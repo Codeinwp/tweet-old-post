@@ -5,7 +5,7 @@ define("PLUGINPATH", realpath(dirname(__FILE__) . "/.."));
 define("CSSFILE", plugins_url('../css/style.css',__FILE__ ));
 define("JSFILE", plugins_url('../js/master.js',__FILE__ ));
 define("JSCOUNTDOWN", plugins_url('../js/countdown.js',__FILE__ ));
-define("CURRENTURL", "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
+define("CURRENTURL", top_current_page());
 define("CWP_TEXTDOMAIN", "TweetOldPost");
 define("SETTINGSURL", admin_url('admin.php?page=TweetOldPost'));
 
@@ -306,5 +306,16 @@ if(!function_exists("array_column")) {
 		}
 }
 
+function top_current_page(){
+	$pageURL = 'http';
+	if (@$_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
+		$pageURL .= "://";
+	if (@$_SERVER["SERVER_PORT"] != "80") {
+		$pageURL .= @$_SERVER["SERVER_NAME"].":".@$_SERVER["SERVER_PORT"].@$_SERVER["REQUEST_URI"];
+	} else {
+		$pageURL .= @$_SERVER["SERVER_NAME"].@$_SERVER["REQUEST_URI"];
+	}
+	return $pageURL;
+}
 // Store all options in array.
 $cwp_top_options_list = array_column($cwp_top_fields, 'option');
