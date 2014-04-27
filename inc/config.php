@@ -1,10 +1,4 @@
 <?php 
-
-// Config Constants
-define("PLUGINPATH", realpath(dirname(__FILE__) . "/.."));
-define("CSSFILE", plugins_url('../css/style.css',__FILE__ ));
-define("JSFILE", plugins_url('../js/master.js',__FILE__ ));
-define("JSCOUNTDOWN", plugins_url('../js/countdown.js',__FILE__ ));
 define("CURRENTURL", top_current_page());
 define("CWP_TEXTDOMAIN", "TweetOldPost");
 define("SETTINGSURL", admin_url('admin.php?page=TweetOldPost'));
@@ -14,12 +8,13 @@ $cwp_top_settings = array(
 	'name' 				=> __("Tweet Old Post", CWP_TEXTDOMAIN),
 	'slug' 				=> "TweetOldPost",
 	'oAuth_settings'	=> array( // Based on TOP Dev Application settings.
-	    'oauth_access_token' 		=> "2364394519-EJKMiUgNTgdx7ssSf89bpyWeFEmESWg1EEjpf6P",
-	    'oauth_access_token_secret' => "rKLWPuk8HEBZRrZ7SXMPjmh7AnGn9qxwubm1fJEbSEDU3",
-	    'consumer_key' 				=> "jlP8YpizvkH3kyfTJtlw",
-	    'consumer_secret' 			=> "6dlFMRm6vU3y1D09MTwPCAI2UopuYHOif764VW2n8k"
+	    'oauth_access_token' 		=> "2256465193-KDpAFIYfxpWugX2OU025b1CPs3WB0RJpgA4Gd4h",
+	    'oauth_access_token_secret' => "abx4Er8qEJ4jI7XDW8a90obzgy8cEtovPXCUNSjmwlpb9",
+	    'consumer_key' 				=> "negZDmFdW1qJqcHkw6Z4EPMbH",
+	    'consumer_secret' 			=> "1BiuP4yvs4JnVx7vYnV0b3NMdpXACGnxtWkQOOYJPO4Rn88QoV"
 		)
 );
+
 
 // Options Array
 $cwp_top_fields = array(
@@ -156,7 +151,7 @@ $cwp_top_fields = array(
 			'name'			=> __('Common Hashtags', CWP_TEXTDOMAIN),
 			'type'			=> 'text',
 			'slug'			=> 'common-hashtags',
-			'option'		=> 'top_opt_common_hashtags',
+			'option'		=> 'top_opt_hashtags',
 			'description'	=> __('Specify which hashtags you want to be used. eg. #example, #example2', CWP_TEXTDOMAIN),
 			'options'		=> array()
 	),
@@ -246,7 +241,7 @@ $cwp_top_fields = array(
 			'options'				=> array()
 	),
 
-	'tweet-specific-category' => array(
+	/*'tweet-specific-category' => array(
 			'id' 					=> '20',
 			'name'  				=> __('Tweet From Specific Categories', CWP_TEXTDOMAIN), 
 			'type'					=> 'categories-list',
@@ -254,7 +249,7 @@ $cwp_top_fields = array(
 			'option'				=> 'top_opt_tweet_specific_category',
 			'description'			=> __('Select which categories do you want to tweet from? Blank - All', CWP_TEXTDOMAIN),
 			'options'				=> array()
-	),
+	),*/
 
 	'exclude-specific-categories' => array(
 			'id' 					=> '21',
@@ -274,12 +269,12 @@ $defaultOptions = array(
 	'top_opt_tweet_type_custom_field'	=> '',
 	'top_opt_add_text'					=> '',
 	'top_opt_add_text_at'				=> 'beginning',
-	'top_opt_include_link'				=> 'true',
+	'top_opt_include_link'				=> 'false',
 	'top_opt_custom_url_option'			=> 'off',
-	'top_opt_use_url_shortner'			=> 'on',
+	'top_opt_use_url_shortner'			=> 'off',
 	'top_opt_url_shortner'				=> 'is.gd',
 	'top_opt_custom_hashtag_option'		=> 'nohashtag',
-	'top_opt_common_hashtags'			=> '',
+	'top_opt_hashtags'			=> '',
 	'top_opt_hashtag_length'			=> '0',
 	'top_opt_custom_hashtag_field'		=> '',
 	'top_opt_interval'					=> '4',
@@ -289,11 +284,11 @@ $defaultOptions = array(
 	'top_opt_post_type'					=> 'post',
 	'top_opt_post_type_value'			=> 'post',
 	'top_opt_custom_url_field'			=> '',
-	'top_opt_tweet_specific_category'	=> '',
+	//'top_opt_tweet_specific_category'	=> '',
 	'top_opt_omit_cats'					=> '',
 
 	// Not field related
-	'cwp_top_active_status'				=> 'false'
+	'cwp_topnew_active_status'				=> 'false'
 );
 
 // Define "array_column" function for PHP versions older than 5.5
@@ -317,5 +312,6 @@ function top_current_page(){
 	}
 	return $pageURL;
 }
+
 // Store all options in array.
 $cwp_top_options_list = array_column($cwp_top_fields, 'option');

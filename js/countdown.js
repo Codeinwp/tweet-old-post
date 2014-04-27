@@ -19,8 +19,13 @@
       };
       getDateData = function(endDate) {
         var dateData, diff;
-        endDate = Date.parse($.isPlainObject(_this.options.date) ? _this.options.date : new Date(_this.options.date));
-        diff = (endDate - Date.parse(new Date)) / 1000;
+        var timenow = new Date();
+        //var timenow = new Date( d1.getUTCFullYear(), d1.getUTCMonth(), d1.getUTCDate(), d1.getUTCHours(), d1.getUTCMinutes(), d1.getUTCSeconds() );
+        //endDate = Date.parse($.isPlainObject(_this.options.date) ? _this.options.date : new Date(_this.options.date));
+        endDate = _this.options.date;
+
+        diff = (endDate - Math.floor(timenow.getTime()/1000));
+        diff = Math.floor(diff);
         if (diff <= 0) {
           diff = 0;
           if (_this.interval) {
