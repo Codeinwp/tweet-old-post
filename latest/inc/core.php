@@ -13,14 +13,17 @@ if (!class_exists('CWP_TOP_Core')) {
 		public static $noFields;
 
 		// Consumer key, Consumer Secret key, oAuth Callback Key
-		private $consumer;
-		private $consumerSecret;
-		private $oAuthCallback;
+		public $consumer;
+		public $consumerSecret;
+		public $oAuthCallback;
 
 		// Access token, oAuth Token, oAuth Token Secret and User Information
 		private $cwp_top_access_token;
 		private $cwp_top_oauth_token;
 		private $cwp_top_oauth_token_secret;
+
+
+		private $users;
 		private $user_info;
 
 		// Plugin Status
@@ -47,18 +50,23 @@ if (!class_exists('CWP_TOP_Core')) {
 
 			// Save all number of fields in static var
 			self::$noFields = count(self::$fields);
-
 		}
 
 		public function startTweetOldPost()
 		{
 			// If the plugin is deactivated
-			if($this->pluginStatus == 'false') {
+			if($this->pluginStatus !== 'true') {
 				// Set it to active status
-				update_option('cwp_top_active_status', 'true');
+				update_option('cwp_topnew_active_status', 'true');
 				// Schedule the next tweet
-				wp_schedule_event(time(), 'cwp_top_schedule', 'cwp_top_tweet_cron');
+				$timeNow = date("Y-m-d H:i:s", time());
+				$timeNow = get_date_from_gmt($timeNow);
+				$timeNow= strtotime($timeNow);
+				$interval = floatval($this->intervalSet) * 60 * 60;
+				$timeNow = $timeNow+$interval;
+				wp_schedule_event($timeNow, 'cwp_top_schedule', 'cwp_top_tweet_cron');
 			} else { 
+				
 				// Report that is already started
 				_e("Tweet Old Post is already active!", CWP_TEXTDOMAIN);
 			}
@@ -68,10 +76,11 @@ if (!class_exists('CWP_TOP_Core')) {
 
 		public function stopTweetOldPost()
 		{
+			//echo $this->pluginStatus;
 			// If the plugin is active
-			if($this->pluginStatus == 'true') {
+			if($this->pluginStatus !== 'false') {
 				// Set it to inactive status
-				update_option('cwp_top_active_status', 'false');
+				update_option('cwp_topnew_active_status', 'false');
 				// Clear all scheduled tweets
 				$this->clearScheduledTweets();
 			} else {
@@ -82,7 +91,7 @@ if (!class_exists('CWP_TOP_Core')) {
 			die(); // Required for AJAX
 		}
 
-		public function tweetOldPost()
+		public function getTweetsFromDB()
 		{
 			// Global WordPress $wpdb object.
 			global $wpdb;
@@ -94,7 +103,7 @@ if (!class_exists('CWP_TOP_Core')) {
 			$tweetCount = intval(get_option('top_opt_no_of_tweet'));
 
 			// Get post categories set.
-			$postQueryCategories =  $this->getTweetCategories();
+//			$postQueryCategories =  $this->getTweetCategories();
 
 			// Get excluded categories.
 			$postQueryExcludedCategories = $this->getExcludedCategories();			
@@ -108,8 +117,8 @@ if (!class_exists('CWP_TOP_Core')) {
 				FROM wp_posts
 				INNER JOIN wp_term_relationships ON (wp_posts.ID = wp_term_relationships.object_id)
 				WHERE 1=1
-				  AND ((post_date >= '{$dateQuery['after']}'
-				        AND post_date <= '{$dateQuery['before']}')) ";
+				  AND ((post_date >= '{$dateQuery['before']}'
+				        AND post_date <= '{$dateQuery['after']}')) ";
 
 			// If there are no categories set, select the post from all.
 			if(!empty($postQueryCategories)) {
@@ -123,21 +132,37 @@ if (!class_exists('CWP_TOP_Core')) {
 					WHERE term_taxonomy_id IN ({$postQueryExcludedCategories})))";
 			}
 						  
-			$query .= "AND wp_posts.post_type IN ({$this->getTweetPostType()})
+			$query .= "AND wp_posts.post_type IN ({$somePostType})
 					  AND (wp_posts.post_status = 'publish')
 					GROUP BY wp_posts.ID
 					ORDER BY RAND() DESC LIMIT 0,{$tweetCount}
 			";
 
+			//echo $query;
+
 			// Save the result in a var for future use.
 			$returnedPost = $wpdb->get_results($query);
 
+			return $returnedPost;
+		}
+
+		public function tweetOldPost()
+		
+		{
+			$returnedPost = $this->getTweetsFromDB();
+
 			$k = 0; // Iterator
+			
+			// Get the number of tweets to be tweeted each interval.
+			$tweetCount = intval(get_option('top_opt_no_of_tweet'));
 
 			// While haven't reached the limit
 			while($k != $tweetCount) {
 				// If the post is not already tweeted
-				if($this->isNotAlreadyTweeted($returnedPost[$k]->ID)) {
+				$isNotAlreadyTweeted = $this->isNotAlreadyTweeted($returnedPost[$k]->ID);
+
+				if($isNotAlreadyTweeted) {
+
 					// Foreach returned post
 					foreach ($returnedPost as $post) {
 						// Generate a tweet from it based on user settings.
@@ -156,6 +181,17 @@ if (!class_exists('CWP_TOP_Core')) {
 				}
 			}
 
+		}
+
+		public function viewSampleTweet()
+		{
+
+			$returnedTweets = $this->getTweetsFromDB();
+			//var_dump($returnedTweets);
+			$finalTweetsPreview = $this->generateTweetFromPost($returnedTweets[0]);
+			echo $finalTweetsPreview;
+
+			die(); // required
 		}
 
 		/**
@@ -183,6 +219,7 @@ if (!class_exists('CWP_TOP_Core')) {
 		
 		public function generateTweetFromPost($postQuery)
 		{
+
 			// Save all user settings in variables.
 			$tweetedPosts 					= get_option("top_opt_already_tweeted_posts");
 			$tweet_content 					= get_option('top_opt_tweet_type');
@@ -195,7 +232,7 @@ if (!class_exists('CWP_TOP_Core')) {
 			$use_url_shortner 				= get_option('top_opt_use_url_shortner');
 			$url_shortner_service 			= get_option('top_opt_url_shortner');
 			$hashtags 						= get_option('top_opt_custom_hashtag_option');
-			$common_hashtags				= get_option('top_opt_common_hashtags');
+			$common_hashtags				= get_option('top_opt_hashtags');
 			$maximum_hashtag_length 		= get_option('top_opt_hashtag_length');
 			$hashtag_custom_field 			= get_option('top_opt_custom_hashtag_field');
 			$additionalTextBeginning 		= "";
@@ -331,21 +368,25 @@ if (!class_exists('CWP_TOP_Core')) {
 		
 		public function tweetPost($finalTweet)
 		{	
-			// Create a new twitter connection using the stored user credentials.
-			$connection = new TwitterOAuth($this->consumer, $this->consumerSecret, $this->cwp_top_oauth_token, $this->cwp_top_oauth_token_secret);
-			// Post the new tweet
-			$status = $connection->post('statuses/update', array('status' => $finalTweet));
+			foreach ($this->users as $user) {
+				// Create a new twitter connection using the stored user credentials.
+				$connection = new TwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
+				// Post the new tweet
+				$status = $connection->post('statuses/update', array('status' => $finalTweet));				
+			}
 		}
 		
 		// Generates the tweet date range based on the user input.
 		public function getTweetPostDateRange()
 		{
 			$minAgeLimit = "-" . get_option('top_opt_age_limit') . " days";
+			if (get_option('top_opt_max_age_limit')==0) $maxAgeLimit = "- 9999 days";
+			else
 			$maxAgeLimit = "-" . get_option('top_opt_max_age_limit') . " days";
 
 			$minAgeLimit = date("Y-m-d H:i:s", strtotime($minAgeLimit));
 			$maxAgeLimit = date("Y-m-d H:i:s", strtotime($maxAgeLimit));
-
+	
 			if(isset($minAgeLimit) || isset($maxAgeLimit)) {
 
 				$dateQuery = array();
@@ -369,7 +410,7 @@ if (!class_exists('CWP_TOP_Core')) {
 		}
 
 		// Gets the tweet categories.
-		public function getTweetCategories()
+/*		public function getTweetCategories()
 		{
 			$postQueryCategories = "";
 			$postsCategories = get_option('top_opt_tweet_specific_category');
@@ -386,7 +427,7 @@ if (!class_exists('CWP_TOP_Core')) {
 			}
 
 			return $postQueryCategories;
-		}
+		}*/
 
 		// Gets the omited tweet categories
 		
@@ -395,7 +436,7 @@ if (!class_exists('CWP_TOP_Core')) {
 			$postQueryCategories = "";
 			$postsCategories = get_option('top_opt_omit_cats');
 
-			if(!empty($postCategories)) {
+			if(!empty($postCategories)&&!is_array($postCategories)) {
 				$lastPostCategory = end($postsCategories);
 				foreach ($postsCategories as $key => $cat) {
 					if($cat == $lastPostCategory) {
@@ -405,6 +446,8 @@ if (!class_exists('CWP_TOP_Core')) {
 					}
 				}
 			}
+			else
+				$postsCategories = get_option('top_opt_omit_cats');
 
 			return $postQueryCategories;
 		}
@@ -455,6 +498,14 @@ if (!class_exists('CWP_TOP_Core')) {
 			wp_clear_scheduled_hook('cwp_top_tweet_cron');
 		}
 
+		// Deactivation hook
+		public function deactivationHook()
+		{
+			delete_option('activation_hook_test_motherfucker');
+			$this->clearScheduledTweets();
+			$this->deleteAllOptions();
+		}
+
 		// Sets all authentication settings
 		public function setAlloAuthSettings() 
 		{
@@ -467,11 +518,14 @@ if (!class_exists('CWP_TOP_Core')) {
 			$this->cwp_top_access_token = get_option('cwp_top_access_token');			
 			$this->cwp_top_oauth_token = get_option('cwp_top_oauth_token');
 			$this->cwp_top_oauth_token_secret = get_option('cwp_top_oauth_token_secret');
-			$this->user_info = get_option('cwp_top_oauth_user_details');
 
-			$this->pluginStatus = get_option('cwp_top_active_status');
+			$this->user_info = get_option('cwp_top_oauth_user_details');			
+			$this->users = get_option('cwp_top_logged_in_users');
+
+			$this->pluginStatus = get_option('cwp_topnew_active_status');
 			$this->intervalSet = get_option('top_opt_interval');
 
+			//update_option('cwp_top_logged_in_users', '');
 		}
 
 		// Checks if twitter returned any temporary credentials to log in the user.
@@ -480,15 +534,27 @@ if (!class_exists('CWP_TOP_Core')) {
 			if(isset($_REQUEST['oauth_token'])) {
 				if($_REQUEST['oauth_token'] == $this->cwp_top_oauth_token) {
 
-					$pluginURL = get_option('cwp_top_first_plugin_url');
 					$twitter = new TwitterOAuth($this->consumer, $this->consumerSecret, $this->cwp_top_oauth_token, $this->cwp_top_oauth_token_secret );
 					$access_token = $twitter->getAccessToken($_REQUEST['oauth_verifier']);
-
 					$user_details = $twitter->get('account/verify_credentials');
 
-					update_option('cwp_top_oauth_token', $access_token['oauth_token']);
-					update_option('cwp_top_oauth_token_secret', $access_token['oauth_token_secret']);
-					update_option('cwp_top_oauth_user_details', $user_details);
+					$newUser = array(
+						'user_id'				=> $user_details->id,
+						'oauth_token'			=> $access_token['oauth_token'],
+						'oauth_token_secret'	=> $access_token['oauth_token_secret'],
+						'oauth_user_details'	=> $user_details
+					);
+
+					$loggedInUsers = get_option('cwp_top_logged_in_users');
+					if(empty($loggedInUsers)) { $loggedInUsers = array(); }
+
+
+					if(in_array($newUser, $loggedInUsers)) {
+						echo "You already added that user! no can do !";
+					} else { 
+						array_push($loggedInUsers, $newUser);
+						update_option('cwp_top_logged_in_users', $loggedInUsers);
+					}
 
 					header("Location: " . SETTINGSURL);
 					exit;
@@ -515,19 +581,33 @@ if (!class_exists('CWP_TOP_Core')) {
 			$twitter = new TwitterOAuth($this->consumer, $this->consumerSecret);
 			$requestToken = $twitter->getRequestToken($this->oAuthCallback);
 
-			$token = $requestToken['oauth_token'];
-			update_option('cwp_top_oauth_token', $token);
+			update_option('cwp_top_oauth_token', $requestToken['oauth_token']);
 			update_option('cwp_top_oauth_token_secret', $requestToken['oauth_token_secret']);
+
+
 
 			switch ($twitter->http_code) {
 				case 200:
-					$url = $twitter->getAuthorizeURL($token);
+					$url = $twitter->getAuthorizeURL($requestToken['oauth_token']);
 					echo $url;
 					break;
 				
 				default:
-					return "Could not connect to twitter!";
+					return __("Could not connect to Twitter!", CWP_TEXTDOMAIN);
 					break;
+			}
+			die(); // Required
+		}
+
+				// Adds new twitter account
+		public function addNewTwitterAccountPro()
+		{
+			if (function_exists('topProAddNewAccount')) {
+				topProAddNewAccount();
+			}
+			else{
+				_e("You need to <a target='_blank' href='http://themeisle.com/plugins/tweet-old-post-pro'>upgrade to the PRO version</a> in order to add more accounts, fellow pirate!", CWP_TEXTDOMAIN);
+
 			}
 			die(); // Required
 		}
@@ -536,10 +616,10 @@ if (!class_exists('CWP_TOP_Core')) {
 		public function getNextTweetInterval()
 		{
 			$timestamp = wp_next_scheduled( 'cwp_top_tweet_cron' );
-
-			$timestamp = date('Y-m-d H:i:s', $timestamp);
-
+			//echo $timestamp;
+			$timestamp = date("Y-m-d H:i:s", $timestamp);
 			$timeLeft = get_date_from_gmt($timestamp);
+			$timeLeft = strtotime($timeLeft);
 			echo $timeLeft;
 		}
 
@@ -556,9 +636,20 @@ if (!class_exists('CWP_TOP_Core')) {
 		// Clears all Twitter user credentials.
 		public function logOutTwitterUser()
 		{
-			update_option('cwp_top_oauth_token', '');
-			update_option('cwp_top_oauth_token_secret', '');
-			update_option('cwp_top_oauth_user_details', '');
+			$userID = $_POST['user_id'];
+
+			$users = get_option('cwp_top_logged_in_users');
+
+			foreach ($users as $id => $user) {
+				foreach ($user as $key => $value) {
+					if($userID == $value) {
+						$user_id = array_search($user, $users);
+						unset($users[$user_id]);
+					}
+				}
+			}
+
+			update_option('cwp_top_logged_in_users', $users);
 
 			$this->setAlloAuthSettings();
 			die();
@@ -572,7 +663,6 @@ if (!class_exists('CWP_TOP_Core')) {
 			$options = array();
 			parse_str($dataSent, $options);
 
-			print_r($options);
 			
 
 			foreach ($options as $option => $newValue) {
@@ -593,21 +683,74 @@ if (!class_exists('CWP_TOP_Core')) {
 			}
 
 			if(!array_key_exists('top_opt_omit_cats', $options)) {
-				update_option('top_opt_tweet_specific_category', '');
+				update_option('top_opt_omit_cats', '');
 			}
 
-			update_option("top_opt_already_tweeted_posts", array());
+			//update_option("top_opt_already_tweeted_posts", array());
 
 			die();
 		}
 
+		public function top_admin_notice() {
+			global $current_user ;
+		        $user_id = $current_user->ID;
+		        /* Check that the user hasn't already clicked to ignore the message */
+			if ( ! get_user_meta($user_id, 'top_ignore_notice') ) {
+		        echo '<div class="error"><p>';
+		        printf(__('If you just updated TOP plugin, please make sure you <a href="'.SETTINGSURL.'">re-authentificate</a> your twitter account and make sure that all the <a href="'.SETTINGSURL.'">settings</a> are correct. To be able to maintain it, we rewrote TOP from scratch and some changes were required. | <a href="'.SETTINGSURL.'&top_nag_ignore=0">Hide Notice</a>'));
+		        echo "</p></div>";
+			}
+		}
+		public function top_nag_ignore() {
+			global $current_user;
+		        $user_id = $current_user->ID;
+		        /* If user clicks to ignore the notice, add that to their user meta */
+		        if ( isset($_GET['top_nag_ignore']) && '0' == $_GET['top_nag_ignore'] ) {
+		             add_user_meta($user_id, 'top_ignore_notice', 'true', true);
+			}
+		}
+
 		public function resetAllOptions()
 		{
-			global $defaultOptions;
+			update_option('activation_hook_test_motherfucker', "Well, the plugin was activated!");
+
+			$defaultOptions = array(
+				'top_opt_tweet_type'				=> 'title',
+				'top_opt_tweet_type_custom_field'	=> '',
+				'top_opt_add_text'					=> '',
+				'top_opt_add_text_at'				=> 'beginning',
+				'top_opt_include_link'				=> 'false',
+				'top_opt_custom_url_option'			=> 'off',
+				'top_opt_use_url_shortner'			=> 'off',
+				'top_opt_url_shortner'				=> 'is.gd',
+				'top_opt_custom_hashtag_option'		=> 'nohashtag',
+				'top_opt_hashtags'			=> '',
+				'top_opt_hashtag_length'			=> '0',
+				'top_opt_custom_hashtag_field'		=> '',
+				'top_opt_interval'					=> '4',
+				'top_opt_age_limit'					=> '30',
+				'top_opt_max_age_limit'				=> '0',
+				'top_opt_no_of_tweet'				=> '1',
+				'top_opt_post_type'					=> 'post',
+				'top_opt_post_type_value'			=> 'post',
+				'top_opt_custom_url_field'			=> '',
+				'top_opt_tweet_specific_category'	=> '',
+				'top_opt_omit_cats'					=> '',
+				'cwp_topnew_active_status'			=> 'false'
+			);
+
 			foreach ($defaultOptions as $option => $defaultValue) {
 				update_option($option, $defaultValue);
 			}
-			die();
+			//die();
+		}
+
+		public function deleteAllOptions()
+		{
+			global $defaultOptions;
+			foreach ($defaultOptions as $option => $defaultValue) {
+				delete_option($option);
+			}
 		}
 
 		// Generate all fields based on settings
@@ -623,8 +766,9 @@ if (!class_exists('CWP_TOP_Core')) {
 				case 'select':
 					$noFieldOptions = intval(count($field['options']));
 					$fieldOptions = array_keys($field['options']);
-
-					print "<select id='".$field['option']."' name='".$field['option']."'>";
+					$disabled = "";
+					if ($field['option']=='top_opt_post_type') $disabled = "disabled";
+					print "<select id='".$field['option']."' name='".$field['option']."'".$disabled.">";
 						for ($i=0; $i < $noFieldOptions; $i++) { 
 							print "<option value=".$fieldOptions[$i];
 							if($field['option_value'] == $fieldOptions[$i]) { echo " selected='selected'"; }
@@ -657,11 +801,15 @@ if (!class_exists('CWP_TOP_Core')) {
 						foreach ($categories as $category) {
 
 							$top_opt_tweet_specific_category = get_option('top_opt_tweet_specific_category');
-							$top_opt_omit_specific_cats = get_option('top_opt_omit_cats');
 
-							print "<div class='cwp-cat'>";
+							if (!is_array(get_option('top_opt_omit_cats')))
+								$top_opt_omit_specific_cats = explode(',',get_option('top_opt_omit_cats'));
+							else
+								$top_opt_omit_specific_cats = get_option('top_opt_omit_cats');
+
+						print "<div class='cwp-cat'>";
 								print "<input type='checkbox' name='".$field['option']."[]' value='".$category->cat_ID."' id='".$field['option']."_cat_".$category->cat_ID."'";
-
+						/*	
 								if($field['option'] == 'top_opt_tweet_specific_category' ) {
 									if(is_array($top_opt_tweet_specific_category)) {
 										if(in_array($category->cat_ID, $top_opt_tweet_specific_category)) {
@@ -669,7 +817,7 @@ if (!class_exists('CWP_TOP_Core')) {
 										}
 									}
 								}
-
+						*/
 								if($field['option'] == 'top_opt_omit_cats') {
 									if(is_array($top_opt_omit_specific_cats)) {
 										if(in_array($category->cat_ID, $top_opt_omit_specific_cats)) {
@@ -690,6 +838,24 @@ if (!class_exists('CWP_TOP_Core')) {
 
 		}
 
+		public function top_plugin_action_links($links, $file) {
+		    static $this_plugin;
+
+		    if (!$this_plugin) {
+		        $this_plugin = plugin_basename(__FILE__);
+		    }
+
+		    if ($file == $this_plugin) {
+		        // The "page" query string value must be equal to the slug
+		        // of the Settings admin page we defined earlier, which in
+		        // this case equals "myplugin-settings".
+		        $settings_link = '<a href="' . get_bloginfo('wpurl') . '/wp-admin/admin.php?page=TweetOldPost">Settings</a>';
+		        array_unshift($links, $settings_link);
+		    }
+
+		    return $links;
+		}
+
 		public function loadAllHooks() 
 		{
 			// loading all actions and filters
@@ -708,20 +874,37 @@ if (!class_exists('CWP_TOP_Core')) {
 			add_action('wp_ajax_nopriv_add_new_twitter_account', array($this, 'addNewTwitterAccount'));
 			add_action('wp_ajax_add_new_twitter_account', array($this, 'addNewTwitterAccount'));
 
+			// Add more than one twitter account ajax action
+			add_action('wp_ajax_nopriv_add_new_twitter_account_pro', array($this, 'addNewTwitterAccountPro'));
+			add_action('wp_ajax_add_new_twitter_account_pro', array($this, 'addNewTwitterAccountPro'));
+
 			// Log Out Twitter user ajax action
 			add_action('wp_ajax_nopriv_log_out_twitter_user', array($this, 'logOutTwitterUser'));
 			add_action('wp_ajax_log_out_twitter_user', array($this, 'logOutTwitterUser'));
 
-			// Tweet Old Post ajax action
+			// Tweet Old Post ajax action.
 			add_action('wp_ajax_nopriv_tweet_old_post_action', array($this, 'startTweetOldPost'));
 			add_action('wp_ajax_tweet_old_post_action', array($this, 'startTweetOldPost'));
+
+			// Tweet Old Post view sample tweet action.
+			add_action('wp_ajax_nopriv_view_sample_tweet_action', array($this, 'viewSampleTweet'));
+			add_action('wp_ajax_view_sample_tweet_action', array($this, 'viewSampleTweet'));
 
 			// Tweet Old Post ajax action
 			add_action('wp_ajax_nopriv_stop_tweet_old_post', array($this, 'stopTweetOldPost'));
 			add_action('wp_ajax_stop_tweet_old_post', array($this, 'stopTweetOldPost'));
 
-			// Clear scheduled tweets on plugin deactivation
-			register_deactivation_hook(__FILE__, array($this, 'clearScheduledTweets'));
+			//Tweet Old Post initial notice
+
+			add_action('admin_notices', array($this,'top_admin_notice'));
+
+			add_action('admin_init', array($this,'top_nag_ignore'));
+
+			//Settings link
+
+			add_filter('plugin_action_links', array($this,'top_plugin_action_links'), 10, 2);
+
+
 
 			// Filter to add new custom schedule based on user input
 			add_filter('cron_schedules', array($this, 'createCustomSchedule'));
@@ -831,6 +1014,8 @@ if (!class_exists('CWP_TOP_Core')) {
 		}
 
 	}
+}
 
-	$CWP_TOP_Core = new CWP_TOP_Core; 
+if(class_exists('CWP_TOP_Core')) {
+	$CWP_TOP_Core = new CWP_TOP_Core;
 }
