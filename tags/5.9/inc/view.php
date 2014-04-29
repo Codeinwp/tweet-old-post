@@ -30,7 +30,7 @@
 				<span class='tweetInterval'> <?php echo $this->intervalSet; ?></span>
 				<?php _e("hours interval, ", CWP_TEXTDOMAIN); ?>
 				<?php _e("and the next tweet will take place in: ", CWP_TEXTDOMAIN); ?>
-				<span class='nextTweet'><?php $this->getNextTweetInterval(); update_option('cwp_topnew_notice', ""); ?></span>
+				<span class='nextTweet'><?php $this->getNextTweetInterval(); ?></span>
 			</p>
 		<?php } else { ?>
 			<p class='inactive'>
@@ -38,7 +38,7 @@
 			</p>
 		<?php } ?>
 			<p class='inactive'>
-				<?php _e("Once you click start tweet a tweet will be sent in 15 sec, also here you can see the error message if is any.", CWP_TEXTDOMAIN); ?>
+				<?php _e("Bit.ly is back, at this point any feedback is crucial, so please let us know if you have any issue.", CWP_TEXTDOMAIN); ?>
 			</p>
 
 		</div><!-- end .cwp_top_status -->

@@ -33,9 +33,6 @@ For updates follow https://twitter.com/themeisle If you have anything you can le
 - Exclude categories
 - Exclude specific posts.
 
-**New in v6.0**
-
-Tweets now are posted immediately, fixed scheduling and added debug messages
 
 **Let me know if you have any more ideas**
 
@@ -158,10 +155,6 @@ http://themeisle.com/plugins/tweet-old-post-lite/
 
 
 == Changelog ==
-
-**New in v6.0**
-
-Tweets now are posted immediately, fixed scheduling and added debug messages
 
 **New in v5.9**
 

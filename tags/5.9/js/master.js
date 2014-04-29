@@ -139,7 +139,7 @@ jQuery(document).ready(function(){
 		endAjaxIntro();
 	});
 
-	// Start Tweet
+	// Tweet Now
 	jQuery("#cwp_top_form a.tweet-now").click(function(e){
 		e.preventDefault();
 		startAjaxIntro();
@@ -165,32 +165,6 @@ jQuery(document).ready(function(){
 		endAjaxIntro();
 	});
 
-	setInterval(function(){ jQuery.ajax({
-			type: "POST", 
-			url: cwp_top_ajaxload.ajaxurl,
-			data: {
-				action: "getNotice_action"
-			},
-			success: function(response) {
-				if(response !== '') {
-					if (response.substring(0,5)=="Error") {
-						jQuery(".cwp_top_status p:nth-child(2)").css( "color", "red" );
-						jQuery(".cwp_top_status p:nth-child(2)").text(response);	
-					} else {
-
-						//jQuery(".cwp_top_status p:nth-child(2)").addClass("active").removeClass("inactive");
-						jQuery(".cwp_top_status p:nth-child(2)").text(response);
-						jQuery(".cwp_top_status p:nth-child(2)").css( "color", "#218618" );
-
-					}
-					
-					//jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet").html(response);
-				}
-			},
-			error: function(MLHttpRequest, textStatus, errorThrown) {
-				console.log("There was an error: "+errorThrown);
-			}
-		})},3000);
 
 	jQuery("#cwp_top_form a.see-sample-tweet").click(function(e){
 		e.preventDefault();

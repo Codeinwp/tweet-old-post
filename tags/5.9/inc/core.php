@@ -59,14 +59,13 @@ if (!class_exists('CWP_TOP_Core')) {
 			if($this->pluginStatus !== 'true') {
 				// Set it to active status
 				update_option('cwp_topnew_active_status', 'true');
-				update_option('cwp_topnew_notice', '');
 				// Schedule the next tweet
 				//$timeNow = date("Y-m-d H:i:s", time());
 				//$timeNow = get_date_from_gmt($timeNow);
 				//$timeNow= strtotime($timeNow);
 				$timeNow = time();
 				$interval = floatval($this->intervalSet) * 60 * 60;
-				$timeNow = $timeNow+15;
+				$timeNow = $timeNow+$interval;
 				wp_schedule_event($timeNow, 'cwp_top_schedule', 'cwp_top_tweet_cron');
 			} else { 
 				
@@ -84,7 +83,6 @@ if (!class_exists('CWP_TOP_Core')) {
 			if($this->pluginStatus !== 'false') {
 				// Set it to inactive status
 				update_option('cwp_topnew_active_status', 'false');
-				update_option('cwp_topnew_notice', '');
 				// Clear all scheduled tweets
 				$this->clearScheduledTweets();
 			} else {
@@ -176,13 +174,10 @@ if (!class_exists('CWP_TOP_Core')) {
 						// Generate a tweet from it based on user settings.
 						$finalTweet = $this->generateTweetFromPost($post);
 						// Tweet the post
-						if ($this->isPostWithImageEnabled()=="on") {
+						if ($this->isPostWithImageEnabled()=="on")
 							$this->tweetPostwithImage($finalTweet, $returnedPost[$k]->ID);
-						}
-						else {
-							$resp = $this->tweetPost($finalTweet);
-							update_option('cwp_topnew_notice', $resp);
-						}
+						else
+							$this->tweetPost($finalTweet);
 						// Get already tweeted posts array.
 						$tweetedPosts = get_option("top_opt_already_tweeted_posts");
 						// Push the tweeted post at the end of the array.
@@ -195,15 +190,6 @@ if (!class_exists('CWP_TOP_Core')) {
 				}
 			}
 
-		}
-
-		public function getNotice() {
-			$notice = get_option('cwp_topnew_notice');
-			if ($notice->errors[0]->message)
-				echo "Error for your last tweet was :'".$notice->errors[0]->message."'";
-			else if ($notice->text)
-				echo "Congrats! The following tweet was posted successfully: '".$notice->text."' at ".$notice->created_at;
-			die();
 		}
 
 		public function viewSampleTweet()
@@ -398,9 +384,7 @@ if (!class_exists('CWP_TOP_Core')) {
 				// Create a new twitter connection using the stored user credentials.
 				$connection = new TwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
 				// Post the new tweet
-				$status = $connection->post('statuses/update', array('status' => $finalTweet));	
-				return $status;
-	
+				$status = $connection->post('statuses/update', array('status' => $finalTweet));				
 			}
 		}
 
@@ -778,8 +762,7 @@ if (!class_exists('CWP_TOP_Core')) {
 				'top_opt_custom_url_field'			=> '',
 				'top_opt_tweet_specific_category'	=> '',
 				'top_opt_omit_cats'					=> '',
-				'cwp_topnew_active_status'			=> 'false',
-				'cwp_topnew_notice'					=> ''
+				'cwp_topnew_active_status'			=> 'false'
 			);
 
 			foreach ($defaultOptions as $option => $defaultValue) {
@@ -904,13 +887,6 @@ if (!class_exists('CWP_TOP_Core')) {
 		    return $links;
 		}
 
-		public function getTime() {
-		    
-		    echo time();
-
-		    die();
-		}
-
 		public function loadAllHooks() 
 		{
 			// loading all actions and filters
@@ -944,12 +920,6 @@ if (!class_exists('CWP_TOP_Core')) {
 			// Tweet Old Post view sample tweet action.
 			add_action('wp_ajax_nopriv_view_sample_tweet_action', array($this, 'viewSampleTweet'));
 			add_action('wp_ajax_view_sample_tweet_action', array($this, 'viewSampleTweet'));
-
-			add_action('wp_ajax_nopriv_gettime_action', array($this, 'getTime'));
-			add_action('wp_ajax_gettime_action', array($this, 'getTime'));
-
-			add_action('wp_ajax_nopriv_getNotice_action', array($this, 'getNotice'));
-			add_action('wp_ajax_getNotice_action', array($this, 'getNotice'));
 
 			// Tweet Old Post ajax action
 			add_action('wp_ajax_nopriv_stop_tweet_old_post', array($this, 'stopTweetOldPost'));
