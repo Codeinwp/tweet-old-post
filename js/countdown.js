@@ -1,3 +1,4 @@
+var timenow="";
 (function() {
 
   (function($) {
@@ -17,13 +18,30 @@
         _this.render();
         return _this;
       };
+      
       getDateData = function(endDate) {
         var dateData, diff;
-        var timenow = new Date();
+        jQuery.ajax({
+          type: "POST", 
+          url: cwp_top_ajaxload.ajaxurl,
+          data: {
+            action: "gettime_action"
+          },
+          success: function(response) {
+            timenow = new Date(response*1000);
+          },
+          error: function(MLHttpRequest, textStatus, errorThrown) {
+            console.log("There was an error: "+errorThrown);
+          }
+        });
+
+        //var timenow = new Date(<?php echo time(); ?>*1000)
         //var timenow = new Date( d1.getUTCFullYear(), d1.getUTCMonth(), d1.getUTCDate(), d1.getUTCHours(), d1.getUTCMinutes(), d1.getUTCSeconds() );
         //endDate = Date.parse($.isPlainObject(_this.options.date) ? _this.options.date : new Date(_this.options.date));
         endDate = _this.options.date;
-
+        
+        if (timenow == '')
+          timenow = new Date();
         diff = (endDate - Math.floor(timenow.getTime()/1000));
         diff = Math.floor(diff);
         if (diff <= 0) {
@@ -83,7 +101,10 @@
           clearInterval(_this.interval);
         }
         _this.interval = null;
+        jQuery(".cwp_top_container .nextTweet").html('Your tweet was just sent to twitter server. Refresh the page to see when the next one will be posted.');
+
         return _this;
+        //return _this;
       };
       this.start = function(refresh) {
         if (refresh == null) {
@@ -106,6 +127,7 @@
       refresh: 1000,
       onEnd: $.noop,
       render: function(date) {
+        if (date.days!=0 || date.hours!=0 || date.min!=0 || date.sec!=0)
         return $(this.el).html("" +  date.days + " days, " + (this.leadingZeros(date.hours)) + " hours, " + (this.leadingZeros(date.min)) + " min and " + (this.leadingZeros(date.sec)) + " sec");
       }
     };
