@@ -156,10 +156,6 @@ http://themeisle.com/plugins/tweet-old-post-lite/
 
 == Changelog ==
 
-**New in v5.9**
-
-Tags are converted to lowercase automatically now
-
 **New in v5.8**
 
 Added post by image options in the pro version and some fixes.
