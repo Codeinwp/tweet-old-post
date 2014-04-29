@@ -2,7 +2,7 @@
 define("CURRENTURL", top_current_page());
 define("CWP_TEXTDOMAIN", "TweetOldPost");
 define("SETTINGSURL", admin_url('admin.php?page=TweetOldPost'));
-
+date_default_timezone_set("GMT");
 // Settings Array
 $cwp_top_settings = array(
 	'name' 				=> __("Tweet Old Post", CWP_TEXTDOMAIN),
@@ -110,6 +110,8 @@ $cwp_top_fields = array(
 			'options'		=> '',
 	),
 
+
+
 	'url-shortner' => array(
 			'id' 			=> '9',
 			'name'  		=> __('URL Shortner Service', CWP_TEXTDOMAIN), 
@@ -118,16 +120,37 @@ $cwp_top_fields = array(
 			'option'		=> 'top_opt_url_shortner',
 			'description'	=> __('Shorten the link to your post.', CWP_TEXTDOMAIN),
 			'options'		=> array(
+				'wp_short_url'		=> __('wp short url', CWP_TEXTDOMAIN),
+				//'t.co'		=> __('t.co', CWP_TEXTDOMAIN),
 				'is.gd'		=> __('is.gd', CWP_TEXTDOMAIN),
-				'su.pr'		=> __('su.pr', CWP_TEXTDOMAIN),
 				'bit.ly'	=> __('bit.ly', CWP_TEXTDOMAIN),
-				'tr.im'		=> __('tr.im', CWP_TEXTDOMAIN),
-				'3.ly'		=> __('3.ly', CWP_TEXTDOMAIN),
-				'u.nu'		=> __('u.nu', CWP_TEXTDOMAIN),
-				'1click.at'	=> __('1click.at', CWP_TEXTDOMAIN),
-				'tinyurl'	=> __('TinyUrl', CWP_TEXTDOMAIN)
+				//'tr.im'		=> __('tr.im', CWP_TEXTDOMAIN),
+				//'3.ly'		=> __('3.ly', CWP_TEXTDOMAIN),
+				//'u.nu'		=> __('u.nu', CWP_TEXTDOMAIN),
+				//'1click.at'	=> __('1click.at', CWP_TEXTDOMAIN),
+				//'tinyurl'	=> __('TinyUrl', CWP_TEXTDOMAIN)
 
 				)
+	),
+
+	'bitly-key' => array(
+			'id'			=> '22',
+			'name'			=> __('Bitly Key', CWP_TEXTDOMAIN),
+			'type'			=> 'text',
+			'slug'			=> 'bitly-key',
+			'option'		=> 'top_opt_bitly_key',
+			'description'	=> '',
+			'options'		=> '',
+	),
+
+	'bitly-user' => array(
+			'id'			=> '23',
+			'name'			=> __('Bitly User', CWP_TEXTDOMAIN),
+			'type'			=> 'text',
+			'slug'			=> 'bitly-user',
+			'option'		=> 'top_opt_bitly_user',
+			'description'	=> '',
+			'options'		=> '',
 	),
 
 	'custom-hashtag-option' => array(
@@ -158,7 +181,7 @@ $cwp_top_fields = array(
 
 	'hashtags-length'		=> array(
 			'id'			=> '12',
-			'name'			=> __('Maximum Hashtag Length', CWP_TEXTDOMAIN),
+			'name'			=> __('Maximum Hashtags Length', CWP_TEXTDOMAIN),
 			'type'			=> 'text',
 			'slug'			=> 'hashtags-length',
 			'option'		=> 'top_opt_hashtag_length',
@@ -238,6 +261,16 @@ $cwp_top_fields = array(
 			'slug'					=> 'post-type-value',
 			'option'				=> 'top_opt_post_type_value',
 			'description'			=> __('Select which custom post type', CWP_TEXTDOMAIN),
+			'options'				=> array()
+	),
+
+	'use-image' => array(
+			'id' 					=> '24',
+			'name'  				=> __('Post with Image', CWP_TEXTDOMAIN), 
+			'type'					=> 'checkbox',
+			'slug'					=> 'post-with-image',
+			'option'				=> 'top_opt_post_with_image',
+			'description'			=> __('Check if you want to add the post featured image to the tweet', CWP_TEXTDOMAIN),
 			'options'				=> array()
 	),
 

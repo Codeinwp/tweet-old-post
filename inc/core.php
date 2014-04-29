@@ -16,7 +16,8 @@ if (!class_exists('CWP_TOP_Core')) {
 		public $consumer;
 		public $consumerSecret;
 		public $oAuthCallback;
-
+		public $bitly_key;
+		public $bitly_user;
 		// Access token, oAuth Token, oAuth Token Secret and User Information
 		private $cwp_top_access_token;
 		private $cwp_top_oauth_token;
@@ -59,9 +60,10 @@ if (!class_exists('CWP_TOP_Core')) {
 				// Set it to active status
 				update_option('cwp_topnew_active_status', 'true');
 				// Schedule the next tweet
-				$timeNow = date("Y-m-d H:i:s", time());
-				$timeNow = get_date_from_gmt($timeNow);
-				$timeNow= strtotime($timeNow);
+				//$timeNow = date("Y-m-d H:i:s", time());
+				//$timeNow = get_date_from_gmt($timeNow);
+				//$timeNow= strtotime($timeNow);
+				$timeNow = time();
 				$interval = floatval($this->intervalSet) * 60 * 60;
 				$timeNow = $timeNow+$interval;
 				wp_schedule_event($timeNow, 'cwp_top_schedule', 'cwp_top_tweet_cron');
@@ -107,6 +109,7 @@ if (!class_exists('CWP_TOP_Core')) {
 
 			// Get excluded categories.
 			$postQueryExcludedCategories = $this->getExcludedCategories();			
+			//echo $postQueryExcludedCategories;
 
 			// Get post type set.
 			$somePostType = $this->getTweetPostType();
@@ -114,31 +117,29 @@ if (!class_exists('CWP_TOP_Core')) {
 			// Generate dynamic query.
 			$query = "
 				SELECT *
-				FROM wp_posts
-				INNER JOIN wp_term_relationships ON (wp_posts.ID = wp_term_relationships.object_id)
+				FROM {$wpdb->prefix}posts
+				INNER JOIN {$wpdb->prefix}term_relationships ON ({$wpdb->prefix}posts.ID = {$wpdb->prefix}term_relationships.object_id)
 				WHERE 1=1
 				  AND ((post_date >= '{$dateQuery['before']}'
 				        AND post_date <= '{$dateQuery['after']}')) ";
 
 			// If there are no categories set, select the post from all.
-			if(!empty($postQueryCategories)) {
-				$query .= "AND (wp_term_relationships.term_taxonomy_id IN ({$postQueryCategories})) ";
-			}
+			//if(!empty($postQueryCategories)) {
+		//		$query .= "AND (wp_term_relationships.term_taxonomy_id IN ({$postQueryCategories})) ";
+		//	}
 
 			if(!empty($postQueryExcludedCategories)) {
-				$query .= "AND ( wp_posts.ID NOT IN (
+				$query .= "AND ( {$wpdb->prefix}posts.ID NOT IN (
 					SELECT object_id
-					FROM wp_term_relationships
+					FROM {$wpdb->prefix}term_relationships
 					WHERE term_taxonomy_id IN ({$postQueryExcludedCategories})))";
 			}
 						  
-			$query .= "AND wp_posts.post_type IN ({$somePostType})
-					  AND (wp_posts.post_status = 'publish')
-					GROUP BY wp_posts.ID
+			$query .= "AND {$wpdb->prefix}posts.post_type IN ({$somePostType})
+					  AND ({$wpdb->prefix}posts.post_status = 'publish')
+					GROUP BY {$wpdb->prefix}posts.ID
 					ORDER BY RAND() DESC LIMIT 0,{$tweetCount}
 			";
-
-			//echo $query;
 
 			// Save the result in a var for future use.
 			$returnedPost = $wpdb->get_results($query);
@@ -146,10 +147,15 @@ if (!class_exists('CWP_TOP_Core')) {
 			return $returnedPost;
 		}
 
+		public function isPostWithImageEnabled () {
+			return get_option("top_opt_post_with_image");
+		}
+
 		public function tweetOldPost()
 		
 		{
 			$returnedPost = $this->getTweetsFromDB();
+
 
 			$k = 0; // Iterator
 			
@@ -168,7 +174,10 @@ if (!class_exists('CWP_TOP_Core')) {
 						// Generate a tweet from it based on user settings.
 						$finalTweet = $this->generateTweetFromPost($post);
 						// Tweet the post
-						$this->tweetPost($finalTweet);
+						if ($this->isPostWithImageEnabled()=="on")
+							$this->tweetPostwithImage($finalTweet, $returnedPost[$k]->ID);
+						else
+							$this->tweetPost($finalTweet);
 						// Get already tweeted posts array.
 						$tweetedPosts = get_option("top_opt_already_tweeted_posts");
 						// Push the tweeted post at the end of the array.
@@ -190,7 +199,7 @@ if (!class_exists('CWP_TOP_Core')) {
 			//var_dump($returnedTweets);
 			$finalTweetsPreview = $this->generateTweetFromPost($returnedTweets[0]);
 			echo $finalTweetsPreview;
-
+			
 			die(); // required
 		}
 
@@ -235,6 +244,8 @@ if (!class_exists('CWP_TOP_Core')) {
 			$common_hashtags				= get_option('top_opt_hashtags');
 			$maximum_hashtag_length 		= get_option('top_opt_hashtag_length');
 			$hashtag_custom_field 			= get_option('top_opt_custom_hashtag_field');
+			$bitly_key 						= get_option('top_opt_bitly_key');
+            $bitly_user 					= get_option('top_opt_bitly_user');
 			$additionalTextBeginning 		= "";
 			$additionalTextEnd 				= "";
 
@@ -258,7 +269,7 @@ if (!class_exists('CWP_TOP_Core')) {
 					break;
 
 				case 'custom-field':
-					$tweetContent = get_post_meta($postQuery->ID, $tweet_content_custom_field);
+					$tweetContent = get_post_meta($postQuery->ID, $tweet_content_custom_field,true);
 					break;
 				default:
 					$tweetContent = $finalTweet;
@@ -277,13 +288,13 @@ if (!class_exists('CWP_TOP_Core')) {
 			// Generate the post link.
 			if($include_link == 'true') {
 				if($fetch_url_from_custom_field == 'on') {
-					$post_url = " " . get_post_meta($postQuery->ID, $custom_field_url) . " ";
+					$post_url = " " . get_post_meta($postQuery->ID, $custom_field_url,true) . " ";
 				} else { 
 					$post_url = " " . get_permalink($postQuery->ID);
 				}
 
 				if($use_url_shortner == 'on') {
-					$post_url = " " . $this->shortenURL($post_url, $url_shortner_service);
+					$post_url = " " . $this->shortenURL($post_url, $url_shortner_service, $postQuery->ID, $bitly_key, $bitly_user);
 				}
 				$post_url = $post_url . " ";
 			} else { $post_url = ""; }
@@ -301,7 +312,7 @@ if (!class_exists('CWP_TOP_Core')) {
 						$postCategories = get_the_category($postQuery->ID);
 
 						foreach ($postCategories as $category) {
-							if(strlen($category->cat_name) <= $maximum_hashtag_length || $maximum_hashtag_length == 0) { 
+							if(strlen($category->cat_name.$newHashtags) <= $maximum_hashtag_length || $maximum_hashtag_length == 0) { 
 						 		$newHashtags = $newHashtags . " #" . $category->cat_name; 
 						 	}
 						} 
@@ -311,7 +322,7 @@ if (!class_exists('CWP_TOP_Core')) {
 					case 'tags':
 						$postTags = wp_get_post_tags($postQuery->ID);
 						foreach ($postTags as $postTag) {
-							if(strlen($postTag->slug) <= $maximum_hashtag_length || $maximum_hashtag_length == 0) {
+							if(strlen($postTag->slug.$newHashtags) <= $maximum_hashtag_length || $maximum_hashtag_length == 0) {
 								$newHashtags = $newHashtags . " #" . $postTag->slug;
 							}
 						}
@@ -375,6 +386,17 @@ if (!class_exists('CWP_TOP_Core')) {
 				$status = $connection->post('statuses/update', array('status' => $finalTweet));				
 			}
 		}
+
+		public function tweetPostwithImage($finalTweet, $id)
+		{	
+			foreach ($this->users as $user) {
+				// Create a new twitter connection using the stored user credentials.
+				$connection = new TwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
+				// Post the new tweet
+				if (function_exists(topProImage)) 
+				topProImage($connection, $finalTweet, $id);				
+			}
+		}
 		
 		// Generates the tweet date range based on the user input.
 		public function getTweetPostDateRange()
@@ -434,11 +456,11 @@ if (!class_exists('CWP_TOP_Core')) {
 		public function getExcludedCategories()
 		{
 			$postQueryCategories = "";
-			$postsCategories = get_option('top_opt_omit_cats');
+			$postCategories = get_option('top_opt_omit_cats');
 
-			if(!empty($postCategories)&&!is_array($postCategories)) {
-				$lastPostCategory = end($postsCategories);
-				foreach ($postsCategories as $key => $cat) {
+			if(!empty($postCategories) && is_array($postCategories)) {
+				$lastPostCategory = end($postCategories);
+				foreach ($postCategories as $key => $cat) {
 					if($cat == $lastPostCategory) {
 						$postQueryCategories .= $cat;
 					} else { 
@@ -447,7 +469,7 @@ if (!class_exists('CWP_TOP_Core')) {
 				}
 			}
 			else
-				$postsCategories = get_option('top_opt_omit_cats');
+				$postQueryCategories = get_option('top_opt_omit_cats');
 
 			return $postQueryCategories;
 		}
@@ -606,7 +628,7 @@ if (!class_exists('CWP_TOP_Core')) {
 				topProAddNewAccount();
 			}
 			else{
-				_e("You need to <a target='_blank' href='http://themeisle.com/plugins/tweet-old-post-pro'>upgrade to the PRO version</a> in order to add more accounts, fellow pirate!", CWP_TEXTDOMAIN);
+				_e("You need to <a target='_blank' href='http://themeisle.com/plugins/tweet-old-post-pro/?utm_source=topplusacc&utm_medium=announce&utm_campaign=top&upgrade=true'>upgrade to the PRO version</a> in order to add more accounts, fellow pirate!", CWP_TEXTDOMAIN);
 
 			}
 			die(); // Required
@@ -716,6 +738,9 @@ if (!class_exists('CWP_TOP_Core')) {
 
 			$defaultOptions = array(
 				'top_opt_tweet_type'				=> 'title',
+				'top_opt_post_with_image'			=> 'off',
+				'top_opt_bitly_user'				=>'',
+				'top_opt_bitly_key'					=>'',
 				'top_opt_tweet_type_custom_field'	=> '',
 				'top_opt_add_text'					=> '',
 				'top_opt_add_text_at'				=> 'beginning',
@@ -756,7 +781,8 @@ if (!class_exists('CWP_TOP_Core')) {
 		// Generate all fields based on settings
 		public static function generateFieldType($field)
 		{	
-
+			$disabled = "";
+			$pro = "";
 			switch ($field['type']) {
 
 				case 'text':
@@ -766,7 +792,7 @@ if (!class_exists('CWP_TOP_Core')) {
 				case 'select':
 					$noFieldOptions = intval(count($field['options']));
 					$fieldOptions = array_keys($field['options']);
-					$disabled = "";
+					
 					if ($field['option']=='top_opt_post_type') $disabled = "disabled";
 					print "<select id='".$field['option']."' name='".$field['option']."'".$disabled.">";
 						for ($i=0; $i < $noFieldOptions; $i++) { 
@@ -778,9 +804,13 @@ if (!class_exists('CWP_TOP_Core')) {
 					break;
 
 				case 'checkbox':
-					print "<input id='".$field['option']."' type='checkbox' name='".$field['option']."'";
+					if ($field['option']=='top_opt_post_with_image'&& !function_exists(topProImage)) {
+						$disabled = "disabled='disabled'";
+						$pro = "This is only available in the PRO option";
+					}
+					print "<input id='".$field['option']."' type='checkbox' ".$disabled." name='".$field['option']."'";
 					if($field['option_value'] == 'on') { echo "checked=checked"; }
-					print " />";
+					print " />".$pro;
 					break;
 
 				case 'custom-post-type':
@@ -937,7 +967,7 @@ if (!class_exists('CWP_TOP_Core')) {
 		public function addAdminMenuPage()
 		{
 			global $cwp_top_settings; // Global Tweet Old Post Settings
-			add_menu_page($cwp_top_settings['name'], $cwp_top_settings['name'], "edit_pages", $cwp_top_settings['slug'], array($this, 'loadMainView'));
+			add_menu_page($cwp_top_settings['name'], $cwp_top_settings['name'], "edit_dashboard", $cwp_top_settings['slug'], array($this, 'loadMainView'));
 		}
 
 		public function loadMainView()
@@ -983,10 +1013,14 @@ if (!class_exists('CWP_TOP_Core')) {
 		}
 
 		// Shortens the url.
-		public function shortenURL($url, $service) {
-
-			if ($service == "su.pr") {
-		        $shortURL = "http://su.pr/api/simpleshorten?url={$url}";
+		public function shortenURL($url, $service, $id, $bitly_key, $bitly_user) {
+			
+			if ($service == "bit.ly") {
+				//$shortURL = $url;
+				$url = trim($url);
+				$bitly_key = trim($bitly_key);
+				$bitly_user = trim($bitly_user);
+		        $shortURL = "http://api.bit.ly/v3/shorten?format=txt&login=".$bitly_user."&apiKey=".$bitly_key."&longUrl={$url}";
 		        $shortURL = $this->sendRequest($shortURL, 'GET');
 		    } elseif ($service == "tr.im") {
 		        $shortURL = "http://api.tr.im/api/trim_simple?url={$url}";
@@ -1003,9 +1037,14 @@ if (!class_exists('CWP_TOP_Core')) {
 		    } elseif ($service == "1click.at") {
 		        $shortURL = "http://1click.at/api.php?action=shorturl&url={$url}&format=simple";
 		        $shortURL = $this->sendRequest($shortURL, 'GET');
-		    } else {
+		    } elseif ($service == "is.gd") {
 		        $shortURL = "http://is.gd/api.php?longurl={$url}";
 		        $shortURL = $this->sendRequest($shortURL, 'GET');
+		    } elseif ($service == "t.co") {
+		        $shortURL = "http://twitter.com/share?url={$url}";
+		        $shortURL = $this->sendRequest($shortURL, 'GET');
+		    } else {
+		    	$shortURL = wp_get_shortlink($id);
 		    }
 
 		    if($shortURL != ' 400 ') {

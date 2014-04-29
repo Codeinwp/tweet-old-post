@@ -12,9 +12,9 @@ Plugin to tweet about your old posts to get more hits for them and keep them ali
 
 Tweet Old Posts is a plugin designed to tweet your older posts to get more traffic. 
 
-This plugin helps you to keeps your old posts alive by tweeting about them and driving more traffic to them from twitter. It also helps you to promote your content. You can set time and no of tweets to post to drive more traffic.For questions, comments, or feature requests, <a href="http://themeisle.com/contact/">contact us</a>!
+This plugin helps you to keeps your old posts alive by tweeting about them and driving more traffic to them from twitter. It also helps you to promote your content. You can set time and no of tweets to post to drive more traffic.For questions, comments, or feature requests, <a href="http://themeisle.com/contact/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">contact us</a>!
 
-For updates follow https://twitter.com/themeisle If you have anything you can let us know at <a href="http://themeisle.com/contact">here</a>
+For updates follow https://twitter.com/themeisle If you have anything you can let us know at <a href="http://themeisle.com/contact/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">here</a>
 
 
 **Fortcoming**
@@ -35,6 +35,34 @@ For updates follow https://twitter.com/themeisle If you have anything you can le
 
 
 **Let me know if you have any more ideas**
+
+**New in v5.8**
+
+Added post by image options in the pro version and some fixes.
+
+**New in v5.7**
+
+Fixed permissions
+
+**New in v5.6**
+
+Added bit.ly back
+
+**New in v5.5**
+
+Fixed the table prefix issue
+
+**New in v5.4**
+
+Fixed the hashtags length issue
+
+**New in v5.3**
+
+Fixed the custom field issue
+
+**New in v5.2**
+
+Fixed exclude categories error, added wp short url, fixed oauth error, removed broken shorten services.
 
 **New in v5.0**
 
@@ -90,23 +118,12 @@ Alternatively you can also follow the following steps to install the Tweet Old P
 == Frequently Asked Questions ==
 
 If you have any questions please get in touch with us at,
-http://www.readythemes.com/contact/
+http://themeisle.com/contact/
 
 
-**Plugin page gets blank while trying to authorize**
+**Plugin doesn't tweet at the regular interval**
 
-- Make sure "Tweet Old Post Admin URL (Current URL)" is showing your current URL.
-- Click on "Update Tweet Old Post Options". 
-- Try to authorize again.
-- If it still does not work try changing browser. Chrome does not work sometimes.
-- If it still does not work enable log, mail me the log file. Log file is generated in tweet old post root folder as log.txt
-
-
-**Too many redirects while trying to authorize**
-
-- Make sure "Tweet Old Post Admin URL (Current URL)" is showing your current URL.
-- Click on "Update Tweet Old Post Options". 
-- Try to authorize again.
+- Unfortunately wp_cron function isn't perfect, it trigger just when somebody visit your site, so you nobody visit your site in 3 hours, TOP won't trigger
 
 
 **If new version doesn't works**
@@ -122,46 +139,54 @@ http://www.readythemes.com/contact/
 - Try removing categories from excluded option. Some of them have posted issues of tweet not getting post when categories are selected in exclued category section.
 
 
-**Tweet old post giving SimpleXmlElement error?**
-
-- If it is giving SimpleXmlElement error, check with your hosting provider on which version of PHP are they supporting. 
-Tweet Old Post supports PHP 5 onwards. It will give SimpleXmlElement error if your hosting provider supports PHP 4
-or PHP less than 5
-
-
-**Tweets not getting posted?**
-
-- If your tweets are not getting posted, try deauthorizing and again authorizing your twitter account with
-plugin.
-
-
-**Plugin flooded your tweeter account with tweets?**
-
-- please check your setting increase the minimum interval between tweets. If your plugin is not updated please update your plugin to latest version.
-
-
-**Not able to authorize your twitter account with Tweet Old Post**
-
-- If you are not able to authorise your twitter account set you blog URL in Administration → Settings → General.
-
 **Any more questions or doubts?**
 
-- Contact us at http://www.readythemes.com/contact/ 
+- Contact us at http://themeisle.com/contact/ 
 
 
 == Screenshots ==
 
 1. Screenshot 1 Basic configurable options for Tweet Old Post to function, with ability to tweet at random interval.
-2. Screenshot 2 configurable categories. Select categories to exclude from tweeting.
-3. Screenshot 3 Configure posts to exclude from selected categories :).
+
 
 for more you can check out 
 
-http://www.readythemes.com/tweet-old-post-lite/
+http://themeisle.com/plugins/tweet-old-post-lite/
 
 
 == Changelog ==
 
+**New in v5.8**
+
+Added post by image options in the pro version and some fixes.
+
+**New in v5.7**
+
+Fixed permissions
+
+**New in v5.6**
+
+Added bit.ly back
+
+**New in v5.5**
+
+Fixed the table prefix issue
+
+**New in v5.4**
+
+Fixed the hashtags length issue
+
+**New in v5.3**
+
+Fixed the custom field issue
+
+**New in v5.2**
+
+Fixed exclude categories error, added wp short url, fixed oauth error, removed broken shorten services.
+
+**New in v5.0**
+
+- Whole plugin was rewrote from scratch and a pro version was added, so after 50 hours of work, here we are. This change will allow us to easier fix issues/ release new features and maintain the plugin.
 
 **New in v4.0.9**
 

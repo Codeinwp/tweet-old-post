@@ -11,7 +11,7 @@
 			} else _e("Tweet Old Post", CWP_TEXTDOMAIN); ?>
 
 		</h1>
-		<span class="slogan"><?php _e("by", CWP_TEXTDOMAIN); ?> <a href="http://themeisle.com">ThemeIsle</a></span>
+		<span class="slogan"><?php _e("by", CWP_TEXTDOMAIN); ?> <a href="http://themeisle.com/?utm_source=topadmin&utm_medium=announce&utm_campaign=top">ThemeIsle</a></span>
 
 		<div class="cwp_top_actions">
 			<a href="https://twitter.com/intent/tweet?text=Check-out%20this%20awesome%20plugin%20-%20&url=http%3A%2F%2Fthemeisle.com%2Fplugins%2Ftweet-old-post-lite%2F&via=themeisle" class="tweet-about-it"><span></span> <?php _e("Show your love", CWP_TEXTDOMAIN); ?></a>
@@ -38,7 +38,7 @@
 			</p>
 		<?php } ?>
 			<p class='inactive'>
-				<?php _e("Before using the Sample Tweet feature please make sure you save the settings, also at this point any feedback is crucial, so please let us know if you have any issue.", CWP_TEXTDOMAIN); ?>
+				<?php _e("Bit.ly is back, at this point any feedback is crucial, so please let us know if you have any issue.", CWP_TEXTDOMAIN); ?>
 			</p>
 
 		</div><!-- end .cwp_top_status -->
@@ -99,9 +99,9 @@
 		
 		<aside class="sidebar">
 			<ul>
-				<li class="upgrade"><a target="_blank" href="http://themeisle.com/plugins/tweet-old-post-pro/?upgrade=true"> <?php _e("Upgrade Tweet Old Post for only $9.99 - Upgrade To Pro Now!", CWP_TEXTDOMAIN); ?></a></li>
-				<li class="readythemes"><a target="_blank" href="http://themeisle.com/allthemes/"> <?php _e("ThemeIsle - Deadly Simple WordPress Themes", CWP_TEXTDOMAIN); ?></a></li>
-				<li class="affiliate-readythemes"><a target="_blank" href="http://themeisle.com/contact/"> <?php _e("ThemeIsle - Promote Our Themes and Plugins and get 55% Comission", CWP_TEXTDOMAIN); ?></a></li>
+				<li class="upgrade"><a target="_blank" href="http://themeisle.com/plugins/tweet-old-post-pro/?utm_source=bannerright&utm_medium=announce&utm_campaign=top&upgrade=true"> <?php _e("Upgrade Tweet Old Post for only $9.99 - Upgrade To Pro Now!", CWP_TEXTDOMAIN); ?></a></li>
+				<li class="readythemes"><a target="_blank" href="http://themeisle.com/allthemes/?utm_source=bannerright&utm_medium=announce&utm_campaign=top"> <?php _e("ThemeIsle - Deadly Simple WordPress Themes", CWP_TEXTDOMAIN); ?></a></li>
+				<li class="affiliate-readythemes"><a target="_blank" href="http://themeisle.com/contact/?utm_source=bannerright&utm_medium=announce&utm_campaign=top"> <?php _e("ThemeIsle - Promote Our Themes and Plugins and get 55% Comission", CWP_TEXTDOMAIN); ?></a></li>
 			</ul>
 		</aside><!-- end .sidebar -->
 	</section><!-- end .cwp_top_container -->

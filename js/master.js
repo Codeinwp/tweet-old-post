@@ -269,6 +269,8 @@ jQuery(document).ready(function(){
 		jQuery("#top_opt_hashtag_length").parent().parent().hide();
 		jQuery("#top_opt_custom_hashtag_field").parent().parent().hide();
 		jQuery("#top_opt_post_type_value").parent().parent().hide();
+		jQuery("#top_opt_bitly_user").parent().parent().hide();
+		jQuery("#top_opt_bitly_key").parent().parent().hide();
 
 	}
 
@@ -289,7 +291,7 @@ jQuery(document).ready(function(){
 			jQuery("#top_opt_hashtags").parent().parent().slideUp("fast");
 			jQuery("#top_opt_hashtag_length").parent().parent().slideDown("fast");
 			jQuery("#top_opt_custom_hashtag_field").parent().parent().slideDown("fast");
-		}
+		} 
 	}
 
 
@@ -298,14 +300,33 @@ jQuery(document).ready(function(){
 
 	if(jQuery("#top_opt_use_url_shortner").is(":checked")) {
 		jQuery("#top_opt_url_shortner").parent().parent().show();
+		if(jQuery("#top_opt_url_shortner").val() == "bit.ly") {
+			jQuery("#top_opt_bitly_user").parent().parent().show();
+			jQuery("#top_opt_bitly_key").parent().parent().show();
+				
+		}
 	} else {
 		jQuery("#top_opt_url_shortner").parent().parent().hide();
+		jQuery("#top_opt_bitly_user").parent().parent().hide();
+		jQuery("#top_opt_bitly_key").parent().parent().hide();
 	}
+
+	jQuery( "#top_opt_url_shortner" ).change(function(){
+		if(jQuery("#top_opt_url_shortner").val() == "bit.ly" && jQuery("#top_opt_use_url_shortner").is(":checked")) {
+			jQuery("#top_opt_bitly_user").parent().parent().show();
+			jQuery("#top_opt_bitly_key").parent().parent().show();
+				
+		}
+		else {
+			jQuery("#top_opt_bitly_user").parent().parent().hide();
+			jQuery("#top_opt_bitly_key").parent().parent().hide();
+		}
+	})
 
 	if(jQuery("select#top_opt_include_link").val() == "true") {
 		jQuery("#top_opt_custom_url_option").parent().parent().show();
 		jQuery("#top_opt_use_url_shortner").parent().parent().show();
-		jQuery("#top_opt_url_shortner").parent().parent().show();
+		//jQuery("#top_opt_url_shortner").parent().parent().show();
 	} else { 
 		jQuery("#top_opt_use_url_shortner").parent().parent().hide();
 		jQuery("#top_opt_custom_url_option").parent().parent().hide();
@@ -350,8 +371,15 @@ jQuery(document).ready(function(){
 	jQuery("#top_opt_use_url_shortner").change(function(){
 		if(jQuery(this).is(":checked")) {
 			jQuery("#top_opt_url_shortner").parent().parent().slideDown("fast");
+			if(jQuery("#top_opt_url_shortner").val() == "bit.ly") {
+			jQuery("#top_opt_bitly_user").parent().parent().slideDown("fast");
+			jQuery("#top_opt_bitly_key").parent().parent().slideDown("fast");
+				
+		}
 		} else {
 			jQuery("#top_opt_url_shortner").parent().parent().slideUp("fast");
+			jQuery("#top_opt_bitly_user").parent().parent().slideUp("fast");
+			jQuery("#top_opt_bitly_key").parent().parent().slideUp("fast");
 
 		}
 	});
