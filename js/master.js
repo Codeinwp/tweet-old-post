@@ -331,6 +331,8 @@ jQuery(document).ready(function(){
 		jQuery("#top_opt_use_url_shortner").parent().parent().hide();
 		jQuery("#top_opt_custom_url_option").parent().parent().hide();
 		jQuery("#top_opt_url_shortner").parent().parent().hide();
+		jQuery("#top_opt_bitly_user").parent().parent().hide();
+		jQuery("#top_opt_bitly_key").parent().parent().hide();
 	}
 
 	if(jQuery("#top_opt_post_type").val() == "custom-post-type") {
