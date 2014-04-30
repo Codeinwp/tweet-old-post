@@ -33,6 +33,10 @@ For updates follow https://twitter.com/themeisle If you have anything you can le
 - Exclude categories
 - Exclude specific posts.
 
+**New in v6.1**
+
+Tweets are now posted!
+
 **New in v6.0**
 
 Tweets now are posted immediately, fixed scheduling and added debug messages
@@ -141,6 +145,10 @@ http://themeisle.com/contact/
 - If its not tweeting any tweets try playing around with the options. Try setting maxtweetage to none and try again.
 - Try removing categories from excluded option. Some of them have posted issues of tweet not getting post when categories are selected in exclued category section.
 
+**When I publish a new post to Twitter sometimes it’s ok, but sometimes I am getting this error: "code":226,"message":"This request looks like it might be automated. To protect our users from spam and other malicious activity, we can’t complete this action right now. Please try again later"?**
+
+This message is coming from the new Twitter’s spam protection mechanism. It’s analyzed your message and marked it as spam. As you can expect they don’t share any information about how this thing works. Try to change the format of your messages and use/don’t use/change URL shortener. There are also some reports that Twitter rejects posts coming from hosting providers that were used to abuse it.
+Please note: Despite the fact that error is saying "might be automated", it doesn’t mean that Twitter rejects the post because it was made though the API. "Automated" there doesn’t mean "posted/submitted automatically", it means "written/generated automatically".
 
 **Any more questions or doubts?**
 

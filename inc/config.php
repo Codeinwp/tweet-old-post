@@ -2,7 +2,7 @@
 define("CURRENTURL", top_current_page());
 define("CWP_TEXTDOMAIN", "TweetOldPost");
 define("SETTINGSURL", admin_url('admin.php?page=TweetOldPost'));
-date_default_timezone_set("GMT");
+
 // Settings Array
 $cwp_top_settings = array(
 	'name' 				=> __("Tweet Old Post", CWP_TEXTDOMAIN),
@@ -10,8 +10,8 @@ $cwp_top_settings = array(
 	'oAuth_settings'	=> array( // Based on TOP Dev Application settings.
 	    'oauth_access_token' 		=> "2256465193-KDpAFIYfxpWugX2OU025b1CPs3WB0RJpgA4Gd4h",
 	    'oauth_access_token_secret' => "abx4Er8qEJ4jI7XDW8a90obzgy8cEtovPXCUNSjmwlpb9",
-	    'consumer_key' 				=> "negZDmFdW1qJqcHkw6Z4EPMbH",
-	    'consumer_secret' 			=> "1BiuP4yvs4JnVx7vYnV0b3NMdpXACGnxtWkQOOYJPO4Rn88QoV"
+	    'consumer_key' 				=> "ofaYongByVpa3NDEbXa2g",
+	    'consumer_secret' 			=> "vTzszlMujMZCY3mVtTE6WovUKQxqv3LVgiVku276M"
 		)
 );
 
