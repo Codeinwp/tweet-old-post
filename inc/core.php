@@ -95,6 +95,28 @@ if (!class_exists('CWP_TOP_Core')) {
 			die(); // Required for AJAX
 		}
 
+		public function getExcludedPosts() {
+
+			$postQueryPosts = "";
+			$postPosts = get_option('top_opt_excluded_post');
+
+			if(!empty($postPosts) && is_array($postPosts)) {
+				$lastPostPosts = end($postPosts);
+				foreach ($postPosts as $key => $cat) {
+					if($cat == $lastPostPosts) {
+						$postQueryPosts .= $cat;
+					} else { 
+						$postQueryPosts .= $cat . ", ";
+					}
+				}
+			}
+			else
+				$postQueryPosts = get_option('top_opt_excluded_post');
+
+			return $postQueryPosts;
+
+		}
+
 		public function getTweetsFromDB()
 		{
 			// Global WordPress $wpdb object.
@@ -108,7 +130,7 @@ if (!class_exists('CWP_TOP_Core')) {
 
 			// Get post categories set.
 //			$postQueryCategories =  $this->getTweetCategories();
-
+			$postQueryExcludedPosts = $this->getExcludedPosts();
 			// Get excluded categories.
 			$postQueryExcludedCategories = $this->getExcludedCategories();			
 			//echo $postQueryExcludedCategories;
@@ -134,7 +156,11 @@ if (!class_exists('CWP_TOP_Core')) {
 				$query .= "AND ( {$wpdb->prefix}posts.ID NOT IN (
 					SELECT object_id
 					FROM {$wpdb->prefix}term_relationships
-					WHERE term_taxonomy_id IN ({$postQueryExcludedCategories})))";
+					WHERE term_taxonomy_id IN ({$postQueryExcludedCategories}))) ";
+			}
+
+			if(!empty($postQueryExcludedPosts)) {
+				$query .= "AND ( {$wpdb->prefix}posts.ID NOT IN ({$postQueryExcludedPosts})) ";
 			}
 						  
 			$query .= "AND {$wpdb->prefix}posts.post_type IN ({$somePostType})
@@ -212,9 +238,23 @@ if (!class_exists('CWP_TOP_Core')) {
 		{
 
 			$returnedTweets = $this->getTweetsFromDB();
+			$image="";
 			//var_dump($returnedTweets);
 			$finalTweetsPreview = $this->generateTweetFromPost($returnedTweets[0]);
-			echo $finalTweetsPreview;
+			$result = $finalTweetsPreview;
+			if (function_exists('topProImage') && get_option('top_opt_post_with_image')=="on") {
+
+				if ( has_post_thumbnail( $returnedTweets[0]->ID ) ) :
+				    $image_array = wp_get_attachment_image_src( get_post_thumbnail_id( $returnedTweets[0]->ID ), 'optional-size' );
+				    $image = $image_array[0];
+				else :
+				    $image = '';
+				endif;
+
+				$result = '<img class="top_preview" src="'.$image.'"/>'.$finalTweetsPreview;
+			}
+			
+			echo $result;
 
 			
 			die(); // required
@@ -416,7 +456,7 @@ if (!class_exists('CWP_TOP_Core')) {
 				// Create a new twitter connection using the stored user credentials.
 				$connection = new TwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
 				// Post the new tweet
-				if (function_exists(topProImage)) 
+				if (function_exists('topProImage')) 
 				topProImage($connection, $finalTweet, $id);				
 			}
 		}
@@ -744,9 +784,9 @@ if (!class_exists('CWP_TOP_Core')) {
 			global $current_user ;
 		        $user_id = $current_user->ID;
 		        /* Check that the user hasn't already clicked to ignore the message */
-			if ( ! get_user_meta($user_id, 'top_ignore_notice1') ) {
+			if ( ! get_user_meta($user_id, 'top_ignore_notice2') ) {
 		        echo '<div class="error"><p>';
-		        printf(__('We just fixed the twitter posting issue but unfortunately you need to <a href="'.SETTINGSURL.'">re-authentificate</a> your twitter account. | <a href="'.SETTINGSURL.'&top_nag_ignore=0">Hide Notice</a>'));
+		        printf(__('After some long working hours excluded posts feature was added back in the free version and integrated in the new version, feel free to get the pro add-on if you want to say thanks!. | <a href="'.SETTINGSURL.'&top_nag_ignore=0">Hide Notice</a>'));
 		        echo "</p></div>";
 			}
 		}
@@ -755,7 +795,7 @@ if (!class_exists('CWP_TOP_Core')) {
 		        $user_id = $current_user->ID;
 		        /* If user clicks to ignore the notice, add that to their user meta */
 		        if ( isset($_GET['top_nag_ignore']) && '0' == $_GET['top_nag_ignore'] ) {
-		             add_user_meta($user_id, 'top_ignore_notice1', 'true', true);
+		             add_user_meta($user_id, 'top_ignore_notice2', 'true', true);
 			}
 		}
 
@@ -788,7 +828,8 @@ if (!class_exists('CWP_TOP_Core')) {
 				'top_opt_custom_url_field'			=> '',
 				'top_opt_omit_cats'					=> '',
 				'cwp_topnew_active_status'			=> 'false',
-				'cwp_topnew_notice'					=> ''
+				'cwp_topnew_notice'					=> '',
+				'top_opt_excluded_post'				=> ''
 			);
 
 			foreach ($defaultOptions as $option => $defaultValue) {
@@ -831,7 +872,7 @@ if (!class_exists('CWP_TOP_Core')) {
 					break;
 
 				case 'checkbox':
-					if ($field['option']=='top_opt_post_with_image'&& !function_exists(topProImage)) {
+					if ($field['option']=='top_opt_post_with_image'&& !function_exists('topProImage')) {
 						$disabled = "disabled='disabled'";
 						$pro = "This is only available in the PRO option";
 					}
@@ -977,7 +1018,7 @@ if (!class_exists('CWP_TOP_Core')) {
 
 			// Enqueue and register all scripts on plugin's page
 			if(isset($_GET['page'])) {
-				if ($_GET['page'] == $cwp_top_settings['slug']) {
+				if ($_GET['page'] == $cwp_top_settings['slug'] || $_GET['page'] == "ExcludePosts") {
 
 					// Enqueue and Register Main CSS File
 					wp_register_style( 'cwp_top_stylesheet', CSSFILE, false, '1.0.0' );
@@ -996,6 +1037,7 @@ if (!class_exists('CWP_TOP_Core')) {
 		{
 			global $cwp_top_settings; // Global Tweet Old Post Settings
 			add_menu_page($cwp_top_settings['name'], $cwp_top_settings['name'], 'manage_options', $cwp_top_settings['slug'], array($this, 'loadMainView'),'dashicons-twitter','99.87514');
+			add_submenu_page($cwp_top_settings['slug'], __('Exclude Posts',CWP_TEXTDOMAIN), __('Exclude Posts',CWP_TEXTDOMAIN), 'manage_options', __('ExcludePosts',CWP_TEXTDOMAIN), 'top_exclude');
 		}
 
 		public function loadMainView()

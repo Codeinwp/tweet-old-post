@@ -33,6 +33,10 @@ For updates follow https://twitter.com/themeisle If you have anything you can le
 - Exclude categories
 - Exclude specific posts.
 
+**New in v6.2**
+
+After some long working hours excluded posts feature was added back in the free version and integrated in the new version.
+
 **New in v6.1**
 
 Tweets are now posted!

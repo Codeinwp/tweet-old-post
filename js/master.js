@@ -43,7 +43,7 @@ jQuery(document).ready(function(){
 	function cwpTopUpdateForm() {
 		startAjaxIntro();
 		var data = jQuery("#cwp_top_form").serialize();
-		console.log(data);
+		//console.log(data);
 
 		var formData = {
 			action:'updateAllOptions',
@@ -68,6 +68,37 @@ jQuery(document).ready(function(){
 		endAjaxIntro();
 		return false; 
 	}
+
+		function cwpTopUpdateFormWithoIntro() {
+		//startAjaxIntro();
+		var data = jQuery("#cwp_top_form").serialize();
+		//console.log(data);
+
+		var formData = {
+			action:'updateAllOptions',
+			dataSent:data
+		}
+
+		jQuery.ajax({
+			type: "POST", 
+			url: cwp_top_ajaxload.ajaxurl,
+			data: {
+				action: "update_response",
+				dataSent: formData
+			},
+			success: function(response) {
+				console.log(response);
+			},
+			error: function(MLHttpRequest, textStatus, errorThrown) {
+				console.log("There was an error: "+errorThrown);
+			}
+		});
+
+		//endAjaxIntro();
+		return false; 
+	}
+
+
 
 
 	// Add New Twitter Account
@@ -197,7 +228,7 @@ jQuery(document).ready(function(){
 	jQuery("#cwp_top_form a.see-sample-tweet").click(function(e){
 		e.preventDefault();
 		startAjaxIntro();
-		cwpTopUpdateForm();
+		cwpTopUpdateFormWithoIntro();
 
 		jQuery.ajax({
 			type: "POST", 
@@ -211,13 +242,15 @@ jQuery(document).ready(function(){
 					
 					jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet").html(response);
 				}
+				endAjaxIntro();
 			},
 			error: function(MLHttpRequest, textStatus, errorThrown) {
 				console.log("There was an error: "+errorThrown);
+				endAjaxIntro();
 			}
 		});
 
-		endAjaxIntro();
+		
 	});	
 
 	// Stop Tweet Old Post

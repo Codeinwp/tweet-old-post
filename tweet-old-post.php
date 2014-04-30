@@ -16,6 +16,8 @@ define("JSCOUNTDOWN", plugins_url('js/countdown.js',__FILE__ ));
 
 // Require core.
 require_once("inc/core.php");
+// Require core.
+require_once("inc/exclude-posts.php");
 // Clear scheduled tweets on plugin deactivation
 register_deactivation_hook(__FILE__, array($CWP_TOP_Core, 'deactivationHook'));
 // Reset all settings on plugin activation.

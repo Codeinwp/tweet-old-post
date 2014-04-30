@@ -124,7 +124,7 @@ var timenow="";
     };
     $.countdown.defaultOptions = {
       date: "June 7, 2087 15:03:25",
-      refresh: 1000,
+      refresh: 2000,
       onEnd: $.noop,
       render: function(date) {
         if (date.days!=0 || date.hours!=0 || date.min!=0 || date.sec!=0)

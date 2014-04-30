@@ -106,7 +106,26 @@ html[xmlns] .clearfix { display: block;}
 .cwp_top_wrapper .cwp_sample_tweet_preview { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background:rgba(0,0,0,0.2); display: none; }
 .cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner h2 { text-align: center; font-weight: bold;color:#7d7d7d; font-family: "HelveticaNeue", "Helvetica Neue", sans-serif; }
 .cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner { background:#fff; width: 60%; margin: 0 auto; margin-top: 759px; padding: 20px; border-radius: 5px;box-shadow: 0px 5px 5px rgba(0,0,0,0.1); }
-.cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet { display: block; width: 100%; border: 1px solid #e8e8e8; padding: 10px; border-radius: 5px; font-family: "Helvetica Neue", HelveticaNeue, sans-serif; font-size: 14px;}
+.cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet { min-height:60px; display: block; width: 100%; border: 1px solid #e8e8e8; padding: 10px; border-radius: 5px; font-family: "Helvetica Neue", HelveticaNeue, sans-serif; font-size: 14px;}
 .cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet a { text-decoration: none; }
 .cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner button { display: block; margin: 0 auto; margin-top: 17px; background:#52c4ef; border: none; border-radius: 3px; padding: 5px 10px; color:#fff; font-family: "Open Sans", sans-serif; color:#fff; text-transform: uppercase; font-weight: bold; }
 .cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner button:hover { cursor: pointer; }
+.top_preview {
+width: 40px;
+height: 40px;
+padding: 5px;
+float: left;}
+.cwp_top_wrapper_full {
+
+	width: 90%;
+	float: left;
+	border-right: none;
+	margin: 5px 15px 2px;
+}
+
+.cwp_top_wrapper_full .cwp_top_container form {
+
+	width: 99%;
+	float: left;
+	border-right: none;
+}
