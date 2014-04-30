@@ -4,7 +4,7 @@
 #     Plugin URI: http://themeisle.com/plugins/tweet-old-post-lite/
 #     Description: Wordpress plugin that helps you to keeps your old posts alive by tweeting about them and driving more traffic to them from twitter. It also helps you to promote your content. You can set time and no of tweets to post to drive more traffic.For questions, comments, or feature requests, <a href="http://themeisle.com/contact/?utm_source=plugindesc&utm_medium=announce&utm_campaign=top">contact </a> us!
 #     Author: ThemeIsle 
-#     Version: 6.2
+#     Version: 6.0
 #     Author URI: http://themeisle.com/
 #     */  
 
@@ -16,8 +16,6 @@ define("JSCOUNTDOWN", plugins_url('js/countdown.js',__FILE__ ));
 
 // Require core.
 require_once("inc/core.php");
-// Require core.
-require_once("inc/exclude-posts.php");
 // Clear scheduled tweets on plugin deactivation
 register_deactivation_hook(__FILE__, array($CWP_TOP_Core, 'deactivationHook'));
 // Reset all settings on plugin activation.

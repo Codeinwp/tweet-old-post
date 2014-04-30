@@ -95,7 +95,6 @@
 				<a class="stop-tweet-old-post" href="#"><span></span> <?php _e("Stop Tweet", CWP_TEXTDOMAIN); ?></a>
 				<a class="see-sample-tweet" href="#"><span></span> <?php _e("See Sample Tweet", CWP_TEXTDOMAIN); ?></a>				
 			</div><!-- end .cwp_top_footer -->
-			<p><?php _e("We are not affiliated or partner with Twitter in any way.", CWP_TEXTDOMAIN); ?>
 		</form><!-- end #cwp_top_form -->
 		
 		<aside class="sidebar">
