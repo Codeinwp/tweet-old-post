@@ -274,6 +274,16 @@ $cwp_top_fields = array(
 			'options'				=> array()
 	),
 
+	'tweet-multiple-times' => array(
+			'id' 					=> '24',
+			'name'  				=> __('Tweet old posts more than once', CWP_TEXTDOMAIN), 
+			'type'					=> 'checkbox',
+			'slug'					=> 'tweet-multiple-times',
+			'option'				=> 'top_opt_tweet_multiple_times',
+			'description'			=> __('By default once a post is tweeted it will not be tweeted again until you stop/start the plugin', CWP_TEXTDOMAIN),
+			'options'				=> array()
+	),
+
 	/*'tweet-specific-category' => array(
 			'id' 					=> '20',
 			'name'  				=> __('Tweet From Specific Categories', CWP_TEXTDOMAIN), 

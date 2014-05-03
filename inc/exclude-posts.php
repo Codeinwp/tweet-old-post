@@ -1,8 +1,7 @@
 <?php
 
-require_once('/../tweet-old-post.php');
-require_once('core.php');
-require_once('xml.php');
+require_once(PLUGINPATH.'/tweet-old-post.php');
+require_once(PLUGINPATH.'/inc/xml.php');
 
 if (!function_exists ("mysql_real_escape_string"))
 {
@@ -75,7 +74,7 @@ function top_exclude() {
     }
 
    
-    require_once("view-exclude.php");
+    require_once(plugin_dir_path( __FILE__ )."view-exclude.php");
 
     
     $sql = "SELECT p.ID,p.post_title,p.post_date,u.user_nicename,p.guid,p.post_type FROM $wpdb->posts p join  $wpdb->users u on p.post_author=u.ID WHERE (post_type = 'post') 
@@ -275,7 +274,7 @@ if($excludeList.length >0)
             echo $page_links_text;
             print('</div>');
         }
-        print('</div>');
+        print('</div></div>');
 
 
 
