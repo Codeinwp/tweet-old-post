@@ -33,6 +33,10 @@ For updates follow https://twitter.com/themeisle If you have anything you can le
 - Exclude categories
 - Exclude specific posts.
 
+**New in v6.7**
+
+Fixed interrupted posting issue
+
 **New in v6.6**
 
 Fixed excluded category issue and some small others.

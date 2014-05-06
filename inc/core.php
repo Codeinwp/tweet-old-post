@@ -133,7 +133,21 @@ if (!class_exists('CWP_TOP_Core')) {
 
 			// Get post categories set.
 //			$postQueryCategories =  $this->getTweetCategories();
+			$excludedIds = "";
+			$tweetedPosts = get_option("top_opt_already_tweeted_posts");
+			if (!$tweetedPosts) {
+				$tweetedPosts = array();
+			}
 			$postQueryExcludedPosts = $this->getExcludedPosts();
+			if ($postQueryExcludedPosts=="")
+				$postQueryExcludedPosts = array();
+			//print_r($postQueryExcludedPosts);
+			$excludedPosts = array_merge($tweetedPosts,(array)$postQueryExcludedPosts);
+			$nrOfExcludedPosts = count($excludedPosts);
+			for ($k=0;$k<$nrOfExcludedPosts-1;$k++)
+				$excludedIds .=$excludedPosts[$k].", ";
+			$excludedIds .=$excludedPosts[$nrOfExcludedPosts-1];
+			//print_r($excludedIds);
 			// Get excluded categories.
 			$postQueryExcludedCategories = $this->getExcludedCategories();			
 			//echo $postQueryExcludedCategories;
@@ -164,8 +178,8 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 					AND {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}))) ";
 			}
 
-			if(!empty($postQueryExcludedPosts)) {
-				$query .= "AND ( {$wpdb->prefix}posts.ID NOT IN ({$postQueryExcludedPosts})) ";
+			if(!empty($excludedIds)) {
+				$query .= "AND ( {$wpdb->prefix}posts.ID NOT IN ({$excludedIds})) ";
 			}
 						  
 			$query .= "AND {$wpdb->prefix}posts.post_type IN ({$somePostType})
@@ -205,7 +219,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			while($k != $tweetCount) {
 				// If the post is not already tweeted
 				$isNotAlreadyTweeted = $this->isNotAlreadyTweeted($returnedPost[$k]->ID);
-
+				
 				if (get_option('top_opt_tweet_multiple_times')=="on") $isNotAlreadyTweeted = true;
 
 				if($isNotAlreadyTweeted) {
@@ -270,6 +284,8 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			//var_dump($returnedTweets);
 			$finalTweetsPreview = $this->generateTweetFromPost($returnedTweets[0]);
 			$result = $finalTweetsPreview;
+			
+
 			if (function_exists('topProImage') && get_option('top_opt_post_with_image')=="on") {
 
 				if ( has_post_thumbnail( $returnedTweets[0]->ID ) ) :
@@ -298,6 +314,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			// Get all already tweeted posts
 
 			$tweetedPosts = get_option("top_opt_already_tweeted_posts");
+
 			if (!$tweetedPosts) {
 				add_option("top_opt_already_tweeted_posts");
 				return true;
@@ -305,8 +322,11 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			
 				// If the new post ID is in the array, which means that is already tweeted
 			if (!empty($tweetedPosts) && is_array($tweetedPosts) ) {
+
 			    if (in_array($postId, $tweetedPosts))
-			    return false;
+			    	return false;
+				else
+					return true;
 				}
 			else
 			{	
@@ -458,15 +478,16 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			}
 
 			if(!empty($newHashtags)) {
-				$hashtagsLength = strlen($newHashtags); $finalTweetLength += intval($hashtagsLength);
+				$hashtagsLength = strlen($newHashtags); 
+				$finalTweetLength += intval($hashtagsLength);
 			}
 
-			$finalTweetLength = 139 - $finalTweetLength - 3;
+			$finalTweetLength = 139 - $finalTweetLength - 5;
 
-			$tweetContent = substr($tweetContent,0, $finalTweetLength) . "...";
+			$tweetContent = substr($tweetContent,0, $finalTweetLength) . " ";
 
 			$finalTweet = $additionalTextBeginning . $tweetContent . $post_url . $newHashtags . $additionalTextEnd;
-			$finalTweet = substr($finalTweet,0, 140);
+			$finalTweet = substr($finalTweet,0, 139);
 
 			// Strip any tags and return the final tweet
 			return strip_tags($finalTweet); 
@@ -848,9 +869,9 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			global $current_user ;
 		        $user_id = $current_user->ID;
 		        /* Check that the user hasn't already clicked to ignore the message */
-			if ( ! get_user_meta($user_id, 'top_ignore_notice2') ) {
+			if ( ! get_user_meta($user_id, 'top_ignore_notice3') ) {
 		        echo '<div class="error"><p>';
-		        printf(__('After some long working hours excluded posts feature was added back in the free version and integrated in the new version, feel free to get the pro add-on if you want to say thanks!. | <a href="'.SETTINGSURL.'&top_nag_ignore=0">Hide Notice</a>'));
+		        printf(__(' We just fixed the interrupted posting issue, if you don\'t see any tweets you need to re-authentificate your twitter accounts. | <a href="'.SETTINGSURL.'&top_nag_ignore=0">Hide Notice</a>'));
 		        echo "</p></div>";
 			}
 		}
@@ -859,7 +880,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		        $user_id = $current_user->ID;
 		        /* If user clicks to ignore the notice, add that to their user meta */
 		        if ( isset($_GET['top_nag_ignore']) && '0' == $_GET['top_nag_ignore'] ) {
-		             add_user_meta($user_id, 'top_ignore_notice2', 'true', true);
+		             add_user_meta($user_id, 'top_ignore_notice3', 'true', true);
 			}
 		}
 

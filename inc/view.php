@@ -89,10 +89,10 @@
 			<?php } ?>
 
 			<div class="cwp_top_footer">
-				<a class="update-options" href="#"><span></span><?php _e("Save", CWP_TEXTDOMAIN); ?></a>
-				<a class="reset-settings" href="#"><span></span> <?php  _e("Reset Settings", CWP_TEXTDOMAIN); ?></a>
-				<a class="tweet-now" href="#"><span></span> <?php _e("Start Tweet", CWP_TEXTDOMAIN); ?></a>
-				<a class="stop-tweet-old-post" href="#"><span></span> <?php _e("Stop Tweet", CWP_TEXTDOMAIN); ?></a>
+				<a class="reset-settings" href="#"><span></span> <?php  _e("Reset", CWP_TEXTDOMAIN); ?></a>
+				<a class="update-options" href="#"><span></span><?php _e("Save Settings", CWP_TEXTDOMAIN); ?></a>
+				<a class="tweet-now" href="#"><span></span> <?php _e("Start Tweeting", CWP_TEXTDOMAIN); ?></a>
+				<a class="stop-tweet-old-post" href="#"><span></span> <?php _e("Stop Tweeting", CWP_TEXTDOMAIN); ?></a>
 				<a class="see-sample-tweet" href="#"><span></span> <?php _e("See Sample Tweet", CWP_TEXTDOMAIN); ?></a>				
 			</div><!-- end .cwp_top_footer -->
 			<p><?php _e("We are not affiliated or partner with Twitter in any way.", CWP_TEXTDOMAIN); ?>

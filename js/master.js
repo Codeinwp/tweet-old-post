@@ -186,7 +186,9 @@ jQuery(document).ready(function(){
 			},
 			success: function(response) {
 				if(response !== '') {
+
 					jQuery('.cwp_top_wrapper').append(response);
+
 				}
 				location.reload();	
 			},
@@ -238,8 +240,11 @@ jQuery(document).ready(function(){
 			},
 			success: function(response) {
 				if(response !== '') {
+
 					jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview").fadeIn().addClass("active");
-					
+					jQuery('html, body').animate({
+				        scrollTop: jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview").offset().top+300
+				    }, 2000);
 					jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet").html(response);
 				}
 				endAjaxIntro();
