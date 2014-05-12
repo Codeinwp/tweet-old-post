@@ -148,6 +148,19 @@ http://themeisle.com/contact/
 
 - Unfortunately wp_cron function isn't perfect, it trigger just when somebody visit your site, so you nobody visit your site in 3 hours, TOP won't trigger
 
+**What do I do is a get the WP CRON error ?
+
+The issue is that your wp-cron.php is not returning a 200 response when hit with a http request originating from your own server, it could be several things, most of the time it's an issue with the server / site and not with TOP.
+
+Some things you can test are.
+
+- Are scheduled posts working? (They use wp-cron too).
+- Are you hosted on Heart Internet? (wp-cron is known not to work with them).
+- If you click tweet now from sample tweet popup does it work?
+- Try adding define( 'ALTERNATE_WP_CRON', true ); to your wp-config.php`, does the plugin work?
+- Is your site private (I.E. is it behind some kind of authentication, maintenance plugin, .htaccess) if so wp-cron won't work until you remove it, if you are and you temporarily remove the authentication, do tweets start working?
+
+If you have tried all these then feel free to contact support.
 
 **If new version doesn't works**
 
@@ -182,6 +195,10 @@ http://themeisle.com/plugins/tweet-old-post-lite/
 
 
 == Changelog ==
+
+**New in v6.7.3**
+
+Added settings link, fixed tweet cutting and added cron debug messages
 
 **New in v6.6**
 

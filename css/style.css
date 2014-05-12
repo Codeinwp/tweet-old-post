@@ -88,7 +88,7 @@ html[xmlns] .clearfix { display: block;}
 /* Tweet Now Button Style */
 .cwp_top_wrapper .cwp_top_container .cwp_top_footer .tweet-now { background:#52c4ef; text-decoration: none; border-radius: 3px; display: block; height: 30px; border-radius: 3px; font-family: "Open Sans", sans-serif; color:#fff; text-transform: uppercase; font-weight: bold; line-height: 2.3; padding-right: 10px; display:inline-block; margin-top: 14px; margin-right: 5px; } 
 .cwp_top_wrapper .cwp_top_container .cwp_top_footer .tweet-now span { background:url("../img/twitter_icon.png") no-repeat center center, #3eaed8; width: 30px; height: 30px; display: block; float: left; border-radius: 3px 0px 0px 3px; margin-right: 10px; }
-
+.top_close_popup {margin-left:30%;float:left;}
 /* Stop Tweet Button Styles  */
 .cwp_top_wrapper .cwp_top_container .cwp_top_footer .stop-tweet-old-post { background:#f9866b; text-decoration: none; border-radius: 3px; display: block; height: 30px; border-radius: 3px; font-family: "Open Sans", sans-serif; color:#fff; text-transform: uppercase; font-weight: bold; line-height: 2.3; padding-right: 10px; display:inline-block; margin-top: 14px; margin-right: 5px; } 
 .cwp_top_wrapper .cwp_top_container .cwp_top_footer .stop-tweet-old-post span { background:url("../img/twitter_icon.png") no-repeat center center, #f16848; width: 30px; height: 30px; display: block; float: left; border-radius: 3px 0px 0px 3px; margin-right: 10px; }
@@ -108,7 +108,7 @@ html[xmlns] .clearfix { display: block;}
 .cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner { background:#fff; width: 60%; margin: 0 auto; margin-top: 759px; padding: 20px; border-radius: 5px;box-shadow: 0px 5px 5px rgba(0,0,0,0.1); }
 .cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet { min-height:60px; display: block; width: 100%; border: 1px solid #e8e8e8; padding: 10px; border-radius: 5px; font-family: "Helvetica Neue", HelveticaNeue, sans-serif; font-size: 14px;}
 .cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet a { text-decoration: none; }
-.cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner button { display: block; margin: 0 auto; margin-top: 17px; background:#52c4ef; border: none; border-radius: 3px; padding: 5px 10px; color:#fff; font-family: "Open Sans", sans-serif; color:#fff; text-transform: uppercase; font-weight: bold; }
+.cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner button { display: block; margin-top: 17px; background:#52c4ef; border: none; border-radius: 3px; padding: 5px 10px; color:#fff; font-family: "Open Sans", sans-serif; color:#fff; text-transform: uppercase; font-weight: bold; }
 .cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner button:hover { cursor: pointer; }
 .top_preview {
 width: 40px;
@@ -128,4 +128,8 @@ float: left;}
 	width: 99%;
 	float: left;
 	border-right: none;
+}
+
+.twptop_opt_post_type {
+	display: none;
 }

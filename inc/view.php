@@ -38,7 +38,8 @@
 			</p>
 		<?php } ?>
 			<p class='inactive'>
-				<?php _e("Once you click start tweet a tweet will be sent in 15 sec, also here you can see the error message if is any.", CWP_TEXTDOMAIN); ?>
+
+				<?php _e("Once you click start tweet a tweet will be sent in 15 sec, also here you can see the error message if is any.", CWP_TEXTDOMAIN); $this->fixCron(); ?>
 			</p>
 
 		</div><!-- end .cwp_top_status -->
@@ -72,7 +73,7 @@
 
 			
 			<?php foreach ($cwp_top_fields as $field) { ?>
-					<fieldset class="option">
+					<fieldset class="option twp<?php echo $field['option']; ?>" >
 						<div class="left">
 							<label for="<?php echo $field['option']; ?>"> <?php echo $field['name'] ?> </label>
 							<span class="description"> <?php echo $field['description']; ?> </span>
@@ -90,7 +91,7 @@
 
 			<div class="cwp_top_footer">
 				<a class="reset-settings" href="#"><span></span> <?php  _e("Reset", CWP_TEXTDOMAIN); ?></a>
-				<a class="update-options" href="#"><span></span><?php _e("Save Settings", CWP_TEXTDOMAIN); ?></a>
+				<a class="update-options" href="#"><span></span><?php _e("Save", CWP_TEXTDOMAIN); ?></a>
 				<a class="tweet-now" href="#"><span></span> <?php _e("Start Tweeting", CWP_TEXTDOMAIN); ?></a>
 				<a class="stop-tweet-old-post" href="#"><span></span> <?php _e("Stop Tweeting", CWP_TEXTDOMAIN); ?></a>
 				<a class="see-sample-tweet" href="#"><span></span> <?php _e("See Sample Tweet", CWP_TEXTDOMAIN); ?></a>				
@@ -111,7 +112,8 @@
 		<div class="cwp_sample_tweet_preview_inner">
 			<h2>Sample Tweet Preview</h2>
 			<span class="sample_tweet">Lorem ipsum dolor sit amet consectetutem! <a href="#">Lorem ipsum</a></span>
-			<button>Ok</button>
+			<button class="top_close_popup">Close preview</button>
+			<button class="tweetitnow">Tweet Now</button>
 		</div><!-- end .cwp_sample_tweet_preview_inner -->
 	</div><!-- end .cwp_sample_tweet_preview -->
 </div><!-- end .cwp_top_wrapper -->

@@ -210,11 +210,11 @@ jQuery(document).ready(function(){
 				if(response !== '') {
 					if (response.substring(0,5)=="Error") {
 						jQuery(".cwp_top_status p:nth-child(2)").css( "color", "red" );
-						jQuery(".cwp_top_status p:nth-child(2)").text(response);	
+						jQuery(".cwp_top_status p:nth-child(2)").html(response);	
 					} else {
 
 						//jQuery(".cwp_top_status p:nth-child(2)").addClass("active").removeClass("inactive");
-						jQuery(".cwp_top_status p:nth-child(2)").text(response);
+						jQuery(".cwp_top_status p:nth-child(2)").html(response);
 						jQuery(".cwp_top_status p:nth-child(2)").css( "color", "#218618" );
 
 					}
@@ -284,8 +284,32 @@ jQuery(document).ready(function(){
 		//location.reload();
 	});
 
- 	jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner button").click(function(e){
+ 	jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner button.top_close_popup").click(function(e){
  		jQuery(this).parent().parent().fadeOut().removeClass("active");
+ 	});	
+
+ 	jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner button.tweetitnow").click(function(e){
+ 		e.preventDefault();
+		startAjaxIntro();
+		
+		jQuery.ajax({
+			type: "POST", 
+			url: cwp_top_ajaxload.ajaxurl,
+			data: {
+				action: "tweet_now_action"
+			},
+			success: function(response) {
+				endAjaxIntro();
+				jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview").fadeOut().removeClass("active");
+				jQuery('html, body').animate({
+				        scrollTop: jQuery(".cwp_top_wrapper .cwp_top_status").offset().top+150
+				    }, 2000);
+			},
+			error: function(MLHttpRequest, textStatus, errorThrown) {
+				console.log("There was an error: "+errorThrown);
+				endAjaxIntro();
+			}
+		});
  	});	
 
 	// Transform the date into a countdown.
