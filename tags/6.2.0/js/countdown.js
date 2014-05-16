@@ -28,7 +28,7 @@ var timenow="";
             action: "gettime_action"
           },
           success: function(response) {
-            timenow = response;
+            timenow = new Date(response*1000);
           },
           error: function(MLHttpRequest, textStatus, errorThrown) {
             console.log("There was an error: "+errorThrown);
@@ -40,11 +40,10 @@ var timenow="";
         //endDate = Date.parse($.isPlainObject(_this.options.date) ? _this.options.date : new Date(_this.options.date));
         endDate = _this.options.date;
         
-        if (timenow == '') 
-          timenow = _this.options.date-20;
-        
-        diff = endDate - timenow;
-        //diff = Math.floor(diff);
+        if (timenow == '')
+          timenow = new Date();
+        diff = (endDate - Math.floor(timenow.getTime()/1000));
+        diff = Math.floor(diff);
         if (diff <= 0) {
           diff = 0;
           if (_this.interval) {
@@ -102,7 +101,7 @@ var timenow="";
           clearInterval(_this.interval);
         }
         _this.interval = null;
-        jQuery(".cwp_top_container .nextTweet").html('Your tweet was just sent to twitter server, wait 5s for a confirmation below. Refresh the page to see when the next one will be posted.');
+        jQuery(".cwp_top_container .nextTweet").html('Your tweet was just sent to twitter server. Refresh the page to see when the next one will be posted.');
 
         return _this;
         //return _this;

@@ -1,7 +1,8 @@
 <?php
 
-require_once(PLUGINPATH.'/tweet-old-post.php');
-require_once(PLUGINPATH.'/inc/xml.php');
+require_once('/../tweet-old-post.php');
+require_once('core.php');
+require_once('xml.php');
 
 if (!function_exists ("mysql_real_escape_string"))
 {
@@ -24,10 +25,7 @@ function top_exclude() {
     $message_updated = __("Tweet Old Post Options Updated.", 'TweetOldPost');
     $response = null;
     $records_per_page = 20;
-    $twp_obj = new CWP_TOP_Core;
-    $omit_cat = "";
-
-    //$omit_cat=get_option('top_opt_omit_cats');
+    $omit_cat=get_option('top_opt_omit_cats');
     $update_text = "Exclude Selected";
     $search_term="";
     $ex_filter="all";
@@ -77,7 +75,7 @@ function top_exclude() {
     }
 
    
-    require_once(plugin_dir_path( __FILE__ )."view-exclude.php");
+    require_once("view-exclude.php");
 
     
     $sql = "SELECT p.ID,p.post_title,p.post_date,u.user_nicename,p.guid,p.post_type FROM $wpdb->posts p join  $wpdb->users u on p.post_author=u.ID WHERE (post_type = 'post') 
@@ -137,14 +135,13 @@ function top_exclude() {
     $post_count =count($posts);
     
     $ex = 0;
-    $excludeList = array();
     for ($j = 0; $j < $post_count; $j++) {
         if (in_array($posts[$j]->ID, $excluded_posts)) {
             $excludeList[$ex] = $posts[$j]->ID;
             $ex = $ex + 1;
         }
     }
-if(count($excludeList) >0)
+if($excludeList.length >0)
 {
     $exposts = implode(",",$excludeList);
 }
@@ -212,7 +209,7 @@ if(count($excludeList) >0)
             if (!empty($categories)) {
                 $out = array();
                 foreach ($categories as $c)
-                    $out[] = "<a href='edit.php?post_type={$posts[$i]->post_type}&amp;category_name={$c->slug}'> " . esc_html(sanitize_term_field('name', $c->name, $c->term_id, 'category', 'display')) . "</a>";
+                    $out[] = "<a href='edit.php?post_type={$post->post_type}&amp;category_name={$c->slug}'> " . esc_html(sanitize_term_field('name', $c->name, $c->term_id, 'category', 'display')) . "</a>";
                 $cats = join(', ', $out);
             }
             else {
@@ -278,7 +275,7 @@ if(count($excludeList) >0)
             echo $page_links_text;
             print('</div>');
         }
-        print('</div></div>');
+        print('</div>');
 
 
 

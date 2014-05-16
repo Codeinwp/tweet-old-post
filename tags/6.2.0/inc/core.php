@@ -1,8 +1,8 @@
 <?php
 // Basic configuration 
-require_once(PLUGINPATH."/inc/config.php");
+require_once("config.php");
 // twitteroauth class 
-require_once(PLUGINPATH."/inc/oAuth/twitteroauth.php");
+require_once("oAuth/twitteroauth.php");
 
 if (!class_exists('CWP_TOP_Core')) {
 	class CWP_TOP_Core {
@@ -14,7 +14,6 @@ if (!class_exists('CWP_TOP_Core')) {
 
 		// Consumer key, Consumer Secret key, oAuth Callback Key
 		public $consumer;
-		public $lastID;
 		public $consumerSecret;
 		public $oAuthCallback;
 		public $bitly_key;
@@ -61,14 +60,13 @@ if (!class_exists('CWP_TOP_Core')) {
 				// Set it to active status
 				update_option('cwp_topnew_active_status', 'true');
 				update_option('cwp_topnew_notice', '');
-				update_option('top_opt_already_tweeted_posts',array());
 				// Schedule the next tweet
 				//$timeNow = date("Y-m-d H:i:s", time());
 				//$timeNow = get_date_from_gmt($timeNow);
 				//$timeNow= strtotime($timeNow);
-				$timeNow =  current_time('timestamp',1);
+				$timeNow = time();
 				$interval = floatval($this->intervalSet) * 60 * 60;
-				$timeNow = $timeNow+25;
+				$timeNow = $timeNow+15;
 				wp_schedule_event($timeNow, 'cwp_top_schedule', 'cwp_top_tweet_cron');
 			} else { 
 				
@@ -87,8 +85,6 @@ if (!class_exists('CWP_TOP_Core')) {
 				// Set it to inactive status
 				update_option('cwp_topnew_active_status', 'false');
 				update_option('cwp_topnew_notice', '');
-				update_option('top_opt_already_tweeted_posts',array());
-
 				// Clear all scheduled tweets
 				$this->clearScheduledTweets();
 			} else {
@@ -121,16 +117,6 @@ if (!class_exists('CWP_TOP_Core')) {
 
 		}
 
-		public function getTweetsFromDBbyID($id)
-		{
-			global $wpdb;
-			$query = "
-			SELECT * FROM {$wpdb->prefix}posts where ID = '{$id}'";
-			$returnedPost = $wpdb->get_results($query);
-			//echo $query;
-			return $returnedPost;
-		}
-
 		public function getTweetsFromDB()
 		{
 			// Global WordPress $wpdb object.
@@ -144,21 +130,7 @@ if (!class_exists('CWP_TOP_Core')) {
 
 			// Get post categories set.
 //			$postQueryCategories =  $this->getTweetCategories();
-			$excludedIds = "";
-			$tweetedPosts = get_option("top_opt_already_tweeted_posts");
-			if (!$tweetedPosts || get_option('top_opt_tweet_multiple_times')=="on") {
-				$tweetedPosts = array();
-			}
 			$postQueryExcludedPosts = $this->getExcludedPosts();
-			if ($postQueryExcludedPosts=="")
-				$postQueryExcludedPosts = array();
-			//print_r($postQueryExcludedPosts);
-			$excludedPosts = array_merge($tweetedPosts,(array)$postQueryExcludedPosts);
-			$nrOfExcludedPosts = count($excludedPosts);
-			for ($k=0;$k<$nrOfExcludedPosts-1;$k++)
-				$excludedIds .=$excludedPosts[$k].", ";
-			$excludedIds .=$excludedPosts[$nrOfExcludedPosts-1];
-			//print_r($excludedIds);
 			// Get excluded categories.
 			$postQueryExcludedCategories = $this->getExcludedCategories();			
 			//echo $postQueryExcludedCategories;
@@ -184,13 +156,11 @@ if (!class_exists('CWP_TOP_Core')) {
 				$query .= "AND ( {$wpdb->prefix}posts.ID NOT IN (
 					SELECT object_id
 					FROM {$wpdb->prefix}term_relationships
-					INNER JOIN {$wpdb->prefix}term_taxonomy ON ( {$wpdb->prefix}term_relationships.term_taxonomy_id = {$wpdb->prefix}term_taxonomy.term_taxonomy_id ) 
-WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
-					AND {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}))) ";
+					WHERE term_taxonomy_id IN ({$postQueryExcludedCategories}))) ";
 			}
 
-			if(!empty($excludedIds)) {
-				$query .= "AND ( {$wpdb->prefix}posts.ID NOT IN ({$excludedIds})) ";
+			if(!empty($postQueryExcludedPosts)) {
+				$query .= "AND ( {$wpdb->prefix}posts.ID NOT IN ({$postQueryExcludedPosts})) ";
 			}
 						  
 			$query .= "AND {$wpdb->prefix}posts.post_type IN ({$somePostType})
@@ -206,21 +176,13 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		}
 
 		public function isPostWithImageEnabled () {
-
-			if (get_option("top_opt_post_with_image")!='on')
-				return false;
-			else
-				return true;
+			return get_option("top_opt_post_with_image");
 		}
 
-		public function tweetOldPost($byID = false)
+		public function tweetOldPost()
 		
 		{
 			$returnedPost = $this->getTweetsFromDB();
-			if ($byID!==false) {
-
-				$returnedPost = $this->getTweetsFromDBbyID($byID);
-			}
 
 
 			$k = 0; // Iterator
@@ -228,25 +190,20 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			// Get the number of tweets to be tweeted each interval.
 			$tweetCount = intval(get_option('top_opt_no_of_tweet'));
 
-			if (count($returnedPost) == 0 ) update_option('cwp_topnew_notice', 'There is no suitable post to tweet make sure you excluded correct categories and selected the right dates.');
-				
 			// While haven't reached the limit
 			while($k != $tweetCount) {
 				// If the post is not already tweeted
 				$isNotAlreadyTweeted = $this->isNotAlreadyTweeted($returnedPost[$k]->ID);
-				
-				if (get_option('top_opt_tweet_multiple_times')=="on") $isNotAlreadyTweeted = true;
 
-				if($isNotAlreadyTweeted && ($k<count($returnedPost))) {
+				if($isNotAlreadyTweeted) {
 
 					// Foreach returned post
-					$post = $returnedPost[$k];
-					//foreach ($returnedPost as $post) {
+					foreach ($returnedPost as $post) {
 						// Generate a tweet from it based on user settings.
 						$finalTweet = $this->generateTweetFromPost($post);
 						// Tweet the post
 						if ($this->isPostWithImageEnabled()=="on") {
-							$resp = $this->tweetPostwithImage($finalTweet, $post->ID);
+							$this->tweetPostwithImage($finalTweet, $returnedPost[$k]->ID);
 							update_option('cwp_topnew_notice', $resp);
 						}
 						else {
@@ -255,27 +212,13 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 						}
 						// Get already tweeted posts array.
 						$tweetedPosts = get_option("top_opt_already_tweeted_posts");
-						if ($tweetedPosts=="")	$tweetedPosts = array();
 						// Push the tweeted post at the end of the array.
 						array_push($tweetedPosts, $post->ID);
 						// Update the new already tweeted posts array.
-						if ( function_exists('w3tc_pgcache_flush') ) {
-							
-							w3tc_dbcache_flush();
-							
-							w3tc_objectcache_flush();
-							$cache = ' and W3TC Caches cleared';
-						}     
-						add_option("top_opt_already_tweeted_posts");
 						update_option("top_opt_already_tweeted_posts", $tweetedPosts);
 						// Increase
 						$k = $k + 1;
-					//}
-				} else {
-					if (count($returnedPost)!=$tweetCount)
-						update_option('cwp_topnew_notice', 'You have tried to post more tweets that they are available, try to include more categories or increase the date range');
-					else
-						update_option('cwp_topnew_notice', 'Tweet was already tweeted, if you want to tweet your old tweets more than once, select "Tweet old posts more than once" option');
+					}
 				}
 			}
 
@@ -284,19 +227,11 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		public function getNotice() {
 			$notice = get_option('cwp_topnew_notice');
 			
-
-			if (is_object($notice) && $notice->errors[0]->message)
+			if ($notice->errors[0]->message)
 				echo "Error for your last tweet was :'".$notice->errors[0]->message."'";
-			else if (is_object($notice) && $notice->text) {
+			else if ($notice->text)
 				echo "Congrats! The following tweet was posted successfully: '".$notice->text."' at ".$notice->created_at;
-			} else if ($notice!="") {
-				echo "Error for your last tweet was : ".$notice;
-			}
 			die();
-		}
-
-		public function tweetNow() {
-			$this->tweetOldPost(get_option('top_lastID'));
 		}
 
 		public function viewSampleTweet()
@@ -306,9 +241,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			$image="";
 			//var_dump($returnedTweets);
 			$finalTweetsPreview = $this->generateTweetFromPost($returnedTweets[0]);
-			$result = $finalTweetsPreview;			
-			update_option( 'top_lastID', $returnedTweets[0]->ID);
-
+			$result = $finalTweetsPreview;
 			if (function_exists('topProImage') && get_option('top_opt_post_with_image')=="on") {
 
 				if ( has_post_thumbnail( $returnedTweets[0]->ID ) ) :
@@ -335,29 +268,14 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		
 		public function isNotAlreadyTweeted($postId) {
 			// Get all already tweeted posts
-
 			$tweetedPosts = get_option("top_opt_already_tweeted_posts");
-
-			if (!$tweetedPosts) {
-				add_option("top_opt_already_tweeted_posts");
+			// If the new post ID is in the array, which means that is already tweeted
+			if(in_array($postId, $tweetedPosts)) {
+				return false;
+			} else {
 				return true;
 			}
-			
-				// If the new post ID is in the array, which means that is already tweeted
-			if (!empty($tweetedPosts) && is_array($tweetedPosts) ) {
-
-			    if (in_array($postId, $tweetedPosts))
-			    	return false;
-				else
-					return true;
-				}
-			else
-			{	
-			    return true;
-			}
 		}
-
-
 
 		/**
 		 * Generates the tweet based on the user settings
@@ -452,7 +370,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 						
 						foreach ($postCategories as $category) {
 							if(strlen($category->cat_name.$newHashtags) <= $maximum_hashtag_length || $maximum_hashtag_length == 0) { 
-						 		$newHashtags = $newHashtags . " #" . preg_replace('/-/','',strtolower($category->slug)); 
+						 		$newHashtags = $newHashtags . " #" . strtolower($category->cat_name); 
 						 	}
 						} 
 
@@ -463,13 +381,13 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 						
 						foreach ($postTags as $postTag) {
 							if(strlen($postTag->slug.$newHashtags) <= $maximum_hashtag_length || $maximum_hashtag_length == 0) {
-								$newHashtags = $newHashtags . " #" . preg_replace('/-/','',strtolower($postTag->slug));
+								$newHashtags = $newHashtags . " #" . strtolower($postTag->slug);
 							}
 						}
 						break;
 
 					case 'custom':
-						$newHashtags = get_post_meta($postQuery->ID, $hashtag_custom_field, true);
+						$newHashtags = get_post_meta($postQuery->ID, $hashtag_custom_field);
 						break;	
 					default:
 						break;
@@ -501,16 +419,15 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			}
 
 			if(!empty($newHashtags)) {
-				$hashtagsLength = strlen($newHashtags); 
-				$finalTweetLength += intval($hashtagsLength);
+				$hashtagsLength = strlen($newHashtags); $finalTweetLength += intval($hashtagsLength);
 			}
 
-			$finalTweetLength = 139 - $finalTweetLength - 5;
+			$finalTweetLength = 139 - $finalTweetLength - 3;
 
-			$tweetContent = mb_substr($tweetContent,0, $finalTweetLength) . " ";
+			$tweetContent = substr($tweetContent,0, $finalTweetLength) . "...";
 
 			$finalTweet = $additionalTextBeginning . $tweetContent . $post_url . $newHashtags . $additionalTextEnd;
-			$finalTweet = substr($finalTweet,0, 139);
+			$finalTweet = substr($finalTweet,0, 140);
 
 			// Strip any tags and return the final tweet
 			return strip_tags($finalTweet); 
@@ -523,41 +440,24 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		
 		public function tweetPost($finalTweet)
 		{	
-			$k=1;
-			$nrOfUsers = count($this->users);
-
 			foreach ($this->users as $user) {
-								
 				// Create a new twitter connection using the stored user credentials.
 				$connection = new TwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
 				// Post the new tweet
 				$status = $connection->post('statuses/update', array('status' => $finalTweet));	
-				//return $status;
-				if ($nrOfUsers == $k)
-					return $status;
-				else
-					$k++;
-				
+				return $status;
+	
 			}
 		}
 
 		public function tweetPostwithImage($finalTweet, $id)
 		{	
-
-			$k=1;
-			$nrOfUsers = count($this->users);
-
 			foreach ($this->users as $user) {
 				// Create a new twitter connection using the stored user credentials.
 				$connection = new TwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
 				// Post the new tweet
 				if (function_exists('topProImage')) 
-					$status = topProImage($connection, $finalTweet, $id);
-
-				if ($nrOfUsers == $k)
-					return $status;
-				else
-					$k++;		
+				topProImage($connection, $finalTweet, $id);				
 			}
 		}
 		
@@ -642,7 +542,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		{
 			$top_opt_tweet_type = get_option('top_opt_post_type');
 
-		/*	switch ($top_opt_tweet_type) {
+			switch ($top_opt_tweet_type) {
 				case 'post':
 					return "'post'";
 					break;
@@ -662,8 +562,6 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 				default:
 					break;
 			}
-		*/
-			return "'post'";
 
 		}
 
@@ -804,10 +702,10 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		{
 			$timestamp = wp_next_scheduled( 'cwp_top_tweet_cron' );
 			//echo $timestamp;
-			//$timestamp = date("Y-m-d H:i:s", $timestamp);
-			//$timeLeft = get_date_from_gmt($timestamp);
-			//$timeLeft = strtotime($timeLeft);
-			echo $timestamp;
+			$timestamp = date("Y-m-d H:i:s", $timestamp);
+			$timeLeft = get_date_from_gmt($timestamp);
+			$timeLeft = strtotime($timeLeft);
+			echo $timeLeft;
 		}
 
 		// Checks if the user is logged in/
@@ -857,8 +755,6 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 				update_option($option, $newValue);
 			}
 
-			update_option('top_opt_post_type', 'post');
-
 			if(!array_key_exists('top_opt_custom_url_option', $options)) {
 				update_option('top_opt_custom_url_option', 'off');
 			}
@@ -869,10 +765,6 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 			if(!array_key_exists('top_opt_post_with_image', $options)) {
 				update_option('top_opt_post_with_image', 'off');
-			}
-
-			if(!array_key_exists('top_opt_tweet_multiple_times', $options)) {
-				update_option('top_opt_tweet_multiple_times', 'off');
 			}
 
 			//if(!array_key_exists('top_opt_tweet_specific_category', $options)) {
@@ -892,9 +784,9 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			global $current_user ;
 		        $user_id = $current_user->ID;
 		        /* Check that the user hasn't already clicked to ignore the message */
-			if ( ! get_user_meta($user_id, 'top_ignore_notice3') ) {
+			if ( ! get_user_meta($user_id, 'top_ignore_notice2') ) {
 		        echo '<div class="error"><p>';
-		        printf(__(' We just fixed the interrupted posting issue and scheduling issue, if you don\'t see any tweets you need to re-authentificate your twitter accounts. | <a href="'.SETTINGSURL.'&top_nag_ignore=0">Hide Notice</a>'));
+		        printf(__('After some long working hours excluded posts feature was added back in the free version and integrated in the new version, feel free to get the pro add-on if you want to say thanks!. | <a href="'.SETTINGSURL.'&top_nag_ignore=0">Hide Notice</a>'));
 		        echo "</p></div>";
 			}
 		}
@@ -903,7 +795,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		        $user_id = $current_user->ID;
 		        /* If user clicks to ignore the notice, add that to their user meta */
 		        if ( isset($_GET['top_nag_ignore']) && '0' == $_GET['top_nag_ignore'] ) {
-		             add_user_meta($user_id, 'top_ignore_notice3', 'true', true);
+		             add_user_meta($user_id, 'top_ignore_notice2', 'true', true);
 			}
 		}
 
@@ -937,9 +829,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 				'top_opt_omit_cats'					=> '',
 				'cwp_topnew_active_status'			=> 'false',
 				'cwp_topnew_notice'					=> '',
-				'top_opt_excluded_post'				=> '',
-				'top_opt_tweet-multiple-times'		=> 'off',
-				'cwp_top_logged_in_users'			=> ''
+				'top_opt_excluded_post'				=> ''
 			);
 
 			foreach ($defaultOptions as $option => $defaultValue) {
@@ -1046,56 +936,27 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 		}
 
+		public function top_plugin_action_links($links, $file) {
+
+			$mylinks = array(
+			 '<a href="' . admin_url( 'admin.php?page=TweetOldPost' ) . '">Settings</a>',
+			 );
+			return array_merge( $links, $mylinks );
+
+
+		}
 
 		public function getTime() {
 		    
-		    echo current_time('timestamp',1);
+		    echo time();
 
 		    die();
-		}
-
-		public function fixCron() {
-			update_option('cwp_topnew_notice','');
-
-			if ( defined( 'ALTERNATE_WP_CRON' ) ) {
-
-				//delete_option( 'hmbkp_wp_cron_test_failed' );
-
-				//echo 1;
-
-				die;
-
-			}
-			else {
-
-				$response = wp_remote_head( site_url( 'wp-cron.php' ), array( 'timeout' => 30 ) );
-
-				if ( is_wp_error( $response ) ) {
-
-					update_option('cwp_topnew_notice', "Looks like there is an issue with your WP Cron and Tweet Old Post relies on wp-cron to schedule tweets, see the <a href='http://wordpress.org/plugins/tweet-old-post/faq/'>FAQ</a> for more details!");
-
-				} elseif ( wp_remote_retrieve_response_code( $response ) != 200 ) {
-
-					update_option('cwp_topnew_notice', "Looks like there is an issue with your WP Cron and Tweet Old Post relies on wp-cron to schedule tweets, see the <a href='http://wordpress.org/plugins/tweet-old-post/faq/'>FAQ</a> for more details!");
-
-				}
-			
-
-				$timestamp = wp_next_scheduled( 'cwp_top_tweet_cron' );
-				$timenow = current_time('timestamp',1);
-
-				if ($this->pluginStatus == 'true' && $timenow > $timestamp) {
-					update_option('cwp_topnew_notice', "Looks like there is an issue with your WP Cron, read more <a href='http://wordpress.org/plugins/tweet-old-post/faq/'>here</a>");
-					
-				}
-			}
 		}
 
 		public function loadAllHooks() 
 		{
 			// loading all actions and filters
 			add_action('admin_menu', array($this, 'addAdminMenuPage'));
-
 			add_action('admin_enqueue_scripts', array($this, 'loadAllScriptsAndStyles'));
 
 			// Update all options ajax action.
@@ -1126,10 +987,6 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			add_action('wp_ajax_nopriv_view_sample_tweet_action', array($this, 'viewSampleTweet'));
 			add_action('wp_ajax_view_sample_tweet_action', array($this, 'viewSampleTweet'));
 
-			// Tweet Old Post tweet now action.
-			add_action('wp_ajax_nopriv_tweet_now_action', array($this, 'tweetNow'));
-			add_action('wp_ajax_tweet_now_action', array($this, 'tweetNow'));
-
 			add_action('wp_ajax_nopriv_gettime_action', array($this, 'getTime'));
 			add_action('wp_ajax_gettime_action', array($this, 'getTime'));
 
@@ -1142,7 +999,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 			//Settings link
 
-			//add_filter('plugin_action_links', array($this,'top_plugin_action_links'), 10, 2);
+			add_filter('plugin_action_links', array($this,'top_plugin_action_links'), 10, 2);
 
 			add_action('admin_notices', array($this,'top_admin_notice'));
 
@@ -1176,27 +1033,10 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
  	
 		}
 
-		function top_check_user_role( $role, $user_id = null ) {
- 
-		    if ( is_numeric( $user_id ) )
-			$user = get_userdata( $user_id );
-		    else
-		        $user = wp_get_current_user();
-		 
-		    if ( empty( $user ) )
-			return false;
-		 
-		    return in_array( $role, (array) $user->roles );
-		}
-
 		public function addAdminMenuPage()
 		{
 			global $cwp_top_settings; // Global Tweet Old Post Settings
-			if (!current_user_can('manage_options') && $this->top_check_user_role( 'Administrator' ))
-				$cap = 1;
-			else
-				$cap='manage_options';
-			add_menu_page($cwp_top_settings['name'], $cwp_top_settings['name'], $cap, $cwp_top_settings['slug'], array($this, 'loadMainView'),'dashicons-twitter','99.87514');
+			add_menu_page($cwp_top_settings['name'], $cwp_top_settings['name'], 'manage_options', $cwp_top_settings['slug'], array($this, 'loadMainView'),'dashicons-twitter','99.87514');
 			add_submenu_page($cwp_top_settings['slug'], __('Exclude Posts',CWP_TEXTDOMAIN), __('Exclude Posts',CWP_TEXTDOMAIN), 'manage_options', __('ExcludePosts',CWP_TEXTDOMAIN), 'top_exclude');
 		}
 
@@ -1206,7 +1046,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			foreach ($cwp_top_fields as $field => $value) {
 				$cwp_top_fields[$field]['option_value'] = get_option($cwp_top_fields[$field]['option']); 
 			}
-			require_once(plugin_dir_path( __FILE__ )."view.php");
+			require_once("view.php");
 		}
 
 		// Sends a request to the passed URL
