@@ -37,14 +37,14 @@ html[xmlns] .clearfix { display: block;}
 
 /* Announcement */
 .cwp_top_wrapper .announcement { width: 100%; background: url("../img/reviewgine_announcement.png") no-repeat left -10px top -45px, #f16848; margin-top: 20px;}
-.cwp_top_wrapper .announcement h2 { float: left; font-family: "Helvetica Neue", HelveticaNeue, sans-serif; color:#fff; font-weight: 100; font-size: 17px; line-height: 1; padding-left: 180px; }
+.cwp_top_wrapper .announcement h2 { width:85%; float: left; font-family: "Helvetica Neue", HelveticaNeue, sans-serif; color:#fff; font-weight: 100; font-size: 17px; line-height: 1; padding-left: 180px; }
 .cwp_top_wrapper .announcement h2 b { font-weight: bold; }
 .cwp_top_wrapper .announcement .show-me { float: right; background:#fff; border-radius: 5px; font-family: "Helvetica Neue", HelveticaNeue, sans-serif; color:#5c5c5c; text-decoration: none; text-transform: uppercase;padding: 7px 15px; margin-top: 9px; margin-right: 20px; -webkit-transition: all 0.3s ease-in-out;-moz-transition: all 0.3s ease-in-out;-o-transition: all 0.3s ease-in-out;transition: all 0.3s ease-in-out; line-height: 1;}
 .cwp_top_wrapper .announcement .show-me:hover { cursor: pointer; opacity: 0.8; }
 
 /* Header Styles */
 .cwp_top_wrapper #cwp_top_header { background:#fff; border-top: 5px solid #52aae2; border-bottom: 1px solid #d4d4d4; margin-top: 10px; padding: 20px 10px;}
-.cwp_top_wrapper #cwp_top_header .logo { margin: 0; padding: 0; float: left; font-family: "Open Sans", sans-serif; font-weight: bold; color:#3c3c3c; padding-left: 55px; background:url("../img/logo.png") no-repeat left center; padding: 20px; padding-left: 60px; padding-right: 0; letter-spacing: -1px; margin-left: 14px; }
+.cwp_top_wrapper #cwp_top_header .top_logo { margin: 0; padding: 0; float: left; font-family: "Open Sans", sans-serif; font-weight: bold; color:#3c3c3c; padding-left: 55px; background:url("../img/logo.png") no-repeat left center; padding: 20px; padding-left: 60px; padding-right: 0; letter-spacing: -1px; margin-left: 14px; }
 .cwp_top_wrapper #cwp_top_header .slogan { float: left; margin: 0; padding: 0; font-size: 17px; color:#858585; font-family: "Open Sans", sans-serif; line-height: 3.5; margin-left: 10px; }
 .cwp_top_wrapper #cwp_top_header .slogan a { color:#858585; font-weight: 600; text-decoration: none; font-style: italic; -webkit-transition: all 0.250s ease-in-out; -moz-transition: all 0.250s ease-in-out; -o-transition: all 0.250s ease-in-out; transition: all 0.250s ease-in-out; }
 .cwp_top_wrapper #cwp_top_header .slogan a:hover { color:#52aae2; }
@@ -132,4 +132,24 @@ float: left;}
 
 .twptop_opt_post_type {
 	display: none;
+}
+
+@media all and (max-width:1280px) {
+	.cwp_top_wrapper {
+		width:100%;
+	}
+	.cwp_top_wrapper .cwp_top_container form {
+		width:100%;
+		border-right: none;
+	}
+	.cwp_top_wrapper .cwp_top_container .sidebar {
+		display: none;
+	}
+
+
+}
+@media all and (max-width:970px) {
+.slogan {
+	display: none;
+}
 }

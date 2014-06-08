@@ -302,8 +302,8 @@ jQuery(document).ready(function(){
 				endAjaxIntro();
 				jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview").fadeOut().removeClass("active");
 				jQuery('html, body').animate({
-				        scrollTop: jQuery(".cwp_top_wrapper .cwp_top_status").offset().top+150
-				    }, 2000);
+				        scrollTop: jQuery(".cwp_top_wrapper .cwp_top_status").offset().top
+				    }, 1000);
 			},
 			error: function(MLHttpRequest, textStatus, errorThrown) {
 				console.log("There was an error: "+errorThrown);

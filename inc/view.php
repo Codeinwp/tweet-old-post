@@ -5,7 +5,7 @@
 	</div><!-- end .announcement -->
 
 	<header id="cwp_top_header" class='clearfix'>
-		<h1 class="logo">
+		<h1 class="top_logo">
 			<?php if (function_exists('topProAddNewAccount')) {
 				_e("Tweet Old Post PRO", CWP_TEXTDOMAIN);
 			} else _e("Tweet Old Post", CWP_TEXTDOMAIN); ?>

@@ -984,7 +984,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 				case 'checkbox':
 					if ($field['option']=='top_opt_post_with_image'&& !function_exists('topProImage')) {
 						$disabled = "disabled='disabled'";
-						$pro = "This is only available in the PRO option";
+						$pro = "This is only available in the <a href='http://themeisle.com/plugins/tweet-old-post-pro/?utm_source=imagepro&utm_medium=link&utm_campaign=top&upgrade=true' target='_blank'>PRO version</a>";
 					}
 					print "<input id='".$field['option']."' type='checkbox' ".$disabled." name='".$field['option']."'";
 					if($field['option_value'] == 'on') { echo "checked=checked"; }
@@ -1054,6 +1054,19 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		    die();
 		}
 
+		function top_plugin_action_links($links, $file) {
+
+		    if ($file == PLUGINBASENAME) {
+		        // The "page" query string value must be equal to the slug
+		        // of the Settings admin page we defined earlier, which in
+		        // this case equals "myplugin-settings".
+		        $settings_link = '<a href="' . get_bloginfo('wpurl') . '/wp-admin/admin.php?page=TweetOldPost">Settings</a>';
+		        array_unshift($links, $settings_link);
+		    }
+
+		    return $links;
+		}
+
 		public function fixCron() {
 			update_option('cwp_topnew_notice','');
 
@@ -1063,7 +1076,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 				//echo 1;
 
-				die;
+				return 0;
 
 			}
 			else {
@@ -1144,12 +1157,14 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 			//add_filter('plugin_action_links', array($this,'top_plugin_action_links'), 10, 2);
 
-			add_action('admin_notices', array($this,'top_admin_notice'));
+			//add_action('admin_notices', array($this,'top_admin_notice'));
 
 			add_action('admin_init', array($this,'top_nag_ignore'));
 
 			// Filter to add new custom schedule based on user input
 			add_filter('cron_schedules', array($this, 'createCustomSchedule'));
+
+			add_filter('plugin_action_links',array($this,'top_plugin_action_links'), 10, 2);
 
 			add_action('cwp_top_tweet_cron', array($this, 'tweetOldPost'));
 
@@ -1277,9 +1292,11 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		    	$shortURL = wp_get_shortlink($id);
 		    }
 
-		    if($shortURL != ' 400 ') {
+		    if($shortURL != ' 400 '&& $shortURL!="500" && $shortURL!="0") {
 		    	return $shortURL;
 		    }
+		    else
+		    	update_option('cwp_topnew_notice','Looks like is an error with your url shortner');
 		}
 
 	}
