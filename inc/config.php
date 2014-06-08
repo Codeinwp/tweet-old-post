@@ -12,7 +12,9 @@ $cwp_top_settings = array(
 	    'oauth_access_token_secret' => "abx4Er8qEJ4jI7XDW8a90obzgy8cEtovPXCUNSjmwlpb9",
 	    'consumer_key' 				=> "ofaYongByVpa3NDEbXa2g",
 	    'consumer_secret' 			=> "vTzszlMujMZCY3mVtTE6WovUKQxqv3LVgiVku276M"
-		)
+		),
+	'app_id'			=> "1487991504767912",
+	'app_secret'		=> "5124ea6d46e64da3c306f12812d0e4fe"
 );
 
 

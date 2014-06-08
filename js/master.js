@@ -40,6 +40,8 @@ jQuery(document).ready(function(){
 		return false;
 	});
 
+
+
 	function cwpTopUpdateForm() {
 		startAjaxIntro();
 		var data = jQuery("#cwp_top_form").serialize();
@@ -98,24 +100,114 @@ jQuery(document).ready(function(){
 		return false; 
 	}
 
-
-
-
-	// Add New Twitter Account
-	jQuery("#cwp_top_form button#twitter-login").click(function(e){
+	jQuery("body").on('click',function(e){
 		e.preventDefault();
 		
+		if (jQuery(e.target).parent().hasClass("cwp_preview_page")) {
+			
+			console.log(e);
+			
+			startAjaxIntro();
+			var service = jQuery(e.target).parent().attr('service');
+			var access_token = jQuery(e.target).parent().attr('pagetoken');
+			var page_id = jQuery(e.target).parent().attr('pageid');
+			
+			jQuery.ajax({
+				type: "POST", 
+				url: cwp_top_ajaxload.ajaxurl,
+				data: {
+					action: "add_pages",
+					currentURL: jQuery("#cwp_top_currenturl").val(),
+					social_network: service,
+					page_token:access_token,
+					page_id:page_id,
+					picture_url: jQuery(e.target).parent().children().children('img').attr('src'),
+					page_name: jQuery(e.target).parent().children('.page_name').text()
+				},
+				success: function(response) {
+					switch (service) {
+						
+						case 'facebook':						
+						    endAjaxIntro();
+						    jQuery(".cwp_top_wrapper .cwp_user_pages").fadeOut().removeClass("active");
+						    window.location.href = response;
+						    break;
+					}
+					
+				},
+				error: function(MLHttpRequest, textStatus, errorThrown) {
+					console.log("There was an error: " + errorThrown);
+				}
+			});
+		}
+			return false;
+		});
+
+	jQuery("#cwp_top_form button.top_authorize").click(function(e){
+		e.preventDefault();
+		startAjaxIntro();
+		app_id = jQuery("#top_opt_app_id").val();
+		app_secret = jQuery("#top_opt_app_secret").val();
+		jQuery.ajax({
+			type: "POST", 
+			url: cwp_top_ajaxload.ajaxurl,
+			data: {
+				action: "add_new_account",
+				currentURL: jQuery("#cwp_top_currenturl").val(),
+				social_network: 'facebook',
+				app_id: app_id,
+				app_secret: app_secret
+			},
+			success: function(response) {
+
+				window.location.href = response;
+			}
+		})
+		return false;
+	});
+
+
+		
+	
+
+	// Add New Twitter Account
+	jQuery("#cwp_top_form button.addaccount").click(function(e){
+		e.preventDefault();
+		var service = jQuery(this).attr('service');
 		if (jQuery(this).text()!=="+") {
 			startAjaxIntro();
 			jQuery.ajax({
 				type: "POST", 
 				url: cwp_top_ajaxload.ajaxurl,
 				data: {
-					action: "add_new_twitter_account",
-					currentURL: jQuery("#cwp_top_currenturl").val()
+					action: "display_pages",
+					currentURL: jQuery("#cwp_top_currenturl").val(),
+					social_network: service
 				},
 				success: function(response) {
-					window.location.href = response;
+					switch (service) {
+						
+						case 'facebook':
+							jQuery(".cwp_top_wrapper .cwp_user_pages").fadeIn().addClass("active");
+							jQuery('html, body').animate({
+						        scrollTop: jQuery(".cwp_top_wrapper .cwp_user_pages").offset().top+400
+						    }, 2000);
+						    response = JSON.parse(response);
+							html='';
+							data = response.data;
+							for (i = 0; i < data.length; i++) {
+								html+="<a href='#' class='cwp_preview_page' service='"+service+"' pagetoken='"+data[i].access_token+"' pageid='"+data[i].id+"'>";
+								profile_image = 'https://graph.facebook.com/'+data[i].id+'/picture';
+								name = data[i].name;
+								category = data[i].category.substr(0,9);
+								html+="<div class='page_avatar'><img src='"+profile_image+"'/></div><div class='page_name'>"+name+"</div><div class='page_category'>"+category+"</div></a>";
+							
+								}
+							jQuery(".cwp_top_wrapper .cwp_user_pages .cwp_user_pages_inner ").html(html);	
+						    endAjaxIntro();
+						    break;
+					}
+					
 				},
 				error: function(MLHttpRequest, textStatus, errorThrown) {
 					console.log("There was an error: " + errorThrown);
@@ -127,8 +219,70 @@ jQuery(document).ready(function(){
 				type: "POST", 
 				url: cwp_top_ajaxload.ajaxurl,
 				data: {
-					action: "add_new_twitter_account_pro",
-					currentURL: jQuery("#cwp_top_currenturl").val()
+					action: "add_new_account_pro",
+					currentURL: jQuery("#cwp_top_currenturl").val(),
+					social_network: jQuery(this).attr('service')
+				},
+				success: function(response) {
+					if (response.search("api.twitter.com")==-1)
+						jQuery(".cwp_top_status .inactive").html(response);
+					else
+						window.location.href = response;
+					
+				},
+				error: function(MLHttpRequest, textStatus, errorThrown) {
+					console.log("There was an error: " + errorThrown);
+				}
+			});
+
+
+		return false;
+	});
+
+	// Add New Twitter Account
+	jQuery("#cwp_top_form button.login").click(function(e){
+		e.preventDefault();
+		var service = jQuery(this).attr('service');
+		if (jQuery(this).text()!=="+") {
+			startAjaxIntro();
+			jQuery.ajax({
+				type: "POST", 
+				url: cwp_top_ajaxload.ajaxurl,
+				data: {
+					action: "add_new_account",
+					currentURL: jQuery("#cwp_top_currenturl").val(),
+					social_network: service
+				},
+				success: function(response) {
+					switch (service) {
+						case 'twitter': 
+							window.location.href = response;
+							break;
+						case 'facebook':
+							jQuery(".cwp_top_wrapper .cwp_fbapp_preview").fadeIn().addClass("active");
+							jQuery('html, body').animate({
+						        scrollTop: jQuery(".cwp_top_wrapper .cwp_fbapp_preview").offset().top+400
+						    }, 2000);
+						   // html = "<input type='text' placeholder='App key'/>";
+						    //jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet").html(html);
+						    endAjaxIntro();
+						    break;
+					}
+					
+				},
+				error: function(MLHttpRequest, textStatus, errorThrown) {
+					console.log("There was an error: " + errorThrown);
+				}
+			});
+		}
+		else
+			jQuery.ajax({
+				type: "POST", 
+				url: cwp_top_ajaxload.ajaxurl,
+				data: {
+					action: "add_new_account_pro",
+					currentURL: jQuery("#cwp_top_currenturl").val(),
+					social_network: jQuery(this).attr('service')
 				},
 				success: function(response) {
 					if (response.search("api.twitter.com")==-1)

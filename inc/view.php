@@ -54,20 +54,58 @@
 				</div><!-- end .left -->
 
 				<div class='right'>
-					<?php if(!empty($this->users)) { ?>
-
-
-					<?php foreach ($this->users as $user) { ?>
+					<?php
+					//print_r($this->users);
+					$tw_users = 0;
+					if (count($this->users)>0)
+					foreach ($this->users as $user) {
+					if ($user['network']=='twitter') { 
+						$tw_users++;
+						?>
 						<div class="user_details">
 							<div class='user_avatar'><img src="<?php echo $user['oauth_user_details']->profile_image_url; ?>"></div>
 							<div class="user_name"><?php echo $user['oauth_user_details']->name; ?></div>
 							<div class="remove_user"><a href='#' id='<?php echo $user['user_id']; ?>' class='logout_user'></a></div>
 						</div><!-- end .user_details -->
-					<?php  } ?>
-						<button id='twitter-login' class='another-account'>+</button>
+					<?php  } }
+					if ($tw_users!==0) { ?>
+						<button id='twitter-login' class='another-account login' service='twitter'>+</button>
 					<?php } else { ?>
-						<button id='twitter-login'> <?php _e("Add Account", CWP_TEXTDOMAIN) ?> </button>
+						<button id='twitter-login' class='login' service='twitter'> <?php _e("Add Account", CWP_TEXTDOMAIN) ?> </button>
 					<?php } ?>
+				</div><!-- end .right -->
+			</fieldset><!-- end .option -->
+
+			<fieldset class="option">
+				<div class="left">
+					<label for="facebook-login"> <?php _e("Facebook Login", CWP_TEXTDOMAIN); ?> </label>
+					<span class='description'> <?php _e("Login using your Facebook account.", CWP_TEXTDOMAIN); ?> </span>
+				</div><!-- end .left -->
+
+				<div class='right'>
+					<?php
+
+					$fb_users = 0;
+					if (count($this->users)>0)
+					foreach ($this->users as $user) {
+					if ($user['network']=='facebook') { 
+						$fb_users++;
+						?>
+						<div class="user_details">
+							<div class='user_avatar'><img src="<?php echo $user['oauth_user_details']->profile_image_url; ?>"></div>
+							<div class="user_name"><?php echo $user['oauth_user_details']->name; ?></div>
+							<div class="remove_user"><a href='#' id='<?php echo $user['user_id']; ?>' service='facebook' class='logout_user'></a></div>
+						</div><!-- end .user_details -->
+					<?php  } }
+					if ($fb_users!==0){ ?>
+						<button id='facebook-login' class='another-account login' service='facebook'>+</button>
+					<?php } else { 
+						if (get_option('top_fb_token')==="") {
+						?>
+						<button id='facebook-authorize' class='login' service='facebook'> <?php _e("Authorize", CWP_TEXTDOMAIN) ?> </button>
+						<?php } else {?>
+						<button id='facebook-login' class='addaccount' service='facebook'> <?php _e("Add Account", CWP_TEXTDOMAIN) ?> </button>
+					<?php }} ?>
 				</div><!-- end .right -->
 			</fieldset><!-- end .option -->
 
@@ -116,4 +154,48 @@
 			<button class="tweetitnow">Tweet Now</button>
 		</div><!-- end .cwp_sample_tweet_preview_inner -->
 	</div><!-- end .cwp_sample_tweet_preview -->
+
+	<div class="cwp_user_pages">
+		<div class="cwp_sample_tweet_preview_inner">
+			<h2>Choose a Profile or Page</h2>
+			<div class="cwp_user_pages_inner"></div>
+			
+					</div><!-- end .cwp_sample_tweet_preview_inner -->
+	</div><!-- end .cwp_sample_tweet_preview -->
+
+	<div class="cwp_fbapp_preview">
+		<div class="cwp_sample_tweet_preview_inner">
+			<h2>Add Your Facebook Account</h2>
+			<span class="sample_tweet"><a href="https://developers.facebook.com/apps/">Create a new Facebook application or associate test with an existing Facebook application.</a></span>
+			<p class='inactive'>In the application page in facebook, navigate to Apps > Settings > Edit settings > Website > Site URL. Set the site url as : http://wicked-stallion-64-120688.euw1.nitrousbox.com:80 </p>
+			<form action="" method="post" id="cwp_top_form" class="clearfix">
+			<fieldset class="option twptop_opt_app_id">
+				<div class="left">
+					<label for="top_opt_app_id"> Facebook App ID </label>
+					<span class="description"> App ID that you find <a href="https://developers.facebook.com/apps/" target="_blank">here</a> </span>
+
+					
+				</div><!-- end .left -->
+				<div class="right">
+					<input type="text" placeholder="1487991504767913" value="" name="top_opt_app_id" id="top_opt_app_id">						
+				</div><!-- end .right -->
+			</fieldset>
+
+			<fieldset class="option twptop_opt_app_secret">
+				<div class="left">
+					<label for="top_opt_app_secret"> Facebook App Secret </label>
+					<span class="description">App Secret that you find <a href="https://developers.facebook.com/apps/" target="_blank">here</a> </span>
+
+					
+				</div><!-- end .left -->
+				<div class="right">
+					<input type="text" placeholder="5124ea6d46e64da3c306f12812d0e4fx" value="" name="top_opt_app_secret" id="top_opt_app_secret">						
+				</div><!-- end .right -->
+			</fieldset>
+
+			<button class="top_authorize">Authorize App</button>
+			</form>
+		</div><!-- end .cwp_sample_tweet_preview_inner -->
+	</div><!-- end .cwp_sample_tweet_preview -->
+
 </div><!-- end .cwp_top_wrapper -->

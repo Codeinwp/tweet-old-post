@@ -59,18 +59,18 @@ html[xmlns] .clearfix { display: block;}
 /* Container and form styles */
 .cwp_top_wrapper .cwp_top_container { background:#f9f9f9; border-bottom: 5px solid #52aae2; position: relative;}
 .cwp_top_wrapper .cwp_top_container form { width: 73%; float: left; border-right: 1px solid #d4d4d4;}
-.cwp_top_wrapper .cwp_top_container form .option { width: 100%; margin: 15px 0px; }
-.cwp_top_wrapper .cwp_top_container form .option .left { float: left; width: 45%; }
-.cwp_top_wrapper .cwp_top_container form .option .left .select-all { float: right; background: none; border: none; background:#ddd; border-radius: 3px; padding: 5px 10px; }
-.cwp_top_wrapper .cwp_top_container form .option .left .select-all:hover { cursor: pointer; }
-.cwp_top_wrapper .cwp_top_container form .option label { font-family: "Helvetica Neue", HelveticaNeue, sans-serif; font-size: 15px; color:#525252; }
-.cwp_top_wrapper .cwp_top_container form .option input[type=text], .cwp_top_wrapper .cwp_top_container form .option select { height: 35px; border-radius: 3px; border: 1px solid #d7d7d7; box-shadow: none; font-family: "Roboto", sans-serif; }
-.cwp_top_wrapper .cwp_top_container form .option input[type=text] { width: 90%; }
-.cwp_top_wrapper .cwp_top_container form .option .left * { display: block; text-align: right; }
-.cwp_top_wrapper .cwp_top_container form .option .right { float: left; width: 55%; padding-left: 20px; }
-.cwp_top_wrapper .cwp_top_container form .option .categories-list { padding-top: 4px; }
-.cwp_top_wrapper .cwp_top_container form .option .categories-list .cwp-cat { float: left; width: 50%; margin-bottom: 5px;  }
-.cwp_top_wrapper .cwp_top_container form .option .categories-list .cwp-cat label { font-size: 13px; }
+.cwp_top_wrapper  .option { width: 100%; margin: 15px 0px; }
+.cwp_top_wrapper  .option .left { float: left; width: 45%; }
+.cwp_top_wrapper  .option .left .select-all { float: right; background: none; border: none; background:#ddd; border-radius: 3px; padding: 5px 10px; }
+.cwp_top_wrapper  .option .left .select-all:hover { cursor: pointer; }
+.cwp_top_wrapper  .option label { font-family: "Helvetica Neue", HelveticaNeue, sans-serif; font-size: 15px; color:#525252; }
+.cwp_top_wrapper  .option input[type=text], .cwp_top_wrapper .cwp_top_container form .option select { height: 35px; border-radius: 3px; border: 1px solid #d7d7d7; box-shadow: none; font-family: "Roboto", sans-serif; }
+.cwp_top_wrapper  .option input[type=text] { width: 90%; }
+.cwp_top_wrapper  .option .left * { display: block; text-align: right; }
+.cwp_top_wrapper  .option .right { float: left; width: 55%; padding-left: 20px; }
+.cwp_top_wrapper  .option .categories-list { padding-top: 4px; }
+.cwp_top_wrapper  .option .categories-list .cwp-cat { float: left; width: 50%; margin-bottom: 5px;  }
+.cwp_top_wrapper  .option .categories-list .cwp-cat label { font-size: 13px; }
 
 /* Sidebar Styles */
 .cwp_top_wrapper .cwp_top_container .sidebar { float: left; width: 27%; padding: 10px}
@@ -103,13 +103,44 @@ html[xmlns] .clearfix { display: block;}
 .cwp_top_wrapper .cwp_top_container .cwp_top_footer a { margin: 0 !important; padding: 0; margin-right: 10px !important; }
 
 /* Sample Tweet Preview Modal */
+.cwp_top_wrapper .cwp_fbapp_preview,.cwp_top_wrapper .cwp_user_pages { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background:rgba(0,0,0,0.2); display: none; }
+.cwp_top_wrapper  .cwp_sample_tweet_preview_inner h2 { text-align: center; font-weight: bold;color:#7d7d7d; font-family: "HelveticaNeue", "Helvetica Neue", sans-serif; }
+.cwp_top_wrapper  .cwp_sample_tweet_preview_inner { background:#fff; width: 60%; margin: 0 auto; margin-top: 759px; padding: 20px; border-radius: 5px;box-shadow: 0px 5px 5px rgba(0,0,0,0.1); }
+.cwp_top_wrapper  .cwp_sample_tweet_preview_inner .sample_tweet { min-height:60px; display: block; width: 100%; border: 1px solid #e8e8e8; padding: 10px; border-radius: 5px; font-family: "Helvetica Neue", HelveticaNeue, sans-serif; font-size: 14px;}
+.cwp_top_wrapper  .cwp_sample_tweet_preview_inner .sample_tweet a { text-decoration: none; }
+.cwp_top_wrapper .cwp_sample_tweet_preview_inner button { display: block; margin-top: 17px; background:#52c4ef; border: none; border-radius: 3px; padding: 5px 10px; color:#fff; font-family: "Open Sans", sans-serif; color:#fff; text-transform: uppercase; font-weight: bold; }
+.cwp_top_wrapper .cwp_sample_tweet_preview_inner button:hover { cursor: pointer; }
+
 .cwp_top_wrapper .cwp_sample_tweet_preview { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background:rgba(0,0,0,0.2); display: none; }
-.cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner h2 { text-align: center; font-weight: bold;color:#7d7d7d; font-family: "HelveticaNeue", "Helvetica Neue", sans-serif; }
-.cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner { background:#fff; width: 60%; margin: 0 auto; margin-top: 759px; padding: 20px; border-radius: 5px;box-shadow: 0px 5px 5px rgba(0,0,0,0.1); }
-.cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet { min-height:60px; display: block; width: 100%; border: 1px solid #e8e8e8; padding: 10px; border-radius: 5px; font-family: "Helvetica Neue", HelveticaNeue, sans-serif; font-size: 14px;}
-.cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet a { text-decoration: none; }
-.cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner button { display: block; margin-top: 17px; background:#52c4ef; border: none; border-radius: 3px; padding: 5px 10px; color:#fff; font-family: "Open Sans", sans-serif; color:#fff; text-transform: uppercase; font-weight: bold; }
-.cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner button:hover { cursor: pointer; }
+
+
+.cwp_user_pages .cwp_preview_page {
+	width: 175px;
+	margin-right: 25px;
+	float: left;
+	height: 75px;
+	margin-bottom: 25px;
+	border-bottom: 1px solid #F1F1F1;
+}
+
+.cwp_user_pages_inner {
+	min-height: 360px;
+}
+.cwp_user_pages .page_name {
+	font-weight: bold;
+	font-size: 15px;
+	padding-bottom: 10px;
+}
+.cwp_user_pages .page_avatar {
+	width: 50px;
+	height: 50px;
+	margin-right: 5px;
+	float: left;
+}
+.cwp_user_pages .page_category {
+	
+	color:grey;
+}
 .top_preview {
 width: 40px;
 height: 40px;

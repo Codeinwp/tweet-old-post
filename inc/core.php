@@ -718,6 +718,11 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		// Checks if twitter returned any temporary credentials to log in the user.
 		public function afterAddAccountCheck()
 		{
+			global $cwp_top_settings;
+			$code="";
+			if(isset($_REQUEST['code']))
+				$code = $_REQUEST["code"];
+
 			if(isset($_REQUEST['oauth_token'])) {
 				if($_REQUEST['oauth_token'] == $this->cwp_top_oauth_token) {
 
@@ -729,7 +734,8 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 						'user_id'				=> $user_details->id,
 						'oauth_token'			=> $access_token['oauth_token'],
 						'oauth_token_secret'	=> $access_token['oauth_token_secret'],
-						'oauth_user_details'	=> $user_details
+						'oauth_user_details'	=> $user_details,
+						'network'				=> 'twitter'
 					);
 
 					$loggedInUsers = get_option('cwp_top_logged_in_users');
@@ -747,47 +753,159 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 					exit;
 				}
 			}
+
+			if(isset($_COOKIE['top_session_state']) && isset($_REQUEST['state']) && ($_COOKIE['top_session_state'] === $_REQUEST['state'])) {
+			
+				$token_url = "https://graph.facebook.com/".TOP_FB_API_VERSION."/oauth/access_token?"
+				. "client_id=" . get_option('cwp_top_app_id') . "&redirect_uri=" . SETTINGSURL
+				. "&client_secret=" . get_option('cwp_top_app_secret') . "&code=" . $code;
+
+				$params = null;$access_token="";
+				$response = wp_remote_get($token_url);
+				
+				if(is_array($response))
+				{
+					if(isset($response['body']))
+					{
+						parse_str($response['body'], $params);
+						if(isset($params['access_token']))
+						$access_token = $params['access_token'];
+					}
+				}
+
+				if($access_token!="")
+				{									
+					update_option('top_fb_token',$access_token);
+						
+				}
+			}
+
+
 		}
 
-		// Used to display the twitter login button
-		public function displayTwitterLoginButton()
+		// Used to display the login buttons
+		public function displayLoginButton($social_network)
 		{
 			// display the twitter login button
-			if($this->userIsLoggedIn()) {
-				$this->setAlloAuthSettings();
+			if($this->userIsLoggedIn($social_network)) {
+				$this->setAlloAuthSettings($social_network);
 				return true;
 			} else {
 				return false;
 			}
 		}
 
-		// Adds new twitter account
-		public function addNewTwitterAccount()
+		// Adds pages
+		public function displayPages()
 		{
-			$this->oAuthCallback = $_POST['currentURL'];
-			$twitter = new TwitterOAuth($this->consumer, $this->consumerSecret);
-			$requestToken = $twitter->getRequestToken($this->oAuthCallback);
+			$social_network = $_POST['social_network'];
+			$access_token = get_option('top_fb_token');
 
-			update_option('cwp_top_oauth_token', $requestToken['oauth_token']);
-			update_option('cwp_top_oauth_token_secret', $requestToken['oauth_token_secret']);
+			switch ($social_network) {
+			    case 'facebook':
+			    	$result1="";$pagearray1="";
+					$pp=wp_remote_get("https://graph.facebook.com/".TOP_FB_API_VERSION."/me/accounts?access_token=$access_token&limit=100&offset=0");
+					//print_r($pp);
+					if(is_array($pp))
+					{
+						$result1=$pp['body'];
+						//print_r($results1);
+						echo $result1;
 
-
-
-			switch ($twitter->http_code) {
-				case 200:
-					$url = $twitter->getAuthorizeURL($requestToken['oauth_token']);
-					echo $url;
-					break;
-				
-				default:
-					return __("Could not connect to Twitter!", CWP_TEXTDOMAIN);
+					}
 					break;
 			}
 			die(); // Required
 		}
 
-				// Adds new twitter account
-		public function addNewTwitterAccountPro()
+		// Adds pages
+		public function addPages()
+		{
+			$social_network = $_POST['social_network'];
+			$access_token = $_POST['page_token'];
+			$page_id= $_POST['page_id'];
+
+			switch ($social_network) {
+			    case 'facebook':
+			    	$user_details['profile_image_url'] = $_POST['picture_url'];
+			    	$user_details['name'] = $_POST['page_name'];
+			    	$user_details = (object) $user_details;
+			    	$newUser = array(
+						'user_id'				=> $page_id,
+						'oauth_token'			=> $access_token,
+						'oauth_token_secret'	=> "",
+						'oauth_user_details'	=> $user_details,
+						'network'				=> 'facebook'
+					);
+
+					$loggedInUsers = get_option('cwp_top_logged_in_users');
+					if(empty($loggedInUsers)) { $loggedInUsers = array(); }
+
+
+					if(in_array($newUser, $loggedInUsers)) {
+						echo "You already added that user! no can do !";
+					} else { 
+						array_push($loggedInUsers, $newUser);
+						update_option('cwp_top_logged_in_users', $loggedInUsers);
+						echo SETTINGSURL;
+					}
+
+					
+					break;
+			}
+			die(); // Required
+		}
+
+		// Adds new account
+		public function addNewAccount()
+		{
+			global $cwp_top_settings;
+			$social_network = $_POST['social_network'];
+			switch ($social_network) {
+			    case 'twitter':
+			        $this->oAuthCallback = $_POST['currentURL'];
+					$twitter = new TwitterOAuth($this->consumer, $this->consumerSecret);
+					$requestToken = $twitter->getRequestToken($this->oAuthCallback);
+
+					update_option('cwp_top_oauth_token', $requestToken['oauth_token']);
+					update_option('cwp_top_oauth_token_secret', $requestToken['oauth_token_secret']);
+
+					switch ($twitter->http_code) {
+						case 200:
+							$url = $twitter->getAuthorizeURL($requestToken['oauth_token']);
+							echo $url;
+							break;
+						
+						default:
+							return __("Could not connect to Twitter!", CWP_TEXTDOMAIN);
+							break;
+					}
+			        break;
+			    case 'facebook':
+			    	update_option('cwp_top_app_id', $_POST['app_id']);
+					update_option('cwp_top_app_secret', $_POST['app_secret']);
+			        $top_session_state = md5(uniqid(rand(), TRUE));
+			        if (isset($_COOKIE['top_session_state'])) {
+			        	unset($_COOKIE['top_session_state']);
+			        	setcookie("top_session_state","",time()-3600,"/");
+			        }
+			        setcookie("top_session_state",$top_session_state,"0","/");
+			        $dialog_url = "https://www.facebook.com/".TOP_FB_API_VERSION."/dialog/oauth?client_id="
+				. $_POST['app_id'] . "&redirect_uri=" . SETTINGSURL . "&state="
+						. $top_session_state . "&scope=publish_stream,publish_actions,manage_pages";
+					echo $dialog_url;
+			        break;
+			    }
+			
+
+
+
+
+			die(); // Required
+		}
+
+		// Adds more than one account
+		public function addNewAccountPro()
 		{
 			if (function_exists('topProAddNewAccount')) {
 				topProAddNewAccount();
@@ -1120,8 +1238,16 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			add_action('wp_ajax_reset_options', array($this, 'resetAllOptions'));
 
 			// Add new twitter account ajax action
-			add_action('wp_ajax_nopriv_add_new_twitter_account', array($this, 'addNewTwitterAccount'));
-			add_action('wp_ajax_add_new_twitter_account', array($this, 'addNewTwitterAccount'));
+			add_action('wp_ajax_nopriv_add_new_account', array($this, 'addNewAccount'));
+			add_action('wp_ajax_add_new_account', array($this, 'addNewAccount'));
+
+			// Display managed pages ajax action
+			add_action('wp_ajax_nopriv_display_pages', array($this, 'displayPages'));
+			add_action('wp_ajax_display_pages', array($this, 'displayPages'));
+
+			// Add new account managed pages ajax action
+			add_action('wp_ajax_nopriv_add_pages', array($this, 'addPages'));
+			add_action('wp_ajax_add_pages', array($this, 'addPages'));
 
 			// Add more than one twitter account ajax action
 			add_action('wp_ajax_nopriv_add_new_twitter_account_pro', array($this, 'addNewTwitterAccountPro'));

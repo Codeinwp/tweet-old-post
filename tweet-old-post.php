@@ -4,7 +4,7 @@
 #     Plugin URI: http://themeisle.com/plugins/tweet-old-post-lite/
 #     Description: Wordpress plugin that helps you to keeps your old posts alive by tweeting about them and driving more traffic to them from twitter. It also helps you to promote your content. You can set time and no of tweets to post to drive more traffic.For questions, comments, or feature requests, <a href="http://themeisle.com/contact/?utm_source=plugindesc&utm_medium=announce&utm_campaign=top">contact </a> us!
 #     Author: ThemeIsle 
-#     Version: 6.7.6
+#     Version: 6.7.7
 #     Author URI: http://themeisle.com/
 #     */  
 
@@ -14,7 +14,7 @@ define("CSSFILE", plugins_url('css/style.css',__FILE__ ));
 define("JSFILE", plugins_url('js/master.js',__FILE__ ));
 define("JSCOUNTDOWN", plugins_url('js/countdown.js',__FILE__ ));
 define("PLUGINBASENAME", plugin_basename(__FILE__));
-
+define('TOP_FB_API_VERSION','v2.0');
 // Require core.
 require_once(PLUGINPATH."/inc/core.php");
 // Require core.
