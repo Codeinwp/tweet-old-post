@@ -1,11 +1,11 @@
 <?php 
 define("CURRENTURL", top_current_page());
 define("CWP_TEXTDOMAIN", "TweetOldPost");
-define("SETTINGSURL", top_settings_url());
+define("SETTINGSURL", admin_url('admin.php?page=TweetOldPost'));
 
 // Settings Array
 $cwp_top_settings = array(
-	'name' 				=> __("Revive Old Post", CWP_TEXTDOMAIN),
+	'name' 				=> __("Tweet Old Post", CWP_TEXTDOMAIN),
 	'slug' 				=> "TweetOldPost",
 	'oAuth_settings'	=> array( // Based on TOP Dev Application settings.
 	    'oauth_access_token' 		=> "2256465193-KDpAFIYfxpWugX2OU025b1CPs3WB0RJpgA4Gd4h",
@@ -21,7 +21,7 @@ $cwp_top_fields = array(
 
 	'tweet-content' 	=> array(
 			'id' 				=> '1',
-			'name'  			=> __('Post Content', CWP_TEXTDOMAIN), 
+			'name'  			=> __('Tweet Content', CWP_TEXTDOMAIN), 
 			'type'				=> 'select',
 			'slug'				=> 'tweet-content',
 			'option'			=> 'top_opt_tweet_type',
@@ -36,7 +36,7 @@ $cwp_top_fields = array(
 
 	'tweet-content-field'	=> array(
 			'id'			=> '2',
-			'name'			=> __('Post Content Custom Field', CWP_TEXTDOMAIN),
+			'name'			=> __('Tweet Content Custom Field', CWP_TEXTDOMAIN),
 			'type'			=> 'text',
 			'slug'			=> 'tweet-content-field',
 			'option'		=> 'top_opt_tweet_type_custom_field',
@@ -62,8 +62,8 @@ $cwp_top_fields = array(
 			'option'		=> 'top_opt_add_text_at',
 			'description'	=> __('Where do you want the text to be added?', CWP_TEXTDOMAIN),
 			'options'		=> array(
-				'beginning'	=> __('Beginning of Post', CWP_TEXTDOMAIN),
-				'end'		=> __('End of Post', CWP_TEXTDOMAIN)
+				'beginning'	=> __('Beginning of Tweet', CWP_TEXTDOMAIN),
+				'end'		=> __('End of Tweet', CWP_TEXTDOMAIN)
 				)
 	),
 
@@ -162,7 +162,7 @@ $cwp_top_fields = array(
 			'description'	=> __('Include #hashtags in your auto posts?', CWP_TEXTDOMAIN),
 			'options'		=> array(
 				'nohashtag'	=> __('Don\'t add any hashtags', CWP_TEXTDOMAIN),
-				'common'	=> __('Common hashtags for all shares', CWP_TEXTDOMAIN),
+				'common'	=> __('Common hashtags for all tweets', CWP_TEXTDOMAIN),
 				'categories'=> __('Create hashtags from Categories', CWP_TEXTDOMAIN),
 				'tags'		=> __('Create hashtags from Tags', CWP_TEXTDOMAIN),
 				'custom'	=> __('Create hashtags from Custom Fields', CWP_TEXTDOMAIN)
@@ -201,17 +201,17 @@ $cwp_top_fields = array(
 
 	'interval'				=> array(
 			'id'			=> '14',
-			'name'			=> __('Minimum interval between shares', CWP_TEXTDOMAIN),
+			'name'			=> __('Minimum interval between tweets', CWP_TEXTDOMAIN),
 			'type'			=> 'text',
 			'slug'			=> 'interval',
 			'option'		=> 'top_opt_interval',
-			'description'	=> __('Minimum time between shares (Hour/Hours), 0.4 can be used also.', CWP_TEXTDOMAIN),
+			'description'	=> __('Minimum time between tweets (Hour/Hours).', CWP_TEXTDOMAIN),
 			'options'		=> array()
 	),
 
 	'age-limit'				=> array(
 			'id'			=> '15',
-			'name'			=> __('Minimum age of post to be eligible for sharing', CWP_TEXTDOMAIN),
+			'name'			=> __('Minimum age of post to be eligible for tweet', CWP_TEXTDOMAIN),
 			'type'			=> 'text',
 			'slug'			=> 'age-limit',
 			'option'		=> 'top_opt_age_limit',
@@ -221,7 +221,7 @@ $cwp_top_fields = array(
 
 	'max-age-limit'				=> array(
 			'id'			=> '16',
-			'name'			=> __('Maximum age of post to be eligible for sharing', CWP_TEXTDOMAIN),
+			'name'			=> __('Maximum age of post to be eligible for tweet', CWP_TEXTDOMAIN),
 			'type'			=> 'text',
 			'slug'			=> 'max-age-limit',
 			'option'		=> 'top_opt_max_age_limit',
@@ -231,7 +231,7 @@ $cwp_top_fields = array(
 
 	'no-of-tweet'			=> array(
 			'id'			=> '17',
-			'name'			=> __('Number of Posts to share', CWP_TEXTDOMAIN),
+			'name'			=> __('Number of Posts to Tweet', CWP_TEXTDOMAIN),
 			'type'			=> 'text',
 			'slug'			=> 'no-of-tweet',
 			'option'		=> 'top_opt_no_of_tweet',
@@ -270,27 +270,17 @@ $cwp_top_fields = array(
 			'type'					=> 'checkbox',
 			'slug'					=> 'post-with-image',
 			'option'				=> 'top_opt_post_with_image',
-			'description'			=> __('Check if you want to add the post featured image to the share', CWP_TEXTDOMAIN),
+			'description'			=> __('Check if you want to add the post featured image to the tweet', CWP_TEXTDOMAIN),
 			'options'				=> array()
 	),
 
 	'tweet-multiple-times' => array(
-			'id' 					=> '25',
-			'name'  				=> __('Share old posts more than once', CWP_TEXTDOMAIN), 
+			'id' 					=> '24',
+			'name'  				=> __('Tweet old posts more than once', CWP_TEXTDOMAIN), 
 			'type'					=> 'checkbox',
 			'slug'					=> 'tweet-multiple-times',
 			'option'				=> 'top_opt_tweet_multiple_times',
-			'description'			=> __('By default once a post is shared it will not be shared again until you stop/start the plugin', CWP_TEXTDOMAIN),
-			'options'				=> array()
-	),
-
-	'analytics-tracking' => array(
-			'id' 					=> '26',
-			'name'  				=> __('Google Analytics Campaign Tracking', CWP_TEXTDOMAIN), 
-			'type'					=> 'checkbox',
-			'slug'					=> 'ga-tracking',
-			'option'				=> 'top_opt_ga_tracking',
-			'description'			=> __('Enabling Campaign Tracking you would be able to see how much traffic Revive Old Post generated.', CWP_TEXTDOMAIN),
+			'description'			=> __('By default once a post is tweeted it will not be tweeted again until you stop/start the plugin', CWP_TEXTDOMAIN),
 			'options'				=> array()
 	),
 
@@ -310,7 +300,7 @@ $cwp_top_fields = array(
 			'type'					=> 'categories-list',
 			'slug'					=> 'exclude-specific-category',
 			'option'				=> 'top_opt_omit_cats',
-			'description'			=> __('Select which categories do you want to exclude to share from? Blank - None', CWP_TEXTDOMAIN),
+			'description'			=> __('Select which categories do you want to exclude to tweet from? Blank - None', CWP_TEXTDOMAIN),
 			'options'				=> array()
 	),
 
@@ -322,10 +312,9 @@ $defaultOptions = array(
 	'top_opt_tweet_type_custom_field'	=> '',
 	'top_opt_add_text'					=> '',
 	'top_opt_add_text_at'				=> 'beginning',
-	'top_opt_include_link'				=> 'true',
+	'top_opt_include_link'				=> 'false',
 	'top_opt_custom_url_option'			=> 'off',
 	'top_opt_use_url_shortner'			=> 'off',
-	'top_opt_ga_tracking'				=>'on',
 	'top_opt_url_shortner'				=> 'is.gd',
 	'top_opt_custom_hashtag_option'		=> 'nohashtag',
 	'top_opt_hashtags'			=> '',
@@ -365,11 +354,6 @@ function top_current_page(){
 		$pageURL .= @$_SERVER["SERVER_NAME"].@$_SERVER["REQUEST_URI"];
 	}
 	return $pageURL;
-}
-
-function top_settings_url(){
-	$pageURL = admin_url('admin.php?page=TweetOldPost');
-	return str_replace(":80","",$pageURL);
 }
 
 // Store all options in array.

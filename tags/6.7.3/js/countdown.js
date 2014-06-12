@@ -102,7 +102,7 @@ var timenow="";
           clearInterval(_this.interval);
         }
         _this.interval = null;
-        jQuery(".cwp_top_container .nextTweet").html('Your post was just sent to social networks servers, wait 15s for a confirmation below. Refresh the page to see when the next one will be posted.');
+        jQuery(".cwp_top_container .nextTweet").html('Your tweet was just sent to twitter server, wait 5s for a confirmation below. Refresh the page to see when the next one will be posted.');
 
         return _this;
         //return _this;

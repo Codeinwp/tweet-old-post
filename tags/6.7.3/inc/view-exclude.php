@@ -8,8 +8,8 @@
 	<header id="cwp_top_header" class='clearfix'>
 		<h1 class="logo">
 			<?php if (function_exists('topProAddNewAccount')) {
-				_e("Revive Old Post PRO", CWP_TEXTDOMAIN);
-			} else _e("Revive Old Post", CWP_TEXTDOMAIN); ?>
+				_e("Tweet Old Post PRO", CWP_TEXTDOMAIN);
+			} else _e("Tweet Old Post", CWP_TEXTDOMAIN); ?>
 
 		</h1>
 		<span class="slogan"><?php _e("by", CWP_TEXTDOMAIN); ?> <a href="http://themeisle.com/?utm_source=topadmin&utm_medium=announce&utm_campaign=top">ThemeIsle</a></span>
@@ -27,15 +27,15 @@
 		
 		<?php if($twp_obj->pluginStatus == 'true') { ?>
 			<p class='active'>
-				<?php _e("Revive Old Post is set to share on a", CWP_TEXTDOMAIN); ?>
+				<?php _e("Tweet Old Post is set to tweet on a", CWP_TEXTDOMAIN); ?>
 				<span class='tweetInterval'> <?php echo $twp_obj->intervalSet; ?></span>
 				<?php _e("hours interval, ", CWP_TEXTDOMAIN); ?>
-				<?php _e("and the next share will take place in: ", CWP_TEXTDOMAIN); ?>
+				<?php _e("and the next tweet will take place in: ", CWP_TEXTDOMAIN); ?>
 				<span class='nextTweet'><?php $twp_obj->getNextTweetInterval(); update_option('cwp_topnew_notice', ""); ?></span>
 			</p>
 		<?php } else { ?>
 			<p class='inactive'>
-				<?php _e("Revive Old Post is not set to share!", CWP_TEXTDOMAIN); ?>
+				<?php _e("Tweet Old Post is not set to tweet!", CWP_TEXTDOMAIN); ?>
 			</p>
 		<?php } ?>
 			<p class='inactive'>

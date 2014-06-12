@@ -281,30 +281,17 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 		}
 
-		public function findInString($where,$what) {
-			if (is_string($notice)) {
-				return false;
-			}
-			else
-				return strpos($where,$what);
-		}
-
 		public function getNotice() {
 			$notice = get_option('cwp_topnew_notice');
-				
-			//$notice = strpos($notice,'UPDAT');
+			
+
 			if (is_object($notice) && $notice->errors[0]->message)
 				echo "Error for your last tweet was :'".$notice->errors[0]->message."'";
-			else if ( $notice !== "OK" && !is_object($notice) && $this->findInString($notice,'UPDAT')===false && $notice!=="")
-				echo "Error for your last post was :'".$notice."'";
-			else
-				if (is_object($notice) && $notice->text || $notice=="OK" || strpos($notice,'UPDAT')!==false) {
-				echo "Congrats! Your last post was revived successfully";
+			else if (is_object($notice) && $notice->text) {
+				echo "Congrats! The following tweet was posted successfully: '".$notice->text."' at ".$notice->created_at;
 			} else if ($notice!="") {
-				echo "Error for your last post was : ".$notice;
+				echo "Error for your last tweet was : ".$notice;
 			}
-
-			
 			die();
 		}
 
@@ -318,23 +305,17 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			$returnedTweets = $this->getTweetsFromDB();
 			$image="";
 			//var_dump($returnedTweets);
-			$finalTweetsPreview = $this->generateTweetFromPost($returnedTweets[0])['message'];
+			$finalTweetsPreview = $this->generateTweetFromPost($returnedTweets[0]);
 			$result = $finalTweetsPreview;			
 			update_option( 'top_lastID', $returnedTweets[0]->ID);
 
 			if (function_exists('topProImage') && get_option('top_opt_post_with_image')=="on") {
 
-				if ( strlen( $img = get_the_post_thumbnail( $returnedTweets[0]->ID, array( 150, 150 ) ) ) ) :
+				if ( has_post_thumbnail( $returnedTweets[0]->ID ) ) :
 				    $image_array = wp_get_attachment_image_src( get_post_thumbnail_id( $returnedTweets[0]->ID ), 'optional-size' );
 				    $image = $image_array[0];
 				else :
-				    $post = get_post($returnedTweets[0]->ID);
-					$image = '';
-					ob_start();
-					ob_end_clean();
-					$output = preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $post->post_content, $matches);
-
-					$image = $matches [1] [0];
+				    $image = '';
 				endif;
 
 				$result = '<img class="top_preview" src="'.$image.'"/>'.$finalTweetsPreview;
@@ -390,7 +371,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			// Save all user settings in variables.
 			$tweetedPosts 					= get_option("top_opt_already_tweeted_posts");
 			$tweet_content 					= get_option('top_opt_tweet_type');
-			$tweet_content_custom_field 	= get_option('top_opt_post_type_custom_field');
+			$tweet_content_custom_field 	= get_option('top_opt_tweet_type_custom_field');
 			$additional_text 				= get_option('top_opt_add_text');
 			$additional_text_at 			= get_option('top_opt_add_text_at');
 			$include_link 					= get_option('top_opt_include_link');
@@ -404,8 +385,6 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			$hashtag_custom_field 			= get_option('top_opt_custom_hashtag_field');
 			$bitly_key 						= get_option('top_opt_bitly_key');
             $bitly_user 					= get_option('top_opt_bitly_user');
-            $ga_tracking  					= get_option('top_opt_ga_tracking');
-            $post_with_image 				= get_option('top_opt_post_with_image');
 			$additionalTextBeginning 		= "";
 			$additionalTextEnd 				= "";
 
@@ -448,33 +427,15 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			// Generate the post link.
 			if($include_link == 'true') {
 				if($fetch_url_from_custom_field == 'on') {
-					$post_url = " " . get_post_meta($postQuery->ID, $custom_field_url,true);
+					$post_url = " " . get_post_meta($postQuery->ID, $custom_field_url,true) . " ";
 				} else { 
 					$post_url = " " . get_permalink($postQuery->ID);
-				}
-
-				if ($post_url==" ")
-					$post_url = " " . get_permalink($postQuery->ID);
-
-				if ($ga_tracking=="on") {
-					$param = 'utm_source=ReviveOldPost&utm_medium=social&utm_campaign=ReviveOldPost';
-					$post_url = rtrim($post_url);
-					if (strpos($post_url,"?")===FALSE)
-						$post_url.='?'.$param;
-					else
-						$post_url.='&'.$param;
 				}
 
 				if($use_url_shortner == 'on') {
 					$post_url = " " . $this->shortenURL($post_url, $url_shortner_service, $postQuery->ID, $bitly_key, $bitly_user);
 				}
-
-				if ($post_url==" ")
-					$post_url = " " . get_permalink($postQuery->ID);
-
 				$post_url = $post_url . " ";
-
-
 			} else { $post_url = ""; }
 
 			// Generate the hashtags
@@ -535,7 +496,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			if(!empty($post_url)) {
 
 				$postURLLength = strlen($post_url); 
-				if ($postURLLength > 21) $postURLLength = 22;
+				if ($postURLLength > 50) $postURLLength = 50;
 				$finalTweetLength += intval($postURLLength);
 			}
 
@@ -544,21 +505,15 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 				$finalTweetLength += intval($hashtagsLength);
 			}
 
-			if ($post_with_image == "on")
-				$finalTweetLength += 25;
-
 			$finalTweetLength = 139 - $finalTweetLength - 5;
 
 			$tweetContent = mb_substr($tweetContent,0, $finalTweetLength) . " ";
 
-			$finalTweet = $additionalTextBeginning . $tweetContent . "%short_urlshort_urlurl%" . $newHashtags . $additionalTextEnd;
+			$finalTweet = $additionalTextBeginning . $tweetContent . $post_url . $newHashtags . $additionalTextEnd;
 			$finalTweet = substr($finalTweet,0, 139);
-			$finalTweet = str_replace("%short_urlshort_urlurl%",$post_url,$finalTweet);
-			$fTweet = array();
-			$fTweet['message'] = strip_tags($finalTweet);
-			$fTweet['link'] = $post_url;
+
 			// Strip any tags and return the final tweet
-			return $fTweet; 
+			return strip_tags($finalTweet); 
 		}
 
 		/**
@@ -572,89 +527,16 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			$nrOfUsers = count($this->users);
 
 			foreach ($this->users as $user) {
-
-				switch ($user['service']) {
-					case 'twitter':
-						// Create a new twitter connection using the stored user credentials.
-						$connection = new TwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
-						// Post the new tweet
-						$status = $connection->post('statuses/update', array('status' => $finalTweet['message']));	
-						//return $status;
-						if ($nrOfUsers == $k)
-							return $status;
-						else
-							$k++;
-						break;
-					
-					case 'facebook':
-						$args =  array(
-							
-							'body' => array( 'message' => $finalTweet['message'],'link' => $finalTweet['link']),
-							
-										);
-
-						$pp=wp_remote_post("https://graph.facebook.com/".TOP_FB_API_VERSION."/$user[id]/feed?access_token=$user[oauth_token]",$args);
-						if ($nrOfUsers == $k)
-							return $pp['response']['message'];
-						else
-							$k++;
-						
-						break;
-
-					case 'linkedin':
-
-						$visibility="anyone";
-						$content_xml.="<content><title>".$finalTweet['message']."</title><submitted-url>".$finalTweet['link']."</submitted-url></content>";
-						$url = 'https://api.linkedin.com/v1/people/~/shares?oauth2_access_token='.$user["oauth_token"];
-		
-
-						$xml       = '<?xml version="1.0" encoding="UTF-8"?><share>
-                         ' . $content_xml . '
-                         <visibility>
-                           <code>' . $visibility . '</code>
-                         </visibility>
-                       </share>';
-                       				$headers = array(
-						    "Content-type: text/xml",
-						    "Content-length: " . strlen($xml),
-						    "Connection: close",
-						);
-
-						$ch = curl_init(); 
-						curl_setopt($ch, CURLOPT_URL,$url);
-						curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-						curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-						curl_setopt($ch, CURLOPT_POST, true);
-						curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
-						curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-						$data = curl_exec($ch); 
-						if ($nrOfUsers == $k)
-							return $data;
-						else
-							$k++;
-						
-						if(curl_errno($ch))
-						    print curl_error($ch);
-						else
-						    curl_close($ch);
-						
-						break;
-
-					default:
-						// Create a new twitter connection using the stored user credentials.
-						$connection = new TwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
-						// Post the new tweet
-						$status = $connection->post('statuses/update', array('status' => $finalTweet['message']));	
-						//return $status;
-						if ($nrOfUsers == $k)
-							return $status;
-						else
-							$k++;
-						break;
-				}
 								
-				
+				// Create a new twitter connection using the stored user credentials.
+				$connection = new TwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
+				// Post the new tweet
+				$status = $connection->post('statuses/update', array('status' => $finalTweet));	
+				//return $status;
+				if ($nrOfUsers == $k)
+					return $status;
+				else
+					$k++;
 				
 			}
 		}
@@ -666,85 +548,16 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			$nrOfUsers = count($this->users);
 
 			foreach ($this->users as $user) {
+				// Create a new twitter connection using the stored user credentials.
+				$connection = new TwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
+				// Post the new tweet
+				if (function_exists('topProImage')) 
+					$status = topProImage($connection, $finalTweet, $id);
 
-				switch ($user['service']) {
-					case 'twitter':
-						// Create a new twitter connection using the stored user credentials.
-						$connection = new TwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
-						// Post the new tweet
-						if (function_exists('topProImage')) 
-							$status = topProImage($connection, $finalTweet['message'], $id);
-
-						if ($nrOfUsers == $k)
-							return $status;
-						else
-							$k++;	
-
-					case 'facebook':
-						$args =  array(
-							
-							'body' => array( 'message' => $finalTweet['message'],'link' => $finalTweet['link']),
-							
-										);
-
-						$pp=wp_remote_post("https://graph.facebook.com/".TOP_FB_API_VERSION."/$user[id]/feed?access_token=$user[oauth_token]",$args);
-						if ($nrOfUsers == $k)
-							return $pp['response']['message'];
-						else
-							$k++;
-						
-						break;
-
-					case 'linkedin':
-
-						$visibility="anyone";
-						$content_xml.="<content><title>".$finalTweet['message']."</title><submitted-url>".$finalTweet['link']."</submitted-url></content>";
-						$url = 'https://api.linkedin.com/v1/people/~/shares?oauth2_access_token='.$user["oauth_token"];
-		
-
-						$xml       = '<?xml version="1.0" encoding="UTF-8"?><share>
-                         ' . $content_xml . '
-                         <visibility>
-                           <code>' . $visibility . '</code>
-                         </visibility>
-                       </share>';
-                       				$headers = array(
-						    "Content-type: text/xml",
-						    "Content-length: " . strlen($xml),
-						    "Connection: close",
-						);
-
-						$ch = curl_init(); 
-						curl_setopt($ch, CURLOPT_URL,$url);
-						curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-						curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-						curl_setopt($ch, CURLOPT_POST, true);
-						curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
-						curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-						$data = curl_exec($ch); 
-						if ($nrOfUsers == $k)
-							return $data;
-						else
-							$k++;
-						
-						if(curl_errno($ch))
-						    print curl_error($ch);
-						else
-						    curl_close($ch);
-						
-						break;
-					default:
-						$connection = new TwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
-						// Post the new tweet
-						if (function_exists('topProImage')) 
-							$status = topProImage($connection, $finalTweet['message'], $id);
-
-						if ($nrOfUsers == $k)
-							return $status;
-						else
-							$k++;	
-				}	
+				if ($nrOfUsers == $k)
+					return $status;
+				else
+					$k++;		
 			}
 		}
 		
@@ -827,9 +640,9 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		// Gets the tweet post type.
 		public function getTweetPostType()
 		{
-			$top_opt_post_type = get_option('top_opt_post_type');
+			$top_opt_tweet_type = get_option('top_opt_post_type');
 
-		/*	switch ($top_opt_post_type) {
+		/*	switch ($top_opt_tweet_type) {
 				case 'post':
 					return "'post'";
 					break;
@@ -905,13 +718,6 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		// Checks if twitter returned any temporary credentials to log in the user.
 		public function afterAddAccountCheck()
 		{
-			if( time() - get_option("top_reauthorize") > 2592000 )
-				$this->reAuthorize();
-			global $cwp_top_settings;
-			$code="";
-			if(isset($_REQUEST['code']))
-				$code = $_REQUEST["code"];
-
 			if(isset($_REQUEST['oauth_token'])) {
 				if($_REQUEST['oauth_token'] == $this->cwp_top_oauth_token) {
 
@@ -923,8 +729,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 						'user_id'				=> $user_details->id,
 						'oauth_token'			=> $access_token['oauth_token'],
 						'oauth_token_secret'	=> $access_token['oauth_token_secret'],
-						'oauth_user_details'	=> $user_details,
-						'service'				=> 'twitter'
+						'oauth_user_details'	=> $user_details
 					);
 
 					$loggedInUsers = get_option('cwp_top_logged_in_users');
@@ -942,298 +747,53 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 					exit;
 				}
 			}
-
-			if(isset($_REQUEST['state']) && (get_option('top_fb_session_state') === $_REQUEST['state'])) {
-			
-				$token_url = "https://graph.facebook.com/".TOP_FB_API_VERSION."/oauth/access_token?"
-				. "client_id=" . get_option('cwp_top_app_id') . "&redirect_uri=" . SETTINGSURL
-				. "&client_secret=" . get_option('cwp_top_app_secret') . "&code=" . $code;
-
-				$params = null;$access_token="";
-				$response = wp_remote_get($token_url);
-				
-				if(is_array($response))
-				{
-					if(isset($response['body']))
-					{
-						parse_str($response['body'], $params);
-						if(isset($params['access_token']))
-						$access_token = $params['access_token'];
-					}
-				}
-
-				if($access_token!="")
-				{									
-					update_option('top_fb_token',$access_token);
-						
-				}
-				header("Location: " . SETTINGSURL.'#fbadd');
-			}
-
-			if (isset($_GET['code'])&&get_option('top_lk_session_state') == $_GET['state']) {
-
-				$lk_auth_token = get_option('cwp_top_lk_app_id');
-				$lk_auth_secret = get_option('cwp_top_lk_app_secret');
-				   $params = array('grant_type' => 'authorization_code',
-                    'client_id' => $lk_auth_token,
-                    'client_secret' => $lk_auth_secret,
-                    'code' => $_GET['code'],
-                    'redirect_uri' => SETTINGSURL,
-              	);
-				
-				$url = 'https://www.linkedin.com/uas/oauth2/accessToken?' . http_build_query($params);
-				//echo $url;
-     			$response = wp_remote_post($url);
-     			$token = json_decode($response['body']);
-     			//print_r($response);
-     			//print_r($token);
-		        if($token->access_token) {
-		          // the request went through without an error, gather user's 'access' tokens
-		        	//AQVBBQ6_ggJaUVFYmJ5oVF_kSH-wn6VNREGgC_sYPWp0YV0U4r2CFwptnLXUbJra5Glp0ZMax96CrD2azzf_HkJ2UdLp5q5zoiT_rbl5bmTMf50XnDfRcdm8Vl2k2XoYhGQ-LkYTnddFz1K-OBcW0CWsapzgZH2hepMVMhc1Lw7bhwTab04"
-		        	update_option('top_linkedin_token',$token->access_token);
-	          		update_option('top_linkedin_token_expires',$token->expires_in);
-				}
-
-				$url = 'https://api.linkedin.com/v1/people/~:(id,picture-url,first_name,last_name)?oauth2_access_token='.$token->access_token;
-				//echo $url;
-				$response = wp_remote_get($url);
-				$response = wp_remote_retrieve_body($response);
-				//print_r($response);
-				$person = simplexml_load_string($response);
-				
-				if (isset($person->id)) {
-					$user_details = array('profile_image_url' => (string)$person->{'picture-url'},'name'=> (string)$person->{'first-name'} );
-					
-					$newUser = array(
-							'user_id'				=> (string)$person->id,
-							'oauth_token'			=> $token->access_token,
-							'oauth_token_secret'	=> '',
-							'oauth_user_details'	=> (object)$user_details,
-							'service'				=> 'linkedin'
-						);
-
-					$loggedInUsers = get_option('cwp_top_logged_in_users');
-					if(empty($loggedInUsers)) { $loggedInUsers = array(); }
-
-					foreach ($loggedInUsers as $key=>$user) {
-						if ($user['user_id'] == $person->id) 
-							unset($loggedInUsers[$key]);
-					}
-
-					if(in_array($newUser, $loggedInUsers)) {
-						echo "You already added that user! no can do !";
-					} else { 
-						array_push($loggedInUsers, $newUser);
-						update_option('cwp_top_logged_in_users', $loggedInUsers);
-					}
-				}
-					header("Location: " . SETTINGSURL);
-			}
-
-
 		}
 
-		// Used to display the login buttons
-		public function displayLoginButton($social_network)
+		// Used to display the twitter login button
+		public function displayTwitterLoginButton()
 		{
 			// display the twitter login button
-			if($this->userIsLoggedIn($social_network)) {
-				$this->setAlloAuthSettings($social_network);
+			if($this->userIsLoggedIn()) {
+				$this->setAlloAuthSettings();
 				return true;
 			} else {
 				return false;
 			}
 		}
 
-		public function reAuthorize() {
-			$top_session_state = uniqid('', true);
-			update_option('top_reauthorize',time());
-			$loggedInUsers = get_option('cwp_top_logged_in_users');
-			if(empty($loggedInUsers)) { $loggedInUsers = array(); }
-			$lk = 0;
-			$fb = 0;
-
-			foreach ($loggedInUsers as $key=>$user) {
-				if ($user['service'] === "linkedin"&&$lk===0) {
-					$lk++;
-					 $url = 'https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id='.get_option("cwp_top_lk_app_id").'&scope=rw_nus&state='.$top_session_state.'&redirect_uri='.SETTINGSURL;
-			        header("Location: " . $url);
-			        
-			        update_option('top_lk_session_state',$top_session_state);
-
-				}
-
-				if ($user['service'] === "facebook"&&$fb===0) {
-					$top_session_state_fb = md5(uniqid(rand(), TRUE));
-			        $fb++;
-			        update_option('top_fb_session_state',$top_session_state_fb);
-			        $dialog_url = "https://www.facebook.com/".TOP_FB_API_VERSION."/dialog/oauth?client_id="
-				. get_option("cwp_top_app_id") . "&redirect_uri=" . SETTINGSURL . "&state="
-						. $top_session_state_fb . "&scope=publish_stream,publish_actions,manage_pages";
-
-					header("Location: " . $dialog_url);
-				}
-			}
-	        
-		}
-
-		// Adds pages
-		public function displayPages()
+		// Adds new twitter account
+		public function addNewTwitterAccount()
 		{
-			$social_network = $_POST['social_network'];
-			$access_token = get_option('top_fb_token');
+			$this->oAuthCallback = $_POST['currentURL'];
+			$twitter = new TwitterOAuth($this->consumer, $this->consumerSecret);
+			$requestToken = $twitter->getRequestToken($this->oAuthCallback);
 
-			switch ($social_network) {
-			    case 'facebook':
-			    	$result1="";$pagearray1="";
-					$pp=wp_remote_get("https://graph.facebook.com/".TOP_FB_API_VERSION."/me/accounts?access_token=$access_token&limit=100&offset=0");
-					//print_r($pp);
-					$me=wp_remote_get("https://graph.facebook.com/".TOP_FB_API_VERSION."/me/?access_token=$access_token&limit=100&offset=0");
-					if(is_array($pp))
-					{
-						$result1=$pp['body'];
-						$result2 = $me['body'];
-						$pagearray2 = json_decode($result2);
-						//print_r($pagearray2);
-						$pagearray1 = json_decode($result1);
-						$profile['name'] = $pagearray2->first_name.' '.$pagearray2->last_name;
-						$profile['id'] = $pagearray2->id;
-						$profile['category'] ='profile';
-						$profile['access_token'] = $access_token;
-						if(is_array($pagearray1->data))
-							array_unshift($pagearray1->data, $profile);
-							//$pagearray1->data[count($pagearray1->data)] = $profile;
-						$result1 = json_encode($pagearray1);
-						//print_r($results1);
-						echo $result1;
+			update_option('cwp_top_oauth_token', $requestToken['oauth_token']);
+			update_option('cwp_top_oauth_token_secret', $requestToken['oauth_token_secret']);
 
-					}
+
+
+			switch ($twitter->http_code) {
+				case 200:
+					$url = $twitter->getAuthorizeURL($requestToken['oauth_token']);
+					echo $url;
+					break;
+				
+				default:
+					return __("Could not connect to Twitter!", CWP_TEXTDOMAIN);
 					break;
 			}
 			die(); // Required
 		}
 
-		// Adds pages
-		public function addPages()
-		{
-			$social_network = $_POST['social_network'];
-			$access_token = $_POST['page_token'];
-			$page_id= $_POST['page_id'];
-
-			switch ($social_network) {
-			    case 'facebook':
-			    	$user_details['profile_image_url'] = $_POST['picture_url'];
-			    	$user_details['name'] = $_POST['page_name'];
-			    	$user_details = (object) $user_details;
-			    	$newUser = array(
-						'user_id'				=> $page_id,
-						'oauth_token'			=> $access_token,
-						'oauth_token_secret'	=> "",
-						'oauth_user_details'	=> $user_details,
-						'service'				=> 'facebook'
-					);
-
-					$loggedInUsers = get_option('cwp_top_logged_in_users');
-					if(empty($loggedInUsers)) { $loggedInUsers = array(); }
-
-					foreach ($loggedInUsers as $key=>$user) {
-						if ($user['user_id'] == $page_id) 
-							unset($loggedInUsers[$key]);
-					}
-
-					if(in_array($newUser, $loggedInUsers)) {
-						echo "You already added that user! no can do !";
-					} else { 
-						array_push($loggedInUsers, $newUser);
-						update_option('cwp_top_logged_in_users', $loggedInUsers);
-						echo SETTINGSURL;
-					}
-
-					
-					break;
-			}
-			die(); // Required
-		}
-
-		// Adds new account
-		public function addNewAccount()
-		{
-			global $cwp_top_settings;
-			$social_network = $_POST['social_network'];
-			switch ($social_network) {
-			    case 'twitter':
-			        $this->oAuthCallback = $_POST['currentURL'];
-					$twitter = new TwitterOAuth($this->consumer, $this->consumerSecret);
-					$requestToken = $twitter->getRequestToken($this->oAuthCallback);
-
-					update_option('cwp_top_oauth_token', $requestToken['oauth_token']);
-					update_option('cwp_top_oauth_token_secret', $requestToken['oauth_token_secret']);
-
-					switch ($twitter->http_code) {
-						case 200:
-							$url = $twitter->getAuthorizeURL($requestToken['oauth_token']);
-							echo $url;
-							break;
-						
-						default:
-							return __("Could not connect to Twitter!", CWP_TEXTDOMAIN);
-							break;
-					}
-			        break;
-			    case 'facebook':
-			    	if (isset($_POST['app_id'])){
-				    	update_option('cwp_top_app_id', $_POST['app_id']);
-						update_option('cwp_top_app_secret', $_POST['app_secret']);
-					
-				        $top_session_state = md5(uniqid(rand(), TRUE));
-				        
-				        update_option('top_fb_session_state',$top_session_state);
-				        $dialog_url = "https://www.facebook.com/".TOP_FB_API_VERSION."/dialog/oauth?client_id="
-					. $_POST['app_id'] . "&redirect_uri=" . SETTINGSURL . "&state="
-							. $top_session_state . "&scope=publish_stream,publish_actions,manage_pages";
-						echo $dialog_url;
-					}
-			        break;
-			    case 'linkedin':
-			    	$top_session_state = uniqid('', true);
-
-	              	$url = 'https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id='.$_POST["app_id"].'&scope=rw_nus&state='.$top_session_state.'&redirect_uri='.SETTINGSURL;
-
-	              	update_option('top_lk_session_state',$top_session_state);
-					if (isset($_POST['app_id'])){ 
-						update_option('cwp_top_lk_app_id', $_POST['app_id']);
-						update_option('cwp_top_lk_app_secret', $_POST['app_secret']);
-					}
-					if (function_exists('topProAddNewAccount')) {
-						echo $url;	    	
-					}
-					else{
-						update_option('cwp_topnew_notice',"You need to <a target='_blank' href='http://themeisle.com/plugins/tweet-old-post-pro/?utm_source=topplusacc&utm_medium=announce&utm_campaign=top&upgrade=true'>upgrade to the PRO version</a> in order to add a Linkedin account, fellow pirate!");
-						echo "You need to <a target='_blank' href='http://themeisle.com/plugins/tweet-old-post-pro/?utm_source=topplusacc&utm_medium=announce&utm_campaign=top&upgrade=true'>upgrade to the PRO version</a> in order to add more accounts, fellow pirate!";
-
-					}
-					
-					break;
-
-					
-			    }
-			
-
-
-
-
-			die(); // Required
-		}
-
-		// Adds more than one account
-		public function addNewAccountPro()
+				// Adds new twitter account
+		public function addNewTwitterAccountPro()
 		{
 			if (function_exists('topProAddNewAccount')) {
-				topProAddNewAccount($_POST['social_network']);
+				topProAddNewAccount();
 			}
 			else{
-				update_option('cwp_topnew_notice',"You need to <a target='_blank' href='http://themeisle.com/plugins/tweet-old-post-pro/?utm_source=topplusacc&utm_medium=announce&utm_campaign=top&upgrade=true'>upgrade to the PRO version</a> in order to add more accounts, fellow pirate!");
-				echo "You need to <a target='_blank' href='http://themeisle.com/plugins/tweet-old-post-pro/?utm_source=topplusacc&utm_medium=announce&utm_campaign=top&upgrade=true'>upgrade to the PRO version</a> in order to add more accounts, fellow pirate!";
+				_e("You need to <a target='_blank' href='http://themeisle.com/plugins/tweet-old-post-pro/?utm_source=topplusacc&utm_medium=announce&utm_campaign=top&upgrade=true'>upgrade to the PRO version</a> in order to add more accounts, fellow pirate!", CWP_TEXTDOMAIN);
 
 			}
 			die(); // Required
@@ -1261,7 +821,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		}
 
 		// Clears all Twitter user credentials.
-		public function logOutUser()
+		public function logOutTwitterUser()
 		{
 			$userID = $_POST['user_id'];
 
@@ -1356,13 +916,12 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 				'top_opt_post_with_image'			=> 'off',
 				'top_opt_bitly_user'				=>'',
 				'top_opt_bitly_key'					=>'',
-				'top_opt_post_type_custom_field'	=> '',
+				'top_opt_tweet_type_custom_field'	=> '',
 				'top_opt_add_text'					=> '',
 				'top_opt_add_text_at'				=> 'beginning',
-				'top_opt_include_link'				=> 'true',
+				'top_opt_include_link'				=> 'false',
 				'top_opt_custom_url_option'			=> 'off',
 				'top_opt_use_url_shortner'			=> 'off',
-				'top_opt_ga_tracking'				=> 'on',
 				'top_opt_url_shortner'				=> 'is.gd',
 				'top_opt_custom_hashtag_option'		=> 'nohashtag',
 				'top_opt_hashtags'			=> '',
@@ -1380,8 +939,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 				'cwp_topnew_notice'					=> '',
 				'top_opt_excluded_post'				=> '',
 				'top_opt_tweet-multiple-times'		=> 'off',
-				'cwp_top_logged_in_users'			=> '',
-				'top_fb_token'						=>''
+				'cwp_top_logged_in_users'			=> ''
 			);
 
 			foreach ($defaultOptions as $option => $defaultValue) {
@@ -1426,7 +984,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 				case 'checkbox':
 					if ($field['option']=='top_opt_post_with_image'&& !function_exists('topProImage')) {
 						$disabled = "disabled='disabled'";
-						$pro = "This is only available in the <a href='http://themeisle.com/plugins/tweet-old-post-pro/?utm_source=imagepro&utm_medium=link&utm_campaign=top&upgrade=true' target='_blank'>PRO version</a>";
+						$pro = "This is only available in the PRO option";
 					}
 					print "<input id='".$field['option']."' type='checkbox' ".$disabled." name='".$field['option']."'";
 					if($field['option_value'] == 'on') { echo "checked=checked"; }
@@ -1496,19 +1054,6 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		    die();
 		}
 
-		function top_plugin_action_links($links, $file) {
-
-		    if ($file == PLUGINBASENAME) {
-		        // The "page" query string value must be equal to the slug
-		        // of the Settings admin page we defined earlier, which in
-		        // this case equals "myplugin-settings".
-		        $settings_link = '<a href="' . get_bloginfo('wpurl') . '/wp-admin/admin.php?page=TweetOldPost">Settings</a>';
-		        array_unshift($links, $settings_link);
-		    }
-
-		    return $links;
-		}
-
 		public function fixCron() {
 			update_option('cwp_topnew_notice','');
 
@@ -1518,7 +1063,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 				//echo 1;
 
-				return 0;
+				die;
 
 			}
 			else {
@@ -1562,24 +1107,16 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			add_action('wp_ajax_reset_options', array($this, 'resetAllOptions'));
 
 			// Add new twitter account ajax action
-			add_action('wp_ajax_nopriv_add_new_account', array($this, 'addNewAccount'));
-			add_action('wp_ajax_add_new_account', array($this, 'addNewAccount'));
-
-			// Display managed pages ajax action
-			add_action('wp_ajax_nopriv_display_pages', array($this, 'displayPages'));
-			add_action('wp_ajax_display_pages', array($this, 'displayPages'));
-
-			// Add new account managed pages ajax action
-			add_action('wp_ajax_nopriv_add_pages', array($this, 'addPages'));
-			add_action('wp_ajax_add_pages', array($this, 'addPages'));
+			add_action('wp_ajax_nopriv_add_new_twitter_account', array($this, 'addNewTwitterAccount'));
+			add_action('wp_ajax_add_new_twitter_account', array($this, 'addNewTwitterAccount'));
 
 			// Add more than one twitter account ajax action
-			add_action('wp_ajax_nopriv_add_new_account_pro', array($this, 'addNewAccountPro'));
-			add_action('wp_ajax_add_new_account_pro', array($this, 'addNewAccountPro'));
+			add_action('wp_ajax_nopriv_add_new_twitter_account_pro', array($this, 'addNewTwitterAccountPro'));
+			add_action('wp_ajax_add_new_twitter_account_pro', array($this, 'addNewTwitterAccountPro'));
 
 			// Log Out Twitter user ajax action
-			add_action('wp_ajax_nopriv_log_out_user', array($this, 'logOutUser'));
-			add_action('wp_ajax_log_out_user', array($this, 'logOutUser'));
+			add_action('wp_ajax_nopriv_log_out_twitter_user', array($this, 'logOutTwitterUser'));
+			add_action('wp_ajax_log_out_twitter_user', array($this, 'logOutTwitterUser'));
 
 			// Tweet Old Post ajax action.
 			add_action('wp_ajax_nopriv_tweet_old_post_action', array($this, 'startTweetOldPost'));
@@ -1607,16 +1144,15 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 			//add_filter('plugin_action_links', array($this,'top_plugin_action_links'), 10, 2);
 
-			//add_action('admin_notices', array($this,'top_admin_notice'));
+			add_action('admin_notices', array($this,'top_admin_notice'));
 
 			add_action('admin_init', array($this,'top_nag_ignore'));
 
 			// Filter to add new custom schedule based on user input
 			add_filter('cron_schedules', array($this, 'createCustomSchedule'));
 
-			add_filter('plugin_action_links',array($this,'top_plugin_action_links'), 10, 2);
-
 			add_action('cwp_top_tweet_cron', array($this, 'tweetOldPost'));
+
 		}
 
 		public function loadAllScriptsAndStyles()
@@ -1660,7 +1196,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 				$cap = 1;
 			else
 				$cap='manage_options';
-			add_menu_page($cwp_top_settings['name'], $cwp_top_settings['name'], $cap, $cwp_top_settings['slug'], array($this, 'loadMainView'), '','99.87514');
+			add_menu_page($cwp_top_settings['name'], $cwp_top_settings['name'], $cap, $cwp_top_settings['slug'], array($this, 'loadMainView'),'dashicons-twitter','99.87514');
 			add_submenu_page($cwp_top_settings['slug'], __('Exclude Posts',CWP_TEXTDOMAIN), __('Exclude Posts',CWP_TEXTDOMAIN), 'manage_options', __('ExcludePosts',CWP_TEXTDOMAIN), 'top_exclude');
 		}
 
@@ -1741,17 +1277,9 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		    	$shortURL = wp_get_shortlink($id);
 		    }
 
-		    if($shortURL != ' 400 '&& $shortURL!="500" && $shortURL!="0") {
+		    if($shortURL != ' 400 ') {
 		    	return $shortURL;
 		    }
-		    else
-		    	update_option('cwp_topnew_notice','Looks like is an error with your url shortner');
-		}
-
-		public function rop_load_dashboard_icon()
-		{
-			wp_register_style( 'rop_custom_dashboard_icon', CUSTOMDASHBOARDICON, false, '1.0.0' );
-			wp_enqueue_style( 'rop_custom_dashboard_icon' );
 		}
 
 	}

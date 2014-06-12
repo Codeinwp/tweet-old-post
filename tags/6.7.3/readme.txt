@@ -196,10 +196,6 @@ http://themeisle.com/plugins/tweet-old-post-lite/
 
 == Changelog ==
 
-**New in v6.7.5**
-
-Fixed some debug messages
-
 **New in v6.7.3**
 
 Added settings link, fixed tweet cutting and added cron debug messages
