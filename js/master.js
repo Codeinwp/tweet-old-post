@@ -100,55 +100,7 @@ jQuery(document).ready(function(){
 		return false; 
 	}
 
-	jQuery("body").on('click',function(e){
-		
-		
-		if (jQuery(e.target).parent().hasClass("cwp_preview_page")) {
-			e.preventDefault();
-			//console.log(e);
-			
-			startAjaxIntro();
-			var service = jQuery(e.target).parent().attr('service');
-			var access_token = jQuery(e.target).parent().attr('pagetoken');
-			var page_id = jQuery(e.target).parent().attr('pageid');
-			
-			jQuery.ajax({
-				type: "POST", 
-				url: cwp_top_ajaxload.ajaxurl,
-				data: {
-					action: "add_pages",
-					currentURL: jQuery("#cwp_top_currenturl").val(),
-					social_network: service,
-					page_token:access_token,
-					page_id:page_id,
-					picture_url: jQuery(e.target).parent().children().children('img').attr('src'),
-					page_name: jQuery(e.target).parent().children('.page_name').text()
-				},
-				success: function(response) {
-					switch (service) {
-						
-						case 'facebook':						
-						    endAjaxIntro();
-						    jQuery(".cwp_top_wrapper .cwp_user_pages").fadeOut().removeClass("active");
-						    window.location.href = response;
-						    break;
 
-						case 'linkedin':						
-						    endAjaxIntro();
-						    jQuery(".cwp_top_wrapper .cwp_user_pages").fadeOut().removeClass("active");
-						    window.location.href = response;
-						    break;
-					}
-					
-				},
-				error: function(MLHttpRequest, textStatus, errorThrown) {
-					console.log("There was an error: " + errorThrown);
-				}
-			});
-			return false;
-		}
-			
-		});
 
 	jQuery("#cwp_top_form button.top_authorize").click(function(e){
 		e.preventDefault();
@@ -283,35 +235,42 @@ jQuery(document).ready(function(){
 					another:another
 				},
 				success: function(response) {
-					switch (service) {
-						case 'twitter': 
-							window.location.href = response;
-							break;
-						case 'facebook':
-							if (another===0) {
 
-							    var elem = jQuery(".cwp_top_wrapper .cwp_fbapp_preview")
+					if (response.indexOf("upgrade to the PRO")===-1) {
+						switch (service) {
+							case 'twitter': 
+								window.location.href = response;
+								break;
+							case 'facebook':
+								if (another===0) {
+
+								    var elem = jQuery(".cwp_top_wrapper .cwp_fbapp_preview")
+									elem.fadeIn().addClass("active");
+									
+				   					var scrollhere = elem.offset().top+(jQuery(window).height()+elem.height())/2;
+									jQuery('html, body').scrollTop(scrollhere);
+								} else {
+									addFacebook();
+								}
+							    endAjaxIntro();
+
+							    break;
+							case 'linkedin':
+								var elem = jQuery(".cwp_top_wrapper .cwp_lkapp_preview")
 								elem.fadeIn().addClass("active");
-								
-			   					var scrollhere = elem.offset().top+(jQuery(window).height()+elem.height())/2;
+									
+				   				var scrollhere = elem.offset().top+(jQuery(window).height()+elem.height())/2;
 								jQuery('html, body').scrollTop(scrollhere);
-							} else {
-								addFacebook();
-							}
-						    endAjaxIntro();
+							   // html = "<input type='text' placeholder='App key'/>";
+							    //jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet").html(html);
+							    endAjaxIntro();
+							    break;
+						}
+				}else {
+					jQuery(".cwp_top_status .inactive").html(response);
+					  endAjaxIntro();
+				}
 
-						    break;
-						case 'linkedin':
-							var elem = jQuery(".cwp_top_wrapper .cwp_lkapp_preview")
-							elem.fadeIn().addClass("active");
-								
-			   				var scrollhere = elem.offset().top+(jQuery(window).height()+elem.height())/2;
-							jQuery('html, body').scrollTop(scrollhere);
-						   // html = "<input type='text' placeholder='App key'/>";
-						    //jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet").html(html);
-						    endAjaxIntro();
-						    break;
-					}
 					
 				},
 				error: function(MLHttpRequest, textStatus, errorThrown) {
@@ -464,8 +423,14 @@ jQuery(document).ready(function(){
 		//location.reload();
 	});
 
- 	jQuery(".cwp_sample_tweet_preview_inner button.top_close_popup").click(function(e){
+ 	jQuery(".cwp_sample_tweet_preview_inner button.top_close_popup").on("click",function(e){
  		jQuery(this).parent().parent().fadeOut().removeClass("active");
+ 	});	
+
+ 	jQuery(".cwp_user_pages_inner button.top_close_popup").on("click",function(e){
+ 		e.preventDefault();
+ 		jQuery(this).parent().parent().parent().fadeOut().removeClass("active");
+ 		return false;
  	});	
 
  	jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner button.tweetitnow").click(function(e){
@@ -514,6 +479,56 @@ jQuery(document).ready(function(){
 		//jQuery(this).find("input[type=text], textarea").val("");
 		//jQuery(this).find("input[type=radio], input[type=checkbox]").checked = false;
 	}
+
+		jQuery("body").on('click',function(e){
+		
+		
+		if (jQuery(e.target).parent().hasClass("cwp_preview_page")) {
+			e.preventDefault();
+			//console.log(e);
+			
+			startAjaxIntro();
+			var service = jQuery(e.target).parent().attr('service');
+			var access_token = jQuery(e.target).parent().attr('pagetoken');
+			var page_id = jQuery(e.target).parent().attr('pageid');
+			
+			jQuery.ajax({
+				type: "POST", 
+				url: cwp_top_ajaxload.ajaxurl,
+				data: {
+					action: "add_pages",
+					currentURL: jQuery("#cwp_top_currenturl").val(),
+					social_network: service,
+					page_token:access_token,
+					page_id:page_id,
+					picture_url: jQuery(e.target).parent().children().children('img').attr('src'),
+					page_name: jQuery(e.target).parent().children('.page_name').text()
+				},
+				success: function(response) {
+					switch (service) {
+						
+						case 'facebook':						
+						    endAjaxIntro();
+						    jQuery(".cwp_top_wrapper .cwp_user_pages").fadeOut().removeClass("active");
+						    window.location.href = response;
+						    break;
+
+						case 'linkedin':						
+						    endAjaxIntro();
+						    jQuery(".cwp_top_wrapper .cwp_user_pages").fadeOut().removeClass("active");
+						    window.location.href = response;
+						    break;
+					}
+					
+				},
+				error: function(MLHttpRequest, textStatus, errorThrown) {
+					console.log("There was an error: " + errorThrown);
+				}
+			});
+			return false;
+		}
+			
+		});
 
 	// Select all function
 	jQuery("button.select-all").click(function(e){
@@ -669,8 +684,5 @@ jQuery(document).ready(function(){
 			jQuery("#top_opt_post_type_value").parent().parent().slideUp("fast");
 		}
 	});
-
-
-
 	
 });	

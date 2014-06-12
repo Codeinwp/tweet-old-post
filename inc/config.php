@@ -366,6 +366,7 @@ function top_current_page(){
 	}
 	return $pageURL;
 }
+
 function top_settings_url(){
 	$pageURL = admin_url('admin.php?page=TweetOldPost');
 	return str_replace(":80","",$pageURL);

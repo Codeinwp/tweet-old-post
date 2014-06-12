@@ -4,7 +4,6 @@ require_once(PLUGINPATH."/inc/config.php");
 // twitteroauth class 
 require_once(PLUGINPATH."/inc/oAuth/twitteroauth.php");
 
-
 if (!class_exists('CWP_TOP_Core')) {
 	class CWP_TOP_Core {
 
@@ -282,13 +281,21 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 		}
 
+		public function findInString($where,$what) {
+			if (is_string($notice)) {
+				return false;
+			}
+			else
+				return strpos($where,$what);
+		}
+
 		public function getNotice() {
 			$notice = get_option('cwp_topnew_notice');
 				
 			//$notice = strpos($notice,'UPDAT');
 			if (is_object($notice) && $notice->errors[0]->message)
 				echo "Error for your last tweet was :'".$notice->errors[0]->message."'";
-			else if ( $notice !== "OK" && strpos($notice,'UPDAT')===false && $notice!=="")
+			else if ( $notice !== "OK" && !is_object($notice) && $this->findInString($notice,'UPDAT')===false && $notice!=="")
 				echo "Error for your last post was :'".$notice."'";
 			else
 				if (is_object($notice) && $notice->text || $notice=="OK" || strpos($notice,'UPDAT')!==false) {
@@ -1197,7 +1204,14 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 						update_option('cwp_top_lk_app_id', $_POST['app_id']);
 						update_option('cwp_top_lk_app_secret', $_POST['app_secret']);
 					}
-					echo $url;	    	
+					if (function_exists('topProAddNewAccount')) {
+						echo $url;	    	
+					}
+					else{
+						update_option('cwp_topnew_notice',"You need to <a target='_blank' href='http://themeisle.com/plugins/tweet-old-post-pro/?utm_source=topplusacc&utm_medium=announce&utm_campaign=top&upgrade=true'>upgrade to the PRO version</a> in order to add a Linkedin account, fellow pirate!");
+						echo "You need to <a target='_blank' href='http://themeisle.com/plugins/tweet-old-post-pro/?utm_source=topplusacc&utm_medium=announce&utm_campaign=top&upgrade=true'>upgrade to the PRO version</a> in order to add more accounts, fellow pirate!";
+
+					}
 					
 					break;
 
@@ -1603,7 +1617,6 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			add_filter('plugin_action_links',array($this,'top_plugin_action_links'), 10, 2);
 
 			add_action('cwp_top_tweet_cron', array($this, 'tweetOldPost'));
-
 		}
 
 		public function loadAllScriptsAndStyles()
@@ -1647,7 +1660,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 				$cap = 1;
 			else
 				$cap='manage_options';
-			add_menu_page($cwp_top_settings['name'], $cwp_top_settings['name'], $cap, $cwp_top_settings['slug'], array($this, 'loadMainView'),'dashicons-twitter','99.87514');
+			add_menu_page($cwp_top_settings['name'], $cwp_top_settings['name'], $cap, $cwp_top_settings['slug'], array($this, 'loadMainView'), '','99.87514');
 			add_submenu_page($cwp_top_settings['slug'], __('Exclude Posts',CWP_TEXTDOMAIN), __('Exclude Posts',CWP_TEXTDOMAIN), 'manage_options', __('ExcludePosts',CWP_TEXTDOMAIN), 'top_exclude');
 		}
 
@@ -1733,6 +1746,12 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		    }
 		    else
 		    	update_option('cwp_topnew_notice','Looks like is an error with your url shortner');
+		}
+
+		public function rop_load_dashboard_icon()
+		{
+			wp_register_style( 'rop_custom_dashboard_icon', CUSTOMDASHBOARDICON, false, '1.0.0' );
+			wp_enqueue_style( 'rop_custom_dashboard_icon' );
 		}
 
 	}
