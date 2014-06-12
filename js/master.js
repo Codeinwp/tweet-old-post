@@ -101,11 +101,11 @@ jQuery(document).ready(function(){
 	}
 
 	jQuery("body").on('click',function(e){
-		e.preventDefault();
+		
 		
 		if (jQuery(e.target).parent().hasClass("cwp_preview_page")) {
-			
-			console.log(e);
+			e.preventDefault();
+			//console.log(e);
 			
 			startAjaxIntro();
 			var service = jQuery(e.target).parent().attr('service');
@@ -132,6 +132,12 @@ jQuery(document).ready(function(){
 						    jQuery(".cwp_top_wrapper .cwp_user_pages").fadeOut().removeClass("active");
 						    window.location.href = response;
 						    break;
+
+						case 'linkedin':						
+						    endAjaxIntro();
+						    jQuery(".cwp_top_wrapper .cwp_user_pages").fadeOut().removeClass("active");
+						    window.location.href = response;
+						    break;
 					}
 					
 				},
@@ -139,22 +145,29 @@ jQuery(document).ready(function(){
 					console.log("There was an error: " + errorThrown);
 				}
 			});
-		}
 			return false;
+		}
+			
 		});
 
 	jQuery("#cwp_top_form button.top_authorize").click(function(e){
 		e.preventDefault();
 		startAjaxIntro();
-		app_id = jQuery("#top_opt_app_id").val();
-		app_secret = jQuery("#top_opt_app_secret").val();
+		if (jQuery(this).attr("service")=='facebook') {
+			app_id = jQuery("#top_opt_app_id").val();
+			app_secret = jQuery("#top_opt_app_secret").val();
+		}
+		else {
+			app_id = jQuery("#top_opt_app_id_lk").val();
+			app_secret = jQuery("#top_opt_app_secret_lk").val();
+		}
 		jQuery.ajax({
 			type: "POST", 
 			url: cwp_top_ajaxload.ajaxurl,
 			data: {
 				action: "add_new_account",
 				currentURL: jQuery("#cwp_top_currenturl").val(),
-				social_network: 'facebook',
+				social_network: jQuery(this).attr("service"),
 				app_id: app_id,
 				app_secret: app_secret
 			},
@@ -168,90 +181,106 @@ jQuery(document).ready(function(){
 
 
 		
-	
-
-	// Add New Twitter Account
-	jQuery("#cwp_top_form button.addaccount").click(function(e){
-		e.preventDefault();
-		var service = jQuery(this).attr('service');
-		if (jQuery(this).text()!=="+") {
-			startAjaxIntro();
-			jQuery.ajax({
-				type: "POST", 
-				url: cwp_top_ajaxload.ajaxurl,
-				data: {
-					action: "display_pages",
-					currentURL: jQuery("#cwp_top_currenturl").val(),
-					social_network: service
-				},
-				success: function(response) {
-					switch (service) {
+	function addFacebook(){
+		var service = "facebook";
+		
+		startAjaxIntro();
+		jQuery.ajax({
+			type: "POST", 
+			url: cwp_top_ajaxload.ajaxurl,
+			data: {
+				action: "display_pages",
+				currentURL: jQuery("#cwp_top_currenturl").val(),
+				social_network: service
+			},
+			success: function(response) {
+				switch (service) {
+					
+					case 'facebook':
+						var elem = jQuery(".cwp_top_wrapper .cwp_user_pages");
+						elem.fadeIn().addClass("active");
 						
-						case 'facebook':
-							jQuery(".cwp_top_wrapper .cwp_user_pages").fadeIn().addClass("active");
-							jQuery('html, body').animate({
-						        scrollTop: jQuery(".cwp_top_wrapper .cwp_user_pages").offset().top+400
-						    }, 2000);
-						    response = JSON.parse(response);
-							html='';
-							data = response.data;
-							for (i = 0; i < data.length; i++) {
+	   					var scrollhere = elem.offset().top+(jQuery(window).height()+elem.height())/2;
+						jQuery('html, body').scrollTop(scrollhere);
+					    response = JSON.parse(response);
+						html='';
+						data = response.data;
+
+						for (i = 0; i < data.length; i++) {
+						//	if (jQuery(".remove_user a[service=facebook").attr("id")!==data[i].id) {
 								html+="<a href='#' class='cwp_preview_page' service='"+service+"' pagetoken='"+data[i].access_token+"' pageid='"+data[i].id+"'>";
 								profile_image = 'https://graph.facebook.com/'+data[i].id+'/picture';
 								name = data[i].name;
 								category = data[i].category.substr(0,9);
 								html+="<div class='page_avatar'><img src='"+profile_image+"'/></div><div class='page_name'>"+name+"</div><div class='page_category'>"+category+"</div></a>";
-							
-								}
-							jQuery(".cwp_top_wrapper .cwp_user_pages .cwp_user_pages_inner ").html(html);	
-						    endAjaxIntro();
-						    break;
-					}
-					
-				},
-				error: function(MLHttpRequest, textStatus, errorThrown) {
-					console.log("There was an error: " + errorThrown);
+							//}
+							}
+							html+='<button class="top_close_popup">Close preview</button>';
+						jQuery(".cwp_top_wrapper .cwp_user_pages .cwp_user_pages_inner ").html(html);	
+					    endAjaxIntro();
+					    break;
+
+					case 'linkedin':
+						var elem = jQuery(".cwp_top_wrapper .cwp_user_pages");
+						elem.fadeIn().addClass("active");
+						
+	   					var scrollhere = elem.offset().top+(jQuery(window).height()+elem.height())/2;
+						jQuery('html, body').scrollTop(scrollhere);
+					    response = JSON.parse(response);
+						html='';
+						data = response.data;
+						for (i = 0; i < data.length; i++) {
+							html+="<a href='#' class='cwp_preview_page' service='"+service+"' pagetoken='"+data[i].access_token+"' pageid='"+data[i].id+"'>";
+							profile_image = 'https://graph.facebook.com/'+data[i].id+'/picture';
+							name = data[i].name;
+							category = data[i].category.substr(0,9);
+							html+="<div class='page_avatar'><img src='"+profile_image+"'/></div><div class='page_name'>"+name+"</div><div class='page_category'>"+category+"</div></a>";
+						
+							}
+						jQuery(".cwp_top_wrapper .cwp_user_pages .cwp_user_pages_inner ").html(html);	
+					    endAjaxIntro();
+					    break;
 				}
-			});
-		}
-		else
-			jQuery.ajax({
-				type: "POST", 
-				url: cwp_top_ajaxload.ajaxurl,
-				data: {
-					action: "add_new_account_pro",
-					currentURL: jQuery("#cwp_top_currenturl").val(),
-					social_network: jQuery(this).attr('service')
-				},
-				success: function(response) {
-					if (response.search("api.twitter.com")==-1)
-						jQuery(".cwp_top_status .inactive").html(response);
-					else
-						window.location.href = response;
-					
-				},
-				error: function(MLHttpRequest, textStatus, errorThrown) {
-					console.log("There was an error: " + errorThrown);
-				}
-			});
+				
+			},
+			error: function(MLHttpRequest, textStatus, errorThrown) {
+				console.log("There was an error: " + errorThrown);
+			}
+		});
+	
 
 
-		return false;
-	});
+	return false;
+	}
+
+	// Add New Account
+	if (location.hash=="#_=_"|| location.hash=="#fbadd") {
+		addFacebook();
+		
+	};
 
 	// Add New Twitter Account
 	jQuery("#cwp_top_form button.login").click(function(e){
 		e.preventDefault();
 		var service = jQuery(this).attr('service');
-		if (jQuery(this).text()!=="+") {
+		var action = "add_new_account";
+		var another = 0;
+		if (jQuery(this).text()=="+") {
+			action = "add_new_account_pro";
+			another = 1;
+		}
+		if (jQuery(this).text()==" Add Account ") {
+			another = 1;
+		}
 			startAjaxIntro();
 			jQuery.ajax({
 				type: "POST", 
 				url: cwp_top_ajaxload.ajaxurl,
 				data: {
-					action: "add_new_account",
+					action: action,
 					currentURL: jQuery("#cwp_top_currenturl").val(),
-					social_network: service
+					social_network: service,
+					another:another
 				},
 				success: function(response) {
 					switch (service) {
@@ -259,10 +288,25 @@ jQuery(document).ready(function(){
 							window.location.href = response;
 							break;
 						case 'facebook':
-							jQuery(".cwp_top_wrapper .cwp_fbapp_preview").fadeIn().addClass("active");
-							jQuery('html, body').animate({
-						        scrollTop: jQuery(".cwp_top_wrapper .cwp_fbapp_preview").offset().top+400
-						    }, 2000);
+							if (another===0) {
+
+							    var elem = jQuery(".cwp_top_wrapper .cwp_fbapp_preview")
+								elem.fadeIn().addClass("active");
+								
+			   					var scrollhere = elem.offset().top+(jQuery(window).height()+elem.height())/2;
+								jQuery('html, body').scrollTop(scrollhere);
+							} else {
+								addFacebook();
+							}
+						    endAjaxIntro();
+
+						    break;
+						case 'linkedin':
+							var elem = jQuery(".cwp_top_wrapper .cwp_lkapp_preview")
+							elem.fadeIn().addClass("active");
+								
+			   				var scrollhere = elem.offset().top+(jQuery(window).height()+elem.height())/2;
+							jQuery('html, body').scrollTop(scrollhere);
 						   // html = "<input type='text' placeholder='App key'/>";
 						    //jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet").html(html);
 						    endAjaxIntro();
@@ -274,28 +318,6 @@ jQuery(document).ready(function(){
 					console.log("There was an error: " + errorThrown);
 				}
 			});
-		}
-		else
-			jQuery.ajax({
-				type: "POST", 
-				url: cwp_top_ajaxload.ajaxurl,
-				data: {
-					action: "add_new_account_pro",
-					currentURL: jQuery("#cwp_top_currenturl").val(),
-					social_network: jQuery(this).attr('service')
-				},
-				success: function(response) {
-					if (response.search("api.twitter.com")==-1)
-						jQuery(".cwp_top_status .inactive").html(response);
-					else
-						window.location.href = response;
-					
-				},
-				error: function(MLHttpRequest, textStatus, errorThrown) {
-					console.log("There was an error: " + errorThrown);
-				}
-			});
-
 
 		return false;
 	});
@@ -311,7 +333,7 @@ jQuery(document).ready(function(){
 			type: "POST", 
 			url: cwp_top_ajaxload.ajaxurl,
 			data: {
-				action: "log_out_twitter_user",
+				action: "log_out_user",
 				user_id: userID
 			},
 			success: function(response) {
@@ -396,9 +418,13 @@ jQuery(document).ready(function(){
 				if(response !== '') {
 
 					jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview").fadeIn().addClass("active");
-					jQuery('html, body').animate({
-				        scrollTop: jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview").offset().top+300
-				    }, 2000);
+
+					//jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview").css("top", ( jQuery(window).height() - this.height() ) / 2+jQuery(window).scrollTop() + "px");
+    				//jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview").css("left", ( jQuery(window).width() - this.width() ) / 2+jQuery(window).scrollLeft() + "px");
+   					var elem = jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview");
+   					var scrollhere = elem.offset().top+(jQuery(window).height()+elem.height())/2;
+					jQuery('html, body').scrollTop(scrollhere);
+				  
 					jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet").html(response);
 				}
 				endAjaxIntro();
@@ -438,7 +464,7 @@ jQuery(document).ready(function(){
 		//location.reload();
 	});
 
- 	jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner button.top_close_popup").click(function(e){
+ 	jQuery(".cwp_sample_tweet_preview_inner button.top_close_popup").click(function(e){
  		jQuery(this).parent().parent().fadeOut().removeClass("active");
  	});	
 
@@ -504,7 +530,7 @@ jQuery(document).ready(function(){
 
 	function hideSpecifiedFieldsets()
 	{
-		jQuery("#top_opt_tweet_type_custom_field").parent().parent().hide();
+		jQuery("#top_opt_post_type_custom_field").parent().parent().hide();
 		jQuery("#top_opt_custom_url_option").parent().parent().hide();
 		jQuery("#top_opt_custom_url_field").parent().parent().hide();
 		jQuery("#top_opt_url_shortner").parent().parent().hide();
@@ -589,9 +615,9 @@ jQuery(document).ready(function(){
 
 	jQuery("select#top_opt_tweet_type").change(function(){
 		if(jQuery(this).val() == "custom-field") { 
-			jQuery("#top_opt_tweet_type_custom_field").parent().parent().slideDown("fast");
+			jQuery("#top_opt_post_type_custom_field").parent().parent().slideDown("fast");
 		} else { 
-			jQuery("#top_opt_tweet_type_custom_field").parent().parent().slideUp("fast");		
+			jQuery("#top_opt_post_type_custom_field").parent().parent().slideUp("fast");		
 		}
 	});
 

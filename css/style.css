@@ -4,7 +4,9 @@
 html[xmlns] .clearfix { display: block;}
 * html .clearfix{ height: 1%;}
 .clearfix { display: block; }
-
+strong {
+	font-weight: 900;
+}
 /* Padding Fix */
 * { -webkit-box-sizing:border-box; -moz-box-sizing:border-box; box-sizing:border-box; }
 
@@ -25,6 +27,18 @@ html[xmlns] .clearfix { display: block;}
 .cwp_top_container button#twitter-login:hover { cursor: pointer; background:url("../img/twitter_blue_icon.png") no-repeat left 10px center, #f7f7f7; box-shadow: inset 0px 0px 3px rgba(0,0,0,0.5); border: 1px solid #f7f7f7; text-shadow: 0px 1px 0px rgba(255,255,255,1);}
 .cwp_top_container button#twitter-login.another-account { border:1px solid #ddd; box-shadow: none;  border-radius: 3px; background-image: none; display: block; padding: 0; height: 35px; width: 35px; font-weight: 100; }
 .cwp_top_container button#twitter-login.another-account:hover { opacity: 0.8; }
+
+/* Facebook Login Button */
+.cwp_top_container button#facebook-login { background:none; border: none; background:url("../img/icon_facebook.gif") no-repeat left 10px center, #fff; padding: 10px 15px 10px 35px; font-weight: bold; font-family: "HelveticaNeue", "Helvetica Neue", Arial, sans-serif; font-size: 1em; line-height: 1; color:#696969; border-radius: 10px; border: 1px solid #f7f7f7; -webkit-transition: all 0.3s ease-in-out;-moz-transition: all 0.3s ease-in-out;-o-transition: all 0.3s ease-in-out;transition: all 0.3s ease-in-out; box-shadow: inset 0px 0px 3px rgba(0,0,0,0.5); }
+.cwp_top_container button#facebook-login:hover { cursor: pointer; background:url("../img/icon_facebook.gif") no-repeat left 10px center, #f7f7f7; box-shadow: inset 0px 0px 3px rgba(0,0,0,0.5); border: 1px solid #f7f7f7; text-shadow: 0px 1px 0px rgba(255,255,255,1);}
+.cwp_top_container button#facebook-login.another-account { border:1px solid #ddd; box-shadow: none;  border-radius: 3px; background-image: none; display: block; padding: 0; height: 35px; width: 35px; font-weight: 100; }
+.cwp_top_container button#facebook-login.another-account:hover { opacity: 0.8; }
+
+/* Linkedin Login Button */
+.cwp_top_container button#linkedin-login { background:none; border: none; background:url("../img/linkedIn.png") no-repeat left 10px center, #fff; padding: 10px 15px 10px 35px; font-weight: bold; font-family: "HelveticaNeue", "Helvetica Neue", Arial, sans-serif; font-size: 1em; line-height: 1; color:#696969; border-radius: 10px; border: 1px solid #f7f7f7; -webkit-transition: all 0.3s ease-in-out;-moz-transition: all 0.3s ease-in-out;-o-transition: all 0.3s ease-in-out;transition: all 0.3s ease-in-out; box-shadow: inset 0px 0px 3px rgba(0,0,0,0.5); }
+.cwp_top_container button#linkedin-login:hover { cursor: pointer; background:url("../img/linkedIn.png") no-repeat left 10px center, #f7f7f7; box-shadow: inset 0px 0px 3px rgba(0,0,0,0.5); border: 1px solid #f7f7f7; text-shadow: 0px 1px 0px rgba(255,255,255,1);}
+.cwp_top_container button#linkedin-login.another-account { border:1px solid #ddd; box-shadow: none;  border-radius: 3px; background-image: none; display: block; padding: 0; height: 35px; width: 35px; font-weight: 100; }
+.cwp_top_container button#linkedin-login.another-account:hover { opacity: 0.8; }
 
 /* Logged In User */
 .cwp_top_container .user_details { height: 35px; border: 1px solid #fff; float: left; overflow: hidden; background:#fff; border: 1px solid #ddd; border-radius: 5px; margin-right: 10px;}
@@ -88,7 +102,7 @@ html[xmlns] .clearfix { display: block;}
 /* Tweet Now Button Style */
 .cwp_top_wrapper .cwp_top_container .cwp_top_footer .tweet-now { background:#52c4ef; text-decoration: none; border-radius: 3px; display: block; height: 30px; border-radius: 3px; font-family: "Open Sans", sans-serif; color:#fff; text-transform: uppercase; font-weight: bold; line-height: 2.3; padding-right: 10px; display:inline-block; margin-top: 14px; margin-right: 5px; } 
 .cwp_top_wrapper .cwp_top_container .cwp_top_footer .tweet-now span { background:url("../img/twitter_icon.png") no-repeat center center, #3eaed8; width: 30px; height: 30px; display: block; float: left; border-radius: 3px 0px 0px 3px; margin-right: 10px; }
-.top_close_popup {margin-left:30%;float:left;}
+.top_close_popup {margin-left:37%;float:left;}
 /* Stop Tweet Button Styles  */
 .cwp_top_wrapper .cwp_top_container .cwp_top_footer .stop-tweet-old-post { background:#f9866b; text-decoration: none; border-radius: 3px; display: block; height: 30px; border-radius: 3px; font-family: "Open Sans", sans-serif; color:#fff; text-transform: uppercase; font-weight: bold; line-height: 2.3; padding-right: 10px; display:inline-block; margin-top: 14px; margin-right: 5px; } 
 .cwp_top_wrapper .cwp_top_container .cwp_top_footer .stop-tweet-old-post span { background:url("../img/twitter_icon.png") no-repeat center center, #f16848; width: 30px; height: 30px; display: block; float: left; border-radius: 3px 0px 0px 3px; margin-right: 10px; }
@@ -103,9 +117,11 @@ html[xmlns] .clearfix { display: block;}
 .cwp_top_wrapper .cwp_top_container .cwp_top_footer a { margin: 0 !important; padding: 0; margin-right: 10px !important; }
 
 /* Sample Tweet Preview Modal */
+.cwp_top_wrapper .cwp_lkapp_preview,.cwp_top_wrapper .cwp_user_pages { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background:rgba(0,0,0,0.2); display: none; }
+
 .cwp_top_wrapper .cwp_fbapp_preview,.cwp_top_wrapper .cwp_user_pages { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background:rgba(0,0,0,0.2); display: none; }
 .cwp_top_wrapper  .cwp_sample_tweet_preview_inner h2 { text-align: center; font-weight: bold;color:#7d7d7d; font-family: "HelveticaNeue", "Helvetica Neue", sans-serif; }
-.cwp_top_wrapper  .cwp_sample_tweet_preview_inner { background:#fff; width: 60%; margin: 0 auto; margin-top: 759px; padding: 20px; border-radius: 5px;box-shadow: 0px 5px 5px rgba(0,0,0,0.1); }
+.cwp_top_wrapper  .cwp_sample_tweet_preview_inner { background:#fff; width: 80%; margin: 0 auto; margin-top: 759px; padding: 20px; border-radius: 5px;box-shadow: 0px 5px 5px rgba(0,0,0,0.1); }
 .cwp_top_wrapper  .cwp_sample_tweet_preview_inner .sample_tweet { min-height:60px; display: block; width: 100%; border: 1px solid #e8e8e8; padding: 10px; border-radius: 5px; font-family: "Helvetica Neue", HelveticaNeue, sans-serif; font-size: 14px;}
 .cwp_top_wrapper  .cwp_sample_tweet_preview_inner .sample_tweet a { text-decoration: none; }
 .cwp_top_wrapper .cwp_sample_tweet_preview_inner button { display: block; margin-top: 17px; background:#52c4ef; border: none; border-radius: 3px; padding: 5px 10px; color:#fff; font-family: "Open Sans", sans-serif; color:#fff; text-transform: uppercase; font-weight: bold; }
@@ -124,7 +140,7 @@ html[xmlns] .clearfix { display: block;}
 }
 
 .cwp_user_pages_inner {
-	min-height: 360px;
+	min-height: 340px;
 }
 .cwp_user_pages .page_name {
 	font-weight: bold;
@@ -164,7 +180,23 @@ float: left;}
 .twptop_opt_post_type {
 	display: none;
 }
-
+.top_left_instructions {
+	float: left;
+	width: 50%;
+}
+.top_auth_form {
+	width:50%;
+	float: left;
+}
+.top_sample_auth{
+	height: 320px;
+}
+.top_auth_inner {
+	height: 460px;
+}
+.top_authorize{
+	margin-left:50px;
+}
 @media all and (max-width:1280px) {
 	.cwp_top_wrapper {
 		width:100%;
