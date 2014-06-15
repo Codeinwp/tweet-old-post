@@ -1,4 +1,4 @@
-﻿=== Tweet Old Post ===
+﻿=== Revive Old Post (Former Tweet Old Post) ===
 Contributors: codeinwp
 Tags: Tweet old post, Tweets, Promote old post by tweeting about them, Twitter, Auto Tweet, Hashtags, Twitter Hashtags, Tweet Posts, Tweet, Post Tweets, Wordpress Twitter Plugin, Twitter Plugin, Tweet Selected Posts, Twitter, Promote Posts, Tweet Random Post, Share Post, Promote Post, Post Tweets, Wordpress Twitter, Drive Traffic, Tweet Selected Posts
 Requires at least: 2.7
@@ -6,137 +6,56 @@ Tested up to: 3.9
 Stable tag: trunk
 
 
-Plugin to tweet about your old posts to get more hits for them and keep them alive.
+Plugin to share about your old posts to get more hits for them and keep them alive.
 
 == Description ==
 
-Tweet Old Posts is a plugin designed to tweet your older posts to get more traffic. 
+Revive Old Posts is a plugin designed to tweet your older posts to get more traffic. 
 
-This plugin helps you to keeps your old posts alive by tweeting about them and driving more traffic to them from twitter. It also helps you to promote your content. You can set time and no of tweets to post to drive more traffic.For questions, comments, or feature requests, <a href="http://themeisle.com/contact/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">contact us</a>!
+This plugin helps you to keeps your old posts alive by sharing them and driving more traffic to them from social networks. It also helps you to promote your content. You can set time and no of posts to share to drive more traffic.For questions, comments, or feature requests, <a href="http://themeisle.com/contact/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">contact us</a>!
 
 For updates follow https://twitter.com/themeisle If you have anything you can let us know at <a href="http://themeisle.com/contact/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">here</a>
 
 
 **Fortcoming**
 
-- Sleep time
-- Additional text based on categories
+- Custom Schedule
+- Posts queue 
 
 
-**Tweet Old Post provides following features**
+**Revive Old Post provides following features**
 
 - Share new and old posts.
-- Choose the time between tweets.
-- Choose the number of tweets to Tweet.
+- Choose the time between posts.
+- Choose the number of posts to share.
 - Use hashtags to focus on topics.
 - Include links back to your site.
 - Exclude categories
 - Exclude specific posts.
 
-**New in v6.7**
-
-Fixed interrupted posting issue
-
-**New in v6.6**
-
-Fixed excluded category issue and some small others.
-
-**New in v6.5**
-
-Fixed 2 words category space, custom field hashtags, better debug messages, fixed not posting issue
-
-**New in v6.2**
-
-After some long working hours excluded posts feature was added back in the free version and integrated in the new version.
-
-**New in v6.1**
-
-Tweets are now posted!
-
-**New in v6.0**
-
-Tweets now are posted immediately, fixed scheduling and added debug messages
-
-**Let me know if you have any more ideas**
-
-**New in v5.8**
-
-Added post by image options in the pro version and some fixes.
-
-**New in v5.7**
-
-Fixed permissions
-
-**New in v5.6**
-
-Added bit.ly back
-
-**New in v5.5**
-
-Fixed the table prefix issue
-
-**New in v5.4**
-
-Fixed the hashtags length issue
-
-**New in v5.3**
-
-Fixed the custom field issue
-
-**New in v5.2**
-
-Fixed exclude categories error, added wp short url, fixed oauth error, removed broken shorten services.
-
-**New in v5.0**
-
-- Whole plugin was rewrote from scratch and a pro version was added, so after 50 hours of work, here we are. This change will allow us to easier fix issues/ release new features and maintain the plugin.
-
-**New in v4.0.9**
-
-- Resolved twitter connectivity issue, for users who were not able to connect in 4.0.8. Twitter has changed their policy 
-as per https://dev.twitter.com/discussions/24239
-
-
-**New in v4.0.8**
-
-- Resolved twitter connectivity issue. Twitter has changed their policy 
-as per https://dev.twitter.com/discussions/24239
-
-
-**New in v4.0.7**
-
-- Resolved tweet not posting issue.
-
-
-**New in v4.0.6**
-
-- Changed how pages are navigated. Should not conflict with any of the plugin that interacts with twitter ever.
-- For "Page not found", update the settings and then authorize with twitter.
-- If you are not able to update anything or you are redirecting to your home page, reset the settings and try again.
-- Code Cleanup.
 
 
 == Installation ==
 
-Following are the steps to install the Tweet Old Post plugin
+Following are the steps to install the Revive Old Post plugin
 
-1. Download the latest version of the Tweet Old Posts Plugin to your computer from here.
+1. Download the latest version of the Revive Old Posts Plugin to your computer from here.
 2. With an FTP program, access your site�s server.
 3. Upload (copy) the Plugin file(s) or folder to the /wp-content/plugins folder.
 4. In your WordPress Administration Panels, click on Plugins from the menu.
-5. You should see Tweet Old Posts Plugin listed. If not, with your FTP program, check the folder to see if it is installed. If it isn�t, upload the file(s) again. If it is, delete the files and upload them again.
-6. To turn the Tweet Old Posts Plugin on, click Activate.
+5. You should see Revive Old Posts Plugin listed. If not, with your FTP program, check the folder to see if it is installed. If it isn�t, upload the file(s) again. If it is, delete the files and upload them again.
+6. To turn the Revive Old Posts Plugin on, click Activate.
 7. Check your Administration Panels or WordPress blog to see if the Plugin is working.
-8. You can change the plugin options from Tweet Old Posts under settings menu.
+8. You can change the plugin options from Revive Old Posts under settings menu.
 
-Alternatively you can also follow the following steps to install the Tweet Old Post plugin
+Alternatively you can also follow the following steps to install the Revive Old Post plugin
 
 1. In your WordPress Administration Panels, click on Add New option under Plugins from the menu.
 2. Click on upload at the top.
-3. Browse the location and select the Tweet Old Post Plugin and click install now.
-4. To turn the Tweet Old Posts Plugin on, click Activate.
+3. Browse the location and select the Revive Old Post Plugin and click install now.
+4. To turn the Revive Old Posts Plugin on, click Activate.
 5. Check your Administration Panels or WordPress blog to see if the Plugin is working.
-6. You can change the plugin options from Tweet Old Posts under settings menu.
+6. You can change the plugin options from Revive Old Posts under settings menu.
 
 == Frequently Asked Questions ==
 
@@ -144,7 +63,7 @@ If you have any questions please get in touch with us at,
 http://themeisle.com/contact/
 
 
-**Plugin doesn't tweet at the regular interval**
+**Plugin doesn't post at the regular interval**
 
 - Unfortunately wp_cron function isn't perfect, it trigger just when somebody visit your site, so you nobody visit your site in 3 hours, TOP won't trigger
 
@@ -156,7 +75,7 @@ Some things you can test are.
 
 - Are scheduled posts working? (They use wp-cron too).
 - Are you hosted on Heart Internet? (wp-cron is known not to work with them).
-- If you click tweet now from sample tweet popup does it work?
+- If you click Share now from sample post popup does it work?
 - Try adding define( 'ALTERNATE_WP_CRON', true ); to your wp-config.php`, does the plugin work?
 - Is your site private (I.E. is it behind some kind of authentication, maintenance plugin, .htaccess) if so wp-cron won't work until you remove it, if you are and you temporarily remove the authentication, do tweets start working?
 
@@ -169,9 +88,9 @@ If you have tried all these then feel free to contact support.
 - Note: Do not upgrade your plugin if you want to use the older version.
 
 
-**Tweet Old post does not posts any tweets?**
+**Revive Old post does not posts any tweets?**
 
-- If its not tweeting any tweets try playing around with the options. Try setting maxtweetage to none and try again.
+- If its not sharing any posts try playing around with the options. Try setting maxtweetage to none and try again.
 - Try removing categories from excluded option. Some of them have posted issues of tweet not getting post when categories are selected in exclued category section.
 
 **When I publish a new post to Twitter sometimes it’s ok, but sometimes I am getting this error: "code":226,"message":"This request looks like it might be automated. To protect our users from spam and other malicious activity, we can’t complete this action right now. Please try again later"?**
@@ -195,6 +114,14 @@ http://themeisle.com/plugins/tweet-old-post-lite/
 
 
 == Changelog ==
+
+**New in v6.7.7**
+
+Added Facebook and Linkedin, Facebook is also enabled for the free users
+Improved Post with image feature, we can also pull the image from post
+Fixed Tweet over 140 chars error
+Added Google Analytics Campaign Tracking
+Rebranded into Revive Old Post
 
 **New in v6.7.5**
 

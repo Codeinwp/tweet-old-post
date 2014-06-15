@@ -318,7 +318,10 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			$returnedTweets = $this->getTweetsFromDB();
 			$image="";
 			//var_dump($returnedTweets);
-			$finalTweetsPreview = $this->generateTweetFromPost($returnedTweets[0])['message'];
+			$finalTweetsPreview = $this->generateTweetFromPost($returnedTweets[0]);
+			if (is_array($finalTweetsPreview)){
+				$finalTweetsPreview = $finalTweetsPreview['message'];
+			}
 			$result = $finalTweetsPreview;			
 			update_option( 'top_lastID', $returnedTweets[0]->ID);
 
@@ -1313,6 +1316,10 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 			if(!array_key_exists('top_opt_tweet_multiple_times', $options)) {
 				update_option('top_opt_tweet_multiple_times', 'off');
+			}
+
+			if(!array_key_exists('top_opt_ga_tracking', $options)) {
+				update_option('top_opt_ga_tracking', 'off');
 			}
 
 			//if(!array_key_exists('top_opt_tweet_specific_category', $options)) {

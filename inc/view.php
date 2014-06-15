@@ -193,7 +193,7 @@
 		<div class="cwp_sample_tweet_preview_inner">
 			<h2>Choose a Profile or Page</h2>
 			<div class="cwp_user_pages_inner"></div>
-			
+			<button class="top_close_popup">Close preview</button>
 					</div><!-- end .cwp_sample_tweet_preview_inner -->
 	</div><!-- end .cwp_sample_tweet_preview -->
 
@@ -207,8 +207,9 @@
 					<li>Click on <strong>Create New App</strong> from the top right corner</li>
 					<li>Enter a <strong>Display Name</strong> and <strong>Namespace</strong> and click on Create App</li>
 					<li>Once you arrive on the app dashboard, copy your <strong>App ID</strong> and <strong>App Secret</strong> in the fields on the right</li>
-					<li>Go on Settings tab from the left sidebar menu and click on <strong>Add Platform</strong> and select <strong>Website</strong></li>
+					<li>Go on Settings tab from the left sidebar menu add the contact email and click on <strong>Add Platform</strong> and select <strong>Website</strong></li>
 					<li>Copy/Paste this url : <strong><?php echo SETTINGSURL; ?></strong> into App Domains and Site URL fields and <strong>Save</strong></li>
+					<li>Go on Status & Review tab and set your app live from the top-right switch.</li>
 					<li>Now everything is done, click on <strong>Authorize App</strong> button.</li>
 				</ol>
 			</div>
