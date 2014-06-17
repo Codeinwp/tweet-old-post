@@ -142,7 +142,7 @@ strong {
 }
 
 .cwp_user_pages_inner {
-	height: 340px;
+	min-height: 340px;
 }
 .cwp_user_pages .page_name {
 	font-weight: bold;
@@ -191,10 +191,10 @@ float: left;}
 	float: left;
 }
 .top_sample_auth{
-	height: 370px;
+	height: 320px;
 }
 .top_auth_inner {
-	height: 480px;
+	height: 460px;
 }
 .top_authorize{
 	margin-left:50px;

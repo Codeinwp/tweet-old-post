@@ -167,12 +167,8 @@ jQuery(document).ready(function(){
 								html+="<div class='page_avatar'><img src='"+profile_image+"'/></div><div class='page_name'>"+name+"</div><div class='page_category'>"+category+"</div></a>";
 							//}
 							}
-							//html+='<button class="top_close_popup">Close preview</button>';
-						fheight = (Math.floor(data.length / 4) -1 )*175; 
-						jQuery(".cwp_top_wrapper .cwp_user_pages .cwp_user_pages_inner ").html(html);
-						jQuery(".cwp_top_wrapper .cwp_user_pages .cwp_user_pages_inner ").height(fheight);	
-						jQuery(".cwp_top_wrapper .cwp_user_pages .cwp_sample_tweet_preview_inner ").height(fheight+120);	
-
+							html+='<button class="top_close_popup">Close preview</button>';
+						jQuery(".cwp_top_wrapper .cwp_user_pages .cwp_user_pages_inner ").html(html);	
 					    endAjaxIntro();
 					    break;
 
