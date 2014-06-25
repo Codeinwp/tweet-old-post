@@ -1,7 +1,7 @@
 <?php
 
-require_once(PLUGINPATH.'/tweet-old-post.php');
-require_once(PLUGINPATH.'/inc/xml.php');
+require_once(ROPPLUGINPATH.'/tweet-old-post.php');
+require_once(ROPPLUGINPATH.'/inc/xml.php');
 
 if (!function_exists ("mysql_real_escape_string"))
 {

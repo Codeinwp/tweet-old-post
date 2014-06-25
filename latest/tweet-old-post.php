@@ -9,19 +9,19 @@
 #     */  
 
 // Config Constants
-define("PLUGINPATH", realpath(dirname(__FILE__) ));
-define("CSSFILE", plugins_url('css/style.css',__FILE__ ));
-define("CUSTOMDASHBOARDICON", plugins_url("css/custom_dashboard_icon.css", __FILE__));
-define("JSFILE", plugins_url('js/master.js',__FILE__ ));
-define("JSCOUNTDOWN", plugins_url('js/countdown.js',__FILE__ ));
-define("PLUGINBASENAME", plugin_basename(__FILE__));
-define('TOP_FB_API_VERSION','v2.0');
+define("ROPPLUGINPATH", realpath(dirname(__FILE__) ));
+define("ROPCSSFILE", plugins_url('css/style.css',__FILE__ ));
+define("ROPCUSTOMDASHBOARDICON", plugins_url("css/custom_dashboard_icon.css", __FILE__));
+define("ROPJSFILE", plugins_url('js/master.js',__FILE__ ));
+define("ROPJSCOUNTDOWN", plugins_url('js/countdown.js',__FILE__ ));
+define("ROPPLUGINBASENAME", plugin_basename(__FILE__));
+define('ROP_TOP_FB_API_VERSION','v2.0');
 // Require core.
-require_once(PLUGINPATH."/inc/core.php");
+require_once(ROPPLUGINPATH."/inc/core.php");
 // Require core.
-require_once(PLUGINPATH."/inc/exclude-posts.php");
+require_once(ROPPLUGINPATH."/inc/exclude-posts.php");
 if (!class_exists('TAV_Remote_Notification_Client')) {
-	require( PLUGINPATH.'/inc/class-remote-notification-client.php' );
+	require( ROPPLUGINPATH.'/inc/class-remote-notification-client.php' );
 }
 if (!function_exists('topProImage'))
     $notification = new TAV_Remote_Notification_Client( 37, 'a8be784b898fa2fb', 'http://themeisle.com?post_type=notification' );

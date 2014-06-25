@@ -1,8 +1,8 @@
 <?php
 // Basic configuration 
-require_once(PLUGINPATH."/inc/config.php");
-// twitteroauth class 
-require_once(PLUGINPATH."/inc/oAuth/twitteroauth.php");
+require_once(ROPPLUGINPATH."/inc/config.php");
+// RopTwitterOAuth class 
+require_once(ROPPLUGINPATH."/inc/oAuth/twitteroauth.php");
 
 if (!class_exists('CWP_TOP_Core')) {
 	class CWP_TOP_Core {
@@ -393,7 +393,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			// Save all user settings in variables.
 			$tweetedPosts 					= get_option("top_opt_already_tweeted_posts");
 			$tweet_content 					= get_option('top_opt_tweet_type');
-			$tweet_content_custom_field 	= get_option('top_opt_post_type_custom_field');
+			$tweet_content_custom_field 	= get_option('top_opt_tweet_type_custom_field');
 			$additional_text 				= get_option('top_opt_add_text');
 			$additional_text_at 			= get_option('top_opt_add_text_at');
 			$include_link 					= get_option('top_opt_include_link');
@@ -579,7 +579,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 				switch ($user['service']) {
 					case 'twitter':
 						// Create a new twitter connection using the stored user credentials.
-						$connection = new TwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
+						$connection = new RopTwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
 						// Post the new tweet
 						$status = $connection->post('statuses/update', array('status' => $finalTweet['message']));	
 						//return $status;
@@ -596,7 +596,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 							
 										);
 
-						$pp=wp_remote_post("https://graph.facebook.com/".TOP_FB_API_VERSION."/$user[id]/feed?access_token=$user[oauth_token]",$args);
+						$pp=wp_remote_post("https://graph.facebook.com/".ROP_TOP_FB_API_VERSION."/$user[id]/feed?access_token=$user[oauth_token]",$args);
 						if ($nrOfUsers == $k)
 							return $pp['response']['message'];
 						else
@@ -646,7 +646,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 					default:
 						// Create a new twitter connection using the stored user credentials.
-						$connection = new TwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
+						$connection = new RopTwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
 						// Post the new tweet
 						$status = $connection->post('statuses/update', array('status' => $finalTweet['message']));	
 						//return $status;
@@ -673,7 +673,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 				switch ($user['service']) {
 					case 'twitter':
 						// Create a new twitter connection using the stored user credentials.
-						$connection = new TwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
+						$connection = new RopTwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
 						// Post the new tweet
 						if (function_exists('topProImage')) 
 							$status = topProImage($connection, $finalTweet['message'], $id);
@@ -690,7 +690,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 							
 										);
 
-						$pp=wp_remote_post("https://graph.facebook.com/".TOP_FB_API_VERSION."/$user[id]/feed?access_token=$user[oauth_token]",$args);
+						$pp=wp_remote_post("https://graph.facebook.com/".ROP_TOP_FB_API_VERSION."/$user[id]/feed?access_token=$user[oauth_token]",$args);
 						if ($nrOfUsers == $k)
 							return $pp['response']['message'];
 						else
@@ -738,7 +738,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 						
 						break;
 					default:
-						$connection = new TwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
+						$connection = new RopTwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
 						// Post the new tweet
 						if (function_exists('topProImage')) 
 							$status = topProImage($connection, $finalTweet['message'], $id);
@@ -918,7 +918,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			if(isset($_REQUEST['oauth_token'])) {
 				if($_REQUEST['oauth_token'] == $this->cwp_top_oauth_token) {
 
-					$twitter = new TwitterOAuth($this->consumer, $this->consumerSecret, $this->cwp_top_oauth_token, $this->cwp_top_oauth_token_secret );
+					$twitter = new RopTwitterOAuth($this->consumer, $this->consumerSecret, $this->cwp_top_oauth_token, $this->cwp_top_oauth_token_secret );
 					$access_token = $twitter->getAccessToken($_REQUEST['oauth_verifier']);
 					$user_details = $twitter->get('account/verify_credentials');
 
@@ -948,7 +948,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 			if(isset($_REQUEST['state']) && (get_option('top_fb_session_state') === $_REQUEST['state'])) {
 			
-				$token_url = "https://graph.facebook.com/".TOP_FB_API_VERSION."/oauth/access_token?"
+				$token_url = "https://graph.facebook.com/".ROP_TOP_FB_API_VERSION."/oauth/access_token?"
 				. "client_id=" . get_option('cwp_top_app_id') . "&redirect_uri=" . SETTINGSURL
 				. "&client_secret=" . get_option('cwp_top_app_secret') . "&code=" . $code;
 
@@ -972,8 +972,8 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 				}
 				header("Location: " . SETTINGSURL.'#fbadd');
 			}
-
-			if (isset($_GET['code'])&&get_option('top_lk_session_state') == $_GET['state']) {
+			
+			if (isset($_GET['code'])&&isset($_GET['state'])&&get_option('top_lk_session_state') == $_GET['state']) {
 
 				$lk_auth_token = get_option('cwp_top_lk_app_id');
 				$lk_auth_secret = get_option('cwp_top_lk_app_secret');
@@ -1070,7 +1070,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 					$top_session_state_fb = md5(uniqid(rand(), TRUE));
 			        $fb++;
 			        update_option('top_fb_session_state',$top_session_state_fb);
-			        $dialog_url = "https://www.facebook.com/".TOP_FB_API_VERSION."/dialog/oauth?client_id="
+			        $dialog_url = "https://www.facebook.com/".ROP_TOP_FB_API_VERSION."/dialog/oauth?client_id="
 				. get_option("cwp_top_app_id") . "&redirect_uri=" . SETTINGSURL . "&state="
 						. $top_session_state_fb . "&scope=publish_stream,publish_actions,manage_pages";
 
@@ -1089,9 +1089,9 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			switch ($social_network) {
 			    case 'facebook':
 			    	$result1="";$pagearray1="";
-					$pp=wp_remote_get("https://graph.facebook.com/".TOP_FB_API_VERSION."/me/accounts?access_token=$access_token&limit=100&offset=0");
+					$pp=wp_remote_get("https://graph.facebook.com/".ROP_TOP_FB_API_VERSION."/me/accounts?access_token=$access_token&limit=100&offset=0");
 					//print_r($pp);
-					$me=wp_remote_get("https://graph.facebook.com/".TOP_FB_API_VERSION."/me/?access_token=$access_token&limit=100&offset=0");
+					$me=wp_remote_get("https://graph.facebook.com/".ROP_TOP_FB_API_VERSION."/me/?access_token=$access_token&limit=100&offset=0");
 					if(is_array($pp))
 					{
 						$result1=$pp['body'];
@@ -1166,7 +1166,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			switch ($social_network) {
 			    case 'twitter':
 			        $this->oAuthCallback = $_POST['currentURL'];
-					$twitter = new TwitterOAuth($this->consumer, $this->consumerSecret);
+					$twitter = new RopTwitterOAuth($this->consumer, $this->consumerSecret);
 					$requestToken = $twitter->getRequestToken($this->oAuthCallback);
 
 					update_option('cwp_top_oauth_token', $requestToken['oauth_token']);
@@ -1191,7 +1191,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 				        $top_session_state = md5(uniqid(rand(), TRUE));
 				        
 				        update_option('top_fb_session_state',$top_session_state);
-				        $dialog_url = "https://www.facebook.com/".TOP_FB_API_VERSION."/dialog/oauth?client_id="
+				        $dialog_url = "https://www.facebook.com/".ROP_TOP_FB_API_VERSION."/dialog/oauth?client_id="
 					. $_POST['app_id'] . "&redirect_uri=" . SETTINGSURL . "&state="
 							. $top_session_state . "&scope=publish_stream,publish_actions,manage_pages";
 						echo $dialog_url;
@@ -1505,7 +1505,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 		function top_plugin_action_links($links, $file) {
 
-		    if ($file == PLUGINBASENAME) {
+		    if ($file == ROPPLUGINBASENAME) {
 		        // The "page" query string value must be equal to the slug
 		        // of the Settings admin page we defined earlier, which in
 		        // this case equals "myplugin-settings".
@@ -1635,12 +1635,12 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 				if ($_GET['page'] == $cwp_top_settings['slug'] || $_GET['page'] == "ExcludePosts") {
 
 					// Enqueue and Register Main CSS File
-					wp_register_style( 'cwp_top_stylesheet', CSSFILE, false, '1.0.0' );
+					wp_register_style( 'cwp_top_stylesheet', ROPCSSFILE, false, '1.0.0' );
 			        wp_enqueue_style( 'cwp_top_stylesheet' );
 
 			        // Register Main JS File
-			        wp_enqueue_script( 'cwp_top_js_countdown', JSCOUNTDOWN, array(), '1.0.0', true );
-			        wp_enqueue_script( 'cwp_top_javascript', JSFILE, array(), '1.0.0', true );
+			        wp_enqueue_script( 'cwp_top_js_countdown', ROPJSCOUNTDOWN, array(), '1.0.0', true );
+			        wp_enqueue_script( 'cwp_top_javascript', ROPJSFILE, array(), '1.0.0', true );
 			        wp_localize_script( 'cwp_top_javascript', 'cwp_top_ajaxload', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
 				 }				
 			}
@@ -1757,7 +1757,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 		public function rop_load_dashboard_icon()
 		{
-			wp_register_style( 'rop_custom_dashboard_icon', CUSTOMDASHBOARDICON, false, '1.0.0' );
+			wp_register_style( 'rop_custom_dashboard_icon', ROPCUSTOMDASHBOARDICON, false, '1.0.0' );
 			wp_enqueue_style( 'rop_custom_dashboard_icon' );
 		}
 
