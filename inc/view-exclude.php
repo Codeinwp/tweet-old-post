@@ -1,7 +1,7 @@
  <?php $twp_obj = new CWP_TOP_Core; ?>
 <div class="cwp_top_wrapper_full cwp_top_wrapper">
 	<div class="announcement clearfix">
-		<h2><?php _e("After 6 months of hard work, we have just released", CWP_TEXTDOMAIN); ?> <b>ThemeIsle</b>, <?php _e("th’ island ‘o WordPress themes.", CWP_TEXTDOMAIN); ?></h2>
+		<h2><?php _e("After 6 months of hard work, we have just released", CWP_TEXTDOMAIN); ?> <b>ThemeIsle</b>, <?php _e("th' island 'o WordPress themes.", CWP_TEXTDOMAIN); ?></h2>
 		<a class="show-me" href="http://themeisle.com/?utm_source=topadmin&utm_medium=announce&utm_campaign=top"><?php _e("Show Me", CWP_TEXTDOMAIN); ?></a>
 	</div><!-- end .announcement -->
 

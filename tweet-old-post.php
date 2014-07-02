@@ -35,3 +35,9 @@ register_deactivation_hook(__FILE__, array($CWP_TOP_Core, 'deactivationHook'));
 register_activation_hook(__FILE__, array($CWP_TOP_Core, 'resetAllOptions'));
 
 add_action("admin_head", array($CWP_TOP_Core, 'rop_load_dashboard_icon'));
+
+function tweetoldpost_basics_plugin_setup () {
+	
+	load_plugin_textdomain('TweetOldPost', false, 'tweet-old-post/languages');
+}
+add_action( 'plugins_loaded','tweetoldpost_basics_plugin_setup');
