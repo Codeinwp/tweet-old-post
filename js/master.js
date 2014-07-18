@@ -168,7 +168,9 @@ jQuery(document).ready(function(){
 							//}
 							}
 							//html+='<button class="top_close_popup">Close preview</button>';
-						fheight = (Math.floor(data.length / 4) -1 )*175; 
+							data.length = 3;
+						fheight = (Math.ceil(data.length / 4) )*95;
+						//if (fheight<=0) fheight = 175; 
 						jQuery(".cwp_top_wrapper .cwp_user_pages .cwp_user_pages_inner ").html(html);
 						jQuery(".cwp_top_wrapper .cwp_user_pages .cwp_user_pages_inner ").height(fheight);	
 						jQuery(".cwp_top_wrapper .cwp_user_pages .cwp_sample_tweet_preview_inner ").height(fheight+120);	

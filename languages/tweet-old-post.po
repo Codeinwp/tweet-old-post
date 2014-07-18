@@ -1,14 +1,17 @@
+# Copyright (C) 2014 Revive Old Post (Former Tweet Old Post)
+# This file is distributed under the same license as the Revive Old Post (Former Tweet Old Post) package.
 msgid ""
 msgstr ""
-"Project-Id-Version: tweet-old-post\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-02 14:38+0200\n"
-"PO-Revision-Date: 2014-07-02 14:39+0200\n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"Project-Id-Version: Revive Old Post (Former Tweet Old Post) 6.8\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/tweet-old-post\n"
+"POT-Creation-Date: 2014-07-15 23:58+0100\n"
+"PO-Revision-Date: 2014-07-16 00:07+0100\n"
+"Last-Translator: Ionut <friends@themeisle.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.7\n"
 "X-Poedit-KeywordsList: _;__;_e\n"
 "X-Poedit-Basepath: ../\n"
 "X-Poedit-SearchPath-0: .\n"
@@ -20,12 +23,6 @@ msgstr ""
 
 #: inc/class-remote-notification-client.php:262
 msgid "Dismiss"
-msgstr ""
-
-#: inc/config.php:8
-#: inc/view-exclude.php:12
-#: inc/view.php:11
-msgid "Revive Old Post"
 msgstr ""
 
 #: inc/config.php:24
@@ -212,8 +209,7 @@ msgstr ""
 msgid "Minimum age of post to be eligible for sharing"
 msgstr ""
 
-#: inc/config.php:218
-#: inc/config.php:228
+#: inc/config.php:218 inc/config.php:228
 msgid "Day/Days - 0 for Disabled"
 msgstr ""
 
@@ -229,93 +225,77 @@ msgstr ""
 msgid "Number of posts to share each time"
 msgstr ""
 
-#: inc/config.php:244
-msgid "Post Type"
-msgstr ""
-
-#: inc/config.php:248
-msgid "What type of items do you want to share?"
-msgstr ""
-
-#: inc/config.php:250
-msgid "Post Only"
-msgstr ""
-
-#: inc/config.php:251
-msgid "Page Only"
-msgstr ""
-
-#: inc/config.php:252
-#: inc/config.php:259
-msgid "Custom Post Type"
-msgstr ""
-
-#: inc/config.php:253
-msgid "Post and Page"
-msgstr ""
-
-#: inc/config.php:263
-msgid "Select which custom post type"
-msgstr ""
-
-#: inc/config.php:269
+#: inc/config.php:246
 msgid "Post with Image"
 msgstr ""
 
-#: inc/config.php:273
+#: inc/config.php:250
 msgid "Check if you want to add the post featured image to the share"
 msgstr ""
 
-#: inc/config.php:279
+#: inc/config.php:256
 msgid "Share old posts more than once"
 msgstr ""
 
-#: inc/config.php:283
-msgid "By default once a post is shared it will not be shared again until you stop/start the plugin"
+#: inc/config.php:260
+msgid ""
+"By default once a post is shared it will not be shared again until you stop/"
+"start the plugin"
 msgstr ""
 
-#: inc/config.php:289
+#: inc/config.php:268
+msgid "Post Type"
+msgstr ""
+
+#: inc/config.php:272
+msgid "What type of items do you want to share?"
+msgstr ""
+
+#: inc/config.php:279
 msgid "Google Analytics Campaign Tracking"
 msgstr ""
 
-#: inc/config.php:293
-msgid "Enabling Campaign Tracking you would be able to see how much traffic Revive Old Post generated."
+#: inc/config.php:283
+msgid ""
+"Enabling Campaign Tracking you would be able to see how much traffic Revive "
+"Old Post generated."
 msgstr ""
 
-#: inc/config.php:309
+#: inc/config.php:289
 msgid "Exclude Specific Categories"
 msgstr ""
 
-#: inc/config.php:313
-msgid "Select which categories do you want to exclude to share from? Blank - None"
+#: inc/config.php:293
+msgid ""
+"Select which categories do you want to exclude to share from? Blank - None"
 msgstr ""
 
-#: inc/core.php:76
+#: inc/core.php:81
 msgid "Tweet Old Post is already active!"
 msgstr ""
 
-#: inc/core.php:96
-msgid "Tweet Old Post is already inactive!"
+#: inc/core.php:101
+msgid "ROP is already inactive!"
 msgstr ""
 
-#: inc/core.php:866
+#: inc/core.php:811
 msgid "Custom Tweet User Interval"
 msgstr ""
 
-#: inc/core.php:1182
+#: inc/core.php:1127
 msgid "Could not connect to Twitter!"
 msgstr ""
 
-#: inc/core.php:1344
-msgid " We just fixed the interrupted posting issue and scheduling issue, if you don't see any tweets you need to re-authentificate your twitter accounts. | <a href=\""
+#: inc/core.php:1385
+msgid "This is only available in the"
 msgstr ""
 
-#: inc/core.php:1671
+#: inc/core.php:1385
+msgid "PRO version"
+msgstr ""
+
+#: inc/core.php:1644
 msgid "Exclude Posts"
-msgstr ""
-
-#: inc/core.php:1671
-msgid "ExcludePosts"
 msgstr ""
 
 #: inc/exclude-posts.php:24
@@ -346,8 +326,7 @@ msgstr ""
 msgid "&raquo;"
 msgstr ""
 
-#: inc/exclude-posts.php:177
-#: inc/exclude-posts.php:272
+#: inc/exclude-posts.php:177 inc/exclude-posts.php:272
 #, php-format
 msgid "Displaying %s&#8211;%s of %s"
 msgstr ""
@@ -357,41 +336,32 @@ msgid "No Posts found. Review your search or filter criteria/term."
 msgstr ""
 
 #: inc/exclude-posts.php:363
-msgid "You do not have enough permission to set the option. Please contact your admin."
+msgid ""
+"You do not have enough permission to set the option. Please contact your "
+"admin."
 msgstr ""
 
-#: inc/view-exclude.php:4
-#: inc/view.php:3
+#: inc/view-exclude.php:4 inc/view.php:3
 msgid "After 6 months of hard work, we have just released"
 msgstr ""
 
-#: inc/view-exclude.php:4
-#: inc/view.php:3
-msgid "th' island 'o WordPress themes."
+#: inc/view-exclude.php:4 inc/view.php:3
+msgid "the island of WordPress themes."
 msgstr ""
 
-#: inc/view-exclude.php:5
-#: inc/view.php:4
+#: inc/view-exclude.php:5 inc/view.php:4
 msgid "Show Me"
 msgstr ""
 
-#: inc/view-exclude.php:11
-#: inc/view.php:10
-msgid "Revive Old Post PRO"
-msgstr ""
-
-#: inc/view-exclude.php:15
-#: inc/view.php:14
+#: inc/view-exclude.php:15 inc/view.php:14
 msgid "by"
 msgstr ""
 
-#: inc/view-exclude.php:18
-#: inc/view.php:17
+#: inc/view-exclude.php:18 inc/view.php:17
 msgid "Show your love"
 msgstr ""
 
-#: inc/view-exclude.php:19
-#: inc/view.php:18
+#: inc/view-exclude.php:19 inc/view.php:18
 msgid "Leave A Review"
 msgstr ""
 
@@ -399,13 +369,11 @@ msgstr ""
 msgid "Revive Old Post is set to share on a"
 msgstr ""
 
-#: inc/view-exclude.php:32
-#: inc/view.php:31
+#: inc/view-exclude.php:32 inc/view.php:31
 msgid "hours interval, "
 msgstr ""
 
-#: inc/view-exclude.php:33
-#: inc/view.php:32
+#: inc/view-exclude.php:33 inc/view.php:32
 msgid "and the next share will take place in: "
 msgstr ""
 
@@ -415,8 +383,10 @@ msgstr ""
 
 #: inc/view-exclude.php:42
 msgid ""
-"You have selected following POST IDs to be excluded from tweeting: <span id='excludeList' style='font-weight:bold;font-style:italic;'></span>.\n"
-"Note: If you have made any change and dint hit 'Exclude Selected' button changes will not be saved. "
+"You have selected following POST IDs to be excluded from tweeting: <span "
+"id='excludeList' style='font-weight:bold;font-style:italic;'></span>.\n"
+"Note: If you have made any change and dint hit 'Exclude Selected' button "
+"changes will not be saved. "
 msgstr ""
 
 #: inc/view.php:29
@@ -428,7 +398,9 @@ msgid "Revive Old Post is not set to post!"
 msgstr ""
 
 #: inc/view.php:42
-msgid "Once you click start sharing a post will be sent in 15 sec, also here you can see the error message if is any."
+msgid ""
+"Once you click start sharing a post will be sent in 15 sec, also here you "
+"can see the error message if is any."
 msgstr ""
 
 #: inc/view.php:52
@@ -439,8 +411,7 @@ msgstr ""
 msgid "Login using your Twitter account."
 msgstr ""
 
-#: inc/view.php:77
-#: inc/view.php:111
+#: inc/view.php:77 inc/view.php:111
 msgid "Add Account"
 msgstr ""
 
@@ -468,6 +439,10 @@ msgstr ""
 msgid "Add account"
 msgstr ""
 
+#: inc/view.php:154
+msgid "Select All"
+msgstr ""
+
 #: inc/view.php:165
 msgid "Reset"
 msgstr ""
@@ -489,7 +464,8 @@ msgid "See Sample Post"
 msgstr ""
 
 #: inc/view.php:171
-msgid "We are not affiliated or partner with Twitter/Facebook/Linkedin in any way."
+msgid ""
+"We are not affiliated or partner with Twitter/Facebook/Linkedin in any way."
 msgstr ""
 
 #: inc/view.php:176
@@ -504,3 +480,138 @@ msgstr ""
 msgid "ThemeIsle - Promote Our Themes and Plugins and get 55% Comission"
 msgstr ""
 
+#: inc/view.php:185
+msgid "Sample Post Preview"
+msgstr ""
+
+#: inc/view.php:187 inc/view.php:196 inc/view.php:242 inc/view.php:289
+msgid "Close preview"
+msgstr ""
+
+#: inc/view.php:188
+msgid "Share now"
+msgstr ""
+
+#: inc/view.php:194
+msgid "Choose a Profile or Page"
+msgstr ""
+
+#: inc/view.php:202
+msgid "Add Your Facebook Account Following The Instructions On The Left"
+msgstr ""
+
+#: inc/view.php:206 inc/view.php:252
+msgid "Go on"
+msgstr ""
+
+#: inc/view.php:207
+msgid "Click on <strong>Create New App</strong> from the top right corner"
+msgstr ""
+
+#: inc/view.php:208
+msgid ""
+"Enter a <strong>Display Name</strong> and <strong>Namespace</strong> and "
+"click on Create App"
+msgstr ""
+
+#: inc/view.php:209
+msgid ""
+"Once you arrive on the app dashboard, copy your <strong>App ID</strong> and "
+"<strong>App Secret</strong> in the fields on the right"
+msgstr ""
+
+#: inc/view.php:210
+msgid ""
+"Go on Settings tab from the left sidebar menu add the contact email and "
+"click on <strong>Add Platform</strong> and select <strong>Website</strong>"
+msgstr ""
+
+#: inc/view.php:211
+msgid ""
+"Copy/Paste this url : <strong><?php echo SETTINGSURL; ?></strong> into App "
+"Domains and Site URL fields and <strong>Save</strong>"
+msgstr ""
+
+#: inc/view.php:212
+msgid ""
+"Go on Status & Review tab and set your app live from the top-right switch."
+msgstr ""
+
+#: inc/view.php:213 inc/view.php:259
+msgid "Now everything is done, click on <strong>Authorize App</strong> button."
+msgstr ""
+
+#: inc/view.php:219
+msgid "Facebook App ID"
+msgstr ""
+
+#: inc/view.php:220
+msgid "ID from your app created on facebook website."
+msgstr ""
+
+#: inc/view.php:231
+msgid "Facebook App Secret"
+msgstr ""
+
+#: inc/view.php:232
+msgid "Secret from your app created on facebook website. "
+msgstr ""
+
+#: inc/view.php:240 inc/view.php:287
+msgid "Authorize App"
+msgstr ""
+
+#: inc/view.php:248
+msgid "Add Your Linkedin Account Following The Instructions On The Left"
+msgstr ""
+
+#: inc/view.php:253
+msgid ""
+"Enter the required details and pay special attention to the further fields :"
+msgstr ""
+
+#: inc/view.php:254
+msgid "Make sure you set Live Status to LIVE"
+msgstr ""
+
+#: inc/view.php:255
+msgid "Default Scope should have r_basicprofile and rw_nus checked"
+msgstr ""
+
+#: inc/view.php:256
+msgid ""
+"Copy/Paste this url : <strong><?php echo SETTINGSURL; ?></strong> into OAuth "
+"2.0 Redirect URLs"
+msgstr ""
+
+#: inc/view.php:257
+msgid ""
+"Once all required fields are filled click on Add Application button, get the "
+"API Key and Secret Key and paste them in the fields on the right"
+msgstr ""
+
+#: inc/view.php:265
+msgid "Linkedin API Key"
+msgstr ""
+
+#: inc/view.php:266
+msgid "API Key that you get once you create an app"
+msgstr ""
+
+#: inc/view.php:277
+msgid "Linkedin Secret Key"
+msgstr ""
+
+#: inc/view.php:278
+msgid "Secret Key that you get once you create an app"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Wordpress plugin that helps you to keeps your old posts alive by sharing "
+"them and driving more traffic to them from twitter/facebook or linkedin. It "
+"also helps you to promote your content. You can set time and no of posts to "
+"share to drive more traffic.For questions, comments, or feature requests, <a "
+"href=\"https://themeisle.com/contact/?"
+"utm_source=plugindesc&utm_medium=announce&utm_campaign=top\">contact </a> us!"
+msgstr ""

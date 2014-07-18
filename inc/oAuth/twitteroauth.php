@@ -12,8 +12,8 @@ require_once('OAuth.php');
 /**
  * Twitter OAuth class
  */
-if (!class_exists('TwitterOAuth')) {
-class TwitterOAuth {
+if (!class_exists('RopTwitterOAuth')) {
+class RopTwitterOAuth {
   /* Contains the last HTTP status code returned. */
   public $http_code;
   /* Contains the last API call. */
@@ -33,7 +33,7 @@ class TwitterOAuth {
   /* Contains the last HTTP headers returned. */
   public $http_info;
   /* Set the useragnet. */
-  public $useragent = 'TwitterOAuth v0.2.0-beta2';
+  public $useragent = 'RopTwitterOAuth v0.2.0-beta2';
   /* Immediately retry the API call if the response was not successful. */
   //public $retry = TRUE;
 
@@ -58,13 +58,13 @@ class TwitterOAuth {
   function lastAPICall() { return $this->last_api_call; }
 
   /**
-   * construct TwitterOAuth object
+   * construct RopTwitterOAuth object
    */
   function __construct($consumer_key, $consumer_secret, $oauth_token = NULL, $oauth_token_secret = NULL) {
-    $this->sha1_method = new OAuthSignatureMethod_HMAC_SHA1();
-    $this->consumer = new OAuthConsumer($consumer_key, $consumer_secret);
+    $this->sha1_method = new RopOAuthSignatureMethod_HMAC_SHA1();
+    $this->consumer = new RopOAuthConsumer($consumer_key, $consumer_secret);
     if (!empty($oauth_token) && !empty($oauth_token_secret)) {
-      $this->token = new OAuthConsumer($oauth_token, $oauth_token_secret);
+      $this->token = new RopOAuthConsumer($oauth_token, $oauth_token_secret);
     } else {
       $this->token = NULL;
     }
@@ -79,7 +79,7 @@ class TwitterOAuth {
   function getRequestToken($oauth_callback) {
     $parameters = array();
     $parameters['oauth_callback'] = $oauth_callback; 
-    $request = $this->oAuthRequest($this->requestTokenURL(), 'GET', $parameters);
+    $request = $this->RopOAuthRequest($this->requestTokenURL(), 'GET', $parameters);
   return $this->getToken($request);
   }
 
@@ -111,7 +111,7 @@ class TwitterOAuth {
   function getAccessToken($oauth_verifier) {
     $parameters = array();
     $parameters['oauth_verifier'] = $oauth_verifier;
-    $request = $this->oAuthRequest($this->accessTokenURL(), 'GET', $parameters);
+    $request = $this->RopOAuthRequest($this->accessTokenURL(), 'GET', $parameters);
     return $this->getToken($request);
   }
 
@@ -129,15 +129,15 @@ class TwitterOAuth {
     $parameters['x_auth_username'] = $username;
     $parameters['x_auth_password'] = $password;
     $parameters['x_auth_mode'] = 'client_auth';
-    $request = $this->oAuthRequest($this->accessTokenURL(), 'POST', $parameters);
+    $request = $this->RopOAuthRequest($this->accessTokenURL(), 'POST', $parameters);
     return $this->getToken($request);
   }
 
   /**
-   * GET wrapper for oAuthRequest.
+   * GET wrapper for RopOAuthRequest.
    */
   function get($url, $parameters = array()) {
-    $response = $this->oAuthRequest($url, 'GET', $parameters);
+    $response = $this->RopOAuthRequest($url, 'GET', $parameters);
     if ($this->format === 'json' && $this->decode_json) {
       return json_decode($response);
     }
@@ -145,10 +145,10 @@ class TwitterOAuth {
   }
   
   /**
-   * POST wrapper for oAuthRequest.
+   * POST wrapper for RopOAuthRequest.
    */
   function post($url, $parameters = array()) {
-    $response = $this->oAuthRequest($url, 'POST', $parameters);
+    $response = $this->RopOAuthRequest($url, 'POST', $parameters);
     if ($this->format === 'json' && $this->decode_json) {
       return json_decode($response);
     }
@@ -159,7 +159,7 @@ class TwitterOAuth {
    * Uploads are handled slightly differently
    */
   function upload($url, $parameters = array()) {
-    $response = $this->oAuthRequest($url, 'POST', $parameters, true);
+    $response = $this->RopOAuthRequest($url, 'POST', $parameters, true);
     if ($this->format === 'json' && $this->decode_json) {
       return json_decode($response);
     }
@@ -170,7 +170,7 @@ class TwitterOAuth {
    * DELETE wrapper for oAuthReqeust.
    */
   function delete($url, $parameters = array()) {
-    $response = $this->oAuthRequest($url, 'DELETE', $parameters);
+    $response = $this->RopOAuthRequest($url, 'DELETE', $parameters);
     if ($this->format === 'json' && $this->decode_json) {
       return json_decode($response);
     }
@@ -180,7 +180,7 @@ class TwitterOAuth {
   /**
    * Format and sign an OAuth / API request
    */
-  function oAuthRequest($url, $method, $parameters, $upload = false) {
+  function RopOAuthRequest($url, $method, $parameters, $upload = false) {
 
     if (strrpos($url, 'https://') !== 0 && strrpos($url, 'http://') !== 0) {
       $url = "{$this->host}{$url}.{$this->format}";
@@ -193,11 +193,11 @@ class TwitterOAuth {
       foreach ($parameters as $k=>&$v)
         if (substr($k, 0, 6) == "oauth_")
           $signable_parameters[$k] = $v;
-      $request = OAuthRequest::from_consumer_and_token($this->consumer, $this->token, $method, $url, $signable_parameters);
+      $request = RopOAuthRequest::from_consumer_and_token($this->consumer, $this->token, $method, $url, $signable_parameters);
       $request->sign_request($this->sha1_method, $this->consumer, $this->token);
       $request->set_parameters($parameters);
     } else {
-      $request = OAuthRequest::from_consumer_and_token($this->consumer, $this->token, $method, $url, $parameters);
+      $request = RopOAuthRequest::from_consumer_and_token($this->consumer, $this->token, $method, $url, $parameters);
       $request->sign_request($this->sha1_method, $this->consumer, $this->token);
     }
 
@@ -339,9 +339,9 @@ class TwitterOAuth {
    **/
   private function getToken($request)
   {
-    $token = OAuthUtil::parse_parameters($request);
+    $token = RopOAuthUtil::parse_parameters($request);
   if(isset($token['oauth_token'], $token['oauth_token_secret']))
-      $this->token = new OAuthConsumer($token['oauth_token'], $token['oauth_token_secret']);
+      $this->token = new RopOAuthConsumer($token['oauth_token'], $token['oauth_token_secret']);
   return $token;
   }
 }

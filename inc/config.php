@@ -1,11 +1,11 @@
 <?php 
 define("CURRENTURL", top_current_page());
-define("CWP_TEXTDOMAIN", "TweetOldPost");
+define("CWP_TEXTDOMAIN", "tweet-old-post");
 define("SETTINGSURL", top_settings_url());
 
 // Settings Array
 $cwp_top_settings = array(
-	'name' 				=> __("Revive Old Post", CWP_TEXTDOMAIN),
+	'name' 				=> "Revive Old Post",
 	'slug' 				=> "TweetOldPost",
 	'oAuth_settings'	=> array( // Based on TOP Dev Application settings.
 	    'oauth_access_token' 		=> "2256465193-KDpAFIYfxpWugX2OU025b1CPs3WB0RJpgA4Gd4h",
@@ -239,30 +239,7 @@ $cwp_top_fields = array(
 			'options'		=> array()
 	),
 
-	'post-type' => array(
-			'id' 					=> '18',
-			'name'  				=> __('Post Type', CWP_TEXTDOMAIN), 
-			'type'					=> 'select',
-			'slug'					=> 'post-type',
-			'option'				=> 'top_opt_post_type',
-			'description'			=> __('What type of items do you want to share?', CWP_TEXTDOMAIN),
-			'options'				=> array(
-				'post'				=> __('Post Only', CWP_TEXTDOMAIN),
-				'page'				=> __('Page Only', CWP_TEXTDOMAIN),
-				'custom-post-type'	=> __('Custom Post Type', CWP_TEXTDOMAIN),
-				'both'				=> __('Post and Page', CWP_TEXTDOMAIN),
-				)
-	),
 
-	'post-type-value' => array(
-			'id' 					=> '19',
-			'name'  				=> __('Custom Post Type', CWP_TEXTDOMAIN), 
-			'type'					=> 'custom-post-type',
-			'slug'					=> 'post-type-value',
-			'option'				=> 'top_opt_post_type_value',
-			'description'			=> __('Select which custom post type', CWP_TEXTDOMAIN),
-			'options'				=> array()
-	),
 
 	'use-image' => array(
 			'id' 					=> '24',
@@ -284,7 +261,20 @@ $cwp_top_fields = array(
 			'options'				=> array()
 	),
 
-	'analytics-tracking' => array(
+
+
+	'post-type' => array(
+			'id' 					=> '18',
+			'name'  				=> __('Post Type', CWP_TEXTDOMAIN), 
+			'type'					=> 'custom-post-type',
+			'slug'					=> 'post-type',
+			'option'				=> 'top_opt_post_type',
+			'description'			=> __('What type of items do you want to share?', CWP_TEXTDOMAIN),
+			'options'				=> array()
+				
+	),
+
+		'analytics-tracking' => array(
 			'id' 					=> '26',
 			'name'  				=> __('Google Analytics Campaign Tracking', CWP_TEXTDOMAIN), 
 			'type'					=> 'checkbox',
@@ -293,16 +283,6 @@ $cwp_top_fields = array(
 			'description'			=> __('Enabling Campaign Tracking you would be able to see how much traffic Revive Old Post generated.', CWP_TEXTDOMAIN),
 			'options'				=> array()
 	),
-
-	/*'tweet-specific-category' => array(
-			'id' 					=> '20',
-			'name'  				=> __('Tweet From Specific Categories', CWP_TEXTDOMAIN), 
-			'type'					=> 'categories-list',
-			'slug'					=> 'tweet-specific-category',
-			'option'				=> 'top_opt_tweet_specific_category',
-			'description'			=> __('Select which categories do you want to tweet from? Blank - All', CWP_TEXTDOMAIN),
-			'options'				=> array()
-	),*/
 
 	'exclude-specific-categories' => array(
 			'id' 					=> '21',

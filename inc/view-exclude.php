@@ -1,18 +1,18 @@
  <?php $twp_obj = new CWP_TOP_Core; ?>
 <div class="cwp_top_wrapper_full cwp_top_wrapper">
 	<div class="announcement clearfix">
-		<h2><?php _e("After 6 months of hard work, we have just released", CWP_TEXTDOMAIN); ?> <b>ThemeIsle</b>, <?php _e("th' island 'o WordPress themes.", CWP_TEXTDOMAIN); ?></h2>
-		<a class="show-me" href="http://themeisle.com/?utm_source=topadmin&utm_medium=announce&utm_campaign=top"><?php _e("Show Me", CWP_TEXTDOMAIN); ?></a>
+		<h2><?php _e("After 6 months of hard work, we have just released", CWP_TEXTDOMAIN); ?> <b>ThemeIsle</b>, <?php _e("the island of WordPress themes.", CWP_TEXTDOMAIN); ?></h2>
+		<a class="show-me" href="https://themeisle.com/?utm_source=topadmin&utm_medium=announce&utm_campaign=top"><?php _e("Show Me", CWP_TEXTDOMAIN); ?></a>
 	</div><!-- end .announcement -->
 
 	<header id="cwp_top_header" class='clearfix'>
-		<h1 class="logo">
+		<h1 class="top-logo" style="float:left">
 			<?php if (function_exists('topProAddNewAccount')) {
-				_e("Revive Old Post PRO", CWP_TEXTDOMAIN);
-			} else _e("Revive Old Post", CWP_TEXTDOMAIN); ?>
+				echo "Revive Old Post PRO";
+			} else echo "Revive Old Post"; ?>
 
 		</h1>
-		<span class="slogan"><?php _e("by", CWP_TEXTDOMAIN); ?> <a href="http://themeisle.com/?utm_source=topadmin&utm_medium=announce&utm_campaign=top">ThemeIsle</a></span>
+		<span class="slogan"><?php _e("by", CWP_TEXTDOMAIN); ?> <a href="https://themeisle.com/?utm_source=topadmin&utm_medium=announce&utm_campaign=top">ThemeIsle</a></span>
 
 		<div class="cwp_top_actions">
 			<a href="https://twitter.com/intent/tweet?text=Check-out%20this%20awesome%20plugin%20-%20&url=http%3A%2F%2Fthemeisle.com%2Fplugins%2Ftweet-old-post-lite%2F&via=themeisle" class="tweet-about-it"><span></span> <?php _e("Show your love", CWP_TEXTDOMAIN); ?></a>
