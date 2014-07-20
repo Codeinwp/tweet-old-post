@@ -1,0 +1,686 @@
+# Copyright (C) 2014 Revive Old Post (Former Tweet Old Post)
+# This file is distributed under the same license as the Revive Old Post (Former Tweet Old Post) package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Revive Old Post (Former Tweet Old Post) 6.8\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/tweet-old-post\n"
+"POT-Creation-Date: 2014-07-16 00:01+0100\n"
+"PO-Revision-Date: 2014-07-16 00:07+0100\n"
+"Last-Translator: Ionut <friends@themeisle.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.7\n"
+"X-Poedit-KeywordsList: _;__;_e\n"
+"X-Poedit-Basepath: ../\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: inc\n"
+
+#: inc/class-remote-notification-client.php:260
+msgid "Dismiss notification"
+msgstr "Dispensar notificação"
+
+#: inc/class-remote-notification-client.php:262
+msgid "Dismiss"
+msgstr "Dispensar"
+
+#: inc/config.php:24
+msgid "Post Content"
+msgstr "Conteúdo da Publicação"
+
+#: inc/config.php:28
+msgid "What do you want to share?"
+msgstr "O que você gostaria de compartilhar?"
+
+#: inc/config.php:30
+msgid "Title Only"
+msgstr "Apenas Título"
+
+#: inc/config.php:31
+msgid "Body Only"
+msgstr "Apenas Mensagem"
+
+#: inc/config.php:32
+msgid "Title & Body"
+msgstr "Título e Mensagem"
+
+#: inc/config.php:33
+msgid "Custom Field"
+msgstr "Campo Personalizado"
+
+#: inc/config.php:39
+msgid "Post Content Custom Field"
+msgstr "Campo Personalizado do Conteúdo da Publicação"
+
+#: inc/config.php:43
+msgid "Which custom field do you want to fetch info from?"
+msgstr "Você deseja extrair informações de qual campo personalizado?"
+
+#: inc/config.php:49
+msgid "Additional Text"
+msgstr "Texto Adicional"
+
+#: inc/config.php:53
+msgid "Text added to your auto posts"
+msgstr "Texto adicionado às suas publicações automáticas"
+
+#: inc/config.php:59
+msgid "Additional Text At"
+msgstr "Texto Adicional em"
+
+#: inc/config.php:63
+msgid "Where do you want the text to be added?"
+msgstr "Onde você deseja que o texto seja adicionado?"
+
+#: inc/config.php:65
+msgid "Beginning of Post"
+msgstr "Início da Publicação"
+
+#: inc/config.php:66
+msgid "End of Post"
+msgstr "Fim da Publicação"
+
+#: inc/config.php:72
+msgid "Include Link"
+msgstr "Incluir Link"
+
+#: inc/config.php:76
+msgid "Include a link to your post?"
+msgstr "Incluir um link para sua publicação?"
+
+#: inc/config.php:78
+msgid "Yes"
+msgstr "Sim"
+
+#: inc/config.php:79
+msgid "No"
+msgstr "Não"
+
+#: inc/config.php:85
+msgid "Fetch URL From Custom Field"
+msgstr "Extrair URL de Campo Personalizado"
+
+#: inc/config.php:89
+msgid "URL will be fetched from a custom field."
+msgstr "A URL será extraída de um campo personalizado."
+
+#: inc/config.php:95
+msgid "URL Custom Field"
+msgstr "Campo Personalizado da URL"
+
+#: inc/config.php:99
+msgid "URL will be fetched from the specified custom field."
+msgstr "A URL será extraída do campo personalizado especificado."
+
+#: inc/config.php:105
+msgid "Use URL Shortner"
+msgstr "Usar Encurtador de URL"
+
+#: inc/config.php:117
+msgid "URL Shortner Service"
+msgstr "Serviço de Encurtador de URL"
+
+#: inc/config.php:121
+msgid "Shorten the link to your post."
+msgstr "Encurte o link para sua publicação."
+
+#: inc/config.php:123
+msgid "wp short url"
+msgstr "url curta wp"
+
+#: inc/config.php:125
+msgid "is.gd"
+msgstr "is.gd"
+
+#: inc/config.php:126
+msgid "bit.ly"
+msgstr "bit.ly"
+
+#: inc/config.php:138
+msgid "Bitly Key"
+msgstr "Chave do Bitly"
+
+#: inc/config.php:148
+msgid "Bitly User"
+msgstr "Usuário do Bitly"
+
+#: inc/config.php:158
+msgid "Hashtags"
+msgstr "Hashtags"
+
+#: inc/config.php:162
+msgid "Include #hashtags in your auto posts?"
+msgstr "Incluir #hashtags em suas publicações automáticas?"
+
+#: inc/config.php:164
+msgid "Don't add any hashtags"
+msgstr "Não adicione nenhuma hashtag"
+
+#: inc/config.php:165
+msgid "Common hashtags for all shares"
+msgstr "Hashtags comuns para todos os compartilhamentos"
+
+#: inc/config.php:166
+msgid "Create hashtags from Categories"
+msgstr "Criar hashtags de Categorias"
+
+#: inc/config.php:167
+msgid "Create hashtags from Tags"
+msgstr "Criar hashtags de Marcações"
+
+#: inc/config.php:168
+msgid "Create hashtags from Custom Fields"
+msgstr "Criar hashtags de Campos Personalizados"
+
+#: inc/config.php:174
+msgid "Common Hashtags"
+msgstr "Hashtags Comuns"
+
+#: inc/config.php:178
+msgid "Specify which hashtags you want to be used. eg. #example, #example2"
+msgstr ""
+"Especifique quais hashtags você quer que sejam usadas. como #exemplo, "
+"#exemplo2"
+
+#: inc/config.php:184
+msgid "Maximum Hashtags Length"
+msgstr "Extensão Máxima das Hashtags"
+
+#: inc/config.php:188
+msgid "Set to 0 (characters) to include all."
+msgstr "Definir para 0 (caracteres) para incluir todos."
+
+#: inc/config.php:194
+msgid "Hashtag Custom Field"
+msgstr "Campo Personalizado de Hashtag"
+
+#: inc/config.php:198
+msgid "Fetch hashtags from specified custom field"
+msgstr "Extraia hashtags do campo personalizado especificado"
+
+#: inc/config.php:204
+msgid "Minimum interval between shares"
+msgstr "Intervalo mínimo entre compartilhamentos"
+
+#: inc/config.php:208
+msgid "Minimum time between shares (Hour/Hours), 0.4 can be used also."
+msgstr ""
+"Tempo mínimo entre compartilhamentos (Hora/Horas), 0,4 também pode ser usado."
+
+#: inc/config.php:214
+msgid "Minimum age of post to be eligible for sharing"
+msgstr "Idade mínima da publicação para ser elegível para compartilhar"
+
+#: inc/config.php:218 inc/config.php:228
+msgid "Day/Days - 0 for Disabled"
+msgstr "Dia/Dias - 0 para Desativada"
+
+#: inc/config.php:224
+msgid "Maximum age of post to be eligible for sharing"
+msgstr "Idade máxima da publicação para ser elegível para compartilhar"
+
+#: inc/config.php:234
+msgid "Number of Posts to share"
+msgstr "Número de Publicações a compartilhar"
+
+#: inc/config.php:238
+msgid "Number of posts to share each time"
+msgstr "Número de publicações a compartilhar cada vez"
+
+#: inc/config.php:246
+msgid "Post with Image"
+msgstr "Publicar com Imagem"
+
+#: inc/config.php:250
+msgid "Check if you want to add the post featured image to the share"
+msgstr ""
+"Marque se deseja adicionar ao compartilhamento a imagem em destaque na "
+"publicação"
+
+#: inc/config.php:256
+msgid "Share old posts more than once"
+msgstr "Compartilhar publicações antigas mais de uma vez"
+
+#: inc/config.php:260
+msgid ""
+"By default once a post is shared it will not be shared again until you stop/"
+"start the plugin"
+msgstr ""
+"Por padrão, quando uma publicação é compartilhada, ela não será "
+"compartilhada novamente até você parar/iniciar o plugin"
+
+#: inc/config.php:268
+msgid "Post Type"
+msgstr "Tipo de Publicação"
+
+#: inc/config.php:272
+msgid "What type of items do you want to share?"
+msgstr "Que tipo de itens que você deseja compartilhar?"
+
+#: inc/config.php:279
+msgid "Google Analytics Campaign Tracking"
+msgstr "Monitoramento de Campanha do Google Analytics"
+
+#: inc/config.php:283
+msgid ""
+"Enabling Campaign Tracking you would be able to see how much traffic Revive "
+"Old Post generated."
+msgstr ""
+"Ao ativar o Monitoramento de Campanha, você pode ver quanto tráfego foi "
+"gerado pelo Reativar Publicação Antiga."
+
+#: inc/config.php:289
+msgid "Exclude Specific Categories"
+msgstr "Excluir Categorias Específicas"
+
+#: inc/config.php:293
+msgid ""
+"Select which categories do you want to exclude to share from? Blank - None"
+msgstr ""
+"Selecione as categorias que você deseja excluir do compartilhamento. Em "
+"branco - Nenhuma"
+
+#: inc/core.php:81
+msgid "Tweet Old Post is already active!"
+msgstr "Tweetar Publicação Antiga já está ativo!"
+
+#: inc/core.php:101
+#, fuzzy
+msgid "ROP is already inactive!"
+msgstr "Tweetar Publicação Antiga já está inativo!"
+
+#: inc/core.php:811
+msgid "Custom Tweet User Interval"
+msgstr "Intervalo do Usuário do Tweet Personalizado"
+
+#: inc/core.php:1127
+msgid "Could not connect to Twitter!"
+msgstr "Não foi possível conectar ao Twitter!"
+
+#: inc/core.php:1385
+msgid "This is only available in the"
+msgstr "Isso só está disponível na"
+
+#: inc/core.php:1385
+msgid "PRO version"
+msgstr "versão PRO"
+
+#: inc/core.php:1644
+msgid "Exclude Posts"
+msgstr "Excluir Publicações"
+
+#: inc/exclude-posts.php:24
+msgid "Tweet Old Post Options Updated."
+msgstr "Opções de Tweetar Publicação Antiga Atualizadas."
+
+#: inc/exclude-posts.php:63
+msgid "No post selected please select a post to be excluded."
+msgstr ""
+"Nenhuma publicação selecionada; selecione uma publicação a ser excluída."
+
+#: inc/exclude-posts.php:70
+msgid "Posts excluded successfully."
+msgstr "Publicações excluídas com sucesso."
+
+#: inc/exclude-posts.php:155
+msgid "Selected Categories"
+msgstr "Categorias Selecionadas"
+
+#: inc/exclude-posts.php:157
+msgid "Filter"
+msgstr "Filtrar"
+
+#: inc/exclude-posts.php:168
+msgid "&laquo;"
+msgstr "«"
+
+#: inc/exclude-posts.php:169
+msgid "&raquo;"
+msgstr "»"
+
+#: inc/exclude-posts.php:177 inc/exclude-posts.php:272
+#, php-format
+msgid "Displaying %s&#8211;%s of %s"
+msgstr "Exibindo %s&#8211;%s de %s"
+
+#: inc/exclude-posts.php:356
+msgid "No Posts found. Review your search or filter criteria/term."
+msgstr ""
+"Nenhuma publicação encontrada. Revise seus critérios/termos de pesquisa ou "
+"de filtro."
+
+#: inc/exclude-posts.php:363
+msgid ""
+"You do not have enough permission to set the option. Please contact your "
+"admin."
+msgstr ""
+"Você não tem permissão suficiente para configurar a opção. Entre em contato "
+"com seu administrador."
+
+#: inc/view-exclude.php:4 inc/view.php:3
+msgid "After 6 months of hard work, we have just released"
+msgstr "Depois de 6 meses de trabalho duro, acabamos de lançar"
+
+#: inc/view-exclude.php:4 inc/view.php:3
+msgid "the island of WordPress themes."
+msgstr "nossos temas de WordPress."
+
+#: inc/view-exclude.php:5 inc/view.php:4
+msgid "Show Me"
+msgstr "Mostrar"
+
+#: inc/view-exclude.php:15 inc/view.php:14
+msgid "by"
+msgstr "por"
+
+#: inc/view-exclude.php:18 inc/view.php:17
+msgid "Show your love"
+msgstr "Você gostou?"
+
+#: inc/view-exclude.php:19 inc/view.php:18
+msgid "Leave A Review"
+msgstr "Faça uma Avaliação"
+
+#: inc/view-exclude.php:30
+msgid "Revive Old Post is set to share on a"
+msgstr "Reativar Publicação Antiga está definido para compartilhar em um"
+
+#: inc/view-exclude.php:32 inc/view.php:31
+msgid "hours interval, "
+msgstr "intervalo de horas, "
+
+#: inc/view-exclude.php:33 inc/view.php:32
+msgid "and the next share will take place in: "
+msgstr "e o próximo compartilhamento será feito em: "
+
+#: inc/view-exclude.php:38
+msgid "Revive Old Post is not set to share!"
+msgstr "Reativar Publicação Antiga não está definido para compartilhar!"
+
+#: inc/view-exclude.php:42
+#, fuzzy
+msgid ""
+"You have selected following POST IDs to be excluded from tweeting: <span "
+"id='excludeList' style='font-weight:bold;font-style:italic;'></span>.\n"
+"Note: If you have made any change and dint hit 'Exclude Selected' button "
+"changes will not be saved. "
+msgstr ""
+"Você selecionou os seguintes IDs de PUBLICAÇÃO a serem excluídos dos tweets: "
+"<span id='excludeList' style='font-weight:bold;font-style:italic;'></span>.\n"
+"Observação: Se você fez alguma alteração e não pressionou o botão \"Excluir "
+"Selecionados\", as alterações não serão salvas. "
+
+#: inc/view.php:29
+msgid "Revive Old Post is set to post on a"
+msgstr "Reativar Publicação Antiga está definido para publicar em um"
+
+#: inc/view.php:37
+msgid "Revive Old Post is not set to post!"
+msgstr "Reativar Publicação Antiga não está definido para publicar!"
+
+#: inc/view.php:42
+msgid ""
+"Once you click start sharing a post will be sent in 15 sec, also here you "
+"can see the error message if is any."
+msgstr ""
+"Depois de clicar em Iniciar Compartilhamento, uma publicação será enviada em "
+"15 segundos; você também pode ver aqui a mensagem de erro, se for o caso."
+
+#: inc/view.php:52
+msgid "Twitter Login"
+msgstr "Login do Twitter"
+
+#: inc/view.php:53
+msgid "Login using your Twitter account."
+msgstr "Fazer login usando sua conta do Twitter."
+
+#: inc/view.php:77 inc/view.php:111
+msgid "Add Account"
+msgstr "Adicionar Conta"
+
+#: inc/view.php:84
+msgid "Facebook Login"
+msgstr "Login do Facebook"
+
+#: inc/view.php:85
+msgid "Login using your Facebook account."
+msgstr "Fazer login usando sua conta do Facebook."
+
+#: inc/view.php:109
+msgid "Authorize"
+msgstr "Autorizar"
+
+#: inc/view.php:118
+msgid "Linkedin Login"
+msgstr "Login do Linkedin"
+
+#: inc/view.php:119
+msgid "Login using your Linkedin account."
+msgstr "Fazer login usando sua conta do Linkedin."
+
+#: inc/view.php:141
+msgid "Add account"
+msgstr "Adicionar conta"
+
+#: inc/view.php:154
+msgid "Select All"
+msgstr "Selecionar Tudo"
+
+#: inc/view.php:165
+msgid "Reset"
+msgstr "Redefinir"
+
+#: inc/view.php:166
+msgid "Save"
+msgstr "Salvar"
+
+#: inc/view.php:167
+msgid "Start Sharing"
+msgstr "Iniciar Compartilhamento"
+
+#: inc/view.php:168
+msgid "Stop Sharing"
+msgstr "Parar Compartilhamento"
+
+#: inc/view.php:169
+msgid "See Sample Post"
+msgstr "Ver Amostra de Publicação"
+
+#: inc/view.php:171
+msgid ""
+"We are not affiliated or partner with Twitter/Facebook/Linkedin in any way."
+msgstr ""
+"Não somos de nenhuma forma afiliados ou parceiros do Twitter/Facebook/"
+"Linkedin."
+
+#: inc/view.php:176
+msgid "Upgrade Tweet Old Post for only $9.99 - Upgrade To Pro Now!"
+msgstr ""
+"Faça Upgrade de Tweetar Publicação Antiga por apenas $9,99 - Faça Upgrade "
+"para Pro Agora!"
+
+#: inc/view.php:177
+msgid "ThemeIsle - Deadly Simple WordPress Themes"
+msgstr "ThemeIsle - Temas de WordPress Extremamente Simples"
+
+#: inc/view.php:178
+msgid "ThemeIsle - Promote Our Themes and Plugins and get 55% Comission"
+msgstr "ThemeIsle - Promova Nossos Temas e Plugins e Ganhe 55% de Comissão"
+
+#: inc/view.php:185
+#, fuzzy
+msgid "Sample Post Preview"
+msgstr "Ver Amostra de Publicação"
+
+#: inc/view.php:187 inc/view.php:196 inc/view.php:242 inc/view.php:289
+msgid "Close preview"
+msgstr ""
+
+#: inc/view.php:188
+msgid "Share now"
+msgstr ""
+
+#: inc/view.php:194
+msgid "Choose a Profile or Page"
+msgstr ""
+
+#: inc/view.php:202
+msgid "Add Your Facebook Account Following The Instructions On The Left"
+msgstr ""
+
+#: inc/view.php:206 inc/view.php:252
+msgid "Go on"
+msgstr ""
+
+#: inc/view.php:207
+msgid "Click on <strong>Create New App</strong> from the top right corner"
+msgstr ""
+
+#: inc/view.php:208
+msgid ""
+"Enter a <strong>Display Name</strong> and <strong>Namespace</strong> and "
+"click on Create App"
+msgstr ""
+
+#: inc/view.php:209
+msgid ""
+"Once you arrive on the app dashboard, copy your <strong>App ID</strong> and "
+"<strong>App Secret</strong> in the fields on the right"
+msgstr ""
+
+#: inc/view.php:210
+msgid ""
+"Go on Settings tab from the left sidebar menu add the contact email and "
+"click on <strong>Add Platform</strong> and select <strong>Website</strong>"
+msgstr ""
+
+#: inc/view.php:211
+msgid ""
+"Copy/Paste this url : <strong><?php echo SETTINGSURL; ?></strong> into App "
+"Domains and Site URL fields and <strong>Save</strong>"
+msgstr ""
+
+#: inc/view.php:212
+msgid ""
+"Go on Status & Review tab and set your app live from the top-right switch."
+msgstr ""
+
+#: inc/view.php:213 inc/view.php:259
+msgid "Now everything is done, click on <strong>Authorize App</strong> button."
+msgstr ""
+
+#: inc/view.php:219
+#, fuzzy
+msgid "Facebook App ID"
+msgstr "Login do Facebook"
+
+#: inc/view.php:220
+msgid "ID from your app created on facebook website."
+msgstr ""
+
+#: inc/view.php:231
+msgid "Facebook App Secret"
+msgstr ""
+
+#: inc/view.php:232
+msgid "Secret from your app created on facebook website. "
+msgstr ""
+
+#: inc/view.php:240 inc/view.php:287
+#, fuzzy
+msgid "Authorize App"
+msgstr "Autorizar"
+
+#: inc/view.php:248
+msgid "Add Your Linkedin Account Following The Instructions On The Left"
+msgstr ""
+
+#: inc/view.php:253
+msgid ""
+"Enter the required details and pay special attention to the further fields :"
+msgstr ""
+
+#: inc/view.php:254
+msgid "Make sure you set Live Status to LIVE"
+msgstr ""
+
+#: inc/view.php:255
+msgid "Default Scope should have r_basicprofile and rw_nus checked"
+msgstr ""
+
+#: inc/view.php:256
+msgid ""
+"Copy/Paste this url : <strong><?php echo SETTINGSURL; ?></strong> into OAuth "
+"2.0 Redirect URLs"
+msgstr ""
+
+#: inc/view.php:257
+msgid ""
+"Once all required fields are filled click on Add Application button, get the "
+"API Key and Secret Key and paste them in the fields on the right"
+msgstr ""
+
+#: inc/view.php:265
+#, fuzzy
+msgid "Linkedin API Key"
+msgstr "Login do Linkedin"
+
+#: inc/view.php:266
+msgid "API Key that you get once you create an app"
+msgstr ""
+
+#: inc/view.php:277
+msgid "Linkedin Secret Key"
+msgstr ""
+
+#: inc/view.php:278
+msgid "Secret Key that you get once you create an app"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Wordpress plugin that helps you to keeps your old posts alive by sharing "
+"them and driving more traffic to them from twitter/facebook or linkedin. It "
+"also helps you to promote your content. You can set time and no of posts to "
+"share to drive more traffic.For questions, comments, or feature requests, <a "
+"href=\"https://themeisle.com/contact/?"
+"utm_source=plugindesc&utm_medium=announce&utm_campaign=top\">contact </a> us!"
+msgstr ""
+"Plugin do Wordpress que ajuda você a manter suas publicações antigas ativas "
+"por compartilhá-las e gerar mais tráfego para elas usando o Twitter/Facebook "
+"ou LinkedIn. Ele também ajuda a promover seu conteúdo. Você pode definir a "
+"hora e o número de publicações a compartilhar para gerar mais tráfego. Par "
+"dúvidas, comentários ou solicitações de recursos, <a href=\"https://themeisle."
+"com/contact/?utm_source=plugindesc&utm_medium=announce&utm_campaign=top"
+"\">contate-nos</a>!"
+
+#~ msgid "Post Only"
+#~ msgstr "Apenas Publicação"
+
+#~ msgid "Page Only"
+#~ msgstr "Apenas Página"
+
+#~ msgid "Custom Post Type"
+#~ msgstr "Tipo de Publicação Personalizada"
+
+#~ msgid "Post and Page"
+#~ msgstr "Publicação e Página"
+
+#~ msgid "Select which custom post type"
+#~ msgstr "Selecione o tipo de publicação personalizada"
+
+#~ msgid ""
+#~ " We just fixed the interrupted posting issue and scheduling issue, if you "
+#~ "don't see any tweets you need to re-authentificate your twitter accounts. "
+#~ "| <a href=\""
+#~ msgstr ""
+#~ " Nós corrigimos o problema de interrupção da publicação e o problema de "
+#~ "agendamento; se você não vir nenhum tweet, precisará autentificar "
+#~ "novamente suas contas do Twitter. | <a href=\""
+
+#~ msgid "ExcludePosts"
+#~ msgstr "ExcluirPublicações"
+
+#~ msgid "Revive Old Post PRO"
+#~ msgstr "Reativar Publicação Antiga PRO"
