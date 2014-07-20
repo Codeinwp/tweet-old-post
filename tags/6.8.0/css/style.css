@@ -88,10 +88,6 @@ strong {
 .cwp_top_wrapper  .option .categories-list .cwp-cat { float: left; width: 50%; margin-bottom: 5px;  }
 .cwp_top_wrapper  .option .categories-list .cwp-cat label { font-size: 13px; }
 
-.cwp_top_wrapper  .option .post-type-list { padding-top: 4px; }
-.cwp_top_wrapper  .option .post-type-list .cwp-cat { float: left; width: 50%; margin-bottom: 5px;  }
-.cwp_top_wrapper  .option .post-type-list .cwp-cat label { font-size: 13px; }
-
 /* Sidebar Styles */
 .cwp_top_wrapper .cwp_top_container .sidebar { float: left; width: 27%; padding: 10px}
 .cwp_top_wrapper .cwp_top_container .sidebar ul { display: block; margin: 0; padding: 0; }
@@ -120,7 +116,7 @@ strong {
 /* Reset Settings Button Styles */
 .cwp_top_wrapper .cwp_top_container .cwp_top_footer .reset-settings { background:#f9866b; text-decoration: none; border-radius: 3px; display: block; height: 30px; border-radius: 3px; font-family: "Open Sans", sans-serif; color:#fff; text-transform: uppercase; font-weight: bold; line-height: 2.3; padding-right: 10px; display:inline-block; margin-top: 14px; margin-right: 5px; } 
 .cwp_top_wrapper .cwp_top_container .cwp_top_footer .reset-settings span { background:url("../img/reset_icon.png") no-repeat center center, #f16848; width: 30px; height: 30px; display: block; float: left; border-radius: 3px 0px 0px 3px; margin-right: 10px; }
-.cwp_top_wrapper .cwp_top_container .cwp_top_footer a { margin: 0 !important; padding: 0; margin-right: 10px !important; margin-bottom:10px!important;}
+.cwp_top_wrapper .cwp_top_container .cwp_top_footer a { margin: 0 !important; padding: 0; margin-right: 10px !important; }
 
 /* Sample Tweet Preview Modal */
 .cwp_top_wrapper .cwp_lkapp_preview,.cwp_top_wrapper .cwp_user_pages { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background:rgba(0,0,0,0.2); display: none; }
@@ -183,7 +179,9 @@ float: left;}
 	border-right: none;
 }
 
-
+.twptop_opt_post_type {
+	display: none;
+}
 .top_left_instructions {
 	float: left;
 	width: 50%;

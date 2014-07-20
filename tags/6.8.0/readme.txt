@@ -12,9 +12,9 @@ Plugin to share about your old posts to get more hits for them and keep them ali
 
 Revive Old Posts is a plugin designed to tweet your older posts to get more traffic. 
 
-This plugin helps you to keeps your old posts alive by sharing them and driving more traffic to them from social networks. It also helps you to promote your content. You can set time and no of posts to share to drive more traffic.For questions, comments, or feature requests, <a href="https://themeisle.com/contact/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">contact us</a>!
+This plugin helps you to keeps your old posts alive by sharing them and driving more traffic to them from social networks. It also helps you to promote your content. You can set time and no of posts to share to drive more traffic.For questions, comments, or feature requests, <a href="http://themeisle.com/contact/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">contact us</a>!
 
-For updates follow https://twitter.com/themeisle If you have anything you can let us know at <a href="https://themeisle.com/contact/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">here</a>
+For updates follow https://twitter.com/themeisle If you have anything you can let us know at <a href="http://themeisle.com/contact/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">here</a>
 
 
 **Fortcoming**
@@ -60,7 +60,7 @@ Alternatively you can also follow the following steps to install the Revive Old 
 == Frequently Asked Questions ==
 
 If you have any questions please get in touch with us at,
-https://themeisle.com/contact/
+http://themeisle.com/contact/
 
 
 **Plugin doesn't post at the regular interval**
@@ -100,7 +100,7 @@ Please note: Despite the fact that error is saying "might be automated", it does
 
 **Any more questions or doubts?**
 
-- Contact us at https://themeisle.com/contact/ 
+- Contact us at http://themeisle.com/contact/ 
 
 
 == Screenshots ==
@@ -110,7 +110,7 @@ Please note: Despite the fact that error is saying "might be automated", it does
 
 for more you can check out 
 
-https://themeisle.com/plugins/tweet-old-post-lite/
+http://themeisle.com/plugins/tweet-old-post-lite/
 
 
 == Changelog ==

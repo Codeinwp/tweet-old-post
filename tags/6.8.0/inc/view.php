@@ -1,17 +1,17 @@
 <div class="cwp_top_wrapper">
-	<!--<div class="announcement clearfix">
-		<h2><?php _e("After 6 months of hard work, we have just released", CWP_TEXTDOMAIN); ?> <b>ThemeIsle</b>, <?php _e("the island of WordPress themes.", CWP_TEXTDOMAIN); ?></h2>
-		<a class="show-me" href="https://themeisle.com/?utm_source=topadmin&utm_medium=announce&utm_campaign=top"><?php _e("Show Me", CWP_TEXTDOMAIN); ?></a>
-	</div> end .announcement -->
+	<div class="announcement clearfix">
+		<h2><?php _e("After 6 months of hard work, we have just released", CWP_TEXTDOMAIN); ?> <b>ThemeIsle</b>, <?php _e("th’ island ‘o WordPress themes.", CWP_TEXTDOMAIN); ?></h2>
+		<a class="show-me" href="http://themeisle.com/?utm_source=topadmin&utm_medium=announce&utm_campaign=top"><?php _e("Show Me", CWP_TEXTDOMAIN); ?></a>
+	</div><!-- end .announcement -->
 
 	<header id="cwp_top_header" class='clearfix'>
 		<h1 class="top_logo">
 			<?php if (function_exists('topProAddNewAccount')) {
-				echo "Revive Old Post PRO";
-			} else echo "Revive Old Post"; ?>
+				_e("Revive Old Post PRO", CWP_TEXTDOMAIN);
+			} else _e("Revive Old Post", CWP_TEXTDOMAIN); ?>
 
 		</h1>
-		<span class="slogan"><?php _e("by", CWP_TEXTDOMAIN); ?> <a href="https://themeisle.com/?utm_source=topadmin&utm_medium=announce&utm_campaign=top">ThemeIsle</a></span>
+		<span class="slogan"><?php _e("by", CWP_TEXTDOMAIN); ?> <a href="http://themeisle.com/?utm_source=topadmin&utm_medium=announce&utm_campaign=top">ThemeIsle</a></span>
 
 		<div class="cwp_top_actions">
 			<a href="https://twitter.com/intent/tweet?text=Check-out%20this%20awesome%20plugin%20-%20&url=http%3A%2F%2Fthemeisle.com%2Fplugins%2Ftweet-old-post-lite%2F&via=themeisle" class="tweet-about-it"><span></span> <?php _e("Show your love", CWP_TEXTDOMAIN); ?></a>
@@ -138,7 +138,7 @@
 					if ($lk_users!==0){ ?>
 						<button id='linkedin-login' class='another-account login' service='linkedin'>+</button>
 					<?php } else { ?>
-						<button id='linkedin-login' class='login' service='linkedin'> <?php _e("Add account", CWP_TEXTDOMAIN); ?> </button>
+						<button id='linkedin-login' class='login' service='linkedin'> <?php _e("Add account", CWP_TEXTDOMAIN) ?> </button>
 					<?php } ?>
 				</div><!-- end .right -->
 			</fieldset><!-- end .option -->
@@ -147,11 +147,11 @@
 			<?php foreach ($cwp_top_fields as $field) { ?>
 					<fieldset class="option twp<?php echo $field['option']; ?>" >
 						<div class="left">
-							<label for="<?php echo $field['option']; ?>"> <?php _e($field['name'],CWP_TEXTDOMAIN); ?> </label>
-							<span class="description"> <?php _e($field['description'],CWP_TEXTDOMAIN); ?> </span>
+							<label for="<?php echo $field['option']; ?>"> <?php echo $field['name'] ?> </label>
+							<span class="description"> <?php echo $field['description']; ?> </span>
 
 							<?php if($field['type'] == 'categories-list') { ?>
-								<button class='select-all'><?php _e("Select All",CWP_TEXTDOMAIN);?></button>
+								<button class='select-all'>Select All</button>
 							<?php } ?>
 
 						</div><!-- end .left -->
@@ -173,51 +173,51 @@
 		
 		<aside class="sidebar">
 			<ul>
-				<li class="upgrade"><a target="_blank" href="https://themeisle.com/plugins/tweet-old-post-pro/?utm_source=bannerright&utm_medium=announce&utm_campaign=top&upgrade=true"> <?php _e("Upgrade Tweet Old Post for only $9.99 - Upgrade To Pro Now!", CWP_TEXTDOMAIN); ?></a></li>
-				<li class="readythemes"><a target="_blank" href="https://themeisle.com/allthemes/?utm_source=bannerright&utm_medium=announce&utm_campaign=top"> <?php _e("ThemeIsle - Deadly Simple WordPress Themes", CWP_TEXTDOMAIN); ?></a></li>
-				<li class="affiliate-readythemes"><a target="_blank" href="https://themeisle.com/contact/?utm_source=bannerright&utm_medium=announce&utm_campaign=top"> <?php _e("ThemeIsle - Promote Our Themes and Plugins and get 55% Comission", CWP_TEXTDOMAIN); ?></a></li>
+				<li class="upgrade"><a target="_blank" href="http://themeisle.com/plugins/tweet-old-post-pro/?utm_source=bannerright&utm_medium=announce&utm_campaign=top&upgrade=true"> <?php _e("Upgrade Tweet Old Post for only $9.99 - Upgrade To Pro Now!", CWP_TEXTDOMAIN); ?></a></li>
+				<li class="readythemes"><a target="_blank" href="http://themeisle.com/allthemes/?utm_source=bannerright&utm_medium=announce&utm_campaign=top"> <?php _e("ThemeIsle - Deadly Simple WordPress Themes", CWP_TEXTDOMAIN); ?></a></li>
+				<li class="affiliate-readythemes"><a target="_blank" href="http://themeisle.com/contact/?utm_source=bannerright&utm_medium=announce&utm_campaign=top"> <?php _e("ThemeIsle - Promote Our Themes and Plugins and get 55% Comission", CWP_TEXTDOMAIN); ?></a></li>
 			</ul>
 		</aside><!-- end .sidebar -->
 	</section><!-- end .cwp_top_container -->
 
 	<div class="cwp_sample_tweet_preview">
 		<div class="cwp_sample_tweet_preview_inner">
-			<h2><?php _e('Sample Post Preview',CWP_TEXTDOMAIN);?></h2>
+			<h2>Sample Post Preview</h2>
 			<span class="sample_tweet">Lorem ipsum dolor sit amet consectetutem! <a href="#">Lorem ipsum</a></span>
-			<button class="top_close_popup"><?php _e('Close preview',CWP_TEXTDOMAIN);?></button>
-			<button class="tweetitnow"><?php _e('Share now',CWP_TEXTDOMAIN);?></button>
+			<button class="top_close_popup">Close preview</button>
+			<button class="tweetitnow">Share Now</button>
 		</div><!-- end .cwp_sample_tweet_preview_inner -->
 	</div><!-- end .cwp_sample_tweet_preview -->
 
 	<div class="cwp_user_pages">
 		<div class="cwp_sample_tweet_preview_inner">
-			<h2><?php _e('Choose a Profile or Page',CWP_TEXTDOMAIN);?></h2>
+			<h2>Choose a Profile or Page</h2>
 			<div class="cwp_user_pages_inner"></div>
-			<button class="top_close_popup"><?php _e('Close preview',CWP_TEXTDOMAIN);?></button>
+			<button class="top_close_popup">Close preview</button>
 					</div><!-- end .cwp_sample_tweet_preview_inner -->
 	</div><!-- end .cwp_sample_tweet_preview -->
 
 	<div class="cwp_fbapp_preview">
 		<div class="cwp_sample_tweet_preview_inner top_auth_inner">
-			<h2><?php _e('Add Your Facebook Account Following The Instructions On The Left',CWP_TEXTDOMAIN);?></h2>
+			<h2>Add Your Facebook Account Following The Instructions On The Left</h2>
 			<span class="sample_tweet top_sample_auth">
 				<div class="top_left_instructions">
 				<ol>
-					<li><?php _e('Go on',CWP_TEXTDOMAIN);?>  <a href="https://developers.facebook.com/apps/" target="_blank">developers.facebook.com/apps</a></li>
-					<li><?php _e('Click on <strong>Create New App</strong> from the top right corner',CWP_TEXTDOMAIN);?> </li>
-					<li><?php _e('Enter a <strong>Display Name</strong> and <strong>Namespace</strong> and click on Create App',CWP_TEXTDOMAIN);?> </li>
-					<li><?php _e('Once you arrive on the app dashboard, copy your <strong>App ID</strong> and <strong>App Secret</strong> in the fields on the right',CWP_TEXTDOMAIN);?> </li>
-					<li><?php _e('Go on Settings tab from the left sidebar menu add the contact email and click on <strong>Add Platform</strong> and select <strong>Website</strong>',CWP_TEXTDOMAIN);?> </li>
-					<li><?php _e('Copy/Paste this url : <strong><?php echo SETTINGSURL; ?></strong> into App Domains and Site URL fields and <strong>Save</strong>',CWP_TEXTDOMAIN);?> </li>
-					<li><?php _e('Go on Status & Review tab and set your app live from the top-right switch.',CWP_TEXTDOMAIN);?> </li>
-					<li><?php _e('Now everything is done, click on <strong>Authorize App</strong> button.',CWP_TEXTDOMAIN);?> </li>
+					<li>Go on <a href="https://developers.facebook.com/apps/" target="_blank">developers.facebook.com/apps</a></li>
+					<li>Click on <strong>Create New App</strong> from the top right corner</li>
+					<li>Enter a <strong>Display Name</strong> and <strong>Namespace</strong> and click on Create App</li>
+					<li>Once you arrive on the app dashboard, copy your <strong>App ID</strong> and <strong>App Secret</strong> in the fields on the right</li>
+					<li>Go on Settings tab from the left sidebar menu add the contact email and click on <strong>Add Platform</strong> and select <strong>Website</strong></li>
+					<li>Copy/Paste this url : <strong><?php echo SETTINGSURL; ?></strong> into App Domains and Site URL fields and <strong>Save</strong></li>
+					<li>Go on Status & Review tab and set your app live from the top-right switch.</li>
+					<li>Now everything is done, click on <strong>Authorize App</strong> button.</li>
 				</ol>
 			</div>
 			<form action="" method="post" id="cwp_top_form" class="clearfix top_auth_form">
 			<fieldset class="option twptop_opt_app_id">
 				<div class="left">
-					<label for="top_opt_app_id"><?php _e('Facebook App ID',CWP_TEXTDOMAIN);?>   </label>
-					<span class="description"><?php _e('ID from your app created on facebook website.',CWP_TEXTDOMAIN);?>   </span>
+					<label for="top_opt_app_id"> Facebook App ID </label>
+					<span class="description"> ID from your app created on facebook website. </span>
 
 					
 				</div><!-- end .left -->
@@ -228,8 +228,8 @@
 
 			<fieldset class="option twptop_opt_app_secret">
 				<div class="left">
-					<label for="top_opt_app_secret"><?php _e('Facebook App Secret',CWP_TEXTDOMAIN);?>  </label>
-					<span class="description"><?php _e('Secret from your app created on facebook website. ',CWP_TEXTDOMAIN);?> </span>
+					<label for="top_opt_app_secret"> Facebook App Secret </label>
+					<span class="description"> Secret from your app created on facebook website. </span>
 					
 				</div><!-- end .left -->
 				<div class="right">
@@ -237,33 +237,33 @@
 				</div><!-- end .right -->
 			</fieldset>
 
-			<button class="top_authorize" service="facebook"><?php _e('Authorize App',CWP_TEXTDOMAIN);?></button>
+			<button class="top_authorize" service="facebook">Authorize App</button>
 			</form>
-		</span><button class="top_close_popup"><?php _e('Close preview',CWP_TEXTDOMAIN);?></button>
+		</span><button class="top_close_popup">Close preview</button>
 		</div><!-- end .cwp_sample_tweet_preview_inner -->
 	</div><!-- end .cwp_sample_tweet_preview -->
 
 		<div class="cwp_lkapp_preview">
 		<div class="cwp_sample_tweet_preview_inner top_auth_inner">
-			<h2><?php _e('Add Your Linkedin Account Following The Instructions On The Left',CWP_TEXTDOMAIN);?></h2>
+			<h2>Add Your Linkedin Account Following The Instructions On The Left</h2>
 			<span class="sample_tweet top_sample_auth">
 				<div class="top_left_instructions">
 				<ol>
-					<li><?php _e('Go on',CWP_TEXTDOMAIN);?> <a href="https://www.linkedin.com/secure/developer?newapp=" target="_blank">linkedin.com/secure/developer?newapp=</a></li>
-					<li><?php _e('Enter the required details and pay special attention to the further fields :',CWP_TEXTDOMAIN);?></li>
-					<li><?php _e('Make sure you set Live Status to LIVE',CWP_TEXTDOMAIN);?> </li>
-					<li><?php _e('Default Scope should have r_basicprofile and rw_nus checked',CWP_TEXTDOMAIN);?></li>
-					<li><?php _e('Copy/Paste this url : <strong><?php echo SETTINGSURL; ?></strong> into OAuth 2.0 Redirect URLs',CWP_TEXTDOMAIN);?></li>
-					<li><?php _e('Once all required fields are filled click on Add Application button, get the API Key and Secret Key and paste them in the fields on the right',CWP_TEXTDOMAIN);?></li>
+					<li>Go on <a href="https://www.linkedin.com/secure/developer?newapp=" target="_blank">linkedin.com/secure/developer?newapp=</a></li>
+					<li>Enter the required details and pay special attention to the further fields :</li>
+					<li>Make sure you set Live Status to LIVE </li>
+					<li>Default Scope should have r_basicprofile and rw_nus checked</li>
+					<li>Copy/Paste this url : <strong><?php echo SETTINGSURL; ?></strong> into OAuth 2.0 Redirect URLs</li>
+					<li>Once all required fields are filled click on Add Application button, get the API Key and Secret Key and paste them in the fields on the right</li>
 					
-					<li><?php _e('Now everything is done, click on <strong>Authorize App</strong> button.',CWP_TEXTDOMAIN);?></li>
+					<li>Now everything is done, click on <strong>Authorize App</strong> button.</li>
 				</ol>
 			</div>
 			<form action="" method="post" id="cwp_top_form" class="clearfix top_auth_form">
 			<fieldset class="option twptop_opt_app_id">
 				<div class="left">
-					<label for="top_opt_app_id"><?php _e('Linkedin API Key',CWP_TEXTDOMAIN);?>  </label>
-					<span class="description"><?php _e('API Key that you get once you create an app',CWP_TEXTDOMAIN);?>  </span>
+					<label for="top_opt_app_id"> Linkedin API Key </label>
+					<span class="description"> API Key that you get once you create an app </span>
 
 					
 				</div><!-- end .left -->
@@ -274,8 +274,8 @@
 
 			<fieldset class="option twptop_opt_app_secret">
 				<div class="left">
-					<label for="top_opt_app_secret"><?php _e('Linkedin Secret Key',CWP_TEXTDOMAIN);?>  </label>
-					<span class="description"><?php _e('Secret Key that you get once you create an app',CWP_TEXTDOMAIN);?> </span>
+					<label for="top_opt_app_secret"> Linkedin Secret Key </label>
+					<span class="description">Secret Key that you get once you create an app </span>
 
 					
 				</div><!-- end .left -->
@@ -284,9 +284,9 @@
 				</div><!-- end .right -->
 			</fieldset>
 
-			<button class="top_authorize" service="linkedin"><?php _e('Authorize App',CWP_TEXTDOMAIN);?></button>
+			<button class="top_authorize" service="linkedin">Authorize App</button>
 			</form>
-		</span><button class="top_close_popup"><?php _e('Close preview',CWP_TEXTDOMAIN);?></button>
+		</span><button class="top_close_popup">Close preview</button>
 		</div><!-- end .cwp_sample_tweet_preview_inner -->
 	</div><!-- end .cwp_sample_tweet_preview -->
 
