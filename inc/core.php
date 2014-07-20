@@ -862,7 +862,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 				}
 			}
 			else
-				$postQueryPostTypes = get_option('top_opt_post_type');
+				$postQueryPostTypes = "'".get_option('top_opt_post_type')."'";
 
 			return $postQueryPostTypes;
 

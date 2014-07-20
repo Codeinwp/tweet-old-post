@@ -115,6 +115,26 @@ https://themeisle.com/plugins/tweet-old-post-lite/
 
 == Changelog ==
 
+**New in v6.8.2**
+
+Fixed no available posts issue
+
+**New in v6.8.1**
+
+Added language support and custom post types
+
+**New in v6.8**
+
+Added Facebook and Linkedin
+
+**New in v6.7**
+
+Fixed interrupted posting issue
+
+**New in v6.6**
+
+Fixed excluded category issue and some small others.
+
 **New in v6.7.7**
 
 Added Facebook and Linkedin, Facebook is also enabled for the free users
