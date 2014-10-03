@@ -337,7 +337,7 @@ if(!function_exists("array_column")) {
 
 function top_current_page(){
 	$pageURL = 'http';
-	if (@$_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
+	if (array_key_exists('HTTPS', $_SERVER) && $_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
 		$pageURL .= "://";
 	if (@$_SERVER["SERVER_PORT"] != "80") {
 		$pageURL .= @$_SERVER["SERVER_NAME"].":".@$_SERVER["SERVER_PORT"].@$_SERVER["REQUEST_URI"];

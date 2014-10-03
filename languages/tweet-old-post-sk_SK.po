@@ -4,130 +4,132 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Revive Old Post (Former Tweet Old Post) 6.8\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/tweet-old-post\n"
-"POT-Creation-Date: 2014-07-16 00:01+0100\n"
-"PO-Revision-Date: 2014-10-03 15:56+0100\n"
-"Last-Translator: Ionut <friends@themeisle.com>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2014-07-15 23:58+0100\n"
+"PO-Revision-Date: 2014-08-05 13:28+0100\n"
+"Last-Translator: Patrik Žec (PATWIST) <patrik.zec@gmail.com>\n"
+"Language-Team: Patrik Žec (PATWIST), www.patwist.com <patrik.zec@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.7\n"
+"X-Generator: Poedit 1.6.4\n"
 "X-Poedit-KeywordsList: _;__;_e\n"
 "X-Poedit-Basepath: ../\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"Language: sk_SK\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: inc\n"
 
 #: inc/class-remote-notification-client.php:260
 msgid "Dismiss notification"
-msgstr "Descartar la notificación"
+msgstr "Zamietnuť oznámenia"
 
 #: inc/class-remote-notification-client.php:262
 msgid "Dismiss"
-msgstr "Descartar"
+msgstr "Zamietnuť"
 
 #: inc/config.php:24
 msgid "Post Content"
-msgstr "Publicar contenido "
+msgstr "Obsah príspevku"
 
 #: inc/config.php:28
 msgid "What do you want to share?"
-msgstr "¿Qué es lo que deseas compartir?"
+msgstr "Čo chcete zdieľať?"
 
 #: inc/config.php:30
 msgid "Title Only"
-msgstr "Solo Título"
+msgstr "Len názov"
 
 #: inc/config.php:31
 msgid "Body Only"
-msgstr "Solo cuerpo"
+msgstr "Len obsah"
 
 #: inc/config.php:32
 msgid "Title & Body"
-msgstr "Título y Cuerpo"
+msgstr "Názov a obsah"
 
 #: inc/config.php:33
 msgid "Custom Field"
-msgstr "Campo personalizado"
+msgstr "Vlastne pole"
 
 #: inc/config.php:39
 msgid "Post Content Custom Field"
-msgstr "Publicar campo de contenido personalizado"
+msgstr "Vlastné polia obsahu príspevku"
 
 #: inc/config.php:43
 msgid "Which custom field do you want to fetch info from?"
-msgstr "¿De qué campo personalizado deseas tomar la información?"
+msgstr "Ktoré vlastné pole chcete vložiť do príspevku?"
 
 #: inc/config.php:49
 msgid "Additional Text"
-msgstr "Texto adicional"
+msgstr "Ďalší text"
 
 #: inc/config.php:53
 msgid "Text added to your auto posts"
-msgstr "Texto añadido a tus autopublicaciones"
+msgstr "Text pridaný do príspevkov"
 
 #: inc/config.php:59
 msgid "Additional Text At"
-msgstr "Texto adicional en"
+msgstr "Ďalší text"
 
 #: inc/config.php:63
 msgid "Where do you want the text to be added?"
-msgstr "¿Dónde quieres que se añada el texto?"
+msgstr "Kam chcete text pridať?"
 
 #: inc/config.php:65
 msgid "Beginning of Post"
-msgstr "Principio de la publicación"
+msgstr "Začiatok príspevku"
 
 #: inc/config.php:66
 msgid "End of Post"
-msgstr "Fin de la publicación"
+msgstr "Koniec príspevku"
 
 #: inc/config.php:72
 msgid "Include Link"
-msgstr "Incluir enlace"
+msgstr "Vložiť odkaz"
 
 #: inc/config.php:76
 msgid "Include a link to your post?"
-msgstr "¿Incluir un enlace a tu publicación?"
+msgstr "Vložiť odkaz do príspevku?"
 
 #: inc/config.php:78
 msgid "Yes"
-msgstr "Sí"
+msgstr "Áno"
 
 #: inc/config.php:79
 msgid "No"
-msgstr "No"
+msgstr "Nie"
 
 #: inc/config.php:85
 msgid "Fetch URL From Custom Field"
-msgstr "Tomar URL del campo personalizado"
+msgstr "Načítať URL z vlastného poľa"
 
 #: inc/config.php:89
 msgid "URL will be fetched from a custom field."
-msgstr "La URL se obtendrá de un campo personalizado."
+msgstr "URL bude načítaná z vlastného poľa"
 
 #: inc/config.php:95
 msgid "URL Custom Field"
-msgstr "Campo personalizado de URL"
+msgstr "URL vlastného poľa"
 
 #: inc/config.php:99
 msgid "URL will be fetched from the specified custom field."
-msgstr "La URL se tomará del campo personalizado especificado."
+msgstr "URL bude načítaná z vlastného poľa"
 
 #: inc/config.php:105
 msgid "Use URL Shortner"
-msgstr "Utilizar acortador de URL"
+msgstr "Použiť skracovač odkazov"
 
 #: inc/config.php:117
 msgid "URL Shortner Service"
-msgstr "Servicio de acortado de URL"
+msgstr "Služba na skrátenie odkazov"
 
 #: inc/config.php:121
 msgid "Shorten the link to your post."
-msgstr "Acortar el enlace a tu publicación."
+msgstr "Skrátenie odkazu v príspevku."
 
 #: inc/config.php:123
 msgid "wp short url"
-msgstr "wp url corta"
+msgstr "wp short url"
 
 #: inc/config.php:125
 msgid "is.gd"
@@ -139,202 +141,192 @@ msgstr "bit.ly"
 
 #: inc/config.php:138
 msgid "Bitly Key"
-msgstr "Clave Bitly"
+msgstr "Bitly kľúč"
 
 #: inc/config.php:148
 msgid "Bitly User"
-msgstr "Usuario Bitly"
+msgstr "Bitly používateľ"
 
 #: inc/config.php:158
 msgid "Hashtags"
-msgstr "Etiquetas"
+msgstr "Hashtagy"
 
 #: inc/config.php:162
 msgid "Include #hashtags in your auto posts?"
-msgstr "¿Incluir #etiquetas en tus autopublicaciones?"
+msgstr "Zahrnúť #hashtagy do príspevkov?"
 
 #: inc/config.php:164
 msgid "Don't add any hashtags"
-msgstr "No agregar ninguna etiqueta"
+msgstr "Nepridávať hashtagy"
 
 #: inc/config.php:165
 msgid "Common hashtags for all shares"
-msgstr "Etiquetas comunes para todas las comparticiones"
+msgstr "Spoločné hashtagy pre všetky zdieľania"
 
 #: inc/config.php:166
 msgid "Create hashtags from Categories"
-msgstr "Crear etiquetas a partir de Categorías"
+msgstr "Použiť hashtagy z názvov kategórií"
 
 #: inc/config.php:167
 msgid "Create hashtags from Tags"
-msgstr "Crear etiquetas a partir de Etiquetas"
+msgstr "Použiť hashtagy zo štítkov"
 
 #: inc/config.php:168
 msgid "Create hashtags from Custom Fields"
-msgstr "Crear etiquetas a partir de Campos Personalizados"
+msgstr "Použiť hashtagy z vlastných polí"
 
 #: inc/config.php:174
 msgid "Common Hashtags"
-msgstr "Etiquetas comunes"
+msgstr "Spoločné hashtagy"
 
 #: inc/config.php:178
 msgid "Specify which hashtags you want to be used. eg. #example, #example2"
-msgstr ""
-"Especifica las etiquetas que deseas utilizar. Por ejemplo. #ejemplo, "
-"#ejemplo2"
+msgstr "Vyberte ktoré hashtagy chcete použiť. napríklad. #priklad1, #priklad2"
 
 #: inc/config.php:184
 msgid "Maximum Hashtags Length"
-msgstr "Longitud máxima de las etiquetas"
+msgstr "Maximálna dĺžka hashtagu"
 
 #: inc/config.php:188
 msgid "Set to 0 (characters) to include all."
-msgstr "Pon este valor a 0 (caracteres) para incluir todos."
+msgstr "Zadajte 0 znakov pre vloženie akéhokoľvek dlhého hashtagu."
 
 #: inc/config.php:194
 msgid "Hashtag Custom Field"
-msgstr "Campo personalizado de etiqueta"
+msgstr "Vlastné polia hashtagy"
 
 #: inc/config.php:198
 msgid "Fetch hashtags from specified custom field"
-msgstr "Tomar etiquetas del campo personalizado especificado"
+msgstr "Načítať hashtagy z vlastného poľa"
 
 #: inc/config.php:204
 msgid "Minimum interval between shares"
-msgstr "Intervalo mínimo entre comparticiones"
+msgstr "Minimálny interval medzi zdieľaniami"
 
 #: inc/config.php:208
 msgid "Minimum time between shares (Hour/Hours), 0.4 can be used also."
 msgstr ""
-"Tiempo mínimo entre comparticiones (hora / horas), También se puede usar 0.4."
+"Minimálny časový interval medzi zdieľaniami (Hodina/Hodiny), 0.3 pre pol "
+"hodiny"
 
 #: inc/config.php:214
 msgid "Minimum age of post to be eligible for sharing"
-msgstr ""
-"Antigüedad mínima de la publicación para poder ser seleccionada para ser "
-"compartida"
+msgstr "Minimálny vek príspevku aby mohol byť zdieľaný"
 
 #: inc/config.php:218 inc/config.php:228
 msgid "Day/Days - 0 for Disabled"
-msgstr "Día / días - 0 para deshabilitar"
+msgstr "Deň/Dni - 0 pre zrušenie"
 
 #: inc/config.php:224
 msgid "Maximum age of post to be eligible for sharing"
-msgstr ""
-"Antigüedad máxima de la publicación para poder ser seleccionada para ser "
-"compartida"
+msgstr "Maximálny vek príspevku aby mohol byť zdieľaný"
 
 #: inc/config.php:234
 msgid "Number of Posts to share"
-msgstr "Número de publicaciones a compartir"
+msgstr "Počet príspevkov pre zdieľanie"
 
 #: inc/config.php:238
 msgid "Number of posts to share each time"
-msgstr "Número de publicaciones a compartir cada vez"
+msgstr "Počet príspevkov pre zdieľanie v určitom čase"
 
 #: inc/config.php:246
 msgid "Post with Image"
-msgstr "Publicar con imagen"
+msgstr "Príspevkov z obrázkom"
 
 #: inc/config.php:250
 msgid "Check if you want to add the post featured image to the share"
-msgstr ""
-"Comprueba si quieres agregar la imagen destacada del artículo en la "
-"compartición"
+msgstr "Zariačknite ak chcete pridať obrázok na zdieľanie"
 
 #: inc/config.php:256
 msgid "Share old posts more than once"
-msgstr "Compartir publicaciones antiguas más de una vez"
+msgstr "Zdieľať staré príspevky viackrát"
 
 #: inc/config.php:260
 msgid ""
 "By default once a post is shared it will not be shared again until you stop/"
 "start the plugin"
 msgstr ""
-"De forma predeterminada, una vez se haya compartido una publicación, no se "
-"volverá a compartir hasta que se detenga y se inicie el plugin"
+"Predvolené nastavenie je že ak sa raz príspevok zdieľa nebude zdieľaný "
+"viackrát pokiaľ nedeaktivujete a aktivujete plugin."
 
 #: inc/config.php:268
 msgid "Post Type"
-msgstr "Tipo de publicación"
+msgstr "Typ príspevku"
 
 #: inc/config.php:272
 msgid "What type of items do you want to share?"
-msgstr "¿Qué tipo de elementos quieres compartir?"
+msgstr "Aký typ položiek chcete zdieľať?"
 
 #: inc/config.php:279
 msgid "Google Analytics Campaign Tracking"
-msgstr "Seguimiento de campaña de Google Analytics"
+msgstr "Google Analytics sledovacia kampaň"
 
 #: inc/config.php:283
 msgid ""
 "Enabling Campaign Tracking you would be able to see how much traffic Revive "
 "Old Post generated."
 msgstr ""
-"Habilitando el seguimiento de campaña podrás ver cuánto tráfico ha generado "
-"Revive Old Post."
+"Povolením sledovania budete môcť vidieť koľko návštevnosti máte vďaka Revive "
+"Old Post."
 
 #: inc/config.php:289
 msgid "Exclude Specific Categories"
-msgstr "Excluir categorías específicas"
+msgstr "Vylúčenie špecifických kategórií"
 
 #: inc/config.php:293
 msgid ""
 "Select which categories do you want to exclude to share from? Blank - None"
-msgstr ""
-"Selecciona las categorías que deseas excluir de la compartición. En blanco - "
-"ninguna"
+msgstr "Vyberte, ktoré kategórie chcete vylúčiť zo zdieľania, prázdne - žiadne"
 
 #: inc/core.php:81
 msgid "Tweet Old Post is already active!"
-msgstr "¡Ya está activado Tweet Old Post!"
+msgstr "Tweet Old Post už je aktívny!"
 
 #: inc/core.php:101
-#, fuzzy
 msgid "ROP is already inactive!"
-msgstr "¡Ya está desactivado Tweet Old Post!"
+msgstr "ROP už je neaktívne!"
 
 #: inc/core.php:811
 msgid "Custom Tweet User Interval"
-msgstr "Intervalo de usuario de tuit personalizado"
+msgstr "Vlastný interval tweetovania"
 
 #: inc/core.php:1127
 msgid "Could not connect to Twitter!"
-msgstr "¡Ha fallado la conexión a Twitter!"
+msgstr "Nedá sa pripojiť na Twitter!"
 
 #: inc/core.php:1385
 msgid "This is only available in the"
-msgstr "Solo está disponible en la"
+msgstr "K dispozícií len v"
 
 #: inc/core.php:1385
 msgid "PRO version"
-msgstr "versión PRO"
+msgstr "PRO verzia"
 
 #: inc/core.php:1644
 msgid "Exclude Posts"
-msgstr "Excluir publicaciones"
+msgstr "Vylúčiť príspevky"
 
 #: inc/exclude-posts.php:24
 msgid "Tweet Old Post Options Updated."
-msgstr "Actualizadas las opciones de Tweet Old Post."
+msgstr "Nastavenia Tweet Ols Post aktualizované."
 
 #: inc/exclude-posts.php:63
 msgid "No post selected please select a post to be excluded."
 msgstr ""
-"No se ha seleccionado ninguna publicación, por favor selecciona una "
-"publicación a excluir."
+"Nie sú vybrané žiadne príspevky, prosím vyberte príspevky, ktoré majú byť "
+"vylúčené."
 
 #: inc/exclude-posts.php:70
 msgid "Posts excluded successfully."
-msgstr "Publicaciones excluidas con éxito."
+msgstr "Úspešné vylúčenie príspevkov."
 
 #: inc/exclude-posts.php:155
 msgid "Selected Categories"
-msgstr "Categorías seleccionadas"
+msgstr "Vybrané kategórie"
 
 #: inc/exclude-posts.php:157
 msgid "Filter"
-msgstr "Filtro"
+msgstr "Filter"
 
 #: inc/exclude-posts.php:168
 msgid "&laquo;"
@@ -347,61 +339,57 @@ msgstr "&raquo;"
 #: inc/exclude-posts.php:177 inc/exclude-posts.php:272
 #, php-format
 msgid "Displaying %s&#8211;%s of %s"
-msgstr "Mostrando %s&#8211;%s de %s"
+msgstr "Zobrazujem %s&#8211;%s z %s"
 
 #: inc/exclude-posts.php:356
 msgid "No Posts found. Review your search or filter criteria/term."
-msgstr ""
-"No se han encontrado publicaciones. Revisa las palabras o criterios de "
-"filtro de la búsqueda."
+msgstr "Nenájdené žiadne príspevky. Skontrolujte zadané kritéria."
 
 #: inc/exclude-posts.php:363
 msgid ""
 "You do not have enough permission to set the option. Please contact your "
 "admin."
-msgstr ""
-"No tienes los permisos necesarios para modificar esta opción.. Por favor, "
-"ponte en contacto con tu administrador."
+msgstr "Nemáte dostatočné povolenia na nastavenie. Prosím kontakujte správcu."
 
 #: inc/view-exclude.php:4 inc/view.php:3
 msgid "After 6 months of hard work, we have just released"
-msgstr "Después de 6 meses de duro trabajo, acabamos de lanzar"
+msgstr "Po 6. mesiacoch tvrdej práce sme práve vydali"
 
 #: inc/view-exclude.php:4 inc/view.php:3
 msgid "the island of WordPress themes."
-msgstr "la isla de temas de WordPress."
+msgstr "ostrov WordPress tém."
 
 #: inc/view-exclude.php:5 inc/view.php:4
 msgid "Show Me"
-msgstr "Muéstramela"
+msgstr "Zobraziť"
 
 #: inc/view-exclude.php:15 inc/view.php:14
 msgid "by"
-msgstr "por"
+msgstr "podľa"
 
 #: inc/view-exclude.php:18 inc/view.php:17
 msgid "Show your love"
-msgstr "Muestra tu amor"
+msgstr "Ukážte svoju lásku"
 
 #: inc/view-exclude.php:19 inc/view.php:18
 msgid "Leave A Review"
-msgstr "Deja una reseña"
+msgstr "Zanechať hodnotenie/komentár"
 
 #: inc/view-exclude.php:30
 msgid "Revive Old Post is set to share on a"
-msgstr "Revive Old Post está configurado para compartir en un"
+msgstr "Revive Old Post je nastavený pre zdieľanie na"
 
 #: inc/view-exclude.php:32 inc/view.php:31
 msgid "hours interval, "
-msgstr "intervalo de horas, "
+msgstr "hodinové intervaly,"
 
 #: inc/view-exclude.php:33 inc/view.php:32
 msgid "and the next share will take place in: "
-msgstr "y la siguiente compartición se llevará a cabo en: "
+msgstr "a ďalšie zdieľanie bude v:"
 
 #: inc/view-exclude.php:38
 msgid "Revive Old Post is not set to share!"
-msgstr "¡Revive Old Post no está configurado para compartir!"
+msgstr "Revive Old Post nie je nastavený na zdieľanie"
 
 #: inc/view-exclude.php:42
 msgid ""
@@ -410,239 +398,247 @@ msgid ""
 "Note: If you have made any change and dint hit 'Exclude Selected' button "
 "changes will not be saved. "
 msgstr ""
-"Has seleccionado excluir los siguientes IDs de publicación de los tuits: "
-"<span id='excludeList' style='font-weight:bold;font-style:italic;'> </ "
-"span> \n"
-" Nota:. Si has realizado algún cambio sin darle al botón 'Excluir "
-"seleccionados', los cambios no se guardarán. "
+"Vybrali ste nasledujúce ID príspevkov, ktoré budú vylúčené zo zdieľania: "
+"<span id='excludeList' style='font-weight:bold;font-style:italic;'></span>.\n"
+"Poznámka: Ak ste vykonali akékoľvek zmeny a neklikli na tlačidlo \"Vylúčiť "
+"vybrané\", zmeny nebudú uložené."
 
 #: inc/view.php:29
 msgid "Revive Old Post is set to post on a"
-msgstr "Revive Old Post está configurado para publicar en"
+msgstr "Revive Old Post je nastavený na zdieľanie na"
 
 #: inc/view.php:37
 msgid "Revive Old Post is not set to post!"
-msgstr "¡Revive Old Post no está configurado para publicar!"
+msgstr "Revive Old Post nie je nastavený na zdieľanie!"
 
 #: inc/view.php:42
 msgid ""
 "Once you click start sharing a post will be sent in 15 sec, also here you "
 "can see the error message if is any."
 msgstr ""
-"Una vez hagas clic en Empezar a compartir, se enviará una publicación en 15 "
-"segundos, también aquí podrás ver el mensaje de error si ocurre algo."
+"Po kliknutí na tlačidlo spustiť zdieľanie bude príspevok zdieľaný za 15 "
+"sekúnd, taktiež tu budete môcť vidieť prípadne chybové hlásenia."
 
 #: inc/view.php:52
 msgid "Twitter Login"
-msgstr "Acceder con Twitter"
+msgstr "Twitter prihlásenie"
 
 #: inc/view.php:53
 msgid "Login using your Twitter account."
-msgstr "Accede utilizando tu cuenta de Twitter."
+msgstr "Prihlásiť sa pomocou Twitter účtu."
 
 #: inc/view.php:77 inc/view.php:111
 msgid "Add Account"
-msgstr "Añadir Cuenta"
+msgstr "Pridať účet"
 
 #: inc/view.php:84
 msgid "Facebook Login"
-msgstr "Acceder con Facebook"
+msgstr "Facebook prihlásenie"
 
 #: inc/view.php:85
 msgid "Login using your Facebook account."
-msgstr "Accede utilizando tu cuenta de Facebook."
+msgstr "Prihlásiť sa pomocou Facebook účtu."
 
 #: inc/view.php:109
 msgid "Authorize"
-msgstr "Autorizar"
+msgstr "Autorizovať"
 
 #: inc/view.php:118
 msgid "Linkedin Login"
-msgstr "Acceso con Linkedin"
+msgstr "Linkedin prihlásenie"
 
 #: inc/view.php:119
 msgid "Login using your Linkedin account."
-msgstr "Accede utilizando tu cuenta de Linkedin."
+msgstr "Prihlásiť sa pomocou LinkedIn účtu."
 
 #: inc/view.php:141
 msgid "Add account"
-msgstr "Agregar cuenta"
+msgstr "Pridať účet"
 
 #: inc/view.php:154
 msgid "Select All"
-msgstr "Seleccionar todo"
+msgstr "Vybrať všetko"
 
 #: inc/view.php:165
 msgid "Reset"
-msgstr "Restablecer"
+msgstr "Obnoviť"
 
 #: inc/view.php:166
 msgid "Save"
-msgstr "Guardar"
+msgstr "Uložiť"
 
 #: inc/view.php:167
 msgid "Start Sharing"
-msgstr "Empezar a compartir"
+msgstr "Spustiť zdieľanie"
 
 #: inc/view.php:168
 msgid "Stop Sharing"
-msgstr "Dejar de compartir"
+msgstr "Vypnúť zdieľanie"
 
 #: inc/view.php:169
 msgid "See Sample Post"
-msgstr "Ver una publicación de muestra"
+msgstr "Pozrieť ukážkový príspevok"
 
 #: inc/view.php:171
 msgid ""
 "We are not affiliated or partner with Twitter/Facebook/Linkedin in any way."
-msgstr ""
-"No estamos afiliados o asociados con Twitter / Facebook / Linkedin de "
-"ninguna manera."
+msgstr "Nie sme partnerom Twitteru/Facebooku/LinkedInu."
 
 #: inc/view.php:176
 msgid "Upgrade Tweet Old Post for only $9.99 - Upgrade To Pro Now!"
-msgstr ""
-"Actualiza Tweet Old Post por solo 9,99 dólares - ¡Actualizar a Pro Ahora!"
+msgstr "Prejdite na PRO verziu Tweet Old Post len za 9,99$!"
 
 #: inc/view.php:177
 msgid "ThemeIsle - Deadly Simple WordPress Themes"
-msgstr "ThemeIsle - Temas de WordPress increíblemente sencillos"
+msgstr "ThemeIsle - Jednoduché WordPress témy"
 
 #: inc/view.php:178
 msgid "ThemeIsle - Promote Our Themes and Plugins and get 55% Comission"
-msgstr ""
-"ThemeIsle - Haz publicidad de nuestros temas y plugins y consigue una "
-"comisión del 55%"
+msgstr "ThemeIsle - Propagujte naše témy a pluginy a získajte 55% províziu"
 
 #: inc/view.php:185
-#, fuzzy
 msgid "Sample Post Preview"
-msgstr "Ver una publicación de muestra"
+msgstr "Ukážka príspevku"
 
 #: inc/view.php:187 inc/view.php:196 inc/view.php:242 inc/view.php:289
 msgid "Close preview"
-msgstr ""
+msgstr "Zatvoriť ukážku"
 
 #: inc/view.php:188
 msgid "Share now"
-msgstr ""
+msgstr "Zdieľať teraz"
 
 #: inc/view.php:194
 msgid "Choose a Profile or Page"
-msgstr ""
+msgstr "Vyberte profil alebo stránku"
 
 #: inc/view.php:202
 msgid "Add Your Facebook Account Following The Instructions On The Left"
-msgstr ""
+msgstr "Pridajte svoj ​Facebook účet podľa pokynov na ľavej strane"
 
 #: inc/view.php:206 inc/view.php:252
 msgid "Go on"
-msgstr ""
+msgstr "Prejsť na"
 
 #: inc/view.php:207
 msgid "Click on <strong>Create New App</strong> from the top right corner"
 msgstr ""
+"Kliknite na <strong>Vytvoriť novú aplikáciu</strong> v pravom hornom horu"
 
 #: inc/view.php:208
 msgid ""
 "Enter a <strong>Display Name</strong> and <strong>Namespace</strong> and "
 "click on Create App"
 msgstr ""
+"Zadajte <strong>Zobraziť názov</strong>a <strong>Meno</strong> a kliknite na "
+"Vytvoriť aplikáciu"
 
 #: inc/view.php:209
 msgid ""
 "Once you arrive on the app dashboard, copy your <strong>App ID</strong> and "
 "<strong>App Secret</strong> in the fields on the right"
 msgstr ""
+"Ak sa dostanete do nástenky aplikácie, skopárojtu vaše <strong>ID aplikácie</"
+"strong> a <strong>Secret kľúč</strong> do polí napravo"
 
 #: inc/view.php:210
 msgid ""
 "Go on Settings tab from the left sidebar menu add the contact email and "
 "click on <strong>Add Platform</strong> and select <strong>Website</strong>"
 msgstr ""
+"Prejdite do nastavení v ľavom bočnom menu, pridajte kontaktný e-mail a "
+"kliknite na <strong>Pridať platformu</strong> a vyberte <strong>Webstránku</"
+"strong>"
 
 #: inc/view.php:211
 msgid ""
 "Copy/Paste this url : <strong><?php echo SETTINGSURL; ?></strong> into App "
 "Domains and Site URL fields and <strong>Save</strong>"
 msgstr ""
+"Kopírovať/vložiť túto URL : <strong><?php echo SETTINGSURL; ?></strong> do "
+"domén aplikácie a poľa pre URL stránky a <strong>Uložiť</strong>"
 
 #: inc/view.php:212
 msgid ""
 "Go on Status & Review tab and set your app live from the top-right switch."
 msgstr ""
+"Prejdite na kartu Stav & Revízia a spustite vašu aplikáciu napravo hore."
 
 #: inc/view.php:213 inc/view.php:259
 msgid "Now everything is done, click on <strong>Authorize App</strong> button."
 msgstr ""
+"Teraz je všetko dokončené, kliknite na tlačidlo <strong>Autorizácia "
+"aplikácie</ strong>."
 
 #: inc/view.php:219
-#, fuzzy
 msgid "Facebook App ID"
-msgstr "Acceder con Facebook"
+msgstr "Facebook aplik. ID"
 
 #: inc/view.php:220
 msgid "ID from your app created on facebook website."
-msgstr ""
+msgstr "ID vytvorenej facebook aplikácie."
 
 #: inc/view.php:231
 msgid "Facebook App Secret"
-msgstr ""
+msgstr "Facebook aplik. Secret"
 
 #: inc/view.php:232
 msgid "Secret from your app created on facebook website. "
-msgstr ""
+msgstr "Secret z Facebook aplikácie."
 
 #: inc/view.php:240 inc/view.php:287
-#, fuzzy
 msgid "Authorize App"
-msgstr "Autorizar"
+msgstr "Autorizovať aplikáciu"
 
 #: inc/view.php:248
 msgid "Add Your Linkedin Account Following The Instructions On The Left"
-msgstr ""
+msgstr "Pridajte svoj ​​LinkedIn účet podľa pokynov na ľavej strane"
 
 #: inc/view.php:253
 msgid ""
 "Enter the required details and pay special attention to the further fields :"
 msgstr ""
+"Zadajte požadované údaje a venujte špeciálnu pozornosť nasledujúcim poliam:"
 
 #: inc/view.php:254
 msgid "Make sure you set Live Status to LIVE"
-msgstr ""
+msgstr "Uistite sa že ste nastavili živý stav"
 
 #: inc/view.php:255
 msgid "Default Scope should have r_basicprofile and rw_nus checked"
-msgstr ""
+msgstr "Predvolený predmet by mal mať  r_basicprofile a rw_nus začiarknuté"
 
 #: inc/view.php:256
 msgid ""
 "Copy/Paste this url : <strong><?php echo SETTINGSURL; ?></strong> into OAuth "
 "2.0 Redirect URLs"
 msgstr ""
+"Kopírovať/vložiť túto URL : <strong><?php echo SETTINGSURL; ?></strong> do "
+"OAuth 2.0 presmerovanie URL adries"
 
 #: inc/view.php:257
 msgid ""
 "Once all required fields are filled click on Add Application button, get the "
 "API Key and Secret Key and paste them in the fields on the right"
 msgstr ""
+"Ak vyplníte všetky povinné polia kliknite na Pridať aplikáciu, získajte API "
+"kľúč a Secret kľúč a vložte ichdo to polí napravo"
 
 #: inc/view.php:265
-#, fuzzy
 msgid "Linkedin API Key"
-msgstr "Acceso con Linkedin"
+msgstr "Linkedin API kľúč"
 
 #: inc/view.php:266
 msgid "API Key that you get once you create an app"
-msgstr ""
+msgstr "API kľúč, ktorý ziskáte po vytvorení aplikácie"
 
 #: inc/view.php:277
 msgid "Linkedin Secret Key"
-msgstr ""
+msgstr "Linkedin Secret kľúč"
 
 #: inc/view.php:278
 msgid "Secret Key that you get once you create an app"
-msgstr ""
+msgstr "Secret kľúč, ktorý ziskáte po vytvorení aplikácie"
 
 #. Description of the plugin/theme
 msgid ""
@@ -653,31 +649,10 @@ msgid ""
 "href=\"https://themeisle.com/contact/?"
 "utm_source=plugindesc&utm_medium=announce&utm_campaign=top\">contact </a> us!"
 msgstr ""
-"Plugin para Wordpress que ayuda a mantener vivos tus publicaciones antiguas "
-"compartiéndolas y atrayendo más tráfico desde twitter / facebook o linkedin. "
-"También te ayuda a promocionar tu contenido. Puedes establecer el tiempo y "
-"número de publicaciones a compartir para atraer más tráfico. Para preguntas, "
-"comentarios o peticiones, <a href=\"https://themeisle.com/contact/?"
-"utm_source=plugindesc&utm_medium=announce&utm_campaign=top\">¡Ponte en "
-"contacto </a> con nosotros!"
-
-#~ msgid "Post Only"
-#~ msgstr "Solo la publicación"
-
-#~ msgid "Page Only"
-#~ msgstr "Solo la página"
-
-#~ msgid "Custom Post Type"
-#~ msgstr "Tipo de publicación personalizada"
-
-#~ msgid "Post and Page"
-#~ msgstr "Publicación y página"
-
-#~ msgid "Select which custom post type"
-#~ msgstr "Selecciona el tipo de publicación personalizada"
-
-#~ msgid "ExcludePosts"
-#~ msgstr "Excluir publicaciones"
-
-#~ msgid "Revive Old Post PRO"
-#~ msgstr "Revive Old Post PRO"
+"WordPress plugin, ktorý vám pomôže udržiavať svoje staré príspevky nažive "
+"ich zdieľaním na Twitteri, Facebooku alebo LinkedIn. To prinesie viac "
+"návštevníkov. Môžete nastaviť čas a počet príspevkov na zdieľanie. Ak máte "
+"akékoľvek otázky, primomienky alebo požiadavky na nové funkcie, <a href="
+"\"https://themeisle.com/contact/?"
+"utm_source=plugindesc&utm_medium=announce&utm_campaign=top\">kontaktujte </"
+"a> nás!"

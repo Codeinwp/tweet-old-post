@@ -208,7 +208,7 @@
 					<li><?php _e('Enter a <strong>Display Name</strong> and <strong>Namespace</strong> and click on Create App',CWP_TEXTDOMAIN);?> </li>
 					<li><?php _e('Once you arrive on the app dashboard, copy your <strong>App ID</strong> and <strong>App Secret</strong> in the fields on the right',CWP_TEXTDOMAIN);?> </li>
 					<li><?php _e('Go on Settings tab from the left sidebar menu add the contact email and click on <strong>Add Platform</strong> and select <strong>Website</strong>',CWP_TEXTDOMAIN);?> </li>
-					<li><?php _e('Copy/Paste this url : <strong><?php echo SETTINGSURL; ?></strong> into App Domains and Site URL fields and <strong>Save</strong>',CWP_TEXTDOMAIN);?> </li>
+					<li><?php printf(__('Copy/Paste this url : <strong>%s</strong> into App Domains and Site URL fields and <strong>Save</strong>',CWP_TEXTDOMAIN),SETTINGSURL);?> </li>
 					<li><?php _e('Go on Status & Review tab and set your app live from the top-right switch.',CWP_TEXTDOMAIN);?> </li>
 					<li><?php _e('Now everything is done, click on <strong>Authorize App</strong> button.',CWP_TEXTDOMAIN);?> </li>
 				</ol>
@@ -253,7 +253,7 @@
 					<li><?php _e('Enter the required details and pay special attention to the further fields :',CWP_TEXTDOMAIN);?></li>
 					<li><?php _e('Make sure you set Live Status to LIVE',CWP_TEXTDOMAIN);?> </li>
 					<li><?php _e('Default Scope should have r_basicprofile and rw_nus checked',CWP_TEXTDOMAIN);?></li>
-					<li><?php _e('Copy/Paste this url : <strong><?php echo SETTINGSURL; ?></strong> into OAuth 2.0 Redirect URLs',CWP_TEXTDOMAIN);?></li>
+					<li><?php printf(__('Copy/Paste this url : <strong>%s</strong> into App Domains and Site URL fields and <strong>Save</strong>',CWP_TEXTDOMAIN),SETTINGSURL);?> </li>
 					<li><?php _e('Once all required fields are filled click on Add Application button, get the API Key and Secret Key and paste them in the fields on the right',CWP_TEXTDOMAIN);?></li>
 					
 					<li><?php _e('Now everything is done, click on <strong>Authorize App</strong> button.',CWP_TEXTDOMAIN);?></li>
