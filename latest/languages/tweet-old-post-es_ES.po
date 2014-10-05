@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Revive Old Post (Former Tweet Old Post) 6.8\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/tweet-old-post\n"
 "POT-Creation-Date: 2014-07-16 00:01+0100\n"
-"PO-Revision-Date: 2014-07-16 00:07+0100\n"
+"PO-Revision-Date: 2014-10-03 15:56+0100\n"
 "Last-Translator: Ionut <friends@themeisle.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -206,7 +206,7 @@ msgstr "Intervalo mínimo entre comparticiones"
 #: inc/config.php:208
 msgid "Minimum time between shares (Hour/Hours), 0.4 can be used also."
 msgstr ""
-"Tiempo mínimo entre comparticiones (hora / horas), También se puede usar 0,4."
+"Tiempo mínimo entre comparticiones (hora / horas), También se puede usar 0.4."
 
 #: inc/config.php:214
 msgid "Minimum age of post to be eligible for sharing"

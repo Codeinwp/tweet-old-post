@@ -209,7 +209,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 			// Save the result in a var for future use.
 			$returnedPost = $wpdb->get_results($query);
-			//echo $query;
+			
 			return $returnedPost;
 		}
 
@@ -301,17 +301,16 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			$notice = get_option('cwp_topnew_notice');
 				
 			//$notice = strpos($notice,'UPDAT');
-			if (is_object($notice) && $notice->errors[0]->message)
+			if (is_object($notice) && isset($notice->errors) &&  $notice->errors[0]->message)
 				echo "Error for your last tweet was :'".$notice->errors[0]->message."'";
 			else if ( $notice !== "OK" && !is_object($notice) && $this->findInString($notice,'UPDAT')===false && $notice!=="")
 				echo "Error for your last post was :'".$notice."'";
 			else
-				if (is_object($notice) && $notice->text || $notice=="OK" || strpos($notice,'UPDAT')!==false) {
+				if (is_object($notice) && isset($notice->text) || $notice=="OK" || strpos($notice,'UPDAT')!==false) {
 				echo "Congrats! Your last post was revived successfully";
 			} else if ($notice!="") {
 				echo "Error for your last post was : ".$notice;
 			}
-
 			
 			die();
 		}
@@ -387,7 +386,21 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			}
 		}
 
+		public function getStrLen($string) {
+			
+			if (function_exists("mb_strlen"))
+				return mb_strlen($string);
+			else
+				return strlen($string);
+		}
 
+		public function ropSubstr($string,$nr1,$nr2	) {
+			if (function_exists("mb_substr")) {
+				return mb_substr($string,$nr1,$nr2);
+			}
+			else
+				return substr($string,$nr1, $nr2);
+		}
 
 		/**
 		 * Generates the tweet based on the user settings
@@ -449,26 +462,28 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 			// Trim new empty lines.
 			
-			$tweetContent = strip_tags($tweetContent);
-			$tweetContent = esc_html($tweetContent);
-			$tweetContent = trim(preg_replace('/\s+/', ' ', $tweetContent));
+			$tweetContent = strip_tags(html_entity_decode($tweetContent));
+			//$tweetContent = esc_html($tweetContent);
+			//$tweetContent = esc_html($tweetContent);	
+			//$tweetContent = trim(preg_replace('/\s+/', ' ', $tweetContent));
 
 			// Remove html entinies.
-			$tweetContent = preg_replace("/&#?[a-z0-9]+;/i","", $tweetContent);
+			//$tweetContent = preg_replace("/&#?[a-z0-9]+;/i","", $tweetContent);
 
 			// Strip all shortcodes from content.
 			$tweetContent = strip_shortcodes($tweetContent);
-
+			$fTweet = array();
+			$fTweet['link'] = get_permalink($postQuery->ID);
 			// Generate the post link.
 			if($include_link == 'true') {
 				if($fetch_url_from_custom_field == 'on') {
-					$post_url = " " . get_post_meta($postQuery->ID, $custom_field_url,true);
+					$post_url = "" . get_post_meta($postQuery->ID, $custom_field_url,true);
 				} else { 
-					$post_url = " " . get_permalink($postQuery->ID);
+					$post_url = "" . get_permalink($postQuery->ID);
 				}
 
-				if ($post_url==" ")
-					$post_url = " " . get_permalink($postQuery->ID);
+				if ($post_url=="")
+					$post_url = "" . get_permalink($postQuery->ID);
 
 				if ($ga_tracking=="on") {
 					$param = 'utm_source=ReviveOldPost&utm_medium=social&utm_campaign=ReviveOldPost';
@@ -480,13 +495,13 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 				}
 
 				if($use_url_shortner == 'on') {
-					$post_url = " " . $this->shortenURL($post_url, $url_shortner_service, $postQuery->ID, $bitly_key, $bitly_user);
+					$post_url = "" . $this->shortenURL($post_url, $url_shortner_service, $postQuery->ID, $bitly_key, $bitly_user);
 				}
 
-				if ($post_url==" ")
-					$post_url = " " . get_permalink($postQuery->ID);
+				if ($post_url=="")
+					$post_url = "" . get_permalink($postQuery->ID);
 
-				$post_url = $post_url . " ";
+				$post_url = $post_url . "";
 
 
 			} else { $post_url = ""; }
@@ -501,13 +516,20 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 						break;
 					
 					case 'categories':
-						$postCategories = get_the_category($postQuery->ID);
-						
-						foreach ($postCategories as $category) {
-							if(strlen($category->cat_name.$newHashtags) <= $maximum_hashtag_length || $maximum_hashtag_length == 0) { 
-						 		$newHashtags = $newHashtags . " #" . preg_replace('/-/','',strtolower($category->slug)); 
-						 	}
-						} 
+
+						if ($postQuery->post_type =="post") {
+							$postCategories = get_the_category($postQuery->ID);
+							
+							foreach ($postCategories as $category) {
+								if(strlen($category->cat_name.$newHashtags) <= $maximum_hashtag_length || $maximum_hashtag_length == 0) { 
+							 		$newHashtags = $newHashtags . " #" . preg_replace('/-/','',strtolower($category->slug)); 
+							 	}
+							}
+						}
+						else {
+							if (function_exists('topProGetCustomCategories')) 
+								$newHashtags = topProGetCustomCategories($postQuery,$maximum_hashtag_length);
+							}
 
 						break;
 
@@ -543,18 +565,19 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			$finalTweetLength = 0;
 
 			if(!empty($additional_text)) {
-				$additionalTextLength = strlen($additional_text); $finalTweetLength += intval($additionalTextLength);
+				$additionalTextLength = $this->getStrLen($additional_text); $finalTweetLength += intval($additionalTextLength);
 			}
 
 			if(!empty($post_url)) {
-				$post_url = htmlentities($post_url);
-				$postURLLength = strlen($post_url); 
-				if ($postURLLength > 21) $postURLLength = 22;
+				
+				$postURLLength = $this->getStrLen($post_url); 
+				//$post_url = urlencode($post_url);
+				if ($postURLLength > 21) $postURLLength = 25;
 				$finalTweetLength += intval($postURLLength);
 			}
 
 			if(!empty($newHashtags)) {
-				$hashtagsLength = strlen($newHashtags); 
+				$hashtagsLength = $this->getStrLen($newHashtags); 
 				$finalTweetLength += intval($hashtagsLength);
 			}
 
@@ -563,16 +586,21 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 			$finalTweetLength = 139 - $finalTweetLength - 5;
 
-			$tweetContent = mb_substr($tweetContent,0, $finalTweetLength) . " ";
+			$tweetContent = $this->ropSubstr($tweetContent,0, $finalTweetLength) . " ";
 
-			$finalTweet = $additionalTextBeginning . $tweetContent . "%short_urlshort_urlurl%" . $newHashtags . $additionalTextEnd;
-			$finalTweet = substr($finalTweet,0, 139);
-			$finalTweet = str_replace("%short_urlshort_urlurl%",$post_url,$finalTweet);
-			$fTweet = array();
+			$finalTweet = $additionalTextBeginning . $tweetContent . " %short_urlshort_urlur% " . $newHashtags . $additionalTextEnd;
+			$finalTweet = $this->ropSubstr($finalTweet,0, 139);
+			$finalTweet = str_replace("%short_urlshort_urlur%",$post_url,$finalTweet);
+			
 			$fTweet['message'] = strip_tags($finalTweet);
-			$fTweet['link'] = $post_url;
+			if ($post_url!="")
+				$fTweet['link'] = $post_url;
+			//var_dump($fTweet['link']);
 			// Strip any tags and return the final tweet
-			return $fTweet; 
+			return $fTweet;
+
+ 			//var_dump(get_object_taxonomies( $postQuery->post_type, 'objects' ));
+ 			//var_dump(get_the_terms($postQuery->ID,'download_category'));
 		}
 
 		/**
@@ -608,6 +636,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 										);
 
 						$pp=wp_remote_post("https://graph.facebook.com/".ROP_TOP_FB_API_VERSION."/$user[id]/feed?access_token=$user[oauth_token]",$args);
+						//var_dump($finalTweet['link']);
 						if ($nrOfUsers == $k)
 							return $pp['response']['message'];
 						else
@@ -616,9 +645,12 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 						break;
 
 					case 'linkedin':
-
+						
+						$lk_message = str_replace("&", "&amp;",$finalTweet['message']);
+						$sharedLink = str_replace("&", "&amp;",$finalTweet['link']);
+						
 						$visibility="anyone";
-						$content_xml.="<content><title>".$finalTweet['message']."</title><submitted-url>".$finalTweet['link']."</submitted-url></content>";
+						$content_xml.="<content><title>".$lk_message."</title><submitted-url>".$sharedLink."</submitted-url></content>";
 						$url = 'https://api.linkedin.com/v1/people/~/shares?oauth2_access_token='.$user["oauth_token"];
 
 
@@ -633,6 +665,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 						    "Content-length: " . strlen($xml),
 						    "Connection: close",
 						);
+			          
 			           	if (!function_exists('curl_version'))
        						update_option('cwp_topnew_notice',"You host does not support CURL");       				
 						$ch = curl_init(); 
@@ -694,6 +727,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 						// Post the new tweet
 						if (function_exists('topProImage')) 
 							$status = topProImage($connection, $finalTweet['message'], $id);
+						//var_dump($status);
 							//$tw++;
 						//} else {
 						///	//$connection = new RopTwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
@@ -723,8 +757,11 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 					case 'linkedin':
 
+						$lk_message = str_replace("&", "&amp;",$finalTweet['message']);
+						$sharedLink = str_replace("&", "&amp;",$finalTweet['link']);
+						
 						$visibility="anyone";
-						$content_xml.="<content><title>".$finalTweet['message']."</title><submitted-url>".$finalTweet['link']."</submitted-url></content>";
+						$content_xml.="<content><title>".$lk_message."</title><submitted-url>".$sharedLink."</submitted-url></content>";
 						$url = 'https://api.linkedin.com/v1/people/~/shares?oauth2_access_token='.$user["oauth_token"];
 
 
@@ -1530,7 +1567,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 							print "</div>";
 							
 						}
-					print "</div>.$pro";
+					print "</div>".$pro;
 					break;
 
 			}
