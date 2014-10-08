@@ -326,7 +326,10 @@ if(list.indexOf(value) != -1)
 
 function addId(list,value)
 {
-list = list.split(",");
+if(list.length != 0 ) 
+	list = list.split(","); 
+else 
+	list = [];
 if(list.indexOf(value) == -1)
     list.push(value);
 return list.join(",");

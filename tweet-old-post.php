@@ -24,7 +24,7 @@ require_once(ROPPLUGINPATH."/inc/core.php");
 require_once(ROPPLUGINPATH."/inc/exclude-posts.php");
 if (!class_exists('TAV_Remote_Notification_Client')) {
 	require( ROPPLUGINPATH.'/inc/class-remote-notification-client.php' );
-}
+}  
 if (!function_exists('topProImage'))
     $notification = new TAV_Remote_Notification_Client( 37, 'a8be784b898fa2fb', 'https://themeisle.com?post_type=notification' );
 else

@@ -59,10 +59,10 @@ if (!class_exists('CWP_TOP_Core')) {
  			load_plugin_textdomain(CWP_TEXTDOMAIN, false, dirname(ROPPLUGINBASENAME).'/languages/');
  		}
 
-		public function startTweetOldPost()
+		public function startTweetOldPost($force = false)
 		{
 			// If the plugin is deactivated
-			if($this->pluginStatus !== 'true') {
+			if($this->pluginStatus !== 'true' || $force === true) {
 				// Set it to active status
 				update_option('cwp_topnew_active_status', 'true');
 				update_option('cwp_topnew_notice', '');
@@ -71,17 +71,24 @@ if (!class_exists('CWP_TOP_Core')) {
 				//$timeNow = date("Y-m-d H:i:s", time());
 				//$timeNow = get_date_from_gmt($timeNow);
 				//$timeNow= strtotime($timeNow);
-				$timeNow =  current_time('timestamp',1);
+				$timeNow =  time();
 				$interval = floatval($this->intervalSet) * 60 * 60;
 				$timeNow = $timeNow+25;
-				wp_schedule_event($timeNow, 'cwp_top_schedule', 'cwp_top_tweet_cron');
+				if(wp_get_schedule( 'cwptoptweetcron' ) === false ) {
+						
+						wp_clear_scheduled_hook($timeNow, 'cwp_top_schedule', 
+						'cwp_top_tweet_cron');
+						wp_schedule_event($timeNow, 'cwp_top_schedule', 
+						'cwptoptweetcron');
+			
+				}
 			} else { 
 				
 				// Report that is already started
 				_e("Tweet Old Post is already active!", CWP_TEXTDOMAIN);
 			}
-
-			die(); // Required for AJAX
+			if(!$force)
+				die(); // Required for AJAX
 		}
 
 		public function stopTweetOldPost()
@@ -492,8 +499,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 						$post_url.='?'.$param;
 					else
 						$post_url.='&'.$param;
-				}
-
+				} 
 				if($use_url_shortner == 'on') {
 					$post_url = "" . $this->shortenURL($post_url, $url_shortner_service, $postQuery->ID, $bitly_key, $bitly_user);
 				}
@@ -830,8 +836,8 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			
 			
 			
-			$minLimit = current_time('timestamp') - get_option('top_opt_age_limit')*24*60*60;
-			$maxLimit = current_time('timestamp') - $limit*24*60*60;
+			$minLimit = time() - get_option('top_opt_age_limit')*24*60*60;
+			$maxLimit = time() - $limit*24*60*60;
 
 			$minAgeLimit = date("Y-m-d H:i:s", $minLimit);
 			$maxAgeLimit = date("Y-m-d H:i:s", $maxLimit);
@@ -921,6 +927,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		public function clearScheduledTweets()
 		{
 			wp_clear_scheduled_hook('cwp_top_tweet_cron');
+			wp_clear_scheduled_hook('cwptoptweetcron');
 		}
 
 		// Deactivation hook
@@ -1293,7 +1300,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		// Gets the next tweet interval.
 		public function getNextTweetInterval()
 		{
-			$timestamp = wp_next_scheduled( 'cwp_top_tweet_cron' );
+			$timestamp = wp_next_scheduled( 'cwptoptweetcron' );
 			//echo $timestamp;
 			//$timestamp = date("Y-m-d H:i:s", $timestamp);
 			//$timeLeft = get_date_from_gmt($timestamp);
@@ -1444,8 +1451,10 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			);
 
 			foreach ($defaultOptions as $option => $defaultValue) {
-				update_option($option, $defaultValue);
+			
+			update_option($option, $defaultValue);
 			}
+			$this->clearScheduledTweets();
 			//die();
 		}
 
@@ -1577,7 +1586,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 		public function getTime() {
 		    
-		    echo current_time('timestamp',1);
+		    echo time();
 
 		    die();
 		}
@@ -1622,11 +1631,12 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 				}
 			
 
-				$timestamp = wp_next_scheduled( 'cwp_top_tweet_cron' );
-				$timenow = current_time('timestamp',1);
-
+				$timestamp = wp_next_scheduled( 'cwptoptweetcron' );
+				$timenow = time();
+				 
 				if ($this->pluginStatus == 'true' && $timenow > $timestamp) {
-					update_option('cwp_topnew_notice', "Looks like there is an issue with your WP Cron, read more <a href='http://wordpress.org/plugins/tweet-old-post/faq/'>here</a>");
+					$this->startTweetOldPost(true);
+					//update_option('cwp_topnew_notice', "Looks like there is an issue with your WP Cron, read more <a href='http://wordpress.org/plugins/tweet-old-post/faq/'>here</a>");
 					
 				}
 			}
@@ -1702,7 +1712,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 			add_filter('plugin_action_links',array($this,'top_plugin_action_links'), 10, 2);
 
-			add_action('cwp_top_tweet_cron', array($this, 'tweetOldPost'));
+			add_action('cwptoptweetcron', array($this, 'tweetOldPost'));
 			add_action( 'plugins_loaded', array($this, 'addLocalization') );
 		}
 
@@ -1795,7 +1805,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 		// Shortens the url.
 		public function shortenURL($url, $service, $id, $bitly_key, $bitly_user) {
-			
+			$url = urlencode($url);
 			if ($service == "bit.ly") {
 				//$shortURL = $url;
 				$url = trim($url);
@@ -1819,15 +1829,16 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		        $shortURL = "http://1click.at/api.php?action=shorturl&url={$url}&format=simple";
 		        $shortURL = $this->sendRequest($shortURL, 'GET');
 		    } elseif ($service == "is.gd") {
+				
 		        $shortURL = "http://is.gd/api.php?longurl={$url}";
+				 
 		        $shortURL = $this->sendRequest($shortURL, 'GET');
 		    } elseif ($service == "t.co") {
 		        $shortURL = "http://twitter.com/share?url={$url}";
 		        $shortURL = $this->sendRequest($shortURL, 'GET');
 		    } else {
 		    	$shortURL = wp_get_shortlink($id);
-		    }
-
+		    } 
 		    if($shortURL != ' 400 '&& $shortURL!="500" && $shortURL!="0") {
 		    	return $shortURL;
 		    }
