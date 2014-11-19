@@ -1,3 +1,6 @@
+<?php
+	global $cwp_top_networks;
+?>
 <div class="cwp_top_wrapper">
 	<!--<div class="announcement clearfix">
 		<h2><?php _e("After 6 months of hard work, we have just released", CWP_TEXTDOMAIN); ?> <b>ThemeIsle</b>, <?php _e("the island of WordPress themes.", CWP_TEXTDOMAIN); ?></h2>
@@ -15,7 +18,7 @@
 
 		<div class="cwp_top_actions">
 			<a href="https://twitter.com/intent/tweet?text=Check-out%20this%20awesome%20plugin%20-%20&url=http%3A%2F%2Fthemeisle.com%2Fplugins%2Ftweet-old-post-lite%2F&via=themeisle" class="tweet-about-it"><span></span> <?php _e("Show your love", CWP_TEXTDOMAIN); ?></a>
-			<a target="_blank" href="http://wordpress.org/support/view/plugin-reviews/tweet-old-post#postform" class="leave-a-review"><span></span> <?php _e("Leave A Review", CWP_TEXTDOMAIN); ?></a>		
+			<a target="_blank" href="http://wordpress.org/support/view/plugin-reviews/tweet-old-post#postform" class="leave-a-review"><span></span> <?php _e("Leave A Review", CWP_TEXTDOMAIN); ?></a>
 		</div><!-- end .cwp_top_actions -->
 	</header><!-- end .cwp_top_header -->
 
@@ -23,128 +26,61 @@
 
 
 		<div class="cwp_top_status">
-		
-		<?php if($this->pluginStatus == 'true') { ?>
+
+		<?php if($this->pluginStatus == 'true') {
+			if(!CWP_TOP_PRO){ ?>
 			<p class='active'>
 				<?php _e("Revive Old Post is set to post on a", CWP_TEXTDOMAIN); ?>
-				<span class='tweetInterval'> <?php echo $this->intervalSet; ?></span>
 				<?php _e("hours interval, ", CWP_TEXTDOMAIN); ?>
 				<?php _e("and the next share will take place in: ", CWP_TEXTDOMAIN); ?>
 				<span class='nextTweet'><?php $this->getNextTweetInterval(); update_option('cwp_topnew_notice', ""); ?></span>
 			</p>
-		<?php } else { ?>
+		<?php } } else { ?>
 			<p class='inactive'>
 				<?php _e("Revive Old Post is not set to post!", CWP_TEXTDOMAIN); ?>
 			</p>
 		<?php } ?>
 			<p class='inactive'>
 
-				<?php _e("Once you click start sharing a post will be sent in 15 sec, also here you can see the error message if is any.", CWP_TEXTDOMAIN); $this->fixCron(); ?>
+				<?php if(!CWP_TOP_PRO){
+					_e("Once you click start sharing a post will be sent in 15 sec, also here you can see the error message if is any.", CWP_TEXTDOMAIN); $this->fixCron();
+				}else{
+
+					_e("Here you can see the error messages if is any.", CWP_TEXTDOMAIN); $this->fixCron();
+
+				}
+
+				?>
 			</p>
 
 		</div><!-- end .cwp_top_status -->
+		<div id="cwp-top-container-form" class="clearfix">
+		<div id="cwp_top_tabs" class="clearfix">
+			<ul id="tabs_menu">
+				<li class="active"> <?php _e('General',CWP_TEXTDOMAIN); ?> </li>
+				<li  > <?php _e('Accounts',CWP_TEXTDOMAIN); ?> </li>
+				<li ><?php _e('Post Format',CWP_TEXTDOMAIN); ?></li>
+				<li ><?php _e('Custom Schedule',CWP_TEXTDOMAIN); ?></li>
 
-		<form action="" method="post" id="cwp_top_form" class="clearfix">
-			<input id="cwp_top_currenturl" type="hidden" value="">
+			</ul>
 
-			<fieldset class="option">
-				<div class="left">
-					<label for="twitter-login"> <?php _e("Twitter Login", CWP_TEXTDOMAIN); ?> </label>
-					<span class='description'> <?php _e("Login using your Twitter account.", CWP_TEXTDOMAIN); ?> </span>
-				</div><!-- end .left -->
+				<form action="" method="post" id="cwp_top_form" class="clearfix">
+			<div class="tab active">
 
-				<div class='right'>
-					<?php
-					
 
-					$tw_users = 0;
-					//$this->tweetPost(array("message"=>"Testinsd sg tpo","link"=>"http://wicked-stallion-64-120688.euw1.nitrousbox.com/"));
-					//echo count($this->users);
-				 	if(!empty($this->users))
-					foreach ($this->users as $user) {
-					if ($user['service']=='twitter'|| !isset($user['service'])) { 
-						$tw_users++;
-						?>
-						<div class="user_details">
-							<div class='user_avatar'><img src="<?php echo $user['oauth_user_details']->profile_image_url; ?>"></div>
-							<div class="user_name"><?php echo $user['oauth_user_details']->name; ?></div>
-							<div class="remove_user"><a href='#' id='<?php echo $user['user_id']; ?>' class='logout_user'></a></div>
-						</div><!-- end .user_details -->
-					<?php  } }
-					if ($tw_users!==0) { ?>
-						<button id='twitter-login' class='another-account login' service='twitter'>+</button>
-					<?php } else { ?>
-						<button id='twitter-login' class='login' service='twitter'> <?php _e("Add Account", CWP_TEXTDOMAIN) ?> </button>
-					<?php } ?>
-				</div><!-- end .right -->
-			</fieldset><!-- end .option -->
+			<?php foreach ($cwp_top_fields as $field) {
 
-			<fieldset class="option">
-				<div class="left">
-					<label for="facebook-login"> <?php _e("Facebook Login", CWP_TEXTDOMAIN); ?> </label>
-					<span class='description'> <?php _e("Login using your Facebook account.", CWP_TEXTDOMAIN); ?> </span>
-				</div><!-- end .left -->
+				if(CWP_TOP_PRO){
+					if(isset($field['available_pro'])){
+						if($field['available_pro'] == 'no')
+							continue ;
 
-				<div class='right'>
-					<?php
+					}
 
-					$fb_users = 0;
-					
-					if(!empty($this->users))
-					foreach ($this->users as $user) {
-					if ($user['service']=='facebook') { 
-						$fb_users++;
-						?>
-						<div class="user_details">
-							<div class='user_avatar'><img src="<?php echo $user['oauth_user_details']->profile_image_url; ?>"></div>
-							<div class="user_name"><?php echo $user['oauth_user_details']->name; ?></div>
-							<div class="remove_user"><a href='#' id='<?php echo $user['user_id']; ?>' service='facebook' class='logout_user'></a></div>
-						</div><!-- end .user_details -->
-					<?php  } }
-					if ($fb_users!==0){ ?>
-						<button id='facebook-login' class='another-account login' service='facebook'>+</button>
-					<?php } else { 
-						if (get_option('top_fb_token')===""||!get_option('top_fb_token')) {
-						?>
-						<button id='facebook-login' class='login' service='facebook'> <?php _e("Authorize", CWP_TEXTDOMAIN) ?> </button>
-						<?php } else {?>
-						<button id='facebook-login' class='login' service='facebook'> <?php _e("Add Account", CWP_TEXTDOMAIN) ?> </button>
-					<?php }} ?>
-				</div><!-- end .right -->
-			</fieldset><!-- end .option -->
+				}
 
-			<fieldset class="option">
-				<div class="left">
-					<label for="linkedin-login"> <?php _e("Linkedin Login", CWP_TEXTDOMAIN); ?> </label>
-					<span class='description'> <?php _e("Login using your Linkedin account.", CWP_TEXTDOMAIN); ?> </span>
-				</div><!-- end .left -->
+				?>
 
-				<div class='right'>
-					<?php
-
-					$lk_users = 0;
-					
-					if(!empty($this->users))
-					foreach ($this->users as $user) {
-					if ($user['service']=='linkedin') { 
-						$lk_users++;
-						?>
-						<div class="user_details">
-							<div class='user_avatar'><img src="<?php echo $user['oauth_user_details']->profile_image_url; ?>"></div>
-							<div class="user_name"><?php echo $user['oauth_user_details']->name; ?></div>
-							<div class="remove_user"><a href='#' id='<?php echo $user['user_id']; ?>' service='linkedin' class='logout_user'></a></div>
-						</div><!-- end .user_details -->
-					<?php  } }
-					if ($lk_users!==0){ ?>
-						<button id='linkedin-login' class='another-account login' service='linkedin'>+</button>
-					<?php } else { ?>
-						<button id='linkedin-login' class='login' service='linkedin'> <?php _e("Add account", CWP_TEXTDOMAIN); ?> </button>
-					<?php } ?>
-				</div><!-- end .right -->
-			</fieldset><!-- end .option -->
-
-			
-			<?php foreach ($cwp_top_fields as $field) { ?>
 					<fieldset class="option twp<?php echo $field['option']; ?>" >
 						<div class="left">
 							<label for="<?php echo $field['option']; ?>"> <?php _e($field['name'],CWP_TEXTDOMAIN); ?> </label>
@@ -161,18 +97,33 @@
 					</fieldset><!-- end .option -->
 			<?php } ?>
 
-			<div class="cwp_top_footer">
-				<a class="reset-settings" href="#"><span></span> <?php  _e("Reset", CWP_TEXTDOMAIN); ?></a>
-				<a class="update-options" href="#"><span></span><?php _e("Save", CWP_TEXTDOMAIN); ?></a>
-				<a class="tweet-now" href="#"><span></span> <?php _e("Start Sharing", CWP_TEXTDOMAIN); ?></a>
-				<a class="stop-tweet-old-post" href="#"><span></span> <?php _e("Stop Sharing", CWP_TEXTDOMAIN); ?></a>
-				<a class="see-sample-tweet" href="#"><span></span> <?php _e("See Sample Post", CWP_TEXTDOMAIN); ?></a>				
+
+			</div>
+
+
+			<div class="tab"><?php  require_once(ROPPLUGINPATH."/inc/view-accounts.php"); ?></div>
+			<div class="tab"><?php  require_once(ROPPLUGINPATH."/inc/view-postformat.php"); ?></div>
+			<div class="tab"><?php  require_once(ROPPLUGINPATH."/inc/view-postschedule.php"); ?></div>
+			<!-- end #cwp_top_form -->
+		</div><div class="cwp_top_footer">
+				<a class="reset-settings" id="reset-settings" href="#"><span></span> <?php  _e("Reset", CWP_TEXTDOMAIN); ?></a>
+				<a class="update-options" id="update-options"href="#"><span></span><?php _e("Save", CWP_TEXTDOMAIN); ?></a>
+				<a class="tweet-now" id="tweet-now" href="#"><span></span> <?php _e("Start Sharing", CWP_TEXTDOMAIN); ?></a>
+				<a class="stop-tweet-old-post" id="stop-tweet-old-post" href="#"><span></span> <?php _e("Stop Sharing", CWP_TEXTDOMAIN); ?></a>
+				<a class="see-sample-tweet" id="see-sample-tweet" href="#"><span></span> <?php _e("See Sample Post", CWP_TEXTDOMAIN); ?></a>
 			</div><!-- end .cwp_top_footer -->
-			<p><?php _e("We are not affiliated or partner with Twitter/Facebook/Linkedin in any way.", CWP_TEXTDOMAIN); ?>
-		</form><!-- end #cwp_top_form -->
-		
+			<p><?php _e("We are not affiliated or partner with Twitter/Facebook/Linkedin in any way.", CWP_TEXTDOMAIN); ?></p>
+				</form></div>
 		<aside class="sidebar">
 			<ul>
+				<?php if(CWP_TOP_PRO && $this->pluginStatus == 'true' ): ?>
+						<?php
+							foreach($cwp_top_networks  as $nn=>$nd) {
+					     ?>
+						<li class="rop-twitter-countdown rop-network-countdown"><?php echo __("Revive Old Post will post on",CWP_TEXTDOMAIN)." <span class='rop-network-name'>".$nn."</span> ".__("in the next",CWP_TEXTDOMAIN); ?>: <span data-timestamp="<?php echo  wp_next_scheduled($nn.'cwptoptweetcron',array($nn)) ; ?>" class='rop-network-timestamp'></span></li>
+				<?php } ?>
+
+				<?php endif; ?>
 				<li class="upgrade"><a target="_blank" href="https://themeisle.com/plugins/tweet-old-post-pro/?utm_source=bannerright&utm_medium=announce&utm_campaign=top&upgrade=true"> <?php _e("Upgrade Tweet Old Post for only $9.99 - Upgrade To Pro Now!", CWP_TEXTDOMAIN); ?></a></li>
 				<li class="readythemes"><a target="_blank" href="https://themeisle.com/allthemes/?utm_source=bannerright&utm_medium=announce&utm_campaign=top"> <?php _e("ThemeIsle - Deadly Simple WordPress Themes", CWP_TEXTDOMAIN); ?></a></li>
 				<li class="affiliate-readythemes"><a target="_blank" href="https://themeisle.com/contact/?utm_source=bannerright&utm_medium=announce&utm_campaign=top"> <?php _e("ThemeIsle - Promote Our Themes and Plugins and get 55% Comission", CWP_TEXTDOMAIN); ?></a></li>
@@ -182,8 +133,12 @@
 
 	<div class="cwp_sample_tweet_preview">
 		<div class="cwp_sample_tweet_preview_inner">
-			<h2><?php _e('Sample Post Preview',CWP_TEXTDOMAIN);?></h2>
-			<span class="sample_tweet">Lorem ipsum dolor sit amet consectetutem! <a href="#">Lorem ipsum</a></span>
+			<h2><?php _e('Sample Post Preview',CWP_TEXTDOMAIN);?> Twitter</h2>
+			<span class="sample_tweet sample_tweet_twitter"></span>
+			<h2><?php _e('Sample Post Preview',CWP_TEXTDOMAIN);?> Facebook</h2>
+			<span class="sample_tweet sample_tweet_facebook"></span>
+			<h2><?php _e('Sample Post Preview',CWP_TEXTDOMAIN);?>   LinkedIn</h2>
+			<span class="sample_tweet sample_tweet_linkedin"></span>
 			<button class="top_close_popup"><?php _e('Close preview',CWP_TEXTDOMAIN);?></button>
 			<button class="tweetitnow"><?php _e('Share now',CWP_TEXTDOMAIN);?></button>
 		</div><!-- end .cwp_sample_tweet_preview_inner -->
@@ -219,10 +174,10 @@
 					<label for="top_opt_app_id"><?php _e('Facebook App ID',CWP_TEXTDOMAIN);?>   </label>
 					<span class="description"><?php _e('ID from your app created on facebook website.',CWP_TEXTDOMAIN);?>   </span>
 
-					
+
 				</div><!-- end .left -->
 				<div class="right">
-					<input type="text" placeholder="1487991504767913" value="<?php get_option('cwp_top_app_id');?>" name="top_opt_app_id" id="top_opt_app_id">						
+					<input type="text" placeholder="1487991504767913" value="<?php get_option('cwp_top_app_id');?>" name="top_opt_app_id" id="top_opt_app_id">
 				</div><!-- end .right -->
 			</fieldset>
 
@@ -230,10 +185,10 @@
 				<div class="left">
 					<label for="top_opt_app_secret"><?php _e('Facebook App Secret',CWP_TEXTDOMAIN);?>  </label>
 					<span class="description"><?php _e('Secret from your app created on facebook website. ',CWP_TEXTDOMAIN);?> </span>
-					
+
 				</div><!-- end .left -->
 				<div class="right">
-					<input type="text" placeholder="5124ea6d46e64da3c306f12812d0e4fx" value="<?php get_option('cwp_top_app_secret');?>" name="top_opt_app_secret" id="top_opt_app_secret">						
+					<input type="text" placeholder="5124ea6d46e64da3c306f12812d0e4fx" value="<?php get_option('cwp_top_app_secret');?>" name="top_opt_app_secret" id="top_opt_app_secret">
 				</div><!-- end .right -->
 			</fieldset>
 
@@ -255,7 +210,7 @@
 					<li><?php _e('Default Scope should have r_basicprofile and rw_nus checked',CWP_TEXTDOMAIN);?></li>
 					<li><?php printf(__('Copy/Paste this url : <strong>%s</strong> into App Domains and Site URL fields and <strong>Save</strong>',CWP_TEXTDOMAIN),SETTINGSURL);?> </li>
 					<li><?php _e('Once all required fields are filled click on Add Application button, get the API Key and Secret Key and paste them in the fields on the right',CWP_TEXTDOMAIN);?></li>
-					
+
 					<li><?php _e('Now everything is done, click on <strong>Authorize App</strong> button.',CWP_TEXTDOMAIN);?></li>
 				</ol>
 			</div>
@@ -265,10 +220,10 @@
 					<label for="top_opt_app_id"><?php _e('Linkedin API Key',CWP_TEXTDOMAIN);?>  </label>
 					<span class="description"><?php _e('API Key that you get once you create an app',CWP_TEXTDOMAIN);?>  </span>
 
-					
+
 				</div><!-- end .left -->
 				<div class="right">
-					<input type="text" placeholder="1487991504767913" value="<?php get_option('cwp_top_lk_app_id');?>" name="top_opt_app_id" id="top_opt_app_id_lk">						
+					<input type="text" placeholder="1487991504767913" value="<?php get_option('cwp_top_lk_app_id');?>" name="top_opt_app_id" id="top_opt_app_id_lk">
 				</div><!-- end .right -->
 			</fieldset>
 
@@ -277,10 +232,10 @@
 					<label for="top_opt_app_secret"><?php _e('Linkedin Secret Key',CWP_TEXTDOMAIN);?>  </label>
 					<span class="description"><?php _e('Secret Key that you get once you create an app',CWP_TEXTDOMAIN);?> </span>
 
-					
+
 				</div><!-- end .left -->
 				<div class="right">
-					<input type="text" placeholder="5124ea6d46e64da3c306f12812d0e4fx" value="<?php get_option('cwp_top_lk_app_id');?>" name="top_opt_app_secret" id="top_opt_app_secret_lk">						
+					<input type="text" placeholder="5124ea6d46e64da3c306f12812d0e4fx" value="<?php get_option('cwp_top_lk_app_id');?>" name="top_opt_app_secret" id="top_opt_app_secret_lk">
 				</div><!-- end .right -->
 			</fieldset>
 

@@ -1,14 +1,14 @@
-<?php   
-#     /* 
+<?php
+#     /*
 #     Plugin Name: Revive Old Post (Former Tweet Old Post)
 #     Plugin URI: https://themeisle.com/plugins/tweet-old-post-lite/
 #     Description: Wordpress plugin that helps you to keeps your old posts alive by sharing them and driving more traffic to them from twitter/facebook or linkedin. It also helps you to promote your content. You can set time and no of posts to share to drive more traffic.For questions, comments, or feature requests, <a href="https://themeisle.com/contact/?utm_source=plugindesc&utm_medium=announce&utm_campaign=top">contact </a> us!
-#     Author: ThemeIsle 
+#     Author: ThemeIsle
 #     Version: 6.8.4
 #     Author URI: https://themeisle.com/
 #	  Text Domain: tweet-old-post
 #	  Domain Path: /languages
-#     */  
+#     */
 
 // Config Constants
 define("ROPPLUGINPATH", realpath(dirname(__FILE__) ));
@@ -24,8 +24,8 @@ require_once(ROPPLUGINPATH."/inc/core.php");
 require_once(ROPPLUGINPATH."/inc/exclude-posts.php");
 if (!class_exists('TAV_Remote_Notification_Client')) {
 	require( ROPPLUGINPATH.'/inc/class-remote-notification-client.php' );
-}  
-if (!function_exists('topProImage'))
+}
+if (CWP_TOP_PRO)
     $notification = new TAV_Remote_Notification_Client( 37, 'a8be784b898fa2fb', 'https://themeisle.com?post_type=notification' );
 else
     $notification = new TAV_Remote_Notification_Client( 38, 'b7fbcc8d0c58614a', 'https://themeisle.com?post_type=notification' );
