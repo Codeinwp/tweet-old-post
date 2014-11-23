@@ -61,10 +61,18 @@ if (!class_exists('CWP_TOP_Core')) {
 
  			load_plugin_textdomain(CWP_TEXTDOMAIN, false, dirname(ROPPLUGINBASENAME).'/languages/');
  		}
+		function checkUsers(){
+			if(count($this->users) == 0){
+				update_option('cwp_topnew_notice', 'You have no account set to post !');
 
+				die();
+
+			}
+
+		}
 		public function startTweetOldPost($force = false)
 		{
-			// If the plugin is deactivated
+			$this->checkUsers();
 			if($this->pluginStatus !== 'true' || $force === true) {
 
 				// Set it to active status
@@ -77,7 +85,7 @@ if (!class_exists('CWP_TOP_Core')) {
 				//$timeNow= strtotime($timeNow);
 				$timeNow =  $this->getTime();
 				$interval = floatval($this->intervalSet) * 60 * 60;
-				$timeNow = $timeNow+$interval;
+				$timeNow = $timeNow+15;
 				if(!CWP_TOP_PRO) {
 					if(wp_get_schedule( 'cwptoptweetcronnew' ) === false ) {
 

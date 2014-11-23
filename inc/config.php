@@ -24,7 +24,7 @@ define("CWP_TOP_PRO_STRING",'<span class="cwp-pro-string">'.__("This is only ava
 
 
 $cwp_top_networks = array(
-	"facebook"=>array(
+	"twitter"=>array(
 
 		'tweet-content' 	=> array(
 			'id' 				=> '1',
@@ -250,7 +250,7 @@ $cwp_top_networks = array(
 				"available_pro"         => "yes"
 			)
 	),
-	"twitter"=>array(
+	"facebook"=>array(
 		'tweet-content' 	=> array(
 			'id' 				=> '1',
 			'name'  			=> __('Post Content', CWP_TEXTDOMAIN),

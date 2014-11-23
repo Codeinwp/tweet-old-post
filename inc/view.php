@@ -40,7 +40,7 @@
 				<?php _e("Revive Old Post is not set to post!", CWP_TEXTDOMAIN); ?>
 			</p>
 		<?php } ?>
-			<p class='inactive'>
+			<p class='inactive cwp-error-label'>
 
 				<?php if(!CWP_TOP_PRO){
 					_e("Once you click start sharing a post will be sent in 15 sec, also here you can see the error message if is any.", CWP_TEXTDOMAIN); $this->fixCron();
@@ -57,15 +57,18 @@
 		<div id="cwp-top-container-form" class="clearfix">
 		<div id="cwp_top_tabs" class="clearfix">
 			<ul id="tabs_menu">
-				<li class="active"> <?php _e('General',CWP_TEXTDOMAIN); ?> </li>
-				<li  > <?php _e('Accounts',CWP_TEXTDOMAIN); ?> </li>
+				<li class="active" > <?php _e('Accounts',CWP_TEXTDOMAIN); ?> </li>
+				<li > <?php _e('General settings',CWP_TEXTDOMAIN); ?> </li>
 				<li ><?php _e('Post Format',CWP_TEXTDOMAIN); ?></li>
 				<li ><?php _e('Custom Schedule',CWP_TEXTDOMAIN); ?></li>
 
 			</ul>
 
 				<form action="" method="post" id="cwp_top_form" class="clearfix">
-			<div class="tab active">
+
+
+			<div class="tab  active"><?php  require_once(ROPPLUGINPATH."/inc/view-accounts.php"); ?></div>
+					<div class="tab">
 
 
 			<?php foreach ($cwp_top_fields as $field) {
@@ -81,7 +84,7 @@
 
 				?>
 
-					<fieldset class="option twp<?php echo $field['option']; ?>" >
+				<fieldset class="option twp<?php echo $field['option']; ?>" >
 						<div class="left">
 							<label for="<?php echo $field['option']; ?>"> <?php _e($field['name'],CWP_TEXTDOMAIN); ?> </label>
 							<span class="description"> <?php _e($field['description'],CWP_TEXTDOMAIN); ?> </span>
@@ -100,8 +103,6 @@
 
 			</div>
 
-
-			<div class="tab"><?php  require_once(ROPPLUGINPATH."/inc/view-accounts.php"); ?></div>
 			<div class="tab"><?php  require_once(ROPPLUGINPATH."/inc/view-postformat.php"); ?></div>
 			<div class="tab"><?php  require_once(ROPPLUGINPATH."/inc/view-postschedule.php"); ?></div>
 			<!-- end #cwp_top_form -->

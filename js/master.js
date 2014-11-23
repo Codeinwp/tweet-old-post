@@ -309,6 +309,12 @@ jQuery(document).ready(function(){
 
 	// Start Tweet
 	jQuery("#tweet-now").click(function(e){
+		if(!cwpTopCheckAccounts()){
+
+			jQuery("#tabs_menu li:first").trigger("click");
+			showCWPROPError("You need to add an account in order to start posting.");
+			return false;
+		}
 		e.preventDefault();
 		startAjaxIntro();
 		cwpTopUpdateForm();
@@ -344,8 +350,7 @@ jQuery(document).ready(function(){
 			success: function(response) {
 				if(response !== '') {
 					if (response.substring(0,5)=="Error") {
-						jQuery(".cwp_top_status p.inactive").css( "color", "red" );
-						jQuery(".cwp_top_status p.inactive").html(response);
+						showCWPROPError(response);
 					} else {
 
 						//jQuery(".cwp_top_status p:nth-child(2)").addClass("active").removeClass("inactive");
@@ -363,6 +368,11 @@ jQuery(document).ready(function(){
 		})},3000);
 
 	jQuery("#see-sample-tweet").click(function(e){
+		if(!cwpTopCheckAccounts()){
+			jQuery("#tabs_menu li:first").trigger("click");
+			showCWPROPError("You need to add an account in order to start posting.");
+			return false;
+		}
 		e.preventDefault();
 		startAjaxIntro();
 		cwpTopUpdateFormWithoIntro();
@@ -882,5 +892,15 @@ function cwpLoadPostFormaFields(){
         cwpDependeField(jQuery(this));
 
     })
+
+}
+function showCWPROPError(string){
+	jQuery(".cwp_top_status p.cwp-error-label").css( "color", "red" );
+	jQuery(".cwp_top_status p.cwp-error-label").html(string);
+
+}
+function cwpTopCheckAccounts(){
+		var users = jQuery(".user_details").length;
+		return (users > 0);
 
 }
