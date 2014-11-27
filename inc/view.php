@@ -1,5 +1,7 @@
  <?php
 	global $cwp_top_networks;
+    $remote_check = get_option("cwp_rop_remote_trigger");
+    if($remote_check === false) $remote_check = "off";
 ?>
 <div class="cwp_top_wrapper">
 	<!--<div class="announcement clearfix">
@@ -17,7 +19,7 @@
 		<span class="slogan"><?php _e("by", CWP_TEXTDOMAIN); ?> <a href="https://themeisle.com/?utm_source=topadmin&utm_medium=announce&utm_campaign=top">ThemeIsle</a></span>
 
 		<div class="cwp_top_actions">
-			<a class="on-off-button on"></a>
+			<span class="cwp-remote-check-info">Remote check</span> <a class="on-off-button <?php echo $remote_check; ?>" id="cwp_remote_check"></a>
 			<a href="https://twitter.com/intent/tweet?text=Check-out%20this%20awesome%20plugin%20-%20&url=http%3A%2F%2Fthemeisle.com%2Fplugins%2Ftweet-old-post-lite%2F&via=themeisle" class="tweet-about-it"><span></span> <?php _e("Show your love", CWP_TEXTDOMAIN); ?></a>
 			<a target="_blank" href="http://wordpress.org/support/view/plugin-reviews/tweet-old-post#postform" class="leave-a-review"><span></span> <?php _e("Leave A Review", CWP_TEXTDOMAIN); ?></a>
 		</div><!-- end .cwp_top_actions -->
@@ -61,7 +63,7 @@
 				<li class="active" > <?php _e('Accounts',CWP_TEXTDOMAIN); ?> </li>
 				<li > <?php _e('General settings',CWP_TEXTDOMAIN); ?> </li>
 				<li ><?php _e('Post Format',CWP_TEXTDOMAIN); ?></li>
-				<li class="pro-version"><?php _e('Custom Schedule',CWP_TEXTDOMAIN); ?></li>
+				<li <?php if(!CWP_TOP_PRO): ?> class="pro-version" <?php endif; ?>><?php _e('Custom Schedule',CWP_TEXTDOMAIN); ?></li>
 
 			</ul>
 

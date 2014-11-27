@@ -547,4 +547,12 @@ a.on-off-button.on {
 a.on-off-button.off {
 	background-position: 0 -40px;
 }
-
+.cwp-remote-check-info{
+    float:left;
+    margin-right:5px;
+    margin-top:4px;
+    font-size: 15px;
+    color: #858585;
+    font-weight: 600;
+    font-style: italic;
+}

@@ -1954,6 +1954,9 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			add_action('wp_ajax_nopriv_tweet_old_post_action', array($this, 'startTweetOldPost'));
 			add_action('wp_ajax_tweet_old_post_action', array($this, 'startTweetOldPost'));
 
+			//remote trigger cron
+			add_action('wp_ajax_remote_trigger', array($this, 'remoteTrigger'));
+
 			// Tweet Old Post view sample tweet action.
 			add_action('wp_ajax_nopriv_view_sample_tweet_action', array($this, 'viewSampleTweet'));
 			add_action('wp_ajax_view_sample_tweet_action', array($this, 'viewSampleTweet'));
@@ -1990,7 +1993,36 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			add_action( 'plugins_loaded', array($this, 'addLocalization') );
 
 		}
+		public function remoteTrigger(){
+			$state = $_POST["state"];
+			if(!empty($state) &&( $state == "on" || $state == "off")){
 
+				update_option("cwp_rop_remote_trigger",$state);
+				$this->sendRemoteTrigger($state);
+
+			}
+
+			die();
+		}
+
+		public function sendRemoteTrigger($state){
+
+			global $cwp_rop_remote_trigger_url;
+			$state = ($state == "on") ? "yes" : "no";
+
+			wp_remote_post( $cwp_rop_remote_trigger_url, array(
+					'method' => 'POST',
+					'timeout' => 1,
+					'redirection' => 5,
+					'httpversion' => '1.0',
+					'blocking' => true,
+					'headers' => array(),
+					'body' => array( 'url' => get_site_url(), 'status' => $state ),
+					'cookies' => array()
+				)
+			);
+
+		}
 		public function loadAllScriptsAndStyles()
 		{
 			global $cwp_top_settings; // Global Tweet Old Post Settings

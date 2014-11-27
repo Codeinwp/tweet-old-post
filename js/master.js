@@ -31,7 +31,33 @@ jQuery(document).ready(function(){
 		return false;
 	});
 
+	jQuery("#cwp_remote_check").on("click",function(){
 
+		var state = "";
+		var th  = jQuery(this);
+		if(th.hasClass("on")){
+			state = "off";
+			th.addClass("off").removeClass("on");
+		}else{
+			state = "on";
+			th.addClass("on").removeClass("off");
+		}
+		jQuery.ajax({
+			type: "POST",
+			url: cwp_top_ajaxload.ajaxurl,
+			data: {
+				action: 'remote_trigger',
+				state:state
+			},
+			success: function(response) {
+				console.log(response);
+			},
+			error: function(response) {
+				console.log("Error: "+ response);
+			}
+		});
+		return false;
+	})
 
 	function cwpTopUpdateForm() {
 		startAjaxIntro();
