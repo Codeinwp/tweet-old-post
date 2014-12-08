@@ -374,7 +374,7 @@ jQuery(document).ready(function(){
 				action: "getNotice_action"
 			},
 			success: function(response) {
-				if(response !== '') {
+				if(jQuery.trim(response) !== '') {
 					if (response.substring(0,5)=="Error") {
 						showCWPROPError(response);
 					} else {
