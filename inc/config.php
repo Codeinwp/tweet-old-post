@@ -48,8 +48,8 @@ $cwp_top_networks = array(
 			'slug'				=> 'tweet-length',
 			'option'			=> 'top_opt_tweet_length',
 			'description'		=> __('The length of the tweet', CWP_TEXTDOMAIN),
-			'max-length'        => 1000,
-			'default_value'     =>1000
+			'max-length'        => 140,
+			'default_value'     =>140
 		),
 
 		'tweet-content-field'	=> array(
@@ -273,8 +273,8 @@ $cwp_top_networks = array(
 			'slug'				=> 'tweet-length',
 			'option'			=> 'top_opt_tweet_length',
 			'description'		=> __('The length of the tweet', CWP_TEXTDOMAIN),
-			'max-length'        => 140,
-			'default_value'     =>140
+			'max-length'        => 1000,
+			'default_value'     =>1000
 		),
 
 		'tweet-content-field'	=> array(
@@ -487,7 +487,8 @@ $cwp_top_networks = array(
 				'body'			=> __('Body Only', CWP_TEXTDOMAIN),
 				'titlenbody'	=> __('Title & Body', CWP_TEXTDOMAIN),
 				'custom-field'	=> __('Custom Field', CWP_TEXTDOMAIN)
-			)
+			),
+			"available_pro"         => "yes"
 		),
 		'top_opt_tweet_length' 	=> array(
 			'id' 				=> '1',
@@ -497,7 +498,8 @@ $cwp_top_networks = array(
 			'option'			=> 'top_opt_tweet_length',
 			'description'		=> __('The length of the tweet', CWP_TEXTDOMAIN),
 			'max-length'        => 256,
-			'default_value'     =>256
+			'default_value'     =>256,
+			"available_pro"         => "yes"
 		),
 
 		'tweet-content-field'	=> array(
@@ -507,7 +509,8 @@ $cwp_top_networks = array(
 			'slug'			=> 'tweet-content-field',
 			'option'		=> 'top_opt_tweet_type_custom_field',
 			'description'	=> __('Which custom field do you want to fetch info from?', CWP_TEXTDOMAIN),
-			'options'		=> array()
+			'options'		=> array(),
+			"available_pro"         => "yes"
 		),
 
 		'additional-text'	=> array(
@@ -517,7 +520,8 @@ $cwp_top_networks = array(
 			'slug'			=> 'additional-text',
 			'option'		=> 'top_opt_add_text',
 			'description'	=> __('Text added to your auto posts', CWP_TEXTDOMAIN),
-			'options'		=> array()
+			'options'		=> array(),
+			"available_pro"         => "yes"
 		),
 
 		'additional-text-at' 	=> array(
@@ -530,7 +534,8 @@ $cwp_top_networks = array(
 			'options'		=> array(
 				'beginning'	=> __('Beginning of Post', CWP_TEXTDOMAIN),
 				'end'		=> __('End of Post', CWP_TEXTDOMAIN)
-			)
+			),
+			"available_pro"         => "yes"
 		),
 
 		'include-link' 			=> array(
@@ -547,7 +552,8 @@ $cwp_top_networks = array(
 			'dependency'=>  array(
 				"url-from-custom-field"=>"true",
 				"use-url-shortner"=>"true",
-			)
+			),
+			"available_pro"         => "yes"
 
 
 		),
@@ -562,7 +568,8 @@ $cwp_top_networks = array(
 			'options'		=> '',
 			'dependency'=>  array(
 				"custom-field-url"=>"true"
-			)
+			),
+			"available_pro"         => "yes"
 		),
 
 		'custom-field-url'		=> array(
@@ -572,7 +579,8 @@ $cwp_top_networks = array(
 			'slug'			=> 'custom-field-url',
 			'option'		=> 'top_opt_custom_url_field',
 			'description'	=> __('URL will be fetched from the specified custom field.', CWP_TEXTDOMAIN),
-			'options'		=> array()
+			'options'		=> array(),
+			"available_pro"         => "yes"
 		),
 
 		'use-url-shortner' => array(
@@ -585,7 +593,8 @@ $cwp_top_networks = array(
 			'options'		=> '',
 			'dependency'=>  array(
 				"url-shortner"=>"true"
-			)
+			),
+			"available_pro"         => "yes"
 		),
 
 
@@ -612,7 +621,8 @@ $cwp_top_networks = array(
 			'dependency'=>  array(
 				"bitly-key"=>"bit.ly",
 				"bitly-user"=>"bit.ly"
-			)
+			),
+			"available_pro"         => "yes"
 		),
 
 		'bitly-key' => array(
@@ -623,6 +633,7 @@ $cwp_top_networks = array(
 			'option'		=> 'top_opt_bitly_key',
 			'description'	=> '',
 			'options'		=> '',
+			"available_pro"         => "yes"
 		),
 
 		'bitly-user' => array(
@@ -633,6 +644,7 @@ $cwp_top_networks = array(
 			'option'		=> 'top_opt_bitly_user',
 			'description'	=> '',
 			'options'		=> '',
+			"available_pro"         => "yes"
 		),
 
 		'custom-hashtag-option' => array(
@@ -654,7 +666,8 @@ $cwp_top_networks = array(
 				"hashtags-length" =>"common,categories,tags,custom",
 				"common-hashtags" =>"common",
 				"custom-hashtag-field"=>"custom"
-			)
+			),
+			"available_pro"         => "yes"
 		),
 
 		'common-hashtags'		=> array(
@@ -664,7 +677,8 @@ $cwp_top_networks = array(
 			'slug'			=> 'common-hashtags',
 			'option'		=> 'top_opt_hashtags',
 			'description'	=> __('Specify which hashtags you want to be used. eg. #example, #example2', CWP_TEXTDOMAIN),
-			'options'		=> array()
+			'options'		=> array(),
+			"available_pro"         => "yes"
 		),
 
 		'hashtags-length'		=> array(
@@ -674,7 +688,8 @@ $cwp_top_networks = array(
 			'slug'			=> 'hashtags-length',
 			'option'		=> 'top_opt_hashtag_length',
 			'description'	=> __('Set to 0 (characters) to include all.', CWP_TEXTDOMAIN),
-			'options'		=> array()
+			'options'		=> array(),
+			"available_pro"         => "yes"
 		),
 
 		'custom-hashtag-field'	=> array(
@@ -684,7 +699,8 @@ $cwp_top_networks = array(
 			'slug'			=> 'custom-hashtag-field',
 			'option'		=> 'top_opt_custom_hashtag_field',
 			'description'	=> __('Fetch hashtags from specified custom field', CWP_TEXTDOMAIN),
-			'options'		=> array()
+			'options'		=> array(),
+			"available_pro"         => "yes"
 		),
 		'use-image' => array(
 			'id' 					=> '24',
@@ -694,6 +710,7 @@ $cwp_top_networks = array(
 			'option'				=> 'top_opt_post_with_image',
 			'description'			=> __('Check if you want to add the post featured image to the share', CWP_TEXTDOMAIN),
 			'options'				=> array(),
+			"available_pro"         => "yes",
 			"available_pro"         => "yes"
 		)
 	)

@@ -4,7 +4,12 @@
 ?><div class="cwp_top_tabs_vertical">
 	<ul class="cwp_top_tabs_btns">
 		<?php $first = true; foreach($cwp_top_networks  as $network_name=>$network_details) { ?>
-			<li <?php if($first){ ?>class="active" <?php } ?>  <?php ?>><?php echo $network_name; ?></li>
+			<li <?php if($first){ ?>class="active" <?php }else{
+
+				if($network_name == 'linkedin' && !CWP_TOP_PRO) echo 'class="pro-version"';
+
+			} ?>  <?php ?>><?php echo $network_name; ?></li>
+
 		<?php $first = false; } ?>
 
 	</ul>
