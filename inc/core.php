@@ -828,9 +828,9 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			global $wpdb;
 			if(CWP_TOP_PRO){
 
-				$pro  = get_plugin_data(dirname(dirname(dirname(__FILE__)))."/tweet-old-post-pro/tweet-old-post-pro.php");
+				$pro  = get_plugin_data(ROPPROPLUGINPATH."/tweet-old-post-pro.php");
 			}
-			$lite  = get_plugin_data(dirname(dirname(dirname(__FILE__)))."/tweet-old-post/tweet-old-post.php");
+			$lite  = get_plugin_data(ROPPLUGINPATH."/tweet-old-post.php");
 			if ( get_bloginfo( 'version' ) < '3.4' ) {
 				$theme_data = get_theme_data( get_stylesheet_directory() . '/style.css' );
 				$theme      = $theme_data['Name'] . ' ' . $theme_data['Version'];
@@ -2053,7 +2053,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		public function clearOldCron(){
 
 			if(CWP_TOP_PRO){
-				$prov = get_plugin_data(dirname(dirname(dirname(__FILE__)))."/tweet-old-post-pro/tweet-old-post-pro.php");
+				$prov = get_plugin_data(ROPPROPLUGINPATH."/tweet-old-post-pro.php");
 				if(version_compare($prov['Version'],"1.4.4","<=")){
 
 					$this->notices[] = "You need to have the latest version of the Revive Old Post Pro addon in order to use it. Please download it from the themeisle.com account";
