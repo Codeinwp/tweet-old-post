@@ -11,7 +11,7 @@
 
 	<header id="cwp_top_header" class='clearfix'>
 		<h1 class="top_logo">
-			<?php if (function_exists('topProAddNewAccount')) {
+			<?php if (CWP_TOP_PRO) {
 				echo "Revive Old Post PRO";
 			} else echo "Revive Old Post"; ?>
 

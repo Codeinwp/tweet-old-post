@@ -64,9 +64,7 @@ if (!class_exists('CWP_TOP_Core')) {
 		function checkUsers(){
 			if(count($this->users) == 0){
 				update_option('cwp_topnew_notice', 'You have no account set to post !');
-
 				die();
-
 			}
 
 		}
@@ -372,6 +370,10 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			if(!CWP_TOP_PRO) {
 
 				wp_schedule_single_event($timeNow,'cwptoptweetcronnew');
+
+			}else{
+				global $CWP_TOP_Core_PRO;
+				$CWP_TOP_Core_PRO->startOldPostPro();
 
 			}
 		}
@@ -1418,6 +1420,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		}
 		public function adminNotice(){
 			if(is_array($this->notices)){
+
 				foreach($this->notices as $n){
 					?>
 					<div class="error">
@@ -2052,28 +2055,37 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		}
 		public function clearOldCron(){
 
-			if(CWP_TOP_PRO){
-				$prov = get_plugin_data(ROPPROPLUGINPATH."/tweet-old-post-pro.php");
-				if(version_compare($prov['Version'],"1.4.4","<=")){
-
+			if(!defined("VERSION_CHECK") && function_exists('topProImage')){
 					$this->notices[] = "You need to have the latest version of the Revive Old Post Pro addon in order to use it. Please download it from the themeisle.com account";
-				}
+					return false;
 			}
-			if(wp_next_scheduled( 'cwptoptweetcron' ) !== false) {
-				$timestamp = wp_next_scheduled( 'cwptoptweetcron' );
-				wp_clear_scheduled_hook('cwptoptweetcron');
-				wp_schedule_single_event($timestamp,'cwptoptweetcronnew');
+			if(wp_next_scheduled( 'cwp_top_tweet_cron' ) !== false) {
+				$timestamp = wp_next_scheduled( 'cwp_top_tweet_cron' );
+				wp_clear_scheduled_hook('cwp_top_tweet_cron');
 
-			}
-			if(CWP_TOP_PRO){
-
-				if(wp_next_scheduled( 'cwptoptweetcronnew' ) !== false) {
-					$timestamp = wp_next_scheduled( 'cwptoptweetcronnew');
-					wp_clear_scheduled_hook('cwptoptweetcronnew');
+				if(CWP_TOP_PRO) {
 					wp_schedule_single_event($timestamp,  'twittercwptoptweetcron',array('twitter')) ;
 					wp_schedule_single_event($timestamp, 'facebookcwptoptweetcron',array('facebook')) ;
 					wp_schedule_single_event($timestamp,  'linkedincwptoptweetcron',array('linkedin')) ;
+				}else{
+					wp_schedule_single_event($timestamp,'cwptoptweetcronnew');
+
 				}
+
+			}else{
+				if(CWP_TOP_PRO){
+
+					if(wp_next_scheduled( 'cwptoptweetcronnew' ) !== false) {
+
+						$timestamp = wp_next_scheduled( 'cwptoptweetcronnew' );
+						wp_clear_scheduled_hook('cwptoptweetcronnew');
+						wp_schedule_single_event($timestamp,  'twittercwptoptweetcron',array('twitter')) ;
+						wp_schedule_single_event($timestamp, 'facebookcwptoptweetcron',array('facebook')) ;
+						wp_schedule_single_event($timestamp,  'linkedincwptoptweetcron',array('linkedin')) ;
+
+					}
+				}
+
 			}
 		}
 		public function loadAllHooks()
