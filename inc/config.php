@@ -1,7 +1,6 @@
 <?php
 define("CURRENTURL", top_current_page());
 define("CWP_TEXTDOMAIN", "tweet-old-post");
-define("SETTINGSURL", top_settings_url());
 
 if(class_exists("CWP_TOP_Core_PRO")){
 	define("CWP_TOP_PRO", TRUE);
