@@ -2051,27 +2051,19 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 				}
 
 
-				$timestamp = wp_next_scheduled( 'cwptoptweetcronnew' );
-				$timenow = $this->getTime();
 
-				if ($this->pluginStatus == 'true' && $timenow > $timestamp && !CWP_TOP_PRO) {
-
-					$this->startTweetOldPost(true);
-					//update_option('cwp_topnew_notice', "Looks like there is an issue with your WP Cron, read more <a href='http://wordpress.org/plugins/tweet-old-post/faq/'>here</a>");
-
-				}
 			}
 		}
 		public function clearOldCron(){
 
 			if(!defined("VERSION_CHECK") && function_exists('topProImage')){
 					$this->notices[] = "You need to have the latest version of the Revive Old Post Pro addon in order to use it. Please download it from the themeisle.com account";
-					return false;
+
 			}
 			if(wp_next_scheduled( 'cwp_top_tweet_cron' ) !== false) {
+
 				$timestamp = wp_next_scheduled( 'cwp_top_tweet_cron' );
 				wp_clear_scheduled_hook('cwp_top_tweet_cron');
-
 				if(CWP_TOP_PRO) {
 					wp_schedule_single_event($timestamp,  'twittercwptoptweetcron',array('twitter')) ;
 					wp_schedule_single_event($timestamp, 'facebookcwptoptweetcron',array('facebook')) ;
@@ -2097,7 +2089,6 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 							wp_schedule_single_event($timestamp,  'linkedincwptoptweetcron',array('linkedin')) ;
 
 					}else{
-
 						if(!in_array("twitter",$networks)){
 
 							wp_clear_scheduled_hook('twittercwptoptweetcron',array('twitter'));
@@ -2233,12 +2224,12 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 				if ($_GET['page'] == $cwp_top_settings['slug'] || $_GET['page'] == "ExcludePosts") {
 
 					// Enqueue and Register Main CSS File
-					wp_register_style( 'cwp_top_stylesheet', ROPCSSFILE, false, '1.0.0' );
+					wp_register_style( 'cwp_top_stylesheet', ROPCSSFILE, false, '2.0.0' );
 					wp_enqueue_style( 'cwp_top_stylesheet' );
 
 					// Register Main JS File
-					wp_enqueue_script( 'cwp_top_js_countdown', ROPJSCOUNTDOWN, array(), '1.0.0', true );
-					wp_enqueue_script( 'cwp_top_javascript', ROPJSFILE, array(), '1.0.0', true );
+					wp_enqueue_script( 'cwp_top_js_countdown', ROPJSCOUNTDOWN, array(), '2.0.0', true );
+					wp_enqueue_script( 'cwp_top_javascript', ROPJSFILE, array(), '2.0.0', true );
 					wp_localize_script( 'cwp_top_javascript', 'cwp_top_ajaxload', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
 				}
 			}
