@@ -553,15 +553,15 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			// Generate the tweet content.
 			switch ( $tweet_content ) {
 				case 'title':
-					$tweetContent = $postQuery->post_title . " ";
+					$tweetContent = $postQuery->post_title;
 					break;
 
 				case 'body':
-					$tweetContent = get_post_field( 'post_content', $postQuery->ID ) . " ";
+					$tweetContent = get_post_field( 'post_content', $postQuery->ID );
 					break;
 
 				case 'titlenbody':
-					$tweetContent = $postQuery->post_title . " " . get_post_field( 'post_content', $postQuery->ID ) . " ";
+					$tweetContent = $postQuery->post_title . " " . get_post_field( 'post_content', $postQuery->ID );
 					break;
 
 				case 'custom-field':
@@ -706,9 +706,9 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			}
 			$finalTweetLength = $max_length - 1  - $finalTweetLength - 5;
 
-			$tweetContent = $this->ropSubstr( $tweetContent, 0, $finalTweetLength ) . " ";
+			$tweetContent = $this->ropSubstr( $tweetContent, 0, $finalTweetLength );
 
-			$finalTweet = $additionalTextBeginning . $tweetContent . " %short_urlshort_urlur% " . $newHashtags . $additionalTextEnd;
+			$finalTweet = $additionalTextBeginning . $tweetContent . " %short_urlshort_urlur%" . $newHashtags . $additionalTextEnd;
 			$finalTweet = $this->ropSubstr( $finalTweet, 0, $max_length - 1 );
 			$finalTweet = str_replace( "%short_urlshort_urlur%", $post_url, $finalTweet );
 
