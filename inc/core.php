@@ -534,7 +534,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			$max_length         = isset($formats[$network."_"."top_opt_tweet_length"]) ? $formats[$network."_"."top_opt_tweet_length"] : $cwp_top_networks[$network]['top_opt_tweet_length']['default_value'];
 			$include_link                = isset($formats[$network."_"."top_opt_include_link"]) ? $formats[$network."_"."top_opt_include_link"] : get_option( 'top_opt_include_link' );  get_option( 'top_opt_include_link' );
 			$fetch_url_from_custom_field =  isset($formats[$network."_"."top_opt_custom_url_option"]) ? $formats[$network."_"."top_opt_custom_url_option"] : get_option( 'top_opt_custom_url_option' );
-			$custom_field_url            =  isset($formats[$network."_"."top_opt_custom_url_option"]) ? $formats[$network."_"."top_opt_custom_url_option"] : get_option( 'top_opt_custom_url_field' );  get_option( 'top_opt_custom_url_field' );
+			$custom_field_url            =  isset($formats[$network."_"."top_opt_custom_url_field"]) ? $formats[$network."_"."top_opt_custom_url_field"] : get_option( 'top_opt_custom_url_field' );  get_option( 'top_opt_custom_url_field' );
 			$use_url_shortner            =  isset($formats[$network."_"."top_opt_use_url_shortner"]) ? $formats[$network."_"."top_opt_use_url_shortner"] : get_option( 'top_opt_use_url_shortner' );
 			$url_shortner_service        = isset($formats[$network."_"."top_opt_url_shortner"]) ? $formats[$network."_"."top_opt_url_shortner"] : get_option( 'top_opt_url_shortner' );
 			$hashtags                    = isset($formats[$network."_"."top_opt_custom_hashtag_option"]) ? $formats[$network."_"."top_opt_custom_hashtag_option"] : get_option( 'top_opt_custom_hashtag_option' );
@@ -556,15 +556,15 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			// Generate the tweet content.
 			switch ( $tweet_content ) {
 				case 'title':
-					$tweetContent = $postQuery->post_title . " ";
+					$tweetContent = $postQuery->post_title;
 					break;
 
 				case 'body':
-					$tweetContent = get_post_field( 'post_content', $postQuery->ID ) . " ";
+					$tweetContent = get_post_field( 'post_content', $postQuery->ID );
 					break;
 
 				case 'titlenbody':
-					$tweetContent = $postQuery->post_title . " " . get_post_field( 'post_content', $postQuery->ID ) . " ";
+					$tweetContent = $postQuery->post_title . " " . get_post_field( 'post_content', $postQuery->ID );
 					break;
 
 				case 'custom-field':
@@ -709,9 +709,9 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			}
 			$finalTweetLength = $max_length - 1  - $finalTweetLength - 5;
 
-			$tweetContent = $this->ropSubstr( $tweetContent, 0, $finalTweetLength ) . " ";
+			$tweetContent = $this->ropSubstr( $tweetContent, 0, $finalTweetLength );
 
-			$finalTweet = $additionalTextBeginning . $tweetContent . " %short_urlshort_urlur% " . $newHashtags . $additionalTextEnd;
+			$finalTweet = $additionalTextBeginning . $tweetContent . " %short_urlshort_urlur%" . $newHashtags . $additionalTextEnd;
 			$finalTweet = $this->ropSubstr( $finalTweet, 0, $max_length - 1 );
 			$finalTweet = str_replace( "%short_urlshort_urlur%", $post_url, $finalTweet );
 
