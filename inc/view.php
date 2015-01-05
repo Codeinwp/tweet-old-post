@@ -214,7 +214,7 @@
 					<li><?php _e('Enter the required details and pay special attention to the further fields :',CWP_TEXTDOMAIN);?></li>
 					<li><?php _e('Make sure you set Live Status to LIVE',CWP_TEXTDOMAIN);?> </li>
 					<li><?php _e('Default Scope should have r_basicprofile and rw_nus checked',CWP_TEXTDOMAIN);?></li>
-					<li><?php printf(__('Copy/Paste this url : <strong>%s</strong> into App Domains and Site URL fields and <strong>Save</strong>',CWP_TEXTDOMAIN),top_settings_url());?> </li>
+					<li><?php printf(__('Copy/Paste this url : <strong>%s</strong> into OAuth 2.0 Redirect URLs field and <strong>Save</strong>',CWP_TEXTDOMAIN),top_settings_url());?> </li>
 					<li><?php _e('Once all required fields are filled click on Add Application button, get the API Key and Secret Key and paste them in the fields on the right',CWP_TEXTDOMAIN);?></li>
 
 					<li><?php _e('Now everything is done, click on <strong>Authorize App</strong> button.',CWP_TEXTDOMAIN);?></li>
