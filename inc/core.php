@@ -77,6 +77,7 @@ if (!class_exists('CWP_TOP_Core')) {
 				update_option('cwp_topnew_active_status', 'true');
 				update_option('cwp_topnew_notice', '');
 				update_option('top_opt_already_tweeted_posts',array());
+				update_option('top_last_tweets',array());
 				// Schedule the next tweet
 				//$timeNow = date("Y-m-d H:i:s", time());
 				//$timeNow = get_date_from_gmt($timeNow);
@@ -356,19 +357,21 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 					add_option("top_opt_already_tweeted_posts");
 					update_option("top_opt_already_tweeted_posts", $tweetedPosts);
 					// Increase
-					$k = $k + 1;
 					//}
 				} else {
 					if (count($returnedPost)!=$tweetCount)
 						update_option('cwp_topnew_notice', 'You have tried to post more tweets that they are available, try to include more categories or increase the date range');
 					else
 						update_option('cwp_topnew_notice', 'Tweet was already tweeted, if you want to tweet your old tweets more than once, select "Tweet old posts more than once" option');
+
 				}
+
+				$k = $k + 1;
 			}
-			$interval = floatval($this->intervalSet) * 60 * 60;
-			$timeNow = $this->getTime()+$interval;
 			if(!CWP_TOP_PRO) {
 
+				$interval = floatval($this->intervalSet) * 60 * 60;
+				$timeNow = $this->getTime()+$interval;
 				wp_schedule_single_event($timeNow,'cwptoptweetcronnew');
 
 			}
@@ -735,8 +738,16 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			$k=1;
 			$nrOfUsers = count($this->users);
 
+			$time = get_option("top_last_tweets");
 			foreach ($this->users as $user) {
 				if($network == $user['service']  ){
+					if(isset($time[$network])){
+						if(time() - $time[$network] < 60)
+							return false;
+
+					}
+					$time[$network] = time();
+					update_option("top_last_tweets",$time);
 					switch ($user['service']) {
 						case 'twitter':
 							// Create a new twitter connection using the stored user credentials.
@@ -862,103 +873,122 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 					<h2><?php _e( 'System Information', CWP_TEXTDOMAIN); ?></h2><br/>
 					<form action="" method="post" dir="ltr">
 						<textarea readonly="readonly" onclick="this.focus();this.select()" cols="100" id="system-info-textarea" name="cwp-top-sysinfo" rows="20" title="<?php _e( 'To copy the system info, click below then press Ctrl + C (PC) or Cmd + C (Mac).', 'edd' ); ?>">
-			### Begin System Info ###
-
-			## Please include this information when posting support requests ##
-
-
-			Multisite:                <?php echo is_multisite() ? 'Yes' . "\n" : 'No' . "\n" ?>
-
-			SITE_URL:                 <?php echo site_url() . "\n"; ?>
-			HOME_URL:                 <?php echo home_url() . "\n"; ?>
-			<?php if(CWP_TOP_PRO): ?>
-				ROP PRO Version:              <?php echo $pro['Version'] . "\n"; ?>
-			<?php endif; ?>
-			ROP Lite Version:              <?php echo $lite['Version'] . "\n"; ?>
-			WordPress Version:        <?php echo get_bloginfo( 'version' ) . "\n"; ?>
-			Permalink Structure:      <?php echo get_option( 'permalink_structure' ) . "\n"; ?>
-			Active Theme:             <?php echo $theme . "\n"; ?>
-			<?php if( $host ) : ?>
-				Host:                     <?php echo $host . "\n"; ?>
-			<?php endif; ?>
+### Begin System Info ###
+## ROP CONFIGS ##
+			<?php
+				$options = get_option("top_opt_post_formats");
+				$cwp_top_global_schedule = get_option("cwp_top_global_schedule");
+		        global $cwp_top_networks;
+			echo "## ROP POST FORMAT";
+				foreach($cwp_top_networks as $n=>$d){
+					echo "  \n \n \n ##".$n." \n \n \n ";
 
 
-			PHP Version:              <?php echo PHP_VERSION . "\n"; ?>
-			MySQL Version:            <?php echo mysql_get_server_info() . "\n"; ?>
-			Web Server Info:          <?php echo $_SERVER['SERVER_SOFTWARE'] . "\n"; ?>
-
-			WordPress Memory Limit:   <?php echo  WP_MEMORY_LIMIT  ; ?><?php echo "\n"; ?>
-			PHP Safe Mode:            <?php echo ini_get( 'safe_mode' ) ? "Yes" : "No\n"; ?>
-			PHP Memory Limit:         <?php echo ini_get( 'memory_limit' ) . "\n"; ?>
-			PHP Upload Max Size:      <?php echo ini_get( 'upload_max_filesize' ) . "\n"; ?>
-			PHP Post Max Size:        <?php echo ini_get( 'post_max_size' ) . "\n"; ?>
-			PHP Upload Max Filesize:  <?php echo ini_get( 'upload_max_filesize' ) . "\n"; ?>
-			PHP Time Limit:           <?php echo ini_get( 'max_execution_time' ) . "\n"; ?>
-			PHP Max Input Vars:       <?php echo ini_get( 'max_input_vars' ) . "\n"; ?>
-			PHP Arg Separator:        <?php echo ini_get( 'arg_separator.output' ) . "\n"; ?>
-			PHP Allow URL File Open:  <?php echo ini_get( 'allow_url_fopen' ) ? "Yes" : "No\n"; ?>
-
-			WP_DEBUG:                 <?php echo defined( 'WP_DEBUG' ) ? WP_DEBUG ? 'Enabled' . "\n" : 'Disabled' . "\n" : 'Not set' . "\n" ?>
-
-			WP Table Prefix:          <?php echo "Length: ". strlen( $wpdb->prefix ); echo " Status:"; if ( strlen( $wpdb->prefix )>16 ) {echo " ERROR: Too Long";} else {echo " Acceptable";} echo "\n"; ?>
-
-			Show On Front:            <?php echo get_option( 'show_on_front' ) . "\n" ?>
-			Page On Front:            <?php $id = get_option( 'page_on_front' ); echo get_the_title( $id ) . ' (#' . $id . ')' . "\n" ?>
-			Page For Posts:           <?php $id = get_option( 'page_for_posts' ); echo get_the_title( $id ) . ' (#' . $id . ')' . "\n" ?>
 
 
-			Session:                  <?php echo isset( $_SESSION ) ? 'Enabled' : 'Disabled'; ?><?php echo "\n"; ?>
-			Session Name:             <?php echo esc_html( ini_get( 'session.name' ) ); ?><?php echo "\n"; ?>
-			Cookie Path:              <?php echo esc_html( ini_get( 'session.cookie_path' ) ); ?><?php echo "\n"; ?>
-			Save Path:                <?php echo esc_html( ini_get( 'session.save_path' ) ); ?><?php echo "\n"; ?>
-			Use Cookies:              <?php echo ini_get( 'session.use_cookies' ) ? 'On' : 'Off'; ?><?php echo "\n"; ?>
-			Use Only Cookies:         <?php echo ini_get( 'session.use_only_cookies' ) ? 'On' : 'Off'; ?><?php echo "\n"; ?>
+					foreach($d as $f){
 
-			DISPLAY ERRORS:           <?php echo ( ini_get( 'display_errors' ) ) ? 'On (' . ini_get( 'display_errors' ) . ')' : 'N/A'; ?><?php echo "\n"; ?>
-			FSOCKOPEN:                <?php echo ( function_exists( 'fsockopen' ) ) ? 'Your server supports fsockopen.' : 'Your server does not support fsockopen.'; ?><?php echo "\n"; ?>
-			cURL:                     <?php echo ( function_exists( 'curl_init' ) ) ? 'Your server supports cURL.' : 'Your server does not support cURL.'; ?><?php echo "\n"; ?>
-			SOAP Client:              <?php echo ( class_exists( 'SoapClient' ) ) ? 'Your server has the SOAP Client enabled.' : 'Your server does not have the SOAP Client enabled.'; ?><?php echo "\n"; ?>
+						echo $f['name']. " : ". $options[$n."_".$f['option']]." \n  ";
+					}
 
-			ACTIVE PLUGINS:
-<?php
-			$plugins = get_plugins();
-			$active_plugins = get_option( 'active_plugins', array() );
-
-			foreach ( $plugins as $plugin_path => $plugin ) {
-				// If the plugin isn't active, don't show it.
-				if ( ! in_array( $plugin_path, $active_plugins ) )
-					continue;
-
-				echo "\t"."\t"."\t"."\t".$plugin['Name'] . ': ' . $plugin['Version'] ."\n";
-			}
-
-			if ( is_multisite() ) :
-				?>
-
-				NETWORK ACTIVE PLUGINS:
-
-				<?php
-				$plugins = wp_get_active_network_plugins();
-				$active_plugins = get_site_option( 'active_sitewide_plugins', array() );
-
-				foreach ( $plugins as $plugin_path ) {
-					$plugin_base = plugin_basename( $plugin_path );
-
-					// If the plugin isn't active, don't show it.
-					if ( ! array_key_exists( $plugin_base, $active_plugins ) )
-						continue;
-
-					$plugin = get_plugin_data( $plugin_path );
-
-					echo "\t"."\t"."\t"."\t".$plugin['Name'] . ' :' . $plugin['Version'] ."\n";
 				}
-
-			endif;
 			?>
 
+## Please include this information when posting support requests ##
 
 
-			### End System Info ###</textarea>
+Multisite:                <?php echo is_multisite() ? 'Yes' . "\n" : 'No' . "\n" ?>
+
+SITE_URL:                 <?php echo site_url() . "\n"; ?>
+HOME_URL:                 <?php echo home_url() . "\n"; ?>
+<?php if(CWP_TOP_PRO): ?>
+ROP PRO Version:              <?php echo $pro['Version'] . "\n"; ?>
+<?php endif; ?>
+ROP Lite Version:              <?php echo $lite['Version'] . "\n"; ?>
+WordPress Version:        <?php echo get_bloginfo( 'version' ) . "\n"; ?>
+Permalink Structure:      <?php echo get_option( 'permalink_structure' ) . "\n"; ?>
+Active Theme:             <?php echo $theme . "\n"; ?>
+<?php if( $host ) : ?>
+	Host:                     <?php echo $host . "\n"; ?>
+<?php endif; ?>
+
+
+PHP Version:              <?php echo PHP_VERSION . "\n"; ?>
+MySQL Version:            <?php echo mysql_get_server_info() . "\n"; ?>
+Web Server Info:          <?php echo $_SERVER['SERVER_SOFTWARE'] . "\n"; ?>
+CRON Active:              <?php echo (WP_CRON) ? "yes" : "no"; ?><?php echo "\n"; ?>
+WordPress Memory Limit:   <?php echo  WP_MEMORY_LIMIT  ; ?><?php echo "\n"; ?>
+PHP Safe Mode:            <?php echo ini_get( 'safe_mode' ) ? "Yes" : "No\n"; ?>
+PHP Memory Limit:         <?php echo ini_get( 'memory_limit' ) . "\n"; ?>
+PHP Upload Max Size:      <?php echo ini_get( 'upload_max_filesize' ) . "\n"; ?>
+PHP Post Max Size:        <?php echo ini_get( 'post_max_size' ) . "\n"; ?>
+PHP Upload Max Filesize:  <?php echo ini_get( 'upload_max_filesize' ) . "\n"; ?>
+PHP Time Limit:           <?php echo ini_get( 'max_execution_time' ) . "\n"; ?>
+PHP Max Input Vars:       <?php echo ini_get( 'max_input_vars' ) . "\n"; ?>
+PHP Arg Separator:        <?php echo ini_get( 'arg_separator.output' ) . "\n"; ?>
+PHP Allow URL File Open:  <?php echo ini_get( 'allow_url_fopen' ) ? "Yes" : "No\n"; ?>
+
+WP_DEBUG:                 <?php echo defined( 'WP_DEBUG' ) ? WP_DEBUG ? 'Enabled' . "\n" : 'Disabled' . "\n" : 'Not set' . "\n" ?>
+
+WP Table Prefix:          <?php echo "Length: ". strlen( $wpdb->prefix ); echo " Status:"; if ( strlen( $wpdb->prefix )>16 ) {echo " ERROR: Too Long";} else {echo " Acceptable";} echo "\n"; ?>
+
+Show On Front:            <?php echo get_option( 'show_on_front' ) . "\n" ?>
+Page On Front:            <?php $id = get_option( 'page_on_front' ); echo get_the_title( $id ) . ' (#' . $id . ')' . "\n" ?>
+Page For Posts:           <?php $id = get_option( 'page_for_posts' ); echo get_the_title( $id ) . ' (#' . $id . ')' . "\n" ?>
+
+
+Session:                  <?php echo isset( $_SESSION ) ? 'Enabled' : 'Disabled'; ?><?php echo "\n"; ?>
+Session Name:             <?php echo esc_html( ini_get( 'session.name' ) ); ?><?php echo "\n"; ?>
+Cookie Path:              <?php echo esc_html( ini_get( 'session.cookie_path' ) ); ?><?php echo "\n"; ?>
+Save Path:                <?php echo esc_html( ini_get( 'session.save_path' ) ); ?><?php echo "\n"; ?>
+Use Cookies:              <?php echo ini_get( 'session.use_cookies' ) ? 'On' : 'Off'; ?><?php echo "\n"; ?>
+Use Only Cookies:         <?php echo ini_get( 'session.use_only_cookies' ) ? 'On' : 'Off'; ?><?php echo "\n"; ?>
+
+DISPLAY ERRORS:           <?php echo ( ini_get( 'display_errors' ) ) ? 'On (' . ini_get( 'display_errors' ) . ')' : 'N/A'; ?><?php echo "\n"; ?>
+FSOCKOPEN:                <?php echo ( function_exists( 'fsockopen' ) ) ? 'Your server supports fsockopen.' : 'Your server does not support fsockopen.'; ?><?php echo "\n"; ?>
+cURL:                     <?php echo ( function_exists( 'curl_init' ) ) ? 'Your server supports cURL.' : 'Your server does not support cURL.'; ?><?php echo "\n"; ?>
+SOAP Client:              <?php echo ( class_exists( 'SoapClient' ) ) ? 'Your server has the SOAP Client enabled.' : 'Your server does not have the SOAP Client enabled.'; ?><?php echo "\n"; ?>
+
+ACTIVE PLUGINS:
+<?php
+$plugins = get_plugins();
+$active_plugins = get_option( 'active_plugins', array() );
+
+foreach ( $plugins as $plugin_path => $plugin ) {
+	// If the plugin isn't active, don't show it.
+	if ( ! in_array( $plugin_path, $active_plugins ) )
+		continue;
+
+	echo "\t"."\t"."\t"."\t".$plugin['Name'] . ': ' . $plugin['Version'] ."\n";
+}
+
+if ( is_multisite() ) :
+	?>
+
+	NETWORK ACTIVE PLUGINS:
+
+	<?php
+	$plugins = wp_get_active_network_plugins();
+	$active_plugins = get_site_option( 'active_sitewide_plugins', array() );
+
+	foreach ( $plugins as $plugin_path ) {
+		$plugin_base = plugin_basename( $plugin_path );
+
+		// If the plugin isn't active, don't show it.
+		if ( ! array_key_exists( $plugin_base, $active_plugins ) )
+			continue;
+
+		$plugin = get_plugin_data( $plugin_path );
+
+		echo "\t"."\t"."\t"."\t".$plugin['Name'] . ' :' . $plugin['Version'] ."\n";
+	}
+
+endif;
+?>
+
+
+
+### End System Info ###</textarea>
 						<p class="submit">
 							<input type="hidden" name="cwp-action" value="download_sysinfo" />
 							<?php submit_button( 'Download System Info File', 'primary', 'cwp-download-sysinfo', false ); ?>
@@ -968,15 +998,25 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 				</div>
 			<?php
 		}
-		public function tweetPostwithImage($finalTweet, $id)
+		public function tweetPostwithImage($finalTweet, $id,$ntk =  'twitter')
 		{
 
 			$k=1;
 			$tw=0;
 			$nrOfUsers = count($this->users);
+			$time = get_option("top_last_tweets");
 
 			foreach ($this->users as $user) {
 
+				if($ntk == $user['service']  ){
+					if(isset($time[$ntk])){
+						if(time() - $time[$ntk] < 60)
+							return false;
+
+					}
+
+					$time[$ntk] = time();
+					update_option("top_last_tweets",$time);
 				switch ($user['service']) {
 					case 'twitter':
 						// Create a new twitter connection using the stored user credentials.
@@ -1071,6 +1111,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 							$k++;
 
 
+				}
 				}
 				//sleep(100);
 			}

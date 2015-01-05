@@ -94,9 +94,9 @@ abstract class RopOAuthSignatureMethod {
 }
 }
 /**
- * The HMAC-SHA1 signature method uses the HMAC-SHA1 signature algorithm as defined in [RFC2104] 
- * where the Signature Base String is the text and the key is the concatenated values (each first 
- * encoded per Parameter Encoding) of the Consumer Secret and Token Secret, separated by an '&' 
+ * The HMAC-SHA1 signature method uses the HMAC-SHA1 signature algorithm as defined in [RFC2104]
+ * where the Signature Base String is the text and the key is the concatenated values (each first
+ * encoded per Parameter Encoding) of the Consumer Secret and Token Secret, separated by an '&'
  * character (ASCII code 38) even if empty.
  *   - Chapter 9.2 ("HMAC-SHA1")
  */
@@ -124,7 +124,7 @@ class RopOAuthSignatureMethod_HMAC_SHA1 extends RopOAuthSignatureMethod {
 }
 }
 /**
- * The PLAINTEXT method does not provide any security protection and SHOULD only be used 
+ * The PLAINTEXT method does not provide any security protection and SHOULD only be used
  * over a secure channel such as HTTPS. It does not use the Signature Base String.
  *   - Chapter 9.4 ("PLAINTEXT")
  */
@@ -135,8 +135,8 @@ class RopOAuthSignatureMethod_PLAINTEXT extends RopOAuthSignatureMethod {
   }
 
   /**
-   * oauth_signature is set to the concatenated encoded values of the Consumer Secret and 
-   * Token Secret, separated by a '&' character (ASCII code 38), even if either secret is 
+   * oauth_signature is set to the concatenated encoded values of the Consumer Secret and
+   * Token Secret, separated by a '&' character (ASCII code 38), even if either secret is
    * empty. The result MUST be encoded again.
    *   - Chapter 9.4.1 ("Generating Signatures")
    *
@@ -159,10 +159,10 @@ class RopOAuthSignatureMethod_PLAINTEXT extends RopOAuthSignatureMethod {
 }
 
 /**
- * The RSA-SHA1 signature method uses the RSASSA-PKCS1-v1_5 signature algorithm as defined in 
- * [RFC3447] section 8.2 (more simply known as PKCS#1), using SHA-1 as the hash function for 
- * EMSA-PKCS1-v1_5. It is assumed that the Consumer has provided its RSA public key in a 
- * verified way to the Service Provider, in a manner which is beyond the scope of this 
+ * The RSA-SHA1 signature method uses the RSASSA-PKCS1-v1_5 signature algorithm as defined in
+ * [RFC3447] section 8.2 (more simply known as PKCS#1), using SHA-1 as the hash function for
+ * EMSA-PKCS1-v1_5. It is assumed that the Consumer has provided its RSA public key in a
+ * verified way to the Service Provider, in a manner which is beyond the scope of this
  * specification.
  *   - Chapter 9.3 ("RSA-SHA1")
  */
@@ -481,9 +481,47 @@ class RopOAuthRequest {
    * util function: current timestamp
    */
   private static function generate_timestamp() {
-    return time();
-  }
+      https://api.twitter.com/1.1/
 
+      $ci = curl_init();
+
+      curl_setopt($ci, CURLOPT_RETURNTRANSFER, TRUE);
+      curl_setopt($ci, CURLOPT_HEADER, TRUE);
+
+      curl_setopt($ci, CURLOPT_URL, "https://api.twitter.com/1.1/");
+
+      $response = curl_exec($ci);
+      $header_size = curl_getinfo($ci, CURLINFO_HEADER_SIZE);
+      $header = substr($response, 0, $header_size);
+      $headers = self::get_headers_from_curl_response($header);
+      return strtotime($headers[0]['date']);
+  }
+    static function get_headers_from_curl_response($headerContent)
+    {
+
+        $headers = array();
+
+        // Split the string on every "double" new line.
+        $arrRequests = explode("\r\n\r\n", $headerContent);
+
+        // Loop of response headers. The "count() -1" is to
+        //avoid an empty row for the extra line break before the body of the response.
+        for ($index = 0; $index < count($arrRequests) -1; $index++) {
+
+            foreach (explode("\r\n", $arrRequests[$index]) as $i => $line)
+            {
+                if ($i === 0)
+                    $headers[$index]['http_code'] = $line;
+                else
+                {
+                    list ($key, $value) = explode(': ', $line);
+                    $headers[$index][$key] = $value;
+                }
+            }
+        }
+
+        return $headers;
+    }
   /**
    * util function: current nonce
    */
@@ -574,7 +612,7 @@ class RopOAuthServer {
   private function get_version(&$request) {
     $version = $request->get_parameter("oauth_version");
     if (!$version) {
-      // Service Providers MUST assume the protocol version to be 1.0 if this parameter is not present. 
+      // Service Providers MUST assume the protocol version to be 1.0 if this parameter is not present.
       // Chapter 7.0 ("Accessing Protected Ressources")
       $version = '1.0';
     }
@@ -674,7 +712,7 @@ class RopOAuthServer {
       throw new RopOAuthException(
         'Missing timestamp parameter. The parameter is required'
       );
-    
+
     // verify that timestamp is recentish
     $now = time();
     if (abs($now - $timestamp) > $this->timestamp_threshold) {
