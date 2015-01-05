@@ -481,7 +481,6 @@ class RopOAuthRequest {
    * util function: current timestamp
    */
   private static function generate_timestamp() {
-      https://api.twitter.com/1.1/
 
       $ci = curl_init();
 
