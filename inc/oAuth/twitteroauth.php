@@ -23,7 +23,7 @@ class RopTwitterOAuth {
   /* Set timeout default. */
   public $timeout = 30;
   /* Set connect timeout. */
-  public $connecttimeout = 30; 
+  public $connecttimeout = 30;
   /* Verify SSL Cert. */
   public $ssl_verifypeer = FALSE;
   /* Respons format. */
@@ -41,8 +41,8 @@ class RopTwitterOAuth {
   /* caching responses for an hour only with GET requests */
   public $cache = 0;
   /* where cache files will be stored if above is set to true */
-  public $cacheLocation = '/tmp'; 
-  
+  public $cacheLocation = '/tmp';
+
   /**
    * Set API URLS
    */
@@ -78,7 +78,7 @@ class RopTwitterOAuth {
    */
   function getRequestToken($oauth_callback) {
     $parameters = array();
-    $parameters['oauth_callback'] = $oauth_callback; 
+    $parameters['oauth_callback'] = $oauth_callback;
     $request = $this->RopOAuthRequest($this->requestTokenURL(), 'GET', $parameters);
   return $this->getToken($request);
   }
@@ -123,7 +123,7 @@ class RopTwitterOAuth {
    *                "user_id" => "9436992",
    *                "screen_name" => "abraham",
    *                "x_auth_expires" => "0")
-   */  
+   */
   function getXAuthToken($username, $password) {
     $parameters = array();
     $parameters['x_auth_username'] = $username;
@@ -143,7 +143,7 @@ class RopTwitterOAuth {
     }
     return $response;
   }
-  
+
   /**
    * POST wrapper for RopOAuthRequest.
    */
@@ -216,7 +216,7 @@ class RopTwitterOAuth {
    */
   function http($url, $method, $postfields = NULL, $authorization_header= false) {
     $this->http_info = array();
-    
+
     $ci = curl_init();
 
     $headers = Array('Expect:');
@@ -253,11 +253,11 @@ class RopTwitterOAuth {
     $this->http_info = array_merge($this->http_info, curl_getinfo($ci));
     $this->url = $url;
     curl_close ($ci);
-    
+
     if ($this->cache) {
         $this->cacheFile($response, $this->cache_file_name);
     }
-    
+
     return $response;
   }
 
@@ -273,10 +273,10 @@ class RopTwitterOAuth {
     }
     return strlen($header);
   }
-  
+
     function checkCache($fileName, $time) {
     $fileName = $this->cacheLocation.'/'.$fileName;
-    
+
     if (!file_exists($fileName)) {
       $this->cache_debug = $fileName . 'does not exist';
       return 0;
@@ -292,11 +292,11 @@ class RopTwitterOAuth {
       $this->cache_debug = 'cache file expired';
       return 1;
     }
-    
+
     $this->cache_debug = 'cache file still valid';
     return 0;
   }
-  
+
   function cacheFile($data, $filename) {
     $new_file = $this->cacheLocation.'/'.$fileName;
     $fh = fopen($new_file, 'w+');
@@ -313,7 +313,7 @@ class RopTwitterOAuth {
     chmod($new_file, 0766);
       return 1;
   }
-  
+
     function cacheRetrieve($fileName) {
         error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);
     if (!$fh = fopen($this->cacheLocation.'/'.$fileName, 'r')) {
@@ -323,8 +323,8 @@ class RopTwitterOAuth {
     error_reporting(E_ALL ^ E_NOTICE);
 
     $xml = "";
-    while (!feof($fh)) { 
-        $xml .= fread($fh, 1024); 
+    while (!feof($fh)) {
+        $xml .= fread($fh, 1024);
         }
     fclose($fh);
 
