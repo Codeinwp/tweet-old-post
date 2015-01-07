@@ -678,7 +678,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 			$tweetContent = $this->ropSubstr( $tweetContent, 0, $finalTweetLength );
 
-			$finalTweet = $additionalTextBeginning . $tweetContent . " %short_urlshort_urlur%" . $newHashtags . $additionalTextEnd;
+			$finalTweet = $additionalTextBeginning . $tweetContent . " %short_urlshort_urlur% " . $newHashtags . $additionalTextEnd;
 			$finalTweet = $this->ropSubstr( $finalTweet, 0, $max_length - 1 );
 			$finalTweet = str_replace( "%short_urlshort_urlur%", $post_url, $finalTweet );
 
