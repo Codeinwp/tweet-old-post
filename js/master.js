@@ -1,5 +1,4 @@
 jQuery(document).ready(function(){
-	jQuery("#cwp_top_currenturl").val(document.location.href);
 	jQuery(".cwp_top_wrapper").append("<div class='ajaxAnimation'></div>");
 	jQuery("#update-options").click(function(e){
 		e.preventDefault();
@@ -30,7 +29,18 @@ jQuery(document).ready(function(){
 		endAjaxIntro();
 		return false;
 	});
-
+	jQuery("#linkedin-login").on("click",function(){
+		jQuery(".cwp_lkapp_preview").show();
+		return false;
+	});
+	jQuery("#facebook-login").on("click",function(){
+		if(jQuery(this).hasClass("another-account")){
+			addFacebook()
+		}else{
+			jQuery(".cwp_fbapp_preview").show();
+		}
+		return false;
+	});
 	jQuery("#cwp_remote_check").on("click",function(){
 
 		var state = "";
@@ -122,36 +132,6 @@ jQuery(document).ready(function(){
 
 
 
-	jQuery("#cwp_top_form button.top_authorize").click(function(e){
-		e.preventDefault();
-		startAjaxIntro();
-		if (jQuery(this).attr("service")=='facebook') {
-			app_id = jQuery("#top_opt_app_id").val();
-			app_secret = jQuery("#top_opt_app_secret").val();
-		}
-		else {
-			app_id = jQuery("#top_opt_app_id_lk").val();
-			app_secret = jQuery("#top_opt_app_secret_lk").val();
-		}
-		jQuery.ajax({
-			type: "POST",
-			url: cwp_top_ajaxload.ajaxurl,
-			data: {
-				action: "add_new_account",
-				currentURL: jQuery("#cwp_top_currenturl").val(),
-				social_network: jQuery(this).attr("service"),
-				app_id: app_id,
-				app_secret: app_secret
-			},
-			success: function(response) {
-
-				window.location.href = response;
-			}
-		})
-		return false;
-	});
-
-
 
 	function addFacebook(){
 		var service = "facebook";
@@ -239,19 +219,26 @@ jQuery(document).ready(function(){
 	};
 
 	// Add New Twitter Account
-	jQuery("#cwp_top_form button.login").click(function(e){
-		e.preventDefault();
+	jQuery("#twitter-login,.top_authorize").click(function(e){
+
 		var service = jQuery(this).attr('service');
 		var action = "add_new_account";
-		var another = 0;
-		if (jQuery(this).text()=="+") {
-			action = "add_new_account_pro";
-			another = 1;
-		}
-		if (jQuery(this).text()==" Add Account ") {
-			another = 1;
-		}
+		var extra = {};
+		if(service != 'twitter'){
+			e.preventDefault();
 			startAjaxIntro();
+			if (service=='facebook') {
+				extra.app_id = jQuery("#top_opt_app_id").val();
+				extra.app_secret = jQuery("#top_opt_app_secret").val();
+			}
+			else {
+				extra.app_id = jQuery("#top_opt_app_id_lk").val();
+				extra.app_secret = jQuery("#top_opt_app_secret_lk").val();
+			}
+
+
+		}
+		startAjaxIntro();
 			jQuery.ajax({
 				type: "POST",
 				url: cwp_top_ajaxload.ajaxurl,
@@ -259,11 +246,20 @@ jQuery(document).ready(function(){
 					action: action,
 					currentURL: jQuery("#cwp_top_currenturl").val(),
 					social_network: service,
-					another:another
+					extra:extra
 				},
+				dataType:"json",
 				success: function(response) {
 
-					if (response.indexOf("upgrade to the PRO")===-1) {
+					if(response.url){
+					 	window.location.href = response.url;
+					}else{
+						jQuery(".cwp_fbapp_preview").hide();
+						jQuery(".cwp_lkapp_preview").hide();
+						endAjaxIntro();
+
+					}
+					/*if (response.indexOf("upgrade to the PRO")===-1) {
 						switch (service) {
 							case 'twitter':
 								window.location.href = response;
@@ -296,7 +292,7 @@ jQuery(document).ready(function(){
 				}else {
 					jQuery(".cwp_top_status .inactive").html(response);
 					  endAjaxIntro();
-				}
+				}*/
 
 
 				},
@@ -332,16 +328,20 @@ jQuery(document).ready(function(){
 
 		endAjaxIntro();
 	});
-
+	jQuery("#rop-clear-log").on("click",function(){
+		clearNotices();
+		jQuery.ajax({
+			type: "POST",
+			url: cwp_top_ajaxload.ajaxurl,
+			data: {
+				action: "rop_clear_log"
+			}
+		});
+		return false;
+	})
 	// Start Tweet
 	jQuery("#tweet-now").click(function(e){
-		if(!cwpTopCheckAccounts()){
 
-			jQuery("#tabs_menu li:first").trigger("click");
-			showCWPROPError("You need to add an account in order to start posting.");
-			return false;
-		}
-		e.preventDefault();
 		startAjaxIntro();
 		cwpTopUpdateForm();
 
@@ -352,11 +352,7 @@ jQuery(document).ready(function(){
 				action: "tweet_old_post_action"
 			},
 			success: function(response) {
-				if(response !== '') {
 
-					jQuery('.cwp_top_wrapper').append(response);
-
-				}
 				location.reload();
 			},
 			error: function(MLHttpRequest, textStatus, errorThrown) {
@@ -373,25 +369,31 @@ jQuery(document).ready(function(){
 			data: {
 				action: "getNotice_action"
 			},
+			dataType:"json",
 			success: function(response) {
-				if(jQuery.trim(response) !== '') {
-					if (response.substring(0,5)=="Error") {
-						showCWPROPError(response);
-					} else {
 
-						//jQuery(".cwp_top_status p:nth-child(2)").addClass("active").removeClass("inactive");
-						jQuery(".cwp_top_status p.inactive").html(response);
-						jQuery(".cwp_top_status p.inactive").css( "color", "#218618" );
-						setTimeout(function(){location.reload();},2000);
+					if(response.length > 0 ){
+						jQuery(".inactive-rop-error-label").hide();
+						jQuery(".active-rop-error-label").show();
+						jQuery(".rop-error-log span").html(response.length).removeClass('no-error');
+						jQuery(".active-rop-error-label").html( " You have <b>" + response.length + " </b>new  messages ! Go to Log tab to see them");
+						jQuery("#rop-log-list").html('');
+						jQuery.each(response,function(k,v){
+
+							jQuery("#rop-log-list").append('<li class="rop-log-item rop-'+ v.type +'"> <span class="rop-log-date">' + v.time + '</span> <span class="rop-log-text">'+ v.message+ '</span> </li>');
+
+
+						})
+
+					}else{
+						clearNotices();
+						jQuery("#rop-log-list").html('<li class="rop-log-item rop-notice">  <span class="rop-log-text">You have no messages ! </span> </li>');
+
 					}
 
-					//jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet").html(response);
 				}
-			},
-			error: function(MLHttpRequest, textStatus, errorThrown) {
-				console.log("There was an error: "+errorThrown);
-			}
-		})},3000);
+			} )
+		},3000);
 
 	jQuery("#see-sample-tweet").click(function(e){
 		if(!cwpTopCheckAccounts()){
@@ -518,7 +520,13 @@ jQuery(document).ready(function(){
 				}
 				jQuery(this).html(event.strftime(format));
 			}).on('finish.countdown', function(event) {
-				jQuery(this).parent().html("Please wait ....");
+				var th = jQuery(this).parent();
+				th.html("Please wait ....");
+				setTimeout(function(){
+					th.html("You can refresh the page to see the next schedule !");
+
+				},1000)
+
 			});
 			span.parent().show();
 		}else{
@@ -928,5 +936,13 @@ function showCWPROPError(string){
 function cwpTopCheckAccounts(){
 		var users = jQuery(".user_details").length;
 		return (users > 0);
+
+}
+function clearNotices(){
+	jQuery("#rop-log-list").html('');
+	jQuery(".rop-error-log span").html('').addClass("no-error");
+	jQuery(".active-rop-error-label").hide();
+	jQuery(".inactive-rop-error-label").show();
+
 
 }

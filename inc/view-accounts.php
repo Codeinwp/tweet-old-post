@@ -1,4 +1,4 @@
-<input id="cwp_top_currenturl" type="hidden" value="">
+<input id="cwp_top_currenturl" type="hidden" value="<?php echo CURRENTURL; ?>">
 
 			<fieldset class="option">
 				<div class="left">

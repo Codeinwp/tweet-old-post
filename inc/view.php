@@ -30,30 +30,20 @@
 
 		<div class="cwp_top_status">
 
-		<?php if($this->pluginStatus == 'true') {
-			if(!CWP_TOP_PRO){ ?>
-			<p class='active'>
-				<?php _e("Revive Old Post is set to post on a", CWP_TEXTDOMAIN); ?>
-				<?php _e("hours interval, ", CWP_TEXTDOMAIN); ?>
-				<?php _e("and the next share will take place in: ", CWP_TEXTDOMAIN); ?>
-				<span class='nextTweet'><?php $this->getNextTweetInterval(); update_option('cwp_topnew_notice', ""); ?></span>
-			</p>
-		<?php } } else { ?>
+		<?php if($this->pluginStatus != 'true') {  ?>
 			<p class='inactive'>
 				<?php _e("Revive Old Post is not set to post!", CWP_TEXTDOMAIN); ?>
 			</p>
 		<?php } ?>
-			<p class='inactive cwp-error-label'>
+			<p class='inactive cwp-error-label inactive-rop-error-label'>
 
-				<?php if(!CWP_TOP_PRO){
-					_e("Once you click start sharing a post will be sent in 15 sec, also here you can see the error message if is any.", CWP_TEXTDOMAIN); $this->fixCron();
-				}else{
-
-					_e("Here you can see the error messages if is any.", CWP_TEXTDOMAIN); $this->fixCron();
-
-				}
+				<?php
+					_e("Here you can see the error messages if is any.", CWP_TEXTDOMAIN);
 
 				?>
+			</p>
+			<p class='active-rop-error-label cwp-error-label'>
+
 			</p>
 
 		</div><!-- end .cwp_top_status -->
@@ -64,6 +54,7 @@
 				<li > <?php _e('General settings',CWP_TEXTDOMAIN); ?> </li>
 				<li ><?php _e('Post Format',CWP_TEXTDOMAIN); ?></li>
 				<li <?php if(!CWP_TOP_PRO): ?> class="pro-version" <?php endif; ?>><?php _e('Custom Schedule',CWP_TEXTDOMAIN); ?></li>
+				<li class="rop-error-log"><span class="no-error"> </span></span><?php _e('Log',CWP_TEXTDOMAIN); ?></li>
 
 			</ul>
 
@@ -108,12 +99,28 @@
 
 			<div class="tab"><?php  require_once(ROPPLUGINPATH."/inc/view-postformat.php"); ?></div>
 			<div class="tab"><?php  require_once(ROPPLUGINPATH."/inc/view-postschedule.php"); ?></div>
+			<div class="tab clearfix">
+				<div class="rop-log-container clearfix">
+
+					<a href="#" id="rop-clear-log"><?php _e('Clear Log',CWP_TEXTDOMAIN); ?></a>
+					<ul id="rop-log-list">
+
+
+					</ul>
+				</div>
+			</div>
 			<!-- end #cwp_top_form -->
 		</div><div class="cwp_top_footer">
 				<a class="reset-settings" id="reset-settings" href="#"><span></span> <?php  _e("Reset", CWP_TEXTDOMAIN); ?></a>
 				<a class="update-options" id="update-options"href="#"><span></span><?php _e("Save", CWP_TEXTDOMAIN); ?></a>
-				<a class="tweet-now" id="tweet-now" href="#"><span></span> <?php _e("Start Sharing", CWP_TEXTDOMAIN); ?></a>
-				<a class="stop-tweet-old-post" id="stop-tweet-old-post" href="#"><span></span> <?php _e("Stop Sharing", CWP_TEXTDOMAIN); ?></a>
+				<?php if($this->pluginStatus != 'true' ): ?>
+
+					<a class="tweet-now" id="tweet-now" href="#"><span></span> <?php _e("Start Sharing", CWP_TEXTDOMAIN); ?></a>
+				<?php else: ?>
+
+					<a class="stop-tweet-old-post" id="stop-tweet-old-post" href="#"><span></span> <?php _e("Stop Sharing", CWP_TEXTDOMAIN); ?></a>
+
+				<?php endif; ?>
 				<a class="see-sample-tweet" id="see-sample-tweet" href="#"><span></span> <?php _e("See Sample Post", CWP_TEXTDOMAIN); ?></a>
 			</div><!-- end .cwp_top_footer -->
 			<p><?php _e("We are not affiliated or partner with Twitter/Facebook/Linkedin in any way.", CWP_TEXTDOMAIN); ?></p>
@@ -121,7 +128,7 @@
 		<aside class="sidebar">
 			<ul>
 				<?php
-				if(CWP_TOP_PRO && $this->pluginStatus == 'true' ): ?>
+				if($this->pluginStatus == 'true' ): ?>
 						<?php
 							foreach($cwp_top_networks  as $nn=>$nd) {
 								if(wp_next_scheduled($nn.'cwptoptweetcron',array($nn)) === false) continue;

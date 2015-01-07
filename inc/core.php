@@ -56,71 +56,80 @@ if (!class_exists('CWP_TOP_Core')) {
 			// Save all number of fields in static var
 			self::$noFields = count(self::$fields);
 		}
+		public static function addNotice($message,$type){
+			$errors = get_option('rop_notice_active');
+			if(count($errors)  > 30) $errors = array();
+			$errors[] = array(
+								"time"=>date('j-m-Y h:i:s A'),
+								'message'=>$message,
+								"type" => $type
+							);
+			update_option("rop_notice_active",$errors);
 
+		}
+		public static function clearLog(){
+			update_option("rop_notice_active",array());
+
+		}
+		public static function addLog($m){
+			$m .= date('l jS \of F Y h:i:s A')." - ".$m." \n\n  ";
+			file_put_contents("rop.log",$m,FILE_APPEND);
+
+		}
 		public function addLocalization() {
 
 			load_plugin_textdomain(CWP_TEXTDOMAIN, false, dirname(ROPPLUGINBASENAME).'/languages/');
 		}
 		function checkUsers(){
+			if(!is_array($this->users)) $this->users = array();
 			if(count($this->users) == 0){
-				update_option('cwp_topnew_notice', 'You have no account set to post !');
+
+				self::addNotice(__("You have no account set to post !", CWP_TEXTDOMAIN),"error");
 				die();
 			}
 
 		}
-		public function startTweetOldPost($force = false)
+		public function startTweetOldPost( )
 		{
 			$this->checkUsers();
-			if($this->pluginStatus !== 'true' || $force === true) {
-
-				// Set it to active status
-				update_option('cwp_topnew_active_status', 'true');
-				update_option('cwp_topnew_notice', '');
-				update_option('top_opt_already_tweeted_posts',array());
-				update_option('top_last_tweets',array());
-				// Schedule the next tweet
-				//$timeNow = date("Y-m-d H:i:s", time());
-				//$timeNow = get_date_from_gmt($timeNow);
-				//$timeNow= strtotime($timeNow);
-				$timeNow =  $this->getTime();
-				$interval = floatval($this->intervalSet) * 60 * 60;
-				$timeNow = $timeNow+15;
-				if(!CWP_TOP_PRO) {
-					if(wp_get_schedule( 'cwptoptweetcronnew' ) === false ) {
-
-						wp_schedule_single_event($timeNow,'cwptoptweetcronnew');
-
-					}
-				}else{
-					$this->clearScheduledTweets();
-					global $CWP_TOP_Core_PRO;
-					$CWP_TOP_Core_PRO->startOldPostPro();
-
-				}
-			} else {
-
-				// Report that is already started
-				_e("Tweet Old Post is already active!", CWP_TEXTDOMAIN);
+			if($this->pluginStatus !== 'true' ) {
+				do_action("rop_start_posting");
 			}
-			if(!$force)
-				die(); // Required for AJAX
+			die();
+		}
+		public function startPosting(){
+
+			update_option('cwp_topnew_active_status', 'true');
+			update_option('top_opt_already_tweeted_posts',array());
+			update_option('top_last_tweets',array());
+			$timeNow =  $this->getTime();
+			$timeNow = $timeNow+15;
+
+			$this->clearScheduledTweets();
+			$networks = $this->getAvailableNetworks();
+
+			foreach($networks as $network){
+				wp_schedule_single_event($timeNow,$network.'cwptoptweetcron',array($network));
+			}
+
 		}
 
+		public function stopPosting(){
+
+			// Set it to inactive status
+			update_option('cwp_topnew_active_status', 'false');
+			update_option('cwp_topnew_notice', '');
+			update_option('top_opt_already_tweeted_posts',array());
+
+			// Clear all scheduled tweets
+			$this->clearScheduledTweets();
+		}
 		public function stopTweetOldPost()
 		{
 			//echo $this->pluginStatus;
 			// If the plugin is active
 			if($this->pluginStatus !== 'false') {
-				// Set it to inactive status
-				update_option('cwp_topnew_active_status', 'false');
-				update_option('cwp_topnew_notice', '');
-				update_option('top_opt_already_tweeted_posts',array());
-
-				// Clear all scheduled tweets
-				$this->clearScheduledTweets();
-			} else {
-				// Report that is already inactive
-				_e("ROP is already inactive!", CWP_TEXTDOMAIN);
+				do_action("rop_stop_posting");
 			}
 
 			die(); // Required for AJAX
@@ -262,22 +271,26 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 				return true;
 		}
 
-		public function tweetOldPost($byID = false,$ntk = "")
+		public function tweetOldPost($ntk = "")
 
 		{
+
 			$returnedPost = $this->getTweetsFromDB();
 			global $cwp_top_networks;
-			if ($byID!==false) {
+			/*if ($byID!==false) {
 
 				$returnedPost = $this->getTweetsFromDBbyID($byID);
-			}
+			}*/
 
 			$k = 0; // Iterator
 
 			// Get the number of tweets to be tweeted each interval.
 			$tweetCount = intval(get_option('top_opt_no_of_tweet'));
 
-			if (count($returnedPost) == 0 ) update_option('cwp_topnew_notice', 'There is no suitable post to tweet make sure you excluded correct categories and selected the right dates.');
+			if (count($returnedPost) == 0 ) {
+				self::addNotice('There is no suitable post to tweet make sure you excluded correct categories and selected the right dates.','error');
+
+			}
 
 			// While haven't reached the limit
 			while($k != $tweetCount) {
@@ -291,57 +304,18 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 					// Foreach returned post
 					$post = $returnedPost[$k];
 
-					//foreach ($returnedPost as $post) {
-					// Generate a tweet from it based on user settings.
-					if(!CWP_TOP_PRO || $ntk == ''){
-
-						foreach($cwp_top_networks as $network =>$details) {
-							$oknet = false;
-							foreach($this->users as $u){
-								if($u['service'] == $network){
-									$oknet = true;
-									break;
-								}
-							}
-							if(!$oknet) continue;
-							$finalTweet = $this->generateTweetFromPost($post,$network);
-							// Tweet the post
-							if ($this->isPostWithImageEnabled(  $network)=="on") {
-								$resp = $this->tweetPostwithImage($finalTweet, $post->ID,$network);
-
-								update_option('cwp_topnew_notice', $resp);
-							}
-							else {
-								$resp = $this->tweetPost($finalTweet,$network);
-								update_option('cwp_topnew_notice', $resp);
-
-
-							}
+					$oknet = false;
+					foreach($this->users as $u){
+						if($u['service'] == $ntk){
+							$oknet = true;
+							break;
 						}
-					}else{
-						$oknet = false;
-						foreach($this->users as $u){
-							if($u['service'] == $ntk){
-								$oknet = true;
-								break;
-							}
-						}
-						if(!$oknet) return false;
-						$finalTweet = $this->generateTweetFromPost($post,$ntk);
-						// Tweet the post
-						if ($this->isPostWithImageEnabled($ntk)=="on") {
-							$resp = $this->tweetPostwithImage($finalTweet, $post->ID,$ntk);
-							update_option('cwp_topnew_notice', $resp);
-
-						}
-						else {
-							$resp = $this->tweetPost($finalTweet,$ntk);
-
-							update_option('cwp_topnew_notice', $resp);
-						}
-
 					}
-					// Get already tweeted posts array.
+					if(!$oknet) return false;
+					$finalTweet = $this->generateTweetFromPost($post,$ntk);
+
+					$this->tweetPost( $finalTweet, $ntk, $post );
+
 					$tweetedPosts = get_option("top_opt_already_tweeted_posts");
 					if ($tweetedPosts=="")	$tweetedPosts = array();
 					// Push the tweeted post at the end of the array.
@@ -356,25 +330,22 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 					}
 					add_option("top_opt_already_tweeted_posts");
 					update_option("top_opt_already_tweeted_posts", $tweetedPosts);
-					// Increase
-					//}
+
+					$k = $k + 1;
 				} else {
 					if (count($returnedPost)!=$tweetCount)
-						update_option('cwp_topnew_notice', 'You have tried to post more tweets that they are available, try to include more categories or increase the date range');
+						self::addNotice('You have tried to post more tweets that they are available, try to include more categories or increase the date range','error');
 					else
-						update_option('cwp_topnew_notice', 'Tweet was already tweeted, if you want to tweet your old tweets more than once, select "Tweet old posts more than once" option');
+						self::addNotice('Tweet was already tweeted, if you want to tweet your old tweets more than once, select "Tweet old posts more than once" option','error');
 
 				}
 
-				$k = $k + 1;
 			}
-			if(!CWP_TOP_PRO) {
 
-				$interval = floatval($this->intervalSet) * 60 * 60;
-				$timeNow = $this->getTime()+$interval;
-				wp_schedule_single_event($timeNow,'cwptoptweetcronnew');
+			$time = $this->getNextTweetTime($ntk);
+			wp_schedule_single_event($time,$ntk.'cwptoptweetcron',array($ntk));
 
-			}
+
 		}
 		public function getAvailableNetworks(){
 			$networks = array();
@@ -390,6 +361,13 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 			return $networks;
 		}
+
+		public function getAllNetworks(){
+			$networks = array('twitter','facebook','linkedin');
+
+
+			return $networks;
+		}
 		public function findInString($where,$what) {
 			if (!is_string($where)) {
 				return false;
@@ -399,20 +377,9 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		}
 
 		public function getNotice() {
-			$notice = get_option('cwp_topnew_notice');
-
-			//$notice = strpos($notice,'UPDAT');
-			if (is_object($notice) && isset($notice->errors) &&  $notice->errors[0]->message)
-				echo "Error for your last tweet was :'".$notice->errors[0]->message."'";
-			else if ( $notice !== "OK" && !is_object($notice) && $this->findInString($notice,'UPDAT')===false && $notice!=="")
-				echo "Error for your last post was :'".$notice."'";
-			else
-				if (is_object($notice) && isset($notice->text) || $notice=="OK" || strpos($notice,'UPDAT')!==false) {
-					echo "Congrats! Your last post was revived successfully";
-				} else if ($notice!="") {
-					echo "Error for your last post was : ".$notice;
-				}
-
+			$notice = get_option('rop_notice_active');
+			if(!is_array($notice)) $notice = array();
+            echo json_encode($notice);
 			die();
 		}
 
@@ -733,35 +700,33 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		 * @param  [type] $finalTweet Generated tweet
 		 */
 
-		public function tweetPost($finalTweet,$network = 'twitter')
+		public function tweetPost($finalTweet,$network = 'twitter',$post)
 		{
-			$k=1;
-			$nrOfUsers = count($this->users);
 
-			$time = get_option("top_last_tweets");
 			foreach ($this->users as $user) {
 				if($network == $user['service']  ){
-					if(isset($time[$network])){
-						if(time() - $time[$network] < 60)
-							return false;
 
-					}
-					$time[$network] = time();
-					update_option("top_last_tweets",$time);
 					switch ($user['service']) {
 						case 'twitter':
 							// Create a new twitter connection using the stored user credentials.
 							$connection = new RopTwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
-							$status = $connection->post('statuses/update', array('status' => $finalTweet['message']));
 
-							//return $status;
-							if ($nrOfUsers == $k)
-								return $status;
-							else
-								$k++;
-							break;
+							if($this->isPostWithImageEnabled($network) && CWP_TOP_PRO){
+								global $CWP_TOP_Core_PRO;
+								$status = $CWP_TOP_Core_PRO->topProImage($connection, $finalTweet['message'], $post->ID);
 
+							}else{
+
+                                $status = $connection->post('statuses/update', array('status' => $finalTweet['message']));
+							}
+							if($status !== false){
+								self::addNotice("Post ".$post->post_title." has been successfully sent to Twitter.",'notice');
+							}else{
+								self::addNotice("Error for post ".$post->post_title." when sending to Twitter.",'error');
+							}
+						break;
 						case 'facebook':
+
 							$args =  array(
 
 								'body' => array( 'message' => $finalTweet['message'],'link' => $finalTweet['link']),
@@ -769,11 +734,19 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 							);
 
 							$pp=wp_remote_post("https://graph.facebook.com/".ROP_TOP_FB_API_VERSION."/$user[id]/feed?access_token=$user[oauth_token]",$args);
-							//var_dump($finalTweet['link']);
-							if ($nrOfUsers == $k)
-								return $pp['response']['message'];
-							else
-								$k++;
+							if(is_wp_error( $pp )){
+								self::addNotice("Error for posting on facebook for  - " .$post->post_title."".$pp->get_error_message(),'error' );
+
+							}else{
+								if($pp['response']['code'] == 200){
+
+									self::addNotice("Post  ". $post->post_title." has been successfully sent to facebook ",'notice');
+								}else{
+									self::addNotice("Error for post ". $post->post_title." ".$pp['response']['message']." on facebook for ".$user['name'],'error');
+
+								}
+
+							}
 
 							break;
 
@@ -800,7 +773,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 							);
 
 							if (!function_exists('curl_version'))
-								update_option('cwp_topnew_notice',"You host does not support CURL");
+								self::addNotice("Your host does not support CURL",'error');
 							$ch = curl_init();
 							curl_setopt($ch, CURLOPT_URL,$url);
 							curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -811,30 +784,19 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 							$data = curl_exec($ch);
 
-							if ($nrOfUsers == $k)
-								return $data;
-							else
-								$k++;
 
 							if(curl_errno($ch))
-								print curl_error($ch);
-							else
+								{
+
+									self::addNotice("Curl error: ". curl_error($ch),'error');
+								}
+							else{
+								self::addNotice("Post ". $post->post_title." has been successfully sent to LinkedIN.",'notice');
 								curl_close($ch);
-
+							}
 							break;
 
-						default:
-							// Create a new twitter connection using the stored user credentials.
-							$connection = new RopTwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
-							// Post the new tweet
-							$status = $connection->post('statuses/update', array('status' => $finalTweet['message']));
-							//return $status;
 
-							if ($nrOfUsers == $k)
-								return $status;
-							else
-								$k++;
-							break;
 
 
 					}
@@ -998,7 +960,7 @@ endif;
 				</div>
 			<?php
 		}
-		public function tweetPostwithImage($finalTweet, $id,$ntk =  'twitter')
+		/*public function tweetPostwithImage($finalTweet, $id,$ntk =  'twitter')
 		{
 
 			$k=1;
@@ -1115,7 +1077,7 @@ endif;
 				}
 				//sleep(100);
 			}
-		}
+		}*/
 
 		// Generates the tweet date range based on the user input.
 		public function getTweetPostDateRange()
@@ -1221,10 +1183,9 @@ endif;
 		// Clears the custom Tweet Old Post cron job.
 		public function clearScheduledTweets()
 		{
-			wp_clear_scheduled_hook('cwptoptweetcronnew');
-			if(CWP_TOP_PRO){
-				global $CWP_TOP_Core_PRO;
-				$CWP_TOP_Core_PRO->clearScheduledTweets();
+			$all = $this->getAllNetworks();
+			foreach($all as $n){
+				wp_clear_scheduled_hook($n.'cwptoptweetcron',array($n));
 			}
 		}
 
@@ -1527,66 +1488,91 @@ endif;
 		{
 			global $cwp_top_settings;
 			$social_network = $_POST['social_network'];
-			switch ($social_network) {
-				case 'twitter':
-					$this->oAuthCallback = $_POST['currentURL'];
-					$twitter = new RopTwitterOAuth($this->consumer, $this->consumerSecret);
-					$requestToken = $twitter->getRequestToken($this->oAuthCallback);
+			$networks = $this->getAvailableNetworks();
+			$response = array();
+			if($social_network == 'linkedin' && !CWP_TOP_PRO){
+				self::addNotice("You need to <a target='_blank' href='https://themeisle.com/plugins/tweet-old-post-pro/?utm_source=topplusacc&utm_medium=announce&utm_campaign=top&upgrade=true'>upgrade to the PRO version</a> in order to add a Linkedin account, fellow pirate!",'error');
 
-					update_option('cwp_top_oauth_token', $requestToken['oauth_token']);
-					update_option('cwp_top_oauth_token_secret', $requestToken['oauth_token_secret']);
 
-					switch ($twitter->http_code) {
-						case 200:
-							$url = $twitter->getAuthorizeURL($requestToken['oauth_token']);
-							echo $url;
-							break;
+			}else if(in_array($social_network,$networks) && !CWP_TOP_PRO) {
+				self::addNotice("You need to <a target='_blank' href='https://themeisle.com/plugins/tweet-old-post-pro/?utm_source=topplusacc&utm_medium=announce&utm_campaign=top&upgrade=true'>upgrade to the PRO version</a> in order to add more accounts, fellow pirate!",'error');
 
-						default:
-							return __("Could not connect to Twitter!", CWP_TEXTDOMAIN);
-							break;
-					}
-					break;
-				case 'facebook':
-					if (isset($_POST['app_id'])){
-						update_option('cwp_top_app_id', $_POST['app_id']);
-						update_option('cwp_top_app_secret', $_POST['app_secret']);
 
-						$top_session_state = md5(uniqid(rand(), TRUE));
+			}else{
+				switch ($social_network) {
+					case 'twitter':
+						$this->oAuthCallback = $_POST['currentURL'];
+						$twitter = new RopTwitterOAuth($this->consumer, $this->consumerSecret);
+						$requestToken = $twitter->getRequestToken($this->oAuthCallback);
 
-						update_option('top_fb_session_state',$top_session_state);
-						$dialog_url = "https://www.facebook.com/".ROP_TOP_FB_API_VERSION."/dialog/oauth?client_id="
-						              . $_POST['app_id'] . "&redirect_uri=" . top_settings_url() . "&state="
-						              . $top_session_state . "&scope=publish_stream,publish_actions,manage_pages";
-						echo $dialog_url;
-					}
-					break;
-				case 'linkedin':
-					$top_session_state = uniqid('', true);
+						update_option('cwp_top_oauth_token', $requestToken['oauth_token']);
+						update_option('cwp_top_oauth_token_secret', $requestToken['oauth_token_secret']);
 
-					$url = 'https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id='.$_POST["app_id"].'&scope=rw_nus&state='.$top_session_state.'&redirect_uri='.top_settings_url();
+						switch ($twitter->http_code) {
+							case 200:
+								$url = $twitter->getAuthorizeURL($requestToken['oauth_token']);
+								$response['url'] = $url;
+								break;
 
-					update_option('top_lk_session_state',$top_session_state);
-					if (isset($_POST['app_id'])){
-						update_option('cwp_top_lk_app_id', $_POST['app_id']);
-						update_option('cwp_top_lk_app_secret', $_POST['app_secret']);
-					}
-					if (CWP_TOP_PRO) {
-						echo $url;
-					}
-					else{
-						update_option('cwp_topnew_notice',"You need to <a target='_blank' href='https://themeisle.com/plugins/tweet-old-post-pro/?utm_source=topplusacc&utm_medium=announce&utm_campaign=top&upgrade=true'>upgrade to the PRO version</a> in order to add a Linkedin account, fellow pirate!");
-						echo "You need to <a target='_blank' href='https://themeisle.com/plugins/tweet-old-post-pro/?utm_source=topplusacc&utm_medium=announce&utm_campaign=top&upgrade=true'>upgrade to the PRO version</a> in order to add more accounts, fellow pirate!";
-					}
+							default:
+								self::addNotice(__("Could not connect to Twitter!"),CWP_TEXTDOMAIN);
 
-					break;
+								break;
+						}
+						break;
+					case 'facebook':
+							if (empty($_POST['extra']['app_id'])){
+								self::addNotice(__("Could not connect to Facebook! You need to add the App ID",CWP_TEXTDOMAIN),'error');
+							}else
+							if (empty($_POST['extra']['app_secret'])){
+								self::addNotice(__("Could not connect to Facebook! You need to add the App Secret",CWP_TEXTDOMAIN),'error');
 
+							}else{
+								update_option('cwp_top_app_id', $_POST['extra']['app_id']);
+								update_option('cwp_top_app_secret', $_POST['extra']['app_secret']);
+
+								$top_session_state = md5(uniqid(rand(), TRUE));
+
+								update_option('top_fb_session_state',$top_session_state);
+								$dialog_url = "https://www.facebook.com/".ROP_TOP_FB_API_VERSION."/dialog/oauth?client_id="
+								              . $_POST['extra']['app_id'] . "&redirect_uri=" . top_settings_url() . "&state="
+								              . $top_session_state . "&scope=publish_stream,publish_actions,manage_pages";
+
+								$response['url'] = $dialog_url;
+
+							}
+
+						break;
+					case 'linkedin':
+							if (empty($_POST['extra']['app_id'])){
+							self::addNotice(__("Could not connect to Linkedin! You need to add the App ID",CWP_TEXTDOMAIN),'error');
+							}else
+							if (empty($_POST['extra']['app_secret'])){
+								self::addNotice(__("Could not connect to Linkedin! You need to add the App Secret",CWP_TEXTDOMAIN),'error');
+
+							}else{
+								$top_session_state = uniqid('', true);
+								$url = 'https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id='.$_POST['extra']["app_id"].'&scope=rw_nus&state='.$top_session_state.'&redirect_uri='.top_settings_url();
+
+								update_option('top_lk_session_state',$top_session_state);
+								update_option('cwp_top_lk_app_id', $_POST['extra']['app_id']);
+								update_option('cwp_top_lk_app_secret', $_POST['extra']['app_secret']);
+
+								$response['url'] = $url;
+
+
+							}
+
+
+
+						break;
+
+
+				}
 
 			}
 
-
-
-
+			echo json_encode($response);
 
 			die(); // Required
 		}
@@ -1650,6 +1636,100 @@ endif;
 			die();
 		}
 
+		function getUpperDays($day,$days){
+			$tmp = array();
+			foreach($days as $d){
+				if($day <= $d){
+					$tmp[] = $d;
+				}
+			}
+			return $tmp;
+		}
+		function   getNextTweetTime($network){
+			if(!CWP_TOP_PRO){
+					return $this->getTime() * get_option('top_opt_interval') ;
+			}
+			$cwp_top_global_schedule = get_option("cwp_top_global_schedule" );
+			$type = $cwp_top_global_schedule[$network.'_schedule_type_selected'];
+			if($type == 'each'){
+				return $this->getTime() + $cwp_top_global_schedule[$network.'_top_opt_interval'] * 3600;
+
+			}else{
+				$cday = date("N",$this->getTime());
+
+				$days = explode(",",$cwp_top_global_schedule[$network.'_top_opt_interval']['days']);
+				if(!empty($days)){
+					$day = 0;
+					$upper_days = $this->getUpperDays($cday,$days);
+
+					if($days[count($days) - 1] < $cday){
+						$day = $days[0];
+
+					}else{
+						$day = $upper_days[0];
+					}
+					$times = $cwp_top_global_schedule[$network.'_top_opt_interval']['times'];
+					$ctime = date("G:i",$this->getTime());
+					$ctime = explode(":",$ctime);
+					$thour = false;
+					$tmin = false;
+
+					if(!empty($times)){
+
+						foreach($times as $t){
+							if(intval($t['hour']) >= intval($ctime[0]) ){
+								if(intval($t['minute']) >= intval($ctime[1])){
+									$thour = intval($t['hour']);
+									$tmin = intval($t['minute']);
+									break;
+								}
+
+							}
+
+						}
+						if($thour === false || $tmin === false){
+
+							$thour = intval($times[0]['hour']);
+							$tmin = intval($times[0]['minute']);
+							if(count($upper_days)>1){
+								$day = $upper_days[1];
+							}else{
+
+								$day = $days[0];
+							}
+
+						}
+						$days_passed = 0;
+						if($day >= $cday){
+							$days_passed = $day - $cday;
+
+						}else{
+							$days_passed = (7 - $cday) + $day ;
+						}
+
+						$ctime[0] = intval($ctime[0]);
+						$ctime[1] = intval($ctime[1]);
+
+						if($days_passed > 1){
+							return $this->getTime() + (($days_passed-1) * 24 * 3600) + $thour * 3600 + $tmin * 60 + ((23 - $ctime[0])*3600) + ((60 - $ctime[1])*60);
+						}else{
+							if($days_passed == 1){
+
+								return $this->getTime()  + $thour * 3600 + $tmin * 60 + ((23 - $ctime[0])*3600) + ((60 - $ctime[1])*60);
+
+							}
+							if($days_passed == 0){
+								return $this->getTime()  + (( $thour - $ctime[0]) * 3600) + (( $tmin - $ctime[1]) * 60);
+
+							}
+
+						}
+
+					}
+				}
+			}
+			return 0;
+		}
 		// Updates all options.
 		public function updateAllOptions()
 		{
@@ -2101,47 +2181,33 @@ endif;
 					$this->notices[] = "You need to have the latest version of the Revive Old Post Pro addon in order to use it. Please download it from the themeisle.com account";
 
 			}
+			$networks = $this->getAvailableNetworks();
 			if(wp_next_scheduled( 'cwp_top_tweet_cron' ) !== false) {
 
 				$timestamp = wp_next_scheduled( 'cwp_top_tweet_cron' );
 				wp_clear_scheduled_hook('cwp_top_tweet_cron');
-				if(CWP_TOP_PRO) {
-					wp_schedule_single_event($timestamp,  'twittercwptoptweetcron',array('twitter')) ;
-					wp_schedule_single_event($timestamp, 'facebookcwptoptweetcron',array('facebook')) ;
-					wp_schedule_single_event($timestamp,  'linkedincwptoptweetcron',array('linkedin')) ;
-				}else{
-					wp_schedule_single_event($timestamp,'cwptoptweetcronnew');
-
+				foreach($networks as $network){
+					wp_schedule_single_event($timestamp,$network.'cwptoptweetcron',array($network));
 				}
 
 			}else{
-				if(CWP_TOP_PRO){
 
-					$networks = $this->getAvailableNetworks();
-					if(wp_next_scheduled( 'cwptoptweetcronnew' ) !== false) {
-
-						$timestamp = wp_next_scheduled( 'cwptoptweetcronnew' );
-						wp_clear_scheduled_hook('cwptoptweetcronnew');
-						if(in_array("twitter",$networks))
-							wp_schedule_single_event($timestamp,  'twittercwptoptweetcron',array('twitter')) ;
-						if(in_array("facebook",$networks))
-							wp_schedule_single_event($timestamp, 'facebookcwptoptweetcron',array('facebook')) ;
-						if(in_array("linkedin",$networks))
-							wp_schedule_single_event($timestamp,  'linkedincwptoptweetcron',array('linkedin')) ;
-
-					}else{
-						if(!in_array("twitter",$networks)){
-
-							wp_clear_scheduled_hook('twittercwptoptweetcron',array('twitter'));
-						}
-						if(!in_array("facebook",$networks)){
-							wp_clear_scheduled_hook('facebookcwptoptweetcron',array('facebook'));
-						}
-						if(!in_array("linkedin",$networks)){
-							wp_clear_scheduled_hook('linkedincwptoptweetcron',array('linkedin'));
-						}
-
+				if(wp_next_scheduled( 'cwptoptweetcronnew' ) !== false) {
+					$timestamp = wp_next_scheduled( 'cwptoptweetcronnew' );
+					wp_clear_scheduled_hook('cwptoptweetcronnew');
+					foreach($networks as $network){
+						wp_schedule_single_event($timestamp,$network.'cwptoptweetcron',array($network));
 					}
+				}
+				else{
+						$all = $this->getAllNetworks();
+						foreach($all as $a){
+							if(!in_array($a,$networks)){
+								wp_clear_scheduled_hook($a.'cwptoptweetcron',array($a));
+							}
+
+						}
+
 				}
 
 			}
@@ -2186,10 +2252,13 @@ endif;
 			// Tweet Old Post ajax action.
 			add_action('wp_ajax_nopriv_tweet_old_post_action', array($this, 'startTweetOldPost'));
 			add_action('wp_ajax_tweet_old_post_action', array($this, 'startTweetOldPost'));
+			add_action('wp_ajax_nopriv_rop_clear_log', array($this, 'clearLog'));
+			add_action('wp_ajax_rop_clear_log', array($this, 'clearLog'));
 
 			//remote trigger cron
 			add_action('wp_ajax_remote_trigger', array($this, 'remoteTrigger'));
-
+			add_action("rop_start_posting",array($this,"startPosting"));
+			add_action("rop_stop_posting",array($this,"stopPosting"));
 			// Tweet Old Post view sample tweet action.
 			add_action('wp_ajax_nopriv_view_sample_tweet_action', array($this, 'viewSampleTweet'));
 			add_action('wp_ajax_view_sample_tweet_action', array($this, 'viewSampleTweet'));
@@ -2208,12 +2277,12 @@ endif;
 			add_action('wp_ajax_nopriv_stop_tweet_old_post', array($this, 'stopTweetOldPost'));
 			add_action('wp_ajax_stop_tweet_old_post', array($this, 'stopTweetOldPost'));
 
-			//Settings link
+			$networks = $this->getAllNetworks();
 
-			//add_filter('plugin_action_links', array($this,'top_plugin_action_links'), 10, 2);
+			foreach($networks as $network){
+				add_action($network.'cwptoptweetcron',array($this,"tweetOldPost"));
 
-			//add_action('admin_notices', array($this,'top_admin_notice'));
-
+			}
 			add_action('admin_init', array($this,'top_nag_ignore'));
 			add_action('admin_init', array($this,'clearOldCron'));
 
@@ -2222,7 +2291,6 @@ endif;
 
 			add_filter('plugin_action_links',array($this,'top_plugin_action_links'), 10, 2);
 
-			add_action('cwptoptweetcronnew', array($this, 'tweetOldPost'));
 			add_action( 'plugins_loaded', array($this, 'addLocalization') );
 
 		}
@@ -2265,12 +2333,12 @@ endif;
 				if ($_GET['page'] == $cwp_top_settings['slug'] || $_GET['page'] == "ExcludePosts") {
 
 					// Enqueue and Register Main CSS File
-					wp_register_style( 'cwp_top_stylesheet', ROPCSSFILE, false, '2.0.0' );
+					wp_register_style( 'cwp_top_stylesheet', ROPCSSFILE, false, time() );
 					wp_enqueue_style( 'cwp_top_stylesheet' );
 
 					// Register Main JS File
-					wp_enqueue_script( 'cwp_top_js_countdown', ROPJSCOUNTDOWN, array(), '2.0.0', true );
-					wp_enqueue_script( 'cwp_top_javascript', ROPJSFILE, array(), '2.0.0', true );
+					wp_enqueue_script( 'cwp_top_js_countdown', ROPJSCOUNTDOWN, array(), time(), true );
+					wp_enqueue_script( 'cwp_top_javascript', ROPJSFILE, array(), time(), true );
 					wp_localize_script( 'cwp_top_javascript', 'cwp_top_ajaxload', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
 				}
 			}
@@ -2415,7 +2483,7 @@ endif;
 
 		public function rop_load_dashboard_icon()
 		{
-			wp_register_style( 'rop_custom_dashboard_icon', ROPCUSTOMDASHBOARDICON, false, '1.0.0' );
+			wp_register_style( 'rop_custom_dashboard_icon', ROPCUSTOMDASHBOARDICON, false, time() );
 			wp_enqueue_style( 'rop_custom_dashboard_icon' );
 		}
 

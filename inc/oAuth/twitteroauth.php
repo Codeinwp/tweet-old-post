@@ -250,13 +250,18 @@ class RopTwitterOAuth {
     $response = curl_exec($ci);
 
     $this->http_code = curl_getinfo($ci, CURLINFO_HTTP_CODE);
-    $this->http_info = array_merge($this->http_info, curl_getinfo($ci));
-    $this->url = $url;
-    curl_close ($ci);
 
-    if ($this->cache) {
-        $this->cacheFile($response, $this->cache_file_name);
-    }
+      if ( $this->http_code != 200 ) {
+        CWP_TOP_Core::addNotice( "Twitter error: " . $response, 'error' );
+        return false;
+      }
+      $this->http_info = array_merge( $this->http_info, curl_getinfo( $ci ) );
+      $this->url       = $url;
+      curl_close( $ci );
+
+      if ( $this->cache ) {
+        $this->cacheFile( $response, $this->cache_file_name );
+      }
 
     return $response;
   }
