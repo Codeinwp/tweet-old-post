@@ -341,7 +341,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 				}
 
 			}
-			if ($byID!==false) {
+			if ($byID===false) {
 				$time = $this->getNextTweetTime( $ntk );
 				wp_schedule_single_event( $time, $ntk . 'roptweetcron', array( $ntk ) );
 			}
@@ -413,21 +413,21 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 			update_option( 'top_lastID', $returnedTweets[0]->ID);
 
-			if (CWP_TOP_PRO && $this->isPostWithImageEnabled()) {
+			foreach($networks as $n) {
+				if (CWP_TOP_PRO && $this->isPostWithImageEnabled($n)) {
 
-				if ( strlen( $img = get_the_post_thumbnail( $returnedTweets[0]->ID, array( 150, 150 ) ) ) ) :
-					$image_array = wp_get_attachment_image_src( get_post_thumbnail_id( $returnedTweets[0]->ID ), 'optional-size' );
-					$image = $image_array[0];
-				else :
-					$post = get_post($returnedTweets[0]->ID);
-					$image = '';
-					ob_start();
-					ob_end_clean();
-					$output = preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $post->post_content, $matches);
+					if ( strlen( $img = get_the_post_thumbnail( $returnedTweets[0]->ID, array( 150, 150 ) ) ) ) :
+						$image_array = wp_get_attachment_image_src( get_post_thumbnail_id( $returnedTweets[0]->ID ), 'optional-size' );
+						$image = $image_array[0];
+					else :
+						$post = get_post($returnedTweets[0]->ID);
+						$image = '';
+						ob_start();
+						ob_end_clean();
+						$output = preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $post->post_content, $matches);
 
-					$image = $matches [1] [0];
-				endif;
-				foreach($networks as $n=>$d) {
+						$image = $matches [1] [0];
+					endif;
 					$messages[$n] = '<img class="top_preview" src="'.$image.'"/>'.$messages[$n];
 				}
 			}
@@ -2205,9 +2205,9 @@ endif;
 				else{
 						$all = $this->getAllNetworks();
 						foreach($all as $a){
-							if(wp_next_scheduled( $a.'cwptoptweetcronnew',array($a) ) !== false) {
+							if(wp_next_scheduled( $a.'cwptoptweetcron',array($a) ) !== false) {
 
-								$timestamp = wp_next_scheduled($a.'cwptoptweetcronnew',array($a) );
+								$timestamp = wp_next_scheduled($a.'cwptoptweetcron',array($a) );
 								wp_clear_scheduled_hook($a.'cwptoptweetcron',array($a));
 								wp_schedule_single_event($timestamp,$a.'roptweetcron',array($a));
 							}
