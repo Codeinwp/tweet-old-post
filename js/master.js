@@ -1,4 +1,13 @@
 jQuery(document).ready(function(){
+
+
+	setInterval(function(){
+		var clock = jQuery(".rop-twitter-clock");
+		var time = parseInt(clock.attr('data-current'));
+		console.log(time);
+		clock.attr('data-current',time+1);
+		clock.find("b").html(new Date(time * 1000).toUTCString());
+	},1000);
 	jQuery(".cwp_top_wrapper").append("<div class='ajaxAnimation'></div>");
 	jQuery("#update-options").click(function(e){
 		e.preventDefault();

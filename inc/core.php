@@ -341,10 +341,10 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 				}
 
 			}
-
-			$time = $this->getNextTweetTime($ntk);
-			wp_schedule_single_event($time,$ntk.'roptweetcron',array($ntk));
-
+			if ($byID!==false) {
+				$time = $this->getNextTweetTime( $ntk );
+				wp_schedule_single_event( $time, $ntk . 'roptweetcron', array( $ntk ) );
+			}
 
 		}
 		public function getAvailableNetworks(){
@@ -1188,7 +1188,7 @@ endif;
 		{
 			$all = $this->getAllNetworks();
 			foreach($all as $n){
-				wp_clear_scheduled_hook($n.'cwptoptweetcron',array($n));
+				wp_clear_scheduled_hook($n.'roptweetcron',array($n));
 			}
 		}
 
