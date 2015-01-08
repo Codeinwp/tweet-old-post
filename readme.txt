@@ -25,7 +25,6 @@ ThemeIsle is a <a href="https://www.codeinwp.com">Codeinwp</a> product.
 
 **Fortcoming**
 
-- Custom Schedule
 - Posts queue 
 
 
@@ -33,6 +32,7 @@ ThemeIsle is a <a href="https://www.codeinwp.com">Codeinwp</a> product.
 
 - Share new and old posts.
 - Choose the time between posts.
+- Custom schedule
 - Choose the number of posts to share.
 - Use hashtags to focus on topics.
 - Include links back to your site.
@@ -46,7 +46,7 @@ ThemeIsle is a <a href="https://www.codeinwp.com">Codeinwp</a> product.
 Following are the steps to install the Revive Old Post plugin
 
 1. Download the latest version of the Revive Old Posts Plugin to your computer from here.
-2. With an FTP program, access your site�s server.
+2. With an FTP program, access your sites server.
 3. Upload (copy) the Plugin file(s) or folder to the /wp-content/plugins folder.
 4. In your WordPress Administration Panels, click on Plugins from the menu.
 5. You should see Revive Old Posts Plugin listed. If not, with your FTP program, check the folder to see if it is installed. If it isn�t, upload the file(s) again. If it is, delete the files and upload them again.
@@ -121,6 +121,12 @@ https://themeisle.com/plugins/tweet-old-post-lite/
 
 
 == Changelog ==
+
+**New in v6.8.8**
+
+Added a more complex logging system
+Fixed multiple accounts/posts issue
+Fixed 404 twitter login error
 
 **New in v6.8.5**
 
