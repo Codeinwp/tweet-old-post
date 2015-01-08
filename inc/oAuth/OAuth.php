@@ -487,7 +487,7 @@ class RopOAuthRequest {
       curl_setopt($ci, CURLOPT_RETURNTRANSFER, TRUE);
       curl_setopt($ci, CURLOPT_HEADER, TRUE);
 
-      curl_setopt($ci, CURLOPT_URL, "https://api.twitter.com/1.1/");
+      curl_setopt($ci, CURLOPT_URL, "http://api.twitter.com/1.1/");
 
       $response = curl_exec($ci);
       $header_size = curl_getinfo($ci, CURLINFO_HEADER_SIZE);
