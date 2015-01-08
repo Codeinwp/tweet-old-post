@@ -421,10 +421,19 @@ jQuery(document).ready(function(){
    					var scrollhere = elem.offset().top+(jQuery(window).height()+elem.height())/2;
 					jQuery('html, body').scrollTop(scrollhere);
                     $json = JSON.parse(response);
-
-					jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet.sample_tweet_twitter").html($json .twitter);
-                    jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet.sample_tweet_facebook").html( $json .facebook);
+					if($json .twitter)
+						jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet.sample_tweet_twitter").html($json .twitter);
+					else
+						jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet.sample_tweet_twitter").hide().prev().hide();
+					if($json .facebook)
+                   		 jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet.sample_tweet_facebook").html( $json .facebook) ;
+					else
+						jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet.sample_tweet_facebook").hide().prev().hide();
+					if($json .linkedin)
                     jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet.sample_tweet_linkedin").html( $json .linkedin);
+					else
+						jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet.sample_tweet_linkedin").hide().prev().hide();
+
 				}
 				endAjaxIntro();
 			},

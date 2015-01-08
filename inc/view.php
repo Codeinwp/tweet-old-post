@@ -131,7 +131,7 @@
 				if($this->pluginStatus == 'true' ): ?>
 						<?php
 							foreach($cwp_top_networks  as $nn=>$nd) {
-								if(wp_next_scheduled($nn.'cwptoptweetcron',array($nn)) === false) continue;
+								if(wp_next_scheduled($nn.'roptweetcron',array($nn)) === false) continue;
 					     ?>
 						<li class="rop-twitter-countdown rop-network-countdown"><?php echo __("Revive Old Post will post on",CWP_TEXTDOMAIN)." <span class='rop-network-name'>".$nn."</span> ".__("in the next",CWP_TEXTDOMAIN); ?>: <span data-timestamp="<?php echo  wp_next_scheduled($nn.'cwptoptweetcron',array($nn)) ; ?>" class='rop-network-timestamp'></span></li>
 				<?php } ?>

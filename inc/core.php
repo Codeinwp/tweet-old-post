@@ -109,7 +109,7 @@ if (!class_exists('CWP_TOP_Core')) {
 			$networks = $this->getAvailableNetworks();
 
 			foreach($networks as $network){
-				wp_schedule_single_event($timeNow,$network.'cwptoptweetcron',array($network));
+				wp_schedule_single_event($timeNow,$network.'roptweetcron',array($network));
 			}
 
 		}
@@ -271,16 +271,16 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 				return true;
 		}
 
-		public function tweetOldPost($ntk = "")
+		public function tweetOldPost($ntk = "",$byID = false)
 
 		{
 
 			$returnedPost = $this->getTweetsFromDB();
 			global $cwp_top_networks;
-			/*if ($byID!==false) {
+			if ($byID!==false) {
 
 				$returnedPost = $this->getTweetsFromDBbyID($byID);
-			}*/
+			}
 
 			$k = 0; // Iterator
 
@@ -343,7 +343,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			}
 
 			$time = $this->getNextTweetTime($ntk);
-			wp_schedule_single_event($time,$ntk.'cwptoptweetcron',array($ntk));
+			wp_schedule_single_event($time,$ntk.'roptweetcron',array($ntk));
 
 
 		}
@@ -384,7 +384,11 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		}
 
 		public function tweetNow() {
-			$this->tweetOldPost(get_option('top_lastID'));
+			$networks = $this->getAvailableNetworks();
+			foreach($networks as $net){
+
+				$this->tweetOldPost($net,get_option('top_lastID'));
+			}
 			die();
 		}
 
@@ -392,13 +396,14 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		{
 
 			$returnedTweets = $this->getTweetsFromDB();
-			global $cwp_top_networks;
 			$messages = array();
-			$image="";
-			//var_dump($returnedTweets);
-
-			if(count($returnedTweets) == 0) die(__("No posts to share",CWP_TEXTDOMAIN));
-			foreach($cwp_top_networks as $n=>$d) {
+			$networks = $this->getAvailableNetworks();
+			if(count($returnedTweets) == 0) {
+				foreach($networks as $net){
+					$messages[$net] = __("No posts to share",CWP_TEXTDOMAIN);
+				}
+			}
+			foreach($networks as $n) {
 				$finalTweetsPreview = $this->generateTweetFromPost($returnedTweets[0],$n);
 				if (is_array($finalTweetsPreview)){
 					$finalTweetsPreview = $finalTweetsPreview['message'];
@@ -408,7 +413,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 			update_option( 'top_lastID', $returnedTweets[0]->ID);
 
-			if (CWP_TOP_PRO && get_option('top_opt_post_with_image')=="on") {
+			if (CWP_TOP_PRO && $this->isPostWithImageEnabled()) {
 
 				if ( strlen( $img = get_the_post_thumbnail( $returnedTweets[0]->ID, array( 150, 150 ) ) ) ) :
 					$image_array = wp_get_attachment_image_src( get_post_thumbnail_id( $returnedTweets[0]->ID ), 'optional-size' );
@@ -422,10 +427,8 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 					$image = $matches [1] [0];
 				endif;
-
-				foreach($cwp_top_networks as $n=>$d) {
+				foreach($networks as $n=>$d) {
 					$messages[$n] = '<img class="top_preview" src="'.$image.'"/>'.$messages[$n];
-
 				}
 			}
 
@@ -2187,7 +2190,7 @@ endif;
 				$timestamp = wp_next_scheduled( 'cwp_top_tweet_cron' );
 				wp_clear_scheduled_hook('cwp_top_tweet_cron');
 				foreach($networks as $network){
-					wp_schedule_single_event($timestamp,$network.'cwptoptweetcron',array($network));
+					wp_schedule_single_event($timestamp,$network.'roptweetcron',array($network));
 				}
 
 			}else{
@@ -2196,14 +2199,22 @@ endif;
 					$timestamp = wp_next_scheduled( 'cwptoptweetcronnew' );
 					wp_clear_scheduled_hook('cwptoptweetcronnew');
 					foreach($networks as $network){
-						wp_schedule_single_event($timestamp,$network.'cwptoptweetcron',array($network));
+						wp_schedule_single_event($timestamp,$network.'roptweetcron',array($network));
 					}
 				}
 				else{
 						$all = $this->getAllNetworks();
 						foreach($all as $a){
-							if(!in_array($a,$networks)){
+							if(wp_next_scheduled( $a.'cwptoptweetcronnew',array($a) ) !== false) {
+
+								$timestamp = wp_next_scheduled($a.'cwptoptweetcronnew',array($a) );
 								wp_clear_scheduled_hook($a.'cwptoptweetcron',array($a));
+								wp_schedule_single_event($timestamp,$a.'roptweetcron',array($a));
+							}
+						}
+						foreach($all as $a){
+							if(!in_array($a,$networks)){
+								wp_clear_scheduled_hook($a.'roptweetcron',array($a));
 							}
 
 						}
@@ -2280,7 +2291,7 @@ endif;
 			$networks = $this->getAllNetworks();
 
 			foreach($networks as $network){
-				add_action($network.'cwptoptweetcron',array($this,"tweetOldPost"));
+				add_action($network.'roptweetcron',array($this,"tweetOldPost"));
 
 			}
 			add_action('admin_init', array($this,'top_nag_ignore'));
