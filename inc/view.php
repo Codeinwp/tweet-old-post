@@ -38,7 +38,7 @@
 			<p class='inactive cwp-error-label inactive-rop-error-label'>
 
 				<?php
-					_e("Here you can see the error messages if is any.", CWP_TEXTDOMAIN);
+					_e("Here you can see errors and notifications if they exist.", CWP_TEXTDOMAIN);
 
 				?>
 			</p>
