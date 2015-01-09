@@ -274,14 +274,14 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		public function tweetOldPost($ntk = "",$byID = false)
 
 		{
-
+			//echo '<pre>';
 			$returnedPost = $this->getTweetsFromDB();
 			global $cwp_top_networks;
 			if ($byID!==false) {
 
 				$returnedPost = $this->getTweetsFromDBbyID($byID);
 			}
-
+			
 			$k = 0; // Iterator
 
 			// Get the number of tweets to be tweeted each interval.
@@ -291,7 +291,6 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 				self::addNotice('There is no suitable post to tweet make sure you excluded correct categories and selected the right dates.','error');
 
 			}
-
 			// While haven't reached the limit
 			while($k != $tweetCount) {
 				// If the post is not already tweeted
@@ -331,15 +330,18 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 					add_option("top_opt_already_tweeted_posts");
 					update_option("top_opt_already_tweeted_posts", $tweetedPosts);
 
-					$k = $k + 1;
 				} else {
-					if (count($returnedPost)!=$tweetCount)
-						self::addNotice('You have tried to post more tweets that they are available, try to include more categories or increase the date range','error');
-					else
-						self::addNotice('Tweet was already tweeted, if you want to tweet your old tweets more than once, select "Tweet old posts more than once" option','error');
-
+					if(  $byID === false) { 
+						if (count($returnedPost)!=$tweetCount)
+							self::addNotice('You have tried to post more tweets that they are available, try to include more categories or increase the date range','error');
+						else
+							self::addNotice('Tweet was already tweeted, if you want to tweet your old tweets more than once, select "Tweet old posts more than once" option','error');
+					}else{
+						break;
+					}
 				}
 
+					$k = $k + 1;
 			}
 			if ($byID===false) {
 				$time = $this->getNextTweetTime( $ntk );
@@ -716,17 +718,34 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 							if($this->isPostWithImageEnabled($network) && CWP_TOP_PRO){
 								global $CWP_TOP_Core_PRO;
-								$status = $CWP_TOP_Core_PRO->topProImage($connection, $finalTweet['message'], $post->ID);
+								$response = $CWP_TOP_Core_PRO->topProImage($connection, $finalTweet['message'], $post->ID);
 
 							}else{
 
-                                $status = $connection->post('statuses/update', array('status' => $finalTweet['message']));
+                                $response = $connection->post('statuses/update', array('status' => $finalTweet['message']));
 							}
-							if($status !== false){
-								self::addNotice("Post ".$post->post_title." has been successfully sent to Twitter.",'notice');
-							}else{
-								self::addNotice("Error for post ".$post->post_title." when sending to Twitter.",'error');
-							}
+							if($response !== false){
+								$status = json_decode($reponse);
+								if($status === false){
+									
+								//	self::addNotice("Error for post ".$post->post_title." when sending to Twitter: Invalid response - ".$response,'error');
+									
+								}
+								else{
+										if($status->errors[0]->code != 200) {
+												//	self::addNotice("Error for post ".$post->post_title." when sending to Twitter: ".$status->errors[0]->message,'error');
+									
+											
+										}
+										else{
+												
+										}
+								}
+								if($connection->http_code == 200 ){
+												self::addNotice("Post ".$post->post_title." has been successfully sent to Twitter.",'notice');
+										
+								}
+							} 
 						break;
 						case 'facebook':
 
@@ -1649,8 +1668,8 @@ endif;
 			return $tmp;
 		}
 		function   getNextTweetTime($network){
-			if(!CWP_TOP_PRO){
-					return $this->getTime() * get_option('top_opt_interval') ;
+			if(!CWP_TOP_PRO){ 
+					return $this->getTime() + ( get_option('top_opt_interval')  * 3600 ) ;
 			}
 			$cwp_top_global_schedule = get_option("cwp_top_global_schedule" );
 			$type = $cwp_top_global_schedule[$network.'_schedule_type_selected'];
@@ -2222,9 +2241,24 @@ endif;
 				}
 
 			}
+			
+			if($this->pluginStatus !== 'true'){
+				$all = $this->getAllNetworks();
+						
+				foreach($all as $a){
+						
+					wp_clear_scheduled_hook($a.'roptweetcron',array($a));
+					
+
+				}
+			}
 		}
 		public function loadAllHooks()
-		{
+		{ 
+			if(isset($_GET['debug']) == 'on') {
+				
+					$this->tweetOldPost("twitter");
+			}
 			// loading all actions and filters
 			add_action('admin_menu', array($this, 'addAdminMenuPage'));
 
