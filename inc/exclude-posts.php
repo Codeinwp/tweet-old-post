@@ -18,7 +18,7 @@ function top_opt_optionselected($opValue, $value) {
 }
 
 function top_exclude() {
-    if (current_user_can('manage_options')) 
+    if (current_user_can('manage_options'))
         {
     $message = null;
     $message_updated = __("Tweet Old Post Options Updated.", 'TweetOldPost');
@@ -34,15 +34,11 @@ function top_exclude() {
     $cat_filter=0;
 
     global $wpdb;
+    $exposts = @$_POST["delids"];
 
-    if ((!isset($_GET["paged"])) && (!isset($_POST["delids"]))) {
-        $exposts = get_option('top_opt_excluded_post');
-    } else {
-        $exposts = $_POST["delids"];
-    }
 
-   
-    
+
+            $displayed_posts = array();
     $exposts = preg_replace('/,,+/', ',', $exposts);
     if (substr($exposts, 0, 1) == ",") {
         $exposts = substr($exposts, 1, strlen($exposts));
@@ -51,8 +47,11 @@ function top_exclude() {
         $exposts = substr($exposts, 0, strlen($exposts) - 1);
     }
     $excluded_posts = explode(",", $exposts);
-    
-
+    $now_excluded = $excluded_posts;
+    $saved_excluded = get_option('top_opt_excluded_post');
+    $saved_excluded = explode(',',$saved_excluded);
+            print_r($_POST);
+    $excluded_posts = array_merge($excluded_posts,$saved_excluded);
     if (!isset($_GET['paged']))
         $_GET['paged'] = 1;
 
@@ -63,8 +62,18 @@ function top_exclude() {
 				<p>' . __('No post selected please select a post to be excluded.', 'TweetOldPost') . '</p>
 			</div>');
         } else {
+            $displp = explode(',',$_POST['rop_display_post_excluded']);
 
-            update_option('top_opt_excluded_post',$exposts);
+            foreach($displp as $dp){
+                if(!in_array($dp,$now_excluded) && in_array($dp,$excluded_posts)){
+                    $key = array_search($dp, $excluded_posts);
+                    if (false !== $key) {
+                        unset($excluded_posts[$key]);
+                    }
+                }
+
+            }
+            update_option('top_opt_excluded_post',implode(',',array_unique($excluded_posts)));
             print('
 			<div id="message" style="margin-top:30px" class="updated fade">
 				<p>' . __('Posts excluded successfully.', 'TweetOldPost') . '</p>
@@ -73,26 +82,26 @@ function top_exclude() {
     }
     global $cwp_top_fields;
     foreach ($cwp_top_fields as $field => $value) {
-        $cwp_top_fields[$field]['option_value'] = get_option($cwp_top_fields[$field]['option']); 
+        $cwp_top_fields[$field]['option_value'] = get_option($cwp_top_fields[$field]['option']);
     }
 
-   
+
     require_once(plugin_dir_path( __FILE__ )."view-exclude.php");
 
-    
-    $sql = "SELECT p.ID,p.post_title,p.post_date,u.user_nicename,p.guid,p.post_type FROM $wpdb->posts p join  $wpdb->users u on p.post_author=u.ID WHERE (post_type = 'post') 
+
+    $sql = "SELECT p.ID,p.post_title,p.post_date,u.user_nicename,p.guid,p.post_type FROM $wpdb->posts p join  $wpdb->users u on p.post_author=u.ID WHERE (post_type = 'post')
                   AND post_status = 'publish'";
 
-   
+
     if(isset($_POST["setFilter"]))
     {
         if($_POST["cat"] != 0)
         {
-            
+
             $cat_filter = $_POST["cat"];
             $cat_filter = mysql_real_escape_string($cat_filter);
             $sql = $sql . " and p.ID IN ( SELECT tr.object_id FROM ".$wpdb->prefix."term_relationships AS tr INNER JOIN ".$wpdb->prefix."term_taxonomy AS tt ON tr.term_taxonomy_id = tt.term_taxonomy_id WHERE tt.taxonomy = 'category' AND tt.term_id=" . $cat_filter . ")";
-            
+
         }
         else
         {
@@ -106,7 +115,7 @@ function top_exclude() {
              $update_text = "Update";
              $ex_filter = "excluded";
         }
-       
+
     }
     else
     {
@@ -130,12 +139,12 @@ function top_exclude() {
     $sql = $sql . " order by post_date desc";
     $posts = $wpdb->get_results($sql);
 
-    
-    
+
+
     $from = $_GET["paged"] * $records_per_page - $records_per_page;
     $to = min($_GET['paged'] * $records_per_page, count($posts));
     $post_count =count($posts);
-    
+
     $ex = 0;
     $excludeList = array();
     for ($j = 0; $j < $post_count; $j++) {
@@ -161,7 +170,7 @@ if(count($excludeList) >0)
 </p>');
         print('</div>');
     if (count($posts) > 0) {
-        
+
         $page_links = paginate_links(array(
                     'base' => add_query_arg('paged', '%#%'),
                     'format' => '',
@@ -170,7 +179,7 @@ if(count($excludeList) >0)
                     'total' => ceil(count($posts) / $records_per_page),
                     'current' => $_GET['paged']
                 ));
-       
+
         if ($page_links) {
 
             print('<div class="tablenav-pages">');
@@ -204,10 +213,9 @@ if(count($excludeList) >0)
 
 
 
-
         for ($i = $from; $i < $to; $i++) {
-            
-            
+
+
             $categories = get_the_category($posts[$i]->ID);
             if (!empty($categories)) {
                 $out = array();
@@ -218,7 +226,7 @@ if(count($excludeList) >0)
             else {
                 $cats = 'Uncategorized';
             }
-            
+
             if (in_array($posts[$i]->ID, $excluded_posts)) {
                 $checked = "Checked";
                 $bgcolor="#FFCC99";
@@ -226,9 +234,9 @@ if(count($excludeList) >0)
                 $checked = "";
                 $bgcolor="#FFF";
             }
-
+            $displayed_posts[] =    $posts[$i]->ID;
             print('
-				
+
 				<tr style="background-color:'.$bgcolor.';">
 					<th class="check-column">
 						<input type="checkbox" name="chkbx" id="del' . $posts[$i]->ID . '" onchange="javascript:managedelid(this,\'' . $posts[$i]->ID . '\');" value="' . $posts[$i]->ID . '" ' . $checked . '/>
@@ -255,7 +263,7 @@ if(count($excludeList) >0)
                                             ' . $posts[$i]->post_type . '
                                         </td>
 				</tr>
-				
+
 			');
         }
         print('
@@ -284,7 +292,7 @@ if(count($excludeList) >0)
 
         print('
 			<script language="javascript">
-                               
+
 
 jQuery(function() {
   jQuery(".page-numbers").click(function(e){
@@ -302,7 +310,7 @@ jQuery(function() {
 
                                 function managedelid(ctrl,id)
 				{
-					
+
 					var delids = document.getElementById("delids").value;
 					if(ctrl.checked)
 					{
@@ -311,7 +319,7 @@ jQuery(function() {
 					else
 					{
 						delids=removeId(delids,id);
-					}	
+					}
 					document.getElementById("delids").value=delids;
                                         setExcludeList(delids);
 				}
@@ -326,9 +334,9 @@ if(list.indexOf(value) != -1)
 
 function addId(list,value)
 {
-if(list.length != 0 ) 
-	list = list.split(","); 
-else 
+if(list.length != 0 )
+	list = list.split(",");
+else
 	list = [];
 if(list.indexOf(value) == -1)
     list.push(value);
@@ -347,7 +355,7 @@ return list.join(",");
                                 }
 
                         setExcludeList("' . $exposts . '");
-                          
+
 			</script>
 		');
     }
@@ -359,6 +367,7 @@ else
 				<p>' . __('No Posts found. Review your search or filter criteria/term.', 'TweetOldPost') . '</p>
 			</div>');
 }
+            echo '<input type="hidden" name="rop_display_post_excluded" value="'.implode(",",$displayed_posts).'"/>';
 print('</form>');
 } else {
         print('

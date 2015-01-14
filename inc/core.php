@@ -68,6 +68,7 @@ if (!class_exists('CWP_TOP_Core')) {
 
 		}
 		public static function clearLog(){
+			if(!is_admin()) return false;
 			update_option("rop_notice_active",array());
 
 		}
@@ -91,6 +92,7 @@ if (!class_exists('CWP_TOP_Core')) {
 		}
 		public function startTweetOldPost( )
 		{
+			if(!is_admin()) return false;
 			$this->checkUsers();
 			if($this->pluginStatus !== 'true' ) {
 				do_action("rop_start_posting");
@@ -126,6 +128,7 @@ if (!class_exists('CWP_TOP_Core')) {
 		}
 		public function stopTweetOldPost()
 		{
+			if(!is_admin()) return false;
 			//echo $this->pluginStatus;
 			// If the plugin is active
 			if($this->pluginStatus !== 'false') {
@@ -141,14 +144,7 @@ if (!class_exists('CWP_TOP_Core')) {
 			$postPosts = get_option('top_opt_excluded_post');
 
 			if(!empty($postPosts) && is_array($postPosts)) {
-				$lastPostPosts = end($postPosts);
-				foreach ($postPosts as $key => $cat) {
-					if($cat == $lastPostPosts) {
-						$postQueryPosts .= $cat;
-					} else {
-						$postQueryPosts .= $cat . ", ";
-					}
-				}
+				 $postQueryPosts = implode(',',$postPosts);
 			}
 			else
 				$postQueryPosts = get_option('top_opt_excluded_post');
@@ -174,18 +170,22 @@ if (!class_exists('CWP_TOP_Core')) {
 
 			// Generate the Tweet Post Date Range
 			$dateQuery = $this->getTweetPostDateRange();
-
+			if(!is_array($dateQuery)) return false;
 			// Get the number of tweets to be tweeted each interval.
 			$tweetCount = intval(get_option('top_opt_no_of_tweet'));
-
+			if($tweetCount == 0 ) {
+				self::addNotice("Invalid number for  Number of Posts to share. It must be a value greater than 0 ",'error');
+				return false;
+			}
 			// Get post categories set.
 //			$postQueryCategories =  $this->getTweetCategories();
 			$excludedIds = "";
 			$tweetedPosts = get_option("top_opt_already_tweeted_posts");
+			if(!is_array($tweetedPosts)) $tweetedPosts = array();
 			$orderQuery = "";
-			if (!$tweetedPosts || get_option('top_opt_tweet_multiple_times')=="on") {
+			if (get_option('top_opt_tweet_multiple_times')=="on") {
 
-				$orderQuery = "  ORDER BY post_date ASC ";
+				$orderQuery = "  ORDER BY post_date ASC LIMIT   ";
 
 				$tweetedPosts = array();
 			}else{
@@ -193,23 +193,11 @@ if (!class_exists('CWP_TOP_Core')) {
 
 			}
 			$postQueryExcludedPosts = $this->getExcludedPosts();
-			if ($postQueryExcludedPosts=="")
-				$postQueryExcludedPosts = array();
-			//print_r($postQueryExcludedPosts);
-			$excludedPosts = array_merge($tweetedPosts,(array)$postQueryExcludedPosts);
-			$nrOfExcludedPosts = count($excludedPosts);
-			for ($k=0;$k<$nrOfExcludedPosts-1;$k++)
-				$excludedIds .=$excludedPosts[$k].", ";
-			if ($nrOfExcludedPosts>0) {
-				$lastId = $nrOfExcludedPosts-1;
-				$excludedIds .=$excludedPosts[$lastId];
-			}
-			//print_r($excludedIds);
-			// Get excluded categories.
+			$postQueryExcludedPosts = explode (',',$postQueryExcludedPosts);
+			$excluded = array_merge($tweetedPosts,$postQueryExcludedPosts);
+			$excluded = array_unique($excluded);
+
 			$postQueryExcludedCategories = $this->getExcludedCategories();
-			//echo $postQueryExcludedCategories;
-			//print_r($postQueryExcludedCategories);
-			// Get post type set.
 			$somePostType = $this->getTweetPostType();
 
 			// Generate dynamic query.
@@ -235,10 +223,15 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 					AND {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}))) ";
 			}
 
-			if(!empty($excludedIds)) {
-				$query .= "AND ( {$wpdb->prefix}posts.ID NOT IN ({$excludedIds})) ";
+			if(!empty($excluded)) {
+				$excluded = implode(',',$excluded);
+				$query .= "AND ( {$wpdb->prefix}posts.ID NOT IN ({$excluded})) ";
 			}
+			if(!empty($somePostType)){
 
+				$somePostType = explode(',',$somePostType);
+				$somePostType = "'".implode("','",$somePostType)."'";
+			}
 			$query .= "AND {$wpdb->prefix}posts.post_type IN ({$somePostType})
 					  AND ({$wpdb->prefix}posts.post_status = 'publish')
 					GROUP BY {$wpdb->prefix}posts.ID
@@ -247,7 +240,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			// Save the result in a var for future use.
 			$returnedPost = $wpdb->get_results($query);
 
-			if(count($returnedPost) > $tweetCount && get_option('top_opt_tweet_multiple_times')=="on") {
+			if(get_option('top_opt_tweet_multiple_times')=="on") {
 				$rand_keys = array_rand($returnedPost , $tweetCount);
 
 				if(is_int($rand_keys)) $rand_keys = array($rand_keys);
@@ -276,33 +269,22 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		{
 			//echo '<pre>';
 			$returnedPost = $this->getTweetsFromDB();
+			if(!is_array($returnedPost)) return false;
 			global $cwp_top_networks;
 			if ($byID!==false) {
 
 				$returnedPost = $this->getTweetsFromDBbyID($byID);
 			}
-			
-			$k = 0; // Iterator
 
-			// Get the number of tweets to be tweeted each interval.
-			$tweetCount = intval(get_option('top_opt_no_of_tweet'));
 
 			if (count($returnedPost) == 0 ) {
 				self::addNotice('There is no suitable post to tweet make sure you excluded correct categories and selected the right dates.','error');
 
 			}
-			// While haven't reached the limit
-			while($k != $tweetCount) {
-				// If the post is not already tweeted
-				$isNotAlreadyTweeted = $this->isNotAlreadyTweeted($returnedPost[$k]->ID);
-
-				if (get_option('top_opt_tweet_multiple_times')=="on") $isNotAlreadyTweeted = true;
-
-				if($isNotAlreadyTweeted && ($k<count($returnedPost))) {
-
-					// Foreach returned post
-					$post = $returnedPost[$k];
-
+			$done = get_option("top_opt_already_tweeted_posts");
+			if(!is_array($done)) $done = array();
+			foreach($returnedPost as $post){
+					if(in_array($post->ID,$done)) continue;
 					$oknet = false;
 					foreach($this->users as $u){
 						if($u['service'] == $ntk){
@@ -316,6 +298,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 					$this->tweetPost( $finalTweet, $ntk, $post );
 
 					$tweetedPosts = get_option("top_opt_already_tweeted_posts");
+
 					if ($tweetedPosts=="")	$tweetedPosts = array();
 					// Push the tweeted post at the end of the array.
 					array_push($tweetedPosts, $post->ID);
@@ -327,25 +310,13 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 						w3tc_objectcache_flush();
 						$cache = ' and W3TC Caches cleared';
 					}
-					add_option("top_opt_already_tweeted_posts");
 					update_option("top_opt_already_tweeted_posts", $tweetedPosts);
-
-				} else {
-					if(  $byID === false) { 
-						if (count($returnedPost)!=$tweetCount)
-							self::addNotice('You have tried to post more tweets that they are available, try to include more categories or increase the date range','error');
-						else
-							self::addNotice('Tweet was already tweeted, if you want to tweet your old tweets more than once, select "Tweet old posts more than once" option','error');
-					}else{
-						break;
-					}
-				}
-
-					$k = $k + 1;
+					$done[] = $post->ID;
 			}
 			if ($byID===false) {
 				$time = $this->getNextTweetTime( $ntk );
-				wp_schedule_single_event( $time, $ntk . 'roptweetcron', array( $ntk ) );
+				if($time != 0 && ($time - $this->getTime()) > 10 * 60)
+					wp_schedule_single_event( $time, $ntk . 'roptweetcron', array( $ntk ) );
 			}
 
 		}
@@ -379,6 +350,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		}
 
 		public function getNotice() {
+			if(!is_admin()) return false;
 			$notice = get_option('rop_notice_active');
 			if(!is_array($notice)) $notice = array();
             echo json_encode($notice);
@@ -386,6 +358,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		}
 
 		public function tweetNow() {
+			if(!is_admin()) return false;
 			$networks = $this->getAvailableNetworks();
 			foreach($networks as $net){
 
@@ -397,29 +370,32 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		public function viewSampleTweet()
 		{
 
+			if(!is_admin()) return false;
 			$returnedTweets = $this->getTweetsFromDB();
+
 			$messages = array();
 			$networks = $this->getAvailableNetworks();
 			if(count($returnedTweets) == 0) {
 				foreach($networks as $net){
 					$messages[$net] = __("No posts to share",CWP_TEXTDOMAIN);
 				}
+				$networks = array();
 			}
 			foreach($networks as $n) {
+
 				$finalTweetsPreview = $this->generateTweetFromPost($returnedTweets[0],$n);
 				if (is_array($finalTweetsPreview)){
 					$finalTweetsPreview = $finalTweetsPreview['message'];
 				}
 				$messages[$n] = $finalTweetsPreview;
 			}
-
-			update_option( 'top_lastID', $returnedTweets[0]->ID);
+			if(isset($returnedTweets[0]))
+				update_option( 'top_lastID', $returnedTweets[0]->ID);
 
 			foreach($networks as $n) {
 				if (CWP_TOP_PRO && $this->isPostWithImageEnabled($n)) {
-
-					if ( strlen( $img = get_the_post_thumbnail( $returnedTweets[0]->ID, array( 150, 150 ) ) ) ) :
-						$image_array = wp_get_attachment_image_src( get_post_thumbnail_id( $returnedTweets[0]->ID ), 'optional-size' );
+					if (has_post_thumbnail($returnedTweets[0]->ID)) :
+						$image_array = wp_get_attachment_image_src( get_post_thumbnail_id( $returnedTweets[0]->ID), array('medium') );
 						$image = $image_array[0];
 					else :
 						$post = get_post($returnedTweets[0]->ID);
@@ -429,6 +405,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 						$output = preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $post->post_content, $matches);
 
 						$image = $matches [1] [0];
+
 					endif;
 					$messages[$n] = '<img class="top_preview" src="'.$image.'"/>'.$messages[$n];
 				}
@@ -727,25 +704,25 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 							if($response !== false){
 								$status = json_decode($reponse);
 								if($status === false){
-									
+
 								//	self::addNotice("Error for post ".$post->post_title." when sending to Twitter: Invalid response - ".$response,'error');
-									
+
 								}
 								else{
 										if($status->errors[0]->code != 200) {
 												//	self::addNotice("Error for post ".$post->post_title." when sending to Twitter: ".$status->errors[0]->message,'error');
-									
-											
+
+
 										}
 										else{
-												
+
 										}
 								}
 								if($connection->http_code == 200 ){
 												self::addNotice("Post ".$post->post_title." has been successfully sent to Twitter.",'notice');
-										
+
 								}
-							} 
+							}
 						break;
 						case 'facebook':
 
@@ -857,8 +834,10 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 					<h2><?php _e( 'System Information', CWP_TEXTDOMAIN); ?></h2><br/>
 					<form action="" method="post" dir="ltr">
 						<textarea readonly="readonly" onclick="this.focus();this.select()" cols="100" id="system-info-textarea" name="cwp-top-sysinfo" rows="20" title="<?php _e( 'To copy the system info, click below then press Ctrl + C (PC) or Cmd + C (Mac).', 'edd' ); ?>">
-### Begin System Info ###
-## ROP CONFIGS ##
+
+## Please include this information when posting support requests ##
+
+## BEGIN ROP CONFIGS ##
 			<?php
 				$options = get_option("top_opt_post_formats");
 				$cwp_top_global_schedule = get_option("cwp_top_global_schedule");
@@ -878,7 +857,63 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 				}
 			?>
 
-## Please include this information when posting support requests ##
+## END ROP CONFIGS ##
+
+## Begin CRON Info
+CRON Active:              <?php echo (WP_CRON) ? "yes" : "no"; ?><?php echo "\n"; ?>
+Alternate WP Cron:        <?php echo defined(ALTERNATE_WP_CRON) ? ((ALTERNATE_WP_CRON) ? "yes" : "no" ) : "no"; ?><?php echo "\n";
+
+			?>
+Time now: <?php echo date ( 'M j, Y @ G:i',time()); ?> <?php echo "\n"; ?>
+ROP Crons:
+<?php
+			$all = $this->getAllNetworks();
+			foreach($all as $nn ){
+				if(wp_next_scheduled($nn.'roptweetcron',array($nn)) === false) continue;
+				echo date (  'M j, Y @ G:i', wp_next_scheduled($nn.'roptweetcron',array($nn)) );
+			}
+
+			?>
+
+## End Cron Info
+
+##Begin General Settings:
+<?php
+			global $cwp_top_fields;
+			foreach($cwp_top_fields as $general_field){
+				echo $general_field['name']. " : ";
+				if(is_array(get_option($general_field['option'])))
+					echo implode(",",get_option($general_field['option']))." \n  " ;
+				else
+					echo get_option($general_field['option'])." \n  ";
+			}
+			?>
+
+##End General Settings
+<?php
+			if(CWP_TOP_PRO):?>
+##Begin Custom schedule settings:
+<?php  foreach($all as $a) {
+
+				if( $cwp_top_global_schedule[$a.'_schedule_type_selected'] == 'each')
+				{
+					echo strtoupper($a)." post on every ".$cwp_top_global_schedule[$a.'_top_opt_interval']." hours"." \n  " ;
+				}else{
+					echo strtoupper($a)." post each ".$cwp_top_global_schedule[$a.'_top_opt_interval']['days']." days of the week at: "." \n  " ;
+					foreach($cwp_top_global_schedule[$a.'_top_opt_interval']['times'] as $time){
+						echo ''.$time['hour']." : ".$time['minute']." \n  " ;
+
+
+					}
+				}
+								?>
+<?php } ?>
+
+##End Custom schedule settings
+<?php			endif;
+			?>
+
+### Begin System Info ###
 
 
 Multisite:                <?php echo is_multisite() ? 'Yes' . "\n" : 'No' . "\n" ?>
@@ -900,7 +935,7 @@ Active Theme:             <?php echo $theme . "\n"; ?>
 PHP Version:              <?php echo PHP_VERSION . "\n"; ?>
 MySQL Version:            <?php echo mysql_get_server_info() . "\n"; ?>
 Web Server Info:          <?php echo $_SERVER['SERVER_SOFTWARE'] . "\n"; ?>
-CRON Active:              <?php echo (WP_CRON) ? "yes" : "no"; ?><?php echo "\n"; ?>
+
 WordPress Memory Limit:   <?php echo  WP_MEMORY_LIMIT  ; ?><?php echo "\n"; ?>
 PHP Safe Mode:            <?php echo ini_get( 'safe_mode' ) ? "Yes" : "No\n"; ?>
 PHP Memory Limit:         <?php echo ini_get( 'memory_limit' ) . "\n"; ?>
@@ -972,7 +1007,40 @@ endif;
 
 
 
-### End System Info ###</textarea>
+### End System Info ###
+
+##Begin Log info
+<?php $logs = get_option('rop_notice_active');
+			foreach($logs as $log){
+				echo strtoupper($log['type']). " @ ".$log['time']. ' - '. $log['message']." \n ";
+
+
+			}
+			?>
+<?php ?>
+#End log info
+
+##Begin user info
+
+<?php
+			foreach($all as $a ){
+				if(!isset($$a)) $$a = 0;
+				foreach($this->users as $us){
+					if($us['service'] == $a) $$a ++;
+
+				}
+
+			}
+			foreach($all as $a){
+				echo  strtoupper($a)." accounts - ".$$a." \n ";
+
+			}
+
+			?>
+
+##End user info
+
+</textarea>
 						<p class="submit">
 							<input type="hidden" name="cwp-action" value="download_sysinfo" />
 							<?php submit_button( 'Download System Info File', 'primary', 'cwp-download-sysinfo', false ); ?>
@@ -1107,39 +1175,41 @@ endif;
 			if (get_option('top_opt_max_age_limit')==0 )
 				$limit = 9999;
 			else
-				$limit = get_option('top_opt_max_age_limit');
+				$limit = intval(get_option('top_opt_max_age_limit'));
 
-			$minAgeLimit = "-" . get_option('top_opt_age_limit') . " days";
+			if( !is_int($limit) ) {
+				self::addNotice("Incorect value for Maximum age of post to be eligible for sharing. Please check the value to be a number greater or equal than 0 ",'error');
+				return false;
+			}
 
-			$maxAgeLimit = "-" . $limit . " days";
+			$min = intval(get_option('top_opt_age_limit'));
+
+			if(!is_int($min)  ){
+				self::addNotice("Incorect value for Minimum age of post to be eligible for sharing. Please check the value to be a number greater  or equal than 0 ",'error');
+				return false;
+
+			}
+			if($limit == 0 ){
+				$limit = 10*365;
+			}
+			if($limit < $min){
+				self::addNotice("Maximum age of post to be eligible for sharing must be greater than Minimum age of post to be eligible for sharing. Please check the value to be a number greater  or equal than 0 ",'error');
+				return false;
+
+			}
 
 
 
-			$minLimit = time() - get_option('top_opt_age_limit')*24*60*60;
+			$minLimit = time() - $min*24*60*60;
 			$maxLimit = time() - $limit*24*60*60;
 
 			$minAgeLimit = date("Y-m-d H:i:s", $minLimit);
 			$maxAgeLimit = date("Y-m-d H:i:s", $maxLimit);
-
-			if(isset($minAgeLimit) || isset($maxAgeLimit)) {
-
-				$dateQuery = array();
-
-				if(isset($minAgeLimit)) {
-					$dateQuery['before'] = $maxAgeLimit;
-				}
-
-				if(isset($maxAgeLimit)) {
-					$dateQuery['after'] = $minAgeLimit;
-				}
-
-				$dateQuery['inclusive'] = true;
-
-			}
-
-			if(!empty($dateQuery)) {
-				return $dateQuery;
-			}
+			$dateQuery = array();
+			$dateQuery['before'] = $maxAgeLimit;
+			$dateQuery['after'] = $minAgeLimit;
+			$dateQuery['inclusive'] = true;
+            return $dateQuery;
 
 
 		}
@@ -1152,14 +1222,7 @@ endif;
 			$postCategories = get_option('top_opt_omit_cats');
 
 			if(!empty($postCategories) && is_array($postCategories)) {
-				$lastPostCategory = end($postCategories);
-				foreach ($postCategories as $key => $cat) {
-					if($cat == $lastPostCategory) {
-						$postQueryCategories .= $cat;
-					} else {
-						$postQueryCategories .= $cat . ", ";
-					}
-				}
+				$postQueryCategories = implode(',',$postCategories);
 			}
 			else
 				$postQueryCategories = get_option('top_opt_omit_cats');
@@ -1174,17 +1237,10 @@ endif;
 			$top_opt_post_type = get_option('top_opt_post_type');
 
 			if(!empty($top_opt_post_type) && is_array($top_opt_post_type)) {
-				$lastPostCategory = end($top_opt_post_type);
-				foreach ($top_opt_post_type as $key => $cat) {
-					if($cat == $lastPostCategory) {
-						$postQueryPostTypes .= "'".$cat."'";
-					} else {
-						$postQueryPostTypes .= "'".$cat."'" . ", ";
-					}
-				}
+				$postQueryPostTypes = implode(',',$top_opt_post_type);
 			}
 			else
-				$postQueryPostTypes = "'".get_option('top_opt_post_type')."'";
+				$postQueryPostTypes = get_option('top_opt_post_type');
 
 			return $postQueryPostTypes;
 
@@ -1234,7 +1290,30 @@ endif;
 
 			$this->user_info = get_option('cwp_top_oauth_user_details');
 			$this->users = get_option('cwp_top_logged_in_users');
+			$ok_update = false;
+			foreach($this->users as $k=>$user){
+				if(!isset($user['service'])){
+					if(strpos($user['oauth_user_details']->profile_image_url,'twimg')){
 
+						$this->users[$k]['service'] = 'twitter';
+					}
+					if(strpos($user['oauth_user_details']->profile_image_url,'facebook')){
+
+						$this->users[$k]['service'] = 'facebook';
+					}
+					if(strpos($user['oauth_user_details']->profile_image_url,'licdn')){
+
+						$this->users[$k]['service'] = 'linkedin';
+					}
+					$ok_update = true;
+				}
+
+			}
+			if($ok_update){
+
+				update_option('cwp_top_logged_in_users',$this->users);
+
+			}
 			$this->pluginStatus = get_option('cwp_topnew_active_status');
 			$this->intervalSet = get_option('top_opt_interval');
 
@@ -1419,6 +1498,8 @@ endif;
 		// Adds pages
 		public function displayPages()
 		{
+
+			if(!is_admin()) return false;
 			$social_network = $_POST['social_network'];
 			$access_token = get_option('top_fb_token');
 
@@ -1466,6 +1547,8 @@ endif;
 		}
 		public function addPages()
 		{
+
+			if(!is_admin()) return false;
 			$social_network = $_POST['social_network'];
 			$access_token = $_POST['page_token'];
 			$page_id= $_POST['page_id'];
@@ -1508,6 +1591,8 @@ endif;
 		// Adds new account
 		public function addNewAccount()
 		{
+
+			if(!is_admin()) return false;
 			global $cwp_top_settings;
 			$social_network = $_POST['social_network'];
 			$networks = $this->getAvailableNetworks();
@@ -1602,6 +1687,8 @@ endif;
 		// Adds more than one account
 		public function addNewAccountPro()
 		{
+
+			if(!is_admin()) return false;
 			if (CWP_TOP_PRO) {
 				global $CWP_TOP_Core_PRO;
 				$CWP_TOP_Core_PRO->topProAddNewAccount($_POST['social_network']);
@@ -1639,6 +1726,7 @@ endif;
 		// Clears all Twitter user credentials.
 		public function logOutUser()
 		{
+			if(!is_admin()) return false;
 			$userID = $_POST['user_id'];
 
 			$users = get_option('cwp_top_logged_in_users');
@@ -1668,98 +1756,115 @@ endif;
 			return $tmp;
 		}
 		function   getNextTweetTime($network){
-			if(!CWP_TOP_PRO){ 
-					return $this->getTime() + ( get_option('top_opt_interval')  * 3600 ) ;
+			$time = 0;
+			if(!CWP_TOP_PRO){
+				 $time =  $this->getTime() + ( get_option('top_opt_interval')  * 3600 ) ;
+				 if($time - $this->getTime() > 10 * 60) {
+					 return $time;
+				 }else{
+					 return 0;
+				 }
 			}
 			$cwp_top_global_schedule = get_option("cwp_top_global_schedule" );
 			$type = $cwp_top_global_schedule[$network.'_schedule_type_selected'];
 			if($type == 'each'){
-				return $this->getTime() + $cwp_top_global_schedule[$network.'_top_opt_interval'] * 3600;
-
+				$time =  $this->getTime() + intval($cwp_top_global_schedule[$network.'_top_opt_interval']) * 3600;
+				if($time - $this->getTime() > 10 * 60) {
+					return $time;
+				}else{
+					return 0;
+				}
 			}else{
-				$cday = date("N",$this->getTime());
+
+				$start =   strtotime("monday this week",$this->getTime()) ;
 
 				$days = explode(",",$cwp_top_global_schedule[$network.'_top_opt_interval']['days']);
-				if(!empty($days)){
-					$day = 0;
-					$upper_days = $this->getUpperDays($cday,$days);
+				$times = $cwp_top_global_schedule[$network.'_top_opt_interval']['times'];
+				$schedules_days = array();
+				if(count($times) == 0 ) return false;
+				if(count($days) == 0 ) return false;
+				foreach($days as $rday){
+					$schedules_days[] = $start +  ($rday-1) * 3600 * 24;
 
-					if($days[count($days) - 1] < $cday){
-						$day = $days[0];
-
-					}else{
-						$day = $upper_days[0];
-					}
-					$times = $cwp_top_global_schedule[$network.'_top_opt_interval']['times'];
-					$ctime = date("G:i",$this->getTime());
-					$ctime = explode(":",$ctime);
-					$thour = false;
-					$tmin = false;
-
-					if(!empty($times)){
-
-						foreach($times as $t){
-							if(intval($t['hour']) >= intval($ctime[0]) ){
-								if(intval($t['minute']) >= intval($ctime[1])){
-									$thour = intval($t['hour']);
-									$tmin = intval($t['minute']);
-									break;
-								}
-
-							}
-
-						}
-						if($thour === false || $tmin === false){
-
-							$thour = intval($times[0]['hour']);
-							$tmin = intval($times[0]['minute']);
-							if(count($upper_days)>1){
-								$day = $upper_days[1];
-							}else{
-
-								$day = $days[0];
-							}
-
-						}
-						$days_passed = 0;
-						if($day >= $cday){
-							$days_passed = $day - $cday;
-
-						}else{
-							$days_passed = (7 - $cday) + $day ;
-						}
-
-						$ctime[0] = intval($ctime[0]);
-						$ctime[1] = intval($ctime[1]);
-
-						if($days_passed > 1){
-							return $this->getTime() + (($days_passed-1) * 24 * 3600) + $thour * 3600 + $tmin * 60 + ((23 - $ctime[0])*3600) + ((60 - $ctime[1])*60);
-						}else{
-							if($days_passed == 1){
-
-								return $this->getTime()  + $thour * 3600 + $tmin * 60 + ((23 - $ctime[0])*3600) + ((60 - $ctime[1])*60);
-
-							}
-							if($days_passed == 0){
-								return $this->getTime()  + (( $thour - $ctime[0]) * 3600) + (( $tmin - $ctime[1]) * 60);
-
-							}
-
-						}
-
-					}
 				}
+				$schedules = array();
+				foreach($schedules_days as $schedule){
+
+					foreach($times as $time){
+
+						$schedules[] = $schedule + intval($time['hour']) * 3600 + intval($time['minute']) * 60;
+
+					}
+
+				}
+				sort($schedules,SORT_REGULAR);
+
+				$ctime = $this->getTime();
+				$time = 0;
+				foreach($schedules as $s ){
+					if($s > $ctime  && (($s - $this->getTime()) > 10 * 60)) {
+						return $s;
+					}
+
+				}
+				return 0;
 			}
 			return 0;
+		}
+		public function getAllOptions(){
+			$options = array();
+
+			global $cwp_top_networks;
+			$all = $this->getAllNetworks();
+			foreach($cwp_top_networks as $n=>$d){
+				foreach($d  as $df){
+
+					$options[] = $n."_".$df['option'];
+
+				}
+			}
+			foreach($all as $a){
+
+				$options[] = $a."_schedule_type_selected";
+				$options[] = $a."_top_schedule_days";
+				$options[] = $a."_time_choice_hour";
+				$options[] = $a."_top_opt_interval";
+				$options[] = $a."_time_choice_min";
+			}
+			global $cwp_top_fields;
+			foreach ($cwp_top_fields as $field)
+			{
+				$options[] = $field['option'];
+			}
+			return $options;
+		}
+		public function sanitizeRequest(){
+
+			$dataSent = $_POST['dataSent']['dataSent'];
+			$valid = array();
+			parse_str($dataSent, $options);
+			$all_options = $this->getAllOptions();
+			$invalid = array();
+			foreach($options as $k => $option ){
+				if(in_array($k,$all_options)){
+					$valid[$k] = $option;
+
+				}else{
+					$invalid[] = $k;
+				}
+
+			}
+			$_POST['dataSent']['dataSent'] = http_build_query($valid);
 		}
 		// Updates all options.
 		public function updateAllOptions()
 		{
+			if(!is_admin()) return false;
 			$dataSent = $_POST['dataSent']['dataSent'];
-
+			$this->sanitizeRequest();
 			$options = array();
-			parse_str($dataSent, $options);
 
+			parse_str($dataSent, $options);
 			foreach ($options as $option => $newValue) {
 				//$newValue = sanitize_text_field($newValue);
 				update_option($option, $newValue);
@@ -1880,6 +1985,8 @@ endif;
 
 		public function resetAllOptions()
 		{
+
+			if(!is_admin()) return false;
 			update_option('activation_hook_test_motherfucker', "Well, the plugin was activated!");
 
 			$defaultOptions = array(
@@ -2203,6 +2310,18 @@ endif;
 					$this->notices[] = "You need to have the latest version of the Revive Old Post Pro addon in order to use it. Please download it from the themeisle.com account";
 
 			}
+			$all = $this->getAllNetworks();
+			if($this->pluginStatus !== 'true'){
+
+				foreach($all as $a){
+
+					wp_clear_scheduled_hook($a.'roptweetcron',array($a));
+
+
+				}
+				return false;
+			}
+
 			$networks = $this->getAvailableNetworks();
 			if(wp_next_scheduled( 'cwp_top_tweet_cron' ) !== false) {
 
@@ -2222,7 +2341,7 @@ endif;
 					}
 				}
 				else{
-						$all = $this->getAllNetworks();
+
 						foreach($all as $a){
 							if(wp_next_scheduled( $a.'cwptoptweetcron',array($a) ) !== false) {
 
@@ -2241,23 +2360,15 @@ endif;
 				}
 
 			}
-			
-			if($this->pluginStatus !== 'true'){
-				$all = $this->getAllNetworks();
-						
-				foreach($all as $a){
-						
-					wp_clear_scheduled_hook($a.'roptweetcron',array($a));
-					
 
-				}
-			}
+
 		}
 		public function loadAllHooks()
-		{ 
+		{
 			if(isset($_GET['debug']) == 'on') {
-				
-					$this->tweetOldPost("twitter");
+
+					//$this->tweetOldPost("twitter");
+					die();
 			}
 			// loading all actions and filters
 			add_action('admin_menu', array($this, 'addAdminMenuPage'));
@@ -2265,81 +2376,78 @@ endif;
 			add_action('admin_enqueue_scripts', array($this, 'loadAllScriptsAndStyles'));
 
 			add_action( 'admin_notices', array($this, 'adminNotice') );
+
+			add_filter('plugin_action_links',array($this,'top_plugin_action_links'), 10, 2);
+
+			add_action( 'plugins_loaded', array($this, 'addLocalization') );
+
+			//ajax actions
+
 			// Update all options ajax action.
-			add_action('wp_ajax_nopriv_update_response', array($this, 'updateAllOptions'));
 			add_action('wp_ajax_update_response', array($this, 'updateAllOptions'));
 
-
 			// Reset all options ajax action.
-			add_action('wp_ajax_nopriv_reset_options', array($this, 'resetAllOptions'));
 			add_action('wp_ajax_reset_options', array($this, 'resetAllOptions'));
 
 			// Add new twitter account ajax action
-			add_action('wp_ajax_nopriv_add_new_account', array($this, 'addNewAccount'));
 			add_action('wp_ajax_add_new_account', array($this, 'addNewAccount'));
 
 			// Display managed pages ajax action
-			add_action('wp_ajax_nopriv_display_pages', array($this, 'displayPages'));
 			add_action('wp_ajax_display_pages', array($this, 'displayPages'));
 
 			// Add new account managed pages ajax action
-			add_action('wp_ajax_nopriv_add_pages', array($this, 'addPages'));
 			add_action('wp_ajax_add_pages', array($this, 'addPages'));
 
 			// Add more than one twitter account ajax action
-			add_action('wp_ajax_nopriv_add_new_account_pro', array($this, 'addNewAccountPro'));
 			add_action('wp_ajax_add_new_account_pro', array($this, 'addNewAccountPro'));
 
 			// Log Out Twitter user ajax action
-			add_action('wp_ajax_nopriv_log_out_user', array($this, 'logOutUser'));
 			add_action('wp_ajax_log_out_user', array($this, 'logOutUser'));
 
-			// Tweet Old Post ajax action.
-			add_action('wp_ajax_nopriv_tweet_old_post_action', array($this, 'startTweetOldPost'));
+			//start ROP
 			add_action('wp_ajax_tweet_old_post_action', array($this, 'startTweetOldPost'));
-			add_action('wp_ajax_nopriv_rop_clear_log', array($this, 'clearLog'));
+
+			//clear Log messages
 			add_action('wp_ajax_rop_clear_log', array($this, 'clearLog'));
 
 			//remote trigger cron
 			add_action('wp_ajax_remote_trigger', array($this, 'remoteTrigger'));
-			add_action("rop_start_posting",array($this,"startPosting"));
-			add_action("rop_stop_posting",array($this,"stopPosting"));
-			// Tweet Old Post view sample tweet action.
-			add_action('wp_ajax_nopriv_view_sample_tweet_action', array($this, 'viewSampleTweet'));
+
+			//sample tweet messages
 			add_action('wp_ajax_view_sample_tweet_action', array($this, 'viewSampleTweet'));
 
 			// Tweet Old Post tweet now action.
-			add_action('wp_ajax_nopriv_tweet_now_action', array($this, 'tweetNow'));
 			add_action('wp_ajax_tweet_now_action', array($this, 'tweetNow'));
 
-			add_action('wp_ajax_nopriv_gettime_action', array($this, 'echoTime'));
 			add_action('wp_ajax_gettime_action', array($this, 'echoTime'));
 
-			add_action('wp_ajax_nopriv_getNotice_action', array($this, 'getNotice'));
+			//get notice
 			add_action('wp_ajax_getNotice_action', array($this, 'getNotice'));
 
-			// Tweet Old Post ajax action
-			add_action('wp_ajax_nopriv_stop_tweet_old_post', array($this, 'stopTweetOldPost'));
+			//stop ROP
 			add_action('wp_ajax_stop_tweet_old_post', array($this, 'stopTweetOldPost'));
 
+			//custom actions
+
+			add_action("rop_start_posting",array($this,"startPosting"));
+			add_action("rop_stop_posting",array($this,"stopPosting"));
 			$networks = $this->getAllNetworks();
 
 			foreach($networks as $network){
 				add_action($network.'roptweetcron',array($this,"tweetOldPost"));
 
 			}
+
+			//admin_init actions
+
 			add_action('admin_init', array($this,'top_nag_ignore'));
 			add_action('admin_init', array($this,'clearOldCron'));
 
-			// Filter to add new custom schedule based on user input
-			add_filter('cron_schedules', array($this, 'createCustomSchedule'));
 
-			add_filter('plugin_action_links',array($this,'top_plugin_action_links'), 10, 2);
-
-			add_action( 'plugins_loaded', array($this, 'addLocalization') );
 
 		}
 		public function remoteTrigger(){
+			if(!is_admin()) return false;
 			$state = $_POST["state"];
 			if(!empty($state) &&( $state == "on" || $state == "off")){
 

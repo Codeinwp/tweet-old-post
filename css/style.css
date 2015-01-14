@@ -98,6 +98,7 @@ strong {
 .cwp_top_wrapper .cwp_top_container .sidebar ul li { display: block; }
 .cwp_top_wrapper .cwp_top_container .sidebar ul li.upgrade a { display: block; background:url("../img/upgrade-top.png") no-repeat top left; width: 270px; height: 101px; text-indent: -9999px; }
 .cwp_top_wrapper .cwp_top_container .sidebar ul li.readythemes a { display: block; background:url("../img/top_banner_themeisle.png") no-repeat left; width: 270px; height: 101px; text-indent: -9999px; }
+.cwp_top_wrapper .cwp_top_container .sidebar ul li.sib a { display: block; background:url("../img/sib.png") no-repeat left; width: 270px; height: 225px; text-indent: -9999px; }
 .cwp_top_wrapper .cwp_top_container .sidebar ul li.affiliate-readythemes a { display: block; background:url("../img/affiliate.png") no-repeat left; width: 270px; height: 101px; text-indent: -9999px; }
 
 /* Footer Styles */
@@ -650,4 +651,4 @@ a.on-off-button.off {
 	text-shadow: 0px 1px 0px #FFF;
 	border-bottom: 1px solid #FFF;
 	padding:4px;
-} 
+}

@@ -755,6 +755,16 @@ jQuery(document).ready(function(){
         var container = jQuery(this);
         cwpTopRefreshPostingDays(container);
     });
+
+	jQuery(".cwp-cpt-checkbox").each(function(){
+		var th = jQuery(this);
+		if(th.is(":checked")){
+
+			jQuery(".cwp-tax-"+th.val()).show();
+
+		}
+
+	});
 });
 
 function cwpDependeField(field,second){
