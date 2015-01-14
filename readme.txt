@@ -16,7 +16,7 @@ Plugin to share about your old posts on twitter, facebook, linkedin to get more 
 
 Using the <a href="https://themeisle.com/plugins/tweet-old-post-pro/?ref=1">PRO version</a> of the plugin you will unleash the most important functionality : images in tweets . Using those your RT/CTR will go crazy.
 
-Other notable features : 
+Other notable features :
 
 * Multiple Social Accounts
 * Custom Post Types support
@@ -34,7 +34,7 @@ ThemeIsle is a <a href="https://www.codeinwp.com">Codeinwp</a> product.
 
 **Fortcoming**
 
-- Posts queue 
+- Posts queue
 - Different post content for each account
 
 
@@ -118,7 +118,7 @@ Please note: Despite the fact that error is saying "might be automated", it does
 
 **Any more questions or doubts?**
 
-- Contact us at https://themeisle.com/contact/ 
+- Contact us at https://themeisle.com/contact/
 
 
 
@@ -127,12 +127,21 @@ Please note: Despite the fact that error is saying "might be automated", it does
 1. Screenshot 1 Basic configurable options for Tweet Old Post to function, with ability to tweet at random interval.
 
 
-for more you can check out 
+for more you can check out
 
 https://themeisle.com/plugins/tweet-old-post-lite/
 
 
 == Changelog ==
+
+**New in v6.9.3**
+
+* Improved logging system
+* Fixed vulnerability issue with update options
+* Fixed issues with custom schedule timing
+* Improved excluded category design
+* Fixed excluded post selection issue
+
 
 **New in v6.8.8**
 
@@ -229,14 +238,14 @@ Fixed exclude categories error, added wp short url, fixed oauth error, removed b
 
 **New in v4.0.9**
 
-- Resolved twitter connectivity issue, for users who were not able to connect in 4.0.8. Twitter has changed their policy 
+- Resolved twitter connectivity issue, for users who were not able to connect in 4.0.8. Twitter has changed their policy
 as per https://dev.twitter.com/discussions/24239
 
 
 
 **New in v4.0.8**
 
-- Resolved twitter connectivity issue. Twitter has changed their policy 
+- Resolved twitter connectivity issue. Twitter has changed their policy
 as per https://dev.twitter.com/discussions/24239
 
 
@@ -292,7 +301,7 @@ as per https://dev.twitter.com/discussions/24239
 
 **New in v4.0.0**
 
-- You can now change the application name. Change via Tweet Old Post to your specified name. Follow the Steps here, 
+- You can now change the application name. Change via Tweet Old Post to your specified name. Follow the Steps here,
 http://www.ajaymatharu.com/major-update-to-tweet-old-post/
 - Pages can now be included in tweets. Added an option to select what is to be tweeted (pages, posts, or both).
 - Removed "." and used "-" when adding additional text, "." was causing grammatical mistakes if sentence was trimmed.
@@ -312,7 +321,7 @@ http://www.ajaymatharu.com/major-update-to-tweet-old-post/
 - Resolved too many redirects issue
 	If its still not working try these steps
 		- Make sure "Tweet Old Post Admin URL (Current URL)" is showing your current URL.
-		- Click on "Update Tweet Old Post Options". 
+		- Click on "Update Tweet Old Post Options".
 		- Try to authorize again.
 - Removed "_" from hashtags. Previously space in hashtag was replaced with "_". Now there will be no spaces or "_" in hashtags.
 
@@ -504,13 +513,13 @@ http://www.ajaymatharu.com/major-update-to-tweet-old-post/
 
 **New in v4.0.9**
 
-- Resolved twitter connectivity issue, for users who were not able to connect in 4.0.8. Twitter has changed their policy 
+- Resolved twitter connectivity issue, for users who were not able to connect in 4.0.8. Twitter has changed their policy
 as per https://dev.twitter.com/discussions/24239
 
 
 **New in v4.0.8**
 
-- Resolved twitter connectivity issue. Twitter has changed their policy 
+- Resolved twitter connectivity issue. Twitter has changed their policy
 as per https://dev.twitter.com/discussions/24239
 
 
@@ -565,7 +574,7 @@ as per https://dev.twitter.com/discussions/24239
 
 **New in v4.0.0**
 
-- You can now change the application name. Change via Tweet Old Post to your specified name. Follow the Steps here, 
+- You can now change the application name. Change via Tweet Old Post to your specified name. Follow the Steps here,
 http://www.ajaymatharu.com/major-update-to-tweet-old-post/
 - Pages can now be included in tweets. Added an option to select what is to be tweeted (pages, posts, or both).
 - Removed "." and used "-" when adding additional text, "." was causing grammatical mistakes if sentence was trimmed.
@@ -583,7 +592,7 @@ http://www.ajaymatharu.com/major-update-to-tweet-old-post/
 - Resolved too many redirects issue
 	If its still not working try these steps
 		- Make sure "Tweet Old Post Admin URL (Current URL)" is showing your current URL.
-		- Click on "Update Tweet Old Post Options". 
+		- Click on "Update Tweet Old Post Options".
 		- Try to authorize again.
 - Removed "_" from hashtags. Previously space in hashtag was replaced with "_". Now there will be no spaces or "_" in hashtags.
 

@@ -2112,7 +2112,7 @@ endif;
 					break;
 
 				case 'categories-list':
-					print "<div class='categories-list'><p>Posts: </p>";
+					print "<div class='categories-list cwp-tax-post'><p class='rop-category-header'>	Posts </p>";
 					$categories = get_categories();
 
 					foreach ($categories as $category) {
@@ -2140,7 +2140,7 @@ endif;
 						print "<label for='".$field['option']."_cat_".$category->cat_ID."'>".$category->name."</label>";
 						print "</div>";
 					}
-					print "</div>";
+					print "<div class='clearfix'></div></div>";
 					$taxs = get_taxonomies(array(
 						'public'   => true,
 						'_builtin' => false
@@ -2163,7 +2163,7 @@ endif;
 
 								) );
 								if(!empty($terms)){
-									print "<div class='categories-list cwp-hidden cwp-tax-".$pt."'><p>".$pd->labels->name.": </p>";
+									print "<div class='categories-list cwp-hidden cwp-tax-".$pt."'><p class='rop-category-header'>".$pd->labels->name."  </p>";
 									foreach ($terms as $t) {
 
 										if (!is_array(get_option('top_opt_omit_cats')))
