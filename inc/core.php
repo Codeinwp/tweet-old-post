@@ -165,7 +165,6 @@ if (!class_exists('CWP_TOP_Core')) {
 
 		public function getTweetsFromDB()
 		{
-			// Global WordPress $wpdb object.
 			global $wpdb;
 
 			// Generate the Tweet Post Date Range
@@ -185,7 +184,7 @@ if (!class_exists('CWP_TOP_Core')) {
 			$orderQuery = "";
 			if (get_option('top_opt_tweet_multiple_times')=="on") {
 
-				$orderQuery = "  ORDER BY post_date ASC LIMIT   ";
+				$orderQuery = "  ORDER BY post_date ASC    ";
 
 				$tweetedPosts = array();
 			}else{
@@ -196,7 +195,7 @@ if (!class_exists('CWP_TOP_Core')) {
 			$postQueryExcludedPosts = explode (',',$postQueryExcludedPosts);
 			$excluded = array_merge($tweetedPosts,$postQueryExcludedPosts);
 			$excluded = array_unique($excluded);
-
+			$excluded = array_filter($excluded);
 			$postQueryExcludedCategories = $this->getExcludedCategories();
 			$somePostType = $this->getTweetPostType();
 
@@ -237,9 +236,9 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 					GROUP BY {$wpdb->prefix}posts.ID
 					{$orderQuery }
 			";
+
 			// Save the result in a var for future use.
 			$returnedPost = $wpdb->get_results($query);
-
 			if(get_option('top_opt_tweet_multiple_times')=="on") {
 				$rand_keys = array_rand($returnedPost , $tweetCount);
 
@@ -250,6 +249,10 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 					$return[] = $returnedPost[$rk];
 				}
 				$returnedPost = $return;
+			}
+			if(count($returnedPost) > $tweetCount)
+			{
+				$returnedPost = array_slice($returnedPost,0,$tweetCount);
 			}
 			return $returnedPost;
 		}
@@ -1290,6 +1293,7 @@ endif;
 
 			$this->user_info = get_option('cwp_top_oauth_user_details');
 			$this->users = get_option('cwp_top_logged_in_users');
+			if(!is_array($this->users)) $this->users = array();
 			$ok_update = false;
 			foreach($this->users as $k=>$user){
 				if(!isset($user['service'])){
