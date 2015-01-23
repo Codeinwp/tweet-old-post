@@ -134,6 +134,18 @@ https://themeisle.com/plugins/tweet-old-post-lite/
 
 == Changelog ==
 
+**New in v6.9.5**
+
+* Fixed issue cron stop
+* Fixed issue for excluded post
+* Added exclude posts from custom post types.
+
+
+**New in v6.9.4**
+
+* Fixed issue with share more than once option
+
+
 **New in v6.9.3**
 
 * Improved logging system
