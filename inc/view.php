@@ -139,7 +139,7 @@
 
 				<?php endif; ?>
 				<li class="upgrade"><a target="_blank" href="https://themeisle.com/plugins/tweet-old-post-pro/?utm_source=bannerright&utm_medium=announce&utm_campaign=top&upgrade=true"> <?php _e("Upgrade Tweet Old Post for only $9.99 - Upgrade To Pro Now!", CWP_TEXTDOMAIN); ?></a></li>
-				<li class="sib"><a target="_blank" href="https://www.sendinblue.com/?utm_source=rop&utm_source=display&utm_campaign=iplugins&utm_content=free"> <?php _e("ThemeIsle - Deadly Simple WordPress Themes", CWP_TEXTDOMAIN); ?></a></li>
+				<li class="sib"><a target="_blank" href="https://www.sendinblue.com/?utm_source=rop&utm_medium=display&utm_campaign=iplugins&utm_content=free"> <?php _e("ThemeIsle - Deadly Simple WordPress Themes", CWP_TEXTDOMAIN); ?></a></li>
 				<li class="affiliate-readythemes"><a target="_blank" href="https://themeisle.com/contact/?utm_source=bannerright&utm_medium=announce&utm_campaign=top"> <?php _e("ThemeIsle - Promote Our Themes and Plugins and get 55% Comission", CWP_TEXTDOMAIN); ?></a></li>
 			</ul>
 		</aside><!-- end .sidebar -->
