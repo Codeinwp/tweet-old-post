@@ -508,26 +508,21 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 			$ga_tracking                 = get_option( 'top_opt_ga_tracking' );
 			$additionalTextBeginning     = "";
 			$additionalTextEnd           = "";
-
 			// If the user set to not use hashtags, set it to empty variable.
 			if ( $hashtags == 'nohashtag' ) {
 				$newHashtags = "";
 			}
-
 			// Generate the tweet content.
 			switch ( $tweet_content ) {
 				case 'title':
 					$tweetContent = $postQuery->post_title;
 					break;
-
 				case 'body':
 					$tweetContent = get_post_field( 'post_content', $postQuery->ID );
 					break;
-
 				case 'titlenbody':
 					$tweetContent = $postQuery->post_title . " " . get_post_field( 'post_content', $postQuery->ID );
 					break;
-
 				case 'custom-field':
 					$tweetContent = get_post_meta( $postQuery->ID, $tweet_content_custom_field, true );
 					break;
@@ -535,17 +530,14 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 					$tweetContent = "";
 					break;
 			}
-
 			// Trim new empty lines.
-		    if(!is_string($tweetContent)) $tweetContent = '';
+			if(!is_string($tweetContent)) $tweetContent = '';
 			$tweetContent = strip_tags( html_entity_decode( $tweetContent ) );
 			//$tweetContent = esc_html($tweetContent);
 			//$tweetContent = esc_html($tweetContent);
 			//$tweetContent = trim(preg_replace('/\s+/', ' ', $tweetContent));
-
 			// Remove html entinies.
 			//$tweetContent = preg_replace("/&#?[a-z0-9]+;/i","", $tweetContent);
-
 			// Strip all shortcodes from content.
 			$tweetContent   = strip_shortcodes( $tweetContent );
 			$fTweet         = array();
@@ -553,20 +545,13 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 			// Generate the post link.
 			if ( $include_link == 'true' ) {
 				if ( $fetch_url_from_custom_field == 'on' ) {
-				//$post_url = preg_replace('/https?:\/\/[^\s"<>]+/', '$0', );
-					preg_match_all('#\bhttps?://[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/))#', get_post_meta( $postQuery->ID, $custom_field_url, true ), $match);
-					if(isset($match[0])){
-						if(isset($match[0][0]))
-							$post_url = $match[0][0];
-					}
+					$post_url = "" . get_post_meta( $postQuery->ID, $custom_field_url, true );
 				} else {
 					$post_url = "" . get_permalink( $postQuery->ID );
 				}
-
 				if ( $post_url == "" ) {
 					$post_url = "" . get_permalink( $postQuery->ID );
 				}
-
 				if ( $ga_tracking == "on" ) {
 					$param    = 'utm_source=ReviveOldPost&utm_medium=social&utm_campaign=ReviveOldPost';
 					$post_url = rtrim( $post_url );
@@ -579,32 +564,23 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 				if ( $use_url_shortner == 'on' ) {
 					$post_url = "" . $this->shortenURL( $post_url, $url_shortner_service, $postQuery->ID, $bitly_key, $bitly_user );
 				}
-
 				if ( $post_url == "" ) {
 					$post_url = "" . get_permalink( $postQuery->ID );
 				}
-
 				$post_url = $post_url . "";
-
-
 			} else {
 				$post_url = "";
 			}
-
 			// Generate the hashtags
 			$newHashtags = "";
 			if ( $hashtags != 'nohashtag' ) {
-
 				switch ( $hashtags ) {
 					case 'common':
 						$newHashtags = $common_hashtags;
 						break;
-
 					case 'categories':
-
 						if ( $postQuery->post_type == "post" ) {
 							$postCategories = get_the_category( $postQuery->ID );
-
 							foreach ( $postCategories as $category ) {
 								if ( strlen( $category->cat_name . $newHashtags ) <= $maximum_hashtag_length || $maximum_hashtag_length == 0 ) {
 									$newHashtags = $newHashtags . " #" . preg_replace( '/-/', '', strtolower( $category->slug ) );
@@ -616,54 +592,36 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 								$newHashtags = $CWP_TOP_Core_PRO->topProGetCustomCategories( $postQuery, $maximum_hashtag_length );
 							}
 						}
-
 						break;
-
 					case 'tags':
 						$postTags = wp_get_post_tags( $postQuery->ID );
-
 						foreach ( $postTags as $postTag ) {
 							if ( strlen( $postTag->slug . $newHashtags ) <= $maximum_hashtag_length || $maximum_hashtag_length == 0 ) {
 								$newHashtags = $newHashtags . " #" . preg_replace( '/-/', '', strtolower( $postTag->slug ) );
 							}
 						}
 						break;
-
 					case 'custom':
 						$newHashtags = get_post_meta( $postQuery->ID, $hashtag_custom_field, true );
-						if($maximum_hashtag_length != 0){
-							if(strlen(  $newHashtags ) <= $maximum_hashtag_length)
-							{
-								$newHashtags = $this->ropSubstr($newHashtags,0,$maximum_hashtag_length);
-
-							}
-						}
 						break;
 					default:
 						break;
 				}
 			}
-
-
 			// Generate the additional text
 			if ( $additional_text_at == 'beginning' ) {
 				$additionalTextBeginning = $additional_text . " ";
 			}
-
 			if ( $additional_text_at == 'end' ) {
 				$additionalTextEnd = " " . $additional_text;
 			}
-
 			// Calculate the final tweet length
 			$finalTweetLength = 0;
-
 			if ( ! empty( $additional_text ) ) {
 				$additionalTextLength = $this->getStrLen( $additional_text );
 				$finalTweetLength += intval( $additionalTextLength );
 			}
-
 			if ( ! empty( $post_url ) ) {
-
 				$postURLLength = $this->getStrLen( $post_url );
 				//$post_url = urlencode($post_url);
 				if ( $postURLLength > 21 ) {
@@ -671,49 +629,25 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 				}
 				$finalTweetLength += intval( $postURLLength );
 			}
-
 			if ( ! empty( $newHashtags ) ) {
 				$hashtagsLength = $this->getStrLen( $newHashtags );
 				$finalTweetLength += intval( $hashtagsLength );
 			}
-
-			$finalTweetLength = $max_length - 1  - $finalTweetLength;
-
+			if ( $post_with_image == "on" ) {
+				$finalTweetLength += 25;
+			}
+			$finalTweetLength = $max_length - 1  - $finalTweetLength - 5;
 			$tweetContent = $this->ropSubstr( $tweetContent, 0, $finalTweetLength );
-			$regex = "@(https?://([-\w\.]+[-\w])+(:\d+)?(/([\w/_\.#-]*(\?\S+)?[^\.\s])?).*$)@";
-			$tweetContent = preg_replace($regex, '', $tweetContent);
-			$tweetContent = strip_tags($tweetContent);
+			$finalTweet = $additionalTextBeginning . $tweetContent . " %short_urlshort_urlur% " . $newHashtags . $additionalTextEnd;
+			$finalTweet = $this->ropSubstr( $finalTweet, 0, $max_length - 1 );
+			$finalTweet = str_replace( "%short_urlshort_urlur%", $post_url, $finalTweet );
+			$fTweet['message'] = strip_tags( $finalTweet );
 			if ( $post_url != "" ) {
 				$fTweet['link'] = $post_url;
 			}
-			$adTextELength = 0;
-			if(is_string($additionalTextEnd)){
-				$adTextELength = $this->getStrLen($additionalTextEnd);
-			}
-			$adTextBLength = 0;
-			if(is_string($additionalTextBeginning)){
-				$adTextBLength = $this->getStrLen($additionalTextBeginning);
-			}
-			$hashLength = 0;
-			if(is_string($newHashtags)){
-				$hashLength = $this->getStrLen($newHashtags);
-			}
-			$finalTweetSize = $max_length - $hashLength - $adTextELength - $adTextBLength ;
-
-			if($network == 'twitter'){
-
-				$finalTweetSize = $finalTweetSize -  $this->getStrLen($fTweet['link']);
-			}
-			$tweetContent = $this->ropSubstr( $tweetContent,0,$finalTweetSize);
-			$finalTweet = $additionalTextBeginning . $tweetContent  . $newHashtags . $additionalTextEnd;
-			$fTweet['message'] =  $finalTweet;
-
-
 			//var_dump($fTweet['link']);
-
 			// Strip any tags and return the final tweet
 			return $fTweet;
-
 			//var_dump(get_object_taxonomies( $postQuery->post_type, 'objects' ));
 			//var_dump(get_the_terms($postQuery->ID,'download_category'));
 		}
@@ -734,7 +668,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 						case 'twitter':
 							// Create a new twitter connection using the stored user credentials.
 							$connection = new RopTwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
-							$args = array('status' => $this->ropSubstr($finalTweet['message'],0,130)." ".$finalTweet['link']);
+							$args = array('status' =>  $finalTweet['message']);
 
 							if($this->isPostWithImageEnabled($network) && CWP_TOP_PRO){
 								global $CWP_TOP_Core_PRO;
