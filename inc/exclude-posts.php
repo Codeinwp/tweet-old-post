@@ -221,21 +221,21 @@ jQuery(function() {
 </p>');
         print('</div>');
 
-        $page_links = paginate_links(array(
+                $page_links = paginate_links(array(
                     'base' => add_query_arg('paged', '%#%'),
                     'format' => '',
                     'prev_text' => __('&laquo;'),
                     'next_text' => __('&raquo;'),
                     'total' => ceil(count($posts) / $records_per_page),
-                    'current' => $_GET['paged']
+                    'current' => $paged
                 ));
 
         if ($page_links) {
 
             print('<div class="tablenav-pages">');
             $page_links_text = sprintf('<span class="displaying-num">' . __('Displaying %s&#8211;%s of %s') . '</span>%s',
-                            number_format_i18n(( $_GET['paged'] - 1 ) * $records_per_page + 1),
-                            number_format_i18n(min($_GET['paged'] * $records_per_page, count($posts))),
+                            number_format_i18n(( $paged - 1 ) * $records_per_page + 1),
+                            number_format_i18n(min($paged * $records_per_page, count($posts))),
                             number_format_i18n(count($posts)),
                             $page_links
             );
@@ -310,8 +310,8 @@ jQuery(function() {
 
             print('<div class="tablenav"> <div class="tablenav-pages">');
             $page_links_text = sprintf('<span class="displaying-num">' . __('Displaying %s&#8211;%s of %s') . '</span>%s',
-                            number_format_i18n(( $_GET['paged'] - 1 ) * $records_per_page + 1),
-                            number_format_i18n(min($_GET['paged'] * $records_per_page, count($posts))),
+                            number_format_i18n(( $paged - 1 ) * $records_per_page + 1),
+                            number_format_i18n(min($paged * $records_per_page, count($posts))),
                             number_format_i18n(count($posts)),
                             $page_links
             );

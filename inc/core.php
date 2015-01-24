@@ -670,16 +670,17 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 							$connection = new RopTwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
 							$args = array('status' =>  $finalTweet['message']);
 
-							if($this->isPostWithImageEnabled($network) && CWP_TOP_PRO){
+							if($this->isPostWithImageEnabled($network) && CWP_TOP_PRO) {
 								global $CWP_TOP_Core_PRO;
-								$args = $CWP_TOP_Core_PRO->topProImage($connection, $finalTweet, $post->ID,$network);
-								if(isset($args['media[]'])){
 
-									$response = $connection->upload('statuses/update_with_media',$args);
-								}else{
-									$response = $connection->post('statuses/update',$args);
+								$args = $CWP_TOP_Core_PRO->topProImage( $connection, $finalTweet, $post->ID, $network );
+								if ( ! is_object( $args ) ) {
+									if ( isset( $args['media[]'] ) ) {
+										$response = $connection->upload( 'statuses/update_with_media', $args );
+									} else {
+										$response = $connection->post( 'statuses/update', $args );
+									}
 								}
-
 							}else{
 
 								$response = $connection->post('statuses/update',$args);
@@ -719,7 +720,8 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 							);
 							if($this->isPostWithImageEnabled($network) && CWP_TOP_PRO){
 								global $CWP_TOP_Core_PRO;
-								$args = $CWP_TOP_Core_PRO->topProImage($connection, $finalTweet, $post->ID,$network);
+								if(defined('ROP_IMAGE_CHECK'))
+									$args = $CWP_TOP_Core_PRO->topProImage($connection, $finalTweet, $post->ID,$network);
 							}
 							$pp=wp_remote_post("https://graph.facebook.com/".ROP_TOP_FB_API_VERSION."/$user[id]/feed?access_token=$user[oauth_token]",$args);
 							if(is_wp_error( $pp )){
