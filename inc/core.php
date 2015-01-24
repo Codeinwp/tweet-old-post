@@ -182,14 +182,11 @@ if (!class_exists('CWP_TOP_Core')) {
 			$tweetedPosts = get_option("top_opt_already_tweeted_posts");
 			if(!is_array($tweetedPosts)) $tweetedPosts = array();
 			$orderQuery = "";
+			$orderQuery = "  ORDER BY post_date ASC    ";
+
 			if (get_option('top_opt_tweet_multiple_times')=="on") {
 
-				$orderQuery = "  ORDER BY post_date ASC    ";
-
 				$tweetedPosts = array();
-			}else{
-				$orderQuery = " ORDER BY post_date ASC LIMIT 0,{$tweetCount} ";
-
 			}
 			$postQueryExcludedPosts = $this->getExcludedPosts();
 			$postQueryExcludedPosts = explode (',',$postQueryExcludedPosts);
@@ -242,17 +239,15 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 			{
 					return $returnedPost;
 			}
-			if(get_option('top_opt_tweet_multiple_times')=="on") {
-				$rand_keys = array_rand($returnedPost , $tweetCount);
+			$rand_keys = array_rand($returnedPost , $tweetCount);
 
-				if(is_int($rand_keys)) $rand_keys = array($rand_keys);
-				$return = array();
+			if(is_int($rand_keys)) $rand_keys = array($rand_keys);
+			$return = array();
 
-				foreach($rand_keys as $rk){
-					$return[] = $returnedPost[$rk];
-				}
-				$returnedPost = $return;
+			foreach($rand_keys as $rk){
+				$return[] = $returnedPost[$rk];
 			}
+			$returnedPost = $return;
 			if(count($returnedPost) > $tweetCount)
 			{
 				$returnedPost = array_slice($returnedPost,0,$tweetCount);
@@ -288,6 +283,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 			}
 			$done = get_option("top_opt_already_tweeted_posts");
 			if(!is_array($done) || get_option('top_opt_tweet_multiple_times')=="on" ) $done = array();
+
 			foreach($returnedPost as $post){
 					if(in_array($post->ID,$done)) continue;
 					$oknet = false;
@@ -300,7 +296,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 					if(!$oknet) return false;
 					$finalTweet = $this->generateTweetFromPost($post,$ntk);
 
-					$this->tweetPost( $finalTweet, $ntk, $post );
+				 	$this->tweetPost( $finalTweet, $ntk, $post );
 
 					$tweetedPosts = get_option("top_opt_already_tweeted_posts");
 
@@ -557,7 +553,12 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 			// Generate the post link.
 			if ( $include_link == 'true' ) {
 				if ( $fetch_url_from_custom_field == 'on' ) {
-					$post_url = "" . get_post_meta( $postQuery->ID, $custom_field_url, true );
+				//$post_url = preg_replace('/https?:\/\/[^\s"<>]+/', '$0', );
+					preg_match_all('#\bhttps?://[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/))#', get_post_meta( $postQuery->ID, $custom_field_url, true ), $match);
+					if(isset($match[0])){
+						if(isset($match[0][0]))
+							$post_url = $match[0][0];
+					}
 				} else {
 					$post_url = "" . get_permalink( $postQuery->ID );
 				}
@@ -630,6 +631,13 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 
 					case 'custom':
 						$newHashtags = get_post_meta( $postQuery->ID, $hashtag_custom_field, true );
+						if($maximum_hashtag_length != 0){
+							if(strlen(  $newHashtags ) <= $maximum_hashtag_length)
+							{
+								$newHashtags = $this->ropSubstr($newHashtags,0,$maximum_hashtag_length);
+
+							}
+						}
 						break;
 					default:
 						break;
@@ -669,21 +677,38 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 				$finalTweetLength += intval( $hashtagsLength );
 			}
 
-			if ( $post_with_image == "on" ) {
-				$finalTweetLength += 25;
-			}
-			$finalTweetLength = $max_length - 1  - $finalTweetLength - 5;
+			$finalTweetLength = $max_length - 1  - $finalTweetLength;
 
 			$tweetContent = $this->ropSubstr( $tweetContent, 0, $finalTweetLength );
-
-			$finalTweet = $additionalTextBeginning . $tweetContent . " %short_urlshort_urlur% " . $newHashtags . $additionalTextEnd;
-			$finalTweet = $this->ropSubstr( $finalTweet, 0, $max_length - 1 );
-			$finalTweet = str_replace( "%short_urlshort_urlur%", $post_url, $finalTweet );
-
-			$fTweet['message'] = strip_tags( $finalTweet );
+			$regex = "@(https?://([-\w\.]+[-\w])+(:\d+)?(/([\w/_\.#-]*(\?\S+)?[^\.\s])?).*$)@";
+			$tweetContent = preg_replace($regex, '', $tweetContent);
+			$tweetContent = strip_tags($tweetContent);
 			if ( $post_url != "" ) {
 				$fTweet['link'] = $post_url;
 			}
+			$adTextELength = 0;
+			if(is_string($additionalTextEnd)){
+				$adTextELength = $this->getStrLen($additionalTextEnd);
+			}
+			$adTextBLength = 0;
+			if(is_string($additionalTextBeginning)){
+				$adTextBLength = $this->getStrLen($additionalTextBeginning);
+			}
+			$hashLength = 0;
+			if(is_string($newHashtags)){
+				$hashLength = $this->getStrLen($newHashtags);
+			}
+			$finalTweetSize = $max_length - $hashLength - $adTextELength - $adTextBLength ;
+
+			if($network == 'twitter'){
+
+				$finalTweetSize = $finalTweetSize -  $this->getStrLen($fTweet['link']);
+			}
+			$tweetContent = $this->ropSubstr( $tweetContent,0,$finalTweetSize);
+			$finalTweet = $additionalTextBeginning . $tweetContent  . $newHashtags . $additionalTextEnd;
+			$fTweet['message'] =  $finalTweet;
+
+
 			//var_dump($fTweet['link']);
 
 			// Strip any tags and return the final tweet
@@ -700,6 +725,8 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 
 		public function tweetPost($finalTweet,$network = 'twitter',$post)
 		{
+
+
 			foreach ($this->users as $user) {
 				if($network == $user['service']  ){
 
@@ -707,7 +734,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 						case 'twitter':
 							// Create a new twitter connection using the stored user credentials.
 							$connection = new RopTwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
-							$args = array('status' => $finalTweet['message']);
+							$args = array('status' => $this->ropSubstr($finalTweet['message'],0,130)." ".$finalTweet['link']);
 
 							if($this->isPostWithImageEnabled($network) && CWP_TOP_PRO){
 								global $CWP_TOP_Core_PRO;
@@ -2420,7 +2447,7 @@ endif;
 		{
 			if(isset($_GET['debug']) == 'on') {
 					//$this->getNextTweetTime('twitter');
-					$this->tweetOldPost("facebook");
+					$this->tweetOldPost("twitter");
 				die();
 			}
 			// loading all actions and filters
