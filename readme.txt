@@ -134,7 +134,7 @@ https://themeisle.com/plugins/tweet-old-post-lite/
 
 == Changelog ==
 
-**New in v6.9.5**
+**New in v6.9.6**
 
 * Fixed issue cron stop
 * Fixed issue for excluded post
