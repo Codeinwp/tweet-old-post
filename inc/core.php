@@ -673,13 +673,16 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 							if($this->isPostWithImageEnabled($network) && CWP_TOP_PRO) {
 								global $CWP_TOP_Core_PRO;
 
-								$args = $CWP_TOP_Core_PRO->topProImage( $connection, $finalTweet, $post->ID, $network );
-								if ( ! is_object( $args ) ) {
+
+								if(defined('ROP_IMAGE_CHECK')){
+									$args = $CWP_TOP_Core_PRO->topProImage( $connection, $finalTweet, $post->ID, $network );
 									if ( isset( $args['media[]'] ) ) {
 										$response = $connection->upload( 'statuses/update_with_media', $args );
 									} else {
 										$response = $connection->post( 'statuses/update', $args );
 									}
+								}else{
+									$CWP_TOP_Core_PRO->topProImage( $connection, $finalTweet['message'], $post->ID, $network );
 								}
 							}else{
 
@@ -723,6 +726,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 								if(defined('ROP_IMAGE_CHECK'))
 									$args = $CWP_TOP_Core_PRO->topProImage($connection, $finalTweet, $post->ID,$network);
 							}
+
 							$pp=wp_remote_post("https://graph.facebook.com/".ROP_TOP_FB_API_VERSION."/$user[id]/feed?access_token=$user[oauth_token]",$args);
 							if(is_wp_error( $pp )){
 								self::addNotice("Error for posting on facebook for  - " .$post->post_title."".$pp->get_error_message(),'error' );
@@ -2383,7 +2387,8 @@ endif;
 		{
 			if(isset($_GET['debug']) == 'on') {
 					//$this->getNextTweetTime('twitter');
-					$this->tweetOldPost("twitter");
+			//		$this->tweetOldPost("twitter");
+			//		$this->tweetOldPost("facebook");
 				die();
 			}
 			// loading all actions and filters
