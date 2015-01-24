@@ -34,7 +34,7 @@ if (!class_exists('CWP_TOP_Core')) {
 		// Interval Set
 		public $intervalSet;
 		public $cwp_twitter;
-
+		public static $date_format;
 		public function __construct() {
 			// Get all fields
 			global $cwp_top_fields;
@@ -218,8 +218,7 @@ if (!class_exists('CWP_TOP_Core')) {
 					SELECT object_id
 					FROM {$wpdb->prefix}term_relationships
 					INNER JOIN {$wpdb->prefix}term_taxonomy ON ( {$wpdb->prefix}term_relationships.term_taxonomy_id = {$wpdb->prefix}term_taxonomy.term_taxonomy_id )
-WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
-					AND {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}))) ";
+WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}))) ";
 			}
 
 			if(!empty($excluded)) {
@@ -237,8 +236,12 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 					{$orderQuery }
 			";
 
-			// Save the result in a var for future use.
 			$returnedPost = $wpdb->get_results($query);
+			echo count($returnedPost);
+			if(count($returnedPost)< $tweetCount)
+			{
+					return $returnedPost;
+			}
 			if(get_option('top_opt_tweet_multiple_times')=="on") {
 				$rand_keys = array_rand($returnedPost , $tweetCount);
 
@@ -270,22 +273,21 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 		public function tweetOldPost($ntk = "",$byID = false)
 
 		{
-			//echo '<pre>';
-			$returnedPost = $this->getTweetsFromDB();
-			if(!is_array($returnedPost)) return false;
-			global $cwp_top_networks;
 			if ($byID!==false) {
 
 				$returnedPost = $this->getTweetsFromDBbyID($byID);
-			}
+			}else{
 
+				$returnedPost = $this->getTweetsFromDB();
+				if(!is_array($returnedPost)) return false;
+
+			}
 
 			if (count($returnedPost) == 0 ) {
 				self::addNotice('There is no suitable post to tweet make sure you excluded correct categories and selected the right dates.','error');
-
 			}
 			$done = get_option("top_opt_already_tweeted_posts");
-			if(!is_array($done)) $done = array();
+			if(!is_array($done) || get_option('top_opt_tweet_multiple_times')=="on" ) $done = array();
 			foreach($returnedPost as $post){
 					if(in_array($post->ID,$done)) continue;
 					$oknet = false;
@@ -317,9 +319,20 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 					$done[] = $post->ID;
 			}
 			if ($byID===false) {
-				$time = $this->getNextTweetTime( $ntk );
-				if($time != 0 && ($time - $this->getTime()) > 10 * 60)
+				$this->scheduleTweet($ntk);
+
+			}
+
+		}
+
+		public function scheduleTweet($ntk){
+			$time = $this->getNextTweetTime( $ntk );
+			if($time != 0 && $time > $this->getTime()){
+				if(wp_next_scheduled( $ntk.'roptweetcron',array($ntk) ) === false) {
 					wp_schedule_single_event( $time, $ntk . 'roptweetcron', array( $ntk ) );
+				}
+			}else{
+				self::addNotice("Invalid next schedule: ".date (  'M j, Y @ G:i',$time),'error');
 			}
 
 		}
@@ -528,7 +541,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 			}
 
 			// Trim new empty lines.
-
+		    if(!is_string($tweetContent)) $tweetContent = '';
 			$tweetContent = strip_tags( html_entity_decode( $tweetContent ) );
 			//$tweetContent = esc_html($tweetContent);
 			//$tweetContent = esc_html($tweetContent);
@@ -687,7 +700,6 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 		public function tweetPost($finalTweet,$network = 'twitter',$post)
 		{
-
 			foreach ($this->users as $user) {
 				if($network == $user['service']  ){
 
@@ -695,17 +707,26 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 						case 'twitter':
 							// Create a new twitter connection using the stored user credentials.
 							$connection = new RopTwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
+							$args = array('status' => $finalTweet['message']);
 
 							if($this->isPostWithImageEnabled($network) && CWP_TOP_PRO){
 								global $CWP_TOP_Core_PRO;
-								$response = $CWP_TOP_Core_PRO->topProImage($connection, $finalTweet['message'], $post->ID);
+								$args = $CWP_TOP_Core_PRO->topProImage($connection, $finalTweet, $post->ID,$network);
+								if(isset($args['media[]'])){
+
+									$response = $connection->upload('statuses/update_with_media',$args);
+								}else{
+									$response = $connection->post('statuses/update',$args);
+								}
 
 							}else{
 
-                                $response = $connection->post('statuses/update', array('status' => $finalTweet['message']));
+								$response = $connection->post('statuses/update',$args);
 							}
+
 							if($response !== false){
-								$status = json_decode($reponse);
+								if(!is_object($response))
+									$status = json_decode($response);
 								if($status === false){
 
 								//	self::addNotice("Error for post ".$post->post_title." when sending to Twitter: Invalid response - ".$response,'error');
@@ -732,9 +753,13 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 							$args =  array(
 
 								'body' => array( 'message' => $finalTweet['message'],'link' => $finalTweet['link']),
+								'timeout'=>20
 
 							);
-
+							if($this->isPostWithImageEnabled($network) && CWP_TOP_PRO){
+								global $CWP_TOP_Core_PRO;
+								$args = $CWP_TOP_Core_PRO->topProImage($connection, $finalTweet, $post->ID,$network);
+							}
 							$pp=wp_remote_post("https://graph.facebook.com/".ROP_TOP_FB_API_VERSION."/$user[id]/feed?access_token=$user[oauth_token]",$args);
 							if(is_wp_error( $pp )){
 								self::addNotice("Error for posting on facebook for  - " .$post->post_title."".$pp->get_error_message(),'error' );
@@ -744,7 +769,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 
 									self::addNotice("Post  ". $post->post_title." has been successfully sent to facebook ",'notice');
 								}else{
-									self::addNotice("Error for post ". $post->post_title." ".$pp['response']['message']." on facebook for ".$user['name'],'error');
+									self::addNotice("Error for post ". $post->post_title." ".$pp['response']['message']." on facebook for ".$user['oauth_user_details']->name,'error');
 
 								}
 
@@ -841,20 +866,21 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 ## Please include this information when posting support requests ##
 
 ## BEGIN ROP CONFIGS ##
-			<?php
+
+<?php
 				$options = get_option("top_opt_post_formats");
 				$cwp_top_global_schedule = get_option("cwp_top_global_schedule");
 		        global $cwp_top_networks;
 			echo "## ROP POST FORMAT";
 				foreach($cwp_top_networks as $n=>$d){
-					echo "  \n \n \n ##".$n." \n \n \n ";
+					echo "\n \n \n ##".$n." \n \n \n";
 
 
 
 
 					foreach($d as $f){
 
-						echo $f['name']. " : ". $options[$n."_".$f['option']]." \n  ";
+						echo $f['name']. " : ". $options[$n."_".$f['option']]." \n";
 					}
 
 				}
@@ -863,6 +889,7 @@ WHERE {$wpdb->prefix}term_taxonomy.taxonomy =  'category'
 ## END ROP CONFIGS ##
 
 ## Begin CRON Info
+
 CRON Active:              <?php echo (WP_CRON) ? "yes" : "no"; ?><?php echo "\n"; ?>
 Alternate WP Cron:        <?php echo defined(ALTERNATE_WP_CRON) ? ((ALTERNATE_WP_CRON) ? "yes" : "no" ) : "no"; ?><?php echo "\n";
 
@@ -881,28 +908,32 @@ ROP Crons:
 ## End Cron Info
 
 ##Begin General Settings:
+
 <?php
 			global $cwp_top_fields;
 			foreach($cwp_top_fields as $general_field){
 				echo $general_field['name']. " : ";
 				if(is_array(get_option($general_field['option'])))
-					echo implode(",",get_option($general_field['option']))." \n  " ;
+					echo implode(",",get_option($general_field['option']))." \n" ;
 				else
-					echo get_option($general_field['option'])." \n  ";
+					echo get_option($general_field['option'])." \n";
 			}
 			?>
 
 ##End General Settings
+
+
 <?php
 			if(CWP_TOP_PRO):?>
 ##Begin Custom schedule settings:
+
 <?php  foreach($all as $a) {
 
 				if( $cwp_top_global_schedule[$a.'_schedule_type_selected'] == 'each')
 				{
-					echo strtoupper($a)." post on every ".$cwp_top_global_schedule[$a.'_top_opt_interval']." hours"." \n  " ;
+					echo strtoupper($a)." post on every ".$cwp_top_global_schedule[$a.'_top_opt_interval']." hours"." \n" ;
 				}else{
-					echo strtoupper($a)." post each ".$cwp_top_global_schedule[$a.'_top_opt_interval']['days']." days of the week at: "." \n  " ;
+					echo strtoupper($a)." post each ".$cwp_top_global_schedule[$a.'_top_opt_interval']['days']." days of the week at: "." \n" ;
 					foreach($cwp_top_global_schedule[$a.'_top_opt_interval']['times'] as $time){
 						echo ''.$time['hour']." : ".$time['minute']." \n  " ;
 
@@ -933,12 +964,9 @@ Active Theme:             <?php echo $theme . "\n"; ?>
 <?php if( $host ) : ?>
 	Host:                     <?php echo $host . "\n"; ?>
 <?php endif; ?>
-
-
 PHP Version:              <?php echo PHP_VERSION . "\n"; ?>
 MySQL Version:            <?php echo mysql_get_server_info() . "\n"; ?>
 Web Server Info:          <?php echo $_SERVER['SERVER_SOFTWARE'] . "\n"; ?>
-
 WordPress Memory Limit:   <?php echo  WP_MEMORY_LIMIT  ; ?><?php echo "\n"; ?>
 PHP Safe Mode:            <?php echo ini_get( 'safe_mode' ) ? "Yes" : "No\n"; ?>
 PHP Memory Limit:         <?php echo ini_get( 'memory_limit' ) . "\n"; ?>
@@ -949,29 +977,25 @@ PHP Time Limit:           <?php echo ini_get( 'max_execution_time' ) . "\n"; ?>
 PHP Max Input Vars:       <?php echo ini_get( 'max_input_vars' ) . "\n"; ?>
 PHP Arg Separator:        <?php echo ini_get( 'arg_separator.output' ) . "\n"; ?>
 PHP Allow URL File Open:  <?php echo ini_get( 'allow_url_fopen' ) ? "Yes" : "No\n"; ?>
-
 WP_DEBUG:                 <?php echo defined( 'WP_DEBUG' ) ? WP_DEBUG ? 'Enabled' . "\n" : 'Disabled' . "\n" : 'Not set' . "\n" ?>
-
 WP Table Prefix:          <?php echo "Length: ". strlen( $wpdb->prefix ); echo " Status:"; if ( strlen( $wpdb->prefix )>16 ) {echo " ERROR: Too Long";} else {echo " Acceptable";} echo "\n"; ?>
-
 Show On Front:            <?php echo get_option( 'show_on_front' ) . "\n" ?>
 Page On Front:            <?php $id = get_option( 'page_on_front' ); echo get_the_title( $id ) . ' (#' . $id . ')' . "\n" ?>
 Page For Posts:           <?php $id = get_option( 'page_for_posts' ); echo get_the_title( $id ) . ' (#' . $id . ')' . "\n" ?>
-
-
 Session:                  <?php echo isset( $_SESSION ) ? 'Enabled' : 'Disabled'; ?><?php echo "\n"; ?>
 Session Name:             <?php echo esc_html( ini_get( 'session.name' ) ); ?><?php echo "\n"; ?>
 Cookie Path:              <?php echo esc_html( ini_get( 'session.cookie_path' ) ); ?><?php echo "\n"; ?>
 Save Path:                <?php echo esc_html( ini_get( 'session.save_path' ) ); ?><?php echo "\n"; ?>
 Use Cookies:              <?php echo ini_get( 'session.use_cookies' ) ? 'On' : 'Off'; ?><?php echo "\n"; ?>
 Use Only Cookies:         <?php echo ini_get( 'session.use_only_cookies' ) ? 'On' : 'Off'; ?><?php echo "\n"; ?>
-
 DISPLAY ERRORS:           <?php echo ( ini_get( 'display_errors' ) ) ? 'On (' . ini_get( 'display_errors' ) . ')' : 'N/A'; ?><?php echo "\n"; ?>
 FSOCKOPEN:                <?php echo ( function_exists( 'fsockopen' ) ) ? 'Your server supports fsockopen.' : 'Your server does not support fsockopen.'; ?><?php echo "\n"; ?>
 cURL:                     <?php echo ( function_exists( 'curl_init' ) ) ? 'Your server supports cURL.' : 'Your server does not support cURL.'; ?><?php echo "\n"; ?>
 SOAP Client:              <?php echo ( class_exists( 'SoapClient' ) ) ? 'Your server has the SOAP Client enabled.' : 'Your server does not have the SOAP Client enabled.'; ?><?php echo "\n"; ?>
 
 ACTIVE PLUGINS:
+
+
 <?php
 $plugins = get_plugins();
 $active_plugins = get_option( 'active_plugins', array() );
@@ -981,7 +1005,7 @@ foreach ( $plugins as $plugin_path => $plugin ) {
 	if ( ! in_array( $plugin_path, $active_plugins ) )
 		continue;
 
-	echo "\t"."\t"."\t"."\t".$plugin['Name'] . ': ' . $plugin['Version'] ."\n";
+	echo $plugin['Name'] . ': ' . $plugin['Version'] ."\n";
 }
 
 if ( is_multisite() ) :
@@ -1013,6 +1037,7 @@ endif;
 ### End System Info ###
 
 ##Begin Log info
+
 <?php $logs = get_option('rop_notice_active');
 			foreach($logs as $log){
 				echo strtoupper($log['type']). " @ ".$log['time']. ' - '. $log['message']." \n ";
@@ -1021,6 +1046,7 @@ endif;
 			}
 			?>
 <?php ?>
+
 #End log info
 
 ##Begin user info
@@ -1035,7 +1061,7 @@ endif;
 
 			}
 			foreach($all as $a){
-				echo  strtoupper($a)." accounts - ".$$a." \n ";
+				echo  strtoupper($a)." accounts - ".$$a." \n";
 
 			}
 
@@ -1321,6 +1347,7 @@ endif;
 			$this->pluginStatus = get_option('cwp_topnew_active_status');
 			$this->intervalSet = get_option('top_opt_interval');
 
+			self::$date_format = 'M j, Y @ G:i';
 			//update_option('cwp_top_logged_in_users', '');
 		}
 
@@ -1762,8 +1789,8 @@ endif;
 		function   getNextTweetTime($network){
 			$time = 0;
 			if(!CWP_TOP_PRO){
-				 $time =  $this->getTime() + ( get_option('top_opt_interval')  * 3600 ) ;
-				 if($time - $this->getTime() > 10 * 60) {
+				 $time =  $this->getTime() + ( floatval(get_option('top_opt_interval'))  * 3600 ) ;
+				 if($time > $this->getTime()) {
 					 return $time;
 				 }else{
 					 return 0;
@@ -1772,15 +1799,18 @@ endif;
 			$cwp_top_global_schedule = get_option("cwp_top_global_schedule" );
 			$type = $cwp_top_global_schedule[$network.'_schedule_type_selected'];
 			if($type == 'each'){
-				$time =  $this->getTime() + intval($cwp_top_global_schedule[$network.'_top_opt_interval']) * 3600;
-				if($time - $this->getTime() > 10 * 60) {
+				$time =  $this->getTime() + floatval($cwp_top_global_schedule[$network.'_top_opt_interval']) * 3600;
+				if($time > $this->getTime()) {
 					return $time;
 				}else{
 					return 0;
 				}
 			}else{
-
-				$start =   strtotime("monday this week",$this->getTime()) ;
+				if (date('N', $this->getTime()) == 1){
+					$start = strtotime("monday this week",$this->getTime()) ;
+				}else{
+					$start = strtotime("last Monday",$this->getTime()) ;
+				}
 
 				$days = explode(",",$cwp_top_global_schedule[$network.'_top_opt_interval']['days']);
 				$times = $cwp_top_global_schedule[$network.'_top_opt_interval']['times'];
@@ -1796,7 +1826,7 @@ endif;
 
 					foreach($times as $time){
 
-						$schedules[] = $schedule + intval($time['hour']) * 3600 + intval($time['minute']) * 60;
+						$schedules[] = $schedule + floatval($time['hour']) * 3600 + floatval($time['minute']) * 60;
 
 					}
 
@@ -1804,9 +1834,8 @@ endif;
 				sort($schedules,SORT_REGULAR);
 
 				$ctime = $this->getTime();
-				$time = 0;
 				foreach($schedules as $s ){
-					if($s > $ctime  && (($s - $this->getTime()) > 10 * 60)) {
+					if($s > $ctime ) {
 						return $s;
 					}
 
@@ -2117,7 +2146,8 @@ endif;
 
 				case 'categories-list':
 					print "<div class='categories-list cwp-tax-post'><p class='rop-category-header'>	Posts </p>";
-					$categories = get_categories();
+					$categories = get_categories(array(
+						'hide_empty'        => false));
 
 					foreach ($categories as $category) {
 
@@ -2262,7 +2292,9 @@ endif;
 		}
 		public function getTime() {
 
-			return time();
+			return time() ;
+
+			//return  time() - 253214 + 2 * 3600 + 24 * 3600;
 		}
 
 		function top_plugin_action_links($links, $file) {
@@ -2309,7 +2341,16 @@ endif;
 			}
 		}
 		public function clearOldCron(){
+			if(isset($_POST['cwp-action'])){
+				if($_POST['cwp-action'] == 'download_sysinfo'){
+					header('Content-Disposition: attachment; filename="report.txt"');
+					header('Content-type: text/plain');
+					echo $_POST['cwp-top-sysinfo'];
+					die();
 
+				}
+
+			}
 			if(!defined("VERSION_CHECK") && function_exists('topProImage')){
 					$this->notices[] = "You need to have the latest version of the Revive Old Post Pro addon in order to use it. Please download it from the themeisle.com account";
 
@@ -2365,14 +2406,22 @@ endif;
 
 			}
 
+			if($this->pluginStatus === 'true'){
+				foreach($networks as $avn){
+					if(wp_next_scheduled( $avn.'roptweetcron',array($avn) ) === false) {
+						$this->scheduleTweet($avn);
+					}
+				}
+			}
+
 
 		}
 		public function loadAllHooks()
 		{
 			if(isset($_GET['debug']) == 'on') {
-
-					//$this->tweetOldPost("twitter");
-					die();
+					//$this->getNextTweetTime('twitter');
+					$this->tweetOldPost("facebook");
+				die();
 			}
 			// loading all actions and filters
 			add_action('admin_menu', array($this, 'addAdminMenuPage'));
@@ -2523,7 +2572,7 @@ endif;
 			else
 				$cap='manage_options';
 			add_menu_page($cwp_top_settings['name'], $cwp_top_settings['name'], $cap, $cwp_top_settings['slug'], array($this, 'loadMainView'), '','99.87514');
-			add_submenu_page($cwp_top_settings['slug'], __('Exclude Posts',CWP_TEXTDOMAIN), __('Exclude Posts',CWP_TEXTDOMAIN), 'manage_options', 'ExcludePosts', 'top_exclude');
+			add_submenu_page($cwp_top_settings['slug'], __('Exclude Posts',CWP_TEXTDOMAIN), __('Exclude Posts',CWP_TEXTDOMAIN), 'manage_options', 'ExcludePosts', 'rop_exclude_posts');
 
 			add_submenu_page($cwp_top_settings['slug'], __('System Info',CWP_TEXTDOMAIN), __('System Info',CWP_TEXTDOMAIN), 'manage_options', 'SystemInfo', array($this,'system_info'));
 
@@ -2584,11 +2633,13 @@ endif;
 			}
 
 			$response = curl_exec($ch);
+
 			$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
 			curl_close($ch);
 
 			if ($httpcode != 200) {
+				self::addNotice("Error for request: " . $url . " : ". $response,'error');
 				return $httpcode;
 			}
 
@@ -2599,12 +2650,14 @@ endif;
 		public function shortenURL($url, $service, $id, $bitly_key, $bitly_user) {
 			$url = urlencode($url);
 			if ($service == "bit.ly") {
+
 				//$shortURL = $url;
 				$url = trim($url);
 				$bitly_key = trim($bitly_key);
 				$bitly_user = trim($bitly_user);
 				$shortURL = "http://api.bit.ly/v3/shorten?format=txt&login=".$bitly_user."&apiKey=".$bitly_key."&longUrl={$url}";
 				$shortURL = $this->sendRequest($shortURL, 'GET');
+
 			} elseif ($service == "tr.im") {
 				$shortURL = "http://api.tr.im/api/trim_simple?url={$url}";
 				$shortURL = $this->sendRequest($shortURL, 'GET');

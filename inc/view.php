@@ -182,7 +182,7 @@
 					<li><?php _e('Now everything is done, click on <strong>Authorize App</strong> button.',CWP_TEXTDOMAIN);?> </li>
 				</ol>
 			</div>
-			<form action="" method="post" id="cwp_top_form" class="clearfix top_auth_form">
+			<form action="" method="post" id="cwp_top_form" class="  top_auth_form">
 			<fieldset class="option twptop_opt_app_id">
 				<div class="left">
 					<label for="top_opt_app_id"><?php _e('Facebook App ID',CWP_TEXTDOMAIN);?>   </label>
@@ -228,7 +228,7 @@
 					<li><?php _e('Now everything is done, click on <strong>Authorize App</strong> button.',CWP_TEXTDOMAIN);?></li>
 				</ol>
 			</div>
-			<form action="" method="post" id="cwp_top_form" class="clearfix top_auth_form">
+			<form action="" method="post" id="cwp_top_form" class="  top_auth_form">
 			<fieldset class="option twptop_opt_app_id">
 				<div class="left">
 					<label for="top_opt_app_id"><?php _e('Linkedin API Key',CWP_TEXTDOMAIN);?>  </label>

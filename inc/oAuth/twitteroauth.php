@@ -252,7 +252,7 @@ class RopTwitterOAuth {
     $this->http_code = curl_getinfo($ci, CURLINFO_HTTP_CODE);
 
       if ( $this->http_code != 200 ) {
-        CWP_TOP_Core::addNotice( "Twitter error: " . $response, 'error' );
+        CWP_TOP_Core::addNotice( "Twitter error: " . htmlentities($response), 'error' );
         return false;
       }
       $this->http_info = array_merge( $this->http_info, curl_getinfo( $ci ) );

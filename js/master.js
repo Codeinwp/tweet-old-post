@@ -795,7 +795,8 @@ function cwpDependeField(field,second){
     var tmpvalues;
     jQuery.each(json,function(k,v){
         item = field.parent().find(".twp"+k);
-        if(v == value && !second){
+		v = v.split(',');
+        if(jQuery.inArray(value,v) > -1 && !second){
             item.slideDown('fast');
             cwpDependeField(item);
         }else{
@@ -861,7 +862,7 @@ function getCwpTopTimeHTML(network){
                 <option value="22">22</option>\
                 <option value="23">23</option>\
                 <option value="24">24</option>\
-                <option value="25">24</option>\
+                <option value="25">25</option>\
                 <option value="26">26</option>\
                 <option value="27">27</option>\
                 <option value="28">28</option>\
