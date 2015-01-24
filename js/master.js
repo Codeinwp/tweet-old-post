@@ -427,9 +427,11 @@ jQuery(document).ready(function(){
 					//jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview").css("top", ( jQuery(window).height() - this.height() ) / 2+jQuery(window).scrollTop() + "px");
     				//jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview").css("left", ( jQuery(window).width() - this.width() ) / 2+jQuery(window).scrollLeft() + "px");
    					var elem = jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview");
-   					var scrollhere = elem.offset().top+(jQuery(window).height()+elem.height())/2;
-					jQuery('html, body').scrollTop(scrollhere);
+
+					jQuery(window).scrollTop(0);
+
                     $json = JSON.parse(response);
+
 					if($json .twitter)
 						jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet.sample_tweet_twitter").html($json .twitter);
 					else

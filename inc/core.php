@@ -237,7 +237,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 			";
 
 			$returnedPost = $wpdb->get_results($query);
-			echo count($returnedPost);
+
 			if(count($returnedPost)< $tweetCount)
 			{
 					return $returnedPost;
