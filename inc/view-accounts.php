@@ -66,7 +66,8 @@
 				</div><!-- end .right -->
 			</fieldset><!-- end .option -->
 
-			<fieldset class="option">
+
+			<fieldset class="option pro-ver">
 				<div class="left">
 					<label for="linkedin-login"> <?php _e("Linkedin Login", CWP_TEXTDOMAIN); ?> </label>
 					<span class='description'> <?php _e("Login using your Linkedin account.", CWP_TEXTDOMAIN); ?> </span>
@@ -96,3 +97,126 @@
 				</div><!-- end .right -->
 			</fieldset><!-- end .option -->
 
+
+			<fieldset class="option pro-ver">
+				<div class="left">
+					<label for="googleplus-login"> <?php _e("Google Plus Login", CWP_TEXTDOMAIN); ?> </label>
+					<span class='description'> <?php _e("Login using your Google plus account.", CWP_TEXTDOMAIN); ?> </span>
+				</div><!-- end .left -->
+
+				<div class='right'>
+					<?php
+
+					$lk_users = 0;
+
+					if(!empty($this->users))
+						foreach ($this->users as $user) {
+							if ($user['service']=='googleplus') {
+								$lk_users++;
+								?>
+								<div class="user_details">
+							<div class='user_avatar'><img src="<?php echo $user['oauth_user_details']->profile_image_url; ?>"></div>
+							<div class="user_name"><?php echo $user['oauth_user_details']->name; ?></div>
+							<div class="remove_user"><a href='#' id='<?php echo $user['user_id']; ?>' service='googleplus' class='logout_user'></a></div>
+						</div><!-- end .user_details -->
+							<?php  } }
+					if ($lk_users!==0){ ?>
+						<button id='googleplus-login' class='another-account login' service='googleplus'>+</button>
+					<?php } else { ?>
+						<button id='googleplus-login' class='login' service='googleplus'> <?php _e("Add account", CWP_TEXTDOMAIN); ?> </button>
+					<?php } ?>
+				</div><!-- end .right -->
+			</fieldset><!-- end .option -->
+
+
+			<fieldset class="option pro-ver">
+				<div class="left">
+					<label for="xing-login"> <?php _e("XING Login", CWP_TEXTDOMAIN); ?> </label>
+					<span class='description'> <?php _e("Login using your XING account.", CWP_TEXTDOMAIN); ?> </span>
+				</div><!-- end .left -->
+
+				<div class='right'>
+					<?php
+
+					$lk_users = 0;
+
+					if(!empty($this->users))
+						foreach ($this->users as $user) {
+							if ($user['service']=='xing') {
+								$lk_users++;
+								?>
+								<div class="user_details">
+							<div class='user_avatar'><img src="<?php echo $user['oauth_user_details']->profile_image_url; ?>"></div>
+							<div class="user_name"><?php echo $user['oauth_user_details']->name; ?></div>
+							<div class="remove_user"><a href='#' id='<?php echo $user['user_id']; ?>' service='xing' class='logout_user'></a></div>
+						</div><!-- end .user_details -->
+							<?php  } }
+					if ($lk_users!==0){ ?>
+						<button id='xing-login' class='another-account login' service='xing'>+</button>
+					<?php } else { ?>
+						<button id='xing-login' class='login' service='xing'> <?php _e("Add account", CWP_TEXTDOMAIN); ?> </button>
+					<?php } ?>
+				</div><!-- end .right -->
+			</fieldset><!-- end .option -->
+
+
+			<fieldset class="option pro-ver">
+				<div class="left">
+					<label for="stumbleupon-login"> <?php _e("Stumbleupon Login", CWP_TEXTDOMAIN); ?> </label>
+					<span class='description'> <?php _e("Login using your Stumbleupon account.", CWP_TEXTDOMAIN); ?> </span>
+				</div><!-- end .left -->
+
+				<div class='right'>
+					<?php
+
+					$lk_users = 0;
+
+					if(!empty($this->users))
+						foreach ($this->users as $user) {
+							if ($user['service']=='stumbleupon') {
+								$lk_users++;
+								?>
+								<div class="user_details">
+							<div class='user_avatar'><img src="<?php echo $user['oauth_user_details']->profile_image_url; ?>"></div>
+							<div class="user_name"><?php echo $user['oauth_user_details']->name; ?></div>
+							<div class="remove_user"><a href='#' id='<?php echo $user['user_id']; ?>' service='stumbleupon' class='logout_user'></a></div>
+						</div><!-- end .user_details -->
+							<?php  } }
+					if ($lk_users!==0){ ?>
+						<button id='stumbleupon-login' class='another-account login' service='stumbleupon'>+</button>
+					<?php } else { ?>
+						<button id='stumbleupon-login' class='login' service='stumbleupon'> <?php _e("Add account", CWP_TEXTDOMAIN); ?> </button>
+					<?php } ?>
+				</div><!-- end .right -->
+			</fieldset><!-- end .option -->
+
+
+			<fieldset class="option pro-ver">
+				<div class="left">
+					<label for="tumblr-login"> <?php _e("Tumblr Login", CWP_TEXTDOMAIN); ?> </label>
+					<span class='description'> <?php _e("Login using your Tumblr account.", CWP_TEXTDOMAIN); ?> </span>
+				</div><!-- end .left -->
+
+				<div class='right'>
+					<?php
+
+					$lk_users = 0;
+
+					if(!empty($this->users))
+						foreach ($this->users as $user) {
+							if ($user['service']=='tumblr') {
+								$lk_users++;
+								?>
+								<div class="user_details">
+							<div class='user_avatar'><img src="<?php echo $user['oauth_user_details']->profile_image_url; ?>"></div>
+							<div class="user_name"><?php echo $user['oauth_user_details']->name; ?></div>
+							<div class="remove_user"><a href='#' id='<?php echo $user['user_id']; ?>' service='tumblr' class='logout_user'></a></div>
+						</div><!-- end .user_details -->
+							<?php  } }
+					if ($lk_users!==0){ ?>
+						<button id='tumblr-login' class='another-account login' service='tumblr'>+</button>
+					<?php } else { ?>
+						<button id='tumblr-login' class='login' service='tumblr'> <?php _e("Add account", CWP_TEXTDOMAIN); ?> </button>
+					<?php } ?>
+				</div><!-- end .right -->
+			</fieldset><!-- end .option -->
