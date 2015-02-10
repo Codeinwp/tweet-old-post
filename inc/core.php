@@ -365,6 +365,9 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 			if(!is_admin()) return false;
 			$notice = get_option('rop_notice_active');
 			if(!is_array($notice)) $notice = array();
+			foreach($notice as $k=>$n){
+				$notice[$k]['message'] = strip_tags($n['message']);
+			}
             echo json_encode($notice);
 			die();
 		}
