@@ -1,5 +1,4 @@
  <?php
-	global $cwp_top_networks;
     $remote_check = get_option("cwp_rop_remote_trigger");
     if($remote_check === false) $remote_check = "off";
 ?>
@@ -131,7 +130,7 @@
 				<?php
 				if($this->pluginStatus == 'true' ): ?>
 						<?php
-							foreach($cwp_top_networks  as $nn=>$nd) {
+							foreach($all_networks  as $nn) {
 								if(wp_next_scheduled($nn.'roptweetcron',array($nn)) === false) continue;
 					     ?>
 						<li class="rop-twitter-countdown rop-network-countdown"><?php echo __("Revive Old Post will post on",CWP_TEXTDOMAIN)." <span class='rop-network-name'>".$nn."</span> ".__("in the next",CWP_TEXTDOMAIN); ?>: <span data-timestamp="<?php echo  wp_next_scheduled($nn.'roptweetcron',array($nn)) ; ?>" class='rop-network-timestamp'></span></li>

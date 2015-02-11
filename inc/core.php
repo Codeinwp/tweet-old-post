@@ -257,8 +257,8 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 
 		public function isPostWithImageEnabled ($ntk = "twitter") {
 			$options = get_option("top_opt_post_formats");
-			global $cwp_top_networks;
-			$value = isset($options[$ntk."_".$cwp_top_networks[$ntk]["use-image"]['option']]) ? $options[$ntk."_".$cwp_top_networks[$ntk]["use-image"]['option']] : get_option("top_opt_post_with_image")  ;
+			$format_fields = $this->getFormatFields();
+			$value = isset($options[$ntk."_".$format_fields[$ntk]["use-image"]['option']]) ? $options[$ntk."_".$format_fields[$ntk]["use-image"]['option']] : get_option("top_opt_post_with_image")  ;
 			if ($value !='on')
 				return false;
 			else
@@ -336,22 +336,18 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 			$networks = array();
 			$users = is_array($this->users) ? $this->users : array();
 			foreach($users  as $u){
-				if($u['service'] == 'twitter' && !in_array("twitter",$networks))
-					$networks[] = "twitter";
-				if($u['service'] == 'facebook' && !in_array("facebook",$networks))
-					$networks[] = "facebook";
-				if($u['service'] == 'linkedin' && !in_array("linkedin",$networks))
-					$networks[] = "linkedin";
+				if(!in_array($u['service'],$networks))
+					$networks[] = $u['service'];
 			}
 
 			return $networks;
 		}
 
 		public function getAllNetworks(){
-			$networks = array('twitter','facebook','linkedin');
+			global $cwp_rop_all_networks;
 
 
-			return $networks;
+			return $cwp_rop_all_networks;
 		}
 		public function findInString($where,$what) {
 			if (!is_string($where)) {
@@ -365,6 +361,10 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 			if(!is_admin()) return false;
 			$notice = get_option('rop_notice_active');
 			if(!is_array($notice)) $notice = array();
+
+			foreach($notice as $k=>$n){
+				$notice[$k]['message'] = strip_tags($n['message']);
+			}
             echo json_encode($notice);
 			die();
 		}
@@ -406,19 +406,26 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 
 			foreach($networks as $n) {
 				if (CWP_TOP_PRO && $this->isPostWithImageEnabled($n)) {
-					if (has_post_thumbnail($returnedTweets[0]->ID)) :
-						$image_array = wp_get_attachment_image_src( get_post_thumbnail_id( $returnedTweets[0]->ID), array('medium') );
-						$image = $image_array[0];
-					else :
-						$post = get_post($returnedTweets[0]->ID);
-						$image = '';
-						ob_start();
-						ob_end_clean();
-						$output = preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $post->post_content, $matches);
+					if(ROP_PRO_1_5){
+						global $CWP_TOP_Core_PRO;
+						$image = $CWP_TOP_Core_PRO->getPostImage($returnedTweets[0]->ID);
+						echo $image;
+						die();
+					}else {
+						if ( has_post_thumbnail( $returnedTweets[0]->ID ) ) :
+							$image_array = wp_get_attachment_image_src( get_post_thumbnail_id( $returnedTweets[0]->ID ), array( 'medium' ) );
+							$image       = $image_array[0];
+						else :
+							$post  = get_post( $returnedTweets[0]->ID );
+							$image = '';
+							ob_start();
+							ob_end_clean();
+							$output = preg_match_all( '/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $post->post_content, $matches );
 
-						$image = $matches [1] [0];
+							$image = $matches [1] [0];
 
-					endif;
+						endif;
+					}
 					$messages[$n] = '<img class="top_preview" src="'.$image.'"/>'.$messages[$n];
 				}
 			}
@@ -484,15 +491,14 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 		public function generateTweetFromPost($postQuery,$network)
 		{
 
-			// Save all user settings in variables.
-			global $cwp_top_networks;
+			$format_fields = $this->getFormatFields();
 			$tweetedPosts 					= get_option("top_opt_already_tweeted_posts");
 			$formats  = get_option('top_opt_post_formats');
 			$tweet_content               = isset($formats[$network."_"."top_opt_tweet_type"]) ? $formats[$network."_"."top_opt_tweet_type"] : get_option( 'top_opt_tweet_type' );
 			$tweet_content_custom_field  = isset($formats[$network."_"."top_opt_tweet_type_custom_field"]) ? $formats[$network."_"."top_opt_tweet_type_custom_field"] : get_option( 'top_opt_tweet_type_custom_field' );
 			$additional_text             = isset($formats[$network."_"."top_opt_add_text"]) ? $formats[$network."_"."top_opt_add_text"] : get_option( 'top_opt_tweet_type_custom_field' );
 			$additional_text_at          = isset($formats[$network."_"."top_opt_add_text_at"]) ? $formats[$network."_"."top_opt_add_text_at"] : get_option( 'top_opt_add_text_at' );
-			$max_length         = isset($formats[$network."_"."top_opt_tweet_length"]) ? $formats[$network."_"."top_opt_tweet_length"] : $cwp_top_networks[$network]['top_opt_tweet_length']['default_value'];
+			$max_length         = isset($formats[$network."_"."top_opt_tweet_length"]) ? $formats[$network."_"."top_opt_tweet_length"] : $format_fields[$network]['top_opt_tweet_length']['default_value'];
 			$include_link                = isset($formats[$network."_"."top_opt_include_link"]) ? $formats[$network."_"."top_opt_include_link"] : get_option( 'top_opt_include_link' );  get_option( 'top_opt_include_link' );
 			$fetch_url_from_custom_field =  isset($formats[$network."_"."top_opt_custom_url_option"]) ? $formats[$network."_"."top_opt_custom_url_option"] : get_option( 'top_opt_custom_url_option' );
 			$custom_field_url            =  isset($formats[$network."_"."top_opt_custom_url_field"]) ? $formats[$network."_"."top_opt_custom_url_field"] : get_option( 'top_opt_custom_url_field' );  get_option( 'top_opt_custom_url_field' );
@@ -508,6 +514,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 			$ga_tracking                 = get_option( 'top_opt_ga_tracking' );
 			$additionalTextBeginning     = "";
 			$additionalTextEnd           = "";
+
 			// If the user set to not use hashtags, set it to empty variable.
 			if ( $hashtags == 'nohashtag' ) {
 				$newHashtags = "";
@@ -545,7 +552,12 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 			// Generate the post link.
 			if ( $include_link == 'true' ) {
 				if ( $fetch_url_from_custom_field == 'on' ) {
-					$post_url = "" . get_post_meta( $postQuery->ID, $custom_field_url, true );
+					//$post_url = preg_replace('/https?:\/\/[^\s"<>]+/', '$0', );
+					preg_match_all('#\bhttps?://[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/))#', get_post_meta( $postQuery->ID, $custom_field_url, true ), $match);
+					if(isset($match[0])){
+						if(isset($match[0][0]))
+							$post_url = $match[0][0];
+					}
 				} else {
 					$post_url = "" . get_permalink( $postQuery->ID );
 				}
@@ -603,6 +615,12 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 						break;
 					case 'custom':
 						$newHashtags = get_post_meta( $postQuery->ID, $hashtag_custom_field, true );
+						if($maximum_hashtag_length != 0){
+							if(strlen(  $newHashtags ) <= $maximum_hashtag_length)
+							{
+								$newHashtags = $this->ropSubstr($newHashtags,0,$maximum_hashtag_length);
+							}
+						}
 						break;
 					default:
 						break;
@@ -633,23 +651,35 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 				$hashtagsLength = $this->getStrLen( $newHashtags );
 				$finalTweetLength += intval( $hashtagsLength );
 			}
-			if ( $post_with_image == "on" ) {
-				$finalTweetLength += 25;
-			}
-			$finalTweetLength = $max_length - 1  - $finalTweetLength - 5;
+			$finalTweetLength = $max_length - 1  - $finalTweetLength;
 			$tweetContent = $this->ropSubstr( $tweetContent, 0, $finalTweetLength );
-			$finalTweet = $additionalTextBeginning . $tweetContent . " %short_urlshort_urlur% " . $newHashtags . $additionalTextEnd;
-			$finalTweet = $this->ropSubstr( $finalTweet, 0, $max_length - 1 );
-			$finalTweet = str_replace( "%short_urlshort_urlur%", $post_url, $finalTweet );
-			$fTweet['message'] = strip_tags( $finalTweet );
+			$regex = "@(https?://([-\w\.]+[-\w])+(:\d+)?(/([\w/_\.#-]*(\?\S+)?[^\.\s])?).*$)@";
+			$tweetContent = preg_replace($regex, '', $tweetContent);
+			$tweetContent = strip_tags($tweetContent);
 			if ( $post_url != "" ) {
 				$fTweet['link'] = $post_url;
 			}
-			//var_dump($fTweet['link']);
-			// Strip any tags and return the final tweet
+			$adTextELength = 0;
+			if(is_string($additionalTextEnd)){
+				$adTextELength = $this->getStrLen($additionalTextEnd);
+			}
+			$adTextBLength = 0;
+			if(is_string($additionalTextBeginning)){
+				$adTextBLength = $this->getStrLen($additionalTextBeginning);
+			}
+			$hashLength = 0;
+			if(is_string($newHashtags)){
+				$hashLength = $this->getStrLen($newHashtags);
+			}
+			$finalTweetSize = $max_length - $hashLength - $adTextELength - $adTextBLength ;
+			if($network == 'twitter'){
+				$finalTweetSize = $finalTweetSize -  25;
+			}
+			$tweetContent = $this->ropSubstr( $tweetContent,0,$finalTweetSize);
+			$finalTweet = $additionalTextBeginning . $tweetContent  . $newHashtags . $additionalTextEnd;
+			$fTweet['message'] =  $finalTweet;
+
 			return $fTweet;
-			//var_dump(get_object_taxonomies( $postQuery->post_type, 'objects' ));
-			//var_dump(get_the_terms($postQuery->ID,'download_category'));
 		}
 
 		/**
@@ -668,7 +698,8 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 						case 'twitter':
 							// Create a new twitter connection using the stored user credentials.
 							$connection = new RopTwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
-							$args = array('status' =>  $finalTweet['message']);
+
+							$args = array('status' =>  $finalTweet['message']." ".$finalTweet['link']);
 
 							if($this->isPostWithImageEnabled($network) && CWP_TOP_PRO) {
 								global $CWP_TOP_Core_PRO;
@@ -837,9 +868,9 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 <?php
 				$options = get_option("top_opt_post_formats");
 				$cwp_top_global_schedule = get_option("cwp_top_global_schedule");
-		        global $cwp_top_networks;
+		        global $cwp_rop_all_networks;
 			echo "## ROP POST FORMAT";
-				foreach($cwp_top_networks as $n=>$d){
+				foreach($cwp_rop_all_networks as $n=>$d){
 					echo "\n \n \n ##".$n." \n \n \n";
 
 
@@ -877,7 +908,7 @@ ROP Crons:
 ##Begin General Settings:
 
 <?php
-			global $cwp_top_fields;
+			$cwp_top_fields = $this->getGeneralFields();
 			foreach($cwp_top_fields as $general_field){
 				echo $general_field['name']. " : ";
 				if(is_array(get_option($general_field['option'])))
@@ -1814,10 +1845,10 @@ endif;
 		public function getAllOptions(){
 			$options = array();
 
-			global $cwp_top_networks;
+			$format_fields = $this->getFormatFields();
 			$all = $this->getAllNetworks();
-			foreach($cwp_top_networks as $n=>$d){
-				foreach($d  as $df){
+			foreach($format_fields as $n=>$detail){
+				foreach($detail  as $df){
 
 					$options[] = $n."_".$df['option'];
 
@@ -1831,7 +1862,7 @@ endif;
 				$options[] = $a."_top_opt_interval";
 				$options[] = $a."_time_choice_min";
 			}
-			global $cwp_top_fields;
+			$cwp_top_fields = $this->getGeneralFields();
 			foreach ($cwp_top_fields as $field)
 			{
 				$options[] = $field['option'];
@@ -1916,14 +1947,14 @@ endif;
 
 		public function updateAllPostFormat()
 		{
-			global $cwp_top_networks;
+			$all = $this->getAllNetworks();
 			$dataSent = $_POST['dataSent']['dataSent'];
 
 			$options = array();
 			parse_str($dataSent, $options);
 
 			//print_r($options);
-			foreach($cwp_top_networks as $n=>$d){
+			foreach($all as $n){
 
 				if(!array_key_exists($n.'_top_opt_custom_url_option', $options)) {
 					$options[$n.'_top_opt_custom_url_option'] =  'off';
@@ -2389,6 +2420,8 @@ endif;
 					//$this->getNextTweetTime('twitter');
 			//		$this->tweetOldPost("twitter");
 			//		$this->tweetOldPost("facebook");
+				//	$this->viewSampleTweet();
+
 				die();
 			}
 			// loading all actions and filters
@@ -2545,31 +2578,50 @@ endif;
 			add_submenu_page($cwp_top_settings['slug'], __('System Info',CWP_TEXTDOMAIN), __('System Info',CWP_TEXTDOMAIN), 'manage_options', 'SystemInfo', array($this,'system_info'));
 
 		}
+
+		public function getFormatFields(){
+
+			$all = $this->getAllNetworks();
+			global $cwp_format_fields;
+			$networks_fields = array();
+
+			foreach($all as $network){
+				$networks_fields[$network] = $cwp_format_fields;
+			}
+			return $networks_fields;
+		}
+		public function getGeneralFields(){
+			global $cwp_top_fields;
+
+			return $cwp_top_fields;
+
+		}
 		public function loadMainView()
 		{
-			global $cwp_top_fields;
+			$cwp_top_fields = $this->getGeneralFields();
 			foreach ($cwp_top_fields as $field => $value) {
 				$cwp_top_fields[$field]['option_value'] = get_option($cwp_top_fields[$field]['option']);
 			}
-			global $cwp_top_networks;
-			global $cwp_top_global_schedule;
+			$all_networks  = $this->getAllNetworks();
+			$format_fields  = $this->getFormatFields();
 			$options = get_option("top_opt_post_formats");
+			global $cwp_top_global_schedule;
 			$cwp_top_global_schedule = get_option("cwp_top_global_schedule");
 			if($options === false ) $options = array();
 			if($cwp_top_global_schedule === false ) $cwp_top_global_schedule = array();
 
 			$schedule = $cwp_top_fields["interval"]['option_value'];
-			foreach ($cwp_top_networks as $network_name => $network_details) {
+			foreach ($format_fields as $network_name => $network_details) {
 				foreach ($network_details as $field => $vvalue) {
-					$value = isset($options[$network_name."_".$cwp_top_networks[$network_name][$field]['option']]) ? $options[$network_name."_".$cwp_top_networks[$network_name][$field]['option']] : false ;
+					$value = isset($options[$network_name."_".$format_fields[$network_name][$field]['option']]) ? $options[$network_name."_".$format_fields[$network_name][$field]['option']] : false ;
 					if($value === false) {
-						$value = get_option($cwp_top_networks[$network_name][$field]['option']);
+						$value = get_option($format_fields[$network_name][$field]['option']);
 						if($value === false) {
 							if(isset($vvalue['default_value']))
 								$value =  $vvalue['default_value'];
 						}
 					}
-					$cwp_top_networks[$network_name][$field]['option_value'] = $value;
+					$format_fields[$network_name][$field]['option_value'] = $value;
 				}
 				if(!isset($cwp_top_global_schedule[$network_name."_schedule_type_selected"])){
 					$cwp_top_global_schedule[$network_name."_schedule_type_selected"] = "each";

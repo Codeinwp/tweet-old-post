@@ -1,9 +1,8 @@
 <?php
-	global $cwp_top_networks;
 	global $cwp_global_schedule;
 ?><div class="cwp_top_tabs_vertical">
 	<ul class="cwp_top_tabs_btns">
-		<?php $first = true; foreach($cwp_top_networks  as $network_name=>$network_details) { ?>
+		<?php $first = true; foreach($format_fields  as $network_name=>$network_details) { ?>
 			<li <?php if($first){ ?>class="active" <?php }else{
 
 				if($network_name == 'linkedin' && !CWP_TOP_PRO) echo 'class="pro-version"';
@@ -14,7 +13,7 @@
 
 	</ul>
 
-	<?php $first = true; foreach($cwp_top_networks  as $network_name=>$network_details) { ?>
+	<?php $first = true; foreach($format_fields  as $network_name=>$network_details) { ?>
 
 		<div class="tab-vertical <?php if($first){ ?> active  <?php } ?>">
 

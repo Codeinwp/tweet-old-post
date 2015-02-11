@@ -1,15 +1,15 @@
 <?php
-	global $cwp_top_networks;
 	global $cwp_top_global_schedule;
+
 ?><div class="cwp_top_tabs_vertical">
 	<ul class="cwp_top_tabs_btns">
-		<?php $first = true; foreach($cwp_top_networks  as $network_name=>$network_details) { ?>
+		<?php $first = true; foreach($all_networks  as $network_name ) { ?>
 			<li <?php if($first){ ?>class="active" <?php } ?>  <?php ?>><?php echo $network_name; ?></li>
 			<?php $first = false; } ?>
 
 	</ul>
 
-	<?php $first = true; foreach($cwp_top_networks  as $network_name=>$network_details) { ?>
+	<?php $first = true; foreach($all_networks  as $network_name ) { ?>
 
 		<div class="tab-vertical <?php if($first){ ?> active  <?php } ?>" data-network="<?php echo $network_name; ?>">
 					 <input type="hidden" value="<?php echo @$cwp_top_global_schedule[$network_name.'_schedule_type_selected'];?>" id="<?php echo $network_name.'_schedule_type_selected' ?>" name="<?php echo $network_name.'_schedule_type_selected' ?>" />
