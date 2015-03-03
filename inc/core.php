@@ -632,9 +632,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 			$regex = '/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/';
 			$tweetContent = preg_replace($regex, '', " ".$tweetContent);
 			$tweetContent = trim($tweetContent);
-			if ( $post_url != "" ) {
-				$fTweet['link'] = $post_url;
-			}
+			$fTweet['link'] = $post_url;
 			$adTextELength = 0;
 			if(is_string($additionalTextEnd)){
 				$adTextELength = $this->getStrLen($additionalTextEnd);
@@ -648,7 +646,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 				$hashLength = $this->getStrLen($newHashtags);
 			}
 			$finalTweetSize = $max_length - $hashLength - $adTextELength - $adTextBLength ;
-			if($network == 'twitter'){
+			if($network == 'twitter' && !empty($fTweet['link']) ){
 				$max_length = $max_length - 25;
 			}
 
@@ -881,6 +879,16 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 			?>
 
 ## END ROP CONFIGS ##
+
+
+## Begin Remote Data
+
+	Beta User: <?php  echo $this->getBetaUserStatus(); ?><?php echo "\n"; ?>
+	Remote Check: <?php  echo $this->getRemoteCheck(); ?><?php echo "\n"; ?>
+
+## End Remote Data
+
+
 
 ## Begin CRON Info
 
