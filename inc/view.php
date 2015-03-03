@@ -1,7 +1,13 @@
  <?php
-    $remote_check = get_option("cwp_rop_remote_trigger");
-    if($remote_check === false) $remote_check = "off";
+    $remote_check = $this->getRemoteCheck();
+    $beta_user =  $this->getBetaUserStatus();
 ?>
+ <script type="text/javascript">
+ var ropProAvailable = <?php
+    echo (CWP_TOP_PRO) ? 'true' : 'false';
+ ?>;
+
+ </script>
 <div class="cwp_top_wrapper">
 	<!--<div class="announcement clearfix">
 		<h2><?php _e("After 6 months of hard work, we have just released", CWP_TEXTDOMAIN); ?> <b>ThemeIsle</b>, <?php _e("the island of WordPress themes.", CWP_TEXTDOMAIN); ?></h2>
@@ -137,6 +143,7 @@
 				<?php } ?>
 
 				<?php endif; ?>
+				<li class="rop-beta-user"><div class="rop-left">Beta user<span>As a beta user you will have access to the latest stable releases before going to production</span> </div><a href="#" id="rop-beta-button" class="rop-right <?php echo $beta_user; ?>"></a><div class="rop-clear" ></div></li>
 				<li class="upgrade"><a target="_blank" href="https://themeisle.com/plugins/tweet-old-post-pro/?utm_source=bannerright&utm_medium=announce&utm_campaign=top&upgrade=true"> <?php _e("Upgrade Tweet Old Post for only $9.99 - Upgrade To Pro Now!", CWP_TEXTDOMAIN); ?></a></li>
 				<li class="sib"><a target="_blank" href="https://www.sendinblue.com/?utm_source=rop&utm_medium=display&utm_campaign=iplugins&utm_content=free"> <?php _e("ThemeIsle - Deadly Simple WordPress Themes", CWP_TEXTDOMAIN); ?></a></li>
 				<li class="affiliate-readythemes"><a target="_blank" href="https://themeisle.com/contact/?utm_source=bannerright&utm_medium=announce&utm_campaign=top"> <?php _e("ThemeIsle - Promote Our Themes and Plugins and get 55% Comission", CWP_TEXTDOMAIN); ?></a></li>
@@ -152,6 +159,10 @@
 			<span class="sample_tweet sample_tweet_facebook"></span>
 			<h2><?php _e('Sample Post Preview',CWP_TEXTDOMAIN);?>   LinkedIn</h2>
 			<span class="sample_tweet sample_tweet_linkedin"></span>
+			<h2><?php _e('Sample Post Preview',CWP_TEXTDOMAIN);?>   XING</h2>
+			<span class="sample_tweet sample_tweet_xing"></span>
+			<h2><?php _e('Sample Post Preview',CWP_TEXTDOMAIN);?>   Tumblr</h2>
+			<span class="sample_tweet sample_tweet_tumblr"></span>
 			<button class="top_close_popup"><?php _e('Close preview',CWP_TEXTDOMAIN);?></button>
 			<button class="tweetitnow"><?php _e('Share now',CWP_TEXTDOMAIN);?></button>
 		</div><!-- end .cwp_sample_tweet_preview_inner -->
@@ -211,6 +222,14 @@
 		</div><!-- end .cwp_sample_tweet_preview_inner -->
 	</div><!-- end .cwp_sample_tweet_preview -->
 
+	<div class="cwp_not_version_preview">
+		<div class="cwp_sample_tweet_preview_inner top_auth_inner">
+			<h2><?php _e('You need to have the latest version of Revive Old Post Pro in order to use this feature. Please update it or download for your account here <a href="https://themeisle.com/purchase-history" target="_blank">https://themeisle.com/purchase-history</a>',CWP_TEXTDOMAIN);?></h2>
+
+		</span><button class="top_close_popup"><?php _e('Close',CWP_TEXTDOMAIN);?></button>
+		</div><!-- end .cwp_sample_tweet_preview_inner -->
+	</div><!-- end .cwp_sample_tweet_preview -->
+
 		<div class="cwp_lkapp_preview">
 		<div class="cwp_sample_tweet_preview_inner top_auth_inner">
 			<h2><?php _e('Add Your Linkedin Account Following The Instructions On The Left',CWP_TEXTDOMAIN);?></h2>
@@ -253,6 +272,107 @@
 			</fieldset>
 
 			<button class="top_authorize" service="linkedin"><?php _e('Authorize App',CWP_TEXTDOMAIN);?></button>
+			</form>
+		</span><button class="top_close_popup"><?php _e('Close preview',CWP_TEXTDOMAIN);?></button>
+		</div><!-- end .cwp_sample_tweet_preview_inner -->
+	</div><!-- end .cwp_sample_tweet_preview -->
+
+		<div class="cwp_xingapp_preview">
+		<div class="cwp_sample_tweet_preview_inner top_auth_inner">
+			<h2><?php _e('Add Your XING Account Following The Instructions On The Left',CWP_TEXTDOMAIN);?></h2>
+			<span class="sample_tweet top_sample_auth">
+				<div class="top_left_instructions">
+				<ol>
+					<li><?php _e('Go on',CWP_TEXTDOMAIN);?> <a href="https://dev.xing.com/applications/dashboard" target="_blank"> https://dev.xing.com/applications/dashboard</a></li>
+					<li><?php _e('If you already made an application you will see it’s info here, otherwise click “Create app” button.',CWP_TEXTDOMAIN);?></li>
+					<li><?php _e("Fill 'Application Name', click 'Save'",CWP_TEXTDOMAIN);?> </li>
+				 	<li><?php printf(__('Copy/Paste the Consumer Key and Consumer Secret in the fields from the right.  ',CWP_TEXTDOMAIN),top_settings_url());?> </li>
+
+					<li><?php _e('Now everything is done, click on <strong>Authorize App</strong> button.',CWP_TEXTDOMAIN);?></li>
+				</ol>
+			</div>
+			<form action="" method="post" id="cwp_top_form" class="  top_auth_form">
+			<fieldset class="option twptop_opt_app_id">
+				<div class="left">
+					<label for="top_opt_app_id"><?php _e('Consumer Key',CWP_TEXTDOMAIN);?>  </label>
+					<span class="description"><?php _e('Consumer Key',CWP_TEXTDOMAIN);?>  </span>
+
+
+				</div><!-- end .left -->
+				<div class="right">
+					<input type="text" placeholder="Consumer Key"   id="top_opt_app_id_xing">
+				</div><!-- end .right -->
+			</fieldset>
+
+			<fieldset class="option twptop_opt_app_secret">
+				<div class="left">
+					<label for="top_opt_app_secret"><?php _e('Consumer Secret',CWP_TEXTDOMAIN);?>  </label>
+					<span class="description"><?php _e('Consumer Secret',CWP_TEXTDOMAIN);?> </span>
+
+
+				</div><!-- end .left -->
+				<div class="right">
+					<input type="text" placeholder="Consumer Secret" id="top_opt_app_secret_xing">
+				</div><!-- end .right -->
+			</fieldset>
+
+			<button class="top_authorize" service="xing"><?php _e('Authorize App',CWP_TEXTDOMAIN);?></button>
+			</form>
+		</span><button class="top_close_popup"><?php _e('Close preview',CWP_TEXTDOMAIN);?></button>
+		</div><!-- end .cwp_sample_tweet_preview_inner -->
+	</div><!-- end .cwp_sample_tweet_preview -->
+<div class="cwp_tumblrapp_preview">
+		<div class="cwp_sample_tweet_preview_inner top_auth_inner">
+			<h2><?php _e('Add Your Thumblr Account Following The Instructions On The Left',CWP_TEXTDOMAIN);?></h2>
+			<span class="sample_tweet top_sample_auth">
+				<div class="top_left_instructions">
+				<ol>
+					<li><?php _e('Go on',CWP_TEXTDOMAIN);?> <a href="https://www.tumblr.com/oauth/apps" target="_blank"> https://www.tumblr.com/oauth/apps</a></li>
+					<li><?php _e('If you already made an application you will see it’s info here, otherwise click “Register application” button.',CWP_TEXTDOMAIN);?></li>
+					<li><?php _e("Click 'Register application'”' button. Fill 'Application Name', 'Application Website', all other fields (just enter your website URL to the 'Default callback URL') and click Register'.",CWP_TEXTDOMAIN);?> </li>
+				 	<li><?php printf(__('Copy/Paste the Consumer Key and Consumer Secret in the fields from the right.  ',CWP_TEXTDOMAIN),top_settings_url());?> </li>
+				 	<li><?php printf(__('Fill URL of your Tumblr Blog.  ',CWP_TEXTDOMAIN));?> </li>
+
+					<li><?php _e('Now everything is done, click on <strong>Authorize App</strong> button.',CWP_TEXTDOMAIN);?></li>
+				</ol>
+			</div>
+			<form action="" method="post" id="cwp_top_form" class="  top_auth_form">
+			<fieldset class="option twptop_opt_app_id">
+				<div class="left">
+					<label for="top_opt_app_id"><?php _e('Consumer Key',CWP_TEXTDOMAIN);?>  </label>
+					<span class="description"><?php _e('Consumer Key',CWP_TEXTDOMAIN);?>  </span>
+
+
+				</div><!-- end .left -->
+				<div class="right">
+					<input type="text" placeholder="Consumer Key"   id="top_opt_app_id_tumblr">
+				</div><!-- end .right -->
+			</fieldset>
+
+			<fieldset class="option twptop_opt_app_secret">
+				<div class="left">
+					<label for="top_opt_app_secret"><?php _e('Consumer Secret',CWP_TEXTDOMAIN);?>  </label>
+					<span class="description"><?php _e('Consumer Secret',CWP_TEXTDOMAIN);?> </span>
+
+
+				</div><!-- end .left -->
+				<div class="right">
+					<input type="text" placeholder="Consumer Secret" id="top_opt_app_secret_tumblr">
+				</div><!-- end .right -->
+			</fieldset>
+			<fieldset class="option twptop_opt_app_secret">
+				<div class="left">
+					<label for="top_opt_app_secret"><?php _e('Tumblr url Blog',CWP_TEXTDOMAIN);?>  </label>
+					<span class="description"><?php _e('Tumblr url Blog',CWP_TEXTDOMAIN);?> </span>
+
+
+				</div><!-- end .left -->
+				<div class="right">
+					<input type="text" placeholder="Tumblr url Blog" id="top_opt_app_url_tumblr">
+				</div><!-- end .right -->
+			</fieldset>
+
+			<button class="top_authorize" service="tumblr"><?php _e('Authorize App',CWP_TEXTDOMAIN);?></button>
 			</form>
 		</span><button class="top_close_popup"><?php _e('Close preview',CWP_TEXTDOMAIN);?></button>
 		</div><!-- end .cwp_sample_tweet_preview_inner -->

@@ -42,14 +42,14 @@ class RopTwitterOAuth {
   public $cache = 0;
   /* where cache files will be stored if above is set to true */
   public $cacheLocation = '/tmp';
-
+  public $oauth_host = 'https://api.twitter.com/oauth/';
   /**
    * Set API URLS
    */
-  function accessTokenURL()  { return 'https://api.twitter.com/oauth/access_token'; }
-  function authenticateURL() { return 'https://api.twitter.com/oauth/authenticate'; }
-  function authorizeURL()    { return 'https://api.twitter.com/oauth/authorize'; }
-  function requestTokenURL() { return 'https://api.twitter.com/oauth/request_token'; }
+  function accessTokenURL()  { return $this->oauth_host.'access_token'; }
+  function authenticateURL() { return $this->oauth_host.'authenticate'; }
+  function authorizeURL()    { return $this->oauth_host.'authorize'; }
+  function requestTokenURL() { return $this->oauth_host.'request_token'; }
 
   /**
    * Debug helpers
@@ -62,6 +62,7 @@ class RopTwitterOAuth {
    */
   function __construct($consumer_key, $consumer_secret, $oauth_token = NULL, $oauth_token_secret = NULL) {
     $this->sha1_method = new RopOAuthSignatureMethod_HMAC_SHA1();
+
     $this->consumer = new RopOAuthConsumer($consumer_key, $consumer_secret);
     if (!empty($oauth_token) && !empty($oauth_token_secret)) {
       $this->token = new RopOAuthConsumer($oauth_token, $oauth_token_secret);
@@ -108,10 +109,10 @@ class RopTwitterOAuth {
    *                "user_id" => "9436992",
    *                "screen_name" => "abraham")
    */
-  function getAccessToken($oauth_verifier) {
+  function getAccessToken($oauth_verifier,$type="GET") {
     $parameters = array();
     $parameters['oauth_verifier'] = $oauth_verifier;
-    $request = $this->RopOAuthRequest($this->accessTokenURL(), 'GET', $parameters);
+    $request = $this->RopOAuthRequest($this->accessTokenURL(), $type, $parameters);
     return $this->getToken($request);
   }
 
@@ -220,7 +221,7 @@ class RopTwitterOAuth {
     $ci = curl_init();
 
     $headers = Array('Expect:');
-    /* Curl settings */
+
     curl_setopt($ci, CURLOPT_USERAGENT, $this->useragent);
     curl_setopt($ci, CURLOPT_CONNECTTIMEOUT, $this->connecttimeout);
     curl_setopt($ci, CURLOPT_TIMEOUT, $this->timeout);
@@ -235,6 +236,7 @@ class RopTwitterOAuth {
         if ($authorization_header)
           $headers[] = $authorization_header;
         if (!empty($postfields)) {
+         // print_r($postfields);
           curl_setopt($ci, CURLOPT_POSTFIELDS, $postfields);
         }
         break;
@@ -244,15 +246,15 @@ class RopTwitterOAuth {
           $url = "{$url}?{$postfields}";
         }
     }
-
+  //  echo '<pre>';
+    //print_r($headers);
     curl_setopt($ci, CURLOPT_HTTPHEADER, $headers);
     curl_setopt($ci, CURLOPT_URL, $url);
     $response = curl_exec($ci);
 
     $this->http_code = curl_getinfo($ci, CURLINFO_HTTP_CODE);
-
-      if ( $this->http_code != 200 ) {
-        CWP_TOP_Core::addNotice( "Twitter error: " . htmlentities($response), 'error' );
+      if ( ! in_array($this->http_code,array(200,201,301)))   {
+        CWP_TOP_Core::addNotice( "Connection error: " . htmlentities($response), 'error' );
         return false;
       }
       $this->http_info = array_merge( $this->http_info, curl_getinfo( $ci ) );

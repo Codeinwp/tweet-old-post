@@ -12,7 +12,7 @@ function rop_exclude_posts() {
             $message_updated = __("Tweet Old Post Options Updated.", 'TweetOldPost');
             $records_per_page = 20;
             $twp_obj = new CWP_TOP_Core;
-            $paged = isset($_GET['paged']) ? $_GET['paged'] : 1;
+            $paged = isset($_POST['paged']) ? $_POST['paged'] : 1;
             $postTypes = $twp_obj->getTweetPostType();
             $postTypes = explode(',',$postTypes);
             $selected_post_type = isset($_POST['rop_select_post_type']) ? $_POST['rop_select_post_type'] :                              $postTypes[0];
@@ -70,7 +70,10 @@ function rop_exclude_posts() {
                     $excluded_ids = array_unique($excluded_ids);
                     update_option('top_opt_excluded_post',implode(',',$excluded_ids));
             }
+             if(isset($_POST['exclude']) || isset($_POST['search'])){
+                 $paged  = 1;
 
+             }
             if(isset($_POST['exclude']) ) {
                 print( '
 			<div id="message" style="margin-top:30px" class="updated fade">
@@ -126,45 +129,47 @@ function rop_exclude_posts() {
             print('
 			<script language="javascript">
 
-function ROPshowCorectTax(){
-    var post_type = jQuery("#rop_select_post_type").val();
-    jQuery("#rop_select_category optgroup").each(function(){
-        var pt = jQuery(this).attr("data-post-type").split(",");
-        var th = jQuery(this);
-        if(jQuery.inArray(post_type,pt) > -1){
-            th.show();
-        }else{
-            th.hide();
-        }
+            function ROPshowCorectTax(){
+                var post_type = jQuery("#rop_select_post_type").val();
+                jQuery("#rop_select_category optgroup").each(function(){
+                var pt = jQuery(this).attr("data-post-type").split(",");
+                var th = jQuery(this);
+                if(jQuery.inArray(post_type,pt) > -1){
+                    th.show();
+                }else{
+                    th.hide();
+                }
 
 
-    });
+            });
 
 }
-jQuery(function() {
-    jQuery("#rop_select_post_type").on("change",function(){
-        ROPshowCorectTax();
+            jQuery(function() {
+                jQuery("#rop_select_post_type").on("change",function(){
+                    ROPshowCorectTax();
 
-    });
-    ROPshowCorectTax();
+                });
+                ROPshowCorectTax();
+            });
+            function checkedAll() {
+                if(jQuery("rop-header-check").is("checked")){
+                    jQuery(".rop_post_id").attr("checked","checked");
 
+                }else{
 
+                    jQuery(".rop_post_id").removeAttr("checked" );
 
+                }
+             }
+			jQuery(document).ready(function(){
+                    jQuery("#top_TweetOldPost").on("click",".page-numbers",function(){
+                        var paged = jQuery(this).text();
+                        jQuery("#post-search-page").val(paged);
+                        jQuery("#top_TweetOldPost").submit();
+                        return false;
+                    })
+			})
 
-
-
-
-});
-                function checkedAll() {
-				    if(jQuery("rop-header-check").is("checked")){
-				        jQuery(".rop_post_id").attr("checked","checked");
-
-				    }else{
-
-				        jQuery(".rop_post_id").removeAttr("checked" );
-
-				    }
-                 }
 			</script>
 		');
         print('<div class="tablenav"><div class="alignleft actions">');
@@ -216,6 +221,7 @@ jQuery(function() {
 
         print('<p class="search-box" style="margin:0px">
 	<input type="text" id="post-search-input" name="s" value="'.$exclude_search.'" />
+	<input type="hidden" id="post-search-page" name="paged" value="'.$paged.'" />
 	<input type="submit" value="Search Posts" name="search" class="button" />
 	<input type="submit" value="Exclude selected" name="exclude" class="button" />
 </p>');

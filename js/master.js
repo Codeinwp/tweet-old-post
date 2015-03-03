@@ -1,6 +1,11 @@
 jQuery(document).ready(function(){
 
 
+	jQuery(".rop-not-version  ").on("click" ,function(){
+		console.log('not version')
+		jQuery(".cwp_not_version_preview").show();
+		return false;
+	});
 	setInterval(function(){
 		var clock = jQuery(".rop-twitter-clock");
 		var time = parseInt(clock.attr('data-current'));
@@ -39,10 +44,36 @@ jQuery(document).ready(function(){
 		return false;
 	});
 	jQuery("#linkedin-login").on("click",function(){
+		if(jQuery(this).hasClass("pro-only")) return false;
+		if(jQuery(this).hasClass("rop-not-version")) return false;
 		jQuery(".cwp_lkapp_preview").show();
 		return false;
 	});
+	jQuery("#xing-login").on("click",function(){
+		if(jQuery(this).hasClass("pro-only")) return false;
+		if(jQuery(this).hasClass("rop-not-version")) return false;
+		jQuery(".cwp_xingapp_preview").show();
+		return false;
+	});
+	jQuery("#tumblr-login").on("click",function(){
+		if(jQuery(this).hasClass("pro-only")) return false;
+		if(jQuery(this).hasClass("rop-not-version")) return false;
+		jQuery(".cwp_tumblrapp_preview").show();
+		return false;
+	});
 	jQuery("#facebook-login").on("click",function(){
+		if(jQuery(this).hasClass("pro-only")) return false;
+		if(jQuery(this).hasClass("rop-not-version")) return false;
+		if(jQuery(this).hasClass("another-account")){
+			addFacebook()
+		}else{
+			jQuery(".cwp_fbapp_preview").show();
+		}
+		return false;
+	});
+	jQuery("#facebook-login").on("click",function(){
+		if(jQuery(this).hasClass("pro-only")) return false;
+		if(jQuery(this).hasClass("rop-not-version")) return false;
 		if(jQuery(this).hasClass("another-account")){
 			addFacebook()
 		}else{
@@ -77,6 +108,33 @@ jQuery(document).ready(function(){
 		});
 		return false;
 	})
+	jQuery("#rop-beta-button").on("click",function(){
+
+		var state = "";
+		var th  = jQuery(this);
+		if(th.hasClass("on")){
+			state = "off";
+			th.addClass("off").removeClass("on");
+		}else{
+			state = "on";
+			th.addClass("on").removeClass("off");
+		}
+		jQuery.ajax({
+			type: "POST",
+			url: cwp_top_ajaxload.ajaxurl,
+			data: {
+				action: 'beta_user_trigger',
+				state:state
+			},
+			success: function(response) {
+				console.log(response);
+			},
+			error: function(response) {
+				console.log("Error: "+ response);
+			}
+		});
+		return false;
+	});
 
 	function cwpTopUpdateForm() {
 		startAjaxIntro();
@@ -222,14 +280,14 @@ jQuery(document).ready(function(){
 	}
 
 	// Add New Account
-	if (location.hash=="#_=_"|| location.hash=="#fbadd") {
+	if ((location.hash=="#_=_"|| location.hash=="#fbadd") && jQuery("#cwp_top_currenturl").attr("data-cnetwork")!= 'tumblr') {
 		addFacebook();
-
 	};
 
 	// Add New Twitter Account
 	jQuery("#twitter-login,.top_authorize").click(function(e){
 
+		if(jQuery(this).hasClass("rop-not-version")) return false;
 		var service = jQuery(this).attr('service');
 		var action = "add_new_account";
 		var extra = {};
@@ -240,9 +298,19 @@ jQuery(document).ready(function(){
 				extra.app_id = jQuery("#top_opt_app_id").val();
 				extra.app_secret = jQuery("#top_opt_app_secret").val();
 			}
-			else {
+
+			if(service == 'linkedin') {
 				extra.app_id = jQuery("#top_opt_app_id_lk").val();
 				extra.app_secret = jQuery("#top_opt_app_secret_lk").val();
+			}
+			if(service == 'xing') {
+				extra.app_id = jQuery("#top_opt_app_id_xing").val();
+				extra.app_secret = jQuery("#top_opt_app_secret_xing").val();
+			}
+			if(service == 'tumblr') {
+				extra.app_id = jQuery("#top_opt_app_id_tumblr").val();
+				extra.app_secret = jQuery("#top_opt_app_secret_tumblr").val();
+				extra.app_url = jQuery("#top_opt_app_url_tumblr").val();
 			}
 
 
@@ -444,6 +512,14 @@ jQuery(document).ready(function(){
                     jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet.sample_tweet_linkedin").html( $json .linkedin);
 					else
 						jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet.sample_tweet_linkedin").hide().prev().hide();
+					if($json .xing)
+                    jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet.sample_tweet_xing").html( $json .xing);
+					else
+						jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet.sample_tweet_xing").hide().prev().hide();
+					if($json .tumblr)
+                    jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet.sample_tweet_tumblr").html( $json .tumblr);
+					else
+						jQuery(".cwp_top_wrapper .cwp_sample_tweet_preview .cwp_sample_tweet_preview_inner .sample_tweet.sample_tweet_tumblr").hide().prev().hide();
 
 				}
 				endAjaxIntro();
@@ -766,6 +842,16 @@ jQuery(document).ready(function(){
 
 		}
 
+	});
+
+	jQuery(".login.pro-only").click(function(e){
+		if(!ropProAvailable){
+			window.open(
+				'https://themeisle.com/plugins/tweet-old-post-pro/?utm_source=imagepro&utm_medium=link&utm_campaign=top&upgrade=true',
+				'_blank'
+			);
+			return false;
+		}
 	});
 });
 

@@ -309,7 +309,7 @@ class RopOAuthRequest {
       $defaults['oauth_token'] = $token->key;
 
     $parameters = array_merge($defaults, $parameters);
-
+   // print_r($parameters);
     return new RopOAuthRequest($http_method, $http_url, $parameters);
   }
 
@@ -531,7 +531,7 @@ class RopOAuthRequest {
   /**
    * util function: current nonce
    */
-  private static function generate_nonce() {
+  public static function generate_nonce() {
     $mt = microtime();
     $rand = mt_rand();
 

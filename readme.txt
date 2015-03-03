@@ -134,6 +134,12 @@ https://themeisle.com/plugins/tweet-old-post-lite/
 
 == Changelog ==
 
+**New in v7.0**
+
+* Fixed issue with duplicate posting
+* Added Xing and Tumbr Networks
+* Fixed issue with random posts on large databases.
+
 **New in v6.9.6**
 
 * Fixed issue cron stop

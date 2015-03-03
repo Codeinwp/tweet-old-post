@@ -1,11 +1,12 @@
 <?php
 	global $cwp_global_schedule;
+	$cfgnets = $this->getAllNetworks(true);
 ?><div class="cwp_top_tabs_vertical">
 	<ul class="cwp_top_tabs_btns">
 		<?php $first = true; foreach($format_fields  as $network_name=>$network_details) { ?>
 			<li <?php if($first){ ?>class="active" <?php }else{
 
-				if($network_name == 'linkedin' && !CWP_TOP_PRO) echo 'class="pro-version"';
+				if($cfgnets[$network_name] && !CWP_TOP_PRO) echo 'class="pro-version"';
 
 			} ?>  <?php ?>><?php echo $network_name; ?></li>
 

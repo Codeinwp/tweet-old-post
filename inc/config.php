@@ -19,10 +19,12 @@ $cwp_top_settings = array(
 		)
 );
 $cwp_rop_remote_trigger_url = "http://portal.themeisle.com/remote_trigger";
+$cwp_rop_beta_trigger_url = "http://portal.themeisle.com/beta_user";
 $cwp_top_global_schedule = array();
 define("CWP_TOP_PRO_STRING",'<span class="cwp-pro-string">'.__("This is only available in the",CWP_TEXTDOMAIN)."<a href='https://themeisle.com/plugins/tweet-old-post-pro/?utm_source=imagepro&utm_medium=link&utm_campaign=top&upgrade=true' target='_blank'> ".__("PRO version")."</a></span>");
 
-$cwp_rop_all_networks = array("twitter","facebook","linkedin");
+$cwp_rop_all_networks = array("twitter"=>false,"facebook"=>false,"linkedin"=>true, "xing"=>true,"tumblr"=>true);
+$cwp_rop_restricted_show = array("bitly-key","bitly-user");
 $cwp_format_fields = array(
 
 		'tweet-content' 	=> array(
