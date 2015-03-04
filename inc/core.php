@@ -474,10 +474,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 		}
 
 		public function ropSubstr($string,$nr1,$nr2	) {
-			if (function_exists("mb_substr")) {
-				return mb_substr($string,$nr1,$nr2);
-			}
-			else
+
 				return substr($string,$nr1, $nr2);
 		}
 
@@ -547,7 +544,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 			// Strip all shortcodes from content.
 			$tweetContent   = strip_shortcodes( $tweetContent );
 			$fTweet         = array();
-			$fTweet['link'] = get_permalink( $postQuery->ID );
+			$post_url = get_permalink( $postQuery->ID );
 			// Generate the post link.
 			if ( $include_link == 'true' ) {
 				if ( $fetch_url_from_custom_field == 'on' ) {
@@ -653,15 +650,17 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 			}
 			$finalTweetSize = $max_length - $hashLength - $adTextELength - $adTextBLength ;
 			if($network == 'twitter' && !empty($fTweet['link']) ){
-				$max_length = $max_length - 25;
+				$max_length = $max_length - 26;
+				if(CWP_TOP_PRO && $this->isPostWithImageEnabled($network)){
+					$max_length = $max_length - 20;
+				}
 			}
 
 			$tweetContent = $this->ropSubstr( $tweetContent,0,$finalTweetSize);
 
 			$finalTweet = $additionalTextBeginning . $tweetContent  . $newHashtags . $additionalTextEnd;
 			$finalTweet = $this->ropSubstr($finalTweet,0,$max_length );
-
-			$fTweet['message'] =  $finalTweet;
+			$fTweet['message'] =  html_entity_decode($finalTweet);
 
 			return $fTweet;
 		}
@@ -683,7 +682,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 							// Create a new twitter connection using the stored user credentials.
 							$connection = new RopTwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
 							$args = array('status' =>  $finalTweet['message']." ".$finalTweet['link']);
-
+							$response = false;
 							if($this->isPostWithImageEnabled($network) && CWP_TOP_PRO) {
 								global $CWP_TOP_Core_PRO;
 
@@ -691,12 +690,13 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 								if(defined('ROP_IMAGE_CHECK')){
 									$args = $CWP_TOP_Core_PRO->topProImage( $connection, $finalTweet, $post->ID, $network );
 									if ( isset( $args['media[]'] ) ) {
+
 										$response = $connection->upload( 'statuses/update_with_media', $args );
 									} else {
 										$response = $connection->post( 'statuses/update', $args );
 									}
 								}else{
-									$CWP_TOP_Core_PRO->topProImage( $connection, $finalTweet['message'], $post->ID, $network );
+									$response = $CWP_TOP_Core_PRO->topProImage( $connection, $finalTweet['message']. " " .$finalTweet['link'], $post->ID, $network );
 								}
 							}else{
 
@@ -743,7 +743,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 									$args = $CWP_TOP_Core_PRO->topProImage($connection, $finalTweet, $post->ID,$network);
 							}
 
-							$pp=wp_remote_post("https://graph.facebook.com/".ROP_TOP_FB_API_VERSION."/$user[id]/feed?access_token=$user[oauth_token]",$args);
+							$pp=wp_remote_post("https://graph.facebook.com/".ROP_TOP_FB_API_VERSION."/".$user['id']."/feed?access_token=".$user['oauth_token'],$args);
 							if(is_wp_error( $pp )){
 								self::addNotice("Error for posting on facebook for  - " .$post->post_title."".$pp->get_error_message(),'error' );
 
@@ -2151,7 +2151,9 @@ endif;
 				case 'categories-list':
 					print "<div class='categories-list cwp-tax-post'><p class='rop-category-header'>	Posts </p>";
 					$categories = get_categories(array(
-						'hide_empty'        => false));
+						'hide_empty'        => false,
+						'number'            => 200
+					));
 
 					foreach ($categories as $category) {
 
@@ -2197,7 +2199,8 @@ endif;
 							if(in_array($pt,$tx->object_type)){
 
 								$terms = get_terms($tx->name, array(
-									'hide_empty'        => false
+									'hide_empty'        => false,
+									'number'            =>200
 
 								) );
 								if(!empty($terms)){

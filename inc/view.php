@@ -142,8 +142,8 @@
 						<li class="rop-twitter-countdown rop-network-countdown"><?php echo __("Revive Old Post will post on",CWP_TEXTDOMAIN)." <span class='rop-network-name'>".$nn."</span> ".__("in the next",CWP_TEXTDOMAIN); ?>: <span data-timestamp="<?php echo  wp_next_scheduled($nn.'roptweetcron',array($nn)) ; ?>" class='rop-network-timestamp'></span></li>
 				<?php } ?>
 				<?php endif; ?>
-				<li class="rop-beta-user"><div class="rop-left">Beta user </div><a href="#" id="rop-beta-button" class="rop-right <?php echo $beta_user; ?>"></a><div class="rop-clear" ></div><span class="rop-beta-desc">As a beta user you will have access to the latest stable releases before going to production</span></li>
-				<li class="rop-beta-user"><div class="rop-left">Remote check</div><a href="#" id="cwp_remote_check" class="<?php echo $remote_check; ?> rop-right "></a><div class="rop-clear" ></div><span class="rop-beta-desc">We will send you a ping each 15 minutes in order assure that posts will be sent to social networks on time.    </span> </li>
+				<li class="rop-beta-user"><div class="rop-left"><?php  _e("Beta user",CWP_TEXTDOMAIN);?> </div><a href="#" id="rop-beta-button" class="rop-right <?php echo $beta_user; ?>"></a><div class="rop-clear" ></div><span class="rop-beta-desc"><?php  _e("As a beta user you will have access to the latest stable releases before going to production",CWP_TEXTDOMAIN);?></span></li>
+				<li class="rop-beta-user"><div class="rop-left"><?php  _e("Remote check",CWP_TEXTDOMAIN);?></div><a href="#" id="cwp_remote_check" class="<?php echo $remote_check; ?> rop-right "></a><div class="rop-clear" ></div><span class="rop-beta-desc"><?php  _e("We will send you a ping each 15 minutes in order assure that posts will be sent to social networks on time.   ",CWP_TEXTDOMAIN);?> </span> </li>
 				<li class="upgrade"><a target="_blank" href="https://themeisle.com/plugins/tweet-old-post-pro/?utm_source=bannerright&utm_medium=announce&utm_campaign=top&upgrade=true"> <?php _e("Upgrade Tweet Old Post for only $9.99 - Upgrade To Pro Now!", CWP_TEXTDOMAIN); ?></a></li>
 
 			</ul>
