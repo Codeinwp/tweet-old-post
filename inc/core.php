@@ -635,6 +635,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 			$regex = '/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/';
 			$tweetContent = preg_replace($regex, '', " ".$tweetContent);
 			$tweetContent = trim($tweetContent);
+			$tweetContent = html_entity_decode($tweetContent);
 			$fTweet['link'] = $post_url;
 			$adTextELength = 0;
 			if(is_string($additionalTextEnd)){
@@ -650,17 +651,24 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 			}
 			$finalTweetSize = $max_length - $hashLength - $adTextELength - $adTextBLength ;
 			if($network == 'twitter' && !empty($fTweet['link']) ){
-				$max_length = $max_length - 26;
+				$finalTweetSize = $finalTweetSize - 25;
 				if(CWP_TOP_PRO && $this->isPostWithImageEnabled($network)){
-					$max_length = $max_length - 20;
+					$finalTweetSize = $finalTweetSize - 25;
 				}
+
 			}
 
 			$tweetContent = $this->ropSubstr( $tweetContent,0,$finalTweetSize);
+			if($network == 'twitter'){
+				$finalTweet = $additionalTextBeginning . $tweetContent  ." ".$fTweet['link']." ".$newHashtags . $additionalTextEnd;
+				$fTweet['link'] = '';
 
-			$finalTweet = $additionalTextBeginning . $tweetContent  . $newHashtags . $additionalTextEnd;
-			$finalTweet = $this->ropSubstr($finalTweet,0,$max_length );
-			$fTweet['message'] =  html_entity_decode($finalTweet);
+			}else{
+				$finalTweet = $additionalTextBeginning . $tweetContent .$newHashtags . $additionalTextEnd;
+
+			}
+
+			$fTweet['message'] =  $finalTweet ;
 
 			return $fTweet;
 		}
