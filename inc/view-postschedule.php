@@ -4,7 +4,7 @@
 ?><div class="cwp_top_tabs_vertical">
 	<ul class="cwp_top_tabs_btns">
 		<?php $first = true; foreach($all_networks  as $network_name ) { ?>
-			<li class="<?php if($first){ ?>active <?php } ?>  <?php if(  !CWP_TOP_PRO) echo "pro-version";?>  " ><?php echo $network_name; ?></li>
+			<li class="<?php if($first){ ?>active <?php } ?>    " ><?php echo $network_name; ?></li>
 			<?php $first = false; } ?>
 
 	</ul>
