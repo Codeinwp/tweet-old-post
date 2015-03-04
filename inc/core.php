@@ -251,7 +251,10 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 				$ids[] = $rp->ID;
 
 			}
-			$returnedPost = $wpdb->get_results("select * from {$wpdb->prefix}posts where ID in (".implode(",",$ids).") ");
+			$returnedPost  = array();
+			if(!empty($ids))
+				$returnedPost = $wpdb->get_results("select * from {$wpdb->prefix}posts where ID in (".implode(",",$ids).") ");
+
 			return $returnedPost;
 
 		}
@@ -399,13 +402,16 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 
 			foreach($networks as $n) {
 				if (CWP_TOP_PRO && $this->isPostWithImageEnabled($n)) {
-					if(ROP_PRO_1_5){
+
+					if(defined('ROP_PRO_VERSION')){
 						global $CWP_TOP_Core_PRO;
 						$image = $CWP_TOP_Core_PRO->getPostImage($returnedTweets[0]->ID);
 
 					}else {
 						if ( has_post_thumbnail( $returnedTweets[0]->ID ) ) :
-							$image_array = wp_get_attachment_image_src( get_post_thumbnail_id( $returnedTweets[0]->ID ), array( 'medium' ) );
+
+							$image_array = wp_get_attachment_image_src( get_post_thumbnail_id( $returnedTweets[0]->ID ) );
+
 							$image       = $image_array[0];
 						else :
 							$post  = get_post( $returnedTweets[0]->ID );
@@ -413,8 +419,8 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 							ob_start();
 							ob_end_clean();
 							$output = preg_match_all( '/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $post->post_content, $matches );
-
-							$image = $matches [1] [0];
+							if(isset($matches [1] [0]))
+								$image = $matches [1] [0];
 
 						endif;
 					}

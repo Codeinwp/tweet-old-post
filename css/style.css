@@ -800,10 +800,33 @@ button.login{
     font-weight: 600;
     font-size:15px;
 
+    line-height: 29px;
 
 }
+.rop-beta-user .rop-beta-desc{
+    font-style: italic;
+    font-size: 13px;
+    font-weight: normal;
+    width: 100%;
+    display: block;
+    line-height: 15px;
+    color: #858585;
 
-.cwp_not_version_preview .top_auth_inner{
-    height:200px;
+}
+.cwp_top_wrapper   .cwp_not_version_preview .top_auth_inner{
+    height:160px;
+
+}
+.cwp_top_wrapper   .cwp_not_version_preview .top_close_popup
+{
+
+    margin: auto;
+    float: none;
+
+}
+.cwp_top_wrapper  .cwp_not_version_preview h2{
+    line-height: 26px;
+    font-size: 17px;
+    font-weight: 500;
 
 }

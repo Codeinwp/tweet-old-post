@@ -24,7 +24,7 @@
 		<span class="slogan"><?php _e("by", CWP_TEXTDOMAIN); ?> <a href="https://themeisle.com/?utm_source=topadmin&utm_medium=announce&utm_campaign=top">ThemeIsle</a></span>
 
 		<div class="cwp_top_actions">
-			<span class="cwp-remote-check-info">Remote check</span> <a class="on-off-button <?php echo $remote_check; ?>" id="cwp_remote_check"></a>
+
 			<a href="https://twitter.com/intent/tweet?text=Check-out%20this%20awesome%20plugin%20-%20&url=http%3A%2F%2Fthemeisle.com%2Fplugins%2Ftweet-old-post-lite%2F&via=themeisle" class="tweet-about-it"><span></span> <?php _e("Show your love", CWP_TEXTDOMAIN); ?></a>
 			<a target="_blank" href="http://wordpress.org/support/view/plugin-reviews/tweet-old-post#postform" class="leave-a-review"><span></span> <?php _e("Leave A Review", CWP_TEXTDOMAIN); ?></a>
 		</div><!-- end .cwp_top_actions -->
@@ -141,12 +141,11 @@
 					     ?>
 						<li class="rop-twitter-countdown rop-network-countdown"><?php echo __("Revive Old Post will post on",CWP_TEXTDOMAIN)." <span class='rop-network-name'>".$nn."</span> ".__("in the next",CWP_TEXTDOMAIN); ?>: <span data-timestamp="<?php echo  wp_next_scheduled($nn.'roptweetcron',array($nn)) ; ?>" class='rop-network-timestamp'></span></li>
 				<?php } ?>
-
 				<?php endif; ?>
-				<li class="rop-beta-user"><div class="rop-left">Beta user<span>As a beta user you will have access to the latest stable releases before going to production</span> </div><a href="#" id="rop-beta-button" class="rop-right <?php echo $beta_user; ?>"></a><div class="rop-clear" ></div></li>
+				<li class="rop-beta-user"><div class="rop-left">Beta user </div><a href="#" id="rop-beta-button" class="rop-right <?php echo $beta_user; ?>"></a><div class="rop-clear" ></div><span class="rop-beta-desc">As a beta user you will have access to the latest stable releases before going to production</span></li>
+				<li class="rop-beta-user"><div class="rop-left">Remote check</div><a href="#" id="cwp_remote_check" class="<?php echo $remote_check; ?> rop-right "></a><div class="rop-clear" ></div><span class="rop-beta-desc">We will send you a ping each 15 minutes in order assure that posts will be sent to social networks on time.    </span> </li>
 				<li class="upgrade"><a target="_blank" href="https://themeisle.com/plugins/tweet-old-post-pro/?utm_source=bannerright&utm_medium=announce&utm_campaign=top&upgrade=true"> <?php _e("Upgrade Tweet Old Post for only $9.99 - Upgrade To Pro Now!", CWP_TEXTDOMAIN); ?></a></li>
-				<li class="sib"><a target="_blank" href="https://www.sendinblue.com/?utm_source=rop&utm_medium=display&utm_campaign=iplugins&utm_content=free"> <?php _e("ThemeIsle - Deadly Simple WordPress Themes", CWP_TEXTDOMAIN); ?></a></li>
-				<li class="affiliate-readythemes"><a target="_blank" href="https://themeisle.com/contact/?utm_source=bannerright&utm_medium=announce&utm_campaign=top"> <?php _e("ThemeIsle - Promote Our Themes and Plugins and get 55% Comission", CWP_TEXTDOMAIN); ?></a></li>
+
 			</ul>
 		</aside><!-- end .sidebar -->
 	</section><!-- end .cwp_top_container -->
