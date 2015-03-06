@@ -630,12 +630,6 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 				$additionalTextEnd = " " . $additional_text;
 			}
 
-			$tweetContent = apply_filters("the_content",$tweetContent);
-			$tweetContent = strip_tags($tweetContent);
-			$regex = '/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/';
-			$tweetContent = preg_replace($regex, '', " ".$tweetContent);
-			$tweetContent = trim($tweetContent);
-			$tweetContent = html_entity_decode($tweetContent);
 			$fTweet['link'] = $post_url;
 			$adTextELength = 0;
 			if(is_string($additionalTextEnd)){
