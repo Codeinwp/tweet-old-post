@@ -134,6 +134,11 @@ https://themeisle.com/plugins/tweet-old-post-lite/
 
 == Changelog ==
 
+**New in v7.0.2**
+
+* Removed twitter update_with_media call.
+* Fixed activation error notices when WP_DEBUG was enabled
+
 **New in v7.0**
 
 * Fixed issue with duplicate posting

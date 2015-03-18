@@ -1,6 +1,7 @@
 <?php
 define("CURRENTURL", top_current_page());
-define("CWP_TEXTDOMAIN", "tweet-old-post");
+if(!defined("CWP_TEXTDOMAIN"))
+	define("CWP_TEXTDOMAIN", "tweet-old-post");
 
 if(class_exists("CWP_TOP_Core_PRO")){
 	define("CWP_TOP_PRO", TRUE);
@@ -41,7 +42,8 @@ $cwp_format_fields = array(
 				'body'			=> __('Body Only', CWP_TEXTDOMAIN),
 				'titlenbody'	=> __('Title & Body', CWP_TEXTDOMAIN),
 				'custom-field'	=> __('Custom Field', CWP_TEXTDOMAIN)
-			)
+			),
+			'default_value'=>'title'
 		),
 		'top_opt_tweet_length' 	=> array(
 			'id' 				=> '1',
@@ -61,7 +63,8 @@ $cwp_format_fields = array(
 			'slug'			=> 'tweet-content-field',
 			'option'		=> 'top_opt_tweet_type_custom_field',
 			'description'	=> __('Which custom field do you want to fetch info from?', CWP_TEXTDOMAIN),
-			'options'		=> array()
+			'options'		=> array(),
+			'default_value'=>""
 		),
 
 		'additional-text'	=> array(
@@ -71,7 +74,8 @@ $cwp_format_fields = array(
 			'slug'			=> 'additional-text',
 			'option'		=> 'top_opt_add_text',
 			'description'	=> __('Text added to your auto posts', CWP_TEXTDOMAIN),
-			'options'		=> array()
+			'options'		=> array(),
+			'default_value'=>''
 		),
 
 		'additional-text-at' 	=> array(
@@ -84,7 +88,8 @@ $cwp_format_fields = array(
 			'options'		=> array(
 				'beginning'	=> __('Beginning of Post', CWP_TEXTDOMAIN),
 				'end'		=> __('End of Post', CWP_TEXTDOMAIN)
-			)
+			),
+			"default_value"=>"beginning"
 		),
 
 		'include-link' 			=> array(
@@ -101,7 +106,8 @@ $cwp_format_fields = array(
 			'dependency'=>  array(
 									"url-from-custom-field"=>"true",
 									"use-url-shortner"=>"true",
-								  )
+								  ),
+			'default_value'   =>"yes"
 
 
 		),
@@ -116,7 +122,9 @@ $cwp_format_fields = array(
 			'options'		=> '',
 			'dependency'=>  array(
 				"custom-field-url"=>"true"
-			)
+			),
+			'default_value'=>''
+
 		),
 
 		'custom-field-url'		=> array(
@@ -126,7 +134,8 @@ $cwp_format_fields = array(
 			'slug'			=> 'custom-field-url',
 			'option'		=> 'top_opt_custom_url_field',
 			'description'	=> __('URL will be fetched from the specified custom field.', CWP_TEXTDOMAIN),
-			'options'		=> array()
+			'options'		=> array(),
+			'default_value'=>""
 		),
 
 		'use-url-shortner' => array(
@@ -139,7 +148,8 @@ $cwp_format_fields = array(
 			'options'		=> '',
 			'dependency'=>  array(
 				"url-shortner"=>"true"
-			)
+			),
+			'default_value'=>"off"
 		),
 
 
@@ -166,7 +176,8 @@ $cwp_format_fields = array(
 			'dependency'=>  array(
 								"bitly-key"=>"bit.ly",
 								"bitly-user"=>"bit.ly"
-							)
+							),
+			'default_value'=>'wp_short_url'
 		),
 
 		'bitly-key' => array(
@@ -177,6 +188,7 @@ $cwp_format_fields = array(
 			'option'		=> 'top_opt_bitly_key',
 			'description'	=> '',
 			'options'		=> '',
+			'default_value'		=> '',
 		),
 
 		'bitly-user' => array(
@@ -187,6 +199,7 @@ $cwp_format_fields = array(
 			'option'		=> 'top_opt_bitly_user',
 			'description'	=> '',
 			'options'		=> '',
+			'default_value'		=> '',
 		),
 
 		'custom-hashtag-option' => array(
@@ -208,7 +221,8 @@ $cwp_format_fields = array(
 				"hashtags-length" =>"common,categories,tags,custom",
 				"common-hashtags" =>"common",
 				"custom-hashtag-field"=>"custom"
-			)
+			),
+			'default_value'=>'nohashtag'
 		),
 
 		'common-hashtags'		=> array(
@@ -218,7 +232,8 @@ $cwp_format_fields = array(
 			'slug'			=> 'common-hashtags',
 			'option'		=> 'top_opt_hashtags',
 			'description'	=> __('Specify which hashtags you want to be used. eg. #example, #example2', CWP_TEXTDOMAIN),
-			'options'		=> array()
+			'options'		=> array(),
+			'default_value'=>''
 		),
 
 		'hashtags-length'		=> array(
@@ -228,7 +243,8 @@ $cwp_format_fields = array(
 			'slug'			=> 'hashtags-length',
 			'option'		=> 'top_opt_hashtag_length',
 			'description'	=> __('Set to 0 (characters) to include all.', CWP_TEXTDOMAIN),
-			'options'		=> array()
+			'options'		=> array(),
+			'default_value'=>'20'
 		),
 
 		'custom-hashtag-field'	=> array(
@@ -238,7 +254,8 @@ $cwp_format_fields = array(
 			'slug'			=> 'custom-hashtag-field',
 			'option'		=> 'top_opt_custom_hashtag_field',
 			'description'	=> __('Fetch hashtags from specified custom field', CWP_TEXTDOMAIN),
-			'options'		=> array()
+			'options'		=> array(),
+			'default_value'=>'',
 
 		)
 		,
@@ -250,7 +267,8 @@ $cwp_format_fields = array(
 				'option'				=> 'top_opt_post_with_image',
 				'description'			=> __('Check if you want to add the post featured image to the share', CWP_TEXTDOMAIN),
 				'options'				=> array(),
-				"available_pro"         => "yes"
+				"available_pro"         => "yes",
+				'default_value'=>"off"
 			)
 );
 
@@ -266,6 +284,7 @@ $cwp_top_fields = array(
 			"available_pro" =>"no",
 			'description'	=> __('Minimum time between shares (Hour/Hours), 0.4 can be used also.', CWP_TEXTDOMAIN),
 			'options'		=> array()
+
 	),
 
 	'age-limit'				=> array(
