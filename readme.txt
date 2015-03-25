@@ -22,6 +22,8 @@ Other notable features :
 * Custom Post Types support
 * Linkedin support
 * Post with image
+* Custom Schedule
+* Post to Xing / Tumblr
 
 ### What the plugin can do ?
 
@@ -30,12 +32,6 @@ This plugin helps you to keeps your old posts alive by sharing them and driving 
 For updates follow https://twitter.com/themeisle If you have anything you can let us know <a href="https://themeisle.com/contact/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">here</a>.
 
 ThemeIsle is a <a href="https://www.codeinwp.com">Codeinwp</a> product.
-
-
-**Fortcoming**
-
-- Posts queue
-- Different post content for each account
 
 
 **Revive Old Post provides following features**
