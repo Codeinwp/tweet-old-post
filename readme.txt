@@ -76,28 +76,23 @@ Alternatively you can also follow the following steps to install the Revive Old 
 6. You can change the plugin options from Revive Old Posts under settings menu.
 
 == Frequently Asked Questions ==
-
 If you have any questions please get in touch with us at,
 https://themeisle.com/contact/
 
+**Before asking any question you need to check if you have the latest version, either PRO or FREE.**
 
-**Plugin doesn't post at the regular interval**
 
-- Unfortunately wp_cron function isn't perfect, it trigger just when somebody visit your site, so you nobody visit your site in 3 hours, TOP won't trigger
+**Plugin doesn't post at the regular interval or sends more posts than it should send to social networks.**
 
-**What do I do is a get the WP CRON error ?
+- Unfortunately wp_cron function isn't perfect, it trigger just when somebody visit your site, so you nobody visit your site in 3 hours, ROP won't trigger. In order to achieve this you need to enable Remote Check and add this line to your wp-config.php right after the lines with database credentials:
 
-The issue is that your wp-cron.php is not returning a 200 response when hit with a http request originating from your own server, it could be several things, most of the time it's an issue with the server / site and not with TOP.
+> define('DISABLE_WP_CRON', true);
 
-Some things you can test are.
+**Post are not sent to the social networks and i always see the green badge with 'You can refresh the page to see the next schedule !'**
 
-- Are scheduled posts working? (They use wp-cron too).
-- Are you hosted on Heart Internet? (wp-cron is known not to work with them).
-- If you click Share now from sample post popup does it work?
-- Try adding define( 'ALTERNATE_WP_CRON', true ); to your wp-config.php`, does the plugin work?
-- Is your site private (I.E. is it behind some kind of authentication, maintenance plugin, .htaccess) if so wp-cron won't work until you remove it, if you are and you temporarily remove the authentication, do tweets start working?
+- You need to add this line to your wp-config.php right after the lines with database credentials:
 
-If you have tried all these then feel free to contact support.
+  > define('ALTERNATE_WP_CRON', true);
 
 **If new version doesn't works**
 
@@ -106,19 +101,9 @@ If you have tried all these then feel free to contact support.
 - Note: Do not upgrade your plugin if you want to use the older version.
 
 
-**Revive Old post does not posts any tweets?**
-
-- If its not sharing any posts try playing around with the options. Try setting maxtweetage to none and try again.
-- Try removing categories from excluded option. Some of them have posted issues of tweet not getting post when categories are selected in exclued category section.
-
-**When I publish a new post to Twitter sometimes it’s ok, but sometimes I am getting this error: "code":226,"message":"This request looks like it might be automated. To protect our users from spam and other malicious activity, we can’t complete this action right now. Please try again later"?**
-
-This message is coming from the new Twitter’s spam protection mechanism. It’s analyzed your message and marked it as spam. As you can expect they don’t share any information about how this thing works. Try to change the format of your messages and use/don’t use/change URL shortener. There are also some reports that Twitter rejects posts coming from hosting providers that were used to abuse it.
-Please note: Despite the fact that error is saying "might be automated", it doesn’t mean that Twitter rejects the post because it was made though the API. "Automated" there doesn’t mean "posted/submitted automatically", it means "written/generated automatically".
-
 **Any more questions or doubts?**
 
-- Contact us at https://themeisle.com/contact/
+- Contact us at https://themeisle.com/contact/ and send us also a copy from Revive Old Post -> System Info
 
 
 
