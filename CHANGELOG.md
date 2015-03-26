@@ -1,5 +1,15 @@
 
 
+### 7.0.2 - 26/03/2015
+
+ Changes: 
+
+
+ * * Removed twitter update_with_media call.
+* Fixed activation error notices when WP_DEBUG was enabled
+ * Merge remote-tracking branch 'origin/development' into development
+
+
 ### 7.0.1 - 06/03/2015
 
  Changes: 
