@@ -166,7 +166,6 @@ if (!class_exists('CWP_TOP_Core')) {
 		public function getTweetsFromDB()
 		{
 			global $wpdb;
-
 			// Generate the Tweet Post Date Range
 			$dateQuery = $this->getTweetPostDateRange();
 			if(!is_array($dateQuery)) return false;
@@ -273,11 +272,44 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 
 
 		}
+		public function checkNetworkLock($ntk){
+			if ( wp_using_ext_object_cache() ) {
+			    $value = wp_cache_get( $ntk.'roplock', 'transient', true );
+				return ( false !== $value) ;
+			} else {
+
+
+				return (false !== ( $value = get_transient( $ntk.'roplock' ) ));
+			}
+
+
+
+
+		}
+		public function setNetworkLock($ntk){
+			if ( wp_using_ext_object_cache() ) {
+				wp_cache_set(  $ntk.'roplock', "lock", 'transient', 5 * MINUTE_IN_SECONDS );
+			} else {
+				set_transient(  $ntk.'roplock' , "lock", 5 * MINUTE_IN_SECONDS );
+			}
+
+		}
+		public function deleteNetworkLock($ntk){
+			if ( wp_using_ext_object_cache() ) {
+				wp_cache_delete($ntk.'roplock','transient');
+			} else {
+				delete_transient($ntk.'roplock');
+			}
+
+		}
+
 		public function tweetOldPost($ntk = "",$byID = false)
 
 		{
-			//if ( false !== ( $value = get_transient( $ntk.'roplock' ) )  && $byID === false ) return false;
-			set_transient(  $ntk.'roplock' , "lock", 5 * MINUTE_IN_SECONDS );
+			if ( $this->checkNetworkLock($ntk) && $byID === false ) return false;
+
+
+			$this->setNetworkLock($ntk);
 			if ($byID!==false) {
 
 				$returnedPost = $this->getTweetsFromDBbyID($byID);
@@ -313,7 +345,8 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 				$this->scheduleTweet($ntk);
 			}
 
-			delete_transient($ntk.'roplock');
+
+			$this->deleteNetworkLock($ntk);
 		}
 
 		public function scheduleTweet($ntk){
@@ -340,7 +373,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 
 		public function getAllNetworks($all = false){
 			global $cwp_rop_all_networks;
-
+			if(empty($cwp_rop_all_networks)) return array();
 
 			return ($all) ? $cwp_rop_all_networks : array_keys($cwp_rop_all_networks);
 		}
@@ -692,8 +725,12 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 								if(defined('ROP_IMAGE_CHECK')){
 									$args = $CWP_TOP_Core_PRO->topProImage( $connection, $finalTweet, $post->ID, $network );
 									if ( isset( $args['media[]'] ) ) {
-
-										$response = $connection->upload( 'statuses/update_with_media', $args );
+										$image = array("media"=>$args['media[]']);
+										$response = $connection->upload( 'https://upload.twitter.com/1.1/media/upload.json', $image );
+										unset($args['media[]']);
+										$args["media_ids"] = $response->media_id;
+										print_r($args);;
+										$response = $connection->post( 'statuses/update', $args );
 									} else {
 										$response = $connection->post( 'statuses/update', $args );
 									}
@@ -868,7 +905,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 ## BEGIN ROP CONFIGS ##
 
 <?php
-				$options = get_option("top_opt_post_formats");
+				$options = $this->getPostFormatValues();
 				$cwp_top_global_schedule = $this->getSchedule();
 		         $cwp_rop_all_networks = $this->getFormatFields();
 			echo "## ROP POST FORMAT";
@@ -1060,9 +1097,10 @@ endif;
 ##Begin user info
 
 <?php
+			$users = $this->getUsers();
 			foreach($all as $a ){
 				if(!isset($$a)) $$a = 0;
-				foreach($this->users as $us){
+				foreach($users  as $us){
 					if($us['service'] == $a) $$a ++;
 
 				}
@@ -2072,7 +2110,30 @@ endif;
 			$this->clearScheduledTweets();
 			//die();
 		}
+		public function getPostFormatValues(){
+			$cwp_rop_all_networks = $this->getFormatFields();
+			$options = get_option("top_opt_post_formats");
+			$return = array();
+			foreach($cwp_rop_all_networks as $n=>$d){
 
+				foreach($d as $fname => $f){
+
+				    if(!isset($options[$n."_".$f['option']])){
+					    $return[$n."_".$f['option']] = $f['default_value'];
+
+				    }else{
+					    $return[$n."_".$f['option']] = $options[$n."_".$f['option']];
+
+				    }
+
+				}
+
+			}
+
+			return $return;
+
+
+		}
 		public function deleteAllOptions()
 		{
 			global $defaultOptions;
@@ -2153,8 +2214,8 @@ endif;
 				case 'categories-list':
 					print "<div class='categories-list cwp-tax-post'><p class='rop-category-header'>	Posts </p>";
 					$categories = get_categories(array(
-						'hide_empty'        => false,
-						'number'            => 200
+						'hide_empty'        => true,
+						'number'            => 400
 					));
 
 					foreach ($categories as $category) {
@@ -2201,8 +2262,8 @@ endif;
 							if(in_array($pt,$tx->object_type)){
 
 								$terms = get_terms($tx->name, array(
-									'hide_empty'        => false,
-									'number'            =>200
+									'hide_empty'        => true,
+									'number'            =>400
 
 								) );
 								if(!empty($terms)){
@@ -2387,6 +2448,7 @@ endif;
 
 			}
 			$all = $this->getAllNetworks();
+
 			if($this->pluginStatus !== 'true'){
 
 				foreach($all as $a){
@@ -2397,6 +2459,7 @@ endif;
 				}
 				return false;
 			}
+
 
 			$networks = $this->getAvailableNetworks();
 			if(wp_next_scheduled( 'cwp_top_tweet_cron' ) !== false) {
@@ -2444,8 +2507,6 @@ endif;
 					}
 				}
 			}
-
-
 		}
 		public function loadAllHooks()
 		{
@@ -2528,9 +2589,9 @@ endif;
 
 			add_filter("rop_users_filter",array($this,"rop_users_filter_free"),1,1);
 
-			if(isset($_GET['debug']) == 'on') {
-				//$this->getNextTweetTime('twitter');
-				$this->tweetOldPost("tumblr");
+			if(isset($_GET['debug']) ) {
+	 			//$this->getNextTweetTime('twitter');
+			    //$this->tweetOldPost("twitter");
 
 				die();
 			}

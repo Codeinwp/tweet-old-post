@@ -250,6 +250,7 @@ class RopTwitterOAuth {
     //print_r($headers);
     curl_setopt($ci, CURLOPT_HTTPHEADER, $headers);
     curl_setopt($ci, CURLOPT_URL, $url);
+  //  echo $url;
     $response = curl_exec($ci);
 
     $this->http_code = curl_getinfo($ci, CURLINFO_HTTP_CODE);
