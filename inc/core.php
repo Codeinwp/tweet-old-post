@@ -1669,6 +1669,11 @@ endif;
 		{
 
 			if(!is_admin()) return false;
+			if(!function_exists('curl_version')){
+
+				self::addNotice(__("You need to have cURL library enabled in order to use our plugin! Please check it with your hosting company to enable this."),CWP_TEXTDOMAIN);
+				return false;
+			}
 			global $cwp_top_settings;
 			$social_network = $_POST['social_network'];
 			self::setCurrentNetwork($social_network);
