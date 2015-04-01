@@ -1085,7 +1085,8 @@ endif;
 
 ##Begin Log info
 
-<?php $logs = get_option('rop_notice_active');
+<?php       $logs = get_option('rop_notice_active');
+			if(!is_array($logs)) $logs = array();
 			foreach($logs as $log){
 				echo strtoupper($log['type']). " @ ".$log['time']. ' - '. $log['message']." \n ";
 			}
