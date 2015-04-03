@@ -728,8 +728,8 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 										$image = array("media"=>$args['media[]']);
 										$response = $connection->upload( 'https://upload.twitter.com/1.1/media/upload.json', $image );
 										unset($args['media[]']);
-										$args["media_ids"] = $response->media_id;
-										print_r($args);;
+										$args["media_ids"] = $response->media_id_string;
+
 										$response = $connection->post( 'statuses/update', $args );
 									} else {
 										$response = $connection->post( 'statuses/update', $args );
@@ -1085,7 +1085,8 @@ endif;
 
 ##Begin Log info
 
-<?php $logs = get_option('rop_notice_active');
+<?php       $logs = get_option('rop_notice_active');
+			if(!is_array($logs)) $logs = array();
 			foreach($logs as $log){
 				echo strtoupper($log['type']). " @ ".$log['time']. ' - '. $log['message']." \n ";
 			}
