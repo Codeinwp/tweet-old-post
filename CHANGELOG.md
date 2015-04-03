@@ -1,5 +1,16 @@
 
 
+### 7.0.3 - 03/04/2015
+
+ Changes: 
+
+
+ * * fixed problem with media_id
+ * * fixed bug with logs reporting in system info where there is no log available.
+ * Update readme.txt
+ * Update readme.txt
+
+
 ### 7.0.2 - 26/03/2015
 
  Changes: 
