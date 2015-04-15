@@ -228,7 +228,10 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 						GROUP BY {$wpdb->prefix}posts.ID
 						order by RAND() limit 50
 			";
+			self::addNotice("Query: ".$query,"error");
+
 			$returnedPost = $wpdb->get_results( $query);
+
 			if(count($returnedPost) >   $tweetCount) {
 				$rand_keys = array_rand( $returnedPost, $tweetCount );
 
@@ -250,6 +253,9 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 				$ids[] = $rp->ID;
 
 			}
+
+			self::addNotice("Ids: ".implode(",",$ids),"error");
+
 			$returnedPost  = array();
 			if(!empty($ids))
 				$returnedPost = $wpdb->get_results("select * from {$wpdb->prefix}posts where ID in (".implode(",",$ids).") ");
@@ -1552,7 +1558,7 @@ endif;
 					update_option('top_fb_session_state',$top_session_state_fb);
 					$dialog_url = "https://www.facebook.com/".ROP_TOP_FB_API_VERSION."/dialog/oauth?client_id="
 					              . get_option("cwp_top_app_id") . "&redirect_uri=" . top_settings_url() . "&state="
-					              . $top_session_state_fb . "&scope=publish_stream,publish_actions,manage_pages";
+					              . $top_session_state_fb . "&scope=publish_actions,manage_pages,publish_pages,user_posts,user_photos";
 
 					header("Location: " . $dialog_url);
 				}
@@ -1727,7 +1733,7 @@ endif;
 								update_option('top_fb_session_state',$top_session_state);
 								$dialog_url = "https://www.facebook.com/".ROP_TOP_FB_API_VERSION."/dialog/oauth?client_id="
 								              . $_POST['extra']['app_id'] . "&redirect_uri=" . top_settings_url() . "&state="
-								              . $top_session_state . "&scope=publish_stream,publish_actions,manage_pages";
+	 							              . $top_session_state . "&scope=publish_actions,manage_pages,publish_pages,user_posts,user_photos";
 
 								$response['url'] = $dialog_url;
 
@@ -2218,49 +2224,16 @@ endif;
 					break;
 
 				case 'categories-list':
-					print "<div class='categories-list cwp-tax-post'><p class='rop-category-header'>	Posts </p>";
-					$categories = get_categories(array(
-						'hide_empty'        => true,
-						'number'            => 400
-					));
 
-					foreach ($categories as $category) {
-
-						$top_opt_tweet_specific_category = get_option('top_opt_tweet_specific_category');
-
-						if (!is_array(get_option('top_opt_omit_cats')))
-							$top_opt_omit_specific_cats = explode(',',get_option('top_opt_omit_cats'));
-						else
-							$top_opt_omit_specific_cats = get_option('top_opt_omit_cats');
-
-						print "<div class='cwp-cat'>";
-						print "<input type='checkbox' name='".$field['option']."[]' value='".$category->cat_ID."' id='".$field['option']."_cat_".$category->cat_ID."'";
-
-						if($field['option'] == 'top_opt_omit_cats') {
-							if(is_array($top_opt_omit_specific_cats)) {
-								if(in_array($category->cat_ID, $top_opt_omit_specific_cats)) {
-									print "checked=checked";
-								}
-							}
-						}
-
-
-						print ">";
-						print "<label for='".$field['option']."_cat_".$category->cat_ID."'>".$category->name."</label>";
-						print "</div>";
-					}
-					print "<div class='clearfix'></div></div>";
 					$taxs = get_taxonomies(array(
-						'public'   => true,
-						'_builtin' => false
+						'public'   => true
 					),"object","and");
-					$args = array(
+
+					$post_types = get_post_types( array(
 						'public'   => true,
-						'_builtin' => false
-					);
-					$output = 'object';
-					$operator = 'and';
-					$post_types = get_post_types( $args, $output, $operator );
+					), "object","and");
+					$post_types["post"] = get_post_type_object( 'post' );
+					$post_types["page"] = get_post_type_object( 'page' );
 
 					foreach($post_types as $pt=>$pd){
 						foreach($taxs as $tx){
@@ -2273,7 +2246,7 @@ endif;
 
 								) );
 								if(!empty($terms)){
-									print "<div class='categories-list cwp-hidden cwp-tax-".$pt."'><p class='rop-category-header'>".$pd->labels->name."  </p>";
+									print "<div class='categories-list cwp-hidden cwp-tax-".$pt."'><p class='rop-category-header'>".$tx->labels->name."  </p>";
 									foreach ($terms as $t) {
 
 										if (!is_array(get_option('top_opt_omit_cats')))
@@ -2297,7 +2270,7 @@ endif;
 										print "<label for='".$field['option']."_cat_".$t->term_id."'>".$t->name."</label>";
 										print "</div>";
 									}
-									print "</div>";
+									print "<div class='clear'></div></div>";
 								}
 
 							}
