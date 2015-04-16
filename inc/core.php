@@ -228,7 +228,6 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 						GROUP BY {$wpdb->prefix}posts.ID
 						order by RAND() limit 50
 			";
-			self::addNotice("Query: ".$query,"error");
 
 			$returnedPost = $wpdb->get_results( $query);
 
@@ -254,7 +253,6 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 
 			}
 
-			self::addNotice("Ids: ".implode(",",$ids),"error");
 
 			$returnedPost  = array();
 			if(!empty($ids))
