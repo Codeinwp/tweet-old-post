@@ -1,5 +1,15 @@
 
 
+### 7.0.4 - 16/04/2015
+
+ Changes: 
+
+
+ * * fixed bug with the new facebook api changes.
+* changed pro banner
+ * Merge branch 'development' of https://github.com/Codeinwp/tweet-old-post into development
+
+
 ### 7.0.3 - 03/04/2015
 
  Changes: 
