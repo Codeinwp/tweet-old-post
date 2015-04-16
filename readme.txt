@@ -115,6 +115,11 @@ https://themeisle.com/plugins/tweet-old-post-lite/
 
 == Changelog ==
 
+**New in v7.0.4**
+
+* Changed pro banner.
+* Fixed bugs with the new facebook api changes.
+
 **New in v7.0.2**
 
 * Removed twitter update_with_media call.
