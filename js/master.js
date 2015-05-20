@@ -280,7 +280,7 @@ jQuery(document).ready(function(){
 	}
 
 	// Add New Account
-	if ((location.hash=="#_=_"|| location.hash=="#fbadd") && jQuery("#cwp_top_currenturl").attr("data-cnetwork")!= 'tumblr') {
+	if ((cwpfbadd) && jQuery("#cwp_top_currenturl").attr("data-cnetwork")!= 'tumblr') {
 		addFacebook();
 	};
 
@@ -995,6 +995,7 @@ function cwpBindCheckedHidden(){
             var field = th.attr('data-hidden');
             var values = jQuery("#"+field).val();
             values = values.split(',');
+
             jQuery.each(values,function(k,v){
                 th.find(".cwp-populate-hidden-checkbox[data-value='"+v+"']").addClass('active');
             });
@@ -1010,12 +1011,15 @@ function cwpTopBindTimes(){
         var values = jQuery(this).attr('data-times');
         var th = jQuery(this);
         values = jQuery.parseJSON(values);
-        jQuery.each(values,function(k,v){
-            th.append(getCwpTopTimeHTML(network) );
-            th.find("li:last select:first").val(v.hour);
-            th.find("li:last select:last").val(v.minute);
-        });
-
+        if(values[0]){
+            if(values[0].hour){
+                jQuery.each(values,function(k,v){
+                    th.append(getCwpTopTimeHTML(network) );
+                    th.find("li:last select:first").val(v.hour);
+                    th.find("li:last select:last").val(v.minute);
+                });
+            }
+        }
 
     })
 

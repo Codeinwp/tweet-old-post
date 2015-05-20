@@ -683,9 +683,9 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 			$finalTweetSize = $max_length - $hashLength - $adTextELength - $adTextBLength ;
 			if($network == 'twitter' && !empty($fTweet['link']) ){
 				$finalTweetSize = $finalTweetSize - 25;
-				if(CWP_TOP_PRO && $this->isPostWithImageEnabled($network)){
-					$finalTweetSize = $finalTweetSize - 25;
-				}
+				//if(CWP_TOP_PRO && $this->isPostWithImageEnabled($network)){
+				//	$finalTweetSize = $finalTweetSize - 25;
+				//}
 
 			}
 
@@ -711,7 +711,6 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 
 		public function tweetPost($finalTweet,$network = 'twitter',$post)
 		{
-
 			$users = $this->getUsers();
 			foreach ($users as $user) {
 				if($network == $user['service']  ){
@@ -1445,7 +1444,7 @@ endif;
 					update_option('top_fb_token',$access_token);
 
 				}
-				header("Location: " . top_settings_url().'#fbadd');
+				header("Location: " . top_settings_url().'&fbadd');
 			}
 
 			if (isset($_GET['code'])&&isset($_GET['state'])&&get_option('top_lk_session_state') == $_GET['state']) {
@@ -1543,7 +1542,7 @@ endif;
 			foreach ($loggedInUsers as $key=>$user) {
 				if ($user['service'] === "linkedin"&&$lk===0) {
 					$lk++;
-					$url = 'https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id='.get_option("cwp_top_lk_app_id").'&scope=rw_nus&state='.$top_session_state.'&redirect_uri='.top_settings_url();
+					$url = 'https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id='.get_option("cwp_top_lk_app_id").'&scope=w_share&state='.$top_session_state.'&redirect_uri='.top_settings_url();
 					header("Location: " . $url);
 
 					update_option('top_lk_session_state',$top_session_state);
@@ -2568,7 +2567,8 @@ endif;
 
 			if(isset($_GET['debug']) ) {
 	 			//$this->getNextTweetTime('twitter');
-			    //$this->tweetOldPost("twitter");
+			    //$this->tweetOldPost("twitter"); 	global $CWP_TOP_Core_PRO;
+				$this->tweetOldPost("twitter");
 
 				die();
 			}
