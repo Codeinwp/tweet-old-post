@@ -1349,7 +1349,6 @@ endif;
 		// Deactivation hook
 		public function deactivationHook()
 		{
-			delete_option('activation_hook_test_motherfucker');
 			$this->clearScheduledTweets();
 			$this->deleteAllOptions();
 			$this->remoteTrigger("off");
@@ -2073,7 +2072,6 @@ endif;
 		{
 
 			if(!is_admin()) return false;
-			update_option('activation_hook_test_motherfucker', "Well, the plugin was activated!");
 
 			$defaultOptions = array(
 				'top_opt_tweet_type'				=> 'title',
