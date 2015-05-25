@@ -34,6 +34,7 @@
 												'slug'			=> 'interval',
 												'option_value'			=>($cwp_top_global_schedule[$network_name.'_schedule_type_selected'] == 'each') ? $cwp_top_global_schedule[$network_name.'_top_opt_interval'] : '8',
 				"available_pro"         => "yes",
+				"pro_text"				=>CWP_TOP_PRO_BUSINESS_STRING,
 												'option'		=> $network_name.'_top_opt_interval',
 												'description'	=> __('Minimum time between shares (Hour/Hours), 0.4 can be used also.', CWP_TEXTDOMAIN),
 												'options'		=> array()
@@ -70,7 +71,7 @@
 								 </div>
 							 	<?php
 							    	if(!CWP_TOP_PRO){
-								    	echo CWP_TOP_PRO_STRING;
+								    	 _e(CWP_TOP_PRO_BUSINESS_STRING,CWP_TEXTDOMAIN);
 								    }
 							    ?>
 						 </div>

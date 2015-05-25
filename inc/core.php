@@ -2163,8 +2163,12 @@ endif;
 					if (isset($field['available_pro'])) {
 
 
-						if(!CWP_TOP_PRO && $field['available_pro'] == 'yes'){
-							$pro = CWP_TOP_PRO_STRING;
+						if(!CWP_TOP_PRO && $field['available_pro'] == 'yes') {
+							if ( isset( $field["pro_text"] ) ) {
+								$pro = __($field["pro_text"],CWP_TEXTDOMAIN);
+							} else {
+								$pro = CWP_TOP_PRO_STRING;
+							}
 							$disabled = "disabled='disabled'";
 						}
 					}
