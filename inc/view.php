@@ -6,6 +6,7 @@
  var ropProAvailable = <?php
     echo (CWP_TOP_PRO) ? 'true' : 'false';
  ?>;
+ var cwpfbadd = <?php echo isset($_GET["fbadd"]) ? "true" : "false"; ?>;
 
  </script>
 <div class="cwp_top_wrapper">
@@ -238,7 +239,7 @@
 					<li><?php _e('Go on',CWP_TEXTDOMAIN);?> <a href="https://www.linkedin.com/secure/developer?newapp=" target="_blank">linkedin.com/secure/developer?newapp=</a></li>
 					<li><?php _e('Enter the required details and pay special attention to the further fields :',CWP_TEXTDOMAIN);?></li>
 					<li><?php _e('Make sure you set Live Status to LIVE',CWP_TEXTDOMAIN);?> </li>
-					<li><?php _e('Default Scope should have r_basicprofile and rw_nus checked',CWP_TEXTDOMAIN);?></li>
+					<li><?php _e('Default Scope should have r_basicprofile and w_share checked',CWP_TEXTDOMAIN);?></li>
 					<li><?php printf(__('Copy/Paste this url : <strong>%s</strong> into OAuth 2.0 Redirect URLs field and <strong>Save</strong>',CWP_TEXTDOMAIN),top_settings_url());?> </li>
 					<li><?php _e('Once all required fields are filled click on Add Application button, get the API Key and Secret Key and paste them in the fields on the right',CWP_TEXTDOMAIN);?></li>
 
