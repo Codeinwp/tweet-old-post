@@ -1,5 +1,15 @@
 
 
+### 7.0.6 - 28/05/2015
+
+ Changes: 
+
+
+ * * removed redundant code
+ * * added compatibility for wordpress 4.2.2
+ * * fixed compatibility with pro version
+
+
 ### 7.0.4 - 25/05/2015
 
  Changes: 
