@@ -294,7 +294,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 			if ( wp_using_ext_object_cache() ) {
 				wp_cache_set(  $ntk.'roplock', "lock", 'transient', 5 * MINUTE_IN_SECONDS );
 			} else {
-				set_transient(  $ntk.'roplock' , "lock", 5 * MINUTE_IN_SECONDS );
+				set_transient(  $ntk.'roplock' , "lock",5 * MINUTE_IN_SECONDS);
 			}
 
 		}
@@ -683,22 +683,22 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 			$finalTweetSize = $max_length - $hashLength - $adTextELength - $adTextBLength ;
 			if($network == 'twitter' && !empty($fTweet['link']) ){
 				$finalTweetSize = $finalTweetSize - 25;
-				//if(CWP_TOP_PRO && $this->isPostWithImageEnabled($network)){
-				//	$finalTweetSize = $finalTweetSize - 25;
-				//}
+
 
 			}
-
+			if($network == 'twitter' && CWP_TOP_PRO && $this->isPostWithImageEnabled($network)){
+				$finalTweetSize = $finalTweetSize - 25;
+			}
 			$tweetContent = $this->ropSubstr( $tweetContent,0,$finalTweetSize);
 			if($network == 'twitter'){
-				$finalTweet = $additionalTextBeginning . $tweetContent  ." ".$fTweet['link']." ".$newHashtags . $additionalTextEnd;
+				if(!empty($fTweet['link'])) $fTweet['link'] = " ".$fTweet['link']." ";
+				$finalTweet = $additionalTextBeginning . $tweetContent  .$fTweet['link'].$newHashtags . $additionalTextEnd;
 				$fTweet['link'] = '';
 
 			}else{
 				$finalTweet = $additionalTextBeginning . $tweetContent .$newHashtags . $additionalTextEnd;
 
 			}
-
 			$fTweet['message'] =  $finalTweet ;
 
 			return $fTweet;
@@ -719,8 +719,9 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 						case 'twitter':
 							// Create a new twitter connection using the stored user credentials.
 							$connection = new RopTwitterOAuth($this->consumer, $this->consumerSecret, $user['oauth_token'], $user['oauth_token_secret']);
-							$args = array('status' =>  $finalTweet['message']." ".$finalTweet['link']);
+							$args = array('status' =>  $finalTweet['message'].$finalTweet['link']);
 							$response = false;
+							//self::addNotice(strlen($args["status"]),"error");
 							if($this->isPostWithImageEnabled($network) && CWP_TOP_PRO) {
 								global $CWP_TOP_Core_PRO;
 
@@ -732,7 +733,6 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 										$response = $connection->upload( 'https://upload.twitter.com/1.1/media/upload.json', $image );
 										unset($args['media[]']);
 										$args["media_ids"] = $response->media_id_string;
-
 										$response = $connection->post( 'statuses/update', $args );
 									} else {
 										$response = $connection->post( 'statuses/update', $args );

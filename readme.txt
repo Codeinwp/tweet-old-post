@@ -115,6 +115,7 @@ https://themeisle.com/plugins/tweet-old-post-lite/
 
 == Changelog ==
 
+
 **New in v7.0.4**
 
 * Changed pro banner.
