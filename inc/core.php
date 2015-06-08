@@ -322,7 +322,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 				if(!is_array($returnedPost)) return false;
 			}
 			if (count($returnedPost) == 0 ) {
-				self::addNotice('There is no suitable post to tweet make sure you excluded correct categories and selected the right dates.','error');
+				self::addNotice(__('There is no suitable post to tweet make sure you excluded correct categories and selected the right dates.',CWP_TEXTDOMAIN),'error');
 			}
 			$done = get_option("top_opt_already_tweeted_posts");
 			if(!is_array($done) || get_option('top_opt_tweet_multiple_times')=="on" ) $done = array();
@@ -361,7 +361,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 					wp_schedule_single_event( $time, $ntk . 'roptweetcron', array( $ntk ) );
 				}
 			}else{
-				self::addNotice("Invalid next schedule: ".date (  'M j, Y @ G:i',$time),'error');
+				self::addNotice(__("Invalid next schedule: ",CWP_TEXTDOMAIN).date (  'M j, Y @ G:i',$time),'error');
 			}
 		}
 		public function getAvailableNetworks(){
@@ -694,6 +694,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 				if(!empty($fTweet['link'])) $fTweet['link'] = " ".$fTweet['link']." ";
 				$finalTweet = $additionalTextBeginning . $tweetContent  .$fTweet['link'].$newHashtags . $additionalTextEnd;
 				$fTweet['link'] = '';
+				$finalTweet =  preg_replace('/\s+/', ' ', trim( $finalTweet));
 
 			}else{
 				$finalTweet = $additionalTextBeginning . $tweetContent .$newHashtags . $additionalTextEnd;
@@ -787,14 +788,14 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 
 							$pp=wp_remote_post("https://graph.facebook.com/".ROP_TOP_FB_API_VERSION."/".$user['id']."/feed?access_token=".$user['oauth_token'],$args);
 							if(is_wp_error( $pp )){
-								self::addNotice("Error for posting on facebook for  - " .$post->post_title."".$pp->get_error_message(),'error' );
+								self::addNotice(__("Error for posting on facebook for:",CWP_TEXTDOMAIN)." ".$post->post_title."".$pp->get_error_message(),'error' );
 
 							}else{
 								if($pp['response']['code'] == 200){
 
-									self::addNotice("Post  ". $post->post_title." has been successfully sent to facebook ",'notice');
+									self::addNotice(sprintf(__("Post %s has been successfully sent to facebook",CWP_TEXTDOMAIN), $post->post_title),'notice');
 								}else{
-									self::addNotice("Error for post ". $post->post_title." ".$pp['response']['message']." on facebook for ".$user['oauth_user_details']->name,'error');
+									self::addNotice(__("Error for facebook share on post ",CWP_TEXTDOMAIN). $post->post_title." ".$pp['response']['message']." @".$user['oauth_user_details']->name,'error');
 
 								}
 
@@ -825,7 +826,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 							);
 
 							if (!function_exists('curl_version'))
-								self::addNotice("Your host does not support CURL",'error');
+								self::addNotice(__("Your host does not support CURL",CWP_TEXTDOMAIN),'error');
 							$ch = curl_init();
 							curl_setopt($ch, CURLOPT_URL,$url);
 							curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -901,7 +902,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 				<div class="wrap">
 					<h2><?php _e( 'System Information', CWP_TEXTDOMAIN); ?></h2><br/>
 					<form action="" method="post" dir="ltr">
-						<textarea readonly="readonly" onclick="this.focus();this.select()" cols="100" id="system-info-textarea" name="cwp-top-sysinfo" rows="20" title="<?php _e( 'To copy the system info, click below then press Ctrl + C (PC) or Cmd + C (Mac).', 'edd' ); ?>">
+						<textarea readonly="readonly" onclick="this.focus();this.select()" cols="100" id="system-info-textarea" name="cwp-top-sysinfo" rows="20" title="<?php _e( 'To copy the system info, click below then press Ctrl + C (PC) or Cmd + C (Mac).', CWP_TEXTDOMAIN ); ?>">
 
 ## Please include this information when posting support requests ##
 
@@ -1122,7 +1123,7 @@ endif;
 </textarea>
 						<p class="submit">
 							<input type="hidden" name="cwp-action" value="download_sysinfo" />
-							<?php submit_button( 'Download System Info File', 'primary', 'cwp-download-sysinfo', false ); ?>
+							<?php submit_button( __('Download System Info File',CWP_TEXTDOMAIN), 'primary', 'cwp-download-sysinfo', false ); ?>
 						</p>
 					</form>
 					</div>
@@ -1257,14 +1258,14 @@ endif;
 				$limit = intval(get_option('top_opt_max_age_limit'));
 
 			if( !is_int($limit) ) {
-				self::addNotice("Incorect value for Maximum age of post to be eligible for sharing. Please check the value to be a number greater or equal than 0 ",'error');
+				self::addNotice(__("Incorect value for Maximum age of post to be eligible for sharing. Please check the value to be a number greater or equal than 0 ",CWP_TEXTDOMAIN),'error');
 				return false;
 			}
 
 			$min = intval(get_option('top_opt_age_limit'));
 
 			if(!is_int($min)  ){
-				self::addNotice("Incorect value for Minimum age of post to be eligible for sharing. Please check the value to be a number greater  or equal than 0 ",'error');
+				self::addNotice(__("Incorect value for Minimum age of post to be eligible for sharing. Please check the value to be a number greater  or equal than 0 ",CWP_TEXTDOMAIN),'error');
 				return false;
 
 			}
@@ -1272,7 +1273,7 @@ endif;
 				$limit = 10*365;
 			}
 			if($limit < $min){
-				self::addNotice("Maximum age of post to be eligible for sharing must be greater than Minimum age of post to be eligible for sharing. Please check the value to be a number greater  or equal than 0 ",'error');
+				self::addNotice(__("Maximum age of post to be eligible for sharing must be greater than Minimum age of post to be eligible for sharing. Please check the value to be a number greater  or equal than 0 ",CWP_TEXTDOMAIN),'error');
 				return false;
 
 			}
@@ -2156,7 +2157,28 @@ endif;
 			$pro = "";
 
 			switch ($field['type']) {
+				case 'image-list':
+					$pro = "";
+					$disabled = "";
+					if (isset($field['available_pro'])) {
 
+
+						if(!CWP_TOP_PRO){
+							$pro = CWP_TOP_PRO_STRING;
+							$disabled = "disabled='disabled'";
+						}
+					}
+					$images = array();
+					$images[] = "full";
+					$images = array_merge($images,get_intermediate_image_sizes());
+
+					echo "<select  name='".$field['option']."' id='".$field['option']."'   ".$disabled ." >";
+							foreach($images as $image){
+								echo "<option ".(($field["option_value"] == $image) ? "selected" : "")." value='".$image."'>".$image."</option>";
+							}
+
+					echo "</select><br/>".$pro;
+					break;
 				case 'text':
 					if (isset($field['available_pro'])) {
 

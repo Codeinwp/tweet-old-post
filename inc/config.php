@@ -364,6 +364,17 @@ $cwp_top_fields = array(
 			'description'			=> __('Select which categories do you want to exclude to share from? Blank - None', CWP_TEXTDOMAIN),
 			'options'				=> array()
 	),
+	'image-size'=>array(
+		'id' 					=> '22',
+		'name'  				=> __('Select image size ', CWP_TEXTDOMAIN),
+		'type'					=> 'image-list',
+		'slug'					=> 'image-sizes',
+		'option'				=> 'top_image_size_selected',
+		'description'			=> __('Select which image size you would like to use <br/> when posting on social networks', CWP_TEXTDOMAIN),
+		'options'				=> array(),
+		"available_pro"         => "yes",
+				'default_value'=>"full"
+	)
 
 );
 
