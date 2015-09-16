@@ -430,7 +430,7 @@ function top_current_page(){
 }
 
 function top_settings_url(){
-	$pageURL = admin_url('admin.php?page=TweetOldPost');
+	$pageURL = get_admin_url( get_current_blog_id(), "admin.php?page=TweetOldPost" );;
 	return str_replace(":80","",$pageURL);
 }
 
