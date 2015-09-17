@@ -23,13 +23,13 @@
                 ?>
 					<fieldset class="option twp<?php echo $key; ?>" <?php if(isset($field['dependency'])) { ?> data-dependent='<?php echo json_encode($field['dependency']); ?>'  <?php } ?>>
 						<div class="left">
-							<label for="<?php echo $field['option']; ?>"> <?php _e( $field['name'], CWP_TEXTDOMAIN ); ?> </label>
-							<span class="description"> <?php _e( $field['description'], CWP_TEXTDOMAIN ); ?> <?php if($field['type'] == 'number'):
-						?>(<?php _e("Max",CWP_TEXTDOMAIN); ?>: <?php echo $field['max-length']; ?>)<?php
+							<label for="<?php echo $field['option']; ?>"> <?php _e( $field['name'], 'tweet-old-post' ); ?> </label>
+							<span class="description"> <?php _e( $field['description'], 'tweet-old-post' ); ?> <?php if($field['type'] == 'number'):
+						?>(<?php _e("Max",'tweet-old-post'); ?>: <?php echo $field['max-length']; ?>)<?php
 						endif;?> </span>
 
 							<?php if($field['type'] == 'categories-list') { ?>
-								<button class='select-all'><?php _e( "Select All", CWP_TEXTDOMAIN );?></button>
+								<button class='select-all'><?php _e( "Select All", 'tweet-old-post' );?></button>
 							<?php } ?>
 
 						</div><!-- end .left -->

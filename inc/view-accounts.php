@@ -7,8 +7,8 @@
 
 		<fieldset class="option <?php if($pro !==  CWP_TOP_PRO):  ?> pro-ver <?php endif; ?> ">
 				<div class="left">
-					<label for="<?php echo $an; ?>-login"> <?php _e(ucwords($an)." Login", CWP_TEXTDOMAIN); ?> </label>
-					<span class='description'> <?php _e("Login using your ".ucwords($an)." account.", CWP_TEXTDOMAIN); ?> </span>
+					<label for="<?php echo $an; ?>-login"> <?php _e(ucwords($an)." Login", 'tweet-old-post'); ?> </label>
+					<span class='description'> <?php _e("Login using your ".ucwords($an)." account.", 'tweet-old-post'); ?> </span>
 				</div><!-- end .left -->
 
 				<div class='right'>
@@ -28,7 +28,7 @@
 					if ($tw_users!==0) { ?>
 						<button id='<?php echo $an; ?>-login' class='another-account login <?php if(! CWP_TOP_PRO) echo 'pro-only'?>' service='<?php echo $an; ?>'>+</button>
 					<?php } else { ?>
-						<button id='<?php echo $an; ?>-login' class='login  <?php $this->checkVersion(); ?> <?php if($pro &&  !CWP_TOP_PRO) echo 'pro-only'?>' service='<?php echo $an; ?>'> <?php _e("Add Account", CWP_TEXTDOMAIN) ?> </button>
+						<button id='<?php echo $an; ?>-login' class='login  <?php $this->checkVersion(); ?> <?php if($pro &&  !CWP_TOP_PRO) echo 'pro-only'?>' service='<?php echo $an; ?>'> <?php _e("Add Account", 'tweet-old-post') ?> </button>
 					<?php } ?>
 				</div><!-- end .right -->
 			</fieldset><!-- end .option -->
