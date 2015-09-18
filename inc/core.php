@@ -677,7 +677,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 				$adTextBLength = $this->getStrLen($additionalTextBeginning);
 			}
 			$hashLength = 0;
-			if(is_string($newHashtags)){
+			if(is_string($newHashtags) && $network != 'tumblr'){
 				$hashLength = $this->getStrLen($newHashtags);
 			}
 			$finalTweetSize = $max_length - $hashLength - $adTextELength - $adTextBLength ;
@@ -692,14 +692,20 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 			$tweetContent = $this->ropSubstr( $tweetContent,0,$finalTweetSize);
 			if($network == 'twitter'){
 				if(!empty($fTweet['link'])) $fTweet['link'] = " ".$fTweet['link']." ";
+
 				$finalTweet = $additionalTextBeginning . $tweetContent  .$fTweet['link'].$newHashtags . $additionalTextEnd;
 				$fTweet['link'] = '';
 				$finalTweet =  preg_replace('/\s+/', ' ', trim( $finalTweet));
 
 			}else{
-				$finalTweet = $additionalTextBeginning . $tweetContent .$newHashtags . $additionalTextEnd;
-
+				if($network === 'tumblr') {
+					$fTweet['tags']  = implode(",",array_filter(explode("#", $newHashtags)));
+					$finalTweet = $additionalTextBeginning . $tweetContent . $additionalTextEnd;
+				}else{
+					$finalTweet = $additionalTextBeginning . $tweetContent .$newHashtags . $additionalTextEnd;
+				}
 			}
+
 			$fTweet['message'] =  $finalTweet ;
 
 			return $fTweet;
