@@ -1,5 +1,19 @@
 
 
+### 7.0.8 - 18/09/2015
+
+ Changes: 
+
+
+ * * removed new lines for tweets
+ * * fixed problems with custom icons
+ * *fixed problem with mysql_get_client_info
+ * Fixed multisite issue for redirect url
+ * making translation ready
+ * fixed single quotes problem
+ * fixed tumblr tags
+
+
 ### 7.0.6 - 28/05/2015
 
  Changes: 
