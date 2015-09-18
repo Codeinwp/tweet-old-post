@@ -90,6 +90,10 @@ https://themeisle.com/contact/
 
   > define('ALTERNATE_WP_CRON', true);
 
+**How do i add a facebook account**
+
+ - Please fallow this tutorial : http://docs.themeisle.com/article/66-how-to-create-a-facebook-application
+
 **If new version doesn't works**
 
 - Try other versions from http://wordpress.org/extend/plugins/tweet-old-post/download/
@@ -115,6 +119,13 @@ https://themeisle.com/plugins/tweet-old-post-lite/
 
 == Changelog ==
 
+
+**New in v7.0.8**
+* Added facebook tutorial for facebook share.
+* Fixed multisite issue for redirect url
+* Making translation ready for new wordpress.org system
+* Fixed single quotes problem
+* Fixed tumblr tags
 
 **New in v7.0.4**
 

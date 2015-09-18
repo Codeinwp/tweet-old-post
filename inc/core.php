@@ -79,13 +79,13 @@ if (!class_exists('CWP_TOP_Core')) {
 		}
 		public function addLocalization() {
 
-			load_plugin_textdomain(CWP_TEXTDOMAIN, false, dirname(ROPPLUGINBASENAME).'/languages/');
+			load_plugin_textdomain('tweet-old-post', false, dirname(ROPPLUGINBASENAME).'/languages/');
 		}
 		function checkUsers(){
 			if(!is_array($this->users)) $this->users = array();
 			if(count($this->users) == 0){
 
-				self::addNotice(__("You have no account set to post !", CWP_TEXTDOMAIN),"error");
+				self::addNotice(__("You have no account set to post !", 'tweet-old-post'),"error");
 				die();
 			}
 
@@ -322,7 +322,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 				if(!is_array($returnedPost)) return false;
 			}
 			if (count($returnedPost) == 0 ) {
-				self::addNotice('There is no suitable post to tweet make sure you excluded correct categories and selected the right dates.','error');
+				self::addNotice(__('There is no suitable post to tweet make sure you excluded correct categories and selected the right dates.','tweet-old-post'),'error');
 			}
 			$done = get_option("top_opt_already_tweeted_posts");
 			if(!is_array($done) || get_option('top_opt_tweet_multiple_times')=="on" ) $done = array();
@@ -361,7 +361,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 					wp_schedule_single_event( $time, $ntk . 'roptweetcron', array( $ntk ) );
 				}
 			}else{
-				self::addNotice("Invalid next schedule: ".date (  'M j, Y @ G:i',$time),'error');
+				self::addNotice(__("Invalid next schedule: ",'tweet-old-post').date (  'M j, Y @ G:i',$time),'error');
 			}
 		}
 		public function getAvailableNetworks(){
@@ -422,7 +422,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 
 			if(count($returnedTweets) == 0) {
 				foreach($networks as $net){
-					$messages[$net] = __("No posts to share",CWP_TEXTDOMAIN);
+					$messages[$net] = __("No posts to share",'tweet-old-post');
 				}
 				$networks = array();
 			}
@@ -572,7 +572,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 			}
 			// Trim new empty lines.
 			if(!is_string($tweetContent)) $tweetContent = '';
-			$tweetContent = strip_tags( html_entity_decode( $tweetContent ) );
+			$tweetContent = strip_tags( html_entity_decode( $tweetContent,ENT_QUOTES ) );
 			//$tweetContent = esc_html($tweetContent);
 			//$tweetContent = esc_html($tweetContent);
 			//$tweetContent = trim(preg_replace('/\s+/', ' ', $tweetContent));
@@ -677,7 +677,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 				$adTextBLength = $this->getStrLen($additionalTextBeginning);
 			}
 			$hashLength = 0;
-			if(is_string($newHashtags)){
+			if(is_string($newHashtags) && $network != 'tumblr'){
 				$hashLength = $this->getStrLen($newHashtags);
 			}
 			$finalTweetSize = $max_length - $hashLength - $adTextELength - $adTextBLength ;
@@ -692,13 +692,20 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 			$tweetContent = $this->ropSubstr( $tweetContent,0,$finalTweetSize);
 			if($network == 'twitter'){
 				if(!empty($fTweet['link'])) $fTweet['link'] = " ".$fTweet['link']." ";
+
 				$finalTweet = $additionalTextBeginning . $tweetContent  .$fTweet['link'].$newHashtags . $additionalTextEnd;
 				$fTweet['link'] = '';
+				$finalTweet =  preg_replace('/\s+/', ' ', trim( $finalTweet));
 
 			}else{
-				$finalTweet = $additionalTextBeginning . $tweetContent .$newHashtags . $additionalTextEnd;
-
+				if($network === 'tumblr') {
+					$fTweet['tags']  = implode(",",array_filter(explode("#", $newHashtags)));
+					$finalTweet = $additionalTextBeginning . $tweetContent . $additionalTextEnd;
+				}else{
+					$finalTweet = $additionalTextBeginning . $tweetContent .$newHashtags . $additionalTextEnd;
+				}
 			}
+
 			$fTweet['message'] =  $finalTweet ;
 
 			return $fTweet;
@@ -787,14 +794,14 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 
 							$pp=wp_remote_post("https://graph.facebook.com/".ROP_TOP_FB_API_VERSION."/".$user['id']."/feed?access_token=".$user['oauth_token'],$args);
 							if(is_wp_error( $pp )){
-								self::addNotice("Error for posting on facebook for  - " .$post->post_title."".$pp->get_error_message(),'error' );
+								self::addNotice(__("Error for posting on facebook for:",'tweet-old-post')." ".$post->post_title."".$pp->get_error_message(),'error' );
 
 							}else{
 								if($pp['response']['code'] == 200){
 
-									self::addNotice("Post  ". $post->post_title." has been successfully sent to facebook ",'notice');
+									self::addNotice(sprintf(__("Post %s has been successfully sent to facebook",'tweet-old-post'), $post->post_title),'notice');
 								}else{
-									self::addNotice("Error for post ". $post->post_title." ".$pp['response']['message']." on facebook for ".$user['oauth_user_details']->name,'error');
+									self::addNotice(__("Error for facebook share on post ",'tweet-old-post'). $post->post_title." ".$pp['response']['message']." @".$user['oauth_user_details']->name,'error');
 
 								}
 
@@ -825,7 +832,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 							);
 
 							if (!function_exists('curl_version'))
-								self::addNotice("Your host does not support CURL",'error');
+								self::addNotice(__("Your host does not support CURL",'tweet-old-post'),'error');
 							$ch = curl_init();
 							curl_setopt($ch, CURLOPT_URL,$url);
 							curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -899,9 +906,9 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 
 			?>
 				<div class="wrap">
-					<h2><?php _e( 'System Information', CWP_TEXTDOMAIN); ?></h2><br/>
+					<h2><?php _e( 'System Information', 'tweet-old-post'); ?></h2><br/>
 					<form action="" method="post" dir="ltr">
-						<textarea readonly="readonly" onclick="this.focus();this.select()" cols="100" id="system-info-textarea" name="cwp-top-sysinfo" rows="20" title="<?php _e( 'To copy the system info, click below then press Ctrl + C (PC) or Cmd + C (Mac).', 'edd' ); ?>">
+						<textarea readonly="readonly" onclick="this.focus();this.select()" cols="100" id="system-info-textarea" name="cwp-top-sysinfo" rows="20" title="<?php _e( 'To copy the system info, click below then press Ctrl + C (PC) or Cmd + C (Mac).', 'tweet-old-post' ); ?>">
 
 ## Please include this information when posting support requests ##
 
@@ -1015,7 +1022,7 @@ Active Theme:             <?php echo $theme . "\n"; ?>
 	Host:                     <?php echo $host . "\n"; ?>
 <?php endif; ?>
 PHP Version:              <?php echo PHP_VERSION . "\n"; ?>
-MySQL Version:            <?php echo mysql_get_server_info() . "\n"; ?>
+MySQL Version:            <?php echo mysqli_get_client_info() . "\n"; ?>
 Web Server Info:          <?php echo $_SERVER['SERVER_SOFTWARE'] . "\n"; ?>
 WordPress Memory Limit:   <?php echo  WP_MEMORY_LIMIT  ; ?><?php echo "\n"; ?>
 PHP Safe Mode:            <?php echo ini_get( 'safe_mode' ) ? "Yes" : "No\n"; ?>
@@ -1122,7 +1129,7 @@ endif;
 </textarea>
 						<p class="submit">
 							<input type="hidden" name="cwp-action" value="download_sysinfo" />
-							<?php submit_button( 'Download System Info File', 'primary', 'cwp-download-sysinfo', false ); ?>
+							<?php submit_button( __('Download System Info File','tweet-old-post'), 'primary', 'cwp-download-sysinfo', false ); ?>
 						</p>
 					</form>
 					</div>
@@ -1257,14 +1264,14 @@ endif;
 				$limit = intval(get_option('top_opt_max_age_limit'));
 
 			if( !is_int($limit) ) {
-				self::addNotice("Incorect value for Maximum age of post to be eligible for sharing. Please check the value to be a number greater or equal than 0 ",'error');
+				self::addNotice(__("Incorect value for Maximum age of post to be eligible for sharing. Please check the value to be a number greater or equal than 0 ",'tweet-old-post'),'error');
 				return false;
 			}
 
 			$min = intval(get_option('top_opt_age_limit'));
 
 			if(!is_int($min)  ){
-				self::addNotice("Incorect value for Minimum age of post to be eligible for sharing. Please check the value to be a number greater  or equal than 0 ",'error');
+				self::addNotice(__("Incorect value for Minimum age of post to be eligible for sharing. Please check the value to be a number greater  or equal than 0 ",'tweet-old-post'),'error');
 				return false;
 
 			}
@@ -1272,7 +1279,7 @@ endif;
 				$limit = 10*365;
 			}
 			if($limit < $min){
-				self::addNotice("Maximum age of post to be eligible for sharing must be greater than Minimum age of post to be eligible for sharing. Please check the value to be a number greater  or equal than 0 ",'error');
+				self::addNotice(__("Maximum age of post to be eligible for sharing must be greater than Minimum age of post to be eligible for sharing. Please check the value to be a number greater  or equal than 0 ",'tweet-old-post'),'error');
 				return false;
 
 			}
@@ -1331,7 +1338,7 @@ endif;
 		{
 			$schedules['cwp_top_schedule'] = array(
 				'interval'	=> floatval($this->intervalSet) * 60 * 60,
-				'display'	=> __("Custom Tweet User Interval", CWP_TEXTDOMAIN)
+				'display'	=> __("Custom Tweet User Interval", 'tweet-old-post')
 			);
 
 			return $schedules;
@@ -1605,7 +1612,7 @@ endif;
 				foreach($this->notices as $n){
 					?>
 					<div class="error">
-       					 <p><?php _e( $n, CWP_TEXTDOMAIN ); ?></p>
+       					 <p><?php _e( $n, 'tweet-old-post' ); ?></p>
    				 </div>
 				<?php
 				}
@@ -1674,7 +1681,7 @@ endif;
 			if(!is_admin()) return false;
 			if(!function_exists('curl_version')){
 
-				self::addNotice(__("You need to have cURL library enabled in order to use our plugin! Please check it with your hosting company to enable this."),CWP_TEXTDOMAIN);
+				self::addNotice(__("You need to have cURL library enabled in order to use our plugin! Please check it with your hosting company to enable this."),'tweet-old-post');
 				return false;
 			}
 			global $cwp_top_settings;
@@ -1708,17 +1715,17 @@ endif;
 								break;
 
 							default:
-								self::addNotice(__("Could not connect to Twitter!"),CWP_TEXTDOMAIN);
+								self::addNotice(__("Could not connect to Twitter!"),'tweet-old-post');
 
 								break;
 						}
 						break;
 					case 'facebook':
 							if (empty($_POST['extra']['app_id'])){
-								self::addNotice(__("Could not connect to Facebook! You need to add the App ID",CWP_TEXTDOMAIN),'error');
+								self::addNotice(__("Could not connect to Facebook! You need to add the App ID",'tweet-old-post'),'error');
 							}else
 							if (empty($_POST['extra']['app_secret'])){
-								self::addNotice(__("Could not connect to Facebook! You need to add the App Secret",CWP_TEXTDOMAIN),'error');
+								self::addNotice(__("Could not connect to Facebook! You need to add the App Secret",'tweet-old-post'),'error');
 
 							}else{
 								update_option('cwp_top_app_id', $_POST['extra']['app_id']);
@@ -2156,21 +2163,42 @@ endif;
 			$pro = "";
 
 			switch ($field['type']) {
+				case 'image-list':
+					$pro = "";
+					$disabled = "";
+					if (isset($field['available_pro'])) {
 
+
+						if(!CWP_TOP_PRO){
+							$pro = CWP_TOP_PRO_STRING;
+							$disabled = "disabled='disabled'";
+						}
+					}
+					$images = array();
+					$images[] = "full";
+					$images = array_merge($images,get_intermediate_image_sizes());
+
+					echo "<select  name='".$field['option']."' id='".$field['option']."'   ".$disabled ." >";
+							foreach($images as $image){
+								echo "<option ".(($field["option_value"] == $image) ? "selected" : "")." value='".$image."'>".$image."</option>";
+							}
+
+					echo "</select><br/>".$pro;
+					break;
 				case 'text':
 					if (isset($field['available_pro'])) {
 
 
 						if(!CWP_TOP_PRO && $field['available_pro'] == 'yes') {
 							if ( isset( $field["pro_text"] ) ) {
-								$pro = __($field["pro_text"],CWP_TEXTDOMAIN);
+								$pro = __($field["pro_text"],'tweet-old-post');
 							} else {
 								$pro = CWP_TOP_PRO_STRING;
 							}
 							$disabled = "disabled='disabled'";
 						}
 					}
-					echo "<input type='text' placeholder='".__($field['description'],CWP_TEXTDOMAIN)."' ".$disabled." value='".$field['option_value']."' name='".$field['option']."' id='".$field['option']."'><br/>".$pro;
+					echo "<input type='text' placeholder='".__($field['description'],'tweet-old-post')."' ".$disabled." value='".$field['option_value']."' name='".$field['option']."' id='".$field['option']."'><br/>".$pro;
 					break;
 
 				case 'number':
@@ -2182,7 +2210,7 @@ endif;
 							$disabled = "disabled='disabled'";
 						}
 					}
-					echo "<input type='number' placeholder='".__($field['description'],CWP_TEXTDOMAIN)."' ".$disabled." value='".$field['option_value']."' max='".$field['max-length']."' name='".$field['option']."' id='".$field['option']."'><br/>".$pro;
+					echo "<input type='number' placeholder='".__($field['description'],'tweet-old-post')."' ".$disabled." value='".$field['option_value']."' max='".$field['max-length']."' name='".$field['option']."' id='".$field['option']."'><br/>".$pro;
 					break;
 
 				case 'select':
@@ -2201,7 +2229,7 @@ endif;
 					for ($i=0; $i < $noFieldOptions; $i++) {
 						print "<option value=".$fieldOptions[$i];
 						if($field['option_value'] == $fieldOptions[$i]) { echo " selected='selected'"; }
-						print ">".__($field['options'][$fieldOptions[$i]],CWP_TEXTDOMAIN)."</option>";
+						print ">".__($field['options'][$fieldOptions[$i]],'tweet-old-post')."</option>";
 					}
 					print "</select>".$pro;
 					break;
@@ -2707,9 +2735,9 @@ endif;
 			else
 				$cap='manage_options';
 			add_menu_page($cwp_top_settings['name'], $cwp_top_settings['name'], $cap, $cwp_top_settings['slug'], array($this, 'loadMainView'), '','99.87514');
-			add_submenu_page($cwp_top_settings['slug'], __('Exclude Posts',CWP_TEXTDOMAIN), __('Exclude Posts',CWP_TEXTDOMAIN), 'manage_options', 'ExcludePosts', 'rop_exclude_posts');
+			add_submenu_page($cwp_top_settings['slug'], __('Exclude Posts','tweet-old-post'), __('Exclude Posts','tweet-old-post'), 'manage_options', 'ExcludePosts', 'rop_exclude_posts');
 
-			add_submenu_page($cwp_top_settings['slug'], __('System Info',CWP_TEXTDOMAIN), __('System Info',CWP_TEXTDOMAIN), 'manage_options', 'SystemInfo', array($this,'system_info'));
+			add_submenu_page($cwp_top_settings['slug'], __('System Info','tweet-old-post'), __('System Info','tweet-old-post'), 'manage_options', 'SystemInfo', array($this,'system_info'));
 
 		}
 
@@ -2856,7 +2884,10 @@ endif;
 		public function rop_load_dashboard_icon()
 		{
 			wp_register_style( 'rop_custom_dashboard_icon', ROPCUSTOMDASHBOARDICON, false, time() );
-			wp_enqueue_style( 'rop_custom_dashboard_icon' );
+			$screen = get_current_screen();
+			if($screen->base == "toplevel_page_TweetOldPost"){
+			    wp_enqueue_style( 'rop_custom_dashboard_icon' );
+		    }
 		}
 
 	}
