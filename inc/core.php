@@ -572,7 +572,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 			}
 			// Trim new empty lines.
 			if(!is_string($tweetContent)) $tweetContent = '';
-			$tweetContent = strip_tags( html_entity_decode( $tweetContent ) );
+			$tweetContent = strip_tags( html_entity_decode( $tweetContent,ENT_QUOTES ) );
 			//$tweetContent = esc_html($tweetContent);
 			//$tweetContent = esc_html($tweetContent);
 			//$tweetContent = trim(preg_replace('/\s+/', ' ', $tweetContent));
