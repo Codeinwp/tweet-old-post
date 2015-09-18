@@ -182,7 +182,7 @@
 			<span class="sample_tweet top_sample_auth">
 				<div class="top_left_instructions">
 				<ol>
-					<li><?php _e('Go on','tweet-old-post');?>  <a href="https://developers.facebook.com/apps/" target="_blank">developers.facebook.com/apps</a></li>
+					<li><?php _e('Go on','tweet-old-post');?>  <a href="https://developers.facebook.com/apps/" target="_blank">developers.facebook.com/apps</a>  </li>
 					<li><?php _e('Click on <strong>Create New App</strong> from the top right corner','tweet-old-post');?> </li>
 					<li><?php _e('Enter a <strong>Display Name</strong> and <strong>Namespace</strong> and click on Create App','tweet-old-post');?> </li>
 					<li><?php _e('Once you arrive on the app dashboard, copy your <strong>App ID</strong> and <strong>App Secret</strong> in the fields on the right','tweet-old-post');?> </li>
@@ -191,6 +191,7 @@
 					<li><?php _e('Go on Status & Review tab and set your app live from the top-right switch.','tweet-old-post');?> </li>
 					<li><?php _e('Now everything is done, click on <strong>Authorize App</strong> button.','tweet-old-post');?> </li>
 				</ol>
+					<h3><?php _e('You can fallow this <a target="_blank" href="http://docs.themeisle.com/article/66-how-to-create-a-facebook-application" > tutorial</a> for more detailed instructions','tweet-old-post'); ?></h3>
 			</div>
 			<form action="" method="post" id="cwp_top_form" class="  top_auth_form">
 			<fieldset class="option twptop_opt_app_id">
