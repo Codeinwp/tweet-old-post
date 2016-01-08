@@ -19,6 +19,9 @@ $cwp_top_settings = array(
 );
 $cwp_rop_remote_trigger_url = "http://portal.themeisle.com/remote_trigger";
 $cwp_rop_beta_trigger_url = "http://portal.themeisle.com/beta_user";
+// Added by Ash/Upwork
+$cwp_rop_self_endpoint      = "rop_checking_schedule";
+// Added by Ash/Upwork
 $cwp_top_global_schedule = array();
 if(!defined('ROP_PRO_VERSION'))
 	$cwp_top_networks = array();

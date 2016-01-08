@@ -25,7 +25,6 @@ if (!class_exists('CWP_TOP_Core')) {
 		private $cwp_top_oauth_token;
 		private $cwp_top_oauth_token_secret;
 
-
 		public $users;
 		private $user_info;
 
@@ -735,7 +734,8 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 
 								if(defined('ROP_IMAGE_CHECK')){
 									$args = $CWP_TOP_Core_PRO->topProImage( $connection, $finalTweet, $post->ID, $network );
-									if ( isset( $args['media[]'] ) ) {
+                                    // Added by Ash/Upwork: !empty($args['media[]'])
+									if ( isset( $args['media[]'] ) && !empty($args['media[]'])) {
 										$image = array("media"=>$args['media[]']);
 										$response = $connection->upload( 'https://upload.twitter.com/1.1/media/upload.json', $image );
 										unset($args['media[]']);
@@ -2590,10 +2590,16 @@ endif;
 
 			add_action('admin_init', array($this,'top_nag_ignore'));
 			add_action('admin_init', array($this,'clearOldCron'));
+            // Added by Ash/Upwork
+            add_filter('template_include', array($this, 'captureRewrites'), 1, 1);
+            add_filter('query_vars', array($this, 'addRewriteVars'));
+            // Added by Ash/Upwork
 
 			//filters
 
 			add_filter("rop_users_filter",array($this,"rop_users_filter_free"),1,1);
+
+
 
 			if(isset($_GET['debug']) ) {
 	 			//$this->getNextTweetTime('twitter');
@@ -2604,6 +2610,38 @@ endif;
 			}
 
 		}
+
+        // Added by Ash/Upwork
+        function addRewriteVars($vars){
+            global $cwp_rop_self_endpoint;
+            $vars[] = $cwp_rop_self_endpoint;
+            return $vars;
+        }
+
+        function captureRewrites($template){
+            global $wp_query, $cwp_rop_self_endpoint;
+            if (get_query_var($cwp_rop_self_endpoint, false)){
+                self::processServerRequest();
+                return null;
+            }
+            return $template;
+        }
+
+        private static function processServerRequest(){
+            if(
+                !get_option("cwp_rop_remote_trigger", false)
+                ||
+                !get_option("cwp_topnew_active_status", false)
+            ) return;
+
+			$this->clearScheduledTweets();
+			$networks = $this->getAvailableNetworks();
+
+			foreach($networks as $network){
+				do_action($network.'roptweetcron', array($network));
+			}
+        }
+        // Added by Ash/Upwork
 
 		public function rop_users_filter_free($users){
 
@@ -2633,8 +2671,16 @@ endif;
 			if(!empty($state) &&( $state == "on" || $state == "off")){
 
 				update_option("cwp_rop_remote_trigger",$state);
-				$this->sendRemoteTrigger($state);
-
+                // Added by Ash/Upwork
+				$response = $this->sendRemoteTrigger($state);
+                if($response){
+                    $error  = __('Error: ','tweet-old-post') . $response;
+                    self::addNotice($error, 'error');
+                    update_option("cwp_rop_remote_trigger", "off");
+                    // if you want to show the user an alert, make showAlert true
+                    wp_send_json_error(array("error" => $error, "showAlert" => false));
+                }
+                // Added by Ash/Upwork
 			}
 
 			if(empty($status)) die();
@@ -2645,7 +2691,7 @@ endif;
 			global $cwp_rop_remote_trigger_url;
 			$state = ($state == "on") ? "yes" : "no";
 
-		    wp_remote_post( $cwp_rop_remote_trigger_url, array(
+		    $response = wp_remote_post( $cwp_rop_remote_trigger_url, array(
 					'method' => 'POST',
 					'timeout' => 1,
 					'redirection' => 5,
@@ -2657,6 +2703,12 @@ endif;
 				)
 			);
 
+            // Added by Ash/Upwork
+            if(is_wp_error($response)){
+                return $response->get_error_message();
+            }
+            return null;
+            // Added by Ash/Upwork
 		}
 
 		public function betaUserTrigger($status = ""){
