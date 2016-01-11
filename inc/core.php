@@ -2646,10 +2646,11 @@ endif;
                         continue;
                     }
                     
-                    echo "firing $hook for $time (current time is " . $this->getTime() . ") <br>";
+                    $network    = trim(str_replace("roptweetcron", "", $hook));
+                    echo "firing $hook for $network for $time (current time is " . $this->getTime() . ") <br>";
 
                     foreach($dings as $hash => $data){
-                        do_action($hook, $data["args"]);
+                        do_action($hook, array($network));
                     }
                 }
             }
