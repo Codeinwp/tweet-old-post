@@ -2621,25 +2621,38 @@ endif;
         function captureRewrites($template){
             global $wp_query, $cwp_rop_self_endpoint;
             if (get_query_var($cwp_rop_self_endpoint, false)){
-                self::processServerRequest();
+                $this->processServerRequest();
                 return null;
             }
             return $template;
         }
 
-        private static function processServerRequest(){
+        private function processServerRequest(){
             if(
                 !get_option("cwp_rop_remote_trigger", false)
                 ||
                 !get_option("cwp_topnew_active_status", false)
             ) return;
 
+			$networks   = $this->getAvailableNetworks();
+            $crons      = _get_cron_array();
 			$this->clearScheduledTweets();
-			$networks = $this->getAvailableNetworks();
 
-			foreach($networks as $network){
-				do_action($network.'roptweetcron', array($network));
-			}
+            foreach($crons as $time => $cron){
+                foreach($cron as $hook => $dings){
+                    if(strpos($hook, "roptweetcron") === FALSE) continue;
+                    if($time >= $this->getTime()){
+                        echo "NOT firing $hook for $time (current time is " . $this->getTime() . ") <br>";
+                        continue;
+                    }
+                    
+                    echo "firing $hook for $time (current time is " . $this->getTime() . ") <br>";
+
+                    foreach($dings as $hash => $data){
+                        do_action($hook, $data["args"]);
+                    }
+                }
+            }
         }
         // Added by Ash/Upwork
 
