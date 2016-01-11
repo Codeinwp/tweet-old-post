@@ -102,7 +102,7 @@ jQuery(document).ready(function(){
 			success: function(response) {
 				console.log(response);
                 if(!response.success){
-                    if(response.data.showAlert) alert(response.data.error);
+                    if(response.data && response.data.showAlert) alert(response.data.error);
                     state = "off";
                     th.addClass("off").removeClass("on");
                 }
