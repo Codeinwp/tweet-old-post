@@ -2634,23 +2634,24 @@ endif;
                 !get_option("cwp_topnew_active_status", false)
             ) return;
 
-			$networks   = $this->getAvailableNetworks();
             $crons      = _get_cron_array();
-			$this->clearScheduledTweets();
+            $this->clearScheduledTweets();
 
             foreach($crons as $time => $cron){
                 foreach($cron as $hook => $dings){
                     if(strpos($hook, "roptweetcron") === FALSE) continue;
-                    if($time >= $this->getTime()){
-                        echo "NOT firing $hook for $time (current time is " . $this->getTime() . ") <br>";
+
+                    $network    = trim(str_replace("roptweetcron", "", $hook));
+                    if($time > $this->getTime()){
+                        echo "FUTURE $hook for $time (current time is " . $this->getTime() . ") <br>";
+                        wp_schedule_single_event($time, $network.'roptweetcron', array($network));
                         continue;
                     }
                     
-                    $network    = trim(str_replace("roptweetcron", "", $hook));
-                    echo "firing $hook for $network for $time (current time is " . $this->getTime() . ") <br>";
+                    echo "NOW $hook for $network for $time (current time is " . $this->getTime() . ") <br>";
 
                     foreach($dings as $hash => $data){
-                        do_action($hook, array($network));
+                        do_action($hook, $network);
                     }
                 }
             }
