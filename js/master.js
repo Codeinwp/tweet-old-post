@@ -20,28 +20,30 @@ jQuery(document).ready(function(){
 		return false;
 	});
 	jQuery("#reset-settings").click(function(e) {
-		e.preventDefault();
-		startAjaxIntro();
+		if(confirm('Are you sure you want to reset all settings? You can\'t undo this action.')) {
+			e.preventDefault();
+			startAjaxIntro();
 
-		jQuery.ajax({
-			type: "POST",
-			url: cwp_top_ajaxload.ajaxurl,
-			data: {
-				action: 'reset_options'
-			},
-			success: function(response) {
-				console.log("Success: " + response);
-				//jQuery("#cwp_top_form").cwpTopUpdateForm();
-				location.reload();
-				endAjaxIntro();
-			},
-			error: function(response) {
-				console.log("Error: "+ response);
-			}
-		});
+			jQuery.ajax({
+				type: "POST",
+				url: cwp_top_ajaxload.ajaxurl,
+				data: {
+					action: 'reset_options'
+				},
+				success: function(response) {
+					console.log("Success: " + response);
+					//jQuery("#cwp_top_form").cwpTopUpdateForm();
+					location.reload();
+					endAjaxIntro();
+				},
+				error: function(response) {
+					console.log("Error: "+ response);
+				}
+			});
 
-		endAjaxIntro();
-		return false;
+			endAjaxIntro();
+			return false;
+		}
 	});
 	jQuery("#linkedin-login").on("click",function(){
 		if(jQuery(this).hasClass("pro-only")) return false;
@@ -101,6 +103,11 @@ jQuery(document).ready(function(){
 			},
 			success: function(response) {
 				console.log(response);
+                if(!response.success){
+                    if(response.data && response.data.showAlert) alert(response.data.error);
+                    state = "off";
+                    th.addClass("off").removeClass("on");
+                }
 			},
 			error: function(response) {
 				console.log("Error: "+ response);
