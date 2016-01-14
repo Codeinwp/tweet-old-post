@@ -31,18 +31,20 @@ ThemeIsle is a Codeinwp product where we also offer a <a href="http://www.codein
 
 If you want to see a live demo of the plugin you can check <a href="http://www.youtube.com/watch?v=YOnlWmyO3VU">http://www.youtube.com/watch?v=YOnlWmyO3VU</a>.
 
-### Why to upgrade to PRO ?
+> ### Why to upgrade to PRO ?
 
 > Using the <a rel="friend" href="https://themeisle.com/plugins/tweet-old-post-pro/">PRO version</a> of the plugin you will unleash the most important functionality : images in tweets . Using those your RT/CTR will go crazy.
 
-Other notable features :
+> Other notable features :
 
-* Multiple Social Accounts
-* Custom Post Types support
-* Linkedin support
-* Post with image
-* Custom Schedule
-* Post to Xing / Tumblr
+> * Multiple Social Accounts
+> * Custom Post Types support
+> * Linkedin support
+> * Post with image
+> * Custom Schedule
+> * Post to Xing / Tumblr
+
+
 = Translations =
 
 * sk_SK translation by Patrik Žec (PATWIST) of http://patwist.com
