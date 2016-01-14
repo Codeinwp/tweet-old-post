@@ -2950,11 +2950,9 @@ endif;
 
 		public function rop_load_dashboard_icon()
 		{
-			wp_register_style( 'rop_custom_dashboard_icon', ROPCUSTOMDASHBOARDICON, false, time() );
-			$screen = get_current_screen();
-			if($screen->base == "toplevel_page_TweetOldPost"){
-			    wp_enqueue_style( 'rop_custom_dashboard_icon' );
-		    }
+			wp_register_style( 'rop_custom_dashboard_icon', ROPCUSTOMDASHBOARDICON, false, ROP_VERSION );
+		    wp_enqueue_style( 'rop_custom_dashboard_icon' );
+
 		}
 
 	}
