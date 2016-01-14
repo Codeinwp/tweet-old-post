@@ -1,5 +1,41 @@
 
 
+### 7.1 - 14/01/2016
+
+ Changes: 
+
+
+ * Add confirmation box to reset settings.
+
+Add confirmation box to reset settings in the plugin options.
+ * Bug fixes for cron and image posting
+
+1) Create endpoint for remote check
+2) White posting to twitter, post without image if media is invalid
+ * Bug fix
+
+Show alert only when showAlert is being sent from the back end
+ * Bux fix: Support from cron
+
+If cron is disabled/inoperative, fire events through the endpoint if
+they are due
+ * Call ROP endpoint
+
+Call the ROP endpoint with the correct network arguments
+ * If cron is not running, reschedule future tweets
+
+In case the cron is only temporarily disabled, the future schedule
+should not be cleared. So, when the endpoint is called, we fetch the
+cron, clear it, execute the passed schedule and schedule the future
+ones.
+ * Fixed schedule inconsistency
+Fixed posting with image
+ * Merge pull request #41 from HardeepAsrani/development
+
+Add confirmation box to reset settings.
+ * Fixed menu icon
+
+
 ### 7.0.8 - 18/09/2015
 
  Changes: 
