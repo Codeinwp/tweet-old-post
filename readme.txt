@@ -2,28 +2,13 @@
 Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle
 Tags: admin, ajax, plugin, twitter, facebook, linkedin, automatic, tweet, share, wordpress, marketing, sharing, Tweet old post, Tweets,evergreen,  Promote old post by tweeting about them, Twitter, Auto Tweet, Hashtags, Twitter Hashtags, Tweet Posts, Tweet, Post Tweets, Wordpress Twitter Plugin, Twitter Plugin, Tweet Selected Posts, Twitter, Promote Posts, Tweet Random Post, Share Post, Promote Post, Post Tweets, Wordpress Twitter, Drive Traffic, Tweet Selected Posts
 Requires at least: 2.7
-Tested up to: 4.2.2
+Tested up to: 4.4.1
 Stable tag: trunk
 
 
 Plugin to share about your old posts on twitter, facebook, linkedin to get more hits for them and keep them alive.
 
 == Description ==
-
-> If you want to see a live demo of the plugin you can check <a href="http://www.youtube.com/watch?v=YOnlWmyO3VU">http://www.youtube.com/watch?v=YOnlWmyO3VU</a>.
-
-### Why to upgrade to PRO ?
-
-Using the <a rel="friend" href="https://themeisle.com/plugins/tweet-old-post-pro/">PRO version</a> of the plugin you will unleash the most important functionality : images in tweets . Using those your RT/CTR will go crazy.
-
-Other notable features :
-
-* Multiple Social Accounts
-* Custom Post Types support
-* Linkedin support
-* Post with image
-* Custom Schedule
-* Post to Xing / Tumblr
 
 ### What the plugin can do ?
 
@@ -44,7 +29,20 @@ ThemeIsle is a Codeinwp product where we also offer a <a href="http://www.codein
 - Exclude categories
 - Exclude specific posts.
 
+If you want to see a live demo of the plugin you can check <a href="http://www.youtube.com/watch?v=YOnlWmyO3VU">http://www.youtube.com/watch?v=YOnlWmyO3VU</a>.
 
+### Why to upgrade to PRO ?
+
+> Using the <a rel="friend" href="https://themeisle.com/plugins/tweet-old-post-pro/">PRO version</a> of the plugin you will unleash the most important functionality : images in tweets . Using those your RT/CTR will go crazy.
+
+Other notable features :
+
+* Multiple Social Accounts
+* Custom Post Types support
+* Linkedin support
+* Post with image
+* Custom Schedule
+* Post to Xing / Tumblr
 = Translations =
 
 * sk_SK translation by Patrik Žec (PATWIST) of http://patwist.com
@@ -118,6 +116,11 @@ https://themeisle.com/plugins/tweet-old-post-lite/
 
 
 == Changelog ==
+
+**New in v7.1**
+
+* Fixed inconsistency in the schedule. Now posting is more accurate.
+* Fixed image sharing issue which was not working for some server configuration
 
 
 **New in v7.0.8**

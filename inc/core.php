@@ -2643,12 +2643,12 @@ endif;
 
                     $network    = trim(str_replace("roptweetcron", "", $hook));
                     if($time > $this->getTime()){
-                        echo "FUTURE $hook for $time (current time is " . $this->getTime() . ") <br>";
+                      //  echo "FUTURE $hook for $time (current time is " . $this->getTime() . ") <br>";
                         wp_schedule_single_event($time, $network.'roptweetcron', array($network));
                         continue;
                     }
                     
-                    echo "NOW $hook for $network for $time (current time is " . $this->getTime() . ") <br>";
+                    //echo "NOW $hook for $network for $time (current time is " . $this->getTime() . ") <br>";
 
                     foreach($dings as $hash => $data){
                         do_action($hook, $network);
