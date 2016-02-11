@@ -1,5 +1,20 @@
 
 
+### 7.2 - 11/02/2016
+
+ Changes: 
+
+
+ * Fix readme
+ * per network buffer
+
+1) removed the global buffer and added a per-network buffer
+2) if min and/or max date of posts is 0, do not include that part in the
+query
+ * Fixed randomization algorithm, preventing share twice of same post until the end of cycle
+Fixed date filter when both of them are 0
+
+
 ### 7.1 - 14/01/2016
 
  Changes: 
