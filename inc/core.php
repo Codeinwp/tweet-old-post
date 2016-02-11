@@ -4,6 +4,11 @@ require_once(ROPPLUGINPATH."/inc/config.php");
 // RopTwitterOAuth class
 require_once(ROPPLUGINPATH."/inc/oAuth/twitteroauth.php");
 
+// Added by Ash/Upwork
+define("ROP_IS_TEST", false);
+// Added by Ash/Upwork
+
+
 if (!class_exists('CWP_TOP_Core')) {
 	class CWP_TOP_Core {
 
@@ -162,7 +167,59 @@ if (!class_exists('CWP_TOP_Core')) {
 			return $returnedPost;
 		}
 
-		public function getTweetsFromDB()
+        // Added by Ash/Upwork
+        /**
+        * This will get the postIDs for the particular network
+        */
+        private function getAlreadyTweetedPosts($ntk){
+            $array      = array();
+            if(!$ntk) return $array;
+
+            $opt        = get_option("top_opt_posts_buffer_" . $ntk, array());
+            if(!$opt || !is_array($opt)) return $array;
+            
+            return $opt;
+        }
+
+        /**
+        * This will add the postID to the network buffer to note which post was posted on which network
+        */
+        private function setAlreadyTweetedPosts($ntk, $postID){
+            if(!$ntk || !$postID) return;
+            $opt        = get_option("top_opt_posts_buffer_" . $ntk, array());
+            if(!$opt || !is_array($opt)){
+                $opt    = array();
+            }
+            $opt[]      = $postID;
+
+
+            update_option("top_opt_posts_buffer_" . $ntk, $opt);
+        }
+
+        /**
+        * This will clear the network buffer
+        */
+        private function clearAlreadyTweetedPosts($ntk){
+            if(!$ntk) return;
+            delete_option("top_opt_posts_buffer_" . $ntk);
+        }
+
+        /**
+        * This is a test method that will be fired on admin_init. Only to be used for testing.
+        * In production, this function will just return harmlessly
+        */
+        public function doTestAction(){
+            if(!ROP_IS_TEST) return;
+
+            $networks   = array("twitter", "facebook", "linkedin", "tumblr");
+            $ntk        = $networks[array_rand($networks)];
+            for($x = 0; $x < rand(0,5); $x++) $this->setAlreadyTweetedPosts($ntk, rand(0,100));
+            echo "<pre>network=".$ntk.print_r($this->getAlreadyTweetedPosts($ntk),true). "</pre>";
+        }
+        
+        // Added by Ash/Upwork
+
+		public function getTweetsFromDB($ntk=null, $clearNetworkBuffer=false)
 		{
 			global $wpdb;
 			// Generate the Tweet Post Date Range
@@ -177,6 +234,9 @@ if (!class_exists('CWP_TOP_Core')) {
 			// Get post categories set.
 //			$postQueryCategories =  $this->getTweetCategories();
 			$excludedIds = "";
+            // Added by Ash/Upwork
+            $tweetedPosts   = $this->getAlreadyTweetedPosts($ntk);
+            /*
 			$tweetedPosts = get_option("top_opt_already_tweeted_posts");
 			if(!is_array($tweetedPosts)) $tweetedPosts = array();
 
@@ -184,6 +244,7 @@ if (!class_exists('CWP_TOP_Core')) {
 
 				$tweetedPosts = array();
 			}
+            */
 			$postQueryExcludedPosts = $this->getExcludedPosts();
 			$postQueryExcludedPosts = explode (',',$postQueryExcludedPosts);
 			$excluded = array_merge($tweetedPosts,$postQueryExcludedPosts);
@@ -196,9 +257,16 @@ if (!class_exists('CWP_TOP_Core')) {
 				SELECT {$wpdb->prefix}posts.ID
 				FROM  {$wpdb->prefix}posts
 				LEFT JOIN {$wpdb->prefix}term_relationships ON ({$wpdb->prefix}posts.ID = {$wpdb->prefix}term_relationships.object_id)
-				WHERE 1=1
-				  AND ((post_date >= '{$dateQuery['before']}'
-				        AND post_date <= '{$dateQuery['after']}')) ";
+				WHERE 1=1 ";
+             
+            // Added by Ash/Upwork
+            if(array_key_exists("before", $dateQuery)){
+                $query  .= "AND post_date >= '{$dateQuery['before']}' ";
+            }
+            if(array_key_exists("after", $dateQuery)){
+                $query  .= "AND post_date <= '{$dateQuery['after']}' ";
+            }
+            // Added by Ash/Upwork
 
 			// If there are no categories set, select the post from all.
 			//if(!empty($postQueryCategories)) {
@@ -210,7 +278,7 @@ if (!class_exists('CWP_TOP_Core')) {
 					SELECT object_id
 					FROM {$wpdb->prefix}term_relationships
 					INNER JOIN {$wpdb->prefix}term_taxonomy ON ( {$wpdb->prefix}term_relationships.term_taxonomy_id = {$wpdb->prefix}term_taxonomy.term_taxonomy_id )
-WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}))) ";
+                    WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}))) ";
 			}
 
 			if(!empty($excluded)) {
@@ -218,17 +286,38 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 				$query .= "AND ( {$wpdb->prefix}posts.ID NOT IN ({$excluded})) ";
 			}
 			if(!empty($somePostType)){
-
 				$somePostType = explode(',',$somePostType);
 				$somePostType = "'".implode("','",$somePostType)."'";
 			}
-			$query .= "AND {$wpdb->prefix}posts.post_type IN ({$somePostType})
-					  AND ({$wpdb->prefix}posts.post_status = 'publish')
+
+            // Added by Ash/Upwork
+            // Use a more efficient = condition than a costly IN condition if only one type is present
+            if(!empty($somePostType)){
+                if(strpos($somePostType, ",") !== FALSE){
+                    $query .= "AND {$wpdb->prefix}posts.post_type IN ({$somePostType}) ";
+                }else{
+                    $query .= "AND {$wpdb->prefix}posts.post_type = ({$somePostType}) ";
+                }
+            }
+            // Added by Ash/Upwork
+
+			$query .= "AND ({$wpdb->prefix}posts.post_status = 'publish')
 						GROUP BY {$wpdb->prefix}posts.ID
 						order by RAND() limit 50
 			";
 
-			$returnedPost = $wpdb->get_results( $query);
+            $returnedPost = $wpdb->get_results( $query);
+
+            //self::addLog("rows " . count($returnedPost) . " from " . $query);
+
+            // Added by Ash/Upwork
+            // If the number of posts found is zero and a post can be shared multiple times, lets clear the buffer and fetch again
+            if($ntk && !$clearNetworkBuffer && count($returnedPost) == 0 && get_option('top_opt_tweet_multiple_times') == "on"){
+                //self::addLog("clearing for $ntk!!");
+                $this->clearAlreadyTweetedPosts($ntk);
+                return $this->getTweetsFromDB($ntk, true);
+            }
+            // Added by Ash/Upwork
 
 			if(count($returnedPost) >   $tweetCount) {
 				$rand_keys = array_rand( $returnedPost, $tweetCount );
@@ -317,17 +406,14 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 
 				$returnedPost = $this->getTweetsFromDBbyID($byID);
 			}else{
-				$returnedPost = $this->getTweetsFromDB();
+				$returnedPost = $this->getTweetsFromDB($ntk);
 				if(!is_array($returnedPost)) return false;
 			}
 			if (count($returnedPost) == 0 ) {
 				self::addNotice(__('There is no suitable post to tweet make sure you excluded correct categories and selected the right dates.','tweet-old-post'),'error');
 			}
-			$done = get_option("top_opt_already_tweeted_posts");
-			if(!is_array($done) || get_option('top_opt_tweet_multiple_times')=="on" ) $done = array();
 			$users = $this->getUsers();
 			foreach($returnedPost as $post){
-					if(in_array($post->ID,$done)) continue;
 					$oknet = false;
 					foreach($users as $u){
 						if($u['service'] == $ntk){
@@ -338,11 +424,7 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 					if(!$oknet) return false;
 					$finalTweet = $this->generateTweetFromPost($post,$ntk);
 				 	$this->tweetPost( $finalTweet, $ntk, $post );
-					$tweetedPosts = get_option("top_opt_already_tweeted_posts");
-					if ($tweetedPosts=="")	$tweetedPosts = array();
-					array_push($tweetedPosts, $post->ID);
-					update_option("top_opt_already_tweeted_posts", $tweetedPosts);
-					$done[] = $post->ID;
+                    $this->setAlreadyTweetedPosts($ntk, $post->ID);
 			}
 			if ($byID===false) {
 				$this->scheduleTweet($ntk);
@@ -717,6 +799,13 @@ WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}
 
 		public function tweetPost($finalTweet,$network = 'twitter',$post)
 		{
+            // Added by Ash/Upwork
+            if(ROP_IS_TEST){
+                self::addLog("Not posting because ROP_IS_TEST is set");
+                return;
+            }
+            // Added by Ash/Upwork
+
 			$users = $this->getUsers();
 			foreach ($users as $user) {
 				if($network == $user['service']  ){
@@ -1256,14 +1345,12 @@ endif;
 		}*/
 
 		// Generates the tweet date range based on the user input.
+        // Corrected by Ash/Upwork: added a few efficiencies
 		public function getTweetPostDateRange()
 		{
-			if (get_option('top_opt_max_age_limit')==0 )
-				$limit = 9999;
-			else
-				$limit = intval(get_option('top_opt_max_age_limit'));
+			$max = intval(get_option('top_opt_max_age_limit'));
 
-			if( !is_int($limit) ) {
+			if( !is_int($max) ) {
 				self::addNotice(__("Incorect value for Maximum age of post to be eligible for sharing. Please check the value to be a number greater or equal than 0 ",'tweet-old-post'),'error');
 				return false;
 			}
@@ -1275,26 +1362,23 @@ endif;
 				return false;
 
 			}
-			if($limit == 0 ){
-				$limit = 10*365;
-			}
-			if($limit < $min){
+			if($max > 0 && $min > 0 && $max < $min){
 				self::addNotice(__("Maximum age of post to be eligible for sharing must be greater than Minimum age of post to be eligible for sharing. Please check the value to be a number greater  or equal than 0 ",'tweet-old-post'),'error');
 				return false;
 
 			}
 
-
-
-			$minLimit = time() - $min*24*60*60;
-			$maxLimit = time() - $limit*24*60*60;
-
-			$minAgeLimit = date("Y-m-d H:i:s", $minLimit);
-			$maxAgeLimit = date("Y-m-d H:i:s", $maxLimit);
 			$dateQuery = array();
-			$dateQuery['before'] = $maxAgeLimit;
-			$dateQuery['after'] = $minAgeLimit;
-			$dateQuery['inclusive'] = true;
+            if($max > 0){
+                $maxLimit       = time() - $max*24*60*60;
+                $dateQuery['before'] = date("Y-m-d H:i:s", $maxLimit);
+            }
+
+            if($min > 0){
+			    $minLimit       = time() - $min*24*60*60;
+                $dateQuery['after'] = date("Y-m-d H:i:s", $minLimit);
+            }
+
             return $dateQuery;
 
 
@@ -2111,7 +2195,14 @@ endif;
 				'top_opt_tweet-multiple-times'		=> 'off',
 				'cwp_top_logged_in_users'			=> '',
 				'top_fb_token'						=>'',
-				'top_opt_post_formats'				=>''
+				'top_opt_post_formats'				=>'',
+                // Added by Ash/Upwork
+                'top_opt_posts_buffer_twitter'      => '',
+                'top_opt_posts_buffer_facebook'     => '',
+                'top_opt_posts_buffer_linkedin'     => '',
+                'top_opt_posts_buffer_tumblr'       => '',
+                'top_opt_posts_buffer_xing'         => '',
+                // Added by Ash/Upwork
 			);
 
 			foreach ($defaultOptions as $option => $defaultValue) {
@@ -2599,7 +2690,10 @@ endif;
 
 			add_filter("rop_users_filter",array($this,"rop_users_filter_free"),1,1);
 
-
+            // Added by Ash/Upwork
+            // test action, only to be used for testing
+            if(ROP_IS_TEST) add_action("admin_init", array($this, "doTestAction"));
+            // Added by Ash/Upwork
 
 			if(isset($_GET['debug']) ) {
 	 			//$this->getNextTweetTime('twitter');

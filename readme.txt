@@ -2,7 +2,7 @@
 Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle
 Tags: admin, ajax, plugin, twitter, facebook, linkedin, automatic, tweet, share, wordpress, marketing, sharing, Tweet old post, Tweets,evergreen,  Promote old post by tweeting about them, Twitter, Auto Tweet, Hashtags, Twitter Hashtags, Tweet Posts, Tweet, Post Tweets, Wordpress Twitter Plugin, Twitter Plugin, Tweet Selected Posts, Twitter, Promote Posts, Tweet Random Post, Share Post, Promote Post, Post Tweets, Wordpress Twitter, Drive Traffic, Tweet Selected Posts
 Requires at least: 2.7
-Tested up to: 4.4.1
+Tested up to: 4.4.2
 Stable tag: trunk
 
 
@@ -29,20 +29,21 @@ ThemeIsle is a Codeinwp product where we also offer a <a href="http://www.codein
 - Exclude categories
 - Exclude specific posts.
 
-If you want to see a live demo of the plugin you can check <a href="http://www.youtube.com/watch?v=YOnlWmyO3VU">http://www.youtube.com/watch?v=YOnlWmyO3VU</a>.
 
-### Why to upgrade to PRO ?
+> ### Why to upgrade to PRO ?
 
 > Using the <a rel="friend" href="https://themeisle.com/plugins/tweet-old-post-pro/">PRO version</a> of the plugin you will unleash the most important functionality : images in tweets . Using those your RT/CTR will go crazy.
 
-Other notable features :
+> Other notable features :
 
-* Multiple Social Accounts
-* Custom Post Types support
-* Linkedin support
-* Post with image
-* Custom Schedule
-* Post to Xing / Tumblr
+> * Multiple Social Accounts
+> * Custom Post Types support
+> * Linkedin support
+> * Post with image
+> * Custom Schedule
+> * Post to Xing / Tumblr
+
+
 = Translations =
 
 * sk_SK translation by Patrik Žec (PATWIST) of http://patwist.com
@@ -116,6 +117,12 @@ https://themeisle.com/plugins/tweet-old-post-lite/
 
 
 == Changelog ==
+
+**New in v7.2**
+
+* Fixed randomization algorithm, preventing sharing of same post twice until the end of cycle.
+* Fixed date range selection when both values are 0
+
 
 **New in v7.1**
 
