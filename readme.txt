@@ -16,7 +16,7 @@ This plugin helps you to keeps your old posts alive by sharing them and driving 
 
 For updates follow https://twitter.com/themeisle If you have anything you can let us know <a href="https://themeisle.com/contact/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">here</a>.
 
-ThemeIsle is a Codeinwp product where we also offer a <a href="http://www.codeinwp.com" rel="friend" title="psd to wordpress">psd to wordpress service</a>, we blog about different topics like : news, <a href="http://www.codeinwp.com/blog/best-business-corporate-wordpress-themes/" rel="friend"> business themes </a> or <a href="http://justfreethemes.com/" rel="friend">free themes</a>
+ThemeIsle is a Codeinwp product where we also offer a <a href="http://www.codeinwp.com" rel="friend" title="psd to wordpress">psd to wordpress service</a>, we blog about different topics like : news, <a href="http://www.codeinwp.com/blog/best-business-corporate-wordpress-themes/" rel="friend"> business themes </a> or <a href="http://justfreethemes.com/" rel="friend">free themes</a>.
 
 
 **Revive Old Post provides following features**
@@ -42,6 +42,8 @@ ThemeIsle is a Codeinwp product where we also offer a <a href="http://www.codein
 > * Post with image
 > * Custom Schedule
 > * Post to Xing / Tumblr
+
+Some of you reported some scheduling issues, after investigation work looks like this is coming from some web hosts, make sure you check-out this post about <a rel="friend" href="https://themeisle.com/plugins/tweet-old-post-pro/">shared WordPress hosting</a>, which should help you pick a good one.
 
 
 = Translations =
