@@ -42,7 +42,7 @@ Revive Old Post is offered by ThemeIsle and CodeinWP  where we blog about differ
 > * Custom Schedule
 > * Post to Xing / Tumblr
 
-Some of you reported some scheduling issues, after investigation work looks like this is coming from some web hosts, make sure you check-out this post about <a rel="friend" href="https://themeisle.com/plugins/tweet-old-post-pro/">shared WordPress hosting</a>, which should help you pick a good one.
+Some of you reported some scheduling issues, after investigation work looks like this is coming from some web hosts, make sure you check-out this post about <a rel="friend" href="http://www.codeinwp.com/blog/best-wordpress-shared-hosting-providers/">shared WordPress hosting</a>, which should help you pick a good one.
 
 
 = Translations =
