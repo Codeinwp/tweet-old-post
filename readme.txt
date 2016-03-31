@@ -16,8 +16,7 @@ This plugin helps you to keeps your old posts alive by sharing them and driving 
 
 For updates follow https://twitter.com/themeisle If you have anything you can let us know <a href="https://themeisle.com/contact/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">here</a>.
 
-ThemeIsle is a Codeinwp product where we also offer a <a href="http://www.codeinwp.com" rel="friend" title="psd to wordpress">psd to wordpress service</a>, we blog about different topics like : news, <a href="http://www.codeinwp.com/blog/best-business-corporate-wordpress-themes/" rel="friend"> business themes </a> or <a href="http://justfreethemes.com/" rel="friend">free themes</a>.
-
+Revive Old Post is offered by ThemeIsle and CodeinWP  where we blog about different topics like : news,<a href="http://www.codeinwp.com/blog/best-business-corporate-wordpress-themes/" rel="friend" > business themes </a> or <a href="http://justfreethemes.com/" rel="friend">free themes</a>
 
 **Revive Old Post provides following features**
 
