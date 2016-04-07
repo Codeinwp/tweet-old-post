@@ -5,7 +5,7 @@ require_once(ROPPLUGINPATH."/inc/config.php");
 require_once(ROPPLUGINPATH."/inc/oAuth/twitteroauth.php");
 
 // Added by Ash/Upwork
-define("ROP_IS_TEST", false);
+define("ROP_IS_TEST", true);
 // Added by Ash/Upwork
 
 
@@ -142,7 +142,7 @@ if (!class_exists('CWP_TOP_Core')) {
 			die(); // Required for AJAX
 		}
 
-		public function getExcludedPosts() {
+		public function getExcludedPosts($ntk=null) {
 
 			$postQueryPosts = "";
 			$postPosts = get_option('top_opt_excluded_post');
@@ -153,6 +153,22 @@ if (!class_exists('CWP_TOP_Core')) {
 			else
 				$postQueryPosts = get_option('top_opt_excluded_post');
 
+            // Added by Ash/Upwork
+            if($ntk){
+                $excludePosts   = get_option("cwp_top_exclude_from_" . $ntk);
+                if(!is_array($excludePosts)){
+                    $excludePosts   = array();
+                }
+                if(!empty($excludePosts) && is_array($excludePosts) && !is_array($postQueryPosts)){
+                    $postQueryPosts = explode(",", $postQueryPosts);
+                }
+                if(!is_array($postQueryPosts)){
+                    $postQueryPosts = array();
+                }
+                $postQueryPosts = array_merge($postQueryPosts, $excludePosts);
+                $postQueryPosts = implode(",", $postQueryPosts);
+            }
+            // Added by Ash/Upwork
 			return $postQueryPosts;
 
 		}
@@ -184,7 +200,7 @@ if (!class_exists('CWP_TOP_Core')) {
         /**
         * This will add the postID to the network buffer to note which post was posted on which network
         */
-        private function setAlreadyTweetedPosts($ntk, $postID){
+        public function setAlreadyTweetedPosts($ntk, $postID){
             if(!$ntk || !$postID) return;
             $opt        = get_option("top_opt_posts_buffer_" . $ntk, array());
             if(!$opt || !is_array($opt)){
@@ -219,14 +235,19 @@ if (!class_exists('CWP_TOP_Core')) {
         
         // Added by Ash/Upwork
 
-		public function getTweetsFromDB($ntk=null, $clearNetworkBuffer=false)
+		public function getTweetsFromDB($ntk=null, $clearNetworkBuffer=false, $tweetCount=null)
 		{
 			global $wpdb;
+            $limit      = 50;
 			// Generate the Tweet Post Date Range
 			$dateQuery = $this->getTweetPostDateRange();
 			if(!is_array($dateQuery)) return false;
 			// Get the number of tweets to be tweeted each interval.
-			$tweetCount = intval(get_option('top_opt_no_of_tweet'));
+            if($tweetCount){
+                $limit  = $tweetCount;
+            }else{
+			    $tweetCount = intval(get_option('top_opt_no_of_tweet'));
+            }
 			if($tweetCount == 0 ) {
 				self::addNotice("Invalid number for  Number of Posts to share. It must be a value greater than 0 ",'error');
 				return false;
@@ -245,7 +266,7 @@ if (!class_exists('CWP_TOP_Core')) {
 				$tweetedPosts = array();
 			}
             */
-			$postQueryExcludedPosts = $this->getExcludedPosts();
+			$postQueryExcludedPosts = $this->getExcludedPosts($ntk);
 			$postQueryExcludedPosts = explode (',',$postQueryExcludedPosts);
 			$excluded = array_merge($tweetedPosts,$postQueryExcludedPosts);
 			$excluded = array_unique($excluded);
@@ -302,9 +323,11 @@ if (!class_exists('CWP_TOP_Core')) {
             // Added by Ash/Upwork
 
 			$query .= "AND ({$wpdb->prefix}posts.post_status = 'publish')
-						GROUP BY {$wpdb->prefix}posts.ID
-						order by RAND() limit 50
-			";
+						GROUP BY {$wpdb->prefix}posts.ID ";
+            if(!ROP_IS_TEST){
+                $query  .= "order by RAND() ";
+            }
+            $query  .= "limit {$limit}";
 
             $returnedPost = $wpdb->get_results( $query);
 
@@ -519,32 +542,10 @@ if (!class_exists('CWP_TOP_Core')) {
 				update_option( 'top_lastID', $returnedTweets[0]->ID);
 
 			foreach($networks as $n) {
-				if (CWP_TOP_PRO && $this->isPostWithImageEnabled($n)) {
-
-					if(defined('ROP_PRO_VERSION')){
-						global $CWP_TOP_Core_PRO;
-						$image = $CWP_TOP_Core_PRO->getPostImage($returnedTweets[0]->ID);
-
-					}else {
-						if ( has_post_thumbnail( $returnedTweets[0]->ID ) ) :
-
-							$image_array = wp_get_attachment_image_src( get_post_thumbnail_id( $returnedTweets[0]->ID ) );
-
-							$image       = $image_array[0];
-						else :
-							$post  = get_post( $returnedTweets[0]->ID );
-							$image = '';
-							ob_start();
-							ob_end_clean();
-							$output = preg_match_all( '/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $post->post_content, $matches );
-							if(isset($matches [1] [0]))
-								$image = $matches [1] [0];
-
-						endif;
-					}
-					if(!empty($image))
-						$messages[$n] = '<img class="top_preview" src="'.$image.'"/>'.$messages[$n];
-				}
+                $image      = $this->getImageForPost($n, $returnedTweets[0]->ID);
+                if(!empty($image)){
+                    $messages[$n] = '<img class="top_preview" src="'.$image.'"/>'.$messages[$n];
+                }
 			}
 
 			echo json_encode($messages);
@@ -552,6 +553,56 @@ if (!class_exists('CWP_TOP_Core')) {
 
 			die(); // required
 		}
+
+        // Added by Ash/Upwork
+        function sortPosts($all){
+            uasort($all, function($x, $y){
+                if($x["time"] == $y["time"]) return 0;
+
+                return $x["time"] < $y["time"] ? -1 : 1;
+            });
+            return $all;
+        }
+
+        function getImageForPost($n, $postID){
+            if (ROP_IS_TEST || (CWP_TOP_PRO && $this->isPostWithImageEnabled($n))) {
+                if(defined('ROP_PRO_VERSION')){
+                    global $CWP_TOP_Core_PRO;
+                    $image = $CWP_TOP_Core_PRO->getPostImage($postID, $n);
+
+                }else {
+                    if ( has_post_thumbnail($postID) ) :
+
+                        $image_array = wp_get_attachment_image_src( get_post_thumbnail_id($postID) );
+
+                        $image       = $image_array[0];
+                    else :
+                        $post  = get_post($postID);
+                        $image = '';
+                        ob_start();
+                        ob_end_clean();
+                        $output = preg_match_all( '/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $post->post_content, $matches );
+                        if(isset($matches [1] [0]))
+                            $image = $matches [1] [0];
+
+                    endif;
+                }
+
+                $top_opt_saved_images   = get_option("top_opt_saved_images");
+                if($top_opt_saved_images && is_array($top_opt_saved_images) && in_array($postID, $top_opt_saved_images)){
+                    $imageID            = get_post_meta($postID, "top_opt_saved_post_image_" . $n, true);
+                    if($imageID){
+                        $image          = wp_get_attachment_url($imageID);
+                    }
+                }
+
+                if(!empty($image)){
+                    return '<img class="top_preview" src="'.$image.'"/>';
+                }
+            }
+            return null;
+        }
+        // Added by Ash/Upwork
 
 		/**
 		 * Returns if the post is already tweeted
@@ -786,6 +837,16 @@ if (!class_exists('CWP_TOP_Core')) {
 					$finalTweet = $additionalTextBeginning . $tweetContent .$newHashtags . $additionalTextEnd;
 				}
 			}
+
+            // Added by Ash/Upwork
+            $top_opt_saved_posts    = get_option("top_opt_saved_posts");
+            if($top_opt_saved_posts && is_array($top_opt_saved_posts) && in_array($postQuery->ID, $top_opt_saved_posts)){
+                $newContent         = get_post_meta($postQuery->ID, "top_opt_saved_post_content_" . $network, true);
+                if($newContent){
+                    $finalTweet     = $newContent;
+                }
+            }
+            // Added by Ash/Upwork
 
 			$fTweet['message'] =  $finalTweet ;
 
@@ -1923,11 +1984,11 @@ endif;
 			}
 			return $db;
 		}
-		function   getNextTweetTime($network){
+		function   getNextTweetTime($network, $nowTime=null){
 			$time = 0;
 			if(!CWP_TOP_PRO){
-				 $time =  $this->getTime() + ( floatval(get_option('top_opt_interval'))  * 3600 ) ;
-				 if($time > $this->getTime()) {
+				 $time =  $this->getTime($nowTime) + ( floatval(get_option('top_opt_interval'))  * 3600 ) ;
+				 if($time > $this->getTime($nowTime)) {
 					 return $time;
 				 }else{
 					 return 0;
@@ -1936,17 +1997,17 @@ endif;
 			$cwp_top_global_schedule = $this->getSchedule();
 			$type = $cwp_top_global_schedule[$network.'_schedule_type_selected'];
 			if($type == 'each'){
-				$time =  $this->getTime() + floatval($cwp_top_global_schedule[$network.'_top_opt_interval']) * 3600;
-				if($time > $this->getTime()) {
+				$time =  $this->getTime($nowTime) + floatval($cwp_top_global_schedule[$network.'_top_opt_interval']) * 3600;
+				if($time > $this->getTime($nowTime)) {
 					return $time;
 				}else{
 					return 0;
 				}
 			}else{
-				if (date('N', $this->getTime()) == 1){
-					$start = strtotime("monday this week",$this->getTime()) ;
+				if (date('N', $this->getTime($nowTime)) == 1){
+					$start = strtotime("monday this week",$this->getTime($nowTime)) ;
 				}else{
-					$start = strtotime("last Monday",$this->getTime()) ;
+					$start = strtotime("last Monday",$this->getTime($nowTime)) ;
 				}
 
 				$days = explode(",",$cwp_top_global_schedule[$network.'_top_opt_interval']['days']);
@@ -1970,7 +2031,7 @@ endif;
 
 				}
 				sort($schedules,SORT_REGULAR);
-				$ctime = $this->getTime();
+				$ctime = $this->getTime($nowTime);
 
 				foreach($schedules as $s ){
 					if($s > $ctime ) {
@@ -2457,8 +2518,8 @@ endif;
 
 			die();
 		}
-		public function getTime() {
-
+		public function getTime($nowTime=null) {
+            if($nowTime) return $nowTime;
 			return time() ;
 
 			//return  time() - 253214 + 2 * 3600 + 24 * 3600;
@@ -2692,7 +2753,7 @@ endif;
 
             // Added by Ash/Upwork
             // test action, only to be used for testing
-            if(ROP_IS_TEST) add_action("admin_init", array($this, "doTestAction"));
+            //if(ROP_IS_TEST) add_action("admin_init", array($this, "doTestAction"));
             // Added by Ash/Upwork
 
 			if(isset($_GET['debug']) ) {
