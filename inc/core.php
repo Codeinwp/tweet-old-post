@@ -648,6 +648,30 @@ if (!class_exists('CWP_TOP_Core')) {
 		}
 
 		/**
+		 * Author Daniel Brown (contact info at http://ymb.tc/contact)
+		 * Includes hashtag in $tweet_content if possible
+		 * to save space, avoid redundancy, and allow more hashtags
+		 * @param  [string] $tweetContent The regular text in the Tweet
+		 * @param  [string] $hashtag The hashtag to include in $tweetContent, if possible
+		 * @return [mixed]  The new $tweetContent or FALSE if the $tweetContent doesn't contain the hashtag
+		 */
+
+		public function tweetContentHashtag ($tweetContent, $hashtag) {
+			$location = stripos($tweetContent, ' ' . $hashtag . ' ');
+			if ( $location !== false ) $location++; // the actual # location will be past the space
+			elseif ( stripos($tweetContent, $hashtag . ' ') === 0 ) { // see if the hashtag is at the beginning
+				$location = 0;
+			}
+			elseif ( stripos($tweetContent, ' ' . $hashtag) + strlen(' ' . $hashtag) == strlen($tweetContent) ) { // see if the hashtag is at the end
+				$location = stripos($tweetContent, ' ' . $hashtag) + 1;
+			}
+			if ( $location !== false ) {
+				return substr_replace($tweetContent, '#', $location, 0);
+			}
+			else return false;
+		}
+
+		/**
 		 * Generates the tweet based on the user settings
 		 * @param  [type] $postQuery Returned post from database
 		 * @return [type]            Generated Tweet
@@ -759,8 +783,13 @@ if (!class_exists('CWP_TOP_Core')) {
 						if ( $postQuery->post_type == "post" ) {
 							$postCategories = get_the_category( $postQuery->ID );
 							foreach ( $postCategories as $category ) {
-								if ( strlen( $category->slug . $newHashtags ) <= $maximum_hashtag_length || $maximum_hashtag_length == 0 ) {
-									$newHashtags = $newHashtags . " #" . preg_replace( '/-/', '', strtolower( $category->slug ) );
+								$thisHashtag = $category->slug;
+								if ( $this->tweetContentHashtag($tweetContent, $thisHashtag) !== false ) { // if the hashtag exists in $tweetContent
+									$tweetContent = $this->tweetContentHashtag($tweetContent, $thisHashtag); // simply add a # there
+									$maximum_hashtag_length--; // subtract 1 for the # we added to $tweetContent
+								}
+								elseif ( strlen( $thisHashtag . $newHashtags ) <= $maximum_hashtag_length || $maximum_hashtag_length == 0 ) {
+									$newHashtags = $newHashtags . " #" . preg_replace( '/-/', '', strtolower( $thisHashtag ) );
 								}
 							}
 						} else {
@@ -773,8 +802,13 @@ if (!class_exists('CWP_TOP_Core')) {
 					case 'tags':
 						$postTags = wp_get_post_tags( $postQuery->ID );
 						foreach ( $postTags as $postTag ) {
-							if ( strlen( $postTag->slug . $newHashtags ) <= $maximum_hashtag_length || $maximum_hashtag_length == 0 ) {
-								$newHashtags = $newHashtags . " #" . preg_replace( '/-/', '', strtolower( $postTag->slug ) );
+							$thisHashtag = $postTag->slug;
+							if ( $this->tweetContentHashtag($tweetContent, $thisHashtag) !== false ) { // if the hashtag exists in $tweetContent
+								$tweetContent = $this->tweetContentHashtag($tweetContent, $thisHashtag); // simply add a # there
+								$maximum_hashtag_length--; // subtract 1 for the # we added to $tweetContent
+							}
+							elseif ( strlen( $thisHashtag . $newHashtags ) <= $maximum_hashtag_length || $maximum_hashtag_length == 0 ) {
+								$newHashtags = $newHashtags . " #" . preg_replace( '/-/', '', strtolower( $thisHashtag ) );
 							}
 						}
 						break;
