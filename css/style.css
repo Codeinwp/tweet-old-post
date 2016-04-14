@@ -399,7 +399,7 @@ float: left;}
 .cwp-according-item .cwp-according-body {
     background:#f0f0f0;
     width:96%;
-    padding:2%;
+    padding: 13px 2%;
 
 }
 .cwp-according-item .cwp-according-header:hover,
@@ -873,3 +873,98 @@ button.login{
 .cwp_quick_edit_actions_after {display: none;}
 .cwp_restrict_image:nth-child(odd) {background-color: #f5f5f5;}
 /* Added by Ash/Upwork */
+
+
+
+@media (max-width: 1200px) {
+
+	#cwp-top-container-form {
+	    width: 100%;
+	}
+	.cwp_top_wrapper .cwp_top_container .sidebar {
+		padding: 0;
+		width: 100%;
+	}
+	.rop-beta-user {
+	    width: 50%;
+	    display: inline-block;
+	    float: left;
+	    padding-bottom: 14px;
+	}
+	.cwp_top_wrapper .cwp_top_container .sidebar ul li.upgrade a {
+	    margin: 0 auto !important;
+	    float: none;
+	}
+	.cwp_top_wrapper .cwp_top_container .sidebar ul li.upgrade {
+	    float: left;
+	    width: 100%;
+	    margin-bottom: 15px;
+	}
+
+}
+
+@media (max-width: 992px) {
+
+
+
+}
+
+@media (max-width: 768px) {
+
+	.rop-beta-user {
+	    width: 100%;
+	}
+	.cwp_top_wrapper .cwp_top_container .sidebar ul li.upgrade a {
+	    margin: 0 auto !important;
+	}
+	.cwp_top_wrapper .cwp_top_container .cwp_top_footer {
+		text-align: center;
+	}
+	.cwp_top_wrapper .option .left,
+	.cwp_top_wrapper .option .right {
+		width: 100%;
+		text-align: left;
+		padding-left: 20px;
+		padding-right: 20px;
+		margin-bottom: 5px;
+	}
+	.cwp_top_wrapper .option .left * {
+		text-align: left;
+		float: left;
+		clear: left;
+	}
+	#cwp_top_tabs ul#tabs_menu {
+	    text-align: center;
+	}
+	#cwp_top_tabs ul#tabs_menu li {
+		margin-bottom: 5px;
+	}
+	.cwp_top_tabs_vertical .cwp_top_tabs_btns {
+	    width: 100%;
+	    padding: 0;
+	}
+	.cwp_top_tabs_vertical .cwp_top_tabs_btns li {
+		border-bottom: 1px solid #fff;
+	}
+	.cwp-according-item .cwp-according-body,
+	.cwp-according-item .cwp-according-header {
+	    width: 100%;
+	}
+	.tab .cwp_top_tabs_vertical .tab-vertical {
+		width: 100%;
+	}
+	.rop-beta-user .rop-left {
+	    width: 100%;
+	    margin-left: -100px;
+	    padding-left: 100px;
+	}
+	.rop-beta-user .rop-right {
+	    width: 80px;
+	}
+	.cwp_top_wrapper #cwp_top_header .cwp_top_actions {
+	    float: left;
+	    clear: left;
+	}
+
+}
+
