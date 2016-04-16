@@ -2712,54 +2712,58 @@ endif;
 
 			add_filter('plugin_action_links',array($this,'top_plugin_action_links'), 10, 2);
 
+            // Added by Ash/Upwork
+            add_filter('cwp_check_ajax_capability', array($this, 'checkAjaxCapability'), 10, 1);
+            // Added by Ash/Upwork
+
 			add_action( 'plugins_loaded', array($this, 'addLocalization') );
 
 			//ajax actions
 
 			// Update all options ajax action.
-			add_action('wp_ajax_update_response', array($this, 'updateAllOptions'));
+			add_action('wp_ajax_update_response', array($this, 'ajax'));
 
 			// Reset all options ajax action.
-			add_action('wp_ajax_reset_options', array($this, 'resetAllOptions'));
+			add_action('wp_ajax_reset_options', array($this, 'ajax'));
 
 			// Add new twitter account ajax action
-			add_action('wp_ajax_add_new_account', array($this, 'addNewAccount'));
+			add_action('wp_ajax_add_new_account', array($this, 'ajax'));
 
 			// Display managed pages ajax action
-			add_action('wp_ajax_display_pages', array($this, 'displayPages'));
+			add_action('wp_ajax_display_pages', array($this, 'ajax'));
 
 			// Add new account managed pages ajax action
-			add_action('wp_ajax_add_pages', array($this, 'addPages'));
+			add_action('wp_ajax_add_pages', array($this, 'ajax'));
 
 			// Add more than one twitter account ajax action
-			add_action('wp_ajax_add_new_account_pro', array($this, 'addNewAccountPro'));
+			add_action('wp_ajax_add_new_account_pro', array($this, 'ajax'));
 
 			// Log Out Twitter user ajax action
-			add_action('wp_ajax_log_out_user', array($this, 'logOutUser'));
+			add_action('wp_ajax_log_out_user', array($this, 'ajax'));
 
 			//start ROP
-			add_action('wp_ajax_tweet_old_post_action', array($this, 'startTweetOldPost'));
+			add_action('wp_ajax_tweet_old_post_action', array($this, 'ajax'));
 
 			//clear Log messages
-			add_action('wp_ajax_rop_clear_log', array($this, 'clearLog'));
+			add_action('wp_ajax_rop_clear_log', array($this, 'ajax'));
 
 			//remote trigger cron
-			add_action('wp_ajax_remote_trigger', array($this, 'remoteTrigger'));
-			add_action('wp_ajax_beta_user_trigger', array($this, 'betaUserTrigger'));
+			add_action('wp_ajax_remote_trigger', array($this, 'ajax'));
+			add_action('wp_ajax_beta_user_trigger', array($this, 'ajax'));
 
 			//sample tweet messages
-			add_action('wp_ajax_view_sample_tweet_action', array($this, 'viewSampleTweet'));
+			add_action('wp_ajax_view_sample_tweet_action', array($this, 'ajax'));
 
 			// Tweet Old Post tweet now action.
-			add_action('wp_ajax_tweet_now_action', array($this, 'tweetNow'));
+			add_action('wp_ajax_tweet_now_action', array($this, 'ajax'));
 
-			add_action('wp_ajax_gettime_action', array($this, 'echoTime'));
+			add_action('wp_ajax_gettime_action', array($this, 'ajax'));
 
 			//get notice
-			add_action('wp_ajax_getNotice_action', array($this, 'getNotice'));
+			add_action('wp_ajax_getNotice_action', array($this, 'ajax'));
 
 			//stop ROP
-			add_action('wp_ajax_stop_tweet_old_post', array($this, 'stopTweetOldPost'));
+			add_action('wp_ajax_stop_tweet_old_post', array($this, 'ajax'));
 
 			//custom actions
 
@@ -2799,6 +2803,70 @@ endif;
 			}
 
 		}
+
+        function checkAjaxCapability($dummy) {
+            $cap        = false;
+			if (!current_user_can('manage_options') && $this->top_check_user_role( 'Administrator' )) {
+				$cap    = true;
+			} else {
+				$cap    = current_user_can('manage_options');
+            }
+            return $cap;
+        }
+
+        function ajax() {
+            if (!$this->checkAjaxCapability()) wp_die();
+            check_ajax_referer("cwp-top-" . ROP_VERSION, "security");
+
+            switch ($_POST["action"]) {
+                case 'reset_options':
+                    $this->resetAllOptions();
+                    break;
+                case 'add_new_account':
+                    $this->addNewAccount();
+                    break;
+                case 'display_pages':
+                    $this->displayPages();
+                    break;
+                case 'add_pages':
+                    $this->addPages();
+                    break;
+                case 'add_new_account_pro':
+                    $this->addNewAccountPro();
+                    break;
+                case 'log_out_user':
+                    $this->logOutUser();
+                    break;
+                case 'tweet_old_post_action':
+                    $this->startTweetOldPost();
+                    break;
+                case 'rop_clear_log':
+                    $this->clearLog();
+                    break;
+                case 'remote_trigger':
+                    $this->remoteTrigger();
+                    break;
+                case 'beta_user_trigger':
+                    $this->betaUserTrigger();
+                    break;
+                case 'view_sample_tweet_action':
+                    $this->viewSampleTweet();
+                    break;
+                case 'tweet_now_action':
+                    $this->tweetNow();
+                    break;
+                case 'gettime_action':
+                    $this->echoTime();
+                    break;
+                case 'getNotice_action':
+                    $this->getNotice();
+                    break;
+                case 'stop_tweet_old_post':
+                    $this->stopTweetOldPost();
+                    break;
+            }
+            wp_die();
+        }
 
         // Added by Ash/Upwork
         function addRewriteVars($vars){
@@ -2964,7 +3032,10 @@ endif;
 					// Register Main JS File
 					wp_enqueue_script( 'cwp_top_js_countdown', ROPJSCOUNTDOWN, array(), time(), true );
 					wp_enqueue_script( 'cwp_top_javascript', ROPJSFILE, array(), time(), true );
-					wp_localize_script( 'cwp_top_javascript', 'cwp_top_ajaxload', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
+					wp_localize_script( 'cwp_top_javascript', 'cwp_top_ajaxload', array(
+                        'ajaxurl'   => admin_url( 'admin-ajax.php' ),
+                        'ajaxnonce' => wp_create_nonce("cwp-top-" . ROP_VERSION),
+                    ) );
 				}
 			}
 
