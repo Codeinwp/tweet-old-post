@@ -602,6 +602,15 @@ if (!class_exists('CWP_TOP_Core')) {
             }
             return null;
         }
+
+        function getFutureTime($network_name, $time, $array){
+            if(array_key_exists("time", $array)){
+                $time       = $array["time"];
+            }else{
+                $time       = CWP_TOP_Core::getNextTweetTime($network_name, $time ? $time : $this->getTime());
+            }
+            return $time;
+        }
         // Added by Ash/Upwork
 
 		/**
@@ -2713,7 +2722,7 @@ endif;
 			add_filter('plugin_action_links',array($this,'top_plugin_action_links'), 10, 2);
 
             // Added by Ash/Upwork
-            add_filter('cwp_check_ajax_capability', array($this, 'checkAjaxCapability'), 10, 1);
+            add_filter('cwp_check_ajax_capability', array($this, 'checkAjaxCapability'), 10, 0);
             // Added by Ash/Upwork
 
 			add_action( 'plugins_loaded', array($this, 'addLocalization') );
@@ -2804,7 +2813,7 @@ endif;
 
 		}
 
-        function checkAjaxCapability($dummy) {
+        function checkAjaxCapability() {
             $cap        = false;
 			if (!current_user_can('manage_options') && $this->top_check_user_role( 'Administrator' )) {
 				$cap    = true;

@@ -1,9 +1,11 @@
 <?php
 	global $cwp_global_schedule;
 	$cfgnets = $this->getAllNetworks(true);
-?><div class="cwp_top_tabs_vertical">
+    $available  = $this->getAvailableNetworks();
+    $class      = count($available) == 1 ? "hide_top_tabs_btns" : "";
+?><div class="cwp_top_tabs_vertical <?php echo $class;?>">
 	<ul class="cwp_top_tabs_btns">
-		<?php $first = true; foreach($format_fields  as $network_name=>$network_details) { ?>
+		<?php $first = true; foreach($available  as $network_name) { ?>
 			<li <?php if($first){ ?>class="active" <?php }else{
 
 				if($cfgnets[$network_name] && !CWP_TOP_PRO) echo 'class="pro-version"';
@@ -14,7 +16,7 @@
 
         <?php
             // Added by Ash/Upwork
-            if(count($cfgnets) > 1){ ?>
+            if(count($available) > 1){ ?>
 			<li><?php _e("All", "tweet-old-post"); ?></li>
         <?php
             }
@@ -30,34 +32,34 @@
             </tr>
             <tr>
                 <th>
-                    <input type="radio" name="delete" value="1" id="delete1">
+                    <input type="radio" name="delete" value="1" id="rop_delete1">
                     <label for="delete1"><?php _e("Exclude this post from publishing only on this network", "tweet-old-post");?></label>
                 </th>
             </tr>
-        <?php if(count($cfgnets) > 1){ ?>
+        <?php if(count($available) > 1){ ?>
             <tr>
                 <th>
-                    <input type="radio" name="delete" value="0" id="delete0">
+                    <input type="radio" name="delete" value="0" id="rop_delete0">
                     <label for="delete0"><?php _e("Exclude this post from publishing on all networks", "tweet-old-post");?></label>
                 </th>
             </tr>
         <?php } ?>
             <tr>
                 <th>
-                    <input type="radio" name="delete" value="2" id="delete2">
+                    <input type="radio" name="delete" value="2" id="rop_delete2">
                     <label for="delete2"><?php _e("Just remove the post from schedule now", "tweet-old-post");?></label>
                 </th>
             </tr>
         </table>
 
-        <input type="hidden" id="delete-type" value="<?php echo get_option("cwp_top_delete_type", -1);?>">
+        <input type="hidden" id="rop-delete-type" value="<?php echo get_option("cwp_top_delete_type", -1);?>">
     </div>
 
 	<?php 
         $networks   = array();
         $collect    = array();
         $first      = true;
-        foreach($format_fields  as $network_name=>$network_details) {
+        foreach($available  as $network_name) {
             $networks[] = $network_name;
         }
         $networks[] = null;
@@ -68,19 +70,28 @@
         }
 
         foreach($networks as $network){
-            $all    = array();
-            if($network){
-                $posts      = CWP_TOP_Core::getTweetsFromDB($network, false, $count);
-                foreach($posts as $post){
-                    $all[]  = array("post" => $post, "network" => $network);
+            $all    = null;
+            if(get_option("cwp_topnew_active_status", 'false') === 'true'){
+                $all    = array();
+                if($network){
+                    $posts      = CWP_TOP_Core::getTweetsFromDB($network, false, $count);
+                    foreach($posts as $post){
+                        $all[]  = array("post" => $post, "network" => $network);
+                    }
+                }else{
+                    $all        = CWP_TOP_Core::sortPosts($collect);
                 }
-            }else{
-                $all        = CWP_TOP_Core::sortPosts($collect);
             }
     ?>
 
 		<div class="tab-vertical <?php if($first){ ?> active  <?php } ?>">
         <?php
+            if(is_null($all)){
+                _e("Please start the plugin to view the future shares", "tweet-old-post");
+                echo "</div>";
+                $first      = false;
+                continue;
+            }
             if(count($all) == 0){
                 _e('There is no suitable post to tweet make sure you excluded correct categories and selected the right dates.','tweet-old-post');
                 echo "</div>";
@@ -93,15 +104,7 @@
                 $post           = $array["post"];
                 $network_name   = $array["network"];
                 $finalTweet     = CWP_TOP_Core::generateTweetFromPost($post, $network_name);
-                if(array_key_exists("time", $array)){
-                    $time       = $array["time"];
-                }else{
-                    if(!$time){
-                        $time       = wp_next_scheduled($network_name.'roptweetcron',array($network_name));
-                    }else{
-                        $time       = CWP_TOP_Core::getNextTweetTime($network_name, $time);
-                    }
-                }
+                $time           = CWP_TOP_Core::getFutureTime($network_name, $time, $array);
                 $image          = CWP_TOP_Core::getImageForPost($network_name, $post->ID);
                 if($network){
                     $collect[]  = array("post" => $post, "network" => $network_name, "time" => $time);
@@ -110,12 +113,12 @@
                 $data_postID    = $post->ID . $network_name;
         ?>
 					<fieldset class="option twp<?php echo $key; ?> cwp_restrict_image">
-						<div class="left">
+						<div class="rop_left">
                             <div class="cwp_post_image" data-post-id="<?php echo $post->ID;?>" data-network="<?php echo $network_name;?>">
                                 <?php echo $image;?>
                             </div>
 						</div><!-- end .left -->
-						<div class="right <?php echo !$image ? "cwp_extend_post" : ""?>">
+						<div class="rop_right <?php echo !$image ? "cwp_extend_post" : ""?>">
                             <div class="cwp_post_message">
                                 <span data-post="<?php echo $data_postID;?>" class="cwp-quick-edit-span">
                                     <?php echo $finalTweet['message'];?>
@@ -135,7 +138,7 @@
                                     </span>
                                 </div>
                                 <div class="cwp_post_time">
-                                    <?php echo get_date_from_gmt(strftime("%d %b %Y %H:%M", $time));?>
+                                    <?php echo date("j M Y g:i:s A", $time);?>
                                 </div>
                             </div>
 						</div><!-- end .right -->

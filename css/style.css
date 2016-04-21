@@ -861,17 +861,19 @@ button.login{
 }
 
 /* Added by Ash/Upwork */
-.cwp_top_wrapper .option.cwp_restrict_image .left {width: 16%}
-.cwp_top_wrapper .option.cwp_restrict_image .right {width: 84%}
-.cwp_top_wrapper .option.cwp_restrict_image .right .cwp_quick_edit {margin: 5px 5px 0px 0px;}
-.cwp_top_wrapper .option.cwp_restrict_image .right .cwp_quick_edit .cwp_quick_edit_actions {float: left;}
-.cwp_top_wrapper .option.cwp_restrict_image .right .cwp_quick_edit .cwp_post_time {float: right;}
-.cwp_top_wrapper .option.cwp_restrict_image .right.cwp_extend_post {width: 100%;}
+.cwp_top_wrapper .option.cwp_restrict_image .rop_left {width: 16%}
+.cwp_top_wrapper .option.cwp_restrict_image .rop_right {width: 84%}
+.cwp_top_wrapper .option.cwp_restrict_image .rop_right .cwp_quick_edit {margin: 5px 5px 0px 0px;}
+.cwp_top_wrapper .option.cwp_restrict_image .rop_right .cwp_quick_edit .cwp_quick_edit_actions {float: left;}
+.cwp_top_wrapper .option.cwp_restrict_image .rop_right .cwp_quick_edit .cwp_post_time {float: right;}
+.cwp_top_wrapper .option.cwp_restrict_image .rop_right.cwp_extend_post {width: 100%;}
 .cwp-quick-edit-text {width: 100%;}
 .cwp_post_image {cursor: pointer;}
 .cwp_delete_table {width: 95%; margin: auto;}
 .cwp_quick_edit_actions_after {display: none;}
 .cwp_restrict_image:nth-child(odd) {background-color: #f5f5f5;}
+.cwp_top_tabs_vertical.hide_top_tabs_btns .cwp_top_tabs_btns{display: none}
+.cwp_top_tabs_vertical.hide_top_tabs_btns .tab-vertical{width: 100%}
 /* Added by Ash/Upwork */
 
 
