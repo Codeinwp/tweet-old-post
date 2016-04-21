@@ -5,7 +5,7 @@ require_once(ROPPLUGINPATH."/inc/config.php");
 require_once(ROPPLUGINPATH."/inc/oAuth/twitteroauth.php");
 
 // Added by Ash/Upwork
-define("ROP_IS_TEST", true);
+define("ROP_IS_TEST", false);
 // Added by Ash/Upwork
 
 
