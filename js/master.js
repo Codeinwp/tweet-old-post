@@ -488,7 +488,7 @@ jQuery(document).ready(function(){
 
 				}
 			} )
-		},300000000);
+		},3000);
 
 	jQuery("#see-sample-tweet").click(function(e){
 		if(!cwpTopCheckAccounts()){

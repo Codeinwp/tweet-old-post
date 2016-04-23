@@ -110,6 +110,10 @@ if (!class_exists('CWP_TOP_Core')) {
 			update_option('top_last_tweets',array());
 			$timeNow =  $this->getTime();
 			$timeNow = $timeNow+15;
+            // Added by Ash/Upwork for advanced scheduling
+            set_transient('top_firstpost_time', $timeNow, 15);
+            //error_log("first post time " . date("g:i:s A", $timeNow));
+            // Added by Ash/Upwork for advanced scheduling
 
 			$this->clearScheduledTweets();
 			$networks = $this->getAvailableNetworks();
@@ -604,6 +608,12 @@ if (!class_exists('CWP_TOP_Core')) {
         }
 
         function getFutureTime($network_name, $time, $array){
+            $firstPostTime  = get_transient('top_firstpost_time');
+            if($firstPostTime !== false){
+                delete_transient('top_firstpost_time');
+                return $firstPostTime;
+            }
+
             if(array_key_exists("time", $array)){
                 $time       = $array["time"];
             }else{
@@ -2828,6 +2838,9 @@ endif;
             check_ajax_referer("cwp-top-" . ROP_VERSION, "security");
 
             switch ($_POST["action"]) {
+                case 'update_response':
+                    $this->updateAllOptions();
+                    break;
                 case 'reset_options':
                     $this->resetAllOptions();
                     break;

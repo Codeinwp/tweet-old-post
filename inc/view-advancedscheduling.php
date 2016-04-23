@@ -100,6 +100,7 @@
             }
 
             $time               = null;
+            $prevDate           = "";
             foreach ($all as $array){
                 $post           = $array["post"];
                 $network_name   = $array["network"];
@@ -110,7 +111,22 @@
                     $collect[]  = array("post" => $post, "network" => $network_name, "time" => $time);
                 }
 
+                $tweetTime      = date("g:i:s A", $time);
+                $tweetDate      = date("j M Y", $time);
+
                 $data_postID    = $post->ID . $network_name;
+
+                if($tweetDate != $prevDate){
+                    if($prevDate != ""){
+        ?>
+                </div>
+        <?php
+                    }
+        ?>
+                <div class="rop_date_container">
+                    <div class="rop_tweet_date"><?php echo $tweetDate;?></div>
+        <?php
+                }
         ?>
 					<fieldset class="option twp<?php echo $key; ?> cwp_restrict_image">
 						<div class="rop_left">
@@ -138,16 +154,20 @@
                                     </span>
                                 </div>
                                 <div class="cwp_post_time">
-                                    <?php echo date("j M Y g:i:s A", $time);?>
+                                    <?php echo $tweetTime;?>
                                 </div>
                             </div>
 						</div><!-- end .right -->
 					</fieldset><!-- end .option -->
             <?php
+                $prevDate   = $tweetDate;
             }
             ?>
+            </div>
 		</div>
-		<?php $first = false; } ?>
-
+		<?php
+                $first = false;
+            }
+        ?>
 
 </div>

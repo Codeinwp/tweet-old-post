@@ -874,6 +874,8 @@ button.login{
 .cwp_restrict_image:nth-child(odd) {background-color: #f5f5f5;}
 .cwp_top_tabs_vertical.hide_top_tabs_btns .cwp_top_tabs_btns{display: none}
 .cwp_top_tabs_vertical.hide_top_tabs_btns .tab-vertical{width: 100%}
+.rop_date_container {border: 2px solid red;}
+.rop_date_container .rop_tweet_date{color: green;}
 /* Added by Ash/Upwork */
 
 
