@@ -2359,6 +2359,9 @@ endif;
 			foreach ($defaultOptions as $option => $defaultValue) {
 				delete_option($option);
 			}
+            // Added by Ash/Upwork
+            do_action("rop_pro_deactivateFree");
+            // Added by Ash/Upwork
 		}
 
 		// Generate all fields based on settings
