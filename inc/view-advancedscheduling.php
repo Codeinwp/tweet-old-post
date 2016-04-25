@@ -128,7 +128,7 @@
         <?php
                 }
         ?>
-					<fieldset class="option twp<?php echo $key; ?> cwp_restrict_image">
+					<fieldset class="option twp<?php echo $key; ?> cwp_restrict_image rop-post-<?php echo $network_name; ?>">
 						<div class="rop_left">
                             <div class="cwp_post_image" data-post-id="<?php echo $post->ID;?>" data-network="<?php echo $network_name;?>">
                                 <?php echo $image;?>
