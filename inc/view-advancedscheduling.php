@@ -86,14 +86,21 @@
 
 		<div class="tab-vertical <?php if($first){ ?> active  <?php } ?>">
         <?php
+            echo '<div class="rop-features-available"><p><span>Editing features are available on the <strong>Business version</strong></span></p></div>';
+        ?>
+        <?php
             if(is_null($all)){
-                _e("Please start the plugin to view the future shares", "tweet-old-post");
+                    echo '<div class="rop-box-with-padding">';
+                        _e("Please start the plugin to view the future shares", "tweet-old-post");
+                    echo '</div>';
                 echo "</div>";
                 $first      = false;
                 continue;
             }
             if(count($all) == 0){
-                _e('There is no suitable post to tweet make sure you excluded correct categories and selected the right dates.','tweet-old-post');
+                    echo '<div class="rop-box-with-padding">';
+                        _e('There is no suitable post to tweet make sure you excluded correct categories and selected the right dates.','tweet-old-post');
+                    echo '</div>';
                 echo "</div>";
                 $first      = false;
                 continue;

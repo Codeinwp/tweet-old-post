@@ -865,8 +865,8 @@ button.login{
 .cwp_top_wrapper .option.cwp_restrict_image .rop_right {width: 84%}
 .cwp_top_wrapper .option.cwp_restrict_image .rop_right .cwp_quick_edit {margin: 5px 5px 0px 0px;}
 .cwp_top_wrapper .option.cwp_restrict_image .rop_right .cwp_quick_edit .cwp_quick_edit_actions {float: left;}
-.cwp_top_wrapper .option.cwp_restrict_image .rop_right .cwp_quick_edit .cwp_post_time {float: right;}
-.cwp_top_wrapper .option.cwp_restrict_image .rop_right.cwp_extend_post {width: 100%;}
+.cwp_top_wrapper .option.cwp_restrict_image .rop_right .cwp_quick_edit .cwp_post_time { float: right; font-style: italic; color: #999999; }
+.cwp_top_wrapper .option.cwp_restrict_image .rop_right.cwp_extend_post { width: 100%; background: #f8f8f8; position: relative; padding: 10px 10px 10px 60px; }
 .cwp-quick-edit-text {width: 100%;}
 .cwp_post_image {cursor: pointer;}
 .cwp_delete_table {width: 95%; margin: auto;}
@@ -874,11 +874,150 @@ button.login{
 .cwp_restrict_image:nth-child(odd) {background-color: #f5f5f5;}
 .cwp_top_tabs_vertical.hide_top_tabs_btns .cwp_top_tabs_btns{display: none}
 .cwp_top_tabs_vertical.hide_top_tabs_btns .tab-vertical{width: 100%}
-.rop_date_container {border: 2px solid red;}
-.rop_date_container .rop_tweet_date{color: green;}
+.rop_date_container {
+    border: 1px solid #EAEAEA;
+    margin: 15px 15px 0px 15px;
+    border-radius: 2px;
+}
+.cwp_top_wrapper .rop_date_container .option {
+	margin: 2px 0 2px;
+	position: relative;
+}
 /* Added by Ash/Upwork */
 
-
+.rop-post-twitter:after,
+.rop-post-facebook:after,
+.rop-post-linkedin:after,
+.rop-post-xing:after,
+.rop-post-tumblr:after {
+	content: "";
+	width: 50px;
+	height: 100%;
+	position: absolute;
+	top: 0;
+}
+.rop-post-twitter:after {
+	background: url(../img/rop-twitter-icn.png) center no-repeat #f1f1f1;
+}
+.rop-post-facebook:after {
+	background: url(../img/rop-facebook-icn.png) center no-repeat #f1f1f1;
+}
+.rop-post-linkedin:after {
+	background: url(../img/rop-linkedin-icn.png) center no-repeat #f1f1f1;
+}
+.rop-post-xing:after {
+	background: url(../img/rop-xing-icn.png) center no-repeat #f1f1f1;
+}
+.rop-post-tumblr:after {
+	background: url(../img/rop-tumblr-icn.png) center no-repeat #f1f1f1;
+}
+.rop_date_container .rop_tweet_date {
+    background: #444;
+    color: #f0f0f0;
+    padding: 10px;
+    margin: -1px -1px 0 -1px;
+    border-radius: 2px 2px 0 0;
+}
+.rop-box-with-padding { padding: 20px; }
+.cwp_top_wrapper .cwp_quick_edit_actions_before a {
+	margin: 0 7px 0 0 !important;
+	float: left;
+}
+.cwp_top_wrapper .cwp-quick-edit-span {
+	padding-bottom: 10px;
+    float: left;
+    width: 100%;
+}
+.cwp_top_wrapper .cwp_quick_edit_actions_before a.cwp-quick-edit {
+	text-indent: -999999px;
+	overflow: hidden;
+	height: 15px;
+	width: 15px;
+	background: url(../img/rop-edit-icons.png) no-repeat;
+	background-position: center 2px;
+	-webkit-transition: all 0s;
+	-moz-transition: all 0s;
+	-o-transition: all 0s;
+	transition: all 0s;
+}
+.cwp_top_wrapper .cwp_quick_edit_actions_before a.cwp-quick-edit:hover {
+	background-position: center -19px;
+}
+.cwp_top_wrapper .cwp_quick_edit_actions_before a.cwp-quick-delete {
+	text-indent: -999999px;
+	overflow: hidden;
+	height: 15px;
+	width: 15px;
+	background: url(../img/rop-delete-icons.png) no-repeat;
+    background-position: center 2px;
+	-webkit-transition: all 0s;
+	-moz-transition: all 0s;
+	-o-transition: all 0s;
+	transition: all 0s;
+}
+.cwp_top_wrapper .cwp_quick_edit_actions_before a.cwp-quick-delete:hover {
+	background-position: center -19px;
+}
+.rop-features-available {
+	margin: 15px;
+	text-align: center;
+	border-radius: 3px;
+	background: rgb(129,191,232); /* Old browsers */
+	background: -moz-linear-gradient(top,  rgba(129,191,232,1) 0%, rgba(67,155,223,1) 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(top,  rgba(129,191,232,1) 0%,rgba(67,155,223,1) 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom,  rgba(129,191,232,1) 0%,rgba(67,155,223,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#81bfe8', endColorstr='#439bdf',GradientType=0 ); /* IE6-9 */
+	border: 1px solid #54A5E1;
+	padding: 7px 25px;
+}
+.rop-features-available p {
+    border-radius: 2px;
+    color: #000;
+    font-size: 13px;
+    font-weight: bold;
+    margin: 0;
+    position: relative;
+    z-index: 9;
+    display: inline-block;
+    background: #fff;
+}
+.rop-features-available p span {
+	position: relative;
+    z-index: 9;
+    padding: 5px 15px;
+    float: left;
+    -webkit-box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.15);
+    -moz-box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.15);
+    box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.15);
+    background: rgb(255,255,255);
+    background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(244,243,244,1) 100%);
+    background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(244,243,244,1) 100%);
+    background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(244,243,244,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f4f3f4',GradientType=0 );
+    color: #777777;
+    text-shadow: 2px 2px 2px #FFFFFF;
+}
+.rop-features-available p:before {
+	content: "";
+	position: absolute;
+	left: -15px;
+	bottom: -4px;
+	width: 25px;
+	height: 27px;
+	background: #F3F3F3;
+}
+.rop-features-available p:after {
+	content: "";
+	position: absolute;
+	right: -15px;
+	bottom: -4px;
+	width: 25px;
+	height: 27px;
+	background: #F3F3F3;
+}
+.rop-features-available strong {
+	color: #F16848;
+}
 
 @media (max-width: 1200px) {
 
