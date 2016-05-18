@@ -1,30 +1,22 @@
 <?php
-	global $cwp_global_schedule;
 	$cfgnets = $this->getAllNetworks(true);
     $available  = $this->getAvailableNetworks();
-    $class      = count($available) == 1 ? "hide_top_tabs_btns" : "";
-?><div class="cwp_top_tabs_vertical <?php echo $class;?>">
-	<ul class="cwp_top_tabs_btns">
-		<?php $first = true; foreach($available  as $network_name) { ?>
-			<li <?php if($first){ ?>class="active" <?php }else{
-
-				if($cfgnets[$network_name] && !CWP_TOP_PRO) echo 'class="pro-version"';
-
-			} ?>  <?php ?>><?php echo $network_name; ?></li>
-
-		<?php $first = false; } ?>
-
-        <?php
-            // Added by Ash/Upwork
-            if(count($available) > 1){ ?>
-			<li><?php _e("All", "tweet-old-post"); ?></li>
-        <?php
-            }
-            // Added by Ash/Upwork
-        ?>
-
-	</ul>
-
+?>
+<div class="cwp_top_tabs_vertical <?php echo (count($available) > 1) ? "rop-tab-with-sidebar" : "rop-tab-full-width"; ?> ">
+    <?php
+    if( count( $available ) > 1) :  ?>
+		<ul class="cwp_top_tabs_btns">
+			<?php
+				$first = true;
+				foreach($available  as $network_name) : ?>
+					<li class="<?php if($first){ ?>active<?php } ?>"><?php echo $network_name; ?></li>
+					<?php $first = false; ?>
+				 <?php endforeach;  ?>
+	        <?php if(count($available) > 1): ?>
+					<li><?php _e("All", "tweet-old-post"); ?></li>
+	        <?php endif; ?>
+		</ul>
+	<?php endif; ?>
     <div id="cwp_delete_thickbox" style="display: none">
         <table class="cwp_delete_table">
             <tr>
@@ -85,12 +77,12 @@
     ?>
 
 		<div class="tab-vertical <?php if($first){ ?> active  <?php } ?>">
-        <?php
-            echo '<div class="rop-features-available"><p><span>Editing features are available on the <strong>Business version</strong></span></p></div>';
-        ?>
+        <?php if(!apply_filters('rop_is_business_user', false)): ?>
+                <div class="rop-features-available"><p><span>Editing features are available on the <a href="<?php echo ROP_PRO_URL; ?>" target="_blank"><strong>Business version</strong></a></span></p></div>
+        <?php endif; ?>
         <?php
             if(is_null($all)){
-                    echo '<div class="rop-box-with-padding">';
+                    echo '<div class="rop-box-with-padding rop-message-tab">';
                         _e("Please start the plugin to view the future shares", "tweet-old-post");
                     echo '</div>';
                 echo "</div>";
@@ -98,7 +90,7 @@
                 continue;
             }
             if(count($all) == 0){
-                    echo '<div class="rop-box-with-padding">';
+                    echo '<div class="rop-box-with-padding rop-message-tab">';
                         _e('There is no suitable post to tweet make sure you excluded correct categories and selected the right dates.','tweet-old-post');
                     echo '</div>';
                 echo "</div>";

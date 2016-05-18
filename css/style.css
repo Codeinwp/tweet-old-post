@@ -1110,4 +1110,14 @@ button.login{
 	}
 
 }
+.tab .cwp_top_tabs_vertical.rop-tab-full-width  .tab-vertical{
+    width:100%;
+}
+.tab .cwp_top_tabs_vertical.rop-tab-with-sidebar  .tab-vertical{
+    width:80%;
+}
+.rop-message-tab{
+    text-align: center;
+    font-weight: bold;
+}
 

@@ -1,19 +1,17 @@
 <?php
 	global $cwp_global_schedule;
 	$cfgnets = $this->getAllNetworks(true);
-?><div class="cwp_top_tabs_vertical">
-	<ul class="cwp_top_tabs_btns">
-		<?php $first = true; foreach($format_fields  as $network_name=>$network_details) { ?>
-			<li <?php if($first){ ?>class="active" <?php }else{
-
-				if($cfgnets[$network_name] && !CWP_TOP_PRO) echo 'class="pro-version"';
-
-			} ?>  <?php ?>><?php echo $network_name; ?></li>
-
-		<?php $first = false; } ?>
-
-	</ul>
-
+	$networks = $this->getAvailableNetworks();
+?><div class="cwp_top_tabs_vertical <?php echo (count($networks) > 1) ? "rop-tab-with-sidebar" : "rop-tab-full-width"; ?>" >
+	<?php if(count($networks) > 1): ?>
+		<ul class="cwp_top_tabs_btns">
+			<?php $first = true; ?>
+			<?php foreach($networks  as $network_name) : ?>
+				<li class="<?php if($first): ?>active<?php endif; ?>"><?php echo $network_name; ?></li>
+				<?php $first = false; ?>
+			<?php endforeach;?>
+		</ul>
+	<?php endif; ?>
 	<?php $first = true; foreach($format_fields  as $network_name=>$network_details) { ?>
 
 		<div class="tab-vertical <?php if($first){ ?> active  <?php } ?>">

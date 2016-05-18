@@ -4,13 +4,14 @@
 #     Plugin URI: https://themeisle.com/plugins/tweet-old-post-lite/
 #     Description: Wordpress plugin that helps you to keeps your old posts alive by sharing them and driving more traffic to them from twitter/facebook or linkedin. It also helps you to promote your content. You can set time and no of posts to share to drive more traffic.For questions, comments, or feature requests, <a href="https://themeisle.com/contact/?utm_source=plugindesc&utm_medium=announce&utm_campaign=top">contact </a> us!
 #     Author: ThemeIsle
-#     Version: 7.2
+#     Version: 7.3.0
 #     Author URI: https://themeisle.com/
 #	  Text Domain: tweet-old-post
 #	  Domain Path: /languages
 #     */
 
 // Config Constants
+define ("ROP_PRO_URL", "http://themeisle.com/plugins/tweet-old-post-pro/");
 define("ROPPLUGINPATH", realpath(dirname(__FILE__) ));
 define("ROPCSSFILE", plugins_url('css/style.css',__FILE__ ));
 define("ROPCUSTOMDASHBOARDICON", plugins_url("css/custom_dashboard_icon.css", __FILE__));
@@ -18,7 +19,7 @@ define("ROPJSFILE", plugins_url('js/master.js',__FILE__ ));
 define("ROPJSCOUNTDOWN", plugins_url('js/countdown.js',__FILE__ ));
 define("ROPPLUGINBASENAME", plugin_basename(__FILE__));
 define('ROP_TOP_FB_API_VERSION','v2.0');
-define('ROP_VERSION','7.2');
+define('ROP_VERSION','7.3.0');
 // Require core.
 require_once(ROPPLUGINPATH."/inc/core.php");
 // Require core.

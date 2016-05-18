@@ -2382,6 +2382,12 @@ endif;
 							$disabled = "disabled='disabled'";
 						}
 					}
+					if(isset($field['available_business'])){
+						if(!apply_filters('rop_is_business_user', false)){
+							$pro = $field["pro_text"];
+							$disabled = "disabled='disabled'";
+						}
+					}
 					$images = array();
 					$images[] = "full";
 					$images = array_merge($images,get_intermediate_image_sizes());
@@ -2406,6 +2412,15 @@ endif;
 							$disabled = "disabled='disabled'";
 						}
 					}
+
+					if(isset($field['available_business'])){
+
+						if(!apply_filters('rop_is_business_user', false)){
+							$pro = $field["pro_text"];
+							$disabled = "disabled='disabled'";
+
+						}
+					}
 					echo "<input type='text' placeholder='".__($field['description'],'tweet-old-post')."' ".$disabled." value='".$field['option_value']."' name='".$field['option']."' id='".$field['option']."'><br/>".$pro;
 					break;
 
@@ -2415,6 +2430,12 @@ endif;
 
 						if(!CWP_TOP_PRO){
 							$pro = CWP_TOP_PRO_STRING;
+							$disabled = "disabled='disabled'";
+						}
+					}
+					if(isset($field['available_business'])){
+						if(!apply_filters('rop_is_business_user', false)){
+							$pro = $field["pro_text"];
 							$disabled = "disabled='disabled'";
 						}
 					}
@@ -2429,6 +2450,12 @@ endif;
 
 						if(!CWP_TOP_PRO && $field['available_pro'] == 'yes'){
 							$pro = CWP_TOP_PRO_STRING;
+							$disabled = "disabled='disabled'";
+						}
+					}
+					if(isset($field['available_business'])){
+						if(!apply_filters('rop_is_business_user', false)){
+							$pro = $field["pro_text"];
 							$disabled = "disabled='disabled'";
 						}
 					}
@@ -2448,6 +2475,12 @@ endif;
 
 						if(!CWP_TOP_PRO){
 							$pro = CWP_TOP_PRO_STRING;
+							$disabled = "disabled='disabled'";
+						}
+					}
+					if(isset($field['available_business'])){
+						if(!apply_filters('rop_is_business_user', false)){
+							$pro = $field["pro_text"];
 							$disabled = "disabled='disabled'";
 						}
 					}
@@ -2529,6 +2562,12 @@ endif;
 					if (isset($field['available_pro'])) {
 						if(!CWP_TOP_PRO){
 							$pro = CWP_TOP_PRO_STRING;
+							$disabled = "disabled='disabled'";
+						}
+					}
+					if(isset($field['available_business'])){
+						if(!apply_filters('rop_is_business_user', false)){
+							$pro = $field["pro_text"];
 							$disabled = "disabled='disabled'";
 						}
 					}
@@ -2722,6 +2761,11 @@ endif;
 				}
 			}
 		}
+
+		public function clear_delete_type(){
+
+			update_option('cwp_top_delete_type',-1);
+		}
 		public function loadAllHooks()
 		{
 
@@ -2762,6 +2806,9 @@ endif;
 
 			// Log Out Twitter user ajax action
 			add_action('wp_ajax_log_out_user', array($this, 'ajax'));
+
+			//
+			add_action("rop_stop_posting", array($this,"clear_delete_type"));
 
 			//start ROP
 			add_action('wp_ajax_tweet_old_post_action', array($this, 'ajax'));

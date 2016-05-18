@@ -1,13 +1,19 @@
 <?php
 	global $cwp_top_global_schedule;
-
-?><div class="cwp_top_tabs_vertical">
-	<ul class="cwp_top_tabs_btns">
-		<?php $first = true; foreach($all_networks  as $network_name ) { ?>
-			<li class="<?php if($first){ ?>active <?php } ?>    " ><?php echo $network_name; ?></li>
-			<?php $first = false; } ?>
-
-	</ul>
+	$networks = $this->getAvailableNetworks();
+?>
+<div class="cwp_top_tabs_vertical <?php echo (count($networks) > 1) ? "rop-tab-with-sidebar" : "rop-tab-full-width"; ?> ">
+	<?php if(count($networks) > 1) : ?>
+		<ul class="cwp_top_tabs_btns">
+			<?php $first = true; ?>
+			<?php foreach($networks  as $network_name ) : ?>
+				<li class="<?php if($first): ?>active<?php endif; ?>">
+					<?php echo $network_name; ?>
+				</li>
+				<?php $first = false; ?>
+			<?php endforeach; ?>
+		</ul>
+	<?php endif; ?>
 
 	<?php $first = true; foreach($all_networks  as $network_name ) { ?>
 
@@ -33,7 +39,7 @@
 												'type'			=> 'text',
 												'slug'			=> 'interval',
 												'option_value'			=>($cwp_top_global_schedule[$network_name.'_schedule_type_selected'] == 'each') ? $cwp_top_global_schedule[$network_name.'_top_opt_interval'] : '8',
-				"available_pro"         => "yes",
+				"available_business"         => "yes",
 				"pro_text"				=>CWP_TOP_PRO_BUSINESS_STRING,
 												'option'		=> $network_name.'_top_opt_interval',
 												'description'	=> __('Minimum time between shares (Hour/Hours), 0.4 can be used also.', 'tweet-old-post'),
@@ -70,7 +76,7 @@
 									 <P><A  href="#" class="cwp-btn cwp-primary cwp-add-posting-time"><?php _e("Add posting time",'tweet-old-post'); ?></a></P>
 								 </div>
 							 	<?php
-							    	if(!CWP_TOP_PRO){
+							    	if(!apply_filters("rop_is_business_user",false)){
 								    	 _e(CWP_TOP_PRO_BUSINESS_STRING,'tweet-old-post');
 								    }
 							    ?>

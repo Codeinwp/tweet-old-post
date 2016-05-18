@@ -61,7 +61,7 @@
 				<li ><?php _e('Post Format','tweet-old-post'); ?></li>
 				<li <?php if(!CWP_TOP_PRO): ?> class="pro-version" <?php endif; ?>><?php _e('Custom Schedule','tweet-old-post'); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
                 <?php // Added by Ash/Upwork ?>
-				<li <?php if(!CWP_TOP_PRO): ?> class="pro-version" <?php endif; ?>><?php _e('Advanced Scheduling','tweet-old-post'); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+				<li   ><?php _e('Manage queue','tweet-old-post'); ?> </li>
                 <?php // Added by Ash/Upwork ?>
 				<li class="rop-error-log"><span class="no-error"> </span></span><?php _e('Log','tweet-old-post'); ?></li>
 
