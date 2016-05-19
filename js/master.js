@@ -28,7 +28,8 @@ jQuery(document).ready(function(){
 				type: "POST",
 				url: cwp_top_ajaxload.ajaxurl,
 				data: {
-					action: 'reset_options'
+					action: 'reset_options',
+                    security: cwp_top_ajaxload.ajaxnonce
 				},
 				success: function(response) {
 					console.log("Success: " + response);
@@ -99,7 +100,8 @@ jQuery(document).ready(function(){
 			url: cwp_top_ajaxload.ajaxurl,
 			data: {
 				action: 'remote_trigger',
-				state:state
+				state:state,
+                security: cwp_top_ajaxload.ajaxnonce
 			},
 			success: function(response) {
 				console.log(response);
@@ -131,7 +133,8 @@ jQuery(document).ready(function(){
 			url: cwp_top_ajaxload.ajaxurl,
 			data: {
 				action: 'beta_user_trigger',
-				state:state
+				state:state,
+                security: cwp_top_ajaxload.ajaxnonce
 			},
 			success: function(response) {
 				console.log(response);
@@ -159,7 +162,8 @@ jQuery(document).ready(function(){
 			async:false,
 			data: {
 				action: "update_response",
-				dataSent: formData
+				dataSent: formData,
+                security: cwp_top_ajaxload.ajaxnonce
 			},
 			success: function(response) {
 				console.log(response);
@@ -188,7 +192,8 @@ jQuery(document).ready(function(){
 			url: cwp_top_ajaxload.ajaxurl,
 			data: {
 				action: "update_response",
-				dataSent: formData
+				dataSent: formData,
+                security: cwp_top_ajaxload.ajaxnonce
 			},
 			success: function(response) {
 				console.log(response);
@@ -217,7 +222,8 @@ jQuery(document).ready(function(){
 			data: {
 				action: "display_pages",
 				currentURL: jQuery("#cwp_top_currenturl").val(),
-				social_network: service
+				social_network: service,
+                security: cwp_top_ajaxload.ajaxnonce
 			},
 			success: function(response) {
 				switch (service) {
@@ -330,7 +336,8 @@ jQuery(document).ready(function(){
 					action: action,
 					currentURL: jQuery("#cwp_top_currenturl").val(),
 					social_network: service,
-					extra:extra
+					extra:extra,
+                    security: cwp_top_ajaxload.ajaxnonce
 				},
 				dataType:"json",
 				success: function(response) {
@@ -400,7 +407,8 @@ jQuery(document).ready(function(){
 			url: cwp_top_ajaxload.ajaxurl,
 			data: {
 				action: "log_out_user",
-				user_id: userID
+				user_id: userID,
+                security: cwp_top_ajaxload.ajaxnonce
 			},
 			success: function(response) {
 				window.location.href = jQuery("#cwp_top_currenturl").val();
@@ -418,7 +426,8 @@ jQuery(document).ready(function(){
 			type: "POST",
 			url: cwp_top_ajaxload.ajaxurl,
 			data: {
-				action: "rop_clear_log"
+				action: "rop_clear_log",
+                security: cwp_top_ajaxload.ajaxnonce
 			}
 		});
 		return false;
@@ -433,7 +442,8 @@ jQuery(document).ready(function(){
 			type: "POST",
 			url: cwp_top_ajaxload.ajaxurl,
 			data: {
-				action: "tweet_old_post_action"
+				action: "tweet_old_post_action",
+                security: cwp_top_ajaxload.ajaxnonce
 			},
 			success: function(response) {
 
@@ -451,7 +461,8 @@ jQuery(document).ready(function(){
 			type: "POST",
 			url: cwp_top_ajaxload.ajaxurl,
 			data: {
-				action: "getNotice_action"
+				action: "getNotice_action",
+                security: cwp_top_ajaxload.ajaxnonce
 			},
 			dataType:"json",
 			success: function(response) {
@@ -492,7 +503,8 @@ jQuery(document).ready(function(){
 			type: "POST",
 			url: cwp_top_ajaxload.ajaxurl,
 			data: {
-				action: "view_sample_tweet_action"
+				action: "view_sample_tweet_action",
+                security: cwp_top_ajaxload.ajaxnonce
 			},
 			success: function(response) {
 				if(response !== '') {
@@ -550,7 +562,8 @@ jQuery(document).ready(function(){
 			type: "POST",
 			url: cwp_top_ajaxload.ajaxurl,
 			data: {
-				action: "stop_tweet_old_post"
+				action: "stop_tweet_old_post",
+                security: cwp_top_ajaxload.ajaxnonce
 			},
 			success: function(response) {
 				if(response !== '') {
@@ -584,7 +597,8 @@ jQuery(document).ready(function(){
 			type: "POST",
 			url: cwp_top_ajaxload.ajaxurl,
 			data: {
-				action: "tweet_now_action"
+				action: "tweet_now_action",
+                security: cwp_top_ajaxload.ajaxnonce
 			},
 			success: function(response) {
 				endAjaxIntro();
@@ -697,7 +711,8 @@ jQuery(document).ready(function(){
 					page_token:access_token,
 					page_id:page_id,
 					picture_url: jQuery(e.target).parent().children().children('img').attr('src'),
-					page_name: jQuery(e.target).parent().children('.page_name').text()
+					page_name: jQuery(e.target).parent().children('.page_name').text(),
+                    security: cwp_top_ajaxload.ajaxnonce
 				},
 				success: function(response) {
 					switch (service) {

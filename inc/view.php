@@ -59,7 +59,10 @@
 				<li class="active" > <?php _e('Accounts','tweet-old-post'); ?> </li>
 				<li > <?php _e('General settings','tweet-old-post'); ?> </li>
 				<li ><?php _e('Post Format','tweet-old-post'); ?></li>
-				<li <?php if(!CWP_TOP_PRO): ?> class="pro-version" <?php endif; ?>><?php _e('Custom Schedule','tweet-old-post'); ?></li>
+				<li <?php if(!CWP_TOP_PRO): ?> class="pro-version" <?php endif; ?>><?php _e('Custom Schedule','tweet-old-post'); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+                <?php // Added by Ash/Upwork ?>
+				<li   ><?php _e('Manage queue','tweet-old-post'); ?> </li>
+                <?php // Added by Ash/Upwork ?>
 				<li class="rop-error-log"><span class="no-error"> </span></span><?php _e('Log','tweet-old-post'); ?></li>
 
 			</ul>
@@ -105,6 +108,9 @@
 
 			<div class="tab"><?php  require_once(ROPPLUGINPATH."/inc/view-postformat.php"); ?></div>
 			<div class="tab"><?php  require_once(ROPPLUGINPATH."/inc/view-postschedule.php"); ?></div>
+            <?php // Added by Ash/Upwork ?>
+			<div class="tab"><?php  require_once(ROPPLUGINPATH."/inc/view-advancedscheduling.php"); ?></div>
+            <?php // Added by Ash/Upwork ?>
 			<div class="tab clearfix">
 				<div class="rop-log-container clearfix">
 

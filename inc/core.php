@@ -110,6 +110,10 @@ if (!class_exists('CWP_TOP_Core')) {
 			update_option('top_last_tweets',array());
 			$timeNow =  $this->getTime();
 			$timeNow = $timeNow+15;
+            // Added by Ash/Upwork for advanced scheduling
+            set_transient('top_firstpost_time', $timeNow, 15);
+            //error_log("first post time " . date("g:i:s A", $timeNow));
+            // Added by Ash/Upwork for advanced scheduling
 
 			$this->clearScheduledTweets();
 			$networks = $this->getAvailableNetworks();
@@ -142,7 +146,7 @@ if (!class_exists('CWP_TOP_Core')) {
 			die(); // Required for AJAX
 		}
 
-		public function getExcludedPosts() {
+		public function getExcludedPosts($ntk=null) {
 
 			$postQueryPosts = "";
 			$postPosts = get_option('top_opt_excluded_post');
@@ -153,6 +157,22 @@ if (!class_exists('CWP_TOP_Core')) {
 			else
 				$postQueryPosts = get_option('top_opt_excluded_post');
 
+            // Added by Ash/Upwork
+            if($ntk){
+                $excludePosts   = get_option("cwp_top_exclude_from_" . $ntk);
+                if(!is_array($excludePosts)){
+                    $excludePosts   = array();
+                }
+                if(!empty($excludePosts) && is_array($excludePosts) && !is_array($postQueryPosts)){
+                    $postQueryPosts = explode(",", $postQueryPosts);
+                }
+                if(!is_array($postQueryPosts)){
+                    $postQueryPosts = array();
+                }
+                $postQueryPosts = array_merge($postQueryPosts, $excludePosts);
+                $postQueryPosts = implode(",", $postQueryPosts);
+            }
+            // Added by Ash/Upwork
 			return $postQueryPosts;
 
 		}
@@ -184,7 +204,7 @@ if (!class_exists('CWP_TOP_Core')) {
         /**
         * This will add the postID to the network buffer to note which post was posted on which network
         */
-        private function setAlreadyTweetedPosts($ntk, $postID){
+        public function setAlreadyTweetedPosts($ntk, $postID){
             if(!$ntk || !$postID) return;
             $opt        = get_option("top_opt_posts_buffer_" . $ntk, array());
             if(!$opt || !is_array($opt)){
@@ -219,14 +239,19 @@ if (!class_exists('CWP_TOP_Core')) {
         
         // Added by Ash/Upwork
 
-		public function getTweetsFromDB($ntk=null, $clearNetworkBuffer=false)
+		public function getTweetsFromDB($ntk=null, $clearNetworkBuffer=false, $tweetCount=null)
 		{
 			global $wpdb;
+            $limit      = 50;
 			// Generate the Tweet Post Date Range
 			$dateQuery = $this->getTweetPostDateRange();
 			if(!is_array($dateQuery)) return false;
 			// Get the number of tweets to be tweeted each interval.
-			$tweetCount = intval(get_option('top_opt_no_of_tweet'));
+            if($tweetCount){
+                $limit  = $tweetCount;
+            }else{
+			    $tweetCount = intval(get_option('top_opt_no_of_tweet'));
+            }
 			if($tweetCount == 0 ) {
 				self::addNotice("Invalid number for  Number of Posts to share. It must be a value greater than 0 ",'error');
 				return false;
@@ -245,7 +270,7 @@ if (!class_exists('CWP_TOP_Core')) {
 				$tweetedPosts = array();
 			}
             */
-			$postQueryExcludedPosts = $this->getExcludedPosts();
+			$postQueryExcludedPosts = $this->getExcludedPosts($ntk);
 			$postQueryExcludedPosts = explode (',',$postQueryExcludedPosts);
 			$excluded = array_merge($tweetedPosts,$postQueryExcludedPosts);
 			$excluded = array_unique($excluded);
@@ -302,9 +327,11 @@ if (!class_exists('CWP_TOP_Core')) {
             // Added by Ash/Upwork
 
 			$query .= "AND ({$wpdb->prefix}posts.post_status = 'publish')
-						GROUP BY {$wpdb->prefix}posts.ID
-						order by RAND() limit 50
-			";
+						GROUP BY {$wpdb->prefix}posts.ID ";
+            if(!ROP_IS_TEST){
+                $query  .= "order by RAND() ";
+            }
+            $query  .= "limit {$limit}";
 
             $returnedPost = $wpdb->get_results( $query);
 
@@ -519,32 +546,10 @@ if (!class_exists('CWP_TOP_Core')) {
 				update_option( 'top_lastID', $returnedTweets[0]->ID);
 
 			foreach($networks as $n) {
-				if (CWP_TOP_PRO && $this->isPostWithImageEnabled($n)) {
-
-					if(defined('ROP_PRO_VERSION')){
-						global $CWP_TOP_Core_PRO;
-						$image = $CWP_TOP_Core_PRO->getPostImage($returnedTweets[0]->ID);
-
-					}else {
-						if ( has_post_thumbnail( $returnedTweets[0]->ID ) ) :
-
-							$image_array = wp_get_attachment_image_src( get_post_thumbnail_id( $returnedTweets[0]->ID ) );
-
-							$image       = $image_array[0];
-						else :
-							$post  = get_post( $returnedTweets[0]->ID );
-							$image = '';
-							ob_start();
-							ob_end_clean();
-							$output = preg_match_all( '/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $post->post_content, $matches );
-							if(isset($matches [1] [0]))
-								$image = $matches [1] [0];
-
-						endif;
-					}
-					if(!empty($image))
-						$messages[$n] = '<img class="top_preview" src="'.$image.'"/>'.$messages[$n];
-				}
+                $image      = $this->getImageForPost($n, $returnedTweets[0]->ID);
+                if(!empty($image)){
+                    $messages[$n] = '<img class="top_preview" src="'.$image.'"/>'.$messages[$n];
+                }
 			}
 
 			echo json_encode($messages);
@@ -552,6 +557,71 @@ if (!class_exists('CWP_TOP_Core')) {
 
 			die(); // required
 		}
+
+        // Added by Ash/Upwork
+        function sortPosts($all){
+            uasort($all, function($x, $y){
+                if($x["time"] == $y["time"]) return 0;
+
+                return $x["time"] < $y["time"] ? -1 : 1;
+            });
+            return $all;
+        }
+
+        function getImageForPost($n, $postID){
+            if (ROP_IS_TEST || (CWP_TOP_PRO && $this->isPostWithImageEnabled($n))) {
+                if(defined('ROP_PRO_VERSION')){
+                    global $CWP_TOP_Core_PRO;
+                    $image = $CWP_TOP_Core_PRO->getPostImage($postID, $n);
+
+                }else {
+                    if ( has_post_thumbnail($postID) ) :
+
+                        $image_array = wp_get_attachment_image_src( get_post_thumbnail_id($postID) );
+
+                        $image       = $image_array[0];
+                    else :
+                        $post  = get_post($postID);
+                        $image = '';
+                        ob_start();
+                        ob_end_clean();
+                        $output = preg_match_all( '/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $post->post_content, $matches );
+                        if(isset($matches [1] [0]))
+                            $image = $matches [1] [0];
+
+                    endif;
+                }
+
+                $top_opt_saved_images   = get_option("top_opt_saved_images");
+                if($top_opt_saved_images && is_array($top_opt_saved_images) && in_array($postID, $top_opt_saved_images)){
+                    $imageID            = get_post_meta($postID, "top_opt_saved_post_image_" . $n, true);
+                    if($imageID){
+                        $image          = wp_get_attachment_url($imageID);
+                    }
+                }
+
+                if(!empty($image)){
+                    return '<img class="top_preview" src="'.$image.'"/>';
+                }
+            }
+            return null;
+        }
+
+        function getFutureTime($network_name, $time, $array){
+            $firstPostTime  = get_transient('top_firstpost_time');
+            if($firstPostTime !== false){
+                delete_transient('top_firstpost_time');
+                return $firstPostTime;
+            }
+
+            if(array_key_exists("time", $array)){
+                $time       = $array["time"];
+            }else{
+                $time       = CWP_TOP_Core::getNextTweetTime($network_name, $time ? $time : $this->getTime());
+            }
+            return $time;
+        }
+        // Added by Ash/Upwork
 
 		/**
 		 * Returns if the post is already tweeted
@@ -594,6 +664,30 @@ if (!class_exists('CWP_TOP_Core')) {
 		public function ropSubstr($string,$nr1,$nr2	) {
 
 				return substr($string,$nr1, $nr2);
+		}
+
+		/**
+		 * Author Daniel Brown (contact info at http://ymb.tc/contact)
+		 * Includes hashtag in $tweet_content if possible
+		 * to save space, avoid redundancy, and allow more hashtags
+		 * @param  [string] $tweetContent The regular text in the Tweet
+		 * @param  [string] $hashtag The hashtag to include in $tweetContent, if possible
+		 * @return [mixed]  The new $tweetContent or FALSE if the $tweetContent doesn't contain the hashtag
+		 */
+
+		public function tweetContentHashtag ($tweetContent, $hashtag) {
+			$location = stripos($tweetContent, ' ' . $hashtag . ' ');
+			if ( $location !== false ) $location++; // the actual # location will be past the space
+			elseif ( stripos($tweetContent, $hashtag . ' ') === 0 ) { // see if the hashtag is at the beginning
+				$location = 0;
+			}
+			elseif ( stripos($tweetContent, ' ' . $hashtag) + strlen(' ' . $hashtag) == strlen($tweetContent) ) { // see if the hashtag is at the end
+				$location = stripos($tweetContent, ' ' . $hashtag) + 1;
+			}
+			if ( $location !== false ) {
+				return substr_replace($tweetContent, '#', $location, 0);
+			}
+			else return false;
 		}
 
 		/**
@@ -708,8 +802,13 @@ if (!class_exists('CWP_TOP_Core')) {
 						if ( $postQuery->post_type == "post" ) {
 							$postCategories = get_the_category( $postQuery->ID );
 							foreach ( $postCategories as $category ) {
-								if ( strlen( $category->slug . $newHashtags ) <= $maximum_hashtag_length || $maximum_hashtag_length == 0 ) {
-									$newHashtags = $newHashtags . " #" . preg_replace( '/-/', '', strtolower( $category->slug ) );
+								$thisHashtag = $category->slug;
+								if ( $this->tweetContentHashtag($tweetContent, $thisHashtag) !== false ) { // if the hashtag exists in $tweetContent
+									$tweetContent = $this->tweetContentHashtag($tweetContent, $thisHashtag); // simply add a # there
+									$maximum_hashtag_length--; // subtract 1 for the # we added to $tweetContent
+								}
+								elseif ( strlen( $thisHashtag . $newHashtags ) <= $maximum_hashtag_length || $maximum_hashtag_length == 0 ) {
+									$newHashtags = $newHashtags . " #" . preg_replace( '/-/', '', strtolower( $thisHashtag ) );
 								}
 							}
 						} else {
@@ -722,8 +821,13 @@ if (!class_exists('CWP_TOP_Core')) {
 					case 'tags':
 						$postTags = wp_get_post_tags( $postQuery->ID );
 						foreach ( $postTags as $postTag ) {
-							if ( strlen( $postTag->slug . $newHashtags ) <= $maximum_hashtag_length || $maximum_hashtag_length == 0 ) {
-								$newHashtags = $newHashtags . " #" . preg_replace( '/-/', '', strtolower( $postTag->slug ) );
+							$thisHashtag = $postTag->slug;
+							if ( $this->tweetContentHashtag($tweetContent, $thisHashtag) !== false ) { // if the hashtag exists in $tweetContent
+								$tweetContent = $this->tweetContentHashtag($tweetContent, $thisHashtag); // simply add a # there
+								$maximum_hashtag_length--; // subtract 1 for the # we added to $tweetContent
+							}
+							elseif ( strlen( $thisHashtag . $newHashtags ) <= $maximum_hashtag_length || $maximum_hashtag_length == 0 ) {
+								$newHashtags = $newHashtags . " #" . preg_replace( '/-/', '', strtolower( $thisHashtag ) );
 							}
 						}
 						break;
@@ -786,6 +890,16 @@ if (!class_exists('CWP_TOP_Core')) {
 					$finalTweet = $additionalTextBeginning . $tweetContent .$newHashtags . $additionalTextEnd;
 				}
 			}
+
+            // Added by Ash/Upwork
+            $top_opt_saved_posts    = get_option("top_opt_saved_posts");
+            if($top_opt_saved_posts && is_array($top_opt_saved_posts) && in_array($postQuery->ID, $top_opt_saved_posts)){
+                $newContent         = get_post_meta($postQuery->ID, "top_opt_saved_post_content_" . $network, true);
+                if($newContent){
+                    $finalTweet     = $newContent;
+                }
+            }
+            // Added by Ash/Upwork
 
 			$fTweet['message'] =  $finalTweet ;
 
@@ -1923,11 +2037,11 @@ endif;
 			}
 			return $db;
 		}
-		function   getNextTweetTime($network){
+		function   getNextTweetTime($network, $nowTime=null){
 			$time = 0;
 			if(!CWP_TOP_PRO){
-				 $time =  $this->getTime() + ( floatval(get_option('top_opt_interval'))  * 3600 ) ;
-				 if($time > $this->getTime()) {
+				 $time =  $this->getTime($nowTime) + ( floatval(get_option('top_opt_interval'))  * 3600 ) ;
+				 if($time > $this->getTime($nowTime)) {
 					 return $time;
 				 }else{
 					 return 0;
@@ -1936,17 +2050,17 @@ endif;
 			$cwp_top_global_schedule = $this->getSchedule();
 			$type = $cwp_top_global_schedule[$network.'_schedule_type_selected'];
 			if($type == 'each'){
-				$time =  $this->getTime() + floatval($cwp_top_global_schedule[$network.'_top_opt_interval']) * 3600;
-				if($time > $this->getTime()) {
+				$time =  $this->getTime($nowTime) + floatval($cwp_top_global_schedule[$network.'_top_opt_interval']) * 3600;
+				if($time > $this->getTime($nowTime)) {
 					return $time;
 				}else{
 					return 0;
 				}
 			}else{
-				if (date('N', $this->getTime()) == 1){
-					$start = strtotime("monday this week",$this->getTime()) ;
+				if (date('N', $this->getTime($nowTime)) == 1){
+					$start = strtotime("monday this week",$this->getTime($nowTime)) ;
 				}else{
-					$start = strtotime("last Monday",$this->getTime()) ;
+					$start = strtotime("last Monday",$this->getTime($nowTime)) ;
 				}
 
 				$days = explode(",",$cwp_top_global_schedule[$network.'_top_opt_interval']['days']);
@@ -1970,7 +2084,7 @@ endif;
 
 				}
 				sort($schedules,SORT_REGULAR);
-				$ctime = $this->getTime();
+				$ctime = $this->getTime($nowTime);
 
 				foreach($schedules as $s ){
 					if($s > $ctime ) {
@@ -2245,6 +2359,9 @@ endif;
 			foreach ($defaultOptions as $option => $defaultValue) {
 				delete_option($option);
 			}
+            // Added by Ash/Upwork
+            do_action("rop_pro_deactivateFree");
+            // Added by Ash/Upwork
 		}
 
 		// Generate all fields based on settings
@@ -2262,6 +2379,12 @@ endif;
 
 						if(!CWP_TOP_PRO){
 							$pro = CWP_TOP_PRO_STRING;
+							$disabled = "disabled='disabled'";
+						}
+					}
+					if(isset($field['available_business'])){
+						if(!apply_filters('rop_is_business_user', false)){
+							$pro = $field["pro_text"];
 							$disabled = "disabled='disabled'";
 						}
 					}
@@ -2289,6 +2412,15 @@ endif;
 							$disabled = "disabled='disabled'";
 						}
 					}
+
+					if(isset($field['available_business'])){
+
+						if(!apply_filters('rop_is_business_user', false)){
+							$pro = $field["pro_text"];
+							$disabled = "disabled='disabled'";
+
+						}
+					}
 					echo "<input type='text' placeholder='".__($field['description'],'tweet-old-post')."' ".$disabled." value='".$field['option_value']."' name='".$field['option']."' id='".$field['option']."'><br/>".$pro;
 					break;
 
@@ -2298,6 +2430,12 @@ endif;
 
 						if(!CWP_TOP_PRO){
 							$pro = CWP_TOP_PRO_STRING;
+							$disabled = "disabled='disabled'";
+						}
+					}
+					if(isset($field['available_business'])){
+						if(!apply_filters('rop_is_business_user', false)){
+							$pro = $field["pro_text"];
 							$disabled = "disabled='disabled'";
 						}
 					}
@@ -2312,6 +2450,12 @@ endif;
 
 						if(!CWP_TOP_PRO && $field['available_pro'] == 'yes'){
 							$pro = CWP_TOP_PRO_STRING;
+							$disabled = "disabled='disabled'";
+						}
+					}
+					if(isset($field['available_business'])){
+						if(!apply_filters('rop_is_business_user', false)){
+							$pro = $field["pro_text"];
 							$disabled = "disabled='disabled'";
 						}
 					}
@@ -2331,6 +2475,12 @@ endif;
 
 						if(!CWP_TOP_PRO){
 							$pro = CWP_TOP_PRO_STRING;
+							$disabled = "disabled='disabled'";
+						}
+					}
+					if(isset($field['available_business'])){
+						if(!apply_filters('rop_is_business_user', false)){
+							$pro = $field["pro_text"];
 							$disabled = "disabled='disabled'";
 						}
 					}
@@ -2415,6 +2565,12 @@ endif;
 							$disabled = "disabled='disabled'";
 						}
 					}
+					if(isset($field['available_business'])){
+						if(!apply_filters('rop_is_business_user', false)){
+							$pro = $field["pro_text"];
+							$disabled = "disabled='disabled'";
+						}
+					}
 					$post_types = get_post_types( $args, $output, $operator );
 					array_push($post_types,"post","page");
 					foreach ($post_types as $post_type) {
@@ -2457,8 +2613,8 @@ endif;
 
 			die();
 		}
-		public function getTime() {
-
+		public function getTime($nowTime=null) {
+            if($nowTime) return $nowTime;
 			return time() ;
 
 			//return  time() - 253214 + 2 * 3600 + 24 * 3600;
@@ -2605,6 +2761,11 @@ endif;
 				}
 			}
 		}
+
+		public function clear_delete_type(){
+
+			update_option('cwp_top_delete_type',-1);
+		}
 		public function loadAllHooks()
 		{
 
@@ -2617,54 +2778,61 @@ endif;
 
 			add_filter('plugin_action_links',array($this,'top_plugin_action_links'), 10, 2);
 
+            // Added by Ash/Upwork
+            add_filter('cwp_check_ajax_capability', array($this, 'checkAjaxCapability'), 10, 0);
+            // Added by Ash/Upwork
+
 			add_action( 'plugins_loaded', array($this, 'addLocalization') );
 
 			//ajax actions
 
 			// Update all options ajax action.
-			add_action('wp_ajax_update_response', array($this, 'updateAllOptions'));
+			add_action('wp_ajax_update_response', array($this, 'ajax'));
 
 			// Reset all options ajax action.
-			add_action('wp_ajax_reset_options', array($this, 'resetAllOptions'));
+			add_action('wp_ajax_reset_options', array($this, 'ajax'));
 
 			// Add new twitter account ajax action
-			add_action('wp_ajax_add_new_account', array($this, 'addNewAccount'));
+			add_action('wp_ajax_add_new_account', array($this, 'ajax'));
 
 			// Display managed pages ajax action
-			add_action('wp_ajax_display_pages', array($this, 'displayPages'));
+			add_action('wp_ajax_display_pages', array($this, 'ajax'));
 
 			// Add new account managed pages ajax action
-			add_action('wp_ajax_add_pages', array($this, 'addPages'));
+			add_action('wp_ajax_add_pages', array($this, 'ajax'));
 
 			// Add more than one twitter account ajax action
-			add_action('wp_ajax_add_new_account_pro', array($this, 'addNewAccountPro'));
+			add_action('wp_ajax_add_new_account_pro', array($this, 'ajax'));
 
 			// Log Out Twitter user ajax action
-			add_action('wp_ajax_log_out_user', array($this, 'logOutUser'));
+			add_action('wp_ajax_log_out_user', array($this, 'ajax'));
+
+			//
+			add_action("rop_stop_posting", array($this,"clear_delete_type"));
 
 			//start ROP
-			add_action('wp_ajax_tweet_old_post_action', array($this, 'startTweetOldPost'));
+			add_action('wp_ajax_tweet_old_post_action', array($this, 'ajax'));
 
 			//clear Log messages
-			add_action('wp_ajax_rop_clear_log', array($this, 'clearLog'));
+			add_action('wp_ajax_rop_clear_log', array($this, 'ajax'));
 
 			//remote trigger cron
-			add_action('wp_ajax_remote_trigger', array($this, 'remoteTrigger'));
-			add_action('wp_ajax_beta_user_trigger', array($this, 'betaUserTrigger'));
+			add_action('wp_ajax_remote_trigger', array($this, 'ajax'));
+			add_action('wp_ajax_beta_user_trigger', array($this, 'ajax'));
 
 			//sample tweet messages
-			add_action('wp_ajax_view_sample_tweet_action', array($this, 'viewSampleTweet'));
+			add_action('wp_ajax_view_sample_tweet_action', array($this, 'ajax'));
 
 			// Tweet Old Post tweet now action.
-			add_action('wp_ajax_tweet_now_action', array($this, 'tweetNow'));
+			add_action('wp_ajax_tweet_now_action', array($this, 'ajax'));
 
-			add_action('wp_ajax_gettime_action', array($this, 'echoTime'));
+			add_action('wp_ajax_gettime_action', array($this, 'ajax'));
 
 			//get notice
-			add_action('wp_ajax_getNotice_action', array($this, 'getNotice'));
+			add_action('wp_ajax_getNotice_action', array($this, 'ajax'));
 
 			//stop ROP
-			add_action('wp_ajax_stop_tweet_old_post', array($this, 'stopTweetOldPost'));
+			add_action('wp_ajax_stop_tweet_old_post', array($this, 'ajax'));
 
 			//custom actions
 
@@ -2692,7 +2860,7 @@ endif;
 
             // Added by Ash/Upwork
             // test action, only to be used for testing
-            if(ROP_IS_TEST) add_action("admin_init", array($this, "doTestAction"));
+            //if(ROP_IS_TEST) add_action("admin_init", array($this, "doTestAction"));
             // Added by Ash/Upwork
 
 			if(isset($_GET['debug']) ) {
@@ -2704,6 +2872,73 @@ endif;
 			}
 
 		}
+
+        function checkAjaxCapability() {
+            $cap        = false;
+			if (!current_user_can('manage_options') && $this->top_check_user_role( 'Administrator' )) {
+				$cap    = true;
+			} else {
+				$cap    = current_user_can('manage_options');
+            }
+            return $cap;
+        }
+
+        function ajax() {
+            if (!$this->checkAjaxCapability()) wp_die();
+            check_ajax_referer("cwp-top-" . ROP_VERSION, "security");
+
+            switch ($_POST["action"]) {
+                case 'update_response':
+                    $this->updateAllOptions();
+                    break;
+                case 'reset_options':
+                    $this->resetAllOptions();
+                    break;
+                case 'add_new_account':
+                    $this->addNewAccount();
+                    break;
+                case 'display_pages':
+                    $this->displayPages();
+                    break;
+                case 'add_pages':
+                    $this->addPages();
+                    break;
+                case 'add_new_account_pro':
+                    $this->addNewAccountPro();
+                    break;
+                case 'log_out_user':
+                    $this->logOutUser();
+                    break;
+                case 'tweet_old_post_action':
+                    $this->startTweetOldPost();
+                    break;
+                case 'rop_clear_log':
+                    $this->clearLog();
+                    break;
+                case 'remote_trigger':
+                    $this->remoteTrigger();
+                    break;
+                case 'beta_user_trigger':
+                    $this->betaUserTrigger();
+                    break;
+                case 'view_sample_tweet_action':
+                    $this->viewSampleTweet();
+                    break;
+                case 'tweet_now_action':
+                    $this->tweetNow();
+                    break;
+                case 'gettime_action':
+                    $this->echoTime();
+                    break;
+                case 'getNotice_action':
+                    $this->getNotice();
+                    break;
+                case 'stop_tweet_old_post':
+                    $this->stopTweetOldPost();
+                    break;
+            }
+            wp_die();
+        }
 
         // Added by Ash/Upwork
         function addRewriteVars($vars){
@@ -2869,7 +3104,10 @@ endif;
 					// Register Main JS File
 					wp_enqueue_script( 'cwp_top_js_countdown', ROPJSCOUNTDOWN, array(), time(), true );
 					wp_enqueue_script( 'cwp_top_javascript', ROPJSFILE, array(), time(), true );
-					wp_localize_script( 'cwp_top_javascript', 'cwp_top_ajaxload', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
+					wp_localize_script( 'cwp_top_javascript', 'cwp_top_ajaxload', array(
+                        'ajaxurl'   => admin_url( 'admin-ajax.php' ),
+                        'ajaxnonce' => wp_create_nonce("cwp-top-" . ROP_VERSION),
+                    ) );
 				}
 			}
 
@@ -3026,8 +3264,7 @@ endif;
 				$shortURL = $this->sendRequest($shortURL, 'GET');
 			} elseif ($service == "is.gd") {
 
-				$shortURL = "http://is.gd/api.php?longurl={$url}";
-
+				$shortURL = "https://is.gd/api.php?longurl={$url}"; 
 				$shortURL = $this->sendRequest($shortURL, 'GET');
 			} elseif ($service == "t.co") {
 				$shortURL = "http://twitter.com/share?url={$url}";

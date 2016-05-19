@@ -2,7 +2,7 @@
 Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle
 Tags: admin, ajax, plugin, twitter, facebook, linkedin, automatic, tweet, share, wordpress, marketing, sharing, Tweet old post, Tweets,evergreen,  Promote old post by tweeting about them, Twitter, Auto Tweet, Hashtags, Twitter Hashtags, Tweet Posts, Tweet, Post Tweets, Wordpress Twitter Plugin, Twitter Plugin, Tweet Selected Posts, Twitter, Promote Posts, Tweet Random Post, Share Post, Promote Post, Post Tweets, Wordpress Twitter, Drive Traffic, Tweet Selected Posts
 Requires at least: 2.7
-Tested up to: 4.4.2
+Tested up to: 4.5.2
 Stable tag: trunk
 
 
@@ -12,11 +12,8 @@ Plugin to share about your old posts on twitter, facebook, linkedin to get more 
 
 ### What the plugin can do ?
 
-This plugin helps you to keeps your old posts alive by sharing them and driving more traffic to them from social networks. It also helps you to promote your content. You can set time and no of posts to share to drive more traffic.For questions, comments, or feature requests, <a href="https://themeisle.com/contact/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">contact us</a>!
+This plugin helps you to keeps your old posts alive by sharing them and driving more traffic to them from social networks. It also helps you to promote your content. You can set time and no of posts to share to drive more traffic.For questions, comments, or feature requests, <a href="http://themeisle.com/contact/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">contact us</a>!
 
-For updates follow https://twitter.com/themeisle If you have anything you can let us know <a href="https://themeisle.com/contact/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">here</a>.
-
-ThemeIsle is a Codeinwp product where we also offer a <a href="http://www.codeinwp.com" rel="friend" title="psd to wordpress">psd to wordpress service</a>, we blog about different topics like : news, <a href="http://www.codeinwp.com/blog/best-business-corporate-wordpress-themes/" rel="friend"> business themes </a> or <a href="http://justfreethemes.com/" rel="friend">free themes</a>
 
 
 **Revive Old Post provides following features**
@@ -42,6 +39,16 @@ ThemeIsle is a Codeinwp product where we also offer a <a href="http://www.codein
 > * Post with image
 > * Custom Schedule
 > * Post to Xing / Tumblr
+
+Some of you reported some scheduling issues, after investigation work looks like this is coming from some web hosts, make sure you check-out this post about <a rel="friend" href="http://www.codeinwp.com/blog/best-wordpress-shared-hosting-providers/">shared WordPress hosting</a>, which should help you pick a good one that works.
+
+For updates follow https://twitter.com/themeisle If you have anything you can let us know <a href="http://themeisle.com/contact/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">here</a>.
+
+** Useful Resources **
+
+- Check-out our <a href="http://docs.themeisle.com" rel="friend" target="_blank">tutorials site</a>
+- Take a look at our other <a href="http://themeisle.com/wordpress-plugins/" rel="friend" target="_blank">plugins</a>.
+- Read more about WordPress on our <a href="http://www.codeinwp.com/blog/" rel="friend" target="_blank">blog</a>.
 
 
 = Translations =
@@ -117,6 +124,12 @@ https://themeisle.com/plugins/tweet-old-post-lite/
 
 
 == Changelog ==
+
+**New in v7.3**
+
+* Added Manage queue timeline.
+* Fixed responsive issues
+* Fixed issue with is.gd
 
 **New in v7.2**
 
