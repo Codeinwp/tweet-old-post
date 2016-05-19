@@ -3264,8 +3264,8 @@ endif;
 				$shortURL = $this->sendRequest($shortURL, 'GET');
 			} elseif ($service == "is.gd") {
 
-				$shortURL = "http://is.gd/api.php?longurl={$url}";
-
+				$shortURL = "https://is.gd/api.php?longurl={$url}";
+				self::addNotice($shortURL,"error"  );
 				$shortURL = $this->sendRequest($shortURL, 'GET');
 			} elseif ($service == "t.co") {
 				$shortURL = "http://twitter.com/share?url={$url}";

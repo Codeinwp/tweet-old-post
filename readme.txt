@@ -129,6 +129,7 @@ https://themeisle.com/plugins/tweet-old-post-lite/
 
 * Added Manage queue timeline.
 * Fixed responsive issues
+* Fixed issue with is.gd
 
 **New in v7.2**
 
