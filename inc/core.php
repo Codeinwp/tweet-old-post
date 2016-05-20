@@ -560,12 +560,14 @@ if (!class_exists('CWP_TOP_Core')) {
 
         // Added by Ash/Upwork
         function sortPosts($all){
-            uasort($all, function($x, $y){
-                if($x["time"] == $y["time"]) return 0;
-
-                return $x["time"] < $y["time"] ? -1 : 1;
-            });
+            uasort($all, array($this, "sortPostsByTimeDesc"));
             return $all;
+        }
+
+        function sortPostsByTimeDesc($x, $y){
+            if($x["time"] == $y["time"]) return 0;
+
+            return $x["time"] < $y["time"] ? -1 : 1;
         }
 
         function getImageForPost($n, $postID){

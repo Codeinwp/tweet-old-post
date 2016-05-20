@@ -125,6 +125,10 @@ https://themeisle.com/plugins/tweet-old-post-lite/
 
 == Changelog ==
 
+**New in v7.3.1**
+
+* Fixed compatibility with old php versions.  
+
 **New in v7.3**
 
 * Added Manage queue timeline.
