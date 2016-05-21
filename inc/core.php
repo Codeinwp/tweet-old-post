@@ -163,7 +163,7 @@ if (!class_exists('CWP_TOP_Core')) {
                 if(!is_array($excludePosts)){
                     $excludePosts   = array();
                 }
-                if(!empty($excludePosts) && is_array($excludePosts) && !is_array($postQueryPosts)){
+                if(!is_array($postQueryPosts)){
                     $postQueryPosts = explode(",", $postQueryPosts);
                 }
                 if(!is_array($postQueryPosts)){
