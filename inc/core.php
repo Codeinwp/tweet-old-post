@@ -656,7 +656,7 @@ if (!class_exists('CWP_TOP_Core')) {
 		}
 
 		public function getStrLen($string) {
-
+            // multibyte string support for multibyte strings: DO NOT REMOVE
 			if (function_exists("mb_strlen"))
 				return mb_strlen($string);
 			else
@@ -664,8 +664,12 @@ if (!class_exists('CWP_TOP_Core')) {
 		}
 
 		public function ropSubstr($string,$nr1,$nr2	) {
-
-				return substr($string,$nr1, $nr2);
+            // multibyte string support for multibyte strings: DO NOT REMOVE
+            if (function_exists("mb_substr")) {
+                return mb_substr($string, $nr1,$nr2);
+            } else {
+                return substr($string, $nr1, $nr2);
+            }
 		}
 
 		/**
