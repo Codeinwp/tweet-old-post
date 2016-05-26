@@ -656,7 +656,7 @@ if (!class_exists('CWP_TOP_Core')) {
 		}
 
 		public function getStrLen($string) {
-
+            // multibyte string support for multibyte strings: DO NOT REMOVE
 			if (function_exists("mb_strlen"))
 				return mb_strlen($string);
 			else
@@ -664,8 +664,12 @@ if (!class_exists('CWP_TOP_Core')) {
 		}
 
 		public function ropSubstr($string,$nr1,$nr2	) {
-
-				return substr($string,$nr1, $nr2);
+            // multibyte string support for multibyte strings: DO NOT REMOVE
+            if (function_exists("mb_substr")) {
+                return mb_substr($string, $nr1,$nr2);
+            } else {
+                return substr($string, $nr1, $nr2);
+            }
 		}
 
 		/**
@@ -698,7 +702,7 @@ if (!class_exists('CWP_TOP_Core')) {
 		 * @return [type]            Generated Tweet
 		 */
 
-		public function generateTweetFromPost($postQuery,$network)
+		public function generateTweetFromPost($postQuery, $network, $fromManageQueue=false)
 		{
 
 			$format_fields = $this->getFormatFields();
@@ -784,7 +788,14 @@ if (!class_exists('CWP_TOP_Core')) {
 					}
 				}
 				if ( $use_url_shortner == 'on' ) {
-					$post_url = "" . $this->shortenURL( $post_url, $url_shortner_service, $postQuery->ID, $bitly_key, $bitly_user );
+                    if ($fromManageQueue) {
+                        // Added by Ash/Upwork so that the pro version can use this to generate the shortened url when required
+                        update_post_meta($postQuery->ID, "rop_post_url_" . $network, $post_url);
+                        // Added by Ash/Upwork
+                    }
+                    // $fromManageQueue Added by Ash/Upwork
+                    $post_url = "" . self::shortenURL( $post_url, $url_shortner_service, $postQuery->ID, $bitly_key, $bitly_user, $fromManageQueue );
+                    // $fromManageQueue Added by Ash/Upwork
 				}
 				if ( $post_url == "" ) {
 					$post_url = "" . get_permalink( $postQuery->ID );
@@ -3203,7 +3214,7 @@ endif;
 		}
 
 		// Sends a request to the passed URL
-		public function sendRequest($url, $method='GET', $data='', $auth_user='', $auth_pass='') {
+		public static function sendRequest($url, $method='GET', $data='', $auth_user='', $auth_pass='') {
 
 			$ch = curl_init($url);
 
@@ -3238,7 +3249,12 @@ endif;
 		}
 
 		// Shortens the url.
-		public function shortenURL($url, $service, $id, $bitly_key, $bitly_user) {
+		public static function shortenURL($url, $service, $id, $bitly_key, $bitly_user, $showPlaceholder=false) {
+            // Added by Ash/Upwork
+            if ($showPlaceholder) {
+                return "[$service]";
+            }
+            // Added by Ash/Upwork
 			$url = urlencode($url);
 			if ($service == "bit.ly") {
 
@@ -3247,30 +3263,30 @@ endif;
 				$bitly_key = trim($bitly_key);
 				$bitly_user = trim($bitly_user);
 				$shortURL = "http://api.bit.ly/v3/shorten?format=txt&login=".$bitly_user."&apiKey=".$bitly_key."&longUrl={$url}";
-				$shortURL = $this->sendRequest($shortURL, 'GET');
+				$shortURL = self::sendRequest($shortURL, 'GET');
 
 			} elseif ($service == "tr.im") {
 				$shortURL = "http://api.tr.im/api/trim_simple?url={$url}";
-				$shortURL = $this->sendRequest($shortURL, 'GET');
+				$shortURL = self::sendRequest($shortURL, 'GET');
 			} elseif ($service == "3.ly") {
 				$shortURL = "http://3.ly/?api=em5893833&u={$url}";
-				$shortURL = $this->sendRequest($shortURL, 'GET');
+				$shortURL = self::sendRequest($shortURL, 'GET');
 			} elseif ($service == "tinyurl") {
 				$shortURL = "http://tinyurl.com/api-create.php?url=" . $url;
-				$shortURL = $this->sendRequest($shortURL, 'GET');
+				$shortURL = self::sendRequest($shortURL, 'GET');
 			} elseif ($service == "u.nu") {
 				$shortURL = "http://u.nu/unu-api-simple?url={$url}";
-				$shortURL = $this->sendRequest($shortURL, 'GET');
+				$shortURL = self::sendRequest($shortURL, 'GET');
 			} elseif ($service == "1click.at") {
 				$shortURL = "http://1click.at/api.php?action=shorturl&url={$url}&format=simple";
-				$shortURL = $this->sendRequest($shortURL, 'GET');
+				$shortURL = self::sendRequest($shortURL, 'GET');
 			} elseif ($service == "is.gd") {
 
 				$shortURL = "https://is.gd/api.php?longurl={$url}"; 
-				$shortURL = $this->sendRequest($shortURL, 'GET');
+				$shortURL = self::sendRequest($shortURL, 'GET');
 			} elseif ($service == "t.co") {
 				$shortURL = "http://twitter.com/share?url={$url}";
-				$shortURL = $this->sendRequest($shortURL, 'GET');
+				$shortURL = self::sendRequest($shortURL, 'GET');
 			} else {
 				$shortURL = wp_get_shortlink($id);
 			}

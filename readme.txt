@@ -125,6 +125,12 @@ https://themeisle.com/plugins/tweet-old-post-lite/
 
 == Changelog ==
 
+**New in v7.3.5**
+
+* Fixed issue with encoding
+* Fixed issue with shortners and slow loading
+* Fixed layout issue for posts with images in Manage Queue
+
 **New in v7.3.2**
 
 * Fixed issue with exclude posts

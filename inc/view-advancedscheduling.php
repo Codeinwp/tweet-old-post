@@ -103,7 +103,7 @@
             foreach ($all as $array){
                 $post           = $array["post"];
                 $network_name   = $array["network"];
-                $finalTweet     = CWP_TOP_Core::generateTweetFromPost($post, $network_name);
+                $finalTweet     = CWP_TOP_Core::generateTweetFromPost($post, $network_name, true);
                 $time           = CWP_TOP_Core::getFutureTime($network_name, $time, $array);
                 $image          = CWP_TOP_Core::getImageForPost($network_name, $post->ID);
                 if($network){
