@@ -1,4 +1,10 @@
 
+### 7.3.5 - 26/05/2016
+**Changes:** 
+- Fixed issue with shortners and slow loading page
+- Fixed layout issues for post with images on Manage Queue section
+- Fixed issue with encoding
+
 ### 7.3.2 - 22/05/2016
 **Changes:** 
 - Fixed exclude posts bug
