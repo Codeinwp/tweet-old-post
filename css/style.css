@@ -861,8 +861,20 @@ button.login{
 }
 
 /* Added by Ash/Upwork */
-.cwp_top_wrapper .option.cwp_restrict_image .rop_left {width: 16%}
-.cwp_top_wrapper .option.cwp_restrict_image .rop_right {width: 84%}
+.cwp_top_wrapper .option.cwp_restrict_image .rop_left {
+    width: 105px;
+    padding-left: 60px;
+    float: left;
+    position: relative;
+    z-index: 99;
+    padding-top: 10px;
+}
+.cwp_top_wrapper .option.cwp_restrict_image .rop_right {
+    width: 100%;
+    background: #f8f8f8;
+    position: relative;
+    padding: 10px 10px 10px 110px;
+}
 .cwp_top_wrapper .option.cwp_restrict_image .rop_right .cwp_quick_edit {margin: 5px 5px 0px 0px;}
 .cwp_top_wrapper .option.cwp_restrict_image .rop_right .cwp_quick_edit .cwp_quick_edit_actions {float: left;}
 .cwp_top_wrapper .option.cwp_restrict_image .rop_right .cwp_quick_edit .cwp_post_time { float: right; font-style: italic; color: #999999; }
@@ -895,6 +907,7 @@ button.login{
 	height: 100%;
 	position: absolute;
 	top: 0;
+    left: 0;
 }
 .rop-post-twitter:after {
 	background: url(../img/rop-twitter-icn.png) center no-repeat #f1f1f1;
@@ -927,6 +940,7 @@ button.login{
 	padding-bottom: 10px;
     float: left;
     width: 100%;
+
 }
 .cwp_top_wrapper .cwp_quick_edit_actions_before a.cwp-quick-edit {
 	text-indent: -999999px;
@@ -1017,6 +1031,10 @@ button.login{
 }
 .rop-features-available strong {
 	color: #F16848;
+}
+.cwp-quick-edit-text input,
+.cwp-quick-edit-text textarea {
+    font-size: 14px;
 }
 
 @media (max-width: 1200px) {
