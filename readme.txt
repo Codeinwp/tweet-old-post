@@ -125,6 +125,13 @@ https://themeisle.com/plugins/tweet-old-post-lite/
 
 == Changelog ==
 
+**New in v7.3.6**
+
+* Fixed issue sample post rendering
+* Improved error logging for facebook request
+* Fixed typos in facebook description
+* Added default tab for Manage Queue
+
 **New in v7.3.5**
 
 * Fixed issue with encoding
