@@ -548,7 +548,7 @@ if (!class_exists('CWP_TOP_Core')) {
 			foreach($networks as $n) {
                 $image      = $this->getImageForPost($n, $returnedTweets[0]->ID);
                 if(!empty($image)){
-                    $messages[$n] = '<img class="top_preview" src="'.$image.'"/>'.$messages[$n];
+                    $messages[$n] =  $image.$messages[$n];
                 }
 			}
 
@@ -888,13 +888,12 @@ if (!class_exists('CWP_TOP_Core')) {
 				$finalTweetSize = $finalTweetSize - 25;
 			}
 			$tweetContent = $this->ropSubstr( $tweetContent,0,$finalTweetSize);
+
 			if($network == 'twitter'){
 				if(!empty($fTweet['link'])) $fTweet['link'] = " ".$fTweet['link']." ";
-
 				$finalTweet = $additionalTextBeginning . $tweetContent  .$fTweet['link'].$newHashtags . $additionalTextEnd;
 				$fTweet['link'] = '';
 				$finalTweet =  preg_replace('/\s+/', ' ', trim( $finalTweet));
-
 			}else{
 				if($network === 'tumblr') {
 					$fTweet['tags']  = implode(",",array_filter(explode("#", $newHashtags)));
@@ -1017,7 +1016,14 @@ if (!class_exists('CWP_TOP_Core')) {
 
 									self::addNotice(sprintf(__("Post %s has been successfully sent to facebook",'tweet-old-post'), $post->post_title),'notice');
 								}else{
-									self::addNotice(__("Error for facebook share on post ",'tweet-old-post'). $post->post_title." ".$pp['response']['message']." @".$user['oauth_user_details']->name,'error');
+									$fb_error = "";
+									$pp = json_decode($pp["body"]);
+
+									if(isset($pp->error)){
+										$fb_error = $pp->error->message;
+									}
+									self::addNotice(__("Error for facebook share on post ",'tweet-old-post'). $post->post_title." ".$fb_error." @".$user['oauth_user_details']->name,'error');
+
 
 								}
 
