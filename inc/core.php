@@ -548,7 +548,7 @@ if (!class_exists('CWP_TOP_Core')) {
 			foreach($networks as $n) {
                 $image      = $this->getImageForPost($n, $returnedTweets[0]->ID);
                 if(!empty($image)){
-                    $messages[$n] = '<img class="top_preview" src="'.$image.'"/>'.$messages[$n];
+                    $messages[$n] =  $image.$messages[$n];
                 }
 			}
 
@@ -889,21 +889,19 @@ if (!class_exists('CWP_TOP_Core')) {
 			}
 			$tweetContent = $this->ropSubstr( $tweetContent,0,$finalTweetSize);
 
-            if(!empty($fTweet['link'])) $fTweet['link'] = " ".$fTweet['link']." ";
-
-
-            if($network === 'tumblr') {
-                $newHashtags    = "";
-            }
-
-            $finalTweet = $additionalTextBeginning . $tweetContent . $fTweet['link'] . $newHashtags . $additionalTextEnd;
-
 			if($network == 'twitter'){
-				$finalTweet =  preg_replace('/\s+/', ' ', trim($finalTweet));
-			}else if($network === 'tumblr') {
-                $fTweet['tags']  = implode(",",array_filter(explode("#", $newHashtags)));
+				if(!empty($fTweet['link'])) $fTweet['link'] = " ".$fTweet['link']." ";
+				$finalTweet = $additionalTextBeginning . $tweetContent  .$fTweet['link'].$newHashtags . $additionalTextEnd;
+				$fTweet['link'] = '';
+				$finalTweet =  preg_replace('/\s+/', ' ', trim( $finalTweet));
+			}else{
+				if($network === 'tumblr') {
+					$fTweet['tags']  = implode(",",array_filter(explode("#", $newHashtags)));
+					$finalTweet = $additionalTextBeginning . $tweetContent . $additionalTextEnd;
+				}else{
+					$finalTweet = $additionalTextBeginning . $tweetContent .$newHashtags . $additionalTextEnd;
+				}
 			}
-            $fTweet['link'] = '';
 
             // Added by Ash/Upwork
             $top_opt_saved_posts    = get_option("top_opt_saved_posts");

@@ -7,10 +7,8 @@
     if( count( $available ) > 1) :  ?>
 		<ul class="cwp_top_tabs_btns">
 			<?php
-				$first = true;
 				foreach($available  as $network_name) : ?>
-					<li class="<?php if($first && count($available) == 1){ ?>active<?php } ?>"><?php echo $network_name; ?></li>
-					<?php $first = false; ?>
+					<li class="<?php if(count($available) == 1){ ?>active<?php } ?>"><?php echo $network_name; ?></li>
 				 <?php endforeach;  ?>
 	        <?php if(count($available) > 1): ?>
 					<li class="active"><?php _e("All", "tweet-old-post"); ?></li>
@@ -50,7 +48,6 @@
 	<?php 
         $networks   = array();
         $collect    = array();
-        $first      = true;
         foreach($available  as $network_name) {
             $networks[] = $network_name;
         }
@@ -76,7 +73,7 @@
             }
     ?>
 
-		<div class="tab-vertical <?php if($first){ ?> active  <?php } ?>">
+		<div class="tab-vertical <?php if(count($available) == 1 || !$network ){ ?> active  <?php } ?>">
         <?php if(!apply_filters('rop_is_business_user', false)): ?>
                 <div class="rop-features-available"><p><span>Editing features are available on the <a href="<?php echo ROP_PRO_URL; ?>" target="_blank"><strong>Business version</strong></a></span></p></div>
         <?php endif; ?>
@@ -86,7 +83,6 @@
                         _e("Please start the plugin to view the future shares", "tweet-old-post");
                     echo '</div>';
                 echo "</div>";
-                $first      = false;
                 continue;
             }
             if(count($all) == 0){
@@ -94,7 +90,6 @@
                         _e('There is no suitable post to tweet make sure you excluded correct categories and selected the right dates.','tweet-old-post');
                     echo '</div>';
                 echo "</div>";
-                $first      = false;
                 continue;
             }
 
@@ -165,7 +160,6 @@
             </div>
 		</div>
 		<?php
-                $first = false;
             }
         ?>
 
