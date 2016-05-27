@@ -9,11 +9,11 @@
 			<?php
 				$first = true;
 				foreach($available  as $network_name) : ?>
-					<li class="<?php if($first){ ?>active<?php } ?>"><?php echo $network_name; ?></li>
+					<li class="<?php if($first && count($available) == 1){ ?>active<?php } ?>"><?php echo $network_name; ?></li>
 					<?php $first = false; ?>
 				 <?php endforeach;  ?>
 	        <?php if(count($available) > 1): ?>
-					<li><?php _e("All", "tweet-old-post"); ?></li>
+					<li class="active"><?php _e("All", "tweet-old-post"); ?></li>
 	        <?php endif; ?>
 		</ul>
 	<?php endif; ?>
