@@ -888,21 +888,22 @@ if (!class_exists('CWP_TOP_Core')) {
 				$finalTweetSize = $finalTweetSize - 25;
 			}
 			$tweetContent = $this->ropSubstr( $tweetContent,0,$finalTweetSize);
+
+            if(!empty($fTweet['link'])) $fTweet['link'] = " ".$fTweet['link']." ";
+
+
+            if($network === 'tumblr') {
+                $newHashtags    = "";
+            }
+
+            $finalTweet = $additionalTextBeginning . $tweetContent . $fTweet['link'] . $newHashtags . $additionalTextEnd;
+
 			if($network == 'twitter'){
-				if(!empty($fTweet['link'])) $fTweet['link'] = " ".$fTweet['link']." ";
-
-				$finalTweet = $additionalTextBeginning . $tweetContent  .$fTweet['link'].$newHashtags . $additionalTextEnd;
-				$fTweet['link'] = '';
-				$finalTweet =  preg_replace('/\s+/', ' ', trim( $finalTweet));
-
-			}else{
-				if($network === 'tumblr') {
-					$fTweet['tags']  = implode(",",array_filter(explode("#", $newHashtags)));
-					$finalTweet = $additionalTextBeginning . $tweetContent . $additionalTextEnd;
-				}else{
-					$finalTweet = $additionalTextBeginning . $tweetContent .$newHashtags . $additionalTextEnd;
-				}
+				$finalTweet =  preg_replace('/\s+/', ' ', trim($finalTweet));
+			}else if($network === 'tumblr') {
+                $fTweet['tags']  = implode(",",array_filter(explode("#", $newHashtags)));
 			}
+            $fTweet['link'] = '';
 
             // Added by Ash/Upwork
             $top_opt_saved_posts    = get_option("top_opt_saved_posts");
