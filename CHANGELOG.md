@@ -1,4 +1,11 @@
 
+### 7.3.6 - 27/05/2016
+**Changes:** 
+- Fixed issue sample post rendering
+- Improved error logging for facebook request
+- Fixed typos in facebook description
+- Added default tab for Manage Queue
+
 ### 7.3.5 - 26/05/2016
 **Changes:** 
 - Fixed issue with shortners and slow loading page
