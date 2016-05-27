@@ -1016,7 +1016,14 @@ if (!class_exists('CWP_TOP_Core')) {
 
 									self::addNotice(sprintf(__("Post %s has been successfully sent to facebook",'tweet-old-post'), $post->post_title),'notice');
 								}else{
-									self::addNotice(__("Error for facebook share on post ",'tweet-old-post'). $post->post_title." ".$pp['response']['message']." @".$user['oauth_user_details']->name,'error');
+									$fb_error = "";
+									$pp = json_decode($pp["body"]);
+
+									if(isset($pp->error)){
+										$fb_error = $pp->error->message;
+									}
+									self::addNotice(__("Error for facebook share on post ",'tweet-old-post'). $post->post_title." ".$fb_error." @".$user['oauth_user_details']->name,'error');
+
 
 								}
 
