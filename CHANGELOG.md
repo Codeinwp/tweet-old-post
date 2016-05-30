@@ -1,4 +1,8 @@
 
+### 7.3.7 - 30/05/2016
+**Changes:** 
+- Fixed issue with inverted settings in post format and custom schedule
+
 ### 7.3.6 - 27/05/2016
 **Changes:** 
 - Fixed issue sample post rendering
