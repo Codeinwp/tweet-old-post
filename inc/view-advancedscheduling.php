@@ -51,8 +51,11 @@
         foreach($available  as $network_name) {
             $networks[] = $network_name;
         }
-        $networks[] = null;
+        if(count($networks) > 1){
 
+            $networks[] = null;
+
+        }
         $count      = 20;
         if(apply_filters('rop_is_business_user', false)){
             $count  = 100;
