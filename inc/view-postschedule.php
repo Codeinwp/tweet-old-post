@@ -15,7 +15,7 @@
 		</ul>
 	<?php endif; ?>
 
-	<?php $first = true; foreach($all_networks  as $network_name ) { ?>
+	<?php $first = true; foreach($networks  as $network_name ) { ?>
 
 		<div class="tab-vertical <?php if($first){ ?> active  <?php } ?>" data-network="<?php echo $network_name; ?>">
 					 <input type="hidden" value="<?php echo @$cwp_top_global_schedule[$network_name.'_schedule_type_selected'];?>" id="<?php echo $network_name.'_schedule_type_selected' ?>" name="<?php echo $network_name.'_schedule_type_selected' ?>" />

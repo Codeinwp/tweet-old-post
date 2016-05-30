@@ -12,11 +12,11 @@
 			<?php endforeach;?>
 		</ul>
 	<?php endif; ?>
-	<?php $first = true; foreach($format_fields  as $network_name=>$network_details) { ?>
+	<?php $first = true; foreach($networks  as $network_name) { ?>
 
 		<div class="tab-vertical <?php if($first){ ?> active  <?php } ?>">
 
-				<?php foreach ($network_details as $key=>$field) {
+				<?php foreach ($format_fields[$network_name] as $key=>$field) {
 					$field['option'] = $network_name."_".$field['option'];
                 ?>
 					<fieldset class="option twp<?php echo $key; ?>" <?php if(isset($field['dependency'])) { ?> data-dependent='<?php echo json_encode($field['dependency']); ?>'  <?php } ?>>

@@ -125,6 +125,10 @@ https://themeisle.com/plugins/tweet-old-post-lite/
 
 == Changelog ==
 
+**New in v7.3.7**
+
+* Fixed issue with inverted settings in post format and custom schedule
+
 **New in v7.3.6**
 
 * Fixed issue sample post rendering
