@@ -2,6 +2,7 @@
 	global $cwp_global_schedule;
 	$cfgnets = $this->getAllNetworks(true);
 	$networks = $this->getAvailableNetworks();
+	if(empty($networks))$networks[] = "twitter";
 ?><div class="cwp_top_tabs_vertical <?php echo (count($networks) > 1) ? "rop-tab-with-sidebar" : "rop-tab-full-width"; ?>" >
 	<?php if(count($networks) > 1): ?>
 		<ul class="cwp_top_tabs_btns">

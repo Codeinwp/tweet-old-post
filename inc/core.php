@@ -845,6 +845,10 @@ if (!class_exists('CWP_TOP_Core')) {
 						}
 						break;
 					case 'custom':
+						if(empty($hashtag_custom_field)){
+							self::addNotice("You need to add a custom field name in order to fetch the hashtags. Please set it from Post Format > $network > Hashtag Custom Field ",'error');
+							break;
+						}
 						$newHashtags = get_post_meta( $postQuery->ID, $hashtag_custom_field, true );
 						if($maximum_hashtag_length != 0){
 							if(strlen(  $newHashtags ) <= $maximum_hashtag_length)
