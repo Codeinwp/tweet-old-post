@@ -3248,12 +3248,15 @@ endif;
 
 			$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-			curl_close($ch);
 
 			if ($httpcode != 200) {
-				self::addNotice("Error for request: " . $url . " : ". $response,'error');
+				self::addNotice("Error for request: " . $url . " : ". curl_error($ch),'error');
+
+				curl_close($ch);
 				return $httpcode;
 			}
+			
+			curl_close($ch);
 
 			return $response;
 		}
