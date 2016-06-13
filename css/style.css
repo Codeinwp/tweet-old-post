@@ -251,12 +251,16 @@ float: left;}
 	float: left;
 	width: 50%;
 }
+.top_left_instructions ol li{
+	font-family: monospace;
+}
 .top_auth_form {
 	width:50%;
 	float: left;
 }
 .top_sample_auth{
 	height: 370px;
+	overflow: scroll;
 }
 .top_auth_inner {
 	height: 500px;
@@ -1138,4 +1142,3 @@ button.login{
     text-align: center;
     font-weight: bold;
 }
-

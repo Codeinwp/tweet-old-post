@@ -188,16 +188,18 @@
 			<span class="sample_tweet top_sample_auth">
 				<div class="top_left_instructions">
 				<ol>
-					<li><?php _e('Go on','tweet-old-post');?>  <a href="https://developers.facebook.com/apps/" target="_blank">developers.facebook.com/apps</a>  </li>
-					<li><?php _e('Click on <strong>Create New App</strong> from the top right corner','tweet-old-post');?> </li>
-					<li><?php _e('Enter a <strong>Display Name</strong> and <strong>Namespace</strong> and click on Create App','tweet-old-post');?> </li>
-					<li><?php _e('Once you arrive on the app dashboard, copy your <strong>App ID</strong> and <strong>App Secret</strong> in the fields on the right','tweet-old-post');?> </li>
-					<li><?php _e('Go on Settings tab from the left sidebar menu add the contact email and click on <strong>Add Platform</strong> and select <strong>Website</strong>','tweet-old-post');?> </li>
-					<li><?php printf(__('Copy/Paste this url : <strong>%s</strong> into App Domains and Site URL fields and <strong>Save</strong>','tweet-old-post'),top_settings_url());?> </li>
-					<li><?php _e('Go on Status & Review tab and set your app live from the top-right switch.','tweet-old-post');?> </li>
-					<li><?php _e('Now everything is done, click on <strong>Authorize App</strong> button.','tweet-old-post');?> </li>
+					<li><?php _e('Go to','tweet-old-post');?>  <a href="https://developers.facebook.com/apps/" target="_blank">developers.facebook.com/apps</a> </li><br>
+					<li><?php _e('Click on <strong>Create New App</strong> from the top right corner.','tweet-old-post');?> </li><br>
+					<li><?php _e('Enter a <strong>Display Name</strong>, <strong>Namespace</strong>, <strong>Contact Email</strong>, <strong>Category</strong> and click on Create App ID.','tweet-old-post');?> </li><br>
+					<li><?php _e('After you prove you are human and the page loads go to <strong>Dashboard</strong>, copy your <strong>App ID</strong> and <strong>App Secret</strong> in the fields on the right.','tweet-old-post');?> </li><br>
+					<li><?php _e('Go back to the app dashboard and next to <strong>Get Started with the Facebook SDK</strong> click <strong>Choose a Platform</strong>.','tweet-old-post');?> </li><br>
+					<li><?php printf(__('Select <strong>Website</strong> from the options, when the page loads scroll down and copy the following URL into the <strong>Site URL</strong> area: <code>%s</code> then click <strong>Next</strong>','tweet-old-post'),top_settings_url());?> </li><br>
+					<li><?php _e('When the new page loads click <strong>Skip Quick Start</strong> to the top right" then go to <strong>Settings</strong>','tweet-old-post');?> </li><br>
+          <li><?php printf(__('In the <strong>App Domains</strong> area paste the following URL: <code>%s</code> then scroll down and click <strong>Save changes</strong>','tweet-old-post'),top_settings_url());?> </li><br>
+					<li><?php _e('Go to <strong>App Review</strong> and turn the switch asking to make your app public to "Yes" and click continue','tweet-old-post');?> </li><br>
+					<li><?php _e('Now everything is almost done, click on <strong>Authorize App</strong> button to the right of this screen, a new page will open asking you to continue as yourself, click <strong>Okay</strong>, the next page will ask you who you want the posts to be shared with, select <strong>Public</strong> if you want everyone to see the shared posts.','tweet-old-post');?> </li><br>
 				</ol>
-					<h3><?php _e('You can follow this <a target="_blank" href="http://docs.themeisle.com/article/66-how-to-create-a-facebook-application" > tutorial</a> for more detailed instructions','tweet-old-post'); ?></h3>
+					<h3><?php _e('<a target="_blank" href="http://docs.themeisle.com/article/66-how-to-create-a-facebook-application" >Click here</a>for a video showing these instructions','tweet-old-post'); ?></h3>
 			</div>
 			<form action="" method="post" id="cwp_top_form" class="  top_auth_form">
 			<fieldset class="option twptop_opt_app_id">
@@ -243,13 +245,12 @@
 			<span class="sample_tweet top_sample_auth">
 				<div class="top_left_instructions">
 				<ol>
-					<li><?php _e('Go on','tweet-old-post');?> <a href="https://www.linkedin.com/secure/developer?newapp=" target="_blank">linkedin.com/secure/developer?newapp=</a></li>
-					<li><?php _e('Enter the required details and pay special attention to the further fields :','tweet-old-post');?></li>
-					<li><?php _e('Make sure you set Live Status to LIVE','tweet-old-post');?> </li>
-					<li><?php _e('Default Scope should have r_basicprofile and w_share checked','tweet-old-post');?></li>
-					<li><?php printf(__('Copy/Paste this url : <strong>%s</strong> into OAuth 2.0 Redirect URLs field and <strong>Save</strong>','tweet-old-post'),top_settings_url());?> </li>
-					<li><?php _e('Once all required fields are filled click on Add Application button, get the API Key and Secret Key and paste them in the fields on the right','tweet-old-post');?></li>
-
+					<li><?php _e('Go on','tweet-old-post');?> <a href="https://www.linkedin.com/secure/developer?newapp=" target="_blank">linkedin.com/secure/developer?newapp=</a></li><br>
+					<li><?php _e('Enter the required details and pay special attention to the further fields :','tweet-old-post');?></li><br>
+					<li><?php _e('Make sure you set Live Status to LIVE','tweet-old-post');?> </li><br>
+					<li><?php _e('Default Scope should have r_basicprofile and w_share checked','tweet-old-post');?></li><br>
+					<li><?php printf(__('Copy/Paste this url : <code>%s</code> into OAuth 2.0 Redirect URLs field and <strong>Save</strong>','tweet-old-post'),top_settings_url());?> </li><br>
+					<li><?php _e('Once all required fields are filled click on Add Application button, get the API Key and Secret Key and paste them in the fields on the right','tweet-old-post');?></li><br>
 					<li><?php _e('Now everything is done, click on <strong>Authorize App</strong> button.','tweet-old-post');?></li>
 				</ol>
 			</div>
@@ -290,12 +291,12 @@
 			<span class="sample_tweet top_sample_auth">
 				<div class="top_left_instructions">
 				<ol>
-					<li><?php _e('Go on','tweet-old-post');?> <a href="https://dev.xing.com/applications/dashboard" target="_blank"> https://dev.xing.com/applications/dashboard</a></li>
-					<li><?php _e('If you already made an application you will see it’s info here, otherwise click “Create app” button.','tweet-old-post');?></li>
-					<li><?php _e("Fill 'Application Name', click 'Save'",'tweet-old-post');?> </li>
-				 	<li><?php printf(__('Copy/Paste the Consumer Key and Consumer Secret in the fields from the right.  ','tweet-old-post'),top_settings_url());?> </li>
+					<li><?php _e('Go on','tweet-old-post');?> <a href="https://dev.xing.com/applications/dashboard" target="_blank"> https://dev.xing.com/applications/dashboard</a></li><br>
+					<li><?php _e('If you already made an application you will see it’s info here, otherwise click “Create app” button.','tweet-old-post');?></li><br>
+					<li><?php _e("Fill 'Application Name', click 'Save'",'tweet-old-post');?> </li><br>
+				 	<li><?php printf(__('Copy/Paste the Consumer Key and Consumer Secret in the fields from the right.  ','tweet-old-post'),top_settings_url());?> </li><br>
 
-					<li><?php _e('Now everything is done, click on <strong>Authorize App</strong> button.','tweet-old-post');?></li>
+					<li><?php _e('Now everything is done, click on <strong>Authorize App</strong> button.','tweet-old-post');?></li><br>
 				</ol>
 			</div>
 			<form action="" method="post" id="cwp_top_form" class="  top_auth_form">
@@ -334,11 +335,11 @@
 			<span class="sample_tweet top_sample_auth">
 				<div class="top_left_instructions">
 				<ol>
-					<li><?php _e('Go on','tweet-old-post');?> <a href="https://www.tumblr.com/oauth/apps" target="_blank"> https://www.tumblr.com/oauth/apps</a></li>
-					<li><?php _e('If you already made an application you will see it’s info here, otherwise click “Register application” button.','tweet-old-post');?></li>
-					<li><?php _e("Click 'Register application'”' button. Fill 'Application Name', 'Application Website', all other fields (just enter your website URL to the 'Default callback URL') and click Register'.",'tweet-old-post');?> </li>
-				 	<li><?php printf(__('Copy/Paste the Consumer Key and Consumer Secret in the fields from the right.  ','tweet-old-post'),top_settings_url());?> </li>
-				 	<li><?php printf(__('Fill URL of your Tumblr Blog.  ','tweet-old-post'));?> </li>
+					<li><?php _e('Go on','tweet-old-post');?> <a href="https://www.tumblr.com/oauth/apps" target="_blank"> https://www.tumblr.com/oauth/apps</a></li><br>
+					<li><?php _e('If you already made an application you will see it’s info here, otherwise click “Register application” button.','tweet-old-post');?></li><br>
+					<li><?php _e("Click 'Register application'”' button. Fill 'Application Name', 'Application Website', all other fields (just enter your website URL to the 'Default callback URL') and click Register'.",'tweet-old-post');?> </li><br>
+				 	<li><?php printf(__('Copy/Paste the Consumer Key and Consumer Secret in the fields from the right.  ','tweet-old-post'),top_settings_url());?> </li><br>
+				 	<li><?php printf(__('Fill URL of your Tumblr Blog.  ','tweet-old-post'));?> </li><br>
 
 					<li><?php _e('Now everything is done, click on <strong>Authorize App</strong> button.','tweet-old-post');?></li>
 				</ol>
