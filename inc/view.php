@@ -245,22 +245,21 @@
 			<span class="sample_tweet top_sample_auth">
 				<div class="top_left_instructions">
 				<ol>
-					<li><?php _e('Go on','tweet-old-post');?> <a href="https://www.linkedin.com/secure/developer?newapp=" target="_blank">linkedin.com/secure/developer?newapp=</a></li><br>
-					<li><?php _e('Enter the required details and pay special attention to the further fields :','tweet-old-post');?></li><br>
-					<li><?php _e('Make sure you set Live Status to LIVE','tweet-old-post');?> </li><br>
-					<li><?php _e('Default Scope should have r_basicprofile and w_share checked','tweet-old-post');?></li><br>
-					<li><?php printf(__('Copy/Paste this url : <code>%s</code> into OAuth 2.0 Redirect URLs field and <strong>Save</strong>','tweet-old-post'),top_settings_url());?> </li><br>
-					<li><?php _e('Once all required fields are filled click on Add Application button, get the API Key and Secret Key and paste them in the fields on the right','tweet-old-post');?></li><br>
-					<li><?php _e('Now everything is done, click on <strong>Authorize App</strong> button.','tweet-old-post');?></li>
+					<li><?php _e('Go to','tweet-old-post');?> <a href="https://www.linkedin.com/secure/developer?newapp=" target="_blank">linkedin.com/secure/developer?newapp=</a> and click <strong>Create Application</strong>.</li><br>
+					<li><?php _e('Enter the required details for your application, be sure to add this current website\'s URL inside the <strong>Website URL</strong> field, click <strong>Submit</strong> when done.','tweet-old-post');?></li><br>
+					<li><?php _e('Set the <strong>Default Application Permissions</strong> to r_basicprofile and w_share.','tweet-old-post');?></li><br>
+					<li><?php printf(__('Copy/Paste this url : <code>%s</code> into OAuth 2.0 Redirect URLs field, click <strong>Add</strong> and then <strong>Update</strong>','tweet-old-post'),top_settings_url());?> </li><br>
+          <li><?php _e('To the top left of the LinkedIn page select <strong>Settings</strong>, under <strong>Application Status</strong> set it to <strong>Live</strong> and click <strong>Update</strong> to save your changes.','tweet-old-post');?></li><br>
+					<li><?php _e('Go back to <strong>Authentication</strong> page, copy the <strong>Client ID</strong> and <strong>Client Secret</strong> and paste them in the fields on the right of this page then click <strong>Authorize APP</strong>','tweet-old-post');?></li><br>
+					<li><?php _e('A new page will open up asking you to grant access by logging in, enter your login credentials then click <strong>Allow access</strong>. Your application should now be connected and ready to share','tweet-old-post');?></li>
 				</ol>
+        <h3><?php _e('<a target="_blank" href="http://docs.themeisle.com/article/352-how-to-create-a-linkedin-app-for-revive-old-post" >Click here</a>for a video showing these instructions','tweet-old-post'); ?></h3>
 			</div>
 			<form action="" method="post" id="cwp_top_form" class="  top_auth_form">
 			<fieldset class="option twptop_opt_app_id">
 				<div class="left">
 					<label for="top_opt_app_id"><?php _e('Linkedin API Key','tweet-old-post');?>  </label>
 					<span class="description"><?php _e('API Key that you get once you create an app','tweet-old-post');?>  </span>
-
-
 				</div><!-- end .left -->
 				<div class="right">
 					<input type="text" placeholder="1487991504767913" value="<?php get_option('cwp_top_lk_app_id');?>" name="top_opt_app_id" id="top_opt_app_id_lk">
