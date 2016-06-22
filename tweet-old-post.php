@@ -20,6 +20,10 @@ define("ROPJSCOUNTDOWN", plugins_url('js/countdown.js',__FILE__ ));
 define("ROPPLUGINBASENAME", plugin_basename(__FILE__));
 define('ROP_TOP_FB_API_VERSION','v2.0');
 define('ROP_VERSION','7.3.7');
+// Added by Ash/Upwork
+define("ROP_ROOT", trailingslashit(plugins_url("", __FILE__)));
+// Added by Ash/Upwork
+
 // Require core.
 require_once(ROPPLUGINPATH."/inc/core.php");
 // Require core.

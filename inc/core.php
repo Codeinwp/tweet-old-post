@@ -2526,6 +2526,7 @@ endif;
 					$post_types["post"] = get_post_type_object( 'post' );
 					$post_types["page"] = get_post_type_object( 'page' );
 
+                    $taxonomies         = array();
 					foreach($post_types as $pt=>$pd){
 						foreach($taxs as $tx){
 
@@ -2537,39 +2538,23 @@ endif;
 
 								) );
 								if(!empty($terms)){
-									print "<div class='categories-list cwp-hidden cwp-tax-".$pt."'><p class='rop-category-header'>".$tx->labels->name."  </p>";
+                                    // Added by Ash/Upwork
+                                    $options                        = array();
 									foreach ($terms as $t) {
-
-										if (!is_array(get_option('top_opt_omit_cats')))
-											$top_opt_omit_specific_cats = explode(',',get_option('top_opt_omit_cats'));
-										else
-											$top_opt_omit_specific_cats = get_option('top_opt_omit_cats');
-
-										print "<div class='cwp-cat'>";
-										print "<input type='checkbox' data-posttype='".$pt."' name='".$field['option']."[]' value='".$t->term_id."'  id='".$field['option']."_cat_".$t->term_id."'";
-
-										if($field['option'] == 'top_opt_omit_cats') {
-											if(is_array($top_opt_omit_specific_cats)) {
-												if(in_array($t->term_id, $top_opt_omit_specific_cats)) {
-													print "checked=checked";
-												}
-											}
-										}
-
-
-										print ">";
-										print "<label for='".$field['option']."_cat_".$t->term_id."'>".$t->name."</label>";
-										print "</div>";
-									}
-									print "<div class='clear'></div></div>";
+                                        $options[$t->name]          = $t->term_id;
+                                    }
+                                    $taxonomies[$tx->labels->name]  = $options;
+                                    // Added by Ash/Upwork
 								}
-
 							}
-
 						}
-
 					}
 
+                    // Added by Ash/Upwork
+                    ob_start();
+                    include_once ROPPLUGINPATH . "/inc/view-categories-list.php";
+                    echo ob_get_clean();
+                    // Added by Ash/Upwork
 
 					break;
 
@@ -3120,8 +3105,16 @@ endif;
 			if(isset($_GET['page'])) {
 				if ($_GET['page'] == $cwp_top_settings['slug'] || $_GET['page'] == "ExcludePosts") {
 
-					// Enqueue and Register Main CSS File
-					wp_register_style( 'cwp_top_stylesheet', ROPCSSFILE, false, time() );
+                    // Added by Ash/Upwork
+                    wp_enqueue_script("jquery");
+					wp_register_script("jquery.chosen", ROP_ROOT . "js/chosen.jquery.min.js", array("jquery"), time(), true);
+					wp_enqueue_script("jquery.chosen");
+					wp_register_style("jquery.chosen", ROP_ROOT . "css/chosen.min.css", array(), time());
+					wp_enqueue_style("jquery.chosen");
+                    // Added by Ash/Upwork
+
+                    // Enqueue and Register Main CSS File
+					wp_register_style( 'cwp_top_stylesheet', ROPCSSFILE, array("jquery.chosen"), time());
 					wp_enqueue_style( 'cwp_top_stylesheet' );
 
 					// Register Main JS File

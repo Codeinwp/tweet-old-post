@@ -875,6 +875,8 @@ jQuery(document).ready(function(){
 			return false;
 		}
 	});
+
+    jQuery(".chosen-select").chosen({width: "90%"});
 });
 
 function cwpDependeField(field,second){
