@@ -6,6 +6,7 @@ require_once(ROPPLUGINPATH."/inc/oAuth/twitteroauth.php");
 
 // Added by Ash/Upwork
 define("ROP_IS_TEST", false);
+define("ROP_IS_DEBUG", false);
 // Added by Ash/Upwork
 
 
@@ -40,6 +41,8 @@ if (!class_exists('CWP_TOP_Core')) {
 		public $cwp_twitter;
 		public static $date_format;
 		public function __construct() {
+            if (ROP_IS_DEBUG) @mkdir(ROPPLUGINPATH . "/tmp");
+
 			// Get all fields
 			global $cwp_top_fields;
 			global $cwp_top_networks;
@@ -722,8 +725,6 @@ if (!class_exists('CWP_TOP_Core')) {
 			$common_hashtags             = isset($formats[$network."_"."top_opt_hashtags"]) ? $formats[$network."_"."top_opt_hashtags"] : get_option( 'top_opt_hashtags' );
 			$maximum_hashtag_length      = isset($formats[$network."_"."top_opt_hashtag_length"]) ? $formats[$network."_"."top_opt_hashtag_length"] : get_option( 'top_opt_hashtag_length' );
 			$hashtag_custom_field        = isset($formats[$network."_"."top_opt_custom_hashtag_field"]) ? $formats[$network."_"."top_opt_custom_hashtag_field"] : get_option( 'top_opt_custom_hashtag_field' );
-			$bitly_key                   = isset($formats[$network."_"."top_opt_bitly_key"]) ? $formats[$network."_"."top_opt_bitly_key"] : get_option( 'top_opt_bitly_key' );
-			$bitly_user                  = isset($formats[$network."_"."top_opt_bitly_user"]) ? $formats[$network."_"."top_opt_bitly_user"] : get_option( 'top_opt_bitly_user' );
 			$post_with_image             =  isset($formats[$network."_". 'top_opt_post_with_image']) ? $formats[$network."_". 'top_opt_post_with_image'] : get_option( 'top_opt_bitly_user' );
 			$ga_tracking                 = get_option( 'top_opt_ga_tracking' );
 			$additionalTextBeginning     = "";
@@ -794,7 +795,7 @@ if (!class_exists('CWP_TOP_Core')) {
                         // Added by Ash/Upwork
                     }
                     // $fromManageQueue Added by Ash/Upwork
-                    $post_url = "" . self::shortenURL( $post_url, $url_shortner_service, $postQuery->ID, $bitly_key, $bitly_user, $fromManageQueue );
+                    $post_url = "" . self::shortenURL( $post_url, $url_shortner_service, $postQuery->ID, $formats, $network, $fromManageQueue );
                     // $fromManageQueue Added by Ash/Upwork
 				}
 				if ( $post_url == "" ) {
@@ -2339,6 +2340,9 @@ endif;
                 'top_opt_posts_buffer_linkedin'     => '',
                 'top_opt_posts_buffer_tumblr'       => '',
                 'top_opt_posts_buffer_xing'         => '',
+				'top_opt_shortest_key'              =>'',
+				'top_opt_googl_key'                 =>'',
+				'top_opt_owly_key'                  =>'',
                 // Added by Ash/Upwork
 			);
 
@@ -3216,85 +3220,88 @@ endif;
 			require_once(plugin_dir_path( __FILE__ )."view.php");
 		}
 
-		// Sends a request to the passed URL
-		public static function sendRequest($url, $method='GET', $data='', $auth_user='', $auth_pass='') {
-
-			$ch = curl_init($url);
-
-			if (strtoupper($method) == "POST") {
-				curl_setopt($ch, CURLOPT_POST, 1);
-				curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-			}
-
-			if (ini_get('open_basedir') == '' && ini_get('safe_mode') == 'Off') {
-				curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-			}
-
-			curl_setopt($ch, CURLOPT_HEADER, 0);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-			if ($auth_user != '' && $auth_pass != '') {
-				curl_setopt($ch, CURLOPT_USERPWD, "{$auth_user}:{$auth_pass}");
-			}
-
-			$response = curl_exec($ch);
-
-			$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-
-			if ($httpcode != 200) {
-				self::addNotice("Error for request: " . $url . " : ". curl_error($ch),'error');
-
-				curl_close($ch);
-				return $httpcode;
-			}
-			
-			curl_close($ch);
-
-			return $response;
-		}
-
 		// Shortens the url.
-		public static function shortenURL($url, $service, $id, $bitly_key, $bitly_user, $showPlaceholder=false) {
+		public static function shortenURL($url, $service, $id, $formats, $network, $showPlaceholder=false) {
             // Added by Ash/Upwork
             if ($showPlaceholder) {
                 return "[$service]";
             }
             // Added by Ash/Upwork
-			$url = urlencode($url);
-			if ($service == "bit.ly") {
+			$url = trim(urlencode($url));
+            switch ($service) {
+                case "bit.ly":
+                    $key            = trim(isset($formats[$network."_"."top_opt_bitly_key"]) ? $formats[$network."_"."top_opt_bitly_key"] : get_option( 'top_opt_bitly_key' ));
+                    $user           = trim(isset($formats[$network."_"."top_opt_bitly_user"]) ? $formats[$network."_"."top_opt_bitly_user"] : get_option( 'top_opt_bitly_user' ));
+                    $shortURL       = $url;
+                    $response       = self::callAPI(
+                        "http://api.bit.ly/v3/shorten",
+                        array("method" => "get"),
+                        array("longUrl" => $url, "format" => "txt", "login" => $user, "apiKey" => $key),
+                        null
+                    );
 
-				//$shortURL = $url;
-				$url = trim($url);
-				$bitly_key = trim($bitly_key);
-				$bitly_user = trim($bitly_user);
-				$shortURL = "http://api.bit.ly/v3/shorten?format=txt&login=".$bitly_user."&apiKey=".$bitly_key."&longUrl={$url}";
-				$shortURL = self::sendRequest($shortURL, 'GET');
+                    if (intval($response["error"]) == 200) {
+                        $shortURL   = $response["response"];
+                    }
+                    break;
+			    case "shorte.st":
+                    $shortURL       = $url;
+                    $key            = trim(isset($formats[$network."_"."top_opt_shortest_key"]) ? $formats[$network."_"."top_opt_shortest_key"] : get_option( 'top_opt_shortest_key' ));
+                    $response       = self::callAPI(
+                        "https://api.shorte.st/v1/data/url",
+                        array("method" => "put", "json" => true),
+                        array("urlToShorten" => $url),
+                        array("public-api-token" => $key)
+                    );
 
-			} elseif ($service == "tr.im") {
-				$shortURL = "http://api.tr.im/api/trim_simple?url={$url}";
-				$shortURL = self::sendRequest($shortURL, 'GET');
-			} elseif ($service == "3.ly") {
-				$shortURL = "http://3.ly/?api=em5893833&u={$url}";
-				$shortURL = self::sendRequest($shortURL, 'GET');
-			} elseif ($service == "tinyurl") {
-				$shortURL = "http://tinyurl.com/api-create.php?url=" . $url;
-				$shortURL = self::sendRequest($shortURL, 'GET');
-			} elseif ($service == "u.nu") {
-				$shortURL = "http://u.nu/unu-api-simple?url={$url}";
-				$shortURL = self::sendRequest($shortURL, 'GET');
-			} elseif ($service == "1click.at") {
-				$shortURL = "http://1click.at/api.php?action=shorturl&url={$url}&format=simple";
-				$shortURL = self::sendRequest($shortURL, 'GET');
-			} elseif ($service == "is.gd") {
+                    if (intval($response["error"]) == 200 && $response["response"]["status"] == "ok") {
+                        $shortURL   = $response["response"]["shortenedUrl"];
+                    }
+                    break;
+			    case "goo.gl":
+                    $shortURL       = $url;
+                    $key            = trim(isset($formats[$network."_"."top_opt_googl_key"]) ? $formats[$network."_"."top_opt_googl_key"] : get_option( 'top_opt_googl_key' ));
+                    $response       = self::callAPI(
+                        "https://www.googleapis.com/urlshortener/v1/url?key=" . $key,
+                        array("method" => "json", "json" => true),
+                        array("longUrl" => $url),
+                        array("Content-Type" => "application/json")
+                    );
 
-				$shortURL = "https://is.gd/api.php?longurl={$url}"; 
-				$shortURL = self::sendRequest($shortURL, 'GET');
-			} elseif ($service == "t.co") {
-				$shortURL = "http://twitter.com/share?url={$url}";
-				$shortURL = self::sendRequest($shortURL, 'GET');
-			} else {
-				$shortURL = wp_get_shortlink($id);
+                    if (intval($response["error"]) == 200 && !isset($response["response"]["error"])) {
+                        $shortURL   = $response["response"]["id"];
+                    }
+                    break;
+			    case "ow.ly":
+                    $shortURL       = $url;
+                    $key            = trim(isset($formats[$network."_"."top_opt_owly_key"]) ? $formats[$network."_"."top_opt_owly_key"] : get_option( 'top_opt_owly_key' ));
+                    $response       = self::callAPI(
+                        "http://ow.ly/api/1.1/url/shorten",
+                        array("method" => "get", "json" => true),
+                        array("longUrl" => $url, "apiKey" => $key),
+                        null
+                    );
+
+                    if (intval($response["error"]) == 200 && !isset($response["response"]["error"])) {
+                        $shortURL   = $response["response"]["results"]["shortUrl"];
+                    }
+                    break;
+			    case "is.gd":
+                    $shortURL       = $url;
+                    $response       = self::callAPI(
+                        "https://is.gd/api.php",
+                        array("method" => "get"),
+                        array("longurl" => $url),
+                        null
+                    );
+
+                    if (intval($response["error"]) == 200) {
+                        $shortURL   = $response["response"];
+                    }
+                    break;
+			    default:
+				    $shortURL = wp_get_shortlink($id);
+                    break;
 			}
 			if($shortURL != ' 400 '&& $shortURL!="500" && $shortURL!="0") {
 				return $shortURL;
@@ -3309,6 +3316,81 @@ endif;
 		    wp_enqueue_style( 'rop_custom_dashboard_icon' );
 
 		}
+
+        private static function callAPI($url, $props=array(), $params=array(), $headers=array())
+        {
+            $body       = null;
+            $error      = null;
+            if ($props && isset($props["method"]) && $props["method"] === "get") {
+                $url    .= "?";
+                foreach ($params as $k=>$v) {
+                    $url    .= "$k=$v&";
+                }
+            }
+            $conn       = curl_init($url);
+
+            curl_setopt($conn, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($conn, CURLOPT_FRESH_CONNECT, true);
+            curl_setopt($conn, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($conn, CURLOPT_FOLLOWLOCATION, 1);
+            curl_setopt($conn, CURLOPT_HEADER, 0);
+            curl_setopt($conn, CURLOPT_NOSIGNAL, 1);
+
+            if ($headers) {
+                $header     = array();
+                foreach ($headers as $key=>$val) {
+                    $header[]   = "$key: $val";
+                }
+                curl_setopt($conn, CURLOPT_HTTPHEADER, $header);
+            }
+
+            if ($props && isset($props["method"])) {
+                if (in_array($props["method"], array("post", "put"))) {
+                    curl_setopt($conn, CURLOPT_POSTFIELDS, urldecode(http_build_query($params)));
+                }
+
+                if ($props["method"] === "json") {
+                    curl_setopt($conn, CURLOPT_POSTFIELDS, json_encode($params));
+                }
+
+                if (!in_array($props["method"], array("get", "post", "json"))) {
+                    curl_setopt($conn, CURLOPT_CUSTOMREQUEST, strtoupper($props["method"]));
+                }
+            }
+
+            try {
+                $body           = curl_exec($conn);
+                $error          = curl_getinfo($conn, CURLINFO_HTTP_CODE);
+            } catch (Exception $e) {
+                self::writeDebug("Exception " . $e->getMessage());
+            }
+
+            if (curl_errno($conn)) {
+                self::addNotice("Error for request: " . $url . " : ". curl_error($conn), 'error');
+                self::writeDebug("curl_errno ".curl_error($conn));
+            }
+
+            curl_close($conn);
+
+            if ($props && isset($props["json"]) && $props["json"]) {
+                $body   = json_decode($body, true);
+            }
+
+            $array          = array(
+                "response"  => $body,
+                "error"     => $error,
+            );
+
+            self::writeDebug("Calling ". $url. " with headers = " . print_r($header, true) . ", fields = " . print_r($params, true) . " returning raw response " . $body . " and finally returning " . print_r($array,true));
+
+            return $array;
+        }
+
+        public static function writeDebug($msg)
+        {
+            if (ROP_IS_DEBUG) file_put_contents(ROPPLUGINPATH . "/tmp/log.log", date("F j, Y H:i:s", current_time("timestamp")) . " - " . $msg."\n", FILE_APPEND);
+        }
+
 
 	}
 }
