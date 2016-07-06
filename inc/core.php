@@ -2343,6 +2343,7 @@ endif;
 				'top_opt_shortest_key'              =>'',
 				'top_opt_googl_key'                 =>'',
 				'top_opt_owly_key'                  =>'',
+				'top_opt_tweet_multiple_times'      => 'on',
                 // Added by Ash/Upwork
 			);
 

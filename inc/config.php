@@ -359,7 +359,8 @@ $cwp_top_fields = array(
 			'slug'					=> 'tweet-multiple-times',
 			'option'				=> 'top_opt_tweet_multiple_times',
 			'description'			=> __('By default once a post is shared it will not be shared again until you stop/start the plugin', 'tweet-old-post'),
-			'options'				=> array()
+			'options'				=> array(),
+			'default_value'         => "on",
 	),
 
 
