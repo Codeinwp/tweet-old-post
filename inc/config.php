@@ -389,11 +389,11 @@ $cwp_top_fields = array(
 
 	'exclude-specific-categories' => array(
 			'id' 					=> '21',
-			'name'  				=> __('Exclude Specific Categories', 'tweet-old-post'),
+			'name'  				=> __('Exclude/Include Specific Categories', 'tweet-old-post'),
 			'type'					=> 'categories-list',
 			'slug'					=> 'exclude-specific-category',
 			'option'				=> 'top_opt_omit_cats',
-			'description'			=> __('Select which categories do you want to exclude to share from? Blank - None', 'tweet-old-post'),
+			'description'			=> __('Select which categories do you want to exclude/include to share from? Blank - None', 'tweet-old-post'),
 			'options'				=> array()
 	),
 	'image-size'=>array(

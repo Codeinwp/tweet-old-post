@@ -278,7 +278,7 @@ if (!class_exists('CWP_TOP_Core')) {
 			$excluded = array_merge($tweetedPosts,$postQueryExcludedPosts);
 			$excluded = array_unique($excluded);
 			$excluded = array_filter($excluded);
-			$postQueryExcludedCategories = $this->getExcludedCategories();
+			$specificCategories = $this->getExcludedCategories();
 			$somePostType = $this->getTweetPostType();
 			// Generate dynamic query.
 			$query =   "
@@ -301,12 +301,13 @@ if (!class_exists('CWP_TOP_Core')) {
 			//		$query .= "AND (wp_term_relationships.term_taxonomy_id IN ({$postQueryCategories})) ";
 			//	}
 
-			if(!empty($postQueryExcludedCategories)) {
-				$query .= "AND ( {$wpdb->prefix}posts.ID NOT IN (
+			if(!empty($specificCategories)) {
+                $categoryFilter = get_option("top_opt_cat_filter", "exclude") == "exclude" ? "NOT IN" : "IN";
+				$query          .= "AND ( {$wpdb->prefix}posts.ID {$categoryFilter} (
 					SELECT object_id
 					FROM {$wpdb->prefix}term_relationships
 					INNER JOIN {$wpdb->prefix}term_taxonomy ON ( {$wpdb->prefix}term_relationships.term_taxonomy_id = {$wpdb->prefix}term_taxonomy.term_taxonomy_id )
-                    WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}))) ";
+                    WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$specificCategories}))) ";
 			}
 
 			if(!empty($excluded)) {
@@ -338,7 +339,7 @@ if (!class_exists('CWP_TOP_Core')) {
 
             $returnedPost = $wpdb->get_results( $query);
 
-            //self::addLog("rows " . count($returnedPost) . " from " . $query);
+            self::writeDebug("rows " . count($returnedPost) . " from " . $query);
 
             // Added by Ash/Upwork
             // If the number of posts found is zero and a post can be shared multiple times, lets clear the buffer and fetch again
@@ -2344,6 +2345,7 @@ endif;
 				'top_opt_googl_key'                 =>'',
 				'top_opt_owly_key'                  =>'',
 				'top_opt_tweet_multiple_times'      => 'on',
+				'rop_opt_cat_filter'                => 'exclude',
                 // Added by Ash/Upwork
 			);
 
@@ -3112,10 +3114,13 @@ endif;
 
                     // Added by Ash/Upwork
                     wp_enqueue_script("jquery");
+                    wp_enqueue_script("jquery-ui-button");
 					wp_register_script("jquery.chosen", ROP_ROOT . "js/chosen.jquery.min.js", array("jquery"), time(), true);
 					wp_enqueue_script("jquery.chosen");
 					wp_register_style("jquery.chosen", ROP_ROOT . "css/chosen.min.css", array(), time());
 					wp_enqueue_style("jquery.chosen");
+                    wp_register_style("jquery.ui-smoothness", "//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css");
+                    wp_enqueue_style("jquery.ui-smoothness");
                     // Added by Ash/Upwork
 
                     // Enqueue and Register Main CSS File

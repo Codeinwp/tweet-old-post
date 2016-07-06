@@ -876,7 +876,8 @@ jQuery(document).ready(function(){
 		}
 	});
 
-    jQuery(".chosen-select").chosen({width: "90%"});
+    jQuery(".top-chosen-select").chosen({width: "90%"});
+    jQuery("#top_exc_inc_radio").buttonset();
 });
 
 function cwpDependeField(field,second){
