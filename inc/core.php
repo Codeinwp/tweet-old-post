@@ -691,7 +691,7 @@ if (!class_exists('CWP_TOP_Core')) {
 			elseif ( stripos($tweetContent, $hashtag . ' ') === 0 ) { // see if the hashtag is at the beginning
 				$location = 0;
 			}
-			elseif ( stripos($tweetContent, ' ' . $hashtag) + strlen(' ' . $hashtag) == strlen($tweetContent) ) { // see if the hashtag is at the end
+			elseif ( stripos($tweetContent, ' ' . $hashtag) !== FALSE && stripos($tweetContent, ' ' . $hashtag) + strlen(' ' . $hashtag) == strlen($tweetContent) ) { // see if the hashtag is at the end
 				$location = stripos($tweetContent, ' ' . $hashtag) + 1;
 			}
 			if ( $location !== false ) {
