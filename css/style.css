@@ -1059,6 +1059,38 @@ button.login{
     font-size: 14px;
 }
 
+#top_exc_inc_radio > label.ui-button.ui-state-default.ui-state-active > span {
+    color: #fff;
+    box-shadow: none;
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #44b0e7), color-stop(100%, #3198de));
+    background-image: -webkit-linear-gradient(top, #44b0e7, #3198de);
+    background-image: -moz-linear-gradient(top, #44b0e7, #3198de);
+    background-image: -ms-linear-gradient(top, #44b0e7, #3198de);
+    background-image: -o-linear-gradient(top, #44b0e7, #3198de);
+    background-image: linear-gradient(top, #44b0e7, #3198de);
+}
+
+#top_exc_inc_radio > label.ui-button.ui-state-default > span {
+    position: relative;
+    z-index: 2;
+    float: left;
+    width: 112px;
+    line-height: 27px;
+    font-size: 14px;
+    color: #333;
+    text-align: center;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+.ui-buttonset {
+    margin-bottom: 10px;
+}
+
+.option.twptop_opt_omit_cats .left {
+    padding-top: 20px;
+}
+
 @media (max-width: 1200px) {
     .cwp_top_wrapper  .cwp_sample_tweet_preview_inner {
         margin-top: 20px;
