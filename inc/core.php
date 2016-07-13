@@ -3233,12 +3233,12 @@ endif;
                 return "[$service]";
             }
             // Added by Ash/Upwork
-			$url = trim(urlencode($url));
+            $shortURL   = trim($url);
+			$url        = urlencode($shortURL);
             switch ($service) {
                 case "bit.ly":
                     $key            = trim(isset($formats[$network."_"."top_opt_bitly_key"]) ? $formats[$network."_"."top_opt_bitly_key"] : get_option( 'top_opt_bitly_key' ));
                     $user           = trim(isset($formats[$network."_"."top_opt_bitly_user"]) ? $formats[$network."_"."top_opt_bitly_user"] : get_option( 'top_opt_bitly_user' ));
-                    $shortURL       = $url;
                     $response       = self::callAPI(
                         "http://api.bit.ly/v3/shorten",
                         array("method" => "get"),
@@ -3251,7 +3251,6 @@ endif;
                     }
                     break;
 			    case "shorte.st":
-                    $shortURL       = $url;
                     $key            = trim(isset($formats[$network."_"."top_opt_shortest_key"]) ? $formats[$network."_"."top_opt_shortest_key"] : get_option( 'top_opt_shortest_key' ));
                     $response       = self::callAPI(
                         "https://api.shorte.st/v1/data/url",
@@ -3265,7 +3264,6 @@ endif;
                     }
                     break;
 			    case "goo.gl":
-                    $shortURL       = $url;
                     $key            = trim(isset($formats[$network."_"."top_opt_googl_key"]) ? $formats[$network."_"."top_opt_googl_key"] : get_option( 'top_opt_googl_key' ));
                     $response       = self::callAPI(
                         "https://www.googleapis.com/urlshortener/v1/url?key=" . $key,
@@ -3279,7 +3277,6 @@ endif;
                     }
                     break;
 			    case "ow.ly":
-                    $shortURL       = $url;
                     $key            = trim(isset($formats[$network."_"."top_opt_owly_key"]) ? $formats[$network."_"."top_opt_owly_key"] : get_option( 'top_opt_owly_key' ));
                     $response       = self::callAPI(
                         "http://ow.ly/api/1.1/url/shorten",
@@ -3293,7 +3290,6 @@ endif;
                     }
                     break;
 			    case "is.gd":
-                    $shortURL       = $url;
                     $response       = self::callAPI(
                         "https://is.gd/api.php",
                         array("method" => "get"),
