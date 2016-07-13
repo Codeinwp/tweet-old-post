@@ -3233,6 +3233,10 @@ endif;
                 return "[$service]";
             }
             // Added by Ash/Upwork
+            if (ROP_IS_TEST) {
+                $url = "http://www.google.com/" . time();
+            }
+
             $shortURL   = trim($url);
 			$url        = urlencode($shortURL);
             switch ($service) {
@@ -3268,7 +3272,7 @@ endif;
                     $response       = self::callAPI(
                         "https://www.googleapis.com/urlshortener/v1/url?key=" . $key,
                         array("method" => "json", "json" => true),
-                        array("longUrl" => $url),
+                        array("longUrl" => urldecode($url)),
                         array("Content-Type" => "application/json")
                     );
 
@@ -3383,7 +3387,7 @@ endif;
                 "error"     => $error,
             );
 
-            self::writeDebug("Calling ". $url. " with headers = " . print_r($header, true) . ", fields = " . print_r($params, true) . " returning raw response " . $body . " and finally returning " . print_r($array,true));
+            self::writeDebug("Calling ". $url. " with headers = " . print_r($header, true) . ", fields = " . print_r($params, true) . " returning raw response " . print_r($body,true) . " and finally returning " . print_r($array,true));
 
             return $array;
         }
