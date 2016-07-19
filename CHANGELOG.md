@@ -1,4 +1,11 @@
 
+### 7.3.8 - 19/07/2016
+**Changes:** 
+- Improved categories excluding UI in the General tab
+- Improved design of the social networks authorization popups
+- Added more shortners
+- Fixed issue with wrong tags fetch
+
 ### 7.3.7 - 30/05/2016
 **Changes:** 
 - Fixed issue with inverted settings in post format and custom schedule
