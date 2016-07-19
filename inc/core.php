@@ -1915,10 +1915,10 @@ endif;
 			$response = array();
 
 			if($allnetworks[$social_network] && !CWP_TOP_PRO){
-				self::addNotice("You need to <a target='_blank' href='https://themeisle.com/plugins/tweet-old-post-pro/?utm_source=topplusacc&utm_medium=announce&utm_campaign=top&upgrade=true'>upgrade to the PRO version</a> in order to add a ".ucwords($social_network)." account, fellow pirate!",'error');
+				self::addNotice("You need to <a target='_blank' href='http://revive.social/plugins/revive-old-post/?utm_source=topplusacc&utm_medium=announce&utm_campaign=top&upgrade=true'>upgrade to the PRO version</a> in order to add a ".ucwords($social_network)." account, fellow pirate!",'error');
 
 			}else if(in_array($social_network,$networks) && !CWP_TOP_PRO) {
-				self::addNotice("You need to <a target='_blank' href='https://themeisle.com/plugins/tweet-old-post-pro/?utm_source=topplusacc&utm_medium=announce&utm_campaign=top&upgrade=true'>upgrade to the PRO version</a> in order to add more accounts, fellow pirate!",'error');
+				self::addNotice("You need to <a target='_blank' href='http://revive.social/plugins/revive-old-post/?utm_source=topplusacc&utm_medium=announce&utm_campaign=top&upgrade=true'>upgrade to the PRO version</a> in order to add more accounts, fellow pirate!",'error');
 
 
 			}else{
@@ -1990,8 +1990,8 @@ endif;
 				$CWP_TOP_Core_PRO->topProAddNewAccount($_POST['social_network']);
 			}
 			else{
-				update_option('cwp_topnew_notice',"You need to <a target='_blank' href='https://themeisle.com/plugins/tweet-old-post-pro/?utm_source=topplusacc&utm_medium=announce&utm_campaign=top&upgrade=true'>upgrade to the PRO version</a> in order to add more accounts, fellow pirate!");
-				echo "You need to <a target='_blank' href='https://themeisle.com/plugins/tweet-old-post-pro/?utm_source=topplusacc&utm_medium=announce&utm_campaign=top&upgrade=true'>upgrade to the PRO version</a> in order to add more accounts, fellow pirate!";
+				update_option('cwp_topnew_notice',"You need to <a target='_blank' href='http://revive.sociahttp://revive.social/plugins/revive-old-post/?utm_source=topplusacc&utm_medium=announce&utm_campaign=top&upgrade=true'>upgrade to the PRO version</a> in order to add more accounts, fellow pirate!");
+				echo "You need to <a target='_blank' href='http://revive.social/plugins/revive-old-post/?utm_source=topplusacc&utm_medium=announce&utm_campaign=top&upgrade=true'>upgrade to the PRO version</a> in order to add more accounts, fellow pirate!";
 
 			}
 			die(); // Required
@@ -2712,7 +2712,7 @@ endif;
 				set_transient( 'rop_remote_calls', "done", 24 * HOUR_IN_SECONDS );
 			}
 			if(!defined("VERSION_CHECK") && function_exists('topProImage')){
-					$this->notices[] = "You need to have the latest version of the Revive Old Post Pro addon in order to use it. Please download it from the themeisle.com account";
+					$this->notices[] = "You need to have the latest version of the Revive Old Post Pro addon in order to use it. Please download it from the revive.social account";
 
 			}
 			$all = $this->getAllNetworks();

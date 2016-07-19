@@ -869,7 +869,7 @@ jQuery(document).ready(function(){
 	jQuery(".login.pro-only").click(function(e){
 		if(!ropProAvailable){
 			window.open(
-				'https://themeisle.com/plugins/tweet-old-post-pro/?utm_source=imagepro&utm_medium=link&utm_campaign=top&upgrade=true',
+				'http://revive.social/plugins/revive-old-post/?utm_source=imagepro&utm_medium=link&utm_campaign=top&upgrade=true',
 				'_blank'
 			);
 			return false;

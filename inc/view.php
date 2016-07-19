@@ -10,10 +10,7 @@
 
  </script>
 <div class="cwp_top_wrapper">
-	<!--<div class="announcement clearfix">
-		<h2><?php _e("After 6 months of hard work, we have just released", 'tweet-old-post'); ?> <b>ThemeIsle</b>, <?php _e("the island of WordPress themes.", 'tweet-old-post'); ?></h2>
-		<a class="show-me" href="https://themeisle.com/?utm_source=topadmin&utm_medium=announce&utm_campaign=top"><?php _e("Show Me", 'tweet-old-post'); ?></a>
-	</div> end .announcement -->
+
 
 	<header id="cwp_top_header" class='clearfix'>
 		<h1 class="top_logo">
@@ -22,11 +19,11 @@
 			} else echo "Revive Old Post"; ?>
 
 		</h1>
-		<span class="slogan"><?php _e("by", 'tweet-old-post'); ?> <a href="https://themeisle.com/?utm_source=topadmin&utm_medium=announce&utm_campaign=top">ThemeIsle</a></span>
+		<span class="slogan"><?php _e("by", 'tweet-old-post'); ?> <a href="https://revive.social/?utm_source=topadmin&utm_medium=announce&utm_campaign=top">ReviveSocial</a></span>
 
 		<div class="cwp_top_actions">
 
-			<a href="https://twitter.com/intent/tweet?text=Check-out%20this%20awesome%20plugin%20-%20&url=http%3A%2F%2Fthemeisle.com%2Fplugins%2Ftweet-old-post-lite%2F&via=themeisle" class="tweet-about-it"><span></span> <?php _e("Show your love", 'tweet-old-post'); ?></a>
+			<a href="https://twitter.com/intent/tweet?text=Check-out%20this%20awesome%20plugin%20-%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial" class="tweet-about-it"><span></span> <?php _e("Show your love", 'tweet-old-post'); ?></a>
 			<a target="_blank" href="http://wordpress.org/support/view/plugin-reviews/tweet-old-post#postform" class="leave-a-review"><span></span> <?php _e("Leave A Review", 'tweet-old-post'); ?></a>
 		</div><!-- end .cwp_top_actions -->
 	</header><!-- end .cwp_top_header -->
@@ -146,7 +143,7 @@
 				<?php endif; ?>
 				<li class="rop-beta-user"><div class="rop-left"><?php  _e("Beta user",'tweet-old-post');?> </div><a href="#" id="rop-beta-button" class="rop-right <?php echo $beta_user; ?>"></a><div class="rop-clear" ></div><span class="rop-beta-desc"><?php  _e("As a beta user you will have access to the latest stable releases before going to production",'tweet-old-post');?></span></li>
 				<li class="rop-beta-user"><div class="rop-left"><?php  _e("Remote check",'tweet-old-post');?></div><a href="#" id="cwp_remote_check" class="<?php echo $remote_check; ?> rop-right "></a><div class="rop-clear" ></div><span class="rop-beta-desc"><?php  _e("We will send you a ping each 15 minutes in order to assure that posts will be sent to social networks on time.   ",'tweet-old-post');?> </span> </li>
-				<li class="upgrade"><a target="_blank" href="https://themeisle.com/plugins/tweet-old-post-pro/?utm_source=bannerright&utm_medium=announce&utm_campaign=top&upgrade=true"> <?php _e("Upgrade Tweet Old Post for only $9.99 - Upgrade To Pro Now!", 'tweet-old-post'); ?></a></li>
+				<li class="upgrade"><a target="_blank" href="https://revive.social/plugins/revive-old-post/?utm_source=bannerright&utm_medium=announce&utm_campaign=top&upgrade=true"> <?php _e("Upgrade Tweet Old Post for only $9.99 - Upgrade To Pro Now!", 'tweet-old-post'); ?></a></li>
 
 			</ul>
 		</aside><!-- end .sidebar -->
@@ -194,7 +191,7 @@
 					<li><?php _e('Go to <strong>App Review</strong> and turn the switch asking to make your app public to "Yes" and click continue','tweet-old-post');?> </li>
 					<li><?php _e('Now everything is almost done, click on <strong>Authorize App</strong> button to the right of this screen, a new page will open asking you to continue as yourself, click <strong>Okay</strong>, the next page will ask you who you want the posts to be shared with, select <strong>Public</strong> if you want everyone to see the shared posts.','tweet-old-post');?> </li>
 				</ol>
-					<h4 class="video-tutorial-link"><?php _e('<a target="_blank" href="http://docs.themeisle.com/article/66-how-to-create-a-facebook-application">Click here</a> for a video showing these instructions','tweet-old-post'); ?></h4>
+					<h4 class="video-tutorial-link"><?php _e('<a target="_blank" href="http://docs.revive.social/article/349-how-to-create-a-facebook-application-for-revive-old-post">Click here</a> for a video showing these instructions','tweet-old-post'); ?></h4>
 			</div>
 			<form action="" method="post" id="cwp_top_form" class="  top_auth_form">
 			<fieldset class="option twptop_opt_app_id">
@@ -228,7 +225,7 @@
 
 	<div class="cwp_not_version_preview">
 		<div class="cwp_sample_tweet_preview_inner top_auth_inner">
-			<h2><?php _e('You need to have the latest version of Revive Old Post Pro in order to use this feature. Please update it or download for your account here <a href="https://themeisle.com/purchase-history" target="_blank">https://themeisle.com/purchase-history</a>','tweet-old-post');?></h2>
+			<h2><?php _e('You need to have the latest version of Revive Old Post Pro in order to use this feature. Please update it or download for your account here <a href="http://revive.social/your-purchases/" target="_blank">http://revive.social/your-purchases/</a>','tweet-old-post');?></h2>
 
 		</span><button class="top_close_popup"><?php _e('Close','tweet-old-post');?></button>
 		</div><!-- end .cwp_sample_tweet_preview_inner -->
@@ -248,7 +245,7 @@
 					<li><?php _e('Go back to <strong>Authentication</strong> page, copy the <strong>Client ID</strong> and <strong>Client Secret</strong> and paste them in the fields on the right of this page then click <strong>Authorize APP</strong>','tweet-old-post');?></li><br>
 					<li><?php _e('A new page will open up asking you to grant access by logging in, enter your login credentials then click <strong>Allow access</strong>. Your application should now be connected and ready to share','tweet-old-post');?></li>
 				</ol>
-        <h4 class ="video-tutorial-link"><?php _e('<a target="_blank" href="http://docs.themeisle.com/article/352-how-to-create-a-linkedin-app-for-revive-old-post" >Click here</a> for a video showing these instructions','tweet-old-post'); ?></h4>
+        <h4 class ="video-tutorial-link"><?php _e('<a target="_blank" href="http://docs.revive.social/article/406-how-to-create-a-linkedin-app-for-revive-old-post" >Click here</a> for a video showing these instructions','tweet-old-post'); ?></h4>
 			</div>
 			<form action="" method="post" id="cwp_top_form" class="  top_auth_form">
 			<fieldset class="option twptop_opt_app_id">

@@ -42,11 +42,11 @@ This plugin helps you to keeps your old posts alive by sharing them and driving 
 
 Some of you reported some scheduling issues, after investigation work looks like this is coming from some web hosts, make sure you check-out this post about <a rel="friend" href="http://www.codeinwp.com/blog/best-wordpress-shared-hosting-providers/">shared WordPress hosting</a>, which should help you pick a good one that works.
 
-For updates follow https://twitter.com/themeisle If you have anything you can let us know <a href="http://revive.social/support/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">here</a>.
+For updates follow https://twitter.com/ReviveSocial If you have anything you can let us know <a href="http://revive.social/support/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">here</a>.
 
 ** Useful Resources **
 
-- Check-out our <a href="http://docs.themeisle.com" rel="friend" target="_blank">tutorials site</a>
+- Check-out our <a href="http://docs.revive.social" rel="friend" target="_blank">tutorials site</a>
 - Take a look at our other <a href="http://themeisle.com/wordpress-plugins/" rel="friend" target="_blank">plugins</a>.
 - Read more about WordPress on our <a href="http://www.codeinwp.com/blog/" rel="friend" target="_blank">blog</a>.
 
