@@ -25,8 +25,8 @@ $cwp_rop_self_endpoint      = "rop_checking_schedule";
 $cwp_top_global_schedule = array();
 if(!defined('ROP_PRO_VERSION'))
 	$cwp_top_networks = array();
-define("CWP_TOP_PRO_STRING",'<span class="cwp-pro-string">'.__("This is only available in the",'tweet-old-post')."<a href='https://themeisle.com/plugins/tweet-old-post-pro/?utm_source=imagepro&utm_medium=link&utm_campaign=top&upgrade=true' target='_blank'> ".__("PRO version")."</a></span>");
-define("CWP_TOP_PRO_BUSINESS_STRING",'<span class="cwp-pro-string">'.__("This is only available in the",'tweet-old-post')."<a href='https://themeisle.com/plugins/tweet-old-post-pro/?utm_source=imagepro&utm_medium=link&utm_campaign=top&upgrade=true' target='_blank'> ".__("BUSINESS version")."</a></span>");
+define("CWP_TOP_PRO_STRING",'<span class="cwp-pro-string">'.__("This is only available in the",'tweet-old-post')."<a href='http://revive.social/plugins/revive-old-post/?utm_source=imagepro&utm_medium=link&utm_campaign=top&upgrade=true' target='_blank'> ".__("PRO version")."</a></span>");
+define("CWP_TOP_PRO_BUSINESS_STRING",'<span class="cwp-pro-string">'.__("This is only available in the",'tweet-old-post')."<a href='http://revive.social/plugins/revive-old-post/?utm_source=imagepro&utm_medium=link&utm_campaign=top&upgrade=true' target='_blank'> ".__("BUSINESS version")."</a></span>");
 
 $cwp_rop_all_networks = array("twitter"=>false,"facebook"=>false,"linkedin"=>true, "xing"=>true,"tumblr"=>true);
 $cwp_rop_restricted_show = array("bitly-key","bitly-user");
@@ -165,19 +165,19 @@ $cwp_format_fields = array(
 			'description'	=> __('Shorten the link to your post.', 'tweet-old-post'),
 			'options'		=> array(
 				'wp_short_url'		=> __('wp short url', 'tweet-old-post'),
-				//'t.co'		=> __('t.co', 'tweet-old-post'),
 				'is.gd'		=> __('is.gd', 'tweet-old-post'),
 				'bit.ly'	=> __('bit.ly', 'tweet-old-post'),
-				//'tr.im'		=> __('tr.im', 'tweet-old-post'),
-				//'3.ly'		=> __('3.ly', 'tweet-old-post'),
-				//'u.nu'		=> __('u.nu', 'tweet-old-post'),
-				//'1click.at'	=> __('1click.at', 'tweet-old-post'),
-				//'tinyurl'	=> __('TinyUrl', 'tweet-old-post')
+				'shorte.st'	=> __('shorte.st', 'tweet-old-post'),
+				'goo.gl'	=> __('goo.gl', 'tweet-old-post'),
+				'ow.ly'	=> __('ow.ly', 'tweet-old-post'),
 
 			),
 			'dependency'=>  array(
+								"bitly-user"=>"bit.ly",
 								"bitly-key"=>"bit.ly",
-								"bitly-user"=>"bit.ly"
+								"shortest-key"=>"shorte.st",
+								"googl-key"=>"goo.gl",
+								"owly-key"=>"ow.ly",
 							),
 			'default_value'=>'wp_short_url'
 		),
@@ -199,6 +199,36 @@ $cwp_format_fields = array(
 			'type'			=> 'text',
 			'slug'			=> 'bitly-user',
 			'option'		=> 'top_opt_bitly_user',
+			'description'	=> '',
+			'options'		=> '',
+			'default_value'		=> '',
+		),
+		'shortest-key' => array(
+			'id'			=> '100',
+			'name'			=> __('Shortest API Key', 'tweet-old-post'),
+			'type'			=> 'text',
+			'slug'			=> 'shortest-key',
+			'option'		=> 'top_opt_shortest_key',
+			'description'	=> '',
+			'options'		=> '',
+			'default_value'		=> '',
+		),
+		'googl-key' => array(
+			'id'			=> '101',
+			'name'			=> __('Google API Key', 'tweet-old-post'),
+			'type'			=> 'text',
+			'slug'			=> 'googl-key',
+			'option'		=> 'top_opt_googl_key',
+			'description'	=> '',
+			'options'		=> '',
+			'default_value'		=> '',
+		),
+		'owly-key' => array(
+			'id'			=> '102',
+			'name'			=> __('Ow.ly API Key', 'tweet-old-post'),
+			'type'			=> 'text',
+			'slug'			=> 'owly-key',
+			'option'		=> 'top_opt_owly_key',
 			'description'	=> '',
 			'options'		=> '',
 			'default_value'		=> '',
@@ -329,7 +359,8 @@ $cwp_top_fields = array(
 			'slug'					=> 'tweet-multiple-times',
 			'option'				=> 'top_opt_tweet_multiple_times',
 			'description'			=> __('By default once a post is shared it will not be shared again until you stop/start the plugin', 'tweet-old-post'),
-			'options'				=> array()
+			'options'				=> array(),
+			'default_value'         => "on",
 	),
 
 
@@ -358,11 +389,11 @@ $cwp_top_fields = array(
 
 	'exclude-specific-categories' => array(
 			'id' 					=> '21',
-			'name'  				=> __('Exclude Specific Categories', 'tweet-old-post'),
+			'name'  				=> __('Exclude/Include Specific Categories', 'tweet-old-post'),
 			'type'					=> 'categories-list',
 			'slug'					=> 'exclude-specific-category',
 			'option'				=> 'top_opt_omit_cats',
-			'description'			=> __('Select which categories do you want to exclude to share from? Blank - None', 'tweet-old-post'),
+			'description'			=> __('Select which categories do you want to exclude/include to share from? Blank - None', 'tweet-old-post'),
 			'options'				=> array()
 	),
 	'image-size'=>array(

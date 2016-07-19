@@ -1,6 +1,7 @@
 <?php
 	$cfgnets = $this->getAllNetworks(true);
     $available  = $this->getAvailableNetworks();
+    if(empty($available)) $available[] = "twitter";
 ?>
 <div class="cwp_top_tabs_vertical <?php echo (count($available) > 1) ? "rop-tab-with-sidebar" : "rop-tab-full-width"; ?> ">
     <?php

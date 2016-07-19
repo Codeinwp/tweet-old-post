@@ -10,10 +10,7 @@
 
  </script>
 <div class="cwp_top_wrapper">
-	<!--<div class="announcement clearfix">
-		<h2><?php _e("After 6 months of hard work, we have just released", 'tweet-old-post'); ?> <b>ThemeIsle</b>, <?php _e("the island of WordPress themes.", 'tweet-old-post'); ?></h2>
-		<a class="show-me" href="https://themeisle.com/?utm_source=topadmin&utm_medium=announce&utm_campaign=top"><?php _e("Show Me", 'tweet-old-post'); ?></a>
-	</div> end .announcement -->
+
 
 	<header id="cwp_top_header" class='clearfix'>
 		<h1 class="top_logo">
@@ -22,11 +19,11 @@
 			} else echo "Revive Old Post"; ?>
 
 		</h1>
-		<span class="slogan"><?php _e("by", 'tweet-old-post'); ?> <a href="https://themeisle.com/?utm_source=topadmin&utm_medium=announce&utm_campaign=top">ThemeIsle</a></span>
+		<span class="slogan"><?php _e("by", 'tweet-old-post'); ?> <a href="https://revive.social/?utm_source=topadmin&utm_medium=announce&utm_campaign=top">ReviveSocial</a></span>
 
 		<div class="cwp_top_actions">
 
-			<a href="https://twitter.com/intent/tweet?text=Check-out%20this%20awesome%20plugin%20-%20&url=http%3A%2F%2Fthemeisle.com%2Fplugins%2Ftweet-old-post-lite%2F&via=themeisle" class="tweet-about-it"><span></span> <?php _e("Show your love", 'tweet-old-post'); ?></a>
+			<a href="https://twitter.com/intent/tweet?text=Check-out%20this%20awesome%20plugin%20-%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial" class="tweet-about-it"><span></span> <?php _e("Show your love", 'tweet-old-post'); ?></a>
 			<a target="_blank" href="http://wordpress.org/support/view/plugin-reviews/tweet-old-post#postform" class="leave-a-review"><span></span> <?php _e("Leave A Review", 'tweet-old-post'); ?></a>
 		</div><!-- end .cwp_top_actions -->
 	</header><!-- end .cwp_top_header -->
@@ -91,11 +88,6 @@
 						<div class="left">
 							<label for="<?php echo $field['option']; ?>"> <?php _e($field['name'],'tweet-old-post'); ?> </label>
 							<span class="description"> <?php _e($field['description'],'tweet-old-post'); ?> </span>
-
-							<?php if($field['type'] == 'categories-list') { ?>
-								<button class='select-all'><?php _e("Select All",'tweet-old-post');?></button>
-							<?php } ?>
-
 						</div><!-- end .left -->
 						<div class="right">
 							<?php CWP_TOP_Core::generateFieldType( $field ); ?>
@@ -151,7 +143,7 @@
 				<?php endif; ?>
 				<li class="rop-beta-user"><div class="rop-left"><?php  _e("Beta user",'tweet-old-post');?> </div><a href="#" id="rop-beta-button" class="rop-right <?php echo $beta_user; ?>"></a><div class="rop-clear" ></div><span class="rop-beta-desc"><?php  _e("As a beta user you will have access to the latest stable releases before going to production",'tweet-old-post');?></span></li>
 				<li class="rop-beta-user"><div class="rop-left"><?php  _e("Remote check",'tweet-old-post');?></div><a href="#" id="cwp_remote_check" class="<?php echo $remote_check; ?> rop-right "></a><div class="rop-clear" ></div><span class="rop-beta-desc"><?php  _e("We will send you a ping each 15 minutes in order to assure that posts will be sent to social networks on time.   ",'tweet-old-post');?> </span> </li>
-				<li class="upgrade"><a target="_blank" href="https://themeisle.com/plugins/tweet-old-post-pro/?utm_source=bannerright&utm_medium=announce&utm_campaign=top&upgrade=true"> <?php _e("Upgrade Tweet Old Post for only $9.99 - Upgrade To Pro Now!", 'tweet-old-post'); ?></a></li>
+				<li class="upgrade"><a target="_blank" href="https://revive.social/plugins/revive-old-post/?utm_source=bannerright&utm_medium=announce&utm_campaign=top&upgrade=true"> <?php _e("Upgrade Tweet Old Post for only $9.99 - Upgrade To Pro Now!", 'tweet-old-post'); ?></a></li>
 
 			</ul>
 		</aside><!-- end .sidebar -->
@@ -188,16 +180,18 @@
 			<span class="sample_tweet top_sample_auth">
 				<div class="top_left_instructions">
 				<ol>
-					<li><?php _e('Go on','tweet-old-post');?>  <a href="https://developers.facebook.com/apps/" target="_blank">developers.facebook.com/apps</a>  </li>
-					<li><?php _e('Click on <strong>Create New App</strong> from the top right corner','tweet-old-post');?> </li>
-					<li><?php _e('Enter a <strong>Display Name</strong> and <strong>Namespace</strong> and click on Create App','tweet-old-post');?> </li>
-					<li><?php _e('Once you arrive on the app dashboard, copy your <strong>App ID</strong> and <strong>App Secret</strong> in the fields on the right','tweet-old-post');?> </li>
-					<li><?php _e('Go on Settings tab from the left sidebar menu add the contact email and click on <strong>Add Platform</strong> and select <strong>Website</strong>','tweet-old-post');?> </li>
-					<li><?php printf(__('Copy/Paste this url : <strong>%s</strong> into App Domains and Site URL fields and <strong>Save</strong>','tweet-old-post'),top_settings_url());?> </li>
-					<li><?php _e('Go on Status & Review tab and set your app live from the top-right switch.','tweet-old-post');?> </li>
-					<li><?php _e('Now everything is done, click on <strong>Authorize App</strong> button.','tweet-old-post');?> </li>
+					<li><?php _e('Go to','tweet-old-post');?>  <a href="https://developers.facebook.com/apps/" target="_blank">developers.facebook.com/apps</a> </li>
+					<li><?php _e('Click on <strong>Create New App</strong> from the top right corner.','tweet-old-post');?> </li>
+					<li><?php _e('Enter a <strong>Display Name</strong>, <strong>Namespace</strong>, <strong>Contact Email</strong>, <strong>Category</strong> and click on Create App ID.','tweet-old-post');?> </li>
+					<li><?php _e('After you prove you are human and the page loads go to <strong>Dashboard</strong>, copy your <strong>App ID</strong> and <strong>App Secret</strong> in the fields on the right.','tweet-old-post');?> </li>
+					<li><?php _e('Go back to the app dashboard and next to <strong>Get Started with the Facebook SDK</strong> click <strong>Choose a Platform</strong>.','tweet-old-post');?> </li>
+					<li><?php printf(__('Select <strong>Website</strong> from the options, when the page loads scroll down and copy the following URL into the <strong>Site URL</strong> area: <code>%s</code> then click <strong>Next</strong>','tweet-old-post'),top_settings_url());?> </li>
+					<li><?php _e('When the new page loads click <strong>Skip Quick Start</strong> to the top right" then go to <strong>Settings</strong>','tweet-old-post');?> </li>
+                    <li><?php printf(__('In the <strong>App Domains</strong> area paste the following URL: <code>%s</code> then scroll down and click <strong>Save changes</strong>','tweet-old-post'),top_settings_url());?> </li>
+					<li><?php _e('Go to <strong>App Review</strong> and turn the switch asking to make your app public to "Yes" and click continue','tweet-old-post');?> </li>
+					<li><?php _e('Now everything is almost done, click on <strong>Authorize App</strong> button to the right of this screen, a new page will open asking you to continue as yourself, click <strong>Okay</strong>, the next page will ask you who you want the posts to be shared with, select <strong>Public</strong> if you want everyone to see the shared posts.','tweet-old-post');?> </li>
 				</ol>
-					<h3><?php _e('You can follow this <a target="_blank" href="http://docs.themeisle.com/article/66-how-to-create-a-facebook-application" > tutorial</a> for more detailed instructions','tweet-old-post'); ?></h3>
+					<h4 class="video-tutorial-link"><?php _e('<a target="_blank" href="http://docs.revive.social/article/349-how-to-create-a-facebook-application-for-revive-old-post">Click here</a> for a video showing these instructions','tweet-old-post'); ?></h4>
 			</div>
 			<form action="" method="post" id="cwp_top_form" class="  top_auth_form">
 			<fieldset class="option twptop_opt_app_id">
@@ -231,7 +225,7 @@
 
 	<div class="cwp_not_version_preview">
 		<div class="cwp_sample_tweet_preview_inner top_auth_inner">
-			<h2><?php _e('You need to have the latest version of Revive Old Post Pro in order to use this feature. Please update it or download for your account here <a href="https://themeisle.com/purchase-history" target="_blank">https://themeisle.com/purchase-history</a>','tweet-old-post');?></h2>
+			<h2><?php _e('You need to have the latest version of Revive Old Post Pro in order to use this feature. Please update it or download for your account here <a href="http://revive.social/your-purchases/" target="_blank">http://revive.social/your-purchases/</a>','tweet-old-post');?></h2>
 
 		</span><button class="top_close_popup"><?php _e('Close','tweet-old-post');?></button>
 		</div><!-- end .cwp_sample_tweet_preview_inner -->
@@ -243,23 +237,21 @@
 			<span class="sample_tweet top_sample_auth">
 				<div class="top_left_instructions">
 				<ol>
-					<li><?php _e('Go on','tweet-old-post');?> <a href="https://www.linkedin.com/secure/developer?newapp=" target="_blank">linkedin.com/secure/developer?newapp=</a></li>
-					<li><?php _e('Enter the required details and pay special attention to the further fields :','tweet-old-post');?></li>
-					<li><?php _e('Make sure you set Live Status to LIVE','tweet-old-post');?> </li>
-					<li><?php _e('Default Scope should have r_basicprofile and w_share checked','tweet-old-post');?></li>
-					<li><?php printf(__('Copy/Paste this url : <strong>%s</strong> into OAuth 2.0 Redirect URLs field and <strong>Save</strong>','tweet-old-post'),top_settings_url());?> </li>
-					<li><?php _e('Once all required fields are filled click on Add Application button, get the API Key and Secret Key and paste them in the fields on the right','tweet-old-post');?></li>
-
-					<li><?php _e('Now everything is done, click on <strong>Authorize App</strong> button.','tweet-old-post');?></li>
+					<li><?php _e('Go to','tweet-old-post');?> <a href="https://www.linkedin.com/secure/developer?newapp=" target="_blank">linkedin.com/secure/developer?newapp=</a> and click <strong>Create Application</strong>.</li><br>
+					<li><?php _e('Enter the required details for your application, be sure to add this current website\'s URL inside the <strong>Website URL</strong> field, click <strong>Submit</strong> when done.','tweet-old-post');?></li><br>
+					<li><?php _e('Set the <strong>Default Application Permissions</strong> to r_basicprofile and w_share.','tweet-old-post');?></li><br>
+					<li><?php printf(__('Copy/Paste this url : <code>%s</code> into OAuth 2.0 Redirect URLs field, click <strong>Add</strong> and then <strong>Update</strong>','tweet-old-post'),top_settings_url());?> </li><br>
+          <li><?php _e('To the top left of the LinkedIn page select <strong>Settings</strong>, under <strong>Application Status</strong> set it to <strong>Live</strong> and click <strong>Update</strong> to save your changes.','tweet-old-post');?></li><br>
+					<li><?php _e('Go back to <strong>Authentication</strong> page, copy the <strong>Client ID</strong> and <strong>Client Secret</strong> and paste them in the fields on the right of this page then click <strong>Authorize APP</strong>','tweet-old-post');?></li><br>
+					<li><?php _e('A new page will open up asking you to grant access by logging in, enter your login credentials then click <strong>Allow access</strong>. Your application should now be connected and ready to share','tweet-old-post');?></li>
 				</ol>
+        <h4 class ="video-tutorial-link"><?php _e('<a target="_blank" href="http://docs.revive.social/article/406-how-to-create-a-linkedin-app-for-revive-old-post" >Click here</a> for a video showing these instructions','tweet-old-post'); ?></h4>
 			</div>
 			<form action="" method="post" id="cwp_top_form" class="  top_auth_form">
 			<fieldset class="option twptop_opt_app_id">
 				<div class="left">
 					<label for="top_opt_app_id"><?php _e('Linkedin API Key','tweet-old-post');?>  </label>
 					<span class="description"><?php _e('API Key that you get once you create an app','tweet-old-post');?>  </span>
-
-
 				</div><!-- end .left -->
 				<div class="right">
 					<input type="text" placeholder="1487991504767913" value="<?php get_option('cwp_top_lk_app_id');?>" name="top_opt_app_id" id="top_opt_app_id_lk">
@@ -290,12 +282,12 @@
 			<span class="sample_tweet top_sample_auth">
 				<div class="top_left_instructions">
 				<ol>
-					<li><?php _e('Go on','tweet-old-post');?> <a href="https://dev.xing.com/applications/dashboard" target="_blank"> https://dev.xing.com/applications/dashboard</a></li>
-					<li><?php _e('If you already made an application you will see it’s info here, otherwise click “Create app” button.','tweet-old-post');?></li>
-					<li><?php _e("Fill 'Application Name', click 'Save'",'tweet-old-post');?> </li>
-				 	<li><?php printf(__('Copy/Paste the Consumer Key and Consumer Secret in the fields from the right.  ','tweet-old-post'),top_settings_url());?> </li>
+					<li><?php _e('Go on','tweet-old-post');?> <a href="https://dev.xing.com/applications/dashboard" target="_blank"> https://dev.xing.com/applications/dashboard</a></li><br>
+					<li><?php _e('If you already made an application you will see it’s info here, otherwise click “Create app” button.','tweet-old-post');?></li><br>
+					<li><?php _e("Fill 'Application Name', click 'Save'",'tweet-old-post');?> </li><br>
+				 	<li><?php printf(__('Copy/Paste the Consumer Key and Consumer Secret in the fields from the right.  ','tweet-old-post'),top_settings_url());?> </li><br>
 
-					<li><?php _e('Now everything is done, click on <strong>Authorize App</strong> button.','tweet-old-post');?></li>
+					<li><?php _e('Now everything is done, click on <strong>Authorize App</strong> button.','tweet-old-post');?></li><br>
 				</ol>
 			</div>
 			<form action="" method="post" id="cwp_top_form" class="  top_auth_form">
@@ -334,11 +326,11 @@
 			<span class="sample_tweet top_sample_auth">
 				<div class="top_left_instructions">
 				<ol>
-					<li><?php _e('Go on','tweet-old-post');?> <a href="https://www.tumblr.com/oauth/apps" target="_blank"> https://www.tumblr.com/oauth/apps</a></li>
-					<li><?php _e('If you already made an application you will see it’s info here, otherwise click “Register application” button.','tweet-old-post');?></li>
-					<li><?php _e("Click 'Register application'”' button. Fill 'Application Name', 'Application Website', all other fields (just enter your website URL to the 'Default callback URL') and click Register'.",'tweet-old-post');?> </li>
-				 	<li><?php printf(__('Copy/Paste the Consumer Key and Consumer Secret in the fields from the right.  ','tweet-old-post'),top_settings_url());?> </li>
-				 	<li><?php printf(__('Fill URL of your Tumblr Blog.  ','tweet-old-post'));?> </li>
+					<li><?php _e('Go on','tweet-old-post');?> <a href="https://www.tumblr.com/oauth/apps" target="_blank"> https://www.tumblr.com/oauth/apps</a></li><br>
+					<li><?php _e('If you already made an application you will see it’s info here, otherwise click “Register application” button.','tweet-old-post');?></li><br>
+					<li><?php _e("Click 'Register application'”' button. Fill 'Application Name', 'Application Website', all other fields (just enter your website URL to the 'Default callback URL') and click Register'.",'tweet-old-post');?> </li><br>
+				 	<li><?php printf(__('Copy/Paste the Consumer Key and Consumer Secret in the fields from the right.  ','tweet-old-post'),top_settings_url());?> </li><br>
+				 	<li><?php printf(__('Fill URL of your Tumblr Blog.  ','tweet-old-post'));?> </li><br>
 
 					<li><?php _e('Now everything is done, click on <strong>Authorize App</strong> button.','tweet-old-post');?></li>
 				</ol>

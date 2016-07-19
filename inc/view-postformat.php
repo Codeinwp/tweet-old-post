@@ -2,6 +2,7 @@
 	global $cwp_global_schedule;
 	$cfgnets = $this->getAllNetworks(true);
 	$networks = $this->getAvailableNetworks();
+	if(empty($networks))$networks[] = "twitter";
 ?><div class="cwp_top_tabs_vertical <?php echo (count($networks) > 1) ? "rop-tab-with-sidebar" : "rop-tab-full-width"; ?>" >
 	<?php if(count($networks) > 1): ?>
 		<ul class="cwp_top_tabs_btns">
@@ -25,11 +26,6 @@
 							<span class="description"> <?php _e( $field['description'], 'tweet-old-post' ); ?> <?php if($field['type'] == 'number'):
 						?>(<?php _e("Max",'tweet-old-post'); ?>: <?php echo $field['max-length']; ?>)<?php
 						endif;?> </span>
-
-							<?php if($field['type'] == 'categories-list') { ?>
-								<button class='select-all'><?php _e( "Select All", 'tweet-old-post' );?></button>
-							<?php } ?>
-
 						</div><!-- end .left -->
 						<div class="right">
 							<?php CWP_TOP_Core::generateFieldType( $field ); ?>

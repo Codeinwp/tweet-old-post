@@ -1,5 +1,5 @@
 ﻿=== Revive Old Post (Former Tweet Old Post) ===
-Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle
+Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle, rsocial
 Tags: admin, ajax, plugin, twitter, facebook, linkedin, automatic, tweet, share, wordpress, marketing, sharing, Tweet old post, Tweets,evergreen,  Promote old post by tweeting about them, Twitter, Auto Tweet, Hashtags, Twitter Hashtags, Tweet Posts, Tweet, Post Tweets, Wordpress Twitter Plugin, Twitter Plugin, Tweet Selected Posts, Twitter, Promote Posts, Tweet Random Post, Share Post, Promote Post, Post Tweets, Wordpress Twitter, Drive Traffic, Tweet Selected Posts
 Requires at least: 2.7
 Tested up to: 4.5.2
@@ -12,7 +12,7 @@ Plugin to share about your old posts on twitter, facebook, linkedin to get more 
 
 ### What the plugin can do ?
 
-This plugin helps you to keeps your old posts alive by sharing them and driving more traffic to them from social networks. It also helps you to promote your content. You can set time and no of posts to share to drive more traffic.For questions, comments, or feature requests, <a href="http://themeisle.com/contact/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">contact us</a>!
+This plugin helps you to keeps your old posts alive by sharing them and driving more traffic to them from social networks. It also helps you to promote your content. You can set time and no of posts to share to drive more traffic.For questions, comments, or feature requests, <a href="http://revive.social/support/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">contact us</a>!
 
 
 
@@ -29,7 +29,7 @@ This plugin helps you to keeps your old posts alive by sharing them and driving 
 
 > ### Why to upgrade to PRO ?
 
-> Using the <a rel="friend" href="https://themeisle.com/plugins/tweet-old-post-pro/">PRO version</a> of the plugin you will unleash the most important functionality : images in tweets . Using those your RT/CTR will go crazy.
+> Using the <a rel="friend" href="http://revive.social/plugins/revive-old-post/">PRO version</a> of the plugin you will unleash the most important functionality : images in tweets . Using those your RT/CTR will go crazy.
 
 > Other notable features :
 
@@ -42,11 +42,11 @@ This plugin helps you to keeps your old posts alive by sharing them and driving 
 
 Some of you reported some scheduling issues, after investigation work looks like this is coming from some web hosts, make sure you check-out this post about <a rel="friend" href="http://www.codeinwp.com/blog/best-wordpress-shared-hosting-providers/">shared WordPress hosting</a>, which should help you pick a good one that works.
 
-For updates follow https://twitter.com/themeisle If you have anything you can let us know <a href="http://themeisle.com/contact/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">here</a>.
+For updates follow https://twitter.com/ReviveSocial If you have anything you can let us know <a href="http://revive.social/support/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">here</a>.
 
 ** Useful Resources **
 
-- Check-out our <a href="http://docs.themeisle.com" rel="friend" target="_blank">tutorials site</a>
+- Check-out our <a href="http://docs.revive.social" rel="friend" target="_blank">tutorials site</a>
 - Take a look at our other <a href="http://themeisle.com/wordpress-plugins/" rel="friend" target="_blank">plugins</a>.
 - Read more about WordPress on our <a href="http://www.codeinwp.com/blog/" rel="friend" target="_blank">blog</a>.
 
@@ -79,7 +79,7 @@ Alternatively you can also follow the following steps to install the Revive Old 
 
 == Frequently Asked Questions ==
 If you have any questions please get in touch with us at,
-https://themeisle.com/contact/
+http://revive.social/support/
 
 **Before asking any question you need to check if you have the latest version, either PRO or FREE.**
 
@@ -98,7 +98,7 @@ https://themeisle.com/contact/
 
 **How do i add a facebook account**
 
- - Please fallow this tutorial : http://docs.themeisle.com/article/66-how-to-create-a-facebook-application
+ - Please fallow this tutorial : http://docs.revive.social/article/349-how-to-create-a-facebook-application-for-revive-old-post
 
 **If new version doesn't works**
 
@@ -109,7 +109,7 @@ https://themeisle.com/contact/
 
 **Any more questions or doubts?**
 
-- Contact us at https://themeisle.com/contact/ and send us also a copy from Revive Old Post -> System Info
+- Contact us at http://revive.social/support/ and send us also a copy from Revive Old Post -> System Info
 
 
 
@@ -120,10 +120,19 @@ https://themeisle.com/contact/
 
 for more you can check out
 
-https://themeisle.com/plugins/tweet-old-post-lite/
+http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+
+**New in v7.3.8**
+
+*  Improved categories excluding UI in the General tab
+*  Improved design of the social networks authorization popups
+*  Added more shortners
+*  Fixed issue with wrong tags fetch
+
+
 
 **New in v7.3.7**
 
@@ -169,6 +178,7 @@ https://themeisle.com/plugins/tweet-old-post-lite/
 
 
 **New in v7.0.8**
+
 * Added facebook tutorial for facebook share.
 * Fixed multisite issue for redirect url
 * Making translation ready for new wordpress.org system

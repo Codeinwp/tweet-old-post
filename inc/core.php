@@ -6,6 +6,7 @@ require_once(ROPPLUGINPATH."/inc/oAuth/twitteroauth.php");
 
 // Added by Ash/Upwork
 define("ROP_IS_TEST", false);
+define("ROP_IS_DEBUG", false);
 // Added by Ash/Upwork
 
 
@@ -40,6 +41,8 @@ if (!class_exists('CWP_TOP_Core')) {
 		public $cwp_twitter;
 		public static $date_format;
 		public function __construct() {
+            if (ROP_IS_DEBUG) @mkdir(ROPPLUGINPATH . "/tmp");
+
 			// Get all fields
 			global $cwp_top_fields;
 			global $cwp_top_networks;
@@ -275,7 +278,7 @@ if (!class_exists('CWP_TOP_Core')) {
 			$excluded = array_merge($tweetedPosts,$postQueryExcludedPosts);
 			$excluded = array_unique($excluded);
 			$excluded = array_filter($excluded);
-			$postQueryExcludedCategories = $this->getExcludedCategories();
+			$specificCategories = $this->getExcludedCategories();
 			$somePostType = $this->getTweetPostType();
 			// Generate dynamic query.
 			$query =   "
@@ -298,12 +301,13 @@ if (!class_exists('CWP_TOP_Core')) {
 			//		$query .= "AND (wp_term_relationships.term_taxonomy_id IN ({$postQueryCategories})) ";
 			//	}
 
-			if(!empty($postQueryExcludedCategories)) {
-				$query .= "AND ( {$wpdb->prefix}posts.ID NOT IN (
+			if(!empty($specificCategories)) {
+                $categoryFilter = get_option("top_opt_cat_filter", "exclude") == "exclude" ? "NOT IN" : "IN";
+				$query          .= "AND ( {$wpdb->prefix}posts.ID {$categoryFilter} (
 					SELECT object_id
 					FROM {$wpdb->prefix}term_relationships
 					INNER JOIN {$wpdb->prefix}term_taxonomy ON ( {$wpdb->prefix}term_relationships.term_taxonomy_id = {$wpdb->prefix}term_taxonomy.term_taxonomy_id )
-                    WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$postQueryExcludedCategories}))) ";
+                    WHERE    {$wpdb->prefix}term_taxonomy.term_id IN ({$specificCategories}))) ";
 			}
 
 			if(!empty($excluded)) {
@@ -335,7 +339,7 @@ if (!class_exists('CWP_TOP_Core')) {
 
             $returnedPost = $wpdb->get_results( $query);
 
-            //self::addLog("rows " . count($returnedPost) . " from " . $query);
+            self::writeDebug("rows " . count($returnedPost) . " from " . $query);
 
             // Added by Ash/Upwork
             // If the number of posts found is zero and a post can be shared multiple times, lets clear the buffer and fetch again
@@ -687,7 +691,7 @@ if (!class_exists('CWP_TOP_Core')) {
 			elseif ( stripos($tweetContent, $hashtag . ' ') === 0 ) { // see if the hashtag is at the beginning
 				$location = 0;
 			}
-			elseif ( stripos($tweetContent, ' ' . $hashtag) + strlen(' ' . $hashtag) == strlen($tweetContent) ) { // see if the hashtag is at the end
+			elseif ( stripos($tweetContent, ' ' . $hashtag) !== FALSE && stripos($tweetContent, ' ' . $hashtag) + strlen(' ' . $hashtag) == strlen($tweetContent) ) { // see if the hashtag is at the end
 				$location = stripos($tweetContent, ' ' . $hashtag) + 1;
 			}
 			if ( $location !== false ) {
@@ -722,8 +726,6 @@ if (!class_exists('CWP_TOP_Core')) {
 			$common_hashtags             = isset($formats[$network."_"."top_opt_hashtags"]) ? $formats[$network."_"."top_opt_hashtags"] : get_option( 'top_opt_hashtags' );
 			$maximum_hashtag_length      = isset($formats[$network."_"."top_opt_hashtag_length"]) ? $formats[$network."_"."top_opt_hashtag_length"] : get_option( 'top_opt_hashtag_length' );
 			$hashtag_custom_field        = isset($formats[$network."_"."top_opt_custom_hashtag_field"]) ? $formats[$network."_"."top_opt_custom_hashtag_field"] : get_option( 'top_opt_custom_hashtag_field' );
-			$bitly_key                   = isset($formats[$network."_"."top_opt_bitly_key"]) ? $formats[$network."_"."top_opt_bitly_key"] : get_option( 'top_opt_bitly_key' );
-			$bitly_user                  = isset($formats[$network."_"."top_opt_bitly_user"]) ? $formats[$network."_"."top_opt_bitly_user"] : get_option( 'top_opt_bitly_user' );
 			$post_with_image             =  isset($formats[$network."_". 'top_opt_post_with_image']) ? $formats[$network."_". 'top_opt_post_with_image'] : get_option( 'top_opt_bitly_user' );
 			$ga_tracking                 = get_option( 'top_opt_ga_tracking' );
 			$additionalTextBeginning     = "";
@@ -794,7 +796,7 @@ if (!class_exists('CWP_TOP_Core')) {
                         // Added by Ash/Upwork
                     }
                     // $fromManageQueue Added by Ash/Upwork
-                    $post_url = "" . self::shortenURL( $post_url, $url_shortner_service, $postQuery->ID, $bitly_key, $bitly_user, $fromManageQueue );
+                    $post_url = "" . self::shortenURL( $post_url, $url_shortner_service, $postQuery->ID, $formats, $network, $fromManageQueue );
                     // $fromManageQueue Added by Ash/Upwork
 				}
 				if ( $post_url == "" ) {
@@ -845,6 +847,10 @@ if (!class_exists('CWP_TOP_Core')) {
 						}
 						break;
 					case 'custom':
+						if(empty($hashtag_custom_field)){
+							self::addNotice("You need to add a custom field name in order to fetch the hashtags. Please set it from Post Format > $network > Hashtag Custom Field ",'error');
+							break;
+						}
 						$newHashtags = get_post_meta( $postQuery->ID, $hashtag_custom_field, true );
 						if($maximum_hashtag_length != 0){
 							if(strlen(  $newHashtags ) <= $maximum_hashtag_length)
@@ -1909,10 +1915,10 @@ endif;
 			$response = array();
 
 			if($allnetworks[$social_network] && !CWP_TOP_PRO){
-				self::addNotice("You need to <a target='_blank' href='https://themeisle.com/plugins/tweet-old-post-pro/?utm_source=topplusacc&utm_medium=announce&utm_campaign=top&upgrade=true'>upgrade to the PRO version</a> in order to add a ".ucwords($social_network)." account, fellow pirate!",'error');
+				self::addNotice("You need to <a target='_blank' href='http://revive.social/plugins/revive-old-post/?utm_source=topplusacc&utm_medium=announce&utm_campaign=top&upgrade=true'>upgrade to the PRO version</a> in order to add a ".ucwords($social_network)." account, fellow pirate!",'error');
 
 			}else if(in_array($social_network,$networks) && !CWP_TOP_PRO) {
-				self::addNotice("You need to <a target='_blank' href='https://themeisle.com/plugins/tweet-old-post-pro/?utm_source=topplusacc&utm_medium=announce&utm_campaign=top&upgrade=true'>upgrade to the PRO version</a> in order to add more accounts, fellow pirate!",'error');
+				self::addNotice("You need to <a target='_blank' href='http://revive.social/plugins/revive-old-post/?utm_source=topplusacc&utm_medium=announce&utm_campaign=top&upgrade=true'>upgrade to the PRO version</a> in order to add more accounts, fellow pirate!",'error');
 
 
 			}else{
@@ -1984,8 +1990,8 @@ endif;
 				$CWP_TOP_Core_PRO->topProAddNewAccount($_POST['social_network']);
 			}
 			else{
-				update_option('cwp_topnew_notice',"You need to <a target='_blank' href='https://themeisle.com/plugins/tweet-old-post-pro/?utm_source=topplusacc&utm_medium=announce&utm_campaign=top&upgrade=true'>upgrade to the PRO version</a> in order to add more accounts, fellow pirate!");
-				echo "You need to <a target='_blank' href='https://themeisle.com/plugins/tweet-old-post-pro/?utm_source=topplusacc&utm_medium=announce&utm_campaign=top&upgrade=true'>upgrade to the PRO version</a> in order to add more accounts, fellow pirate!";
+				update_option('cwp_topnew_notice',"You need to <a target='_blank' href='http://revive.sociahttp://revive.social/plugins/revive-old-post/?utm_source=topplusacc&utm_medium=announce&utm_campaign=top&upgrade=true'>upgrade to the PRO version</a> in order to add more accounts, fellow pirate!");
+				echo "You need to <a target='_blank' href='http://revive.social/plugins/revive-old-post/?utm_source=topplusacc&utm_medium=announce&utm_campaign=top&upgrade=true'>upgrade to the PRO version</a> in order to add more accounts, fellow pirate!";
 
 			}
 			die(); // Required
@@ -2335,6 +2341,11 @@ endif;
                 'top_opt_posts_buffer_linkedin'     => '',
                 'top_opt_posts_buffer_tumblr'       => '',
                 'top_opt_posts_buffer_xing'         => '',
+				'top_opt_shortest_key'              =>'',
+				'top_opt_googl_key'                 =>'',
+				'top_opt_owly_key'                  =>'',
+				'top_opt_tweet_multiple_times'      => 'on',
+				'rop_opt_cat_filter'                => 'exclude',
                 // Added by Ash/Upwork
 			);
 
@@ -2522,6 +2533,7 @@ endif;
 					$post_types["post"] = get_post_type_object( 'post' );
 					$post_types["page"] = get_post_type_object( 'page' );
 
+                    $taxonomies         = array();
 					foreach($post_types as $pt=>$pd){
 						foreach($taxs as $tx){
 
@@ -2533,39 +2545,23 @@ endif;
 
 								) );
 								if(!empty($terms)){
-									print "<div class='categories-list cwp-hidden cwp-tax-".$pt."'><p class='rop-category-header'>".$tx->labels->name."  </p>";
+                                    // Added by Ash/Upwork
+                                    $options                        = array();
 									foreach ($terms as $t) {
-
-										if (!is_array(get_option('top_opt_omit_cats')))
-											$top_opt_omit_specific_cats = explode(',',get_option('top_opt_omit_cats'));
-										else
-											$top_opt_omit_specific_cats = get_option('top_opt_omit_cats');
-
-										print "<div class='cwp-cat'>";
-										print "<input type='checkbox' data-posttype='".$pt."' name='".$field['option']."[]' value='".$t->term_id."'  id='".$field['option']."_cat_".$t->term_id."'";
-
-										if($field['option'] == 'top_opt_omit_cats') {
-											if(is_array($top_opt_omit_specific_cats)) {
-												if(in_array($t->term_id, $top_opt_omit_specific_cats)) {
-													print "checked=checked";
-												}
-											}
-										}
-
-
-										print ">";
-										print "<label for='".$field['option']."_cat_".$t->term_id."'>".$t->name."</label>";
-										print "</div>";
-									}
-									print "<div class='clear'></div></div>";
+                                        $options[$t->name]          = $t->term_id;
+                                    }
+                                    $taxonomies[$tx->labels->name]  = $options;
+                                    // Added by Ash/Upwork
 								}
-
 							}
-
 						}
-
 					}
 
+                    // Added by Ash/Upwork
+                    ob_start();
+                    include_once ROPPLUGINPATH . "/inc/view-categories-list.php";
+                    echo ob_get_clean();
+                    // Added by Ash/Upwork
 
 					break;
 
@@ -2716,7 +2712,7 @@ endif;
 				set_transient( 'rop_remote_calls', "done", 24 * HOUR_IN_SECONDS );
 			}
 			if(!defined("VERSION_CHECK") && function_exists('topProImage')){
-					$this->notices[] = "You need to have the latest version of the Revive Old Post Pro addon in order to use it. Please download it from the themeisle.com account";
+					$this->notices[] = "You need to have the latest version of the Revive Old Post Pro addon in order to use it. Please download it from the revive.social account";
 
 			}
 			$all = $this->getAllNetworks();
@@ -3116,8 +3112,19 @@ endif;
 			if(isset($_GET['page'])) {
 				if ($_GET['page'] == $cwp_top_settings['slug'] || $_GET['page'] == "ExcludePosts") {
 
-					// Enqueue and Register Main CSS File
-					wp_register_style( 'cwp_top_stylesheet', ROPCSSFILE, false, time() );
+                    // Added by Ash/Upwork
+                    wp_enqueue_script("jquery");
+                    wp_enqueue_script("jquery-ui-button");
+					wp_register_script("jquery.chosen", ROP_ROOT . "js/chosen.jquery.min.js", array("jquery"), time(), true);
+					wp_enqueue_script("jquery.chosen");
+					wp_register_style("jquery.chosen", ROP_ROOT . "css/chosen.min.css", array(), time());
+					wp_enqueue_style("jquery.chosen");
+                    wp_register_style("jquery.ui-smoothness", "//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css");
+                    wp_enqueue_style("jquery.ui-smoothness");
+                    // Added by Ash/Upwork
+
+                    // Enqueue and Register Main CSS File
+					wp_register_style( 'cwp_top_stylesheet', ROPCSSFILE, array("jquery.chosen"), time());
 					wp_enqueue_style( 'cwp_top_stylesheet' );
 
 					// Register Main JS File
@@ -3219,82 +3226,88 @@ endif;
 			require_once(plugin_dir_path( __FILE__ )."view.php");
 		}
 
-		// Sends a request to the passed URL
-		public static function sendRequest($url, $method='GET', $data='', $auth_user='', $auth_pass='') {
-
-			$ch = curl_init($url);
-
-			if (strtoupper($method) == "POST") {
-				curl_setopt($ch, CURLOPT_POST, 1);
-				curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-			}
-
-			if (ini_get('open_basedir') == '' && ini_get('safe_mode') == 'Off') {
-				curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-			}
-
-			curl_setopt($ch, CURLOPT_HEADER, 0);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-			if ($auth_user != '' && $auth_pass != '') {
-				curl_setopt($ch, CURLOPT_USERPWD, "{$auth_user}:{$auth_pass}");
-			}
-
-			$response = curl_exec($ch);
-
-			$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-			curl_close($ch);
-
-			if ($httpcode != 200) {
-				self::addNotice("Error for request: " . $url . " : ". $response,'error');
-				return $httpcode;
-			}
-
-			return $response;
-		}
-
 		// Shortens the url.
-		public static function shortenURL($url, $service, $id, $bitly_key, $bitly_user, $showPlaceholder=false) {
+		public static function shortenURL($url, $service, $id, $formats, $network, $showPlaceholder=false) {
             // Added by Ash/Upwork
             if ($showPlaceholder) {
                 return "[$service]";
             }
             // Added by Ash/Upwork
-			$url = urlencode($url);
-			if ($service == "bit.ly") {
+            if (ROP_IS_TEST) {
+                $url = "http://www.google.com/" . time();
+            }
 
-				//$shortURL = $url;
-				$url = trim($url);
-				$bitly_key = trim($bitly_key);
-				$bitly_user = trim($bitly_user);
-				$shortURL = "http://api.bit.ly/v3/shorten?format=txt&login=".$bitly_user."&apiKey=".$bitly_key."&longUrl={$url}";
-				$shortURL = self::sendRequest($shortURL, 'GET');
+            $shortURL   = trim($url);
+			$url        = urlencode($shortURL);
+            switch ($service) {
+                case "bit.ly":
+                    $key            = trim(isset($formats[$network."_"."top_opt_bitly_key"]) ? $formats[$network."_"."top_opt_bitly_key"] : get_option( 'top_opt_bitly_key' ));
+                    $user           = trim(isset($formats[$network."_"."top_opt_bitly_user"]) ? $formats[$network."_"."top_opt_bitly_user"] : get_option( 'top_opt_bitly_user' ));
+                    $response       = self::callAPI(
+                        "http://api.bit.ly/v3/shorten",
+                        array("method" => "get"),
+                        array("longUrl" => $url, "format" => "txt", "login" => $user, "apiKey" => $key),
+                        null
+                    );
 
-			} elseif ($service == "tr.im") {
-				$shortURL = "http://api.tr.im/api/trim_simple?url={$url}";
-				$shortURL = self::sendRequest($shortURL, 'GET');
-			} elseif ($service == "3.ly") {
-				$shortURL = "http://3.ly/?api=em5893833&u={$url}";
-				$shortURL = self::sendRequest($shortURL, 'GET');
-			} elseif ($service == "tinyurl") {
-				$shortURL = "http://tinyurl.com/api-create.php?url=" . $url;
-				$shortURL = self::sendRequest($shortURL, 'GET');
-			} elseif ($service == "u.nu") {
-				$shortURL = "http://u.nu/unu-api-simple?url={$url}";
-				$shortURL = self::sendRequest($shortURL, 'GET');
-			} elseif ($service == "1click.at") {
-				$shortURL = "http://1click.at/api.php?action=shorturl&url={$url}&format=simple";
-				$shortURL = self::sendRequest($shortURL, 'GET');
-			} elseif ($service == "is.gd") {
+                    if (intval($response["error"]) == 200) {
+                        $shortURL   = $response["response"];
+                    }
+                    break;
+			    case "shorte.st":
+                    $key            = trim(isset($formats[$network."_"."top_opt_shortest_key"]) ? $formats[$network."_"."top_opt_shortest_key"] : get_option( 'top_opt_shortest_key' ));
+                    $response       = self::callAPI(
+                        "https://api.shorte.st/v1/data/url",
+                        array("method" => "put", "json" => true),
+                        array("urlToShorten" => $url),
+                        array("public-api-token" => $key)
+                    );
 
-				$shortURL = "https://is.gd/api.php?longurl={$url}"; 
-				$shortURL = self::sendRequest($shortURL, 'GET');
-			} elseif ($service == "t.co") {
-				$shortURL = "http://twitter.com/share?url={$url}";
-				$shortURL = self::sendRequest($shortURL, 'GET');
-			} else {
-				$shortURL = wp_get_shortlink($id);
+                    if (intval($response["error"]) == 200 && $response["response"]["status"] == "ok") {
+                        $shortURL   = $response["response"]["shortenedUrl"];
+                    }
+                    break;
+			    case "goo.gl":
+                    $key            = trim(isset($formats[$network."_"."top_opt_googl_key"]) ? $formats[$network."_"."top_opt_googl_key"] : get_option( 'top_opt_googl_key' ));
+                    $response       = self::callAPI(
+                        "https://www.googleapis.com/urlshortener/v1/url?key=" . $key,
+                        array("method" => "json", "json" => true),
+                        array("longUrl" => urldecode($url)),
+                        array("Content-Type" => "application/json")
+                    );
+
+                    if (intval($response["error"]) == 200 && !isset($response["response"]["error"])) {
+                        $shortURL   = $response["response"]["id"];
+                    }
+                    break;
+			    case "ow.ly":
+                    $key            = trim(isset($formats[$network."_"."top_opt_owly_key"]) ? $formats[$network."_"."top_opt_owly_key"] : get_option( 'top_opt_owly_key' ));
+                    $response       = self::callAPI(
+                        "http://ow.ly/api/1.1/url/shorten",
+                        array("method" => "get", "json" => true),
+                        array("longUrl" => $url, "apiKey" => $key),
+                        null
+                    );
+
+                    if (intval($response["error"]) == 200 && !isset($response["response"]["error"])) {
+                        $shortURL   = $response["response"]["results"]["shortUrl"];
+                    }
+                    break;
+			    case "is.gd":
+                    $response       = self::callAPI(
+                        "https://is.gd/api.php",
+                        array("method" => "get"),
+                        array("longurl" => $url),
+                        null
+                    );
+
+                    if (intval($response["error"]) == 200) {
+                        $shortURL   = $response["response"];
+                    }
+                    break;
+			    default:
+				    $shortURL = wp_get_shortlink($id);
+                    break;
 			}
 			if($shortURL != ' 400 '&& $shortURL!="500" && $shortURL!="0") {
 				return $shortURL;
@@ -3309,6 +3322,81 @@ endif;
 		    wp_enqueue_style( 'rop_custom_dashboard_icon' );
 
 		}
+
+        private static function callAPI($url, $props=array(), $params=array(), $headers=array())
+        {
+            $body       = null;
+            $error      = null;
+            if ($props && isset($props["method"]) && $props["method"] === "get") {
+                $url    .= "?";
+                foreach ($params as $k=>$v) {
+                    $url    .= "$k=$v&";
+                }
+            }
+            $conn       = curl_init($url);
+
+            curl_setopt($conn, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($conn, CURLOPT_FRESH_CONNECT, true);
+            curl_setopt($conn, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($conn, CURLOPT_FOLLOWLOCATION, 1);
+            curl_setopt($conn, CURLOPT_HEADER, 0);
+            curl_setopt($conn, CURLOPT_NOSIGNAL, 1);
+
+            if ($headers) {
+                $header     = array();
+                foreach ($headers as $key=>$val) {
+                    $header[]   = "$key: $val";
+                }
+                curl_setopt($conn, CURLOPT_HTTPHEADER, $header);
+            }
+
+            if ($props && isset($props["method"])) {
+                if (in_array($props["method"], array("post", "put"))) {
+                    curl_setopt($conn, CURLOPT_POSTFIELDS, urldecode(http_build_query($params)));
+                }
+
+                if ($props["method"] === "json") {
+                    curl_setopt($conn, CURLOPT_POSTFIELDS, json_encode($params));
+                }
+
+                if (!in_array($props["method"], array("get", "post", "json"))) {
+                    curl_setopt($conn, CURLOPT_CUSTOMREQUEST, strtoupper($props["method"]));
+                }
+            }
+
+            try {
+                $body           = curl_exec($conn);
+                $error          = curl_getinfo($conn, CURLINFO_HTTP_CODE);
+            } catch (Exception $e) {
+                self::writeDebug("Exception " . $e->getMessage());
+            }
+
+            if (curl_errno($conn)) {
+                self::addNotice("Error for request: " . $url . " : ". curl_error($conn), 'error');
+                self::writeDebug("curl_errno ".curl_error($conn));
+            }
+
+            curl_close($conn);
+
+            if ($props && isset($props["json"]) && $props["json"]) {
+                $body   = json_decode($body, true);
+            }
+
+            $array          = array(
+                "response"  => $body,
+                "error"     => $error,
+            );
+
+            self::writeDebug("Calling ". $url. " with headers = " . print_r($header, true) . ", fields = " . print_r($params, true) . " returning raw response " . print_r($body,true) . " and finally returning " . print_r($array,true));
+
+            return $array;
+        }
+
+        public static function writeDebug($msg)
+        {
+            if (ROP_IS_DEBUG) file_put_contents(ROPPLUGINPATH . "/tmp/log.log", date("F j, Y H:i:s", current_time("timestamp")) . " - " . $msg."\n", FILE_APPEND);
+        }
+
 
 	}
 }
