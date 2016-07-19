@@ -25,8 +25,8 @@ $cwp_rop_self_endpoint      = "rop_checking_schedule";
 $cwp_top_global_schedule = array();
 if(!defined('ROP_PRO_VERSION'))
 	$cwp_top_networks = array();
-define("CWP_TOP_PRO_STRING",'<span class="cwp-pro-string">'.__("This is only available in the",'tweet-old-post')."<a href='https://themeisle.com/plugins/tweet-old-post-pro/?utm_source=imagepro&utm_medium=link&utm_campaign=top&upgrade=true' target='_blank'> ".__("PRO version")."</a></span>");
-define("CWP_TOP_PRO_BUSINESS_STRING",'<span class="cwp-pro-string">'.__("This is only available in the",'tweet-old-post')."<a href='https://themeisle.com/plugins/tweet-old-post-pro/?utm_source=imagepro&utm_medium=link&utm_campaign=top&upgrade=true' target='_blank'> ".__("BUSINESS version")."</a></span>");
+define("CWP_TOP_PRO_STRING",'<span class="cwp-pro-string">'.__("This is only available in the",'tweet-old-post')."<a href='http://revive.social/plugins/revive-old-post/?utm_source=imagepro&utm_medium=link&utm_campaign=top&upgrade=true' target='_blank'> ".__("PRO version")."</a></span>");
+define("CWP_TOP_PRO_BUSINESS_STRING",'<span class="cwp-pro-string">'.__("This is only available in the",'tweet-old-post')."<a href='http://revive.social/plugins/revive-old-post/?utm_source=imagepro&utm_medium=link&utm_campaign=top&upgrade=true' target='_blank'> ".__("BUSINESS version")."</a></span>");
 
 $cwp_rop_all_networks = array("twitter"=>false,"facebook"=>false,"linkedin"=>true, "xing"=>true,"tumblr"=>true);
 $cwp_rop_restricted_show = array("bitly-key","bitly-user");
