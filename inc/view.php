@@ -23,7 +23,7 @@
 
 		<div class="cwp_top_actions">
 
-			<a href="https://twitter.com/intent/tweet?text=Check-out%20this%20awesome%20plugin%20-%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial" class="tweet-about-it"><span></span> <?php _e("Show your love", 'tweet-old-post'); ?></a>
+			<a target="_blank" href="https://twitter.com/intent/tweet?text=Check-out%20this%20awesome%20plugin%20-%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial" class="tweet-about-it"><span></span> <?php _e("Show your love", 'tweet-old-post'); ?></a>
 			<a target="_blank" href="http://wordpress.org/support/view/plugin-reviews/tweet-old-post#postform" class="leave-a-review"><span></span> <?php _e("Leave A Review", 'tweet-old-post'); ?></a>
 		</div><!-- end .cwp_top_actions -->
 	</header><!-- end .cwp_top_header -->
