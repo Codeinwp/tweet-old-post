@@ -919,6 +919,7 @@ if (!class_exists('CWP_TOP_Core')) {
             }
             // Added by Ash/Upwork
 
+            $finalTweet         = apply_filters("rop_override_tweet", $finalTweet, $postQuery);
 			$fTweet['message'] =  $finalTweet ;
 
 			return $fTweet;
@@ -2336,6 +2337,7 @@ endif;
 				'top_fb_token'						=>'',
 				'top_opt_post_formats'				=>'',
                 // Added by Ash/Upwork
+                'cwp_rop_custom_messages'           => 'off',
                 'top_opt_posts_buffer_twitter'      => '',
                 'top_opt_posts_buffer_facebook'     => '',
                 'top_opt_posts_buffer_linkedin'     => '',
