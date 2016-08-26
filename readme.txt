@@ -1,6 +1,6 @@
 ﻿=== Revive Old Post (Former Tweet Old Post) ===
 Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle, rsocial
-Tags: admin, ajax, plugin, twitter, facebook, linkedin, automatic, tweet, share, wordpress, marketing, sharing, Tweet old post, Tweets,evergreen,  Promote old post by tweeting about them, Twitter, Auto Tweet, Hashtags, Twitter Hashtags, Tweet Posts, Tweet, Post Tweets, Wordpress Twitter Plugin, Twitter Plugin, Tweet Selected Posts, Twitter, Promote Posts, Tweet Random Post, Share Post, Promote Post, Post Tweets, Wordpress Twitter, Drive Traffic, Tweet Selected Posts
+Tags:twitter, facebook, linkedin, automatic, tweet, share, wordpress, marketing, sharing, Tweet old post, Tweets,evergreen
 Requires at least: 2.7
 Tested up to: 4.6
 Stable tag: trunk
@@ -29,7 +29,7 @@ This plugin helps you to keeps your old posts alive by sharing them and driving 
 
 > ### Why to upgrade to PRO ?
 
-> Using the <a rel="friend" href="http://revive.social/plugins/revive-old-post/">PRO version</a> of the plugin you will unleash the most important functionality : images in tweets . Using those your RT/CTR will go crazy.
+> Using the <a href="http://revive.social/plugins/revive-old-post/">PRO version</a> of the plugin you will unleash the most important functionality : images in tweets . Using those your RT/CTR will go crazy.
 
 > Other notable features :
 
@@ -40,15 +40,15 @@ This plugin helps you to keeps your old posts alive by sharing them and driving 
 > * Custom Schedule
 > * Post to Xing / Tumblr
 
-Some of you reported some scheduling issues, after investigation work looks like this is coming from some web hosts, make sure you check-out this post about <a rel="friend" href="http://www.codeinwp.com/blog/best-wordpress-shared-hosting-providers/">shared WordPress hosting</a>, which should help you pick a good one that works.
+Some of you reported some scheduling issues, after investigation work looks like this is coming from some web hosts, make sure you check-out this post about <a href="http://www.codeinwp.com/blog/best-wordpress-shared-hosting-providers/">shared WordPress hosting</a>, which should help you pick a good one that works.
 
 For updates follow https://twitter.com/ReviveSocial If you have anything you can let us know <a href="http://revive.social/support/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">here</a>.
 
 ** Useful Resources **
 
-- Check-out our <a href="http://docs.revive.social" rel="friend" target="_blank">tutorials site</a>
-- Take a look at our other <a href="http://themeisle.com/wordpress-plugins/" rel="friend" target="_blank">plugins</a>.
-- Read more about WordPress on our <a href="http://www.codeinwp.com/blog/" rel="friend" target="_blank">blog</a>.
+- Check-out our <a href="http://docs.revive.social" target="_blank">tutorials site</a>
+- Take a look at our other <a href="http://themeisle.com/wordpress-plugins/"  target="_blank">plugins</a>.
+- Read more about WordPress on our <a href="http://www.codeinwp.com/blog/"  target="_blank">blog</a>.
 
 
 = Translations =
