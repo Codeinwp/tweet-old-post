@@ -2548,11 +2548,11 @@ endif;
 								) );
 								if(!empty($terms)){
                                     // Added by Ash/Upwork
-                                    $options                        = array();
+                                    $options                = array();
 									foreach ($terms as $t) {
-                                        $options[$t->name]          = $t->term_id;
+                                        $options[]          = array("label" => $t->name, "id" => $t->term_id);
                                     }
-                                    $taxonomies[$tx->labels->name]  = $options;
+                                    $taxonomies[]           = array("label" => $tx->labels->name, "values" => $options);
                                     // Added by Ash/Upwork
 								}
 							}
