@@ -23,7 +23,7 @@
 
 		<div class="cwp_top_actions">
 
-			<a href="https://twitter.com/intent/tweet?text=Check-out%20this%20awesome%20plugin%20-%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial" class="tweet-about-it"><span></span> <?php _e("Show your love", 'tweet-old-post'); ?></a>
+			<a target="_blank" href="https://twitter.com/intent/tweet?text=Check-out%20this%20awesome%20plugin%20-%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial" class="tweet-about-it"><span></span> <?php _e("Show your love", 'tweet-old-post'); ?></a>
 			<a target="_blank" href="http://wordpress.org/support/view/plugin-reviews/tweet-old-post#postform" class="leave-a-review"><span></span> <?php _e("Leave A Review", 'tweet-old-post'); ?></a>
 		</div><!-- end .cwp_top_actions -->
 	</header><!-- end .cwp_top_header -->
@@ -143,6 +143,7 @@
 				<?php endif; ?>
 				<li class="rop-beta-user"><div class="rop-left"><?php  _e("Beta user",'tweet-old-post');?> </div><a href="#" id="rop-beta-button" class="rop-right <?php echo $beta_user; ?>"></a><div class="rop-clear" ></div><span class="rop-beta-desc"><?php  _e("As a beta user you will have access to the latest stable releases before going to production",'tweet-old-post');?></span></li>
 				<li class="rop-beta-user"><div class="rop-left"><?php  _e("Remote check",'tweet-old-post');?></div><a href="#" id="cwp_remote_check" class="<?php echo $remote_check; ?> rop-right "></a><div class="rop-clear" ></div><span class="rop-beta-desc"><?php  _e("We will send you a ping each 15 minutes in order to assure that posts will be sent to social networks on time.   ",'tweet-old-post');?> </span> </li>
+                <?php echo apply_filters("rop_add_to_sidebar", "");?>
 				<li class="upgrade"><a target="_blank" href="https://revive.social/plugins/revive-old-post/?utm_source=bannerright&utm_medium=announce&utm_campaign=top&upgrade=true"> <?php _e("Upgrade Tweet Old Post for only $9.99 - Upgrade To Pro Now!", 'tweet-old-post'); ?></a></li>
 
 			</ul>
