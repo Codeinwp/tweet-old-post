@@ -16,11 +16,15 @@ $filterType = get_option("top_opt_cat_filter", "exclude");
 <select name="<?php echo $field['option'];?>[]" data-placeholder="<?php _e("Categories", "tweet-old-post");?>" class="top-chosen-select" multiple>
     <option value=""></option>
 <?php
-    foreach ($taxonomies as $type=>$options) {
+    foreach ($taxonomies as $taxonomy) {
+        $type       = $taxonomy["label"];
+        $options    = $taxonomy["values"];
 ?>
     <optgroup label="<?php echo $type?>">
 <?php
-        foreach ($options as $label=>$id) {
+        foreach ($options as $option) {
+            $label      = $option["label"];
+            $id         = $option["id"];
             $extra      = in_array($id, $top_opt_omit_specific_cats) ? "selected" : "";
 ?>
       <option value="<?php echo $id;?>" <?php echo $extra;?>><?php echo $label;?></option>
