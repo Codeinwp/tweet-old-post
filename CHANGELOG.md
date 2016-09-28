@@ -1,4 +1,10 @@
 
+### 7.4.0 - 28/09/2016
+**Changes:** 
+- Added support for custom messages
+- Fixes issue with multiple taxonomies having the same name
+- Fixed instructions for popups
+
 ### 7.3.8 - 19/07/2016
 **Changes:** 
 - Improved categories excluding UI in the General tab
