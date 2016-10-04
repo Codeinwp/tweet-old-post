@@ -108,7 +108,7 @@ if (!class_exists('CWP_TOP_Core')) {
 		}
 		public function startPosting(){
 
-			update_option('cwp_topnew_active_status', 'true');
+			update_option('cwp_topnew_active_status', 'yes');
 			update_option('top_opt_already_tweeted_posts',array());
 			update_option('top_last_tweets',array());
 			$timeNow =  $this->getTime();
@@ -130,7 +130,7 @@ if (!class_exists('CWP_TOP_Core')) {
 		public function stopPosting(){
 
 			// Set it to inactive status
-			update_option('cwp_topnew_active_status', 'false');
+			update_option('cwp_topnew_active_status', 'no');
 			update_option('cwp_topnew_notice', '');
 			update_option('top_opt_already_tweeted_posts',array());
 
@@ -1601,7 +1601,7 @@ endif;
 			$this->user_info = get_option('cwp_top_oauth_user_details');
 			$this->users = apply_filters("rop_users_filter",get_option('cwp_top_logged_in_users'));
 
-			$this->pluginStatus = get_option('cwp_topnew_active_status');
+			$this->pluginStatus = get_option('cwp_topnew_active_status', 'no') === 'yes';
 			$this->intervalSet = get_option('top_opt_interval');
 
 			self::$date_format = 'M j, Y @ G:i';
@@ -2329,7 +2329,7 @@ endif;
 				'top_opt_post_type_value'			=> 'post',
 				'top_opt_custom_url_field'			=> '',
 				'top_opt_omit_cats'					=> '',
-				'cwp_topnew_active_status'			=> 'false',
+				'cwp_topnew_active_status'			=> 'no',
 				'cwp_topnew_notice'					=> '',
 				'top_opt_excluded_post'				=> '',
 				'top_opt_tweet-multiple-times'		=> 'off',
@@ -2977,7 +2977,7 @@ endif;
             if(
                 !get_option("cwp_rop_remote_trigger", false)
                 ||
-                !get_option("cwp_topnew_active_status", false)
+                get_option("cwp_topnew_active_status", 'no') === 'no'
             ) return;
 
             $crons      = _get_cron_array();
