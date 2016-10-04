@@ -64,7 +64,7 @@
 
         foreach($networks as $network){
             $all    = null;
-            if(get_option("cwp_topnew_active_status", 'false') === 'true'){
+            if(get_option("cwp_topnew_active_status", 'no') === 'yes'){
                 $all    = array();
                 if($network){
                     $posts      = CWP_TOP_Core::getTweetsFromDB($network, false, $count);
