@@ -2710,7 +2710,7 @@ endif;
 					$this->sendBetaUserTrigger($remote_call);
 				}
 
-				$this->sendRemoteTrigger($this->getRemoteCheck());
+				$this->remoteTrigger();
 				set_transient( 'rop_remote_calls', "done", 24 * HOUR_IN_SECONDS );
 			}
 			if(!defined("VERSION_CHECK") && function_exists('topProImage')){
@@ -2866,10 +2866,8 @@ endif;
 
 			add_action('admin_init', array($this,'top_nag_ignore'));
 			add_action('admin_init', array($this,'clearOldCron'));
-            // Added by Ash/Upwork
-            add_filter('template_include', array($this, 'captureRewrites'), 1, 1);
-            add_filter('query_vars', array($this, 'addRewriteVars'));
-            // Added by Ash/Upwork
+
+            add_action("rest_api_init", array($this, "rop_endpoint_register"));
 
 			//filters
 
@@ -2889,6 +2887,44 @@ endif;
 			}
 
 		}
+
+        function rop_endpoint_trigger_schedule() {
+            $networks           = $this->getAvailableNetworks();
+            $users              = $this->getUsers();
+            return new WP_REST_Response(
+                array(
+                    "networks"  => count($networks),
+                    "accounts"  => count($users),
+                    "started"   => true
+                )
+            );
+        }
+
+        function rop_endpoint_register() {
+            error_log("in rop_endpoint_register");
+            register_rest_route(
+                ROP_ENDPOINT_SLUG__ . "/v" . ROP_REST_VERSION,
+                "/trigger_schedule/",
+                array(
+                    "methods" => "GET",
+                    "callback" => array($this, "rop_endpoint_trigger_schedule"),
+                )
+            );
+        }
+
+        function rop_update_option($name, $value=false) {
+            $main           = get_option("rop-settings", array());
+            $main[$name]    = $value;
+            update_option("rop-settings", $main);
+        }
+
+        function rop_get_option($name, $default=false) {
+            $main       = get_option("rop-settings", array());
+            if ($main && array_key_exists($name, $main)) {
+                return $main[$name];
+            }
+            return $default;
+        }
 
         function checkAjaxCapability() {
             $cap        = false;
@@ -2933,7 +2969,7 @@ endif;
                     $this->clearLog();
                     break;
                 case 'remote_trigger':
-                    $this->remoteTrigger();
+                    $this->remoteTrigger("on");
                     break;
                 case 'beta_user_trigger':
                     $this->betaUserTrigger();
@@ -2958,21 +2994,6 @@ endif;
         }
 
         // Added by Ash/Upwork
-        function addRewriteVars($vars){
-            global $cwp_rop_self_endpoint;
-            $vars[] = $cwp_rop_self_endpoint;
-            return $vars;
-        }
-
-        function captureRewrites($template){
-            global $wp_query, $cwp_rop_self_endpoint;
-            if (get_query_var($cwp_rop_self_endpoint, false)){
-                $this->processServerRequest();
-                return null;
-            }
-            return $template;
-        }
-
         private function processServerRequest(){
             if(
                 !get_option("cwp_rop_remote_trigger", false)
@@ -3023,53 +3044,39 @@ endif;
 			return $users;
 		}
 
-		public function remoteTrigger($status = ""){
-			if(!is_admin()) return false;
-			$state = isset($_POST["state"]) ? $_POST["state"] : "";
-
-			if(!empty($status)) $state = $status;
-
-			if(!empty($state) &&( $state == "on" || $state == "off")){
-
-				update_option("cwp_rop_remote_trigger",$state);
-                // Added by Ash/Upwork
-				$response = $this->sendRemoteTrigger($state);
-                if($response){
-                    $error  = __('Error: ','tweet-old-post') . $response;
-                    self::addNotice($error, 'error');
-                    update_option("cwp_rop_remote_trigger", "off");
-                    // if you want to show the user an alert, make showAlert true
-                    wp_send_json_error(array("error" => $error, "showAlert" => false));
-                }
-                // Added by Ash/Upwork
-			}
-
-			if(empty($status)) die();
-		}
-
-		public function sendRemoteTrigger($state){
-
-			global $cwp_rop_remote_trigger_url;
-			$state = ($state == "on") ? "yes" : "no";
-
-		    $response = wp_remote_post( $cwp_rop_remote_trigger_url, array(
-					'method' => 'POST',
-					'timeout' => 1,
-					'redirection' => 5,
-					'httpversion' => '1.0',
-					'blocking' => true,
-					'headers' => array(),
-					'body' => array( 'url' => get_site_url(), 'status' => $state ),
-					'cookies' => array()
-				)
-			);
-
-            // Added by Ash/Upwork
-            if(is_wp_error($response)){
-                return $response->get_error_message();
+        // status will be on/off when its being toggled and null when the scheduled JS is calling
+		public function remoteTrigger($status=null){
+            if ($status === "off") {
+                update_option("cwp_rop_remote_trigger", $status);
+                return;
             }
-            return null;
-            // Added by Ash/Upwork
+
+            $time_to_shake      = true;
+            // when status is "on" we will call the api no matter the time
+            if (!$status) {
+                $time_to_shake  = $this->rop_get_option("api-handshake-time", 0);
+                $time_to_shake  = $time_to_shake === 0 || $time_to_shake > time();
+            }
+
+            if ($time_to_shake) {
+                // call the api
+                $handshake      = "no";
+                $failed         = $handshake === "no";
+                $this->rop_update_option("api-handshake-response", $handshake);
+
+                if ($failed) {
+                    $this->rop_update_option("api-handshake-time", time() + DAY_IN_SECONDS);
+                    if ($status === "on") {
+                        update_option("cwp_rop_remote_trigger", "off");
+                    }
+                } else {
+                    wp_send_json_success(array());
+                }
+            }
+
+			if ($status) {
+                die();
+            }
 		}
 
 		public function betaUserTrigger($status = ""){
@@ -3135,6 +3142,7 @@ endif;
 					wp_localize_script( 'cwp_top_javascript', 'cwp_top_ajaxload', array(
                         'ajaxurl'   => admin_url( 'admin-ajax.php' ),
                         'ajaxnonce' => wp_create_nonce("cwp-top-" . ROP_VERSION),
+                        'resturl'   => class_exists( "WP_REST_Request", false ) ? rest_url(ROP_ENDPOINT_SLUG__ . "/v" . ROP_REST_VERSION . "/trigger_schedule/") : "",
                     ) );
 				}
 			}
