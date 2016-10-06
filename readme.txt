@@ -1,5 +1,5 @@
 ﻿=== Revive Old Post (Former Tweet Old Post) ===
-Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle, rsocial
+Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle,rsocial,uriahs-victor
 Tags:twitter, facebook, linkedin, automatic, tweet, share, wordpress, marketing, sharing, Tweet old post, Tweets,evergreen
 Requires at least: 2.7
 Tested up to: 4.6.1
@@ -163,7 +163,7 @@ http://revive.social/plugins/revive-old-post
 
 **New in v7.3.1**
 
-* Fixed compatibility with old php versions.  
+* Fixed compatibility with old php versions.
 
 **New in v7.3**
 
@@ -836,4 +836,3 @@ http://www.ajaymatharu.com/major-update-to-tweet-old-post/
 - Randomness interval - This is a contributing factor in minimum interval so that posts are randomly chosen and tweeted from your blog.
 - Minimum age of post to be eligible for tweet - This allows you to set how old your post should be in order to be eligible for the tweet.
 - Categories to omit from tweets - This will protect posts from the selected categories from being tweeted.
-

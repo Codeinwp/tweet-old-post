@@ -1,11 +1,11 @@
 <?php
 #     /*
-#     Plugin Name: Revive Old Post (Former Tweet Old Post)
-#     Plugin URI: https://revive.social/
-#     Description: Wordpress plugin that helps you to keeps your old posts alive by sharing them and driving more traffic to them from twitter/facebook or linkedin. It also helps you to promote your content. You can set time and no of posts to share to drive more traffic.For questions, comments, or feature requests, <a href="http://revive.social/support/?utm_source=plugindesc&utm_medium=announce&utm_campaign=top">contact </a> us!
-#     Author: reviev.social
-#     Version: 7.4.0
-#     Author URI: https://revive.social/
+#   Plugin Name: Revive Old Post (Former Tweet Old Post)
+#   Plugin URI: https://revive.social/
+#   Description: Wordpress plugin that helps you to keeps your old posts alive by sharing them and driving more traffic to them from twitter/facebook or linkedin. It also helps you to promote your content. You can set time and no of posts to share to drive more traffic.For questions, comments, or feature requests, <a href="http://revive.social/support/?utm_source=plugindesc&utm_medium=announce&utm_campaign=top">contact </a> us!
+#   Author: ReviveSocial
+#   Version: 7.4.0
+#   Author URI: https://revive.social/
 #	  Text Domain: tweet-old-post
 #	  Domain Path: /languages
 #     */
