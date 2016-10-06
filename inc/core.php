@@ -2889,6 +2889,7 @@ endif;
 		}
 
         function rop_endpoint_trigger_schedule() {
+            $this->processServerRequest();
             $networks           = $this->getAvailableNetworks();
             $users              = $this->getUsers();
             return new WP_REST_Response(
@@ -2901,7 +2902,6 @@ endif;
         }
 
         function rop_endpoint_register() {
-            error_log("in rop_endpoint_register");
             register_rest_route(
                 ROP_ENDPOINT_SLUG__ . "/v" . ROP_REST_VERSION,
                 "/trigger_schedule/",
@@ -2969,7 +2969,7 @@ endif;
                     $this->clearLog();
                     break;
                 case 'remote_trigger':
-                    $this->remoteTrigger("on");
+                    $this->remoteTrigger(isset($_POST["state"]) ? $_POST["state"] : null);
                     break;
                 case 'beta_user_trigger':
                     $this->betaUserTrigger();
@@ -3046,29 +3046,34 @@ endif;
 
         // status will be on/off when its being toggled and null when the scheduled JS is calling
 		public function remoteTrigger($status=null){
+            if (!$status && !defined('ROP_PRO_VERSION') && update_option("cwp_rop_remote_trigger") == "off") {
+                return;
+            }
+
             if ($status === "off") {
                 update_option("cwp_rop_remote_trigger", $status);
                 return;
             }
 
-            $time_to_shake      = true;
             // when status is "on" we will call the api no matter the time
             if (!$status) {
                 $time_to_shake  = $this->rop_get_option("api-handshake-time", 0);
-                $time_to_shake  = $time_to_shake === 0 || $time_to_shake > time();
+                $time_to_shake  = time() > $time_to_shake;
             }
 
             if ($time_to_shake) {
                 // call the api
+                $rest_url       = rest_url(ROP_ENDPOINT_SLUG__ . "/v" . ROP_REST_VERSION . "/trigger_schedule/");
                 $handshake      = "no";
                 $failed         = $handshake === "no";
                 $this->rop_update_option("api-handshake-response", $handshake);
 
                 if ($failed) {
-                    $this->rop_update_option("api-handshake-time", time() + DAY_IN_SECONDS);
+                    $this->rop_update_option("api-handshake-time", time() + 24 * HOUR_IN_SECONDS);
                     if ($status === "on") {
                         update_option("cwp_rop_remote_trigger", "off");
                     }
+                    self::addNotice(__("Unable to reach your site", "tweet-old-post"), "error");
                 } else {
                     wp_send_json_success(array());
                 }
@@ -3142,7 +3147,6 @@ endif;
 					wp_localize_script( 'cwp_top_javascript', 'cwp_top_ajaxload', array(
                         'ajaxurl'   => admin_url( 'admin-ajax.php' ),
                         'ajaxnonce' => wp_create_nonce("cwp-top-" . ROP_VERSION),
-                        'resturl'   => class_exists( "WP_REST_Request", false ) ? rest_url(ROP_ENDPOINT_SLUG__ . "/v" . ROP_REST_VERSION . "/trigger_schedule/") : "",
                     ) );
 				}
 			}
