@@ -1601,7 +1601,7 @@ endif;
 			$this->user_info = get_option('cwp_top_oauth_user_details');
 			$this->users = apply_filters("rop_users_filter",get_option('cwp_top_logged_in_users'));
 
-			$this->pluginStatus = get_option('cwp_topnew_active_status', 'no') === 'yes';
+            $this->pluginStatus = get_option('cwp_topnew_active_status', 'no') === 'yes' ? 'true' : 'false';
 			$this->intervalSet = get_option('top_opt_interval');
 
 			self::$date_format = 'M j, Y @ G:i';
