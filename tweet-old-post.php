@@ -3,7 +3,7 @@
 #     Plugin Name: Revive Old Post (Former Tweet Old Post)
 #     Plugin URI: https://revive.social/
 #     Description: Wordpress plugin that helps you to keeps your old posts alive by sharing them and driving more traffic to them from twitter/facebook or linkedin. It also helps you to promote your content. You can set time and no of posts to share to drive more traffic.For questions, comments, or feature requests, <a href="http://revive.social/support/?utm_source=plugindesc&utm_medium=announce&utm_campaign=top">contact </a> us!
-#     Author: reviev.social
+#     Author: revive.social
 #     Version: 7.4.0
 #     Author URI: https://revive.social/
 #	  Text Domain: tweet-old-post
@@ -28,13 +28,6 @@ define("ROP_ROOT", trailingslashit(plugins_url("", __FILE__)));
 require_once(ROPPLUGINPATH."/inc/core.php");
 // Require core.
 require_once(ROPPLUGINPATH."/inc/exclude-posts.php");
-if (!class_exists('TAV_Remote_Notification_Client')) {
-	require( ROPPLUGINPATH.'/inc/class-remote-notification-client.php' );
-}
-if (CWP_TOP_PRO)
-    $notification = new TAV_Remote_Notification_Client( 37, 'a8be784b898fa2fb', 'https://themeisle.com?post_type=notification' );
-else
-    $notification = new TAV_Remote_Notification_Client( 38, 'b7fbcc8d0c58614a', 'https://themeisle.com?post_type=notification' );
 
 // Clear scheduled tweets on plugin deactivation
 register_deactivation_hook(__FILE__, array($CWP_TOP_Core, 'deactivationHook'));
