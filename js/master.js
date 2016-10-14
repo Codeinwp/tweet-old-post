@@ -1,6 +1,15 @@
 jQuery(document).ready(function(){
 
 
+    jQuery.ajax({
+        type: "POST",
+        url: cwp_top_ajaxload.ajaxurl,
+        data: {
+            action: 'remote_trigger',
+            security: cwp_top_ajaxload.ajaxnonce
+        },
+    });
+
 	jQuery(".rop-not-version  ").on("click" ,function(){
 		console.log('not version')
 		jQuery(".cwp_not_version_preview").show();
