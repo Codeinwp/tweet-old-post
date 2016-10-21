@@ -2221,7 +2221,7 @@ endif;
 			}
 
 			//update_option("top_opt_already_tweeted_posts", array());
-			$this->updateAllPostFormat();
+			$this->updateAllPostFormat($options);
 			if(CWP_TOP_PRO){
 
 				global $CWP_TOP_Core_PRO;
@@ -2230,15 +2230,9 @@ endif;
 			die();
 		}
 
-		public function updateAllPostFormat()
+		private function updateAllPostFormat($options)
 		{
 			$all = $this->getAllNetworks();
-			$dataSent = $_POST['dataSent']['dataSent'];
-
-			$options = array();
-			parse_str($dataSent, $options);
-
-			//print_r($options);
 			foreach($all as $n){
 
 				if(!array_key_exists($n.'_top_opt_custom_url_option', $options)) {
