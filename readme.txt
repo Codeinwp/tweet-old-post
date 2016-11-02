@@ -1,22 +1,22 @@
 ﻿=== Revive Old Post (Former Tweet Old Post) ===
-Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle, rsocial,uriahs-victor
+Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle, rsocial, uriahs-victor
 Tags:twitter, facebook, linkedin, automatic, tweet, share, wordpress, marketing, sharing, Tweet old post, Tweets,evergreen
 Requires at least: 2.7
 Tested up to: 4.6.1
 Stable tag: trunk
 
 
-Plugin to share about your old posts on twitter, facebook, linkedin to get more hits for them and keep them alive.
+Automatically share your old posts on Twitter, Facebook, LinkedIn. Get more visitors to your website and keep your content alive.
 
 == Description ==
 
 ### What the plugin can do ?
 
-This plugin helps you to keeps your old posts alive by sharing them and driving more traffic to them from social networks. It also helps you to promote your content. You can set time and no of posts to share to drive more traffic.For questions, comments, or feature requests, <a href="http://revive.social/support/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">contact us</a>!
+This plugin helps you keep your old posts alive by automatically sharing them and driving more traffic to them from Social Networks. It also helps you to promote your content. You can set sharing interval and number of posts to share to drive more traffic.For questions, comments, or feature requests, <a href="http://revive.social/support/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">contact us</a>!
 
 
 
-**Revive Old Post provides following features**
+**Revive Old Post provides the following features**
 
 - Share new and old posts.
 - Choose the time between posts.
@@ -25,6 +25,8 @@ This plugin helps you to keeps your old posts alive by sharing them and driving 
 - Include links back to your site.
 - Exclude categories
 - Exclude specific posts.
+- Integrated with Google Analytics.
+- Compatible with URL Shortners.
 
 
 > ### Why to upgrade to PRO ?
@@ -35,9 +37,10 @@ This plugin helps you to keeps your old posts alive by sharing them and driving 
 
 > * Multiple Social Accounts
 > * Custom Post Types support
-> * Linkedin support
+> * LinkedIn support
 > * Post with image
 > * Custom Schedule
+> * Custom Share Messages
 > * Post to Xing / Tumblr
 
 Some of you reported some scheduling issues, after investigation work looks like this is coming from some web hosts, make sure you check-out this post about <a rel="nofollow" href="http://www.codeinwp.com/blog/best-wordpress-shared-hosting-providers/">shared WordPress hosting</a>, which should help you pick a good one that works.
