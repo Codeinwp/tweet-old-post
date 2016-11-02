@@ -1,4 +1,11 @@
 
+### 7.4.5 - 02/11/2016
+**Changes:** 
+- Improved schedule trigger mechanism
+- Fixed post format saving issues
+- Fixed status saving issue
+- Updated readme and assets
+
 ### 7.4.0 - 28/09/2016
 **Changes:** 
 - Added support for custom messages
