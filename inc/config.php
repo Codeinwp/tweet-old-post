@@ -2,7 +2,7 @@
 define("CURRENTURL", top_current_page());
 define("ROP_ENDPOINT_SLUG__", "rop");
 define("ROP_REST_VERSION", "1");
-define("ROP_YOURLS_SITE", "http://159.203.132.3/yourls/yourls-api.php");
+define("ROP_YOURLS_SITE", "http://rviv.ly/yourls/yourls-api.php");
 define("ROP_YOURLS_SALT", "themeisle");
 
 if(class_exists("CWP_TOP_Core_PRO")){
