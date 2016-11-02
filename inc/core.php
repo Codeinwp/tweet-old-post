@@ -2310,7 +2310,7 @@ endif;
 				'top_opt_custom_url_option'			=> 'off',
 				'top_opt_use_url_shortner'			=> 'off',
 				'top_opt_ga_tracking'				=> 'on',
-				'top_opt_url_shortner'				=> 'is.gd',
+				'top_opt_url_shortner'				=> 'yourls',
 				'top_opt_custom_hashtag_option'		=> 'nohashtag',
 				'top_opt_hashtags'			=> '',
 				'top_opt_hashtag_length'			=> '0',
@@ -3040,7 +3040,7 @@ endif;
 
         // status will be on/off when its being toggled and null when the scheduled JS is calling
 		public function remoteTrigger($status=null){
-            if (!$status && !defined('ROP_PRO_VERSION') && update_option("cwp_rop_remote_trigger") == "off") {
+            if (!$status && !defined('ROP_PRO_VERSION') && get_option("cwp_rop_remote_trigger") == "off") {
                 return;
             }
 
@@ -3248,6 +3248,19 @@ endif;
             $shortURL   = trim($url);
 			$url        = urlencode($shortURL);
             switch ($service) {
+                case "yourls":
+                    $website        = get_bloginfo("url");
+                    $response       = self::callAPI(
+                        ROP_YOURLS_SITE,
+                        array("method" => "post"),
+                        array("action" => "shorturl", "format" => "simple", "signature" => substr(md5($website . md5(ROP_YOURLS_SALT)), 0, 10), "url" => $url, "website" => base64_encode($website)),
+                        null
+                    );
+
+                    if (intval($response["error"]) == 200) {
+                        $shortURL   = $response["response"];
+                    }
+                    break;
                 case "bit.ly":
                     $key            = trim(isset($formats[$network."_"."top_opt_bitly_key"]) ? $formats[$network."_"."top_opt_bitly_key"] : get_option( 'top_opt_bitly_key' ));
                     $user           = trim(isset($formats[$network."_"."top_opt_bitly_user"]) ? $formats[$network."_"."top_opt_bitly_user"] : get_option( 'top_opt_bitly_user' ));
@@ -3350,8 +3363,8 @@ endif;
             curl_setopt($conn, CURLOPT_HEADER, 0);
             curl_setopt($conn, CURLOPT_NOSIGNAL, 1);
 
+            $header     = array();
             if ($headers) {
-                $header     = array();
                 foreach ($headers as $key=>$val) {
                     $header[]   = "$key: $val";
                 }
