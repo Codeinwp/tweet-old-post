@@ -128,6 +128,12 @@ http://revive.social/plugins/revive-old-post
 
 == Changelog ==
 
+**New in v7.4.5**
+
+*   Improved schedule trigger for posts
+*   Fixed issue with plugin starting
+*   Fixed issue with post format
+
 **New in v7.4.0**
 
 *   Added support for custom messages
