@@ -1601,7 +1601,7 @@ endif;
 			$this->user_info = get_option('cwp_top_oauth_user_details');
 			$this->users = apply_filters("rop_users_filter",get_option('cwp_top_logged_in_users'));
 			$status = get_option('cwp_topnew_active_status', 'no');
-			if($status == 'yes' || $status='no'){
+			if($status == 'yes' || $status == 'no'){
 				$this->pluginStatus = ($status=='yes') ? 'true' : 'false';
 			}else{
 				$this->pluginStatus = $status;
