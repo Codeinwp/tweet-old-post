@@ -1,4 +1,8 @@
 
+### 7.4.6 - 03/11/2016
+**Changes:** 
+- Fixed deactivation error
+
 ### 7.4.5 - 02/11/2016
 **Changes:** 
 - Improved schedule trigger mechanism
