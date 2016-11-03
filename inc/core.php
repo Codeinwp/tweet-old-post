@@ -1582,7 +1582,7 @@ endif;
 		{
 			$this->clearScheduledTweets();
 			$this->deleteAllOptions();
-			$this->remoteTrigger("off");
+		//	$this->remoteTrigger("off");
 		}
 
 		// Sets all authentication settings
