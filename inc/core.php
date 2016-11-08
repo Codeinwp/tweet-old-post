@@ -1581,7 +1581,6 @@ endif;
 		public function deactivationHook()
 		{
 			$this->clearScheduledTweets();
-			$this->deleteAllOptions();
 		//	$this->remoteTrigger("off");
 		}
 
@@ -2298,10 +2297,20 @@ endif;
 			}
 		}
 
-		public function resetAllOptions()
+		public function resetAllOptions($force=false)
 		{
 
 			if(!is_admin()) return false;
+
+            if (!$force) {
+                // check if the database is already populated
+                // if it is, quit resetting
+
+                $title  = get_option("top_opt_tweet_type");
+                if (!empty($title)) {
+                    return;
+                }
+            }
 
 			$defaultOptions = array(
 				'top_opt_tweet_type'				=> 'title',
@@ -2946,7 +2955,7 @@ endif;
                     $this->updateAllOptions();
                     break;
                 case 'reset_options':
-                    $this->resetAllOptions();
+                    $this->resetAllOptions(true);
                     break;
                 case 'add_new_account':
                     $this->addNewAccount();
