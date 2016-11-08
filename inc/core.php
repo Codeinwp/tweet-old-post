@@ -2236,7 +2236,6 @@ endif;
 		private function updateAllPostFormat($options)
 		{
 			$all = $this->getAllNetworks();
-
 			foreach($all as $n){
 
 				if(!array_key_exists($n.'_top_opt_custom_url_option', $options)) {
@@ -3063,6 +3062,7 @@ endif;
 				update_option( "cwp_rop_remote_trigger", $status );
 				wp_send_json_success( array() );
 
+
 				return;
 			}
 			// when status is "on" we will call the api no matter the time
@@ -3381,8 +3381,8 @@ endif;
             curl_setopt($conn, CURLOPT_HEADER, 0);
             curl_setopt($conn, CURLOPT_NOSIGNAL, 1);
 
+            $header     = array();
             if ($headers) {
-                $header     = array();
                 foreach ($headers as $key=>$val) {
                     $header[]   = "$key: $val";
                 }
