@@ -42,6 +42,7 @@ if (!class_exists('CWP_TOP_Core')) {
 		public static $date_format;
 		public function __construct() {
             if (ROP_IS_DEBUG) @mkdir(ROPPLUGINPATH . "/tmp");
+            if (ROP_IS_TEST) add_filter("rop_is_business_user", create_function('',  'return true;'));
 
 			// Get all fields
 			global $cwp_top_fields;
@@ -2818,6 +2819,9 @@ endif;
 			// Log Out Twitter user ajax action
 			add_action('wp_ajax_log_out_user', array($this, 'ajax'));
 
+			// get message queue
+			add_action('wp_ajax_get_queue', array($this, 'ajax'));
+
 			//
 			add_action("rop_stop_posting", array($this,"clear_delete_type"));
 
@@ -2983,11 +2987,25 @@ endif;
                 case 'stop_tweet_old_post':
                     $this->stopTweetOldPost();
                     break;
+                case 'get_queue':
+                    $this->getQueue();
+                    break;
+
             }
             wp_die();
         }
 
         // Added by Ash/Upwork
+        private function getQueue() {
+            $available  = $this->getAvailableNetworks();
+            if(empty($available)) $available[] = "twitter";
+
+            ob_start();
+            include_once ROPPLUGINPATH . "/inc/scrap-advancedscheduling.php";
+            $html   = ob_get_clean();
+            wp_send_json_success( array("html" => $html) );
+        }
+
         private function processServerRequest(){
             if(
                 !get_option("cwp_rop_remote_trigger", false)
