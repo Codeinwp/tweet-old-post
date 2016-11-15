@@ -4,6 +4,7 @@ define("ROP_ENDPOINT_SLUG__", "rop");
 define("ROP_REST_VERSION", "1");
 define("ROP_YOURLS_SITE", "http://rviv.ly/yourls/yourls-api.php");
 define("ROP_YOURLS_SALT", "themeisle");
+define("ROP_REMOTE_CHECK_URL", 'http://mirror.themeisle.com');
 
 if(class_exists("CWP_TOP_Core_PRO")){
 	define("CWP_TOP_PRO", TRUE);

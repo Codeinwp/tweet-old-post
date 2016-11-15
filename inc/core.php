@@ -1583,7 +1583,7 @@ endif;
 		{
 			$this->clearScheduledTweets();
 			$this->deleteAllOptions();
-			$this->remoteTrigger("off");
+		//	$this->remoteTrigger("off");
 		}
 
 		// Sets all authentication settings
@@ -1601,8 +1601,12 @@ endif;
 
 			$this->user_info = get_option('cwp_top_oauth_user_details');
 			$this->users = apply_filters("rop_users_filter",get_option('cwp_top_logged_in_users'));
-
-            $this->pluginStatus = get_option('cwp_topnew_active_status', 'no') === 'yes' ? 'true' : 'false';
+			$status = get_option('cwp_topnew_active_status', 'no');
+			if($status == 'yes' || $status == 'no'){
+				$this->pluginStatus = ($status=='yes') ? 'true' : 'false';
+			}else{
+				$this->pluginStatus = $status;
+			}
 			$this->intervalSet = get_option('top_opt_interval');
 
 			self::$date_format = 'M j, Y @ G:i';
@@ -2894,6 +2898,8 @@ endif;
                 array(
                     "networks"  => count($networks),
                     "accounts"  => count($users),
+                    "free_version"  => defined("ROP_VERSION") ? ROP_VERSION : false,
+                    "pro_version"  => defined("ROP_PRO_VERSION") ? ROP_PRO_VERSION : false ,
                     "started"   => true
                 )
             );
@@ -3056,44 +3062,58 @@ endif;
 			return $users;
 		}
 
-        // status will be on/off when its being toggled and null when the scheduled JS is calling
-		public function remoteTrigger($status=null){
-            if (!$status && !defined('ROP_PRO_VERSION') && get_option("cwp_rop_remote_trigger") == "off") {
-                return;
-            }
-
-            if ($status === "off") {
-                update_option("cwp_rop_remote_trigger", $status);
-                return;
-            }
-
-            // when status is "on" we will call the api no matter the time
-            if (!$status) {
-                $time_to_shake  = $this->rop_get_option("api-handshake-time", 0);
-                $time_to_shake  = time() > $time_to_shake;
-            }
-
-            if ($time_to_shake) {
-                // call the api
-                $rest_url       = rest_url(ROP_ENDPOINT_SLUG__ . "/v" . ROP_REST_VERSION . "/trigger_schedule/");
-                $handshake      = "no";
-                $failed         = $handshake === "no";
-                $this->rop_update_option("api-handshake-response", $handshake);
-
-                if ($failed) {
-                    $this->rop_update_option("api-handshake-time", time() + 24 * HOUR_IN_SECONDS);
-                    if ($status === "on") {
-                        update_option("cwp_rop_remote_trigger", "off");
-                    }
-                    self::addNotice(__("Unable to reach your site", "tweet-old-post"), "error");
-                } else {
-                    wp_send_json_success(array());
-                }
-            }
-
-			if ($status) {
-                die();
-            }
+		// status will be on/off when its being toggled and null when the scheduled JS is calling
+		public function remoteTrigger( $status = null ) {
+			if ( is_null( $status ) && ! defined( 'ROP_PRO_VERSION' ) && get_option( "cwp_rop_remote_trigger", 'off' ) == "off" ) {
+				return;
+			}
+			if ( ! is_null( $status ) ) {
+				update_option( "cwp_rop_remote_trigger", $status );
+				wp_send_json_success( array() );
+				return;
+			}
+			// when status is "on" we will call the api no matter the time
+			if ( ! is_null( $status ) ) {
+				$time_to_shake = $this->rop_get_option( "api-handshake-time", 0 );
+				$time_to_shake = time() > $time_to_shake;
+			} else {
+				$time_to_shake = true;
+			}
+			if ( $time_to_shake ) {
+				// call the api
+				$rest_url  = rest_url( ROP_ENDPOINT_SLUG__ . "/v" . ROP_REST_VERSION . "/trigger_schedule/" );
+				$hresponse = wp_remote_post( ROP_REMOTE_CHECK_URL, array(
+					'method'      => 'POST',
+					'timeout'     => 3,
+					'redirection' => 5,
+					'headers'     => array( "X-ThemeIsle-Event" => "add_ping" ),
+					'body'        => array(
+						'site' => urlencode( $rest_url )
+					),
+				) );
+				$handshake = "no";
+				if ( is_array( $hresponse ) ) {
+					$body = $hresponse['body']; // use the content
+					$body = json_decode( $body );
+					if ( isset( $body->data ) ) {
+						if ( $body->data->handshake ) {
+							$handshake = $body->data->handshake;
+						}
+					}
+				}
+				$failed = $handshake === "no";
+				$this->rop_update_option( "api-handshake-response", $handshake );
+				if ( $failed ) {
+					$this->rop_update_option( "api-handshake-time", time() + 24 * HOUR_IN_SECONDS );
+					if ( $status === "on" ) {
+						update_option( "cwp_rop_remote_trigger", "off" );
+					}
+					self::addNotice( __( "The remote check can not access your website. You need to whitelist this ip 107.170.26.57 in order for the schedule to work properly", "tweet-old-post" ), "error" );
+				}
+			}
+			if ( ! is_null( $status ) ) {
+				die();
+			}
 		}
 
 		public function betaUserTrigger($status = ""){
