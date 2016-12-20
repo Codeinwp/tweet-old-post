@@ -42,6 +42,7 @@ if (!class_exists('CWP_TOP_Core')) {
 		public static $date_format;
 		public function __construct() {
             if (ROP_IS_DEBUG) @mkdir(ROPPLUGINPATH . "/tmp");
+            if (ROP_IS_TEST) add_filter("rop_is_business_user", create_function('',  'return true;'));
 
 			// Get all fields
 			global $cwp_top_fields;
@@ -2237,7 +2238,6 @@ endif;
 		private function updateAllPostFormat($options)
 		{
 			$all = $this->getAllNetworks();
-
 			foreach($all as $n){
 
 				if(!array_key_exists($n.'_top_opt_custom_url_option', $options)) {
@@ -2315,7 +2315,7 @@ endif;
 				'top_opt_custom_url_option'			=> 'off',
 				'top_opt_use_url_shortner'			=> 'off',
 				'top_opt_ga_tracking'				=> 'on',
-				'top_opt_url_shortner'				=> 'is.gd',
+				'top_opt_url_shortner'				=> 'yourls',
 				'top_opt_custom_hashtag_option'		=> 'nohashtag',
 				'top_opt_hashtags'			=> '',
 				'top_opt_hashtag_length'			=> '0',
@@ -2823,6 +2823,9 @@ endif;
 			// Log Out Twitter user ajax action
 			add_action('wp_ajax_log_out_user', array($this, 'ajax'));
 
+			// get message queue
+			add_action('wp_ajax_get_queue', array($this, 'ajax'));
+
 			//
 			add_action("rop_stop_posting", array($this,"clear_delete_type"));
 
@@ -2990,11 +2993,25 @@ endif;
                 case 'stop_tweet_old_post':
                     $this->stopTweetOldPost();
                     break;
+                case 'get_queue':
+                    $this->getQueue();
+                    break;
+
             }
             wp_die();
         }
 
         // Added by Ash/Upwork
+        private function getQueue() {
+            $available  = $this->getAvailableNetworks();
+            if(empty($available)) $available[] = "twitter";
+
+            ob_start();
+            include_once ROPPLUGINPATH . "/inc/scrap-advancedscheduling.php";
+            $html   = ob_get_clean();
+            wp_send_json_success( array("html" => $html) );
+        }
+
         private function processServerRequest(){
             if(
                 !get_option("cwp_rop_remote_trigger", false)
@@ -3053,7 +3070,6 @@ endif;
 			if ( ! is_null( $status ) ) {
 				update_option( "cwp_rop_remote_trigger", $status );
 				wp_send_json_success( array() );
-
 				return;
 			}
 			// when status is "on" we will call the api no matter the time
@@ -3270,6 +3286,19 @@ endif;
             $shortURL   = trim($url);
 			$url        = urlencode($shortURL);
             switch ($service) {
+                case "yourls":
+                    $website        = get_bloginfo("url");
+                    $response       = self::callAPI(
+                        ROP_YOURLS_SITE,
+                        array("method" => "post"),
+                        array("action" => "shorturl", "format" => "simple", "signature" => substr(md5($website . md5(ROP_YOURLS_SALT)), 0, 10), "url" => $url, "website" => base64_encode($website)),
+                        null
+                    );
+
+                    if (intval($response["error"]) == 200) {
+                        $shortURL   = $response["response"];
+                    }
+                    break;
                 case "bit.ly":
                     $key            = trim(isset($formats[$network."_"."top_opt_bitly_key"]) ? $formats[$network."_"."top_opt_bitly_key"] : get_option( 'top_opt_bitly_key' ));
                     $user           = trim(isset($formats[$network."_"."top_opt_bitly_user"]) ? $formats[$network."_"."top_opt_bitly_user"] : get_option( 'top_opt_bitly_user' ));
@@ -3372,8 +3401,8 @@ endif;
             curl_setopt($conn, CURLOPT_HEADER, 0);
             curl_setopt($conn, CURLOPT_NOSIGNAL, 1);
 
+            $header     = array();
             if ($headers) {
-                $header     = array();
                 foreach ($headers as $key=>$val) {
                     $header[]   = "$key: $val";
                 }
