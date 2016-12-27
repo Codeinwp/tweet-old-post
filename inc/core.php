@@ -1631,7 +1631,7 @@ endif;
 					$access_token = $twitter->getAccessToken($_REQUEST['oauth_verifier']);
 					$user_details = $twitter->get('account/verify_credentials');
 					$user_details->status = array();
-
+					$user_details->description = '';
 					$newUser = array(
 						'user_id'				=> $user_details->id,
 						'oauth_token'			=> $access_token['oauth_token'],
