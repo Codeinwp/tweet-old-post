@@ -1121,7 +1121,7 @@ function ropOpenTab4(){
         },
         success: function(response) {
             jQuery("#rop-queue").html(response.data.html);
-            ropOpenTab4Pro();
+            if (window.ropOpenTab4Pro) ropOpenTab4Pro();
             endAjaxIntro();
         },
     });
