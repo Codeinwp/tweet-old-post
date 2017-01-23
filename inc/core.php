@@ -3064,7 +3064,7 @@ endif;
 
 		// status will be on/off when its being toggled and null when the scheduled JS is calling
 		public function remoteTrigger( $status = null ) {
-			if ( is_null( $status ) && ! defined( 'ROP_PRO_VERSION' ) && get_option( "cwp_rop_remote_trigger", 'off' ) == "off" ) {
+			if ( is_null( $status ) && get_option( "cwp_rop_remote_trigger", 'off' ) == "off" ) {
 				return;
 			}
 			if ( ! is_null( $status ) ) {
