@@ -1,4 +1,10 @@
 
+### 7.4.7 - 23/01/2017
+**Changes:** 
+- Fixed remote check for pro version.
+- Added rviv.ly.
+- Fixed clear setting on uninstall.
+
 ### 7.4.6 - 03/11/2016
 **Changes:** 
 - Fixed deactivation error
