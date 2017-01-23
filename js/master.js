@@ -774,6 +774,12 @@ jQuery(document).ready(function(){
 
         jQuery("#cwp_top_tabs div.tab").eq(index).addClass("active");
 
+        var tab = "ropOpenTab" + index;
+
+        if(jQuery.isFunction(eval(tab))){
+            eval(tab + "()");
+        }
+
         return false
     });
     jQuery(".cwp-schedule-days li").click(function(){
@@ -1100,4 +1106,33 @@ function clearNotices(){
 	jQuery(".inactive-rop-error-label").show();
 
 
+}
+
+
+// manage queue
+function ropOpenTab4(){
+    startAjaxIntro();
+    jQuery.ajax({
+        type: "POST",
+        url: cwp_top_ajaxload.ajaxurl,
+        data: {
+            action: 'get_queue',
+            security: cwp_top_ajaxload.ajaxnonce
+        },
+        success: function(response) {
+            jQuery("#rop-queue").html(response.data.html);
+            if (window.ropOpenTab4Pro) ropOpenTab4Pro();
+            endAjaxIntro();
+        },
+    });
+}
+
+// Starting the AJAX intro animation
+function startAjaxIntro() {
+    jQuery(".cwp_top_wrapper .ajaxAnimation").fadeIn();
+}
+
+// Ending the AJAX intro animation
+function endAjaxIntro() {
+    jQuery(".cwp_top_wrapper .ajaxAnimation").fadeOut();
 }
