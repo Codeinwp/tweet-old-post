@@ -2,7 +2,7 @@
 define("CURRENTURL", top_current_page());
 define("ROP_ENDPOINT_SLUG__", "rop");
 define("ROP_REST_VERSION", "1");
-define("ROP_YOURLS_SITE", "http://rviv.ly/yourls/yourls-api.php");
+define("ROP_YOURLS_SITE", "http://rviv.ly/yourls-api.php");
 define("ROP_YOURLS_SALT", "themeisle");
 define("ROP_REMOTE_CHECK_URL", 'http://mirror.themeisle.com');
 
@@ -166,7 +166,7 @@ $cwp_format_fields = array(
 			'option'		=> 'top_opt_url_shortner',
 			'description'	=> __('Shorten the link to your post.', 'tweet-old-post'),
 			'options'		=> array(
-				'yourls'		=> __('yourls', 'tweet-old-post'),
+				'rviv.ly'		=> __('rviv.ly', 'tweet-old-post'),
 				'wp_short_url'		=> __('wp short url', 'tweet-old-post'),
 				'is.gd'		=> __('is.gd', 'tweet-old-post'),
 				'bit.ly'	=> __('bit.ly', 'tweet-old-post'),

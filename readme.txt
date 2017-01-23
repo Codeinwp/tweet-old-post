@@ -2,7 +2,7 @@
 Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle, rsocial, uriahs-victor
 Tags:twitter, facebook, linkedin, automatic, tweet, share, wordpress, marketing, sharing, Tweet old post, Tweets,evergreen
 Requires at least: 2.7
-Tested up to: 4.6.1
+Tested up to: 4.7.1
 Stable tag: trunk
 
 
@@ -127,6 +127,13 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+
+**New in v7.4.7**
+
+*   Fixed issue with settings cleared after update/deactivate
+*   Fixed issue with posts queue
+*   Added default shortner rviv.ly
+
 
 **New in v7.4.5**
 

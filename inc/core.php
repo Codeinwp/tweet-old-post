@@ -2313,9 +2313,9 @@ endif;
 				'top_opt_add_text_at'				=> 'beginning',
 				'top_opt_include_link'				=> 'true',
 				'top_opt_custom_url_option'			=> 'off',
-				'top_opt_use_url_shortner'			=> 'off',
+				'top_opt_use_url_shortner'			=> 'on',
 				'top_opt_ga_tracking'				=> 'on',
-				'top_opt_url_shortner'				=> 'yourls',
+				'top_opt_url_shortner'				=> 'rviv.ly',
 				'top_opt_custom_hashtag_option'		=> 'nohashtag',
 				'top_opt_hashtags'			=> '',
 				'top_opt_hashtag_length'			=> '0',
@@ -3286,7 +3286,7 @@ endif;
             $shortURL   = trim($url);
 			$url        = urlencode($shortURL);
             switch ($service) {
-                case "yourls":
+                case "rviv.ly":
                     $website        = get_bloginfo("url");
                     $response       = self::callAPI(
                         ROP_YOURLS_SITE,
