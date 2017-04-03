@@ -1632,6 +1632,7 @@ endif;
 					$user_details = $twitter->get('account/verify_credentials');
 					$user_details->status = array();
 					$user_details->description = '';
+					$user_details->name = preg_replace("/[^A-Za-z0-9 ]/", '', 	$user_details->name );
 					$newUser = array(
 						'user_id'				=> $user_details->id,
 						'oauth_token'			=> $access_token['oauth_token'],
@@ -1669,6 +1670,10 @@ endif;
 					if(isset($response['body']))
 					{
 						parse_str($response['body'], $params);
+						if ( ! isset( $params['access_token'] ) ) {
+                            // check if the body is in json
+                            $params = json_decode( $response['body'], true );
+                        }
 						if(isset($params['access_token']))
 							$access_token = $params['access_token'];
 					}
