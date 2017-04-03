@@ -1,4 +1,9 @@
 
+### 7.4.8 - 03/04/2017
+**Changes:** 
+- Fixed bad chars in name for twitter.
+- Fixed facebook display users.
+
 ### 7.4.7 - 23/01/2017
 **Changes:** 
 - Fixed remote check for pro version.
