@@ -1670,6 +1670,10 @@ endif;
 					if(isset($response['body']))
 					{
 						parse_str($response['body'], $params);
+						if ( ! isset( $params['access_token'] ) ) {
+                            // check if the body is in json
+                            $params = json_decode( $response['body'], true );
+                        }
 						if(isset($params['access_token']))
 							$access_token = $params['access_token'];
 					}
