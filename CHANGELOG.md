@@ -1,4 +1,8 @@
 
+### 7.4.8 - 06/04/2017
+**Changes:** 
+- update description
+
 ### 7.4.8 - 03/04/2017
 **Changes:** 
 - Fixed bad chars in name for twitter.
