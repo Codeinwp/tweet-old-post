@@ -1,4 +1,4 @@
-﻿=== Revive Old Post (Former Tweet Old Post) ===
+﻿=== Revive Old Post - Auto Post to Social Media ===
 Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle, rsocial, uriahs-victor
 Tags:twitter, facebook, linkedin, automatic, tweet, share, wordpress, marketing, sharing, Tweet old post, Tweets,evergreen
 Requires at least: 2.7
@@ -6,13 +6,15 @@ Tested up to: 4.7.3
 Stable tag: trunk
 
 
-Automatically share your old posts on Twitter, Facebook, LinkedIn. Get more visitors to your website and keep your content alive.
+Automatically share your WordPress posts on Twitter, Facebook, LinkedIn. Get more visitors to your website and keep your content alive.
 
 == Description ==
 
 ### What the plugin can do ?
 
 This plugin helps you keep your old posts alive by automatically sharing them and driving more traffic to them from Social Networks. It also helps you to promote your content. You can set sharing interval and number of posts to share to drive more traffic.For questions, comments, or feature requests, <a href="http://revive.social/support/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">contact us</a>!
+
+ROP can work as a facebook or twitter auto-poster and using it you can easily auto-share your posts on social media.
 
 
 
@@ -27,6 +29,7 @@ This plugin helps you keep your old posts alive by automatically sharing them an
 - Exclude specific posts.
 - Integrated with Google Analytics.
 - Compatible with URL Shortners.
+- WP to Twitter
 
 
 > ### Why to upgrade to PRO ?
@@ -75,7 +78,7 @@ Alternatively you can also follow the following steps to install the Revive Old 
 
 1. In your WordPress Administration Panels, click on Add New option under Plugins from the menu.
 2. Click on upload at the top.
-3. Browse the location and select the Revive Old Post Plugin and click install now.
+3. Browse the location and select the Tweet old post Plugin and click install now.
 4. To turn the Revive Old Posts Plugin on, click Activate.
 5. Check your Administration Panels or WordPress blog to see if the Plugin is working.
 6. You can change the plugin options from Revive Old Posts under settings menu.
