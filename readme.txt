@@ -1,5 +1,5 @@
 ﻿=== Revive Old Post - Auto Post to Social Media ===
-Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle, rsocial, uriahs victor
+Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle, rsocial, Uriahs Victor
 Tags:twitter, facebook, linkedin, automatic, tweet, share, wordpress, marketing, sharing, Tweet old post, Tweets,evergreen
 Requires at least: 2.7
 Tested up to: 4.7.3
@@ -69,7 +69,7 @@ Following are the steps to install the Revive Old Post plugin
 2. With an FTP program, access your sites server.
 3. Upload (copy) the Plugin file(s) or folder to the /wp-content/plugins folder.
 4. In your WordPress Administration Panels, click on Plugins from the menu.
-5. You should see Revive Old Posts Plugin listed. If not, with your FTP program, check the folder to see if it is installed. If it isn�t, upload the file(s) again. If it is, delete the files and upload them again.
+5. You should see Revive Old Posts Plugin listed. If not, with your FTP program, check the folder to see if it is installed. If it isn't, upload the file(s) again. If it is, delete the files and upload them again.
 6. To turn the Revive Old Posts Plugin on, click Activate.
 7. Check your Administration Panels or WordPress blog to see if the Plugin is working.
 8. You can change the plugin options from Revive Old Posts under settings menu.
