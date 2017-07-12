@@ -10,33 +10,33 @@ Automatically share your WordPress posts on Twitter, Facebook, LinkedIn. Get mor
 
 == Description ==
 
-### What the plugin can do ?
+### Hhat does this plugin do?
 
-This plugin helps you keep your old posts alive by automatically sharing them and driving more traffic to them from Social Networks. It also helps you to promote your content. You can set sharing interval and number of posts to share to drive more traffic.For questions, comments, or feature requests, <a href="http://revive.social/support/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">contact us</a>!
+This plugin (ROP) helps you keep your old posts alive by automatically sharing them and driving more traffic to them from Social Networks. It also helps you to promote your content. You can set sharing interval and number of posts to share to drive more traffic. For questions, comments, or feature requests, <a href="http://revive.social/support/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">contact us</a>!
 
-ROP can work as a facebook or twitter auto-poster and using it you can easily auto-share your posts on social media.
+ROP can work as a Facebook or Twitter auto-poster so you can easily auto-share your posts on social media.
 
 
 
 **Revive Old Post provides the following features**
 
-- Share new and old posts.
-- Choose the time between posts.
-- Choose the number of posts to share.
-- Use hashtags to focus on topics.
-- Include links back to your site.
-- Exclude categories
-- Exclude specific posts.
-- Integrated with Google Analytics.
-- Compatible with URL Shortners.
-- WP to Twitter
+- Share new and old posts;
+- Choose the time between posts;
+- Choose the number of posts to share;
+- Use hashtags to focus on topics;
+- Include links back to your site;
+- Exclude categories;
+- Exclude specific posts;
+- Integration with Google Analytics;
+- Compatible with URL Shortners;
+- WP to Twitter.
 
 
-> ### Why to upgrade to PRO ?
+> ### Why to upgrade to PRO?
 
 > Using the <a rel="nofollow" href="http://revive.social/plugins/revive-old-post/">PRO version</a> of the plugin you will unleash the most important functionality : images in tweets . Using those your RT/CTR will go crazy.
 
-> Other notable features :
+> Other notable features:
 
 > * Multiple Social Accounts
 > * Custom Post Types support
@@ -46,15 +46,20 @@ ROP can work as a facebook or twitter auto-poster and using it you can easily au
 > * Custom Share Messages
 > * Post to Xing / Tumblr
 
+> ### Revive Network plugin
+
+>  <a rel="nofollow" href="https://revive.social/plugins/revive-network/">Revive Network</a> is the twin tool of Revive Old Post. This new WordPress plugin enables your social media accounts to post content from other websites and blogs in your industry. This will help you get noticed and engage effectively in your community (think partnerships, leads, deals, and new friends). A great tool for bloggers, social media marketers and agencies.
+
 Some of you reported some scheduling issues, after investigation work looks like this is coming from some web hosts, make sure you check-out this post about <a rel="nofollow" href="http://www.codeinwp.com/blog/best-wordpress-shared-hosting-providers/">shared WordPress hosting</a>, which should help you pick a good one that works.
 
-For updates follow https://twitter.com/ReviveSocial If you have anything you can let us know <a href="http://revive.social/support/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">here</a>.
+For updates follow <a href="https://twitter.com/ReviveSocial" rel="nofollow" target="_blank">https://twitter.com/ReviveSocial</a> If you have anything you can let us know <a href="http://revive.social/support/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">here</a>.
 
 ** Useful Resources **
 
-- Check-out our <a href="http://docs.revive.social" rel="nofollow" target="_blank">tutorials site</a>
-- Take a look at our other <a href="http://themeisle.com/wordpress-plugins/" rel="nofollow" target="_blank">plugins</a>.
-- Read more about WordPress on our <a href="http://www.codeinwp.com/blog/" rel="nofollow" target="_blank">blog</a>.
+- Check-out our <a href="http://docs.revive.social" rel="nofollow" target="_blank">docs and tutorials site</a>.
+- Learn about marketing and social media on the <a href="https://revive.social/blog" rel="nofollow" target="_blank">Revive.Social blog</a>. 
+- Take a look at our other WordPress <a href="http://themeisle.com/wordpress-plugins/" rel="nofollow" target="_blank">plugins</a>.
+- Learn more about WordPress on our <a href="http://www.codeinwp.com/blog/" rel="nofollow" target="_blank">CodeinWP blog</a> and <a href="http://themeisle.com/blog" rel="nofollow" target="_blank">ThemeIsle blog</a>.
 
 
 = Translations =
