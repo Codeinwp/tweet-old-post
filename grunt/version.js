@@ -13,7 +13,7 @@ module.exports = {
     },
     style: {
         options: {
-            prefix: 'Version\\:\\s'
+	        prefix: 'Version\\:\.*\\s'
         },
         src: [
             'tweet-old-post.php',
@@ -29,10 +29,10 @@ module.exports = {
     },
     constants: {
 	    options: {
-		    prefix: 'PIRATE_FORMS_VERSION\'\,\\s+\''
+		    prefix: 'ROP_LITE_VERSION\'\,\\s+\''
 	    },
 	    src: [
-		    'ROP_LITE_VERSION.php',
+		    'tweet-old-post.php',
 	    ]
     }
 };
