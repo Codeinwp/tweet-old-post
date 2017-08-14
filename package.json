@@ -1,0 +1,28 @@
+{
+  "name": "tweet-old-post",
+  "version": "7.4.8",
+  "description": "Pirate Forms plugin",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Codeinwp/tweet-old-post.git"
+  },
+  "keywords": [
+    "wordpress-plugin"
+  ],
+  "category": "plugins",
+  "textdomain": "tweet-old-post",
+  "author": "ThemeIsle <friends@themeisle.com>",
+  "license": "GPL-2.0+",
+  "bugs": {
+    "url": "https://github.com/Codeinwp/tweet-old-post/issues"
+  },
+  "pot": {
+    "reportmsgidbugsto": "https://github.com/Codeinwp/tweet-old-post/issues",
+    "languageteam": "Themeisle Translate <friends@themeisle.com>",
+    "lasttranslator": "Themeisle Translate Team <friends@themeisle.com>"
+  },
+  "devDependencies": {
+    "grunt-plugin-fleet": "codeinwp/grunt-plugin-fleet",
+    "load-project-config": "~0.2.0"
+  }
+}
