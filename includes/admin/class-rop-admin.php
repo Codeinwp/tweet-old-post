@@ -73,7 +73,7 @@ class Rop_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/rop-admin.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name, ROP_LITE_URL . 'assets/css/rop-admin.css', array(), $this->version, 'all' );
 
 	}
 
@@ -96,7 +96,7 @@ class Rop_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/rop-admin.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, ROP_LITE_URL . 'assets/js/rop.js', array( 'jquery' ), $this->version, false );
 
 	}
 
