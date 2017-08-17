@@ -30,20 +30,46 @@
  * Text Domain: tweet-old-post
  * Domain Path:       /languages
  */
+
+// If this file is called directly, abort.
+if ( ! defined( 'WPINC' ) ) {
+	die;
+}
+
 /**
- * Bootstrap the plugin.
+ * The code that runs during plugin activation.
+ * This action is documented in includes/class-rop-activator.php
  */
-function run_rop_lite() {
+function activate_rop() {
+	Rop_Activator::activate();
+}
+
+/**
+ * The code that runs during plugin deactivation.
+ * This action is documented in includes/class-rop-deactivator.php
+ */
+function deactivate_rop() {
+	Rop_Deactivator::deactivate();
+}
+
+register_activation_hook( __FILE__, 'activate_rop' );
+register_deactivation_hook( __FILE__, 'deactivate_rop' );
+
+/**
+ * Begins execution of the plugin.
+ *
+ * Since everything within the plugin is registered via hooks,
+ * then kicking off the plugin from this point in the file does
+ * not affect the page life cycle.
+ *
+ * @since    8.0.0
+ */
+function run_rop() {
 
 	define( 'ROP_PRO_URL', 'http://revive.social/plugins/revive-old-post/' );
 	define( 'ROP_LITE_VERSION', '8.0.0' );
 	define( 'ROP_LITE_PATH', plugin_dir_path( __FILE__ ) );
 	define( 'ROP_LITE_URL', plugin_dir_url( __FILE__ ) );
-
-	/*
-	    $plugin = new ROP();
-		$plugin->run();
-	*/
 
 	$vendor_file = ROP_LITE_PATH . '/vendor/autoload_52.php';
 	if ( is_readable( $vendor_file ) ) {
@@ -56,6 +82,19 @@ function run_rop_lite() {
 			return $products;
 		}
 	);
+
+	$plugin = new Rop();
+	$plugin->run();
+
 }
 
-run_rop_lite();
+require( 'class-rop-autoloader.php' );
+Rop_Autoloader::define_namespaces( array( 'Rop' ) );
+/**
+ * Invocation of the Autoloader::loader method.
+ *
+ * @since   8.0.0
+ */
+spl_autoload_register( array( 'Rop_Autoloader', 'loader' ) );
+
+run_rop();
