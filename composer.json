@@ -27,7 +27,8 @@
   },
   "require": {
     "codeinwp/themeisle-sdk": "master",
-    "xrstf/composer-php52": "^1.0.20"
+    "xrstf/composer-php52": "^1.0.20",
+    "facebook/graph-sdk": "^5.6"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,

@@ -71,7 +71,7 @@ function run_rop() {
 	define( 'ROP_LITE_PATH', plugin_dir_path( __FILE__ ) );
 	define( 'ROP_LITE_URL', plugin_dir_url( __FILE__ ) );
 
-	$vendor_file = ROP_LITE_PATH . '/vendor/autoload_52.php';
+	$vendor_file = ROP_LITE_PATH . '/vendor/autoload.php';
 	if ( is_readable( $vendor_file ) ) {
 		require_once $vendor_file;
 	}

@@ -129,7 +129,114 @@ class Rop {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
+		$fb_service = new Rop_Facebook_Service();
+		//$fb_service->credentials( array( 'app_id' => '470293890022208', 'secret' => 'bf3ee9335692fee071c1a41fbe52fdf5' ) );
+		//$fb_service->set_token( 'EAAGrutRBO0ABAEfThg0IOMaKXWD0QzBlZCeETluvu3ZAah1BWStgvd7Of3OMHZAsgX6gUfjaqgnbXEYyToyzkB1gEgc8hsrZBiHRiKgerSaDxjJHevy8ZB1jLrRemQOrFAfYO8MXsZC6lFkwJr8U9WbHm34gFnxSJVRYp3CEoPQb1dMKf37ZApV' );
+		$fb_service->auth();
+		if( $fb_service->is_auth() ) {
+		    var_dump( $fb_service->get_pages() );
+            //$fb_service->share( array( 'message' => 'My message' ) );
+        }
+
+        add_action( 'rest_api_init', function () {
+            register_rest_route( 'tweet-old-post/v8', '/facebook', array(
+                'methods' => 'GET',
+                'callback' => array( $this, 'doLogin' )
+            ) );
+        } );
+
+        add_action( 'rest_api_init', function () {
+            register_rest_route( 'tweet-old-post/v8', '/facebook/login', array(
+                'methods' => 'GET',
+                'callback' => array( $this, 'requestLogin' )
+            ) );
+        } );
+
 	}
+
+	public function requestLogin( WP_REST_Request $request ) {
+        if(!session_id()) {
+            session_start();
+        }
+        $fb = new \Facebook\Facebook([
+            'app_id' => '470293890022208',
+            'app_secret' => 'bf3ee9335692fee071c1a41fbe52fdf5',
+            'default_graph_version' => 'v2.10',
+            //'default_access_token' => '{access-token}', // optional
+        ]);
+
+        $helper = $fb->getRedirectLoginHelper();
+
+        $permissions = [ 'email', 'manage_pages', 'publish_pages' ]; // Optional permissions
+        $url = site_url( '/wp-json/tweet-old-post/v8/facebook/' );
+        $loginUrl = $helper->getLoginUrl($url, $permissions);
+
+        echo $loginUrl;
+    }
+
+	public function doLogin( WP_REST_Request $request ) {
+        if( ! session_id() ) {
+            session_start();
+        }
+        $fb = new \Facebook\Facebook([
+            'app_id' => '470293890022208',
+            'app_secret' => 'bf3ee9335692fee071c1a41fbe52fdf5',
+            'default_graph_version' => 'v2.10',
+            //'default_access_token' => '{access-token}', // optional
+        ]);
+
+        $helper = $fb->getRedirectLoginHelper();
+
+        if( isset( $_SESSION['facebook_access_token'] ) ) {
+            $longAccessToken = $_SESSION['facebook_access_token'];
+        } else {
+            try {
+                $accessToken = $helper->getAccessToken();
+                $expires = time() + ( 120 * 24 * 60 * 60 ); // 120 days; 24 hours; 60 minutes; 60 seconds.
+                $longAccessToken = new \Facebook\Authentication\AccessToken( $accessToken, $expires );
+            } catch(Facebook\Exceptions\FacebookResponseException $e) {
+                // When Graph returns an error
+                echo 'Graph returned an error: ' . $e->getMessage();
+                exit;
+            } catch(Facebook\Exceptions\FacebookSDKException $e) {
+                // When validation fails or other local issues
+                echo 'Facebook SDK returned an error: ' . $e->getMessage();
+                exit;
+            }
+        }
+
+        if ( ! isset( $longAccessToken ) ) {
+            if ( $helper->getError() ) {
+                header('HTTP/1.0 401 Unauthorized');
+                echo "Error: " . $helper->getError() . "\n";
+                echo "Error Code: " . $helper->getErrorCode() . "\n";
+                echo "Error Reason: " . $helper->getErrorReason() . "\n";
+                echo "Error Description: " . $helper->getErrorDescription() . "\n";
+            } else {
+                header('HTTP/1.0 400 Bad Request');
+                echo 'Bad request';
+            }
+            exit;
+        }
+
+        $_SESSION['facebook_access_token'] = $longAccessToken;
+        $token_value = $longAccessToken->getValue();
+
+        try {
+            // Returns a `Facebook\FacebookResponse` object
+            $response = $fb->get('/me?fields=id,name', $token_value);
+        } catch(Facebook\Exceptions\FacebookResponseException $e) {
+            echo 'Graph returned an error: ' . $e->getMessage();
+            exit;
+        } catch(Facebook\Exceptions\FacebookSDKException $e) {
+            echo 'Facebook SDK returned an error: ' . $e->getMessage();
+            exit;
+        }
+
+        $user = $response->getGraphUser();
+
+	    echo $token_value;
+    }
 
 	/**
 	 * Run the loader to execute all of the hooks with WordPress.
