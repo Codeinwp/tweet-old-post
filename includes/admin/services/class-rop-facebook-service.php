@@ -147,7 +147,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
         $page_token = 'EAAGrutRBO0ABAHa5ZCq2OWBsZC3o2y6lZA5TQPBNUzBkLZBZCdg28EymWSvJG8yh4H2a5n2ZCP4YibXd5i5YGiS29sltqStlwNvCnxTUV9tUwPyfd1wZBQ3RZC7hp3YZAuVBjYgXdUgZBY3MeqU5IlvKnZBOPHyo5g4ilO2FZC2q5CpkCBiJ3Nk849ZBNDjAIcZBPmadEZD';
         $fb = $this->fb;
         try {
-            $post = $fb->post( '/' . $id . '/feed', array('message' => $post_details['message']), $page_token );
+            $post = $fb->post( '/' . $id . '/feed', array('message' => $post_details['message'], 'link' => 'https://themeisle.com', 'picture' => 'https://cdn.pixabay.com/photo/2016/01/19/18/00/city-1150026_960_720.jpg', ), $page_token );
             $post = $post->getGraphNode()->asArray();
         } catch(Facebook\Exceptions\FacebookResponseException $e) {
             $error->throw_exception( '400 Bad Request', 'Graph returned an error: ' . $e->getMessage() );

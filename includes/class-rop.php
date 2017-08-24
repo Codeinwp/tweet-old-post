@@ -134,8 +134,8 @@ class Rop {
 		//$fb_service->set_token( 'EAAGrutRBO0ABAEfThg0IOMaKXWD0QzBlZCeETluvu3ZAah1BWStgvd7Of3OMHZAsgX6gUfjaqgnbXEYyToyzkB1gEgc8hsrZBiHRiKgerSaDxjJHevy8ZB1jLrRemQOrFAfYO8MXsZC6lFkwJr8U9WbHm34gFnxSJVRYp3CEoPQb1dMKf37ZApV' );
 		$fb_service->auth();
 		if( $fb_service->is_auth() ) {
-		    var_dump( $fb_service->get_pages() );
-            //$fb_service->share( array( 'message' => 'My message' ) );
+		    //var_dump( $fb_service->get_pages() );
+            //$fb_service->share( array( 'message' => 'A new test message from ROP. Just the image.' ) );
         }
 
         add_action( 'rest_api_init', function () {
