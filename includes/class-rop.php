@@ -153,6 +153,11 @@ class Rop {
 
 	}
 
+	/**
+	 * Does the login request.
+	 *
+	 * @param WP_REST_Request $request The WP REST object.
+	 */
 	public function requestLogin( WP_REST_Request $request ) {
 		if ( ! session_id() ) {
 			session_start();
@@ -173,6 +178,11 @@ class Rop {
 		echo $loginUrl;
 	}
 
+	/**
+	 * Does the login request.
+	 *
+	 * @param WP_REST_Request $request The WP REST object.
+	 */
 	public function doLogin( WP_REST_Request $request ) {
 		if ( ! session_id() ) {
 			session_start();
