@@ -1,18 +1,86 @@
 <?php
+/**
+ * The file that defines the Facebook Service specifics.
+ *
+ * A class that is used to interact with Facebook.
+ * It extends the Rop_Services_Abstract class.
+ *
+ * @link       https://themeisle.com/
+ * @since      8.0.0
+ *
+ * @package    Rop
+ * @subpackage Rop/includes/admin/services
+ */
+
+/**
+ * Class Rop_Facebook_Service
+ *
+ * @since   8.0.0
+ * @link    https://themeisle.com/
+ */
 class Rop_Facebook_Service extends Rop_Services_Abstract {
 
+	/**
+	 * Defines the service name in slug format.
+	 *
+	 * @since   8.0.0
+	 * @access  protected
+	 * @var     string $service_name The service name.
+	 */
 	protected $service_name = 'facebook';
 
+	/**
+	 * Defines the service permissions needed.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @var     array $permissions The Facebook required permissions.
+	 */
 	private $permissions = array( 'email', 'manage_pages', 'publish_pages' );
 
+	/**
+	 * Stores the App ID.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @var     string $app_id The Facebook App ID.
+	 */
 	private $app_id;
 
+	/**
+	 * Stores the App Secret.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @var     string $secret The Facebook App Secret.
+	 */
 	private $secret;
 
+	/**
+	 * Stores the Facebook token after auth.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @var     string $token The Facebook token.
+	 */
 	private $token;
 
+	/**
+	 * Stores the \Facebook\Facebook instance.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @var     \Facebook\Facebook $fb Instance.
+	 */
 	private $fb;
 
+	/**
+	 * Method to inject functionality into constructor.
+	 * Defines the defaults and settings for this service.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 */
 	public function init() {
 		$this->display_name = 'Facebook';
 		$this->credentials = $this->model->get_option( 'credentials' );
@@ -25,6 +93,13 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		$this->register_endpoint( 'auth', 'auth' );
 	}
 
+	/**
+	 * Utility method to set default values for service.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   string $key The key to instantiate.
+	 */
 	private function set_defaults( $key ) {
 		$this->$key = '';
 		if ( isset( $this->credentials[ $key ] ) && $this->credentials[ $key ] != '' && $this->credentials[ $key ] != null ) {
@@ -32,16 +107,37 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		}
 	}
 
+	/**
+	 * Utility method to get the service token.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return string
+	 */
 	public function get_token() {
 		return $this->token;
 	}
 
+	/**
+	 * Utility method to register the service token.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @param   string $value The value to be stored.
+	 */
 	public function set_token( $value ) {
 		$this->token = $value;
 		$this->credentials['token'] = $this->token;
 		$this->model->set_option( 'credentials', $this->credentials );
 	}
 
+	/**
+	 * Utility method to register credentials for auth.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @param   array $args The credentials array.
+	 */
 	public function credentials( $args ) {
 		foreach ( $args as $key => $value ) {
 			if ( in_array( $key, array( 'app_id', 'secret' ) ) ) {
@@ -52,6 +148,12 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		$this->model->set_option( 'credentials', $this->credentials );
 	}
 
+	/**
+	 * Utility method to auth with Facebook.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 */
 	public function auth() {
 		if ( ! session_id() ) {
 			session_start();
@@ -108,6 +210,14 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		}
 	}
 
+	/**
+	 * Method to return a Rop_User_Model.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @param   array $page A Facebook page array.
+	 * @return Rop_User_Model
+	 */
 	public function get_user( $page ) {
 		$user = new Rop_User_Model( array(
 			'user_id' => $page['id'],
@@ -121,6 +231,13 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		return $user;
 	}
 
+	/**
+	 * Utility method to retrieve pages from the Facebook account.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return array
+	 */
 	public function get_pages() {
 		$pages_array = array();
 		$fb = $this->fb;
@@ -141,6 +258,14 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		return $pages_array;
 	}
 
+	/**
+	 * Method for publishing with Facebook service.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @param   array $post_details The post details to be published by the service.
+	 * @return mixed
+	 */
 	public function share( $post_details ) {
 		$error = new Rop_Exception_Handler();
 		$id = '1168461009964049';

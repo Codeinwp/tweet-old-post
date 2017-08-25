@@ -90,7 +90,6 @@ abstract class Rop_Services_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 * @param   array $args The credentials array.
-	 * @return mixed
 	 */
 	public abstract function credentials( $args );
 
