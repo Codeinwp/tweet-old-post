@@ -1,5 +1,5 @@
 var rop_main = function( $ ) {
-    'use strict';
+	'use strict';
 
 	/**
 	 * All of the code for your admin-facing JavaScript source
@@ -28,9 +28,9 @@ var rop_main = function( $ ) {
 	 * Although scripts in the WordPress core, Plugins and Themes may be
 	 * practising this, we should strive to set a better example in our own work.
 	 */
-    $( function() {
+	$( function() {
 
-    });
+	});
 
 };
 
