@@ -89,8 +89,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		$this->set_defaults( 'secret' );
 		$this->set_defaults( 'token' );
 
-		$this->register_endpoint( 'login', 'req_login' );
-		$this->register_endpoint( 'auth', 'auth' );
+		//$this->register_endpoint( 'login', 'req_login' );
+		//$this->register_endpoint( 'auth', 'auth' );
 	}
 
 	/**

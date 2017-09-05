@@ -127,31 +127,61 @@ class Rop {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+        $this->loader->add_action( 'admin_menu', $this, 'menu_pages' );
 
 		$fb_service = new Rop_Facebook_Service();
+		$twitter_service = new Rop_Twitter_Service();
+		//var_dump( $twitter_service );
 		// $fb_service->credentials( array( 'app_id' => '470293890022208', 'secret' => 'bf3ee9335692fee071c1a41fbe52fdf5' ) );
 		// $fb_service->set_token( 'EAAGrutRBO0ABAEfThg0IOMaKXWD0QzBlZCeETluvu3ZAah1BWStgvd7Of3OMHZAsgX6gUfjaqgnbXEYyToyzkB1gEgc8hsrZBiHRiKgerSaDxjJHevy8ZB1jLrRemQOrFAfYO8MXsZC6lFkwJr8U9WbHm34gFnxSJVRYp3CEoPQb1dMKf37ZApV' );
-		$fb_service->auth();
-		if ( $fb_service->is_auth() ) {
+		//$fb_service->auth();
+		//if ( $fb_service->is_auth() ) {
 		    // var_dump( $fb_service->get_pages() );
 			// $fb_service->share( array( 'message' => 'A new test message from ROP. Just the image.' ) );
-		}
+		//}
 
-		add_action( 'rest_api_init', function () {
-			register_rest_route( 'tweet-old-post/v8', '/facebook', array(
-				'methods' => 'GET',
-				'callback' => array( $this, 'doLogin' ),
-			) );
-		} );
-
-		add_action( 'rest_api_init', function () {
-			register_rest_route( 'tweet-old-post/v8', '/facebook/login', array(
-				'methods' => 'GET',
-				'callback' => array( $this, 'requestLogin' ),
-			) );
-		} );
+//		add_action( 'rest_api_init', function () {
+//			register_rest_route( 'tweet-old-post/v8', '/facebook', array(
+//				'methods' => 'GET',
+//				'callback' => array( $this, 'doLogin' ),
+//			) );
+//		} );
+//
+//		add_action( 'rest_api_init', function () {
+//			register_rest_route( 'tweet-old-post/v8', '/facebook/login', array(
+//				'methods' => 'GET',
+//				'callback' => array( $this, 'requestLogin' ),
+//			) );
+//		} );
 
 	}
+
+	public function rop_main_page() {
+	    $render_helper = new Rop_Render_Helper( true );
+	    $panel_template = $render_helper->render_partial( 'panel' );
+
+	    echo '
+	    <div id="rop_core" style="margin: 20px 20px 40px 0;">
+	        <my-component></my-component>
+        </div>
+	    ' . $panel_template ;
+    }
+
+    /**
+     * Add admin menu items for orbit-fox.
+     *
+     * @since   1.0.0
+     * @access  public
+     */
+    public function menu_pages() {
+        add_menu_page(
+            __( 'Revive Old Posts', 'rop' ), __( 'Revive Old Posts', 'rop' ), 'manage_options', 'rop_main',
+            array(
+                $this,
+                'rop_main_page',
+            )
+        );
+    }
 
 	/**
 	 * Does the login request.
