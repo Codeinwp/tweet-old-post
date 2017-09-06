@@ -72,9 +72,8 @@ class Rop_Admin {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-
-		wp_enqueue_style( $this->plugin_name, ROP_LITE_URL . 'assets/css/rop.css', array(), $this->version, 'all' );
 		wp_enqueue_style( $this->plugin_name . '_core', ROP_LITE_URL . 'assets/css/rop_core.css', array(), $this->version, 'all' );
+        wp_enqueue_style( $this->plugin_name, ROP_LITE_URL . 'assets/css/rop.css', array( $this->plugin_name . '_core' ), $this->version, 'all' );
 
 	}
 
@@ -98,12 +97,10 @@ class Rop_Admin {
 		 */
 
 		wp_enqueue_script( $this->plugin_name . '_vue', ROP_LITE_URL . 'assets/js/vue.js', array(), $this->version, false );
-		wp_enqueue_script( $this->plugin_name . '_core', ROP_LITE_URL . 'assets/js/rop.js', array( $this->plugin_name . '_vue' ), $this->version, false );
-
         $screen = get_current_screen();
 
         if( in_array( $screen->id, array( 'toplevel_page_rop_main' ) ) ) {
-            wp_enqueue_script( $this->plugin_name . '_main', ROP_LITE_URL . 'assets/js/rop_main.js', array( $this->plugin_name . '_vue', $this->plugin_name . '_core' ), $this->version, false );
+            wp_enqueue_script( $this->plugin_name . '_main', ROP_LITE_URL . 'assets/js/build/rop.js', array( $this->plugin_name . '_vue' ), $this->version, false );
         }
 
 	}

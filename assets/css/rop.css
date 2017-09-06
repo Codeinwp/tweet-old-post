@@ -2,3 +2,18 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+#rop_core .powered {
+    color: #50596c;
+}
+
+#rop_core .powered a {
+    color: #50596c;
+}
+
+#rop_core .powered a:hover {
+    cursor: pointer;
+}
+
+#rop_core .title-panel {
+    border-top: 4px solid #e85407;
+}

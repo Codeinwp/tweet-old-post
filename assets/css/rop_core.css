@@ -289,20 +289,20 @@ body {
 }
 
 a {
-  color: #5764c6;
+  color: #042440;
   outline: none;
   text-decoration: none;
 }
 
 a:focus {
-  box-shadow: 0 0 0 .1rem rgba(87, 100, 198, .2);
+  box-shadow: 0 0 0 .1rem rgba(4, 36, 64, .2);
 }
 
 a:focus,
 a:hover,
 a:active,
 a.active {
-  color: #4452c0;
+  color: #031728;
   text-decoration: underline;
 }
 
@@ -528,9 +528,9 @@ a.active {
   -moz-appearance: none;
   appearance: none;
   background: #fff;
-  border: .05rem solid #5764c6;
+  border: .05rem solid #042440;
   border-radius: .1rem;
-  color: #5764c6;
+  color: #042440;
   cursor: pointer;
   display: inline-block;
   font-size: .7rem;
@@ -550,20 +550,20 @@ a.active {
 }
 
 #rop_core .btn:focus {
-  box-shadow: 0 0 0 .1rem rgba(87, 100, 198, .2);
+  box-shadow: 0 0 0 .1rem rgba(4, 36, 64, .2);
 }
 
 #rop_core .btn:focus,
 #rop_core .btn:hover {
-  background: #eff1fa;
-  border-color: #4c59c2;
+  background: #e85407;
+  border-color: #031c32;
   text-decoration: none;
 }
 
 #rop_core .btn:active,
 #rop_core .btn.active {
-  background: #4c59c2;
-  border-color: #3e4cb6;
+  background: #031c32;
+  border-color: #020e1a;
   color: #fff;
   text-decoration: none;
 }
@@ -583,22 +583,22 @@ a.active {
 }
 
 #rop_core .btn.btn-primary {
-  background: #5764c6;
-  border-color: #4c59c2;
+  background: #042440;
+  border-color: #031c32;
   color: #fff;
 }
 
 #rop_core .btn.btn-primary:focus,
 #rop_core .btn.btn-primary:hover {
-  background: #4452c0;
-  border-color: #3e4cb6;
+  background: #031728;
+  border-color: #020e1a;
   color: #fff;
 }
 
 #rop_core .btn.btn-primary:active,
 #rop_core .btn.btn-primary.active {
-  background: #3f4eba;
-  border-color: #3b49af;
+  background: #02111e;
+  border-color: #010910;
   color: #fff;
 }
 
@@ -610,14 +610,14 @@ a.active {
 #rop_core .btn.btn-link {
   background: transparent;
   border-color: transparent;
-  color: #5764c6;
+  color: #042440;
 }
 
 #rop_core .btn.btn-link:focus,
 #rop_core .btn.btn-link:hover,
 #rop_core .btn.btn-link:active,
 #rop_core .btn.btn-link.active {
-  color: #4452c0;
+  color: #031728;
 }
 
 #rop_core .btn.btn-facebook {
@@ -883,8 +883,8 @@ a.active {
 }
 
 #rop_core .form-input:focus {
-  border-color: #5764c6;
-  box-shadow: 0 0 0 .1rem rgba(87, 100, 198, .2);
+  border-color: #042440;
+  box-shadow: 0 0 0 .1rem rgba(4, 36, 64, .2);
 }
 
 #rop_core .form-input::-webkit-input-placeholder {
@@ -973,8 +973,8 @@ a.active {
 }
 
 #rop_core .form-select:focus {
-  border-color: #5764c6;
-  box-shadow: 0 0 0 .1rem rgba(87, 100, 198, .2);
+  border-color: #042440;
+  box-shadow: 0 0 0 .1rem rgba(4, 36, 64, .2);
 }
 
 #rop_core .form-select::-ms-expand {
@@ -1047,15 +1047,15 @@ a.active {
 #rop_core .form-checkbox input:focus + .form-icon,
 #rop_core .form-radio input:focus + .form-icon,
 #rop_core .form-switch input:focus + .form-icon {
-  border-color: #5764c6;
-  box-shadow: 0 0 0 .1rem rgba(87, 100, 198, .2);
+  border-color: #042440;
+  box-shadow: 0 0 0 .1rem rgba(4, 36, 64, .2);
 }
 
 #rop_core .form-checkbox input:checked + .form-icon,
 #rop_core .form-radio input:checked + .form-icon,
 #rop_core .form-switch input:checked + .form-icon {
-  background: #5764c6;
-  border-color: #5764c6;
+  background: #042440;
+  border-color: #042440;
 }
 
 #rop_core .form-checkbox .form-icon,
@@ -1103,8 +1103,8 @@ a.active {
 }
 
 #rop_core .form-checkbox input:indeterminate + .form-icon {
-  background: #5764c6;
-  border-color: #5764c6;
+  background: #042440;
+  border-color: #042440;
 }
 
 #rop_core .form-checkbox input:indeterminate + .form-icon::before {
@@ -1370,13 +1370,13 @@ a.active {
 }
 
 #rop_core .label.label-primary {
-  background: #5764c6;
+  background: #042440;
   color: #fff;
 }
 
 #rop_core .label.label-secondary {
-  background: #eff1fa;
-  color: #5764c6;
+  background: #e85407;
+  color: #042440;
 }
 
 #rop_core .label.label-success {
@@ -2027,8 +2027,8 @@ a.active {
 }
 
 #rop_core .form-autocomplete .form-autocomplete-input.is-focused {
-  border-color: #5764c6;
-  box-shadow: 0 0 0 .1rem rgba(87, 100, 198, .2);
+  border-color: #042440;
+  box-shadow: 0 0 0 .1rem rgba(4, 36, 64, .2);
 }
 
 #rop_core .form-autocomplete .form-autocomplete-input .form-input {
@@ -2051,7 +2051,7 @@ a.active {
 }
 
 #rop_core .avatar {
-  background: #5764c6;
+  background: #042440;
   border-radius: 50%;
   color: rgba(255, 255, 255, .85);
   display: inline-block;
@@ -2147,7 +2147,7 @@ a.active {
 
 #rop_core .badge[data-badge]::after,
 #rop_core .badge:not([data-badge])::after {
-  background: #5764c6;
+  background: #042440;
   background-clip: padding-box;
   border-radius: .5rem;
   box-shadow: 0 0 0 .1rem #fff;
@@ -2241,7 +2241,7 @@ a.active {
 }
 
 #rop_core .bar .bar-item {
-  background: #5764c6;
+  background: #042440;
   color: #fff;
   display: block;
   -ms-flex-negative: 0;
@@ -2284,7 +2284,7 @@ a.active {
 }
 
 #rop_core .bar-slider .bar-slider-btn {
-  background: #5764c6;
+  background: #042440;
   border: 0;
   border-radius: 50%;
   height: .6rem;
@@ -2297,7 +2297,7 @@ a.active {
 }
 
 #rop_core .bar-slider .bar-slider-btn:active {
-  box-shadow: 0 0 0 .1rem #5764c6;
+  box-shadow: 0 0 0 .1rem #042440;
 }
 
 #rop_core .card {
@@ -2358,7 +2358,7 @@ a.active {
 }
 
 #rop_core .chip.active {
-  background: #5764c6;
+  background: #042440;
   color: #fff;
 }
 
@@ -2457,14 +2457,14 @@ a.active {
 
 #rop_core .menu .menu-item > a:focus,
 #rop_core .menu .menu-item > a:hover {
-  background: #eff1fa;
-  color: #5764c6;
+  background: #e85407;
+  color: #042440;
 }
 
 #rop_core .menu .menu-item > a:active,
 #rop_core .menu .menu-item > a.active {
-  background: #eff1fa;
-  color: #5764c6;
+  background: #e85407;
+  color: #042440;
 }
 
 #rop_core .menu .menu-item + .menu-item {
@@ -2573,7 +2573,7 @@ a.active {
 
 #rop_core .nav .nav-item a:focus,
 #rop_core .nav .nav-item a:hover {
-  color: #5764c6;
+  color: #042440;
 }
 
 #rop_core .nav .nav-item.active > a {
@@ -2583,7 +2583,7 @@ a.active {
 
 #rop_core .nav .nav-item.active > a:focus,
 #rop_core .nav .nav-item.active > a:hover {
-  color: #5764c6;
+  color: #042440;
 }
 
 #rop_core .nav .nav {
@@ -2618,7 +2618,7 @@ a.active {
 
 #rop_core .pagination .page-item a:focus,
 #rop_core .pagination .page-item a:hover {
-  color: #5764c6;
+  color: #042440;
 }
 
 #rop_core .pagination .page-item.disabled a {
@@ -2628,7 +2628,7 @@ a.active {
 }
 
 #rop_core .pagination .page-item.active a {
-  background: #5764c6;
+  background: #042440;
   color: #fff;
 }
 
@@ -2763,7 +2763,7 @@ a.active {
 }
 
 #rop_core .step .step-item:not(:first-child)::before {
-  background: #5764c6;
+  background: #042440;
   content: "";
   height: 2px;
   left: -50%;
@@ -2780,7 +2780,7 @@ a.active {
 }
 
 #rop_core .step .step-item a::before {
-  background: #5764c6;
+  background: #042440;
   border: .1rem solid #fff;
   border-radius: 50%;
   content: "";
@@ -2796,7 +2796,7 @@ a.active {
 
 #rop_core .step .step-item.active a::before {
   background: #fff;
-  border: .1rem solid #5764c6;
+  border: .1rem solid #042440;
 }
 
 #rop_core .step .step-item.active ~ .step-item::before {
@@ -2840,13 +2840,13 @@ a.active {
 
 #rop_core .tab .tab-item a:focus,
 #rop_core .tab .tab-item a:hover {
-  color: #5764c6;
+  color: #042440;
 }
 
 #rop_core .tab .tab-item.active a,
 #rop_core .tab .tab-item a.active {
-  border-bottom-color: #5764c6;
-  color: #5764c6;
+  border-bottom-color: #042440;
+  color: #042440;
 }
 
 #rop_core .tab.tab-block .tab-item {
@@ -2932,8 +2932,8 @@ a.active {
 }
 
 #rop_core .toast.toast-primary {
-  background: rgba(87, 100, 198, .9);
-  border-color: #5764c6;
+  background: rgba(4, 36, 64, .9);
+  border-color: #042440;
 }
 
 #rop_core .toast.toast-success {
@@ -3059,21 +3059,21 @@ a.active {
 }
 
 #rop_core .text-primary {
-  color: #5764c6;
+  color: #042440;
 }
 
 #rop_core a.text-primary:focus,
 #rop_core a.text-primary:hover {
-  color: #4452c0;
+  color: #031728;
 }
 
 #rop_core .text-secondary {
-  color: #e4e6f6;
+  color: #d94f07;
 }
 
 #rop_core a.text-secondary:focus,
 #rop_core a.text-secondary:hover {
-  color: #d1d4ef;
+  color: #c04606;
 }
 
 #rop_core .text-gray {
@@ -3122,11 +3122,11 @@ a.active {
 }
 
 #rop_core .bg-primary {
-  background: #5764c6;
+  background: #042440;
 }
 
 #rop_core .bg-secondary {
-  background: #eff1fa;
+  background: #e85407;
 }
 
 #rop_core .bg-dark {
@@ -3288,7 +3288,7 @@ a.active {
 
 #rop_core .loading::after {
   animation: loading 500ms infinite linear;
-  border: .1rem solid #5764c6;
+  border: .1rem solid #042440;
   border-radius: 50%;
   border-right-color: transparent;
   border-top-color: transparent;
