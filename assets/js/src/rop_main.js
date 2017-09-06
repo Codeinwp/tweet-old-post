@@ -1,62 +1,14 @@
-require('./vue-elements/test.js');
-
-function logMessage( log, message ) {
-    return log.concat( message + '\n' );
-}
+import vueVariables from './variables.js';
+import SignInBtn from './vue-elements/SignInBtn.vue';
 
 window.onload = function () {
-    var page = {
-        debug: true,
-        logs: 'Here starts the log \n\n',
-        state: {
-            authorizedService: {
-                twitter: false,
-                facebook: false
-            },
-            view: 'accounts'
-        },
-        updateService: function( serviceName, serviceStatus ) {
-            if (this.debug) console.log('updateService triggered by', serviceName)
-            if (this.debug) this.logs = logMessage( this.logs, 'updateService triggered by ' + serviceName );
-            this.state.authorizedService[serviceName.toLowerCase()] = serviceStatus
-        }
-    }
-
-    var tabs = [
-        {
-            name: 'Accounts',
-            slug: 'accounts',
-            isActive: true
-        },
-        {
-            name: 'General Settings',
-            slug: 'settings',
-            isActive: false
-        },
-        {
-            name: 'Post Format',
-            slug: 'post',
-            isActive: false
-        },
-        {
-            name: 'Custom Schedule',
-            slug: 'schedule',
-            isActive: false
-        },
-        {
-            name: 'Logs',
-            slug: 'logs',
-            isActive: false
-        },
-    ]
-
     // register
-    Vue.component('my-component', {
+    var myComponent = {
         template: '#panel-template',
         data: function() {
             return {
-                tabs: tabs,
-                sharedState: page.state
+                tabs: vueVariables.tabs,
+                sharedState: vueVariables.page.state
             }
         },
         methods: {
@@ -74,6 +26,9 @@ window.onload = function () {
             accounts: {
                 name: 'account-view',
                 template: '#account-template',
+                components: {
+                    'sign-in-btn': SignInBtn
+                }
             },
             settings: {
                 name: 'settings-view',
@@ -92,43 +47,27 @@ window.onload = function () {
                 template: '#logs-template',
                 data: function() {
                     return {
-                        logs: page.logs
+                        logs: vueVariables.page.logs
                     }
                 }
-            },
+            }
         }
-    })
+    };
 
-    Vue.component('sign-in-btn', {
-        props: [ 'serviceName' ],
-        template: '#sign-in-button-template',
-        data: function() {
-            return {
-                sharedState: page.state
-            }
-        },
-        methods: {
-          isAuthorized: function() {
-              page.updateService( this.serviceName, !this.authorized )
-          }
-        },
-        computed: {
-            authorized: function() {
-              return page.state.authorizedService[this.serviceName.toLowerCase()]
-            },
-            serviceClass: function () {
-                return {
-                    'btn-twitter': this.serviceName === 'Twitter',
-                    'btn-facebook': this.serviceName === 'Facebook',
-                }
-            },
-            serviceId: function() {
-                return 'service-' + this.serviceName.toLowerCase()
-            }
-        }
-    })
+    // Vue.component( 'sign-in-btn', SignInBtn );
+
     // create a root instance
     new Vue({
-        el: '#rop_core'
-    })
+        el: '#rop_core',
+        data: {
+            page: vueVariables.page,
+            tabs: vueVariables.tabs
+        },
+        components: {
+            'my-component': myComponent,
+        },
+        created: function() {
+            console.log( this.$options.components );
+        }
+    });
 };
