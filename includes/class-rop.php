@@ -162,7 +162,7 @@ class Rop {
 
 	    echo '
 	    <div id="rop_core" style="margin: 20px 20px 40px 0;">
-	        <my-component></my-component>
+	        <main-page-panel v-model="model" :model="model"></main-page-panel>
         </div>
 	    ' . $panel_template ;
     }

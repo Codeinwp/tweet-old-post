@@ -4,18 +4,17 @@
 </template>
 
 <script>
-    import vueVariables from './../variables.js';
     module.exports = {
         name: 'sign-in-btn',
-        props: [ 'serviceName' ],
+        props: [ 'serviceName', 'model' ],
         data: function() {
             return {
-                sharedState: vueVariables.page.state
+                sharedState: this.model.page.state
             }
         },
         methods: {
             isAuthorized: function() {
-                vueVariables.page.updateService( this.serviceName, !this.authorized )
+                this.model.page.updateService( this.serviceName, !this.authorized )
             }
         },
         computed: {
