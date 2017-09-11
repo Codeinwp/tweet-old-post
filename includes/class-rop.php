@@ -114,6 +114,39 @@ class Rop {
 
 	}
 
+	public function api( WP_REST_Request $request ) {
+	    switch( $request->get_param( 'req' ) ) {
+            case 'available_services':
+                $response = array(
+                    'facebook' => [
+                        'name' => 'Facebook',
+                        'two_step_sign_in' => true,
+                        'credentials' => [
+                            'app_id'=> [
+                                'name' => 'APP ID',
+                                'description' => 'Please add the APP ID from your Facebook app.'
+                            ],
+                            'secret' => [
+                                'name' => 'APP SECRET',
+                                'description' => 'Please add the APP SECRET from your Facebook app.'
+                            ]
+                        ],
+                        'url' => '#'
+                    ],
+                    'twitter' => [
+                        'name' => 'Twitter',
+                        'two_step_sign_in' => false,
+                        'credentials' => [],
+                        'url' => '#'
+                    ]
+                );
+                break;
+            default:
+                $response = array( 'status' => '200', 'data' => array( 'list', 'of', 'stuff', 'from', 'api' ) );
+        }
+	    return $response;
+    }
+
 	/**
 	 * Register all of the hooks related to the admin area functionality
 	 * of the plugin.
@@ -129,8 +162,15 @@ class Rop {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
         $this->loader->add_action( 'admin_menu', $this, 'menu_pages' );
 
-		$fb_service = new Rop_Facebook_Service();
-		$twitter_service = new Rop_Twitter_Service();
+        add_action( 'rest_api_init', function () {
+			register_rest_route( 'tweet-old-post/v8', '/api', array(
+				'methods' => array( 'GET', 'POST' ),
+				'callback' => array( $this, 'api' ),
+			) );
+		} );
+
+		//$fb_service = new Rop_Facebook_Service();
+		//$twitter_service = new Rop_Twitter_Service();
 		//var_dump( $twitter_service );
 		// $fb_service->credentials( array( 'app_id' => '470293890022208', 'secret' => 'bf3ee9335692fee071c1a41fbe52fdf5' ) );
 		// $fb_service->set_token( 'EAAGrutRBO0ABAEfThg0IOMaKXWD0QzBlZCeETluvu3ZAah1BWStgvd7Of3OMHZAsgX6gUfjaqgnbXEYyToyzkB1gEgc8hsrZBiHRiKgerSaDxjJHevy8ZB1jLrRemQOrFAfYO8MXsZC6lFkwJr8U9WbHm34gFnxSJVRYp3CEoPQb1dMKf37ZApV' );
@@ -157,14 +197,10 @@ class Rop {
 	}
 
 	public function rop_main_page() {
-	    $render_helper = new Rop_Render_Helper( true );
-	    $panel_template = $render_helper->render_partial( 'panel' );
-
 	    echo '
 	    <div id="rop_core" style="margin: 20px 20px 40px 0;">
-	        <main-page-panel v-model="model" :model="model"></main-page-panel>
-        </div>
-	    ' . $panel_template ;
+	        <main-page-panel></main-page-panel>
+        </div>';
     }
 
     /**

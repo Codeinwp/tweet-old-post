@@ -94,20 +94,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	}
 
 	/**
-	 * Utility method to set default values for service.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 * @param   string $key The key to instantiate.
-	 */
-	private function set_defaults( $key ) {
-		$this->$key = '';
-		if ( isset( $this->credentials[ $key ] ) && $this->credentials[ $key ] != '' && $this->credentials[ $key ] != null ) {
-			$this->$key = $this->credentials[ $key ];
-		}
-	}
-
-	/**
 	 * Utility method to get the service token.
 	 *
 	 * @since   8.0.0

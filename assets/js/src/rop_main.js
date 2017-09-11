@@ -1,22 +1,18 @@
-import vueVariables from './variables.js';
+import Vue from 'vue'
+import VueResource from 'vue-resource'
+
+import store from './models/rop_store.js';
 import MainPagePanel from './vue-elements/main-page-panel.vue';
 
 window.onload = function () {
-
-    // create a root instance
     new Vue({
         el: '#rop_core',
-        data: {
-            model: {
-                page: vueVariables.page,
-                tabs: vueVariables.tabs
-            }
+        store,
+        create() {
+            store.dispatch( 'fetchAvailableServices' );
         },
         components: {
-            MainPagePanel,
-        },
-        created: function() {
-            console.log( this.$options.components );
+            MainPagePanel
         }
     });
 };

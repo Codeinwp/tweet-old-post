@@ -9,7 +9,7 @@
         <div class="panel">
             <div class="panel-nav" style="padding: 8px;">
                 <ul class="tab">
-                    <li class="tab-item" v-for="tab in tabs" :class="{ active: tab.isActive }"><a href="#" @click="switchTab( tab.slug )">{{ tab.name }}</a></li>
+                    <li class="tab-item" v-for="tab in displayTabs" :class="{ active: tab.isActive }"><a href="#" @click="switchTab( tab.slug )">{{ tab.name }}</a></li>
                     <li class="tab-item tab-action">
                         <div class="form-group">
                             <label class="form-switch">
@@ -25,7 +25,7 @@
                 </ul>
             </div>
 
-            <component :is="sharedState.view" :model="model"></component>
+            <component :is="page.view"></component>
         </div>
     </div>
 </template>
@@ -34,24 +34,14 @@
     import AccountsTab from './accounts-tab-panel.vue';
     import LogsTab from './logs-tab-panel.vue';
 
+    import { mapState } from 'vuex'
+
     module.exports = {
         name: 'main-page-panel',
-        props: [ 'model' ],
-        data: function() {
-            return {
-                tabs: this.model.tabs,
-                sharedState: this.model.page.state
-            }
-        },
+        computed: mapState([ 'displayTabs', 'page' ]),
         methods: {
-            switchTab: function( slug ) {
-                for( var tab in this.tabs ) {
-                    this.tabs[tab].isActive = false;
-                    if( this.tabs[tab].slug === slug ) {
-                        this.tabs[tab].isActive = true;
-                        this.sharedState.view = slug;
-                    }
-                }
+            switchTab( slug ) {
+                this.$store.commit( 'setTabView', slug )
             }
         },
         components: {

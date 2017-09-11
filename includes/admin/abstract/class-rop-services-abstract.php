@@ -37,6 +37,15 @@ abstract class Rop_Services_Abstract {
 	 */
 	protected $service_name;
 
+    /**
+     * Stores a reference to the API to be used.
+     *
+     * @since   8.0.0
+     * @access  protected
+     * @var     object $api The API object.
+     */
+	protected $api;
+
 	/**
 	 * The array with the credentials for auth-ing the service.
 	 *
@@ -64,6 +73,15 @@ abstract class Rop_Services_Abstract {
 	 */
 	protected $is_auth = false;
 
+    /**
+     * Holds the Rop_Exception_Handler
+     *
+     * @since   8.0.0
+     * @access  protected
+     * @var     Rop_Exception_Handler $error The exception handler.
+     */
+	protected $error;
+
 	/**
 	 * Rop_Services_Abstract constructor.
 	 *
@@ -72,6 +90,7 @@ abstract class Rop_Services_Abstract {
 	 */
 	public function __construct() {
 		$this->model = new Rop_Service_Model( $this->service_name );
+		$this->error = new Rop_Exception_Handler();
 		$this->init();
 	}
 
@@ -84,6 +103,77 @@ abstract class Rop_Services_Abstract {
 	 */
 	public abstract function init();
 
+    /**
+     * Method to define the api.
+     *
+     * @since   8.0.0
+     * @access  public
+     * @return mixed
+     */
+	public abstract function set_api();
+
+    /**
+     * Method to retrieve the api object.
+     *
+     * @since   8.0.0
+     * @access  public
+     * @return mixed
+     */
+	public abstract function get_api();
+
+    /**
+     * Method for authorizing the service.
+     *
+     * @since   8.0.0
+     * @access  public
+     * @return mixed
+     */
+    public abstract function authorize();
+
+    /**
+     * Method for authenticate the service.
+     *
+     * @since   8.0.0
+     * @access  public
+     * @return mixed
+     */
+    public abstract function authenticate();
+
+    /**
+     * Utility method to retrieve state of authentication.
+     *
+     * @since   8.0.0
+     * @access  public
+     * @return bool
+     */
+    public function is_authenticated() {
+        return $this->is_auth;
+    }
+
+    /**
+     * Method to request a token from api.
+     *
+     * @since   8.0.0
+     * @access  protected
+     * @return mixed
+     */
+    protected abstract function request_api_token();
+
+
+    /**
+     * Utility method to set default values for specified credentials.
+     *
+     * @since   8.0.0
+     * @access  protected
+     * @param   string $key The key to instantiate.
+     */
+    protected function set_credential_defaults( $key ) {
+        $this->$key = '';
+        if ( isset( $this->credentials[ $key ] ) && $this->credentials[ $key ] != '' && $this->credentials[ $key ] != null ) {
+            $this->$key = $this->credentials[ $key ];
+        }
+    }
+
 	/**
 	 * Method to register credentials for the service.
 	 *
@@ -91,7 +181,7 @@ abstract class Rop_Services_Abstract {
 	 * @access  public
 	 * @param   array $args The credentials array.
 	 */
-	public abstract function credentials( $args );
+	public abstract function set_credentials( $args );
 
 	/**
 	 * Method to return a token to be used for further requests.
@@ -113,15 +203,6 @@ abstract class Rop_Services_Abstract {
 	public abstract function get_user( $args );
 
 	/**
-	 * Method for auth-ing the service.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return mixed
-	 */
-	public abstract function auth();
-
-	/**
 	 * Method for publishing with the service.
 	 *
 	 * @since   8.0.0
@@ -130,17 +211,6 @@ abstract class Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public abstract function share( $post_details );
-
-	/**
-	 * Utility method to retrieve state of auth.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return bool
-	 */
-	public function is_auth() {
-		return $this->is_auth;
-	}
 
 	/**
 	 * Utility method to register a REST endpoint via WP.
@@ -163,8 +233,25 @@ abstract class Rop_Services_Abstract {
         );
 	}
 
+    /**
+     * Method to retrieve an endpoint URL.
+     *
+     * @since   8.0.0
+     * @access  public
+     * @param string $path
+     * @return mixed
+     */
 	public function get_endpoint_url( $path = '' ) {
 	    return rest_url( '/tweet-old-post/v8/' . $this->service_name . '/'. $path );
     }
+
+    /**
+     * Returns information for the current service.
+     *
+     * @since   8.0.0
+     * @access  public
+     * @return mixed
+     */
+    public abstract function get_service();
 
 }
