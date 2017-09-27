@@ -10,7 +10,7 @@
                         <i>Select a service and sign in with an account for that service.</i>
                     </div>
                     <div class="column col-6 text-left">
-                        <sign-in-btn :services="availableServices" ></sign-in-btn>
+                        <sign-in-btn></sign-in-btn>
                     </div>
                 </div>
             </div>
@@ -38,7 +38,7 @@
     module.exports = {
         name: 'account-view',
         data: function() {
-            console.log( this.state );
+            console.log( this.$store.state );
             return {
                 active_accounts: [
                     {
@@ -56,7 +56,6 @@
                 ],
             }
         },
-        computed: mapState([ 'availableServices' ]),
         components: {
             SignInBtn,
             ServiceUserTile

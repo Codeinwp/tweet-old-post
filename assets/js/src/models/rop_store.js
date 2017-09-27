@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import VueResource from 'vue-resource'
 
-Vue.use( Vuex )
+Vue.use( Vuex );
+Vue.use( VueResource );
 
 export default new Vuex.Store({
     state: {
@@ -38,7 +40,7 @@ export default new Vuex.Store({
             },
         ],
         availableServices: [],
-        authenticatedServicces: [],
+        authenticatedServices: [],
         registeredAccounts: [],
     },
     getters: {
