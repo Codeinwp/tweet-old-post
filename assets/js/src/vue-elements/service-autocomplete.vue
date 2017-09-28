@@ -1,0 +1,145 @@
+<template>
+    <div class="form-autocomplete">
+        <!-- autocomplete input container -->
+        <div class="form-autocomplete-input form-input" :class="is_focused">
+
+            <!-- autocomplete chips -->
+            <label class="chip" v-for="( account, index ) in to_be_activated">
+                <img :src="getImg(account.img)" class="avatar avatar-sm" alt="{account.name}">
+                {{account.name}}
+                <a href="#" class="btn btn-clear" aria-label="Close" @click="removeToBeActivated(index)" role="button"></a>
+            </label>
+
+            <!-- autocomplete real input box -->
+            <input class="form-input" type="text" ref="search" v-model="search" placeholder="Type page name here ..." @click="magic_flag = true" @focus="magic_flag = true" @keyup="magic_flag = true" @keydown.8="popLast()" @keydown.40="hilightItem()">
+        </div>
+
+        <!-- autocomplete suggestion list -->
+        <ul class="menu" ref="autocomplete_results" :class="is_visible">
+            <!-- menu list chips -->
+            <li class="menu-item" v-for="( account, index ) in accounts" v-if="filterSearch(account)">
+                <a href="#" @click="addToBeActivated(index)" @keydown.40="hilightItem()">
+                    <div class="tile tile-centered">
+                        <div class="tile-icon">
+                            <img :src="getImg(account.img)" class="avatar avatar-sm" alt="{account.name}">
+                        </div>
+                        <div class="tile-content" v-html="markMatch(account.name, search)"></div>
+                    </div>
+                </a>
+            </li>
+            <li v-if="!no_results">
+                <a href="#">
+                    <div class="tile tile-centered">
+                        <div class="tile-content"><i>Nothing found matching "{{search}}" ...</i></div>
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </div>
+</template>
+
+<script>
+    function containsObject(obj, list) {
+        var i;
+        for (i = 0; i < list.length; i++) {
+            if (list[i] === obj) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    module.exports = {
+        name: 'service-autocomplete',
+        data: function () {
+            return {
+                search: '',
+                hilighted: 0,
+                no_results: false,
+                magic_flag: false,
+                account_def_img: ROP_ASSETS_URL + 'img/accounts_icon.jpg',
+                accounts: [
+                    {
+                        id: 'account_id_1',
+                        name: 'Page one',
+                        img: ''
+                    },
+                    {
+                        id: 'account_id_2',
+                        name: 'Page two',
+                        img: 'http://www.xsjjys.com/data/out/96/WHDQ-512397052.jpg'
+                    },
+                    {
+                        id: 'account_id_3',
+                        name: 'Page three',
+                        img: 'https://organicthemes.com/demo/profile/files/2012/12/profile_img.png'
+                    },
+                ],
+                to_be_activated: [],
+            }
+        },
+        computed: {
+            is_focused: function() {
+                return {
+                    'is-focused': this.magic_flag === true
+                }
+            },
+            is_visible: function() {
+                return {
+                    'd-none': this.magic_flag === false
+                }
+            }
+        },
+        methods: {
+            hilightItem: function() {
+                console.log( this.$refs.autocomplete_results.children );
+            },
+            popLast: function() {
+              if( this.search === '' ) {
+                  this.to_be_activated.pop();
+                  this.magic_flag = false;
+              }
+            },
+            markMatch: function( value, search ) {
+                var result = value;
+                if( value.toLowerCase().indexOf( search.toLowerCase() ) !== -1 && search !== '' ) {
+                    var rex = new RegExp(search, 'ig');
+                    result = value.replace(rex, function replace( match ) {
+                        return '<mark>' + match + '</mark>';
+                    });
+                }
+                return result;
+            },
+            getImg( img ) {
+                if( img === '' || img === undefined || img === null ) {
+                    return this.account_def_img;
+                }
+                return img;
+            },
+            filterSearch(element) {
+                if ( element.name.toLowerCase().indexOf( this.search.toLowerCase() ) !== -1 || this.search === '' ) {
+                    if( containsObject( element, this.to_be_activated ) ) {
+                        this.no_results = false;
+                        return false;
+                    }
+                    this.no_results = true;
+                    return true;
+                }
+                this.no_results = false;
+                return false;
+            },
+            addToBeActivated( index ) {
+                this.to_be_activated.push( this.accounts[index] );
+                this.$refs.search.focus();
+                this.magic_flag = false;
+                this.search = '';
+            },
+            removeToBeActivated( index ) {
+                this.to_be_activated.splice( index, 1 );
+                this.$refs.search.focus();
+                this.magic_flag = false;
+                this.search = '';
+            }
+        }
+    }
+</script>

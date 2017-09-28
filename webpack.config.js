@@ -33,10 +33,12 @@ module.exports = {
     entry: entryPoint,
     output: {
         path: exportPath,
-        filename: appName
+        filename: appName,
+        publicPath: '/'
     },
     module: {
         loaders: [
+            { test: /\.(jpe?g|png|gif|svg)$/i, use: [ "file-loader?name=assets/img/[name].[ext]" ] },
             {
                 test: /\.js$/,
                 exclude: /(node_modules|bower_components)/,

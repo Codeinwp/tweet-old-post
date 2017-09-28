@@ -13,8 +13,13 @@
                         <sign-in-btn></sign-in-btn>
                     </div>
                 </div>
+                <hr/>
+                <h5>Authenticated Services</h5>
+                <service-tile v-for="service in authenticated_services" :key="service.id" :service="service"></service-tile>
             </div>
             <div class="container grid-sm float-left">
+                <h5 style="margin-bottom: 22px;">Active Accounts</h5>
+                <hr/>
                 <div class="columns">
                     <div class="column col-12" v-for="account in active_accounts">
                         <service-user-tile :account_data="account"></service-user-tile>
@@ -31,6 +36,7 @@
 
 <script>
     import SignInBtn from './sign-in-btn.vue';
+    import ServiceTile from './service-tile.vue';
     import ServiceUserTile from './service-user-tile.vue';
 
     import { mapState } from 'vuex'
@@ -40,6 +46,15 @@
         data: function() {
             console.log( this.$store.state );
             return {
+                authenticated_services: {
+                    'serviceID': {
+                        id: 'serviceID',
+                        service: 'facebook',
+                        available_accounts: {
+
+                        }
+                    }
+                },
                 active_accounts: [
                     {
                         service: 'facebook',
@@ -58,7 +73,8 @@
         },
         components: {
             SignInBtn,
-            ServiceUserTile
+            ServiceTile,
+            ServiceUserTile,
         }
     }
 </script>

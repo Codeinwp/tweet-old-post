@@ -57,7 +57,7 @@
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
+/******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 13);
@@ -957,10 +957,318 @@ var index_esm = {
 
 /* harmony default export */ __webpack_exports__["default"] = (index_esm);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(9)))
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function() {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		var result = [];
+		for(var i = 0; i < this.length; i++) {
+			var item = this[i];
+			if(item[2]) {
+				result.push("@media " + item[2] + "{" + item[1] + "}");
+			} else {
+				result.push(item[1]);
+			}
+		}
+		return result.join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+var stylesInDom = {},
+	memoize = function(fn) {
+		var memo;
+		return function () {
+			if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+			return memo;
+		};
+	},
+	isOldIE = memoize(function() {
+		return /msie [6-9]\b/.test(self.navigator.userAgent.toLowerCase());
+	}),
+	getHeadElement = memoize(function () {
+		return document.head || document.getElementsByTagName("head")[0];
+	}),
+	singletonElement = null,
+	singletonCounter = 0,
+	styleElementsInsertedAtTop = [];
+
+module.exports = function(list, options) {
+	if(typeof DEBUG !== "undefined" && DEBUG) {
+		if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+	}
+
+	options = options || {};
+	// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+	// tags it will allow on a page
+	if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+
+	// By default, add <style> tags to the bottom of <head>.
+	if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
+
+	var styles = listToStyles(list);
+	addStylesToDom(styles, options);
+
+	return function update(newList) {
+		var mayRemove = [];
+		for(var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+			domStyle.refs--;
+			mayRemove.push(domStyle);
+		}
+		if(newList) {
+			var newStyles = listToStyles(newList);
+			addStylesToDom(newStyles, options);
+		}
+		for(var i = 0; i < mayRemove.length; i++) {
+			var domStyle = mayRemove[i];
+			if(domStyle.refs === 0) {
+				for(var j = 0; j < domStyle.parts.length; j++)
+					domStyle.parts[j]();
+				delete stylesInDom[domStyle.id];
+			}
+		}
+	};
+}
+
+function addStylesToDom(styles, options) {
+	for(var i = 0; i < styles.length; i++) {
+		var item = styles[i];
+		var domStyle = stylesInDom[item.id];
+		if(domStyle) {
+			domStyle.refs++;
+			for(var j = 0; j < domStyle.parts.length; j++) {
+				domStyle.parts[j](item.parts[j]);
+			}
+			for(; j < item.parts.length; j++) {
+				domStyle.parts.push(addStyle(item.parts[j], options));
+			}
+		} else {
+			var parts = [];
+			for(var j = 0; j < item.parts.length; j++) {
+				parts.push(addStyle(item.parts[j], options));
+			}
+			stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+		}
+	}
+}
+
+function listToStyles(list) {
+	var styles = [];
+	var newStyles = {};
+	for(var i = 0; i < list.length; i++) {
+		var item = list[i];
+		var id = item[0];
+		var css = item[1];
+		var media = item[2];
+		var sourceMap = item[3];
+		var part = {css: css, media: media, sourceMap: sourceMap};
+		if(!newStyles[id])
+			styles.push(newStyles[id] = {id: id, parts: [part]});
+		else
+			newStyles[id].parts.push(part);
+	}
+	return styles;
+}
+
+function insertStyleElement(options, styleElement) {
+	var head = getHeadElement();
+	var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
+	if (options.insertAt === "top") {
+		if(!lastStyleElementInsertedAtTop) {
+			head.insertBefore(styleElement, head.firstChild);
+		} else if(lastStyleElementInsertedAtTop.nextSibling) {
+			head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
+		} else {
+			head.appendChild(styleElement);
+		}
+		styleElementsInsertedAtTop.push(styleElement);
+	} else if (options.insertAt === "bottom") {
+		head.appendChild(styleElement);
+	} else {
+		throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+	}
+}
+
+function removeStyleElement(styleElement) {
+	styleElement.parentNode.removeChild(styleElement);
+	var idx = styleElementsInsertedAtTop.indexOf(styleElement);
+	if(idx >= 0) {
+		styleElementsInsertedAtTop.splice(idx, 1);
+	}
+}
+
+function createStyleElement(options) {
+	var styleElement = document.createElement("style");
+	styleElement.type = "text/css";
+	insertStyleElement(options, styleElement);
+	return styleElement;
+}
+
+function createLinkElement(options) {
+	var linkElement = document.createElement("link");
+	linkElement.rel = "stylesheet";
+	insertStyleElement(options, linkElement);
+	return linkElement;
+}
+
+function addStyle(obj, options) {
+	var styleElement, update, remove;
+
+	if (options.singleton) {
+		var styleIndex = singletonCounter++;
+		styleElement = singletonElement || (singletonElement = createStyleElement(options));
+		update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
+		remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
+	} else if(obj.sourceMap &&
+		typeof URL === "function" &&
+		typeof URL.createObjectURL === "function" &&
+		typeof URL.revokeObjectURL === "function" &&
+		typeof Blob === "function" &&
+		typeof btoa === "function") {
+		styleElement = createLinkElement(options);
+		update = updateLink.bind(null, styleElement);
+		remove = function() {
+			removeStyleElement(styleElement);
+			if(styleElement.href)
+				URL.revokeObjectURL(styleElement.href);
+		};
+	} else {
+		styleElement = createStyleElement(options);
+		update = applyToTag.bind(null, styleElement);
+		remove = function() {
+			removeStyleElement(styleElement);
+		};
+	}
+
+	update(obj);
+
+	return function updateStyle(newObj) {
+		if(newObj) {
+			if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
+				return;
+			update(obj = newObj);
+		} else {
+			remove();
+		}
+	};
+}
+
+var replaceText = (function () {
+	var textStore = [];
+
+	return function (index, replacement) {
+		textStore[index] = replacement;
+		return textStore.filter(Boolean).join('\n');
+	};
+})();
+
+function applyToSingletonTag(styleElement, index, remove, obj) {
+	var css = remove ? "" : obj.css;
+
+	if (styleElement.styleSheet) {
+		styleElement.styleSheet.cssText = replaceText(index, css);
+	} else {
+		var cssNode = document.createTextNode(css);
+		var childNodes = styleElement.childNodes;
+		if (childNodes[index]) styleElement.removeChild(childNodes[index]);
+		if (childNodes.length) {
+			styleElement.insertBefore(cssNode, childNodes[index]);
+		} else {
+			styleElement.appendChild(cssNode);
+		}
+	}
+}
+
+function applyToTag(styleElement, obj) {
+	var css = obj.css;
+	var media = obj.media;
+
+	if(media) {
+		styleElement.setAttribute("media", media)
+	}
+
+	if(styleElement.styleSheet) {
+		styleElement.styleSheet.cssText = css;
+	} else {
+		while(styleElement.firstChild) {
+			styleElement.removeChild(styleElement.firstChild);
+		}
+		styleElement.appendChild(document.createTextNode(css));
+	}
+}
+
+function updateLink(linkElement, obj) {
+	var css = obj.css;
+	var sourceMap = obj.sourceMap;
+
+	if(sourceMap) {
+		// http://stackoverflow.com/a/26603875
+		css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+	}
+
+	var blob = new Blob([css], { type: "text/css" });
+
+	var oldSrc = linkElement.href;
+
+	linkElement.href = URL.createObjectURL(blob);
+
+	if(oldSrc)
+		URL.revokeObjectURL(oldSrc);
+}
+
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports) {
 
 // https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
@@ -972,7 +1280,7 @@ if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
 
 
 /***/ }),
-/* 2 */
+/* 4 */
 /***/ (function(module, exports) {
 
 var core = module.exports = { version: '2.5.1' };
@@ -980,7 +1288,7 @@ if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 
 /***/ }),
-/* 3 */
+/* 5 */
 /***/ (function(module, exports) {
 
 module.exports = function (it) {
@@ -989,17 +1297,17 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 4 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Thank's IE8 for his funny defineProperty
-module.exports = !__webpack_require__(5)(function () {
+module.exports = !__webpack_require__(7)(function () {
   return Object.defineProperty({}, 'a', { get: function () { return 7; } }).a != 7;
 });
 
 
 /***/ }),
-/* 5 */
+/* 7 */
 /***/ (function(module, exports) {
 
 module.exports = function (exec) {
@@ -1012,7 +1320,7 @@ module.exports = function (exec) {
 
 
 /***/ }),
-/* 6 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11103,10 +11411,10 @@ Vue$3.compile = compileToFunctions;
 
 /* harmony default export */ __webpack_exports__["default"] = (Vue$3);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(7), __webpack_require__(14)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(9), __webpack_require__(14)))
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -11296,314 +11604,6 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 8 */
-/***/ (function(module, exports) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-// css base code, injected by the css-loader
-module.exports = function() {
-	var list = [];
-
-	// return the list of modules as css string
-	list.toString = function toString() {
-		var result = [];
-		for(var i = 0; i < this.length; i++) {
-			var item = this[i];
-			if(item[2]) {
-				result.push("@media " + item[2] + "{" + item[1] + "}");
-			} else {
-				result.push(item[1]);
-			}
-		}
-		return result.join("");
-	};
-
-	// import a list of modules into the list
-	list.i = function(modules, mediaQuery) {
-		if(typeof modules === "string")
-			modules = [[null, modules, ""]];
-		var alreadyImportedModules = {};
-		for(var i = 0; i < this.length; i++) {
-			var id = this[i][0];
-			if(typeof id === "number")
-				alreadyImportedModules[id] = true;
-		}
-		for(i = 0; i < modules.length; i++) {
-			var item = modules[i];
-			// skip already imported module
-			// this implementation is not 100% perfect for weird media query combinations
-			//  when a module is imported multiple times with different media queries.
-			//  I hope this will never occur (Hey this way we have smaller bundles)
-			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-				if(mediaQuery && !item[2]) {
-					item[2] = mediaQuery;
-				} else if(mediaQuery) {
-					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-				}
-				list.push(item);
-			}
-		}
-	};
-	return list;
-};
-
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-var stylesInDom = {},
-	memoize = function(fn) {
-		var memo;
-		return function () {
-			if (typeof memo === "undefined") memo = fn.apply(this, arguments);
-			return memo;
-		};
-	},
-	isOldIE = memoize(function() {
-		return /msie [6-9]\b/.test(self.navigator.userAgent.toLowerCase());
-	}),
-	getHeadElement = memoize(function () {
-		return document.head || document.getElementsByTagName("head")[0];
-	}),
-	singletonElement = null,
-	singletonCounter = 0,
-	styleElementsInsertedAtTop = [];
-
-module.exports = function(list, options) {
-	if(typeof DEBUG !== "undefined" && DEBUG) {
-		if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
-	}
-
-	options = options || {};
-	// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-	// tags it will allow on a page
-	if (typeof options.singleton === "undefined") options.singleton = isOldIE();
-
-	// By default, add <style> tags to the bottom of <head>.
-	if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
-
-	var styles = listToStyles(list);
-	addStylesToDom(styles, options);
-
-	return function update(newList) {
-		var mayRemove = [];
-		for(var i = 0; i < styles.length; i++) {
-			var item = styles[i];
-			var domStyle = stylesInDom[item.id];
-			domStyle.refs--;
-			mayRemove.push(domStyle);
-		}
-		if(newList) {
-			var newStyles = listToStyles(newList);
-			addStylesToDom(newStyles, options);
-		}
-		for(var i = 0; i < mayRemove.length; i++) {
-			var domStyle = mayRemove[i];
-			if(domStyle.refs === 0) {
-				for(var j = 0; j < domStyle.parts.length; j++)
-					domStyle.parts[j]();
-				delete stylesInDom[domStyle.id];
-			}
-		}
-	};
-}
-
-function addStylesToDom(styles, options) {
-	for(var i = 0; i < styles.length; i++) {
-		var item = styles[i];
-		var domStyle = stylesInDom[item.id];
-		if(domStyle) {
-			domStyle.refs++;
-			for(var j = 0; j < domStyle.parts.length; j++) {
-				domStyle.parts[j](item.parts[j]);
-			}
-			for(; j < item.parts.length; j++) {
-				domStyle.parts.push(addStyle(item.parts[j], options));
-			}
-		} else {
-			var parts = [];
-			for(var j = 0; j < item.parts.length; j++) {
-				parts.push(addStyle(item.parts[j], options));
-			}
-			stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
-		}
-	}
-}
-
-function listToStyles(list) {
-	var styles = [];
-	var newStyles = {};
-	for(var i = 0; i < list.length; i++) {
-		var item = list[i];
-		var id = item[0];
-		var css = item[1];
-		var media = item[2];
-		var sourceMap = item[3];
-		var part = {css: css, media: media, sourceMap: sourceMap};
-		if(!newStyles[id])
-			styles.push(newStyles[id] = {id: id, parts: [part]});
-		else
-			newStyles[id].parts.push(part);
-	}
-	return styles;
-}
-
-function insertStyleElement(options, styleElement) {
-	var head = getHeadElement();
-	var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
-	if (options.insertAt === "top") {
-		if(!lastStyleElementInsertedAtTop) {
-			head.insertBefore(styleElement, head.firstChild);
-		} else if(lastStyleElementInsertedAtTop.nextSibling) {
-			head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
-		} else {
-			head.appendChild(styleElement);
-		}
-		styleElementsInsertedAtTop.push(styleElement);
-	} else if (options.insertAt === "bottom") {
-		head.appendChild(styleElement);
-	} else {
-		throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
-	}
-}
-
-function removeStyleElement(styleElement) {
-	styleElement.parentNode.removeChild(styleElement);
-	var idx = styleElementsInsertedAtTop.indexOf(styleElement);
-	if(idx >= 0) {
-		styleElementsInsertedAtTop.splice(idx, 1);
-	}
-}
-
-function createStyleElement(options) {
-	var styleElement = document.createElement("style");
-	styleElement.type = "text/css";
-	insertStyleElement(options, styleElement);
-	return styleElement;
-}
-
-function createLinkElement(options) {
-	var linkElement = document.createElement("link");
-	linkElement.rel = "stylesheet";
-	insertStyleElement(options, linkElement);
-	return linkElement;
-}
-
-function addStyle(obj, options) {
-	var styleElement, update, remove;
-
-	if (options.singleton) {
-		var styleIndex = singletonCounter++;
-		styleElement = singletonElement || (singletonElement = createStyleElement(options));
-		update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
-		remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
-	} else if(obj.sourceMap &&
-		typeof URL === "function" &&
-		typeof URL.createObjectURL === "function" &&
-		typeof URL.revokeObjectURL === "function" &&
-		typeof Blob === "function" &&
-		typeof btoa === "function") {
-		styleElement = createLinkElement(options);
-		update = updateLink.bind(null, styleElement);
-		remove = function() {
-			removeStyleElement(styleElement);
-			if(styleElement.href)
-				URL.revokeObjectURL(styleElement.href);
-		};
-	} else {
-		styleElement = createStyleElement(options);
-		update = applyToTag.bind(null, styleElement);
-		remove = function() {
-			removeStyleElement(styleElement);
-		};
-	}
-
-	update(obj);
-
-	return function updateStyle(newObj) {
-		if(newObj) {
-			if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
-				return;
-			update(obj = newObj);
-		} else {
-			remove();
-		}
-	};
-}
-
-var replaceText = (function () {
-	var textStore = [];
-
-	return function (index, replacement) {
-		textStore[index] = replacement;
-		return textStore.filter(Boolean).join('\n');
-	};
-})();
-
-function applyToSingletonTag(styleElement, index, remove, obj) {
-	var css = remove ? "" : obj.css;
-
-	if (styleElement.styleSheet) {
-		styleElement.styleSheet.cssText = replaceText(index, css);
-	} else {
-		var cssNode = document.createTextNode(css);
-		var childNodes = styleElement.childNodes;
-		if (childNodes[index]) styleElement.removeChild(childNodes[index]);
-		if (childNodes.length) {
-			styleElement.insertBefore(cssNode, childNodes[index]);
-		} else {
-			styleElement.appendChild(cssNode);
-		}
-	}
-}
-
-function applyToTag(styleElement, obj) {
-	var css = obj.css;
-	var media = obj.media;
-
-	if(media) {
-		styleElement.setAttribute("media", media)
-	}
-
-	if(styleElement.styleSheet) {
-		styleElement.styleSheet.cssText = css;
-	} else {
-		while(styleElement.firstChild) {
-			styleElement.removeChild(styleElement.firstChild);
-		}
-		styleElement.appendChild(document.createTextNode(css));
-	}
-}
-
-function updateLink(linkElement, obj) {
-	var css = obj.css;
-	var sourceMap = obj.sourceMap;
-
-	if(sourceMap) {
-		// http://stackoverflow.com/a/26603875
-		css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
-	}
-
-	var blob = new Blob([css], { type: "text/css" });
-
-	var oldSrc = linkElement.href;
-
-	linkElement.href = URL.createObjectURL(blob);
-
-	if(oldSrc)
-		URL.revokeObjectURL(oldSrc);
-}
-
-
-/***/ }),
 /* 10 */
 /***/ (function(module, exports) {
 
@@ -11645,11 +11645,11 @@ module.exports = function (it) {
 "use strict";
 
 
-var _vue = __webpack_require__(6);
+var _vue = __webpack_require__(8);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _rop_store = __webpack_require__(17);
+var _rop_store = __webpack_require__(15);
 
 var _rop_store2 = _interopRequireDefault(_rop_store);
 
@@ -11702,6 +11702,110 @@ module.exports = g;
 
 /***/ }),
 /* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _vue = __webpack_require__(8);
+
+var _vue2 = _interopRequireDefault(_vue);
+
+var _vuex = __webpack_require__(0);
+
+var _vuex2 = _interopRequireDefault(_vuex);
+
+var _vueResource = __webpack_require__(16);
+
+var _vueResource2 = _interopRequireDefault(_vueResource);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_vue2.default.use(_vuex2.default);
+_vue2.default.use(_vueResource2.default);
+
+exports.default = new _vuex2.default.Store({
+    state: {
+        page: {
+            debug: true,
+            logs: 'Here starts the log \n\n',
+            view: 'accounts'
+        },
+        displayTabs: [{
+            name: 'Accounts',
+            slug: 'accounts',
+            isActive: true
+        }, {
+            name: 'General Settings',
+            slug: 'settings',
+            isActive: false
+        }, {
+            name: 'Post Format',
+            slug: 'post',
+            isActive: false
+        }, {
+            name: 'Custom Schedule',
+            slug: 'schedule',
+            isActive: false
+        }, {
+            name: 'Logs',
+            slug: 'logs',
+            isActive: false
+        }],
+        availableServices: [],
+        authenticatedServices: [],
+        registeredAccounts: []
+    },
+    getters: {
+        getServices: function getServices(state) {
+            return state.availableServices;
+        }
+    },
+    mutations: {
+        logMessage: function logMessage(state, message) {
+            if (state.debug === true) console.log(message);
+            return state.logs.concat(message + '\n');
+        },
+        setTabView: function setTabView(state, view) {
+            for (var tab in state.displayTabs) {
+                state.displayTabs[tab].isActive = false;
+                if (state.displayTabs[tab].slug === view) {
+                    state.displayTabs[tab].isActive = true;
+                    state.page.view = view;
+                }
+            }
+        },
+        updateAvailableServices: function updateAvailableServices(state, data) {
+            state.availableServices = data;
+        },
+        getAuthenticatedServices: function getAuthenticatedServices(state) {},
+        getRegisteredAccounts: function getRegisteredAccounts(state) {}
+    },
+    actions: {
+        fetchAvailableServices: function fetchAvailableServices(_ref) {
+            var commit = _ref.commit;
+
+            _vue2.default.http({
+                url: ROP_REST_API,
+                method: 'POST',
+                params: { 'req': 'available_services' }
+            }).then(function (response) {
+                commit('updateAvailableServices', response.data);
+            }, function () {
+                console.log('Error retrieving available services.');
+            });
+        }
+    }
+});
+
+//store.dispatch( 'fetchAvailableServices' );
+
+/***/ }),
+/* 16 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -12803,7 +12907,7 @@ var xhrClient = function (request) {
 
 var nodeClient = function (request) {
 
-    var client = __webpack_require__(16);
+    var client = __webpack_require__(17);
 
     return new PromiseObj(function (resolve) {
 
@@ -13279,114 +13383,10 @@ if (typeof window !== 'undefined' && window.Vue) {
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _vue = __webpack_require__(6);
-
-var _vue2 = _interopRequireDefault(_vue);
-
-var _vuex = __webpack_require__(0);
-
-var _vuex2 = _interopRequireDefault(_vuex);
-
-var _vueResource = __webpack_require__(15);
-
-var _vueResource2 = _interopRequireDefault(_vueResource);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-_vue2.default.use(_vuex2.default);
-_vue2.default.use(_vueResource2.default);
-
-exports.default = new _vuex2.default.Store({
-    state: {
-        page: {
-            debug: true,
-            logs: 'Here starts the log \n\n',
-            view: 'accounts'
-        },
-        displayTabs: [{
-            name: 'Accounts',
-            slug: 'accounts',
-            isActive: true
-        }, {
-            name: 'General Settings',
-            slug: 'settings',
-            isActive: false
-        }, {
-            name: 'Post Format',
-            slug: 'post',
-            isActive: false
-        }, {
-            name: 'Custom Schedule',
-            slug: 'schedule',
-            isActive: false
-        }, {
-            name: 'Logs',
-            slug: 'logs',
-            isActive: false
-        }],
-        availableServices: [],
-        authenticatedServices: [],
-        registeredAccounts: []
-    },
-    getters: {
-        getServices: function getServices(state) {
-            return state.availableServices;
-        }
-    },
-    mutations: {
-        logMessage: function logMessage(state, message) {
-            if (state.debug === true) console.log(message);
-            return state.logs.concat(message + '\n');
-        },
-        setTabView: function setTabView(state, view) {
-            for (var tab in state.displayTabs) {
-                state.displayTabs[tab].isActive = false;
-                if (state.displayTabs[tab].slug === view) {
-                    state.displayTabs[tab].isActive = true;
-                    state.page.view = view;
-                }
-            }
-        },
-        updateAvailableServices: function updateAvailableServices(state, data) {
-            state.availableServices = data;
-        },
-        getAuthenticatedServices: function getAuthenticatedServices(state) {},
-        getRegisteredAccounts: function getRegisteredAccounts(state) {}
-    },
-    actions: {
-        fetchAvailableServices: function fetchAvailableServices(_ref) {
-            var commit = _ref.commit;
-
-            _vue2.default.http({
-                url: ROP_REST_API,
-                method: 'POST',
-                params: { 'req': 'available_services' }
-            }).then(function (response) {
-                commit('updateAvailableServices', response.data);
-            }, function () {
-                console.log('Error retrieving available services.');
-            });
-        }
-    }
-});
-
-//store.dispatch( 'fetchAvailableServices' );
 
 /***/ }),
 /* 18 */
@@ -13394,7 +13394,7 @@ exports.default = new _vuex2.default.Store({
 
 var __vue_script__, __vue_template__
 __vue_script__ = __webpack_require__(19)
-__vue_template__ = __webpack_require__(63)
+__vue_template__ = __webpack_require__(72)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -13421,7 +13421,7 @@ var _accountsTabPanel = __webpack_require__(20);
 
 var _accountsTabPanel2 = _interopRequireDefault(_accountsTabPanel);
 
-var _logsTabPanel = __webpack_require__(60);
+var _logsTabPanel = __webpack_require__(69);
 
 var _logsTabPanel2 = _interopRequireDefault(_logsTabPanel);
 
@@ -13500,7 +13500,7 @@ module.exports = {
 
 var __vue_script__, __vue_template__
 __vue_script__ = __webpack_require__(21)
-__vue_template__ = __webpack_require__(59)
+__vue_template__ = __webpack_require__(68)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -13527,7 +13527,11 @@ var _signInBtn = __webpack_require__(22);
 
 var _signInBtn2 = _interopRequireDefault(_signInBtn);
 
-var _serviceUserTile = __webpack_require__(54);
+var _serviceTile = __webpack_require__(54);
+
+var _serviceTile2 = _interopRequireDefault(_serviceTile);
+
+var _serviceUserTile = __webpack_require__(63);
 
 var _serviceUserTile2 = _interopRequireDefault(_serviceUserTile);
 
@@ -13535,31 +13539,7 @@ var _vuex = __webpack_require__(0);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-module.exports = {
-    name: 'account-view',
-    data: function data() {
-        console.log(this.$store.state);
-        return {
-            active_accounts: [{
-                service: 'facebook',
-                user: 'Company Page',
-                account: 'user@email.com',
-                created: '07/09/2017 15:16'
-            }, {
-                service: 'twitter',
-                user: 'John Doe',
-                account: '@unkownjoe',
-                created: '07/09/2017 15:16'
-            }]
-        };
-    },
-    components: {
-        SignInBtn: _signInBtn2.default,
-        ServiceUserTile: _serviceUserTile2.default
-    }
-    // </script>
-
-}; // <template>
+// <template>
 //     <div class="tab-view">
 //         <div class="panel-body">
 //             <h3>Accounts</h3>
@@ -13574,8 +13554,13 @@ module.exports = {
 //                         <sign-in-btn></sign-in-btn>
 //                     </div>
 //                 </div>
+//                 <hr/>
+//                 <h5>Authenticated Services</h5>
+//                 <service-tile v-for="service in authenticated_services" :key="service.id" :service="service"></service-tile>
 //             </div>
 //             <div class="container grid-sm float-left">
+//                 <h5 style="margin-bottom: 22px;">Active Accounts</h5>
+//                 <hr/>
 //                 <div class="columns">
 //                     <div class="column col-12" v-for="account in active_accounts">
 //                         <service-user-tile :account_data="account"></service-user-tile>
@@ -13591,6 +13576,39 @@ module.exports = {
 // </template>
 //
 // <script>
+module.exports = {
+    name: 'account-view',
+    data: function data() {
+        console.log(this.$store.state);
+        return {
+            authenticated_services: {
+                'serviceID': {
+                    id: 'serviceID',
+                    service: 'facebook',
+                    available_accounts: {}
+                }
+            },
+            active_accounts: [{
+                service: 'facebook',
+                user: 'Company Page',
+                account: 'user@email.com',
+                created: '07/09/2017 15:16'
+            }, {
+                service: 'twitter',
+                user: 'John Doe',
+                account: '@unkownjoe',
+                created: '07/09/2017 15:16'
+            }]
+        };
+    },
+    components: {
+        SignInBtn: _signInBtn2.default,
+        ServiceTile: _serviceTile2.default,
+        ServiceUserTile: _serviceUserTile2.default
+    }
+    // </script>
+
+};
 
 /***/ }),
 /* 22 */
@@ -13625,7 +13643,7 @@ if (false) {(function () {  module.hot.accept()
 var content = __webpack_require__(24);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(9)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -13645,7 +13663,7 @@ if(false) {
 /* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(8)();
+exports = module.exports = __webpack_require__(1)();
 // imports
 
 
@@ -13802,7 +13820,7 @@ module.exports = { "default": __webpack_require__(27), __esModule: true };
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(28);
-module.exports = __webpack_require__(2).Object.keys;
+module.exports = __webpack_require__(4).Object.keys;
 
 
 /***/ }),
@@ -13969,7 +13987,7 @@ module.exports = function (key) {
 /* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var global = __webpack_require__(1);
+var global = __webpack_require__(3);
 var SHARED = '__core-js_shared__';
 var store = global[SHARED] || (global[SHARED] = {});
 module.exports = function (key) {
@@ -14004,8 +14022,8 @@ module.exports = (
 
 // most Object methods by ES6 should accept primitives
 var $export = __webpack_require__(43);
-var core = __webpack_require__(2);
-var fails = __webpack_require__(5);
+var core = __webpack_require__(4);
+var fails = __webpack_require__(7);
 module.exports = function (KEY, exec) {
   var fn = (core.Object || {})[KEY] || Object[KEY];
   var exp = {};
@@ -14018,8 +14036,8 @@ module.exports = function (KEY, exec) {
 /* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var global = __webpack_require__(1);
-var core = __webpack_require__(2);
+var global = __webpack_require__(3);
+var core = __webpack_require__(4);
 var ctx = __webpack_require__(44);
 var hide = __webpack_require__(46);
 var PROTOTYPE = 'prototype';
@@ -14123,7 +14141,7 @@ module.exports = function (it) {
 
 var dP = __webpack_require__(47);
 var createDesc = __webpack_require__(52);
-module.exports = __webpack_require__(4) ? function (object, key, value) {
+module.exports = __webpack_require__(6) ? function (object, key, value) {
   return dP.f(object, key, createDesc(1, value));
 } : function (object, key, value) {
   object[key] = value;
@@ -14140,7 +14158,7 @@ var IE8_DOM_DEFINE = __webpack_require__(49);
 var toPrimitive = __webpack_require__(51);
 var dP = Object.defineProperty;
 
-exports.f = __webpack_require__(4) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
+exports.f = __webpack_require__(6) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
   anObject(O);
   P = toPrimitive(P, true);
   anObject(Attributes);
@@ -14157,7 +14175,7 @@ exports.f = __webpack_require__(4) ? Object.defineProperty : function defineProp
 /* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isObject = __webpack_require__(3);
+var isObject = __webpack_require__(5);
 module.exports = function (it) {
   if (!isObject(it)) throw TypeError(it + ' is not an object!');
   return it;
@@ -14168,7 +14186,7 @@ module.exports = function (it) {
 /* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = !__webpack_require__(4) && !__webpack_require__(5)(function () {
+module.exports = !__webpack_require__(6) && !__webpack_require__(7)(function () {
   return Object.defineProperty(__webpack_require__(50)('div'), 'a', { get: function () { return 7; } }).a != 7;
 });
 
@@ -14177,8 +14195,8 @@ module.exports = !__webpack_require__(4) && !__webpack_require__(5)(function () 
 /* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isObject = __webpack_require__(3);
-var document = __webpack_require__(1).document;
+var isObject = __webpack_require__(5);
+var document = __webpack_require__(3).document;
 // typeof document.createElement is 'object' in old IE
 var is = isObject(document) && isObject(document.createElement);
 module.exports = function (it) {
@@ -14191,7 +14209,7 @@ module.exports = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.1 ToPrimitive(input [, PreferredType])
-var isObject = __webpack_require__(3);
+var isObject = __webpack_require__(5);
 // instead of the ES6 spec version, we didn't implement @@toPrimitive case
 // and the second argument - flag - preferred type is a string
 module.exports = function (it, S) {
@@ -14231,7 +14249,7 @@ module.exports = "\n    <div class=\"sign-in-btn\" _v-8e89fa8e=\"\">\n        <d
 var __vue_script__, __vue_template__
 __webpack_require__(55)
 __vue_script__ = __webpack_require__(57)
-__vue_template__ = __webpack_require__(58)
+__vue_template__ = __webpack_require__(62)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -14239,7 +14257,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/var/www/html/wp-base/wp-content/plugins/tweet-old-post/assets/js/src/vue-elements/service-user-tile.vue"
+  var id = "/var/www/html/wp-base/wp-content/plugins/tweet-old-post/assets/js/src/vue-elements/service-tile.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -14257,7 +14275,318 @@ if (false) {(function () {  module.hot.accept()
 var content = __webpack_require__(56);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(9)(content, {});
+var update = __webpack_require__(2)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3e1338be&file=service-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./service-tile.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3e1338be&file=service-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./service-tile.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 56 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(1)();
+// imports
+
+
+// module
+exports.push([module.i, "\n    .facebook[_v-3e1338be] {\n        background-color: #3b5998;\n    }\n\n    .twitter[_v-3e1338be] {\n        background-color: #55acee;\n    }\n\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 57 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _serviceAutocomplete = __webpack_require__(58);
+
+var _serviceAutocomplete2 = _interopRequireDefault(_serviceAutocomplete);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase().concat(string.slice(1));
+} // <template>
+//     <div class="service-tile">
+//         <div class="input-group">
+//             <button class="btn input-group-btn" @click="" >
+//                 <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
+//             </button>
+//             <button class="btn input-group-btn" @click="" >
+//                 <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i>
+//             </button>
+//             <span class="input-group-addon">facebook.com/</span>
+//             <service-autocomplete></service-autocomplete>
+//             <!--<select class="form-select">-->
+//                 <!--<option default>Select an account to activate</option>-->
+//                 <!--&lt;!&ndash;<option v-for="( service, network ) in services" v-bind:value="network">{{ service.name }}</option>&ndash;&gt;-->
+//             <!--</select>-->
+//             <button class="btn input-group-btn" >
+//                 <i class="fa fa-plus" aria-hidden="true"></i> Activate
+//             </button>
+//         </div>
+//     </div>
+// </template>
+//
+// <script>
+
+
+module.exports = {
+    name: 'service-tile',
+    data: function data() {
+        return {};
+    },
+    components: {
+        ServiceAutocomplete: _serviceAutocomplete2.default
+    }
+    // </script>
+    //
+    // <style scoped>
+    //     .facebook {
+    //         background-color: #3b5998;
+    //     }
+    //
+    //     .twitter {
+    //         background-color: #55acee;
+    //     }
+    //
+    // </style>
+
+};
+
+/***/ }),
+/* 58 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__vue_script__ = __webpack_require__(59)
+__vue_template__ = __webpack_require__(61)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/var/www/html/wp-base/wp-content/plugins/tweet-old-post/assets/js/src/vue-elements/service-autocomplete.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 59 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// <template>
+//     <div class="form-autocomplete">
+//         <!-- autocomplete input container -->
+//         <div class="form-autocomplete-input form-input" :class="is_focused">
+//
+//             <!-- autocomplete chips -->
+//             <label class="chip" v-for="( account, index ) in to_be_activated">
+//                 <img :src="getImg(account.img)" class="avatar avatar-sm" alt="{account.name}">
+//                 {{account.name}}
+//                 <a href="#" class="btn btn-clear" aria-label="Close" @click="removeToBeActivated(index)" role="button"></a>
+//             </label>
+//
+//             <!-- autocomplete real input box -->
+//             <input class="form-input" type="text" ref="search" v-model="search" placeholder="Type page name here ..." @click="magic_flag = true" @focus="magic_flag = true" @keyup="magic_flag = true" @keydown.8="popLast()" @keydown.40="hilightItem()">
+//         </div>
+//
+//         <!-- autocomplete suggestion list -->
+//         <ul class="menu" ref="autocomplete_results" :class="is_visible">
+//             <!-- menu list chips -->
+//             <li class="menu-item" v-for="( account, index ) in accounts" v-if="filterSearch(account)">
+//                 <a href="#" @click="addToBeActivated(index)" @keydown.40="hilightItem()">
+//                     <div class="tile tile-centered">
+//                         <div class="tile-icon">
+//                             <img :src="getImg(account.img)" class="avatar avatar-sm" alt="{account.name}">
+//                         </div>
+//                         <div class="tile-content" v-html="markMatch(account.name, search)"></div>
+//                     </div>
+//                 </a>
+//             </li>
+//             <li v-if="!no_results">
+//                 <a href="#">
+//                     <div class="tile tile-centered">
+//                         <div class="tile-content"><i>Nothing found matching "{{search}}" ...</i></div>
+//                     </div>
+//                 </a>
+//             </li>
+//         </ul>
+//     </div>
+// </template>
+//
+// <script>
+function containsObject(obj, list) {
+    var i;
+    for (i = 0; i < list.length; i++) {
+        if (list[i] === obj) {
+            return true;
+        }
+    }
+    return false;
+}
+
+module.exports = {
+    name: 'service-autocomplete',
+    data: function data() {
+        return {
+            search: '',
+            hilighted: 0,
+            no_results: false,
+            magic_flag: false,
+            account_def_img: ROP_ASSETS_URL + 'img/accounts_icon.jpg',
+            accounts: [{
+                id: 'account_id_1',
+                name: 'Page one',
+                img: ''
+            }, {
+                id: 'account_id_2',
+                name: 'Page two',
+                img: 'http://www.xsjjys.com/data/out/96/WHDQ-512397052.jpg'
+            }, {
+                id: 'account_id_3',
+                name: 'Page three',
+                img: 'https://organicthemes.com/demo/profile/files/2012/12/profile_img.png'
+            }],
+            to_be_activated: []
+        };
+    },
+    computed: {
+        is_focused: function is_focused() {
+            return {
+                'is-focused': this.magic_flag === true
+            };
+        },
+        is_visible: function is_visible() {
+            return {
+                'd-none': this.magic_flag === false
+            };
+        }
+    },
+    methods: {
+        hilightItem: function hilightItem() {
+            console.log(this.$refs.autocomplete_results.children);
+        },
+        popLast: function popLast() {
+            if (this.search === '') {
+                this.to_be_activated.pop();
+                this.magic_flag = false;
+            }
+        },
+        markMatch: function markMatch(value, search) {
+            var result = value;
+            if (value.toLowerCase().indexOf(search.toLowerCase()) !== -1 && search !== '') {
+                var rex = new RegExp(search, 'ig');
+                result = value.replace(rex, function replace(match) {
+                    return '<mark>' + match + '</mark>';
+                });
+            }
+            return result;
+        },
+        getImg: function getImg(img) {
+            if (img === '' || img === undefined || img === null) {
+                return this.account_def_img;
+            }
+            return img;
+        },
+        filterSearch: function filterSearch(element) {
+            if (element.name.toLowerCase().indexOf(this.search.toLowerCase()) !== -1 || this.search === '') {
+                if (containsObject(element, this.to_be_activated)) {
+                    this.no_results = false;
+                    return false;
+                }
+                this.no_results = true;
+                return true;
+            }
+            this.no_results = false;
+            return false;
+        },
+        addToBeActivated: function addToBeActivated(index) {
+            this.to_be_activated.push(this.accounts[index]);
+            this.$refs.search.focus();
+            this.magic_flag = false;
+            this.search = '';
+        },
+        removeToBeActivated: function removeToBeActivated(index) {
+            this.to_be_activated.splice(index, 1);
+            this.$refs.search.focus();
+            this.magic_flag = false;
+            this.search = '';
+        }
+    }
+    // </script>
+
+};
+
+/***/ }),
+/* 60 */,
+/* 61 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div class=\"form-autocomplete\">\n        <!-- autocomplete input container -->\n        <div class=\"form-autocomplete-input form-input\" :class=\"is_focused\">\n\n            <!-- autocomplete chips -->\n            <label class=\"chip\" v-for=\"( account, index ) in to_be_activated\">\n                <img :src=\"getImg(account.img)\" class=\"avatar avatar-sm\" alt=\"{account.name}\">\n                {{account.name}}\n                <a href=\"#\" class=\"btn btn-clear\" aria-label=\"Close\" @click=\"removeToBeActivated(index)\" role=\"button\"></a>\n            </label>\n\n            <!-- autocomplete real input box -->\n            <input class=\"form-input\" type=\"text\" ref=\"search\" v-model=\"search\" placeholder=\"Type page name here ...\" @click=\"magic_flag = true\" @focus=\"magic_flag = true\" @keyup=\"magic_flag = true\" @keydown.8=\"popLast()\" @keydown.40=\"hilightItem()\">\n        </div>\n\n        <!-- autocomplete suggestion list -->\n        <ul class=\"menu\" ref=\"autocomplete_results\" :class=\"is_visible\">\n            <!-- menu list chips -->\n            <li class=\"menu-item\" v-for=\"( account, index ) in accounts\" v-if=\"filterSearch(account)\">\n                <a href=\"#\" @click=\"addToBeActivated(index)\" @keydown.40=\"hilightItem()\">\n                    <div class=\"tile tile-centered\">\n                        <div class=\"tile-icon\">\n                            <img :src=\"getImg(account.img)\" class=\"avatar avatar-sm\" alt=\"{account.name}\">\n                        </div>\n                        <div class=\"tile-content\" v-html=\"markMatch(account.name, search)\"></div>\n                    </div>\n                </a>\n            </li>\n            <li v-if=\"!no_results\">\n                <a href=\"#\">\n                    <div class=\"tile tile-centered\">\n                        <div class=\"tile-content\"><i>Nothing found matching \"{{search}}\" ...</i></div>\n                    </div>\n                </a>\n            </li>\n        </ul>\n    </div>\n";
+
+/***/ }),
+/* 62 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div class=\"service-tile\" _v-3e1338be=\"\">\n        <div class=\"input-group\" _v-3e1338be=\"\">\n            <button class=\"btn input-group-btn\" @click=\"\" _v-3e1338be=\"\">\n                <i class=\"fa fa-fw fa-trash\" aria-hidden=\"true\" _v-3e1338be=\"\"></i>\n            </button>\n            <button class=\"btn input-group-btn\" @click=\"\" _v-3e1338be=\"\">\n                <i class=\"fa fa-fw fa-info-circle\" aria-hidden=\"true\" _v-3e1338be=\"\"></i>\n            </button>\n            <span class=\"input-group-addon\" _v-3e1338be=\"\">facebook.com/</span>\n            <service-autocomplete _v-3e1338be=\"\"></service-autocomplete>\n            <!--<select class=\"form-select\">-->\n                <!--<option default>Select an account to activate</option>-->\n                <!--&lt;!&ndash;<option v-for=\"( service, network ) in services\" v-bind:value=\"network\">{{ service.name }}</option>&ndash;&gt;-->\n            <!--</select>-->\n            <button class=\"btn input-group-btn\" _v-3e1338be=\"\">\n                <i class=\"fa fa-plus\" aria-hidden=\"true\" _v-3e1338be=\"\"></i> Activate\n            </button>\n        </div>\n    </div>\n";
+
+/***/ }),
+/* 63 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(64)
+__vue_script__ = __webpack_require__(66)
+__vue_template__ = __webpack_require__(67)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/var/www/html/wp-base/wp-content/plugins/tweet-old-post/assets/js/src/vue-elements/service-user-tile.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 64 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(65);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -14274,10 +14603,10 @@ if(false) {
 }
 
 /***/ }),
-/* 56 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(8)();
+exports = module.exports = __webpack_require__(1)();
 // imports
 
 
@@ -14288,7 +14617,7 @@ exports.push([module.i, "\n    .icon_box[_v-0eff658d] {\n        width: 45px;\n 
 
 
 /***/ }),
-/* 57 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14375,24 +14704,24 @@ module.exports = {
 };
 
 /***/ }),
-/* 58 */
+/* 67 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div class=\"tile tile-centered\" _v-0eff658d=\"\">\n        <div class=\"tile-icon\" _v-0eff658d=\"\">\n            <div class=\"icon_box\" :class=\"service\" _v-0eff658d=\"\">\n                <i class=\"fa\" :class=\"icon\" aria-hidden=\"true\" _v-0eff658d=\"\"></i>\n            </div>\n        </div>\n        <div class=\"tile-content\" _v-0eff658d=\"\">\n            <div class=\"tile-title\" _v-0eff658d=\"\">{{ user }}</div>\n            <div class=\"tile-subtitle text-gray\" _v-0eff658d=\"\">{{ service_info }}</div>\n        </div>\n        <div class=\"tile-action\" _v-0eff658d=\"\">\n            <div class=\"dropdown dropdown-right\" _v-0eff658d=\"\">\n                <a href=\"#\" class=\"btn btn-link dropdown-toggle\" tabindex=\"0\" _v-0eff658d=\"\">\n                    <i class=\"fa fa-ellipsis-v\" aria-hidden=\"true\" _v-0eff658d=\"\"></i>\n                </a>\n                <!-- menu component -->\n                <ul class=\"menu\" _v-0eff658d=\"\">\n                    <li class=\"menu-item\" _v-0eff658d=\"\">\n                        <a @click=\"\" _v-0eff658d=\"\"><i class=\"fa fa-pencil\" aria-hidden=\"true\" _v-0eff658d=\"\"></i> Edit</a>\n                    </li>\n                    <li class=\"menu-item\" _v-0eff658d=\"\">\n                        <a @click=\"\" _v-0eff658d=\"\"><i class=\"fa fa-trash\" aria-hidden=\"true\" _v-0eff658d=\"\"></i> Remove</a>\n                    </li>\n                </ul>\n            </div>\n        </div>\n    </div>\n";
 
 /***/ }),
-/* 59 */
+/* 68 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"tab-view\">\n        <div class=\"panel-body\">\n            <h3>Accounts</h3>\n            <p>This is a <b>Vue.js</b> component.</p>\n            <div class=\"container grid-md float-left\">\n                <div class=\"columns\">\n                    <div class=\"column col-6 text-right\">\n                        <b>New Service</b><br/>\n                        <i>Select a service and sign in with an account for that service.</i>\n                    </div>\n                    <div class=\"column col-6 text-left\">\n                        <sign-in-btn></sign-in-btn>\n                    </div>\n                </div>\n            </div>\n            <div class=\"container grid-sm float-left\">\n                <div class=\"columns\">\n                    <div class=\"column col-12\" v-for=\"account in active_accounts\">\n                        <service-user-tile :account_data=\"account\"></service-user-tile>\n                        <div class=\"divider\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"panel-footer\">\n            <button class=\"btn btn-primary\">Save</button>\n        </div>\n    </div>\n";
+module.exports = "\n    <div class=\"tab-view\">\n        <div class=\"panel-body\">\n            <h3>Accounts</h3>\n            <p>This is a <b>Vue.js</b> component.</p>\n            <div class=\"container grid-md float-left\">\n                <div class=\"columns\">\n                    <div class=\"column col-6 text-right\">\n                        <b>New Service</b><br/>\n                        <i>Select a service and sign in with an account for that service.</i>\n                    </div>\n                    <div class=\"column col-6 text-left\">\n                        <sign-in-btn></sign-in-btn>\n                    </div>\n                </div>\n                <hr/>\n                <h5>Authenticated Services</h5>\n                <service-tile v-for=\"service in authenticated_services\" :key=\"service.id\" :service=\"service\"></service-tile>\n            </div>\n            <div class=\"container grid-sm float-left\">\n                <h5 style=\"margin-bottom: 22px;\">Active Accounts</h5>\n                <hr/>\n                <div class=\"columns\">\n                    <div class=\"column col-12\" v-for=\"account in active_accounts\">\n                        <service-user-tile :account_data=\"account\"></service-user-tile>\n                        <div class=\"divider\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"panel-footer\">\n            <button class=\"btn btn-primary\">Save</button>\n        </div>\n    </div>\n";
 
 /***/ }),
-/* 60 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(61)
-__vue_template__ = __webpack_require__(62)
+__vue_script__ = __webpack_require__(70)
+__vue_template__ = __webpack_require__(71)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -14409,7 +14738,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 61 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14442,13 +14771,13 @@ module.exports = {
 };
 
 /***/ }),
-/* 62 */
+/* 71 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div class=\"container\">\n        <h3>Logs</h3>\n        <div class=\"columns\">\n            <div class=\"column col-12\">\n                <pre class=\"code\" data-lang=\"Vue.js\">\n                    <code>{{ logs }}</code>\n                </pre>\n            </div>\n        </div>\n    </div>\n";
 
 /***/ }),
-/* 63 */
+/* 72 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div>\n        <div class=\"panel title-panel\" style=\"margin-bottom: 40px; padding-bottom: 20px;\">\n            <div class=\"panel-header\">\n                <!--<img src=\"./../../../img/logo_rop.png\" style=\"float: left; margin-right: 10px;\" />-->\n                <h1 class=\"d-inline-block\">Revive Old Posts</h1><span class=\"powered\"> by <a href=\"https://themeisle.com\" target=\"_blank\"><b>ThemeIsle</b></a></span>\n            </div>\n        </div>\n        <div class=\"panel\">\n            <div class=\"panel-nav\" style=\"padding: 8px;\">\n                <ul class=\"tab\">\n                    <li class=\"tab-item\" v-for=\"tab in displayTabs\" :class=\"{ active: tab.isActive }\"><a href=\"#\" @click=\"switchTab( tab.slug )\">{{ tab.name }}</a></li>\n                    <li class=\"tab-item tab-action\">\n                        <div class=\"form-group\">\n                            <label class=\"form-switch\">\n                                <input type=\"checkbox\" />\n                                <i class=\"form-icon\"></i> Beta User\n                            </label>\n                            <label class=\"form-switch\">\n                                <input type=\"checkbox\" />\n                                <i class=\"form-icon\"></i> Remote Check\n                            </label>\n                        </div>\n                    </li>\n                </ul>\n            </div>\n\n            <component :is=\"page.view\"></component>\n        </div>\n    </div>\n";
