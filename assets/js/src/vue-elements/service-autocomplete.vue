@@ -1,5 +1,5 @@
 <template>
-    <div class="form-autocomplete">
+    <div class="form-autocomplete" v-on-clickaway="closeDropdown">
         <!-- autocomplete input container -->
         <div class="form-autocomplete-input form-input" :class="is_focused">
 
@@ -11,14 +11,14 @@
             </label>
 
             <!-- autocomplete real input box -->
-            <input class="form-input" type="text" ref="search" v-model="search" placeholder="Type page name here ..." @click="magic_flag = true" @focus="magic_flag = true" @keyup="magic_flag = true" @keydown.8="popLast()" @keydown.40="hilightItem()">
+            <input class="form-input" type="text" ref="search" v-model="search" placeholder="Type page name here ..." @click="magic_flag = true" @focus="magic_flag = true" @keyup="magic_flag = true" @keydown.8="popLast()" @keydown.38="highlightItem(true)" @keydown.40="highlightItem()">
         </div>
 
         <!-- autocomplete suggestion list -->
         <ul class="menu" ref="autocomplete_results" :class="is_visible">
             <!-- menu list chips -->
             <li class="menu-item" v-for="( account, index ) in accounts" v-if="filterSearch(account)">
-                <a href="#" @click="addToBeActivated(index)" @keydown.40="hilightItem()">
+                <a href="#" @click="addToBeActivated(index)" @keydown.38="highlightItem(true)" @keydown.40="highlightItem()">
                     <div class="tile tile-centered">
                         <div class="tile-icon">
                             <img :src="getImg(account.img)" class="avatar avatar-sm" alt="{account.name}">
@@ -27,7 +27,7 @@
                     </div>
                 </a>
             </li>
-            <li v-if="!no_results">
+            <li v-if="has_results">
                 <a href="#">
                     <div class="tile tile-centered">
                         <div class="tile-content"><i>Nothing found matching "{{search}}" ...</i></div>
@@ -39,6 +39,8 @@
 </template>
 
 <script>
+    import { mixin as clickaway } from 'vue-clickaway';
+
     function containsObject(obj, list) {
         var i;
         for (i = 0; i < list.length; i++) {
@@ -51,10 +53,11 @@
 
     module.exports = {
         name: 'service-autocomplete',
+        mixins: [ clickaway ],
         data: function () {
             return {
                 search: '',
-                hilighted: 0,
+                highlighted: -1,
                 no_results: false,
                 magic_flag: false,
                 account_def_img: ROP_ASSETS_URL + 'img/accounts_icon.jpg',
@@ -88,11 +91,36 @@
                 return {
                     'd-none': this.magic_flag === false
                 }
+            },
+            has_results: function() {
+                var found = 0;
+                for( var account of this.accounts ) {
+                    if( this.filterSearch( account ) ) {
+                        found++;
+                    }
+                }
+                if( found ) {
+                    return false;
+                }
+                return true;
             }
         },
         methods: {
-            hilightItem: function() {
-                console.log( this.$refs.autocomplete_results.children );
+            closeDropdown: function() {
+                this.magic_flag = false;
+            },
+            highlightItem: function( up = false ) {
+                if( up ) {
+                    this.highlighted--;
+                } else {
+                    this.highlighted++;
+                }
+                var size =  this.$refs.autocomplete_results.children.length - 1;
+                if( size < 0 ) size = 0;
+                if( this.highlighted > size ) this.highlighted = 0;
+                if( this.highlighted < 0 ) this.highlighted = size;
+                this.$refs.autocomplete_results.children[this.highlighted].firstChild.focus();
+
             },
             popLast: function() {
               if( this.search === '' ) {
@@ -119,13 +147,10 @@
             filterSearch(element) {
                 if ( element.name.toLowerCase().indexOf( this.search.toLowerCase() ) !== -1 || this.search === '' ) {
                     if( containsObject( element, this.to_be_activated ) ) {
-                        this.no_results = false;
                         return false;
                     }
-                    this.no_results = true;
                     return true;
                 }
-                this.no_results = false;
                 return false;
             },
             addToBeActivated( index ) {
