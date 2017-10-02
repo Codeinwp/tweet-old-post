@@ -75,9 +75,11 @@ export default new Vuex.Store({
     actions: {
         fetchAvailableServices ({ commit }) {
             Vue.http({
-                url: ROP_REST_API,
+                url: ropApiSettings.root,
                 method: 'POST',
-                params: { 'req': 'available_services' }
+                headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+                params: { 'req': 'available_services' },
+                responseType: 'json'
             }).then(function (response) {
                 commit( 'updateAvailableServices', response.data );
             }, function () {

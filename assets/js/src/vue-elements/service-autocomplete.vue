@@ -1,5 +1,5 @@
 <template>
-    <div class="form-autocomplete" v-on-clickaway="closeDropdown">
+    <div class="form-autocomplete" style="width: 100%;" v-on-clickaway="closeDropdown">
         <!-- autocomplete input container -->
         <div class="form-autocomplete-input form-input" :class="is_focused">
 
@@ -7,18 +7,18 @@
             <label class="chip" v-for="( account, index ) in to_be_activated">
                 <img :src="getImg(account.img)" class="avatar avatar-sm" alt="{account.name}">
                 {{account.name}}
-                <a href="#" class="btn btn-clear" aria-label="Close" @click="removeToBeActivated(index)" role="button"></a>
+                <a href="#" class="btn btn-clear" aria-label="Close" @click.prevent="removeToBeActivated(index)" role="button" v-if="!is_one"></a>
             </label>
 
             <!-- autocomplete real input box -->
-            <input class="form-input" type="text" ref="search" v-model="search" placeholder="Type page name here ..." @click="magic_flag = true" @focus="magic_flag = true" @keyup="magic_flag = true" @keydown.8="popLast()" @keydown.38="highlightItem(true)" @keydown.40="highlightItem()">
+            <input style="height: 1.0rem;" class="form-input" type="text" ref="search" v-model="search" :placeholder="autocomplete_placeholder" @click="magic_flag = true" @focus="magic_flag = true" @keyup="magic_flag = true" @keydown.8="popLast()" @keydown.38="highlightItem(true)" @keydown.40="highlightItem()" :readonly="is_one">
         </div>
 
         <!-- autocomplete suggestion list -->
-        <ul class="menu" ref="autocomplete_results" :class="is_visible">
+        <ul class="menu" ref="autocomplete_results" :class="is_visible" v-if="!is_one">
             <!-- menu list chips -->
             <li class="menu-item" v-for="( account, index ) in accounts" v-if="filterSearch(account)">
-                <a href="#" @click="addToBeActivated(index)" @keydown.38="highlightItem(true)" @keydown.40="highlightItem()">
+                <a href="#" @click.prevent="addToBeActivated(index)" @keydown.38="highlightItem(true)" @keydown.40="highlightItem()">
                     <div class="tile tile-centered">
                         <div class="tile-icon">
                             <img :src="getImg(account.img)" class="avatar avatar-sm" alt="{account.name}">
@@ -36,6 +36,7 @@
             </li>
         </ul>
     </div>
+
 </template>
 
 <script>
@@ -54,6 +55,7 @@
     module.exports = {
         name: 'service-autocomplete',
         mixins: [ clickaway ],
+        props: [ 'accounts' ],
         data: function () {
             return {
                 search: '',
@@ -61,23 +63,6 @@
                 no_results: false,
                 magic_flag: false,
                 account_def_img: ROP_ASSETS_URL + 'img/accounts_icon.jpg',
-                accounts: [
-                    {
-                        id: 'account_id_1',
-                        name: 'Page one',
-                        img: ''
-                    },
-                    {
-                        id: 'account_id_2',
-                        name: 'Page two',
-                        img: 'http://www.xsjjys.com/data/out/96/WHDQ-512397052.jpg'
-                    },
-                    {
-                        id: 'account_id_3',
-                        name: 'Page three',
-                        img: 'https://organicthemes.com/demo/profile/files/2012/12/profile_img.png'
-                    },
-                ],
                 to_be_activated: [],
             }
         },
@@ -91,6 +76,19 @@
                 return {
                     'd-none': this.magic_flag === false
                 }
+            },
+            is_one: function() {
+                if( this.accounts.length === 1 ) {
+                    this.to_be_activated.push( this.accounts[0] );
+                    return true;
+                }
+                return false
+            },
+            autocomplete_placeholder: function() {
+                if( this.is_one ) {
+                    return '';
+                }
+                return 'Accounts ...';
             },
             has_results: function() {
                 var found = 0;

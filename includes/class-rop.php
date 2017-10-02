@@ -114,33 +114,53 @@ class Rop {
 
 	}
 
+	private function get_available_services() {
+	    return array(
+            'facebook' => array(
+                'active' => true,
+                'name' => 'Facebook',
+                'two_step_sign_in' => true,
+                'credentials' => array(
+                    'app_id'=> array(
+                        'name' => 'APP ID',
+                        'description' => 'Please add the APP ID from your Facebook app.'
+                    ),
+                    'secret' => array(
+                        'name' => 'APP SECRET',
+                        'description' => 'Please add the APP SECRET from your Facebook app.'
+                    )
+                ),
+                'url' => '#'
+            ),
+            'twitter' => array(
+                'active' => true,
+                'name' => 'Twitter',
+                'two_step_sign_in' => false,
+                'credentials' => array(),
+                'url' => '#'
+            ),
+            'linkedin' => array(
+                'active' => false,
+                'name' => 'LinkedIn'
+            ),
+            'thumblr' => array(
+                'active' => false,
+                'name' => 'Thumblr'
+            ),
+        );
+    }
+
+    private function get_authenticated_services() {
+	    return array();
+    }
+
 	public function api( WP_REST_Request $request ) {
 	    switch( $request->get_param( 'req' ) ) {
             case 'available_services':
-                $response = array(
-                    'facebook' => [
-                        'name' => 'Facebook',
-                        'two_step_sign_in' => true,
-                        'credentials' => [
-                            'app_id'=> [
-                                'name' => 'APP ID',
-                                'description' => 'Please add the APP ID from your Facebook app.'
-                            ],
-                            'secret' => [
-                                'name' => 'APP SECRET',
-                                'description' => 'Please add the APP SECRET from your Facebook app.'
-                            ]
-                        ],
-                        'url' => '#'
-                    ],
-                    'twitter' => [
-                        'name' => 'Twitter',
-                        'two_step_sign_in' => false,
-                        'credentials' => [],
-                        'url' => '#'
-                    ]
-                );
+                $response = $this->get_available_services();
                 break;
+            case 'authenticated_services':
+                $response = $this->get_authenticated_services();
             default:
                 $response = array( 'status' => '200', 'data' => array( 'list', 'of', 'stuff', 'from', 'api' ) );
         }

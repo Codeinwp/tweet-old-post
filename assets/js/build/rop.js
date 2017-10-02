@@ -11790,9 +11790,11 @@ exports.default = new _vuex2.default.Store({
             var commit = _ref.commit;
 
             _vue2.default.http({
-                url: ROP_REST_API,
+                url: ropApiSettings.root,
                 method: 'POST',
-                params: { 'req': 'available_services' }
+                headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+                params: { 'req': 'available_services' },
+                responseType: 'json'
             }).then(function (response) {
                 commit('updateAvailableServices', response.data);
             }, function () {
@@ -13544,28 +13546,40 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //         <div class="panel-body">
 //             <h3>Accounts</h3>
 //             <p>This is a <b>Vue.js</b> component.</p>
-//             <div class="container grid-md float-left">
+//             <div class="container">
 //                 <div class="columns">
-//                     <div class="column col-6 text-right">
-//                         <b>New Service</b><br/>
-//                         <i>Select a service and sign in with an account for that service.</i>
+//                     <div class="column col-sm-12 col-md-12 col-lg-6">
+//                         <div class="columns">
+//                             <div class="column col-sm-12 col-md-12 col-xl-6 col-8 text-right">
+//                                 <b>New Service</b><br/>
+//                                 <i>Select a service and sign in with an account for that service.</i>
+//                             </div>
+//                             <div class="column col-sm-12 col-md-12 col-xl-6 col-4 text-left">
+//                                 <sign-in-btn></sign-in-btn>
+//                             </div>
+//                         </div>
+//                         <div class="columns">
+//                             <div class="column col-sm-12 col-md-12 col-lg-12 text-left">
+//                                 <hr/>
+//                                 <h5>Authenticated Services</h5>
+//                                 <service-tile v-for="service in authenticated_services" :key="service.id" :service="service"></service-tile>
+//                             </div>
+//                         </div>
 //                     </div>
-//                     <div class="column col-6 text-left">
-//                         <sign-in-btn></sign-in-btn>
+//                     <div class="column col-sm-12 col-md-12 col-lg-6 text-left">
+//                         <h5>Active Accounts</h5>
+//                         <hr/>
+//                         <div class="column col-12" v-for="account in active_accounts">
+//                             <service-user-tile :account_data="account"></service-user-tile>
+//                             <div class="divider"></div>
+//                         </div>
 //                     </div>
 //                 </div>
-//                 <hr/>
-//                 <h5>Authenticated Services</h5>
-//                 <service-tile v-for="service in authenticated_services" :key="service.id" :service="service"></service-tile>
 //             </div>
-//             <div class="container grid-sm float-left">
-//                 <h5 style="margin-bottom: 22px;">Active Accounts</h5>
-//                 <hr/>
-//                 <div class="columns">
-//                     <div class="column col-12" v-for="account in active_accounts">
-//                         <service-user-tile :account_data="account"></service-user-tile>
-//                         <div class="divider"></div>
-//                     </div>
+//             <div class="columns">
+//                 <div class="column col-12">
+//                     <h4><i class="fa fa-info-circle"></i> Info</h4>
+//                     <p><i>Authenticate a new service (eg. Facebook, Twitter etc. ), select the accounts you want to add from that service and <b>activate</b> them. Only the accounts displayed in the <b>"Active accounts"</b> section will be used.</i></p>
 //                 </div>
 //             </div>
 //         </div>
@@ -13582,10 +13596,43 @@ module.exports = {
         console.log(this.$store.state);
         return {
             authenticated_services: {
-                'serviceID': {
+                'serviceIDFacebook': {
                     id: 'serviceID',
                     service: 'facebook',
-                    available_accounts: {}
+                    credentials: {
+                        app_id: {
+                            name: 'App ID',
+                            value: 'dasdassdaUYASGDUY!@&',
+                            private: false
+                        },
+                        secret: {
+                            name: 'Secret',
+                            value: 'sdaUYASGDUY!@&WHDQ',
+                            private: true
+                        }
+                    },
+                    available_accounts: [{
+                        id: 'account_id_1',
+                        name: 'Page one',
+                        img: ''
+                    }, {
+                        id: 'account_id_2',
+                        name: 'Page two',
+                        img: 'http://www.xsjjys.com/data/out/96/WHDQ-512397052.jpg'
+                    }, {
+                        id: 'account_id_3',
+                        name: 'Page three',
+                        img: 'https://organicthemes.com/demo/profile/files/2012/12/profile_img.png'
+                    }]
+                },
+                'serviceIDTwitter': {
+                    id: 'serviceID',
+                    service: 'twitter',
+                    available_accounts: [{
+                        id: 'account_id_1',
+                        name: '@username',
+                        img: ''
+                    }]
                 }
             },
             active_accounts: [{
@@ -13777,7 +13824,7 @@ module.exports = {
 //     <div class="sign-in-btn">
 //         <div class="input-group">
 //             <select class="form-select" v-model="selected_network">
-//                 <option v-for="( service, network ) in services" v-bind:value="network">{{ service.name }}</option>
+//                 <option v-for="( service, network ) in services" v-bind:value="network" :disabled="!service.active">{{ service.name }}</option>
 //             </select>
 //             <button class="btn input-group-btn" :class="serviceClass" @click="requestAuthorization()" >
 //                 <i class="fa" :class="serviceIcon" aria-hidden="true"></i> Sign In
@@ -14240,7 +14287,7 @@ module.exports = function (bitmap, value) {
 /* 53 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"sign-in-btn\" _v-8e89fa8e=\"\">\n        <div class=\"input-group\" _v-8e89fa8e=\"\">\n            <select class=\"form-select\" v-model=\"selected_network\" _v-8e89fa8e=\"\">\n                <option v-for=\"( service, network ) in services\" v-bind:value=\"network\" _v-8e89fa8e=\"\">{{ service.name }}</option>\n            </select>\n            <button class=\"btn input-group-btn\" :class=\"serviceClass\" @click=\"requestAuthorization()\" _v-8e89fa8e=\"\">\n                <i class=\"fa\" :class=\"serviceIcon\" aria-hidden=\"true\" _v-8e89fa8e=\"\"></i> Sign In\n            </button>\n        </div>\n        <div class=\"modal\" :class=\"modalActiveClass\" _v-8e89fa8e=\"\">\n            <div class=\"modal-overlay\" _v-8e89fa8e=\"\"></div>\n            <div class=\"modal-container\" _v-8e89fa8e=\"\">\n                <div class=\"modal-header\" _v-8e89fa8e=\"\">\n                    <button class=\"btn btn-clear float-right\" @click=\"closeModal()\" _v-8e89fa8e=\"\"></button>\n                    <div class=\"modal-title h5\" _v-8e89fa8e=\"\">{{ modal.serviceName }} Service Credentials</div>\n                </div>\n                <div class=\"modal-body\" _v-8e89fa8e=\"\">\n                    <div class=\"content\" _v-8e89fa8e=\"\">\n                        <div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-8e89fa8e=\"\">\n                            <label class=\"form-label\" :for=\"field.id\" _v-8e89fa8e=\"\">{{ field.name }}</label>\n                            <input class=\"form-input\" type=\"text\" :id=\"field.id\" :placeholder=\"field.name\" _v-8e89fa8e=\"\">\n                            <i _v-8e89fa8e=\"\">{{ field.description }}</i>\n                        </div>\n                    </div>\n                </div>\n                <div class=\"modal-footer\" _v-8e89fa8e=\"\">\n                    <button class=\"btn btn-primary\" @click=\"closeModal()\" _v-8e89fa8e=\"\">Sign in</button>\n                </div>\n            </div>\n        </div>\n    </div>\n";
+module.exports = "\n    <div class=\"sign-in-btn\" _v-8e89fa8e=\"\">\n        <div class=\"input-group\" _v-8e89fa8e=\"\">\n            <select class=\"form-select\" v-model=\"selected_network\" _v-8e89fa8e=\"\">\n                <option v-for=\"( service, network ) in services\" v-bind:value=\"network\" :disabled=\"!service.active\" _v-8e89fa8e=\"\">{{ service.name }}</option>\n            </select>\n            <button class=\"btn input-group-btn\" :class=\"serviceClass\" @click=\"requestAuthorization()\" _v-8e89fa8e=\"\">\n                <i class=\"fa\" :class=\"serviceIcon\" aria-hidden=\"true\" _v-8e89fa8e=\"\"></i> Sign In\n            </button>\n        </div>\n        <div class=\"modal\" :class=\"modalActiveClass\" _v-8e89fa8e=\"\">\n            <div class=\"modal-overlay\" _v-8e89fa8e=\"\"></div>\n            <div class=\"modal-container\" _v-8e89fa8e=\"\">\n                <div class=\"modal-header\" _v-8e89fa8e=\"\">\n                    <button class=\"btn btn-clear float-right\" @click=\"closeModal()\" _v-8e89fa8e=\"\"></button>\n                    <div class=\"modal-title h5\" _v-8e89fa8e=\"\">{{ modal.serviceName }} Service Credentials</div>\n                </div>\n                <div class=\"modal-body\" _v-8e89fa8e=\"\">\n                    <div class=\"content\" _v-8e89fa8e=\"\">\n                        <div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-8e89fa8e=\"\">\n                            <label class=\"form-label\" :for=\"field.id\" _v-8e89fa8e=\"\">{{ field.name }}</label>\n                            <input class=\"form-input\" type=\"text\" :id=\"field.id\" :placeholder=\"field.name\" _v-8e89fa8e=\"\">\n                            <i _v-8e89fa8e=\"\">{{ field.description }}</i>\n                        </div>\n                    </div>\n                </div>\n                <div class=\"modal-footer\" _v-8e89fa8e=\"\">\n                    <button class=\"btn btn-primary\" @click=\"closeModal()\" _v-8e89fa8e=\"\">Sign in</button>\n                </div>\n            </div>\n        </div>\n    </div>\n";
 
 /***/ }),
 /* 54 */
@@ -14300,7 +14347,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n    .facebook[_v-3e1338be] {\n        background-color: #3b5998;\n    }\n\n    .twitter[_v-3e1338be] {\n        background-color: #55acee;\n    }\n\n", ""]);
+exports.push([module.i, "\n\n    #rop_core .btn.btn-danger[_v-3e1338be] {\n        background-color: #d50000;\n        color: #efefef;\n        border-color: #b71c1c;\n    }\n\n    #rop_core .btn.btn-danger[_v-3e1338be]:hover, #rop_core .btn.btn-danger[_v-3e1338be]:focus {\n        background-color: #efefef;\n        color: #d50000;\n        border-color: #b71c1c;\n    }\n\n    #rop_core .btn.btn-info[_v-3e1338be] {\n        background-color: #2196f3;\n        color: #efefef;\n        border-color: #1565c0;\n    }\n\n    #rop_core .btn.btn-info[_v-3e1338be]:hover, #rop_core .btn.btn-info[_v-3e1338be]:focus {\n        background-color: #efefef;\n        color: #2196f3;\n        border-color: #1565c0;\n    }\n\n", ""]);
 
 // exports
 
@@ -14316,52 +14363,133 @@ var _serviceAutocomplete = __webpack_require__(58);
 
 var _serviceAutocomplete2 = _interopRequireDefault(_serviceAutocomplete);
 
+var _secretInput = __webpack_require__(100);
+
+var _secretInput2 = _interopRequireDefault(_secretInput);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase().concat(string.slice(1));
-} // <template>
+// <template>
 //     <div class="service-tile">
+//         <label class="show-md hide-xl"><b>{{service_url}}/</b></label>
 //         <div class="input-group">
-//             <button class="btn input-group-btn" @click="" >
+//             <button class="btn input-group-btn btn-danger" @click="" >
 //                 <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
 //             </button>
-//             <button class="btn input-group-btn" @click="" >
+//             <button class="btn input-group-btn btn-info" @click="toggleCredentials()" v-if="service.credentials" >
 //                 <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i>
 //             </button>
-//             <span class="input-group-addon">facebook.com/</span>
-//             <service-autocomplete></service-autocomplete>
-//             <!--<select class="form-select">-->
-//                 <!--<option default>Select an account to activate</option>-->
-//                 <!--&lt;!&ndash;<option v-for="( service, network ) in services" v-bind:value="network">{{ service.name }}</option>&ndash;&gt;-->
-//             <!--</select>-->
-//             <button class="btn input-group-btn" >
-//                 <i class="fa fa-plus" aria-hidden="true"></i> Activate
+//             <span class="input-group-addon hide-md" style="min-width: 115px; text-align: right;">{{service_url}}/</span>
+//             <service-autocomplete :accounts="service.available_accounts"></service-autocomplete>
+//             <button class="btn input-group-btn" :class="serviceClass" >
+//                 <i class="fa fa-fw fa-plus" aria-hidden="true"></i> <span class="hide-md">Activate</span>
 //             </button>
 //         </div>
+//         <div class="card centered" :class="credentialsDisplayClass" v-if="service.credentials">
+//             <div class="card-header">
+//                 <div class="card-title h5">{{serviceName}}</div>
+//                 <div class="card-subtitle text-gray">{{service.id}}</div>
+//             </div>
+//             <div class="card-body">
+//                 <div class="form-horizontal">
+//                     <div class="form-group" v-for="( credential, index ) in service.credentials">
+//                         <div class="col-3">
+//                             <label class="form-label" :for="credentialID(index)">{{credential.name}}:</label>
+//                         </div>
+//                         <div class="col-9">
+//                             <secret-input :id="credentialID(index)" :value="credential.value" :secret="credential.private" />
+//                         </div>
+//                     </div>
+//                 </div>
+//             </div>
+//         </div>
+//         <div class="divider clearfix"></div>
 //     </div>
 // </template>
 //
 // <script>
-
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase().concat(string.slice(1));
+}
 
 module.exports = {
     name: 'service-tile',
+    props: {
+        service: {
+            type: Object,
+            required: true
+        }
+    },
     data: function data() {
-        return {};
+        return {
+            show_credentials: false
+        };
+    },
+    computed: {
+        service_url: function service_url() {
+            if (this.service.service === 'facebook') {
+                return 'facebook.com';
+            }
+            if (this.service.service === 'twitter') {
+                return 'twitter.com';
+            }
+
+            return 'service.url';
+        },
+        serviceName: function serviceName() {
+            return capitalizeFirstLetter(this.service.service);
+        },
+        serviceClass: function serviceClass() {
+            return {
+                'btn-twitter': this.service.service === 'twitter',
+                'btn-facebook': this.service.service === 'facebook'
+            };
+        },
+        credentialsDisplayClass: function credentialsDisplayClass() {
+            return {
+                'd-block': this.show_credentials === true,
+                'd-none': this.show_credentials === false
+            };
+        }
+    },
+    methods: {
+        credentialID: function credentialID(index) {
+            return 'service-' + index + '-field';
+        },
+        toggleCredentials: function toggleCredentials() {
+            this.show_credentials = !this.show_credentials;
+        }
     },
     components: {
-        ServiceAutocomplete: _serviceAutocomplete2.default
+        ServiceAutocomplete: _serviceAutocomplete2.default,
+        SecretInput: _secretInput2.default
     }
     // </script>
     //
     // <style scoped>
-    //     .facebook {
-    //         background-color: #3b5998;
+    //
+    //     #rop_core .btn.btn-danger {
+    //         background-color: #d50000;
+    //         color: #efefef;
+    //         border-color: #b71c1c;
     //     }
     //
-    //     .twitter {
-    //         background-color: #55acee;
+    //     #rop_core .btn.btn-danger:hover, #rop_core .btn.btn-danger:focus {
+    //         background-color: #efefef;
+    //         color: #d50000;
+    //         border-color: #b71c1c;
+    //     }
+    //
+    //     #rop_core .btn.btn-info {
+    //         background-color: #2196f3;
+    //         color: #efefef;
+    //         border-color: #1565c0;
+    //     }
+    //
+    //     #rop_core .btn.btn-info:hover, #rop_core .btn.btn-info:focus {
+    //         background-color: #efefef;
+    //         color: #2196f3;
+    //         border-color: #1565c0;
     //     }
     //
     // </style>
@@ -14414,7 +14542,7 @@ function containsObject(obj, list) {
     }
     return false;
 } // <template>
-//     <div class="form-autocomplete" v-on-clickaway="closeDropdown">
+//     <div class="form-autocomplete" style="width: 100%;" v-on-clickaway="closeDropdown">
 //         <!-- autocomplete input container -->
 //         <div class="form-autocomplete-input form-input" :class="is_focused">
 //
@@ -14422,18 +14550,18 @@ function containsObject(obj, list) {
 //             <label class="chip" v-for="( account, index ) in to_be_activated">
 //                 <img :src="getImg(account.img)" class="avatar avatar-sm" alt="{account.name}">
 //                 {{account.name}}
-//                 <a href="#" class="btn btn-clear" aria-label="Close" @click="removeToBeActivated(index)" role="button"></a>
+//                 <a href="#" class="btn btn-clear" aria-label="Close" @click.prevent="removeToBeActivated(index)" role="button" v-if="!is_one"></a>
 //             </label>
 //
 //             <!-- autocomplete real input box -->
-//             <input class="form-input" type="text" ref="search" v-model="search" placeholder="Type page name here ..." @click="magic_flag = true" @focus="magic_flag = true" @keyup="magic_flag = true" @keydown.8="popLast()" @keydown.38="highlightItem(true)" @keydown.40="highlightItem()">
+//             <input style="height: 1.0rem;" class="form-input" type="text" ref="search" v-model="search" :placeholder="autocomplete_placeholder" @click="magic_flag = true" @focus="magic_flag = true" @keyup="magic_flag = true" @keydown.8="popLast()" @keydown.38="highlightItem(true)" @keydown.40="highlightItem()" :readonly="is_one">
 //         </div>
 //
 //         <!-- autocomplete suggestion list -->
-//         <ul class="menu" ref="autocomplete_results" :class="is_visible">
+//         <ul class="menu" ref="autocomplete_results" :class="is_visible" v-if="!is_one">
 //             <!-- menu list chips -->
 //             <li class="menu-item" v-for="( account, index ) in accounts" v-if="filterSearch(account)">
-//                 <a href="#" @click="addToBeActivated(index)" @keydown.38="highlightItem(true)" @keydown.40="highlightItem()">
+//                 <a href="#" @click.prevent="addToBeActivated(index)" @keydown.38="highlightItem(true)" @keydown.40="highlightItem()">
 //                     <div class="tile tile-centered">
 //                         <div class="tile-icon">
 //                             <img :src="getImg(account.img)" class="avatar avatar-sm" alt="{account.name}">
@@ -14451,6 +14579,7 @@ function containsObject(obj, list) {
 //             </li>
 //         </ul>
 //     </div>
+//
 // </template>
 //
 // <script>
@@ -14459,6 +14588,7 @@ function containsObject(obj, list) {
 module.exports = {
     name: 'service-autocomplete',
     mixins: [_vueClickaway.mixin],
+    props: ['accounts'],
     data: function data() {
         return {
             search: '',
@@ -14466,19 +14596,6 @@ module.exports = {
             no_results: false,
             magic_flag: false,
             account_def_img: ROP_ASSETS_URL + 'img/accounts_icon.jpg',
-            accounts: [{
-                id: 'account_id_1',
-                name: 'Page one',
-                img: ''
-            }, {
-                id: 'account_id_2',
-                name: 'Page two',
-                img: 'http://www.xsjjys.com/data/out/96/WHDQ-512397052.jpg'
-            }, {
-                id: 'account_id_3',
-                name: 'Page three',
-                img: 'https://organicthemes.com/demo/profile/files/2012/12/profile_img.png'
-            }],
             to_be_activated: []
         };
     },
@@ -14492,6 +14609,19 @@ module.exports = {
             return {
                 'd-none': this.magic_flag === false
             };
+        },
+        is_one: function is_one() {
+            if (this.accounts.length === 1) {
+                this.to_be_activated.push(this.accounts[0]);
+                return true;
+            }
+            return false;
+        },
+        autocomplete_placeholder: function autocomplete_placeholder() {
+            if (this.is_one) {
+                return '';
+            }
+            return 'Accounts ...';
         },
         has_results: function has_results() {
             var found = 0;
@@ -14599,13 +14729,13 @@ module.exports = {
 /* 61 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"form-autocomplete\" v-on-clickaway=\"closeDropdown\">\n        <!-- autocomplete input container -->\n        <div class=\"form-autocomplete-input form-input\" :class=\"is_focused\">\n\n            <!-- autocomplete chips -->\n            <label class=\"chip\" v-for=\"( account, index ) in to_be_activated\">\n                <img :src=\"getImg(account.img)\" class=\"avatar avatar-sm\" alt=\"{account.name}\">\n                {{account.name}}\n                <a href=\"#\" class=\"btn btn-clear\" aria-label=\"Close\" @click=\"removeToBeActivated(index)\" role=\"button\"></a>\n            </label>\n\n            <!-- autocomplete real input box -->\n            <input class=\"form-input\" type=\"text\" ref=\"search\" v-model=\"search\" placeholder=\"Type page name here ...\" @click=\"magic_flag = true\" @focus=\"magic_flag = true\" @keyup=\"magic_flag = true\" @keydown.8=\"popLast()\" @keydown.38=\"highlightItem(true)\" @keydown.40=\"highlightItem()\">\n        </div>\n\n        <!-- autocomplete suggestion list -->\n        <ul class=\"menu\" ref=\"autocomplete_results\" :class=\"is_visible\">\n            <!-- menu list chips -->\n            <li class=\"menu-item\" v-for=\"( account, index ) in accounts\" v-if=\"filterSearch(account)\">\n                <a href=\"#\" @click=\"addToBeActivated(index)\" @keydown.38=\"highlightItem(true)\" @keydown.40=\"highlightItem()\">\n                    <div class=\"tile tile-centered\">\n                        <div class=\"tile-icon\">\n                            <img :src=\"getImg(account.img)\" class=\"avatar avatar-sm\" alt=\"{account.name}\">\n                        </div>\n                        <div class=\"tile-content\" v-html=\"markMatch(account.name, search)\"></div>\n                    </div>\n                </a>\n            </li>\n            <li v-if=\"has_results\">\n                <a href=\"#\">\n                    <div class=\"tile tile-centered\">\n                        <div class=\"tile-content\"><i>Nothing found matching \"{{search}}\" ...</i></div>\n                    </div>\n                </a>\n            </li>\n        </ul>\n    </div>\n";
+module.exports = "\n    <div class=\"form-autocomplete\" style=\"width: 100%;\" v-on-clickaway=\"closeDropdown\">\n        <!-- autocomplete input container -->\n        <div class=\"form-autocomplete-input form-input\" :class=\"is_focused\">\n\n            <!-- autocomplete chips -->\n            <label class=\"chip\" v-for=\"( account, index ) in to_be_activated\">\n                <img :src=\"getImg(account.img)\" class=\"avatar avatar-sm\" alt=\"{account.name}\">\n                {{account.name}}\n                <a href=\"#\" class=\"btn btn-clear\" aria-label=\"Close\" @click.prevent=\"removeToBeActivated(index)\" role=\"button\" v-if=\"!is_one\"></a>\n            </label>\n\n            <!-- autocomplete real input box -->\n            <input style=\"height: 1.0rem;\" class=\"form-input\" type=\"text\" ref=\"search\" v-model=\"search\" :placeholder=\"autocomplete_placeholder\" @click=\"magic_flag = true\" @focus=\"magic_flag = true\" @keyup=\"magic_flag = true\" @keydown.8=\"popLast()\" @keydown.38=\"highlightItem(true)\" @keydown.40=\"highlightItem()\" :readonly=\"is_one\">\n        </div>\n\n        <!-- autocomplete suggestion list -->\n        <ul class=\"menu\" ref=\"autocomplete_results\" :class=\"is_visible\" v-if=\"!is_one\">\n            <!-- menu list chips -->\n            <li class=\"menu-item\" v-for=\"( account, index ) in accounts\" v-if=\"filterSearch(account)\">\n                <a href=\"#\" @click.prevent=\"addToBeActivated(index)\" @keydown.38=\"highlightItem(true)\" @keydown.40=\"highlightItem()\">\n                    <div class=\"tile tile-centered\">\n                        <div class=\"tile-icon\">\n                            <img :src=\"getImg(account.img)\" class=\"avatar avatar-sm\" alt=\"{account.name}\">\n                        </div>\n                        <div class=\"tile-content\" v-html=\"markMatch(account.name, search)\"></div>\n                    </div>\n                </a>\n            </li>\n            <li v-if=\"has_results\">\n                <a href=\"#\">\n                    <div class=\"tile tile-centered\">\n                        <div class=\"tile-content\"><i>Nothing found matching \"{{search}}\" ...</i></div>\n                    </div>\n                </a>\n            </li>\n        </ul>\n    </div>\n\n";
 
 /***/ }),
 /* 62 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"service-tile\" _v-3e1338be=\"\">\n        <div class=\"input-group\" _v-3e1338be=\"\">\n            <button class=\"btn input-group-btn\" @click=\"\" _v-3e1338be=\"\">\n                <i class=\"fa fa-fw fa-trash\" aria-hidden=\"true\" _v-3e1338be=\"\"></i>\n            </button>\n            <button class=\"btn input-group-btn\" @click=\"\" _v-3e1338be=\"\">\n                <i class=\"fa fa-fw fa-info-circle\" aria-hidden=\"true\" _v-3e1338be=\"\"></i>\n            </button>\n            <span class=\"input-group-addon\" _v-3e1338be=\"\">facebook.com/</span>\n            <service-autocomplete _v-3e1338be=\"\"></service-autocomplete>\n            <!--<select class=\"form-select\">-->\n                <!--<option default>Select an account to activate</option>-->\n                <!--&lt;!&ndash;<option v-for=\"( service, network ) in services\" v-bind:value=\"network\">{{ service.name }}</option>&ndash;&gt;-->\n            <!--</select>-->\n            <button class=\"btn input-group-btn\" _v-3e1338be=\"\">\n                <i class=\"fa fa-plus\" aria-hidden=\"true\" _v-3e1338be=\"\"></i> Activate\n            </button>\n        </div>\n    </div>\n";
+module.exports = "\n    <div class=\"service-tile\" _v-3e1338be=\"\">\n        <label class=\"show-md hide-xl\" _v-3e1338be=\"\"><b _v-3e1338be=\"\">{{service_url}}/</b></label>\n        <div class=\"input-group\" _v-3e1338be=\"\">\n            <button class=\"btn input-group-btn btn-danger\" @click=\"\" _v-3e1338be=\"\">\n                <i class=\"fa fa-fw fa-trash\" aria-hidden=\"true\" _v-3e1338be=\"\"></i>\n            </button>\n            <button class=\"btn input-group-btn btn-info\" @click=\"toggleCredentials()\" v-if=\"service.credentials\" _v-3e1338be=\"\">\n                <i class=\"fa fa-fw fa-info-circle\" aria-hidden=\"true\" _v-3e1338be=\"\"></i>\n            </button>\n            <span class=\"input-group-addon hide-md\" style=\"min-width: 115px; text-align: right;\" _v-3e1338be=\"\">{{service_url}}/</span>\n            <service-autocomplete :accounts=\"service.available_accounts\" _v-3e1338be=\"\"></service-autocomplete>\n            <button class=\"btn input-group-btn\" :class=\"serviceClass\" _v-3e1338be=\"\">\n                <i class=\"fa fa-fw fa-plus\" aria-hidden=\"true\" _v-3e1338be=\"\"></i> <span class=\"hide-md\" _v-3e1338be=\"\">Activate</span>\n            </button>\n        </div>\n        <div class=\"card centered\" :class=\"credentialsDisplayClass\" v-if=\"service.credentials\" _v-3e1338be=\"\">\n            <div class=\"card-header\" _v-3e1338be=\"\">\n                <div class=\"card-title h5\" _v-3e1338be=\"\">{{serviceName}}</div>\n                <div class=\"card-subtitle text-gray\" _v-3e1338be=\"\">{{service.id}}</div>\n            </div>\n            <div class=\"card-body\" _v-3e1338be=\"\">\n                <div class=\"form-horizontal\" _v-3e1338be=\"\">\n                    <div class=\"form-group\" v-for=\"( credential, index ) in service.credentials\" _v-3e1338be=\"\">\n                        <div class=\"col-3\" _v-3e1338be=\"\">\n                            <label class=\"form-label\" :for=\"credentialID(index)\" _v-3e1338be=\"\">{{credential.name}}:</label>\n                        </div>\n                        <div class=\"col-9\" _v-3e1338be=\"\">\n                            <secret-input :id=\"credentialID(index)\" :value=\"credential.value\" :secret=\"credential.private\" _v-3e1338be=\"\">\n                        </secret-input></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"divider clearfix\" _v-3e1338be=\"\"></div>\n    </div>\n";
 
 /***/ }),
 /* 63 */
@@ -14767,7 +14897,7 @@ module.exports = "\n    <div class=\"tile tile-centered\" _v-0eff658d=\"\">\n   
 /* 68 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"tab-view\">\n        <div class=\"panel-body\">\n            <h3>Accounts</h3>\n            <p>This is a <b>Vue.js</b> component.</p>\n            <div class=\"container grid-md float-left\">\n                <div class=\"columns\">\n                    <div class=\"column col-6 text-right\">\n                        <b>New Service</b><br/>\n                        <i>Select a service and sign in with an account for that service.</i>\n                    </div>\n                    <div class=\"column col-6 text-left\">\n                        <sign-in-btn></sign-in-btn>\n                    </div>\n                </div>\n                <hr/>\n                <h5>Authenticated Services</h5>\n                <service-tile v-for=\"service in authenticated_services\" :key=\"service.id\" :service=\"service\"></service-tile>\n            </div>\n            <div class=\"container grid-sm float-left\">\n                <h5 style=\"margin-bottom: 22px;\">Active Accounts</h5>\n                <hr/>\n                <div class=\"columns\">\n                    <div class=\"column col-12\" v-for=\"account in active_accounts\">\n                        <service-user-tile :account_data=\"account\"></service-user-tile>\n                        <div class=\"divider\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"panel-footer\">\n            <button class=\"btn btn-primary\">Save</button>\n        </div>\n    </div>\n";
+module.exports = "\n    <div class=\"tab-view\">\n        <div class=\"panel-body\">\n            <h3>Accounts</h3>\n            <p>This is a <b>Vue.js</b> component.</p>\n            <div class=\"container\">\n                <div class=\"columns\">\n                    <div class=\"column col-sm-12 col-md-12 col-lg-6\">\n                        <div class=\"columns\">\n                            <div class=\"column col-sm-12 col-md-12 col-xl-6 col-8 text-right\">\n                                <b>New Service</b><br/>\n                                <i>Select a service and sign in with an account for that service.</i>\n                            </div>\n                            <div class=\"column col-sm-12 col-md-12 col-xl-6 col-4 text-left\">\n                                <sign-in-btn></sign-in-btn>\n                            </div>\n                        </div>\n                        <div class=\"columns\">\n                            <div class=\"column col-sm-12 col-md-12 col-lg-12 text-left\">\n                                <hr/>\n                                <h5>Authenticated Services</h5>\n                                <service-tile v-for=\"service in authenticated_services\" :key=\"service.id\" :service=\"service\"></service-tile>\n                            </div>\n                        </div>\n                    </div>\n                    <div class=\"column col-sm-12 col-md-12 col-lg-6 text-left\">\n                        <h5>Active Accounts</h5>\n                        <hr/>\n                        <div class=\"column col-12\" v-for=\"account in active_accounts\">\n                            <service-user-tile :account_data=\"account\"></service-user-tile>\n                            <div class=\"divider\"></div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"columns\">\n                <div class=\"column col-12\">\n                    <h4><i class=\"fa fa-info-circle\"></i> Info</h4>\n                    <p><i>Authenticate a new service (eg. Facebook, Twitter etc. ), select the accounts you want to add from that service and <b>activate</b> them. Only the accounts displayed in the <b>\"Active accounts\"</b> section will be used.</i></p>\n                </div>\n            </div>\n        </div>\n        <div class=\"panel-footer\">\n            <button class=\"btn btn-primary\">Save</button>\n        </div>\n    </div>\n";
 
 /***/ }),
 /* 69 */
@@ -15360,6 +15490,99 @@ exports.version = version;
 exports.directive = directive;
 exports.mixin = mixin;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
+
+/***/ }),
+/* 96 */,
+/* 97 */,
+/* 98 */,
+/* 99 */,
+/* 100 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__vue_script__ = __webpack_require__(101)
+__vue_template__ = __webpack_require__(102)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/var/www/html/wp-base/wp-content/plugins/tweet-old-post/assets/js/src/vue-elements/reusables/secret-input.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 101 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// <template>
+//     <div class="input-group" v-if="secret">
+//         <input class="form-input" :type="input_type" :id="id" :value="value" :readonly="readonly">
+//         <button class="btn input-group-btn" @mouseenter="showHideSecret()" @mouseleave="showHideSecret()"><i class="fa fa-fw" :class="visibileClass"></i></button>
+//     </div>
+//     <input class="form-input" type="text" :id="id" :value="value" :readonly="readonly" v-else>
+// </template>
+// <script>
+module.exports = {
+    name: 'secret-input',
+    props: {
+        id: {
+            default: ''
+        },
+        secret: {
+            type: Boolean,
+            default: true
+        },
+        value: {
+            default: ''
+        },
+        readonly: {
+            type: Boolean,
+            default: true
+        }
+    },
+    data: function data() {
+        return {
+            visible: false
+        };
+    },
+    computed: {
+        input_type: function input_type() {
+            if (this.visible) {
+                return 'text';
+            }
+            return 'password';
+        },
+        visibileClass: function visibileClass() {
+            return {
+                'fa-eye': this.visible === true,
+                'fa-eye-slash': this.visible === false
+            };
+        }
+    },
+    methods: {
+        showHideSecret: function showHideSecret() {
+            this.visible = !this.visible;
+        }
+    }
+    // </script>
+
+};
+
+/***/ }),
+/* 102 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div class=\"input-group\" v-if=\"secret\">\n        <input class=\"form-input\" :type=\"input_type\" :id=\"id\" :value=\"value\" :readonly=\"readonly\">\n        <button class=\"btn input-group-btn\" @mouseenter=\"showHideSecret()\" @mouseleave=\"showHideSecret()\"><i class=\"fa fa-fw\" :class=\"visibileClass\"></i></button>\n    </div>\n    <input class=\"form-input\" type=\"text\" :id=\"id\" :value=\"value\" :readonly=\"readonly\" v-else>\n";
 
 /***/ })
 /******/ ]);

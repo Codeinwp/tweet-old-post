@@ -2,7 +2,7 @@
     <div class="sign-in-btn">
         <div class="input-group">
             <select class="form-select" v-model="selected_network">
-                <option v-for="( service, network ) in services" v-bind:value="network">{{ service.name }}</option>
+                <option v-for="( service, network ) in services" v-bind:value="network" :disabled="!service.active">{{ service.name }}</option>
             </select>
             <button class="btn input-group-btn" :class="serviceClass" @click="requestAuthorization()" >
                 <i class="fa" :class="serviceIcon" aria-hidden="true"></i> Sign In
