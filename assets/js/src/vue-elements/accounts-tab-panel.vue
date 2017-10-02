@@ -55,69 +55,12 @@
 
     module.exports = {
         name: 'account-view',
-        data: function() {
-            console.log( this.$store.state );
-            return {
-                authenticated_services: {
-                    'serviceIDFacebook': {
-                        id: 'serviceID',
-                        service: 'facebook',
-                        credentials: {
-                            app_id: {
-                                name: 'App ID',
-                                value: 'dasdassdaUYASGDUY!@&',
-                                private: false,
-                            },
-                            secret: {
-                                name: 'Secret',
-                                value: 'sdaUYASGDUY!@&WHDQ',
-                                private: true,
-                            }
-                        },
-                        available_accounts: [
-                            {
-                                id: 'account_id_1',
-                                name: 'Page one',
-                                img: ''
-                            },
-                            {
-                                id: 'account_id_2',
-                                name: 'Page two',
-                                img: 'http://www.xsjjys.com/data/out/96/WHDQ-512397052.jpg'
-                            },
-                            {
-                                id: 'account_id_3',
-                                name: 'Page three',
-                                img: 'https://organicthemes.com/demo/profile/files/2012/12/profile_img.png'
-                            }
-                        ]
-                    },
-                    'serviceIDTwitter': {
-                        id: 'serviceID',
-                        service: 'twitter',
-                        available_accounts: [
-                            {
-                                id: 'account_id_1',
-                                name: '@username',
-                                img: ''
-                            },
-                        ]
-                    }
-                },
-                active_accounts: [
-                    {
-                        service: 'facebook',
-                        user: 'Company Page',
-                        account: 'user@email.com',
-                        created: '07/09/2017 15:16'
-                    },
-                    {
-                        service: 'twitter',
-                        user: 'John Doe',
-                        account: '@unkownjoe',
-                        created: '07/09/2017 15:16'
-                    }
-                ],
+        computed: {
+            authenticated_services: function() {
+                return this.$store.state.authenticatedServices;
+            },
+            active_accounts: function() {
+                return this.$store.state.activeAccounts;
             }
         },
         components: {

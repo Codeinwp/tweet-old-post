@@ -151,7 +151,69 @@ class Rop {
     }
 
     private function get_authenticated_services() {
-	    return array();
+	    return array(
+            'serviceIDFacebook' => array(
+                'id' => 'serviceID',
+                'service' => 'facebook',
+                'credentials' => array(
+                    'app_id' => array(
+                        'name' => 'App ID',
+                        'value' => 'dasdassdaUYASGDUY!@&',
+                        'private' => false,
+                    ),
+                    'secret' => array(
+                        'name' => 'Secret',
+                        'value' => 'sdaUYASGDUY!@&WHDQ',
+                        'private' => true,
+                    )
+                ),
+                'available_accounts' => array(
+                    array(
+                        'id' => 'account_id_1',
+                        'name' => 'Page one',
+                        'img' => ''
+                    ),
+                    array(
+                        'id' => 'account_id_2',
+                        'name' => 'Page two',
+                        'img' => 'http://www.xsjjys.com/data/out/96/WHDQ-512397052.jpg'
+                    ),
+                    array(
+                        'id' => 'account_id_3',
+                        'name' => 'Page three',
+                        'img' => 'https://organicthemes.com/demo/profile/files/2012/12/profile_img.png'
+                    )
+                )
+            ),
+            'serviceIDTwitter' => array(
+                'id' => 'serviceID',
+                'service' => 'twitter',
+                'available_accounts' => array(
+                    array(
+                        'id' => 'account_id_1',
+                        'name' => '@username',
+                        'img' => ''
+                    ),
+                )
+            )
+        );
+    }
+
+    private function get_active_accounts() {
+        return array(
+            array(
+                'service' => 'facebook',
+                'user' => 'Company Page',
+                'account' => 'user@email.com',
+                'created' => '07/09/2017 15:16'
+            ),
+            array(
+                'service' => 'twitter',
+                'user' => 'John Doe',
+                'account' => '@unkownjoe',
+                'created' => '07/09/2017 15:16'
+            ),
+        );
     }
 
 	public function api( WP_REST_Request $request ) {
@@ -161,6 +223,10 @@ class Rop {
                 break;
             case 'authenticated_services':
                 $response = $this->get_authenticated_services();
+                break;
+            case 'active_accounts':
+                $response = $this->get_active_accounts();
+                break;
             default:
                 $response = array( 'status' => '200', 'data' => array( 'list', 'of', 'stuff', 'from', 'api' ) );
         }

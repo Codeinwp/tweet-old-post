@@ -41,7 +41,7 @@ export default new Vuex.Store({
         ],
         availableServices: [],
         authenticatedServices: [],
-        registeredAccounts: [],
+        activeAccounts: [],
     },
     getters: {
       getServices( state ) {
@@ -65,11 +65,11 @@ export default new Vuex.Store({
         updateAvailableServices( state, data ) {
             state.availableServices = data;
         },
-        getAuthenticatedServices( state ) {
-
+        updateAuthenticatedServices( state, data ) {
+            state.authenticatedServices = data;
         },
-        getRegisteredAccounts( state ) {
-
+        updateActiveAccounts( state, data ) {
+            state.activeAccounts = data;
         }
     },
     actions: {
@@ -85,8 +85,34 @@ export default new Vuex.Store({
             }, function () {
                 console.log( 'Error retrieving available services.' )
             })
+        },
+        fetchAuthenticatedServices ({ commit }) {
+            Vue.http({
+                url: ropApiSettings.root,
+                method: 'POST',
+                headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+                params: { 'req': 'authenticated_services' },
+                responseType: 'json'
+            }).then(function (response) {
+                commit( 'updateAuthenticatedServices', response.data );
+            }, function () {
+                console.log( 'Error retrieving authenticated services.' )
+            })
+        },
+        fetchActiveAccounts ({ commit }) {
+            Vue.http({
+                url: ropApiSettings.root,
+                method: 'POST',
+                headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+                params: { 'req': 'active_accounts' },
+                responseType: 'json'
+            }).then(function (response) {
+                commit( 'updateActiveAccounts', response.data );
+            }, function () {
+                console.log( 'Error retrieving active accounts.' )
+            })
         }
-    }
+    },
 });
 
 //store.dispatch( 'fetchAvailableServices' );

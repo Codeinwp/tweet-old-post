@@ -9,6 +9,8 @@ window.onload = function () {
         store,
         created() {
             store.dispatch( 'fetchAvailableServices' );
+            store.dispatch( 'fetchAuthenticatedServices' );
+            store.dispatch( 'fetchActiveAccounts' );
         },
         components: {
             MainPagePanel

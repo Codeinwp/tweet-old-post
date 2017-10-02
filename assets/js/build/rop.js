@@ -11665,6 +11665,8 @@ window.onload = function () {
         store: _rop_store2.default,
         created: function created() {
             _rop_store2.default.dispatch('fetchAvailableServices');
+            _rop_store2.default.dispatch('fetchAuthenticatedServices');
+            _rop_store2.default.dispatch('fetchActiveAccounts');
         },
 
         components: {
@@ -11758,7 +11760,7 @@ exports.default = new _vuex2.default.Store({
         }],
         availableServices: [],
         authenticatedServices: [],
-        registeredAccounts: []
+        activeAccounts: []
     },
     getters: {
         getServices: function getServices(state) {
@@ -11782,8 +11784,12 @@ exports.default = new _vuex2.default.Store({
         updateAvailableServices: function updateAvailableServices(state, data) {
             state.availableServices = data;
         },
-        getAuthenticatedServices: function getAuthenticatedServices(state) {},
-        getRegisteredAccounts: function getRegisteredAccounts(state) {}
+        updateAuthenticatedServices: function updateAuthenticatedServices(state, data) {
+            state.authenticatedServices = data;
+        },
+        updateActiveAccounts: function updateActiveAccounts(state, data) {
+            state.activeAccounts = data;
+        }
     },
     actions: {
         fetchAvailableServices: function fetchAvailableServices(_ref) {
@@ -11799,6 +11805,36 @@ exports.default = new _vuex2.default.Store({
                 commit('updateAvailableServices', response.data);
             }, function () {
                 console.log('Error retrieving available services.');
+            });
+        },
+        fetchAuthenticatedServices: function fetchAuthenticatedServices(_ref2) {
+            var commit = _ref2.commit;
+
+            _vue2.default.http({
+                url: ropApiSettings.root,
+                method: 'POST',
+                headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+                params: { 'req': 'authenticated_services' },
+                responseType: 'json'
+            }).then(function (response) {
+                commit('updateAuthenticatedServices', response.data);
+            }, function () {
+                console.log('Error retrieving authenticated services.');
+            });
+        },
+        fetchActiveAccounts: function fetchActiveAccounts(_ref3) {
+            var commit = _ref3.commit;
+
+            _vue2.default.http({
+                url: ropApiSettings.root,
+                method: 'POST',
+                headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+                params: { 'req': 'active_accounts' },
+                responseType: 'json'
+            }).then(function (response) {
+                commit('updateActiveAccounts', response.data);
+            }, function () {
+                console.log('Error retrieving active accounts.');
             });
         }
     }
@@ -13592,61 +13628,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // <script>
 module.exports = {
     name: 'account-view',
-    data: function data() {
-        console.log(this.$store.state);
-        return {
-            authenticated_services: {
-                'serviceIDFacebook': {
-                    id: 'serviceID',
-                    service: 'facebook',
-                    credentials: {
-                        app_id: {
-                            name: 'App ID',
-                            value: 'dasdassdaUYASGDUY!@&',
-                            private: false
-                        },
-                        secret: {
-                            name: 'Secret',
-                            value: 'sdaUYASGDUY!@&WHDQ',
-                            private: true
-                        }
-                    },
-                    available_accounts: [{
-                        id: 'account_id_1',
-                        name: 'Page one',
-                        img: ''
-                    }, {
-                        id: 'account_id_2',
-                        name: 'Page two',
-                        img: 'http://www.xsjjys.com/data/out/96/WHDQ-512397052.jpg'
-                    }, {
-                        id: 'account_id_3',
-                        name: 'Page three',
-                        img: 'https://organicthemes.com/demo/profile/files/2012/12/profile_img.png'
-                    }]
-                },
-                'serviceIDTwitter': {
-                    id: 'serviceID',
-                    service: 'twitter',
-                    available_accounts: [{
-                        id: 'account_id_1',
-                        name: '@username',
-                        img: ''
-                    }]
-                }
-            },
-            active_accounts: [{
-                service: 'facebook',
-                user: 'Company Page',
-                account: 'user@email.com',
-                created: '07/09/2017 15:16'
-            }, {
-                service: 'twitter',
-                user: 'John Doe',
-                account: '@unkownjoe',
-                created: '07/09/2017 15:16'
-            }]
-        };
+    computed: {
+        authenticated_services: function authenticated_services() {
+            return this.$store.state.authenticatedServices;
+        },
+        active_accounts: function active_accounts() {
+            return this.$store.state.activeAccounts;
+        }
     },
     components: {
         SignInBtn: _signInBtn2.default,
