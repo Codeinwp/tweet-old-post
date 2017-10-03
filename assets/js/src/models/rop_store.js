@@ -116,7 +116,6 @@ export default new Vuex.Store({
             })
         },
         updateActiveAccounts ({ commit }, data) {
-
             if( data.action === 'update' ) {
                 Vue.http({
                     url: ropApiSettings.root,
@@ -146,6 +145,21 @@ export default new Vuex.Store({
             } else {
                 console.log( 'No valid action specified.' );
             }
+        },
+        authenticateService ({ commit }, data) {
+            Vue.http({
+                url: ropApiSettings.root,
+                method: 'POST',
+                headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+                params: { 'req': 'authenticate_service' },
+                body: data,
+                responseType: 'json'
+            }).then(function (response) {
+                console.log( response.data );
+                commit( 'updateAuthenticatedServices', response.data );
+            }, function () {
+                console.log( 'Error retrieving active accounts.' );
+            })
         }
     },
 });

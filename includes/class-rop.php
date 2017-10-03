@@ -115,6 +115,12 @@ class Rop {
 	}
 
 	private function get_available_services() {
+
+        $twitter_service = new Rop_Twitter_Service();
+        $twitter_service->init();
+        $request_token = $twitter_service->request_api_token();
+
+
 	    return array(
             'facebook' => array(
                 'active' => true,
@@ -136,8 +142,8 @@ class Rop {
                 'active' => true,
                 'name' => 'Twitter',
                 'two_step_sign_in' => false,
-                'credentials' => array(),
-                'url' => '#'
+                'credentials' => $request_token,
+                'url' => $twitter_service->sign_in_url( $request_token )
             ),
             'linkedin' => array(
                 'active' => false,
@@ -253,6 +259,39 @@ class Rop {
         return $result;
     }
 
+    private function authenticate_service( $data ) {
+        $new_service = array();
+	    if( $data['service'] == 'twitter' ) {
+            $twitter_service = new Rop_Twitter_Service();
+            $authentication = $twitter_service->authenticate();
+            if( $authentication ) {
+                $authenticated_services = $this->get_authenticated_services();
+
+                $img = '';
+                if( ! $authentication->default_profile_image ) {
+                    $img = $authentication->profile_image_url_https;
+                }
+
+                $new_service[$authentication->id_str] = array(
+                    'id' => $authentication->id,
+                    'service' => $data['service'],
+                    'available_accounts' => array(
+                        array(
+                            'id' => $authentication->id,
+                            'name' => $authentication->name,
+                            'account' => '@' . $authentication->screen_name,
+                            'img' => $img,
+                            'active' => true,
+                        ),
+                    )
+                );
+
+
+            }
+        }
+        return wp_parse_args( $new_service, $authenticated_services );
+    }
+
 	public function api( WP_REST_Request $request ) {
 	    switch( $request->get_param( 'req' ) ) {
             case 'available_services':
@@ -271,6 +310,10 @@ class Rop {
             case 'remove_account':
                 $data = json_decode( $request->get_body(), true );
                 $response = $this->remove_account( $data );
+                break;
+            case 'authenticate_service':
+                $data = json_decode( $request->get_body(), true );
+                $response = $this->authenticate_service( $data );
                 break;
             default:
                 $response = array( 'status' => '200', 'data' => array( 'list', 'of', 'stuff', 'from', 'api' ) );
@@ -301,7 +344,8 @@ class Rop {
 		} );
 
 		//$fb_service = new Rop_Facebook_Service();
-		//$twitter_service = new Rop_Twitter_Service();
+		$twitter_service = new Rop_Twitter_Service();
+		$twitter_service->init();
 		//var_dump( $twitter_service );
 		// $fb_service->credentials( array( 'app_id' => '470293890022208', 'secret' => 'bf3ee9335692fee071c1a41fbe52fdf5' ) );
 		// $fb_service->set_token( 'EAAGrutRBO0ABAEfThg0IOMaKXWD0QzBlZCeETluvu3ZAah1BWStgvd7Of3OMHZAsgX6gUfjaqgnbXEYyToyzkB1gEgc8hsrZBiHRiKgerSaDxjJHevy8ZB1jLrRemQOrFAfYO8MXsZC6lFkwJr8U9WbHm34gFnxSJVRYp3CEoPQb1dMKf37ZApV' );

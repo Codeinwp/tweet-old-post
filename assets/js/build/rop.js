@@ -11660,7 +11660,7 @@ var _mainPagePanel2 = _interopRequireDefault(_mainPagePanel);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 window.onload = function () {
-    new _vue2.default({
+    var RopApp = new _vue2.default({
         el: '#rop_core',
         store: _rop_store2.default,
         created: function created() {
@@ -11843,7 +11843,6 @@ exports.default = new _vuex2.default.Store({
         updateActiveAccounts: function updateActiveAccounts(_ref4, data) {
             var commit = _ref4.commit;
 
-
             if (data.action === 'update') {
                 _vue2.default.http({
                     url: ropApiSettings.root,
@@ -11873,6 +11872,23 @@ exports.default = new _vuex2.default.Store({
             } else {
                 console.log('No valid action specified.');
             }
+        },
+        authenticateService: function authenticateService(_ref5, data) {
+            var commit = _ref5.commit;
+
+            _vue2.default.http({
+                url: ropApiSettings.root,
+                method: 'POST',
+                headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+                params: { 'req': 'authenticate_service' },
+                body: data,
+                responseType: 'json'
+            }).then(function (response) {
+                console.log(response.data);
+                commit('updateAuthenticatedServices', response.data);
+            }, function () {
+                console.log('Error retrieving active accounts.');
+            });
         }
     }
 });
@@ -13790,8 +13806,29 @@ module.exports = {
                 this.modal.serviceName = this.$store.state.availableServices[this.selected_network].name;
                 this.modal.data = this.$store.state.availableServices[this.selected_network].credentials;
                 this.openModal();
+            } else if (this.$store.state.availableServices[this.selected_network].url !== '') {
+                var url = this.$store.state.availableServices[this.selected_network].url;
+                var w = 560;
+                var h = 340;
+                var y = window.top.outerHeight / 2 + window.top.screenY - w / 2;
+                var x = window.top.outerWidth / 2 + window.top.screenX - h / 2;
+                var newWindow = window.open(url, url, 'width=' + w + ', height=' + h + ', toolbar=0, menubar=0, location=0, top=' + y + ', left=' + x);
+                if (window.focus) {
+                    newWindow.focus();
+                }
+                var instance = this;
+                var pollTimer = window.setInterval(function () {
+                    if (newWindow.closed !== false) {
+                        window.clearInterval(pollTimer);
+                        instance.requestAuthentication();
+                    }
+                }, 200);
             }
         },
+        requestAuthentication: function requestAuthentication() {
+            this.$store.dispatch('authenticateService', { service: this.selected_network });
+        },
+
         openModal: function openModal() {
             this.modal.isOpen = true;
         },

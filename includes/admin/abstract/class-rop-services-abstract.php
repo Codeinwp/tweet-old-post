@@ -44,7 +44,7 @@ abstract class Rop_Services_Abstract {
      * @access  protected
      * @var     object $api The API object.
      */
-	protected $api;
+	protected $api = null;
 
 	/**
 	 * The array with the credentials for auth-ing the service.

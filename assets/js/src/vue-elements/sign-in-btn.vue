@@ -54,7 +54,26 @@
                     this.modal.serviceName = this.$store.state.availableServices[this.selected_network].name;
                     this.modal.data = this.$store.state.availableServices[this.selected_network].credentials;
                     this.openModal()
+                } else if( this.$store.state.availableServices[this.selected_network].url !== '' ) {
+                    var url = this.$store.state.availableServices[this.selected_network].url;
+                    var w = 560;
+                    var h = 340;
+                    var y = window.top.outerHeight / 2 + window.top.screenY - ( w / 2);
+                    var x = window.top.outerWidth / 2 + window.top.screenX - ( h / 2);
+                    var newWindow = window.open( url, url,'width=' + w + ', height=' + h + ', toolbar=0, menubar=0, location=0, top=' + y + ', left=' + x );
+                    if ( window.focus ) { newWindow.focus(); }
+                    var instance = this;
+                    var pollTimer = window.setInterval( function() {
+                        if ( newWindow.closed !== false ) {
+                            window.clearInterval( pollTimer );
+                            instance.requestAuthentication();
+
+                        }
+                    }, 200);
                 }
+            },
+            requestAuthentication() {
+                this.$store.dispatch( 'authenticateService', { service: this.selected_network } );
             },
             openModal: function() {
                 this.modal.isOpen = true;
