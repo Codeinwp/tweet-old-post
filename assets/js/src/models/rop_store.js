@@ -46,6 +46,9 @@ export default new Vuex.Store({
     getters: {
       getServices( state ) {
           return state.availableServices
+      },
+      getActiveAccounts( state ) {
+          return state.activeAccounts
       }
     },
     mutations: {
@@ -111,6 +114,38 @@ export default new Vuex.Store({
             }, function () {
                 console.log( 'Error retrieving active accounts.' )
             })
+        },
+        updateActiveAccounts ({ commit }, data) {
+
+            if( data.action === 'update' ) {
+                Vue.http({
+                    url: ropApiSettings.root,
+                    method: 'POST',
+                    headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+                    params: { 'req': 'update_accounts' },
+                    body: data,
+                    responseType: 'json'
+                }).then(function (response) {
+                    commit( 'updateActiveAccounts', response.data );
+                }, function () {
+                    console.log( 'Error retrieving active accounts.' );
+                })
+            } else if( data.action === 'remove' ) {
+                Vue.http({
+                    url: ropApiSettings.root,
+                    method: 'POST',
+                    headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+                    params: { 'req': 'remove_account' },
+                    body: data,
+                    responseType: 'json'
+                }).then(function (response) {
+                    commit( 'updateActiveAccounts', response.data );
+                }, function () {
+                    console.log( 'Error retrieving active accounts.' );
+                })
+            } else {
+                console.log( 'No valid action specified.' );
+            }
         }
     },
 });

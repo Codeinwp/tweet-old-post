@@ -40,8 +40,6 @@
         name: 'main-page-panel',
         computed: mapState([ 'displayTabs', 'page' ]),
         created() {
-            console.log( 'Test' );
-            console.log( this.$store.state );
         },
         methods: {
             switchTab( slug ) {

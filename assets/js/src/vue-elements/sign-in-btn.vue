@@ -38,7 +38,6 @@
     module.exports = {
         name: 'sign-in-btn',
         created() {
-            console.log( this.$store.state.availableServices );
         },
         data: function() {
             return {
@@ -51,7 +50,6 @@
         },
         methods: {
             requestAuthorization: function() {
-                console.log( this.$store.state.availableServices );
                 if( this.$store.state.availableServices[this.selected_network].two_step_sign_in ) {
                     this.modal.serviceName = this.$store.state.availableServices[this.selected_network].name;
                     this.modal.data = this.$store.state.availableServices[this.selected_network].credentials;
@@ -69,15 +67,12 @@
             selected_network: {
                 get: function() {
                     var default_network = this.modal.serviceName;
-                    console.log( 'Default newtwork: ', default_network );
                     if( Object.keys( this.services )[0] && default_network === '' ) {
                         default_network = Object.keys( this.services )[0];
                     }
-                    console.log( 'Selected newtwork: ', default_network );
                     return default_network.toLowerCase()
                 },
                 set: function( new_network ) {
-                    console.log( new_network );
                     this.modal.serviceName = new_network;
                 }
             },

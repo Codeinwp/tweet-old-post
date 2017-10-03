@@ -11765,6 +11765,9 @@ exports.default = new _vuex2.default.Store({
     getters: {
         getServices: function getServices(state) {
             return state.availableServices;
+        },
+        getActiveAccounts: function getActiveAccounts(state) {
+            return state.activeAccounts;
         }
     },
     mutations: {
@@ -11836,6 +11839,40 @@ exports.default = new _vuex2.default.Store({
             }, function () {
                 console.log('Error retrieving active accounts.');
             });
+        },
+        updateActiveAccounts: function updateActiveAccounts(_ref4, data) {
+            var commit = _ref4.commit;
+
+
+            if (data.action === 'update') {
+                _vue2.default.http({
+                    url: ropApiSettings.root,
+                    method: 'POST',
+                    headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+                    params: { 'req': 'update_accounts' },
+                    body: data,
+                    responseType: 'json'
+                }).then(function (response) {
+                    commit('updateActiveAccounts', response.data);
+                }, function () {
+                    console.log('Error retrieving active accounts.');
+                });
+            } else if (data.action === 'remove') {
+                _vue2.default.http({
+                    url: ropApiSettings.root,
+                    method: 'POST',
+                    headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+                    params: { 'req': 'remove_account' },
+                    body: data,
+                    responseType: 'json'
+                }).then(function (response) {
+                    commit('updateActiveAccounts', response.data);
+                }, function () {
+                    console.log('Error retrieving active accounts.');
+                });
+            } else {
+                console.log('No valid action specified.');
+            }
         }
     }
 });
@@ -13470,10 +13507,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 module.exports = {
     name: 'main-page-panel',
     computed: (0, _vuex.mapState)(['displayTabs', 'page']),
-    created: function created() {
-        console.log('Test');
-        console.log(this.$store.state);
-    },
+    created: function created() {},
 
     methods: {
         switchTab: function switchTab(slug) {
@@ -13598,15 +13632,29 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //                             <div class="column col-sm-12 col-md-12 col-lg-12 text-left">
 //                                 <hr/>
 //                                 <h5>Authenticated Services</h5>
+//                                 <div class="empty" v-if="authenticated_services.length == 0">
+//                                     <div class="empty-icon">
+//                                         <i class="fa fa-3x fa-cloud"></i>
+//                                     </div>
+//                                     <p class="empty-title h5">No authenticated service!</p>
+//                                     <p class="empty-subtitle">Add one from the <b>"New Service"</b> section.</p>
+//                                 </div>
 //                                 <service-tile v-for="service in authenticated_services" :key="service.id" :service="service"></service-tile>
 //                             </div>
 //                         </div>
 //                     </div>
 //                     <div class="column col-sm-12 col-md-12 col-lg-6 text-left">
+//                         <hr style="margin-top: 45px" />
 //                         <h5>Active Accounts</h5>
-//                         <hr/>
-//                         <div class="column col-12" v-for="account in active_accounts">
-//                             <service-user-tile :account_data="account"></service-user-tile>
+//                         <div class="empty" v-if="active_accounts.length == 0">
+//                             <div class="empty-icon">
+//                                 <i class="fa fa-3x fa-user-circle-o"></i>
+//                             </div>
+//                             <p class="empty-title h5">No active accounts!</p>
+//                             <p class="empty-subtitle">Add one from the <b>"Authenticated Services"</b> section.</p>
+//                         </div>
+//                         <div v-for="( account, id ) in active_accounts">
+//                             <service-user-tile :account_data="account" :account_id="id"></service-user-tile>
 //                             <div class="divider"></div>
 //                         </div>
 //                     </div>
@@ -13725,9 +13773,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 module.exports = {
     name: 'sign-in-btn',
-    created: function created() {
-        console.log(this.$store.state.availableServices);
-    },
+    created: function created() {},
 
     data: function data() {
         return {
@@ -13740,7 +13786,6 @@ module.exports = {
     },
     methods: {
         requestAuthorization: function requestAuthorization() {
-            console.log(this.$store.state.availableServices);
             if (this.$store.state.availableServices[this.selected_network].two_step_sign_in) {
                 this.modal.serviceName = this.$store.state.availableServices[this.selected_network].name;
                 this.modal.data = this.$store.state.availableServices[this.selected_network].credentials;
@@ -13758,15 +13803,12 @@ module.exports = {
         selected_network: {
             get: function get() {
                 var default_network = this.modal.serviceName;
-                console.log('Default newtwork: ', default_network);
                 if ((0, _keys2.default)(this.services)[0] && default_network === '') {
                     default_network = (0, _keys2.default)(this.services)[0];
                 }
-                console.log('Selected newtwork: ', default_network);
                 return default_network.toLowerCase();
             },
             set: function set(new_network) {
-                console.log(new_network);
                 this.modal.serviceName = new_network;
             }
         },
@@ -14335,7 +14377,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\n    #rop_core .btn.btn-danger[_v-3e1338be] {\n        background-color: #d50000;\n        color: #efefef;\n        border-color: #b71c1c;\n    }\n\n    #rop_core .btn.btn-danger[_v-3e1338be]:hover, #rop_core .btn.btn-danger[_v-3e1338be]:focus {\n        background-color: #efefef;\n        color: #d50000;\n        border-color: #b71c1c;\n    }\n\n    #rop_core .btn.btn-info[_v-3e1338be] {\n        background-color: #2196f3;\n        color: #efefef;\n        border-color: #1565c0;\n    }\n\n    #rop_core .btn.btn-info[_v-3e1338be]:hover, #rop_core .btn.btn-info[_v-3e1338be]:focus {\n        background-color: #efefef;\n        color: #2196f3;\n        border-color: #1565c0;\n    }\n\n", ""]);
+exports.push([module.i, "\n\n    #rop_core .btn.btn-danger[_v-3e1338be] {\n        background-color: #d50000;\n        color: #efefef;\n        border-color: #b71c1c;\n    }\n\n    #rop_core .btn.btn-danger[_v-3e1338be]:hover, #rop_core[_v-3e1338be] {\n        background-color: #efefef;\n        color: #d50000;\n        border-color: #b71c1c;\n    }\n\n    #rop_core .btn.btn-info[_v-3e1338be] {\n        background-color: #2196f3;\n        color: #efefef;\n        border-color: #1565c0;\n    }\n\n    #rop_core .btn.btn-info[_v-3e1338be]:hover, #rop_core[_v-3e1338be] {\n        background-color: #efefef;\n        color: #2196f3;\n        border-color: #1565c0;\n    }\n\n", ""]);
 
 // exports
 
@@ -14368,8 +14410,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //                 <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i>
 //             </button>
 //             <span class="input-group-addon hide-md" style="min-width: 115px; text-align: right;">{{service_url}}/</span>
-//             <service-autocomplete :accounts="service.available_accounts"></service-autocomplete>
-//             <button class="btn input-group-btn" :class="serviceClass" >
+//             <service-autocomplete :accounts="service.available_accounts" :to_be_activated="to_be_activated"></service-autocomplete>
+//             <button class="btn input-group-btn" :class="serviceClass" @click="activateSelected( service.id )">
 //                 <i class="fa fa-fw fa-plus" aria-hidden="true"></i> <span class="hide-md">Activate</span>
 //             </button>
 //         </div>
@@ -14410,7 +14452,8 @@ module.exports = {
     },
     data: function data() {
         return {
-            show_credentials: false
+            show_credentials: false,
+            to_be_activated: []
         };
     },
     computed: {
@@ -14446,6 +14489,9 @@ module.exports = {
         },
         toggleCredentials: function toggleCredentials() {
             this.show_credentials = !this.show_credentials;
+        },
+        activateSelected: function activateSelected(service_id) {
+            this.$store.dispatch('updateActiveAccounts', { action: 'update', service_id: service_id, service: this.service.service, to_be_activated: this.to_be_activated, current_active: this.$store.state.activeAccounts });
         }
     },
     components: {
@@ -14462,7 +14508,7 @@ module.exports = {
     //         border-color: #b71c1c;
     //     }
     //
-    //     #rop_core .btn.btn-danger:hover, #rop_core .btn.btn-danger:focus {
+    //     #rop_core .btn.btn-danger:hover, #rop_core {
     //         background-color: #efefef;
     //         color: #d50000;
     //         border-color: #b71c1c;
@@ -14474,7 +14520,7 @@ module.exports = {
     //         border-color: #1565c0;
     //     }
     //
-    //     #rop_core .btn.btn-info:hover, #rop_core .btn.btn-info:focus {
+    //     #rop_core .btn.btn-info:hover, #rop_core {
     //         background-color: #efefef;
     //         color: #2196f3;
     //         border-color: #1565c0;
@@ -14576,15 +14622,45 @@ function containsObject(obj, list) {
 module.exports = {
     name: 'service-autocomplete',
     mixins: [_vueClickaway.mixin],
-    props: ['accounts'],
+    props: ['accounts', 'to_be_activated'],
+    mounted: function mounted() {
+        var index = 0;
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+            for (var _iterator = (0, _getIterator3.default)(this.accounts), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                var account = _step.value;
+
+                if (account.active) {
+                    this.addToBeActivated(index);
+                }
+                index++;
+            }
+        } catch (err) {
+            _didIteratorError = true;
+            _iteratorError = err;
+        } finally {
+            try {
+                if (!_iteratorNormalCompletion && _iterator.return) {
+                    _iterator.return();
+                }
+            } finally {
+                if (_didIteratorError) {
+                    throw _iteratorError;
+                }
+            }
+        }
+    },
+
     data: function data() {
         return {
             search: '',
             highlighted: -1,
             no_results: false,
             magic_flag: false,
-            account_def_img: ROP_ASSETS_URL + 'img/accounts_icon.jpg',
-            to_be_activated: []
+            account_def_img: ROP_ASSETS_URL + 'img/accounts_icon.jpg'
         };
     },
     computed: {
@@ -14599,8 +14675,10 @@ module.exports = {
             };
         },
         is_one: function is_one() {
-            if (this.accounts.length === 1) {
+            if (this.accounts.length === 1 && this.accounts[0].active === false) {
                 this.to_be_activated.push(this.accounts[0]);
+                return true;
+            } else if (this.accounts.length === 1 && this.accounts[0].active === true) {
                 return true;
             }
             return false;
@@ -14613,29 +14691,29 @@ module.exports = {
         },
         has_results: function has_results() {
             var found = 0;
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
+            var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
 
             try {
-                for (var _iterator = (0, _getIterator3.default)(this.accounts), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var account = _step.value;
+                for (var _iterator2 = (0, _getIterator3.default)(this.accounts), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    var account = _step2.value;
 
                     if (this.filterSearch(account)) {
                         found++;
                     }
                 }
             } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
+                _didIteratorError2 = true;
+                _iteratorError2 = err;
             } finally {
                 try {
-                    if (!_iteratorNormalCompletion && _iterator.return) {
-                        _iterator.return();
+                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                        _iterator2.return();
                     }
                 } finally {
-                    if (_didIteratorError) {
-                        throw _iteratorError;
+                    if (_didIteratorError2) {
+                        throw _iteratorError2;
                     }
                 }
             }
@@ -14723,7 +14801,7 @@ module.exports = "\n    <div class=\"form-autocomplete\" style=\"width: 100%;\" 
 /* 62 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"service-tile\" _v-3e1338be=\"\">\n        <label class=\"show-md hide-xl\" _v-3e1338be=\"\"><b _v-3e1338be=\"\">{{service_url}}/</b></label>\n        <div class=\"input-group\" _v-3e1338be=\"\">\n            <button class=\"btn input-group-btn btn-danger\" @click=\"\" _v-3e1338be=\"\">\n                <i class=\"fa fa-fw fa-trash\" aria-hidden=\"true\" _v-3e1338be=\"\"></i>\n            </button>\n            <button class=\"btn input-group-btn btn-info\" @click=\"toggleCredentials()\" v-if=\"service.credentials\" _v-3e1338be=\"\">\n                <i class=\"fa fa-fw fa-info-circle\" aria-hidden=\"true\" _v-3e1338be=\"\"></i>\n            </button>\n            <span class=\"input-group-addon hide-md\" style=\"min-width: 115px; text-align: right;\" _v-3e1338be=\"\">{{service_url}}/</span>\n            <service-autocomplete :accounts=\"service.available_accounts\" _v-3e1338be=\"\"></service-autocomplete>\n            <button class=\"btn input-group-btn\" :class=\"serviceClass\" _v-3e1338be=\"\">\n                <i class=\"fa fa-fw fa-plus\" aria-hidden=\"true\" _v-3e1338be=\"\"></i> <span class=\"hide-md\" _v-3e1338be=\"\">Activate</span>\n            </button>\n        </div>\n        <div class=\"card centered\" :class=\"credentialsDisplayClass\" v-if=\"service.credentials\" _v-3e1338be=\"\">\n            <div class=\"card-header\" _v-3e1338be=\"\">\n                <div class=\"card-title h5\" _v-3e1338be=\"\">{{serviceName}}</div>\n                <div class=\"card-subtitle text-gray\" _v-3e1338be=\"\">{{service.id}}</div>\n            </div>\n            <div class=\"card-body\" _v-3e1338be=\"\">\n                <div class=\"form-horizontal\" _v-3e1338be=\"\">\n                    <div class=\"form-group\" v-for=\"( credential, index ) in service.credentials\" _v-3e1338be=\"\">\n                        <div class=\"col-3\" _v-3e1338be=\"\">\n                            <label class=\"form-label\" :for=\"credentialID(index)\" _v-3e1338be=\"\">{{credential.name}}:</label>\n                        </div>\n                        <div class=\"col-9\" _v-3e1338be=\"\">\n                            <secret-input :id=\"credentialID(index)\" :value=\"credential.value\" :secret=\"credential.private\" _v-3e1338be=\"\">\n                        </secret-input></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"divider clearfix\" _v-3e1338be=\"\"></div>\n    </div>\n";
+module.exports = "\n    <div class=\"service-tile\" _v-3e1338be=\"\">\n        <label class=\"show-md hide-xl\" _v-3e1338be=\"\"><b _v-3e1338be=\"\">{{service_url}}/</b></label>\n        <div class=\"input-group\" _v-3e1338be=\"\">\n            <button class=\"btn input-group-btn btn-danger\" @click=\"\" _v-3e1338be=\"\">\n                <i class=\"fa fa-fw fa-trash\" aria-hidden=\"true\" _v-3e1338be=\"\"></i>\n            </button>\n            <button class=\"btn input-group-btn btn-info\" @click=\"toggleCredentials()\" v-if=\"service.credentials\" _v-3e1338be=\"\">\n                <i class=\"fa fa-fw fa-info-circle\" aria-hidden=\"true\" _v-3e1338be=\"\"></i>\n            </button>\n            <span class=\"input-group-addon hide-md\" style=\"min-width: 115px; text-align: right;\" _v-3e1338be=\"\">{{service_url}}/</span>\n            <service-autocomplete :accounts=\"service.available_accounts\" :to_be_activated=\"to_be_activated\" _v-3e1338be=\"\"></service-autocomplete>\n            <button class=\"btn input-group-btn\" :class=\"serviceClass\" @click=\"activateSelected( service.id )\" _v-3e1338be=\"\">\n                <i class=\"fa fa-fw fa-plus\" aria-hidden=\"true\" _v-3e1338be=\"\"></i> <span class=\"hide-md\" _v-3e1338be=\"\">Activate</span>\n            </button>\n        </div>\n        <div class=\"card centered\" :class=\"credentialsDisplayClass\" v-if=\"service.credentials\" _v-3e1338be=\"\">\n            <div class=\"card-header\" _v-3e1338be=\"\">\n                <div class=\"card-title h5\" _v-3e1338be=\"\">{{serviceName}}</div>\n                <div class=\"card-subtitle text-gray\" _v-3e1338be=\"\">{{service.id}}</div>\n            </div>\n            <div class=\"card-body\" _v-3e1338be=\"\">\n                <div class=\"form-horizontal\" _v-3e1338be=\"\">\n                    <div class=\"form-group\" v-for=\"( credential, index ) in service.credentials\" _v-3e1338be=\"\">\n                        <div class=\"col-3\" _v-3e1338be=\"\">\n                            <label class=\"form-label\" :for=\"credentialID(index)\" _v-3e1338be=\"\">{{credential.name}}:</label>\n                        </div>\n                        <div class=\"col-9\" _v-3e1338be=\"\">\n                            <secret-input :id=\"credentialID(index)\" :value=\"credential.value\" :secret=\"credential.private\" _v-3e1338be=\"\">\n                        </secret-input></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"divider clearfix\" _v-3e1338be=\"\"></div>\n    </div>\n";
 
 /***/ }),
 /* 63 */
@@ -14783,7 +14861,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n    .icon_box[_v-0eff658d] {\n        width: 45px;\n        height: 45px;\n        padding: 7px;\n        text-align: center;\n        background-color: #333333;\n        color: #efefef;\n    }\n\n    .icon_box > .fa[_v-0eff658d] {\n        width: 30px;\n        height: 30px;\n        font-size: 30px;\n    }\n\n    .facebook[_v-0eff658d] {\n        background-color: #3b5998;\n    }\n\n    .twitter[_v-0eff658d] {\n        background-color: #55acee;\n    }\n\n", ""]);
+exports.push([module.i, "\n    #rop_core .btn.btn-link.btn-danger[_v-0eff658d] {\n        color: #d50000;\n    }\n    #rop_core .btn.btn-link.btn-danger[_v-0eff658d]:hover {\n        color: #b71c1c;\n    }\n\n    .service_account_image[_v-0eff658d] {\n        width: 150%;\n        border-radius: 50%;\n        margin-left: -25%;\n        margin-top: -25%;\n    }\n\n    .icon_box[_v-0eff658d] {\n        width: 45px;\n        height: 45px;\n        padding: 7px;\n        text-align: center;\n        background-color: #333333;\n        color: #efefef;\n    }\n\n    .icon_box > .fa[_v-0eff658d] {\n        width: 30px;\n        height: 30px;\n        font-size: 30px;\n    }\n\n    .facebook[_v-0eff658d] {\n        background-color: #3b5998;\n    }\n\n    .twitter[_v-0eff658d] {\n        background-color: #55acee;\n    }\n\n", ""]);
 
 // exports
 
@@ -14799,7 +14877,8 @@ exports.push([module.i, "\n    .icon_box[_v-0eff658d] {\n        width: 45px;\n 
 //     <div class="tile tile-centered">
 //         <div class="tile-icon">
 //             <div class="icon_box" :class="service">
-//                 <i class="fa" :class="icon" aria-hidden="true"></i>
+//                 <img class="service_account_image" :src="img" v-if="img" />
+//                 <i class="fa" :class="icon" aria-hidden="true" v-else></i>
 //             </div>
 //         </div>
 //         <div class="tile-content">
@@ -14808,18 +14887,9 @@ exports.push([module.i, "\n    .icon_box[_v-0eff658d] {\n        width: 45px;\n 
 //         </div>
 //         <div class="tile-action">
 //             <div class="dropdown dropdown-right">
-//                 <a href="#" class="btn btn-link dropdown-toggle" tabindex="0">
-//                     <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+//                 <a href="#" class="btn btn-link btn-danger" tabindex="0" @click.prevent="removeActiveAccount( account_id )">
+//                     <i class="fa fa-trash" aria-hidden="true"></i>
 //                 </a>
-//                 <!-- menu component -->
-//                 <ul class="menu">
-//                     <li class="menu-item">
-//                         <a @click=""><i class="fa fa-pencil" aria-hidden="true"></i> Edit</a>
-//                     </li>
-//                     <li class="menu-item">
-//                         <a @click=""><i class="fa fa-trash" aria-hidden="true"></i> Remove</a>
-//                     </li>
-//                 </ul>
 //             </div>
 //         </div>
 //     </div>
@@ -14832,22 +14902,55 @@ function capitalizeFirstLetter(string) {
 
 module.exports = {
     name: 'service-user-tile',
-    props: ['account_data', 'model'],
-    data: function data() {
-        var service_icon = 'fa-';
-        if (this.account_data.service === 'facebook') service_icon = service_icon.concat('facebook-official');
-        if (this.account_data.service === 'twitter') service_icon = service_icon.concat('twitter');
-        var service_info = this.account_data.account.concat(" at: ").concat(this.account_data.created);
-        return {
-            service: this.account_data.service,
-            icon: service_icon,
-            user: this.account_data.user,
-            service_info: service_info
-        };
+    props: ['account_data', 'account_id'],
+    computed: {
+        service: function service() {
+            return this.account_data.service;
+        },
+        icon: function icon() {
+            var service_icon = 'fa-';
+            if (this.account_data.service === 'facebook') service_icon = service_icon.concat('facebook-official');
+            if (this.account_data.service === 'twitter') service_icon = service_icon.concat('twitter');
+            return service_icon;
+        },
+        img: function img() {
+            var img = '';
+            if (this.account_data.img !== '' && this.account_data.img !== undefined) {
+                img = this.account_data.img;
+            }
+            return img;
+        },
+        user: function user() {
+            return this.account_data.user;
+        },
+        service_info: function service_info() {
+            var service_info = this.account_data.account.concat(" at: ").concat(this.account_data.created);
+            return service_info;
+        }
+    },
+    methods: {
+        removeActiveAccount: function removeActiveAccount(id) {
+            console.log(id);
+            this.$store.dispatch('updateActiveAccounts', { action: 'remove', account_id: id, current_active: this.$store.state.activeAccounts });
+        }
     }
     // </script>
     //
     // <style scoped>
+    //     #rop_core .btn.btn-link.btn-danger {
+    //         color: #d50000;
+    //     }
+    //     #rop_core .btn.btn-link.btn-danger:hover {
+    //         color: #b71c1c;
+    //     }
+    //
+    //     .service_account_image {
+    //         width: 150%;
+    //         border-radius: 50%;
+    //         margin-left: -25%;
+    //         margin-top: -25%;
+    //     }
+    //
     //     .icon_box {
     //         width: 45px;
     //         height: 45px;
@@ -14879,13 +14982,13 @@ module.exports = {
 /* 67 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"tile tile-centered\" _v-0eff658d=\"\">\n        <div class=\"tile-icon\" _v-0eff658d=\"\">\n            <div class=\"icon_box\" :class=\"service\" _v-0eff658d=\"\">\n                <i class=\"fa\" :class=\"icon\" aria-hidden=\"true\" _v-0eff658d=\"\"></i>\n            </div>\n        </div>\n        <div class=\"tile-content\" _v-0eff658d=\"\">\n            <div class=\"tile-title\" _v-0eff658d=\"\">{{ user }}</div>\n            <div class=\"tile-subtitle text-gray\" _v-0eff658d=\"\">{{ service_info }}</div>\n        </div>\n        <div class=\"tile-action\" _v-0eff658d=\"\">\n            <div class=\"dropdown dropdown-right\" _v-0eff658d=\"\">\n                <a href=\"#\" class=\"btn btn-link dropdown-toggle\" tabindex=\"0\" _v-0eff658d=\"\">\n                    <i class=\"fa fa-ellipsis-v\" aria-hidden=\"true\" _v-0eff658d=\"\"></i>\n                </a>\n                <!-- menu component -->\n                <ul class=\"menu\" _v-0eff658d=\"\">\n                    <li class=\"menu-item\" _v-0eff658d=\"\">\n                        <a @click=\"\" _v-0eff658d=\"\"><i class=\"fa fa-pencil\" aria-hidden=\"true\" _v-0eff658d=\"\"></i> Edit</a>\n                    </li>\n                    <li class=\"menu-item\" _v-0eff658d=\"\">\n                        <a @click=\"\" _v-0eff658d=\"\"><i class=\"fa fa-trash\" aria-hidden=\"true\" _v-0eff658d=\"\"></i> Remove</a>\n                    </li>\n                </ul>\n            </div>\n        </div>\n    </div>\n";
+module.exports = "\n    <div class=\"tile tile-centered\" _v-0eff658d=\"\">\n        <div class=\"tile-icon\" _v-0eff658d=\"\">\n            <div class=\"icon_box\" :class=\"service\" _v-0eff658d=\"\">\n                <img class=\"service_account_image\" :src=\"img\" v-if=\"img\" _v-0eff658d=\"\">\n                <i class=\"fa\" :class=\"icon\" aria-hidden=\"true\" v-else=\"\" _v-0eff658d=\"\"></i>\n            </div>\n        </div>\n        <div class=\"tile-content\" _v-0eff658d=\"\">\n            <div class=\"tile-title\" _v-0eff658d=\"\">{{ user }}</div>\n            <div class=\"tile-subtitle text-gray\" _v-0eff658d=\"\">{{ service_info }}</div>\n        </div>\n        <div class=\"tile-action\" _v-0eff658d=\"\">\n            <div class=\"dropdown dropdown-right\" _v-0eff658d=\"\">\n                <a href=\"#\" class=\"btn btn-link btn-danger\" tabindex=\"0\" @click.prevent=\"removeActiveAccount( account_id )\" _v-0eff658d=\"\">\n                    <i class=\"fa fa-trash\" aria-hidden=\"true\" _v-0eff658d=\"\"></i>\n                </a>\n            </div>\n        </div>\n    </div>\n";
 
 /***/ }),
 /* 68 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"tab-view\">\n        <div class=\"panel-body\">\n            <h3>Accounts</h3>\n            <p>This is a <b>Vue.js</b> component.</p>\n            <div class=\"container\">\n                <div class=\"columns\">\n                    <div class=\"column col-sm-12 col-md-12 col-lg-6\">\n                        <div class=\"columns\">\n                            <div class=\"column col-sm-12 col-md-12 col-xl-6 col-8 text-right\">\n                                <b>New Service</b><br/>\n                                <i>Select a service and sign in with an account for that service.</i>\n                            </div>\n                            <div class=\"column col-sm-12 col-md-12 col-xl-6 col-4 text-left\">\n                                <sign-in-btn></sign-in-btn>\n                            </div>\n                        </div>\n                        <div class=\"columns\">\n                            <div class=\"column col-sm-12 col-md-12 col-lg-12 text-left\">\n                                <hr/>\n                                <h5>Authenticated Services</h5>\n                                <service-tile v-for=\"service in authenticated_services\" :key=\"service.id\" :service=\"service\"></service-tile>\n                            </div>\n                        </div>\n                    </div>\n                    <div class=\"column col-sm-12 col-md-12 col-lg-6 text-left\">\n                        <h5>Active Accounts</h5>\n                        <hr/>\n                        <div class=\"column col-12\" v-for=\"account in active_accounts\">\n                            <service-user-tile :account_data=\"account\"></service-user-tile>\n                            <div class=\"divider\"></div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"columns\">\n                <div class=\"column col-12\">\n                    <h4><i class=\"fa fa-info-circle\"></i> Info</h4>\n                    <p><i>Authenticate a new service (eg. Facebook, Twitter etc. ), select the accounts you want to add from that service and <b>activate</b> them. Only the accounts displayed in the <b>\"Active accounts\"</b> section will be used.</i></p>\n                </div>\n            </div>\n        </div>\n        <div class=\"panel-footer\">\n            <button class=\"btn btn-primary\">Save</button>\n        </div>\n    </div>\n";
+module.exports = "\n    <div class=\"tab-view\">\n        <div class=\"panel-body\">\n            <h3>Accounts</h3>\n            <p>This is a <b>Vue.js</b> component.</p>\n            <div class=\"container\">\n                <div class=\"columns\">\n                    <div class=\"column col-sm-12 col-md-12 col-lg-6\">\n                        <div class=\"columns\">\n                            <div class=\"column col-sm-12 col-md-12 col-xl-6 col-8 text-right\">\n                                <b>New Service</b><br/>\n                                <i>Select a service and sign in with an account for that service.</i>\n                            </div>\n                            <div class=\"column col-sm-12 col-md-12 col-xl-6 col-4 text-left\">\n                                <sign-in-btn></sign-in-btn>\n                            </div>\n                        </div>\n                        <div class=\"columns\">\n                            <div class=\"column col-sm-12 col-md-12 col-lg-12 text-left\">\n                                <hr/>\n                                <h5>Authenticated Services</h5>\n                                <div class=\"empty\" v-if=\"authenticated_services.length == 0\">\n                                    <div class=\"empty-icon\">\n                                        <i class=\"fa fa-3x fa-cloud\"></i>\n                                    </div>\n                                    <p class=\"empty-title h5\">No authenticated service!</p>\n                                    <p class=\"empty-subtitle\">Add one from the <b>\"New Service\"</b> section.</p>\n                                </div>\n                                <service-tile v-for=\"service in authenticated_services\" :key=\"service.id\" :service=\"service\"></service-tile>\n                            </div>\n                        </div>\n                    </div>\n                    <div class=\"column col-sm-12 col-md-12 col-lg-6 text-left\">\n                        <hr style=\"margin-top: 45px\" />\n                        <h5>Active Accounts</h5>\n                        <div class=\"empty\" v-if=\"active_accounts.length == 0\">\n                            <div class=\"empty-icon\">\n                                <i class=\"fa fa-3x fa-user-circle-o\"></i>\n                            </div>\n                            <p class=\"empty-title h5\">No active accounts!</p>\n                            <p class=\"empty-subtitle\">Add one from the <b>\"Authenticated Services\"</b> section.</p>\n                        </div>\n                        <div v-for=\"( account, id ) in active_accounts\">\n                            <service-user-tile :account_data=\"account\" :account_id=\"id\"></service-user-tile>\n                            <div class=\"divider\"></div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"columns\">\n                <div class=\"column col-12\">\n                    <h4><i class=\"fa fa-info-circle\"></i> Info</h4>\n                    <p><i>Authenticate a new service (eg. Facebook, Twitter etc. ), select the accounts you want to add from that service and <b>activate</b> them. Only the accounts displayed in the <b>\"Active accounts\"</b> section will be used.</i></p>\n                </div>\n            </div>\n        </div>\n        <div class=\"panel-footer\">\n            <button class=\"btn btn-primary\">Save</button>\n        </div>\n    </div>\n";
 
 /***/ }),
 /* 69 */

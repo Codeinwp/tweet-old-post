@@ -153,7 +153,7 @@ class Rop {
     private function get_authenticated_services() {
 	    return array(
             'serviceIDFacebook' => array(
-                'id' => 'serviceID',
+                'id' => 'serviceIDFacebook',
                 'service' => 'facebook',
                 'credentials' => array(
                     'app_id' => array(
@@ -171,28 +171,36 @@ class Rop {
                     array(
                         'id' => 'account_id_1',
                         'name' => 'Page one',
-                        'img' => ''
+                        'account' => 'user@email.com',
+                        'img' => '',
+                        'active' => true,
                     ),
                     array(
                         'id' => 'account_id_2',
                         'name' => 'Page two',
-                        'img' => 'http://www.xsjjys.com/data/out/96/WHDQ-512397052.jpg'
+                        'account' => 'user@email.com',
+                        'img' => 'http://www.xsjjys.com/data/out/96/WHDQ-512397052.jpg',
+                        'active' => false,
                     ),
                     array(
                         'id' => 'account_id_3',
                         'name' => 'Page three',
-                        'img' => 'https://organicthemes.com/demo/profile/files/2012/12/profile_img.png'
+                        'account' => 'user@email.com',
+                        'img' => 'https://organicthemes.com/demo/profile/files/2012/12/profile_img.png',
+                        'active' => true,
                     )
                 )
             ),
             'serviceIDTwitter' => array(
-                'id' => 'serviceID',
+                'id' => 'serviceIDTwitter',
                 'service' => 'twitter',
                 'available_accounts' => array(
                     array(
                         'id' => 'account_id_1',
-                        'name' => '@username',
-                        'img' => ''
+                        'name' => 'John Doe',
+                        'account' => '@unkownjoe',
+                        'img' => '',
+                        'active' => true,
                     ),
                 )
             )
@@ -201,19 +209,48 @@ class Rop {
 
     private function get_active_accounts() {
         return array(
-            array(
+            'serviceIDFacebook_account_id' => array(
                 'service' => 'facebook',
-                'user' => 'Company Page',
-                'account' => 'user@email.com',
+                'user' => 'Company Page Default',
+                'img' => '',
+                'account' => 'user@default.com',
                 'created' => '07/09/2017 15:16'
             ),
-            array(
+            'serviceIDTwitter_account_id' => array(
                 'service' => 'twitter',
-                'user' => 'John Doe',
-                'account' => '@unkownjoe',
+                'user' => 'The Default Doe',
+                'img' => '',
+                'account' => '@unkownjoedefault',
                 'created' => '07/09/2017 15:16'
             ),
         );
+    }
+
+    private function update_active_accounts( $data ) {
+	    $active = $data['current_active'];
+        $new_active = array();
+	    foreach ( $data['to_be_activated'] as $account ) {
+	        $id = $data['service_id'] . '_' . $account['id'];
+            $new_active[$id] = array(
+                'service' => $data['service'],
+                'user' => $account['name'],
+                'img' => $account['img'],
+                'account' => $account['account'],
+                'created' => date('d/m/Y H:i')
+            );
+        }
+
+	    $result = wp_parse_args( $new_active, $active );
+
+        return $result;
+    }
+
+    private function remove_account( $data ) {
+        $active = $data['current_active'];
+        $result = $active;
+        unset( $result[$data['account_id']] );
+
+        return $result;
     }
 
 	public function api( WP_REST_Request $request ) {
@@ -226,6 +263,14 @@ class Rop {
                 break;
             case 'active_accounts':
                 $response = $this->get_active_accounts();
+                break;
+            case 'update_accounts':
+                $data = json_decode( $request->get_body(), true );
+                $response = $this->update_active_accounts( $data );
+                break;
+            case 'remove_account':
+                $data = json_decode( $request->get_body(), true );
+                $response = $this->remove_account( $data );
                 break;
             default:
                 $response = array( 'status' => '200', 'data' => array( 'list', 'of', 'stuff', 'from', 'api' ) );

@@ -9,8 +9,8 @@
                 <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i>
             </button>
             <span class="input-group-addon hide-md" style="min-width: 115px; text-align: right;">{{service_url}}/</span>
-            <service-autocomplete :accounts="service.available_accounts"></service-autocomplete>
-            <button class="btn input-group-btn" :class="serviceClass" >
+            <service-autocomplete :accounts="service.available_accounts" :to_be_activated="to_be_activated"></service-autocomplete>
+            <button class="btn input-group-btn" :class="serviceClass" @click="activateSelected( service.id )">
                 <i class="fa fa-fw fa-plus" aria-hidden="true"></i> <span class="hide-md">Activate</span>
             </button>
         </div>
@@ -54,7 +54,8 @@
         },
         data: function() {
             return {
-                show_credentials: false
+                show_credentials: false,
+                to_be_activated: []
             }
         },
         computed: {
@@ -90,6 +91,9 @@
             },
             toggleCredentials() {
                 this.show_credentials = ! this.show_credentials;
+            },
+            activateSelected( service_id ) {
+                this.$store.dispatch( 'updateActiveAccounts', { action: 'update', service_id: service_id, service: this.service.service, to_be_activated: this.to_be_activated, current_active: this.$store.state.activeAccounts } );
             }
         },
         components: {
@@ -107,7 +111,7 @@
         border-color: #b71c1c;
     }
 
-    #rop_core .btn.btn-danger:hover, #rop_core .btn.btn-danger:focus {
+    #rop_core .btn.btn-danger:hover, #rop_core {
         background-color: #efefef;
         color: #d50000;
         border-color: #b71c1c;
@@ -119,7 +123,7 @@
         border-color: #1565c0;
     }
 
-    #rop_core .btn.btn-info:hover, #rop_core .btn.btn-info:focus {
+    #rop_core .btn.btn-info:hover, #rop_core {
         background-color: #efefef;
         color: #2196f3;
         border-color: #1565c0;

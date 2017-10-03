@@ -19,15 +19,29 @@
                             <div class="column col-sm-12 col-md-12 col-lg-12 text-left">
                                 <hr/>
                                 <h5>Authenticated Services</h5>
+                                <div class="empty" v-if="authenticated_services.length == 0">
+                                    <div class="empty-icon">
+                                        <i class="fa fa-3x fa-cloud"></i>
+                                    </div>
+                                    <p class="empty-title h5">No authenticated service!</p>
+                                    <p class="empty-subtitle">Add one from the <b>"New Service"</b> section.</p>
+                                </div>
                                 <service-tile v-for="service in authenticated_services" :key="service.id" :service="service"></service-tile>
                             </div>
                         </div>
                     </div>
                     <div class="column col-sm-12 col-md-12 col-lg-6 text-left">
+                        <hr style="margin-top: 45px" />
                         <h5>Active Accounts</h5>
-                        <hr/>
-                        <div class="column col-12" v-for="account in active_accounts">
-                            <service-user-tile :account_data="account"></service-user-tile>
+                        <div class="empty" v-if="active_accounts.length == 0">
+                            <div class="empty-icon">
+                                <i class="fa fa-3x fa-user-circle-o"></i>
+                            </div>
+                            <p class="empty-title h5">No active accounts!</p>
+                            <p class="empty-subtitle">Add one from the <b>"Authenticated Services"</b> section.</p>
+                        </div>
+                        <div v-for="( account, id ) in active_accounts">
+                            <service-user-tile :account_data="account" :account_id="id"></service-user-tile>
                             <div class="divider"></div>
                         </div>
                     </div>

@@ -55,7 +55,16 @@
     module.exports = {
         name: 'service-autocomplete',
         mixins: [ clickaway ],
-        props: [ 'accounts' ],
+        props: [ 'accounts', 'to_be_activated' ],
+        mounted() {
+            var index = 0;
+            for( var account of this.accounts ) {
+                if( account.active ) {
+                    this.addToBeActivated( index );
+                }
+                index++;
+            }
+        },
         data: function () {
             return {
                 search: '',
@@ -63,7 +72,6 @@
                 no_results: false,
                 magic_flag: false,
                 account_def_img: ROP_ASSETS_URL + 'img/accounts_icon.jpg',
-                to_be_activated: [],
             }
         },
         computed: {
@@ -78,8 +86,10 @@
                 }
             },
             is_one: function() {
-                if( this.accounts.length === 1 ) {
+                if( this.accounts.length === 1 && this.accounts[0].active === false ) {
                     this.to_be_activated.push( this.accounts[0] );
+                    return true;
+                } else if( this.accounts.length === 1 && this.accounts[0].active === true ) {
                     return true;
                 }
                 return false
