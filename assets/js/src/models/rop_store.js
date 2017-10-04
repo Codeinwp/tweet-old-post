@@ -158,7 +158,22 @@ export default new Vuex.Store({
                 console.log( response.data );
                 commit( 'updateAuthenticatedServices', response.data );
             }, function () {
-                console.log( 'Error retrieving active accounts.' );
+                console.log( 'Error retrieving authenticated services.' );
+            })
+        },
+        removeService ({ commit }, data) {
+            Vue.http({
+                url: ropApiSettings.root,
+                method: 'POST',
+                headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+                params: { 'req': 'remove_service' },
+                body: data,
+                responseType: 'json'
+            }).then(function (response) {
+                console.log( response.data );
+                commit( 'updateAuthenticatedServices', response.data );
+            }, function () {
+                console.log( 'Error retrieving authenticated services.' );
             })
         }
     },

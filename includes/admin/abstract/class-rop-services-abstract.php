@@ -56,15 +56,6 @@ abstract class Rop_Services_Abstract {
 	protected $credentials;
 
 	/**
-	 * Stores a Rop_Service_Model instance.
-	 *
-	 * @since   8.0.0
-	 * @access  protected
-	 * @var     Rop_Service_Model $model The service model.
-	 */
-	protected $model;
-
-	/**
 	 * A flag to specify if is auth or not.
 	 *
 	 * @since   8.0.0
@@ -89,7 +80,6 @@ abstract class Rop_Services_Abstract {
 	 * @access  public
 	 */
 	public function __construct() {
-		$this->model = new Rop_Service_Model( $this->service_name );
 		$this->error = new Rop_Exception_Handler();
 		$this->init();
 	}

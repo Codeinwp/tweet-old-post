@@ -157,86 +157,91 @@ class Rop {
     }
 
     private function get_authenticated_services() {
-	    return array(
-            'serviceIDFacebook' => array(
-                'id' => 'serviceIDFacebook',
-                'service' => 'facebook',
-                'credentials' => array(
-                    'app_id' => array(
-                        'name' => 'App ID',
-                        'value' => 'dasdassdaUYASGDUY!@&',
-                        'private' => false,
-                    ),
-                    'secret' => array(
-                        'name' => 'Secret',
-                        'value' => 'sdaUYASGDUY!@&WHDQ',
-                        'private' => true,
-                    )
-                ),
-                'available_accounts' => array(
-                    array(
-                        'id' => 'account_id_1',
-                        'name' => 'Page one',
-                        'account' => 'user@email.com',
-                        'img' => '',
-                        'active' => true,
-                    ),
-                    array(
-                        'id' => 'account_id_2',
-                        'name' => 'Page two',
-                        'account' => 'user@email.com',
-                        'img' => 'http://www.xsjjys.com/data/out/96/WHDQ-512397052.jpg',
-                        'active' => false,
-                    ),
-                    array(
-                        'id' => 'account_id_3',
-                        'name' => 'Page three',
-                        'account' => 'user@email.com',
-                        'img' => 'https://organicthemes.com/demo/profile/files/2012/12/profile_img.png',
-                        'active' => true,
-                    )
-                )
-            ),
-            'serviceIDTwitter' => array(
-                'id' => 'serviceIDTwitter',
-                'service' => 'twitter',
-                'available_accounts' => array(
-                    array(
-                        'id' => 'account_id_1',
-                        'name' => 'John Doe',
-                        'account' => '@unkownjoe',
-                        'img' => '',
-                        'active' => true,
-                    ),
-                )
-            )
-        );
+	    $model = new Rop_Services_Model();
+	    //$model->reset_authenticated_services();
+	    return $model->get_authenticated_services();
+//	    return array(
+//            'serviceIDFacebook' => array(
+//                'id' => 'serviceIDFacebook',
+//                'service' => 'facebook',
+//                'credentials' => array(
+//                    'app_id' => array(
+//                        'name' => 'App ID',
+//                        'value' => 'dasdassdaUYASGDUY!@&',
+//                        'private' => false,
+//                    ),
+//                    'secret' => array(
+//                        'name' => 'Secret',
+//                        'value' => 'sdaUYASGDUY!@&WHDQ',
+//                        'private' => true,
+//                    )
+//                ),
+//                'available_accounts' => array(
+//                    array(
+//                        'id' => 'account_id_1',
+//                        'name' => 'Page one',
+//                        'account' => 'user@email.com',
+//                        'img' => '',
+//                        'active' => true,
+//                    ),
+//                    array(
+//                        'id' => 'account_id_2',
+//                        'name' => 'Page two',
+//                        'account' => 'user@email.com',
+//                        'img' => 'http://www.xsjjys.com/data/out/96/WHDQ-512397052.jpg',
+//                        'active' => false,
+//                    ),
+//                    array(
+//                        'id' => 'account_id_3',
+//                        'name' => 'Page three',
+//                        'account' => 'user@email.com',
+//                        'img' => 'https://organicthemes.com/demo/profile/files/2012/12/profile_img.png',
+//                        'active' => true,
+//                    )
+//                )
+//            ),
+//            'serviceIDTwitter' => array(
+//                'id' => 'serviceIDTwitter',
+//                'service' => 'twitter',
+//                'available_accounts' => array(
+//                    array(
+//                        'id' => 'account_id_1',
+//                        'name' => 'John Doe',
+//                        'account' => '@unkownjoe',
+//                        'img' => '',
+//                        'active' => true,
+//                    ),
+//                )
+//            )
+//        );
     }
 
     private function get_active_accounts() {
-        return array(
-            'serviceIDFacebook_account_id' => array(
-                'service' => 'facebook',
-                'user' => 'Company Page Default',
-                'img' => '',
-                'account' => 'user@default.com',
-                'created' => '07/09/2017 15:16'
-            ),
-            'serviceIDTwitter_account_id' => array(
-                'service' => 'twitter',
-                'user' => 'The Default Doe',
-                'img' => '',
-                'account' => '@unkownjoedefault',
-                'created' => '07/09/2017 15:16'
-            ),
-        );
+        $model = new Rop_Services_Model();
+        //$model->reset_authenticated_services();
+        return $model->get_active_accounts();
+//        return array(
+//            'serviceIDFacebook_account_id' => array(
+//                'service' => 'facebook',
+//                'user' => 'Company Page Default',
+//                'img' => '',
+//                'account' => 'user@default.com',
+//                'created' => '07/09/2017 15:16'
+//            ),
+//            'serviceIDTwitter_account_id' => array(
+//                'service' => 'twitter',
+//                'user' => 'The Default Doe',
+//                'img' => '',
+//                'account' => '@unkownjoedefault',
+//                'created' => '07/09/2017 15:16'
+//            ),
+//        );
     }
 
     private function update_active_accounts( $data ) {
-	    $active = $data['current_active'];
         $new_active = array();
 	    foreach ( $data['to_be_activated'] as $account ) {
-	        $id = $data['service_id'] . '_' . $account['id'];
+	        $id = $data['service'] . '_' . $data['service_id'] . '_' . $account['id'];
             $new_active[$id] = array(
                 'service' => $data['service'],
                 'user' => $account['name'],
@@ -245,51 +250,33 @@ class Rop {
                 'created' => date('d/m/Y H:i')
             );
         }
-
-	    $result = wp_parse_args( $new_active, $active );
-
-        return $result;
+        $model = new Rop_Services_Model();
+        return $model->add_active_accounts( $new_active );
     }
 
     private function remove_account( $data ) {
-        $active = $data['current_active'];
-        $result = $active;
-        unset( $result[$data['account_id']] );
-
-        return $result;
+        $model = new Rop_Services_Model();
+        return $model->delete_active_accounts( $data['account_id'] );
     }
 
     private function authenticate_service( $data ) {
         $new_service = array();
 	    if( $data['service'] == 'twitter' ) {
             $twitter_service = new Rop_Twitter_Service();
-            $authentication = $twitter_service->authenticate();
-            if( $authentication ) {
-                $authenticated_services = $this->get_authenticated_services();
-
-                $img = '';
-                if( ! $authentication->default_profile_image ) {
-                    $img = $authentication->profile_image_url_https;
-                }
-
-                $new_service[$authentication->id_str] = array(
-                    'id' => $authentication->id,
-                    'service' => $data['service'],
-                    'available_accounts' => array(
-                        array(
-                            'id' => $authentication->id,
-                            'name' => $authentication->name,
-                            'account' => '@' . $authentication->screen_name,
-                            'img' => $img,
-                            'active' => true,
-                        ),
-                    )
-                );
-
-
+            $authenticated = $twitter_service->authenticate();
+            if( $authenticated ) {
+                $service = $twitter_service->get_service();
+                $service_id = $service['service'] . '_' . $service['id'];
+                $new_service[$service_id] = $service;
             }
         }
-        return wp_parse_args( $new_service, $authenticated_services );
+        $model = new Rop_Services_Model();
+        return $model->add_authenticated_service( $new_service );
+    }
+
+    private function remove_service( $data ) {
+        $model = new Rop_Services_Model();
+        return $model->delete_authenticated_service( $data['id'], $data['service'] );
     }
 
 	public function api( WP_REST_Request $request ) {
@@ -314,6 +301,10 @@ class Rop {
             case 'authenticate_service':
                 $data = json_decode( $request->get_body(), true );
                 $response = $this->authenticate_service( $data );
+                break;
+            case 'remove_service':
+                $data = json_decode( $request->get_body(), true );
+                $response = $this->remove_service( $data );
                 break;
             default:
                 $response = array( 'status' => '200', 'data' => array( 'list', 'of', 'stuff', 'from', 'api' ) );

@@ -11887,7 +11887,24 @@ exports.default = new _vuex2.default.Store({
                 console.log(response.data);
                 commit('updateAuthenticatedServices', response.data);
             }, function () {
-                console.log('Error retrieving active accounts.');
+                console.log('Error retrieving authenticated services.');
+            });
+        },
+        removeService: function removeService(_ref6, data) {
+            var commit = _ref6.commit;
+
+            _vue2.default.http({
+                url: ropApiSettings.root,
+                method: 'POST',
+                headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+                params: { 'req': 'remove_service' },
+                body: data,
+                responseType: 'json'
+            }).then(function (response) {
+                console.log(response.data);
+                commit('updateAuthenticatedServices', response.data);
+            }, function () {
+                console.log('Error retrieving authenticated services.');
             });
         }
     }
@@ -14440,10 +14457,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //     <div class="service-tile">
 //         <label class="show-md hide-xl"><b>{{service_url}}/</b></label>
 //         <div class="input-group">
-//             <button class="btn input-group-btn btn-danger" @click="" >
+//             <button class="btn input-group-btn btn-danger" @click="removeService()" >
 //                 <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
 //             </button>
-//             <button class="btn input-group-btn btn-info" @click="toggleCredentials()" v-if="service.credentials" >
+//             <button class="btn input-group-btn btn-info" @click="toggleCredentials()" v-if="service.public_credentials" >
 //                 <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i>
 //             </button>
 //             <span class="input-group-addon hide-md" style="min-width: 115px; text-align: right;">{{service_url}}/</span>
@@ -14452,14 +14469,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //                 <i class="fa fa-fw fa-plus" aria-hidden="true"></i> <span class="hide-md">Activate</span>
 //             </button>
 //         </div>
-//         <div class="card centered" :class="credentialsDisplayClass" v-if="service.credentials">
+//         <div class="card centered" :class="credentialsDisplayClass" v-if="service.public_credentials">
 //             <div class="card-header">
 //                 <div class="card-title h5">{{serviceName}}</div>
 //                 <div class="card-subtitle text-gray">{{service.id}}</div>
 //             </div>
 //             <div class="card-body">
 //                 <div class="form-horizontal">
-//                     <div class="form-group" v-for="( credential, index ) in service.credentials">
+//                     <div class="form-group" v-for="( credential, index ) in service.public_credentials">
 //                         <div class="col-3">
 //                             <label class="form-label" :for="credentialID(index)">{{credential.name}}:</label>
 //                         </div>
@@ -14529,6 +14546,9 @@ module.exports = {
         },
         activateSelected: function activateSelected(service_id) {
             this.$store.dispatch('updateActiveAccounts', { action: 'update', service_id: service_id, service: this.service.service, to_be_activated: this.to_be_activated, current_active: this.$store.state.activeAccounts });
+        },
+        removeService: function removeService() {
+            this.$store.dispatch('removeService', { id: this.service.id, service: this.service.service });
         }
     },
     components: {
@@ -14838,7 +14858,7 @@ module.exports = "\n    <div class=\"form-autocomplete\" style=\"width: 100%;\" 
 /* 62 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"service-tile\" _v-3e1338be=\"\">\n        <label class=\"show-md hide-xl\" _v-3e1338be=\"\"><b _v-3e1338be=\"\">{{service_url}}/</b></label>\n        <div class=\"input-group\" _v-3e1338be=\"\">\n            <button class=\"btn input-group-btn btn-danger\" @click=\"\" _v-3e1338be=\"\">\n                <i class=\"fa fa-fw fa-trash\" aria-hidden=\"true\" _v-3e1338be=\"\"></i>\n            </button>\n            <button class=\"btn input-group-btn btn-info\" @click=\"toggleCredentials()\" v-if=\"service.credentials\" _v-3e1338be=\"\">\n                <i class=\"fa fa-fw fa-info-circle\" aria-hidden=\"true\" _v-3e1338be=\"\"></i>\n            </button>\n            <span class=\"input-group-addon hide-md\" style=\"min-width: 115px; text-align: right;\" _v-3e1338be=\"\">{{service_url}}/</span>\n            <service-autocomplete :accounts=\"service.available_accounts\" :to_be_activated=\"to_be_activated\" _v-3e1338be=\"\"></service-autocomplete>\n            <button class=\"btn input-group-btn\" :class=\"serviceClass\" @click=\"activateSelected( service.id )\" _v-3e1338be=\"\">\n                <i class=\"fa fa-fw fa-plus\" aria-hidden=\"true\" _v-3e1338be=\"\"></i> <span class=\"hide-md\" _v-3e1338be=\"\">Activate</span>\n            </button>\n        </div>\n        <div class=\"card centered\" :class=\"credentialsDisplayClass\" v-if=\"service.credentials\" _v-3e1338be=\"\">\n            <div class=\"card-header\" _v-3e1338be=\"\">\n                <div class=\"card-title h5\" _v-3e1338be=\"\">{{serviceName}}</div>\n                <div class=\"card-subtitle text-gray\" _v-3e1338be=\"\">{{service.id}}</div>\n            </div>\n            <div class=\"card-body\" _v-3e1338be=\"\">\n                <div class=\"form-horizontal\" _v-3e1338be=\"\">\n                    <div class=\"form-group\" v-for=\"( credential, index ) in service.credentials\" _v-3e1338be=\"\">\n                        <div class=\"col-3\" _v-3e1338be=\"\">\n                            <label class=\"form-label\" :for=\"credentialID(index)\" _v-3e1338be=\"\">{{credential.name}}:</label>\n                        </div>\n                        <div class=\"col-9\" _v-3e1338be=\"\">\n                            <secret-input :id=\"credentialID(index)\" :value=\"credential.value\" :secret=\"credential.private\" _v-3e1338be=\"\">\n                        </secret-input></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"divider clearfix\" _v-3e1338be=\"\"></div>\n    </div>\n";
+module.exports = "\n    <div class=\"service-tile\" _v-3e1338be=\"\">\n        <label class=\"show-md hide-xl\" _v-3e1338be=\"\"><b _v-3e1338be=\"\">{{service_url}}/</b></label>\n        <div class=\"input-group\" _v-3e1338be=\"\">\n            <button class=\"btn input-group-btn btn-danger\" @click=\"removeService()\" _v-3e1338be=\"\">\n                <i class=\"fa fa-fw fa-trash\" aria-hidden=\"true\" _v-3e1338be=\"\"></i>\n            </button>\n            <button class=\"btn input-group-btn btn-info\" @click=\"toggleCredentials()\" v-if=\"service.public_credentials\" _v-3e1338be=\"\">\n                <i class=\"fa fa-fw fa-info-circle\" aria-hidden=\"true\" _v-3e1338be=\"\"></i>\n            </button>\n            <span class=\"input-group-addon hide-md\" style=\"min-width: 115px; text-align: right;\" _v-3e1338be=\"\">{{service_url}}/</span>\n            <service-autocomplete :accounts=\"service.available_accounts\" :to_be_activated=\"to_be_activated\" _v-3e1338be=\"\"></service-autocomplete>\n            <button class=\"btn input-group-btn\" :class=\"serviceClass\" @click=\"activateSelected( service.id )\" _v-3e1338be=\"\">\n                <i class=\"fa fa-fw fa-plus\" aria-hidden=\"true\" _v-3e1338be=\"\"></i> <span class=\"hide-md\" _v-3e1338be=\"\">Activate</span>\n            </button>\n        </div>\n        <div class=\"card centered\" :class=\"credentialsDisplayClass\" v-if=\"service.public_credentials\" _v-3e1338be=\"\">\n            <div class=\"card-header\" _v-3e1338be=\"\">\n                <div class=\"card-title h5\" _v-3e1338be=\"\">{{serviceName}}</div>\n                <div class=\"card-subtitle text-gray\" _v-3e1338be=\"\">{{service.id}}</div>\n            </div>\n            <div class=\"card-body\" _v-3e1338be=\"\">\n                <div class=\"form-horizontal\" _v-3e1338be=\"\">\n                    <div class=\"form-group\" v-for=\"( credential, index ) in service.public_credentials\" _v-3e1338be=\"\">\n                        <div class=\"col-3\" _v-3e1338be=\"\">\n                            <label class=\"form-label\" :for=\"credentialID(index)\" _v-3e1338be=\"\">{{credential.name}}:</label>\n                        </div>\n                        <div class=\"col-9\" _v-3e1338be=\"\">\n                            <secret-input :id=\"credentialID(index)\" :value=\"credential.value\" :secret=\"credential.private\" _v-3e1338be=\"\">\n                        </secret-input></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"divider clearfix\" _v-3e1338be=\"\"></div>\n    </div>\n";
 
 /***/ }),
 /* 63 */

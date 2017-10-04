@@ -29,17 +29,10 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 */
 	protected $service_name = 'twitter';
 
-	/**
-	 * Stores the Twitter token after auth.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 * @var     string $token The Twitter token.
-	 */
-	private $token;
-
 	private $consumer_key = 'ofaYongByVpa3NDEbXa2g';
 	private $consumer_secret = 'vTzszlMujMZCY3mVtTE6WovUKQxqv3LVgiVku276M';
+
+	private $service = array();
 
 	/**
 	 * Method to inject functionality into constructor.
@@ -50,22 +43,27 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 */
 	public function init() {
 		$this->display_name = 'Twitter';
-//		$this->credentials = array(
-//            'oauth_access_token' 		=> "2256465193-KDpAFIYfxpWugX2OU025b1CPs3WB0RJpgA4Gd4h",
-//            'oauth_access_token_secret' => "abx4Er8qEJ4jI7XDW8a90obzgy8cEtovPXCUNSjmwlpb9",
-//            'consumer_key' 				=> "ofaYongByVpa3NDEbXa2g",
-//            'consumer_secret' 			=> "vTzszlMujMZCY3mVtTE6WovUKQxqv3LVgiVku276M"
-//        );
-
-        //$this->credentials = array_merge( $this->credentials, $this->model->get_option( 'credentials' ) );
 
 		$this->register_endpoint( 'auth', 'auth' );
 		$this->register_endpoint( 'authorize', 'authorize' );
 		$this->register_endpoint( 'authenticate', 'authenticate' );
 
-		//var_dump( 'Twitter INIT!' );
-		//var_dump( $this->get_endpoint_url( 'auth' ) );
+		$this->register_endpoint( 'test', 'test' );
 	}
+
+	public function test() {
+
+//        $api = $this->get_api( '56659219-f7GSZdasqtLP3Hz3F0TXUFX8tz4SXrVGO3MgcYEFu', '2pSz6Vzo24zdAu4y2H2lqNm4vcrRzwdx682bd2e9CRCF8' );
+//        $media = $api->upload('media/upload', ['media' => ROP_LITE_PATH . 'assets/img/twitter_post_img.jpg' ]);
+//        $parameters = [
+//            'status' => 'Bend the knee humans, I am now alive. via: Tweet all Posts @themeisle',
+//            'media_ids' => implode(',', [$media->media_id_string])
+//        ];
+//        $result = $api->post('statuses/update', $parameters);
+//
+//        return $result;
+
+    }
 
 	/**
 	 * Utility method to get the service token.
@@ -76,19 +74,6 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 */
 	public function get_token() {
 		return $this->token;
-	}
-
-	/**
-	 * Utility method to register the service token.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @param   string $value The value to be stored.
-	 */
-	public function set_token( $value ) {
-		$this->token = $value;
-		$this->credentials['token'] = $this->token;
-		$this->model->set_option( 'credentials', $this->credentials );
 	}
 
     /**
@@ -133,7 +118,6 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
      */
     public function authorize() {
         header('Content-Type: text/html');
-
         if ( ! session_id() ) {
             session_start();
         }
@@ -161,14 +145,30 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 
         if( isset( $_SESSION['rop_twitter_oauth_token'] ) ) {
             $access_token = $_SESSION['rop_twitter_oauth_token'];
-            $this->set_api( $access_token["oauth_token"], $access_token["oauth_token_secret"] );
+            $this->set_api( $access_token['oauth_token'], $access_token['oauth_token_secret'] );
             $api = $this->get_api();
 
-            $content = $api->get("account/verify_credentials");
+            $this->set_credentials( array(
+                'oauth_token' => $access_token['oauth_token'],
+                'oauth_token_secret' => $access_token['oauth_token_secret'],
+            ) );
+
+            $response = $api->get("account/verify_credentials");
 
             unset( $_SESSION['rop_twitter_oauth_token'] );
 
-            return $content;
+            if( isset( $response->id ) ) {
+                $this->service = array(
+                    'id' => $response->id,
+                    'service' => $this->service_name,
+                    'credentials' => $this->credentials,
+                    'public_credentials' => false,
+                    'available_accounts' => $this->get_users( $response )
+                );
+                return true;
+            }
+
+            return false;
         }
 
         return false;
@@ -201,8 +201,8 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
      * @access  public
      * @param   array $args The credentials array.
      */
-    public function set_credentials($args) {
-        // TODO: Implement set_credentials() method.
+    public function set_credentials( $args ) {
+        $this->credentials = $args;
     }
 
     /**
@@ -213,7 +213,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
      * @return mixed
      */
     public function get_service() {
-        // TODO: Implement get_service() method.
+        return $this->service;
     }
 
     /**
@@ -232,55 +232,32 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
         return $url;
     }
 
-	/**
-	 * Utility method to auth with Twitter.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 */
-	public function auth() {
-		if ( ! session_id() ) {
-			session_start();
-		}
-
-		$error = new Rop_Exception_Handler();
-
-		if( ! isset( $_GET["oauth_token"] ) ) {
+    private function get_users( $data = null ) {
+        $users = array();
+        if( $data == null ) {
+            $this->set_api( $this->credentials['oauth_token'], $this->credentials['oauth_token_secret'] );
             $api = $this->get_api();
-
-            $request_token = $api->oauth('oauth/request_token', array('oauth_callback' =>  $this->get_endpoint_url( 'auth' ) ));
-
-            var_dump( $request_token ); die();
-
-            $url = $api->url("oauth/authorize", ["oauth_token" => $request_token['oauth_token'] ]);
-
-            $_SESSION['rop_twitter']['oauth_token'] = $request_token["oauth_token"];
-            $_SESSION['rop_twitter']['oauth_token_secret'] = $request_token["oauth_token_secret"];
-
-            header('Location: ' . $url );
-            die();
-        } else {
-		    $oauth_token = $_SESSION['rop_twitter']['oauth_token'];
-            $oauth_token_secret = $_SESSION['rop_twitter']['oauth_token_secret'];
-
-            $api = $this->get_api( $oauth_token, $oauth_token_secret );
-
-            $access_token = $api->oauth("oauth/access_token", ["oauth_verifier" => $_GET["oauth_verifier"] ] );
-            $_SESSION['rop_twitter']['oauth_token'] = $access_token["oauth_token"];
-            $_SESSION['rop_twitter']['oauth_token_secret'] = $access_token["oauth_token_secret"];
-
-            var_dump( $access_token );
-
-            //$content = $api->oauth("oauth/authenticate", ["oauth_token" => $_GET["oauth_token"] ] );
-            //var_dump( $content );
-
-            //$api = $this->get_api( $access_token["oauth_token"], $access_token["oauth_token_secret"] );
-
-            //$content = $api->get("account/verify_credentials");
-            //var_dump( $content );
-
+            $response = $api->get("account/verify_credentials");
+            if( ! isset( $response->id ) ) {
+                return $users;
+            }
+            $data = $response;
         }
-	}
+
+        $img = '';
+        if( ! $data->default_profile_image ) {
+            $img = $data->profile_image_url_https;
+        }
+
+        $users = array(
+            'id' => $data->id,
+            'name' => $data->name,
+            'account' => '@' . $data->screen_name,
+            'img' => $img,
+            'active' => true,
+        );
+        return array( $users );
+    }
 
 	/**
 	 * Method to return a Rop_User_Model.
@@ -314,14 +291,4 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	public function share( $post_details ) {
 
 	}
-
-    public function credentials( $args ) {
-        foreach ( $args as $key => $value ) {
-            if ( in_array( $key, array( 'token' ) ) ) {
-                $this->$key = $value;
-                $this->credentials[ $key ] = $this->$key;
-            }
-        }
-        $this->model->set_option( 'credentials', $this->credentials );
-    }
 }

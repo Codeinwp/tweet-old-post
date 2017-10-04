@@ -2,10 +2,10 @@
     <div class="service-tile">
         <label class="show-md hide-xl"><b>{{service_url}}/</b></label>
         <div class="input-group">
-            <button class="btn input-group-btn btn-danger" @click="" >
+            <button class="btn input-group-btn btn-danger" @click="removeService()" >
                 <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
             </button>
-            <button class="btn input-group-btn btn-info" @click="toggleCredentials()" v-if="service.credentials" >
+            <button class="btn input-group-btn btn-info" @click="toggleCredentials()" v-if="service.public_credentials" >
                 <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i>
             </button>
             <span class="input-group-addon hide-md" style="min-width: 115px; text-align: right;">{{service_url}}/</span>
@@ -14,14 +14,14 @@
                 <i class="fa fa-fw fa-plus" aria-hidden="true"></i> <span class="hide-md">Activate</span>
             </button>
         </div>
-        <div class="card centered" :class="credentialsDisplayClass" v-if="service.credentials">
+        <div class="card centered" :class="credentialsDisplayClass" v-if="service.public_credentials">
             <div class="card-header">
                 <div class="card-title h5">{{serviceName}}</div>
                 <div class="card-subtitle text-gray">{{service.id}}</div>
             </div>
             <div class="card-body">
                 <div class="form-horizontal">
-                    <div class="form-group" v-for="( credential, index ) in service.credentials">
+                    <div class="form-group" v-for="( credential, index ) in service.public_credentials">
                         <div class="col-3">
                             <label class="form-label" :for="credentialID(index)">{{credential.name}}:</label>
                         </div>
@@ -94,6 +94,9 @@
             },
             activateSelected( service_id ) {
                 this.$store.dispatch( 'updateActiveAccounts', { action: 'update', service_id: service_id, service: this.service.service, to_be_activated: this.to_be_activated, current_active: this.$store.state.activeAccounts } );
+            },
+            removeService() {
+                this.$store.dispatch( 'removeService', { id: this.service.id, service: this.service.service } );
             }
         },
         components: {
