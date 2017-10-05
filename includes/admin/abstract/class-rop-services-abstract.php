@@ -55,15 +55,6 @@ abstract class Rop_Services_Abstract {
 	 */
 	protected $credentials;
 
-	/**
-	 * A flag to specify if is auth or not.
-	 *
-	 * @since   8.0.0
-	 * @access  protected
-	 * @var     bool $is_auth The flag for auth.
-	 */
-	protected $is_auth = false;
-
     /**
      * Holds the Rop_Exception_Handler
      *
@@ -92,6 +83,17 @@ abstract class Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public abstract function init();
+
+    /**
+     * Method to expose desired endpoints.
+     * This should be invoked by the Factory class
+     * to register all endpoints at once.
+     *
+     * @since   8.0.0
+     * @access  public
+     * @return mixed
+     */
+    public abstract function expose_endpoints();
 
     /**
      * Method to define the api.
@@ -130,17 +132,6 @@ abstract class Rop_Services_Abstract {
     public abstract function authenticate();
 
     /**
-     * Utility method to retrieve state of authentication.
-     *
-     * @since   8.0.0
-     * @access  public
-     * @return bool
-     */
-    public function is_authenticated() {
-        return $this->is_auth;
-    }
-
-    /**
      * Method to request a token from api.
      *
      * @since   8.0.0
@@ -148,21 +139,6 @@ abstract class Rop_Services_Abstract {
      * @return mixed
      */
     protected abstract function request_api_token();
-
-
-    /**
-     * Utility method to set default values for specified credentials.
-     *
-     * @since   8.0.0
-     * @access  protected
-     * @param   string $key The key to instantiate.
-     */
-    protected function set_credential_defaults( $key ) {
-        $this->$key = '';
-        if ( isset( $this->credentials[ $key ] ) && $this->credentials[ $key ] != '' && $this->credentials[ $key ] != null ) {
-            $this->$key = $this->credentials[ $key ];
-        }
-    }
 
 	/**
 	 * Method to register credentials for the service.

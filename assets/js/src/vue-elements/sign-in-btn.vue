@@ -19,7 +19,7 @@
                     <div class="content">
                         <div class="form-group" v-for="( field, id ) in modal.data">
                             <label class="form-label" :for="field.id">{{ field.name }}</label>
-                            <input class="form-input" type="text" :id="field.id" :placeholder="field.name" />
+                            <input class="form-input" type="text" :id="field.id" v-model="field.value" :placeholder="field.name" />
                             <i>{{ field.description }}</i>
                         </div>
                     </div>
@@ -45,7 +45,8 @@
                     isOpen: false,
                     serviceName: '',
                     data: {}
-                }
+                },
+                activePopup: '',
             }
         },
         methods: {
@@ -54,23 +55,36 @@
                     this.modal.serviceName = this.$store.state.availableServices[this.selected_network].name;
                     this.modal.data = this.$store.state.availableServices[this.selected_network].credentials;
                     this.openModal()
-                } else if( this.$store.state.availableServices[this.selected_network].url !== '' ) {
-                    var url = this.$store.state.availableServices[this.selected_network].url;
-                    var w = 560;
-                    var h = 340;
-                    var y = window.top.outerHeight / 2 + window.top.screenY - ( w / 2);
-                    var x = window.top.outerWidth / 2 + window.top.screenX - ( h / 2);
-                    var newWindow = window.open( url, url,'width=' + w + ', height=' + h + ', toolbar=0, menubar=0, location=0, top=' + y + ', left=' + x );
-                    if ( window.focus ) { newWindow.focus(); }
-                    var instance = this;
-                    var pollTimer = window.setInterval( function() {
-                        if ( newWindow.closed !== false ) {
-                            window.clearInterval( pollTimer );
-                            instance.requestAuthentication();
-
-                        }
-                    }, 200);
+                } else {
+                    this.activePopup = this.selected_network
+                    let w = 560;
+                    let h = 340;
+                    let y = window.top.outerHeight / 2 + window.top.screenY - ( w / 2);
+                    let x = window.top.outerWidth / 2 + window.top.screenX - ( h / 2);
+                    window.open( '', this.activePopup,'width=' + w + ', height=' + h + ', toolbar=0, menubar=0, location=0, top=' + y + ', left=' + x );
+                    this.getUrlAndGo( [] );
                 }
+            },
+            openPopup( url ) {
+                console.log( 'Trying to open popup for url:', url );
+                let newWindow = window.open( url, this.activePopup );
+                if ( window.focus ) { newWindow.focus(); }
+                let instance = this;
+                let pollTimer = window.setInterval( function() {
+                    if ( newWindow.closed !== false ) {
+                        window.clearInterval( pollTimer );
+                        instance.requestAuthentication();
+                    }
+                }, 200);
+            },
+            getUrlAndGo( credentials ) {
+                console.log( 'Credentials recieved:', credentials );
+                this.$store.dispatch( 'getServiceSignInUrl', { service: this.selected_network, credentials: credentials } ).then(response => {
+                    console.log("Got some data, now lets show something in this component", response);
+                    this.openPopup( response.url );
+                }, error => {
+                    console.error("Got nothing from server. Prompt user to check internet connection and try again", error);
+                })
             },
             requestAuthentication() {
                 this.$store.dispatch( 'authenticateService', { service: this.selected_network } );
@@ -79,6 +93,23 @@
                 this.modal.isOpen = true;
             },
             closeModal: function() {
+                let credentials = {};
+                for( const index of Object.keys( this.modal.data ) ) {
+                    credentials[index] = '';
+                    if( 'value' in this.modal.data[index] ) {
+                        credentials[index] = this.modal.data[index]['value'];
+                    }
+                }
+                //console.log( 'credentials: ', credentials );
+
+                this.activePopup = this.selected_network
+                let w = 560;
+                let h = 340;
+                let y = window.top.outerHeight / 2 + window.top.screenY - ( w / 2);
+                let x = window.top.outerWidth / 2 + window.top.screenX - ( h / 2);
+                window.open( '', this.activePopup,'width=' + w + ', height=' + h + ', toolbar=0, menubar=0, location=0, top=' + y + ', left=' + x );
+                this.getUrlAndGo( credentials );
+
                 this.modal.isOpen = false;
             }
         },

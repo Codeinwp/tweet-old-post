@@ -1,8 +1,8 @@
 <?php
 /**
- * The file that defines the Facebook Service specifics.
+ * The file that defines the Twitter Service specifics.
  *
- * A class that is used to interact with Facebook.
+ * A class that is used to interact with Twitter.
  * It extends the Rop_Services_Abstract class.
  *
  * @link       https://themeisle.com/
@@ -13,7 +13,7 @@
  */
 
 /**
- * Class Rop_Facebook_Service
+ * Class Rop_Twitter_Service
  *
  * @since   8.0.0
  * @link    https://themeisle.com/
@@ -29,9 +29,31 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 */
 	protected $service_name = 'twitter';
 
+    /**
+     * Holds the Twitter APP Consumer Key.
+     *
+     * @since   8.0.0
+     * @access  private
+     * @var     string $consumer_key The Twitter APP Consumer Key.
+     */
 	private $consumer_key = 'ofaYongByVpa3NDEbXa2g';
+
+    /**
+     * Holds the Twitter APP Consumer Secret.
+     *
+     * @since   8.0.0
+     * @access  private
+     * @var     string $consumer_secret The Twitter APP Consumer Secret.
+     */
 	private $consumer_secret = 'vTzszlMujMZCY3mVtTE6WovUKQxqv3LVgiVku276M';
 
+    /**
+     * Holds the temp data for the authenticated service.
+     *
+     * @since   8.0.0
+     * @access  private
+     * @var     array $service The temporary data of the authenticated service.
+     */
 	private $service = array();
 
 	/**
@@ -43,15 +65,25 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 */
 	public function init() {
 		$this->display_name = 'Twitter';
-
-		$this->register_endpoint( 'auth', 'auth' );
-		$this->register_endpoint( 'authorize', 'authorize' );
-		$this->register_endpoint( 'authenticate', 'authenticate' );
-
-		$this->register_endpoint( 'test', 'test' );
 	}
 
+    /**
+     * Method to expose desired endpoints.
+     * This should be invoked by the Factory class
+     * to register all endpoints at once.
+     *
+     * @since   8.0.0
+     * @access  public
+     * @return mixed
+     */
+    public function expose_endpoints() {
+        $this->register_endpoint( 'authorize', 'authorize' );
+        $this->register_endpoint( 'authenticate', 'authenticate' );
+        $this->register_endpoint( 'test', 'test' );
+    }
+
 	public function test() {
+        return 'Ok Boss!';
 
 //        $api = $this->get_api( '56659219-f7GSZdasqtLP3Hz3F0TXUFX8tz4SXrVGO3MgcYEFu', '2pSz6Vzo24zdAu4y2H2lqNm4vcrRzwdx682bd2e9CRCF8' );
 //        $media = $api->upload('media/upload', ['media' => ROP_LITE_PATH . 'assets/img/twitter_post_img.jpg' ]);
@@ -64,17 +96,6 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 //        return $result;
 
     }
-
-	/**
-	 * Utility method to get the service token.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return string
-	 */
-	public function get_token() {
-		return $this->token;
-	}
 
     /**
      * Method to define the api.
@@ -232,6 +253,38 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
         return $url;
     }
 
+    /**
+     * Utility method to get the service token.
+     *
+     * @since   8.0.0
+     * @access  public
+     * @return string
+     */
+    public function get_token() {
+        return $this->token;
+    }
+
+    /**
+     * Method to return a Rop_User_Model.
+     *
+     * @since   8.0.0
+     * @access  public
+     * @param   array $args TODO
+     * @return Rop_User_Model
+     */
+    public function get_user( $args ) {
+        $user = new Rop_User_Model();
+        return $user;
+    }
+
+    /**
+     * Utility method to retrieve users from the Twitter account.
+     *
+     * @since   8.0.0
+     * @access  public
+     * @param   object $data Response data from Twitter.
+     * @return array
+     */
     private function get_users( $data = null ) {
         $users = array();
         if( $data == null ) {
@@ -258,27 +311,6 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
         );
         return array( $users );
     }
-
-	/**
-	 * Method to return a Rop_User_Model.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @param   array $page A Facebook page array.
-	 * @return Rop_User_Model
-	 */
-	public function get_user( $page ) {
-		$user = new Rop_User_Model( array(
-			'user_id' => $page['id'],
-			'user_name' => $page['name'],
-			'user_picture' => $page['img'],
-			'user_service' => $this->service_name,
-			'user_credentials' => array(
-				'token' => $page['access_token'],
-			),
-		) );
-		return $user;
-	}
 
 	/**
 	 * Method for publishing with Twitter service.

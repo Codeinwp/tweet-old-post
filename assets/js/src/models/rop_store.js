@@ -89,6 +89,24 @@ export default new Vuex.Store({
                 console.log( 'Error retrieving available services.' )
             })
         },
+        getServiceSignInUrl ({ commit }, data) {
+            console.log( 'Recived', data );
+            return new Promise((resolve, reject) => {
+                Vue.http({
+                    url: ropApiSettings.root,
+                    method: 'POST',
+                    headers: {'X-WP-Nonce': ropApiSettings.nonce},
+                    params: {'req': 'service_sign_in_url'},
+                    body: data,
+                    responseType: 'json'
+                }).then(function (response) {
+                    resolve(response.data);
+                }, function () {
+                    reject();
+                    console.log('Error retrieving active accounts.');
+                })
+            })
+        },
         fetchAuthenticatedServices ({ commit }) {
             Vue.http({
                 url: ropApiSettings.root,

@@ -115,4 +115,33 @@ class Rop_Admin {
 
 	}
 
+    /**
+     * The display method for the main page.
+     *
+     * @since   8.0.0
+     * @access  public
+     */
+    public function rop_main_page() {
+        echo '
+	    <div id="rop_core" style="margin: 20px 20px 40px 0;">
+	        <main-page-panel></main-page-panel>
+        </div>';
+    }
+
+    /**
+     * Add admin menu items for plugin.
+     *
+     * @since   8.0.0
+     * @access  public
+     */
+    public function menu_pages() {
+        add_menu_page(
+            __( 'Revive Old Posts', 'rop' ), __( 'Revive Old Posts', 'rop' ), 'manage_options', 'rop_main',
+            array(
+                $this,
+                'rop_main_page',
+            )
+        );
+    }
+
 }

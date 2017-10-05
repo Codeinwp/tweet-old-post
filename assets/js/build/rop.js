@@ -11810,8 +11810,28 @@ exports.default = new _vuex2.default.Store({
                 console.log('Error retrieving available services.');
             });
         },
-        fetchAuthenticatedServices: function fetchAuthenticatedServices(_ref2) {
+        getServiceSignInUrl: function getServiceSignInUrl(_ref2, data) {
             var commit = _ref2.commit;
+
+            console.log('Recived', data);
+            return new Promise(function (resolve, reject) {
+                _vue2.default.http({
+                    url: ropApiSettings.root,
+                    method: 'POST',
+                    headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+                    params: { 'req': 'service_sign_in_url' },
+                    body: data,
+                    responseType: 'json'
+                }).then(function (response) {
+                    resolve(response.data);
+                }, function () {
+                    reject();
+                    console.log('Error retrieving active accounts.');
+                });
+            });
+        },
+        fetchAuthenticatedServices: function fetchAuthenticatedServices(_ref3) {
+            var commit = _ref3.commit;
 
             _vue2.default.http({
                 url: ropApiSettings.root,
@@ -11825,8 +11845,8 @@ exports.default = new _vuex2.default.Store({
                 console.log('Error retrieving authenticated services.');
             });
         },
-        fetchActiveAccounts: function fetchActiveAccounts(_ref3) {
-            var commit = _ref3.commit;
+        fetchActiveAccounts: function fetchActiveAccounts(_ref4) {
+            var commit = _ref4.commit;
 
             _vue2.default.http({
                 url: ropApiSettings.root,
@@ -11840,8 +11860,8 @@ exports.default = new _vuex2.default.Store({
                 console.log('Error retrieving active accounts.');
             });
         },
-        updateActiveAccounts: function updateActiveAccounts(_ref4, data) {
-            var commit = _ref4.commit;
+        updateActiveAccounts: function updateActiveAccounts(_ref5, data) {
+            var commit = _ref5.commit;
 
             if (data.action === 'update') {
                 _vue2.default.http({
@@ -11873,8 +11893,8 @@ exports.default = new _vuex2.default.Store({
                 console.log('No valid action specified.');
             }
         },
-        authenticateService: function authenticateService(_ref5, data) {
-            var commit = _ref5.commit;
+        authenticateService: function authenticateService(_ref6, data) {
+            var commit = _ref6.commit;
 
             _vue2.default.http({
                 url: ropApiSettings.root,
@@ -11890,8 +11910,8 @@ exports.default = new _vuex2.default.Store({
                 console.log('Error retrieving authenticated services.');
             });
         },
-        removeService: function removeService(_ref6, data) {
-            var commit = _ref6.commit;
+        removeService: function removeService(_ref7, data) {
+            var commit = _ref7.commit;
 
             _vue2.default.http({
                 url: ropApiSettings.root,
@@ -13800,6 +13820,10 @@ var _keys = __webpack_require__(26);
 
 var _keys2 = _interopRequireDefault(_keys);
 
+var _getIterator2 = __webpack_require__(77);
+
+var _getIterator3 = _interopRequireDefault(_getIterator2);
+
 var _vuex = __webpack_require__(0);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -13814,7 +13838,8 @@ module.exports = {
                 isOpen: false,
                 serviceName: '',
                 data: {}
-            }
+            },
+            activePopup: ''
         };
     },
     methods: {
@@ -13823,24 +13848,40 @@ module.exports = {
                 this.modal.serviceName = this.$store.state.availableServices[this.selected_network].name;
                 this.modal.data = this.$store.state.availableServices[this.selected_network].credentials;
                 this.openModal();
-            } else if (this.$store.state.availableServices[this.selected_network].url !== '') {
-                var url = this.$store.state.availableServices[this.selected_network].url;
+            } else {
+                this.activePopup = this.selected_network;
                 var w = 560;
                 var h = 340;
                 var y = window.top.outerHeight / 2 + window.top.screenY - w / 2;
                 var x = window.top.outerWidth / 2 + window.top.screenX - h / 2;
-                var newWindow = window.open(url, url, 'width=' + w + ', height=' + h + ', toolbar=0, menubar=0, location=0, top=' + y + ', left=' + x);
-                if (window.focus) {
-                    newWindow.focus();
-                }
-                var instance = this;
-                var pollTimer = window.setInterval(function () {
-                    if (newWindow.closed !== false) {
-                        window.clearInterval(pollTimer);
-                        instance.requestAuthentication();
-                    }
-                }, 200);
+                window.open('', this.activePopup, 'width=' + w + ', height=' + h + ', toolbar=0, menubar=0, location=0, top=' + y + ', left=' + x);
+                this.getUrlAndGo([]);
             }
+        },
+        openPopup: function openPopup(url) {
+            console.log('Trying to open popup for url:', url);
+            var newWindow = window.open(url, this.activePopup);
+            if (window.focus) {
+                newWindow.focus();
+            }
+            var instance = this;
+            var pollTimer = window.setInterval(function () {
+                if (newWindow.closed !== false) {
+                    window.clearInterval(pollTimer);
+                    instance.requestAuthentication();
+                }
+            }, 200);
+        },
+        getUrlAndGo: function getUrlAndGo(credentials) {
+            var _this = this;
+
+            console.log('Credentials recieved:', credentials);
+            this.$store.dispatch('getServiceSignInUrl', { service: this.selected_network, credentials: credentials }).then(function (response) {
+                console.log("Got some data, now lets show something in this component", response);
+                _this.openPopup(response.url);
+            }, function (error) {
+                console.error("Got nothing from server. Prompt user to check internet connection and try again", error);
+            });
         },
         requestAuthentication: function requestAuthentication() {
             this.$store.dispatch('authenticateService', { service: this.selected_network });
@@ -13850,6 +13891,44 @@ module.exports = {
             this.modal.isOpen = true;
         },
         closeModal: function closeModal() {
+            var credentials = {};
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = (0, _getIterator3.default)((0, _keys2.default)(this.modal.data)), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var index = _step.value;
+
+                    credentials[index] = '';
+                    if ('value' in this.modal.data[index]) {
+                        credentials[index] = this.modal.data[index]['value'];
+                    }
+                }
+                //console.log( 'credentials: ', credentials );
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+
+            this.activePopup = this.selected_network;
+            var w = 560;
+            var h = 340;
+            var y = window.top.outerHeight / 2 + window.top.screenY - w / 2;
+            var x = window.top.outerWidth / 2 + window.top.screenX - h / 2;
+            window.open('', this.activePopup, 'width=' + w + ', height=' + h + ', toolbar=0, menubar=0, location=0, top=' + y + ', left=' + x);
+            this.getUrlAndGo(credentials);
+
             this.modal.isOpen = false;
         }
     },
@@ -13925,7 +14004,7 @@ module.exports = {
 //                     <div class="content">
 //                         <div class="form-group" v-for="( field, id ) in modal.data">
 //                             <label class="form-label" :for="field.id">{{ field.name }}</label>
-//                             <input class="form-input" type="text" :id="field.id" :placeholder="field.name" />
+//                             <input class="form-input" type="text" :id="field.id" v-model="field.value" :placeholder="field.name" />
 //                             <i>{{ field.description }}</i>
 //                         </div>
 //                     </div>
@@ -14371,7 +14450,7 @@ module.exports = function (bitmap, value) {
 /* 53 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"sign-in-btn\" _v-8e89fa8e=\"\">\n        <div class=\"input-group\" _v-8e89fa8e=\"\">\n            <select class=\"form-select\" v-model=\"selected_network\" _v-8e89fa8e=\"\">\n                <option v-for=\"( service, network ) in services\" v-bind:value=\"network\" :disabled=\"!service.active\" _v-8e89fa8e=\"\">{{ service.name }}</option>\n            </select>\n            <button class=\"btn input-group-btn\" :class=\"serviceClass\" @click=\"requestAuthorization()\" _v-8e89fa8e=\"\">\n                <i class=\"fa\" :class=\"serviceIcon\" aria-hidden=\"true\" _v-8e89fa8e=\"\"></i> Sign In\n            </button>\n        </div>\n        <div class=\"modal\" :class=\"modalActiveClass\" _v-8e89fa8e=\"\">\n            <div class=\"modal-overlay\" _v-8e89fa8e=\"\"></div>\n            <div class=\"modal-container\" _v-8e89fa8e=\"\">\n                <div class=\"modal-header\" _v-8e89fa8e=\"\">\n                    <button class=\"btn btn-clear float-right\" @click=\"closeModal()\" _v-8e89fa8e=\"\"></button>\n                    <div class=\"modal-title h5\" _v-8e89fa8e=\"\">{{ modal.serviceName }} Service Credentials</div>\n                </div>\n                <div class=\"modal-body\" _v-8e89fa8e=\"\">\n                    <div class=\"content\" _v-8e89fa8e=\"\">\n                        <div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-8e89fa8e=\"\">\n                            <label class=\"form-label\" :for=\"field.id\" _v-8e89fa8e=\"\">{{ field.name }}</label>\n                            <input class=\"form-input\" type=\"text\" :id=\"field.id\" :placeholder=\"field.name\" _v-8e89fa8e=\"\">\n                            <i _v-8e89fa8e=\"\">{{ field.description }}</i>\n                        </div>\n                    </div>\n                </div>\n                <div class=\"modal-footer\" _v-8e89fa8e=\"\">\n                    <button class=\"btn btn-primary\" @click=\"closeModal()\" _v-8e89fa8e=\"\">Sign in</button>\n                </div>\n            </div>\n        </div>\n    </div>\n";
+module.exports = "\n    <div class=\"sign-in-btn\" _v-8e89fa8e=\"\">\n        <div class=\"input-group\" _v-8e89fa8e=\"\">\n            <select class=\"form-select\" v-model=\"selected_network\" _v-8e89fa8e=\"\">\n                <option v-for=\"( service, network ) in services\" v-bind:value=\"network\" :disabled=\"!service.active\" _v-8e89fa8e=\"\">{{ service.name }}</option>\n            </select>\n            <button class=\"btn input-group-btn\" :class=\"serviceClass\" @click=\"requestAuthorization()\" _v-8e89fa8e=\"\">\n                <i class=\"fa\" :class=\"serviceIcon\" aria-hidden=\"true\" _v-8e89fa8e=\"\"></i> Sign In\n            </button>\n        </div>\n        <div class=\"modal\" :class=\"modalActiveClass\" _v-8e89fa8e=\"\">\n            <div class=\"modal-overlay\" _v-8e89fa8e=\"\"></div>\n            <div class=\"modal-container\" _v-8e89fa8e=\"\">\n                <div class=\"modal-header\" _v-8e89fa8e=\"\">\n                    <button class=\"btn btn-clear float-right\" @click=\"closeModal()\" _v-8e89fa8e=\"\"></button>\n                    <div class=\"modal-title h5\" _v-8e89fa8e=\"\">{{ modal.serviceName }} Service Credentials</div>\n                </div>\n                <div class=\"modal-body\" _v-8e89fa8e=\"\">\n                    <div class=\"content\" _v-8e89fa8e=\"\">\n                        <div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-8e89fa8e=\"\">\n                            <label class=\"form-label\" :for=\"field.id\" _v-8e89fa8e=\"\">{{ field.name }}</label>\n                            <input class=\"form-input\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-8e89fa8e=\"\">\n                            <i _v-8e89fa8e=\"\">{{ field.description }}</i>\n                        </div>\n                    </div>\n                </div>\n                <div class=\"modal-footer\" _v-8e89fa8e=\"\">\n                    <button class=\"btn btn-primary\" @click=\"closeModal()\" _v-8e89fa8e=\"\">Sign in</button>\n                </div>\n            </div>\n        </div>\n    </div>\n";
 
 /***/ }),
 /* 54 */
