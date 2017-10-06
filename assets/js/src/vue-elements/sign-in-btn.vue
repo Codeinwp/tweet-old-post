@@ -2,9 +2,10 @@
     <div class="sign-in-btn">
         <div class="input-group">
             <select class="form-select" v-model="selected_network">
-                <option v-for="( service, network ) in services" v-bind:value="network" :disabled="!service.active">{{ service.name }}</option>
+                <option v-for="( service, network ) in services" v-bind:value="network" :disabled="checkDisabled( service.active )">{{ service.name }}</option>
             </select>
-            <button class="btn input-group-btn" :class="serviceClass" @click="requestAuthorization()" >
+
+            <button class="btn input-group-btn" :class="serviceClass" @click="requestAuthorization()" :disabled="checkDisabled(true)" >
                 <i class="fa fa-fw" :class="serviceIcon" aria-hidden="true"></i> Sign In
             </button>
         </div>
@@ -50,7 +51,15 @@
             }
         },
         methods: {
+            checkDisabled( active ) {
+                if( active == false ) {
+                    return true
+                }
+
+                return this.$store.state.auth_in_progress
+            },
             requestAuthorization: function() {
+                this.$store.state.auth_in_progress = true;
                 if( this.$store.state.availableServices[this.selected_network].two_step_sign_in ) {
                     this.modal.serviceName = this.$store.state.availableServices[this.selected_network].name;
                     this.modal.data = this.$store.state.availableServices[this.selected_network].credentials;
@@ -140,6 +149,7 @@
                     'btn-facebook': this.selected_network === 'facebook',
                     'btn-linkedin': this.selected_network === 'linkedin',
                     'btn-tumblr': this.selected_network === 'tumblr',
+                    'loading': this.$store.state.auth_in_progress
                 }
             },
             serviceIcon: function() {
@@ -152,7 +162,7 @@
             },
             serviceId: function() {
                 return 'service-' + this.modal.serviceName.toLowerCase()
-            }
+            },
         }
     }
 </script>
