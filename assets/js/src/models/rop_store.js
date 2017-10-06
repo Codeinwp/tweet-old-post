@@ -97,7 +97,7 @@ export default new Vuex.Store({
 		},
 		getServiceSignInUrl( { commit }, data ) {
 			console.log( 'Recived', data );
-			return new Promise((resolve, reject) = > {
+			return new Promise((resolve, reject) => {
 				Vue.http({
 					url: ropApiSettings.root,
 					method: 'POST',
