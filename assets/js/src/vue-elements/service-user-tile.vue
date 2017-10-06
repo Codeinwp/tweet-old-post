@@ -30,12 +30,18 @@
         props: [ 'account_data', 'account_id' ],
         computed: {
             service: function() {
-                return this.account_data.service;
+                var icon_class = this.account_data.service;
+                if( this.img != '' ) {
+                    icon_class = icon_class.concat( ' ' ).concat( 'has_image' )
+                }
+                return icon_class;
             },
             icon: function() {
                 var service_icon = ('fa-');
                 if( this.account_data.service === 'facebook' ) service_icon = service_icon.concat( 'facebook-official' );
                 if( this.account_data.service === 'twitter' ) service_icon = service_icon.concat( 'twitter' );
+                if( this.account_data.service === 'linkedin' ) service_icon = service_icon.concat( 'linkedin' );
+                if( this.account_data.service === 'tumblr' ) service_icon = service_icon.concat( 'tumblr' );
                 return service_icon;
             },
             img: function() {
@@ -55,7 +61,6 @@
         },
         methods: {
             removeActiveAccount( id ) {
-                console.log( id );
                 this.$store.dispatch( 'updateActiveAccounts', { action: 'remove', account_id: id, current_active: this.$store.state.activeAccounts } );
             }
         }
@@ -68,6 +73,10 @@
     }
     #rop_core .btn.btn-link.btn-danger:hover {
         color: #b71c1c;
+    }
+
+    .has_image {
+        border-radius: 50%;
     }
 
     .service_account_image {
@@ -98,6 +107,14 @@
 
     .twitter {
         background-color: #55acee;
+    }
+
+    .linkedin {
+        background-color: #007bb5;
+    }
+
+    .tumblr {
+        background-color: #32506d;
     }
 
 </style>

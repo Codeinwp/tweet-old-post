@@ -113,23 +113,15 @@ class Rop_Rest_Api {
 
     private function authenticate_service( $data ) {
         $new_service = array();
-        if( $data['service'] == 'twitter' ) {
-            $twitter_service = new Rop_Twitter_Service();
-            $authenticated = $twitter_service->authenticate();
-            if( $authenticated ) {
-                $service = $twitter_service->get_service();
-                $service_id = $service['service'] . '_' . $service['id'];
-                $new_service[$service_id] = $service;
-            }
-        } else if( $data['service'] == 'facebook' ) {
-            $facebook_service = new Rop_Facebook_Service();
-            $authenticated = $facebook_service->authenticate();
-            if( $authenticated ) {
-                $service = $facebook_service->get_service();
-                $service_id = $service['service'] . '_' . $service['id'];
-                $new_service[$service_id] = $service;
-            }
+        $factory = new Rop_Services_Factory();
+        ${$data['service'].'_services'} = $factory->build( $data['service'] );
+        $authenticated = ${$data['service'].'_services'}->authenticate();
+        if( $authenticated ) {
+            $service = ${$data['service'].'_services'}->get_service();
+            $service_id = $service['service'] . '_' . $service['id'];
+            $new_service[$service_id] = $service;
         }
+
         $model = new Rop_Services_Model();
         return $model->add_authenticated_service( $new_service );
     }
@@ -141,13 +133,10 @@ class Rop_Rest_Api {
 
     private function get_service_sign_in_url( $data ) {
         $url = '';
-        if( $data['service'] == 'twitter' ) {
-            $twitter_service = new Rop_Twitter_Service();
-            $request_token = $twitter_service->request_api_token();
-            $url = $twitter_service->sign_in_url( $request_token );
-        } else if( $data['service'] == 'facebook' ) {
-            $facebook_service = new Rop_Facebook_Service();
-            $url = $facebook_service->sign_in_url( $data['credentials'] );
+        $factory = new Rop_Services_Factory();
+        ${$data['service'].'_services'} = $factory->build( $data['service'] );
+        if( ${$data['service'].'_services'} ) {
+            $url = ${$data['service'].'_services'}->sign_in_url( $data );
         }
         return json_encode( array( 'url' => $url ) );
     }

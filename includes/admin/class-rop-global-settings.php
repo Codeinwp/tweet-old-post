@@ -73,12 +73,34 @@ class Rop_Global_Settings {
                         'two_step_sign_in' => false,
                     ),
                     'linkedin' => array(
-                        'active' => false,
-                        'name' => 'LinkedIn'
+                        'active' => true,
+                        'name' => 'LinkedIn',
+                        'two_step_sign_in' => true,
+                        'credentials' => array(
+                            'client_id'=> array(
+                                'name' => 'Client ID',
+                                'description' => 'Please add the Client ID from your LinkedIn app.'
+                            ),
+                            'secret' => array(
+                                'name' => 'Client Secret',
+                                'description' => 'Please add the Client Secret from your LinkedIn app.'
+                            )
+                        )
                     ),
-                    'thumblr' => array(
-                        'active' => false,
-                        'name' => 'Thumblr'
+                    'tumblr' => array(
+                        'active' => true,
+                        'name' => 'Tumblr',
+                        'two_step_sign_in' => true,
+                        'credentials' => array(
+                            'consumer_key'=> array(
+                                'name' => 'Consumer Key',
+                                'description' => 'Please add the Consumer Key from your Tumblr app.'
+                            ),
+                            'consumer_secret' => array(
+                                'name' => 'Consumer Secret',
+                                'description' => 'Please add the Consumer Secret from your Tumblr app.'
+                            )
+                        )
                     ),
                 )
             );

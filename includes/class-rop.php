@@ -137,10 +137,6 @@ class Rop {
             ${$service.'_service'} = $factory->build( $service );
             ${$service.'_service'}->expose_endpoints();
         }
-
-        // $fb_service->credentials( array( 'app_id' => '470293890022208', 'secret' => 'bf3ee9335692fee071c1a41fbe52fdf5' ) );
-
-
     }
 
 	/**

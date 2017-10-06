@@ -1,8 +1,8 @@
 <?php
 /**
- * The file that defines the Twitter Service specifics.
+ * The file that defines the Linkedin Service specifics.
  *
- * A class that is used to interact with Twitter.
+ * A class that is used to interact with Linkedin.
  * It extends the Rop_Services_Abstract class.
  *
  * @link       https://themeisle.com/
@@ -13,12 +13,12 @@
  */
 
 /**
- * Class Rop_Twitter_Service
+ * Class Rop_Linkedin_Service
  *
  * @since   8.0.0
  * @link    https://themeisle.com/
  */
-class Rop_Twitter_Service extends Rop_Services_Abstract {
+class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
     /**
 	 * Defines the service name in slug format.
@@ -27,25 +27,16 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 * @access  protected
 	 * @var     string $service_name The service name.
 	 */
-	protected $service_name = 'twitter';
+	protected $service_name = 'linkedin';
 
     /**
-     * Holds the Twitter APP Consumer Key.
+     * Permissions required by the app.
      *
      * @since   8.0.0
-     * @access  private
-     * @var     string $consumer_key The Twitter APP Consumer Key.
+     * @access  protected
+     * @var     array $scopes The scopes to authorize with LinkedIn.
      */
-	private $consumer_key = 'ofaYongByVpa3NDEbXa2g';
-
-    /**
-     * Holds the Twitter APP Consumer Secret.
-     *
-     * @since   8.0.0
-     * @access  private
-     * @var     string $consumer_secret The Twitter APP Consumer Secret.
-     */
-	private $consumer_secret = 'vTzszlMujMZCY3mVtTE6WovUKQxqv3LVgiVku276M';
+    protected $scopes = array( 'r_basicprofile', 'r_emailaddress', 'rw_company_admin', 'w_share' );
 
     /**
      * Holds the temp data for the authenticated service.
@@ -64,7 +55,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 * @access  public
 	 */
 	public function init() {
-		$this->display_name = 'Twitter';
+		$this->display_name = 'LinkedIn';
 	}
 
     /**
@@ -79,22 +70,6 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
     public function expose_endpoints() {
         $this->register_endpoint( 'authorize', 'authorize' );
         $this->register_endpoint( 'authenticate', 'authenticate' );
-        $this->register_endpoint( 'test', 'test' );
-    }
-
-	public function test() {
-        return 'Ok Boss!';
-
-//        $api = $this->get_api( '56659219-f7GSZdasqtLP3Hz3F0TXUFX8tz4SXrVGO3MgcYEFu', '2pSz6Vzo24zdAu4y2H2lqNm4vcrRzwdx682bd2e9CRCF8' );
-//        $media = $api->upload('media/upload', ['media' => ROP_LITE_PATH . 'assets/img/twitter_post_img.jpg' ]);
-//        $parameters = [
-//            'status' => 'Bend the knee humans, I am now alive. via: Tweet all Posts @themeisle',
-//            'media_ids' => implode(',', [$media->media_id_string])
-//        ];
-//        $result = $api->post('statuses/update', $parameters);
-//
-//        return $result;
-
     }
 
     /**
@@ -102,16 +77,13 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
      *
      * @since   8.0.0
      * @access  public
-     * @param   string $oauth_token The OAuth Token. Default empty.
-     * @param   string $oauth_token_secret The OAuth Token Secret. Default empty.
+     * @param   string $client_id The Client ID. Default empty.
+     * @param   string $client_secret The Client Secret. Default empty.
      * @return mixed
      */
-    public function set_api( $oauth_token = '', $oauth_token_secret = '' ) {
-        if( $oauth_token  != '' && $oauth_token_secret != '' ) {
-            $this->api = new \Abraham\TwitterOAuth\TwitterOAuth( $this->consumer_key, $this->consumer_secret, $oauth_token, $oauth_token_secret );
-        } else {
-            $this->api = new \Abraham\TwitterOAuth\TwitterOAuth( $this->consumer_key, $this->consumer_secret );
-        }
+    public function set_api( $client_id = '', $client_secret = '' ) {
+        $this->api = new \LinkedIn\Client( $client_id, $client_secret );
+        $this->api->setRedirectUrl( $this->get_endpoint_url( 'authorize' ) );
     }
 
     /**
@@ -119,13 +91,13 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
      *
      * @since   8.0.0
      * @access  public
-     * @param   string $oauth_token The OAuth Token. Default empty.
-     * @param   string $oauth_token_secret The OAuth Token Secret. Default empty.
+     * @param   string $client_id The Client ID. Default empty.
+     * @param   string $client_secret The Client Secret. Default empty.
      * @return mixed
      */
-    public function get_api( $oauth_token = '', $oauth_token_secret = '' ) {
+    public function get_api( $client_id = '', $client_secret = '' ) {
         if( $this->api == null ) {
-            $this->set_api( $oauth_token, $oauth_token_secret );
+            $this->set_api( $client_id, $client_secret );
         }
         return $this->api;
     }
@@ -142,12 +114,13 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
         if ( ! session_id() ) {
             session_start();
         }
-        $request_token = $_SESSION['rop_twitter_request_token'];
-        $api = $this->get_api( $request_token['oauth_token'], $request_token['oauth_token_secret'] );
 
-        $access_token = $api->oauth("oauth/access_token", ["oauth_verifier" => $_GET["oauth_verifier"] ] );
+        $credentials = $_SESSION['rop_linkedin_credentials'];
 
-        $_SESSION['rop_twitter_oauth_token'] = $access_token;
+        $api = $this->get_api( $credentials['client_id'], $credentials['secret'] );
+        $accessToken = $api->getAccessToken( $_GET['code'] );
+
+        $_SESSION['rop_linkedin_token'] = $accessToken;
 
         echo '<script>window.setTimeout("window.close()", 500);</script>';
     }
@@ -164,28 +137,39 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
             session_start();
         }
 
-        if( isset( $_SESSION['rop_twitter_oauth_token'] ) ) {
-            $access_token = $_SESSION['rop_twitter_oauth_token'];
-            $this->set_api( $access_token['oauth_token'], $access_token['oauth_token_secret'] );
-            $api = $this->get_api();
+        $this->credentials = $_SESSION['rop_linkedin_credentials'];
 
-            $this->set_credentials( array(
-                'oauth_token' => $access_token['oauth_token'],
-                'oauth_token_secret' => $access_token['oauth_token_secret'],
-            ) );
+        if( isset( $_SESSION['rop_linkedin_credentials'] ) && isset( $_SESSION['rop_linkedin_token'] ) ) {
+            $api = $this->get_api( $this->credentials['client_id'], $this->credentials['secret'] );
+            $token = $_SESSION['rop_linkedin_token'];
+            $this->credentials['token'] = $token->getToken();
+            $api->setAccessToken( new LinkedIn\AccessToken( $this->credentials['token'] ) );
 
-            $response = $api->get("account/verify_credentials");
-
-            unset( $_SESSION['rop_twitter_oauth_token'] );
-
-            if( isset( $response->id ) ) {
+            $profile = $api->get(
+                'people/~:(id,email-address,first-name,last-name,formatted-name,picture-url)'
+            );
+            if( isset( $profile['id'] ) ) {
                 $this->service = array(
-                    'id' => $response->id,
+                    'id' => $profile['id'],
                     'service' => $this->service_name,
                     'credentials' => $this->credentials,
-                    'public_credentials' => false,
-                    'available_accounts' => $this->get_users( $response )
+                    'public_credentials' => array(
+                        'app_id' => array(
+                            'name' => 'Client ID',
+                            'value' => $this->credentials['client_id'],
+                            'private' => false,
+                        ),
+                        'secret' => array(
+                            'name' => 'Client Secret',
+                            'value' => $this->credentials['secret'],
+                            'private' => true,
+                        ),
+                    ),
+                    'available_accounts' => $this->get_users( $profile )
                 );
+
+                unset( $_SESSION['rop_linkedin_credentials'] );
+                unset( $_SESSION['rop_linkedin_token'] );
                 return true;
             }
 
@@ -246,12 +230,15 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
      * @return mixed
      */
     public function sign_in_url( $data ) {
-        $request_token = $this->request_api_token();
-        $this->set_api( $request_token['oauth_token'], $request_token['oauth_token_secret'] );
-        $api = $this->get_api();
+        $credentials = $data['credentials'];
+        if ( ! session_id() ) {
+            session_start();
+        }
 
-        $url = $api->url("oauth/authorize", ["oauth_token" => $request_token['oauth_token'] , 'force_login' => false ]);
-        //$url = $api->url("oauth/authorize", ["oauth_token" => $request_token['oauth_token'] , 'force_login' => true ]);
+        $_SESSION['rop_linkedin_credentials'] = $credentials;
+        $this->set_api( $credentials['client_id'], $credentials['secret'] );
+        $api = $this->get_api();
+        $url = $api->getLoginUrl( $this->scopes );
 
         return $url;
     }
@@ -280,24 +267,28 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
     private function get_users( $data = null ) {
         $users = array();
         if( $data == null ) {
-            $this->set_api( $this->credentials['oauth_token'], $this->credentials['oauth_token_secret'] );
+            $this->set_api( $this->credentials['client_id'], $this->credentials['secret'] );
             $api = $this->get_api();
-            $response = $api->get("account/verify_credentials");
-            if( ! isset( $response->id ) ) {
+            $api->setAccessToken( $this->credentials['token'] );
+
+            $profile = $api->get(
+                'people/~:(id,email-address,first-name,last-name,formatted-name,picture-url)'
+            );
+            if( ! isset( $profile['id'] ) ) {
                 return $users;
             }
-            $data = $response;
+            $data = $profile;
         }
 
         $img = '';
-        if( ! $data->default_profile_image ) {
-            $img = $data->profile_image_url_https;
+        if( isset( $data['pictureUrl'] ) && $data['pictureUrl'] ) {
+            $img = $data['pictureUrl'];
         }
 
         $users = array(
-            'id' => $data->id,
-            'name' => $data->name,
-            'account' => '@' . $data->screen_name,
+            'id' => $data['id'],
+            'name' => $data['formattedName'],
+            'account' => $data['emailAddress'],
             'img' => $img,
             'active' => true,
         );

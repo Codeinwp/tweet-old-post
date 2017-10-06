@@ -29,7 +29,9 @@
     "codeinwp/themeisle-sdk": "master",
     "xrstf/composer-php52": "^1.0.20",
     "facebook/graph-sdk": "^5.6",
-    "abraham/twitteroauth": "^0.7.4"
+    "abraham/twitteroauth": "^0.7.4",
+    "zoonman/linkedin-api-php-client": "^0.0.5",
+    "tumblr/tumblr": "^0.4.0"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,

@@ -147,7 +147,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
         $_SESSION['rop_facebook_token'] = $token->getValue();
 
-        echo '<script>window.setTimeout("window.close()", 1000);</script>';
+        echo '<script>window.setTimeout("window.close()", 500);</script>';
     }
 
     /**
@@ -283,9 +283,11 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
      *
      * @since   8.0.0
      * @access  public
+     * @param   array $data The data from the user.
      * @return mixed
      */
-    public function sign_in_url( $credentials ) {
+    public function sign_in_url( $data ) {
+        $credentials = $data['credentials'];
         if ( ! session_id() ) {
             session_start();
         }
@@ -297,18 +299,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
         $url = $helper->getLoginUrl( $this->get_endpoint_url( 'authorize' ), $this->permissions );
         return $url;
     }
-
-
-    /**
-	 * Utility method to get the service token.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return string
-	 */
-	public function get_token() {
-		return $this->token;
-	}
 
 	/**
 	 * Method to return a Rop_User_Model.

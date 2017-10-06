@@ -150,15 +150,6 @@ abstract class Rop_Services_Abstract {
 	public abstract function set_credentials( $args );
 
 	/**
-	 * Method to return a token to be used for further requests.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return mixed
-	 */
-	public abstract function get_token();
-
-	/**
 	 * Method to retrieve a user model for the service.
 	 *
 	 * @since   8.0.0

@@ -678,31 +678,31 @@ a.active {
   border-left-color: #fff;
 }
 
-#rop_core .btn.btn-google {
-  background: #dd4b39;
-  border-color: #db3f2c;
+#rop_core .btn.btn-tumblr {
+  background: #32506d;
+  border-color: #304d69;
   color: #fff;
 }
 
-#rop_core .btn.btn-google:focus {
+#rop_core .btn.btn-tumblr:focus {
   box-shadow: 0 0 0 .1rem rgba(221, 75, 57, .2);
 }
 
-#rop_core .btn.btn-google:focus,
-#rop_core .btn.btn-google:hover {
-  background: #dc4330;
-  border-color: #d73925;
+#rop_core .btn.btn-tumblr:focus,
+#rop_core .btn.btn-tumblr:hover {
+  background: #375878;
+  border-color: #355473;
   color: #fff;
 }
 
-#rop_core .btn.btn-google:active,
-#rop_core .btn.btn-google.active {
-  background: #cf3624;
-  border-color: #c23321;
+#rop_core .btn.btn-tumblr:active,
+#rop_core .btn.btn-tumblr.active {
+  background: #3A5E7F;
+  border-color: #395C7D;
   color: #fff;
 }
 
-#rop_core .btn.btn-google.loading::after {
+#rop_core .btn.btn-tumblr.loading::after {
   border-bottom-color: #fff;
   border-left-color: #fff;
 }

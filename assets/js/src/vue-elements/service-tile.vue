@@ -66,6 +66,12 @@
                 if( this.service.service === 'twitter' ) {
                     return 'twitter.com';
                 }
+                if( this.service.service === 'linkedin' ) {
+                    return 'linkedin.com';
+                }
+                if( this.service.service === 'tumblr' ) {
+                    return 'tumblr.com';
+                }
 
                 return 'service.url';
             },
@@ -76,6 +82,8 @@
                 return {
                     'btn-twitter': this.service.service === 'twitter',
                     'btn-facebook': this.service.service === 'facebook',
+                    'btn-linkedin': this.service.service === 'linkedin',
+                    'btn-tumblr': this.service.service === 'tumblr',
                 }
             },
             credentialsDisplayClass: function() {

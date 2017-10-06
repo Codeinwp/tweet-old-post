@@ -13956,13 +13956,17 @@ module.exports = {
         serviceClass: function serviceClass() {
             return {
                 'btn-twitter': this.selected_network === 'twitter',
-                'btn-facebook': this.selected_network === 'facebook'
+                'btn-facebook': this.selected_network === 'facebook',
+                'btn-linkedin': this.selected_network === 'linkedin',
+                'btn-tumblr': this.selected_network === 'tumblr'
             };
         },
         serviceIcon: function serviceIcon() {
             return {
                 'fa-twitter': this.selected_network === 'twitter',
-                'fa-facebook-official': this.selected_network === 'facebook'
+                'fa-facebook-official': this.selected_network === 'facebook',
+                'fa-linkedin': this.selected_network === 'linkedin',
+                'fa-tumblr': this.selected_network === 'tumblr'
             };
         },
         serviceId: function serviceId() {
@@ -13990,7 +13994,7 @@ module.exports = {
 //                 <option v-for="( service, network ) in services" v-bind:value="network" :disabled="!service.active">{{ service.name }}</option>
 //             </select>
 //             <button class="btn input-group-btn" :class="serviceClass" @click="requestAuthorization()" >
-//                 <i class="fa" :class="serviceIcon" aria-hidden="true"></i> Sign In
+//                 <i class="fa fa-fw" :class="serviceIcon" aria-hidden="true"></i> Sign In
 //             </button>
 //         </div>
 //         <div class="modal" :class="modalActiveClass">
@@ -14450,7 +14454,7 @@ module.exports = function (bitmap, value) {
 /* 53 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"sign-in-btn\" _v-8e89fa8e=\"\">\n        <div class=\"input-group\" _v-8e89fa8e=\"\">\n            <select class=\"form-select\" v-model=\"selected_network\" _v-8e89fa8e=\"\">\n                <option v-for=\"( service, network ) in services\" v-bind:value=\"network\" :disabled=\"!service.active\" _v-8e89fa8e=\"\">{{ service.name }}</option>\n            </select>\n            <button class=\"btn input-group-btn\" :class=\"serviceClass\" @click=\"requestAuthorization()\" _v-8e89fa8e=\"\">\n                <i class=\"fa\" :class=\"serviceIcon\" aria-hidden=\"true\" _v-8e89fa8e=\"\"></i> Sign In\n            </button>\n        </div>\n        <div class=\"modal\" :class=\"modalActiveClass\" _v-8e89fa8e=\"\">\n            <div class=\"modal-overlay\" _v-8e89fa8e=\"\"></div>\n            <div class=\"modal-container\" _v-8e89fa8e=\"\">\n                <div class=\"modal-header\" _v-8e89fa8e=\"\">\n                    <button class=\"btn btn-clear float-right\" @click=\"closeModal()\" _v-8e89fa8e=\"\"></button>\n                    <div class=\"modal-title h5\" _v-8e89fa8e=\"\">{{ modal.serviceName }} Service Credentials</div>\n                </div>\n                <div class=\"modal-body\" _v-8e89fa8e=\"\">\n                    <div class=\"content\" _v-8e89fa8e=\"\">\n                        <div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-8e89fa8e=\"\">\n                            <label class=\"form-label\" :for=\"field.id\" _v-8e89fa8e=\"\">{{ field.name }}</label>\n                            <input class=\"form-input\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-8e89fa8e=\"\">\n                            <i _v-8e89fa8e=\"\">{{ field.description }}</i>\n                        </div>\n                    </div>\n                </div>\n                <div class=\"modal-footer\" _v-8e89fa8e=\"\">\n                    <button class=\"btn btn-primary\" @click=\"closeModal()\" _v-8e89fa8e=\"\">Sign in</button>\n                </div>\n            </div>\n        </div>\n    </div>\n";
+module.exports = "\n    <div class=\"sign-in-btn\" _v-8e89fa8e=\"\">\n        <div class=\"input-group\" _v-8e89fa8e=\"\">\n            <select class=\"form-select\" v-model=\"selected_network\" _v-8e89fa8e=\"\">\n                <option v-for=\"( service, network ) in services\" v-bind:value=\"network\" :disabled=\"!service.active\" _v-8e89fa8e=\"\">{{ service.name }}</option>\n            </select>\n            <button class=\"btn input-group-btn\" :class=\"serviceClass\" @click=\"requestAuthorization()\" _v-8e89fa8e=\"\">\n                <i class=\"fa fa-fw\" :class=\"serviceIcon\" aria-hidden=\"true\" _v-8e89fa8e=\"\"></i> Sign In\n            </button>\n        </div>\n        <div class=\"modal\" :class=\"modalActiveClass\" _v-8e89fa8e=\"\">\n            <div class=\"modal-overlay\" _v-8e89fa8e=\"\"></div>\n            <div class=\"modal-container\" _v-8e89fa8e=\"\">\n                <div class=\"modal-header\" _v-8e89fa8e=\"\">\n                    <button class=\"btn btn-clear float-right\" @click=\"closeModal()\" _v-8e89fa8e=\"\"></button>\n                    <div class=\"modal-title h5\" _v-8e89fa8e=\"\">{{ modal.serviceName }} Service Credentials</div>\n                </div>\n                <div class=\"modal-body\" _v-8e89fa8e=\"\">\n                    <div class=\"content\" _v-8e89fa8e=\"\">\n                        <div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-8e89fa8e=\"\">\n                            <label class=\"form-label\" :for=\"field.id\" _v-8e89fa8e=\"\">{{ field.name }}</label>\n                            <input class=\"form-input\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-8e89fa8e=\"\">\n                            <i _v-8e89fa8e=\"\">{{ field.description }}</i>\n                        </div>\n                    </div>\n                </div>\n                <div class=\"modal-footer\" _v-8e89fa8e=\"\">\n                    <button class=\"btn btn-primary\" @click=\"closeModal()\" _v-8e89fa8e=\"\">Sign in</button>\n                </div>\n            </div>\n        </div>\n    </div>\n";
 
 /***/ }),
 /* 54 */
@@ -14597,6 +14601,12 @@ module.exports = {
             if (this.service.service === 'twitter') {
                 return 'twitter.com';
             }
+            if (this.service.service === 'linkedin') {
+                return 'linkedin.com';
+            }
+            if (this.service.service === 'tumblr') {
+                return 'tumblr.com';
+            }
 
             return 'service.url';
         },
@@ -14606,7 +14616,9 @@ module.exports = {
         serviceClass: function serviceClass() {
             return {
                 'btn-twitter': this.service.service === 'twitter',
-                'btn-facebook': this.service.service === 'facebook'
+                'btn-facebook': this.service.service === 'facebook',
+                'btn-linkedin': this.service.service === 'linkedin',
+                'btn-tumblr': this.service.service === 'tumblr'
             };
         },
         credentialsDisplayClass: function credentialsDisplayClass() {
@@ -14997,7 +15009,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n    #rop_core .btn.btn-link.btn-danger[_v-0eff658d] {\n        color: #d50000;\n    }\n    #rop_core .btn.btn-link.btn-danger[_v-0eff658d]:hover {\n        color: #b71c1c;\n    }\n\n    .service_account_image[_v-0eff658d] {\n        width: 150%;\n        border-radius: 50%;\n        margin-left: -25%;\n        margin-top: -25%;\n    }\n\n    .icon_box[_v-0eff658d] {\n        width: 45px;\n        height: 45px;\n        padding: 7px;\n        text-align: center;\n        background-color: #333333;\n        color: #efefef;\n    }\n\n    .icon_box > .fa[_v-0eff658d] {\n        width: 30px;\n        height: 30px;\n        font-size: 30px;\n    }\n\n    .facebook[_v-0eff658d] {\n        background-color: #3b5998;\n    }\n\n    .twitter[_v-0eff658d] {\n        background-color: #55acee;\n    }\n\n", ""]);
+exports.push([module.i, "\n    #rop_core .btn.btn-link.btn-danger[_v-0eff658d] {\n        color: #d50000;\n    }\n    #rop_core .btn.btn-link.btn-danger[_v-0eff658d]:hover {\n        color: #b71c1c;\n    }\n\n    .has_image[_v-0eff658d] {\n        border-radius: 50%;\n    }\n\n    .service_account_image[_v-0eff658d] {\n        width: 150%;\n        border-radius: 50%;\n        margin-left: -25%;\n        margin-top: -25%;\n    }\n\n    .icon_box[_v-0eff658d] {\n        width: 45px;\n        height: 45px;\n        padding: 7px;\n        text-align: center;\n        background-color: #333333;\n        color: #efefef;\n    }\n\n    .icon_box > .fa[_v-0eff658d] {\n        width: 30px;\n        height: 30px;\n        font-size: 30px;\n    }\n\n    .facebook[_v-0eff658d] {\n        background-color: #3b5998;\n    }\n\n    .twitter[_v-0eff658d] {\n        background-color: #55acee;\n    }\n\n    .linkedin[_v-0eff658d] {\n        background-color: #007bb5;\n    }\n\n    .tumblr[_v-0eff658d] {\n        background-color: #32506d;\n    }\n\n", ""]);
 
 // exports
 
@@ -15041,12 +15053,18 @@ module.exports = {
     props: ['account_data', 'account_id'],
     computed: {
         service: function service() {
-            return this.account_data.service;
+            var icon_class = this.account_data.service;
+            if (this.img != '') {
+                icon_class = icon_class.concat(' ').concat('has_image');
+            }
+            return icon_class;
         },
         icon: function icon() {
             var service_icon = 'fa-';
             if (this.account_data.service === 'facebook') service_icon = service_icon.concat('facebook-official');
             if (this.account_data.service === 'twitter') service_icon = service_icon.concat('twitter');
+            if (this.account_data.service === 'linkedin') service_icon = service_icon.concat('linkedin');
+            if (this.account_data.service === 'tumblr') service_icon = service_icon.concat('tumblr');
             return service_icon;
         },
         img: function img() {
@@ -15066,7 +15084,6 @@ module.exports = {
     },
     methods: {
         removeActiveAccount: function removeActiveAccount(id) {
-            console.log(id);
             this.$store.dispatch('updateActiveAccounts', { action: 'remove', account_id: id, current_active: this.$store.state.activeAccounts });
         }
     }
@@ -15078,6 +15095,10 @@ module.exports = {
     //     }
     //     #rop_core .btn.btn-link.btn-danger:hover {
     //         color: #b71c1c;
+    //     }
+    //
+    //     .has_image {
+    //         border-radius: 50%;
     //     }
     //
     //     .service_account_image {
@@ -15108,6 +15129,14 @@ module.exports = {
     //
     //     .twitter {
     //         background-color: #55acee;
+    //     }
+    //
+    //     .linkedin {
+    //         background-color: #007bb5;
+    //     }
+    //
+    //     .tumblr {
+    //         background-color: #32506d;
     //     }
     //
     // </style>

@@ -60,14 +60,32 @@ class Rop_Services_Model extends Rop_Model_Abstract {
     }
 
     public function add_active_accounts( $new_active_account ) {
+        foreach ( $new_active_account as $index => $data ) {
+            $this->toggle_account_state( $index, true );
+        }
         return $this->update_active_accounts( wp_parse_args( $new_active_account, $this->get_active_accounts() ) );
     }
 
     public function delete_active_accounts( $index ) {
         $this->last_accounts_query = $this->get_active_accounts();
+        $this->toggle_account_state( $index, false );
+
         unset( $this->last_accounts_query[$index] );
         $this->set( $this->accounts_namespace, $this->last_accounts_query );
         return $this->last_accounts_query;
+    }
+
+    private function toggle_account_state( $index, $state ) {
+        $this->last_services_query = $this->get_authenticated_services();
+        list( $service, $service_id, $account_id ) = explode( '_', $index );
+        if( count( $this->last_services_query[$service . '_' . $service_id]['available_accounts'] ) > 1 ) {
+            foreach ( $this->last_services_query[$service . '_' . $service_id]['available_accounts'] as $key => $account ) {
+                if( $account['id'] == $account_id ) {
+                    $this->last_services_query[$service . '_' . $service_id]['available_accounts'][$key]['active'] = $state;
+                }
+            }
+            $this->set( $this->services_namespace, $this->last_services_query );
+        }
     }
 
     public function find_service() {

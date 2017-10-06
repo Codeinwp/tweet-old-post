@@ -5,7 +5,7 @@
                 <option v-for="( service, network ) in services" v-bind:value="network" :disabled="!service.active">{{ service.name }}</option>
             </select>
             <button class="btn input-group-btn" :class="serviceClass" @click="requestAuthorization()" >
-                <i class="fa" :class="serviceIcon" aria-hidden="true"></i> Sign In
+                <i class="fa fa-fw" :class="serviceIcon" aria-hidden="true"></i> Sign In
             </button>
         </div>
         <div class="modal" :class="modalActiveClass">
@@ -138,12 +138,16 @@
                 return {
                     'btn-twitter': this.selected_network === 'twitter',
                     'btn-facebook': this.selected_network === 'facebook',
+                    'btn-linkedin': this.selected_network === 'linkedin',
+                    'btn-tumblr': this.selected_network === 'tumblr',
                 }
             },
             serviceIcon: function() {
                 return {
                     'fa-twitter': this.selected_network === 'twitter',
                     'fa-facebook-official': this.selected_network === 'facebook',
+                    'fa-linkedin': this.selected_network === 'linkedin',
+                    'fa-tumblr': this.selected_network === 'tumblr',
                 }
             },
             serviceId: function() {
