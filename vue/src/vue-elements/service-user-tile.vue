@@ -22,44 +22,44 @@
 
 <script>
     module.exports = {
-        name: 'service-user-tile',
-        props: [ 'account_data', 'account_id' ],
-        computed: {
-            service: function () {
-                var iconClass = this.account_data.service
-                if (this.img !== '') {
-                    iconClass = iconClass.concat(' ').concat('has_image')
-                }
-                return iconClass
-            },
-            icon: function () {
-                var serviceIcon = 'fa-'
-                if (this.account_data.service === 'facebook') serviceIcon = serviceIcon.concat('facebook-official')
-                if (this.account_data.service === 'twitter') serviceIcon = serviceIcon.concat('twitter')
-                if (this.account_data.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin')
-                if (this.account_data.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr')
-                return serviceIcon
-            },
-            img: function () {
-                var img = ''
-                if (this.account_data.img !== '' && this.account_data.img !== undefined) {
-                    img = this.account_data.img
-                }
-                return img
-            },
-            user: function () {
-                return this.account_data.user
-            },
-            serviceInfo: function () {
-                let serviceTextInfo = this.account_data.account.concat(' at: ').concat(this.account_data.created)
-                return serviceTextInfo
-            }
-        },
-        methods: {
-            removeActiveAccount (id) {
-                this.$store.dispatch('updateActiveAccounts', { action: 'remove', account_id: id, current_active: this.$store.state.activeAccounts })
-            }
-        }
+    	name: 'service-user-tile',
+    	props: [ 'account_data', 'account_id' ],
+    	computed: {
+    		service: function () {
+    			var iconClass = this.account_data.service
+    			if ( this.img !== '' ) {
+    				iconClass = iconClass.concat( ' ' ).concat( 'has_image' )
+    			}
+    			return iconClass
+    		},
+    		icon: function () {
+    			var serviceIcon = 'fa-'
+    			if ( this.account_data.service === 'facebook' ) serviceIcon = serviceIcon.concat( 'facebook-official' )
+    			if ( this.account_data.service === 'twitter' ) serviceIcon = serviceIcon.concat( 'twitter' )
+    			if ( this.account_data.service === 'linkedin' ) serviceIcon = serviceIcon.concat( 'linkedin' )
+    			if ( this.account_data.service === 'tumblr' ) serviceIcon = serviceIcon.concat( 'tumblr' )
+    			return serviceIcon
+    		},
+    		img: function () {
+    			var img = ''
+    			if ( this.account_data.img !== '' && this.account_data.img !== undefined ) {
+    				img = this.account_data.img
+    			}
+    			return img
+    		},
+    		user: function () {
+    			return this.account_data.user
+    		},
+    		serviceInfo: function () {
+    			let serviceTextInfo = this.account_data.account.concat( ' at: ' ).concat( this.account_data.created )
+    			return serviceTextInfo
+    		}
+    	},
+    	methods: {
+    		removeActiveAccount ( id ) {
+    			this.$store.dispatch( 'updateActiveAccounts', { action: 'remove', account_id: id, current_active: this.$store.state.activeAccounts } )
+    		}
+    	}
     }
 </script>
 

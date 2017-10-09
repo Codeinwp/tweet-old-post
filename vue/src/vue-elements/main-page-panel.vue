@@ -37,30 +37,30 @@
     import { mapState } from 'vuex'
 
     module.exports = {
-        name: 'main-page-panel',
-        computed: mapState([ 'displayTabs', 'page' ]),
-        created () {
-        },
-        methods: {
-            switchTab (slug) {
-                this.$store.commit('setTabView', slug)
-            }
-        },
-        components: {
-            'accounts': AccountsTab,
-            settings: {
-                name: 'settings-view',
-                template: '<span>This is not yet ready</span>'
-            },
-            post: {
-                name: 'post-view',
-                template: '<span>This is not yet ready</span>'
-            },
-            schedule: {
-                name: 'schedule-view',
-                template: '<span>This is not yet ready</span>'
-            },
-            'logs': LogsTab
-        }
+    	name: 'main-page-panel',
+    	computed: mapState( [ 'displayTabs', 'page' ] ),
+    	created () {
+    	},
+    	methods: {
+    		switchTab ( slug ) {
+    			this.$store.commit( 'setTabView', slug )
+    		}
+    	},
+    	components: {
+    		'accounts': AccountsTab,
+    		settings: {
+    			name: 'settings-view',
+    			template: '<span>This is not yet ready</span>'
+    		},
+    		post: {
+    			name: 'post-view',
+    			template: '<span>This is not yet ready</span>'
+    		},
+    		schedule: {
+    			name: 'schedule-view',
+    			template: '<span>This is not yet ready</span>'
+    		},
+    		'logs': LogsTab
+    	}
     }
 </script>

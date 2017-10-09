@@ -1,4 +1,4 @@
-function logMessage (log, message) {
+function logMessage ( log, message ) {
 	return log.concat( message + '\n' )
 }
 
@@ -12,9 +12,11 @@ var page = {
 		},
 		view: 'accounts'
 	},
-	updateService: function( serviceName, serviceStatus ) {
-		if (this.debug) { console.log( 'updateService triggered by', serviceName )
-			if (this.debug) { this.logs = logMessage( this.logs, 'updateService triggered by ' + serviceName );
+	updateService: function ( serviceName, serviceStatus ) {
+		if ( this.debug ) {
+			console.log( 'updateService triggered by', serviceName )
+			if ( this.debug ) {
+				this.logs = logMessage( this.logs, 'updateService triggered by ' + serviceName )
 			}
 		}
 		this.state.authorizedService[serviceName.toLowerCase()] = serviceStatus
@@ -47,9 +49,9 @@ var tabs = [
 		slug: 'logs',
 		isActive: false
 	}
-	]
+]
 
-	module.exports = {
-		page: page,
-		tabs: tabs
-	}
+module.exports = {
+	page: page,
+	tabs: tabs
+}

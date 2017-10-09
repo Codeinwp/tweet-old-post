@@ -66,19 +66,19 @@
     import ServiceUserTile from './service-user-tile.vue'
 
     module.exports = {
-        name: 'account-view',
-        computed: {
-            authenticated_services: function () {
-                return this.$store.state.authenticatedServices
-            },
-            active_accounts: function () {
-                return this.$store.state.activeAccounts
-            }
-        },
-        components: {
-            SignInBtn,
-            ServiceTile,
-            ServiceUserTile
-        }
+    	name: 'account-view',
+    	computed: {
+    		authenticated_services: function () {
+    			return this.$store.state.authenticatedServices
+    		},
+    		active_accounts: function () {
+    			return this.$store.state.activeAccounts
+    		}
+    	},
+    	components: {
+    		SignInBtn,
+    		ServiceTile,
+    		ServiceUserTile
+    	}
     }
 </script>

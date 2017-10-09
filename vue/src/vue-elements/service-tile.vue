@@ -40,77 +40,77 @@
     import ServiceAutocomplete from './service-autocomplete.vue'
     import SecretInput from './reusables/secret-input.vue'
 
-    function capitalizeFirstLetter (string) {
-        return string.charAt(0).toUpperCase().concat(string.slice(1))
+    function capitalizeFirstLetter ( string ) {
+    	return string.charAt( 0 ).toUpperCase().concat( string.slice( 1 ) )
     }
 
     module.exports = {
-        name: 'service-tile',
-        props: {
-            service: {
-                type: Object,
-                required: true
-            }
-        },
-        data: function () {
-            return {
-                show_credentials: false,
-                to_be_activated: []
-            }
-        },
-        computed: {
-            service_url: function () {
-                if (this.service.service === 'facebook') {
-                    return 'facebook.com'
-                }
-                if (this.service.service === 'twitter') {
-                    return 'twitter.com'
-                }
-                if (this.service.service === 'linkedin') {
-                    return 'linkedin.com'
-                }
-                if (this.service.service === 'tumblr') {
-                    return 'tumblr.com'
-                }
+    	name: 'service-tile',
+    	props: {
+    		service: {
+    			type: Object,
+    			required: true
+    		}
+    	},
+    	data: function () {
+    		return {
+    			show_credentials: false,
+    			to_be_activated: []
+    		}
+    	},
+    	computed: {
+    		service_url: function () {
+    			if ( this.service.service === 'facebook' ) {
+    				return 'facebook.com'
+    			}
+    			if ( this.service.service === 'twitter' ) {
+    				return 'twitter.com'
+    			}
+    			if ( this.service.service === 'linkedin' ) {
+    				return 'linkedin.com'
+    			}
+    			if ( this.service.service === 'tumblr' ) {
+    				return 'tumblr.com'
+    			}
 
-                return 'service.url'
-            },
-            serviceName: function () {
-                return capitalizeFirstLetter(this.service.service)
-            },
-            serviceClass: function () {
-                return {
-                    'btn-twitter': this.service.service === 'twitter',
-                    'btn-facebook': this.service.service === 'facebook',
-                    'btn-linkedin': this.service.service === 'linkedin',
-                    'btn-tumblr': this.service.service === 'tumblr'
-                }
-            },
-            credentialsDisplayClass: function () {
-                return {
-                    'd-block': this.show_credentials === true,
-                    'd-none': this.show_credentials === false
-                }
-            }
-        },
-        methods: {
-            credentialID (index) {
-                return 'service-' + index + '-field'
-            },
-            toggleCredentials () {
-                this.show_credentials = !this.show_credentials
-            },
-            activateSelected (serviceId) {
-                this.$store.dispatch('updateActiveAccounts', { action: 'update', service_id: serviceId, service: this.service.service, to_be_activated: this.to_be_activated, current_active: this.$store.state.activeAccounts })
-            },
-            removeService () {
-                this.$store.dispatch('removeService', { id: this.service.id, service: this.service.service })
-            }
-        },
-        components: {
-            ServiceAutocomplete,
-            SecretInput
-        }
+    			return 'service.url'
+    		},
+    		serviceName: function () {
+    			return capitalizeFirstLetter( this.service.service )
+    		},
+    		serviceClass: function () {
+    			return {
+    				'btn-twitter': this.service.service === 'twitter',
+    				'btn-facebook': this.service.service === 'facebook',
+    				'btn-linkedin': this.service.service === 'linkedin',
+    				'btn-tumblr': this.service.service === 'tumblr'
+    			}
+    		},
+    		credentialsDisplayClass: function () {
+    			return {
+    				'd-block': this.show_credentials === true,
+    				'd-none': this.show_credentials === false
+    			}
+    		}
+    	},
+    	methods: {
+    		credentialID ( index ) {
+    			return 'service-' + index + '-field'
+    		},
+    		toggleCredentials () {
+    			this.show_credentials = !this.show_credentials
+    		},
+    		activateSelected ( serviceId ) {
+    			this.$store.dispatch( 'updateActiveAccounts', { action: 'update', service_id: serviceId, service: this.service.service, to_be_activated: this.to_be_activated, current_active: this.$store.state.activeAccounts } )
+    		},
+    		removeService () {
+    			this.$store.dispatch( 'removeService', { id: this.service.id, service: this.service.service } )
+    		}
+    	},
+    	components: {
+    		ServiceAutocomplete,
+    		SecretInput
+    	}
     }
 </script>
 

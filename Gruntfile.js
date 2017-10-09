@@ -1,6 +1,6 @@
 /* jshint node:true */
-/* global require */
-module.exports = function (grunt) {
+/* global require, grunt */
+module.exports = function ( runt ) {
 	'use strict'
 
 	var loader = require( 'load-project-config' )

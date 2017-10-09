@@ -12,7 +12,9 @@ module.exports = {
     ],
     // add your custom rules here
     rules: {
-        "indent": ["error", 4],
+        "indent": ["error", "tab"],
+        "no-tabs": 0,
+        "space-in-parens": ["error", "always"],
         "camelcase": [2,{"properties":"never"}],
     },
     globals: {}

@@ -7,46 +7,46 @@
 </template>
 <script>
     module.exports = {
-        name: 'secret-input',
-        props: {
-            id: {
-                default: ''
-            },
-            secret: {
-                type: Boolean,
-                default: true
-            },
-            value: {
-                default: ''
-            },
-            readonly: {
-                type: Boolean,
-                default: true
-            }
-        },
-        data: function () {
-            return {
-                visible: false
-            }
-        },
-        computed: {
-            input_type: function () {
-                if (this.visible) {
-                    return 'text'
-                }
-                return 'password'
-            },
-            visibileClass: function () {
-                return {
-                    'fa-eye': this.visible === true,
-                    'fa-eye-slash': this.visible === false
-                }
-            }
-        },
-        methods: {
-            showHideSecret () {
-                this.visible = !this.visible
-            }
-        }
+    	name: 'secret-input',
+    	props: {
+    		id: {
+    			default: ''
+    		},
+    		secret: {
+    			type: Boolean,
+    			default: true
+    		},
+    		value: {
+    			default: ''
+    		},
+    		readonly: {
+    			type: Boolean,
+    			default: true
+    		}
+    	},
+    	data: function () {
+    		return {
+    			visible: false
+    		}
+    	},
+    	computed: {
+    		input_type: function () {
+    			if ( this.visible ) {
+    				return 'text'
+    			}
+    			return 'password'
+    		},
+    		visibileClass: function () {
+    			return {
+    				'fa-eye': this.visible === true,
+    				'fa-eye-slash': this.visible === false
+    			}
+    		}
+    	},
+    	methods: {
+    		showHideSecret () {
+    			this.visible = !this.visible
+    		}
+    	}
     }
 </script>
