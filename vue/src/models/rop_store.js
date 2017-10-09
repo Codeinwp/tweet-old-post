@@ -55,11 +55,29 @@ export default new Vuex.Store( {
 		}
 	},
 	mutations: {
-		logMessage ( state, message ) {
-			if ( state.debug === true ) {
+		logMessage ( state, data ) {
+			let message = data
+			let type = ''
+
+			if ( data.constructor === Array ) {
+				message = data[0]
+			}
+
+			if ( data.length === 2 ) {
+				type = data[1]
+			}
+
+			if ( type === '' || type === undefined ) {
+				type = 'notice'
+			}
+
+			let status = '[' + type.toUpperCase() + ']'
+
+			if ( state.page.debug === true ) {
 				console.log( message )
 			}
-			return state.logs.concat( message + '\n' )
+			message = status.concat( ' ' ).concat( message )
+			state.page.logs = state.page.logs.concat( message + '\n' )
 		},
 		setTabView ( state, view ) {
 			for ( var tab in state.displayTabs ) {
@@ -95,8 +113,9 @@ export default new Vuex.Store( {
 				responseType: 'json'
 			} ).then( function ( response ) {
 				commit( 'updateAvailableServices', response.data )
+				commit( 'logMessage', ['Fetching available services.', 'success'] )
 			}, function () {
-				console.log( 'Error retrieving available services.' )
+				commit( 'logMessage', ['Error retrieving available services.', 'error'] )
 			} )
 		},
 		getServiceSignInUrl ( { commit }, data ) {
@@ -111,9 +130,9 @@ export default new Vuex.Store( {
 					responseType: 'json'
 				} ).then( function ( response ) {
 					resolve( response.data )
-				}, function () {
-					// reject()
-					console.log( 'Error retrieving active accounts.' )
+				}, function ( error ) {
+					reject( error )
+					commit( 'logMessage', ['Error retrieving active accounts.', 'error'] )
 				} )
 			} )
 		},
@@ -127,7 +146,7 @@ export default new Vuex.Store( {
 			} ).then( function ( response ) {
 				commit( 'updateAuthenticatedServices', response.data )
 			}, function () {
-				console.log( 'Error retrieving authenticated services.' )
+				commit( 'logMessage', ['Error retrieving authenticated services.', 'error'] )
 			} )
 		},
 		fetchActiveAccounts ( { commit } ) {
@@ -140,7 +159,7 @@ export default new Vuex.Store( {
 			} ).then( function ( response ) {
 				commit( 'updateActiveAccounts', response.data )
 			}, function () {
-				console.log( 'Error retrieving active accounts.' )
+				commit( 'logMessage', ['Error retrieving active accounts.', 'error'] )
 			} )
 		},
 		updateActiveAccounts ( { commit }, data ) {
@@ -155,7 +174,7 @@ export default new Vuex.Store( {
 				} ).then( function ( response ) {
 					commit( 'updateActiveAccounts', response.data )
 				}, function () {
-					console.log( 'Error retrieving active accounts.' )
+					commit( 'logMessage', ['Error when trying to update active accounts.', 'error'] )
 				} )
 			} else if ( data.action === 'remove' ) {
 				Vue.http( {
@@ -168,7 +187,7 @@ export default new Vuex.Store( {
 				} ).then( function ( response ) {
 					commit( 'updateActiveAccounts', response.data )
 				}, function () {
-					console.log( 'Error retrieving active accounts.' )
+					commit( 'logMessage', ['Error when trying to remove and update active accounts.', 'error'] )
 				} )
 			} else {
 				console.log( 'No valid action specified.' )
@@ -183,11 +202,11 @@ export default new Vuex.Store( {
 				body: data,
 				responseType: 'json'
 			} ).then( function ( response ) {
-				console.log( response.data )
 				commit( 'updateAuthenticatedServices', response.data )
 				commit( 'updateAuthProgress', false )
+				commit( 'logMessage', ['Service authenticated: ' + data.service, 'success'] )
 			}, function () {
-				console.log( 'Error retrieving authenticated services.' )
+				commit( 'logMessage', ['Error retrieving authenticated services.', 'error'] )
 			} )
 		},
 		removeService ( { commit }, data ) {
@@ -202,7 +221,7 @@ export default new Vuex.Store( {
 				console.log( response.data )
 				commit( 'updateAuthenticatedServices', response.data )
 			}, function () {
-				console.log( 'Error retrieving authenticated services.' )
+				commit( 'logMessage', ['Error when trying to remove and update authenticated services.', 'error'] )
 			} )
 		}
 	}

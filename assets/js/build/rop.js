@@ -12245,11 +12245,29 @@ exports.default = new _vuex2.default.Store({
 		}
 	},
 	mutations: {
-		logMessage: function logMessage(state, message) {
-			if (state.debug === true) {
+		logMessage: function logMessage(state, data) {
+			var message = data;
+			var type = '';
+
+			if (data.constructor === Array) {
+				message = data[0];
+			}
+
+			if (data.length === 2) {
+				type = data[1];
+			}
+
+			if (type === '' || type === undefined) {
+				type = 'notice';
+			}
+
+			var status = '[' + type.toUpperCase() + ']';
+
+			if (state.page.debug === true) {
 				console.log(message);
 			}
-			return state.logs.concat(message + '\n');
+			message = status.concat(' ').concat(message);
+			state.page.logs = state.page.logs.concat(message + '\n');
 		},
 		setTabView: function setTabView(state, view) {
 			for (var tab in state.displayTabs) {
@@ -12287,8 +12305,9 @@ exports.default = new _vuex2.default.Store({
 				responseType: 'json'
 			}).then(function (response) {
 				commit('updateAvailableServices', response.data);
+				commit('logMessage', ['Fetching available services.', 'success']);
 			}, function () {
-				console.log('Error retrieving available services.');
+				commit('logMessage', ['Error retrieving available services.', 'error']);
 			});
 		},
 		getServiceSignInUrl: function getServiceSignInUrl(_ref2, data) {
@@ -12305,9 +12324,9 @@ exports.default = new _vuex2.default.Store({
 					responseType: 'json'
 				}).then(function (response) {
 					resolve(response.data);
-				}, function () {
-					// reject()
-					console.log('Error retrieving active accounts.');
+				}, function (error) {
+					reject(error);
+					commit('logMessage', ['Error retrieving active accounts.', 'error']);
 				});
 			});
 		},
@@ -12323,7 +12342,7 @@ exports.default = new _vuex2.default.Store({
 			}).then(function (response) {
 				commit('updateAuthenticatedServices', response.data);
 			}, function () {
-				console.log('Error retrieving authenticated services.');
+				commit('logMessage', ['Error retrieving authenticated services.', 'error']);
 			});
 		},
 		fetchActiveAccounts: function fetchActiveAccounts(_ref4) {
@@ -12338,7 +12357,7 @@ exports.default = new _vuex2.default.Store({
 			}).then(function (response) {
 				commit('updateActiveAccounts', response.data);
 			}, function () {
-				console.log('Error retrieving active accounts.');
+				commit('logMessage', ['Error retrieving active accounts.', 'error']);
 			});
 		},
 		updateActiveAccounts: function updateActiveAccounts(_ref5, data) {
@@ -12355,7 +12374,7 @@ exports.default = new _vuex2.default.Store({
 				}).then(function (response) {
 					commit('updateActiveAccounts', response.data);
 				}, function () {
-					console.log('Error retrieving active accounts.');
+					commit('logMessage', ['Error when trying to update active accounts.', 'error']);
 				});
 			} else if (data.action === 'remove') {
 				_vue2.default.http({
@@ -12368,7 +12387,7 @@ exports.default = new _vuex2.default.Store({
 				}).then(function (response) {
 					commit('updateActiveAccounts', response.data);
 				}, function () {
-					console.log('Error retrieving active accounts.');
+					commit('logMessage', ['Error when trying to remove and update active accounts.', 'error']);
 				});
 			} else {
 				console.log('No valid action specified.');
@@ -12385,11 +12404,11 @@ exports.default = new _vuex2.default.Store({
 				body: data,
 				responseType: 'json'
 			}).then(function (response) {
-				console.log(response.data);
 				commit('updateAuthenticatedServices', response.data);
 				commit('updateAuthProgress', false);
+				commit('logMessage', ['Service authenticated: ' + data.service, 'success']);
 			}, function () {
-				console.log('Error retrieving authenticated services.');
+				commit('logMessage', ['Error retrieving authenticated services.', 'error']);
 			});
 		},
 		removeService: function removeService(_ref7, data) {
@@ -12406,7 +12425,7 @@ exports.default = new _vuex2.default.Store({
 				console.log(response.data);
 				commit('updateAuthenticatedServices', response.data);
 			}, function () {
-				console.log('Error retrieving authenticated services.');
+				commit('logMessage', ['Error when trying to remove and update authenticated services.', 'error']);
 			});
 		}
 	}
@@ -14385,7 +14404,7 @@ module.exports = {
 			}
 		},
 		openPopup: function openPopup(url) {
-			console.log('Trying to open popup for url:', url);
+			this.$store.commit('logMessage', ['Trying to open popup for url:' + url, 'notice']);
 			var newWindow = window.open(url, this.activePopup);
 			if (window.focus) {
 				newWindow.focus();

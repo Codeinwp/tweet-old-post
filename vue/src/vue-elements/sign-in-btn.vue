@@ -73,7 +73,7 @@
 				}
 			},
 			openPopup ( url ) {
-				console.log( 'Trying to open popup for url:', url )
+				this.$store.commit( 'logMessage', [ 'Trying to open popup for url:' + url, 'notice' ] )
 				let newWindow = window.open( url, this.activePopup )
 				if ( window.focus ) { newWindow.focus() }
 				let instance = this
