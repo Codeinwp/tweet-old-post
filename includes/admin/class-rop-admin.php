@@ -108,7 +108,6 @@ class Rop_Admin {
 				'root' => esc_url_raw( rest_url( '/tweet-old-post/v8/api/' ) ),
 				'nonce' => wp_create_nonce( 'wp_rest' ),
 			) );
-			// wp_localize_script( $this->plugin_name . '_main', 'ROP_REST_API', rest_url( '/tweet-old-post/v8/api/' ) );
 			wp_localize_script( $this->plugin_name . '_main', 'ROP_ASSETS_URL', ROP_LITE_URL . 'assets/' );
 			wp_enqueue_script( $this->plugin_name . '_main' );
 		}

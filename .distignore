@@ -3,6 +3,7 @@
 .gitignore
 .travis.yml
 .jshintrc
+.eslintrc.js
 Gruntfile.js
 grunt
 phpcs.xml
@@ -18,3 +19,5 @@ artifact
 composer.json
 composer.lock
 key.enc
+vue
+webpack.config.js
