@@ -14,38 +14,38 @@
             },
             secret: {
                 type: Boolean,
-                default: true,
+                default: true
             },
             value: {
                 default: ''
             },
             readonly: {
                 type: Boolean,
-                default: true,
+                default: true
             }
         },
-        data: function() {
-            return{
+        data: function () {
+            return {
                 visible: false
             }
         },
         computed: {
-            input_type: function() {
-                if( this.visible ) {
-                  return 'text';
+            input_type: function () {
+                if (this.visible) {
+                    return 'text'
                 }
-                return 'password';
+                return 'password'
             },
-            visibileClass: function() {
+            visibileClass: function () {
                 return {
                     'fa-eye': this.visible === true,
-                    'fa-eye-slash': this.visible === false,
+                    'fa-eye-slash': this.visible === false
                 }
             }
         },
         methods: {
-            showHideSecret() {
-                this.visible = !this.visible;
+            showHideSecret () {
+                this.visible = !this.visible
             }
         }
     }

@@ -48,6 +48,12 @@ module.exports = {
                 }
             },
             {
+                enforce: 'pre',
+                test: /\.vue$/,
+                loader: 'eslint-loader',
+                exclude: /node_modules/
+            },
+            {
                 test: /\.vue$/,
                 loader: 'vue-loader'
             }

@@ -15,7 +15,7 @@
     module.exports = {
         name: 'logs-view',
         props: [ 'model' ],
-        data: function() {
+        data: function () {
             return {
                 logs: this.model.page.logs
             }

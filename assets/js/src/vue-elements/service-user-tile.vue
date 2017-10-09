@@ -8,7 +8,7 @@
         </div>
         <div class="tile-content">
             <div class="tile-title">{{ user }}</div>
-            <div class="tile-subtitle text-gray">{{ service_info }}</div>
+            <div class="tile-subtitle text-gray">{{ serviceInfo }}</div>
         </div>
         <div class="tile-action">
             <div class="dropdown dropdown-right">
@@ -21,47 +21,43 @@
 </template>
 
 <script>
-    function capitalizeFirstLetter( string ) {
-        return string.charAt(0).toUpperCase().concat( string.slice(1) );
-    }
-
     module.exports = {
         name: 'service-user-tile',
         props: [ 'account_data', 'account_id' ],
         computed: {
-            service: function() {
-                var icon_class = this.account_data.service;
-                if( this.img != '' ) {
-                    icon_class = icon_class.concat( ' ' ).concat( 'has_image' )
+            service: function () {
+                var iconClass = this.account_data.service
+                if (this.img !== '') {
+                    iconClass = iconClass.concat(' ').concat('has_image')
                 }
-                return icon_class;
+                return iconClass
             },
-            icon: function() {
-                var service_icon = ('fa-');
-                if( this.account_data.service === 'facebook' ) service_icon = service_icon.concat( 'facebook-official' );
-                if( this.account_data.service === 'twitter' ) service_icon = service_icon.concat( 'twitter' );
-                if( this.account_data.service === 'linkedin' ) service_icon = service_icon.concat( 'linkedin' );
-                if( this.account_data.service === 'tumblr' ) service_icon = service_icon.concat( 'tumblr' );
-                return service_icon;
+            icon: function () {
+                var serviceIcon = 'fa-'
+                if (this.account_data.service === 'facebook') serviceIcon = serviceIcon.concat('facebook-official')
+                if (this.account_data.service === 'twitter') serviceIcon = serviceIcon.concat('twitter')
+                if (this.account_data.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin')
+                if (this.account_data.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr')
+                return serviceIcon
             },
-            img: function() {
-                var img = '';
-                if( this.account_data.img !== '' && this.account_data.img !== undefined ) {
-                    img = this.account_data.img;
+            img: function () {
+                var img = ''
+                if (this.account_data.img !== '' && this.account_data.img !== undefined) {
+                    img = this.account_data.img
                 }
-                return img;
+                return img
             },
-            user: function() {
-                return this.account_data.user;
+            user: function () {
+                return this.account_data.user
             },
-            service_info: function() {
-                var service_info = this.account_data.account.concat( " at: " ).concat( this.account_data.created );
-                return service_info;
+            serviceInfo: function () {
+                let serviceTextInfo = this.account_data.account.concat(' at: ').concat(this.account_data.created)
+                return serviceTextInfo
             }
         },
         methods: {
-            removeActiveAccount( id ) {
-                this.$store.dispatch( 'updateActiveAccounts', { action: 'remove', account_id: id, current_active: this.$store.state.activeAccounts } );
+            removeActiveAccount (id) {
+                this.$store.dispatch('updateActiveAccounts', { action: 'remove', account_id: id, current_active: this.$store.state.activeAccounts })
             }
         }
     }

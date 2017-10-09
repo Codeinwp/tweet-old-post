@@ -106,7 +106,7 @@ if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 var dP = __webpack_require__(17);
 var createDesc = __webpack_require__(28);
-module.exports = __webpack_require__(7) ? function (object, key, value) {
+module.exports = __webpack_require__(6) ? function (object, key, value) {
   return dP.f(object, key, createDesc(1, value));
 } : function (object, key, value) {
   object[key] = value;
@@ -116,902 +116,6 @@ module.exports = __webpack_require__(7) ? function (object, key, value) {
 
 /***/ }),
 /* 4 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* WEBPACK VAR INJECTION */(function(process) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Store", function() { return Store; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mapState", function() { return mapState; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mapMutations", function() { return mapMutations; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mapGetters", function() { return mapGetters; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mapActions", function() { return mapActions; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createNamespacedHelpers", function() { return createNamespacedHelpers; });
-/**
- * vuex v2.4.0
- * (c) 2017 Evan You
- * @license MIT
- */
-var applyMixin = function (Vue) {
-  var version = Number(Vue.version.split('.')[0]);
-
-  if (version >= 2) {
-    Vue.mixin({ beforeCreate: vuexInit });
-  } else {
-    // override init and inject vuex init procedure
-    // for 1.x backwards compatibility.
-    var _init = Vue.prototype._init;
-    Vue.prototype._init = function (options) {
-      if ( options === void 0 ) options = {};
-
-      options.init = options.init
-        ? [vuexInit].concat(options.init)
-        : vuexInit;
-      _init.call(this, options);
-    };
-  }
-
-  /**
-   * Vuex init hook, injected into each instances init hooks list.
-   */
-
-  function vuexInit () {
-    var options = this.$options;
-    // store injection
-    if (options.store) {
-      this.$store = typeof options.store === 'function'
-        ? options.store()
-        : options.store;
-    } else if (options.parent && options.parent.$store) {
-      this.$store = options.parent.$store;
-    }
-  }
-};
-
-var devtoolHook =
-  typeof window !== 'undefined' &&
-  window.__VUE_DEVTOOLS_GLOBAL_HOOK__;
-
-function devtoolPlugin (store) {
-  if (!devtoolHook) { return }
-
-  store._devtoolHook = devtoolHook;
-
-  devtoolHook.emit('vuex:init', store);
-
-  devtoolHook.on('vuex:travel-to-state', function (targetState) {
-    store.replaceState(targetState);
-  });
-
-  store.subscribe(function (mutation, state) {
-    devtoolHook.emit('vuex:mutation', mutation, state);
-  });
-}
-
-/**
- * Get the first item that pass the test
- * by second argument function
- *
- * @param {Array} list
- * @param {Function} f
- * @return {*}
- */
-/**
- * Deep copy the given object considering circular structure.
- * This function caches all nested objects and its copies.
- * If it detects circular structure, use cached copy to avoid infinite loop.
- *
- * @param {*} obj
- * @param {Array<Object>} cache
- * @return {*}
- */
-
-
-/**
- * forEach for object
- */
-function forEachValue (obj, fn) {
-  Object.keys(obj).forEach(function (key) { return fn(obj[key], key); });
-}
-
-function isObject (obj) {
-  return obj !== null && typeof obj === 'object'
-}
-
-function isPromise (val) {
-  return val && typeof val.then === 'function'
-}
-
-function assert (condition, msg) {
-  if (!condition) { throw new Error(("[vuex] " + msg)) }
-}
-
-var Module = function Module (rawModule, runtime) {
-  this.runtime = runtime;
-  this._children = Object.create(null);
-  this._rawModule = rawModule;
-  var rawState = rawModule.state;
-  this.state = (typeof rawState === 'function' ? rawState() : rawState) || {};
-};
-
-var prototypeAccessors$1 = { namespaced: {} };
-
-prototypeAccessors$1.namespaced.get = function () {
-  return !!this._rawModule.namespaced
-};
-
-Module.prototype.addChild = function addChild (key, module) {
-  this._children[key] = module;
-};
-
-Module.prototype.removeChild = function removeChild (key) {
-  delete this._children[key];
-};
-
-Module.prototype.getChild = function getChild (key) {
-  return this._children[key]
-};
-
-Module.prototype.update = function update (rawModule) {
-  this._rawModule.namespaced = rawModule.namespaced;
-  if (rawModule.actions) {
-    this._rawModule.actions = rawModule.actions;
-  }
-  if (rawModule.mutations) {
-    this._rawModule.mutations = rawModule.mutations;
-  }
-  if (rawModule.getters) {
-    this._rawModule.getters = rawModule.getters;
-  }
-};
-
-Module.prototype.forEachChild = function forEachChild (fn) {
-  forEachValue(this._children, fn);
-};
-
-Module.prototype.forEachGetter = function forEachGetter (fn) {
-  if (this._rawModule.getters) {
-    forEachValue(this._rawModule.getters, fn);
-  }
-};
-
-Module.prototype.forEachAction = function forEachAction (fn) {
-  if (this._rawModule.actions) {
-    forEachValue(this._rawModule.actions, fn);
-  }
-};
-
-Module.prototype.forEachMutation = function forEachMutation (fn) {
-  if (this._rawModule.mutations) {
-    forEachValue(this._rawModule.mutations, fn);
-  }
-};
-
-Object.defineProperties( Module.prototype, prototypeAccessors$1 );
-
-var ModuleCollection = function ModuleCollection (rawRootModule) {
-  // register root module (Vuex.Store options)
-  this.register([], rawRootModule, false);
-};
-
-ModuleCollection.prototype.get = function get (path) {
-  return path.reduce(function (module, key) {
-    return module.getChild(key)
-  }, this.root)
-};
-
-ModuleCollection.prototype.getNamespace = function getNamespace (path) {
-  var module = this.root;
-  return path.reduce(function (namespace, key) {
-    module = module.getChild(key);
-    return namespace + (module.namespaced ? key + '/' : '')
-  }, '')
-};
-
-ModuleCollection.prototype.update = function update$1 (rawRootModule) {
-  update([], this.root, rawRootModule);
-};
-
-ModuleCollection.prototype.register = function register (path, rawModule, runtime) {
-    var this$1 = this;
-    if ( runtime === void 0 ) runtime = true;
-
-  if (process.env.NODE_ENV !== 'production') {
-    assertRawModule(path, rawModule);
-  }
-
-  var newModule = new Module(rawModule, runtime);
-  if (path.length === 0) {
-    this.root = newModule;
-  } else {
-    var parent = this.get(path.slice(0, -1));
-    parent.addChild(path[path.length - 1], newModule);
-  }
-
-  // register nested modules
-  if (rawModule.modules) {
-    forEachValue(rawModule.modules, function (rawChildModule, key) {
-      this$1.register(path.concat(key), rawChildModule, runtime);
-    });
-  }
-};
-
-ModuleCollection.prototype.unregister = function unregister (path) {
-  var parent = this.get(path.slice(0, -1));
-  var key = path[path.length - 1];
-  if (!parent.getChild(key).runtime) { return }
-
-  parent.removeChild(key);
-};
-
-function update (path, targetModule, newModule) {
-  if (process.env.NODE_ENV !== 'production') {
-    assertRawModule(path, newModule);
-  }
-
-  // update target module
-  targetModule.update(newModule);
-
-  // update nested modules
-  if (newModule.modules) {
-    for (var key in newModule.modules) {
-      if (!targetModule.getChild(key)) {
-        if (process.env.NODE_ENV !== 'production') {
-          console.warn(
-            "[vuex] trying to add a new module '" + key + "' on hot reloading, " +
-            'manual reload is needed'
-          );
-        }
-        return
-      }
-      update(
-        path.concat(key),
-        targetModule.getChild(key),
-        newModule.modules[key]
-      );
-    }
-  }
-}
-
-function assertRawModule (path, rawModule) {
-  ['getters', 'actions', 'mutations'].forEach(function (key) {
-    if (!rawModule[key]) { return }
-
-    forEachValue(rawModule[key], function (value, type) {
-      assert(
-        typeof value === 'function',
-        makeAssertionMessage(path, key, type, value)
-      );
-    });
-  });
-}
-
-function makeAssertionMessage (path, key, type, value) {
-  var buf = key + " should be function but \"" + key + "." + type + "\"";
-  if (path.length > 0) {
-    buf += " in module \"" + (path.join('.')) + "\"";
-  }
-  buf += " is " + (JSON.stringify(value)) + ".";
-
-  return buf
-}
-
-var Vue; // bind on install
-
-var Store = function Store (options) {
-  var this$1 = this;
-  if ( options === void 0 ) options = {};
-
-  if (process.env.NODE_ENV !== 'production') {
-    assert(Vue, "must call Vue.use(Vuex) before creating a store instance.");
-    assert(typeof Promise !== 'undefined', "vuex requires a Promise polyfill in this browser.");
-    assert(this instanceof Store, "Store must be called with the new operator.");
-  }
-
-  var plugins = options.plugins; if ( plugins === void 0 ) plugins = [];
-  var strict = options.strict; if ( strict === void 0 ) strict = false;
-
-  var state = options.state; if ( state === void 0 ) state = {};
-  if (typeof state === 'function') {
-    state = state();
-  }
-
-  // store internal state
-  this._committing = false;
-  this._actions = Object.create(null);
-  this._mutations = Object.create(null);
-  this._wrappedGetters = Object.create(null);
-  this._modules = new ModuleCollection(options);
-  this._modulesNamespaceMap = Object.create(null);
-  this._subscribers = [];
-  this._watcherVM = new Vue();
-
-  // bind commit and dispatch to self
-  var store = this;
-  var ref = this;
-  var dispatch = ref.dispatch;
-  var commit = ref.commit;
-  this.dispatch = function boundDispatch (type, payload) {
-    return dispatch.call(store, type, payload)
-  };
-  this.commit = function boundCommit (type, payload, options) {
-    return commit.call(store, type, payload, options)
-  };
-
-  // strict mode
-  this.strict = strict;
-
-  // init root module.
-  // this also recursively registers all sub-modules
-  // and collects all module getters inside this._wrappedGetters
-  installModule(this, state, [], this._modules.root);
-
-  // initialize the store vm, which is responsible for the reactivity
-  // (also registers _wrappedGetters as computed properties)
-  resetStoreVM(this, state);
-
-  // apply plugins
-  plugins.forEach(function (plugin) { return plugin(this$1); });
-
-  if (Vue.config.devtools) {
-    devtoolPlugin(this);
-  }
-};
-
-var prototypeAccessors = { state: {} };
-
-prototypeAccessors.state.get = function () {
-  return this._vm._data.$$state
-};
-
-prototypeAccessors.state.set = function (v) {
-  if (process.env.NODE_ENV !== 'production') {
-    assert(false, "Use store.replaceState() to explicit replace store state.");
-  }
-};
-
-Store.prototype.commit = function commit (_type, _payload, _options) {
-    var this$1 = this;
-
-  // check object-style commit
-  var ref = unifyObjectStyle(_type, _payload, _options);
-    var type = ref.type;
-    var payload = ref.payload;
-    var options = ref.options;
-
-  var mutation = { type: type, payload: payload };
-  var entry = this._mutations[type];
-  if (!entry) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error(("[vuex] unknown mutation type: " + type));
-    }
-    return
-  }
-  this._withCommit(function () {
-    entry.forEach(function commitIterator (handler) {
-      handler(payload);
-    });
-  });
-  this._subscribers.forEach(function (sub) { return sub(mutation, this$1.state); });
-
-  if (
-    process.env.NODE_ENV !== 'production' &&
-    options && options.silent
-  ) {
-    console.warn(
-      "[vuex] mutation type: " + type + ". Silent option has been removed. " +
-      'Use the filter functionality in the vue-devtools'
-    );
-  }
-};
-
-Store.prototype.dispatch = function dispatch (_type, _payload) {
-  // check object-style dispatch
-  var ref = unifyObjectStyle(_type, _payload);
-    var type = ref.type;
-    var payload = ref.payload;
-
-  var entry = this._actions[type];
-  if (!entry) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error(("[vuex] unknown action type: " + type));
-    }
-    return
-  }
-  return entry.length > 1
-    ? Promise.all(entry.map(function (handler) { return handler(payload); }))
-    : entry[0](payload)
-};
-
-Store.prototype.subscribe = function subscribe (fn) {
-  var subs = this._subscribers;
-  if (subs.indexOf(fn) < 0) {
-    subs.push(fn);
-  }
-  return function () {
-    var i = subs.indexOf(fn);
-    if (i > -1) {
-      subs.splice(i, 1);
-    }
-  }
-};
-
-Store.prototype.watch = function watch (getter, cb, options) {
-    var this$1 = this;
-
-  if (process.env.NODE_ENV !== 'production') {
-    assert(typeof getter === 'function', "store.watch only accepts a function.");
-  }
-  return this._watcherVM.$watch(function () { return getter(this$1.state, this$1.getters); }, cb, options)
-};
-
-Store.prototype.replaceState = function replaceState (state) {
-    var this$1 = this;
-
-  this._withCommit(function () {
-    this$1._vm._data.$$state = state;
-  });
-};
-
-Store.prototype.registerModule = function registerModule (path, rawModule) {
-  if (typeof path === 'string') { path = [path]; }
-
-  if (process.env.NODE_ENV !== 'production') {
-    assert(Array.isArray(path), "module path must be a string or an Array.");
-    assert(path.length > 0, 'cannot register the root module by using registerModule.');
-  }
-
-  this._modules.register(path, rawModule);
-  installModule(this, this.state, path, this._modules.get(path));
-  // reset store to update getters...
-  resetStoreVM(this, this.state);
-};
-
-Store.prototype.unregisterModule = function unregisterModule (path) {
-    var this$1 = this;
-
-  if (typeof path === 'string') { path = [path]; }
-
-  if (process.env.NODE_ENV !== 'production') {
-    assert(Array.isArray(path), "module path must be a string or an Array.");
-  }
-
-  this._modules.unregister(path);
-  this._withCommit(function () {
-    var parentState = getNestedState(this$1.state, path.slice(0, -1));
-    Vue.delete(parentState, path[path.length - 1]);
-  });
-  resetStore(this);
-};
-
-Store.prototype.hotUpdate = function hotUpdate (newOptions) {
-  this._modules.update(newOptions);
-  resetStore(this, true);
-};
-
-Store.prototype._withCommit = function _withCommit (fn) {
-  var committing = this._committing;
-  this._committing = true;
-  fn();
-  this._committing = committing;
-};
-
-Object.defineProperties( Store.prototype, prototypeAccessors );
-
-function resetStore (store, hot) {
-  store._actions = Object.create(null);
-  store._mutations = Object.create(null);
-  store._wrappedGetters = Object.create(null);
-  store._modulesNamespaceMap = Object.create(null);
-  var state = store.state;
-  // init all modules
-  installModule(store, state, [], store._modules.root, true);
-  // reset vm
-  resetStoreVM(store, state, hot);
-}
-
-function resetStoreVM (store, state, hot) {
-  var oldVm = store._vm;
-
-  // bind store public getters
-  store.getters = {};
-  var wrappedGetters = store._wrappedGetters;
-  var computed = {};
-  forEachValue(wrappedGetters, function (fn, key) {
-    // use computed to leverage its lazy-caching mechanism
-    computed[key] = function () { return fn(store); };
-    Object.defineProperty(store.getters, key, {
-      get: function () { return store._vm[key]; },
-      enumerable: true // for local getters
-    });
-  });
-
-  // use a Vue instance to store the state tree
-  // suppress warnings just in case the user has added
-  // some funky global mixins
-  var silent = Vue.config.silent;
-  Vue.config.silent = true;
-  store._vm = new Vue({
-    data: {
-      $$state: state
-    },
-    computed: computed
-  });
-  Vue.config.silent = silent;
-
-  // enable strict mode for new vm
-  if (store.strict) {
-    enableStrictMode(store);
-  }
-
-  if (oldVm) {
-    if (hot) {
-      // dispatch changes in all subscribed watchers
-      // to force getter re-evaluation for hot reloading.
-      store._withCommit(function () {
-        oldVm._data.$$state = null;
-      });
-    }
-    Vue.nextTick(function () { return oldVm.$destroy(); });
-  }
-}
-
-function installModule (store, rootState, path, module, hot) {
-  var isRoot = !path.length;
-  var namespace = store._modules.getNamespace(path);
-
-  // register in namespace map
-  if (module.namespaced) {
-    store._modulesNamespaceMap[namespace] = module;
-  }
-
-  // set state
-  if (!isRoot && !hot) {
-    var parentState = getNestedState(rootState, path.slice(0, -1));
-    var moduleName = path[path.length - 1];
-    store._withCommit(function () {
-      Vue.set(parentState, moduleName, module.state);
-    });
-  }
-
-  var local = module.context = makeLocalContext(store, namespace, path);
-
-  module.forEachMutation(function (mutation, key) {
-    var namespacedType = namespace + key;
-    registerMutation(store, namespacedType, mutation, local);
-  });
-
-  module.forEachAction(function (action, key) {
-    var namespacedType = namespace + key;
-    registerAction(store, namespacedType, action, local);
-  });
-
-  module.forEachGetter(function (getter, key) {
-    var namespacedType = namespace + key;
-    registerGetter(store, namespacedType, getter, local);
-  });
-
-  module.forEachChild(function (child, key) {
-    installModule(store, rootState, path.concat(key), child, hot);
-  });
-}
-
-/**
- * make localized dispatch, commit, getters and state
- * if there is no namespace, just use root ones
- */
-function makeLocalContext (store, namespace, path) {
-  var noNamespace = namespace === '';
-
-  var local = {
-    dispatch: noNamespace ? store.dispatch : function (_type, _payload, _options) {
-      var args = unifyObjectStyle(_type, _payload, _options);
-      var payload = args.payload;
-      var options = args.options;
-      var type = args.type;
-
-      if (!options || !options.root) {
-        type = namespace + type;
-        if (process.env.NODE_ENV !== 'production' && !store._actions[type]) {
-          console.error(("[vuex] unknown local action type: " + (args.type) + ", global type: " + type));
-          return
-        }
-      }
-
-      return store.dispatch(type, payload)
-    },
-
-    commit: noNamespace ? store.commit : function (_type, _payload, _options) {
-      var args = unifyObjectStyle(_type, _payload, _options);
-      var payload = args.payload;
-      var options = args.options;
-      var type = args.type;
-
-      if (!options || !options.root) {
-        type = namespace + type;
-        if (process.env.NODE_ENV !== 'production' && !store._mutations[type]) {
-          console.error(("[vuex] unknown local mutation type: " + (args.type) + ", global type: " + type));
-          return
-        }
-      }
-
-      store.commit(type, payload, options);
-    }
-  };
-
-  // getters and state object must be gotten lazily
-  // because they will be changed by vm update
-  Object.defineProperties(local, {
-    getters: {
-      get: noNamespace
-        ? function () { return store.getters; }
-        : function () { return makeLocalGetters(store, namespace); }
-    },
-    state: {
-      get: function () { return getNestedState(store.state, path); }
-    }
-  });
-
-  return local
-}
-
-function makeLocalGetters (store, namespace) {
-  var gettersProxy = {};
-
-  var splitPos = namespace.length;
-  Object.keys(store.getters).forEach(function (type) {
-    // skip if the target getter is not match this namespace
-    if (type.slice(0, splitPos) !== namespace) { return }
-
-    // extract local getter type
-    var localType = type.slice(splitPos);
-
-    // Add a port to the getters proxy.
-    // Define as getter property because
-    // we do not want to evaluate the getters in this time.
-    Object.defineProperty(gettersProxy, localType, {
-      get: function () { return store.getters[type]; },
-      enumerable: true
-    });
-  });
-
-  return gettersProxy
-}
-
-function registerMutation (store, type, handler, local) {
-  var entry = store._mutations[type] || (store._mutations[type] = []);
-  entry.push(function wrappedMutationHandler (payload) {
-    handler.call(store, local.state, payload);
-  });
-}
-
-function registerAction (store, type, handler, local) {
-  var entry = store._actions[type] || (store._actions[type] = []);
-  entry.push(function wrappedActionHandler (payload, cb) {
-    var res = handler.call(store, {
-      dispatch: local.dispatch,
-      commit: local.commit,
-      getters: local.getters,
-      state: local.state,
-      rootGetters: store.getters,
-      rootState: store.state
-    }, payload, cb);
-    if (!isPromise(res)) {
-      res = Promise.resolve(res);
-    }
-    if (store._devtoolHook) {
-      return res.catch(function (err) {
-        store._devtoolHook.emit('vuex:error', err);
-        throw err
-      })
-    } else {
-      return res
-    }
-  });
-}
-
-function registerGetter (store, type, rawGetter, local) {
-  if (store._wrappedGetters[type]) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error(("[vuex] duplicate getter key: " + type));
-    }
-    return
-  }
-  store._wrappedGetters[type] = function wrappedGetter (store) {
-    return rawGetter(
-      local.state, // local state
-      local.getters, // local getters
-      store.state, // root state
-      store.getters // root getters
-    )
-  };
-}
-
-function enableStrictMode (store) {
-  store._vm.$watch(function () { return this._data.$$state }, function () {
-    if (process.env.NODE_ENV !== 'production') {
-      assert(store._committing, "Do not mutate vuex store state outside mutation handlers.");
-    }
-  }, { deep: true, sync: true });
-}
-
-function getNestedState (state, path) {
-  return path.length
-    ? path.reduce(function (state, key) { return state[key]; }, state)
-    : state
-}
-
-function unifyObjectStyle (type, payload, options) {
-  if (isObject(type) && type.type) {
-    options = payload;
-    payload = type;
-    type = type.type;
-  }
-
-  if (process.env.NODE_ENV !== 'production') {
-    assert(typeof type === 'string', ("Expects string as the type, but found " + (typeof type) + "."));
-  }
-
-  return { type: type, payload: payload, options: options }
-}
-
-function install (_Vue) {
-  if (Vue) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error(
-        '[vuex] already installed. Vue.use(Vuex) should be called only once.'
-      );
-    }
-    return
-  }
-  Vue = _Vue;
-  applyMixin(Vue);
-}
-
-// auto install in dist mode
-if (typeof window !== 'undefined' && window.Vue) {
-  install(window.Vue);
-}
-
-var mapState = normalizeNamespace(function (namespace, states) {
-  var res = {};
-  normalizeMap(states).forEach(function (ref) {
-    var key = ref.key;
-    var val = ref.val;
-
-    res[key] = function mappedState () {
-      var state = this.$store.state;
-      var getters = this.$store.getters;
-      if (namespace) {
-        var module = getModuleByNamespace(this.$store, 'mapState', namespace);
-        if (!module) {
-          return
-        }
-        state = module.context.state;
-        getters = module.context.getters;
-      }
-      return typeof val === 'function'
-        ? val.call(this, state, getters)
-        : state[val]
-    };
-    // mark vuex getter for devtools
-    res[key].vuex = true;
-  });
-  return res
-});
-
-var mapMutations = normalizeNamespace(function (namespace, mutations) {
-  var res = {};
-  normalizeMap(mutations).forEach(function (ref) {
-    var key = ref.key;
-    var val = ref.val;
-
-    val = namespace + val;
-    res[key] = function mappedMutation () {
-      var args = [], len = arguments.length;
-      while ( len-- ) args[ len ] = arguments[ len ];
-
-      if (namespace && !getModuleByNamespace(this.$store, 'mapMutations', namespace)) {
-        return
-      }
-      return this.$store.commit.apply(this.$store, [val].concat(args))
-    };
-  });
-  return res
-});
-
-var mapGetters = normalizeNamespace(function (namespace, getters) {
-  var res = {};
-  normalizeMap(getters).forEach(function (ref) {
-    var key = ref.key;
-    var val = ref.val;
-
-    val = namespace + val;
-    res[key] = function mappedGetter () {
-      if (namespace && !getModuleByNamespace(this.$store, 'mapGetters', namespace)) {
-        return
-      }
-      if (process.env.NODE_ENV !== 'production' && !(val in this.$store.getters)) {
-        console.error(("[vuex] unknown getter: " + val));
-        return
-      }
-      return this.$store.getters[val]
-    };
-    // mark vuex getter for devtools
-    res[key].vuex = true;
-  });
-  return res
-});
-
-var mapActions = normalizeNamespace(function (namespace, actions) {
-  var res = {};
-  normalizeMap(actions).forEach(function (ref) {
-    var key = ref.key;
-    var val = ref.val;
-
-    val = namespace + val;
-    res[key] = function mappedAction () {
-      var args = [], len = arguments.length;
-      while ( len-- ) args[ len ] = arguments[ len ];
-
-      if (namespace && !getModuleByNamespace(this.$store, 'mapActions', namespace)) {
-        return
-      }
-      return this.$store.dispatch.apply(this.$store, [val].concat(args))
-    };
-  });
-  return res
-});
-
-var createNamespacedHelpers = function (namespace) { return ({
-  mapState: mapState.bind(null, namespace),
-  mapGetters: mapGetters.bind(null, namespace),
-  mapMutations: mapMutations.bind(null, namespace),
-  mapActions: mapActions.bind(null, namespace)
-}); };
-
-function normalizeMap (map) {
-  return Array.isArray(map)
-    ? map.map(function (key) { return ({ key: key, val: key }); })
-    : Object.keys(map).map(function (key) { return ({ key: key, val: map[key] }); })
-}
-
-function normalizeNamespace (fn) {
-  return function (namespace, map) {
-    if (typeof namespace !== 'string') {
-      map = namespace;
-      namespace = '';
-    } else if (namespace.charAt(namespace.length - 1) !== '/') {
-      namespace += '/';
-    }
-    return fn(namespace, map)
-  }
-}
-
-function getModuleByNamespace (store, helper, namespace) {
-  var module = store._modulesNamespaceMap[namespace];
-  if (process.env.NODE_ENV !== 'production' && !module) {
-    console.error(("[vuex] module namespace not found in " + helper + "(): " + namespace));
-  }
-  return module
-}
-
-var index_esm = {
-  Store: Store,
-  install: install,
-  version: '2.4.0',
-  mapState: mapState,
-  mapMutations: mapMutations,
-  mapGetters: mapGetters,
-  mapActions: mapActions,
-  createNamespacedHelpers: createNamespacedHelpers
-};
-
-/* harmony default export */ __webpack_exports__["default"] = (index_esm);
-
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(10)))
-
-/***/ }),
-/* 5 */
 /***/ (function(module, exports) {
 
 var hasOwnProperty = {}.hasOwnProperty;
@@ -1021,7 +125,7 @@ module.exports = function (it, key) {
 
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isObject = __webpack_require__(18);
@@ -1032,7 +136,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Thank's IE8 for his funny defineProperty
@@ -1042,14 +146,14 @@ module.exports = !__webpack_require__(19)(function () {
 
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports) {
 
 module.exports = {};
 
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11140,10 +10244,10 @@ Vue$3.compile = compileToFunctions;
 
 /* harmony default export */ __webpack_exports__["default"] = (Vue$3);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(10), __webpack_require__(33)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(9), __webpack_require__(33)))
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -11331,6 +10435,902 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
+
+/***/ }),
+/* 10 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* WEBPACK VAR INJECTION */(function(process) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Store", function() { return Store; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mapState", function() { return mapState; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mapMutations", function() { return mapMutations; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mapGetters", function() { return mapGetters; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mapActions", function() { return mapActions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createNamespacedHelpers", function() { return createNamespacedHelpers; });
+/**
+ * vuex v2.4.0
+ * (c) 2017 Evan You
+ * @license MIT
+ */
+var applyMixin = function (Vue) {
+  var version = Number(Vue.version.split('.')[0]);
+
+  if (version >= 2) {
+    Vue.mixin({ beforeCreate: vuexInit });
+  } else {
+    // override init and inject vuex init procedure
+    // for 1.x backwards compatibility.
+    var _init = Vue.prototype._init;
+    Vue.prototype._init = function (options) {
+      if ( options === void 0 ) options = {};
+
+      options.init = options.init
+        ? [vuexInit].concat(options.init)
+        : vuexInit;
+      _init.call(this, options);
+    };
+  }
+
+  /**
+   * Vuex init hook, injected into each instances init hooks list.
+   */
+
+  function vuexInit () {
+    var options = this.$options;
+    // store injection
+    if (options.store) {
+      this.$store = typeof options.store === 'function'
+        ? options.store()
+        : options.store;
+    } else if (options.parent && options.parent.$store) {
+      this.$store = options.parent.$store;
+    }
+  }
+};
+
+var devtoolHook =
+  typeof window !== 'undefined' &&
+  window.__VUE_DEVTOOLS_GLOBAL_HOOK__;
+
+function devtoolPlugin (store) {
+  if (!devtoolHook) { return }
+
+  store._devtoolHook = devtoolHook;
+
+  devtoolHook.emit('vuex:init', store);
+
+  devtoolHook.on('vuex:travel-to-state', function (targetState) {
+    store.replaceState(targetState);
+  });
+
+  store.subscribe(function (mutation, state) {
+    devtoolHook.emit('vuex:mutation', mutation, state);
+  });
+}
+
+/**
+ * Get the first item that pass the test
+ * by second argument function
+ *
+ * @param {Array} list
+ * @param {Function} f
+ * @return {*}
+ */
+/**
+ * Deep copy the given object considering circular structure.
+ * This function caches all nested objects and its copies.
+ * If it detects circular structure, use cached copy to avoid infinite loop.
+ *
+ * @param {*} obj
+ * @param {Array<Object>} cache
+ * @return {*}
+ */
+
+
+/**
+ * forEach for object
+ */
+function forEachValue (obj, fn) {
+  Object.keys(obj).forEach(function (key) { return fn(obj[key], key); });
+}
+
+function isObject (obj) {
+  return obj !== null && typeof obj === 'object'
+}
+
+function isPromise (val) {
+  return val && typeof val.then === 'function'
+}
+
+function assert (condition, msg) {
+  if (!condition) { throw new Error(("[vuex] " + msg)) }
+}
+
+var Module = function Module (rawModule, runtime) {
+  this.runtime = runtime;
+  this._children = Object.create(null);
+  this._rawModule = rawModule;
+  var rawState = rawModule.state;
+  this.state = (typeof rawState === 'function' ? rawState() : rawState) || {};
+};
+
+var prototypeAccessors$1 = { namespaced: {} };
+
+prototypeAccessors$1.namespaced.get = function () {
+  return !!this._rawModule.namespaced
+};
+
+Module.prototype.addChild = function addChild (key, module) {
+  this._children[key] = module;
+};
+
+Module.prototype.removeChild = function removeChild (key) {
+  delete this._children[key];
+};
+
+Module.prototype.getChild = function getChild (key) {
+  return this._children[key]
+};
+
+Module.prototype.update = function update (rawModule) {
+  this._rawModule.namespaced = rawModule.namespaced;
+  if (rawModule.actions) {
+    this._rawModule.actions = rawModule.actions;
+  }
+  if (rawModule.mutations) {
+    this._rawModule.mutations = rawModule.mutations;
+  }
+  if (rawModule.getters) {
+    this._rawModule.getters = rawModule.getters;
+  }
+};
+
+Module.prototype.forEachChild = function forEachChild (fn) {
+  forEachValue(this._children, fn);
+};
+
+Module.prototype.forEachGetter = function forEachGetter (fn) {
+  if (this._rawModule.getters) {
+    forEachValue(this._rawModule.getters, fn);
+  }
+};
+
+Module.prototype.forEachAction = function forEachAction (fn) {
+  if (this._rawModule.actions) {
+    forEachValue(this._rawModule.actions, fn);
+  }
+};
+
+Module.prototype.forEachMutation = function forEachMutation (fn) {
+  if (this._rawModule.mutations) {
+    forEachValue(this._rawModule.mutations, fn);
+  }
+};
+
+Object.defineProperties( Module.prototype, prototypeAccessors$1 );
+
+var ModuleCollection = function ModuleCollection (rawRootModule) {
+  // register root module (Vuex.Store options)
+  this.register([], rawRootModule, false);
+};
+
+ModuleCollection.prototype.get = function get (path) {
+  return path.reduce(function (module, key) {
+    return module.getChild(key)
+  }, this.root)
+};
+
+ModuleCollection.prototype.getNamespace = function getNamespace (path) {
+  var module = this.root;
+  return path.reduce(function (namespace, key) {
+    module = module.getChild(key);
+    return namespace + (module.namespaced ? key + '/' : '')
+  }, '')
+};
+
+ModuleCollection.prototype.update = function update$1 (rawRootModule) {
+  update([], this.root, rawRootModule);
+};
+
+ModuleCollection.prototype.register = function register (path, rawModule, runtime) {
+    var this$1 = this;
+    if ( runtime === void 0 ) runtime = true;
+
+  if (process.env.NODE_ENV !== 'production') {
+    assertRawModule(path, rawModule);
+  }
+
+  var newModule = new Module(rawModule, runtime);
+  if (path.length === 0) {
+    this.root = newModule;
+  } else {
+    var parent = this.get(path.slice(0, -1));
+    parent.addChild(path[path.length - 1], newModule);
+  }
+
+  // register nested modules
+  if (rawModule.modules) {
+    forEachValue(rawModule.modules, function (rawChildModule, key) {
+      this$1.register(path.concat(key), rawChildModule, runtime);
+    });
+  }
+};
+
+ModuleCollection.prototype.unregister = function unregister (path) {
+  var parent = this.get(path.slice(0, -1));
+  var key = path[path.length - 1];
+  if (!parent.getChild(key).runtime) { return }
+
+  parent.removeChild(key);
+};
+
+function update (path, targetModule, newModule) {
+  if (process.env.NODE_ENV !== 'production') {
+    assertRawModule(path, newModule);
+  }
+
+  // update target module
+  targetModule.update(newModule);
+
+  // update nested modules
+  if (newModule.modules) {
+    for (var key in newModule.modules) {
+      if (!targetModule.getChild(key)) {
+        if (process.env.NODE_ENV !== 'production') {
+          console.warn(
+            "[vuex] trying to add a new module '" + key + "' on hot reloading, " +
+            'manual reload is needed'
+          );
+        }
+        return
+      }
+      update(
+        path.concat(key),
+        targetModule.getChild(key),
+        newModule.modules[key]
+      );
+    }
+  }
+}
+
+function assertRawModule (path, rawModule) {
+  ['getters', 'actions', 'mutations'].forEach(function (key) {
+    if (!rawModule[key]) { return }
+
+    forEachValue(rawModule[key], function (value, type) {
+      assert(
+        typeof value === 'function',
+        makeAssertionMessage(path, key, type, value)
+      );
+    });
+  });
+}
+
+function makeAssertionMessage (path, key, type, value) {
+  var buf = key + " should be function but \"" + key + "." + type + "\"";
+  if (path.length > 0) {
+    buf += " in module \"" + (path.join('.')) + "\"";
+  }
+  buf += " is " + (JSON.stringify(value)) + ".";
+
+  return buf
+}
+
+var Vue; // bind on install
+
+var Store = function Store (options) {
+  var this$1 = this;
+  if ( options === void 0 ) options = {};
+
+  if (process.env.NODE_ENV !== 'production') {
+    assert(Vue, "must call Vue.use(Vuex) before creating a store instance.");
+    assert(typeof Promise !== 'undefined', "vuex requires a Promise polyfill in this browser.");
+    assert(this instanceof Store, "Store must be called with the new operator.");
+  }
+
+  var plugins = options.plugins; if ( plugins === void 0 ) plugins = [];
+  var strict = options.strict; if ( strict === void 0 ) strict = false;
+
+  var state = options.state; if ( state === void 0 ) state = {};
+  if (typeof state === 'function') {
+    state = state();
+  }
+
+  // store internal state
+  this._committing = false;
+  this._actions = Object.create(null);
+  this._mutations = Object.create(null);
+  this._wrappedGetters = Object.create(null);
+  this._modules = new ModuleCollection(options);
+  this._modulesNamespaceMap = Object.create(null);
+  this._subscribers = [];
+  this._watcherVM = new Vue();
+
+  // bind commit and dispatch to self
+  var store = this;
+  var ref = this;
+  var dispatch = ref.dispatch;
+  var commit = ref.commit;
+  this.dispatch = function boundDispatch (type, payload) {
+    return dispatch.call(store, type, payload)
+  };
+  this.commit = function boundCommit (type, payload, options) {
+    return commit.call(store, type, payload, options)
+  };
+
+  // strict mode
+  this.strict = strict;
+
+  // init root module.
+  // this also recursively registers all sub-modules
+  // and collects all module getters inside this._wrappedGetters
+  installModule(this, state, [], this._modules.root);
+
+  // initialize the store vm, which is responsible for the reactivity
+  // (also registers _wrappedGetters as computed properties)
+  resetStoreVM(this, state);
+
+  // apply plugins
+  plugins.forEach(function (plugin) { return plugin(this$1); });
+
+  if (Vue.config.devtools) {
+    devtoolPlugin(this);
+  }
+};
+
+var prototypeAccessors = { state: {} };
+
+prototypeAccessors.state.get = function () {
+  return this._vm._data.$$state
+};
+
+prototypeAccessors.state.set = function (v) {
+  if (process.env.NODE_ENV !== 'production') {
+    assert(false, "Use store.replaceState() to explicit replace store state.");
+  }
+};
+
+Store.prototype.commit = function commit (_type, _payload, _options) {
+    var this$1 = this;
+
+  // check object-style commit
+  var ref = unifyObjectStyle(_type, _payload, _options);
+    var type = ref.type;
+    var payload = ref.payload;
+    var options = ref.options;
+
+  var mutation = { type: type, payload: payload };
+  var entry = this._mutations[type];
+  if (!entry) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.error(("[vuex] unknown mutation type: " + type));
+    }
+    return
+  }
+  this._withCommit(function () {
+    entry.forEach(function commitIterator (handler) {
+      handler(payload);
+    });
+  });
+  this._subscribers.forEach(function (sub) { return sub(mutation, this$1.state); });
+
+  if (
+    process.env.NODE_ENV !== 'production' &&
+    options && options.silent
+  ) {
+    console.warn(
+      "[vuex] mutation type: " + type + ". Silent option has been removed. " +
+      'Use the filter functionality in the vue-devtools'
+    );
+  }
+};
+
+Store.prototype.dispatch = function dispatch (_type, _payload) {
+  // check object-style dispatch
+  var ref = unifyObjectStyle(_type, _payload);
+    var type = ref.type;
+    var payload = ref.payload;
+
+  var entry = this._actions[type];
+  if (!entry) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.error(("[vuex] unknown action type: " + type));
+    }
+    return
+  }
+  return entry.length > 1
+    ? Promise.all(entry.map(function (handler) { return handler(payload); }))
+    : entry[0](payload)
+};
+
+Store.prototype.subscribe = function subscribe (fn) {
+  var subs = this._subscribers;
+  if (subs.indexOf(fn) < 0) {
+    subs.push(fn);
+  }
+  return function () {
+    var i = subs.indexOf(fn);
+    if (i > -1) {
+      subs.splice(i, 1);
+    }
+  }
+};
+
+Store.prototype.watch = function watch (getter, cb, options) {
+    var this$1 = this;
+
+  if (process.env.NODE_ENV !== 'production') {
+    assert(typeof getter === 'function', "store.watch only accepts a function.");
+  }
+  return this._watcherVM.$watch(function () { return getter(this$1.state, this$1.getters); }, cb, options)
+};
+
+Store.prototype.replaceState = function replaceState (state) {
+    var this$1 = this;
+
+  this._withCommit(function () {
+    this$1._vm._data.$$state = state;
+  });
+};
+
+Store.prototype.registerModule = function registerModule (path, rawModule) {
+  if (typeof path === 'string') { path = [path]; }
+
+  if (process.env.NODE_ENV !== 'production') {
+    assert(Array.isArray(path), "module path must be a string or an Array.");
+    assert(path.length > 0, 'cannot register the root module by using registerModule.');
+  }
+
+  this._modules.register(path, rawModule);
+  installModule(this, this.state, path, this._modules.get(path));
+  // reset store to update getters...
+  resetStoreVM(this, this.state);
+};
+
+Store.prototype.unregisterModule = function unregisterModule (path) {
+    var this$1 = this;
+
+  if (typeof path === 'string') { path = [path]; }
+
+  if (process.env.NODE_ENV !== 'production') {
+    assert(Array.isArray(path), "module path must be a string or an Array.");
+  }
+
+  this._modules.unregister(path);
+  this._withCommit(function () {
+    var parentState = getNestedState(this$1.state, path.slice(0, -1));
+    Vue.delete(parentState, path[path.length - 1]);
+  });
+  resetStore(this);
+};
+
+Store.prototype.hotUpdate = function hotUpdate (newOptions) {
+  this._modules.update(newOptions);
+  resetStore(this, true);
+};
+
+Store.prototype._withCommit = function _withCommit (fn) {
+  var committing = this._committing;
+  this._committing = true;
+  fn();
+  this._committing = committing;
+};
+
+Object.defineProperties( Store.prototype, prototypeAccessors );
+
+function resetStore (store, hot) {
+  store._actions = Object.create(null);
+  store._mutations = Object.create(null);
+  store._wrappedGetters = Object.create(null);
+  store._modulesNamespaceMap = Object.create(null);
+  var state = store.state;
+  // init all modules
+  installModule(store, state, [], store._modules.root, true);
+  // reset vm
+  resetStoreVM(store, state, hot);
+}
+
+function resetStoreVM (store, state, hot) {
+  var oldVm = store._vm;
+
+  // bind store public getters
+  store.getters = {};
+  var wrappedGetters = store._wrappedGetters;
+  var computed = {};
+  forEachValue(wrappedGetters, function (fn, key) {
+    // use computed to leverage its lazy-caching mechanism
+    computed[key] = function () { return fn(store); };
+    Object.defineProperty(store.getters, key, {
+      get: function () { return store._vm[key]; },
+      enumerable: true // for local getters
+    });
+  });
+
+  // use a Vue instance to store the state tree
+  // suppress warnings just in case the user has added
+  // some funky global mixins
+  var silent = Vue.config.silent;
+  Vue.config.silent = true;
+  store._vm = new Vue({
+    data: {
+      $$state: state
+    },
+    computed: computed
+  });
+  Vue.config.silent = silent;
+
+  // enable strict mode for new vm
+  if (store.strict) {
+    enableStrictMode(store);
+  }
+
+  if (oldVm) {
+    if (hot) {
+      // dispatch changes in all subscribed watchers
+      // to force getter re-evaluation for hot reloading.
+      store._withCommit(function () {
+        oldVm._data.$$state = null;
+      });
+    }
+    Vue.nextTick(function () { return oldVm.$destroy(); });
+  }
+}
+
+function installModule (store, rootState, path, module, hot) {
+  var isRoot = !path.length;
+  var namespace = store._modules.getNamespace(path);
+
+  // register in namespace map
+  if (module.namespaced) {
+    store._modulesNamespaceMap[namespace] = module;
+  }
+
+  // set state
+  if (!isRoot && !hot) {
+    var parentState = getNestedState(rootState, path.slice(0, -1));
+    var moduleName = path[path.length - 1];
+    store._withCommit(function () {
+      Vue.set(parentState, moduleName, module.state);
+    });
+  }
+
+  var local = module.context = makeLocalContext(store, namespace, path);
+
+  module.forEachMutation(function (mutation, key) {
+    var namespacedType = namespace + key;
+    registerMutation(store, namespacedType, mutation, local);
+  });
+
+  module.forEachAction(function (action, key) {
+    var namespacedType = namespace + key;
+    registerAction(store, namespacedType, action, local);
+  });
+
+  module.forEachGetter(function (getter, key) {
+    var namespacedType = namespace + key;
+    registerGetter(store, namespacedType, getter, local);
+  });
+
+  module.forEachChild(function (child, key) {
+    installModule(store, rootState, path.concat(key), child, hot);
+  });
+}
+
+/**
+ * make localized dispatch, commit, getters and state
+ * if there is no namespace, just use root ones
+ */
+function makeLocalContext (store, namespace, path) {
+  var noNamespace = namespace === '';
+
+  var local = {
+    dispatch: noNamespace ? store.dispatch : function (_type, _payload, _options) {
+      var args = unifyObjectStyle(_type, _payload, _options);
+      var payload = args.payload;
+      var options = args.options;
+      var type = args.type;
+
+      if (!options || !options.root) {
+        type = namespace + type;
+        if (process.env.NODE_ENV !== 'production' && !store._actions[type]) {
+          console.error(("[vuex] unknown local action type: " + (args.type) + ", global type: " + type));
+          return
+        }
+      }
+
+      return store.dispatch(type, payload)
+    },
+
+    commit: noNamespace ? store.commit : function (_type, _payload, _options) {
+      var args = unifyObjectStyle(_type, _payload, _options);
+      var payload = args.payload;
+      var options = args.options;
+      var type = args.type;
+
+      if (!options || !options.root) {
+        type = namespace + type;
+        if (process.env.NODE_ENV !== 'production' && !store._mutations[type]) {
+          console.error(("[vuex] unknown local mutation type: " + (args.type) + ", global type: " + type));
+          return
+        }
+      }
+
+      store.commit(type, payload, options);
+    }
+  };
+
+  // getters and state object must be gotten lazily
+  // because they will be changed by vm update
+  Object.defineProperties(local, {
+    getters: {
+      get: noNamespace
+        ? function () { return store.getters; }
+        : function () { return makeLocalGetters(store, namespace); }
+    },
+    state: {
+      get: function () { return getNestedState(store.state, path); }
+    }
+  });
+
+  return local
+}
+
+function makeLocalGetters (store, namespace) {
+  var gettersProxy = {};
+
+  var splitPos = namespace.length;
+  Object.keys(store.getters).forEach(function (type) {
+    // skip if the target getter is not match this namespace
+    if (type.slice(0, splitPos) !== namespace) { return }
+
+    // extract local getter type
+    var localType = type.slice(splitPos);
+
+    // Add a port to the getters proxy.
+    // Define as getter property because
+    // we do not want to evaluate the getters in this time.
+    Object.defineProperty(gettersProxy, localType, {
+      get: function () { return store.getters[type]; },
+      enumerable: true
+    });
+  });
+
+  return gettersProxy
+}
+
+function registerMutation (store, type, handler, local) {
+  var entry = store._mutations[type] || (store._mutations[type] = []);
+  entry.push(function wrappedMutationHandler (payload) {
+    handler.call(store, local.state, payload);
+  });
+}
+
+function registerAction (store, type, handler, local) {
+  var entry = store._actions[type] || (store._actions[type] = []);
+  entry.push(function wrappedActionHandler (payload, cb) {
+    var res = handler.call(store, {
+      dispatch: local.dispatch,
+      commit: local.commit,
+      getters: local.getters,
+      state: local.state,
+      rootGetters: store.getters,
+      rootState: store.state
+    }, payload, cb);
+    if (!isPromise(res)) {
+      res = Promise.resolve(res);
+    }
+    if (store._devtoolHook) {
+      return res.catch(function (err) {
+        store._devtoolHook.emit('vuex:error', err);
+        throw err
+      })
+    } else {
+      return res
+    }
+  });
+}
+
+function registerGetter (store, type, rawGetter, local) {
+  if (store._wrappedGetters[type]) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.error(("[vuex] duplicate getter key: " + type));
+    }
+    return
+  }
+  store._wrappedGetters[type] = function wrappedGetter (store) {
+    return rawGetter(
+      local.state, // local state
+      local.getters, // local getters
+      store.state, // root state
+      store.getters // root getters
+    )
+  };
+}
+
+function enableStrictMode (store) {
+  store._vm.$watch(function () { return this._data.$$state }, function () {
+    if (process.env.NODE_ENV !== 'production') {
+      assert(store._committing, "Do not mutate vuex store state outside mutation handlers.");
+    }
+  }, { deep: true, sync: true });
+}
+
+function getNestedState (state, path) {
+  return path.length
+    ? path.reduce(function (state, key) { return state[key]; }, state)
+    : state
+}
+
+function unifyObjectStyle (type, payload, options) {
+  if (isObject(type) && type.type) {
+    options = payload;
+    payload = type;
+    type = type.type;
+  }
+
+  if (process.env.NODE_ENV !== 'production') {
+    assert(typeof type === 'string', ("Expects string as the type, but found " + (typeof type) + "."));
+  }
+
+  return { type: type, payload: payload, options: options }
+}
+
+function install (_Vue) {
+  if (Vue) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.error(
+        '[vuex] already installed. Vue.use(Vuex) should be called only once.'
+      );
+    }
+    return
+  }
+  Vue = _Vue;
+  applyMixin(Vue);
+}
+
+// auto install in dist mode
+if (typeof window !== 'undefined' && window.Vue) {
+  install(window.Vue);
+}
+
+var mapState = normalizeNamespace(function (namespace, states) {
+  var res = {};
+  normalizeMap(states).forEach(function (ref) {
+    var key = ref.key;
+    var val = ref.val;
+
+    res[key] = function mappedState () {
+      var state = this.$store.state;
+      var getters = this.$store.getters;
+      if (namespace) {
+        var module = getModuleByNamespace(this.$store, 'mapState', namespace);
+        if (!module) {
+          return
+        }
+        state = module.context.state;
+        getters = module.context.getters;
+      }
+      return typeof val === 'function'
+        ? val.call(this, state, getters)
+        : state[val]
+    };
+    // mark vuex getter for devtools
+    res[key].vuex = true;
+  });
+  return res
+});
+
+var mapMutations = normalizeNamespace(function (namespace, mutations) {
+  var res = {};
+  normalizeMap(mutations).forEach(function (ref) {
+    var key = ref.key;
+    var val = ref.val;
+
+    val = namespace + val;
+    res[key] = function mappedMutation () {
+      var args = [], len = arguments.length;
+      while ( len-- ) args[ len ] = arguments[ len ];
+
+      if (namespace && !getModuleByNamespace(this.$store, 'mapMutations', namespace)) {
+        return
+      }
+      return this.$store.commit.apply(this.$store, [val].concat(args))
+    };
+  });
+  return res
+});
+
+var mapGetters = normalizeNamespace(function (namespace, getters) {
+  var res = {};
+  normalizeMap(getters).forEach(function (ref) {
+    var key = ref.key;
+    var val = ref.val;
+
+    val = namespace + val;
+    res[key] = function mappedGetter () {
+      if (namespace && !getModuleByNamespace(this.$store, 'mapGetters', namespace)) {
+        return
+      }
+      if (process.env.NODE_ENV !== 'production' && !(val in this.$store.getters)) {
+        console.error(("[vuex] unknown getter: " + val));
+        return
+      }
+      return this.$store.getters[val]
+    };
+    // mark vuex getter for devtools
+    res[key].vuex = true;
+  });
+  return res
+});
+
+var mapActions = normalizeNamespace(function (namespace, actions) {
+  var res = {};
+  normalizeMap(actions).forEach(function (ref) {
+    var key = ref.key;
+    var val = ref.val;
+
+    val = namespace + val;
+    res[key] = function mappedAction () {
+      var args = [], len = arguments.length;
+      while ( len-- ) args[ len ] = arguments[ len ];
+
+      if (namespace && !getModuleByNamespace(this.$store, 'mapActions', namespace)) {
+        return
+      }
+      return this.$store.dispatch.apply(this.$store, [val].concat(args))
+    };
+  });
+  return res
+});
+
+var createNamespacedHelpers = function (namespace) { return ({
+  mapState: mapState.bind(null, namespace),
+  mapGetters: mapGetters.bind(null, namespace),
+  mapMutations: mapMutations.bind(null, namespace),
+  mapActions: mapActions.bind(null, namespace)
+}); };
+
+function normalizeMap (map) {
+  return Array.isArray(map)
+    ? map.map(function (key) { return ({ key: key, val: key }); })
+    : Object.keys(map).map(function (key) { return ({ key: key, val: map[key] }); })
+}
+
+function normalizeNamespace (fn) {
+  return function (namespace, map) {
+    if (typeof namespace !== 'string') {
+      map = namespace;
+      namespace = '';
+    } else if (namespace.charAt(namespace.length - 1) !== '/') {
+      namespace += '/';
+    }
+    return fn(namespace, map)
+  }
+}
+
+function getModuleByNamespace (store, helper, namespace) {
+  var module = store._modulesNamespaceMap[namespace];
+  if (process.env.NODE_ENV !== 'production' && !module) {
+    console.error(("[vuex] module namespace not found in " + helper + "(): " + namespace));
+  }
+  return module
+}
+
+var index_esm = {
+  Store: Store,
+  install: install,
+  version: '2.4.0',
+  mapState: mapState,
+  mapMutations: mapMutations,
+  mapGetters: mapGetters,
+  mapActions: mapActions,
+  createNamespacedHelpers: createNamespacedHelpers
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (index_esm);
+
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(9)))
 
 /***/ }),
 /* 11 */
@@ -11690,12 +11690,12 @@ module.exports = function (key) {
 /* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var anObject = __webpack_require__(6);
+var anObject = __webpack_require__(5);
 var IE8_DOM_DEFINE = __webpack_require__(56);
 var toPrimitive = __webpack_require__(57);
 var dP = Object.defineProperty;
 
-exports.f = __webpack_require__(7) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
+exports.f = __webpack_require__(6) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
   anObject(O);
   P = toPrimitive(P, true);
   anObject(Attributes);
@@ -11908,8 +11908,8 @@ var LIBRARY = __webpack_require__(63);
 var $export = __webpack_require__(26);
 var redefine = __webpack_require__(64);
 var hide = __webpack_require__(3);
-var has = __webpack_require__(5);
-var Iterators = __webpack_require__(8);
+var has = __webpack_require__(4);
+var Iterators = __webpack_require__(7);
 var $iterCreate = __webpack_require__(65);
 var setToStringTag = __webpack_require__(31);
 var getPrototypeOf = __webpack_require__(69);
@@ -11980,7 +11980,7 @@ module.exports = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
 /***/ (function(module, exports, __webpack_require__) {
 
 var def = __webpack_require__(17).f;
-var has = __webpack_require__(5);
+var has = __webpack_require__(4);
 var TAG = __webpack_require__(1)('toStringTag');
 
 module.exports = function (it, tag, stat) {
@@ -11995,7 +11995,7 @@ module.exports = function (it, tag, stat) {
 "use strict";
 
 
-var _vue = __webpack_require__(9);
+var _vue = __webpack_require__(8);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -12010,20 +12010,21 @@ var _mainPagePanel2 = _interopRequireDefault(_mainPagePanel);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 window.onload = function () {
-	var RopApp = new _vue2.default({
-		el: '#rop_core',
-		store: _rop_store2.default,
-		created: function created() {
-			_rop_store2.default.dispatch('fetchAvailableServices');
-			_rop_store2.default.dispatch('fetchAuthenticatedServices');
-			_rop_store2.default.dispatch('fetchActiveAccounts');
-		},
+    var RopApp = new _vue2.default({
+        el: '#rop_core',
+        store: _rop_store2.default,
+        created: function created() {
+            _rop_store2.default.dispatch('fetchAvailableServices');
+            _rop_store2.default.dispatch('fetchAuthenticatedServices');
+            _rop_store2.default.dispatch('fetchActiveAccounts');
+        },
 
-		components: {
-			MainPagePanel: _mainPagePanel2.default
-		}
-	});
-};
+        components: {
+            MainPagePanel: _mainPagePanel2.default
+        }
+    });
+}; /* eslint no-unused-vars: 0 */
+/* exported RopApp */
 
 /***/ }),
 /* 33 */
@@ -12060,14 +12061,14 @@ module.exports = g;
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+    value: true
 });
 
-var _vue = __webpack_require__(9);
+var _vue = __webpack_require__(8);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _vuex = __webpack_require__(4);
+var _vuex = __webpack_require__(10);
 
 var _vuex2 = _interopRequireDefault(_vuex);
 
@@ -12077,219 +12078,218 @@ var _vueResource2 = _interopRequireDefault(_vueResource);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_vue2.default.use(_vuex2.default);
+_vue2.default.use(_vuex2.default); /* global ropApiSettings */
+
 _vue2.default.use(_vueResource2.default);
 
 exports.default = new _vuex2.default.Store({
-	state: {
-		page: {
-			debug: true,
-			logs: 'Here starts the log \n\n',
-			view: 'accounts'
-		},
-		auth_in_progress: false,
-		displayTabs: [{
-			name: 'Accounts',
-			slug: 'accounts',
-			isActive: true
-		}, {
-			name: 'General Settings',
-			slug: 'settings',
-			isActive: false
-		}, {
-			name: 'Post Format',
-			slug: 'post',
-			isActive: false
-		}, {
-			name: 'Custom Schedule',
-			slug: 'schedule',
-			isActive: false
-		}, {
-			name: 'Logs',
-			slug: 'logs',
-			isActive: false
-		}],
-		availableServices: [],
-		authenticatedServices: [],
-		activeAccounts: []
-	},
-	getters: {
-		getServices: function getServices(state) {
-			return state.availableServices;
-		},
-		getActiveAccounts: function getActiveAccounts(state) {
-			return state.activeAccounts;
-		}
-	},
-	mutations: {
-		logMessage: function logMessage(state, message) {
-			if (state.debug === true) {
-				console.log(message);
-			}
-			return state.logs.concat(message + '\n');
-		},
-		setTabView: function setTabView(state, view) {
-			for (var tab in state.displayTabs) {
-				state.displayTabs[tab].isActive = false;
-				if (state.displayTabs[tab].slug === view) {
-					state.displayTabs[tab].isActive = true;
-					state.page.view = view;
-				}
-			}
-		},
-		updateAuthProgress: function updateAuthProgress(state, data) {
-			if (state.auth_in_progress == true) {
-				state.auth_in_progress = false;
-			}
-		},
-		updateAvailableServices: function updateAvailableServices(state, data) {
-			state.availableServices = data;
-		},
-		updateAuthenticatedServices: function updateAuthenticatedServices(state, data) {
-			state.authenticatedServices = data;
-		},
-		updateActiveAccounts: function updateActiveAccounts(state, data) {
-			state.activeAccounts = data;
-		}
-	},
-	actions: {
-		fetchAvailableServices: function fetchAvailableServices(_ref) {
-			var commit = _ref.commit;
+    state: {
+        page: {
+            debug: true,
+            logs: 'Here starts the log \n\n',
+            view: 'accounts'
+        },
+        auth_in_progress: false,
+        displayTabs: [{
+            name: 'Accounts',
+            slug: 'accounts',
+            isActive: true
+        }, {
+            name: 'General Settings',
+            slug: 'settings',
+            isActive: false
+        }, {
+            name: 'Post Format',
+            slug: 'post',
+            isActive: false
+        }, {
+            name: 'Custom Schedule',
+            slug: 'schedule',
+            isActive: false
+        }, {
+            name: 'Logs',
+            slug: 'logs',
+            isActive: false
+        }],
+        availableServices: [],
+        authenticatedServices: [],
+        activeAccounts: []
+    },
+    getters: {
+        getServices: function getServices(state) {
+            return state.availableServices;
+        },
+        getActiveAccounts: function getActiveAccounts(state) {
+            return state.activeAccounts;
+        }
+    },
+    mutations: {
+        logMessage: function logMessage(state, message) {
+            if (state.debug === true) {
+                console.log(message);
+            }
+            return state.logs.concat(message + '\n');
+        },
+        setTabView: function setTabView(state, view) {
+            for (var tab in state.displayTabs) {
+                state.displayTabs[tab].isActive = false;
+                if (state.displayTabs[tab].slug === view) {
+                    state.displayTabs[tab].isActive = true;
+                    state.page.view = view;
+                }
+            }
+        },
+        updateAuthProgress: function updateAuthProgress(state, data) {
+            if (state.auth_in_progress === true) {
+                state.auth_in_progress = false;
+            }
+        },
+        updateAvailableServices: function updateAvailableServices(state, data) {
+            state.availableServices = data;
+        },
+        updateAuthenticatedServices: function updateAuthenticatedServices(state, data) {
+            state.authenticatedServices = data;
+        },
+        updateActiveAccounts: function updateActiveAccounts(state, data) {
+            state.activeAccounts = data;
+        }
+    },
+    actions: {
+        fetchAvailableServices: function fetchAvailableServices(_ref) {
+            var commit = _ref.commit;
 
-			_vue2.default.http({
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'available_services' },
-				responseType: 'json'
-			}).then(function (response) {
-				commit('updateAvailableServices', response.data);
-			}, function () {
-				console.log('Error retrieving available services.');
-			});
-		},
-		getServiceSignInUrl: function getServiceSignInUrl(_ref2, data) {
-			var commit = _ref2.commit;
+            _vue2.default.http({
+                url: ropApiSettings.root,
+                method: 'POST',
+                headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+                params: { 'req': 'available_services' },
+                responseType: 'json'
+            }).then(function (response) {
+                commit('updateAvailableServices', response.data);
+            }, function () {
+                console.log('Error retrieving available services.');
+            });
+        },
+        getServiceSignInUrl: function getServiceSignInUrl(_ref2, data) {
+            var commit = _ref2.commit;
 
-			console.log('Recived', data);
-			return new Promise(function (resolve, reject) {
-				_vue2.default.http({
-					url: ropApiSettings.root,
-					method: 'POST',
-					headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-					params: { 'req': 'service_sign_in_url' },
-					body: data,
-					responseType: 'json'
-				}).then(function (response) {
-					resolve(response.data);
-				}, function () {
-					reject();
-					console.log('Error retrieving active accounts.');
-				});
-			});
-		},
-		fetchAuthenticatedServices: function fetchAuthenticatedServices(_ref3) {
-			var commit = _ref3.commit;
+            console.log('Recived', data);
+            return new Promise(function (resolve, reject) {
+                _vue2.default.http({
+                    url: ropApiSettings.root,
+                    method: 'POST',
+                    headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+                    params: { 'req': 'service_sign_in_url' },
+                    body: data,
+                    responseType: 'json'
+                }).then(function (response) {
+                    resolve(response.data);
+                }, function () {
+                    // reject()
+                    console.log('Error retrieving active accounts.');
+                });
+            });
+        },
+        fetchAuthenticatedServices: function fetchAuthenticatedServices(_ref3) {
+            var commit = _ref3.commit;
 
-			_vue2.default.http({
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'authenticated_services' },
-				responseType: 'json'
-			}).then(function (response) {
-				commit('updateAuthenticatedServices', response.data);
-			}, function () {
-				console.log('Error retrieving authenticated services.');
-			});
-		},
-		fetchActiveAccounts: function fetchActiveAccounts(_ref4) {
-			var commit = _ref4.commit;
+            _vue2.default.http({
+                url: ropApiSettings.root,
+                method: 'POST',
+                headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+                params: { 'req': 'authenticated_services' },
+                responseType: 'json'
+            }).then(function (response) {
+                commit('updateAuthenticatedServices', response.data);
+            }, function () {
+                console.log('Error retrieving authenticated services.');
+            });
+        },
+        fetchActiveAccounts: function fetchActiveAccounts(_ref4) {
+            var commit = _ref4.commit;
 
-			_vue2.default.http({
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'active_accounts' },
-				responseType: 'json'
-			}).then(function (response) {
-				commit('updateActiveAccounts', response.data);
-			}, function () {
-				console.log('Error retrieving active accounts.');
-			});
-		},
-		updateActiveAccounts: function updateActiveAccounts(_ref5, data) {
-			var commit = _ref5.commit;
+            _vue2.default.http({
+                url: ropApiSettings.root,
+                method: 'POST',
+                headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+                params: { 'req': 'active_accounts' },
+                responseType: 'json'
+            }).then(function (response) {
+                commit('updateActiveAccounts', response.data);
+            }, function () {
+                console.log('Error retrieving active accounts.');
+            });
+        },
+        updateActiveAccounts: function updateActiveAccounts(_ref5, data) {
+            var commit = _ref5.commit;
 
-			if (data.action === 'update') {
-				_vue2.default.http({
-					url: ropApiSettings.root,
-					method: 'POST',
-					headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-					params: { 'req': 'update_accounts' },
-					body: data,
-					responseType: 'json'
-				}).then(function (response) {
-					commit('updateActiveAccounts', response.data);
-				}, function () {
-					console.log('Error retrieving active accounts.');
-				});
-			} else if (data.action === 'remove') {
-				_vue2.default.http({
-					url: ropApiSettings.root,
-					method: 'POST',
-					headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-					params: { 'req': 'remove_account' },
-					body: data,
-					responseType: 'json'
-				}).then(function (response) {
-					commit('updateActiveAccounts', response.data);
-				}, function () {
-					console.log('Error retrieving active accounts.');
-				});
-			} else {
-				console.log('No valid action specified.');
-			}
-		},
-		authenticateService: function authenticateService(_ref6, data) {
-			var commit = _ref6.commit;
+            if (data.action === 'update') {
+                _vue2.default.http({
+                    url: ropApiSettings.root,
+                    method: 'POST',
+                    headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+                    params: { 'req': 'update_accounts' },
+                    body: data,
+                    responseType: 'json'
+                }).then(function (response) {
+                    commit('updateActiveAccounts', response.data);
+                }, function () {
+                    console.log('Error retrieving active accounts.');
+                });
+            } else if (data.action === 'remove') {
+                _vue2.default.http({
+                    url: ropApiSettings.root,
+                    method: 'POST',
+                    headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+                    params: { 'req': 'remove_account' },
+                    body: data,
+                    responseType: 'json'
+                }).then(function (response) {
+                    commit('updateActiveAccounts', response.data);
+                }, function () {
+                    console.log('Error retrieving active accounts.');
+                });
+            } else {
+                console.log('No valid action specified.');
+            }
+        },
+        authenticateService: function authenticateService(_ref6, data) {
+            var commit = _ref6.commit;
 
-			_vue2.default.http({
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'authenticate_service' },
-				body: data,
-				responseType: 'json'
-			}).then(function (response) {
-				console.log(response.data);
-				commit('updateAuthenticatedServices', response.data);
-				commit('updateAuthProgress', false);
-			}, function () {
-				console.log('Error retrieving authenticated services.');
-			});
-		},
-		removeService: function removeService(_ref7, data) {
-			var commit = _ref7.commit;
+            _vue2.default.http({
+                url: ropApiSettings.root,
+                method: 'POST',
+                headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+                params: { 'req': 'authenticate_service' },
+                body: data,
+                responseType: 'json'
+            }).then(function (response) {
+                console.log(response.data);
+                commit('updateAuthenticatedServices', response.data);
+                commit('updateAuthProgress', false);
+            }, function () {
+                console.log('Error retrieving authenticated services.');
+            });
+        },
+        removeService: function removeService(_ref7, data) {
+            var commit = _ref7.commit;
 
-			_vue2.default.http({
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'remove_service' },
-				body: data,
-				responseType: 'json'
-			}).then(function (response) {
-				console.log(response.data);
-				commit('updateAuthenticatedServices', response.data);
-			}, function () {
-				console.log('Error retrieving authenticated services.');
-			});
-		}
-	}
+            _vue2.default.http({
+                url: ropApiSettings.root,
+                method: 'POST',
+                headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+                params: { 'req': 'remove_service' },
+                body: data,
+                responseType: 'json'
+            }).then(function (response) {
+                console.log(response.data);
+                commit('updateAuthenticatedServices', response.data);
+            }, function () {
+                console.log('Error retrieving authenticated services.');
+            });
+        }
+    }
 });
-
-// store.dispatch( 'fetchAvailableServices' );
 
 /***/ }),
 /* 35 */
@@ -13912,7 +13912,7 @@ var _logsTabPanel = __webpack_require__(94);
 
 var _logsTabPanel2 = _interopRequireDefault(_logsTabPanel);
 
-var _vuex = __webpack_require__(4);
+var _vuex = __webpack_require__(10);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -13942,9 +13942,9 @@ module.exports = {
         },
         'logs': _logsTabPanel2.default
     }
-};
-// </script>
-// <template>
+    // </script>
+
+}; // <template>
 //     <div>
 //         <div class="panel title-panel" style="margin-bottom: 40px; padding-bottom: 20px;">
 //             <div class="panel-header">
@@ -14019,11 +14019,26 @@ var _serviceUserTile = __webpack_require__(88);
 
 var _serviceUserTile2 = _interopRequireDefault(_serviceUserTile);
 
-var _vuex = __webpack_require__(4);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// <template>
+module.exports = {
+    name: 'account-view',
+    computed: {
+        authenticated_services: function authenticated_services() {
+            return this.$store.state.authenticatedServices;
+        },
+        active_accounts: function active_accounts() {
+            return this.$store.state.activeAccounts;
+        }
+    },
+    components: {
+        SignInBtn: _signInBtn2.default,
+        ServiceTile: _serviceTile2.default,
+        ServiceUserTile: _serviceUserTile2.default
+    }
+    // </script>
+
+}; // <template>
 //     <div class="tab-view">
 //         <div class="panel-body">
 //             <h3>Accounts</h3>
@@ -14086,24 +14101,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // </template>
 //
 // <script>
-module.exports = {
-    name: 'account-view',
-    computed: {
-        authenticated_services: function authenticated_services() {
-            return this.$store.state.authenticatedServices;
-        },
-        active_accounts: function active_accounts() {
-            return this.$store.state.activeAccounts;
-        }
-    },
-    components: {
-        SignInBtn: _signInBtn2.default,
-        ServiceTile: _serviceTile2.default,
-        ServiceUserTile: _serviceUserTile2.default
-    }
-    // </script>
-
-};
 
 /***/ }),
 /* 41 */
@@ -14144,8 +14141,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-8e89fa8e&file=sign-in-btn.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./sign-in-btn.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-8e89fa8e&file=sign-in-btn.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./sign-in-btn.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-8e89fa8e&file=sign-in-btn.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./sign-in-btn.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-8e89fa8e&file=sign-in-btn.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./sign-in-btn.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -14183,10 +14180,44 @@ var _getIterator2 = __webpack_require__(29);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
-var _vuex = __webpack_require__(4);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// <template>
+//     <div class="sign-in-btn">
+//         <div class="input-group">
+//             <select class="form-select" v-model="selected_network">
+//                 <option v-for="( service, network ) in services" v-bind:value="network" :disabled="checkDisabled( service.active )">{{ service.name }}</option>
+//             </select>
+//
+//             <button class="btn input-group-btn" :class="serviceClass" @click="requestAuthorization()" :disabled="checkDisabled(true)" >
+//                 <i class="fa fa-fw" :class="serviceIcon" aria-hidden="true"></i> Sign In
+//             </button>
+//         </div>
+//         <div class="modal" :class="modalActiveClass">
+//             <div class="modal-overlay"></div>
+//             <div class="modal-container">
+//                 <div class="modal-header">
+//                     <button class="btn btn-clear float-right" @click="closeModal()"></button>
+//                     <div class="modal-title h5">{{ modal.serviceName }} Service Credentials</div>
+//                 </div>
+//                 <div class="modal-body">
+//                     <div class="content">
+//                         <div class="form-group" v-for="( field, id ) in modal.data">
+//                             <label class="form-label" :for="field.id">{{ field.name }}</label>
+//                             <input class="form-input" type="text" :id="field.id" v-model="field.value" :placeholder="field.name" />
+//                             <i>{{ field.description }}</i>
+//                         </div>
+//                     </div>
+//                 </div>
+//                 <div class="modal-footer">
+//                     <button class="btn btn-primary" @click="closeModal()">Sign in</button>
+//                 </div>
+//             </div>
+//         </div>
+//     </div>
+// </template>
+//
+// <script>
 module.exports = {
     name: 'sign-in-btn',
     created: function created() {},
@@ -14203,7 +14234,7 @@ module.exports = {
     },
     methods: {
         checkDisabled: function checkDisabled(active) {
-            if (active == false) {
+            if (active === false) {
                 return true;
             }
 
@@ -14245,10 +14276,10 @@ module.exports = {
 
             console.log('Credentials recieved:', credentials);
             this.$store.dispatch('getServiceSignInUrl', { service: this.selected_network, credentials: credentials }).then(function (response) {
-                console.log("Got some data, now lets show something in this component", response);
+                console.log('Got some data, now lets show something in this component', response);
                 _this.openPopup(response.url);
             }, function (error) {
-                console.error("Got nothing from server. Prompt user to check internet connection and try again", error);
+                console.error('Got nothing from server. Prompt user to check internet connection and try again', error);
             });
         },
         requestAuthentication: function requestAuthentication() {
@@ -14273,7 +14304,6 @@ module.exports = {
                         credentials[index] = this.modal.data[index]['value'];
                     }
                 }
-                //console.log( 'credentials: ', credentials );
             } catch (err) {
                 _didIteratorError = true;
                 _iteratorError = err;
@@ -14303,14 +14333,14 @@ module.exports = {
     computed: {
         selected_network: {
             get: function get() {
-                var default_network = this.modal.serviceName;
-                if ((0, _keys2.default)(this.services)[0] && default_network === '') {
-                    default_network = (0, _keys2.default)(this.services)[0];
+                var defaultNetwork = this.modal.serviceName;
+                if ((0, _keys2.default)(this.services)[0] && defaultNetwork === '') {
+                    defaultNetwork = (0, _keys2.default)(this.services)[0];
                 }
-                return default_network.toLowerCase();
+                return defaultNetwork.toLowerCase();
             },
-            set: function set(new_network) {
-                this.modal.serviceName = new_network;
+            set: function set(newNetwork) {
+                this.modal.serviceName = newNetwork;
             }
         },
         services: function services() {
@@ -14356,42 +14386,7 @@ module.exports = {
     //
     // </style>
 
-}; // <template>
-//     <div class="sign-in-btn">
-//         <div class="input-group">
-//             <select class="form-select" v-model="selected_network">
-//                 <option v-for="( service, network ) in services" v-bind:value="network" :disabled="checkDisabled( service.active )">{{ service.name }}</option>
-//             </select>
-//
-//             <button class="btn input-group-btn" :class="serviceClass" @click="requestAuthorization()" :disabled="checkDisabled(true)" >
-//                 <i class="fa fa-fw" :class="serviceIcon" aria-hidden="true"></i> Sign In
-//             </button>
-//         </div>
-//         <div class="modal" :class="modalActiveClass">
-//             <div class="modal-overlay"></div>
-//             <div class="modal-container">
-//                 <div class="modal-header">
-//                     <button class="btn btn-clear float-right" @click="closeModal()"></button>
-//                     <div class="modal-title h5">{{ modal.serviceName }} Service Credentials</div>
-//                 </div>
-//                 <div class="modal-body">
-//                     <div class="content">
-//                         <div class="form-group" v-for="( field, id ) in modal.data">
-//                             <label class="form-label" :for="field.id">{{ field.name }}</label>
-//                             <input class="form-input" type="text" :id="field.id" v-model="field.value" :placeholder="field.name" />
-//                             <i>{{ field.description }}</i>
-//                         </div>
-//                     </div>
-//                 </div>
-//                 <div class="modal-footer">
-//                     <button class="btn btn-primary" @click="closeModal()">Sign in</button>
-//                 </div>
-//             </div>
-//         </div>
-//     </div>
-// </template>
-//
-// <script>
+};
 
 /***/ }),
 /* 45 */
@@ -14426,7 +14421,7 @@ __webpack_require__(53)('keys', function () {
 /* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var has = __webpack_require__(5);
+var has = __webpack_require__(4);
 var toIObject = __webpack_require__(14);
 var arrayIndexOf = __webpack_require__(50)(false);
 var IE_PROTO = __webpack_require__(16)('IE_PROTO');
@@ -14567,7 +14562,7 @@ module.exports = function (it) {
 /* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = !__webpack_require__(7) && !__webpack_require__(19)(function () {
+module.exports = !__webpack_require__(6) && !__webpack_require__(19)(function () {
   return Object.defineProperty(__webpack_require__(27)('div'), 'a', { get: function () { return 7; } }).a != 7;
 });
 
@@ -14606,7 +14601,7 @@ module.exports = __webpack_require__(72);
 __webpack_require__(60);
 var global = __webpack_require__(0);
 var hide = __webpack_require__(3);
-var Iterators = __webpack_require__(8);
+var Iterators = __webpack_require__(7);
 var TO_STRING_TAG = __webpack_require__(1)('toStringTag');
 
 var DOMIterables = ('CSSRuleList,CSSStyleDeclaration,CSSValueList,ClientRectList,DOMRectList,DOMStringList,' +
@@ -14632,7 +14627,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 
 var addToUnscopables = __webpack_require__(61);
 var step = __webpack_require__(62);
-var Iterators = __webpack_require__(8);
+var Iterators = __webpack_require__(7);
 var toIObject = __webpack_require__(14);
 
 // 22.1.3.4 Array.prototype.entries()
@@ -14720,7 +14715,7 @@ module.exports = function (Constructor, NAME, next) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
-var anObject = __webpack_require__(6);
+var anObject = __webpack_require__(5);
 var dPs = __webpack_require__(67);
 var enumBugKeys = __webpack_require__(25);
 var IE_PROTO = __webpack_require__(16)('IE_PROTO');
@@ -14767,10 +14762,10 @@ module.exports = Object.create || function create(O, Properties) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var dP = __webpack_require__(17);
-var anObject = __webpack_require__(6);
+var anObject = __webpack_require__(5);
 var getKeys = __webpack_require__(21);
 
-module.exports = __webpack_require__(7) ? Object.defineProperties : function defineProperties(O, Properties) {
+module.exports = __webpack_require__(6) ? Object.defineProperties : function defineProperties(O, Properties) {
   anObject(O);
   var keys = getKeys(Properties);
   var length = keys.length;
@@ -14794,7 +14789,7 @@ module.exports = document && document.documentElement;
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
-var has = __webpack_require__(5);
+var has = __webpack_require__(4);
 var toObject = __webpack_require__(20);
 var IE_PROTO = __webpack_require__(16)('IE_PROTO');
 var ObjectProto = Object.prototype;
@@ -14859,7 +14854,7 @@ module.exports = function (TO_STRING) {
 /* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var anObject = __webpack_require__(6);
+var anObject = __webpack_require__(5);
 var get = __webpack_require__(73);
 module.exports = __webpack_require__(2).getIterator = function (it) {
   var iterFn = get(it);
@@ -14874,7 +14869,7 @@ module.exports = __webpack_require__(2).getIterator = function (it) {
 
 var classof = __webpack_require__(74);
 var ITERATOR = __webpack_require__(1)('iterator');
-var Iterators = __webpack_require__(8);
+var Iterators = __webpack_require__(7);
 module.exports = __webpack_require__(2).getIteratorMethod = function (it) {
   if (it != undefined) return it[ITERATOR]
     || it['@@iterator']
@@ -14956,8 +14951,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3e1338be&file=service-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./service-tile.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3e1338be&file=service-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./service-tile.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3e1338be&file=service-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./service-tile.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3e1338be&file=service-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./service-tile.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -14975,7 +14970,7 @@ exports = module.exports = __webpack_require__(11)();
 
 
 // module
-exports.push([module.i, "\n\n    #rop_core .btn.btn-danger[_v-3e1338be] {\n        background-color: #d50000;\n        color: #efefef;\n        border-color: #b71c1c;\n    }\n\n    #rop_core .btn.btn-danger[_v-3e1338be]:hover, #rop_core[_v-3e1338be] {\n        background-color: #efefef;\n        color: #d50000;\n        border-color: #b71c1c;\n    }\n\n    #rop_core .btn.btn-info[_v-3e1338be] {\n        background-color: #2196f3;\n        color: #efefef;\n        border-color: #1565c0;\n    }\n\n    #rop_core .btn.btn-info[_v-3e1338be]:hover, #rop_core[_v-3e1338be] {\n        background-color: #efefef;\n        color: #2196f3;\n        border-color: #1565c0;\n    }\n\n", ""]);
+exports.push([module.i, "\n\n\t#rop_core .btn.btn-danger[_v-3e1338be] {\n\t\tbackground-color: #d50000;\n\t\tcolor: #efefef;\n\t\tborder-color: #b71c1c;\n\t}\n\n\t#rop_core .btn.btn-danger[_v-3e1338be]:hover, #rop_core[_v-3e1338be] {\n\t\tbackground-color: #efefef;\n\t\tcolor: #d50000;\n\t\tborder-color: #b71c1c;\n\t}\n\n\t#rop_core .btn.btn-info[_v-3e1338be] {\n\t\tbackground-color: #2196f3;\n\t\tcolor: #efefef;\n\t\tborder-color: #1565c0;\n\t}\n\n\t#rop_core .btn.btn-info[_v-3e1338be]:hover, #rop_core[_v-3e1338be] {\n\t\tbackground-color: #efefef;\n\t\tcolor: #2196f3;\n\t\tborder-color: #1565c0;\n\t}\n\n", ""]);
 
 // exports
 
@@ -14998,144 +14993,144 @@ var _secretInput2 = _interopRequireDefault(_secretInput);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // <template>
-//     <div class="service-tile">
-//         <label class="show-md hide-xl"><b>{{service_url}}/</b></label>
-//         <div class="input-group">
-//             <button class="btn input-group-btn btn-danger" @click="removeService()" >
-//                 <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
-//             </button>
-//             <button class="btn input-group-btn btn-info" @click="toggleCredentials()" v-if="service.public_credentials" >
-//                 <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i>
-//             </button>
-//             <span class="input-group-addon hide-md" style="min-width: 115px; text-align: right;">{{service_url}}/</span>
-//             <service-autocomplete :accounts="service.available_accounts" :to_be_activated="to_be_activated"></service-autocomplete>
-//             <button class="btn input-group-btn" :class="serviceClass" @click="activateSelected( service.id )">
-//                 <i class="fa fa-fw fa-plus" aria-hidden="true"></i> <span class="hide-md">Activate</span>
-//             </button>
-//         </div>
-//         <div class="card centered" :class="credentialsDisplayClass" v-if="service.public_credentials">
-//             <div class="card-header">
-//                 <div class="card-title h5">{{serviceName}}</div>
-//                 <div class="card-subtitle text-gray">{{service.id}}</div>
-//             </div>
-//             <div class="card-body">
-//                 <div class="form-horizontal">
-//                     <div class="form-group" v-for="( credential, index ) in service.public_credentials">
-//                         <div class="col-3">
-//                             <label class="form-label" :for="credentialID(index)">{{credential.name}}:</label>
-//                         </div>
-//                         <div class="col-9">
-//                             <secret-input :id="credentialID(index)" :value="credential.value" :secret="credential.private" />
-//                         </div>
-//                     </div>
-//                 </div>
-//             </div>
-//         </div>
-//         <div class="divider clearfix"></div>
-//     </div>
+// 	<div class="service-tile">
+// 		<label class="show-md hide-xl"><b>{{service_url}}/</b></label>
+// 		<div class="input-group">
+// 			<button class="btn input-group-btn btn-danger" @click="removeService()" >
+// 				<i class="fa fa-fw fa-trash" aria-hidden="true"></i>
+// 			</button>
+// 			<button class="btn input-group-btn btn-info" @click="toggleCredentials()" v-if="service.public_credentials" >
+// 				<i class="fa fa-fw fa-info-circle" aria-hidden="true"></i>
+// 			</button>
+// 			<span class="input-group-addon hide-md" style="min-width: 115px; text-align: right;">{{service_url}}/</span>
+// 			<service-autocomplete :accounts="service.available_accounts" :to_be_activated="to_be_activated"></service-autocomplete>
+// 			<button class="btn input-group-btn" :class="serviceClass" @click="activateSelected( service.id )">
+// 				<i class="fa fa-fw fa-plus" aria-hidden="true"></i> <span class="hide-md">Activate</span>
+// 			</button>
+// 		</div>
+// 		<div class="card centered" :class="credentialsDisplayClass" v-if="service.public_credentials">
+// 			<div class="card-header">
+// 				<div class="card-title h5">{{serviceName}}</div>
+// 				<div class="card-subtitle text-gray">{{service.id}}</div>
+// 			</div>
+// 			<div class="card-body">
+// 				<div class="form-horizontal">
+// 					<div class="form-group" v-for="( credential, index ) in service.public_credentials">
+// 						<div class="col-3">
+// 							<label class="form-label" :for="credentialID(index)">{{credential.name}}:</label>
+// 						</div>
+// 						<div class="col-9">
+// 							<secret-input :id="credentialID(index)" :value="credential.value" :secret="credential.private" />
+// 						</div>
+// 					</div>
+// 				</div>
+// 			</div>
+// 		</div>
+// 		<div class="divider clearfix"></div>
+// 	</div>
 // </template>
 //
 // <script>
 function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase().concat(string.slice(1));
+	return string.charAt(0).toUpperCase().concat(string.slice(1));
 }
 
 module.exports = {
-    name: 'service-tile',
-    props: {
-        service: {
-            type: Object,
-            required: true
-        }
-    },
-    data: function data() {
-        return {
-            show_credentials: false,
-            to_be_activated: []
-        };
-    },
-    computed: {
-        service_url: function service_url() {
-            if (this.service.service === 'facebook') {
-                return 'facebook.com';
-            }
-            if (this.service.service === 'twitter') {
-                return 'twitter.com';
-            }
-            if (this.service.service === 'linkedin') {
-                return 'linkedin.com';
-            }
-            if (this.service.service === 'tumblr') {
-                return 'tumblr.com';
-            }
+	name: 'service-tile',
+	props: {
+		service: {
+			type: Object,
+			required: true
+		}
+	},
+	data: function data() {
+		return {
+			show_credentials: false,
+			to_be_activated: []
+		};
+	},
+	computed: {
+		service_url: function service_url() {
+			if (this.service.service === 'facebook') {
+				return 'facebook.com';
+			}
+			if (this.service.service === 'twitter') {
+				return 'twitter.com';
+			}
+			if (this.service.service === 'linkedin') {
+				return 'linkedin.com';
+			}
+			if (this.service.service === 'tumblr') {
+				return 'tumblr.com';
+			}
 
-            return 'service.url';
-        },
-        serviceName: function serviceName() {
-            return capitalizeFirstLetter(this.service.service);
-        },
-        serviceClass: function serviceClass() {
-            return {
-                'btn-twitter': this.service.service === 'twitter',
-                'btn-facebook': this.service.service === 'facebook',
-                'btn-linkedin': this.service.service === 'linkedin',
-                'btn-tumblr': this.service.service === 'tumblr'
-            };
-        },
-        credentialsDisplayClass: function credentialsDisplayClass() {
-            return {
-                'd-block': this.show_credentials === true,
-                'd-none': this.show_credentials === false
-            };
-        }
-    },
-    methods: {
-        credentialID: function credentialID(index) {
-            return 'service-' + index + '-field';
-        },
-        toggleCredentials: function toggleCredentials() {
-            this.show_credentials = !this.show_credentials;
-        },
-        activateSelected: function activateSelected(service_id) {
-            this.$store.dispatch('updateActiveAccounts', { action: 'update', service_id: service_id, service: this.service.service, to_be_activated: this.to_be_activated, current_active: this.$store.state.activeAccounts });
-        },
-        removeService: function removeService() {
-            this.$store.dispatch('removeService', { id: this.service.id, service: this.service.service });
-        }
-    },
-    components: {
-        ServiceAutocomplete: _serviceAutocomplete2.default,
-        SecretInput: _secretInput2.default
-    }
-    // </script>
-    //
-    // <style scoped>
-    //
-    //     #rop_core .btn.btn-danger {
-    //         background-color: #d50000;
-    //         color: #efefef;
-    //         border-color: #b71c1c;
-    //     }
-    //
-    //     #rop_core .btn.btn-danger:hover, #rop_core {
-    //         background-color: #efefef;
-    //         color: #d50000;
-    //         border-color: #b71c1c;
-    //     }
-    //
-    //     #rop_core .btn.btn-info {
-    //         background-color: #2196f3;
-    //         color: #efefef;
-    //         border-color: #1565c0;
-    //     }
-    //
-    //     #rop_core .btn.btn-info:hover, #rop_core {
-    //         background-color: #efefef;
-    //         color: #2196f3;
-    //         border-color: #1565c0;
-    //     }
-    //
-    // </style>
+			return 'service.url';
+		},
+		serviceName: function serviceName() {
+			return capitalizeFirstLetter(this.service.service);
+		},
+		serviceClass: function serviceClass() {
+			return {
+				'btn-twitter': this.service.service === 'twitter',
+				'btn-facebook': this.service.service === 'facebook',
+				'btn-linkedin': this.service.service === 'linkedin',
+				'btn-tumblr': this.service.service === 'tumblr'
+			};
+		},
+		credentialsDisplayClass: function credentialsDisplayClass() {
+			return {
+				'd-block': this.show_credentials === true,
+				'd-none': this.show_credentials === false
+			};
+		}
+	},
+	methods: {
+		credentialID: function credentialID(index) {
+			return 'service-' + index + '-field';
+		},
+		toggleCredentials: function toggleCredentials() {
+			this.show_credentials = !this.show_credentials;
+		},
+		activateSelected: function activateSelected(serviceId) {
+			this.$store.dispatch('updateActiveAccounts', { action: 'update', service_id: serviceId, service: this.service.service, to_be_activated: this.to_be_activated, current_active: this.$store.state.activeAccounts });
+		},
+		removeService: function removeService() {
+			this.$store.dispatch('removeService', { id: this.service.id, service: this.service.service });
+		}
+	},
+	components: {
+		ServiceAutocomplete: _serviceAutocomplete2.default,
+		SecretInput: _secretInput2.default
+	}
+	// </script>
+	//
+	// <style scoped>
+	//
+	// 	#rop_core .btn.btn-danger {
+	// 		background-color: #d50000;
+	// 		color: #efefef;
+	// 		border-color: #b71c1c;
+	// 	}
+	//
+	// 	#rop_core .btn.btn-danger:hover, #rop_core {
+	// 		background-color: #efefef;
+	// 		color: #d50000;
+	// 		border-color: #b71c1c;
+	// 	}
+	//
+	// 	#rop_core .btn.btn-info {
+	// 		background-color: #2196f3;
+	// 		color: #efefef;
+	// 		border-color: #1565c0;
+	// 	}
+	//
+	// 	#rop_core .btn.btn-info:hover, #rop_core {
+	// 		background-color: #efefef;
+	// 		color: #2196f3;
+	// 		border-color: #1565c0;
+	// 	}
+	//
+	// </style>
 
 };
 
@@ -15177,7 +15172,7 @@ var _vueClickaway = __webpack_require__(82);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function containsObject(obj, list) {
-    var i;
+    var i = void 0;
     for (i = 0; i < list.length; i++) {
         if (list[i] === obj) {
             return true;
@@ -15226,6 +15221,7 @@ function containsObject(obj, list) {
 // </template>
 //
 // <script>
+/* global ROP_ASSETS_URL */
 
 
 module.exports = {
@@ -15361,7 +15357,7 @@ module.exports = {
             var result = value;
             if (value.toLowerCase().indexOf(search.toLowerCase()) !== -1 && search !== '') {
                 var rex = new RegExp(search, 'ig');
-                result = value.replace(rex, function replace(match) {
+                result = value.replace(rex, function (match) {
                     return '<mark>' + match + '</mark>';
                 });
             }
@@ -15406,7 +15402,7 @@ module.exports = {
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
-var Vue = __webpack_require__(9);
+var Vue = __webpack_require__(8);
 Vue = 'default' in Vue ? Vue['default'] : Vue;
 
 var version = '2.1.0';
@@ -15481,7 +15477,7 @@ var mixin = {
 exports.version = version;
 exports.directive = directive;
 exports.mixin = mixin;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ }),
 /* 83 */
@@ -15582,7 +15578,7 @@ module.exports = "\n    <div class=\"input-group\" v-if=\"secret\">\n        <in
 /* 87 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"service-tile\" _v-3e1338be=\"\">\n        <label class=\"show-md hide-xl\" _v-3e1338be=\"\"><b _v-3e1338be=\"\">{{service_url}}/</b></label>\n        <div class=\"input-group\" _v-3e1338be=\"\">\n            <button class=\"btn input-group-btn btn-danger\" @click=\"removeService()\" _v-3e1338be=\"\">\n                <i class=\"fa fa-fw fa-trash\" aria-hidden=\"true\" _v-3e1338be=\"\"></i>\n            </button>\n            <button class=\"btn input-group-btn btn-info\" @click=\"toggleCredentials()\" v-if=\"service.public_credentials\" _v-3e1338be=\"\">\n                <i class=\"fa fa-fw fa-info-circle\" aria-hidden=\"true\" _v-3e1338be=\"\"></i>\n            </button>\n            <span class=\"input-group-addon hide-md\" style=\"min-width: 115px; text-align: right;\" _v-3e1338be=\"\">{{service_url}}/</span>\n            <service-autocomplete :accounts=\"service.available_accounts\" :to_be_activated=\"to_be_activated\" _v-3e1338be=\"\"></service-autocomplete>\n            <button class=\"btn input-group-btn\" :class=\"serviceClass\" @click=\"activateSelected( service.id )\" _v-3e1338be=\"\">\n                <i class=\"fa fa-fw fa-plus\" aria-hidden=\"true\" _v-3e1338be=\"\"></i> <span class=\"hide-md\" _v-3e1338be=\"\">Activate</span>\n            </button>\n        </div>\n        <div class=\"card centered\" :class=\"credentialsDisplayClass\" v-if=\"service.public_credentials\" _v-3e1338be=\"\">\n            <div class=\"card-header\" _v-3e1338be=\"\">\n                <div class=\"card-title h5\" _v-3e1338be=\"\">{{serviceName}}</div>\n                <div class=\"card-subtitle text-gray\" _v-3e1338be=\"\">{{service.id}}</div>\n            </div>\n            <div class=\"card-body\" _v-3e1338be=\"\">\n                <div class=\"form-horizontal\" _v-3e1338be=\"\">\n                    <div class=\"form-group\" v-for=\"( credential, index ) in service.public_credentials\" _v-3e1338be=\"\">\n                        <div class=\"col-3\" _v-3e1338be=\"\">\n                            <label class=\"form-label\" :for=\"credentialID(index)\" _v-3e1338be=\"\">{{credential.name}}:</label>\n                        </div>\n                        <div class=\"col-9\" _v-3e1338be=\"\">\n                            <secret-input :id=\"credentialID(index)\" :value=\"credential.value\" :secret=\"credential.private\" _v-3e1338be=\"\">\n                        </secret-input></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"divider clearfix\" _v-3e1338be=\"\"></div>\n    </div>\n";
+module.exports = "\n\t<div class=\"service-tile\" _v-3e1338be=\"\">\n\t\t<label class=\"show-md hide-xl\" _v-3e1338be=\"\"><b _v-3e1338be=\"\">{{service_url}}/</b></label>\n\t\t<div class=\"input-group\" _v-3e1338be=\"\">\n\t\t\t<button class=\"btn input-group-btn btn-danger\" @click=\"removeService()\" _v-3e1338be=\"\">\n\t\t\t\t<i class=\"fa fa-fw fa-trash\" aria-hidden=\"true\" _v-3e1338be=\"\"></i>\n\t\t\t</button>\n\t\t\t<button class=\"btn input-group-btn btn-info\" @click=\"toggleCredentials()\" v-if=\"service.public_credentials\" _v-3e1338be=\"\">\n\t\t\t\t<i class=\"fa fa-fw fa-info-circle\" aria-hidden=\"true\" _v-3e1338be=\"\"></i>\n\t\t\t</button>\n\t\t\t<span class=\"input-group-addon hide-md\" style=\"min-width: 115px; text-align: right;\" _v-3e1338be=\"\">{{service_url}}/</span>\n\t\t\t<service-autocomplete :accounts=\"service.available_accounts\" :to_be_activated=\"to_be_activated\" _v-3e1338be=\"\"></service-autocomplete>\n\t\t\t<button class=\"btn input-group-btn\" :class=\"serviceClass\" @click=\"activateSelected( service.id )\" _v-3e1338be=\"\">\n\t\t\t\t<i class=\"fa fa-fw fa-plus\" aria-hidden=\"true\" _v-3e1338be=\"\"></i> <span class=\"hide-md\" _v-3e1338be=\"\">Activate</span>\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"card centered\" :class=\"credentialsDisplayClass\" v-if=\"service.public_credentials\" _v-3e1338be=\"\">\n\t\t\t<div class=\"card-header\" _v-3e1338be=\"\">\n\t\t\t\t<div class=\"card-title h5\" _v-3e1338be=\"\">{{serviceName}}</div>\n\t\t\t\t<div class=\"card-subtitle text-gray\" _v-3e1338be=\"\">{{service.id}}</div>\n\t\t\t</div>\n\t\t\t<div class=\"card-body\" _v-3e1338be=\"\">\n\t\t\t\t<div class=\"form-horizontal\" _v-3e1338be=\"\">\n\t\t\t\t\t<div class=\"form-group\" v-for=\"( credential, index ) in service.public_credentials\" _v-3e1338be=\"\">\n\t\t\t\t\t\t<div class=\"col-3\" _v-3e1338be=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"credentialID(index)\" _v-3e1338be=\"\">{{credential.name}}:</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"col-9\" _v-3e1338be=\"\">\n\t\t\t\t\t\t\t<secret-input :id=\"credentialID(index)\" :value=\"credential.value\" :secret=\"credential.private\" _v-3e1338be=\"\">\n\t\t\t\t\t\t</secret-input></div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"divider clearfix\" _v-3e1338be=\"\"></div>\n\t</div>\n";
 
 /***/ }),
 /* 88 */
@@ -15623,8 +15619,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0eff658d&file=service-user-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./service-user-tile.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0eff658d&file=service-user-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./service-user-tile.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0eff658d&file=service-user-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./service-user-tile.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0eff658d&file=service-user-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./service-user-tile.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -15664,7 +15660,7 @@ exports.push([module.i, "\n    #rop_core .btn.btn-link.btn-danger[_v-0eff658d] {
 //         </div>
 //         <div class="tile-content">
 //             <div class="tile-title">{{ user }}</div>
-//             <div class="tile-subtitle text-gray">{{ service_info }}</div>
+//             <div class="tile-subtitle text-gray">{{ serviceInfo }}</div>
 //         </div>
 //         <div class="tile-action">
 //             <div class="dropdown dropdown-right">
@@ -15677,28 +15673,24 @@ exports.push([module.i, "\n    #rop_core .btn.btn-link.btn-danger[_v-0eff658d] {
 // </template>
 //
 // <script>
-function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase().concat(string.slice(1));
-}
-
 module.exports = {
     name: 'service-user-tile',
     props: ['account_data', 'account_id'],
     computed: {
         service: function service() {
-            var icon_class = this.account_data.service;
-            if (this.img != '') {
-                icon_class = icon_class.concat(' ').concat('has_image');
+            var iconClass = this.account_data.service;
+            if (this.img !== '') {
+                iconClass = iconClass.concat(' ').concat('has_image');
             }
-            return icon_class;
+            return iconClass;
         },
         icon: function icon() {
-            var service_icon = 'fa-';
-            if (this.account_data.service === 'facebook') service_icon = service_icon.concat('facebook-official');
-            if (this.account_data.service === 'twitter') service_icon = service_icon.concat('twitter');
-            if (this.account_data.service === 'linkedin') service_icon = service_icon.concat('linkedin');
-            if (this.account_data.service === 'tumblr') service_icon = service_icon.concat('tumblr');
-            return service_icon;
+            var serviceIcon = 'fa-';
+            if (this.account_data.service === 'facebook') serviceIcon = serviceIcon.concat('facebook-official');
+            if (this.account_data.service === 'twitter') serviceIcon = serviceIcon.concat('twitter');
+            if (this.account_data.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin');
+            if (this.account_data.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr');
+            return serviceIcon;
         },
         img: function img() {
             var img = '';
@@ -15710,9 +15702,9 @@ module.exports = {
         user: function user() {
             return this.account_data.user;
         },
-        service_info: function service_info() {
-            var service_info = this.account_data.account.concat(" at: ").concat(this.account_data.created);
-            return service_info;
+        serviceInfo: function serviceInfo() {
+            var serviceTextInfo = this.account_data.account.concat(' at: ').concat(this.account_data.created);
+            return serviceTextInfo;
         }
     },
     methods: {
@@ -15780,7 +15772,7 @@ module.exports = {
 /* 92 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"tile tile-centered\" _v-0eff658d=\"\">\n        <div class=\"tile-icon\" _v-0eff658d=\"\">\n            <div class=\"icon_box\" :class=\"service\" _v-0eff658d=\"\">\n                <img class=\"service_account_image\" :src=\"img\" v-if=\"img\" _v-0eff658d=\"\">\n                <i class=\"fa\" :class=\"icon\" aria-hidden=\"true\" v-else=\"\" _v-0eff658d=\"\"></i>\n            </div>\n        </div>\n        <div class=\"tile-content\" _v-0eff658d=\"\">\n            <div class=\"tile-title\" _v-0eff658d=\"\">{{ user }}</div>\n            <div class=\"tile-subtitle text-gray\" _v-0eff658d=\"\">{{ service_info }}</div>\n        </div>\n        <div class=\"tile-action\" _v-0eff658d=\"\">\n            <div class=\"dropdown dropdown-right\" _v-0eff658d=\"\">\n                <a href=\"#\" class=\"btn btn-link btn-danger\" tabindex=\"0\" @click.prevent=\"removeActiveAccount( account_id )\" _v-0eff658d=\"\">\n                    <i class=\"fa fa-trash\" aria-hidden=\"true\" _v-0eff658d=\"\"></i>\n                </a>\n            </div>\n        </div>\n    </div>\n";
+module.exports = "\n    <div class=\"tile tile-centered\" _v-0eff658d=\"\">\n        <div class=\"tile-icon\" _v-0eff658d=\"\">\n            <div class=\"icon_box\" :class=\"service\" _v-0eff658d=\"\">\n                <img class=\"service_account_image\" :src=\"img\" v-if=\"img\" _v-0eff658d=\"\">\n                <i class=\"fa\" :class=\"icon\" aria-hidden=\"true\" v-else=\"\" _v-0eff658d=\"\"></i>\n            </div>\n        </div>\n        <div class=\"tile-content\" _v-0eff658d=\"\">\n            <div class=\"tile-title\" _v-0eff658d=\"\">{{ user }}</div>\n            <div class=\"tile-subtitle text-gray\" _v-0eff658d=\"\">{{ serviceInfo }}</div>\n        </div>\n        <div class=\"tile-action\" _v-0eff658d=\"\">\n            <div class=\"dropdown dropdown-right\" _v-0eff658d=\"\">\n                <a href=\"#\" class=\"btn btn-link btn-danger\" tabindex=\"0\" @click.prevent=\"removeActiveAccount( account_id )\" _v-0eff658d=\"\">\n                    <i class=\"fa fa-trash\" aria-hidden=\"true\" _v-0eff658d=\"\"></i>\n                </a>\n            </div>\n        </div>\n    </div>\n";
 
 /***/ }),
 /* 93 */

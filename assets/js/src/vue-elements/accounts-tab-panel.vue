@@ -61,26 +61,24 @@
 </template>
 
 <script>
-    import SignInBtn from './sign-in-btn.vue';
-    import ServiceTile from './service-tile.vue';
-    import ServiceUserTile from './service-user-tile.vue';
-
-    import { mapState } from 'vuex'
+    import SignInBtn from './sign-in-btn.vue'
+    import ServiceTile from './service-tile.vue'
+    import ServiceUserTile from './service-user-tile.vue'
 
     module.exports = {
         name: 'account-view',
         computed: {
-            authenticated_services: function() {
-                return this.$store.state.authenticatedServices;
+            authenticated_services: function () {
+                return this.$store.state.authenticatedServices
             },
-            active_accounts: function() {
-                return this.$store.state.activeAccounts;
+            active_accounts: function () {
+                return this.$store.state.activeAccounts
             }
         },
         components: {
             SignInBtn,
             ServiceTile,
-            ServiceUserTile,
+            ServiceUserTile
         }
     }
 </script>

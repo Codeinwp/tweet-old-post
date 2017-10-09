@@ -40,29 +40,30 @@
 </template>
 
 <script>
-    import { mixin as clickaway } from 'vue-clickaway';
+    /* global ROP_ASSETS_URL */
+    import { mixin as clickaway } from 'vue-clickaway'
 
-    function containsObject(obj, list) {
-        var i;
+    function containsObject (obj, list) {
+        let i
         for (i = 0; i < list.length; i++) {
             if (list[i] === obj) {
-                return true;
+                return true
             }
         }
-        return false;
+        return false
     }
 
     module.exports = {
         name: 'service-autocomplete',
         mixins: [ clickaway ],
         props: [ 'accounts', 'to_be_activated' ],
-        mounted() {
-            var index = 0;
-            for( var account of this.accounts ) {
-                if( account.active ) {
-                    this.addToBeActivated( index );
+        mounted () {
+            var index = 0
+            for (var account of this.accounts) {
+                if (account.active) {
+                    this.addToBeActivated(index)
                 }
-                index++;
+                index++
             }
         },
         data: function () {
@@ -71,107 +72,106 @@
                 highlighted: -1,
                 no_results: false,
                 magic_flag: false,
-                account_def_img: ROP_ASSETS_URL + 'img/accounts_icon.jpg',
+                account_def_img: ROP_ASSETS_URL + 'img/accounts_icon.jpg'
             }
         },
         computed: {
-            is_focused: function() {
+            is_focused: function () {
                 return {
                     'is-focused': this.magic_flag === true
                 }
             },
-            is_visible: function() {
+            is_visible: function () {
                 return {
                     'd-none': this.magic_flag === false
                 }
             },
-            is_one: function() {
-                if( this.accounts.length === 1 && this.accounts[0].active === false ) {
-                    this.to_be_activated.push( this.accounts[0] );
-                    return true;
-                } else if( this.accounts.length === 1 && this.accounts[0].active === true ) {
-                    return true;
+            is_one: function () {
+                if (this.accounts.length === 1 && this.accounts[0].active === false) {
+                    this.to_be_activated.push(this.accounts[0])
+                    return true
+                } else if (this.accounts.length === 1 && this.accounts[0].active === true) {
+                    return true
                 }
                 return false
             },
-            autocomplete_placeholder: function() {
-                if( this.is_one ) {
-                    return '';
+            autocomplete_placeholder: function () {
+                if (this.is_one) {
+                    return ''
                 }
-                return 'Accounts ...';
+                return 'Accounts ...'
             },
-            has_results: function() {
-                var found = 0;
-                for( var account of this.accounts ) {
-                    if( this.filterSearch( account ) ) {
-                        found++;
+            has_results: function () {
+                let found = 0
+                for (var account of this.accounts) {
+                    if (this.filterSearch(account)) {
+                        found++
                     }
                 }
-                if( found ) {
-                    return false;
+                if (found) {
+                    return false
                 }
-                return true;
+                return true
             }
         },
         methods: {
-            closeDropdown: function() {
-                this.magic_flag = false;
+            closeDropdown: function () {
+                this.magic_flag = false
             },
-            highlightItem: function( up = false ) {
-                if( up ) {
-                    this.highlighted--;
+            highlightItem: function (up = false) {
+                if (up) {
+                    this.highlighted--
                 } else {
-                    this.highlighted++;
+                    this.highlighted++
                 }
-                var size =  this.$refs.autocomplete_results.children.length - 1;
-                if( size < 0 ) size = 0;
-                if( this.highlighted > size ) this.highlighted = 0;
-                if( this.highlighted < 0 ) this.highlighted = size;
-                this.$refs.autocomplete_results.children[this.highlighted].firstChild.focus();
-
+                var size = this.$refs.autocomplete_results.children.length - 1
+                if (size < 0) size = 0
+                if (this.highlighted > size) this.highlighted = 0
+                if (this.highlighted < 0) this.highlighted = size
+                this.$refs.autocomplete_results.children[this.highlighted].firstChild.focus()
             },
-            popLast: function() {
-              if( this.search === '' ) {
-                  this.to_be_activated.pop();
-                  this.magic_flag = false;
-              }
-            },
-            markMatch: function( value, search ) {
-                var result = value;
-                if( value.toLowerCase().indexOf( search.toLowerCase() ) !== -1 && search !== '' ) {
-                    var rex = new RegExp(search, 'ig');
-                    result = value.replace(rex, function replace( match ) {
-                        return '<mark>' + match + '</mark>';
-                    });
+            popLast: function () {
+                if (this.search === '') {
+                    this.to_be_activated.pop()
+                    this.magic_flag = false
                 }
-                return result;
             },
-            getImg( img ) {
-                if( img === '' || img === undefined || img === null ) {
-                    return this.account_def_img;
+            markMatch: function (value, search) {
+                var result = value
+                if (value.toLowerCase().indexOf(search.toLowerCase()) !== -1 && search !== '') {
+                    var rex = new RegExp(search, 'ig')
+                    result = value.replace(rex, function (match) {
+                        return '<mark>' + match + '</mark>'
+                    })
                 }
-                return img;
+                return result
             },
-            filterSearch(element) {
-                if ( element.name.toLowerCase().indexOf( this.search.toLowerCase() ) !== -1 || this.search === '' ) {
-                    if( containsObject( element, this.to_be_activated ) ) {
-                        return false;
+            getImg (img) {
+                if (img === '' || img === undefined || img === null) {
+                    return this.account_def_img
+                }
+                return img
+            },
+            filterSearch (element) {
+                if (element.name.toLowerCase().indexOf(this.search.toLowerCase()) !== -1 || this.search === '') {
+                    if (containsObject(element, this.to_be_activated)) {
+                        return false
                     }
-                    return true;
+                    return true
                 }
-                return false;
+                return false
             },
-            addToBeActivated( index ) {
-                this.to_be_activated.push( this.accounts[index] );
-                this.$refs.search.focus();
-                this.magic_flag = false;
-                this.search = '';
+            addToBeActivated (index) {
+                this.to_be_activated.push(this.accounts[index])
+                this.$refs.search.focus()
+                this.magic_flag = false
+                this.search = ''
             },
-            removeToBeActivated( index ) {
-                this.to_be_activated.splice( index, 1 );
-                this.$refs.search.focus();
-                this.magic_flag = false;
-                this.search = '';
+            removeToBeActivated (index) {
+                this.to_be_activated.splice(index, 1)
+                this.$refs.search.focus()
+                this.magic_flag = false
+                this.search = ''
             }
         }
     }
