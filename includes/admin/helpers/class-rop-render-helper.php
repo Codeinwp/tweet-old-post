@@ -107,14 +107,14 @@ class Rop_Render_Helper {
 	 *
 	 * @since   8.0.0
 	 * @access  public
-     * @param   boolean $is_vue Determine if is Vue.js view/template file.
+	 * @param   boolean $is_vue Determine if is Vue.js view/template file.
 	 */
 	public function __construct( $is_vue = false ) {
-	    if( $is_vue ) {
-            $this->set_base_path_vue();
-        } else {
-            $this->set_base_path();
-        }
+	    if ( $is_vue ) {
+			$this->set_base_path_vue();
+		} else {
+			$this->set_base_path();
+		}
 	}
 
 	/**
@@ -131,20 +131,20 @@ class Rop_Render_Helper {
 		}
 	}
 
-    /**
-     * Utility method to define the base path for Vue.js.
-     *
-     * @since   8.0.0
-     * @access  public
-     * @param   bool $public Flag for specifying if base is admin or public.
-     */
-    public function set_base_path_vue( $public = false ) {
-        $this->partials_dir = 'vue_templates';
-        $this->base_path = $this->root . $this->core_admin . 'vue_' . $this->views_dir . '/';
-        if ( $public ) {
-            $this->base_path = $this->root . $this->core_public . 'vue_' . $this->views_dir . '/';
-        }
-    }
+	/**
+	 * Utility method to define the base path for Vue.js.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @param   bool $public Flag for specifying if base is admin or public.
+	 */
+	public function set_base_path_vue( $public = false ) {
+		$this->partials_dir = 'vue_templates';
+		$this->base_path = $this->root . $this->core_admin . 'vue_' . $this->views_dir . '/';
+		if ( $public ) {
+			$this->base_path = $this->root . $this->core_public . 'vue_' . $this->views_dir . '/';
+		}
+	}
 
 	/**
 	 * Utility method to define allowed files for import.
@@ -209,7 +209,7 @@ class Rop_Render_Helper {
 	 */
 	private function get_file( $name = '', $path = '' ) {
 		$file_name = $name . '.php';
-		//$file_name = $this->is_allowed_file( $file_name );
+		// $file_name = $this->is_allowed_file( $file_name );
 		$default_path = $this->base_path . $path . '/';
 		$theme_path = get_template_directory() . '/' . $this->theme_dir . '/';
 		$child_theme_path = get_stylesheet_directory() . '/' . $this->theme_dir . '/';

@@ -37,13 +37,13 @@ abstract class Rop_Services_Abstract {
 	 */
 	protected $service_name;
 
-    /**
-     * Stores a reference to the API to be used.
-     *
-     * @since   8.0.0
-     * @access  protected
-     * @var     object $api The API object.
-     */
+	/**
+	 * Stores a reference to the API to be used.
+	 *
+	 * @since   8.0.0
+	 * @access  protected
+	 * @var     object $api The API object.
+	 */
 	protected $api = null;
 
 	/**
@@ -55,13 +55,13 @@ abstract class Rop_Services_Abstract {
 	 */
 	protected $credentials;
 
-    /**
-     * Holds the Rop_Exception_Handler
-     *
-     * @since   8.0.0
-     * @access  protected
-     * @var     Rop_Exception_Handler $error The exception handler.
-     */
+	/**
+	 * Holds the Rop_Exception_Handler
+	 *
+	 * @since   8.0.0
+	 * @access  protected
+	 * @var     Rop_Exception_Handler $error The exception handler.
+	 */
 	protected $error;
 
 	/**
@@ -84,61 +84,61 @@ abstract class Rop_Services_Abstract {
 	 */
 	public abstract function init();
 
-    /**
-     * Method to expose desired endpoints.
-     * This should be invoked by the Factory class
-     * to register all endpoints at once.
-     *
-     * @since   8.0.0
-     * @access  public
-     * @return mixed
-     */
-    public abstract function expose_endpoints();
+	/**
+	 * Method to expose desired endpoints.
+	 * This should be invoked by the Factory class
+	 * to register all endpoints at once.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return mixed
+	 */
+	public abstract function expose_endpoints();
 
-    /**
-     * Method to define the api.
-     *
-     * @since   8.0.0
-     * @access  public
-     * @return mixed
-     */
+	/**
+	 * Method to define the api.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return mixed
+	 */
 	public abstract function set_api();
 
-    /**
-     * Method to retrieve the api object.
-     *
-     * @since   8.0.0
-     * @access  public
-     * @return mixed
-     */
+	/**
+	 * Method to retrieve the api object.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return mixed
+	 */
 	public abstract function get_api();
 
-    /**
-     * Method for authorizing the service.
-     *
-     * @since   8.0.0
-     * @access  public
-     * @return mixed
-     */
-    public abstract function authorize();
+	/**
+	 * Method for authorizing the service.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return mixed
+	 */
+	public abstract function authorize();
 
-    /**
-     * Method for authenticate the service.
-     *
-     * @since   8.0.0
-     * @access  public
-     * @return mixed
-     */
-    public abstract function authenticate();
+	/**
+	 * Method for authenticate the service.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return mixed
+	 */
+	public abstract function authenticate();
 
-    /**
-     * Method to request a token from api.
-     *
-     * @since   8.0.0
-     * @access  protected
-     * @return mixed
-     */
-    protected abstract function request_api_token();
+	/**
+	 * Method to request a token from api.
+	 *
+	 * @since   8.0.0
+	 * @access  protected
+	 * @return mixed
+	 */
+	protected abstract function request_api_token();
 
 	/**
 	 * Method to register credentials for the service.
@@ -181,34 +181,34 @@ abstract class Rop_Services_Abstract {
 	protected function register_endpoint( $path, $callback, $method = 'GET' ) {
 
 		add_action( 'rest_api_init',
-            function() use ( $path, $callback, $method ) {
-                register_rest_route('tweet-old-post/v8', '/' . $this->service_name . '/' . $path, array(
-                    'methods' => $method,
-                    'callback' => array($this, $callback),
-                ));
-            }
-        );
+			function() use ( $path, $callback, $method ) {
+				register_rest_route('tweet-old-post/v8', '/' . $this->service_name . '/' . $path, array(
+					'methods' => $method,
+					'callback' => array($this, $callback),
+				));
+			}
+		);
 	}
 
-    /**
-     * Method to retrieve an endpoint URL.
-     *
-     * @since   8.0.0
-     * @access  public
-     * @param string $path
-     * @return mixed
-     */
+	/**
+	 * Method to retrieve an endpoint URL.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @param   string $path The endpoint path.
+	 * @return mixed
+	 */
 	public function get_endpoint_url( $path = '' ) {
-	    return rest_url( '/tweet-old-post/v8/' . $this->service_name . '/'. $path );
-    }
+	    return rest_url( '/tweet-old-post/v8/' . $this->service_name . '/' . $path );
+	}
 
-    /**
-     * Returns information for the current service.
-     *
-     * @since   8.0.0
-     * @access  public
-     * @return mixed
-     */
-    public abstract function get_service();
+	/**
+	 * Returns information for the current service.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return mixed
+	 */
+	public abstract function get_service();
 
 }

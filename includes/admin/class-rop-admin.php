@@ -72,11 +72,11 @@ class Rop_Admin {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-        $screen = get_current_screen();
-        if( in_array( $screen->id, array( 'toplevel_page_rop_main' ) ) ) {
-            wp_enqueue_style($this->plugin_name . '_core', ROP_LITE_URL . 'assets/css/rop_core.css', array(), $this->version, 'all');
-            wp_enqueue_style($this->plugin_name, ROP_LITE_URL . 'assets/css/rop.css', array($this->plugin_name . '_core'), $this->version, 'all');
-        }
+		$screen = get_current_screen();
+		if ( in_array( $screen->id, array( 'toplevel_page_rop_main' ) ) ) {
+			wp_enqueue_style( $this->plugin_name . '_core', ROP_LITE_URL . 'assets/css/rop_core.css', array(), $this->version, 'all' );
+			wp_enqueue_style( $this->plugin_name, ROP_LITE_URL . 'assets/css/rop.css', array($this->plugin_name . '_core'), $this->version, 'all' );
+		}
 
 	}
 
@@ -98,50 +98,50 @@ class Rop_Admin {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-        $screen = get_current_screen();
+		$screen = get_current_screen();
 
-        if( in_array( $screen->id, array( 'toplevel_page_rop_main' ) ) ) {
-            wp_enqueue_script( $this->plugin_name . '_fa', 'https://use.fontawesome.com/af4c3f0b39.js', array(), $this->version, false );
+		if ( in_array( $screen->id, array( 'toplevel_page_rop_main' ) ) ) {
+			wp_enqueue_script( $this->plugin_name . '_fa', 'https://use.fontawesome.com/af4c3f0b39.js', array(), $this->version, false );
 
-            wp_register_script( $this->plugin_name . '_main',  ROP_LITE_URL . 'assets/js/build/rop.js', array( $this->plugin_name . '_fa' ), $this->version, false );
-            wp_localize_script( $this->plugin_name . '_main', 'ropApiSettings', array(
-                'root' => esc_url_raw( rest_url( '/tweet-old-post/v8/api/' ) ),
-                'nonce' => wp_create_nonce( 'wp_rest' )
-            ) );
-            //wp_localize_script( $this->plugin_name . '_main', 'ROP_REST_API', rest_url( '/tweet-old-post/v8/api/' ) );
-            wp_localize_script( $this->plugin_name . '_main', 'ROP_ASSETS_URL', ROP_LITE_URL . 'assets/' );
-            wp_enqueue_script( $this->plugin_name . '_main' );
-        }
+			wp_register_script( $this->plugin_name . '_main',  ROP_LITE_URL . 'assets/js/build/rop.js', array( $this->plugin_name . '_fa' ), $this->version, false );
+			wp_localize_script( $this->plugin_name . '_main', 'ropApiSettings', array(
+				'root' => esc_url_raw( rest_url( '/tweet-old-post/v8/api/' ) ),
+				'nonce' => wp_create_nonce( 'wp_rest' ),
+			) );
+			// wp_localize_script( $this->plugin_name . '_main', 'ROP_REST_API', rest_url( '/tweet-old-post/v8/api/' ) );
+			wp_localize_script( $this->plugin_name . '_main', 'ROP_ASSETS_URL', ROP_LITE_URL . 'assets/' );
+			wp_enqueue_script( $this->plugin_name . '_main' );
+		}
 
 	}
 
-    /**
-     * The display method for the main page.
-     *
-     * @since   8.0.0
-     * @access  public
-     */
-    public function rop_main_page() {
-        echo '
+	/**
+	 * The display method for the main page.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 */
+	public function rop_main_page() {
+		echo '
 	    <div id="rop_core" style="margin: 20px 20px 40px 0;">
 	        <main-page-panel></main-page-panel>
         </div>';
-    }
+	}
 
-    /**
-     * Add admin menu items for plugin.
-     *
-     * @since   8.0.0
-     * @access  public
-     */
-    public function menu_pages() {
-        add_menu_page(
-            __( 'Revive Old Posts', 'rop' ), __( 'Revive Old Posts', 'rop' ), 'manage_options', 'rop_main',
-            array(
-                $this,
-                'rop_main_page',
-            )
-        );
-    }
+	/**
+	 * Add admin menu items for plugin.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 */
+	public function menu_pages() {
+		add_menu_page(
+			__( 'Revive Old Posts', 'rop' ), __( 'Revive Old Posts', 'rop' ), 'manage_options', 'rop_main',
+			array(
+				$this,
+				'rop_main_page',
+			)
+		);
+	}
 
 }

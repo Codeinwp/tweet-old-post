@@ -19,14 +19,14 @@
  */
 class Rop_Service_Model extends Rop_Model_Abstract {
 
-    /**
-     * Store the service id.
-     *
-     * @since   8.0.0
-     * @access  private
-     * @var     string $service_id The service id.
-     */
-    private $service_id;
+	/**
+	 * Store the service id.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @var     string $service_id The service id.
+	 */
+	private $service_id;
 
 	/**
 	 * Store the service name.
@@ -46,13 +46,13 @@ class Rop_Service_Model extends Rop_Model_Abstract {
 	 */
 	private $service_data;
 
-    /**
-     * Handle for accessing DB data.
-     *
-     * @since   8.0.0
-     * @access  private
-     * @var     string $handle The handle for accessing DB data.
-     */
+	/**
+	 * Handle for accessing DB data.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @var     string $handle The handle for accessing DB data.
+	 */
 	private $handle;
 
 	/**
@@ -60,6 +60,7 @@ class Rop_Service_Model extends Rop_Model_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 * @param   string $service_id The service ID.
 	 * @param   string $service The service name.
 	 */
 	public function __construct( $service_id, $service ) {
@@ -75,22 +76,22 @@ class Rop_Service_Model extends Rop_Model_Abstract {
 		$this->service_data = wp_parse_args( $this->service_data, $this->service_data_defaults() );
 	}
 
-    /**
-     * Service data defaults structure.
-     *
-     * @since   8.0.0
-     * @access  private
-     * @return array
-     */
+	/**
+	 * Service data defaults structure.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @return array
+	 */
 	private function service_data_defaults() {
 	    $default_structure = array(
 	        'id' => $this->service_id,
 	        'service' => $this->service,
-            'credentials' => array(),
-            'available_accounts' => array(),
-        );
+			'credentials' => array(),
+			'available_accounts' => array(),
+		);
 	    return $default_structure;
-    }
+	}
 
 	/**
 	 * The get method for a specific option.
@@ -122,7 +123,7 @@ class Rop_Service_Model extends Rop_Model_Abstract {
 		if ( ! array_key_exists( $key, $this->service_data ) ) {
 			$this->service_data[ $key ] = '';
 		}
-		$this->service_data[ $key ] = apply_filters( 'rop_set_' . $this->handle. '_key_' . $key, $value );
+		$this->service_data[ $key ] = apply_filters( 'rop_set_' . $this->handle . '_key_' . $key, $value );
 
 		return $this->set( $this->handle, $this->service_data );
 	}

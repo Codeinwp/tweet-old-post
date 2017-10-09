@@ -127,17 +127,17 @@ class Rop {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-        $this->loader->add_action( 'admin_menu', $plugin_admin, 'menu_pages' );
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'menu_pages' );
 
-        $pugin_rest_api = new Rop_Rest_Api();
+		$pugin_rest_api = new Rop_Rest_Api();
 
-        $factory = new Rop_Services_Factory();
-        $global_settings = new Rop_Global_Settings();
-        foreach ( $global_settings->get_active_services_handle() as $service ) {
-            ${$service.'_service'} = $factory->build( $service );
-            ${$service.'_service'}->expose_endpoints();
-        }
-    }
+		$factory = new Rop_Services_Factory();
+		$global_settings = new Rop_Global_Settings();
+		foreach ( $global_settings->get_active_services_handle() as $service ) {
+			${$service . '_service'} = $factory->build( $service );
+			${$service . '_service'}->expose_endpoints();
+		}
+	}
 
 	/**
 	 * Run the loader to execute all of the hooks with WordPress.
