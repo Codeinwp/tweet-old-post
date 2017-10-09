@@ -441,7 +441,7 @@ a.active {
 }
 
 #rop_core dl dd {
-	margin: .4rem 0 .8rem 0;
+	margin: .4rem 0 .8rem;
 }
 
 #rop_core :lang(zh) {
@@ -1485,7 +1485,7 @@ a.active {
 }
 
 #rop_core .figure {
-	margin: 0 0 .4rem 0;
+	margin: 0 0 .4rem;
 }
 
 #rop_core .figure .figure-caption {
@@ -2605,7 +2605,7 @@ a.active {
 
 #rop_core .pagination .page-item span {
 	display: inline-block;
-	padding: .2rem .2rem;
+	padding: .2rem;
 }
 
 #rop_core .pagination .page-item a {
@@ -2816,7 +2816,7 @@ a.active {
 	-ms-flex-wrap: wrap;
 	flex-wrap: wrap;
 	list-style: none;
-	margin: .2rem 0 .15rem 0;
+	margin: .2rem 0 .15rem;
 }
 
 #rop_core .tab .tab-item {
@@ -2834,7 +2834,7 @@ a.active {
 	color: inherit;
 	display: block;
 	margin: 0 .4rem 0 0;
-	padding: .4rem .2rem .3rem .2rem;
+	padding: .4rem .2rem .3rem;
 	text-decoration: none;
 }
 

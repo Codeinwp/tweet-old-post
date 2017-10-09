@@ -46,6 +46,7 @@
     "html-loader": "^0.5.1",
     "load-project-config": "~0.2.0",
     "style-loader": "^0.13.0",
+    "stylelint-config-recommended": "^1.0.0",
     "vue-html-loader": "^1.0.0",
     "vue-loader": "^7.3.0",
     "webpack": "^3.5.5"
