@@ -12010,19 +12010,19 @@ var _mainPagePanel2 = _interopRequireDefault(_mainPagePanel);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 window.onload = function () {
-    var RopApp = new _vue2.default({
-        el: '#rop_core',
-        store: _rop_store2.default,
-        created: function created() {
-            _rop_store2.default.dispatch('fetchAvailableServices');
-            _rop_store2.default.dispatch('fetchAuthenticatedServices');
-            _rop_store2.default.dispatch('fetchActiveAccounts');
-        },
+	var RopApp = new _vue2.default({
+		el: '#rop_core',
+		store: _rop_store2.default,
+		created: function created() {
+			_rop_store2.default.dispatch('fetchAvailableServices');
+			_rop_store2.default.dispatch('fetchAuthenticatedServices');
+			_rop_store2.default.dispatch('fetchActiveAccounts');
+		},
 
-        components: {
-            MainPagePanel: _mainPagePanel2.default
-        }
-    });
+		components: {
+			MainPagePanel: _mainPagePanel2.default
+		}
+	});
 }; /* eslint no-unused-vars: 0 */
 /* exported RopApp */
 

@@ -7,16 +7,16 @@ import store from './models/rop_store.js'
 import MainPagePanel from './vue-elements/main-page-panel.vue'
 
 window.onload = function () {
-    var RopApp = new Vue({
-        el: '#rop_core',
-        store,
-        created () {
-            store.dispatch('fetchAvailableServices')
-            store.dispatch('fetchAuthenticatedServices')
-            store.dispatch('fetchActiveAccounts')
-        },
-        components: {
-            MainPagePanel
-        }
-    })
+	var RopApp = new Vue({
+		el: '#rop_core',
+		store,
+		created() {
+			store.dispatch( 'fetchAvailableServices' )
+			store.dispatch( 'fetchAuthenticatedServices' )
+			store.dispatch( 'fetchActiveAccounts' )
+		},
+		components: {
+			MainPagePanel
+		}
+	})
 }
