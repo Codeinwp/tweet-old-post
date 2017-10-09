@@ -11,7 +11,7 @@ export default new Vuex.Store( {
 	state: {
 		page: {
 			debug: true,
-			logs: 'Here starts the log \n\n',
+			logs: '### Here starts the log \n\n',
 			view: 'accounts'
 		},
 		auth_in_progress: false,

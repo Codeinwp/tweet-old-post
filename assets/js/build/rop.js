@@ -159,7 +159,7 @@ module.exports = {};
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* WEBPACK VAR INJECTION */(function(process, global) {/*!
- * Vue.js v2.4.2
+ * Vue.js v2.4.4
  * (c) 2014-2017 Evan You
  * Released under the MIT License.
  */
@@ -322,12 +322,9 @@ var capitalize = cached(function (str) {
 /**
  * Hyphenate a camelCase string.
  */
-var hyphenateRE = /([^-])([A-Z])/g;
+var hyphenateRE = /\B([A-Z])/g;
 var hyphenate = cached(function (str) {
-  return str
-    .replace(hyphenateRE, '$1-$2')
-    .replace(hyphenateRE, '$1-$2')
-    .toLowerCase()
+  return str.replace(hyphenateRE, '-$1').toLowerCase()
 });
 
 /**
@@ -746,7 +743,7 @@ var isAndroid = UA && UA.indexOf('android') > 0;
 var isIOS = UA && /iphone|ipad|ipod|ios/.test(UA);
 var isChrome = UA && /chrome\/\d+/.test(UA) && !isEdge;
 
-// Firefix has a "watch" function on Object.prototype...
+// Firefox has a "watch" function on Object.prototype...
 var nativeWatch = ({}).watch;
 
 var supportsPassive = false;
@@ -828,13 +825,13 @@ var nextTick = (function () {
       // "force" the microtask queue to be flushed by adding an empty timer.
       if (isIOS) { setTimeout(noop); }
     };
-  } else if (typeof MutationObserver !== 'undefined' && (
+  } else if (!isIE && typeof MutationObserver !== 'undefined' && (
     isNative(MutationObserver) ||
     // PhantomJS and iOS 7.x
     MutationObserver.toString() === '[object MutationObserverConstructor]'
   )) {
     // use MutationObserver where native Promise is not available,
-    // e.g. PhantomJS IE11, iOS7, Android 4.4
+    // e.g. PhantomJS, iOS7, Android 4.4
     var counter = 1;
     var observer = new MutationObserver(nextTickHandler);
     var textNode = document.createTextNode(String(counter));
@@ -1134,9 +1131,9 @@ function defineReactive$$1 (
         dep.depend();
         if (childOb) {
           childOb.dep.depend();
-        }
-        if (Array.isArray(value)) {
-          dependArray(value);
+          if (Array.isArray(value)) {
+            dependArray(value);
+          }
         }
       }
       return value
@@ -1313,7 +1310,7 @@ function mergeDataOrFn (
         : childVal;
       var defaultData = typeof parentVal === 'function'
         ? parentVal.call(vm)
-        : undefined;
+        : parentVal;
       if (instanceData) {
         return mergeData(instanceData, defaultData)
       } else {
@@ -1716,7 +1713,12 @@ function assertType (value, type) {
   var valid;
   var expectedType = getType(type);
   if (simpleCheckRE.test(expectedType)) {
-    valid = typeof value === expectedType.toLowerCase();
+    var t = typeof value;
+    valid = t === expectedType.toLowerCase();
+    // for primitive wrapper objects
+    if (!valid && t === 'object') {
+      valid = value instanceof type;
+    }
   } else if (expectedType === 'Object') {
     valid = isPlainObject(value);
   } else if (expectedType === 'Array') {
@@ -1914,7 +1916,7 @@ function createTextVNode (val) {
 // used for static nodes and slot nodes because they may be reused across
 // multiple renders, cloning them avoids errors when DOM manipulations rely
 // on their elm reference.
-function cloneVNode (vnode) {
+function cloneVNode (vnode, deep) {
   var cloned = new VNode(
     vnode.tag,
     vnode.data,
@@ -1930,14 +1932,17 @@ function cloneVNode (vnode) {
   cloned.key = vnode.key;
   cloned.isComment = vnode.isComment;
   cloned.isCloned = true;
+  if (deep && vnode.children) {
+    cloned.children = cloneVNodes(vnode.children);
+  }
   return cloned
 }
 
-function cloneVNodes (vnodes) {
+function cloneVNodes (vnodes, deep) {
   var len = vnodes.length;
   var res = new Array(len);
   for (var i = 0; i < len; i++) {
-    res[i] = cloneVNode(vnodes[i]);
+    res[i] = cloneVNode(vnodes[i], deep);
   }
   return res
 }
@@ -1951,8 +1956,10 @@ var normalizeEvent = cached(function (name) {
   name = once$$1 ? name.slice(1) : name;
   var capture = name.charAt(0) === '!';
   name = capture ? name.slice(1) : name;
+  var plain = !(passive || once$$1 || capture);
   return {
     name: name,
+    plain: plain,
     once: once$$1,
     capture: capture,
     passive: passive
@@ -1978,6 +1985,11 @@ function createFnInvoker (fns) {
   return invoker
 }
 
+// #6552
+function prioritizePlainEvents (a, b) {
+  return a.plain ? -1 : b.plain ? 1 : 0
+}
+
 function updateListeners (
   on,
   oldOn,
@@ -1986,10 +1998,13 @@ function updateListeners (
   vm
 ) {
   var name, cur, old, event;
+  var toAdd = [];
+  var hasModifier = false;
   for (name in on) {
     cur = on[name];
     old = oldOn[name];
     event = normalizeEvent(name);
+    if (!event.plain) { hasModifier = true; }
     if (isUndef(cur)) {
       process.env.NODE_ENV !== 'production' && warn(
         "Invalid handler for event \"" + (event.name) + "\": got " + String(cur),
@@ -1999,10 +2014,18 @@ function updateListeners (
       if (isUndef(cur.fns)) {
         cur = on[name] = createFnInvoker(cur);
       }
-      add(event.name, cur, event.once, event.capture, event.passive);
+      event.handler = cur;
+      toAdd.push(event);
     } else if (cur !== old) {
       old.fns = cur;
       on[name] = old;
+    }
+  }
+  if (toAdd.length) {
+    if (hasModifier) { toAdd.sort(prioritizePlainEvents); }
+    for (var i = 0; i < toAdd.length; i++) {
+      var event$1 = toAdd[i];
+      add(event$1.name, event$1.handler, event$1.once, event$1.capture, event$1.passive);
     }
   }
   for (name in oldOn) {
@@ -2319,11 +2342,17 @@ function resolveAsyncComponent (
 
 /*  */
 
+function isAsyncPlaceholder (node) {
+  return node.isComment && node.asyncFactory
+}
+
+/*  */
+
 function getFirstComponentChild (children) {
   if (Array.isArray(children)) {
     for (var i = 0; i < children.length; i++) {
       var c = children[i];
-      if (isDef(c) && isDef(c.componentOptions)) {
+      if (isDef(c) && (isDef(c.componentOptions) || isAsyncPlaceholder(c))) {
         return c
       }
     }
@@ -2410,8 +2439,8 @@ function eventsMixin (Vue) {
     }
     // array of events
     if (Array.isArray(event)) {
-      for (var i$1 = 0, l = event.length; i$1 < l; i$1++) {
-        this$1.$off(event[i$1], fn);
+      for (var i = 0, l = event.length; i < l; i++) {
+        this$1.$off(event[i], fn);
       }
       return vm
     }
@@ -2424,14 +2453,16 @@ function eventsMixin (Vue) {
       vm._events[event] = null;
       return vm
     }
-    // specific handler
-    var cb;
-    var i = cbs.length;
-    while (i--) {
-      cb = cbs[i];
-      if (cb === fn || cb.fn === fn) {
-        cbs.splice(i, 1);
-        break
+    if (fn) {
+      // specific handler
+      var cb;
+      var i$1 = cbs.length;
+      while (i$1--) {
+        cb = cbs[i$1];
+        if (cb === fn || cb.fn === fn) {
+          cbs.splice(i$1, 1);
+          break
+        }
       }
     }
     return vm
@@ -2483,10 +2514,15 @@ function resolveSlots (
   var defaultSlot = [];
   for (var i = 0, l = children.length; i < l; i++) {
     var child = children[i];
+    var data = child.data;
+    // remove slot attribute if the node is resolved as a Vue slot node
+    if (data && data.attrs && data.attrs.slot) {
+      delete data.attrs.slot;
+    }
     // named slots should only be respected if the vnode was rendered in the
     // same context.
     if ((child.context === context || child.functionalContext === context) &&
-      child.data && child.data.slot != null
+      data && data.slot != null
     ) {
       var name = child.data.slot;
       var slot = (slots[name] || (slots[name] = []));
@@ -2739,11 +2775,11 @@ function updateChildComponent (
   }
   vm.$options._renderChildren = renderChildren;
 
-  // update $attrs and $listensers hash
+  // update $attrs and $listeners hash
   // these are also reactive so they may trigger child update if the child
   // used them during render
-  vm.$attrs = parentVnode.data && parentVnode.data.attrs;
-  vm.$listeners = listeners;
+  vm.$attrs = (parentVnode.data && parentVnode.data.attrs) || emptyObject;
+  vm.$listeners = listeners || emptyObject;
 
   // update props
   if (propsData && vm.$options.props) {
@@ -3330,7 +3366,7 @@ function initData (vm) {
     if (process.env.NODE_ENV !== 'production') {
       if (methods && hasOwn(methods, key)) {
         warn(
-          ("method \"" + key + "\" has already been defined as a data property."),
+          ("Method \"" + key + "\" has already been defined as a data property."),
           vm
         );
       }
@@ -3363,6 +3399,8 @@ var computedWatcherOptions = { lazy: true };
 function initComputed (vm, computed) {
   process.env.NODE_ENV !== 'production' && checkOptionType(vm, 'computed');
   var watchers = vm._computedWatchers = Object.create(null);
+  // computed properties are just getters during SSR
+  var isSSR = isServerRendering();
 
   for (var key in computed) {
     var userDef = computed[key];
@@ -3373,8 +3411,16 @@ function initComputed (vm, computed) {
         vm
       );
     }
-    // create internal watcher for the computed property.
-    watchers[key] = new Watcher(vm, getter || noop, noop, computedWatcherOptions);
+
+    if (!isSSR) {
+      // create internal watcher for the computed property.
+      watchers[key] = new Watcher(
+        vm,
+        getter || noop,
+        noop,
+        computedWatcherOptions
+      );
+    }
 
     // component-defined computed properties are already defined on the
     // component prototype. We only need to define computed properties defined
@@ -3391,13 +3437,20 @@ function initComputed (vm, computed) {
   }
 }
 
-function defineComputed (target, key, userDef) {
+function defineComputed (
+  target,
+  key,
+  userDef
+) {
+  var shouldCache = !isServerRendering();
   if (typeof userDef === 'function') {
-    sharedPropertyDefinition.get = createComputedGetter(key);
+    sharedPropertyDefinition.get = shouldCache
+      ? createComputedGetter(key)
+      : userDef;
     sharedPropertyDefinition.set = noop;
   } else {
     sharedPropertyDefinition.get = userDef.get
-      ? userDef.cache !== false
+      ? shouldCache && userDef.cache !== false
         ? createComputedGetter(key)
         : userDef.get
       : noop;
@@ -3436,22 +3489,28 @@ function initMethods (vm, methods) {
   process.env.NODE_ENV !== 'production' && checkOptionType(vm, 'methods');
   var props = vm.$options.props;
   for (var key in methods) {
-    vm[key] = methods[key] == null ? noop : bind(methods[key], vm);
     if (process.env.NODE_ENV !== 'production') {
       if (methods[key] == null) {
         warn(
-          "method \"" + key + "\" has an undefined value in the component definition. " +
+          "Method \"" + key + "\" has an undefined value in the component definition. " +
           "Did you reference the function correctly?",
           vm
         );
       }
       if (props && hasOwn(props, key)) {
         warn(
-          ("method \"" + key + "\" has already been defined as a prop."),
+          ("Method \"" + key + "\" has already been defined as a prop."),
           vm
         );
       }
+      if ((key in vm) && isReserved(key)) {
+        warn(
+          "Method \"" + key + "\" conflicts with an existing Vue instance method. " +
+          "Avoid defining component methods that start with _ or $."
+        );
+      }
     }
+    vm[key] = methods[key] == null ? noop : bind(methods[key], vm);
   }
 }
 
@@ -3571,7 +3630,10 @@ function resolveInject (inject, vm) {
     // inject is :any because flow is not smart enough to figure out cached
     var result = Object.create(null);
     var keys = hasSymbol
-        ? Reflect.ownKeys(inject)
+        ? Reflect.ownKeys(inject).filter(function (key) {
+          /* istanbul ignore next */
+          return Object.getOwnPropertyDescriptor(inject, key).enumerable
+        })
         : Object.keys(inject);
 
     for (var i = 0; i < keys.length; i++) {
@@ -3606,7 +3668,7 @@ function createFunctionalComponent (
   var propOptions = Ctor.options.props;
   if (isDef(propOptions)) {
     for (var key in propOptions) {
-      props[key] = validateProp(key, propOptions, propsData || {});
+      props[key] = validateProp(key, propOptions, propsData || emptyObject);
     }
   } else {
     if (isDef(data.attrs)) { mergeProps(props, data.attrs); }
@@ -3621,7 +3683,7 @@ function createFunctionalComponent (
     props: props,
     children: children,
     parent: context,
-    listeners: data.on || {},
+    listeners: data.on || emptyObject,
     injections: resolveInject(Ctor.options.inject, context),
     slots: function () { return resolveSlots(children, context); }
   });
@@ -3945,7 +4007,7 @@ function _createElement (
   var vnode, ns;
   if (typeof tag === 'string') {
     var Ctor;
-    ns = config.getTagNamespace(tag);
+    ns = (context.$vnode && context.$vnode.ns) || config.getTagNamespace(tag);
     if (config.isReservedTag(tag)) {
       // platform built-in elements
       vnode = new VNode(
@@ -4241,17 +4303,18 @@ function initRender (vm) {
   // $attrs & $listeners are exposed for easier HOC creation.
   // they need to be reactive so that HOCs using them are always updated
   var parentData = parentVnode && parentVnode.data;
+
   /* istanbul ignore else */
   if (process.env.NODE_ENV !== 'production') {
-    defineReactive$$1(vm, '$attrs', parentData && parentData.attrs, function () {
+    defineReactive$$1(vm, '$attrs', parentData && parentData.attrs || emptyObject, function () {
       !isUpdatingChildComponent && warn("$attrs is readonly.", vm);
     }, true);
-    defineReactive$$1(vm, '$listeners', vm.$options._parentListeners, function () {
+    defineReactive$$1(vm, '$listeners', vm.$options._parentListeners || emptyObject, function () {
       !isUpdatingChildComponent && warn("$listeners is readonly.", vm);
     }, true);
   } else {
-    defineReactive$$1(vm, '$attrs', parentData && parentData.attrs, null, true);
-    defineReactive$$1(vm, '$listeners', vm.$options._parentListeners, null, true);
+    defineReactive$$1(vm, '$attrs', parentData && parentData.attrs || emptyObject, null, true);
+    defineReactive$$1(vm, '$listeners', vm.$options._parentListeners || emptyObject, null, true);
   }
 }
 
@@ -4268,9 +4331,13 @@ function renderMixin (Vue) {
     var _parentVnode = ref._parentVnode;
 
     if (vm._isMounted) {
-      // clone slot nodes on re-renders
+      // if the parent didn't update, the slot nodes will be the ones from
+      // last render. They need to be cloned to ensure "freshness" for this render.
       for (var key in vm.$slots) {
-        vm.$slots[key] = cloneVNodes(vm.$slots[key]);
+        var slot = vm.$slots[key];
+        if (slot._rendered) {
+          vm.$slots[key] = cloneVNodes(slot, true /* deep */);
+        }
       }
     }
 
@@ -4815,7 +4882,7 @@ Object.defineProperty(Vue$3.prototype, '$ssrContext', {
   }
 });
 
-Vue$3.version = '2.4.2';
+Vue$3.version = '2.4.4';
 
 /*  */
 
@@ -4824,7 +4891,7 @@ Vue$3.version = '2.4.2';
 var isReservedAttr = makeMap('style,class');
 
 // attributes that should be using props for binding
-var acceptValue = makeMap('input,textarea,option,select');
+var acceptValue = makeMap('input,textarea,option,select,progress');
 var mustUseProp = function (tag, type, attr) {
   return (
     (attr === 'value' && acceptValue(tag)) && type !== 'button' ||
@@ -5013,6 +5080,8 @@ function isUnknownElement (tag) {
   }
 }
 
+var isTextInputType = makeMap('text,number,password,search,email,tel,url');
+
 /*  */
 
 /**
@@ -5159,8 +5228,6 @@ function registerRef (vnode, isRemoval) {
  *
  * modified by Evan You (@yyx990803)
  *
-
-/*
  * Not type-checking this because this file is perf-critical and the cost
  * of making flow understand it is not worth it.
  */
@@ -5186,14 +5253,12 @@ function sameVnode (a, b) {
   )
 }
 
-// Some browsers do not support dynamically changing type for <input>
-// so they need to be treated as different nodes
 function sameInputType (a, b) {
   if (a.tag !== 'input') { return true }
   var i;
   var typeA = isDef(i = a.data) && isDef(i = i.attrs) && i.type;
   var typeB = isDef(i = b.data) && isDef(i = i.attrs) && i.type;
-  return typeA === typeB
+  return typeA === typeB || isTextInputType(typeA) && isTextInputType(typeB)
 }
 
 function createKeyToOldIdx (children, beginIdx, endIdx) {
@@ -5525,10 +5590,11 @@ function createPatchFunction (backend) {
         newStartVnode = newCh[++newStartIdx];
       } else {
         if (isUndef(oldKeyToIdx)) { oldKeyToIdx = createKeyToOldIdx(oldCh, oldStartIdx, oldEndIdx); }
-        idxInOld = isDef(newStartVnode.key) ? oldKeyToIdx[newStartVnode.key] : null;
+        idxInOld = isDef(newStartVnode.key)
+          ? oldKeyToIdx[newStartVnode.key]
+          : findIdxInOld(newStartVnode, oldCh, oldStartIdx, oldEndIdx);
         if (isUndef(idxInOld)) { // New element
           createElm(newStartVnode, insertedVnodeQueue, parentElm, oldStartVnode.elm);
-          newStartVnode = newCh[++newStartIdx];
         } else {
           elmToMove = oldCh[idxInOld];
           /* istanbul ignore if */
@@ -5542,13 +5608,12 @@ function createPatchFunction (backend) {
             patchVnode(elmToMove, newStartVnode, insertedVnodeQueue);
             oldCh[idxInOld] = undefined;
             canMove && nodeOps.insertBefore(parentElm, elmToMove.elm, oldStartVnode.elm);
-            newStartVnode = newCh[++newStartIdx];
           } else {
             // same key but different element. treat as new element
             createElm(newStartVnode, insertedVnodeQueue, parentElm, oldStartVnode.elm);
-            newStartVnode = newCh[++newStartIdx];
           }
         }
+        newStartVnode = newCh[++newStartIdx];
       }
     }
     if (oldStartIdx > oldEndIdx) {
@@ -5556,6 +5621,13 @@ function createPatchFunction (backend) {
       addVnodes(parentElm, refElm, newCh, newStartIdx, newEndIdx, insertedVnodeQueue);
     } else if (newStartIdx > newEndIdx) {
       removeVnodes(parentElm, oldCh, oldStartIdx, oldEndIdx);
+    }
+  }
+
+  function findIdxInOld (node, oldCh, start, end) {
+    for (var i = start; i < end; i++) {
+      var c = oldCh[i];
+      if (isDef(c) && sameVnode(node, c)) { return i }
     }
   }
 
@@ -5666,27 +5738,46 @@ function createPatchFunction (backend) {
         if (!elm.hasChildNodes()) {
           createChildren(vnode, children, insertedVnodeQueue);
         } else {
-          var childrenMatch = true;
-          var childNode = elm.firstChild;
-          for (var i$1 = 0; i$1 < children.length; i$1++) {
-            if (!childNode || !hydrate(childNode, children[i$1], insertedVnodeQueue)) {
-              childrenMatch = false;
-              break
+          // v-html and domProps: innerHTML
+          if (isDef(i = data) && isDef(i = i.domProps) && isDef(i = i.innerHTML)) {
+            if (i !== elm.innerHTML) {
+              /* istanbul ignore if */
+              if (process.env.NODE_ENV !== 'production' &&
+                typeof console !== 'undefined' &&
+                !bailed
+              ) {
+                bailed = true;
+                console.warn('Parent: ', elm);
+                console.warn('server innerHTML: ', i);
+                console.warn('client innerHTML: ', elm.innerHTML);
+              }
+              return false
             }
-            childNode = childNode.nextSibling;
-          }
-          // if childNode is not null, it means the actual childNodes list is
-          // longer than the virtual children list.
-          if (!childrenMatch || childNode) {
-            if (process.env.NODE_ENV !== 'production' &&
-              typeof console !== 'undefined' &&
-              !bailed
-            ) {
-              bailed = true;
-              console.warn('Parent: ', elm);
-              console.warn('Mismatching childNodes vs. VNodes: ', elm.childNodes, children);
+          } else {
+            // iterate and compare children lists
+            var childrenMatch = true;
+            var childNode = elm.firstChild;
+            for (var i$1 = 0; i$1 < children.length; i$1++) {
+              if (!childNode || !hydrate(childNode, children[i$1], insertedVnodeQueue)) {
+                childrenMatch = false;
+                break
+              }
+              childNode = childNode.nextSibling;
             }
-            return false
+            // if childNode is not null, it means the actual childNodes list is
+            // longer than the virtual children list.
+            if (!childrenMatch || childNode) {
+              /* istanbul ignore if */
+              if (process.env.NODE_ENV !== 'production' &&
+                typeof console !== 'undefined' &&
+                !bailed
+              ) {
+                bailed = true;
+                console.warn('Parent: ', elm);
+                console.warn('Mismatching childNodes vs. VNodes: ', elm.childNodes, children);
+              }
+              return false
+            }
           }
         }
       }
@@ -5777,14 +5868,28 @@ function createPatchFunction (backend) {
           // component root element replaced.
           // update parent placeholder node element, recursively
           var ancestor = vnode.parent;
+          var patchable = isPatchable(vnode);
           while (ancestor) {
-            ancestor.elm = vnode.elm;
-            ancestor = ancestor.parent;
-          }
-          if (isPatchable(vnode)) {
-            for (var i = 0; i < cbs.create.length; ++i) {
-              cbs.create[i](emptyNode, vnode.parent);
+            for (var i = 0; i < cbs.destroy.length; ++i) {
+              cbs.destroy[i](ancestor);
             }
+            ancestor.elm = vnode.elm;
+            if (patchable) {
+              for (var i$1 = 0; i$1 < cbs.create.length; ++i$1) {
+                cbs.create[i$1](emptyNode, ancestor);
+              }
+              // #6513
+              // invoke insert hooks that may have been merged by create hooks.
+              // e.g. for directives that uses the "inserted" hook.
+              var insert = ancestor.data.hook.insert;
+              if (insert.merged) {
+                // start at index 1 to avoid re-invoking component mounted hook
+                for (var i$2 = 1; i$2 < insert.fns.length; i$2++) {
+                  insert.fns[i$2]();
+                }
+              }
+            }
+            ancestor = ancestor.parent;
           }
         }
 
@@ -5968,7 +6073,12 @@ function setAttr (el, key, value) {
     if (isFalsyAttrValue(value)) {
       el.removeAttribute(key);
     } else {
-      el.setAttribute(key, key);
+      // technically allowfullscreen is a boolean attribute for <iframe>,
+      // but Flash expects a value of "true" when used on <embed> tag
+      value = key === 'allowfullscreen' && el.tagName === 'EMBED'
+        ? 'true'
+        : key;
+      el.setAttribute(key, value);
     }
   } else if (isEnumeratedAttr(key)) {
     el.setAttribute(key, isFalsyAttrValue(value) || value === 'false' ? 'false' : 'true');
@@ -6475,7 +6585,7 @@ function genCheckboxModel (
     'if(Array.isArray($$a)){' +
       "var $$v=" + (number ? '_n(' + valueBinding + ')' : valueBinding) + "," +
           '$$i=_i($$a,$$v);' +
-      "if($$el.checked){$$i<0&&(" + value + "=$$a.concat($$v))}" +
+      "if($$el.checked){$$i<0&&(" + value + "=$$a.concat([$$v]))}" +
       "else{$$i>-1&&(" + value + "=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}" +
     "}else{" + (genAssignmentCode(value, '$$c')) + "}",
     null, true
@@ -6844,7 +6954,7 @@ function updateStyle (oldVnode, vnode) {
   var style = normalizeStyleBinding(vnode.data.style) || {};
 
   // store normalized style under a different key for next diff
-  // make sure to clone it if it's reactive, since the user likley wants
+  // make sure to clone it if it's reactive, since the user likely wants
   // to mutate it.
   vnode.data.normalizedStyle = isDef(style.__ob__)
     ? extend({}, style)
@@ -7449,8 +7559,6 @@ var patch = createPatchFunction({ nodeOps: nodeOps, modules: modules });
  * properties to Elements.
  */
 
-var isTextInputType = makeMap('text,number,password,search,email,tel,url');
-
 /* istanbul ignore if */
 if (isIE9) {
   // http://www.matts411.com/post/internet-explorer-9-oninput/
@@ -7465,14 +7573,7 @@ if (isIE9) {
 var model$1 = {
   inserted: function inserted (el, binding, vnode) {
     if (vnode.tag === 'select') {
-      var cb = function () {
-        setSelected(el, binding, vnode.context);
-      };
-      cb();
-      /* istanbul ignore if */
-      if (isIE || isEdge) {
-        setTimeout(cb, 0);
-      }
+      setSelected(el, binding, vnode.context);
       el._vOptions = [].map.call(el.options, getValue);
     } else if (vnode.tag === 'textarea' || isTextInputType(el.type)) {
       el._vModifiers = binding.modifiers;
@@ -7503,13 +7604,30 @@ var model$1 = {
       var prevOptions = el._vOptions;
       var curOptions = el._vOptions = [].map.call(el.options, getValue);
       if (curOptions.some(function (o, i) { return !looseEqual(o, prevOptions[i]); })) {
-        trigger(el, 'change');
+        // trigger change event if
+        // no matching option found for at least one value
+        var needReset = el.multiple
+          ? binding.value.some(function (v) { return hasNoMatchingOption(v, curOptions); })
+          : binding.value !== binding.oldValue && hasNoMatchingOption(binding.value, curOptions);
+        if (needReset) {
+          trigger(el, 'change');
+        }
       }
     }
   }
 };
 
 function setSelected (el, binding, vm) {
+  actuallySetSelected(el, binding, vm);
+  /* istanbul ignore if */
+  if (isIE || isEdge) {
+    setTimeout(function () {
+      actuallySetSelected(el, binding, vm);
+    }, 0);
+  }
+}
+
+function actuallySetSelected (el, binding, vm) {
   var value = binding.value;
   var isMultiple = el.multiple;
   if (isMultiple && !Array.isArray(value)) {
@@ -7540,6 +7658,10 @@ function setSelected (el, binding, vm) {
   if (!isMultiple) {
     el.selectedIndex = -1;
   }
+}
+
+function hasNoMatchingOption (value, options) {
+  return options.every(function (o) { return !looseEqual(o, value); })
 }
 
 function getValue (option) {
@@ -7702,10 +7824,6 @@ function hasParentTransition (vnode) {
 
 function isSameChild (child, oldChild) {
   return oldChild.key === child.key && oldChild.tag === child.tag
-}
-
-function isAsyncPlaceholder (node) {
-  return node.isComment && node.asyncFactory
 }
 
 var Transition = {
@@ -8275,29 +8393,14 @@ var he = {
  */
 
 // Regular Expressions for parsing tags and attributes
-var singleAttrIdentifier = /([^\s"'<>/=]+)/;
-var singleAttrAssign = /(?:=)/;
-var singleAttrValues = [
-  // attr value double quotes
-  /"([^"]*)"+/.source,
-  // attr value, single quotes
-  /'([^']*)'+/.source,
-  // attr value, no quotes
-  /([^\s"'=<>`]+)/.source
-];
-var attribute = new RegExp(
-  '^\\s*' + singleAttrIdentifier.source +
-  '(?:\\s*(' + singleAttrAssign.source + ')' +
-  '\\s*(?:' + singleAttrValues.join('|') + '))?'
-);
-
+var attribute = /^\s*([^\s"'<>\/=]+)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/;
 // could use https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-QName
 // but for Vue templates we can enforce a simple charset
 var ncname = '[a-zA-Z_][\\w\\-\\.]*';
-var qnameCapture = '((?:' + ncname + '\\:)?' + ncname + ')';
-var startTagOpen = new RegExp('^<' + qnameCapture);
+var qnameCapture = "((?:" + ncname + "\\:)?" + ncname + ")";
+var startTagOpen = new RegExp(("^<" + qnameCapture));
 var startTagClose = /^\s*(\/?)>/;
-var endTag = new RegExp('^<\\/' + qnameCapture + '[^>]*>');
+var endTag = new RegExp(("^<\\/" + qnameCapture + "[^>]*>"));
 var doctype = /^<!DOCTYPE [^>]+>/i;
 var comment = /^<!--/;
 var conditionalComment = /^<!\[/;
@@ -8997,6 +9100,8 @@ function processSlot (el) {
     var slotTarget = getBindingAttr(el, 'slot');
     if (slotTarget) {
       el.slotTarget = slotTarget === '""' ? '"default"' : slotTarget;
+      // preserve slot as an attribute for native shadow DOM compat
+      addAttr(el, 'slot', slotTarget);
     }
     if (el.tag === 'template') {
       el.slotScope = getAndRemoveAttr(el, 'scope');
@@ -9533,7 +9638,7 @@ function genOnce (el, state) {
       );
       return genElement(el, state)
     }
-    return ("_o(" + (genElement(el, state)) + "," + (state.onceId++) + (key ? ("," + key) : "") + ")")
+    return ("_o(" + (genElement(el, state)) + "," + (state.onceId++) + "," + key + ")")
   } else {
     return genStatic(el, state)
   }
@@ -10841,13 +10946,14 @@ module.exports = function (exec) {
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* WEBPACK VAR INJECTION */(function(process) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Store", function() { return Store; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "install", function() { return install; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mapState", function() { return mapState; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mapMutations", function() { return mapMutations; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mapGetters", function() { return mapGetters; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mapActions", function() { return mapActions; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createNamespacedHelpers", function() { return createNamespacedHelpers; });
 /**
- * vuex v2.4.0
+ * vuex v2.4.1
  * (c) 2017 Evan You
  * @license MIT
  */
@@ -10953,7 +11059,7 @@ var Module = function Module (rawModule, runtime) {
   this.state = (typeof rawState === 'function' ? rawState() : rawState) || {};
 };
 
-var prototypeAccessors$1 = { namespaced: {} };
+var prototypeAccessors$1 = { namespaced: { configurable: true } };
 
 prototypeAccessors$1.namespaced.get = function () {
   return !!this._rawModule.namespaced
@@ -11121,6 +11227,13 @@ var Store = function Store (options) {
   var this$1 = this;
   if ( options === void 0 ) options = {};
 
+  // Auto install if it is not done yet and `window` has `Vue`.
+  // To allow users to avoid auto-installation in some cases,
+  // this code should be placed here. See #731
+  if (!Vue && typeof window !== 'undefined' && window.Vue) {
+    install(window.Vue);
+  }
+
   if (process.env.NODE_ENV !== 'production') {
     assert(Vue, "must call Vue.use(Vuex) before creating a store instance.");
     assert(typeof Promise !== 'undefined', "vuex requires a Promise polyfill in this browser.");
@@ -11177,7 +11290,7 @@ var Store = function Store (options) {
   }
 };
 
-var prototypeAccessors = { state: {} };
+var prototypeAccessors = { state: { configurable: true } };
 
 prototypeAccessors.state.get = function () {
   return this._vm._data.$$state
@@ -11575,7 +11688,7 @@ function unifyObjectStyle (type, payload, options) {
 }
 
 function install (_Vue) {
-  if (Vue) {
+  if (Vue && _Vue === Vue) {
     if (process.env.NODE_ENV !== 'production') {
       console.error(
         '[vuex] already installed. Vue.use(Vuex) should be called only once.'
@@ -11585,11 +11698,6 @@ function install (_Vue) {
   }
   Vue = _Vue;
   applyMixin(Vue);
-}
-
-// auto install in dist mode
-if (typeof window !== 'undefined' && window.Vue) {
-  install(window.Vue);
 }
 
 var mapState = normalizeNamespace(function (namespace, states) {
@@ -11625,15 +11733,21 @@ var mapMutations = normalizeNamespace(function (namespace, mutations) {
     var key = ref.key;
     var val = ref.val;
 
-    val = namespace + val;
     res[key] = function mappedMutation () {
       var args = [], len = arguments.length;
       while ( len-- ) args[ len ] = arguments[ len ];
 
-      if (namespace && !getModuleByNamespace(this.$store, 'mapMutations', namespace)) {
-        return
+      var commit = this.$store.commit;
+      if (namespace) {
+        var module = getModuleByNamespace(this.$store, 'mapMutations', namespace);
+        if (!module) {
+          return
+        }
+        commit = module.context.commit;
       }
-      return this.$store.commit.apply(this.$store, [val].concat(args))
+      return typeof val === 'function'
+        ? val.apply(this, [commit].concat(args))
+        : commit.apply(this.$store, [val].concat(args))
     };
   });
   return res
@@ -11668,15 +11782,21 @@ var mapActions = normalizeNamespace(function (namespace, actions) {
     var key = ref.key;
     var val = ref.val;
 
-    val = namespace + val;
     res[key] = function mappedAction () {
       var args = [], len = arguments.length;
       while ( len-- ) args[ len ] = arguments[ len ];
 
-      if (namespace && !getModuleByNamespace(this.$store, 'mapActions', namespace)) {
-        return
+      var dispatch = this.$store.dispatch;
+      if (namespace) {
+        var module = getModuleByNamespace(this.$store, 'mapActions', namespace);
+        if (!module) {
+          return
+        }
+        dispatch = module.context.dispatch;
       }
-      return this.$store.dispatch.apply(this.$store, [val].concat(args))
+      return typeof val === 'function'
+        ? val.apply(this, [dispatch].concat(args))
+        : dispatch.apply(this.$store, [val].concat(args))
     };
   });
   return res
@@ -11718,13 +11838,14 @@ function getModuleByNamespace (store, helper, namespace) {
 var index_esm = {
   Store: Store,
   install: install,
-  version: '2.4.0',
+  version: '2.4.1',
   mapState: mapState,
   mapMutations: mapMutations,
   mapGetters: mapGetters,
   mapActions: mapActions,
   createNamespacedHelpers: createNamespacedHelpers
 };
+
 
 /* harmony default export */ __webpack_exports__["default"] = (index_esm);
 
@@ -12061,7 +12182,7 @@ module.exports = g;
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+	value: true
 });
 
 var _vue = __webpack_require__(8);
@@ -12083,212 +12204,212 @@ _vue2.default.use(_vuex2.default); /* global ropApiSettings */
 _vue2.default.use(_vueResource2.default);
 
 exports.default = new _vuex2.default.Store({
-    state: {
-        page: {
-            debug: true,
-            logs: 'Here starts the log \n\n',
-            view: 'accounts'
-        },
-        auth_in_progress: false,
-        displayTabs: [{
-            name: 'Accounts',
-            slug: 'accounts',
-            isActive: true
-        }, {
-            name: 'General Settings',
-            slug: 'settings',
-            isActive: false
-        }, {
-            name: 'Post Format',
-            slug: 'post',
-            isActive: false
-        }, {
-            name: 'Custom Schedule',
-            slug: 'schedule',
-            isActive: false
-        }, {
-            name: 'Logs',
-            slug: 'logs',
-            isActive: false
-        }],
-        availableServices: [],
-        authenticatedServices: [],
-        activeAccounts: []
-    },
-    getters: {
-        getServices: function getServices(state) {
-            return state.availableServices;
-        },
-        getActiveAccounts: function getActiveAccounts(state) {
-            return state.activeAccounts;
-        }
-    },
-    mutations: {
-        logMessage: function logMessage(state, message) {
-            if (state.debug === true) {
-                console.log(message);
-            }
-            return state.logs.concat(message + '\n');
-        },
-        setTabView: function setTabView(state, view) {
-            for (var tab in state.displayTabs) {
-                state.displayTabs[tab].isActive = false;
-                if (state.displayTabs[tab].slug === view) {
-                    state.displayTabs[tab].isActive = true;
-                    state.page.view = view;
-                }
-            }
-        },
-        updateAuthProgress: function updateAuthProgress(state, data) {
-            if (state.auth_in_progress === true) {
-                state.auth_in_progress = false;
-            }
-        },
-        updateAvailableServices: function updateAvailableServices(state, data) {
-            state.availableServices = data;
-        },
-        updateAuthenticatedServices: function updateAuthenticatedServices(state, data) {
-            state.authenticatedServices = data;
-        },
-        updateActiveAccounts: function updateActiveAccounts(state, data) {
-            state.activeAccounts = data;
-        }
-    },
-    actions: {
-        fetchAvailableServices: function fetchAvailableServices(_ref) {
-            var commit = _ref.commit;
+	state: {
+		page: {
+			debug: true,
+			logs: '### Here starts the log \n\n',
+			view: 'accounts'
+		},
+		auth_in_progress: false,
+		displayTabs: [{
+			name: 'Accounts',
+			slug: 'accounts',
+			isActive: true
+		}, {
+			name: 'General Settings',
+			slug: 'settings',
+			isActive: false
+		}, {
+			name: 'Post Format',
+			slug: 'post',
+			isActive: false
+		}, {
+			name: 'Custom Schedule',
+			slug: 'schedule',
+			isActive: false
+		}, {
+			name: 'Logs',
+			slug: 'logs',
+			isActive: false
+		}],
+		availableServices: [],
+		authenticatedServices: [],
+		activeAccounts: []
+	},
+	getters: {
+		getServices: function getServices(state) {
+			return state.availableServices;
+		},
+		getActiveAccounts: function getActiveAccounts(state) {
+			return state.activeAccounts;
+		}
+	},
+	mutations: {
+		logMessage: function logMessage(state, message) {
+			if (state.debug === true) {
+				console.log(message);
+			}
+			return state.logs.concat(message + '\n');
+		},
+		setTabView: function setTabView(state, view) {
+			for (var tab in state.displayTabs) {
+				state.displayTabs[tab].isActive = false;
+				if (state.displayTabs[tab].slug === view) {
+					state.displayTabs[tab].isActive = true;
+					state.page.view = view;
+				}
+			}
+		},
+		updateAuthProgress: function updateAuthProgress(state, data) {
+			if (state.auth_in_progress === true) {
+				state.auth_in_progress = false;
+			}
+		},
+		updateAvailableServices: function updateAvailableServices(state, data) {
+			state.availableServices = data;
+		},
+		updateAuthenticatedServices: function updateAuthenticatedServices(state, data) {
+			state.authenticatedServices = data;
+		},
+		updateActiveAccounts: function updateActiveAccounts(state, data) {
+			state.activeAccounts = data;
+		}
+	},
+	actions: {
+		fetchAvailableServices: function fetchAvailableServices(_ref) {
+			var commit = _ref.commit;
 
-            _vue2.default.http({
-                url: ropApiSettings.root,
-                method: 'POST',
-                headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-                params: { 'req': 'available_services' },
-                responseType: 'json'
-            }).then(function (response) {
-                commit('updateAvailableServices', response.data);
-            }, function () {
-                console.log('Error retrieving available services.');
-            });
-        },
-        getServiceSignInUrl: function getServiceSignInUrl(_ref2, data) {
-            var commit = _ref2.commit;
+			_vue2.default.http({
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'available_services' },
+				responseType: 'json'
+			}).then(function (response) {
+				commit('updateAvailableServices', response.data);
+			}, function () {
+				console.log('Error retrieving available services.');
+			});
+		},
+		getServiceSignInUrl: function getServiceSignInUrl(_ref2, data) {
+			var commit = _ref2.commit;
 
-            console.log('Recived', data);
-            return new Promise(function (resolve, reject) {
-                _vue2.default.http({
-                    url: ropApiSettings.root,
-                    method: 'POST',
-                    headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-                    params: { 'req': 'service_sign_in_url' },
-                    body: data,
-                    responseType: 'json'
-                }).then(function (response) {
-                    resolve(response.data);
-                }, function () {
-                    // reject()
-                    console.log('Error retrieving active accounts.');
-                });
-            });
-        },
-        fetchAuthenticatedServices: function fetchAuthenticatedServices(_ref3) {
-            var commit = _ref3.commit;
+			console.log('Recived', data);
+			return new Promise(function (resolve, reject) {
+				_vue2.default.http({
+					url: ropApiSettings.root,
+					method: 'POST',
+					headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+					params: { 'req': 'service_sign_in_url' },
+					body: data,
+					responseType: 'json'
+				}).then(function (response) {
+					resolve(response.data);
+				}, function () {
+					// reject()
+					console.log('Error retrieving active accounts.');
+				});
+			});
+		},
+		fetchAuthenticatedServices: function fetchAuthenticatedServices(_ref3) {
+			var commit = _ref3.commit;
 
-            _vue2.default.http({
-                url: ropApiSettings.root,
-                method: 'POST',
-                headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-                params: { 'req': 'authenticated_services' },
-                responseType: 'json'
-            }).then(function (response) {
-                commit('updateAuthenticatedServices', response.data);
-            }, function () {
-                console.log('Error retrieving authenticated services.');
-            });
-        },
-        fetchActiveAccounts: function fetchActiveAccounts(_ref4) {
-            var commit = _ref4.commit;
+			_vue2.default.http({
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'authenticated_services' },
+				responseType: 'json'
+			}).then(function (response) {
+				commit('updateAuthenticatedServices', response.data);
+			}, function () {
+				console.log('Error retrieving authenticated services.');
+			});
+		},
+		fetchActiveAccounts: function fetchActiveAccounts(_ref4) {
+			var commit = _ref4.commit;
 
-            _vue2.default.http({
-                url: ropApiSettings.root,
-                method: 'POST',
-                headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-                params: { 'req': 'active_accounts' },
-                responseType: 'json'
-            }).then(function (response) {
-                commit('updateActiveAccounts', response.data);
-            }, function () {
-                console.log('Error retrieving active accounts.');
-            });
-        },
-        updateActiveAccounts: function updateActiveAccounts(_ref5, data) {
-            var commit = _ref5.commit;
+			_vue2.default.http({
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'active_accounts' },
+				responseType: 'json'
+			}).then(function (response) {
+				commit('updateActiveAccounts', response.data);
+			}, function () {
+				console.log('Error retrieving active accounts.');
+			});
+		},
+		updateActiveAccounts: function updateActiveAccounts(_ref5, data) {
+			var commit = _ref5.commit;
 
-            if (data.action === 'update') {
-                _vue2.default.http({
-                    url: ropApiSettings.root,
-                    method: 'POST',
-                    headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-                    params: { 'req': 'update_accounts' },
-                    body: data,
-                    responseType: 'json'
-                }).then(function (response) {
-                    commit('updateActiveAccounts', response.data);
-                }, function () {
-                    console.log('Error retrieving active accounts.');
-                });
-            } else if (data.action === 'remove') {
-                _vue2.default.http({
-                    url: ropApiSettings.root,
-                    method: 'POST',
-                    headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-                    params: { 'req': 'remove_account' },
-                    body: data,
-                    responseType: 'json'
-                }).then(function (response) {
-                    commit('updateActiveAccounts', response.data);
-                }, function () {
-                    console.log('Error retrieving active accounts.');
-                });
-            } else {
-                console.log('No valid action specified.');
-            }
-        },
-        authenticateService: function authenticateService(_ref6, data) {
-            var commit = _ref6.commit;
+			if (data.action === 'update') {
+				_vue2.default.http({
+					url: ropApiSettings.root,
+					method: 'POST',
+					headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+					params: { 'req': 'update_accounts' },
+					body: data,
+					responseType: 'json'
+				}).then(function (response) {
+					commit('updateActiveAccounts', response.data);
+				}, function () {
+					console.log('Error retrieving active accounts.');
+				});
+			} else if (data.action === 'remove') {
+				_vue2.default.http({
+					url: ropApiSettings.root,
+					method: 'POST',
+					headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+					params: { 'req': 'remove_account' },
+					body: data,
+					responseType: 'json'
+				}).then(function (response) {
+					commit('updateActiveAccounts', response.data);
+				}, function () {
+					console.log('Error retrieving active accounts.');
+				});
+			} else {
+				console.log('No valid action specified.');
+			}
+		},
+		authenticateService: function authenticateService(_ref6, data) {
+			var commit = _ref6.commit;
 
-            _vue2.default.http({
-                url: ropApiSettings.root,
-                method: 'POST',
-                headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-                params: { 'req': 'authenticate_service' },
-                body: data,
-                responseType: 'json'
-            }).then(function (response) {
-                console.log(response.data);
-                commit('updateAuthenticatedServices', response.data);
-                commit('updateAuthProgress', false);
-            }, function () {
-                console.log('Error retrieving authenticated services.');
-            });
-        },
-        removeService: function removeService(_ref7, data) {
-            var commit = _ref7.commit;
+			_vue2.default.http({
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'authenticate_service' },
+				body: data,
+				responseType: 'json'
+			}).then(function (response) {
+				console.log(response.data);
+				commit('updateAuthenticatedServices', response.data);
+				commit('updateAuthProgress', false);
+			}, function () {
+				console.log('Error retrieving authenticated services.');
+			});
+		},
+		removeService: function removeService(_ref7, data) {
+			var commit = _ref7.commit;
 
-            _vue2.default.http({
-                url: ropApiSettings.root,
-                method: 'POST',
-                headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-                params: { 'req': 'remove_service' },
-                body: data,
-                responseType: 'json'
-            }).then(function (response) {
-                console.log(response.data);
-                commit('updateAuthenticatedServices', response.data);
-            }, function () {
-                console.log('Error retrieving authenticated services.');
-            });
-        }
-    }
+			_vue2.default.http({
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'remove_service' },
+				body: data,
+				responseType: 'json'
+			}).then(function (response) {
+				console.log(response.data);
+				commit('updateAuthenticatedServices', response.data);
+			}, function () {
+				console.log('Error retrieving authenticated services.');
+			});
+		}
+	}
 });
 
 /***/ }),
@@ -13917,66 +14038,72 @@ var _vuex = __webpack_require__(19);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 module.exports = {
-    name: 'main-page-panel',
-    computed: (0, _vuex.mapState)(['displayTabs', 'page']),
-    created: function created() {},
+	name: 'main-page-panel',
+	computed: (0, _vuex.mapState)(['displayTabs', 'page']),
+	created: function created() {},
 
-    methods: {
-        switchTab: function switchTab(slug) {
-            this.$store.commit('setTabView', slug);
-        }
-    },
-    components: {
-        'accounts': _accountsTabPanel2.default,
-        settings: {
-            name: 'settings-view',
-            template: '<span>This is not yet ready</span>'
-        },
-        post: {
-            name: 'post-view',
-            template: '<span>This is not yet ready</span>'
-        },
-        schedule: {
-            name: 'schedule-view',
-            template: '<span>This is not yet ready</span>'
-        },
-        'logs': _logsTabPanel2.default
-    }
-    // </script>
+	data: function data() {
+		return {
+			plugin_logo: ROP_ASSETS_URL + 'img/logo_rop.png'
+		};
+	},
+	methods: {
+		switchTab: function switchTab(slug) {
+			this.$store.commit('setTabView', slug);
+		}
+	},
+	components: {
+		'accounts': _accountsTabPanel2.default,
+		settings: {
+			name: 'settings-view',
+			template: '<span>This is not yet ready</span>'
+		},
+		post: {
+			name: 'post-view',
+			template: '<span>This is not yet ready</span>'
+		},
+		schedule: {
+			name: 'schedule-view',
+			template: '<span>This is not yet ready</span>'
+		},
+		'logs': _logsTabPanel2.default
+	}
+	// </script>
 
 }; // <template>
-//     <div>
-//         <div class="panel title-panel" style="margin-bottom: 40px; padding-bottom: 20px;">
-//             <div class="panel-header">
-//                 <!--<img src="./../../../img/logo_rop.png" style="float: left; margin-right: 10px;" />-->
-//                 <h1 class="d-inline-block">Revive Old Posts</h1><span class="powered"> by <a href="https://themeisle.com" target="_blank"><b>ThemeIsle</b></a></span>
-//             </div>
-//         </div>
-//         <div class="panel">
-//             <div class="panel-nav" style="padding: 8px;">
-//                 <ul class="tab">
-//                     <li class="tab-item" v-for="tab in displayTabs" :class="{ active: tab.isActive }"><a href="#" @click="switchTab( tab.slug )">{{ tab.name }}</a></li>
-//                     <li class="tab-item tab-action">
-//                         <div class="form-group">
-//                             <label class="form-switch">
-//                                 <input type="checkbox" />
-//                                 <i class="form-icon"></i> Beta User
-//                             </label>
-//                             <label class="form-switch">
-//                                 <input type="checkbox" />
-//                                 <i class="form-icon"></i> Remote Check
-//                             </label>
-//                         </div>
-//                     </li>
-//                 </ul>
-//             </div>
+// 	<div>
+// 		<div class="panel title-panel" style="margin-bottom: 40px; padding-bottom: 20px;">
+// 			<div class="panel-header">
+// 				<img :src="plugin_logo" style="float: left; margin-right: 10px;" />
+// 				<h1 class="d-inline-block">Revive Old Posts</h1><span class="powered"> by <a href="https://themeisle.com" target="_blank"><b>ThemeIsle</b></a></span>
+// 			</div>
+// 		</div>
+// 		<div class="panel">
+// 			<div class="panel-nav" style="padding: 8px;">
+// 				<ul class="tab">
+// 					<li class="tab-item" v-for="tab in displayTabs" :class="{ active: tab.isActive }"><a href="#" @click="switchTab( tab.slug )">{{ tab.name }}</a></li>
+// 					<li class="tab-item tab-action">
+// 						<div class="form-group">
+// 							<label class="form-switch">
+// 								<input type="checkbox" />
+// 								<i class="form-icon"></i> Beta User
+// 							</label>
+// 							<label class="form-switch">
+// 								<input type="checkbox" />
+// 								<i class="form-icon"></i> Remote Check
+// 							</label>
+// 						</div>
+// 					</li>
+// 				</ul>
+// 			</div>
 //
-//             <component :is="page.view"></component>
-//         </div>
-//     </div>
+// 			<component :is="page.view"></component>
+// 		</div>
+// 	</div>
 // </template>
 //
 // <script>
+/* global ROP_ASSETS_URL */
 
 /***/ }),
 /* 39 */
@@ -14022,21 +14149,21 @@ var _serviceUserTile2 = _interopRequireDefault(_serviceUserTile);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 module.exports = {
-    name: 'account-view',
-    computed: {
-        authenticated_services: function authenticated_services() {
-            return this.$store.state.authenticatedServices;
-        },
-        active_accounts: function active_accounts() {
-            return this.$store.state.activeAccounts;
-        }
-    },
-    components: {
-        SignInBtn: _signInBtn2.default,
-        ServiceTile: _serviceTile2.default,
-        ServiceUserTile: _serviceUserTile2.default
-    }
-    // </script>
+	name: 'account-view',
+	computed: {
+		authenticated_services: function authenticated_services() {
+			return this.$store.state.authenticatedServices;
+		},
+		active_accounts: function active_accounts() {
+			return this.$store.state.activeAccounts;
+		}
+	},
+	components: {
+		SignInBtn: _signInBtn2.default,
+		ServiceTile: _serviceTile2.default,
+		ServiceUserTile: _serviceUserTile2.default
+	}
+	// </script>
 
 }; // <template>
 //     <div class="tab-view">
@@ -14160,7 +14287,7 @@ exports = module.exports = __webpack_require__(10)();
 
 
 // module
-exports.push([module.i, "\n    #rop_core .sign-in-btn > .modal[_v-7e903530] {\n        position: absolute;\n        top: 20px;\n    }\n\n    #rop_core .sign-in-btn > .modal > .modal-container[_v-7e903530] {\n        width: 100%;\n    }\n\n", ""]);
+exports.push([module.i, "\n\t#rop_core .sign-in-btn > .modal[_v-7e903530] {\n\t\tposition: absolute;\n\t\ttop: 20px;\n\t}\n\n\t#rop_core .sign-in-btn > .modal > .modal-container[_v-7e903530] {\n\t\twidth: 100%;\n\t}\n\n", ""]);
 
 // exports
 
@@ -14183,208 +14310,208 @@ var _getIterator3 = _interopRequireDefault(_getIterator2);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // <template>
-//     <div class="sign-in-btn">
-//         <div class="input-group">
-//             <select class="form-select" v-model="selected_network">
-//                 <option v-for="( service, network ) in services" v-bind:value="network" :disabled="checkDisabled( service.active )">{{ service.name }}</option>
-//             </select>
+// 	<div class="sign-in-btn">
+// 		<div class="input-group">
+// 			<select class="form-select" v-model="selected_network">
+// 				<option v-for="( service, network ) in services" v-bind:value="network" :disabled="checkDisabled( service.active )">{{ service.name }}</option>
+// 			</select>
 //
-//             <button class="btn input-group-btn" :class="serviceClass" @click="requestAuthorization()" :disabled="checkDisabled(true)" >
-//                 <i class="fa fa-fw" :class="serviceIcon" aria-hidden="true"></i> Sign In
-//             </button>
-//         </div>
-//         <div class="modal" :class="modalActiveClass">
-//             <div class="modal-overlay"></div>
-//             <div class="modal-container">
-//                 <div class="modal-header">
-//                     <button class="btn btn-clear float-right" @click="closeModal()"></button>
-//                     <div class="modal-title h5">{{ modal.serviceName }} Service Credentials</div>
-//                 </div>
-//                 <div class="modal-body">
-//                     <div class="content">
-//                         <div class="form-group" v-for="( field, id ) in modal.data">
-//                             <label class="form-label" :for="field.id">{{ field.name }}</label>
-//                             <input class="form-input" type="text" :id="field.id" v-model="field.value" :placeholder="field.name" />
-//                             <i>{{ field.description }}</i>
-//                         </div>
-//                     </div>
-//                 </div>
-//                 <div class="modal-footer">
-//                     <button class="btn btn-primary" @click="closeModal()">Sign in</button>
-//                 </div>
-//             </div>
-//         </div>
-//     </div>
+// 			<button class="btn input-group-btn" :class="serviceClass" @click="requestAuthorization()" :disabled="checkDisabled(true)" >
+// 				<i class="fa fa-fw" :class="serviceIcon" aria-hidden="true"></i> Sign In
+// 			</button>
+// 		</div>
+// 		<div class="modal" :class="modalActiveClass">
+// 			<div class="modal-overlay"></div>
+// 			<div class="modal-container">
+// 				<div class="modal-header">
+// 					<button class="btn btn-clear float-right" @click="closeModal()"></button>
+// 					<div class="modal-title h5">{{ modal.serviceName }} Service Credentials</div>
+// 				</div>
+// 				<div class="modal-body">
+// 					<div class="content">
+// 						<div class="form-group" v-for="( field, id ) in modal.data">
+// 							<label class="form-label" :for="field.id">{{ field.name }}</label>
+// 							<input class="form-input" type="text" :id="field.id" v-model="field.value" :placeholder="field.name" />
+// 							<i>{{ field.description }}</i>
+// 						</div>
+// 					</div>
+// 				</div>
+// 				<div class="modal-footer">
+// 					<button class="btn btn-primary" @click="closeModal()">Sign in</button>
+// 				</div>
+// 			</div>
+// 		</div>
+// 	</div>
 // </template>
 //
 // <script>
 module.exports = {
-    name: 'sign-in-btn',
-    created: function created() {},
+	name: 'sign-in-btn',
+	created: function created() {},
 
-    data: function data() {
-        return {
-            modal: {
-                isOpen: false,
-                serviceName: '',
-                data: {}
-            },
-            activePopup: ''
-        };
-    },
-    methods: {
-        checkDisabled: function checkDisabled(active) {
-            if (active === false) {
-                return true;
-            }
+	data: function data() {
+		return {
+			modal: {
+				isOpen: false,
+				serviceName: '',
+				data: {}
+			},
+			activePopup: ''
+		};
+	},
+	methods: {
+		checkDisabled: function checkDisabled(active) {
+			if (active === false) {
+				return true;
+			}
 
-            return this.$store.state.auth_in_progress;
-        },
+			return this.$store.state.auth_in_progress;
+		},
 
-        requestAuthorization: function requestAuthorization() {
-            this.$store.state.auth_in_progress = true;
-            if (this.$store.state.availableServices[this.selected_network].two_step_sign_in) {
-                this.modal.serviceName = this.$store.state.availableServices[this.selected_network].name;
-                this.modal.data = this.$store.state.availableServices[this.selected_network].credentials;
-                this.openModal();
-            } else {
-                this.activePopup = this.selected_network;
-                var w = 560;
-                var h = 340;
-                var y = window.top.outerHeight / 2 + window.top.screenY - w / 2;
-                var x = window.top.outerWidth / 2 + window.top.screenX - h / 2;
-                window.open('', this.activePopup, 'width=' + w + ', height=' + h + ', toolbar=0, menubar=0, location=0, top=' + y + ', left=' + x);
-                this.getUrlAndGo([]);
-            }
-        },
-        openPopup: function openPopup(url) {
-            console.log('Trying to open popup for url:', url);
-            var newWindow = window.open(url, this.activePopup);
-            if (window.focus) {
-                newWindow.focus();
-            }
-            var instance = this;
-            var pollTimer = window.setInterval(function () {
-                if (newWindow.closed !== false) {
-                    window.clearInterval(pollTimer);
-                    instance.requestAuthentication();
-                }
-            }, 200);
-        },
-        getUrlAndGo: function getUrlAndGo(credentials) {
-            var _this = this;
+		requestAuthorization: function requestAuthorization() {
+			this.$store.state.auth_in_progress = true;
+			if (this.$store.state.availableServices[this.selected_network].two_step_sign_in) {
+				this.modal.serviceName = this.$store.state.availableServices[this.selected_network].name;
+				this.modal.data = this.$store.state.availableServices[this.selected_network].credentials;
+				this.openModal();
+			} else {
+				this.activePopup = this.selected_network;
+				var w = 560;
+				var h = 340;
+				var y = window.top.outerHeight / 2 + window.top.screenY - w / 2;
+				var x = window.top.outerWidth / 2 + window.top.screenX - h / 2;
+				window.open('', this.activePopup, 'width=' + w + ', height=' + h + ', toolbar=0, menubar=0, location=0, top=' + y + ', left=' + x);
+				this.getUrlAndGo([]);
+			}
+		},
+		openPopup: function openPopup(url) {
+			console.log('Trying to open popup for url:', url);
+			var newWindow = window.open(url, this.activePopup);
+			if (window.focus) {
+				newWindow.focus();
+			}
+			var instance = this;
+			var pollTimer = window.setInterval(function () {
+				if (newWindow.closed !== false) {
+					window.clearInterval(pollTimer);
+					instance.requestAuthentication();
+				}
+			}, 200);
+		},
+		getUrlAndGo: function getUrlAndGo(credentials) {
+			var _this = this;
 
-            console.log('Credentials recieved:', credentials);
-            this.$store.dispatch('getServiceSignInUrl', { service: this.selected_network, credentials: credentials }).then(function (response) {
-                console.log('Got some data, now lets show something in this component', response);
-                _this.openPopup(response.url);
-            }, function (error) {
-                console.error('Got nothing from server. Prompt user to check internet connection and try again', error);
-            });
-        },
-        requestAuthentication: function requestAuthentication() {
-            this.$store.dispatch('authenticateService', { service: this.selected_network });
-        },
+			console.log('Credentials recieved:', credentials);
+			this.$store.dispatch('getServiceSignInUrl', { service: this.selected_network, credentials: credentials }).then(function (response) {
+				console.log('Got some data, now lets show something in this component', response);
+				_this.openPopup(response.url);
+			}, function (error) {
+				console.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+			});
+		},
+		requestAuthentication: function requestAuthentication() {
+			this.$store.dispatch('authenticateService', { service: this.selected_network });
+		},
 
-        openModal: function openModal() {
-            this.modal.isOpen = true;
-        },
-        closeModal: function closeModal() {
-            var credentials = {};
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
+		openModal: function openModal() {
+			this.modal.isOpen = true;
+		},
+		closeModal: function closeModal() {
+			var credentials = {};
+			var _iteratorNormalCompletion = true;
+			var _didIteratorError = false;
+			var _iteratorError = undefined;
 
-            try {
-                for (var _iterator = (0, _getIterator3.default)((0, _keys2.default)(this.modal.data)), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var index = _step.value;
+			try {
+				for (var _iterator = (0, _getIterator3.default)((0, _keys2.default)(this.modal.data)), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+					var index = _step.value;
 
-                    credentials[index] = '';
-                    if ('value' in this.modal.data[index]) {
-                        credentials[index] = this.modal.data[index]['value'];
-                    }
-                }
-            } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion && _iterator.return) {
-                        _iterator.return();
-                    }
-                } finally {
-                    if (_didIteratorError) {
-                        throw _iteratorError;
-                    }
-                }
-            }
+					credentials[index] = '';
+					if ('value' in this.modal.data[index]) {
+						credentials[index] = this.modal.data[index]['value'];
+					}
+				}
+			} catch (err) {
+				_didIteratorError = true;
+				_iteratorError = err;
+			} finally {
+				try {
+					if (!_iteratorNormalCompletion && _iterator.return) {
+						_iterator.return();
+					}
+				} finally {
+					if (_didIteratorError) {
+						throw _iteratorError;
+					}
+				}
+			}
 
-            this.activePopup = this.selected_network;
-            var w = 560;
-            var h = 340;
-            var y = window.top.outerHeight / 2 + window.top.screenY - w / 2;
-            var x = window.top.outerWidth / 2 + window.top.screenX - h / 2;
-            window.open('', this.activePopup, 'width=' + w + ', height=' + h + ', toolbar=0, menubar=0, location=0, top=' + y + ', left=' + x);
-            this.getUrlAndGo(credentials);
+			this.activePopup = this.selected_network;
+			var w = 560;
+			var h = 340;
+			var y = window.top.outerHeight / 2 + window.top.screenY - w / 2;
+			var x = window.top.outerWidth / 2 + window.top.screenX - h / 2;
+			window.open('', this.activePopup, 'width=' + w + ', height=' + h + ', toolbar=0, menubar=0, location=0, top=' + y + ', left=' + x);
+			this.getUrlAndGo(credentials);
 
-            this.modal.isOpen = false;
-        }
-    },
-    computed: {
-        selected_network: {
-            get: function get() {
-                var defaultNetwork = this.modal.serviceName;
-                if ((0, _keys2.default)(this.services)[0] && defaultNetwork === '') {
-                    defaultNetwork = (0, _keys2.default)(this.services)[0];
-                }
-                return defaultNetwork.toLowerCase();
-            },
-            set: function set(newNetwork) {
-                this.modal.serviceName = newNetwork;
-            }
-        },
-        services: function services() {
-            return this.$store.state.availableServices;
-        },
-        modalActiveClass: function modalActiveClass() {
-            return {
-                'active': this.modal.isOpen === true
-            };
-        },
-        serviceClass: function serviceClass() {
-            return {
-                'btn-twitter': this.selected_network === 'twitter',
-                'btn-facebook': this.selected_network === 'facebook',
-                'btn-linkedin': this.selected_network === 'linkedin',
-                'btn-tumblr': this.selected_network === 'tumblr',
-                'loading': this.$store.state.auth_in_progress
-            };
-        },
-        serviceIcon: function serviceIcon() {
-            return {
-                'fa-twitter': this.selected_network === 'twitter',
-                'fa-facebook-official': this.selected_network === 'facebook',
-                'fa-linkedin': this.selected_network === 'linkedin',
-                'fa-tumblr': this.selected_network === 'tumblr'
-            };
-        },
-        serviceId: function serviceId() {
-            return 'service-' + this.modal.serviceName.toLowerCase();
-        }
-    }
-    // </script>
-    //
-    // <style scoped>
-    //     #rop_core .sign-in-btn > .modal {
-    //         position: absolute;
-    //         top: 20px;
-    //     }
-    //
-    //     #rop_core .sign-in-btn > .modal > .modal-container {
-    //         width: 100%;
-    //     }
-    //
-    // </style>
+			this.modal.isOpen = false;
+		}
+	},
+	computed: {
+		selected_network: {
+			get: function get() {
+				var defaultNetwork = this.modal.serviceName;
+				if ((0, _keys2.default)(this.services)[0] && defaultNetwork === '') {
+					defaultNetwork = (0, _keys2.default)(this.services)[0];
+				}
+				return defaultNetwork.toLowerCase();
+			},
+			set: function set(newNetwork) {
+				this.modal.serviceName = newNetwork;
+			}
+		},
+		services: function services() {
+			return this.$store.state.availableServices;
+		},
+		modalActiveClass: function modalActiveClass() {
+			return {
+				'active': this.modal.isOpen === true
+			};
+		},
+		serviceClass: function serviceClass() {
+			return {
+				'btn-twitter': this.selected_network === 'twitter',
+				'btn-facebook': this.selected_network === 'facebook',
+				'btn-linkedin': this.selected_network === 'linkedin',
+				'btn-tumblr': this.selected_network === 'tumblr',
+				'loading': this.$store.state.auth_in_progress
+			};
+		},
+		serviceIcon: function serviceIcon() {
+			return {
+				'fa-twitter': this.selected_network === 'twitter',
+				'fa-facebook-official': this.selected_network === 'facebook',
+				'fa-linkedin': this.selected_network === 'linkedin',
+				'fa-tumblr': this.selected_network === 'tumblr'
+			};
+		},
+		serviceId: function serviceId() {
+			return 'service-' + this.modal.serviceName.toLowerCase();
+		}
+	}
+	// </script>
+	//
+	// <style scoped>
+	// 	#rop_core .sign-in-btn > .modal {
+	// 		position: absolute;
+	// 		top: 20px;
+	// 	}
+	//
+	// 	#rop_core .sign-in-btn > .modal > .modal-container {
+	// 		width: 100%;
+	// 	}
+	//
+	// </style>
 
 };
 
@@ -14910,7 +15037,7 @@ module.exports = function (it) {
 /* 75 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"sign-in-btn\" _v-7e903530=\"\">\n        <div class=\"input-group\" _v-7e903530=\"\">\n            <select class=\"form-select\" v-model=\"selected_network\" _v-7e903530=\"\">\n                <option v-for=\"( service, network ) in services\" v-bind:value=\"network\" :disabled=\"checkDisabled( service.active )\" _v-7e903530=\"\">{{ service.name }}</option>\n            </select>\n\n            <button class=\"btn input-group-btn\" :class=\"serviceClass\" @click=\"requestAuthorization()\" :disabled=\"checkDisabled(true)\" _v-7e903530=\"\">\n                <i class=\"fa fa-fw\" :class=\"serviceIcon\" aria-hidden=\"true\" _v-7e903530=\"\"></i> Sign In\n            </button>\n        </div>\n        <div class=\"modal\" :class=\"modalActiveClass\" _v-7e903530=\"\">\n            <div class=\"modal-overlay\" _v-7e903530=\"\"></div>\n            <div class=\"modal-container\" _v-7e903530=\"\">\n                <div class=\"modal-header\" _v-7e903530=\"\">\n                    <button class=\"btn btn-clear float-right\" @click=\"closeModal()\" _v-7e903530=\"\"></button>\n                    <div class=\"modal-title h5\" _v-7e903530=\"\">{{ modal.serviceName }} Service Credentials</div>\n                </div>\n                <div class=\"modal-body\" _v-7e903530=\"\">\n                    <div class=\"content\" _v-7e903530=\"\">\n                        <div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-7e903530=\"\">\n                            <label class=\"form-label\" :for=\"field.id\" _v-7e903530=\"\">{{ field.name }}</label>\n                            <input class=\"form-input\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-7e903530=\"\">\n                            <i _v-7e903530=\"\">{{ field.description }}</i>\n                        </div>\n                    </div>\n                </div>\n                <div class=\"modal-footer\" _v-7e903530=\"\">\n                    <button class=\"btn btn-primary\" @click=\"closeModal()\" _v-7e903530=\"\">Sign in</button>\n                </div>\n            </div>\n        </div>\n    </div>\n";
+module.exports = "\n\t<div class=\"sign-in-btn\" _v-7e903530=\"\">\n\t\t<div class=\"input-group\" _v-7e903530=\"\">\n\t\t\t<select class=\"form-select\" v-model=\"selected_network\" _v-7e903530=\"\">\n\t\t\t\t<option v-for=\"( service, network ) in services\" v-bind:value=\"network\" :disabled=\"checkDisabled( service.active )\" _v-7e903530=\"\">{{ service.name }}</option>\n\t\t\t</select>\n\n\t\t\t<button class=\"btn input-group-btn\" :class=\"serviceClass\" @click=\"requestAuthorization()\" :disabled=\"checkDisabled(true)\" _v-7e903530=\"\">\n\t\t\t\t<i class=\"fa fa-fw\" :class=\"serviceIcon\" aria-hidden=\"true\" _v-7e903530=\"\"></i> Sign In\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"modal\" :class=\"modalActiveClass\" _v-7e903530=\"\">\n\t\t\t<div class=\"modal-overlay\" _v-7e903530=\"\"></div>\n\t\t\t<div class=\"modal-container\" _v-7e903530=\"\">\n\t\t\t\t<div class=\"modal-header\" _v-7e903530=\"\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"closeModal()\" _v-7e903530=\"\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\" _v-7e903530=\"\">{{ modal.serviceName }} Service Credentials</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\" _v-7e903530=\"\">\n\t\t\t\t\t<div class=\"content\" _v-7e903530=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-7e903530=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-7e903530=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-7e903530=\"\">\n\t\t\t\t\t\t\t<i _v-7e903530=\"\">{{ field.description }}</i>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-footer\" _v-7e903530=\"\">\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-7e903530=\"\">Sign in</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 76 */
@@ -15032,105 +15159,105 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 // <script>
 function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase().concat(string.slice(1));
+	return string.charAt(0).toUpperCase().concat(string.slice(1));
 }
 
 module.exports = {
-    name: 'service-tile',
-    props: {
-        service: {
-            type: Object,
-            required: true
-        }
-    },
-    data: function data() {
-        return {
-            show_credentials: false,
-            to_be_activated: []
-        };
-    },
-    computed: {
-        service_url: function service_url() {
-            if (this.service.service === 'facebook') {
-                return 'facebook.com';
-            }
-            if (this.service.service === 'twitter') {
-                return 'twitter.com';
-            }
-            if (this.service.service === 'linkedin') {
-                return 'linkedin.com';
-            }
-            if (this.service.service === 'tumblr') {
-                return 'tumblr.com';
-            }
+	name: 'service-tile',
+	props: {
+		service: {
+			type: Object,
+			required: true
+		}
+	},
+	data: function data() {
+		return {
+			show_credentials: false,
+			to_be_activated: []
+		};
+	},
+	computed: {
+		service_url: function service_url() {
+			if (this.service.service === 'facebook') {
+				return 'facebook.com';
+			}
+			if (this.service.service === 'twitter') {
+				return 'twitter.com';
+			}
+			if (this.service.service === 'linkedin') {
+				return 'linkedin.com';
+			}
+			if (this.service.service === 'tumblr') {
+				return 'tumblr.com';
+			}
 
-            return 'service.url';
-        },
-        serviceName: function serviceName() {
-            return capitalizeFirstLetter(this.service.service);
-        },
-        serviceClass: function serviceClass() {
-            return {
-                'btn-twitter': this.service.service === 'twitter',
-                'btn-facebook': this.service.service === 'facebook',
-                'btn-linkedin': this.service.service === 'linkedin',
-                'btn-tumblr': this.service.service === 'tumblr'
-            };
-        },
-        credentialsDisplayClass: function credentialsDisplayClass() {
-            return {
-                'd-block': this.show_credentials === true,
-                'd-none': this.show_credentials === false
-            };
-        }
-    },
-    methods: {
-        credentialID: function credentialID(index) {
-            return 'service-' + index + '-field';
-        },
-        toggleCredentials: function toggleCredentials() {
-            this.show_credentials = !this.show_credentials;
-        },
-        activateSelected: function activateSelected(serviceId) {
-            this.$store.dispatch('updateActiveAccounts', { action: 'update', service_id: serviceId, service: this.service.service, to_be_activated: this.to_be_activated, current_active: this.$store.state.activeAccounts });
-        },
-        removeService: function removeService() {
-            this.$store.dispatch('removeService', { id: this.service.id, service: this.service.service });
-        }
-    },
-    components: {
-        ServiceAutocomplete: _serviceAutocomplete2.default,
-        SecretInput: _secretInput2.default
-    }
-    // </script>
-    //
-    // <style scoped>
-    //
-    //     #rop_core .btn.btn-danger {
-    //         background-color: #d50000;
-    //         color: #efefef;
-    //         border-color: #b71c1c;
-    //     }
-    //
-    //     #rop_core .btn.btn-danger:hover, #rop_core {
-    //         background-color: #efefef;
-    //         color: #d50000;
-    //         border-color: #b71c1c;
-    //     }
-    //
-    //     #rop_core .btn.btn-info {
-    //         background-color: #2196f3;
-    //         color: #efefef;
-    //         border-color: #1565c0;
-    //     }
-    //
-    //     #rop_core .btn.btn-info:hover, #rop_core {
-    //         background-color: #efefef;
-    //         color: #2196f3;
-    //         border-color: #1565c0;
-    //     }
-    //
-    // </style>
+			return 'service.url';
+		},
+		serviceName: function serviceName() {
+			return capitalizeFirstLetter(this.service.service);
+		},
+		serviceClass: function serviceClass() {
+			return {
+				'btn-twitter': this.service.service === 'twitter',
+				'btn-facebook': this.service.service === 'facebook',
+				'btn-linkedin': this.service.service === 'linkedin',
+				'btn-tumblr': this.service.service === 'tumblr'
+			};
+		},
+		credentialsDisplayClass: function credentialsDisplayClass() {
+			return {
+				'd-block': this.show_credentials === true,
+				'd-none': this.show_credentials === false
+			};
+		}
+	},
+	methods: {
+		credentialID: function credentialID(index) {
+			return 'service-' + index + '-field';
+		},
+		toggleCredentials: function toggleCredentials() {
+			this.show_credentials = !this.show_credentials;
+		},
+		activateSelected: function activateSelected(serviceId) {
+			this.$store.dispatch('updateActiveAccounts', { action: 'update', service_id: serviceId, service: this.service.service, to_be_activated: this.to_be_activated, current_active: this.$store.state.activeAccounts });
+		},
+		removeService: function removeService() {
+			this.$store.dispatch('removeService', { id: this.service.id, service: this.service.service });
+		}
+	},
+	components: {
+		ServiceAutocomplete: _serviceAutocomplete2.default,
+		SecretInput: _secretInput2.default
+	}
+	// </script>
+	//
+	// <style scoped>
+	//
+	//     #rop_core .btn.btn-danger {
+	//         background-color: #d50000;
+	//         color: #efefef;
+	//         border-color: #b71c1c;
+	//     }
+	//
+	//     #rop_core .btn.btn-danger:hover, #rop_core {
+	//         background-color: #efefef;
+	//         color: #d50000;
+	//         border-color: #b71c1c;
+	//     }
+	//
+	//     #rop_core .btn.btn-info {
+	//         background-color: #2196f3;
+	//         color: #efefef;
+	//         border-color: #1565c0;
+	//     }
+	//
+	//     #rop_core .btn.btn-info:hover, #rop_core {
+	//         background-color: #efefef;
+	//         color: #2196f3;
+	//         border-color: #1565c0;
+	//     }
+	//
+	// </style>
 
 };
 
@@ -15172,13 +15299,13 @@ var _vueClickaway = __webpack_require__(82);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function containsObject(obj, list) {
-    var i = void 0;
-    for (i = 0; i < list.length; i++) {
-        if (list[i] === obj) {
-            return true;
-        }
-    }
-    return false;
+	var i = void 0;
+	for (i = 0; i < list.length; i++) {
+		if (list[i] === obj) {
+			return true;
+		}
+	}
+	return false;
 } // <template>
 //     <div class="form-autocomplete" style="width: 100%;" v-on-clickaway="closeDropdown">
 //         <!-- autocomplete input container -->
@@ -15225,173 +15352,173 @@ function containsObject(obj, list) {
 
 
 module.exports = {
-    name: 'service-autocomplete',
-    mixins: [_vueClickaway.mixin],
-    props: ['accounts', 'to_be_activated'],
-    mounted: function mounted() {
-        var index = 0;
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
+	name: 'service-autocomplete',
+	mixins: [_vueClickaway.mixin],
+	props: ['accounts', 'to_be_activated'],
+	mounted: function mounted() {
+		var index = 0;
+		var _iteratorNormalCompletion = true;
+		var _didIteratorError = false;
+		var _iteratorError = undefined;
 
-        try {
-            for (var _iterator = (0, _getIterator3.default)(this.accounts), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                var account = _step.value;
+		try {
+			for (var _iterator = (0, _getIterator3.default)(this.accounts), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+				var account = _step.value;
 
-                if (account.active) {
-                    this.addToBeActivated(index);
-                }
-                index++;
-            }
-        } catch (err) {
-            _didIteratorError = true;
-            _iteratorError = err;
-        } finally {
-            try {
-                if (!_iteratorNormalCompletion && _iterator.return) {
-                    _iterator.return();
-                }
-            } finally {
-                if (_didIteratorError) {
-                    throw _iteratorError;
-                }
-            }
-        }
-    },
+				if (account.active) {
+					this.addToBeActivated(index);
+				}
+				index++;
+			}
+		} catch (err) {
+			_didIteratorError = true;
+			_iteratorError = err;
+		} finally {
+			try {
+				if (!_iteratorNormalCompletion && _iterator.return) {
+					_iterator.return();
+				}
+			} finally {
+				if (_didIteratorError) {
+					throw _iteratorError;
+				}
+			}
+		}
+	},
 
-    data: function data() {
-        return {
-            search: '',
-            highlighted: -1,
-            no_results: false,
-            magic_flag: false,
-            account_def_img: ROP_ASSETS_URL + 'img/accounts_icon.jpg'
-        };
-    },
-    computed: {
-        is_focused: function is_focused() {
-            return {
-                'is-focused': this.magic_flag === true
-            };
-        },
-        is_visible: function is_visible() {
-            return {
-                'd-none': this.magic_flag === false
-            };
-        },
-        is_one: function is_one() {
-            if (this.accounts.length === 1 && this.accounts[0].active === false) {
-                this.to_be_activated.push(this.accounts[0]);
-                return true;
-            } else if (this.accounts.length === 1 && this.accounts[0].active === true) {
-                return true;
-            }
-            return false;
-        },
-        autocomplete_placeholder: function autocomplete_placeholder() {
-            if (this.is_one) {
-                return '';
-            }
-            return 'Accounts ...';
-        },
-        has_results: function has_results() {
-            var found = 0;
-            var _iteratorNormalCompletion2 = true;
-            var _didIteratorError2 = false;
-            var _iteratorError2 = undefined;
+	data: function data() {
+		return {
+			search: '',
+			highlighted: -1,
+			no_results: false,
+			magic_flag: false,
+			account_def_img: ROP_ASSETS_URL + 'img/accounts_icon.jpg'
+		};
+	},
+	computed: {
+		is_focused: function is_focused() {
+			return {
+				'is-focused': this.magic_flag === true
+			};
+		},
+		is_visible: function is_visible() {
+			return {
+				'd-none': this.magic_flag === false
+			};
+		},
+		is_one: function is_one() {
+			if (this.accounts.length === 1 && this.accounts[0].active === false) {
+				this.to_be_activated.push(this.accounts[0]);
+				return true;
+			} else if (this.accounts.length === 1 && this.accounts[0].active === true) {
+				return true;
+			}
+			return false;
+		},
+		autocomplete_placeholder: function autocomplete_placeholder() {
+			if (this.is_one) {
+				return '';
+			}
+			return 'Accounts ...';
+		},
+		has_results: function has_results() {
+			var found = 0;
+			var _iteratorNormalCompletion2 = true;
+			var _didIteratorError2 = false;
+			var _iteratorError2 = undefined;
 
-            try {
-                for (var _iterator2 = (0, _getIterator3.default)(this.accounts), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                    var account = _step2.value;
+			try {
+				for (var _iterator2 = (0, _getIterator3.default)(this.accounts), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+					var account = _step2.value;
 
-                    if (this.filterSearch(account)) {
-                        found++;
-                    }
-                }
-            } catch (err) {
-                _didIteratorError2 = true;
-                _iteratorError2 = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                        _iterator2.return();
-                    }
-                } finally {
-                    if (_didIteratorError2) {
-                        throw _iteratorError2;
-                    }
-                }
-            }
+					if (this.filterSearch(account)) {
+						found++;
+					}
+				}
+			} catch (err) {
+				_didIteratorError2 = true;
+				_iteratorError2 = err;
+			} finally {
+				try {
+					if (!_iteratorNormalCompletion2 && _iterator2.return) {
+						_iterator2.return();
+					}
+				} finally {
+					if (_didIteratorError2) {
+						throw _iteratorError2;
+					}
+				}
+			}
 
-            if (found) {
-                return false;
-            }
-            return true;
-        }
-    },
-    methods: {
-        closeDropdown: function closeDropdown() {
-            this.magic_flag = false;
-        },
-        highlightItem: function highlightItem() {
-            var up = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+			if (found) {
+				return false;
+			}
+			return true;
+		}
+	},
+	methods: {
+		closeDropdown: function closeDropdown() {
+			this.magic_flag = false;
+		},
+		highlightItem: function highlightItem() {
+			var up = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
-            if (up) {
-                this.highlighted--;
-            } else {
-                this.highlighted++;
-            }
-            var size = this.$refs.autocomplete_results.children.length - 1;
-            if (size < 0) size = 0;
-            if (this.highlighted > size) this.highlighted = 0;
-            if (this.highlighted < 0) this.highlighted = size;
-            this.$refs.autocomplete_results.children[this.highlighted].firstChild.focus();
-        },
-        popLast: function popLast() {
-            if (this.search === '') {
-                this.to_be_activated.pop();
-                this.magic_flag = false;
-            }
-        },
-        markMatch: function markMatch(value, search) {
-            var result = value;
-            if (value.toLowerCase().indexOf(search.toLowerCase()) !== -1 && search !== '') {
-                var rex = new RegExp(search, 'ig');
-                result = value.replace(rex, function (match) {
-                    return '<mark>' + match + '</mark>';
-                });
-            }
-            return result;
-        },
-        getImg: function getImg(img) {
-            if (img === '' || img === undefined || img === null) {
-                return this.account_def_img;
-            }
-            return img;
-        },
-        filterSearch: function filterSearch(element) {
-            if (element.name.toLowerCase().indexOf(this.search.toLowerCase()) !== -1 || this.search === '') {
-                if (containsObject(element, this.to_be_activated)) {
-                    return false;
-                }
-                return true;
-            }
-            return false;
-        },
-        addToBeActivated: function addToBeActivated(index) {
-            this.to_be_activated.push(this.accounts[index]);
-            this.$refs.search.focus();
-            this.magic_flag = false;
-            this.search = '';
-        },
-        removeToBeActivated: function removeToBeActivated(index) {
-            this.to_be_activated.splice(index, 1);
-            this.$refs.search.focus();
-            this.magic_flag = false;
-            this.search = '';
-        }
-    }
-    // </script>
+			if (up) {
+				this.highlighted--;
+			} else {
+				this.highlighted++;
+			}
+			var size = this.$refs.autocomplete_results.children.length - 1;
+			if (size < 0) size = 0;
+			if (this.highlighted > size) this.highlighted = 0;
+			if (this.highlighted < 0) this.highlighted = size;
+			this.$refs.autocomplete_results.children[this.highlighted].firstChild.focus();
+		},
+		popLast: function popLast() {
+			if (this.search === '') {
+				this.to_be_activated.pop();
+				this.magic_flag = false;
+			}
+		},
+		markMatch: function markMatch(value, search) {
+			var result = value;
+			if (value.toLowerCase().indexOf(search.toLowerCase()) !== -1 && search !== '') {
+				var rex = new RegExp(search, 'ig');
+				result = value.replace(rex, function (match) {
+					return '<mark>' + match + '</mark>';
+				});
+			}
+			return result;
+		},
+		getImg: function getImg(img) {
+			if (img === '' || img === undefined || img === null) {
+				return this.account_def_img;
+			}
+			return img;
+		},
+		filterSearch: function filterSearch(element) {
+			if (element.name.toLowerCase().indexOf(this.search.toLowerCase()) !== -1 || this.search === '') {
+				if (containsObject(element, this.to_be_activated)) {
+					return false;
+				}
+				return true;
+			}
+			return false;
+		},
+		addToBeActivated: function addToBeActivated(index) {
+			this.to_be_activated.push(this.accounts[index]);
+			this.$refs.search.focus();
+			this.magic_flag = false;
+			this.search = '';
+		},
+		removeToBeActivated: function removeToBeActivated(index) {
+			this.to_be_activated.splice(index, 1);
+			this.$refs.search.focus();
+			this.magic_flag = false;
+			this.search = '';
+		}
+	}
+	// </script>
 
 };
 
@@ -15523,48 +15650,48 @@ if (false) {(function () {  module.hot.accept()
 // </template>
 // <script>
 module.exports = {
-    name: 'secret-input',
-    props: {
-        id: {
-            default: ''
-        },
-        secret: {
-            type: Boolean,
-            default: true
-        },
-        value: {
-            default: ''
-        },
-        readonly: {
-            type: Boolean,
-            default: true
-        }
-    },
-    data: function data() {
-        return {
-            visible: false
-        };
-    },
-    computed: {
-        input_type: function input_type() {
-            if (this.visible) {
-                return 'text';
-            }
-            return 'password';
-        },
-        visibileClass: function visibileClass() {
-            return {
-                'fa-eye': this.visible === true,
-                'fa-eye-slash': this.visible === false
-            };
-        }
-    },
-    methods: {
-        showHideSecret: function showHideSecret() {
-            this.visible = !this.visible;
-        }
-    }
-    // </script>
+	name: 'secret-input',
+	props: {
+		id: {
+			default: ''
+		},
+		secret: {
+			type: Boolean,
+			default: true
+		},
+		value: {
+			default: ''
+		},
+		readonly: {
+			type: Boolean,
+			default: true
+		}
+	},
+	data: function data() {
+		return {
+			visible: false
+		};
+	},
+	computed: {
+		input_type: function input_type() {
+			if (this.visible) {
+				return 'text';
+			}
+			return 'password';
+		},
+		visibileClass: function visibileClass() {
+			return {
+				'fa-eye': this.visible === true,
+				'fa-eye-slash': this.visible === false
+			};
+		}
+	},
+	methods: {
+		showHideSecret: function showHideSecret() {
+			this.visible = !this.visible;
+		}
+	}
+	// </script>
 
 };
 
@@ -15674,97 +15801,97 @@ exports.push([module.i, "\n    #rop_core .btn.btn-link.btn-danger[_v-d8a56e08] {
 //
 // <script>
 module.exports = {
-    name: 'service-user-tile',
-    props: ['account_data', 'account_id'],
-    computed: {
-        service: function service() {
-            var iconClass = this.account_data.service;
-            if (this.img !== '') {
-                iconClass = iconClass.concat(' ').concat('has_image');
-            }
-            return iconClass;
-        },
-        icon: function icon() {
-            var serviceIcon = 'fa-';
-            if (this.account_data.service === 'facebook') serviceIcon = serviceIcon.concat('facebook-official');
-            if (this.account_data.service === 'twitter') serviceIcon = serviceIcon.concat('twitter');
-            if (this.account_data.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin');
-            if (this.account_data.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr');
-            return serviceIcon;
-        },
-        img: function img() {
-            var img = '';
-            if (this.account_data.img !== '' && this.account_data.img !== undefined) {
-                img = this.account_data.img;
-            }
-            return img;
-        },
-        user: function user() {
-            return this.account_data.user;
-        },
-        serviceInfo: function serviceInfo() {
-            var serviceTextInfo = this.account_data.account.concat(' at: ').concat(this.account_data.created);
-            return serviceTextInfo;
-        }
-    },
-    methods: {
-        removeActiveAccount: function removeActiveAccount(id) {
-            this.$store.dispatch('updateActiveAccounts', { action: 'remove', account_id: id, current_active: this.$store.state.activeAccounts });
-        }
-    }
-    // </script>
-    //
-    // <style scoped>
-    //     #rop_core .btn.btn-link.btn-danger {
-    //         color: #d50000;
-    //     }
-    //     #rop_core .btn.btn-link.btn-danger:hover {
-    //         color: #b71c1c;
-    //     }
-    //
-    //     .has_image {
-    //         border-radius: 50%;
-    //     }
-    //
-    //     .service_account_image {
-    //         width: 150%;
-    //         border-radius: 50%;
-    //         margin-left: -25%;
-    //         margin-top: -25%;
-    //     }
-    //
-    //     .icon_box {
-    //         width: 45px;
-    //         height: 45px;
-    //         padding: 7px;
-    //         text-align: center;
-    //         background-color: #333333;
-    //         color: #efefef;
-    //     }
-    //
-    //     .icon_box > .fa {
-    //         width: 30px;
-    //         height: 30px;
-    //         font-size: 30px;
-    //     }
-    //
-    //     .facebook {
-    //         background-color: #3b5998;
-    //     }
-    //
-    //     .twitter {
-    //         background-color: #55acee;
-    //     }
-    //
-    //     .linkedin {
-    //         background-color: #007bb5;
-    //     }
-    //
-    //     .tumblr {
-    //         background-color: #32506d;
-    //     }
-    //
-    // </style>
+	name: 'service-user-tile',
+	props: ['account_data', 'account_id'],
+	computed: {
+		service: function service() {
+			var iconClass = this.account_data.service;
+			if (this.img !== '') {
+				iconClass = iconClass.concat(' ').concat('has_image');
+			}
+			return iconClass;
+		},
+		icon: function icon() {
+			var serviceIcon = 'fa-';
+			if (this.account_data.service === 'facebook') serviceIcon = serviceIcon.concat('facebook-official');
+			if (this.account_data.service === 'twitter') serviceIcon = serviceIcon.concat('twitter');
+			if (this.account_data.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin');
+			if (this.account_data.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr');
+			return serviceIcon;
+		},
+		img: function img() {
+			var img = '';
+			if (this.account_data.img !== '' && this.account_data.img !== undefined) {
+				img = this.account_data.img;
+			}
+			return img;
+		},
+		user: function user() {
+			return this.account_data.user;
+		},
+		serviceInfo: function serviceInfo() {
+			var serviceTextInfo = this.account_data.account.concat(' at: ').concat(this.account_data.created);
+			return serviceTextInfo;
+		}
+	},
+	methods: {
+		removeActiveAccount: function removeActiveAccount(id) {
+			this.$store.dispatch('updateActiveAccounts', { action: 'remove', account_id: id, current_active: this.$store.state.activeAccounts });
+		}
+	}
+	// </script>
+	//
+	// <style scoped>
+	//     #rop_core .btn.btn-link.btn-danger {
+	//         color: #d50000;
+	//     }
+	//     #rop_core .btn.btn-link.btn-danger:hover {
+	//         color: #b71c1c;
+	//     }
+	//
+	//     .has_image {
+	//         border-radius: 50%;
+	//     }
+	//
+	//     .service_account_image {
+	//         width: 150%;
+	//         border-radius: 50%;
+	//         margin-left: -25%;
+	//         margin-top: -25%;
+	//     }
+	//
+	//     .icon_box {
+	//         width: 45px;
+	//         height: 45px;
+	//         padding: 7px;
+	//         text-align: center;
+	//         background-color: #333333;
+	//         color: #efefef;
+	//     }
+	//
+	//     .icon_box > .fa {
+	//         width: 30px;
+	//         height: 30px;
+	//         font-size: 30px;
+	//     }
+	//
+	//     .facebook {
+	//         background-color: #3b5998;
+	//     }
+	//
+	//     .twitter {
+	//         background-color: #55acee;
+	//     }
+	//
+	//     .linkedin {
+	//         background-color: #007bb5;
+	//     }
+	//
+	//     .tumblr {
+	//         background-color: #32506d;
+	//     }
+	//
+	// </style>
 
 };
 
@@ -15824,14 +15951,14 @@ if (false) {(function () {  module.hot.accept()
 //
 // <script>
 module.exports = {
-    name: 'logs-view',
-    props: ['model'],
-    data: function data() {
-        return {
-            logs: this.model.page.logs
-        };
-    }
-    // </script>
+	name: 'logs-view',
+	props: ['model'],
+	data: function data() {
+		return {
+			logs: this.$store.state.page.logs
+		};
+	}
+	// </script>
 
 };
 
@@ -15845,7 +15972,7 @@ module.exports = "\n    <div class=\"container\">\n        <h3>Logs</h3>\n      
 /* 97 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <div class=\"panel title-panel\" style=\"margin-bottom: 40px; padding-bottom: 20px;\">\n            <div class=\"panel-header\">\n                <!--<img src=\"./../../../img/logo_rop.png\" style=\"float: left; margin-right: 10px;\" />-->\n                <h1 class=\"d-inline-block\">Revive Old Posts</h1><span class=\"powered\"> by <a href=\"https://themeisle.com\" target=\"_blank\"><b>ThemeIsle</b></a></span>\n            </div>\n        </div>\n        <div class=\"panel\">\n            <div class=\"panel-nav\" style=\"padding: 8px;\">\n                <ul class=\"tab\">\n                    <li class=\"tab-item\" v-for=\"tab in displayTabs\" :class=\"{ active: tab.isActive }\"><a href=\"#\" @click=\"switchTab( tab.slug )\">{{ tab.name }}</a></li>\n                    <li class=\"tab-item tab-action\">\n                        <div class=\"form-group\">\n                            <label class=\"form-switch\">\n                                <input type=\"checkbox\" />\n                                <i class=\"form-icon\"></i> Beta User\n                            </label>\n                            <label class=\"form-switch\">\n                                <input type=\"checkbox\" />\n                                <i class=\"form-icon\"></i> Remote Check\n                            </label>\n                        </div>\n                    </li>\n                </ul>\n            </div>\n\n            <component :is=\"page.view\"></component>\n        </div>\n    </div>\n";
+module.exports = "\n\t<div>\n\t\t<div class=\"panel title-panel\" style=\"margin-bottom: 40px; padding-bottom: 20px;\">\n\t\t\t<div class=\"panel-header\">\n\t\t\t\t<img :src=\"plugin_logo\" style=\"float: left; margin-right: 10px;\" />\n\t\t\t\t<h1 class=\"d-inline-block\">Revive Old Posts</h1><span class=\"powered\"> by <a href=\"https://themeisle.com\" target=\"_blank\"><b>ThemeIsle</b></a></span>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel\">\n\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t<ul class=\"tab\">\n\t\t\t\t\t<li class=\"tab-item\" v-for=\"tab in displayTabs\" :class=\"{ active: tab.isActive }\"><a href=\"#\" @click=\"switchTab( tab.slug )\">{{ tab.name }}</a></li>\n\t\t\t\t\t<li class=\"tab-item tab-action\">\n\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Beta User\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Remote Check\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\n\t\t\t<component :is=\"page.view\"></component>\n\t\t</div>\n\t</div>\n";
 
 /***/ })
 /******/ ]);

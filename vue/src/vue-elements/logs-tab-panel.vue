@@ -17,7 +17,7 @@
     	props: [ 'model' ],
     	data: function () {
     		return {
-    			logs: this.model.page.logs
+    			logs: this.$store.state.page.logs
     		}
     	}
     }
