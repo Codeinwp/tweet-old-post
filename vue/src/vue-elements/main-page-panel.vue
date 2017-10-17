@@ -33,6 +33,7 @@
 <script>
 	/* global ROP_ASSETS_URL */
 	import AccountsTab from './accounts-tab-panel.vue'
+	import SettingsTab from './settings-tab-panel.vue'
 	import LogsTab from './logs-tab-panel.vue'
 
 	import { mapState } from 'vuex'
@@ -54,10 +55,7 @@
 		},
 		components: {
 			'accounts': AccountsTab,
-			settings: {
-				name: 'settings-view',
-				template: '<span>This is not yet ready</span>'
-			},
+			'settings': SettingsTab,
 			post: {
 				name: 'post-view',
 				template: '<span>This is not yet ready</span>'

@@ -66,6 +66,7 @@ class Rop_Global_Settings {
 								'description' => 'Please add the APP SECRET from your Facebook app.',
 							),
 						),
+                        'allowed_accounts' => 2
 					),
 					'twitter' => array(
 						'active' => true,

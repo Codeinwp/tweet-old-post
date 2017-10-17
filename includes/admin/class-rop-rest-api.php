@@ -78,6 +78,7 @@ class Rop_Rest_Api {
 			default:
 				$response = array( 'status' => '200', 'data' => array( 'list', 'of', 'stuff', 'from', 'api' ) );
 		}
+        // array_push( $response, array( 'current_user' => current_user_can( 'manage_options' ) ) );
 		return $response;
 	}
 

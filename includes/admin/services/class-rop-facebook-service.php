@@ -83,11 +83,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function set_api( $app_id = '', $secret = '' ) {
-		if ( $app_id != '' && $secret != '' ) {
-			$this->api = new \Facebook\Facebook( array( 'app_id' => $app_id, 'app_secret' => $secret, 'default_graph_version' => 'v2.10' ) );
-		} else {
-			$this->api = new \Facebook\Facebook( array( 'app_id' => $this->app_id, 'app_secret' => $this->secret, 'default_graph_version' => 'v2.10' ) );
-		}
+        $this->api = new \Facebook\Facebook( array( 'app_id' => $app_id, 'app_secret' => $secret, 'default_graph_version' => 'v2.10' ) );
 	}
 
 	/**
@@ -108,6 +104,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 	/**
 	 * Method for authorizing the service.
+     *
+     * @codeCoverageIgnore
 	 *
 	 * @since   8.0.0
 	 * @access  public
@@ -152,6 +150,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 	/**
 	 * Method for authenticate the service.
+     *
+     * @codeCoverageIgnore
 	 *
 	 * @since   8.0.0
 	 * @access  public
@@ -218,13 +218,15 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 	/**
 	 * Method to request a token from api.
+     *
+     * @codeCoverageIgnore
 	 *
 	 * @since   8.0.0
 	 * @access  protected
 	 * @param   string $token A Facebook token to use.
 	 * @return mixed
 	 */
-	protected function request_api_token( $token = '' ) {
+	public function request_api_token( $token = '' ) {
 		$api = $this->get_api();
 
 		$helper = $api->getRedirectLoginHelper();
@@ -302,6 +304,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 	/**
 	 * Method to return a Rop_User_Model.
+     *
+     * @codeCoverageIgnore
 	 *
 	 * @since   8.0.0
 	 * @access  public
@@ -323,6 +327,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 	/**
 	 * Utility method to retrieve pages from the Facebook account.
+     *
+     * @codeCoverageIgnore
 	 *
 	 * @since   8.0.0
 	 * @access  public
@@ -359,20 +365,21 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function share( $post_details ) {
-		$error = new Rop_Exception_Handler();
-		$id = '1168461009964049';
-		$page_token = 'EAAGrutRBO0ABAHa5ZCq2OWBsZC3o2y6lZA5TQPBNUzBkLZBZCdg28EymWSvJG8yh4H2a5n2ZCP4YibXd5i5YGiS29sltqStlwNvCnxTUV9tUwPyfd1wZBQ3RZC7hp3YZAuVBjYgXdUgZBY3MeqU5IlvKnZBOPHyo5g4ilO2FZC2q5CpkCBiJ3Nk849ZBNDjAIcZBPmadEZD';
-		$fb = $this->fb;
-		try {
-			$post = $fb->post( '/' . $id . '/feed', array('message' => $post_details['message'], 'link' => 'https://themeisle.com', 'picture' => 'https://cdn.pixabay.com/photo/2016/01/19/18/00/city-1150026_960_720.jpg' ), $page_token );
-			$post = $post->getGraphNode()->asArray();
-		} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
-			$error->throw_exception( '400 Bad Request', 'Graph returned an error: ' . $e->getMessage() );
-		} catch ( Facebook\Exceptions\FacebookSDKException $e ) {
-			$error->throw_exception( '400 Bad Request', 'Facebook SDK returned an error: ' . $e->getMessage() );
-		}
-
-		var_dump( $post );
+//		$error = new Rop_Exception_Handler();
+//		$id = '1168461009964049';
+//		$page_token = 'EAAGrutRBO0ABAHa5ZCq2OWBsZC3o2y6lZA5TQPBNUzBkLZBZCdg28EymWSvJG8yh4H2a5n2ZCP4YibXd5i5YGiS29sltqStlwNvCnxTUV9tUwPyfd1wZBQ3RZC7hp3YZAuVBjYgXdUgZBY3MeqU5IlvKnZBOPHyo5g4ilO2FZC2q5CpkCBiJ3Nk849ZBNDjAIcZBPmadEZD';
+//		$fb = $this->fb;
+//		try {
+//			$post = $fb->post( '/' . $id . '/feed', array('message' => $post_details['message'], 'link' => 'https://themeisle.com', 'picture' => 'https://cdn.pixabay.com/photo/2016/01/19/18/00/city-1150026_960_720.jpg' ), $page_token );
+//			$post = $post->getGraphNode()->asArray();
+//		} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
+//			$error->throw_exception( '400 Bad Request', 'Graph returned an error: ' . $e->getMessage() );
+//		} catch ( Facebook\Exceptions\FacebookSDKException $e ) {
+//			$error->throw_exception( '400 Bad Request', 'Facebook SDK returned an error: ' . $e->getMessage() );
+//		}
+//
+//		var_dump( $post );
+        return true;
 	}
 
 }

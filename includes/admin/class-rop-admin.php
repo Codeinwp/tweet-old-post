@@ -104,10 +104,16 @@ class Rop_Admin {
 			wp_enqueue_script( $this->plugin_name . '_fa', 'https://use.fontawesome.com/af4c3f0b39.js', array(), $this->version, false );
 
 			wp_register_script( $this->plugin_name . '_main',  ROP_LITE_URL . 'assets/js/build/rop.js', array( $this->plugin_name . '_fa' ), $this->version, false );
-			wp_localize_script( $this->plugin_name . '_main', 'ropApiSettings', array(
-				'root' => esc_url_raw( rest_url( '/tweet-old-post/v8/api/' ) ),
-				'nonce' => wp_create_nonce( 'wp_rest' ),
-			) );
+            $array_nonce = array(
+                'root' => esc_url_raw( rest_url( '/tweet-old-post/v8/api/' ) )
+            );
+			if( current_user_can( 'manage_options' ) ) {
+			    $array_nonce = array(
+                    'root' => esc_url_raw( rest_url( '/tweet-old-post/v8/api/' ) ),
+                    'nonce' => wp_create_nonce( 'wp_rest' ),
+                );
+            }
+			wp_localize_script( $this->plugin_name . '_main', 'ropApiSettings', $array_nonce );
 			wp_localize_script( $this->plugin_name . '_main', 'ROP_ASSETS_URL', ROP_LITE_URL . 'assets/' );
 			wp_enqueue_script( $this->plugin_name . '_main' );
 		}

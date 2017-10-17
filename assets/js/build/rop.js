@@ -14021,7 +14021,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 
 var __vue_script__, __vue_template__
 __vue_script__ = __webpack_require__(38)
-__vue_template__ = __webpack_require__(97)
+__vue_template__ = __webpack_require__(100)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -14048,7 +14048,11 @@ var _accountsTabPanel = __webpack_require__(39);
 
 var _accountsTabPanel2 = _interopRequireDefault(_accountsTabPanel);
 
-var _logsTabPanel = __webpack_require__(94);
+var _settingsTabPanel = __webpack_require__(94);
+
+var _settingsTabPanel2 = _interopRequireDefault(_settingsTabPanel);
+
+var _logsTabPanel = __webpack_require__(97);
 
 var _logsTabPanel2 = _interopRequireDefault(_logsTabPanel);
 
@@ -14056,40 +14060,7 @@ var _vuex = __webpack_require__(19);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-module.exports = {
-	name: 'main-page-panel',
-	computed: (0, _vuex.mapState)(['displayTabs', 'page']),
-	created: function created() {},
-
-	data: function data() {
-		return {
-			plugin_logo: ROP_ASSETS_URL + 'img/logo_rop.png'
-		};
-	},
-	methods: {
-		switchTab: function switchTab(slug) {
-			this.$store.commit('setTabView', slug);
-		}
-	},
-	components: {
-		'accounts': _accountsTabPanel2.default,
-		settings: {
-			name: 'settings-view',
-			template: '<span>This is not yet ready</span>'
-		},
-		post: {
-			name: 'post-view',
-			template: '<span>This is not yet ready</span>'
-		},
-		schedule: {
-			name: 'schedule-view',
-			template: '<span>This is not yet ready</span>'
-		},
-		'logs': _logsTabPanel2.default
-	}
-	// </script>
-
-}; // <template>
+// <template>
 // 	<div>
 // 		<div class="panel title-panel" style="margin-bottom: 40px; padding-bottom: 20px;">
 // 			<div class="panel-header">
@@ -14123,6 +14094,37 @@ module.exports = {
 //
 // <script>
 /* global ROP_ASSETS_URL */
+module.exports = {
+	name: 'main-page-panel',
+	computed: (0, _vuex.mapState)(['displayTabs', 'page']),
+	created: function created() {},
+
+	data: function data() {
+		return {
+			plugin_logo: ROP_ASSETS_URL + 'img/logo_rop.png'
+		};
+	},
+	methods: {
+		switchTab: function switchTab(slug) {
+			this.$store.commit('setTabView', slug);
+		}
+	},
+	components: {
+		'accounts': _accountsTabPanel2.default,
+		'settings': _settingsTabPanel2.default,
+		post: {
+			name: 'post-view',
+			template: '<span>This is not yet ready</span>'
+		},
+		schedule: {
+			name: 'schedule-view',
+			template: '<span>This is not yet ready</span>'
+		},
+		'logs': _logsTabPanel2.default
+	}
+	// </script>
+
+};
 
 /***/ }),
 /* 39 */
@@ -15940,7 +15942,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/var/www/html/wp-base/wp-content/plugins/tweet-old-post/vue/src/vue-elements/logs-tab-panel.vue"
+  var id = "/var/www/html/wp-base/wp-content/plugins/tweet-old-post/vue/src/vue-elements/settings-tab-panel.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -15950,6 +15952,59 @@ if (false) {(function () {  module.hot.accept()
 
 /***/ }),
 /* 95 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// <template>
+//     <div class="tab-view">
+//         <h3>General Settings</h3>
+//         <p>This is a <b>Vue.js</b> component.</p>
+//         <div class="container">
+//         </div>
+//     </div>
+// </template>
+//
+// <script>
+module.exports = {
+	name: 'settings-view',
+	computed: {},
+	components: {}
+	// </script>
+
+};
+
+/***/ }),
+/* 96 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div class=\"tab-view\">\n        <h3>General Settings</h3>\n        <p>This is a <b>Vue.js</b> component.</p>\n        <div class=\"container\">\n        </div>\n    </div>\n";
+
+/***/ }),
+/* 97 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__vue_script__ = __webpack_require__(98)
+__vue_template__ = __webpack_require__(99)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/var/www/html/wp-base/wp-content/plugins/tweet-old-post/vue/src/vue-elements/logs-tab-panel.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15982,13 +16037,13 @@ module.exports = {
 };
 
 /***/ }),
-/* 96 */
+/* 99 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div class=\"container\">\n        <h3>Logs</h3>\n        <div class=\"columns\">\n            <div class=\"column col-12\">\n                <pre class=\"code\" data-lang=\"Vue.js\">\n                    <code>{{ logs }}</code>\n                </pre>\n            </div>\n        </div>\n    </div>\n";
 
 /***/ }),
-/* 97 */
+/* 100 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div>\n\t\t<div class=\"panel title-panel\" style=\"margin-bottom: 40px; padding-bottom: 20px;\">\n\t\t\t<div class=\"panel-header\">\n\t\t\t\t<img :src=\"plugin_logo\" style=\"float: left; margin-right: 10px;\" />\n\t\t\t\t<h1 class=\"d-inline-block\">Revive Old Posts</h1><span class=\"powered\"> by <a href=\"https://themeisle.com\" target=\"_blank\"><b>ThemeIsle</b></a></span>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel\">\n\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t<ul class=\"tab\">\n\t\t\t\t\t<li class=\"tab-item\" v-for=\"tab in displayTabs\" :class=\"{ active: tab.isActive }\"><a href=\"#\" @click=\"switchTab( tab.slug )\">{{ tab.name }}</a></li>\n\t\t\t\t\t<li class=\"tab-item tab-action\">\n\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Beta User\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Remote Check\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\n\t\t\t<component :is=\"page.view\"></component>\n\t\t</div>\n\t</div>\n";

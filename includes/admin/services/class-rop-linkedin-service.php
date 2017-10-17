@@ -104,6 +104,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 	/**
 	 * Method for authorizing the service.
+     *
+     * @codeCoverageIgnore
 	 *
 	 * @since   8.0.0
 	 * @access  public
@@ -127,6 +129,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 	/**
 	 * Method for authenticate the service.
+     *
+     * @codeCoverageIgnore
 	 *
 	 * @since   8.0.0
 	 * @access  public
@@ -182,6 +186,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	/**
 	 * Method to request a token from api.
 	 *
+     * @codeCoverageIgnore
+     *
 	 * @since   8.0.0
 	 * @access  protected
 	 * @return mixed
@@ -231,9 +237,11 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 */
 	public function sign_in_url( $data ) {
 		$credentials = $data['credentials'];
+        // @codeCoverageIgnoreStart
 		if ( ! session_id() ) {
 			session_start();
 		}
+        // @codeCoverageIgnoreEnd
 
 		$_SESSION['rop_linkedin_credentials'] = $credentials;
 		$this->set_api( $credentials['client_id'], $credentials['secret'] );
@@ -245,6 +253,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 	/**
 	 * Method to return a Rop_User_Model.
+     *
+     * @codeCoverageIgnore
 	 *
 	 * @since   8.0.0
 	 * @access  public
@@ -258,6 +268,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 	/**
 	 * Utility method to retrieve users from the Twitter account.
+     *
+     * @codeCoverageIgnore
 	 *
 	 * @since   8.0.0
 	 * @access  public
@@ -304,6 +316,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function share( $post_details ) {
-
+        return true;
 	}
 }

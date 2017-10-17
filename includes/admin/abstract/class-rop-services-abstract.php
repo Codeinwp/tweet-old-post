@@ -179,7 +179,6 @@ abstract class Rop_Services_Abstract {
 	 * @param   string $method The request type ( GET, POST, PUT, DELETE etc. ).
 	 */
 	protected function register_endpoint( $path, $callback, $method = 'GET' ) {
-
 		add_action( 'rest_api_init',
 			function() use ( $path, $callback, $method ) {
 				register_rest_route('tweet-old-post/v8', '/' . $this->service_name . '/' . $path, array(
