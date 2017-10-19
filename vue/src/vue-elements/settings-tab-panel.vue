@@ -1,18 +1,167 @@
 <template>
-    <div class="tab-view">
-        <h3>General Settings</h3>
-        <p>This is a <b>Vue.js</b> component.</p>
-        <div class="container">
-        </div>
-    </div>
+	<div class="tab-view">
+		<h3>General Settings</h3>
+		<p>This is a <b>Vue.js</b> component.</p>
+		<div class="container">
+			<div class="columns">
+				<!-- Minimum age of posts available for sharing, in days
+				(number) -->
+				<div class="column col-sm-12 col-md-12 col-lg-6">
+					<div class="columns">
+						<div class="column col-sm-12 col-md-6 col-xl-6 col-8 text-right">
+							<b>Minimum post age</b><br/>
+							<i>Minimum age of posts available for sharing, in days.</i>
+						</div>
+						<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-left">
+							<counter-input id="min_post_age" :maxVal="365" />
+						</div>
+					</div>
+				</div>
+				<!-- Maximum age of posts available for sharing, in days
+				(number) -->
+				<div class="column col-sm-12 col-md-12 col-lg-6">
+					<div class="columns">
+						<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-right">
+							<counter-input id="max_post_age" :maxVal="365" />
+						</div>
+						<div class="column col-sm-12 col-md-6 col-xl-6 col-8 text-left">
+							<b>Maximum post age</b><br/>
+							<i>Maximum age of posts available for sharing, in days.</i>
+						</div>
+					</div>
+				</div>
+			</div>
+			<hr/>
+			<div class="columns">
+				<!-- Number of posts to share per account per trigger
+				(number) -->
+				<div class="column col-sm-12 col-md-12 col-lg-6">
+					<div class="columns">
+						<div class="column col-sm-12 col-md-6 col-xl-6 col-8 text-right">
+							<b>Number of posts</b><br/>
+							<i>Number of posts to share per. account per. trigger of scheduled job.</i>
+						</div>
+						<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-left">
+							<counter-input id="no_of_posts" />
+						</div>
+					</div>
+				</div>
+				<!-- Share more than once, if there are no more posts to share, we should start re-sharing the one we
+				previously shared
+				(boolean) -->
+				<div class="column col-sm-12 col-md-12 col-lg-6">
+					<div class="columns">
+						<div class="column col-sm-12 col-md-2 col-xl-2 col-1 text-right">
+							<div class="form-group">
+								<label class="form-checkbox">
+									<input type="checkbox" />
+									<i class="form-icon"></i> Yes
+								</label>
+							</div>
+						</div>
+						<div class="column col-sm-12 col-md-10 col-xl-10 col-11 text-left">
+							<b>Share more than once?</b><br/>
+							<i>If there are no more posts to share, we should start re-sharing the one we previously shared.</i>
+						</div>
+					</div>
+				</div>
+			</div>
+			<hr/>
+			<div class="columns">
+				<!-- Post types available to share - what post types are available for share
+				( multi-select list ) -->
+				<div class="column col-sm-12 col-md-12 col-lg-12">
+					<div class="columns">
+						<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+							<b>Post types</b><br/>
+							<i>Post types available to share - what post types are available for share</i>
+						</div>
+						<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+                            <multiple-select :options="postTypes" :selected="[]" />
+						</div>
+					</div>
+				</div>
+			</div>
+            <hr/>
+            <div class="columns">
+                <!-- Taxonomies available for posts to share - based on what post types users choose to share, we should
+			    show the taxonomies available for that post type, along with their terms, which user can select to share.
+			    Here we should have also a toggle if either the taxonomies selected are included or excluded.
+			    ( multi-select list ) -->
+                <div class="column col-sm-12 col-md-12 col-lg-12">
+                    <div class="columns">
+                        <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+                            <b>Taxonomies</b><br/>
+                            <i>Taxonomies available for the selected post types. Use to include or exclude posts.</i>
+                        </div>
+                        <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+                            <div class="input-group">
+                                <multiple-select :options="taxonomies" :selected="[]" />
+                                <span class="input-group-addon">
+                                    <label class="form-checkbox">
+                                        <input type="checkbox" />
+                                        <i class="form-icon"></i> Exclude?
+                                    </label>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr/>
+            <div class="columns">
+                <!-- Posts excluded/included in sharing - what posts we should exclude or include in sharing
+                - we should have have an autocomplete list which should fetch posts from the previously select post_types
+                and terms and allow them to be include/excluded.
+                ( multi-select list ) -->
+                <div class="column col-sm-12 col-md-12 col-lg-12">
+                    <div class="columns">
+                        <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+                            <b>Posts</b><br/>
+                            <i>Posts excluded/included in sharing, filtered based on previous selections.</i>
+                        </div>
+                        <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+                            <multiple-select :options="postsAvailable" :selected="[]" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
 </template>
 
 <script>
+	import CounterInput from './reusables/counter-input.vue'
+	import MultipleSelect from './reusables/multiple-select.vue'
+
 	module.exports = {
 		name: 'settings-view',
 		computed: {
+			postTypes: function () {
+				return [
+					{ name: 'Post', selected: false },
+					{ name: 'Page', selected: true },
+					{ name: 'Custom Post', selected: false }
+				]
+			},
+			taxonomies: function () {
+				return [
+					{ name: 'Category', selected: false },
+					{ name: 'Article', selected: true },
+					{ name: 'News', selected: false }
+				]
+			},
+			postsAvailable: function () {
+				return [
+					{ name: 'This cool post!', selected: false },
+					{ name: 'Hello World', selected: true },
+					{ name: 'The curious case of autonomous AI.', selected: false }
+				]
+			}
 		},
 		components: {
+			CounterInput,
+			MultipleSelect
 		}
 	}
 </script>

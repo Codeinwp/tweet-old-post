@@ -12208,7 +12208,8 @@ exports.default = new _vuex2.default.Store({
 		page: {
 			debug: true,
 			logs: '### Here starts the log \n\n',
-			view: 'accounts'
+			// view: 'accounts'
+			view: 'settings'
 		},
 		auth_in_progress: false,
 		displayTabs: [{
@@ -15957,20 +15958,166 @@ if (false) {(function () {  module.hot.accept()
 "use strict";
 
 
+var _counterInput = __webpack_require__(101);
+
+var _counterInput2 = _interopRequireDefault(_counterInput);
+
+var _multipleSelect = __webpack_require__(106);
+
+var _multipleSelect2 = _interopRequireDefault(_multipleSelect);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 // <template>
-//     <div class="tab-view">
-//         <h3>General Settings</h3>
-//         <p>This is a <b>Vue.js</b> component.</p>
-//         <div class="container">
-//         </div>
-//     </div>
+// 	<div class="tab-view">
+// 		<h3>General Settings</h3>
+// 		<p>This is a <b>Vue.js</b> component.</p>
+// 		<div class="container">
+// 			<div class="columns">
+// 				<!-- Minimum age of posts available for sharing, in days
+// 				(number) -->
+// 				<div class="column col-sm-12 col-md-12 col-lg-6">
+// 					<div class="columns">
+// 						<div class="column col-sm-12 col-md-6 col-xl-6 col-8 text-right">
+// 							<b>Minimum post age</b><br/>
+// 							<i>Minimum age of posts available for sharing, in days.</i>
+// 						</div>
+// 						<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-left">
+// 							<counter-input id="min_post_age" :maxVal="365" />
+// 						</div>
+// 					</div>
+// 				</div>
+// 				<!-- Maximum age of posts available for sharing, in days
+// 				(number) -->
+// 				<div class="column col-sm-12 col-md-12 col-lg-6">
+// 					<div class="columns">
+// 						<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-right">
+// 							<counter-input id="max_post_age" :maxVal="365" />
+// 						</div>
+// 						<div class="column col-sm-12 col-md-6 col-xl-6 col-8 text-left">
+// 							<b>Maximum post age</b><br/>
+// 							<i>Maximum age of posts available for sharing, in days.</i>
+// 						</div>
+// 					</div>
+// 				</div>
+// 			</div>
+// 			<hr/>
+// 			<div class="columns">
+// 				<!-- Number of posts to share per account per trigger
+// 				(number) -->
+// 				<div class="column col-sm-12 col-md-12 col-lg-6">
+// 					<div class="columns">
+// 						<div class="column col-sm-12 col-md-6 col-xl-6 col-8 text-right">
+// 							<b>Number of posts</b><br/>
+// 							<i>Number of posts to share per. account per. trigger of scheduled job.</i>
+// 						</div>
+// 						<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-left">
+// 							<counter-input id="no_of_posts" />
+// 						</div>
+// 					</div>
+// 				</div>
+// 				<!-- Share more than once, if there are no more posts to share, we should start re-sharing the one we
+// 				previously shared
+// 				(boolean) -->
+// 				<div class="column col-sm-12 col-md-12 col-lg-6">
+// 					<div class="columns">
+// 						<div class="column col-sm-12 col-md-2 col-xl-2 col-1 text-right">
+// 							<div class="form-group">
+// 								<label class="form-checkbox">
+// 									<input type="checkbox" />
+// 									<i class="form-icon"></i> Yes
+// 								</label>
+// 							</div>
+// 						</div>
+// 						<div class="column col-sm-12 col-md-10 col-xl-10 col-11 text-left">
+// 							<b>Share more than once?</b><br/>
+// 							<i>If there are no more posts to share, we should start re-sharing the one we previously shared.</i>
+// 						</div>
+// 					</div>
+// 				</div>
+// 			</div>
+// 			<hr/>
+// 			<div class="columns">
+// 				<!-- Post types available to share - what post types are available for share
+// 				( multi-select list ) -->
+// 				<div class="column col-sm-12 col-md-12 col-lg-12">
+// 					<div class="columns">
+// 						<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+// 							<b>Post types</b><br/>
+// 							<i>Post types available to share - what post types are available for share</i>
+// 						</div>
+// 						<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+//                             <multiple-select :options="postTypes" :selected="[]" />
+// 						</div>
+// 					</div>
+// 				</div>
+// 			</div>
+//             <hr/>
+//             <div class="columns">
+//                 <!-- Taxonomies available for posts to share - based on what post types users choose to share, we should
+// 			    show the taxonomies available for that post type, along with their terms, which user can select to share.
+// 			    Here we should have also a toggle if either the taxonomies selected are included or excluded.
+// 			    ( multi-select list ) -->
+//                 <div class="column col-sm-12 col-md-12 col-lg-12">
+//                     <div class="columns">
+//                         <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+//                             <b>Taxonomies</b><br/>
+//                             <i>Taxonomies available for the selected post types. Use to include or exclude posts.</i>
+//                         </div>
+//                         <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+//                             <div class="input-group">
+//                                 <multiple-select :options="taxonomies" :selected="[]" />
+//                                 <span class="input-group-addon">
+//                                     <label class="form-checkbox">
+//                                         <input type="checkbox" />
+//                                         <i class="form-icon"></i> Exclude?
+//                                     </label>
+//                                 </span>
+//                             </div>
+//                         </div>
+//                     </div>
+//                 </div>
+//             </div>
+//             <hr/>
+//             <div class="columns">
+//                 <!-- Posts excluded/included in sharing - what posts we should exclude or include in sharing
+//                 - we should have have an autocomplete list which should fetch posts from the previously select post_types
+//                 and terms and allow them to be include/excluded.
+//                 ( multi-select list ) -->
+//                 <div class="column col-sm-12 col-md-12 col-lg-12">
+//                     <div class="columns">
+//                         <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+//                             <b>Posts</b><br/>
+//                             <i>Posts excluded/included in sharing, filtered based on previous selections.</i>
+//                         </div>
+//                         <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+//                             <multiple-select :options="postsAvailable" :selected="[]" />
+//                         </div>
+//                     </div>
+//                 </div>
+//             </div>
+// 		</div>
+// 	</div>
 // </template>
 //
 // <script>
 module.exports = {
 	name: 'settings-view',
-	computed: {},
-	components: {}
+	computed: {
+		postTypes: function postTypes() {
+			return [{ name: 'Post', selected: false }, { name: 'Page', selected: true }, { name: 'Custom Post', selected: false }];
+		},
+		taxonomies: function taxonomies() {
+			return [{ name: 'Category', selected: false }, { name: 'Article', selected: true }, { name: 'News', selected: false }];
+		},
+		postsAvailable: function postsAvailable() {
+			return [{ name: 'This cool post!', selected: false }, { name: 'Hello World', selected: true }, { name: 'The curious case of autonomous AI.', selected: false }];
+		}
+	},
+	components: {
+		CounterInput: _counterInput2.default,
+		MultipleSelect: _multipleSelect2.default
+	}
 	// </script>
 
 };
@@ -15979,7 +16126,7 @@ module.exports = {
 /* 96 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"tab-view\">\n        <h3>General Settings</h3>\n        <p>This is a <b>Vue.js</b> component.</p>\n        <div class=\"container\">\n        </div>\n    </div>\n";
+module.exports = "\n\t<div class=\"tab-view\">\n\t\t<h3>General Settings</h3>\n\t\t<p>This is a <b>Vue.js</b> component.</p>\n\t\t<div class=\"container\">\n\t\t\t<div class=\"columns\">\n\t\t\t\t<!-- Minimum age of posts available for sharing, in days\n\t\t\t\t(number) -->\n\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t<b>Minimum post age</b><br/>\n\t\t\t\t\t\t\t<i>Minimum age of posts available for sharing, in days.</i>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t<counter-input id=\"min_post_age\" :maxVal=\"365\" />\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- Maximum age of posts available for sharing, in days\n\t\t\t\t(number) -->\n\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-right\">\n\t\t\t\t\t\t\t<counter-input id=\"max_post_age\" :maxVal=\"365\" />\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-left\">\n\t\t\t\t\t\t\t<b>Maximum post age</b><br/>\n\t\t\t\t\t\t\t<i>Maximum age of posts available for sharing, in days.</i>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<hr/>\n\t\t\t<div class=\"columns\">\n\t\t\t\t<!-- Number of posts to share per account per trigger\n\t\t\t\t(number) -->\n\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t<b>Number of posts</b><br/>\n\t\t\t\t\t\t\t<i>Number of posts to share per. account per. trigger of scheduled job.</i>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t<counter-input id=\"no_of_posts\" />\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- Share more than once, if there are no more posts to share, we should start re-sharing the one we\n\t\t\t\tpreviously shared\n\t\t\t\t(boolean) -->\n\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-2 col-xl-2 col-1 text-right\">\n\t\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" />\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Yes\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-10 col-xl-10 col-11 text-left\">\n\t\t\t\t\t\t\t<b>Share more than once?</b><br/>\n\t\t\t\t\t\t\t<i>If there are no more posts to share, we should start re-sharing the one we previously shared.</i>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<hr/>\n\t\t\t<div class=\"columns\">\n\t\t\t\t<!-- Post types available to share - what post types are available for share\n\t\t\t\t( multi-select list ) -->\n\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t<b>Post types</b><br/>\n\t\t\t\t\t\t\t<i>Post types available to share - what post types are available for share</i>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n                            <multiple-select :options=\"postTypes\" :selected=\"[]\" />\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n            <hr/>\n            <div class=\"columns\">\n                <!-- Taxonomies available for posts to share - based on what post types users choose to share, we should\n\t\t\t    show the taxonomies available for that post type, along with their terms, which user can select to share.\n\t\t\t    Here we should have also a toggle if either the taxonomies selected are included or excluded.\n\t\t\t    ( multi-select list ) -->\n                <div class=\"column col-sm-12 col-md-12 col-lg-12\">\n                    <div class=\"columns\">\n                        <div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n                            <b>Taxonomies</b><br/>\n                            <i>Taxonomies available for the selected post types. Use to include or exclude posts.</i>\n                        </div>\n                        <div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n                            <div class=\"input-group\">\n                                <multiple-select :options=\"taxonomies\" :selected=\"[]\" />\n                                <span class=\"input-group-addon\">\n                                    <label class=\"form-checkbox\">\n                                        <input type=\"checkbox\" />\n                                        <i class=\"form-icon\"></i> Exclude?\n                                    </label>\n                                </span>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <hr/>\n            <div class=\"columns\">\n                <!-- Posts excluded/included in sharing - what posts we should exclude or include in sharing\n                - we should have have an autocomplete list which should fetch posts from the previously select post_types\n                and terms and allow them to be include/excluded.\n                ( multi-select list ) -->\n                <div class=\"column col-sm-12 col-md-12 col-lg-12\">\n                    <div class=\"columns\">\n                        <div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n                            <b>Posts</b><br/>\n                            <i>Posts excluded/included in sharing, filtered based on previous selections.</i>\n                        </div>\n                        <div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n                            <multiple-select :options=\"postsAvailable\" :selected=\"[]\" />\n                        </div>\n                    </div>\n                </div>\n            </div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 97 */
@@ -16047,6 +16194,456 @@ module.exports = "\n    <div class=\"container\">\n        <h3>Logs</h3>\n      
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div>\n\t\t<div class=\"panel title-panel\" style=\"margin-bottom: 40px; padding-bottom: 20px;\">\n\t\t\t<div class=\"panel-header\">\n\t\t\t\t<img :src=\"plugin_logo\" style=\"float: left; margin-right: 10px;\" />\n\t\t\t\t<h1 class=\"d-inline-block\">Revive Old Posts</h1><span class=\"powered\"> by <a href=\"https://themeisle.com\" target=\"_blank\"><b>ThemeIsle</b></a></span>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel\">\n\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t<ul class=\"tab\">\n\t\t\t\t\t<li class=\"tab-item\" v-for=\"tab in displayTabs\" :class=\"{ active: tab.isActive }\"><a href=\"#\" @click=\"switchTab( tab.slug )\">{{ tab.name }}</a></li>\n\t\t\t\t\t<li class=\"tab-item tab-action\">\n\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Beta User\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Remote Check\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\n\t\t\t<component :is=\"page.view\"></component>\n\t\t</div>\n\t</div>\n";
+
+/***/ }),
+/* 101 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(104)
+__vue_script__ = __webpack_require__(102)
+__vue_template__ = __webpack_require__(103)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/var/www/html/wp-base/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/counter-input.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 102 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// <template>
+// 	<div class="input-group rop-counter-group">
+// 		<input class="form-input rop-counter" type="number" :id="id" :value="inputValue" readonly>
+// 		<button class="btn input-group-btn increment-btn up" @mousedown="isPressed('up')" @mouseup="isReleased('up')"><i class="fa fa-fw fa-caret-up"></i></button>
+// 		<button class="btn input-group-btn increment-btn down" @mousedown="isPressed('down')" @mouseup="isReleased('down')"><i class="fa fa-fw fa-caret-down"></i></button>
+// 	</div>
+// </template>
+//
+// <script>
+var intervalID = null;
+
+module.exports = {
+	name: 'counter-input',
+	props: {
+		id: {
+			default: ''
+		},
+		value: {
+			default: 0,
+			type: Number
+		},
+		allowNegative: {
+			default: false,
+			type: Boolean
+		},
+		minVal: {
+			default: 0,
+			type: Number
+		},
+		maxVal: {
+			default: 0,
+			type: Number
+		}
+	},
+	data: function data() {
+		return {
+			pressStartTime: null,
+			incrementUp: 0,
+			incrementDown: 0,
+			inputValue: this.value
+		};
+	},
+	computed: {},
+	methods: {
+		updateInput: function updateInput() {
+			var now = new Date();
+			var secondsPassed = parseInt((now.getTime() - this.pressStartTime.getTime()) / 1000);
+			var increment = secondsPassed;
+			if (secondsPassed === 0) increment = 1;
+
+			if (this.incrementUp === 1) {
+				this.inputValue += increment;
+				if (this.inputValue > this.maxVal && this.maxVal !== 0) this.inputValue = this.maxVal;
+			}
+			if (this.incrementDown === 1) {
+				this.inputValue -= increment;
+				if (this.inputValue < 0 && this.allowNegative === false) this.inputValue = 0;
+				if (this.inputValue < this.minVal) this.inputValue = this.minVal;
+			}
+		},
+		isPressed: function isPressed(type) {
+			if (type === 'up') {
+				this.incrementUp = 1;
+			} else {
+				this.incrementDown = 1;
+			}
+			this.pressStartTime = new Date();
+			this.updateInput();
+			intervalID = setInterval(this.updateInput, 250);
+		},
+		isReleased: function isReleased(type) {
+			if (type === 'up') {
+				this.incrementUp = 0;
+			} else {
+				this.incrementDown = 0;
+			}
+			this.pressStartTime = null;
+			clearInterval(intervalID);
+		}
+	}
+	// </script>
+	//
+	// <style>
+	// 	#rop_core .input-group.rop-counter-group {
+	// 		position: relative;
+	// 	}
+	// 	#rop_core .btn.increment-btn {
+	// 		position: absolute;
+	// 		right: 0;
+	// 		width: 1rem;
+	// 		height: 0.85rem;
+	// 		padding: 0.025rem 0.010rem;
+	// 		line-height: 0.3rem;
+	// 		z-index: 2;
+	// 	}
+	//
+	// 	#rop_core .btn.increment-btn.up { top: 0; }
+	// 	#rop_core .btn.increment-btn.down { bottom: 0; }
+	//
+	// 	input.rop-counter::-webkit-inner-spin-button {
+	// 		display: none;
+	// 	}
+	// </style>
+
+};
+
+/***/ }),
+/* 103 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div class=\"input-group rop-counter-group\">\n\t\t<input class=\"form-input rop-counter\" type=\"number\" :id=\"id\" :value=\"inputValue\" readonly>\n\t\t<button class=\"btn input-group-btn increment-btn up\" @mousedown=\"isPressed('up')\" @mouseup=\"isReleased('up')\"><i class=\"fa fa-fw fa-caret-up\"></i></button>\n\t\t<button class=\"btn input-group-btn increment-btn down\" @mousedown=\"isPressed('down')\" @mouseup=\"isReleased('down')\"><i class=\"fa fa-fw fa-caret-down\"></i></button>\n\t</div>\n";
+
+/***/ }),
+/* 104 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(105);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(11)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0e4d6f14&file=counter-input.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./counter-input.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0e4d6f14&file=counter-input.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./counter-input.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 105 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(10)();
+// imports
+
+
+// module
+exports.push([module.i, "\n\t#rop_core .input-group.rop-counter-group {\n\t\tposition: relative;\n\t}\n\t#rop_core .btn.increment-btn {\n\t\tposition: absolute;\n\t\tright: 0;\n\t\twidth: 1rem;\n\t\theight: 0.85rem;\n\t\tpadding: 0.025rem 0.010rem;\n\t\tline-height: 0.3rem;\n\t\tz-index: 2;\n\t}\n\n\t#rop_core .btn.increment-btn.up { top: 0; }\n\t#rop_core .btn.increment-btn.down { bottom: 0; }\n\n\tinput.rop-counter::-webkit-inner-spin-button {\n\t\tdisplay: none;\n\t}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 106 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__vue_script__ = __webpack_require__(107)
+__vue_template__ = __webpack_require__(108)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/var/www/html/wp-base/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/multiple-select.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 107 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _getIterator2 = __webpack_require__(29);
+
+var _getIterator3 = _interopRequireDefault(_getIterator2);
+
+var _vueClickaway = __webpack_require__(82);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function containsObject(obj, list) {
+	var i = void 0;
+	for (i = 0; i < list.length; i++) {
+		if (list[i] === obj) {
+			return true;
+		}
+	}
+	return false;
+} // <template>
+// 	<div class="form-autocomplete" style="width: 100%;" v-on-clickaway="closeDropdown">
+// 		<!-- autocomplete input container -->
+// 		<div class="form-autocomplete-input form-input" :class="is_focused">
+//
+// 			<!-- autocomplete chips -->
+// 			<label class="chip" v-for="( option, index ) in selected">
+// 				{{option.name}}
+// 				<a href="#" class="btn btn-clear" aria-label="Close" @click.prevent="removeSelected(index)" role="button" v-if="!is_one"></a>
+// 			</label>
+//
+// 			<!-- autocomplete real input box -->
+// 			<input style="height: 1.0rem;" class="form-input" type="text" ref="search" v-model="search" :placeholder="autocomplete_placeholder" @click="magic_flag = true" @focus="magic_flag = true" @keyup="magic_flag = true" @keydown.8="popLast()" @keydown.38="highlightItem(true)" @keydown.40="highlightItem()" :readonly="is_one">
+// 		</div>
+//
+// 		<!-- autocomplete suggestion list -->
+// 		<ul class="menu" ref="autocomplete_results" :class="is_visible" v-if="!is_one">
+// 			<!-- menu list chips -->
+// 			<li class="menu-item" v-for="( option, index ) in options" v-if="filterSearch(option)">
+// 				<a href="#" @click.prevent="addToSelected(index)" @keydown.38="highlightItem(true)" @keydown.40="highlightItem()">
+// 					<div class="tile tile-centered">
+// 						<div class="tile-content" v-html="markMatch(option.name, search)"></div>
+// 					</div>
+// 				</a>
+// 			</li>
+// 			<li v-if="has_results">
+// 				<a href="#">
+// 					<div class="tile tile-centered">
+// 						<div class="tile-content"><i>Nothing found matching "{{search}}" ...</i></div>
+// 					</div>
+// 				</a>
+// 			</li>
+// 		</ul>
+// 	</div>
+//
+// </template>
+//
+// <script>
+
+
+module.exports = {
+	name: 'multiple-select',
+	mixins: [_vueClickaway.mixin],
+	props: {
+		options: {
+			default: [],
+			type: Array
+		},
+		selected: {
+			default: [],
+			type: Array
+		},
+		placeHolderText: {
+			default: '',
+			type: String
+		}
+	},
+	mounted: function mounted() {
+		var index = 0;
+		var _iteratorNormalCompletion = true;
+		var _didIteratorError = false;
+		var _iteratorError = undefined;
+
+		try {
+			for (var _iterator = (0, _getIterator3.default)(this.options), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+				var option = _step.value;
+
+				if (option.selected) {
+					this.addToSelected(index);
+				}
+				index++;
+			}
+		} catch (err) {
+			_didIteratorError = true;
+			_iteratorError = err;
+		} finally {
+			try {
+				if (!_iteratorNormalCompletion && _iterator.return) {
+					_iterator.return();
+				}
+			} finally {
+				if (_didIteratorError) {
+					throw _iteratorError;
+				}
+			}
+		}
+	},
+
+	data: function data() {
+		return {
+			search: '',
+			highlighted: -1,
+			no_results: false,
+			magic_flag: false
+		};
+	},
+	computed: {
+		is_focused: function is_focused() {
+			return {
+				'is-focused': this.magic_flag === true
+			};
+		},
+		is_visible: function is_visible() {
+			return {
+				'd-none': this.magic_flag === false
+			};
+		},
+		is_one: function is_one() {
+			if (this.options.length === 1 && this.options[0].selected === false) {
+				this.selected.push(this.options[0]);
+				return true;
+			} else if (this.options.length === 1 && this.options[0].selected === true) {
+				return true;
+			}
+			return false;
+		},
+		autocomplete_placeholder: function autocomplete_placeholder() {
+			if (this.is_one) {
+				return '';
+			}
+			return this.placeHolderText;
+		},
+		has_results: function has_results() {
+			var found = 0;
+			var _iteratorNormalCompletion2 = true;
+			var _didIteratorError2 = false;
+			var _iteratorError2 = undefined;
+
+			try {
+				for (var _iterator2 = (0, _getIterator3.default)(this.options), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+					var option = _step2.value;
+
+					if (this.filterSearch(option)) {
+						found++;
+					}
+				}
+			} catch (err) {
+				_didIteratorError2 = true;
+				_iteratorError2 = err;
+			} finally {
+				try {
+					if (!_iteratorNormalCompletion2 && _iterator2.return) {
+						_iterator2.return();
+					}
+				} finally {
+					if (_didIteratorError2) {
+						throw _iteratorError2;
+					}
+				}
+			}
+
+			if (found) {
+				return false;
+			}
+			return true;
+		}
+	},
+	methods: {
+		closeDropdown: function closeDropdown() {
+			this.magic_flag = false;
+		},
+		highlightItem: function highlightItem() {
+			var up = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+			if (up) {
+				this.highlighted--;
+			} else {
+				this.highlighted++;
+			}
+			var size = this.$refs.autocomplete_results.children.length - 1;
+			if (size < 0) size = 0;
+			if (this.highlighted > size) this.highlighted = 0;
+			if (this.highlighted < 0) this.highlighted = size;
+			this.$refs.autocomplete_results.children[this.highlighted].firstChild.focus();
+		},
+		popLast: function popLast() {
+			if (this.search === '') {
+				this.selected.pop();
+				this.magic_flag = false;
+			}
+		},
+		markMatch: function markMatch(value, search) {
+			var result = value;
+			if (value.toLowerCase().indexOf(search.toLowerCase()) !== -1 && search !== '') {
+				var rex = new RegExp(search, 'ig');
+				result = value.replace(rex, function (match) {
+					return '<mark>' + match + '</mark>';
+				});
+			}
+			return result;
+		},
+		filterSearch: function filterSearch(element) {
+			if (element.name.toLowerCase().indexOf(this.search.toLowerCase()) !== -1 || this.search === '') {
+				if (containsObject(element, this.selected)) {
+					return false;
+				}
+				return true;
+			}
+			return false;
+		},
+		addToSelected: function addToSelected(index) {
+			this.selected.push(this.options[index]);
+			this.$refs.search.focus();
+			this.magic_flag = false;
+			this.search = '';
+		},
+		removeSelected: function removeSelected(index) {
+			this.selected.splice(index, 1);
+			this.$refs.search.focus();
+			this.magic_flag = false;
+			this.search = '';
+		}
+	}
+	// </script>
+
+};
+
+/***/ }),
+/* 108 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div class=\"form-autocomplete\" style=\"width: 100%;\" v-on-clickaway=\"closeDropdown\">\n\t\t<!-- autocomplete input container -->\n\t\t<div class=\"form-autocomplete-input form-input\" :class=\"is_focused\">\n\n\t\t\t<!-- autocomplete chips -->\n\t\t\t<label class=\"chip\" v-for=\"( option, index ) in selected\">\n\t\t\t\t{{option.name}}\n\t\t\t\t<a href=\"#\" class=\"btn btn-clear\" aria-label=\"Close\" @click.prevent=\"removeSelected(index)\" role=\"button\" v-if=\"!is_one\"></a>\n\t\t\t</label>\n\n\t\t\t<!-- autocomplete real input box -->\n\t\t\t<input style=\"height: 1.0rem;\" class=\"form-input\" type=\"text\" ref=\"search\" v-model=\"search\" :placeholder=\"autocomplete_placeholder\" @click=\"magic_flag = true\" @focus=\"magic_flag = true\" @keyup=\"magic_flag = true\" @keydown.8=\"popLast()\" @keydown.38=\"highlightItem(true)\" @keydown.40=\"highlightItem()\" :readonly=\"is_one\">\n\t\t</div>\n\n\t\t<!-- autocomplete suggestion list -->\n\t\t<ul class=\"menu\" ref=\"autocomplete_results\" :class=\"is_visible\" v-if=\"!is_one\">\n\t\t\t<!-- menu list chips -->\n\t\t\t<li class=\"menu-item\" v-for=\"( option, index ) in options\" v-if=\"filterSearch(option)\">\n\t\t\t\t<a href=\"#\" @click.prevent=\"addToSelected(index)\" @keydown.38=\"highlightItem(true)\" @keydown.40=\"highlightItem()\">\n\t\t\t\t\t<div class=\"tile tile-centered\">\n\t\t\t\t\t\t<div class=\"tile-content\" v-html=\"markMatch(option.name, search)\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</a>\n\t\t\t</li>\n\t\t\t<li v-if=\"has_results\">\n\t\t\t\t<a href=\"#\">\n\t\t\t\t\t<div class=\"tile tile-centered\">\n\t\t\t\t\t\t<div class=\"tile-content\"><i>Nothing found matching \"{{search}}\" ...</i></div>\n\t\t\t\t\t</div>\n\t\t\t\t</a>\n\t\t\t</li>\n\t\t</ul>\n\t</div>\n\n";
 
 /***/ })
 /******/ ]);
