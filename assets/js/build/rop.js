@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 32);
+/******/ 	return __webpack_require__(__webpack_require__.s = 33);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -79,8 +79,8 @@ if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var store = __webpack_require__(23)('wks');
-var uid = __webpack_require__(24);
+var store = __webpack_require__(24)('wks');
+var uid = __webpack_require__(25);
 var Symbol = __webpack_require__(0).Symbol;
 var USE_SYMBOL = typeof Symbol == 'function';
 
@@ -105,8 +105,8 @@ if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 /***/ (function(module, exports, __webpack_require__) {
 
 var dP = __webpack_require__(16);
-var createDesc = __webpack_require__(28);
-module.exports = __webpack_require__(6) ? function (object, key, value) {
+var createDesc = __webpack_require__(29);
+module.exports = __webpack_require__(8) ? function (object, key, value) {
   return dP.f(object, key, createDesc(1, value));
 } : function (object, key, value) {
   object[key] = value;
@@ -118,6 +118,314 @@ module.exports = __webpack_require__(6) ? function (object, key, value) {
 /* 4 */
 /***/ (function(module, exports) {
 
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function() {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		var result = [];
+		for(var i = 0; i < this.length; i++) {
+			var item = this[i];
+			if(item[2]) {
+				result.push("@media " + item[2] + "{" + item[1] + "}");
+			} else {
+				result.push(item[1]);
+			}
+		}
+		return result.join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+var stylesInDom = {},
+	memoize = function(fn) {
+		var memo;
+		return function () {
+			if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+			return memo;
+		};
+	},
+	isOldIE = memoize(function() {
+		return /msie [6-9]\b/.test(self.navigator.userAgent.toLowerCase());
+	}),
+	getHeadElement = memoize(function () {
+		return document.head || document.getElementsByTagName("head")[0];
+	}),
+	singletonElement = null,
+	singletonCounter = 0,
+	styleElementsInsertedAtTop = [];
+
+module.exports = function(list, options) {
+	if(typeof DEBUG !== "undefined" && DEBUG) {
+		if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+	}
+
+	options = options || {};
+	// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+	// tags it will allow on a page
+	if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+
+	// By default, add <style> tags to the bottom of <head>.
+	if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
+
+	var styles = listToStyles(list);
+	addStylesToDom(styles, options);
+
+	return function update(newList) {
+		var mayRemove = [];
+		for(var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+			domStyle.refs--;
+			mayRemove.push(domStyle);
+		}
+		if(newList) {
+			var newStyles = listToStyles(newList);
+			addStylesToDom(newStyles, options);
+		}
+		for(var i = 0; i < mayRemove.length; i++) {
+			var domStyle = mayRemove[i];
+			if(domStyle.refs === 0) {
+				for(var j = 0; j < domStyle.parts.length; j++)
+					domStyle.parts[j]();
+				delete stylesInDom[domStyle.id];
+			}
+		}
+	};
+}
+
+function addStylesToDom(styles, options) {
+	for(var i = 0; i < styles.length; i++) {
+		var item = styles[i];
+		var domStyle = stylesInDom[item.id];
+		if(domStyle) {
+			domStyle.refs++;
+			for(var j = 0; j < domStyle.parts.length; j++) {
+				domStyle.parts[j](item.parts[j]);
+			}
+			for(; j < item.parts.length; j++) {
+				domStyle.parts.push(addStyle(item.parts[j], options));
+			}
+		} else {
+			var parts = [];
+			for(var j = 0; j < item.parts.length; j++) {
+				parts.push(addStyle(item.parts[j], options));
+			}
+			stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+		}
+	}
+}
+
+function listToStyles(list) {
+	var styles = [];
+	var newStyles = {};
+	for(var i = 0; i < list.length; i++) {
+		var item = list[i];
+		var id = item[0];
+		var css = item[1];
+		var media = item[2];
+		var sourceMap = item[3];
+		var part = {css: css, media: media, sourceMap: sourceMap};
+		if(!newStyles[id])
+			styles.push(newStyles[id] = {id: id, parts: [part]});
+		else
+			newStyles[id].parts.push(part);
+	}
+	return styles;
+}
+
+function insertStyleElement(options, styleElement) {
+	var head = getHeadElement();
+	var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
+	if (options.insertAt === "top") {
+		if(!lastStyleElementInsertedAtTop) {
+			head.insertBefore(styleElement, head.firstChild);
+		} else if(lastStyleElementInsertedAtTop.nextSibling) {
+			head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
+		} else {
+			head.appendChild(styleElement);
+		}
+		styleElementsInsertedAtTop.push(styleElement);
+	} else if (options.insertAt === "bottom") {
+		head.appendChild(styleElement);
+	} else {
+		throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+	}
+}
+
+function removeStyleElement(styleElement) {
+	styleElement.parentNode.removeChild(styleElement);
+	var idx = styleElementsInsertedAtTop.indexOf(styleElement);
+	if(idx >= 0) {
+		styleElementsInsertedAtTop.splice(idx, 1);
+	}
+}
+
+function createStyleElement(options) {
+	var styleElement = document.createElement("style");
+	styleElement.type = "text/css";
+	insertStyleElement(options, styleElement);
+	return styleElement;
+}
+
+function createLinkElement(options) {
+	var linkElement = document.createElement("link");
+	linkElement.rel = "stylesheet";
+	insertStyleElement(options, linkElement);
+	return linkElement;
+}
+
+function addStyle(obj, options) {
+	var styleElement, update, remove;
+
+	if (options.singleton) {
+		var styleIndex = singletonCounter++;
+		styleElement = singletonElement || (singletonElement = createStyleElement(options));
+		update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
+		remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
+	} else if(obj.sourceMap &&
+		typeof URL === "function" &&
+		typeof URL.createObjectURL === "function" &&
+		typeof URL.revokeObjectURL === "function" &&
+		typeof Blob === "function" &&
+		typeof btoa === "function") {
+		styleElement = createLinkElement(options);
+		update = updateLink.bind(null, styleElement);
+		remove = function() {
+			removeStyleElement(styleElement);
+			if(styleElement.href)
+				URL.revokeObjectURL(styleElement.href);
+		};
+	} else {
+		styleElement = createStyleElement(options);
+		update = applyToTag.bind(null, styleElement);
+		remove = function() {
+			removeStyleElement(styleElement);
+		};
+	}
+
+	update(obj);
+
+	return function updateStyle(newObj) {
+		if(newObj) {
+			if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
+				return;
+			update(obj = newObj);
+		} else {
+			remove();
+		}
+	};
+}
+
+var replaceText = (function () {
+	var textStore = [];
+
+	return function (index, replacement) {
+		textStore[index] = replacement;
+		return textStore.filter(Boolean).join('\n');
+	};
+})();
+
+function applyToSingletonTag(styleElement, index, remove, obj) {
+	var css = remove ? "" : obj.css;
+
+	if (styleElement.styleSheet) {
+		styleElement.styleSheet.cssText = replaceText(index, css);
+	} else {
+		var cssNode = document.createTextNode(css);
+		var childNodes = styleElement.childNodes;
+		if (childNodes[index]) styleElement.removeChild(childNodes[index]);
+		if (childNodes.length) {
+			styleElement.insertBefore(cssNode, childNodes[index]);
+		} else {
+			styleElement.appendChild(cssNode);
+		}
+	}
+}
+
+function applyToTag(styleElement, obj) {
+	var css = obj.css;
+	var media = obj.media;
+
+	if(media) {
+		styleElement.setAttribute("media", media)
+	}
+
+	if(styleElement.styleSheet) {
+		styleElement.styleSheet.cssText = css;
+	} else {
+		while(styleElement.firstChild) {
+			styleElement.removeChild(styleElement.firstChild);
+		}
+		styleElement.appendChild(document.createTextNode(css));
+	}
+}
+
+function updateLink(linkElement, obj) {
+	var css = obj.css;
+	var sourceMap = obj.sourceMap;
+
+	if(sourceMap) {
+		// http://stackoverflow.com/a/26603875
+		css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+	}
+
+	var blob = new Blob([css], { type: "text/css" });
+
+	var oldSrc = linkElement.href;
+
+	linkElement.href = URL.createObjectURL(blob);
+
+	if(oldSrc)
+		URL.revokeObjectURL(oldSrc);
+}
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
 var hasOwnProperty = {}.hasOwnProperty;
 module.exports = function (it, key) {
   return hasOwnProperty.call(it, key);
@@ -125,7 +433,7 @@ module.exports = function (it, key) {
 
 
 /***/ }),
-/* 5 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isObject = __webpack_require__(17);
@@ -136,7 +444,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 6 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Thank's IE8 for his funny defineProperty
@@ -146,14 +454,14 @@ module.exports = !__webpack_require__(18)(function () {
 
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, exports) {
 
 module.exports = {};
 
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10349,10 +10657,10 @@ Vue$3.compile = compileToFunctions;
 
 /* harmony default export */ __webpack_exports__["default"] = (Vue$3);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(9), __webpack_require__(33)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(11), __webpack_require__(34)))
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -10542,314 +10850,6 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 10 */
-/***/ (function(module, exports) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-// css base code, injected by the css-loader
-module.exports = function() {
-	var list = [];
-
-	// return the list of modules as css string
-	list.toString = function toString() {
-		var result = [];
-		for(var i = 0; i < this.length; i++) {
-			var item = this[i];
-			if(item[2]) {
-				result.push("@media " + item[2] + "{" + item[1] + "}");
-			} else {
-				result.push(item[1]);
-			}
-		}
-		return result.join("");
-	};
-
-	// import a list of modules into the list
-	list.i = function(modules, mediaQuery) {
-		if(typeof modules === "string")
-			modules = [[null, modules, ""]];
-		var alreadyImportedModules = {};
-		for(var i = 0; i < this.length; i++) {
-			var id = this[i][0];
-			if(typeof id === "number")
-				alreadyImportedModules[id] = true;
-		}
-		for(i = 0; i < modules.length; i++) {
-			var item = modules[i];
-			// skip already imported module
-			// this implementation is not 100% perfect for weird media query combinations
-			//  when a module is imported multiple times with different media queries.
-			//  I hope this will never occur (Hey this way we have smaller bundles)
-			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-				if(mediaQuery && !item[2]) {
-					item[2] = mediaQuery;
-				} else if(mediaQuery) {
-					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-				}
-				list.push(item);
-			}
-		}
-	};
-	return list;
-};
-
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-var stylesInDom = {},
-	memoize = function(fn) {
-		var memo;
-		return function () {
-			if (typeof memo === "undefined") memo = fn.apply(this, arguments);
-			return memo;
-		};
-	},
-	isOldIE = memoize(function() {
-		return /msie [6-9]\b/.test(self.navigator.userAgent.toLowerCase());
-	}),
-	getHeadElement = memoize(function () {
-		return document.head || document.getElementsByTagName("head")[0];
-	}),
-	singletonElement = null,
-	singletonCounter = 0,
-	styleElementsInsertedAtTop = [];
-
-module.exports = function(list, options) {
-	if(typeof DEBUG !== "undefined" && DEBUG) {
-		if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
-	}
-
-	options = options || {};
-	// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-	// tags it will allow on a page
-	if (typeof options.singleton === "undefined") options.singleton = isOldIE();
-
-	// By default, add <style> tags to the bottom of <head>.
-	if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
-
-	var styles = listToStyles(list);
-	addStylesToDom(styles, options);
-
-	return function update(newList) {
-		var mayRemove = [];
-		for(var i = 0; i < styles.length; i++) {
-			var item = styles[i];
-			var domStyle = stylesInDom[item.id];
-			domStyle.refs--;
-			mayRemove.push(domStyle);
-		}
-		if(newList) {
-			var newStyles = listToStyles(newList);
-			addStylesToDom(newStyles, options);
-		}
-		for(var i = 0; i < mayRemove.length; i++) {
-			var domStyle = mayRemove[i];
-			if(domStyle.refs === 0) {
-				for(var j = 0; j < domStyle.parts.length; j++)
-					domStyle.parts[j]();
-				delete stylesInDom[domStyle.id];
-			}
-		}
-	};
-}
-
-function addStylesToDom(styles, options) {
-	for(var i = 0; i < styles.length; i++) {
-		var item = styles[i];
-		var domStyle = stylesInDom[item.id];
-		if(domStyle) {
-			domStyle.refs++;
-			for(var j = 0; j < domStyle.parts.length; j++) {
-				domStyle.parts[j](item.parts[j]);
-			}
-			for(; j < item.parts.length; j++) {
-				domStyle.parts.push(addStyle(item.parts[j], options));
-			}
-		} else {
-			var parts = [];
-			for(var j = 0; j < item.parts.length; j++) {
-				parts.push(addStyle(item.parts[j], options));
-			}
-			stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
-		}
-	}
-}
-
-function listToStyles(list) {
-	var styles = [];
-	var newStyles = {};
-	for(var i = 0; i < list.length; i++) {
-		var item = list[i];
-		var id = item[0];
-		var css = item[1];
-		var media = item[2];
-		var sourceMap = item[3];
-		var part = {css: css, media: media, sourceMap: sourceMap};
-		if(!newStyles[id])
-			styles.push(newStyles[id] = {id: id, parts: [part]});
-		else
-			newStyles[id].parts.push(part);
-	}
-	return styles;
-}
-
-function insertStyleElement(options, styleElement) {
-	var head = getHeadElement();
-	var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
-	if (options.insertAt === "top") {
-		if(!lastStyleElementInsertedAtTop) {
-			head.insertBefore(styleElement, head.firstChild);
-		} else if(lastStyleElementInsertedAtTop.nextSibling) {
-			head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
-		} else {
-			head.appendChild(styleElement);
-		}
-		styleElementsInsertedAtTop.push(styleElement);
-	} else if (options.insertAt === "bottom") {
-		head.appendChild(styleElement);
-	} else {
-		throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
-	}
-}
-
-function removeStyleElement(styleElement) {
-	styleElement.parentNode.removeChild(styleElement);
-	var idx = styleElementsInsertedAtTop.indexOf(styleElement);
-	if(idx >= 0) {
-		styleElementsInsertedAtTop.splice(idx, 1);
-	}
-}
-
-function createStyleElement(options) {
-	var styleElement = document.createElement("style");
-	styleElement.type = "text/css";
-	insertStyleElement(options, styleElement);
-	return styleElement;
-}
-
-function createLinkElement(options) {
-	var linkElement = document.createElement("link");
-	linkElement.rel = "stylesheet";
-	insertStyleElement(options, linkElement);
-	return linkElement;
-}
-
-function addStyle(obj, options) {
-	var styleElement, update, remove;
-
-	if (options.singleton) {
-		var styleIndex = singletonCounter++;
-		styleElement = singletonElement || (singletonElement = createStyleElement(options));
-		update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
-		remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
-	} else if(obj.sourceMap &&
-		typeof URL === "function" &&
-		typeof URL.createObjectURL === "function" &&
-		typeof URL.revokeObjectURL === "function" &&
-		typeof Blob === "function" &&
-		typeof btoa === "function") {
-		styleElement = createLinkElement(options);
-		update = updateLink.bind(null, styleElement);
-		remove = function() {
-			removeStyleElement(styleElement);
-			if(styleElement.href)
-				URL.revokeObjectURL(styleElement.href);
-		};
-	} else {
-		styleElement = createStyleElement(options);
-		update = applyToTag.bind(null, styleElement);
-		remove = function() {
-			removeStyleElement(styleElement);
-		};
-	}
-
-	update(obj);
-
-	return function updateStyle(newObj) {
-		if(newObj) {
-			if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
-				return;
-			update(obj = newObj);
-		} else {
-			remove();
-		}
-	};
-}
-
-var replaceText = (function () {
-	var textStore = [];
-
-	return function (index, replacement) {
-		textStore[index] = replacement;
-		return textStore.filter(Boolean).join('\n');
-	};
-})();
-
-function applyToSingletonTag(styleElement, index, remove, obj) {
-	var css = remove ? "" : obj.css;
-
-	if (styleElement.styleSheet) {
-		styleElement.styleSheet.cssText = replaceText(index, css);
-	} else {
-		var cssNode = document.createTextNode(css);
-		var childNodes = styleElement.childNodes;
-		if (childNodes[index]) styleElement.removeChild(childNodes[index]);
-		if (childNodes.length) {
-			styleElement.insertBefore(cssNode, childNodes[index]);
-		} else {
-			styleElement.appendChild(cssNode);
-		}
-	}
-}
-
-function applyToTag(styleElement, obj) {
-	var css = obj.css;
-	var media = obj.media;
-
-	if(media) {
-		styleElement.setAttribute("media", media)
-	}
-
-	if(styleElement.styleSheet) {
-		styleElement.styleSheet.cssText = css;
-	} else {
-		while(styleElement.firstChild) {
-			styleElement.removeChild(styleElement.firstChild);
-		}
-		styleElement.appendChild(document.createTextNode(css));
-	}
-}
-
-function updateLink(linkElement, obj) {
-	var css = obj.css;
-	var sourceMap = obj.sourceMap;
-
-	if(sourceMap) {
-		// http://stackoverflow.com/a/26603875
-		css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
-	}
-
-	var blob = new Blob([css], { type: "text/css" });
-
-	var oldSrc = linkElement.href;
-
-	linkElement.href = URL.createObjectURL(blob);
-
-	if(oldSrc)
-		URL.revokeObjectURL(oldSrc);
-}
-
-
-/***/ }),
 /* 12 */
 /***/ (function(module, exports) {
 
@@ -10865,7 +10865,7 @@ module.exports = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // to indexed object, toObject with fallback for non-array-like ES3 strings
-var IObject = __webpack_require__(49);
+var IObject = __webpack_require__(50);
 var defined = __webpack_require__(12);
 module.exports = function (it) {
   return IObject(defined(it));
@@ -10888,8 +10888,8 @@ module.exports = function (it) {
 /* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var shared = __webpack_require__(23)('keys');
-var uid = __webpack_require__(24);
+var shared = __webpack_require__(24)('keys');
+var uid = __webpack_require__(25);
 module.exports = function (key) {
   return shared[key] || (shared[key] = uid(key));
 };
@@ -10899,12 +10899,12 @@ module.exports = function (key) {
 /* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var anObject = __webpack_require__(5);
-var IE8_DOM_DEFINE = __webpack_require__(56);
-var toPrimitive = __webpack_require__(57);
+var anObject = __webpack_require__(7);
+var IE8_DOM_DEFINE = __webpack_require__(57);
+var toPrimitive = __webpack_require__(58);
 var dP = Object.defineProperty;
 
-exports.f = __webpack_require__(6) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
+exports.f = __webpack_require__(8) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
   anObject(O);
   P = toPrimitive(P, true);
   anObject(Attributes);
@@ -10941,6 +10941,12 @@ module.exports = function (exec) {
 
 /***/ }),
 /* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = { "default": __webpack_require__(59), __esModule: true };
+
+/***/ }),
+/* 20 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11849,10 +11855,10 @@ var index_esm = {
 
 /* harmony default export */ __webpack_exports__["default"] = (index_esm);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(9)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(11)))
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.13 ToObject(argument)
@@ -11863,12 +11869,12 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.14 / 15.2.3.14 Object.keys(O)
-var $keys = __webpack_require__(48);
-var enumBugKeys = __webpack_require__(25);
+var $keys = __webpack_require__(49);
+var enumBugKeys = __webpack_require__(26);
 
 module.exports = Object.keys || function keys(O) {
   return $keys(O, enumBugKeys);
@@ -11876,7 +11882,7 @@ module.exports = Object.keys || function keys(O) {
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -11887,7 +11893,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(0);
@@ -11899,7 +11905,7 @@ module.exports = function (key) {
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports) {
 
 var id = 0;
@@ -11910,7 +11916,7 @@ module.exports = function (key) {
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports) {
 
 // IE 8- don't enum bug keys
@@ -11920,12 +11926,12 @@ module.exports = (
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(0);
 var core = __webpack_require__(2);
-var ctx = __webpack_require__(54);
+var ctx = __webpack_require__(55);
 var hide = __webpack_require__(3);
 var PROTOTYPE = 'prototype';
 
@@ -11987,7 +11993,7 @@ module.exports = $export;
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isObject = __webpack_require__(17);
@@ -12000,7 +12006,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports) {
 
 module.exports = function (bitmap, value) {
@@ -12014,26 +12020,20 @@ module.exports = function (bitmap, value) {
 
 
 /***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = { "default": __webpack_require__(58), __esModule: true };
-
-/***/ }),
 /* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var LIBRARY = __webpack_require__(63);
-var $export = __webpack_require__(26);
-var redefine = __webpack_require__(64);
+var LIBRARY = __webpack_require__(64);
+var $export = __webpack_require__(27);
+var redefine = __webpack_require__(65);
 var hide = __webpack_require__(3);
-var has = __webpack_require__(4);
-var Iterators = __webpack_require__(7);
-var $iterCreate = __webpack_require__(65);
+var has = __webpack_require__(6);
+var Iterators = __webpack_require__(9);
+var $iterCreate = __webpack_require__(66);
 var setToStringTag = __webpack_require__(31);
-var getPrototypeOf = __webpack_require__(69);
+var getPrototypeOf = __webpack_require__(70);
 var ITERATOR = __webpack_require__(1)('iterator');
 var BUGGY = !([].keys && 'next' in [].keys()); // Safari has buggy iterators w/o `next`
 var FF_ITERATOR = '@@iterator';
@@ -12101,7 +12101,7 @@ module.exports = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
 /***/ (function(module, exports, __webpack_require__) {
 
 var def = __webpack_require__(16).f;
-var has = __webpack_require__(4);
+var has = __webpack_require__(6);
 var TAG = __webpack_require__(1)('toStringTag');
 
 module.exports = function (it, tag, stat) {
@@ -12114,17 +12114,101 @@ module.exports = function (it, tag, stat) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+var Vue = __webpack_require__(10);
+Vue = 'default' in Vue ? Vue['default'] : Vue;
+
+var version = '2.1.0';
+
+var compatible = (/^2\./).test(Vue.version);
+if (!compatible) {
+  Vue.util.warn('VueClickaway ' + version + ' only supports Vue 2.x, and does not support Vue ' + Vue.version);
+}
 
 
-var _vue = __webpack_require__(8);
+
+// @SECTION: implementation
+
+var HANDLER = '_vue_clickaway_handler';
+
+function bind(el, binding) {
+  unbind(el);
+
+  var callback = binding.value;
+  if (typeof callback !== 'function') {
+    if (process.env.NODE_ENV !== 'production') {
+      Vue.util.warn(
+        'v-' + binding.name + '="' +
+        binding.expression + '" expects a function value, ' +
+        'got ' + callback
+      );
+    }
+    return;
+  }
+
+  // @NOTE: Vue binds directives in microtasks, while UI events are dispatched
+  //        in macrotasks. This causes the listener to be set up before
+  //        the "origin" click event (the event that lead to the binding of
+  //        the directive) arrives at the document root. To work around that,
+  //        we ignore events until the end of the "initial" macrotask.
+  // @REFERENCE: https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/
+  // @REFERENCE: https://github.com/simplesmiler/vue-clickaway/issues/8
+  var initialMacrotaskEnded = false;
+  setTimeout(function() {
+    initialMacrotaskEnded = true;
+  }, 0);
+
+  el[HANDLER] = function(ev) {
+    // @NOTE: IE 5.0+
+    // @REFERENCE: https://developer.mozilla.org/en/docs/Web/API/Node/contains
+    if (initialMacrotaskEnded && !el.contains(ev.target)) {
+      return callback(ev);
+    }
+  };
+
+  document.documentElement.addEventListener('click', el[HANDLER], false);
+}
+
+function unbind(el) {
+  document.documentElement.removeEventListener('click', el[HANDLER], false);
+  delete el[HANDLER];
+}
+
+var directive = {
+  bind: bind,
+  update: function(el, binding) {
+    if (binding.value === binding.oldValue) return;
+    bind(el, binding);
+  },
+  unbind: unbind,
+};
+
+var mixin = {
+  directives: { onClickaway: directive },
+};
+
+exports.version = version;
+exports.directive = directive;
+exports.mixin = mixin;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)))
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _vue = __webpack_require__(10);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _rop_store = __webpack_require__(34);
+var _rop_store = __webpack_require__(35);
 
 var _rop_store2 = _interopRequireDefault(_rop_store);
 
-var _mainPagePanel = __webpack_require__(37);
+var _mainPagePanel = __webpack_require__(38);
 
 var _mainPagePanel2 = _interopRequireDefault(_mainPagePanel);
 
@@ -12135,6 +12219,7 @@ window.onload = function () {
 		el: '#rop_core',
 		store: _rop_store2.default,
 		created: function created() {
+			_rop_store2.default.dispatch('getGeneralSettings');
 			_rop_store2.default.dispatch('fetchAvailableServices');
 			_rop_store2.default.dispatch('fetchAuthenticatedServices');
 			_rop_store2.default.dispatch('fetchActiveAccounts');
@@ -12148,7 +12233,7 @@ window.onload = function () {
 /* exported RopApp */
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports) {
 
 var g;
@@ -12175,7 +12260,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12185,15 +12270,15 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _vue = __webpack_require__(8);
+var _vue = __webpack_require__(10);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _vuex = __webpack_require__(19);
+var _vuex = __webpack_require__(20);
 
 var _vuex2 = _interopRequireDefault(_vuex);
 
-var _vueResource = __webpack_require__(35);
+var _vueResource = __webpack_require__(36);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
@@ -12233,6 +12318,7 @@ exports.default = new _vuex2.default.Store({
 			slug: 'logs',
 			isActive: false
 		}],
+		generalSettings: [],
 		availableServices: [],
 		authenticatedServices: [],
 		activeAccounts: []
@@ -12292,6 +12378,18 @@ exports.default = new _vuex2.default.Store({
 		},
 		updateActiveAccounts: function updateActiveAccounts(state, data) {
 			state.activeAccounts = data;
+		},
+		updateGeneralSettings: function updateGeneralSettings(state, data) {
+			state.generalSettings = data;
+		},
+		updateSelectedPostTypes: function updateSelectedPostTypes(state, data) {
+			state.generalSettings.selected_post_types = data;
+		},
+		updateAvailableTaxonomies: function updateAvailableTaxonomies(state, data) {
+			state.generalSettings.available_taxonomies = data;
+		},
+		updateSelectedTaxonomies: function updateSelectedTaxonomies(state, data) {
+			state.generalSettings.selected_taxonomies = data;
 		}
 	},
 	actions: {
@@ -12314,7 +12412,6 @@ exports.default = new _vuex2.default.Store({
 		getServiceSignInUrl: function getServiceSignInUrl(_ref2, data) {
 			var commit = _ref2.commit;
 
-			console.log('Recived', data);
 			return new Promise(function (resolve, reject) {
 				_vue2.default.http({
 					url: ropApiSettings.root,
@@ -12428,12 +12525,61 @@ exports.default = new _vuex2.default.Store({
 			}, function () {
 				commit('logMessage', ['Error when trying to remove and update authenticated services.', 'error']);
 			});
+		},
+		getGeneralSettings: function getGeneralSettings(_ref8, data) {
+			var commit = _ref8.commit;
+
+			_vue2.default.http({
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'get_general_settings' },
+				responseType: 'json'
+			}).then(function (response) {
+				commit('updateGeneralSettings', response.data);
+			}, function () {
+				commit('logMessage', ['Error retrieving general settings.', 'error']);
+			});
+		},
+		fetchTaxonomies: function fetchTaxonomies(_ref9, data) {
+			var commit = _ref9.commit;
+
+			_vue2.default.http({
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'get_taxonomies' },
+				body: data,
+				responseType: 'json'
+			}).then(function (response) {
+				console.log(response.data);
+				commit('updateAvailableTaxonomies', response.data);
+			}, function () {
+				commit('logMessage', ['Error retrieving taxonomies.', 'error']);
+			});
+		},
+		fetchPosts: function fetchPosts(_ref10, data) {
+			var commit = _ref10.commit;
+
+			_vue2.default.http({
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'get_posts' },
+				body: data,
+				responseType: 'json'
+			}).then(function (response) {
+				console.log(response.data);
+				// commit( 'updateAvailableTaxonomies', response.data )
+			}, function () {
+				commit('logMessage', ['Error retrieving posts.', 'error']);
+			});
 		}
 	}
 });
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -13535,7 +13681,7 @@ var xhrClient = function (request) {
 
 var nodeClient = function (request) {
 
-    var client = __webpack_require__(36);
+    var client = __webpack_require__(37);
 
     return new PromiseObj(function (resolve) {
 
@@ -14011,18 +14157,18 @@ if (typeof window !== 'undefined' && window.Vue) {
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(38)
-__vue_template__ = __webpack_require__(100)
+__vue_script__ = __webpack_require__(39)
+__vue_template__ = __webpack_require__(108)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -14039,13 +14185,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _accountsTabPanel = __webpack_require__(39);
+var _accountsTabPanel = __webpack_require__(40);
 
 var _accountsTabPanel2 = _interopRequireDefault(_accountsTabPanel);
 
@@ -14053,11 +14199,11 @@ var _settingsTabPanel = __webpack_require__(94);
 
 var _settingsTabPanel2 = _interopRequireDefault(_settingsTabPanel);
 
-var _logsTabPanel = __webpack_require__(97);
+var _logsTabPanel = __webpack_require__(105);
 
 var _logsTabPanel2 = _interopRequireDefault(_logsTabPanel);
 
-var _vuex = __webpack_require__(19);
+var _vuex = __webpack_require__(20);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -14128,11 +14274,11 @@ module.exports = {
 };
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(40)
+__vue_script__ = __webpack_require__(41)
 __vue_template__ = __webpack_require__(93)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
@@ -14150,17 +14296,17 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _signInBtn = __webpack_require__(41);
+var _signInBtn = __webpack_require__(42);
 
 var _signInBtn2 = _interopRequireDefault(_signInBtn);
 
-var _serviceTile = __webpack_require__(76);
+var _serviceTile = __webpack_require__(77);
 
 var _serviceTile2 = _interopRequireDefault(_serviceTile);
 
@@ -14252,13 +14398,13 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(42)
-__vue_script__ = __webpack_require__(44)
-__vue_template__ = __webpack_require__(75)
+__webpack_require__(43)
+__vue_script__ = __webpack_require__(45)
+__vue_template__ = __webpack_require__(76)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -14275,16 +14421,16 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(43);
+var content = __webpack_require__(44);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(11)(content, {});
+var update = __webpack_require__(5)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -14301,10 +14447,10 @@ if(false) {
 }
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(10)();
+exports = module.exports = __webpack_require__(4)();
 // imports
 
 
@@ -14315,17 +14461,17 @@ exports.push([module.i, "\n\t#rop_core .sign-in-btn > .modal[_v-7e903530] {\n\t\
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _keys = __webpack_require__(45);
+var _keys = __webpack_require__(46);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _getIterator2 = __webpack_require__(29);
+var _getIterator2 = __webpack_require__(19);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -14538,28 +14684,28 @@ module.exports = {
 };
 
 /***/ }),
-/* 45 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = { "default": __webpack_require__(46), __esModule: true };
-
-/***/ }),
 /* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(47);
-module.exports = __webpack_require__(2).Object.keys;
-
+module.exports = { "default": __webpack_require__(47), __esModule: true };
 
 /***/ }),
 /* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// 19.1.2.14 Object.keys(O)
-var toObject = __webpack_require__(20);
-var $keys = __webpack_require__(21);
+__webpack_require__(48);
+module.exports = __webpack_require__(2).Object.keys;
 
-__webpack_require__(53)('keys', function () {
+
+/***/ }),
+/* 48 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 19.1.2.14 Object.keys(O)
+var toObject = __webpack_require__(21);
+var $keys = __webpack_require__(22);
+
+__webpack_require__(54)('keys', function () {
   return function keys(it) {
     return $keys(toObject(it));
   };
@@ -14567,12 +14713,12 @@ __webpack_require__(53)('keys', function () {
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var has = __webpack_require__(4);
+var has = __webpack_require__(6);
 var toIObject = __webpack_require__(13);
-var arrayIndexOf = __webpack_require__(50)(false);
+var arrayIndexOf = __webpack_require__(51)(false);
 var IE_PROTO = __webpack_require__(15)('IE_PROTO');
 
 module.exports = function (object, names) {
@@ -14590,11 +14736,11 @@ module.exports = function (object, names) {
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for non-array-like ES3 and non-enumerable old V8 strings
-var cof = __webpack_require__(22);
+var cof = __webpack_require__(23);
 // eslint-disable-next-line no-prototype-builtins
 module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
   return cof(it) == 'String' ? it.split('') : Object(it);
@@ -14602,14 +14748,14 @@ module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
 
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // false -> Array#indexOf
 // true  -> Array#includes
 var toIObject = __webpack_require__(13);
-var toLength = __webpack_require__(51);
-var toAbsoluteIndex = __webpack_require__(52);
+var toLength = __webpack_require__(52);
+var toAbsoluteIndex = __webpack_require__(53);
 module.exports = function (IS_INCLUDES) {
   return function ($this, el, fromIndex) {
     var O = toIObject($this);
@@ -14631,7 +14777,7 @@ module.exports = function (IS_INCLUDES) {
 
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.15 ToLength
@@ -14643,7 +14789,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var toInteger = __webpack_require__(14);
@@ -14656,11 +14802,11 @@ module.exports = function (index, length) {
 
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // most Object methods by ES6 should accept primitives
-var $export = __webpack_require__(26);
+var $export = __webpack_require__(27);
 var core = __webpack_require__(2);
 var fails = __webpack_require__(18);
 module.exports = function (KEY, exec) {
@@ -14672,11 +14818,11 @@ module.exports = function (KEY, exec) {
 
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // optional / simple context binding
-var aFunction = __webpack_require__(55);
+var aFunction = __webpack_require__(56);
 module.exports = function (fn, that, length) {
   aFunction(fn);
   if (that === undefined) return fn;
@@ -14698,7 +14844,7 @@ module.exports = function (fn, that, length) {
 
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports) {
 
 module.exports = function (it) {
@@ -14708,16 +14854,16 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = !__webpack_require__(6) && !__webpack_require__(18)(function () {
-  return Object.defineProperty(__webpack_require__(27)('div'), 'a', { get: function () { return 7; } }).a != 7;
+module.exports = !__webpack_require__(8) && !__webpack_require__(18)(function () {
+  return Object.defineProperty(__webpack_require__(28)('div'), 'a', { get: function () { return 7; } }).a != 7;
 });
 
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.1 ToPrimitive(input [, PreferredType])
@@ -14735,22 +14881,22 @@ module.exports = function (it, S) {
 
 
 /***/ }),
-/* 58 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(59);
-__webpack_require__(70);
-module.exports = __webpack_require__(72);
-
-
-/***/ }),
 /* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(60);
+__webpack_require__(71);
+module.exports = __webpack_require__(73);
+
+
+/***/ }),
+/* 60 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(61);
 var global = __webpack_require__(0);
 var hide = __webpack_require__(3);
-var Iterators = __webpack_require__(7);
+var Iterators = __webpack_require__(9);
 var TO_STRING_TAG = __webpack_require__(1)('toStringTag');
 
 var DOMIterables = ('CSSRuleList,CSSStyleDeclaration,CSSValueList,ClientRectList,DOMRectList,DOMStringList,' +
@@ -14769,14 +14915,14 @@ for (var i = 0; i < DOMIterables.length; i++) {
 
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var addToUnscopables = __webpack_require__(61);
-var step = __webpack_require__(62);
-var Iterators = __webpack_require__(7);
+var addToUnscopables = __webpack_require__(62);
+var step = __webpack_require__(63);
+var Iterators = __webpack_require__(9);
 var toIObject = __webpack_require__(13);
 
 // 22.1.3.4 Array.prototype.entries()
@@ -14810,14 +14956,14 @@ addToUnscopables('entries');
 
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports) {
 
 module.exports = function () { /* empty */ };
 
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports) {
 
 module.exports = function (done, value) {
@@ -14826,27 +14972,27 @@ module.exports = function (done, value) {
 
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports) {
 
 module.exports = true;
 
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(3);
 
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var create = __webpack_require__(66);
-var descriptor = __webpack_require__(28);
+var create = __webpack_require__(67);
+var descriptor = __webpack_require__(29);
 var setToStringTag = __webpack_require__(31);
 var IteratorPrototype = {};
 
@@ -14860,13 +15006,13 @@ module.exports = function (Constructor, NAME, next) {
 
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
-var anObject = __webpack_require__(5);
-var dPs = __webpack_require__(67);
-var enumBugKeys = __webpack_require__(25);
+var anObject = __webpack_require__(7);
+var dPs = __webpack_require__(68);
+var enumBugKeys = __webpack_require__(26);
 var IE_PROTO = __webpack_require__(15)('IE_PROTO');
 var Empty = function () { /* empty */ };
 var PROTOTYPE = 'prototype';
@@ -14874,13 +15020,13 @@ var PROTOTYPE = 'prototype';
 // Create object with fake `null` prototype: use iframe Object with cleared prototype
 var createDict = function () {
   // Thrash, waste and sodomy: IE GC bug
-  var iframe = __webpack_require__(27)('iframe');
+  var iframe = __webpack_require__(28)('iframe');
   var i = enumBugKeys.length;
   var lt = '<';
   var gt = '>';
   var iframeDocument;
   iframe.style.display = 'none';
-  __webpack_require__(68).appendChild(iframe);
+  __webpack_require__(69).appendChild(iframe);
   iframe.src = 'javascript:'; // eslint-disable-line no-script-url
   // createDict = iframe.contentWindow.Object;
   // html.removeChild(iframe);
@@ -14907,14 +15053,14 @@ module.exports = Object.create || function create(O, Properties) {
 
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var dP = __webpack_require__(16);
-var anObject = __webpack_require__(5);
-var getKeys = __webpack_require__(21);
+var anObject = __webpack_require__(7);
+var getKeys = __webpack_require__(22);
 
-module.exports = __webpack_require__(6) ? Object.defineProperties : function defineProperties(O, Properties) {
+module.exports = __webpack_require__(8) ? Object.defineProperties : function defineProperties(O, Properties) {
   anObject(O);
   var keys = getKeys(Properties);
   var length = keys.length;
@@ -14926,7 +15072,7 @@ module.exports = __webpack_require__(6) ? Object.defineProperties : function def
 
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var document = __webpack_require__(0).document;
@@ -14934,12 +15080,12 @@ module.exports = document && document.documentElement;
 
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
-var has = __webpack_require__(4);
-var toObject = __webpack_require__(20);
+var has = __webpack_require__(6);
+var toObject = __webpack_require__(21);
 var IE_PROTO = __webpack_require__(15)('IE_PROTO');
 var ObjectProto = Object.prototype;
 
@@ -14953,12 +15099,12 @@ module.exports = Object.getPrototypeOf || function (O) {
 
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var $at = __webpack_require__(71)(true);
+var $at = __webpack_require__(72)(true);
 
 // 21.1.3.27 String.prototype[@@iterator]()
 __webpack_require__(30)(String, 'String', function (iterated) {
@@ -14977,7 +15123,7 @@ __webpack_require__(30)(String, 'String', function (iterated) {
 
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var toInteger = __webpack_require__(14);
@@ -15000,11 +15146,11 @@ module.exports = function (TO_STRING) {
 
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var anObject = __webpack_require__(5);
-var get = __webpack_require__(73);
+var anObject = __webpack_require__(7);
+var get = __webpack_require__(74);
 module.exports = __webpack_require__(2).getIterator = function (it) {
   var iterFn = get(it);
   if (typeof iterFn != 'function') throw TypeError(it + ' is not iterable!');
@@ -15013,12 +15159,12 @@ module.exports = __webpack_require__(2).getIterator = function (it) {
 
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var classof = __webpack_require__(74);
+var classof = __webpack_require__(75);
 var ITERATOR = __webpack_require__(1)('iterator');
-var Iterators = __webpack_require__(7);
+var Iterators = __webpack_require__(9);
 module.exports = __webpack_require__(2).getIteratorMethod = function (it) {
   if (it != undefined) return it[ITERATOR]
     || it['@@iterator']
@@ -15027,11 +15173,11 @@ module.exports = __webpack_require__(2).getIteratorMethod = function (it) {
 
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // getting tag from 19.1.3.6 Object.prototype.toString()
-var cof = __webpack_require__(22);
+var cof = __webpack_require__(23);
 var TAG = __webpack_require__(1)('toStringTag');
 // ES3 wrong here
 var ARG = cof(function () { return arguments; }()) == 'Arguments';
@@ -15056,18 +15202,18 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"sign-in-btn\" _v-7e903530=\"\">\n\t\t<div class=\"input-group\" _v-7e903530=\"\">\n\t\t\t<select class=\"form-select\" v-model=\"selected_network\" _v-7e903530=\"\">\n\t\t\t\t<option v-for=\"( service, network ) in services\" v-bind:value=\"network\" :disabled=\"checkDisabled( service.active )\" _v-7e903530=\"\">{{ service.name }}</option>\n\t\t\t</select>\n\n\t\t\t<button class=\"btn input-group-btn\" :class=\"serviceClass\" @click=\"requestAuthorization()\" :disabled=\"checkDisabled(true)\" _v-7e903530=\"\">\n\t\t\t\t<i class=\"fa fa-fw\" :class=\"serviceIcon\" aria-hidden=\"true\" _v-7e903530=\"\"></i> Sign In\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"modal\" :class=\"modalActiveClass\" _v-7e903530=\"\">\n\t\t\t<div class=\"modal-overlay\" _v-7e903530=\"\"></div>\n\t\t\t<div class=\"modal-container\" _v-7e903530=\"\">\n\t\t\t\t<div class=\"modal-header\" _v-7e903530=\"\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"closeModal()\" _v-7e903530=\"\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\" _v-7e903530=\"\">{{ modal.serviceName }} Service Credentials</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\" _v-7e903530=\"\">\n\t\t\t\t\t<div class=\"content\" _v-7e903530=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-7e903530=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-7e903530=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-7e903530=\"\">\n\t\t\t\t\t\t\t<i _v-7e903530=\"\">{{ field.description }}</i>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-footer\" _v-7e903530=\"\">\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-7e903530=\"\">Sign in</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(77)
-__vue_script__ = __webpack_require__(79)
+__webpack_require__(78)
+__vue_script__ = __webpack_require__(80)
 __vue_template__ = __webpack_require__(87)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
@@ -15085,16 +15231,16 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(78);
+var content = __webpack_require__(79);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(11)(content, {});
+var update = __webpack_require__(5)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -15111,10 +15257,10 @@ if(false) {
 }
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(10)();
+exports = module.exports = __webpack_require__(4)();
 // imports
 
 
@@ -15125,13 +15271,13 @@ exports.push([module.i, "\n\n    #rop_core .btn.btn-danger[_v-4ed4525c] {\n     
 
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _serviceAutocomplete = __webpack_require__(80);
+var _serviceAutocomplete = __webpack_require__(81);
 
 var _serviceAutocomplete2 = _interopRequireDefault(_serviceAutocomplete);
 
@@ -15284,11 +15430,11 @@ module.exports = {
 };
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(81)
+__vue_script__ = __webpack_require__(82)
 __vue_template__ = __webpack_require__(83)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
@@ -15306,17 +15452,17 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _getIterator2 = __webpack_require__(29);
+var _getIterator2 = __webpack_require__(19);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
-var _vueClickaway = __webpack_require__(82);
+var _vueClickaway = __webpack_require__(32);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -15545,90 +15691,6 @@ module.exports = {
 };
 
 /***/ }),
-/* 82 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {
-
-var Vue = __webpack_require__(8);
-Vue = 'default' in Vue ? Vue['default'] : Vue;
-
-var version = '2.1.0';
-
-var compatible = (/^2\./).test(Vue.version);
-if (!compatible) {
-  Vue.util.warn('VueClickaway ' + version + ' only supports Vue 2.x, and does not support Vue ' + Vue.version);
-}
-
-
-
-// @SECTION: implementation
-
-var HANDLER = '_vue_clickaway_handler';
-
-function bind(el, binding) {
-  unbind(el);
-
-  var callback = binding.value;
-  if (typeof callback !== 'function') {
-    if (process.env.NODE_ENV !== 'production') {
-      Vue.util.warn(
-        'v-' + binding.name + '="' +
-        binding.expression + '" expects a function value, ' +
-        'got ' + callback
-      );
-    }
-    return;
-  }
-
-  // @NOTE: Vue binds directives in microtasks, while UI events are dispatched
-  //        in macrotasks. This causes the listener to be set up before
-  //        the "origin" click event (the event that lead to the binding of
-  //        the directive) arrives at the document root. To work around that,
-  //        we ignore events until the end of the "initial" macrotask.
-  // @REFERENCE: https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/
-  // @REFERENCE: https://github.com/simplesmiler/vue-clickaway/issues/8
-  var initialMacrotaskEnded = false;
-  setTimeout(function() {
-    initialMacrotaskEnded = true;
-  }, 0);
-
-  el[HANDLER] = function(ev) {
-    // @NOTE: IE 5.0+
-    // @REFERENCE: https://developer.mozilla.org/en/docs/Web/API/Node/contains
-    if (initialMacrotaskEnded && !el.contains(ev.target)) {
-      return callback(ev);
-    }
-  };
-
-  document.documentElement.addEventListener('click', el[HANDLER], false);
-}
-
-function unbind(el) {
-  document.documentElement.removeEventListener('click', el[HANDLER], false);
-  delete el[HANDLER];
-}
-
-var directive = {
-  bind: bind,
-  update: function(el, binding) {
-    if (binding.value === binding.oldValue) return;
-    bind(el, binding);
-  },
-  unbind: unbind,
-};
-
-var mixin = {
-  directives: { onClickaway: directive },
-};
-
-exports.version = version;
-exports.directive = directive;
-exports.mixin = mixin;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
-
-/***/ }),
 /* 83 */
 /***/ (function(module, exports) {
 
@@ -15762,7 +15824,7 @@ if (false) {(function () {  module.hot.accept()
 var content = __webpack_require__(90);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(11)(content, {});
+var update = __webpack_require__(5)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -15782,7 +15844,7 @@ if(false) {
 /* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(10)();
+exports = module.exports = __webpack_require__(4)();
 // imports
 
 
@@ -15935,7 +15997,7 @@ module.exports = "\n    <div class=\"tab-view\">\n        <div class=\"panel-bod
 
 var __vue_script__, __vue_template__
 __vue_script__ = __webpack_require__(95)
-__vue_template__ = __webpack_require__(96)
+__vue_template__ = __webpack_require__(104)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -15958,11 +16020,11 @@ if (false) {(function () {  module.hot.accept()
 "use strict";
 
 
-var _counterInput = __webpack_require__(101);
+var _counterInput = __webpack_require__(96);
 
 var _counterInput2 = _interopRequireDefault(_counterInput);
 
-var _multipleSelect = __webpack_require__(106);
+var _multipleSelect = __webpack_require__(101);
 
 var _multipleSelect2 = _interopRequireDefault(_multipleSelect);
 
@@ -15970,132 +16032,145 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // <template>
 // 	<div class="tab-view">
-// 		<h3>General Settings</h3>
-// 		<p>This is a <b>Vue.js</b> component.</p>
-// 		<div class="container">
-// 			<div class="columns">
-// 				<!-- Minimum age of posts available for sharing, in days
-// 				(number) -->
-// 				<div class="column col-sm-12 col-md-12 col-lg-6">
-// 					<div class="columns">
-// 						<div class="column col-sm-12 col-md-6 col-xl-6 col-8 text-right">
-// 							<b>Minimum post age</b><br/>
-// 							<i>Minimum age of posts available for sharing, in days.</i>
-// 						</div>
-// 						<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-left">
-// 							<counter-input id="min_post_age" :maxVal="365" />
-// 						</div>
-// 					</div>
-// 				</div>
-// 				<!-- Maximum age of posts available for sharing, in days
-// 				(number) -->
-// 				<div class="column col-sm-12 col-md-12 col-lg-6">
-// 					<div class="columns">
-// 						<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-right">
-// 							<counter-input id="max_post_age" :maxVal="365" />
-// 						</div>
-// 						<div class="column col-sm-12 col-md-6 col-xl-6 col-8 text-left">
-// 							<b>Maximum post age</b><br/>
-// 							<i>Maximum age of posts available for sharing, in days.</i>
-// 						</div>
-// 					</div>
-// 				</div>
-// 			</div>
-// 			<hr/>
-// 			<div class="columns">
-// 				<!-- Number of posts to share per account per trigger
-// 				(number) -->
-// 				<div class="column col-sm-12 col-md-12 col-lg-6">
-// 					<div class="columns">
-// 						<div class="column col-sm-12 col-md-6 col-xl-6 col-8 text-right">
-// 							<b>Number of posts</b><br/>
-// 							<i>Number of posts to share per. account per. trigger of scheduled job.</i>
-// 						</div>
-// 						<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-left">
-// 							<counter-input id="no_of_posts" />
-// 						</div>
-// 					</div>
-// 				</div>
-// 				<!-- Share more than once, if there are no more posts to share, we should start re-sharing the one we
-// 				previously shared
-// 				(boolean) -->
-// 				<div class="column col-sm-12 col-md-12 col-lg-6">
-// 					<div class="columns">
-// 						<div class="column col-sm-12 col-md-2 col-xl-2 col-1 text-right">
-// 							<div class="form-group">
-// 								<label class="form-checkbox">
-// 									<input type="checkbox" />
-// 									<i class="form-icon"></i> Yes
-// 								</label>
+// 		<div class="panel-body">
+// 			<h3>General Settings</h3>
+// 			<p>This is a <b>Vue.js</b> component.</p>
+// 			<div class="container">
+// 				<div class="columns">
+// 					<!-- Minimum age of posts available for sharing, in days
+// 					(number) -->
+// 					<div class="column col-sm-12 col-md-12 col-lg-6">
+// 						<div class="columns">
+// 							<div class="column col-sm-12 col-md-6 col-xl-6 col-8 text-right">
+// 								<b>Minimum post age</b><br/>
+// 								<i>Minimum age of posts available for sharing, in days.</i>
+// 							</div>
+// 							<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-left">
+// 								<counter-input id="min_post_age" :maxVal="365" v-model="generalSettings.minimum_post_age" />
 // 							</div>
 // 						</div>
-// 						<div class="column col-sm-12 col-md-10 col-xl-10 col-11 text-left">
-// 							<b>Share more than once?</b><br/>
-// 							<i>If there are no more posts to share, we should start re-sharing the one we previously shared.</i>
+// 					</div>
+// 					<!-- Maximum age of posts available for sharing, in days
+// 					(number) -->
+// 					<div class="column col-sm-12 col-md-12 col-lg-6">
+// 						<div class="columns">
+// 							<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-right">
+// 								<counter-input id="max_post_age" :maxVal="365" v-model="generalSettings.maximum_post_age" />
+// 							</div>
+// 							<div class="column col-sm-12 col-md-6 col-xl-6 col-8 text-left">
+// 								<b>Maximum post age</b><br/>
+// 								<i>Maximum age of posts available for sharing, in days.</i>
+// 							</div>
+// 						</div>
+// 					</div>
+// 				</div>
+// 				<hr/>
+// 				<div class="columns">
+// 					<!-- Number of posts to share per account per trigger
+// 					(number) -->
+// 					<div class="column col-sm-12 col-md-12 col-lg-6">
+// 						<div class="columns">
+// 							<div class="column col-sm-12 col-md-6 col-xl-6 col-8 text-right">
+// 								<b>Number of posts</b><br/>
+// 								<i>Number of posts to share per. account per. trigger of scheduled job.</i>
+// 							</div>
+// 							<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-left">
+// 								<counter-input id="no_of_posts" v-model="generalSettings.number_of_posts" />
+// 							</div>
+// 						</div>
+// 					</div>
+// 					<!-- Share more than once, if there are no more posts to share, we should start re-sharing the one we
+// 					previously shared
+// 					(boolean) -->
+// 					<div class="column col-sm-12 col-md-12 col-lg-6">
+// 						<div class="columns">
+// 							<div class="column col-sm-12 col-md-2 col-xl-2 col-1 text-right">
+// 								<div class="form-group">
+// 									<label class="form-checkbox">
+// 										<input type="checkbox" v-model="generalSettings.more_than_once" />
+// 										<i class="form-icon"></i> Yes
+// 									</label>
+// 								</div>
+// 							</div>
+// 							<div class="column col-sm-12 col-md-10 col-xl-10 col-11 text-left">
+// 								<b>Share more than once?</b><br/>
+// 								<i>If there are no more posts to share, we should start re-sharing the one we previously shared.</i>
+// 							</div>
+// 						</div>
+// 					</div>
+// 				</div>
+// 				<hr/>
+// 				<div class="columns">
+// 					<!-- Post types available to share - what post types are available for share
+// 					( multi-select list ) -->
+// 					<div class="column col-sm-12 col-md-12 col-lg-12">
+// 						<div class="columns">
+// 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+// 								<b>Post types</b><br/>
+// 								<i>Post types available to share - what post types are available for share</i>
+// 							</div>
+// 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+// 								<multiple-select :options="postTypes" :selected="generalSettings.selected_post_types" :changedSelection="updatedPostTypes" />
+// 							</div>
+// 						</div>
+// 					</div>
+// 				</div>
+// 				<hr/>
+// 				<div class="columns">
+// 					<!-- Taxonomies available for posts to share - based on what post types users choose to share, we should
+// 					show the taxonomies available for that post type, along with their terms, which user can select to share.
+// 					Here we should have also a toggle if either the taxonomies selected are included or excluded.
+// 					( multi-select list ) -->
+// 					<div class="column col-sm-12 col-md-12 col-lg-12">
+// 						<div class="columns">
+// 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+// 								<b>Taxonomies</b><br/>
+// 								<i>Taxonomies available for the selected post types. Use to include or exclude posts.</i>
+// 							</div>
+// 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+// 								<div class="input-group">
+// 									<multiple-select :options="taxonomies" :selected="generalSettings.selected_taxonomies" :changedSelection="updatedTaxonomies" />
+// 									<span class="input-group-addon">
+// 										<label class="form-checkbox">
+// 											<input type="checkbox" v-model="generalSettings.exclude_taxonomies" />
+// 											<i class="form-icon"></i> Exclude?
+// 										</label>
+// 									</span>
+// 								</div>
+// 							</div>
+// 						</div>
+// 					</div>
+// 				</div>
+// 				<hr/>
+// 				<div class="columns">
+// 					<!-- Posts excluded/included in sharing - what posts we should exclude or include in sharing
+// 					- we should have have an autocomplete list which should fetch posts from the previously select post_types
+// 					and terms and allow them to be include/excluded.
+// 					( multi-select list ) -->
+// 					<div class="column col-sm-12 col-md-12 col-lg-12">
+// 						<div class="columns">
+// 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+// 								<b>Posts</b><br/>
+// 								<i>Posts excluded/included in sharing, filtered based on previous selections.</i>
+// 							</div>
+// 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+// 								<div class="input-group">
+// 									<multiple-select :options="postsAvailable" :selected="[]" />
+// 									<span class="input-group-addon">
+// 										<label class="form-checkbox">
+// 											<input type="checkbox" />
+// 											<i class="form-icon"></i> Exclude?
+// 										</label>
+// 									</span>
+// 								</div>
+// 							</div>
 // 						</div>
 // 					</div>
 // 				</div>
 // 			</div>
-// 			<hr/>
-// 			<div class="columns">
-// 				<!-- Post types available to share - what post types are available for share
-// 				( multi-select list ) -->
-// 				<div class="column col-sm-12 col-md-12 col-lg-12">
-// 					<div class="columns">
-// 						<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-// 							<b>Post types</b><br/>
-// 							<i>Post types available to share - what post types are available for share</i>
-// 						</div>
-// 						<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-//                             <multiple-select :options="postTypes" :selected="[]" />
-// 						</div>
-// 					</div>
-// 				</div>
-// 			</div>
-//             <hr/>
-//             <div class="columns">
-//                 <!-- Taxonomies available for posts to share - based on what post types users choose to share, we should
-// 			    show the taxonomies available for that post type, along with their terms, which user can select to share.
-// 			    Here we should have also a toggle if either the taxonomies selected are included or excluded.
-// 			    ( multi-select list ) -->
-//                 <div class="column col-sm-12 col-md-12 col-lg-12">
-//                     <div class="columns">
-//                         <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-//                             <b>Taxonomies</b><br/>
-//                             <i>Taxonomies available for the selected post types. Use to include or exclude posts.</i>
-//                         </div>
-//                         <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-//                             <div class="input-group">
-//                                 <multiple-select :options="taxonomies" :selected="[]" />
-//                                 <span class="input-group-addon">
-//                                     <label class="form-checkbox">
-//                                         <input type="checkbox" />
-//                                         <i class="form-icon"></i> Exclude?
-//                                     </label>
-//                                 </span>
-//                             </div>
-//                         </div>
-//                     </div>
-//                 </div>
-//             </div>
-//             <hr/>
-//             <div class="columns">
-//                 <!-- Posts excluded/included in sharing - what posts we should exclude or include in sharing
-//                 - we should have have an autocomplete list which should fetch posts from the previously select post_types
-//                 and terms and allow them to be include/excluded.
-//                 ( multi-select list ) -->
-//                 <div class="column col-sm-12 col-md-12 col-lg-12">
-//                     <div class="columns">
-//                         <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-//                             <b>Posts</b><br/>
-//                             <i>Posts excluded/included in sharing, filtered based on previous selections.</i>
-//                         </div>
-//                         <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-//                             <multiple-select :options="postsAvailable" :selected="[]" />
-//                         </div>
-//                     </div>
-//                 </div>
-//             </div>
+// 		</div>
+// 		<div class="panel-footer">
+// 			<button class="btn btn-primary"><i class="fa fa-check"></i> Save</button>
 // 		</div>
 // 	</div>
 // </template>
@@ -16103,15 +16178,70 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // <script>
 module.exports = {
 	name: 'settings-view',
+	data: function data() {
+		return {
+			taxonomiesSelected: []
+		};
+	},
 	computed: {
+		generalSettings: function generalSettings() {
+			return this.$store.state.generalSettings;
+		},
 		postTypes: function postTypes() {
-			return [{ name: 'Post', selected: false }, { name: 'Page', selected: true }, { name: 'Custom Post', selected: false }];
+			var options = [];
+			for (var index in this.generalSettings.available_post_types) {
+				var item = this.generalSettings.available_post_types[index];
+				options.push({ name: item.label, value: item.name, selected: false });
+			}
+
+			return options;
 		},
 		taxonomies: function taxonomies() {
-			return [{ name: 'Category', selected: false }, { name: 'Article', selected: true }, { name: 'News', selected: false }];
+			var options = [];
+			var taxonomiesSelected = this.taxonomiesSelected;
+			for (var taxIndex in this.generalSettings.available_taxonomies) {
+				console.log(taxIndex);
+				var taxName = this.generalSettings.available_taxonomies[taxIndex]['name'];
+				var taxSelected = false;
+				if (taxonomiesSelected.includes(taxIndex + '_all')) taxSelected = true;
+				options.push({ name: taxName, value: taxIndex + '_all', selected: taxSelected });
+				for (var termIndex in this.generalSettings.available_taxonomies[taxIndex]['terms']) {
+					var termName = this.generalSettings.available_taxonomies[taxIndex]['terms'][termIndex]['name'];
+					var termSlug = this.generalSettings.available_taxonomies[taxIndex]['terms'][termIndex]['slug'];
+					var termSelected = taxSelected;
+					if (taxonomiesSelected.includes(taxIndex + '_' + termSlug)) termSelected = true;
+					options.push({ name: taxName + ': ' + termName, value: taxIndex + '_' + termSlug, selected: termSelected });
+				}
+			}
+
+			return options;
 		},
 		postsAvailable: function postsAvailable() {
 			return [{ name: 'This cool post!', selected: false }, { name: 'Hello World', selected: true }, { name: 'The curious case of autonomous AI.', selected: false }];
+		}
+	},
+	methods: {
+		updatedPostTypes: function updatedPostTypes(data) {
+			var postTypes = [];
+			for (var index in data) {
+				postTypes.push(data[index].value);
+			}
+			this.$store.commit('updateSelectedPostTypes', data);
+			this.$store.dispatch('fetchTaxonomies', { post_types: postTypes });
+		},
+		updatedTaxonomies: function updatedTaxonomies(data) {
+			var taxonomiesSelectedList = [];
+			for (var index in data) {
+				taxonomiesSelectedList.push(data[index].value);
+			}
+
+			this.taxonomiesSelected = taxonomiesSelectedList;
+			this.$store.commit('updateSelectedTaxonomies', data);
+
+			var postTypesSelected = this.$store.state.generalSettings.selected_post_types;
+			var taxonomiesSelected = this.$store.state.generalSettings.selected_taxonomies;
+
+			this.$store.dispatch('fetchPosts', { post_types: postTypesSelected, taxonomies: taxonomiesSelected });
 		}
 	},
 	components: {
@@ -16124,85 +16254,12 @@ module.exports = {
 
 /***/ }),
 /* 96 */
-/***/ (function(module, exports) {
-
-module.exports = "\n\t<div class=\"tab-view\">\n\t\t<h3>General Settings</h3>\n\t\t<p>This is a <b>Vue.js</b> component.</p>\n\t\t<div class=\"container\">\n\t\t\t<div class=\"columns\">\n\t\t\t\t<!-- Minimum age of posts available for sharing, in days\n\t\t\t\t(number) -->\n\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t<b>Minimum post age</b><br/>\n\t\t\t\t\t\t\t<i>Minimum age of posts available for sharing, in days.</i>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t<counter-input id=\"min_post_age\" :maxVal=\"365\" />\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- Maximum age of posts available for sharing, in days\n\t\t\t\t(number) -->\n\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-right\">\n\t\t\t\t\t\t\t<counter-input id=\"max_post_age\" :maxVal=\"365\" />\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-left\">\n\t\t\t\t\t\t\t<b>Maximum post age</b><br/>\n\t\t\t\t\t\t\t<i>Maximum age of posts available for sharing, in days.</i>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<hr/>\n\t\t\t<div class=\"columns\">\n\t\t\t\t<!-- Number of posts to share per account per trigger\n\t\t\t\t(number) -->\n\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t<b>Number of posts</b><br/>\n\t\t\t\t\t\t\t<i>Number of posts to share per. account per. trigger of scheduled job.</i>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t<counter-input id=\"no_of_posts\" />\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- Share more than once, if there are no more posts to share, we should start re-sharing the one we\n\t\t\t\tpreviously shared\n\t\t\t\t(boolean) -->\n\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-2 col-xl-2 col-1 text-right\">\n\t\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" />\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Yes\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-10 col-xl-10 col-11 text-left\">\n\t\t\t\t\t\t\t<b>Share more than once?</b><br/>\n\t\t\t\t\t\t\t<i>If there are no more posts to share, we should start re-sharing the one we previously shared.</i>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<hr/>\n\t\t\t<div class=\"columns\">\n\t\t\t\t<!-- Post types available to share - what post types are available for share\n\t\t\t\t( multi-select list ) -->\n\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t<b>Post types</b><br/>\n\t\t\t\t\t\t\t<i>Post types available to share - what post types are available for share</i>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n                            <multiple-select :options=\"postTypes\" :selected=\"[]\" />\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n            <hr/>\n            <div class=\"columns\">\n                <!-- Taxonomies available for posts to share - based on what post types users choose to share, we should\n\t\t\t    show the taxonomies available for that post type, along with their terms, which user can select to share.\n\t\t\t    Here we should have also a toggle if either the taxonomies selected are included or excluded.\n\t\t\t    ( multi-select list ) -->\n                <div class=\"column col-sm-12 col-md-12 col-lg-12\">\n                    <div class=\"columns\">\n                        <div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n                            <b>Taxonomies</b><br/>\n                            <i>Taxonomies available for the selected post types. Use to include or exclude posts.</i>\n                        </div>\n                        <div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n                            <div class=\"input-group\">\n                                <multiple-select :options=\"taxonomies\" :selected=\"[]\" />\n                                <span class=\"input-group-addon\">\n                                    <label class=\"form-checkbox\">\n                                        <input type=\"checkbox\" />\n                                        <i class=\"form-icon\"></i> Exclude?\n                                    </label>\n                                </span>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <hr/>\n            <div class=\"columns\">\n                <!-- Posts excluded/included in sharing - what posts we should exclude or include in sharing\n                - we should have have an autocomplete list which should fetch posts from the previously select post_types\n                and terms and allow them to be include/excluded.\n                ( multi-select list ) -->\n                <div class=\"column col-sm-12 col-md-12 col-lg-12\">\n                    <div class=\"columns\">\n                        <div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n                            <b>Posts</b><br/>\n                            <i>Posts excluded/included in sharing, filtered based on previous selections.</i>\n                        </div>\n                        <div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n                            <multiple-select :options=\"postsAvailable\" :selected=\"[]\" />\n                        </div>\n                    </div>\n                </div>\n            </div>\n\t\t</div>\n\t</div>\n";
-
-/***/ }),
-/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(98)
-__vue_template__ = __webpack_require__(99)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/var/www/html/wp-base/wp-content/plugins/tweet-old-post/vue/src/vue-elements/logs-tab-panel.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-/* 98 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-// <template>
-//     <div class="container">
-//         <h3>Logs</h3>
-//         <div class="columns">
-//             <div class="column col-12">
-//                 <pre class="code" data-lang="Vue.js">
-//                     <code>{{ logs }}</code>
-//                 </pre>
-//             </div>
-//         </div>
-//     </div>
-// </template>
-//
-// <script>
-module.exports = {
-	name: 'logs-view',
-	props: ['model'],
-	data: function data() {
-		return {
-			logs: this.$store.state.page.logs
-		};
-	}
-	// </script>
-
-};
-
-/***/ }),
-/* 99 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div class=\"container\">\n        <h3>Logs</h3>\n        <div class=\"columns\">\n            <div class=\"column col-12\">\n                <pre class=\"code\" data-lang=\"Vue.js\">\n                    <code>{{ logs }}</code>\n                </pre>\n            </div>\n        </div>\n    </div>\n";
-
-/***/ }),
-/* 100 */
-/***/ (function(module, exports) {
-
-module.exports = "\n\t<div>\n\t\t<div class=\"panel title-panel\" style=\"margin-bottom: 40px; padding-bottom: 20px;\">\n\t\t\t<div class=\"panel-header\">\n\t\t\t\t<img :src=\"plugin_logo\" style=\"float: left; margin-right: 10px;\" />\n\t\t\t\t<h1 class=\"d-inline-block\">Revive Old Posts</h1><span class=\"powered\"> by <a href=\"https://themeisle.com\" target=\"_blank\"><b>ThemeIsle</b></a></span>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel\">\n\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t<ul class=\"tab\">\n\t\t\t\t\t<li class=\"tab-item\" v-for=\"tab in displayTabs\" :class=\"{ active: tab.isActive }\"><a href=\"#\" @click=\"switchTab( tab.slug )\">{{ tab.name }}</a></li>\n\t\t\t\t\t<li class=\"tab-item tab-action\">\n\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Beta User\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Remote Check\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\n\t\t\t<component :is=\"page.view\"></component>\n\t\t</div>\n\t</div>\n";
-
-/***/ }),
-/* 101 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(104)
-__vue_script__ = __webpack_require__(102)
-__vue_template__ = __webpack_require__(103)
+__webpack_require__(97)
+__vue_script__ = __webpack_require__(99)
+__vue_template__ = __webpack_require__(100)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -16219,7 +16276,47 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 102 */
+/* 97 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(98);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(5)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0e4d6f14&file=counter-input.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./counter-input.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0e4d6f14&file=counter-input.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./counter-input.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 98 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(4)();
+// imports
+
+
+// module
+exports.push([module.i, "\n\t#rop_core .input-group.rop-counter-group {\n\t\tposition: relative;\n\t}\n\t#rop_core .btn.increment-btn {\n\t\tposition: absolute;\n\t\tright: 0;\n\t\twidth: 1rem;\n\t\theight: 0.85rem;\n\t\tpadding: 0.025rem 0.010rem;\n\t\tline-height: 0.3rem;\n\t\tz-index: 2;\n\t}\n\n\t#rop_core .btn.increment-btn.up { top: 0; }\n\t#rop_core .btn.increment-btn.down { bottom: 0; }\n\n\tinput.rop-counter::-webkit-inner-spin-button {\n\t\tdisplay: none;\n\t}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16263,11 +16360,14 @@ module.exports = {
 		return {
 			pressStartTime: null,
 			incrementUp: 0,
-			incrementDown: 0,
-			inputValue: this.value
+			incrementDown: 0
 		};
 	},
-	computed: {},
+	computed: {
+		inputValue: function inputValue() {
+			return this.value;
+		}
+	},
 	methods: {
 		updateInput: function updateInput() {
 			var now = new Date();
@@ -16332,58 +16432,18 @@ module.exports = {
 };
 
 /***/ }),
-/* 103 */
+/* 100 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"input-group rop-counter-group\">\n\t\t<input class=\"form-input rop-counter\" type=\"number\" :id=\"id\" :value=\"inputValue\" readonly>\n\t\t<button class=\"btn input-group-btn increment-btn up\" @mousedown=\"isPressed('up')\" @mouseup=\"isReleased('up')\"><i class=\"fa fa-fw fa-caret-up\"></i></button>\n\t\t<button class=\"btn input-group-btn increment-btn down\" @mousedown=\"isPressed('down')\" @mouseup=\"isReleased('down')\"><i class=\"fa fa-fw fa-caret-down\"></i></button>\n\t</div>\n";
 
 /***/ }),
-/* 104 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(105);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(11)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0e4d6f14&file=counter-input.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./counter-input.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0e4d6f14&file=counter-input.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./counter-input.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 105 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(10)();
-// imports
-
-
-// module
-exports.push([module.i, "\n\t#rop_core .input-group.rop-counter-group {\n\t\tposition: relative;\n\t}\n\t#rop_core .btn.increment-btn {\n\t\tposition: absolute;\n\t\tright: 0;\n\t\twidth: 1rem;\n\t\theight: 0.85rem;\n\t\tpadding: 0.025rem 0.010rem;\n\t\tline-height: 0.3rem;\n\t\tz-index: 2;\n\t}\n\n\t#rop_core .btn.increment-btn.up { top: 0; }\n\t#rop_core .btn.increment-btn.down { bottom: 0; }\n\n\tinput.rop-counter::-webkit-inner-spin-button {\n\t\tdisplay: none;\n\t}\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 106 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(107)
-__vue_template__ = __webpack_require__(108)
+__vue_script__ = __webpack_require__(102)
+__vue_template__ = __webpack_require__(103)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -16400,17 +16460,17 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 107 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _getIterator2 = __webpack_require__(29);
+var _getIterator2 = __webpack_require__(19);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
-var _vueClickaway = __webpack_require__(82);
+var _vueClickaway = __webpack_require__(32);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -16471,12 +16531,20 @@ module.exports = {
 			type: Array
 		},
 		selected: {
-			default: [],
+			default: function _default() {
+				return [];
+			},
 			type: Array
 		},
 		placeHolderText: {
 			default: '',
 			type: String
+		},
+		changedSelection: {
+			default: function _default(data) {
+				return true;
+			},
+			type: Function
 		}
 	},
 	mounted: function mounted() {
@@ -16615,6 +16683,9 @@ module.exports = {
 		},
 		filterSearch: function filterSearch(element) {
 			if (element.name.toLowerCase().indexOf(this.search.toLowerCase()) !== -1 || this.search === '') {
+				if (element.selected) {
+					return false;
+				}
 				if (containsObject(element, this.selected)) {
 					return false;
 				}
@@ -16627,12 +16698,14 @@ module.exports = {
 			this.$refs.search.focus();
 			this.magic_flag = false;
 			this.search = '';
+			this.changedSelection(this.selected);
 		},
 		removeSelected: function removeSelected(index) {
 			this.selected.splice(index, 1);
 			this.$refs.search.focus();
 			this.magic_flag = false;
 			this.search = '';
+			this.changedSelection(this.selected);
 		}
 	}
 	// </script>
@@ -16640,10 +16713,83 @@ module.exports = {
 };
 
 /***/ }),
-/* 108 */
+/* 103 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"form-autocomplete\" style=\"width: 100%;\" v-on-clickaway=\"closeDropdown\">\n\t\t<!-- autocomplete input container -->\n\t\t<div class=\"form-autocomplete-input form-input\" :class=\"is_focused\">\n\n\t\t\t<!-- autocomplete chips -->\n\t\t\t<label class=\"chip\" v-for=\"( option, index ) in selected\">\n\t\t\t\t{{option.name}}\n\t\t\t\t<a href=\"#\" class=\"btn btn-clear\" aria-label=\"Close\" @click.prevent=\"removeSelected(index)\" role=\"button\" v-if=\"!is_one\"></a>\n\t\t\t</label>\n\n\t\t\t<!-- autocomplete real input box -->\n\t\t\t<input style=\"height: 1.0rem;\" class=\"form-input\" type=\"text\" ref=\"search\" v-model=\"search\" :placeholder=\"autocomplete_placeholder\" @click=\"magic_flag = true\" @focus=\"magic_flag = true\" @keyup=\"magic_flag = true\" @keydown.8=\"popLast()\" @keydown.38=\"highlightItem(true)\" @keydown.40=\"highlightItem()\" :readonly=\"is_one\">\n\t\t</div>\n\n\t\t<!-- autocomplete suggestion list -->\n\t\t<ul class=\"menu\" ref=\"autocomplete_results\" :class=\"is_visible\" v-if=\"!is_one\">\n\t\t\t<!-- menu list chips -->\n\t\t\t<li class=\"menu-item\" v-for=\"( option, index ) in options\" v-if=\"filterSearch(option)\">\n\t\t\t\t<a href=\"#\" @click.prevent=\"addToSelected(index)\" @keydown.38=\"highlightItem(true)\" @keydown.40=\"highlightItem()\">\n\t\t\t\t\t<div class=\"tile tile-centered\">\n\t\t\t\t\t\t<div class=\"tile-content\" v-html=\"markMatch(option.name, search)\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</a>\n\t\t\t</li>\n\t\t\t<li v-if=\"has_results\">\n\t\t\t\t<a href=\"#\">\n\t\t\t\t\t<div class=\"tile tile-centered\">\n\t\t\t\t\t\t<div class=\"tile-content\"><i>Nothing found matching \"{{search}}\" ...</i></div>\n\t\t\t\t\t</div>\n\t\t\t\t</a>\n\t\t\t</li>\n\t\t</ul>\n\t</div>\n\n";
+
+/***/ }),
+/* 104 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\">\n\t\t\t<h3>General Settings</h3>\n\t\t\t<p>This is a <b>Vue.js</b> component.</p>\n\t\t\t<div class=\"container\">\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Minimum age of posts available for sharing, in days\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t\t<b>Minimum post age</b><br/>\n\t\t\t\t\t\t\t\t<i>Minimum age of posts available for sharing, in days.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<counter-input id=\"min_post_age\" :maxVal=\"365\" v-model=\"generalSettings.minimum_post_age\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<!-- Maximum age of posts available for sharing, in days\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-right\">\n\t\t\t\t\t\t\t\t<counter-input id=\"max_post_age\" :maxVal=\"365\" v-model=\"generalSettings.maximum_post_age\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-left\">\n\t\t\t\t\t\t\t\t<b>Maximum post age</b><br/>\n\t\t\t\t\t\t\t\t<i>Maximum age of posts available for sharing, in days.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Number of posts to share per account per trigger\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t\t<b>Number of posts</b><br/>\n\t\t\t\t\t\t\t\t<i>Number of posts to share per. account per. trigger of scheduled job.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<counter-input id=\"no_of_posts\" v-model=\"generalSettings.number_of_posts\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<!-- Share more than once, if there are no more posts to share, we should start re-sharing the one we\n\t\t\t\t\tpreviously shared\n\t\t\t\t\t(boolean) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-2 col-xl-2 col-1 text-right\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\" />\n\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Yes\n\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-10 col-xl-10 col-11 text-left\">\n\t\t\t\t\t\t\t\t<b>Share more than once?</b><br/>\n\t\t\t\t\t\t\t\t<i>If there are no more posts to share, we should start re-sharing the one we previously shared.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Post types available to share - what post types are available for share\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Post types</b><br/>\n\t\t\t\t\t\t\t\t<i>Post types available to share - what post types are available for share</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<multiple-select :options=\"postTypes\" :selected=\"generalSettings.selected_post_types\" :changedSelection=\"updatedPostTypes\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Taxonomies available for posts to share - based on what post types users choose to share, we should\n\t\t\t\t\tshow the taxonomies available for that post type, along with their terms, which user can select to share.\n\t\t\t\t\tHere we should have also a toggle if either the taxonomies selected are included or excluded.\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Taxonomies</b><br/>\n\t\t\t\t\t\t\t\t<i>Taxonomies available for the selected post types. Use to include or exclude posts.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changedSelection=\"updatedTaxonomies\" />\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\">\n\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" />\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Exclude?\n\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Posts excluded/included in sharing - what posts we should exclude or include in sharing\n\t\t\t\t\t- we should have have an autocomplete list which should fetch posts from the previously select post_types\n\t\t\t\t\tand terms and allow them to be include/excluded.\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Posts</b><br/>\n\t\t\t\t\t\t\t\t<i>Posts excluded/included in sharing, filtered based on previous selections.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t\t\t\t<multiple-select :options=\"postsAvailable\" :selected=\"[]\" />\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\">\n\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" />\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Exclude?\n\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\">\n\t\t\t<button class=\"btn btn-primary\"><i class=\"fa fa-check\"></i> Save</button>\n\t\t</div>\n\t</div>\n";
+
+/***/ }),
+/* 105 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__vue_script__ = __webpack_require__(106)
+__vue_template__ = __webpack_require__(107)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/var/www/html/wp-base/wp-content/plugins/tweet-old-post/vue/src/vue-elements/logs-tab-panel.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 106 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// <template>
+//     <div class="container">
+//         <h3>Logs</h3>
+//         <div class="columns">
+//             <div class="column col-12">
+//                 <pre class="code" data-lang="Vue.js">
+//                     <code>{{ logs }}</code>
+//                 </pre>
+//             </div>
+//         </div>
+//     </div>
+// </template>
+//
+// <script>
+module.exports = {
+	name: 'logs-view',
+	props: ['model'],
+	data: function data() {
+		return {
+			logs: this.$store.state.page.logs
+		};
+	}
+	// </script>
+
+};
+
+/***/ }),
+/* 107 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div class=\"container\">\n        <h3>Logs</h3>\n        <div class=\"columns\">\n            <div class=\"column col-12\">\n                <pre class=\"code\" data-lang=\"Vue.js\">\n                    <code>{{ logs }}</code>\n                </pre>\n            </div>\n        </div>\n    </div>\n";
+
+/***/ }),
+/* 108 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div>\n\t\t<div class=\"panel title-panel\" style=\"margin-bottom: 40px; padding-bottom: 20px;\">\n\t\t\t<div class=\"panel-header\">\n\t\t\t\t<img :src=\"plugin_logo\" style=\"float: left; margin-right: 10px;\" />\n\t\t\t\t<h1 class=\"d-inline-block\">Revive Old Posts</h1><span class=\"powered\"> by <a href=\"https://themeisle.com\" target=\"_blank\"><b>ThemeIsle</b></a></span>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel\">\n\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t<ul class=\"tab\">\n\t\t\t\t\t<li class=\"tab-item\" v-for=\"tab in displayTabs\" :class=\"{ active: tab.isActive }\"><a href=\"#\" @click=\"switchTab( tab.slug )\">{{ tab.name }}</a></li>\n\t\t\t\t\t<li class=\"tab-item tab-action\">\n\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Beta User\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Remote Check\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\n\t\t\t<component :is=\"page.view\"></component>\n\t\t</div>\n\t</div>\n";
 
 /***/ })
 /******/ ]);

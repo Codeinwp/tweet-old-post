@@ -43,6 +43,7 @@ export default new Vuex.Store( {
 				isActive: false
 			}
 		],
+		generalSettings: [],
 		availableServices: [],
 		authenticatedServices: [],
 		activeAccounts: []
@@ -102,6 +103,18 @@ export default new Vuex.Store( {
 		},
 		updateActiveAccounts ( state, data ) {
 			state.activeAccounts = data
+		},
+		updateGeneralSettings ( state, data ) {
+			state.generalSettings = data
+		},
+		updateSelectedPostTypes ( state, data ) {
+			state.generalSettings.selected_post_types = data
+		},
+		updateAvailableTaxonomies ( state, data ) {
+			state.generalSettings.available_taxonomies = data
+		},
+		updateSelectedTaxonomies ( state, data ) {
+			state.generalSettings.selected_taxonomies = data
 		}
 	},
 	actions: {
@@ -120,7 +133,6 @@ export default new Vuex.Store( {
 			} )
 		},
 		getServiceSignInUrl ( { commit }, data ) {
-			console.log( 'Recived', data )
 			return new Promise( ( resolve, reject ) => {
 				Vue.http( {
 					url: ropApiSettings.root,
@@ -223,6 +235,49 @@ export default new Vuex.Store( {
 				commit( 'updateAuthenticatedServices', response.data )
 			}, function () {
 				commit( 'logMessage', ['Error when trying to remove and update authenticated services.', 'error'] )
+			} )
+		},
+		getGeneralSettings ( { commit }, data ) {
+			Vue.http( {
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'get_general_settings' },
+				responseType: 'json'
+			} ).then( function ( response ) {
+				commit( 'updateGeneralSettings', response.data )
+			}, function () {
+				commit( 'logMessage', ['Error retrieving general settings.', 'error'] )
+			} )
+		},
+		fetchTaxonomies ( { commit }, data ) {
+			Vue.http( {
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'get_taxonomies' },
+				body: data,
+				responseType: 'json'
+			} ).then( function ( response ) {
+				console.log( response.data )
+				commit( 'updateAvailableTaxonomies', response.data )
+			}, function () {
+				commit( 'logMessage', ['Error retrieving taxonomies.', 'error'] )
+			} )
+		},
+		fetchPosts ( { commit }, data ) {
+			Vue.http( {
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'get_posts' },
+				body: data,
+				responseType: 'json'
+			} ).then( function ( response ) {
+				console.log( response.data )
+				// commit( 'updateAvailableTaxonomies', response.data )
+			}, function () {
+				commit( 'logMessage', ['Error retrieving posts.', 'error'] )
 			} )
 		}
 	}

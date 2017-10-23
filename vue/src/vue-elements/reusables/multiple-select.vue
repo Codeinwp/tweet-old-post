@@ -57,12 +57,16 @@
 				type: Array
 			},
 			selected: {
-				default: [],
+				default: function () { return [] },
 				type: Array
 			},
 			placeHolderText: {
 				default: '',
 				type: String
+			},
+			changedSelection: {
+				default: function ( data ) { return true },
+				type: Function
 			}
 		},
 		mounted () {
@@ -155,6 +159,9 @@
 			},
 			filterSearch ( element ) {
 				if ( element.name.toLowerCase().indexOf( this.search.toLowerCase() ) !== -1 || this.search === '' ) {
+					if ( element.selected ) {
+						return false
+					}
 					if ( containsObject( element, this.selected ) ) {
 						return false
 					}
@@ -167,12 +174,14 @@
 				this.$refs.search.focus()
 				this.magic_flag = false
 				this.search = ''
+				this.changedSelection( this.selected )
 			},
 			removeSelected ( index ) {
 				this.selected.splice( index, 1 )
 				this.$refs.search.focus()
 				this.magic_flag = false
 				this.search = ''
+				this.changedSelection( this.selected )
 			}
 		}
 	}

@@ -46,6 +46,17 @@ class Rop_Rest_Api {
 	 */
 	public function api( WP_REST_Request $request ) {
 		switch ( $request->get_param( 'req' ) ) {
+			case 'get_general_settings':
+				$response = $this->get_general_settings();
+				break;
+			case 'get_taxonomies':
+				$data = json_decode( $request->get_body(), true );
+				$response = $this->get_taxonomies( $data );
+				break;
+			case 'get_posts':
+				$data = json_decode( $request->get_body(), true );
+				$response = $this->get_posts( $data );
+				break;
 			case 'available_services':
 				$response = $this->get_available_services();
 				break;
@@ -77,9 +88,64 @@ class Rop_Rest_Api {
 				break;
 			default:
 				$response = array( 'status' => '200', 'data' => array( 'list', 'of', 'stuff', 'from', 'api' ) );
-		}
-        // array_push( $response, array( 'current_user' => current_user_can( 'manage_options' ) ) );
+		}// End switch().
+		// array_push( $response, array( 'current_user' => current_user_can( 'manage_options' ) ) );
 		return $response;
+	}
+
+	/**
+	 * API method called to retrieve the general settings.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @return array
+	 */
+	private function get_general_settings() {
+		$general_settings_model = new Rop_Settings_Model();
+		return $general_settings_model->get_settings();
+	}
+
+	/**
+	 * API method called to retrieve the taxonomies
+	 * for the selected post types.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   array $data Data passed from the AJAX call.
+	 * @return array
+	 */
+	private function get_taxonomies( $data ) {
+	    $taxonomies = array();
+	    foreach ( $data['post_types'] as $post_type_name ) {
+			$post_type_taxonomies = get_object_taxonomies( $post_type_name, 'objects' );
+			foreach ( $post_type_taxonomies as $post_type_taxonomy ) {
+				$taxonomy = get_taxonomy( $post_type_taxonomy->name );
+				$terms = get_terms( $post_type_taxonomy->name );
+				if ( ! isset( $taxonomies[ $taxonomy->name ] ) ) { $taxonomies[ $taxonomy->name ] = array();
+				}
+				$taxonomies[ $taxonomy->name ] = array_merge(
+					$taxonomies[ $taxonomy->name ],
+					array(
+						'name' => $taxonomy->label,
+						'terms' => $terms,
+					)
+				);
+			}
+		}
+		return $taxonomies;
+	}
+
+	/**
+	 * API method called to retrieve the posts
+	 * for the selected post types and taxonomies.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   array $data Data passed from the AJAX call.
+	 * @return array
+	 */
+	private function get_posts( $data ) {
+	    return array();
 	}
 
 	/**

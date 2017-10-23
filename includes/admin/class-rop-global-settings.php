@@ -30,6 +30,15 @@ class Rop_Global_Settings {
 	public static $instance;
 
 	/**
+	 * Stores the default general settings defaults.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @var     array $settings Default settings values.
+	 */
+	public $settings = array();
+
+	/**
 	 * Stores the default available services data.
 	 *
 	 * @since   8.0.0
@@ -66,7 +75,7 @@ class Rop_Global_Settings {
 								'description' => 'Please add the APP SECRET from your Facebook app.',
 							),
 						),
-                        'allowed_accounts' => 2
+						'allowed_accounts' => 2,
 					),
 					'twitter' => array(
 						'active' => true,
@@ -105,9 +114,39 @@ class Rop_Global_Settings {
 					),
 				)
 			);
+
+			$post_types = get_post_types( array(), 'objects' );
+			self::$instance->settings = apply_filters(
+				'rop_general_settings_defaults',
+				array(
+					'minimum_post_age' => 15,
+					'maximum_post_age' => 60,
+					'number_of_posts' => 5,
+					'more_than_once' => true,
+					'available_post_types' => $post_types,
+					'selected_post_types' => array(),
+					'available_taxonomies' => array(),
+					'selected_taxonomies' => array(),
+					'exclude_taxonomies' => false,
+					'available_posts' => array(), // get_posts(),
+					'selected_posts' => array(),
+					'exclude_posts' => false,
+				)
+			);
 		}// End if().
 
 		return self::$instance;
+	}
+
+	/**
+	 * Method to retrieve instance of settings.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return array
+	 */
+	public function get_default_settings() {
+		return self::instance()->settings;
 	}
 
 	/**

@@ -36,11 +36,13 @@
 			return {
 				pressStartTime: null,
 				incrementUp: 0,
-				incrementDown: 0,
-				inputValue: this.value
+				incrementDown: 0
 			}
 		},
 		computed: {
+			inputValue: function () {
+				return this.value
+			}
 		},
 		methods: {
 			updateInput () {

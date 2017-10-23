@@ -11,6 +11,7 @@ window.onload = function () {
 		el: '#rop_core',
 		store,
 		created () {
+			store.dispatch( 'getGeneralSettings' )
 			store.dispatch( 'fetchAvailableServices' )
 			store.dispatch( 'fetchAuthenticatedServices' )
 			store.dispatch( 'fetchActiveAccounts' )
