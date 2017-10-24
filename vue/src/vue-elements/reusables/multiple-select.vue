@@ -14,7 +14,7 @@
 		</div>
 
 		<!-- autocomplete suggestion list -->
-		<ul class="menu" ref="autocomplete_results" :class="is_visible" v-if="!is_one">
+		<ul class="menu" ref="autocomplete_results" :class="is_visible" v-if="!is_one" style="overflow-y: scroll; max-height: 120px">
 			<!-- menu list chips -->
 			<li class="menu-item" v-for="( option, index ) in options" v-if="filterSearch(option)">
 				<a href="#" @click.prevent="addToSelected(index)" @keydown.38="highlightItem(true)" @keydown.40="highlightItem()">

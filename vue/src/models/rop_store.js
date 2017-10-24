@@ -115,6 +115,9 @@ export default new Vuex.Store( {
 		},
 		updateSelectedTaxonomies ( state, data ) {
 			state.generalSettings.selected_taxonomies = data
+		},
+		updateAvailablePosts ( state, data ) {
+			state.generalSettings.available_posts = data
 		}
 	},
 	actions: {
@@ -275,7 +278,7 @@ export default new Vuex.Store( {
 				responseType: 'json'
 			} ).then( function ( response ) {
 				console.log( response.data )
-				// commit( 'updateAvailableTaxonomies', response.data )
+				commit( 'updateAvailablePosts', response.data )
 			}, function () {
 				commit( 'logMessage', ['Error retrieving posts.', 'error'] )
 			} )

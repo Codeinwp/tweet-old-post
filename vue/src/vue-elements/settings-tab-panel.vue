@@ -1,6 +1,6 @@
 <template>
 	<div class="tab-view">
-		<div class="panel-body">
+		<div class="panel-body" style="overflow: inherit;">
 			<h3>General Settings</h3>
 			<p>This is a <b>Vue.js</b> component.</p>
 			<div class="container">
@@ -100,7 +100,7 @@
 									<multiple-select :options="taxonomies" :selected="generalSettings.selected_taxonomies" :changedSelection="updatedTaxonomies" />
 									<span class="input-group-addon">
 										<label class="form-checkbox">
-											<input type="checkbox" v-model="generalSettings.exclude_taxonomies" />
+											<input type="checkbox" v-model="generalSettings.exclude_taxonomies" @change="exludeTaxonomiesChange" />
 											<i class="form-icon"></i> Exclude?
 										</label>
 									</span>
@@ -188,11 +188,13 @@
 				return options
 			},
 			postsAvailable: function () {
-				return [
-					{ name: 'This cool post!', selected: false },
-					{ name: 'Hello World', selected: true },
-					{ name: 'The curious case of autonomous AI.', selected: false }
-				]
+				let options = []
+				for ( let index in this.generalSettings.available_posts ) {
+					let item = this.generalSettings.available_posts[index]
+					options.push( { name: item.post_title, value: item.ID, selected: false } )
+				}
+
+				return options
 			}
 		},
 		methods: {
@@ -203,6 +205,7 @@
 				}
 				this.$store.commit( 'updateSelectedPostTypes', data )
 				this.$store.dispatch( 'fetchTaxonomies', { post_types: postTypes } )
+				this.requestPostUpdate()
 			},
 			updatedTaxonomies ( data ) {
 				let taxonomiesSelectedList = []
@@ -212,11 +215,16 @@
 
 				this.taxonomiesSelected = taxonomiesSelectedList
 				this.$store.commit( 'updateSelectedTaxonomies', data )
-
+				this.requestPostUpdate()
+			},
+			exludeTaxonomiesChange () {
+				this.requestPostUpdate()
+			},
+			requestPostUpdate () {
 				let postTypesSelected = this.$store.state.generalSettings.selected_post_types
 				let taxonomiesSelected = this.$store.state.generalSettings.selected_taxonomies
 
-				this.$store.dispatch( 'fetchPosts', { post_types: postTypesSelected, taxonomies: taxonomiesSelected } )
+				this.$store.dispatch( 'fetchPosts', { post_types: postTypesSelected, taxonomies: taxonomiesSelected, exclude: this.generalSettings.exclude_taxonomies } )
 			}
 		},
 		components: {
