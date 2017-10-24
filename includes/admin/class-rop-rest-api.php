@@ -145,44 +145,44 @@ class Rop_Rest_Api {
 	 * @return array
 	 */
 	private function get_posts( $data ) {
-        $post_types = array();
-        $tax_queries = array( 'relation' => 'OR' );
-        $operator = ( isset( $data['exclude'] ) && $data['exclude'] == true ) ? 'NOT IN' : 'IN';
+		$post_types = array();
+		$tax_queries = array( 'relation' => 'OR' );
+		$operator = ( isset( $data['exclude'] ) && $data['exclude'] == true ) ? 'NOT IN' : 'IN';
 
-        if( ! empty( $data['post_types'] ) ) {
-            foreach ( $data['post_types'] as $post_type ) {
-                array_push( $post_types, $post_type['value'] );
-            }
-        }
+		if ( ! empty( $data['post_types'] ) ) {
+			foreach ( $data['post_types'] as $post_type ) {
+				array_push( $post_types, $post_type['value'] );
+			}
+		}
 
-        if( ! empty( $data['taxonomies'] ) ) {
-            foreach ( $data['taxonomies'] as $taxonomy ) {
-                $tmp_query = array();
-                list( $tax, $term ) = explode( '_', $taxonomy['value'] );
-                $tmp_query['taxonomy'] = $tax;
-                if( isset( $term ) && $term != 'all' && $term != '' ) {
-                    $tmp_query['field'] = 'slug';
-                    $tmp_query['terms'] = $term;
-                } else {
-                    $all_terms = get_terms( $tax );
-                    $terms = array();
-                    foreach ( $all_terms as $custom_term ) {
-                        array_push( $terms, $custom_term->slug );
-                    }
-                    $tmp_query['field'] = 'slug';
-                    $tmp_query['terms'] = $terms;
-                }
-                $tmp_query['include_children'] = true;
-                $tmp_query['operator'] = $operator;
-                array_push( $tax_queries, $tmp_query );
-            }
-        }
+		if ( ! empty( $data['taxonomies'] ) ) {
+			foreach ( $data['taxonomies'] as $taxonomy ) {
+				$tmp_query = array();
+				list( $tax, $term ) = explode( '_', $taxonomy['value'] );
+				$tmp_query['taxonomy'] = $tax;
+				if ( isset( $term ) && $term != 'all' && $term != '' ) {
+					$tmp_query['field'] = 'slug';
+					$tmp_query['terms'] = $term;
+				} else {
+					$all_terms = get_terms( $tax );
+					$terms = array();
+					foreach ( $all_terms as $custom_term ) {
+						array_push( $terms, $custom_term->slug );
+					}
+					$tmp_query['field'] = 'slug';
+					$tmp_query['terms'] = $terms;
+				}
+				$tmp_query['include_children'] = true;
+				$tmp_query['operator'] = $operator;
+				array_push( $tax_queries, $tmp_query );
+			}
+		}
 
 		$posts_array = get_posts(
 			array(
 				'posts_per_page' => -1,
 				'post_type' => $post_types,
-				'tax_query' => $tax_queries
+				'tax_query' => $tax_queries,
 			)
 		);
 
