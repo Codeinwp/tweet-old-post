@@ -46,6 +46,9 @@ class Rop_Rest_Api {
 	 */
 	public function api( WP_REST_Request $request ) {
 		switch ( $request->get_param( 'req' ) ) {
+			case 'select_posts':
+				$response = $this->select_posts();
+				break;
 			case 'get_general_settings':
 				$response = $this->get_general_settings();
 				break;
@@ -56,6 +59,10 @@ class Rop_Rest_Api {
 			case 'get_posts':
 				$data = json_decode( $request->get_body(), true );
 				$response = $this->get_posts( $data );
+				break;
+			case 'save_general_settings':
+				$data = json_decode( $request->get_body(), true );
+				$response = $this->save_general_settings( $data );
 				break;
 			case 'available_services':
 				$response = $this->get_available_services();
@@ -91,6 +98,11 @@ class Rop_Rest_Api {
 		}// End switch().
 		// array_push( $response, array( 'current_user' => current_user_can( 'manage_options' ) ) );
 		return $response;
+	}
+
+	private function select_posts() {
+	    $posts_selector = new Rop_Posts_Selector_Model();
+	    return $posts_selector->select();
 	}
 
 	/**
@@ -159,6 +171,7 @@ class Rop_Rest_Api {
 			foreach ( $data['taxonomies'] as $taxonomy ) {
 				$tmp_query = array();
 				list( $tax, $term ) = explode( '_', $taxonomy['value'] );
+				$tmp_query['relation'] = 'OR';
 				$tmp_query['taxonomy'] = $tax;
 				if ( isset( $term ) && $term != 'all' && $term != '' ) {
 					$tmp_query['field'] = 'slug';
@@ -187,6 +200,24 @@ class Rop_Rest_Api {
 		);
 
 	    return $posts_array;
+	}
+
+	private function save_general_settings( $data ) {
+		$general_settings = array(
+			'minimum_post_age' => $data['minimum_post_age'],
+			'maximum_post_age' => $data['maximum_post_age'],
+			'number_of_posts' => $data['number_of_posts'],
+			'more_than_once' => $data['more_than_once'],
+			'selected_post_types' => $data['post_types'],
+			'selected_taxonomies' => $data['taxonomies'],
+			'exclude_taxonomies' => $data['exclude_taxonomies'],
+			'selected_posts' => $data['posts'],
+			'exclude_posts' => false,
+		);
+
+		$general_settings_model = new Rop_Settings_Model();
+		$general_settings_model->save_settings( $general_settings );
+		return $general_settings_model->get_settings();
 	}
 
 	/**

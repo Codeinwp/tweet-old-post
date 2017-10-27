@@ -14,7 +14,7 @@
 								<i>Minimum age of posts available for sharing, in days.</i>
 							</div>
 							<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-left">
-								<counter-input id="min_post_age" :maxVal="365" v-model="generalSettings.minimum_post_age" />
+								<counter-input id="min_post_age" :maxVal="365" :value.sync="generalSettings.minimum_post_age" />
 							</div>
 						</div>
 					</div>
@@ -23,7 +23,7 @@
 					<div class="column col-sm-12 col-md-12 col-lg-6">
 						<div class="columns">
 							<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-right">
-								<counter-input id="max_post_age" :maxVal="365" v-model="generalSettings.maximum_post_age" />
+								<counter-input id="max_post_age" :maxVal="365" :value.sync="generalSettings.maximum_post_age" />
 							</div>
 							<div class="column col-sm-12 col-md-6 col-xl-6 col-8 text-left">
 								<b>Maximum post age</b><br/>
@@ -43,7 +43,7 @@
 								<i>Number of posts to share per. account per. trigger of scheduled job.</i>
 							</div>
 							<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-left">
-								<counter-input id="no_of_posts" v-model="generalSettings.number_of_posts" />
+								<counter-input id="no_of_posts" :value.sync="generalSettings.number_of_posts" />
 							</div>
 						</div>
 					</div>
@@ -123,7 +123,7 @@
 							</div>
 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 								<div class="input-group">
-									<multiple-select :options="postsAvailable" :selected="[]" />
+									<multiple-select :options="postsAvailable" :selected="generalSettings.selected_posts" :changedSelection="updatedPosts" />
 									<span class="input-group-addon">
 										<label class="form-checkbox">
 											<input type="checkbox" />
@@ -138,7 +138,7 @@
 			</div>
 		</div>
 		<div class="panel-footer">
-			<button class="btn btn-primary"><i class="fa fa-check"></i> Save</button>
+			<button class="btn btn-primary" @click="saveGeneralSettings()"><i class="fa fa-check"></i> Save</button>
 		</div>
 	</div>
 </template>
@@ -217,6 +217,9 @@
 				this.$store.commit( 'updateSelectedTaxonomies', data )
 				this.requestPostUpdate()
 			},
+			updatedPosts ( data ) {
+				this.$store.commit( 'updateSelectedPosts', data )
+			},
 			exludeTaxonomiesChange () {
 				this.requestPostUpdate()
 			},
@@ -225,6 +228,24 @@
 				let taxonomiesSelected = this.$store.state.generalSettings.selected_taxonomies
 
 				this.$store.dispatch( 'fetchPosts', { post_types: postTypesSelected, taxonomies: taxonomiesSelected, exclude: this.generalSettings.exclude_taxonomies } )
+			},
+			saveGeneralSettings () {
+				let postTypesSelected = this.$store.state.generalSettings.selected_post_types
+				let taxonomiesSelected = this.$store.state.generalSettings.selected_taxonomies
+				let excludeTaxonomies = this.generalSettings.exclude_taxonomies
+				let postsSelected = this.generalSettings.selected_posts
+
+				this.$store.dispatch( 'saveGeneralSettings',
+					{
+						minimum_post_age: this.generalSettings.minimum_post_age,
+						maximum_post_age: this.generalSettings.maximum_post_age,
+						number_of_posts: this.generalSettings.number_of_posts,
+						more_than_once: this.generalSettings.more_than_once,
+						post_types: postTypesSelected,
+						taxonomies: taxonomiesSelected,
+						exclude_taxonomies: excludeTaxonomies,
+						posts: postsSelected
+					} )
 			}
 		},
 		components: {

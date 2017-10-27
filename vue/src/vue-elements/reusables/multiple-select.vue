@@ -170,7 +170,9 @@
 				return false
 			},
 			addToSelected ( index ) {
-				this.selected.push( this.options[index] )
+				let newSelection = this.options[index]
+				newSelection.selected = true
+				this.selected.push( newSelection )
 				this.$refs.search.focus()
 				this.magic_flag = false
 				this.search = ''

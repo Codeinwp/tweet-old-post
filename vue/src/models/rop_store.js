@@ -118,6 +118,9 @@ export default new Vuex.Store( {
 		},
 		updateAvailablePosts ( state, data ) {
 			state.generalSettings.available_posts = data
+		},
+		updateSelectedPosts ( state, data ) {
+			state.generalSettings.selected_posts = data
 		}
 	},
 	actions: {
@@ -281,6 +284,21 @@ export default new Vuex.Store( {
 				commit( 'updateAvailablePosts', response.data )
 			}, function () {
 				commit( 'logMessage', ['Error retrieving posts.', 'error'] )
+			} )
+		},
+		saveGeneralSettings ( { commit }, data ) {
+			Vue.http( {
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'save_general_settings' },
+				body: data,
+				responseType: 'json'
+			} ).then( function ( response ) {
+				console.log( response.data )
+				// commit( 'updateAvailablePosts', response.data )
+			}, function () {
+				commit( 'logMessage', ['Error saving general settings.', 'error'] )
 			} )
 		}
 	}
