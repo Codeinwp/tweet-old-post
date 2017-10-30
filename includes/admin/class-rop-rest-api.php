@@ -100,6 +100,13 @@ class Rop_Rest_Api {
 		return $response;
 	}
 
+	/**
+	 * API method called to select posts for publishing.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @return mixed
+	 */
 	private function select_posts() {
 	    $posts_selector = new Rop_Posts_Selector_Model();
 	    return $posts_selector->select();
@@ -202,6 +209,14 @@ class Rop_Rest_Api {
 	    return $posts_array;
 	}
 
+	/**
+	 * API method called to save general settings.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   array $data The settings data to save.
+	 * @return array
+	 */
 	private function save_general_settings( $data ) {
 		$general_settings = array(
 			'minimum_post_age' => $data['minimum_post_age'],

@@ -14,19 +14,54 @@
  */
 class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 
+	/**
+	 * Holds the buffer which filters the results.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @var     array $buffer The buffer to filter the results by.
+	 */
 	private $buffer = array();
 
+	/**
+	 * Stores the active selection.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @var     array $selection The active selection.
+	 */
 	private $selection = array();
 
+	/**
+	 * Stores the Rop_Settings_Model instance.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @var     array|Rop_Settings_Model $settings The model instance.
+	 */
 	private $settings = array();
 
+	/**
+	 * Rop_Posts_Selector_Model constructor.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 */
 	public function __construct() {
 		parent::__construct();
 		$this->settings = new Rop_Settings_Model();
 		$this->buffer = wp_parse_args( $this->get( 'posts_buffer' ), $this->buffer );
 	}
 
-	public function select() {
+	/**
+	 * Method to retrieve the posts based on general settings and filtered by the buffer.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @param   bool|string $account The account id to filter by. Default false, don't filter by account.
+	 * @return mixed
+	 */
+	public function select( $account = false ) {
 		$post_types = array();
 		$tax_queries = array( 'relation' => 'OR' );
 		$operator = ( $this->settings->get_exclude_taxonomies() == true ) ? 'NOT IN' : 'IN';
@@ -58,7 +93,9 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		}
 
 		$include = array();
-		$exclude = $this->buffer;
+		if ( isset( $account ) && $account ) {
+			$exclude = $this->buffer[ $account ];
+		}
 		foreach ( $this->settings->get_selected_posts() as $post ) {
 			if ( $this->settings->get_exclude_posts() == true ) {
 				array_push( $exclude, $post['value'] );
@@ -91,5 +128,21 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		$results = wp_parse_args( $results, $required );
 
 		return $results;
+	}
+
+	/**
+	 * Method to clear buffer.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @param   bool|string $account The account id to clear buffer filter. Default false, clear all.
+	 */
+	public function clear_buffer( $account = false ) {
+		if ( isset( $account ) && $account ) {
+			unset( $this->buffer[ $account ] );
+		} else {
+			$this->buffer = array();
+		}
+		$this->set( 'posts_buffer', $this->buffer );
 	}
 }

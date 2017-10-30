@@ -42,7 +42,7 @@
 		},
 		methods: {
 			updateInput () {
-				this.inputValue = this.value;
+				this.inputValue = this.value
 				let now = new Date()
 				let secondsPassed = parseInt( ( now.getTime() - this.pressStartTime.getTime() ) / 1000 )
 				let increment = secondsPassed
