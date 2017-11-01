@@ -13,7 +13,7 @@ export default new Vuex.Store( {
 			debug: true,
 			logs: '### Here starts the log \n\n',
 			// view: 'accounts'
-			view: 'settings'
+			view: 'post-format'
 		},
 		auth_in_progress: false,
 		displayTabs: [
@@ -29,7 +29,7 @@ export default new Vuex.Store( {
 			},
 			{
 				name: 'Post Format',
-				slug: 'post',
+				slug: 'post-format',
 				isActive: false
 			},
 			{

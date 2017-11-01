@@ -39,6 +39,15 @@ class Rop_Global_Settings {
 	public $settings = array();
 
 	/**
+	 * Stores the default post format default options.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @var array
+	 */
+	public $post_format = array();
+
+	/**
 	 * Stores the default available services data.
 	 *
 	 * @since   8.0.0
@@ -131,6 +140,52 @@ class Rop_Global_Settings {
 					'available_posts' => array(), // get_posts(),
 					'selected_posts' => array(),
 					'exclude_posts' => false,
+				)
+			);
+
+			self::$instance->post_format = apply_filters(
+			    'rop_post_format_defaults',
+				array(
+					'facebook' => array(
+						'post_content' => '',
+						'maximum_length' => '160',
+						'custom_text_pos' => '',
+						'include_link' => true,
+						'url_from_meta' => false,
+						'short_url' => true,
+						'hashtags' => '',
+						'image' => true,
+					),
+					'twitter' => array(
+						'post_content' => '',
+						'maximum_length' => '160',
+						'custom_text_pos' => '',
+						'include_link' => true,
+						'url_from_meta' => false,
+						'short_url' => true,
+						'hashtags' => '',
+						'image' => true,
+					),
+					'linkedin' => array(
+						'post_content' => '',
+						'maximum_length' => '160',
+						'custom_text_pos' => '',
+						'include_link' => true,
+						'url_from_meta' => false,
+						'short_url' => true,
+						'hashtags' => '',
+						'image' => true,
+					),
+					'tumblr' => array(
+						'post_content' => '',
+						'maximum_length' => '160',
+						'custom_text_pos' => '',
+						'include_link' => true,
+						'url_from_meta' => false,
+						'short_url' => true,
+						'hashtags' => '',
+						'image' => true,
+					),
 				)
 			);
 		}// End if().

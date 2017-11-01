@@ -12294,7 +12294,7 @@ exports.default = new _vuex2.default.Store({
 			debug: true,
 			logs: '### Here starts the log \n\n',
 			// view: 'accounts'
-			view: 'settings'
+			view: 'post-format'
 		},
 		auth_in_progress: false,
 		displayTabs: [{
@@ -12307,7 +12307,7 @@ exports.default = new _vuex2.default.Store({
 			isActive: false
 		}, {
 			name: 'Post Format',
-			slug: 'post',
+			slug: 'post-format',
 			isActive: false
 		}, {
 			name: 'Custom Schedule',
@@ -14222,6 +14222,10 @@ var _settingsTabPanel = __webpack_require__(94);
 
 var _settingsTabPanel2 = _interopRequireDefault(_settingsTabPanel);
 
+var _postFormatTabPanel = __webpack_require__(109);
+
+var _postFormatTabPanel2 = _interopRequireDefault(_postFormatTabPanel);
+
 var _logsTabPanel = __webpack_require__(105);
 
 var _logsTabPanel2 = _interopRequireDefault(_logsTabPanel);
@@ -14230,7 +14234,34 @@ var _vuex = __webpack_require__(20);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// <template>
+module.exports = {
+	name: 'main-page-panel',
+	computed: (0, _vuex.mapState)(['displayTabs', 'page']),
+	created: function created() {},
+
+	data: function data() {
+		return {
+			plugin_logo: ROP_ASSETS_URL + 'img/logo_rop.png'
+		};
+	},
+	methods: {
+		switchTab: function switchTab(slug) {
+			this.$store.commit('setTabView', slug);
+		}
+	},
+	components: {
+		'accounts': _accountsTabPanel2.default,
+		'settings': _settingsTabPanel2.default,
+		'post-format': _postFormatTabPanel2.default,
+		schedule: {
+			name: 'schedule-view',
+			template: '<span>This is not yet ready</span>'
+		},
+		'logs': _logsTabPanel2.default
+	}
+	// </script>
+
+}; // <template>
 // 	<div>
 // 		<div class="panel title-panel" style="margin-bottom: 40px; padding-bottom: 20px;">
 // 			<div class="panel-header">
@@ -14264,37 +14295,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 // <script>
 /* global ROP_ASSETS_URL */
-module.exports = {
-	name: 'main-page-panel',
-	computed: (0, _vuex.mapState)(['displayTabs', 'page']),
-	created: function created() {},
-
-	data: function data() {
-		return {
-			plugin_logo: ROP_ASSETS_URL + 'img/logo_rop.png'
-		};
-	},
-	methods: {
-		switchTab: function switchTab(slug) {
-			this.$store.commit('setTabView', slug);
-		}
-	},
-	components: {
-		'accounts': _accountsTabPanel2.default,
-		'settings': _settingsTabPanel2.default,
-		post: {
-			name: 'post-view',
-			template: '<span>This is not yet ready</span>'
-		},
-		schedule: {
-			name: 'schedule-view',
-			template: '<span>This is not yet ready</span>'
-		},
-		'logs': _logsTabPanel2.default
-	}
-	// </script>
-
-};
 
 /***/ }),
 /* 40 */
@@ -16845,6 +16845,133 @@ module.exports = "\n    <div class=\"container\">\n        <h3>Logs</h3>\n      
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div>\n\t\t<div class=\"panel title-panel\" style=\"margin-bottom: 40px; padding-bottom: 20px;\">\n\t\t\t<div class=\"panel-header\">\n\t\t\t\t<img :src=\"plugin_logo\" style=\"float: left; margin-right: 10px;\" />\n\t\t\t\t<h1 class=\"d-inline-block\">Revive Old Posts</h1><span class=\"powered\"> by <a href=\"https://themeisle.com\" target=\"_blank\"><b>ThemeIsle</b></a></span>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel\">\n\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t<ul class=\"tab\">\n\t\t\t\t\t<li class=\"tab-item\" v-for=\"tab in displayTabs\" :class=\"{ active: tab.isActive }\"><a href=\"#\" @click=\"switchTab( tab.slug )\">{{ tab.name }}</a></li>\n\t\t\t\t\t<li class=\"tab-item tab-action\">\n\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Beta User\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Remote Check\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\n\t\t\t<component :is=\"page.view\"></component>\n\t\t</div>\n\t</div>\n";
+
+/***/ }),
+/* 109 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__vue_script__ = __webpack_require__(110)
+__vue_template__ = __webpack_require__(111)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/var/www/html/wp-base/wp-content/plugins/tweet-old-post/vue/src/vue-elements/post-format-tab-panel.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 110 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// <template>
+//     <div class="tab-view">
+//         <div class="panel-body" style="overflow: inherit;">
+//             <h3>Post Format</h3>
+//             <p>This is a <b>Vue.js</b> component.</p>
+//             <div class="container">
+//                 <div class="columns">
+//                     <div class="column col-sm-12 col-md-12 col-lg-12">
+//                         <!-- Post Content - where to fetch the content which will be shared
+//                              (dropdown with 4 options ( post_title, post_content, post_content
+//                              and title and custom field). If custom field is selected we will
+//                              have a text field which users will need to fill in to fetch the
+//                              content from that meta key. -->
+//                         <div class="columns">
+//                             <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+//                                 <b>Post Content</b><br/>
+//                                 <i>Posts excluded/included in sharing, filtered based on previous selections.</i>
+//                             </div>
+//                             <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+//                                 <div class="form-group">
+//                                     <select class="form-select">
+//                                         <option>post_title</option>
+//                                         <option>post_content</option>
+//                                         <option>post_content and title</option>
+//                                         <option>custom field</option>
+//                                     </select>
+//                                 </div>
+//                             </div>
+//                         </div>
+//
+//                         <!-- Maximum length of the message( number field ) which holds the maximum
+//                              number of chars for the shared content. We striping the content, we need
+//                              to strip at the last whitespace or dot before reaching the limit, in order
+//                              to not trim just half of the word. -->
+//
+//                         <!-- Additional text field - text field which will be used by the users to a
+//                              custom content before the fetched post content. -->
+//
+//                         <!-- Additional text at - dropdown with 2 options, begining or end, having the
+//                              option where to add the additional text content. -->
+//
+//                         <!-- Include link - checkbox either we should include the post permalink or not
+//                              in the shared content. This is will appended at the end of the content. -->
+//
+//                         <!-- Fetch url from custom field - checkbox - either we should fetch the url from
+//                              a meta field or not. When checked we will open a text field for entering the
+//                              meta key. -->
+//
+//                         <!-- Use url shortner ( checkbox ) , either we should use a shortner when adding
+//                              the links to the content. When checked we will show a dropdown with the shortners
+//                              available and the api keys ( if needed ) for each one. The list of shortners will
+//                              be the same as the old version of the plugin. -->
+//
+//                         <!-- Hashtags - dropdown - having this options - (Dont add any hashtags, Common hastags
+//                              for all shares, Create hashtags from categories, Create hashtags from tags, Create
+//                              hashtags from custom field). If one of those options is selected, except the dont
+//                              any hashtags options, we will show a number field having the Maximum hashtags length.
+//                              Moreover for common hashtags option, we will have another text field which will contain
+//                              the hashtags value. -->
+//
+//                         <!-- Post with image - checkbox (either we should use the featured image when posting) -->
+//
+//                         <div class="columns">
+//                             <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+//                                 <b>Post Content</b><br/>
+//                                 <i>Posts excluded/included in sharing, filtered based on previous selections.</i>
+//                             </div>
+//                             <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+//                                 <div class="form-group">
+//                                     <select class="form-select">
+//                                         <option>post_title</option>
+//                                         <option>post_content</option>
+//                                         <option>post_content and title</option>
+//                                         <option>custom field</option>
+//                                     </select>
+//                                 </div>
+//                             </div>
+//                         </div>
+//                     </div>
+//                 </div>
+//             </div>
+//         </div>
+//     </div>
+// </template>
+//
+// <script>
+module.exports = {
+	name: 'post-format-view'
+	// </script>
+
+};
+
+/***/ }),
+/* 111 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div class=\"tab-view\">\n        <div class=\"panel-body\" style=\"overflow: inherit;\">\n            <h3>Post Format</h3>\n            <p>This is a <b>Vue.js</b> component.</p>\n            <div class=\"container\">\n                <div class=\"columns\">\n                    <div class=\"column col-sm-12 col-md-12 col-lg-12\">\n                        <!-- Post Content - where to fetch the content which will be shared\n                             (dropdown with 4 options ( post_title, post_content, post_content\n                             and title and custom field). If custom field is selected we will\n                             have a text field which users will need to fill in to fetch the\n                             content from that meta key. -->\n                        <div class=\"columns\">\n                            <div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n                                <b>Post Content</b><br/>\n                                <i>Posts excluded/included in sharing, filtered based on previous selections.</i>\n                            </div>\n                            <div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n                                <div class=\"form-group\">\n                                    <select class=\"form-select\">\n                                        <option>post_title</option>\n                                        <option>post_content</option>\n                                        <option>post_content and title</option>\n                                        <option>custom field</option>\n                                    </select>\n                                </div>\n                            </div>\n                        </div>\n\n                        <!-- Maximum length of the message( number field ) which holds the maximum\n                             number of chars for the shared content. We striping the content, we need\n                             to strip at the last whitespace or dot before reaching the limit, in order\n                             to not trim just half of the word. -->\n\n                        <!-- Additional text field - text field which will be used by the users to a\n                             custom content before the fetched post content. -->\n\n                        <!-- Additional text at - dropdown with 2 options, begining or end, having the\n                             option where to add the additional text content. -->\n\n                        <!-- Include link - checkbox either we should include the post permalink or not\n                             in the shared content. This is will appended at the end of the content. -->\n\n                        <!-- Fetch url from custom field - checkbox - either we should fetch the url from\n                             a meta field or not. When checked we will open a text field for entering the\n                             meta key. -->\n\n                        <!-- Use url shortner ( checkbox ) , either we should use a shortner when adding\n                             the links to the content. When checked we will show a dropdown with the shortners\n                             available and the api keys ( if needed ) for each one. The list of shortners will\n                             be the same as the old version of the plugin. -->\n\n                        <!-- Hashtags - dropdown - having this options - (Dont add any hashtags, Common hastags\n                             for all shares, Create hashtags from categories, Create hashtags from tags, Create\n                             hashtags from custom field). If one of those options is selected, except the dont\n                             any hashtags options, we will show a number field having the Maximum hashtags length.\n                             Moreover for common hashtags option, we will have another text field which will contain\n                             the hashtags value. -->\n\n                        <!-- Post with image - checkbox (either we should use the featured image when posting) -->\n\n                        <div class=\"columns\">\n                            <div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n                                <b>Post Content</b><br/>\n                                <i>Posts excluded/included in sharing, filtered based on previous selections.</i>\n                            </div>\n                            <div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n                                <div class=\"form-group\">\n                                    <select class=\"form-select\">\n                                        <option>post_title</option>\n                                        <option>post_content</option>\n                                        <option>post_content and title</option>\n                                        <option>custom field</option>\n                                    </select>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n";
 
 /***/ })
 /******/ ]);

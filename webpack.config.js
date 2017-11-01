@@ -1,25 +1,25 @@
-var webpack = require( 'webpack' )
-var path = require( 'path' )
+const webpack = require( 'webpack' )
+const path = require( 'path' )
 
 // Naming and path settings
-var appName = 'rop'
-var entryPoint = './vue/src/rop_main.js'
-var exportPath = path.resolve( __dirname, './assets/js/build' )
+let appName = 'rop'
+const entryPoint = './vue/src/rop_main.js'
+const exportPath = path.resolve( __dirname, './assets/js/build' )
 
 // Enviroment flag
-var plugins = []
-var env = process.env.WEBPACK_ENV
+const plugins = []
+const env = process.env.WEBPACK_ENV
 
 // Differ settings based on production flag
-if (env === 'production') {
-	var UglifyJsPlugin = webpack.optimize.UglifyJsPlugin
+if ( env === 'production' ) {
+	const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin
 
 	plugins.push( new UglifyJsPlugin( { minimize: true } ) )
-	plugins.push(new webpack.DefinePlugin({
+	plugins.push( new webpack.DefinePlugin( {
 		'process.env': {
 			NODE_ENV: '"production"'
 		}
-	}))
+	} ) )
 
 	appName = appName + '.min.js'
 } else {
