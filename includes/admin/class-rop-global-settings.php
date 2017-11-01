@@ -193,6 +193,21 @@ class Rop_Global_Settings {
 		return self::$instance;
 	}
 
+    /**
+     * Method to retrieve instance of post_format.
+     *
+     * @since   8.0.0
+     * @access  public
+     * @param   bool|string $service_name The name of the service. Default false. Returns all.
+     * @return array|mixed
+     */
+	public function get_default_post_format( $service_name = false ) {
+	    if ( isset( $service_name ) && $service_name != false && isset( self::instance()->post_format[$service_name] ) ) {
+	        return self::instance()->post_format[$service_name];
+        }
+        return self::instance()->post_format;
+    }
+
 	/**
 	 * Method to retrieve instance of settings.
 	 *
