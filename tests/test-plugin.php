@@ -122,6 +122,48 @@ class Test_ROP extends WP_UnitTestCase {
 
     }
 
+    /**
+     * Testing post format
+     *
+     * @since   8.0.0
+     * @access  public
+     *
+     * @covers Rop_Post_Format_Model
+     */
+    public function test_post_format() {
+        $service = 'facebook';
+        $account_id = 'test_id_facebook';
+        $post_format_data = array(
+            'post_content' => 'post_title',
+            'maximum_length' => '190',
+            'custom_text' => 'Custom text',
+            'custom_text_pos' => 'end',
+            'include_link' => true,
+            'url_from_meta' => false,
+            'short_url' => true,
+            'hashtags' => 'no-hastags',
+            'hashtags_length' => '',
+            'hashtags_custom' => '',
+            'image' => false,
+        );
+        $global_settings = new Rop_Global_Settings();
+        $defaults = $global_settings->get_default_post_format( $service );
+
+	    $post_format = new Rop_Post_Format_Model( $service );
+
+	    $this->assertEquals( $post_format->get_post_format( $account_id ), $defaults );
+
+	    $post_format->add_update_post_format( $account_id, $post_format_data );
+
+
+        $this->assertEquals( $post_format->get_post_format( $account_id ), $post_format_data );
+
+        $post_format->remove_post_format( $account_id );
+
+        $this->assertEquals( $post_format->get_post_format( $account_id ), $defaults );
+
+    }
+
     private function assertUriIsCorrect( $uri ) {
         // https://stackoverflow.com/questions/30847/regex-to-validate-uris
         // http://snipplr.com/view/6889/regular-expressions-for-uri-validationparsing/

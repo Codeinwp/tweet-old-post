@@ -149,41 +149,53 @@ class Rop_Global_Settings {
 					'facebook' => array(
 						'post_content' => '',
 						'maximum_length' => '160',
+						'custom_text' => '',
 						'custom_text_pos' => '',
 						'include_link' => true,
 						'url_from_meta' => false,
 						'short_url' => true,
 						'hashtags' => '',
+						'hashtags_length' => '',
+						'hashtags_custom' => '',
 						'image' => true,
 					),
 					'twitter' => array(
 						'post_content' => '',
 						'maximum_length' => '160',
+						'custom_text' => '',
 						'custom_text_pos' => '',
 						'include_link' => true,
 						'url_from_meta' => false,
 						'short_url' => true,
 						'hashtags' => '',
+						'hashtags_length' => '',
+						'hashtags_custom' => '',
 						'image' => true,
 					),
 					'linkedin' => array(
 						'post_content' => '',
 						'maximum_length' => '160',
+						'custom_text' => '',
 						'custom_text_pos' => '',
 						'include_link' => true,
 						'url_from_meta' => false,
 						'short_url' => true,
 						'hashtags' => '',
+						'hashtags_length' => '',
+						'hashtags_custom' => '',
 						'image' => true,
 					),
 					'tumblr' => array(
 						'post_content' => '',
 						'maximum_length' => '160',
+						'custom_text' => '',
 						'custom_text_pos' => '',
 						'include_link' => true,
 						'url_from_meta' => false,
 						'short_url' => true,
 						'hashtags' => '',
+						'hashtags_length' => '',
+						'hashtags_custom' => '',
 						'image' => true,
 					),
 				)
@@ -193,20 +205,20 @@ class Rop_Global_Settings {
 		return self::$instance;
 	}
 
-    /**
-     * Method to retrieve instance of post_format.
-     *
-     * @since   8.0.0
-     * @access  public
-     * @param   bool|string $service_name The name of the service. Default false. Returns all.
-     * @return array|mixed
-     */
+	/**
+	 * Method to retrieve instance of post_format.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @param   bool|string $service_name The name of the service. Default false. Returns all.
+	 * @return array|mixed
+	 */
 	public function get_default_post_format( $service_name = false ) {
-	    if ( isset( $service_name ) && $service_name != false && isset( self::instance()->post_format[$service_name] ) ) {
-	        return self::instance()->post_format[$service_name];
-        }
-        return self::instance()->post_format;
-    }
+	    if ( isset( $service_name ) && $service_name != false && isset( self::instance()->post_format[ $service_name ] ) ) {
+	        return self::instance()->post_format[ $service_name ];
+		}
+		return self::instance()->post_format;
+	}
 
 	/**
 	 * Method to retrieve instance of settings.
