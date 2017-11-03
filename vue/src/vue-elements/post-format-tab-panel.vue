@@ -213,10 +213,10 @@
 								<div class="form-group">
 									<select class="form-select" v-model="post_format.hashtags">
 										<option value="no-hashtags" >Dont add any hashtags</option>
-										<option value="common-hastags">Common hastags for all shares</option>
-										<option value="categories-hastags">Create hashtags from categories</option>
-										<option value="tags-hastags">Create hashtags from tags</option>
-										<option value="custom-hastags">Create hashtags from custom field</option>
+										<option value="common-hashtags">Common hastags for all shares</option>
+										<option value="categories-hashtags">Create hashtags from categories</option>
+										<option value="tags-hashtags">Create hashtags from tags</option>
+										<option value="custom-hashtags">Create hashtags from custom field</option>
 									</select>
 								</div>
 							</div>

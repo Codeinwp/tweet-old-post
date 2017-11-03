@@ -135,16 +135,19 @@ class Test_ROP extends WP_UnitTestCase {
         $account_id = 'test_id_facebook';
         $post_format_data = array(
             'post_content' => 'post_title',
+            'custom_meta_field' => '',
             'maximum_length' => '190',
-            'custom_text' => 'Custom text',
-            'custom_text_pos' => 'end',
+            'custom_text' => 'I am the King of Random!',
+            'custom_text_pos' => 'beginning',
             'include_link' => true,
             'url_from_meta' => false,
+            'url_meta_key' => '',
             'short_url' => true,
-            'hashtags' => 'no-hastags',
-            'hashtags_length' => '',
+            'hashtags' => 'common-hashtags',
+            'hashtags_length' => '15',
+            'hashtags_common' => '#testLikeABoss, #themeIsle',
             'hashtags_custom' => '',
-            'image' => false,
+            'image' => true,
         );
         $global_settings = new Rop_Global_Settings();
         $defaults = $global_settings->get_default_post_format( $service );
