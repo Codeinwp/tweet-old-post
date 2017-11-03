@@ -232,7 +232,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="columns" v-if="post_format.hashtags === 'common-hastags'">
+                        <div class="columns" v-if="post_format.hashtags === 'common-hashtags'">
                             <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
                                 <b>Common Hashtags</b><br/>
                                 <i>List of hastags to use separated by comma ",".</i>
