@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 33);
+/******/ 	return __webpack_require__(__webpack_require__.s = 34);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -79,8 +79,8 @@ if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var store = __webpack_require__(24)('wks');
-var uid = __webpack_require__(25);
+var store = __webpack_require__(25)('wks');
+var uid = __webpack_require__(26);
 var Symbol = __webpack_require__(0).Symbol;
 var USE_SYMBOL = typeof Symbol == 'function';
 
@@ -94,28 +94,6 @@ $exports.store = store;
 
 /***/ }),
 /* 2 */
-/***/ (function(module, exports) {
-
-var core = module.exports = { version: '2.5.1' };
-if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var dP = __webpack_require__(16);
-var createDesc = __webpack_require__(29);
-module.exports = __webpack_require__(8) ? function (object, key, value) {
-  return dP.f(object, key, createDesc(1, value));
-} : function (object, key, value) {
-  object[key] = value;
-  return object;
-};
-
-
-/***/ }),
-/* 4 */
 /***/ (function(module, exports) {
 
 /*
@@ -171,7 +149,7 @@ module.exports = function() {
 
 
 /***/ }),
-/* 5 */
+/* 3 */
 /***/ (function(module, exports) {
 
 /*
@@ -420,6 +398,28 @@ function updateLink(linkElement, obj) {
 	if(oldSrc)
 		URL.revokeObjectURL(oldSrc);
 }
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+var core = module.exports = { version: '2.5.1' };
+if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var dP = __webpack_require__(16);
+var createDesc = __webpack_require__(30);
+module.exports = __webpack_require__(8) ? function (object, key, value) {
+  return dP.f(object, key, createDesc(1, value));
+} : function (object, key, value) {
+  object[key] = value;
+  return object;
+};
 
 
 /***/ }),
@@ -10657,7 +10657,7 @@ Vue$3.compile = compileToFunctions;
 
 /* harmony default export */ __webpack_exports__["default"] = (Vue$3);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(11), __webpack_require__(34)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(11), __webpack_require__(35)))
 
 /***/ }),
 /* 11 */
@@ -10888,8 +10888,8 @@ module.exports = function (it) {
 /* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var shared = __webpack_require__(24)('keys');
-var uid = __webpack_require__(25);
+var shared = __webpack_require__(25)('keys');
+var uid = __webpack_require__(26);
 module.exports = function (key) {
   return shared[key] || (shared[key] = uid(key));
 };
@@ -11861,6 +11861,12 @@ var index_esm = {
 /* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
+module.exports = { "default": __webpack_require__(47), __esModule: true };
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
 // 7.1.13 ToObject(argument)
 var defined = __webpack_require__(12);
 module.exports = function (it) {
@@ -11869,12 +11875,12 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.14 / 15.2.3.14 Object.keys(O)
 var $keys = __webpack_require__(49);
-var enumBugKeys = __webpack_require__(26);
+var enumBugKeys = __webpack_require__(27);
 
 module.exports = Object.keys || function keys(O) {
   return $keys(O, enumBugKeys);
@@ -11882,7 +11888,7 @@ module.exports = Object.keys || function keys(O) {
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -11893,7 +11899,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(0);
@@ -11905,7 +11911,7 @@ module.exports = function (key) {
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports) {
 
 var id = 0;
@@ -11916,7 +11922,7 @@ module.exports = function (key) {
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports) {
 
 // IE 8- don't enum bug keys
@@ -11926,13 +11932,13 @@ module.exports = (
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(0);
-var core = __webpack_require__(2);
+var core = __webpack_require__(4);
 var ctx = __webpack_require__(55);
-var hide = __webpack_require__(3);
+var hide = __webpack_require__(5);
 var PROTOTYPE = 'prototype';
 
 var $export = function (type, name, source) {
@@ -11993,7 +11999,7 @@ module.exports = $export;
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isObject = __webpack_require__(17);
@@ -12006,7 +12012,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports) {
 
 module.exports = function (bitmap, value) {
@@ -12020,19 +12026,19 @@ module.exports = function (bitmap, value) {
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var LIBRARY = __webpack_require__(64);
-var $export = __webpack_require__(27);
+var $export = __webpack_require__(28);
 var redefine = __webpack_require__(65);
-var hide = __webpack_require__(3);
+var hide = __webpack_require__(5);
 var has = __webpack_require__(6);
 var Iterators = __webpack_require__(9);
 var $iterCreate = __webpack_require__(66);
-var setToStringTag = __webpack_require__(31);
+var setToStringTag = __webpack_require__(32);
 var getPrototypeOf = __webpack_require__(70);
 var ITERATOR = __webpack_require__(1)('iterator');
 var BUGGY = !([].keys && 'next' in [].keys()); // Safari has buggy iterators w/o `next`
@@ -12097,7 +12103,7 @@ module.exports = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var def = __webpack_require__(16).f;
@@ -12110,7 +12116,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12194,7 +12200,7 @@ exports.mixin = mixin;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)))
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12204,11 +12210,11 @@ var _vue = __webpack_require__(10);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _rop_store = __webpack_require__(35);
+var _rop_store = __webpack_require__(36);
 
 var _rop_store2 = _interopRequireDefault(_rop_store);
 
-var _mainPagePanel = __webpack_require__(38);
+var _mainPagePanel = __webpack_require__(39);
 
 var _mainPagePanel2 = _interopRequireDefault(_mainPagePanel);
 
@@ -12233,7 +12239,7 @@ window.onload = function () {
 /* exported RopApp */
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports) {
 
 var g;
@@ -12260,7 +12266,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12278,7 +12284,7 @@ var _vuex = __webpack_require__(20);
 
 var _vuex2 = _interopRequireDefault(_vuex);
 
-var _vueResource = __webpack_require__(36);
+var _vueResource = __webpack_require__(37);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
@@ -12657,7 +12663,7 @@ exports.default = new _vuex2.default.Store({
 });
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -13759,7 +13765,7 @@ var xhrClient = function (request) {
 
 var nodeClient = function (request) {
 
-    var client = __webpack_require__(37);
+    var client = __webpack_require__(38);
 
     return new PromiseObj(function (resolve) {
 
@@ -14235,18 +14241,18 @@ if (typeof window !== 'undefined' && window.Vue) {
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(39)
-__vue_template__ = __webpack_require__(111)
+__vue_script__ = __webpack_require__(40)
+__vue_template__ = __webpack_require__(113)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -14263,13 +14269,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _accountsTabPanel = __webpack_require__(40);
+var _accountsTabPanel = __webpack_require__(41);
 
 var _accountsTabPanel2 = _interopRequireDefault(_accountsTabPanel);
 
@@ -14281,7 +14287,7 @@ var _postFormatTabPanel = __webpack_require__(105);
 
 var _postFormatTabPanel2 = _interopRequireDefault(_postFormatTabPanel);
 
-var _logsTabPanel = __webpack_require__(108);
+var _logsTabPanel = __webpack_require__(110);
 
 var _logsTabPanel2 = _interopRequireDefault(_logsTabPanel);
 
@@ -14352,11 +14358,11 @@ module.exports = {
 /* global ROP_ASSETS_URL */
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(41)
+__vue_script__ = __webpack_require__(42)
 __vue_template__ = __webpack_require__(93)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
@@ -14374,13 +14380,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _signInBtn = __webpack_require__(42);
+var _signInBtn = __webpack_require__(43);
 
 var _signInBtn2 = _interopRequireDefault(_signInBtn);
 
@@ -14476,12 +14482,12 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(43)
-__vue_script__ = __webpack_require__(45)
+__webpack_require__(44)
+__vue_script__ = __webpack_require__(46)
 __vue_template__ = __webpack_require__(76)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
@@ -14499,16 +14505,16 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(44);
+var content = __webpack_require__(45);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(5)(content, {});
+var update = __webpack_require__(3)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -14525,10 +14531,10 @@ if(false) {
 }
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(4)();
+exports = module.exports = __webpack_require__(2)();
 // imports
 
 
@@ -14539,13 +14545,13 @@ exports.push([module.i, "\n\t#rop_core .sign-in-btn > .modal[_v-7e903530] {\n\t\
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _keys = __webpack_require__(46);
+var _keys = __webpack_require__(21);
 
 var _keys2 = _interopRequireDefault(_keys);
 
@@ -14762,17 +14768,11 @@ module.exports = {
 };
 
 /***/ }),
-/* 46 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = { "default": __webpack_require__(47), __esModule: true };
-
-/***/ }),
 /* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(48);
-module.exports = __webpack_require__(2).Object.keys;
+module.exports = __webpack_require__(4).Object.keys;
 
 
 /***/ }),
@@ -14780,8 +14780,8 @@ module.exports = __webpack_require__(2).Object.keys;
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.14 Object.keys(O)
-var toObject = __webpack_require__(21);
-var $keys = __webpack_require__(22);
+var toObject = __webpack_require__(22);
+var $keys = __webpack_require__(23);
 
 __webpack_require__(54)('keys', function () {
   return function keys(it) {
@@ -14818,7 +14818,7 @@ module.exports = function (object, names) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for non-array-like ES3 and non-enumerable old V8 strings
-var cof = __webpack_require__(23);
+var cof = __webpack_require__(24);
 // eslint-disable-next-line no-prototype-builtins
 module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
   return cof(it) == 'String' ? it.split('') : Object(it);
@@ -14884,8 +14884,8 @@ module.exports = function (index, length) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // most Object methods by ES6 should accept primitives
-var $export = __webpack_require__(27);
-var core = __webpack_require__(2);
+var $export = __webpack_require__(28);
+var core = __webpack_require__(4);
 var fails = __webpack_require__(18);
 module.exports = function (KEY, exec) {
   var fn = (core.Object || {})[KEY] || Object[KEY];
@@ -14936,7 +14936,7 @@ module.exports = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = !__webpack_require__(8) && !__webpack_require__(18)(function () {
-  return Object.defineProperty(__webpack_require__(28)('div'), 'a', { get: function () { return 7; } }).a != 7;
+  return Object.defineProperty(__webpack_require__(29)('div'), 'a', { get: function () { return 7; } }).a != 7;
 });
 
 
@@ -14973,7 +14973,7 @@ module.exports = __webpack_require__(73);
 
 __webpack_require__(61);
 var global = __webpack_require__(0);
-var hide = __webpack_require__(3);
+var hide = __webpack_require__(5);
 var Iterators = __webpack_require__(9);
 var TO_STRING_TAG = __webpack_require__(1)('toStringTag');
 
@@ -15007,7 +15007,7 @@ var toIObject = __webpack_require__(13);
 // 22.1.3.13 Array.prototype.keys()
 // 22.1.3.29 Array.prototype.values()
 // 22.1.3.30 Array.prototype[@@iterator]()
-module.exports = __webpack_require__(30)(Array, 'Array', function (iterated, kind) {
+module.exports = __webpack_require__(31)(Array, 'Array', function (iterated, kind) {
   this._t = toIObject(iterated); // target
   this._i = 0;                   // next index
   this._k = kind;                // kind
@@ -15060,7 +15060,7 @@ module.exports = true;
 /* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(3);
+module.exports = __webpack_require__(5);
 
 
 /***/ }),
@@ -15070,12 +15070,12 @@ module.exports = __webpack_require__(3);
 "use strict";
 
 var create = __webpack_require__(67);
-var descriptor = __webpack_require__(29);
-var setToStringTag = __webpack_require__(31);
+var descriptor = __webpack_require__(30);
+var setToStringTag = __webpack_require__(32);
 var IteratorPrototype = {};
 
 // 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-__webpack_require__(3)(IteratorPrototype, __webpack_require__(1)('iterator'), function () { return this; });
+__webpack_require__(5)(IteratorPrototype, __webpack_require__(1)('iterator'), function () { return this; });
 
 module.exports = function (Constructor, NAME, next) {
   Constructor.prototype = create(IteratorPrototype, { next: descriptor(1, next) });
@@ -15090,7 +15090,7 @@ module.exports = function (Constructor, NAME, next) {
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
 var anObject = __webpack_require__(7);
 var dPs = __webpack_require__(68);
-var enumBugKeys = __webpack_require__(26);
+var enumBugKeys = __webpack_require__(27);
 var IE_PROTO = __webpack_require__(15)('IE_PROTO');
 var Empty = function () { /* empty */ };
 var PROTOTYPE = 'prototype';
@@ -15098,7 +15098,7 @@ var PROTOTYPE = 'prototype';
 // Create object with fake `null` prototype: use iframe Object with cleared prototype
 var createDict = function () {
   // Thrash, waste and sodomy: IE GC bug
-  var iframe = __webpack_require__(28)('iframe');
+  var iframe = __webpack_require__(29)('iframe');
   var i = enumBugKeys.length;
   var lt = '<';
   var gt = '>';
@@ -15136,7 +15136,7 @@ module.exports = Object.create || function create(O, Properties) {
 
 var dP = __webpack_require__(16);
 var anObject = __webpack_require__(7);
-var getKeys = __webpack_require__(22);
+var getKeys = __webpack_require__(23);
 
 module.exports = __webpack_require__(8) ? Object.defineProperties : function defineProperties(O, Properties) {
   anObject(O);
@@ -15163,7 +15163,7 @@ module.exports = document && document.documentElement;
 
 // 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
 var has = __webpack_require__(6);
-var toObject = __webpack_require__(21);
+var toObject = __webpack_require__(22);
 var IE_PROTO = __webpack_require__(15)('IE_PROTO');
 var ObjectProto = Object.prototype;
 
@@ -15185,7 +15185,7 @@ module.exports = Object.getPrototypeOf || function (O) {
 var $at = __webpack_require__(72)(true);
 
 // 21.1.3.27 String.prototype[@@iterator]()
-__webpack_require__(30)(String, 'String', function (iterated) {
+__webpack_require__(31)(String, 'String', function (iterated) {
   this._t = String(iterated); // target
   this._i = 0;                // next index
 // 21.1.5.2.1 %StringIteratorPrototype%.next()
@@ -15229,7 +15229,7 @@ module.exports = function (TO_STRING) {
 
 var anObject = __webpack_require__(7);
 var get = __webpack_require__(74);
-module.exports = __webpack_require__(2).getIterator = function (it) {
+module.exports = __webpack_require__(4).getIterator = function (it) {
   var iterFn = get(it);
   if (typeof iterFn != 'function') throw TypeError(it + ' is not iterable!');
   return anObject(iterFn.call(it));
@@ -15243,7 +15243,7 @@ module.exports = __webpack_require__(2).getIterator = function (it) {
 var classof = __webpack_require__(75);
 var ITERATOR = __webpack_require__(1)('iterator');
 var Iterators = __webpack_require__(9);
-module.exports = __webpack_require__(2).getIteratorMethod = function (it) {
+module.exports = __webpack_require__(4).getIteratorMethod = function (it) {
   if (it != undefined) return it[ITERATOR]
     || it['@@iterator']
     || Iterators[classof(it)];
@@ -15255,7 +15255,7 @@ module.exports = __webpack_require__(2).getIteratorMethod = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // getting tag from 19.1.3.6 Object.prototype.toString()
-var cof = __webpack_require__(23);
+var cof = __webpack_require__(24);
 var TAG = __webpack_require__(1)('toStringTag');
 // ES3 wrong here
 var ARG = cof(function () { return arguments; }()) == 'Arguments';
@@ -15318,7 +15318,7 @@ if (false) {(function () {  module.hot.accept()
 var content = __webpack_require__(79);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(5)(content, {});
+var update = __webpack_require__(3)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -15338,7 +15338,7 @@ if(false) {
 /* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(4)();
+exports = module.exports = __webpack_require__(2)();
 // imports
 
 
@@ -15540,7 +15540,7 @@ var _getIterator2 = __webpack_require__(19);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
-var _vueClickaway = __webpack_require__(32);
+var _vueClickaway = __webpack_require__(33);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -15902,7 +15902,7 @@ if (false) {(function () {  module.hot.accept()
 var content = __webpack_require__(90);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(5)(content, {});
+var update = __webpack_require__(3)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -15922,7 +15922,7 @@ if(false) {
 /* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(4)();
+exports = module.exports = __webpack_require__(2)();
 // imports
 
 
@@ -16395,7 +16395,7 @@ if (false) {(function () {  module.hot.accept()
 var content = __webpack_require__(98);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(5)(content, {});
+var update = __webpack_require__(3)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -16415,7 +16415,7 @@ if(false) {
 /* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(4)();
+exports = module.exports = __webpack_require__(2)();
 // imports
 
 
@@ -16578,7 +16578,7 @@ var _getIterator2 = __webpack_require__(19);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
-var _vueClickaway = __webpack_require__(32);
+var _vueClickaway = __webpack_require__(33);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -16839,9 +16839,9 @@ module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\" st
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(114)
-__vue_script__ = __webpack_require__(106)
-__vue_template__ = __webpack_require__(116)
+__webpack_require__(106)
+__vue_script__ = __webpack_require__(108)
+__vue_template__ = __webpack_require__(109)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -16861,10 +16861,50 @@ if (false) {(function () {  module.hot.accept()
 /* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(107);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(3)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-051e6fb2&file=post-format-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./post-format-tab-panel.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-051e6fb2&file=post-format-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./post-format-tab-panel.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 107 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(2)();
+// imports
+
+
+// module
+exports.push([module.i, "\n\t#rop_core .avatar .avatar-icon[_v-051e6fb2] {\n\t\tbackground: #333;\n\t\tborder-radius: 50%;\n\t\tfont-size: 16px;\n\t\ttext-align: center;\n\t\tline-height: 20px;\n\t}\n\t#rop_core .avatar .avatar-icon.fa-facebook-official[_v-051e6fb2] { background-color: #3b5998; }\n\t#rop_core .avatar .avatar-icon.fa-twitter[_v-051e6fb2] { background-color: #55acee; }\n\t#rop_core .avatar .avatar-icon.fa-linkedin[_v-051e6fb2] { background-color: #007bb5; }\n\t#rop_core .avatar .avatar-icon.fa-tumblr[_v-051e6fb2] { background-color: #32506d; }\n\n\t#rop_core .service.facebook[_v-051e6fb2] {\n\t\tcolor: #3b5998;\n\t}\n\n\t#rop_core .service.twitter[_v-051e6fb2] {\n\t\tcolor: #55acee;\n\t}\n\n\t#rop_core .service.linkedin[_v-051e6fb2] {\n\t\tcolor: #007bb5;\n\t}\n\n\t#rop_core .service.tumblr[_v-051e6fb2] {\n\t\tcolor: #32506d;\n\t}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 108 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 
 
-var _keys = __webpack_require__(46);
+var _keys = __webpack_require__(21);
 
 var _keys2 = _interopRequireDefault(_keys);
 
@@ -16880,10 +16920,17 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 				<i class="avatar-icon fa" :class="icon" aria-hidden="true" v-if="img"></i>
 // 				<!--<img src="img/avatar-5.png" class="avatar-icon" alt="...">-->
 // 			</figure>
-// 			<div class="d-inline-block" style="vertical-align: bottom; margin-left: 16px;">
+// 			<div class="d-inline-block" style="vertical-align: top; margin-left: 16px;">
 // 				<h6>{{user_name}}</h6>
 // 				<b class="service" :class="service">{{service_name}}</b>
 // 			</div>
+//             <div class="d-inline-block" style="vertical-align: top; margin-left: 16px; width: 80%">
+//                 <h4><i class="fa fa-info-circle"></i> Info</h4>
+//                 <p><i>Each <b>account</b> can have it's own <b>Post Format</b> for sharing, on the left you can see the
+//                     current selected account and network, bellow are the <b>Post Format</b> options for the account.
+//                     Don't forget to save after each change and remember, you can always reset an account to the network defaults.
+//                 </i></p>
+//             </div>
 // 			<div class="container">
 // 				<div class="columns">
 // 					<div class="column col-sm-12 col-md-12 col-lg-12">
@@ -16902,6 +16949,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 						</div>
 // 						<hr/>
 //
+//                         <h4>Content</h4>
 // 						<!-- Post Content - where to fetch the content which will be shared
 // 							 (dropdown with 4 options ( post_title, post_content, post_content
 // 							 and title and custom field). If custom field is selected we will
@@ -16923,6 +16971,17 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 								</div>
 // 							</div>
 // 						</div>
+//                         <div class="columns" v-if="post_format.post_content === 'custom_field'">
+//                             <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+//                                 <b>Custom Meta Field</b><br/>
+//                                 <i>Meta field name from which to get the content.</i>
+//                             </div>
+//                             <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+//                                 <div class="form-group">
+//                                     <input class="form-input" type="number" v-model="post_format.custom_meta_field" value="" placeholder="" />
+//                                 </div>
+//                             </div>
+//                         </div>
 //
 // 						<!-- Maximum length of the message( number field ) which holds the maximum
 // 							 number of chars for the shared content. We striping the content, we need
@@ -16969,7 +17028,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 								</div>
 // 							</div>
 // 						</div>
+//                         <hr/>
 //
+//                         <h4>Link & URL</h4>
 // 						<!-- Include link - checkbox either we should include the post permalink or not
 // 							 in the shared content. This is will appended at the end of the content. -->
 // 						<div class="columns">
@@ -17012,6 +17073,17 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 								</div>
 // 							</div>
 // 						</div>
+//                         <div class="columns" v-if="post_format.url_from_meta">
+//                             <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+//                                 <b>Meta Key</b><br/>
+//                                 <i>Meta key name from which to get the URL.</i>
+//                             </div>
+//                             <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+//                                 <div class="form-group">
+//                                     <input class="form-input" type="number" v-model="post_format.url_meta_key" value="" placeholder="" />
+//                                 </div>
+//                             </div>
+//                         </div>
 //
 // 						<!-- Use url shortner ( checkbox ) , either we should use a shortner when adding
 // 							 the links to the content. When checked we will show a dropdown with the shortners
@@ -17035,7 +17107,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 								</div>
 // 							</div>
 // 						</div>
+//                         <hr/>
 //
+//                         <h4>Misc.</h4>
 // 						<!-- Hashtags - dropdown - having this options - (Dont add any hashtags, Common hastags
 // 							 for all shares, Create hashtags from categories, Create hashtags from tags, Create
 // 							 hashtags from custom field). If one of those options is selected, except the dont
@@ -17059,6 +17133,28 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 								</div>
 // 							</div>
 // 						</div>
+//                         <div class="columns" v-if="post_format.hashtags !== 'no-hashtags'">
+//                             <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+//                                 <b>Maximum Hashtags length</b><br/>
+//                                 <i>The maximum hashtags length to be used when publishing.</i>
+//                             </div>
+//                             <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+//                                 <div class="form-group">
+//                                     <input class="form-input" type="number" v-model="post_format.hashtags_length" value="" placeholder="" />
+//                                 </div>
+//                             </div>
+//                         </div>
+//                         <div class="columns" v-if="post_format.hashtags === 'common-hastags'">
+//                             <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+//                                 <b>Common Hashtags</b><br/>
+//                                 <i>List of hastags to use separated by comma ",".</i>
+//                             </div>
+//                             <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+//                                 <div class="form-group">
+//                                     <input class="form-input" type="text" v-model="post_format.hashtags_common" value="" placeholder="" />
+//                                 </div>
+//                             </div>
+//                         </div>
 //
 // 						<!-- Post with image - checkbox (either we should use the featured image when posting) -->
 // 						<div class="columns">
@@ -17079,7 +17175,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 								</div>
 // 							</div>
 // 						</div>
-//
+//                         <hr/>
 // 					</div>
 // 				</div>
 // 			</div>
@@ -17203,13 +17299,18 @@ module.exports = {
 };
 
 /***/ }),
-/* 107 */,
-/* 108 */
+/* 109 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div class=\"tab-view\" _v-051e6fb2=\"\">\n\t\t<div class=\"panel-body\" style=\"overflow: inherit;\" _v-051e6fb2=\"\">\n\t\t\t<h3 _v-051e6fb2=\"\">Post Format</h3>\n\t\t\t<figure class=\"avatar avatar-lg\" style=\"text-align: center;\" _v-051e6fb2=\"\">\n\t\t\t\t<img :src=\"img\" v-if=\"img\" _v-051e6fb2=\"\">\n\t\t\t\t<i class=\"fa\" :class=\"icon\" style=\"line-height: 48px;\" aria-hidden=\"true\" v-else=\"\" _v-051e6fb2=\"\"></i>\n\t\t\t\t<i class=\"avatar-icon fa\" :class=\"icon\" aria-hidden=\"true\" v-if=\"img\" _v-051e6fb2=\"\"></i>\n\t\t\t\t<!--<img src=\"img/avatar-5.png\" class=\"avatar-icon\" alt=\"...\">-->\n\t\t\t</figure>\n\t\t\t<div class=\"d-inline-block\" style=\"vertical-align: top; margin-left: 16px;\" _v-051e6fb2=\"\">\n\t\t\t\t<h6 _v-051e6fb2=\"\">{{user_name}}</h6>\n\t\t\t\t<b class=\"service\" :class=\"service\" _v-051e6fb2=\"\">{{service_name}}</b>\n\t\t\t</div>\n            <div class=\"d-inline-block\" style=\"vertical-align: top; margin-left: 16px; width: 80%\" _v-051e6fb2=\"\">\n                <h4 _v-051e6fb2=\"\"><i class=\"fa fa-info-circle\" _v-051e6fb2=\"\"></i> Info</h4>\n                <p _v-051e6fb2=\"\"><i _v-051e6fb2=\"\">Each <b _v-051e6fb2=\"\">account</b> can have it's own <b _v-051e6fb2=\"\">Post Format</b> for sharing, on the left you can see the\n                    current selected account and network, bellow are the <b _v-051e6fb2=\"\">Post Format</b> options for the account.\n                    Don't forget to save after each change and remember, you can always reset an account to the network defaults.\n                </i></p>\n            </div>\n\t\t\t<div class=\"container\" _v-051e6fb2=\"\">\n\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Account</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Specify an account to change the settings of.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"selected_account\" @change=\"getAccountpostFormat()\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<option v-for=\"( account, id ) in active_accounts\" :value=\"id\" _v-051e6fb2=\"\">{{account.user}} - {{account.service}} </option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<hr _v-051e6fb2=\"\">\n\n                        <h4 _v-051e6fb2=\"\">Content</h4>\n\t\t\t\t\t\t<!-- Post Content - where to fetch the content which will be shared\n\t\t\t\t\t\t\t (dropdown with 4 options ( post_title, post_content, post_content\n\t\t\t\t\t\t\t and title and custom field). If custom field is selected we will\n\t\t\t\t\t\t\t have a text field which users will need to fill in to fetch the\n\t\t\t\t\t\t\t content from that meta key. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Post Content</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">From where to fetch the content which will be shared.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.post_content\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<option value=\"post_title\" _v-051e6fb2=\"\">Post Title</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"post_content\" _v-051e6fb2=\"\">Post Content</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"post_title_content\" _v-051e6fb2=\"\">Post Title &amp; Content</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"custom_field\" _v-051e6fb2=\"\">Custom Field</option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n                        <div class=\"columns\" v-if=\"post_format.post_content === 'custom_field'\" _v-051e6fb2=\"\">\n                            <div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n                                <b _v-051e6fb2=\"\">Custom Meta Field</b><br _v-051e6fb2=\"\">\n                                <i _v-051e6fb2=\"\">Meta field name from which to get the content.</i>\n                            </div>\n                            <div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n                                <div class=\"form-group\" _v-051e6fb2=\"\">\n                                    <input class=\"form-input\" type=\"number\" v-model=\"post_format.custom_meta_field\" value=\"\" placeholder=\"\" _v-051e6fb2=\"\">\n                                </div>\n                            </div>\n                        </div>\n\n\t\t\t\t\t\t<!-- Maximum length of the message( number field ) which holds the maximum\n\t\t\t\t\t\t\t number of chars for the shared content. We striping the content, we need\n\t\t\t\t\t\t\t to strip at the last whitespace or dot before reaching the limit, in order\n\t\t\t\t\t\t\t to not trim just half of the word. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Maximum chars</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Maximum length of the message.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.maximum_length\" value=\"\" placeholder=\"\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!-- Additional text field - text field which will be used by the users to a\n\t\t\t\t\t\t\t custom content before the fetched post content. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Additional text</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Add custom content to published items.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<textarea class=\"form-input\" v-model=\"post_format.custom_text\" placeholder=\"Custom content ...\" _v-051e6fb2=\"\">{{post_format.custom_text}}</textarea>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!-- Additional text at - dropdown with 2 options, begining or end, having the\n\t\t\t\t\t\t\t option where to add the additional text content. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Where to add the custom text</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.custom_text_pos\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<option value=\"beginning\" _v-051e6fb2=\"\">Beginning</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"end\" _v-051e6fb2=\"\">End</option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n                        <hr _v-051e6fb2=\"\">\n\n                        <h4 _v-051e6fb2=\"\">Link &amp; URL</h4>\n\t\t\t\t\t\t<!-- Include link - checkbox either we should include the post permalink or not\n\t\t\t\t\t\t\t in the shared content. This is will appended at the end of the content. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Include link</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Should include the post permalink or not?</i>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.include_link\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-051e6fb2=\"\"></i> Yes\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!-- Fetch url from custom field - checkbox - either we should fetch the url from\n\t\t\t\t\t\t\t a meta field or not. When checked we will open a text field for entering the\n\t\t\t\t\t\t\t meta key. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">URL</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Fetch URL from custom field?</i>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.url_from_meta\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-051e6fb2=\"\"></i> Yes\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n                        <div class=\"columns\" v-if=\"post_format.url_from_meta\" _v-051e6fb2=\"\">\n                            <div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n                                <b _v-051e6fb2=\"\">Meta Key</b><br _v-051e6fb2=\"\">\n                                <i _v-051e6fb2=\"\">Meta key name from which to get the URL.</i>\n                            </div>\n                            <div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n                                <div class=\"form-group\" _v-051e6fb2=\"\">\n                                    <input class=\"form-input\" type=\"number\" v-model=\"post_format.url_meta_key\" value=\"\" placeholder=\"\" _v-051e6fb2=\"\">\n                                </div>\n                            </div>\n                        </div>\n\n\t\t\t\t\t\t<!-- Use url shortner ( checkbox ) , either we should use a shortner when adding\n\t\t\t\t\t\t\t the links to the content. When checked we will show a dropdown with the shortners\n\t\t\t\t\t\t\t available and the api keys ( if needed ) for each one. The list of shortners will\n\t\t\t\t\t\t\t be the same as the old version of the plugin. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Use url shortner</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Should we  use a shortner when adding the links to the content?</i>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.short_url\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-051e6fb2=\"\"></i> Yes\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n                        <hr _v-051e6fb2=\"\">\n\n                        <h4 _v-051e6fb2=\"\">Misc.</h4>\n\t\t\t\t\t\t<!-- Hashtags - dropdown - having this options - (Dont add any hashtags, Common hastags\n\t\t\t\t\t\t\t for all shares, Create hashtags from categories, Create hashtags from tags, Create\n\t\t\t\t\t\t\t hashtags from custom field). If one of those options is selected, except the dont\n\t\t\t\t\t\t\t any hashtags options, we will show a number field having the Maximum hashtags length.\n\t\t\t\t\t\t\t Moreover for common hashtags option, we will have another text field which will contain\n\t\t\t\t\t\t\t the hashtags value. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Hashtags</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Hashtags to published content.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.hashtags\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<option value=\"no-hashtags\" _v-051e6fb2=\"\">Dont add any hashtags</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"common-hastags\" _v-051e6fb2=\"\">Common hastags for all shares</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"categories-hastags\" _v-051e6fb2=\"\">Create hashtags from categories</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"tags-hastags\" _v-051e6fb2=\"\">Create hashtags from tags</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"custom-hastags\" _v-051e6fb2=\"\">Create hashtags from custom field</option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n                        <div class=\"columns\" v-if=\"post_format.hashtags !== 'no-hashtags'\" _v-051e6fb2=\"\">\n                            <div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n                                <b _v-051e6fb2=\"\">Maximum Hashtags length</b><br _v-051e6fb2=\"\">\n                                <i _v-051e6fb2=\"\">The maximum hashtags length to be used when publishing.</i>\n                            </div>\n                            <div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n                                <div class=\"form-group\" _v-051e6fb2=\"\">\n                                    <input class=\"form-input\" type=\"number\" v-model=\"post_format.hashtags_length\" value=\"\" placeholder=\"\" _v-051e6fb2=\"\">\n                                </div>\n                            </div>\n                        </div>\n                        <div class=\"columns\" v-if=\"post_format.hashtags === 'common-hastags'\" _v-051e6fb2=\"\">\n                            <div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n                                <b _v-051e6fb2=\"\">Common Hashtags</b><br _v-051e6fb2=\"\">\n                                <i _v-051e6fb2=\"\">List of hastags to use separated by comma \",\".</i>\n                            </div>\n                            <div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n                                <div class=\"form-group\" _v-051e6fb2=\"\">\n                                    <input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_common\" value=\"\" placeholder=\"\" _v-051e6fb2=\"\">\n                                </div>\n                            </div>\n                        </div>\n\n\t\t\t\t\t\t<!-- Post with image - checkbox (either we should use the featured image when posting) -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Post with image</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Use the featured image when posting?</i>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.image\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-051e6fb2=\"\"></i> Yes\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n                        <hr _v-051e6fb2=\"\">\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\" _v-051e6fb2=\"\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"savePostFormat()\" _v-051e6fb2=\"\"><i class=\"fa fa-check\" _v-051e6fb2=\"\"></i> Save Post Format</button>\n\t\t\t<button class=\"btn btn-secondary\" @click=\"resetPostFormat()\" _v-051e6fb2=\"\"><i class=\"fa fa-ban\" _v-051e6fb2=\"\"></i> Reset to Defaults</button>\n\t\t</div>\n\t</div>\n";
+
+/***/ }),
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(109)
-__vue_template__ = __webpack_require__(110)
+__vue_script__ = __webpack_require__(111)
+__vue_template__ = __webpack_require__(112)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -17226,7 +17327,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 109 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17259,64 +17360,16 @@ module.exports = {
 };
 
 /***/ }),
-/* 110 */
+/* 112 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div class=\"container\">\n        <h3>Logs</h3>\n        <div class=\"columns\">\n            <div class=\"column col-12\">\n                <pre class=\"code\" data-lang=\"Vue.js\">\n                    <code>{{ logs }}</code>\n                </pre>\n            </div>\n        </div>\n    </div>\n";
 
 /***/ }),
-/* 111 */
+/* 113 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div>\n\t\t<div class=\"panel title-panel\" style=\"margin-bottom: 40px; padding-bottom: 20px;\">\n\t\t\t<div class=\"panel-header\">\n\t\t\t\t<img :src=\"plugin_logo\" style=\"float: left; margin-right: 10px;\" />\n\t\t\t\t<h1 class=\"d-inline-block\">Revive Old Posts</h1><span class=\"powered\"> by <a href=\"https://themeisle.com\" target=\"_blank\"><b>ThemeIsle</b></a></span>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel\">\n\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t<ul class=\"tab\">\n\t\t\t\t\t<li class=\"tab-item\" v-for=\"tab in displayTabs\" :class=\"{ active: tab.isActive }\"><a href=\"#\" @click=\"switchTab( tab.slug )\">{{ tab.name }}</a></li>\n\t\t\t\t\t<li class=\"tab-item tab-action\">\n\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Beta User\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Remote Check\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\n\t\t\t<component :is=\"page.view\"></component>\n\t\t</div>\n\t</div>\n";
-
-/***/ }),
-/* 112 */,
-/* 113 */,
-/* 114 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(115);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(5)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-051e6fb2&file=post-format-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./post-format-tab-panel.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-051e6fb2&file=post-format-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./post-format-tab-panel.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 115 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(4)();
-// imports
-
-
-// module
-exports.push([module.i, "\n\t#rop_core .avatar .avatar-icon[_v-051e6fb2] {\n\t\tbackground: #333;\n\t\tborder-radius: 50%;\n\t\tfont-size: 16px;\n\t\ttext-align: center;\n\t\tline-height: 20px;\n\t}\n\t#rop_core .avatar .avatar-icon.fa-facebook-official[_v-051e6fb2] { background-color: #3b5998; }\n\t#rop_core .avatar .avatar-icon.fa-twitter[_v-051e6fb2] { background-color: #55acee; }\n\t#rop_core .avatar .avatar-icon.fa-linkedin[_v-051e6fb2] { background-color: #007bb5; }\n\t#rop_core .avatar .avatar-icon.fa-tumblr[_v-051e6fb2] { background-color: #32506d; }\n\n\t#rop_core .service.facebook[_v-051e6fb2] {\n\t\tcolor: #3b5998;\n\t}\n\n\t#rop_core .service.twitter[_v-051e6fb2] {\n\t\tcolor: #55acee;\n\t}\n\n\t#rop_core .service.linkedin[_v-051e6fb2] {\n\t\tcolor: #007bb5;\n\t}\n\n\t#rop_core .service.tumblr[_v-051e6fb2] {\n\t\tcolor: #32506d;\n\t}\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 116 */
-/***/ (function(module, exports) {
-
-module.exports = "\n\t<div class=\"tab-view\" _v-051e6fb2=\"\">\n\t\t<div class=\"panel-body\" style=\"overflow: inherit;\" _v-051e6fb2=\"\">\n\t\t\t<h3 _v-051e6fb2=\"\">Post Format</h3>\n\t\t\t<figure class=\"avatar avatar-lg\" style=\"text-align: center;\" _v-051e6fb2=\"\">\n\t\t\t\t<img :src=\"img\" v-if=\"img\" _v-051e6fb2=\"\">\n\t\t\t\t<i class=\"fa\" :class=\"icon\" style=\"line-height: 48px;\" aria-hidden=\"true\" v-else=\"\" _v-051e6fb2=\"\"></i>\n\t\t\t\t<i class=\"avatar-icon fa\" :class=\"icon\" aria-hidden=\"true\" v-if=\"img\" _v-051e6fb2=\"\"></i>\n\t\t\t\t<!--<img src=\"img/avatar-5.png\" class=\"avatar-icon\" alt=\"...\">-->\n\t\t\t</figure>\n\t\t\t<div class=\"d-inline-block\" style=\"vertical-align: bottom; margin-left: 16px;\" _v-051e6fb2=\"\">\n\t\t\t\t<h6 _v-051e6fb2=\"\">{{user_name}}</h6>\n\t\t\t\t<b class=\"service\" :class=\"service\" _v-051e6fb2=\"\">{{service_name}}</b>\n\t\t\t</div>\n\t\t\t<div class=\"container\" _v-051e6fb2=\"\">\n\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Account</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Specify an account to change the settings of.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"selected_account\" @change=\"getAccountpostFormat()\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<option v-for=\"( account, id ) in active_accounts\" :value=\"id\" _v-051e6fb2=\"\">{{account.user}} - {{account.service}} </option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<hr _v-051e6fb2=\"\">\n\n\t\t\t\t\t\t<!-- Post Content - where to fetch the content which will be shared\n\t\t\t\t\t\t\t (dropdown with 4 options ( post_title, post_content, post_content\n\t\t\t\t\t\t\t and title and custom field). If custom field is selected we will\n\t\t\t\t\t\t\t have a text field which users will need to fill in to fetch the\n\t\t\t\t\t\t\t content from that meta key. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Post Content</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">From where to fetch the content which will be shared.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.post_content\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<option value=\"post_title\" _v-051e6fb2=\"\">Post Title</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"post_content\" _v-051e6fb2=\"\">Post Content</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"post_title_content\" _v-051e6fb2=\"\">Post Title &amp; Content</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"custom_field\" _v-051e6fb2=\"\">Custom Field</option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!-- Maximum length of the message( number field ) which holds the maximum\n\t\t\t\t\t\t\t number of chars for the shared content. We striping the content, we need\n\t\t\t\t\t\t\t to strip at the last whitespace or dot before reaching the limit, in order\n\t\t\t\t\t\t\t to not trim just half of the word. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Maximum chars</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Maximum length of the message.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.maximum_length\" value=\"\" placeholder=\"\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!-- Additional text field - text field which will be used by the users to a\n\t\t\t\t\t\t\t custom content before the fetched post content. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Additional text</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Add custom content to published items.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<textarea class=\"form-input\" v-model=\"post_format.custom_text\" placeholder=\"Custom content ...\" _v-051e6fb2=\"\">{{post_format.custom_text}}</textarea>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!-- Additional text at - dropdown with 2 options, begining or end, having the\n\t\t\t\t\t\t\t option where to add the additional text content. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Where to add the custom text</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.custom_text_pos\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<option value=\"beginning\" _v-051e6fb2=\"\">Beginning</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"end\" _v-051e6fb2=\"\">End</option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!-- Include link - checkbox either we should include the post permalink or not\n\t\t\t\t\t\t\t in the shared content. This is will appended at the end of the content. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Include link</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Should include the post permalink or not?</i>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.include_link\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-051e6fb2=\"\"></i> Yes\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!-- Fetch url from custom field - checkbox - either we should fetch the url from\n\t\t\t\t\t\t\t a meta field or not. When checked we will open a text field for entering the\n\t\t\t\t\t\t\t meta key. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">URL</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Fetch URL from custom field?</i>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.url_from_meta\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-051e6fb2=\"\"></i> Yes\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!-- Use url shortner ( checkbox ) , either we should use a shortner when adding\n\t\t\t\t\t\t\t the links to the content. When checked we will show a dropdown with the shortners\n\t\t\t\t\t\t\t available and the api keys ( if needed ) for each one. The list of shortners will\n\t\t\t\t\t\t\t be the same as the old version of the plugin. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Use url shortner</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Should we  use a shortner when adding the links to the content?</i>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.short_url\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-051e6fb2=\"\"></i> Yes\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!-- Hashtags - dropdown - having this options - (Dont add any hashtags, Common hastags\n\t\t\t\t\t\t\t for all shares, Create hashtags from categories, Create hashtags from tags, Create\n\t\t\t\t\t\t\t hashtags from custom field). If one of those options is selected, except the dont\n\t\t\t\t\t\t\t any hashtags options, we will show a number field having the Maximum hashtags length.\n\t\t\t\t\t\t\t Moreover for common hashtags option, we will have another text field which will contain\n\t\t\t\t\t\t\t the hashtags value. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Hashtags</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Hashtags to published content.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.hashtags\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<option value=\"no-hashtags\" _v-051e6fb2=\"\">Dont add any hashtags</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"common-hastags\" _v-051e6fb2=\"\">Common hastags for all shares</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"categories-hastags\" _v-051e6fb2=\"\">Create hashtags from categories</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"tags-hastags\" _v-051e6fb2=\"\">Create hashtags from tags</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"custom-hastags\" _v-051e6fb2=\"\">Create hashtags from custom field</option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!-- Post with image - checkbox (either we should use the featured image when posting) -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Post with image</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Use the featured image when posting?</i>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.image\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-051e6fb2=\"\"></i> Yes\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\" _v-051e6fb2=\"\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"savePostFormat()\" _v-051e6fb2=\"\"><i class=\"fa fa-check\" _v-051e6fb2=\"\"></i> Save Post Format</button>\n\t\t\t<button class=\"btn btn-secondary\" @click=\"resetPostFormat()\" _v-051e6fb2=\"\"><i class=\"fa fa-ban\" _v-051e6fb2=\"\"></i> Reset to Defaults</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ })
 /******/ ]);
