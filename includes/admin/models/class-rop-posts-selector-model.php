@@ -70,41 +70,46 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			array_push( $post_types, $post_type['value'] );
 		}
 
-		foreach ( $this->settings->get_selected_taxonomies() as $taxonomy ) {
-			$tmp_query = array();
-			list( $tax, $term ) = explode( '_', $taxonomy['value'] );
-			$tmp_query['relation'] = 'OR';
-			$tmp_query['taxonomy'] = $tax;
-			if ( isset( $term ) && $term != 'all' && $term != '' ) {
-				$tmp_query['field'] = 'slug';
-				$tmp_query['terms'] = $term;
-			} else {
-				$all_terms = get_terms( $tax );
-				$terms = array();
-				foreach ( $all_terms as $custom_term ) {
-					array_push( $terms, $custom_term->slug );
-				}
-				$tmp_query['field'] = 'slug';
-				$tmp_query['terms'] = $terms;
-			}
-			$tmp_query['include_children'] = true;
-			$tmp_query['operator'] = $operator;
-			array_push( $tax_queries, $tmp_query );
-		}
+		if( ! empty( $this->settings->get_selected_taxonomies() ) ) {
+            foreach ( $this->settings->get_selected_taxonomies() as $taxonomy ) {
+                $tmp_query = array();
+                list( $tax, $term ) = explode( '_', $taxonomy['value'] );
+                $tmp_query['relation'] = 'OR';
+                $tmp_query['taxonomy'] = $tax;
+                if ( isset( $term ) && $term != 'all' && $term != '' ) {
+                    $tmp_query['field'] = 'slug';
+                    $tmp_query['terms'] = $term;
+                } else {
+                    $all_terms = get_terms( $tax );
+                    $terms = array();
+                    foreach ( $all_terms as $custom_term ) {
+                        array_push( $terms, $custom_term->slug );
+                    }
+                    $tmp_query['field'] = 'slug';
+                    $tmp_query['terms'] = $terms;
+                }
+                $tmp_query['include_children'] = true;
+                $tmp_query['operator'] = $operator;
+                array_push( $tax_queries, $tmp_query );
+            }
+        }
 
 		$include = array();
 		if ( isset( $account ) && $account ) {
-			$exclude = $this->buffer[ $account ];
-		}
-		foreach ( $this->settings->get_selected_posts() as $post ) {
-			if ( $this->settings->get_exclude_posts() == true ) {
-				array_push( $exclude, $post['value'] );
-			} else {
-				array_push( $include, $post['value'] );
-			}
+			$exclude = ( isset( $this->buffer[ $account ] ) ) ? $this->buffer[ $account ] : array();
 		}
 
-		$required = get_posts( array( 'numberposts' => -1, 'include' => $include, 'no_found_rows' => true ) );
+        $required = array();
+		if( ! empty( $this->settings->get_selected_posts() ) ) {
+            foreach ( $this->settings->get_selected_posts() as $post ) {
+                if ( $this->settings->get_exclude_posts() == true ) {
+                    array_push( $exclude, $post['value'] );
+                } else {
+                    array_push( $include, $post['value'] );
+                }
+            }
+            $required = get_posts( array( 'numberposts' => -1, 'include' => $include, 'no_found_rows' => true ) );
+        }
 
 		$args = array(
 			'no_found_rows' => true,
@@ -118,10 +123,14 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 					'before' => date( 'Y-m-d', strtotime( '-' . $this->settings->get_minimum_post_age() . ' days' ) ),
 				),
 				array(
-					'before' => date( 'Y-m-d', strtotime( '-' . $this->settings->get_maximum_post_age() . ' days' ) ),
+					'after' => date( 'Y-m-d', strtotime( '-' . $this->settings->get_maximum_post_age() . ' days' ) ),
 				)
 			),
 		);
+
+        if( empty( $this->settings->get_selected_taxonomies() ) ) {
+            unset( $args['tax_query'] );
+        }
 
 		$results = get_posts( $args );
 
