@@ -2,7 +2,16 @@
 	<div class="tab-view">
 		<div class="panel-body" style="overflow: inherit;">
 			<h3>Post Format</h3>
-			<p>This is a <b>Vue.js</b> component.</p>
+			<figure class="avatar avatar-lg" style="text-align: center;">
+				<img :src="img" v-if="img">
+				<i class="fa" :class="icon" style="line-height: 48px;" aria-hidden="true" v-else></i>
+				<i class="avatar-icon fa" :class="icon" aria-hidden="true" v-if="img"></i>
+				<!--<img src="img/avatar-5.png" class="avatar-icon" alt="...">-->
+			</figure>
+			<div class="d-inline-block" style="vertical-align: bottom; margin-left: 16px;">
+				<h6>{{user_name}}</h6>
+				<b class="service" :class="service">{{service_name}}</b>
+			</div>
 			<div class="container">
 				<div class="columns">
 					<div class="column col-sm-12 col-md-12 col-lg-12">
@@ -13,8 +22,8 @@
 							</div>
 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 								<div class="form-group">
-									<select class="form-select">
-										<option v-for="( account, id ) in active_accounts" >{{account.user}} - {{account.service}} </option>
+									<select class="form-select" v-model="selected_account" @change="getAccountpostFormat()">
+										<option v-for="( account, id ) in active_accounts" :value="id" >{{account.user}} - {{account.service}} </option>
 									</select>
 								</div>
 							</div>
@@ -33,11 +42,11 @@
 							</div>
 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 								<div class="form-group">
-									<select class="form-select">
-										<option>post_title</option>
-										<option>post_content</option>
-										<option>post_content and title</option>
-										<option>custom field</option>
+									<select class="form-select" v-model="post_format.post_content">
+										<option value="post_title">Post Title</option>
+										<option value="post_content">Post Content</option>
+										<option value="post_title_content">Post Title & Content</option>
+										<option value="custom_field">Custom Field</option>
 									</select>
 								</div>
 							</div>
@@ -54,7 +63,7 @@
 							</div>
 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 								<div class="form-group">
-									<input class="form-input" type="number" value="" placeholder="" />
+									<input class="form-input" type="number" v-model="post_format.maximum_length" value="" placeholder="" />
 								</div>
 							</div>
 						</div>
@@ -68,7 +77,7 @@
 							</div>
 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 								<div class="form-group">
-									<textarea class="form-input" placeholder="Custom content ..."></textarea>
+									<textarea class="form-input" v-model="post_format.custom_text" placeholder="Custom content ...">{{post_format.custom_text}}</textarea>
 								</div>
 							</div>
 						</div>
@@ -81,9 +90,9 @@
 							</div>
 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 								<div class="form-group">
-									<select class="form-select">
-										<option>begining</option>
-										<option>end</option>
+									<select class="form-select" v-model="post_format.custom_text_pos">
+										<option value="beginning">Beginning</option>
+										<option value="end">End</option>
 									</select>
 								</div>
 							</div>
@@ -101,7 +110,7 @@
 									<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 										<div class="input-group">
 											<label class="form-checkbox">
-												<input type="checkbox" />
+												<input type="checkbox" v-model="post_format.include_link" />
 												<i class="form-icon"></i> Yes
 											</label>
 										</div>
@@ -123,7 +132,7 @@
 									<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 										<div class="input-group">
 											<label class="form-checkbox">
-												<input type="checkbox" />
+												<input type="checkbox" v-model="post_format.url_from_meta" />
 												<i class="form-icon"></i> Yes
 											</label>
 										</div>
@@ -146,7 +155,7 @@
 									<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 										<div class="input-group">
 											<label class="form-checkbox">
-												<input type="checkbox" />
+												<input type="checkbox" v-model="post_format.short_url" />
 												<i class="form-icon"></i> Yes
 											</label>
 										</div>
@@ -168,7 +177,7 @@
 							</div>
 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 								<div class="form-group">
-									<select class="form-select">
+									<select class="form-select" v-model="post_format.hashtags">
 										<option value="no-hashtags" >Dont add any hashtags</option>
 										<option value="common-hastags">Common hastags for all shares</option>
 										<option value="categories-hastags">Create hashtags from categories</option>
@@ -190,7 +199,7 @@
 									<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 										<div class="input-group">
 											<label class="form-checkbox">
-												<input type="checkbox" />
+												<input type="checkbox" v-model="post_format.image" />
 												<i class="form-icon"></i> Yes
 											</label>
 										</div>
@@ -203,22 +212,119 @@
 				</div>
 			</div>
 		</div>
-        <div class="panel-footer">
-            <button class="btn btn-primary" @click="saveGeneralSettings()"><i class="fa fa-check"></i> Save</button>
-        </div>
+		<div class="panel-footer">
+			<button class="btn btn-primary" @click="savePostFormat()"><i class="fa fa-check"></i> Save Post Format</button>
+			<button class="btn btn-secondary" @click="resetPostFormat()"><i class="fa fa-ban"></i> Reset to Defaults</button>
+		</div>
 	</div>
 </template>
 
 <script>
 	module.exports = {
 		name: 'post-format-view',
+		data: function () {
+			let key = null
+			if ( Object.keys( this.$store.state.activeAccounts )[0] !== undefined ) key = Object.keys( this.$store.state.activeAccounts )[0]
+			return {
+				selected_account: key
+			}
+		},
 		computed: {
 			active_accounts: function () {
 				return this.$store.state.activeAccounts
+			},
+			post_format: function () {
+				let activePostFormat = this.$store.state.activePostFormat
+				return activePostFormat
+			},
+			icon: function () {
+				let serviceIcon = 'fa-user'
+				if ( this.selected_account !== null ) {
+					serviceIcon = 'fa-'
+					let account = this.active_accounts[this.selected_account]
+					if ( account.service === 'facebook' ) serviceIcon = serviceIcon.concat( 'facebook-official' )
+					if ( account.service === 'twitter' ) serviceIcon = serviceIcon.concat( 'twitter' )
+					if ( account.service === 'linkedin' ) serviceIcon = serviceIcon.concat( 'linkedin' )
+					if ( account.service === 'tumblr' ) serviceIcon = serviceIcon.concat( 'tumblr' )
+				}
+				return serviceIcon
+			},
+			img: function () {
+				let img = ''
+				if ( this.selected_account !== null && this.active_accounts[this.selected_account].img !== '' && this.active_accounts[this.selected_account].img !== undefined ) {
+					img = this.active_accounts[this.selected_account].img
+				}
+				return img
+			},
+			service: function () {
+				let serviceClass = ''
+				if ( this.selected_account !== null && this.active_accounts[this.selected_account].service ) {
+					serviceClass = this.active_accounts[this.selected_account].service
+				}
+				return serviceClass
+			},
+			service_name: function () {
+				if ( this.service !== '' ) return this.service.charAt( 0 ).toUpperCase() + this.service.slice( 1 )
+				return 'Service'
+			},
+			user_name: function () {
+				if ( this.selected_account !== null && this.active_accounts[this.selected_account].user ) return this.active_accounts[this.selected_account].user
+				return 'John Doe'
+			}
+		},
+		watch: {
+			active_accounts: function () {
+				console.log( 'Accounts changed' )
+				if ( Object.keys( this.$store.state.activeAccounts )[0] && this.selected_account === null ) {
+					let key = Object.keys( this.$store.state.activeAccounts )[0]
+					this.selected_account = key
+					this.getAccountpostFormat()
+				}
 			}
 		},
 		methods: {
-
+			getAccountpostFormat () {
+				console.log( 'Get Post format for', this.selected_account )
+				this.$store.dispatch( 'fetchPostFormat', { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account } )
+			},
+			savePostFormat () {
+				console.log( 'Save Post format for', this.selected_account )
+				this.$store.dispatch( 'savePostFormat', { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account, post_format: this.post_format } )
+			},
+			resetPostFormat () {
+				console.log( 'Reset Post format for', this.selected_account )
+				this.$store.dispatch( 'resetPostFormat', { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account } )
+			}
 		}
 	}
 </script>
+
+<style scoped>
+	#rop_core .avatar .avatar-icon {
+		background: #333;
+		border-radius: 50%;
+		font-size: 16px;
+		text-align: center;
+		line-height: 20px;
+	}
+	#rop_core .avatar .avatar-icon.fa-facebook-official { background-color: #3b5998; }
+	#rop_core .avatar .avatar-icon.fa-twitter { background-color: #55acee; }
+	#rop_core .avatar .avatar-icon.fa-linkedin { background-color: #007bb5; }
+	#rop_core .avatar .avatar-icon.fa-tumblr { background-color: #32506d; }
+
+	#rop_core .service.facebook {
+		color: #3b5998;
+	}
+
+	#rop_core .service.twitter {
+		color: #55acee;
+	}
+
+	#rop_core .service.linkedin {
+		color: #007bb5;
+	}
+
+	#rop_core .service.tumblr {
+		color: #32506d;
+	}
+</style>

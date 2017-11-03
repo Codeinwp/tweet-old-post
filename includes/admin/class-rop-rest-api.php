@@ -46,6 +46,18 @@ class Rop_Rest_Api {
 	 */
 	public function api( WP_REST_Request $request ) {
 		switch ( $request->get_param( 'req' ) ) {
+			case 'save_post_format':
+				$data = json_decode( $request->get_body(), true );
+				$response = $this->save_post_format( $data );
+				break;
+			case 'reset_post_format':
+				$data = json_decode( $request->get_body(), true );
+				$response = $this->reset_post_format( $data );
+				break;
+			case 'get_post_format':
+				$data = json_decode( $request->get_body(), true );
+				$response = $this->get_post_format( $data );
+				break;
 			case 'select_posts':
 				$response = $this->select_posts();
 				break;
@@ -98,6 +110,47 @@ class Rop_Rest_Api {
 		}// End switch().
 		// array_push( $response, array( 'current_user' => current_user_can( 'manage_options' ) ) );
 		return $response;
+	}
+
+	/**
+	 * API method called to save a post format.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   array $data Data passed from the AJAX call.
+	 * @return array
+	 */
+	private function save_post_format( $data ) {
+		$post_format = new Rop_Post_Format_Model( $data['service'] );
+		$post_format->add_update_post_format( $data['account_id'], $data['post_format'] );
+		return $post_format->get_post_format( $data['account_id'] );
+	}
+
+	/**
+	 * API method called to reset a post format to defaults.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   array $data Data passed from the AJAX call.
+	 * @return array
+	 */
+	private function reset_post_format( $data ) {
+		$post_format = new Rop_Post_Format_Model( $data['service'] );
+		$post_format->remove_post_format( $data['account_id'] );
+		return $post_format->get_post_format( $data['account_id'] );
+	}
+
+	/**
+	 * API method called to retrieve a post format.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   array $data Data passed from the AJAX call.
+	 * @return array
+	 */
+	private function get_post_format( $data ) {
+		$post_format = new Rop_Post_Format_Model( $data['service'] );
+		return $post_format->get_post_format( $data['account_id'] );
 	}
 
 	/**

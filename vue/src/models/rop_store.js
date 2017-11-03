@@ -46,7 +46,8 @@ export default new Vuex.Store( {
 		generalSettings: [],
 		availableServices: [],
 		authenticatedServices: [],
-		activeAccounts: []
+		activeAccounts: [],
+		activePostFormat: []
 	},
 	getters: {
 		getServices ( state ) {
@@ -121,6 +122,9 @@ export default new Vuex.Store( {
 		},
 		updateSelectedPosts ( state, data ) {
 			state.generalSettings.selected_posts = data
+		},
+		updatePostFormat ( state, data ) {
+			state.activePostFormat = data
 		}
 	},
 	actions: {
@@ -299,6 +303,51 @@ export default new Vuex.Store( {
 				// commit( 'updateAvailablePosts', response.data )
 			}, function () {
 				commit( 'logMessage', ['Error saving general settings.', 'error'] )
+			} )
+		},
+		fetchPostFormat ( { commit }, data ) {
+			Vue.http( {
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'get_post_format' },
+				body: data,
+				responseType: 'json'
+			} ).then( function ( response ) {
+				console.log( response.data )
+				commit( 'updatePostFormat', response.data )
+			}, function () {
+				commit( 'logMessage', ['Error retrieving posts.', 'error'] )
+			} )
+		},
+		savePostFormat ( { commit }, data ) {
+			Vue.http( {
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'save_post_format' },
+				body: data,
+				responseType: 'json'
+			} ).then( function ( response ) {
+				console.log( response.data )
+				commit( 'updatePostFormat', response.data )
+			}, function () {
+				commit( 'logMessage', ['Error retrieving posts.', 'error'] )
+			} )
+		},
+		resetPostFormat ( { commit }, data ) {
+			Vue.http( {
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'reset_post_format' },
+				body: data,
+				responseType: 'json'
+			} ).then( function ( response ) {
+				console.log( response.data )
+				commit( 'updatePostFormat', response.data )
+			}, function () {
+				commit( 'logMessage', ['Error retrieving posts.', 'error'] )
 			} )
 		}
 	}

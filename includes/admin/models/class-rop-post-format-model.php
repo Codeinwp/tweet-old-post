@@ -85,7 +85,7 @@ class Rop_Post_Format_Model extends Rop_Model_Abstract {
 	 */
 	public function add_update_post_format( $account_id, $data ) {
 	    $data = wp_parse_args( $data, $this->defaults );
-        $this->post_format[ $account_id ] = $data;
+		$this->post_format[ $account_id ] = $data;
 	    return $this->set( 'post_format', $this->post_format );
 	}
 
