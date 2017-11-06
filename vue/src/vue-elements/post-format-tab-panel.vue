@@ -195,6 +195,24 @@
 								</div>
 							</div>
 						</div>
+                        <div class="columns" v-if="post_format.short_url">
+                            <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+                                <b>URL Shorner Service</b><br/>
+                                <i>Which service to use for URL shortening.</i>
+                            </div>
+                            <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+                                <div class="form-group">
+                                    <select class="form-select" v-model="post_format.short_url_service">
+                                        <option value="rviv.ly">rviv.ly</option>
+                                        <option value="bit.ly">bit.ly</option>
+                                        <option value="shorte.st">shorte.st</option>
+                                        <option value="goo.gl">goo.gl</option>
+                                        <option value="ow.ly">ow.ly</option>
+                                        <option value="is.gd">is.gd</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
 						<hr/>
 
 						<h4>Misc.</h4>
@@ -285,8 +303,9 @@
 				selected_account: key
 			}
 		},
-		created: function () {
-			this.getAccountpostFormat()
+		mounted: function () {
+			// Uncomment this when not fixed tab on post format
+			// this.getAccountpostFormat()
 		},
 		computed: {
 			active_accounts: function () {

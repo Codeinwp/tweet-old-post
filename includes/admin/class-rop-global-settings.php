@@ -127,8 +127,8 @@ class Rop_Global_Settings {
 			$post_types = get_post_types( array(), 'objects' );
 			$post_types_array = array();
 			foreach ( $post_types as $type ) {
-                array_push( $post_types_array, array( 'name' => $type->label, 'value' => $type->name, 'selected' => false ) );
-            }
+				array_push( $post_types_array, array( 'name' => $type->label, 'value' => $type->name, 'selected' => false ) );
+			}
 
 			self::$instance->settings = apply_filters(
 				'rop_general_settings_defaults',
@@ -161,6 +161,7 @@ class Rop_Global_Settings {
 						'url_from_meta' => false,
 						'url_meta_key' => '',
 						'short_url' => true,
+						'short_url_service' => 'rviv.ly',
 						'hashtags' => 'no-hashtags',
 						'hashtags_length' => '10',
 						'hashtags_common' => '',
@@ -177,6 +178,7 @@ class Rop_Global_Settings {
 						'url_from_meta' => false,
 						'url_meta_key' => '',
 						'short_url' => true,
+						'short_url_service' => 'rviv.ly',
 						'hashtags' => 'no-hashtags',
 						'hashtags_length' => '10',
 						'hashtags_common' => '',
@@ -193,6 +195,7 @@ class Rop_Global_Settings {
 						'url_from_meta' => false,
 						'url_meta_key' => '',
 						'short_url' => true,
+						'short_url_service' => 'rviv.ly',
 						'hashtags' => 'no-hashtags',
 						'hashtags_length' => '10',
 						'hashtags_common' => '',
@@ -209,6 +212,7 @@ class Rop_Global_Settings {
 						'url_from_meta' => false,
 						'url_meta_key' => '',
 						'short_url' => true,
+						'short_url_service' => 'rviv.ly',
 						'hashtags' => 'no-hashtags',
 						'hashtags_length' => '10',
 						'hashtags_common' => '',

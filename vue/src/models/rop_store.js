@@ -13,8 +13,8 @@ export default new Vuex.Store( {
 			debug: true,
 			logs: '### Here starts the log \n\n',
 			// view: 'accounts'
-			// view: 'post-format'
-			view: 'settings'
+			view: 'post-format'
+			// view: 'settings'
 		},
 		auth_in_progress: false,
 		displayTabs: [

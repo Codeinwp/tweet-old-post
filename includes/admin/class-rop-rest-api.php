@@ -194,11 +194,11 @@ class Rop_Rest_Api {
 				$taxonomy = get_taxonomy( $post_type_taxonomy->name );
 				$terms = get_terms( $post_type_taxonomy->name );
 				if ( ! empty( $terms ) ) {
-                    array_push( $taxonomies, array( 'name' => $taxonomy->label, 'value' => $taxonomy->name . '_all', 'selected' => false ) );
-                    foreach ( $terms as $term ) {
-                        array_push( $taxonomies, array( 'name' => $taxonomy->label . ': ' . $term->name, 'value' => $taxonomy->name . '_' . $term->slug, 'selected' => false, 'parent' => $taxonomy->name . '_all' ) );
-                    }
-                }
+					array_push( $taxonomies, array( 'name' => $taxonomy->label, 'value' => $taxonomy->name . '_all', 'selected' => false ) );
+					foreach ( $terms as $term ) {
+						array_push( $taxonomies, array( 'name' => $taxonomy->label . ': ' . $term->name, 'value' => $taxonomy->name . '_' . $term->slug, 'selected' => false, 'parent' => $taxonomy->name . '_all' ) );
+					}
+				}
 			}
 		}
 
@@ -216,8 +216,8 @@ class Rop_Rest_Api {
 	 */
 	private function get_posts( $data, $search_query = '' ) {
 	    if ( isset( $data['search_query'] ) && $data['search_query'] != '' ) {
-            $search_query = $data['search_query'];
-        }
+			$search_query = $data['search_query'];
+		}
 
 		$post_types = array();
 		$tax_queries = array( 'relation' => 'OR' );
@@ -265,7 +265,7 @@ class Rop_Rest_Api {
 		$formatted_posts = array();
 		foreach ( $posts_array as $post ) {
 		    array_push( $formatted_posts, array( 'name' => $post->post_title, 'value' => $post->ID, 'selected' => false ) );
-        }
+		}
 
 	    return $formatted_posts;
 	}
