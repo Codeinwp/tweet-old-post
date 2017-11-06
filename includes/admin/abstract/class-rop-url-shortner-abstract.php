@@ -85,4 +85,61 @@ abstract class Rop_Url_Shortner_Abstract {
 	 * @return string
 	 */
 	public abstract function shorten_url( $url );
+
+    protected final function callAPI( $url, $props = array(), $params = array(), $headers = array() ) {
+        $body       = null;
+        $error      = null;
+        if ( $props && isset($props["method"]) && $props["method"] === "get" ) {
+            $url    .= "?";
+            foreach ( $params as $k=>$v ) {
+                $url .= "$k=$v&";
+            }
+        }
+        $conn = curl_init( $url );
+        curl_setopt( $conn, CURLOPT_SSL_VERIFYPEER, false );
+        curl_setopt( $conn, CURLOPT_FRESH_CONNECT, true );
+        curl_setopt( $conn, CURLOPT_RETURNTRANSFER, 1 );
+        curl_setopt( $conn, CURLOPT_FOLLOWLOCATION, 1 );
+        curl_setopt( $conn, CURLOPT_HEADER, 0 );
+        curl_setopt( $conn, CURLOPT_NOSIGNAL, 1 );
+        $header = array();
+        if ( $headers ) {
+            foreach ( $headers as $key=>$val ) {
+                $header[] = "$key: $val";
+            }
+            curl_setopt( $conn, CURLOPT_HTTPHEADER, $header );
+        }
+        if ( $props && isset( $props["method"] ) ) {
+            if ( in_array( $props["method"], array( "post", "put" ) ) ) {
+                curl_setopt( $conn, CURLOPT_POSTFIELDS, urldecode( http_build_query( $params ) ) );
+            }
+            if ( $props["method"] === "json" ) {
+                curl_setopt( $conn, CURLOPT_POSTFIELDS, json_encode( $params ) );
+            }
+            if (!in_array( $props["method"], array( "get", "post", "json" ) ) ) {
+                curl_setopt ( $conn, CURLOPT_CUSTOMREQUEST, strtoupper( $props["method"] ) );
+            }
+        }
+        try {
+            $body = curl_exec($conn);
+            $error = curl_getinfo($conn, CURLINFO_HTTP_CODE);
+        } catch ( Exception $e ) {
+            $this->error->throw_exception( "Exception " . $e->getMessage() );
+        }
+        if ( curl_errno( $conn ) ) {
+//            self::addNotice("Error for request: " . $url . " : ". curl_error($conn), 'error');
+//            self::writeDebug("curl_errno ".curl_error($conn));
+
+        }
+        curl_close( $conn );
+        if ( $props && isset( $props["json"] ) && $props["json"] ) {
+            $body = json_decode($body, true );
+        }
+        $array = array(
+            "response"  => $body,
+            "error"     => $error,
+        );
+        //self::writeDebug( "Calling ". $url. " with headers = " . print_r($header, true) . ", fields = " . print_r($params, true) . " returning raw response " . print_r($body,true) . " and finally returning " . print_r($array,true));
+        return $array;
+    }
 }
