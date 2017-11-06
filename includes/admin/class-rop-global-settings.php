@@ -125,6 +125,11 @@ class Rop_Global_Settings {
 			);
 
 			$post_types = get_post_types( array(), 'objects' );
+			$post_types_array = array();
+			foreach ( $post_types as $type ) {
+                array_push( $post_types_array, array( 'name' => $type->label, 'value' => $type->name, 'selected' => false ) );
+            }
+
 			self::$instance->settings = apply_filters(
 				'rop_general_settings_defaults',
 				array(
@@ -132,7 +137,7 @@ class Rop_Global_Settings {
 					'maximum_post_age' => 60,
 					'number_of_posts' => 5,
 					'more_than_once' => true,
-					'available_post_types' => $post_types,
+					'available_post_types' => $post_types_array,
 					'selected_post_types' => array(),
 					'available_taxonomies' => array(),
 					'selected_taxonomies' => array(),

@@ -123,7 +123,7 @@
 							</div>
 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 								<div class="input-group">
-									<multiple-select :options="postsAvailable" :selected="generalSettings.selected_posts" :changedSelection="updatedPosts" />
+									<multiple-select :searchQuery="searchQuery" @update="searchUpdate" :options="postsAvailable" :dontLock="true" :selected="generalSettings.selected_posts" :changedSelection="updatedPosts" />
 									<span class="input-group-addon">
 										<label class="form-checkbox">
 											<input type="checkbox" />
@@ -151,7 +151,7 @@
 		name: 'settings-view',
 		data: function () {
 			return {
-				taxonomiesSelected: []
+				searchQuery: ''
 			}
 		},
 		computed: {
@@ -159,45 +159,21 @@
 				return this.$store.state.generalSettings
 			},
 			postTypes: function () {
-				let options = []
-				for ( let index in this.generalSettings.available_post_types ) {
-					let item = this.generalSettings.available_post_types[index]
-					options.push( { name: item.label, value: item.name, selected: false } )
-				}
-
-				return options
+				return this.$store.state.generalSettings.available_post_types
 			},
 			taxonomies: function () {
-				let options = []
-				let taxonomiesSelected = this.taxonomiesSelected
-				for ( let taxIndex in this.generalSettings.available_taxonomies ) {
-					console.log( taxIndex )
-					let taxName = this.generalSettings.available_taxonomies[taxIndex]['name']
-					let taxSelected = false
-					if ( taxonomiesSelected.includes( taxIndex + '_all' ) ) taxSelected = true
-					options.push( { name: taxName, value: taxIndex + '_all', selected: taxSelected } )
-					for ( let termIndex in this.generalSettings.available_taxonomies[taxIndex]['terms'] ) {
-						let termName = this.generalSettings.available_taxonomies[taxIndex]['terms'][termIndex]['name']
-						let termSlug = this.generalSettings.available_taxonomies[taxIndex]['terms'][termIndex]['slug']
-						let termSelected = taxSelected
-						if ( taxonomiesSelected.includes( taxIndex + '_' + termSlug ) ) termSelected = true
-						options.push( { name: taxName + ': ' + termName, value: taxIndex + '_' + termSlug, selected: termSelected } )
-					}
-				}
-
-				return options
+				this.requestPostUpdate()
+				return this.$store.state.generalSettings.available_taxonomies
 			},
 			postsAvailable: function () {
-				let options = []
-				for ( let index in this.generalSettings.available_posts ) {
-					let item = this.generalSettings.available_posts[index]
-					options.push( { name: item.post_title, value: item.ID, selected: false } )
-				}
-
-				return options
+				return this.$store.state.generalSettings.available_posts
 			}
 		},
 		methods: {
+			searchUpdate ( newQuery ) {
+				this.searchQuery = newQuery
+				this.requestPostUpdate()
+			},
 			updatedPostTypes ( data ) {
 				let postTypes = []
 				for ( let index in data ) {
@@ -208,12 +184,10 @@
 				this.requestPostUpdate()
 			},
 			updatedTaxonomies ( data ) {
-				let taxonomiesSelectedList = []
+				let taxonomies = []
 				for ( let index in data ) {
-					taxonomiesSelectedList.push( data[index].value )
+					taxonomies.push( data[index].value )
 				}
-
-				this.taxonomiesSelected = taxonomiesSelectedList
 				this.$store.commit( 'updateSelectedTaxonomies', data )
 				this.requestPostUpdate()
 			},
@@ -227,7 +201,7 @@
 				let postTypesSelected = this.$store.state.generalSettings.selected_post_types
 				let taxonomiesSelected = this.$store.state.generalSettings.selected_taxonomies
 
-				this.$store.dispatch( 'fetchPosts', { post_types: postTypesSelected, taxonomies: taxonomiesSelected, exclude: this.generalSettings.exclude_taxonomies } )
+				this.$store.dispatch( 'fetchPosts', { post_types: postTypesSelected, search_query: this.searchQuery, taxonomies: taxonomiesSelected, exclude: this.generalSettings.exclude_taxonomies } )
 			},
 			saveGeneralSettings () {
 				let postTypesSelected = this.$store.state.generalSettings.selected_post_types
@@ -237,6 +211,7 @@
 
 				this.$store.dispatch( 'saveGeneralSettings',
 					{
+						available_taxonomies: this.generalSettings.available_taxonomies,
 						minimum_post_age: this.generalSettings.minimum_post_age,
 						maximum_post_age: this.generalSettings.maximum_post_age,
 						number_of_posts: this.generalSettings.number_of_posts,

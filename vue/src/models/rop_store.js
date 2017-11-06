@@ -13,7 +13,8 @@ export default new Vuex.Store( {
 			debug: true,
 			logs: '### Here starts the log \n\n',
 			// view: 'accounts'
-			view: 'post-format'
+			// view: 'post-format'
+			view: 'settings'
 		},
 		auth_in_progress: false,
 		displayTabs: [
@@ -110,12 +111,28 @@ export default new Vuex.Store( {
 		},
 		updateSelectedPostTypes ( state, data ) {
 			state.generalSettings.selected_post_types = data
+			for ( let index in state.generalSettings.available_post_types ) {
+				state.generalSettings.available_post_types[index].selected = false
+				for ( let indexSelected in data ) {
+					if ( state.generalSettings.available_post_types[index].value === data[indexSelected].value ) {
+						state.generalSettings.available_post_types[index].selected = true
+					}
+				}
+			}
 		},
 		updateAvailableTaxonomies ( state, data ) {
 			state.generalSettings.available_taxonomies = data
 		},
 		updateSelectedTaxonomies ( state, data ) {
 			state.generalSettings.selected_taxonomies = data
+			for ( let index in state.generalSettings.available_taxonomies ) {
+				state.generalSettings.available_taxonomies[index].selected = false
+				for ( let indexSelected in data ) {
+					if ( state.generalSettings.available_taxonomies[index].value === data[indexSelected].value || state.generalSettings.available_taxonomies[index].parent === data[indexSelected].value ) {
+						state.generalSettings.available_taxonomies[index].selected = true
+					}
+				}
+			}
 		},
 		updateAvailablePosts ( state, data ) {
 			state.generalSettings.available_posts = data

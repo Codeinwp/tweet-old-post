@@ -133,14 +133,14 @@ class Test_ROP extends WP_UnitTestCase {
      * @covers Rop_Settings_Model::<public>
      */
     public function test_posts_selector() {
-        $page_ids_min5 = $this->generatePosts( 3, 'page', '-5 days' );
+        $page_ids_min5 = $this->generatePosts( 3, 'page', '-5 day' );
         $page_ids_now = $this->generatePosts( 2, 'page', false );
-        $page_ids_min65 = $this->generatePosts( 5, 'page', '-65 days' );
+        $page_ids_min65 = $this->generatePosts( 5, 'page', '-65 day' );
 
 
-        $post_ids_min5 = $this->generatePosts( 3, 'post', '-5 days' );
+        $post_ids_min5 = $this->generatePosts( 3, 'post', '-5 day' );
         $post_ids_now = $this->generatePosts( 2, 'post', false );
-        $post_ids_min65 = $this->generatePosts( 5, 'post', '-65 days' );
+        $post_ids_min65 = $this->generatePosts( 5, 'post', '-65 day' );
 
         $settings = new Rop_Settings_Model();
         $global_settings = new Rop_Global_Settings();
@@ -149,19 +149,15 @@ class Test_ROP extends WP_UnitTestCase {
 
         $new_settings = $settings->get_settings();
 
-        var_dump( $settings->get_number_of_posts() );
-
         $new_settings['minimum_post_age'] = 1;
         $new_settings['maximum_post_age'] = 365;
-        $new_settings['selected_post_types'] = array( array( 'name' => 'Posts', 'selected' => true, 'value' => 'post' ) );
+        $new_settings['selected_post_types'] = array( array( 'name' => 'Posts', 'selected' => true, 'value' => 'page' ) );
 
         $settings->save_settings( $new_settings );
 
         $this->assertEquals( $settings->get_settings(), $new_settings );
 
 	    $posts_selector = new Rop_Posts_Selector_Model();
-
-	    var_dump( sizeof( $posts_selector->select( 'test_id_facebook' ) ) );
 
 	    $this->assertEquals( sizeof( $posts_selector->select( 'test_id_facebook' ) ), $settings->get_number_of_posts() );
     }
@@ -297,8 +293,10 @@ EOD;
         $post_ids = array();
         $date = date( 'Y-m-d H:i:s');
         if ( $time_shift ) {
-            date( 'Y-m-d H:i:s', strtotime( $time_shift ) );
+            $date = date( 'Y-m-d H:i:s', strtotime( $time_shift ) );
         }
+
+        //var_dump( $date );
         for ( $i = 0; $i < $count; $i++ ) {
             $content = file_get_contents('http://loripsum.net/api/5/medium/plaintext');
             $id = $this->factory->post->create( array(
@@ -311,6 +309,7 @@ EOD;
             array_push( $post_ids, $id );
         }
 
+        return $post_ids;
     }
 
 }

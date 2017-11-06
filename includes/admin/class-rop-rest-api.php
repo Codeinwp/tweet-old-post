@@ -193,17 +193,15 @@ class Rop_Rest_Api {
 			foreach ( $post_type_taxonomies as $post_type_taxonomy ) {
 				$taxonomy = get_taxonomy( $post_type_taxonomy->name );
 				$terms = get_terms( $post_type_taxonomy->name );
-				if ( ! isset( $taxonomies[ $taxonomy->name ] ) ) { $taxonomies[ $taxonomy->name ] = array();
-				}
-				$taxonomies[ $taxonomy->name ] = array_merge(
-					$taxonomies[ $taxonomy->name ],
-					array(
-						'name' => $taxonomy->label,
-						'terms' => $terms,
-					)
-				);
+				if ( ! empty( $terms ) ) {
+                    array_push( $taxonomies, array( 'name' => $taxonomy->label, 'value' => $taxonomy->name . '_all', 'selected' => false ) );
+                    foreach ( $terms as $term ) {
+                        array_push( $taxonomies, array( 'name' => $taxonomy->label . ': ' . $term->name, 'value' => $taxonomy->name . '_' . $term->slug, 'selected' => false, 'parent' => $taxonomy->name . '_all' ) );
+                    }
+                }
 			}
 		}
+
 		return $taxonomies;
 	}
 
@@ -216,7 +214,11 @@ class Rop_Rest_Api {
 	 * @param   array $data Data passed from the AJAX call.
 	 * @return array
 	 */
-	private function get_posts( $data ) {
+	private function get_posts( $data, $search_query = '' ) {
+	    if ( isset( $data['search_query'] ) && $data['search_query'] != '' ) {
+            $search_query = $data['search_query'];
+        }
+
 		$post_types = array();
 		$tax_queries = array( 'relation' => 'OR' );
 		$operator = ( isset( $data['exclude'] ) && $data['exclude'] == true ) ? 'NOT IN' : 'IN';
@@ -253,13 +255,19 @@ class Rop_Rest_Api {
 
 		$posts_array = get_posts(
 			array(
-				'posts_per_page' => -1,
+				'posts_per_page' => 5,
 				'post_type' => $post_types,
+				's' => $search_query,
 				'tax_query' => $tax_queries,
 			)
 		);
 
-	    return $posts_array;
+		$formatted_posts = array();
+		foreach ( $posts_array as $post ) {
+		    array_push( $formatted_posts, array( 'name' => $post->post_title, 'value' => $post->ID, 'selected' => false ) );
+        }
+
+	    return $formatted_posts;
 	}
 
 	/**
@@ -272,6 +280,7 @@ class Rop_Rest_Api {
 	 */
 	private function save_general_settings( $data ) {
 		$general_settings = array(
+		    'available_taxonomies' => $data['available_taxonomies'],
 			'minimum_post_age' => $data['minimum_post_age'],
 			'maximum_post_age' => $data['maximum_post_age'],
 			'number_of_posts' => $data['number_of_posts'],

@@ -53,7 +53,7 @@
 		mixins: [ clickaway ],
 		props: {
 			options: {
-				default: [],
+				default: function () { return [] },
 				type: Array
 			},
 			selected: {
@@ -67,6 +67,10 @@
 			changedSelection: {
 				default: function ( data ) { return true },
 				type: Function
+			},
+			dontLock: {
+				default: false,
+				type: Boolean
 			}
 		},
 		mounted () {
@@ -77,6 +81,7 @@
 				}
 				index++
 			}
+			// this.$emit( 'update', this.search )
 		},
 		data: function () {
 			return {
@@ -84,6 +89,11 @@
 				highlighted: -1,
 				no_results: false,
 				magic_flag: false
+			}
+		},
+		watch: {
+			search: function ( val ) {
+				this.$emit( 'update', val )
 			}
 		},
 		computed: {
@@ -98,11 +108,13 @@
 				}
 			},
 			is_one: function () {
-				if ( this.options.length === 1 && this.options[0].selected === false ) {
-					this.selected.push( this.options[0] )
-					return true
-				} else if ( this.options.length === 1 && this.options[0].selected === true ) {
-					return true
+				if ( !this.dontLock ) {
+					if ( this.options.length === 1 && this.options[0].selected === false ) {
+						this.selected.push( this.options[0] )
+						return true
+					} else if ( this.options.length === 1 && this.options[0].selected === true ) {
+						return true
+					}
 				}
 				return false
 			},

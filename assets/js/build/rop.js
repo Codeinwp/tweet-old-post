@@ -12300,7 +12300,8 @@ exports.default = new _vuex2.default.Store({
 			debug: true,
 			logs: '### Here starts the log \n\n',
 			// view: 'accounts'
-			view: 'post-format'
+			// view: 'post-format'
+			view: 'settings'
 		},
 		auth_in_progress: false,
 		displayTabs: [{
@@ -12391,12 +12392,28 @@ exports.default = new _vuex2.default.Store({
 		},
 		updateSelectedPostTypes: function updateSelectedPostTypes(state, data) {
 			state.generalSettings.selected_post_types = data;
+			for (var index in state.generalSettings.available_post_types) {
+				state.generalSettings.available_post_types[index].selected = false;
+				for (var indexSelected in data) {
+					if (state.generalSettings.available_post_types[index].value === data[indexSelected].value) {
+						state.generalSettings.available_post_types[index].selected = true;
+					}
+				}
+			}
 		},
 		updateAvailableTaxonomies: function updateAvailableTaxonomies(state, data) {
 			state.generalSettings.available_taxonomies = data;
 		},
 		updateSelectedTaxonomies: function updateSelectedTaxonomies(state, data) {
 			state.generalSettings.selected_taxonomies = data;
+			for (var index in state.generalSettings.available_taxonomies) {
+				state.generalSettings.available_taxonomies[index].selected = false;
+				for (var indexSelected in data) {
+					if (state.generalSettings.available_taxonomies[index].value === data[indexSelected].value || state.generalSettings.available_taxonomies[index].parent === data[indexSelected].value) {
+						state.generalSettings.available_taxonomies[index].selected = true;
+					}
+				}
+			}
 		},
 		updateAvailablePosts: function updateAvailablePosts(state, data) {
 			state.generalSettings.available_posts = data;
@@ -16233,7 +16250,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 							</div>
 // 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 // 								<div class="input-group">
-// 									<multiple-select :options="postsAvailable" :selected="generalSettings.selected_posts" :changedSelection="updatedPosts" />
+// 									<multiple-select :searchQuery="searchQuery" @update="searchUpdate" :options="postsAvailable" :dontLock="true" :selected="generalSettings.selected_posts" :changedSelection="updatedPosts" />
 // 									<span class="input-group-addon">
 // 										<label class="form-checkbox">
 // 											<input type="checkbox" />
@@ -16258,7 +16275,7 @@ module.exports = {
 	name: 'settings-view',
 	data: function data() {
 		return {
-			taxonomiesSelected: []
+			searchQuery: ''
 		};
 	},
 	computed: {
@@ -16266,45 +16283,21 @@ module.exports = {
 			return this.$store.state.generalSettings;
 		},
 		postTypes: function postTypes() {
-			var options = [];
-			for (var index in this.generalSettings.available_post_types) {
-				var item = this.generalSettings.available_post_types[index];
-				options.push({ name: item.label, value: item.name, selected: false });
-			}
-
-			return options;
+			return this.$store.state.generalSettings.available_post_types;
 		},
 		taxonomies: function taxonomies() {
-			var options = [];
-			var taxonomiesSelected = this.taxonomiesSelected;
-			for (var taxIndex in this.generalSettings.available_taxonomies) {
-				console.log(taxIndex);
-				var taxName = this.generalSettings.available_taxonomies[taxIndex]['name'];
-				var taxSelected = false;
-				if (taxonomiesSelected.includes(taxIndex + '_all')) taxSelected = true;
-				options.push({ name: taxName, value: taxIndex + '_all', selected: taxSelected });
-				for (var termIndex in this.generalSettings.available_taxonomies[taxIndex]['terms']) {
-					var termName = this.generalSettings.available_taxonomies[taxIndex]['terms'][termIndex]['name'];
-					var termSlug = this.generalSettings.available_taxonomies[taxIndex]['terms'][termIndex]['slug'];
-					var termSelected = taxSelected;
-					if (taxonomiesSelected.includes(taxIndex + '_' + termSlug)) termSelected = true;
-					options.push({ name: taxName + ': ' + termName, value: taxIndex + '_' + termSlug, selected: termSelected });
-				}
-			}
-
-			return options;
+			this.requestPostUpdate();
+			return this.$store.state.generalSettings.available_taxonomies;
 		},
 		postsAvailable: function postsAvailable() {
-			var options = [];
-			for (var index in this.generalSettings.available_posts) {
-				var item = this.generalSettings.available_posts[index];
-				options.push({ name: item.post_title, value: item.ID, selected: false });
-			}
-
-			return options;
+			return this.$store.state.generalSettings.available_posts;
 		}
 	},
 	methods: {
+		searchUpdate: function searchUpdate(newQuery) {
+			this.searchQuery = newQuery;
+			this.requestPostUpdate();
+		},
 		updatedPostTypes: function updatedPostTypes(data) {
 			var postTypes = [];
 			for (var index in data) {
@@ -16315,12 +16308,10 @@ module.exports = {
 			this.requestPostUpdate();
 		},
 		updatedTaxonomies: function updatedTaxonomies(data) {
-			var taxonomiesSelectedList = [];
+			var taxonomies = [];
 			for (var index in data) {
-				taxonomiesSelectedList.push(data[index].value);
+				taxonomies.push(data[index].value);
 			}
-
-			this.taxonomiesSelected = taxonomiesSelectedList;
 			this.$store.commit('updateSelectedTaxonomies', data);
 			this.requestPostUpdate();
 		},
@@ -16334,7 +16325,7 @@ module.exports = {
 			var postTypesSelected = this.$store.state.generalSettings.selected_post_types;
 			var taxonomiesSelected = this.$store.state.generalSettings.selected_taxonomies;
 
-			this.$store.dispatch('fetchPosts', { post_types: postTypesSelected, taxonomies: taxonomiesSelected, exclude: this.generalSettings.exclude_taxonomies });
+			this.$store.dispatch('fetchPosts', { post_types: postTypesSelected, search_query: this.searchQuery, taxonomies: taxonomiesSelected, exclude: this.generalSettings.exclude_taxonomies });
 		},
 		saveGeneralSettings: function saveGeneralSettings() {
 			var postTypesSelected = this.$store.state.generalSettings.selected_post_types;
@@ -16343,6 +16334,7 @@ module.exports = {
 			var postsSelected = this.generalSettings.selected_posts;
 
 			this.$store.dispatch('saveGeneralSettings', {
+				available_taxonomies: this.generalSettings.available_taxonomies,
 				minimum_post_age: this.generalSettings.minimum_post_age,
 				maximum_post_age: this.generalSettings.maximum_post_age,
 				number_of_posts: this.generalSettings.number_of_posts,
@@ -16635,7 +16627,9 @@ module.exports = {
 	mixins: [_vueClickaway.mixin],
 	props: {
 		options: {
-			default: [],
+			default: function _default() {
+				return [];
+			},
 			type: Array
 		},
 		selected: {
@@ -16653,6 +16647,10 @@ module.exports = {
 				return true;
 			},
 			type: Function
+		},
+		dontLock: {
+			default: false,
+			type: Boolean
 		}
 	},
 	mounted: function mounted() {
@@ -16670,6 +16668,7 @@ module.exports = {
 				}
 				index++;
 			}
+			// this.$emit( 'update', this.search )
 		} catch (err) {
 			_didIteratorError = true;
 			_iteratorError = err;
@@ -16694,6 +16693,11 @@ module.exports = {
 			magic_flag: false
 		};
 	},
+	watch: {
+		search: function search(val) {
+			this.$emit('update', val);
+		}
+	},
 	computed: {
 		is_focused: function is_focused() {
 			return {
@@ -16706,11 +16710,13 @@ module.exports = {
 			};
 		},
 		is_one: function is_one() {
-			if (this.options.length === 1 && this.options[0].selected === false) {
-				this.selected.push(this.options[0]);
-				return true;
-			} else if (this.options.length === 1 && this.options[0].selected === true) {
-				return true;
+			if (!this.dontLock) {
+				if (this.options.length === 1 && this.options[0].selected === false) {
+					this.selected.push(this.options[0]);
+					return true;
+				} else if (this.options.length === 1 && this.options[0].selected === true) {
+					return true;
+				}
 			}
 			return false;
 		},
@@ -16832,7 +16838,7 @@ module.exports = "\n\t<div class=\"form-autocomplete\" style=\"width: 100%;\" v-
 /* 104 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\" style=\"overflow: inherit;\">\n\t\t\t<h3>General Settings</h3>\n\t\t\t<p>This is a <b>Vue.js</b> component.</p>\n\t\t\t<div class=\"container\">\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Minimum age of posts available for sharing, in days\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t\t<b>Minimum post age</b><br/>\n\t\t\t\t\t\t\t\t<i>Minimum age of posts available for sharing, in days.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<counter-input id=\"min_post_age\" :maxVal=\"365\" :value.sync=\"generalSettings.minimum_post_age\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<!-- Maximum age of posts available for sharing, in days\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-right\">\n\t\t\t\t\t\t\t\t<counter-input id=\"max_post_age\" :maxVal=\"365\" :value.sync=\"generalSettings.maximum_post_age\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-left\">\n\t\t\t\t\t\t\t\t<b>Maximum post age</b><br/>\n\t\t\t\t\t\t\t\t<i>Maximum age of posts available for sharing, in days.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Number of posts to share per account per trigger\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t\t<b>Number of posts</b><br/>\n\t\t\t\t\t\t\t\t<i>Number of posts to share per. account per. trigger of scheduled job.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<!-- Share more than once, if there are no more posts to share, we should start re-sharing the one we\n\t\t\t\t\tpreviously shared\n\t\t\t\t\t(boolean) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-2 col-xl-2 col-1 text-right\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\" />\n\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Yes\n\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-10 col-xl-10 col-11 text-left\">\n\t\t\t\t\t\t\t\t<b>Share more than once?</b><br/>\n\t\t\t\t\t\t\t\t<i>If there are no more posts to share, we should start re-sharing the one we previously shared.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Post types available to share - what post types are available for share\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Post types</b><br/>\n\t\t\t\t\t\t\t\t<i>Post types available to share - what post types are available for share</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<multiple-select :options=\"postTypes\" :selected=\"generalSettings.selected_post_types\" :changedSelection=\"updatedPostTypes\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Taxonomies available for posts to share - based on what post types users choose to share, we should\n\t\t\t\t\tshow the taxonomies available for that post type, along with their terms, which user can select to share.\n\t\t\t\t\tHere we should have also a toggle if either the taxonomies selected are included or excluded.\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Taxonomies</b><br/>\n\t\t\t\t\t\t\t\t<i>Taxonomies available for the selected post types. Use to include or exclude posts.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changedSelection=\"updatedTaxonomies\" />\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\">\n\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" @change=\"exludeTaxonomiesChange\" />\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Exclude?\n\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Posts excluded/included in sharing - what posts we should exclude or include in sharing\n\t\t\t\t\t- we should have have an autocomplete list which should fetch posts from the previously select post_types\n\t\t\t\t\tand terms and allow them to be include/excluded.\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Posts</b><br/>\n\t\t\t\t\t\t\t\t<i>Posts excluded/included in sharing, filtered based on previous selections.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t\t\t\t<multiple-select :options=\"postsAvailable\" :selected=\"generalSettings.selected_posts\" :changedSelection=\"updatedPosts\" />\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\">\n\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" />\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Exclude?\n\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\"><i class=\"fa fa-check\"></i> Save</button>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\" style=\"overflow: inherit;\">\n\t\t\t<h3>General Settings</h3>\n\t\t\t<p>This is a <b>Vue.js</b> component.</p>\n\t\t\t<div class=\"container\">\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Minimum age of posts available for sharing, in days\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t\t<b>Minimum post age</b><br/>\n\t\t\t\t\t\t\t\t<i>Minimum age of posts available for sharing, in days.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<counter-input id=\"min_post_age\" :maxVal=\"365\" :value.sync=\"generalSettings.minimum_post_age\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<!-- Maximum age of posts available for sharing, in days\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-right\">\n\t\t\t\t\t\t\t\t<counter-input id=\"max_post_age\" :maxVal=\"365\" :value.sync=\"generalSettings.maximum_post_age\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-left\">\n\t\t\t\t\t\t\t\t<b>Maximum post age</b><br/>\n\t\t\t\t\t\t\t\t<i>Maximum age of posts available for sharing, in days.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Number of posts to share per account per trigger\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t\t<b>Number of posts</b><br/>\n\t\t\t\t\t\t\t\t<i>Number of posts to share per. account per. trigger of scheduled job.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<!-- Share more than once, if there are no more posts to share, we should start re-sharing the one we\n\t\t\t\t\tpreviously shared\n\t\t\t\t\t(boolean) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-2 col-xl-2 col-1 text-right\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\" />\n\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Yes\n\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-10 col-xl-10 col-11 text-left\">\n\t\t\t\t\t\t\t\t<b>Share more than once?</b><br/>\n\t\t\t\t\t\t\t\t<i>If there are no more posts to share, we should start re-sharing the one we previously shared.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Post types available to share - what post types are available for share\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Post types</b><br/>\n\t\t\t\t\t\t\t\t<i>Post types available to share - what post types are available for share</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<multiple-select :options=\"postTypes\" :selected=\"generalSettings.selected_post_types\" :changedSelection=\"updatedPostTypes\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Taxonomies available for posts to share - based on what post types users choose to share, we should\n\t\t\t\t\tshow the taxonomies available for that post type, along with their terms, which user can select to share.\n\t\t\t\t\tHere we should have also a toggle if either the taxonomies selected are included or excluded.\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Taxonomies</b><br/>\n\t\t\t\t\t\t\t\t<i>Taxonomies available for the selected post types. Use to include or exclude posts.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changedSelection=\"updatedTaxonomies\" />\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\">\n\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" @change=\"exludeTaxonomiesChange\" />\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Exclude?\n\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Posts excluded/included in sharing - what posts we should exclude or include in sharing\n\t\t\t\t\t- we should have have an autocomplete list which should fetch posts from the previously select post_types\n\t\t\t\t\tand terms and allow them to be include/excluded.\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Posts</b><br/>\n\t\t\t\t\t\t\t\t<i>Posts excluded/included in sharing, filtered based on previous selections.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t\t\t\t<multiple-select :searchQuery=\"searchQuery\" @update=\"searchUpdate\" :options=\"postsAvailable\" :dontLock=\"true\" :selected=\"generalSettings.selected_posts\" :changedSelection=\"updatedPosts\" />\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\">\n\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" />\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Exclude?\n\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\"><i class=\"fa fa-check\"></i> Save</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 105 */
