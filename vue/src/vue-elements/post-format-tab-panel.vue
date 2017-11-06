@@ -12,13 +12,13 @@
 				<h6>{{user_name}}</h6>
 				<b class="service" :class="service">{{service_name}}</b>
 			</div>
-            <div class="d-inline-block" style="vertical-align: top; margin-left: 16px; width: 80%">
-                <h4><i class="fa fa-info-circle"></i> Info</h4>
-                <p><i>Each <b>account</b> can have it's own <b>Post Format</b> for sharing, on the left you can see the
-                    current selected account and network, bellow are the <b>Post Format</b> options for the account.
-                    Don't forget to save after each change and remember, you can always reset an account to the network defaults.
-                </i></p>
-            </div>
+			<div class="d-inline-block" style="vertical-align: top; margin-left: 16px; width: 80%">
+				<h4><i class="fa fa-info-circle"></i> Info</h4>
+				<p><i>Each <b>account</b> can have it's own <b>Post Format</b> for sharing, on the left you can see the
+					current selected account and network, bellow are the <b>Post Format</b> options for the account.
+					Don't forget to save after each change and remember, you can always reset an account to the network defaults.
+				</i></p>
+			</div>
 			<div class="container">
 				<div class="columns">
 					<div class="column col-sm-12 col-md-12 col-lg-12">
@@ -37,7 +37,7 @@
 						</div>
 						<hr/>
 
-                        <h4>Content</h4>
+						<h4>Content</h4>
 						<!-- Post Content - where to fetch the content which will be shared
 							 (dropdown with 4 options ( post_title, post_content, post_content
 							 and title and custom field). If custom field is selected we will
@@ -59,17 +59,17 @@
 								</div>
 							</div>
 						</div>
-                        <div class="columns" v-if="post_format.post_content === 'custom_field'">
-                            <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-                                <b>Custom Meta Field</b><br/>
-                                <i>Meta field name from which to get the content.</i>
-                            </div>
-                            <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-                                <div class="form-group">
-                                    <input class="form-input" type="number" v-model="post_format.custom_meta_field" value="" placeholder="" />
-                                </div>
-                            </div>
-                        </div>
+						<div class="columns" v-if="post_format.post_content === 'custom_field'">
+							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+								<b>Custom Meta Field</b><br/>
+								<i>Meta field name from which to get the content.</i>
+							</div>
+							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+								<div class="form-group">
+									<input class="form-input" type="number" v-model="post_format.custom_meta_field" value="" placeholder="" />
+								</div>
+							</div>
+						</div>
 
 						<!-- Maximum length of the message( number field ) which holds the maximum
 							 number of chars for the shared content. We striping the content, we need
@@ -116,9 +116,9 @@
 								</div>
 							</div>
 						</div>
-                        <hr/>
+						<hr/>
 
-                        <h4>Link & URL</h4>
+						<h4>Link & URL</h4>
 						<!-- Include link - checkbox either we should include the post permalink or not
 							 in the shared content. This is will appended at the end of the content. -->
 						<div class="columns">
@@ -161,17 +161,17 @@
 								</div>
 							</div>
 						</div>
-                        <div class="columns" v-if="post_format.url_from_meta">
-                            <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-                                <b>Meta Key</b><br/>
-                                <i>Meta key name from which to get the URL.</i>
-                            </div>
-                            <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-                                <div class="form-group">
-                                    <input class="form-input" type="number" v-model="post_format.url_meta_key" value="" placeholder="" />
-                                </div>
-                            </div>
-                        </div>
+						<div class="columns" v-if="post_format.url_from_meta">
+							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+								<b>Meta Key</b><br/>
+								<i>Meta key name from which to get the URL.</i>
+							</div>
+							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+								<div class="form-group">
+									<input class="form-input" type="number" v-model="post_format.url_meta_key" value="" placeholder="" />
+								</div>
+							</div>
+						</div>
 
 						<!-- Use url shortner ( checkbox ) , either we should use a shortner when adding
 							 the links to the content. When checked we will show a dropdown with the shortners
@@ -195,9 +195,9 @@
 								</div>
 							</div>
 						</div>
-                        <hr/>
+						<hr/>
 
-                        <h4>Misc.</h4>
+						<h4>Misc.</h4>
 						<!-- Hashtags - dropdown - having this options - (Dont add any hashtags, Common hastags
 							 for all shares, Create hashtags from categories, Create hashtags from tags, Create
 							 hashtags from custom field). If one of those options is selected, except the dont
@@ -221,28 +221,28 @@
 								</div>
 							</div>
 						</div>
-                        <div class="columns" v-if="post_format.hashtags !== 'no-hashtags'">
-                            <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-                                <b>Maximum Hashtags length</b><br/>
-                                <i>The maximum hashtags length to be used when publishing.</i>
-                            </div>
-                            <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-                                <div class="form-group">
-                                    <input class="form-input" type="number" v-model="post_format.hashtags_length" value="" placeholder="" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="columns" v-if="post_format.hashtags === 'common-hashtags'">
-                            <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-                                <b>Common Hashtags</b><br/>
-                                <i>List of hastags to use separated by comma ",".</i>
-                            </div>
-                            <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-                                <div class="form-group">
-                                    <input class="form-input" type="text" v-model="post_format.hashtags_common" value="" placeholder="" />
-                                </div>
-                            </div>
-                        </div>
+						<div class="columns" v-if="post_format.hashtags !== 'no-hashtags'">
+							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+								<b>Maximum Hashtags length</b><br/>
+								<i>The maximum hashtags length to be used when publishing.</i>
+							</div>
+							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+								<div class="form-group">
+									<input class="form-input" type="number" v-model="post_format.hashtags_length" value="" placeholder="" />
+								</div>
+							</div>
+						</div>
+						<div class="columns" v-if="post_format.hashtags === 'common-hashtags'">
+							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+								<b>Common Hashtags</b><br/>
+								<i>List of hastags to use separated by comma ",".</i>
+							</div>
+							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+								<div class="form-group">
+									<input class="form-input" type="text" v-model="post_format.hashtags_common" value="" placeholder="" />
+								</div>
+							</div>
+						</div>
 
 						<!-- Post with image - checkbox (either we should use the featured image when posting) -->
 						<div class="columns">
@@ -263,7 +263,7 @@
 								</div>
 							</div>
 						</div>
-                        <hr/>
+						<hr/>
 					</div>
 				</div>
 			</div>
@@ -284,6 +284,9 @@
 			return {
 				selected_account: key
 			}
+		},
+		created: function () {
+			this.getAccountpostFormat()
 		},
 		computed: {
 			active_accounts: function () {
