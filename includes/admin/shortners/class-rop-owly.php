@@ -15,7 +15,7 @@
  * @since   8.0.0
  * @link    https://themeisle.com/
  */
-class Rop_Owly extends Rop_Url_Shortner_Abstract {
+class Rop_Owly_Shortner extends Rop_Url_Shortner_Abstract {
 
 	/**
 	 * Method to inject functionality into constructor.

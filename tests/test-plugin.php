@@ -216,10 +216,11 @@ class Test_ROP extends WP_UnitTestCase {
      * @access  public
      *
      * @covers Rop_Url_Shortner_Abstract
-     * @covers Rop_Rvivly
-     * @covers Rop_Bitly
-     * @covers Rop_Shortest
-     * @covers Rop_Googl
+     * @covers Rop_Rvivly_Shortner
+     * @covers Rop_Bitly_Shortner
+     * @covers Rop_Shortest_Shortner
+     * @covers Rop_Googl_Shortner
+     * @covers Rop_Isgd_Shortner
      */
     public function test_url_shortners() {
         $url = 'http://google.com/';
@@ -234,7 +235,7 @@ class Test_ROP extends WP_UnitTestCase {
 //        $this->assertNotEquals( $short_url, '' );
 
         // bit.ly Test
-        $bitly = new Rop_Bitly();
+        $bitly = new Rop_Bitly_Shortner();
         $user = 'o_57qgimegp1';
         $key = 'R_9a63d988de77438aaa6b3cd8e0830b6b';
         $bitly->set_credentials( array( 'user' => $user, 'key' => $key ) );
@@ -245,7 +246,7 @@ class Test_ROP extends WP_UnitTestCase {
         $this->assertNotEquals( $short_url, '' );
 
         // shorte.st Test
-        $shortest = new Rop_Shortest();
+        $shortest = new Rop_Shortest_Shortner();
         $key = 'e3b65f77eddddc7c0bf1f3a2f5a13f59';
         $shortest->set_credentials( array( 'key' => $key ) );
         $short_url = $shortest->shorten_url( $url );
@@ -255,7 +256,7 @@ class Test_ROP extends WP_UnitTestCase {
         $this->assertNotEquals( $short_url, '' );
 
         // goo.gl Test
-        $googl = new Rop_Googl();
+        $googl = new Rop_Googl_Shortner();
         $key = 'AIzaSyAqNtuEu-xXurkpV-p57r5oAqQgcAyMSN4';
         $googl->set_credentials( array( 'key' => $key ) );
         $short_url = $shortest->shorten_url( $url );
@@ -265,7 +266,7 @@ class Test_ROP extends WP_UnitTestCase {
         $this->assertNotEquals( $short_url, '' );
 
         // is.gd Test
-        $isgd = new Rop_Isgd();
+        $isgd = new Rop_Isgd_Shortner();
         $isgd = $bitly->shorten_url( $url );
 
         $this->assertNotEquals( $url, $short_url );

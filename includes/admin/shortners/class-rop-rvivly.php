@@ -15,7 +15,7 @@
  * @since   8.0.0
  * @link    https://themeisle.com/
  */
-class Rop_Rvivly extends Rop_Url_Shortner_Abstract {
+class Rop_Rvivly_Shortner extends Rop_Url_Shortner_Abstract {
 
 	/**
 	 * Holds the website root.
