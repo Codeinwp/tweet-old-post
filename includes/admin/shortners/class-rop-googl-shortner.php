@@ -10,12 +10,12 @@
  */
 
 /**
- * Class Rop_Shortest
+ * Class Rop_Googl_Shortner
  *
  * @since   8.0.0
  * @link    https://themeisle.com/
  */
-class Rop_Shortest_Shortner extends Rop_Url_Shortner_Abstract {
+class Rop_Googl_Shortner extends Rop_Url_Shortner_Abstract {
 
 	/**
 	 * Method to inject functionality into constructor.
@@ -25,21 +25,10 @@ class Rop_Shortest_Shortner extends Rop_Url_Shortner_Abstract {
 	 * @return mixed
 	 */
 	public function init() {
-		$this->service_name = 'shorte.st';
+		$this->service_name = 'goo.gl';
 		$this->credentials = array(
 			'key' => '',
 		);
-	}
-
-	/**
-	 * Method to return the needed credentials for this service.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return array
-	 */
-	public function get_required_credentials() {
-		return $this->credentials;
 	}
 
 	/**
@@ -52,14 +41,14 @@ class Rop_Shortest_Shortner extends Rop_Url_Shortner_Abstract {
 	 */
 	public function shorten_url( $url ) {
 		$response = $this->callAPI(
-			'https://api.shorte.st/v1/data/url',
-			array( 'method' => 'put', 'json' => true ),
-			array( 'urlToShorten' => $url ),
-			array( 'public-api-token' => $this->credentials['key'] )
+			'https://www.googleapis.com/urlshortener/v1/url?key=' . $this->credentials['key'],
+			array( 'method' => 'json', 'json' => true ),
+			array( 'longUrl' => urldecode( $url ) ),
+			array( 'Content-Type' => 'application/json' )
 		);
 		$shortURL = $url;
-		if ( intval( $response['error'] ) == 200 && $response['response']['status'] == 'ok' ) {
-			$shortURL   = $response['response']['shortenedUrl'];
+		if ( intval( $response['error'] ) == 200 && ! isset( $response['response']['error'] ) ) {
+			$shortURL = $response['response']['id'];
 		}
 		return $shortURL;
 	}

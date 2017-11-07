@@ -46,6 +46,10 @@ class Rop_Rest_Api {
 	 */
 	public function api( WP_REST_Request $request ) {
 		switch ( $request->get_param( 'req' ) ) {
+			case 'shortner_credentials':
+				$data = json_decode( $request->get_body(), true );
+				$response = $this->get_shortner_credentials( $data );
+				break;
 			case 'save_post_format':
 				$data = json_decode( $request->get_body(), true );
 				$response = $this->save_post_format( $data );
@@ -110,6 +114,20 @@ class Rop_Rest_Api {
 		}// End switch().
 		// array_push( $response, array( 'current_user' => current_user_can( 'manage_options' ) ) );
 		return $response;
+	}
+
+	/**
+	 * API method called to get shortner service credentials.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   array $data Data passed from the AJAX call.
+	 * @return mixed
+	 */
+	private function get_shortner_credentials( $data ) {
+	    $sh_factory = new Rop_Shortner_Factory();
+	    $shortner = $sh_factory->build( $data['short_url_service'] );
+	    return $shortner->get_credentials();
 	}
 
 	/**

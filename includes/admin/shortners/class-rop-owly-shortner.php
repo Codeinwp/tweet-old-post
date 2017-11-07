@@ -10,7 +10,7 @@
  */
 
 /**
- * Class Rop_Owly
+ * Class Rop_Owly_Shortner
  *
  * @since   8.0.0
  * @link    https://themeisle.com/
@@ -29,17 +29,6 @@ class Rop_Owly_Shortner extends Rop_Url_Shortner_Abstract {
 		$this->credentials = array(
 			'key' => '',
 		);
-	}
-
-	/**
-	 * Method to return the needed credentials for this service.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return array
-	 */
-	public function get_required_credentials() {
-		return $this->credentials;
 	}
 
 	/**

@@ -366,6 +366,21 @@ export default new Vuex.Store( {
 			}, function () {
 				commit( 'logMessage', ['Error retrieving posts.', 'error'] )
 			} )
+		},
+		fetchShortnerCredentials ( { commit }, data ) {
+			Vue.http( {
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'shortner_credentials' },
+				body: data,
+				responseType: 'json'
+			} ).then( function ( response ) {
+				console.log( response.data )
+				//commit( 'updatePostFormat', response.data )
+			}, function () {
+				commit( 'logMessage', ['Error retrieving shortner credentials.', 'error'] )
+			} )
 		}
 	}
 } )

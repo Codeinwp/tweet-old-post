@@ -10,7 +10,7 @@
  */
 
 /**
- * Class Rop_Isgd
+ * Class Rop_Isgd_Shortner
  *
  * @since   8.0.0
  * @link    https://themeisle.com/
@@ -26,18 +26,7 @@ class Rop_Isgd_Shortner extends Rop_Url_Shortner_Abstract {
 	 */
 	public function init() {
 		$this->service_name = 'is.gd';
-		$this->credentials = false;
-	}
-
-	/**
-	 * Method to return the needed credentials for this service.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return array
-	 */
-	public function get_required_credentials() {
-		return $this->credentials;
+		$this->credentials = array();
 	}
 
 	/**

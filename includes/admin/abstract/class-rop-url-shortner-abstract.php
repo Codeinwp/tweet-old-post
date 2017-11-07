@@ -78,15 +78,6 @@ abstract class Rop_Url_Shortner_Abstract {
 	public abstract function init();
 
 	/**
-	 * Method to return the needed credentials for this service.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return array
-	 */
-	public abstract function get_required_credentials();
-
-	/**
 	 * Returns the stored credentials from DB.
 	 *
 	 * @since   8.0.0

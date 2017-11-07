@@ -10,7 +10,7 @@
  */
 
 /**
- * Class Rop_Bitly
+ * Class Rop_Bitly_Shortner
  *
  * @since   8.0.0
  * @link    https://themeisle.com/
@@ -30,17 +30,6 @@ class Rop_Bitly_Shortner extends Rop_Url_Shortner_Abstract {
 			'user' => '',
 			'key' => '',
 		);
-	}
-
-	/**
-	 * Method to return the needed credentials for this service.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return array
-	 */
-	public function get_required_credentials() {
-		return $this->credentials;
 	}
 
 	/**
