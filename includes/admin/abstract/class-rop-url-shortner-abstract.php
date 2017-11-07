@@ -1,4 +1,22 @@
 <?php
+/**
+ * The file that defines the abstract class inherited by all shortners
+ *
+ * A class that is used to define the shortners class and utility methods.
+ *
+ * @link       https://themeisle.com/
+ * @since      8.0.0
+ *
+ * @package    Rop
+ * @subpackage Rop/includes/admin/abstract
+ */
+
+/**
+ * Class Rop_Url_Shortner_Abstract
+ *
+ * @since   8.0.0
+ * @link    https://themeisle.com/
+ */
 abstract class Rop_Url_Shortner_Abstract {
 
 
@@ -21,6 +39,15 @@ abstract class Rop_Url_Shortner_Abstract {
 	protected $credentials;
 
 	/**
+	 * Stores an instance of Rop_Shortners_Model
+	 *
+	 * @since   8.0.0
+	 * @access  protected
+	 * @var     Rop_Shortners_Model $model An instance of the model.
+	 */
+	protected $model;
+
+	/**
 	 * Holds the Rop_Exception_Handler
 	 *
 	 * @since   8.0.0
@@ -38,6 +65,7 @@ abstract class Rop_Url_Shortner_Abstract {
 	public function __construct() {
 		$this->error = new Rop_Exception_Handler();
 		$this->init();
+		$this->model = new Rop_Shortners_Model( $this->service_name, $this->credentials );
 	}
 
 	/**
@@ -65,16 +93,23 @@ abstract class Rop_Url_Shortner_Abstract {
 	 * @access  public
 	 * @return mixed
 	 */
-	public abstract function get_credentials();
+	public function get_credentials() {
+	    return $this->model->credentials();
+	}
 
 	/**
 	 * Updates the credentials in DB.
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 * @param   array $credentials An array of credentials to save.
 	 * @return mixed
 	 */
-	public abstract function set_credentials();
+	public function set_credentials( $credentials ) {
+		$this->model->save( $credentials );
+		$this->credentials = $this->get_credentials();
+		return $this->credentials;
+	}
 
 	/**
 	 * Method to retrieve the shorten url from the API call.
@@ -86,60 +121,90 @@ abstract class Rop_Url_Shortner_Abstract {
 	 */
 	public abstract function shorten_url( $url );
 
-    protected final function callAPI( $url, $props = array(), $params = array(), $headers = array() ) {
-        $body       = null;
-        $error      = null;
-        if ( $props && isset($props["method"]) && $props["method"] === "get" ) {
-            $url    .= "?";
-            foreach ( $params as $k=>$v ) {
-                $url .= "$k=$v&";
-            }
-        }
-        $conn = curl_init( $url );
-        curl_setopt( $conn, CURLOPT_SSL_VERIFYPEER, false );
-        curl_setopt( $conn, CURLOPT_FRESH_CONNECT, true );
-        curl_setopt( $conn, CURLOPT_RETURNTRANSFER, 1 );
-        curl_setopt( $conn, CURLOPT_FOLLOWLOCATION, 1 );
-        curl_setopt( $conn, CURLOPT_HEADER, 0 );
-        curl_setopt( $conn, CURLOPT_NOSIGNAL, 1 );
-        $header = array();
-        if ( $headers ) {
-            foreach ( $headers as $key=>$val ) {
-                $header[] = "$key: $val";
-            }
-            curl_setopt( $conn, CURLOPT_HTTPHEADER, $header );
-        }
-        if ( $props && isset( $props["method"] ) ) {
-            if ( in_array( $props["method"], array( "post", "put" ) ) ) {
-                curl_setopt( $conn, CURLOPT_POSTFIELDS, urldecode( http_build_query( $params ) ) );
-            }
-            if ( $props["method"] === "json" ) {
-                curl_setopt( $conn, CURLOPT_POSTFIELDS, json_encode( $params ) );
-            }
-            if (!in_array( $props["method"], array( "get", "post", "json" ) ) ) {
-                curl_setopt ( $conn, CURLOPT_CUSTOMREQUEST, strtoupper( $props["method"] ) );
-            }
-        }
-        try {
-            $body = curl_exec($conn);
-            $error = curl_getinfo($conn, CURLINFO_HTTP_CODE);
-        } catch ( Exception $e ) {
-            $this->error->throw_exception( "Exception " . $e->getMessage() );
-        }
-        if ( curl_errno( $conn ) ) {
-//            self::addNotice("Error for request: " . $url . " : ". curl_error($conn), 'error');
-//            self::writeDebug("curl_errno ".curl_error($conn));
+	/**
+	 * Utility method to generate a salt string.
+	 *
+	 * @since   8.0.0
+	 * @access  protected
+	 * @return string
+	 */
+	protected function getSalt() {
+		$charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/\\][{}\'";:?.>,<!@#$%^&*()-_=+|';
+		$randStringLen = 64;
 
-        }
-        curl_close( $conn );
-        if ( $props && isset( $props["json"] ) && $props["json"] ) {
-            $body = json_decode($body, true );
-        }
-        $array = array(
-            "response"  => $body,
-            "error"     => $error,
-        );
-        //self::writeDebug( "Calling ". $url. " with headers = " . print_r($header, true) . ", fields = " . print_r($params, true) . " returning raw response " . print_r($body,true) . " and finally returning " . print_r($array,true));
-        return $array;
-    }
+		$randString = '';
+		for ( $i = 0; $i < $randStringLen; $i++ ) {
+			$randString .= $charset[ mt_rand( 0, strlen( $charset ) - 1 ) ];
+		}
+
+		return $randString;
+	}
+
+	/**
+	 * Method to call a shortner API.
+	 *
+	 * @since   8.0.0
+	 * @access  protected
+	 * @param   string $url The URL to shorten.
+	 * @param   array  $props Curl props.
+	 * @param   array  $params Params to be passed to API.
+	 * @param   array  $headers Additional headers if needed.
+	 * @return array
+	 */
+	protected final function callAPI( $url, $props = array(), $params = array(), $headers = array() ) {
+		$body       = null;
+		$error      = null;
+		if ( $props && isset( $props['method'] ) && $props['method'] === 'get' ) {
+			$url    .= '?';
+			foreach ( $params as $k => $v ) {
+				$url .= "$k=$v&";
+			}
+		}
+		$conn = curl_init( $url );
+		curl_setopt( $conn, CURLOPT_SSL_VERIFYPEER, false );
+		curl_setopt( $conn, CURLOPT_FRESH_CONNECT, true );
+		curl_setopt( $conn, CURLOPT_RETURNTRANSFER, 1 );
+		curl_setopt( $conn, CURLOPT_FOLLOWLOCATION, 1 );
+		curl_setopt( $conn, CURLOPT_HEADER, 0 );
+		curl_setopt( $conn, CURLOPT_NOSIGNAL, 1 );
+		$header = array();
+		if ( $headers ) {
+			foreach ( $headers as $key => $val ) {
+				$header[] = "$key: $val";
+			}
+			curl_setopt( $conn, CURLOPT_HTTPHEADER, $header );
+		}
+		if ( $props && isset( $props['method'] ) ) {
+			if ( in_array( $props['method'], array( 'post', 'put' ) ) ) {
+				curl_setopt( $conn, CURLOPT_POSTFIELDS, urldecode( http_build_query( $params ) ) );
+			}
+			if ( $props['method'] === 'json' ) {
+				curl_setopt( $conn, CURLOPT_POSTFIELDS, json_encode( $params ) );
+			}
+			if ( ! in_array( $props['method'], array( 'get', 'post', 'json' ) ) ) {
+				curl_setopt( $conn, CURLOPT_CUSTOMREQUEST, strtoupper( $props['method'] ) );
+			}
+		}
+		try {
+			$body = curl_exec( $conn );
+			$error = curl_getinfo( $conn, CURLINFO_HTTP_CODE );
+		} catch ( Exception $e ) {
+			$this->error->throw_exception( 'Exception ' . $e->getMessage() );
+		}
+		if ( curl_errno( $conn ) ) {
+			var_dump( 'Error for request: ' . $url . ' : ' . curl_error( $conn ), 'error' );
+			// self::addNotice("Error for request: " . $url . " : ". curl_error($conn), 'error');
+			// self::writeDebug("curl_errno ".curl_error($conn));
+		}
+		curl_close( $conn );
+		if ( $props && isset( $props['json'] ) && $props['json'] ) {
+			$body = json_decode( $body, true );
+		}
+		$array = array(
+			'response'  => $body,
+			'error'     => $error,
+		);
+		// self::writeDebug( "Calling ". $url. " with headers = " . print_r($header, true) . ", fields = " . print_r($params, true) . " returning raw response " . print_r($body,true) . " and finally returning " . print_r($array,true));
+		return $array;
+	}
 }

@@ -168,6 +168,7 @@ class Test_ROP extends WP_UnitTestCase {
      * @since   8.0.0
      * @access  public
      *
+     * @covers Rop_Model_Abstract
      * @covers Rop_Post_Format_Model::<public>
      */
     public function test_post_format() {
@@ -183,6 +184,7 @@ class Test_ROP extends WP_UnitTestCase {
             'url_from_meta' => false,
             'url_meta_key' => '',
             'short_url' => true,
+            'short_url_service' => 'rviv.ly',
             'hashtags' => 'common-hashtags',
             'hashtags_length' => '15',
             'hashtags_common' => '#testLikeABoss, #themeIsle',
@@ -204,6 +206,71 @@ class Test_ROP extends WP_UnitTestCase {
         $post_format->remove_post_format( $account_id );
 
         $this->assertEquals( $post_format->get_post_format( $account_id ), $defaults );
+
+    }
+
+    /**
+     * Testing URL shortners
+     *
+     * @since   8.0.0
+     * @access  public
+     *
+     * @covers Rop_Url_Shortner_Abstract
+     * @covers Rop_Rvivly
+     * @covers Rop_Bitly
+     * @covers Rop_Shortest
+     * @covers Rop_Googl
+     */
+    public function test_url_shortners() {
+        $url = 'http://google.com/';
+
+        // rviv.ly Test
+//        $rvivly = new Rop_Rvivly();
+//        $rvivly->set_website( $url );
+//        $short_url = $rvivly->shorten_url( $url );
+//        var_dump( $short_url );
+//        $this->assertNotEquals( $url, $short_url );
+//        $this->assertUriIsCorrect( $short_url );
+//        $this->assertNotEquals( $short_url, '' );
+
+        // bit.ly Test
+        $bitly = new Rop_Bitly();
+        $user = 'o_57qgimegp1';
+        $key = 'R_9a63d988de77438aaa6b3cd8e0830b6b';
+        $bitly->set_credentials( array( 'user' => $user, 'key' => $key ) );
+        $short_url = $bitly->shorten_url( $url );
+
+        $this->assertNotEquals( $url, $short_url );
+        $this->assertUriIsCorrect( $short_url );
+        $this->assertNotEquals( $short_url, '' );
+
+        // shorte.st Test
+        $shortest = new Rop_Shortest();
+        $key = 'e3b65f77eddddc7c0bf1f3a2f5a13f59';
+        $shortest->set_credentials( array( 'key' => $key ) );
+        $short_url = $shortest->shorten_url( $url );
+
+        $this->assertNotEquals( $url, $short_url );
+        $this->assertUriIsCorrect( $short_url );
+        $this->assertNotEquals( $short_url, '' );
+
+        // goo.gl Test
+        $googl = new Rop_Googl();
+        $key = 'AIzaSyAqNtuEu-xXurkpV-p57r5oAqQgcAyMSN4';
+        $googl->set_credentials( array( 'key' => $key ) );
+        $short_url = $shortest->shorten_url( $url );
+
+        $this->assertNotEquals( $url, $short_url );
+        $this->assertUriIsCorrect( $short_url );
+        $this->assertNotEquals( $short_url, '' );
+
+        // is.gd Test
+        $isgd = new Rop_Isgd();
+        $isgd = $bitly->shorten_url( $url );
+
+        $this->assertNotEquals( $url, $short_url );
+        $this->assertUriIsCorrect( $short_url );
+        $this->assertNotEquals( $short_url, '' );
 
     }
 

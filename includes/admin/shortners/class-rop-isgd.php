@@ -10,21 +10,12 @@
  */
 
 /**
- * Class Rop_Rvivly
+ * Class Rop_Isgd
  *
  * @since   8.0.0
  * @link    https://themeisle.com/
  */
-class Rop_Rvivly extends Rop_Url_Shortner_Abstract {
-
-	/**
-	 * Holds the website root.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 * @var     string $website The website root.
-	 */
-	private $website;
+class Rop_Isgd extends Rop_Url_Shortner_Abstract {
 
 	/**
 	 * Method to inject functionality into constructor.
@@ -34,9 +25,8 @@ class Rop_Rvivly extends Rop_Url_Shortner_Abstract {
 	 * @return mixed
 	 */
 	public function init() {
-		$this->service_name = 'rviv.ly';
+		$this->service_name = 'is.gd';
 		$this->credentials = false;
-		$this->set_website();
 	}
 
 	/**
@@ -51,20 +41,6 @@ class Rop_Rvivly extends Rop_Url_Shortner_Abstract {
 	}
 
 	/**
-	 * Utility method to change default website.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @param   bool|string $website Optional. Another value for website if required.
-	 */
-	public function set_website( $website = false ) {
-		$this->website = get_bloginfo( 'url' );
-		if ( $website ) {
-			$this->website = $website;
-		}
-	}
-
-	/**
 	 * Method to retrieve the shorten url from the API call.
 	 *
 	 * @since   8.0.0
@@ -73,18 +49,16 @@ class Rop_Rvivly extends Rop_Url_Shortner_Abstract {
 	 * @return string
 	 */
 	public function shorten_url( $url ) {
-		var_dump( $this->website );
 		$response = $this->callAPI(
-			'http://rviv.ly/yourls-api.php',
-			array( 'method' => 'post' ),
-			array( 'action' => 'shorturl', 'format' => 'simple', 'signature' => substr( md5( $this->website . md5( 'themeisle' ) ), 0, 10 ), 'url' => $url, 'website' => base64_encode( $this->website ) ),
+			'https://is.gd/api.php',
+			array( 'method' => 'get' ),
+			array( 'longurl' => $url) ,
 			null
 		);
-
 		$shortURL = $url;
 		if ( intval( $response['error'] ) == 200 ) {
 			$shortURL = $response['response'];
 		}
-		return $response;
+		return $shortURL;
 	}
 }
