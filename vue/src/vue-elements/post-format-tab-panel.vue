@@ -202,7 +202,7 @@
 							</div>
 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 								<div class="form-group">
-									<select class="form-select" v-model="post_format.short_url_service" @change="getShortnerCredentials()">
+									<select class="form-select" v-model="post_format.short_url_service">
 										<option value="rviv.ly">rviv.ly</option>
 										<option value="bit.ly">bit.ly</option>
 										<option value="shorte.st">shorte.st</option>
@@ -210,6 +210,17 @@
 										<option value="ow.ly">ow.ly</option>
 										<option value="is.gd">is.gd</option>
 									</select>
+								</div>
+							</div>
+						</div>
+						<div class="columns" v-for="( credential, key_name ) in shortner_credentials">
+							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+								<b>{{ key_name | capitalize }}</b><br/>
+								<i>Add the "{{key_name}}" required by the <b>{{post_format.short_url_service}}</b> service API.</i>
+							</div>
+							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+								<div class="form-group">
+									<input class="form-input" type="text" v-model="shortner_credentials[key_name]" value="" placeholder="" />
 								</div>
 							</div>
 						</div>
@@ -261,17 +272,17 @@
 								</div>
 							</div>
 						</div>
-                        <div class="columns" v-if="post_format.hashtags === 'custom-hashtags'">
-                            <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-                                <b>Common Hashtags</b><br/>
-                                <i>List of hastags to use separated by comma ",".</i>
-                            </div>
-                            <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-                                <div class="form-group">
-                                    <input class="form-input" type="text" v-model="post_format.hashtags_custom" value="" placeholder="" />
-                                </div>
-                            </div>
-                        </div>
+						<div class="columns" v-if="post_format.hashtags === 'custom-hashtags'">
+							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+								<b>Custom Hashtags</b><br/>
+								<i>The name of the meta field that contains the hashtags.</i>
+							</div>
+							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+								<div class="form-group">
+									<input class="form-input" type="text" v-model="post_format.hashtags_custom" value="" placeholder="" />
+								</div>
+							</div>
+						</div>
 
 						<!-- Post with image - checkbox (either we should use the featured image when posting) -->
 						<div class="columns">
@@ -311,20 +322,31 @@
 			let key = null
 			if ( Object.keys( this.$store.state.activeAccounts )[0] !== undefined ) key = Object.keys( this.$store.state.activeAccounts )[0]
 			return {
-				selected_account: key
+				selected_account: key,
+				shortner_credentials: []
 			}
 		},
 		mounted: function () {
 			// Uncomment this when not fixed tab on post format
 			// this.getAccountpostFormat()
 		},
+		filters: {
+			capitalize: function ( value ) {
+				if ( !value ) return ''
+				value = value.toString()
+				return value.charAt( 0 ).toUpperCase() + value.slice( 1 )
+			}
+		},
 		computed: {
 			active_accounts: function () {
 				return this.$store.state.activeAccounts
 			},
 			post_format: function () {
-				let activePostFormat = this.$store.state.activePostFormat
-				return activePostFormat
+				return this.$store.state.activePostFormat
+			},
+			short_url_service: function () {
+				let postFormat = this.$store.getters.getPostFormat
+				return postFormat.short_url_service
 			},
 			icon: function () {
 				let serviceIcon = 'fa-user'
@@ -369,6 +391,16 @@
 					this.selected_account = key
 					this.getAccountpostFormat()
 				}
+			},
+			short_url_service: function () {
+				console.log( 'Service changed' )
+				console.log( this.short_url_service )
+				this.$store.dispatch( 'fetchShortnerCredentials', { short_url_service: this.short_url_service } ).then( response => {
+					console.log( 'Got some data, now lets show something in this component', response )
+					this.shortner_credentials = response
+				}, error => {
+					console.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
+				} )
 			}
 		},
 		methods: {
@@ -383,10 +415,7 @@
 			resetPostFormat () {
 				console.log( 'Reset Post format for', this.selected_account )
 				this.$store.dispatch( 'resetPostFormat', { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account } )
-			},
-			getShortnerCredentials () {
-				console.log( this.post_format.short_url_service )
-				this.$store.dispatch( 'fetchShortnerCredentials', { short_url_service: this.post_format.short_url_service } )
+				this.$forceUpdate()
 			}
 		}
 	}

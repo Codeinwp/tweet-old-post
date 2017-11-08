@@ -56,6 +56,9 @@ export default new Vuex.Store( {
 		},
 		getActiveAccounts ( state ) {
 			return state.activeAccounts
+		},
+		getPostFormat ( state ) {
+			return state.activePostFormat
 		}
 	},
 	mutations: {
@@ -142,6 +145,9 @@ export default new Vuex.Store( {
 		},
 		updatePostFormat ( state, data ) {
 			state.activePostFormat = data
+		},
+		updatePostFormatShortnerCredentials ( state, data ) {
+			state.activePostFormat['shortner_credentials'] = data
 		}
 	},
 	actions: {
@@ -368,18 +374,21 @@ export default new Vuex.Store( {
 			} )
 		},
 		fetchShortnerCredentials ( { commit }, data ) {
-			Vue.http( {
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'shortner_credentials' },
-				body: data,
-				responseType: 'json'
-			} ).then( function ( response ) {
-				console.log( response.data )
-				//commit( 'updatePostFormat', response.data )
-			}, function () {
-				commit( 'logMessage', ['Error retrieving shortner credentials.', 'error'] )
+			return new Promise( ( resolve, reject ) => {
+				Vue.http( {
+					url: ropApiSettings.root,
+					method: 'POST',
+					headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+					params: { 'req': 'shortner_credentials' },
+					body: data,
+					responseType: 'json'
+				} ).then( function ( response ) {
+					resolve( response.data )
+					commit( 'updatePostFormatShortnerCredentials', response.data )
+					console.log( response.data )
+				}, function () {
+					commit( 'logMessage', ['Error retrieving shortner credentials.', 'error'] )
+				} )
 			} )
 		}
 	}
