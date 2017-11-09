@@ -276,6 +276,18 @@ class Test_ROP extends WP_UnitTestCase {
     }
 
     /**
+     * Testing the scheduler model.
+     *
+     * @since   8.0.0
+     * @access  public
+     *
+     * @covers  Rop_Scheduler_Model
+     */
+    public function test_scheduler() {
+
+    }
+
+    /**
      * Testing publish content manipulations
      *
      * @since   8.0.0

@@ -28,13 +28,12 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 
 		$this->schedule_defaults = array(
 			'type' => 'recurring', // another possible value is "fixed"
-			'interval_r' => '2.5',
-			'interval_f' => array(
-				'week_days' => array( 0, 1, 2, 3, 4, 5, 6 ),
-				'time' => current_time( 'H:i', 0 ),
-			),
-
-			'timestamp' => array( current_time( 'timestamp', 0 ) ),
+			// 'interval_r' => '6.5',
+			// 'interval_f' => array(
+			//      'week_days' => array( 0, 1, 2, 3, 4, 5, 6 ),
+			//      'time' => current_time( 'H:i', 0 ),
+			// ),
+			'timestamp' => current_time( 'timestamp', 0 ),
 			'first_share' => null,
 			'last_share' => null,
 		);
@@ -89,37 +88,20 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		return date( $format, $timestamp );
 	}
 
-	public function create_schedule( $type = 'recurring', $date, $time ) {
+	public function create_schedule( $type = 'recurring', $interval ) {
 		$schedule = array();
 		if ( in_array( $type, array( 'recurring', 'fixed' ) ) ) {
 			$schedule['type'] = $type;
 		}
 
-		if ( is_string( $date ) ) {
-			$date = array( $date );
+		if ( is_string( $interval ) ) {
+			$schedule['interval_r'] = $interval;
 		}
 
-		if ( is_string( $time ) ) {
-			$time = array( $time );
-		}
-
-		if ( is_array( $date ) && ! empty( $date ) ) {
-			$schedule['date'] = $date;
-		}
-
-		if ( is_array( $time ) && ! empty( $time ) ) {
-			if ( $type == 'recurring' ) {
-				$valid_times = array();
-				foreach ( $time as $item ) {
-					if ( $this->check_time_is_float( $item ) ) {
-						array_push( $valid_times, $item );
-					}
-				}
-				$schedule['time'] = $valid_times;
-			} else {
-				$schedule['time'] = $time;
-			}
-		}
+		if( is_array( $interval ) ) {
+		    $schedule['interval_f'] = $interval;
+        }
+        $schedule['first_share'] = strtotime( '+15 seconds', current_time( 'timestamp', 0 ) );
 
 		return wp_parse_args( $schedule, $this->schedule_defaults );
 	}
@@ -172,7 +154,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		foreach ( $this->schedules as $schedule ) {
 			if ( $schedule['type'] == 'recurring' ) {
 				if ( $schedule['last_share'] == null ) {
-					$time = $this->convert_float_to_time( $schedule['time'] );
+					$time = $this->convert_float_to_time( $schedule['interval_r'] );
 					$event['time'] = $this->add_to_time( $schedule['timestamp'], $time['hours'], $time['minutes'], true );
 				}
 				for ( $i = 1; $i < $future_events; $i++ ) {
