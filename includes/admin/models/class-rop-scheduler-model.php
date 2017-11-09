@@ -114,9 +114,9 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		return $this->schedule_defaults;
 	}
 
-	public function add_update_schedule( $account_id, $type, $date, $time, $last_share = null ) {
+	public function add_update_schedule( $account_id, $type, $interval, $last_share = null ) {
 		$this->schedules = $this->get_schedules();
-		$schedule = $this->create_schedule( $type, $date, $time );
+		$schedule = $this->create_schedule( $type, $interval );
 		$schedule['last_share'] = $last_share;
 		$this->schedules[ $account_id ] = $schedule;
 		return $this->set( 'schedules', $this->schedules );
@@ -151,17 +151,24 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		$this->schedules = $this->get_schedules();
 		$this->skips = $this->get_skips();
 		$list = array();
-		foreach ( $this->schedules as $schedule ) {
+		foreach ( $this->schedules as $account_id => $schedule ) {
+            $event = array( 'account_id' => $account_id );
 			if ( $schedule['type'] == 'recurring' ) {
 				if ( $schedule['last_share'] == null ) {
 					$time = $this->convert_float_to_time( $schedule['interval_r'] );
-					$event['time'] = $this->add_to_time( $schedule['timestamp'], $time['hours'], $time['minutes'], true );
+					$event['time'] = $this->add_to_time( $schedule['first_share'], $time['hours'], $time['minutes'], true );
+                    $schedule['last_share'] = $event['time'];
 				}
+				array_push( $list, $event );
 				for ( $i = 1; $i < $future_events; $i++ ) {
-
+                    $event = array( 'account_id' => $account_id );
+                    $event['time'] = $this->add_to_time( $schedule['last_share'], $time['hours'], $time['minutes'], false );
+                    $schedule['last_share'] = $event['time'];
+                    array_push( $list, $event );
 				}
 			}
 		}
+		return $list;
 	}
 
 }

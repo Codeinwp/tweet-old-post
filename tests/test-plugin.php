@@ -284,7 +284,9 @@ class Test_ROP extends WP_UnitTestCase {
      * @covers  Rop_Scheduler_Model
      */
     public function test_scheduler() {
-
+        $scheduler = new Rop_Scheduler_Model();
+        $scheduler->add_update_schedule( 'test_id_facebook', 'recurring', '2.5' );
+        var_dump( $scheduler->list_upcomming_schedules() );
     }
 
     /**
