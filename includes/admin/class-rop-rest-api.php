@@ -140,6 +140,9 @@ class Rop_Rest_Api {
 	 */
 	private function save_post_format( $data ) {
 		$post_format = new Rop_Post_Format_Model( $data['service'] );
+		$sh_factory = new Rop_Shortner_Factory();
+		$shortner = $sh_factory->build( $data['post_format']['short_url_service'] );
+		$shortner->set_credentials( $data['post_format']['shortner_credentials'] );
 		$post_format->add_update_post_format( $data['account_id'], $data['post_format'] );
 		return $post_format->get_post_format( $data['account_id'] );
 	}

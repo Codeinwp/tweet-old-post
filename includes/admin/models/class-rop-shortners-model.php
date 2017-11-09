@@ -41,8 +41,8 @@ class Rop_Shortners_Model extends Rop_Model_Abstract {
 	 * @param   array  $default_credentials The default credentials for shortner.
 	 */
 	public function __construct( $shortner, $default_credentials ) {
-		parent::__construct();
-		$this->shortner_name = $shortner;
+		$this->shortner_name = str_replace( '.', '', $shortner );
+		parent::__construct( 'rop_shortners_' . $this->shortner_name );
 		$this->credentials = ( $this->get( $this->shortner_name . '_credentials' ) != null ) ? $this->get( $this->shortner_name . '_credentials' ) : $default_credentials;
 	}
 

@@ -220,7 +220,7 @@
 							</div>
 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 								<div class="form-group">
-									<input class="form-input" type="text" v-model="shortner_credentials[key_name]" value="" placeholder="" />
+									<input class="form-input" type="text" v-model="shortner_credentials[key_name]" value="" placeholder="" @change="updateShortnerCredentials()" @keyup="updateShortnerCredentials()" />
 								</div>
 							</div>
 						</div>
@@ -416,6 +416,9 @@
 				console.log( 'Reset Post format for', this.selected_account )
 				this.$store.dispatch( 'resetPostFormat', { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account } )
 				this.$forceUpdate()
+			},
+			updateShortnerCredentials () {
+				this.$store.commit( 'updatePostFormatShortnerCredentials', this.shortner_credentials )
 			}
 		}
 	}
