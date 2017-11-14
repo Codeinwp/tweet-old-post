@@ -46,6 +46,14 @@ class Rop_Rest_Api {
 	 */
 	public function api( WP_REST_Request $request ) {
 		switch ( $request->get_param( 'req' ) ) {
+			case 'save_schedule':
+				$data = json_decode( $request->get_body(), true );
+				$response = $this->save_schedule( $data );
+				break;
+			case 'reset_schedule':
+				$data = json_decode( $request->get_body(), true );
+				$response = $this->reset_schedule( $data );
+				break;
 			case 'get_schedule':
 				$data = json_decode( $request->get_body(), true );
 				$response = $this->get_schedule( $data );
@@ -118,6 +126,34 @@ class Rop_Rest_Api {
 		}// End switch().
 		// array_push( $response, array( 'current_user' => current_user_can( 'manage_options' ) ) );
 		return $response;
+	}
+
+	/**
+	 * API method called to save a post format.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   array $data Data passed from the AJAX call.
+	 * @return array
+	 */
+	private function save_schedule( $data ) {
+		$schedules = new Rop_Scheduler_Model();
+		$schedules->add_update_schedule( $data['account_id'], $data['schedule'] );
+		return $schedules->get_schedule( $data['account_id'] );
+	}
+
+	/**
+	 * API method called to reset a post format to defaults.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   array $data Data passed from the AJAX call.
+	 * @return array
+	 */
+	private function reset_schedule( $data ) {
+		$schedules = new Rop_Scheduler_Model();
+		$schedules->remove_schedule( $data['account_id'] );
+		return $schedules->get_schedule( $data['account_id'] );
 	}
 
 	/**

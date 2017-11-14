@@ -115,6 +115,8 @@ abstract class Rop_Url_Shortner_Abstract {
 	/**
 	 * Utility method to generate a salt string.
 	 *
+	 * @codeCoverageIgnore
+	 *
 	 * @since   8.0.0
 	 * @access  protected
 	 * @return string
@@ -133,6 +135,8 @@ abstract class Rop_Url_Shortner_Abstract {
 
 	/**
 	 * Method to call a shortner API.
+	 *
+	 * @codeCoverageIgnore
 	 *
 	 * @since   8.0.0
 	 * @access  protected

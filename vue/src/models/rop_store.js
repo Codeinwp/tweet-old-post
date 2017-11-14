@@ -410,6 +410,36 @@ export default new Vuex.Store( {
 			}, function () {
 				commit( 'logMessage', ['Error retrieving schedule.', 'error'] )
 			} )
-		}
+		},
+		saveSchedule ( { commit }, data ) {
+			Vue.http( {
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'save_schedule' },
+				body: data,
+				responseType: 'json'
+			} ).then( function ( response ) {
+				console.log( response.data )
+				commit( 'updateSchedule', response.data )
+			}, function () {
+				commit( 'logMessage', ['Error retrieving schedule.', 'error'] )
+			} )
+		},
+		resetSchedule ( { commit }, data ) {
+			Vue.http( {
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'reset_schedule' },
+				body: data,
+				responseType: 'json'
+			} ).then( function ( response ) {
+				console.log( response.data )
+				commit( 'updateSchedule', response.data )
+			}, function () {
+				commit( 'logMessage', ['Error retrieving schedule.', 'error'] )
+			} )
+		},
 	}
 } )

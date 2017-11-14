@@ -48,7 +48,7 @@
 							</div>
 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 								<div class="form-group">
-									<select class="form-select" v-model="schedule_type">
+									<select class="form-select" v-model="schedule.type">
 										<option value="recurring">Recurring</option>
 										<option value="fixed">Fixed</option>
 									</select>
@@ -56,24 +56,18 @@
 							</div>
 						</div>
 
-						<div class="columns" v-if="schedule_type === 'fixed'">
+						<div class="columns" v-if="schedule.type === 'fixed'">
 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
 								<b>Fixed Schedule Days</b><br/>
 								<i>The days when to share for this account.</i>
 							</div>
 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 								<div class="form-group">
-									<button-checkbox value="1" label="Mon" :checked="isChecked('1')" @add-day="addDay" @rmv-day="rmvDay"></button-checkbox>
-									<button-checkbox value="2" label="Tue" :checked="isChecked('2')" @add-day="addDay" @rmv-day="rmvDay"></button-checkbox>
-									<button-checkbox value="3" label="Wen" :checked="isChecked('3')" @add-day="addDay" @rmv-day="rmvDay"></button-checkbox>
-									<button-checkbox value="4" label="Thu" :checked="isChecked('4')" @add-day="addDay" @rmv-day="rmvDay"></button-checkbox>
-									<button-checkbox value="5" label="Fri" :checked="isChecked('5')" @add-day="addDay" @rmv-day="rmvDay"></button-checkbox>
-									<button-checkbox value="6" label="Sat" :checked="isChecked('6')" @add-day="addDay" @rmv-day="rmvDay"></button-checkbox>
-									<button-checkbox value="7" label="Sun" :checked="isChecked('7')" @add-day="addDay" @rmv-day="rmvDay"></button-checkbox>
+									<button-checkbox v-for="( data, label ) in daysObject" :key="label" :value="data.value" :label="label" :checked="data.checked" @add-day="addDay" @rmv-day="rmvDay"></button-checkbox>
 								</div>
 							</div>
 						</div>
-						<div class="columns" v-if="schedule_type === 'fixed'">
+						<div class="columns" v-if="schedule.type === 'fixed'">
 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
 								<b>Fixed Schedule Time</b><br/>
 								<i>The time at witch to share for this account.</i>
@@ -91,7 +85,7 @@
 							</div>
 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 								<div class="form-group">
-									<input type="number" class="form-input" v-model="interval_r" placeholder="hours.min (Eg. 2.5)" />
+									<input type="number" class="form-input" v-model="schedule.interval_r" placeholder="hours.min (Eg. 2.5)" />
 								</div>
 							</div>
 						</div>
@@ -121,12 +115,36 @@
 			if ( Object.keys( this.$store.state.activeAccounts )[0] !== undefined ) key = Object.keys( this.$store.state.activeAccounts )[0]
 			return {
 				selected_account: key,
-				schedule_type: 'fixed',
-				interval_f: {
-					'days': [ '1', '3', '5' ],
-					'time': '10:30'
-				},
-				interval_r: 2.5
+				days: {
+					'Mon': {
+						'value': '1',
+						'checked': false
+					},
+					'Tue': {
+						'value': '2',
+						'checked': false
+					},
+					'Wen': {
+						'value': '3',
+						'checked': false
+					},
+					'Thu': {
+						'value': '4',
+						'checked': false
+					},
+					'Fri': {
+						'value': '5',
+						'checked': false
+					},
+					'Sat': {
+						'value': '6',
+						'checked': false
+					},
+					'Sun': {
+						'value': '7',
+						'checked': false
+					}
+				}
 			}
 		},
 		mounted: function () {
@@ -141,8 +159,19 @@
 			}
 		},
 		computed: {
+			schedule: function () {
+				return this.$store.state.activeSchedule
+			},
+			daysObject: function () {
+				let daysObject = this.days
+				for ( let day in daysObject ) {
+					daysObject[day].checked = this.isChecked( daysObject[day].value )
+				}
+				console.log( daysObject )
+				return daysObject
+			},
 			timeObject: function () {
-				let currentTime = this.interval_f.time
+				let currentTime = this.schedule.interval_f.time
 				let timeParts = currentTime.split( ':' )
 				return {
 					'HH': timeParts[0],
@@ -193,34 +222,43 @@
 				if ( Object.keys( this.$store.state.activeAccounts )[0] && this.selected_account === null ) {
 					let key = Object.keys( this.$store.state.activeAccounts )[0]
 					this.selected_account = key
-					// this.getAccountpostFormat()
+					this.getAccountSchedule()
 				}
 			}
 		},
 		methods: {
 			isChecked ( value ) {
-				if ( this.interval_f.days.indexOf( value ) > -1 )	{
+				if ( this.schedule.interval_f !== undefined && this.schedule.interval_f.week_days.indexOf( value ) > -1 )	{
 					return true
 				}
 				return false
 			},
 			syncTime ( dataEvent ) {
-				this.interval_f.time = dataEvent.data.HH + ':' + dataEvent.data.mm
+				this.schedule.interval_f.time = dataEvent.data.HH + ':' + dataEvent.data.mm
 			},
 			addDay ( value ) {
 				console.log( 'Add day', value )
-				this.interval_f.days.push( value )
+				this.schedule.interval_f.week_days.push( value )
 			},
 			rmvDay ( value ) {
 				console.log( 'Rmv day', value )
-				let index = this.interval_f.days.indexOf( value )
+				let index = this.schedule.interval_f.week_days.indexOf( value )
 				if ( index > -1 )	{
-					this.interval_f.days.splice( index, 1 )
+					this.schedule.interval_f.week_days.splice( index, 1 )
 				}
 			},
 			getAccountSchedule () {
 				console.log( 'Get Schedule for', this.selected_account )
 				this.$store.dispatch( 'fetchSchedule', { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account } )
+			},
+			saveSchedule () {
+				console.log( 'Save Schedule for', this.selected_account )
+				this.$store.dispatch( 'saveSchedule', { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account, schedule: this.schedule } )
+			},
+			resetSchedule () {
+				console.log( 'Reset Schedule for', this.selected_account )
+				this.$store.dispatch( 'resetSchedule', { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account } )
+				this.$forceUpdate()
 			}
 		},
 		components: {

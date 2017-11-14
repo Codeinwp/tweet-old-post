@@ -12723,6 +12723,40 @@ exports.default = new _vuex2.default.Store({
 			}, function () {
 				commit('logMessage', ['Error retrieving schedule.', 'error']);
 			});
+		},
+		saveSchedule: function saveSchedule(_ref17, data) {
+			var commit = _ref17.commit;
+
+			_vue2.default.http({
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'save_schedule' },
+				body: data,
+				responseType: 'json'
+			}).then(function (response) {
+				console.log(response.data);
+				commit('updateSchedule', response.data);
+			}, function () {
+				commit('logMessage', ['Error retrieving schedule.', 'error']);
+			});
+		},
+		resetSchedule: function resetSchedule(_ref18, data) {
+			var commit = _ref18.commit;
+
+			_vue2.default.http({
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'reset_schedule' },
+				body: data,
+				responseType: 'json'
+			}).then(function (response) {
+				console.log(response.data);
+				commit('updateSchedule', response.data);
+			}, function () {
+				commit('logMessage', ['Error retrieving schedule.', 'error']);
+			});
 		}
 	}
 });
@@ -17566,7 +17600,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 							</div>
 // 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 // 								<div class="form-group">
-// 									<select class="form-select" v-model="schedule_type">
+// 									<select class="form-select" v-model="schedule.type">
 // 										<option value="recurring">Recurring</option>
 // 										<option value="fixed">Fixed</option>
 // 									</select>
@@ -17574,24 +17608,18 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 							</div>
 // 						</div>
 //
-// 						<div class="columns" v-if="schedule_type === 'fixed'">
+// 						<div class="columns" v-if="schedule.type === 'fixed'">
 // 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
 // 								<b>Fixed Schedule Days</b><br/>
 // 								<i>The days when to share for this account.</i>
 // 							</div>
 // 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 // 								<div class="form-group">
-// 									<button-checkbox value="1" label="Mon" :checked="isChecked('1')" @add-day="addDay" @rmv-day="rmvDay"></button-checkbox>
-// 									<button-checkbox value="2" label="Tue" :checked="isChecked('2')" @add-day="addDay" @rmv-day="rmvDay"></button-checkbox>
-// 									<button-checkbox value="3" label="Wen" :checked="isChecked('3')" @add-day="addDay" @rmv-day="rmvDay"></button-checkbox>
-// 									<button-checkbox value="4" label="Thu" :checked="isChecked('4')" @add-day="addDay" @rmv-day="rmvDay"></button-checkbox>
-// 									<button-checkbox value="5" label="Fri" :checked="isChecked('5')" @add-day="addDay" @rmv-day="rmvDay"></button-checkbox>
-// 									<button-checkbox value="6" label="Sat" :checked="isChecked('6')" @add-day="addDay" @rmv-day="rmvDay"></button-checkbox>
-// 									<button-checkbox value="7" label="Sun" :checked="isChecked('7')" @add-day="addDay" @rmv-day="rmvDay"></button-checkbox>
+// 									<button-checkbox v-for="( data, label ) in daysObject" :key="label" :value="data.value" :label="label" :checked="data.checked" @add-day="addDay" @rmv-day="rmvDay"></button-checkbox>
 // 								</div>
 // 							</div>
 // 						</div>
-// 						<div class="columns" v-if="schedule_type === 'fixed'">
+// 						<div class="columns" v-if="schedule.type === 'fixed'">
 // 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
 // 								<b>Fixed Schedule Time</b><br/>
 // 								<i>The time at witch to share for this account.</i>
@@ -17609,7 +17637,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 							</div>
 // 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 // 								<div class="form-group">
-// 									<input type="number" class="form-input" v-model="interval_r" placeholder="hours.min (Eg. 2.5)" />
+// 									<input type="number" class="form-input" v-model="schedule.interval_r" placeholder="hours.min (Eg. 2.5)" />
 // 								</div>
 // 							</div>
 // 						</div>
@@ -17636,12 +17664,36 @@ module.exports = {
 		if ((0, _keys2.default)(this.$store.state.activeAccounts)[0] !== undefined) key = (0, _keys2.default)(this.$store.state.activeAccounts)[0];
 		return {
 			selected_account: key,
-			schedule_type: 'fixed',
-			interval_f: {
-				'days': ['1', '3', '5'],
-				'time': '10:30'
-			},
-			interval_r: 2.5
+			days: {
+				'Mon': {
+					'value': '1',
+					'checked': false
+				},
+				'Tue': {
+					'value': '2',
+					'checked': false
+				},
+				'Wen': {
+					'value': '3',
+					'checked': false
+				},
+				'Thu': {
+					'value': '4',
+					'checked': false
+				},
+				'Fri': {
+					'value': '5',
+					'checked': false
+				},
+				'Sat': {
+					'value': '6',
+					'checked': false
+				},
+				'Sun': {
+					'value': '7',
+					'checked': false
+				}
+			}
 		};
 	},
 	mounted: function mounted() {
@@ -17656,8 +17708,19 @@ module.exports = {
 		}
 	},
 	computed: {
+		schedule: function schedule() {
+			return this.$store.state.activeSchedule;
+		},
+		daysObject: function daysObject() {
+			var daysObject = this.days;
+			for (var day in daysObject) {
+				daysObject[day].checked = this.isChecked(daysObject[day].value);
+			}
+			console.log(daysObject);
+			return daysObject;
+		},
 		timeObject: function timeObject() {
-			var currentTime = this.interval_f.time;
+			var currentTime = this.schedule.interval_f.time;
 			var timeParts = currentTime.split(':');
 			return {
 				'HH': timeParts[0],
@@ -17708,34 +17771,43 @@ module.exports = {
 			if ((0, _keys2.default)(this.$store.state.activeAccounts)[0] && this.selected_account === null) {
 				var key = (0, _keys2.default)(this.$store.state.activeAccounts)[0];
 				this.selected_account = key;
-				// this.getAccountpostFormat()
+				this.getAccountSchedule();
 			}
 		}
 	},
 	methods: {
 		isChecked: function isChecked(value) {
-			if (this.interval_f.days.indexOf(value) > -1) {
+			if (this.schedule.interval_f !== undefined && this.schedule.interval_f.week_days.indexOf(value) > -1) {
 				return true;
 			}
 			return false;
 		},
 		syncTime: function syncTime(dataEvent) {
-			this.interval_f.time = dataEvent.data.HH + ':' + dataEvent.data.mm;
+			this.schedule.interval_f.time = dataEvent.data.HH + ':' + dataEvent.data.mm;
 		},
 		addDay: function addDay(value) {
 			console.log('Add day', value);
-			this.interval_f.days.push(value);
+			this.schedule.interval_f.week_days.push(value);
 		},
 		rmvDay: function rmvDay(value) {
 			console.log('Rmv day', value);
-			var index = this.interval_f.days.indexOf(value);
+			var index = this.schedule.interval_f.week_days.indexOf(value);
 			if (index > -1) {
-				this.interval_f.days.splice(index, 1);
+				this.schedule.interval_f.week_days.splice(index, 1);
 			}
 		},
 		getAccountSchedule: function getAccountSchedule() {
 			console.log('Get Schedule for', this.selected_account);
 			this.$store.dispatch('fetchSchedule', { service: this.active_accounts[this.selected_account].service, account_id: this.selected_account });
+		},
+		saveSchedule: function saveSchedule() {
+			console.log('Save Schedule for', this.selected_account);
+			this.$store.dispatch('saveSchedule', { service: this.active_accounts[this.selected_account].service, account_id: this.selected_account, schedule: this.schedule });
+		},
+		resetSchedule: function resetSchedule() {
+			console.log('Reset Schedule for', this.selected_account);
+			this.$store.dispatch('resetSchedule', { service: this.active_accounts[this.selected_account].service, account_id: this.selected_account });
+			this.$forceUpdate();
 		}
 	},
 	components: {
@@ -17829,9 +17901,6 @@ if (false) {(function () {  module.hot.accept()
 module.exports = {
 	name: 'button-checkbox',
 	props: {
-		id: {
-			default: ''
-		},
 		value: {
 			default: '0',
 			type: String
@@ -17839,6 +17908,16 @@ module.exports = {
 		label: {
 			default: '',
 			type: String
+		},
+		id: {
+			default: function _default() {
+				var base = 'day';
+				if (this.label !== '' && this.label !== undefined) {
+					base = base + '_' + this.label.toLowerCase();
+				}
+
+				return base;
+			}
 		},
 		checked: {
 			default: false,
@@ -17855,6 +17934,11 @@ module.exports = {
 			return {
 				'active': this.componentCheckState === true
 			};
+		}
+	},
+	watch: {
+		checked: function checked() {
+			this.componentCheckState = this.checked;
 		}
 	},
 	methods: {
@@ -18378,7 +18462,7 @@ module.exports = "\n<span class=\"time-picker\">\n  <input class=\"display-time\
 /* 126 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\" _v-d77321bc=\"\">\n\t\t<div class=\"panel-body\" style=\"overflow: inherit;\" _v-d77321bc=\"\">\n\t\t\t<h3 _v-d77321bc=\"\">Custom Schedule</h3>\n\t\t\t<figure class=\"avatar avatar-lg\" style=\"text-align: center;\" _v-d77321bc=\"\">\n\t\t\t\t<img :src=\"img\" v-if=\"img\" _v-d77321bc=\"\">\n\t\t\t\t<i class=\"fa\" :class=\"icon\" style=\"line-height: 48px;\" aria-hidden=\"true\" v-else=\"\" _v-d77321bc=\"\"></i>\n\t\t\t\t<i class=\"avatar-icon fa\" :class=\"icon\" aria-hidden=\"true\" v-if=\"img\" _v-d77321bc=\"\"></i>\n\t\t\t\t<!--<img src=\"img/avatar-5.png\" class=\"avatar-icon\" alt=\"...\">-->\n\t\t\t</figure>\n\t\t\t<div class=\"d-inline-block\" style=\"vertical-align: top; margin-left: 16px;\" _v-d77321bc=\"\">\n\t\t\t\t<h6 _v-d77321bc=\"\">{{user_name}}</h6>\n\t\t\t\t<b class=\"service\" :class=\"service\" _v-d77321bc=\"\">{{service_name}}</b>\n\t\t\t</div>\n\t\t\t<div class=\"d-inline-block\" style=\"vertical-align: top; margin-left: 16px; width: 80%\" _v-d77321bc=\"\">\n\t\t\t\t<h4 _v-d77321bc=\"\"><i class=\"fa fa-info-circle\" _v-d77321bc=\"\"></i> Info</h4>\n\t\t\t\t<p _v-d77321bc=\"\"><i _v-d77321bc=\"\">Each <b _v-d77321bc=\"\">account</b> can have it's own <b _v-d77321bc=\"\">Schedule</b> for sharing, on the left you can see the\n\t\t\t\t\tcurrent selected account and network, bellow are the <b _v-d77321bc=\"\">Schedule</b> options for the account.\n\t\t\t\t\tDon't forget to save after each change and remember, you can always reset an account to the defaults.\n\t\t\t\t</i></p>\n\t\t\t</div>\n\t\t\t<div class=\"container\" _v-d77321bc=\"\">\n\t\t\t\t<div class=\"columns\" _v-d77321bc=\"\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-d77321bc=\"\">\n\t\t\t\t\t\t<div class=\"columns\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<b _v-d77321bc=\"\">Account</b><br _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<i _v-d77321bc=\"\">Specify an account to change the settings of.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"selected_account\" @change=\"getAccountSchedule()\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t\t<option v-for=\"( account, id ) in active_accounts\" :value=\"id\" _v-d77321bc=\"\">{{account.user}} - {{account.service}} </option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<hr _v-d77321bc=\"\">\n\n\t\t\t\t\t\t<h4 _v-d77321bc=\"\">Schedule</h4>\n\t\t\t\t\t\t<!-- Schedule Type - Can be 'recurring' or 'fixed'\n\t\t\t\t\t\t\t If Recurring than an repeating interval is filled (float) Eg. 2.5 hours\n\t\t\t\t\t\t\t If Fixed days of the week are selected and a specific time is selected. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<b _v-d77321bc=\"\">Schedule Type</b><br _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<i _v-d77321bc=\"\">What type of schedule to use.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"schedule_type\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t\t<option value=\"recurring\" _v-d77321bc=\"\">Recurring</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"fixed\" _v-d77321bc=\"\">Fixed</option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<div class=\"columns\" v-if=\"schedule_type === 'fixed'\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<b _v-d77321bc=\"\">Fixed Schedule Days</b><br _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<i _v-d77321bc=\"\">The days when to share for this account.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t<button-checkbox value=\"1\" label=\"Mon\" :checked=\"isChecked('1')\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" _v-d77321bc=\"\"></button-checkbox>\n\t\t\t\t\t\t\t\t\t<button-checkbox value=\"2\" label=\"Tue\" :checked=\"isChecked('2')\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" _v-d77321bc=\"\"></button-checkbox>\n\t\t\t\t\t\t\t\t\t<button-checkbox value=\"3\" label=\"Wen\" :checked=\"isChecked('3')\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" _v-d77321bc=\"\"></button-checkbox>\n\t\t\t\t\t\t\t\t\t<button-checkbox value=\"4\" label=\"Thu\" :checked=\"isChecked('4')\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" _v-d77321bc=\"\"></button-checkbox>\n\t\t\t\t\t\t\t\t\t<button-checkbox value=\"5\" label=\"Fri\" :checked=\"isChecked('5')\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" _v-d77321bc=\"\"></button-checkbox>\n\t\t\t\t\t\t\t\t\t<button-checkbox value=\"6\" label=\"Sat\" :checked=\"isChecked('6')\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" _v-d77321bc=\"\"></button-checkbox>\n\t\t\t\t\t\t\t\t\t<button-checkbox value=\"7\" label=\"Sun\" :checked=\"isChecked('7')\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" _v-d77321bc=\"\"></button-checkbox>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-if=\"schedule_type === 'fixed'\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<b _v-d77321bc=\"\">Fixed Schedule Time</b><br _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<i _v-d77321bc=\"\">The time at witch to share for this account.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t<vue-timepicker :minute-interval=\"5\" class=\"timepicker-style-fix\" :value=\"timeObject\" @change=\"syncTime\" _v-d77321bc=\"\"></vue-timepicker>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-else=\"\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<b _v-d77321bc=\"\">Recurring Schedule Interval</b><br _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<i _v-d77321bc=\"\">A recurring interval to use for sharing. Once every 'X' hours.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t<input type=\"number\" class=\"form-input\" v-model=\"interval_r\" placeholder=\"hours.min (Eg. 2.5)\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\n\n\t\t\t\t\t\t<hr _v-d77321bc=\"\">\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\" _v-d77321bc=\"\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveSchedule()\" _v-d77321bc=\"\"><i class=\"fa fa-check\" _v-d77321bc=\"\"></i> Save Schedule</button>\n\t\t\t<button class=\"btn btn-secondary\" @click=\"resetSchedule()\" _v-d77321bc=\"\"><i class=\"fa fa-ban\" _v-d77321bc=\"\"></i> Reset to Defaults</button>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\" _v-d77321bc=\"\">\n\t\t<div class=\"panel-body\" style=\"overflow: inherit;\" _v-d77321bc=\"\">\n\t\t\t<h3 _v-d77321bc=\"\">Custom Schedule</h3>\n\t\t\t<figure class=\"avatar avatar-lg\" style=\"text-align: center;\" _v-d77321bc=\"\">\n\t\t\t\t<img :src=\"img\" v-if=\"img\" _v-d77321bc=\"\">\n\t\t\t\t<i class=\"fa\" :class=\"icon\" style=\"line-height: 48px;\" aria-hidden=\"true\" v-else=\"\" _v-d77321bc=\"\"></i>\n\t\t\t\t<i class=\"avatar-icon fa\" :class=\"icon\" aria-hidden=\"true\" v-if=\"img\" _v-d77321bc=\"\"></i>\n\t\t\t\t<!--<img src=\"img/avatar-5.png\" class=\"avatar-icon\" alt=\"...\">-->\n\t\t\t</figure>\n\t\t\t<div class=\"d-inline-block\" style=\"vertical-align: top; margin-left: 16px;\" _v-d77321bc=\"\">\n\t\t\t\t<h6 _v-d77321bc=\"\">{{user_name}}</h6>\n\t\t\t\t<b class=\"service\" :class=\"service\" _v-d77321bc=\"\">{{service_name}}</b>\n\t\t\t</div>\n\t\t\t<div class=\"d-inline-block\" style=\"vertical-align: top; margin-left: 16px; width: 80%\" _v-d77321bc=\"\">\n\t\t\t\t<h4 _v-d77321bc=\"\"><i class=\"fa fa-info-circle\" _v-d77321bc=\"\"></i> Info</h4>\n\t\t\t\t<p _v-d77321bc=\"\"><i _v-d77321bc=\"\">Each <b _v-d77321bc=\"\">account</b> can have it's own <b _v-d77321bc=\"\">Schedule</b> for sharing, on the left you can see the\n\t\t\t\t\tcurrent selected account and network, bellow are the <b _v-d77321bc=\"\">Schedule</b> options for the account.\n\t\t\t\t\tDon't forget to save after each change and remember, you can always reset an account to the defaults.\n\t\t\t\t</i></p>\n\t\t\t</div>\n\t\t\t<div class=\"container\" _v-d77321bc=\"\">\n\t\t\t\t<div class=\"columns\" _v-d77321bc=\"\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-d77321bc=\"\">\n\t\t\t\t\t\t<div class=\"columns\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<b _v-d77321bc=\"\">Account</b><br _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<i _v-d77321bc=\"\">Specify an account to change the settings of.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"selected_account\" @change=\"getAccountSchedule()\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t\t<option v-for=\"( account, id ) in active_accounts\" :value=\"id\" _v-d77321bc=\"\">{{account.user}} - {{account.service}} </option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<hr _v-d77321bc=\"\">\n\n\t\t\t\t\t\t<h4 _v-d77321bc=\"\">Schedule</h4>\n\t\t\t\t\t\t<!-- Schedule Type - Can be 'recurring' or 'fixed'\n\t\t\t\t\t\t\t If Recurring than an repeating interval is filled (float) Eg. 2.5 hours\n\t\t\t\t\t\t\t If Fixed days of the week are selected and a specific time is selected. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<b _v-d77321bc=\"\">Schedule Type</b><br _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<i _v-d77321bc=\"\">What type of schedule to use.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"schedule.type\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t\t<option value=\"recurring\" _v-d77321bc=\"\">Recurring</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"fixed\" _v-d77321bc=\"\">Fixed</option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<div class=\"columns\" v-if=\"schedule.type === 'fixed'\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<b _v-d77321bc=\"\">Fixed Schedule Days</b><br _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<i _v-d77321bc=\"\">The days when to share for this account.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t<button-checkbox v-for=\"( data, label ) in daysObject\" :key=\"label\" :value=\"data.value\" :label=\"label\" :checked=\"data.checked\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" _v-d77321bc=\"\"></button-checkbox>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-if=\"schedule.type === 'fixed'\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<b _v-d77321bc=\"\">Fixed Schedule Time</b><br _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<i _v-d77321bc=\"\">The time at witch to share for this account.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t<vue-timepicker :minute-interval=\"5\" class=\"timepicker-style-fix\" :value=\"timeObject\" @change=\"syncTime\" _v-d77321bc=\"\"></vue-timepicker>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-else=\"\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<b _v-d77321bc=\"\">Recurring Schedule Interval</b><br _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<i _v-d77321bc=\"\">A recurring interval to use for sharing. Once every 'X' hours.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t<input type=\"number\" class=\"form-input\" v-model=\"schedule.interval_r\" placeholder=\"hours.min (Eg. 2.5)\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\n\n\t\t\t\t\t\t<hr _v-d77321bc=\"\">\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\" _v-d77321bc=\"\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveSchedule()\" _v-d77321bc=\"\"><i class=\"fa fa-check\" _v-d77321bc=\"\"></i> Save Schedule</button>\n\t\t\t<button class=\"btn btn-secondary\" @click=\"resetSchedule()\" _v-d77321bc=\"\"><i class=\"fa fa-ban\" _v-d77321bc=\"\"></i> Reset to Defaults</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 127 */

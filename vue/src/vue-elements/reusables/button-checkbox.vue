@@ -6,9 +6,6 @@
 	module.exports = {
 		name: 'button-checkbox',
 		props: {
-			id: {
-				default: ''
-			},
 			value: {
 				default: '0',
 				type: String
@@ -16,6 +13,16 @@
 			label: {
 				default: '',
 				type: String
+			},
+			id: {
+				default: function () {
+					let base = 'day'
+					if ( this.label !== '' && this.label !== undefined ) {
+						base = base + '_' + this.label.toLowerCase()
+					}
+
+					return base
+				}
 			},
 			checked: {
 				default: false,
@@ -32,6 +39,11 @@
 				return {
 					'active': this.componentCheckState === true
 				}
+			}
+		},
+		watch: {
+			checked: function () {
+				this.componentCheckState = this.checked
 			}
 		},
 		methods: {
