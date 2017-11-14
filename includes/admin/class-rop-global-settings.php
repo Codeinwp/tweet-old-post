@@ -43,7 +43,7 @@ class Rop_Global_Settings {
 	 *
 	 * @since   8.0.0
 	 * @access  public
-	 * @var array
+	 * @var     array $post_format Default post format options.
 	 */
 	public $post_format = array();
 
@@ -55,6 +55,15 @@ class Rop_Global_Settings {
 	 * @var     array $services Available Services List.
 	 */
 	public $services = array();
+
+	/**
+	 * Stores the default schedule options.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @var     array $schedule Default schedule options.
+	 */
+	public $schedule = array();
 
 	/**
 	 * The instance method for the static class.
@@ -221,9 +230,35 @@ class Rop_Global_Settings {
 					),
 				)
 			);
+
+			self::$instance->schedule = apply_filters(
+				'rop_schedule_defaults',
+				array(
+					'type' => 'fixed',
+					'interval_r' => null,
+					'interval_f' => array(
+						'week_days' => array( 1, 3, 5 ),
+						'time' => '10:30',
+					),
+					'timestamp' => current_time( 'timestamp', 0 ),
+					'first_share' => null,
+					'last_share' => null,
+				)
+			);
 		}// End if().
 
 		return self::$instance;
+	}
+
+	/**
+	 * Method to retrieve instance of schedule.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return array
+	 */
+	public function get_default_schedule() {
+		return self::instance()->schedule;
 	}
 
 	/**
@@ -285,7 +320,7 @@ class Rop_Global_Settings {
 	 * @since   8.0.0
 	 * @access  public
 	 */
-	public static function distroy_instance() {
+	public static function destroy_instance() {
 		static::$instance = null;
 	}
 }

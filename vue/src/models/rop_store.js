@@ -49,7 +49,8 @@ export default new Vuex.Store( {
 		availableServices: [],
 		authenticatedServices: [],
 		activeAccounts: [],
-		activePostFormat: []
+		activePostFormat: [],
+		activeSchedule: []
 	},
 	getters: {
 		getServices ( state ) {
@@ -149,6 +150,9 @@ export default new Vuex.Store( {
 		},
 		updatePostFormatShortnerCredentials ( state, data ) {
 			state.activePostFormat['shortner_credentials'] = data
+		},
+		updateSchedule ( state, data ) {
+			state.activeSchedule = data
 		}
 	},
 	actions: {
@@ -390,6 +394,21 @@ export default new Vuex.Store( {
 				}, function () {
 					commit( 'logMessage', ['Error retrieving shortner credentials.', 'error'] )
 				} )
+			} )
+		},
+		fetchSchedule ( { commit }, data ) {
+			Vue.http( {
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'get_schedule' },
+				body: data,
+				responseType: 'json'
+			} ).then( function ( response ) {
+				console.log( response.data )
+				commit( 'updateSchedule', response.data )
+			}, function () {
+				commit( 'logMessage', ['Error retrieving schedule.', 'error'] )
 			} )
 		}
 	}

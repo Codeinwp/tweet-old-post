@@ -46,6 +46,10 @@ class Rop_Rest_Api {
 	 */
 	public function api( WP_REST_Request $request ) {
 		switch ( $request->get_param( 'req' ) ) {
+			case 'get_schedule':
+				$data = json_decode( $request->get_body(), true );
+				$response = $this->get_schedule( $data );
+				break;
 			case 'shortner_credentials':
 				$data = json_decode( $request->get_body(), true );
 				$response = $this->get_shortner_credentials( $data );
@@ -114,6 +118,19 @@ class Rop_Rest_Api {
 		}// End switch().
 		// array_push( $response, array( 'current_user' => current_user_can( 'manage_options' ) ) );
 		return $response;
+	}
+
+	/**
+	 * API method called to retrieve a schedule.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   array $data Data passed from the AJAX call.
+	 * @return array
+	 */
+	private function get_schedule( $data ) {
+		$schedules = new Rop_Scheduler_Model();
+		return $schedules->get_schedule( $data['account_id'] );
 	}
 
 	/**

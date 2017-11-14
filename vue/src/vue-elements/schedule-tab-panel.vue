@@ -29,7 +29,7 @@
 							</div>
 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 								<div class="form-group">
-									<select class="form-select" v-model="selected_account" @change="getAccountpostFormat()">
+									<select class="form-select" v-model="selected_account" @change="getAccountSchedule()">
 										<option v-for="( account, id ) in active_accounts" :value="id" >{{account.user}} - {{account.service}} </option>
 									</select>
 								</div>
@@ -48,7 +48,7 @@
 							</div>
 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 								<div class="form-group">
-									<select class="form-select">
+									<select class="form-select" v-model="schedule_type">
 										<option value="recurring">Recurring</option>
 										<option value="fixed">Fixed</option>
 									</select>
@@ -56,34 +56,45 @@
 							</div>
 						</div>
 
-						<div class="columns">
+						<div class="columns" v-if="schedule_type === 'fixed'">
 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
 								<b>Fixed Schedule Days</b><br/>
 								<i>The days when to share for this account.</i>
 							</div>
 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 								<div class="form-group">
-									<button-checkbox value="1" label="Mon"></button-checkbox>
-									<button-checkbox value="2" label="Tue"></button-checkbox>
-									<button-checkbox value="3" label="Wen"></button-checkbox>
-									<button-checkbox value="4" label="Thu"></button-checkbox>
-									<button-checkbox value="5" label="Fri"></button-checkbox>
-									<button-checkbox value="6" label="Sat"></button-checkbox>
-									<button-checkbox value="7" label="Sun"></button-checkbox>
+									<button-checkbox value="1" label="Mon" :checked="isChecked('1')" @add-day="addDay" @rmv-day="rmvDay"></button-checkbox>
+									<button-checkbox value="2" label="Tue" :checked="isChecked('2')" @add-day="addDay" @rmv-day="rmvDay"></button-checkbox>
+									<button-checkbox value="3" label="Wen" :checked="isChecked('3')" @add-day="addDay" @rmv-day="rmvDay"></button-checkbox>
+									<button-checkbox value="4" label="Thu" :checked="isChecked('4')" @add-day="addDay" @rmv-day="rmvDay"></button-checkbox>
+									<button-checkbox value="5" label="Fri" :checked="isChecked('5')" @add-day="addDay" @rmv-day="rmvDay"></button-checkbox>
+									<button-checkbox value="6" label="Sat" :checked="isChecked('6')" @add-day="addDay" @rmv-day="rmvDay"></button-checkbox>
+									<button-checkbox value="7" label="Sun" :checked="isChecked('7')" @add-day="addDay" @rmv-day="rmvDay"></button-checkbox>
 								</div>
 							</div>
 						</div>
-                        <div class="columns">
-                            <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-                                <b>Fixed Schedule Time</b><br/>
-                                <i>The time at witch to share for this account.</i>
-                            </div>
-                            <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-                                <div class="form-group">
-                                    <vue-timepicker :minute-interval="5" class="timepicker-style-fix"></vue-timepicker>
-                                </div>
-                            </div>
-                        </div>
+						<div class="columns" v-if="schedule_type === 'fixed'">
+							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+								<b>Fixed Schedule Time</b><br/>
+								<i>The time at witch to share for this account.</i>
+							</div>
+							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+								<div class="form-group">
+									<vue-timepicker :minute-interval="5" class="timepicker-style-fix" :value="timeObject" @change="syncTime"></vue-timepicker>
+								</div>
+							</div>
+						</div>
+						<div class="columns" v-else>
+							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+								<b>Recurring Schedule Interval</b><br/>
+								<i>A recurring interval to use for sharing. Once every 'X' hours.</i>
+							</div>
+							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+								<div class="form-group">
+									<input type="number" class="form-input" v-model="interval_r" placeholder="hours.min (Eg. 2.5)" />
+								</div>
+							</div>
+						</div>
 
 
 
@@ -93,8 +104,8 @@
 			</div>
 		</div>
 		<div class="panel-footer">
-			<button class="btn btn-primary" @click="savePostFormat()"><i class="fa fa-check"></i> Save Post Format</button>
-			<button class="btn btn-secondary" @click="resetPostFormat()"><i class="fa fa-ban"></i> Reset to Defaults</button>
+			<button class="btn btn-primary" @click="saveSchedule()"><i class="fa fa-check"></i> Save Schedule</button>
+			<button class="btn btn-secondary" @click="resetSchedule()"><i class="fa fa-ban"></i> Reset to Defaults</button>
 		</div>
 	</div>
 </template>
@@ -110,12 +121,17 @@
 			if ( Object.keys( this.$store.state.activeAccounts )[0] !== undefined ) key = Object.keys( this.$store.state.activeAccounts )[0]
 			return {
 				selected_account: key,
-				shortner_credentials: []
+				schedule_type: 'fixed',
+				interval_f: {
+					'days': [ '1', '3', '5' ],
+					'time': '10:30'
+				},
+				interval_r: 2.5
 			}
 		},
 		mounted: function () {
-			// Uncomment this when not fixed tab on post format
-			// this.getAccountpostFormat()
+			// Uncomment this when not fixed tab on schedule
+			// this.getAccountSchedule()
 		},
 		filters: {
 			capitalize: function ( value ) {
@@ -125,6 +141,14 @@
 			}
 		},
 		computed: {
+			timeObject: function () {
+				let currentTime = this.interval_f.time
+				let timeParts = currentTime.split( ':' )
+				return {
+					'HH': timeParts[0],
+					'mm': timeParts[1]
+				}
+			},
 			active_accounts: function () {
 				return this.$store.state.activeAccounts
 			},
@@ -174,6 +198,30 @@
 			}
 		},
 		methods: {
+			isChecked ( value ) {
+				if ( this.interval_f.days.indexOf( value ) > -1 )	{
+					return true
+				}
+				return false
+			},
+			syncTime ( dataEvent ) {
+				this.interval_f.time = dataEvent.data.HH + ':' + dataEvent.data.mm
+			},
+			addDay ( value ) {
+				console.log( 'Add day', value )
+				this.interval_f.days.push( value )
+			},
+			rmvDay ( value ) {
+				console.log( 'Rmv day', value )
+				let index = this.interval_f.days.indexOf( value )
+				if ( index > -1 )	{
+					this.interval_f.days.splice( index, 1 )
+				}
+			},
+			getAccountSchedule () {
+				console.log( 'Get Schedule for', this.selected_account )
+				this.$store.dispatch( 'fetchSchedule', { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account } )
+			}
 		},
 		components: {
 			ButtonCheckbox,
@@ -212,18 +260,18 @@
 	}
 </style>
 <style>
-    #rop_core .time-picker.timepicker-style-fix .dropdown {
-        top: 4px;
-    }
-    #rop_core .time-picker.timepicker-style-fix ul {
-        margin: 0;
-    }
-    #rop_core .time-picker.timepicker-style-fix ul li {
-        list-style: none;
-    }
+	#rop_core .time-picker.timepicker-style-fix .dropdown {
+		top: 4px;
+	}
+	#rop_core .time-picker.timepicker-style-fix ul {
+		margin: 0;
+	}
+	#rop_core .time-picker.timepicker-style-fix ul li {
+		list-style: none;
+	}
 
-    #rop_core .time-picker.timepicker-style-fix .dropdown ul li.active,
-    #rop_core .time-picker.timepicker-style-fix .dropdown ul li.active:hover {
-        background: #e85407;
-    }
+	#rop_core .time-picker.timepicker-style-fix .dropdown ul li.active,
+	#rop_core .time-picker.timepicker-style-fix .dropdown ul li.active:hover {
+		background: #e85407;
+	}
 </style>

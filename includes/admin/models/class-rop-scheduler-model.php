@@ -26,17 +26,9 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		$this->schedules = $this->get_schedules();
 		$this->skips = $this->get_skips();
 
-		$this->schedule_defaults = array(
-			'type' => 'recurring', // another possible value is "fixed"
-			// 'interval_r' => '6.5',
-			// 'interval_f' => array(
-			// 'week_days' => array( 0, 1, 2, 3, 4, 5, 6 ),
-			// 'time' => current_time( 'H:i', 0 ),
-			// ),
-			'timestamp' => current_time( 'timestamp', 0 ),
-			'first_share' => null,
-			'last_share' => null,
-		);
+		$global_settings = new Rop_Global_Settings();
+
+		$this->schedule_defaults = $global_settings->get_default_schedule();
 	}
 
 	private function get_schedules() {

@@ -37,6 +37,11 @@
 		methods: {
 			toggleThis () {
 				this.componentCheckState = !this.componentCheckState
+				if ( this.componentCheckState ) {
+					this.$emit( 'add-day', this.value )
+				} else {
+					this.$emit( 'rmv-day', this.value )
+				}
 			}
 		}
 	}
