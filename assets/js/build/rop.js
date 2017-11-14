@@ -67,35 +67,6 @@
 /* 0 */
 /***/ (function(module, exports) {
 
-// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
-var global = module.exports = typeof window != 'undefined' && window.Math == Math
-  ? window : typeof self != 'undefined' && self.Math == Math ? self
-  // eslint-disable-next-line no-new-func
-  : Function('return this')();
-if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
-
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var store = __webpack_require__(25)('wks');
-var uid = __webpack_require__(26);
-var Symbol = __webpack_require__(0).Symbol;
-var USE_SYMBOL = typeof Symbol == 'function';
-
-var $exports = module.exports = function (name) {
-  return store[name] || (store[name] =
-    USE_SYMBOL && Symbol[name] || (USE_SYMBOL ? Symbol : uid)('Symbol.' + name));
-};
-
-$exports.store = store;
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
 /*
 	MIT License http://www.opensource.org/licenses/mit-license.php
 	Author Tobias Koppers @sokra
@@ -149,7 +120,7 @@ module.exports = function() {
 
 
 /***/ }),
-/* 3 */
+/* 1 */
 /***/ (function(module, exports) {
 
 /*
@@ -401,7 +372,19 @@ function updateLink(linkElement, obj) {
 
 
 /***/ }),
-/* 4 */
+/* 2 */
+/***/ (function(module, exports) {
+
+// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
+var global = module.exports = typeof window != 'undefined' && window.Math == Math
+  ? window : typeof self != 'undefined' && self.Math == Math ? self
+  // eslint-disable-next-line no-new-func
+  : Function('return this')();
+if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
+
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports) {
 
 var core = module.exports = { version: '2.5.1' };
@@ -409,12 +392,29 @@ if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 
 /***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var store = __webpack_require__(25)('wks');
+var uid = __webpack_require__(26);
+var Symbol = __webpack_require__(2).Symbol;
+var USE_SYMBOL = typeof Symbol == 'function';
+
+var $exports = module.exports = function (name) {
+  return store[name] || (store[name] =
+    USE_SYMBOL && Symbol[name] || (USE_SYMBOL ? Symbol : uid)('Symbol.' + name));
+};
+
+$exports.store = store;
+
+
+/***/ }),
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var dP = __webpack_require__(16);
+var dP = __webpack_require__(17);
 var createDesc = __webpack_require__(30);
-module.exports = __webpack_require__(8) ? function (object, key, value) {
+module.exports = __webpack_require__(9) ? function (object, key, value) {
   return dP.f(object, key, createDesc(1, value));
 } : function (object, key, value) {
   object[key] = value;
@@ -424,6 +424,12 @@ module.exports = __webpack_require__(8) ? function (object, key, value) {
 
 /***/ }),
 /* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = { "default": __webpack_require__(47), __esModule: true };
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports) {
 
 var hasOwnProperty = {}.hasOwnProperty;
@@ -433,10 +439,10 @@ module.exports = function (it, key) {
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isObject = __webpack_require__(17);
+var isObject = __webpack_require__(18);
 module.exports = function (it) {
   if (!isObject(it)) throw TypeError(it + ' is not an object!');
   return it;
@@ -444,24 +450,24 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Thank's IE8 for his funny defineProperty
-module.exports = !__webpack_require__(18)(function () {
+module.exports = !__webpack_require__(19)(function () {
   return Object.defineProperty({}, 'a', { get: function () { return 7; } }).a != 7;
 });
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports) {
 
 module.exports = {};
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10657,10 +10663,10 @@ Vue$3.compile = compileToFunctions;
 
 /* harmony default export */ __webpack_exports__["default"] = (Vue$3);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(11), __webpack_require__(35)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(12), __webpack_require__(35)))
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -10850,7 +10856,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports) {
 
 // 7.2.1 RequireObjectCoercible(argument)
@@ -10861,19 +10867,19 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // to indexed object, toObject with fallback for non-array-like ES3 strings
 var IObject = __webpack_require__(50);
-var defined = __webpack_require__(12);
+var defined = __webpack_require__(13);
 module.exports = function (it) {
   return IObject(defined(it));
 };
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports) {
 
 // 7.1.4 ToInteger
@@ -10885,7 +10891,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var shared = __webpack_require__(25)('keys');
@@ -10896,15 +10902,15 @@ module.exports = function (key) {
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var anObject = __webpack_require__(7);
+var anObject = __webpack_require__(8);
 var IE8_DOM_DEFINE = __webpack_require__(57);
 var toPrimitive = __webpack_require__(58);
 var dP = Object.defineProperty;
 
-exports.f = __webpack_require__(8) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
+exports.f = __webpack_require__(9) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
   anObject(O);
   P = toPrimitive(P, true);
   anObject(Attributes);
@@ -10918,7 +10924,7 @@ exports.f = __webpack_require__(8) ? Object.defineProperty : function defineProp
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports) {
 
 module.exports = function (it) {
@@ -10927,7 +10933,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports) {
 
 module.exports = function (exec) {
@@ -10940,13 +10946,13 @@ module.exports = function (exec) {
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = { "default": __webpack_require__(59), __esModule: true };
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11855,20 +11861,14 @@ var index_esm = {
 
 /* harmony default export */ __webpack_exports__["default"] = (index_esm);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(11)))
-
-/***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = { "default": __webpack_require__(47), __esModule: true };
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(12)))
 
 /***/ }),
 /* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.13 ToObject(argument)
-var defined = __webpack_require__(12);
+var defined = __webpack_require__(13);
 module.exports = function (it) {
   return Object(defined(it));
 };
@@ -11902,7 +11902,7 @@ module.exports = function (it) {
 /* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var global = __webpack_require__(0);
+var global = __webpack_require__(2);
 var SHARED = '__core-js_shared__';
 var store = global[SHARED] || (global[SHARED] = {});
 module.exports = function (key) {
@@ -11935,8 +11935,8 @@ module.exports = (
 /* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var global = __webpack_require__(0);
-var core = __webpack_require__(4);
+var global = __webpack_require__(2);
+var core = __webpack_require__(3);
 var ctx = __webpack_require__(55);
 var hide = __webpack_require__(5);
 var PROTOTYPE = 'prototype';
@@ -12002,8 +12002,8 @@ module.exports = $export;
 /* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isObject = __webpack_require__(17);
-var document = __webpack_require__(0).document;
+var isObject = __webpack_require__(18);
+var document = __webpack_require__(2).document;
 // typeof document.createElement is 'object' in old IE
 var is = isObject(document) && isObject(document.createElement);
 module.exports = function (it) {
@@ -12035,12 +12035,12 @@ var LIBRARY = __webpack_require__(64);
 var $export = __webpack_require__(28);
 var redefine = __webpack_require__(65);
 var hide = __webpack_require__(5);
-var has = __webpack_require__(6);
-var Iterators = __webpack_require__(9);
+var has = __webpack_require__(7);
+var Iterators = __webpack_require__(10);
 var $iterCreate = __webpack_require__(66);
 var setToStringTag = __webpack_require__(32);
 var getPrototypeOf = __webpack_require__(70);
-var ITERATOR = __webpack_require__(1)('iterator');
+var ITERATOR = __webpack_require__(4)('iterator');
 var BUGGY = !([].keys && 'next' in [].keys()); // Safari has buggy iterators w/o `next`
 var FF_ITERATOR = '@@iterator';
 var KEYS = 'keys';
@@ -12106,9 +12106,9 @@ module.exports = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
 /* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var def = __webpack_require__(16).f;
-var has = __webpack_require__(6);
-var TAG = __webpack_require__(1)('toStringTag');
+var def = __webpack_require__(17).f;
+var has = __webpack_require__(7);
+var TAG = __webpack_require__(4)('toStringTag');
 
 module.exports = function (it, tag, stat) {
   if (it && !has(it = stat ? it : it.prototype, TAG)) def(it, TAG, { configurable: true, value: tag });
@@ -12122,7 +12122,7 @@ module.exports = function (it, tag, stat) {
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
-var Vue = __webpack_require__(10);
+var Vue = __webpack_require__(11);
 Vue = 'default' in Vue ? Vue['default'] : Vue;
 
 var version = '2.1.0';
@@ -12197,7 +12197,7 @@ var mixin = {
 exports.version = version;
 exports.directive = directive;
 exports.mixin = mixin;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12)))
 
 /***/ }),
 /* 34 */
@@ -12206,7 +12206,7 @@ exports.mixin = mixin;
 "use strict";
 
 
-var _vue = __webpack_require__(10);
+var _vue = __webpack_require__(11);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -12276,11 +12276,11 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _vue = __webpack_require__(10);
+var _vue = __webpack_require__(11);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _vuex = __webpack_require__(20);
+var _vuex = __webpack_require__(21);
 
 var _vuex2 = _interopRequireDefault(_vuex);
 
@@ -12300,8 +12300,9 @@ exports.default = new _vuex2.default.Store({
 			debug: true,
 			logs: '### Here starts the log \n\n',
 			// view: 'accounts'
-			view: 'post-format'
+			// view: 'post-format'
 			// view: 'settings'
+			view: 'schedule'
 		},
 		auth_in_progress: false,
 		displayTabs: [{
@@ -14295,7 +14296,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 
 var __vue_script__, __vue_template__
 __vue_script__ = __webpack_require__(40)
-__vue_template__ = __webpack_require__(113)
+__vue_template__ = __webpack_require__(130)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -14330,42 +14331,19 @@ var _postFormatTabPanel = __webpack_require__(105);
 
 var _postFormatTabPanel2 = _interopRequireDefault(_postFormatTabPanel);
 
-var _logsTabPanel = __webpack_require__(110);
+var _scheduleTabPanel = __webpack_require__(110);
+
+var _scheduleTabPanel2 = _interopRequireDefault(_scheduleTabPanel);
+
+var _logsTabPanel = __webpack_require__(127);
 
 var _logsTabPanel2 = _interopRequireDefault(_logsTabPanel);
 
-var _vuex = __webpack_require__(20);
+var _vuex = __webpack_require__(21);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-module.exports = {
-	name: 'main-page-panel',
-	computed: (0, _vuex.mapState)(['displayTabs', 'page']),
-	created: function created() {},
-
-	data: function data() {
-		return {
-			plugin_logo: ROP_ASSETS_URL + 'img/logo_rop.png'
-		};
-	},
-	methods: {
-		switchTab: function switchTab(slug) {
-			this.$store.commit('setTabView', slug);
-		}
-	},
-	components: {
-		'accounts': _accountsTabPanel2.default,
-		'settings': _settingsTabPanel2.default,
-		'post-format': _postFormatTabPanel2.default,
-		schedule: {
-			name: 'schedule-view',
-			template: '<span>This is not yet ready</span>'
-		},
-		'logs': _logsTabPanel2.default
-	}
-	// </script>
-
-}; // <template>
+// <template>
 // 	<div>
 // 		<div class="panel title-panel" style="margin-bottom: 40px; padding-bottom: 20px;">
 // 			<div class="panel-header">
@@ -14399,6 +14377,31 @@ module.exports = {
 //
 // <script>
 /* global ROP_ASSETS_URL */
+module.exports = {
+	name: 'main-page-panel',
+	computed: (0, _vuex.mapState)(['displayTabs', 'page']),
+	created: function created() {},
+
+	data: function data() {
+		return {
+			plugin_logo: ROP_ASSETS_URL + 'img/logo_rop.png'
+		};
+	},
+	methods: {
+		switchTab: function switchTab(slug) {
+			this.$store.commit('setTabView', slug);
+		}
+	},
+	components: {
+		'accounts': _accountsTabPanel2.default,
+		'settings': _settingsTabPanel2.default,
+		'post-format': _postFormatTabPanel2.default,
+		'schedule': _scheduleTabPanel2.default,
+		'logs': _logsTabPanel2.default
+	}
+	// </script>
+
+};
 
 /***/ }),
 /* 41 */
@@ -14557,7 +14560,7 @@ if (false) {(function () {  module.hot.accept()
 var content = __webpack_require__(45);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(3)(content, {});
+var update = __webpack_require__(1)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -14577,7 +14580,7 @@ if(false) {
 /* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)();
+exports = module.exports = __webpack_require__(0)();
 // imports
 
 
@@ -14594,11 +14597,11 @@ exports.push([module.i, "\n\t#rop_core .sign-in-btn > .modal[_v-7e903530] {\n\t\
 "use strict";
 
 
-var _keys = __webpack_require__(21);
+var _keys = __webpack_require__(6);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _getIterator2 = __webpack_require__(19);
+var _getIterator2 = __webpack_require__(20);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -14815,7 +14818,7 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(48);
-module.exports = __webpack_require__(4).Object.keys;
+module.exports = __webpack_require__(3).Object.keys;
 
 
 /***/ }),
@@ -14837,10 +14840,10 @@ __webpack_require__(54)('keys', function () {
 /* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var has = __webpack_require__(6);
-var toIObject = __webpack_require__(13);
+var has = __webpack_require__(7);
+var toIObject = __webpack_require__(14);
 var arrayIndexOf = __webpack_require__(51)(false);
-var IE_PROTO = __webpack_require__(15)('IE_PROTO');
+var IE_PROTO = __webpack_require__(16)('IE_PROTO');
 
 module.exports = function (object, names) {
   var O = toIObject(object);
@@ -14874,7 +14877,7 @@ module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
 
 // false -> Array#indexOf
 // true  -> Array#includes
-var toIObject = __webpack_require__(13);
+var toIObject = __webpack_require__(14);
 var toLength = __webpack_require__(52);
 var toAbsoluteIndex = __webpack_require__(53);
 module.exports = function (IS_INCLUDES) {
@@ -14902,7 +14905,7 @@ module.exports = function (IS_INCLUDES) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.15 ToLength
-var toInteger = __webpack_require__(14);
+var toInteger = __webpack_require__(15);
 var min = Math.min;
 module.exports = function (it) {
   return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
@@ -14913,7 +14916,7 @@ module.exports = function (it) {
 /* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var toInteger = __webpack_require__(14);
+var toInteger = __webpack_require__(15);
 var max = Math.max;
 var min = Math.min;
 module.exports = function (index, length) {
@@ -14928,8 +14931,8 @@ module.exports = function (index, length) {
 
 // most Object methods by ES6 should accept primitives
 var $export = __webpack_require__(28);
-var core = __webpack_require__(4);
-var fails = __webpack_require__(18);
+var core = __webpack_require__(3);
+var fails = __webpack_require__(19);
 module.exports = function (KEY, exec) {
   var fn = (core.Object || {})[KEY] || Object[KEY];
   var exp = {};
@@ -14978,7 +14981,7 @@ module.exports = function (it) {
 /* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = !__webpack_require__(8) && !__webpack_require__(18)(function () {
+module.exports = !__webpack_require__(9) && !__webpack_require__(19)(function () {
   return Object.defineProperty(__webpack_require__(29)('div'), 'a', { get: function () { return 7; } }).a != 7;
 });
 
@@ -14988,7 +14991,7 @@ module.exports = !__webpack_require__(8) && !__webpack_require__(18)(function ()
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.1 ToPrimitive(input [, PreferredType])
-var isObject = __webpack_require__(17);
+var isObject = __webpack_require__(18);
 // instead of the ES6 spec version, we didn't implement @@toPrimitive case
 // and the second argument - flag - preferred type is a string
 module.exports = function (it, S) {
@@ -15015,10 +15018,10 @@ module.exports = __webpack_require__(73);
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(61);
-var global = __webpack_require__(0);
+var global = __webpack_require__(2);
 var hide = __webpack_require__(5);
-var Iterators = __webpack_require__(9);
-var TO_STRING_TAG = __webpack_require__(1)('toStringTag');
+var Iterators = __webpack_require__(10);
+var TO_STRING_TAG = __webpack_require__(4)('toStringTag');
 
 var DOMIterables = ('CSSRuleList,CSSStyleDeclaration,CSSValueList,ClientRectList,DOMRectList,DOMStringList,' +
   'DOMTokenList,DataTransferItemList,FileList,HTMLAllCollection,HTMLCollection,HTMLFormElement,HTMLSelectElement,' +
@@ -15043,8 +15046,8 @@ for (var i = 0; i < DOMIterables.length; i++) {
 
 var addToUnscopables = __webpack_require__(62);
 var step = __webpack_require__(63);
-var Iterators = __webpack_require__(9);
-var toIObject = __webpack_require__(13);
+var Iterators = __webpack_require__(10);
+var toIObject = __webpack_require__(14);
 
 // 22.1.3.4 Array.prototype.entries()
 // 22.1.3.13 Array.prototype.keys()
@@ -15118,7 +15121,7 @@ var setToStringTag = __webpack_require__(32);
 var IteratorPrototype = {};
 
 // 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-__webpack_require__(5)(IteratorPrototype, __webpack_require__(1)('iterator'), function () { return this; });
+__webpack_require__(5)(IteratorPrototype, __webpack_require__(4)('iterator'), function () { return this; });
 
 module.exports = function (Constructor, NAME, next) {
   Constructor.prototype = create(IteratorPrototype, { next: descriptor(1, next) });
@@ -15131,10 +15134,10 @@ module.exports = function (Constructor, NAME, next) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
-var anObject = __webpack_require__(7);
+var anObject = __webpack_require__(8);
 var dPs = __webpack_require__(68);
 var enumBugKeys = __webpack_require__(27);
-var IE_PROTO = __webpack_require__(15)('IE_PROTO');
+var IE_PROTO = __webpack_require__(16)('IE_PROTO');
 var Empty = function () { /* empty */ };
 var PROTOTYPE = 'prototype';
 
@@ -15177,11 +15180,11 @@ module.exports = Object.create || function create(O, Properties) {
 /* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var dP = __webpack_require__(16);
-var anObject = __webpack_require__(7);
+var dP = __webpack_require__(17);
+var anObject = __webpack_require__(8);
 var getKeys = __webpack_require__(23);
 
-module.exports = __webpack_require__(8) ? Object.defineProperties : function defineProperties(O, Properties) {
+module.exports = __webpack_require__(9) ? Object.defineProperties : function defineProperties(O, Properties) {
   anObject(O);
   var keys = getKeys(Properties);
   var length = keys.length;
@@ -15196,7 +15199,7 @@ module.exports = __webpack_require__(8) ? Object.defineProperties : function def
 /* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var document = __webpack_require__(0).document;
+var document = __webpack_require__(2).document;
 module.exports = document && document.documentElement;
 
 
@@ -15205,9 +15208,9 @@ module.exports = document && document.documentElement;
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
-var has = __webpack_require__(6);
+var has = __webpack_require__(7);
 var toObject = __webpack_require__(22);
-var IE_PROTO = __webpack_require__(15)('IE_PROTO');
+var IE_PROTO = __webpack_require__(16)('IE_PROTO');
 var ObjectProto = Object.prototype;
 
 module.exports = Object.getPrototypeOf || function (O) {
@@ -15247,8 +15250,8 @@ __webpack_require__(31)(String, 'String', function (iterated) {
 /* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var toInteger = __webpack_require__(14);
-var defined = __webpack_require__(12);
+var toInteger = __webpack_require__(15);
+var defined = __webpack_require__(13);
 // true  -> String#at
 // false -> String#codePointAt
 module.exports = function (TO_STRING) {
@@ -15270,9 +15273,9 @@ module.exports = function (TO_STRING) {
 /* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var anObject = __webpack_require__(7);
+var anObject = __webpack_require__(8);
 var get = __webpack_require__(74);
-module.exports = __webpack_require__(4).getIterator = function (it) {
+module.exports = __webpack_require__(3).getIterator = function (it) {
   var iterFn = get(it);
   if (typeof iterFn != 'function') throw TypeError(it + ' is not iterable!');
   return anObject(iterFn.call(it));
@@ -15284,9 +15287,9 @@ module.exports = __webpack_require__(4).getIterator = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var classof = __webpack_require__(75);
-var ITERATOR = __webpack_require__(1)('iterator');
-var Iterators = __webpack_require__(9);
-module.exports = __webpack_require__(4).getIteratorMethod = function (it) {
+var ITERATOR = __webpack_require__(4)('iterator');
+var Iterators = __webpack_require__(10);
+module.exports = __webpack_require__(3).getIteratorMethod = function (it) {
   if (it != undefined) return it[ITERATOR]
     || it['@@iterator']
     || Iterators[classof(it)];
@@ -15299,7 +15302,7 @@ module.exports = __webpack_require__(4).getIteratorMethod = function (it) {
 
 // getting tag from 19.1.3.6 Object.prototype.toString()
 var cof = __webpack_require__(24);
-var TAG = __webpack_require__(1)('toStringTag');
+var TAG = __webpack_require__(4)('toStringTag');
 // ES3 wrong here
 var ARG = cof(function () { return arguments; }()) == 'Arguments';
 
@@ -15361,7 +15364,7 @@ if (false) {(function () {  module.hot.accept()
 var content = __webpack_require__(79);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(3)(content, {});
+var update = __webpack_require__(1)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -15381,7 +15384,7 @@ if(false) {
 /* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)();
+exports = module.exports = __webpack_require__(0)();
 // imports
 
 
@@ -15579,7 +15582,7 @@ if (false) {(function () {  module.hot.accept()
 "use strict";
 
 
-var _getIterator2 = __webpack_require__(19);
+var _getIterator2 = __webpack_require__(20);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -15945,7 +15948,7 @@ if (false) {(function () {  module.hot.accept()
 var content = __webpack_require__(90);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(3)(content, {});
+var update = __webpack_require__(1)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -15965,7 +15968,7 @@ if(false) {
 /* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)();
+exports = module.exports = __webpack_require__(0)();
 // imports
 
 
@@ -16413,7 +16416,7 @@ if (false) {(function () {  module.hot.accept()
 var content = __webpack_require__(98);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(3)(content, {});
+var update = __webpack_require__(1)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -16433,7 +16436,7 @@ if(false) {
 /* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)();
+exports = module.exports = __webpack_require__(0)();
 // imports
 
 
@@ -16592,7 +16595,7 @@ if (false) {(function () {  module.hot.accept()
 "use strict";
 
 
-var _getIterator2 = __webpack_require__(19);
+var _getIterator2 = __webpack_require__(20);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -16899,7 +16902,7 @@ if (false) {(function () {  module.hot.accept()
 var content = __webpack_require__(107);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(3)(content, {});
+var update = __webpack_require__(1)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -16919,7 +16922,7 @@ if(false) {
 /* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)();
+exports = module.exports = __webpack_require__(0)();
 // imports
 
 
@@ -16936,7 +16939,7 @@ exports.push([module.i, "\n\t#rop_core .avatar .avatar-icon[_v-051e6fb2] {\n\t\t
 "use strict";
 
 
-var _keys = __webpack_require__(21);
+var _keys = __webpack_require__(6);
 
 var _keys2 = _interopRequireDefault(_keys);
 
@@ -17412,8 +17415,903 @@ module.exports = "\n\t<div class=\"tab-view\" _v-051e6fb2=\"\">\n\t\t<div class=
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(111)
-__vue_template__ = __webpack_require__(112)
+__webpack_require__(111)
+__webpack_require__(134)
+__vue_script__ = __webpack_require__(113)
+__vue_template__ = __webpack_require__(126)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/var/www/html/wp-base/wp-content/plugins/tweet-old-post/vue/src/vue-elements/schedule-tab-panel.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 111 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(112);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-d77321bc&file=schedule-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./schedule-tab-panel.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-d77321bc&file=schedule-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./schedule-tab-panel.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 112 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)();
+// imports
+
+
+// module
+exports.push([module.i, "\n\t#rop_core .avatar .avatar-icon[_v-d77321bc] {\n\t\tbackground: #333;\n\t\tborder-radius: 50%;\n\t\tfont-size: 16px;\n\t\ttext-align: center;\n\t\tline-height: 20px;\n\t}\n\t#rop_core .avatar .avatar-icon.fa-facebook-official[_v-d77321bc] { background-color: #3b5998; }\n\t#rop_core .avatar .avatar-icon.fa-twitter[_v-d77321bc] { background-color: #55acee; }\n\t#rop_core .avatar .avatar-icon.fa-linkedin[_v-d77321bc] { background-color: #007bb5; }\n\t#rop_core .avatar .avatar-icon.fa-tumblr[_v-d77321bc] { background-color: #32506d; }\n\n\t#rop_core .service.facebook[_v-d77321bc] {\n\t\tcolor: #3b5998;\n\t}\n\n\t#rop_core .service.twitter[_v-d77321bc] {\n\t\tcolor: #55acee;\n\t}\n\n\t#rop_core .service.linkedin[_v-d77321bc] {\n\t\tcolor: #007bb5;\n\t}\n\n\t#rop_core .service.tumblr[_v-d77321bc] {\n\t\tcolor: #32506d;\n\t}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 113 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _keys = __webpack_require__(6);
+
+var _keys2 = _interopRequireDefault(_keys);
+
+var _buttonCheckbox = __webpack_require__(114);
+
+var _buttonCheckbox2 = _interopRequireDefault(_buttonCheckbox);
+
+var _vue2Timepicker = __webpack_require__(117);
+
+var _vue2Timepicker2 = _interopRequireDefault(_vue2Timepicker);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// <template>
+// 	<div class="tab-view">
+// 		<div class="panel-body" style="overflow: inherit;">
+// 			<h3>Custom Schedule</h3>
+// 			<figure class="avatar avatar-lg" style="text-align: center;">
+// 				<img :src="img" v-if="img">
+// 				<i class="fa" :class="icon" style="line-height: 48px;" aria-hidden="true" v-else></i>
+// 				<i class="avatar-icon fa" :class="icon" aria-hidden="true" v-if="img"></i>
+// 				<!--<img src="img/avatar-5.png" class="avatar-icon" alt="...">-->
+// 			</figure>
+// 			<div class="d-inline-block" style="vertical-align: top; margin-left: 16px;">
+// 				<h6>{{user_name}}</h6>
+// 				<b class="service" :class="service">{{service_name}}</b>
+// 			</div>
+// 			<div class="d-inline-block" style="vertical-align: top; margin-left: 16px; width: 80%">
+// 				<h4><i class="fa fa-info-circle"></i> Info</h4>
+// 				<p><i>Each <b>account</b> can have it's own <b>Schedule</b> for sharing, on the left you can see the
+// 					current selected account and network, bellow are the <b>Schedule</b> options for the account.
+// 					Don't forget to save after each change and remember, you can always reset an account to the defaults.
+// 				</i></p>
+// 			</div>
+// 			<div class="container">
+// 				<div class="columns">
+// 					<div class="column col-sm-12 col-md-12 col-lg-12">
+// 						<div class="columns">
+// 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+// 								<b>Account</b><br/>
+// 								<i>Specify an account to change the settings of.</i>
+// 							</div>
+// 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+// 								<div class="form-group">
+// 									<select class="form-select" v-model="selected_account" @change="getAccountpostFormat()">
+// 										<option v-for="( account, id ) in active_accounts" :value="id" >{{account.user}} - {{account.service}} </option>
+// 									</select>
+// 								</div>
+// 							</div>
+// 						</div>
+// 						<hr/>
+//
+// 						<h4>Schedule</h4>
+// 						<!-- Schedule Type - Can be 'recurring' or 'fixed'
+// 							 If Recurring than an repeating interval is filled (float) Eg. 2.5 hours
+// 							 If Fixed days of the week are selected and a specific time is selected. -->
+// 						<div class="columns">
+// 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+// 								<b>Schedule Type</b><br/>
+// 								<i>What type of schedule to use.</i>
+// 							</div>
+// 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+// 								<div class="form-group">
+// 									<select class="form-select">
+// 										<option value="recurring">Recurring</option>
+// 										<option value="fixed">Fixed</option>
+// 									</select>
+// 								</div>
+// 							</div>
+// 						</div>
+//
+// 						<div class="columns">
+// 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+// 								<b>Fixed Schedule Days</b><br/>
+// 								<i>The days when to share for this account.</i>
+// 							</div>
+// 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+// 								<div class="form-group">
+// 									<button-checkbox value="1" label="Mon"></button-checkbox>
+// 									<button-checkbox value="2" label="Tue"></button-checkbox>
+// 									<button-checkbox value="3" label="Wen"></button-checkbox>
+// 									<button-checkbox value="4" label="Thu"></button-checkbox>
+// 									<button-checkbox value="5" label="Fri"></button-checkbox>
+// 									<button-checkbox value="6" label="Sat"></button-checkbox>
+// 									<button-checkbox value="7" label="Sun"></button-checkbox>
+// 								</div>
+// 							</div>
+// 						</div>
+//                         <div class="columns">
+//                             <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+//                                 <b>Fixed Schedule Time</b><br/>
+//                                 <i>The time at witch to share for this account.</i>
+//                             </div>
+//                             <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+//                                 <div class="form-group">
+//                                     <vue-timepicker :minute-interval="5" class="timepicker-style-fix"></vue-timepicker>
+//                                 </div>
+//                             </div>
+//                         </div>
+//
+//
+//
+// 						<hr/>
+// 					</div>
+// 				</div>
+// 			</div>
+// 		</div>
+// 		<div class="panel-footer">
+// 			<button class="btn btn-primary" @click="savePostFormat()"><i class="fa fa-check"></i> Save Post Format</button>
+// 			<button class="btn btn-secondary" @click="resetPostFormat()"><i class="fa fa-ban"></i> Reset to Defaults</button>
+// 		</div>
+// 	</div>
+// </template>
+//
+// <script>
+module.exports = {
+	name: 'schedule-view',
+	data: function data() {
+		var key = null;
+		if ((0, _keys2.default)(this.$store.state.activeAccounts)[0] !== undefined) key = (0, _keys2.default)(this.$store.state.activeAccounts)[0];
+		return {
+			selected_account: key,
+			shortner_credentials: []
+		};
+	},
+	mounted: function mounted() {
+		// Uncomment this when not fixed tab on post format
+		// this.getAccountpostFormat()
+	},
+	filters: {
+		capitalize: function capitalize(value) {
+			if (!value) return '';
+			value = value.toString();
+			return value.charAt(0).toUpperCase() + value.slice(1);
+		}
+	},
+	computed: {
+		active_accounts: function active_accounts() {
+			return this.$store.state.activeAccounts;
+		},
+		icon: function icon() {
+			var serviceIcon = 'fa-user';
+			if (this.selected_account !== null) {
+				serviceIcon = 'fa-';
+				var account = this.active_accounts[this.selected_account];
+				if (account.service === 'facebook') serviceIcon = serviceIcon.concat('facebook-official');
+				if (account.service === 'twitter') serviceIcon = serviceIcon.concat('twitter');
+				if (account.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin');
+				if (account.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr');
+			}
+			return serviceIcon;
+		},
+		img: function img() {
+			var img = '';
+			if (this.selected_account !== null && this.active_accounts[this.selected_account].img !== '' && this.active_accounts[this.selected_account].img !== undefined) {
+				img = this.active_accounts[this.selected_account].img;
+			}
+			return img;
+		},
+		service: function service() {
+			var serviceClass = '';
+			if (this.selected_account !== null && this.active_accounts[this.selected_account].service) {
+				serviceClass = this.active_accounts[this.selected_account].service;
+			}
+			return serviceClass;
+		},
+		service_name: function service_name() {
+			if (this.service !== '') return this.service.charAt(0).toUpperCase() + this.service.slice(1);
+			return 'Service';
+		},
+		user_name: function user_name() {
+			if (this.selected_account !== null && this.active_accounts[this.selected_account].user) return this.active_accounts[this.selected_account].user;
+			return 'John Doe';
+		}
+	},
+	watch: {
+		active_accounts: function active_accounts() {
+			console.log('Accounts changed');
+			if ((0, _keys2.default)(this.$store.state.activeAccounts)[0] && this.selected_account === null) {
+				var key = (0, _keys2.default)(this.$store.state.activeAccounts)[0];
+				this.selected_account = key;
+				// this.getAccountpostFormat()
+			}
+		}
+	},
+	methods: {},
+	components: {
+		ButtonCheckbox: _buttonCheckbox2.default,
+		VueTimepicker: _vue2Timepicker2.default
+	}
+	// </script>
+	//
+	// <style scoped>
+	// 	#rop_core .avatar .avatar-icon {
+	// 		background: #333;
+	// 		border-radius: 50%;
+	// 		font-size: 16px;
+	// 		text-align: center;
+	// 		line-height: 20px;
+	// 	}
+	// 	#rop_core .avatar .avatar-icon.fa-facebook-official { background-color: #3b5998; }
+	// 	#rop_core .avatar .avatar-icon.fa-twitter { background-color: #55acee; }
+	// 	#rop_core .avatar .avatar-icon.fa-linkedin { background-color: #007bb5; }
+	// 	#rop_core .avatar .avatar-icon.fa-tumblr { background-color: #32506d; }
+	//
+	// 	#rop_core .service.facebook {
+	// 		color: #3b5998;
+	// 	}
+	//
+	// 	#rop_core .service.twitter {
+	// 		color: #55acee;
+	// 	}
+	//
+	// 	#rop_core .service.linkedin {
+	// 		color: #007bb5;
+	// 	}
+	//
+	// 	#rop_core .service.tumblr {
+	// 		color: #32506d;
+	// 	}
+	// </style>
+	// <style>
+	//     #rop_core .time-picker.timepicker-style-fix .dropdown {
+	//         top: 4px;
+	//     }
+	//     #rop_core .time-picker.timepicker-style-fix ul {
+	//         margin: 0;
+	//     }
+	//     #rop_core .time-picker.timepicker-style-fix ul li {
+	//         list-style: none;
+	//     }
+	//
+	//     #rop_core .time-picker.timepicker-style-fix .dropdown ul li.active,
+	//     #rop_core .time-picker.timepicker-style-fix .dropdown ul li.active:hover {
+	//         background: #e85407;
+	//     }
+	// </style>
+
+};
+
+/***/ }),
+/* 114 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__vue_script__ = __webpack_require__(115)
+__vue_template__ = __webpack_require__(116)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/var/www/html/wp-base/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/button-checkbox.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 115 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// <template>
+// 	<button class="btn" :class="is_active" @click="toggleThis()" >{{label}}</button>
+// </template>
+//
+// <script>
+module.exports = {
+	name: 'button-checkbox',
+	props: {
+		id: {
+			default: ''
+		},
+		value: {
+			default: '0',
+			type: String
+		},
+		label: {
+			default: '',
+			type: String
+		},
+		checked: {
+			default: false,
+			type: Boolean
+		}
+	},
+	data: function data() {
+		return {
+			componentCheckState: this.checked
+		};
+	},
+	computed: {
+		is_active: function is_active() {
+			return {
+				'active': this.componentCheckState === true
+			};
+		}
+	},
+	methods: {
+		toggleThis: function toggleThis() {
+			this.componentCheckState = !this.componentCheckState;
+		}
+	}
+	// </script>
+
+};
+
+/***/ }),
+/* 116 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<button class=\"btn\" :class=\"is_active\" @click=\"toggleThis()\" >{{label}}</button>\n";
+
+/***/ }),
+/* 117 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(118)
+
+
+/***/ }),
+/* 118 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(119)
+__vue_script__ = __webpack_require__(122)
+__vue_template__ = __webpack_require__(125)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/var/www/html/wp-base/wp-content/plugins/tweet-old-post/node_modules/vue2-timepicker/src/vue-timepicker.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 119 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(120);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../css-loader/index.js!../../vue-loader/lib/style-rewriter.js?id=_v-58411cf4&file=vue-timepicker.vue!../../vue-loader/lib/selector.js?type=style&index=0!./vue-timepicker.vue", function() {
+			var newContent = require("!!../../css-loader/index.js!../../vue-loader/lib/style-rewriter.js?id=_v-58411cf4&file=vue-timepicker.vue!../../vue-loader/lib/selector.js?type=style&index=0!./vue-timepicker.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 120 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)();
+// imports
+exports.i(__webpack_require__(121), "");
+
+// module
+exports.push([module.i, "\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 121 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)();
+// imports
+
+
+// module
+exports.push([module.i, ".time-picker {\n  display: inline-block;\n  position: relative;\n  font-size: 1em;\n  width: 10em;\n  font-family: sans-serif;\n  vertical-align: middle;\n}\n\n.time-picker * {\n  box-sizing: border-box;\n}\n\n.time-picker input.display-time {\n  border: 1px solid #d2d2d2;\n  width: 10em;\n  height: 2.2em;\n  padding: 0.3em 0.5em;\n  font-size: 1em;\n}\n\n.time-picker .clear-btn {\n  position: absolute;\n  display: flex;\n  flex-flow: column nowrap;\n  justify-content: center;\n  align-items: center;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  margin-top: -0.15em;\n  z-index: 3;\n  font-size: 1.1em;\n  line-height: 1em;\n  vertical-align: middle;\n  width: 1.3em;\n  color: #d2d2d2;\n  background: rgba(255,255,255,0);\n  text-align: center;\n  font-style: normal;\n\n  -webkit-transition: color .2s;\n  transition: color .2s;\n}\n\n.time-picker .clear-btn:hover {\n  color: #797979;\n  cursor: pointer;\n}\n\n.time-picker .time-picker-overlay {\n  z-index: 2;\n  position: fixed;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n}\n\n.time-picker .dropdown {\n  position: absolute;\n  z-index: 5;\n  top: calc(2.2em + 2px);\n  left: 0;\n  background: #fff;\n  box-shadow: 0 1px 6px rgba(0,0,0,0.15);\n  width: 10em;\n  height: 10em;\n  font-weight: normal;\n}\n\n.time-picker .dropdown .select-list {\n  width: 10em;\n  height: 10em;\n  overflow: hidden;\n  display: flex;\n  flex-flow: row nowrap;\n  align-items: stretch;\n  justify-content: space-between;\n}\n\n.time-picker .dropdown ul {\n  padding: 0;\n  margin: 0;\n  list-style: none;\n\n  flex: 1;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\n\n.time-picker .dropdown ul.minutes,\n.time-picker .dropdown ul.seconds,\n.time-picker .dropdown ul.apms{\n  border-left: 1px solid #fff;\n}\n\n.time-picker .dropdown ul li {\n  text-align: center;\n  padding: 0.3em 0;\n  color: #161616;\n}\n\n.time-picker .dropdown ul li:not(.hint):hover {\n  background: rgba(0,0,0,.08);\n  color: #161616;\n  cursor: pointer;\n}\n\n.time-picker .dropdown ul li.active,\n.time-picker .dropdown ul li.active:hover {\n  background: #41B883;\n  color: #fff;\n}\n\n.time-picker .dropdown .hint {\n  color: #a5a5a5;\n  cursor: default;\n  font-size: 0.8em;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 122 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _keys = __webpack_require__(6);
+
+var _keys2 = _interopRequireDefault(_keys);
+
+var _stringify = __webpack_require__(123);
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var CONFIG = {
+  HOUR_TOKENS: ['HH', 'H', 'hh', 'h', 'kk', 'k'],
+  MINUTE_TOKENS: ['mm', 'm'],
+  SECOND_TOKENS: ['ss', 's'],
+  APM_TOKENS: ['A', 'a']
+};
+
+exports.default = {
+  name: 'VueTimepicker',
+
+  props: {
+    value: { type: Object },
+    hideClearButton: { type: Boolean },
+    format: { type: String },
+    minuteInterval: { type: Number },
+    secondInterval: { type: Number },
+    id: { type: String }
+  },
+
+  data: function data() {
+    return {
+      hours: [],
+      minutes: [],
+      seconds: [],
+      apms: [],
+      showDropdown: false,
+      muteWatch: false,
+      hourType: 'HH',
+      minuteType: 'mm',
+      secondType: '',
+      apmType: '',
+      hour: '',
+      minute: '',
+      second: '',
+      apm: '',
+      fullValues: undefined
+    };
+  },
+
+
+  computed: {
+    displayTime: function displayTime() {
+      var formatString = String(this.format || 'HH:mm');
+      if (this.hour) {
+        formatString = formatString.replace(new RegExp(this.hourType, 'g'), this.hour);
+      }
+      if (this.minute) {
+        formatString = formatString.replace(new RegExp(this.minuteType, 'g'), this.minute);
+      }
+      if (this.second && this.secondType) {
+        formatString = formatString.replace(new RegExp(this.secondType, 'g'), this.second);
+      }
+      if (this.apm && this.apmType) {
+        formatString = formatString.replace(new RegExp(this.apmType, 'g'), this.apm);
+      }
+      return formatString;
+    },
+    showClearBtn: function showClearBtn() {
+      if (this.hour && this.hour !== '' || this.minute && this.minute !== '') {
+        return true;
+      }
+      return false;
+    }
+  },
+
+  watch: {
+    'format': 'renderFormat',
+    minuteInterval: function minuteInterval(newInteval) {
+      this.renderList('minute', newInteval);
+    },
+    secondInterval: function secondInterval(newInteval) {
+      this.renderList('second', newInteval);
+    },
+
+    'value': 'readValues',
+    'displayTime': 'fillValues'
+  },
+
+  methods: {
+    formatValue: function formatValue(type, i) {
+      switch (type) {
+        case 'H':
+        case 'm':
+        case 's':
+          return String(i);
+        case 'HH':
+        case 'mm':
+        case 'ss':
+          return i < 10 ? '0' + i : String(i);
+        case 'h':
+        case 'k':
+          return String(i + 1);
+        case 'hh':
+        case 'kk':
+          return i + 1 < 10 ? '0' + (i + 1) : String(i + 1);
+        default:
+          return '';
+      }
+    },
+    checkAcceptingType: function checkAcceptingType(validValues, formatString, fallbackValue) {
+      if (!validValues || !formatString || !formatString.length) {
+        return '';
+      }
+      for (var i = 0; i < validValues.length; i++) {
+        if (formatString.indexOf(validValues[i]) > -1) {
+          return validValues[i];
+        }
+      }
+      return fallbackValue || '';
+    },
+    renderFormat: function renderFormat(newFormat) {
+      newFormat = newFormat || this.format;
+      if (!newFormat || !newFormat.length) {
+        newFormat = 'HH:mm';
+      }
+
+      this.hourType = this.checkAcceptingType(CONFIG.HOUR_TOKENS, newFormat, 'HH');
+      this.minuteType = this.checkAcceptingType(CONFIG.MINUTE_TOKENS, newFormat, 'mm');
+      this.secondType = this.checkAcceptingType(CONFIG.SECOND_TOKENS, newFormat);
+      this.apmType = this.checkAcceptingType(CONFIG.APM_TOKENS, newFormat);
+
+      this.renderHoursList();
+      this.renderList('minute');
+
+      if (this.secondType) {
+        this.renderList('second');
+      }
+
+      if (this.apmType) {
+        this.renderApmList();
+      }
+
+      var self = this;
+      this.$nextTick(function () {
+        self.readValues();
+      });
+    },
+    renderHoursList: function renderHoursList() {
+      var hoursCount = this.hourType === 'h' || this.hourType === 'hh' ? 12 : 24;
+      this.hours = [];
+      for (var i = 0; i < hoursCount; i++) {
+        this.hours.push(this.formatValue(this.hourType, i));
+      }
+    },
+    renderList: function renderList(listType, interval) {
+      if (listType === 'second') {
+        interval = interval || this.secondInterval;
+      } else if (listType === 'minute') {
+        interval = interval || this.minuteInterval;
+      } else {
+        return;
+      }
+
+      if (interval === 0) {
+        interval = 60;
+      } else if (interval > 60) {
+        window.console.warn('`' + listType + '-interval` should be less than 60. Current value is', interval);
+        interval = 1;
+      } else if (interval < 1) {
+        window.console.warn('`' + listType + '-interval` should be NO less than 1. Current value is', interval);
+        interval = 1;
+      } else if (!interval) {
+        interval = 1;
+      }
+
+      if (listType === 'minute') {
+        this.minutes = [];
+      } else {
+        this.seconds = [];
+      }
+
+      for (var i = 0; i < 60; i += interval) {
+        if (listType === 'minute') {
+          this.minutes.push(this.formatValue(this.minuteType, i));
+        } else {
+          this.seconds.push(this.formatValue(this.secondType, i));
+        }
+      }
+    },
+    renderApmList: function renderApmList() {
+      this.apms = [];
+      if (!this.apmType) {
+        return;
+      }
+      this.apms = this.apmType === 'A' ? ['AM', 'PM'] : ['am', 'pm'];
+    },
+    readValues: function readValues() {
+      if (!this.value || this.muteWatch) {
+        return;
+      }
+
+      var timeValue = JSON.parse((0, _stringify2.default)(this.value || {}));
+
+      var values = (0, _keys2.default)(timeValue);
+      if (values.length === 0) {
+        return;
+      }
+
+      if (values.indexOf(this.hourType) > -1) {
+        this.hour = timeValue[this.hourType];
+      }
+
+      if (values.indexOf(this.minuteType) > -1) {
+        this.minute = timeValue[this.minuteType];
+      }
+
+      if (values.indexOf(this.secondType) > -1) {
+        this.second = timeValue[this.secondType];
+      } else {
+        this.second = 0;
+      }
+
+      if (values.indexOf(this.apmType) > -1) {
+        this.apm = timeValue[this.apmType];
+      }
+
+      this.fillValues();
+    },
+    fillValues: function fillValues() {
+      var fullValues = {};
+
+      var baseHour = this.hour;
+      var baseHourType = this.hourType;
+
+      var hourValue = baseHour || baseHour === 0 ? Number(baseHour) : '';
+      var baseOnTwelveHours = this.isTwelveHours(baseHourType);
+      var apmValue = baseOnTwelveHours && this.apm ? String(this.apm).toLowerCase() : false;
+
+      CONFIG.HOUR_TOKENS.forEach(function (token) {
+        if (token === baseHourType) {
+          fullValues[token] = baseHour;
+          return;
+        }
+
+        var value = void 0;
+        var apm = void 0;
+        switch (token) {
+          case 'H':
+          case 'HH':
+            if (!String(hourValue).length) {
+              fullValues[token] = '';
+              return;
+            } else if (baseOnTwelveHours) {
+              if (apmValue === 'pm') {
+                value = hourValue < 12 ? hourValue + 12 : hourValue;
+              } else {
+                value = hourValue % 12;
+              }
+            } else {
+              value = hourValue % 24;
+            }
+            fullValues[token] = token === 'HH' && value < 10 ? '0' + value : String(value);
+            break;
+          case 'k':
+          case 'kk':
+            if (!String(hourValue).length) {
+              fullValues[token] = '';
+              return;
+            } else if (baseOnTwelveHours) {
+              if (apmValue === 'pm') {
+                value = hourValue < 12 ? hourValue + 12 : hourValue;
+              } else {
+                value = hourValue === 12 ? 24 : hourValue;
+              }
+            } else {
+              value = hourValue === 0 ? 24 : hourValue;
+            }
+            fullValues[token] = token === 'kk' && value < 10 ? '0' + value : String(value);
+            break;
+          case 'h':
+          case 'hh':
+            if (apmValue) {
+              value = hourValue;
+              apm = apmValue || 'am';
+            } else {
+              if (!String(hourValue).length) {
+                fullValues[token] = '';
+                fullValues.a = '';
+                fullValues.A = '';
+                return;
+              } else if (hourValue > 11) {
+                apm = 'pm';
+                value = hourValue === 12 ? 12 : hourValue % 12;
+              } else {
+                if (baseOnTwelveHours) {
+                  apm = '';
+                } else {
+                  apm = 'am';
+                }
+                value = hourValue % 12 === 0 ? 12 : hourValue;
+              }
+            }
+            fullValues[token] = token === 'hh' && value < 10 ? '0' + value : String(value);
+            fullValues.a = apm;
+            fullValues.A = apm.toUpperCase();
+            break;
+        }
+      });
+
+      if (this.minute || this.minute === 0) {
+        var minuteValue = Number(this.minute);
+        fullValues.m = String(minuteValue);
+        fullValues.mm = minuteValue < 10 ? '0' + minuteValue : String(minuteValue);
+      } else {
+        fullValues.m = '';
+        fullValues.mm = '';
+      }
+
+      if (this.second || this.second === 0) {
+        var secondValue = Number(this.second);
+        fullValues.s = String(secondValue);
+        fullValues.ss = secondValue < 10 ? '0' + secondValue : String(secondValue);
+      } else {
+        fullValues.s = '';
+        fullValues.ss = '';
+      }
+
+      this.fullValues = fullValues;
+      this.updateTimeValue(fullValues);
+      this.$emit('change', { data: fullValues });
+    },
+    updateTimeValue: function updateTimeValue(fullValues) {
+      this.muteWatch = true;
+
+      var self = this;
+
+      var baseTimeValue = JSON.parse((0, _stringify2.default)(this.value || {}));
+      var timeValue = {};
+
+      (0, _keys2.default)(baseTimeValue).forEach(function (key) {
+        timeValue[key] = fullValues[key];
+      });
+
+      this.$emit('input', timeValue);
+
+      this.$nextTick(function () {
+        self.muteWatch = false;
+      });
+    },
+    isTwelveHours: function isTwelveHours(token) {
+      return token === 'h' || token === 'hh';
+    },
+    toggleDropdown: function toggleDropdown() {
+      this.showDropdown = !this.showDropdown;
+    },
+    select: function select(type, value) {
+      if (type === 'hour') {
+        this.hour = value;
+      } else if (type === 'minute') {
+        this.minute = value;
+      } else if (type === 'second') {
+        this.second = value;
+      } else if (type === 'apm') {
+        this.apm = value;
+      }
+    },
+    clearTime: function clearTime() {
+      this.hour = '';
+      this.minute = '';
+      this.second = '';
+      this.apm = '';
+    }
+  },
+
+  mounted: function mounted() {
+    this.renderFormat();
+  }
+};
+
+/***/ }),
+/* 123 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = { "default": __webpack_require__(124), __esModule: true };
+
+/***/ }),
+/* 124 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var core = __webpack_require__(3);
+var $JSON = core.JSON || (core.JSON = { stringify: JSON.stringify });
+module.exports = function stringify(it) { // eslint-disable-line no-unused-vars
+  return $JSON.stringify.apply($JSON, arguments);
+};
+
+
+/***/ }),
+/* 125 */
+/***/ (function(module, exports) {
+
+module.exports = "\n<span class=\"time-picker\">\n  <input class=\"display-time\" :id=\"id\" v-model=\"displayTime\" @click.stop=\"toggleDropdown\" type=\"text\" readonly />\n  <span class=\"clear-btn\" v-if=\"!hideClearButton\" v-show=\"!showDropdown && showClearBtn\" @click.stop=\"clearTime\">&times;</span>\n  <div class=\"time-picker-overlay\" v-if=\"showDropdown\" @click.stop=\"toggleDropdown\"></div>\n  <div class=\"dropdown\" v-show=\"showDropdown\">\n    <div class=\"select-list\">\n      <ul class=\"hours\">\n        <li class=\"hint\" v-text=\"hourType\"></li>\n        <li v-for=\"hr in hours\" v-text=\"hr\" :class=\"{active: hour === hr}\" @click.stop=\"select('hour', hr)\"></li>\n      </ul>\n      <ul class=\"minutes\">\n        <li class=\"hint\" v-text=\"minuteType\"></li>\n        <li v-for=\"m in minutes\" v-text=\"m\" :class=\"{active: minute === m}\" @click.stop=\"select('minute', m)\"></li>\n      </ul>\n      <ul class=\"seconds\" v-if=\"secondType\">\n        <li class=\"hint\" v-text=\"secondType\"></li>\n        <li v-for=\"s in seconds\" v-text=\"s\" :class=\"{active: second === s}\" @click.stop=\"select('second', s)\"></li>\n      </ul>\n      <ul class=\"apms\" v-if=\"apmType\">\n        <li class=\"hint\" v-text=\"apmType\"></li>\n        <li v-for=\"a in apms\" v-text=\"a\" :class=\"{active: apm === a}\" @click.stop=\"select('apm', a)\"></li>\n      </ul>\n    </div>\n  </div>\n</span>\n";
+
+/***/ }),
+/* 126 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div class=\"tab-view\" _v-d77321bc=\"\">\n\t\t<div class=\"panel-body\" style=\"overflow: inherit;\" _v-d77321bc=\"\">\n\t\t\t<h3 _v-d77321bc=\"\">Custom Schedule</h3>\n\t\t\t<figure class=\"avatar avatar-lg\" style=\"text-align: center;\" _v-d77321bc=\"\">\n\t\t\t\t<img :src=\"img\" v-if=\"img\" _v-d77321bc=\"\">\n\t\t\t\t<i class=\"fa\" :class=\"icon\" style=\"line-height: 48px;\" aria-hidden=\"true\" v-else=\"\" _v-d77321bc=\"\"></i>\n\t\t\t\t<i class=\"avatar-icon fa\" :class=\"icon\" aria-hidden=\"true\" v-if=\"img\" _v-d77321bc=\"\"></i>\n\t\t\t\t<!--<img src=\"img/avatar-5.png\" class=\"avatar-icon\" alt=\"...\">-->\n\t\t\t</figure>\n\t\t\t<div class=\"d-inline-block\" style=\"vertical-align: top; margin-left: 16px;\" _v-d77321bc=\"\">\n\t\t\t\t<h6 _v-d77321bc=\"\">{{user_name}}</h6>\n\t\t\t\t<b class=\"service\" :class=\"service\" _v-d77321bc=\"\">{{service_name}}</b>\n\t\t\t</div>\n\t\t\t<div class=\"d-inline-block\" style=\"vertical-align: top; margin-left: 16px; width: 80%\" _v-d77321bc=\"\">\n\t\t\t\t<h4 _v-d77321bc=\"\"><i class=\"fa fa-info-circle\" _v-d77321bc=\"\"></i> Info</h4>\n\t\t\t\t<p _v-d77321bc=\"\"><i _v-d77321bc=\"\">Each <b _v-d77321bc=\"\">account</b> can have it's own <b _v-d77321bc=\"\">Schedule</b> for sharing, on the left you can see the\n\t\t\t\t\tcurrent selected account and network, bellow are the <b _v-d77321bc=\"\">Schedule</b> options for the account.\n\t\t\t\t\tDon't forget to save after each change and remember, you can always reset an account to the defaults.\n\t\t\t\t</i></p>\n\t\t\t</div>\n\t\t\t<div class=\"container\" _v-d77321bc=\"\">\n\t\t\t\t<div class=\"columns\" _v-d77321bc=\"\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-d77321bc=\"\">\n\t\t\t\t\t\t<div class=\"columns\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<b _v-d77321bc=\"\">Account</b><br _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<i _v-d77321bc=\"\">Specify an account to change the settings of.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"selected_account\" @change=\"getAccountpostFormat()\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t\t<option v-for=\"( account, id ) in active_accounts\" :value=\"id\" _v-d77321bc=\"\">{{account.user}} - {{account.service}} </option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<hr _v-d77321bc=\"\">\n\n\t\t\t\t\t\t<h4 _v-d77321bc=\"\">Schedule</h4>\n\t\t\t\t\t\t<!-- Schedule Type - Can be 'recurring' or 'fixed'\n\t\t\t\t\t\t\t If Recurring than an repeating interval is filled (float) Eg. 2.5 hours\n\t\t\t\t\t\t\t If Fixed days of the week are selected and a specific time is selected. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<b _v-d77321bc=\"\">Schedule Type</b><br _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<i _v-d77321bc=\"\">What type of schedule to use.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t\t<option value=\"recurring\" _v-d77321bc=\"\">Recurring</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"fixed\" _v-d77321bc=\"\">Fixed</option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<div class=\"columns\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<b _v-d77321bc=\"\">Fixed Schedule Days</b><br _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<i _v-d77321bc=\"\">The days when to share for this account.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t<button-checkbox value=\"1\" label=\"Mon\" _v-d77321bc=\"\"></button-checkbox>\n\t\t\t\t\t\t\t\t\t<button-checkbox value=\"2\" label=\"Tue\" _v-d77321bc=\"\"></button-checkbox>\n\t\t\t\t\t\t\t\t\t<button-checkbox value=\"3\" label=\"Wen\" _v-d77321bc=\"\"></button-checkbox>\n\t\t\t\t\t\t\t\t\t<button-checkbox value=\"4\" label=\"Thu\" _v-d77321bc=\"\"></button-checkbox>\n\t\t\t\t\t\t\t\t\t<button-checkbox value=\"5\" label=\"Fri\" _v-d77321bc=\"\"></button-checkbox>\n\t\t\t\t\t\t\t\t\t<button-checkbox value=\"6\" label=\"Sat\" _v-d77321bc=\"\"></button-checkbox>\n\t\t\t\t\t\t\t\t\t<button-checkbox value=\"7\" label=\"Sun\" _v-d77321bc=\"\"></button-checkbox>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n                        <div class=\"columns\" _v-d77321bc=\"\">\n                            <div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-d77321bc=\"\">\n                                <b _v-d77321bc=\"\">Fixed Schedule Time</b><br _v-d77321bc=\"\">\n                                <i _v-d77321bc=\"\">The time at witch to share for this account.</i>\n                            </div>\n                            <div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-d77321bc=\"\">\n                                <div class=\"form-group\" _v-d77321bc=\"\">\n                                    <vue-timepicker :minute-interval=\"5\" class=\"timepicker-style-fix\" _v-d77321bc=\"\"></vue-timepicker>\n                                </div>\n                            </div>\n                        </div>\n\n\n\n\t\t\t\t\t\t<hr _v-d77321bc=\"\">\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\" _v-d77321bc=\"\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"savePostFormat()\" _v-d77321bc=\"\"><i class=\"fa fa-check\" _v-d77321bc=\"\"></i> Save Post Format</button>\n\t\t\t<button class=\"btn btn-secondary\" @click=\"resetPostFormat()\" _v-d77321bc=\"\"><i class=\"fa fa-ban\" _v-d77321bc=\"\"></i> Reset to Defaults</button>\n\t\t</div>\n\t</div>\n";
+
+/***/ }),
+/* 127 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__vue_script__ = __webpack_require__(128)
+__vue_template__ = __webpack_require__(129)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -17430,7 +18328,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 111 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17463,16 +18361,59 @@ module.exports = {
 };
 
 /***/ }),
-/* 112 */
+/* 129 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div class=\"container\">\n        <h3>Logs</h3>\n        <div class=\"columns\">\n            <div class=\"column col-12\">\n                <pre class=\"code\" data-lang=\"Vue.js\">\n                    <code>{{ logs }}</code>\n                </pre>\n            </div>\n        </div>\n    </div>\n";
 
 /***/ }),
-/* 113 */
+/* 130 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div>\n\t\t<div class=\"panel title-panel\" style=\"margin-bottom: 40px; padding-bottom: 20px;\">\n\t\t\t<div class=\"panel-header\">\n\t\t\t\t<img :src=\"plugin_logo\" style=\"float: left; margin-right: 10px;\" />\n\t\t\t\t<h1 class=\"d-inline-block\">Revive Old Posts</h1><span class=\"powered\"> by <a href=\"https://themeisle.com\" target=\"_blank\"><b>ThemeIsle</b></a></span>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel\">\n\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t<ul class=\"tab\">\n\t\t\t\t\t<li class=\"tab-item\" v-for=\"tab in displayTabs\" :class=\"{ active: tab.isActive }\"><a href=\"#\" @click=\"switchTab( tab.slug )\">{{ tab.name }}</a></li>\n\t\t\t\t\t<li class=\"tab-item tab-action\">\n\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Beta User\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Remote Check\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\n\t\t\t<component :is=\"page.view\"></component>\n\t\t</div>\n\t</div>\n";
+
+/***/ }),
+/* 131 */,
+/* 132 */,
+/* 133 */,
+/* 134 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(135);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-d77321bc&file=schedule-tab-panel.vue!../../../node_modules/vue-loader/lib/selector.js?type=style&index=1!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./schedule-tab-panel.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-d77321bc&file=schedule-tab-panel.vue!../../../node_modules/vue-loader/lib/selector.js?type=style&index=1!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./schedule-tab-panel.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 135 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)();
+// imports
+
+
+// module
+exports.push([module.i, "\n    #rop_core .time-picker.timepicker-style-fix .dropdown {\n        top: 4px;\n    }\n    #rop_core .time-picker.timepicker-style-fix ul {\n        margin: 0;\n    }\n    #rop_core .time-picker.timepicker-style-fix ul li {\n        list-style: none;\n    }\n\n    #rop_core .time-picker.timepicker-style-fix .dropdown ul li.active,\n    #rop_core .time-picker.timepicker-style-fix .dropdown ul li.active:hover {\n        background: #e85407;\n    }\n", ""]);
+
+// exports
+
 
 /***/ })
 /******/ ]);

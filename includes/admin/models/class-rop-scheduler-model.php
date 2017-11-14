@@ -30,8 +30,8 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 			'type' => 'recurring', // another possible value is "fixed"
 			// 'interval_r' => '6.5',
 			// 'interval_f' => array(
-			//      'week_days' => array( 0, 1, 2, 3, 4, 5, 6 ),
-			//      'time' => current_time( 'H:i', 0 ),
+			// 'week_days' => array( 0, 1, 2, 3, 4, 5, 6 ),
+			// 'time' => current_time( 'H:i', 0 ),
 			// ),
 			'timestamp' => current_time( 'timestamp', 0 ),
 			'first_share' => null,
@@ -98,10 +98,10 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 			$schedule['interval_r'] = $interval;
 		}
 
-		if( is_array( $interval ) ) {
+		if ( is_array( $interval ) ) {
 		    $schedule['interval_f'] = $interval;
-        }
-        $schedule['first_share'] = strtotime( '+15 seconds', current_time( 'timestamp', 0 ) );
+		}
+		$schedule['first_share'] = strtotime( '+15 seconds', current_time( 'timestamp', 0 ) );
 
 		return wp_parse_args( $schedule, $this->schedule_defaults );
 	}
@@ -152,19 +152,19 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		$this->skips = $this->get_skips();
 		$list = array();
 		foreach ( $this->schedules as $account_id => $schedule ) {
-            $event = array( 'account_id' => $account_id );
+			$event = array( 'account_id' => $account_id );
 			if ( $schedule['type'] == 'recurring' ) {
 				if ( $schedule['last_share'] == null ) {
 					$time = $this->convert_float_to_time( $schedule['interval_r'] );
 					$event['time'] = $this->add_to_time( $schedule['first_share'], $time['hours'], $time['minutes'], true );
-                    $schedule['last_share'] = $event['time'];
+					$schedule['last_share'] = $event['time'];
 				}
 				array_push( $list, $event );
 				for ( $i = 1; $i < $future_events; $i++ ) {
-                    $event = array( 'account_id' => $account_id );
-                    $event['time'] = $this->add_to_time( $schedule['last_share'], $time['hours'], $time['minutes'], false );
-                    $schedule['last_share'] = $event['time'];
-                    array_push( $list, $event );
+					$event = array( 'account_id' => $account_id );
+					$event['time'] = $this->add_to_time( $schedule['last_share'], $time['hours'], $time['minutes'], false );
+					$schedule['last_share'] = $event['time'];
+					array_push( $list, $event );
 				}
 			}
 		}

@@ -35,6 +35,7 @@
 	import AccountsTab from './accounts-tab-panel.vue'
 	import SettingsTab from './settings-tab-panel.vue'
 	import PostFormatTab from './post-format-tab-panel.vue'
+	import ScheduleTab from './schedule-tab-panel.vue'
 	import LogsTab from './logs-tab-panel.vue'
 
 	import { mapState } from 'vuex'
@@ -58,10 +59,7 @@
 			'accounts': AccountsTab,
 			'settings': SettingsTab,
 			'post-format': PostFormatTab,
-			schedule: {
-				name: 'schedule-view',
-				template: '<span>This is not yet ready</span>'
-			},
+			'schedule': ScheduleTab,
 			'logs': LogsTab
 		}
 	}
