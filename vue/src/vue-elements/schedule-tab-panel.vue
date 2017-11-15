@@ -74,7 +74,15 @@
 							</div>
 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 								<div class="form-group">
-									<vue-timepicker :minute-interval="5" class="timepicker-style-fix" :value="timeObject" @change="syncTime"></vue-timepicker>
+									<div class="input-group" v-for="( time, index ) in schedule.interval_f.time">
+										<vue-timepicker :minute-interval="5" class="timepicker-style-fix" :value="getTime( index )" @change="syncTime( $event, index )" hide-clear-button></vue-timepicker>
+										<button class="btn btn-success input-group-btn" v-if="schedule.interval_f.time.length > 1" @click="rmvTime( index )">
+											<i class="fa fa-fw fa-minus"></i>
+										</button>
+                                        <button class="btn btn-success input-group-btn" v-if="index == schedule.interval_f.time.length - 1" @click="addTime()">
+                                            <i class="fa fa-fw fa-plus"></i>
+                                        </button>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -167,16 +175,7 @@
 				for ( let day in daysObject ) {
 					daysObject[day].checked = this.isChecked( daysObject[day].value )
 				}
-				console.log( daysObject )
 				return daysObject
-			},
-			timeObject: function () {
-				let currentTime = this.schedule.interval_f.time
-				let timeParts = currentTime.split( ':' )
-				return {
-					'HH': timeParts[0],
-					'mm': timeParts[1]
-				}
 			},
 			active_accounts: function () {
 				return this.$store.state.activeAccounts
@@ -218,7 +217,6 @@
 		},
 		watch: {
 			active_accounts: function () {
-				console.log( 'Accounts changed' )
 				if ( Object.keys( this.$store.state.activeAccounts )[0] && this.selected_account === null ) {
 					let key = Object.keys( this.$store.state.activeAccounts )[0]
 					this.selected_account = key
@@ -233,15 +231,29 @@
 				}
 				return false
 			},
-			syncTime ( dataEvent ) {
-				this.schedule.interval_f.time = dataEvent.data.HH + ':' + dataEvent.data.mm
+			getTime ( index ) {
+				let currentTime = this.schedule.interval_f.time[index]
+				let timeParts = currentTime.split( ':' )
+				return {
+					'HH': timeParts[0],
+					'mm': timeParts[1]
+				}
+			},
+			syncTime ( dataEvent, index ) {
+				if( this.schedule.interval_f.time[index] !== undefined ) {
+					this.schedule.interval_f.time[index] = dataEvent.data.HH + ':' + dataEvent.data.mm
+				}
+			},
+			addTime () {
+				this.schedule.interval_f.time.push( '00:00' )
+			},
+			rmvTime ( index ) {
+				this.schedule.interval_f.time.splice( index, 1 )
 			},
 			addDay ( value ) {
-				console.log( 'Add day', value )
 				this.schedule.interval_f.week_days.push( value )
 			},
 			rmvDay ( value ) {
-				console.log( 'Rmv day', value )
 				let index = this.schedule.interval_f.week_days.indexOf( value )
 				if ( index > -1 )	{
 					this.schedule.interval_f.week_days.splice( index, 1 )

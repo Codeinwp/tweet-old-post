@@ -362,7 +362,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @param   int $future_events No. of future events to compute.
 	 * @return array
 	 */
-	public function list_upcomming_schedules( $future_events = 5 ) {
+	public function list_upcomming_schedules( $future_events = 10 ) {
 		$this->schedules = $this->get_schedules();
 		$this->skips = $this->get_skips();
 		$list = array();
@@ -370,8 +370,8 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 			$list[ $account_id ] = array();
 			if ( $schedule['type'] == 'recurring' ) {
 			    $i = 0;
+				$time = $this->convert_float_to_time( $schedule['interval_r'] );
 				if ( $schedule['last_share'] == null ) {
-					$time = $this->convert_float_to_time( $schedule['interval_r'] );
 					$event_time = $this->add_to_time( $schedule['first_share'], $time['hours'], $time['minutes'], true );
 					while ( $this->is_in_skips( $account_id, $event_time ) ) {
 					    $last_time = $event_time;
@@ -391,42 +391,44 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 					array_push( $list[ $account_id ], $event_time );
 				}
 			} else {
-				$i = 0;
 				$week_days = $schedule['interval_f']['week_days'];
-				$time = $schedule['interval_f']['time'];
+				$times = $schedule['interval_f']['time'];
 				$next_pos = $this->get_days_start_pos( $week_days );
 				$size = sizeof( $week_days );
+				$i = 0;
 				if ( $schedule['last_share'] == null ) {
-					$event_time = $this->next_day_of_week( $schedule['first_share'], $week_days[ $next_pos ], true ) . ' ' . $time;
-					while ( $this->is_in_skips( $account_id, $event_time ) ) {
-						$last_time = $event_time;
-						$event_time = $this->next_day_of_week( $last_time, $week_days[ $next_pos ], false ) . ' ' . $time;
+					$event_date = $this->next_day_of_week( $schedule['first_share'], $week_days[ $next_pos ], true );
+					foreach ( $times as $time ) {
+						$event_time = $event_date . ' ' . $time;
+						$schedule['last_share'] = $event_time;
+						array_push( $list[ $account_id ], $event_time );
 					}
-					$schedule['last_share'] = $event_time;
 					$next_pos = $this->next_pos_in_size( $next_pos, $size );
-					array_push( $list[ $account_id ], $event_time );
 					$i++;
 				}
 				for ( $i; $i < $future_events; $i++ ) {
-					$event = array( 'account_id' => $account_id );
-					$event_time = $this->next_day_of_week( $schedule['last_share'], $week_days[ $next_pos ], false ) . ' ' . $time;
-					while ( $this->is_in_skips( $account_id, $event_time ) ) {
-						$last_time = $event_time;
-						$event_time = $this->next_day_of_week( $last_time, $week_days[ $next_pos ], false ) . ' ' . $time;
+					$event_date = $this->next_day_of_week( $schedule['last_share'], $week_days[ $next_pos ], false );
+					foreach ( $times as $time ) {
+						$event_time = $event_date . ' ' . $time;
+						$schedule['last_share'] = $event_time;
+						array_push( $list[ $account_id ], $event_time );
 					}
-					$schedule['last_share'] = $event_time;
-					array_push( $list[ $account_id ], $event_time );
 					$next_pos = $this->next_pos_in_size( $next_pos, $size );
 				}
-			}// End if().
-		}// End foreach().
+				$to_sort = $list[ $account_id ];
+				uasort( $to_sort, function( $a, $b ) {
+					return strtotime( $a ) - strtotime( $b );
+				} );
+				$list[ $account_id ] = array_slice( $to_sort, 0, $future_events );
+			} // End if().
+		} // End foreach().
 		return $list;
 	}
 
 	/**
 	 * Utility method to give a position bounded by two dimensions.
 	 *
-	 * Used to loop through the days of the week array as many times as needed.
+	 * Used to loop through the days of the week array and the times array as many times as needed.
 	 *
 	 * @since   8.0.0
 	 * @access  private

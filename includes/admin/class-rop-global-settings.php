@@ -238,7 +238,7 @@ class Rop_Global_Settings {
 					'interval_r' => '2.5',
 					'interval_f' => array(
 						'week_days' => array( '1', '3', '5' ),
-						'time' => '10:30',
+						'time' => array( '10:30', '11:30' ),
 					),
 					'timestamp' => current_time( 'timestamp', 0 ),
 					'first_share' => null,

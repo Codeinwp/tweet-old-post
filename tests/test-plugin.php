@@ -297,6 +297,7 @@ class Test_ROP extends WP_UnitTestCase {
         $this->assertEquals( $scheduler->get_schedule( $account_id ), $schedule_defaults );
 
         $schedule['type'] = 'recurring';
+        $schedule['last_share'] = '2017-11-15 17:56';
 
         $schedule = $scheduler->create_schedule( $schedule );
         $schedule_f = $scheduler->create_schedule( $schedule_f );
