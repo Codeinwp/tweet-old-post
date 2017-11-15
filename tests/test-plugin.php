@@ -285,23 +285,29 @@ class Test_ROP extends WP_UnitTestCase {
      */
     public function test_scheduler() {
         $account_id = 'test_id_facebook';
+        $account_id_f = 'test_id_twitter';
 
         $global_settings = new Rop_Global_Settings();
         $scheduler = new Rop_Scheduler_Model();
         $schedule_defaults = $global_settings->get_default_schedule();
 
         $schedule = $schedule_defaults;
+        $schedule_f = $schedule_defaults;
 
         $this->assertEquals( $scheduler->get_schedule( $account_id ), $schedule_defaults );
 
         $schedule['type'] = 'recurring';
 
         $schedule = $scheduler->create_schedule( $schedule );
+        $schedule_f = $scheduler->create_schedule( $schedule_f );
 
         $scheduler->add_update_schedule( $account_id, $schedule );
+        $scheduler->add_update_schedule( $account_id_f, $schedule_f );
 
         $this->assertEquals( $scheduler->get_schedule( $account_id ), $schedule );
         $this->assertNotEquals( $scheduler->get_schedule( $account_id ), $schedule_defaults );
+
+        $scheduler->add_to_skips( $account_id_f, '2017-12-01 10:30' );
 
         var_dump( $scheduler->list_upcomming_schedules() );
 

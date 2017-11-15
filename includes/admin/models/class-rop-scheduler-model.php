@@ -159,6 +159,36 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	}
 
 	/**
+	 * Method to compute next day specified day of the week from given date.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   string         $from_date Start date.
+	 * @param   string|integer $day_of_the_week The number of the day of the week.
+	 * @param   bool           $is_timestamp Flag to specify if given date is timestamp.
+	 * @param   string         $format The return format for the date.
+	 * @return false|string
+	 */
+	private function next_day_of_week( $from_date, $day_of_the_week, $is_timestamp = false, $format = 'Y-m-d' ) {
+		$days = array(
+			'1' => 'monday',
+			'2' => 'tuesday',
+			'3' => 'wednesday',
+			'4' => 'thursday',
+			'5' => 'friday',
+			'6' => 'saturday',
+			'7' => 'sunday',
+		);
+		if ( $is_timestamp ) {
+			$timestamp = strtotime( 'next ' . $days[ $day_of_the_week ], $from_date );
+		} else {
+			$timestamp = strtotime( 'next ' . $days[ $day_of_the_week ], strtotime( $from_date ) );
+		}
+
+		return date( $format, $timestamp );
+	}
+
+	/**
 	 * Method to create a schedule array.
 	 *
 	 * @since   8.0.0
@@ -253,13 +283,18 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 * @param   string $account_id The account iD to be skipped.
+	 * @param   string $time A date time format string.
 	 * @return mixed
 	 */
-	public function add_to_skips( $account_id ) {
+	public function add_to_skips( $account_id, $time, $is_timestamp = false ) {
 		$this->skips = $this->get_skips();
-		if ( ! in_array( $account_id, $this->skips ) ) {
-			array_push( $this->skips, $account_id );
+		if ( $is_timestamp ) {
+		    $time = date( 'Y-m-d H:i', $time );
 		}
+		if ( ! isset( $this->skips[ $account_id ] ) ) {
+			$this->skips[ $account_id ] = array();
+		}
+		array_push( $this->skips[ $account_id ], $time );
 		return $this->set( 'skips', $this->skips );
 	}
 
@@ -268,16 +303,55 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  public
-	 * @param   string $account_id The account ID.
+	 * @param   string      $account_id The account ID.
+	 * @param   bool|string $time Flag to specify if all skips should be removed or just a specific time.
 	 * @return mixed
 	 */
-	public function remove_skips( $account_id ) {
+	public function remove_skips( $account_id, $time = false ) {
 		$this->skips = $this->get_skips();
-		if ( in_array( $account_id, $this->skips ) ) {
-			$to_remove = array( $account_id );
-			$this->skips = array_diff( $this->skips, $to_remove );
+		if ( isset( $this->skips[ $account_id ] ) ) {
+			if ( $time ) {
+				$to_remove = array( $time );
+				$this->skips[ $account_id ] = array_diff( $this->skips[ $account_id ], $to_remove );
+			} else {
+				unset( $this->skips[ $account_id ] );
+			}
 		}
 		return $this->set( 'skips', $this->skips );
+	}
+
+	/**
+	 * Return the skips for a given account ID.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @param   string $account_id The account ID.
+	 * @return array|mixed
+	 */
+	public function get_account_skips( $account_id ) {
+		if ( isset( $this->skips[ $account_id ] ) ) {
+			return $this->skips[ $account_id ];
+		}
+		return array();
+	}
+
+	/**
+	 * Utility method to determine if a given date is in skips for a given account ID.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   string $account_id The account ID.
+	 * @param   string $time The date time to look for.
+	 * @param   bool   $is_timestamp Flag to specify if the given time is timestamp.
+	 * @return bool
+	 */
+	private function is_in_skips( $account_id, $time, $is_timestamp = false ) {
+	    $account_skips = $this->get_account_skips( $account_id );
+	    if ( $is_timestamp ) {
+	        return in_array( date( 'Y-m-d H:i', $time ), $account_skips );
+		} else {
+			return in_array( $time, $account_skips );
+		}
 	}
 
 	/**
@@ -293,23 +367,98 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		$this->skips = $this->get_skips();
 		$list = array();
 		foreach ( $this->schedules as $account_id => $schedule ) {
-			$event = array( 'account_id' => $account_id );
+			$list[ $account_id ] = array();
 			if ( $schedule['type'] == 'recurring' ) {
+			    $i = 0;
 				if ( $schedule['last_share'] == null ) {
 					$time = $this->convert_float_to_time( $schedule['interval_r'] );
-					$event['time'] = $this->add_to_time( $schedule['first_share'], $time['hours'], $time['minutes'], true );
-					$schedule['last_share'] = $event['time'];
+					$event_time = $this->add_to_time( $schedule['first_share'], $time['hours'], $time['minutes'], true );
+					while ( $this->is_in_skips( $account_id, $event_time ) ) {
+					    $last_time = $event_time;
+						$event_time = $this->add_to_time( $last_time, $time['hours'], $time['minutes'], false );
+					}
+					$schedule['last_share'] = $event_time;
+					array_push( $list[ $account_id ], $event_time );
+					$i++;
 				}
-				array_push( $list, $event );
-				for ( $i = 1; $i < $future_events; $i++ ) {
+				for ( $i; $i < $future_events; $i++ ) {
+					$event_time = $this->add_to_time( $schedule['last_share'], $time['hours'], $time['minutes'], false );
+					while ( $this->is_in_skips( $account_id, $event_time ) ) {
+						$last_time = $event_time;
+						$event_time = $this->add_to_time( $last_time, $time['hours'], $time['minutes'], false );
+					}
+					$schedule['last_share'] = $event_time;
+					array_push( $list[ $account_id ], $event_time );
+				}
+			} else {
+				$i = 0;
+				$week_days = $schedule['interval_f']['week_days'];
+				$time = $schedule['interval_f']['time'];
+				$next_pos = $this->get_days_start_pos( $week_days );
+				$size = sizeof( $week_days );
+				if ( $schedule['last_share'] == null ) {
+					$event_time = $this->next_day_of_week( $schedule['first_share'], $week_days[ $next_pos ], true ) . ' ' . $time;
+					while ( $this->is_in_skips( $account_id, $event_time ) ) {
+						$last_time = $event_time;
+						$event_time = $this->next_day_of_week( $last_time, $week_days[ $next_pos ], false ) . ' ' . $time;
+					}
+					$schedule['last_share'] = $event_time;
+					$next_pos = $this->next_pos_in_size( $next_pos, $size );
+					array_push( $list[ $account_id ], $event_time );
+					$i++;
+				}
+				for ( $i; $i < $future_events; $i++ ) {
 					$event = array( 'account_id' => $account_id );
-					$event['time'] = $this->add_to_time( $schedule['last_share'], $time['hours'], $time['minutes'], false );
-					$schedule['last_share'] = $event['time'];
-					array_push( $list, $event );
+					$event_time = $this->next_day_of_week( $schedule['last_share'], $week_days[ $next_pos ], false ) . ' ' . $time;
+					while ( $this->is_in_skips( $account_id, $event_time ) ) {
+						$last_time = $event_time;
+						$event_time = $this->next_day_of_week( $last_time, $week_days[ $next_pos ], false ) . ' ' . $time;
+					}
+					$schedule['last_share'] = $event_time;
+					array_push( $list[ $account_id ], $event_time );
+					$next_pos = $this->next_pos_in_size( $next_pos, $size );
 				}
+			}// End if().
+		}// End foreach().
+		return $list;
+	}
+
+	/**
+	 * Utility method to give a position bounded by two dimensions.
+	 *
+	 * Used to loop through the days of the week array as many times as needed.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   int $current_pos The current position.
+	 * @param   int $size The upper limit.
+	 * @param   int $first_pos The lower limit.
+	 * @return int
+	 */
+	private function next_pos_in_size( $current_pos, $size = 1, $first_pos = 0 ) {
+		$next_pos = $current_pos + 1;
+		if ( $next_pos < $size ) {
+			return $next_pos;
+		}
+		return $first_pos;
+	}
+
+	/**
+	 * Computes the next available day of the week from current time
+	 * with respect to the days of the week array passed from the schedules.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   array $days_of_week The days of the week array.
+	 * @return int
+	 */
+	private function get_days_start_pos( $days_of_week ) {
+		for ( $i = 0; $i < sizeof( $days_of_week ); $i++ ) {
+			if ( $days_of_week[ $i ] >= date( 'N', current_time( 'timestamp', 0 ) ) ) {
+				return $i;
 			}
 		}
-		return $list;
+		return 0;
 	}
 
 }
