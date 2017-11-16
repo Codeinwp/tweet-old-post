@@ -134,6 +134,42 @@ abstract class Rop_Url_Shortner_Abstract {
 	}
 
 	/**
+	 * Utility method to build the request url for cURL.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   string $url The URL to shorten.
+	 * @param   array  $props cURL props.
+	 * @param   array  $params Params to be appended to URL.
+	 * @return string
+	 */
+	private function build_url( $url, $props, $params ) {
+		if ( $props && isset( $props['method'] ) && $props['method'] === 'get' ) {
+			$url    .= '?';
+			foreach ( $params as $k => $v ) {
+				$url .= "$k=$v&";
+			}
+		}
+		return $url;
+	}
+
+	/**
+	 * Utility method to build the headers.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param array $headers The headers to be added to cURL.
+	 * @return array
+	 */
+	private function build_headers( $headers ) {
+		$header = array();
+		foreach ( $headers as $key => $val ) {
+			$header[] = "$key: $val";
+		}
+		return $header;
+	}
+
+	/**
 	 * Method to call a shortner API.
 	 *
 	 * @codeCoverageIgnore
@@ -141,7 +177,7 @@ abstract class Rop_Url_Shortner_Abstract {
 	 * @since   8.0.0
 	 * @access  protected
 	 * @param   string $url The URL to shorten.
-	 * @param   array  $props Curl props.
+	 * @param   array  $props cURL props.
 	 * @param   array  $params Params to be passed to API.
 	 * @param   array  $headers Additional headers if needed.
 	 * @return array
@@ -149,25 +185,17 @@ abstract class Rop_Url_Shortner_Abstract {
 	protected final function callAPI( $url, $props = array(), $params = array(), $headers = array() ) {
 		$body       = null;
 		$error      = null;
-		if ( $props && isset( $props['method'] ) && $props['method'] === 'get' ) {
-			$url    .= '?';
-			foreach ( $params as $k => $v ) {
-				$url .= "$k=$v&";
-			}
-		}
-		$conn = curl_init( $url );
+
+		$conn = curl_init( $this->build_url( $url, $props, $params ) );
 		curl_setopt( $conn, CURLOPT_SSL_VERIFYPEER, false );
 		curl_setopt( $conn, CURLOPT_FRESH_CONNECT, true );
 		curl_setopt( $conn, CURLOPT_RETURNTRANSFER, 1 );
 		curl_setopt( $conn, CURLOPT_FOLLOWLOCATION, 1 );
 		curl_setopt( $conn, CURLOPT_HEADER, 0 );
 		curl_setopt( $conn, CURLOPT_NOSIGNAL, 1 );
-		$header = array();
+
 		if ( $headers ) {
-			foreach ( $headers as $key => $val ) {
-				$header[] = "$key: $val";
-			}
-			curl_setopt( $conn, CURLOPT_HTTPHEADER, $header );
+			curl_setopt( $conn, CURLOPT_HTTPHEADER, $this->build_headers( $headers ) );
 		}
 		if ( $props && isset( $props['method'] ) ) {
 			if ( in_array( $props['method'], array( 'post', 'put' ) ) ) {

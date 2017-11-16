@@ -267,7 +267,7 @@ class Test_ROP extends WP_UnitTestCase {
 
         // is.gd Test
         $isgd = new Rop_Isgd_Shortner();
-        $isgd = $bitly->shorten_url( $url );
+        $short_url = $isgd->shorten_url( $url );
 
         $this->assertNotEquals( $url, $short_url );
         $this->assertUriIsCorrect( $short_url );
@@ -291,30 +291,91 @@ class Test_ROP extends WP_UnitTestCase {
         $scheduler = new Rop_Scheduler_Model();
         $schedule_defaults = $global_settings->get_default_schedule();
 
-        $schedule = $schedule_defaults;
-        $schedule_f = $schedule_defaults;
-
         $this->assertEquals( $scheduler->get_schedule( $account_id ), $schedule_defaults );
 
-        $schedule['type'] = 'recurring';
-        $schedule['last_share'] = '2017-11-15 17:56';
+        $schedule = $this->generateSchedules( $account_id, array( 'type' => 'recurring', 'last_share' => '2017-11-15 17:56' ) );
+        $this->generateSchedules( $account_id_f );
 
-        $schedule = $scheduler->create_schedule( $schedule );
-        $schedule_f = $scheduler->create_schedule( $schedule_f );
-
-        $scheduler->add_update_schedule( $account_id, $schedule );
-        $scheduler->add_update_schedule( $account_id_f, $schedule_f );
-
+        $scheduler = new Rop_Scheduler_Model();
         $this->assertEquals( $scheduler->get_schedule( $account_id ), $schedule );
         $this->assertNotEquals( $scheduler->get_schedule( $account_id ), $schedule_defaults );
 
         $scheduler->add_to_skips( $account_id_f, '2017-12-01 10:30' );
 
-        var_dump( $scheduler->list_upcomming_schedules() );
+        $upcoming = $scheduler->list_upcomming_schedules();
+
+        $this->assertTrue( is_array( $upcoming ) );
+        $this->assertNotTrue( empty( $upcoming ) );
+
+        $this->assertEquals( sizeof( $upcoming[$account_id] ),  sizeof( $upcoming[$account_id_f] ) );
 
         $scheduler->remove_schedule( $account_id );
 
         $this->assertEquals( $scheduler->get_schedule( $account_id ), $schedule_defaults );
+    }
+
+    private function generateSchedules( $account_id, $data = false ) {
+        $global_settings = new Rop_Global_Settings();
+        $scheduler = new Rop_Scheduler_Model();
+        $schedule_defaults = $global_settings->get_default_schedule();
+        $schedule = $schedule_defaults;
+
+        if( $data && is_array( $data ) ) {
+            foreach ( $data as $key => $value ) {
+                $schedule[$key] = $value;
+            }
+        }
+
+        $schedule = $scheduler->create_schedule( $schedule );
+        $scheduler->add_update_schedule( $account_id, $schedule );
+        return $schedule;
+    }
+
+    /**
+     * Testing the queue model.
+     *
+     * @since   8.0.0
+     * @access  public
+     *
+     * @covers Rop_Queue_Model
+     */
+    public function test_queue() {
+        $account_id = 'test_id_facebook';
+
+        $this->generateSchedules( $account_id );
+        $this->generatePosts( 8, 'post', '-30 day' );
+
+        $queue = new Rop_Queue_Model();
+
+        $starting_queue = $queue->get_queue();
+
+        $this->assertTrue( !empty( $starting_queue ) );
+
+        for ( $i=0; $i<sizeof( $starting_queue[$account_id] ); $i++ ) {
+            $queue->pop_from_queue( $account_id );
+        }
+
+        $should_be_empty_queue = $queue->get_queue();
+
+        $this->assertTrue( empty( $should_be_empty_queue[$account_id] ) );
+
+        $queue->ban_post( $account_id, 28 );
+        $queue->ban_post( $account_id, 26 );
+
+
+        $queue->refill_queue();
+
+        $new_queue_w_filter = $queue->get_queue();
+
+        $this->assertTrue( !empty( $new_queue_w_filter ) );
+        $this->assertNotEquals( $starting_queue, $new_queue_w_filter );
+
+        for ( $i=0; $i < sizeof( $new_queue_w_filter[$account_id] ); $i++ ) {
+            $id = $new_queue_w_filter[$account_id][$i]['post'];
+            $this->assertTrue( ! in_array( $id, array( 28, 26 ) ) );
+        }
+
+        //var_dump( $queue->create_shuffler( 0, 2, 10 ) );
     }
 
     /**

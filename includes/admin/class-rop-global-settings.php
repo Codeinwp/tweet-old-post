@@ -147,7 +147,7 @@ class Rop_Global_Settings {
 					'number_of_posts' => 5,
 					'more_than_once' => true,
 					'available_post_types' => $post_types_array,
-					'selected_post_types' => array(),
+					'selected_post_types' => array( array( 'name' => 'Posts', 'value' => 'post', 'selected' => true ) ),
 					'available_taxonomies' => array(),
 					'selected_taxonomies' => array(),
 					'exclude_taxonomies' => false,

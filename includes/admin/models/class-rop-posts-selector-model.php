@@ -54,21 +54,31 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	}
 
 	/**
-	 * Method to retrieve the posts based on general settings and filtered by the buffer.
+	 * Utility method to build the post types from settings.
 	 *
 	 * @since   8.0.0
-	 * @access  public
-	 * @param   bool|string $account The account id to filter by. Default false, don't filter by account.
-	 * @return mixed
+	 * @access  private
+	 * @return array
 	 */
-	public function select( $account = false ) {
+	private function build_post_types() {
 		$post_types = array();
-		$tax_queries = array( 'relation' => 'OR' );
-		$operator = ( $this->settings->get_exclude_taxonomies() == true ) ? 'NOT IN' : 'IN';
-
 		foreach ( $this->settings->get_selected_post_types() as $post_type ) {
 			array_push( $post_types, $post_type['value'] );
 		}
+
+		return $post_types;
+	}
+
+	/**
+	 * Utility method to build the taxonomies query.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @return array
+	 */
+	private function build_tax_query() {
+		$tax_queries = array( 'relation' => 'OR' );
+		$operator = ( $this->settings->get_exclude_taxonomies() == true ) ? 'NOT IN' : 'IN';
 
 		if ( ! empty( $this->settings->get_selected_taxonomies() ) ) {
 			foreach ( $this->settings->get_selected_taxonomies() as $taxonomy ) {
@@ -93,6 +103,20 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 				array_push( $tax_queries, $tmp_query );
 			}
 		}
+		return $tax_queries;
+	}
+
+	/**
+	 * Method to retrieve the posts based on general settings and filtered by the buffer.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @param   bool|string $account The account id to filter by. Default false, don't filter by account.
+	 * @return mixed
+	 */
+	public function select( $account = false ) {
+		$post_types = $this->build_post_types();
+		$tax_queries = $this->build_tax_query();
 
 		$include = array();
 		if ( isset( $account ) && $account ) {
@@ -136,7 +160,17 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 
 		$results = wp_parse_args( $results, $required );
 
+		$this->selection = $results;
 		return $results;
+	}
+
+	public function update_buffer( $account_id, $post_id ) {
+	    if ( ! isset( $this->buffer[ $account_id ] ) ) {
+			$this->buffer[ $account_id ] = array();
+		}
+		if ( ! in_array( $post_id, $this->buffer[ $account_id ] ) ) {
+			array_push( $this->buffer[ $account_id ], $post_id );
+		}
 	}
 
 	/**

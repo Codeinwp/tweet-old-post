@@ -240,7 +240,7 @@
 				}
 			},
 			syncTime ( dataEvent, index ) {
-				if( this.schedule.interval_f.time[index] !== undefined ) {
+				if ( this.schedule.interval_f.time[index] !== undefined ) {
 					this.schedule.interval_f.time[index] = dataEvent.data.HH + ':' + dataEvent.data.mm
 				}
 			},
