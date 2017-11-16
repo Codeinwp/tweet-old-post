@@ -1,12 +1,39 @@
 <?php
 class Rop_Queue_Model extends Rop_Model_Abstract {
 
+	/**
+	 * Holds the active queue.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @var     array $queue The active queue array.
+	 */
 	private $queue;
 
+	/**
+	 * An instance of the Posts Selector.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @var     Rop_Posts_Selector_Model An instance of the Posts Selector.
+	 */
 	private $selector;
 
+	/**
+	 * An instance of the Scheduler Model
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @var     Rop_Scheduler_Model An instance of the Scheduler Model.
+	 */
 	private $scheduler;
 
+	/**
+	 * Rop_Queue_Model constructor.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 */
 	public function __construct() {
 		parent::__construct( 'rop_queue' );
 
@@ -22,7 +49,17 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 		}
 	}
 
-	public function create_shuffler( $start, $end, $quantity ) {
+	/**
+	 * Utility method to generate a shuffle list within the specified range.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   int $start The starting value.
+	 * @param   int $end The end value.
+	 * @param   int $quantity The amount of results to be returned.
+	 * @return array
+	 */
+	private function create_shuffler( $start, $end, $quantity ) {
 		$numbers = range( $start, $end );
 		shuffle( $numbers );
 		$result = $numbers;
@@ -33,6 +70,13 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 		return array_slice( $result, 0, $quantity );
 	}
 
+	/**
+	 * Utility method to build the active queue.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return array
+	 */
 	public function build_queue() {
 		$queue = array();
 		$upcoming_schedules = $this->scheduler->list_upcomming_schedules();
@@ -53,6 +97,12 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 		return $queue;
 	}
 
+	/**
+	 * Utility method to top off queue for empty elements.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 */
 	public function refill_queue() {
 		$upcoming_schedules = $this->scheduler->list_upcomming_schedules();
 		if ( $this->queue && ! empty( $this->queue ) ) {
@@ -73,6 +123,16 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 
 	}
 
+	/**
+	 * Method to pop items from active queue.
+	 * And update account scheduler, as if event was resolved.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @param   string $account_id The account ID.
+	 * @param   bool   $update_last_share Flag to specify if scheduler for the account should be updated.
+	 * @return mixed
+	 */
 	public function pop_from_queue( $account_id, $update_last_share = true ) {
 		$queue_to_pop = $this->queue[ $account_id ];
 		$popped = array_shift( $queue_to_pop );
@@ -83,8 +143,16 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 		return $popped['time'];
 	}
 
+	/**
+	 * Mark a post_id as blocked for the account.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @param   string $account_id The account ID.
+	 * @param   int    $post_id The post id.
+	 */
 	public function ban_post( $account_id, $post_id ) {
-		$this->selector->update_buffer( $account_id, $post_id );
+		$this->selector->mark_as_blocked( $account_id, $post_id );
 	}
 
 	public function get_queue() {

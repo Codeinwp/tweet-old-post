@@ -24,6 +24,15 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	private $buffer = array();
 
 	/**
+	 * Holds the block post ID's.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @var     array $blocked The blocked post ID's to filter the results by.
+	 */
+	private $blocked = array();
+
+	/**
 	 * Stores the active selection.
 	 *
 	 * @since   8.0.0
@@ -51,6 +60,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		parent::__construct();
 		$this->settings = new Rop_Settings_Model();
 		$this->buffer = wp_parse_args( $this->get( 'posts_buffer' ), $this->buffer );
+		$this->blocked = wp_parse_args( $this->get( 'posts_blocked' ), $this->blocked );
 	}
 
 	/**
@@ -106,36 +116,8 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		return $tax_queries;
 	}
 
-	/**
-	 * Method to retrieve the posts based on general settings and filtered by the buffer.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @param   bool|string $account The account id to filter by. Default false, don't filter by account.
-	 * @return mixed
-	 */
-	public function select( $account = false ) {
-		$post_types = $this->build_post_types();
-		$tax_queries = $this->build_tax_query();
-
-		$include = array();
-		if ( isset( $account ) && $account ) {
-			$exclude = ( isset( $this->buffer[ $account ] ) ) ? $this->buffer[ $account ] : array();
-		}
-
-		$required = array();
-		if ( ! empty( $this->settings->get_selected_posts() ) ) {
-			foreach ( $this->settings->get_selected_posts() as $post ) {
-				if ( $this->settings->get_exclude_posts() == true ) {
-					array_push( $exclude, $post['value'] );
-				} else {
-					array_push( $include, $post['value'] );
-				}
-			}
-			$required = get_posts( array( 'numberposts' => -1, 'include' => $include, 'no_found_rows' => true ) );
-		}
-
-		$args = array(
+	private function build_query_args( $post_types, $tax_queries, $exclude ) {
+	    return array(
 			'no_found_rows' => true,
 			'numberposts' => $this->settings->get_number_of_posts(),
 			'post_type' => $post_types,
@@ -151,17 +133,80 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 				)
 			),
 		);
+	}
+
+	private function build_exclude( $account_id, $excluded_by_user = array() ) {
+		$exclude = array();
+		if ( isset( $account_id ) && $account_id ) {
+			$exclude = ( isset( $this->buffer[ $account_id ] ) ) ? $this->buffer[ $account_id ] : array();
+			$blocked = ( isset( $this->blocked[ $account_id ] ) ) ? $this->blocked[ $account_id ] : array();
+			$exclude = array_merge( $exclude, $blocked );
+		}
+		$exclude = array_merge( $exclude, $excluded_by_user );
+	    return $exclude;
+	}
+
+
+	private function query_results( $account_id, $post_types, $tax_queries, $excluded_by_user ) {
+		$exclude = $this->build_exclude( $account_id, $excluded_by_user );
+
+		$args = $this->build_query_args( $post_types, $tax_queries, $exclude );
 
 		if ( empty( $this->settings->get_selected_taxonomies() ) ) {
 			unset( $args['tax_query'] );
 		}
 
-		$results = get_posts( $args );
+		return get_posts( $args );
+	}
+
+	/**
+	 * Method to retrieve the posts based on general settings and filtered by the buffer.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @param   bool|string $account_id The account ID to filter by. Default false, don't filter by account.
+	 * @return mixed
+	 */
+	public function select( $account_id = false ) {
+		$post_types = $this->build_post_types();
+		$tax_queries = $this->build_tax_query();
+
+		$include = array();
+		$excluded_by_user = array();
+		$required = array();
+		if ( ! empty( $this->settings->get_selected_posts() ) ) {
+			foreach ( $this->settings->get_selected_posts() as $post ) {
+				if ( $this->settings->get_exclude_posts() == true ) {
+					array_push( $excluded_by_user, $post['value'] );
+				} else {
+					array_push( $include, $post['value'] );
+				}
+			}
+			$required = get_posts( array( 'numberposts' => -1, 'include' => $include, 'no_found_rows' => true ) );
+		}
+
+		$results = $this->query_results( $account_id, $post_types, $tax_queries, $excluded_by_user );
+
+		if ( empty( $results ) && $this->has_buffer_items( $account_id ) ) {
+		    $this->clear_buffer( $account_id );
+
+			$results = $this->query_results( $account_id, $post_types, $tax_queries, $excluded_by_user );
+
+		}
 
 		$results = wp_parse_args( $results, $required );
 
 		$this->selection = $results;
 		return $results;
+	}
+
+	public function mark_as_blocked( $account_id, $post_id ) {
+		if ( ! isset( $this->blocked[ $account_id ] ) ) {
+			$this->blocked[ $account_id ] = array();
+		}
+		if ( ! in_array( $post_id, $this->blocked[ $account_id ] ) ) {
+			array_push( $this->blocked[ $account_id ], $post_id );
+		}
 	}
 
 	public function update_buffer( $account_id, $post_id ) {
@@ -171,6 +216,11 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		if ( ! in_array( $post_id, $this->buffer[ $account_id ] ) ) {
 			array_push( $this->buffer[ $account_id ], $post_id );
 		}
+	}
+
+	public function has_buffer_items( $account_id ) {
+		$this->buffer = wp_parse_args( $this->get( 'posts_buffer' ), $this->buffer );
+		return ( isset( $this->buffer[ $account_id ] ) ) ? true : false;
 	}
 
 	/**
