@@ -50,12 +50,12 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	public function __construct() {
 		parent::__construct( 'rop_schedules_data' );
 
-		$this->schedules = $this->get_schedules();
-		$this->skips = $this->get_skips();
-
 		$global_settings = new Rop_Global_Settings();
 
 		$this->schedule_defaults = $global_settings->get_default_schedule();
+
+		$this->schedules = $this->get_schedules();
+		$this->skips = $this->get_skips();
 	}
 
 	/**
@@ -66,7 +66,15 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @return array
 	 */
 	private function get_schedules() {
-		return ( $this->get( 'schedules' ) != null ) ?  $this->get( 'schedules' ) : array();
+	    $services = new Rop_Services_Model();
+	    $active_accounts = $services->get_active_accounts();
+		$schedules = ( $this->get( 'schedules' ) != null ) ?  $this->get( 'schedules' ) : array();
+		$default_schedules = array();
+		foreach ( $active_accounts as $account_id => $data ) {
+			$default_schedules[ $account_id ] = $this->create_schedule( $this->schedule_defaults );
+		}
+
+		return wp_parse_args( $schedules, $default_schedules );
 	}
 
 	/**
@@ -78,28 +86,6 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 */
 	private function get_skips() {
 		return ( $this->get( 'skips' ) != null ) ?  $this->get( 'skips' ) : array();
-	}
-
-	/**
-	 * Utility method to check if a time value is of float type.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 * @param   string $time The time value to check.
-	 * @return bool
-	 */
-	private function check_time_is_float( $time ) {
-		if ( ! is_scalar( $time ) ) {
-			return false;
-		}
-
-		$type = gettype( $time );
-
-		if ( $type === 'float' ) {
-			return true;
-		} else {
-			return preg_match( '/^\\d+\\.\\d+$/', $time ) === 1;
-		}
 	}
 
 	/**
@@ -121,19 +107,6 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 			'hours' => $hours,
 			'minutes' => $minutes,
 		);
-	}
-
-	/**
-	 * Utility method to convert a string of HH:mm format to float,
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 * @param   string $value The value to be converted.
-	 * @return float|int
-	 */
-	private function convert_time_to_float( $value ) {
-		list( $hour, $minutes ) = explode( ':', $value );
-		return $hour + floor( ( $minutes / 60 ) * 100 ) / 100;
 	}
 
 	/**

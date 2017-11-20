@@ -12229,6 +12229,7 @@ window.onload = function () {
 			_rop_store2.default.dispatch('fetchAvailableServices');
 			_rop_store2.default.dispatch('fetchAuthenticatedServices');
 			_rop_store2.default.dispatch('fetchActiveAccounts');
+			_rop_store2.default.dispatch('fetchQueue');
 		},
 
 		components: {
@@ -12302,7 +12303,8 @@ exports.default = new _vuex2.default.Store({
 			// view: 'accounts'
 			// view: 'post-format'
 			// view: 'settings'
-			view: 'schedule'
+			// view: 'schedule'
+			view: 'queue'
 		},
 		auth_in_progress: false,
 		displayTabs: [{
@@ -12322,6 +12324,10 @@ exports.default = new _vuex2.default.Store({
 			slug: 'schedule',
 			isActive: false
 		}, {
+			name: 'Sharing Queue',
+			slug: 'queue',
+			isActive: false
+		}, {
 			name: 'Logs',
 			slug: 'logs',
 			isActive: false
@@ -12331,7 +12337,8 @@ exports.default = new _vuex2.default.Store({
 		authenticatedServices: [],
 		activeAccounts: [],
 		activePostFormat: [],
-		activeSchedule: []
+		activeSchedule: [],
+		queue: []
 	},
 	getters: {
 		getServices: function getServices(state) {
@@ -12434,6 +12441,9 @@ exports.default = new _vuex2.default.Store({
 		},
 		updateSchedule: function updateSchedule(state, data) {
 			state.activeSchedule = data;
+		},
+		updateQueue: function updateQueue(state, data) {
+			state.queue = data;
 		}
 	},
 	actions: {
@@ -12756,6 +12766,23 @@ exports.default = new _vuex2.default.Store({
 				commit('updateSchedule', response.data);
 			}, function () {
 				commit('logMessage', ['Error retrieving schedule.', 'error']);
+			});
+		},
+		fetchQueue: function fetchQueue(_ref19, data) {
+			var commit = _ref19.commit;
+
+			_vue2.default.http({
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'get_queue' },
+				body: data,
+				responseType: 'json'
+			}).then(function (response) {
+				console.log(response.data);
+				commit('updateQueue', response.data);
+			}, function () {
+				commit('logMessage', ['Error retrieving queue.', 'error']);
 			});
 		}
 	}
@@ -14390,6 +14417,10 @@ var _scheduleTabPanel = __webpack_require__(110);
 
 var _scheduleTabPanel2 = _interopRequireDefault(_scheduleTabPanel);
 
+var _queueTabPanel = __webpack_require__(133);
+
+var _queueTabPanel2 = _interopRequireDefault(_queueTabPanel);
+
 var _logsTabPanel = __webpack_require__(129);
 
 var _logsTabPanel2 = _interopRequireDefault(_logsTabPanel);
@@ -14398,7 +14429,32 @@ var _vuex = __webpack_require__(21);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// <template>
+module.exports = {
+	name: 'main-page-panel',
+	computed: (0, _vuex.mapState)(['displayTabs', 'page']),
+	created: function created() {},
+
+	data: function data() {
+		return {
+			plugin_logo: ROP_ASSETS_URL + 'img/logo_rop.png'
+		};
+	},
+	methods: {
+		switchTab: function switchTab(slug) {
+			this.$store.commit('setTabView', slug);
+		}
+	},
+	components: {
+		'accounts': _accountsTabPanel2.default,
+		'settings': _settingsTabPanel2.default,
+		'post-format': _postFormatTabPanel2.default,
+		'schedule': _scheduleTabPanel2.default,
+		'queue': _queueTabPanel2.default,
+		'logs': _logsTabPanel2.default
+	}
+	// </script>
+
+}; // <template>
 // 	<div>
 // 		<div class="panel title-panel" style="margin-bottom: 40px; padding-bottom: 20px;">
 // 			<div class="panel-header">
@@ -14432,31 +14488,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 // <script>
 /* global ROP_ASSETS_URL */
-module.exports = {
-	name: 'main-page-panel',
-	computed: (0, _vuex.mapState)(['displayTabs', 'page']),
-	created: function created() {},
-
-	data: function data() {
-		return {
-			plugin_logo: ROP_ASSETS_URL + 'img/logo_rop.png'
-		};
-	},
-	methods: {
-		switchTab: function switchTab(slug) {
-			this.$store.commit('setTabView', slug);
-		}
-	},
-	components: {
-		'accounts': _accountsTabPanel2.default,
-		'settings': _settingsTabPanel2.default,
-		'post-format': _postFormatTabPanel2.default,
-		'schedule': _scheduleTabPanel2.default,
-		'logs': _logsTabPanel2.default
-	}
-	// </script>
-
-};
 
 /***/ }),
 /* 41 */
@@ -16337,7 +16368,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 									<multiple-select :searchQuery="searchQuery" @update="searchUpdate" :options="postsAvailable" :dontLock="true" :selected="generalSettings.selected_posts" :changedSelection="updatedPosts" />
 // 									<span class="input-group-addon">
 // 										<label class="form-checkbox">
-// 											<input type="checkbox" />
+// 											<input type="checkbox" v-model="generalSettings.exclude_posts" />
 // 											<i class="form-icon"></i> Exclude?
 // 										</label>
 // 									</span>
@@ -16426,7 +16457,8 @@ module.exports = {
 				post_types: postTypesSelected,
 				taxonomies: taxonomiesSelected,
 				exclude_taxonomies: excludeTaxonomies,
-				posts: postsSelected
+				posts: postsSelected,
+				exclude_posts: this.generalSettings.exclude_posts
 			});
 		}
 	},
@@ -16922,7 +16954,7 @@ module.exports = "\n\t<div class=\"form-autocomplete\" style=\"width: 100%;\" v-
 /* 104 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\" style=\"overflow: inherit;\">\n\t\t\t<h3>General Settings</h3>\n\t\t\t<p>This is a <b>Vue.js</b> component.</p>\n\t\t\t<div class=\"container\">\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Minimum age of posts available for sharing, in days\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t\t<b>Minimum post age</b><br/>\n\t\t\t\t\t\t\t\t<i>Minimum age of posts available for sharing, in days.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<counter-input id=\"min_post_age\" :maxVal=\"365\" :value.sync=\"generalSettings.minimum_post_age\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<!-- Maximum age of posts available for sharing, in days\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-right\">\n\t\t\t\t\t\t\t\t<counter-input id=\"max_post_age\" :maxVal=\"365\" :value.sync=\"generalSettings.maximum_post_age\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-left\">\n\t\t\t\t\t\t\t\t<b>Maximum post age</b><br/>\n\t\t\t\t\t\t\t\t<i>Maximum age of posts available for sharing, in days.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Number of posts to share per account per trigger\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t\t<b>Number of posts</b><br/>\n\t\t\t\t\t\t\t\t<i>Number of posts to share per. account per. trigger of scheduled job.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<!-- Share more than once, if there are no more posts to share, we should start re-sharing the one we\n\t\t\t\t\tpreviously shared\n\t\t\t\t\t(boolean) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-2 col-xl-2 col-1 text-right\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\" />\n\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Yes\n\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-10 col-xl-10 col-11 text-left\">\n\t\t\t\t\t\t\t\t<b>Share more than once?</b><br/>\n\t\t\t\t\t\t\t\t<i>If there are no more posts to share, we should start re-sharing the one we previously shared.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Post types available to share - what post types are available for share\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Post types</b><br/>\n\t\t\t\t\t\t\t\t<i>Post types available to share - what post types are available for share</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<multiple-select :options=\"postTypes\" :selected=\"generalSettings.selected_post_types\" :changedSelection=\"updatedPostTypes\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Taxonomies available for posts to share - based on what post types users choose to share, we should\n\t\t\t\t\tshow the taxonomies available for that post type, along with their terms, which user can select to share.\n\t\t\t\t\tHere we should have also a toggle if either the taxonomies selected are included or excluded.\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Taxonomies</b><br/>\n\t\t\t\t\t\t\t\t<i>Taxonomies available for the selected post types. Use to include or exclude posts.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changedSelection=\"updatedTaxonomies\" />\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\">\n\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" @change=\"exludeTaxonomiesChange\" />\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Exclude?\n\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Posts excluded/included in sharing - what posts we should exclude or include in sharing\n\t\t\t\t\t- we should have have an autocomplete list which should fetch posts from the previously select post_types\n\t\t\t\t\tand terms and allow them to be include/excluded.\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Posts</b><br/>\n\t\t\t\t\t\t\t\t<i>Posts excluded/included in sharing, filtered based on previous selections.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t\t\t\t<multiple-select :searchQuery=\"searchQuery\" @update=\"searchUpdate\" :options=\"postsAvailable\" :dontLock=\"true\" :selected=\"generalSettings.selected_posts\" :changedSelection=\"updatedPosts\" />\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\">\n\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" />\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Exclude?\n\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\"><i class=\"fa fa-check\"></i> Save</button>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\" style=\"overflow: inherit;\">\n\t\t\t<h3>General Settings</h3>\n\t\t\t<p>This is a <b>Vue.js</b> component.</p>\n\t\t\t<div class=\"container\">\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Minimum age of posts available for sharing, in days\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t\t<b>Minimum post age</b><br/>\n\t\t\t\t\t\t\t\t<i>Minimum age of posts available for sharing, in days.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<counter-input id=\"min_post_age\" :maxVal=\"365\" :value.sync=\"generalSettings.minimum_post_age\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<!-- Maximum age of posts available for sharing, in days\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-right\">\n\t\t\t\t\t\t\t\t<counter-input id=\"max_post_age\" :maxVal=\"365\" :value.sync=\"generalSettings.maximum_post_age\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-left\">\n\t\t\t\t\t\t\t\t<b>Maximum post age</b><br/>\n\t\t\t\t\t\t\t\t<i>Maximum age of posts available for sharing, in days.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Number of posts to share per account per trigger\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t\t<b>Number of posts</b><br/>\n\t\t\t\t\t\t\t\t<i>Number of posts to share per. account per. trigger of scheduled job.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<!-- Share more than once, if there are no more posts to share, we should start re-sharing the one we\n\t\t\t\t\tpreviously shared\n\t\t\t\t\t(boolean) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-2 col-xl-2 col-1 text-right\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\" />\n\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Yes\n\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-10 col-xl-10 col-11 text-left\">\n\t\t\t\t\t\t\t\t<b>Share more than once?</b><br/>\n\t\t\t\t\t\t\t\t<i>If there are no more posts to share, we should start re-sharing the one we previously shared.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Post types available to share - what post types are available for share\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Post types</b><br/>\n\t\t\t\t\t\t\t\t<i>Post types available to share - what post types are available for share</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<multiple-select :options=\"postTypes\" :selected=\"generalSettings.selected_post_types\" :changedSelection=\"updatedPostTypes\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Taxonomies available for posts to share - based on what post types users choose to share, we should\n\t\t\t\t\tshow the taxonomies available for that post type, along with their terms, which user can select to share.\n\t\t\t\t\tHere we should have also a toggle if either the taxonomies selected are included or excluded.\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Taxonomies</b><br/>\n\t\t\t\t\t\t\t\t<i>Taxonomies available for the selected post types. Use to include or exclude posts.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changedSelection=\"updatedTaxonomies\" />\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\">\n\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" @change=\"exludeTaxonomiesChange\" />\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Exclude?\n\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Posts excluded/included in sharing - what posts we should exclude or include in sharing\n\t\t\t\t\t- we should have have an autocomplete list which should fetch posts from the previously select post_types\n\t\t\t\t\tand terms and allow them to be include/excluded.\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Posts</b><br/>\n\t\t\t\t\t\t\t\t<i>Posts excluded/included in sharing, filtered based on previous selections.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t\t\t\t<multiple-select :searchQuery=\"searchQuery\" @update=\"searchUpdate\" :options=\"postsAvailable\" :dontLock=\"true\" :selected=\"generalSettings.selected_posts\" :changedSelection=\"updatedPosts\" />\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\">\n\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_posts\" />\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Exclude?\n\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\"><i class=\"fa fa-check\"></i> Save</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 105 */
@@ -18582,6 +18614,230 @@ module.exports = "\n    <div class=\"container\">\n        <h3>Logs</h3>\n      
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div>\n\t\t<div class=\"panel title-panel\" style=\"margin-bottom: 40px; padding-bottom: 20px;\">\n\t\t\t<div class=\"panel-header\">\n\t\t\t\t<img :src=\"plugin_logo\" style=\"float: left; margin-right: 10px;\" />\n\t\t\t\t<h1 class=\"d-inline-block\">Revive Old Posts</h1><span class=\"powered\"> by <a href=\"https://themeisle.com\" target=\"_blank\"><b>ThemeIsle</b></a></span>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel\">\n\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t<ul class=\"tab\">\n\t\t\t\t\t<li class=\"tab-item\" v-for=\"tab in displayTabs\" :class=\"{ active: tab.isActive }\"><a href=\"#\" @click=\"switchTab( tab.slug )\">{{ tab.name }}</a></li>\n\t\t\t\t\t<li class=\"tab-item tab-action\">\n\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Beta User\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Remote Check\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\n\t\t\t<component :is=\"page.view\"></component>\n\t\t</div>\n\t</div>\n";
+
+/***/ }),
+/* 133 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(134)
+__vue_script__ = __webpack_require__(138)
+__vue_template__ = __webpack_require__(139)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/var/www/html/wp-base/wp-content/plugins/tweet-old-post/vue/src/vue-elements/queue-tab-panel.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 134 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(135);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-eb638c98&file=queue-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./queue-tab-panel.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-eb638c98&file=queue-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./queue-tab-panel.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 135 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)();
+// imports
+
+
+// module
+exports.push([module.i, "\n\t#rop_core .avatar .avatar-icon[_v-eb638c98] {\n\t\tbackground: #333;\n\t\tborder-radius: 50%;\n\t\tfont-size: 16px;\n\t\ttext-align: center;\n\t\tline-height: 20px;\n\t}\n\t#rop_core .avatar .avatar-icon.fa-facebook-official[_v-eb638c98] { background-color: #3b5998; }\n\t#rop_core .avatar .avatar-icon.fa-twitter[_v-eb638c98] { background-color: #55acee; }\n\t#rop_core .avatar .avatar-icon.fa-linkedin[_v-eb638c98] { background-color: #007bb5; }\n\t#rop_core .avatar .avatar-icon.fa-tumblr[_v-eb638c98] { background-color: #32506d; }\n\n\t#rop_core .service.facebook[_v-eb638c98] {\n\t\tcolor: #3b5998;\n\t}\n\n\t#rop_core .service.twitter[_v-eb638c98] {\n\t\tcolor: #55acee;\n\t}\n\n\t#rop_core .service.linkedin[_v-eb638c98] {\n\t\tcolor: #007bb5;\n\t}\n\n\t#rop_core .service.tumblr[_v-eb638c98] {\n\t\tcolor: #32506d;\n\t}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 136 */,
+/* 137 */,
+/* 138 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _keys = __webpack_require__(6);
+
+var _keys2 = _interopRequireDefault(_keys);
+
+var _buttonCheckbox = __webpack_require__(116);
+
+var _buttonCheckbox2 = _interopRequireDefault(_buttonCheckbox);
+
+var _vue2Timepicker = __webpack_require__(119);
+
+var _vue2Timepicker2 = _interopRequireDefault(_vue2Timepicker);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// <template>
+// 	<div class="tab-view">
+// 		<div class="panel-body" style="overflow: inherit;">
+// 			<h3>Sharing Queue</h3>
+// 			<div class="container columns">
+//                 <div class="column col-sm-12 col-6 text-left" v-for=" (data, index) in queue ">
+//                     <div class="card col-12" style="max-width: 100%;">
+//                         <div class="card-header">
+//                             <p class="text-gray text-right float-right"><b>Scheduled:</b><br/>{{data.time}}</p>
+//                             <div class="card-title h5">{{data.post.post_title}}</div>
+//                             <div class="card-subtitle text-gray"><i class="service fa" :class="iconClass( data.account_id )"></i> {{active_accounts[data.account_id].account}}</div>
+//                         </div>
+//                         <div class="card-image" v-if="data.post.post_img">
+//                             <figure class="figure" style="max-height: 250px; overflow: hidden;">
+//                                 <img :src="data.post.post_img" class="img-fit-cover" style=" width: 100%; height: 250px;">
+//                             </figure>
+//                         </div>
+//                         <div class="card-body">
+//                             <p>{{data.post.post_content}}</p>
+//                         </div>
+//                         <div class="card-footer text-center">
+//                             <button class="btn btn-primary"><i class="fa fa-refresh" aria-hidden="true"></i> Update</button>
+//                             <button class="btn btn-warning"><i class="fa fa-step-forward" aria-hidden="true"></i> Skip</button>
+//                             <button class="btn btn-danger"><i class="fa fa-ban" aria-hidden="true"></i> Block</button>
+//                         </div>
+//                     </div>
+//                 </div>
+// 			</div>
+// 		</div>
+// 		<div class="panel-footer">
+// 			<button class="btn btn-primary" @click="saveSchedule()"><i class="fa fa-check"></i> Save Schedule</button>
+// 			<button class="btn btn-secondary" @click="resetSchedule()"><i class="fa fa-ban"></i> Reset to Defaults</button>
+// 		</div>
+// 	</div>
+// </template>
+//
+// <script>
+module.exports = {
+	name: 'queue-view',
+	data: function data() {
+		var key = null;
+		if ((0, _keys2.default)(this.$store.state.activeAccounts)[0] !== undefined) key = (0, _keys2.default)(this.$store.state.activeAccounts)[0];
+		return {
+			selected_account: key
+		};
+	},
+	mounted: function mounted() {
+		// Uncomment this when not fixed tab on schedule
+		// this.getAccountSchedule()
+	},
+	filters: {
+		capitalize: function capitalize(value) {
+			if (!value) return '';
+			value = value.toString();
+			return value.charAt(0).toUpperCase() + value.slice(1);
+		}
+	},
+	computed: {
+		queue: function queue() {
+			return this.$store.state.queue;
+		},
+		active_accounts: function active_accounts() {
+			return this.$store.state.activeAccounts;
+		},
+		img: function img() {
+			var img = '';
+			if (this.selected_account !== null && this.active_accounts[this.selected_account].img !== '' && this.active_accounts[this.selected_account].img !== undefined) {
+				img = this.active_accounts[this.selected_account].img;
+			}
+			return img;
+		},
+		service_name: function service_name() {
+			if (this.service !== '') return this.service.charAt(0).toUpperCase() + this.service.slice(1);
+			return 'Service';
+		},
+		user_name: function user_name() {
+			if (this.selected_account !== null && this.active_accounts[this.selected_account].user) return this.active_accounts[this.selected_account].user;
+			return 'John Doe';
+		}
+	},
+	methods: {
+		iconClass: function iconClass(accountId) {
+			var serviceIcon = 'fa-user';
+			if (accountId !== null) {
+				serviceIcon = 'fa-';
+				var account = this.active_accounts[accountId];
+				if (account.service === 'facebook') serviceIcon = serviceIcon.concat('facebook-official facebook');
+				if (account.service === 'twitter') serviceIcon = serviceIcon.concat('twitter twitter');
+				if (account.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin linkedin');
+				if (account.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr tumblr');
+			}
+			return serviceIcon;
+		}
+	},
+	components: {
+		ButtonCheckbox: _buttonCheckbox2.default,
+		VueTimepicker: _vue2Timepicker2.default
+	}
+	// </script>
+	//
+	// <style scoped>
+	// 	#rop_core .avatar .avatar-icon {
+	// 		background: #333;
+	// 		border-radius: 50%;
+	// 		font-size: 16px;
+	// 		text-align: center;
+	// 		line-height: 20px;
+	// 	}
+	// 	#rop_core .avatar .avatar-icon.fa-facebook-official { background-color: #3b5998; }
+	// 	#rop_core .avatar .avatar-icon.fa-twitter { background-color: #55acee; }
+	// 	#rop_core .avatar .avatar-icon.fa-linkedin { background-color: #007bb5; }
+	// 	#rop_core .avatar .avatar-icon.fa-tumblr { background-color: #32506d; }
+	//
+	// 	#rop_core .service.facebook {
+	// 		color: #3b5998;
+	// 	}
+	//
+	// 	#rop_core .service.twitter {
+	// 		color: #55acee;
+	// 	}
+	//
+	// 	#rop_core .service.linkedin {
+	// 		color: #007bb5;
+	// 	}
+	//
+	// 	#rop_core .service.tumblr {
+	// 		color: #32506d;
+	// 	}
+	// </style>
+
+};
+
+/***/ }),
+/* 139 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div class=\"tab-view\" _v-eb638c98=\"\">\n\t\t<div class=\"panel-body\" style=\"overflow: inherit;\" _v-eb638c98=\"\">\n\t\t\t<h3 _v-eb638c98=\"\">Sharing Queue</h3>\n\t\t\t<div class=\"container columns\" _v-eb638c98=\"\">\n                <div class=\"column col-sm-12 col-6 text-left\" v-for=\" (data, index) in queue \" _v-eb638c98=\"\">\n                    <div class=\"card col-12\" style=\"max-width: 100%;\" _v-eb638c98=\"\">\n                        <div class=\"card-header\" _v-eb638c98=\"\">\n                            <p class=\"text-gray text-right float-right\" _v-eb638c98=\"\"><b _v-eb638c98=\"\">Scheduled:</b><br _v-eb638c98=\"\">{{data.time}}</p>\n                            <div class=\"card-title h5\" _v-eb638c98=\"\">{{data.post.post_title}}</div>\n                            <div class=\"card-subtitle text-gray\" _v-eb638c98=\"\"><i class=\"service fa\" :class=\"iconClass( data.account_id )\" _v-eb638c98=\"\"></i> {{active_accounts[data.account_id].account}}</div>\n                        </div>\n                        <div class=\"card-image\" v-if=\"data.post.post_img\" _v-eb638c98=\"\">\n                            <figure class=\"figure\" style=\"max-height: 250px; overflow: hidden;\" _v-eb638c98=\"\">\n                                <img :src=\"data.post.post_img\" class=\"img-fit-cover\" style=\" width: 100%; height: 250px;\" _v-eb638c98=\"\">\n                            </figure>\n                        </div>\n                        <div class=\"card-body\" _v-eb638c98=\"\">\n                            <p _v-eb638c98=\"\">{{data.post.post_content}}</p>\n                        </div>\n                        <div class=\"card-footer text-center\" _v-eb638c98=\"\">\n                            <button class=\"btn btn-primary\" _v-eb638c98=\"\"><i class=\"fa fa-refresh\" aria-hidden=\"true\" _v-eb638c98=\"\"></i> Update</button>\n                            <button class=\"btn btn-warning\" _v-eb638c98=\"\"><i class=\"fa fa-step-forward\" aria-hidden=\"true\" _v-eb638c98=\"\"></i> Skip</button>\n                            <button class=\"btn btn-danger\" _v-eb638c98=\"\"><i class=\"fa fa-ban\" aria-hidden=\"true\" _v-eb638c98=\"\"></i> Block</button>\n                        </div>\n                    </div>\n                </div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\" _v-eb638c98=\"\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveSchedule()\" _v-eb638c98=\"\"><i class=\"fa fa-check\" _v-eb638c98=\"\"></i> Save Schedule</button>\n\t\t\t<button class=\"btn btn-secondary\" @click=\"resetSchedule()\" _v-eb638c98=\"\"><i class=\"fa fa-ban\" _v-eb638c98=\"\"></i> Reset to Defaults</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ })
 /******/ ]);

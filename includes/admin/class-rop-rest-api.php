@@ -46,6 +46,9 @@ class Rop_Rest_Api {
 	 */
 	public function api( WP_REST_Request $request ) {
 		switch ( $request->get_param( 'req' ) ) {
+			case 'get_queue':
+				$response = $this->get_queue();
+				break;
 			case 'save_schedule':
 				$data = json_decode( $request->get_body(), true );
 				$response = $this->save_schedule( $data );
@@ -126,6 +129,18 @@ class Rop_Rest_Api {
 		}// End switch().
 		// array_push( $response, array( 'current_user' => current_user_can( 'manage_options' ) ) );
 		return $response;
+	}
+
+	/**
+	 * API method called to get the active queue.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @return array
+	 */
+	private function get_queue() {
+	    $queue = new Rop_Queue_Model();
+	    return $queue->get_ordered_queue();
 	}
 
 	/**
@@ -363,7 +378,7 @@ class Rop_Rest_Api {
 			'selected_taxonomies' => $data['taxonomies'],
 			'exclude_taxonomies' => $data['exclude_taxonomies'],
 			'selected_posts' => $data['posts'],
-			'exclude_posts' => false,
+			'exclude_posts' => $data['exclude_posts'],
 		);
 
 		$general_settings_model = new Rop_Settings_Model();

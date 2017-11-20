@@ -36,6 +36,7 @@
 	import SettingsTab from './settings-tab-panel.vue'
 	import PostFormatTab from './post-format-tab-panel.vue'
 	import ScheduleTab from './schedule-tab-panel.vue'
+	import QueueTab from './queue-tab-panel.vue'
 	import LogsTab from './logs-tab-panel.vue'
 
 	import { mapState } from 'vuex'
@@ -60,6 +61,7 @@
 			'settings': SettingsTab,
 			'post-format': PostFormatTab,
 			'schedule': ScheduleTab,
+			'queue': QueueTab,
 			'logs': LogsTab
 		}
 	}

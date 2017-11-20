@@ -15,6 +15,7 @@ window.onload = function () {
 			store.dispatch( 'fetchAvailableServices' )
 			store.dispatch( 'fetchAuthenticatedServices' )
 			store.dispatch( 'fetchActiveAccounts' )
+			store.dispatch( 'fetchQueue' )
 		},
 		components: {
 			MainPagePanel

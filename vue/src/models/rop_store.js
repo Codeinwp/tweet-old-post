@@ -15,7 +15,8 @@ export default new Vuex.Store( {
 			// view: 'accounts'
 			// view: 'post-format'
 			// view: 'settings'
-			view: 'schedule'
+			// view: 'schedule'
+			view: 'queue'
 		},
 		auth_in_progress: false,
 		displayTabs: [
@@ -40,6 +41,11 @@ export default new Vuex.Store( {
 				isActive: false
 			},
 			{
+				name: 'Sharing Queue',
+				slug: 'queue',
+				isActive: false
+			},
+			{
 				name: 'Logs',
 				slug: 'logs',
 				isActive: false
@@ -50,7 +56,8 @@ export default new Vuex.Store( {
 		authenticatedServices: [],
 		activeAccounts: [],
 		activePostFormat: [],
-		activeSchedule: []
+		activeSchedule: [],
+		queue: []
 	},
 	getters: {
 		getServices ( state ) {
@@ -153,6 +160,9 @@ export default new Vuex.Store( {
 		},
 		updateSchedule ( state, data ) {
 			state.activeSchedule = data
+		},
+		updateQueue ( state, data ) {
+			state.queue = data
 		}
 	},
 	actions: {
@@ -441,5 +451,20 @@ export default new Vuex.Store( {
 				commit( 'logMessage', ['Error retrieving schedule.', 'error'] )
 			} )
 		},
+		fetchQueue ( { commit }, data ) {
+			Vue.http( {
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'get_queue' },
+				body: data,
+				responseType: 'json'
+			} ).then( function ( response ) {
+				console.log( response.data )
+				commit( 'updateQueue', response.data )
+			}, function () {
+				commit( 'logMessage', ['Error retrieving queue.', 'error'] )
+			} )
+		}
 	}
 } )

@@ -112,12 +112,24 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 				$tmp_query['operator'] = $operator;
 				array_push( $tax_queries, $tmp_query );
 			}
+		} else {
+			$tax_queries = array();
 		}
 		return $tax_queries;
 	}
 
+	/**
+	 * Utility method to build the args array for the get post method.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   array $post_types The post types array.
+	 * @param   array $tax_queries The taxonomies query array.
+	 * @param   array $exclude The excluded posts array.
+	 * @return array
+	 */
 	private function build_query_args( $post_types, $tax_queries, $exclude ) {
-	    return array(
+	    $args = array(
 			'no_found_rows' => true,
 			'numberposts' => $this->settings->get_number_of_posts(),
 			'post_type' => $post_types,
@@ -133,8 +145,24 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 				)
 			),
 		);
+	    if ( empty( $tax_queries ) ) {
+	        unset( $args['tax_query'] );
+		}
+		if ( empty( $exclude ) ) {
+			unset( $args['exclude'] );
+		}
+		return $args;
 	}
 
+	/**
+	 * Utility method to build an exclusion list.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   string $account_id The account ID.
+	 * @param   array  $excluded_by_user Excluded post ID's by the user.
+	 * @return array|mixed
+	 */
 	private function build_exclude( $account_id, $excluded_by_user = array() ) {
 		$exclude = array();
 		if ( isset( $account_id ) && $account_id ) {
@@ -147,15 +175,20 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	}
 
 
+	/**
+	 * Utility method to query the DB for posts.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   string $account_id The account ID.
+	 * @param   array  $post_types The post types array.
+	 * @param   array  $tax_queries The taxonomies query array.
+	 * @param   array  $excluded_by_user Excluded post ID's by the user.
+	 * @return mixed
+	 */
 	private function query_results( $account_id, $post_types, $tax_queries, $excluded_by_user ) {
 		$exclude = $this->build_exclude( $account_id, $excluded_by_user );
-
 		$args = $this->build_query_args( $post_types, $tax_queries, $exclude );
-
-		if ( empty( $this->settings->get_selected_taxonomies() ) ) {
-			unset( $args['tax_query'] );
-		}
-
 		return get_posts( $args );
 	}
 
@@ -182,7 +215,9 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 					array_push( $include, $post['value'] );
 				}
 			}
-			$required = get_posts( array( 'numberposts' => -1, 'include' => $include, 'no_found_rows' => true ) );
+			if ( $this->settings->get_exclude_posts() != true ) {
+				$required = get_posts( array( 'numberposts' => -1, 'include' => $include, 'no_found_rows' => true ) );
+			}
 		}
 
 		$results = $this->query_results( $account_id, $post_types, $tax_queries, $excluded_by_user );
@@ -200,6 +235,14 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		return $results;
 	}
 
+	/**
+	 * Utility method to mark a post ID as blocked.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @param   string $account_id The account ID.
+	 * @param   int    $post_id The post ID.
+	 */
 	public function mark_as_blocked( $account_id, $post_id ) {
 		if ( ! isset( $this->blocked[ $account_id ] ) ) {
 			$this->blocked[ $account_id ] = array();
@@ -209,6 +252,14 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		}
 	}
 
+	/**
+	 * Method to update the buffer.
+	 *
+	 * @since   8.0.0
+	 * @acess   public
+	 * @param   string $account_id The account ID.
+	 * @param   int    $post_id The post ID.
+	 */
 	public function update_buffer( $account_id, $post_id ) {
 	    if ( ! isset( $this->buffer[ $account_id ] ) ) {
 			$this->buffer[ $account_id ] = array();
@@ -218,6 +269,14 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		}
 	}
 
+	/**
+	 * Method to determine if the buffer is empty or not.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @param   string $account_id The account ID for witch to check.
+	 * @return bool
+	 */
 	public function has_buffer_items( $account_id ) {
 		$this->buffer = wp_parse_args( $this->get( 'posts_buffer' ), $this->buffer );
 		return ( isset( $this->buffer[ $account_id ] ) ) ? true : false;
@@ -228,11 +287,11 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  public
-	 * @param   bool|string $account The account id to clear buffer filter. Default false, clear all.
+	 * @param   bool|string $account_id The account ID to clear buffer filter. Default false, clear all.
 	 */
-	public function clear_buffer( $account = false ) {
-		if ( isset( $account ) && $account ) {
-			unset( $this->buffer[ $account ] );
+	public function clear_buffer( $account_id = false ) {
+		if ( isset( $account_id ) && $account_id ) {
+			unset( $this->buffer[ $account_id ] );
 		} else {
 			$this->buffer = array();
 		}

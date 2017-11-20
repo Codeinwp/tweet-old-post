@@ -126,7 +126,7 @@
 									<multiple-select :searchQuery="searchQuery" @update="searchUpdate" :options="postsAvailable" :dontLock="true" :selected="generalSettings.selected_posts" :changedSelection="updatedPosts" />
 									<span class="input-group-addon">
 										<label class="form-checkbox">
-											<input type="checkbox" />
+											<input type="checkbox" v-model="generalSettings.exclude_posts" />
 											<i class="form-icon"></i> Exclude?
 										</label>
 									</span>
@@ -219,7 +219,8 @@
 						post_types: postTypesSelected,
 						taxonomies: taxonomiesSelected,
 						exclude_taxonomies: excludeTaxonomies,
-						posts: postsSelected
+						posts: postsSelected,
+						exclude_posts: this.generalSettings.exclude_posts
 					} )
 			}
 		},
