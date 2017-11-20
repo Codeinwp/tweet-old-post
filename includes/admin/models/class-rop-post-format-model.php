@@ -48,7 +48,7 @@ class Rop_Post_Format_Model extends Rop_Model_Abstract {
 	 * @access  public
 	 * @param   string $service_name The name of the service. Default false. Returns all.
 	 */
-	public function __construct( $service_name ) {
+	public function __construct( $service_name = false ) {
 		parent::__construct();
 		$global_settings = new Rop_Global_Settings();
 		$this->defaults = $global_settings->get_default_post_format( $service_name );

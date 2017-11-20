@@ -87,14 +87,16 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * This method will be refactored or moved inside a post format helper.
 	 *
 	 * @param WP_Post $post The post object.
+	 * @param string  $account_id The account ID.
 	 * @return array
 	 */
-	private function prepare_post_object( WP_Post $post ) {
-		$ch = new Rop_Content_Helper();
+	private function prepare_post_object( WP_Post $post, $account_id ) {
+		$post_format_helper = new Rop_Post_Format_Helper();
+		$post_format_helper->set_post_format( $account_id );
 	    $filtered_post = array();
 		$filtered_post['post_id'] = $post->ID;
 		$filtered_post['post_title'] = $post->post_title;
-		$filtered_post['post_content'] = $ch->token_truncate( wp_strip_all_tags( $post->post_content ) );
+		$filtered_post['post_content'] = $post_format_helper->build_content( $post );
 		if ( has_post_thumbnail( $post->ID ) ) {
 			$filtered_post['post_img'] = get_the_post_thumbnail_url( $post->ID, 'large' );
 		} else {
@@ -123,7 +125,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 				// print_r( $schedules );
 				foreach ( $schedules as $time ) {
 					$pos = $shuffler[ $i++ ];
-					array_push( $account_queue, array( 'time' => $time, 'post' => $this->prepare_post_object( $post_pool[ $pos ] ) ) );
+					array_push( $account_queue, array( 'time' => $time, 'post' => $this->prepare_post_object( $post_pool[ $pos ], $account_id ) ) );
 				}
 				$queue[ $account_id ] = $account_queue;
 			}
@@ -149,7 +151,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 					$i = 0;
 					foreach ( $schedules as $time ) {
 						$pos = $shuffler[ $i++ ];
-						array_push( $account_queue, array( 'time' => $time, 'post' => $this->prepare_post_object( $post_pool[ $pos ] ) ) );
+						array_push( $account_queue, array( 'time' => $time, 'post' => $this->prepare_post_object( $post_pool[ $pos ], $account_id ) ) );
 					}
 					$this->queue[ $account_id ] = $account_queue;
 				}

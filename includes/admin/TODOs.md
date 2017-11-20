@@ -3,6 +3,7 @@
 **This list should be deleted after everything is done.**
 
 - [ ] Add counter to common hashtags in post format and limit input to set char limit.
+- [ ] Automatic calculations of chars available in total.
 - [ ] Create a pre-share helper class that outputs the shared object, based on save post format options.
 - [ ] Create a media helper for interacting with WordPress Library.
 - [ ] Edit sharing queue.
