@@ -97,6 +97,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 		$filtered_post['post_id'] = $post->ID;
 		$filtered_post['post_title'] = $post->post_title;
 		$filtered_post['post_content'] = $post_format_helper->build_content( $post );
+		$filtered_post['post_url'] = $post_format_helper->build_url( $post );
 		if ( has_post_thumbnail( $post->ID ) ) {
 			$filtered_post['post_img'] = get_the_post_thumbnail_url( $post->ID, 'large' );
 		} else {

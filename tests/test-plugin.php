@@ -259,7 +259,7 @@ class Test_ROP extends WP_UnitTestCase {
 		$googl = new Rop_Googl_Shortner();
 		$key = 'AIzaSyAqNtuEu-xXurkpV-p57r5oAqQgcAyMSN4';
 		$googl->set_credentials( array( 'key' => $key ) );
-		$short_url = $shortest->shorten_url( $url );
+		$short_url = $googl->shorten_url( $url );
 
 		$this->assertNotEquals( $url, $short_url );
 		$this->assertUriIsCorrect( $short_url );

@@ -304,6 +304,20 @@
 							</div>
 						</div>
 						<hr/>
+						<div class="columns">
+							<div class="column col-sm-12 col-md-12 col-lg-12">
+								<div class="columns">
+									<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+										<b>Stats:</b><br/>
+										<i>Available char for post content</i>
+									</div>
+									<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+										{{computed_chars}}
+									</div>
+								</div>
+							</div>
+						</div>
+						<hr/>
 					</div>
 				</div>
 			</div>
@@ -328,7 +342,7 @@
 		},
 		mounted: function () {
 			// Uncomment this when not fixed tab on post format
-			// this.getAccountpostFormat()
+			this.getAccountpostFormat()
 		},
 		filters: {
 			capitalize: function ( value ) {
@@ -338,6 +352,20 @@
 			}
 		},
 		computed: {
+			computed_chars: function () {
+				let allowedChars = this.post_format.maximum_length
+				let customText = 0
+				let hashtagsLength = 0
+				if ( this.post_format.custom_text !== undefined ) customText = this.post_format.custom_text.length
+				if ( this.post_format.hashtags !== 'no-hashtags' ) hashtagsLength = this.post_format.hashtags_length
+				if ( customText !== 0 ) customText = customText + 1
+				let serviceReserved = 0
+				if ( this.selected_account !== null && this.active_accounts[this.selected_account].service === 'twitter' ) {
+					if ( this.post_format.image ) serviceReserved = serviceReserved + 25
+					if ( this.post_format.include_link ) serviceReserved = serviceReserved + 25
+				}
+				return allowedChars - customText - hashtagsLength - serviceReserved
+			},
 			active_accounts: function () {
 				return this.$store.state.activeAccounts
 			},

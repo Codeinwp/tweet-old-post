@@ -122,4 +122,34 @@ class Rop_Content_Helper {
 		return $output;
 	}
 
+	/**
+	 * Imported from Tweet Old Post v7.*.
+	 * Author Daniel Brown (contact info at http://ymb.tc/contact)
+	 * Includes hashtag in $tweet_content if possible
+	 * to save space, avoid redundancy, and allow more hashtags
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @param  string $string The regular text in the Tweet
+	 * @param  string $hashtag The hashtag to include in $string, if possible
+	 * @return mixed  The new $string or false if the $string doesn't contain the $hashtag
+	 */
+	public function mark_hashtags( $string, $hashtag ) {
+		$location = stripos( $string, ' ' . $hashtag . ' ' );
+		if ( $location !== false ) {
+			$location++; // the actual # location will be past the space
+		} elseif ( stripos( $string, $hashtag . ' ' ) === 0 ) {
+			// see if the hashtag is at the beginning
+			$location = 0;
+		} elseif ( stripos( rtrim( $string, " \t." ), ' ' . $hashtag ) !== false && stripos( rtrim( $string, " \t." ), ' ' . $hashtag ) + strlen( ' ' . $hashtag ) == strlen( rtrim( $string, " \t." ) ) ) {
+			// see if the hashtag is at the end
+			$location = stripos( rtrim( $string, " \t." ), ' ' . $hashtag ) + 1;
+		}
+		if ( $location !== false ) {
+			return substr_replace( $string, '#', $location, 0 );
+		}
+
+		return false;
+	}
+
 }
