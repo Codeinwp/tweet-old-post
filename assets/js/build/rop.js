@@ -18648,9 +18648,8 @@ module.exports = "\n\t<div>\n\t\t<div class=\"panel title-panel\" style=\"margin
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(134)
 __vue_script__ = __webpack_require__(138)
-__vue_template__ = __webpack_require__(139)
+__vue_template__ = __webpack_require__(143)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -18667,46 +18666,8 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 134 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(135);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-eb638c98&file=queue-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./queue-tab-panel.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-eb638c98&file=queue-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./queue-tab-panel.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 135 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)();
-// imports
-
-
-// module
-exports.push([module.i, "\n\t#rop_core .avatar .avatar-icon[_v-eb638c98] {\n\t\tbackground: #333;\n\t\tborder-radius: 50%;\n\t\tfont-size: 16px;\n\t\ttext-align: center;\n\t\tline-height: 20px;\n\t}\n\t#rop_core .avatar .avatar-icon.fa-facebook-official[_v-eb638c98] { background-color: #3b5998; }\n\t#rop_core .avatar .avatar-icon.fa-twitter[_v-eb638c98] { background-color: #55acee; }\n\t#rop_core .avatar .avatar-icon.fa-linkedin[_v-eb638c98] { background-color: #007bb5; }\n\t#rop_core .avatar .avatar-icon.fa-tumblr[_v-eb638c98] { background-color: #32506d; }\n\n\t#rop_core .service.facebook[_v-eb638c98] {\n\t\tcolor: #3b5998;\n\t}\n\n\t#rop_core .service.twitter[_v-eb638c98] {\n\t\tcolor: #55acee;\n\t}\n\n\t#rop_core .service.linkedin[_v-eb638c98] {\n\t\tcolor: #007bb5;\n\t}\n\n\t#rop_core .service.tumblr[_v-eb638c98] {\n\t\tcolor: #32506d;\n\t}\n", ""]);
-
-// exports
-
-
-/***/ }),
+/* 134 */,
+/* 135 */,
 /* 136 */,
 /* 137 */,
 /* 138 */
@@ -18715,56 +18676,32 @@ exports.push([module.i, "\n\t#rop_core .avatar .avatar-icon[_v-eb638c98] {\n\t\t
 "use strict";
 
 
-var _keys = __webpack_require__(6);
+var _queueCard = __webpack_require__(140);
 
-var _keys2 = _interopRequireDefault(_keys);
-
-var _buttonCheckbox = __webpack_require__(116);
-
-var _buttonCheckbox2 = _interopRequireDefault(_buttonCheckbox);
-
-var _vue2Timepicker = __webpack_require__(119);
-
-var _vue2Timepicker2 = _interopRequireDefault(_vue2Timepicker);
+var _queueCard2 = _interopRequireDefault(_queueCard);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// <template>
+module.exports = {
+	name: 'queue-view',
+	computed: {
+		queue: function queue() {
+			return this.$store.state.queue;
+		}
+	},
+	methods: {},
+	components: {
+		QueueCard: _queueCard2.default
+	}
+	// </script>
+
+}; // <template>
 // 	<div class="tab-view">
 // 		<div class="panel-body" style="overflow: inherit;">
 // 			<h3>Sharing Queue</h3>
 // 			<div class="container columns">
 // 				<div class="column col-sm-12 col-3 text-left" v-for=" (data, index) in queue ">
-// 					<div class="card col-12" style="max-width: 100%; min-height: 350px;">
-// 						<div class="card-header">
-// 							<p class="text-gray text-right float-right"><b>Scheduled:</b><br/>{{data.time}}</p>
-// 							<div class="card-title h6">{{data.post.post_title}}</div>
-// 							<div class="card-subtitle text-gray"><i class="service fa" :class="iconClass( data.account_id )"></i> {{active_accounts[data.account_id].account}}</div>
-// 						</div>
-// 						<hr/>
-// 						<details class="accordion" v-if="data.post.post_img">
-// 							<summary class="accordion-header">
-// 								<i class="fa fa-file-image-o"></i>
-// 								Image Preview
-// 							</summary>
-// 							<div class="accordion-body">
-// 								<div class="card-image" v-if="data.post.post_img">
-// 									<figure class="figure" style="max-height: 250px; overflow: hidden;">
-// 										<img :src="data.post.post_img" class="img-fit-cover" style=" width: 100%; height: 250px;" @error="brokenImg(index)">
-// 									</figure>
-// 								</div>
-// 							</div>
-// 						</details>
-//
-// 						<div class="card-body">
-// 							<p v-html="hashtags( data.post.post_content )"></p>
-// 						</div>
-// 						<div class="card-footer text-center">
-// 							<button class="btn btn-primary"><i class="fa fa-refresh" aria-hidden="true"></i> Update</button>
-// 							<button class="btn btn-warning"><i class="fa fa-step-forward" aria-hidden="true"></i> Skip</button>
-// 							<button class="btn btn-danger"><i class="fa fa-ban" aria-hidden="true"></i> Block</button>
-// 						</div>
-// 					</div>
+//                     <queue-card :account_id="data.account_id" :post="data.post" :time="data.time" :key="index" :id="index" />
 // 				</div>
 // 			</div>
 // 		</div>
@@ -18776,50 +18713,182 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // </template>
 //
 // <script>
+
+/***/ }),
+/* 139 */,
+/* 140 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(144)
+__vue_script__ = __webpack_require__(141)
+__vue_template__ = __webpack_require__(146)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/var/www/html/wp-base/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/queue-card.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 141 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// <template>
+// 	<div class="card col-12" style="max-width: 100%; min-height: 350px;">
+// 		<div style="position: absolute; display: block; top: 0; right: 0;">
+// 			<button class="btn btn-sm btn-primary" @click="toggleEditState" v-if="edit === false"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</button>
+// 			<button class="btn btn-sm btn-success" @click="saveChanges" v-if="edit"><i class="fa fa-check" aria-hidden="true"></i> Save</button>
+// 			<button class="btn btn-sm btn-warning" @click="toggleEditState" v-if="edit"><i class="fa fa-times" aria-hidden="true"></i> Cancel</button>
+// 		</div>
+// 		<div class="card-header">
+// 			<p class="text-gray text-right float-right"><b>Scheduled:</b><br/>{{time}}</p>
+// 			<div class="card-title h6">{{post.post_title}}</div>
+// 			<div class="card-subtitle text-gray"><i class="service fa" :class="iconClass( account_id )"></i> {{active_accounts[account_id].account}}</div>
+// 		</div>
+// 		<hr/>
+// 		<span v-if="edit === false">
+// 			<details class="accordion" v-if="post.post_img">
+// 				<summary class="accordion-header">
+// 					<i class="fa fa-file-image-o"></i>
+// 					Image Preview
+// 				</summary>
+// 				<div class="accordion-body">
+// 					<div class="card-image" v-if="post.post_img">
+// 						<figure class="figure" style="max-height: 250px; overflow: hidden;">
+// 							<img :src="post.post_img" class="img-fit-cover" style=" width: 100%; height: 250px;" @error="brokenImg">
+// 						</figure>
+// 					</div>
+// 				</div>
+// 			</details>
+// 			<details class="accordion" v-else>
+// 				<summary class="accordion-header">
+// 					<i class="fa fa-file-image-o"></i>
+// 					No Image
+// 				</summary>
+// 				<div class="accordion-body text-gray">
+// 					<small>
+// 						<i class="fa fa-chain-broken" aria-hidden="true"></i> No image attached or a broken link was detected.<br/>
+// 						<i class="fa fa-info-circle" aria-hidden="true"></i> <i>If a image should be here, update the post or edit this item.</i>
+// 					</small>
+// 				</div>
+// 			</details>
+//
+// 			<div class="card-body" v-if="edit === false">
+// 				<p v-html="hashtags( post_content )"></p>
+// 				<p v-if="post.post_url"><b>Link:</b> <a :href="post.post_url" target="_blank">{{post.post_url}}</a></p>
+// 			</div>
+// 		</span>
+// 		<div class="card-body" v-else>
+// 			<div class="form-group">
+// 				<label class="form-label" for="image">Image</label>
+// 				<div class="input-group">
+// 					<span class="input-group-addon"><i class="fa fa-file-image-o"></i></span>
+// 					<input id="image" type="text" class="form-input" :value="post_img_url" readonly>
+// 					<button class="btn btn-primary input-group-btn" @click="uploadImage"><i class="fa fa-upload" aria-hidden="true"></i></button>
+// 					<button class="btn btn-danger input-group-btn" @click="clearImage"><i class="fa fa-trash" aria-hidden="true"></i></button>
+// 				</div>
+//
+// 				<label class="form-label" for="content">Content</label>
+// 				<textarea class="form-input" id="content" placeholder="Textarea" rows="3" @keydown="checkCount">{{post_content}}</textarea>
+// 			</div>
+// 		</div>
+// 		<div style="position: absolute; display: block; bottom: 0; right: 0;" v-if="edit === false">
+// 			<button class="btn btn-sm btn-warning"><i class="fa fa-step-forward" aria-hidden="true"></i> Skip</button>
+// 			<button class="btn btn-sm btn-danger"><i class="fa fa-ban" aria-hidden="true"></i> Block</button>
+// 		</div>
+// 	</div>
+// </template>
+//
+// <script>
+/* global wp */
+
 module.exports = {
-	name: 'queue-view',
-	data: function data() {
-		var key = null;
-		if ((0, _keys2.default)(this.$store.state.activeAccounts)[0] !== undefined) key = (0, _keys2.default)(this.$store.state.activeAccounts)[0];
-		return {
-			selected_account: key
-		};
-	},
-	mounted: function mounted() {
-		// Uncomment this when not fixed tab on schedule
-		// this.getAccountSchedule()
-	},
-	filters: {
-		capitalize: function capitalize(value) {
-			if (!value) return '';
-			value = value.toString();
-			return value.charAt(0).toUpperCase() + value.slice(1);
+	name: 'queue-card',
+	props: {
+		id: {
+			default: ''
+		},
+		account_id: {
+			default: '',
+			type: String
+		},
+		post: {
+			default: function _default() {
+				return {};
+			},
+			type: Object
+		},
+		time: {
+			default: '',
+			type: String
 		}
 	},
+	data: function data() {
+		return {
+			edit: false,
+			post_edit: this.post
+		};
+	},
 	computed: {
-		queue: function queue() {
-			return this.$store.state.queue;
+		post_content: function post_content() {
+			if (this.post.custom_content !== '') {
+				return this.post.custom_content;
+			}
+			return this.post.post_content;
 		},
 		active_accounts: function active_accounts() {
 			return this.$store.state.activeAccounts;
 		},
-		img: function img() {
-			var img = '';
-			if (this.selected_account !== null && this.active_accounts[this.selected_account].img !== '' && this.active_accounts[this.selected_account].img !== undefined) {
-				img = this.active_accounts[this.selected_account].img;
+		post_img_url: function post_img_url() {
+			if (this.post_edit.post_img !== false) {
+				return this.post_edit.post_img;
 			}
-			return img;
-		},
-		service_name: function service_name() {
-			if (this.service !== '') return this.service.charAt(0).toUpperCase() + this.service.slice(1);
-			return 'Service';
-		},
-		user_name: function user_name() {
-			if (this.selected_account !== null && this.active_accounts[this.selected_account].user) return this.active_accounts[this.selected_account].user;
-			return 'John Doe';
+			return '';
 		}
 	},
+	watch: {},
 	methods: {
+		toggleEditState: function toggleEditState() {
+			this.edit = !this.edit;
+		},
+		checkCount: function checkCount(evt) {
+			console.log(evt);
+		},
+		saveChanges: function saveChanges() {},
+		clearImage: function clearImage() {
+			this.post_edit.post_img = false;
+		},
+		uploadImage: function uploadImage() {
+			var window = wp.media({
+				title: 'Insert a media',
+				library: {
+					type: 'image'
+				},
+				multiple: false,
+				button: { text: 'Insert' }
+			});
+
+			var self = this;
+			window.on('select', function () {
+				var first = window.state().get('selection').first().toJSON();
+				console.log(first);
+				self.post_edit.post_img = first.url;
+			});
+
+			window.open();
+		},
 		iconClass: function iconClass(accountId) {
 			var serviceIcon = 'fa-user';
 			if (accountId !== null) {
@@ -18832,9 +18901,9 @@ module.exports = {
 			}
 			return serviceIcon;
 		},
-		brokenImg: function brokenImg(index) {
+		brokenImg: function brokenImg() {
 			console.log('Image is broken');
-			this.queue[index].post.post_img = false;
+			this.post.post_img = false;
 		},
 		hashtags: function hashtags(string) {
 			var regex = '#\\S+';
@@ -18846,10 +18915,6 @@ module.exports = {
 				return '<strong>' + matchedText + '</strong>';
 			});
 		}
-	},
-	components: {
-		ButtonCheckbox: _buttonCheckbox2.default,
-		VueTimepicker: _vue2Timepicker2.default
 	}
 	// </script>
 	//
@@ -18881,15 +18946,113 @@ module.exports = {
 	// 	#rop_core .service.tumblr {
 	// 		color: #32506d;
 	// 	}
+	//
+	// 	#rop_core .btn-warning {
+	// 		background-color: #ef6c00;
+	// 		border-color: #e65100;
+	// 		color: #FFF;
+	// 	}
+	//
+	// 	#rop_core .btn-warning:hover, #rop_core .btn-warning:focus {
+	// 		border-color: #e65100;
+	// 		background-color: #fff;
+	// 		color: #ef6c00;
+	// 	}
+	//
+	// 	#rop_core .btn-warning.active, #rop_core .btn-warning:active {
+	// 		background-color: #e65100;
+	// 		border-color: #ef6c00;
+	// 	}
+	//
+	// 	#rop_core .btn-danger {
+	// 		 background-color: #c62828;
+	// 		 border-color: #b71c1c;
+	// 		 color: #FFF;
+	// 	 }
+	//
+	// 	#rop_core .btn-danger:hover, #rop_core .btn-danger:focus {
+	// 		border-color: #b71c1c;
+	// 		background-color: #fff;
+	// 		color: #c62828;
+	// 	}
+	//
+	// 	#rop_core .btn-danger.active, #rop_core .btn-danger:active {
+	// 		background-color: #b71c1c;
+	// 		border-color: #c62828;
+	// 	}
+	//
+	// 	#rop_core .btn-success {
+	// 		background-color: #8bc34a;
+	// 		border-color: #33691e;
+	// 		color: #FFF;
+	// 	}
+	//
+	// 	#rop_core .btn-success:hover, #rop_core .btn-success:focus {
+	// 		border-color: #33691e;
+	// 		background-color: #fff;
+	// 		color: #8bc34a;
+	// 	}
+	//
+	// 	#rop_core .btn-success.active, #rop_core .btn-success:active {
+	// 		background-color: #33691e;
+	// 		border-color: #8bc34a;
+	// 	}
 	// </style>
 
 };
 
 /***/ }),
-/* 139 */
+/* 142 */,
+/* 143 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\" _v-eb638c98=\"\">\n\t\t<div class=\"panel-body\" style=\"overflow: inherit;\" _v-eb638c98=\"\">\n\t\t\t<h3 _v-eb638c98=\"\">Sharing Queue</h3>\n\t\t\t<div class=\"container columns\" _v-eb638c98=\"\">\n\t\t\t\t<div class=\"column col-sm-12 col-3 text-left\" v-for=\" (data, index) in queue \" _v-eb638c98=\"\">\n\t\t\t\t\t<div class=\"card col-12\" style=\"max-width: 100%; min-height: 350px;\" _v-eb638c98=\"\">\n\t\t\t\t\t\t<div class=\"card-header\" _v-eb638c98=\"\">\n\t\t\t\t\t\t\t<p class=\"text-gray text-right float-right\" _v-eb638c98=\"\"><b _v-eb638c98=\"\">Scheduled:</b><br _v-eb638c98=\"\">{{data.time}}</p>\n\t\t\t\t\t\t\t<div class=\"card-title h6\" _v-eb638c98=\"\">{{data.post.post_title}}</div>\n\t\t\t\t\t\t\t<div class=\"card-subtitle text-gray\" _v-eb638c98=\"\"><i class=\"service fa\" :class=\"iconClass( data.account_id )\" _v-eb638c98=\"\"></i> {{active_accounts[data.account_id].account}}</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<hr _v-eb638c98=\"\">\n\t\t\t\t\t\t<details class=\"accordion\" v-if=\"data.post.post_img\" _v-eb638c98=\"\">\n\t\t\t\t\t\t\t<summary class=\"accordion-header\" _v-eb638c98=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-eb638c98=\"\"></i>\n\t\t\t\t\t\t\t\tImage Preview\n\t\t\t\t\t\t\t</summary>\n\t\t\t\t\t\t\t<div class=\"accordion-body\" _v-eb638c98=\"\">\n\t\t\t\t\t\t\t\t<div class=\"card-image\" v-if=\"data.post.post_img\" _v-eb638c98=\"\">\n\t\t\t\t\t\t\t\t\t<figure class=\"figure\" style=\"max-height: 250px; overflow: hidden;\" _v-eb638c98=\"\">\n\t\t\t\t\t\t\t\t\t\t<img :src=\"data.post.post_img\" class=\"img-fit-cover\" style=\" width: 100%; height: 250px;\" @error=\"brokenImg(index)\" _v-eb638c98=\"\">\n\t\t\t\t\t\t\t\t\t</figure>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</details>\n\n\t\t\t\t\t\t<div class=\"card-body\" _v-eb638c98=\"\">\n\t\t\t\t\t\t\t<p v-html=\"hashtags( data.post.post_content )\" _v-eb638c98=\"\"></p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"card-footer text-center\" _v-eb638c98=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary\" _v-eb638c98=\"\"><i class=\"fa fa-refresh\" aria-hidden=\"true\" _v-eb638c98=\"\"></i> Update</button>\n\t\t\t\t\t\t\t<button class=\"btn btn-warning\" _v-eb638c98=\"\"><i class=\"fa fa-step-forward\" aria-hidden=\"true\" _v-eb638c98=\"\"></i> Skip</button>\n\t\t\t\t\t\t\t<button class=\"btn btn-danger\" _v-eb638c98=\"\"><i class=\"fa fa-ban\" aria-hidden=\"true\" _v-eb638c98=\"\"></i> Block</button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\" _v-eb638c98=\"\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveSchedule()\" _v-eb638c98=\"\"><i class=\"fa fa-check\" _v-eb638c98=\"\"></i> Save Schedule</button>\n\t\t\t<button class=\"btn btn-secondary\" @click=\"resetSchedule()\" _v-eb638c98=\"\"><i class=\"fa fa-ban\" _v-eb638c98=\"\"></i> Reset to Defaults</button>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\" style=\"overflow: inherit;\">\n\t\t\t<h3>Sharing Queue</h3>\n\t\t\t<div class=\"container columns\">\n\t\t\t\t<div class=\"column col-sm-12 col-3 text-left\" v-for=\" (data, index) in queue \">\n                    <queue-card :account_id=\"data.account_id\" :post=\"data.post\" :time=\"data.time\" :key=\"index\" :id=\"index\" />\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveSchedule()\"><i class=\"fa fa-check\"></i> Save Schedule</button>\n\t\t\t<button class=\"btn btn-secondary\" @click=\"resetSchedule()\"><i class=\"fa fa-ban\"></i> Reset to Defaults</button>\n\t\t</div>\n\t</div>\n";
+
+/***/ }),
+/* 144 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(145);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2719575f&file=queue-card.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./queue-card.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2719575f&file=queue-card.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./queue-card.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 145 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)();
+// imports
+
+
+// module
+exports.push([module.i, "\n\t#rop_core .avatar .avatar-icon[_v-2719575f] {\n\t\tbackground: #333;\n\t\tborder-radius: 50%;\n\t\tfont-size: 16px;\n\t\ttext-align: center;\n\t\tline-height: 20px;\n\t}\n\t#rop_core .avatar .avatar-icon.fa-facebook-official[_v-2719575f] { background-color: #3b5998; }\n\t#rop_core .avatar .avatar-icon.fa-twitter[_v-2719575f] { background-color: #55acee; }\n\t#rop_core .avatar .avatar-icon.fa-linkedin[_v-2719575f] { background-color: #007bb5; }\n\t#rop_core .avatar .avatar-icon.fa-tumblr[_v-2719575f] { background-color: #32506d; }\n\n\t#rop_core .service.facebook[_v-2719575f] {\n\t\tcolor: #3b5998;\n\t}\n\n\t#rop_core .service.twitter[_v-2719575f] {\n\t\tcolor: #55acee;\n\t}\n\n\t#rop_core .service.linkedin[_v-2719575f] {\n\t\tcolor: #007bb5;\n\t}\n\n\t#rop_core .service.tumblr[_v-2719575f] {\n\t\tcolor: #32506d;\n\t}\n\n\t#rop_core .btn-warning[_v-2719575f] {\n\t\tbackground-color: #ef6c00;\n\t\tborder-color: #e65100;\n\t\tcolor: #FFF;\n\t}\n\n\t#rop_core .btn-warning[_v-2719575f]:hover, #rop_core .btn-warning[_v-2719575f]:focus {\n\t\tborder-color: #e65100;\n\t\tbackground-color: #fff;\n\t\tcolor: #ef6c00;\n\t}\n\n\t#rop_core .btn-warning.active[_v-2719575f], #rop_core .btn-warning[_v-2719575f]:active {\n\t\tbackground-color: #e65100;\n\t\tborder-color: #ef6c00;\n\t}\n\n\t#rop_core .btn-danger[_v-2719575f] {\n\t\t background-color: #c62828;\n\t\t border-color: #b71c1c;\n\t\t color: #FFF;\n\t }\n\n\t#rop_core .btn-danger[_v-2719575f]:hover, #rop_core .btn-danger[_v-2719575f]:focus {\n\t\tborder-color: #b71c1c;\n\t\tbackground-color: #fff;\n\t\tcolor: #c62828;\n\t}\n\n\t#rop_core .btn-danger.active[_v-2719575f], #rop_core .btn-danger[_v-2719575f]:active {\n\t\tbackground-color: #b71c1c;\n\t\tborder-color: #c62828;\n\t}\n\n\t#rop_core .btn-success[_v-2719575f] {\n\t\tbackground-color: #8bc34a;\n\t\tborder-color: #33691e;\n\t\tcolor: #FFF;\n\t}\n\n\t#rop_core .btn-success[_v-2719575f]:hover, #rop_core .btn-success[_v-2719575f]:focus {\n\t\tborder-color: #33691e;\n\t\tbackground-color: #fff;\n\t\tcolor: #8bc34a;\n\t}\n\n\t#rop_core .btn-success.active[_v-2719575f], #rop_core .btn-success[_v-2719575f]:active {\n\t\tbackground-color: #33691e;\n\t\tborder-color: #8bc34a;\n\t}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 146 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div class=\"card col-12\" style=\"max-width: 100%; min-height: 350px;\" _v-2719575f=\"\">\n\t\t<div style=\"position: absolute; display: block; top: 0; right: 0;\" _v-2719575f=\"\">\n\t\t\t<button class=\"btn btn-sm btn-primary\" @click=\"toggleEditState\" v-if=\"edit === false\" _v-2719575f=\"\"><i class=\"fa fa-pencil\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Edit</button>\n\t\t\t<button class=\"btn btn-sm btn-success\" @click=\"saveChanges\" v-if=\"edit\" _v-2719575f=\"\"><i class=\"fa fa-check\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Save</button>\n\t\t\t<button class=\"btn btn-sm btn-warning\" @click=\"toggleEditState\" v-if=\"edit\" _v-2719575f=\"\"><i class=\"fa fa-times\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Cancel</button>\n\t\t</div>\n\t\t<div class=\"card-header\" _v-2719575f=\"\">\n\t\t\t<p class=\"text-gray text-right float-right\" _v-2719575f=\"\"><b _v-2719575f=\"\">Scheduled:</b><br _v-2719575f=\"\">{{time}}</p>\n\t\t\t<div class=\"card-title h6\" _v-2719575f=\"\">{{post.post_title}}</div>\n\t\t\t<div class=\"card-subtitle text-gray\" _v-2719575f=\"\"><i class=\"service fa\" :class=\"iconClass( account_id )\" _v-2719575f=\"\"></i> {{active_accounts[account_id].account}}</div>\n\t\t</div>\n\t\t<hr _v-2719575f=\"\">\n\t\t<span v-if=\"edit === false\" _v-2719575f=\"\">\n\t\t\t<details class=\"accordion\" v-if=\"post.post_img\" _v-2719575f=\"\">\n\t\t\t\t<summary class=\"accordion-header\" _v-2719575f=\"\">\n\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-2719575f=\"\"></i>\n\t\t\t\t\tImage Preview\n\t\t\t\t</summary>\n\t\t\t\t<div class=\"accordion-body\" _v-2719575f=\"\">\n\t\t\t\t\t<div class=\"card-image\" v-if=\"post.post_img\" _v-2719575f=\"\">\n\t\t\t\t\t\t<figure class=\"figure\" style=\"max-height: 250px; overflow: hidden;\" _v-2719575f=\"\">\n\t\t\t\t\t\t\t<img :src=\"post.post_img\" class=\"img-fit-cover\" style=\" width: 100%; height: 250px;\" @error=\"brokenImg\" _v-2719575f=\"\">\n\t\t\t\t\t\t</figure>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</details>\n\t\t\t<details class=\"accordion\" v-else=\"\" _v-2719575f=\"\">\n\t\t\t\t<summary class=\"accordion-header\" _v-2719575f=\"\">\n\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-2719575f=\"\"></i>\n\t\t\t\t\tNo Image\n\t\t\t\t</summary>\n\t\t\t\t<div class=\"accordion-body text-gray\" _v-2719575f=\"\">\n\t\t\t\t\t<small _v-2719575f=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-chain-broken\" aria-hidden=\"true\" _v-2719575f=\"\"></i> No image attached or a broken link was detected.<br _v-2719575f=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-info-circle\" aria-hidden=\"true\" _v-2719575f=\"\"></i> <i _v-2719575f=\"\">If a image should be here, update the post or edit this item.</i>\n\t\t\t\t\t</small>\n\t\t\t\t</div>\n\t\t\t</details>\n\n\t\t\t<div class=\"card-body\" v-if=\"edit === false\" _v-2719575f=\"\">\n\t\t\t\t<p v-html=\"hashtags( post_content )\" _v-2719575f=\"\"></p>\n\t\t\t\t<p v-if=\"post.post_url\" _v-2719575f=\"\"><b _v-2719575f=\"\">Link:</b> <a :href=\"post.post_url\" target=\"_blank\" _v-2719575f=\"\">{{post.post_url}}</a></p>\n\t\t\t</div>\n\t\t</span>\n\t\t<div class=\"card-body\" v-else=\"\" _v-2719575f=\"\">\n\t\t\t<div class=\"form-group\" _v-2719575f=\"\">\n\t\t\t\t<label class=\"form-label\" for=\"image\" _v-2719575f=\"\">Image</label>\n\t\t\t\t<div class=\"input-group\" _v-2719575f=\"\">\n\t\t\t\t\t<span class=\"input-group-addon\" _v-2719575f=\"\"><i class=\"fa fa-file-image-o\" _v-2719575f=\"\"></i></span>\n\t\t\t\t\t<input id=\"image\" type=\"text\" class=\"form-input\" :value=\"post_img_url\" readonly=\"\" _v-2719575f=\"\">\n\t\t\t\t\t<button class=\"btn btn-primary input-group-btn\" @click=\"uploadImage\" _v-2719575f=\"\"><i class=\"fa fa-upload\" aria-hidden=\"true\" _v-2719575f=\"\"></i></button>\n\t\t\t\t\t<button class=\"btn btn-danger input-group-btn\" @click=\"clearImage\" _v-2719575f=\"\"><i class=\"fa fa-trash\" aria-hidden=\"true\" _v-2719575f=\"\"></i></button>\n\t\t\t\t</div>\n\n\t\t\t\t<label class=\"form-label\" for=\"content\" _v-2719575f=\"\">Content</label>\n\t\t\t\t<textarea class=\"form-input\" id=\"content\" placeholder=\"Textarea\" rows=\"3\" @keydown=\"checkCount\" _v-2719575f=\"\">{{post_content}}</textarea>\n\t\t\t</div>\n\t\t</div>\n\t\t<div style=\"position: absolute; display: block; bottom: 0; right: 0;\" v-if=\"edit === false\" _v-2719575f=\"\">\n\t\t\t<button class=\"btn btn-sm btn-warning\" _v-2719575f=\"\"><i class=\"fa fa-step-forward\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Skip</button>\n\t\t\t<button class=\"btn btn-sm btn-danger\" _v-2719575f=\"\"><i class=\"fa fa-ban\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Block</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ })
 /******/ ]);

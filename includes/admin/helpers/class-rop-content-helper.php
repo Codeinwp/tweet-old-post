@@ -130,8 +130,8 @@ class Rop_Content_Helper {
 	 *
 	 * @since   8.0.0
 	 * @access  public
-	 * @param  string $string The regular text in the Tweet
-	 * @param  string $hashtag The hashtag to include in $string, if possible
+	 * @param  string $string The regular text in the Tweet.
+	 * @param  string $hashtag The hashtag to include in $string, if possible.
 	 * @return mixed  The new $string or false if the $string doesn't contain the $hashtag
 	 */
 	public function mark_hashtags( $string, $hashtag ) {

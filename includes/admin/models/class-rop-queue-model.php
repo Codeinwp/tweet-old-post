@@ -86,8 +86,10 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	/**
 	 * This method will be refactored or moved inside a post format helper.
 	 *
-	 * @param WP_Post $post The post object.
-	 * @param string  $account_id The account ID.
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   WP_Post $post The post object.
+	 * @param   string  $account_id The account ID.
 	 * @return array
 	 */
 	private function prepare_post_object( WP_Post $post, $account_id ) {
@@ -95,15 +97,75 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 		$post_format_helper->set_post_format( $account_id );
 	    $filtered_post = array();
 		$filtered_post['post_id'] = $post->ID;
+		$filtered_post['account_id'] = $account_id;
 		$filtered_post['post_title'] = $post->post_title;
 		$filtered_post['post_content'] = $post_format_helper->build_content( $post );
+		$filtered_post['custom_content'] = '';
 		$filtered_post['post_url'] = $post_format_helper->build_url( $post );
 		if ( has_post_thumbnail( $post->ID ) ) {
 			$filtered_post['post_img'] = get_the_post_thumbnail_url( $post->ID, 'large' );
 		} else {
 			$filtered_post['post_img'] = false;
 		}
+		$filtered_post['custom_img'] = false;
 		return $filtered_post;
+	}
+
+	/**
+	 * Rebuilds the post object using the updated post format
+	 * and preserving the old user settings.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   WP_Post $post A WordPress Post Object.
+	 * @param   string  $account_id The account ID.
+	 * @param   array   $old_post_object The old filtered post object data.
+	 * @return array
+	 */
+	private function rebuild_post_object( WP_Post $post, $account_id, $old_post_object ) {
+		$post_format_helper = new Rop_Post_Format_Helper();
+		$post_format_helper->set_post_format( $account_id );
+		$filtered_post = array();
+		$filtered_post['post_id'] = $post->ID;
+		$filtered_post['account_id'] = $account_id;
+		$filtered_post['post_title'] = $post->post_title;
+		$filtered_post['post_content'] = $post_format_helper->build_content( $post );
+		$filtered_post['custom_content'] = ( isset( $old_post_object['custom_content'] ) && $old_post_object['custom_content'] != '' ) ? $old_post_object['custom_content'] : '';
+		$filtered_post['post_url'] = $post_format_helper->build_url( $post );
+		$filtered_post['custom_img'] = $old_post_object['custom_img'];
+		if ( $filtered_post['custom_img'] ) {
+			$filtered_post['post_img'] = old_post_object['post_img'];
+		} else {
+			if ( has_post_thumbnail( $post->ID ) ) {
+				$filtered_post['post_img'] = get_the_post_thumbnail_url( $post->ID, 'large' );
+			} else {
+				$filtered_post['post_img'] = false;
+			}
+		}
+		return $filtered_post;
+	}
+
+	/**
+	 * Refreshes the current queue items.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 */
+	private function refresh_queue() {
+	    if ( ! empty( $this->queue ) ) {
+			$updated_queue = array();
+			foreach ( $this->queue as $account_id => $account_queue ) {
+				$updated_accounts_queue = array();
+				foreach ( $account_queue as $queue_event ) {
+					$post = get_post( $queue_event['post']['post_id'] );
+					$updated_post = $this->rebuild_post_object( $post, $account_id, $queue_event['post'] );
+					array_push( $updated_accounts_queue, array( 'time' => $queue_event['time'], 'post' => $updated_post ) );
+				}
+				$updated_queue[ $account_id ] = $updated_accounts_queue;
+			}
+			$this->queue = $updated_queue;
+			$this->set( 'queue', $this->queue );
+		}
 	}
 
 	/**
@@ -131,7 +193,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 				$queue[ $account_id ] = $account_queue;
 			}
 		}
-
+		$this->set( 'queue', $queue );
 		return $queue;
 	}
 
@@ -158,7 +220,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 				}
 			}
 		}
-
+		$this->set( 'queue', $this->queue );
 	}
 
 	/**
@@ -179,6 +241,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 			$this->scheduler->add_update_schedule( $account_id, false, $popped['time'] );
 		}
 		$this->selector->update_buffer( $account_id, $popped['post_id'] );
+		$this->set( 'queue', $this->queue );
 		return $popped['time'];
 	}
 
@@ -213,14 +276,15 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @return array
 	 */
 	public function get_ordered_queue() {
+	    $this->refresh_queue();
 	    $queue = $this->queue;
 	    $ordered = array();
 	    // print_r( $queue );
 	    foreach ( $queue as $account_id => $data ) {
 	        foreach ( $data as $event ) {
-	            $formated_data = $event;
-	            $formated_data['time'] = date( 'd-m-Y H:i', strtotime( $formated_data['time'] ) );
-				array_push( $ordered, array( 'time' => $event['time'], 'account_id' => $account_id, 'post' => $formated_data['post'] ) );
+	            $formatted_data = $event;
+	            $formatted_data['time'] = date( 'd-m-Y H:i', strtotime( $formatted_data['time'] ) );
+				array_push( $ordered, array( 'time' => $event['time'], 'account_id' => $account_id, 'post' => $formatted_data['post'] ) );
 			}
 		}
 		usort( $ordered, function ( $a, $b ) {

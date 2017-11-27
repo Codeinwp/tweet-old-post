@@ -101,6 +101,7 @@ class Rop_Admin {
 		$screen = get_current_screen();
 
 		if ( in_array( $screen->id, array( 'toplevel_page_rop_main' ) ) ) {
+			wp_enqueue_media();
 			wp_enqueue_script( $this->plugin_name . '_fa', 'https://use.fontawesome.com/af4c3f0b39.js', array(), $this->version, false );
 
 			wp_register_script( $this->plugin_name . '_main',  ROP_LITE_URL . 'assets/js/build/rop.js', array( $this->plugin_name . '_fa' ), $this->version, false );
