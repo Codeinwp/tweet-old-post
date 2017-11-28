@@ -12801,6 +12801,57 @@ exports.default = new _vuex2.default.Store({
 			}, function () {
 				commit('logMessage', ['Error updating queue event.', 'error']);
 			});
+		},
+		publishQueueCard: function publishQueueCard(_ref21, data) {
+			var commit = _ref21.commit;
+
+			_vue2.default.http({
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'publish_queue_event' },
+				body: data,
+				responseType: 'json'
+			}).then(function (response) {
+				console.log(response.data);
+				commit('updateQueue', response.data);
+			}, function () {
+				commit('logMessage', ['Error updating queue event.', 'error']);
+			});
+		},
+		skipQueueCard: function skipQueueCard(_ref22, data) {
+			var commit = _ref22.commit;
+
+			_vue2.default.http({
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'skip_queue_event' },
+				body: data,
+				responseType: 'json'
+			}).then(function (response) {
+				console.log(response.data);
+				commit('updateQueue', response.data);
+			}, function () {
+				commit('logMessage', ['Error updating queue event.', 'error']);
+			});
+		},
+		blockQueueCard: function blockQueueCard(_ref23, data) {
+			var commit = _ref23.commit;
+
+			_vue2.default.http({
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'block_queue_event' },
+				body: data,
+				responseType: 'json'
+			}).then(function (response) {
+				console.log(response.data);
+				commit('updateQueue', response.data);
+			}, function () {
+				commit('logMessage', ['Error updating queue event.', 'error']);
+			});
 		}
 	}
 });
@@ -18706,7 +18757,11 @@ module.exports = {
 			return this.$store.state.queue;
 		}
 	},
-	methods: {},
+	methods: {
+		refreshQueue: function refreshQueue() {
+			this.$store.dispatch('fetchQueue');
+		}
+	},
 	components: {
 		QueueCard: _queueCard2.default
 	}
@@ -18718,13 +18773,12 @@ module.exports = {
 // 			<h3>Sharing Queue</h3>
 // 			<div class="container columns">
 // 				<div class="column col-sm-12 col-3 text-left" v-for=" (data, index) in queue ">
-//                     <queue-card :account_id="data.account_id" :post="data.post" :time="data.time" :key="index" :id="index" />
+// 					<queue-card :account_id="data.account_id" :post="data.post" :time="data.time" :key="index" :id="index" />
 // 				</div>
 // 			</div>
 // 		</div>
 // 		<div class="panel-footer">
-// 			<button class="btn btn-primary" @click="saveSchedule()"><i class="fa fa-check"></i> Save Schedule</button>
-// 			<button class="btn btn-secondary" @click="resetSchedule()"><i class="fa fa-ban"></i> Reset to Defaults</button>
+// 			<button class="btn btn-secondary" @click="refreshQueue"><i class="fa fa-refresh"></i> Refresh Queue</button>
 // 		</div>
 // 	</div>
 // </template>
@@ -19051,7 +19105,7 @@ module.exports = {
 /* 143 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\" style=\"overflow: inherit;\">\n\t\t\t<h3>Sharing Queue</h3>\n\t\t\t<div class=\"container columns\">\n\t\t\t\t<div class=\"column col-sm-12 col-3 text-left\" v-for=\" (data, index) in queue \">\n                    <queue-card :account_id=\"data.account_id\" :post=\"data.post\" :time=\"data.time\" :key=\"index\" :id=\"index\" />\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveSchedule()\"><i class=\"fa fa-check\"></i> Save Schedule</button>\n\t\t\t<button class=\"btn btn-secondary\" @click=\"resetSchedule()\"><i class=\"fa fa-ban\"></i> Reset to Defaults</button>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\" style=\"overflow: inherit;\">\n\t\t\t<h3>Sharing Queue</h3>\n\t\t\t<div class=\"container columns\">\n\t\t\t\t<div class=\"column col-sm-12 col-3 text-left\" v-for=\" (data, index) in queue \">\n\t\t\t\t\t<queue-card :account_id=\"data.account_id\" :post=\"data.post\" :time=\"data.time\" :key=\"index\" :id=\"index\" />\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\">\n\t\t\t<button class=\"btn btn-secondary\" @click=\"refreshQueue\"><i class=\"fa fa-refresh\"></i> Refresh Queue</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 144 */

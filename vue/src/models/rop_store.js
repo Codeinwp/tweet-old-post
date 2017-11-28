@@ -480,6 +480,51 @@ export default new Vuex.Store( {
 			}, function () {
 				commit( 'logMessage', ['Error updating queue event.', 'error'] )
 			} )
+		},
+		publishQueueCard ( { commit }, data ) {
+			Vue.http( {
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'publish_queue_event' },
+				body: data,
+				responseType: 'json'
+			} ).then( function ( response ) {
+				console.log( response.data )
+				commit( 'updateQueue', response.data )
+			}, function () {
+				commit( 'logMessage', ['Error updating queue event.', 'error'] )
+			} )
+		},
+		skipQueueCard ( { commit }, data ) {
+			Vue.http( {
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'skip_queue_event' },
+				body: data,
+				responseType: 'json'
+			} ).then( function ( response ) {
+				console.log( response.data )
+				commit( 'updateQueue', response.data )
+			}, function () {
+				commit( 'logMessage', ['Error updating queue event.', 'error'] )
+			} )
+		},
+		blockQueueCard ( { commit }, data ) {
+			Vue.http( {
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'block_queue_event' },
+				body: data,
+				responseType: 'json'
+			} ).then( function ( response ) {
+				console.log( response.data )
+				commit( 'updateQueue', response.data )
+			}, function () {
+				commit( 'logMessage', ['Error updating queue event.', 'error'] )
+			} )
 		}
 	}
 } )
