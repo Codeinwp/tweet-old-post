@@ -12784,6 +12784,23 @@ exports.default = new _vuex2.default.Store({
 			}, function () {
 				commit('logMessage', ['Error retrieving queue.', 'error']);
 			});
+		},
+		updateQueueCard: function updateQueueCard(_ref20, data) {
+			var commit = _ref20.commit;
+
+			_vue2.default.http({
+				url: ropApiSettings.root,
+				method: 'POST',
+				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+				params: { 'req': 'update_queue_event' },
+				body: data,
+				responseType: 'json'
+			}).then(function (response) {
+				console.log(response.data);
+				commit('updateQueue', response.data);
+			}, function () {
+				commit('logMessage', ['Error updating queue event.', 'error']);
+			});
 		}
 	}
 });
@@ -18745,12 +18762,18 @@ if (false) {(function () {  module.hot.accept()
 "use strict";
 
 
+var _stringify = __webpack_require__(125);
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 // <template>
 // 	<div class="card col-12" style="max-width: 100%; min-height: 350px;">
 // 		<div style="position: absolute; display: block; top: 0; right: 0;">
 // 			<button class="btn btn-sm btn-primary" @click="toggleEditState" v-if="edit === false"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</button>
 // 			<button class="btn btn-sm btn-success" @click="saveChanges" v-if="edit"><i class="fa fa-check" aria-hidden="true"></i> Save</button>
-// 			<button class="btn btn-sm btn-warning" @click="toggleEditState" v-if="edit"><i class="fa fa-times" aria-hidden="true"></i> Cancel</button>
+// 			<button class="btn btn-sm btn-warning" @click="cancelChanges" v-if="edit"><i class="fa fa-times" aria-hidden="true"></i> Cancel</button>
 // 		</div>
 // 		<div class="card-header">
 // 			<p class="text-gray text-right float-right"><b>Scheduled:</b><br/>{{time}}</p>
@@ -18759,15 +18782,15 @@ if (false) {(function () {  module.hot.accept()
 // 		</div>
 // 		<hr/>
 // 		<span v-if="edit === false">
-// 			<details class="accordion" v-if="post.post_img">
+// 			<details class="accordion" v-if="post_img_url !== ''">
 // 				<summary class="accordion-header">
 // 					<i class="fa fa-file-image-o"></i>
 // 					Image Preview
 // 				</summary>
 // 				<div class="accordion-body">
-// 					<div class="card-image" v-if="post.post_img">
+// 					<div class="card-image" v-if="post_img_url !== ''">
 // 						<figure class="figure" style="max-height: 250px; overflow: hidden;">
-// 							<img :src="post.post_img" class="img-fit-cover" style=" width: 100%; height: 250px;" @error="brokenImg">
+// 							<img :src="post_img_url" class="img-fit-cover" style=" width: 100%; height: 250px;" @error="brokenImg">
 // 						</figure>
 // 					</div>
 // 				</div>
@@ -18801,12 +18824,13 @@ if (false) {(function () {  module.hot.accept()
 // 				</div>
 //
 // 				<label class="form-label" for="content">Content</label>
-// 				<textarea class="form-input" id="content" placeholder="Textarea" rows="3" @keydown="checkCount">{{post_content}}</textarea>
+// 				<textarea class="form-input" id="content" placeholder="Textarea" rows="3" @keyup="checkCount">{{post_content}}</textarea>
 // 			</div>
 // 		</div>
 // 		<div style="position: absolute; display: block; bottom: 0; right: 0;" v-if="edit === false">
-// 			<button class="btn btn-sm btn-warning"><i class="fa fa-step-forward" aria-hidden="true"></i> Skip</button>
-// 			<button class="btn btn-sm btn-danger"><i class="fa fa-ban" aria-hidden="true"></i> Block</button>
+// 			<button class="btn btn-sm btn-success" @click="publishNow"><i class="fa fa-share" aria-hidden="true"></i> Share Now</button>
+// 			<button class="btn btn-sm btn-warning" @click="skipPost"><i class="fa fa-step-forward" aria-hidden="true"></i> Skip</button>
+// 			<button class="btn btn-sm btn-danger" @click="blockPost"><i class="fa fa-ban" aria-hidden="true"></i> Block</button>
 // 		</div>
 // 	</div>
 // </template>
@@ -18838,15 +18862,16 @@ module.exports = {
 	data: function data() {
 		return {
 			edit: false,
-			post_edit: this.post
+			post_edit: this.post,
+			post_defaults: JSON.parse((0, _stringify2.default)(this.post)) // This removes the observable/reactivity
 		};
 	},
 	computed: {
 		post_content: function post_content() {
-			if (this.post.custom_content !== '') {
-				return this.post.custom_content;
+			if (this.post_edit.custom_content !== '') {
+				return this.post_edit.custom_content;
 			}
-			return this.post.post_content;
+			return this.post_edit.post_content;
 		},
 		active_accounts: function active_accounts() {
 			return this.$store.state.activeAccounts;
@@ -18860,13 +18885,32 @@ module.exports = {
 	},
 	watch: {},
 	methods: {
+		publishNow: function publishNow() {
+			this.$store.dispatch('publishQueueCard', { account_id: this.post_edit.account_id, post_id: this.post_edit.post_id });
+		},
+		skipPost: function skipPost() {
+			this.$store.dispatch('skipQueueCard', { account_id: this.post_edit.account_id, post_id: this.post_edit.post_id });
+		},
+		blockPost: function blockPost() {
+			this.$store.dispatch('blockQueueCard', { account_id: this.post_edit.account_id, post_id: this.post_edit.post_id });
+		},
 		toggleEditState: function toggleEditState() {
 			this.edit = !this.edit;
 		},
 		checkCount: function checkCount(evt) {
-			console.log(evt);
+			this.post_edit.custom_content = '';
+			if (this.post_edit.post_content !== evt.srcElement.value) {
+				this.post_edit.custom_content = evt.srcElement.value;
+			}
 		},
-		saveChanges: function saveChanges() {},
+		saveChanges: function saveChanges() {
+			this.$store.dispatch('updateQueueCard', { account_id: this.post_edit.account_id, post_id: this.post_edit.post_id, custom_data: this.post_edit });
+			this.toggleEditState();
+		},
+		cancelChanges: function cancelChanges() {
+			this.post_edit = this.post_defaults;
+			this.toggleEditState();
+		},
 		clearImage: function clearImage() {
 			this.post_edit.post_img = false;
 		},
@@ -18885,6 +18929,7 @@ module.exports = {
 				var first = window.state().get('selection').first().toJSON();
 				console.log(first);
 				self.post_edit.post_img = first.url;
+				self.custom_img = true;
 			});
 
 			window.open();
@@ -19052,7 +19097,7 @@ exports.push([module.i, "\n\t#rop_core .avatar .avatar-icon[_v-2719575f] {\n\t\t
 /* 146 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"card col-12\" style=\"max-width: 100%; min-height: 350px;\" _v-2719575f=\"\">\n\t\t<div style=\"position: absolute; display: block; top: 0; right: 0;\" _v-2719575f=\"\">\n\t\t\t<button class=\"btn btn-sm btn-primary\" @click=\"toggleEditState\" v-if=\"edit === false\" _v-2719575f=\"\"><i class=\"fa fa-pencil\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Edit</button>\n\t\t\t<button class=\"btn btn-sm btn-success\" @click=\"saveChanges\" v-if=\"edit\" _v-2719575f=\"\"><i class=\"fa fa-check\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Save</button>\n\t\t\t<button class=\"btn btn-sm btn-warning\" @click=\"toggleEditState\" v-if=\"edit\" _v-2719575f=\"\"><i class=\"fa fa-times\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Cancel</button>\n\t\t</div>\n\t\t<div class=\"card-header\" _v-2719575f=\"\">\n\t\t\t<p class=\"text-gray text-right float-right\" _v-2719575f=\"\"><b _v-2719575f=\"\">Scheduled:</b><br _v-2719575f=\"\">{{time}}</p>\n\t\t\t<div class=\"card-title h6\" _v-2719575f=\"\">{{post.post_title}}</div>\n\t\t\t<div class=\"card-subtitle text-gray\" _v-2719575f=\"\"><i class=\"service fa\" :class=\"iconClass( account_id )\" _v-2719575f=\"\"></i> {{active_accounts[account_id].account}}</div>\n\t\t</div>\n\t\t<hr _v-2719575f=\"\">\n\t\t<span v-if=\"edit === false\" _v-2719575f=\"\">\n\t\t\t<details class=\"accordion\" v-if=\"post.post_img\" _v-2719575f=\"\">\n\t\t\t\t<summary class=\"accordion-header\" _v-2719575f=\"\">\n\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-2719575f=\"\"></i>\n\t\t\t\t\tImage Preview\n\t\t\t\t</summary>\n\t\t\t\t<div class=\"accordion-body\" _v-2719575f=\"\">\n\t\t\t\t\t<div class=\"card-image\" v-if=\"post.post_img\" _v-2719575f=\"\">\n\t\t\t\t\t\t<figure class=\"figure\" style=\"max-height: 250px; overflow: hidden;\" _v-2719575f=\"\">\n\t\t\t\t\t\t\t<img :src=\"post.post_img\" class=\"img-fit-cover\" style=\" width: 100%; height: 250px;\" @error=\"brokenImg\" _v-2719575f=\"\">\n\t\t\t\t\t\t</figure>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</details>\n\t\t\t<details class=\"accordion\" v-else=\"\" _v-2719575f=\"\">\n\t\t\t\t<summary class=\"accordion-header\" _v-2719575f=\"\">\n\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-2719575f=\"\"></i>\n\t\t\t\t\tNo Image\n\t\t\t\t</summary>\n\t\t\t\t<div class=\"accordion-body text-gray\" _v-2719575f=\"\">\n\t\t\t\t\t<small _v-2719575f=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-chain-broken\" aria-hidden=\"true\" _v-2719575f=\"\"></i> No image attached or a broken link was detected.<br _v-2719575f=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-info-circle\" aria-hidden=\"true\" _v-2719575f=\"\"></i> <i _v-2719575f=\"\">If a image should be here, update the post or edit this item.</i>\n\t\t\t\t\t</small>\n\t\t\t\t</div>\n\t\t\t</details>\n\n\t\t\t<div class=\"card-body\" v-if=\"edit === false\" _v-2719575f=\"\">\n\t\t\t\t<p v-html=\"hashtags( post_content )\" _v-2719575f=\"\"></p>\n\t\t\t\t<p v-if=\"post.post_url\" _v-2719575f=\"\"><b _v-2719575f=\"\">Link:</b> <a :href=\"post.post_url\" target=\"_blank\" _v-2719575f=\"\">{{post.post_url}}</a></p>\n\t\t\t</div>\n\t\t</span>\n\t\t<div class=\"card-body\" v-else=\"\" _v-2719575f=\"\">\n\t\t\t<div class=\"form-group\" _v-2719575f=\"\">\n\t\t\t\t<label class=\"form-label\" for=\"image\" _v-2719575f=\"\">Image</label>\n\t\t\t\t<div class=\"input-group\" _v-2719575f=\"\">\n\t\t\t\t\t<span class=\"input-group-addon\" _v-2719575f=\"\"><i class=\"fa fa-file-image-o\" _v-2719575f=\"\"></i></span>\n\t\t\t\t\t<input id=\"image\" type=\"text\" class=\"form-input\" :value=\"post_img_url\" readonly=\"\" _v-2719575f=\"\">\n\t\t\t\t\t<button class=\"btn btn-primary input-group-btn\" @click=\"uploadImage\" _v-2719575f=\"\"><i class=\"fa fa-upload\" aria-hidden=\"true\" _v-2719575f=\"\"></i></button>\n\t\t\t\t\t<button class=\"btn btn-danger input-group-btn\" @click=\"clearImage\" _v-2719575f=\"\"><i class=\"fa fa-trash\" aria-hidden=\"true\" _v-2719575f=\"\"></i></button>\n\t\t\t\t</div>\n\n\t\t\t\t<label class=\"form-label\" for=\"content\" _v-2719575f=\"\">Content</label>\n\t\t\t\t<textarea class=\"form-input\" id=\"content\" placeholder=\"Textarea\" rows=\"3\" @keydown=\"checkCount\" _v-2719575f=\"\">{{post_content}}</textarea>\n\t\t\t</div>\n\t\t</div>\n\t\t<div style=\"position: absolute; display: block; bottom: 0; right: 0;\" v-if=\"edit === false\" _v-2719575f=\"\">\n\t\t\t<button class=\"btn btn-sm btn-warning\" _v-2719575f=\"\"><i class=\"fa fa-step-forward\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Skip</button>\n\t\t\t<button class=\"btn btn-sm btn-danger\" _v-2719575f=\"\"><i class=\"fa fa-ban\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Block</button>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"card col-12\" style=\"max-width: 100%; min-height: 350px;\" _v-2719575f=\"\">\n\t\t<div style=\"position: absolute; display: block; top: 0; right: 0;\" _v-2719575f=\"\">\n\t\t\t<button class=\"btn btn-sm btn-primary\" @click=\"toggleEditState\" v-if=\"edit === false\" _v-2719575f=\"\"><i class=\"fa fa-pencil\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Edit</button>\n\t\t\t<button class=\"btn btn-sm btn-success\" @click=\"saveChanges\" v-if=\"edit\" _v-2719575f=\"\"><i class=\"fa fa-check\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Save</button>\n\t\t\t<button class=\"btn btn-sm btn-warning\" @click=\"cancelChanges\" v-if=\"edit\" _v-2719575f=\"\"><i class=\"fa fa-times\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Cancel</button>\n\t\t</div>\n\t\t<div class=\"card-header\" _v-2719575f=\"\">\n\t\t\t<p class=\"text-gray text-right float-right\" _v-2719575f=\"\"><b _v-2719575f=\"\">Scheduled:</b><br _v-2719575f=\"\">{{time}}</p>\n\t\t\t<div class=\"card-title h6\" _v-2719575f=\"\">{{post.post_title}}</div>\n\t\t\t<div class=\"card-subtitle text-gray\" _v-2719575f=\"\"><i class=\"service fa\" :class=\"iconClass( account_id )\" _v-2719575f=\"\"></i> {{active_accounts[account_id].account}}</div>\n\t\t</div>\n\t\t<hr _v-2719575f=\"\">\n\t\t<span v-if=\"edit === false\" _v-2719575f=\"\">\n\t\t\t<details class=\"accordion\" v-if=\"post_img_url !== ''\" _v-2719575f=\"\">\n\t\t\t\t<summary class=\"accordion-header\" _v-2719575f=\"\">\n\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-2719575f=\"\"></i>\n\t\t\t\t\tImage Preview\n\t\t\t\t</summary>\n\t\t\t\t<div class=\"accordion-body\" _v-2719575f=\"\">\n\t\t\t\t\t<div class=\"card-image\" v-if=\"post_img_url !== ''\" _v-2719575f=\"\">\n\t\t\t\t\t\t<figure class=\"figure\" style=\"max-height: 250px; overflow: hidden;\" _v-2719575f=\"\">\n\t\t\t\t\t\t\t<img :src=\"post_img_url\" class=\"img-fit-cover\" style=\" width: 100%; height: 250px;\" @error=\"brokenImg\" _v-2719575f=\"\">\n\t\t\t\t\t\t</figure>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</details>\n\t\t\t<details class=\"accordion\" v-else=\"\" _v-2719575f=\"\">\n\t\t\t\t<summary class=\"accordion-header\" _v-2719575f=\"\">\n\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-2719575f=\"\"></i>\n\t\t\t\t\tNo Image\n\t\t\t\t</summary>\n\t\t\t\t<div class=\"accordion-body text-gray\" _v-2719575f=\"\">\n\t\t\t\t\t<small _v-2719575f=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-chain-broken\" aria-hidden=\"true\" _v-2719575f=\"\"></i> No image attached or a broken link was detected.<br _v-2719575f=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-info-circle\" aria-hidden=\"true\" _v-2719575f=\"\"></i> <i _v-2719575f=\"\">If a image should be here, update the post or edit this item.</i>\n\t\t\t\t\t</small>\n\t\t\t\t</div>\n\t\t\t</details>\n\n\t\t\t<div class=\"card-body\" v-if=\"edit === false\" _v-2719575f=\"\">\n\t\t\t\t<p v-html=\"hashtags( post_content )\" _v-2719575f=\"\"></p>\n\t\t\t\t<p v-if=\"post.post_url\" _v-2719575f=\"\"><b _v-2719575f=\"\">Link:</b> <a :href=\"post.post_url\" target=\"_blank\" _v-2719575f=\"\">{{post.post_url}}</a></p>\n\t\t\t</div>\n\t\t</span>\n\t\t<div class=\"card-body\" v-else=\"\" _v-2719575f=\"\">\n\t\t\t<div class=\"form-group\" _v-2719575f=\"\">\n\t\t\t\t<label class=\"form-label\" for=\"image\" _v-2719575f=\"\">Image</label>\n\t\t\t\t<div class=\"input-group\" _v-2719575f=\"\">\n\t\t\t\t\t<span class=\"input-group-addon\" _v-2719575f=\"\"><i class=\"fa fa-file-image-o\" _v-2719575f=\"\"></i></span>\n\t\t\t\t\t<input id=\"image\" type=\"text\" class=\"form-input\" :value=\"post_img_url\" readonly=\"\" _v-2719575f=\"\">\n\t\t\t\t\t<button class=\"btn btn-primary input-group-btn\" @click=\"uploadImage\" _v-2719575f=\"\"><i class=\"fa fa-upload\" aria-hidden=\"true\" _v-2719575f=\"\"></i></button>\n\t\t\t\t\t<button class=\"btn btn-danger input-group-btn\" @click=\"clearImage\" _v-2719575f=\"\"><i class=\"fa fa-trash\" aria-hidden=\"true\" _v-2719575f=\"\"></i></button>\n\t\t\t\t</div>\n\n\t\t\t\t<label class=\"form-label\" for=\"content\" _v-2719575f=\"\">Content</label>\n\t\t\t\t<textarea class=\"form-input\" id=\"content\" placeholder=\"Textarea\" rows=\"3\" @keyup=\"checkCount\" _v-2719575f=\"\">{{post_content}}</textarea>\n\t\t\t</div>\n\t\t</div>\n\t\t<div style=\"position: absolute; display: block; bottom: 0; right: 0;\" v-if=\"edit === false\" _v-2719575f=\"\">\n\t\t\t<button class=\"btn btn-sm btn-success\" @click=\"publishNow\" _v-2719575f=\"\"><i class=\"fa fa-share\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Share Now</button>\n\t\t\t<button class=\"btn btn-sm btn-warning\" @click=\"skipPost\" _v-2719575f=\"\"><i class=\"fa fa-step-forward\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Skip</button>\n\t\t\t<button class=\"btn btn-sm btn-danger\" @click=\"blockPost\" _v-2719575f=\"\"><i class=\"fa fa-ban\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Block</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ })
 /******/ ]);

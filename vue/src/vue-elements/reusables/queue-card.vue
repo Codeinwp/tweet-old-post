@@ -3,7 +3,7 @@
 		<div style="position: absolute; display: block; top: 0; right: 0;">
 			<button class="btn btn-sm btn-primary" @click="toggleEditState" v-if="edit === false"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</button>
 			<button class="btn btn-sm btn-success" @click="saveChanges" v-if="edit"><i class="fa fa-check" aria-hidden="true"></i> Save</button>
-			<button class="btn btn-sm btn-warning" @click="toggleEditState" v-if="edit"><i class="fa fa-times" aria-hidden="true"></i> Cancel</button>
+			<button class="btn btn-sm btn-warning" @click="cancelChanges" v-if="edit"><i class="fa fa-times" aria-hidden="true"></i> Cancel</button>
 		</div>
 		<div class="card-header">
 			<p class="text-gray text-right float-right"><b>Scheduled:</b><br/>{{time}}</p>
@@ -12,15 +12,15 @@
 		</div>
 		<hr/>
 		<span v-if="edit === false">
-			<details class="accordion" v-if="post.post_img">
+			<details class="accordion" v-if="post_img_url !== ''">
 				<summary class="accordion-header">
 					<i class="fa fa-file-image-o"></i>
 					Image Preview
 				</summary>
 				<div class="accordion-body">
-					<div class="card-image" v-if="post.post_img">
+					<div class="card-image" v-if="post_img_url !== ''">
 						<figure class="figure" style="max-height: 250px; overflow: hidden;">
-							<img :src="post.post_img" class="img-fit-cover" style=" width: 100%; height: 250px;" @error="brokenImg">
+							<img :src="post_img_url" class="img-fit-cover" style=" width: 100%; height: 250px;" @error="brokenImg">
 						</figure>
 					</div>
 				</div>
@@ -54,12 +54,13 @@
 				</div>
 
 				<label class="form-label" for="content">Content</label>
-				<textarea class="form-input" id="content" placeholder="Textarea" rows="3" @keydown="checkCount">{{post_content}}</textarea>
+				<textarea class="form-input" id="content" placeholder="Textarea" rows="3" @keyup="checkCount">{{post_content}}</textarea>
 			</div>
 		</div>
 		<div style="position: absolute; display: block; bottom: 0; right: 0;" v-if="edit === false">
-			<button class="btn btn-sm btn-warning"><i class="fa fa-step-forward" aria-hidden="true"></i> Skip</button>
-			<button class="btn btn-sm btn-danger"><i class="fa fa-ban" aria-hidden="true"></i> Block</button>
+			<button class="btn btn-sm btn-success" @click="publishNow"><i class="fa fa-share" aria-hidden="true"></i> Share Now</button>
+			<button class="btn btn-sm btn-warning" @click="skipPost"><i class="fa fa-step-forward" aria-hidden="true"></i> Skip</button>
+			<button class="btn btn-sm btn-danger" @click="blockPost"><i class="fa fa-ban" aria-hidden="true"></i> Block</button>
 		</div>
 	</div>
 </template>
@@ -91,15 +92,16 @@
 		data: function () {
 			return {
 				edit: false,
-				post_edit: this.post
+				post_edit: this.post,
+				post_defaults: JSON.parse( JSON.stringify( this.post ) ) // This removes the observable/reactivity
 			}
 		},
 		computed: {
 			post_content: function () {
-				if ( this.post.custom_content !== '' ) {
-					return this.post.custom_content
+				if ( this.post_edit.custom_content !== '' ) {
+					return this.post_edit.custom_content
 				}
-				return this.post.post_content
+				return this.post_edit.post_content
 			},
 			active_accounts: function () {
 				return this.$store.state.activeAccounts
@@ -114,13 +116,31 @@
 		watch: {
 		},
 		methods: {
+			publishNow: function () {
+				this.$store.dispatch( 'publishQueueCard', { account_id: this.post_edit.account_id, post_id: this.post_edit.post_id } )
+			},
+			skipPost: function () {
+				this.$store.dispatch( 'skipQueueCard', { account_id: this.post_edit.account_id, post_id: this.post_edit.post_id } )
+			},
+			blockPost: function () {
+				this.$store.dispatch( 'blockQueueCard', { account_id: this.post_edit.account_id, post_id: this.post_edit.post_id } )
+			},
 			toggleEditState: function () {
 				this.edit = !this.edit
 			},
 			checkCount: function ( evt ) {
-				console.log( evt )
+				this.post_edit.custom_content = ''
+				if ( this.post_edit.post_content !== evt.srcElement.value ) {
+					this.post_edit.custom_content = evt.srcElement.value
+				}
 			},
 			saveChanges: function () {
+				this.$store.dispatch( 'updateQueueCard', { account_id: this.post_edit.account_id, post_id: this.post_edit.post_id, custom_data: this.post_edit } )
+				this.toggleEditState()
+			},
+			cancelChanges: function () {
+				this.post_edit = this.post_defaults
+				this.toggleEditState()
 			},
 			clearImage: function () {
 				this.post_edit.post_img = false
@@ -140,6 +160,7 @@
 					let first = window.state().get( 'selection' ).first().toJSON()
 					console.log( first )
 					self.post_edit.post_img = first.url
+					self.custom_img = true
 				} )
 
 				window.open()

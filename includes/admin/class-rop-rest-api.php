@@ -46,6 +46,10 @@ class Rop_Rest_Api {
 	 */
 	public function api( WP_REST_Request $request ) {
 		switch ( $request->get_param( 'req' ) ) {
+			case 'update_queue_event':
+				$data = json_decode( $request->get_body(), true );
+				$response = $this->update_queue_event( $data );
+				break;
 			case 'get_queue':
 				$response = $this->get_queue();
 				break;
@@ -129,6 +133,20 @@ class Rop_Rest_Api {
 		}// End switch().
 		// array_push( $response, array( 'current_user' => current_user_can( 'manage_options' ) ) );
 		return $response;
+	}
+
+	/**
+	 * API method called to update a queue event and return active queue.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   array $data Data passed from the AJAX call.
+	 * @return array
+	 */
+	private function update_queue_event( $data ) {
+		$queue = new Rop_Queue_Model();
+		$queue->update_queue_object( $data['account_id'], $data['post_id'], $data['custom_data'] );
+		return $queue->get_ordered_queue();
 	}
 
 	/**

@@ -95,7 +95,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	private function prepare_post_object( WP_Post $post, $account_id ) {
 		$post_format_helper = new Rop_Post_Format_Helper();
 		$post_format_helper->set_post_format( $account_id );
-	    $filtered_post = array();
+		$filtered_post = array();
 		$filtered_post['post_id'] = $post->ID;
 		$filtered_post['account_id'] = $account_id;
 		$filtered_post['post_title'] = $post->post_title;
@@ -109,6 +109,86 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 		}
 		$filtered_post['custom_img'] = false;
 		return $filtered_post;
+	}
+
+	/**
+	 * Utility  method to search an associative array
+	 * and return the key of the first found element.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   string $key_name The key to use for lookup.
+	 * @param   mixed  $value The value to match against.
+	 * @param   array  $array The array where to search.
+	 * @return int|null|string
+	 */
+	private function search_array_by_key( $key_name, $value, $array ) {
+		foreach ( $array as $key => $val ) {
+			if ( $val['post'][ $key_name ] == $value ) {
+				return $key;
+			}
+		}
+		return null;
+	}
+
+
+	/**
+	 * Check if the object exists in queue and returns the key if found.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   string $account_id The account ID.
+	 * @param   int    $post_id The post ID.
+	 * @return bool|int|null|string
+	 */
+	private function queue_object_exists( $account_id, $post_id ) {
+		if ( empty( $this->queue ) ) {
+			return false;
+		}
+		if ( ! isset( $this->queue[ $account_id ] ) || empty( $this->queue[ $account_id ] ) ) {
+			return false;
+		}
+
+		$key_to_edit = $this->search_array_by_key( 'post_id', $post_id, $this->queue[ $account_id ] );
+		if ( $key_to_edit === null ) {
+			return false;
+		}
+
+		return $key_to_edit;
+	}
+
+	/**
+	 * Update a queue object with custom data, passed by the user.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @param   string $account_id The account ID.
+	 * @param   int    $post_id The post ID referenced.
+	 * @param   array  $custom_data The custom data.
+	 * @return bool
+	 */
+	public function update_queue_object( $account_id, $post_id, $custom_data ) {
+		$key_to_edit = $this->queue_object_exists( $account_id, $post_id );
+		if ( $key_to_edit === false ) {
+			return false;
+		}
+
+		$edit = $this->queue[ $account_id ][ $key_to_edit ];
+
+		if ( isset( $custom_data['custom_content'] ) ) {
+			$edit['post']['custom_content'] = $custom_data['custom_content'];
+		}
+		if ( isset( $custom_data['custom_img'] ) ) {
+			$edit['post']['custom_img'] = $custom_data['custom_img'];
+		}
+		if ( isset( $custom_data['post_img'] ) ) {
+			$edit['post']['post_img'] = $custom_data['post_img'];
+		}
+
+		$this->queue[ $account_id ][ $key_to_edit ] = $edit;
+
+		$this->set( 'queue', $this->queue );
+		return true;
 	}
 
 	/**
@@ -152,7 +232,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @access  private
 	 */
 	private function refresh_queue() {
-	    if ( ! empty( $this->queue ) ) {
+		if ( ! empty( $this->queue ) ) {
 			$updated_queue = array();
 			foreach ( $this->queue as $account_id => $account_queue ) {
 				$updated_accounts_queue = array();
@@ -276,21 +356,21 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @return array
 	 */
 	public function get_ordered_queue() {
-	    $this->refresh_queue();
-	    $queue = $this->queue;
-	    $ordered = array();
-	    // print_r( $queue );
-	    foreach ( $queue as $account_id => $data ) {
-	        foreach ( $data as $event ) {
-	            $formatted_data = $event;
-	            $formatted_data['time'] = date( 'd-m-Y H:i', strtotime( $formatted_data['time'] ) );
+		$this->refresh_queue();
+		$queue = $this->queue;
+		$ordered = array();
+		// print_r( $queue );
+		foreach ( $queue as $account_id => $data ) {
+			foreach ( $data as $event ) {
+				$formatted_data = $event;
+				$formatted_data['time'] = date( 'd-m-Y H:i', strtotime( $formatted_data['time'] ) );
 				array_push( $ordered, array( 'time' => $event['time'], 'account_id' => $account_id, 'post' => $formatted_data['post'] ) );
 			}
 		}
 		usort( $ordered, function ( $a, $b ) {
 			return strtotime( $a['time'] ) - strtotime( $b['time'] );
 		} );
-	    return $ordered;
+		return $ordered;
 	}
 
 }
