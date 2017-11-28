@@ -155,7 +155,7 @@ class Rop_Rest_Api {
 	 * @param   array $data Data passed from the AJAX call.
 	 * @return array
 	 */
-	private function publish_queue_event( $data, $first_in_queue = true ) {
+	private function publish_queue_event( $data ) {
 		$queue = new Rop_Queue_Model();
 		$services_model = new Rop_Services_Model();
 		$account_data = $services_model->find_account( $data['account_id'] );

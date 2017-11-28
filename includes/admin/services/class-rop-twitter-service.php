@@ -306,6 +306,18 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function share( $post_details ) {
+
+        $message = $post_details['post']['post_content'];
+	    if ( $post_details['post']['custom_content'] !== '' ) {
+	        $message = $post_details['post']['custom_content'];
+        }
+
+        $this->set_api( $this->credentials['oauth_token'], $this->credentials['oauth_token_secret'] );
+	    $api = $this->get_api();
+        $response = $api->post('statuses/update', array( 'status' => $message ) );
+
+        var_dump( $response );
+
 		return true;
 	}
 }
