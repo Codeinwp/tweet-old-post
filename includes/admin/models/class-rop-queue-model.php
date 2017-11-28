@@ -320,9 +320,9 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 		if ( $update_last_share ) {
 			$this->scheduler->add_update_schedule( $account_id, false, $popped['time'] );
 		}
-		$this->selector->update_buffer( $account_id, $popped['post_id'] );
-		$this->set( 'queue', $this->queue );
-		return $popped['time'];
+		$this->selector->update_buffer( $account_id, $popped['post']['post_id'] );
+		// $this->set( 'queue', $this->queue );
+		return $popped;
 	}
 
 	/**

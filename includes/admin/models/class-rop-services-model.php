@@ -230,9 +230,27 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 
 	/**
 	 * Utility method to find an account.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @param   string $account_id The account ID to look for.
+	 * @return bool|array
 	 */
-	public function find_account() {
-
+	public function find_account( $account_id ) {
+		$this->last_services_query = $this->get_authenticated_services();
+		list( $service, $service_id, $id ) = explode( '_', $account_id );
+		if ( count( $this->last_services_query[ $service . '_' . $service_id ]['available_accounts'] ) >= 1 ) {
+			foreach ( $this->last_services_query[ $service . '_' . $service_id ]['available_accounts'] as $key => $account ) {
+				if ( $account['id'] == $id ) {
+					return array(
+						'id' => $this->last_services_query[ $service . '_' . $service_id ]['available_accounts'][ $key ]['id'],
+						'service' => $this->last_services_query[ $service . '_' . $service_id ]['service'],
+						'credentials' => $this->last_services_query[ $service . '_' . $service_id ]['credentials'],
+					);
+				}
+			}
+		}
+		return false;
 	}
 
 }
