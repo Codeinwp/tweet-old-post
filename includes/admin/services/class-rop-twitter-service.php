@@ -74,7 +74,6 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  public
-	 * @return mixed
 	 */
 	public function expose_endpoints() {
 		$this->register_endpoint( 'authorize', 'authorize' );
@@ -88,7 +87,6 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 * @access  public
 	 * @param   string $oauth_token The OAuth Token. Default empty.
 	 * @param   string $oauth_token_secret The OAuth Token Secret. Default empty.
-	 * @return mixed
 	 */
 	public function set_api( $oauth_token = '', $oauth_token_secret = '' ) {
 		if ( $oauth_token != '' && $oauth_token_secret != '' ) {
@@ -121,7 +119,6 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  public
-	 * @return mixed
 	 */
 	public function authorize() {
 		header( 'Content-Type: text/html' );
@@ -230,12 +227,14 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	/**
 	 * Generate the sign in URL.
 	 *
+	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+	 *
 	 * @since   8.0.0
 	 * @access  public
 	 * @param   array $data The data from the user.
 	 * @return mixed
 	 */
-	public function sign_in_url( $data ) {
+	public function sign_in_url( /* @noinspection PhpUnusedParameterInspection */ $data ) {
 		$request_token = $this->request_api_token();
 		$this->set_api( $request_token['oauth_token'], $request_token['oauth_token_secret'] );
 		$api = $this->get_api();
@@ -296,14 +295,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		$api = $this->get_api();
 
 		$new_post = array();
-
-	    $img = false;
-
 	    if ( isset( $post_details['post']['post_img'] ) && $post_details['post']['post_img'] !== '' && $post_details['post']['post_img'] !== false ) {
-			$img = $post_details['post']['post_img'];
-		}
-
-		if ( $img ) {
 			$media_response = $api->upload( 'media/upload', array( 'media' => $post_details['post']['post_img'] ) );
 			if ( $media_response->media_id_string ) {
 				$new_post['media_ids'] = $media_response->media_id_string;

@@ -218,15 +218,15 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 		if ( ! empty( $this->queue ) ) {
 			$updated_queue = array();
 			foreach ( $this->queue as $account_id => $account_queue ) {
-				$updated_accounts_queue = array();
+				$u_accounts_queue = array();
 				foreach ( $account_queue as $queue_event ) {
 					$post = get_post( $queue_event['post']['post_id'] );
 					$updated_post = $this->rebuild_post_object( $post, $account_id, $queue_event['post'] );
 					$uid = $this->create_uid( $account_id, $queue_event['time'] );
-					$updated_accounts_queue[ $uid ] = array( 'time' => $queue_event['time'], 'post' => $updated_post );
+					$u_accounts_queue[ $uid ] = array( 'time' => $queue_event['time'], 'post' => $updated_post );
 					// array_push( $updated_accounts_queue, array( 'time' => $queue_event['time'], 'post' => $updated_post ) );
 				}
-				$updated_queue[ $account_id ] = $updated_accounts_queue;
+				$updated_queue[ $account_id ] = $u_accounts_queue;
 			}
 			$this->queue = $updated_queue;
 			$this->set( 'queue', $this->queue );
@@ -362,10 +362,10 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	private function replace_post_in_queue( $account_id, $post_id ) {
 		$post_pool = $this->selector->select( $account_id );
 		$shuffler = $this->create_shuffler( 0, sizeof( $post_pool ) - 1, sizeof( $this->queue[ $account_id ] ) );
-		$i = 0;
+		$iterator = 0;
 		foreach ( $this->queue[ $account_id ] as $index => $event ) {
 			if ( $event['post']['post_id'] == $post_id ) {
-				$pos = $shuffler[ $i++ ];
+				$pos = $shuffler[ $iterator++ ];
 				$this->queue[ $account_id ][ $index ]['post'] = $this->prepare_post_object( $post_pool[ $pos ], $account_id );
 			}
 		}
@@ -401,8 +401,8 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 				// array_push( $ordered, array( 'time' => $event['time'], 'account_id' => $account_id, 'post' => $formatted_data['post'] ) );
 			}
 		}
-		uasort( $ordered, function ( $a, $b ) {
-			return strtotime( $a['time'] ) - strtotime( $b['time'] );
+		uasort( $ordered, function ( $alpha, $beta ) {
+			return strtotime( $alpha['time'] ) - strtotime( $beta['time'] );
 		} );
 		// $new_indexes = array_map( function( $element ){ return base64_encode( strtotime( $element['time'] ) *  strlen( $element['account_id'] ) ) ; }, $ordered );
 		// $ordered = array_combine ( $new_indexes , $ordered );

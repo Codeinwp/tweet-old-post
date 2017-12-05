@@ -89,7 +89,7 @@ class Rop_Post_Format_Helper {
 	 * @return string
 	 */
 	public function build_content( WP_Post $post ) {
-		$ch = new Rop_Content_Helper();
+		$content_helper = new Rop_Content_Helper();
 		$max_length = $this->post_format['maximum_length'];
 		if ( $this->post_format ) {
 			switch ( $this->post_format['post_content'] ) {
@@ -138,8 +138,8 @@ class Rop_Post_Format_Helper {
 					if ( ! empty( $hastags_list ) ) {
 					    foreach ( $hastags_list as $hashtag ) {
 					        $hashtag = str_replace( '#', '', $hashtag );
-							if ( $ch->mark_hashtags( $content, $hashtag ) !== false ) { // if the hashtag exists in $content
-								$content = $ch->mark_hashtags( $content, $hashtag ); // simply add a # there
+							if ( $content_helper->mark_hashtags( $content, $hashtag ) !== false ) { // if the hashtag exists in $content
+								$content = $content_helper->mark_hashtags( $content, $hashtag ); // simply add a # there
 								$hashtags_length--; // subtract 1 for the # we added to $content
 							} elseif ( strlen( $hashtag . $hashtags ) <= $hashtags_length || $hashtags_length == 0 ) {
 								$hashtags = $hashtags . ' #' . preg_replace( '/-/', '', strtolower( $hashtag ) );
@@ -153,8 +153,8 @@ class Rop_Post_Format_Helper {
 						$post_categories = get_the_category( $post->ID );
 						foreach ( $post_categories as $category ) {
 							$hashtag = $category->slug;
-							if ( $ch->mark_hashtags( $content, $hashtag ) !== false ) { // if the hashtag exists in $content
-								$content = $ch->mark_hashtags( $content, $hashtag ); // simply add a # there
+							if ( $content_helper->mark_hashtags( $content, $hashtag ) !== false ) { // if the hashtag exists in $content
+								$content = $content_helper->mark_hashtags( $content, $hashtag ); // simply add a # there
 								$hashtags_length--; // subtract 1 for the # we added to $content
 							} elseif ( strlen( $hashtag . $hashtags ) <= $hashtags_length || $hashtags_length == 0 ) {
 								$hashtags = $hashtags . ' #' . preg_replace( '/-/', '', strtolower( $hashtag ) );
@@ -172,8 +172,8 @@ class Rop_Post_Format_Helper {
 					$postTags = wp_get_post_tags( $post->ID );
 					foreach ( $postTags as $postTag ) {
 						$hashtag = $postTag->slug;
-						if ( $ch->mark_hashtags( $content, $hashtag ) !== false ) { // if the hashtag exists in $content
-							$content = $ch->mark_hashtags( $content, $hashtag ); // simply add a # there
+						if ( $content_helper->mark_hashtags( $content, $hashtag ) !== false ) { // if the hashtag exists in $content
+							$content = $content_helper->mark_hashtags( $content, $hashtag ); // simply add a # there
 							$hashtags_length--; // subtract 1 for the # we added to $content
 						} elseif ( strlen( $hashtag . $hashtags ) <= $hashtags_length || $hashtags_length == 0 ) {
 							$hashtags = $hashtags . ' #' . preg_replace( '/-/', '', strtolower( $hashtag ) );
@@ -189,8 +189,8 @@ class Rop_Post_Format_Helper {
 					$hashtag = get_post_meta( $post->ID, $this->post_format['hashtags_custom'], true );
 					if ( $hashtags_length != 0 ) {
 						if ( strlen( $hashtag ) <= $hashtags_length ) {
-							$ch->use_ellipse( false );
-							$hashtags = $ch->token_truncate( $hashtag, $hashtags_length );
+							$content_helper->use_ellipse( false );
+							$hashtags = $content_helper->token_truncate( $hashtag, $hashtags_length );
 						}
 					}
 					break;
@@ -202,7 +202,7 @@ class Rop_Post_Format_Helper {
 			$size = $max_length - $hashtags_length - $custom_length;
 
 			$response = array(
-			    'display_content' => $ch->token_truncate( $content, $size ) . ' ' . $hashtags,
+			    'display_content' => $content_helper->token_truncate( $content, $size ) . ' ' . $hashtags,
 			    'hashtags' => $hashtags,
 			);
 
@@ -262,13 +262,14 @@ class Rop_Post_Format_Helper {
 	/**
 	 * Returns the short url for the given service.
 	 *
+	 * @Throws Exception If a service can not be built and defaults to passed URL.
+	 *
 	 * @since   8.0.0
 	 * @access  public
 	 * @param   string $url The URL to shorten.
 	 * @param   string $short_url_service The shorten service. Used by the factory to build the service.
 	 * @param   array  $credentials Optional. If needed the service credentials.
 	 * @return string
-	 * @Throws Exception If a service can not be built and defaults to passed URL.
 	 */
 	public function get_short_url( $url, $short_url_service, $credentials = array() ) {
 	    $shortner_factory = new Rop_Shortner_Factory();

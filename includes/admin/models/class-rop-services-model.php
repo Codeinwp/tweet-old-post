@@ -77,11 +77,11 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  public
-	 * @param   array $new_authenticated_services The new services array.
+	 * @param   array $new_auth_services The new services array.
 	 * @return mixed|null
 	 */
-	public function update_authenticated_services( $new_authenticated_services ) {
-		$this->last_services_query = wp_parse_args( $new_authenticated_services, $this->last_services_query );
+	public function update_authenticated_services( $new_auth_services ) {
+		$this->last_services_query = wp_parse_args( $new_auth_services, $this->last_services_query );
 		$this->set( $this->services_namespace, $this->last_services_query );
 		return $this->last_services_query;
 	}
@@ -114,13 +114,13 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  public
-	 * @param   string $id The service ID.
+	 * @param   string $service_id The service ID.
 	 * @param   string $service The service name.
 	 * @return mixed|null
 	 */
-	public function delete_authenticated_service( $id, $service ) {
+	public function delete_authenticated_service( $service_id, $service ) {
 		$this->last_services_query = $this->get_authenticated_services();
-		$index = $service . '_' . $id;
+		$index = $service . '_' . $service_id;
 		unset( $this->last_services_query[ $index ] );
 		$this->set( $this->services_namespace, $this->last_services_query );
 		return $this->last_services_query;
@@ -170,6 +170,8 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 
 	/**
 	 * Add a new account to DB.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
 	 *
 	 * @since   8.0.0
 	 * @access  public
@@ -238,10 +240,10 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 */
 	public function find_account( $account_id ) {
 		$this->last_services_query = $this->get_authenticated_services();
-		list( $service, $service_id, $id ) = explode( '_', $account_id );
+		list( $service, $service_id, $user_id ) = explode( '_', $account_id );
 		if ( count( $this->last_services_query[ $service . '_' . $service_id ]['available_accounts'] ) >= 1 ) {
 			foreach ( $this->last_services_query[ $service . '_' . $service_id ]['available_accounts'] as $key => $account ) {
-				if ( $account['id'] == $id ) {
+				if ( $account['id'] == $user_id ) {
 					$response = array(
 						'id' => $this->last_services_query[ $service . '_' . $service_id ]['available_accounts'][ $key ]['id'],
 						'service' => $this->last_services_query[ $service . '_' . $service_id ]['service'],

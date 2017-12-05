@@ -61,6 +61,8 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	/**
 	 * Method to retrieve all the schedules from the DB.
 	 *
+	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+	 *
 	 * @since   8.0.0
 	 * @access  private
 	 * @return array

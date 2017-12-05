@@ -129,7 +129,8 @@ class Rop {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'menu_pages' );
 
-		$pugin_rest_api = new Rop_Rest_Api();
+		$plugin_rest_api = new Rop_Rest_Api();
+		$plugin_rest_api->register();
 
 		$factory = new Rop_Services_Factory();
 		$global_settings = new Rop_Global_Settings();

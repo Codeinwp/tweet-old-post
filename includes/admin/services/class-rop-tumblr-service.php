@@ -151,35 +151,46 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		$this->credentials['oauth_token_secret'] = isset( $_SESSION['rop_tumblr_token']['oauth_token_secret'] ) ? $_SESSION['rop_tumblr_token']['oauth_token_secret'] : null;
 
 		if ( isset( $_SESSION['rop_tumblr_credentials'] ) && isset( $_SESSION['rop_tumblr_token'] ) ) {
-			$api = $this->get_api( $this->credentials['consumer_key'], $this->credentials['consumer_secret'], $this->credentials['oauth_token'], $this->credentials['oauth_token_secret'] );
+			return $this->request_and_set_user_info();
+		}
 
-			$profile = $api->getUserInfo();
-			if ( isset( $profile->user->name ) ) {
-				$this->service = array(
-					'id' => $profile->user->name,
-					'service' => $this->service_name,
-					'credentials' => $this->credentials,
-					'public_credentials' => array(
-						'app_id' => array(
-							'name' => 'Consumer Key',
-							'value' => $this->credentials['consumer_key'],
-							'private' => false,
-						),
-						'secret' => array(
-							'name' => 'Consumer Secret',
-							'value' => $this->credentials['consumer_secret'],
-							'private' => true,
-						),
+		return false;
+	}
+
+	/**
+	 * Helper method for requesting user info.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @return bool
+	 */
+	private function request_and_set_user_info() {
+		$api = $this->get_api( $this->credentials['consumer_key'], $this->credentials['consumer_secret'], $this->credentials['oauth_token'], $this->credentials['oauth_token_secret'] );
+
+		$profile = $api->getUserInfo();
+		if ( isset( $profile->user->name ) ) {
+			$this->service = array(
+				'id' => $profile->user->name,
+				'service' => $this->service_name,
+				'credentials' => $this->credentials,
+				'public_credentials' => array(
+					'app_id' => array(
+						'name' => 'Consumer Key',
+						'value' => $this->credentials['consumer_key'],
+						'private' => false,
 					),
-					'available_accounts' => $this->get_users( $profile->user->blogs ),
-				);
+					'secret' => array(
+						'name' => 'Consumer Secret',
+						'value' => $this->credentials['consumer_secret'],
+						'private' => true,
+					),
+				),
+				'available_accounts' => $this->get_users( $profile->user->blogs ),
+			);
 
-				unset( $_SESSION['rop_tumblr_credentials'] );
-				unset( $_SESSION['rop_tumblr_token'] );
-				return true;
-			}
-
-			return false;
+			unset( $_SESSION['rop_tumblr_credentials'] );
+			unset( $_SESSION['rop_tumblr_token'] );
+			return true;
 		}
 
 		return false;

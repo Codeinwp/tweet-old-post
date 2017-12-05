@@ -22,13 +22,24 @@ class Rop_Rest_Api {
 
 	/**
 	 * Rop_Rest_Api constructor.
-	 * Registers the API endpoint.
 	 *
 	 * @since   8.0.0
 	 * @access  public
 	 */
 	public function __construct() {
+
+	}
+
+	/**
+	 * Registers the API endpoint.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 */
+	public function register() {
+		/* @noinspection PhpUndefinedFunctionInspection */
 		add_action( 'rest_api_init', function () {
+			/* @noinspection PhpUndefinedFunctionInspection */
 			register_rest_route( 'tweet-old-post/v8', '/api', array(
 				'methods' => array( 'GET', 'POST' ),
 				'callback' => array( $this, 'api' ),
@@ -36,6 +47,7 @@ class Rop_Rest_Api {
 		} );
 	}
 
+	/* @noinspection PhpUndefinedClassInspection */
 	/**
 	 * The api switch and entry point.
 	 *
@@ -44,111 +56,29 @@ class Rop_Rest_Api {
 	 * @param   WP_REST_Request $request The request object.
 	 * @return array|mixed|null|string
 	 */
-	public function api( WP_REST_Request $request ) {
-		switch ( $request->get_param( 'req' ) ) {
-			case 'publish_queue_event':
-				$data = json_decode( $request->get_body(), true );
-				$response = $this->publish_queue_event( $data );
-				break;
-			case 'skip_queue_event':
-				$data = json_decode( $request->get_body(), true );
-				$response = $this->skip_queue_event( $data );
-				break;
-			case 'block_queue_event':
-				$data = json_decode( $request->get_body(), true );
-				$response = $this->block_queue_event( $data );
-				break;
-			case 'update_queue_event':
-				$data = json_decode( $request->get_body(), true );
-				$response = $this->update_queue_event( $data );
-				break;
-			case 'get_queue':
-				$response = $this->get_queue();
-				break;
-			case 'save_schedule':
-				$data = json_decode( $request->get_body(), true );
-				$response = $this->save_schedule( $data );
-				break;
-			case 'reset_schedule':
-				$data = json_decode( $request->get_body(), true );
-				$response = $this->reset_schedule( $data );
-				break;
-			case 'get_schedule':
-				$data = json_decode( $request->get_body(), true );
-				$response = $this->get_schedule( $data );
-				break;
-			case 'shortner_credentials':
-				$data = json_decode( $request->get_body(), true );
-				$response = $this->get_shortner_credentials( $data );
-				break;
-			case 'save_post_format':
-				$data = json_decode( $request->get_body(), true );
-				$response = $this->save_post_format( $data );
-				break;
-			case 'reset_post_format':
-				$data = json_decode( $request->get_body(), true );
-				$response = $this->reset_post_format( $data );
-				break;
-			case 'get_post_format':
-				$data = json_decode( $request->get_body(), true );
-				$response = $this->get_post_format( $data );
-				break;
-			case 'select_posts':
-				$response = $this->select_posts();
-				break;
-			case 'get_general_settings':
-				$response = $this->get_general_settings();
-				break;
-			case 'get_taxonomies':
-				$data = json_decode( $request->get_body(), true );
-				$response = $this->get_taxonomies( $data );
-				break;
-			case 'get_posts':
-				$data = json_decode( $request->get_body(), true );
-				$response = $this->get_posts( $data );
-				break;
-			case 'save_general_settings':
-				$data = json_decode( $request->get_body(), true );
-				$response = $this->save_general_settings( $data );
-				break;
-			case 'available_services':
-				$response = $this->get_available_services();
-				break;
-			case 'service_sign_in_url':
-				$data = json_decode( $request->get_body(), true );
-				$response = $this->get_service_sign_in_url( $data );
-				break;
-			case 'authenticated_services':
-				$response = $this->get_authenticated_services();
-				break;
-			case 'active_accounts':
-				$response = $this->get_active_accounts();
-				break;
-			case 'update_accounts':
-				$data = json_decode( $request->get_body(), true );
-				$response = $this->update_active_accounts( $data );
-				break;
-			case 'remove_account':
-				$data = json_decode( $request->get_body(), true );
-				$response = $this->remove_account( $data );
-				break;
-			case 'authenticate_service':
-				$data = json_decode( $request->get_body(), true );
-				$response = $this->authenticate_service( $data );
-				break;
-			case 'remove_service':
-				$data = json_decode( $request->get_body(), true );
-				$response = $this->remove_service( $data );
-				break;
-			default:
-				$response = array( 'status' => '200', 'data' => array( 'list', 'of', 'stuff', 'from', 'api' ) );
-		}// End switch().
-		// array_push( $response, array( 'current_user' => current_user_can( 'manage_options' ) ) );
+	public function api( /* @noinspection PhpUndefinedClassInspection */ WP_REST_Request $request ) {
+		$response = array( 'status' => '200', 'data' => array( 'list', 'of', 'stuff', 'from', 'api' ) );
+		/* @noinspection PhpUndefinedMethodInspection */
+		$method_requested = $request->get_param( 'req' );
+		if ( method_exists( $this, $method_requested ) ) {
+			/* @noinspection PhpUndefinedMethodInspection */
+			$data = json_decode( $request->get_body(), true );
+			if ( ! empty( $data ) ) {
+				$response = $this->$method_requested( $data );
+			} else {
+				$response = $this->$method_requested();
+			}
+		}
+
 		return $response;
 	}
 
+	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to publish a queue event and return active queue.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
+	 * @Throws Exception If a service can not be built.
 	 *
 	 * @since   8.0.0
 	 * @access  private
@@ -161,17 +91,24 @@ class Rop_Rest_Api {
 		$account_data = $services_model->find_account( $data['account_id'] );
 		if ( $account_data ) {
 			$service_factory = new Rop_Services_Factory();
-			$service = $service_factory->build( $account_data['service'] );
-			$service->set_credentials( $account_data['credentials'] );
-			$queue_event = $queue->remove_from_queue( $data['index'], $data['account_id'] );
-			$service->share( $queue_event, $account_data );
+			try {
+				$service = $service_factory->build( $account_data['service'] );
+				$service->set_credentials( $account_data['credentials'] );
+				$queue_event = $queue->remove_from_queue( $data['index'], $data['account_id'] );
+				$service->share( $queue_event, $account_data );
+			} catch ( Exception $exception ) {
+			    // The service can not be built or was not found. Maybe log this. TODO
+			}
 		}
 
 		return $queue->get_ordered_queue();
 	}
 
+	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to skip a queue event and return active queue.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
 	 *
 	 * @since   8.0.0
 	 * @access  private
@@ -184,8 +121,11 @@ class Rop_Rest_Api {
 		return $queue->get_ordered_queue();
 	}
 
+	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to block a queue event and return active queue.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
 	 *
 	 * @since   8.0.0
 	 * @access  private
@@ -198,8 +138,11 @@ class Rop_Rest_Api {
 		return $queue->get_ordered_queue();
 	}
 
+	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to update a queue event and return active queue.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
 	 *
 	 * @since   8.0.0
 	 * @access  private
@@ -212,8 +155,11 @@ class Rop_Rest_Api {
 		return $queue->get_ordered_queue();
 	}
 
+	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to get the active queue.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
 	 *
 	 * @since   8.0.0
 	 * @access  private
@@ -224,8 +170,11 @@ class Rop_Rest_Api {
 	    return $queue->get_ordered_queue();
 	}
 
+	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to save a post format.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
 	 *
 	 * @since   8.0.0
 	 * @access  private
@@ -238,8 +187,11 @@ class Rop_Rest_Api {
 		return $schedules->get_schedule( $data['account_id'] );
 	}
 
+	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to reset a post format to defaults.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
 	 *
 	 * @since   8.0.0
 	 * @access  private
@@ -252,8 +204,11 @@ class Rop_Rest_Api {
 		return $schedules->get_schedule( $data['account_id'] );
 	}
 
+	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to retrieve a schedule.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
 	 *
 	 * @since   8.0.0
 	 * @access  private
@@ -265,8 +220,12 @@ class Rop_Rest_Api {
 		return $schedules->get_schedule( $data['account_id'] );
 	}
 
+	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to get shortner service credentials.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
+	 * @Throws Exception Throws an exception if a short url service can't be built.
 	 *
 	 * @since   8.0.0
 	 * @access  private
@@ -275,12 +234,22 @@ class Rop_Rest_Api {
 	 */
 	private function get_shortner_credentials( $data ) {
 	    $sh_factory = new Rop_Shortner_Factory();
-	    $shortner = $sh_factory->build( $data['short_url_service'] );
-	    return $shortner->get_credentials();
+	    try {
+			$shortner = $sh_factory->build( $data['short_url_service'] );
+			return $shortner->get_credentials();
+		} catch ( Exception $exception ) {
+	        // Service not found or can't be built. Maybe log this exception. TODO
+	        return array();
+		}
+
 	}
 
+	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to save a post format.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
+	 * @Throws Exception Throws an exception if a short url service can't be built.
 	 *
 	 * @since   8.0.0
 	 * @access  private
@@ -290,14 +259,22 @@ class Rop_Rest_Api {
 	private function save_post_format( $data ) {
 		$post_format = new Rop_Post_Format_Model( $data['service'] );
 		$sh_factory = new Rop_Shortner_Factory();
-		$shortner = $sh_factory->build( $data['post_format']['short_url_service'] );
-		$shortner->set_credentials( $data['post_format']['shortner_credentials'] );
+		try {
+			$shortner = $sh_factory->build( $data['post_format']['short_url_service'] );
+			$shortner->set_credentials( $data['post_format']['shortner_credentials'] );
+		} catch ( Exception $exception ) {
+			// Service not found or can't be built. Maybe log this exception.
+			// Also shorten service not updated at this point. TODO
+		}
 		$post_format->add_update_post_format( $data['account_id'], $data['post_format'] );
 		return $post_format->get_post_format( $data['account_id'] );
 	}
 
+	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to reset a post format to defaults.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
 	 *
 	 * @since   8.0.0
 	 * @access  private
@@ -310,8 +287,11 @@ class Rop_Rest_Api {
 		return $post_format->get_post_format( $data['account_id'] );
 	}
 
+	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to retrieve a post format.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
 	 *
 	 * @since   8.0.0
 	 * @access  private
@@ -323,8 +303,11 @@ class Rop_Rest_Api {
 		return $post_format->get_post_format( $data['account_id'] );
 	}
 
+	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to select posts for publishing.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
 	 *
 	 * @since   8.0.0
 	 * @access  private
@@ -335,21 +318,27 @@ class Rop_Rest_Api {
 	    return $posts_selector->select();
 	}
 
+	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to retrieve the general settings.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
 	 *
 	 * @since   8.0.0
 	 * @access  private
 	 * @return array
 	 */
 	private function get_general_settings() {
-		$general_settings_model = new Rop_Settings_Model();
-		return $general_settings_model->get_settings();
+		$settings_model = new Rop_Settings_Model();
+		return $settings_model->get_settings();
 	}
 
+	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to retrieve the taxonomies
 	 * for the selected post types.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
 	 *
 	 * @since   8.0.0
 	 * @access  private
@@ -359,9 +348,12 @@ class Rop_Rest_Api {
 	private function get_taxonomies( $data ) {
 	    $taxonomies = array();
 	    foreach ( $data['post_types'] as $post_type_name ) {
+			/* @noinspection PhpUndefinedFunctionInspection */
 			$post_type_taxonomies = get_object_taxonomies( $post_type_name, 'objects' );
 			foreach ( $post_type_taxonomies as $post_type_taxonomy ) {
+				/* @noinspection PhpUndefinedFunctionInspection */
 				$taxonomy = get_taxonomy( $post_type_taxonomy->name );
+				/* @noinspection PhpUndefinedFunctionInspection */
 				$terms = get_terms( $post_type_taxonomy->name );
 				if ( ! empty( $terms ) ) {
 					array_push( $taxonomies, array( 'name' => $taxonomy->label, 'value' => $taxonomy->name . '_all', 'selected' => false ) );
@@ -375,13 +367,17 @@ class Rop_Rest_Api {
 		return $taxonomies;
 	}
 
+	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to retrieve the posts
 	 * for the selected post types and taxonomies.
 	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
+	 *
 	 * @since   8.0.0
 	 * @access  private
-	 * @param   array $data Data passed from the AJAX call.
+	 * @param   array  $data Data passed from the AJAX call.
+	 * @param   string $search_query The search query for posts.
 	 * @return array
 	 */
 	private function get_posts( $data, $search_query = '' ) {
@@ -409,6 +405,7 @@ class Rop_Rest_Api {
 					$tmp_query['field'] = 'slug';
 					$tmp_query['terms'] = $term;
 				} else {
+					/* @noinspection PhpUndefinedFunctionInspection */
 					$all_terms = get_terms( $tax );
 					$terms = array();
 					foreach ( $all_terms as $custom_term ) {
@@ -423,6 +420,7 @@ class Rop_Rest_Api {
 			}
 		}
 
+		/* @noinspection PhpUndefinedFunctionInspection */
 		$posts_array = get_posts(
 			array(
 				'posts_per_page' => 5,
@@ -440,8 +438,11 @@ class Rop_Rest_Api {
 	    return $formatted_posts;
 	}
 
+	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to save general settings.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
 	 *
 	 * @since   8.0.0
 	 * @access  private
@@ -462,13 +463,16 @@ class Rop_Rest_Api {
 			'exclude_posts' => $data['exclude_posts'],
 		);
 
-		$general_settings_model = new Rop_Settings_Model();
-		$general_settings_model->save_settings( $general_settings );
-		return $general_settings_model->get_settings();
+		$settings_model = new Rop_Settings_Model();
+		$settings_model->save_settings( $general_settings );
+		return $settings_model->get_settings();
 	}
 
+	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to retrieve available services.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
 	 *
 	 * @since   8.0.0
 	 * @access  private
@@ -479,8 +483,11 @@ class Rop_Rest_Api {
 		return $global_settings->get_available_services();
 	}
 
+	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to retrieve authenticated services.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
 	 *
 	 * @since   8.0.0
 	 * @access  private
@@ -492,8 +499,11 @@ class Rop_Rest_Api {
 		return $model->get_authenticated_services();
 	}
 
+	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to retrieve active accounts.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
 	 *
 	 * @since   8.0.0
 	 * @access  private
@@ -505,8 +515,11 @@ class Rop_Rest_Api {
 		return $model->get_active_accounts();
 	}
 
+	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to update active accounts.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
 	 *
 	 * @since   8.0.0
 	 * @access  private
@@ -529,8 +542,11 @@ class Rop_Rest_Api {
 		return $model->add_active_accounts( $new_active );
 	}
 
+	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to remove accounts.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
 	 *
 	 * @since   8.0.0
 	 * @access  private
@@ -542,8 +558,12 @@ class Rop_Rest_Api {
 		return $model->delete_active_accounts( $data['account_id'] );
 	}
 
+	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to try and authenticate a service.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
+	 * @Throws Exception Throws an exception if a service can't be built.
 	 *
 	 * @since   8.0.0
 	 * @access  private
@@ -553,20 +573,31 @@ class Rop_Rest_Api {
 	private function authenticate_service( $data ) {
 		$new_service = array();
 		$factory = new Rop_Services_Factory();
-		${$data['service'] . '_services'} = $factory->build( $data['service'] );
-		$authenticated = ${$data['service'] . '_services'}->authenticate();
-		if ( $authenticated ) {
-			$service = ${$data['service'] . '_services'}->get_service();
-			$service_id = $service['service'] . '_' . $service['id'];
-			$new_service[ $service_id ] = $service;
+		try {
+			${$data['service'] . '_services'} = $factory->build( $data['service'] );
+			/* @noinspection PhpUndefinedMethodInspection */
+			$authenticated = ${$data['service'] . '_services'}->authenticate();
+			if ( $authenticated ) {
+				/* @noinspection PhpUndefinedMethodInspection */
+				$service = ${$data['service'] . '_services'}->get_service();
+				$service_id = $service['service'] . '_' . $service['id'];
+				$new_service[ $service_id ] = $service;
+			}
+
+			$model = new Rop_Services_Model();
+			return $model->add_authenticated_service( $new_service );
+		} catch ( Exception $exception ) {
+		    // Service can't be built. Not found or otherwise. Maybe log this. TODO
+		    return null;
 		}
 
-		$model = new Rop_Services_Model();
-		return $model->add_authenticated_service( $new_service );
 	}
 
+	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to try and remove a service.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
 	 *
 	 * @since   8.0.0
 	 * @access  private
@@ -578,8 +609,12 @@ class Rop_Rest_Api {
 		return $model->delete_authenticated_service( $data['id'], $data['service'] );
 	}
 
+	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to retrieve a service sign in url.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
+	 * @Throws Exception Throws an exception if the service can't be built.
 	 *
 	 * @since   8.0.0
 	 * @access  private
@@ -589,10 +624,17 @@ class Rop_Rest_Api {
 	private function get_service_sign_in_url( $data ) {
 		$url = '';
 		$factory = new Rop_Services_Factory();
-		${$data['service'] . '_services'} = $factory->build( $data['service'] );
-		if ( ${$data['service'] . '_services'} ) {
-			$url = ${$data['service'] . '_services'}->sign_in_url( $data );
+		try {
+			${$data['service'] . '_services'} = $factory->build( $data['service'] );
+			if ( ${$data['service'] . '_services'} ) {
+				/* @noinspection PhpUndefinedMethodInspection */
+				$url = ${$data['service'] . '_services'}->sign_in_url( $data );
+			}
+		} catch ( Exception $exception ) {
+			// Service can't be built. Not found or otherwise. Maybe log this. TODO
+			$url = '';
 		}
+
 		return json_encode( array( 'url' => $url ) );
 	}
 

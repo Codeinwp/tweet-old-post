@@ -12460,7 +12460,7 @@ exports.default = new _vuex2.default.Store({
 				url: ropApiSettings.root,
 				method: 'POST',
 				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'available_services' },
+				params: { 'req': 'get_available_services' },
 				responseType: 'json'
 			}).then(function (response) {
 				commit('updateAvailableServices', response.data);
@@ -12477,7 +12477,7 @@ exports.default = new _vuex2.default.Store({
 					url: ropApiSettings.root,
 					method: 'POST',
 					headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-					params: { 'req': 'service_sign_in_url' },
+					params: { 'req': 'get_service_sign_in_url' },
 					body: data,
 					responseType: 'json'
 				}).then(function (response) {
@@ -12495,7 +12495,7 @@ exports.default = new _vuex2.default.Store({
 				url: ropApiSettings.root,
 				method: 'POST',
 				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'authenticated_services' },
+				params: { 'req': 'get_authenticated_services' },
 				responseType: 'json'
 			}).then(function (response) {
 				commit('updateAuthenticatedServices', response.data);
@@ -12510,7 +12510,7 @@ exports.default = new _vuex2.default.Store({
 				url: ropApiSettings.root,
 				method: 'POST',
 				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'active_accounts' },
+				params: { 'req': 'get_active_accounts' },
 				responseType: 'json'
 			}).then(function (response) {
 				commit('updateActiveAccounts', response.data);
@@ -12526,7 +12526,7 @@ exports.default = new _vuex2.default.Store({
 					url: ropApiSettings.root,
 					method: 'POST',
 					headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-					params: { 'req': 'update_accounts' },
+					params: { 'req': 'update_active_accounts' },
 					body: data,
 					responseType: 'json'
 				}).then(function (response) {
@@ -12711,7 +12711,7 @@ exports.default = new _vuex2.default.Store({
 					url: ropApiSettings.root,
 					method: 'POST',
 					headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-					params: { 'req': 'shortner_credentials' },
+					params: { 'req': 'get_shortner_credentials' },
 					body: data,
 					responseType: 'json'
 				}).then(function (response) {

@@ -334,6 +334,31 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	}
 
 	/**
+	 * Method to try and share on facebook.
+	 * Moved to a separated method to drive the NPath complexity down.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   array  $new_post The Facebook post format array.
+	 * @param   int    $page_id The Facebook page ID.
+	 * @param   string $token The Facebook page token.
+	 * @return bool
+	 */
+	private function try_post( $new_post, $page_id, $token ) {
+		$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
+		$api = $this->get_api();
+
+		try {
+			$api->post( '/' . $page_id . '/feed', $new_post, $token );
+			return true;
+		} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
+			return false;
+		} catch ( Facebook\Exceptions\FacebookSDKException $e ) {
+			return false;
+		}
+	}
+
+	/**
 	 * Method for publishing with Facebook service.
 	 *
 	 * @since   8.0.0
@@ -343,15 +368,12 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function share( $post_details, $args = array() ) {
-		$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
-		$api = $this->get_api();
 
 		$new_post = array();
 
 		if ( isset( $post_details['post']['post_img'] ) && $post_details['post']['post_img'] !== '' && $post_details['post']['post_img'] !== false ) {
 			$new_post['picture'] = $post_details['post']['post_img'];
-			$new_post['picture'] = 'https://static.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg';
-			$new_post['link'] = 'https://static.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg';
+			$new_post['link'] = $post_details['post']['post_img'];
 		}
 
 		$new_post['message'] = $post_details['post']['post_content'];
@@ -359,31 +381,17 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			$new_post['message'] = $post_details['post']['custom_content'];
 		}
 
-		$link = '';
 		if ( isset( $post_details['post']['post_url'] ) && $post_details['post']['post_url'] != '' ) {
 			$post_format_helper = new Rop_Post_Format_Helper();
 			$link = ' ' . $post_format_helper->get_short_url( 'www.themeisle.com', $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
-		}
-
-		if ( $link != '' ) {
-			$new_post['message'] = $new_post['message'] . ' ' . $link;
+			$new_post['message'] = $new_post['message'] . $link;
 		}
 
 		if ( ! isset( $args['id'] ) || ! isset( $args['access_token'] ) ) {
 			return false;
 		}
 
-		try {
-			$post = $api->post( '/' . $args['id'] . '/feed', $new_post, $args['access_token'] );
-			$post = $post->getGraphNode()->asArray();
-			return true;
-		} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
-			return false;
-		} catch ( Facebook\Exceptions\FacebookSDKException $e ) {
-			return false;
-		}
-
-		return false;
+		return $this->try_post( $new_post, $args['id'], $args['access_token'] );
 	}
 
 }
