@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 34);
+/******/ 	return __webpack_require__(__webpack_require__.s = 35);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -426,7 +426,7 @@ module.exports = __webpack_require__(9) ? function (object, key, value) {
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(47), __esModule: true };
+module.exports = { "default": __webpack_require__(48), __esModule: true };
 
 /***/ }),
 /* 7 */
@@ -10663,7 +10663,7 @@ Vue$3.compile = compileToFunctions;
 
 /* harmony default export */ __webpack_exports__["default"] = (Vue$3);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(12), __webpack_require__(35)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(12), __webpack_require__(36)))
 
 /***/ }),
 /* 12 */
@@ -10871,7 +10871,7 @@ module.exports = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // to indexed object, toObject with fallback for non-array-like ES3 strings
-var IObject = __webpack_require__(50);
+var IObject = __webpack_require__(51);
 var defined = __webpack_require__(13);
 module.exports = function (it) {
   return IObject(defined(it));
@@ -10906,8 +10906,8 @@ module.exports = function (key) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var anObject = __webpack_require__(8);
-var IE8_DOM_DEFINE = __webpack_require__(57);
-var toPrimitive = __webpack_require__(58);
+var IE8_DOM_DEFINE = __webpack_require__(58);
+var toPrimitive = __webpack_require__(59);
 var dP = Object.defineProperty;
 
 exports.f = __webpack_require__(9) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
@@ -10949,7 +10949,7 @@ module.exports = function (exec) {
 /* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(59), __esModule: true };
+module.exports = { "default": __webpack_require__(60), __esModule: true };
 
 /***/ }),
 /* 21 */
@@ -11879,7 +11879,7 @@ module.exports = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.14 / 15.2.3.14 Object.keys(O)
-var $keys = __webpack_require__(49);
+var $keys = __webpack_require__(50);
 var enumBugKeys = __webpack_require__(27);
 
 module.exports = Object.keys || function keys(O) {
@@ -11937,7 +11937,7 @@ module.exports = (
 
 var global = __webpack_require__(2);
 var core = __webpack_require__(3);
-var ctx = __webpack_require__(55);
+var ctx = __webpack_require__(56);
 var hide = __webpack_require__(5);
 var PROTOTYPE = 'prototype';
 
@@ -12031,15 +12031,15 @@ module.exports = function (bitmap, value) {
 
 "use strict";
 
-var LIBRARY = __webpack_require__(64);
+var LIBRARY = __webpack_require__(65);
 var $export = __webpack_require__(28);
-var redefine = __webpack_require__(65);
+var redefine = __webpack_require__(66);
 var hide = __webpack_require__(5);
 var has = __webpack_require__(7);
 var Iterators = __webpack_require__(10);
-var $iterCreate = __webpack_require__(66);
+var $iterCreate = __webpack_require__(67);
 var setToStringTag = __webpack_require__(32);
-var getPrototypeOf = __webpack_require__(70);
+var getPrototypeOf = __webpack_require__(71);
 var ITERATOR = __webpack_require__(4)('iterator');
 var BUGGY = !([].keys && 'next' in [].keys()); // Safari has buggy iterators w/o `next`
 var FF_ITERATOR = '@@iterator';
@@ -12203,6 +12203,12 @@ exports.mixin = mixin;
 /* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
+module.exports = { "default": __webpack_require__(126), __esModule: true };
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 
 
@@ -12210,11 +12216,11 @@ var _vue = __webpack_require__(11);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _rop_store = __webpack_require__(36);
+var _rop_store = __webpack_require__(37);
 
 var _rop_store2 = _interopRequireDefault(_rop_store);
 
-var _mainPagePanel = __webpack_require__(39);
+var _mainPagePanel = __webpack_require__(40);
 
 var _mainPagePanel2 = _interopRequireDefault(_mainPagePanel);
 
@@ -12240,7 +12246,7 @@ window.onload = function () {
 /* exported RopApp */
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports) {
 
 var g;
@@ -12267,7 +12273,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12285,7 +12291,7 @@ var _vuex = __webpack_require__(21);
 
 var _vuex2 = _interopRequireDefault(_vuex);
 
-var _vueResource = __webpack_require__(37);
+var _vueResource = __webpack_require__(38);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
@@ -12857,7 +12863,7 @@ exports.default = new _vuex2.default.Store({
 });
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -13959,7 +13965,7 @@ var xhrClient = function (request) {
 
 var nodeClient = function (request) {
 
-    var client = __webpack_require__(38);
+    var client = __webpack_require__(39);
 
     return new PromiseObj(function (resolve) {
 
@@ -14435,18 +14441,18 @@ if (typeof window !== 'undefined' && window.Vue) {
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(40)
-__vue_template__ = __webpack_require__(132)
+__vue_script__ = __webpack_require__(41)
+__vue_template__ = __webpack_require__(140)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -14463,33 +14469,33 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _accountsTabPanel = __webpack_require__(41);
+var _accountsTabPanel = __webpack_require__(42);
 
 var _accountsTabPanel2 = _interopRequireDefault(_accountsTabPanel);
 
-var _settingsTabPanel = __webpack_require__(94);
+var _settingsTabPanel = __webpack_require__(95);
 
 var _settingsTabPanel2 = _interopRequireDefault(_settingsTabPanel);
 
-var _postFormatTabPanel = __webpack_require__(105);
+var _postFormatTabPanel = __webpack_require__(106);
 
 var _postFormatTabPanel2 = _interopRequireDefault(_postFormatTabPanel);
 
-var _scheduleTabPanel = __webpack_require__(110);
+var _scheduleTabPanel = __webpack_require__(111);
 
 var _scheduleTabPanel2 = _interopRequireDefault(_scheduleTabPanel);
 
-var _queueTabPanel = __webpack_require__(133);
+var _queueTabPanel = __webpack_require__(129);
 
 var _queueTabPanel2 = _interopRequireDefault(_queueTabPanel);
 
-var _logsTabPanel = __webpack_require__(129);
+var _logsTabPanel = __webpack_require__(137);
 
 var _logsTabPanel2 = _interopRequireDefault(_logsTabPanel);
 
@@ -14558,12 +14564,12 @@ module.exports = {
 /* global ROP_ASSETS_URL */
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(42)
-__vue_template__ = __webpack_require__(93)
+__vue_script__ = __webpack_require__(43)
+__vue_template__ = __webpack_require__(94)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -14580,21 +14586,21 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _signInBtn = __webpack_require__(43);
+var _signInBtn = __webpack_require__(44);
 
 var _signInBtn2 = _interopRequireDefault(_signInBtn);
 
-var _serviceTile = __webpack_require__(77);
+var _serviceTile = __webpack_require__(78);
 
 var _serviceTile2 = _interopRequireDefault(_serviceTile);
 
-var _serviceUserTile = __webpack_require__(88);
+var _serviceUserTile = __webpack_require__(89);
 
 var _serviceUserTile2 = _interopRequireDefault(_serviceUserTile);
 
@@ -14682,13 +14688,13 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(44)
-__vue_script__ = __webpack_require__(46)
-__vue_template__ = __webpack_require__(76)
+__webpack_require__(45)
+__vue_script__ = __webpack_require__(47)
+__vue_template__ = __webpack_require__(77)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -14705,13 +14711,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(45);
+var content = __webpack_require__(46);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -14731,7 +14737,7 @@ if(false) {
 }
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)();
@@ -14745,7 +14751,7 @@ exports.push([module.i, "\n\t#rop_core .sign-in-btn > .modal[_v-7e903530] {\n\t\
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14968,22 +14974,22 @@ module.exports = {
 };
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(48);
+__webpack_require__(49);
 module.exports = __webpack_require__(3).Object.keys;
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.14 Object.keys(O)
 var toObject = __webpack_require__(22);
 var $keys = __webpack_require__(23);
 
-__webpack_require__(54)('keys', function () {
+__webpack_require__(55)('keys', function () {
   return function keys(it) {
     return $keys(toObject(it));
   };
@@ -14991,12 +14997,12 @@ __webpack_require__(54)('keys', function () {
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var has = __webpack_require__(7);
 var toIObject = __webpack_require__(14);
-var arrayIndexOf = __webpack_require__(51)(false);
+var arrayIndexOf = __webpack_require__(52)(false);
 var IE_PROTO = __webpack_require__(16)('IE_PROTO');
 
 module.exports = function (object, names) {
@@ -15014,7 +15020,7 @@ module.exports = function (object, names) {
 
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for non-array-like ES3 and non-enumerable old V8 strings
@@ -15026,14 +15032,14 @@ module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
 
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // false -> Array#indexOf
 // true  -> Array#includes
 var toIObject = __webpack_require__(14);
-var toLength = __webpack_require__(52);
-var toAbsoluteIndex = __webpack_require__(53);
+var toLength = __webpack_require__(53);
+var toAbsoluteIndex = __webpack_require__(54);
 module.exports = function (IS_INCLUDES) {
   return function ($this, el, fromIndex) {
     var O = toIObject($this);
@@ -15055,7 +15061,7 @@ module.exports = function (IS_INCLUDES) {
 
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.15 ToLength
@@ -15067,7 +15073,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var toInteger = __webpack_require__(15);
@@ -15080,7 +15086,7 @@ module.exports = function (index, length) {
 
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // most Object methods by ES6 should accept primitives
@@ -15096,11 +15102,11 @@ module.exports = function (KEY, exec) {
 
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // optional / simple context binding
-var aFunction = __webpack_require__(56);
+var aFunction = __webpack_require__(57);
 module.exports = function (fn, that, length) {
   aFunction(fn);
   if (that === undefined) return fn;
@@ -15122,7 +15128,7 @@ module.exports = function (fn, that, length) {
 
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports) {
 
 module.exports = function (it) {
@@ -15132,7 +15138,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = !__webpack_require__(9) && !__webpack_require__(19)(function () {
@@ -15141,7 +15147,7 @@ module.exports = !__webpack_require__(9) && !__webpack_require__(19)(function ()
 
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.1 ToPrimitive(input [, PreferredType])
@@ -15159,19 +15165,19 @@ module.exports = function (it, S) {
 
 
 /***/ }),
-/* 59 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(60);
-__webpack_require__(71);
-module.exports = __webpack_require__(73);
-
-
-/***/ }),
 /* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(61);
+__webpack_require__(72);
+module.exports = __webpack_require__(74);
+
+
+/***/ }),
+/* 61 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(62);
 var global = __webpack_require__(2);
 var hide = __webpack_require__(5);
 var Iterators = __webpack_require__(10);
@@ -15193,13 +15199,13 @@ for (var i = 0; i < DOMIterables.length; i++) {
 
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var addToUnscopables = __webpack_require__(62);
-var step = __webpack_require__(63);
+var addToUnscopables = __webpack_require__(63);
+var step = __webpack_require__(64);
 var Iterators = __webpack_require__(10);
 var toIObject = __webpack_require__(14);
 
@@ -15234,14 +15240,14 @@ addToUnscopables('entries');
 
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports) {
 
 module.exports = function () { /* empty */ };
 
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports) {
 
 module.exports = function (done, value) {
@@ -15250,26 +15256,26 @@ module.exports = function (done, value) {
 
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports) {
 
 module.exports = true;
 
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(5);
 
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var create = __webpack_require__(67);
+var create = __webpack_require__(68);
 var descriptor = __webpack_require__(30);
 var setToStringTag = __webpack_require__(32);
 var IteratorPrototype = {};
@@ -15284,12 +15290,12 @@ module.exports = function (Constructor, NAME, next) {
 
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
 var anObject = __webpack_require__(8);
-var dPs = __webpack_require__(68);
+var dPs = __webpack_require__(69);
 var enumBugKeys = __webpack_require__(27);
 var IE_PROTO = __webpack_require__(16)('IE_PROTO');
 var Empty = function () { /* empty */ };
@@ -15304,7 +15310,7 @@ var createDict = function () {
   var gt = '>';
   var iframeDocument;
   iframe.style.display = 'none';
-  __webpack_require__(69).appendChild(iframe);
+  __webpack_require__(70).appendChild(iframe);
   iframe.src = 'javascript:'; // eslint-disable-line no-script-url
   // createDict = iframe.contentWindow.Object;
   // html.removeChild(iframe);
@@ -15331,7 +15337,7 @@ module.exports = Object.create || function create(O, Properties) {
 
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var dP = __webpack_require__(17);
@@ -15350,7 +15356,7 @@ module.exports = __webpack_require__(9) ? Object.defineProperties : function def
 
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var document = __webpack_require__(2).document;
@@ -15358,7 +15364,7 @@ module.exports = document && document.documentElement;
 
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
@@ -15377,12 +15383,12 @@ module.exports = Object.getPrototypeOf || function (O) {
 
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var $at = __webpack_require__(72)(true);
+var $at = __webpack_require__(73)(true);
 
 // 21.1.3.27 String.prototype[@@iterator]()
 __webpack_require__(31)(String, 'String', function (iterated) {
@@ -15401,7 +15407,7 @@ __webpack_require__(31)(String, 'String', function (iterated) {
 
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var toInteger = __webpack_require__(15);
@@ -15424,11 +15430,11 @@ module.exports = function (TO_STRING) {
 
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var anObject = __webpack_require__(8);
-var get = __webpack_require__(74);
+var get = __webpack_require__(75);
 module.exports = __webpack_require__(3).getIterator = function (it) {
   var iterFn = get(it);
   if (typeof iterFn != 'function') throw TypeError(it + ' is not iterable!');
@@ -15437,10 +15443,10 @@ module.exports = __webpack_require__(3).getIterator = function (it) {
 
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var classof = __webpack_require__(75);
+var classof = __webpack_require__(76);
 var ITERATOR = __webpack_require__(4)('iterator');
 var Iterators = __webpack_require__(10);
 module.exports = __webpack_require__(3).getIteratorMethod = function (it) {
@@ -15451,7 +15457,7 @@ module.exports = __webpack_require__(3).getIteratorMethod = function (it) {
 
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // getting tag from 19.1.3.6 Object.prototype.toString()
@@ -15480,19 +15486,19 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"sign-in-btn\" _v-7e903530=\"\">\n\t\t<div class=\"input-group\" _v-7e903530=\"\">\n\t\t\t<select class=\"form-select\" v-model=\"selected_network\" _v-7e903530=\"\">\n\t\t\t\t<option v-for=\"( service, network ) in services\" v-bind:value=\"network\" :disabled=\"checkDisabled( service.active )\" _v-7e903530=\"\">{{ service.name }}</option>\n\t\t\t</select>\n\n\t\t\t<button class=\"btn input-group-btn\" :class=\"serviceClass\" @click=\"requestAuthorization()\" :disabled=\"checkDisabled(true)\" _v-7e903530=\"\">\n\t\t\t\t<i class=\"fa fa-fw\" :class=\"serviceIcon\" aria-hidden=\"true\" _v-7e903530=\"\"></i> Sign In\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"modal\" :class=\"modalActiveClass\" _v-7e903530=\"\">\n\t\t\t<div class=\"modal-overlay\" _v-7e903530=\"\"></div>\n\t\t\t<div class=\"modal-container\" _v-7e903530=\"\">\n\t\t\t\t<div class=\"modal-header\" _v-7e903530=\"\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"closeModal()\" _v-7e903530=\"\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\" _v-7e903530=\"\">{{ modal.serviceName }} Service Credentials</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\" _v-7e903530=\"\">\n\t\t\t\t\t<div class=\"content\" _v-7e903530=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-7e903530=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-7e903530=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-7e903530=\"\">\n\t\t\t\t\t\t\t<i _v-7e903530=\"\">{{ field.description }}</i>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-footer\" _v-7e903530=\"\">\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-7e903530=\"\">Sign in</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(78)
-__vue_script__ = __webpack_require__(80)
-__vue_template__ = __webpack_require__(87)
+__webpack_require__(79)
+__vue_script__ = __webpack_require__(81)
+__vue_template__ = __webpack_require__(88)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -15509,13 +15515,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(79);
+var content = __webpack_require__(80);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -15535,7 +15541,7 @@ if(false) {
 }
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)();
@@ -15549,17 +15555,17 @@ exports.push([module.i, "\n\n    #rop_core .btn.btn-danger[_v-4ed4525c] {\n     
 
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _serviceAutocomplete = __webpack_require__(81);
+var _serviceAutocomplete = __webpack_require__(82);
 
 var _serviceAutocomplete2 = _interopRequireDefault(_serviceAutocomplete);
 
-var _secretInput = __webpack_require__(84);
+var _secretInput = __webpack_require__(85);
 
 var _secretInput2 = _interopRequireDefault(_secretInput);
 
@@ -15708,12 +15714,12 @@ module.exports = {
 };
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(82)
-__vue_template__ = __webpack_require__(83)
+__vue_script__ = __webpack_require__(83)
+__vue_template__ = __webpack_require__(84)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -15730,7 +15736,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15969,18 +15975,18 @@ module.exports = {
 };
 
 /***/ }),
-/* 83 */
+/* 84 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div class=\"form-autocomplete\" style=\"width: 100%;\" v-on-clickaway=\"closeDropdown\">\n        <!-- autocomplete input container -->\n        <div class=\"form-autocomplete-input form-input\" :class=\"is_focused\">\n\n            <!-- autocomplete chips -->\n            <label class=\"chip\" v-for=\"( account, index ) in to_be_activated\">\n                <img :src=\"getImg(account.img)\" class=\"avatar avatar-sm\" alt=\"{account.name}\">\n                {{account.name}}\n                <a href=\"#\" class=\"btn btn-clear\" aria-label=\"Close\" @click.prevent=\"removeToBeActivated(index)\" role=\"button\" v-if=\"!is_one\"></a>\n            </label>\n\n            <!-- autocomplete real input box -->\n            <input style=\"height: 1.0rem;\" class=\"form-input\" type=\"text\" ref=\"search\" v-model=\"search\" :placeholder=\"autocomplete_placeholder\" @click=\"magic_flag = true\" @focus=\"magic_flag = true\" @keyup=\"magic_flag = true\" @keydown.8=\"popLast()\" @keydown.38=\"highlightItem(true)\" @keydown.40=\"highlightItem()\" :readonly=\"is_one\">\n        </div>\n\n        <!-- autocomplete suggestion list -->\n        <ul class=\"menu\" ref=\"autocomplete_results\" :class=\"is_visible\" v-if=\"!is_one\">\n            <!-- menu list chips -->\n            <li class=\"menu-item\" v-for=\"( account, index ) in accounts\" v-if=\"filterSearch(account)\">\n                <a href=\"#\" @click.prevent=\"addToBeActivated(index)\" @keydown.38=\"highlightItem(true)\" @keydown.40=\"highlightItem()\">\n                    <div class=\"tile tile-centered\">\n                        <div class=\"tile-icon\">\n                            <img :src=\"getImg(account.img)\" class=\"avatar avatar-sm\" alt=\"{account.name}\">\n                        </div>\n                        <div class=\"tile-content\" v-html=\"markMatch(account.name, search)\"></div>\n                    </div>\n                </a>\n            </li>\n            <li v-if=\"has_results\">\n                <a href=\"#\">\n                    <div class=\"tile tile-centered\">\n                        <div class=\"tile-content\"><i>Nothing found matching \"{{search}}\" ...</i></div>\n                    </div>\n                </a>\n            </li>\n        </ul>\n    </div>\n\n";
 
 /***/ }),
-/* 84 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(85)
-__vue_template__ = __webpack_require__(86)
+__vue_script__ = __webpack_require__(86)
+__vue_template__ = __webpack_require__(87)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -15997,7 +16003,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 85 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16058,25 +16064,25 @@ module.exports = {
 };
 
 /***/ }),
-/* 86 */
+/* 87 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div class=\"input-group\" v-if=\"secret\">\n        <input class=\"form-input\" :type=\"input_type\" :id=\"id\" :value=\"value\" :readonly=\"readonly\">\n        <button class=\"btn input-group-btn\" @mouseenter=\"showHideSecret()\" @mouseleave=\"showHideSecret()\"><i class=\"fa fa-fw\" :class=\"visibileClass\"></i></button>\n    </div>\n    <input class=\"form-input\" type=\"text\" :id=\"id\" :value=\"value\" :readonly=\"readonly\" v-else>\n";
 
 /***/ }),
-/* 87 */
+/* 88 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div class=\"service-tile\" _v-4ed4525c=\"\">\n        <label class=\"show-md hide-xl\" _v-4ed4525c=\"\"><b _v-4ed4525c=\"\">{{service_url}}/</b></label>\n        <div class=\"input-group\" _v-4ed4525c=\"\">\n            <button class=\"btn input-group-btn btn-danger\" @click=\"removeService()\" _v-4ed4525c=\"\">\n                <i class=\"fa fa-fw fa-trash\" aria-hidden=\"true\" _v-4ed4525c=\"\"></i>\n            </button>\n            <button class=\"btn input-group-btn btn-info\" @click=\"toggleCredentials()\" v-if=\"service.public_credentials\" _v-4ed4525c=\"\">\n                <i class=\"fa fa-fw fa-info-circle\" aria-hidden=\"true\" _v-4ed4525c=\"\"></i>\n            </button>\n            <span class=\"input-group-addon hide-md\" style=\"min-width: 115px; text-align: right;\" _v-4ed4525c=\"\">{{service_url}}/</span>\n            <service-autocomplete :accounts=\"service.available_accounts\" :to_be_activated=\"to_be_activated\" _v-4ed4525c=\"\"></service-autocomplete>\n            <button class=\"btn input-group-btn\" :class=\"serviceClass\" @click=\"activateSelected( service.id )\" _v-4ed4525c=\"\">\n                <i class=\"fa fa-fw fa-plus\" aria-hidden=\"true\" _v-4ed4525c=\"\"></i> <span class=\"hide-md\" _v-4ed4525c=\"\">Activate</span>\n            </button>\n        </div>\n        <div class=\"card centered\" :class=\"credentialsDisplayClass\" v-if=\"service.public_credentials\" _v-4ed4525c=\"\">\n            <div class=\"card-header\" _v-4ed4525c=\"\">\n                <div class=\"card-title h5\" _v-4ed4525c=\"\">{{serviceName}}</div>\n                <div class=\"card-subtitle text-gray\" _v-4ed4525c=\"\">{{service.id}}</div>\n            </div>\n            <div class=\"card-body\" _v-4ed4525c=\"\">\n                <div class=\"form-horizontal\" _v-4ed4525c=\"\">\n                    <div class=\"form-group\" v-for=\"( credential, index ) in service.public_credentials\" _v-4ed4525c=\"\">\n                        <div class=\"col-3\" _v-4ed4525c=\"\">\n                            <label class=\"form-label\" :for=\"credentialID(index)\" _v-4ed4525c=\"\">{{credential.name}}:</label>\n                        </div>\n                        <div class=\"col-9\" _v-4ed4525c=\"\">\n                            <secret-input :id=\"credentialID(index)\" :value=\"credential.value\" :secret=\"credential.private\" _v-4ed4525c=\"\">\n                        </secret-input></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"divider clearfix\" _v-4ed4525c=\"\"></div>\n    </div>\n";
 
 /***/ }),
-/* 88 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(89)
-__vue_script__ = __webpack_require__(91)
-__vue_template__ = __webpack_require__(92)
+__webpack_require__(90)
+__vue_script__ = __webpack_require__(92)
+__vue_template__ = __webpack_require__(93)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -16093,13 +16099,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 89 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(90);
+var content = __webpack_require__(91);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -16119,7 +16125,7 @@ if(false) {
 }
 
 /***/ }),
-/* 90 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)();
@@ -16133,7 +16139,7 @@ exports.push([module.i, "\n    #rop_core .btn.btn-link.btn-danger[_v-d8a56e08] {
 
 
 /***/ }),
-/* 91 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16258,24 +16264,24 @@ module.exports = {
 };
 
 /***/ }),
-/* 92 */
+/* 93 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div class=\"tile tile-centered\" _v-d8a56e08=\"\">\n        <div class=\"tile-icon\" _v-d8a56e08=\"\">\n            <div class=\"icon_box\" :class=\"service\" _v-d8a56e08=\"\">\n                <img class=\"service_account_image\" :src=\"img\" v-if=\"img\" _v-d8a56e08=\"\">\n                <i class=\"fa\" :class=\"icon\" aria-hidden=\"true\" v-else=\"\" _v-d8a56e08=\"\"></i>\n            </div>\n        </div>\n        <div class=\"tile-content\" _v-d8a56e08=\"\">\n            <div class=\"tile-title\" _v-d8a56e08=\"\">{{ user }}</div>\n            <div class=\"tile-subtitle text-gray\" _v-d8a56e08=\"\">{{ serviceInfo }}</div>\n        </div>\n        <div class=\"tile-action\" _v-d8a56e08=\"\">\n            <div class=\"dropdown dropdown-right\" _v-d8a56e08=\"\">\n                <a href=\"#\" class=\"btn btn-link btn-danger\" tabindex=\"0\" @click.prevent=\"removeActiveAccount( account_id )\" _v-d8a56e08=\"\">\n                    <i class=\"fa fa-trash\" aria-hidden=\"true\" _v-d8a56e08=\"\"></i>\n                </a>\n            </div>\n        </div>\n    </div>\n";
 
 /***/ }),
-/* 93 */
+/* 94 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div class=\"tab-view\">\n        <div class=\"panel-body\">\n            <h3>Accounts</h3>\n            <p>This is a <b>Vue.js</b> component.</p>\n            <div class=\"container\">\n                <div class=\"columns\">\n                    <div class=\"column col-sm-12 col-md-12 col-lg-6\">\n                        <div class=\"columns\">\n                            <div class=\"column col-sm-12 col-md-12 col-xl-6 col-8 text-right\">\n                                <b>New Service</b><br/>\n                                <i>Select a service and sign in with an account for that service.</i>\n                            </div>\n                            <div class=\"column col-sm-12 col-md-12 col-xl-6 col-4 text-left\">\n                                <sign-in-btn></sign-in-btn>\n                            </div>\n                        </div>\n                        <div class=\"columns\">\n                            <div class=\"column col-sm-12 col-md-12 col-lg-12 text-left\">\n                                <hr/>\n                                <h5>Authenticated Services</h5>\n                                <div class=\"empty\" v-if=\"authenticated_services.length == 0\">\n                                    <div class=\"empty-icon\">\n                                        <i class=\"fa fa-3x fa-cloud\"></i>\n                                    </div>\n                                    <p class=\"empty-title h5\">No authenticated service!</p>\n                                    <p class=\"empty-subtitle\">Add one from the <b>\"New Service\"</b> section.</p>\n                                </div>\n                                <service-tile v-for=\"service in authenticated_services\" :key=\"service.id\" :service=\"service\"></service-tile>\n                            </div>\n                        </div>\n                    </div>\n                    <div class=\"column col-sm-12 col-md-12 col-lg-6 text-left\">\n                        <hr style=\"margin-top: 45px\" />\n                        <h5>Active Accounts</h5>\n                        <div class=\"empty\" v-if=\"active_accounts.length == 0\">\n                            <div class=\"empty-icon\">\n                                <i class=\"fa fa-3x fa-user-circle-o\"></i>\n                            </div>\n                            <p class=\"empty-title h5\">No active accounts!</p>\n                            <p class=\"empty-subtitle\">Add one from the <b>\"Authenticated Services\"</b> section.</p>\n                        </div>\n                        <div v-for=\"( account, id ) in active_accounts\">\n                            <service-user-tile :account_data=\"account\" :account_id=\"id\"></service-user-tile>\n                            <div class=\"divider\"></div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"columns\">\n                <div class=\"column col-12\">\n                    <h4><i class=\"fa fa-info-circle\"></i> Info</h4>\n                    <p><i>Authenticate a new service (eg. Facebook, Twitter etc. ), select the accounts you want to add from that service and <b>activate</b> them. Only the accounts displayed in the <b>\"Active accounts\"</b> section will be used.</i></p>\n                </div>\n            </div>\n        </div>\n        <div class=\"panel-footer\">\n            <button class=\"btn btn-primary\">Save</button>\n        </div>\n    </div>\n";
 
 /***/ }),
-/* 94 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(95)
-__vue_template__ = __webpack_require__(104)
+__vue_script__ = __webpack_require__(96)
+__vue_template__ = __webpack_require__(105)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -16292,17 +16298,17 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 95 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _counterInput = __webpack_require__(96);
+var _counterInput = __webpack_require__(97);
 
 var _counterInput2 = _interopRequireDefault(_counterInput);
 
-var _multipleSelect = __webpack_require__(101);
+var _multipleSelect = __webpack_require__(102);
 
 var _multipleSelect2 = _interopRequireDefault(_multipleSelect);
 
@@ -16539,13 +16545,13 @@ module.exports = {
 };
 
 /***/ }),
-/* 96 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(97)
-__vue_script__ = __webpack_require__(99)
-__vue_template__ = __webpack_require__(100)
+__webpack_require__(98)
+__vue_script__ = __webpack_require__(100)
+__vue_template__ = __webpack_require__(101)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -16562,13 +16568,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 97 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(98);
+var content = __webpack_require__(99);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -16588,7 +16594,7 @@ if(false) {
 }
 
 /***/ }),
-/* 98 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)();
@@ -16602,7 +16608,7 @@ exports.push([module.i, "\n\t#rop_core .input-group.rop-counter-group {\n\t\tpos
 
 
 /***/ }),
-/* 99 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16716,18 +16722,18 @@ module.exports = {
 };
 
 /***/ }),
-/* 100 */
+/* 101 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"input-group rop-counter-group\">\n\t\t<input class=\"form-input rop-counter\" type=\"number\" :id=\"id\" :value=\"value\" readonly>\n\t\t<button class=\"btn input-group-btn increment-btn up\" @mousedown=\"isPressed('up')\" @mouseup=\"isReleased('up')\"><i class=\"fa fa-fw fa-caret-up\"></i></button>\n\t\t<button class=\"btn input-group-btn increment-btn down\" @mousedown=\"isPressed('down')\" @mouseup=\"isReleased('down')\"><i class=\"fa fa-fw fa-caret-down\"></i></button>\n\t</div>\n";
 
 /***/ }),
-/* 101 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(102)
-__vue_template__ = __webpack_require__(103)
+__vue_script__ = __webpack_require__(103)
+__vue_template__ = __webpack_require__(104)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -16744,7 +16750,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 102 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17013,25 +17019,25 @@ module.exports = {
 };
 
 /***/ }),
-/* 103 */
+/* 104 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"form-autocomplete\" style=\"width: 100%;\" v-on-clickaway=\"closeDropdown\">\n\t\t<!-- autocomplete input container -->\n\t\t<div class=\"form-autocomplete-input form-input\" :class=\"is_focused\">\n\n\t\t\t<!-- autocomplete chips -->\n\t\t\t<label class=\"chip\" v-for=\"( option, index ) in selected\">\n\t\t\t\t{{option.name}}\n\t\t\t\t<a href=\"#\" class=\"btn btn-clear\" aria-label=\"Close\" @click.prevent=\"removeSelected(index)\" role=\"button\" v-if=\"!is_one\"></a>\n\t\t\t</label>\n\n\t\t\t<!-- autocomplete real input box -->\n\t\t\t<input style=\"height: 1.0rem;\" class=\"form-input\" type=\"text\" ref=\"search\" v-model=\"search\" :placeholder=\"autocomplete_placeholder\" @click=\"magic_flag = true\" @focus=\"magic_flag = true\" @keyup=\"magic_flag = true\" @keydown.8=\"popLast()\" @keydown.38=\"highlightItem(true)\" @keydown.40=\"highlightItem()\" :readonly=\"is_one\">\n\t\t</div>\n\n\t\t<!-- autocomplete suggestion list -->\n\t\t<ul class=\"menu\" ref=\"autocomplete_results\" :class=\"is_visible\" v-if=\"!is_one\" style=\"overflow-y: scroll; max-height: 120px\">\n\t\t\t<!-- menu list chips -->\n\t\t\t<li class=\"menu-item\" v-for=\"( option, index ) in options\" v-if=\"filterSearch(option)\">\n\t\t\t\t<a href=\"#\" @click.prevent=\"addToSelected(index)\" @keydown.38=\"highlightItem(true)\" @keydown.40=\"highlightItem()\">\n\t\t\t\t\t<div class=\"tile tile-centered\">\n\t\t\t\t\t\t<div class=\"tile-content\" v-html=\"markMatch(option.name, search)\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</a>\n\t\t\t</li>\n\t\t\t<li v-if=\"has_results\">\n\t\t\t\t<a href=\"#\">\n\t\t\t\t\t<div class=\"tile tile-centered\">\n\t\t\t\t\t\t<div class=\"tile-content\"><i>Nothing found matching \"{{search}}\" ...</i></div>\n\t\t\t\t\t</div>\n\t\t\t\t</a>\n\t\t\t</li>\n\t\t</ul>\n\t</div>\n\n";
 
 /***/ }),
-/* 104 */
+/* 105 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\" style=\"overflow: inherit;\">\n\t\t\t<h3>General Settings</h3>\n\t\t\t<p>This is a <b>Vue.js</b> component.</p>\n\t\t\t<div class=\"container\">\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Minimum age of posts available for sharing, in days\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t\t<b>Minimum post age</b><br/>\n\t\t\t\t\t\t\t\t<i>Minimum age of posts available for sharing, in days.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<counter-input id=\"min_post_age\" :maxVal=\"365\" :value.sync=\"generalSettings.minimum_post_age\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<!-- Maximum age of posts available for sharing, in days\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-right\">\n\t\t\t\t\t\t\t\t<counter-input id=\"max_post_age\" :maxVal=\"365\" :value.sync=\"generalSettings.maximum_post_age\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-left\">\n\t\t\t\t\t\t\t\t<b>Maximum post age</b><br/>\n\t\t\t\t\t\t\t\t<i>Maximum age of posts available for sharing, in days.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Number of posts to share per account per trigger\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t\t<b>Number of posts</b><br/>\n\t\t\t\t\t\t\t\t<i>Number of posts to share per. account per. trigger of scheduled job.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<!-- Share more than once, if there are no more posts to share, we should start re-sharing the one we\n\t\t\t\t\tpreviously shared\n\t\t\t\t\t(boolean) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-2 col-xl-2 col-1 text-right\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\" />\n\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Yes\n\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-10 col-xl-10 col-11 text-left\">\n\t\t\t\t\t\t\t\t<b>Share more than once?</b><br/>\n\t\t\t\t\t\t\t\t<i>If there are no more posts to share, we should start re-sharing the one we previously shared.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Post types available to share - what post types are available for share\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Post types</b><br/>\n\t\t\t\t\t\t\t\t<i>Post types available to share - what post types are available for share</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<multiple-select :options=\"postTypes\" :selected=\"generalSettings.selected_post_types\" :changedSelection=\"updatedPostTypes\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Taxonomies available for posts to share - based on what post types users choose to share, we should\n\t\t\t\t\tshow the taxonomies available for that post type, along with their terms, which user can select to share.\n\t\t\t\t\tHere we should have also a toggle if either the taxonomies selected are included or excluded.\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Taxonomies</b><br/>\n\t\t\t\t\t\t\t\t<i>Taxonomies available for the selected post types. Use to include or exclude posts.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changedSelection=\"updatedTaxonomies\" />\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\">\n\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" @change=\"exludeTaxonomiesChange\" />\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Exclude?\n\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Posts excluded/included in sharing - what posts we should exclude or include in sharing\n\t\t\t\t\t- we should have have an autocomplete list which should fetch posts from the previously select post_types\n\t\t\t\t\tand terms and allow them to be include/excluded.\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Posts</b><br/>\n\t\t\t\t\t\t\t\t<i>Posts excluded/included in sharing, filtered based on previous selections.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t\t\t\t<multiple-select :searchQuery=\"searchQuery\" @update=\"searchUpdate\" :options=\"postsAvailable\" :dontLock=\"true\" :selected=\"generalSettings.selected_posts\" :changedSelection=\"updatedPosts\" />\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\">\n\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_posts\" />\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Exclude?\n\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\"><i class=\"fa fa-check\"></i> Save</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 105 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(106)
-__vue_script__ = __webpack_require__(108)
-__vue_template__ = __webpack_require__(109)
+__webpack_require__(107)
+__vue_script__ = __webpack_require__(109)
+__vue_template__ = __webpack_require__(110)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -17048,13 +17054,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 106 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(107);
+var content = __webpack_require__(108);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -17074,7 +17080,7 @@ if(false) {
 }
 
 /***/ }),
-/* 107 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)();
@@ -17088,7 +17094,7 @@ exports.push([module.i, "\n\t#rop_core .avatar .avatar-icon[_v-051e6fb2] {\n\t\t
 
 
 /***/ }),
-/* 108 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17588,19 +17594,19 @@ module.exports = {
 };
 
 /***/ }),
-/* 109 */
+/* 110 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"tab-view\" _v-051e6fb2=\"\">\n\t\t<div class=\"panel-body\" style=\"overflow: inherit;\" _v-051e6fb2=\"\">\n\t\t\t<h3 _v-051e6fb2=\"\">Post Format</h3>\n\t\t\t<figure class=\"avatar avatar-lg\" style=\"text-align: center;\" _v-051e6fb2=\"\">\n\t\t\t\t<img :src=\"img\" v-if=\"img\" _v-051e6fb2=\"\">\n\t\t\t\t<i class=\"fa\" :class=\"icon\" style=\"line-height: 48px;\" aria-hidden=\"true\" v-else=\"\" _v-051e6fb2=\"\"></i>\n\t\t\t\t<i class=\"avatar-icon fa\" :class=\"icon\" aria-hidden=\"true\" v-if=\"img\" _v-051e6fb2=\"\"></i>\n\t\t\t\t<!--<img src=\"img/avatar-5.png\" class=\"avatar-icon\" alt=\"...\">-->\n\t\t\t</figure>\n\t\t\t<div class=\"d-inline-block\" style=\"vertical-align: top; margin-left: 16px;\" _v-051e6fb2=\"\">\n\t\t\t\t<h6 _v-051e6fb2=\"\">{{user_name}}</h6>\n\t\t\t\t<b class=\"service\" :class=\"service\" _v-051e6fb2=\"\">{{service_name}}</b>\n\t\t\t</div>\n\t\t\t<div class=\"d-inline-block\" style=\"vertical-align: top; margin-left: 16px; width: 80%\" _v-051e6fb2=\"\">\n\t\t\t\t<h4 _v-051e6fb2=\"\"><i class=\"fa fa-info-circle\" _v-051e6fb2=\"\"></i> Info</h4>\n\t\t\t\t<p _v-051e6fb2=\"\"><i _v-051e6fb2=\"\">Each <b _v-051e6fb2=\"\">account</b> can have it's own <b _v-051e6fb2=\"\">Post Format</b> for sharing, on the left you can see the\n\t\t\t\t\tcurrent selected account and network, bellow are the <b _v-051e6fb2=\"\">Post Format</b> options for the account.\n\t\t\t\t\tDon't forget to save after each change and remember, you can always reset an account to the network defaults.\n\t\t\t\t</i></p>\n\t\t\t</div>\n\t\t\t<div class=\"container\" _v-051e6fb2=\"\">\n\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Account</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Specify an account to change the settings of.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"selected_account\" @change=\"getAccountpostFormat()\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<option v-for=\"( account, id ) in active_accounts\" :value=\"id\" _v-051e6fb2=\"\">{{account.user}} - {{account.service}} </option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<hr _v-051e6fb2=\"\">\n\n\t\t\t\t\t\t<h4 _v-051e6fb2=\"\">Content</h4>\n\t\t\t\t\t\t<!-- Post Content - where to fetch the content which will be shared\n\t\t\t\t\t\t\t (dropdown with 4 options ( post_title, post_content, post_content\n\t\t\t\t\t\t\t and title and custom field). If custom field is selected we will\n\t\t\t\t\t\t\t have a text field which users will need to fill in to fetch the\n\t\t\t\t\t\t\t content from that meta key. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Post Content</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">From where to fetch the content which will be shared.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.post_content\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<option value=\"post_title\" _v-051e6fb2=\"\">Post Title</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"post_content\" _v-051e6fb2=\"\">Post Content</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"post_title_content\" _v-051e6fb2=\"\">Post Title &amp; Content</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"custom_field\" _v-051e6fb2=\"\">Custom Field</option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-if=\"post_format.post_content === 'custom_field'\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Custom Meta Field</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Meta field name from which to get the content.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.custom_meta_field\" value=\"\" placeholder=\"\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!-- Maximum length of the message( number field ) which holds the maximum\n\t\t\t\t\t\t\t number of chars for the shared content. We striping the content, we need\n\t\t\t\t\t\t\t to strip at the last whitespace or dot before reaching the limit, in order\n\t\t\t\t\t\t\t to not trim just half of the word. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Maximum chars</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Maximum length of the message.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.maximum_length\" value=\"\" placeholder=\"\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!-- Additional text field - text field which will be used by the users to a\n\t\t\t\t\t\t\t custom content before the fetched post content. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Additional text</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Add custom content to published items.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<textarea class=\"form-input\" v-model=\"post_format.custom_text\" placeholder=\"Custom content ...\" _v-051e6fb2=\"\">{{post_format.custom_text}}</textarea>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!-- Additional text at - dropdown with 2 options, begining or end, having the\n\t\t\t\t\t\t\t option where to add the additional text content. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Where to add the custom text</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.custom_text_pos\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<option value=\"beginning\" _v-051e6fb2=\"\">Beginning</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"end\" _v-051e6fb2=\"\">End</option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<hr _v-051e6fb2=\"\">\n\n\t\t\t\t\t\t<h4 _v-051e6fb2=\"\">Link &amp; URL</h4>\n\t\t\t\t\t\t<!-- Include link - checkbox either we should include the post permalink or not\n\t\t\t\t\t\t\t in the shared content. This is will appended at the end of the content. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Include link</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Should include the post permalink or not?</i>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.include_link\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-051e6fb2=\"\"></i> Yes\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!-- Fetch url from custom field - checkbox - either we should fetch the url from\n\t\t\t\t\t\t\t a meta field or not. When checked we will open a text field for entering the\n\t\t\t\t\t\t\t meta key. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">URL</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Fetch URL from custom field?</i>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.url_from_meta\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-051e6fb2=\"\"></i> Yes\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-if=\"post_format.url_from_meta\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Meta Key</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Meta key name from which to get the URL.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.url_meta_key\" value=\"\" placeholder=\"\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!-- Use url shortner ( checkbox ) , either we should use a shortner when adding\n\t\t\t\t\t\t\t the links to the content. When checked we will show a dropdown with the shortners\n\t\t\t\t\t\t\t available and the api keys ( if needed ) for each one. The list of shortners will\n\t\t\t\t\t\t\t be the same as the old version of the plugin. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Use url shortner</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Should we  use a shortner when adding the links to the content?</i>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.short_url\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-051e6fb2=\"\"></i> Yes\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-if=\"post_format.short_url\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">URL Shorner Service</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Which service to use for URL shortening.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.short_url_service\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<option value=\"rviv.ly\" _v-051e6fb2=\"\">rviv.ly</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"bit.ly\" _v-051e6fb2=\"\">bit.ly</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"shorte.st\" _v-051e6fb2=\"\">shorte.st</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"goo.gl\" _v-051e6fb2=\"\">goo.gl</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"ow.ly\" _v-051e6fb2=\"\">ow.ly</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"is.gd\" _v-051e6fb2=\"\">is.gd</option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-for=\"( credential, key_name ) in shortner_credentials\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">{{ key_name | capitalize }}</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Add the \"{{key_name}}\" required by the <b _v-051e6fb2=\"\">{{post_format.short_url_service}}</b> service API.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"shortner_credentials[key_name]\" value=\"\" placeholder=\"\" @change=\"updateShortnerCredentials()\" @keyup=\"updateShortnerCredentials()\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<hr _v-051e6fb2=\"\">\n\n\t\t\t\t\t\t<h4 _v-051e6fb2=\"\">Misc.</h4>\n\t\t\t\t\t\t<!-- Hashtags - dropdown - having this options - (Dont add any hashtags, Common hastags\n\t\t\t\t\t\t\t for all shares, Create hashtags from categories, Create hashtags from tags, Create\n\t\t\t\t\t\t\t hashtags from custom field). If one of those options is selected, except the dont\n\t\t\t\t\t\t\t any hashtags options, we will show a number field having the Maximum hashtags length.\n\t\t\t\t\t\t\t Moreover for common hashtags option, we will have another text field which will contain\n\t\t\t\t\t\t\t the hashtags value. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Hashtags</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Hashtags to published content.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.hashtags\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<option value=\"no-hashtags\" _v-051e6fb2=\"\">Dont add any hashtags</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"common-hashtags\" _v-051e6fb2=\"\">Common hastags for all shares</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"categories-hashtags\" _v-051e6fb2=\"\">Create hashtags from categories</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"tags-hashtags\" _v-051e6fb2=\"\">Create hashtags from tags</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"custom-hashtags\" _v-051e6fb2=\"\">Create hashtags from custom field</option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-if=\"post_format.hashtags !== 'no-hashtags'\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Maximum Hashtags length</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">The maximum hashtags length to be used when publishing.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.hashtags_length\" value=\"\" placeholder=\"\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-if=\"post_format.hashtags === 'common-hashtags'\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Common Hashtags</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">List of hastags to use separated by comma \",\".</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_common\" value=\"\" placeholder=\"\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-if=\"post_format.hashtags === 'custom-hashtags'\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Custom Hashtags</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">The name of the meta field that contains the hashtags.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_custom\" value=\"\" placeholder=\"\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!-- Post with image - checkbox (either we should use the featured image when posting) -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Post with image</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Use the featured image when posting?</i>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.image\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-051e6fb2=\"\"></i> Yes\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<hr _v-051e6fb2=\"\">\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Stats:</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Available char for post content</i>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t{{computed_chars}}\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<hr _v-051e6fb2=\"\">\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\" _v-051e6fb2=\"\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"savePostFormat()\" _v-051e6fb2=\"\"><i class=\"fa fa-check\" _v-051e6fb2=\"\"></i> Save Post Format</button>\n\t\t\t<button class=\"btn btn-secondary\" @click=\"resetPostFormat()\" _v-051e6fb2=\"\"><i class=\"fa fa-ban\" _v-051e6fb2=\"\"></i> Reset to Defaults</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 110 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(111)
-__webpack_require__(113)
-__vue_script__ = __webpack_require__(115)
+__webpack_require__(112)
+__webpack_require__(114)
+__vue_script__ = __webpack_require__(116)
 __vue_template__ = __webpack_require__(128)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
@@ -17618,13 +17624,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 111 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(112);
+var content = __webpack_require__(113);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -17644,7 +17650,7 @@ if(false) {
 }
 
 /***/ }),
-/* 112 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)();
@@ -17658,13 +17664,13 @@ exports.push([module.i, "\n\t#rop_core .avatar .avatar-icon[_v-d77321bc] {\n\t\t
 
 
 /***/ }),
-/* 113 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(114);
+var content = __webpack_require__(115);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -17684,7 +17690,7 @@ if(false) {
 }
 
 /***/ }),
-/* 114 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)();
@@ -17698,7 +17704,7 @@ exports.push([module.i, "\n\t#rop_core .time-picker.timepicker-style-fix .dropdo
 
 
 /***/ }),
-/* 115 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17708,11 +17714,11 @@ var _keys = __webpack_require__(6);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _buttonCheckbox = __webpack_require__(116);
+var _buttonCheckbox = __webpack_require__(117);
 
 var _buttonCheckbox2 = _interopRequireDefault(_buttonCheckbox);
 
-var _vue2Timepicker = __webpack_require__(119);
+var _vue2Timepicker = __webpack_require__(120);
 
 var _vue2Timepicker2 = _interopRequireDefault(_vue2Timepicker);
 
@@ -18045,12 +18051,12 @@ module.exports = {
 };
 
 /***/ }),
-/* 116 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(117)
-__vue_template__ = __webpack_require__(118)
+__vue_script__ = __webpack_require__(118)
+__vue_template__ = __webpack_require__(119)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -18067,7 +18073,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 117 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18136,25 +18142,25 @@ module.exports = {
 };
 
 /***/ }),
-/* 118 */
+/* 119 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<button class=\"btn\" :class=\"is_active\" @click=\"toggleThis()\" >{{label}}</button>\n";
 
 /***/ }),
-/* 119 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(120)
-
-
-/***/ }),
 /* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
+module.exports = __webpack_require__(121)
+
+
+/***/ }),
+/* 121 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var __vue_script__, __vue_template__
-__webpack_require__(121)
-__vue_script__ = __webpack_require__(124)
+__webpack_require__(122)
+__vue_script__ = __webpack_require__(125)
 __vue_template__ = __webpack_require__(127)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
@@ -18172,13 +18178,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 121 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(122);
+var content = __webpack_require__(123);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -18198,12 +18204,12 @@ if(false) {
 }
 
 /***/ }),
-/* 122 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)();
 // imports
-exports.i(__webpack_require__(123), "");
+exports.i(__webpack_require__(124), "");
 
 // module
 exports.push([module.i, "\n", ""]);
@@ -18212,7 +18218,7 @@ exports.push([module.i, "\n", ""]);
 
 
 /***/ }),
-/* 123 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)();
@@ -18226,7 +18232,7 @@ exports.push([module.i, ".time-picker {\n  display: inline-block;\n  position: r
 
 
 /***/ }),
-/* 124 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18240,7 +18246,7 @@ var _keys = __webpack_require__(6);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _stringify = __webpack_require__(125);
+var _stringify = __webpack_require__(34);
 
 var _stringify2 = _interopRequireDefault(_stringify);
 
@@ -18616,12 +18622,6 @@ exports.default = {
 };
 
 /***/ }),
-/* 125 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = { "default": __webpack_require__(126), __esModule: true };
-
-/***/ }),
 /* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18650,74 +18650,7 @@ module.exports = "\n\t<div class=\"tab-view\" _v-d77321bc=\"\">\n\t\t<div class=
 
 var __vue_script__, __vue_template__
 __vue_script__ = __webpack_require__(130)
-__vue_template__ = __webpack_require__(131)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/var/www/html/wp-base/wp-content/plugins/tweet-old-post/vue/src/vue-elements/logs-tab-panel.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-/* 130 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-// <template>
-//     <div class="container">
-//         <h3>Logs</h3>
-//         <div class="columns">
-//             <div class="column col-12">
-//                 <pre class="code" data-lang="Vue.js">
-//                     <code>{{ logs }}</code>
-//                 </pre>
-//             </div>
-//         </div>
-//     </div>
-// </template>
-//
-// <script>
-module.exports = {
-	name: 'logs-view',
-	props: ['model'],
-	data: function data() {
-		return {
-			logs: this.$store.state.page.logs
-		};
-	}
-	// </script>
-
-};
-
-/***/ }),
-/* 131 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div class=\"container\">\n        <h3>Logs</h3>\n        <div class=\"columns\">\n            <div class=\"column col-12\">\n                <pre class=\"code\" data-lang=\"Vue.js\">\n                    <code>{{ logs }}</code>\n                </pre>\n            </div>\n        </div>\n    </div>\n";
-
-/***/ }),
-/* 132 */
-/***/ (function(module, exports) {
-
-module.exports = "\n\t<div>\n\t\t<div class=\"panel title-panel\" style=\"margin-bottom: 40px; padding-bottom: 20px;\">\n\t\t\t<div class=\"panel-header\">\n\t\t\t\t<img :src=\"plugin_logo\" style=\"float: left; margin-right: 10px;\" />\n\t\t\t\t<h1 class=\"d-inline-block\">Revive Old Posts</h1><span class=\"powered\"> by <a href=\"https://themeisle.com\" target=\"_blank\"><b>ThemeIsle</b></a></span>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel\">\n\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t<ul class=\"tab\">\n\t\t\t\t\t<li class=\"tab-item\" v-for=\"tab in displayTabs\" :class=\"{ active: tab.isActive }\"><a href=\"#\" @click=\"switchTab( tab.slug )\">{{ tab.name }}</a></li>\n\t\t\t\t\t<li class=\"tab-item tab-action\">\n\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Beta User\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Remote Check\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\n\t\t\t<component :is=\"page.view\"></component>\n\t\t</div>\n\t</div>\n";
-
-/***/ }),
-/* 133 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(138)
-__vue_template__ = __webpack_require__(143)
+__vue_template__ = __webpack_require__(136)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -18734,17 +18667,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 134 */,
-/* 135 */,
-/* 136 */,
-/* 137 */,
-/* 138 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _queueCard = __webpack_require__(140);
+var _queueCard = __webpack_require__(131);
 
 var _queueCard2 = _interopRequireDefault(_queueCard);
 
@@ -18786,14 +18715,13 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 139 */,
-/* 140 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(144)
-__vue_script__ = __webpack_require__(141)
-__vue_template__ = __webpack_require__(146)
+__webpack_require__(132)
+__vue_script__ = __webpack_require__(134)
+__vue_template__ = __webpack_require__(135)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -18810,13 +18738,53 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 141 */
+/* 132 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(133);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2719575f&file=queue-card.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./queue-card.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2719575f&file=queue-card.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./queue-card.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 133 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)();
+// imports
+
+
+// module
+exports.push([module.i, "\n\t#rop_core .avatar .avatar-icon[_v-2719575f] {\n\t\tbackground: #333;\n\t\tborder-radius: 50%;\n\t\tfont-size: 16px;\n\t\ttext-align: center;\n\t\tline-height: 20px;\n\t}\n\t#rop_core .avatar .avatar-icon.fa-facebook-official[_v-2719575f] { background-color: #3b5998; }\n\t#rop_core .avatar .avatar-icon.fa-twitter[_v-2719575f] { background-color: #55acee; }\n\t#rop_core .avatar .avatar-icon.fa-linkedin[_v-2719575f] { background-color: #007bb5; }\n\t#rop_core .avatar .avatar-icon.fa-tumblr[_v-2719575f] { background-color: #32506d; }\n\n\t#rop_core .service.facebook[_v-2719575f] {\n\t\tcolor: #3b5998;\n\t}\n\n\t#rop_core .service.twitter[_v-2719575f] {\n\t\tcolor: #55acee;\n\t}\n\n\t#rop_core .service.linkedin[_v-2719575f] {\n\t\tcolor: #007bb5;\n\t}\n\n\t#rop_core .service.tumblr[_v-2719575f] {\n\t\tcolor: #32506d;\n\t}\n\n\t#rop_core .btn-warning[_v-2719575f] {\n\t\tbackground-color: #ef6c00;\n\t\tborder-color: #e65100;\n\t\tcolor: #FFF;\n\t}\n\n\t#rop_core .btn-warning[_v-2719575f]:hover, #rop_core .btn-warning[_v-2719575f]:focus {\n\t\tborder-color: #e65100;\n\t\tbackground-color: #fff;\n\t\tcolor: #ef6c00;\n\t}\n\n\t#rop_core .btn-warning.active[_v-2719575f], #rop_core .btn-warning[_v-2719575f]:active {\n\t\tbackground-color: #e65100;\n\t\tborder-color: #ef6c00;\n\t}\n\n\t#rop_core .btn-danger[_v-2719575f] {\n\t\t background-color: #c62828;\n\t\t border-color: #b71c1c;\n\t\t color: #FFF;\n\t }\n\n\t#rop_core .btn-danger[_v-2719575f]:hover, #rop_core .btn-danger[_v-2719575f]:focus {\n\t\tborder-color: #b71c1c;\n\t\tbackground-color: #fff;\n\t\tcolor: #c62828;\n\t}\n\n\t#rop_core .btn-danger.active[_v-2719575f], #rop_core .btn-danger[_v-2719575f]:active {\n\t\tbackground-color: #b71c1c;\n\t\tborder-color: #c62828;\n\t}\n\n\t#rop_core .btn-success[_v-2719575f] {\n\t\tbackground-color: #8bc34a;\n\t\tborder-color: #33691e;\n\t\tcolor: #FFF;\n\t}\n\n\t#rop_core .btn-success[_v-2719575f]:hover, #rop_core .btn-success[_v-2719575f]:focus {\n\t\tborder-color: #33691e;\n\t\tbackground-color: #fff;\n\t\tcolor: #8bc34a;\n\t}\n\n\t#rop_core .btn-success.active[_v-2719575f], #rop_core .btn-success[_v-2719575f]:active {\n\t\tbackground-color: #33691e;\n\t\tborder-color: #8bc34a;\n\t}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _stringify = __webpack_require__(125);
+var _stringify = __webpack_require__(34);
 
 var _stringify2 = _interopRequireDefault(_stringify);
 
@@ -18916,11 +18884,14 @@ module.exports = {
 	data: function data() {
 		return {
 			edit: false,
-			post_edit: this.post,
-			post_defaults: JSON.parse((0, _stringify2.default)(this.post)) // This removes the observable/reactivity
+			post_edit: this.post
+			// post_defaults: JSON.parse( JSON.stringify( this.post ) ) // This removes the observable/reactivity
 		};
 	},
 	computed: {
+		post_defaults: function post_defaults() {
+			return JSON.parse((0, _stringify2.default)(this.post)); // This removes the observable/reactivity
+		},
 		post_content: function post_content() {
 			if (this.post_edit.custom_content !== '') {
 				return this.post_edit.custom_content;
@@ -18940,13 +18911,13 @@ module.exports = {
 	watch: {},
 	methods: {
 		publishNow: function publishNow() {
-			this.$store.dispatch('publishQueueCard', { account_id: this.post_edit.account_id, post_id: this.post_edit.post_id });
+			this.$store.dispatch('publishQueueCard', { account_id: this.post_edit.account_id, index: this.id });
 		},
 		skipPost: function skipPost() {
-			this.$store.dispatch('skipQueueCard', { account_id: this.post_edit.account_id, post_id: this.post_edit.post_id });
+			this.$store.dispatch('skipQueueCard', { account_id: this.post_edit.account_id, index: this.id });
 		},
 		blockPost: function blockPost() {
-			this.$store.dispatch('blockQueueCard', { account_id: this.post_edit.account_id, post_id: this.post_edit.post_id });
+			this.$store.dispatch('blockQueueCard', { account_id: this.post_edit.account_id, index: this.id });
 		},
 		toggleEditState: function toggleEditState() {
 			this.edit = !this.edit;
@@ -19101,57 +19072,83 @@ module.exports = {
 };
 
 /***/ }),
-/* 142 */,
-/* 143 */
+/* 135 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div class=\"card col-12\" style=\"max-width: 100%; min-height: 350px;\" _v-2719575f=\"\">\n\t\t<div style=\"position: absolute; display: block; top: 0; right: 0;\" _v-2719575f=\"\">\n\t\t\t<button class=\"btn btn-sm btn-primary\" @click=\"toggleEditState\" v-if=\"edit === false\" _v-2719575f=\"\"><i class=\"fa fa-pencil\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Edit</button>\n\t\t\t<button class=\"btn btn-sm btn-success\" @click=\"saveChanges\" v-if=\"edit\" _v-2719575f=\"\"><i class=\"fa fa-check\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Save</button>\n\t\t\t<button class=\"btn btn-sm btn-warning\" @click=\"cancelChanges\" v-if=\"edit\" _v-2719575f=\"\"><i class=\"fa fa-times\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Cancel</button>\n\t\t</div>\n\t\t<div class=\"card-header\" _v-2719575f=\"\">\n\t\t\t<p class=\"text-gray text-right float-right\" _v-2719575f=\"\"><b _v-2719575f=\"\">Scheduled:</b><br _v-2719575f=\"\">{{time}}</p>\n\t\t\t<div class=\"card-title h6\" _v-2719575f=\"\">{{post.post_title}}</div>\n\t\t\t<div class=\"card-subtitle text-gray\" _v-2719575f=\"\"><i class=\"service fa\" :class=\"iconClass( account_id )\" _v-2719575f=\"\"></i> {{active_accounts[account_id].account}}</div>\n\t\t</div>\n\t\t<hr _v-2719575f=\"\">\n\t\t<span v-if=\"edit === false\" _v-2719575f=\"\">\n\t\t\t<details class=\"accordion\" v-if=\"post_img_url !== ''\" _v-2719575f=\"\">\n\t\t\t\t<summary class=\"accordion-header\" _v-2719575f=\"\">\n\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-2719575f=\"\"></i>\n\t\t\t\t\tImage Preview\n\t\t\t\t</summary>\n\t\t\t\t<div class=\"accordion-body\" _v-2719575f=\"\">\n\t\t\t\t\t<div class=\"card-image\" v-if=\"post_img_url !== ''\" _v-2719575f=\"\">\n\t\t\t\t\t\t<figure class=\"figure\" style=\"max-height: 250px; overflow: hidden;\" _v-2719575f=\"\">\n\t\t\t\t\t\t\t<img :src=\"post_img_url\" class=\"img-fit-cover\" style=\" width: 100%; height: 250px;\" @error=\"brokenImg\" _v-2719575f=\"\">\n\t\t\t\t\t\t</figure>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</details>\n\t\t\t<details class=\"accordion\" v-else=\"\" _v-2719575f=\"\">\n\t\t\t\t<summary class=\"accordion-header\" _v-2719575f=\"\">\n\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-2719575f=\"\"></i>\n\t\t\t\t\tNo Image\n\t\t\t\t</summary>\n\t\t\t\t<div class=\"accordion-body text-gray\" _v-2719575f=\"\">\n\t\t\t\t\t<small _v-2719575f=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-chain-broken\" aria-hidden=\"true\" _v-2719575f=\"\"></i> No image attached or a broken link was detected.<br _v-2719575f=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-info-circle\" aria-hidden=\"true\" _v-2719575f=\"\"></i> <i _v-2719575f=\"\">If a image should be here, update the post or edit this item.</i>\n\t\t\t\t\t</small>\n\t\t\t\t</div>\n\t\t\t</details>\n\n\t\t\t<div class=\"card-body\" v-if=\"edit === false\" _v-2719575f=\"\">\n\t\t\t\t<p v-html=\"hashtags( post_content )\" _v-2719575f=\"\"></p>\n\t\t\t\t<p v-if=\"post.post_url\" _v-2719575f=\"\"><b _v-2719575f=\"\">Link:</b> <a :href=\"post.post_url\" target=\"_blank\" _v-2719575f=\"\">{{post.post_url}}</a></p>\n\t\t\t</div>\n\t\t</span>\n\t\t<div class=\"card-body\" v-else=\"\" _v-2719575f=\"\">\n\t\t\t<div class=\"form-group\" _v-2719575f=\"\">\n\t\t\t\t<label class=\"form-label\" for=\"image\" _v-2719575f=\"\">Image</label>\n\t\t\t\t<div class=\"input-group\" _v-2719575f=\"\">\n\t\t\t\t\t<span class=\"input-group-addon\" _v-2719575f=\"\"><i class=\"fa fa-file-image-o\" _v-2719575f=\"\"></i></span>\n\t\t\t\t\t<input id=\"image\" type=\"text\" class=\"form-input\" :value=\"post_img_url\" readonly=\"\" _v-2719575f=\"\">\n\t\t\t\t\t<button class=\"btn btn-primary input-group-btn\" @click=\"uploadImage\" _v-2719575f=\"\"><i class=\"fa fa-upload\" aria-hidden=\"true\" _v-2719575f=\"\"></i></button>\n\t\t\t\t\t<button class=\"btn btn-danger input-group-btn\" @click=\"clearImage\" _v-2719575f=\"\"><i class=\"fa fa-trash\" aria-hidden=\"true\" _v-2719575f=\"\"></i></button>\n\t\t\t\t</div>\n\n\t\t\t\t<label class=\"form-label\" for=\"content\" _v-2719575f=\"\">Content</label>\n\t\t\t\t<textarea class=\"form-input\" id=\"content\" placeholder=\"Textarea\" rows=\"3\" @keyup=\"checkCount\" _v-2719575f=\"\">{{post_content}}</textarea>\n\t\t\t</div>\n\t\t</div>\n\t\t<div style=\"position: absolute; display: block; bottom: 0; right: 0;\" v-if=\"edit === false\" _v-2719575f=\"\">\n\t\t\t<button class=\"btn btn-sm btn-success\" @click=\"publishNow\" _v-2719575f=\"\"><i class=\"fa fa-share\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Share Now</button>\n\t\t\t<button class=\"btn btn-sm btn-warning\" @click=\"skipPost\" _v-2719575f=\"\"><i class=\"fa fa-step-forward\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Skip</button>\n\t\t\t<button class=\"btn btn-sm btn-danger\" @click=\"blockPost\" _v-2719575f=\"\"><i class=\"fa fa-ban\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Block</button>\n\t\t</div>\n\t</div>\n";
+
+/***/ }),
+/* 136 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\" style=\"overflow: inherit;\">\n\t\t\t<h3>Sharing Queue</h3>\n\t\t\t<div class=\"container columns\">\n\t\t\t\t<div class=\"column col-sm-12 col-3 text-left\" v-for=\" (data, index) in queue \">\n\t\t\t\t\t<queue-card :account_id=\"data.account_id\" :post=\"data.post\" :time=\"data.time\" :key=\"index\" :id=\"index\" />\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\">\n\t\t\t<button class=\"btn btn-secondary\" @click=\"refreshQueue\"><i class=\"fa fa-refresh\"></i> Refresh Queue</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 144 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// style-loader: Adds some css to the DOM by adding a <style> tag
+var __vue_script__, __vue_template__
+__vue_script__ = __webpack_require__(138)
+__vue_template__ = __webpack_require__(139)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/var/www/html/wp-base/wp-content/plugins/tweet-old-post/vue/src/vue-elements/logs-tab-panel.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
 
-// load the styles
-var content = __webpack_require__(145);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2719575f&file=queue-card.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./queue-card.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2719575f&file=queue-card.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./queue-card.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
+/***/ }),
+/* 138 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// <template>
+//     <div class="container">
+//         <h3>Logs</h3>
+//         <div class="columns">
+//             <div class="column col-12">
+//                 <pre class="code" data-lang="Vue.js">
+//                     <code>{{ logs }}</code>
+//                 </pre>
+//             </div>
+//         </div>
+//     </div>
+// </template>
+//
+// <script>
+module.exports = {
+	name: 'logs-view',
+	props: ['model'],
+	data: function data() {
+		return {
+			logs: this.$store.state.page.logs
+		};
 	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
+	// </script>
+
+};
 
 /***/ }),
-/* 145 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)();
-// imports
-
-
-// module
-exports.push([module.i, "\n\t#rop_core .avatar .avatar-icon[_v-2719575f] {\n\t\tbackground: #333;\n\t\tborder-radius: 50%;\n\t\tfont-size: 16px;\n\t\ttext-align: center;\n\t\tline-height: 20px;\n\t}\n\t#rop_core .avatar .avatar-icon.fa-facebook-official[_v-2719575f] { background-color: #3b5998; }\n\t#rop_core .avatar .avatar-icon.fa-twitter[_v-2719575f] { background-color: #55acee; }\n\t#rop_core .avatar .avatar-icon.fa-linkedin[_v-2719575f] { background-color: #007bb5; }\n\t#rop_core .avatar .avatar-icon.fa-tumblr[_v-2719575f] { background-color: #32506d; }\n\n\t#rop_core .service.facebook[_v-2719575f] {\n\t\tcolor: #3b5998;\n\t}\n\n\t#rop_core .service.twitter[_v-2719575f] {\n\t\tcolor: #55acee;\n\t}\n\n\t#rop_core .service.linkedin[_v-2719575f] {\n\t\tcolor: #007bb5;\n\t}\n\n\t#rop_core .service.tumblr[_v-2719575f] {\n\t\tcolor: #32506d;\n\t}\n\n\t#rop_core .btn-warning[_v-2719575f] {\n\t\tbackground-color: #ef6c00;\n\t\tborder-color: #e65100;\n\t\tcolor: #FFF;\n\t}\n\n\t#rop_core .btn-warning[_v-2719575f]:hover, #rop_core .btn-warning[_v-2719575f]:focus {\n\t\tborder-color: #e65100;\n\t\tbackground-color: #fff;\n\t\tcolor: #ef6c00;\n\t}\n\n\t#rop_core .btn-warning.active[_v-2719575f], #rop_core .btn-warning[_v-2719575f]:active {\n\t\tbackground-color: #e65100;\n\t\tborder-color: #ef6c00;\n\t}\n\n\t#rop_core .btn-danger[_v-2719575f] {\n\t\t background-color: #c62828;\n\t\t border-color: #b71c1c;\n\t\t color: #FFF;\n\t }\n\n\t#rop_core .btn-danger[_v-2719575f]:hover, #rop_core .btn-danger[_v-2719575f]:focus {\n\t\tborder-color: #b71c1c;\n\t\tbackground-color: #fff;\n\t\tcolor: #c62828;\n\t}\n\n\t#rop_core .btn-danger.active[_v-2719575f], #rop_core .btn-danger[_v-2719575f]:active {\n\t\tbackground-color: #b71c1c;\n\t\tborder-color: #c62828;\n\t}\n\n\t#rop_core .btn-success[_v-2719575f] {\n\t\tbackground-color: #8bc34a;\n\t\tborder-color: #33691e;\n\t\tcolor: #FFF;\n\t}\n\n\t#rop_core .btn-success[_v-2719575f]:hover, #rop_core .btn-success[_v-2719575f]:focus {\n\t\tborder-color: #33691e;\n\t\tbackground-color: #fff;\n\t\tcolor: #8bc34a;\n\t}\n\n\t#rop_core .btn-success.active[_v-2719575f], #rop_core .btn-success[_v-2719575f]:active {\n\t\tbackground-color: #33691e;\n\t\tborder-color: #8bc34a;\n\t}\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 146 */
+/* 139 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"card col-12\" style=\"max-width: 100%; min-height: 350px;\" _v-2719575f=\"\">\n\t\t<div style=\"position: absolute; display: block; top: 0; right: 0;\" _v-2719575f=\"\">\n\t\t\t<button class=\"btn btn-sm btn-primary\" @click=\"toggleEditState\" v-if=\"edit === false\" _v-2719575f=\"\"><i class=\"fa fa-pencil\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Edit</button>\n\t\t\t<button class=\"btn btn-sm btn-success\" @click=\"saveChanges\" v-if=\"edit\" _v-2719575f=\"\"><i class=\"fa fa-check\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Save</button>\n\t\t\t<button class=\"btn btn-sm btn-warning\" @click=\"cancelChanges\" v-if=\"edit\" _v-2719575f=\"\"><i class=\"fa fa-times\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Cancel</button>\n\t\t</div>\n\t\t<div class=\"card-header\" _v-2719575f=\"\">\n\t\t\t<p class=\"text-gray text-right float-right\" _v-2719575f=\"\"><b _v-2719575f=\"\">Scheduled:</b><br _v-2719575f=\"\">{{time}}</p>\n\t\t\t<div class=\"card-title h6\" _v-2719575f=\"\">{{post.post_title}}</div>\n\t\t\t<div class=\"card-subtitle text-gray\" _v-2719575f=\"\"><i class=\"service fa\" :class=\"iconClass( account_id )\" _v-2719575f=\"\"></i> {{active_accounts[account_id].account}}</div>\n\t\t</div>\n\t\t<hr _v-2719575f=\"\">\n\t\t<span v-if=\"edit === false\" _v-2719575f=\"\">\n\t\t\t<details class=\"accordion\" v-if=\"post_img_url !== ''\" _v-2719575f=\"\">\n\t\t\t\t<summary class=\"accordion-header\" _v-2719575f=\"\">\n\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-2719575f=\"\"></i>\n\t\t\t\t\tImage Preview\n\t\t\t\t</summary>\n\t\t\t\t<div class=\"accordion-body\" _v-2719575f=\"\">\n\t\t\t\t\t<div class=\"card-image\" v-if=\"post_img_url !== ''\" _v-2719575f=\"\">\n\t\t\t\t\t\t<figure class=\"figure\" style=\"max-height: 250px; overflow: hidden;\" _v-2719575f=\"\">\n\t\t\t\t\t\t\t<img :src=\"post_img_url\" class=\"img-fit-cover\" style=\" width: 100%; height: 250px;\" @error=\"brokenImg\" _v-2719575f=\"\">\n\t\t\t\t\t\t</figure>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</details>\n\t\t\t<details class=\"accordion\" v-else=\"\" _v-2719575f=\"\">\n\t\t\t\t<summary class=\"accordion-header\" _v-2719575f=\"\">\n\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-2719575f=\"\"></i>\n\t\t\t\t\tNo Image\n\t\t\t\t</summary>\n\t\t\t\t<div class=\"accordion-body text-gray\" _v-2719575f=\"\">\n\t\t\t\t\t<small _v-2719575f=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-chain-broken\" aria-hidden=\"true\" _v-2719575f=\"\"></i> No image attached or a broken link was detected.<br _v-2719575f=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-info-circle\" aria-hidden=\"true\" _v-2719575f=\"\"></i> <i _v-2719575f=\"\">If a image should be here, update the post or edit this item.</i>\n\t\t\t\t\t</small>\n\t\t\t\t</div>\n\t\t\t</details>\n\n\t\t\t<div class=\"card-body\" v-if=\"edit === false\" _v-2719575f=\"\">\n\t\t\t\t<p v-html=\"hashtags( post_content )\" _v-2719575f=\"\"></p>\n\t\t\t\t<p v-if=\"post.post_url\" _v-2719575f=\"\"><b _v-2719575f=\"\">Link:</b> <a :href=\"post.post_url\" target=\"_blank\" _v-2719575f=\"\">{{post.post_url}}</a></p>\n\t\t\t</div>\n\t\t</span>\n\t\t<div class=\"card-body\" v-else=\"\" _v-2719575f=\"\">\n\t\t\t<div class=\"form-group\" _v-2719575f=\"\">\n\t\t\t\t<label class=\"form-label\" for=\"image\" _v-2719575f=\"\">Image</label>\n\t\t\t\t<div class=\"input-group\" _v-2719575f=\"\">\n\t\t\t\t\t<span class=\"input-group-addon\" _v-2719575f=\"\"><i class=\"fa fa-file-image-o\" _v-2719575f=\"\"></i></span>\n\t\t\t\t\t<input id=\"image\" type=\"text\" class=\"form-input\" :value=\"post_img_url\" readonly=\"\" _v-2719575f=\"\">\n\t\t\t\t\t<button class=\"btn btn-primary input-group-btn\" @click=\"uploadImage\" _v-2719575f=\"\"><i class=\"fa fa-upload\" aria-hidden=\"true\" _v-2719575f=\"\"></i></button>\n\t\t\t\t\t<button class=\"btn btn-danger input-group-btn\" @click=\"clearImage\" _v-2719575f=\"\"><i class=\"fa fa-trash\" aria-hidden=\"true\" _v-2719575f=\"\"></i></button>\n\t\t\t\t</div>\n\n\t\t\t\t<label class=\"form-label\" for=\"content\" _v-2719575f=\"\">Content</label>\n\t\t\t\t<textarea class=\"form-input\" id=\"content\" placeholder=\"Textarea\" rows=\"3\" @keyup=\"checkCount\" _v-2719575f=\"\">{{post_content}}</textarea>\n\t\t\t</div>\n\t\t</div>\n\t\t<div style=\"position: absolute; display: block; bottom: 0; right: 0;\" v-if=\"edit === false\" _v-2719575f=\"\">\n\t\t\t<button class=\"btn btn-sm btn-success\" @click=\"publishNow\" _v-2719575f=\"\"><i class=\"fa fa-share\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Share Now</button>\n\t\t\t<button class=\"btn btn-sm btn-warning\" @click=\"skipPost\" _v-2719575f=\"\"><i class=\"fa fa-step-forward\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Skip</button>\n\t\t\t<button class=\"btn btn-sm btn-danger\" @click=\"blockPost\" _v-2719575f=\"\"><i class=\"fa fa-ban\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Block</button>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n    <div class=\"container\">\n        <h3>Logs</h3>\n        <div class=\"columns\">\n            <div class=\"column col-12\">\n                <pre class=\"code\" data-lang=\"Vue.js\">\n                    <code>{{ logs }}</code>\n                </pre>\n            </div>\n        </div>\n    </div>\n";
+
+/***/ }),
+/* 140 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div>\n\t\t<div class=\"panel title-panel\" style=\"margin-bottom: 40px; padding-bottom: 20px;\">\n\t\t\t<div class=\"panel-header\">\n\t\t\t\t<img :src=\"plugin_logo\" style=\"float: left; margin-right: 10px;\" />\n\t\t\t\t<h1 class=\"d-inline-block\">Revive Old Posts</h1><span class=\"powered\"> by <a href=\"https://themeisle.com\" target=\"_blank\"><b>ThemeIsle</b></a></span>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel\">\n\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t<ul class=\"tab\">\n\t\t\t\t\t<li class=\"tab-item\" v-for=\"tab in displayTabs\" :class=\"{ active: tab.isActive }\"><a href=\"#\" @click=\"switchTab( tab.slug )\">{{ tab.name }}</a></li>\n\t\t\t\t\t<li class=\"tab-item tab-action\">\n\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Beta User\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Remote Check\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\n\t\t\t<component :is=\"page.view\"></component>\n\t\t</div>\n\t</div>\n";
 
 /***/ })
 /******/ ]);

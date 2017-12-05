@@ -84,6 +84,19 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	}
 
 	/**
+	 * Method to generate an uid.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   string $account_id The account ID.
+	 * @param   string $time A date time string.
+	 * @return string
+	 */
+	private function create_uid( $account_id, $time ) {
+		return base64_encode( strtotime( $time ) * strlen( $account_id ) );
+	}
+
+	/**
 	 * This method will be refactored or moved inside a post format helper.
 	 *
 	 * @since   8.0.0
@@ -94,20 +107,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 */
 	private function prepare_post_object( WP_Post $post, $account_id ) {
 		$post_format_helper = new Rop_Post_Format_Helper();
-		$post_format_helper->set_post_format( $account_id );
-		$filtered_post = array();
-		$filtered_post['post_id'] = $post->ID;
-		$filtered_post['account_id'] = $account_id;
-		$filtered_post['post_title'] = $post->post_title;
-		$filtered_post['post_content'] = $post_format_helper->build_content( $post );
-		$filtered_post['custom_content'] = '';
-		$filtered_post['post_url'] = $post_format_helper->build_url( $post );
-		if ( has_post_thumbnail( $post->ID ) ) {
-			$filtered_post['post_img'] = get_the_post_thumbnail_url( $post->ID, 'large' );
-		} else {
-			$filtered_post['post_img'] = false;
-		}
-		$filtered_post['custom_img'] = false;
+		$filtered_post = $post_format_helper->get_formated_object( $account_id, $post );
 		return $filtered_post;
 	}
 
@@ -204,24 +204,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 */
 	private function rebuild_post_object( WP_Post $post, $account_id, $old_post_object ) {
 		$post_format_helper = new Rop_Post_Format_Helper();
-		$post_format_helper->set_post_format( $account_id );
-		$filtered_post = array();
-		$filtered_post['post_id'] = $post->ID;
-		$filtered_post['account_id'] = $account_id;
-		$filtered_post['post_title'] = $post->post_title;
-		$filtered_post['post_content'] = $post_format_helper->build_content( $post );
-		$filtered_post['custom_content'] = ( isset( $old_post_object['custom_content'] ) && $old_post_object['custom_content'] != '' ) ? $old_post_object['custom_content'] : '';
-		$filtered_post['post_url'] = $post_format_helper->build_url( $post );
-		$filtered_post['custom_img'] = $old_post_object['custom_img'];
-		if ( $filtered_post['custom_img'] ) {
-			$filtered_post['post_img'] = old_post_object['post_img'];
-		} else {
-			if ( has_post_thumbnail( $post->ID ) ) {
-				$filtered_post['post_img'] = get_the_post_thumbnail_url( $post->ID, 'large' );
-			} else {
-				$filtered_post['post_img'] = false;
-			}
-		}
+		$filtered_post = $post_format_helper->get_formated_object( $account_id, $post, $old_post_object );
 		return $filtered_post;
 	}
 
@@ -239,7 +222,9 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 				foreach ( $account_queue as $queue_event ) {
 					$post = get_post( $queue_event['post']['post_id'] );
 					$updated_post = $this->rebuild_post_object( $post, $account_id, $queue_event['post'] );
-					array_push( $updated_accounts_queue, array( 'time' => $queue_event['time'], 'post' => $updated_post ) );
+					$uid = $this->create_uid( $account_id, $queue_event['time'] );
+					$updated_accounts_queue[ $uid ] = array( 'time' => $queue_event['time'], 'post' => $updated_post );
+					// array_push( $updated_accounts_queue, array( 'time' => $queue_event['time'], 'post' => $updated_post ) );
 				}
 				$updated_queue[ $account_id ] = $updated_accounts_queue;
 			}
@@ -268,7 +253,9 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 				// print_r( $schedules );
 				foreach ( $schedules as $time ) {
 					$pos = $shuffler[ $i++ ];
-					array_push( $account_queue, array( 'time' => $time, 'post' => $this->prepare_post_object( $post_pool[ $pos ], $account_id ) ) );
+					$uid = $this->create_uid( $account_id, $time );
+					$account_queue[ $uid ] = array( 'time' => $time, 'post' => $this->prepare_post_object( $post_pool[ $pos ], $account_id ) );
+					// array_push( $account_queue, array( 'time' => $time, 'post' => $this->prepare_post_object( $post_pool[ $pos ], $account_id ) ) );
 				}
 				$queue[ $account_id ] = $account_queue;
 			}
@@ -294,7 +281,9 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 					$i = 0;
 					foreach ( $schedules as $time ) {
 						$pos = $shuffler[ $i++ ];
-						array_push( $account_queue, array( 'time' => $time, 'post' => $this->prepare_post_object( $post_pool[ $pos ], $account_id ) ) );
+						$uid = $this->create_uid( $account_id, $time );
+						$account_queue[ $uid ] = array( 'time' => $time, 'post' => $this->prepare_post_object( $post_pool[ $pos ], $account_id ) );
+						// array_push( $account_queue, array( 'time' => $time, 'post' => $this->prepare_post_object( $post_pool[ $pos ], $account_id ) ) );
 					}
 					$this->queue[ $account_id ] = $account_queue;
 				}
@@ -326,15 +315,60 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	}
 
 	/**
+	 * Utility method to remove from queue.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @param   string $index The base64 uid.
+	 * @param   string $account_id The account ID.
+	 * @return mixed
+	 */
+	public function remove_from_queue( $index, $account_id ) {
+	    $to_remove_from_queue = $this->queue[ $account_id ][ $index ];
+		$this->selector->update_buffer( $account_id, $to_remove_from_queue['post']['post_id'] );
+		unset( $this->queue[ $account_id ][ $index ] );
+		$this->set( 'queue', $this->queue );
+		return $to_remove_from_queue;
+	}
+
+	/**
 	 * Mark a post_id as blocked for the account.
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 * @param   string $index The base64 uid.
 	 * @param   string $account_id The account ID.
-	 * @param   int    $post_id The post id.
 	 */
-	public function ban_post( $account_id, $post_id ) {
-		$this->selector->mark_as_blocked( $account_id, $post_id );
+	public function ban_post( $index, $account_id ) {
+		if ( ! empty( $this->queue ) ) {
+			$queue = $this->queue;
+			if ( isset( $queue[ $account_id ] [ $index ] ) ) {
+				$skip_id = $queue[ $account_id ][ $index ]['post']['post_id'];
+				$this->selector->mark_as_blocked( $account_id, $skip_id );
+				$this->replace_post_in_queue( $account_id, $skip_id );
+			}
+		}
+		$this->set( 'queue', $this->queue );
+	}
+
+	/**
+	 * Utility method to replace given post ID from queue.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   string $account_id The account ID.
+	 * @param   int    $post_id The post ID.
+	 */
+	private function replace_post_in_queue( $account_id, $post_id ) {
+		$post_pool = $this->selector->select( $account_id );
+		$shuffler = $this->create_shuffler( 0, sizeof( $post_pool ) - 1, sizeof( $this->queue[ $account_id ] ) );
+		$i = 0;
+		foreach ( $this->queue[ $account_id ] as $index => $event ) {
+			if ( $event['post']['post_id'] == $post_id ) {
+				$pos = $shuffler[ $i++ ];
+				$this->queue[ $account_id ][ $index ]['post'] = $this->prepare_post_object( $post_pool[ $pos ], $account_id );
+			}
+		}
 	}
 
 	/**
@@ -359,18 +393,49 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 		$this->refresh_queue();
 		$queue = $this->queue;
 		$ordered = array();
-		// print_r( $queue );
 		foreach ( $queue as $account_id => $data ) {
-			foreach ( $data as $event ) {
+			foreach ( $data as $index => $event ) {
 				$formatted_data = $event;
 				$formatted_data['time'] = date( 'd-m-Y H:i', strtotime( $formatted_data['time'] ) );
-				array_push( $ordered, array( 'time' => $event['time'], 'account_id' => $account_id, 'post' => $formatted_data['post'] ) );
+				$ordered[ $index ] = array( 'time' => $event['time'], 'account_id' => $account_id, 'post' => $formatted_data['post'] );
+				// array_push( $ordered, array( 'time' => $event['time'], 'account_id' => $account_id, 'post' => $formatted_data['post'] ) );
 			}
 		}
-		usort( $ordered, function ( $a, $b ) {
+		uasort( $ordered, function ( $a, $b ) {
 			return strtotime( $a['time'] ) - strtotime( $b['time'] );
 		} );
+		// $new_indexes = array_map( function( $element ){ return base64_encode( strtotime( $element['time'] ) *  strlen( $element['account_id'] ) ) ; }, $ordered );
+		// $ordered = array_combine ( $new_indexes , $ordered );
 		return $ordered;
+	}
+
+	/**
+	 * Method to skip post for the given account.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @param   string $index The base64 uid.
+	 * @param   string $account_id The account ID.
+	 * @return bool
+	 */
+	public function skip_post( $index, $account_id ) {
+		if ( ! empty( $this->queue ) ) {
+			$queue = $this->queue;
+			if ( isset( $queue[ $account_id ][ $index ] ) ) {
+				$skip_id = $queue[ $account_id ][ $index ]['post']['post_id'];
+				$this->selector->update_buffer( $account_id, $skip_id );
+				$post = $this->selector->select( $account_id );
+				if ( isset( $post[0] ) && ! empty( $post[0] ) ) {
+					$this->queue[ $account_id ][ $index ]['post'] = $this->prepare_post_object( $post[0], $account_id );
+					;
+					$this->set( 'queue', $this->queue );
+					$this->refresh_queue();
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 }

@@ -150,24 +150,15 @@ abstract class Rop_Services_Abstract {
 	public abstract function set_credentials( $args );
 
 	/**
-	 * Method to retrieve a user model for the service.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @param   array $args Optional. Arguments needed by the implementation.
-	 * @return Rop_User_Model
-	 */
-	public abstract function get_user( $args );
-
-	/**
 	 * Method for publishing with the service.
 	 *
 	 * @since   8.0.0
 	 * @access  public
 	 * @param   array $post_details The post details to be published by the service.
+	 * @param   array $args Optional arguments needed by the method.
 	 * @return mixed
 	 */
-	public abstract function share( $post_details );
+	public abstract function share( $post_details, $args = array() );
 
 	/**
 	 * Utility method to register a REST endpoint via WP.

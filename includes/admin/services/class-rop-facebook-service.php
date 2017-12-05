@@ -303,29 +303,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	}
 
 	/**
-	 * Method to return a Rop_User_Model.
-	 *
-	 * @codeCoverageIgnore
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @param   array $page A Facebook page array. TODO.
-	 * @return Rop_User_Model
-	 */
-	public function get_user( $page ) {
-		$user = new Rop_User_Model( array(
-			'user_id' => $page['id'],
-			'user_name' => $page['name'],
-			'user_picture' => $page['img'],
-			'user_service' => $this->service_name,
-			'user_credentials' => array(
-				'token' => $page['access_token'],
-			),
-		) );
-		return $user;
-	}
-
-	/**
 	 * Utility method to retrieve pages from the Facebook account.
 	 *
 	 * @codeCoverageIgnore
@@ -362,24 +339,51 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 * @param   array $post_details The post details to be published by the service.
+	 * @param   array $args Optional arguments needed by the method.
 	 * @return mixed
 	 */
-	public function share( $post_details ) {
-		// $error = new Rop_Exception_Handler();
-		// $id = '1168461009964049';
-		// $page_token = 'EAAGrutRBO0ABAHa5ZCq2OWBsZC3o2y6lZA5TQPBNUzBkLZBZCdg28EymWSvJG8yh4H2a5n2ZCP4YibXd5i5YGiS29sltqStlwNvCnxTUV9tUwPyfd1wZBQ3RZC7hp3YZAuVBjYgXdUgZBY3MeqU5IlvKnZBOPHyo5g4ilO2FZC2q5CpkCBiJ3Nk849ZBNDjAIcZBPmadEZD';
-		// $fb = $this->fb;
-		// try {
-		// $post = $fb->post( '/' . $id . '/feed', array('message' => $post_details['message'], 'link' => 'https://themeisle.com', 'picture' => 'https://cdn.pixabay.com/photo/2016/01/19/18/00/city-1150026_960_720.jpg' ), $page_token );
-		// $post = $post->getGraphNode()->asArray();
-		// } catch ( Facebook\Exceptions\FacebookResponseException $e ) {
-		// $error->throw_exception( '400 Bad Request', 'Graph returned an error: ' . $e->getMessage() );
-		// } catch ( Facebook\Exceptions\FacebookSDKException $e ) {
-		// $error->throw_exception( '400 Bad Request', 'Facebook SDK returned an error: ' . $e->getMessage() );
-		// }
-		//
-		// var_dump( $post );
-		return true;
+	public function share( $post_details, $args = array() ) {
+		$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
+		$api = $this->get_api();
+
+		$new_post = array();
+
+		if ( isset( $post_details['post']['post_img'] ) && $post_details['post']['post_img'] !== '' && $post_details['post']['post_img'] !== false ) {
+			$new_post['picture'] = $post_details['post']['post_img'];
+			$new_post['picture'] = 'https://static.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg';
+			$new_post['link'] = 'https://static.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg';
+		}
+
+		$new_post['message'] = $post_details['post']['post_content'];
+		if ( $post_details['post']['custom_content'] !== '' ) {
+			$new_post['message'] = $post_details['post']['custom_content'];
+		}
+
+		$link = '';
+		if ( isset( $post_details['post']['post_url'] ) && $post_details['post']['post_url'] != '' ) {
+			$post_format_helper = new Rop_Post_Format_Helper();
+			$link = ' ' . $post_format_helper->get_short_url( 'www.themeisle.com', $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
+		}
+
+		if ( $link != '' ) {
+			$new_post['message'] = $new_post['message'] . ' ' . $link;
+		}
+
+		if ( ! isset( $args['id'] ) || ! isset( $args['access_token'] ) ) {
+			return false;
+		}
+
+		try {
+			$post = $api->post( '/' . $args['id'] . '/feed', $new_post, $args['access_token'] );
+			$post = $post->getGraphNode()->asArray();
+			return true;
+		} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
+			return false;
+		} catch ( Facebook\Exceptions\FacebookSDKException $e ) {
+			return false;
+		}
+
+		return false;
 	}
 
 }

@@ -246,21 +246,6 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	}
 
 	/**
-	 * Method to return a Rop_User_Model.
-	 *
-	 * @codeCoverageIgnore
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @param   array $args TODO.
-	 * @return Rop_User_Model
-	 */
-	public function get_user( $args ) {
-		$user = new Rop_User_Model();
-		return $user;
-	}
-
-	/**
 	 * Utility method to retrieve users from the Twitter account.
 	 *
 	 * @codeCoverageIgnore
@@ -303,21 +288,47 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 * @param   array $post_details The post details to be published by the service.
+	 * @param   array $args Optional arguments needed by the method.
 	 * @return mixed
 	 */
-	public function share( $post_details ) {
+	public function share( $post_details, $args = array() ) {
+		$this->set_api( $this->credentials['oauth_token'], $this->credentials['oauth_token_secret'] );
+		$api = $this->get_api();
 
-        $message = $post_details['post']['post_content'];
+		$new_post = array();
+
+	    $img = false;
+
+	    if ( isset( $post_details['post']['post_img'] ) && $post_details['post']['post_img'] !== '' && $post_details['post']['post_img'] !== false ) {
+			$img = $post_details['post']['post_img'];
+		}
+
+		if ( $img ) {
+			$media_response = $api->upload( 'media/upload', array( 'media' => $post_details['post']['post_img'] ) );
+			if ( $media_response->media_id_string ) {
+				$new_post['media_ids'] = $media_response->media_id_string;
+			}
+		}
+
+		$message = $post_details['post']['post_content'];
 	    if ( $post_details['post']['custom_content'] !== '' ) {
 	        $message = $post_details['post']['custom_content'];
-        }
+		}
 
-        $this->set_api( $this->credentials['oauth_token'], $this->credentials['oauth_token_secret'] );
-	    $api = $this->get_api();
-        $response = $api->post('statuses/update', array( 'status' => $message ) );
+		$link = '';
+		if ( isset( $post_details['post']['post_url'] ) && $post_details['post']['post_url'] != '' ) {
+			$post_format_helper = new Rop_Post_Format_Helper();
+			$link = ' ' . $post_format_helper->get_short_url( 'www.themeisle.com', $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
+		}
 
-        var_dump( $response );
+		$new_post['status'] = $message . $link;
 
-		return true;
+		$response = $api->post( 'statuses/update', $new_post );
+
+		if ( $response->id ) {
+			return true;
+		}
+
+		return false;
 	}
 }

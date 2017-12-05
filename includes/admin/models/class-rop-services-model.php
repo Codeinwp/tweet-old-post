@@ -242,11 +242,17 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 		if ( count( $this->last_services_query[ $service . '_' . $service_id ]['available_accounts'] ) >= 1 ) {
 			foreach ( $this->last_services_query[ $service . '_' . $service_id ]['available_accounts'] as $key => $account ) {
 				if ( $account['id'] == $id ) {
-					return array(
+					$response = array(
 						'id' => $this->last_services_query[ $service . '_' . $service_id ]['available_accounts'][ $key ]['id'],
 						'service' => $this->last_services_query[ $service . '_' . $service_id ]['service'],
 						'credentials' => $this->last_services_query[ $service . '_' . $service_id ]['credentials'],
 					);
+
+					if ( $service == 'facebook' ) {
+						$response['access_token'] = $this->last_services_query[ $service . '_' . $service_id ]['available_accounts'][ $key ]['access_token'];
+					}
+
+					return $response;
 				}
 			}
 		}

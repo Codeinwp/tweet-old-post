@@ -92,11 +92,14 @@
 		data: function () {
 			return {
 				edit: false,
-				post_edit: this.post,
-				post_defaults: JSON.parse( JSON.stringify( this.post ) ) // This removes the observable/reactivity
+				post_edit: this.post
+				// post_defaults: JSON.parse( JSON.stringify( this.post ) ) // This removes the observable/reactivity
 			}
 		},
 		computed: {
+			post_defaults: function () {
+				return JSON.parse( JSON.stringify( this.post ) ) // This removes the observable/reactivity
+			},
 			post_content: function () {
 				if ( this.post_edit.custom_content !== '' ) {
 					return this.post_edit.custom_content
@@ -117,13 +120,13 @@
 		},
 		methods: {
 			publishNow: function () {
-				this.$store.dispatch( 'publishQueueCard', { account_id: this.post_edit.account_id, post_id: this.post_edit.post_id } )
+				this.$store.dispatch( 'publishQueueCard', { account_id: this.post_edit.account_id, index: this.id } )
 			},
 			skipPost: function () {
-				this.$store.dispatch( 'skipQueueCard', { account_id: this.post_edit.account_id, post_id: this.post_edit.post_id } )
+				this.$store.dispatch( 'skipQueueCard', { account_id: this.post_edit.account_id, index: this.id } )
 			},
 			blockPost: function () {
-				this.$store.dispatch( 'blockQueueCard', { account_id: this.post_edit.account_id, post_id: this.post_edit.post_id } )
+				this.$store.dispatch( 'blockQueueCard', { account_id: this.post_edit.account_id, index: this.id } )
 			},
 			toggleEditState: function () {
 				this.edit = !this.edit

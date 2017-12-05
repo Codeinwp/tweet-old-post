@@ -163,8 +163,8 @@ class Rop_Rest_Api {
 			$service_factory = new Rop_Services_Factory();
 			$service = $service_factory->build( $account_data['service'] );
 			$service->set_credentials( $account_data['credentials'] );
-			$queue_event = $queue->pop_from_queue( $data['account_id'] );
-			$service->share( $queue_event );
+			$queue_event = $queue->remove_from_queue( $data['index'], $data['account_id'] );
+			$service->share( $queue_event, $account_data );
 		}
 
 		return $queue->get_ordered_queue();
@@ -180,6 +180,7 @@ class Rop_Rest_Api {
 	 */
 	private function skip_queue_event( $data ) {
 		$queue = new Rop_Queue_Model();
+		$queue->skip_post( $data['index'], $data['account_id'] );
 		return $queue->get_ordered_queue();
 	}
 
@@ -193,6 +194,7 @@ class Rop_Rest_Api {
 	 */
 	private function block_queue_event( $data ) {
 		$queue = new Rop_Queue_Model();
+		$queue->ban_post( $data['index'], $data['account_id'] );
 		return $queue->get_ordered_queue();
 	}
 

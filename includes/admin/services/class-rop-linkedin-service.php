@@ -251,21 +251,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	}
 
 	/**
-	 * Method to return a Rop_User_Model.
-	 *
-	 * @codeCoverageIgnore
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @param   array $args TODO.
-	 * @return Rop_User_Model
-	 */
-	public function get_user( $args ) {
-		$user = new Rop_User_Model();
-		return $user;
-	}
-
-	/**
 	 * Utility method to retrieve users from the Twitter account.
 	 *
 	 * @codeCoverageIgnore
@@ -312,9 +297,10 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 * @param   array $post_details The post details to be published by the service.
+	 * @param   array $args Optional arguments needed by the method.
 	 * @return mixed
 	 */
-	public function share( $post_details ) {
+	public function share( $post_details, $args = array() ) {
 		return true;
 	}
 }

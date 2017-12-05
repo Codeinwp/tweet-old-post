@@ -200,11 +200,89 @@ class Rop_Post_Format_Helper {
 			}// End switch().
 
 			$size = $max_length - $hashtags_length - $custom_length;
-			return $ch->token_truncate( $content, $size ) . ' ' . $hashtags;
+
+			$response = array(
+			    'display_content' => $ch->token_truncate( $content, $size ) . ' ' . $hashtags,
+			    'hashtags' => $hashtags,
+			);
+
+			return $response;
 
 		}// End if().
 
 		return 'N/A';
+	}
+
+	/**
+	 * Formats an object from the post data for sharing.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @param   string     $account_id The account ID.
+	 * @param   WP_Post    $post The post object to format.
+	 * @param   bool|array $prev_data Optional. Previous data to retain if object is updated.
+	 * @return array
+	 */
+	public function get_formated_object( $account_id, WP_Post $post, $prev_data = false ) {
+		$this->set_post_format( $account_id );
+
+		$parts = explode( '_', $account_id );
+		$service = $parts[0];
+
+		$content = $this->build_content( $post );
+
+		// print_r( $this->post_format );
+		$filtered_post = array();
+		$filtered_post['post_id'] = $post->ID;
+		$filtered_post['account_id'] = $account_id;
+		$filtered_post['service'] = $service;
+		$filtered_post['post_title'] = $post->post_title;
+		$filtered_post['post_content'] = $content['display_content'];
+		$filtered_post['hashtags'] = $content['hashtags'];
+		$filtered_post['custom_content'] = ( isset( $prev_data['custom_content'] ) && $prev_data['custom_content'] != '' ) ? $prev_data['custom_content'] : '';
+		$filtered_post['post_url'] = $this->build_url( $post );
+		$filtered_post['short_url_service'] = $this->post_format['short_url_service'];
+		$filtered_post['shortner_credentials'] = ( isset( $this->post_format['shortner_credentials'] ) ) ? $this->post_format['shortner_credentials'] : array();
+
+		if ( $prev_data !== false && isset( $prev_data['custom_img'] ) ) {
+			$filtered_post['custom_img'] = $prev_data['custom_img'];
+			$filtered_post['post_img'] = $prev_data['post_img'];
+		} else {
+			if ( has_post_thumbnail( $post->ID ) ) {
+				$filtered_post['post_img'] = get_the_post_thumbnail_url( $post->ID, 'large' );
+			} else {
+				$filtered_post['post_img'] = false;
+			}
+			$filtered_post['custom_img'] = false;
+		}
+
+		return $filtered_post;
+	}
+
+	/**
+	 * Returns the short url for the given service.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @param   string $url The URL to shorten.
+	 * @param   string $short_url_service The shorten service. Used by the factory to build the service.
+	 * @param   array  $credentials Optional. If needed the service credentials.
+	 * @return string
+	 * @Throws Exception If a service can not be built and defaults to passed URL.
+	 */
+	public function get_short_url( $url, $short_url_service, $credentials = array() ) {
+	    $shortner_factory = new Rop_Shortner_Factory();
+		try {
+			$shortner_service = $shortner_factory->build( $short_url_service );
+			if ( ! empty( $credentials ) ) {
+				$shortner_service->set_credentials( $credentials );
+			}
+			$short_url = $shortner_service->shorten_url( $url );
+		} catch ( Exception $e ) {
+			$short_url = $url;
+		}
+
+		return $short_url;
 	}
 
 }

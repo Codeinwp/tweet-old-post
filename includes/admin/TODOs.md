@@ -7,6 +7,7 @@
 - [x] Create a pre-share helper class that outputs the shared object, based on save post format options.
 - [x] Create a media helper for interacting with WordPress Library.
 - [x] Edit sharing queue.
-- [ ] Add endpoints for post skip and post block in sharing queue.
+- [x] Add endpoints for post skip and post block in sharing queue.
 - [ ] Custom share messages. See git issue: https://github.com/Codeinwp/tweet-old-post/issues/137
 - [ ] The log tab. See https://github.com/Codeinwp/tweet-old-post/issues/138
+- [ ] Rebuild account queue after schedule change !!!

@@ -250,6 +250,8 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		if ( ! in_array( $post_id, $this->blocked[ $account_id ] ) ) {
 			array_push( $this->blocked[ $account_id ], $post_id );
 		}
+
+		$this->set( 'posts_blocked', $this->blocked );
 	}
 
 	/**
@@ -267,6 +269,8 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		if ( ! in_array( $post_id, $this->buffer[ $account_id ] ) ) {
 			array_push( $this->buffer[ $account_id ], $post_id );
 		}
+
+		$this->set( 'posts_buffer', $this->buffer );
 	}
 
 	/**
