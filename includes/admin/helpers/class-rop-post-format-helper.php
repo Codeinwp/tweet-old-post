@@ -53,9 +53,11 @@ class Rop_Post_Format_Helper {
 	 * @return mixed
 	 */
 	public function get_custom_field_value( $post_id, $field_key ) {
+		/* @noinspection PhpUndefinedFunctionInspection */
 		return get_post_custom_values( $field_key, $post_id );
 	}
 
+	/* @noinspection PhpUndefinedClassInspection */
 	/**
 	 * Method to build the URL for a given post object.
 	 *
@@ -64,12 +66,21 @@ class Rop_Post_Format_Helper {
 	 * @param   WP_Post $post The post object.
 	 * @return mixed
 	 */
-	public function build_url( WP_Post $post ) {
+	public function build_url( /* @noinspection PhpUndefinedClassInspection */ WP_Post $post ) {
+		/*
+         @noinspection PhpUndefinedFieldInspection */
+		/* @noinspection PhpUndefinedFunctionInspection */
 		$post_url = get_permalink( $post->ID );
 		if ( $this->post_format && $this->post_format['include_link'] ) {
+			/*
+             @noinspection PhpUndefinedFieldInspection */
+			/* @noinspection PhpUndefinedFunctionInspection */
 			$post_url = get_permalink( $post->ID );
 		    if ( isset( $this->post_format['url_from_meta'] ) && $this->post_format['url_from_meta'] && isset( $this->post_format['url_meta_key'] ) && ! empty( $this->post_format['url_meta_key'] ) ) {
-				preg_match_all( '#\bhttps?://[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/))#', get_post_meta( $post->ID, $this->post_format['url_meta_key'], true ), $match );
+				/*
+                 @noinspection PhpUndefinedFieldInspection */
+				/* @noinspection PhpUndefinedFunctionInspection */
+		        preg_match_all( '#\bhttps?://[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/))#', get_post_meta( $post->ID, $this->post_format['url_meta_key'], true ), $match );
 				if ( isset( $match[0] ) ) {
 					if ( isset( $match[0][0] ) ) {
 						$post_url = $match[0][0];
@@ -80,124 +91,287 @@ class Rop_Post_Format_Helper {
 		return $post_url;
 	}
 
+	/* @noinspection PhpUndefinedClassInspection */
+	/**
+	 * Creates the base content as specified by the post format option.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   WP_Post $post The post object.
+	 * @return mixed|string
+	 */
+	private function build_base_content( /* @noinspection PhpUndefinedClassInspection */ WP_Post $post ) {
+		switch ( $this->post_format['post_content'] ) {
+			case 'post_title':
+				/* @noinspection PhpUndefinedFieldInspection */
+				$content = $post->post_title;
+				break;
+			case 'post_content':
+				/* @noinspection PhpUndefinedFieldInspection */
+				$content = $post->post_content;
+				break;
+			case 'post_title_content':
+				/* @noinspection PhpUndefinedFieldInspection */
+				$content = $post->post_title . ' ' . $post->post_content;
+				break;
+			case 'custom_field':
+				/* @noinspection PhpUndefinedFieldInspection */
+				$content = $this->get_custom_field_value( $post->ID, $this->post_format['custom_meta_field'] );
+				break;
+			default :
+				$content = '';
+				break;
+		}
+
+		if ( ! is_string( $content ) ) {
+			$content = '';
+		}
+		/** @noinspection PhpUndefinedFunctionInspection */
+		$content = wp_strip_all_tags( html_entity_decode( $content,ENT_QUOTES ) );
+
+	    return $content;
+	}
+
+	/**
+	 * Utility method to append custom content if specified by the post format option.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   string $content The content to use.
+	 * @return array
+	 */
+	private function append_custom_text( $content ) {
+		$custom_length = 0;
+		if ( strlen( $this->post_format['custom_text'] ) != 0 ) {
+			$custom_length = strlen( $this->post_format['custom_text'] ) + 1; // one char added for the space.
+			switch ( $this->post_format['custom_text_pos'] ) {
+				case 'beginning':
+					$content = $this->post_format['custom_text'] . ' ' . $content;
+					break;
+				default :
+					$content = $content . ' ' . $this->post_format['custom_text'];
+					break;
+			}
+		}
+		return array(
+			'custom_length' => $custom_length,
+			'content' => $content,
+		);
+	}
+
+	/* @noinspection PhpUndefinedClassInspection */
+	/**
+	 * Utility method to filter content and generate hashtags as specified by the post format options.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   string             $content The content to filter.
+	 * @param   Rop_Content_Helper $content_helper The content helper class. Used for processing.
+	 * @param   WP_Post            $post The post object.
+	 * @return array
+	 */
+	private function make_hashtags( $content, Rop_Content_Helper $content_helper, /* @noinspection PhpUndefinedClassInspection */ WP_Post $post ) {
+		$hashtags_length = $this->post_format['hashtags_length'];
+		switch ( $this->post_format['hashtags'] ) {
+			case 'common-hashtags':
+				$result = $this->get_common_hashtags( $content, $hashtags_length, $content_helper );
+				break;
+			case 'categories-hashtags':
+				$result = $this->get_categories_hashtags( $content, $hashtags_length, $content_helper, $post );
+				break;
+			case 'tags-hashtags':
+				$result = $this->get_tags_hashtags( $content, $hashtags_length, $content_helper, $post );
+				break;
+			case 'custom-hashtags':
+				$result = $this->get_custom_hashtags( $content, $hashtags_length, $content_helper, $post );
+				break;
+			default : // no-hashtags
+				$result = array(
+					'filtered_content' => $content,
+					'hashtags_length' => $hashtags_length,
+					'hashtags' => '',
+				);
+				break;
+		}// End switch().
+
+		return $result;
+	}
+
+	/**
+	 * Utility method to generate the common hashtags.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   string             $content The content to filter.
+	 * @param   int                $hashtags_length The hashtags length.
+	 * @param   Rop_Content_Helper $content_helper The content helper class. Used for processing.
+	 * @return array
+	 */
+	private function get_common_hashtags( $content, $hashtags_length, Rop_Content_Helper $content_helper ) {
+		$hashtags = '';
+		$hastags_list = explode( ',', str_replace( ' ', '', $this->post_format['hashtags_common'] ) );
+		if ( ! empty( $hastags_list ) ) {
+			foreach ( $hastags_list as $hashtag ) {
+				$hashtag = str_replace( '#', '', $hashtag );
+				if ( $content_helper->mark_hashtags( $content, $hashtag ) !== false ) { // if the hashtag exists in $content
+					$content = $content_helper->mark_hashtags( $content, $hashtag ); // simply add a # there
+					$hashtags_length--; // subtract 1 for the # we added to $content
+				} elseif ( strlen( $hashtag . $hashtags ) <= $hashtags_length || $hashtags_length == 0 ) {
+					$hashtags = $hashtags . ' #' . preg_replace( '/-/', '', strtolower( $hashtag ) );
+				}
+			}
+		}
+
+	    return array(
+	        'filtered_content' => $content,
+			'hashtags_length' => $hashtags_length,
+			'hashtags' => $hashtags,
+		);
+	}
+
+	/* @noinspection PhpUndefinedClassInspection */
+	/**
+	 * Utility method to generate the categories hashtags.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   string             $content The content to filter.
+	 * @param   int                $hashtags_length The hashtags length.
+	 * @param   Rop_Content_Helper $content_helper The content helper class. Used for processing.
+	 * @param   WP_Post            $post The post object.
+	 * @return array
+	 */
+	private function get_categories_hashtags( $content, $hashtags_length, Rop_Content_Helper $content_helper, /* @noinspection PhpUndefinedClassInspection */ WP_Post $post ) {
+		$hashtags = '';
+		/* @noinspection PhpUndefinedFieldInspection */
+		if ( $post->post_type == 'post' ) {
+			/*
+             @noinspection PhpUndefinedFieldInspection */
+			/* @noinspection PhpUndefinedFunctionInspection */
+			$post_categories = get_the_category( $post->ID );
+			foreach ( $post_categories as $category ) {
+				$hashtag = $category->slug;
+				if ( $content_helper->mark_hashtags( $content, $hashtag ) !== false ) { // if the hashtag exists in $content
+					$content = $content_helper->mark_hashtags( $content, $hashtag ); // simply add a # there
+					$hashtags_length--; // subtract 1 for the # we added to $content
+				} elseif ( strlen( $hashtag . $hashtags ) <= $hashtags_length || $hashtags_length == 0 ) {
+					$hashtags = $hashtags . ' #' . preg_replace( '/-/', '', strtolower( $hashtag ) );
+				}
+			}
+		} else {
+			// if ( CWP_TOP_PRO ) {
+			// global $CWP_TOP_Core_PRO;
+			// $newHashtags = $CWP_TOP_Core_PRO->topProGetCustomCategories( $postQuery, $maximum_hashtag_length );
+			// } TODO
+			$hashtags = '';
+		}
+
+		return array(
+			'filtered_content' => $content,
+			'hashtags_length' => $hashtags_length,
+			'hashtags' => $hashtags,
+		);
+	}
+
+	/* @noinspection PhpUndefinedClassInspection */
+	/**
+	 * Utility method to generate the tags hashtags.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   string             $content The content to filter.
+	 * @param   int                $hashtags_length The hashtags length.
+	 * @param   Rop_Content_Helper $content_helper The content helper class. Used for processing.
+	 * @param   WP_Post            $post The post object.
+	 * @return array
+	 */
+	private function get_tags_hashtags( $content, $hashtags_length, Rop_Content_Helper $content_helper, /* @noinspection PhpUndefinedClassInspection */ WP_Post $post ) {
+		$hashtags = '';
+		/*
+         @noinspection PhpUndefinedFieldInspection */
+		/* @noinspection PhpUndefinedFunctionInspection */
+		$postTags = wp_get_post_tags( $post->ID );
+		foreach ( $postTags as $postTag ) {
+			$hashtag = $postTag->slug;
+			if ( $content_helper->mark_hashtags( $content, $hashtag ) !== false ) { // if the hashtag exists in $content
+				$content = $content_helper->mark_hashtags( $content, $hashtag ); // simply add a # there
+				$hashtags_length--; // subtract 1 for the # we added to $content
+			} elseif ( strlen( $hashtag . $hashtags ) <= $hashtags_length || $hashtags_length == 0 ) {
+				$hashtags = $hashtags . ' #' . preg_replace( '/-/', '', strtolower( $hashtag ) );
+			}
+		}
+
+		return array(
+			'filtered_content' => $content,
+			'hashtags_length' => $hashtags_length,
+			'hashtags' => $hashtags,
+		);
+	}
+
+	/* @noinspection PhpUndefinedClassInspection */
+	/**
+	 * Utility method to generate the custom hashtags.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   string             $content The content to filter.
+	 * @param   int                $hashtags_length The hashtags length.
+	 * @param   Rop_Content_Helper $content_helper The content helper class. Used for processing.
+	 * @param   WP_Post            $post The post object.
+	 * @return array
+	 */
+	private function get_custom_hashtags( $content, $hashtags_length, Rop_Content_Helper $content_helper, /* @noinspection PhpUndefinedClassInspection */ WP_Post $post ) {
+		$hashtags = '';
+		if ( empty( $this->post_format['hashtags_custom'] ) ) {
+			// self::addNotice("You need to add a custom field name in order to fetch the hashtags. Please set it from Post Format > $network > Hashtag Custom Field ",'error');
+			// TODO manage this
+			return array(
+				'filtered_content' => $content,
+				'hashtags_length' => $hashtags_length,
+				'hashtags' => $hashtags,
+			);
+		}
+		/*
+         @noinspection PhpUndefinedFunctionInspection */
+		/* @noinspection PhpUndefinedFieldInspection */
+		$hashtag = get_post_meta( $post->ID, $this->post_format['hashtags_custom'], true );
+		if ( $hashtags_length != 0 ) {
+			if ( strlen( $hashtag ) <= $hashtags_length ) {
+				$content_helper->use_ellipse( false );
+				$hashtags = $content_helper->token_truncate( $hashtag, $hashtags_length );
+			}
+		}
+
+		return array(
+			'filtered_content' => $content,
+			'hashtags_length' => $hashtags_length,
+			'hashtags' => $hashtags,
+		);
+	}
+
+	/* @noinspection PhpUndefinedClassInspection */
 	/**
 	 * Utility method to prepare the content based on the post format settings.
 	 *
 	 * @since   8.0.0
 	 * @access  public
 	 * @param   WP_Post $post The post object.
-	 * @return string
+	 * @return array
 	 */
-	public function build_content( WP_Post $post ) {
+	public function build_content( /* @noinspection PhpUndefinedClassInspection */ WP_Post $post ) {
 		$content_helper = new Rop_Content_Helper();
 		$max_length = $this->post_format['maximum_length'];
 		if ( $this->post_format ) {
-			switch ( $this->post_format['post_content'] ) {
-				case 'post_title':
-					$content = $post->post_title;
-					break;
-				case 'post_content':
-					$content = $post->post_content;
-					break;
-				case 'post_title_content':
-					$content = $post->post_title . ' ' . $post->post_content;
-					break;
-				case 'custom_field':
-					$content = $this->get_custom_field_value( $post->ID, $this->post_format['custom_meta_field'] );
-					break;
-				default :
-					$content = 'We found nothing here!!!';
-					break;
-			}
+			$content = $this->build_base_content( $post );
 
-			if ( ! is_string( $content ) ) { $content = '';
-			}
-			$content = wp_strip_all_tags( html_entity_decode( $content,ENT_QUOTES ) );
+			$result = $this->append_custom_text( $content );
+			$custom_length = $result['custom_length'];
+			$content = $result['content'];
 
-			$custom_length = 0;
-			if ( strlen( $this->post_format['custom_text'] ) != 0 ) {
-				$custom_length = strlen( $this->post_format['custom_text'] ) + 1; // one char added for the space.
-				switch ( $this->post_format['custom_text_pos'] ) {
-					case 'beginning':
-						$content = $this->post_format['custom_text'] . ' ' . $content;
-						break;
-					default :
-						$content = $content . ' ' . $this->post_format['custom_text'];
-						break;
-				}
-			}
-
-			$hashtags_length = $this->post_format['hashtags_length'];
-			switch ( $this->post_format['hashtags'] ) {
-				case 'no-hashtags':
-					$hashtags = '';
-					break;
-				case 'common-hashtags':
-					$hashtags = '';
-					$hastags_list = explode( ',', str_replace( ' ', '', $this->post_format['hashtags_common'] ) );
-					if ( ! empty( $hastags_list ) ) {
-					    foreach ( $hastags_list as $hashtag ) {
-					        $hashtag = str_replace( '#', '', $hashtag );
-							if ( $content_helper->mark_hashtags( $content, $hashtag ) !== false ) { // if the hashtag exists in $content
-								$content = $content_helper->mark_hashtags( $content, $hashtag ); // simply add a # there
-								$hashtags_length--; // subtract 1 for the # we added to $content
-							} elseif ( strlen( $hashtag . $hashtags ) <= $hashtags_length || $hashtags_length == 0 ) {
-								$hashtags = $hashtags . ' #' . preg_replace( '/-/', '', strtolower( $hashtag ) );
-							}
-						}
-					}
-					break;
-				case 'categories-hashtags':
-					$hashtags = '';
-					if ( $post->post_type == 'post' ) {
-						$post_categories = get_the_category( $post->ID );
-						foreach ( $post_categories as $category ) {
-							$hashtag = $category->slug;
-							if ( $content_helper->mark_hashtags( $content, $hashtag ) !== false ) { // if the hashtag exists in $content
-								$content = $content_helper->mark_hashtags( $content, $hashtag ); // simply add a # there
-								$hashtags_length--; // subtract 1 for the # we added to $content
-							} elseif ( strlen( $hashtag . $hashtags ) <= $hashtags_length || $hashtags_length == 0 ) {
-								$hashtags = $hashtags . ' #' . preg_replace( '/-/', '', strtolower( $hashtag ) );
-							}
-						}
-					} else {
-						// if ( CWP_TOP_PRO ) {
-						// global $CWP_TOP_Core_PRO;
-						// $newHashtags = $CWP_TOP_Core_PRO->topProGetCustomCategories( $postQuery, $maximum_hashtag_length );
-						// }
-					}
-					break;
-				case 'tags-hashtags':
-					$hashtags = '';
-					$postTags = wp_get_post_tags( $post->ID );
-					foreach ( $postTags as $postTag ) {
-						$hashtag = $postTag->slug;
-						if ( $content_helper->mark_hashtags( $content, $hashtag ) !== false ) { // if the hashtag exists in $content
-							$content = $content_helper->mark_hashtags( $content, $hashtag ); // simply add a # there
-							$hashtags_length--; // subtract 1 for the # we added to $content
-						} elseif ( strlen( $hashtag . $hashtags ) <= $hashtags_length || $hashtags_length == 0 ) {
-							$hashtags = $hashtags . ' #' . preg_replace( '/-/', '', strtolower( $hashtag ) );
-						}
-					}
-					break;
-				case 'custom-hashtags':
-					$hashtags = '';
-					if ( empty( $this->post_format['hashtags_custom'] ) ) {
-						// self::addNotice("You need to add a custom field name in order to fetch the hashtags. Please set it from Post Format > $network > Hashtag Custom Field ",'error');
-						break;
-					}
-					$hashtag = get_post_meta( $post->ID, $this->post_format['hashtags_custom'], true );
-					if ( $hashtags_length != 0 ) {
-						if ( strlen( $hashtag ) <= $hashtags_length ) {
-							$content_helper->use_ellipse( false );
-							$hashtags = $content_helper->token_truncate( $hashtag, $hashtags_length );
-						}
-					}
-					break;
-				default :
-					$hashtags = '';
-					break;
-			}// End switch().
+			$result = $this->make_hashtags( $content, $content_helper, $post );
+			$hashtags_length = $result['hashtags_length'];
+			$hashtags = $result['hashtags'];
+			$content = $result['filtered_content'];
 
 			$size = $max_length - $hashtags_length - $custom_length;
 
@@ -210,9 +384,13 @@ class Rop_Post_Format_Helper {
 
 		}// End if().
 
-		return 'N/A';
+		return array(
+			'display_content' => 'N/A',
+			'hashtags' => '',
+		);
 	}
 
+	/* @noinspection PhpUndefinedClassInspection */
 	/**
 	 * Formats an object from the post data for sharing.
 	 *
@@ -223,7 +401,7 @@ class Rop_Post_Format_Helper {
 	 * @param   bool|array $prev_data Optional. Previous data to retain if object is updated.
 	 * @return array
 	 */
-	public function get_formated_object( $account_id, WP_Post $post, $prev_data = false ) {
+	public function get_formated_object( $account_id, /* @noinspection PhpUndefinedClassInspection */ WP_Post $post, $prev_data = false ) {
 		$this->set_post_format( $account_id );
 
 		$parts = explode( '_', $account_id );
@@ -233,9 +411,11 @@ class Rop_Post_Format_Helper {
 
 		// print_r( $this->post_format );
 		$filtered_post = array();
+		/* @noinspection PhpUndefinedFieldInspection */
 		$filtered_post['post_id'] = $post->ID;
 		$filtered_post['account_id'] = $account_id;
 		$filtered_post['service'] = $service;
+		/* @noinspection PhpUndefinedFieldInspection */
 		$filtered_post['post_title'] = $post->post_title;
 		$filtered_post['post_content'] = $content['display_content'];
 		$filtered_post['hashtags'] = $content['hashtags'];
@@ -248,7 +428,13 @@ class Rop_Post_Format_Helper {
 			$filtered_post['custom_img'] = $prev_data['custom_img'];
 			$filtered_post['post_img'] = $prev_data['post_img'];
 		} else {
+			/*
+             @noinspection PhpUndefinedFieldInspection */
+			/* @noinspection PhpUndefinedFunctionInspection */
 			if ( has_post_thumbnail( $post->ID ) ) {
+				/*
+                 @noinspection PhpUndefinedFieldInspection */
+				/* @noinspection PhpUndefinedFunctionInspection */
 				$filtered_post['post_img'] = get_the_post_thumbnail_url( $post->ID, 'large' );
 			} else {
 				$filtered_post['post_img'] = false;
