@@ -65,7 +65,6 @@ class Rop_Global_Settings {
 	 */
 	public $schedule = array();
 
-
 	/**
 	 * The services defaults.
 	 *
@@ -147,6 +146,9 @@ class Rop_Global_Settings {
 		'available_posts' => array(), // get_posts(),
 		'selected_posts' => array(),
 		'exclude_posts' => false,
+		'post_limit' => 20,
+		'beta_user' => false,
+		'remote_check' => false,
 	);
 
 	/**
@@ -275,7 +277,7 @@ class Rop_Global_Settings {
 			);
 
 			self::$instance->post_format = apply_filters(
-			    'rop_post_format_defaults',
+				'rop_post_format_defaults',
 				self::$instance->post_format_defaults
 			);
 
@@ -309,8 +311,8 @@ class Rop_Global_Settings {
 	 * @return array|mixed
 	 */
 	public function get_default_post_format( $service_name = false ) {
-	    if ( isset( $service_name ) && $service_name != false && isset( self::instance()->post_format[ $service_name ] ) ) {
-	        return self::instance()->post_format[ $service_name ];
+		if ( isset( $service_name ) && $service_name != false && isset( self::instance()->post_format[ $service_name ] ) ) {
+			return self::instance()->post_format[ $service_name ];
 		}
 		return self::instance()->post_format;
 	}

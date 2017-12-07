@@ -13,11 +13,11 @@
 					<li class="tab-item tab-action">
 						<div class="form-group">
 							<label class="form-switch">
-								<input type="checkbox" />
-								<i class="form-icon"></i> Beta User
+								<input type="checkbox" v-model="generalSettings.beta_user" @change="updateSettings" />
+								<i class="form-icon" ></i> Beta User
 							</label>
 							<label class="form-switch">
-								<input type="checkbox" />
+								<input type="checkbox" v-model="generalSettings.remote_check" @change="updateSettings" />
 								<i class="form-icon"></i> Remote Check
 							</label>
 						</div>
@@ -43,7 +43,7 @@
 
 	module.exports = {
 		name: 'main-page-panel',
-		computed: mapState( [ 'displayTabs', 'page' ] ),
+		computed: mapState( [ 'displayTabs', 'page', 'generalSettings' ] ),
 		created () {
 		},
 		data: function () {
@@ -54,6 +54,9 @@
 		methods: {
 			switchTab ( slug ) {
 				this.$store.commit( 'setTabView', slug )
+			},
+			updateSettings () {
+				this.$store.dispatch( 'updateSettingsToggle', this.$store.state.generalSettings )
 			}
 		},
 		components: {

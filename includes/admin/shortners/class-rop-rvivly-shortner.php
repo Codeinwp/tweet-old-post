@@ -62,7 +62,6 @@ class Rop_Rvivly_Shortner extends Rop_Url_Shortner_Abstract {
 	 * @return string
 	 */
 	public function shorten_url( $url ) {
-		var_dump( $this->website );
 		$response = $this->callAPI(
 			'http://rviv.ly/yourls-api.php',
 			array( 'method' => 'post' ),

@@ -78,6 +78,18 @@ class Test_ROP extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Testing Logger
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 *
+	 * @covers Rop_Logger
+	 */
+	public function test_logger() {
+		$log = new Rop_Logger();
+	}
+
+	/**
 	 * Testing services
 	 *
 	 * @since   8.0.0

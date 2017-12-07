@@ -131,7 +131,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	private function build_query_args( $post_types, $tax_queries, $exclude ) {
 	    $args = array(
 			'no_found_rows' => true,
-			'numberposts' => $this->settings->get_number_of_posts(),
+			'numberposts' => '20',
 			'post_type' => $post_types,
 			'tax_query' => $tax_queries,
 			'exclude' => $exclude,

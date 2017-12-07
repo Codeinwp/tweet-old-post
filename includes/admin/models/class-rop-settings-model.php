@@ -46,6 +46,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 		$global_settings = new Rop_Global_Settings();
 		$default = $global_settings->get_default_settings();
 		$this->settings = wp_parse_args( $this->get( 'general_settings' ), $default );
+		//$this->settings = wp_parse_args( array(), $default );
 		return $this->settings;
 	}
 
@@ -158,5 +159,17 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 */
 	public function get_exclude_posts() {
 		return $this->settings['exclude_posts'];
+	}
+
+	public function get_post_limit() {
+		return $this->settings['post_limit'];
+	}
+
+	public function get_beta_user() {
+		return $this->settings['beta_user'];
+	}
+
+	public function get_remote_check() {
+		return $this->settings['remote_check'];
 	}
 }

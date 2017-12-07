@@ -37,9 +37,7 @@ class Rop_Rest_Api {
 	 * @access  public
 	 */
 	public function register() {
-		/* @noinspection PhpUndefinedFunctionInspection */
 		add_action( 'rest_api_init', function () {
-			/* @noinspection PhpUndefinedFunctionInspection */
 			register_rest_route( 'tweet-old-post/v8', '/api', array(
 				'methods' => array( 'GET', 'POST' ),
 				'callback' => array( $this, 'api' ),
@@ -47,7 +45,6 @@ class Rop_Rest_Api {
 		} );
 	}
 
-	/* @noinspection PhpUndefinedClassInspection */
 	/**
 	 * The api switch and entry point.
 	 *
@@ -56,12 +53,10 @@ class Rop_Rest_Api {
 	 * @param   WP_REST_Request $request The request object.
 	 * @return array|mixed|null|string
 	 */
-	public function api( /* @noinspection PhpUndefinedClassInspection */ WP_REST_Request $request ) {
+	public function api( WP_REST_Request $request ) {
 		$response = array( 'status' => '200', 'data' => array( 'list', 'of', 'stuff', 'from', 'api' ) );
-		/* @noinspection PhpUndefinedMethodInspection */
 		$method_requested = $request->get_param( 'req' );
 		if ( method_exists( $this, $method_requested ) ) {
-			/* @noinspection PhpUndefinedMethodInspection */
 			$data = json_decode( $request->get_body(), true );
 			if ( ! empty( $data ) ) {
 				$response = $this->$method_requested( $data );
@@ -73,7 +68,6 @@ class Rop_Rest_Api {
 		return $response;
 	}
 
-	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to publish a queue event and return active queue.
 	 *
@@ -95,16 +89,17 @@ class Rop_Rest_Api {
 				$service = $service_factory->build( $account_data['service'] );
 				$service->set_credentials( $account_data['credentials'] );
 				$queue_event = $queue->remove_from_queue( $data['index'], $data['account_id'] );
-				$service->share( $queue_event, $account_data );
+				//$service->share( $queue_event, $account_data );
 			} catch ( Exception $exception ) {
-			    // The service can not be built or was not found. Maybe log this. TODO
+			    // The service can not be built or was not found.
+				$log = new Rop_Logger();
+				$log->warn( 'The service "' . $account_data['service'] . '" can NOT be built or was not found', $exception );
 			}
 		}
 
 		return $queue->get_ordered_queue();
 	}
 
-	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to skip a queue event and return active queue.
 	 *
@@ -121,7 +116,6 @@ class Rop_Rest_Api {
 		return $queue->get_ordered_queue();
 	}
 
-	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to block a queue event and return active queue.
 	 *
@@ -138,7 +132,6 @@ class Rop_Rest_Api {
 		return $queue->get_ordered_queue();
 	}
 
-	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to update a queue event and return active queue.
 	 *
@@ -155,7 +148,6 @@ class Rop_Rest_Api {
 		return $queue->get_ordered_queue();
 	}
 
-	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to get the active queue.
 	 *
@@ -170,7 +162,6 @@ class Rop_Rest_Api {
 	    return $queue->get_ordered_queue();
 	}
 
-	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to save a post format.
 	 *
@@ -187,7 +178,6 @@ class Rop_Rest_Api {
 		return $schedules->get_schedule( $data['account_id'] );
 	}
 
-	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to reset a post format to defaults.
 	 *
@@ -204,7 +194,6 @@ class Rop_Rest_Api {
 		return $schedules->get_schedule( $data['account_id'] );
 	}
 
-	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to retrieve a schedule.
 	 *
@@ -220,7 +209,6 @@ class Rop_Rest_Api {
 		return $schedules->get_schedule( $data['account_id'] );
 	}
 
-	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to get shortner service credentials.
 	 *
@@ -238,13 +226,14 @@ class Rop_Rest_Api {
 			$shortner = $sh_factory->build( $data['short_url_service'] );
 			return $shortner->get_credentials();
 		} catch ( Exception $exception ) {
-	        // Service not found or can't be built. Maybe log this exception. TODO
+	        // Service not found or can't be built. Maybe log this exception.
+		    $log = new Rop_Logger();
+		    $log->warn( 'The shortner service "' . $data['short_url_service'] . '" can NOT be built or was not found', $exception );
 	        return array();
 		}
 
 	}
 
-	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to save a post format.
 	 *
@@ -264,13 +253,15 @@ class Rop_Rest_Api {
 			$shortner->set_credentials( $data['post_format']['shortner_credentials'] );
 		} catch ( Exception $exception ) {
 			// Service not found or can't be built. Maybe log this exception.
-			// Also shorten service not updated at this point. TODO
+			// Also shorten service not updated at this point.
+			$log = new Rop_Logger();
+			$log->info( 'Shortner service can NOT be updated.' );
+			$log->warn( 'The shortner service "' . $data['post_format']['short_url_service'] . '" can NOT be built or was not found', $exception );
 		}
 		$post_format->add_update_post_format( $data['account_id'], $data['post_format'] );
 		return $post_format->get_post_format( $data['account_id'] );
 	}
 
-	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to reset a post format to defaults.
 	 *
@@ -287,7 +278,6 @@ class Rop_Rest_Api {
 		return $post_format->get_post_format( $data['account_id'] );
 	}
 
-	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to retrieve a post format.
 	 *
@@ -303,7 +293,6 @@ class Rop_Rest_Api {
 		return $post_format->get_post_format( $data['account_id'] );
 	}
 
-	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to select posts for publishing.
 	 *
@@ -318,7 +307,6 @@ class Rop_Rest_Api {
 	    return $posts_selector->select();
 	}
 
-	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to retrieve the general settings.
 	 *
@@ -333,7 +321,6 @@ class Rop_Rest_Api {
 		return $settings_model->get_settings();
 	}
 
-	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to retrieve the taxonomies
 	 * for the selected post types.
@@ -348,12 +335,9 @@ class Rop_Rest_Api {
 	private function get_taxonomies( $data ) {
 	    $taxonomies = array();
 	    foreach ( $data['post_types'] as $post_type_name ) {
-			/* @noinspection PhpUndefinedFunctionInspection */
 			$post_type_taxonomies = get_object_taxonomies( $post_type_name, 'objects' );
 			foreach ( $post_type_taxonomies as $post_type_taxonomy ) {
-				/* @noinspection PhpUndefinedFunctionInspection */
 				$taxonomy = get_taxonomy( $post_type_taxonomy->name );
-				/* @noinspection PhpUndefinedFunctionInspection */
 				$terms = get_terms( $post_type_taxonomy->name );
 				if ( ! empty( $terms ) ) {
 					array_push( $taxonomies, array( 'name' => $taxonomy->label, 'value' => $taxonomy->name . '_all', 'selected' => false ) );
@@ -367,7 +351,6 @@ class Rop_Rest_Api {
 		return $taxonomies;
 	}
 
-	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to retrieve the posts
 	 * for the selected post types and taxonomies.
@@ -405,7 +388,6 @@ class Rop_Rest_Api {
 					$tmp_query['field'] = 'slug';
 					$tmp_query['terms'] = $term;
 				} else {
-					/* @noinspection PhpUndefinedFunctionInspection */
 					$all_terms = get_terms( $tax );
 					$terms = array();
 					foreach ( $all_terms as $custom_term ) {
@@ -420,7 +402,6 @@ class Rop_Rest_Api {
 			}
 		}
 
-		/* @noinspection PhpUndefinedFunctionInspection */
 		$posts_array = get_posts(
 			array(
 				'posts_per_page' => 5,
@@ -438,7 +419,6 @@ class Rop_Rest_Api {
 	    return $formatted_posts;
 	}
 
-	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to save general settings.
 	 *
@@ -468,7 +448,6 @@ class Rop_Rest_Api {
 		return $settings_model->get_settings();
 	}
 
-	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to retrieve available services.
 	 *
@@ -483,7 +462,6 @@ class Rop_Rest_Api {
 		return $global_settings->get_available_services();
 	}
 
-	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to retrieve authenticated services.
 	 *
@@ -499,7 +477,6 @@ class Rop_Rest_Api {
 		return $model->get_authenticated_services();
 	}
 
-	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to retrieve active accounts.
 	 *
@@ -515,7 +492,6 @@ class Rop_Rest_Api {
 		return $model->get_active_accounts();
 	}
 
-	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to update active accounts.
 	 *
@@ -542,7 +518,6 @@ class Rop_Rest_Api {
 		return $model->add_active_accounts( $new_active );
 	}
 
-	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to remove accounts.
 	 *
@@ -558,7 +533,6 @@ class Rop_Rest_Api {
 		return $model->delete_active_accounts( $data['account_id'] );
 	}
 
-	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to try and authenticate a service.
 	 *
@@ -575,10 +549,8 @@ class Rop_Rest_Api {
 		$factory = new Rop_Services_Factory();
 		try {
 			${$data['service'] . '_services'} = $factory->build( $data['service'] );
-			/* @noinspection PhpUndefinedMethodInspection */
 			$authenticated = ${$data['service'] . '_services'}->authenticate();
 			if ( $authenticated ) {
-				/* @noinspection PhpUndefinedMethodInspection */
 				$service = ${$data['service'] . '_services'}->get_service();
 				$service_id = $service['service'] . '_' . $service['id'];
 				$new_service[ $service_id ] = $service;
@@ -587,13 +559,13 @@ class Rop_Rest_Api {
 			$model = new Rop_Services_Model();
 			return $model->add_authenticated_service( $new_service );
 		} catch ( Exception $exception ) {
-		    // Service can't be built. Not found or otherwise. Maybe log this. TODO
+		    // Service can't be built. Not found or otherwise. Maybe log this.
+			$log = new Rop_Logger();
+			$log->warn( 'The service "' . $data['service'] . '" can NOT be built or was not found', $exception );
 		    return null;
 		}
-
 	}
 
-	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to try and remove a service.
 	 *
@@ -609,7 +581,6 @@ class Rop_Rest_Api {
 		return $model->delete_authenticated_service( $data['id'], $data['service'] );
 	}
 
-	/* @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * API method called to retrieve a service sign in url.
 	 *
@@ -631,11 +602,27 @@ class Rop_Rest_Api {
 				$url = ${$data['service'] . '_services'}->sign_in_url( $data );
 			}
 		} catch ( Exception $exception ) {
-			// Service can't be built. Not found or otherwise. Maybe log this. TODO
+			// Service can't be built. Not found or otherwise. Maybe log this.
+			$log = new Rop_Logger();
+			$log->warn( 'The service "' . $data['service'] . '" can NOT be built or was not found', $exception );
 			$url = '';
 		}
 
 		return json_encode( array( 'url' => $url ) );
+	}
+
+	/**
+	 * API method called to retrieve the logs.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @return string
+	 */
+	private function get_log() {
+		$log = new Rop_Logger();
+		return $log->read();
 	}
 
 }

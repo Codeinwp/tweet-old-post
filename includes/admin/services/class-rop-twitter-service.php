@@ -234,7 +234,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 * @param   array $data The data from the user.
 	 * @return mixed
 	 */
-	public function sign_in_url( /* @noinspection PhpUnusedParameterInspection */ $data ) {
+	public function sign_in_url( $data ) {
 		$request_token = $this->request_api_token();
 		$this->set_api( $request_token['oauth_token'], $request_token['oauth_token_secret'] );
 		$api = $this->get_api();

@@ -24,15 +24,6 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	private $schedules;
 
 	/**
-	 * Stores the schedules to be skipped.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 * @var     array $skips The schedules to be skipped.
-	 */
-	private $skips;
-
-	/**
 	 * The defaults to be returned for a non existing schedule.
 	 *
 	 * @since   8.0.0
@@ -55,7 +46,6 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		$this->schedule_defaults = $global_settings->get_default_schedule();
 
 		$this->schedules = $this->get_schedules();
-		$this->skips = $this->get_skips();
 	}
 
 	/**
@@ -76,18 +66,9 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 			$default_schedules[ $account_id ] = $this->create_schedule( $this->schedule_defaults );
 		}
 
-		return wp_parse_args( $schedules, $default_schedules );
-	}
-
-	/**
-	 * Method to retrieve all the skips from the DB.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 * @return array
-	 */
-	private function get_skips() {
-		return ( $this->get( 'skips' ) != null ) ?  $this->get( 'skips' ) : array();
+		$filtered_schedules =  wp_parse_args( $schedules, $default_schedules );
+		unset( $filtered_schedules[''] ); // TODO check why an empty value was added.
+		return $filtered_schedules;
 	}
 
 	/**
@@ -253,83 +234,6 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	}
 
 	/**
-	 * Method to add to skips array.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @param   string $account_id The account iD to be skipped.
-	 * @param   string $time A date time format string.
-	 * @return mixed
-	 */
-	public function add_to_skips( $account_id, $time, $is_timestamp = false ) {
-		$this->skips = $this->get_skips();
-		if ( $is_timestamp ) {
-		    $time = date( 'Y-m-d H:i', $time );
-		}
-		if ( ! isset( $this->skips[ $account_id ] ) ) {
-			$this->skips[ $account_id ] = array();
-		}
-		array_push( $this->skips[ $account_id ], $time );
-		return $this->set( 'skips', $this->skips );
-	}
-
-	/**
-	 * Method to remove account from skipped,
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @param   string      $account_id The account ID.
-	 * @param   bool|string $time Flag to specify if all skips should be removed or just a specific time.
-	 * @return mixed
-	 */
-	public function remove_skips( $account_id, $time = false ) {
-		$this->skips = $this->get_skips();
-		if ( isset( $this->skips[ $account_id ] ) ) {
-			if ( $time ) {
-				$to_remove = array( $time );
-				$this->skips[ $account_id ] = array_diff( $this->skips[ $account_id ], $to_remove );
-			} else {
-				unset( $this->skips[ $account_id ] );
-			}
-		}
-		return $this->set( 'skips', $this->skips );
-	}
-
-	/**
-	 * Return the skips for a given account ID.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @param   string $account_id The account ID.
-	 * @return array|mixed
-	 */
-	public function get_account_skips( $account_id ) {
-		if ( isset( $this->skips[ $account_id ] ) ) {
-			return $this->skips[ $account_id ];
-		}
-		return array();
-	}
-
-	/**
-	 * Utility method to determine if a given date is in skips for a given account ID.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 * @param   string $account_id The account ID.
-	 * @param   string $time The date time to look for.
-	 * @param   bool   $is_timestamp Flag to specify if the given time is timestamp.
-	 * @return bool
-	 */
-	private function is_in_skips( $account_id, $time, $is_timestamp = false ) {
-	    $account_skips = $this->get_account_skips( $account_id );
-	    if ( $is_timestamp ) {
-	        return in_array( date( 'Y-m-d H:i', $time ), $account_skips );
-		} else {
-			return in_array( $time, $account_skips );
-		}
-	}
-
-	/**
 	 * Method to compute and list upcoming schedules.
 	 *
 	 * @since   8.0.0
@@ -339,7 +243,6 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 */
 	public function list_upcomming_schedules( $future_events = 10 ) {
 		$this->schedules = $this->get_schedules();
-		$this->skips = $this->get_skips();
 		$list = array();
 		foreach ( $this->schedules as $account_id => $schedule ) {
 			$list[ $account_id ] = array();
@@ -348,20 +251,12 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 				$time = $this->convert_float_to_time( $schedule['interval_r'] );
 				if ( $schedule['last_share'] == null ) {
 					$event_time = $this->add_to_time( $schedule['first_share'], $time['hours'], $time['minutes'], true );
-					while ( $this->is_in_skips( $account_id, $event_time ) ) {
-					    $last_time = $event_time;
-						$event_time = $this->add_to_time( $last_time, $time['hours'], $time['minutes'], false );
-					}
 					$schedule['last_share'] = $event_time;
 					array_push( $list[ $account_id ], $event_time );
 					$i++;
 				}
 				for ( $i; $i < $future_events; $i++ ) {
 					$event_time = $this->add_to_time( $schedule['last_share'], $time['hours'], $time['minutes'], false );
-					while ( $this->is_in_skips( $account_id, $event_time ) ) {
-						$last_time = $event_time;
-						$event_time = $this->add_to_time( $last_time, $time['hours'], $time['minutes'], false );
-					}
 					$schedule['last_share'] = $event_time;
 					array_push( $list[ $account_id ], $event_time );
 				}

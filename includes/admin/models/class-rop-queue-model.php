@@ -50,16 +50,10 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	public function __construct() {
 		parent::__construct( 'rop_queue' );
 
-		$this->queue = ( $this->get( 'queue' ) != null ) ? $this->get( 'queue' ) : array();
-
 		$this->selector = new Rop_Posts_Selector_Model();
 		$this->scheduler = new Rop_Scheduler_Model();
 
-		if ( empty( $this->queue ) ) {
-			$this->queue = $this->build_queue();
-		} else {
-			$this->refill_queue();
-		}
+		$this->queue = $this->build_and_update_queue();
 	}
 
 	/**
@@ -92,23 +86,8 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @param   string $time A date time string.
 	 * @return string
 	 */
-	private function create_uid( $account_id, $time ) {
-		return base64_encode( strtotime( $time ) * strlen( $account_id ) );
-	}
-
-	/**
-	 * This method will be refactored or moved inside a post format helper.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 * @param   WP_Post $post The post object.
-	 * @param   string  $account_id The account ID.
-	 * @return array
-	 */
-	private function prepare_post_object( WP_Post $post, $account_id ) {
-		$post_format_helper = new Rop_Post_Format_Helper();
-		$filtered_post = $post_format_helper->get_formated_object( $account_id, $post );
-		return $filtered_post;
+	private function create_uid( $account_id, $time, $index ) {
+		return base64_encode( strtotime( $time ) * strlen( $account_id ) * $index );
 	}
 
 	/**
@@ -193,103 +172,59 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 
 	/**
 	 * Rebuilds the post object using the updated post format
-	 * and preserving the old user settings.
+	 * and preserving the old user settings. Or creates a new one.
 	 *
 	 * @since   8.0.0
 	 * @access  private
 	 * @param   WP_Post $post A WordPress Post Object.
 	 * @param   string  $account_id The account ID.
-	 * @param   array   $old_post_object The old filtered post object data.
+	 * @param   array   $old_post_object [optional] The old filtered post object data.
 	 * @return array
 	 */
-	private function rebuild_post_object( WP_Post $post, $account_id, $old_post_object ) {
+	private function prepare_post_object( WP_Post $post, $account_id, $old_post_object = array() ) {
 		$post_format_helper = new Rop_Post_Format_Helper();
-		$filtered_post = $post_format_helper->get_formated_object( $account_id, $post, $old_post_object );
+		if( !empty( $old_post_object ) ) {
+			$filtered_post = $post_format_helper->get_formated_object( $account_id, $post, $old_post_object );
+		} else {
+			$filtered_post = $post_format_helper->get_formated_object( $account_id, $post );
+		}
 		return $filtered_post;
 	}
 
-	/**
-	 * Refreshes the current queue items.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 */
-	private function refresh_queue() {
-		if ( ! empty( $this->queue ) ) {
-			$updated_queue = array();
-			foreach ( $this->queue as $account_id => $account_queue ) {
-				$u_accounts_queue = array();
-				foreach ( $account_queue as $queue_event ) {
-					$post = get_post( $queue_event['post']['post_id'] );
-					$updated_post = $this->rebuild_post_object( $post, $account_id, $queue_event['post'] );
-					$uid = $this->create_uid( $account_id, $queue_event['time'] );
-					$u_accounts_queue[ $uid ] = array( 'time' => $queue_event['time'], 'post' => $updated_post );
-					// array_push( $updated_accounts_queue, array( 'time' => $queue_event['time'], 'post' => $updated_post ) );
-				}
-				$updated_queue[ $account_id ] = $u_accounts_queue;
-			}
-			$this->queue = $updated_queue;
-			$this->set( 'queue', $this->queue );
-		}
-	}
-
-	/**
-	 * Utility method to build the active queue.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return array
-	 */
-	public function build_queue() {
+	public function build_and_update_queue() {
+		$this->queue = ( $this->get( 'queue' ) != null ) ? $this->get( 'queue' ) : array();
+		$this->queue = array();
+		$settings = new Rop_Settings_Model();
+		$no_of_posts = $settings->get_number_of_posts();
 		$queue = array();
-		$upcoming_schedules = $this->scheduler->list_upcomming_schedules();
+		$upcoming_schedules = $this->scheduler->list_upcomming_schedules( 2 );
 		if ( $upcoming_schedules && ! empty( $upcoming_schedules ) ) {
 			foreach ( $upcoming_schedules as $account_id => $schedules ) {
 				$account_queue = array();
 				$post_pool = $this->selector->select( $account_id );
-				// var_dump( $post_pool );
-				$shuffler = $this->create_shuffler( 0, sizeof( $post_pool ) - 1, sizeof( $schedules ) );
+				print_r( sizeof( $post_pool ) . PHP_EOL );
 				$i = 0;
-				// print_r( $schedules );
-				foreach ( $schedules as $time ) {
-					$pos = $shuffler[ $i++ ];
-					$uid = $this->create_uid( $account_id, $time );
-					$account_queue[ $uid ] = array( 'time' => $time, 'post' => $this->prepare_post_object( $post_pool[ $pos ], $account_id ) );
-					// array_push( $account_queue, array( 'time' => $time, 'post' => $this->prepare_post_object( $post_pool[ $pos ], $account_id ) ) );
+				foreach ( $schedules as $index => $time ) {
+					$shuffler = $this->create_shuffler( 0, sizeof( $post_pool ) - 1, sizeof( $schedules ) * $no_of_posts );
+					while( $i < $no_of_posts ) {
+						$pos = $shuffler[ $i++ ];
+						//print_r( $pos . PHP_EOL );
+						$uid = $this->create_uid( $account_id, $time, ( $index + $i ) );
+						if( isset( $this->queue[$account_id][$uid] ) ) {
+							$post = get_post( $this->queue[$account_id][$uid]['post']['post_id'] );
+							$updated_post = $this->prepare_post_object( $post, $account_id, $this->queue[$account_id][$uid]['post'] );
+							$account_queue[ $uid ] = array( 'time' => $this->queue[$account_id][$uid]['time'], 'post' => $updated_post );
+						} else {
+							$account_queue[ $uid ] = array( 'time' => $time, 'post' => $this->prepare_post_object( $post_pool[ $pos ], $account_id ) );
+						}
+					}
+					$i = 0;
 				}
 				$queue[ $account_id ] = $account_queue;
 			}
 		}
 		$this->set( 'queue', $queue );
 		return $queue;
-	}
-
-	/**
-	 * Utility method to top off queue for empty elements.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 */
-	public function refill_queue() {
-		$upcoming_schedules = $this->scheduler->list_upcomming_schedules();
-		if ( $this->queue && ! empty( $this->queue ) ) {
-			foreach ( $this->queue as $account_id => $account_queue ) {
-				if ( empty( $account_queue ) ) {
-					$schedules = $upcoming_schedules[ $account_id ];
-					$post_pool = $this->selector->select( $account_id );
-					$shuffler = $this->create_shuffler( 0, sizeof( $post_pool ) - 1, sizeof( $schedules ) );
-					$i = 0;
-					foreach ( $schedules as $time ) {
-						$pos = $shuffler[ $i++ ];
-						$uid = $this->create_uid( $account_id, $time );
-						$account_queue[ $uid ] = array( 'time' => $time, 'post' => $this->prepare_post_object( $post_pool[ $pos ], $account_id ) );
-						// array_push( $account_queue, array( 'time' => $time, 'post' => $this->prepare_post_object( $post_pool[ $pos ], $account_id ) ) );
-					}
-					$this->queue[ $account_id ] = $account_queue;
-				}
-			}
-		}
-		$this->set( 'queue', $this->queue );
 	}
 
 	/**
@@ -390,7 +325,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @return array
 	 */
 	public function get_ordered_queue() {
-		$this->refresh_queue();
+		$this->queue = $this->build_and_update_queue();
 		$queue = $this->queue;
 		$ordered = array();
 		foreach ( $queue as $account_id => $data ) {
@@ -398,14 +333,12 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 				$formatted_data = $event;
 				$formatted_data['time'] = date( 'd-m-Y H:i', strtotime( $formatted_data['time'] ) );
 				$ordered[ $index ] = array( 'time' => $event['time'], 'account_id' => $account_id, 'post' => $formatted_data['post'] );
-				// array_push( $ordered, array( 'time' => $event['time'], 'account_id' => $account_id, 'post' => $formatted_data['post'] ) );
 			}
 		}
+
 		uasort( $ordered, function ( $alpha, $beta ) {
 			return strtotime( $alpha['time'] ) - strtotime( $beta['time'] );
 		} );
-		// $new_indexes = array_map( function( $element ){ return base64_encode( strtotime( $element['time'] ) *  strlen( $element['account_id'] ) ) ; }, $ordered );
-		// $ordered = array_combine ( $new_indexes , $ordered );
 		return $ordered;
 	}
 
@@ -427,9 +360,8 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 				$post = $this->selector->select( $account_id );
 				if ( isset( $post[0] ) && ! empty( $post[0] ) ) {
 					$this->queue[ $account_id ][ $index ]['post'] = $this->prepare_post_object( $post[0], $account_id );
-					;
 					$this->set( 'queue', $this->queue );
-					$this->refresh_queue();
+					$this->build_and_update_queue();
 					return true;
 				}
 			}
