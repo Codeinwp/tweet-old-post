@@ -255,7 +255,7 @@ class Rop_Rest_Api {
 	 */
 	private function get_schedule( $data ) {
 		$schedules = new Rop_Scheduler_Model();
-		this->response->set_code( '200' )
+		$this->response->set_code( '200' )
 			->set_message( __( 'Schedule was retrieved successfully.', 'tweet-old-post' ) )
 			->set_data( $schedules->get_schedule( $data['account_id'] ) );
 		return $this->response->to_array();
@@ -274,16 +274,20 @@ class Rop_Rest_Api {
 	 */
 	private function get_shortner_credentials( $data ) {
 	    $sh_factory = new Rop_Shortner_Factory();
+		$this->response->set_code( '500' )->set_message( __( 'An error occurred when trying to retrieve the sortner service credentials.', 'tweet-old-post' ) );
 	    try {
 			$shortner = $sh_factory->build( $data['short_url_service'] );
-			return $shortner->get_credentials();
+		    $this->response->set_code( '200' )
+		                   ->set_message( __( 'Shortner credentials retrieved successfully.', 'tweet-old-post' ) )
+		                   ->set_data( $shortner->get_credentials() );
 		} catch ( Exception $exception ) {
 	        // Service not found or can't be built. Maybe log this exception.
 		    $log = new Rop_Logger();
-		    $log->warn( 'The shortner service "' . $data['short_url_service'] . '" can NOT be built or was not found', $exception );
-	        return array();
+		    $error_message = sprintf( esc_html__( 'The shortner service %1$s can NOT be built or was not found', 'tweet-old-post' ), $data['short_url_service'] );
+		    $log->warn( $error_message, $exception );
+		    $this->response->set_code( '500' )->set_message( $error_message );
 		}
-
+		return $this->response->to_array();
 	}
 
 	/**
