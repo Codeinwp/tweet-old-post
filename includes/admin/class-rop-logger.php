@@ -89,7 +89,7 @@ class Rop_Logger {
 	 * @since   8.0.0
 	 * @access  public
 	 * @param   string $message The message to log.
-	 * @param   array $context [optional] A context for the message, if needed.
+	 * @param   array  $context [optional] A context for the message, if needed.
 	 */
 	public function info( $message = '', $context = array() ) {
 		$this->logger->info( $message, $context );
@@ -101,7 +101,7 @@ class Rop_Logger {
 	 * @since   8.0.0
 	 * @access  public
 	 * @param   string $message The message to log.
-	 * @param   array $context [optional] A context for the message, if needed.
+	 * @param   array  $context [optional] A context for the message, if needed.
 	 */
 	public function warn( $message = '', $context = array() ) {
 		$this->logger->warn( $message, $context );
@@ -113,7 +113,7 @@ class Rop_Logger {
 	 * @since   8.0.0
 	 * @access  public
 	 * @param   string $message The message to log.
-	 * @param   array $context [optional] A context for the message, if needed.
+	 * @param   array  $context [optional] A context for the message, if needed.
 	 */
 	public function error( $message = '', $context = array() ) {
 		$this->logger->error( $message, $context );

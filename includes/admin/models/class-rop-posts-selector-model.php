@@ -189,8 +189,8 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	private function query_results( $account_id, $post_types, $tax_queries, $excluded_by_user ) {
 		$exclude = $this->build_exclude( $account_id, $excluded_by_user );
 		$args = $this->build_query_args( $post_types, $tax_queries, $exclude );
-		//print_r( $args );
-		//print_r( get_posts( $args ) );
+		// print_r( $args );
+		// print_r( get_posts( $args ) );
 		return get_posts( $args );
 	}
 
@@ -234,7 +234,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		$results = wp_parse_args( $results, $required );
 
 		$this->selection = $results;
-		//print_r( $results );
+		// print_r( $results );
 		return $results;
 	}
 

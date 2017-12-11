@@ -21,13 +21,22 @@
 class Rop_Rest_Api {
 
 	/**
+	 * Stores the default response for the API.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @var     array $response The default response.
+	 */
+	private $response;
+
+	/**
 	 * Rop_Rest_Api constructor.
 	 *
 	 * @since   8.0.0
 	 * @access  public
 	 */
 	public function __construct() {
-
+		$this->response = new Rop_Api_Response();
 	}
 
 	/**
@@ -54,7 +63,7 @@ class Rop_Rest_Api {
 	 * @return array|mixed|null|string
 	 */
 	public function api( WP_REST_Request $request ) {
-		$response = array( 'status' => '200', 'data' => array( 'list', 'of', 'stuff', 'from', 'api' ) );
+		$response = $this->response;
 		$method_requested = $request->get_param( 'req' );
 		if ( method_exists( $this, $method_requested ) ) {
 			$data = json_decode( $request->get_body(), true );
@@ -83,21 +92,28 @@ class Rop_Rest_Api {
 		$queue = new Rop_Queue_Model();
 		$services_model = new Rop_Services_Model();
 		$account_data = $services_model->find_account( $data['account_id'] );
+		$this->response->set_code( '400' )->set_message( __( 'Bad request!', 'tweet-old-post' ) );
 		if ( $account_data ) {
 			$service_factory = new Rop_Services_Factory();
 			try {
 				$service = $service_factory->build( $account_data['service'] );
 				$service->set_credentials( $account_data['credentials'] );
 				$queue_event = $queue->remove_from_queue( $data['index'], $data['account_id'] );
-				//$service->share( $queue_event, $account_data );
+				// $service->share( $queue_event, $account_data );
+				$this->response->set_code( '201' )
+				               ->set_message( sprintf( esc_html__( 'The post was shared successfully with the %1$s network', 'tweet-old-post' ), $account_data['service'] ) )
+				               ->is_not_silent()
+				               ->set_data( $queue->get_ordered_queue() );
 			} catch ( Exception $exception ) {
 			    // The service can not be built or was not found.
 				$log = new Rop_Logger();
-				$log->warn( 'The service "' . $account_data['service'] . '" can NOT be built or was not found', $exception );
+				$error_message = sprintf( esc_html__( 'The service %1$s can NOT be built or was not found', 'tweet-old-post' ), $account_data['service'] );
+				$log->warn( $error_message, $exception );
+				$this->response->set_code( '500' )->set_message( $error_message );
 			}
 		}
 
-		return $queue->get_ordered_queue();
+		return $this->response->to_array();
 	}
 
 	/**
@@ -112,8 +128,14 @@ class Rop_Rest_Api {
 	 */
 	private function skip_queue_event( $data ) {
 		$queue = new Rop_Queue_Model();
-		$queue->skip_post( $data['index'], $data['account_id'] );
-		return $queue->get_ordered_queue();
+		$this->response->set_code( '500' )->set_message( __( 'An error occurred when trying to skip post.', 'tweet-old-post' ) );
+		if ( $queue->skip_post( $data['index'], $data['account_id'] ) ) {
+			$this->response->set_code( '201' )
+			               ->set_message( __( 'The post was skipped successfully.', 'tweet-old-post' ) )
+			               ->is_not_silent()
+			               ->set_data( $queue->get_ordered_queue() );
+		}
+		return $this->response->to_array();
 	}
 
 	/**
@@ -128,8 +150,14 @@ class Rop_Rest_Api {
 	 */
 	private function block_queue_event( $data ) {
 		$queue = new Rop_Queue_Model();
-		$queue->ban_post( $data['index'], $data['account_id'] );
-		return $queue->get_ordered_queue();
+		$this->response->set_code( '500' )->set_message( __( 'An error occurred when trying to block post.', 'tweet-old-post' ) );
+		if ( $queue->ban_post( $data['index'], $data['account_id'] ) ) {
+			$this->response->set_code( '201' )
+			               ->set_message( __( 'The post was blocked successfully.', 'tweet-old-post' ) )
+			               ->is_not_silent()
+			               ->set_data( $queue->get_ordered_queue() );
+		}
+		return $this->response->to_array();
 	}
 
 	/**
@@ -144,8 +172,14 @@ class Rop_Rest_Api {
 	 */
 	private function update_queue_event( $data ) {
 		$queue = new Rop_Queue_Model();
-		$queue->update_queue_object( $data['account_id'], $data['post_id'], $data['custom_data'] );
-		return $queue->get_ordered_queue();
+		$this->response->set_code( '500' )->set_message( __( 'An error occurred when trying to update the post.', 'tweet-old-post' ) );
+		if ( $queue->update_queue_object( $data['account_id'], $data['post_id'], $data['custom_data'] ) ) {
+			$this->response->set_code( '201' )
+			               ->set_message( __( 'The post was updated successfully.', 'tweet-old-post' ) )
+			               ->is_not_silent()
+			               ->set_data( $queue->get_ordered_queue() );
+		}
+		return $this->response->to_array();
 	}
 
 	/**
@@ -159,11 +193,14 @@ class Rop_Rest_Api {
 	 */
 	private function get_queue() {
 	    $queue = new Rop_Queue_Model();
-	    return $queue->get_ordered_queue();
+		$this->response->set_code( '200' )
+		               ->set_message( __( 'Queue retrieved successfully.', 'tweet-old-post' ) )
+		               ->set_data( $queue->get_ordered_queue() );
+		return $this->response->to_array();
 	}
 
 	/**
-	 * API method called to save a post format.
+	 * API method called to save a schedule.
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
 	 *
@@ -174,12 +211,18 @@ class Rop_Rest_Api {
 	 */
 	private function save_schedule( $data ) {
 		$schedules = new Rop_Scheduler_Model();
-		$schedules->add_update_schedule( $data['account_id'], $data['schedule'] );
-		return $schedules->get_schedule( $data['account_id'] );
+		$this->response->set_code( '500' )->set_message( __( 'An error occurred when trying to update the schedule.', 'tweet-old-post' ) );
+		if ( $schedules->add_update_schedule( $data['account_id'], $data['schedule'] ) ) {
+			$this->response->set_code( '201' )
+			               ->set_message( __( 'Schedule saved successfully.', 'tweet-old-post' ) )
+			               ->is_not_silent()
+			               ->set_data( $schedules->get_schedule( $data['account_id'] ) );
+		}
+		return $this->response->to_array();
 	}
 
 	/**
-	 * API method called to reset a post format to defaults.
+	 * API method called to reset a schedule to defaults.
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
 	 *
@@ -190,8 +233,14 @@ class Rop_Rest_Api {
 	 */
 	private function reset_schedule( $data ) {
 		$schedules = new Rop_Scheduler_Model();
-		$schedules->remove_schedule( $data['account_id'] );
-		return $schedules->get_schedule( $data['account_id'] );
+		$this->response->set_code( '500' )->set_message( __( 'An error occurred when trying to update the schedule.', 'tweet-old-post' ) );
+		if ( $schedules->remove_schedule( $data['account_id'] ) ) {
+			$this->response->set_code( '201' )
+			               ->set_message( __( 'Schedule was reset successfully.', 'tweet-old-post' ) )
+			               ->is_not_silent()
+			               ->set_data( $schedules->get_schedule( $data['account_id'] ) );
+		}
+		return $this->response->to_array();
 	}
 
 	/**
@@ -206,7 +255,10 @@ class Rop_Rest_Api {
 	 */
 	private function get_schedule( $data ) {
 		$schedules = new Rop_Scheduler_Model();
-		return $schedules->get_schedule( $data['account_id'] );
+		this->response->set_code( '200' )
+			->set_message( __( 'Schedule was retrieved successfully.', 'tweet-old-post' ) )
+			->set_data( $schedules->get_schedule( $data['account_id'] ) );
+		return $this->response->to_array();
 	}
 
 	/**

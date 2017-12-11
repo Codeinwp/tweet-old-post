@@ -18,6 +18,12 @@ export default new Vuex.Store( {
 			// view: 'schedule'
 			view: 'queue'
 		},
+		toast: {
+			type: 'success',
+			show: true,
+			title: 'Title placeholder',
+			message: 'Lorem ipsum content message placeholder. This is the default.'
+		},
 		auth_in_progress: false,
 		displayTabs: [
 			{
@@ -94,8 +100,6 @@ export default new Vuex.Store( {
 			}
 		},
 		updateState ( state, { stateData, requestName } ) {
-			console.log( stateData )
-			console.log( requestName )
 			switch ( requestName ) {
 			case 'get_general_settings':
 				state.generalSettings = stateData
@@ -168,6 +172,9 @@ export default new Vuex.Store( {
 			case 'block_queue_event':
 				state.queue = stateData
 				break
+			case 'update_toast':
+				state.toast = stateData
+				break
 			default:
 				state.page.logs = state.page.logs.concat( '[info] No state update for request: "' + requestName + '"\n' )
 			}
@@ -184,7 +191,20 @@ export default new Vuex.Store( {
 					body: data.data,
 					responseType: 'json'
 				} ).then( function ( response ) {
+					let display = response.data.show_to_user
+					if ( display ) {
+						let toast = {
+							type: response.data.status,
+							show: true,
+							title: response.data.title,
+							message: response.data.message
+						}
+						commit( 'updateState', { stateData: toast, requestName: 'update_toast' } )
+					}
 					let stateData = response.data
+					if ( response.data.data ) {
+						stateData = response.data.data
+					}
 					let requestName = data.req
 					if ( data.updateState !== false ) {
 						commit( 'updateState', { stateData, requestName } )

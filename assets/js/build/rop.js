@@ -12312,6 +12312,12 @@ exports.default = new _vuex2.default.Store({
 			// view: 'schedule'
 			view: 'queue'
 		},
+		toast: {
+			type: 'success',
+			show: true,
+			title: 'Title placeholder',
+			message: 'Lorem ipsum content message placeholder. This is the default.'
+		},
 		auth_in_progress: false,
 		displayTabs: [{
 			name: 'Accounts',
@@ -12384,8 +12390,6 @@ exports.default = new _vuex2.default.Store({
 			var stateData = _ref.stateData,
 			    requestName = _ref.requestName;
 
-			console.log(stateData);
-			console.log(requestName);
 			switch (requestName) {
 				case 'get_general_settings':
 					state.generalSettings = stateData;
@@ -12458,6 +12462,9 @@ exports.default = new _vuex2.default.Store({
 				case 'block_queue_event':
 					state.queue = stateData;
 					break;
+				case 'update_toast':
+					state.toast = stateData;
+					break;
 				default:
 					state.page.logs = state.page.logs.concat('[info] No state update for request: "' + requestName + '"\n');
 			}
@@ -12476,7 +12483,20 @@ exports.default = new _vuex2.default.Store({
 					body: data.data,
 					responseType: 'json'
 				}).then(function (response) {
+					var display = response.data.show_to_user;
+					if (display) {
+						var toast = {
+							type: response.data.status,
+							show: true,
+							title: response.data.title,
+							message: response.data.message
+						};
+						commit('updateState', { stateData: toast, requestName: 'update_toast' });
+					}
 					var stateData = response.data;
+					if (response.data.data) {
+						stateData = response.data.data;
+					}
 					var requestName = data.req;
 					if (data.updateState !== false) {
 						commit('updateState', { stateData: stateData, requestName: requestName });
@@ -14153,39 +14173,15 @@ var _logsTabPanel = __webpack_require__(137);
 
 var _logsTabPanel2 = _interopRequireDefault(_logsTabPanel);
 
+var _toast = __webpack_require__(145);
+
+var _toast2 = _interopRequireDefault(_toast);
+
 var _vuex = __webpack_require__(21);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-module.exports = {
-	name: 'main-page-panel',
-	computed: (0, _vuex.mapState)(['displayTabs', 'page', 'generalSettings']),
-	created: function created() {},
-
-	data: function data() {
-		return {
-			plugin_logo: ROP_ASSETS_URL + 'img/logo_rop.png'
-		};
-	},
-	methods: {
-		switchTab: function switchTab(slug) {
-			this.$store.commit('setTabView', slug);
-		},
-		updateSettings: function updateSettings() {
-			this.$store.dispatch('updateSettingsToggle', this.$store.state.generalSettings);
-		}
-	},
-	components: {
-		'accounts': _accountsTabPanel2.default,
-		'settings': _settingsTabPanel2.default,
-		'post-format': _postFormatTabPanel2.default,
-		'schedule': _scheduleTabPanel2.default,
-		'queue': _queueTabPanel2.default,
-		'logs': _logsTabPanel2.default
-	}
-	// </script>
-
-}; // <template>
+// <template>
 // 	<div>
 // 		<div class="panel title-panel" style="margin-bottom: 40px; padding-bottom: 20px;">
 // 			<div class="panel-header">
@@ -14193,6 +14189,8 @@ module.exports = {
 // 				<h1 class="d-inline-block">Revive Old Posts</h1><span class="powered"> by <a href="https://themeisle.com" target="_blank"><b>ThemeIsle</b></a></span>
 // 			</div>
 // 		</div>
+//
+//         <toast />
 // 		<div class="panel">
 // 			<div class="panel-nav" style="padding: 8px;">
 // 				<ul class="tab">
@@ -14219,6 +14217,36 @@ module.exports = {
 //
 // <script>
 /* global ROP_ASSETS_URL */
+module.exports = {
+	name: 'main-page-panel',
+	computed: (0, _vuex.mapState)(['displayTabs', 'page', 'generalSettings']),
+	created: function created() {},
+
+	data: function data() {
+		return {
+			plugin_logo: ROP_ASSETS_URL + 'img/logo_rop.png'
+		};
+	},
+	methods: {
+		switchTab: function switchTab(slug) {
+			this.$store.commit('setTabView', slug);
+		},
+		updateSettings: function updateSettings() {
+			this.$store.dispatch('updateSettingsToggle', this.$store.state.generalSettings);
+		}
+	},
+	components: {
+		'accounts': _accountsTabPanel2.default,
+		'settings': _settingsTabPanel2.default,
+		'post-format': _postFormatTabPanel2.default,
+		'schedule': _scheduleTabPanel2.default,
+		'queue': _queueTabPanel2.default,
+		'logs': _logsTabPanel2.default,
+		'toast': _toast2.default
+	}
+	// </script>
+
+};
 
 /***/ }),
 /* 42 */
@@ -18802,7 +18830,135 @@ module.exports = "\n    <div class=\"container\">\n        <h3>Logs</h3>\n      
 /* 140 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div>\n\t\t<div class=\"panel title-panel\" style=\"margin-bottom: 40px; padding-bottom: 20px;\">\n\t\t\t<div class=\"panel-header\">\n\t\t\t\t<img :src=\"plugin_logo\" style=\"float: left; margin-right: 10px;\" />\n\t\t\t\t<h1 class=\"d-inline-block\">Revive Old Posts</h1><span class=\"powered\"> by <a href=\"https://themeisle.com\" target=\"_blank\"><b>ThemeIsle</b></a></span>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel\">\n\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t<ul class=\"tab\">\n\t\t\t\t\t<li class=\"tab-item\" v-for=\"tab in displayTabs\" :class=\"{ active: tab.isActive }\"><a href=\"#\" @click=\"switchTab( tab.slug )\">{{ tab.name }}</a></li>\n\t\t\t\t\t<li class=\"tab-item tab-action\">\n\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.beta_user\" @change=\"updateSettings\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" ></i> Beta User\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.remote_check\" @change=\"updateSettings\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Remote Check\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\n\t\t\t<component :is=\"page.view\"></component>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div>\n\t\t<div class=\"panel title-panel\" style=\"margin-bottom: 40px; padding-bottom: 20px;\">\n\t\t\t<div class=\"panel-header\">\n\t\t\t\t<img :src=\"plugin_logo\" style=\"float: left; margin-right: 10px;\" />\n\t\t\t\t<h1 class=\"d-inline-block\">Revive Old Posts</h1><span class=\"powered\"> by <a href=\"https://themeisle.com\" target=\"_blank\"><b>ThemeIsle</b></a></span>\n\t\t\t</div>\n\t\t</div>\n\n        <toast />\n\t\t<div class=\"panel\">\n\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t<ul class=\"tab\">\n\t\t\t\t\t<li class=\"tab-item\" v-for=\"tab in displayTabs\" :class=\"{ active: tab.isActive }\"><a href=\"#\" @click=\"switchTab( tab.slug )\">{{ tab.name }}</a></li>\n\t\t\t\t\t<li class=\"tab-item tab-action\">\n\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.beta_user\" @change=\"updateSettings\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" ></i> Beta User\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.remote_check\" @change=\"updateSettings\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Remote Check\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\n\t\t\t<component :is=\"page.view\"></component>\n\t\t</div>\n\t</div>\n";
+
+/***/ }),
+/* 141 */,
+/* 142 */,
+/* 143 */,
+/* 144 */,
+/* 145 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(148)
+__vue_script__ = __webpack_require__(146)
+__vue_template__ = __webpack_require__(147)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/var/www/html/wp-base/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/toast.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 146 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// <template>
+// 	<div class="toast" :class="toastTypeClass" >
+// 		<button class="btn btn-clear float-right" @click="closeThis"></button>
+// 		<b><i class="fa" :class="iconClass"></i> {{ toast.title }}</b><br/>
+// 		<small>{{ toast.message }}</small>
+// 	</div>
+// </template>
+//
+// <script>
+module.exports = {
+	name: 'toast',
+	computed: {
+		toast: function toast() {
+			return this.$store.state.toast;
+		},
+		toastTypeClass: function toastTypeClass() {
+			return {
+				'toast-primary': this.toast.type === 'info',
+				'toast-success': this.toast.type === 'success',
+				'toast-warning': this.toast.type === 'warning',
+				'toast-error': this.toast.type === 'error',
+				'hidden': this.toast.show === false
+			};
+		},
+		iconClass: function iconClass() {
+			return {
+				'fa-info-circle': this.toast.type === 'info',
+				'fa-check-circle': this.toast.type === 'success',
+				'fa-exclamation-triangle': this.toast.type === 'warning',
+				'fa-exclamation-circle': this.toast.type === 'error'
+			};
+		}
+	},
+	methods: {
+		closeThis: function closeThis() {
+			this.toast.show = false;
+		}
+	}
+	// </script>
+	//
+	// <style>
+	// 	#rop_core .toast.hidden {
+	// 		display: none;
+	// 	}
+	// </style>
+
+};
+
+/***/ }),
+/* 147 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div class=\"toast\" :class=\"toastTypeClass\" >\n\t\t<button class=\"btn btn-clear float-right\" @click=\"closeThis\"></button>\n\t\t<b><i class=\"fa\" :class=\"iconClass\"></i> {{ toast.title }}</b><br/>\n\t\t<small>{{ toast.message }}</small>\n\t</div>\n";
+
+/***/ }),
+/* 148 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(149);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-df6ed038&file=toast.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./toast.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-df6ed038&file=toast.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./toast.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 149 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)();
+// imports
+
+
+// module
+exports.push([module.i, "\n\t#rop_core .toast.hidden {\n\t\tdisplay: none;\n\t}\n", ""]);
+
+// exports
+
 
 /***/ })
 /******/ ]);

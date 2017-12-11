@@ -66,7 +66,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 			$default_schedules[ $account_id ] = $this->create_schedule( $this->schedule_defaults );
 		}
 
-		$filtered_schedules =  wp_parse_args( $schedules, $default_schedules );
+		$filtered_schedules = wp_parse_args( $schedules, $default_schedules );
 		unset( $filtered_schedules[''] ); // TODO check why an empty value was added.
 		return $filtered_schedules;
 	}

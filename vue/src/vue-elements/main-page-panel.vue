@@ -6,6 +6,8 @@
 				<h1 class="d-inline-block">Revive Old Posts</h1><span class="powered"> by <a href="https://themeisle.com" target="_blank"><b>ThemeIsle</b></a></span>
 			</div>
 		</div>
+
+        <toast />
 		<div class="panel">
 			<div class="panel-nav" style="padding: 8px;">
 				<ul class="tab">
@@ -38,6 +40,7 @@
 	import ScheduleTab from './schedule-tab-panel.vue'
 	import QueueTab from './queue-tab-panel.vue'
 	import LogsTab from './logs-tab-panel.vue'
+	import Toast from './reusables/toast.vue'
 
 	import { mapState } from 'vuex'
 
@@ -65,7 +68,8 @@
 			'post-format': PostFormatTab,
 			'schedule': ScheduleTab,
 			'queue': QueueTab,
-			'logs': LogsTab
+			'logs': LogsTab,
+			'toast': Toast
 		}
 	}
 </script>

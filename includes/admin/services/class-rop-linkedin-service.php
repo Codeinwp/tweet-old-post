@@ -314,15 +314,15 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 				'submitted-image-url' => '',
 			),
 			'visibility' => array(
-				'code' => 'anyone'
-			)
+				'code' => 'anyone',
+			),
 		);
 
-		//$new_post['content']['title'] = '';
-		//$new_post['content']['description'] = '';
+		// $new_post['content']['title'] = '';
+		// $new_post['content']['description'] = '';
 		if ( isset( $post_details['post']['post_img'] ) && $post_details['post']['post_img'] !== '' && $post_details['post']['post_img'] !== false ) {
 			$new_post['content']['submitted-image-url'] = $post_details['post']['post_img'];
-			//$new_post['content']['submitted-image-url'] = 'www.gettyimages.ca/gi-resources/images/Homepage/Hero/UK/CMS_Creative_164657191_Kingfisher.jpg';
+			// $new_post['content']['submitted-image-url'] = 'www.gettyimages.ca/gi-resources/images/Homepage/Hero/UK/CMS_Creative_164657191_Kingfisher.jpg';
 		}
 
 		$new_post['comment'] = $post_details['post']['post_content'];
@@ -334,7 +334,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			$post_format_helper = new Rop_Post_Format_Helper();
 			$link = $post_format_helper->get_short_url( 'www.themeisle.com', $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
 			$new_post['content']['submitted-url'] = $link;
-			//$new_post['content']['submitted-url'] = 'www.themeisle.com';
+			// $new_post['content']['submitted-url'] = 'www.themeisle.com';
 		}
 
 		$new_post['visibility']['code'] = 'anyone';
@@ -347,8 +347,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			$log->warn( 'Posting failed for LinkedIn.', $exception );
 			return false;
 		}
-
-
 
 		return true;
 	}
