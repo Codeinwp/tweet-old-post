@@ -86,7 +86,7 @@
 			},
 			getUrlAndGo ( credentials ) {
 				console.log( 'Credentials recieved:', credentials )
-				this.$store.dispatch( 'getServiceSignInUrl', { service: this.selected_network, credentials: credentials } ).then( response => {
+				this.$store.dispatch( 'fetchAJAXPromise', { req: 'get_service_sign_in_url', updateState: false, data: { service: this.selected_network, credentials: credentials } } ).then( response => {
 					console.log( 'Got some data, now lets show something in this component', response )
 					this.openPopup( response.url )
 				}, error => {
@@ -94,7 +94,7 @@
 				} )
 			},
 			requestAuthentication () {
-				this.$store.dispatch( 'authenticateService', { service: this.selected_network } )
+				this.$store.dispatch( 'fetchAjax', { req: 'authenticate_service', data: { service: this.selected_network } } )
 			},
 			openModal: function () {
 				this.modal.isOpen = true

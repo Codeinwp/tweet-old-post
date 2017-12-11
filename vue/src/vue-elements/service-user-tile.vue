@@ -57,7 +57,7 @@
     	},
     	methods: {
     		removeActiveAccount ( id ) {
-    			this.$store.dispatch( 'updateActiveAccounts', { action: 'remove', account_id: id, current_active: this.$store.state.activeAccounts } )
+    			this.$store.dispatch( 'fetchAJAX', { req: 'remove_account', data: { account_id: id, current_active: this.$store.state.activeAccounts } } )
     		}
     	}
     }

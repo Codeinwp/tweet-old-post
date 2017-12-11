@@ -120,13 +120,13 @@
 		},
 		methods: {
 			publishNow: function () {
-				this.$store.dispatch( 'publishQueueCard', { account_id: this.post_edit.account_id, index: this.id } )
+				this.$store.dispatch( 'fetchAJAX', { req: 'publish_queue_event', data: { account_id: this.post_edit.account_id, index: this.id } } )
 			},
 			skipPost: function () {
-				this.$store.dispatch( 'skipQueueCard', { account_id: this.post_edit.account_id, index: this.id } )
+				this.$store.dispatch( 'fetchAJAX', { req: 'skip_queue_event', data: { account_id: this.post_edit.account_id, index: this.id } } )
 			},
 			blockPost: function () {
-				this.$store.dispatch( 'blockQueueCard', { account_id: this.post_edit.account_id, index: this.id } )
+				this.$store.dispatch( 'fetchAJAX', { req: 'block_queue_event', data: { account_id: this.post_edit.account_id, index: this.id } } )
 			},
 			toggleEditState: function () {
 				this.edit = !this.edit
@@ -138,7 +138,7 @@
 				}
 			},
 			saveChanges: function () {
-				this.$store.dispatch( 'updateQueueCard', { account_id: this.post_edit.account_id, post_id: this.post_edit.post_id, custom_data: this.post_edit } )
+				this.$store.dispatch( 'fetchAJAX', { req: 'update_queue_event', data: { account_id: this.post_edit.account_id, post_id: this.post_edit.post_id, custom_data: this.post_edit } } )
 				this.toggleEditState()
 			},
 			cancelChanges: function () {

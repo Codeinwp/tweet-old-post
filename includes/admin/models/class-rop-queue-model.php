@@ -202,7 +202,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 			foreach ( $upcoming_schedules as $account_id => $schedules ) {
 				$account_queue = array();
 				$post_pool = $this->selector->select( $account_id );
-				print_r( sizeof( $post_pool ) . PHP_EOL );
+				//print_r( sizeof( $post_pool ) . PHP_EOL );
 				$i = 0;
 				foreach ( $schedules as $index => $time ) {
 					$shuffler = $this->create_shuffler( 0, sizeof( $post_pool ) - 1, sizeof( $schedules ) * $no_of_posts );

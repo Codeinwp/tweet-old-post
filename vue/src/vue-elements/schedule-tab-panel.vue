@@ -260,16 +260,13 @@
 				}
 			},
 			getAccountSchedule () {
-				console.log( 'Get Schedule for', this.selected_account )
-				this.$store.dispatch( 'fetchSchedule', { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account } )
+				this.$store.dispatch( 'fetchAJAX', { req: 'get_schedule', data: { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account } } )
 			},
 			saveSchedule () {
-				console.log( 'Save Schedule for', this.selected_account )
-				this.$store.dispatch( 'saveSchedule', { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account, schedule: this.schedule } )
+				this.$store.dispatch( 'fetchAJAX', { req: 'save_schedule', data: { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account, schedule: this.schedule } } )
 			},
 			resetSchedule () {
-				console.log( 'Reset Schedule for', this.selected_account )
-				this.$store.dispatch( 'resetSchedule', { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account } )
+				this.$store.dispatch( 'fetchAJAX', { req: 'reset_schedule', data: { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account } } )
 				this.$forceUpdate()
 			}
 		},

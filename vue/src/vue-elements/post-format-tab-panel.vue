@@ -373,7 +373,7 @@
 				return this.$store.state.activePostFormat
 			},
 			short_url_service: function () {
-				let postFormat = this.$store.getters.getPostFormat
+				let postFormat = this.$store.state.activePostFormat
 				return postFormat.short_url_service
 			},
 			icon: function () {
@@ -423,8 +423,7 @@
 			short_url_service: function () {
 				console.log( 'Service changed' )
 				console.log( this.short_url_service )
-				this.$store.dispatch( 'fetchShortnerCredentials', { short_url_service: this.short_url_service } ).then( response => {
-					console.log( 'Got some data, now lets show something in this component', response )
+				this.$store.dispatch( 'fetchAJAXPromise', { req: 'get_shortner_credentials', data: { short_url_service: this.short_url_service } } ).then( response => {
 					this.shortner_credentials = response
 				}, error => {
 					console.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
@@ -433,20 +432,17 @@
 		},
 		methods: {
 			getAccountpostFormat () {
-				console.log( 'Get Post format for', this.selected_account )
-				this.$store.dispatch( 'fetchPostFormat', { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account } )
+				this.$store.dispatch( 'fetchAJAX', { req: 'get_post_format', data: { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account } } )
 			},
 			savePostFormat () {
-				console.log( 'Save Post format for', this.selected_account )
-				this.$store.dispatch( 'savePostFormat', { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account, post_format: this.post_format } )
+				this.$store.dispatch( 'fetchAJAX', { req: 'save_post_format', data: { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account, post_format: this.post_format } } )
 			},
 			resetPostFormat () {
-				console.log( 'Reset Post format for', this.selected_account )
-				this.$store.dispatch( 'resetPostFormat', { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account } )
+				this.$store.dispatch( 'fetchAJAX', { req: 'reset_post_format', data: { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account } } )
 				this.$forceUpdate()
 			},
 			updateShortnerCredentials () {
-				this.$store.commit( 'updatePostFormatShortnerCredentials', this.shortner_credentials )
+				this.$store.commit( 'updateState', { stateData: this.shortner_credentials, requestName: 'get_shortner_credentials' } )
 			}
 		}
 	}

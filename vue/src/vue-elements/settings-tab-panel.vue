@@ -179,8 +179,8 @@
 				for ( let index in data ) {
 					postTypes.push( data[index].value )
 				}
-				this.$store.commit( 'updateSelectedPostTypes', data )
-				this.$store.dispatch( 'fetchTaxonomies', { post_types: postTypes } )
+				this.$store.commit( 'updateState', { stateData: data, requestName: 'update_selected_post_types' } )
+				this.$store.dispatch( 'fetchAJAX', { req: 'get_taxonomies', data: { post_types: postTypes } } )
 				this.requestPostUpdate()
 			},
 			updatedTaxonomies ( data ) {
@@ -188,11 +188,11 @@
 				for ( let index in data ) {
 					taxonomies.push( data[index].value )
 				}
-				this.$store.commit( 'updateSelectedTaxonomies', data )
+				this.$store.commit( 'updateState', { stateData: data, requestName: 'update_selected_taxonomies' } )
 				this.requestPostUpdate()
 			},
 			updatedPosts ( data ) {
-				this.$store.commit( 'updateSelectedPosts', data )
+				this.$store.commit( 'updateState', { stateData: data, requestName: 'update_selected_posts' } )
 			},
 			exludeTaxonomiesChange () {
 				this.requestPostUpdate()
@@ -201,7 +201,7 @@
 				let postTypesSelected = this.$store.state.generalSettings.selected_post_types
 				let taxonomiesSelected = this.$store.state.generalSettings.selected_taxonomies
 
-				this.$store.dispatch( 'fetchPosts', { post_types: postTypesSelected, search_query: this.searchQuery, taxonomies: taxonomiesSelected, exclude: this.generalSettings.exclude_taxonomies } )
+				this.$store.dispatch( 'fetchAJAX', { req: 'get_posts', data: { post_types: postTypesSelected, search_query: this.searchQuery, taxonomies: taxonomiesSelected, exclude: this.generalSettings.exclude_taxonomies } } )
 			},
 			saveGeneralSettings () {
 				let postTypesSelected = this.$store.state.generalSettings.selected_post_types
@@ -209,8 +209,10 @@
 				let excludeTaxonomies = this.generalSettings.exclude_taxonomies
 				let postsSelected = this.generalSettings.selected_posts
 
-				this.$store.dispatch( 'saveGeneralSettings',
-					{
+				this.$store.dispatch( 'fetchAJAX', {
+					req: 'save_general_settings',
+					updateState: false,
+					data: {
 						available_taxonomies: this.generalSettings.available_taxonomies,
 						minimum_post_age: this.generalSettings.minimum_post_age,
 						maximum_post_age: this.generalSettings.maximum_post_age,
@@ -221,7 +223,8 @@
 						exclude_taxonomies: excludeTaxonomies,
 						posts: postsSelected,
 						exclude_posts: this.generalSettings.exclude_posts
-					} )
+					}
+				} )
 			}
 		},
 		components: {

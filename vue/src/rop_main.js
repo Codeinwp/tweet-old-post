@@ -11,11 +11,11 @@ window.onload = function () {
 		el: '#rop_core',
 		store,
 		created () {
-			store.dispatch( 'getGeneralSettings' )
-			store.dispatch( 'fetchAvailableServices' )
-			store.dispatch( 'fetchAuthenticatedServices' )
-			store.dispatch( 'fetchActiveAccounts' )
-			store.dispatch( 'fetchQueue' )
+			store.dispatch( 'fetchAJAX', { req: 'get_general_settings' } )
+			store.dispatch( 'fetchAJAX', { req: 'get_available_services' } )
+			store.dispatch( 'fetchAJAX', { req: 'get_authenticated_services' } )
+			store.dispatch( 'fetchAJAX', { req: 'get_active_accounts' } )
+			store.dispatch( 'fetchAJAX', { req: 'get_queue' } )
 		},
 		components: {
 			MainPagePanel

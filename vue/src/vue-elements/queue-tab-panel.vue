@@ -26,7 +26,7 @@
 		},
 		methods: {
 			refreshQueue: function () {
-				this.$store.dispatch( 'fetchQueue' )
+				this.$store.dispatch( 'fetchAJAX', { req: 'get_queue' } )
 			}
 		},
 		components: {

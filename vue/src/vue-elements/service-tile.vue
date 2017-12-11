@@ -101,10 +101,10 @@
     			this.show_credentials = !this.show_credentials
     		},
     		activateSelected ( serviceId ) {
-    			this.$store.dispatch( 'updateActiveAccounts', { action: 'update', service_id: serviceId, service: this.service.service, to_be_activated: this.to_be_activated, current_active: this.$store.state.activeAccounts } )
+    			this.$store.dispatch( 'fetchAJAX', { req: 'update_active_accounts', data: { service_id: serviceId, service: this.service.service, to_be_activated: this.to_be_activated, current_active: this.$store.state.activeAccounts } } )
     		},
     		removeService () {
-    			this.$store.dispatch( 'removeService', { id: this.service.id, service: this.service.service } )
+    			this.$store.dispatch( 'fetchAJAX', { req: 'remove_service', data: { id: this.service.id, service: this.service.service } } )
     		}
     	},
     	components: {

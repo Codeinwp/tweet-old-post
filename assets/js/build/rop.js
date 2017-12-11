@@ -12231,11 +12231,11 @@ window.onload = function () {
 		el: '#rop_core',
 		store: _rop_store2.default,
 		created: function created() {
-			_rop_store2.default.dispatch('getGeneralSettings');
-			_rop_store2.default.dispatch('fetchAvailableServices');
-			_rop_store2.default.dispatch('fetchAuthenticatedServices');
-			_rop_store2.default.dispatch('fetchActiveAccounts');
-			_rop_store2.default.dispatch('fetchQueue');
+			_rop_store2.default.dispatch('fetchAJAX', { req: 'get_general_settings' });
+			_rop_store2.default.dispatch('fetchAJAX', { req: 'get_available_services' });
+			_rop_store2.default.dispatch('fetchAJAX', { req: 'get_authenticated_services' });
+			_rop_store2.default.dispatch('fetchAJAX', { req: 'get_active_accounts' });
+			_rop_store2.default.dispatch('fetchAJAX', { req: 'get_queue' });
 		},
 
 		components: {
@@ -12346,17 +12346,6 @@ exports.default = new _vuex2.default.Store({
 		activeSchedule: [],
 		queue: []
 	},
-	getters: {
-		getServices: function getServices(state) {
-			return state.availableServices;
-		},
-		getActiveAccounts: function getActiveAccounts(state) {
-			return state.activeAccounts;
-		},
-		getPostFormat: function getPostFormat(state) {
-			return state.activePostFormat;
-		}
-	},
 	mutations: {
 		logMessage: function logMessage(state, data) {
 			var message = data;
@@ -12391,473 +12380,138 @@ exports.default = new _vuex2.default.Store({
 				}
 			}
 		},
-		updateAuthProgress: function updateAuthProgress(state, data) {
-			if (state.auth_in_progress === true) {
-				state.auth_in_progress = false;
-			}
-		},
-		updateAvailableServices: function updateAvailableServices(state, data) {
-			state.availableServices = data;
-		},
-		updateAuthenticatedServices: function updateAuthenticatedServices(state, data) {
-			state.authenticatedServices = data;
-		},
-		updateActiveAccounts: function updateActiveAccounts(state, data) {
-			state.activeAccounts = data;
-		},
-		updateGeneralSettings: function updateGeneralSettings(state, data) {
-			state.generalSettings = data;
-		},
-		updateSelectedPostTypes: function updateSelectedPostTypes(state, data) {
-			state.generalSettings.selected_post_types = data;
-			for (var index in state.generalSettings.available_post_types) {
-				state.generalSettings.available_post_types[index].selected = false;
-				for (var indexSelected in data) {
-					if (state.generalSettings.available_post_types[index].value === data[indexSelected].value) {
-						state.generalSettings.available_post_types[index].selected = true;
+		updateState: function updateState(state, _ref) {
+			var stateData = _ref.stateData,
+			    requestName = _ref.requestName;
+
+			console.log(stateData);
+			console.log(requestName);
+			switch (requestName) {
+				case 'get_general_settings':
+					state.generalSettings = stateData;
+					break;
+				case 'update_selected_post_types':
+					state.generalSettings.selected_post_types = stateData;
+					for (var index in state.generalSettings.available_post_types) {
+						state.generalSettings.available_post_types[index].selected = false;
+						for (var indexSelected in stateData) {
+							if (state.generalSettings.available_post_types[index].value === stateData[indexSelected].value) {
+								state.generalSettings.available_post_types[index].selected = true;
+							}
+						}
 					}
-				}
-			}
-		},
-		updateAvailableTaxonomies: function updateAvailableTaxonomies(state, data) {
-			state.generalSettings.available_taxonomies = data;
-		},
-		updateSelectedTaxonomies: function updateSelectedTaxonomies(state, data) {
-			state.generalSettings.selected_taxonomies = data;
-			for (var index in state.generalSettings.available_taxonomies) {
-				state.generalSettings.available_taxonomies[index].selected = false;
-				for (var indexSelected in data) {
-					if (state.generalSettings.available_taxonomies[index].value === data[indexSelected].value || state.generalSettings.available_taxonomies[index].parent === data[indexSelected].value) {
-						state.generalSettings.available_taxonomies[index].selected = true;
+					break;
+				case 'update_selected_taxonomies':
+					state.generalSettings.selected_taxonomies = stateData;
+					for (var _index in state.generalSettings.available_taxonomies) {
+						state.generalSettings.available_taxonomies[_index].selected = false;
+						for (var _indexSelected in stateData) {
+							if (state.generalSettings.available_taxonomies[_index].value === stateData[_indexSelected].value || state.generalSettings.available_taxonomies[_index].parent === stateData[_indexSelected].value) {
+								state.generalSettings.available_taxonomies[_index].selected = true;
+							}
+						}
 					}
-				}
+					break;
+				case 'update_selected_posts':
+					state.generalSettings.selected_posts = stateData;
+					break;
+				case 'get_available_services':
+					state.availableServices = stateData;
+					break;
+				case 'get_authenticated_services':
+				case 'remove_service':
+					state.authenticatedServices = stateData;
+					break;
+				case 'authenticate_service':
+					state.authenticatedServices = stateData;
+					state.auth_in_progress = false;
+					state.activeAccounts = stateData;
+					break;
+				case 'get_active_accounts':
+				case 'update_active_accounts':
+				case 'remove_account':
+					state.activeAccounts = stateData;
+					break;
+				case 'get_taxonomies':
+					state.generalSettings.available_taxonomies = stateData;
+					break;
+				case 'get_posts':
+					state.generalSettings.available_posts = stateData;
+					break;
+				case 'get_post_format':
+				case 'save_post_format':
+				case 'reset_post_format':
+					state.activePostFormat = stateData;
+					break;
+				case 'get_shortner_credentials':
+					state.activePostFormat['shortner_credentials'] = stateData;
+					break;
+				case 'get_schedule':
+				case 'save_schedule':
+				case 'reset_schedule':
+					state.activeSchedule = stateData;
+					break;
+				case 'get_queue':
+				case 'update_queue_event':
+				case 'publish_queue_event':
+				case 'skip_queue_event':
+				case 'block_queue_event':
+					state.queue = stateData;
+					break;
+				default:
+					state.page.logs = state.page.logs.concat('[info] No state update for request: "' + requestName + '"\n');
 			}
-		},
-		updateAvailablePosts: function updateAvailablePosts(state, data) {
-			state.generalSettings.available_posts = data;
-		},
-		updateSelectedPosts: function updateSelectedPosts(state, data) {
-			state.generalSettings.selected_posts = data;
-		},
-		updatePostFormat: function updatePostFormat(state, data) {
-			state.activePostFormat = data;
-		},
-		updatePostFormatShortnerCredentials: function updatePostFormatShortnerCredentials(state, data) {
-			state.activePostFormat['shortner_credentials'] = data;
-		},
-		updateSchedule: function updateSchedule(state, data) {
-			state.activeSchedule = data;
-		},
-		updateQueue: function updateQueue(state, data) {
-			state.queue = data;
 		}
 	},
 	actions: {
-		fetchAvailableServices: function fetchAvailableServices(_ref) {
-			var commit = _ref.commit;
-
-			_vue2.default.http({
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'get_available_services' },
-				responseType: 'json'
-			}).then(function (response) {
-				commit('updateAvailableServices', response.data);
-				commit('logMessage', ['Fetching available services.', 'success']);
-			}, function () {
-				commit('logMessage', ['Error retrieving available services.', 'error']);
-			});
-		},
-		getServiceSignInUrl: function getServiceSignInUrl(_ref2, data) {
+		fetchAJAX: function fetchAJAX(_ref2, data) {
 			var commit = _ref2.commit;
 
-			return new Promise(function (resolve, reject) {
+			if (data.req !== '') {
 				_vue2.default.http({
 					url: ropApiSettings.root,
 					method: 'POST',
 					headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-					params: { 'req': 'get_service_sign_in_url' },
-					body: data,
+					params: { 'req': data.req },
+					body: data.data,
 					responseType: 'json'
 				}).then(function (response) {
-					resolve(response.data);
-				}, function (error) {
-					reject(error);
-					commit('logMessage', ['Error retrieving active accounts.', 'error']);
+					var stateData = response.data;
+					var requestName = data.req;
+					if (data.updateState !== false) {
+						commit('updateState', { stateData: stateData, requestName: requestName });
+					}
+				}, function () {
+					commit('logMessage', ['Error when trying to do request: "' + data.req + '".', 'error']);
 				});
-			});
+			}
+			return false;
 		},
-		fetchAuthenticatedServices: function fetchAuthenticatedServices(_ref3) {
+		fetchAJAXPromise: function fetchAJAXPromise(_ref3, data) {
 			var commit = _ref3.commit;
 
-			_vue2.default.http({
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'get_authenticated_services' },
-				responseType: 'json'
-			}).then(function (response) {
-				commit('updateAuthenticatedServices', response.data);
-			}, function () {
-				commit('logMessage', ['Error retrieving authenticated services.', 'error']);
-			});
-		},
-		fetchActiveAccounts: function fetchActiveAccounts(_ref4) {
-			var commit = _ref4.commit;
-
-			_vue2.default.http({
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'get_active_accounts' },
-				responseType: 'json'
-			}).then(function (response) {
-				commit('updateActiveAccounts', response.data);
-			}, function () {
-				commit('logMessage', ['Error retrieving active accounts.', 'error']);
-			});
-		},
-		updateActiveAccounts: function updateActiveAccounts(_ref5, data) {
-			var commit = _ref5.commit;
-
-			if (data.action === 'update') {
-				_vue2.default.http({
-					url: ropApiSettings.root,
-					method: 'POST',
-					headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-					params: { 'req': 'update_active_accounts' },
-					body: data,
-					responseType: 'json'
-				}).then(function (response) {
-					commit('updateActiveAccounts', response.data);
-				}, function () {
-					commit('logMessage', ['Error when trying to update active accounts.', 'error']);
+			if (data.req !== '') {
+				return new Promise(function (resolve, reject) {
+					_vue2.default.http({
+						url: ropApiSettings.root,
+						method: 'POST',
+						headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+						params: { 'req': data.req },
+						body: data.data,
+						responseType: 'json'
+					}).then(function (response) {
+						var stateData = response.data;
+						var requestName = data.req;
+						resolve(response.data);
+						if (data.updateState !== false) {
+							commit('updateState', { stateData: stateData, requestName: requestName });
+						}
+					}, function () {
+						commit('logMessage', ['Error when trying to do request: "' + data.req + '".', 'error']);
+					});
 				});
-			} else if (data.action === 'remove') {
-				_vue2.default.http({
-					url: ropApiSettings.root,
-					method: 'POST',
-					headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-					params: { 'req': 'remove_account' },
-					body: data,
-					responseType: 'json'
-				}).then(function (response) {
-					commit('updateActiveAccounts', response.data);
-				}, function () {
-					commit('logMessage', ['Error when trying to remove and update active accounts.', 'error']);
-				});
-			} else {
-				console.log('No valid action specified.');
 			}
-		},
-		authenticateService: function authenticateService(_ref6, data) {
-			var commit = _ref6.commit;
-
-			_vue2.default.http({
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'authenticate_service' },
-				body: data,
-				responseType: 'json'
-			}).then(function (response) {
-				commit('updateAuthenticatedServices', response.data);
-				commit('updateAuthProgress', false);
-				commit('logMessage', ['Service authenticated: ' + data.service, 'success']);
-			}, function () {
-				commit('logMessage', ['Error retrieving authenticated services.', 'error']);
-			});
-		},
-		removeService: function removeService(_ref7, data) {
-			var commit = _ref7.commit;
-
-			_vue2.default.http({
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'remove_service' },
-				body: data,
-				responseType: 'json'
-			}).then(function (response) {
-				console.log(response.data);
-				commit('updateAuthenticatedServices', response.data);
-			}, function () {
-				commit('logMessage', ['Error when trying to remove and update authenticated services.', 'error']);
-			});
-		},
-		getGeneralSettings: function getGeneralSettings(_ref8, data) {
-			var commit = _ref8.commit;
-
-			_vue2.default.http({
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'get_general_settings' },
-				responseType: 'json'
-			}).then(function (response) {
-				commit('updateGeneralSettings', response.data);
-			}, function () {
-				commit('logMessage', ['Error retrieving general settings.', 'error']);
-			});
-		},
-		fetchTaxonomies: function fetchTaxonomies(_ref9, data) {
-			var commit = _ref9.commit;
-
-			_vue2.default.http({
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'get_taxonomies' },
-				body: data,
-				responseType: 'json'
-			}).then(function (response) {
-				console.log(response.data);
-				commit('updateAvailableTaxonomies', response.data);
-			}, function () {
-				commit('logMessage', ['Error retrieving taxonomies.', 'error']);
-			});
-		},
-		fetchPosts: function fetchPosts(_ref10, data) {
-			var commit = _ref10.commit;
-
-			_vue2.default.http({
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'get_posts' },
-				body: data,
-				responseType: 'json'
-			}).then(function (response) {
-				console.log(response.data);
-				commit('updateAvailablePosts', response.data);
-			}, function () {
-				commit('logMessage', ['Error retrieving posts.', 'error']);
-			});
-		},
-		saveGeneralSettings: function saveGeneralSettings(_ref11, data) {
-			var commit = _ref11.commit;
-
-			_vue2.default.http({
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'save_general_settings' },
-				body: data,
-				responseType: 'json'
-			}).then(function (response) {
-				console.log(response.data);
-				// commit( 'updateAvailablePosts', response.data )
-			}, function () {
-				commit('logMessage', ['Error saving general settings.', 'error']);
-			});
-		},
-		fetchPostFormat: function fetchPostFormat(_ref12, data) {
-			var commit = _ref12.commit;
-
-			_vue2.default.http({
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'get_post_format' },
-				body: data,
-				responseType: 'json'
-			}).then(function (response) {
-				console.log(response.data);
-				commit('updatePostFormat', response.data);
-			}, function () {
-				commit('logMessage', ['Error retrieving posts.', 'error']);
-			});
-		},
-		savePostFormat: function savePostFormat(_ref13, data) {
-			var commit = _ref13.commit;
-
-			_vue2.default.http({
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'save_post_format' },
-				body: data,
-				responseType: 'json'
-			}).then(function (response) {
-				console.log(response.data);
-				commit('updatePostFormat', response.data);
-			}, function () {
-				commit('logMessage', ['Error retrieving posts.', 'error']);
-			});
-		},
-		resetPostFormat: function resetPostFormat(_ref14, data) {
-			var commit = _ref14.commit;
-
-			_vue2.default.http({
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'reset_post_format' },
-				body: data,
-				responseType: 'json'
-			}).then(function (response) {
-				console.log(response.data);
-				commit('updatePostFormat', response.data);
-			}, function () {
-				commit('logMessage', ['Error retrieving posts.', 'error']);
-			});
-		},
-		fetchShortnerCredentials: function fetchShortnerCredentials(_ref15, data) {
-			var commit = _ref15.commit;
-
-			return new Promise(function (resolve, reject) {
-				_vue2.default.http({
-					url: ropApiSettings.root,
-					method: 'POST',
-					headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-					params: { 'req': 'get_shortner_credentials' },
-					body: data,
-					responseType: 'json'
-				}).then(function (response) {
-					resolve(response.data);
-					commit('updatePostFormatShortnerCredentials', response.data);
-					console.log(response.data);
-				}, function () {
-					commit('logMessage', ['Error retrieving shortner credentials.', 'error']);
-				});
-			});
-		},
-		fetchSchedule: function fetchSchedule(_ref16, data) {
-			var commit = _ref16.commit;
-
-			_vue2.default.http({
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'get_schedule' },
-				body: data,
-				responseType: 'json'
-			}).then(function (response) {
-				console.log(response.data);
-				commit('updateSchedule', response.data);
-			}, function () {
-				commit('logMessage', ['Error retrieving schedule.', 'error']);
-			});
-		},
-		saveSchedule: function saveSchedule(_ref17, data) {
-			var commit = _ref17.commit;
-
-			_vue2.default.http({
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'save_schedule' },
-				body: data,
-				responseType: 'json'
-			}).then(function (response) {
-				console.log(response.data);
-				commit('updateSchedule', response.data);
-			}, function () {
-				commit('logMessage', ['Error retrieving schedule.', 'error']);
-			});
-		},
-		resetSchedule: function resetSchedule(_ref18, data) {
-			var commit = _ref18.commit;
-
-			_vue2.default.http({
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'reset_schedule' },
-				body: data,
-				responseType: 'json'
-			}).then(function (response) {
-				console.log(response.data);
-				commit('updateSchedule', response.data);
-			}, function () {
-				commit('logMessage', ['Error retrieving schedule.', 'error']);
-			});
-		},
-		fetchQueue: function fetchQueue(_ref19, data) {
-			var commit = _ref19.commit;
-
-			_vue2.default.http({
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'get_queue' },
-				body: data,
-				responseType: 'json'
-			}).then(function (response) {
-				console.log(response.data);
-				commit('updateQueue', response.data);
-			}, function () {
-				commit('logMessage', ['Error retrieving queue.', 'error']);
-			});
-		},
-		updateQueueCard: function updateQueueCard(_ref20, data) {
-			var commit = _ref20.commit;
-
-			_vue2.default.http({
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'update_queue_event' },
-				body: data,
-				responseType: 'json'
-			}).then(function (response) {
-				console.log(response.data);
-				commit('updateQueue', response.data);
-			}, function () {
-				commit('logMessage', ['Error updating queue event.', 'error']);
-			});
-		},
-		publishQueueCard: function publishQueueCard(_ref21, data) {
-			var commit = _ref21.commit;
-
-			_vue2.default.http({
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'publish_queue_event' },
-				body: data,
-				responseType: 'json'
-			}).then(function (response) {
-				console.log(response.data);
-				commit('updateQueue', response.data);
-			}, function () {
-				commit('logMessage', ['Error updating queue event.', 'error']);
-			});
-		},
-		skipQueueCard: function skipQueueCard(_ref22, data) {
-			var commit = _ref22.commit;
-
-			_vue2.default.http({
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'skip_queue_event' },
-				body: data,
-				responseType: 'json'
-			}).then(function (response) {
-				console.log(response.data);
-				commit('updateQueue', response.data);
-			}, function () {
-				commit('logMessage', ['Error updating queue event.', 'error']);
-			});
-		},
-		blockQueueCard: function blockQueueCard(_ref23, data) {
-			var commit = _ref23.commit;
-
-			_vue2.default.http({
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'block_queue_event' },
-				body: data,
-				responseType: 'json'
-			}).then(function (response) {
-				console.log(response.data);
-				commit('updateQueue', response.data);
-			}, function () {
-				commit('logMessage', ['Error updating queue event.', 'error']);
-			});
+			return false;
 		}
 	}
 });
@@ -14863,7 +14517,7 @@ module.exports = {
 			var _this = this;
 
 			console.log('Credentials recieved:', credentials);
-			this.$store.dispatch('getServiceSignInUrl', { service: this.selected_network, credentials: credentials }).then(function (response) {
+			this.$store.dispatch('fetchAJAXPromise', { req: 'get_service_sign_in_url', updateState: false, data: { service: this.selected_network, credentials: credentials } }).then(function (response) {
 				console.log('Got some data, now lets show something in this component', response);
 				_this.openPopup(response.url);
 			}, function (error) {
@@ -14871,7 +14525,7 @@ module.exports = {
 			});
 		},
 		requestAuthentication: function requestAuthentication() {
-			this.$store.dispatch('authenticateService', { service: this.selected_network });
+			this.$store.dispatch('fetchAjax', { req: 'authenticate_service', data: { service: this.selected_network } });
 		},
 
 		openModal: function openModal() {
@@ -15674,10 +15328,10 @@ module.exports = {
 			this.show_credentials = !this.show_credentials;
 		},
 		activateSelected: function activateSelected(serviceId) {
-			this.$store.dispatch('updateActiveAccounts', { action: 'update', service_id: serviceId, service: this.service.service, to_be_activated: this.to_be_activated, current_active: this.$store.state.activeAccounts });
+			this.$store.dispatch('fetchAJAX', { req: 'update_active_accounts', data: { service_id: serviceId, service: this.service.service, to_be_activated: this.to_be_activated, current_active: this.$store.state.activeAccounts } });
 		},
 		removeService: function removeService() {
-			this.$store.dispatch('removeService', { id: this.service.id, service: this.service.service });
+			this.$store.dispatch('fetchAJAX', { req: 'remove_service', data: { id: this.service.id, service: this.service.service } });
 		}
 	},
 	components: {
@@ -16207,7 +15861,7 @@ module.exports = {
 	},
 	methods: {
 		removeActiveAccount: function removeActiveAccount(id) {
-			this.$store.dispatch('updateActiveAccounts', { action: 'remove', account_id: id, current_active: this.$store.state.activeAccounts });
+			this.$store.dispatch('fetchAJAX', { req: 'remove_account', data: { account_id: id, current_active: this.$store.state.activeAccounts } });
 		}
 	}
 	// </script>
@@ -16495,8 +16149,8 @@ module.exports = {
 			for (var index in data) {
 				postTypes.push(data[index].value);
 			}
-			this.$store.commit('updateSelectedPostTypes', data);
-			this.$store.dispatch('fetchTaxonomies', { post_types: postTypes });
+			this.$store.commit('updateState', { stateData: data, requestName: 'update_selected_post_types' });
+			this.$store.dispatch('fetchAJAX', { req: 'get_taxonomies', data: { post_types: postTypes } });
 			this.requestPostUpdate();
 		},
 		updatedTaxonomies: function updatedTaxonomies(data) {
@@ -16504,11 +16158,11 @@ module.exports = {
 			for (var index in data) {
 				taxonomies.push(data[index].value);
 			}
-			this.$store.commit('updateSelectedTaxonomies', data);
+			this.$store.commit('updateState', { stateData: data, requestName: 'update_selected_taxonomies' });
 			this.requestPostUpdate();
 		},
 		updatedPosts: function updatedPosts(data) {
-			this.$store.commit('updateSelectedPosts', data);
+			this.$store.commit('updateState', { stateData: data, requestName: 'update_selected_posts' });
 		},
 		exludeTaxonomiesChange: function exludeTaxonomiesChange() {
 			this.requestPostUpdate();
@@ -16517,7 +16171,7 @@ module.exports = {
 			var postTypesSelected = this.$store.state.generalSettings.selected_post_types;
 			var taxonomiesSelected = this.$store.state.generalSettings.selected_taxonomies;
 
-			this.$store.dispatch('fetchPosts', { post_types: postTypesSelected, search_query: this.searchQuery, taxonomies: taxonomiesSelected, exclude: this.generalSettings.exclude_taxonomies });
+			this.$store.dispatch('fetchAJAX', { req: 'get_posts', data: { post_types: postTypesSelected, search_query: this.searchQuery, taxonomies: taxonomiesSelected, exclude: this.generalSettings.exclude_taxonomies } });
 		},
 		saveGeneralSettings: function saveGeneralSettings() {
 			var postTypesSelected = this.$store.state.generalSettings.selected_post_types;
@@ -16525,17 +16179,21 @@ module.exports = {
 			var excludeTaxonomies = this.generalSettings.exclude_taxonomies;
 			var postsSelected = this.generalSettings.selected_posts;
 
-			this.$store.dispatch('saveGeneralSettings', {
-				available_taxonomies: this.generalSettings.available_taxonomies,
-				minimum_post_age: this.generalSettings.minimum_post_age,
-				maximum_post_age: this.generalSettings.maximum_post_age,
-				number_of_posts: this.generalSettings.number_of_posts,
-				more_than_once: this.generalSettings.more_than_once,
-				post_types: postTypesSelected,
-				taxonomies: taxonomiesSelected,
-				exclude_taxonomies: excludeTaxonomies,
-				posts: postsSelected,
-				exclude_posts: this.generalSettings.exclude_posts
+			this.$store.dispatch('fetchAJAX', {
+				req: 'save_general_settings',
+				updateState: false,
+				data: {
+					available_taxonomies: this.generalSettings.available_taxonomies,
+					minimum_post_age: this.generalSettings.minimum_post_age,
+					maximum_post_age: this.generalSettings.maximum_post_age,
+					number_of_posts: this.generalSettings.number_of_posts,
+					more_than_once: this.generalSettings.more_than_once,
+					post_types: postTypesSelected,
+					taxonomies: taxonomiesSelected,
+					exclude_taxonomies: excludeTaxonomies,
+					posts: postsSelected,
+					exclude_posts: this.generalSettings.exclude_posts
+				}
 			});
 		}
 	},
@@ -17484,7 +17142,7 @@ module.exports = {
 			return this.$store.state.activePostFormat;
 		},
 		short_url_service: function short_url_service() {
-			var postFormat = this.$store.getters.getPostFormat;
+			var postFormat = this.$store.state.activePostFormat;
 			return postFormat.short_url_service;
 		},
 		icon: function icon() {
@@ -17536,8 +17194,7 @@ module.exports = {
 
 			console.log('Service changed');
 			console.log(this.short_url_service);
-			this.$store.dispatch('fetchShortnerCredentials', { short_url_service: this.short_url_service }).then(function (response) {
-				console.log('Got some data, now lets show something in this component', response);
+			this.$store.dispatch('fetchAJAXPromise', { req: 'get_shortner_credentials', data: { short_url_service: this.short_url_service } }).then(function (response) {
 				_this.shortner_credentials = response;
 			}, function (error) {
 				console.error('Got nothing from server. Prompt user to check internet connection and try again', error);
@@ -17546,20 +17203,17 @@ module.exports = {
 	},
 	methods: {
 		getAccountpostFormat: function getAccountpostFormat() {
-			console.log('Get Post format for', this.selected_account);
-			this.$store.dispatch('fetchPostFormat', { service: this.active_accounts[this.selected_account].service, account_id: this.selected_account });
+			this.$store.dispatch('fetchAJAX', { req: 'get_post_format', data: { service: this.active_accounts[this.selected_account].service, account_id: this.selected_account } });
 		},
 		savePostFormat: function savePostFormat() {
-			console.log('Save Post format for', this.selected_account);
-			this.$store.dispatch('savePostFormat', { service: this.active_accounts[this.selected_account].service, account_id: this.selected_account, post_format: this.post_format });
+			this.$store.dispatch('fetchAJAX', { req: 'save_post_format', data: { service: this.active_accounts[this.selected_account].service, account_id: this.selected_account, post_format: this.post_format } });
 		},
 		resetPostFormat: function resetPostFormat() {
-			console.log('Reset Post format for', this.selected_account);
-			this.$store.dispatch('resetPostFormat', { service: this.active_accounts[this.selected_account].service, account_id: this.selected_account });
+			this.$store.dispatch('fetchAJAX', { req: 'reset_post_format', data: { service: this.active_accounts[this.selected_account].service, account_id: this.selected_account } });
 			this.$forceUpdate();
 		},
 		updateShortnerCredentials: function updateShortnerCredentials() {
-			this.$store.commit('updatePostFormatShortnerCredentials', this.shortner_credentials);
+			this.$store.commit('updateState', { stateData: this.shortner_credentials, requestName: 'get_shortner_credentials' });
 		}
 	}
 	// </script>
@@ -17986,16 +17640,13 @@ module.exports = {
 			}
 		},
 		getAccountSchedule: function getAccountSchedule() {
-			console.log('Get Schedule for', this.selected_account);
-			this.$store.dispatch('fetchSchedule', { service: this.active_accounts[this.selected_account].service, account_id: this.selected_account });
+			this.$store.dispatch('fetchAJAX', { req: 'get_schedule', data: { service: this.active_accounts[this.selected_account].service, account_id: this.selected_account } });
 		},
 		saveSchedule: function saveSchedule() {
-			console.log('Save Schedule for', this.selected_account);
-			this.$store.dispatch('saveSchedule', { service: this.active_accounts[this.selected_account].service, account_id: this.selected_account, schedule: this.schedule });
+			this.$store.dispatch('fetchAJAX', { req: 'save_schedule', data: { service: this.active_accounts[this.selected_account].service, account_id: this.selected_account, schedule: this.schedule } });
 		},
 		resetSchedule: function resetSchedule() {
-			console.log('Reset Schedule for', this.selected_account);
-			this.$store.dispatch('resetSchedule', { service: this.active_accounts[this.selected_account].service, account_id: this.selected_account });
+			this.$store.dispatch('fetchAJAX', { req: 'reset_schedule', data: { service: this.active_accounts[this.selected_account].service, account_id: this.selected_account } });
 			this.$forceUpdate();
 		}
 	},
@@ -18691,7 +18342,7 @@ module.exports = {
 	},
 	methods: {
 		refreshQueue: function refreshQueue() {
-			this.$store.dispatch('fetchQueue');
+			this.$store.dispatch('fetchAJAX', { req: 'get_queue' });
 		}
 	},
 	components: {
@@ -18914,13 +18565,13 @@ module.exports = {
 	watch: {},
 	methods: {
 		publishNow: function publishNow() {
-			this.$store.dispatch('publishQueueCard', { account_id: this.post_edit.account_id, index: this.id });
+			this.$store.dispatch('fetchAJAX', { req: 'publish_queue_event', data: { account_id: this.post_edit.account_id, index: this.id } });
 		},
 		skipPost: function skipPost() {
-			this.$store.dispatch('skipQueueCard', { account_id: this.post_edit.account_id, index: this.id });
+			this.$store.dispatch('fetchAJAX', { req: 'skip_queue_event', data: { account_id: this.post_edit.account_id, index: this.id } });
 		},
 		blockPost: function blockPost() {
-			this.$store.dispatch('blockQueueCard', { account_id: this.post_edit.account_id, index: this.id });
+			this.$store.dispatch('fetchAJAX', { req: 'block_queue_event', data: { account_id: this.post_edit.account_id, index: this.id } });
 		},
 		toggleEditState: function toggleEditState() {
 			this.edit = !this.edit;
@@ -18932,7 +18583,7 @@ module.exports = {
 			}
 		},
 		saveChanges: function saveChanges() {
-			this.$store.dispatch('updateQueueCard', { account_id: this.post_edit.account_id, post_id: this.post_edit.post_id, custom_data: this.post_edit });
+			this.$store.dispatch('fetchAJAX', { req: 'update_queue_event', data: { account_id: this.post_edit.account_id, post_id: this.post_edit.post_id, custom_data: this.post_edit } });
 			this.toggleEditState();
 		},
 		cancelChanges: function cancelChanges() {

@@ -59,17 +59,6 @@ export default new Vuex.Store( {
 		activeSchedule: [],
 		queue: []
 	},
-	getters: {
-		getServices ( state ) {
-			return state.availableServices
-		},
-		getActiveAccounts ( state ) {
-			return state.activeAccounts
-		},
-		getPostFormat ( state ) {
-			return state.activePostFormat
-		}
-	},
 	mutations: {
 		logMessage ( state, data ) {
 			let message = data
@@ -96,7 +85,7 @@ export default new Vuex.Store( {
 			state.page.logs = state.page.logs.concat( message + '\n' )
 		},
 		setTabView ( state, view ) {
-			for ( var tab in state.displayTabs ) {
+			for ( let tab in state.displayTabs ) {
 				state.displayTabs[tab].isActive = false
 				if ( state.displayTabs[tab].slug === view ) {
 					state.displayTabs[tab].isActive = true
@@ -104,427 +93,131 @@ export default new Vuex.Store( {
 				}
 			}
 		},
-		updateAuthProgress ( state, data ) {
-			if ( state.auth_in_progress === true ) {
+		updateState ( state, { stateData, requestName } ) {
+			console.log( stateData )
+			console.log( requestName )
+			switch ( requestName ) {
+			case 'get_general_settings':
+				state.generalSettings = stateData
+				break
+			case 'update_selected_post_types':
+				state.generalSettings.selected_post_types = stateData
+				for ( let index in state.generalSettings.available_post_types ) {
+					state.generalSettings.available_post_types[index].selected = false
+					for ( let indexSelected in stateData ) {
+						if ( state.generalSettings.available_post_types[index].value === stateData[indexSelected].value ) {
+							state.generalSettings.available_post_types[index].selected = true
+						}
+					}
+				}
+				break
+			case 'update_selected_taxonomies':
+				state.generalSettings.selected_taxonomies = stateData
+				for ( let index in state.generalSettings.available_taxonomies ) {
+					state.generalSettings.available_taxonomies[index].selected = false
+					for ( let indexSelected in stateData ) {
+						if ( state.generalSettings.available_taxonomies[index].value === stateData[indexSelected].value || state.generalSettings.available_taxonomies[index].parent === stateData[indexSelected].value ) {
+							state.generalSettings.available_taxonomies[index].selected = true
+						}
+					}
+				}
+				break
+			case 'update_selected_posts':
+				state.generalSettings.selected_posts = stateData
+				break
+			case 'get_available_services':
+				state.availableServices = stateData
+				break
+			case 'get_authenticated_services':
+			case 'remove_service':
+				state.authenticatedServices = stateData
+				break
+			case 'authenticate_service':
+				state.authenticatedServices = stateData
 				state.auth_in_progress = false
+				state.activeAccounts = stateData
+				break
+			case 'get_active_accounts':
+			case 'update_active_accounts':
+			case 'remove_account':
+				state.activeAccounts = stateData
+				break
+			case 'get_taxonomies':
+				state.generalSettings.available_taxonomies = stateData
+				break
+			case 'get_posts':
+				state.generalSettings.available_posts = stateData
+				break
+			case 'get_post_format':
+			case 'save_post_format':
+			case 'reset_post_format':
+				state.activePostFormat = stateData
+				break
+			case 'get_shortner_credentials':
+				state.activePostFormat['shortner_credentials'] = stateData
+				break
+			case 'get_schedule':
+			case 'save_schedule':
+			case 'reset_schedule':
+				state.activeSchedule = stateData
+				break
+			case 'get_queue':
+			case 'update_queue_event':
+			case 'publish_queue_event':
+			case 'skip_queue_event':
+			case 'block_queue_event':
+				state.queue = stateData
+				break
+			default:
+				state.page.logs = state.page.logs.concat( '[info] No state update for request: "' + requestName + '"\n' )
 			}
-		},
-		updateAvailableServices ( state, data ) {
-			state.availableServices = data
-		},
-		updateAuthenticatedServices ( state, data ) {
-			state.authenticatedServices = data
-		},
-		updateActiveAccounts ( state, data ) {
-			state.activeAccounts = data
-		},
-		updateGeneralSettings ( state, data ) {
-			state.generalSettings = data
-		},
-		updateSelectedPostTypes ( state, data ) {
-			state.generalSettings.selected_post_types = data
-			for ( let index in state.generalSettings.available_post_types ) {
-				state.generalSettings.available_post_types[index].selected = false
-				for ( let indexSelected in data ) {
-					if ( state.generalSettings.available_post_types[index].value === data[indexSelected].value ) {
-						state.generalSettings.available_post_types[index].selected = true
-					}
-				}
-			}
-		},
-		updateAvailableTaxonomies ( state, data ) {
-			state.generalSettings.available_taxonomies = data
-		},
-		updateSelectedTaxonomies ( state, data ) {
-			state.generalSettings.selected_taxonomies = data
-			for ( let index in state.generalSettings.available_taxonomies ) {
-				state.generalSettings.available_taxonomies[index].selected = false
-				for ( let indexSelected in data ) {
-					if ( state.generalSettings.available_taxonomies[index].value === data[indexSelected].value || state.generalSettings.available_taxonomies[index].parent === data[indexSelected].value ) {
-						state.generalSettings.available_taxonomies[index].selected = true
-					}
-				}
-			}
-		},
-		updateAvailablePosts ( state, data ) {
-			state.generalSettings.available_posts = data
-		},
-		updateSelectedPosts ( state, data ) {
-			state.generalSettings.selected_posts = data
-		},
-		updatePostFormat ( state, data ) {
-			state.activePostFormat = data
-		},
-		updatePostFormatShortnerCredentials ( state, data ) {
-			state.activePostFormat['shortner_credentials'] = data
-		},
-		updateSchedule ( state, data ) {
-			state.activeSchedule = data
-		},
-		updateQueue ( state, data ) {
-			state.queue = data
 		}
 	},
 	actions: {
-		fetchAvailableServices ( { commit } ) {
-			Vue.http( {
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'get_available_services' },
-				responseType: 'json'
-			} ).then( function ( response ) {
-				commit( 'updateAvailableServices', response.data )
-				commit( 'logMessage', ['Fetching available services.', 'success'] )
-			}, function () {
-				commit( 'logMessage', ['Error retrieving available services.', 'error'] )
-			} )
-		},
-		getServiceSignInUrl ( { commit }, data ) {
-			return new Promise( ( resolve, reject ) => {
-				Vue.http( {
-					url: ropApiSettings.root,
-					method: 'POST',
-					headers: {'X-WP-Nonce': ropApiSettings.nonce},
-					params: {'req': 'get_service_sign_in_url'},
-					body: data,
-					responseType: 'json'
-				} ).then( function ( response ) {
-					resolve( response.data )
-				}, function ( error ) {
-					reject( error )
-					commit( 'logMessage', ['Error retrieving active accounts.', 'error'] )
-				} )
-			} )
-		},
-		fetchAuthenticatedServices ( { commit } ) {
-			Vue.http( {
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'get_authenticated_services' },
-				responseType: 'json'
-			} ).then( function ( response ) {
-				commit( 'updateAuthenticatedServices', response.data )
-			}, function () {
-				commit( 'logMessage', ['Error retrieving authenticated services.', 'error'] )
-			} )
-		},
-		fetchActiveAccounts ( { commit } ) {
-			Vue.http( {
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'get_active_accounts' },
-				responseType: 'json'
-			} ).then( function ( response ) {
-				commit( 'updateActiveAccounts', response.data )
-			}, function () {
-				commit( 'logMessage', ['Error retrieving active accounts.', 'error'] )
-			} )
-		},
-		updateActiveAccounts ( { commit }, data ) {
-			if ( data.action === 'update' ) {
+		fetchAJAX ( { commit }, data ) {
+			if ( data.req !== '' ) {
 				Vue.http( {
 					url: ropApiSettings.root,
 					method: 'POST',
 					headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-					params: { 'req': 'update_active_accounts' },
-					body: data,
+					params: { 'req': data.req },
+					body: data.data,
 					responseType: 'json'
 				} ).then( function ( response ) {
-					commit( 'updateActiveAccounts', response.data )
+					let stateData = response.data
+					let requestName = data.req
+					if ( data.updateState !== false ) {
+						commit( 'updateState', { stateData, requestName } )
+					}
 				}, function () {
-					commit( 'logMessage', ['Error when trying to update active accounts.', 'error'] )
+					commit( 'logMessage', ['Error when trying to do request: "' + data.req + '".', 'error'] )
 				} )
-			} else if ( data.action === 'remove' ) {
-				Vue.http( {
-					url: ropApiSettings.root,
-					method: 'POST',
-					headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-					params: { 'req': 'remove_account' },
-					body: data,
-					responseType: 'json'
-				} ).then( function ( response ) {
-					commit( 'updateActiveAccounts', response.data )
-				}, function () {
-					commit( 'logMessage', ['Error when trying to remove and update active accounts.', 'error'] )
-				} )
-			} else {
-				console.log( 'No valid action specified.' )
 			}
+			return false
 		},
-		authenticateService ( { commit }, data ) {
-			Vue.http( {
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'authenticate_service' },
-				body: data,
-				responseType: 'json'
-			} ).then( function ( response ) {
-				commit( 'updateAuthenticatedServices', response.data )
-				commit( 'updateAuthProgress', false )
-				commit( 'logMessage', ['Service authenticated: ' + data.service, 'success'] )
-			}, function () {
-				commit( 'logMessage', ['Error retrieving authenticated services.', 'error'] )
-			} )
-		},
-		removeService ( { commit }, data ) {
-			Vue.http( {
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'remove_service' },
-				body: data,
-				responseType: 'json'
-			} ).then( function ( response ) {
-				console.log( response.data )
-				commit( 'updateAuthenticatedServices', response.data )
-			}, function () {
-				commit( 'logMessage', ['Error when trying to remove and update authenticated services.', 'error'] )
-			} )
-		},
-		getGeneralSettings ( { commit }, data ) {
-			Vue.http( {
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'get_general_settings' },
-				responseType: 'json'
-			} ).then( function ( response ) {
-				commit( 'updateGeneralSettings', response.data )
-			}, function () {
-				commit( 'logMessage', ['Error retrieving general settings.', 'error'] )
-			} )
-		},
-		fetchTaxonomies ( { commit }, data ) {
-			Vue.http( {
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'get_taxonomies' },
-				body: data,
-				responseType: 'json'
-			} ).then( function ( response ) {
-				console.log( response.data )
-				commit( 'updateAvailableTaxonomies', response.data )
-			}, function () {
-				commit( 'logMessage', ['Error retrieving taxonomies.', 'error'] )
-			} )
-		},
-		fetchPosts ( { commit }, data ) {
-			Vue.http( {
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'get_posts' },
-				body: data,
-				responseType: 'json'
-			} ).then( function ( response ) {
-				console.log( response.data )
-				commit( 'updateAvailablePosts', response.data )
-			}, function () {
-				commit( 'logMessage', ['Error retrieving posts.', 'error'] )
-			} )
-		},
-		saveGeneralSettings ( { commit }, data ) {
-			Vue.http( {
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'save_general_settings' },
-				body: data,
-				responseType: 'json'
-			} ).then( function ( response ) {
-				console.log( response.data )
-				// commit( 'updateAvailablePosts', response.data )
-			}, function () {
-				commit( 'logMessage', ['Error saving general settings.', 'error'] )
-			} )
-		},
-		fetchPostFormat ( { commit }, data ) {
-			Vue.http( {
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'get_post_format' },
-				body: data,
-				responseType: 'json'
-			} ).then( function ( response ) {
-				console.log( response.data )
-				commit( 'updatePostFormat', response.data )
-			}, function () {
-				commit( 'logMessage', ['Error retrieving posts.', 'error'] )
-			} )
-		},
-		savePostFormat ( { commit }, data ) {
-			Vue.http( {
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'save_post_format' },
-				body: data,
-				responseType: 'json'
-			} ).then( function ( response ) {
-				console.log( response.data )
-				commit( 'updatePostFormat', response.data )
-			}, function () {
-				commit( 'logMessage', ['Error retrieving posts.', 'error'] )
-			} )
-		},
-		resetPostFormat ( { commit }, data ) {
-			Vue.http( {
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'reset_post_format' },
-				body: data,
-				responseType: 'json'
-			} ).then( function ( response ) {
-				console.log( response.data )
-				commit( 'updatePostFormat', response.data )
-			}, function () {
-				commit( 'logMessage', ['Error retrieving posts.', 'error'] )
-			} )
-		},
-		fetchShortnerCredentials ( { commit }, data ) {
-			return new Promise( ( resolve, reject ) => {
-				Vue.http( {
-					url: ropApiSettings.root,
-					method: 'POST',
-					headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-					params: { 'req': 'get_shortner_credentials' },
-					body: data,
-					responseType: 'json'
-				} ).then( function ( response ) {
-					resolve( response.data )
-					commit( 'updatePostFormatShortnerCredentials', response.data )
-					console.log( response.data )
-				}, function () {
-					commit( 'logMessage', ['Error retrieving shortner credentials.', 'error'] )
+		fetchAJAXPromise ( { commit }, data ) {
+			if ( data.req !== '' ) {
+				return new Promise( ( resolve, reject ) => {
+					Vue.http( {
+						url: ropApiSettings.root,
+						method: 'POST',
+						headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+						params: { 'req': data.req },
+						body: data.data,
+						responseType: 'json'
+					} ).then( function ( response ) {
+						let stateData = response.data
+						let requestName = data.req
+						resolve( response.data )
+						if ( data.updateState !== false ) {
+							commit( 'updateState', { stateData, requestName } )
+						}
+					}, function () {
+						commit( 'logMessage', ['Error when trying to do request: "' + data.req + '".', 'error'] )
+					} )
 				} )
-			} )
-		},
-		fetchSchedule ( { commit }, data ) {
-			Vue.http( {
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'get_schedule' },
-				body: data,
-				responseType: 'json'
-			} ).then( function ( response ) {
-				console.log( response.data )
-				commit( 'updateSchedule', response.data )
-			}, function () {
-				commit( 'logMessage', ['Error retrieving schedule.', 'error'] )
-			} )
-		},
-		saveSchedule ( { commit }, data ) {
-			Vue.http( {
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'save_schedule' },
-				body: data,
-				responseType: 'json'
-			} ).then( function ( response ) {
-				console.log( response.data )
-				commit( 'updateSchedule', response.data )
-			}, function () {
-				commit( 'logMessage', ['Error retrieving schedule.', 'error'] )
-			} )
-		},
-		resetSchedule ( { commit }, data ) {
-			Vue.http( {
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'reset_schedule' },
-				body: data,
-				responseType: 'json'
-			} ).then( function ( response ) {
-				console.log( response.data )
-				commit( 'updateSchedule', response.data )
-			}, function () {
-				commit( 'logMessage', ['Error retrieving schedule.', 'error'] )
-			} )
-		},
-		fetchQueue ( { commit }, data ) {
-			Vue.http( {
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'get_queue' },
-				body: data,
-				responseType: 'json'
-			} ).then( function ( response ) {
-				console.log( response.data )
-				commit( 'updateQueue', response.data )
-			}, function () {
-				commit( 'logMessage', ['Error retrieving queue.', 'error'] )
-			} )
-		},
-		updateQueueCard ( { commit }, data ) {
-			Vue.http( {
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'update_queue_event' },
-				body: data,
-				responseType: 'json'
-			} ).then( function ( response ) {
-				console.log( response.data )
-				commit( 'updateQueue', response.data )
-			}, function () {
-				commit( 'logMessage', ['Error updating queue event.', 'error'] )
-			} )
-		},
-		publishQueueCard ( { commit }, data ) {
-			Vue.http( {
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'publish_queue_event' },
-				body: data,
-				responseType: 'json'
-			} ).then( function ( response ) {
-				console.log( response.data )
-				commit( 'updateQueue', response.data )
-			}, function () {
-				commit( 'logMessage', ['Error updating queue event.', 'error'] )
-			} )
-		},
-		skipQueueCard ( { commit }, data ) {
-			Vue.http( {
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'skip_queue_event' },
-				body: data,
-				responseType: 'json'
-			} ).then( function ( response ) {
-				console.log( response.data )
-				commit( 'updateQueue', response.data )
-			}, function () {
-				commit( 'logMessage', ['Error updating queue event.', 'error'] )
-			} )
-		},
-		blockQueueCard ( { commit }, data ) {
-			Vue.http( {
-				url: ropApiSettings.root,
-				method: 'POST',
-				headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-				params: { 'req': 'block_queue_event' },
-				body: data,
-				responseType: 'json'
-			} ).then( function ( response ) {
-				console.log( response.data )
-				commit( 'updateQueue', response.data )
-			}, function () {
-				commit( 'logMessage', ['Error updating queue event.', 'error'] )
-			} )
+			}
+			return false
 		}
 	}
 } )
