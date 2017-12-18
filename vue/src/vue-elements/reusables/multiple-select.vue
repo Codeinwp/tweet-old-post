@@ -74,12 +74,23 @@
 			}
 		},
 		mounted () {
-			var index = 0
-			for ( var option of this.options ) {
+			let index = 0
+			for ( let option of this.options ) {
 				if ( option.selected ) {
 					this.addToSelected( index )
 				}
 				index++
+			}
+			for ( let selection of this.selected ) {
+				if ( selection.selected ) {
+					index = 0
+					for ( let option of this.options ) {
+						if ( option.value === selection.value ) {
+							this.options[index].selected = selection.selected
+						}
+						index++
+					}
+				}
 			}
 			// this.$emit( 'update', this.search )
 		},

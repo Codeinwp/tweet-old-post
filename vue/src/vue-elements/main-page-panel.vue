@@ -14,6 +14,10 @@
 					<li class="tab-item" v-for="tab in displayTabs" :class="{ active: tab.isActive }"><a href="#" @click="switchTab( tab.slug )">{{ tab.name }}</a></li>
 					<li class="tab-item tab-action">
 						<div class="form-group">
+                            <label class="form-switch">
+                                <input type="checkbox" v-model="generalSettings.custom_messages" @change="updateSettings" />
+                                <i class="form-icon" ></i> Custom Share Messages
+                            </label>
 							<label class="form-switch">
 								<input type="checkbox" v-model="generalSettings.beta_user" @change="updateSettings" />
 								<i class="form-icon" ></i> Beta User
@@ -59,7 +63,7 @@
 				this.$store.commit( 'setTabView', slug )
 			},
 			updateSettings () {
-				this.$store.dispatch( 'updateSettingsToggle', this.$store.state.generalSettings )
+				this.$store.dispatch( 'fetchAJAX', { req: 'update_settings_toggle', data: { custom_messages: this.$store.state.generalSettings.custom_messages, beta_user: this.$store.state.generalSettings.beta_user, remote_check: this.$store.state.generalSettings.remote_check } } )
 			}
 		},
 		components: {

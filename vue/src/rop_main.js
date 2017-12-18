@@ -16,6 +16,7 @@ window.onload = function () {
 			store.dispatch( 'fetchAJAX', { req: 'get_authenticated_services' } )
 			store.dispatch( 'fetchAJAX', { req: 'get_active_accounts' } )
 			store.dispatch( 'fetchAJAX', { req: 'get_queue' } )
+			store.dispatch( 'fetchAJAX', { req: 'get_log' } )
 		},
 		components: {
 			MainPagePanel

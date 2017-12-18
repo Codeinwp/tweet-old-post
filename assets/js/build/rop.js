@@ -12236,6 +12236,7 @@ window.onload = function () {
 			_rop_store2.default.dispatch('fetchAJAX', { req: 'get_authenticated_services' });
 			_rop_store2.default.dispatch('fetchAJAX', { req: 'get_active_accounts' });
 			_rop_store2.default.dispatch('fetchAJAX', { req: 'get_queue' });
+			_rop_store2.default.dispatch('fetchAJAX', { req: 'get_log' });
 		},
 
 		components: {
@@ -12306,6 +12307,7 @@ exports.default = new _vuex2.default.Store({
 		page: {
 			debug: true,
 			logs: '### Here starts the log \n\n',
+			logs_verbose: '### Here starts the log \n\n',
 			// view: 'accounts'
 			// view: 'post-format'
 			// view: 'settings'
@@ -12391,6 +12393,11 @@ exports.default = new _vuex2.default.Store({
 			    requestName = _ref.requestName;
 
 			switch (requestName) {
+				case 'get_log':
+					console.log('Log Response', stateData);
+					state.page.logs = stateData.pretty;
+					state.page.logs_verbose = stateData.verbose;
+					break;
 				case 'get_general_settings':
 					state.generalSettings = stateData;
 					break;
@@ -12521,8 +12528,11 @@ exports.default = new _vuex2.default.Store({
 						responseType: 'json'
 					}).then(function (response) {
 						var stateData = response.data;
+						if (response.data.data) {
+							stateData = response.data.data;
+						}
 						var requestName = data.req;
-						resolve(response.data);
+						resolve(stateData);
 						if (data.updateState !== false) {
 							commit('updateState', { stateData: stateData, requestName: requestName });
 						}
@@ -14126,7 +14136,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 
 var __vue_script__, __vue_template__
 __vue_script__ = __webpack_require__(41)
-__vue_template__ = __webpack_require__(140)
+__vue_template__ = __webpack_require__(145)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -14173,7 +14183,7 @@ var _logsTabPanel = __webpack_require__(137);
 
 var _logsTabPanel2 = _interopRequireDefault(_logsTabPanel);
 
-var _toast = __webpack_require__(145);
+var _toast = __webpack_require__(140);
 
 var _toast2 = _interopRequireDefault(_toast);
 
@@ -14197,6 +14207,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 					<li class="tab-item" v-for="tab in displayTabs" :class="{ active: tab.isActive }"><a href="#" @click="switchTab( tab.slug )">{{ tab.name }}</a></li>
 // 					<li class="tab-item tab-action">
 // 						<div class="form-group">
+//                             <label class="form-switch">
+//                                 <input type="checkbox" v-model="generalSettings.custom_messages" @change="updateSettings" />
+//                                 <i class="form-icon" ></i> Custom Share Messages
+//                             </label>
 // 							<label class="form-switch">
 // 								<input type="checkbox" v-model="generalSettings.beta_user" @change="updateSettings" />
 // 								<i class="form-icon" ></i> Beta User
@@ -14232,7 +14246,7 @@ module.exports = {
 			this.$store.commit('setTabView', slug);
 		},
 		updateSettings: function updateSettings() {
-			this.$store.dispatch('updateSettingsToggle', this.$store.state.generalSettings);
+			this.$store.dispatch('fetchAJAX', { req: 'update_settings_toggle', data: { custom_messages: this.$store.state.generalSettings.custom_messages, beta_user: this.$store.state.generalSettings.beta_user, remote_check: this.$store.state.generalSettings.remote_check } });
 		}
 	},
 	components: {
@@ -16547,7 +16561,6 @@ module.exports = {
 				}
 				index++;
 			}
-			// this.$emit( 'update', this.search )
 		} catch (err) {
 			_didIteratorError = true;
 			_iteratorError = err;
@@ -16559,6 +16572,61 @@ module.exports = {
 			} finally {
 				if (_didIteratorError) {
 					throw _iteratorError;
+				}
+			}
+		}
+
+		var _iteratorNormalCompletion2 = true;
+		var _didIteratorError2 = false;
+		var _iteratorError2 = undefined;
+
+		try {
+			for (var _iterator2 = (0, _getIterator3.default)(this.selected), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+				var selection = _step2.value;
+
+				if (selection.selected) {
+					index = 0;
+					var _iteratorNormalCompletion3 = true;
+					var _didIteratorError3 = false;
+					var _iteratorError3 = undefined;
+
+					try {
+						for (var _iterator3 = (0, _getIterator3.default)(this.options), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+							var _option = _step3.value;
+
+							if (_option.value === selection.value) {
+								this.options[index].selected = selection.selected;
+							}
+							index++;
+						}
+					} catch (err) {
+						_didIteratorError3 = true;
+						_iteratorError3 = err;
+					} finally {
+						try {
+							if (!_iteratorNormalCompletion3 && _iterator3.return) {
+								_iterator3.return();
+							}
+						} finally {
+							if (_didIteratorError3) {
+								throw _iteratorError3;
+							}
+						}
+					}
+				}
+			}
+			// this.$emit( 'update', this.search )
+		} catch (err) {
+			_didIteratorError2 = true;
+			_iteratorError2 = err;
+		} finally {
+			try {
+				if (!_iteratorNormalCompletion2 && _iterator2.return) {
+					_iterator2.return();
+				}
+			} finally {
+				if (_didIteratorError2) {
+					throw _iteratorError2;
 				}
 			}
 		}
@@ -16607,29 +16675,29 @@ module.exports = {
 		},
 		has_results: function has_results() {
 			var found = 0;
-			var _iteratorNormalCompletion2 = true;
-			var _didIteratorError2 = false;
-			var _iteratorError2 = undefined;
+			var _iteratorNormalCompletion4 = true;
+			var _didIteratorError4 = false;
+			var _iteratorError4 = undefined;
 
 			try {
-				for (var _iterator2 = (0, _getIterator3.default)(this.options), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-					var option = _step2.value;
+				for (var _iterator4 = (0, _getIterator3.default)(this.options), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+					var option = _step4.value;
 
 					if (this.filterSearch(option)) {
 						found++;
 					}
 				}
 			} catch (err) {
-				_didIteratorError2 = true;
-				_iteratorError2 = err;
+				_didIteratorError4 = true;
+				_iteratorError4 = err;
 			} finally {
 				try {
-					if (!_iteratorNormalCompletion2 && _iterator2.return) {
-						_iterator2.return();
+					if (!_iteratorNormalCompletion4 && _iterator4.return) {
+						_iterator4.return();
 					}
 				} finally {
-					if (_didIteratorError2) {
-						throw _iteratorError2;
+					if (_didIteratorError4) {
+						throw _iteratorError4;
 					}
 				}
 			}
@@ -18795,26 +18863,37 @@ if (false) {(function () {  module.hot.accept()
 
 
 // <template>
-//     <div class="container">
-//         <h3>Logs</h3>
-//         <div class="columns">
-//             <div class="column col-12">
-//                 <pre class="code" data-lang="Vue.js">
-//                     <code>{{ logs }}</code>
-//                 </pre>
-//             </div>
-//         </div>
-//     </div>
+// 	<div class="container">
+// 		<h3>Logs</h3>
+// 		<div class="columns">
+// 			<div class="column col-6">
+// 				<pre class="code" data-lang="User Friendly Logs">
+// 					<code>{{ logs }}</code>
+// 				</pre>
+// 			</div>
+// 			<div class="column col-6">
+// 				<pre class="code" data-lang="Verbose Logs">
+// 					<code>{{ logs_verbose }}</code>
+// 				</pre>
+// 			</div>
+// 		</div>
+// 	</div>
 // </template>
 //
 // <script>
 module.exports = {
 	name: 'logs-view',
 	props: ['model'],
-	data: function data() {
-		return {
-			logs: this.$store.state.page.logs
-		};
+	mounted: function mounted() {
+		this.$store.dispatch('fetchAJAX', { req: 'get_log' });
+	},
+	computed: {
+		logs: function logs() {
+			return this.$store.state.page.logs;
+		},
+		logs_verbose: function logs_verbose() {
+			return this.$store.state.page.logs_verbose;
+		}
 	}
 	// </script>
 
@@ -18824,26 +18903,16 @@ module.exports = {
 /* 139 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"container\">\n        <h3>Logs</h3>\n        <div class=\"columns\">\n            <div class=\"column col-12\">\n                <pre class=\"code\" data-lang=\"Vue.js\">\n                    <code>{{ logs }}</code>\n                </pre>\n            </div>\n        </div>\n    </div>\n";
+module.exports = "\n\t<div class=\"container\">\n\t\t<h3>Logs</h3>\n\t\t<div class=\"columns\">\n\t\t\t<div class=\"column col-6\">\n\t\t\t\t<pre class=\"code\" data-lang=\"User Friendly Logs\">\n\t\t\t\t\t<code>{{ logs }}</code>\n\t\t\t\t</pre>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6\">\n\t\t\t\t<pre class=\"code\" data-lang=\"Verbose Logs\">\n\t\t\t\t\t<code>{{ logs_verbose }}</code>\n\t\t\t\t</pre>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 140 */
-/***/ (function(module, exports) {
-
-module.exports = "\n\t<div>\n\t\t<div class=\"panel title-panel\" style=\"margin-bottom: 40px; padding-bottom: 20px;\">\n\t\t\t<div class=\"panel-header\">\n\t\t\t\t<img :src=\"plugin_logo\" style=\"float: left; margin-right: 10px;\" />\n\t\t\t\t<h1 class=\"d-inline-block\">Revive Old Posts</h1><span class=\"powered\"> by <a href=\"https://themeisle.com\" target=\"_blank\"><b>ThemeIsle</b></a></span>\n\t\t\t</div>\n\t\t</div>\n\n        <toast />\n\t\t<div class=\"panel\">\n\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t<ul class=\"tab\">\n\t\t\t\t\t<li class=\"tab-item\" v-for=\"tab in displayTabs\" :class=\"{ active: tab.isActive }\"><a href=\"#\" @click=\"switchTab( tab.slug )\">{{ tab.name }}</a></li>\n\t\t\t\t\t<li class=\"tab-item tab-action\">\n\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.beta_user\" @change=\"updateSettings\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" ></i> Beta User\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.remote_check\" @change=\"updateSettings\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Remote Check\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\n\t\t\t<component :is=\"page.view\"></component>\n\t\t</div>\n\t</div>\n";
-
-/***/ }),
-/* 141 */,
-/* 142 */,
-/* 143 */,
-/* 144 */,
-/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(148)
-__vue_script__ = __webpack_require__(146)
-__vue_template__ = __webpack_require__(147)
+__webpack_require__(141)
+__vue_script__ = __webpack_require__(143)
+__vue_template__ = __webpack_require__(144)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -18860,7 +18929,47 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 146 */
+/* 141 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(142);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-df6ed038&file=toast.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./toast.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-df6ed038&file=toast.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./toast.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 142 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)();
+// imports
+
+
+// module
+exports.push([module.i, "\n\t#rop_core .toast.hidden {\n\t\tdisplay: none;\n\t}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18915,50 +19024,16 @@ module.exports = {
 };
 
 /***/ }),
-/* 147 */
+/* 144 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"toast\" :class=\"toastTypeClass\" >\n\t\t<button class=\"btn btn-clear float-right\" @click=\"closeThis\"></button>\n\t\t<b><i class=\"fa\" :class=\"iconClass\"></i> {{ toast.title }}</b><br/>\n\t\t<small>{{ toast.message }}</small>\n\t</div>\n";
 
 /***/ }),
-/* 148 */
-/***/ (function(module, exports, __webpack_require__) {
+/* 145 */
+/***/ (function(module, exports) {
 
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(149);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-df6ed038&file=toast.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./toast.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-df6ed038&file=toast.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./toast.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 149 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)();
-// imports
-
-
-// module
-exports.push([module.i, "\n\t#rop_core .toast.hidden {\n\t\tdisplay: none;\n\t}\n", ""]);
-
-// exports
-
+module.exports = "\n\t<div>\n\t\t<div class=\"panel title-panel\" style=\"margin-bottom: 40px; padding-bottom: 20px;\">\n\t\t\t<div class=\"panel-header\">\n\t\t\t\t<img :src=\"plugin_logo\" style=\"float: left; margin-right: 10px;\" />\n\t\t\t\t<h1 class=\"d-inline-block\">Revive Old Posts</h1><span class=\"powered\"> by <a href=\"https://themeisle.com\" target=\"_blank\"><b>ThemeIsle</b></a></span>\n\t\t\t</div>\n\t\t</div>\n\n        <toast />\n\t\t<div class=\"panel\">\n\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t<ul class=\"tab\">\n\t\t\t\t\t<li class=\"tab-item\" v-for=\"tab in displayTabs\" :class=\"{ active: tab.isActive }\"><a href=\"#\" @click=\"switchTab( tab.slug )\">{{ tab.name }}</a></li>\n\t\t\t\t\t<li class=\"tab-item tab-action\">\n\t\t\t\t\t\t<div class=\"form-group\">\n                            <label class=\"form-switch\">\n                                <input type=\"checkbox\" v-model=\"generalSettings.custom_messages\" @change=\"updateSettings\" />\n                                <i class=\"form-icon\" ></i> Custom Share Messages\n                            </label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.beta_user\" @change=\"updateSettings\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" ></i> Beta User\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.remote_check\" @change=\"updateSettings\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Remote Check\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\n\t\t\t<component :is=\"page.view\"></component>\n\t\t</div>\n\t</div>\n";
 
 /***/ })
 /******/ ]);

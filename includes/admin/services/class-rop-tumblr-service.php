@@ -323,6 +323,44 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function share( $post_details, $args = array() ) {
+		$api = $this->get_api( $this->credentials['consumer_key'], $this->credentials['consumer_secret'], $this->credentials['oauth_token'], $this->credentials['oauth_token_secret'] );
+
+		$new_post = array(
+			'type' => 'link',
+			'author' => 'me',
+			'title' => '',
+			'url' => '',
+			'description' => '',
+		);
+
+		// var_dump( $api->getBlogInfo( $args['id'] ) ); die();
+		$new_post['thumbnail'] = 'http://www.gettyimages.ca/gi-resources/images/Homepage/Hero/UK/CMS_Creative_164657191_Kingfisher.jpg';
+		if ( isset( $post_details['post']['post_img'] ) && $post_details['post']['post_img'] !== '' && $post_details['post']['post_img'] !== false ) {
+			$new_post['thumbnail'] = $post_details['post']['post_img'];
+			// $new_post['thumbnail'] = 'http://www.gettyimages.ca/gi-resources/images/Homepage/Hero/UK/CMS_Creative_164657191_Kingfisher.jpg';
+		}
+
+		$new_post['description'] = $post_details['post']['post_content'];
+		if ( $post_details['post']['custom_content'] !== '' ) {
+			$new_post['description'] = $post_details['post']['custom_content'];
+		}
+
+		if ( isset( $post_details['post']['post_url'] ) && $post_details['post']['post_url'] != '' ) {
+			$post_format_helper = new Rop_Post_Format_Helper();
+			$link = $post_format_helper->get_short_url( 'www.themeisle.com', $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
+			$new_post['url'] = $link;
+		}
+
+		// print_r( $new_post ); die();
+		try {
+			$api->createPost( $args['id'] . '.tumblr.com', $new_post );
+		} catch ( Exception $exception ) {
+			// Maybe log this.
+			$log = new Rop_Logger();
+			$log->warn( 'Posting failed for Tumblr.', array( $exception ) );
+			return false;
+		}
+
 		return true;
 	}
 }

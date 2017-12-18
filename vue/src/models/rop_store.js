@@ -12,6 +12,7 @@ export default new Vuex.Store( {
 		page: {
 			debug: true,
 			logs: '### Here starts the log \n\n',
+			logs_verbose: '### Here starts the log \n\n',
 			// view: 'accounts'
 			// view: 'post-format'
 			// view: 'settings'
@@ -101,6 +102,11 @@ export default new Vuex.Store( {
 		},
 		updateState ( state, { stateData, requestName } ) {
 			switch ( requestName ) {
+			case 'get_log':
+				console.log( 'Log Response', stateData )
+				state.page.logs = stateData.pretty
+				state.page.logs_verbose = stateData.verbose
+				break
 			case 'get_general_settings':
 				state.generalSettings = stateData
 				break
@@ -227,8 +233,11 @@ export default new Vuex.Store( {
 						responseType: 'json'
 					} ).then( function ( response ) {
 						let stateData = response.data
+						if ( response.data.data ) {
+							stateData = response.data.data
+						}
 						let requestName = data.req
-						resolve( response.data )
+						resolve( stateData )
 						if ( data.updateState !== false ) {
 							commit( 'updateState', { stateData, requestName } )
 						}

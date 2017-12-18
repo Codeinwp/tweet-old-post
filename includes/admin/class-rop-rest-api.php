@@ -99,11 +99,13 @@ class Rop_Rest_Api {
 				$service = $service_factory->build( $account_data['service'] );
 				$service->set_credentials( $account_data['credentials'] );
 				$queue_event = $queue->remove_from_queue( $data['index'], $data['account_id'] );
-				// $service->share( $queue_event, $account_data );
-				$this->response->set_code( '201' )
-				               ->set_message( sprintf( esc_html__( 'The post was shared successfully with the %1$s network', 'tweet-old-post' ), $account_data['service'] ) )
-				               ->is_not_silent()
-				               ->set_data( $queue->get_ordered_queue() );
+				$this->response->set_code( '400' )
+				               ->set_message( sprintf( esc_html__( 'The post was not shared with the %1$s network. An error occured.', 'tweet-old-post' ), $account_data['service'] ) );
+				if ( $service->share( $queue_event, $account_data ) ) {
+					$this->response->set_code( '201' )
+					               ->set_message( sprintf( esc_html__( 'The post was shared successfully with the %1$s network', 'tweet-old-post' ), $account_data['service'] ) );
+				}
+				$this->response->set_data( $queue->get_ordered_queue() );
 			} catch ( Exception $exception ) {
 			    // The service can not be built or was not found.
 				$log = new Rop_Logger();
@@ -113,7 +115,7 @@ class Rop_Rest_Api {
 			}
 		}
 
-		return $this->response->to_array();
+		return $this->response->is_not_silent()->to_array();
 	}
 
 	/**
@@ -132,10 +134,9 @@ class Rop_Rest_Api {
 		if ( $queue->skip_post( $data['index'], $data['account_id'] ) ) {
 			$this->response->set_code( '201' )
 			               ->set_message( __( 'The post was skipped successfully.', 'tweet-old-post' ) )
-			               ->is_not_silent()
 			               ->set_data( $queue->get_ordered_queue() );
 		}
-		return $this->response->to_array();
+		return $this->response->is_not_silent()->to_array();
 	}
 
 	/**
@@ -154,10 +155,9 @@ class Rop_Rest_Api {
 		if ( $queue->ban_post( $data['index'], $data['account_id'] ) ) {
 			$this->response->set_code( '201' )
 			               ->set_message( __( 'The post was blocked successfully.', 'tweet-old-post' ) )
-			               ->is_not_silent()
 			               ->set_data( $queue->get_ordered_queue() );
 		}
-		return $this->response->to_array();
+		return $this->response->is_not_silent()->to_array();
 	}
 
 	/**
@@ -176,10 +176,9 @@ class Rop_Rest_Api {
 		if ( $queue->update_queue_object( $data['account_id'], $data['post_id'], $data['custom_data'] ) ) {
 			$this->response->set_code( '201' )
 			               ->set_message( __( 'The post was updated successfully.', 'tweet-old-post' ) )
-			               ->is_not_silent()
 			               ->set_data( $queue->get_ordered_queue() );
 		}
-		return $this->response->to_array();
+		return $this->response->is_not_silent()->to_array();
 	}
 
 	/**
@@ -215,10 +214,9 @@ class Rop_Rest_Api {
 		if ( $schedules->add_update_schedule( $data['account_id'], $data['schedule'] ) ) {
 			$this->response->set_code( '201' )
 			               ->set_message( __( 'Schedule saved successfully.', 'tweet-old-post' ) )
-			               ->is_not_silent()
 			               ->set_data( $schedules->get_schedule( $data['account_id'] ) );
 		}
-		return $this->response->to_array();
+		return $this->response->is_not_silent()->to_array();
 	}
 
 	/**
@@ -237,10 +235,9 @@ class Rop_Rest_Api {
 		if ( $schedules->remove_schedule( $data['account_id'] ) ) {
 			$this->response->set_code( '201' )
 			               ->set_message( __( 'Schedule was reset successfully.', 'tweet-old-post' ) )
-			               ->is_not_silent()
 			               ->set_data( $schedules->get_schedule( $data['account_id'] ) );
 		}
-		return $this->response->to_array();
+		return $this->response->is_not_silent()->to_array();
 	}
 
 	/**
@@ -304,18 +301,27 @@ class Rop_Rest_Api {
 	private function save_post_format( $data ) {
 		$post_format = new Rop_Post_Format_Model( $data['service'] );
 		$sh_factory = new Rop_Shortner_Factory();
+		$this->response->set_code( '500' )->set_message( __( 'An error occurred when trying to save the post format.', 'tweet-old-post' ) );
 		try {
 			$shortner = $sh_factory->build( $data['post_format']['short_url_service'] );
 			$shortner->set_credentials( $data['post_format']['shortner_credentials'] );
+			$this->response->set_code( '201' )
+			               ->set_message( __( 'Shortner and credentials set successfully.', 'tweet-old-post' ) );
 		} catch ( Exception $exception ) {
 			// Service not found or can't be built. Maybe log this exception.
 			// Also shorten service not updated at this point.
 			$log = new Rop_Logger();
-			$log->info( 'Shortner service can NOT be updated.' );
-			$log->warn( 'The shortner service "' . $data['post_format']['short_url_service'] . '" can NOT be built or was not found', $exception );
+			$error_message = sprintf( esc_html__( 'The shortner service %1$s can NOT be built or was not found', 'tweet-old-post' ), $data['post_format']['short_url_service'] );
+			$log->info( __( 'Shortner service can NOT be updated.', 'tweet-old-post' ) );
+			$log->warn( $error_message, $exception );
+			$this->response->set_code( '500' )->set_message( $error_message );
 		}
-		$post_format->add_update_post_format( $data['account_id'], $data['post_format'] );
-		return $post_format->get_post_format( $data['account_id'] );
+		if ( $post_format->add_update_post_format( $data['account_id'], $data['post_format'] ) ) {
+			$this->response->set_code( '201' )
+			               ->set_message( sprintf( esc_html__( 'Post format was saved successfully. For the %1$s service', 'tweet-old-post' ), $data['service'] ) );
+		}
+		$this->response->set_data( $post_format->get_post_format( $data['account_id'] ) )->is_not_silent();
+		return $this->response->to_array();
 	}
 
 	/**
@@ -330,8 +336,13 @@ class Rop_Rest_Api {
 	 */
 	private function reset_post_format( $data ) {
 		$post_format = new Rop_Post_Format_Model( $data['service'] );
-		$post_format->remove_post_format( $data['account_id'] );
-		return $post_format->get_post_format( $data['account_id'] );
+		$this->response->set_code( '500' )->set_message( __( 'An error occurred when trying to reset the post format.', 'tweet-old-post' ) );
+		if ( $post_format->remove_post_format( $data['account_id'] ) ) {
+			$this->response->set_code( '201' )
+			               ->set_message( sprintf( esc_html__( 'Post format was reseted to defaults successfully. For the %1$s service', 'tweet-old-post' ), $data['service'] ) );
+		}
+		$this->response->set_data( $post_format->get_post_format( $data['account_id'] ) );
+		return $this->response->is_not_silent()->to_array();
 	}
 
 	/**
@@ -346,7 +357,10 @@ class Rop_Rest_Api {
 	 */
 	private function get_post_format( $data ) {
 		$post_format = new Rop_Post_Format_Model( $data['service'] );
-		return $post_format->get_post_format( $data['account_id'] );
+		$this->response->set_code( '200' )
+		               ->set_message( sprintf( esc_html__( 'Post format was retrieved successfully. For the %1$s service', 'tweet-old-post' ), $data['service'] ) )
+		               ->set_data( $post_format->get_post_format( $data['account_id'] ) );
+		return $this->response->to_array();
 	}
 
 	/**
@@ -360,7 +374,10 @@ class Rop_Rest_Api {
 	 */
 	private function select_posts() {
 	    $posts_selector = new Rop_Posts_Selector_Model();
-	    return $posts_selector->select();
+		$this->response->set_code( '200' )
+		               ->set_message( __( 'Selected posts from the database. Here are the results.', 'tweet-old-post' ) )
+		               ->set_data( $posts_selector->select() );
+	    return $this->response->to_array();
 	}
 
 	/**
@@ -374,7 +391,10 @@ class Rop_Rest_Api {
 	 */
 	private function get_general_settings() {
 		$settings_model = new Rop_Settings_Model();
-		return $settings_model->get_settings();
+		$this->response->set_code( '200' )
+		               ->set_message( __( 'Retrieved general settings from the database.', 'tweet-old-post' ) )
+		               ->set_data( $settings_model->get_settings() );
+		return $this->response->to_array();
 	}
 
 	/**
@@ -389,22 +409,17 @@ class Rop_Rest_Api {
 	 * @return array
 	 */
 	private function get_taxonomies( $data ) {
-	    $taxonomies = array();
-	    foreach ( $data['post_types'] as $post_type_name ) {
-			$post_type_taxonomies = get_object_taxonomies( $post_type_name, 'objects' );
-			foreach ( $post_type_taxonomies as $post_type_taxonomy ) {
-				$taxonomy = get_taxonomy( $post_type_taxonomy->name );
-				$terms = get_terms( $post_type_taxonomy->name );
-				if ( ! empty( $terms ) ) {
-					array_push( $taxonomies, array( 'name' => $taxonomy->label, 'value' => $taxonomy->name . '_all', 'selected' => false ) );
-					foreach ( $terms as $term ) {
-						array_push( $taxonomies, array( 'name' => $taxonomy->label . ': ' . $term->name, 'value' => $taxonomy->name . '_' . $term->slug, 'selected' => false, 'parent' => $taxonomy->name . '_all' ) );
-					}
-				}
-			}
-		}
+	    $post_selector = new Rop_Posts_Selector_Model();
+	    $taxonomies = $post_selector->get_taxonomies( $data['post_types'] );
+		$this->response->set_code( '400' )
+		               ->set_message( __( 'Something happened when trying to retrieve taxonomies.', 'tweet-old-post' ) );
+	    if ( $taxonomies != false ) {
+		    $this->response->set_code( '200' )
+		                   ->set_message( __( 'Taxonomies retrieved successfully.', 'tweet-old-post' ) )
+		                   ->set_data( $taxonomies );
+	    }
 
-		return $taxonomies;
+		return $this->response->to_array();
 	}
 
 	/**
@@ -415,64 +430,18 @@ class Rop_Rest_Api {
 	 *
 	 * @since   8.0.0
 	 * @access  private
-	 * @param   array  $data Data passed from the AJAX call.
-	 * @param   string $search_query The search query for posts.
+	 * @param   array $data Data passed from the AJAX call.
 	 * @return array
 	 */
-	private function get_posts( $data, $search_query = '' ) {
-	    if ( isset( $data['search_query'] ) && $data['search_query'] != '' ) {
-			$search_query = $data['search_query'];
-		}
+	private function get_posts( $data ) {
+		$post_selector = new Rop_Posts_Selector_Model();
+		$available_posts = $post_selector->get_posts( $data['post_types'], $data['taxonomies'], $data['search_query'], $data['exclude'] );
 
-		$post_types = array();
-		$tax_queries = array( 'relation' => 'OR' );
-		$operator = ( isset( $data['exclude'] ) && $data['exclude'] == true ) ? 'NOT IN' : 'IN';
+		$this->response->set_code( '200' )
+			->set_message( __( 'Retrieved available posts from the database.', 'tweet-old-post' ) )
+			->set_data( $available_posts );
 
-		if ( ! empty( $data['post_types'] ) ) {
-			foreach ( $data['post_types'] as $post_type ) {
-				array_push( $post_types, $post_type['value'] );
-			}
-		}
-
-		if ( ! empty( $data['taxonomies'] ) ) {
-			foreach ( $data['taxonomies'] as $taxonomy ) {
-				$tmp_query = array();
-				list( $tax, $term ) = explode( '_', $taxonomy['value'] );
-				$tmp_query['relation'] = 'OR';
-				$tmp_query['taxonomy'] = $tax;
-				if ( isset( $term ) && $term != 'all' && $term != '' ) {
-					$tmp_query['field'] = 'slug';
-					$tmp_query['terms'] = $term;
-				} else {
-					$all_terms = get_terms( $tax );
-					$terms = array();
-					foreach ( $all_terms as $custom_term ) {
-						array_push( $terms, $custom_term->slug );
-					}
-					$tmp_query['field'] = 'slug';
-					$tmp_query['terms'] = $terms;
-				}
-				$tmp_query['include_children'] = true;
-				$tmp_query['operator'] = $operator;
-				array_push( $tax_queries, $tmp_query );
-			}
-		}
-
-		$posts_array = get_posts(
-			array(
-				'posts_per_page' => 5,
-				'post_type' => $post_types,
-				's' => $search_query,
-				'tax_query' => $tax_queries,
-			)
-		);
-
-		$formatted_posts = array();
-		foreach ( $posts_array as $post ) {
-		    array_push( $formatted_posts, array( 'name' => $post->post_title, 'value' => $post->ID, 'selected' => false ) );
-		}
-
-	    return $formatted_posts;
+		return $this->response->to_array();
 	}
 
 	/**
@@ -498,10 +467,35 @@ class Rop_Rest_Api {
 			'selected_posts' => $data['posts'],
 			'exclude_posts' => $data['exclude_posts'],
 		);
-
 		$settings_model = new Rop_Settings_Model();
 		$settings_model->save_settings( $general_settings );
-		return $settings_model->get_settings();
+		$this->response->set_code( '200' )
+		               ->set_message( __( 'Updated settings', 'tweet-old-post' ) )
+		               ->set_data( $settings_model->get_settings() );
+		return $this->response->to_array();
+	}
+
+	/**
+	 * API method called to save general settings for toggles.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @param   array $data The settings data to save.
+	 * @return array
+	 */
+	private function update_settings_toggle( $data ) {
+		$settings_model = new Rop_Settings_Model();
+		$general_settings = $settings_model->get_settings();
+		$general_settings['beta_user'] = $data['beta_user'];
+		$general_settings['remote_check'] = $data['remote_check'];
+		$general_settings['custom_messages'] = $data['custom_messages'];
+		$settings_model->save_settings( $general_settings );
+		$this->response->set_code( '200' )
+		               ->set_message( __( 'Updated settings', 'tweet-old-post' ) )
+		               ->set_data( $settings_model->get_settings() );
+		return $this->response->to_array();
 	}
 
 	/**
@@ -515,7 +509,10 @@ class Rop_Rest_Api {
 	 */
 	private function get_available_services() {
 		$global_settings = new Rop_Global_Settings();
-		return $global_settings->get_available_services();
+		$this->response->set_code( '200' )
+		               ->set_message( __( 'Retrieved available services.', 'tweet-old-post' ) )
+		               ->set_data( $global_settings->get_available_services() );
+		return $this->response->to_array();
 	}
 
 	/**
@@ -530,7 +527,10 @@ class Rop_Rest_Api {
 	private function get_authenticated_services() {
 		$model = new Rop_Services_Model();
 		// $model->reset_authenticated_services();
-		return $model->get_authenticated_services();
+		$this->response->set_code( '200' )
+		               ->set_message( __( 'Retrieved authenticated services.', 'tweet-old-post' ) )
+		               ->set_data( $model->get_authenticated_services() );
+		return $this->response->to_array();
 	}
 
 	/**
@@ -545,7 +545,10 @@ class Rop_Rest_Api {
 	private function get_active_accounts() {
 		$model = new Rop_Services_Model();
 		// $model->reset_authenticated_services();
-		return $model->get_active_accounts();
+		$this->response->set_code( '200' )
+		               ->set_message( __( 'Retrieved active accounts.', 'tweet-old-post' ) )
+		               ->set_data( $model->get_active_accounts() );
+		return $this->response->to_array();
 	}
 
 	/**
@@ -571,7 +574,10 @@ class Rop_Rest_Api {
 			);
 		}
 		$model = new Rop_Services_Model();
-		return $model->add_active_accounts( $new_active );
+		$this->response->set_code( '200' )
+		               ->set_message( __( 'Active accounts updated.', 'tweet-old-post' ) )
+		               ->set_data( $model->add_active_accounts( $new_active ) );
+		return $this->response->to_array();
 	}
 
 	/**
@@ -586,7 +592,10 @@ class Rop_Rest_Api {
 	 */
 	private function remove_account( $data ) {
 		$model = new Rop_Services_Model();
-		return $model->delete_active_accounts( $data['account_id'] );
+		$this->response->set_code( '200' )
+		               ->set_message( __( 'Account has been removed.', 'tweet-old-post' ) )
+		               ->set_data( $model->delete_active_accounts( $data['account_id'] ) );
+		return $this->response->to_array();
 	}
 
 	/**
@@ -678,7 +687,10 @@ class Rop_Rest_Api {
 	 */
 	private function get_log() {
 		$log = new Rop_Logger();
-		return $log->read();
+		$this->response->set_code( '200' )
+		               ->set_message( __( 'Logs retrieved successfully.', 'tweet-old-post' ) )
+		               ->set_data( array( 'pretty' => $log->read(), 'verbose' => $log->read( true ) ) );
+		return $this->response->to_array();
 	}
 
 }

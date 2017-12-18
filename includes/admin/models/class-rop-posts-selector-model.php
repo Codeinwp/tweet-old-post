@@ -64,15 +64,93 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	}
 
 	/**
+	 * Method to retrieve taxonomies.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @param   array $post_formats The post formats to use.
+	 *
+	 * @return array|bool
+	 */
+	public function get_taxonomies( $post_formats = array() ) {
+		$taxonomies = array();
+		if ( empty( $post_formats ) ) {
+			return false;
+		}
+		foreach ( $post_formats as $post_type_name ) {
+			$post_type_taxonomies = get_object_taxonomies( $post_type_name, 'objects' );
+			foreach ( $post_type_taxonomies as $post_type_taxonomy ) {
+				$taxonomy = get_taxonomy( $post_type_taxonomy->name );
+				$terms = get_terms( $post_type_taxonomy->name );
+				if ( ! empty( $terms ) ) {
+					array_push( $taxonomies, array( 'name' => $taxonomy->label, 'value' => $taxonomy->name . '_all', 'selected' => false ) );
+					foreach ( $terms as $term ) {
+						array_push( $taxonomies, array( 'name' => $taxonomy->label . ': ' . $term->name, 'value' => $taxonomy->name . '_' . $term->slug, 'selected' => false, 'parent' => $taxonomy->name . '_all' ) );
+					}
+				}
+			}
+		}
+		if ( empty( $taxonomies ) ) {
+			return false;
+		}
+
+		return $taxonomies;
+	}
+
+	/**
+	 * Utility method to retrieve posts.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @param   array  $selected_post_types The selected post types.
+	 * @param   array  $taxonomies The taxonomies.
+	 * @param   string $search A search query.
+	 * @param   bool   $exclude The exclude flag.
+	 *
+	 * @return array
+	 */
+	public function get_posts( $selected_post_types, $taxonomies, $search, $exclude ) {
+		$search_query = '';
+		if ( isset( $search ) && $search != '' ) {
+			$search_query = $search;
+		}
+		$post_types = $this->build_post_types( $selected_post_types );
+		$tax_queries = $this->build_tax_query( array( 'taxonomies' => $taxonomies, 'exclude' => $exclude ) );
+
+		$posts_array = get_posts(
+			array(
+				'posts_per_page' => 5,
+				'post_type' => $post_types,
+				's' => $search_query,
+				'tax_query' => $tax_queries,
+			)
+		);
+
+		$formatted_posts = array();
+		foreach ( $posts_array as $post ) {
+			array_push( $formatted_posts, array( 'name' => $post->post_title, 'value' => $post->ID, 'selected' => false ) );
+		}
+
+		return $formatted_posts;
+	}
+
+	/**
 	 * Utility method to build the post types from settings.
 	 *
 	 * @since   8.0.0
 	 * @access  private
+	 * @param   array $selected_post_types [optional] Pass post_type data to use instead of settings.
 	 * @return array
 	 */
-	private function build_post_types() {
+	private function build_post_types( $selected_post_types = array() ) {
 		$post_types = array();
-		foreach ( $this->settings->get_selected_post_types() as $post_type ) {
+
+		$post_type_to_use = $this->settings->get_selected_post_types();
+		if ( ! empty( $selected_post_types ) ) {
+			$post_type_to_use = $selected_post_types;
+		}
+
+		foreach ( $post_type_to_use as $post_type ) {
 			array_push( $post_types, $post_type['value'] );
 		}
 
@@ -84,14 +162,24 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  private
+	 * @param   array $custom_data [optional] Pass an associative array with taxonomies and exclude options to use.
 	 * @return array
 	 */
-	private function build_tax_query() {
+	private function build_tax_query( $custom_data = array() ) {
 		$tax_queries = array( 'relation' => 'OR' );
-		$operator = ( $this->settings->get_exclude_taxonomies() == true ) ? 'NOT IN' : 'IN';
 
-		if ( ! empty( $this->settings->get_selected_taxonomies() ) ) {
-			foreach ( $this->settings->get_selected_taxonomies() as $taxonomy ) {
+		$exclude = $this->settings->get_exclude_taxonomies();
+		$taxonomies = $this->settings->get_selected_taxonomies();
+
+		if ( ! empty( $custom_data ) && isset( $custom_data['taxonomies'] ) && isset( $custom_data['exclude'] ) ) {
+			$exclude = $custom_data['exclude'];
+			$taxonomies = $custom_data['taxonomies'];
+		}
+
+		$operator = ( $exclude == true ) ? 'NOT IN' : 'IN';
+
+		if ( ! empty( $taxonomies ) ) {
+			foreach ( $taxonomies as $taxonomy ) {
 				$tmp_query = array();
 				list( $tax, $term ) = explode( '_', $taxonomy['value'] );
 				$tmp_query['relation'] = 'OR';
