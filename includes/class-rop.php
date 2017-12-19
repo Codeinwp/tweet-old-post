@@ -129,6 +129,9 @@ class Rop {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'menu_pages' );
 
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'register_meta_box', 2 );
+		$this->loader->add_action( 'save_post', $plugin_admin,'custom_repeatable_meta_box_save' );
+
 		$plugin_rest_api = new Rop_Rest_Api();
 		$plugin_rest_api->register();
 

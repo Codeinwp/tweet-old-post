@@ -330,24 +330,48 @@ class Rop_Post_Format_Helper {
 	public function build_content( WP_Post $post ) {
 		$content_helper = new Rop_Content_Helper();
 		$max_length = $this->post_format['maximum_length'];
+
+		$general_settings = new Rop_Settings_Model();
+		$custom_messages = get_post_meta( $post->ID, 'rop_custom_messages_group', true );
+
 		if ( $this->post_format ) {
-			$content = $this->build_base_content( $post );
 
-			$result = $this->append_custom_text( $content );
-			$custom_length = $result['custom_length'];
-			$content = $result['content'];
+			if ( $general_settings->get_custom_messages() && ! empty( $custom_messages ) ) {
 
-			$result = $this->make_hashtags( $content, $content_helper, $post );
-			$hashtags_length = $result['hashtags_length'];
-			$hashtags = $result['hashtags'];
-			$content = $result['filtered_content'];
+				$random_index = rand( 0, sizeof( $custom_messages ) );
+				$content = $custom_messages[ $random_index ]['rop_custom_description'];
 
-			$size = $max_length - $hashtags_length - $custom_length;
+				$result = $this->make_hashtags( $content, $content_helper, $post );
+				$hashtags_length = $result['hashtags_length'];
+				$hashtags = $result['hashtags'];
+				$content = $result['filtered_content'];
 
-			$response = array(
-			    'display_content' => $content_helper->token_truncate( $content, $size ) . ' ' . $hashtags,
-			    'hashtags' => $hashtags,
-			);
+				$size = $max_length - $hashtags_length;
+
+				$response = array(
+					'display_content' => $content_helper->token_truncate( $content, $size ) . ' ' . $hashtags,
+					'hashtags' => $hashtags,
+				);
+
+			} else {
+				$content = $this->build_base_content( $post );
+
+				$result = $this->append_custom_text( $content );
+				$custom_length = $result['custom_length'];
+				$content = $result['content'];
+
+				$result = $this->make_hashtags( $content, $content_helper, $post );
+				$hashtags_length = $result['hashtags_length'];
+				$hashtags = $result['hashtags'];
+				$content = $result['filtered_content'];
+
+				$size = $max_length - $hashtags_length - $custom_length;
+
+				$response = array(
+					'display_content' => $content_helper->token_truncate( $content, $size ) . ' ' . $hashtags,
+					'hashtags' => $hashtags,
+				);
+			}// End if().
 
 			return $response;
 

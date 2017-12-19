@@ -122,6 +122,69 @@ class Rop_Admin {
 	}
 
 	/**
+	 * Register the repeatable meta box if custom messages are enabled.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 */
+	public function register_meta_box() {
+		$general_settings = new Rop_Settings_Model();
+		if ( $general_settings->get_custom_messages() ) {
+			add_meta_box( 'rop-custom-messages-group', 'Custom Share Messages', array( $this, 'custom_meta_box' ), 'post', 'normal', 'default' );
+		}
+	}
+
+	/**
+	 * Display the custom messages meta box.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 */
+	public function custom_meta_box() {
+		global $post;
+		$rop_custom_messages_group = get_post_meta( $post->ID, 'rop_custom_messages_group', true );
+		wp_nonce_field( 'rop_repeatable_meta_box_nonce', 'rop_repeatable_meta_box_nonce' );
+
+		include ROP_PATH . '/includes/admin/views/custom_fields_view.php';
+	}
+
+	/**
+	 * Save method for custom messages meta box.
+	 *
+	 * @since   8.0.0
+	 * @param   int $post_id The post ID.
+	 */
+	public function custom_repeatable_meta_box_save( $post_id ) {
+		if ( ! isset( $_POST['rop_repeatable_meta_box_nonce'] ) ||
+		     ! wp_verify_nonce( $_POST['rop_repeatable_meta_box_nonce'], 'rop_repeatable_meta_box_nonce' ) ) {
+			return;
+		}
+
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+
+		$old = get_post_meta( $post_id, 'rop_custom_messages_group', true );
+		$new = array();
+		$text = $_POST['rop_custom_description'];
+		$count = count( $text );
+		for ( $i = 0; $i < $count; $i++ ) {
+			if ( $text[ $i ] != '' ) {
+				$new[ $i ]['rop_custom_description'] = stripslashes( strip_tags( $text[ $i ] ) );
+			}
+		}
+		if ( ! empty( $new ) && $new != $old ) {
+			update_post_meta( $post_id, 'rop_custom_messages_group', $new );
+		} elseif ( empty( $new ) && $old ) {
+			delete_post_meta( $post_id, 'rop_custom_messages_group', $old );
+		}
+	}
+
+	/**
 	 * The display method for the main page.
 	 *
 	 * @since   8.0.0
