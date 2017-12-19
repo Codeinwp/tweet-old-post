@@ -12308,15 +12308,15 @@ exports.default = new _vuex2.default.Store({
 			debug: true,
 			logs: '### Here starts the log \n\n',
 			logs_verbose: '### Here starts the log \n\n',
-			// view: 'accounts'
+			view: 'accounts'
 			// view: 'post-format'
 			// view: 'settings'
 			// view: 'schedule'
-			view: 'queue'
+			// view: 'queue'
 		},
 		toast: {
 			type: 'success',
-			show: true,
+			show: false,
 			title: 'Title placeholder',
 			message: 'Lorem ipsum content message placeholder. This is the default.'
 		},

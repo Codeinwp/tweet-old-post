@@ -338,7 +338,7 @@ class Rop_Post_Format_Helper {
 
 			if ( $general_settings->get_custom_messages() && ! empty( $custom_messages ) ) {
 
-				$random_index = rand( 0, sizeof( $custom_messages ) );
+				$random_index = rand( 0, ( sizeof( $custom_messages ) - 1 ) );
 				$content = $custom_messages[ $random_index ]['rop_custom_description'];
 
 				$result = $this->make_hashtags( $content, $content_helper, $post );
