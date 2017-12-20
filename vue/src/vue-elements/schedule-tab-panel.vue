@@ -157,7 +157,7 @@
 		},
 		mounted: function () {
 			// Uncomment this when not fixed tab on schedule
-			// this.getAccountSchedule()
+			this.getAccountSchedule()
 		},
 		filters: {
 			capitalize: function ( value ) {

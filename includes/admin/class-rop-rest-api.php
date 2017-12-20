@@ -592,6 +592,13 @@ class Rop_Rest_Api {
 	 */
 	private function remove_account( $data ) {
 		$model = new Rop_Services_Model();
+		$post_format = new Rop_Post_Format_Model();
+		$schedules = new Rop_Scheduler_Model();
+		$queue = new Rop_Queue_Model();
+
+		$post_format->remove_post_format( $data['account_id'] );
+		$schedules->remove_schedule( $data['account_id'] );
+		$queue->remove_account_from_queue( $data['account_id'] );
 		$this->response->set_code( '200' )
 		               ->set_message( __( 'Account has been removed.', 'tweet-old-post' ) )
 		               ->set_data( $model->delete_active_accounts( $data['account_id'] ) );

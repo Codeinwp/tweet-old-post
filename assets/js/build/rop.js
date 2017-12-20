@@ -17633,7 +17633,7 @@ module.exports = {
 	},
 	mounted: function mounted() {
 		// Uncomment this when not fixed tab on schedule
-		// this.getAccountSchedule()
+		this.getAccountSchedule();
 	},
 	filters: {
 		capitalize: function capitalize(value) {

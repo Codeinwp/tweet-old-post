@@ -275,6 +275,18 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	}
 
 	/**
+	 * Removes an account from queue
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @param   string $account_id The account ID.
+	 */
+	public function remove_account_from_queue( $account_id ) {
+		unset( $this->queue[ $account_id ] );
+		$this->set( 'queue', $this->queue );
+	}
+
+	/**
 	 * Mark a post_id as blocked for the account.
 	 *
 	 * @since   8.0.0
