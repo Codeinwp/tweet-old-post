@@ -201,7 +201,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 */
 	public function build_and_update_queue() {
 		$this->queue = ( $this->get( 'queue' ) != null ) ? $this->get( 'queue' ) : array();
-		//$this->queue = array();
+		// $this->queue = array();
 		$settings = new Rop_Settings_Model();
 		$no_of_posts = $settings->get_number_of_posts();
 		$queue = array();

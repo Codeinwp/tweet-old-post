@@ -2,7 +2,7 @@
 	<div class="sign-in-btn">
 		<div class="input-group">
 			<select class="form-select" v-model="selected_network">
-				<option v-for="( service, network ) in services" v-bind:value="network" :disabled="checkDisabled( service.active )">{{ service.name }}</option>
+				<option v-for="( service, network ) in services" v-bind:value="network" :disabled="checkDisabled( service, network )">{{ service.name }}</option>
 			</select>
 
 			<button class="btn input-group-btn" :class="serviceClass" @click="requestAuthorization()" :disabled="checkDisabled(true)" >
@@ -49,8 +49,26 @@
 			}
 		},
 		methods: {
-			checkDisabled ( active ) {
-				if ( active === false ) {
+			checkDisabled ( service, network ) {
+				if ( service.active === false ) {
+					return true
+				}
+
+				let countAuthServices = 0
+				for ( let authService in this.$store.state.authenticatedServices ) {
+					if ( this.$store.state.authenticatedServices[authService].service === network ) {
+						countAuthServices++
+					}
+				}
+
+				let countActiveAccounts = 0
+				for ( let activeAccount in this.$store.state.activeAccounts ) {
+					if ( this.$store.state.activeAccounts[activeAccount].service === network ) {
+						countActiveAccounts++
+					}
+				}
+
+				if ( service.allowed_accounts >= countAuthServices || service.allowed_accounts >= countActiveAccounts ) {
 					return true
 				}
 
