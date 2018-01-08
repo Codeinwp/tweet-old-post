@@ -114,6 +114,9 @@ class Rop_Admin {
 					'nonce' => wp_create_nonce( 'wp_rest' ),
 				);
 			}
+			$global_settings =  new Rop_Global_Settings();
+			$array_nonce['has_pro'] = ( $global_settings->has_pro() ) ? 'true': 'false';
+			$array_nonce['available_post_types'] = $global_settings->get_available_post_types();
 			wp_localize_script( $this->plugin_name . '_main', 'ropApiSettings', $array_nonce );
 			wp_localize_script( $this->plugin_name . '_main', 'ROP_ASSETS_URL', ROP_LITE_URL . 'assets/' );
 			wp_enqueue_script( $this->plugin_name . '_main' );

@@ -98,17 +98,17 @@ class Rop_Global_Settings {
 		'linkedin' => array(
 			'active' => false,
 			'name' => 'LinkedIn',
-	// 'two_step_sign_in' => true,
-	// 'credentials' => array(
-	// 'client_id' => array(
-	// 'name' => 'Client ID',
-	// 'description' => 'Please add the Client ID from your LinkedIn app.',
-	// ),
-	// 'secret' => array(
-	// 'name' => 'Client Secret',
-	// 'description' => 'Please add the Client Secret from your LinkedIn app.',
-	// ),
-	// ),
+//	 'two_step_sign_in' => true,
+//	 'credentials' => array(
+//	 'client_id' => array(
+//	 'name' => 'Client ID',
+//	 'description' => 'Please add the Client ID from your LinkedIn app.',
+//	 ),
+//	 'secret' => array(
+//	 'name' => 'Client Secret',
+//	 'description' => 'Please add the Client Secret from your LinkedIn app.',
+//	 ),
+//	 ),
 		),
 		'tumblr' => array(
 			'active' => false,
@@ -176,7 +176,7 @@ class Rop_Global_Settings {
 			'hashtags_length' => '10',
 			'hashtags_common' => '',
 			'hashtags_custom' => '',
-			'image' => true,
+			'image' => false,
 		),
 		'twitter' => array(
 			'post_content' => 'post_title',
@@ -193,7 +193,7 @@ class Rop_Global_Settings {
 			'hashtags_length' => '10',
 			'hashtags_common' => '',
 			'hashtags_custom' => '',
-			'image' => true,
+			'image' => false,
 		),
 		'linkedin' => array(
 			'post_content' => 'post_title',
@@ -210,7 +210,7 @@ class Rop_Global_Settings {
 			'hashtags_length' => '10',
 			'hashtags_common' => '',
 			'hashtags_custom' => '',
-			'image' => true,
+			'image' => false,
 		),
 		'tumblr' => array(
 			'post_content' => 'post_title',
@@ -227,7 +227,7 @@ class Rop_Global_Settings {
 			'hashtags_length' => '10',
 			'hashtags_common' => '',
 			'hashtags_custom' => '',
-			'image' => true,
+			'image' => false,
 		),
 	);
 
@@ -266,13 +266,6 @@ class Rop_Global_Settings {
 				self::$instance->services_defaults
 			);
 
-			$post_types = get_post_types( array(), 'objects' );
-			$post_types_array = array();
-			foreach ( $post_types as $type ) {
-				array_push( $post_types_array, array( 'name' => $type->label, 'value' => $type->name, 'selected' => false ) );
-			}
-
-			self::$instance->settings_defaults['available_post_types'] = $post_types_array;
 			self::$instance->settings = apply_filters(
 				'rop_general_settings_defaults',
 				self::$instance->settings_defaults
@@ -355,6 +348,37 @@ class Rop_Global_Settings {
 			}
 		}
 		return $active;
+	}
+
+	public function get_available_post_types() {
+		$has_pro = $this->has_pro();
+		$args = array( 'exclude_from_search' => false );
+		if ( $has_pro === false ) {
+			$args = array( '_builtin' => true, 'exclude_from_search' => false );
+		}
+		$post_types = get_post_types( $args, 'objects' );
+		$post_types_array = array();
+		foreach ( $post_types as $type ) {
+			if ( ! in_array( $type->name, array( 'attachment' ) ) ) {
+				array_push( $post_types_array, array( 'name' => $type->label, 'value' => $type->name, 'selected' => false ) );
+			}
+		}
+
+		return $post_types_array;
+	}
+
+	/**
+	 * Method to check if the PRO classes exist.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return bool
+	 */
+	public function has_pro() {
+		if( class_exists( 'Rop_Admin_Pro' ) ) {
+			return true;
+		}
+		return false;
 	}
 
 	/**

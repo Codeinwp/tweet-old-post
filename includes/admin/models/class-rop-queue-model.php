@@ -214,7 +214,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 				$i = 0;
 				foreach ( $schedules as $index => $time ) {
 					$shuffler = $this->create_shuffler( 0, sizeof( $post_pool ) - 1, sizeof( $schedules ) * $no_of_posts );
-					while ( $i < $no_of_posts ) {
+					while ( $i < $no_of_posts && sizeof( $post_pool ) > 0 ) {
 						$pos = $shuffler[ $i++ ];
 						// print_r( $pos . PHP_EOL );
 						$uid = $this->create_uid( $account_id, $time, ( $index + $i ) );

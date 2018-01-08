@@ -2,13 +2,13 @@
 	<div class="tab-view">
 		<div class="panel-body" style="overflow: inherit;">
 			<h3>Post Format</h3>
-			<figure class="avatar avatar-lg" style="text-align: center;">
+			<figure class="avatar avatar-lg" style="text-align: center;" v-if="accountsCount > 0">
 				<img :src="img" v-if="img">
 				<i class="fa" :class="icon" style="line-height: 48px;" aria-hidden="true" v-else></i>
 				<i class="avatar-icon fa" :class="icon" aria-hidden="true" v-if="img"></i>
 				<!--<img src="img/avatar-5.png" class="avatar-icon" alt="...">-->
 			</figure>
-			<div class="d-inline-block" style="vertical-align: top; margin-left: 16px;">
+			<div class="d-inline-block" style="vertical-align: top; margin-left: 16px;" v-if="accountsCount > 0">
 				<h6>{{user_name}}</h6>
 				<b class="service" :class="service">{{service_name}}</b>
 			</div>
@@ -19,7 +19,8 @@
 					Don't forget to save after each change and remember, you can always reset an account to the network defaults.
 				</i></p>
 			</div>
-			<div class="container">
+			<empty-active-accounts v-if="accountsCount === 0"></empty-active-accounts>
+			<div class="container" v-if="accountsCount > 0">
 				<div class="columns">
 					<div class="column col-sm-12 col-md-12 col-lg-12">
 						<div class="columns">
@@ -295,9 +296,10 @@
 									<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 										<div class="input-group">
 											<label class="form-checkbox">
-												<input type="checkbox" v-model="post_format.image" />
-												<i class="form-icon"></i> Yes
+												<input type="checkbox" v-model="post_format.image" :disabled="!has_pro" />
+												<i class="form-icon" ></i> Yes
 											</label>
+                                            <span class="chip upsell" style="font-size: 10px; vertical-align: baseline;">PRO</span> <i>Available in PRO version. Add upsell message here.</i>
 										</div>
 									</div>
 								</div>
@@ -322,7 +324,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="panel-footer">
+		<div class="panel-footer" v-if="accountsCount > 0">
 			<button class="btn btn-primary" @click="savePostFormat()"><i class="fa fa-check"></i> Save Post Format</button>
 			<button class="btn btn-secondary" @click="resetPostFormat()"><i class="fa fa-ban"></i> Reset to Defaults</button>
 		</div>
@@ -330,6 +332,8 @@
 </template>
 
 <script>
+	import EmptyActiveAccounts from './reusables/empty-active-accounts.vue'
+
 	module.exports = {
 		name: 'post-format-view',
 		data: function () {
@@ -352,6 +356,9 @@
 			}
 		},
 		computed: {
+			has_pro: function () {
+				return this.$store.state.has_pro
+			},
 			computed_chars: function () {
 				let allowedChars = this.post_format.maximum_length
 				let customText = 0
@@ -365,6 +372,13 @@
 					if ( this.post_format.include_link ) serviceReserved = serviceReserved + 25
 				}
 				return allowedChars - customText - hashtagsLength - serviceReserved
+			},
+			accountsCount: function () {
+				if ( this.$store.state.activeAccounts.isArray ) {
+					return this.$store.state.activeAccounts.length
+				} else {
+					return Object.keys( this.$store.state.activeAccounts ).length
+				}
 			},
 			active_accounts: function () {
 				return this.$store.state.activeAccounts
@@ -432,7 +446,14 @@
 		},
 		methods: {
 			getAccountpostFormat () {
-				this.$store.dispatch( 'fetchAJAX', { req: 'get_post_format', data: { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account } } )
+				if ( this.active_accounts[ this.selected_account ] !== undefined ) {
+					this.$store.dispatch( 'fetchAJAX', {req: 'get_post_format',
+						data: {
+							service: this.active_accounts[this.selected_account].service,
+							account_id: this.selected_account
+						}
+					} )
+				}
 			},
 			savePostFormat () {
 				this.$store.dispatch( 'fetchAJAX', { req: 'save_post_format', data: { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account, post_format: this.post_format } } )
@@ -444,6 +465,9 @@
 			updateShortnerCredentials () {
 				this.$store.commit( 'updateState', { stateData: this.shortner_credentials, requestName: 'get_shortner_credentials' } )
 			}
+		},
+		components: {
+			EmptyActiveAccounts
 		}
 	}
 </script>

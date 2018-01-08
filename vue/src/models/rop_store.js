@@ -7,6 +7,14 @@ import VueResource from 'vue-resource'
 Vue.use( Vuex )
 Vue.use( VueResource )
 
+function stringToBoolean ( string ) {
+	switch ( string.toLowerCase().trim() ) {
+	case 'true': case 'yes': case '1': return true
+	case 'false': case 'no': case '0': case null: return false
+	default: return Boolean( string )
+	}
+}
+
 export default new Vuex.Store( {
 	state: {
 		page: {
@@ -58,7 +66,8 @@ export default new Vuex.Store( {
 				isActive: false
 			}
 		],
-		generalSettings: [],
+		has_pro: stringToBoolean( ropApiSettings.has_pro ),
+		generalSettings: { 'available_post_types': ropApiSettings.available_post_types },
 		availableServices: [],
 		authenticatedServices: [],
 		activeAccounts: [],
@@ -103,12 +112,12 @@ export default new Vuex.Store( {
 		updateState ( state, { stateData, requestName } ) {
 			switch ( requestName ) {
 			case 'get_log':
-				console.log( 'Log Response', stateData )
 				state.page.logs = stateData.pretty
 				state.page.logs_verbose = stateData.verbose
 				break
 			case 'get_general_settings':
 				state.generalSettings = stateData
+				state.generalSettings.available_post_types = ropApiSettings.available_post_types
 				break
 			case 'update_selected_post_types':
 				state.generalSettings.selected_post_types = stateData
@@ -145,7 +154,7 @@ export default new Vuex.Store( {
 			case 'authenticate_service':
 				state.authenticatedServices = stateData
 				state.auth_in_progress = false
-				state.activeAccounts = stateData
+				//state.activeAccounts = stateData
 				break
 			case 'get_active_accounts':
 			case 'update_active_accounts':

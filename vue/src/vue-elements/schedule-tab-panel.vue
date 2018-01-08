@@ -2,13 +2,13 @@
 	<div class="tab-view">
 		<div class="panel-body" style="overflow: inherit;">
 			<h3>Custom Schedule</h3>
-			<figure class="avatar avatar-lg" style="text-align: center;">
+			<figure class="avatar avatar-lg" style="text-align: center;" v-if="accountsCount > 0">
 				<img :src="img" v-if="img">
 				<i class="fa" :class="icon" style="line-height: 48px;" aria-hidden="true" v-else></i>
 				<i class="avatar-icon fa" :class="icon" aria-hidden="true" v-if="img"></i>
 				<!--<img src="img/avatar-5.png" class="avatar-icon" alt="...">-->
 			</figure>
-			<div class="d-inline-block" style="vertical-align: top; margin-left: 16px;">
+			<div class="d-inline-block" style="vertical-align: top; margin-left: 16px;" v-if="accountsCount > 0">
 				<h6>{{user_name}}</h6>
 				<b class="service" :class="service">{{service_name}}</b>
 			</div>
@@ -19,7 +19,8 @@
 					Don't forget to save after each change and remember, you can always reset an account to the defaults.
 				</i></p>
 			</div>
-			<div class="container">
+			<empty-active-accounts v-if="accountsCount === 0"></empty-active-accounts>
+			<div class="container" v-if="accountsCount > 0">
 				<div class="columns">
 					<div class="column col-sm-12 col-md-12 col-lg-12">
 						<div class="columns">
@@ -79,9 +80,9 @@
 										<button class="btn btn-success input-group-btn" v-if="schedule.interval_f.time.length > 1" @click="rmvTime( index )">
 											<i class="fa fa-fw fa-minus"></i>
 										</button>
-                                        <button class="btn btn-success input-group-btn" v-if="index == schedule.interval_f.time.length - 1" @click="addTime()">
-                                            <i class="fa fa-fw fa-plus"></i>
-                                        </button>
+										<button class="btn btn-success input-group-btn" v-if="index == schedule.interval_f.time.length - 1" @click="addTime()">
+											<i class="fa fa-fw fa-plus"></i>
+										</button>
 									</div>
 								</div>
 							</div>
@@ -97,15 +98,12 @@
 								</div>
 							</div>
 						</div>
-
-
-
 						<hr/>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="panel-footer">
+		<div class="panel-footer" v-if="accountsCount > 0">
 			<button class="btn btn-primary" @click="saveSchedule()"><i class="fa fa-check"></i> Save Schedule</button>
 			<button class="btn btn-secondary" @click="resetSchedule()"><i class="fa fa-ban"></i> Reset to Defaults</button>
 		</div>
@@ -115,6 +113,7 @@
 <script>
 	import ButtonCheckbox from './reusables/button-checkbox.vue'
 	import VueTimepicker from 'vue2-timepicker'
+	import EmptyActiveAccounts from './reusables/empty-active-accounts.vue'
 
 	module.exports = {
 		name: 'schedule-view',
@@ -167,6 +166,9 @@
 			}
 		},
 		computed: {
+			has_pro: function () {
+				return this.$store.state.has_pro
+			},
 			schedule: function () {
 				return this.$store.state.activeSchedule
 			},
@@ -176,6 +178,13 @@
 					daysObject[day].checked = this.isChecked( daysObject[day].value )
 				}
 				return daysObject
+			},
+			accountsCount: function () {
+				if ( this.$store.state.activeAccounts.isArray ) {
+					return this.$store.state.activeAccounts.length
+				} else {
+					return Object.keys( this.$store.state.activeAccounts ).length
+				}
 			},
 			active_accounts: function () {
 				return this.$store.state.activeAccounts
@@ -260,7 +269,14 @@
 				}
 			},
 			getAccountSchedule () {
-				this.$store.dispatch( 'fetchAJAX', { req: 'get_schedule', data: { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account } } )
+				if ( this.active_accounts[ this.selected_account ] !== undefined ) {
+					this.$store.dispatch( 'fetchAJAX', {req: 'get_schedule',
+						data: {
+							service: this.active_accounts[this.selected_account].service,
+							account_id: this.selected_account
+						}
+					} )
+				}
 			},
 			saveSchedule () {
 				this.$store.dispatch( 'fetchAJAX', { req: 'save_schedule', data: { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account, schedule: this.schedule } } )
@@ -272,6 +288,7 @@
 		},
 		components: {
 			ButtonCheckbox,
+			EmptyActiveAccounts,
 			VueTimepicker
 		}
 	}

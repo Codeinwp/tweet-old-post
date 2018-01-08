@@ -68,7 +68,7 @@
 					}
 				}
 
-				if ( service.allowed_accounts >= countAuthServices || service.allowed_accounts >= countActiveAccounts ) {
+				if ( service.allowed_accounts !== undefined && ( service.allowed_accounts <= countAuthServices || service.allowed_accounts <= countActiveAccounts ) ) {
 					return true
 				}
 
@@ -112,7 +112,7 @@
 				} )
 			},
 			requestAuthentication () {
-				this.$store.dispatch( 'fetchAjax', { req: 'authenticate_service', data: { service: this.selected_network } } )
+				this.$store.dispatch( 'fetchAJAX', { req: 'authenticate_service', data: { service: this.selected_network } } )
 			},
 			openModal: function () {
 				this.modal.isOpen = true

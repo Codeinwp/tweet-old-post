@@ -7,17 +7,17 @@
 			</div>
 		</div>
 
-        <toast />
+		<toast />
 		<div class="panel">
 			<div class="panel-nav" style="padding: 8px;">
 				<ul class="tab">
-					<li class="tab-item" v-for="tab in displayTabs" :class="{ active: tab.isActive }"><a href="#" @click="switchTab( tab.slug )">{{ tab.name }}</a></li>
+					<li class="tab-item" v-for="tab in displayTabs" :class="{ active: tab.isActive, badge: displayProBadge( tab.slug ), upsell: displayProBadge( tab.slug ) }" data-badge="PRO"><a href="#" @click="switchTab( tab.slug )">{{ tab.name }}</a></li>
 					<li class="tab-item tab-action">
 						<div class="form-group">
-                            <label class="form-switch">
-                                <input type="checkbox" v-model="generalSettings.custom_messages" @change="updateSettings" />
-                                <i class="form-icon" ></i> Custom Share Messages
-                            </label>
+							<label class="form-switch">
+								<input type="checkbox" v-model="generalSettings.custom_messages" @change="updateSettings" :disabled="!has_pro" />
+								<i class="form-icon" ></i> Custom Share Messages
+							</label>
 							<label class="form-switch">
 								<input type="checkbox" v-model="generalSettings.beta_user" @change="updateSettings" />
 								<i class="form-icon" ></i> Beta User
@@ -46,16 +46,28 @@
 	import LogsTab from './logs-tab-panel.vue'
 	import Toast from './reusables/toast.vue'
 
-	import { mapState } from 'vuex'
-
 	module.exports = {
 		name: 'main-page-panel',
-		computed: mapState( [ 'displayTabs', 'page', 'generalSettings' ] ),
+		computed: {
+			displayTabs: function () {
+				return this.$store.state.displayTabs
+			},
+			page: function () {
+				return this.$store.state.page
+			},
+			generalSettings: function () {
+				return this.$store.state.generalSettings
+			},
+			has_pro: function () {
+				return this.$store.state.has_pro
+			}
+		},
 		created () {
 		},
 		data: function () {
 			return {
-				plugin_logo: ROP_ASSETS_URL + 'img/logo_rop.png'
+				plugin_logo: ROP_ASSETS_URL + 'img/logo_rop.png',
+				has_pro: this.$store.state.has_pro
 			}
 		},
 		methods: {
@@ -64,6 +76,12 @@
 			},
 			updateSettings () {
 				this.$store.dispatch( 'fetchAJAX', { req: 'update_settings_toggle', data: { custom_messages: this.$store.state.generalSettings.custom_messages, beta_user: this.$store.state.generalSettings.beta_user, remote_check: this.$store.state.generalSettings.remote_check } } )
+			},
+			displayProBadge: function ( slug ) {
+				if ( !this.has_pro && ( slug === 'schedule' || slug === 'queue' ) ) {
+					return true
+				}
+				return false
 			}
 		},
 		components: {
@@ -77,3 +95,11 @@
 		}
 	}
 </script>
+
+<style>
+    #rop_core .badge[data-badge]::after {
+        position: absolute;
+        bottom: -16px;
+        right: 0px;
+    }
+</style>
