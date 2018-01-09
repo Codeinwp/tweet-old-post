@@ -95,7 +95,7 @@
 			limit: function () {
 				let network = this.service.service
 				let service = this.$store.state.availableServices[ network ]
-				if ( service.allowed_accounts !== undefined ) {
+				if ( service !== undefined ) {
 					return service.allowed_accounts
 				}
 				return -1
@@ -104,7 +104,7 @@
 				let network = this.service.service
 				let service = this.$store.state.availableServices[ network ]
 
-				if ( service.active === false ) {
+				if ( service !== undefined && service.active === false ) {
 					return true
 				}
 
@@ -115,7 +115,7 @@
 					}
 				}
 
-				if ( service.allowed_accounts !== undefined && ( service.allowed_accounts <= countActiveAccounts ) ) {
+				if ( service !== undefined && ( service.allowed_accounts <= countActiveAccounts ) ) {
 					return true
 				}
 
@@ -133,7 +133,11 @@
 				this.$store.dispatch( 'fetchAJAX', { req: 'update_active_accounts', data: { service_id: serviceId, service: this.service.service, to_be_activated: this.to_be_activated, current_active: this.$store.state.activeAccounts } } )
 			},
 			removeService () {
-				this.$store.dispatch( 'fetchAJAX', { req: 'remove_service', data: { id: this.service.id, service: this.service.service } } )
+				this.$store.dispatch( 'fetchAJAXPromise', { req: 'remove_service', data: { id: this.service.id, service: this.service.service } } ).then( response => {
+					this.$store.dispatch( 'fetchAJAX', { req: 'get_active_accounts' } )
+				}, error => {
+					console.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
+				} )
 			}
 		},
 		components: {

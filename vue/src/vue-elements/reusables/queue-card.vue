@@ -1,9 +1,9 @@
 <template>
 	<div class="card col-12" style="max-width: 100%; min-height: 350px;">
 		<div style="position: absolute; display: block; top: 0; right: 0;">
-			<button class="btn btn-sm btn-primary" @click="toggleEditState" v-if="edit === false"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</button>
-			<button class="btn btn-sm btn-success" @click="saveChanges" v-if="edit"><i class="fa fa-check" aria-hidden="true"></i> Save</button>
-			<button class="btn btn-sm btn-warning" @click="cancelChanges" v-if="edit"><i class="fa fa-times" aria-hidden="true"></i> Cancel</button>
+			<button class="btn btn-sm btn-primary" @click="toggleEditState" v-if="edit === false" :disabled="!has_pro"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</button>
+			<button class="btn btn-sm btn-success" @click="saveChanges" v-if="edit" :disabled="!has_pro"><i class="fa fa-check" aria-hidden="true"></i> Save</button>
+			<button class="btn btn-sm btn-warning" @click="cancelChanges" v-if="edit" :disabled="!has_pro"><i class="fa fa-times" aria-hidden="true"></i> Cancel</button>
 		</div>
 		<div class="card-header">
 			<p class="text-gray text-right float-right"><b>Scheduled:</b><br/>{{time}}</p>
@@ -58,9 +58,9 @@
 			</div>
 		</div>
 		<div style="position: absolute; display: block; bottom: 0; right: 0;" v-if="edit === false">
-			<button class="btn btn-sm btn-success" @click="publishNow"><i class="fa fa-share" aria-hidden="true"></i> Share Now</button>
-			<button class="btn btn-sm btn-warning" @click="skipPost"><i class="fa fa-step-forward" aria-hidden="true"></i> Skip</button>
-			<button class="btn btn-sm btn-danger" @click="blockPost"><i class="fa fa-ban" aria-hidden="true"></i> Block</button>
+			<button class="btn btn-sm btn-success" @click="publishNow" :disabled="!has_pro"><i class="fa fa-share" aria-hidden="true"></i> Share Now</button>
+			<button class="btn btn-sm btn-warning" @click="skipPost" :disabled="!has_pro"><i class="fa fa-step-forward" aria-hidden="true"></i> Skip</button>
+			<button class="btn btn-sm btn-danger" @click="blockPost" :disabled="!has_pro"><i class="fa fa-ban" aria-hidden="true"></i> Block</button>
 		</div>
 	</div>
 </template>
@@ -97,6 +97,9 @@
 			}
 		},
 		computed: {
+			has_pro: function () {
+				return this.$store.state.has_pro
+			},
 			post_defaults: function () {
 				return JSON.parse( JSON.stringify( this.post ) ) // This removes the observable/reactivity
 			},

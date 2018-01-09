@@ -12254,9 +12254,9 @@ window.onload = function () {
 		store: _rop_store2.default,
 		created: function created() {
 			_rop_store2.default.dispatch('fetchAJAX', { req: 'get_general_settings' });
-			_rop_store2.default.dispatch('fetchAJAX', { req: 'get_available_services' });
-			_rop_store2.default.dispatch('fetchAJAX', { req: 'get_authenticated_services' });
-			_rop_store2.default.dispatch('fetchAJAX', { req: 'get_active_accounts' });
+			_rop_store2.default.dispatch('fetchAJAXPromise', { req: 'get_available_services' });
+			_rop_store2.default.dispatch('fetchAJAXPromise', { req: 'get_authenticated_services' });
+			_rop_store2.default.dispatch('fetchAJAXPromise', { req: 'get_active_accounts' });
 			_rop_store2.default.dispatch('fetchAJAX', { req: 'get_queue' });
 			_rop_store2.default.dispatch('fetchAJAX', { req: 'get_log' });
 		},
@@ -12335,6 +12335,17 @@ function stringToBoolean(string) {
 	}
 }
 
+function licenceType(string) {
+	switch (string.toLowerCase().trim()) {
+		case 'pro':case 'true':case 'yes':
+			return 'pro';
+		case 'business':
+			return 'business';
+		default:
+			return 'lite';
+	}
+}
+
 exports.default = new _vuex2.default.Store({
 	state: {
 		page: {
@@ -12379,6 +12390,7 @@ exports.default = new _vuex2.default.Store({
 			slug: 'logs',
 			isActive: false
 		}],
+		licence: licenceType(ropApiSettings.has_pro),
 		has_pro: stringToBoolean(ropApiSettings.has_pro),
 		generalSettings: { 'available_post_types': ropApiSettings.available_post_types },
 		availableServices: [],
@@ -14244,8 +14256,7 @@ module.exports = {
 
 	data: function data() {
 		return {
-			plugin_logo: ROP_ASSETS_URL + 'img/logo_rop.png',
-			has_pro: this.$store.state.has_pro
+			plugin_logo: ROP_ASSETS_URL + 'img/logo_rop.png'
 		};
 	},
 	methods: {
@@ -14275,11 +14286,11 @@ module.exports = {
 	// </script>
 	//
 	// <style>
-	//     #rop_core .badge[data-badge]::after {
-	//         position: absolute;
-	//         bottom: -16px;
-	//         right: 0px;
-	//     }
+	// 	#rop_core .badge[data-badge]::after {
+	// 		position: absolute;
+	// 		bottom: -16px;
+	// 		right: 0px;
+	// 	}
 	// </style>
 
 }; // <template>
@@ -14300,15 +14311,15 @@ module.exports = {
 // 						<div class="form-group">
 // 							<label class="form-switch">
 // 								<input type="checkbox" v-model="generalSettings.custom_messages" @change="updateSettings" :disabled="!has_pro" />
-// 								<i class="form-icon" ></i> Custom Share Messages
+// 								<i class="form-icon" v-if="has_pro"></i><i class="badge" data-badge="PRO" v-else></i> <span class="hide-sm">Custom Share Messages</span>
 // 							</label>
 // 							<label class="form-switch">
 // 								<input type="checkbox" v-model="generalSettings.beta_user" @change="updateSettings" />
-// 								<i class="form-icon" ></i> Beta User
+//                                 <i class="form-icon"></i> <span class="hide-sm">Beta User</span>
 // 							</label>
 // 							<label class="form-switch">
 // 								<input type="checkbox" v-model="generalSettings.remote_check" @change="updateSettings" />
-// 								<i class="form-icon"></i> Remote Check
+//                                 <i class="form-icon"></i> <span class="hide-sm">Remote Check</span>
 // 							</label>
 // 						</div>
 // 					</li>
@@ -14534,9 +14545,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 				<option v-for="( service, network ) in services" v-bind:value="network" :disabled="checkDisabled( service, network )">{{ service.name }}</option>
 // 			</select>
 //
-// 			<button class="btn input-group-btn" :class="serviceClass" @click="requestAuthorization()" :disabled="checkDisabled(true)" >
+// 			<button class="btn input-group-btn" :class="serviceClass" @click="requestAuthorization()" :disabled="checkDisabled( selected_service, selected_network )" >
 // 				<i class="fa fa-fw" :class="serviceIcon" aria-hidden="true"></i> Sign In
 // 			</button>
+//             <i class="badge" data-badge="PRO" v-if="checkDisabled( selected_service, selected_network ) && !has_pro">More available in the <b>PRO</b> versions.</i>
 // 		</div>
 // 		<div class="modal" :class="modalActiveClass">
 // 			<div class="modal-overlay"></div>
@@ -14579,7 +14591,7 @@ module.exports = {
 	},
 	methods: {
 		checkDisabled: function checkDisabled(service, network) {
-			if (service.active === false) {
+			if (service !== undefined && service.active === false) {
 				return true;
 			}
 
@@ -14597,7 +14609,7 @@ module.exports = {
 				}
 			}
 
-			if (service.allowed_accounts !== undefined && (service.allowed_accounts <= countAuthServices || service.allowed_accounts <= countActiveAccounts)) {
+			if (service !== undefined && (service.allowed_accounts <= countAuthServices || service.allowed_accounts <= countActiveAccounts)) {
 				return true;
 			}
 
@@ -14694,6 +14706,12 @@ module.exports = {
 		}
 	},
 	computed: {
+		has_pro: function has_pro() {
+			return this.$store.state.has_pro;
+		},
+		selected_service: function selected_service() {
+			return this.services[this.selected_network];
+		},
 		selected_network: {
 			get: function get() {
 				var defaultNetwork = this.modal.serviceName;
@@ -15267,7 +15285,7 @@ module.exports = function (it) {
 /* 78 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"sign-in-btn\" _v-7e903530=\"\">\n\t\t<div class=\"input-group\" _v-7e903530=\"\">\n\t\t\t<select class=\"form-select\" v-model=\"selected_network\" _v-7e903530=\"\">\n\t\t\t\t<option v-for=\"( service, network ) in services\" v-bind:value=\"network\" :disabled=\"checkDisabled( service, network )\" _v-7e903530=\"\">{{ service.name }}</option>\n\t\t\t</select>\n\n\t\t\t<button class=\"btn input-group-btn\" :class=\"serviceClass\" @click=\"requestAuthorization()\" :disabled=\"checkDisabled(true)\" _v-7e903530=\"\">\n\t\t\t\t<i class=\"fa fa-fw\" :class=\"serviceIcon\" aria-hidden=\"true\" _v-7e903530=\"\"></i> Sign In\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"modal\" :class=\"modalActiveClass\" _v-7e903530=\"\">\n\t\t\t<div class=\"modal-overlay\" _v-7e903530=\"\"></div>\n\t\t\t<div class=\"modal-container\" _v-7e903530=\"\">\n\t\t\t\t<div class=\"modal-header\" _v-7e903530=\"\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"closeModal()\" _v-7e903530=\"\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\" _v-7e903530=\"\">{{ modal.serviceName }} Service Credentials</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\" _v-7e903530=\"\">\n\t\t\t\t\t<div class=\"content\" _v-7e903530=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-7e903530=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-7e903530=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-7e903530=\"\">\n\t\t\t\t\t\t\t<i _v-7e903530=\"\">{{ field.description }}</i>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-footer\" _v-7e903530=\"\">\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-7e903530=\"\">Sign in</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"sign-in-btn\" _v-7e903530=\"\">\n\t\t<div class=\"input-group\" _v-7e903530=\"\">\n\t\t\t<select class=\"form-select\" v-model=\"selected_network\" _v-7e903530=\"\">\n\t\t\t\t<option v-for=\"( service, network ) in services\" v-bind:value=\"network\" :disabled=\"checkDisabled( service, network )\" _v-7e903530=\"\">{{ service.name }}</option>\n\t\t\t</select>\n\n\t\t\t<button class=\"btn input-group-btn\" :class=\"serviceClass\" @click=\"requestAuthorization()\" :disabled=\"checkDisabled( selected_service, selected_network )\" _v-7e903530=\"\">\n\t\t\t\t<i class=\"fa fa-fw\" :class=\"serviceIcon\" aria-hidden=\"true\" _v-7e903530=\"\"></i> Sign In\n\t\t\t</button>\n            <i class=\"badge\" data-badge=\"PRO\" v-if=\"checkDisabled( selected_service, selected_network ) &amp;&amp; !has_pro\" _v-7e903530=\"\">More available in the <b _v-7e903530=\"\">PRO</b> versions.</i>\n\t\t</div>\n\t\t<div class=\"modal\" :class=\"modalActiveClass\" _v-7e903530=\"\">\n\t\t\t<div class=\"modal-overlay\" _v-7e903530=\"\"></div>\n\t\t\t<div class=\"modal-container\" _v-7e903530=\"\">\n\t\t\t\t<div class=\"modal-header\" _v-7e903530=\"\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"closeModal()\" _v-7e903530=\"\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\" _v-7e903530=\"\">{{ modal.serviceName }} Service Credentials</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\" _v-7e903530=\"\">\n\t\t\t\t\t<div class=\"content\" _v-7e903530=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-7e903530=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-7e903530=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-7e903530=\"\">\n\t\t\t\t\t\t\t<i _v-7e903530=\"\">{{ field.description }}</i>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-footer\" _v-7e903530=\"\">\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-7e903530=\"\">Sign in</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 79 */
@@ -15443,7 +15461,7 @@ module.exports = {
 		limit: function limit() {
 			var network = this.service.service;
 			var service = this.$store.state.availableServices[network];
-			if (service.allowed_accounts !== undefined) {
+			if (service !== undefined) {
 				return service.allowed_accounts;
 			}
 			return -1;
@@ -15452,7 +15470,7 @@ module.exports = {
 			var network = this.service.service;
 			var service = this.$store.state.availableServices[network];
 
-			if (service.active === false) {
+			if (service !== undefined && service.active === false) {
 				return true;
 			}
 
@@ -15463,7 +15481,7 @@ module.exports = {
 				}
 			}
 
-			if (service.allowed_accounts !== undefined && service.allowed_accounts <= countActiveAccounts) {
+			if (service !== undefined && service.allowed_accounts <= countActiveAccounts) {
 				return true;
 			}
 
@@ -15481,7 +15499,13 @@ module.exports = {
 			this.$store.dispatch('fetchAJAX', { req: 'update_active_accounts', data: { service_id: serviceId, service: this.service.service, to_be_activated: this.to_be_activated, current_active: this.$store.state.activeAccounts } });
 		},
 		removeService: function removeService() {
-			this.$store.dispatch('fetchAJAX', { req: 'remove_service', data: { id: this.service.id, service: this.service.service } });
+			var _this = this;
+
+			this.$store.dispatch('fetchAJAXPromise', { req: 'remove_service', data: { id: this.service.id, service: this.service.service } }).then(function (response) {
+				_this.$store.dispatch('fetchAJAX', { req: 'get_active_accounts' });
+			}, function (error) {
+				console.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+			});
 		}
 	},
 	components: {
@@ -17635,7 +17659,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .time-picker.timepicker-style-fix .dropdown {\n\t\ttop: 4px;\n\t}\n\t#rop_core .time-picker.timepicker-style-fix ul {\n\t\tmargin: 0;\n\t}\n\t#rop_core .time-picker.timepicker-style-fix ul li {\n\t\tlist-style: none;\n\t}\n\n\t#rop_core .time-picker.timepicker-style-fix .dropdown ul li.active,\n\t#rop_core .time-picker.timepicker-style-fix .dropdown ul li.active:hover {\n\t\tbackground: #e85407;\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop_core .time-picker.timepicker-style-fix .dropdown {\n\t\ttop: 4px;\n\t}\n\t#rop_core .time-picker.timepicker-style-fix ul {\n\t\tmargin: 0;\n\t}\n\t#rop_core .time-picker.timepicker-style-fix ul li {\n\t\tlist-style: none;\n\t}\n\n\t#rop_core .time-picker.timepicker-style-fix .dropdown ul li.active,\n\t#rop_core .time-picker.timepicker-style-fix .dropdown ul li.active:hover {\n\t\tbackground: #e85407;\n\t}\n\n    #rop_core #main_schedules {\n        position: relative;\n    }\n\n    #rop_core .empty.upsell {\n        position: absolute;\n        top: 50px;\n        left: 0;\n        width: 100%;\n        height: 80%;\n        z-index: 2;\n        background-color: rgba(255,255,255,0.9);\n    }\n", ""]);
 
 // exports
 
@@ -17887,6 +17911,20 @@ module.exports = {
 	// 	#rop_core .time-picker.timepicker-style-fix .dropdown ul li.active:hover {
 	// 		background: #e85407;
 	// 	}
+	//
+	//     #rop_core #main_schedules {
+	//         position: relative;
+	//     }
+	//
+	//     #rop_core .empty.upsell {
+	//         position: absolute;
+	//         top: 50px;
+	//         left: 0;
+	//         width: 100%;
+	//         height: 80%;
+	//         z-index: 2;
+	//         background-color: rgba(255,255,255,0.9);
+	//     }
 	// </style>
 
 }; // <template>
@@ -17913,7 +17951,7 @@ module.exports = {
 // 			<empty-active-accounts v-if="accountsCount === 0"></empty-active-accounts>
 // 			<div class="container" v-if="accountsCount > 0">
 // 				<div class="columns">
-// 					<div class="column col-sm-12 col-md-12 col-lg-12">
+// 					<div id="main_schedules" class="column col-sm-12 col-md-12 col-lg-12">
 // 						<div class="columns">
 // 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
 // 								<b>Account</b><br/>
@@ -17928,7 +17966,14 @@ module.exports = {
 // 							</div>
 // 						</div>
 // 						<hr/>
-//
+//                         <div class="empty upsell" v-if="!has_pro">
+//                             <div class="empty-icon">
+//                                 <i class="fa fa-3x fa-lock"></i>
+//                             </div>
+//                             <p class="empty-title h5">Available in Business</p>
+//                             <p class="empty-subtitle">More upsell info here ...</p>
+//                             <button class="btn btn-primary" @click="goToAccounts()">Get PRO Business</button>
+//                         </div>
 // 						<h4>Schedule</h4>
 // 						<!-- Schedule Type - Can be 'recurring' or 'fixed'
 // 							 If Recurring than an repeating interval is filled (float) Eg. 2.5 hours
@@ -17940,7 +17985,7 @@ module.exports = {
 // 							</div>
 // 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 // 								<div class="form-group">
-// 									<select class="form-select" v-model="schedule.type">
+// 									<select class="form-select" v-model="schedule.type" :disabled="!has_pro">
 // 										<option value="recurring">Recurring</option>
 // 										<option value="fixed">Fixed</option>
 // 									</select>
@@ -17955,7 +18000,7 @@ module.exports = {
 // 							</div>
 // 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 // 								<div class="form-group">
-// 									<button-checkbox v-for="( data, label ) in daysObject" :key="label" :value="data.value" :label="label" :checked="data.checked" @add-day="addDay" @rmv-day="rmvDay"></button-checkbox>
+// 									<button-checkbox v-for="( data, label ) in daysObject" :key="label" :value="data.value" :label="label" :checked="data.checked" @add-day="addDay" @rmv-day="rmvDay" :disabled="!has_pro"></button-checkbox>
 // 								</div>
 // 							</div>
 // 						</div>
@@ -17967,11 +18012,11 @@ module.exports = {
 // 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 // 								<div class="form-group">
 // 									<div class="input-group" v-for="( time, index ) in schedule.interval_f.time">
-// 										<vue-timepicker :minute-interval="5" class="timepicker-style-fix" :value="getTime( index )" @change="syncTime( $event, index )" hide-clear-button></vue-timepicker>
-// 										<button class="btn btn-success input-group-btn" v-if="schedule.interval_f.time.length > 1" @click="rmvTime( index )">
+// 										<vue-timepicker :minute-interval="5" class="timepicker-style-fix" :value="getTime( index )" @change="syncTime( $event, index )" hide-clear-button :disabled="!has_pro"></vue-timepicker>
+// 										<button class="btn btn-success input-group-btn" v-if="schedule.interval_f.time.length > 1" @click="rmvTime( index )" :disabled="!has_pro">
 // 											<i class="fa fa-fw fa-minus"></i>
 // 										</button>
-// 										<button class="btn btn-success input-group-btn" v-if="index == schedule.interval_f.time.length - 1" @click="addTime()">
+// 										<button class="btn btn-success input-group-btn" v-if="index == schedule.interval_f.time.length - 1" @click="addTime()" :disabled="!has_pro">
 // 											<i class="fa fa-fw fa-plus"></i>
 // 										</button>
 // 									</div>
@@ -17985,7 +18030,7 @@ module.exports = {
 // 							</div>
 // 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 // 								<div class="form-group">
-// 									<input type="number" class="form-input" v-model="schedule.interval_r" placeholder="hours.min (Eg. 2.5)" />
+// 									<input type="number" class="form-input" v-model="schedule.interval_r" placeholder="hours.min (Eg. 2.5)" :disabled="!has_pro" />
 // 								</div>
 // 							</div>
 // 						</div>
@@ -17995,8 +18040,8 @@ module.exports = {
 // 			</div>
 // 		</div>
 // 		<div class="panel-footer" v-if="accountsCount > 0">
-// 			<button class="btn btn-primary" @click="saveSchedule()"><i class="fa fa-check"></i> Save Schedule</button>
-// 			<button class="btn btn-secondary" @click="resetSchedule()"><i class="fa fa-ban"></i> Reset to Defaults</button>
+// 			<button class="btn btn-primary" @click="saveSchedule()" :disabled="!has_pro"><i class="fa fa-check"></i> Save Schedule</button>
+// 			<button class="btn btn-secondary" @click="resetSchedule()" :disabled="!has_pro"><i class="fa fa-ban"></i> Reset to Defaults</button>
 // 		</div>
 // 	</div>
 // </template>
@@ -18595,7 +18640,7 @@ module.exports = "\n<span class=\"time-picker\">\n  <input class=\"display-time\
 /* 131 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\" _v-d77321bc=\"\">\n\t\t<div class=\"panel-body\" style=\"overflow: inherit;\" _v-d77321bc=\"\">\n\t\t\t<h3 _v-d77321bc=\"\">Custom Schedule</h3>\n\t\t\t<figure class=\"avatar avatar-lg\" style=\"text-align: center;\" v-if=\"accountsCount > 0\" _v-d77321bc=\"\">\n\t\t\t\t<img :src=\"img\" v-if=\"img\" _v-d77321bc=\"\">\n\t\t\t\t<i class=\"fa\" :class=\"icon\" style=\"line-height: 48px;\" aria-hidden=\"true\" v-else=\"\" _v-d77321bc=\"\"></i>\n\t\t\t\t<i class=\"avatar-icon fa\" :class=\"icon\" aria-hidden=\"true\" v-if=\"img\" _v-d77321bc=\"\"></i>\n\t\t\t\t<!--<img src=\"img/avatar-5.png\" class=\"avatar-icon\" alt=\"...\">-->\n\t\t\t</figure>\n\t\t\t<div class=\"d-inline-block\" style=\"vertical-align: top; margin-left: 16px;\" v-if=\"accountsCount > 0\" _v-d77321bc=\"\">\n\t\t\t\t<h6 _v-d77321bc=\"\">{{user_name}}</h6>\n\t\t\t\t<b class=\"service\" :class=\"service\" _v-d77321bc=\"\">{{service_name}}</b>\n\t\t\t</div>\n\t\t\t<div class=\"d-inline-block\" style=\"vertical-align: top; margin-left: 16px; width: 80%\" _v-d77321bc=\"\">\n\t\t\t\t<h4 _v-d77321bc=\"\"><i class=\"fa fa-info-circle\" _v-d77321bc=\"\"></i> Info</h4>\n\t\t\t\t<p _v-d77321bc=\"\"><i _v-d77321bc=\"\">Each <b _v-d77321bc=\"\">account</b> can have it's own <b _v-d77321bc=\"\">Schedule</b> for sharing, on the left you can see the\n\t\t\t\t\tcurrent selected account and network, bellow are the <b _v-d77321bc=\"\">Schedule</b> options for the account.\n\t\t\t\t\tDon't forget to save after each change and remember, you can always reset an account to the defaults.\n\t\t\t\t</i></p>\n\t\t\t</div>\n\t\t\t<empty-active-accounts v-if=\"accountsCount === 0\" _v-d77321bc=\"\"></empty-active-accounts>\n\t\t\t<div class=\"container\" v-if=\"accountsCount > 0\" _v-d77321bc=\"\">\n\t\t\t\t<div class=\"columns\" _v-d77321bc=\"\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-d77321bc=\"\">\n\t\t\t\t\t\t<div class=\"columns\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<b _v-d77321bc=\"\">Account</b><br _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<i _v-d77321bc=\"\">Specify an account to change the settings of.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"selected_account\" @change=\"getAccountSchedule()\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t\t<option v-for=\"( account, id ) in active_accounts\" :value=\"id\" _v-d77321bc=\"\">{{account.user}} - {{account.service}} </option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<hr _v-d77321bc=\"\">\n\n\t\t\t\t\t\t<h4 _v-d77321bc=\"\">Schedule</h4>\n\t\t\t\t\t\t<!-- Schedule Type - Can be 'recurring' or 'fixed'\n\t\t\t\t\t\t\t If Recurring than an repeating interval is filled (float) Eg. 2.5 hours\n\t\t\t\t\t\t\t If Fixed days of the week are selected and a specific time is selected. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<b _v-d77321bc=\"\">Schedule Type</b><br _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<i _v-d77321bc=\"\">What type of schedule to use.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"schedule.type\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t\t<option value=\"recurring\" _v-d77321bc=\"\">Recurring</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"fixed\" _v-d77321bc=\"\">Fixed</option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<div class=\"columns\" v-if=\"schedule.type === 'fixed'\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<b _v-d77321bc=\"\">Fixed Schedule Days</b><br _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<i _v-d77321bc=\"\">The days when to share for this account.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t<button-checkbox v-for=\"( data, label ) in daysObject\" :key=\"label\" :value=\"data.value\" :label=\"label\" :checked=\"data.checked\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" _v-d77321bc=\"\"></button-checkbox>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-if=\"schedule.type === 'fixed'\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<b _v-d77321bc=\"\">Fixed Schedule Time</b><br _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<i _v-d77321bc=\"\">The time at witch to share for this account.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"input-group\" v-for=\"( time, index ) in schedule.interval_f.time\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t\t<vue-timepicker :minute-interval=\"5\" class=\"timepicker-style-fix\" :value=\"getTime( index )\" @change=\"syncTime( $event, index )\" hide-clear-button=\"\" _v-d77321bc=\"\"></vue-timepicker>\n\t\t\t\t\t\t\t\t\t\t<button class=\"btn btn-success input-group-btn\" v-if=\"schedule.interval_f.time.length > 1\" @click=\"rmvTime( index )\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-minus\" _v-d77321bc=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t\t\t<button class=\"btn btn-success input-group-btn\" v-if=\"index == schedule.interval_f.time.length - 1\" @click=\"addTime()\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-plus\" _v-d77321bc=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-else=\"\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<b _v-d77321bc=\"\">Recurring Schedule Interval</b><br _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<i _v-d77321bc=\"\">A recurring interval to use for sharing. Once every 'X' hours.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t<input type=\"number\" class=\"form-input\" v-model=\"schedule.interval_r\" placeholder=\"hours.min (Eg. 2.5)\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<hr _v-d77321bc=\"\">\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-d77321bc=\"\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveSchedule()\" _v-d77321bc=\"\"><i class=\"fa fa-check\" _v-d77321bc=\"\"></i> Save Schedule</button>\n\t\t\t<button class=\"btn btn-secondary\" @click=\"resetSchedule()\" _v-d77321bc=\"\"><i class=\"fa fa-ban\" _v-d77321bc=\"\"></i> Reset to Defaults</button>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\" _v-d77321bc=\"\">\n\t\t<div class=\"panel-body\" style=\"overflow: inherit;\" _v-d77321bc=\"\">\n\t\t\t<h3 _v-d77321bc=\"\">Custom Schedule</h3>\n\t\t\t<figure class=\"avatar avatar-lg\" style=\"text-align: center;\" v-if=\"accountsCount > 0\" _v-d77321bc=\"\">\n\t\t\t\t<img :src=\"img\" v-if=\"img\" _v-d77321bc=\"\">\n\t\t\t\t<i class=\"fa\" :class=\"icon\" style=\"line-height: 48px;\" aria-hidden=\"true\" v-else=\"\" _v-d77321bc=\"\"></i>\n\t\t\t\t<i class=\"avatar-icon fa\" :class=\"icon\" aria-hidden=\"true\" v-if=\"img\" _v-d77321bc=\"\"></i>\n\t\t\t\t<!--<img src=\"img/avatar-5.png\" class=\"avatar-icon\" alt=\"...\">-->\n\t\t\t</figure>\n\t\t\t<div class=\"d-inline-block\" style=\"vertical-align: top; margin-left: 16px;\" v-if=\"accountsCount > 0\" _v-d77321bc=\"\">\n\t\t\t\t<h6 _v-d77321bc=\"\">{{user_name}}</h6>\n\t\t\t\t<b class=\"service\" :class=\"service\" _v-d77321bc=\"\">{{service_name}}</b>\n\t\t\t</div>\n\t\t\t<div class=\"d-inline-block\" style=\"vertical-align: top; margin-left: 16px; width: 80%\" _v-d77321bc=\"\">\n\t\t\t\t<h4 _v-d77321bc=\"\"><i class=\"fa fa-info-circle\" _v-d77321bc=\"\"></i> Info</h4>\n\t\t\t\t<p _v-d77321bc=\"\"><i _v-d77321bc=\"\">Each <b _v-d77321bc=\"\">account</b> can have it's own <b _v-d77321bc=\"\">Schedule</b> for sharing, on the left you can see the\n\t\t\t\t\tcurrent selected account and network, bellow are the <b _v-d77321bc=\"\">Schedule</b> options for the account.\n\t\t\t\t\tDon't forget to save after each change and remember, you can always reset an account to the defaults.\n\t\t\t\t</i></p>\n\t\t\t</div>\n\t\t\t<empty-active-accounts v-if=\"accountsCount === 0\" _v-d77321bc=\"\"></empty-active-accounts>\n\t\t\t<div class=\"container\" v-if=\"accountsCount > 0\" _v-d77321bc=\"\">\n\t\t\t\t<div class=\"columns\" _v-d77321bc=\"\">\n\t\t\t\t\t<div id=\"main_schedules\" class=\"column col-sm-12 col-md-12 col-lg-12\" _v-d77321bc=\"\">\n\t\t\t\t\t\t<div class=\"columns\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<b _v-d77321bc=\"\">Account</b><br _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<i _v-d77321bc=\"\">Specify an account to change the settings of.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"selected_account\" @change=\"getAccountSchedule()\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t\t<option v-for=\"( account, id ) in active_accounts\" :value=\"id\" _v-d77321bc=\"\">{{account.user}} - {{account.service}} </option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<hr _v-d77321bc=\"\">\n                        <div class=\"empty upsell\" v-if=\"!has_pro\" _v-d77321bc=\"\">\n                            <div class=\"empty-icon\" _v-d77321bc=\"\">\n                                <i class=\"fa fa-3x fa-lock\" _v-d77321bc=\"\"></i>\n                            </div>\n                            <p class=\"empty-title h5\" _v-d77321bc=\"\">Available in Business</p>\n                            <p class=\"empty-subtitle\" _v-d77321bc=\"\">More upsell info here ...</p>\n                            <button class=\"btn btn-primary\" @click=\"goToAccounts()\" _v-d77321bc=\"\">Get PRO Business</button>\n                        </div>\n\t\t\t\t\t\t<h4 _v-d77321bc=\"\">Schedule</h4>\n\t\t\t\t\t\t<!-- Schedule Type - Can be 'recurring' or 'fixed'\n\t\t\t\t\t\t\t If Recurring than an repeating interval is filled (float) Eg. 2.5 hours\n\t\t\t\t\t\t\t If Fixed days of the week are selected and a specific time is selected. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<b _v-d77321bc=\"\">Schedule Type</b><br _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<i _v-d77321bc=\"\">What type of schedule to use.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"schedule.type\" :disabled=\"!has_pro\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t\t<option value=\"recurring\" _v-d77321bc=\"\">Recurring</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"fixed\" _v-d77321bc=\"\">Fixed</option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<div class=\"columns\" v-if=\"schedule.type === 'fixed'\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<b _v-d77321bc=\"\">Fixed Schedule Days</b><br _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<i _v-d77321bc=\"\">The days when to share for this account.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t<button-checkbox v-for=\"( data, label ) in daysObject\" :key=\"label\" :value=\"data.value\" :label=\"label\" :checked=\"data.checked\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" :disabled=\"!has_pro\" _v-d77321bc=\"\"></button-checkbox>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-if=\"schedule.type === 'fixed'\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<b _v-d77321bc=\"\">Fixed Schedule Time</b><br _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<i _v-d77321bc=\"\">The time at witch to share for this account.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"input-group\" v-for=\"( time, index ) in schedule.interval_f.time\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t\t<vue-timepicker :minute-interval=\"5\" class=\"timepicker-style-fix\" :value=\"getTime( index )\" @change=\"syncTime( $event, index )\" hide-clear-button=\"\" :disabled=\"!has_pro\" _v-d77321bc=\"\"></vue-timepicker>\n\t\t\t\t\t\t\t\t\t\t<button class=\"btn btn-success input-group-btn\" v-if=\"schedule.interval_f.time.length > 1\" @click=\"rmvTime( index )\" :disabled=\"!has_pro\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-minus\" _v-d77321bc=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t\t\t<button class=\"btn btn-success input-group-btn\" v-if=\"index == schedule.interval_f.time.length - 1\" @click=\"addTime()\" :disabled=\"!has_pro\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-plus\" _v-d77321bc=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-else=\"\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<b _v-d77321bc=\"\">Recurring Schedule Interval</b><br _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<i _v-d77321bc=\"\">A recurring interval to use for sharing. Once every 'X' hours.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t<input type=\"number\" class=\"form-input\" v-model=\"schedule.interval_r\" placeholder=\"hours.min (Eg. 2.5)\" :disabled=\"!has_pro\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<hr _v-d77321bc=\"\">\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-d77321bc=\"\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveSchedule()\" :disabled=\"!has_pro\" _v-d77321bc=\"\"><i class=\"fa fa-check\" _v-d77321bc=\"\"></i> Save Schedule</button>\n\t\t\t<button class=\"btn btn-secondary\" @click=\"resetSchedule()\" :disabled=\"!has_pro\" _v-d77321bc=\"\"><i class=\"fa fa-ban\" _v-d77321bc=\"\"></i> Reset to Defaults</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 132 */
@@ -18640,6 +18685,9 @@ module.exports = {
 		},
 		queue: function queue() {
 			return this.$store.state.queue;
+		},
+		has_pro: function has_pro() {
+			return this.$store.state.has_pro;
 		}
 	},
 	methods: {
@@ -18756,9 +18804,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // <template>
 // 	<div class="card col-12" style="max-width: 100%; min-height: 350px;">
 // 		<div style="position: absolute; display: block; top: 0; right: 0;">
-// 			<button class="btn btn-sm btn-primary" @click="toggleEditState" v-if="edit === false"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</button>
-// 			<button class="btn btn-sm btn-success" @click="saveChanges" v-if="edit"><i class="fa fa-check" aria-hidden="true"></i> Save</button>
-// 			<button class="btn btn-sm btn-warning" @click="cancelChanges" v-if="edit"><i class="fa fa-times" aria-hidden="true"></i> Cancel</button>
+// 			<button class="btn btn-sm btn-primary" @click="toggleEditState" v-if="edit === false" :disabled="!has_pro"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</button>
+// 			<button class="btn btn-sm btn-success" @click="saveChanges" v-if="edit" :disabled="!has_pro"><i class="fa fa-check" aria-hidden="true"></i> Save</button>
+// 			<button class="btn btn-sm btn-warning" @click="cancelChanges" v-if="edit" :disabled="!has_pro"><i class="fa fa-times" aria-hidden="true"></i> Cancel</button>
 // 		</div>
 // 		<div class="card-header">
 // 			<p class="text-gray text-right float-right"><b>Scheduled:</b><br/>{{time}}</p>
@@ -18813,9 +18861,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 			</div>
 // 		</div>
 // 		<div style="position: absolute; display: block; bottom: 0; right: 0;" v-if="edit === false">
-// 			<button class="btn btn-sm btn-success" @click="publishNow"><i class="fa fa-share" aria-hidden="true"></i> Share Now</button>
-// 			<button class="btn btn-sm btn-warning" @click="skipPost"><i class="fa fa-step-forward" aria-hidden="true"></i> Skip</button>
-// 			<button class="btn btn-sm btn-danger" @click="blockPost"><i class="fa fa-ban" aria-hidden="true"></i> Block</button>
+// 			<button class="btn btn-sm btn-success" @click="publishNow" :disabled="!has_pro"><i class="fa fa-share" aria-hidden="true"></i> Share Now</button>
+// 			<button class="btn btn-sm btn-warning" @click="skipPost" :disabled="!has_pro"><i class="fa fa-step-forward" aria-hidden="true"></i> Skip</button>
+// 			<button class="btn btn-sm btn-danger" @click="blockPost" :disabled="!has_pro"><i class="fa fa-ban" aria-hidden="true"></i> Block</button>
 // 		</div>
 // 	</div>
 // </template>
@@ -18852,6 +18900,9 @@ module.exports = {
 		};
 	},
 	computed: {
+		has_pro: function has_pro() {
+			return this.$store.state.has_pro;
+		},
 		post_defaults: function post_defaults() {
 			return JSON.parse((0, _stringify2.default)(this.post)); // This removes the observable/reactivity
 		},
@@ -19038,7 +19089,7 @@ module.exports = {
 /* 138 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"card col-12\" style=\"max-width: 100%; min-height: 350px;\" _v-2719575f=\"\">\n\t\t<div style=\"position: absolute; display: block; top: 0; right: 0;\" _v-2719575f=\"\">\n\t\t\t<button class=\"btn btn-sm btn-primary\" @click=\"toggleEditState\" v-if=\"edit === false\" _v-2719575f=\"\"><i class=\"fa fa-pencil\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Edit</button>\n\t\t\t<button class=\"btn btn-sm btn-success\" @click=\"saveChanges\" v-if=\"edit\" _v-2719575f=\"\"><i class=\"fa fa-check\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Save</button>\n\t\t\t<button class=\"btn btn-sm btn-warning\" @click=\"cancelChanges\" v-if=\"edit\" _v-2719575f=\"\"><i class=\"fa fa-times\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Cancel</button>\n\t\t</div>\n\t\t<div class=\"card-header\" _v-2719575f=\"\">\n\t\t\t<p class=\"text-gray text-right float-right\" _v-2719575f=\"\"><b _v-2719575f=\"\">Scheduled:</b><br _v-2719575f=\"\">{{time}}</p>\n\t\t\t<div class=\"card-title h6\" _v-2719575f=\"\">{{post.post_title}}</div>\n\t\t\t<div class=\"card-subtitle text-gray\" _v-2719575f=\"\"><i class=\"service fa\" :class=\"iconClass( account_id )\" _v-2719575f=\"\"></i> {{active_accounts[account_id].account}}</div>\n\t\t</div>\n\t\t<hr _v-2719575f=\"\">\n\t\t<span v-if=\"edit === false\" _v-2719575f=\"\">\n\t\t\t<details class=\"accordion\" v-if=\"post_img_url !== ''\" _v-2719575f=\"\">\n\t\t\t\t<summary class=\"accordion-header\" _v-2719575f=\"\">\n\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-2719575f=\"\"></i>\n\t\t\t\t\tImage Preview\n\t\t\t\t</summary>\n\t\t\t\t<div class=\"accordion-body\" _v-2719575f=\"\">\n\t\t\t\t\t<div class=\"card-image\" v-if=\"post_img_url !== ''\" _v-2719575f=\"\">\n\t\t\t\t\t\t<figure class=\"figure\" style=\"max-height: 250px; overflow: hidden;\" _v-2719575f=\"\">\n\t\t\t\t\t\t\t<img :src=\"post_img_url\" class=\"img-fit-cover\" style=\" width: 100%; height: 250px;\" @error=\"brokenImg\" _v-2719575f=\"\">\n\t\t\t\t\t\t</figure>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</details>\n\t\t\t<details class=\"accordion\" v-else=\"\" _v-2719575f=\"\">\n\t\t\t\t<summary class=\"accordion-header\" _v-2719575f=\"\">\n\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-2719575f=\"\"></i>\n\t\t\t\t\tNo Image\n\t\t\t\t</summary>\n\t\t\t\t<div class=\"accordion-body text-gray\" _v-2719575f=\"\">\n\t\t\t\t\t<small _v-2719575f=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-chain-broken\" aria-hidden=\"true\" _v-2719575f=\"\"></i> No image attached or a broken link was detected.<br _v-2719575f=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-info-circle\" aria-hidden=\"true\" _v-2719575f=\"\"></i> <i _v-2719575f=\"\">If a image should be here, update the post or edit this item.</i>\n\t\t\t\t\t</small>\n\t\t\t\t</div>\n\t\t\t</details>\n\n\t\t\t<div class=\"card-body\" v-if=\"edit === false\" _v-2719575f=\"\">\n\t\t\t\t<p v-html=\"hashtags( post_content )\" _v-2719575f=\"\"></p>\n\t\t\t\t<p v-if=\"post.post_url\" _v-2719575f=\"\"><b _v-2719575f=\"\">Link:</b> <a :href=\"post.post_url\" target=\"_blank\" _v-2719575f=\"\">{{post.post_url}}</a></p>\n\t\t\t</div>\n\t\t</span>\n\t\t<div class=\"card-body\" v-else=\"\" _v-2719575f=\"\">\n\t\t\t<div class=\"form-group\" _v-2719575f=\"\">\n\t\t\t\t<label class=\"form-label\" for=\"image\" _v-2719575f=\"\">Image</label>\n\t\t\t\t<div class=\"input-group\" _v-2719575f=\"\">\n\t\t\t\t\t<span class=\"input-group-addon\" _v-2719575f=\"\"><i class=\"fa fa-file-image-o\" _v-2719575f=\"\"></i></span>\n\t\t\t\t\t<input id=\"image\" type=\"text\" class=\"form-input\" :value=\"post_img_url\" readonly=\"\" _v-2719575f=\"\">\n\t\t\t\t\t<button class=\"btn btn-primary input-group-btn\" @click=\"uploadImage\" _v-2719575f=\"\"><i class=\"fa fa-upload\" aria-hidden=\"true\" _v-2719575f=\"\"></i></button>\n\t\t\t\t\t<button class=\"btn btn-danger input-group-btn\" @click=\"clearImage\" _v-2719575f=\"\"><i class=\"fa fa-trash\" aria-hidden=\"true\" _v-2719575f=\"\"></i></button>\n\t\t\t\t</div>\n\n\t\t\t\t<label class=\"form-label\" for=\"content\" _v-2719575f=\"\">Content</label>\n\t\t\t\t<textarea class=\"form-input\" id=\"content\" placeholder=\"Textarea\" rows=\"3\" @keyup=\"checkCount\" _v-2719575f=\"\">{{post_content}}</textarea>\n\t\t\t</div>\n\t\t</div>\n\t\t<div style=\"position: absolute; display: block; bottom: 0; right: 0;\" v-if=\"edit === false\" _v-2719575f=\"\">\n\t\t\t<button class=\"btn btn-sm btn-success\" @click=\"publishNow\" _v-2719575f=\"\"><i class=\"fa fa-share\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Share Now</button>\n\t\t\t<button class=\"btn btn-sm btn-warning\" @click=\"skipPost\" _v-2719575f=\"\"><i class=\"fa fa-step-forward\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Skip</button>\n\t\t\t<button class=\"btn btn-sm btn-danger\" @click=\"blockPost\" _v-2719575f=\"\"><i class=\"fa fa-ban\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Block</button>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"card col-12\" style=\"max-width: 100%; min-height: 350px;\" _v-2719575f=\"\">\n\t\t<div style=\"position: absolute; display: block; top: 0; right: 0;\" _v-2719575f=\"\">\n\t\t\t<button class=\"btn btn-sm btn-primary\" @click=\"toggleEditState\" v-if=\"edit === false\" :disabled=\"!has_pro\" _v-2719575f=\"\"><i class=\"fa fa-pencil\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Edit</button>\n\t\t\t<button class=\"btn btn-sm btn-success\" @click=\"saveChanges\" v-if=\"edit\" :disabled=\"!has_pro\" _v-2719575f=\"\"><i class=\"fa fa-check\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Save</button>\n\t\t\t<button class=\"btn btn-sm btn-warning\" @click=\"cancelChanges\" v-if=\"edit\" :disabled=\"!has_pro\" _v-2719575f=\"\"><i class=\"fa fa-times\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Cancel</button>\n\t\t</div>\n\t\t<div class=\"card-header\" _v-2719575f=\"\">\n\t\t\t<p class=\"text-gray text-right float-right\" _v-2719575f=\"\"><b _v-2719575f=\"\">Scheduled:</b><br _v-2719575f=\"\">{{time}}</p>\n\t\t\t<div class=\"card-title h6\" _v-2719575f=\"\">{{post.post_title}}</div>\n\t\t\t<div class=\"card-subtitle text-gray\" _v-2719575f=\"\"><i class=\"service fa\" :class=\"iconClass( account_id )\" _v-2719575f=\"\"></i> {{active_accounts[account_id].account}}</div>\n\t\t</div>\n\t\t<hr _v-2719575f=\"\">\n\t\t<span v-if=\"edit === false\" _v-2719575f=\"\">\n\t\t\t<details class=\"accordion\" v-if=\"post_img_url !== ''\" _v-2719575f=\"\">\n\t\t\t\t<summary class=\"accordion-header\" _v-2719575f=\"\">\n\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-2719575f=\"\"></i>\n\t\t\t\t\tImage Preview\n\t\t\t\t</summary>\n\t\t\t\t<div class=\"accordion-body\" _v-2719575f=\"\">\n\t\t\t\t\t<div class=\"card-image\" v-if=\"post_img_url !== ''\" _v-2719575f=\"\">\n\t\t\t\t\t\t<figure class=\"figure\" style=\"max-height: 250px; overflow: hidden;\" _v-2719575f=\"\">\n\t\t\t\t\t\t\t<img :src=\"post_img_url\" class=\"img-fit-cover\" style=\" width: 100%; height: 250px;\" @error=\"brokenImg\" _v-2719575f=\"\">\n\t\t\t\t\t\t</figure>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</details>\n\t\t\t<details class=\"accordion\" v-else=\"\" _v-2719575f=\"\">\n\t\t\t\t<summary class=\"accordion-header\" _v-2719575f=\"\">\n\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-2719575f=\"\"></i>\n\t\t\t\t\tNo Image\n\t\t\t\t</summary>\n\t\t\t\t<div class=\"accordion-body text-gray\" _v-2719575f=\"\">\n\t\t\t\t\t<small _v-2719575f=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-chain-broken\" aria-hidden=\"true\" _v-2719575f=\"\"></i> No image attached or a broken link was detected.<br _v-2719575f=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-info-circle\" aria-hidden=\"true\" _v-2719575f=\"\"></i> <i _v-2719575f=\"\">If a image should be here, update the post or edit this item.</i>\n\t\t\t\t\t</small>\n\t\t\t\t</div>\n\t\t\t</details>\n\n\t\t\t<div class=\"card-body\" v-if=\"edit === false\" _v-2719575f=\"\">\n\t\t\t\t<p v-html=\"hashtags( post_content )\" _v-2719575f=\"\"></p>\n\t\t\t\t<p v-if=\"post.post_url\" _v-2719575f=\"\"><b _v-2719575f=\"\">Link:</b> <a :href=\"post.post_url\" target=\"_blank\" _v-2719575f=\"\">{{post.post_url}}</a></p>\n\t\t\t</div>\n\t\t</span>\n\t\t<div class=\"card-body\" v-else=\"\" _v-2719575f=\"\">\n\t\t\t<div class=\"form-group\" _v-2719575f=\"\">\n\t\t\t\t<label class=\"form-label\" for=\"image\" _v-2719575f=\"\">Image</label>\n\t\t\t\t<div class=\"input-group\" _v-2719575f=\"\">\n\t\t\t\t\t<span class=\"input-group-addon\" _v-2719575f=\"\"><i class=\"fa fa-file-image-o\" _v-2719575f=\"\"></i></span>\n\t\t\t\t\t<input id=\"image\" type=\"text\" class=\"form-input\" :value=\"post_img_url\" readonly=\"\" _v-2719575f=\"\">\n\t\t\t\t\t<button class=\"btn btn-primary input-group-btn\" @click=\"uploadImage\" _v-2719575f=\"\"><i class=\"fa fa-upload\" aria-hidden=\"true\" _v-2719575f=\"\"></i></button>\n\t\t\t\t\t<button class=\"btn btn-danger input-group-btn\" @click=\"clearImage\" _v-2719575f=\"\"><i class=\"fa fa-trash\" aria-hidden=\"true\" _v-2719575f=\"\"></i></button>\n\t\t\t\t</div>\n\n\t\t\t\t<label class=\"form-label\" for=\"content\" _v-2719575f=\"\">Content</label>\n\t\t\t\t<textarea class=\"form-input\" id=\"content\" placeholder=\"Textarea\" rows=\"3\" @keyup=\"checkCount\" _v-2719575f=\"\">{{post_content}}</textarea>\n\t\t\t</div>\n\t\t</div>\n\t\t<div style=\"position: absolute; display: block; bottom: 0; right: 0;\" v-if=\"edit === false\" _v-2719575f=\"\">\n\t\t\t<button class=\"btn btn-sm btn-success\" @click=\"publishNow\" :disabled=\"!has_pro\" _v-2719575f=\"\"><i class=\"fa fa-share\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Share Now</button>\n\t\t\t<button class=\"btn btn-sm btn-warning\" @click=\"skipPost\" :disabled=\"!has_pro\" _v-2719575f=\"\"><i class=\"fa fa-step-forward\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Skip</button>\n\t\t\t<button class=\"btn btn-sm btn-danger\" @click=\"blockPost\" :disabled=\"!has_pro\" _v-2719575f=\"\"><i class=\"fa fa-ban\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Block</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 139 */
@@ -19246,7 +19297,7 @@ module.exports = "\n\t<div class=\"toast\" :class=\"toastTypeClass\" >\n\t\t<but
 /* 148 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div>\n\t\t<div class=\"panel title-panel\" style=\"margin-bottom: 40px; padding-bottom: 20px;\">\n\t\t\t<div class=\"panel-header\">\n\t\t\t\t<img :src=\"plugin_logo\" style=\"float: left; margin-right: 10px;\" />\n\t\t\t\t<h1 class=\"d-inline-block\">Revive Old Posts</h1><span class=\"powered\"> by <a href=\"https://themeisle.com\" target=\"_blank\"><b>ThemeIsle</b></a></span>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<toast />\n\t\t<div class=\"panel\">\n\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t<ul class=\"tab\">\n\t\t\t\t\t<li class=\"tab-item\" v-for=\"tab in displayTabs\" :class=\"{ active: tab.isActive, badge: displayProBadge( tab.slug ), upsell: displayProBadge( tab.slug ) }\" data-badge=\"PRO\"><a href=\"#\" @click=\"switchTab( tab.slug )\">{{ tab.name }}</a></li>\n\t\t\t\t\t<li class=\"tab-item tab-action\">\n\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.custom_messages\" @change=\"updateSettings\" :disabled=\"!has_pro\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" ></i> Custom Share Messages\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.beta_user\" @change=\"updateSettings\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" ></i> Beta User\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.remote_check\" @change=\"updateSettings\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Remote Check\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\n\t\t\t<component :is=\"page.view\"></component>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div>\n\t\t<div class=\"panel title-panel\" style=\"margin-bottom: 40px; padding-bottom: 20px;\">\n\t\t\t<div class=\"panel-header\">\n\t\t\t\t<img :src=\"plugin_logo\" style=\"float: left; margin-right: 10px;\" />\n\t\t\t\t<h1 class=\"d-inline-block\">Revive Old Posts</h1><span class=\"powered\"> by <a href=\"https://themeisle.com\" target=\"_blank\"><b>ThemeIsle</b></a></span>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<toast />\n\t\t<div class=\"panel\">\n\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t<ul class=\"tab\">\n\t\t\t\t\t<li class=\"tab-item\" v-for=\"tab in displayTabs\" :class=\"{ active: tab.isActive, badge: displayProBadge( tab.slug ), upsell: displayProBadge( tab.slug ) }\" data-badge=\"PRO\"><a href=\"#\" @click=\"switchTab( tab.slug )\">{{ tab.name }}</a></li>\n\t\t\t\t\t<li class=\"tab-item tab-action\">\n\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.custom_messages\" @change=\"updateSettings\" :disabled=\"!has_pro\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" v-if=\"has_pro\"></i><i class=\"badge\" data-badge=\"PRO\" v-else></i> <span class=\"hide-sm\">Custom Share Messages</span>\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.beta_user\" @change=\"updateSettings\" />\n                                <i class=\"form-icon\"></i> <span class=\"hide-sm\">Beta User</span>\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.remote_check\" @change=\"updateSettings\" />\n                                <i class=\"form-icon\"></i> <span class=\"hide-sm\">Remote Check</span>\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\n\t\t\t<component :is=\"page.view\"></component>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 149 */,
@@ -19287,7 +19338,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, "\n    #rop_core .badge[data-badge]::after {\n        position: absolute;\n        bottom: -16px;\n        right: 0px;\n    }\n", ""]);
+exports.push([module.i, "\n\t#rop_core .badge[data-badge]::after {\n\t\tposition: absolute;\n\t\tbottom: -16px;\n\t\tright: 0px;\n\t}\n", ""]);
 
 // exports
 

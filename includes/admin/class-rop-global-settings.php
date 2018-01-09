@@ -376,7 +376,8 @@ class Rop_Global_Settings {
 	 */
 	public function has_pro() {
 		if( class_exists( 'Rop_Admin_Pro' ) ) {
-			return true;
+			$pro_admin = new Rop_Admin_Pro();
+			return $pro_admin->is_business(); // TODO should return a string 'pro' or 'business' based on licence type
 		}
 		return false;
 	}

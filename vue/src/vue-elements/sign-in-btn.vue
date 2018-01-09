@@ -5,9 +5,10 @@
 				<option v-for="( service, network ) in services" v-bind:value="network" :disabled="checkDisabled( service, network )">{{ service.name }}</option>
 			</select>
 
-			<button class="btn input-group-btn" :class="serviceClass" @click="requestAuthorization()" :disabled="checkDisabled(true)" >
+			<button class="btn input-group-btn" :class="serviceClass" @click="requestAuthorization()" :disabled="checkDisabled( selected_service, selected_network )" >
 				<i class="fa fa-fw" :class="serviceIcon" aria-hidden="true"></i> Sign In
 			</button>
+            <i class="badge" data-badge="PRO" v-if="checkDisabled( selected_service, selected_network ) && !has_pro">More available in the <b>PRO</b> versions.</i>
 		</div>
 		<div class="modal" :class="modalActiveClass">
 			<div class="modal-overlay"></div>
@@ -50,7 +51,7 @@
 		},
 		methods: {
 			checkDisabled ( service, network ) {
-				if ( service.active === false ) {
+				if ( service !== undefined && service.active === false ) {
 					return true
 				}
 
@@ -68,7 +69,7 @@
 					}
 				}
 
-				if ( service.allowed_accounts !== undefined && ( service.allowed_accounts <= countAuthServices || service.allowed_accounts <= countActiveAccounts ) ) {
+				if ( service !== undefined && ( service.allowed_accounts <= countAuthServices || service.allowed_accounts <= countActiveAccounts ) ) {
 					return true
 				}
 
@@ -138,9 +139,15 @@
 			}
 		},
 		computed: {
+			has_pro: function () {
+				return this.$store.state.has_pro
+			},
+			selected_service: function () {
+				return this.services[this.selected_network]
+			},
 			selected_network: {
 				get: function () {
-					var defaultNetwork = this.modal.serviceName
+					let defaultNetwork = this.modal.serviceName
 					if ( Object.keys( this.services )[0] && defaultNetwork === '' ) {
 						defaultNetwork = Object.keys( this.services )[0]
 					}

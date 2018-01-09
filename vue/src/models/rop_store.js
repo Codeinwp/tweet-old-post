@@ -15,6 +15,14 @@ function stringToBoolean ( string ) {
 	}
 }
 
+function licenceType ( string ) {
+	switch ( string.toLowerCase().trim() ) {
+	case 'pro': case 'true': case 'yes': return 'pro'
+	case 'business': return 'business'
+	default: return 'lite'
+	}
+}
+
 export default new Vuex.Store( {
 	state: {
 		page: {
@@ -66,6 +74,7 @@ export default new Vuex.Store( {
 				isActive: false
 			}
 		],
+		licence: licenceType( ropApiSettings.has_pro ),
 		has_pro: stringToBoolean( ropApiSettings.has_pro ),
 		generalSettings: { 'available_post_types': ropApiSettings.available_post_types },
 		availableServices: [],

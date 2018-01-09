@@ -16,15 +16,15 @@
 						<div class="form-group">
 							<label class="form-switch">
 								<input type="checkbox" v-model="generalSettings.custom_messages" @change="updateSettings" :disabled="!has_pro" />
-								<i class="form-icon" ></i> Custom Share Messages
+								<i class="form-icon" v-if="has_pro"></i><i class="badge" data-badge="PRO" v-else></i> <span class="hide-sm">Custom Share Messages</span>
 							</label>
 							<label class="form-switch">
 								<input type="checkbox" v-model="generalSettings.beta_user" @change="updateSettings" />
-								<i class="form-icon" ></i> Beta User
+                                <i class="form-icon"></i> <span class="hide-sm">Beta User</span>
 							</label>
 							<label class="form-switch">
 								<input type="checkbox" v-model="generalSettings.remote_check" @change="updateSettings" />
-								<i class="form-icon"></i> Remote Check
+                                <i class="form-icon"></i> <span class="hide-sm">Remote Check</span>
 							</label>
 						</div>
 					</li>
@@ -66,8 +66,7 @@
 		},
 		data: function () {
 			return {
-				plugin_logo: ROP_ASSETS_URL + 'img/logo_rop.png',
-				has_pro: this.$store.state.has_pro
+				plugin_logo: ROP_ASSETS_URL + 'img/logo_rop.png'
 			}
 		},
 		methods: {
@@ -97,9 +96,9 @@
 </script>
 
 <style>
-    #rop_core .badge[data-badge]::after {
-        position: absolute;
-        bottom: -16px;
-        right: 0px;
-    }
+	#rop_core .badge[data-badge]::after {
+		position: absolute;
+		bottom: -16px;
+		right: 0px;
+	}
 </style>

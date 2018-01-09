@@ -32,6 +32,9 @@
 			},
 			queue: function () {
 				return this.$store.state.queue
+			},
+			has_pro: function () {
+				return this.$store.state.has_pro
 			}
 		},
 		methods: {

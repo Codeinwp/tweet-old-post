@@ -12,9 +12,9 @@ window.onload = function () {
 		store,
 		created () {
 			store.dispatch( 'fetchAJAX', { req: 'get_general_settings' } )
-			store.dispatch( 'fetchAJAX', { req: 'get_available_services' } )
-			store.dispatch( 'fetchAJAX', { req: 'get_authenticated_services' } )
-			store.dispatch( 'fetchAJAX', { req: 'get_active_accounts' } )
+			store.dispatch( 'fetchAJAXPromise', { req: 'get_available_services' } )
+			store.dispatch( 'fetchAJAXPromise', { req: 'get_authenticated_services' } )
+			store.dispatch( 'fetchAJAXPromise', { req: 'get_active_accounts' } )
 			store.dispatch( 'fetchAJAX', { req: 'get_queue' } )
 			store.dispatch( 'fetchAJAX', { req: 'get_log' } )
 		},

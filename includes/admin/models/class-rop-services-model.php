@@ -121,6 +121,10 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	public function delete_authenticated_service( $service_id, $service ) {
 		$this->last_services_query = $this->get_authenticated_services();
 		$index = $service . '_' . $service_id;
+		$available_accounts = $this->last_services_query[ $index ]['available_accounts'];
+		foreach ( $available_accounts as $account ) {
+			$this->delete_active_accounts( $index . '_' . $account['id'] );
+		}
 		unset( $this->last_services_query[ $index ] );
 		$this->set( $this->services_namespace, $this->last_services_query );
 		return $this->last_services_query;
