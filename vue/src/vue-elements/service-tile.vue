@@ -130,11 +130,19 @@
 				this.show_credentials = !this.show_credentials
 			},
 			activateSelected ( serviceId ) {
-				this.$store.dispatch( 'fetchAJAX', { req: 'update_active_accounts', data: { service_id: serviceId, service: this.service.service, to_be_activated: this.to_be_activated, current_active: this.$store.state.activeAccounts } } )
+				this.$store.dispatch( 'fetchAJAXPromise', { req: 'update_active_accounts', data: { service_id: serviceId, service: this.service.service, to_be_activated: this.to_be_activated, current_active: this.$store.state.activeAccounts } } ).then( response => {
+					this.$store.dispatch( 'fetchAJAX', { req: 'get_queue' } )
+				}, error => {
+					console.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
+				} )
 			},
 			removeService () {
 				this.$store.dispatch( 'fetchAJAXPromise', { req: 'remove_service', data: { id: this.service.id, service: this.service.service } } ).then( response => {
-					this.$store.dispatch( 'fetchAJAX', { req: 'get_active_accounts' } )
+					this.$store.dispatch( 'fetchAJAXPromsie', { req: 'get_active_accounts' } ).then( response => {
+						this.$store.dispatch( 'fetchAJAX', { req: 'get_queue' } )
+					}, error => {
+						console.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
+					} )
 				}, error => {
 					console.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
 				} )

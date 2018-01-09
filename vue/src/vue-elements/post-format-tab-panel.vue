@@ -299,7 +299,7 @@
 												<input type="checkbox" v-model="post_format.image" :disabled="!has_pro" />
 												<i class="form-icon" ></i> Yes
 											</label>
-                                            <span class="chip upsell" style="font-size: 10px; vertical-align: baseline;">PRO</span> <i>Available in PRO version. Add upsell message here.</i>
+											<span class="chip upsell" style="font-size: 10px; vertical-align: baseline;">PRO</span> <i>Available in PRO version. Add upsell message here.</i>
 										</div>
 									</div>
 								</div>
@@ -456,10 +456,18 @@
 				}
 			},
 			savePostFormat () {
-				this.$store.dispatch( 'fetchAJAX', { req: 'save_post_format', data: { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account, post_format: this.post_format } } )
+				this.$store.dispatch( 'fetchAJAXPromise', { req: 'save_post_format', data: { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account, post_format: this.post_format } } ).then( response => {
+					this.$store.dispatch( 'fetchAJAX', { req: 'get_queue' } )
+				}, error => {
+					console.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
+				} )
 			},
 			resetPostFormat () {
-				this.$store.dispatch( 'fetchAJAX', { req: 'reset_post_format', data: { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account } } )
+				this.$store.dispatch( 'fetchAJAXPromise', { req: 'reset_post_format', data: { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account } } ).then( response => {
+					this.$store.dispatch( 'fetchAJAX', { req: 'get_queue' } )
+				}, error => {
+					console.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
+				} )
 				this.$forceUpdate()
 			},
 			updateShortnerCredentials () {

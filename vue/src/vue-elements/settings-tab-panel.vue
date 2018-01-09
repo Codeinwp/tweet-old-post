@@ -209,7 +209,7 @@
 				let excludeTaxonomies = this.generalSettings.exclude_taxonomies
 				let postsSelected = this.generalSettings.selected_posts
 
-				this.$store.dispatch( 'fetchAJAX', {
+				this.$store.dispatch( 'fetchAJAXPromise', {
 					req: 'save_general_settings',
 					updateState: false,
 					data: {
@@ -224,6 +224,10 @@
 						posts: postsSelected,
 						exclude_posts: this.generalSettings.exclude_posts
 					}
+				} ).then( response => {
+					this.$store.dispatch( 'fetchAJAX', { req: 'get_queue' } )
+				}, error => {
+					console.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
 				} )
 			}
 		},

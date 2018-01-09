@@ -37,14 +37,14 @@
 							</div>
 						</div>
 						<hr/>
-                        <div class="empty upsell" v-if="!has_pro">
-                            <div class="empty-icon">
-                                <i class="fa fa-3x fa-lock"></i>
-                            </div>
-                            <p class="empty-title h5">Available in Business</p>
-                            <p class="empty-subtitle">More upsell info here ...</p>
-                            <button class="btn btn-primary" @click="goToAccounts()">Get PRO Business</button>
-                        </div>
+						<div class="empty upsell" v-if="!has_pro">
+							<div class="empty-icon">
+								<i class="fa fa-3x fa-lock"></i>
+							</div>
+							<p class="empty-title h5">Available in Business</p>
+							<p class="empty-subtitle">More upsell info here ...</p>
+							<button class="btn btn-primary" @click="goToAccounts()">Get PRO Business</button>
+						</div>
 						<h4>Schedule</h4>
 						<!-- Schedule Type - Can be 'recurring' or 'fixed'
 							 If Recurring than an repeating interval is filled (float) Eg. 2.5 hours
@@ -286,10 +286,18 @@
 				}
 			},
 			saveSchedule () {
-				this.$store.dispatch( 'fetchAJAX', { req: 'save_schedule', data: { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account, schedule: this.schedule } } )
+				this.$store.dispatch( 'fetchAJAXPromise', { req: 'save_schedule', data: { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account, schedule: this.schedule } } ).then( response => {
+					this.$store.dispatch( 'fetchAJAX', { req: 'get_queue' } )
+				}, error => {
+					console.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
+				} )
 			},
 			resetSchedule () {
-				this.$store.dispatch( 'fetchAJAX', { req: 'reset_schedule', data: { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account } } )
+				this.$store.dispatch( 'fetchAJAXPromise', { req: 'reset_schedule', data: { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account } } ).then( response => {
+					this.$store.dispatch( 'fetchAJAX', { req: 'get_queue' } )
+				}, error => {
+					console.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
+				} )
 				this.$forceUpdate()
 			}
 		},
@@ -346,17 +354,17 @@
 		background: #e85407;
 	}
 
-    #rop_core #main_schedules {
-        position: relative;
-    }
+	#rop_core #main_schedules {
+		position: relative;
+	}
 
-    #rop_core .empty.upsell {
-        position: absolute;
-        top: 50px;
-        left: 0;
-        width: 100%;
-        height: 80%;
-        z-index: 2;
-        background-color: rgba(255,255,255,0.9);
-    }
+	#rop_core .empty.upsell {
+		position: absolute;
+		top: 50px;
+		left: 0;
+		width: 100%;
+		height: 80%;
+		z-index: 2;
+		background-color: rgba(255,255,255,0.9);
+	}
 </style>
