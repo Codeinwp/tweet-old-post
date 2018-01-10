@@ -73,7 +73,7 @@ class Rop_Admin {
 		 * class.
 		 */
 		$screen = get_current_screen();
-		if ( in_array( $screen->id, array( 'toplevel_page_rop_main' ) ) ) {
+		if ( in_array( $screen->id, array( 'toplevel_page_TweetOldPost' ) ) ) {
 			wp_enqueue_style( $this->plugin_name . '_core', ROP_LITE_URL . 'assets/css/rop_core.css', array(), $this->version, 'all' );
 			wp_enqueue_style( $this->plugin_name, ROP_LITE_URL . 'assets/css/rop.css', array($this->plugin_name . '_core'), $this->version, 'all' );
 		}
@@ -100,7 +100,7 @@ class Rop_Admin {
 		 */
 		$screen = get_current_screen();
 
-		if ( in_array( $screen->id, array( 'toplevel_page_rop_main' ) ) ) {
+		if ( in_array( $screen->id, array( 'toplevel_page_TweetOldPost' ) ) ) {
 			wp_enqueue_media();
 			wp_enqueue_script( $this->plugin_name . '_fa', 'https://use.fontawesome.com/af4c3f0b39.js', array(), $this->version, false );
 
@@ -208,7 +208,7 @@ class Rop_Admin {
 	 */
 	public function menu_pages() {
 		add_menu_page(
-			__( 'Revive Old Posts', 'rop' ), __( 'Revive Old Posts', 'rop' ), 'manage_options', 'rop_main',
+			__( 'Revive Old Posts', 'rop' ), __( 'Revive Old Posts', 'rop' ), 'manage_options', 'TweetOldPost',
 			array(
 				$this,
 				'rop_main_page',
