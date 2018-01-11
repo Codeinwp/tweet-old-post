@@ -25,13 +25,29 @@ class Rop_Db_Upgrade {
 	 * @return bool
 	 */
 	public function do_upgrade() {
+
+		$this->migrate_accounts();
+
+		$this->migrate_settings();
+
+	}
+
+	public function migrate_settings() {
+		
+	}
+
+	public function migrate_accounts() {
+
 		$previous_logged_users = get_option('cwp_top_logged_in_users');
 
 		if( $previous_logged_users ) {
 
 			$model = new Rop_Services_Model();
+
+			// TODO Remove this 2 lines after finishing testing
 			$model->reset_active_accounts();
 			$model->reset_authenticated_services();
+			// TODO End
 
 
 			$service = array();
@@ -120,8 +136,8 @@ class Rop_Db_Upgrade {
 						$tumblr_service = new Rop_Tumblr_Service();
 						$consumer_key = get_option('cwp_top_consumer_key_tumblr');
 						$consumer_secret = get_option('cwp_top_consumer_secret_tumblr');
-						$oauth_token = get_option('cwp_top_oauth_token_tumblr');
-						$oauth_token_secret = get_option('cwp_top_oauth_token_secret_tumblr');
+						$oauth_token = $user['oauth_token'];
+						$oauth_token_secret = $user['oauth_token_secret'];
 
 						if ( $tumblr_service->re_authenticate( $consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret ) ) {
 							$api = $tumblr_service->get_api();
@@ -131,8 +147,8 @@ class Rop_Db_Upgrade {
 
 							}
 							$id = $user['user_id'];
-							if( isset( $info['response']['blog']['name'] ) ) {
-								$id = $info['response']['blog']['name'];
+							if( isset( $info->response->blog->name ) ) {
+								$id = $info->response->blog->name;
 							}
 
 							$index =  $user['service'] . '_' .  $id;
@@ -164,6 +180,7 @@ class Rop_Db_Upgrade {
 			$model->add_authenticated_service( $service );
 			$model->add_active_accounts( $active_accounts );
 		}
+
 	}
 
 	/**
