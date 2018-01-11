@@ -125,7 +125,11 @@ class Rop_Db_Upgrade {
 
 						if ( $tumblr_service->re_authenticate( $consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret ) ) {
 							$api = $tumblr_service->get_api();
-							$info = $api->get( 'http://api.tumblr.com/v2/blog/' . get_option("cwp_top_consumer_url_tumblr") . '/info?api_key=' . $consumer_key );
+							try {
+								$info = $api->getBlogInfo( get_option("cwp_top_consumer_url_tumblr") );
+							} catch ( Exception $exception ) {
+
+							}
 							$id = $user['user_id'];
 							if( isset( $info['response']['blog']['name'] ) ) {
 								$id = $info['response']['blog']['name'];

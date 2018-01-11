@@ -197,9 +197,14 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	}
 
 	public function re_authenticate( $consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret ) {
-		$api = $this->get_api( $consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret );
-
-		$profile = $api->getUserInfo();
+		$this->set_api( $consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret );
+		$api = $this->get_api();
+		try {
+			$profile = $api->getUserInfo();
+		} catch ( Exception $exception ) {
+			$log = new Rop_Logger();
+			$log->warn( 'User Info failed for Tumblr.', array( $exception ) );
+		}
 		if ( isset( $profile->user->name ) ) {
 			$this->service = array(
 				'id' => $profile->user->name,
