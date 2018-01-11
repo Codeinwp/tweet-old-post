@@ -196,9 +196,13 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$api = $this->get_api( $client_id, $secret );
 		$api->setAccessToken( new LinkedIn\AccessToken( $token ) );
 
-		$profile = $api->get(
-			'people/~:(id,email-address,first-name,last-name,formatted-name,picture-url)'
-		);
+		try {
+			$profile = $api->get(
+				'people/~:(id,email-address,first-name,last-name,formatted-name,picture-url)'
+			);
+		} catch ( \LinkedIn\Exception $e ) {
+			$this->error->throw_exception( '400 Bad Request', 'LinkedIn returned an error: ' . $e->getMessage() );
+		}
 		if ( isset( $profile['id'] ) ) {
 			$this->service = array(
 				'id' => $profile['id'],
@@ -327,7 +331,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$users = array(
 			'id' => $data['id'],
 			'name' => $data['formattedName'],
-			'account' => $data['emailAddress'],
+			'account' => $data['formattedName'],
 			'img' => $img,
 			'active' => true,
 		);

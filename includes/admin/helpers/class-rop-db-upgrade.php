@@ -80,7 +80,7 @@ class Rop_Db_Upgrade {
 							$service[$index] = $facebook_service->get_service();
 
 							$img = $user['oauth_user_details']->profile_image_url;
-							$key = array_search($user['user_id'], array_column( $service[$index]['available_accounts'], 'id' ) );
+							$key = array_search( $user['user_id'], array_column( $service[$index]['available_accounts'], 'id' ) );
 							if( $key ) {
 								$img = $service[$index]['available_accounts'][$key]['img'];
 							}
@@ -110,13 +110,50 @@ class Rop_Db_Upgrade {
 								'service' => $user['service'],
 								'user' => $linkedin_service->user['formattedName'],
 								'img' => $linkedin_service->user['pictureUrl'],
-								'account' => $linkedin_service->user['emailAddress'],
+								'account' => $linkedin_service->user['formattedName'],
 								'created' => date( 'd/m/Y H:i' ),
 							);
 						}
 
 						break;
 					case 'tumblr':
+						$tumblr_service = new Rop_Tumblr_Service();
+						$consumer_key = get_option('cwp_top_consumer_key_tumblr');
+						$consumer_secret = get_option('cwp_top_consumer_secret_tumblr');
+						$oauth_token = get_option('cwp_top_oauth_token_tumblr');
+						$oauth_token_secret = get_option('cwp_top_oauth_token_secret_tumblr');
+
+						if ( $tumblr_service->re_authenticate( $consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret ) ) {
+							$api = $tumblr_service->get_api();
+							$info = $api->get( 'http://api.tumblr.com/v2/blog/' . get_option("cwp_top_consumer_url_tumblr") . '/info?api_key=' . $consumer_key );
+							$id = $user['user_id'];
+							if( isset( $info['response']['blog']['name'] ) ) {
+								$id = $info['response']['blog']['name'];
+							}
+
+							$index =  $user['service'] . '_' .  $id;
+							$service[$index] = $tumblr_service->get_service();
+
+							$key = array_search( $id, array_column( $service[$index]['available_accounts'], 'id' ) );
+							$name = $user['oauth_user_details']->name;
+							$account = $id;
+							$img = $user['oauth_user_details']->profile_image_url;
+							if( $key ) {
+								$name = $service[$index]['available_accounts'][$key]['name'];
+								$account = $service[$index]['available_accounts'][$key]['account'];
+								$img = $service[$index]['available_accounts'][$key]['img'];
+							}
+
+							$index_account = $index . '_' . $id;
+							$active_accounts[$index_account] = array(
+								'service' => $user['service'],
+								'user' => $name,
+								'img' => $img,
+								'account' => $account,
+								'created' => date( 'd/m/Y H:i' ),
+							);
+						}
+
 						break;
 				}
 			}

@@ -196,6 +196,36 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		return false;
 	}
 
+	public function re_authenticate( $consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret ) {
+		$api = $this->get_api( $consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret );
+
+		$profile = $api->getUserInfo();
+		if ( isset( $profile->user->name ) ) {
+			$this->service = array(
+				'id' => $profile->user->name,
+				'service' => $this->service_name,
+				'credentials' => $this->credentials,
+				'public_credentials' => array(
+					'app_id' => array(
+						'name' => 'Consumer Key',
+						'value' => $this->credentials['consumer_key'],
+						'private' => false,
+					),
+					'secret' => array(
+						'name' => 'Consumer Secret',
+						'value' => $this->credentials['consumer_secret'],
+						'private' => true,
+					),
+				),
+				'available_accounts' => $this->get_users( $profile->user->blogs ),
+			);
+
+			return true;
+		}
+
+		return false;
+	}
+
 	/**
 	 * Method to request a token from api.
 	 *
