@@ -33,7 +33,7 @@ class Rop_Db_Upgrade {
 	}
 
 	public function migrate_settings() {
-		
+
 	}
 
 	public function migrate_accounts() {
