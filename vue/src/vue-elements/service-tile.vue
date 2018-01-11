@@ -138,7 +138,7 @@
 			},
 			removeService () {
 				this.$store.dispatch( 'fetchAJAXPromise', { req: 'remove_service', data: { id: this.service.id, service: this.service.service } } ).then( response => {
-					this.$store.dispatch( 'fetchAJAXPromsie', { req: 'get_active_accounts' } ).then( response => {
+					this.$store.dispatch( 'fetchAJAXPromise', { req: 'get_active_accounts' } ).then( response => {
 						this.$store.dispatch( 'fetchAJAX', { req: 'get_queue' } )
 					}, error => {
 						console.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )

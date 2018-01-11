@@ -30,7 +30,10 @@ class Rop_Activator {
 	 * @since    8.0.0
 	 */
 	public static function activate() {
-
+		$upgrade_helper = new Rop_Db_Upgrade();
+		if( $upgrade_helper->is_upgrade_required() ) {
+			$upgrade_helper->do_upgrade();
+		}
 	}
 
 }

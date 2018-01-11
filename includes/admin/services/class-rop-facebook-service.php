@@ -48,6 +48,15 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	private $service = array();
 
 	/**
+	 * An instance of authenticated Facebook user.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @var     array $user An instance of the current user.
+	 */
+	public $user;
+
+	/**
 	 * Method to inject functionality into constructor.
 	 * Defines the defaults and settings for this service.
 	 *
@@ -212,6 +221,52 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 			return false;
 		}// End if().
+
+		return false;
+	}
+
+	public function re_authenticate( $app_id, $secret, $token ) {
+		$api = $this->get_api( $app_id, $secret );
+		$this->set_credentials( array(
+			'app_id' => $app_id,
+			'secret' => $secret,
+			'token' => $token,
+		) );
+		$api->setDefaultAccessToken( $token );
+
+		try {
+			// Returns a `Facebook\FacebookResponse` object
+			$response = $api->get( '/me?fields=id,name,email', $token );
+		} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
+			$this->error->throw_exception( '400 Bad Request', 'Graph returned an error: ' . $e->getMessage() );
+		} catch ( Facebook\Exceptions\FacebookSDKException $e ) {
+			$this->error->throw_exception( '400 Bad Request', 'Facebook SDK returned an error: ' . $e->getMessage() );
+		}
+
+		$user = $response->getGraphUser();
+		$this->user = $user;
+		if ( $user->getId() ) {
+			$this->service = array(
+				'id' => $user->getId(),
+				'service' => $this->service_name,
+				'credentials' => $this->credentials,
+				'public_credentials' => array(
+					'app_id' => array(
+						'name' => 'APP ID',
+						'value' => $this->credentials['app_id'],
+						'private' => false,
+					),
+					'secret' => array(
+						'name' => 'APP Secret',
+						'value' => $this->credentials['secret'],
+						'private' => true,
+					),
+				),
+				'available_accounts' => $this->get_pages( $user ),
+			);
+
+			return true;
+		}
 
 		return false;
 	}

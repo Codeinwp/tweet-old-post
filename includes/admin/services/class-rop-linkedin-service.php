@@ -48,6 +48,15 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	private $service = array();
 
 	/**
+	 * An instance of authenticated LinkedIn user.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @var     array $user An instance of the current user.
+	 */
+	public $user;
+
+	/**
 	 * Method to inject functionality into constructor.
 	 * Defines the defaults and settings for this service.
 	 *
@@ -179,6 +188,40 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 			return false;
 		}// End if().
+
+		return false;
+	}
+
+	public function re_authenticate( $client_id, $secret, $token ) {
+		$api = $this->get_api( $client_id, $secret );
+		$api->setAccessToken( new LinkedIn\AccessToken( $token ) );
+
+		$profile = $api->get(
+			'people/~:(id,email-address,first-name,last-name,formatted-name,picture-url)'
+		);
+		if ( isset( $profile['id'] ) ) {
+			$this->service = array(
+				'id' => $profile['id'],
+				'service' => $this->service_name,
+				'credentials' => $this->credentials,
+				'public_credentials' => array(
+					'app_id' => array(
+						'name' => 'Client ID',
+						'value' => $this->credentials['client_id'],
+						'private' => false,
+					),
+					'secret' => array(
+						'name' => 'Client Secret',
+						'value' => $this->credentials['secret'],
+						'private' => true,
+					),
+				),
+				'available_accounts' => $this->get_users( $profile ),
+			);
+
+			$this->user = $profile;
+			return true;
+		}
 
 		return false;
 	}

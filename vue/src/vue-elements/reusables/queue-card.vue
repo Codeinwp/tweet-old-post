@@ -8,7 +8,7 @@
 		<div class="card-header">
 			<p class="text-gray text-right float-right"><b>Scheduled:</b><br/>{{time}}</p>
 			<div class="card-title h6">{{post.post_title}}</div>
-			<div class="card-subtitle text-gray"><i class="service fa" :class="iconClass( account_id )"></i> {{active_accounts[account_id].account}}</div>
+			<div class="card-subtitle text-gray"><i class="service fa" :class="iconClass( account_id )"></i> {{active_accounts[account_id].user}}</div>
 		</div>
 		<hr/>
 		<span v-if="edit === false">

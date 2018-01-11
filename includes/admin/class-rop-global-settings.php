@@ -87,28 +87,28 @@ class Rop_Global_Settings {
 					'description' => 'Please add the APP SECRET from your Facebook app.',
 				),
 			),
-			'allowed_accounts' => 1,
+			//'allowed_accounts' => 1,
 		),
 		'twitter' => array(
 			'active' => true,
 			'name' => 'Twitter',
 			'two_step_sign_in' => false,
-			'allowed_accounts' => 1,
+			//'allowed_accounts' => 1,
 		),
 		'linkedin' => array(
-			'active' => false,
+			'active' => true,
 			'name' => 'LinkedIn',
-//	 'two_step_sign_in' => true,
-//	 'credentials' => array(
-//	 'client_id' => array(
-//	 'name' => 'Client ID',
-//	 'description' => 'Please add the Client ID from your LinkedIn app.',
-//	 ),
-//	 'secret' => array(
-//	 'name' => 'Client Secret',
-//	 'description' => 'Please add the Client Secret from your LinkedIn app.',
-//	 ),
-//	 ),
+	 'two_step_sign_in' => true,
+	 'credentials' => array(
+	 'client_id' => array(
+	 'name' => 'Client ID',
+	 'description' => 'Please add the Client ID from your LinkedIn app.',
+	 ),
+	 'secret' => array(
+	 'name' => 'Client Secret',
+	 'description' => 'Please add the Client Secret from your LinkedIn app.',
+	 ),
+	 ),
 		),
 		'tumblr' => array(
 			'active' => false,
@@ -375,6 +375,7 @@ class Rop_Global_Settings {
 	 * @return bool
 	 */
 	public function has_pro() {
+		return 'business';
 		if( class_exists( 'Rop_Admin_Pro' ) ) {
 			$pro_admin = new Rop_Admin_Pro();
 			return $pro_admin->is_business(); // TODO should return a string 'pro' or 'business' based on licence type
