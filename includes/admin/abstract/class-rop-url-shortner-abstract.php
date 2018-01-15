@@ -153,6 +153,19 @@ abstract class Rop_Url_Shortner_Abstract {
 		return $url;
 	}
 
+	public function append_utm( $url ) {
+		$url_parts = parse_url($url);
+		parse_str($url_parts['query'], $params);
+
+		$params['utm_source'] = 'ReviveOldPost';
+		$params['utm_medium'] = 'social';
+		$params['utm_campaign'] = 'ReviveOldPost';
+
+		$url_parts['query'] = http_build_query($params);
+
+		return $url_parts['scheme'] . '://' . $url_parts['host'] . $url_parts['path'] . '?' . $url_parts['query'];
+	}
+
 	/**
 	 * Utility method to build the headers.
 	 *

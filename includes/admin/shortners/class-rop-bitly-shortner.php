@@ -41,6 +41,12 @@ class Rop_Bitly_Shortner extends Rop_Url_Shortner_Abstract {
 	 * @return string
 	 */
 	public function shorten_url( $url ) {
+
+		$settings = new Rop_Settings_Model();
+		if( $settings->get_ga_tracking() ) {
+			$url = $this->append_utm( $url );
+		}
+
 		$response = $this->callAPI(
 			'https://api-ssl.bit.ly/v3/shorten',
 			array('method' => 'get'),

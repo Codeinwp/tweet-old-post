@@ -225,6 +225,16 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		return false;
 	}
 
+	/**
+	 * Method to re authenticate an user based on provided credentials.
+	 * Used in DB upgrade.
+	 *
+	 * @param string $app_id    The app id.
+	 * @param string $secret    The app secret.
+	 * @param string $token     The token.
+	 *
+	 * @return bool
+	 */
 	public function re_authenticate( $app_id, $secret, $token ) {
 		$api = $this->get_api( $app_id, $secret );
 		$this->set_credentials( array(

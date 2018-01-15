@@ -196,6 +196,17 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		return false;
 	}
 
+	/**
+	 * Method to re authenticate an user based on provided credentials.
+	 * Used in DB upgrade.
+	 *
+	 * @param string $consumer_key          The consumer key.
+	 * @param string $consumer_secret       The consumer secret.
+	 * @param string $oauth_token           The oauth token.
+	 * @param string $oauth_token_secret    The oauth token secret.
+	 *
+	 * @return bool
+	 */
 	public function re_authenticate( $consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret ) {
 		$this->set_api( $consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret );
 		$api = $this->get_api();

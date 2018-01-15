@@ -46,7 +46,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 		$global_settings = new Rop_Global_Settings();
 		$default = $global_settings->get_default_settings();
 		$this->settings = wp_parse_args( $this->get( 'general_settings' ), $default );
-		//$this->settings = wp_parse_args( array(), $default );
+		// $this->settings = wp_parse_args( array(), $default );
 		return $this->settings;
 	}
 
@@ -61,6 +61,17 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	public function save_settings( $data = array() ) {
 		unset( $data['available_post_types'] );
 	    return $this->set( 'general_settings', $data );
+	}
+
+	/**
+	 * Method to retrieve if Google Analytics tracking should be used.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return mixed
+	 */
+	public function get_ga_tracking() {
+		return $this->settings['ga_tracking'];
 	}
 
 	/**

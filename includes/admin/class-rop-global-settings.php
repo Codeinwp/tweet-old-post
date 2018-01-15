@@ -125,6 +125,7 @@ class Rop_Global_Settings {
 		'available_posts' => array(), // get_posts(),
 		'selected_posts' => array(),
 		'exclude_posts' => false,
+		'ga_tracking' => false,
 		'post_limit' => 20,
 		'beta_user' => false,
 		'remote_check' => false,
@@ -328,6 +329,13 @@ class Rop_Global_Settings {
 		return $active;
 	}
 
+	/**
+	 * Defines the available post types.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return array
+	 */
 	public function get_available_post_types() {
 		$has_pro = $this->has_pro();
 		$args = array( 'exclude_from_search' => false );
@@ -353,8 +361,8 @@ class Rop_Global_Settings {
 	 * @return bool
 	 */
 	public function has_pro() {
-		//return 'business';
-		if( class_exists( 'Rop_Pro' ) ) {
+		// return 'business';
+		if ( class_exists( 'Rop_Pro' ) ) {
 			$pro = new Rop_Pro();
 			return $pro->is_business(); // TODO should return a string 'pro' or 'business' based on licence type
 		}

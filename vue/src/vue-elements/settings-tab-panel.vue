@@ -135,6 +135,25 @@
 						</div>
 					</div>
 				</div>
+				<hr/>
+				<div  class="columns">
+					<div class="column col-sm-12 col-md-12 col-lg-12">
+						<div class="columns">
+							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+								<b>Enable Google Analytics Tracking</b><br/>
+								<i>If checked an utm query willbe added to URL's so that you cand better track trafic.</i>
+							</div>
+							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+								<div class="form-group">
+									<label class="form-checkbox">
+										<input type="checkbox" v-model="generalSettings.ga_tracking" />
+										<i class="form-icon"></i> Yes
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="panel-footer">
@@ -222,7 +241,8 @@
 						taxonomies: taxonomiesSelected,
 						exclude_taxonomies: excludeTaxonomies,
 						posts: postsSelected,
-						exclude_posts: this.generalSettings.exclude_posts
+						exclude_posts: this.generalSettings.exclude_posts,
+						ga_tracking: this.generalSettings.ga_tracking
 					}
 				} ).then( response => {
 					this.$store.dispatch( 'fetchAJAX', { req: 'get_queue' } )

@@ -417,6 +417,7 @@ class Rop_Rest_Api {
 			'exclude_taxonomies' => $data['exclude_taxonomies'],
 			'selected_posts' => $data['posts'],
 			'exclude_posts' => $data['exclude_posts'],
+			'ga_tracking' => $data['ga_tracking'],
 		);
 		$settings_model = new Rop_Settings_Model();
 		$settings_model->save_settings( $general_settings );

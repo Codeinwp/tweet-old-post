@@ -114,7 +114,7 @@ class Rop_Admin {
 					'nonce' => wp_create_nonce( 'wp_rest' ),
 				);
 			}
-			$global_settings =  new Rop_Global_Settings();
+			$global_settings = new Rop_Global_Settings();
 			$array_nonce['has_pro'] = $global_settings->has_pro();
 			$array_nonce['available_post_types'] = $global_settings->get_available_post_types();
 			wp_localize_script( $this->plugin_name . '_main', 'ropApiSettings', $array_nonce );
@@ -151,6 +151,43 @@ class Rop_Admin {
 				'rop_main_page',
 			)
 		);
+	}
+
+	/**
+	 * The Cron Job for the plugin.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 */
+	public function rop_cron_job() {
+		$queue = new Rop_Queue_Model();
+		$services_model = new Rop_Services_Model();
+		$log = new Rop_Logger();
+
+		$queue_stack = $queue->get_ordered_queue();
+		foreach ( $queue_stack as $index => $event ) {
+			if ( strtotime( $event['time'] ) <= current_time( 'timestamp', 0 ) ) {
+				$account_data = $services_model->find_account( $event['account_id'] );
+				$service_factory = new Rop_Services_Factory();
+				try {
+					$service = $service_factory->build( $account_data['service'] );
+					$service->set_credentials( $account_data['credentials'] );
+					$queue_event = $queue->remove_from_queue( $index, $event['account_id'] );
+					if ( $service->share( $queue_event, $account_data ) ) {
+						$info_message = sprintf( esc_html__( 'The post was shared successfully with the %1$s network', 'tweet-old-post' ), $account_data['service'] );
+						$log->info( $info_message );
+					} else {
+						$error_message = sprintf( esc_html__( 'The post was not shared with the %1$s network. An error occured.', 'tweet-old-post' ), $account_data['service'] );
+						$log->warn( $error_message );
+					}
+					$this->response->set_data( $queue->get_ordered_queue() );
+				} catch ( Exception $exception ) {
+					// The service can not be built or was not found.
+					$error_message = sprintf( esc_html__( 'The service %1$s can NOT be built or was not found', 'tweet-old-post' ), $account_data['service'] );
+					$log->warn( $error_message, $exception );
+				}
+			}
+		}
 	}
 
 }

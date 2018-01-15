@@ -192,6 +192,16 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		return false;
 	}
 
+	/**
+	 * Method to re authenticate an user based on provided credentials.
+	 * Used in DB upgrade.
+	 *
+	 * @param string $client_id The client id.
+	 * @param string $secret    The app secret.
+	 * @param string $token     The token.
+	 *
+	 * @return bool
+	 */
 	public function re_authenticate( $client_id, $secret, $token ) {
 		$api = $this->get_api( $client_id, $secret );
 		$api->setAccessToken( new LinkedIn\AccessToken( $token ) );

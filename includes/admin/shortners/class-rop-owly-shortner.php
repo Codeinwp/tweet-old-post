@@ -40,6 +40,11 @@ class Rop_Owly_Shortner extends Rop_Url_Shortner_Abstract {
 	 * @return string
 	 */
 	public function shorten_url( $url ) {
+		$settings = new Rop_Settings_Model();
+		if( $settings->get_ga_tracking() ) {
+			$url = $this->append_utm( $url );
+		}
+
 		$response = $this->callAPI(
 			'http://ow.ly/api/1.1/url/shorten',
 			array( 'method' => 'get', 'json' => true ),
