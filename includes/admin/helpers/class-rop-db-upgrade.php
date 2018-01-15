@@ -33,6 +33,76 @@ class Rop_Db_Upgrade {
 	}
 
 	public function migrate_settings() {
+		$general_settings = new Rop_Settings_Model();
+		$setting = $general_settings->get_settings();
+
+		if( get_option( 'top_opt_age_limit', null ) !== null ) {
+			$setting['minimum_post_age'] = (int) get_option( 'top_opt_age_limit' );
+		}
+
+		if( get_option( 'top_opt_max_age_limit', null ) !== null ) {
+			$setting['maximum_post_age'] = (int) get_option( 'top_opt_max_age_limit' );
+		}
+
+		if( get_option( 'top_opt_no_of_tweet', null ) !== null ) {
+			$setting['number_of_posts'] = (int) get_option( 'top_opt_no_of_tweet' );
+		}
+
+		if( get_option( 'top_opt_tweet_multiple_times', null ) !== null ) {
+			$setting['more_than_once'] = ( get_option( 'top_opt_tweet_multiple_times' ) === 'on' ) ? true : false;
+		}
+
+		if( get_option( 'top_opt_post_type', null ) !== null ) {
+			$args = array( 'exclude_from_search' => false );
+			$post_types = get_post_types( $args, 'objects' );
+			$post_types_array = array();
+			foreach ( $post_types as $type ) {
+				if ( ! in_array( $type->name, array( 'attachment' ) ) ) {
+					array_push( $post_types_array, array( 'name' => $type->label, 'value' => $type->name, 'selected' => true ) );
+				}
+			}
+
+			$migrated_post_types = array();
+			foreach ( get_option( 'top_opt_post_type' ) as $post_type ) {
+				$key = array_search( $post_type, array_column( $post_types_array, 'value' ) );
+				$post_types_array[$key]['selected'] = true;
+				array_push( $migrated_post_types, $post_types_array[$key] );
+			}
+
+			$setting['selected_post_types'] = $migrated_post_types;
+		}
+
+		if( get_option( 'top_opt_omit_cats', null ) !== null ) {
+			$migrated_taxonomies = array();
+			foreach ( get_option( 'top_opt_post_type' ) as $post_type_name ) {
+				$post_type_taxonomies = get_object_taxonomies( $post_type_name, 'objects' );
+				foreach ( $post_type_taxonomies as $post_type_taxonomy ) {
+					$taxonomy = get_taxonomy( $post_type_taxonomy->name );
+					$terms = get_terms( $post_type_taxonomy->name );
+					if ( ! empty( $terms ) ) {
+						foreach ( $terms as $term ) {
+							foreach ( get_option( 'top_opt_omit_cats' ) as $old_taxonomy ) {
+								$tax_object = get_term_by( 'term_taxonomy_id', $old_taxonomy );
+								if ( $tax_object->name === $term->name ) {
+									$to_push =  array( 'name' => $taxonomy->label . ': ' . $term->name, 'value' => $taxonomy->name . '_' . $term->slug, 'selected' => true, 'parent' => $taxonomy->name . '_all' );
+									if ( ! in_array( $to_push, $migrated_taxonomies ) ) {
+										array_push( $migrated_taxonomies, $to_push );
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			$setting['selected_taxonomies'] = $migrated_taxonomies;
+		}
+
+		if( get_option( 'top_opt_cat_filter', null ) !== null ) {
+			$setting['exclude_taxonomies'] = ( get_option( 'top_opt_cat_filter' ) === 'include' ) ? false : true ;
+		}
+
+		$general_settings->save_settings( $setting );
 
 	}
 

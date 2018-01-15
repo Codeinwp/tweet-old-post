@@ -89,33 +89,8 @@ class Rop_Rest_Api {
 	 * @return array
 	 */
 	private function publish_queue_event( $data ) {
-		$queue = new Rop_Queue_Model();
-		$services_model = new Rop_Services_Model();
-		$account_data = $services_model->find_account( $data['account_id'] );
-		$this->response->set_code( '400' )->set_message( __( 'Bad request!', 'tweet-old-post' ) );
-		if ( $account_data ) {
-			$service_factory = new Rop_Services_Factory();
-			try {
-				$service = $service_factory->build( $account_data['service'] );
-				$service->set_credentials( $account_data['credentials'] );
-				$queue_event = $queue->remove_from_queue( $data['index'], $data['account_id'] );
-				$this->response->set_code( '400' )
-				               ->set_message( sprintf( esc_html__( 'The post was not shared with the %1$s network. An error occured.', 'tweet-old-post' ), $account_data['service'] ) );
-				if ( $service->share( $queue_event, $account_data ) ) {
-					$this->response->set_code( '201' )
-					               ->set_message( sprintf( esc_html__( 'The post was shared successfully with the %1$s network', 'tweet-old-post' ), $account_data['service'] ) );
-				}
-				$this->response->set_data( $queue->get_ordered_queue() );
-			} catch ( Exception $exception ) {
-			    // The service can not be built or was not found.
-				$log = new Rop_Logger();
-				$error_message = sprintf( esc_html__( 'The service %1$s can NOT be built or was not found', 'tweet-old-post' ), $account_data['service'] );
-				$log->warn( $error_message, $exception );
-				$this->response->set_code( '500' )->set_message( $error_message );
-			}
-		}
-
-		return $this->response->is_not_silent()->to_array();
+		$pro_api = new Rop_Pro_Api();
+		return $pro_api->publish_queue_event( $data );
 	}
 
 	/**
@@ -129,14 +104,8 @@ class Rop_Rest_Api {
 	 * @return array
 	 */
 	private function skip_queue_event( $data ) {
-		$queue = new Rop_Queue_Model();
-		$this->response->set_code( '500' )->set_message( __( 'An error occurred when trying to skip post.', 'tweet-old-post' ) );
-		if ( $queue->skip_post( $data['index'], $data['account_id'] ) ) {
-			$this->response->set_code( '201' )
-			               ->set_message( __( 'The post was skipped successfully.', 'tweet-old-post' ) )
-			               ->set_data( $queue->get_ordered_queue() );
-		}
-		return $this->response->is_not_silent()->to_array();
+		$pro_api = new Rop_Pro_Api();
+		return $pro_api->skip_queue_event( $data );
 	}
 
 	/**
@@ -150,14 +119,8 @@ class Rop_Rest_Api {
 	 * @return array
 	 */
 	private function block_queue_event( $data ) {
-		$queue = new Rop_Queue_Model();
-		$this->response->set_code( '500' )->set_message( __( 'An error occurred when trying to block post.', 'tweet-old-post' ) );
-		if ( $queue->ban_post( $data['index'], $data['account_id'] ) ) {
-			$this->response->set_code( '201' )
-			               ->set_message( __( 'The post was blocked successfully.', 'tweet-old-post' ) )
-			               ->set_data( $queue->get_ordered_queue() );
-		}
-		return $this->response->is_not_silent()->to_array();
+		$pro_api = new Rop_Pro_Api();
+		return $pro_api->block_queue_event( $data );
 	}
 
 	/**
@@ -171,14 +134,8 @@ class Rop_Rest_Api {
 	 * @return array
 	 */
 	private function update_queue_event( $data ) {
-		$queue = new Rop_Queue_Model();
-		$this->response->set_code( '500' )->set_message( __( 'An error occurred when trying to update the post.', 'tweet-old-post' ) );
-		if ( $queue->update_queue_object( $data['account_id'], $data['post_id'], $data['custom_data'] ) ) {
-			$this->response->set_code( '201' )
-			               ->set_message( __( 'The post was updated successfully.', 'tweet-old-post' ) )
-			               ->set_data( $queue->get_ordered_queue() );
-		}
-		return $this->response->is_not_silent()->to_array();
+		$pro_api = new Rop_Pro_Api();
+		return $pro_api->update_queue_event( $data );
 	}
 
 	/**
@@ -209,14 +166,8 @@ class Rop_Rest_Api {
 	 * @return array
 	 */
 	private function save_schedule( $data ) {
-		$schedules = new Rop_Scheduler_Model();
-		$this->response->set_code( '500' )->set_message( __( 'An error occurred when trying to update the schedule.', 'tweet-old-post' ) );
-		if ( $schedules->add_update_schedule( $data['account_id'], $data['schedule'] ) ) {
-			$this->response->set_code( '201' )
-			               ->set_message( __( 'Schedule saved successfully.', 'tweet-old-post' ) )
-			               ->set_data( $schedules->get_schedule( $data['account_id'] ) );
-		}
-		return $this->response->is_not_silent()->to_array();
+		$pro_api = new Rop_Pro_Api();
+		return $pro_api->save_schedule( $data );
 	}
 
 	/**

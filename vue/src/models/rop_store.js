@@ -16,9 +16,10 @@ function stringToBoolean ( string ) {
 }
 
 function licenceType ( string ) {
+	console.log( 'Licence', string )
 	switch ( string.toLowerCase().trim() ) {
-	case 'pro': case 'true': case 'yes': return 'pro'
 	case 'business': return 'business'
+	case 'pro': case 'true': case 'yes': return 'pro'
 	default: return 'lite'
 	}
 }
