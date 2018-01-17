@@ -127,7 +127,7 @@ class Test_ROP extends WP_UnitTestCase {
 			$singin_url = @$service->sign_in_url( $data );
 			$this->assertUriIsCorrect( $singin_url );
 
-			$this->assertTrue( $service->share( array() ) );
+			//$this->assertTrue( $service->share( array() ) );
 
 			$this->assertTrue( is_array( $service->get_service() ) );
 		}
@@ -145,14 +145,14 @@ class Test_ROP extends WP_UnitTestCase {
 	 * @covers Rop_Settings_Model::<public>
 	 */
 	public function test_posts_selector() {
-		$page_ids_min5 = $this->generatePosts( 3, 'page', '-5 day' );
-		$page_ids_now = $this->generatePosts( 2, 'page', false );
-		$page_ids_min65 = $this->generatePosts( 5, 'page', '-65 day' );
+		$page_ids_min5 = $this->generatePosts( 13, 'page', '-5 day' );
+		$page_ids_now = $this->generatePosts( 12, 'page', false );
+		$page_ids_min65 = $this->generatePosts( 15, 'page', '-65 day' );
 
 
-		$post_ids_min5 = $this->generatePosts( 3, 'post', '-5 day' );
-		$post_ids_now = $this->generatePosts( 2, 'post', false );
-		$post_ids_min65 = $this->generatePosts( 5, 'post', '-65 day' );
+		$post_ids_min5 = $this->generatePosts( 13, 'post', '-5 day' );
+		$post_ids_now = $this->generatePosts( 12, 'post', false );
+		$post_ids_min65 = $this->generatePosts( 15, 'post', '-65 day' );
 
 		$settings = new Rop_Settings_Model();
 		$global_settings = new Rop_Global_Settings();
@@ -171,7 +171,7 @@ class Test_ROP extends WP_UnitTestCase {
 
 		$posts_selector = new Rop_Posts_Selector_Model();
 
-		$this->assertEquals( sizeof( $posts_selector->select( 'test_id_facebook' ) ), $settings->get_number_of_posts() );
+		$this->assertEquals( sizeof( $posts_selector->select( 'test_id_facebook' ) ), $settings->get_post_limit() );
 	}
 
 	/**
@@ -185,7 +185,7 @@ class Test_ROP extends WP_UnitTestCase {
 	 */
 	public function test_post_format() {
 		$service = 'facebook';
-		$account_id = 'test_id_facebook';
+		$account_id = 'facebook_test_id';
 		$post_format_data = array(
 			'post_content' => 'post_title',
 			'custom_meta_field' => '',
@@ -296,8 +296,8 @@ class Test_ROP extends WP_UnitTestCase {
 	 * @covers  Rop_Scheduler_Model
 	 */
 	public function test_scheduler() {
-		$account_id = 'test_id_facebook';
-		$account_id_f = 'test_id_twitter';
+		$account_id = 'facebook_test_id';
+		$account_id_f = 'twitter_test_id';
 
 		$global_settings = new Rop_Global_Settings();
 		$scheduler = new Rop_Scheduler_Model();
@@ -311,8 +311,6 @@ class Test_ROP extends WP_UnitTestCase {
 		$scheduler = new Rop_Scheduler_Model();
 		$this->assertEquals( $scheduler->get_schedule( $account_id ), $schedule );
 		$this->assertNotEquals( $scheduler->get_schedule( $account_id ), $schedule_defaults );
-
-		$scheduler->add_to_skips( $account_id_f, '2017-12-01 10:30' );
 
 		$upcoming = $scheduler->list_upcomming_schedules();
 
@@ -352,7 +350,7 @@ class Test_ROP extends WP_UnitTestCase {
 	 * @covers Rop_Queue_Model
 	 */
 	public function test_queue() {
-		$account_id = 'test_id_facebook';
+		$account_id = 'facebook_test_id';
 
 		$this->generateSchedules( $account_id );
 		$this->generatePosts( 8, 'post', '-30 day' );
@@ -371,23 +369,22 @@ class Test_ROP extends WP_UnitTestCase {
 
 		$this->assertTrue( empty( $should_be_empty_queue[$account_id] ) );
 
-		$queue->ban_post( $account_id, 28 );
-		$queue->ban_post( $account_id, 26 );
+		$rand_keys = array_rand( $starting_queue[$account_id], 2 );
+
+		$queue->ban_post( $rand_keys[0], $account_id );
+		$queue->ban_post( $rand_keys[1], $account_id );
 
 
-		$queue->refill_queue();
+		$queue = new Rop_Queue_Model();
 
 		$new_queue_w_filter = $queue->get_queue();
 
 		$this->assertTrue( !empty( $new_queue_w_filter ) );
 		$this->assertNotEquals( $starting_queue, $new_queue_w_filter );
 
-		for ( $i=0; $i < sizeof( $new_queue_w_filter[$account_id] ); $i++ ) {
-			$id = $new_queue_w_filter[$account_id][$i]['post'];
-			$this->assertTrue( ! in_array( $id, array( 28, 26 ) ) );
+		foreach ( $new_queue_w_filter[$account_id] as $uid => $event ) {
+			$this->assertTrue( ! in_array( $uid, $rand_keys ) );
 		}
-
-		//var_dump( $queue->create_shuffler( 0, 2, 10 ) );
 	}
 
 	/**

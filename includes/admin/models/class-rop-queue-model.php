@@ -183,6 +183,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 */
 	private function prepare_post_object( WP_Post $post, $account_id, $old_post_object = array() ) {
 		$post_format_helper = new Rop_Post_Format_Helper();
+		$post_format_helper->set_post_format( $account_id );
 		if ( ! empty( $old_post_object ) ) {
 			$filtered_post = $post_format_helper->get_formated_object( $account_id, $post, $old_post_object );
 		} else {

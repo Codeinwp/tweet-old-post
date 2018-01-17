@@ -41,7 +41,7 @@ class Rop_Googl_Shortner extends Rop_Url_Shortner_Abstract {
 	 */
 	public function shorten_url( $url ) {
 		$settings = new Rop_Settings_Model();
-		if( $settings->get_ga_tracking() ) {
+		if ( $settings->get_ga_tracking() ) {
 			$url = $this->append_utm( $url );
 		}
 

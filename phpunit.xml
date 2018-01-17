@@ -22,6 +22,7 @@
                 <file>includes/admin/abstract/class-rop-model-abstract.php</file>
                 <directory suffix=".php">includes/admin/models</directory>
                 <directory suffix=".php">includes/admin/helpers</directory>
+                <directory suffix=".php">includes/admin/views</directory>
             </exclude>
         </whitelist>
     </filter>

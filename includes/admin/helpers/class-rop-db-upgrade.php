@@ -1,9 +1,23 @@
 <?php
+/**
+ * The file that defines the abstract class inherited by all shortners
+ *
+ * A class that is used to define the shortners class and utility methods.
+ *
+ * @link       https://themeisle.com/
+ * @since      8.0.0
+ *
+ * @package    Rop
+ * @subpackage Rop/includes/admin/helpers
+ */
+
+/**
+ * Class Rop_Db_Upgrade
+ *
+ * @since   8.0.0
+ * @link    https://themeisle.com/
+ */
 class Rop_Db_Upgrade {
-	public function __construct() {
-
-	}
-
 
 	/**
 	 * Method to check if upgrade is required.
@@ -13,7 +27,11 @@ class Rop_Db_Upgrade {
 	 * @return bool
 	 */
 	public function is_upgrade_required() {
-		return true;
+		if ( get_option( 'cwp_top_logged_in_users' ) && ! get_option( 'rop_data' ) ) {
+			return true;
+		}
+
+		return false;
 	}
 
 
@@ -22,14 +40,10 @@ class Rop_Db_Upgrade {
 	 *
 	 * @since   8.0.0
 	 * @access  public
-	 * @return bool
 	 */
 	public function do_upgrade() {
-
 		$this->migrate_accounts();
-
 		$this->migrate_settings();
-
 	}
 
 	/**
@@ -258,18 +272,105 @@ class Rop_Db_Upgrade {
 			}// End foreach().
 			$model->add_authenticated_service( $service );
 			$model->add_active_accounts( $active_accounts );
+
+			$this->migrate_schedule( $active_accounts );
+			$this->migrate_post_formats( $active_accounts );
 		}// End if().
 
 	}
 
 	/**
-	 * Method to do a revert for an upgrade action.
+	 * Method to migrate the schedule.
 	 *
 	 * @since   8.0.0
 	 * @access  public
-	 * @return bool
+	 * @param   array $active_accounts The array of accounts to use.
 	 */
-	public function revert() {
+	public function migrate_schedule( $active_accounts ) {
+		$old_schedule = get_option( 'cwp_top_global_schedule' );
 
+		$global_settings = new Rop_Global_Settings();
+		$schedule_defaults = $global_settings::instance()->get_default_schedule();
+
+		$scheduler_model = new Rop_Scheduler_Model();
+
+		foreach ( $active_accounts as $account_id => $account ) {
+			if ( isset( $old_schedule[ $account['service'] . '_schedule_type_selected' ] ) && isset( $old_schedule[ $account['service'] . '_top_opt_interval' ] ) ) {
+				$schedule = $schedule_defaults;
+				if ( $old_schedule[ $account['service'] . '_schedule_type_selected' ] == 'each' ) {
+					$schedule['type'] = 'fixed';
+					$schedule['interval_r'] = $old_schedule[ $account['service'] . '_top_opt_interval' ];
+				} else {
+					$schedule['type'] = 'recurring';
+					$schedule['interval_f']['week_days'] = explode( ',', $old_schedule[ $account['service'] . '_top_opt_interval' ]['days'] );
+					$times = array();
+					foreach ( $old_schedule[ $account['service'] . '_top_opt_interval' ]['times'] as $times ) {
+						array_push( $times, $times['hour'] . ':' . $times['minute'] );
+					}
+					$schedule['interval_f']['time'] = $times;
+				}
+
+				$scheduler_model->add_update_schedule( $account_id, $schedule );
+			}
+		}
+	}
+
+	/**
+	 * Method to migrate post format options.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @param   array $active_accounts The array of accounts to use.
+	 */
+	public function migrate_post_formats( $active_accounts ) {
+		foreach ( $active_accounts as $account_id => $account ) {
+			if ( get_option( $account['service'] . '_top_opt_tweet_type' ) !== false ) {
+				$post_format_model = new Rop_Post_Format_Model( $account['service'] );
+				$post_format = $post_format_model->get_post_format( $account_id );
+
+				$tweet_content               = get_option( $account['service'] . '_top_opt_tweet_type' );
+				$tweet_content_custom_field  = get_option( $account['service'] . '_top_opt_tweet_type_custom_field' );
+				$additional_text             = get_option( $account['service'] . '_top_opt_add_text' );
+				$additional_text_at          = get_option( $account['service'] . '_top_opt_add_text_at' );
+				$max_length                  = get_option( $account['service'] . '_top_opt_tweet_length' );
+				$include_link                = get_option( $account['service'] . '_top_opt_include_link' );
+				$fetch_url_from_custom_field = get_option( $account['service'] . '_top_opt_custom_url_option' );
+				$custom_field_url            = get_option( $account['service'] . '_top_opt_custom_url_field' );
+				$use_url_shortner            = get_option( $account['service'] . '_top_opt_use_url_shortner' );
+				$url_shortner_service        = get_option( $account['service'] . '_top_opt_url_shortner' );
+				$hashtags                    = get_option( $account['service'] . '_top_opt_custom_hashtag_option' );
+				$common_hashtags             = get_option( $account['service'] . '_top_opt_hashtags' );
+				$maximum_hashtag_length      = get_option( $account['service'] . '_top_opt_hashtag_length' );
+				$hashtag_custom_field        = get_option( $account['service'] . '_top_opt_custom_hashtag_field' );
+				$post_with_image             = get_option( $account['service'] . '_top_opt_post_with_image' );
+
+				if ( $tweet_content == 'title' ) { $tweet_content = 'post_title'; }
+				if ( $tweet_content == 'body' ) { $tweet_content = 'post_content'; }
+				if ( $tweet_content == 'titlenbody' ) { $tweet_content = 'post_title_content'; }
+				if ( $tweet_content == 'custom-field' ) { $tweet_content = 'custom_field'; }
+				$post_format['post_content'] = $tweet_content;
+				$post_format['custom_meta_field'] = $tweet_content_custom_field;
+				$post_format['custom_text_pos'] = $additional_text_at;
+				$post_format['custom_text'] = $additional_text;
+				$post_format['maximum_length'] = $max_length;
+				$post_format['include_link'] = ( $include_link == 'on' || $include_link == true ) ? true : false;
+				$post_format['url_from_meta'] = ( $fetch_url_from_custom_field == 'on' || $fetch_url_from_custom_field == true ) ? true : false;
+				$post_format['url_meta_key'] = $custom_field_url;
+				$post_format['short_url'] = ( $use_url_shortner == 'on' || $use_url_shortner == true ) ? true : false;
+				$post_format['short_url_service'] = $url_shortner_service;
+				if ( $hashtags == 'nohashtag' ) { $hashtags = 'no-hashtags'; }
+				if ( $hashtags == 'common' ) { $hashtags = 'common-hashtags'; }
+				if ( $hashtags == 'categories' ) { $hashtags = 'categories-hashtags'; }
+				if ( $hashtags == 'tags' ) { $hashtags = 'tags-hashtags'; }
+				if ( $hashtags == 'custom' ) { $hashtags = 'custom-hashtags'; }
+				$post_format['hashtags'] = $hashtags;
+				$post_format['hashtags_length'] = $maximum_hashtag_length;
+				$post_format['hashtags_common'] = $common_hashtags;
+				$post_format['hashtags_custom'] = $hashtag_custom_field;
+				$post_format['image'] = ( $post_with_image == 'on' || $post_with_image == true ) ? true : false;
+
+				$post_format_model->add_update_post_format( $account_id, $post_format );
+			}// End if().
+		}// End foreach().
 	}
 }

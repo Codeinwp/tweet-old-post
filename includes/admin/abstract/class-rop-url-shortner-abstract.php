@@ -153,15 +153,23 @@ abstract class Rop_Url_Shortner_Abstract {
 		return $url;
 	}
 
+	/**
+	 * Utility method to append utm params to url.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @param   string $url An url to use.
+	 * @return string
+	 */
 	public function append_utm( $url ) {
-		$url_parts = parse_url($url);
-		parse_str($url_parts['query'], $params);
+		$url_parts = parse_url( $url );
+		parse_str( $url_parts['query'], $params );
 
 		$params['utm_source'] = 'ReviveOldPost';
 		$params['utm_medium'] = 'social';
 		$params['utm_campaign'] = 'ReviveOldPost';
 
-		$url_parts['query'] = http_build_query($params);
+		$url_parts['query'] = http_build_query( $params );
 
 		return $url_parts['scheme'] . '://' . $url_parts['host'] . $url_parts['path'] . '?' . $url_parts['query'];
 	}
