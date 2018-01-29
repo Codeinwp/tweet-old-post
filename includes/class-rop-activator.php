@@ -36,7 +36,7 @@ class Rop_Activator {
 			$upgrade_helper->do_upgrade();
 		}
 
-		add_filter( 'cron_schedules','rop_cron_schedules' );
+		add_filter( 'cron_schedules', array( 'Rop_Activator', 'rop_cron_schedules' ) );
 
 		if ( ! wp_next_scheduled( 'rop_cron_job' ) ) {
 			wp_schedule_event( time(), '5min', 'rop_cron_job' );
@@ -51,7 +51,7 @@ class Rop_Activator {
 	 * @param   array $schedules The schedules array.
 	 * @return mixed
 	 */
-	public function rop_cron_schedules( $schedules ) {
+	public static function rop_cron_schedules( $schedules ) {
 		if ( ! isset( $schedules['5min'] ) ) {
 			$schedules['5min'] = array(
 				'interval' => 5 * 60,
