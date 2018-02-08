@@ -310,7 +310,14 @@ class Rop_Global_Settings {
 	 * @return array
 	 */
 	public function get_available_services() {
-		return self::instance()->services;
+		$available_services = self::instance()->services;
+		if ( $this->has_pro() !== false ) {
+			unset( $available_services['facebook']['allowed_accounts'] );
+			unset( $available_services['twitter']['allowed_accounts'] );
+			unset( $available_services['linkedin']['allowed_accounts'] );
+			unset( $available_services['tumblr']['allowed_accounts'] );
+		}
+		return $available_services;
 	}
 
 	/**
