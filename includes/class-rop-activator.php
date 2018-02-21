@@ -31,11 +31,6 @@ class Rop_Activator {
 	 * @access  public
 	 */
 	public static function activate() {
-		$upgrade_helper = new Rop_Db_Upgrade();
-		if ( $upgrade_helper->is_upgrade_required() ) {
-			$upgrade_helper->do_upgrade();
-		}
-
 		add_filter( 'cron_schedules', array( 'Rop_Activator', 'rop_cron_schedules' ) );
 
 		if ( ! wp_next_scheduled( 'rop_cron_job' ) ) {

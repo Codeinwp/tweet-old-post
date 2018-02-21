@@ -129,6 +129,8 @@ class Rop {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'menu_pages' );
 
+		$this->loader->add_action( 'plugins_loaded', $this, 'upgrade', 1 );
+
 		$plugin_rest_api = new Rop_Rest_Api();
 		$plugin_rest_api->register();
 
@@ -137,6 +139,19 @@ class Rop {
 		foreach ( $global_settings->get_active_services_handle() as $service ) {
 			${$service . '_service'} = $factory->build( $service );
 			${$service . '_service'}->expose_endpoints();
+		}
+	}
+
+	/**
+	 * Upgrade method called by plugins_loaded hook.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 */
+	public function upgrade() {
+		$upgrade_helper = new Rop_Db_Upgrade();
+		if ( $upgrade_helper->is_upgrade_required() ) {
+			$upgrade_helper->do_upgrade();
 		}
 	}
 
