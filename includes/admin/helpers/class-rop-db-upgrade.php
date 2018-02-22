@@ -72,7 +72,11 @@ class Rop_Db_Upgrade {
 			$setting['more_than_once'] = ( get_option( 'top_opt_tweet_multiple_times' ) === 'on' ) ? true : false;
 		}
 
-		if ( get_option( 'top_opt_post_type', null ) !== null ) {
+		$top_opt_post_type = get_option( 'top_opt_post_type', null );
+		if ( ! is_array( $top_opt_post_type ) ) {
+			$top_opt_post_type = array( $top_opt_post_type );
+		}
+		if ( $top_opt_post_type !== null && ! empty( $top_opt_post_type ) ) {
 			$args = array( 'exclude_from_search' => false );
 			$post_types = get_post_types( $args, 'objects' );
 			$post_types_array = array();
@@ -83,7 +87,7 @@ class Rop_Db_Upgrade {
 			}
 
 			$migrated_post_types = array();
-			foreach ( get_option( 'top_opt_post_type' ) as $post_type ) {
+			foreach ( $top_opt_post_type as $post_type ) {
 				$key = array_search( $post_type, array_column( $post_types_array, 'value' ) );
 				$post_types_array[ $key ]['selected'] = true;
 				array_push( $migrated_post_types, $post_types_array[ $key ] );
@@ -92,16 +96,20 @@ class Rop_Db_Upgrade {
 			$setting['selected_post_types'] = $migrated_post_types;
 		}
 
-		if ( get_option( 'top_opt_omit_cats', null ) !== null ) {
+		$top_opt_omit_cats = get_option( 'top_opt_omit_cats', null );
+		if( ! is_array( $top_opt_omit_cats ) ) {
+			$top_opt_omit_cats = array( $top_opt_omit_cats );
+		}
+		if ( $top_opt_omit_cats !== null ) {
 			$migrated_taxonomies = array();
-			foreach ( get_option( 'top_opt_post_type' ) as $post_type_name ) {
+			foreach ( $top_opt_post_type as $post_type_name ) {
 				$post_type_taxonomies = get_object_taxonomies( $post_type_name, 'objects' );
 				foreach ( $post_type_taxonomies as $post_type_taxonomy ) {
 					$taxonomy = get_taxonomy( $post_type_taxonomy->name );
 					$terms = get_terms( $post_type_taxonomy->name );
 					if ( ! empty( $terms ) ) {
 						foreach ( $terms as $term ) {
-							foreach ( get_option( 'top_opt_omit_cats' ) as $old_taxonomy ) {
+							foreach ( $top_opt_omit_cats as $old_taxonomy ) {
 								$tax_object = get_term_by( 'term_taxonomy_id', $old_taxonomy );
 								if ( $tax_object->name === $term->name ) {
 									$to_push = array( 'name' => $taxonomy->label . ': ' . $term->name, 'value' => $taxonomy->name . '_' . $term->slug, 'selected' => true, 'parent' => $taxonomy->name . '_all' );
