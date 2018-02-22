@@ -8,6 +8,7 @@
 		</div>
 
 		<toast />
+        <ajax-loader />
 		<div class="panel">
 			<div class="panel-nav" style="padding: 8px;">
 				<ul class="tab">
@@ -45,6 +46,7 @@
 	import QueueTab from './queue-tab-panel.vue'
 	import LogsTab from './logs-tab-panel.vue'
 	import Toast from './reusables/toast.vue'
+	import AjaxLoader from './reusables/ajax-loader.vue'
 
 	module.exports = {
 		name: 'main-page-panel',
@@ -90,7 +92,8 @@
 			'schedule': ScheduleTab,
 			'queue': QueueTab,
 			'logs': LogsTab,
-			'toast': Toast
+			'toast': Toast,
+			'ajax-loader': AjaxLoader
 		}
 	}
 </script>

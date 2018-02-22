@@ -54,9 +54,6 @@
                 </div>
             </div>
         </div>
-        <div class="panel-footer">
-            <button class="btn btn-primary">Save</button>
-        </div>
     </div>
 </template>
 

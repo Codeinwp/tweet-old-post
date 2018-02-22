@@ -42,6 +42,7 @@ export default new Vuex.Store( {
 			title: 'Title placeholder',
 			message: 'Lorem ipsum content message placeholder. This is the default.'
 		},
+		ajaxLoader: false,
 		auth_in_progress: false,
 		displayTabs: [
 			{
@@ -118,6 +119,9 @@ export default new Vuex.Store( {
 					state.page.view = view
 				}
 			}
+		},
+		setAjaxState ( state, data ) {
+			state.ajaxLoader = data
 		},
 		updateState ( state, { stateData, requestName } ) {
 			switch ( requestName ) {
@@ -208,6 +212,7 @@ export default new Vuex.Store( {
 	actions: {
 		fetchAJAX ( { commit }, data ) {
 			if ( data.req !== '' ) {
+				commit( 'setAjaxState', true )
 				Vue.http( {
 					url: ropApiSettings.root,
 					method: 'POST',
@@ -216,6 +221,7 @@ export default new Vuex.Store( {
 					body: data.data,
 					responseType: 'json'
 				} ).then( function ( response ) {
+					commit( 'setAjaxState', false )
 					let display = response.data.show_to_user
 					if ( display ) {
 						let toast = {
@@ -235,6 +241,7 @@ export default new Vuex.Store( {
 						commit( 'updateState', { stateData, requestName } )
 					}
 				}, function () {
+					commit( 'setAjaxState', false )
 					commit( 'logMessage', ['Error when trying to do request: "' + data.req + '".', 'error'] )
 				} )
 			}
@@ -242,6 +249,7 @@ export default new Vuex.Store( {
 		},
 		fetchAJAXPromise ( { commit }, data ) {
 			if ( data.req !== '' ) {
+				commit( 'setAjaxState', true )
 				return new Promise( ( resolve, reject ) => {
 					Vue.http( {
 						url: ropApiSettings.root,
@@ -251,6 +259,7 @@ export default new Vuex.Store( {
 						body: data.data,
 						responseType: 'json'
 					} ).then( function ( response ) {
+						commit( 'setAjaxState', false )
 						let stateData = response.data
 						if ( response.data.data ) {
 							stateData = response.data.data
@@ -261,6 +270,7 @@ export default new Vuex.Store( {
 							commit( 'updateState', { stateData, requestName } )
 						}
 					}, function () {
+						commit( 'setAjaxState', false )
 						commit( 'logMessage', ['Error when trying to do request: "' + data.req + '".', 'error'] )
 					} )
 				} )

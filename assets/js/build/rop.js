@@ -11453,6 +11453,7 @@ exports.default = new _vuex2.default.Store({
 			title: 'Title placeholder',
 			message: 'Lorem ipsum content message placeholder. This is the default.'
 		},
+		ajaxLoader: false,
 		auth_in_progress: false,
 		displayTabs: [{
 			name: 'Accounts',
@@ -11522,6 +11523,9 @@ exports.default = new _vuex2.default.Store({
 					state.page.view = view;
 				}
 			}
+		},
+		setAjaxState: function setAjaxState(state, data) {
+			state.ajaxLoader = data;
 		},
 		updateState: function updateState(state, _ref) {
 			var stateData = _ref.stateData,
@@ -11617,6 +11621,7 @@ exports.default = new _vuex2.default.Store({
 			var commit = _ref2.commit;
 
 			if (data.req !== '') {
+				commit('setAjaxState', true);
 				_vue2.default.http({
 					url: ropApiSettings.root,
 					method: 'POST',
@@ -11625,6 +11630,7 @@ exports.default = new _vuex2.default.Store({
 					body: data.data,
 					responseType: 'json'
 				}).then(function (response) {
+					commit('setAjaxState', false);
 					var display = response.data.show_to_user;
 					if (display) {
 						var toast = {
@@ -11644,6 +11650,7 @@ exports.default = new _vuex2.default.Store({
 						commit('updateState', { stateData: stateData, requestName: requestName });
 					}
 				}, function () {
+					commit('setAjaxState', false);
 					commit('logMessage', ['Error when trying to do request: "' + data.req + '".', 'error']);
 				});
 			}
@@ -11653,6 +11660,7 @@ exports.default = new _vuex2.default.Store({
 			var commit = _ref3.commit;
 
 			if (data.req !== '') {
+				commit('setAjaxState', true);
 				return new Promise(function (resolve, reject) {
 					_vue2.default.http({
 						url: ropApiSettings.root,
@@ -11662,6 +11670,7 @@ exports.default = new _vuex2.default.Store({
 						body: data.data,
 						responseType: 'json'
 					}).then(function (response) {
+						commit('setAjaxState', false);
 						var stateData = response.data;
 						if (response.data.data) {
 							stateData = response.data.data;
@@ -11672,6 +11681,7 @@ exports.default = new _vuex2.default.Store({
 							commit('updateState', { stateData: stateData, requestName: requestName });
 						}
 					}, function () {
+						commit('setAjaxState', false);
 						commit('logMessage', ['Error when trying to do request: "' + data.req + '".', 'error']);
 					});
 				});
@@ -14275,8 +14285,53 @@ var _toast = __webpack_require__(145);
 
 var _toast2 = _interopRequireDefault(_toast);
 
+var _ajaxLoader = __webpack_require__(151);
+
+var _ajaxLoader2 = _interopRequireDefault(_ajaxLoader);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// <template>
+// 	<div>
+// 		<div class="panel title-panel" style="margin-bottom: 40px; padding-bottom: 20px;">
+// 			<div class="panel-header">
+// 				<img :src="plugin_logo" style="float: left; margin-right: 10px;" />
+// 				<h1 class="d-inline-block">Revive Old Posts</h1><span class="powered"> by <a href="https://themeisle.com" target="_blank"><b>ThemeIsle</b></a></span>
+// 			</div>
+// 		</div>
+//
+// 		<toast />
+//         <ajax-loader />
+// 		<div class="panel">
+// 			<div class="panel-nav" style="padding: 8px;">
+// 				<ul class="tab">
+// 					<li class="tab-item" v-for="tab in displayTabs" :class="{ active: tab.isActive, badge: displayProBadge( tab.slug ), upsell: displayProBadge( tab.slug ) }" data-badge="PRO"><a href="#" @click="switchTab( tab.slug )">{{ tab.name }}</a></li>
+// 					<li class="tab-item tab-action">
+// 						<div class="form-group">
+// 							<label class="form-switch">
+// 								<input type="checkbox" v-model="generalSettings.custom_messages" @change="updateSettings" :disabled="!has_pro" />
+// 								<i class="form-icon" v-if="has_pro"></i><i class="badge" data-badge="PRO" v-else></i> <span class="hide-sm">Custom Share Messages</span>
+// 							</label>
+// 							<label class="form-switch">
+// 								<input type="checkbox" v-model="generalSettings.beta_user" @change="updateSettings" />
+//                                 <i class="form-icon"></i> <span class="hide-sm">Beta User</span>
+// 							</label>
+// 							<label class="form-switch">
+// 								<input type="checkbox" v-model="generalSettings.remote_check" @change="updateSettings" />
+//                                 <i class="form-icon"></i> <span class="hide-sm">Remote Check</span>
+// 							</label>
+// 						</div>
+// 					</li>
+// 				</ul>
+// 			</div>
+//
+// 			<component :is="page.view"></component>
+// 		</div>
+// 	</div>
+// </template>
+//
+// <script>
+/* global ROP_ASSETS_URL */
 module.exports = {
 	name: 'main-page-panel',
 	computed: {
@@ -14322,7 +14377,8 @@ module.exports = {
 		'schedule': _scheduleTabPanel2.default,
 		'queue': _queueTabPanel2.default,
 		'logs': _logsTabPanel2.default,
-		'toast': _toast2.default
+		'toast': _toast2.default,
+		'ajax-loader': _ajaxLoader2.default
 	}
 	// </script>
 	//
@@ -14334,46 +14390,7 @@ module.exports = {
 	// 	}
 	// </style>
 
-}; // <template>
-// 	<div>
-// 		<div class="panel title-panel" style="margin-bottom: 40px; padding-bottom: 20px;">
-// 			<div class="panel-header">
-// 				<img :src="plugin_logo" style="float: left; margin-right: 10px;" />
-// 				<h1 class="d-inline-block">Revive Old Posts</h1><span class="powered"> by <a href="https://themeisle.com" target="_blank"><b>ThemeIsle</b></a></span>
-// 			</div>
-// 		</div>
-//
-// 		<toast />
-// 		<div class="panel">
-// 			<div class="panel-nav" style="padding: 8px;">
-// 				<ul class="tab">
-// 					<li class="tab-item" v-for="tab in displayTabs" :class="{ active: tab.isActive, badge: displayProBadge( tab.slug ), upsell: displayProBadge( tab.slug ) }" data-badge="PRO"><a href="#" @click="switchTab( tab.slug )">{{ tab.name }}</a></li>
-// 					<li class="tab-item tab-action">
-// 						<div class="form-group">
-// 							<label class="form-switch">
-// 								<input type="checkbox" v-model="generalSettings.custom_messages" @change="updateSettings" :disabled="!has_pro" />
-// 								<i class="form-icon" v-if="has_pro"></i><i class="badge" data-badge="PRO" v-else></i> <span class="hide-sm">Custom Share Messages</span>
-// 							</label>
-// 							<label class="form-switch">
-// 								<input type="checkbox" v-model="generalSettings.beta_user" @change="updateSettings" />
-//                                 <i class="form-icon"></i> <span class="hide-sm">Beta User</span>
-// 							</label>
-// 							<label class="form-switch">
-// 								<input type="checkbox" v-model="generalSettings.remote_check" @change="updateSettings" />
-//                                 <i class="form-icon"></i> <span class="hide-sm">Remote Check</span>
-// 							</label>
-// 						</div>
-// 					</li>
-// 				</ul>
-// 			</div>
-//
-// 			<component :is="page.view"></component>
-// 		</div>
-// 	</div>
-// </template>
-//
-// <script>
-/* global ROP_ASSETS_URL */
+};
 
 /***/ }),
 /* 45 */
@@ -14490,9 +14507,6 @@ module.exports = {
 //                     <p><i>Authenticate a new service (eg. Facebook, Twitter etc. ), select the accounts you want to add from that service and <b>activate</b> them. Only the accounts displayed in the <b>"Active accounts"</b> section will be used.</i></p>
 //                 </div>
 //             </div>
-//         </div>
-//         <div class="panel-footer">
-//             <button class="btn btn-primary">Save</button>
 //         </div>
 //     </div>
 // </template>
@@ -16177,7 +16191,7 @@ module.exports = "\n\t<div class=\"tile tile-centered\" _v-d8a56e08=\"\">\n\t\t<
 /* 97 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"tab-view\">\n        <div class=\"panel-body\">\n            <h3>Accounts</h3>\n            <p>This is a <b>Vue.js</b> component.</p>\n            <div class=\"container\">\n                <div class=\"columns\">\n                    <div class=\"column col-sm-12 col-md-12 col-lg-6\">\n                        <div class=\"columns\">\n                            <div class=\"column col-sm-12 col-md-12 col-xl-6 col-8 text-right\">\n                                <b>New Service</b><br/>\n                                <i>Select a service and sign in with an account for that service.</i>\n                            </div>\n                            <div class=\"column col-sm-12 col-md-12 col-xl-6 col-4 text-left\">\n                                <sign-in-btn></sign-in-btn>\n                            </div>\n                        </div>\n                        <div class=\"columns\">\n                            <div class=\"column col-sm-12 col-md-12 col-lg-12 text-left\">\n                                <hr/>\n                                <h5>Authenticated Services</h5>\n                                <div class=\"empty\" v-if=\"authenticated_services.length == 0\">\n                                    <div class=\"empty-icon\">\n                                        <i class=\"fa fa-3x fa-cloud\"></i>\n                                    </div>\n                                    <p class=\"empty-title h5\">No authenticated service!</p>\n                                    <p class=\"empty-subtitle\">Add one from the <b>\"New Service\"</b> section.</p>\n                                </div>\n                                <service-tile v-for=\"service in authenticated_services\" :key=\"service.id\" :service=\"service\"></service-tile>\n                            </div>\n                        </div>\n                    </div>\n                    <div class=\"column col-sm-12 col-md-12 col-lg-6 text-left\">\n                        <hr style=\"margin-top: 45px\" />\n                        <h5>Active Accounts</h5>\n                        <div class=\"empty\" v-if=\"active_accounts.length == 0\">\n                            <div class=\"empty-icon\">\n                                <i class=\"fa fa-3x fa-user-circle-o\"></i>\n                            </div>\n                            <p class=\"empty-title h5\">No active accounts!</p>\n                            <p class=\"empty-subtitle\">Add one from the <b>\"Authenticated Services\"</b> section.</p>\n                        </div>\n                        <div v-for=\"( account, id ) in active_accounts\">\n                            <service-user-tile :account_data=\"account\" :account_id=\"id\"></service-user-tile>\n                            <div class=\"divider\"></div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"columns\">\n                <div class=\"column col-12\">\n                    <h4><i class=\"fa fa-info-circle\"></i> Info</h4>\n                    <p><i>Authenticate a new service (eg. Facebook, Twitter etc. ), select the accounts you want to add from that service and <b>activate</b> them. Only the accounts displayed in the <b>\"Active accounts\"</b> section will be used.</i></p>\n                </div>\n            </div>\n        </div>\n        <div class=\"panel-footer\">\n            <button class=\"btn btn-primary\">Save</button>\n        </div>\n    </div>\n";
+module.exports = "\n    <div class=\"tab-view\">\n        <div class=\"panel-body\">\n            <h3>Accounts</h3>\n            <p>This is a <b>Vue.js</b> component.</p>\n            <div class=\"container\">\n                <div class=\"columns\">\n                    <div class=\"column col-sm-12 col-md-12 col-lg-6\">\n                        <div class=\"columns\">\n                            <div class=\"column col-sm-12 col-md-12 col-xl-6 col-8 text-right\">\n                                <b>New Service</b><br/>\n                                <i>Select a service and sign in with an account for that service.</i>\n                            </div>\n                            <div class=\"column col-sm-12 col-md-12 col-xl-6 col-4 text-left\">\n                                <sign-in-btn></sign-in-btn>\n                            </div>\n                        </div>\n                        <div class=\"columns\">\n                            <div class=\"column col-sm-12 col-md-12 col-lg-12 text-left\">\n                                <hr/>\n                                <h5>Authenticated Services</h5>\n                                <div class=\"empty\" v-if=\"authenticated_services.length == 0\">\n                                    <div class=\"empty-icon\">\n                                        <i class=\"fa fa-3x fa-cloud\"></i>\n                                    </div>\n                                    <p class=\"empty-title h5\">No authenticated service!</p>\n                                    <p class=\"empty-subtitle\">Add one from the <b>\"New Service\"</b> section.</p>\n                                </div>\n                                <service-tile v-for=\"service in authenticated_services\" :key=\"service.id\" :service=\"service\"></service-tile>\n                            </div>\n                        </div>\n                    </div>\n                    <div class=\"column col-sm-12 col-md-12 col-lg-6 text-left\">\n                        <hr style=\"margin-top: 45px\" />\n                        <h5>Active Accounts</h5>\n                        <div class=\"empty\" v-if=\"active_accounts.length == 0\">\n                            <div class=\"empty-icon\">\n                                <i class=\"fa fa-3x fa-user-circle-o\"></i>\n                            </div>\n                            <p class=\"empty-title h5\">No active accounts!</p>\n                            <p class=\"empty-subtitle\">Add one from the <b>\"Authenticated Services\"</b> section.</p>\n                        </div>\n                        <div v-for=\"( account, id ) in active_accounts\">\n                            <service-user-tile :account_data=\"account\" :account_id=\"id\"></service-user-tile>\n                            <div class=\"divider\"></div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"columns\">\n                <div class=\"column col-12\">\n                    <h4><i class=\"fa fa-info-circle\"></i> Info</h4>\n                    <p><i>Authenticate a new service (eg. Facebook, Twitter etc. ), select the accounts you want to add from that service and <b>activate</b> them. Only the accounts displayed in the <b>\"Active accounts\"</b> section will be used.</i></p>\n                </div>\n            </div>\n        </div>\n    </div>\n";
 
 /***/ }),
 /* 98 */
@@ -19404,7 +19418,117 @@ module.exports = "\n\t<div class=\"toast\" :class=\"toastTypeClass\" >\n\t\t<but
 /* 150 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div>\n\t\t<div class=\"panel title-panel\" style=\"margin-bottom: 40px; padding-bottom: 20px;\">\n\t\t\t<div class=\"panel-header\">\n\t\t\t\t<img :src=\"plugin_logo\" style=\"float: left; margin-right: 10px;\" />\n\t\t\t\t<h1 class=\"d-inline-block\">Revive Old Posts</h1><span class=\"powered\"> by <a href=\"https://themeisle.com\" target=\"_blank\"><b>ThemeIsle</b></a></span>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<toast />\n\t\t<div class=\"panel\">\n\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t<ul class=\"tab\">\n\t\t\t\t\t<li class=\"tab-item\" v-for=\"tab in displayTabs\" :class=\"{ active: tab.isActive, badge: displayProBadge( tab.slug ), upsell: displayProBadge( tab.slug ) }\" data-badge=\"PRO\"><a href=\"#\" @click=\"switchTab( tab.slug )\">{{ tab.name }}</a></li>\n\t\t\t\t\t<li class=\"tab-item tab-action\">\n\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.custom_messages\" @change=\"updateSettings\" :disabled=\"!has_pro\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" v-if=\"has_pro\"></i><i class=\"badge\" data-badge=\"PRO\" v-else></i> <span class=\"hide-sm\">Custom Share Messages</span>\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.beta_user\" @change=\"updateSettings\" />\n                                <i class=\"form-icon\"></i> <span class=\"hide-sm\">Beta User</span>\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.remote_check\" @change=\"updateSettings\" />\n                                <i class=\"form-icon\"></i> <span class=\"hide-sm\">Remote Check</span>\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\n\t\t\t<component :is=\"page.view\"></component>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div>\n\t\t<div class=\"panel title-panel\" style=\"margin-bottom: 40px; padding-bottom: 20px;\">\n\t\t\t<div class=\"panel-header\">\n\t\t\t\t<img :src=\"plugin_logo\" style=\"float: left; margin-right: 10px;\" />\n\t\t\t\t<h1 class=\"d-inline-block\">Revive Old Posts</h1><span class=\"powered\"> by <a href=\"https://themeisle.com\" target=\"_blank\"><b>ThemeIsle</b></a></span>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<toast />\n        <ajax-loader />\n\t\t<div class=\"panel\">\n\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t<ul class=\"tab\">\n\t\t\t\t\t<li class=\"tab-item\" v-for=\"tab in displayTabs\" :class=\"{ active: tab.isActive, badge: displayProBadge( tab.slug ), upsell: displayProBadge( tab.slug ) }\" data-badge=\"PRO\"><a href=\"#\" @click=\"switchTab( tab.slug )\">{{ tab.name }}</a></li>\n\t\t\t\t\t<li class=\"tab-item tab-action\">\n\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.custom_messages\" @change=\"updateSettings\" :disabled=\"!has_pro\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" v-if=\"has_pro\"></i><i class=\"badge\" data-badge=\"PRO\" v-else></i> <span class=\"hide-sm\">Custom Share Messages</span>\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.beta_user\" @change=\"updateSettings\" />\n                                <i class=\"form-icon\"></i> <span class=\"hide-sm\">Beta User</span>\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.remote_check\" @change=\"updateSettings\" />\n                                <i class=\"form-icon\"></i> <span class=\"hide-sm\">Remote Check</span>\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\n\t\t\t<component :is=\"page.view\"></component>\n\t\t</div>\n\t</div>\n";
+
+/***/ }),
+/* 151 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(152)
+__vue_script__ = __webpack_require__(154)
+__vue_template__ = __webpack_require__(155)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/var/www/html/wp-base/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/ajax-loader.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 152 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(153);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-66d831dd&file=ajax-loader.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./ajax-loader.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-66d831dd&file=ajax-loader.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./ajax-loader.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 153 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)();
+// imports
+
+
+// module
+exports.push([module.i, "\n    #rop_core .ajax-loader.ajax-hide {\n        display: none;\n    }\n    #rop_core .ajax-loader.ajax-show {\n        display: block;\n    }\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 154 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// <template>
+//     <div class="ajax-loader" :class="isVisible" >
+//         <i class="fa fa-spinner fa-spin"></i> <b>Loading ...</b>
+//     </div>
+// </template>
+//
+// <script>
+module.exports = {
+	name: 'ajax-loader',
+	computed: {
+		ajaxLoader: function ajaxLoader() {
+			return this.$store.state.ajaxLoader;
+		},
+		isVisible: function isVisible() {
+			return {
+				'ajax-show': this.ajaxLoader === true,
+				'ajax-hide': this.ajaxLoader === false
+			};
+		}
+	},
+	methods: {}
+	// </script>
+	//
+	// <style>
+	//     #rop_core .ajax-loader.ajax-hide {
+	//         display: none;
+	//     }
+	//     #rop_core .ajax-loader.ajax-show {
+	//         display: block;
+	//     }
+	// </style>
+
+};
+
+/***/ }),
+/* 155 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div class=\"ajax-loader\" :class=\"isVisible\" >\n        <i class=\"fa fa-spinner fa-spin\"></i> <b>Loading ...</b>\n    </div>\n";
 
 /***/ })
 /******/ ]);
