@@ -56,20 +56,27 @@ class Rop_Db_Upgrade {
 		$general_settings = new Rop_Settings_Model();
 		$setting = $general_settings->get_settings();
 
-		if ( get_option( 'top_opt_age_limit', null ) !== null ) {
-			$setting['minimum_post_age'] = (int) get_option( 'top_opt_age_limit' );
+
+		$old_settings = get_option( 'top_opt_post_formats', null );
+
+		if ( $old_settings !== null && isset ( $old_settings['top_opt_age_limit'] ) ) {
+			$setting['minimum_post_age'] = (int) $old_settings['top_opt_age_limit'];
 		}
 
-		if ( get_option( 'top_opt_max_age_limit', null ) !== null ) {
-			$setting['maximum_post_age'] = (int) get_option( 'top_opt_max_age_limit' );
+		if ( $old_settings !== null && isset ( $old_settings['top_opt_max_age_limit'] ) ) {
+			$setting['maximum_post_age'] = (int) $old_settings['top_opt_max_age_limit'];
 		}
 
-		if ( get_option( 'top_opt_no_of_tweet', null ) !== null ) {
-			$setting['number_of_posts'] = (int) get_option( 'top_opt_no_of_tweet' );
+		if ( $old_settings !== null && isset ( $old_settings['top_opt_no_of_tweet'] ) ) {
+			$setting['number_of_posts'] = (int) $old_settings['top_opt_no_of_tweet'];
 		}
 
-		if ( get_option( 'top_opt_tweet_multiple_times', null ) !== null ) {
-			$setting['more_than_once'] = ( get_option( 'top_opt_tweet_multiple_times' ) === 'on' ) ? true : false;
+		if ( $old_settings !== null && isset ( $old_settings['top_opt_tweet_multiple_times'] ) ) {
+			$setting['more_than_once'] = ( $old_settings['top_opt_tweet_multiple_times'] === 'on' ) ? true : false;
+		}
+
+		if ( $old_settings !== null && isset ( $old_settings['top_opt_ga_tracking'] ) ) {
+			$setting['ga_tracking'] = ( $old_settings['top_opt_ga_tracking'] === 'on' ) ? true : false;
 		}
 
 		$top_opt_post_type = get_option( 'top_opt_post_type', null );
@@ -96,7 +103,10 @@ class Rop_Db_Upgrade {
 			$setting['selected_post_types'] = $migrated_post_types;
 		}
 
-		$top_opt_omit_cats = get_option( 'top_opt_omit_cats', null );
+		$top_opt_omit_cats = null;
+		if ( $old_settings !== null && isset ( $old_settings['top_opt_omit_cats'] ) ) {
+			$top_opt_omit_cats = $old_settings['top_opt_omit_cats'];
+		}
 		if( ! is_array( $top_opt_omit_cats ) ) {
 			$top_opt_omit_cats = array( $top_opt_omit_cats );
 		}
@@ -126,8 +136,8 @@ class Rop_Db_Upgrade {
 			$setting['selected_taxonomies'] = $migrated_taxonomies;
 		}
 
-		if ( get_option( 'top_opt_cat_filter', null ) !== null ) {
-			$setting['exclude_taxonomies'] = ( get_option( 'top_opt_cat_filter' ) === 'include' ) ? false : true ;
+		if ( $old_settings !== null && isset ( $old_settings['top_opt_cat_filter'] ) ) {
+			$setting['exclude_taxonomies'] = ( $old_settings['top_opt_cat_filter'] === 'include' ) ? false : true ;
 		}
 
 		$general_settings->save_settings( $setting );
