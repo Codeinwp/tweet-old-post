@@ -56,30 +56,29 @@ class Rop_Db_Upgrade {
 		$general_settings = new Rop_Settings_Model();
 		$setting = $general_settings->get_settings();
 
-
 		$old_settings = get_option( 'top_opt_post_formats', null );
 
-		if ( $old_settings !== null && isset ( $old_settings['top_opt_interval'] ) ) {
+		if ( $old_settings !== null && isset( $old_settings['top_opt_interval'] ) ) {
 			$setting['default_interval'] = (int) $old_settings['top_opt_interval'];
 		}
 
-		if ( $old_settings !== null && isset ( $old_settings['top_opt_age_limit'] ) ) {
+		if ( $old_settings !== null && isset( $old_settings['top_opt_age_limit'] ) ) {
 			$setting['minimum_post_age'] = (int) $old_settings['top_opt_age_limit'];
 		}
 
-		if ( $old_settings !== null && isset ( $old_settings['top_opt_max_age_limit'] ) ) {
+		if ( $old_settings !== null && isset( $old_settings['top_opt_max_age_limit'] ) ) {
 			$setting['maximum_post_age'] = (int) $old_settings['top_opt_max_age_limit'];
 		}
 
-		if ( $old_settings !== null && isset ( $old_settings['top_opt_no_of_tweet'] ) ) {
+		if ( $old_settings !== null && isset( $old_settings['top_opt_no_of_tweet'] ) ) {
 			$setting['number_of_posts'] = (int) $old_settings['top_opt_no_of_tweet'];
 		}
 
-		if ( $old_settings !== null && isset ( $old_settings['top_opt_tweet_multiple_times'] ) ) {
+		if ( $old_settings !== null && isset( $old_settings['top_opt_tweet_multiple_times'] ) ) {
 			$setting['more_than_once'] = ( $old_settings['top_opt_tweet_multiple_times'] === 'on' ) ? true : false;
 		}
 
-		if ( $old_settings !== null && isset ( $old_settings['top_opt_ga_tracking'] ) ) {
+		if ( $old_settings !== null && isset( $old_settings['top_opt_ga_tracking'] ) ) {
 			$setting['ga_tracking'] = ( $old_settings['top_opt_ga_tracking'] === 'on' ) ? true : false;
 		}
 
@@ -108,10 +107,10 @@ class Rop_Db_Upgrade {
 		}
 
 		$top_opt_omit_cats = null;
-		if ( $old_settings !== null && isset ( $old_settings['top_opt_omit_cats'] ) ) {
+		if ( $old_settings !== null && isset( $old_settings['top_opt_omit_cats'] ) ) {
 			$top_opt_omit_cats = $old_settings['top_opt_omit_cats'];
 		}
-		if( ! is_array( $top_opt_omit_cats ) ) {
+		if ( ! is_array( $top_opt_omit_cats ) ) {
 			$top_opt_omit_cats = array( $top_opt_omit_cats );
 		}
 		if ( $top_opt_omit_cats !== null ) {
@@ -140,7 +139,7 @@ class Rop_Db_Upgrade {
 			$setting['selected_taxonomies'] = $migrated_taxonomies;
 		}
 
-		if ( $old_settings !== null && isset ( $old_settings['top_opt_cat_filter'] ) ) {
+		if ( $old_settings !== null && isset( $old_settings['top_opt_cat_filter'] ) ) {
 			$setting['exclude_taxonomies'] = ( $old_settings['top_opt_cat_filter'] === 'include' ) ? false : true ;
 		}
 
