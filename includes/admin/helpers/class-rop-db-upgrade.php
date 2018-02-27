@@ -27,7 +27,7 @@ class Rop_Db_Upgrade {
 	 * @return bool
 	 */
 	public function is_upgrade_required() {
-		if ( get_option( 'cwp_top_logged_in_users' ) && ! get_option( 'rop_data' ) ) {
+		if ( ! get_option( 'rop_data' ) ) {
 			return true;
 		}
 
