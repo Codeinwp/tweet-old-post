@@ -113,6 +113,7 @@ class Rop_Global_Settings {
 	 * @var     array $settings_defaults The class defaults for settings.
 	 */
 	private $settings_defaults = array(
+		'default_interval' => 8,
 		'minimum_post_age' => 15,
 		'maximum_post_age' => 60,
 		'number_of_posts' => 5,
@@ -273,7 +274,10 @@ class Rop_Global_Settings {
 	 * @return array
 	 */
 	public function get_default_schedule() {
-		return self::instance()->schedule;
+		$schedule = self::instance()->schedule;
+		$settings_model = new Rop_Settings_Model();
+		$schedule['interval_r'] = $settings_model->get_interval();
+		return $schedule;
 	}
 
 	/**

@@ -59,6 +59,10 @@ class Rop_Db_Upgrade {
 
 		$old_settings = get_option( 'top_opt_post_formats', null );
 
+		if ( $old_settings !== null && isset ( $old_settings['top_opt_interval'] ) ) {
+			$setting['default_interval'] = (int) $old_settings['top_opt_interval'];
+		}
+
 		if ( $old_settings !== null && isset ( $old_settings['top_opt_age_limit'] ) ) {
 			$setting['minimum_post_age'] = (int) $old_settings['top_opt_age_limit'];
 		}

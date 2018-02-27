@@ -4,6 +4,21 @@
 			<h3>General Settings</h3>
 			<p>This is a <b>Vue.js</b> component.</p>
 			<div class="container">
+                <div class="columns">
+                    <!-- Minimum age of posts available for sharing, in days
+                    (number) -->
+                    <div class="column col-sm-12 col-md-12 col-lg-12">
+                        <div class="columns">
+                            <div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-right">
+                                <b>Minimum interval between shares</b><br/>
+                                <i>Minimum time between shares (hour/hours), 0.4 can be used.</i>
+                            </div>
+                            <div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-left">
+                                <counter-input id="default_interval" :value.sync="generalSettings.default_interval" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
 				<div class="columns">
 					<!-- Minimum age of posts available for sharing, in days
 					(number) -->
@@ -233,6 +248,7 @@
 					updateState: false,
 					data: {
 						available_taxonomies: this.generalSettings.available_taxonomies,
+						default_interval: this.generalSettings.default_interval,
 						minimum_post_age: this.generalSettings.minimum_post_age,
 						maximum_post_age: this.generalSettings.maximum_post_age,
 						number_of_posts: this.generalSettings.number_of_posts,

@@ -64,6 +64,17 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	}
 
 	/**
+	 * Method to retrieve the default interval that should be used.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return mixed
+	 */
+	public function get_interval() {
+		return $this->settings['default_interval'];
+	}
+
+	/**
 	 * Method to retrieve if Google Analytics tracking should be used.
 	 *
 	 * @since   8.0.0
