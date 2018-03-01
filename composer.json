@@ -5,12 +5,6 @@
     "wordpress",
     "share"
   ],
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/Codeinwp/themeisle-sdk"
-    }
-  ],
   "homepage": "https://themeisle.com/plugins/tweet-old-post/",
   "license": "GPL-2.0+",
   "authors": [
