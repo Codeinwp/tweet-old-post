@@ -196,7 +196,7 @@
 				return this.$store.state.generalSettings.available_post_types
 			},
 			taxonomies: function () {
-				this.requestPostUpdate()
+				// this.requestPostUpdate()
 				return this.$store.state.generalSettings.available_taxonomies
 			},
 			postsAvailable: function () {
@@ -213,6 +213,7 @@
 				for ( let index in data ) {
 					postTypes.push( data[index].value )
 				}
+
 				this.$store.commit( 'updateState', { stateData: data, requestName: 'update_selected_post_types' } )
 				this.$store.dispatch( 'fetchAJAX', { req: 'get_taxonomies', data: { post_types: postTypes } } )
 				this.requestPostUpdate()

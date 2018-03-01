@@ -16427,7 +16427,7 @@ module.exports = {
 			return this.$store.state.generalSettings.available_post_types;
 		},
 		taxonomies: function taxonomies() {
-			this.requestPostUpdate();
+			// this.requestPostUpdate()
 			return this.$store.state.generalSettings.available_taxonomies;
 		},
 		postsAvailable: function postsAvailable() {
@@ -16444,6 +16444,7 @@ module.exports = {
 			for (var index in data) {
 				postTypes.push(data[index].value);
 			}
+
 			this.$store.commit('updateState', { stateData: data, requestName: 'update_selected_post_types' });
 			this.$store.dispatch('fetchAJAX', { req: 'get_taxonomies', data: { post_types: postTypes } });
 			this.requestPostUpdate();
@@ -16798,7 +16799,7 @@ module.exports = {
 		},
 		changedSelection: {
 			default: function _default(data) {
-				return true;
+				return data;
 			},
 			type: Function
 		},
@@ -16817,7 +16818,7 @@ module.exports = {
 			for (var _iterator = (0, _getIterator3.default)(this.options), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
 				var option = _step.value;
 
-				if (option.selected) {
+				if (option.selected && this.selected.length === 0) {
 					this.addToSelected(index);
 				}
 				index++;

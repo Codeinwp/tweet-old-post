@@ -65,7 +65,7 @@
 				type: String
 			},
 			changedSelection: {
-				default: function ( data ) { return true },
+				default: function ( data ) { return data },
 				type: Function
 			},
 			dontLock: {
@@ -76,7 +76,7 @@
 		mounted () {
 			let index = 0
 			for ( let option of this.options ) {
-				if ( option.selected ) {
+				if ( option.selected && this.selected.length === 0 ) {
 					this.addToSelected( index )
 				}
 				index++
