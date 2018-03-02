@@ -1,8 +1,9 @@
 ﻿=== Revive Old Post - Auto Post to Social Media ===
 Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle, rsocial, uriahs-victor
 Tags:twitter, facebook, linkedin, automatic, tweet, share, wordpress, marketing, sharing, Tweet old post, Tweets,evergreen
-Requires at least: 2.7
-Tested up to: 4.7.3
+Requires at least: 4.7
+Tested up to: 4.9
+Requires PHP: 5.4
 Stable tag: trunk
 
 
