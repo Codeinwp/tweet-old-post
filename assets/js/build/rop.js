@@ -14603,13 +14603,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 			<button class="btn input-group-btn" :class="serviceClass" @click="requestAuthorization()" :disabled="checkDisabled( selected_service, selected_network )" >
 // 				<i class="fa fa-fw" :class="serviceIcon" aria-hidden="true"></i> Sign In
 // 			</button>
-//             <i class="badge" data-badge="PRO" v-if="checkDisabled( selected_service, selected_network ) && !has_pro">More available in the <b>PRO</b> versions.</i>
+// 			<i class="badge" data-badge="PRO" v-if="checkDisabled( selected_service, selected_network ) && !has_pro">More available in the <b>PRO</b> versions.</i>
 // 		</div>
 // 		<div class="modal" :class="modalActiveClass">
 // 			<div class="modal-overlay"></div>
 // 			<div class="modal-container">
 // 				<div class="modal-header">
-// 					<button class="btn btn-clear float-right" @click="closeModal()"></button>
+// 					<button class="btn btn-clear float-right" @click="cancelModal()"></button>
 // 					<div class="modal-title h5">{{ modal.serviceName }} Service Credentials</div>
 // 				</div>
 // 				<div class="modal-body">
@@ -14679,20 +14679,20 @@ module.exports = {
 				this.openModal();
 			} else {
 				this.activePopup = this.selected_network;
-				var w = 560;
-				var h = 340;
-				var y = window.top.outerHeight / 2 + window.top.screenY - w / 2;
-				var x = window.top.outerWidth / 2 + window.top.screenX - h / 2;
-				window.open('', this.activePopup, 'width=' + w + ', height=' + h + ', toolbar=0, menubar=0, location=0, top=' + y + ', left=' + x);
 				this.getUrlAndGo([]);
 			}
 		},
 		openPopup: function openPopup(url) {
 			this.$store.commit('logMessage', ['Trying to open popup for url:' + url, 'notice']);
-			var newWindow = window.open(url, this.activePopup);
+			var w = 560;
+			var h = 340;
+			var y = window.top.outerHeight / 2 + window.top.screenY - w / 2;
+			var x = window.top.outerWidth / 2 + window.top.screenX - h / 2;
+			var newWindow = window.open(url, this.activePopup, 'width=' + w + ', height=' + h + ', toolbar=0, menubar=0, location=0, target=_self, top=' + y + ', left=' + x);
 			if (window.focus) {
 				newWindow.focus();
 			}
+			console.log(newWindow.external);
 			var instance = this;
 			var pollTimer = window.setInterval(function () {
 				if (newWindow.closed !== false) {
@@ -14750,13 +14750,12 @@ module.exports = {
 			}
 
 			this.activePopup = this.selected_network;
-			var w = 560;
-			var h = 340;
-			var y = window.top.outerHeight / 2 + window.top.screenY - w / 2;
-			var x = window.top.outerWidth / 2 + window.top.screenX - h / 2;
-			window.open('', this.activePopup, 'width=' + w + ', height=' + h + ', toolbar=0, menubar=0, location=0, top=' + y + ', left=' + x);
 			this.getUrlAndGo(credentials);
 
+			this.modal.isOpen = false;
+		},
+		cancelModal: function cancelModal() {
+			this.$store.state.auth_in_progress = false;
 			this.modal.isOpen = false;
 		}
 	},
@@ -15340,7 +15339,7 @@ module.exports = function (it) {
 /* 80 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"sign-in-btn\" _v-7e903530=\"\">\n\t\t<div class=\"input-group\" _v-7e903530=\"\">\n\t\t\t<select class=\"form-select\" v-model=\"selected_network\" _v-7e903530=\"\">\n\t\t\t\t<option v-for=\"( service, network ) in services\" v-bind:value=\"network\" :disabled=\"checkDisabled( service, network )\" _v-7e903530=\"\">{{ service.name }}</option>\n\t\t\t</select>\n\n\t\t\t<button class=\"btn input-group-btn\" :class=\"serviceClass\" @click=\"requestAuthorization()\" :disabled=\"checkDisabled( selected_service, selected_network )\" _v-7e903530=\"\">\n\t\t\t\t<i class=\"fa fa-fw\" :class=\"serviceIcon\" aria-hidden=\"true\" _v-7e903530=\"\"></i> Sign In\n\t\t\t</button>\n            <i class=\"badge\" data-badge=\"PRO\" v-if=\"checkDisabled( selected_service, selected_network ) &amp;&amp; !has_pro\" _v-7e903530=\"\">More available in the <b _v-7e903530=\"\">PRO</b> versions.</i>\n\t\t</div>\n\t\t<div class=\"modal\" :class=\"modalActiveClass\" _v-7e903530=\"\">\n\t\t\t<div class=\"modal-overlay\" _v-7e903530=\"\"></div>\n\t\t\t<div class=\"modal-container\" _v-7e903530=\"\">\n\t\t\t\t<div class=\"modal-header\" _v-7e903530=\"\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"closeModal()\" _v-7e903530=\"\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\" _v-7e903530=\"\">{{ modal.serviceName }} Service Credentials</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\" _v-7e903530=\"\">\n\t\t\t\t\t<div class=\"content\" _v-7e903530=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-7e903530=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-7e903530=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-7e903530=\"\">\n\t\t\t\t\t\t\t<i _v-7e903530=\"\">{{ field.description }}</i>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-footer\" _v-7e903530=\"\">\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-7e903530=\"\">Sign in</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"sign-in-btn\" _v-7e903530=\"\">\n\t\t<div class=\"input-group\" _v-7e903530=\"\">\n\t\t\t<select class=\"form-select\" v-model=\"selected_network\" _v-7e903530=\"\">\n\t\t\t\t<option v-for=\"( service, network ) in services\" v-bind:value=\"network\" :disabled=\"checkDisabled( service, network )\" _v-7e903530=\"\">{{ service.name }}</option>\n\t\t\t</select>\n\n\t\t\t<button class=\"btn input-group-btn\" :class=\"serviceClass\" @click=\"requestAuthorization()\" :disabled=\"checkDisabled( selected_service, selected_network )\" _v-7e903530=\"\">\n\t\t\t\t<i class=\"fa fa-fw\" :class=\"serviceIcon\" aria-hidden=\"true\" _v-7e903530=\"\"></i> Sign In\n\t\t\t</button>\n\t\t\t<i class=\"badge\" data-badge=\"PRO\" v-if=\"checkDisabled( selected_service, selected_network ) &amp;&amp; !has_pro\" _v-7e903530=\"\">More available in the <b _v-7e903530=\"\">PRO</b> versions.</i>\n\t\t</div>\n\t\t<div class=\"modal\" :class=\"modalActiveClass\" _v-7e903530=\"\">\n\t\t\t<div class=\"modal-overlay\" _v-7e903530=\"\"></div>\n\t\t\t<div class=\"modal-container\" _v-7e903530=\"\">\n\t\t\t\t<div class=\"modal-header\" _v-7e903530=\"\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"cancelModal()\" _v-7e903530=\"\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\" _v-7e903530=\"\">{{ modal.serviceName }} Service Credentials</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\" _v-7e903530=\"\">\n\t\t\t\t\t<div class=\"content\" _v-7e903530=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-7e903530=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-7e903530=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-7e903530=\"\">\n\t\t\t\t\t\t\t<i _v-7e903530=\"\">{{ field.description }}</i>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-footer\" _v-7e903530=\"\">\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-7e903530=\"\">Sign in</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 81 */
@@ -16238,21 +16237,21 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 			<h3>General Settings</h3>
 // 			<p>This is a <b>Vue.js</b> component.</p>
 // 			<div class="container">
-//                 <div class="columns">
-//                     <!-- Minimum age of posts available for sharing, in days
-//                     (number) -->
-//                     <div class="column col-sm-12 col-md-12 col-lg-12">
-//                         <div class="columns">
-//                             <div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-right">
-//                                 <b>Minimum interval between shares</b><br/>
-//                                 <i>Minimum time between shares (hour/hours), 0.4 can be used.</i>
-//                             </div>
-//                             <div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-left">
-//                                 <counter-input id="default_interval" :value.sync="generalSettings.default_interval" />
-//                             </div>
-//                         </div>
-//                     </div>
-//                 </div>
+// 				<div class="columns">
+// 					<!-- Minimum age of posts available for sharing, in days
+// 					(number) -->
+// 					<div class="column col-sm-12 col-md-12 col-lg-12">
+// 						<div class="columns">
+// 							<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-right">
+// 								<b>Minimum interval between shares</b><br/>
+// 								<i>Minimum time between shares (hour/hours), 0.4 can be used.</i>
+// 							</div>
+// 							<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-left">
+// 								<counter-input id="default_interval" :value.sync="generalSettings.default_interval" />
+// 							</div>
+// 						</div>
+// 					</div>
+// 				</div>
 // 				<div class="columns">
 // 					<!-- Minimum age of posts available for sharing, in days
 // 					(number) -->
@@ -16581,7 +16580,7 @@ exports.push([module.i, "\n\t#rop_core .input-group.rop-counter-group {\n\t\tpos
 
 // <template>
 // 	<div class="input-group rop-counter-group">
-// 		<input class="form-input rop-counter" type="number" :id="id" :value="value">
+// 		<input class="form-input rop-counter" type="number" v-model="inputValueC" :id="id" :value="value">
 // 		<button class="btn input-group-btn increment-btn up" @mousedown="isPressed('up')" @mouseup="isReleased('up')"><i class="fa fa-fw fa-caret-up"></i></button>
 // 		<button class="btn input-group-btn increment-btn down" @mousedown="isPressed('down')" @mouseup="isReleased('down')"><i class="fa fa-fw fa-caret-down"></i></button>
 // 	</div>
@@ -16620,6 +16619,18 @@ module.exports = {
 			incrementDown: 0,
 			inputValue: 0
 		};
+	},
+	computed: {
+		inputValueC: {
+			get: function get() {
+				return this.value;
+			},
+			set: function set(newValue) {
+				this.inputValue = parseInt(newValue);
+				this.$emit('update:value', this.inputValue);
+			}
+
+		}
 	},
 	methods: {
 		updateInput: function updateInput() {
@@ -16690,7 +16701,7 @@ module.exports = {
 /* 104 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"input-group rop-counter-group\">\n\t\t<input class=\"form-input rop-counter\" type=\"number\" :id=\"id\" :value=\"value\">\n\t\t<button class=\"btn input-group-btn increment-btn up\" @mousedown=\"isPressed('up')\" @mouseup=\"isReleased('up')\"><i class=\"fa fa-fw fa-caret-up\"></i></button>\n\t\t<button class=\"btn input-group-btn increment-btn down\" @mousedown=\"isPressed('down')\" @mouseup=\"isReleased('down')\"><i class=\"fa fa-fw fa-caret-down\"></i></button>\n\t</div>\n";
+module.exports = "\n\t<div class=\"input-group rop-counter-group\">\n\t\t<input class=\"form-input rop-counter\" type=\"number\" v-model=\"inputValueC\" :id=\"id\" :value=\"value\">\n\t\t<button class=\"btn input-group-btn increment-btn up\" @mousedown=\"isPressed('up')\" @mouseup=\"isReleased('up')\"><i class=\"fa fa-fw fa-caret-up\"></i></button>\n\t\t<button class=\"btn input-group-btn increment-btn down\" @mousedown=\"isPressed('down')\" @mouseup=\"isReleased('down')\"><i class=\"fa fa-fw fa-caret-down\"></i></button>\n\t</div>\n";
 
 /***/ }),
 /* 105 */
@@ -17047,7 +17058,7 @@ module.exports = "\n\t<div class=\"form-autocomplete\" style=\"width: 100%;\" v-
 /* 108 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\" style=\"overflow: inherit;\">\n\t\t\t<h3>General Settings</h3>\n\t\t\t<p>This is a <b>Vue.js</b> component.</p>\n\t\t\t<div class=\"container\">\n                <div class=\"columns\">\n                    <!-- Minimum age of posts available for sharing, in days\n                    (number) -->\n                    <div class=\"column col-sm-12 col-md-12 col-lg-12\">\n                        <div class=\"columns\">\n                            <div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-right\">\n                                <b>Minimum interval between shares</b><br/>\n                                <i>Minimum time between shares (hour/hours), 0.4 can be used.</i>\n                            </div>\n                            <div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n                                <counter-input id=\"default_interval\" :value.sync=\"generalSettings.default_interval\" />\n                            </div>\n                        </div>\n                    </div>\n                </div>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Minimum age of posts available for sharing, in days\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t\t<b>Minimum post age</b><br/>\n\t\t\t\t\t\t\t\t<i>Minimum age of posts available for sharing, in days.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<counter-input id=\"min_post_age\" :maxVal=\"365\" :value.sync=\"generalSettings.minimum_post_age\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<!-- Maximum age of posts available for sharing, in days\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-right\">\n\t\t\t\t\t\t\t\t<counter-input id=\"max_post_age\" :maxVal=\"365\" :value.sync=\"generalSettings.maximum_post_age\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-left\">\n\t\t\t\t\t\t\t\t<b>Maximum post age</b><br/>\n\t\t\t\t\t\t\t\t<i>Maximum age of posts available for sharing, in days.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Number of posts to share per account per trigger\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t\t<b>Number of posts</b><br/>\n\t\t\t\t\t\t\t\t<i>Number of posts to share per. account per. trigger of scheduled job.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<!-- Share more than once, if there are no more posts to share, we should start re-sharing the one we\n\t\t\t\t\tpreviously shared\n\t\t\t\t\t(boolean) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-2 col-xl-2 col-1 text-right\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\" />\n\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Yes\n\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-10 col-xl-10 col-11 text-left\">\n\t\t\t\t\t\t\t\t<b>Share more than once?</b><br/>\n\t\t\t\t\t\t\t\t<i>If there are no more posts to share, we should start re-sharing the one we previously shared.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Post types available to share - what post types are available for share\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Post types</b><br/>\n\t\t\t\t\t\t\t\t<i>Post types available to share - what post types are available for share</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<multiple-select :options=\"postTypes\" :selected=\"generalSettings.selected_post_types\" :changedSelection=\"updatedPostTypes\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Taxonomies available for posts to share - based on what post types users choose to share, we should\n\t\t\t\t\tshow the taxonomies available for that post type, along with their terms, which user can select to share.\n\t\t\t\t\tHere we should have also a toggle if either the taxonomies selected are included or excluded.\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Taxonomies</b><br/>\n\t\t\t\t\t\t\t\t<i>Taxonomies available for the selected post types. Use to include or exclude posts.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changedSelection=\"updatedTaxonomies\" />\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\">\n\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" @change=\"exludeTaxonomiesChange\" />\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Exclude?\n\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Posts excluded/included in sharing - what posts we should exclude or include in sharing\n\t\t\t\t\t- we should have have an autocomplete list which should fetch posts from the previously select post_types\n\t\t\t\t\tand terms and allow them to be include/excluded.\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Posts</b><br/>\n\t\t\t\t\t\t\t\t<i>Posts excluded/included in sharing, filtered based on previous selections.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t\t\t\t<multiple-select :searchQuery=\"searchQuery\" @update=\"searchUpdate\" :options=\"postsAvailable\" :dontLock=\"true\" :selected=\"generalSettings.selected_posts\" :changedSelection=\"updatedPosts\" />\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\">\n\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_posts\" />\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Exclude?\n\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div  class=\"columns\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Enable Google Analytics Tracking</b><br/>\n\t\t\t\t\t\t\t\t<i>If checked an utm query willbe added to URL's so that you cand better track trafic.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.ga_tracking\" />\n\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Yes\n\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\"><i class=\"fa fa-check\"></i> Save</button>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\" style=\"overflow: inherit;\">\n\t\t\t<h3>General Settings</h3>\n\t\t\t<p>This is a <b>Vue.js</b> component.</p>\n\t\t\t<div class=\"container\">\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Minimum age of posts available for sharing, in days\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Minimum interval between shares</b><br/>\n\t\t\t\t\t\t\t\t<i>Minimum time between shares (hour/hours), 0.4 can be used.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<counter-input id=\"default_interval\" :value.sync=\"generalSettings.default_interval\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Minimum age of posts available for sharing, in days\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t\t<b>Minimum post age</b><br/>\n\t\t\t\t\t\t\t\t<i>Minimum age of posts available for sharing, in days.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<counter-input id=\"min_post_age\" :maxVal=\"365\" :value.sync=\"generalSettings.minimum_post_age\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<!-- Maximum age of posts available for sharing, in days\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-right\">\n\t\t\t\t\t\t\t\t<counter-input id=\"max_post_age\" :maxVal=\"365\" :value.sync=\"generalSettings.maximum_post_age\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-left\">\n\t\t\t\t\t\t\t\t<b>Maximum post age</b><br/>\n\t\t\t\t\t\t\t\t<i>Maximum age of posts available for sharing, in days.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Number of posts to share per account per trigger\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t\t<b>Number of posts</b><br/>\n\t\t\t\t\t\t\t\t<i>Number of posts to share per. account per. trigger of scheduled job.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<!-- Share more than once, if there are no more posts to share, we should start re-sharing the one we\n\t\t\t\t\tpreviously shared\n\t\t\t\t\t(boolean) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-2 col-xl-2 col-1 text-right\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\" />\n\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Yes\n\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-10 col-xl-10 col-11 text-left\">\n\t\t\t\t\t\t\t\t<b>Share more than once?</b><br/>\n\t\t\t\t\t\t\t\t<i>If there are no more posts to share, we should start re-sharing the one we previously shared.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Post types available to share - what post types are available for share\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Post types</b><br/>\n\t\t\t\t\t\t\t\t<i>Post types available to share - what post types are available for share</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<multiple-select :options=\"postTypes\" :selected=\"generalSettings.selected_post_types\" :changedSelection=\"updatedPostTypes\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Taxonomies available for posts to share - based on what post types users choose to share, we should\n\t\t\t\t\tshow the taxonomies available for that post type, along with their terms, which user can select to share.\n\t\t\t\t\tHere we should have also a toggle if either the taxonomies selected are included or excluded.\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Taxonomies</b><br/>\n\t\t\t\t\t\t\t\t<i>Taxonomies available for the selected post types. Use to include or exclude posts.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changedSelection=\"updatedTaxonomies\" />\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\">\n\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" @change=\"exludeTaxonomiesChange\" />\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Exclude?\n\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Posts excluded/included in sharing - what posts we should exclude or include in sharing\n\t\t\t\t\t- we should have have an autocomplete list which should fetch posts from the previously select post_types\n\t\t\t\t\tand terms and allow them to be include/excluded.\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Posts</b><br/>\n\t\t\t\t\t\t\t\t<i>Posts excluded/included in sharing, filtered based on previous selections.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t\t\t\t<multiple-select :searchQuery=\"searchQuery\" @update=\"searchUpdate\" :options=\"postsAvailable\" :dontLock=\"true\" :selected=\"generalSettings.selected_posts\" :changedSelection=\"updatedPosts\" />\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\">\n\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_posts\" />\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Exclude?\n\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div  class=\"columns\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Enable Google Analytics Tracking</b><br/>\n\t\t\t\t\t\t\t\t<i>If checked an utm query willbe added to URL's so that you cand better track trafic.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.ga_tracking\" />\n\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Yes\n\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\"><i class=\"fa fa-check\"></i> Save</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 109 */

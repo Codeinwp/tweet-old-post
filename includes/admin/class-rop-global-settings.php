@@ -314,7 +314,10 @@ class Rop_Global_Settings {
 	 * @return array
 	 */
 	public function get_available_services() {
-		$available_services = self::instance()->services;
+		$available_services =  apply_filters(
+			'rop_available_services',
+			self::instance()->services_defaults
+		);
 		if ( $this->has_pro() !== false ) {
 			unset( $available_services['facebook']['allowed_accounts'] );
 			unset( $available_services['twitter']['allowed_accounts'] );

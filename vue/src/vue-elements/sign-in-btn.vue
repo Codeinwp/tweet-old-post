@@ -8,13 +8,13 @@
 			<button class="btn input-group-btn" :class="serviceClass" @click="requestAuthorization()" :disabled="checkDisabled( selected_service, selected_network )" >
 				<i class="fa fa-fw" :class="serviceIcon" aria-hidden="true"></i> Sign In
 			</button>
-            <i class="badge" data-badge="PRO" v-if="checkDisabled( selected_service, selected_network ) && !has_pro">More available in the <b>PRO</b> versions.</i>
+			<i class="badge" data-badge="PRO" v-if="checkDisabled( selected_service, selected_network ) && !has_pro">More available in the <b>PRO</b> versions.</i>
 		</div>
 		<div class="modal" :class="modalActiveClass">
 			<div class="modal-overlay"></div>
 			<div class="modal-container">
 				<div class="modal-header">
-					<button class="btn btn-clear float-right" @click="closeModal()"></button>
+					<button class="btn btn-clear float-right" @click="cancelModal()"></button>
 					<div class="modal-title h5">{{ modal.serviceName }} Service Credentials</div>
 				</div>
 				<div class="modal-body">
@@ -83,18 +83,18 @@
 					this.openModal()
 				} else {
 					this.activePopup = this.selected_network
-					let w = 560
-					let h = 340
-					let y = window.top.outerHeight / 2 + window.top.screenY - ( w / 2 )
-					let x = window.top.outerWidth / 2 + window.top.screenX - ( h / 2 )
-					window.open( '', this.activePopup, 'width=' + w + ', height=' + h + ', toolbar=0, menubar=0, location=0, top=' + y + ', left=' + x )
 					this.getUrlAndGo( [] )
 				}
 			},
 			openPopup ( url ) {
 				this.$store.commit( 'logMessage', [ 'Trying to open popup for url:' + url, 'notice' ] )
-				let newWindow = window.open( url, this.activePopup )
+				let w = 560
+				let h = 340
+				let y = window.top.outerHeight / 2 + window.top.screenY - ( w / 2 )
+				let x = window.top.outerWidth / 2 + window.top.screenX - ( h / 2 )
+				let newWindow = window.open( url, this.activePopup, 'width=' + w + ', height=' + h + ', toolbar=0, menubar=0, location=0, target=_self, top=' + y + ', left=' + x )
 				if ( window.focus ) { newWindow.focus() }
+				console.log( newWindow.external )
 				let instance = this
 				let pollTimer = window.setInterval( function () {
 					if ( newWindow.closed !== false ) {
@@ -128,13 +128,12 @@
 				}
 
 				this.activePopup = this.selected_network
-				let w = 560
-				let h = 340
-				let y = window.top.outerHeight / 2 + window.top.screenY - ( w / 2 )
-				let x = window.top.outerWidth / 2 + window.top.screenX - ( h / 2 )
-				window.open( '', this.activePopup, 'width=' + w + ', height=' + h + ', toolbar=0, menubar=0, location=0, top=' + y + ', left=' + x )
 				this.getUrlAndGo( credentials )
 
+				this.modal.isOpen = false
+			},
+			cancelModal: function () {
+				this.$store.state.auth_in_progress = false
 				this.modal.isOpen = false
 			}
 		},

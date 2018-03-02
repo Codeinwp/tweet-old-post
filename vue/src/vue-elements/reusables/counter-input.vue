@@ -1,6 +1,6 @@
 <template>
 	<div class="input-group rop-counter-group">
-		<input class="form-input rop-counter" type="number" :id="id" :value="value">
+		<input class="form-input rop-counter" type="number" v-model="inputValueC" :id="id" :value="value">
 		<button class="btn input-group-btn increment-btn up" @mousedown="isPressed('up')" @mouseup="isReleased('up')"><i class="fa fa-fw fa-caret-up"></i></button>
 		<button class="btn input-group-btn increment-btn down" @mousedown="isPressed('down')" @mouseup="isReleased('down')"><i class="fa fa-fw fa-caret-down"></i></button>
 	</div>
@@ -38,6 +38,18 @@
 				incrementUp: 0,
 				incrementDown: 0,
 				inputValue: 0
+			}
+		},
+		computed: {
+			inputValueC: {
+				get: function () {
+					return this.value
+				},
+				set: function ( newValue ) {
+					this.inputValue = parseInt( newValue )
+					this.$emit( 'update:value', this.inputValue )
+				}
+
 			}
 		},
 		methods: {

@@ -408,6 +408,7 @@ class Rop_Rest_Api {
 	private function save_general_settings( $data ) {
 		$general_settings = array(
 		    'available_taxonomies' => $data['available_taxonomies'],
+			'default_interval' => $data['default_interval'],
 			'minimum_post_age' => $data['minimum_post_age'],
 			'maximum_post_age' => $data['maximum_post_age'],
 			'number_of_posts' => $data['number_of_posts'],

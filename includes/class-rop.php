@@ -140,6 +140,16 @@ class Rop {
 			${$service . '_service'} = $factory->build( $service );
 			${$service . '_service'}->expose_endpoints();
 		}
+
+
+		if( class_exists( 'Rop_Pro_Admin' ) ) {
+			$plugin_pro_admin = new Rop_Pro_Admin( $this->get_plugin_name(), $this->get_version() );
+
+			$this->loader->add_action( 'admin_init', $plugin_pro_admin, 'register_meta_box', 2 );
+			$this->loader->add_action( 'save_post', $plugin_pro_admin, 'custom_repeatable_meta_box_save' );
+
+			$this->loader->add_filter( 'rop_available_services', $plugin_pro_admin, 'available_services' );
+		}
 	}
 
 	/**
