@@ -314,7 +314,7 @@ class Rop_Global_Settings {
 	 * @return array
 	 */
 	public function get_available_services() {
-		$available_services =  apply_filters(
+		$available_services = apply_filters(
 			'rop_available_services',
 			self::instance()->services_defaults
 		);

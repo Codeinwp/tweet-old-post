@@ -131,18 +131,9 @@ class Rop {
 
 		$this->loader->add_action( 'plugins_loaded', $this, 'upgrade', 1 );
 
-		$plugin_rest_api = new Rop_Rest_Api();
-		$plugin_rest_api->register();
+		$this->loader->add_action( 'plugins_loaded', $this, 'register_service_api_endpoints', 10 );
 
-		$factory = new Rop_Services_Factory();
-		$global_settings = new Rop_Global_Settings();
-		foreach ( $global_settings->get_active_services_handle() as $service ) {
-			${$service . '_service'} = $factory->build( $service );
-			${$service . '_service'}->expose_endpoints();
-		}
-
-
-		if( class_exists( 'Rop_Pro_Admin' ) ) {
+		if ( class_exists( 'Rop_Pro_Admin' ) ) {
 			$plugin_pro_admin = new Rop_Pro_Admin( $this->get_plugin_name(), $this->get_version() );
 
 			$this->loader->add_action( 'admin_init', $plugin_pro_admin, 'register_meta_box', 2 );
@@ -150,6 +141,33 @@ class Rop {
 
 			$this->loader->add_filter( 'rop_available_services', $plugin_pro_admin, 'available_services' );
 		}
+	}
+
+	/**
+	 * Method used to register API endpoints later.
+	 * Before it did not register some endpoints.
+	 *
+	 * @since   8.0.0rc
+	 * @access  public
+	 * @throws Exception An exception is thrown if a service can not be built.
+	 */
+	public function register_service_api_endpoints() {
+		$plugin_rest_api = new Rop_Rest_Api();
+		$plugin_rest_api->register();
+
+		$factory = new Rop_Services_Factory();
+		$global_settings = new Rop_Global_Settings();
+		foreach ( $global_settings->get_active_services_handle() as $service ) {
+			try {
+				${$service . '_service'} = $factory->build( $service );
+				${$service . '_service'}->expose_endpoints();
+			} catch ( Exception $exception ) {
+				// Service can't be built. Not found or otherwise. Maybe log this.
+				$log = new Rop_Logger();
+				$log->warn( 'The service "' . $service . '" can NOT be built or was not found', $exception->getMessage() );
+			}
+		}
+
 	}
 
 	/**

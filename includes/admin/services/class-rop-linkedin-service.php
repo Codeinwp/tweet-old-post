@@ -133,7 +133,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		$_SESSION['rop_linkedin_token'] = $accessToken;
 
-		echo '<script>window.setTimeout("window.close()", 500);</script>';
+		parent::authorize();
+		// echo '<script>window.setTimeout("window.close()", 500);</script>';
 	}
 
 	/**

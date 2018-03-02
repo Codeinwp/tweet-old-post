@@ -111,25 +111,28 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			session_start();
 		}
 
-		$credentials = $_SESSION['rop_tumblr_credentials'];
-		$tmp_token = $_SESSION['rop_tumblr_request_token'];
+		if ( isset( $_SESSION['rop_tumblr_credentials'] ) && isset( $_SESSION['rop_tumblr_request_token'] ) ) {
+			$credentials = $_SESSION['rop_tumblr_credentials'];
+			$tmp_token = $_SESSION['rop_tumblr_request_token'];
 
-		$api = $this->get_api( $credentials['consumer_key'], $credentials['consumer_secret'], $tmp_token['oauth_token'], $tmp_token['oauth_token_secret'] );
-		$requestHandler = $api->getRequestHandler();
-		$requestHandler->setBaseUrl( 'https://www.tumblr.com/' );
+			$api = $this->get_api( $credentials['consumer_key'], $credentials['consumer_secret'], $tmp_token['oauth_token'], $tmp_token['oauth_token_secret'] );
+			$requestHandler = $api->getRequestHandler();
+			$requestHandler->setBaseUrl( 'https://www.tumblr.com/' );
 
-		if ( ! empty( $_GET['oauth_verifier'] ) ) {
-			// exchange the verifier for the keys
-			$verifier = trim( $_GET['oauth_verifier'] );
-			$resp = $requestHandler->request( 'POST', 'oauth/access_token', array('oauth_verifier' => $verifier ) );
-			$out = (string) $resp->body;
-			$accessToken = array();
-			parse_str( $out, $accessToken );
-			unset( $_SESSION['rop_tumblr_request_token'] );
-			$_SESSION['rop_tumblr_token'] = $accessToken;
+			if ( ! empty( $_GET['oauth_verifier'] ) ) {
+				// exchange the verifier for the keys
+				$verifier = trim( $_GET['oauth_verifier'] );
+				$resp = $requestHandler->request( 'POST', 'oauth/access_token', array('oauth_verifier' => $verifier ) );
+				$out = (string) $resp->body;
+				$accessToken = array();
+				parse_str( $out, $accessToken );
+				unset( $_SESSION['rop_tumblr_request_token'] );
+				$_SESSION['rop_tumblr_token'] = $accessToken;
+			}
 		}
 
-		echo '<script>window.setTimeout("window.close()", 500);</script>';
+		parent::authorize();
+		// echo '<script>window.setTimeout("window.close()", 500);</script>';
 	}
 
 	/**
@@ -164,7 +167,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	 * @access  private
 	 * @return bool
 	 */
-	private function request_and_set_user_info() {
+	protected function request_and_set_user_info() {
 		$api = $this->get_api( $this->credentials['consumer_key'], $this->credentials['consumer_secret'], $this->credentials['oauth_token'], $this->credentials['oauth_token_secret'] );
 
 		$profile = $api->getUserInfo();

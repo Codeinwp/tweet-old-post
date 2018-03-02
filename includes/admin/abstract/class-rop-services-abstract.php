@@ -120,7 +120,29 @@ abstract class Rop_Services_Abstract {
 	 * @access  public
 	 * @return mixed
 	 */
-	public abstract function authorize();
+	public function authorize() {
+
+		try {
+
+			$authenticated = $this->authenticate();
+
+			if ( $authenticated ) {
+				$service = $this->get_service();
+				$service_id = $service['service'] . '_' . $service['id'];
+				$new_service[ $service_id ] = $service;
+			}
+
+			$model = new Rop_Services_Model();
+			$model->add_authenticated_service( $new_service );
+
+		} catch ( Exception $exception ) {
+			// Service can't be built. Not found or otherwise. Maybe log this.
+			$log = new Rop_Logger();
+			$log->warn( 'The service "' . $this->display_name . '" can NOT be built or was not found', $exception->getMessage() );
+		}
+
+		exit( wp_redirect( admin_url( 'admin.php?page=TweetOldPost' ) ) );
+	}
 
 	/**
 	 * Method for authenticate the service.

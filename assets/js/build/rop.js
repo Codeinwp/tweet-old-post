@@ -14684,22 +14684,21 @@ module.exports = {
 		},
 		openPopup: function openPopup(url) {
 			this.$store.commit('logMessage', ['Trying to open popup for url:' + url, 'notice']);
-			var w = 560;
-			var h = 340;
-			var y = window.top.outerHeight / 2 + window.top.screenY - w / 2;
-			var x = window.top.outerWidth / 2 + window.top.screenX - h / 2;
-			var newWindow = window.open(url, this.activePopup, 'width=' + w + ', height=' + h + ', toolbar=0, menubar=0, location=0, target=_self, top=' + y + ', left=' + x);
-			if (window.focus) {
-				newWindow.focus();
-			}
-			console.log(newWindow.external);
-			var instance = this;
-			var pollTimer = window.setInterval(function () {
-				if (newWindow.closed !== false) {
-					window.clearInterval(pollTimer);
-					instance.requestAuthentication();
-				}
-			}, 200);
+			// let w = 560
+			// let h = 340
+			// let y = window.top.outerHeight / 2 + window.top.screenY - ( w / 2 )
+			// let x = window.top.outerWidth / 2 + window.top.screenX - ( h / 2 )
+			// let newWindow = window.open( url, this.activePopup, 'width=' + w + ', height=' + h + ', dependent=1, toolbar=0, menubar=0, location=0, status=1, top=' + y + ', left=' + x )
+			window.open(url, '_self');
+			// if ( window.focus ) { newWindow.focus() }
+			// console.log( newWindow.document )
+			// let instance = this
+			// let pollTimer = window.setInterval( function () {
+			// 	if ( newWindow.closed !== false ) {
+			// 		window.clearInterval( pollTimer )
+			// 		instance.requestAuthentication()
+			// 	}
+			// }, 200 )
 		},
 		getUrlAndGo: function getUrlAndGo(credentials) {
 			var _this = this;

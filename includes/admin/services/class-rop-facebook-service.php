@@ -154,7 +154,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		$_SESSION['rop_facebook_token'] = $token->getValue();
 
-		echo '<script>window.setTimeout("window.close()", 500);</script>';
+		parent::authorize();
+		// echo '<script>window.setTimeout("window.close()", 500);</script>';
 	}
 
 	/**

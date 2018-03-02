@@ -132,7 +132,8 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 
 		$_SESSION['rop_twitter_oauth_token'] = $access_token;
 
-		echo '<script>window.setTimeout("window.close()", 500);</script>';
+		parent::authorize();
+		// echo '<script>window.setTimeout("window.close()", 500);</script>';
 	}
 
 	/**
