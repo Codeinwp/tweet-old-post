@@ -68,7 +68,6 @@
 				let queue = this.$store.state.queue
 				let toTime = null
 				let isOn = this.$store.state.cron_status
-				isOn = true
 				if ( queue !== undefined && queue[Object.keys( queue )[0]] && isOn ) {
 					toTime = queue[Object.keys( queue )[0]].time
 				}

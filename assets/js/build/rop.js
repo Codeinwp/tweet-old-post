@@ -14322,7 +14322,6 @@ module.exports = {
 			var queue = this.$store.state.queue;
 			var toTime = null;
 			var isOn = this.$store.state.cron_status;
-			isOn = true;
 			if (queue !== undefined && queue[(0, _keys2.default)(queue)[0]] && isOn) {
 				toTime = queue[(0, _keys2.default)(queue)[0]].time;
 			}
