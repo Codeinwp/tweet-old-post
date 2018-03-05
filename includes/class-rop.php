@@ -129,9 +129,9 @@ class Rop {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'menu_pages' );
 
-		$this->loader->add_action( 'plugins_loaded', $this, 'upgrade', 1 );
+		$this->loader->add_action( 'plugins_loaded', $this, 'upgrade', 2 );
 
-		$this->loader->add_action( 'plugins_loaded', $this, 'register_service_api_endpoints', 10 );
+		$this->loader->add_action( 'plugins_loaded', $this, 'register_service_api_endpoints', 1 );
 
 		if ( class_exists( 'Rop_Pro_Admin' ) ) {
 			$plugin_pro_admin = new Rop_Pro_Admin( $this->get_plugin_name(), $this->get_version() );
