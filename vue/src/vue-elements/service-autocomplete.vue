@@ -78,7 +78,6 @@
 		},
 		watch: {
 			to_be_activated: function () {
-				console.log( this.to_be_activated )
 				this.toActivateCount = this.to_be_activated.length
 			}
 		},

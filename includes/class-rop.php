@@ -128,6 +128,7 @@ class Rop {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'menu_pages' );
+		$this->loader->add_action( 'rop_cron_job', $plugin_admin, 'rop_cron_job' );
 
 		$this->loader->add_action( 'wp_loaded', $this, 'register_service_api_endpoints', 1 );
 
@@ -141,6 +142,9 @@ class Rop {
 
 			$this->loader->add_filter( 'rop_available_services', $plugin_pro_admin, 'available_services' );
 		}
+
+		$rop_cron_helper = new Rop_Cron_Helper();
+		$this->loader->add_filter( 'cron_schedules', $rop_cron_helper, 'rop_cron_schedules' );
 	}
 
 	/**

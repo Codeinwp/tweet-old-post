@@ -78,6 +78,24 @@ class Rop_Rest_Api {
 	}
 
 	/**
+	 * API method called to toggle the cron job.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
+	 *
+	 * @since   8.0.0rc
+	 * @access  private
+	 * @param   array $data Data passed from the AJAX call.
+	 * @return array
+	 */
+	private function manage_cron( $data ) {
+		$cron_helper = new Rop_Cron_Helper();
+		$this->response->set_code( '200' )
+		               ->set_message( __( 'Cron manager response.', 'tweet-old-post' ) )
+		               ->set_data( $cron_helper->manage_cron( $data ) );
+		return $this->response->to_array();
+	}
+
+	/**
 	 * API method called to publish a queue event and return active queue.
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.

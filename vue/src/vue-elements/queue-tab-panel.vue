@@ -37,6 +37,9 @@
 				return this.$store.state.has_pro
 			}
 		},
+		mounted: function () {
+			this.$store.dispatch( 'fetchAJAX', { req: 'get_queue' } )
+		},
 		methods: {
 			refreshQueue: function () {
 				this.$store.dispatch( 'fetchAJAX', { req: 'get_queue' } )

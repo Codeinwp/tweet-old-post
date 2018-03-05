@@ -8,7 +8,8 @@
 		</div>
 
 		<toast />
-        <ajax-loader />
+		<countdown v-bind:to="countdownObject" />
+		<ajax-loader />
 		<div class="panel">
 			<div class="panel-nav" style="padding: 8px;">
 				<ul class="tab">
@@ -21,17 +22,16 @@
 							</label>
 							<label class="form-switch">
 								<input type="checkbox" v-model="generalSettings.beta_user" @change="updateSettings" />
-                                <i class="form-icon"></i> <span class="hide-sm">Beta User</span>
+								<i class="form-icon"></i> <span class="hide-sm">Beta User</span>
 							</label>
 							<label class="form-switch">
 								<input type="checkbox" v-model="generalSettings.remote_check" @change="updateSettings" />
-                                <i class="form-icon"></i> <span class="hide-sm">Remote Check</span>
+								<i class="form-icon"></i> <span class="hide-sm">Remote Check</span>
 							</label>
 						</div>
 					</li>
 				</ul>
 			</div>
-
 			<component :is="page.view"></component>
 		</div>
 	</div>
@@ -46,6 +46,7 @@
 	import QueueTab from './queue-tab-panel.vue'
 	import LogsTab from './logs-tab-panel.vue'
 	import Toast from './reusables/toast.vue'
+	import CountDown from './reusables/countdown.vue'
 	import AjaxLoader from './reusables/ajax-loader.vue'
 
 	module.exports = {
@@ -62,6 +63,19 @@
 			},
 			has_pro: function () {
 				return this.$store.state.has_pro
+			},
+			countdownObject () {
+				let queue = this.$store.state.queue
+				let toTime = null
+				let isOn = this.$store.state.cron_status
+				isOn = true
+				if ( queue !== undefined && queue[Object.keys( queue )[0]] && isOn ) {
+					toTime = queue[Object.keys( queue )[0]].time
+				}
+				return {
+					toTime: toTime,
+					isOn: isOn
+				}
 			}
 		},
 		created () {
@@ -93,6 +107,7 @@
 			'queue': QueueTab,
 			'logs': LogsTab,
 			'toast': Toast,
+			'countdown': CountDown,
 			'ajax-loader': AjaxLoader
 		}
 	}

@@ -16,7 +16,6 @@ function stringToBoolean ( string ) {
 }
 
 function licenceType ( string ) {
-	console.log( 'Licence', string )
 	switch ( string.toLowerCase().trim() ) {
 	case 'business': return 'business'
 	case 'pro': case 'true': case 'yes': return 'pro'
@@ -36,6 +35,7 @@ export default new Vuex.Store( {
 			// view: 'schedule'
 			// view: 'queue'
 		},
+		cron_status: false,
 		toast: {
 			type: 'success',
 			show: false,
@@ -125,6 +125,8 @@ export default new Vuex.Store( {
 		},
 		updateState ( state, { stateData, requestName } ) {
 			switch ( requestName ) {
+			case 'manage_cron':
+				state.cron_status = stateData.current_status
 			case 'get_log':
 				state.page.logs = stateData.pretty
 				state.page.logs_verbose = stateData.verbose

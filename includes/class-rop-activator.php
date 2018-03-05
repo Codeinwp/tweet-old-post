@@ -30,36 +30,6 @@ class Rop_Activator {
 	 * @since   8.0.0
 	 * @access  public
 	 */
-	public static function activate() {
-		add_filter( 'cron_schedules', array( 'Rop_Activator', 'rop_cron_schedules' ) );
-
-		if ( ! wp_next_scheduled( 'rop_cron_job' ) ) {
-			wp_schedule_event( time(), '5min', 'rop_cron_job' );
-		}
-	}
-
-	/**
-	 * Defines new schedules for cron use.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @param   array $schedules The schedules array.
-	 * @return mixed
-	 */
-	public static function rop_cron_schedules( $schedules ) {
-		if ( ! isset( $schedules['5min'] ) ) {
-			$schedules['5min'] = array(
-				'interval' => 5 * 60,
-				'display' => __( 'Once every 5 minutes' ),
-			);
-		}
-		if ( ! isset( $schedules['30min'] ) ) {
-			$schedules['30min'] = array(
-				'interval' => 30 * 60,
-				'display' => __( 'Once every 30 minutes' ),
-			);
-		}
-		return $schedules;
-	}
+	public static function activate() {}
 
 }

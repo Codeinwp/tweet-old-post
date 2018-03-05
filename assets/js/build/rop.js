@@ -375,6 +375,14 @@ function updateLink(linkElement, obj) {
 /* 2 */
 /***/ (function(module, exports) {
 
+var core = module.exports = { version: '2.5.1' };
+if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
 // https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
 var global = module.exports = typeof window != 'undefined' && window.Math == Math
   ? window : typeof self != 'undefined' && self.Math == Math ? self
@@ -384,20 +392,12 @@ if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
 
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports) {
-
-var core = module.exports = { version: '2.5.1' };
-if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
-
-
-/***/ }),
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var store = __webpack_require__(24)('wks');
-var uid = __webpack_require__(25);
-var Symbol = __webpack_require__(2).Symbol;
+var store = __webpack_require__(25)('wks');
+var uid = __webpack_require__(26);
+var Symbol = __webpack_require__(3).Symbol;
 var USE_SYMBOL = typeof Symbol == 'function';
 
 var $exports = module.exports = function (name) {
@@ -412,7 +412,13 @@ $exports.store = store;
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var dP = __webpack_require__(17);
+module.exports = { "default": __webpack_require__(45), __esModule: true };
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var dP = __webpack_require__(18);
 var createDesc = __webpack_require__(29);
 module.exports = __webpack_require__(9) ? function (object, key, value) {
   return dP.f(object, key, createDesc(1, value));
@@ -421,12 +427,6 @@ module.exports = __webpack_require__(9) ? function (object, key, value) {
   return object;
 };
 
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = { "default": __webpack_require__(51), __esModule: true };
 
 /***/ }),
 /* 7 */
@@ -442,7 +442,7 @@ module.exports = function (it, key) {
 /* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isObject = __webpack_require__(18);
+var isObject = __webpack_require__(19);
 module.exports = function (it) {
   if (!isObject(it)) throw TypeError(it + ' is not an object!');
   return it;
@@ -454,7 +454,7 @@ module.exports = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // Thank's IE8 for his funny defineProperty
-module.exports = !__webpack_require__(19)(function () {
+module.exports = !__webpack_require__(20)(function () {
   return Object.defineProperty({}, 'a', { get: function () { return 7; } }).a != 7;
 });
 
@@ -10871,7 +10871,7 @@ module.exports = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // to indexed object, toObject with fallback for non-array-like ES3 strings
-var IObject = __webpack_require__(54);
+var IObject = __webpack_require__(48);
 var defined = __webpack_require__(13);
 module.exports = function (it) {
   return IObject(defined(it));
@@ -10894,8 +10894,8 @@ module.exports = function (it) {
 /* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var shared = __webpack_require__(24)('keys');
-var uid = __webpack_require__(25);
+var shared = __webpack_require__(25)('keys');
+var uid = __webpack_require__(26);
 module.exports = function (key) {
   return shared[key] || (shared[key] = uid(key));
 };
@@ -10905,128 +10905,10 @@ module.exports = function (key) {
 /* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var anObject = __webpack_require__(8);
-var IE8_DOM_DEFINE = __webpack_require__(61);
-var toPrimitive = __webpack_require__(62);
-var dP = Object.defineProperty;
-
-exports.f = __webpack_require__(9) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
-  anObject(O);
-  P = toPrimitive(P, true);
-  anObject(Attributes);
-  if (IE8_DOM_DEFINE) try {
-    return dP(O, P, Attributes);
-  } catch (e) { /* empty */ }
-  if ('get' in Attributes || 'set' in Attributes) throw TypeError('Accessors not supported!');
-  if ('value' in Attributes) O[P] = Attributes.value;
-  return O;
-};
-
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports) {
-
-module.exports = function (it) {
-  return typeof it === 'object' ? it !== null : typeof it === 'function';
-};
-
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports) {
-
-module.exports = function (exec) {
-  try {
-    return !!exec();
-  } catch (e) {
-    return true;
-  }
-};
-
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = { "default": __webpack_require__(63), __esModule: true };
-
-/***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// 7.1.13 ToObject(argument)
-var defined = __webpack_require__(13);
-module.exports = function (it) {
-  return Object(defined(it));
-};
-
-
-/***/ }),
-/* 22 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// 19.1.2.14 / 15.2.3.14 Object.keys(O)
-var $keys = __webpack_require__(53);
-var enumBugKeys = __webpack_require__(26);
-
-module.exports = Object.keys || function keys(O) {
-  return $keys(O, enumBugKeys);
-};
-
-
-/***/ }),
-/* 23 */
-/***/ (function(module, exports) {
-
-var toString = {}.toString;
-
-module.exports = function (it) {
-  return toString.call(it).slice(8, -1);
-};
-
-
-/***/ }),
-/* 24 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var global = __webpack_require__(2);
-var SHARED = '__core-js_shared__';
-var store = global[SHARED] || (global[SHARED] = {});
-module.exports = function (key) {
-  return store[key] || (store[key] = {});
-};
-
-
-/***/ }),
-/* 25 */
-/***/ (function(module, exports) {
-
-var id = 0;
-var px = Math.random();
-module.exports = function (key) {
-  return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
-};
-
-
-/***/ }),
-/* 26 */
-/***/ (function(module, exports) {
-
-// IE 8- don't enum bug keys
-module.exports = (
-  'constructor,hasOwnProperty,isPrototypeOf,propertyIsEnumerable,toLocaleString,toString,valueOf'
-).split(',');
-
-
-/***/ }),
-/* 27 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var global = __webpack_require__(2);
-var core = __webpack_require__(3);
-var ctx = __webpack_require__(59);
-var hide = __webpack_require__(5);
+var global = __webpack_require__(3);
+var core = __webpack_require__(2);
+var ctx = __webpack_require__(53);
+var hide = __webpack_require__(6);
 var PROTOTYPE = 'prototype';
 
 var $export = function (type, name, source) {
@@ -11087,11 +10969,129 @@ module.exports = $export;
 
 
 /***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var anObject = __webpack_require__(8);
+var IE8_DOM_DEFINE = __webpack_require__(55);
+var toPrimitive = __webpack_require__(56);
+var dP = Object.defineProperty;
+
+exports.f = __webpack_require__(9) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
+  anObject(O);
+  P = toPrimitive(P, true);
+  anObject(Attributes);
+  if (IE8_DOM_DEFINE) try {
+    return dP(O, P, Attributes);
+  } catch (e) { /* empty */ }
+  if ('get' in Attributes || 'set' in Attributes) throw TypeError('Accessors not supported!');
+  if ('value' in Attributes) O[P] = Attributes.value;
+  return O;
+};
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports) {
+
+module.exports = function (it) {
+  return typeof it === 'object' ? it !== null : typeof it === 'function';
+};
+
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports) {
+
+module.exports = function (exec) {
+  try {
+    return !!exec();
+  } catch (e) {
+    return true;
+  }
+};
+
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = { "default": __webpack_require__(63), __esModule: true };
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 7.1.13 ToObject(argument)
+var defined = __webpack_require__(13);
+module.exports = function (it) {
+  return Object(defined(it));
+};
+
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 19.1.2.14 / 15.2.3.14 Object.keys(O)
+var $keys = __webpack_require__(47);
+var enumBugKeys = __webpack_require__(27);
+
+module.exports = Object.keys || function keys(O) {
+  return $keys(O, enumBugKeys);
+};
+
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports) {
+
+var toString = {}.toString;
+
+module.exports = function (it) {
+  return toString.call(it).slice(8, -1);
+};
+
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var global = __webpack_require__(3);
+var SHARED = '__core-js_shared__';
+var store = global[SHARED] || (global[SHARED] = {});
+module.exports = function (key) {
+  return store[key] || (store[key] = {});
+};
+
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports) {
+
+var id = 0;
+var px = Math.random();
+module.exports = function (key) {
+  return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
+};
+
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports) {
+
+// IE 8- don't enum bug keys
+module.exports = (
+  'constructor,hasOwnProperty,isPrototypeOf,propertyIsEnumerable,toLocaleString,toString,valueOf'
+).split(',');
+
+
+/***/ }),
 /* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isObject = __webpack_require__(18);
-var document = __webpack_require__(2).document;
+var isObject = __webpack_require__(19);
+var document = __webpack_require__(3).document;
 // typeof document.createElement is 'object' in old IE
 var is = isObject(document) && isObject(document.createElement);
 module.exports = function (it) {
@@ -11120,9 +11120,9 @@ module.exports = function (bitmap, value) {
 "use strict";
 
 var LIBRARY = __webpack_require__(68);
-var $export = __webpack_require__(27);
+var $export = __webpack_require__(17);
 var redefine = __webpack_require__(69);
-var hide = __webpack_require__(5);
+var hide = __webpack_require__(6);
 var has = __webpack_require__(7);
 var Iterators = __webpack_require__(10);
 var $iterCreate = __webpack_require__(70);
@@ -11194,7 +11194,7 @@ module.exports = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
 /* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var def = __webpack_require__(17).f;
+var def = __webpack_require__(18).f;
 var has = __webpack_require__(7);
 var TAG = __webpack_require__(4)('toStringTag');
 
@@ -11292,8 +11292,8 @@ exports.mixin = mixin;
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(113)
-__vue_template__ = __webpack_require__(114)
+__vue_script__ = __webpack_require__(116)
+__vue_template__ = __webpack_require__(117)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -11313,7 +11313,7 @@ if (false) {(function () {  module.hot.accept()
 /* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(131), __esModule: true };
+module.exports = { "default": __webpack_require__(134), __esModule: true };
 
 /***/ }),
 /* 35 */
@@ -11341,6 +11341,7 @@ window.onload = function () {
 		el: '#rop_core',
 		store: _rop_store2.default,
 		created: function created() {
+			_rop_store2.default.dispatch('fetchAJAX', { req: 'manage_cron', data: { action: 'status' } });
 			_rop_store2.default.dispatch('fetchAJAX', { req: 'get_general_settings' });
 			_rop_store2.default.dispatch('fetchAJAXPromise', { req: 'get_available_services' });
 			_rop_store2.default.dispatch('fetchAJAXPromise', { req: 'get_authenticated_services' });
@@ -11424,7 +11425,6 @@ function stringToBoolean(string) {
 }
 
 function licenceType(string) {
-	console.log('Licence', string);
 	switch (string.toLowerCase().trim()) {
 		case 'business':
 			return 'business';
@@ -11447,6 +11447,7 @@ exports.default = new _vuex2.default.Store({
 			// view: 'schedule'
 			// view: 'queue'
 		},
+		cron_status: false,
 		toast: {
 			type: 'success',
 			show: false,
@@ -11532,6 +11533,8 @@ exports.default = new _vuex2.default.Store({
 			    requestName = _ref.requestName;
 
 			switch (requestName) {
+				case 'manage_cron':
+					state.cron_status = stateData.current_status;
 				case 'get_log':
 					state.page.logs = stateData.pretty;
 					state.page.logs_verbose = stateData.verbose;
@@ -14195,7 +14198,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 var __vue_script__, __vue_template__
 __webpack_require__(42)
 __vue_script__ = __webpack_require__(44)
-__vue_template__ = __webpack_require__(155)
+__vue_template__ = __webpack_require__(164)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -14258,81 +14261,48 @@ exports.push([module.i, "\n\t#rop_core .badge[data-badge]::after {\n\t\tposition
 "use strict";
 
 
-var _accountsTabPanel = __webpack_require__(45);
+var _keys = __webpack_require__(5);
+
+var _keys2 = _interopRequireDefault(_keys);
+
+var _accountsTabPanel = __webpack_require__(57);
 
 var _accountsTabPanel2 = _interopRequireDefault(_accountsTabPanel);
 
-var _settingsTabPanel = __webpack_require__(98);
+var _settingsTabPanel = __webpack_require__(101);
 
 var _settingsTabPanel2 = _interopRequireDefault(_settingsTabPanel);
 
-var _postFormatTabPanel = __webpack_require__(109);
+var _postFormatTabPanel = __webpack_require__(112);
 
 var _postFormatTabPanel2 = _interopRequireDefault(_postFormatTabPanel);
 
-var _scheduleTabPanel = __webpack_require__(116);
+var _scheduleTabPanel = __webpack_require__(119);
 
 var _scheduleTabPanel2 = _interopRequireDefault(_scheduleTabPanel);
 
-var _queueTabPanel = __webpack_require__(134);
+var _queueTabPanel = __webpack_require__(137);
 
 var _queueTabPanel2 = _interopRequireDefault(_queueTabPanel);
 
-var _logsTabPanel = __webpack_require__(142);
+var _logsTabPanel = __webpack_require__(145);
 
 var _logsTabPanel2 = _interopRequireDefault(_logsTabPanel);
 
-var _toast = __webpack_require__(145);
+var _toast = __webpack_require__(148);
 
 var _toast2 = _interopRequireDefault(_toast);
 
-var _ajaxLoader = __webpack_require__(150);
+var _countdown = __webpack_require__(153);
+
+var _countdown2 = _interopRequireDefault(_countdown);
+
+var _ajaxLoader = __webpack_require__(159);
 
 var _ajaxLoader2 = _interopRequireDefault(_ajaxLoader);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// <template>
-// 	<div>
-// 		<div class="panel title-panel" style="margin-bottom: 40px; padding-bottom: 20px;">
-// 			<div class="panel-header">
-// 				<img :src="plugin_logo" style="float: left; margin-right: 10px;" />
-// 				<h1 class="d-inline-block">Revive Old Posts</h1><span class="powered"> by <a href="https://themeisle.com" target="_blank"><b>ThemeIsle</b></a></span>
-// 			</div>
-// 		</div>
-//
-// 		<toast />
-//         <ajax-loader />
-// 		<div class="panel">
-// 			<div class="panel-nav" style="padding: 8px;">
-// 				<ul class="tab">
-// 					<li class="tab-item" v-for="tab in displayTabs" :class="{ active: tab.isActive, badge: displayProBadge( tab.slug ), upsell: displayProBadge( tab.slug ) }" data-badge="PRO"><a href="#" @click="switchTab( tab.slug )">{{ tab.name }}</a></li>
-// 					<li class="tab-item tab-action">
-// 						<div class="form-group">
-// 							<label class="form-switch">
-// 								<input type="checkbox" v-model="generalSettings.custom_messages" @change="updateSettings" :disabled="!has_pro" />
-// 								<i class="form-icon" v-if="has_pro"></i><i class="badge" data-badge="PRO" v-else></i> <span class="hide-sm">Custom Share Messages</span>
-// 							</label>
-// 							<label class="form-switch">
-// 								<input type="checkbox" v-model="generalSettings.beta_user" @change="updateSettings" />
-//                                 <i class="form-icon"></i> <span class="hide-sm">Beta User</span>
-// 							</label>
-// 							<label class="form-switch">
-// 								<input type="checkbox" v-model="generalSettings.remote_check" @change="updateSettings" />
-//                                 <i class="form-icon"></i> <span class="hide-sm">Remote Check</span>
-// 							</label>
-// 						</div>
-// 					</li>
-// 				</ul>
-// 			</div>
-//
-// 			<component :is="page.view"></component>
-// 		</div>
-// 	</div>
-// </template>
-//
-// <script>
-/* global ROP_ASSETS_URL */
 module.exports = {
 	name: 'main-page-panel',
 	computed: {
@@ -14347,6 +14317,19 @@ module.exports = {
 		},
 		has_pro: function has_pro() {
 			return this.$store.state.has_pro;
+		},
+		countdownObject: function countdownObject() {
+			var queue = this.$store.state.queue;
+			var toTime = null;
+			var isOn = this.$store.state.cron_status;
+			isOn = true;
+			if (queue !== undefined && queue[(0, _keys2.default)(queue)[0]] && isOn) {
+				toTime = queue[(0, _keys2.default)(queue)[0]].time;
+			}
+			return {
+				toTime: toTime,
+				isOn: isOn
+			};
 		}
 	},
 	created: function created() {},
@@ -14379,6 +14362,7 @@ module.exports = {
 		'queue': _queueTabPanel2.default,
 		'logs': _logsTabPanel2.default,
 		'toast': _toast2.default,
+		'countdown': _countdown2.default,
 		'ajax-loader': _ajaxLoader2.default
 	}
 	// </script>
@@ -14391,15 +14375,246 @@ module.exports = {
 	// 	}
 	// </style>
 
-};
+}; // <template>
+// 	<div>
+// 		<div class="panel title-panel" style="margin-bottom: 40px; padding-bottom: 20px;">
+// 			<div class="panel-header">
+// 				<img :src="plugin_logo" style="float: left; margin-right: 10px;" />
+// 				<h1 class="d-inline-block">Revive Old Posts</h1><span class="powered"> by <a href="https://themeisle.com" target="_blank"><b>ThemeIsle</b></a></span>
+// 			</div>
+// 		</div>
+//
+// 		<toast />
+// 		<countdown v-bind:to="countdownObject" />
+// 		<ajax-loader />
+// 		<div class="panel">
+// 			<div class="panel-nav" style="padding: 8px;">
+// 				<ul class="tab">
+// 					<li class="tab-item" v-for="tab in displayTabs" :class="{ active: tab.isActive, badge: displayProBadge( tab.slug ), upsell: displayProBadge( tab.slug ) }" data-badge="PRO"><a href="#" @click="switchTab( tab.slug )">{{ tab.name }}</a></li>
+// 					<li class="tab-item tab-action">
+// 						<div class="form-group">
+// 							<label class="form-switch">
+// 								<input type="checkbox" v-model="generalSettings.custom_messages" @change="updateSettings" :disabled="!has_pro" />
+// 								<i class="form-icon" v-if="has_pro"></i><i class="badge" data-badge="PRO" v-else></i> <span class="hide-sm">Custom Share Messages</span>
+// 							</label>
+// 							<label class="form-switch">
+// 								<input type="checkbox" v-model="generalSettings.beta_user" @change="updateSettings" />
+// 								<i class="form-icon"></i> <span class="hide-sm">Beta User</span>
+// 							</label>
+// 							<label class="form-switch">
+// 								<input type="checkbox" v-model="generalSettings.remote_check" @change="updateSettings" />
+// 								<i class="form-icon"></i> <span class="hide-sm">Remote Check</span>
+// 							</label>
+// 						</div>
+// 					</li>
+// 				</ul>
+// 			</div>
+// 			<component :is="page.view"></component>
+// 		</div>
+// 	</div>
+// </template>
+//
+// <script>
+/* global ROP_ASSETS_URL */
 
 /***/ }),
 /* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
+__webpack_require__(46);
+module.exports = __webpack_require__(2).Object.keys;
+
+
+/***/ }),
+/* 46 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 19.1.2.14 Object.keys(O)
+var toObject = __webpack_require__(22);
+var $keys = __webpack_require__(23);
+
+__webpack_require__(52)('keys', function () {
+  return function keys(it) {
+    return $keys(toObject(it));
+  };
+});
+
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var has = __webpack_require__(7);
+var toIObject = __webpack_require__(14);
+var arrayIndexOf = __webpack_require__(49)(false);
+var IE_PROTO = __webpack_require__(16)('IE_PROTO');
+
+module.exports = function (object, names) {
+  var O = toIObject(object);
+  var i = 0;
+  var result = [];
+  var key;
+  for (key in O) if (key != IE_PROTO) has(O, key) && result.push(key);
+  // Don't enum bug & hidden keys
+  while (names.length > i) if (has(O, key = names[i++])) {
+    ~arrayIndexOf(result, key) || result.push(key);
+  }
+  return result;
+};
+
+
+/***/ }),
+/* 48 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// fallback for non-array-like ES3 and non-enumerable old V8 strings
+var cof = __webpack_require__(24);
+// eslint-disable-next-line no-prototype-builtins
+module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
+  return cof(it) == 'String' ? it.split('') : Object(it);
+};
+
+
+/***/ }),
+/* 49 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// false -> Array#indexOf
+// true  -> Array#includes
+var toIObject = __webpack_require__(14);
+var toLength = __webpack_require__(50);
+var toAbsoluteIndex = __webpack_require__(51);
+module.exports = function (IS_INCLUDES) {
+  return function ($this, el, fromIndex) {
+    var O = toIObject($this);
+    var length = toLength(O.length);
+    var index = toAbsoluteIndex(fromIndex, length);
+    var value;
+    // Array#includes uses SameValueZero equality algorithm
+    // eslint-disable-next-line no-self-compare
+    if (IS_INCLUDES && el != el) while (length > index) {
+      value = O[index++];
+      // eslint-disable-next-line no-self-compare
+      if (value != value) return true;
+    // Array#indexOf ignores holes, Array#includes - not
+    } else for (;length > index; index++) if (IS_INCLUDES || index in O) {
+      if (O[index] === el) return IS_INCLUDES || index || 0;
+    } return !IS_INCLUDES && -1;
+  };
+};
+
+
+/***/ }),
+/* 50 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 7.1.15 ToLength
+var toInteger = __webpack_require__(15);
+var min = Math.min;
+module.exports = function (it) {
+  return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
+};
+
+
+/***/ }),
+/* 51 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var toInteger = __webpack_require__(15);
+var max = Math.max;
+var min = Math.min;
+module.exports = function (index, length) {
+  index = toInteger(index);
+  return index < 0 ? max(index + length, 0) : min(index, length);
+};
+
+
+/***/ }),
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// most Object methods by ES6 should accept primitives
+var $export = __webpack_require__(17);
+var core = __webpack_require__(2);
+var fails = __webpack_require__(20);
+module.exports = function (KEY, exec) {
+  var fn = (core.Object || {})[KEY] || Object[KEY];
+  var exp = {};
+  exp[KEY] = exec(fn);
+  $export($export.S + $export.F * fails(function () { fn(1); }), 'Object', exp);
+};
+
+
+/***/ }),
+/* 53 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// optional / simple context binding
+var aFunction = __webpack_require__(54);
+module.exports = function (fn, that, length) {
+  aFunction(fn);
+  if (that === undefined) return fn;
+  switch (length) {
+    case 1: return function (a) {
+      return fn.call(that, a);
+    };
+    case 2: return function (a, b) {
+      return fn.call(that, a, b);
+    };
+    case 3: return function (a, b, c) {
+      return fn.call(that, a, b, c);
+    };
+  }
+  return function (/* ...args */) {
+    return fn.apply(that, arguments);
+  };
+};
+
+
+/***/ }),
+/* 54 */
+/***/ (function(module, exports) {
+
+module.exports = function (it) {
+  if (typeof it != 'function') throw TypeError(it + ' is not a function!');
+  return it;
+};
+
+
+/***/ }),
+/* 55 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = !__webpack_require__(9) && !__webpack_require__(20)(function () {
+  return Object.defineProperty(__webpack_require__(28)('div'), 'a', { get: function () { return 7; } }).a != 7;
+});
+
+
+/***/ }),
+/* 56 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 7.1.1 ToPrimitive(input [, PreferredType])
+var isObject = __webpack_require__(19);
+// instead of the ES6 spec version, we didn't implement @@toPrimitive case
+// and the second argument - flag - preferred type is a string
+module.exports = function (it, S) {
+  if (!isObject(it)) return it;
+  var fn, val;
+  if (S && typeof (fn = it.toString) == 'function' && !isObject(val = fn.call(it))) return val;
+  if (typeof (fn = it.valueOf) == 'function' && !isObject(val = fn.call(it))) return val;
+  if (!S && typeof (fn = it.toString) == 'function' && !isObject(val = fn.call(it))) return val;
+  throw TypeError("Can't convert object to primitive value");
+};
+
+
+/***/ }),
+/* 57 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(46)
-__vue_template__ = __webpack_require__(97)
+__vue_script__ = __webpack_require__(58)
+__vue_template__ = __webpack_require__(100)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -14416,13 +14631,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 46 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _signInBtn = __webpack_require__(47);
+var _signInBtn = __webpack_require__(59);
 
 var _signInBtn2 = _interopRequireDefault(_signInBtn);
 
@@ -14434,8 +14649,75 @@ var _serviceUserTile = __webpack_require__(92);
 
 var _serviceUserTile2 = _interopRequireDefault(_serviceUserTile);
 
+var _cronButton = __webpack_require__(97);
+
+var _cronButton2 = _interopRequireDefault(_cronButton);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// <template>
+// 	<div class="tab-view">
+// 		<div class="panel-body">
+// 			<h3>Accounts</h3>
+// 			<p>This is a <b>Vue.js</b> component.</p>
+// 			<div class="container">
+// 				<div class="columns">
+// 					<div class="column col-sm-12 col-md-12 col-lg-6">
+// 						<div class="columns">
+// 							<div class="column col-sm-12 col-md-12 col-xl-6 col-8 text-right">
+// 								<b>New Service</b><br/>
+// 								<i>Select a service and sign in with an account for that service.</i>
+// 							</div>
+// 							<div class="column col-sm-12 col-md-12 col-xl-6 col-4 text-left">
+// 								<sign-in-btn></sign-in-btn>
+// 							</div>
+// 						</div>
+// 						<div class="columns">
+// 							<div class="column col-sm-12 col-md-12 col-lg-12 text-left">
+// 								<hr/>
+// 								<h5>Authenticated Services</h5>
+// 								<div class="empty" v-if="authenticated_services.length == 0">
+// 									<div class="empty-icon">
+// 										<i class="fa fa-3x fa-cloud"></i>
+// 									</div>
+// 									<p class="empty-title h5">No authenticated service!</p>
+// 									<p class="empty-subtitle">Add one from the <b>"New Service"</b> section.</p>
+// 								</div>
+// 								<service-tile v-for="service in authenticated_services" :key="service.id" :service="service"></service-tile>
+// 							</div>
+// 						</div>
+// 					</div>
+// 					<div class="column col-sm-12 col-md-12 col-lg-6 text-left">
+// 						<hr style="margin-top: 45px" />
+// 						<h5>Active Accounts</h5>
+// 						<div class="empty" v-if="active_accounts.length == 0">
+// 							<div class="empty-icon">
+// 								<i class="fa fa-3x fa-user-circle-o"></i>
+// 							</div>
+// 							<p class="empty-title h5">No active accounts!</p>
+// 							<p class="empty-subtitle">Add one from the <b>"Authenticated Services"</b> section.</p>
+// 						</div>
+// 						<div v-for="( account, id ) in active_accounts">
+// 							<service-user-tile :account_data="account" :account_id="id"></service-user-tile>
+// 							<div class="divider"></div>
+// 						</div>
+// 					</div>
+// 				</div>
+// 			</div>
+// 			<div class="columns">
+// 				<div class="column col-12">
+// 					<h4><i class="fa fa-info-circle"></i> Info</h4>
+// 					<p><i>Authenticate a new service (eg. Facebook, Twitter etc. ), select the accounts you want to add from that service and <b>activate</b> them. Only the accounts displayed in the <b>"Active accounts"</b> section will be used.</i></p>
+// 				</div>
+// 			</div>
+// 		</div>
+//         <div class="panel-footer">
+//             <cron-button></cron-button>
+//         </div>
+// 	</div>
+// </template>
+//
+// <script>
 module.exports = {
 	name: 'account-view',
 	computed: {
@@ -14448,79 +14730,21 @@ module.exports = {
 	},
 	components: {
 		SignInBtn: _signInBtn2.default,
+		CronButton: _cronButton2.default,
 		ServiceTile: _serviceTile2.default,
 		ServiceUserTile: _serviceUserTile2.default
 	}
 	// </script>
 
-}; // <template>
-//     <div class="tab-view">
-//         <div class="panel-body">
-//             <h3>Accounts</h3>
-//             <p>This is a <b>Vue.js</b> component.</p>
-//             <div class="container">
-//                 <div class="columns">
-//                     <div class="column col-sm-12 col-md-12 col-lg-6">
-//                         <div class="columns">
-//                             <div class="column col-sm-12 col-md-12 col-xl-6 col-8 text-right">
-//                                 <b>New Service</b><br/>
-//                                 <i>Select a service and sign in with an account for that service.</i>
-//                             </div>
-//                             <div class="column col-sm-12 col-md-12 col-xl-6 col-4 text-left">
-//                                 <sign-in-btn></sign-in-btn>
-//                             </div>
-//                         </div>
-//                         <div class="columns">
-//                             <div class="column col-sm-12 col-md-12 col-lg-12 text-left">
-//                                 <hr/>
-//                                 <h5>Authenticated Services</h5>
-//                                 <div class="empty" v-if="authenticated_services.length == 0">
-//                                     <div class="empty-icon">
-//                                         <i class="fa fa-3x fa-cloud"></i>
-//                                     </div>
-//                                     <p class="empty-title h5">No authenticated service!</p>
-//                                     <p class="empty-subtitle">Add one from the <b>"New Service"</b> section.</p>
-//                                 </div>
-//                                 <service-tile v-for="service in authenticated_services" :key="service.id" :service="service"></service-tile>
-//                             </div>
-//                         </div>
-//                     </div>
-//                     <div class="column col-sm-12 col-md-12 col-lg-6 text-left">
-//                         <hr style="margin-top: 45px" />
-//                         <h5>Active Accounts</h5>
-//                         <div class="empty" v-if="active_accounts.length == 0">
-//                             <div class="empty-icon">
-//                                 <i class="fa fa-3x fa-user-circle-o"></i>
-//                             </div>
-//                             <p class="empty-title h5">No active accounts!</p>
-//                             <p class="empty-subtitle">Add one from the <b>"Authenticated Services"</b> section.</p>
-//                         </div>
-//                         <div v-for="( account, id ) in active_accounts">
-//                             <service-user-tile :account_data="account" :account_id="id"></service-user-tile>
-//                             <div class="divider"></div>
-//                         </div>
-//                     </div>
-//                 </div>
-//             </div>
-//             <div class="columns">
-//                 <div class="column col-12">
-//                     <h4><i class="fa fa-info-circle"></i> Info</h4>
-//                     <p><i>Authenticate a new service (eg. Facebook, Twitter etc. ), select the accounts you want to add from that service and <b>activate</b> them. Only the accounts displayed in the <b>"Active accounts"</b> section will be used.</i></p>
-//                 </div>
-//             </div>
-//         </div>
-//     </div>
-// </template>
-//
-// <script>
+};
 
 /***/ }),
-/* 47 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(48)
-__vue_script__ = __webpack_require__(50)
+__webpack_require__(60)
+__vue_script__ = __webpack_require__(62)
 __vue_template__ = __webpack_require__(80)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
@@ -14538,13 +14762,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 48 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(49);
+var content = __webpack_require__(61);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -14564,7 +14788,7 @@ if(false) {
 }
 
 /***/ }),
-/* 49 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)();
@@ -14578,17 +14802,17 @@ exports.push([module.i, "\n\t#rop_core .sign-in-btn > .modal[_v-7e903530] {\n\t\
 
 
 /***/ }),
-/* 50 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _keys = __webpack_require__(6);
+var _keys = __webpack_require__(5);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _getIterator2 = __webpack_require__(20);
+var _getIterator2 = __webpack_require__(21);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -14824,197 +15048,6 @@ module.exports = {
 };
 
 /***/ }),
-/* 51 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(52);
-module.exports = __webpack_require__(3).Object.keys;
-
-
-/***/ }),
-/* 52 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// 19.1.2.14 Object.keys(O)
-var toObject = __webpack_require__(21);
-var $keys = __webpack_require__(22);
-
-__webpack_require__(58)('keys', function () {
-  return function keys(it) {
-    return $keys(toObject(it));
-  };
-});
-
-
-/***/ }),
-/* 53 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var has = __webpack_require__(7);
-var toIObject = __webpack_require__(14);
-var arrayIndexOf = __webpack_require__(55)(false);
-var IE_PROTO = __webpack_require__(16)('IE_PROTO');
-
-module.exports = function (object, names) {
-  var O = toIObject(object);
-  var i = 0;
-  var result = [];
-  var key;
-  for (key in O) if (key != IE_PROTO) has(O, key) && result.push(key);
-  // Don't enum bug & hidden keys
-  while (names.length > i) if (has(O, key = names[i++])) {
-    ~arrayIndexOf(result, key) || result.push(key);
-  }
-  return result;
-};
-
-
-/***/ }),
-/* 54 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// fallback for non-array-like ES3 and non-enumerable old V8 strings
-var cof = __webpack_require__(23);
-// eslint-disable-next-line no-prototype-builtins
-module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
-  return cof(it) == 'String' ? it.split('') : Object(it);
-};
-
-
-/***/ }),
-/* 55 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// false -> Array#indexOf
-// true  -> Array#includes
-var toIObject = __webpack_require__(14);
-var toLength = __webpack_require__(56);
-var toAbsoluteIndex = __webpack_require__(57);
-module.exports = function (IS_INCLUDES) {
-  return function ($this, el, fromIndex) {
-    var O = toIObject($this);
-    var length = toLength(O.length);
-    var index = toAbsoluteIndex(fromIndex, length);
-    var value;
-    // Array#includes uses SameValueZero equality algorithm
-    // eslint-disable-next-line no-self-compare
-    if (IS_INCLUDES && el != el) while (length > index) {
-      value = O[index++];
-      // eslint-disable-next-line no-self-compare
-      if (value != value) return true;
-    // Array#indexOf ignores holes, Array#includes - not
-    } else for (;length > index; index++) if (IS_INCLUDES || index in O) {
-      if (O[index] === el) return IS_INCLUDES || index || 0;
-    } return !IS_INCLUDES && -1;
-  };
-};
-
-
-/***/ }),
-/* 56 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// 7.1.15 ToLength
-var toInteger = __webpack_require__(15);
-var min = Math.min;
-module.exports = function (it) {
-  return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
-};
-
-
-/***/ }),
-/* 57 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var toInteger = __webpack_require__(15);
-var max = Math.max;
-var min = Math.min;
-module.exports = function (index, length) {
-  index = toInteger(index);
-  return index < 0 ? max(index + length, 0) : min(index, length);
-};
-
-
-/***/ }),
-/* 58 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// most Object methods by ES6 should accept primitives
-var $export = __webpack_require__(27);
-var core = __webpack_require__(3);
-var fails = __webpack_require__(19);
-module.exports = function (KEY, exec) {
-  var fn = (core.Object || {})[KEY] || Object[KEY];
-  var exp = {};
-  exp[KEY] = exec(fn);
-  $export($export.S + $export.F * fails(function () { fn(1); }), 'Object', exp);
-};
-
-
-/***/ }),
-/* 59 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// optional / simple context binding
-var aFunction = __webpack_require__(60);
-module.exports = function (fn, that, length) {
-  aFunction(fn);
-  if (that === undefined) return fn;
-  switch (length) {
-    case 1: return function (a) {
-      return fn.call(that, a);
-    };
-    case 2: return function (a, b) {
-      return fn.call(that, a, b);
-    };
-    case 3: return function (a, b, c) {
-      return fn.call(that, a, b, c);
-    };
-  }
-  return function (/* ...args */) {
-    return fn.apply(that, arguments);
-  };
-};
-
-
-/***/ }),
-/* 60 */
-/***/ (function(module, exports) {
-
-module.exports = function (it) {
-  if (typeof it != 'function') throw TypeError(it + ' is not a function!');
-  return it;
-};
-
-
-/***/ }),
-/* 61 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = !__webpack_require__(9) && !__webpack_require__(19)(function () {
-  return Object.defineProperty(__webpack_require__(28)('div'), 'a', { get: function () { return 7; } }).a != 7;
-});
-
-
-/***/ }),
-/* 62 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// 7.1.1 ToPrimitive(input [, PreferredType])
-var isObject = __webpack_require__(18);
-// instead of the ES6 spec version, we didn't implement @@toPrimitive case
-// and the second argument - flag - preferred type is a string
-module.exports = function (it, S) {
-  if (!isObject(it)) return it;
-  var fn, val;
-  if (S && typeof (fn = it.toString) == 'function' && !isObject(val = fn.call(it))) return val;
-  if (typeof (fn = it.valueOf) == 'function' && !isObject(val = fn.call(it))) return val;
-  if (!S && typeof (fn = it.toString) == 'function' && !isObject(val = fn.call(it))) return val;
-  throw TypeError("Can't convert object to primitive value");
-};
-
-
-/***/ }),
 /* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15028,8 +15061,8 @@ module.exports = __webpack_require__(77);
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(65);
-var global = __webpack_require__(2);
-var hide = __webpack_require__(5);
+var global = __webpack_require__(3);
+var hide = __webpack_require__(6);
 var Iterators = __webpack_require__(10);
 var TO_STRING_TAG = __webpack_require__(4)('toStringTag');
 
@@ -15116,7 +15149,7 @@ module.exports = true;
 /* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(5);
+module.exports = __webpack_require__(6);
 
 
 /***/ }),
@@ -15131,7 +15164,7 @@ var setToStringTag = __webpack_require__(31);
 var IteratorPrototype = {};
 
 // 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-__webpack_require__(5)(IteratorPrototype, __webpack_require__(4)('iterator'), function () { return this; });
+__webpack_require__(6)(IteratorPrototype, __webpack_require__(4)('iterator'), function () { return this; });
 
 module.exports = function (Constructor, NAME, next) {
   Constructor.prototype = create(IteratorPrototype, { next: descriptor(1, next) });
@@ -15146,7 +15179,7 @@ module.exports = function (Constructor, NAME, next) {
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
 var anObject = __webpack_require__(8);
 var dPs = __webpack_require__(72);
-var enumBugKeys = __webpack_require__(26);
+var enumBugKeys = __webpack_require__(27);
 var IE_PROTO = __webpack_require__(16)('IE_PROTO');
 var Empty = function () { /* empty */ };
 var PROTOTYPE = 'prototype';
@@ -15190,9 +15223,9 @@ module.exports = Object.create || function create(O, Properties) {
 /* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var dP = __webpack_require__(17);
+var dP = __webpack_require__(18);
 var anObject = __webpack_require__(8);
-var getKeys = __webpack_require__(22);
+var getKeys = __webpack_require__(23);
 
 module.exports = __webpack_require__(9) ? Object.defineProperties : function defineProperties(O, Properties) {
   anObject(O);
@@ -15209,7 +15242,7 @@ module.exports = __webpack_require__(9) ? Object.defineProperties : function def
 /* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var document = __webpack_require__(2).document;
+var document = __webpack_require__(3).document;
 module.exports = document && document.documentElement;
 
 
@@ -15219,7 +15252,7 @@ module.exports = document && document.documentElement;
 
 // 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
 var has = __webpack_require__(7);
-var toObject = __webpack_require__(21);
+var toObject = __webpack_require__(22);
 var IE_PROTO = __webpack_require__(16)('IE_PROTO');
 var ObjectProto = Object.prototype;
 
@@ -15285,7 +15318,7 @@ module.exports = function (TO_STRING) {
 
 var anObject = __webpack_require__(8);
 var get = __webpack_require__(78);
-module.exports = __webpack_require__(3).getIterator = function (it) {
+module.exports = __webpack_require__(2).getIterator = function (it) {
   var iterFn = get(it);
   if (typeof iterFn != 'function') throw TypeError(it + ' is not iterable!');
   return anObject(iterFn.call(it));
@@ -15299,7 +15332,7 @@ module.exports = __webpack_require__(3).getIterator = function (it) {
 var classof = __webpack_require__(79);
 var ITERATOR = __webpack_require__(4)('iterator');
 var Iterators = __webpack_require__(10);
-module.exports = __webpack_require__(3).getIteratorMethod = function (it) {
+module.exports = __webpack_require__(2).getIteratorMethod = function (it) {
   if (it != undefined) return it[ITERATOR]
     || it['@@iterator']
     || Iterators[classof(it)];
@@ -15311,7 +15344,7 @@ module.exports = __webpack_require__(3).getIteratorMethod = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // getting tag from 19.1.3.6 Object.prototype.toString()
-var cof = __webpack_require__(23);
+var cof = __webpack_require__(24);
 var TAG = __webpack_require__(4)('toStringTag');
 // ES3 wrong here
 var ARG = cof(function () { return arguments; }()) == 'Arguments';
@@ -15637,7 +15670,7 @@ if (false) {(function () {  module.hot.accept()
 "use strict";
 
 
-var _getIterator2 = __webpack_require__(20);
+var _getIterator2 = __webpack_require__(21);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -15745,7 +15778,6 @@ module.exports = {
 	},
 	watch: {
 		to_be_activated: function to_be_activated() {
-			console.log(this.to_be_activated);
 			this.toActivateCount = this.to_be_activated.length;
 		}
 	},
@@ -16188,17 +16220,79 @@ module.exports = "\n\t<div class=\"tile tile-centered\" _v-d8a56e08=\"\">\n\t\t<
 
 /***/ }),
 /* 97 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = "\n    <div class=\"tab-view\">\n        <div class=\"panel-body\">\n            <h3>Accounts</h3>\n            <p>This is a <b>Vue.js</b> component.</p>\n            <div class=\"container\">\n                <div class=\"columns\">\n                    <div class=\"column col-sm-12 col-md-12 col-lg-6\">\n                        <div class=\"columns\">\n                            <div class=\"column col-sm-12 col-md-12 col-xl-6 col-8 text-right\">\n                                <b>New Service</b><br/>\n                                <i>Select a service and sign in with an account for that service.</i>\n                            </div>\n                            <div class=\"column col-sm-12 col-md-12 col-xl-6 col-4 text-left\">\n                                <sign-in-btn></sign-in-btn>\n                            </div>\n                        </div>\n                        <div class=\"columns\">\n                            <div class=\"column col-sm-12 col-md-12 col-lg-12 text-left\">\n                                <hr/>\n                                <h5>Authenticated Services</h5>\n                                <div class=\"empty\" v-if=\"authenticated_services.length == 0\">\n                                    <div class=\"empty-icon\">\n                                        <i class=\"fa fa-3x fa-cloud\"></i>\n                                    </div>\n                                    <p class=\"empty-title h5\">No authenticated service!</p>\n                                    <p class=\"empty-subtitle\">Add one from the <b>\"New Service\"</b> section.</p>\n                                </div>\n                                <service-tile v-for=\"service in authenticated_services\" :key=\"service.id\" :service=\"service\"></service-tile>\n                            </div>\n                        </div>\n                    </div>\n                    <div class=\"column col-sm-12 col-md-12 col-lg-6 text-left\">\n                        <hr style=\"margin-top: 45px\" />\n                        <h5>Active Accounts</h5>\n                        <div class=\"empty\" v-if=\"active_accounts.length == 0\">\n                            <div class=\"empty-icon\">\n                                <i class=\"fa fa-3x fa-user-circle-o\"></i>\n                            </div>\n                            <p class=\"empty-title h5\">No active accounts!</p>\n                            <p class=\"empty-subtitle\">Add one from the <b>\"Authenticated Services\"</b> section.</p>\n                        </div>\n                        <div v-for=\"( account, id ) in active_accounts\">\n                            <service-user-tile :account_data=\"account\" :account_id=\"id\"></service-user-tile>\n                            <div class=\"divider\"></div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"columns\">\n                <div class=\"column col-12\">\n                    <h4><i class=\"fa fa-info-circle\"></i> Info</h4>\n                    <p><i>Authenticate a new service (eg. Facebook, Twitter etc. ), select the accounts you want to add from that service and <b>activate</b> them. Only the accounts displayed in the <b>\"Active accounts\"</b> section will be used.</i></p>\n                </div>\n            </div>\n        </div>\n    </div>\n";
+var __vue_script__, __vue_template__
+__vue_script__ = __webpack_require__(98)
+__vue_template__ = __webpack_require__(99)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/var/www/html/wp-base/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/cron-button.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
 
 /***/ }),
 /* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+
+// <template>
+//     <button class="btn btn-success" @click="cronStart" v-if="!cron_status"><i class="fa fa-play"></i> Start Sharing</button>
+//     <button class="btn btn-error" @click="cronStop" v-else><i class="fa fa-stop"></i> Stop Sharing</button>
+// </template>
+//
+// <script>
+module.exports = {
+	name: 'cron-button',
+	computed: {
+		cron_status: function cron_status() {
+			return this.$store.state.cron_status;
+		}
+	},
+	methods: {
+		cronStart: function cronStart() {
+			this.$store.dispatch('fetchAJAX', { req: 'manage_cron', data: { action: 'start' } });
+		},
+		cronStop: function cronStop() {
+			this.$store.dispatch('fetchAJAX', { req: 'manage_cron', data: { action: 'stop' } });
+		}
+	}
+	// </script>
+	//
+	// <style></style>
+
+};
+
+/***/ }),
+/* 99 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <button class=\"btn btn-success\" @click=\"cronStart\" v-if=\"!cron_status\"><i class=\"fa fa-play\"></i> Start Sharing</button>\n    <button class=\"btn btn-error\" @click=\"cronStop\" v-else><i class=\"fa fa-stop\"></i> Stop Sharing</button>\n";
+
+/***/ }),
+/* 100 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\">\n\t\t\t<h3>Accounts</h3>\n\t\t\t<p>This is a <b>Vue.js</b> component.</p>\n\t\t\t<div class=\"container\">\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t\t<b>New Service</b><br/>\n\t\t\t\t\t\t\t\t<i>Select a service and sign in with an account for that service.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<sign-in-btn></sign-in-btn>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12 text-left\">\n\t\t\t\t\t\t\t\t<hr/>\n\t\t\t\t\t\t\t\t<h5>Authenticated Services</h5>\n\t\t\t\t\t\t\t\t<div class=\"empty\" v-if=\"authenticated_services.length == 0\">\n\t\t\t\t\t\t\t\t\t<div class=\"empty-icon\">\n\t\t\t\t\t\t\t\t\t\t<i class=\"fa fa-3x fa-cloud\"></i>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<p class=\"empty-title h5\">No authenticated service!</p>\n\t\t\t\t\t\t\t\t\t<p class=\"empty-subtitle\">Add one from the <b>\"New Service\"</b> section.</p>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t<service-tile v-for=\"service in authenticated_services\" :key=\"service.id\" :service=\"service\"></service-tile>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6 text-left\">\n\t\t\t\t\t\t<hr style=\"margin-top: 45px\" />\n\t\t\t\t\t\t<h5>Active Accounts</h5>\n\t\t\t\t\t\t<div class=\"empty\" v-if=\"active_accounts.length == 0\">\n\t\t\t\t\t\t\t<div class=\"empty-icon\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\"></i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<p class=\"empty-title h5\">No active accounts!</p>\n\t\t\t\t\t\t\t<p class=\"empty-subtitle\">Add one from the <b>\"Authenticated Services\"</b> section.</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div v-for=\"( account, id ) in active_accounts\">\n\t\t\t\t\t\t\t<service-user-tile :account_data=\"account\" :account_id=\"id\"></service-user-tile>\n\t\t\t\t\t\t\t<div class=\"divider\"></div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"columns\">\n\t\t\t\t<div class=\"column col-12\">\n\t\t\t\t\t<h4><i class=\"fa fa-info-circle\"></i> Info</h4>\n\t\t\t\t\t<p><i>Authenticate a new service (eg. Facebook, Twitter etc. ), select the accounts you want to add from that service and <b>activate</b> them. Only the accounts displayed in the <b>\"Active accounts\"</b> section will be used.</i></p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n        <div class=\"panel-footer\">\n            <cron-button></cron-button>\n        </div>\n\t</div>\n";
+
+/***/ }),
+/* 101 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(99)
-__vue_template__ = __webpack_require__(108)
+__vue_script__ = __webpack_require__(102)
+__vue_template__ = __webpack_require__(111)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -16215,17 +16309,17 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 99 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _counterInput = __webpack_require__(100);
+var _counterInput = __webpack_require__(103);
 
 var _counterInput2 = _interopRequireDefault(_counterInput);
 
-var _multipleSelect = __webpack_require__(105);
+var _multipleSelect = __webpack_require__(108);
 
 var _multipleSelect2 = _interopRequireDefault(_multipleSelect);
 
@@ -16509,13 +16603,13 @@ module.exports = {
 };
 
 /***/ }),
-/* 100 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(101)
-__vue_script__ = __webpack_require__(103)
-__vue_template__ = __webpack_require__(104)
+__webpack_require__(104)
+__vue_script__ = __webpack_require__(106)
+__vue_template__ = __webpack_require__(107)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -16532,13 +16626,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 101 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(102);
+var content = __webpack_require__(105);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -16558,7 +16652,7 @@ if(false) {
 }
 
 /***/ }),
-/* 102 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)();
@@ -16572,7 +16666,7 @@ exports.push([module.i, "\n\t#rop_core .input-group.rop-counter-group {\n\t\tpos
 
 
 /***/ }),
-/* 103 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16698,18 +16792,18 @@ module.exports = {
 };
 
 /***/ }),
-/* 104 */
+/* 107 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"input-group rop-counter-group\">\n\t\t<input class=\"form-input rop-counter\" type=\"number\" v-model=\"inputValueC\" :id=\"id\" :value=\"value\">\n\t\t<button class=\"btn input-group-btn increment-btn up\" @mousedown=\"isPressed('up')\" @mouseup=\"isReleased('up')\"><i class=\"fa fa-fw fa-caret-up\"></i></button>\n\t\t<button class=\"btn input-group-btn increment-btn down\" @mousedown=\"isPressed('down')\" @mouseup=\"isReleased('down')\"><i class=\"fa fa-fw fa-caret-down\"></i></button>\n\t</div>\n";
 
 /***/ }),
-/* 105 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(106)
-__vue_template__ = __webpack_require__(107)
+__vue_script__ = __webpack_require__(109)
+__vue_template__ = __webpack_require__(110)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -16726,13 +16820,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 106 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _getIterator2 = __webpack_require__(20);
+var _getIterator2 = __webpack_require__(21);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -17049,25 +17143,25 @@ module.exports = {
 };
 
 /***/ }),
-/* 107 */
+/* 110 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"form-autocomplete\" style=\"width: 100%;\" v-on-clickaway=\"closeDropdown\">\n\t\t<!-- autocomplete input container -->\n\t\t<div class=\"form-autocomplete-input form-input\" :class=\"is_focused\">\n\n\t\t\t<!-- autocomplete chips -->\n\t\t\t<label class=\"chip\" v-for=\"( option, index ) in selected\">\n\t\t\t\t{{option.name}}\n\t\t\t\t<a href=\"#\" class=\"btn btn-clear\" aria-label=\"Close\" @click.prevent=\"removeSelected(index)\" role=\"button\" v-if=\"!is_one\"></a>\n\t\t\t</label>\n\n\t\t\t<!-- autocomplete real input box -->\n\t\t\t<input style=\"height: 1.0rem;\" class=\"form-input\" type=\"text\" ref=\"search\" v-model=\"search\" :placeholder=\"autocomplete_placeholder\" @click=\"magic_flag = true\" @focus=\"magic_flag = true\" @keyup=\"magic_flag = true\" @keydown.8=\"popLast()\" @keydown.38=\"highlightItem(true)\" @keydown.40=\"highlightItem()\" :readonly=\"is_one\">\n\t\t</div>\n\n\t\t<!-- autocomplete suggestion list -->\n\t\t<ul class=\"menu\" ref=\"autocomplete_results\" :class=\"is_visible\" v-if=\"!is_one\" style=\"overflow-y: scroll; max-height: 120px\">\n\t\t\t<!-- menu list chips -->\n\t\t\t<li class=\"menu-item\" v-for=\"( option, index ) in options\" v-if=\"filterSearch(option)\">\n\t\t\t\t<a href=\"#\" @click.prevent=\"addToSelected(index)\" @keydown.38=\"highlightItem(true)\" @keydown.40=\"highlightItem()\">\n\t\t\t\t\t<div class=\"tile tile-centered\">\n\t\t\t\t\t\t<div class=\"tile-content\" v-html=\"markMatch(option.name, search)\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</a>\n\t\t\t</li>\n\t\t\t<li v-if=\"has_results\">\n\t\t\t\t<a href=\"#\">\n\t\t\t\t\t<div class=\"tile tile-centered\">\n\t\t\t\t\t\t<div class=\"tile-content\"><i>Nothing found matching \"{{search}}\" ...</i></div>\n\t\t\t\t\t</div>\n\t\t\t\t</a>\n\t\t\t</li>\n\t\t</ul>\n\t</div>\n\n";
 
 /***/ }),
-/* 108 */
+/* 111 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\" style=\"overflow: inherit;\">\n\t\t\t<h3>General Settings</h3>\n\t\t\t<p>This is a <b>Vue.js</b> component.</p>\n\t\t\t<div class=\"container\">\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Minimum age of posts available for sharing, in days\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Minimum interval between shares</b><br/>\n\t\t\t\t\t\t\t\t<i>Minimum time between shares (hour/hours), 0.4 can be used.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<counter-input id=\"default_interval\" :value.sync=\"generalSettings.default_interval\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Minimum age of posts available for sharing, in days\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t\t<b>Minimum post age</b><br/>\n\t\t\t\t\t\t\t\t<i>Minimum age of posts available for sharing, in days.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<counter-input id=\"min_post_age\" :maxVal=\"365\" :value.sync=\"generalSettings.minimum_post_age\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<!-- Maximum age of posts available for sharing, in days\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-right\">\n\t\t\t\t\t\t\t\t<counter-input id=\"max_post_age\" :maxVal=\"365\" :value.sync=\"generalSettings.maximum_post_age\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-left\">\n\t\t\t\t\t\t\t\t<b>Maximum post age</b><br/>\n\t\t\t\t\t\t\t\t<i>Maximum age of posts available for sharing, in days.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Number of posts to share per account per trigger\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t\t<b>Number of posts</b><br/>\n\t\t\t\t\t\t\t\t<i>Number of posts to share per. account per. trigger of scheduled job.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<!-- Share more than once, if there are no more posts to share, we should start re-sharing the one we\n\t\t\t\t\tpreviously shared\n\t\t\t\t\t(boolean) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-2 col-xl-2 col-1 text-right\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\" />\n\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Yes\n\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-10 col-xl-10 col-11 text-left\">\n\t\t\t\t\t\t\t\t<b>Share more than once?</b><br/>\n\t\t\t\t\t\t\t\t<i>If there are no more posts to share, we should start re-sharing the one we previously shared.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Post types available to share - what post types are available for share\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Post types</b><br/>\n\t\t\t\t\t\t\t\t<i>Post types available to share - what post types are available for share</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<multiple-select :options=\"postTypes\" :selected=\"generalSettings.selected_post_types\" :changedSelection=\"updatedPostTypes\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Taxonomies available for posts to share - based on what post types users choose to share, we should\n\t\t\t\t\tshow the taxonomies available for that post type, along with their terms, which user can select to share.\n\t\t\t\t\tHere we should have also a toggle if either the taxonomies selected are included or excluded.\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Taxonomies</b><br/>\n\t\t\t\t\t\t\t\t<i>Taxonomies available for the selected post types. Use to include or exclude posts.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changedSelection=\"updatedTaxonomies\" />\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\">\n\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" @change=\"exludeTaxonomiesChange\" />\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Exclude?\n\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Posts excluded/included in sharing - what posts we should exclude or include in sharing\n\t\t\t\t\t- we should have have an autocomplete list which should fetch posts from the previously select post_types\n\t\t\t\t\tand terms and allow them to be include/excluded.\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Posts</b><br/>\n\t\t\t\t\t\t\t\t<i>Posts excluded/included in sharing, filtered based on previous selections.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t\t\t\t<multiple-select :searchQuery=\"searchQuery\" @update=\"searchUpdate\" :options=\"postsAvailable\" :dontLock=\"true\" :selected=\"generalSettings.selected_posts\" :changedSelection=\"updatedPosts\" />\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\">\n\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_posts\" />\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Exclude?\n\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div  class=\"columns\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Enable Google Analytics Tracking</b><br/>\n\t\t\t\t\t\t\t\t<i>If checked an utm query willbe added to URL's so that you cand better track trafic.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.ga_tracking\" />\n\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Yes\n\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\"><i class=\"fa fa-check\"></i> Save</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 109 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(110)
-__vue_script__ = __webpack_require__(112)
-__vue_template__ = __webpack_require__(115)
+__webpack_require__(113)
+__vue_script__ = __webpack_require__(115)
+__vue_template__ = __webpack_require__(118)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -17084,13 +17178,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 110 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(111);
+var content = __webpack_require__(114);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -17110,7 +17204,7 @@ if(false) {
 }
 
 /***/ }),
-/* 111 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)();
@@ -17124,13 +17218,13 @@ exports.push([module.i, "\n\t#rop_core .avatar .avatar-icon[_v-051e6fb2] {\n\t\t
 
 
 /***/ }),
-/* 112 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _keys = __webpack_require__(6);
+var _keys = __webpack_require__(5);
 
 var _keys2 = _interopRequireDefault(_keys);
 
@@ -17657,7 +17751,7 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 113 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17686,26 +17780,26 @@ module.exports = {
 };
 
 /***/ }),
-/* 114 */
+/* 117 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div class=\"empty\">\n        <div class=\"empty-icon\">\n            <i class=\"fa fa-3x fa-user-circle-o\"></i>\n        </div>\n        <p class=\"empty-title h5\">No active accounts!</p>\n        <p class=\"empty-subtitle\">Add one from the <b>\"Accounts\"</b> section.</p>\n        <button class=\"btn btn-primary\" @click=\"goToAccounts()\">Go to Accounts</button>\n    </div>\n";
 
 /***/ }),
-/* 115 */
+/* 118 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"tab-view\" _v-051e6fb2=\"\">\n\t\t<div class=\"panel-body\" style=\"overflow: inherit;\" _v-051e6fb2=\"\">\n\t\t\t<h3 _v-051e6fb2=\"\">Post Format</h3>\n\t\t\t<figure class=\"avatar avatar-lg\" style=\"text-align: center;\" v-if=\"accountsCount > 0\" _v-051e6fb2=\"\">\n\t\t\t\t<img :src=\"img\" v-if=\"img\" _v-051e6fb2=\"\">\n\t\t\t\t<i class=\"fa\" :class=\"icon\" style=\"line-height: 48px;\" aria-hidden=\"true\" v-else=\"\" _v-051e6fb2=\"\"></i>\n\t\t\t\t<i class=\"avatar-icon fa\" :class=\"icon\" aria-hidden=\"true\" v-if=\"img\" _v-051e6fb2=\"\"></i>\n\t\t\t\t<!--<img src=\"img/avatar-5.png\" class=\"avatar-icon\" alt=\"...\">-->\n\t\t\t</figure>\n\t\t\t<div class=\"d-inline-block\" style=\"vertical-align: top; margin-left: 16px;\" v-if=\"accountsCount > 0\" _v-051e6fb2=\"\">\n\t\t\t\t<h6 _v-051e6fb2=\"\">{{user_name}}</h6>\n\t\t\t\t<b class=\"service\" :class=\"service\" _v-051e6fb2=\"\">{{service_name}}</b>\n\t\t\t</div>\n\t\t\t<div class=\"d-inline-block\" style=\"vertical-align: top; margin-left: 16px; width: 80%\" _v-051e6fb2=\"\">\n\t\t\t\t<h4 _v-051e6fb2=\"\"><i class=\"fa fa-info-circle\" _v-051e6fb2=\"\"></i> Info</h4>\n\t\t\t\t<p _v-051e6fb2=\"\"><i _v-051e6fb2=\"\">Each <b _v-051e6fb2=\"\">account</b> can have it's own <b _v-051e6fb2=\"\">Post Format</b> for sharing, on the left you can see the\n\t\t\t\t\tcurrent selected account and network, bellow are the <b _v-051e6fb2=\"\">Post Format</b> options for the account.\n\t\t\t\t\tDon't forget to save after each change and remember, you can always reset an account to the network defaults.\n\t\t\t\t</i></p>\n\t\t\t</div>\n\t\t\t<empty-active-accounts v-if=\"accountsCount === 0\" _v-051e6fb2=\"\"></empty-active-accounts>\n\t\t\t<div class=\"container\" v-if=\"accountsCount > 0\" _v-051e6fb2=\"\">\n\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Account</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Specify an account to change the settings of.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"selected_account\" @change=\"getAccountpostFormat()\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<option v-for=\"( account, id ) in active_accounts\" :value=\"id\" _v-051e6fb2=\"\">{{account.user}} - {{account.service}} </option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<hr _v-051e6fb2=\"\">\n\n\t\t\t\t\t\t<h4 _v-051e6fb2=\"\">Content</h4>\n\t\t\t\t\t\t<!-- Post Content - where to fetch the content which will be shared\n\t\t\t\t\t\t\t (dropdown with 4 options ( post_title, post_content, post_content\n\t\t\t\t\t\t\t and title and custom field). If custom field is selected we will\n\t\t\t\t\t\t\t have a text field which users will need to fill in to fetch the\n\t\t\t\t\t\t\t content from that meta key. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Post Content</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">From where to fetch the content which will be shared.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.post_content\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<option value=\"post_title\" _v-051e6fb2=\"\">Post Title</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"post_content\" _v-051e6fb2=\"\">Post Content</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"post_title_content\" _v-051e6fb2=\"\">Post Title &amp; Content</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"custom_field\" _v-051e6fb2=\"\">Custom Field</option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-if=\"post_format.post_content === 'custom_field'\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Custom Meta Field</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Meta field name from which to get the content.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.custom_meta_field\" value=\"\" placeholder=\"\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!-- Maximum length of the message( number field ) which holds the maximum\n\t\t\t\t\t\t\t number of chars for the shared content. We striping the content, we need\n\t\t\t\t\t\t\t to strip at the last whitespace or dot before reaching the limit, in order\n\t\t\t\t\t\t\t to not trim just half of the word. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Maximum chars</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Maximum length of the message.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.maximum_length\" value=\"\" placeholder=\"\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!-- Additional text field - text field which will be used by the users to a\n\t\t\t\t\t\t\t custom content before the fetched post content. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Additional text</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Add custom content to published items.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<textarea class=\"form-input\" v-model=\"post_format.custom_text\" placeholder=\"Custom content ...\" _v-051e6fb2=\"\">{{post_format.custom_text}}</textarea>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!-- Additional text at - dropdown with 2 options, begining or end, having the\n\t\t\t\t\t\t\t option where to add the additional text content. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Where to add the custom text</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.custom_text_pos\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<option value=\"beginning\" _v-051e6fb2=\"\">Beginning</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"end\" _v-051e6fb2=\"\">End</option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<hr _v-051e6fb2=\"\">\n\n\t\t\t\t\t\t<h4 _v-051e6fb2=\"\">Link &amp; URL</h4>\n\t\t\t\t\t\t<!-- Include link - checkbox either we should include the post permalink or not\n\t\t\t\t\t\t\t in the shared content. This is will appended at the end of the content. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Include link</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Should include the post permalink or not?</i>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.include_link\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-051e6fb2=\"\"></i> Yes\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!-- Fetch url from custom field - checkbox - either we should fetch the url from\n\t\t\t\t\t\t\t a meta field or not. When checked we will open a text field for entering the\n\t\t\t\t\t\t\t meta key. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">URL</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Fetch URL from custom field?</i>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.url_from_meta\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-051e6fb2=\"\"></i> Yes\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-if=\"post_format.url_from_meta\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Meta Key</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Meta key name from which to get the URL.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.url_meta_key\" value=\"\" placeholder=\"\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!-- Use url shortner ( checkbox ) , either we should use a shortner when adding\n\t\t\t\t\t\t\t the links to the content. When checked we will show a dropdown with the shortners\n\t\t\t\t\t\t\t available and the api keys ( if needed ) for each one. The list of shortners will\n\t\t\t\t\t\t\t be the same as the old version of the plugin. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Use url shortner</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Should we  use a shortner when adding the links to the content?</i>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.short_url\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-051e6fb2=\"\"></i> Yes\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-if=\"post_format.short_url\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">URL Shorner Service</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Which service to use for URL shortening.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.short_url_service\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<option value=\"rviv.ly\" _v-051e6fb2=\"\">rviv.ly</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"bit.ly\" _v-051e6fb2=\"\">bit.ly</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"shorte.st\" _v-051e6fb2=\"\">shorte.st</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"goo.gl\" _v-051e6fb2=\"\">goo.gl</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"ow.ly\" _v-051e6fb2=\"\">ow.ly</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"is.gd\" _v-051e6fb2=\"\">is.gd</option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-for=\"( credential, key_name ) in shortner_credentials\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">{{ key_name | capitalize }}</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Add the \"{{key_name}}\" required by the <b _v-051e6fb2=\"\">{{post_format.short_url_service}}</b> service API.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"shortner_credentials[key_name]\" value=\"\" placeholder=\"\" @change=\"updateShortnerCredentials()\" @keyup=\"updateShortnerCredentials()\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<hr _v-051e6fb2=\"\">\n\n\t\t\t\t\t\t<h4 _v-051e6fb2=\"\">Misc.</h4>\n\t\t\t\t\t\t<!-- Hashtags - dropdown - having this options - (Dont add any hashtags, Common hastags\n\t\t\t\t\t\t\t for all shares, Create hashtags from categories, Create hashtags from tags, Create\n\t\t\t\t\t\t\t hashtags from custom field). If one of those options is selected, except the dont\n\t\t\t\t\t\t\t any hashtags options, we will show a number field having the Maximum hashtags length.\n\t\t\t\t\t\t\t Moreover for common hashtags option, we will have another text field which will contain\n\t\t\t\t\t\t\t the hashtags value. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Hashtags</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Hashtags to published content.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.hashtags\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<option value=\"no-hashtags\" _v-051e6fb2=\"\">Dont add any hashtags</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"common-hashtags\" _v-051e6fb2=\"\">Common hastags for all shares</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"categories-hashtags\" _v-051e6fb2=\"\">Create hashtags from categories</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"tags-hashtags\" _v-051e6fb2=\"\">Create hashtags from tags</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"custom-hashtags\" _v-051e6fb2=\"\">Create hashtags from custom field</option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-if=\"post_format.hashtags !== 'no-hashtags'\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Maximum Hashtags length</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">The maximum hashtags length to be used when publishing.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.hashtags_length\" value=\"\" placeholder=\"\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-if=\"post_format.hashtags === 'common-hashtags'\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Common Hashtags</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">List of hastags to use separated by comma \",\".</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_common\" value=\"\" placeholder=\"\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-if=\"post_format.hashtags === 'custom-hashtags'\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Custom Hashtags</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">The name of the meta field that contains the hashtags.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_custom\" value=\"\" placeholder=\"\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!-- Post with image - checkbox (either we should use the featured image when posting) -->\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Post with image</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Use the featured image when posting?</i>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.image\" :disabled=\"!has_pro\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-051e6fb2=\"\"></i> Yes\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t\t<span class=\"chip upsell\" style=\"font-size: 10px; vertical-align: baseline;\" _v-051e6fb2=\"\">PRO</span> <i _v-051e6fb2=\"\">Available in PRO version. Add upsell message here.</i>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<hr _v-051e6fb2=\"\">\n\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t<div class=\"columns\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-051e6fb2=\"\">Stats:</b><br _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t<i _v-051e6fb2=\"\">Available char for post content</i>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-051e6fb2=\"\">\n\t\t\t\t\t\t\t\t\t\t{{computed_chars}}\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<hr _v-051e6fb2=\"\">\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-051e6fb2=\"\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"savePostFormat()\" _v-051e6fb2=\"\"><i class=\"fa fa-check\" _v-051e6fb2=\"\"></i> Save Post Format</button>\n\t\t\t<button class=\"btn btn-secondary\" @click=\"resetPostFormat()\" _v-051e6fb2=\"\"><i class=\"fa fa-ban\" _v-051e6fb2=\"\"></i> Reset to Defaults</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 116 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(117)
-__webpack_require__(119)
-__vue_script__ = __webpack_require__(121)
-__vue_template__ = __webpack_require__(133)
+__webpack_require__(120)
+__webpack_require__(122)
+__vue_script__ = __webpack_require__(124)
+__vue_template__ = __webpack_require__(136)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -17722,13 +17816,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 117 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(118);
+var content = __webpack_require__(121);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -17748,7 +17842,7 @@ if(false) {
 }
 
 /***/ }),
-/* 118 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)();
@@ -17762,13 +17856,13 @@ exports.push([module.i, "\n\t#rop_core .avatar .avatar-icon[_v-d77321bc] {\n\t\t
 
 
 /***/ }),
-/* 119 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(120);
+var content = __webpack_require__(123);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -17788,7 +17882,7 @@ if(false) {
 }
 
 /***/ }),
-/* 120 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)();
@@ -17802,21 +17896,21 @@ exports.push([module.i, "\n\t#rop_core .time-picker.timepicker-style-fix .dropdo
 
 
 /***/ }),
-/* 121 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _keys = __webpack_require__(6);
+var _keys = __webpack_require__(5);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _buttonCheckbox = __webpack_require__(122);
+var _buttonCheckbox = __webpack_require__(125);
 
 var _buttonCheckbox2 = _interopRequireDefault(_buttonCheckbox);
 
-var _vue2Timepicker = __webpack_require__(125);
+var _vue2Timepicker = __webpack_require__(128);
 
 var _vue2Timepicker2 = _interopRequireDefault(_vue2Timepicker);
 
@@ -18198,12 +18292,12 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 122 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(123)
-__vue_template__ = __webpack_require__(124)
+__vue_script__ = __webpack_require__(126)
+__vue_template__ = __webpack_require__(127)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -18220,7 +18314,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 123 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18289,26 +18383,26 @@ module.exports = {
 };
 
 /***/ }),
-/* 124 */
+/* 127 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<button class=\"btn\" :class=\"is_active\" @click=\"toggleThis()\" >{{label}}</button>\n";
 
 /***/ }),
-/* 125 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(126)
+module.exports = __webpack_require__(129)
 
 
 /***/ }),
-/* 126 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(127)
-__vue_script__ = __webpack_require__(130)
-__vue_template__ = __webpack_require__(132)
+__webpack_require__(130)
+__vue_script__ = __webpack_require__(133)
+__vue_template__ = __webpack_require__(135)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -18325,13 +18419,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 127 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(128);
+var content = __webpack_require__(131);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -18351,12 +18445,12 @@ if(false) {
 }
 
 /***/ }),
-/* 128 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)();
 // imports
-exports.i(__webpack_require__(129), "");
+exports.i(__webpack_require__(132), "");
 
 // module
 exports.push([module.i, "\n", ""]);
@@ -18365,7 +18459,7 @@ exports.push([module.i, "\n", ""]);
 
 
 /***/ }),
-/* 129 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)();
@@ -18379,7 +18473,7 @@ exports.push([module.i, ".time-picker {\n  display: inline-block;\n  position: r
 
 
 /***/ }),
-/* 130 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18389,7 +18483,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _keys = __webpack_require__(6);
+var _keys = __webpack_require__(5);
 
 var _keys2 = _interopRequireDefault(_keys);
 
@@ -18769,10 +18863,10 @@ exports.default = {
 };
 
 /***/ }),
-/* 131 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var core = __webpack_require__(3);
+var core = __webpack_require__(2);
 var $JSON = core.JSON || (core.JSON = { stringify: JSON.stringify });
 module.exports = function stringify(it) { // eslint-disable-line no-unused-vars
   return $JSON.stringify.apply($JSON, arguments);
@@ -18780,24 +18874,24 @@ module.exports = function stringify(it) { // eslint-disable-line no-unused-vars
 
 
 /***/ }),
-/* 132 */
+/* 135 */
 /***/ (function(module, exports) {
 
 module.exports = "\n<span class=\"time-picker\">\n  <input class=\"display-time\" :id=\"id\" v-model=\"displayTime\" @click.stop=\"toggleDropdown\" type=\"text\" readonly />\n  <span class=\"clear-btn\" v-if=\"!hideClearButton\" v-show=\"!showDropdown && showClearBtn\" @click.stop=\"clearTime\">&times;</span>\n  <div class=\"time-picker-overlay\" v-if=\"showDropdown\" @click.stop=\"toggleDropdown\"></div>\n  <div class=\"dropdown\" v-show=\"showDropdown\">\n    <div class=\"select-list\">\n      <ul class=\"hours\">\n        <li class=\"hint\" v-text=\"hourType\"></li>\n        <li v-for=\"hr in hours\" v-text=\"hr\" :class=\"{active: hour === hr}\" @click.stop=\"select('hour', hr)\"></li>\n      </ul>\n      <ul class=\"minutes\">\n        <li class=\"hint\" v-text=\"minuteType\"></li>\n        <li v-for=\"m in minutes\" v-text=\"m\" :class=\"{active: minute === m}\" @click.stop=\"select('minute', m)\"></li>\n      </ul>\n      <ul class=\"seconds\" v-if=\"secondType\">\n        <li class=\"hint\" v-text=\"secondType\"></li>\n        <li v-for=\"s in seconds\" v-text=\"s\" :class=\"{active: second === s}\" @click.stop=\"select('second', s)\"></li>\n      </ul>\n      <ul class=\"apms\" v-if=\"apmType\">\n        <li class=\"hint\" v-text=\"apmType\"></li>\n        <li v-for=\"a in apms\" v-text=\"a\" :class=\"{active: apm === a}\" @click.stop=\"select('apm', a)\"></li>\n      </ul>\n    </div>\n  </div>\n</span>\n";
 
 /***/ }),
-/* 133 */
+/* 136 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"tab-view\" _v-d77321bc=\"\">\n\t\t<div class=\"panel-body\" style=\"overflow: inherit;\" _v-d77321bc=\"\">\n\t\t\t<h3 _v-d77321bc=\"\">Custom Schedule</h3>\n\t\t\t<figure class=\"avatar avatar-lg\" style=\"text-align: center;\" v-if=\"accountsCount > 0\" _v-d77321bc=\"\">\n\t\t\t\t<img :src=\"img\" v-if=\"img\" _v-d77321bc=\"\">\n\t\t\t\t<i class=\"fa\" :class=\"icon\" style=\"line-height: 48px;\" aria-hidden=\"true\" v-else=\"\" _v-d77321bc=\"\"></i>\n\t\t\t\t<i class=\"avatar-icon fa\" :class=\"icon\" aria-hidden=\"true\" v-if=\"img\" _v-d77321bc=\"\"></i>\n\t\t\t\t<!--<img src=\"img/avatar-5.png\" class=\"avatar-icon\" alt=\"...\">-->\n\t\t\t</figure>\n\t\t\t<div class=\"d-inline-block\" style=\"vertical-align: top; margin-left: 16px;\" v-if=\"accountsCount > 0\" _v-d77321bc=\"\">\n\t\t\t\t<h6 _v-d77321bc=\"\">{{user_name}}</h6>\n\t\t\t\t<b class=\"service\" :class=\"service\" _v-d77321bc=\"\">{{service_name}}</b>\n\t\t\t</div>\n\t\t\t<div class=\"d-inline-block\" style=\"vertical-align: top; margin-left: 16px; width: 80%\" _v-d77321bc=\"\">\n\t\t\t\t<h4 _v-d77321bc=\"\"><i class=\"fa fa-info-circle\" _v-d77321bc=\"\"></i> Info</h4>\n\t\t\t\t<p _v-d77321bc=\"\"><i _v-d77321bc=\"\">Each <b _v-d77321bc=\"\">account</b> can have it's own <b _v-d77321bc=\"\">Schedule</b> for sharing, on the left you can see the\n\t\t\t\t\tcurrent selected account and network, bellow are the <b _v-d77321bc=\"\">Schedule</b> options for the account.\n\t\t\t\t\tDon't forget to save after each change and remember, you can always reset an account to the defaults.\n\t\t\t\t</i></p>\n\t\t\t</div>\n\t\t\t<empty-active-accounts v-if=\"accountsCount === 0\" _v-d77321bc=\"\"></empty-active-accounts>\n\t\t\t<div class=\"container\" v-if=\"accountsCount > 0\" _v-d77321bc=\"\">\n\t\t\t\t<div class=\"columns\" _v-d77321bc=\"\">\n\t\t\t\t\t<div id=\"main_schedules\" class=\"column col-sm-12 col-md-12 col-lg-12\" _v-d77321bc=\"\">\n\t\t\t\t\t\t<div class=\"columns\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<b _v-d77321bc=\"\">Account</b><br _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<i _v-d77321bc=\"\">Specify an account to change the settings of.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"selected_account\" @change=\"getAccountSchedule()\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t\t<option v-for=\"( account, id ) in active_accounts\" :value=\"id\" _v-d77321bc=\"\">{{account.user}} - {{account.service}} </option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<hr _v-d77321bc=\"\">\n\t\t\t\t\t\t<div class=\"empty upsell\" v-if=\"!has_pro\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t<div class=\"empty-icon\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-3x fa-lock\" _v-d77321bc=\"\"></i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<p class=\"empty-title h5\" _v-d77321bc=\"\">Available in Business</p>\n\t\t\t\t\t\t\t<p class=\"empty-subtitle\" _v-d77321bc=\"\">More upsell info here ...</p>\n\t\t\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"goToAccounts()\" _v-d77321bc=\"\">Get PRO Business</button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<h4 _v-d77321bc=\"\">Schedule</h4>\n\t\t\t\t\t\t<!-- Schedule Type - Can be 'recurring' or 'fixed'\n\t\t\t\t\t\t\t If Recurring than an repeating interval is filled (float) Eg. 2.5 hours\n\t\t\t\t\t\t\t If Fixed days of the week are selected and a specific time is selected. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<b _v-d77321bc=\"\">Schedule Type</b><br _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<i _v-d77321bc=\"\">What type of schedule to use.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"schedule.type\" :disabled=\"!has_pro\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t\t<option value=\"recurring\" _v-d77321bc=\"\">Recurring</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"fixed\" _v-d77321bc=\"\">Fixed</option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<div class=\"columns\" v-if=\"schedule.type === 'fixed'\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<b _v-d77321bc=\"\">Fixed Schedule Days</b><br _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<i _v-d77321bc=\"\">The days when to share for this account.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t<button-checkbox v-for=\"( data, label ) in daysObject\" :key=\"label\" :value=\"data.value\" :label=\"label\" :checked=\"data.checked\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" :disabled=\"!has_pro\" _v-d77321bc=\"\"></button-checkbox>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-if=\"schedule.type === 'fixed'\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<b _v-d77321bc=\"\">Fixed Schedule Time</b><br _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<i _v-d77321bc=\"\">The time at witch to share for this account.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"input-group\" v-for=\"( time, index ) in schedule.interval_f.time\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t\t<vue-timepicker :minute-interval=\"5\" class=\"timepicker-style-fix\" :value=\"getTime( index )\" @change=\"syncTime( $event, index )\" hide-clear-button=\"\" :disabled=\"!has_pro\" _v-d77321bc=\"\"></vue-timepicker>\n\t\t\t\t\t\t\t\t\t\t<button class=\"btn btn-success input-group-btn\" v-if=\"schedule.interval_f.time.length > 1\" @click=\"rmvTime( index )\" :disabled=\"!has_pro\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-minus\" _v-d77321bc=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t\t\t<button class=\"btn btn-success input-group-btn\" v-if=\"index == schedule.interval_f.time.length - 1\" @click=\"addTime()\" :disabled=\"!has_pro\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-plus\" _v-d77321bc=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-else=\"\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<b _v-d77321bc=\"\">Recurring Schedule Interval</b><br _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<i _v-d77321bc=\"\">A recurring interval to use for sharing. Once every 'X' hours.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t\t<input type=\"number\" class=\"form-input\" v-model=\"schedule.interval_r\" placeholder=\"hours.min (Eg. 2.5)\" :disabled=\"!has_pro\" _v-d77321bc=\"\">\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<hr _v-d77321bc=\"\">\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-d77321bc=\"\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveSchedule()\" :disabled=\"!has_pro\" _v-d77321bc=\"\"><i class=\"fa fa-check\" _v-d77321bc=\"\"></i> Save Schedule</button>\n\t\t\t<button class=\"btn btn-secondary\" @click=\"resetSchedule()\" :disabled=\"!has_pro\" _v-d77321bc=\"\"><i class=\"fa fa-ban\" _v-d77321bc=\"\"></i> Reset to Defaults</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 134 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(135)
-__vue_template__ = __webpack_require__(141)
+__vue_script__ = __webpack_require__(138)
+__vue_template__ = __webpack_require__(144)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -18814,13 +18908,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 135 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _queueCard = __webpack_require__(136);
+var _queueCard = __webpack_require__(139);
 
 var _queueCard2 = _interopRequireDefault(_queueCard);
 
@@ -18838,6 +18932,9 @@ module.exports = {
 		has_pro: function has_pro() {
 			return this.$store.state.has_pro;
 		}
+	},
+	mounted: function mounted() {
+		this.$store.dispatch('fetchAJAX', { req: 'get_queue' });
 	},
 	methods: {
 		refreshQueue: function refreshQueue() {
@@ -18875,13 +18972,13 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 136 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(137)
-__vue_script__ = __webpack_require__(139)
-__vue_template__ = __webpack_require__(140)
+__webpack_require__(140)
+__vue_script__ = __webpack_require__(142)
+__vue_template__ = __webpack_require__(143)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -18898,13 +18995,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 137 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(138);
+var content = __webpack_require__(141);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -18924,7 +19021,7 @@ if(false) {
 }
 
 /***/ }),
-/* 138 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)();
@@ -18938,7 +19035,7 @@ exports.push([module.i, "\n\t#rop_core .avatar .avatar-icon[_v-2719575f] {\n\t\t
 
 
 /***/ }),
-/* 139 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19235,24 +19332,24 @@ module.exports = {
 };
 
 /***/ }),
-/* 140 */
+/* 143 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"card col-12\" style=\"max-width: 100%; min-height: 350px;\" _v-2719575f=\"\">\n\t\t<div style=\"position: absolute; display: block; top: 0; right: 0;\" _v-2719575f=\"\">\n\t\t\t<button class=\"btn btn-sm btn-primary\" @click=\"toggleEditState\" v-if=\"edit === false\" :disabled=\"!has_pro\" _v-2719575f=\"\"><i class=\"fa fa-pencil\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Edit</button>\n\t\t\t<button class=\"btn btn-sm btn-success\" @click=\"saveChanges\" v-if=\"edit\" :disabled=\"!has_pro\" _v-2719575f=\"\"><i class=\"fa fa-check\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Save</button>\n\t\t\t<button class=\"btn btn-sm btn-warning\" @click=\"cancelChanges\" v-if=\"edit\" :disabled=\"!has_pro\" _v-2719575f=\"\"><i class=\"fa fa-times\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Cancel</button>\n\t\t</div>\n\t\t<div class=\"card-header\" _v-2719575f=\"\">\n\t\t\t<p class=\"text-gray text-right float-right\" _v-2719575f=\"\"><b _v-2719575f=\"\">Scheduled:</b><br _v-2719575f=\"\">{{time}}</p>\n\t\t\t<div class=\"card-title h6\" _v-2719575f=\"\">{{post.post_title}}</div>\n\t\t\t<div class=\"card-subtitle text-gray\" _v-2719575f=\"\"><i class=\"service fa\" :class=\"iconClass( account_id )\" _v-2719575f=\"\"></i> {{active_accounts[account_id].user}}</div>\n\t\t</div>\n\t\t<hr _v-2719575f=\"\">\n\t\t<span v-if=\"edit === false\" _v-2719575f=\"\">\n\t\t\t<details class=\"accordion\" v-if=\"post_img_url !== ''\" _v-2719575f=\"\">\n\t\t\t\t<summary class=\"accordion-header\" _v-2719575f=\"\">\n\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-2719575f=\"\"></i>\n\t\t\t\t\tImage Preview\n\t\t\t\t</summary>\n\t\t\t\t<div class=\"accordion-body\" _v-2719575f=\"\">\n\t\t\t\t\t<div class=\"card-image\" v-if=\"post_img_url !== ''\" _v-2719575f=\"\">\n\t\t\t\t\t\t<figure class=\"figure\" style=\"max-height: 250px; overflow: hidden;\" _v-2719575f=\"\">\n\t\t\t\t\t\t\t<img :src=\"post_img_url\" class=\"img-fit-cover\" style=\" width: 100%; height: 250px;\" @error=\"brokenImg\" _v-2719575f=\"\">\n\t\t\t\t\t\t</figure>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</details>\n\t\t\t<details class=\"accordion\" v-else=\"\" _v-2719575f=\"\">\n\t\t\t\t<summary class=\"accordion-header\" _v-2719575f=\"\">\n\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-2719575f=\"\"></i>\n\t\t\t\t\tNo Image\n\t\t\t\t</summary>\n\t\t\t\t<div class=\"accordion-body text-gray\" _v-2719575f=\"\">\n\t\t\t\t\t<small _v-2719575f=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-chain-broken\" aria-hidden=\"true\" _v-2719575f=\"\"></i> No image attached or a broken link was detected.<br _v-2719575f=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-info-circle\" aria-hidden=\"true\" _v-2719575f=\"\"></i> <i _v-2719575f=\"\">If a image should be here, update the post or edit this item.</i>\n\t\t\t\t\t</small>\n\t\t\t\t</div>\n\t\t\t</details>\n\n\t\t\t<div class=\"card-body\" v-if=\"edit === false\" _v-2719575f=\"\">\n\t\t\t\t<p v-html=\"hashtags( post_content )\" _v-2719575f=\"\"></p>\n\t\t\t\t<p v-if=\"post.post_url\" _v-2719575f=\"\"><b _v-2719575f=\"\">Link:</b> <a :href=\"post.post_url\" target=\"_blank\" _v-2719575f=\"\">{{post.post_url}}</a></p>\n\t\t\t</div>\n\t\t</span>\n\t\t<div class=\"card-body\" v-else=\"\" _v-2719575f=\"\">\n\t\t\t<div class=\"form-group\" _v-2719575f=\"\">\n\t\t\t\t<label class=\"form-label\" for=\"image\" _v-2719575f=\"\">Image</label>\n\t\t\t\t<div class=\"input-group\" _v-2719575f=\"\">\n\t\t\t\t\t<span class=\"input-group-addon\" _v-2719575f=\"\"><i class=\"fa fa-file-image-o\" _v-2719575f=\"\"></i></span>\n\t\t\t\t\t<input id=\"image\" type=\"text\" class=\"form-input\" :value=\"post_img_url\" readonly=\"\" _v-2719575f=\"\">\n\t\t\t\t\t<button class=\"btn btn-primary input-group-btn\" @click=\"uploadImage\" _v-2719575f=\"\"><i class=\"fa fa-upload\" aria-hidden=\"true\" _v-2719575f=\"\"></i></button>\n\t\t\t\t\t<button class=\"btn btn-danger input-group-btn\" @click=\"clearImage\" _v-2719575f=\"\"><i class=\"fa fa-trash\" aria-hidden=\"true\" _v-2719575f=\"\"></i></button>\n\t\t\t\t</div>\n\n\t\t\t\t<label class=\"form-label\" for=\"content\" _v-2719575f=\"\">Content</label>\n\t\t\t\t<textarea class=\"form-input\" id=\"content\" placeholder=\"Textarea\" rows=\"3\" @keyup=\"checkCount\" _v-2719575f=\"\">{{post_content}}</textarea>\n\t\t\t</div>\n\t\t</div>\n\t\t<div style=\"position: absolute; display: block; bottom: 0; right: 0;\" v-if=\"edit === false\" _v-2719575f=\"\">\n\t\t\t<button class=\"btn btn-sm btn-success\" @click=\"publishNow\" :disabled=\"!has_pro\" _v-2719575f=\"\"><i class=\"fa fa-share\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Share Now</button>\n\t\t\t<button class=\"btn btn-sm btn-warning\" @click=\"skipPost\" :disabled=\"!has_pro\" _v-2719575f=\"\"><i class=\"fa fa-step-forward\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Skip</button>\n\t\t\t<button class=\"btn btn-sm btn-danger\" @click=\"blockPost\" :disabled=\"!has_pro\" _v-2719575f=\"\"><i class=\"fa fa-ban\" aria-hidden=\"true\" _v-2719575f=\"\"></i> Block</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 141 */
+/* 144 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\" style=\"overflow: inherit;\">\n\t\t\t<h3>Sharing Queue</h3>\n\t\t\t<div class=\"empty\" v-if=\"queueCount === 0\">\n\t\t\t\t<div class=\"empty-icon\">\n\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\"></i>\n\t\t\t\t</div>\n\t\t\t\t<p class=\"empty-title h5\">No queued posts!</p>\n\t\t\t\t<p class=\"empty-subtitle\">Check if you have at least an <b>\"Active account\"</b>, what posts and pages are selected in <b>\"General Settings\"</b> and if a <b>\"Schedule\"</b> is defined.</p>\n\t\t\t</div>\n\t\t\t<div class=\"container columns\">\n\t\t\t\t<div class=\"column col-sm-12 col-3 text-left\" v-for=\" (data, index) in queue \">\n\t\t\t\t\t<queue-card :account_id=\"data.account_id\" :post=\"data.post\" :time=\"data.time\" :key=\"index\" :id=\"index\" />\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\">\n\t\t\t<button class=\"btn btn-secondary\" @click=\"refreshQueue\"><i class=\"fa fa-refresh\"></i> Refresh Queue</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 142 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(143)
-__vue_template__ = __webpack_require__(144)
+__vue_script__ = __webpack_require__(146)
+__vue_template__ = __webpack_require__(147)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -19269,7 +19366,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 143 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19313,19 +19410,19 @@ module.exports = {
 };
 
 /***/ }),
-/* 144 */
+/* 147 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"container\">\n\t\t<h3>Logs</h3>\n\t\t<div class=\"columns\">\n\t\t\t<div class=\"column col-6\">\n\t\t\t\t<pre class=\"code\" data-lang=\"User Friendly Logs\">\n\t\t\t\t\t<code>{{ logs }}</code>\n\t\t\t\t</pre>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6\">\n\t\t\t\t<pre class=\"code\" data-lang=\"Verbose Logs\">\n\t\t\t\t\t<code>{{ logs_verbose }}</code>\n\t\t\t\t</pre>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 145 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(146)
-__vue_script__ = __webpack_require__(148)
-__vue_template__ = __webpack_require__(149)
+__webpack_require__(149)
+__vue_script__ = __webpack_require__(151)
+__vue_template__ = __webpack_require__(152)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -19342,13 +19439,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 146 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(147);
+var content = __webpack_require__(150);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -19368,7 +19465,7 @@ if(false) {
 }
 
 /***/ }),
-/* 147 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)();
@@ -19382,7 +19479,7 @@ exports.push([module.i, "\n\t#rop_core .toast.hidden {\n\t\tdisplay: none;\n\t}\
 
 
 /***/ }),
-/* 148 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19437,19 +19534,155 @@ module.exports = {
 };
 
 /***/ }),
-/* 149 */
+/* 152 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"toast\" :class=\"toastTypeClass\" >\n\t\t<button class=\"btn btn-clear float-right\" @click=\"closeThis\"></button>\n\t\t<b><i class=\"fa\" :class=\"iconClass\"></i> {{ toast.title }}</b><br/>\n\t\t<small>{{ toast.message }}</small>\n\t</div>\n";
 
 /***/ }),
-/* 150 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(151)
-__vue_script__ = __webpack_require__(153)
-__vue_template__ = __webpack_require__(154)
+__vue_script__ = __webpack_require__(154)
+__vue_template__ = __webpack_require__(158)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/var/www/html/wp-base/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/countdown.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 154 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _trunc = __webpack_require__(155);
+
+var _trunc2 = _interopRequireDefault(_trunc);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// <template>
+// 	<div class="toast toast-success" v-if="to.isOn" >
+// 		<b><i class="fa fa-fast-forward"></i> Next share</b> in <small v-if="days">{{ days | twoDigits }} days</small> <small v-if="hours">{{ hours | twoDigits }} hours</small> <small>{{ minutes | twoDigits }} minutes</small> <small>{{ seconds | twoDigits }} seconds</small>
+// 	</div>
+// </template>
+//
+// <script>
+module.exports = {
+	name: 'cowntdown',
+	props: {
+		to: {
+			default: function _default() {
+				return { toTime: null, isOn: false };
+			},
+			type: Object
+		}
+	},
+	mounted: function mounted() {
+		var _this = this;
+
+		window.setInterval(function () {
+			_this.now = (0, _trunc2.default)(new Date().getTime() / 1000);
+			_this.updateQueueIfNeeded();
+		}, 1000);
+	},
+	data: function data() {
+		return {
+			now: (0, _trunc2.default)(new Date().getTime() / 1000)
+		};
+	},
+
+	computed: {
+		date: function date() {
+			return (0, _trunc2.default)(Date.parse(this.to.toTime) / 1000);
+		},
+		seconds: function seconds() {
+			return (this.date - this.now) % 60;
+		},
+		minutes: function minutes() {
+			return (0, _trunc2.default)((this.date - this.now) / 60) % 60;
+		},
+		hours: function hours() {
+			return (0, _trunc2.default)((this.date - this.now) / 60 / 60) % 24;
+		},
+		days: function days() {
+			return (0, _trunc2.default)((this.date - this.now) / 60 / 60 / 24);
+		}
+	},
+	methods: {
+		updateQueueIfNeeded: function updateQueueIfNeeded() {
+			if (this.now === this.date) {
+				this.$store.dispatch('fetchAJAX', { req: 'get_queue' });
+			}
+		}
+	},
+	filters: {
+		twoDigits: function twoDigits(value) {
+			if (value.toString().length <= 1) {
+				return '0' + value.toString();
+			}
+			return value.toString();
+		}
+	}
+	// </script>
+
+};
+
+/***/ }),
+/* 155 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = { "default": __webpack_require__(156), __esModule: true };
+
+/***/ }),
+/* 156 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(157);
+module.exports = __webpack_require__(2).Math.trunc;
+
+
+/***/ }),
+/* 157 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 20.2.2.34 Math.trunc(x)
+var $export = __webpack_require__(17);
+
+$export($export.S, 'Math', {
+  trunc: function trunc(it) {
+    return (it > 0 ? Math.floor : Math.ceil)(it);
+  }
+});
+
+
+/***/ }),
+/* 158 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div class=\"toast toast-success\" v-if=\"to.isOn\" >\n\t\t<b><i class=\"fa fa-fast-forward\"></i> Next share</b> in <small v-if=\"days\">{{ days | twoDigits }} days</small> <small v-if=\"hours\">{{ hours | twoDigits }} hours</small> <small>{{ minutes | twoDigits }} minutes</small> <small>{{ seconds | twoDigits }} seconds</small>\n\t</div>\n";
+
+/***/ }),
+/* 159 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(160)
+__vue_script__ = __webpack_require__(162)
+__vue_template__ = __webpack_require__(163)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -19466,13 +19699,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 151 */
+/* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(152);
+var content = __webpack_require__(161);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -19492,7 +19725,7 @@ if(false) {
 }
 
 /***/ }),
-/* 152 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)();
@@ -19506,7 +19739,7 @@ exports.push([module.i, "\n    #rop_core .ajax-loader.ajax-hide {\n        displ
 
 
 /***/ }),
-/* 153 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19547,16 +19780,16 @@ module.exports = {
 };
 
 /***/ }),
-/* 154 */
+/* 163 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div class=\"ajax-loader\" :class=\"isVisible\" >\n        <i class=\"fa fa-spinner fa-spin\"></i> <b>Loading ...</b>\n    </div>\n";
 
 /***/ }),
-/* 155 */
+/* 164 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div>\n\t\t<div class=\"panel title-panel\" style=\"margin-bottom: 40px; padding-bottom: 20px;\">\n\t\t\t<div class=\"panel-header\">\n\t\t\t\t<img :src=\"plugin_logo\" style=\"float: left; margin-right: 10px;\" />\n\t\t\t\t<h1 class=\"d-inline-block\">Revive Old Posts</h1><span class=\"powered\"> by <a href=\"https://themeisle.com\" target=\"_blank\"><b>ThemeIsle</b></a></span>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<toast />\n        <ajax-loader />\n\t\t<div class=\"panel\">\n\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t<ul class=\"tab\">\n\t\t\t\t\t<li class=\"tab-item\" v-for=\"tab in displayTabs\" :class=\"{ active: tab.isActive, badge: displayProBadge( tab.slug ), upsell: displayProBadge( tab.slug ) }\" data-badge=\"PRO\"><a href=\"#\" @click=\"switchTab( tab.slug )\">{{ tab.name }}</a></li>\n\t\t\t\t\t<li class=\"tab-item tab-action\">\n\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.custom_messages\" @change=\"updateSettings\" :disabled=\"!has_pro\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" v-if=\"has_pro\"></i><i class=\"badge\" data-badge=\"PRO\" v-else></i> <span class=\"hide-sm\">Custom Share Messages</span>\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.beta_user\" @change=\"updateSettings\" />\n                                <i class=\"form-icon\"></i> <span class=\"hide-sm\">Beta User</span>\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.remote_check\" @change=\"updateSettings\" />\n                                <i class=\"form-icon\"></i> <span class=\"hide-sm\">Remote Check</span>\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\n\t\t\t<component :is=\"page.view\"></component>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div>\n\t\t<div class=\"panel title-panel\" style=\"margin-bottom: 40px; padding-bottom: 20px;\">\n\t\t\t<div class=\"panel-header\">\n\t\t\t\t<img :src=\"plugin_logo\" style=\"float: left; margin-right: 10px;\" />\n\t\t\t\t<h1 class=\"d-inline-block\">Revive Old Posts</h1><span class=\"powered\"> by <a href=\"https://themeisle.com\" target=\"_blank\"><b>ThemeIsle</b></a></span>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<toast />\n\t\t<countdown v-bind:to=\"countdownObject\" />\n\t\t<ajax-loader />\n\t\t<div class=\"panel\">\n\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t<ul class=\"tab\">\n\t\t\t\t\t<li class=\"tab-item\" v-for=\"tab in displayTabs\" :class=\"{ active: tab.isActive, badge: displayProBadge( tab.slug ), upsell: displayProBadge( tab.slug ) }\" data-badge=\"PRO\"><a href=\"#\" @click=\"switchTab( tab.slug )\">{{ tab.name }}</a></li>\n\t\t\t\t\t<li class=\"tab-item tab-action\">\n\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.custom_messages\" @change=\"updateSettings\" :disabled=\"!has_pro\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" v-if=\"has_pro\"></i><i class=\"badge\" data-badge=\"PRO\" v-else></i> <span class=\"hide-sm\">Custom Share Messages</span>\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.beta_user\" @change=\"updateSettings\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> <span class=\"hide-sm\">Beta User</span>\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.remote_check\" @change=\"updateSettings\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> <span class=\"hide-sm\">Remote Check</span>\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\t\t\t<component :is=\"page.view\"></component>\n\t\t</div>\n\t</div>\n";
 
 /***/ })
 /******/ ]);
