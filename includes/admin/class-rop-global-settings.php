@@ -344,6 +344,21 @@ class Rop_Global_Settings {
 	}
 
 	/**
+	 * Method to retrieve all the services handles.
+	 *
+	 * @since   8.0.0rc
+	 * @access  public
+	 * @return array
+	 */
+	public function get_all_services_handle() {
+		$all = array();
+		foreach ( $this->get_available_services() as $handle => $data ) {
+			array_push( $all, $handle );
+		}
+		return $all;
+	}
+
+	/**
 	 * Defines the available post types.
 	 *
 	 * @since   8.0.0

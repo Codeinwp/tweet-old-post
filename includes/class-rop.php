@@ -157,7 +157,7 @@ class Rop {
 
 		$factory = new Rop_Services_Factory();
 		$global_settings = new Rop_Global_Settings();
-		foreach ( $global_settings->get_active_services_handle() as $service ) {
+		foreach ( $global_settings->get_all_services_handle() as $service ) {
 			try {
 				${$service . '_service'} = $factory->build( $service );
 				${$service . '_service'}->expose_endpoints();
