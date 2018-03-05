@@ -383,6 +383,21 @@ class Rop_Global_Settings {
 	}
 
 	/**
+	 * Defines the available taxonomies.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return array
+	 */
+	public function get_available_taxonomies() {
+		$settings_model = new Rop_Settings_Model();
+		$post_selector = new Rop_Posts_Selector_Model();
+		$taxonomies = $post_selector->get_taxonomies( $settings_model->get_selected_post_types() );
+
+		return $taxonomies;
+	}
+
+	/**
 	 * Method to check if the PRO classes exist.
 	 *
 	 * @since   8.0.0

@@ -11482,7 +11482,7 @@ exports.default = new _vuex2.default.Store({
 		}],
 		licence: licenceType(ropApiSettings.has_pro),
 		has_pro: stringToBoolean(ropApiSettings.has_pro),
-		generalSettings: { 'available_post_types': ropApiSettings.available_post_types },
+		generalSettings: { 'available_post_types': ropApiSettings.available_post_types, 'available_taxonomies': ropApiSettings.available_taxonomies },
 		availableServices: [],
 		authenticatedServices: [],
 		activeAccounts: [],
@@ -11539,6 +11539,7 @@ exports.default = new _vuex2.default.Store({
 				case 'get_general_settings':
 					state.generalSettings = stateData;
 					state.generalSettings.available_post_types = ropApiSettings.available_post_types;
+					state.generalSettings.available_taxonomies = ropApiSettings.available_taxonomies;
 					break;
 				case 'update_selected_post_types':
 					state.generalSettings.selected_post_types = stateData;
@@ -16425,7 +16426,7 @@ module.exports = {
 			return this.$store.state.generalSettings.available_post_types;
 		},
 		taxonomies: function taxonomies() {
-			// this.requestPostUpdate()
+			this.requestPostUpdate();
 			return this.$store.state.generalSettings.available_taxonomies;
 		},
 		postsAvailable: function postsAvailable() {

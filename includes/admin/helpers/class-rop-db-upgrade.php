@@ -82,7 +82,10 @@ class Rop_Db_Upgrade {
 			$setting['ga_tracking'] = ( $old_settings['top_opt_ga_tracking'] === 'on' ) ? true : false;
 		}
 
-		$top_opt_post_type = get_option( 'top_opt_post_type', null );
+		$top_opt_post_type = null;
+		if ( $old_settings !== null && isset( $old_settings['top_opt_post_type'] ) ) {
+			$top_opt_post_type = $old_settings['top_opt_post_type'];
+		}
 		if ( ! is_array( $top_opt_post_type ) ) {
 			$top_opt_post_type = array( $top_opt_post_type );
 		}

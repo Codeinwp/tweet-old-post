@@ -196,7 +196,7 @@
 				return this.$store.state.generalSettings.available_post_types
 			},
 			taxonomies: function () {
-				// this.requestPostUpdate()
+				this.requestPostUpdate()
 				return this.$store.state.generalSettings.available_taxonomies
 			},
 			postsAvailable: function () {
