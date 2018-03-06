@@ -163,13 +163,12 @@ abstract class Rop_Url_Shortner_Abstract {
 	 */
 	public function append_utm( $url ) {
 		$url_parts = parse_url( $url );
-		if( isset( $url_parts['query'] ) ) {
+		if ( isset( $url_parts['query'] ) ) {
 			parse_str( $url_parts['query'], $params );
 		} else {
 			$params = array();
 			$url_parts['query'] = '';
 		}
-
 
 		$params['utm_source'] = 'ReviveOldPost';
 		$params['utm_medium'] = 'social';
@@ -177,11 +176,11 @@ abstract class Rop_Url_Shortner_Abstract {
 
 		$url_parts['query'] = http_build_query( $params );
 
-		if( ! isset( $url_parts['scheme'] ) ) {
+		if ( ! isset( $url_parts['scheme'] ) ) {
 			$url_parts['scheme'] = 'http';
 		}
 
-		if( ! isset( $url_parts['host'] ) ) {
+		if ( ! isset( $url_parts['host'] ) ) {
 			$url_parts['host'] = '';
 		}
 

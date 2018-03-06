@@ -202,7 +202,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 */
 	public function build_and_update_queue() {
 		$this->queue = ( $this->get( 'queue' ) != null ) ? $this->get( 'queue' ) : array();
-		//$this->queue = array();
+		// $this->queue = array();
 		$settings = new Rop_Settings_Model();
 		$no_of_posts = $settings->get_number_of_posts();
 		$queue = array();
@@ -267,7 +267,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @param   string $account_id The account ID.
 	 * @return mixed
 	 */
-	public function remove_from_queue( $index, $account_id, $update_last_share = true  ) {
+	public function remove_from_queue( $index, $account_id, $update_last_share = true ) {
 	    $to_remove_from_queue = $this->queue[ $account_id ][ $index ];
 		$this->selector->update_buffer( $account_id, $to_remove_from_queue['post']['post_id'] );
 		if ( $update_last_share ) {

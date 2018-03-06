@@ -210,10 +210,10 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			'secret' => $secret,
 			'token' => $token,
 		) );
-		$token =  new \LinkedIn\AccessToken( $token );
+		$token = new \LinkedIn\AccessToken( $token );
 		$api->setAccessToken( $token );
 
-		//var_dump( $token ); die();
+		// var_dump( $token ); die();
 		try {
 			$profile = $api->get(
 				'people/~:(id,email-address,first-name,last-name,formatted-name,picture-url)'
