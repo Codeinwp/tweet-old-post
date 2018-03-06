@@ -297,7 +297,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		$include = array();
 		$excluded_by_user = array();
 		$required = array();
-		if ( ! empty( $this->settings->get_selected_posts() ) ) {
+		if ( $this->settings->get_selected_posts() ) {
 			foreach ( $this->settings->get_selected_posts() as $post ) {
 				if ( $this->settings->get_exclude_posts() == true ) {
 					array_push( $excluded_by_user, $post['value'] );
