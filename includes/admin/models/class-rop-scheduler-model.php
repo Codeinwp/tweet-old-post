@@ -58,16 +58,16 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @return array
 	 */
 	private function get_schedules() {
-	    $services = new Rop_Services_Model();
-	    $active_accounts = $services->get_active_accounts();
-		$schedules = ( $this->get( 'schedules' ) != null ) ?  $this->get( 'schedules' ) : array();
+	    $services          = new Rop_Services_Model();
+	    $active_accounts   = $services->get_active_accounts();
+		$schedules         = ( $this->get( 'schedules' ) != null ) ? $this->get( 'schedules' ) : array();
 		$default_schedules = array();
 		foreach ( $active_accounts as $account_id => $data ) {
 			$default_schedules[ $account_id ] = $this->create_schedule( $this->schedule_defaults );
 		}
 
 		$filtered_schedules = wp_parse_args( $schedules, $default_schedules );
-		unset( $filtered_schedules[''] ); // TODO check why an empty value was added.
+		unset( $filtered_schedules[''] );
 		return $filtered_schedules;
 	}
 
@@ -81,13 +81,13 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @return array|string
 	 */
 	private function convert_float_to_time( $value, $as_array = true ) {
-		$hours = floor( $value );
+		$hours   = floor( $value );
 		$minutes = ( ( $value * 60 ) % 60 );
 		if ( ! $as_array ) {
 			return $hours . ':' . $minutes;
 		}
 		return array(
-			'hours' => $hours,
+			'hours'   => $hours,
 			'minutes' => $minutes,
 		);
 	}
@@ -206,7 +206,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 */
 	public function add_update_schedule( $account_id, $schedule_data = false, $last_share = false ) {
 		$this->schedules = $this->get_schedules();
-		$schedule = ( isset( $this->schedules[ $account_id ] ) && ! empty( $this->schedules[ $account_id ] ) ) ? $this->schedules[ $account_id ] : $this->schedule_defaults ;
+		$schedule        = ( isset( $this->schedules[ $account_id ] ) && ! empty( $this->schedules[ $account_id ] ) ) ? $this->schedules[ $account_id ] : $this->schedule_defaults;
 		if ( $schedule_data != false && is_array( $schedule_data ) && ! empty( $schedule_data ) ) {
 			$schedule = $this->create_schedule( $schedule_data );
 		}
@@ -243,33 +243,33 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 */
 	public function list_upcomming_schedules( $future_events = 10 ) {
 		$this->schedules = $this->get_schedules();
-		$list = array();
+		$list            = array();
 		foreach ( $this->schedules as $account_id => $schedule ) {
 			$list[ $account_id ] = array();
 			if ( $schedule['type'] == 'recurring' ) {
-			    $i = 0;
+			    $i    = 0;
 				$time = $this->convert_float_to_time( $schedule['interval_r'] );
 				if ( $schedule['last_share'] == null ) {
-					$event_time = $this->add_to_time( $schedule['first_share'], $time['hours'], $time['minutes'], true );
+					$event_time             = $this->add_to_time( $schedule['first_share'], $time['hours'], $time['minutes'], true );
 					$schedule['last_share'] = $event_time;
 					array_push( $list[ $account_id ], $event_time );
 					$i++;
 				}
 				for ( $i; $i < $future_events; $i++ ) {
-					$event_time = $this->add_to_time( $schedule['last_share'], $time['hours'], $time['minutes'], false );
+					$event_time             = $this->add_to_time( $schedule['last_share'], $time['hours'], $time['minutes'], false );
 					$schedule['last_share'] = $event_time;
 					array_push( $list[ $account_id ], $event_time );
 				}
 			} else {
 				$week_days = $schedule['interval_f']['week_days'];
-				$times = $schedule['interval_f']['time'];
-				$next_pos = $this->get_days_start_pos( $week_days );
-				$size = sizeof( $week_days );
-				$i = 0;
+				$times     = $schedule['interval_f']['time'];
+				$next_pos  = $this->get_days_start_pos( $week_days );
+				$size      = sizeof( $week_days );
+				$i         = 0;
 				if ( $schedule['last_share'] == null ) {
 					$event_date = $this->next_day_of_week( $schedule['first_share'], $week_days[ $next_pos ], true );
 					foreach ( $times as $time ) {
-						$event_time = $event_date . ' ' . $time;
+						$event_time             = $event_date . ' ' . $time;
 						$schedule['last_share'] = $event_time;
 						array_push( $list[ $account_id ], $event_time );
 					}
@@ -279,16 +279,18 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 				for ( $i; $i < $future_events; $i++ ) {
 					$event_date = $this->next_day_of_week( $schedule['last_share'], $week_days[ $next_pos ], false );
 					foreach ( $times as $time ) {
-						$event_time = $event_date . ' ' . $time;
+						$event_time             = $event_date . ' ' . $time;
 						$schedule['last_share'] = $event_time;
 						array_push( $list[ $account_id ], $event_time );
 					}
 					$next_pos = $this->next_pos_in_size( $next_pos, $size );
 				}
 				$to_sort = $list[ $account_id ];
-				uasort( $to_sort, function( $a, $b ) {
-					return strtotime( $a ) - strtotime( $b );
-				} );
+				uasort(
+					$to_sort, function( $a, $b ) {
+						return strtotime( $a ) - strtotime( $b );
+					}
+				);
 				$list[ $account_id ] = array_slice( $to_sort, 0, $future_events );
 			} // End if().
 		} // End foreach().

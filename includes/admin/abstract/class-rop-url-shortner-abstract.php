@@ -122,7 +122,7 @@ abstract class Rop_Url_Shortner_Abstract {
 	 * @return string
 	 */
 	protected function getSalt() {
-		$charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/\\][{}\'";:?.>,<!@#$%^&*()-_=+|';
+		$charset       = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/\\][{}\'";:?.>,<!@#$%^&*()-_=+|';
 		$randStringLen = 64;
 
 		$randString = '';
@@ -145,7 +145,7 @@ abstract class Rop_Url_Shortner_Abstract {
 	 */
 	private function build_url( $url, $props, $params ) {
 		if ( $props && isset( $props['method'] ) && $props['method'] === 'get' ) {
-			$url    .= '?';
+			$url .= '?';
 			foreach ( $params as $k => $v ) {
 				$url .= "$k=$v&";
 			}
@@ -166,12 +166,12 @@ abstract class Rop_Url_Shortner_Abstract {
 		if ( isset( $url_parts['query'] ) ) {
 			parse_str( $url_parts['query'], $params );
 		} else {
-			$params = array();
+			$params             = array();
 			$url_parts['query'] = '';
 		}
 
-		$params['utm_source'] = 'ReviveOldPost';
-		$params['utm_medium'] = 'social';
+		$params['utm_source']   = 'ReviveOldPost';
+		$params['utm_medium']   = 'social';
 		$params['utm_campaign'] = 'ReviveOldPost';
 
 		$url_parts['query'] = http_build_query( $params );
@@ -217,8 +217,8 @@ abstract class Rop_Url_Shortner_Abstract {
 	 * @return array
 	 */
 	protected final function callAPI( $url, $props = array(), $params = array(), $headers = array() ) {
-		$body       = null;
-		$error      = null;
+		$body  = null;
+		$error = null;
 
 		$conn = curl_init( $this->build_url( $url, $props, $params ) );
 		curl_setopt( $conn, CURLOPT_SSL_VERIFYPEER, false );
@@ -243,7 +243,7 @@ abstract class Rop_Url_Shortner_Abstract {
 			}
 		}
 		try {
-			$body = curl_exec( $conn );
+			$body  = curl_exec( $conn );
 			$error = curl_getinfo( $conn, CURLINFO_HTTP_CODE );
 		} catch ( Exception $e ) {
 			$this->error->throw_exception( 'Exception ' . $e->getMessage() );
@@ -258,8 +258,8 @@ abstract class Rop_Url_Shortner_Abstract {
 			$body = json_decode( $body, true );
 		}
 		$array = array(
-			'response'  => $body,
-			'error'     => $error,
+			'response' => $body,
+			'error'    => $error,
 		);
 		// self::writeDebug( "Calling ". $url. " with headers = " . print_r($header, true) . ", fields = " . print_r($params, true) . " returning raw response " . print_r($body,true) . " and finally returning " . print_r($array,true));
 		return $array;

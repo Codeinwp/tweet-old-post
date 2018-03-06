@@ -5,6 +5,6 @@ module.exports = function ( grunt ) {
 
 	var loader = require( 'load-project-config' )
 	var config = require( 'grunt-plugin-fleet' )
-	config = config()
+	config     = config()
 	loader( grunt, config ).init()
 }

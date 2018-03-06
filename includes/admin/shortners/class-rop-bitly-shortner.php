@@ -26,9 +26,9 @@ class Rop_Bitly_Shortner extends Rop_Url_Shortner_Abstract {
 	 */
 	public function init() {
 		$this->service_name = 'bit.ly';
-		$this->credentials = array(
+		$this->credentials  = array(
 			'user' => '',
-			'key' => '',
+			'key'  => '',
 		);
 	}
 

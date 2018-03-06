@@ -26,7 +26,7 @@ class Rop_Shortest_Shortner extends Rop_Url_Shortner_Abstract {
 	 */
 	public function init() {
 		$this->service_name = 'shorte.st';
-		$this->credentials = array(
+		$this->credentials  = array(
 			'key' => '',
 		);
 	}
@@ -53,7 +53,7 @@ class Rop_Shortest_Shortner extends Rop_Url_Shortner_Abstract {
 		);
 		$shortURL = $url;
 		if ( intval( $response['error'] ) == 200 && $response['response']['status'] == 'ok' ) {
-			$shortURL   = $response['response']['shortenedUrl'];
+			$shortURL = $response['response']['shortenedUrl'];
 		}
 		return $shortURL;
 	}

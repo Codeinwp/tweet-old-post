@@ -37,7 +37,7 @@ class Rop_Exception_Handler {
 	 * @return string
 	 */
 	public function get_fb_exeption_message( $helper ) {
-		$message = 'Error: ' . $helper->getError() . PHP_EOL;
+		$message  = 'Error: ' . $helper->getError() . PHP_EOL;
 		$message .= 'Error Code: ' . $helper->getErrorCode() . PHP_EOL;
 		$message .= 'Error Reason: ' . $helper->getErrorReason() . PHP_EOL;
 		$message .= 'Error Description: ' . $helper->getErrorDescription() . PHP_EOL;

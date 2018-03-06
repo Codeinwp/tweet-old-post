@@ -85,12 +85,12 @@ class Rop_Api_Response {
 	 * @access  public
 	 */
 	public function __construct() {
-		$this->code = '403';
-		$this->title = __( 'An error occurred', 'tweet-old-post' );
-		$this->status = 'error';
+		$this->code    = '403';
+		$this->title   = __( 'An error occurred', 'tweet-old-post' );
+		$this->status  = 'error';
 		$this->message = __( 'Requested operation is not allowed. No further action will be taken.', 'tweet-old-post' );
-		$this->silent = true;
-		$this->data = array();
+		$this->silent  = true;
+		$this->data    = array();
 	}
 
 	/**
@@ -106,21 +106,21 @@ class Rop_Api_Response {
 			$this->code = $code;
 			switch ( $code ) {
 				case '200':
-					$this->title = __( 'Info', 'tweet-old-post' );
+					$this->title  = __( 'Info', 'tweet-old-post' );
 					$this->status = 'info';
 					break;
 				case '201':
-					$this->title = __( 'Everything looks ok', 'tweet-old-post' );
+					$this->title  = __( 'Everything looks ok', 'tweet-old-post' );
 					$this->status = 'success';
 					break;
 				case '400':
 				case '401':
-					$this->title = __( 'Oho! Something happened', 'tweet-old-post' );
+					$this->title  = __( 'Oho! Something happened', 'tweet-old-post' );
 					$this->status = 'warning';
 					break;
 				case '403':
 				default: // code 500 assumed
-					$this->title = __( 'An error occurred', 'tweet-old-post' );
+					$this->title  = __( 'An error occurred', 'tweet-old-post' );
 					$this->status = 'error';
 					break;
 			}
@@ -179,13 +179,13 @@ class Rop_Api_Response {
 	 */
 	public function to_array() {
 		return array(
-			'code' => $this->code,
-			'status' => $this->status,
-			'title' => $this->title,
-			'message' => $this->message,
-			'silent' => $this->silent,
+			'code'         => $this->code,
+			'status'       => $this->status,
+			'title'        => $this->title,
+			'message'      => $this->message,
+			'silent'       => $this->silent,
 			'show_to_user' => ! $this->silent,
-			'data' => $this->data,
+			'data'         => $this->data,
 		);
 	}
 

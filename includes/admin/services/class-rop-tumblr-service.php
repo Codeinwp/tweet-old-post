@@ -113,17 +113,17 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 
 		if ( isset( $_SESSION['rop_tumblr_credentials'] ) && isset( $_SESSION['rop_tumblr_request_token'] ) ) {
 			$credentials = $_SESSION['rop_tumblr_credentials'];
-			$tmp_token = $_SESSION['rop_tumblr_request_token'];
+			$tmp_token   = $_SESSION['rop_tumblr_request_token'];
 
-			$api = $this->get_api( $credentials['consumer_key'], $credentials['consumer_secret'], $tmp_token['oauth_token'], $tmp_token['oauth_token_secret'] );
+			$api            = $this->get_api( $credentials['consumer_key'], $credentials['consumer_secret'], $tmp_token['oauth_token'], $tmp_token['oauth_token_secret'] );
 			$requestHandler = $api->getRequestHandler();
 			$requestHandler->setBaseUrl( 'https://www.tumblr.com/' );
 
 			if ( ! empty( $_GET['oauth_verifier'] ) ) {
 				// exchange the verifier for the keys
-				$verifier = trim( $_GET['oauth_verifier'] );
-				$resp = $requestHandler->request( 'POST', 'oauth/access_token', array('oauth_verifier' => $verifier ) );
-				$out = (string) $resp->body;
+				$verifier    = trim( $_GET['oauth_verifier'] );
+				$resp        = $requestHandler->request( 'POST', 'oauth/access_token', array('oauth_verifier' => $verifier ) );
+				$out         = (string) $resp->body;
 				$accessToken = array();
 				parse_str( $out, $accessToken );
 				unset( $_SESSION['rop_tumblr_request_token'] );
@@ -149,8 +149,8 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			session_start();
 		}
 
-		$this->credentials = $_SESSION['rop_tumblr_credentials'];
-		$this->credentials['oauth_token'] = isset( $_SESSION['rop_tumblr_token']['oauth_token'] ) ? $_SESSION['rop_tumblr_token']['oauth_token'] : null;
+		$this->credentials                       = $_SESSION['rop_tumblr_credentials'];
+		$this->credentials['oauth_token']        = isset( $_SESSION['rop_tumblr_token']['oauth_token'] ) ? $_SESSION['rop_tumblr_token']['oauth_token'] : null;
 		$this->credentials['oauth_token_secret'] = isset( $_SESSION['rop_tumblr_token']['oauth_token_secret'] ) ? $_SESSION['rop_tumblr_token']['oauth_token_secret'] : null;
 
 		if ( isset( $_SESSION['rop_tumblr_credentials'] ) && isset( $_SESSION['rop_tumblr_token'] ) ) {
@@ -173,18 +173,18 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		$profile = $api->getUserInfo();
 		if ( isset( $profile->user->name ) ) {
 			$this->service = array(
-				'id' => $profile->user->name,
-				'service' => $this->service_name,
-				'credentials' => $this->credentials,
+				'id'                 => $profile->user->name,
+				'service'            => $this->service_name,
+				'credentials'        => $this->credentials,
 				'public_credentials' => array(
 					'app_id' => array(
-						'name' => 'Consumer Key',
-						'value' => $this->credentials['consumer_key'],
+						'name'    => 'Consumer Key',
+						'value'   => $this->credentials['consumer_key'],
 						'private' => false,
 					),
 					'secret' => array(
-						'name' => 'Consumer Secret',
-						'value' => $this->credentials['consumer_secret'],
+						'name'    => 'Consumer Secret',
+						'value'   => $this->credentials['consumer_secret'],
 						'private' => true,
 					),
 				),
@@ -214,12 +214,14 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		$this->set_api( $consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret );
 		$api = $this->get_api();
 
-		$this->set_credentials( array(
-			'consumer_key' => $consumer_key,
-			'consumer_secret' => $consumer_secret,
-			'oauth_token' => $oauth_token,
-			'oauth_token_secret' => $oauth_token_secret,
-		) );
+		$this->set_credentials(
+			array(
+				'consumer_key'       => $consumer_key,
+				'consumer_secret'    => $consumer_secret,
+				'oauth_token'        => $oauth_token,
+				'oauth_token_secret' => $oauth_token_secret,
+			)
+		);
 
 		try {
 			$profile = $api->getUserInfo();
@@ -229,18 +231,18 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		}
 		if ( isset( $profile->user->name ) ) {
 			$this->service = array(
-				'id' => $profile->user->name,
-				'service' => $this->service_name,
-				'credentials' => $this->credentials,
+				'id'                 => $profile->user->name,
+				'service'            => $this->service_name,
+				'credentials'        => $this->credentials,
 				'public_credentials' => array(
 					'app_id' => array(
-						'name' => 'Consumer Key',
-						'value' => $this->credentials['consumer_key'],
+						'name'    => 'Consumer Key',
+						'value'   => $this->credentials['consumer_key'],
 						'private' => false,
 					),
 					'secret' => array(
-						'name' => 'Consumer Secret',
-						'value' => $this->credentials['consumer_secret'],
+						'name'    => 'Consumer Secret',
+						'value'   => $this->credentials['consumer_secret'],
 						'private' => true,
 					),
 				),
@@ -267,13 +269,15 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			session_start();
 		}
 
-		$api = $this->get_api();
+		$api            = $this->get_api();
 		$requestHandler = $api->getRequestHandler();
 		$requestHandler->setBaseUrl( 'https://www.tumblr.com/' );
 
-		$resp = $requestHandler->request('POST', 'oauth/request_token', array(
-			'oauth_callback' => $this->get_endpoint_url( 'authorize' ),
-		));
+		$resp = $requestHandler->request(
+			'POST', 'oauth/request_token', array(
+				'oauth_callback' => $this->get_endpoint_url( 'authorize' ),
+			)
+		);
 
 		$result = (string) $resp->body;
 		parse_str( $result, $request_token );
@@ -359,11 +363,11 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			}
 
 			$users[] = array(
-				'id' => $page->name,
-				'name' => $page->title,
+				'id'      => $page->name,
+				'name'    => $page->title,
 				'account' => $page->name,
-				'img' => $img,
-				'active' => true,
+				'img'     => $img,
+				'active'  => true,
 			);
 		}
 
@@ -383,10 +387,10 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		$api = $this->get_api( $this->credentials['consumer_key'], $this->credentials['consumer_secret'], $this->credentials['oauth_token'], $this->credentials['oauth_token_secret'] );
 
 		$new_post = array(
-			'type' => 'link',
-			'author' => 'me',
-			'title' => '',
-			'url' => '',
+			'type'        => 'link',
+			'author'      => 'me',
+			'title'       => '',
+			'url'         => '',
 			'description' => '',
 		);
 
@@ -405,7 +409,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		if ( isset( $post_details['post']['post_url'] ) && $post_details['post']['post_url'] != '' ) {
 			$post_format_helper = new Rop_Post_Format_Helper();
 			// $link = $post_format_helper->get_short_url( 'www.themeisle.com', $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
-			$link = ' ' . $post_format_helper->get_short_url( $post_details['post']['post_url'], $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
+			$link            = ' ' . $post_format_helper->get_short_url( $post_details['post']['post_url'], $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
 			$new_post['url'] = $link;
 		}
 

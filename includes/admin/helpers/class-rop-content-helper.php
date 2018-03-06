@@ -57,7 +57,7 @@ class Rop_Content_Helper {
 	public function __construct( $length = 160, $end_ellipse = false ) {
 		$this->end_ellipse = $end_ellipse;
 
-		$length = $this->adjust_for_ellipse( $length );
+		$length       = $this->adjust_for_ellipse( $length );
 		$this->length = $length;
 	}
 
@@ -87,7 +87,7 @@ class Rop_Content_Helper {
 	 */
 	public function use_ellipse( $use = true, $ellipse = '...' ) {
 		$this->end_ellipse = $use;
-		$this->ellipse = $ellipse;
+		$this->ellipse     = $ellipse;
 	}
 
 	/**
@@ -104,13 +104,14 @@ class Rop_Content_Helper {
 			$this->length = $this->adjust_for_ellipse( $new_length );
 		}
 
-		$parts = preg_split( '/([\s\n\r]+)/', $string, null, PREG_SPLIT_DELIM_CAPTURE );
+		$parts       = preg_split( '/([\s\n\r]+)/', $string, null, PREG_SPLIT_DELIM_CAPTURE );
 		$parts_count = count( $parts );
 
 		$length = 0;
 		for ( $last_part = 0; $last_part < $parts_count; ++$last_part ) {
 			$length += strlen( $parts[ $last_part ] );
-			if ( $length > $this->length ) { break; }
+			if ( $length > $this->length ) {
+				break; }
 		}
 		$output = rtrim( implode( array_slice( $parts, 0, $last_part ) ) );
 

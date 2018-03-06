@@ -27,7 +27,7 @@ if ( $rop_custom_messages_group ) {
 				<small><i>' . __( 'A custom message that will be selected randomly for each share and will overwrite the default post.', 'tweet-old-post' ) . '</i></small>
 			</td> 
 			<td width="70%">
-				<textarea placeholder="Description" cols="55" rows="5" name="rop_custom_description[]" style="width: 100%;">' . ( ( $field['rop_custom_description'] != '') ? esc_attr( $field['rop_custom_description'] ) : '' ) . '</textarea></td>
+				<textarea placeholder="Description" cols="55" rows="5" name="rop_custom_description[]" style="width: 100%;">' . ( ( $field['rop_custom_description'] != '' ) ? esc_attr( $field['rop_custom_description'] ) : '' ) . '</textarea></td>
 			<td width="15%"><a class="button remove-row" href="#1">' . __( 'Remove Custom Message', 'twwet-old-post' ) . '</a></td>
 		</tr>
 		';
@@ -49,8 +49,8 @@ if ( $rop_custom_messages_group ) {
 ?>
 		<tr class="empty-row screen-reader-text">
 			<td width="15%">
-				<b><?php echo __( 'Custom message #', 'tweet-old-post' ) ?></b><br/>
-				<small><i><?php echo __( 'A custom message that will be selected randomly for each share and will overwrite the default post.', 'tweet-old-post' ) ?></i></small>
+				<b><?php echo __( 'Custom message #', 'tweet-old-post' ); ?></b><br/>
+				<small><i><?php echo __( 'A custom message that will be selected randomly for each share and will overwrite the default post.', 'tweet-old-post' ); ?></i></small>
 			<td width="70%">
 				<textarea placeholder="Description" cols="55" rows="5" name="rop_custom_description[]" style="width: 100%;"></textarea>
 			</td>

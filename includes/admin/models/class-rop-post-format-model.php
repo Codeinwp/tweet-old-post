@@ -50,10 +50,10 @@ class Rop_Post_Format_Model extends Rop_Model_Abstract {
 	 */
 	public function __construct( $service_name = false ) {
 		parent::__construct();
-		$global_settings = new Rop_Global_Settings();
-		$this->defaults = $global_settings->get_default_post_format( $service_name );
+		$global_settings    = new Rop_Global_Settings();
+		$this->defaults     = $global_settings->get_default_post_format( $service_name );
 		$this->service_name = $service_name;
-		$this->post_format = ( $this->get( 'post_format' ) != null ) ? $this->get( 'post_format' ) : array();
+		$this->post_format  = ( $this->get( 'post_format' ) != null ) ? $this->get( 'post_format' ) : array();
 	}
 
 	/**
@@ -66,7 +66,7 @@ class Rop_Post_Format_Model extends Rop_Model_Abstract {
 	 * @return array
 	 */
 	public function get_post_format( $account_id = false ) {
-		$post_format_from_db = $this->get( 'post_format' );
+		$post_format_from_db  = $this->get( 'post_format' );
 		$selected_post_format = array();
 		if ( $account_id != false && isset( $post_format_from_db[ $account_id ] ) ) {
 			$selected_post_format = $post_format_from_db[ $account_id ];
@@ -84,7 +84,7 @@ class Rop_Post_Format_Model extends Rop_Model_Abstract {
 	 * @return bool
 	 */
 	public function add_update_post_format( $account_id, $data ) {
-	    $data = wp_parse_args( $data, $this->defaults );
+	    $data                             = wp_parse_args( $data, $this->defaults );
 		$this->post_format[ $account_id ] = $data;
 	    return $this->set( 'post_format', $this->post_format );
 	}

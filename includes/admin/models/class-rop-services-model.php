@@ -65,8 +65,8 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 */
 	public function get_authenticated_services( $force = false ) {
 		if ( $this->last_services_query == null || $force == true ) {
-			$default = array();
-			$services = $this->get( $this->services_namespace );
+			$default                   = array();
+			$services                  = $this->get( $this->services_namespace );
 			$this->last_services_query = wp_parse_args( $services, $default );
 		}
 		return $this->last_services_query;
@@ -120,8 +120,8 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 */
 	public function delete_authenticated_service( $service_id, $service ) {
 		$this->last_services_query = $this->get_authenticated_services();
-		$index = $service . '_' . $service_id;
-		$available_accounts = $this->last_services_query[ $index ]['available_accounts'];
+		$index                     = $service . '_' . $service_id;
+		$available_accounts        = $this->last_services_query[ $index ]['available_accounts'];
 		foreach ( $available_accounts as $account ) {
 			$this->delete_active_accounts( $index . '_' . $account['id'] );
 		}
@@ -140,8 +140,8 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 */
 	public function get_active_accounts( $force = false ) {
 		if ( $this->last_accounts_query == null || $force == true ) {
-			$default = array();
-			$accounts = $this->get( $this->accounts_namespace );
+			$default                   = array();
+			$accounts                  = $this->get( $this->accounts_namespace );
 			$this->last_accounts_query = wp_parse_args( $accounts, $default );
 		}
 		return $this->last_accounts_query;
@@ -215,7 +215,7 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 * @param   boolean $state The desired state (true/false).
 	 */
 	private function toggle_account_state( $index, $state ) {
-		$this->last_services_query = $this->get_authenticated_services();
+		$this->last_services_query                 = $this->get_authenticated_services();
 		list( $service, $service_id, $account_id ) = explode( '_', $index );
 		if ( count( $this->last_services_query[ $service . '_' . $service_id ]['available_accounts'] ) > 1 ) {
 			foreach ( $this->last_services_query[ $service . '_' . $service_id ]['available_accounts'] as $key => $account ) {
@@ -243,14 +243,14 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 * @return bool|array
 	 */
 	public function find_account( $account_id ) {
-		$this->last_services_query = $this->get_authenticated_services();
+		$this->last_services_query              = $this->get_authenticated_services();
 		list( $service, $service_id, $user_id ) = explode( '_', $account_id );
 		if ( count( $this->last_services_query[ $service . '_' . $service_id ]['available_accounts'] ) >= 1 ) {
 			foreach ( $this->last_services_query[ $service . '_' . $service_id ]['available_accounts'] as $key => $account ) {
 				if ( $account['id'] == $user_id ) {
 					$response = array(
-						'id' => $this->last_services_query[ $service . '_' . $service_id ]['available_accounts'][ $key ]['id'],
-						'service' => $this->last_services_query[ $service . '_' . $service_id ]['service'],
+						'id'          => $this->last_services_query[ $service . '_' . $service_id ]['available_accounts'][ $key ]['id'],
+						'service'     => $this->last_services_query[ $service . '_' . $service_id ]['service'],
 						'credentials' => $this->last_services_query[ $service . '_' . $service_id ]['credentials'],
 					);
 

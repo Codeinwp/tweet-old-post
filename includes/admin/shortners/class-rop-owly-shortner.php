@@ -26,7 +26,7 @@ class Rop_Owly_Shortner extends Rop_Url_Shortner_Abstract {
 	 */
 	public function init() {
 		$this->service_name = 'ow.ly';
-		$this->credentials = array(
+		$this->credentials  = array(
 			'key' => '',
 		);
 	}
@@ -53,7 +53,7 @@ class Rop_Owly_Shortner extends Rop_Url_Shortner_Abstract {
 		);
 		$shortURL = $url;
 		if ( intval( $response['error'] ) == 200 && ! isset( $response['response']['error'] ) ) {
-			$shortURL   = $response['response']['results']['shortUrl'];
+			$shortURL = $response['response']['results']['shortUrl'];
 		}
 		return $shortURL;
 	}

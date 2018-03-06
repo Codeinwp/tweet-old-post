@@ -50,7 +50,7 @@ class Rop_Admin {
 	public function __construct( $plugin_name, $version ) {
 
 		$this->plugin_name = $plugin_name;
-		$this->version = $version;
+		$this->version     = $version;
 
 	}
 
@@ -104,18 +104,18 @@ class Rop_Admin {
 			wp_enqueue_media();
 			wp_enqueue_script( $this->plugin_name . '_fa', 'https://use.fontawesome.com/af4c3f0b39.js', array(), $this->version, false );
 
-			wp_register_script( $this->plugin_name . '_main',  ROP_LITE_URL . 'assets/js/build/rop.js', array( $this->plugin_name . '_fa' ), $this->version, false );
+			wp_register_script( $this->plugin_name . '_main', ROP_LITE_URL . 'assets/js/build/rop.js', array( $this->plugin_name . '_fa' ), $this->version, false );
 			$array_nonce = array(
 				'root' => esc_url_raw( rest_url( '/tweet-old-post/v8/api/' ) ),
 			);
 			if ( current_user_can( 'manage_options' ) ) {
 			    $array_nonce = array(
-					'root' => esc_url_raw( rest_url( '/tweet-old-post/v8/api/' ) ),
+					'root'  => esc_url_raw( rest_url( '/tweet-old-post/v8/api/' ) ),
 					'nonce' => wp_create_nonce( 'wp_rest' ),
 				);
 			}
-			$global_settings = new Rop_Global_Settings();
-			$array_nonce['has_pro'] = $global_settings->has_pro();
+			$global_settings                     = new Rop_Global_Settings();
+			$array_nonce['has_pro']              = $global_settings->has_pro();
 			$array_nonce['available_post_types'] = $global_settings->get_available_post_types();
 			$array_nonce['available_taxonomies'] = $global_settings->get_available_taxonomies();
 			wp_localize_script( $this->plugin_name . '_main', 'ropApiSettings', $array_nonce );
@@ -146,7 +146,7 @@ class Rop_Admin {
 	 */
 	public function menu_pages() {
 		add_menu_page(
-			__( 'Revive Old Posts', 'rop' ), __( 'Revive Old Posts', 'rop' ), 'manage_options', 'TweetOldPost',
+			__( 'Revive Old Posts', 'tweet-old-post' ), __( 'Revive Old Posts', 'tweet-old-post' ), 'manage_options', 'TweetOldPost',
 			array(
 				$this,
 				'rop_main_page',
@@ -161,9 +161,9 @@ class Rop_Admin {
 	 * @access  public
 	 */
 	public function rop_cron_job() {
-		$queue = new Rop_Queue_Model();
+		$queue          = new Rop_Queue_Model();
 		$services_model = new Rop_Services_Model();
-		$log = new Rop_Logger();
+		$log            = new Rop_Logger();
 
 		error_log( 'CRON RUNNING >>> ' );
 		error_log( 'CURRENT TIME ::--:: ' . date( 'd/m/Y H:i:s', current_time( 'timestamp', 0 ) ) );
@@ -171,7 +171,7 @@ class Rop_Admin {
 		foreach ( $queue_stack as $index => $event ) {
 			if ( strtotime( $event['time'] ) <= current_time( 'timestamp', 0 ) ) {
 
-				$account_data = $services_model->find_account( $event['account_id'] );
+				$account_data    = $services_model->find_account( $event['account_id'] );
 				$service_factory = new Rop_Services_Factory();
 				try {
 					$service = $service_factory->build( $account_data['service'] );

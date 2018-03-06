@@ -87,14 +87,14 @@ class Rop_Logger {
 	 */
 	public function __construct() {
 
-		$this->date_format = 'd-m-Y H:i:s';
+		$this->date_format   = 'd-m-Y H:i:s';
 		$this->output_format = '%datetime% > %level_name% > %message% %context% %extra%' . PHP_EOL;
-		$this->file = ROP_PATH . '/logs/rop.log';
-		$this->file_verbose = ROP_PATH . '/logs/rop_verbose.log';
+		$this->file          = ROP_PATH . '/logs/rop.log';
+		$this->file_verbose  = ROP_PATH . '/logs/rop_verbose.log';
 
 		$formatter = new LineFormatter( $this->output_format, $this->date_format );
 
-		$stream_pretty = new StreamHandler( $this->file, Logger::DEBUG );
+		$stream_pretty  = new StreamHandler( $this->file, Logger::DEBUG );
 		$stream_verbose = new StreamHandler( $this->file_verbose, Logger::DEBUG );
 
 		$stream_pretty->setFormatter( $formatter );

@@ -126,7 +126,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			session_start();
 		}
 		$request_token = $_SESSION['rop_twitter_request_token'];
-		$api = $this->get_api( $request_token['oauth_token'], $request_token['oauth_token_secret'] );
+		$api           = $this->get_api( $request_token['oauth_token'], $request_token['oauth_token_secret'] );
 
 		$access_token = $api->oauth( 'oauth/access_token', ['oauth_verifier' => $_GET['oauth_verifier'] ] );
 
@@ -155,10 +155,12 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			$this->set_api( $access_token['oauth_token'], $access_token['oauth_token_secret'] );
 			$api = $this->get_api();
 
-			$this->set_credentials( array(
-				'oauth_token' => $access_token['oauth_token'],
-				'oauth_token_secret' => $access_token['oauth_token_secret'],
-			) );
+			$this->set_credentials(
+				array(
+					'oauth_token'        => $access_token['oauth_token'],
+					'oauth_token_secret' => $access_token['oauth_token_secret'],
+				)
+			);
 
 			$response = $api->get( 'account/verify_credentials' );
 
@@ -166,9 +168,9 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 
 			if ( isset( $response->id ) ) {
 				$this->service = array(
-					'id' => $response->id,
-					'service' => $this->service_name,
-					'credentials' => $this->credentials,
+					'id'                 => $response->id,
+					'service'            => $this->service_name,
+					'credentials'        => $this->credentials,
 					'public_credentials' => false,
 					'available_accounts' => $this->get_users( $response ),
 				);
@@ -195,7 +197,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			session_start();
 		}
 
-		$api = $this->get_api();
+		$api           = $this->get_api();
 		$request_token = $api->oauth( 'oauth/request_token', array('oauth_callback' => $this->get_endpoint_url( 'authorize' ) ) );
 
 		$_SESSION['rop_twitter_request_token'] = $request_token;
@@ -259,7 +261,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		$users = array();
 		if ( $data == null ) {
 			$this->set_api( $this->credentials['oauth_token'], $this->credentials['oauth_token_secret'] );
-			$api = $this->get_api();
+			$api      = $this->get_api();
 			$response = $api->get( 'account/verify_credentials' );
 			if ( ! isset( $response->id ) ) {
 				return $users;
@@ -273,11 +275,11 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		}
 
 		$users = array(
-			'id' => $data->id,
-			'name' => $data->name,
+			'id'      => $data->id,
+			'name'    => $data->name,
 			'account' => '@' . $data->screen_name,
-			'img' => $img,
-			'active' => true,
+			'img'     => $img,
+			'active'  => true,
 		);
 		return array( $users );
 	}
@@ -311,7 +313,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		$link = '';
 		if ( isset( $post_details['post']['post_url'] ) && $post_details['post']['post_url'] != '' ) {
 			$post_format_helper = new Rop_Post_Format_Helper();
-			$link = ' ' . $post_format_helper->get_short_url( 'www.themeisle.com', $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
+			$link               = ' ' . $post_format_helper->get_short_url( 'www.themeisle.com', $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
 			// $link = ' ' . $post_format_helper->get_short_url( $post_details['post']['post_url'], $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
 		}
 

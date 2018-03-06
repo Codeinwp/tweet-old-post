@@ -68,7 +68,7 @@ class Rop {
 	public function __construct() {
 
 		$this->plugin_name = 'rop';
-		$this->version = '8.0.0';
+		$this->version     = '8.0.0';
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -159,7 +159,7 @@ class Rop {
 		$plugin_rest_api = new Rop_Rest_Api();
 		$plugin_rest_api->register();
 
-		$factory = new Rop_Services_Factory();
+		$factory         = new Rop_Services_Factory();
 		$global_settings = new Rop_Global_Settings();
 		foreach ( $global_settings->get_all_services_handle() as $service ) {
 			try {

@@ -50,7 +50,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	public function __construct() {
 		parent::__construct( 'rop_queue' );
 
-		$this->selector = new Rop_Posts_Selector_Model();
+		$this->selector  = new Rop_Posts_Selector_Model();
 		$this->scheduler = new Rop_Scheduler_Model();
 
 		$this->queue = $this->build_and_update_queue();
@@ -203,14 +203,14 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	public function build_and_update_queue() {
 		$this->queue = ( $this->get( 'queue' ) != null ) ? $this->get( 'queue' ) : array();
 		// $this->queue = array();
-		$settings = new Rop_Settings_Model();
-		$no_of_posts = $settings->get_number_of_posts();
-		$queue = array();
+		$settings           = new Rop_Settings_Model();
+		$no_of_posts        = $settings->get_number_of_posts();
+		$queue              = array();
 		$upcoming_schedules = $this->scheduler->list_upcomming_schedules( 10 );
 		if ( $upcoming_schedules && ! empty( $upcoming_schedules ) ) {
 			foreach ( $upcoming_schedules as $account_id => $schedules ) {
 				$account_queue = array();
-				$post_pool = $this->selector->select( $account_id );
+				$post_pool     = $this->selector->select( $account_id );
 				// print_r( sizeof( $post_pool ) . PHP_EOL );
 				$i = 0;
 				foreach ( $schedules as $index => $time ) {
@@ -220,8 +220,8 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 						// print_r( $pos . PHP_EOL );
 						$uid = $this->create_uid( $account_id, $time, ( $index + $i ) );
 						if ( isset( $this->queue[ $account_id ][ $uid ] ) ) {
-							$post = get_post( $this->queue[ $account_id ][ $uid ]['post']['post_id'] );
-							$updated_post = $this->prepare_post_object( $post, $account_id, $this->queue[ $account_id ][ $uid ]['post'] );
+							$post                  = get_post( $this->queue[ $account_id ][ $uid ]['post']['post_id'] );
+							$updated_post          = $this->prepare_post_object( $post, $account_id, $this->queue[ $account_id ][ $uid ]['post'] );
 							$account_queue[ $uid ] = array( 'time' => $this->queue[ $account_id ][ $uid ]['time'], 'post' => $updated_post );
 						} else {
 							$account_queue[ $uid ] = array( 'time' => $time, 'post' => $this->prepare_post_object( $post_pool[ $pos ], $account_id ) );
@@ -247,8 +247,8 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function pop_from_queue( $account_id, $update_last_share = true ) {
-		$queue_to_pop = $this->queue[ $account_id ];
-		$popped = array_shift( $queue_to_pop );
+		$queue_to_pop               = $this->queue[ $account_id ];
+		$popped                     = array_shift( $queue_to_pop );
 		$this->queue[ $account_id ] = $queue_to_pop;
 		if ( $update_last_share ) {
 			$this->scheduler->add_update_schedule( $account_id, false, $popped['time'] );
@@ -325,8 +325,8 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 */
 	private function replace_post_in_queue( $account_id, $post_id ) {
 		$post_pool = $this->selector->select( $account_id );
-		$shuffler = $this->create_shuffler( 0, sizeof( $post_pool ) - 1, sizeof( $this->queue[ $account_id ] ) );
-		$iterator = 0;
+		$shuffler  = $this->create_shuffler( 0, sizeof( $post_pool ) - 1, sizeof( $this->queue[ $account_id ] ) );
+		$iterator  = 0;
 		foreach ( $this->queue[ $account_id ] as $index => $event ) {
 			if ( $event['post']['post_id'] == $post_id ) {
 				$pos = $shuffler[ $iterator++ ];
@@ -355,19 +355,21 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 */
 	public function get_ordered_queue() {
 		$this->queue = $this->build_and_update_queue();
-		$queue = $this->queue;
-		$ordered = array();
+		$queue       = $this->queue;
+		$ordered     = array();
 		foreach ( $queue as $account_id => $data ) {
 			foreach ( $data as $index => $event ) {
-				$formatted_data = $event;
+				$formatted_data         = $event;
 				$formatted_data['time'] = date( 'd-m-Y H:i', strtotime( $formatted_data['time'] ) );
-				$ordered[ $index ] = array( 'time' => $event['time'], 'account_id' => $account_id, 'post' => $formatted_data['post'] );
+				$ordered[ $index ]      = array( 'time' => $event['time'], 'account_id' => $account_id, 'post' => $formatted_data['post'] );
 			}
 		}
 
-		uasort( $ordered, function ( $alpha, $beta ) {
-			return strtotime( $alpha['time'] ) - strtotime( $beta['time'] );
-		} );
+		uasort(
+			$ordered, function ( $alpha, $beta ) {
+				return strtotime( $alpha['time'] ) - strtotime( $beta['time'] );
+			}
+		);
 		return $ordered;
 	}
 

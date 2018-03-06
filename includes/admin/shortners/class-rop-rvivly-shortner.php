@@ -35,7 +35,7 @@ class Rop_Rvivly_Shortner extends Rop_Url_Shortner_Abstract {
 	 */
 	public function init() {
 		$this->service_name = 'rviv.ly';
-		$this->credentials = array();
+		$this->credentials  = array();
 		$this->set_website();
 	}
 

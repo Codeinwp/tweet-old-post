@@ -74,34 +74,34 @@ class Rop_Global_Settings {
 	 */
 	private $services_defaults = array(
 		'facebook' => array(
-			'active' => true,
-			'name' => 'Facebook',
+			'active'           => true,
+			'name'             => 'Facebook',
 			'two_step_sign_in' => true,
-			'credentials' => array(
+			'credentials'      => array(
 				'app_id' => array(
-					'name' => 'APP ID',
+					'name'        => 'APP ID',
 					'description' => 'Please add the APP ID from your Facebook app.',
 				),
 				'secret' => array(
-					'name' => 'APP SECRET',
+					'name'        => 'APP SECRET',
 					'description' => 'Please add the APP SECRET from your Facebook app.',
 				),
 			),
 			'allowed_accounts' => 1,
 		),
-		'twitter' => array(
-			'active' => true,
-			'name' => 'Twitter',
+		'twitter'  => array(
+			'active'           => true,
+			'name'             => 'Twitter',
 			'two_step_sign_in' => false,
 			'allowed_accounts' => 1,
 		),
 		'linkedin' => array(
 			'active' => false,
-			'name' => 'LinkedIn',
+			'name'   => 'LinkedIn',
 		),
-		'tumblr' => array(
+		'tumblr'   => array(
 			'active' => false,
-			'name' => 'Tumblr',
+			'name'   => 'Tumblr',
 		),
 	);
 
@@ -113,24 +113,24 @@ class Rop_Global_Settings {
 	 * @var     array $settings_defaults The class defaults for settings.
 	 */
 	private $settings_defaults = array(
-		'default_interval' => 8,
-		'minimum_post_age' => 15,
-		'maximum_post_age' => 60,
-		'number_of_posts' => 5,
-		'more_than_once' => true,
+		'default_interval'     => 8,
+		'minimum_post_age'     => 15,
+		'maximum_post_age'     => 60,
+		'number_of_posts'      => 5,
+		'more_than_once'       => true,
 		'available_post_types' => array(),
-		'selected_post_types' => array( array( 'name' => 'Posts', 'value' => 'post', 'selected' => true ) ),
+		'selected_post_types'  => array( array( 'name' => 'Posts', 'value' => 'post', 'selected' => true ) ),
 		'available_taxonomies' => array(),
-		'selected_taxonomies' => array(),
-		'exclude_taxonomies' => false,
-		'available_posts' => array(), // get_posts(),
-		'selected_posts' => array(),
-		'exclude_posts' => false,
-		'ga_tracking' => false,
-		'post_limit' => 20,
-		'beta_user' => false,
-		'remote_check' => false,
-		'custom_messages' => false,
+		'selected_taxonomies'  => array(),
+		'exclude_taxonomies'   => false,
+		'available_posts'      => array(), // get_posts(),
+		'selected_posts'       => array(),
+		'exclude_posts'        => false,
+		'ga_tracking'          => false,
+		'post_limit'           => 20,
+		'beta_user'            => false,
+		'remote_check'         => false,
+		'custom_messages'      => false,
 	);
 
 	/**
@@ -142,72 +142,72 @@ class Rop_Global_Settings {
 	 */
 	private $post_format_defaults = array(
 		'facebook' => array(
-			'post_content' => 'post_title',
+			'post_content'      => 'post_title',
 			'custom_meta_field' => '',
-			'maximum_length' => '160',
-			'custom_text' => '',
-			'custom_text_pos' => 'beginning',
-			'include_link' => true,
-			'url_from_meta' => false,
-			'url_meta_key' => '',
-			'short_url' => true,
+			'maximum_length'    => '160',
+			'custom_text'       => '',
+			'custom_text_pos'   => 'beginning',
+			'include_link'      => true,
+			'url_from_meta'     => false,
+			'url_meta_key'      => '',
+			'short_url'         => true,
 			'short_url_service' => 'rviv.ly',
-			'hashtags' => 'no-hashtags',
-			'hashtags_length' => '10',
-			'hashtags_common' => '',
-			'hashtags_custom' => '',
-			'image' => false,
+			'hashtags'          => 'no-hashtags',
+			'hashtags_length'   => '10',
+			'hashtags_common'   => '',
+			'hashtags_custom'   => '',
+			'image'             => false,
 		),
-		'twitter' => array(
-			'post_content' => 'post_title',
+		'twitter'  => array(
+			'post_content'      => 'post_title',
 			'custom_meta_field' => '',
-			'maximum_length' => '160',
-			'custom_text' => '',
-			'custom_text_pos' => 'beginning',
-			'include_link' => true,
-			'url_from_meta' => false,
-			'url_meta_key' => '',
-			'short_url' => true,
+			'maximum_length'    => '160',
+			'custom_text'       => '',
+			'custom_text_pos'   => 'beginning',
+			'include_link'      => true,
+			'url_from_meta'     => false,
+			'url_meta_key'      => '',
+			'short_url'         => true,
 			'short_url_service' => 'rviv.ly',
-			'hashtags' => 'no-hashtags',
-			'hashtags_length' => '10',
-			'hashtags_common' => '',
-			'hashtags_custom' => '',
-			'image' => false,
+			'hashtags'          => 'no-hashtags',
+			'hashtags_length'   => '10',
+			'hashtags_common'   => '',
+			'hashtags_custom'   => '',
+			'image'             => false,
 		),
 		'linkedin' => array(
-			'post_content' => 'post_title',
+			'post_content'      => 'post_title',
 			'custom_meta_field' => '',
-			'maximum_length' => '160',
-			'custom_text' => '',
-			'custom_text_pos' => 'beginning',
-			'include_link' => true,
-			'url_from_meta' => false,
-			'url_meta_key' => '',
-			'short_url' => true,
+			'maximum_length'    => '160',
+			'custom_text'       => '',
+			'custom_text_pos'   => 'beginning',
+			'include_link'      => true,
+			'url_from_meta'     => false,
+			'url_meta_key'      => '',
+			'short_url'         => true,
 			'short_url_service' => 'rviv.ly',
-			'hashtags' => 'no-hashtags',
-			'hashtags_length' => '10',
-			'hashtags_common' => '',
-			'hashtags_custom' => '',
-			'image' => false,
+			'hashtags'          => 'no-hashtags',
+			'hashtags_length'   => '10',
+			'hashtags_common'   => '',
+			'hashtags_custom'   => '',
+			'image'             => false,
 		),
-		'tumblr' => array(
-			'post_content' => 'post_title',
+		'tumblr'   => array(
+			'post_content'      => 'post_title',
 			'custom_meta_field' => '',
-			'maximum_length' => '160',
-			'custom_text' => '',
-			'custom_text_pos' => 'beginning',
-			'include_link' => true,
-			'url_from_meta' => false,
-			'url_meta_key' => '',
-			'short_url' => true,
+			'maximum_length'    => '160',
+			'custom_text'       => '',
+			'custom_text_pos'   => 'beginning',
+			'include_link'      => true,
+			'url_from_meta'     => false,
+			'url_meta_key'      => '',
+			'short_url'         => true,
 			'short_url_service' => 'rviv.ly',
-			'hashtags' => 'no-hashtags',
-			'hashtags_length' => '10',
-			'hashtags_common' => '',
-			'hashtags_custom' => '',
-			'image' => false,
+			'hashtags'          => 'no-hashtags',
+			'hashtags_length'   => '10',
+			'hashtags_common'   => '',
+			'hashtags_custom'   => '',
+			'image'             => false,
 		),
 	);
 
@@ -219,15 +219,15 @@ class Rop_Global_Settings {
 	 * @var     array $schedule_defaults The class schedule defaults.
 	 */
 	private $schedule_defaults = array(
-		'type' => 'fixed',
-		'interval_r' => '2.5',
-		'interval_f' => array(
+		'type'        => 'fixed',
+		'interval_r'  => '2.5',
+		'interval_f'  => array(
 			'week_days' => array( '1', '3', '5' ),
-			'time' => array( '10:30', '11:30' ),
+			'time'      => array( '10:30', '11:30' ),
 		),
-		'timestamp' => null,
+		'timestamp'   => null,
 		'first_share' => null,
-		'last_share' => null,
+		'last_share'  => null,
 	);
 
 	/**
@@ -240,7 +240,7 @@ class Rop_Global_Settings {
 	 */
 	public static function instance() {
 		if ( ! isset( self::$instance ) && ! ( self::$instance instanceof Rop_Global_Settings ) ) {
-			self::$instance = new Rop_Global_Settings;
+			self::$instance           = new Rop_Global_Settings;
 			self::$instance->services = apply_filters(
 				'rop_available_services',
 				self::$instance->services_defaults
@@ -257,7 +257,7 @@ class Rop_Global_Settings {
 			);
 
 			self::$instance->schedule_defaults['timestamp'] = current_time( 'timestamp', 0 );
-			self::$instance->schedule = apply_filters(
+			self::$instance->schedule                       = apply_filters(
 				'rop_schedule_defaults',
 				self::$instance->schedule_defaults
 			);
@@ -274,8 +274,8 @@ class Rop_Global_Settings {
 	 * @return array
 	 */
 	public function get_default_schedule() {
-		$schedule = self::instance()->schedule;
-		$settings_model = new Rop_Settings_Model();
+		$schedule               = self::instance()->schedule;
+		$settings_model         = new Rop_Settings_Model();
 		$schedule['interval_r'] = $settings_model->get_interval();
 		return $schedule;
 	}
@@ -337,7 +337,8 @@ class Rop_Global_Settings {
 	public function get_active_services_handle() {
 		$active = array();
 		foreach ( $this->get_available_services() as $handle => $data ) {
-			if ( $data['active'] == true ) { array_push( $active, $handle );
+			if ( $data['active'] == true ) {
+				array_push( $active, $handle );
 			}
 		}
 		return $active;
@@ -367,11 +368,11 @@ class Rop_Global_Settings {
 	 */
 	public function get_available_post_types() {
 		$has_pro = $this->has_pro();
-		$args = array( 'exclude_from_search' => false );
+		$args    = array( 'exclude_from_search' => false );
 		if ( $has_pro === false ) {
 			$args = array( '_builtin' => true, 'exclude_from_search' => false );
 		}
-		$post_types = get_post_types( $args, 'objects' );
+		$post_types       = get_post_types( $args, 'objects' );
 		$post_types_array = array();
 		foreach ( $post_types as $type ) {
 			if ( ! in_array( $type->name, array( 'attachment' ) ) ) {
@@ -391,8 +392,8 @@ class Rop_Global_Settings {
 	 */
 	public function get_available_taxonomies() {
 		$settings_model = new Rop_Settings_Model();
-		$post_selector = new Rop_Posts_Selector_Model();
-		$taxonomies = $post_selector->get_taxonomies( $settings_model->get_selected_post_types() );
+		$post_selector  = new Rop_Posts_Selector_Model();
+		$taxonomies     = $post_selector->get_taxonomies( $settings_model->get_selected_post_types() );
 
 		return $taxonomies;
 	}

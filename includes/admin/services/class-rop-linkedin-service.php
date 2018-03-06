@@ -128,7 +128,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		$credentials = $_SESSION['rop_linkedin_credentials'];
 
-		$api = $this->get_api( $credentials['client_id'], $credentials['secret'] );
+		$api         = $this->get_api( $credentials['client_id'], $credentials['secret'] );
 		$accessToken = $api->getAccessToken( $_GET['code'] );
 
 		$_SESSION['rop_linkedin_token'] = $accessToken;
@@ -154,8 +154,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$this->credentials = $_SESSION['rop_linkedin_credentials'];
 
 		if ( isset( $_SESSION['rop_linkedin_credentials'] ) && isset( $_SESSION['rop_linkedin_token'] ) ) {
-			$api = $this->get_api( $this->credentials['client_id'], $this->credentials['secret'] );
-			$token = $_SESSION['rop_linkedin_token'];
+			$api                        = $this->get_api( $this->credentials['client_id'], $this->credentials['secret'] );
+			$token                      = $_SESSION['rop_linkedin_token'];
 			$this->credentials['token'] = $token->getToken();
 			$api->setAccessToken( new LinkedIn\AccessToken( $this->credentials['token'] ) );
 
@@ -164,18 +164,18 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			);
 			if ( isset( $profile['id'] ) ) {
 				$this->service = array(
-					'id' => $profile['id'],
-					'service' => $this->service_name,
-					'credentials' => $this->credentials,
+					'id'                 => $profile['id'],
+					'service'            => $this->service_name,
+					'credentials'        => $this->credentials,
 					'public_credentials' => array(
 						'app_id' => array(
-							'name' => 'Client ID',
-							'value' => $this->credentials['client_id'],
+							'name'    => 'Client ID',
+							'value'   => $this->credentials['client_id'],
 							'private' => false,
 						),
 						'secret' => array(
-							'name' => 'Client Secret',
-							'value' => $this->credentials['secret'],
+							'name'    => 'Client Secret',
+							'value'   => $this->credentials['secret'],
 							'private' => true,
 						),
 					),
@@ -205,11 +205,13 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 */
 	public function re_authenticate( $client_id, $secret, $token ) {
 		$api = $this->get_api( $client_id, $secret );
-		$this->set_credentials( array(
-			'client_id' => $client_id,
-			'secret' => $secret,
-			'token' => $token,
-		) );
+		$this->set_credentials(
+			array(
+				'client_id' => $client_id,
+				'secret'    => $secret,
+				'token'     => $token,
+			)
+		);
 		$token = new \LinkedIn\AccessToken( $token );
 		$api->setAccessToken( $token );
 
@@ -223,18 +225,18 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		}
 		if ( isset( $profile['id'] ) ) {
 			$this->service = array(
-				'id' => $profile['id'],
-				'service' => $this->service_name,
-				'credentials' => $this->credentials,
+				'id'                 => $profile['id'],
+				'service'            => $this->service_name,
+				'credentials'        => $this->credentials,
 				'public_credentials' => array(
 					'app_id' => array(
-						'name' => 'Client ID',
-						'value' => $this->credentials['client_id'],
+						'name'    => 'Client ID',
+						'value'   => $this->credentials['client_id'],
 						'private' => false,
 					),
 					'secret' => array(
-						'name' => 'Client Secret',
-						'value' => $this->credentials['secret'],
+						'name'    => 'Client Secret',
+						'value'   => $this->credentials['secret'],
 						'private' => true,
 					),
 				),
@@ -262,7 +264,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			session_start();
 		}
 
-		$api = $this->get_api();
+		$api           = $this->get_api();
 		$request_token = $api->oauth( 'oauth/request_token', array('oauth_callback' => $this->get_endpoint_url( 'authorize' ) ) );
 
 		$_SESSION['rop_twitter_request_token'] = $request_token;
@@ -347,11 +349,11 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		}
 
 		$users = array(
-			'id' => $data['id'],
-			'name' => $data['formattedName'],
+			'id'      => $data['id'],
+			'name'    => $data['formattedName'],
 			'account' => $data['formattedName'],
-			'img' => $img,
-			'active' => true,
+			'img'     => $img,
+			'active'  => true,
 		);
 		return array( $users );
 	}
@@ -367,16 +369,16 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 */
 	public function share( $post_details, $args = array() ) {
 		$this->set_api( $this->credentials['client_id'], $this->credentials['secret'] );
-		$api = $this->get_api();
+		$api   = $this->get_api();
 		$token = new \LinkedIn\AccessToken( $this->credentials['token'] );
 		$api->setAccessToken( $token );
 
 		$new_post = array(
-			'comment' => '',
-			'content' => array(
-				'title' => '',
-				'description' => '',
-				'submitted-url' => '',
+			'comment'    => '',
+			'content'    => array(
+				'title'               => '',
+				'description'         => '',
+				'submitted-url'       => '',
 				'submitted-image-url' => '',
 			),
 			'visibility' => array(
@@ -399,7 +401,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		if ( isset( $post_details['post']['post_url'] ) && $post_details['post']['post_url'] != '' ) {
 			$post_format_helper = new Rop_Post_Format_Helper();
 			// $link = $post_format_helper->get_short_url( 'www.themeisle.com', $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
-			$link = ' ' . $post_format_helper->get_short_url( $post_details['post']['post_url'], $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
+			$link                                 = ' ' . $post_format_helper->get_short_url( $post_details['post']['post_url'], $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
 			$new_post['content']['submitted-url'] = $link;
 			// $new_post['content']['submitted-url'] = 'www.themeisle.com';
 		}

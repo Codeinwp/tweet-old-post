@@ -26,7 +26,7 @@ class Rop_Isgd_Shortner extends Rop_Url_Shortner_Abstract {
 	 */
 	public function init() {
 		$this->service_name = 'is.gd';
-		$this->credentials = array();
+		$this->credentials  = array();
 	}
 
 	/**
@@ -46,7 +46,7 @@ class Rop_Isgd_Shortner extends Rop_Url_Shortner_Abstract {
 		$response = $this->callAPI(
 			'https://is.gd/api.php',
 			array( 'method' => 'get' ),
-			array( 'longurl' => $url) ,
+			array( 'longurl' => $url),
 			null
 		);
 		$shortURL = $url;

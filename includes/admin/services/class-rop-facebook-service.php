@@ -142,7 +142,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 					$this->error->throw_exception( '400 Bad Request', 'Bad request' );
 				}
 			}
-			$expires = time() + ( 120 * 24 * 60 * 60 ); // 120 days; 24 hours; 60 minutes; 60 seconds.
+			$expires         = time() + ( 120 * 24 * 60 * 60 ); // 120 days; 24 hours; 60 minutes; 60 seconds.
 			$longAccessToken = new \Facebook\Authentication\AccessToken( $accessToken, $expires );
 		} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
 			$this->error->throw_exception( '400 Bad Request', 'Graph returned an error: ' . $e->getMessage() );
@@ -174,14 +174,16 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		if ( isset( $_SESSION['rop_facebook_token'] ) && isset( $_SESSION['rop_facebook_credentials'] ) ) {
 			$credentials = $_SESSION['rop_facebook_credentials'];
-			$token = $_SESSION['rop_facebook_token'];
-			$api = $this->get_api( $credentials['app_id'], $credentials['secret'] );
+			$token       = $_SESSION['rop_facebook_token'];
+			$api         = $this->get_api( $credentials['app_id'], $credentials['secret'] );
 
-			$this->set_credentials( array(
-				'app_id' => $credentials['app_id'],
-				'secret' => $credentials['secret'],
-				'token' => $token,
-			) );
+			$this->set_credentials(
+				array(
+					'app_id' => $credentials['app_id'],
+					'secret' => $credentials['secret'],
+					'token'  => $token,
+				)
+			);
 
 			$api->setDefaultAccessToken( $token );
 
@@ -200,18 +202,18 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			$user = $response->getGraphUser();
 			if ( $user->getId() ) {
 				$this->service = array(
-					'id' => $user->getId(),
-					'service' => $this->service_name,
-					'credentials' => $this->credentials,
+					'id'                 => $user->getId(),
+					'service'            => $this->service_name,
+					'credentials'        => $this->credentials,
 					'public_credentials' => array(
 						'app_id' => array(
-							'name' => 'APP ID',
-							'value' => $this->credentials['app_id'],
+							'name'    => 'APP ID',
+							'value'   => $this->credentials['app_id'],
 							'private' => false,
 						),
 						'secret' => array(
-							'name' => 'APP Secret',
-							'value' => $this->credentials['secret'],
+							'name'    => 'APP Secret',
+							'value'   => $this->credentials['secret'],
 							'private' => true,
 						),
 					),
@@ -238,11 +240,13 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 */
 	public function re_authenticate( $app_id, $secret, $token ) {
 		$api = $this->get_api( $app_id, $secret );
-		$this->set_credentials( array(
-			'app_id' => $app_id,
-			'secret' => $secret,
-			'token' => $token,
-		) );
+		$this->set_credentials(
+			array(
+				'app_id' => $app_id,
+				'secret' => $secret,
+				'token'  => $token,
+			)
+		);
 		$api->setDefaultAccessToken( $token );
 
 		try {
@@ -254,22 +258,22 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			$this->error->throw_exception( '400 Bad Request', 'Facebook SDK returned an error: ' . $e->getMessage() );
 		}
 
-		$user = $response->getGraphUser();
+		$user       = $response->getGraphUser();
 		$this->user = $user;
 		if ( $user->getId() ) {
 			$this->service = array(
-				'id' => $user->getId(),
-				'service' => $this->service_name,
-				'credentials' => $this->credentials,
+				'id'                 => $user->getId(),
+				'service'            => $this->service_name,
+				'credentials'        => $this->credentials,
 				'public_credentials' => array(
 					'app_id' => array(
-						'name' => 'APP ID',
-						'value' => $this->credentials['app_id'],
+						'name'    => 'APP ID',
+						'value'   => $this->credentials['app_id'],
 						'private' => false,
 					),
 					'secret' => array(
-						'name' => 'APP Secret',
-						'value' => $this->credentials['secret'],
+						'name'    => 'APP Secret',
+						'value'   => $this->credentials['secret'],
 						'private' => true,
 					),
 				),
@@ -299,7 +303,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		if ( isset( $token ) && $token != '' && $token != null ) {
 			$longAccessToken = new \Facebook\Authentication\AccessToken( $this->token );
-			$token = $longAccessToken->getValue();
+			$token           = $longAccessToken->getValue();
 			return $token->getValue();
 		}
 
@@ -312,9 +316,9 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 					$this->error->throw_exception( '400 Bad Request', 'Bad request' );
 				}
 			}
-			$expires = time() + ( 120 * 24 * 60 * 60 ); // 120 days; 24 hours; 60 minutes; 60 seconds.
+			$expires         = time() + ( 120 * 24 * 60 * 60 ); // 120 days; 24 hours; 60 minutes; 60 seconds.
 			$longAccessToken = new \Facebook\Authentication\AccessToken( $accessToken, $expires );
-			$token = $longAccessToken->getValue();
+			$token           = $longAccessToken->getValue();
 			return $token->getValue();
 		} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
 			$this->error->throw_exception( '400 Bad Request', 'Graph returned an error: ' . $e->getMessage() );
@@ -362,9 +366,9 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		$_SESSION['rop_facebook_credentials'] = $credentials;
 
-		$api = $this->get_api( $credentials['app_id'], $credentials['secret'] );
+		$api    = $this->get_api( $credentials['app_id'], $credentials['secret'] );
 		$helper = $api->getRedirectLoginHelper();
-		$url = $helper->getLoginUrl( $this->get_endpoint_url( 'authorize' ), $this->permissions );
+		$url    = $helper->getLoginUrl( $this->get_endpoint_url( 'authorize' ), $this->permissions );
 		return $url;
 	}
 
@@ -380,20 +384,20 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 */
 	public function get_pages( $user ) {
 		$pages_array = array();
-		$api = $this->get_api();
-		$pages = $api->get( '/me/accounts' );
-		$pages = $pages->getGraphEdge()->asArray();
+		$api         = $this->get_api();
+		$pages       = $api->get( '/me/accounts' );
+		$pages       = $pages->getGraphEdge()->asArray();
 		foreach ( $pages as $key ) {
-			$img = $api->sendRequest( 'GET','/' . $key['id'] . '/picture', array( 'redirect' => false ) );
+			$img = $api->sendRequest( 'GET', '/' . $key['id'] . '/picture', array( 'redirect' => false ) );
 			$img = $img->getGraphNode()->asArray();
 
 			$pages_array[] = array(
-			  'id' => $key['id'],
-			  'name' => $key['name'],
-			  'account' => $user->getEmail(),
-			  'img' => $img['url'],
-			  'active' => false,
-			  'access_token' => $key['access_token'],
+				'id'           => $key['id'],
+				'name'         => $key['name'],
+				'account'      => $user->getEmail(),
+				'img'          => $img['url'],
+				'active'       => false,
+				'access_token' => $key['access_token'],
 			);
 		}
 		return $pages_array;
@@ -439,7 +443,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		if ( isset( $post_details['post']['post_img'] ) && $post_details['post']['post_img'] !== '' && $post_details['post']['post_img'] !== false ) {
 			$new_post['picture'] = $post_details['post']['post_img'];
-			$new_post['link'] = $post_details['post']['post_img'];
+			$new_post['link']    = $post_details['post']['post_img'];
 		}
 
 		$new_post['message'] = $post_details['post']['post_content'];
@@ -450,7 +454,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		if ( isset( $post_details['post']['post_url'] ) && $post_details['post']['post_url'] != '' ) {
 			$post_format_helper = new Rop_Post_Format_Helper();
 			// $link = ' ' . $post_format_helper->get_short_url( 'www.themeisle.com', $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
-			$link = ' ' . $post_format_helper->get_short_url( $post_details['post']['post_url'], $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
+			$link                = ' ' . $post_format_helper->get_short_url( $post_details['post']['post_url'], $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
 			$new_post['message'] = $new_post['message'] . $link;
 		}
 

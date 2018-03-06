@@ -26,7 +26,7 @@ class Rop_Googl_Shortner extends Rop_Url_Shortner_Abstract {
 	 */
 	public function init() {
 		$this->service_name = 'goo.gl';
-		$this->credentials = array(
+		$this->credentials  = array(
 			'key' => '',
 		);
 	}

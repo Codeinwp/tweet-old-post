@@ -37,8 +37,8 @@ class Rop_Post_Format_Helper {
 	 * @param   string $account_id The account ID.
 	 */
 	public function set_post_format( $account_id ) {
-		$parts = explode( '_', $account_id );
-		$service = $parts[0];
+		$parts             = explode( '_', $account_id );
+		$service           = $parts[0];
 		$post_format_model = new Rop_Post_Format_Model( $service );
 		$this->post_format = $post_format_model->get_post_format( $account_id );
 	}
@@ -102,7 +102,7 @@ class Rop_Post_Format_Helper {
 			case 'custom_field':
 				$content = $this->get_custom_field_value( $post->ID, $this->post_format['custom_meta_field'] );
 				break;
-			default :
+			default:
 				$content = '';
 				break;
 		}
@@ -110,7 +110,7 @@ class Rop_Post_Format_Helper {
 		if ( ! is_string( $content ) ) {
 			$content = '';
 		}
-		$content = wp_strip_all_tags( html_entity_decode( $content,ENT_QUOTES ) );
+		$content = wp_strip_all_tags( html_entity_decode( $content, ENT_QUOTES ) );
 
 	    return $content;
 	}
@@ -131,14 +131,14 @@ class Rop_Post_Format_Helper {
 				case 'beginning':
 					$content = $this->post_format['custom_text'] . ' ' . $content;
 					break;
-				default :
+				default:
 					$content = $content . ' ' . $this->post_format['custom_text'];
 					break;
 			}
 		}
 		return array(
 			'custom_length' => $custom_length,
-			'content' => $content,
+			'content'       => $content,
 		);
 	}
 
@@ -167,11 +167,11 @@ class Rop_Post_Format_Helper {
 			case 'custom-hashtags':
 				$result = $this->get_custom_hashtags( $content, $hashtags_length, $content_helper, $post );
 				break;
-			default : // no-hashtags
+			default: // no-hashtags
 				$result = array(
 					'filtered_content' => $content,
-					'hashtags_length' => $hashtags_length,
-					'hashtags' => '',
+					'hashtags_length'  => $hashtags_length,
+					'hashtags'         => '',
 				);
 				break;
 		}// End switch().
@@ -190,7 +190,7 @@ class Rop_Post_Format_Helper {
 	 * @return array
 	 */
 	private function get_common_hashtags( $content, $hashtags_length, Rop_Content_Helper $content_helper ) {
-		$hashtags = '';
+		$hashtags     = '';
 		$hastags_list = explode( ',', str_replace( ' ', '', $this->post_format['hashtags_common'] ) );
 		if ( ! empty( $hastags_list ) ) {
 			foreach ( $hastags_list as $hashtag ) {
@@ -206,8 +206,8 @@ class Rop_Post_Format_Helper {
 
 	    return array(
 	        'filtered_content' => $content,
-			'hashtags_length' => $hashtags_length,
-			'hashtags' => $hashtags,
+			'hashtags_length'  => $hashtags_length,
+			'hashtags'         => $hashtags,
 		);
 	}
 
@@ -236,17 +236,13 @@ class Rop_Post_Format_Helper {
 				}
 			}
 		} else {
-			// if ( CWP_TOP_PRO ) {
-			// global $CWP_TOP_Core_PRO;
-			// $newHashtags = $CWP_TOP_Core_PRO->topProGetCustomCategories( $postQuery, $maximum_hashtag_length );
-			// } TODO
 			$hashtags = '';
 		}
 
 		return array(
 			'filtered_content' => $content,
-			'hashtags_length' => $hashtags_length,
-			'hashtags' => $hashtags,
+			'hashtags_length'  => $hashtags_length,
+			'hashtags'         => $hashtags,
 		);
 	}
 
@@ -276,8 +272,8 @@ class Rop_Post_Format_Helper {
 
 		return array(
 			'filtered_content' => $content,
-			'hashtags_length' => $hashtags_length,
-			'hashtags' => $hashtags,
+			'hashtags_length'  => $hashtags_length,
+			'hashtags'         => $hashtags,
 		);
 	}
 
@@ -300,8 +296,8 @@ class Rop_Post_Format_Helper {
 			$log->info( 'No hashtags used due to previous warning.' );
 			return array(
 				'filtered_content' => $content,
-				'hashtags_length' => $hashtags_length,
-				'hashtags' => $hashtags,
+				'hashtags_length'  => $hashtags_length,
+				'hashtags'         => $hashtags,
 			);
 		}
 		$hashtag = get_post_meta( $post->ID, $this->post_format['hashtags_custom'], true );
@@ -314,8 +310,8 @@ class Rop_Post_Format_Helper {
 
 		return array(
 			'filtered_content' => $content,
-			'hashtags_length' => $hashtags_length,
-			'hashtags' => $hashtags,
+			'hashtags_length'  => $hashtags_length,
+			'hashtags'         => $hashtags,
 		);
 	}
 
@@ -329,47 +325,47 @@ class Rop_Post_Format_Helper {
 	 */
 	public function build_content( WP_Post $post ) {
 		$content_helper = new Rop_Content_Helper();
-		$max_length = $this->post_format['maximum_length'];
+		$max_length     = $this->post_format['maximum_length'];
 
 		$general_settings = new Rop_Settings_Model();
-		$custom_messages = get_post_meta( $post->ID, 'rop_custom_messages_group', true );
+		$custom_messages  = get_post_meta( $post->ID, 'rop_custom_messages_group', true );
 
 		if ( $this->post_format ) {
 
 			if ( $general_settings->get_custom_messages() && ! empty( $custom_messages ) ) {
 
 				$random_index = rand( 0, ( sizeof( $custom_messages ) - 1 ) );
-				$content = $custom_messages[ $random_index ]['rop_custom_description'];
+				$content      = $custom_messages[ $random_index ]['rop_custom_description'];
 
-				$result = $this->make_hashtags( $content, $content_helper, $post );
+				$result          = $this->make_hashtags( $content, $content_helper, $post );
 				$hashtags_length = $result['hashtags_length'];
-				$hashtags = $result['hashtags'];
-				$content = $result['filtered_content'];
+				$hashtags        = $result['hashtags'];
+				$content         = $result['filtered_content'];
 
 				$size = $max_length - $hashtags_length;
 
 				$response = array(
 					'display_content' => $content_helper->token_truncate( $content, $size ) . ' ' . $hashtags,
-					'hashtags' => $hashtags,
+					'hashtags'        => $hashtags,
 				);
 
 			} else {
 				$content = $this->build_base_content( $post );
 
-				$result = $this->append_custom_text( $content );
+				$result        = $this->append_custom_text( $content );
 				$custom_length = $result['custom_length'];
-				$content = $result['content'];
+				$content       = $result['content'];
 
-				$result = $this->make_hashtags( $content, $content_helper, $post );
+				$result          = $this->make_hashtags( $content, $content_helper, $post );
 				$hashtags_length = $result['hashtags_length'];
-				$hashtags = $result['hashtags'];
-				$content = $result['filtered_content'];
+				$hashtags        = $result['hashtags'];
+				$content         = $result['filtered_content'];
 
 				$size = $max_length - $hashtags_length - $custom_length;
 
 				$response = array(
 					'display_content' => $content_helper->token_truncate( $content, $size ) . ' ' . $hashtags,
-					'hashtags' => $hashtags,
+					'hashtags'        => $hashtags,
 				);
 			}// End if().
 
@@ -379,7 +375,7 @@ class Rop_Post_Format_Helper {
 
 		return array(
 			'display_content' => 'N/A',
-			'hashtags' => '',
+			'hashtags'        => '',
 		);
 	}
 
@@ -396,26 +392,26 @@ class Rop_Post_Format_Helper {
 	public function get_formated_object( $account_id, WP_Post $post, $prev_data = false ) {
 		$this->set_post_format( $account_id );
 
-		$parts = explode( '_', $account_id );
+		$parts   = explode( '_', $account_id );
 		$service = $parts[0];
 
 		$content = $this->build_content( $post );
 
-		$filtered_post = array();
-		$filtered_post['post_id'] = $post->ID;
-		$filtered_post['account_id'] = $account_id;
-		$filtered_post['service'] = $service;
-		$filtered_post['post_title'] = $post->post_title;
-		$filtered_post['post_content'] = $content['display_content'];
-		$filtered_post['hashtags'] = $content['hashtags'];
-		$filtered_post['custom_content'] = ( isset( $prev_data['custom_content'] ) && $prev_data['custom_content'] != '' ) ? $prev_data['custom_content'] : '';
-		$filtered_post['post_url'] = $this->build_url( $post );
-		$filtered_post['short_url_service'] = $this->post_format['short_url_service'];
+		$filtered_post                         = array();
+		$filtered_post['post_id']              = $post->ID;
+		$filtered_post['account_id']           = $account_id;
+		$filtered_post['service']              = $service;
+		$filtered_post['post_title']           = $post->post_title;
+		$filtered_post['post_content']         = $content['display_content'];
+		$filtered_post['hashtags']             = $content['hashtags'];
+		$filtered_post['custom_content']       = ( isset( $prev_data['custom_content'] ) && $prev_data['custom_content'] != '' ) ? $prev_data['custom_content'] : '';
+		$filtered_post['post_url']             = $this->build_url( $post );
+		$filtered_post['short_url_service']    = $this->post_format['short_url_service'];
 		$filtered_post['shortner_credentials'] = ( isset( $this->post_format['shortner_credentials'] ) ) ? $this->post_format['shortner_credentials'] : array();
 
 		if ( $prev_data !== false && isset( $prev_data['custom_img'] ) ) {
 			$filtered_post['custom_img'] = $prev_data['custom_img'];
-			$filtered_post['post_img'] = $prev_data['post_img'];
+			$filtered_post['post_img']   = $prev_data['post_img'];
 		} else {
 			if ( has_post_thumbnail( $post->ID ) ) {
 				$filtered_post['post_img'] = get_the_post_thumbnail_url( $post->ID, 'large' );
