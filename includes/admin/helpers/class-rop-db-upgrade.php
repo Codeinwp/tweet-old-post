@@ -27,7 +27,6 @@ class Rop_Db_Upgrade {
 	 * @return bool
 	 */
 	public function is_upgrade_required() {
-		return true;
 		if ( ! get_option( 'rop_data' ) ) {
 			return true;
 		}

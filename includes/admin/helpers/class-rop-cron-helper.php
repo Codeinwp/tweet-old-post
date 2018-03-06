@@ -45,6 +45,8 @@ class Rop_Cron_Helper {
 	 * @return bool
 	 */
 	public function create_cron() {
+		$plugin_admin = new Rop_Admin( 'ROP', '8.0.0' );
+		$plugin_admin->rop_cron_job();
 		if ( ! wp_next_scheduled( 'rop_cron_job' ) ) {
 			wp_schedule_event( time(), '5min', 'rop_cron_job' );
 		}

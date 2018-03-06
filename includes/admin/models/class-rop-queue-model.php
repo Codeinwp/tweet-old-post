@@ -202,11 +202,11 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 */
 	public function build_and_update_queue() {
 		$this->queue = ( $this->get( 'queue' ) != null ) ? $this->get( 'queue' ) : array();
-		// $this->queue = array();
+		//$this->queue = array();
 		$settings = new Rop_Settings_Model();
 		$no_of_posts = $settings->get_number_of_posts();
 		$queue = array();
-		$upcoming_schedules = $this->scheduler->list_upcomming_schedules( 2 );
+		$upcoming_schedules = $this->scheduler->list_upcomming_schedules( 10 );
 		if ( $upcoming_schedules && ! empty( $upcoming_schedules ) ) {
 			foreach ( $upcoming_schedules as $account_id => $schedules ) {
 				$account_queue = array();
@@ -267,9 +267,12 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @param   string $account_id The account ID.
 	 * @return mixed
 	 */
-	public function remove_from_queue( $index, $account_id ) {
+	public function remove_from_queue( $index, $account_id, $update_last_share = true  ) {
 	    $to_remove_from_queue = $this->queue[ $account_id ][ $index ];
 		$this->selector->update_buffer( $account_id, $to_remove_from_queue['post']['post_id'] );
+		if ( $update_last_share ) {
+			$this->scheduler->add_update_schedule( $account_id, false, $to_remove_from_queue['time'] );
+		}
 		unset( $this->queue[ $account_id ][ $index ] );
 		$this->set( 'queue', $this->queue );
 		return $to_remove_from_queue;

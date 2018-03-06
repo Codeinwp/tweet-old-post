@@ -311,15 +311,15 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		$link = '';
 		if ( isset( $post_details['post']['post_url'] ) && $post_details['post']['post_url'] != '' ) {
 			$post_format_helper = new Rop_Post_Format_Helper();
-			//$link = ' ' . $post_format_helper->get_short_url( 'www.themeisle.com', $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
-			$link = ' ' . $post_format_helper->get_short_url( $post_details['post']['post_url'], $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
+			$link = ' ' . $post_format_helper->get_short_url( 'www.themeisle.com', $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
+			//$link = ' ' . $post_format_helper->get_short_url( $post_details['post']['post_url'], $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
 		}
 
 		$new_post['status'] = $message . $link;
 
 		$response = $api->post( 'statuses/update', $new_post );
 
-		if ( $response->id ) {
+		if ( isset( $response->id ) ) {
 			return true;
 		}
 

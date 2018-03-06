@@ -165,9 +165,12 @@ class Rop_Admin {
 		$services_model = new Rop_Services_Model();
 		$log = new Rop_Logger();
 
+		error_log( 'CRON RUNNING >>> ' );
+		error_log( 'CURRENT TIME ::--:: ' . date( 'd/m/Y H:i:s', current_time( 'timestamp', 0 ) ) );
 		$queue_stack = $queue->get_ordered_queue();
 		foreach ( $queue_stack as $index => $event ) {
 			if ( strtotime( $event['time'] ) <= current_time( 'timestamp', 0 ) ) {
+
 				$account_data = $services_model->find_account( $event['account_id'] );
 				$service_factory = new Rop_Services_Factory();
 				try {
@@ -181,11 +184,10 @@ class Rop_Admin {
 						$error_message = sprintf( esc_html__( 'The post was not shared with the %1$s network. An error occured.', 'tweet-old-post' ), $account_data['service'] );
 						$log->warn( $error_message );
 					}
-					$this->response->set_data( $queue->get_ordered_queue() );
 				} catch ( Exception $exception ) {
 					// The service can not be built or was not found.
 					$error_message = sprintf( esc_html__( 'The service %1$s can NOT be built or was not found', 'tweet-old-post' ), $account_data['service'] );
-					$log->warn( $error_message, $exception );
+					$log->warn( $error_message, $exception->getTrace() );
 				}
 			}
 		}
