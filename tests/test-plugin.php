@@ -478,7 +478,7 @@ EOD;
 
 		//var_dump( $date );
 		for ( $i = 0; $i < $count; $i++ ) {
-			$content = file_get_contents('http://loripsum.net/api/5/medium/plaintext');
+			$content = file_get_contents('https://loripsum.net/api/5/medium/plaintext');
 			$id = $this->factory->post->create( array(
 				'post_title' => 'Test Post ' . str_pad( $i+1, 2, "0", STR_PAD_LEFT ),
 				'post_content' => $content,
