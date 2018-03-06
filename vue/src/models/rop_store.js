@@ -1,4 +1,7 @@
+// jshint ignore: start
+
 /* global ropApiSettings */
+/* exported ropApiSettings */
 
 import Vue from 'vue'
 import Vuex from 'vuex'

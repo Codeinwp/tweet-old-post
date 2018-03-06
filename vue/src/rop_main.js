@@ -1,3 +1,4 @@
+// jshint ignore: start
 /* eslint no-unused-vars: 0 */
 /* exported RopApp */
 
