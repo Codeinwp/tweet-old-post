@@ -268,7 +268,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function remove_from_queue( $index, $account_id, $update_last_share = true ) {
-	    $to_remove_from_queue = $this->queue[ $account_id ][ $index ];
+		$to_remove_from_queue = $this->queue[ $account_id ][ $index ];
 		$this->selector->update_buffer( $account_id, $to_remove_from_queue['post']['post_id'] );
 		if ( $update_last_share ) {
 			$this->scheduler->add_update_schedule( $account_id, false, $to_remove_from_queue['time'] );

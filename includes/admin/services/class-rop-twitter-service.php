@@ -298,7 +298,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		$api = $this->get_api();
 
 		$new_post = array();
-	    if ( isset( $post_details['post']['post_img'] ) && $post_details['post']['post_img'] !== '' && $post_details['post']['post_img'] !== false ) {
+		if ( isset( $post_details['post']['post_img'] ) && $post_details['post']['post_img'] !== '' && $post_details['post']['post_img'] !== false ) {
 			$media_response = $api->upload( 'media/upload', array( 'media' => $post_details['post']['post_img'] ) );
 			if ( $media_response->media_id_string ) {
 				$new_post['media_ids'] = $media_response->media_id_string;
@@ -306,8 +306,8 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		}
 
 		$message = $post_details['post']['post_content'];
-	    if ( $post_details['post']['custom_content'] !== '' ) {
-	        $message = $post_details['post']['custom_content'];
+		if ( $post_details['post']['custom_content'] !== '' ) {
+			$message = $post_details['post']['custom_content'];
 		}
 
 		$link = $this->get_url( $post_details );

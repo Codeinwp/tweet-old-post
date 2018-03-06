@@ -58,8 +58,8 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @return array
 	 */
 	private function get_schedules() {
-	    $services          = new Rop_Services_Model();
-	    $active_accounts   = $services->get_active_accounts();
+		$services          = new Rop_Services_Model();
+		$active_accounts   = $services->get_active_accounts();
 		$schedules         = ( $this->get( 'schedules' ) != null ) ? $this->get( 'schedules' ) : array();
 		$default_schedules = array();
 		foreach ( $active_accounts as $account_id => $data ) {
@@ -247,7 +247,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		foreach ( $this->schedules as $account_id => $schedule ) {
 			$list[ $account_id ] = array();
 			if ( $schedule['type'] == 'recurring' ) {
-			    $i    = 0;
+				$i    = 0;
 				$time = $this->convert_float_to_time( $schedule['interval_r'] );
 				if ( $schedule['last_share'] == null ) {
 					$event_time             = $this->add_to_time( $schedule['first_share'], $time['hours'], $time['minutes'], true );

@@ -60,7 +60,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 */
 	public function save_settings( $data = array() ) {
 		unset( $data['available_post_types'] );
-	    return $this->set( 'general_settings', $data );
+		return $this->set( 'general_settings', $data );
 	}
 
 	/**
@@ -115,7 +115,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_number_of_posts() {
-	    return $this->settings['number_of_posts'];
+		return $this->settings['number_of_posts'];
 	}
 
 	/**

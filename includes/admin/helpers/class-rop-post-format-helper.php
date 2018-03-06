@@ -68,8 +68,8 @@ class Rop_Post_Format_Helper {
 		$post_url = get_permalink( $post->ID );
 		if ( $this->post_format && $this->post_format['include_link'] ) {
 			$post_url = get_permalink( $post->ID );
-		    if ( isset( $this->post_format['url_from_meta'] ) && $this->post_format['url_from_meta'] && isset( $this->post_format['url_meta_key'] ) && ! empty( $this->post_format['url_meta_key'] ) ) {
-		        preg_match_all( '#\bhttps?://[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/))#', get_post_meta( $post->ID, $this->post_format['url_meta_key'], true ), $match );
+			if ( isset( $this->post_format['url_from_meta'] ) && $this->post_format['url_from_meta'] && isset( $this->post_format['url_meta_key'] ) && ! empty( $this->post_format['url_meta_key'] ) ) {
+				preg_match_all( '#\bhttps?://[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/))#', get_post_meta( $post->ID, $this->post_format['url_meta_key'], true ), $match );
 				if ( isset( $match[0] ) ) {
 					if ( isset( $match[0][0] ) ) {
 						$post_url = $match[0][0];
@@ -112,7 +112,7 @@ class Rop_Post_Format_Helper {
 		}
 		$content = wp_strip_all_tags( html_entity_decode( $content, ENT_QUOTES ) );
 
-	    return $content;
+		return $content;
 	}
 
 	/**
@@ -204,8 +204,8 @@ class Rop_Post_Format_Helper {
 			}
 		}
 
-	    return array(
-	        'filtered_content' => $content,
+		return array(
+			'filtered_content' => $content,
 			'hashtags_length'  => $hashtags_length,
 			'hashtags'         => $hashtags,
 		);
@@ -437,7 +437,7 @@ class Rop_Post_Format_Helper {
 	 * @return string
 	 */
 	public function get_short_url( $url, $short_url_service, $credentials = array() ) {
-	    $shortner_factory = new Rop_Shortner_Factory();
+		$shortner_factory = new Rop_Shortner_Factory();
 		try {
 			$shortner_service = $shortner_factory->build( $short_url_service );
 			if ( ! empty( $credentials ) ) {

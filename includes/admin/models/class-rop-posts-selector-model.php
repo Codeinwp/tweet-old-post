@@ -217,7 +217,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @return array
 	 */
 	private function build_query_args( $post_types, $tax_queries, $exclude ) {
-	    $args = array(
+		$args = array(
 			'no_found_rows' => true,
 			'numberposts'   => '20',
 			'post_type'     => $post_types,
@@ -233,8 +233,8 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 				),
 			),
 		);
-	    if ( empty( $tax_queries ) ) {
-	        unset( $args['tax_query'] );
+		if ( empty( $tax_queries ) ) {
+			unset( $args['tax_query'] );
 		}
 		if ( empty( $exclude ) ) {
 			unset( $args['exclude'] );
@@ -259,7 +259,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			$exclude = array_merge( $exclude, $blocked );
 		}
 		$exclude = array_merge( $exclude, $excluded_by_user );
-	    return $exclude;
+		return $exclude;
 	}
 
 
@@ -313,7 +313,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		$results = $this->query_results( $account_id, $post_types, $tax_queries, $excluded_by_user );
 
 		if ( empty( $results ) && $this->has_buffer_items( $account_id ) ) {
-		    $this->clear_buffer( $account_id );
+			$this->clear_buffer( $account_id );
 
 			$results = $this->query_results( $account_id, $post_types, $tax_queries, $excluded_by_user );
 
@@ -354,7 +354,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @param   int    $post_id The post ID.
 	 */
 	public function update_buffer( $account_id, $post_id ) {
-	    if ( ! isset( $this->buffer[ $account_id ] ) ) {
+		if ( ! isset( $this->buffer[ $account_id ] ) ) {
 			$this->buffer[ $account_id ] = array();
 		}
 		if ( ! in_array( $post_id, $this->buffer[ $account_id ] ) ) {

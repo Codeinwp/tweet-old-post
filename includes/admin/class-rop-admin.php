@@ -109,7 +109,7 @@ class Rop_Admin {
 				'root' => esc_url_raw( rest_url( '/tweet-old-post/v8/api/' ) ),
 			);
 			if ( current_user_can( 'manage_options' ) ) {
-			    $array_nonce = array(
+				$array_nonce = array(
 					'root'  => esc_url_raw( rest_url( '/tweet-old-post/v8/api/' ) ),
 					'nonce' => wp_create_nonce( 'wp_rest' ),
 				);
