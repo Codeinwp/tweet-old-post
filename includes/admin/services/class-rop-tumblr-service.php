@@ -407,10 +407,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		}
 
 		if ( isset( $post_details['post']['post_url'] ) && $post_details['post']['post_url'] != '' ) {
-			$post_format_helper = new Rop_Post_Format_Helper();
-			// $link = $post_format_helper->get_short_url( 'www.themeisle.com', $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
-			$link            = ' ' . $post_format_helper->get_short_url( $post_details['post']['post_url'], $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
-			$new_post['url'] = $link;
+			$new_post['url'] = ' ' . $this->get_url( $post_details );
 		}
 
 		// print_r( $new_post ); die();

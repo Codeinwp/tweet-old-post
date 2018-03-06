@@ -183,6 +183,30 @@ abstract class Rop_Services_Abstract {
 	public abstract function share( $post_details, $args = array() );
 
 	/**
+	 * Method to generate url for service post share.
+	 *
+	 * @since   8.0.0rc
+	 * @access  protected
+	 * @param   array $post_details The post details to be published by the service.
+	 * @return string
+	 */
+	protected function get_url( $post_details ) {
+
+		$link = ( isset( $post_details['post']['post_url'] ) ) ? $post_details['post']['post_url'] : '';
+		if ( $post_details['post']['short_url_service'] === 'wp_short_url' ) {
+			$link = wp_get_shortlink( $post_details['post']['post_id'] );
+		} else {
+			if ( isset( $post_details['post']['post_url'] ) && $post_details['post']['post_url'] != '' ) {
+				$post_format_helper = new Rop_Post_Format_Helper();
+				$link               = ' ' . $post_format_helper->get_short_url( 'www.themeisle.com', $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
+				// $link = ' ' . $post_format_helper->get_short_url( $post_details['post']['post_url'], $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
+			}
+		}
+
+		return $link;
+	}
+
+	/**
 	 * Utility method to register a REST endpoint via WP.
 	 *
 	 * @since   8.0.0

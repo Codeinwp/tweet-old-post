@@ -398,13 +398,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			$new_post['comment'] = $post_details['post']['custom_content'];
 		}
 
-		if ( isset( $post_details['post']['post_url'] ) && $post_details['post']['post_url'] != '' ) {
-			$post_format_helper = new Rop_Post_Format_Helper();
-			// $link = $post_format_helper->get_short_url( 'www.themeisle.com', $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
-			$link                                 = ' ' . $post_format_helper->get_short_url( $post_details['post']['post_url'], $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
-			$new_post['content']['submitted-url'] = $link;
-			// $new_post['content']['submitted-url'] = 'www.themeisle.com';
-		}
+		$new_post['content']['submitted-url'] = $this->get_url( $post_details );
 
 		$new_post['visibility']['code'] = 'anyone';
 

@@ -243,19 +243,26 @@ class Rop_Rest_Api {
 	 * @return mixed
 	 */
 	private function get_shortner_credentials( $data ) {
-		$sh_factory = new Rop_Shortner_Factory();
-		$this->response->set_code( '500' )->set_message( __( 'An error occurred when trying to retrieve the sortner service credentials.', 'tweet-old-post' ) );
-		try {
-			$shortner = $sh_factory->build( $data['short_url_service'] );
+
+		if ( $data['short_url_service'] === 'wp_short_url' ) {
 			$this->response->set_code( '200' )
 				->set_message( __( 'Shortner credentials retrieved successfully.', 'tweet-old-post' ) )
-				->set_data( $shortner->get_credentials() );
-		} catch ( Exception $exception ) {
-			// Service not found or can't be built. Maybe log this exception.
-			$log           = new Rop_Logger();
-			$error_message = sprintf( esc_html__( 'The shortner service %1$s can NOT be built or was not found', 'tweet-old-post' ), $data['short_url_service'] );
-			$log->warn( $error_message, $exception );
-			$this->response->set_code( '500' )->set_message( $error_message );
+				->set_data( array() );
+		} else {
+			$sh_factory = new Rop_Shortner_Factory();
+			$this->response->set_code( '500' )->set_message( __( 'An error occurred when trying to retrieve the sortner service credentials.', 'tweet-old-post' ) );
+			try {
+				$shortner = $sh_factory->build( $data['short_url_service'] );
+				$this->response->set_code( '200' )
+					->set_message( __( 'Shortner credentials retrieved successfully.', 'tweet-old-post' ) )
+					->set_data( $shortner->get_credentials() );
+			} catch ( Exception $exception ) {
+				// Service not found or can't be built. Maybe log this exception.
+				$log           = new Rop_Logger();
+				$error_message = sprintf( esc_html__( 'The shortner service %1$s can NOT be built or was not found', 'tweet-old-post' ), $data['short_url_service'] );
+				$log->warn( $error_message, $exception );
+				$this->response->set_code( '500' )->set_message( $error_message );
+			}
 		}
 		return $this->response->to_array();
 	}
@@ -276,8 +283,10 @@ class Rop_Rest_Api {
 		$sh_factory  = new Rop_Shortner_Factory();
 		$this->response->set_code( '500' )->set_message( __( 'An error occurred when trying to save the post format.', 'tweet-old-post' ) );
 		try {
-			$shortner = $sh_factory->build( $data['post_format']['short_url_service'] );
-			$shortner->set_credentials( $data['post_format']['shortner_credentials'] );
+			if ( $data['post_format']['short_url_service'] !== 'wp_short_url' ) {
+				$shortner = $sh_factory->build( $data['post_format']['short_url_service'] );
+				$shortner->set_credentials( $data['post_format']['shortner_credentials'] );
+			}
 			$this->response->set_code( '201' )
 				->set_message( __( 'Shortner and credentials set successfully.', 'tweet-old-post' ) );
 		} catch ( Exception $exception ) {
