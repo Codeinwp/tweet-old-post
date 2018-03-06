@@ -75,7 +75,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function set_api( $consumer_key = '', $consumer_secret = '', $token = null, $token_secret = null ) {
-		$this->api = new Tumblr\API\Client( $consumer_key, $consumer_secret, $token, $token_secret );
+		$this->api = new \Tumblr\API\Client( $consumer_key, $consumer_secret, $token, $token_secret );
 	}
 
 	/**
@@ -213,6 +213,14 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	public function re_authenticate( $consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret ) {
 		$this->set_api( $consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret );
 		$api = $this->get_api();
+
+		$this->set_credentials( array(
+			'consumer_key' => $consumer_key,
+			'consumer_secret' => $consumer_secret,
+			'oauth_token' => $oauth_token,
+			'oauth_token_secret' => $oauth_token_secret,
+		) );
+
 		try {
 			$profile = $api->getUserInfo();
 		} catch ( Exception $exception ) {
@@ -396,7 +404,8 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 
 		if ( isset( $post_details['post']['post_url'] ) && $post_details['post']['post_url'] != '' ) {
 			$post_format_helper = new Rop_Post_Format_Helper();
-			$link = $post_format_helper->get_short_url( 'www.themeisle.com', $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
+			//$link = $post_format_helper->get_short_url( 'www.themeisle.com', $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
+			$link = ' ' . $post_format_helper->get_short_url( $post_details['post']['post_url'], $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
 			$new_post['url'] = $link;
 		}
 

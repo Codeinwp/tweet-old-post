@@ -27,6 +27,7 @@ class Rop_Db_Upgrade {
 	 * @return bool
 	 */
 	public function is_upgrade_required() {
+		return true;
 		if ( ! get_option( 'rop_data' ) ) {
 			return true;
 		}
@@ -116,7 +117,7 @@ class Rop_Db_Upgrade {
 		if ( ! is_array( $top_opt_omit_cats ) ) {
 			$top_opt_omit_cats = array( $top_opt_omit_cats );
 		}
-		
+
 		if ( $top_opt_omit_cats !== null ) {
 			$migrated_taxonomies = array();
 			foreach ( $top_opt_post_type as $post_type_name ) {
