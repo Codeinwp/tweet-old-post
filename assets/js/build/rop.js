@@ -19543,6 +19543,7 @@ module.exports = "\n\t<div class=\"toast\" :class=\"toastTypeClass\" >\n\t\t<but
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
+__webpack_require__(165)
 __vue_script__ = __webpack_require__(154)
 __vue_template__ = __webpack_require__(158)
 module.exports = __vue_script__ || {}
@@ -19574,7 +19575,7 @@ var _trunc2 = _interopRequireDefault(_trunc);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // <template>
-// 	<div class="toast toast-success" v-if="to.isOn" >
+// 	<div class="toast toast-success countdownS" v-if="to.isOn" >
 // 		<b><i class="fa fa-fast-forward"></i> Next share</b> in <small v-if="days">{{ days | twoDigits }} days</small> <small v-if="hours">{{ hours | twoDigits }} hours</small> <small>{{ minutes | twoDigits }} minutes</small> <small>{{ seconds | twoDigits }} seconds</small>
 // 	</div>
 // </template>
@@ -19637,6 +19638,46 @@ module.exports = {
 		}
 	}
 	// </script>
+	//
+	// <style>
+	//     @keyframes move {
+	//         0% {
+	//             background-position: 0 0;
+	//         }
+	//         100% {
+	//             background-position: 64px 64px;
+	//         }
+	//     }
+	//
+	//     .countdownS {
+	//         position: relative;
+	//     }
+	//     .countdownS:after {
+	//         content: "";
+	//         position: absolute;
+	//         top: 0; left: 0; bottom: 0; right: 0;
+	//         background-image: linear-gradient(
+	//                 -45deg,
+	//                 rgba(255, 255, 255, .1) 25%,
+	//                 transparent 25%,
+	//                 transparent 50%,
+	//                 rgba(255, 255, 255, .1) 50%,
+	//                 rgba(255, 255, 255, .1) 75%,
+	//                 transparent 75%,
+	//                 transparent
+	//         );
+	//         z-index: 1;
+	//         background-size: 64px 64px;
+	//         animation: move 2s linear infinite;
+	//         border-top-right-radius: 8px;
+	//         border-bottom-right-radius: 8px;
+	//         border-top-left-radius: 20px;
+	//         border-bottom-left-radius: 20px;
+	//         overflow: hidden;
+	//
+	//         animation: move 2s linear infinite;
+	//     }
+	// </style>
 
 };
 
@@ -19672,7 +19713,7 @@ $export($export.S, 'Math', {
 /* 158 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"toast toast-success\" v-if=\"to.isOn\" >\n\t\t<b><i class=\"fa fa-fast-forward\"></i> Next share</b> in <small v-if=\"days\">{{ days | twoDigits }} days</small> <small v-if=\"hours\">{{ hours | twoDigits }} hours</small> <small>{{ minutes | twoDigits }} minutes</small> <small>{{ seconds | twoDigits }} seconds</small>\n\t</div>\n";
+module.exports = "\n\t<div class=\"toast toast-success countdownS\" v-if=\"to.isOn\" >\n\t\t<b><i class=\"fa fa-fast-forward\"></i> Next share</b> in <small v-if=\"days\">{{ days | twoDigits }} days</small> <small v-if=\"hours\">{{ hours | twoDigits }} hours</small> <small>{{ minutes | twoDigits }} minutes</small> <small>{{ seconds | twoDigits }} seconds</small>\n\t</div>\n";
 
 /***/ }),
 /* 159 */
@@ -19789,6 +19830,46 @@ module.exports = "\n    <div class=\"ajax-loader\" :class=\"isVisible\" >\n     
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div>\n\t\t<div class=\"panel title-panel\" style=\"margin-bottom: 40px; padding-bottom: 20px;\">\n\t\t\t<div class=\"panel-header\">\n\t\t\t\t<img :src=\"plugin_logo\" style=\"float: left; margin-right: 10px;\" />\n\t\t\t\t<h1 class=\"d-inline-block\">Revive Old Posts</h1><span class=\"powered\"> by <a href=\"https://themeisle.com\" target=\"_blank\"><b>ThemeIsle</b></a></span>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<toast />\n\t\t<countdown v-bind:to=\"countdownObject\" />\n\t\t<ajax-loader />\n\t\t<div class=\"panel\">\n\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t<ul class=\"tab\">\n\t\t\t\t\t<li class=\"tab-item\" v-for=\"tab in displayTabs\" :class=\"{ active: tab.isActive, badge: displayProBadge( tab.slug ), upsell: displayProBadge( tab.slug ) }\" data-badge=\"PRO\"><a href=\"#\" @click=\"switchTab( tab.slug )\">{{ tab.name }}</a></li>\n\t\t\t\t\t<li class=\"tab-item tab-action\">\n\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.custom_messages\" @change=\"updateSettings\" :disabled=\"!has_pro\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" v-if=\"has_pro\"></i><i class=\"badge\" data-badge=\"PRO\" v-else></i> <span class=\"hide-sm\">Custom Share Messages</span>\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.beta_user\" @change=\"updateSettings\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> <span class=\"hide-sm\">Beta User</span>\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.remote_check\" @change=\"updateSettings\" />\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> <span class=\"hide-sm\">Remote Check</span>\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\t\t\t<component :is=\"page.view\"></component>\n\t\t</div>\n\t</div>\n";
+
+/***/ }),
+/* 165 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(166);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-09a0686e&file=countdown.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./countdown.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-09a0686e&file=countdown.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./countdown.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 166 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)();
+// imports
+
+
+// module
+exports.push([module.i, "\n    @-webkit-keyframes move {\n        0% {\n            background-position: 0 0;\n        }\n        100% {\n            background-position: 64px 64px;\n        }\n    }\n\n    @keyframes move {\n        0% {\n            background-position: 0 0;\n        }\n        100% {\n            background-position: 64px 64px;\n        }\n    }\n\n    .countdownS {\n        position: relative;\n    }\n    .countdownS:after {\n        content: \"\";\n        position: absolute;\n        top: 0; left: 0; bottom: 0; right: 0;\n        background-image: linear-gradient(\n                -45deg,\n                rgba(255, 255, 255, .1) 25%,\n                transparent 25%,\n                transparent 50%,\n                rgba(255, 255, 255, .1) 50%,\n                rgba(255, 255, 255, .1) 75%,\n                transparent 75%,\n                transparent\n        );\n        z-index: 1;\n        background-size: 64px 64px;\n        -webkit-animation: move 2s linear infinite;\n                animation: move 2s linear infinite;\n        border-top-right-radius: 8px;\n        border-bottom-right-radius: 8px;\n        border-top-left-radius: 20px;\n        border-bottom-left-radius: 20px;\n        overflow: hidden;\n\n        animation: move 2s linear infinite;\n    }\n", ""]);
+
+// exports
+
 
 /***/ })
 /******/ ]);

@@ -326,10 +326,10 @@ class Rop_Db_Upgrade {
 					$schedule['interval_r'] = $old_schedule[ $account['service'] . '_top_opt_interval' ];
 				} else {
 					$schedule['type'] = 'recurring';
-					$schedule['interval_f']['week_days'] = explode( ',', $old_schedule[ $account['service'] . '_top_opt_interval' ]['days'] );
+					$schedule['interval_f']['week_days'] = explode( ',', $old_schedule[ $account['service'] . '_top_schedule_days' ] );
 					$times = array();
-					foreach ( $old_schedule[ $account['service'] . '_top_opt_interval' ]['times'] as $times ) {
-						array_push( $times, $times['hour'] . ':' . $times['minute'] );
+					foreach ( $old_schedule[ $account['service'] . '_time_choice_hour' ] as $hours ) {
+						array_push( $times, $hours . ':' . $old_schedule[ $account['service'] . '_time_choice_min' ] );
 					}
 					$schedule['interval_f']['time'] = $times;
 				}
