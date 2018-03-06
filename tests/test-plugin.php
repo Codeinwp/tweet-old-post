@@ -135,43 +135,68 @@ class Test_ROP extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Testing posts selector
+	 * Testing URL shortners
 	 *
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @covers Rop_Model_Abstract
-	 * @covers Rop_Posts_Selector_Model::<public>
-	 * @covers Rop_Settings_Model::<public>
+	 * @covers Rop_Url_Shortner_Abstract
+	 * @covers Rop_Rvivly_Shortner
+	 * @covers Rop_Bitly_Shortner
+	 * @covers Rop_Shortest_Shortner
+	 * @covers Rop_Googl_Shortner
+	 * @covers Rop_Isgd_Shortner
 	 */
-	public function test_posts_selector() {
-		$page_ids_min5 = $this->generatePosts( 13, 'page', '-5 day' );
-		$page_ids_now = $this->generatePosts( 12, 'page', false );
-		$page_ids_min65 = $this->generatePosts( 15, 'page', '-65 day' );
+	public function test_url_shortners() {
+		$url = 'http://google.com/';
 
+		// rviv.ly Test
+		$rvivly = new Rop_Rvivly_Shortner();
+		$rvivly->set_website( $url );
+		$short_url = $rvivly->shorten_url( $url );
+		$this->assertNotEquals( $url, $short_url );
+		$this->assertUriIsCorrect( $short_url );
+		$this->assertNotEquals( $short_url, '' );
 
-		$post_ids_min5 = $this->generatePosts( 13, 'post', '-5 day' );
-		$post_ids_now = $this->generatePosts( 12, 'post', false );
-		$post_ids_min65 = $this->generatePosts( 15, 'post', '-65 day' );
+		// bit.ly Test
+		$bitly = new Rop_Bitly_Shortner();
+		$user = 'o_57qgimegp1';
+		$key = 'R_9a63d988de77438aaa6b3cd8e0830b6b';
+		$bitly->set_credentials( array( 'user' => $user, 'key' => $key ) );
+		$short_url = $bitly->shorten_url( $url );
 
-		$settings = new Rop_Settings_Model();
-		$global_settings = new Rop_Global_Settings();
+		$this->assertNotEquals( $url, $short_url );
+		$this->assertUriIsCorrect( $short_url );
+		$this->assertNotEquals( $short_url, '' );
 
-		$this->assertEquals( $settings->get_settings(), $global_settings->get_default_settings() );
+		// shorte.st Test
+		$shortest = new Rop_Shortest_Shortner();
+		$key = 'e3b65f77eddddc7c0bf1f3a2f5a13f59';
+		$shortest->set_credentials( array( 'key' => $key ) );
+		$short_url = $shortest->shorten_url( $url );
 
-		$new_settings = $settings->get_settings();
+		$this->assertNotEquals( $url, $short_url );
+		$this->assertUriIsCorrect( $short_url );
+		$this->assertNotEquals( $short_url, '' );
 
-		$new_settings['minimum_post_age'] = 1;
-		$new_settings['maximum_post_age'] = 365;
-		$new_settings['selected_post_types'] = array( array( 'name' => 'Posts', 'selected' => true, 'value' => 'page' ) );
+		// goo.gl Test
+		$googl = new Rop_Googl_Shortner();
+		$key = 'AIzaSyAqNtuEu-xXurkpV-p57r5oAqQgcAyMSN4';
+		$googl->set_credentials( array( 'key' => $key ) );
+		$short_url = $googl->shorten_url( $url );
 
-		$settings->save_settings( $new_settings );
+		$this->assertNotEquals( $url, $short_url );
+		$this->assertUriIsCorrect( $short_url );
+		$this->assertNotEquals( $short_url, '' );
 
-		$this->assertEquals( $settings->get_settings(), $new_settings );
+		// is.gd Test
+		$isgd = new Rop_Isgd_Shortner();
+		$short_url = $isgd->shorten_url( $url );
 
-		$posts_selector = new Rop_Posts_Selector_Model();
+		$this->assertNotEquals( $url, $short_url );
+		$this->assertUriIsCorrect( $short_url );
+		$this->assertNotEquals( $short_url, '' );
 
-		$this->assertEquals( sizeof( $posts_selector->select( 'test_id_facebook' ) ), $settings->get_post_limit() );
 	}
 
 	/**
@@ -218,72 +243,6 @@ class Test_ROP extends WP_UnitTestCase {
 		$post_format->remove_post_format( $account_id );
 
 		$this->assertEquals( $post_format->get_post_format( $account_id ), $defaults );
-
-	}
-
-	/**
-	 * Testing URL shortners
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @covers Rop_Url_Shortner_Abstract
-	 * @covers Rop_Rvivly_Shortner
-	 * @covers Rop_Bitly_Shortner
-	 * @covers Rop_Shortest_Shortner
-	 * @covers Rop_Googl_Shortner
-	 * @covers Rop_Isgd_Shortner
-	 */
-	public function test_url_shortners() {
-		$url = 'http://google.com/';
-
-		// rviv.ly Test
-//        $rvivly = new Rop_Rvivly();
-//        $rvivly->set_website( $url );
-//        $short_url = $rvivly->shorten_url( $url );
-//        var_dump( $short_url );
-//        $this->assertNotEquals( $url, $short_url );
-//        $this->assertUriIsCorrect( $short_url );
-//        $this->assertNotEquals( $short_url, '' );
-
-		// bit.ly Test
-		$bitly = new Rop_Bitly_Shortner();
-		$user = 'o_57qgimegp1';
-		$key = 'R_9a63d988de77438aaa6b3cd8e0830b6b';
-		$bitly->set_credentials( array( 'user' => $user, 'key' => $key ) );
-		$short_url = $bitly->shorten_url( $url );
-
-		$this->assertNotEquals( $url, $short_url );
-		$this->assertUriIsCorrect( $short_url );
-		$this->assertNotEquals( $short_url, '' );
-
-		// shorte.st Test
-		$shortest = new Rop_Shortest_Shortner();
-		$key = 'e3b65f77eddddc7c0bf1f3a2f5a13f59';
-		$shortest->set_credentials( array( 'key' => $key ) );
-		$short_url = $shortest->shorten_url( $url );
-
-		$this->assertNotEquals( $url, $short_url );
-		$this->assertUriIsCorrect( $short_url );
-		$this->assertNotEquals( $short_url, '' );
-
-		// goo.gl Test
-		$googl = new Rop_Googl_Shortner();
-		$key = 'AIzaSyAqNtuEu-xXurkpV-p57r5oAqQgcAyMSN4';
-		$googl->set_credentials( array( 'key' => $key ) );
-		$short_url = $googl->shorten_url( $url );
-
-		$this->assertNotEquals( $url, $short_url );
-		$this->assertUriIsCorrect( $short_url );
-		$this->assertNotEquals( $short_url, '' );
-
-		// is.gd Test
-		$isgd = new Rop_Isgd_Shortner();
-		$short_url = $isgd->shorten_url( $url );
-
-		$this->assertNotEquals( $url, $short_url );
-		$this->assertUriIsCorrect( $short_url );
-		$this->assertNotEquals( $short_url, '' );
 
 	}
 
@@ -339,6 +298,46 @@ class Test_ROP extends WP_UnitTestCase {
 		$schedule = $scheduler->create_schedule( $schedule );
 		$scheduler->add_update_schedule( $account_id, $schedule );
 		return $schedule;
+	}
+
+	/**
+	 * Testing posts selector
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 *
+	 * @covers Rop_Model_Abstract
+	 * @covers Rop_Posts_Selector_Model::<public>
+	 * @covers Rop_Settings_Model::<public>
+	 */
+	public function test_posts_selector() {
+		$page_ids_min5 = $this->generatePosts( 13, 'page', '-5 day' );
+		$page_ids_now = $this->generatePosts( 12, 'page', false );
+		$page_ids_min65 = $this->generatePosts( 15, 'page', '-65 day' );
+
+
+		$post_ids_min5 = $this->generatePosts( 13, 'post', '-5 day' );
+		$post_ids_now = $this->generatePosts( 12, 'post', false );
+		$post_ids_min65 = $this->generatePosts( 15, 'post', '-65 day' );
+
+		$settings = new Rop_Settings_Model();
+		$global_settings = new Rop_Global_Settings();
+
+		$this->assertEquals( $settings->get_settings(), $global_settings->get_default_settings() );
+
+		$new_settings = $settings->get_settings();
+
+		$new_settings['minimum_post_age'] = 1;
+		$new_settings['maximum_post_age'] = 365;
+		$new_settings['selected_post_types'] = array( array( 'name' => 'Posts', 'selected' => true, 'value' => 'page' ) );
+
+		$settings->save_settings( $new_settings );
+
+		$this->assertEquals( $settings->get_settings(), $new_settings );
+
+		$posts_selector = new Rop_Posts_Selector_Model();
+
+		$this->assertEquals( sizeof( $posts_selector->select( 'test_id_facebook' ) ), $settings->get_post_limit() );
 	}
 
 	/**
