@@ -85,7 +85,7 @@ abstract class Rop_Url_Shortner_Abstract {
 	 * @return mixed
 	 */
 	public function get_credentials() {
-		return $this->model->credentials();
+	    return $this->model->credentials();
 	}
 
 	/**
@@ -221,7 +221,6 @@ abstract class Rop_Url_Shortner_Abstract {
 		$error = null;
 
 		$conn = curl_init( $this->build_url( $url, $props, $params ) );
-		curl_setopt( $conn, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_1 ); // Added for Travis
 		curl_setopt( $conn, CURLOPT_SSL_VERIFYPEER, false );
 		curl_setopt( $conn, CURLOPT_FRESH_CONNECT, true );
 		curl_setopt( $conn, CURLOPT_RETURNTRANSFER, 1 );
