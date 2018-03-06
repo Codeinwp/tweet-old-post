@@ -82,7 +82,7 @@ class Rop_Db_Upgrade {
 			$setting['ga_tracking'] = ( $old_settings['top_opt_ga_tracking'] === 'on' ) ? true : false;
 		}
 
-		$top_opt_post_type = null;
+		$top_opt_post_type = null );
 		if ( $old_settings !== null && isset( $old_settings['top_opt_post_type'] ) ) {
 			$top_opt_post_type = $old_settings['top_opt_post_type'];
 		}
@@ -116,6 +116,8 @@ class Rop_Db_Upgrade {
 		if ( ! is_array( $top_opt_omit_cats ) ) {
 			$top_opt_omit_cats = array( $top_opt_omit_cats );
 		}
+
+		var_dump( $top_opt_post_type );
 		if ( $top_opt_omit_cats !== null ) {
 			$migrated_taxonomies = array();
 			foreach ( $top_opt_post_type as $post_type_name ) {
@@ -326,10 +328,10 @@ class Rop_Db_Upgrade {
 					$schedule['interval_r'] = $old_schedule[ $account['service'] . '_top_opt_interval' ];
 				} else {
 					$schedule['type'] = 'recurring';
-					$schedule['interval_f']['week_days'] = explode( ',', $old_schedule[ $account['service'] . '_top_schedule_days' ] );
+					$schedule['interval_f']['week_days'] = explode( ',', $old_schedule[ $account['service'] . '_top_opt_interval' ]['days'] );
 					$times = array();
-					foreach ( $old_schedule[ $account['service'] . '_time_choice_hour' ] as $hours ) {
-						array_push( $times, $hours . ':' . $old_schedule[ $account['service'] . '_time_choice_min' ] );
+					foreach ( $old_schedule[ $account['service'] . '_top_opt_interval' ]['times'] as $time ) {
+						array_push( $times, $time['hour'] . ':' . $time['minute'] );
 					}
 					$schedule['interval_f']['time'] = $times;
 				}
