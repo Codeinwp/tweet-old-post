@@ -103,33 +103,36 @@ class Test_ROP extends WP_UnitTestCase {
 	 * @covers Rop_Services_Abstract
 	 */
 	public function test_services() {
-		$service_factory = new Rop_Services_Factory();
 
-		$this->services['facebook'] = $service_factory->build( 'facebook' );
-		$this->services['twitter'] = $service_factory->build( 'twitter' );
-		$this->services['linkedin'] = $service_factory->build( 'linkedin' );
-		$this->services['tumblr'] = $service_factory->build( 'tumblr' );
+		if ( version_compare( PHP_VERSION, '5.6.0' ) >= 0 ) {
+			$service_factory = new Rop_Services_Factory();
 
-		foreach ( $this->services as $service ) {
-			$this->assertInstanceOf( 'Rop_Services_Abstract', $service );
-			$service->get_api( $this->baseApiClasses[$service->display_name]['credentials'][0], $this->baseApiClasses[$service->display_name]['credentials'][1] );
-			$service->expose_endpoints();
-			$service->get_endpoint_url( 'authorize' );
-			$service->set_api( $this->baseApiClasses[$service->display_name]['credentials'][0], $this->baseApiClasses[$service->display_name]['credentials'][1] );
-			$api = $service->get_api();
-			$this->assertInstanceOf( $this->baseApiClasses[$service->display_name]['class'], $api );
-			$data['credentials'] = array(
-				$this->baseApiClasses[$service->display_name]['credentials_name'][0] => $this->baseApiClasses[$service->display_name]['credentials'][0],
-				$this->baseApiClasses[$service->display_name]['credentials_name'][1] => $this->baseApiClasses[$service->display_name]['credentials'][1],
-			);
-			$service->set_credentials( $data['credentials'] );
+			$this->services['facebook'] = $service_factory->build( 'facebook' );
+			$this->services['twitter'] = $service_factory->build( 'twitter' );
+			$this->services['linkedin'] = $service_factory->build( 'linkedin' );
+			$this->services['tumblr'] = $service_factory->build( 'tumblr' );
 
-			$singin_url = @$service->sign_in_url( $data );
-			$this->assertUriIsCorrect( $singin_url );
+			foreach ( $this->services as $service ) {
+				$this->assertInstanceOf( 'Rop_Services_Abstract', $service );
+				$service->get_api( $this->baseApiClasses[$service->display_name]['credentials'][0], $this->baseApiClasses[$service->display_name]['credentials'][1] );
+				$service->expose_endpoints();
+				$service->get_endpoint_url( 'authorize' );
+				$service->set_api( $this->baseApiClasses[$service->display_name]['credentials'][0], $this->baseApiClasses[$service->display_name]['credentials'][1] );
+				$api = $service->get_api();
+				$this->assertInstanceOf( $this->baseApiClasses[$service->display_name]['class'], $api );
+				$data['credentials'] = array(
+					$this->baseApiClasses[$service->display_name]['credentials_name'][0] => $this->baseApiClasses[$service->display_name]['credentials'][0],
+					$this->baseApiClasses[$service->display_name]['credentials_name'][1] => $this->baseApiClasses[$service->display_name]['credentials'][1],
+				);
+				$service->set_credentials( $data['credentials'] );
 
-			//$this->assertTrue( $service->share( array() ) );
+				$singin_url = @$service->sign_in_url( $data );
+				$this->assertUriIsCorrect( $singin_url );
 
-			$this->assertTrue( is_array( $service->get_service() ) );
+				//$this->assertTrue( $service->share( array() ) );
+
+				$this->assertTrue( is_array( $service->get_service() ) );
+			}
 		}
 
 	}
