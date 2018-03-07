@@ -295,25 +295,24 @@ class Rop_Db_Upgrade {
 							} catch ( Exception $exception ) {
 								// add the logger
 							}
-							$id = $user['user_id'];
-							if ( isset( $info->response->blog->name ) ) {
-								$id = $info->response->blog->name;
+
+							$tmp_service = $tumblr_service->get_service();
+							if ( is_array( $tmp_service ) ) {
+								$name    = $user['oauth_user_details']->name;
+								$id      = $tmp_service['id'];
+								$account = $tmp_service['id'];
+								$img     = $user['oauth_user_details']->profile_image_url;
 							}
-
-							$index             = $user['service'] . '_' . $id;
-							$service[ $index ] = $tumblr_service->get_service();
-
-							$key     = array_search( $id, array_column( $service[ $index ]['available_accounts'], 'id' ) );
-							$name    = $user['oauth_user_details']->name;
-							$account = $id;
-							$img     = $user['oauth_user_details']->profile_image_url;
+							$key = array_search( $id, array_column( $tmp_service['available_accounts'], 'id' ) );
 							if ( $key ) {
-								$name    = $service[ $index ]['available_accounts'][ $key ]['name'];
-								$account = $service[ $index ]['available_accounts'][ $key ]['account'];
-								$img     = $service[ $index ]['available_accounts'][ $key ]['img'];
+								$name    = $tmp_service['available_accounts'][ $key ]['name'];
+								$account = $tmp_service['available_accounts'][ $key ]['account'];
+								$img     = $tmp_service['available_accounts'][ $key ]['img'];
 							}
 
-							$index_account                     = $index . '_' . $id;
+							$index                             = $user['service'] . '_' . $account;
+							$service[ $index ]                 = $tmp_service;
+							$index_account                     = $index . '_' . $account;
 							$active_accounts[ $index_account ] = array(
 								'service' => $user['service'],
 								'user'    => $name,
