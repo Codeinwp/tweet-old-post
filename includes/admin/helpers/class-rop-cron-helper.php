@@ -78,13 +78,13 @@ class Rop_Cron_Helper {
 		if ( ! isset( $schedules['5min'] ) ) {
 			$schedules['5min'] = array(
 				'interval' => 5 * 60,
-				'display'  => __( 'Once every 5 minutes' ),
+				'display'  => __( 'Once every 5 minutes', 'tweet-old-post' ),
 			);
 		}
 		if ( ! isset( $schedules['30min'] ) ) {
 			$schedules['30min'] = array(
 				'interval' => 30 * 60,
-				'display'  => __( 'Once every 30 minutes' ),
+				'display'  => __( 'Once every 30 minutes', 'tweet-old-post' ),
 			);
 		}
 		return $schedules;

@@ -28,7 +28,7 @@ if ( $rop_custom_messages_group ) {
 			</td> 
 			<td width="70%">
 				<textarea placeholder="Description" cols="55" rows="5" name="rop_custom_description[]" style="width: 100%;">' . ( ( $field['rop_custom_description'] != '' ) ? esc_attr( $field['rop_custom_description'] ) : '' ) . '</textarea></td>
-			<td width="15%"><a class="button remove-row" href="#1">' . __( 'Remove Custom Message', 'twwet-old-post' ) . '</a></td>
+			<td width="15%"><a class="button remove-row" href="#1">' . __( 'Remove Custom Message', 'tweet-old-post' ) . '</a></td>
 		</tr>
 		';
 	}
@@ -54,8 +54,8 @@ if ( $rop_custom_messages_group ) {
 			<td width="70%">
 				<textarea placeholder="Description" cols="55" rows="5" name="rop_custom_description[]" style="width: 100%;"></textarea>
 			</td>
-			<td width="15%"><a class="button remove-row" href="#"><?php echo __( 'Remove Custom Message', 'twwet-old-post' ); ?></a></td>
+			<td width="15%"><a class="button remove-row" href="#"><?php echo __( 'Remove Custom Message', 'tweet-old-post' ); ?></a></td>
 		</tr>
 	</tbody>
 </table>
-<p><a id="add-row" class="button" href="#"><?php echo __( 'Add New Custom Message', 'twwet-old-post' ); ?></a></p>
+<p><a id="add-row" class="button" href="#"><?php echo __( 'Add New Custom Message', 'tweet-old-post' ); ?></a></p>
