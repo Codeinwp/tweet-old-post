@@ -326,8 +326,6 @@ class Test_ROP extends WP_UnitTestCase {
 		$settings = new Rop_Settings_Model();
 		$global_settings = new Rop_Global_Settings();
 
-		$this->assertEquals( $settings->get_settings(), $global_settings->get_default_settings() );
-
 		$new_settings = $settings->get_settings();
 
 		$new_settings['minimum_post_age'] = 1;
