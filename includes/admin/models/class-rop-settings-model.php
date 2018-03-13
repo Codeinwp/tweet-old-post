@@ -50,6 +50,9 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 		return $this->settings;
 	}
 
+	/**
+	 * Normalize settings.
+	 */
 	private function normalize_settings() {
 
 		$settings  = $this->settings;
@@ -57,7 +60,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 			'selected_taxonomies',
 			'available_taxonomies',
 			'selected_posts',
-			'available_posts'
+			'available_posts',
 		);
 
 		/**
@@ -79,12 +82,14 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 			if ( ! is_array( $settings[ $list ] ) ) {
 				continue;
 			}
-			$settings[ $list ] = array_map( function ( $value ) {
-				$value['value'] = intval( $value['value'] );
+			$settings[ $list ] = array_map(
+				function ( $value ) {
+					$value['value'] = intval( $value['value'] );
 
-				return $value;
+					return $value;
 
-			}, $settings[ $list ] );
+				}, $settings[ $list ]
+			);
 		}
 		$this->settings = $settings;
 
@@ -128,11 +133,13 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 		$post_types       = get_post_types( $args, 'objects' );
 		$post_types_array = array();
 		foreach ( $post_types as $type ) {
-			array_push( $post_types_array, array(
-				'name'     => $type->label,
-				'value'    => $type->name,
-				'selected' => false
-			) );
+			array_push(
+				$post_types_array, array(
+					'name'     => $type->label,
+					'value'    => $type->name,
+					'selected' => false,
+				)
+			);
 		}
 
 		return $post_types_array;

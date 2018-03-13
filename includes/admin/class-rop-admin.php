@@ -27,7 +27,7 @@ class Rop_Admin {
 	 *
 	 * @since    8.0.0
 	 * @access   private
-	 * @var      string    $plugin_name    The ID of this plugin.
+	 * @var      string $plugin_name The ID of this plugin.
 	 */
 	private $plugin_name;
 
@@ -36,7 +36,7 @@ class Rop_Admin {
 	 *
 	 * @since    8.0.0
 	 * @access   private
-	 * @var      string    $version    The current version of this plugin.
+	 * @var      string $version The current version of this plugin.
 	 */
 	private $version;
 
@@ -44,8 +44,9 @@ class Rop_Admin {
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    8.0.0
-	 * @param      string $plugin_name       The name of this plugin.
-	 * @param      string $version    The version of this plugin.
+	 *
+	 * @param      string $plugin_name The name of this plugin.
+	 * @param      string $version The version of this plugin.
 	 */
 	public function __construct( $plugin_name, $version ) {
 
@@ -75,7 +76,7 @@ class Rop_Admin {
 		$screen = get_current_screen();
 		if ( in_array( $screen->id, array( 'toplevel_page_TweetOldPost' ) ) ) {
 			wp_enqueue_style( $this->plugin_name . '_core', ROP_LITE_URL . 'assets/css/rop_core.css', array(), $this->version, 'all' );
-			wp_enqueue_style( $this->plugin_name, ROP_LITE_URL . 'assets/css/rop.css', array($this->plugin_name . '_core'), $this->version, 'all' );
+			wp_enqueue_style( $this->plugin_name, ROP_LITE_URL . 'assets/css/rop.css', array( $this->plugin_name . '_core' ), $this->version, 'all' );
 		}
 
 	}
@@ -114,8 +115,8 @@ class Rop_Admin {
 					'nonce' => wp_create_nonce( 'wp_rest' ),
 				);
 			}
-			$global_settings                     = new Rop_Global_Settings();
-			$array_nonce['has_pro']              = $global_settings->has_pro();
+			$global_settings        = new Rop_Global_Settings();
+			$array_nonce['has_pro'] = $global_settings->has_pro();
 			wp_localize_script( $this->plugin_name . '_main', 'ropApiSettings', $array_nonce );
 			wp_localize_script( $this->plugin_name . '_main', 'ROP_ASSETS_URL', ROP_LITE_URL . 'assets/' );
 			wp_enqueue_script( $this->plugin_name . '_main' );

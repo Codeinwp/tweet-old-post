@@ -84,6 +84,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 				continue;
 			}
 			$post_type_taxonomies = get_object_taxonomies( $post_type_name, 'objects' );
+			$post_type_taxonomies = $this->ignore_taxonomies( $post_type_taxonomies );
 			$taxonomies           = array();
 			foreach ( $post_type_taxonomies as $post_type_taxonomy ) {
 				$taxonomy = get_taxonomy( $post_type_taxonomy->name );
@@ -115,6 +116,21 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		}
 
 		return $taxonomies;
+	}
+
+	/**
+	 * Utility method to ignore certain taxonomies.
+	 *
+	 * @param array $taxes Taxonomies to filter.
+	 *
+	 * @return array Filtered taxonomy list.
+	 */
+	public function ignore_taxonomies( $taxes ) {
+		if ( isset( $taxes['post_format'] ) ) {
+			unset( $taxes['post_format'] );
+		}
+
+		return apply_filters( 'rop_ignore_taxonmies', $taxes );
 	}
 
 	/**
@@ -160,6 +176,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			);
 		}
 		wp_reset_postdata();
+
 		return $formatted_posts;
 	}
 
