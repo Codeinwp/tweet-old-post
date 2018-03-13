@@ -159,8 +159,8 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function save_settings( $data = array() ) {
+		self::$settings = $data;
 		unset( $data['available_post_types'] );
-
 		return $this->set( 'general_settings', $data );
 	}
 
