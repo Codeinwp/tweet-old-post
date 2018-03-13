@@ -31,7 +31,6 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 */
 	public function __construct() {
 		parent::__construct();
-		$this->get_settings();
 	}
 
 	/**
@@ -46,8 +45,97 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 		$global_settings = new Rop_Global_Settings();
 		$default         = $global_settings->get_default_settings();
 		$this->settings  = wp_parse_args( $this->get( 'general_settings' ), $default );
-		// $this->settings = wp_parse_args( array(), $default );
+		$this->normalize_settings();
+
 		return $this->settings;
+	}
+
+	private function normalize_settings() {
+
+		$settings  = $this->settings;
+		$list_keys = array(
+			'selected_taxonomies',
+			'available_taxonomies',
+			'selected_posts',
+			'available_posts'
+		);
+
+		/**
+		 * Load dynamic lists.
+		 */
+		$settings['available_taxonomies'] = $this->get_available_taxonomies();
+		$settings['available_post_types'] = $this->get_available_post_types();
+
+		/**
+		 * Cast list value id to int.
+		 */
+		foreach ( $list_keys as $list ) {
+			if ( ! isset( $settings[ $list ] ) ) {
+				continue;
+			}
+			if ( empty( $settings[ $list ] ) ) {
+				continue;
+			}
+			if ( ! is_array( $settings[ $list ] ) ) {
+				continue;
+			}
+			$settings[ $list ] = array_map( function ( $value ) {
+				$value['value'] = intval( $value['value'] );
+
+				return $value;
+
+			}, $settings[ $list ] );
+		}
+		$this->settings = $settings;
+
+	}
+
+	/**
+	 * Defines the available taxonomies.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return array
+	 */
+	public function get_available_taxonomies() {
+		$post_selector = new Rop_Posts_Selector_Model();
+		$taxonomies    = $post_selector->get_taxonomies( $this->get_selected_post_types() );
+
+		return $taxonomies;
+	}
+
+	/**
+	 * Getter for selected post types.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return mixed
+	 */
+	public function get_selected_post_types() {
+		return $this->settings['selected_post_types'];
+	}
+
+	/**
+	 * Defines the available post types.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return array
+	 */
+	public function get_available_post_types() {
+
+		$args             = array( 'public' => true, 'show_in_nav_menus' => true );
+		$post_types       = get_post_types( $args, 'objects' );
+		$post_types_array = array();
+		foreach ( $post_types as $type ) {
+			array_push( $post_types_array, array(
+				'name'     => $type->label,
+				'value'    => $type->name,
+				'selected' => false
+			) );
+		}
+
+		return $post_types_array;
 	}
 
 	/**
@@ -55,11 +143,14 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
 	 * @param   array $data The array data to save.
+	 *
 	 * @return mixed
 	 */
 	public function save_settings( $data = array() ) {
 		unset( $data['available_post_types'] );
+
 		return $this->set( 'general_settings', $data );
 	}
 
@@ -127,17 +218,6 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 */
 	public function get_more_than_once() {
 		return $this->settings['more_than_once'];
-	}
-
-	/**
-	 * Getter for selected post types.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return mixed
-	 */
-	public function get_selected_post_types() {
-		return $this->settings['selected_post_types'];
 	}
 
 	/**

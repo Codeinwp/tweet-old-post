@@ -93,7 +93,7 @@
 								<i>Post types available to share - what post types are available for share</i>
 							</div>
 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-								<multiple-select :options="postTypes" :selected="generalSettings.selected_post_types" :changedSelection="updatedPostTypes" />
+								<multiple-select :options="postTypes" :disabled="isPro" :selected="generalSettings.selected_post_types" :changedSelection="updatedPostTypes" />
 							</div>
 						</div>
 					</div>
@@ -191,6 +191,9 @@
 		computed: {
 			generalSettings: function () {
 				return this.$store.state.generalSettings
+			},
+			isPro: function () {
+				return this.$store.state.has_pro
 			},
 			postTypes: function () {
 				return this.$store.state.generalSettings.available_post_types

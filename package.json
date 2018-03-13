@@ -22,8 +22,8 @@
     "lasttranslator": "Themeisle Translate Team <friends@themeisle.com>"
   },
   "scripts": {
-    "dev": "WEBPACK_ENV=dev webpack --progress --colors --watch",
-    "build": "WEBPACK_ENV=production webpack"
+    "dev": "cross-env WEBPACK_ENV=dev webpack --progress --colors --watch",
+    "build": "cross-env WEBPACK_ENV=production webpack"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -38,6 +38,7 @@
     "eslint": "^4.8.0",
     "eslint-config-standard": "^10.2.1",
     "eslint-loader": "^1.9.0",
+    "cross-env": "^5.1.3",
     "eslint-plugin-html": "^3.2.2",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-node": "^5.2.0",

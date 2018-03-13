@@ -81,8 +81,8 @@ export default new Vuex.Store( {
 		],
 		licence: licenceType( ropApiSettings.has_pro ),
 		has_pro: stringToBoolean( ropApiSettings.has_pro ),
-		generalSettings: { 'available_post_types': ropApiSettings.available_post_types, 'available_taxonomies': ropApiSettings.available_taxonomies },
 		availableServices: [],
+		generalSettings: [],
 		authenticatedServices: [],
 		activeAccounts: [],
 		activePostFormat: [],
@@ -136,8 +136,6 @@ export default new Vuex.Store( {
 				break
 			case 'get_general_settings':
 				state.generalSettings = stateData
-				state.generalSettings.available_post_types = ropApiSettings.available_post_types
-				state.generalSettings.available_taxonomies = ropApiSettings.available_taxonomies
 				break
 			case 'update_selected_post_types':
 				state.generalSettings.selected_post_types = stateData

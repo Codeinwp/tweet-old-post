@@ -231,6 +231,31 @@ class Rop_Global_Settings {
 	);
 
 	/**
+	 * Method to destroy singleton.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 */
+	public static function destroy_instance() {
+		static::$instance = null;
+	}
+
+	/**
+	 * Method to retrieve instance of schedule.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return array
+	 */
+	public function get_default_schedule() {
+		$schedule               = self::instance()->schedule;
+		$settings_model         = new Rop_Settings_Model();
+		$schedule['interval_r'] = $settings_model->get_interval();
+
+		return $schedule;
+	}
+
+	/**
 	 * The instance method for the static class.
 	 * Defines and returns the instance of the static class.
 	 *
@@ -245,7 +270,6 @@ class Rop_Global_Settings {
 				'rop_available_services',
 				self::$instance->services_defaults
 			);
-
 			self::$instance->settings = apply_filters(
 				'rop_general_settings_defaults',
 				self::$instance->settings_defaults
@@ -267,17 +291,21 @@ class Rop_Global_Settings {
 	}
 
 	/**
-	 * Method to retrieve instance of schedule.
+	 * Method to check if the PRO classes exist.
 	 *
 	 * @since   8.0.0
 	 * @access  public
-	 * @return array
+	 * @return bool
 	 */
-	public function get_default_schedule() {
-		$schedule               = self::instance()->schedule;
-		$settings_model         = new Rop_Settings_Model();
-		$schedule['interval_r'] = $settings_model->get_interval();
-		return $schedule;
+	public function has_pro() {
+		// return 'business';
+		if ( class_exists( 'Rop_Pro' ) ) {
+			$pro = new Rop_Pro();
+
+			return $pro->is_business(); // TODO should return a string 'pro' or 'business' based on licence type
+		}
+
+		return false;
 	}
 
 	/**
@@ -285,13 +313,16 @@ class Rop_Global_Settings {
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
 	 * @param   bool|string $service_name The name of the service. Default false. Returns all.
+	 *
 	 * @return array|mixed
 	 */
 	public function get_default_post_format( $service_name = false ) {
 		if ( isset( $service_name ) && $service_name != false && isset( self::instance()->post_format[ $service_name ] ) ) {
 			return self::instance()->post_format[ $service_name ];
 		}
+
 		return self::instance()->post_format;
 	}
 
@@ -304,6 +335,24 @@ class Rop_Global_Settings {
 	 */
 	public function get_default_settings() {
 		return self::instance()->settings;
+	}
+
+	/**
+	 * Method to retrieve only the active services handle.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return array
+	 */
+	public function get_active_services_handle() {
+		$active = array();
+		foreach ( $this->get_available_services() as $handle => $data ) {
+			if ( $data['active'] == true ) {
+				array_push( $active, $handle );
+			}
+		}
+
+		return $active;
 	}
 
 	/**
@@ -324,24 +373,8 @@ class Rop_Global_Settings {
 			unset( $available_services['linkedin']['allowed_accounts'] );
 			unset( $available_services['tumblr']['allowed_accounts'] );
 		}
-		return $available_services;
-	}
 
-	/**
-	 * Method to retrieve only the active services handle.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return array
-	 */
-	public function get_active_services_handle() {
-		$active = array();
-		foreach ( $this->get_available_services() as $handle => $data ) {
-			if ( $data['active'] == true ) {
-				array_push( $active, $handle );
-			}
-		}
-		return $active;
+		return $available_services;
 	}
 
 	/**
@@ -356,71 +389,7 @@ class Rop_Global_Settings {
 		foreach ( $this->get_available_services() as $handle => $data ) {
 			array_push( $all, $handle );
 		}
+
 		return $all;
-	}
-
-	/**
-	 * Defines the available post types.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return array
-	 */
-	public function get_available_post_types() {
-		$has_pro = $this->has_pro();
-		$args    = array( 'exclude_from_search' => false );
-		if ( $has_pro === false ) {
-			$args = array( '_builtin' => true, 'exclude_from_search' => false );
-		}
-		$post_types       = get_post_types( $args, 'objects' );
-		$post_types_array = array();
-		foreach ( $post_types as $type ) {
-			if ( ! in_array( $type->name, array( 'attachment' ) ) ) {
-				array_push( $post_types_array, array( 'name' => $type->label, 'value' => $type->name, 'selected' => false ) );
-			}
-		}
-
-		return $post_types_array;
-	}
-
-	/**
-	 * Defines the available taxonomies.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return array
-	 */
-	public function get_available_taxonomies() {
-		$settings_model = new Rop_Settings_Model();
-		$post_selector  = new Rop_Posts_Selector_Model();
-		$taxonomies     = $post_selector->get_taxonomies( $settings_model->get_selected_post_types() );
-
-		return $taxonomies;
-	}
-
-	/**
-	 * Method to check if the PRO classes exist.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return bool
-	 */
-	public function has_pro() {
-		// return 'business';
-		if ( class_exists( 'Rop_Pro' ) ) {
-			$pro = new Rop_Pro();
-			return $pro->is_business(); // TODO should return a string 'pro' or 'business' based on licence type
-		}
-		return false;
-	}
-
-	/**
-	 * Method to destroy singleton.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 */
-	public static function destroy_instance() {
-		static::$instance = null;
 	}
 }
