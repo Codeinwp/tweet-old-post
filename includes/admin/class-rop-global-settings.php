@@ -116,7 +116,7 @@ class Rop_Global_Settings {
 		'default_interval'     => 8,
 		'minimum_post_age'     => 15,
 		'maximum_post_age'     => 60,
-		'number_of_posts'      => 5,
+		'number_of_posts'      => 1,
 		'more_than_once'       => true,
 		'available_post_types' => array(),
 		'selected_post_types'  => array( array( 'name' => 'Posts', 'value' => 'post', 'selected' => true ) ),

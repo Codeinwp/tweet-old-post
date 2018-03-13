@@ -2,7 +2,6 @@
 	<div class="tab-view">
 		<div class="panel-body" style="overflow: inherit;">
 			<h3>General Settings</h3>
-			<p>This is a <b>Vue.js</b> component.</p>
 			<div class="container">
 				<div class="columns">
 					<!-- Minimum age of posts available for sharing, in days

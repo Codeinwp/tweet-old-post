@@ -2,7 +2,6 @@
 	<div class="tab-view">
 		<div class="panel-body">
 			<h3>Accounts</h3>
-			<p>This is a <b>Vue.js</b> component.</p>
 			<div class="container">
 				<div class="columns">
 					<div class="column col-sm-12 col-md-12 col-lg-6">

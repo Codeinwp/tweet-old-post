@@ -46,6 +46,7 @@ class Rop_Post_Format_Model extends Rop_Model_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
 	 * @param   string $service_name The name of the service. Default false. Returns all.
 	 */
 	public function __construct( $service_name = false ) {
@@ -62,7 +63,9 @@ class Rop_Post_Format_Model extends Rop_Model_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
 	 * @param   string $account_id The account ID for which to retrieve options.
+	 *
 	 * @return array
 	 */
 	public function get_post_format( $account_id = false ) {
@@ -71,6 +74,7 @@ class Rop_Post_Format_Model extends Rop_Model_Abstract {
 		if ( $account_id != false && isset( $post_format_from_db[ $account_id ] ) ) {
 			$selected_post_format = $post_format_from_db[ $account_id ];
 		}
+
 		return wp_parse_args( $selected_post_format, $this->defaults );
 	}
 
@@ -79,13 +83,16 @@ class Rop_Post_Format_Model extends Rop_Model_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
 	 * @param   string $account_id The account ID for which to add post format.
 	 * @param   array  $data The post format data.
+	 *
 	 * @return bool
 	 */
 	public function add_update_post_format( $account_id, $data ) {
 		$data                             = wp_parse_args( $data, $this->defaults );
 		$this->post_format[ $account_id ] = $data;
+
 		return $this->set( 'post_format', $this->post_format );
 	}
 
@@ -94,11 +101,14 @@ class Rop_Post_Format_Model extends Rop_Model_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
 	 * @param   string $account_id The account ID for which to update post format.
+	 *
 	 * @return mixed
 	 */
 	public function remove_post_format( $account_id ) {
 		unset( $this->post_format[ $account_id ] );
+
 		return $this->set( 'post_format', $this->post_format );
 	}
 

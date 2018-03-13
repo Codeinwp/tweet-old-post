@@ -161,6 +161,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	public function save_settings( $data = array() ) {
 		self::$settings = $data;
 		unset( $data['available_post_types'] );
+
 		return $this->set( 'general_settings', $data );
 	}
 
@@ -195,7 +196,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_minimum_post_age() {
-		return self::$settings['minimum_post_age'];
+		return intval( self::$settings['minimum_post_age'] );
 	}
 
 	/**
@@ -206,7 +207,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_maximum_post_age() {
-		return self::$settings['maximum_post_age'];
+		return intval( self::$settings['maximum_post_age'] );
 	}
 
 	/**

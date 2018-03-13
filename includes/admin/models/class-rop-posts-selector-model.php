@@ -318,7 +318,11 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		$args    = $this->build_query_args( $post_types, $tax_queries, $exclude );
 		// print_r( $args );
 		// print_r( get_posts( $args ) );
-		return get_posts( $args );
+		$query = new WP_Query( $args );
+		$posts = $query->posts;
+		wp_reset_postdata();
+
+		return $posts;
 	}
 
 	/**
@@ -357,22 +361,24 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @return array
 	 */
 	private function build_query_args( $post_types, $tax_queries, $exclude ) {
-		$args = array(
-			'no_found_rows' => true,
-			'numberposts'   => '20',
-			'post_type'     => $post_types,
-			'tax_query'     => $tax_queries,
-			'exclude'       => $exclude,
-			'date_query'    => array(
-				'relation' => 'AND',
-				array(
-					'before' => date( 'Y-m-d', strtotime( '-' . $this->settings->get_minimum_post_age() . ' days' ) ),
-				),
-				array(
-					'after' => date( 'Y-m-d', strtotime( '-' . $this->settings->get_maximum_post_age() . ' days' ) ),
-				),
-			),
+		$args    = array(
+			'no_found_rows'  => true,
+			'posts_per_page' => '20',
+			'post_type'      => $post_types,
+			'tax_query'      => $tax_queries,
+			'exclude'        => $exclude,
 		);
+		$min_age = $this->settings->get_minimum_post_age();
+		if ( ! empty( $min_age ) ) {
+			$args['date_query'][]['before'] = date( 'Y-m-d', strtotime( '-' . $this->settings->get_minimum_post_age() . ' days' ) );
+		}
+		$max_age = $this->settings->get_maximum_post_age();
+		if ( ! empty( $max_age ) ) {
+			$args['date_query'][]['after'] = date( 'Y-m-d', strtotime( '-' . $this->settings->get_maximum_post_age() . ' days' ) );
+		}
+		if ( ! empty( $args['date_query'] ) ) {
+			$args['date_query']['relation'] = 'AND';
+		}
 		if ( empty( $tax_queries ) ) {
 			unset( $args['tax_query'] );
 		}

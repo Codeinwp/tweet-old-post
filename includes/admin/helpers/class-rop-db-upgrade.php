@@ -27,7 +27,7 @@ class Rop_Db_Upgrade {
 	 * @return bool
 	 */
 	public function is_upgrade_required() {
-		if ( ! get_option( 'rop_data' ) ) {
+		if ( ! empty( get_option( 'rop_data', '' ) ) ) {
 			return true;
 		}
 
@@ -413,7 +413,6 @@ class Rop_Db_Upgrade {
 
 			$setting['selected_post_types'] = $migrated_post_types;
 		}
-
 		$top_opt_omit_cats = null;
 		if ( $old_settings !== null && isset( $old_settings['top_opt_omit_cats'] ) ) {
 			$top_opt_omit_cats = $old_settings['top_opt_omit_cats'];
@@ -445,8 +444,9 @@ class Rop_Db_Upgrade {
 					array_push( $migrated_taxonomies, $to_push );
 				}
 			}
-
-			$setting['selected_taxonomies'] = $migrated_taxonomies;
+			if ( ! empty( $migrated_taxonomies ) ) {
+				$setting['selected_taxonomies'] = $migrated_taxonomies;
+			}
 		}
 
 		if ( $old_settings !== null && isset( $old_settings['top_opt_cat_filter'] ) ) {
