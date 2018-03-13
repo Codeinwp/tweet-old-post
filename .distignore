@@ -20,5 +20,6 @@ artifact
 composer.json
 composer.lock
 key.enc
+package-lock.json
 vue
 webpack.config.js
