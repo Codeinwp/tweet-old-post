@@ -67,7 +67,7 @@
 							</div>
 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 								<div class="form-group">
-									<input class="form-input" type="number" v-model="post_format.custom_meta_field" value="" placeholder="" />
+									<input class="form-input" type="text" v-model="post_format.custom_meta_field" value="" placeholder="" />
 								</div>
 							</div>
 						</div>
@@ -169,7 +169,7 @@
 							</div>
 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 								<div class="form-group">
-									<input class="form-input" type="number" v-model="post_format.url_meta_key" value="" placeholder="" />
+									<input class="form-input" type="text" v-model="post_format.url_meta_key" value="" placeholder="" />
 								</div>
 							</div>
 						</div>
@@ -307,19 +307,7 @@
 							</div>
 						</div>
 						<hr/>
-						<div class="columns">
-							<div class="column col-sm-12 col-md-12 col-lg-12">
-								<div class="columns">
-									<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-										<b>Stats:</b><br/>
-										<i>Available char for post content</i>
-									</div>
-									<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-										{{computed_chars}}
-									</div>
-								</div>
-							</div>
-						</div>
+					 
 						<hr/>
 					</div>
 				</div>
