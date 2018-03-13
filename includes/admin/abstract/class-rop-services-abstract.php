@@ -96,15 +96,6 @@ abstract class Rop_Services_Abstract {
 	public abstract function expose_endpoints();
 
 	/**
-	 * Method to define the api.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return mixed
-	 */
-	public abstract function set_api();
-
-	/**
 	 * Method to retrieve the api object.
 	 *
 	 * @since   8.0.0
@@ -112,6 +103,15 @@ abstract class Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public abstract function get_api();
+
+	/**
+	 * Method to define the api.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return mixed
+	 */
+	public abstract function set_api();
 
 	/**
 	 * Method for authorizing the service.
@@ -154,19 +154,20 @@ abstract class Rop_Services_Abstract {
 	public abstract function authenticate();
 
 	/**
-	 * Method to request a token from api.
+	 * Returns information for the current service.
 	 *
 	 * @since   8.0.0
-	 * @access  protected
+	 * @access  public
 	 * @return mixed
 	 */
-	protected abstract function request_api_token();
+	public abstract function get_service();
 
 	/**
 	 * Method to register credentials for the service.
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
 	 * @param   array $args The credentials array.
 	 */
 	public abstract function set_credentials( $args );
@@ -176,18 +177,45 @@ abstract class Rop_Services_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
 	 * @param   array $post_details The post details to be published by the service.
 	 * @param   array $args Optional arguments needed by the method.
+	 *
 	 * @return mixed
 	 */
 	public abstract function share( $post_details, $args = array() );
+
+	/**
+	 * Method to retrieve an endpoint URL.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 *
+	 * @param   string $path The endpoint path.
+	 *
+	 * @return mixed
+	 */
+	public function get_endpoint_url( $path = '' ) {
+		return rest_url( '/tweet-old-post/v8/' . $this->service_name . '/' . $path );
+	}
+
+	/**
+	 * Method to request a token from api.
+	 *
+	 * @since   8.0.0
+	 * @access  protected
+	 * @return mixed
+	 */
+	protected abstract function request_api_token();
 
 	/**
 	 * Method to generate url for service post share.
 	 *
 	 * @since   8.0.0rc
 	 * @access  protected
+	 *
 	 * @param   array $post_details The post details to be published by the service.
+	 *
 	 * @return string
 	 */
 	protected function get_url( $post_details ) {
@@ -211,6 +239,7 @@ abstract class Rop_Services_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
 	 * @param   string $path The path for the endpoint.
 	 * @param   string $callback The method name from the service class.
 	 * @param   string $method The request type ( GET, POST, PUT, DELETE etc. ).
@@ -218,36 +247,18 @@ abstract class Rop_Services_Abstract {
 	protected function register_endpoint( $path, $callback, $method = 'GET' ) {
 		add_action(
 			'rest_api_init',
-			function() use ( $path, $callback, $method ) {
+			function () use ( $path, $callback, $method ) {
 				register_rest_route(
 					'tweet-old-post/v8', '/' . $this->service_name . '/' . $path, array(
-						'methods'  => $method,
-						'callback' => array($this, $callback),
+						'methods'             => $method,
+						'callback'            => array( $this, $callback ),
+						'permission_callback' => function () {
+							return current_user_can( 'manage_options' );
+						},
 					)
 				);
 			}
 		);
 	}
-
-	/**
-	 * Method to retrieve an endpoint URL.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @param   string $path The endpoint path.
-	 * @return mixed
-	 */
-	public function get_endpoint_url( $path = '' ) {
-		return rest_url( '/tweet-old-post/v8/' . $this->service_name . '/' . $path );
-	}
-
-	/**
-	 * Returns information for the current service.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return mixed
-	 */
-	public abstract function get_service();
 
 }
