@@ -21,7 +21,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @access  private
 	 * @var     array $settings The settings array.
 	 */
-	private $settings = array();
+	private static $settings = array();
 
 	/**
 	 * Rop_Settings_Model constructor.
@@ -31,6 +31,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 */
 	public function __construct() {
 		parent::__construct();
+		$this->get_settings();
 	}
 
 	/**
@@ -42,12 +43,14 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return array
 	 */
 	public function get_settings() {
-		$global_settings = new Rop_Global_Settings();
-		$default         = $global_settings->get_default_settings();
-		$this->settings  = wp_parse_args( $this->get( 'general_settings' ), $default );
-		$this->normalize_settings();
+		if ( empty( self::$settings ) ) {
+			$global_settings = new Rop_Global_Settings();
+			$default         = $global_settings->get_default_settings();
+			self::$settings  = wp_parse_args( $this->get( 'general_settings' ), $default );
+			$this->normalize_settings();
+		}
 
-		return $this->settings;
+		return self::$settings;
 	}
 
 	/**
@@ -55,7 +58,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 */
 	private function normalize_settings() {
 
-		$settings  = $this->settings;
+		$settings  = self::$settings;
 		$list_keys = array(
 			'selected_taxonomies',
 			'available_taxonomies',
@@ -91,7 +94,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 				}, $settings[ $list ]
 			);
 		}
-		$this->settings = $settings;
+		self::$settings = $settings;
 
 	}
 
@@ -117,7 +120,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_selected_post_types() {
-		return $this->settings['selected_post_types'];
+		return self::$settings['selected_post_types'];
 	}
 
 	/**
@@ -169,7 +172,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_interval() {
-		return $this->settings['default_interval'];
+		return self::$settings['default_interval'];
 	}
 
 	/**
@@ -180,7 +183,8 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_ga_tracking() {
-		return $this->settings['ga_tracking'];
+
+		return isset( self::$settings['ga_tracking'] ) ? self::$settings['ga_tracking'] : false;
 	}
 
 	/**
@@ -191,7 +195,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_minimum_post_age() {
-		return $this->settings['minimum_post_age'];
+		return self::$settings['minimum_post_age'];
 	}
 
 	/**
@@ -202,7 +206,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_maximum_post_age() {
-		return $this->settings['maximum_post_age'];
+		return self::$settings['maximum_post_age'];
 	}
 
 	/**
@@ -213,7 +217,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_number_of_posts() {
-		return $this->settings['number_of_posts'];
+		return self::$settings['number_of_posts'];
 	}
 
 	/**
@@ -224,7 +228,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_more_than_once() {
-		return $this->settings['more_than_once'];
+		return self::$settings['more_than_once'];
 	}
 
 	/**
@@ -235,7 +239,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_selected_taxonomies() {
-		return $this->settings['selected_taxonomies'];
+		return self::$settings['selected_taxonomies'];
 	}
 
 	/**
@@ -246,7 +250,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_exclude_taxonomies() {
-		return $this->settings['exclude_taxonomies'];
+		return self::$settings['exclude_taxonomies'];
 	}
 
 	/**
@@ -257,7 +261,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_selected_posts() {
-		return $this->settings['selected_posts'];
+		return self::$settings['selected_posts'];
 	}
 
 	/**
@@ -268,7 +272,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_exclude_posts() {
-		return $this->settings['exclude_posts'];
+		return self::$settings['exclude_posts'];
 	}
 
 	/**
@@ -279,7 +283,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_post_limit() {
-		return $this->settings['post_limit'];
+		return self::$settings['post_limit'];
 	}
 
 	/**
@@ -290,7 +294,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_beta_user() {
-		return $this->settings['beta_user'];
+		return self::$settings['beta_user'];
 	}
 
 	/**
@@ -301,7 +305,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_remote_check() {
-		return $this->settings['remote_check'];
+		return self::$settings['remote_check'];
 	}
 
 	/**
@@ -312,6 +316,6 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_custom_messages() {
-		return $this->settings['custom_messages'];
+		return self::$settings['custom_messages'];
 	}
 }
