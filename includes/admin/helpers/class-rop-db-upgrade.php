@@ -18,6 +18,12 @@
  * @link    https://themeisle.com/
  */
 class Rop_Db_Upgrade {
+	/**
+	 * Database version used for upgrading purposes.
+	 *
+	 * @var string $db_version Database version.
+	 */
+	private $db_version = '1.0.0';
 
 	/**
 	 * Method to check if upgrade is required.
@@ -27,7 +33,8 @@ class Rop_Db_Upgrade {
 	 * @return bool
 	 */
 	public function is_upgrade_required() {
-		if ( ! empty( get_option( 'rop_data', '' ) ) ) {
+		$upgrade_check = get_option( 'rop_data', '' );
+		if ( ! empty( $upgrade_check ) ) {
 			return true;
 		}
 
@@ -42,6 +49,7 @@ class Rop_Db_Upgrade {
 	 * @access  public
 	 */
 	public function do_upgrade() {
+		update_option( 'rop_db_version', $this->db_version );
 		$this->migrate_accounts();
 		$this->migrate_settings();
 	}
