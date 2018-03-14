@@ -21,6 +21,14 @@
 class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 	/**
+	 * An instance of authenticated Facebook user.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @var     array $user An instance of the current user.
+	 */
+	public $user;
+	/**
 	 * Defines the service name in slug format.
 	 *
 	 * @since   8.0.0
@@ -28,7 +36,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @var     string $service_name The service name.
 	 */
 	protected $service_name = 'facebook';
-
 	/**
 	 * Defines the service permissions needed.
 	 *
@@ -37,7 +44,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @var     array $permissions The Facebook required permissions.
 	 */
 	private $permissions = array( 'email', 'manage_pages', 'publish_pages' );
-
 	/**
 	 * Holds the temp data for the authenticated service.
 	 *
@@ -46,15 +52,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @var     array $service The temporary data of the authenticated service.
 	 */
 	private $service = array();
-
-	/**
-	 * An instance of authenticated Facebook user.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 * @var     array $user An instance of the current user.
-	 */
-	public $user;
 
 	/**
 	 * Method to inject functionality into constructor.
@@ -79,36 +76,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	public function expose_endpoints() {
 		$this->register_endpoint( 'authorize', 'authorize' );
 		$this->register_endpoint( 'authenticate', 'authenticate' );
-	}
-
-
-	/**
-	 * Method to define the api.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @param   string $app_id The Facebook APP ID. Default empty.
-	 * @param   string $secret The Facebook APP Secret. Default empty.
-	 * @return mixed
-	 */
-	public function set_api( $app_id = '', $secret = '' ) {
-		$this->api = new \Facebook\Facebook( array( 'app_id' => $app_id, 'app_secret' => $secret, 'default_graph_version' => 'v2.10' ) );
-	}
-
-	/**
-	 * Method to retrieve the api object.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @param   string $app_id The Facebook APP ID. Default empty.
-	 * @param   string $secret The Facebook APP Secret. Default empty.
-	 * @return mixed
-	 */
-	public function get_api( $app_id = '', $secret = '' ) {
-		if ( $this->api == null ) {
-			$this->set_api( $app_id, $secret );
-		}
-		return $this->api;
 	}
 
 	/**
@@ -156,6 +123,46 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		parent::authorize();
 		// echo '<script>window.setTimeout("window.close()", 500);</script>';
+	}
+
+	/**
+	 * Method to retrieve the api object.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 *
+	 * @param   string $app_id The Facebook APP ID. Default empty.
+	 * @param   string $secret The Facebook APP Secret. Default empty.
+	 *
+	 * @return \Facebook\Facebook
+	 */
+	public function get_api( $app_id = '', $secret = '' ) {
+		if ( $this->api == null ) {
+			$this->set_api( $app_id, $secret );
+		}
+
+		return $this->api;
+	}
+
+	/**
+	 * Method to define the api.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 *
+	 * @param   string $app_id The Facebook APP ID. Default empty.
+	 * @param   string $secret The Facebook APP Secret. Default empty.
+	 *
+	 * @return mixed
+	 */
+	public function set_api( $app_id = '', $secret = '' ) {
+		$this->api = new \Facebook\Facebook(
+			array(
+				'app_id'                => $app_id,
+				'app_secret'            => $secret,
+				'default_graph_version' => 'v2.10',
+			)
+		);
 	}
 
 	/**
@@ -219,6 +226,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 					),
 					'available_accounts' => $this->get_pages( $user ),
 				);
+
 				return true;
 			}
 
@@ -229,12 +237,59 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	}
 
 	/**
+	 * Method to register credentials for the service.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 *
+	 * @param   array $args The credentials array.
+	 */
+	public function set_credentials( $args ) {
+		$this->credentials = $args;
+	}
+
+	/**
+	 * Utility method to retrieve pages from the Facebook account.
+	 *
+	 * @codeCoverageIgnore
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 *
+	 * @param   object $user The Facebook user.
+	 *
+	 * @return array
+	 */
+	public function get_pages( $user ) {
+		$pages_array = array();
+		$api         = $this->get_api();
+		$pages       = $api->get( '/me/accounts' );
+		$pages       = $pages->getGraphEdge()->asArray();
+
+		foreach ( $pages as $key ) {
+			$img = $api->sendRequest( 'GET', '/' . $key['id'] . '/picture', array( 'redirect' => false ) );
+			$img = $img->getGraphNode()->asArray();
+
+			$pages_array[] = array(
+				'id'           => $key['id'],
+				'name'         => $key['name'],
+				'account'      => $user->getEmail(),
+				'img'          => $img['url'],
+				'active'       => false,
+				'access_token' => $key['access_token'],
+			);
+		}
+
+		return $pages_array;
+	}
+
+	/**
 	 * Method to re authenticate an user based on provided credentials.
 	 * Used in DB upgrade.
 	 *
-	 * @param string $app_id    The app id.
-	 * @param string $secret    The app secret.
-	 * @param string $token     The token.
+	 * @param string $app_id The app id.
+	 * @param string $secret The app secret.
+	 * @param string $token The token.
 	 *
 	 * @return bool
 	 */
@@ -251,7 +306,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		try {
 			// Returns a `Facebook\FacebookResponse` object
-			$response = $api->get( '/me?fields=id,name,email', $token );
+			$response = $api->get( '/me?fields=id,name,email,picture', $token );
 		} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
 			$this->error->throw_exception( '400 Bad Request', 'Graph returned an error: ' . $e->getMessage() );
 		} catch ( Facebook\Exceptions\FacebookSDKException $e ) {
@@ -261,6 +316,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		$user       = $response->getGraphUser();
 		$this->user = $user;
 		if ( $user->getId() ) {
+
 			$this->service = array(
 				'id'                 => $user->getId(),
 				'service'            => $this->service_name,
@@ -277,7 +333,19 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 						'private' => true,
 					),
 				),
-				'available_accounts' => $this->get_pages( $user ),
+				'available_accounts' => array_merge(
+					array(
+						array(
+							'id'           => $user->getId(),
+							'name'         => $user['name'],
+							'account'      => $user->getEmail(),
+							'img'          => $user->getPicture()->getUrl(),
+							'active'       => false,
+							'access_token' => $token,
+						),
+					),
+					$this->get_pages( $user )
+				),
 			);
 
 			return true;
@@ -293,7 +361,9 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  protected
+	 *
 	 * @param   string $token A Facebook token to use.
+	 *
 	 * @return mixed
 	 */
 	public function request_api_token( $token = '' ) {
@@ -304,6 +374,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		if ( isset( $token ) && $token != '' && $token != null ) {
 			$longAccessToken = new \Facebook\Authentication\AccessToken( $this->token );
 			$token           = $longAccessToken->getValue();
+
 			return $token->getValue();
 		}
 
@@ -319,24 +390,15 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			$expires         = time() + ( 120 * 24 * 60 * 60 ); // 120 days; 24 hours; 60 minutes; 60 seconds.
 			$longAccessToken = new \Facebook\Authentication\AccessToken( $accessToken, $expires );
 			$token           = $longAccessToken->getValue();
+
 			return $token->getValue();
 		} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
 			$this->error->throw_exception( '400 Bad Request', 'Graph returned an error: ' . $e->getMessage() );
 		} catch ( Facebook\Exceptions\FacebookSDKException $e ) {
 			$this->error->throw_exception( '400 Bad Request', 'Facebook SDK returned an error: ' . $e->getMessage() );
 		}
-		return false;
-	}
 
-	/**
-	 * Method to register credentials for the service.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @param   array $args The credentials array.
-	 */
-	public function set_credentials( $args ) {
-		$this->credentials = $args;
+		return false;
 	}
 
 	/**
@@ -355,7 +417,9 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
 	 * @param   array $data The data from the user.
+	 *
 	 * @return mixed
 	 */
 	public function sign_in_url( $data ) {
@@ -369,63 +433,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		$api    = $this->get_api( $credentials['app_id'], $credentials['secret'] );
 		$helper = $api->getRedirectLoginHelper();
 		$url    = $helper->getLoginUrl( $this->get_endpoint_url( 'authorize' ), $this->permissions );
+
 		return $url;
-	}
-
-	/**
-	 * Utility method to retrieve pages from the Facebook account.
-	 *
-	 * @codeCoverageIgnore
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @param   object $user The Facebook user.
-	 * @return array
-	 */
-	public function get_pages( $user ) {
-		$pages_array = array();
-		$api         = $this->get_api();
-		$pages       = $api->get( '/me/accounts' );
-		$pages       = $pages->getGraphEdge()->asArray();
-		foreach ( $pages as $key ) {
-			$img = $api->sendRequest( 'GET', '/' . $key['id'] . '/picture', array( 'redirect' => false ) );
-			$img = $img->getGraphNode()->asArray();
-
-			$pages_array[] = array(
-				'id'           => $key['id'],
-				'name'         => $key['name'],
-				'account'      => $user->getEmail(),
-				'img'          => $img['url'],
-				'active'       => false,
-				'access_token' => $key['access_token'],
-			);
-		}
-		return $pages_array;
-	}
-
-	/**
-	 * Method to try and share on facebook.
-	 * Moved to a separated method to drive the NPath complexity down.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 * @param   array  $new_post The Facebook post format array.
-	 * @param   int    $page_id The Facebook page ID.
-	 * @param   string $token The Facebook page token.
-	 * @return bool
-	 */
-	private function try_post( $new_post, $page_id, $token ) {
-		$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
-		$api = $this->get_api();
-
-		try {
-			$api->post( '/' . $page_id . '/feed', $new_post, $token );
-			return true;
-		} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
-			return false;
-		} catch ( Facebook\Exceptions\FacebookSDKException $e ) {
-			return false;
-		}
 	}
 
 	/**
@@ -433,8 +442,10 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
 	 * @param   array $post_details The post details to be published by the service.
 	 * @param   array $args Optional arguments needed by the method.
+	 *
 	 * @return mixed
 	 */
 	public function share( $post_details, $args = array() ) {
@@ -461,6 +472,34 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		}
 
 		return $this->try_post( $new_post, $args['id'], $args['access_token'] );
+	}
+
+	/**
+	 * Method to try and share on facebook.
+	 * Moved to a separated method to drive the NPath complexity down.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 *
+	 * @param   array  $new_post The Facebook post format array.
+	 * @param   int    $page_id The Facebook page ID.
+	 * @param   string $token The Facebook page token.
+	 *
+	 * @return bool
+	 */
+	private function try_post( $new_post, $page_id, $token ) {
+		$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
+		$api = $this->get_api();
+
+		try {
+			$api->post( '/' . $page_id . '/feed', $new_post, $token );
+
+			return true;
+		} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
+			return false;
+		} catch ( Facebook\Exceptions\FacebookSDKException $e ) {
+			return false;
+		}
 	}
 
 }

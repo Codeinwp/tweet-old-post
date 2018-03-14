@@ -26,6 +26,13 @@ class Rop_Db_Upgrade {
 	private $db_version = '1.0.0';
 
 	/**
+	 * The database option key.
+	 *
+	 * @var string $db_namespace Database namespace.
+	 */
+	private $db_namespace = 'rop_db_version';
+
+	/**
 	 * Method to check if upgrade is required.
 	 *
 	 * @since   8.0.0
@@ -33,14 +40,34 @@ class Rop_Db_Upgrade {
 	 * @return bool
 	 */
 	public function is_upgrade_required() {
+
 		$upgrade_check = get_option( 'rop_data', '' );
-		if ( ! empty( $upgrade_check ) ) {
-			return true;
+		if ( empty( $upgrade_check ) ) {
+			return false;
+		}
+		$db_version = $this->get_db_version();
+		if ( version_compare( $db_version, $this->db_version ) === 0 ) {
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 
+	/**
+	 * Get database version.
+	 *
+	 * @return string Database version string.
+	 */
+	private function get_db_version() {
+		$db_version_cache = wp_cache_get( $this->db_namespace, 'rop' );
+		if ( ! empty( $db_version_cache ) ) {
+			return $db_version_cache;
+		}
+
+		$db_version = get_option( $this->db_namespace, '' );
+
+		return $db_version;
+	}
 
 	/**
 	 * Method to do the required upgrade.
@@ -49,9 +76,10 @@ class Rop_Db_Upgrade {
 	 * @access  public
 	 */
 	public function do_upgrade() {
-		update_option( 'rop_db_version', $this->db_version );
 		$this->migrate_accounts();
 		$this->migrate_settings();
+		update_option( $this->db_namespace, $this->db_version, 'no' );
+		wp_cache_delete( $this->db_namespace, 'rop' );
 	}
 
 	/**

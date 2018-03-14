@@ -18098,7 +18098,6 @@ module.exports = {
 			return this.placeHolderText;
 		},
 		is_disabled: function is_disabled() {
-			console.log(this.disabled);
 			return !this.disabled;
 		},
 		has_results: function has_results() {

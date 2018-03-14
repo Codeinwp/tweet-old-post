@@ -152,7 +152,6 @@
 				return this.placeHolderText
 			},
 			is_disabled: function () {
-				console.log(this.disabled);
 				return !this.disabled;
 			},
 			has_results: function () {
