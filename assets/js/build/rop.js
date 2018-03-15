@@ -15705,18 +15705,20 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 	<div class="tab-view">
 // 		<div class="panel-body">
 // 			<h3>Accounts</h3>
+// 			<div class="columns">
+// 				<div class="column col-sm-12 col-md-12 col-xl-12 col-12 text-center">
+// 					<b>New Service</b><br/>
+// 					<i>Select a service and sign in with an account for that service.</i>
+// 				</div>
+// 				<div class="column col-sm-12 col-md-12 col-xl-6 col-4 text-center centered">
+// 					<sign-in-btn></sign-in-btn>
+// 				</div>
+// 			</div>
 // 			<div class="container">
+//
 // 				<div class="columns">
-// 					<div class="column col-sm-12 col-md-12 col-lg-6">
-// 						<div class="columns">
-// 							<div class="column col-sm-12 col-md-12 col-xl-6 col-8 text-right">
-// 								<b>New Service</b><br/>
-// 								<i>Select a service and sign in with an account for that service.</i>
-// 							</div>
-// 							<div class="column col-sm-12 col-md-12 col-xl-6 col-4 text-left">
-// 								<sign-in-btn></sign-in-btn>
-// 							</div>
-// 						</div>
+// 					<!--<div class="column col-sm-12 col-md-12 col-lg-6">
+//
 // 						<div class="columns">
 // 							<div class="column col-sm-12 col-md-12 col-lg-12 text-left">
 // 								<hr/>
@@ -15728,12 +15730,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 									<p class="empty-title h5">No authenticated service!</p>
 // 									<p class="empty-subtitle">Add one from the <b>"New Service"</b> section.</p>
 // 								</div>
-// 								<service-tile v-for="service in authenticated_services" :key="service.id" :service="service"></service-tile>
+// 								<service-tile v-for="service in authenticated_services" :key="service.id"
+// 								              :service="service"></service-tile>
 // 							</div>
 // 						</div>
-// 					</div>
-// 					<div class="column col-sm-12 col-md-12 col-lg-6 text-left">
-// 						<hr style="margin-top: 45px" />
+// 					</div>-->
+// 					<div class="column col-sm-12 col-md-12 col-lg-12 text-left">
+// 						<hr style="margin-top: 45px"/>
 // 						<h5>Active Accounts</h5>
 // 						<div class="empty" v-if="active_accounts.length == 0">
 // 							<div class="empty-icon">
@@ -15746,19 +15749,25 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 							<service-user-tile :account_data="account" :account_id="id"></service-user-tile>
 // 							<div class="divider"></div>
 // 						</div>
+// 						<div class="inactive-accounts" v-for="( account, id ) in inactive_accounts">
+// 							<service-user-tile :account_data="account" :account_id="id"></service-user-tile>
+// 							<div class="divider"></div>
+// 						</div>
 // 					</div>
 // 				</div>
 // 			</div>
 // 			<div class="columns">
 // 				<div class="column col-12">
 // 					<h4><i class="fa fa-info-circle"></i> Info</h4>
-// 					<p><i>Authenticate a new service (eg. Facebook, Twitter etc. ), select the accounts you want to add from that service and <b>activate</b> them. Only the accounts displayed in the <b>"Active accounts"</b> section will be used.</i></p>
+// 					<p><i>Authenticate a new service (eg. Facebook, Twitter etc. ), select the accounts you want to add
+// 						from that service and <b>activate</b> them. Only the accounts displayed in the <b>"Active
+// 							accounts"</b> section will be used.</i></p>
 // 				</div>
 // 			</div>
 // 		</div>
-//         <div class="panel-footer">
-//             <cron-button></cron-button>
-//         </div>
+// 		<div class="panel-footer">
+// 			<cron-button></cron-button>
+// 		</div>
 // 	</div>
 // </template>
 //
@@ -15766,8 +15775,32 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 module.exports = {
 	name: 'account-view',
 	computed: {
-		authenticated_services: function authenticated_services() {
-			return this.$store.state.authenticatedServices;
+		inactive_accounts: function inactive_accounts() {
+			var inactive_accounts = [];
+			var services = this.$store.state.authenticatedServices;
+
+			var _loop = function _loop(key) {
+				if (!services.hasOwnProperty(key)) {
+					return 'continue';
+				}
+				var service = services[key];
+				service.available_accounts.map(function (account) {
+					if (account.active === true) {
+						return;
+					}
+					account.service = service.service;
+
+					inactive_accounts.push(account);
+				});
+			};
+
+			for (var key in services) {
+				var _ret = _loop(key);
+
+				if (_ret === 'continue') continue;
+			}
+			console.log(inactive_accounts);
+			return inactive_accounts;
 		},
 		active_accounts: function active_accounts() {
 			return this.$store.state.activeAccounts;
@@ -16477,7 +16510,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, "\n\n\t#rop_core .btn.btn-danger[_v-ba3b2af6] {\n\t\tbackground-color: #d50000;\n\t\tcolor: #efefef;\n\t\tborder-color: #b71c1c;\n\t}\n\n\t#rop_core .btn.btn-danger[_v-ba3b2af6]:hover, #rop_core[_v-ba3b2af6] {\n\t\tbackground-color: #efefef;\n\t\tcolor: #d50000;\n\t\tborder-color: #b71c1c;\n\t}\n\n\t#rop_core .btn.btn-info[_v-ba3b2af6] {\n\t\tbackground-color: #2196f3;\n\t\tcolor: #efefef;\n\t\tborder-color: #1565c0;\n\t}\n\n\t#rop_core .btn.btn-info[_v-ba3b2af6]:hover, #rop_core[_v-ba3b2af6] {\n\t\tbackground-color: #efefef;\n\t\tcolor: #2196f3;\n\t\tborder-color: #1565c0;\n\t}\n\n", ""]);
+exports.push([module.i, "\n\t\n\t#rop_core .btn.btn-danger[_v-ba3b2af6] {\n\t\tbackground-color: #d50000;\n\t\tcolor: #efefef;\n\t\tborder-color: #b71c1c;\n\t}\n\t\n\t#rop_core .btn.btn-danger[_v-ba3b2af6]:hover, #rop_core[_v-ba3b2af6] {\n\t\tbackground-color: #efefef;\n\t\tcolor: #d50000;\n\t\tborder-color: #b71c1c;\n\t}\n\t\n\t#rop_core .btn.btn-info[_v-ba3b2af6] {\n\t\tbackground-color: #2196f3;\n\t\tcolor: #efefef;\n\t\tborder-color: #1565c0;\n\t}\n\t\n\t#rop_core .btn.btn-info[_v-ba3b2af6]:hover, #rop_core[_v-ba3b2af6] {\n\t\tbackground-color: #efefef;\n\t\tcolor: #2196f3;\n\t\tborder-color: #1565c0;\n\t}\n\n", ""]);
 
 // exports
 
@@ -16503,15 +16536,17 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 	<div class="service-tile">
 // 		<label class="show-md hide-xl"><b>{{service_url}}/</b></label>
 // 		<div class="input-group">
-// 			<button class="btn input-group-btn btn-danger" @click="removeService()" >
+// 			<button class="btn input-group-btn btn-danger" @click="removeService()">
 // 				<i class="fa fa-fw fa-trash" aria-hidden="true"></i>
 // 			</button>
-// 			<button class="btn input-group-btn btn-info" @click="toggleCredentials()" v-if="service.public_credentials" >
+// 			<button class="btn input-group-btn btn-info" @click="toggleCredentials()" v-if="service.public_credentials">
 // 				<i class="fa fa-fw fa-info-circle" aria-hidden="true"></i>
 // 			</button>
 // 			<span class="input-group-addon hide-md" style="min-width: 115px; text-align: right;">{{service_url}}/</span>
-// 			<service-autocomplete :accounts="service.available_accounts" :to_be_activated="to_be_activated" :disabled="isDisabled" :limit="limit"></service-autocomplete>
-// 			<button class="btn input-group-btn" :class="serviceClass" @click="activateSelected( service.id )" :disabled="isDisabled">
+// 			<service-autocomplete :accounts="available_accounts" :to_be_activated="to_be_activated"
+// 			                      :disabled="isDisabled" :limit="limit"></service-autocomplete>
+// 			<button class="btn input-group-btn" :class="serviceClass" @click="activateSelected( service.id )"
+// 			        :disabled="isDisabled">
 // 				<i class="fa fa-fw fa-plus" aria-hidden="true"></i> <span class="hide-md">Activate</span>
 // 			</button>
 // 		</div>
@@ -16527,7 +16562,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 							<label class="form-label" :for="credentialID(index)">{{credential.name}}:</label>
 // 						</div>
 // 						<div class="col-9">
-// 							<secret-input :id="credentialID(index)" :value="credential.value" :secret="credential.private" />
+// 							<secret-input :id="credentialID(index)" :value="credential.value"
+// 							              :secret="credential.private"/>
 // 						</div>
 // 					</div>
 // 				</div>
@@ -16572,6 +16608,10 @@ module.exports = {
 			}
 
 			return 'service.url';
+		},
+		available_accounts: function available_accounts() {
+			console.log('Available accounts changed');
+			return this.service.available_accounts;
 		},
 		serviceName: function serviceName() {
 			return capitalizeFirstLetter(this.service.service);
@@ -16630,8 +16670,17 @@ module.exports = {
 		activateSelected: function activateSelected(serviceId) {
 			var _this = this;
 
-			this.$store.dispatch('fetchAJAXPromise', { req: 'update_active_accounts', data: { service_id: serviceId, service: this.service.service, to_be_activated: this.to_be_activated, current_active: this.$store.state.activeAccounts } }).then(function (response) {
+			this.$store.dispatch('fetchAJAXPromise', {
+				req: 'update_active_accounts',
+				data: {
+					service_id: serviceId,
+					service: this.service.service,
+					to_be_activated: this.to_be_activated,
+					current_active: this.$store.state.activeAccounts
+				}
+			}).then(function (response) {
 				_this.$store.dispatch('fetchAJAX', { req: 'get_queue' });
+				_this.$store.dispatch('fetchAJAX', { req: 'get_authenticated_services' });
 			}, function (error) {
 				console.error('Got nothing from server. Prompt user to check internet connection and try again', error);
 			});
@@ -16639,7 +16688,10 @@ module.exports = {
 		removeService: function removeService() {
 			var _this2 = this;
 
-			this.$store.dispatch('fetchAJAXPromise', { req: 'remove_service', data: { id: this.service.id, service: this.service.service } }).then(function (response) {
+			this.$store.dispatch('fetchAJAXPromise', {
+				req: 'remove_service',
+				data: { id: this.service.id, service: this.service.service }
+			}).then(function (response) {
 				_this2.$store.dispatch('fetchAJAXPromise', { req: 'get_active_accounts' }).then(function (response) {
 					_this2.$store.dispatch('fetchAJAX', { req: 'get_queue' });
 				}, function (error) {
@@ -16740,18 +16792,23 @@ function containsObject(obj, list) {
 // 			<label class="chip" v-for="( account, index ) in to_be_activated">
 // 				<img :src="getImg(account.img)" class="avatar avatar-sm" alt="{account.name}">
 // 				{{account.name}}
-// 				<a href="#" class="btn btn-clear" aria-label="Close" @click.prevent="removeToBeActivated(index)" role="button" v-if="!is_one"></a>
+// 				<a href="#" class="btn btn-clear" aria-label="Close" @click.prevent="removeToBeActivated(index)"
+// 				   role="button"></a>
 // 			</label>
 //
 // 			<!-- autocomplete real input box -->
-// 			<input style="height: 1.0rem;" class="form-input" type="text" ref="search" v-model="search" :placeholder="autocomplete_placeholder" @click="magic_flag = true" @focus="magic_flag = true" @keyup="magic_flag = true" @keydown.8="popLast()" @keydown.38="highlightItem(true)" @keydown.40="highlightItem()" :readonly="is_one || has_limit">
+// 			<input style="height: 1.0rem;" class="form-input" type="text" ref="search" v-model="search"
+// 			       :placeholder="autocomplete_placeholder" @click="magic_flag = true" @focus="magic_flag = true"
+// 			       @keyup="magic_flag = true" @keydown.8="popLast()" @keydown.38="highlightItem(true)"
+// 			       @keydown.40="highlightItem()">
 // 		</div>
 //
 // 		<!-- autocomplete suggestion list -->
-// 		<ul class="menu" ref="autocomplete_results" :class="is_visible" v-if="!is_one && has_limit === false">
+// 		<ul class="menu" ref="autocomplete_results" :class="is_visible">
 // 			<!-- menu list chips -->
 // 			<li class="menu-item" v-for="( account, index ) in accounts" v-if="filterSearch(account)">
-// 				<a href="#" @click.prevent="addToBeActivated(index)" @keydown.38="highlightItem(true)" @keydown.40="highlightItem()">
+// 				<a href="#" @click.prevent="addToBeActivated(index)" @keydown.38="highlightItem(true)"
+// 				   @keydown.40="highlightItem()">
 // 					<div class="tile tile-centered">
 // 						<div class="tile-icon">
 // 							<img :src="getImg(account.img)" class="avatar avatar-sm" alt="{account.name}">
@@ -16780,36 +16837,7 @@ module.exports = {
 	name: 'service-autocomplete',
 	mixins: [_vueClickaway.mixin],
 	props: ['accounts', 'to_be_activated', 'disabled', 'limit'],
-	mounted: function mounted() {
-		var index = 0;
-		var _iteratorNormalCompletion = true;
-		var _didIteratorError = false;
-		var _iteratorError = undefined;
-
-		try {
-			for (var _iterator = (0, _getIterator3.default)(this.accounts), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-				var account = _step.value;
-
-				if (account.active) {
-					this.addToBeActivated(index);
-				}
-				index++;
-			}
-		} catch (err) {
-			_didIteratorError = true;
-			_iteratorError = err;
-		} finally {
-			try {
-				if (!_iteratorNormalCompletion && _iterator.return) {
-					_iterator.return();
-				}
-			} finally {
-				if (_didIteratorError) {
-					throw _iteratorError;
-				}
-			}
-		}
-	},
+	mounted: function mounted() {},
 
 	data: function data() {
 		return {
@@ -16837,55 +16865,38 @@ module.exports = {
 				'd-none': this.magic_flag === false
 			};
 		},
-		has_limit: function has_limit() {
-			if (this.toActivateCount >= this.limit) {
-				return true;
-			}
-			return false;
-		},
-		is_one: function is_one() {
-			if (this.disabled === true) {
-				return true;
-			}
-			if (this.accounts.length === 1 && this.accounts[0].active === false) {
-				this.to_be_activated.push(this.accounts[0]);
-				return true;
-			} else if (this.accounts.length === 1 && this.accounts[0].active === true) {
-				return true;
-			}
-			return false;
-		},
+
 		autocomplete_placeholder: function autocomplete_placeholder() {
-			if (this.is_one) {
+			if (this.to_be_activated.length > 0) {
 				return '';
 			}
 			return 'Accounts ...';
 		},
 		has_results: function has_results() {
 			var found = 0;
-			var _iteratorNormalCompletion2 = true;
-			var _didIteratorError2 = false;
-			var _iteratorError2 = undefined;
+			var _iteratorNormalCompletion = true;
+			var _didIteratorError = false;
+			var _iteratorError = undefined;
 
 			try {
-				for (var _iterator2 = (0, _getIterator3.default)(this.accounts), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-					var account = _step2.value;
+				for (var _iterator = (0, _getIterator3.default)(this.accounts), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+					var account = _step.value;
 
 					if (this.filterSearch(account)) {
 						found++;
 					}
 				}
 			} catch (err) {
-				_didIteratorError2 = true;
-				_iteratorError2 = err;
+				_didIteratorError = true;
+				_iteratorError = err;
 			} finally {
 				try {
-					if (!_iteratorNormalCompletion2 && _iterator2.return) {
-						_iterator2.return();
+					if (!_iteratorNormalCompletion && _iterator.return) {
+						_iterator.return();
 					}
 				} finally {
-					if (_didIteratorError2) {
-						throw _iteratorError2;
+					if (_didIteratorError) {
+						throw _iteratorError;
 					}
 				}
 			}
@@ -16938,6 +16949,9 @@ module.exports = {
 		},
 		filterSearch: function filterSearch(element) {
 			if (element.name.toLowerCase().indexOf(this.search.toLowerCase()) !== -1 || this.search === '') {
+				if (element.active) {
+					return false;
+				}
 				if (containsObject(element, this.to_be_activated)) {
 					return false;
 				}
@@ -16966,7 +16980,7 @@ module.exports = {
 /* 89 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"form-autocomplete\" style=\"width: 100%;\" v-on-clickaway=\"closeDropdown\">\n\t\t<!-- autocomplete input container -->\n\t\t<div class=\"form-autocomplete-input form-input\" :class=\"is_focused\">\n\n\t\t\t<!-- autocomplete chips -->\n\t\t\t<label class=\"chip\" v-for=\"( account, index ) in to_be_activated\">\n\t\t\t\t<img :src=\"getImg(account.img)\" class=\"avatar avatar-sm\" alt=\"{account.name}\">\n\t\t\t\t{{account.name}}\n\t\t\t\t<a href=\"#\" class=\"btn btn-clear\" aria-label=\"Close\" @click.prevent=\"removeToBeActivated(index)\" role=\"button\" v-if=\"!is_one\"></a>\n\t\t\t</label>\n\n\t\t\t<!-- autocomplete real input box -->\n\t\t\t<input style=\"height: 1.0rem;\" class=\"form-input\" type=\"text\" ref=\"search\" v-model=\"search\" :placeholder=\"autocomplete_placeholder\" @click=\"magic_flag = true\" @focus=\"magic_flag = true\" @keyup=\"magic_flag = true\" @keydown.8=\"popLast()\" @keydown.38=\"highlightItem(true)\" @keydown.40=\"highlightItem()\" :readonly=\"is_one || has_limit\">\n\t\t</div>\n\n\t\t<!-- autocomplete suggestion list -->\n\t\t<ul class=\"menu\" ref=\"autocomplete_results\" :class=\"is_visible\" v-if=\"!is_one && has_limit === false\">\n\t\t\t<!-- menu list chips -->\n\t\t\t<li class=\"menu-item\" v-for=\"( account, index ) in accounts\" v-if=\"filterSearch(account)\">\n\t\t\t\t<a href=\"#\" @click.prevent=\"addToBeActivated(index)\" @keydown.38=\"highlightItem(true)\" @keydown.40=\"highlightItem()\">\n\t\t\t\t\t<div class=\"tile tile-centered\">\n\t\t\t\t\t\t<div class=\"tile-icon\">\n\t\t\t\t\t\t\t<img :src=\"getImg(account.img)\" class=\"avatar avatar-sm\" alt=\"{account.name}\">\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"tile-content\" v-html=\"markMatch(account.name, search)\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</a>\n\t\t\t</li>\n\t\t\t<li v-if=\"has_results\">\n\t\t\t\t<a href=\"#\">\n\t\t\t\t\t<div class=\"tile tile-centered\">\n\t\t\t\t\t\t<div class=\"tile-content\"><i>Nothing found matching \"{{search}}\" ...</i></div>\n\t\t\t\t\t</div>\n\t\t\t\t</a>\n\t\t\t</li>\n\t\t</ul>\n\t</div>\n\n";
+module.exports = "\n\t<div class=\"form-autocomplete\" style=\"width: 100%;\" v-on-clickaway=\"closeDropdown\">\n\t\t<!-- autocomplete input container -->\n\t\t<div class=\"form-autocomplete-input form-input\" :class=\"is_focused\">\n\t\t\t\n\t\t\t<!-- autocomplete chips -->\n\t\t\t<label class=\"chip\" v-for=\"( account, index ) in to_be_activated\">\n\t\t\t\t<img :src=\"getImg(account.img)\" class=\"avatar avatar-sm\" alt=\"{account.name}\">\n\t\t\t\t{{account.name}}\n\t\t\t\t<a href=\"#\" class=\"btn btn-clear\" aria-label=\"Close\" @click.prevent=\"removeToBeActivated(index)\"\n\t\t\t\t   role=\"button\"></a>\n\t\t\t</label>\n\t\t\t\n\t\t\t<!-- autocomplete real input box -->\n\t\t\t<input style=\"height: 1.0rem;\" class=\"form-input\" type=\"text\" ref=\"search\" v-model=\"search\"\n\t\t\t       :placeholder=\"autocomplete_placeholder\" @click=\"magic_flag = true\" @focus=\"magic_flag = true\"\n\t\t\t       @keyup=\"magic_flag = true\" @keydown.8=\"popLast()\" @keydown.38=\"highlightItem(true)\"\n\t\t\t       @keydown.40=\"highlightItem()\">\n\t\t</div>\n\t\t\n\t\t<!-- autocomplete suggestion list -->\n\t\t<ul class=\"menu\" ref=\"autocomplete_results\" :class=\"is_visible\">\n\t\t\t<!-- menu list chips -->\n\t\t\t<li class=\"menu-item\" v-for=\"( account, index ) in accounts\" v-if=\"filterSearch(account)\">\n\t\t\t\t<a href=\"#\" @click.prevent=\"addToBeActivated(index)\" @keydown.38=\"highlightItem(true)\"\n\t\t\t\t   @keydown.40=\"highlightItem()\">\n\t\t\t\t\t<div class=\"tile tile-centered\">\n\t\t\t\t\t\t<div class=\"tile-icon\">\n\t\t\t\t\t\t\t<img :src=\"getImg(account.img)\" class=\"avatar avatar-sm\" alt=\"{account.name}\">\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"tile-content\" v-html=\"markMatch(account.name, search)\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</a>\n\t\t\t</li>\n\t\t\t<li v-if=\"has_results\">\n\t\t\t\t<a href=\"#\">\n\t\t\t\t\t<div class=\"tile tile-centered\">\n\t\t\t\t\t\t<div class=\"tile-content\"><i>Nothing found matching \"{{search}}\" ...</i></div>\n\t\t\t\t\t</div>\n\t\t\t\t</a>\n\t\t\t</li>\n\t\t</ul>\n\t</div>\n\n";
 
 /***/ }),
 /* 90 */
@@ -17061,7 +17075,7 @@ module.exports = "\n    <div class=\"input-group\" v-if=\"secret\">\n        <in
 /* 93 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"service-tile\" _v-ba3b2af6=\"\">\n\t\t<label class=\"show-md hide-xl\" _v-ba3b2af6=\"\"><b _v-ba3b2af6=\"\">{{service_url}}/</b></label>\n\t\t<div class=\"input-group\" _v-ba3b2af6=\"\">\n\t\t\t<button class=\"btn input-group-btn btn-danger\" @click=\"removeService()\" _v-ba3b2af6=\"\">\n\t\t\t\t<i class=\"fa fa-fw fa-trash\" aria-hidden=\"true\" _v-ba3b2af6=\"\"></i>\n\t\t\t</button>\n\t\t\t<button class=\"btn input-group-btn btn-info\" @click=\"toggleCredentials()\" v-if=\"service.public_credentials\" _v-ba3b2af6=\"\">\n\t\t\t\t<i class=\"fa fa-fw fa-info-circle\" aria-hidden=\"true\" _v-ba3b2af6=\"\"></i>\n\t\t\t</button>\n\t\t\t<span class=\"input-group-addon hide-md\" style=\"min-width: 115px; text-align: right;\" _v-ba3b2af6=\"\">{{service_url}}/</span>\n\t\t\t<service-autocomplete :accounts=\"service.available_accounts\" :to_be_activated=\"to_be_activated\" :disabled=\"isDisabled\" :limit=\"limit\" _v-ba3b2af6=\"\"></service-autocomplete>\n\t\t\t<button class=\"btn input-group-btn\" :class=\"serviceClass\" @click=\"activateSelected( service.id )\" :disabled=\"isDisabled\" _v-ba3b2af6=\"\">\n\t\t\t\t<i class=\"fa fa-fw fa-plus\" aria-hidden=\"true\" _v-ba3b2af6=\"\"></i> <span class=\"hide-md\" _v-ba3b2af6=\"\">Activate</span>\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"card centered\" :class=\"credentialsDisplayClass\" v-if=\"service.public_credentials\" _v-ba3b2af6=\"\">\n\t\t\t<div class=\"card-header\" _v-ba3b2af6=\"\">\n\t\t\t\t<div class=\"card-title h5\" _v-ba3b2af6=\"\">{{serviceName}}</div>\n\t\t\t\t<div class=\"card-subtitle text-gray\" _v-ba3b2af6=\"\">{{service.id}}</div>\n\t\t\t</div>\n\t\t\t<div class=\"card-body\" _v-ba3b2af6=\"\">\n\t\t\t\t<div class=\"form-horizontal\" _v-ba3b2af6=\"\">\n\t\t\t\t\t<div class=\"form-group\" v-for=\"( credential, index ) in service.public_credentials\" _v-ba3b2af6=\"\">\n\t\t\t\t\t\t<div class=\"col-3\" _v-ba3b2af6=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"credentialID(index)\" _v-ba3b2af6=\"\">{{credential.name}}:</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"col-9\" _v-ba3b2af6=\"\">\n\t\t\t\t\t\t\t<secret-input :id=\"credentialID(index)\" :value=\"credential.value\" :secret=\"credential.private\" _v-ba3b2af6=\"\">\n\t\t\t\t\t\t</secret-input></div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"divider clearfix\" _v-ba3b2af6=\"\"></div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"service-tile\" _v-ba3b2af6=\"\">\n\t\t<label class=\"show-md hide-xl\" _v-ba3b2af6=\"\"><b _v-ba3b2af6=\"\">{{service_url}}/</b></label>\n\t\t<div class=\"input-group\" _v-ba3b2af6=\"\">\n\t\t\t<button class=\"btn input-group-btn btn-danger\" @click=\"removeService()\" _v-ba3b2af6=\"\">\n\t\t\t\t<i class=\"fa fa-fw fa-trash\" aria-hidden=\"true\" _v-ba3b2af6=\"\"></i>\n\t\t\t</button>\n\t\t\t<button class=\"btn input-group-btn btn-info\" @click=\"toggleCredentials()\" v-if=\"service.public_credentials\" _v-ba3b2af6=\"\">\n\t\t\t\t<i class=\"fa fa-fw fa-info-circle\" aria-hidden=\"true\" _v-ba3b2af6=\"\"></i>\n\t\t\t</button>\n\t\t\t<span class=\"input-group-addon hide-md\" style=\"min-width: 115px; text-align: right;\" _v-ba3b2af6=\"\">{{service_url}}/</span>\n\t\t\t<service-autocomplete :accounts=\"available_accounts\" :to_be_activated=\"to_be_activated\" :disabled=\"isDisabled\" :limit=\"limit\" _v-ba3b2af6=\"\"></service-autocomplete>\n\t\t\t<button class=\"btn input-group-btn\" :class=\"serviceClass\" @click=\"activateSelected( service.id )\" :disabled=\"isDisabled\" _v-ba3b2af6=\"\">\n\t\t\t\t<i class=\"fa fa-fw fa-plus\" aria-hidden=\"true\" _v-ba3b2af6=\"\"></i> <span class=\"hide-md\" _v-ba3b2af6=\"\">Activate</span>\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"card centered\" :class=\"credentialsDisplayClass\" v-if=\"service.public_credentials\" _v-ba3b2af6=\"\">\n\t\t\t<div class=\"card-header\" _v-ba3b2af6=\"\">\n\t\t\t\t<div class=\"card-title h5\" _v-ba3b2af6=\"\">{{serviceName}}</div>\n\t\t\t\t<div class=\"card-subtitle text-gray\" _v-ba3b2af6=\"\">{{service.id}}</div>\n\t\t\t</div>\n\t\t\t<div class=\"card-body\" _v-ba3b2af6=\"\">\n\t\t\t\t<div class=\"form-horizontal\" _v-ba3b2af6=\"\">\n\t\t\t\t\t<div class=\"form-group\" v-for=\"( credential, index ) in service.public_credentials\" _v-ba3b2af6=\"\">\n\t\t\t\t\t\t<div class=\"col-3\" _v-ba3b2af6=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"credentialID(index)\" _v-ba3b2af6=\"\">{{credential.name}}:</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"col-9\" _v-ba3b2af6=\"\">\n\t\t\t\t\t\t\t<secret-input :id=\"credentialID(index)\" :value=\"credential.value\" :secret=\"credential.private\" _v-ba3b2af6=\"\">\n\t\t\t\t\t\t</secret-input></div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"divider clearfix\" _v-ba3b2af6=\"\"></div>\n\t</div>\n";
 
 /***/ }),
 /* 94 */
@@ -17121,7 +17135,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .btn.btn-link.btn-danger[_v-62b80d29] {\n\t\tcolor: #d50000;\n\t}\n\t#rop_core .btn.btn-link.btn-danger[_v-62b80d29]:hover {\n\t\tcolor: #b71c1c;\n\t}\n\n\t.has_image[_v-62b80d29] {\n\t\tborder-radius: 50%;\n\t}\n\n\t.service_account_image[_v-62b80d29] {\n\t\twidth: 150%;\n\t\tborder-radius: 50%;\n\t\tmargin-left: -25%;\n\t\tmargin-top: -25%;\n\t}\n\n\t.icon_box[_v-62b80d29] {\n\t\twidth: 45px;\n\t\theight: 45px;\n\t\tpadding: 7px;\n\t\ttext-align: center;\n\t\tbackground-color: #333333;\n\t\tcolor: #efefef;\n\t}\n\n\t.icon_box > .fa[_v-62b80d29] {\n\t\twidth: 30px;\n\t\theight: 30px;\n\t\tfont-size: 30px;\n\t}\n\n\t.facebook[_v-62b80d29] {\n\t\tbackground-color: #3b5998;\n\t}\n\n\t.twitter[_v-62b80d29] {\n\t\tbackground-color: #55acee;\n\t}\n\n\t.linkedin[_v-62b80d29] {\n\t\tbackground-color: #007bb5;\n\t}\n\n\t.tumblr[_v-62b80d29] {\n\t\tbackground-color: #32506d;\n\t}\n\n", ""]);
+exports.push([module.i, "\n\t#rop_core .btn.btn-link.btn-danger[_v-62b80d29] {\n\t\tcolor: #d50000;\n\t}\n\t\n\t#rop_core .btn.btn-link.btn-danger[_v-62b80d29]:hover {\n\t\tcolor: #b71c1c;\n\t}\n\t\n\t.has_image[_v-62b80d29] {\n\t\tborder-radius: 50%;\n\t}\n\t\n\t.service_account_image[_v-62b80d29] {\n\t\twidth: 150%;\n\t\tborder-radius: 50%;\n\t\tmargin-left: -25%;\n\t\tmargin-top: -25%;\n\t}\n\t\n\t.icon_box[_v-62b80d29] {\n\t\twidth: 45px;\n\t\theight: 45px;\n\t\tpadding: 7px;\n\t\ttext-align: center;\n\t\tbackground-color: #333333;\n\t\tcolor: #efefef;\n\t\tposition: relative;\n\t}\n\t.icon_box.has_image .fa[_v-62b80d29]{\n\t\tposition: absolute;\n\t\tbottom: 0px;\n\t\tright: 0px;\n\t\tpadding: 4px;\n\t\tborder-radius: 50%;\n\t\tfont-size: 0.7em;\n\t}\n\t.icon_box.no-image > .fa[_v-62b80d29]{\n\t\twidth: 30px;\n\t\theight: 30px;\n\t\t\n\t\tfont-size: 30px;\n\t}\n\t\n\t.facebook[_v-62b80d29], .fa-facebook-official[_v-62b80d29] {\n\t\tbackground-color: #3b5998;\n\t}\n\t\n\t.twitter[_v-62b80d29], .fa-twitter[_v-62b80d29] {\n\t\tbackground-color: #55acee;\n\t}\n\t\n\t.linkedin[_v-62b80d29], .fa-linkedin[_v-62b80d29] {\n\t\tbackground-color: #007bb5;\n\t}\n\t\n\t.tumblr[_v-62b80d29], .fa-tumblr[_v-62b80d29] {\n\t\tbackground-color: #32506d;\n\t}\n\n", ""]);
 
 // exports
 
@@ -17137,8 +17151,8 @@ exports.push([module.i, "\n\t#rop_core .btn.btn-link.btn-danger[_v-62b80d29] {\n
 // 	<div class="tile tile-centered">
 // 		<div class="tile-icon">
 // 			<div class="icon_box" :class="service">
-// 				<img class="service_account_image" :src="img" v-if="img" />
-// 				<i class="fa" :class="icon" aria-hidden="true" v-else></i>
+// 				<img class="service_account_image"  :src="img" v-if="img"/>
+// 				<i class="fa  " :class="icon" aria-hidden="true"></i>
 // 			</div>
 // 		</div>
 // 		<div class="tile-content">
@@ -17147,7 +17161,8 @@ exports.push([module.i, "\n\t#rop_core .btn.btn-link.btn-danger[_v-62b80d29] {\n
 // 		</div>
 // 		<div class="tile-action">
 // 			<div class="dropdown dropdown-right">
-// 				<a href="#" class="btn btn-link btn-danger" tabindex="0" @click.prevent="removeActiveAccount( account_id )">
+// 				<a href="#" class="btn btn-link btn-danger" tabindex="0"
+// 				   @click.prevent="removeActiveAccount( account_id )">
 // 					<i class="fa fa-trash" aria-hidden="true"></i>
 // 				</a>
 // 			</div>
@@ -17164,6 +17179,8 @@ module.exports = {
 			var iconClass = this.account_data.service;
 			if (this.img !== '') {
 				iconClass = iconClass.concat(' ').concat('has_image');
+			} else {
+				iconClass = iconClass.concat(' ').concat('no-image');
 			}
 			return iconClass;
 		},
@@ -17194,7 +17211,10 @@ module.exports = {
 		removeActiveAccount: function removeActiveAccount(id) {
 			var _this = this;
 
-			this.$store.dispatch('fetchAJAXPromise', { req: 'remove_account', data: { account_id: id, current_active: this.$store.state.activeAccounts } }).then(function (response) {
+			this.$store.dispatch('fetchAJAXPromise', {
+				req: 'remove_account',
+				data: { account_id: id, current_active: this.$store.state.activeAccounts }
+			}).then(function (response) {
 				_this.$store.dispatch('fetchAJAX', { req: 'get_queue' });
 			}, function (error) {
 				console.error('Got nothing from server. Prompt user to check internet connection and try again', error);
@@ -17207,6 +17227,7 @@ module.exports = {
 	// 	#rop_core .btn.btn-link.btn-danger {
 	// 		color: #d50000;
 	// 	}
+	//
 	// 	#rop_core .btn.btn-link.btn-danger:hover {
 	// 		color: #b71c1c;
 	// 	}
@@ -17229,27 +17250,36 @@ module.exports = {
 	// 		text-align: center;
 	// 		background-color: #333333;
 	// 		color: #efefef;
+	// 		position: relative;
 	// 	}
-	//
-	// 	.icon_box > .fa {
+	// 	.icon_box.has_image .fa{
+	// 		position: absolute;
+	// 		bottom: 0px;
+	// 		right: 0px;
+	// 		padding: 4px;
+	// 		border-radius: 50%;
+	// 		font-size: 0.7em;
+	// 	}
+	// 	.icon_box.no-image > .fa{
 	// 		width: 30px;
 	// 		height: 30px;
+	//
 	// 		font-size: 30px;
 	// 	}
 	//
-	// 	.facebook {
+	// 	.facebook, .fa-facebook-official {
 	// 		background-color: #3b5998;
 	// 	}
 	//
-	// 	.twitter {
+	// 	.twitter, .fa-twitter {
 	// 		background-color: #55acee;
 	// 	}
 	//
-	// 	.linkedin {
+	// 	.linkedin, .fa-linkedin {
 	// 		background-color: #007bb5;
 	// 	}
 	//
-	// 	.tumblr {
+	// 	.tumblr, .fa-tumblr {
 	// 		background-color: #32506d;
 	// 	}
 	//
@@ -17261,7 +17291,7 @@ module.exports = {
 /* 98 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tile tile-centered\" _v-62b80d29=\"\">\n\t\t<div class=\"tile-icon\" _v-62b80d29=\"\">\n\t\t\t<div class=\"icon_box\" :class=\"service\" _v-62b80d29=\"\">\n\t\t\t\t<img class=\"service_account_image\" :src=\"img\" v-if=\"img\" _v-62b80d29=\"\">\n\t\t\t\t<i class=\"fa\" :class=\"icon\" aria-hidden=\"true\" v-else=\"\" _v-62b80d29=\"\"></i>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"tile-content\" _v-62b80d29=\"\">\n\t\t\t<div class=\"tile-title\" _v-62b80d29=\"\">{{ user }}</div>\n\t\t\t<div class=\"tile-subtitle text-gray\" _v-62b80d29=\"\">{{ serviceInfo }}</div>\n\t\t</div>\n\t\t<div class=\"tile-action\" _v-62b80d29=\"\">\n\t\t\t<div class=\"dropdown dropdown-right\" _v-62b80d29=\"\">\n\t\t\t\t<a href=\"#\" class=\"btn btn-link btn-danger\" tabindex=\"0\" @click.prevent=\"removeActiveAccount( account_id )\" _v-62b80d29=\"\">\n\t\t\t\t\t<i class=\"fa fa-trash\" aria-hidden=\"true\" _v-62b80d29=\"\"></i>\n\t\t\t\t</a>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tile tile-centered\" _v-62b80d29=\"\">\n\t\t<div class=\"tile-icon\" _v-62b80d29=\"\">\n\t\t\t<div class=\"icon_box\" :class=\"service\" _v-62b80d29=\"\">\n\t\t\t\t<img class=\"service_account_image\" :src=\"img\" v-if=\"img\" _v-62b80d29=\"\">\n\t\t\t\t<i class=\"fa  \" :class=\"icon\" aria-hidden=\"true\" _v-62b80d29=\"\"></i>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"tile-content\" _v-62b80d29=\"\">\n\t\t\t<div class=\"tile-title\" _v-62b80d29=\"\">{{ user }}</div>\n\t\t\t<div class=\"tile-subtitle text-gray\" _v-62b80d29=\"\">{{ serviceInfo }}</div>\n\t\t</div>\n\t\t<div class=\"tile-action\" _v-62b80d29=\"\">\n\t\t\t<div class=\"dropdown dropdown-right\" _v-62b80d29=\"\">\n\t\t\t\t<a href=\"#\" class=\"btn btn-link btn-danger\" tabindex=\"0\" @click.prevent=\"removeActiveAccount( account_id )\" _v-62b80d29=\"\">\n\t\t\t\t\t<i class=\"fa fa-trash\" aria-hidden=\"true\" _v-62b80d29=\"\"></i>\n\t\t\t\t</a>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 99 */
@@ -17329,7 +17359,7 @@ module.exports = "\n    <button class=\"btn btn-success\" @click=\"cronStart\" v
 /* 102 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\">\n\t\t\t<h3>Accounts</h3>\n\t\t\t<div class=\"container\">\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t\t<b>New Service</b><br/>\n\t\t\t\t\t\t\t\t<i>Select a service and sign in with an account for that service.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<sign-in-btn></sign-in-btn>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12 text-left\">\n\t\t\t\t\t\t\t\t<hr/>\n\t\t\t\t\t\t\t\t<h5>Authenticated Services</h5>\n\t\t\t\t\t\t\t\t<div class=\"empty\" v-if=\"authenticated_services.length == 0\">\n\t\t\t\t\t\t\t\t\t<div class=\"empty-icon\">\n\t\t\t\t\t\t\t\t\t\t<i class=\"fa fa-3x fa-cloud\"></i>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<p class=\"empty-title h5\">No authenticated service!</p>\n\t\t\t\t\t\t\t\t\t<p class=\"empty-subtitle\">Add one from the <b>\"New Service\"</b> section.</p>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t<service-tile v-for=\"service in authenticated_services\" :key=\"service.id\" :service=\"service\"></service-tile>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6 text-left\">\n\t\t\t\t\t\t<hr style=\"margin-top: 45px\" />\n\t\t\t\t\t\t<h5>Active Accounts</h5>\n\t\t\t\t\t\t<div class=\"empty\" v-if=\"active_accounts.length == 0\">\n\t\t\t\t\t\t\t<div class=\"empty-icon\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\"></i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<p class=\"empty-title h5\">No active accounts!</p>\n\t\t\t\t\t\t\t<p class=\"empty-subtitle\">Add one from the <b>\"Authenticated Services\"</b> section.</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div v-for=\"( account, id ) in active_accounts\">\n\t\t\t\t\t\t\t<service-user-tile :account_data=\"account\" :account_id=\"id\"></service-user-tile>\n\t\t\t\t\t\t\t<div class=\"divider\"></div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"columns\">\n\t\t\t\t<div class=\"column col-12\">\n\t\t\t\t\t<h4><i class=\"fa fa-info-circle\"></i> Info</h4>\n\t\t\t\t\t<p><i>Authenticate a new service (eg. Facebook, Twitter etc. ), select the accounts you want to add from that service and <b>activate</b> them. Only the accounts displayed in the <b>\"Active accounts\"</b> section will be used.</i></p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n        <div class=\"panel-footer\">\n            <cron-button></cron-button>\n        </div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\">\n\t\t\t<h3>Accounts</h3>\n\t\t\t<div class=\"columns\">\n\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-xl-12 col-12 text-center\">\n\t\t\t\t\t<b>New Service</b><br/>\n\t\t\t\t\t<i>Select a service and sign in with an account for that service.</i>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-xl-6 col-4 text-center centered\">\n\t\t\t\t\t<sign-in-btn></sign-in-btn>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"container\">\n\t\t\t\t\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!--<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12 text-left\">\n\t\t\t\t\t\t\t\t<hr/>\n\t\t\t\t\t\t\t\t<h5>Authenticated Services</h5>\n\t\t\t\t\t\t\t\t<div class=\"empty\" v-if=\"authenticated_services.length == 0\">\n\t\t\t\t\t\t\t\t\t<div class=\"empty-icon\">\n\t\t\t\t\t\t\t\t\t\t<i class=\"fa fa-3x fa-cloud\"></i>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<p class=\"empty-title h5\">No authenticated service!</p>\n\t\t\t\t\t\t\t\t\t<p class=\"empty-subtitle\">Add one from the <b>\"New Service\"</b> section.</p>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t<service-tile v-for=\"service in authenticated_services\" :key=\"service.id\"\n\t\t\t\t\t\t\t\t              :service=\"service\"></service-tile>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>-->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12 text-left\">\n\t\t\t\t\t\t<hr style=\"margin-top: 45px\"/>\n\t\t\t\t\t\t<h5>Active Accounts</h5>\n\t\t\t\t\t\t<div class=\"empty\" v-if=\"active_accounts.length == 0\">\n\t\t\t\t\t\t\t<div class=\"empty-icon\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\"></i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<p class=\"empty-title h5\">No active accounts!</p>\n\t\t\t\t\t\t\t<p class=\"empty-subtitle\">Add one from the <b>\"Authenticated Services\"</b> section.</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div v-for=\"( account, id ) in active_accounts\">\n\t\t\t\t\t\t\t<service-user-tile :account_data=\"account\" :account_id=\"id\"></service-user-tile>\n\t\t\t\t\t\t\t<div class=\"divider\"></div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"inactive-accounts\" v-for=\"( account, id ) in inactive_accounts\">\n\t\t\t\t\t\t\t<service-user-tile :account_data=\"account\" :account_id=\"id\"></service-user-tile>\n\t\t\t\t\t\t\t<div class=\"divider\"></div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"columns\">\n\t\t\t\t<div class=\"column col-12\">\n\t\t\t\t\t<h4><i class=\"fa fa-info-circle\"></i> Info</h4>\n\t\t\t\t\t<p><i>Authenticate a new service (eg. Facebook, Twitter etc. ), select the accounts you want to add\n\t\t\t\t\t\tfrom that service and <b>activate</b> them. Only the accounts displayed in the <b>\"Active\n\t\t\t\t\t\t\taccounts\"</b> section will be used.</i></p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\">\n\t\t\t<cron-button></cron-button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 103 */
@@ -17385,7 +17415,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 								<i>Minimum time between shares (hour/hours), 0.4 can be used.</i>
 // 							</div>
 // 							<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-left">
-// 								<counter-input id="default_interval" :value.sync="generalSettings.default_interval" />
+// 								<counter-input id="default_interval" :value.sync="generalSettings.default_interval"/>
 // 							</div>
 // 						</div>
 // 					</div>
@@ -17400,7 +17430,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 								<i>Minimum age of posts available for sharing, in days.</i>
 // 							</div>
 // 							<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-left">
-// 								<counter-input id="min_post_age" :maxVal="365" :value.sync="generalSettings.minimum_post_age" />
+// 								<counter-input id="min_post_age" :maxVal="365"
+// 								               :value.sync="generalSettings.minimum_post_age"/>
 // 							</div>
 // 						</div>
 // 					</div>
@@ -17409,7 +17440,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 					<div class="column col-sm-12 col-md-12 col-lg-6">
 // 						<div class="columns">
 // 							<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-right">
-// 								<counter-input id="max_post_age" :maxVal="365" :value.sync="generalSettings.maximum_post_age" />
+// 								<counter-input id="max_post_age" :maxVal="365"
+// 								               :value.sync="generalSettings.maximum_post_age"/>
 // 							</div>
 // 							<div class="column col-sm-12 col-md-6 col-xl-6 col-8 text-left">
 // 								<b>Maximum post age</b><br/>
@@ -17429,7 +17461,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 								<i>Number of posts to share per. account per. trigger of scheduled job.</i>
 // 							</div>
 // 							<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-left">
-// 								<counter-input id="no_of_posts" :value.sync="generalSettings.number_of_posts" />
+// 								<counter-input id="no_of_posts" :value.sync="generalSettings.number_of_posts"/>
 // 							</div>
 // 						</div>
 // 					</div>
@@ -17441,14 +17473,15 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 							<div class="column col-sm-12 col-md-2 col-xl-2 col-1 text-right">
 // 								<div class="form-group">
 // 									<label class="form-checkbox">
-// 										<input type="checkbox" v-model="generalSettings.more_than_once" />
+// 										<input type="checkbox" v-model="generalSettings.more_than_once"/>
 // 										<i class="form-icon"></i> Yes
 // 									</label>
 // 								</div>
 // 							</div>
 // 							<div class="column col-sm-12 col-md-10 col-xl-10 col-11 text-left">
 // 								<b>Share more than once?</b><br/>
-// 								<i>If there are no more posts to share, we should start re-sharing the one we previously shared.</i>
+// 								<i>If there are no more posts to share, we should start re-sharing the one we previously
+// 									shared.</i>
 // 							</div>
 // 						</div>
 // 					</div>
@@ -17464,7 +17497,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 								<i>Post types available to share - what post types are available for share</i>
 // 							</div>
 // 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-// 								<multiple-select :options="postTypes" :disabled="isPro" :selected="generalSettings.selected_post_types" :changedSelection="updatedPostTypes" />
+// 								<multiple-select :options="postTypes" :disabled="isPro"
+// 								                 :selected="generalSettings.selected_post_types"
+// 								                 :changedSelection="updatedPostTypes"/>
 // 							</div>
 // 						</div>
 // 					</div>
@@ -17479,14 +17514,18 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 						<div class="columns">
 // 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
 // 								<b>Taxonomies</b><br/>
-// 								<i>Taxonomies available for the selected post types. Use to include or exclude posts.</i>
+// 								<i>Taxonomies available for the selected post types. Use to include or exclude
+// 									posts.</i>
 // 							</div>
 // 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 // 								<div class="input-group">
-// 									<multiple-select :options="taxonomies" :selected="generalSettings.selected_taxonomies" :changedSelection="updatedTaxonomies" />
+// 									<multiple-select :options="taxonomies"
+// 									                 :selected="generalSettings.selected_taxonomies"
+// 									                 :changedSelection="updatedTaxonomies"/>
 // 									<span class="input-group-addon">
 // 										<label class="form-checkbox">
-// 											<input type="checkbox" v-model="generalSettings.exclude_taxonomies" @change="exludeTaxonomiesChange" />
+// 											<input type="checkbox" v-model="generalSettings.exclude_taxonomies"
+// 											       @change="exludeTaxonomiesChange"/>
 // 											<i class="form-icon"></i> Exclude?
 // 										</label>
 // 									</span>
@@ -17509,30 +17548,29 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 							</div>
 // 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 // 								<div class="input-group">
-// 									<multiple-select :searchQuery="searchQuery" @update="searchUpdate" :options="postsAvailable" :dontLock="true" :selected="generalSettings.selected_posts" :changedSelection="updatedPosts" />
-// 									<span class="input-group-addon">
-// 										<label class="form-checkbox">
-// 											<input type="checkbox" v-model="generalSettings.exclude_posts" />
-// 											<i class="form-icon"></i> Exclude?
-// 										</label>
-// 									</span>
+// 									<multiple-select :searchQuery="searchQuery" @update="searchUpdate"
+// 									                 :options="postsAvailable" :dontLock="true"
+// 									                 :selected="generalSettings.selected_posts"
+// 									                 :changedSelection="updatedPosts"/>
+//
 // 								</div>
 // 							</div>
 // 						</div>
 // 					</div>
 // 				</div>
 // 				<hr/>
-// 				<div  class="columns">
+// 				<div class="columns">
 // 					<div class="column col-sm-12 col-md-12 col-lg-12">
 // 						<div class="columns">
 // 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
 // 								<b>Enable Google Analytics Tracking</b><br/>
-// 								<i>If checked an utm query willbe added to URL's so that you cand better track trafic.</i>
+// 								<i>If checked an utm query willbe added to URL's so that you cand better track
+// 									trafic.</i>
 // 							</div>
 // 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 // 								<div class="form-group">
 // 									<label class="form-checkbox">
-// 										<input type="checkbox" v-model="generalSettings.ga_tracking" />
+// 										<input type="checkbox" v-model="generalSettings.ga_tracking"/>
 // 										<i class="form-icon"></i> Yes
 // 									</label>
 // 								</div>
@@ -17553,7 +17591,8 @@ module.exports = {
 	name: 'settings-view',
 	data: function data() {
 		return {
-			searchQuery: ''
+			searchQuery: '',
+			postTimeout: ''
 		};
 	},
 	computed: {
@@ -17564,6 +17603,7 @@ module.exports = {
 			return this.$store.state.has_pro;
 		},
 		postTypes: function postTypes() {
+
 			return this.$store.state.generalSettings.available_post_types;
 		},
 		taxonomies: function taxonomies() {
@@ -17603,11 +17643,26 @@ module.exports = {
 		exludeTaxonomiesChange: function exludeTaxonomiesChange() {
 			this.requestPostUpdate();
 		},
-		requestPostUpdate: function requestPostUpdate() {
+		doPostUpdate: function doPostUpdate() {
 			var postTypesSelected = this.$store.state.generalSettings.selected_post_types;
 			var taxonomiesSelected = this.$store.state.generalSettings.selected_taxonomies;
 
-			this.$store.dispatch('fetchAJAX', { req: 'get_posts', data: { post_types: postTypesSelected, search_query: this.searchQuery, taxonomies: taxonomiesSelected, exclude: this.generalSettings.exclude_taxonomies } });
+			this.$store.dispatch('fetchAJAX', {
+				req: 'get_posts',
+				data: {
+					post_types: postTypesSelected,
+					search_query: this.searchQuery,
+					taxonomies: taxonomiesSelected,
+					exclude: this.generalSettings.exclude_taxonomies,
+					selected: this.generalSettings.selected_posts
+				}
+			});
+		},
+		requestPostUpdate: function requestPostUpdate() {
+			if (this.postTimeout !== '') {
+				clearTimeout(this.postTimeout);
+			}
+			this.postTimeout = setTimeout(this.doPostUpdate, 500);
 		},
 		saveGeneralSettings: function saveGeneralSettings() {
 			var _this = this;
@@ -17631,7 +17686,6 @@ module.exports = {
 					taxonomies: taxonomiesSelected,
 					exclude_taxonomies: excludeTaxonomies,
 					posts: postsSelected,
-					exclude_posts: this.generalSettings.exclude_posts,
 					ga_tracking: this.generalSettings.ga_tracking
 				}
 			}).then(function (response) {
@@ -17980,7 +18034,7 @@ module.exports = {
 			for (var _iterator = (0, _getIterator3.default)(this.options), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
 				var option = _step.value;
 
-				if (option.selected && this.selected.length === 0) {
+				if (boolean(option.selected)) {
 					this.addToSelected(index);
 				}
 				index++;
@@ -18212,7 +18266,7 @@ module.exports = "\n\t<div class=\"form-autocomplete\" style=\"width: 100%;\" v-
 /* 113 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\" style=\"overflow: inherit;\">\n\t\t\t<h3>General Settings</h3>\n\t\t\t<div class=\"container\">\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Minimum age of posts available for sharing, in days\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Minimum interval between shares</b><br/>\n\t\t\t\t\t\t\t\t<i>Minimum time between shares (hour/hours), 0.4 can be used.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<counter-input id=\"default_interval\" :value.sync=\"generalSettings.default_interval\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Minimum age of posts available for sharing, in days\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t\t<b>Minimum post age</b><br/>\n\t\t\t\t\t\t\t\t<i>Minimum age of posts available for sharing, in days.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<counter-input id=\"min_post_age\" :maxVal=\"365\" :value.sync=\"generalSettings.minimum_post_age\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<!-- Maximum age of posts available for sharing, in days\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-right\">\n\t\t\t\t\t\t\t\t<counter-input id=\"max_post_age\" :maxVal=\"365\" :value.sync=\"generalSettings.maximum_post_age\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-left\">\n\t\t\t\t\t\t\t\t<b>Maximum post age</b><br/>\n\t\t\t\t\t\t\t\t<i>Maximum age of posts available for sharing, in days.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Number of posts to share per account per trigger\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t\t<b>Number of posts</b><br/>\n\t\t\t\t\t\t\t\t<i>Number of posts to share per. account per. trigger of scheduled job.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<!-- Share more than once, if there are no more posts to share, we should start re-sharing the one we\n\t\t\t\t\tpreviously shared\n\t\t\t\t\t(boolean) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-2 col-xl-2 col-1 text-right\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\" />\n\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Yes\n\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-10 col-xl-10 col-11 text-left\">\n\t\t\t\t\t\t\t\t<b>Share more than once?</b><br/>\n\t\t\t\t\t\t\t\t<i>If there are no more posts to share, we should start re-sharing the one we previously shared.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Post types available to share - what post types are available for share\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Post types</b><br/>\n\t\t\t\t\t\t\t\t<i>Post types available to share - what post types are available for share</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<multiple-select :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changedSelection=\"updatedPostTypes\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Taxonomies available for posts to share - based on what post types users choose to share, we should\n\t\t\t\t\tshow the taxonomies available for that post type, along with their terms, which user can select to share.\n\t\t\t\t\tHere we should have also a toggle if either the taxonomies selected are included or excluded.\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Taxonomies</b><br/>\n\t\t\t\t\t\t\t\t<i>Taxonomies available for the selected post types. Use to include or exclude posts.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changedSelection=\"updatedTaxonomies\" />\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\">\n\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" @change=\"exludeTaxonomiesChange\" />\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Exclude?\n\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Posts excluded/included in sharing - what posts we should exclude or include in sharing\n\t\t\t\t\t- we should have have an autocomplete list which should fetch posts from the previously select post_types\n\t\t\t\t\tand terms and allow them to be include/excluded.\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Posts</b><br/>\n\t\t\t\t\t\t\t\t<i>Posts excluded/included in sharing, filtered based on previous selections.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t\t\t\t<multiple-select :searchQuery=\"searchQuery\" @update=\"searchUpdate\" :options=\"postsAvailable\" :dontLock=\"true\" :selected=\"generalSettings.selected_posts\" :changedSelection=\"updatedPosts\" />\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\">\n\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_posts\" />\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Exclude?\n\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div  class=\"columns\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Enable Google Analytics Tracking</b><br/>\n\t\t\t\t\t\t\t\t<i>If checked an utm query willbe added to URL's so that you cand better track trafic.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.ga_tracking\" />\n\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Yes\n\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\"><i class=\"fa fa-check\"></i> Save</button>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\" style=\"overflow: inherit;\">\n\t\t\t<h3>General Settings</h3>\n\t\t\t<div class=\"container\">\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Minimum age of posts available for sharing, in days\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Minimum interval between shares</b><br/>\n\t\t\t\t\t\t\t\t<i>Minimum time between shares (hour/hours), 0.4 can be used.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<counter-input id=\"default_interval\" :value.sync=\"generalSettings.default_interval\"/>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Minimum age of posts available for sharing, in days\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t\t<b>Minimum post age</b><br/>\n\t\t\t\t\t\t\t\t<i>Minimum age of posts available for sharing, in days.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<counter-input id=\"min_post_age\" :maxVal=\"365\"\n\t\t\t\t\t\t\t\t               :value.sync=\"generalSettings.minimum_post_age\"/>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<!-- Maximum age of posts available for sharing, in days\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-right\">\n\t\t\t\t\t\t\t\t<counter-input id=\"max_post_age\" :maxVal=\"365\"\n\t\t\t\t\t\t\t\t               :value.sync=\"generalSettings.maximum_post_age\"/>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-left\">\n\t\t\t\t\t\t\t\t<b>Maximum post age</b><br/>\n\t\t\t\t\t\t\t\t<i>Maximum age of posts available for sharing, in days.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Number of posts to share per account per trigger\n\t\t\t\t\t(number) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t\t<b>Number of posts</b><br/>\n\t\t\t\t\t\t\t\t<i>Number of posts to share per. account per. trigger of scheduled job.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\"/>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<!-- Share more than once, if there are no more posts to share, we should start re-sharing the one we\n\t\t\t\t\tpreviously shared\n\t\t\t\t\t(boolean) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-2 col-xl-2 col-1 text-right\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\"/>\n\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Yes\n\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-10 col-xl-10 col-11 text-left\">\n\t\t\t\t\t\t\t\t<b>Share more than once?</b><br/>\n\t\t\t\t\t\t\t\t<i>If there are no more posts to share, we should start re-sharing the one we previously\n\t\t\t\t\t\t\t\t\tshared.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Post types available to share - what post types are available for share\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Post types</b><br/>\n\t\t\t\t\t\t\t\t<i>Post types available to share - what post types are available for share</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<multiple-select :options=\"postTypes\" :disabled=\"isPro\"\n\t\t\t\t\t\t\t\t                 :selected=\"generalSettings.selected_post_types\"\n\t\t\t\t\t\t\t\t                 :changedSelection=\"updatedPostTypes\"/>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Taxonomies available for posts to share - based on what post types users choose to share, we should\n\t\t\t\t\tshow the taxonomies available for that post type, along with their terms, which user can select to share.\n\t\t\t\t\tHere we should have also a toggle if either the taxonomies selected are included or excluded.\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Taxonomies</b><br/>\n\t\t\t\t\t\t\t\t<i>Taxonomies available for the selected post types. Use to include or exclude\n\t\t\t\t\t\t\t\t\tposts.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\"\n\t\t\t\t\t\t\t\t\t                 :selected=\"generalSettings.selected_taxonomies\"\n\t\t\t\t\t\t\t\t\t                 :changedSelection=\"updatedTaxonomies\"/>\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\">\n\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\"\n\t\t\t\t\t\t\t\t\t\t\t       @change=\"exludeTaxonomiesChange\"/>\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Exclude?\n\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<!-- Posts excluded/included in sharing - what posts we should exclude or include in sharing\n\t\t\t\t\t- we should have have an autocomplete list which should fetch posts from the previously select post_types\n\t\t\t\t\tand terms and allow them to be include/excluded.\n\t\t\t\t\t( multi-select list ) -->\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Posts</b><br/>\n\t\t\t\t\t\t\t\t<i>Posts excluded/included in sharing, filtered based on previous selections.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t\t\t\t<multiple-select :searchQuery=\"searchQuery\" @update=\"searchUpdate\"\n\t\t\t\t\t\t\t\t\t                 :options=\"postsAvailable\" :dontLock=\"true\"\n\t\t\t\t\t\t\t\t\t                 :selected=\"generalSettings.selected_posts\"\n\t\t\t\t\t\t\t\t\t                 :changedSelection=\"updatedPosts\"/>\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Enable Google Analytics Tracking</b><br/>\n\t\t\t\t\t\t\t\t<i>If checked an utm query willbe added to URL's so that you cand better track\n\t\t\t\t\t\t\t\t\ttrafic.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.ga_tracking\"/>\n\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Yes\n\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\"><i class=\"fa fa-check\"></i> Save</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 114 */

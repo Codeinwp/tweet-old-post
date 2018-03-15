@@ -44,14 +44,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @var     array $permissions The Facebook required permissions.
 	 */
 	private $permissions = array( 'email', 'manage_pages', 'publish_pages' );
-	/**
-	 * Holds the temp data for the authenticated service.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 * @var     array $service The temporary data of the authenticated service.
-	 */
-	private $service = array();
 
 	/**
 	 * Method to inject functionality into constructor.
@@ -75,7 +67,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 */
 	public function expose_endpoints() {
 		$this->register_endpoint( 'authorize', 'authorize' );
-		$this->register_endpoint( 'authenticate', 'authenticate' );
+		$this->register_endpoint( 'authenticate', 'maybe_authenticate' );
 	}
 
 	/**
@@ -95,13 +87,13 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		$credentials = $_SESSION['rop_facebook_credentials'];
 
-		$api = $this->get_api( $credentials['app_id'], $credentials['secret'] );
-
-		$helper = $api->getRedirectLoginHelper();
-
-		$longAccessToken = '';
 		try {
-			$accessToken = $helper->getAccessToken();
+			$api = $this->get_api( $credentials['app_id'], $credentials['secret'] );
+
+			$helper = $api->getRedirectLoginHelper();
+
+			$longAccessToken = '';
+			$accessToken     = $helper->getAccessToken();
 			if ( ! isset( $accessToken ) ) {
 				if ( $helper->getError() ) {
 					$this->error->throw_exception( '401 Unauthorized', $this->error->get_fb_exeption_message( $helper ) );
@@ -174,66 +166,121 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @access  public
 	 * @return mixed
 	 */
-	public function authenticate() {
+	public function maybe_authenticate() {
 		if ( ! session_id() ) {
 			session_start();
 		}
+		if ( ! $this->is_set_not_empty(
+			$_SESSION, array(
+				'rop_facebook_token',
+				'rop_facebook_credentials',
+			)
+		) ) {
+			return false;
+		}
 
-		if ( isset( $_SESSION['rop_facebook_token'] ) && isset( $_SESSION['rop_facebook_credentials'] ) ) {
-			$credentials = $_SESSION['rop_facebook_credentials'];
-			$token       = $_SESSION['rop_facebook_token'];
-			$api         = $this->get_api( $credentials['app_id'], $credentials['secret'] );
+		if ( ! $this->is_set_not_empty(
+			$_SESSION['rop_facebook_credentials'], array(
+				'app_id',
+				'secret',
+			)
+		) ) {
+			return false;
+		}
+		$credentials = $_SESSION['rop_facebook_credentials'];
+		$token       = $_SESSION['rop_facebook_token'];
 
+		$credentials['token'] = $token;
+		unset( $_SESSION['rop_facebook_credentials'] );
+		unset( $_SESSION['rop_facebook_token'] );
+
+		return $this->authenticate( $credentials );
+
+	}
+
+	/**
+	 * Method to authenticate an user based on provided credentials.
+	 * Used in DB upgrade.
+	 *
+	 * @param array $args The arguments for facebook service auth.
+	 *
+	 * @return bool
+	 */
+	public function authenticate( $args = array() ) {
+		if ( ! $this->is_set_not_empty(
+			$args, array(
+				'app_id',
+				'secret',
+				'token',
+			)
+		) ) {
+			return false;
+		}
+
+		$app_id = $args['app_id'];
+		$secret = $args['secret'];
+		$token  = $args['token'];
+
+		try {
+			$api = $this->get_api( $app_id, $secret );
 			$this->set_credentials(
 				array(
-					'app_id' => $credentials['app_id'],
-					'secret' => $credentials['secret'],
+					'app_id' => $app_id,
+					'secret' => $secret,
 					'token'  => $token,
 				)
 			);
-
 			$api->setDefaultAccessToken( $token );
 
-			try {
-				// Returns a `Facebook\FacebookResponse` object
-				$response = $api->get( '/me?fields=id,name,email', $token );
-			} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
-				$this->error->throw_exception( '400 Bad Request', 'Graph returned an error: ' . $e->getMessage() );
-			} catch ( Facebook\Exceptions\FacebookSDKException $e ) {
-				$this->error->throw_exception( '400 Bad Request', 'Facebook SDK returned an error: ' . $e->getMessage() );
-			}
-
-			unset( $_SESSION['rop_facebook_credentials'] );
-			unset( $_SESSION['rop_facebook_token'] );
-
-			$user = $response->getGraphUser();
-			if ( $user->getId() ) {
-				$this->service = array(
-					'id'                 => $user->getId(),
-					'service'            => $this->service_name,
-					'credentials'        => $this->credentials,
-					'public_credentials' => array(
-						'app_id' => array(
-							'name'    => 'APP ID',
-							'value'   => $this->credentials['app_id'],
-							'private' => false,
-						),
-						'secret' => array(
-							'name'    => 'APP Secret',
-							'value'   => $this->credentials['secret'],
-							'private' => true,
-						),
-					),
-					'available_accounts' => $this->get_pages( $user ),
-				);
-
-				return true;
-			}
+			// Returns a `Facebook\FacebookResponse` object
+			$response = $api->get( '/me?fields=id,name,email,picture', $token );
+		} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
+			$this->error->throw_exception( '400 Bad Request', 'Graph returned an error: ' . $e->getMessage() );
 
 			return false;
-		}// End if().
+		} catch ( Facebook\Exceptions\FacebookSDKException $e ) {
+			$this->error->throw_exception( '400 Bad Request', 'Facebook SDK returned an error: ' . $e->getMessage() );
 
-		return false;
+			return false;
+		}
+
+		$user       = $response->getGraphUser();
+		$this->user = $user;
+		if ( empty( $user->getId() ) ) {
+			return false;
+		}
+		$user_details                 = $this->user_default;
+		$user_details['id']           = $user->getId();
+		$user_details['user']         = $user['name'];
+		$user_details['account']      = $user->getEmail();
+		$user_details['img']          = $user->getPicture()->getUrl();
+		$user_details['access_token'] = $token;
+		$this->service                = array(
+			'id'                 => $user->getId(),
+			'service'            => $this->service_name,
+			'credentials'        => $this->credentials,
+			'public_credentials' => array(
+				'app_id' => array(
+					'name'    => 'APP ID',
+					'value'   => $this->credentials['app_id'],
+					'private' => false,
+				),
+				'secret' => array(
+					'name'    => 'APP Secret',
+					'value'   => $this->credentials['secret'],
+					'private' => true,
+				),
+			),
+			'available_accounts' => array_merge(
+				array(
+					$user_details,
+				),
+				$this->get_pages( $user )
+			),
+		);
+
+		return true;
+
 	}
 
 	/**
@@ -267,91 +314,18 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		$pages       = $pages->getGraphEdge()->asArray();
 
 		foreach ( $pages as $key ) {
-			$img = $api->sendRequest( 'GET', '/' . $key['id'] . '/picture', array( 'redirect' => false ) );
-			$img = $img->getGraphNode()->asArray();
-
-			$pages_array[] = array(
-				'id'           => $key['id'],
-				'name'         => $key['name'],
-				'account'      => $user->getEmail(),
-				'img'          => $img['url'],
-				'active'       => false,
-				'access_token' => $key['access_token'],
-			);
+			$img                          = $api->sendRequest( 'GET', '/' . $key['id'] . '/picture', array( 'redirect' => false ) );
+			$img                          = $img->getGraphNode()->asArray();
+			$user_details                 = $this->user_default;
+			$user_details['id']           = $key['id'];
+			$user_details['user']         = $key['name'];
+			$user_details['account']      = $user->getEmail();
+			$user_details['img']          = $img['url'];
+			$user_details['access_token'] = $key['access_token'];
+			$pages_array[]                = $user_details;
 		}
 
 		return $pages_array;
-	}
-
-	/**
-	 * Method to re authenticate an user based on provided credentials.
-	 * Used in DB upgrade.
-	 *
-	 * @param string $app_id The app id.
-	 * @param string $secret The app secret.
-	 * @param string $token The token.
-	 *
-	 * @return bool
-	 */
-	public function re_authenticate( $app_id, $secret, $token ) {
-		$api = $this->get_api( $app_id, $secret );
-		$this->set_credentials(
-			array(
-				'app_id' => $app_id,
-				'secret' => $secret,
-				'token'  => $token,
-			)
-		);
-		$api->setDefaultAccessToken( $token );
-
-		try {
-			// Returns a `Facebook\FacebookResponse` object
-			$response = $api->get( '/me?fields=id,name,email,picture', $token );
-		} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
-			$this->error->throw_exception( '400 Bad Request', 'Graph returned an error: ' . $e->getMessage() );
-		} catch ( Facebook\Exceptions\FacebookSDKException $e ) {
-			$this->error->throw_exception( '400 Bad Request', 'Facebook SDK returned an error: ' . $e->getMessage() );
-		}
-
-		$user       = $response->getGraphUser();
-		$this->user = $user;
-		if ( $user->getId() ) {
-
-			$this->service = array(
-				'id'                 => $user->getId(),
-				'service'            => $this->service_name,
-				'credentials'        => $this->credentials,
-				'public_credentials' => array(
-					'app_id' => array(
-						'name'    => 'APP ID',
-						'value'   => $this->credentials['app_id'],
-						'private' => false,
-					),
-					'secret' => array(
-						'name'    => 'APP Secret',
-						'value'   => $this->credentials['secret'],
-						'private' => true,
-					),
-				),
-				'available_accounts' => array_merge(
-					array(
-						array(
-							'id'           => $user->getId(),
-							'name'         => $user['name'],
-							'account'      => $user->getEmail(),
-							'img'          => $user->getPicture()->getUrl(),
-							'active'       => false,
-							'access_token' => $token,
-						),
-					),
-					$this->get_pages( $user )
-				),
-			);
-
-			return true;
-		}
-
-		return false;
 	}
 
 	/**

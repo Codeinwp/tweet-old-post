@@ -418,7 +418,7 @@ class Rop_Rest_Api {
 		$settings_model = new Rop_Settings_Model();
 		$this->response->set_code( '200' )
 					   ->set_message( __( 'Retrieved general settings from the database.', 'tweet-old-post' ) )
-					   ->set_data( $settings_model->get_settings() );
+					   ->set_data( $settings_model->get_settings( true ) );
 
 		return $this->response->to_array();
 	}
@@ -465,7 +465,7 @@ class Rop_Rest_Api {
 	 */
 	private function get_posts( $data ) {
 		$post_selector   = new Rop_Posts_Selector_Model();
-		$available_posts = $post_selector->get_posts( $data['post_types'], $data['taxonomies'], $data['search_query'], $data['exclude'] );
+		$available_posts = $post_selector->get_posts( $data['post_types'], $data['taxonomies'], $data['search_query'], $data['exclude'], $data['selected'] );
 
 		$this->response->set_code( '200' )
 					   ->set_message( __( 'Retrieved available posts from the database.', 'tweet-old-post' ) )
@@ -488,18 +488,16 @@ class Rop_Rest_Api {
 	 */
 	private function save_general_settings( $data ) {
 		$general_settings = array(
-			'available_taxonomies' => $data['available_taxonomies'],
-			'default_interval'     => $data['default_interval'],
-			'minimum_post_age'     => $data['minimum_post_age'],
-			'maximum_post_age'     => $data['maximum_post_age'],
-			'number_of_posts'      => $data['number_of_posts'],
-			'more_than_once'       => $data['more_than_once'],
-			'selected_post_types'  => $data['post_types'],
-			'selected_taxonomies'  => $data['taxonomies'],
-			'exclude_taxonomies'   => $data['exclude_taxonomies'],
-			'selected_posts'       => $data['posts'],
-			'exclude_posts'        => $data['exclude_posts'],
-			'ga_tracking'          => $data['ga_tracking'],
+			'default_interval'    => $data['default_interval'],
+			'minimum_post_age'    => $data['minimum_post_age'],
+			'maximum_post_age'    => $data['maximum_post_age'],
+			'number_of_posts'     => $data['number_of_posts'],
+			'more_than_once'      => $data['more_than_once'],
+			'selected_post_types' => $data['post_types'],
+			'selected_taxonomies' => $data['taxonomies'],
+			'exclude_taxonomies'  => $data['exclude_taxonomies'],
+			'selected_posts'      => $data['posts'],
+			'ga_tracking'         => $data['ga_tracking'],
 		);
 		$settings_model   = new Rop_Settings_Model();
 		$settings_model->save_settings( $general_settings );
@@ -607,14 +605,8 @@ class Rop_Rest_Api {
 	private function update_active_accounts( $data ) {
 		$new_active = array();
 		foreach ( $data['to_be_activated'] as $account ) {
-			$id                = $data['service'] . '_' . $data['service_id'] . '_' . $account['id'];
-			$new_active[ $id ] = array(
-				'service' => $data['service'],
-				'user'    => $account['name'],
-				'img'     => $account['img'],
-				'account' => $account['account'],
-				'created' => date( 'd/m/Y H:i' ),
-			);
+			$id = $data['service'] . '_' . $data['service_id'] . '_' . $account['id'];
+			$new_active[] = $id;
 		}
 		$model = new Rop_Services_Model();
 		$this->response->set_code( '200' )

@@ -21,6 +21,14 @@
 class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 	/**
+	 * An instance of authenticated LinkedIn user.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @var     array $user An instance of the current user.
+	 */
+	public $user;
+	/**
 	 * Defines the service name in slug format.
 	 *
 	 * @since   8.0.0
@@ -28,7 +36,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @var     string $service_name The service name.
 	 */
 	protected $service_name = 'linkedin';
-
 	/**
 	 * Permissions required by the app.
 	 *
@@ -38,23 +45,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 */
 	protected $scopes = array( 'r_basicprofile', 'r_emailaddress', 'rw_company_admin', 'w_share' );
 
-	/**
-	 * Holds the temp data for the authenticated service.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 * @var     array $service The temporary data of the authenticated service.
-	 */
-	private $service = array();
-
-	/**
-	 * An instance of authenticated LinkedIn user.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 * @var     array $user An instance of the current user.
-	 */
-	public $user;
 
 	/**
 	 * Method to inject functionality into constructor.
@@ -78,37 +68,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 */
 	public function expose_endpoints() {
 		$this->register_endpoint( 'authorize', 'authorize' );
-		$this->register_endpoint( 'authenticate', 'authenticate' );
-	}
-
-	/**
-	 * Method to define the api.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @param   string $client_id The Client ID. Default empty.
-	 * @param   string $client_secret The Client Secret. Default empty.
-	 * @return mixed
-	 */
-	public function set_api( $client_id = '', $client_secret = '' ) {
-		$this->api = new \LinkedIn\Client( $client_id, $client_secret );
-		$this->api->setRedirectUrl( $this->get_endpoint_url( 'authorize' ) );
-	}
-
-	/**
-	 * Method to retrieve the api object.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @param   string $client_id The Client ID. Default empty.
-	 * @param   string $client_secret The Client Secret. Default empty.
-	 * @return mixed
-	 */
-	public function get_api( $client_id = '', $client_secret = '' ) {
-		if ( $this->api == null ) {
-			$this->set_api( $client_id, $client_secret );
-		}
-		return $this->api;
+		$this->register_endpoint( 'authenticate', 'maybe_authenticate' );
 	}
 
 	/**
@@ -131,10 +91,86 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$api         = $this->get_api( $credentials['client_id'], $credentials['secret'] );
 		$accessToken = $api->getAccessToken( $_GET['code'] );
 
-		$_SESSION['rop_linkedin_token'] = $accessToken;
+		$_SESSION['rop_linkedin_token'] = $accessToken->getToken();
 
 		parent::authorize();
 		// echo '<script>window.setTimeout("window.close()", 500);</script>';
+	}
+
+	/**
+	 * Method to retrieve the api object.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 *
+	 * @param   string $client_id The Client ID. Default empty.
+	 * @param   string $client_secret The Client Secret. Default empty.
+	 *
+	 * @return mixed
+	 */
+	public function get_api( $client_id = '', $client_secret = '' ) {
+		if ( $this->api == null ) {
+			$this->set_api( $client_id, $client_secret );
+		}
+
+		return $this->api;
+	}
+
+	/**
+	 * Method to define the api.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 *
+	 * @param   string $client_id The Client ID. Default empty.
+	 * @param   string $client_secret The Client Secret. Default empty.
+	 *
+	 * @return mixed
+	 */
+	public function set_api( $client_id = '', $client_secret = '' ) {
+		$this->api = new \LinkedIn\Client( $client_id, $client_secret );
+
+		$this->api->setRedirectUrl( $this->get_endpoint_url( 'authorize' ) );
+	}
+
+	/**
+	 * Method for maybe authenticate the service.
+	 *
+	 * @codeCoverageIgnore
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return mixed
+	 */
+	public function maybe_authenticate() {
+		if ( ! session_id() ) {
+			session_start();
+		}
+		if ( ! $this->is_set_not_empty(
+			$_SESSION, array(
+				'rop_linkedin_credentials',
+				'rop_linkedin_token',
+			)
+		) ) {
+			return false;
+		}
+		if ( ! $this->is_set_not_empty(
+			$_SESSION['rop_linkedin_credentials'], array(
+				'client_id',
+				'secret',
+			)
+		) ) {
+			return false;
+		}
+
+		$credentials          = $_SESSION['rop_linkedin_credentials'];
+		$token                = $_SESSION['rop_linkedin_token'];
+		$credentials['token'] = $token;
+
+		unset( $_SESSION['rop_linkedin_credentials'] );
+		unset( $_SESSION['rop_linkedin_token'] );
+
+		return $this->authenticate( $credentials );
 	}
 
 	/**
@@ -146,108 +182,96 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @access  public
 	 * @return mixed
 	 */
-	public function authenticate() {
-		if ( ! session_id() ) {
-			session_start();
+	public function authenticate( $args ) {
+		if ( ! $this->is_set_not_empty(
+			$args, array(
+				'client_id',
+				'token',
+				'secret',
+			)
+		) ) {
+			return false;
 		}
 
-		$this->credentials = $_SESSION['rop_linkedin_credentials'];
+		$token = $args['token'];
 
-		if ( isset( $_SESSION['rop_linkedin_credentials'] ) && isset( $_SESSION['rop_linkedin_token'] ) ) {
-			$api                        = $this->get_api( $this->credentials['client_id'], $this->credentials['secret'] );
-			$token                      = $_SESSION['rop_linkedin_token'];
-			$this->credentials['token'] = $token->getToken();
-			$api->setAccessToken( new LinkedIn\AccessToken( $this->credentials['token'] ) );
+		$api = $this->get_api( $args['client_id'], $args['secret'] );
 
-			$profile = $api->get(
-				'people/~:(id,email-address,first-name,last-name,formatted-name,picture-url)'
-			);
-			if ( isset( $profile['id'] ) ) {
-				$this->service = array(
-					'id'                 => $profile['id'],
-					'service'            => $this->service_name,
-					'credentials'        => $this->credentials,
-					'public_credentials' => array(
-						'app_id' => array(
-							'name'    => 'Client ID',
-							'value'   => $this->credentials['client_id'],
-							'private' => false,
-						),
-						'secret' => array(
-							'name'    => 'Client Secret',
-							'value'   => $this->credentials['secret'],
-							'private' => true,
-						),
-					),
-					'available_accounts' => $this->get_users( $profile ),
-				);
+		$this->credentials['token']     = $token;
+		$this->credentials['client_id'] = $args['client_id'];
+		$this->credentials['secret']    = $args['secret'];
 
-				unset( $_SESSION['rop_linkedin_credentials'] );
-				unset( $_SESSION['rop_linkedin_token'] );
-				return true;
-			}
+		$api->setAccessToken( new LinkedIn\AccessToken( $args['token'] ) );
 
+		$profile = $api->get(
+			'people/~:(id,email-address,first-name,last-name,formatted-name,picture-url)'
+		);
+		if ( ! isset( $profile['id'] ) ) {
 			return false;
-		}// End if().
+		}
+		$this->service = array(
+			'id'                 => $profile['id'],
+			'service'            => $this->service_name,
+			'credentials'        => $this->credentials,
+			'public_credentials' => array(
+				'app_id' => array(
+					'name'    => 'Client ID',
+					'value'   => $this->credentials['client_id'],
+					'private' => false,
+				),
+				'secret' => array(
+					'name'    => 'Client Secret',
+					'value'   => $this->credentials['secret'],
+					'private' => true,
+				),
+			),
+			'available_accounts' => $this->get_users( $profile ),
+		);
 
-		return false;
+		return true;
+
 	}
 
 	/**
-	 * Method to re authenticate an user based on provided credentials.
-	 * Used in DB upgrade.
+	 * Utility method to retrieve users from the Twitter account.
 	 *
-	 * @param string $client_id The client id.
-	 * @param string $secret    The app secret.
-	 * @param string $token     The token.
+	 * @codeCoverageIgnore
 	 *
-	 * @return bool
+	 * @since   8.0.0
+	 * @access  public
+	 *
+	 * @param   object $data Response data from Twitter.
+	 *
+	 * @return array
 	 */
-	public function re_authenticate( $client_id, $secret, $token ) {
-		$api = $this->get_api( $client_id, $secret );
-		$this->set_credentials(
-			array(
-				'client_id' => $client_id,
-				'secret'    => $secret,
-				'token'     => $token,
-			)
-		);
-		$token = new \LinkedIn\AccessToken( $token );
-		$api->setAccessToken( $token );
-
-		// var_dump( $token ); die();
-		try {
-			$profile = $api->get(
-				'people/~:(id,email-address,first-name,last-name,formatted-name,picture-url)'
-			);
-		} catch ( \LinkedIn\Exception $e ) {
-			$this->error->throw_exception( '400 Bad Request', 'LinkedIn returned an error: ' . $e->getMessage() );
+	private function get_users( $data = null ) {
+		if ( empty( $data ) ) {
+			return array();
 		}
-		if ( isset( $profile['id'] ) ) {
-			$this->service = array(
-				'id'                 => $profile['id'],
-				'service'            => $this->service_name,
-				'credentials'        => $this->credentials,
-				'public_credentials' => array(
-					'app_id' => array(
-						'name'    => 'Client ID',
-						'value'   => $this->credentials['client_id'],
-						'private' => false,
-					),
-					'secret' => array(
-						'name'    => 'Client Secret',
-						'value'   => $this->credentials['secret'],
-						'private' => true,
-					),
-				),
-				'available_accounts' => $this->get_users( $profile ),
-			);
-
-			$this->user = $profile;
-			return true;
+		$img = '';
+		if ( isset( $data['pictureUrl'] ) && $data['pictureUrl'] ) {
+			$img = $data['pictureUrl'];
 		}
+		$user_details            = $this->user_default;
+		$user_details['id']      = $data['id'];
+		$user_details['account'] = $data['formattedName'];
+		$user_details['user']    = $data['formattedName'];
+		$user_details['img']     = $img;
 
-		return false;
+		return array( $user_details );
+	}
+
+
+	/**
+	 * Method to register credentials for the service.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 *
+	 * @param   array $args The credentials array.
+	 */
+	public function set_credentials( $args ) {
+		$this->credentials = $args;
 	}
 
 	/**
@@ -265,22 +289,11 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		}
 
 		$api           = $this->get_api();
-		$request_token = $api->oauth( 'oauth/request_token', array('oauth_callback' => $this->get_endpoint_url( 'authorize' ) ) );
+		$request_token = $api->oauth( 'oauth/request_token', array( 'oauth_callback' => $this->get_endpoint_url( 'authorize' ) ) );
 
 		$_SESSION['rop_twitter_request_token'] = $request_token;
 
 		return $request_token;
-	}
-
-	/**
-	 * Method to register credentials for the service.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @param   array $args The credentials array.
-	 */
-	public function set_credentials( $args ) {
-		$this->credentials = $args;
 	}
 
 	/**
@@ -299,7 +312,9 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
 	 * @param   array $data The data from the user.
+	 *
 	 * @return mixed
 	 */
 	public function sign_in_url( $data ) {
@@ -318,53 +333,14 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	}
 
 	/**
-	 * Utility method to retrieve users from the Twitter account.
-	 *
-	 * @codeCoverageIgnore
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @param   object $data Response data from Twitter.
-	 * @return array
-	 */
-	private function get_users( $data = null ) {
-		$users = array();
-		if ( $data == null ) {
-			$this->set_api( $this->credentials['client_id'], $this->credentials['secret'] );
-			$api = $this->get_api();
-			$api->setAccessToken( $this->credentials['token'] );
-
-			$profile = $api->get(
-				'people/~:(id,email-address,first-name,last-name,formatted-name,picture-url)'
-			);
-			if ( ! isset( $profile['id'] ) ) {
-				return $users;
-			}
-			$data = $profile;
-		}
-
-		$img = '';
-		if ( isset( $data['pictureUrl'] ) && $data['pictureUrl'] ) {
-			$img = $data['pictureUrl'];
-		}
-
-		$users = array(
-			'id'      => $data['id'],
-			'name'    => $data['formattedName'],
-			'account' => $data['formattedName'],
-			'img'     => $img,
-			'active'  => true,
-		);
-		return array( $users );
-	}
-
-	/**
 	 * Method for publishing with Twitter service.
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
 	 * @param   array $post_details The post details to be published by the service.
 	 * @param   array $args Optional arguments needed by the method.
+	 *
 	 * @return mixed
 	 */
 	public function share( $post_details, $args = array() ) {
@@ -409,6 +385,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			// Maybe log this.
 			$log = new Rop_Logger();
 			$log->warn( 'Posting failed for LinkedIn.', $exception->getTrace() );
+
 			return false;
 		}
 

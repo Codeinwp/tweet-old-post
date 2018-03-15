@@ -146,25 +146,29 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 *
 	 * @return array
 	 */
-	public function get_posts( $selected_post_types, $taxonomies, $search, $exclude ) {
+	public function get_posts( $selected_post_types, $taxonomies, $search, $exclude, $selected_posts ) {
 		$search_query = '';
 		if ( isset( $search ) && $search != '' ) {
 			$search_query = $search;
 		}
+		$selected = array();
+		if ( ! empty( $selected_posts ) && is_array( $selected_posts ) ) {
+			$selected = wp_list_pluck( $selected_posts, 'value' );
+		}
 		$post_types  = $this->build_post_types( $selected_post_types );
 		$tax_queries = $this->build_tax_query( array( 'taxonomies' => $taxonomies, 'exclude' => $exclude ) );
 
-		$posts_array = new WP_Query(
+		$posts_array     = new WP_Query(
 			array(
 				'posts_per_page'         => 10,
 				'no_found_rows'          => true,
+				'post__not_in'           => $selected,
 				'update_post_meta_cache' => false,
 				'post_type'              => $post_types,
 				's'                      => $search_query,
 				'tax_query'              => $tax_queries,
 			)
 		);
-
 		$formatted_posts = array();
 		foreach ( $posts_array->posts as $post ) {
 			array_push(
@@ -279,7 +283,13 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 				}
 			}
 			if ( $this->settings->get_exclude_posts() != true ) {
-				$required = get_posts( array( 'numberposts' => - 1, 'include' => $include, 'no_found_rows' => true ) );
+				$required = get_posts(
+					array(
+						'posts_per_page' => 100,
+						'posts__in'      => $include,
+						'no_found_rows'  => true,
+					)
+				);
 			}
 		}
 

@@ -131,7 +131,6 @@ class Test_ROP extends WP_UnitTestCase {
 
 				//$this->assertTrue( $service->share( array() ) );
 
-				$this->assertTrue( is_array( $service->get_service() ) );
 			}
 		}
 

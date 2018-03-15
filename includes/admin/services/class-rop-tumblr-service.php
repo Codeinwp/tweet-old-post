@@ -29,14 +29,6 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	 */
 	protected $service_name = 'tumblr';
 
-	/**
-	 * Holds the temp data for the authenticated service.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 * @var     array $service The temporary data of the authenticated service.
-	 */
-	private $service = array();
 
 	/**
 	 * Method to inject functionality into constructor.
@@ -60,40 +52,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	 */
 	public function expose_endpoints() {
 		$this->register_endpoint( 'authorize', 'authorize' );
-		$this->register_endpoint( 'authenticate', 'authenticate' );
-	}
-
-	/**
-	 * Method to define the api.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @param   string $consumer_key The Consumer Key. Default empty.
-	 * @param   string $consumer_secret The Consumer Secret. Default empty.
-	 * @param   string $token The Consumer Key. Default NULL.
-	 * @param   string $token_secret The Consumer Secret. Default NULL.
-	 * @return mixed
-	 */
-	public function set_api( $consumer_key = '', $consumer_secret = '', $token = null, $token_secret = null ) {
-		$this->api = new \Tumblr\API\Client( $consumer_key, $consumer_secret, $token, $token_secret );
-	}
-
-	/**
-	 * Method to retrieve the api object.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @param   string $consumer_key The Consumer Key. Default empty.
-	 * @param   string $consumer_secret The Consumer Secret. Default empty.
-	 * @param   string $token The Consumer Key. Default NULL.
-	 * @param   string $token_secret The Consumer Secret. Default NULL.
-	 * @return mixed
-	 */
-	public function get_api( $consumer_key = '', $consumer_secret = '', $token = null, $token_secret = null ) {
-		if ( $this->api == null ) {
-			$this->set_api( $consumer_key, $consumer_secret, $token, $token_secret );
-		}
-		return $this->api;
+		$this->register_endpoint( 'authenticate', 'maybe_authenticate' );
 	}
 
 	/**
@@ -122,7 +81,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			if ( ! empty( $_GET['oauth_verifier'] ) ) {
 				// exchange the verifier for the keys
 				$verifier    = trim( $_GET['oauth_verifier'] );
-				$resp        = $requestHandler->request( 'POST', 'oauth/access_token', array('oauth_verifier' => $verifier ) );
+				$resp        = $requestHandler->request( 'POST', 'oauth/access_token', array( 'oauth_verifier' => $verifier ) );
 				$out         = (string) $resp->body;
 				$accessToken = array();
 				parse_str( $out, $accessToken );
@@ -136,6 +95,44 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	}
 
 	/**
+	 * Method to retrieve the api object.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 *
+	 * @param   string $consumer_key The Consumer Key. Default empty.
+	 * @param   string $consumer_secret The Consumer Secret. Default empty.
+	 * @param   string $token The Consumer Key. Default NULL.
+	 * @param   string $token_secret The Consumer Secret. Default NULL.
+	 *
+	 * @return mixed
+	 */
+	public function get_api( $consumer_key = '', $consumer_secret = '', $token = null, $token_secret = null ) {
+		if ( $this->api == null ) {
+			$this->set_api( $consumer_key, $consumer_secret, $token, $token_secret );
+		}
+
+		return $this->api;
+	}
+
+	/**
+	 * Method to define the api.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 *
+	 * @param   string $consumer_key The Consumer Key. Default empty.
+	 * @param   string $consumer_secret The Consumer Secret. Default empty.
+	 * @param   string $token The Consumer Key. Default NULL.
+	 * @param   string $token_secret The Consumer Secret. Default NULL.
+	 *
+	 * @return mixed
+	 */
+	public function set_api( $consumer_key = '', $consumer_secret = '', $token = null, $token_secret = null ) {
+		$this->api = new \Tumblr\API\Client( $consumer_key, $consumer_secret, $token, $token_secret );
+	}
+
+	/**
 	 * Method for authenticate the service.
 	 *
 	 * @codeCoverageIgnore
@@ -144,20 +141,33 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	 * @access  public
 	 * @return mixed
 	 */
-	public function authenticate() {
+	public function maybe_authenticate() {
 		if ( ! session_id() ) {
 			session_start();
 		}
-
-		$this->credentials                       = $_SESSION['rop_tumblr_credentials'];
-		$this->credentials['oauth_token']        = isset( $_SESSION['rop_tumblr_token']['oauth_token'] ) ? $_SESSION['rop_tumblr_token']['oauth_token'] : null;
-		$this->credentials['oauth_token_secret'] = isset( $_SESSION['rop_tumblr_token']['oauth_token_secret'] ) ? $_SESSION['rop_tumblr_token']['oauth_token_secret'] : null;
-
-		if ( isset( $_SESSION['rop_tumblr_credentials'] ) && isset( $_SESSION['rop_tumblr_token'] ) ) {
-			return $this->request_and_set_user_info();
+		if ( ! $this->is_set_not_empty(
+			$_SESSION, array(
+				'rop_tumblr_credentials',
+				'rop_tumblr_token',
+			)
+		) ) {
+			return false;
 		}
+		if ( ! $this->is_set_not_empty(
+			$_SESSION['rop_tumblr_token'], array(
+				'oauth_token',
+				'oauth_token_secret',
+			)
+		) ) {
+			return false;
+		}
+		$credentials                       = $_SESSION['rop_tumblr_credentials'];
+		$credentials['oauth_token']        = $_SESSION['rop_tumblr_token']['oauth_token'];
+		$credentials['oauth_token_secret'] = $_SESSION['rop_tumblr_token']['oauth_token_secret'];
+		unset( $_SESSION['rop_tumblr_credentials'] );
+		unset( $_SESSION['rop_tumblr_token'] );
 
-		return false;
+		return $this->authenticate( $credentials );
 	}
 
 	/**
@@ -167,92 +177,127 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	 * @access  private
 	 * @return bool
 	 */
-	protected function request_and_set_user_info() {
-		$api = $this->get_api( $this->credentials['consumer_key'], $this->credentials['consumer_secret'], $this->credentials['oauth_token'], $this->credentials['oauth_token_secret'] );
-
-		$profile = $api->getUserInfo();
-		if ( isset( $profile->user->name ) ) {
-			$this->service = array(
-				'id'                 => $profile->user->name,
-				'service'            => $this->service_name,
-				'credentials'        => $this->credentials,
-				'public_credentials' => array(
-					'app_id' => array(
-						'name'    => 'Consumer Key',
-						'value'   => $this->credentials['consumer_key'],
-						'private' => false,
-					),
-					'secret' => array(
-						'name'    => 'Consumer Secret',
-						'value'   => $this->credentials['consumer_secret'],
-						'private' => true,
-					),
-				),
-				'available_accounts' => $this->get_users( $profile->user->blogs ),
-			);
-
-			unset( $_SESSION['rop_tumblr_credentials'] );
-			unset( $_SESSION['rop_tumblr_token'] );
-			return true;
+	public function authenticate( $args ) {
+		if ( ! $this->is_set_not_empty(
+			$args, array(
+				'oauth_token',
+				'oauth_token_secret',
+				'consumer_key',
+				'consumer_secret',
+			)
+		) ) {
+			return false;
 		}
 
-		return false;
+		$api = $this->get_api( $args['consumer_key'], $args['consumer_secret'], $args['oauth_token'], $args['oauth_token_secret'] );
+
+		$profile = $api->getUserInfo();
+		if ( ! isset( $profile->user->name ) ) {
+			return false;
+		}
+		$this->service = array(
+			'id'                 => $profile->user->name,
+			'service'            => $this->service_name,
+			'credentials'        => $args,
+			'public_credentials' => array(
+				'app_id' => array(
+					'name'    => 'Consumer Key',
+					'value'   => $args['consumer_key'],
+					'private' => false,
+				),
+				'secret' => array(
+					'name'    => 'Consumer Secret',
+					'value'   => $args['consumer_secret'],
+					'private' => true,
+				),
+			),
+			'available_accounts' => $this->get_users( $profile->user->blogs ),
+		);
+
+		return true;
 	}
 
 	/**
-	 * Method to re authenticate an user based on provided credentials.
-	 * Used in DB upgrade.
+	 * Utility method to retrieve users from the Twitter account.
 	 *
-	 * @param string $consumer_key          The consumer key.
-	 * @param string $consumer_secret       The consumer secret.
-	 * @param string $oauth_token           The oauth token.
-	 * @param string $oauth_token_secret    The oauth token secret.
+	 * @codeCoverageIgnore
 	 *
-	 * @return bool
+	 * @since   8.0.0
+	 * @access  public
+	 *
+	 * @param   object $data Response data from Twitter.
+	 *
+	 * @return array
 	 */
-	public function re_authenticate( $consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret ) {
-		$this->set_api( $consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret );
-		$api = $this->get_api();
+	private function get_users( $data = null ) {
+		$users = array();
 
-		$this->set_credentials(
-			array(
-				'consumer_key'       => $consumer_key,
-				'consumer_secret'    => $consumer_secret,
-				'oauth_token'        => $oauth_token,
-				'oauth_token_secret' => $oauth_token_secret,
-			)
-		);
-
-		try {
-			$profile = $api->getUserInfo();
-		} catch ( Exception $exception ) {
-			$log = new Rop_Logger();
-			$log->warn( 'User Info failed for Tumblr.', array( $exception ) );
-		}
-		if ( isset( $profile->user->name ) ) {
-			$this->service = array(
-				'id'                 => $profile->user->name,
-				'service'            => $this->service_name,
-				'credentials'        => $this->credentials,
-				'public_credentials' => array(
-					'app_id' => array(
-						'name'    => 'Consumer Key',
-						'value'   => $this->credentials['consumer_key'],
-						'private' => false,
-					),
-					'secret' => array(
-						'name'    => 'Consumer Secret',
-						'value'   => $this->credentials['consumer_secret'],
-						'private' => true,
-					),
-				),
-				'available_accounts' => $this->get_users( $profile->user->blogs ),
+		foreach ( $data as $page ) {
+			$img = '';
+			if ( isset( $page->name ) ) {
+				$img = 'https://api.tumblr.com/v2/blog/' . $page->name . '.tumblr.com/avatar';
+			}
+			$user_details = wp_parse_args(
+				array(
+					'id'      => $page->name,
+					'user'    => $page->title,
+					'account' => $page->name,
+					'img'     => $img,
+				), $this->user_default
 			);
-
-			return true;
+			$users[]      = $user_details;
 		}
 
-		return false;
+		return $users;
+	}
+
+	/**
+	 * Method to register credentials for the service.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 *
+	 * @param   array $args The credentials array.
+	 */
+	public function set_credentials( $args ) {
+		$this->credentials = $args;
+	}
+
+	/**
+	 * Returns information for the current service.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return mixed
+	 */
+	public function get_service() {
+		return $this->service;
+	}
+
+	/**
+	 * Generate the sign in URL.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 *
+	 * @param   array $data The data from the user.
+	 *
+	 * @return mixed
+	 */
+	public function sign_in_url( $data ) {
+		$credentials = $data['credentials'];
+		// @codeCoverageIgnoreStart
+		if ( ! session_id() ) {
+			session_start();
+		}
+		// @codeCoverageIgnoreEnd
+		$_SESSION['rop_tumblr_credentials'] = $credentials;
+		$this->set_api( $credentials['consumer_key'], $credentials['consumer_secret'] );
+		$request_token = $this->request_api_token();
+
+		$url = 'https://www.tumblr.com/oauth/authorize?oauth_token=' . $request_token['oauth_token'];
+
+		return $url;
 	}
 
 	/**
@@ -288,99 +333,14 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	}
 
 	/**
-	 * Method to register credentials for the service.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @param   array $args The credentials array.
-	 */
-	public function set_credentials( $args ) {
-		$this->credentials = $args;
-	}
-
-	/**
-	 * Returns information for the current service.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return mixed
-	 */
-	public function get_service() {
-		return $this->service;
-	}
-
-	/**
-	 * Generate the sign in URL.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @param   array $data The data from the user.
-	 * @return mixed
-	 */
-	public function sign_in_url( $data ) {
-		$credentials = $data['credentials'];
-		// @codeCoverageIgnoreStart
-		if ( ! session_id() ) {
-			session_start();
-		}
-		// @codeCoverageIgnoreEnd
-		$_SESSION['rop_tumblr_credentials'] = $credentials;
-		$this->set_api( $credentials['consumer_key'], $credentials['consumer_secret'] );
-		$request_token = $this->request_api_token();
-
-		$url = 'https://www.tumblr.com/oauth/authorize?oauth_token=' . $request_token['oauth_token'];
-
-		return $url;
-	}
-
-	/**
-	 * Utility method to retrieve users from the Twitter account.
-	 *
-	 * @codeCoverageIgnore
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @param   object $data Response data from Twitter.
-	 * @return array
-	 */
-	private function get_users( $data = null ) {
-		$users = array();
-		if ( $data == null ) {
-			$this->set_api( $this->credentials['consumer_key'], $this->credentials['consumer_secret'], $this->credentials['oauth_token'], $this->credentials['oauth_token_secret'] );
-			$api = $this->get_api();
-
-			$profile = $api->getUserInfo();
-			if ( ! isset( $profile->user->name ) ) {
-				return $users;
-			}
-			$data = $profile->user->blogs;
-		}
-
-		foreach ( $data as $page ) {
-			$img = '';
-			if ( isset( $page->name ) ) {
-				$img = 'https://api.tumblr.com/v2/blog/' . $page->name . '.tumblr.com/avatar';
-			}
-
-			$users[] = array(
-				'id'      => $page->name,
-				'name'    => $page->title,
-				'account' => $page->name,
-				'img'     => $img,
-				'active'  => true,
-			);
-		}
-
-		return $users;
-	}
-
-	/**
 	 * Method for publishing with Twitter service.
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
 	 * @param   array $post_details The post details to be published by the service.
 	 * @param   array $args Optional arguments needed by the method.
+	 *
 	 * @return mixed
 	 */
 	public function share( $post_details, $args = array() ) {
@@ -417,6 +377,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			// Maybe log this.
 			$log = new Rop_Logger();
 			$log->warn( 'Posting failed for Tumblr.', array( $exception ) );
+
 			return false;
 		}
 

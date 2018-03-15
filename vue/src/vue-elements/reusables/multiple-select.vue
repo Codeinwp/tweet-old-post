@@ -92,7 +92,7 @@
 		mounted() {
 			let index = 0
 			for (let option of this.options) {
-				if (option.selected && this.selected.length === 0) {
+				if (boolean( option.selected)) {
 					this.addToSelected(index)
 				}
 				index++

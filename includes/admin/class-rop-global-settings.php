@@ -125,7 +125,7 @@ class Rop_Global_Settings {
 		'exclude_taxonomies'   => false,
 		'available_posts'      => array(), // get_posts(),
 		'selected_posts'       => array(),
-		'exclude_posts'        => false,
+		'exclude_posts'        => true,
 		'ga_tracking'          => false,
 		'post_limit'           => 20,
 		'beta_user'            => false,

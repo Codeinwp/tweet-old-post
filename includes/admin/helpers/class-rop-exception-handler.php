@@ -33,11 +33,13 @@ class Rop_Exception_Handler {
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
 	 * @param   object $helper The Facebook helper object.
+	 *
 	 * @return string
 	 */
 	public function get_fb_exeption_message( $helper ) {
-		$message  = 'Error: ' . $helper->getError() . PHP_EOL;
+		$message = 'Error: ' . $helper->getError() . PHP_EOL;
 		$message .= 'Error Code: ' . $helper->getErrorCode() . PHP_EOL;
 		$message .= 'Error Reason: ' . $helper->getErrorReason() . PHP_EOL;
 		$message .= 'Error Description: ' . $helper->getErrorDescription() . PHP_EOL;
@@ -50,6 +52,7 @@ class Rop_Exception_Handler {
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
 	 * @param   string $message An exception message.
 	 */
 	public function register_exception( $message ) {
@@ -61,11 +64,16 @@ class Rop_Exception_Handler {
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
 	 * @param   string $header The header as rfc2616 HTTP compliant code.
 	 * @param   string $message The message.
 	 */
 	public function throw_exception( $header, $message ) {
+		if ( ! ROP_TEST ) {
+			return;
+		}
 		header( 'HTTP/1.0 ' . $header );
+
 		echo $message;
 		exit;
 	}

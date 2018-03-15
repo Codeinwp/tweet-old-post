@@ -13,7 +13,7 @@
 								<i>Minimum time between shares (hour/hours), 0.4 can be used.</i>
 							</div>
 							<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-left">
-								<counter-input id="default_interval" :value.sync="generalSettings.default_interval" />
+								<counter-input id="default_interval" :value.sync="generalSettings.default_interval"/>
 							</div>
 						</div>
 					</div>
@@ -28,7 +28,8 @@
 								<i>Minimum age of posts available for sharing, in days.</i>
 							</div>
 							<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-left">
-								<counter-input id="min_post_age" :maxVal="365" :value.sync="generalSettings.minimum_post_age" />
+								<counter-input id="min_post_age" :maxVal="365"
+								               :value.sync="generalSettings.minimum_post_age"/>
 							</div>
 						</div>
 					</div>
@@ -37,7 +38,8 @@
 					<div class="column col-sm-12 col-md-12 col-lg-6">
 						<div class="columns">
 							<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-right">
-								<counter-input id="max_post_age" :maxVal="365" :value.sync="generalSettings.maximum_post_age" />
+								<counter-input id="max_post_age" :maxVal="365"
+								               :value.sync="generalSettings.maximum_post_age"/>
 							</div>
 							<div class="column col-sm-12 col-md-6 col-xl-6 col-8 text-left">
 								<b>Maximum post age</b><br/>
@@ -57,7 +59,7 @@
 								<i>Number of posts to share per. account per. trigger of scheduled job.</i>
 							</div>
 							<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-left">
-								<counter-input id="no_of_posts" :value.sync="generalSettings.number_of_posts" />
+								<counter-input id="no_of_posts" :value.sync="generalSettings.number_of_posts"/>
 							</div>
 						</div>
 					</div>
@@ -69,14 +71,15 @@
 							<div class="column col-sm-12 col-md-2 col-xl-2 col-1 text-right">
 								<div class="form-group">
 									<label class="form-checkbox">
-										<input type="checkbox" v-model="generalSettings.more_than_once" />
+										<input type="checkbox" v-model="generalSettings.more_than_once"/>
 										<i class="form-icon"></i> Yes
 									</label>
 								</div>
 							</div>
 							<div class="column col-sm-12 col-md-10 col-xl-10 col-11 text-left">
 								<b>Share more than once?</b><br/>
-								<i>If there are no more posts to share, we should start re-sharing the one we previously shared.</i>
+								<i>If there are no more posts to share, we should start re-sharing the one we previously
+									shared.</i>
 							</div>
 						</div>
 					</div>
@@ -92,7 +95,9 @@
 								<i>Post types available to share - what post types are available for share</i>
 							</div>
 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-								<multiple-select :options="postTypes" :disabled="isPro" :selected="generalSettings.selected_post_types" :changedSelection="updatedPostTypes" />
+								<multiple-select :options="postTypes" :disabled="isPro"
+								                 :selected="generalSettings.selected_post_types"
+								                 :changedSelection="updatedPostTypes"/>
 							</div>
 						</div>
 					</div>
@@ -107,14 +112,18 @@
 						<div class="columns">
 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
 								<b>Taxonomies</b><br/>
-								<i>Taxonomies available for the selected post types. Use to include or exclude posts.</i>
+								<i>Taxonomies available for the selected post types. Use to include or exclude
+									posts.</i>
 							</div>
 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 								<div class="input-group">
-									<multiple-select :options="taxonomies" :selected="generalSettings.selected_taxonomies" :changedSelection="updatedTaxonomies" />
+									<multiple-select :options="taxonomies"
+									                 :selected="generalSettings.selected_taxonomies"
+									                 :changedSelection="updatedTaxonomies"/>
 									<span class="input-group-addon">
 										<label class="form-checkbox">
-											<input type="checkbox" v-model="generalSettings.exclude_taxonomies" @change="exludeTaxonomiesChange" />
+											<input type="checkbox" v-model="generalSettings.exclude_taxonomies"
+											       @change="exludeTaxonomiesChange"/>
 											<i class="form-icon"></i> Exclude?
 										</label>
 									</span>
@@ -137,30 +146,29 @@
 							</div>
 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 								<div class="input-group">
-									<multiple-select :searchQuery="searchQuery" @update="searchUpdate" :options="postsAvailable" :dontLock="true" :selected="generalSettings.selected_posts" :changedSelection="updatedPosts" />
-									<span class="input-group-addon">
-										<label class="form-checkbox">
-											<input type="checkbox" v-model="generalSettings.exclude_posts" />
-											<i class="form-icon"></i> Exclude?
-										</label>
-									</span>
+									<multiple-select :searchQuery="searchQuery" @update="searchUpdate"
+									                 :options="postsAvailable" :dontLock="true"
+									                 :selected="generalSettings.selected_posts"
+									                 :changedSelection="updatedPosts"/>
+								
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 				<hr/>
-				<div  class="columns">
+				<div class="columns">
 					<div class="column col-sm-12 col-md-12 col-lg-12">
 						<div class="columns">
 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
 								<b>Enable Google Analytics Tracking</b><br/>
-								<i>If checked an utm query willbe added to URL's so that you cand better track trafic.</i>
+								<i>If checked an utm query willbe added to URL's so that you cand better track
+									trafic.</i>
 							</div>
 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 								<div class="form-group">
 									<label class="form-checkbox">
-										<input type="checkbox" v-model="generalSettings.ga_tracking" />
+										<input type="checkbox" v-model="generalSettings.ga_tracking"/>
 										<i class="form-icon"></i> Yes
 									</label>
 								</div>
@@ -184,7 +192,8 @@
 		name: 'settings-view',
 		data: function () {
 			return {
-				searchQuery: ''
+				searchQuery: '',
+				postTimeout: '',
 			}
 		},
 		computed: {
@@ -195,7 +204,10 @@
 				return this.$store.state.has_pro
 			},
 			postTypes: function () {
-				return this.$store.state.generalSettings.available_post_types
+				
+				return this.$store.state.generalSettings.available_post_types;
+				
+
 			},
 			taxonomies: function () {
 				this.requestPostUpdate()
@@ -206,47 +218,63 @@
 			}
 		},
 		methods: {
-			searchUpdate ( newQuery ) {
+			searchUpdate(newQuery) {
 				this.searchQuery = newQuery
 				this.requestPostUpdate()
 			},
-			updatedPostTypes ( data ) {
+			updatedPostTypes(data) {
 				let postTypes = []
-				for ( let index in data ) {
-					postTypes.push( data[index].value )
+				for (let index in data) {
+					postTypes.push(data[index].value)
 				}
 
-				this.$store.commit( 'updateState', { stateData: data, requestName: 'update_selected_post_types' } )
-				this.$store.dispatch( 'fetchAJAX', { req: 'get_taxonomies', data: { post_types: postTypes } } )
+				this.$store.commit('updateState', {stateData: data, requestName: 'update_selected_post_types'})
+				this.$store.dispatch('fetchAJAX', {req: 'get_taxonomies', data: {post_types: postTypes}})
 				this.requestPostUpdate()
 			},
-			updatedTaxonomies ( data ) {
+			updatedTaxonomies(data) {
 				let taxonomies = []
-				for ( let index in data ) {
-					taxonomies.push( data[index].value )
+				for (let index in data) {
+					taxonomies.push(data[index].value)
 				}
-				this.$store.commit( 'updateState', { stateData: data, requestName: 'update_selected_taxonomies' } )
+				this.$store.commit('updateState', {stateData: data, requestName: 'update_selected_taxonomies'})
 				this.requestPostUpdate()
 			},
-			updatedPosts ( data ) {
-				this.$store.commit( 'updateState', { stateData: data, requestName: 'update_selected_posts' } )
+			updatedPosts(data) {
+				this.$store.commit('updateState', {stateData: data, requestName: 'update_selected_posts'})
 			},
-			exludeTaxonomiesChange () {
+			exludeTaxonomiesChange() {
 				this.requestPostUpdate()
 			},
-			requestPostUpdate () {
+			doPostUpdate() {
 				let postTypesSelected = this.$store.state.generalSettings.selected_post_types
 				let taxonomiesSelected = this.$store.state.generalSettings.selected_taxonomies
 
-				this.$store.dispatch( 'fetchAJAX', { req: 'get_posts', data: { post_types: postTypesSelected, search_query: this.searchQuery, taxonomies: taxonomiesSelected, exclude: this.generalSettings.exclude_taxonomies } } )
+				this.$store.dispatch('fetchAJAX', {
+					req: 'get_posts',
+					data: {
+						post_types: postTypesSelected,
+						search_query: this.searchQuery,
+						taxonomies: taxonomiesSelected,
+						exclude: this.generalSettings.exclude_taxonomies,
+						selected: this.generalSettings.selected_posts
+					}
+				})
 			},
-			saveGeneralSettings () {
+			requestPostUpdate() {
+				if (this.postTimeout !== '') {
+					clearTimeout(this.postTimeout);
+				}
+				this.postTimeout = setTimeout(this.doPostUpdate, 500);
+
+			},
+			saveGeneralSettings() {
 				let postTypesSelected = this.$store.state.generalSettings.selected_post_types
 				let taxonomiesSelected = this.$store.state.generalSettings.selected_taxonomies
 				let excludeTaxonomies = this.generalSettings.exclude_taxonomies
 				let postsSelected = this.generalSettings.selected_posts
 
-				this.$store.dispatch( 'fetchAJAXPromise', {
+				this.$store.dispatch('fetchAJAXPromise', {
 					req: 'save_general_settings',
 					updateState: false,
 					data: {
@@ -260,14 +288,13 @@
 						taxonomies: taxonomiesSelected,
 						exclude_taxonomies: excludeTaxonomies,
 						posts: postsSelected,
-						exclude_posts: this.generalSettings.exclude_posts,
 						ga_tracking: this.generalSettings.ga_tracking
 					}
-				} ).then( response => {
-					this.$store.dispatch( 'fetchAJAX', { req: 'get_queue' } )
+				}).then(response => {
+					this.$store.dispatch('fetchAJAX', {req: 'get_queue'})
 				}, error => {
-					console.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
-				} )
+					console.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+				})
 			}
 		},
 		components: {

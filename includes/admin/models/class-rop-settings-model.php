@@ -21,7 +21,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @access  private
 	 * @var     array $settings The settings array.
 	 */
-	private static $settings = array();
+	private $settings = array();
 
 	/**
 	 * Rop_Settings_Model constructor.
@@ -31,7 +31,42 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 */
 	public function __construct() {
 		parent::__construct();
-		$this->get_settings();
+		$this->setup_settings();
+	}
+
+	/**
+	 * Setup settings var.
+	 */
+	private function setup_settings() {
+		$global_settings = new Rop_Global_Settings();
+		$default         = $global_settings->get_default_settings();
+		$settings        = wp_parse_args( $this->get( 'general_settings' ), $default );
+		$this->settings  = $this->normalize_settings( $settings );
+	}
+
+	/**
+	 * Normalize settings.
+	 */
+	private function normalize_settings( $settings ) {
+
+		foreach ( $settings as $key => $setting ) {
+			if ( ! is_array( $setting ) ) {
+				continue;
+			}
+			$settings[ $key ] = array_map(
+				function ( $value ) {
+					if ( ! is_numeric( $value ) ) {
+						return $value;
+					}
+					$value['value'] = intval( $value['value'] );
+
+					return $value;
+
+				}, $setting
+			);
+		}
+
+		return $settings;
 	}
 
 	/**
@@ -40,62 +75,21 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
+	 * @param bool $include_dynamic Either we include the dinamyc settings or not.
+	 *
 	 * @return array
 	 */
-	public function get_settings() {
-		if ( empty( self::$settings ) ) {
-			$global_settings = new Rop_Global_Settings();
-			$default         = $global_settings->get_default_settings();
-			self::$settings  = wp_parse_args( $this->get( 'general_settings' ), $default );
-			$this->normalize_settings();
-		}
-
-		return self::$settings;
-	}
-
-	/**
-	 * Normalize settings.
-	 */
-	private function normalize_settings() {
-
-		$settings  = self::$settings;
-		$list_keys = array(
-			'selected_taxonomies',
-			'available_taxonomies',
-			'selected_posts',
-			'available_posts',
-		);
-
+	public function get_settings( $include_dynamic = false ) {
 		/**
 		 * Load dynamic lists.
 		 */
-		$settings['available_taxonomies'] = $this->get_available_taxonomies();
-		$settings['available_post_types'] = $this->get_available_post_types();
-
-		/**
-		 * Cast list value id to int.
-		 */
-		foreach ( $list_keys as $list ) {
-			if ( ! isset( $settings[ $list ] ) ) {
-				continue;
-			}
-			if ( empty( $settings[ $list ] ) ) {
-				continue;
-			}
-			if ( ! is_array( $settings[ $list ] ) ) {
-				continue;
-			}
-			$settings[ $list ] = array_map(
-				function ( $value ) {
-					$value['value'] = intval( $value['value'] );
-
-					return $value;
-
-				}, $settings[ $list ]
-			);
+		if ( $include_dynamic ) {
+			$this->settings['available_taxonomies'] = $this->get_available_taxonomies( $this->get_selected_post_types() );
+			$this->settings['available_post_types'] = $this->get_available_post_types();
 		}
-		self::$settings = $settings;
 
+		return $this->settings;
 	}
 
 	/**
@@ -105,9 +99,9 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @access  public
 	 * @return array
 	 */
-	public function get_available_taxonomies() {
+	public function get_available_taxonomies( $selected_post_types ) {
 		$post_selector = new Rop_Posts_Selector_Model();
-		$taxonomies    = $post_selector->get_taxonomies( $this->get_selected_post_types() );
+		$taxonomies    = $post_selector->get_taxonomies( $selected_post_types );
 
 		return $taxonomies;
 	}
@@ -120,7 +114,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_selected_post_types() {
-		return self::$settings['selected_post_types'];
+		return $this->settings['selected_post_types'];
 	}
 
 	/**
@@ -135,12 +129,15 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 		$args             = array( 'public' => true, 'show_in_nav_menus' => true );
 		$post_types       = get_post_types( $args, 'objects' );
 		$post_types_array = array();
+		$selected         = $this->get_selected_post_types();
+		$selected         = wp_list_pluck( $selected, 'value' );
 		foreach ( $post_types as $type ) {
+
 			array_push(
 				$post_types_array, array(
 					'name'     => $type->label,
 					'value'    => $type->name,
-					'selected' => false,
+					'selected' => in_array( $type->name, $selected ),
 				)
 			);
 		}
@@ -159,7 +156,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function save_settings( $data = array() ) {
-		self::$settings = $data;
+		$this->settings = $data;
 		unset( $data['available_post_types'] );
 
 		return $this->set( 'general_settings', $data );
@@ -173,7 +170,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_interval() {
-		return self::$settings['default_interval'];
+		return $this->settings['default_interval'];
 	}
 
 	/**
@@ -185,7 +182,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 */
 	public function get_ga_tracking() {
 
-		return isset( self::$settings['ga_tracking'] ) ? self::$settings['ga_tracking'] : false;
+		return isset( $this->settings['ga_tracking'] ) ? $this->settings['ga_tracking'] : false;
 	}
 
 	/**
@@ -196,7 +193,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_minimum_post_age() {
-		return intval( self::$settings['minimum_post_age'] );
+		return intval( $this->settings['minimum_post_age'] );
 	}
 
 	/**
@@ -207,7 +204,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_maximum_post_age() {
-		return intval( self::$settings['maximum_post_age'] );
+		return intval( $this->settings['maximum_post_age'] );
 	}
 
 	/**
@@ -218,7 +215,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_number_of_posts() {
-		return self::$settings['number_of_posts'];
+		return $this->settings['number_of_posts'];
 	}
 
 	/**
@@ -229,7 +226,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_more_than_once() {
-		return self::$settings['more_than_once'];
+		return $this->settings['more_than_once'];
 	}
 
 	/**
@@ -240,7 +237,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_selected_taxonomies() {
-		return self::$settings['selected_taxonomies'];
+		return $this->settings['selected_taxonomies'];
 	}
 
 	/**
@@ -251,7 +248,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_exclude_taxonomies() {
-		return self::$settings['exclude_taxonomies'];
+		return $this->settings['exclude_taxonomies'];
 	}
 
 	/**
@@ -262,7 +259,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_selected_posts() {
-		return self::$settings['selected_posts'];
+		return $this->settings['selected_posts'];
 	}
 
 	/**
@@ -273,7 +270,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_exclude_posts() {
-		return self::$settings['exclude_posts'];
+		return $this->settings['exclude_posts'];
 	}
 
 	/**
@@ -284,7 +281,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_post_limit() {
-		return self::$settings['post_limit'];
+		return $this->settings['post_limit'];
 	}
 
 	/**
@@ -295,7 +292,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_beta_user() {
-		return self::$settings['beta_user'];
+		return $this->settings['beta_user'];
 	}
 
 	/**
@@ -306,7 +303,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_remote_check() {
-		return self::$settings['remote_check'];
+		return $this->settings['remote_check'];
 	}
 
 	/**
@@ -317,6 +314,6 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_custom_messages() {
-		return self::$settings['custom_messages'];
+		return $this->settings['custom_messages'];
 	}
 }

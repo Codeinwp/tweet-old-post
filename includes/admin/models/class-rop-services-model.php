@@ -37,23 +37,6 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 */
 	private $accounts_namespace = 'active_accounts';
 
-	/**
-	 * Has the results of the last run query.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 * @var     mixed|null $last_services_query The last services query results.
-	 */
-	private $last_services_query = null;
-
-	/**
-	 * Has the results of the last run query.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 * @var     mixed|null $last_accounts_query The last active accounts query results.
-	 */
-	private $last_accounts_query = null;
 
 	/**
 	 * Utility method to clear authenticated services.
@@ -63,7 +46,6 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 */
 	public function reset_authenticated_services() {
 		$this->set( $this->services_namespace, array() );
-		$this->last_services_query = null;
 	}
 
 	/**
@@ -77,6 +59,10 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 * @return mixed|null
 	 */
 	public function add_authenticated_service( $new_service ) {
+		if ( empty( $new_service ) ) {
+			return false;
+		}
+
 		return $this->update_authenticated_services( wp_parse_args( $new_service, $this->get_authenticated_services() ) );
 	}
 
@@ -88,13 +74,34 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 *
 	 * @param   array $new_auth_services The new services array.
 	 *
-	 * @return mixed|null
+	 * @return boolean
 	 */
 	public function update_authenticated_services( $new_auth_services ) {
-		$this->last_services_query = wp_parse_args( $new_auth_services, $this->last_services_query );
-		$this->set( $this->services_namespace, $this->last_services_query );
+		if ( empty( $new_auth_services ) ) {
+			return false;
+		}
 
-		return $this->last_services_query;
+		$this->set( $this->services_namespace, $new_auth_services );
+		$this->sync_active_accounts();
+
+		return true;
+	}
+
+	/**
+	 * Sync active accounts after a service change.
+	 */
+	private function sync_active_accounts() {
+		$services = $this->get_authenticated_services();
+		foreach ( $services as $service_key => $service_details ) {
+			foreach ( $service_details['available_accounts'] as $account ) {
+				$id = $service_details['service'] . '_' . $service_details['id'] . '_' . $account['id'];
+				if ( $account['active'] ) {
+					$this->add_active_accounts( $id );
+				} else {
+					$this->delete_active_accounts( $id );
+				}
+			}
+		}
 	}
 
 	/**
@@ -103,19 +110,117 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   bool $force Flag to specify if last query should be ignored. Get fresh results.
+	 * @return array
+	 */
+	public function get_authenticated_services() {
+
+		$services = $this->get( $this->services_namespace );
+
+		return wp_parse_args( $services, array() );
+		;
+	}
+
+	/**
+	 * Add a new account to DB.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 *
+	 * @param   array $new_active_accounts The new account array.
 	 *
 	 * @return mixed|null
 	 */
-	public function get_authenticated_services( $force = false ) {
-		if ( $this->last_services_query == null || $force == true ) {
-			$default  = array();
-			$services = $this->get( $this->services_namespace );
-
-			$this->last_services_query = wp_parse_args( $services, $default );
+	public function add_active_accounts( $new_active_accounts ) {
+		if ( empty( $new_active_accounts ) ) {
+			return false;
+		}
+		if ( ! is_array( $new_active_accounts ) ) {
+			$new_active_accounts = array( $new_active_accounts );
+		}
+		$account_details = array();
+		foreach ( $new_active_accounts as $index ) {
+			$account_details[ $index ] = $this->toggle_account_state( $index, true );
 		}
 
-		return $this->last_services_query;
+		return $this->update_active_accounts( wp_parse_args( $account_details, $this->get_active_accounts() ) );
+	}
+
+	/**
+	 * Method to updated the state of an account from the services array.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 *
+	 * @param   string  $index The active account index.
+	 * @param   boolean $state The desired state (true/false).
+	 */
+	private function toggle_account_state( $index, $state ) {
+
+		$services = $this->get_authenticated_services();
+		$return   = array();
+		list( $service, $service_id, $account_id ) = explode( '_', $index );
+		if ( count( $services[ $service . '_' . $service_id ]['available_accounts'] ) > 0 ) {
+			foreach ( $services[ $service . '_' . $service_id ]['available_accounts'] as $key => $account ) {
+				if ( $account['id'] == $account_id ) {
+					$services[ $service . '_' . $service_id ]['available_accounts'][ $key ]['active'] = $state;
+					$return                                                                           = $services[ $service . '_' . $service_id ]['available_accounts'][ $key ];
+				}
+			}
+			$this->set( $this->services_namespace, $services );
+		}
+
+		return $return;
+	}
+
+	/**
+	 * Method to update active accounts.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 *
+	 * @param   array $new_active_accounts The new active accounts array.
+	 *
+	 * @return mixed|null
+	 */
+	public function update_active_accounts( $new_active_accounts ) {
+		$this->set( $this->accounts_namespace, $new_active_accounts );
+
+		return $new_active_accounts;
+	}
+
+	/**
+	 * Method to retrieve the active accounts from DB.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 *
+	 * @return mixed|null
+	 */
+	public function get_active_accounts() {
+		$accounts = $this->get( $this->accounts_namespace );
+
+		return wp_parse_args( $accounts, array() );
+	}
+
+	/**
+	 * Remove an account from DB.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 *
+	 * @param   string $index The account index.
+	 *
+	 * @return mixed|null
+	 */
+	public function delete_active_accounts( $index ) {
+		$accounts = $this->get_active_accounts();
+		$this->toggle_account_state( $index, false );
+		unset( $accounts[ $index ] );
+		$this->update_active_accounts( $accounts );
+
+		return $accounts;
 	}
 
 	/**
@@ -130,79 +235,16 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 * @return mixed|null
 	 */
 	public function delete_authenticated_service( $service_id, $service ) {
-		$this->last_services_query = $this->get_authenticated_services();
-		$index                     = $service . '_' . $service_id;
-		$available_accounts        = $this->last_services_query[ $index ]['available_accounts'];
+		$services           = $this->get_authenticated_services();
+		$index              = $service . '_' . $service_id;
+		$available_accounts = $services[ $index ]['available_accounts'];
 		foreach ( $available_accounts as $account ) {
 			$this->delete_active_accounts( $index . '_' . $account['id'] );
 		}
-		unset( $this->last_services_query[ $index ] );
-		$this->set( $this->services_namespace, $this->last_services_query );
+		unset( $services[ $index ] );
+		$this->update_authenticated_services( $services );
 
-		return $this->last_services_query;
-	}
-
-	/**
-	 * Remove an account from DB.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   string $index The account index.
-	 *
-	 * @return mixed|null
-	 */
-	public function delete_active_accounts( $index ) {
-		$this->last_accounts_query = $this->get_active_accounts();
-		$this->toggle_account_state( $index, false );
-
-		unset( $this->last_accounts_query[ $index ] );
-		$this->set( $this->accounts_namespace, $this->last_accounts_query );
-
-		return $this->last_accounts_query;
-	}
-
-	/**
-	 * Method to retrieve the active accounts from DB.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   bool $force Flag to specify if last query should be ignored. Get fresh results.
-	 *
-	 * @return mixed|null
-	 */
-	public function get_active_accounts( $force = false ) {
-		if ( $this->last_accounts_query == null || $force == true ) {
-			$default                   = array();
-			$accounts                  = $this->get( $this->accounts_namespace );
-			$this->last_accounts_query = wp_parse_args( $accounts, $default );
-		}
-
-		return $this->last_accounts_query;
-	}
-
-	/**
-	 * Method to updated the state of an account from the services array.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 *
-	 * @param   string  $index The active account index.
-	 * @param   boolean $state The desired state (true/false).
-	 */
-	private function toggle_account_state( $index, $state ) {
-		$this->last_services_query = $this->get_authenticated_services();
-
-		list( $service, $service_id, $account_id ) = explode( '_', $index );
-		if ( count( $this->last_services_query[ $service . '_' . $service_id ]['available_accounts'] ) > 1 ) {
-			foreach ( $this->last_services_query[ $service . '_' . $service_id ]['available_accounts'] as $key => $account ) {
-				if ( $account['id'] == $account_id ) {
-					$this->last_services_query[ $service . '_' . $service_id ]['available_accounts'][ $key ]['active'] = $state;
-				}
-			}
-			$this->set( $this->services_namespace, $this->last_services_query );
-		}
+		return $services;
 	}
 
 	/**
@@ -213,44 +255,6 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 */
 	public function reset_active_accounts() {
 		$this->set( $this->accounts_namespace, array() );
-		$this->last_accounts_query = null;
-	}
-
-	/**
-	 * Add a new account to DB.
-	 *
-	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   array $new_active_account The new account array.
-	 *
-	 * @return mixed|null
-	 */
-	public function add_active_accounts( $new_active_account ) {
-		foreach ( $new_active_account as $index => $data ) {
-			$this->toggle_account_state( $index, true );
-		}
-
-		return $this->update_active_accounts( wp_parse_args( $new_active_account, $this->get_active_accounts() ) );
-	}
-
-	/**
-	 * Method to update active accounts.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   array $new_active_accounts The new active accounts array.
-	 *
-	 * @return mixed|null
-	 */
-	public function update_active_accounts( $new_active_accounts ) {
-		$this->last_accounts_query = wp_parse_args( $new_active_accounts, $this->last_accounts_query );
-		$this->set( $this->accounts_namespace, $this->last_accounts_query );
-
-		return $this->last_accounts_query;
 	}
 
 	/**
@@ -271,19 +275,19 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 * @return bool|array
 	 */
 	public function find_account( $account_id ) {
-		$this->last_services_query = $this->get_authenticated_services();
+		$services = $this->get_authenticated_services();
 		list( $service, $service_id, $user_id ) = explode( '_', $account_id );
-		if ( count( $this->last_services_query[ $service . '_' . $service_id ]['available_accounts'] ) >= 1 ) {
-			foreach ( $this->last_services_query[ $service . '_' . $service_id ]['available_accounts'] as $key => $account ) {
+		if ( count( $services[ $service . '_' . $service_id ]['available_accounts'] ) >= 1 ) {
+			foreach ( $services[ $service . '_' . $service_id ]['available_accounts'] as $key => $account ) {
 				if ( $account['id'] == $user_id ) {
 					$response = array(
-						'id'          => $this->last_services_query[ $service . '_' . $service_id ]['available_accounts'][ $key ]['id'],
-						'service'     => $this->last_services_query[ $service . '_' . $service_id ]['service'],
-						'credentials' => $this->last_services_query[ $service . '_' . $service_id ]['credentials'],
+						'id'          => $services[ $service . '_' . $service_id ]['available_accounts'][ $key ]['id'],
+						'service'     => $services[ $service . '_' . $service_id ]['service'],
+						'credentials' => $services[ $service . '_' . $service_id ]['credentials'],
 					);
 
 					if ( $service == 'facebook' ) {
-						$response['access_token'] = $this->last_services_query[ $service . '_' . $service_id ]['available_accounts'][ $key ]['access_token'];
+						$response['access_token'] = $services[ $service . '_' . $service_id ]['available_accounts'][ $key ]['access_token'];
 					}
 
 					return $response;

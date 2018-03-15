@@ -18,7 +18,6 @@
  * @link    https://themeisle.com/
  */
 abstract class Rop_Services_Abstract {
-
 	/**
 	 * Stores the service display name.
 	 *
@@ -27,7 +26,14 @@ abstract class Rop_Services_Abstract {
 	 * @var     string $display_name The service pretty name.
 	 */
 	public $display_name;
-
+	/**
+	 * Stores the service details.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @var     array $service The service details.
+	 */
+	protected $service;
 	/**
 	 * Stores the service name in slug format.
 	 *
@@ -63,6 +69,22 @@ abstract class Rop_Services_Abstract {
 	 * @var     Rop_Exception_Handler $error The exception handler.
 	 */
 	protected $error;
+	/**
+	 * Default account template array.
+	 *
+	 * @access  protected
+	 * @since   8.0.0
+	 * @var array Default account values.
+	 */
+	protected $user_default = array(
+		'account' => '',
+		'user'    => '',
+		'created' => 0,
+		'id'      => 0,
+		'active'  => true,
+		'img'     => '',
+		'service' => '',
+	);
 
 	/**
 	 * Rop_Services_Abstract constructor.
@@ -71,7 +93,9 @@ abstract class Rop_Services_Abstract {
 	 * @access  public
 	 */
 	public function __construct() {
-		$this->error = new Rop_Exception_Handler();
+		$this->error                   = new Rop_Exception_Handler();
+		$this->user_default['created'] = date( 'd/m/Y H:i' );
+		$this->user_default['service'] = $this->service_name;
 		$this->init();
 	}
 
@@ -124,7 +148,7 @@ abstract class Rop_Services_Abstract {
 
 		try {
 
-			$authenticated = $this->authenticate();
+			$authenticated = $this->maybe_authenticate();
 
 			if ( $authenticated ) {
 				$service                    = $this->get_service();
@@ -138,20 +162,20 @@ abstract class Rop_Services_Abstract {
 		} catch ( Exception $exception ) {
 			// Service can't be built. Not found or otherwise. Maybe log this.
 			$log = new Rop_Logger();
-			$log->warn( 'The service "' . $this->display_name . '" can NOT be built or was not found', $exception->getMessage() );
+			$log->warn( 'The service "' . $this->display_name . '" can NOT be built or was not found ' . $exception->getMessage() );
 		}
 
 		exit( wp_redirect( admin_url( 'admin.php?page=TweetOldPost' ) ) );
 	}
 
 	/**
-	 * Method for authenticate the service.
+	 * Method for checking authentication the service.
 	 *
 	 * @since   8.0.0
 	 * @access  public
 	 * @return mixed
 	 */
-	public abstract function authenticate();
+	public abstract function maybe_authenticate();
 
 	/**
 	 * Returns information for the current service.
@@ -161,6 +185,15 @@ abstract class Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public abstract function get_service();
+
+	/**
+	 * Method for authenticate the service.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return mixed
+	 */
+	public abstract function authenticate( $args );
 
 	/**
 	 * Method to register credentials for the service.
@@ -200,6 +233,58 @@ abstract class Rop_Services_Abstract {
 	}
 
 	/**
+	 * Method to retrieve an service id.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 *
+	 * @return array
+	 */
+	public function get_service_active_accounts() {
+		$service_details = $this->service;
+
+		if ( ! isset( $service_details['available_accounts'] ) ) {
+			return array();
+		}
+		if ( empty( $service_details['available_accounts'] ) ) {
+			return array();
+		}
+
+		$active_accounts = array_filter(
+			$service_details['available_accounts'], function ( $value ) {
+				if ( ! isset( $value['active'] ) ) {
+					return false;
+				}
+
+				return $value['active'];
+			}
+		);
+		$accounts_ids    = array();
+		foreach ( $active_accounts as $account ) {
+			$accounts_ids[ $this->get_service_id() . '_' . $account['id'] ] = $account;
+		}
+
+		return $accounts_ids;
+	}
+
+	/**
+	 * Method to retrieve an service id.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 *
+	 * @return string
+	 */
+	public function get_service_id() {
+		$service_details = $this->service;
+		if ( ! isset( $service_details['id'] ) ) {
+			return '';
+		}
+
+		return $this->service_name . '_' . $service_details['id'];
+	}
+
+	/**
 	 * Method to request a token from api.
 	 *
 	 * @since   8.0.0
@@ -235,6 +320,37 @@ abstract class Rop_Services_Abstract {
 	}
 
 	/**
+	 * Utility method to check array if has certain keys set and not empty.
+	 *
+	 * @param array $array Array to check.
+	 * @param array $list List of keys to check.
+	 *
+	 * @return bool Valid or not.
+	 */
+	protected function is_set_not_empty( $array = array(), $list = array() ) {
+		if ( empty( $array ) ) {
+			return false;
+		}
+		if ( empty( $list ) ) {
+			return false;
+		}
+		foreach ( $list as $key ) {
+			if ( ! isset( $array[ $key ] ) ) {
+				$this->error->throw_exception( 'Value not set ', sprintf( 'Value not set : %s in %s ', $key, print_r( $array, true ) ) );
+
+				return false;
+			}
+			if ( empty( $array[ $key ] ) ) {
+				$this->error->throw_exception( 'Value is empty ', sprintf( 'Value is empty : %s in %s ', $key, print_r( $array, true ) ) );
+
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Utility method to register a REST endpoint via WP.
 	 *
 	 * @since   8.0.0
@@ -250,11 +366,9 @@ abstract class Rop_Services_Abstract {
 			function () use ( $path, $callback, $method ) {
 				register_rest_route(
 					'tweet-old-post/v8', '/' . $this->service_name . '/' . $path, array(
-						'methods'             => $method,
-						'callback'            => array( $this, $callback ),
-						'permission_callback' => function () {
-							return current_user_can( 'manage_options' );
-						},
+						'methods'  => $method,
+						'callback' => array( $this, $callback ),
+
 					)
 				);
 			}

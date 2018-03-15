@@ -2,15 +2,17 @@
 	<div class="service-tile">
 		<label class="show-md hide-xl"><b>{{service_url}}/</b></label>
 		<div class="input-group">
-			<button class="btn input-group-btn btn-danger" @click="removeService()" >
+			<button class="btn input-group-btn btn-danger" @click="removeService()">
 				<i class="fa fa-fw fa-trash" aria-hidden="true"></i>
 			</button>
-			<button class="btn input-group-btn btn-info" @click="toggleCredentials()" v-if="service.public_credentials" >
+			<button class="btn input-group-btn btn-info" @click="toggleCredentials()" v-if="service.public_credentials">
 				<i class="fa fa-fw fa-info-circle" aria-hidden="true"></i>
 			</button>
 			<span class="input-group-addon hide-md" style="min-width: 115px; text-align: right;">{{service_url}}/</span>
-			<service-autocomplete :accounts="service.available_accounts" :to_be_activated="to_be_activated" :disabled="isDisabled" :limit="limit"></service-autocomplete>
-			<button class="btn input-group-btn" :class="serviceClass" @click="activateSelected( service.id )" :disabled="isDisabled">
+			<service-autocomplete :accounts="available_accounts" :to_be_activated="to_be_activated"
+			                      :disabled="isDisabled" :limit="limit"></service-autocomplete>
+			<button class="btn input-group-btn" :class="serviceClass" @click="activateSelected( service.id )"
+			        :disabled="isDisabled">
 				<i class="fa fa-fw fa-plus" aria-hidden="true"></i> <span class="hide-md">Activate</span>
 			</button>
 		</div>
@@ -26,7 +28,8 @@
 							<label class="form-label" :for="credentialID(index)">{{credential.name}}:</label>
 						</div>
 						<div class="col-9">
-							<secret-input :id="credentialID(index)" :value="credential.value" :secret="credential.private" />
+							<secret-input :id="credentialID(index)" :value="credential.value"
+							              :secret="credential.private"/>
 						</div>
 					</div>
 				</div>
@@ -40,8 +43,8 @@
 	import ServiceAutocomplete from './service-autocomplete.vue'
 	import SecretInput from './reusables/secret-input.vue'
 
-	function capitalizeFirstLetter ( string ) {
-		return string.charAt( 0 ).toUpperCase().concat( string.slice( 1 ) )
+	function capitalizeFirstLetter(string) {
+		return string.charAt(0).toUpperCase().concat(string.slice(1))
 	}
 
 	module.exports = {
@@ -60,23 +63,27 @@
 		},
 		computed: {
 			service_url: function () {
-				if ( this.service.service === 'facebook' ) {
+				if (this.service.service === 'facebook') {
 					return 'facebook.com'
 				}
-				if ( this.service.service === 'twitter' ) {
+				if (this.service.service === 'twitter') {
 					return 'twitter.com'
 				}
-				if ( this.service.service === 'linkedin' ) {
+				if (this.service.service === 'linkedin') {
 					return 'linkedin.com'
 				}
-				if ( this.service.service === 'tumblr' ) {
+				if (this.service.service === 'tumblr') {
 					return 'tumblr.com'
 				}
 
 				return 'service.url'
 			},
+			available_accounts: function () {
+				console.log('Available accounts changed');
+				return this.service.available_accounts;
+			},
 			serviceName: function () {
-				return capitalizeFirstLetter( this.service.service )
+				return capitalizeFirstLetter(this.service.service)
 			},
 			serviceClass: function () {
 				return {
@@ -94,28 +101,28 @@
 			},
 			limit: function () {
 				let network = this.service.service
-				let service = this.$store.state.availableServices[ network ]
-				if ( service !== undefined ) {
+				let service = this.$store.state.availableServices[network]
+				if (service !== undefined) {
 					return service.allowed_accounts
 				}
 				return -1
 			},
 			isDisabled: function () {
 				let network = this.service.service
-				let service = this.$store.state.availableServices[ network ]
+				let service = this.$store.state.availableServices[network]
 
-				if ( service !== undefined && service.active === false ) {
+				if (service !== undefined && service.active === false) {
 					return true
 				}
 
 				let countActiveAccounts = 0
-				for ( let activeAccount in this.$store.state.activeAccounts ) {
-					if ( this.$store.state.activeAccounts[activeAccount].service === network ) {
+				for (let activeAccount in this.$store.state.activeAccounts) {
+					if (this.$store.state.activeAccounts[activeAccount].service === network) {
 						countActiveAccounts++
 					}
 				}
 
-				if ( service !== undefined && ( service.allowed_accounts <= countActiveAccounts ) ) {
+				if (service !== undefined && (service.allowed_accounts <= countActiveAccounts)) {
 					return true
 				}
 
@@ -123,29 +130,41 @@
 			}
 		},
 		methods: {
-			credentialID ( index ) {
+			credentialID(index) {
 				return 'service-' + index + '-field'
 			},
-			toggleCredentials () {
+			toggleCredentials() {
 				this.show_credentials = !this.show_credentials
 			},
-			activateSelected ( serviceId ) {
-				this.$store.dispatch( 'fetchAJAXPromise', { req: 'update_active_accounts', data: { service_id: serviceId, service: this.service.service, to_be_activated: this.to_be_activated, current_active: this.$store.state.activeAccounts } } ).then( response => {
-					this.$store.dispatch( 'fetchAJAX', { req: 'get_queue' } )
+			activateSelected(serviceId) {
+				this.$store.dispatch('fetchAJAXPromise', {
+					req: 'update_active_accounts',
+					data: {
+						service_id: serviceId,
+						service: this.service.service,
+						to_be_activated: this.to_be_activated,
+						current_active: this.$store.state.activeAccounts
+					}
+				}).then(response => {
+					this.$store.dispatch('fetchAJAX', {req: 'get_queue'});
+					this.$store.dispatch('fetchAJAX', {req: 'get_authenticated_services'});
 				}, error => {
-					console.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
-				} )
+					console.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+				})
 			},
-			removeService () {
-				this.$store.dispatch( 'fetchAJAXPromise', { req: 'remove_service', data: { id: this.service.id, service: this.service.service } } ).then( response => {
-					this.$store.dispatch( 'fetchAJAXPromise', { req: 'get_active_accounts' } ).then( response => {
-						this.$store.dispatch( 'fetchAJAX', { req: 'get_queue' } )
+			removeService() {
+				this.$store.dispatch('fetchAJAXPromise', {
+					req: 'remove_service',
+					data: {id: this.service.id, service: this.service.service}
+				}).then(response => {
+					this.$store.dispatch('fetchAJAXPromise', {req: 'get_active_accounts'}).then(response => {
+						this.$store.dispatch('fetchAJAX', {req: 'get_queue'})
 					}, error => {
-						console.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
-					} )
+						console.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+					})
 				}, error => {
-					console.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
-				} )
+					console.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+				})
 			}
 		},
 		components: {
@@ -156,25 +175,25 @@
 </script>
 
 <style scoped>
-
+	
 	#rop_core .btn.btn-danger {
 		background-color: #d50000;
 		color: #efefef;
 		border-color: #b71c1c;
 	}
-
+	
 	#rop_core .btn.btn-danger:hover, #rop_core {
 		background-color: #efefef;
 		color: #d50000;
 		border-color: #b71c1c;
 	}
-
+	
 	#rop_core .btn.btn-info {
 		background-color: #2196f3;
 		color: #efefef;
 		border-color: #1565c0;
 	}
-
+	
 	#rop_core .btn.btn-info:hover, #rop_core {
 		background-color: #efefef;
 		color: #2196f3;

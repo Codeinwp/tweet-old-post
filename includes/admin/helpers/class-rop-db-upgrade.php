@@ -40,17 +40,24 @@ class Rop_Db_Upgrade {
 	 * @return bool
 	 */
 	public function is_upgrade_required() {
+		$upgrade_check = get_option( 'cwp_top_logged_in_users', '' );
 
-		$upgrade_check = get_option( 'rop_data', '' );
 		if ( empty( $upgrade_check ) ) {
 			return false;
-		}
-		$db_version = $this->get_db_version();
-		if ( version_compare( $db_version, $this->db_version ) === 0 ) {
+		} else {
+
+			$db_version = $this->get_db_version();
+
+			if ( empty( $db_version ) ) {
+				return true;
+			}
+			if ( version_compare( $db_version, $this->db_version ) < 0 ) {
+				return true;
+			}
+
 			return false;
 		}
 
-		return true;
 	}
 
 	/**
@@ -95,86 +102,51 @@ class Rop_Db_Upgrade {
 		if ( $previous_logged_users ) {
 
 			$model           = new Rop_Services_Model();
-			$service         = array();
+			$services        = array();
 			$active_accounts = array();
 			foreach ( $previous_logged_users as $user ) {
 				switch ( $user['service'] ) {
 					case 'twitter':
-						$index             = $user['service'] . '_' . $user['user_id'];
-						$service[ $index ] = array(
-							'id'                 => $user['user_id'],
-							'service'            => $user['service'],
-							'credentials'        => array(
+						$twitter_service = new Rop_Twitter_Service();
+						$twitter_service->authenticate(
+							array(
 								'oauth_token'        => $user['oauth_token'],
 								'oauth_token_secret' => $user['oauth_token_secret'],
-							),
-							'public_credentials' => false,
-							'available_accounts' => array(
-								array(
-									'id'      => $user['user_id'],
-									'name'    => $user['oauth_user_details']->name,
-									'account' => '@' . $user['oauth_user_details']->screen_name,
-									'img'     => $user['oauth_user_details']->profile_image_url_https,
-									'active'  => true,
-								),
-							),
+							)
 						);
-
-						$index_account                     = $index . '_' . $user['user_id'];
-						$active_accounts[ $index_account ] = array(
-							'service' => $user['service'],
-							'user'    => $user['oauth_user_details']->name,
-							'img'     => $user['oauth_user_details']->profile_image_url_https,
-							'account' => '@' . $user['oauth_user_details']->screen_name,
-							'created' => date( 'd/m/Y H:i' ),
-						);
+						$services[ $twitter_service->get_service_id() ] = $twitter_service->get_service();
+						$active_accounts                                = array_merge( $active_accounts, $twitter_service->get_service_active_accounts() );
 						break;
 					case 'facebook':
 						$facebook_service = new Rop_Facebook_Service();
 						$app_id           = get_option( 'cwp_top_app_id' );
 						$secret           = get_option( 'cwp_top_app_secret' );
 						$token            = get_option( 'top_fb_token' );
-
-						if ( $facebook_service->re_authenticate( $app_id, $secret, $token ) ) {
-							$index             = $user['service'] . '_' . $facebook_service->user['id'];
-							$service[ $index ] = $facebook_service->get_service();
-
-							$img = $user['oauth_user_details']->profile_image_url;
-							$key = array_search( $user['user_id'], array_column( $service[ $index ]['available_accounts'], 'id' ) );
-							if ( $key ) {
-								$img = $service[ $index ]['available_accounts'][ $key ]['img'];
-							}
-
-							$index_account                     = $index . '_' . $user['user_id'];
-							$active_accounts[ $index_account ] = array(
-								'service' => $user['service'],
-								'user'    => $user['oauth_user_details']->name,
-								'img'     => $img,
-								'account' => $facebook_service->user['email'],
-								'created' => date( 'd/m/Y H:i' ),
-							);
-						}
+						$facebook_service->authenticate(
+							array(
+								'app_id' => $app_id,
+								'secret' => $secret,
+								'token'  => $token,
+							)
+						);
+						$services[ $facebook_service->get_service_id() ] = $facebook_service->get_service();
+						$active_accounts                                 = array_merge( $active_accounts, $facebook_service->get_service_active_accounts() );
 						break;
 					case 'linkedin':
 						$linkedin_service = new Rop_Linkedin_Service();
 						$app_id           = get_option( 'cwp_top_lk_app_id' );
 						$secret           = get_option( 'cwp_top_lk_app_secret' );
 						$token            = get_option( 'top_linkedin_token' );
+						$linkedin_service->authenticate(
+							array(
+								'client_id' => $app_id,
+								'secret'    => $secret,
+								'token'     => $token,
+							)
+						);
 
-						if ( $linkedin_service->re_authenticate( $app_id, $secret, $token ) ) {
-							$index             = $user['service'] . '_' . $user['user_id'];
-							$service[ $index ] = $linkedin_service->get_service();
-
-							$index_account                     = $index . '_' . $user['user_id'];
-							$active_accounts[ $index_account ] = array(
-								'service' => $user['service'],
-								'user'    => $linkedin_service->user['formattedName'],
-								'img'     => $linkedin_service->user['pictureUrl'],
-								'account' => $linkedin_service->user['formattedName'],
-								'created' => date( 'd/m/Y H:i' ),
-							);
-						}
-
+						$services[ $linkedin_service->get_service_id() ] = $linkedin_service->get_service();
+						$active_accounts                                 = array_merge( $active_accounts, $linkedin_service->get_service_active_accounts() );
 						break;
 					case 'tumblr':
 						$tumblr_service     = new Rop_Tumblr_Service();
@@ -182,49 +154,28 @@ class Rop_Db_Upgrade {
 						$consumer_secret    = get_option( 'cwp_top_consumer_secret_tumblr' );
 						$oauth_token        = $user['oauth_token'];
 						$oauth_token_secret = $user['oauth_token_secret'];
+						$tumblr_service->authenticate(
+							array(
+								'consumer_key'       => $consumer_key,
+								'consumer_secret'    => $consumer_secret,
+								'oauth_token'        => $oauth_token,
+								'oauth_token_secret' => $oauth_token_secret,
+							)
+						);
 
-						if ( $tumblr_service->re_authenticate( $consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret ) ) {
-							$api = $tumblr_service->get_api();
-							try {
-								$info = $api->getBlogInfo( get_option( 'cwp_top_consumer_url_tumblr' ) );
-							} catch ( Exception $exception ) {
-								// add the logger
-							}
-
-							$tmp_service = $tumblr_service->get_service();
-							if ( is_array( $tmp_service ) ) {
-								$name    = $user['oauth_user_details']->name;
-								$id      = $tmp_service['id'];
-								$account = $tmp_service['id'];
-								$img     = $user['oauth_user_details']->profile_image_url;
-							}
-							$key = array_search( $id, array_column( $tmp_service['available_accounts'], 'id' ) );
-							if ( $key ) {
-								$name    = $tmp_service['available_accounts'][ $key ]['name'];
-								$account = $tmp_service['available_accounts'][ $key ]['account'];
-								$img     = $tmp_service['available_accounts'][ $key ]['img'];
-							}
-
-							$index                             = $user['service'] . '_' . $account;
-							$service[ $index ]                 = $tmp_service;
-							$index_account                     = $index . '_' . $account;
-							$active_accounts[ $index_account ] = array(
-								'service' => $user['service'],
-								'user'    => $name,
-								'img'     => $img,
-								'account' => $account,
-								'created' => date( 'd/m/Y H:i' ),
-							);
-						}
-
+						$services[ $tumblr_service->get_service_id() ] = $tumblr_service->get_service();
+						$active_accounts                               = array_merge( $active_accounts, $tumblr_service->get_service_active_accounts() );
 						break;
 				}// End switch().
 			}// End foreach().
-			$model->add_authenticated_service( $service );
-			$model->add_active_accounts( $active_accounts );
 
-			$this->migrate_schedule( $active_accounts );
-			$this->migrate_post_formats( $active_accounts );
+			if ( ! empty( $services ) ) {
+				$model->add_authenticated_service( $services );
+			}
+			if ( ! empty( $active_accounts ) ) {
+				$this->migrate_schedule( $active_accounts );
+				$this->migrate_post_formats( $active_accounts );
+			}
 		}// End if().
 
 	}
@@ -425,29 +376,21 @@ class Rop_Db_Upgrade {
 			$top_opt_post_type = array( $top_opt_post_type );
 		}
 		if ( $top_opt_post_type !== null && ! empty( $top_opt_post_type ) ) {
+
 			$args             = array( 'exclude_from_search' => false );
 			$post_types       = get_post_types( $args, 'objects' );
 			$post_types_array = array();
 			foreach ( $post_types as $type ) {
-				if ( ! in_array( $type->name, array( 'attachment' ) ) ) {
+				if ( ! in_array( $type->name, array( 'attachment' ) ) && in_array( $type->name, $top_opt_post_type ) ) {
 					array_push(
 						$post_types_array, array(
-							'name'     => $type->label,
-							'value'    => $type->name,
-							'selected' => true,
+							'name'  => $type->label,
+							'value' => $type->name,
 						)
 					);
 				}
 			}
-
-			$migrated_post_types = array();
-			foreach ( $top_opt_post_type as $post_type ) {
-				$key                                  = array_search( $post_type, array_column( $post_types_array, 'value' ) );
-				$post_types_array[ $key ]['selected'] = true;
-				array_push( $migrated_post_types, $post_types_array[ $key ] );
-			}
-
-			$setting['selected_post_types'] = $migrated_post_types;
+			$setting['selected_post_types'] = $post_types_array;
 		}
 		$top_opt_omit_cats = null;
 		if ( $old_settings !== null && isset( $old_settings['top_opt_omit_cats'] ) ) {
@@ -487,6 +430,35 @@ class Rop_Db_Upgrade {
 
 		if ( $old_settings !== null && isset( $old_settings['top_opt_cat_filter'] ) ) {
 			$setting['exclude_taxonomies'] = ( $old_settings['top_opt_cat_filter'] === 'include' ) ? false : true;
+		}
+
+		$excluded_posts = get_option( 'top_opt_excluded_post', '' );
+		$excluded_posts = explode( ',', $excluded_posts );
+		if ( is_array( $excluded_posts ) && ! empty( $excluded_posts ) ) {
+			$formatted_posts = array();
+
+			$query = new WP_Query(
+				array(
+					'post__in'               => $excluded_posts,
+					'no_found_rows'          => true,
+					'update_post_meta_cache' => false,
+					'update_post_term_cache' => false,
+				)
+			);
+			foreach ( $query->posts as $post ) {
+				array_push(
+					$formatted_posts, array(
+						'name'     => $post->post_title,
+						'value'    => $post->ID,
+						'selected' => true,
+					)
+				);
+			}
+			wp_reset_postdata();
+			if ( ! empty( $formatted_posts ) ) {
+				$setting['selected_posts'] = $formatted_posts;
+				$setting['exclude_posts']  = true;
+			}
 		}
 		$general_settings->save_settings( $setting );
 
