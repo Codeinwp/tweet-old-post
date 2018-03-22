@@ -121,13 +121,15 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 		if ( ! is_array( $services ) ) {
 			return array();
 		}
-		$services = array_filter( $services, function ( $value ) use ( $service ) {
-			if ( $value['service'] === $service ) {
-				return true;
-			}
+		$services = array_filter(
+			$services, function ( $value ) use ( $service ) {
+				if ( $value['service'] === $service ) {
+					return true;
+				}
 
-			return false;
-		} );
+				return false;
+			}
+		);
 
 		return $services;
 	}

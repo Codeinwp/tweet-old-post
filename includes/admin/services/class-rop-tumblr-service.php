@@ -68,10 +68,12 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		if ( ! session_id() ) {
 			session_start();
 		}
-		if ( ! $this->is_set_not_empty( $_SESSION, array(
-			'rop_tumblr_credentials',
-			'rop_tumblr_request_token',
-		) ) ) {
+		if ( ! $this->is_set_not_empty(
+			$_SESSION, array(
+				'rop_tumblr_credentials',
+				'rop_tumblr_request_token',
+			)
+		) ) {
 			return false;
 		}
 

@@ -133,8 +133,6 @@ class Rop {
 
 		$this->loader->add_action( 'wp_loaded', $this, 'upgrade', 2 );
 
-
-
 		$rop_cron_helper = new Rop_Cron_Helper();
 		$this->loader->add_filter( 'cron_schedules', $rop_cron_helper, 'rop_cron_schedules' );
 	}
