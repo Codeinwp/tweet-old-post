@@ -160,9 +160,7 @@ abstract class Rop_Services_Abstract {
 			$model->add_authenticated_service( $new_service );
 
 		} catch ( Exception $exception ) {
-			// Service can't be built. Not found or otherwise. Maybe log this.
-			$log = new Rop_Logger();
-			$log->warn( 'The service "' . $this->display_name . '" can NOT be built or was not found ' . $exception->getMessage() );
+			$this->error->throw_exception( 'Error', sprintf( 'The service "' . $this->display_name . '" can NOT be built or was not found %s', $exception->getMessage() ) );
 		}
 
 		exit( wp_redirect( admin_url( 'admin.php?page=TweetOldPost' ) ) );

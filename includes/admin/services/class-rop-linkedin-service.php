@@ -214,12 +214,12 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			'service'            => $this->service_name,
 			'credentials'        => $this->credentials,
 			'public_credentials' => array(
-				'app_id' => array(
+				'client_id' => array(
 					'name'    => 'Client ID',
 					'value'   => $this->credentials['client_id'],
 					'private' => false,
 				),
-				'secret' => array(
+				'secret'    => array(
 					'name'    => 'Client Secret',
 					'value'   => $this->credentials['secret'],
 					'private' => true,

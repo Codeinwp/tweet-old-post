@@ -34,7 +34,7 @@ class Rop {
 	 *
 	 * @since    8.0.0
 	 * @access   protected
-	 * @var      Rop_Loader    $loader    Maintains and registers all hooks for the plugin.
+	 * @var      Rop_Loader $loader Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;
 
@@ -43,7 +43,7 @@ class Rop {
 	 *
 	 * @since    8.0.0
 	 * @access   protected
-	 * @var      string    $plugin_name    The string used to uniquely identify this plugin.
+	 * @var      string $plugin_name The string used to uniquely identify this plugin.
 	 */
 	protected $plugin_name;
 
@@ -52,7 +52,7 @@ class Rop {
 	 *
 	 * @since    8.0.0
 	 * @access   protected
-	 * @var      string    $version    The current version of the plugin.
+	 * @var      string $version The current version of the plugin.
 	 */
 	protected $version;
 
@@ -129,22 +129,35 @@ class Rop {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'menu_pages' );
 		$this->loader->add_action( 'rop_cron_job', $plugin_admin, 'rop_cron_job' );
-
 		$this->loader->add_action( 'wp_loaded', $this, 'register_service_api_endpoints', 1 );
 
 		$this->loader->add_action( 'wp_loaded', $this, 'upgrade', 2 );
 
-		if ( class_exists( 'Rop_Pro_Admin' ) ) {
-			$plugin_pro_admin = new Rop_Pro_Admin( $this->get_plugin_name(), $this->get_version() );
 
-			$this->loader->add_action( 'admin_init', $plugin_pro_admin, 'register_meta_box', 2 );
-			$this->loader->add_action( 'save_post', $plugin_pro_admin, 'custom_repeatable_meta_box_save' );
-
-			$this->loader->add_filter( 'rop_available_services', $plugin_pro_admin, 'available_services' );
-		}
 
 		$rop_cron_helper = new Rop_Cron_Helper();
 		$this->loader->add_filter( 'cron_schedules', $rop_cron_helper, 'rop_cron_schedules' );
+	}
+
+	/**
+	 * The name of the plugin used to uniquely identify it within the context of
+	 * WordPress and to define internationalization functionality.
+	 *
+	 * @since     8.0.0
+	 * @return    string    The name of the plugin.
+	 */
+	public function get_plugin_name() {
+		return $this->plugin_name;
+	}
+
+	/**
+	 * Retrieve the version number of the plugin.
+	 *
+	 * @since     8.0.0
+	 * @return    string    The version number of the plugin.
+	 */
+	public function get_version() {
+		return $this->version;
 	}
 
 	/**
@@ -197,17 +210,6 @@ class Rop {
 	}
 
 	/**
-	 * The name of the plugin used to uniquely identify it within the context of
-	 * WordPress and to define internationalization functionality.
-	 *
-	 * @since     8.0.0
-	 * @return    string    The name of the plugin.
-	 */
-	public function get_plugin_name() {
-		return $this->plugin_name;
-	}
-
-	/**
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
 	 * @since     8.0.0
@@ -215,16 +217,6 @@ class Rop {
 	 */
 	public function get_loader() {
 		return $this->loader;
-	}
-
-	/**
-	 * Retrieve the version number of the plugin.
-	 *
-	 * @since     8.0.0
-	 * @return    string    The version number of the plugin.
-	 */
-	public function get_version() {
-		return $this->version;
 	}
 
 }

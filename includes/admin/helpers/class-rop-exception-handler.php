@@ -27,6 +27,21 @@ class Rop_Exception_Handler {
 	 * @var     array $exception The exceptions array.
 	 */
 	private $exception = array();
+	/**
+	 * Monolog logger.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @var     array $logger The Monolog instance.
+	 */
+	private $logger;
+
+	/**
+	 * Rop_Exception_Handler constructor.
+	 */
+	public function __construct() {
+		$this->logger = new Rop_Logger();
+	}
 
 	/**
 	 * Utility method to parse Facebook exceptions.
@@ -73,7 +88,8 @@ class Rop_Exception_Handler {
 			return;
 		}
 		header( 'HTTP/1.0 ' . $header );
-
+		$backtrace = wp_debug_backtrace_summary();
+		$this->logger->error( $message . ' BackTrace: ' . $backtrace );
 		echo $message;
 		exit;
 	}

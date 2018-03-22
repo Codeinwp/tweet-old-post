@@ -17135,7 +17135,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .btn.btn-link.btn-danger[_v-62b80d29] {\n\t\tcolor: #d50000;\n\t}\n\t\n\t#rop_core .btn.btn-link.btn-danger[_v-62b80d29]:hover {\n\t\tcolor: #b71c1c;\n\t}\n\t\n\t.has_image[_v-62b80d29] {\n\t\tborder-radius: 50%;\n\t}\n\t\n\t.service_account_image[_v-62b80d29] {\n\t\twidth: 150%;\n\t\tborder-radius: 50%;\n\t\tmargin-left: -25%;\n\t\tmargin-top: -25%;\n\t}\n\t\n\t.icon_box[_v-62b80d29] {\n\t\twidth: 45px;\n\t\theight: 45px;\n\t\tpadding: 7px;\n\t\ttext-align: center;\n\t\tbackground-color: #333333;\n\t\tcolor: #efefef;\n\t\tposition: relative;\n\t}\n\t.icon_box.has_image .fa[_v-62b80d29]{\n\t\tposition: absolute;\n\t\tbottom: 0px;\n\t\tright: 0px;\n\t\tpadding: 4px;\n\t\tborder-radius: 50%;\n\t\tfont-size: 0.7em;\n\t}\n\t.icon_box.no-image > .fa[_v-62b80d29]{\n\t\twidth: 30px;\n\t\theight: 30px;\n\t\t\n\t\tfont-size: 30px;\n\t}\n\t\n\t.facebook[_v-62b80d29], .fa-facebook-official[_v-62b80d29] {\n\t\tbackground-color: #3b5998;\n\t}\n\t\n\t.twitter[_v-62b80d29], .fa-twitter[_v-62b80d29] {\n\t\tbackground-color: #55acee;\n\t}\n\t\n\t.linkedin[_v-62b80d29], .fa-linkedin[_v-62b80d29] {\n\t\tbackground-color: #007bb5;\n\t}\n\t\n\t.tumblr[_v-62b80d29], .fa-tumblr[_v-62b80d29] {\n\t\tbackground-color: #32506d;\n\t}\n\n", ""]);
+exports.push([module.i, "\n\t#rop_core .btn.btn-link.btn-danger[_v-62b80d29] {\n\t\tcolor: #d50000;\n\t}\n\t\n\t#rop_core .btn.btn-link.btn-danger[_v-62b80d29]:hover {\n\t\tcolor: #b71c1c;\n\t}\n\t\n\t.has_image[_v-62b80d29] {\n\t\tborder-radius: 50%;\n\t}\n\t\n\t.service_account_image[_v-62b80d29] {\n\t\twidth: 150%;\n\t\tborder-radius: 50%;\n\t\tmargin-left: -25%;\n\t\tmargin-top: -25%;\n\t}\n\t\n\t.icon_box[_v-62b80d29] {\n\t\twidth: 45px;\n\t\theight: 45px;\n\t\tpadding: 7px;\n\t\ttext-align: center;\n\t\tbackground-color: #333333;\n\t\tcolor: #efefef;\n\t\tposition: relative;\n\t}\n\t\n\t.icon_box.has_image .fa[_v-62b80d29] {\n\t\tposition: absolute;\n\t\tbottom: 0px;\n\t\tright: 0px;\n\t\tpadding: 4px;\n\t\tborder-radius: 50%;\n\t\tfont-size: 0.7em;\n\t}\n\t\n\t.icon_box.no-image > .fa[_v-62b80d29] {\n\t\twidth: 30px;\n\t\theight: 30px;\n\t\t\n\t\tfont-size: 30px;\n\t}\n\t\n\t.facebook[_v-62b80d29], .fa-facebook-official[_v-62b80d29] {\n\t\tbackground-color: #3b5998;\n\t}\n\t\n\t.twitter[_v-62b80d29], .fa-twitter[_v-62b80d29] {\n\t\tbackground-color: #55acee;\n\t}\n\t\n\t.linkedin[_v-62b80d29], .fa-linkedin[_v-62b80d29] {\n\t\tbackground-color: #007bb5;\n\t}\n\t\n\t.tumblr[_v-62b80d29], .fa-tumblr[_v-62b80d29] {\n\t\tbackground-color: #32506d;\n\t}\n\n", ""]);
 
 // exports
 
@@ -17151,7 +17151,7 @@ exports.push([module.i, "\n\t#rop_core .btn.btn-link.btn-danger[_v-62b80d29] {\n
 // 	<div class="tile tile-centered">
 // 		<div class="tile-icon">
 // 			<div class="icon_box" :class="service">
-// 				<img class="service_account_image"  :src="img" v-if="img"/>
+// 				<img class="service_account_image" :src="img" v-if="img"/>
 // 				<i class="fa  " :class="icon" aria-hidden="true"></i>
 // 			</div>
 // 		</div>
@@ -17216,6 +17216,7 @@ module.exports = {
 				data: { account_id: id, current_active: this.$store.state.activeAccounts }
 			}).then(function (response) {
 				_this.$store.dispatch('fetchAJAX', { req: 'get_queue' });
+				_this.$store.dispatch('fetchAJAX', { req: 'get_authenticated_services' });
 			}, function (error) {
 				console.error('Got nothing from server. Prompt user to check internet connection and try again', error);
 			});
@@ -17252,7 +17253,8 @@ module.exports = {
 	// 		color: #efefef;
 	// 		position: relative;
 	// 	}
-	// 	.icon_box.has_image .fa{
+	//
+	// 	.icon_box.has_image .fa {
 	// 		position: absolute;
 	// 		bottom: 0px;
 	// 		right: 0px;
@@ -17260,7 +17262,8 @@ module.exports = {
 	// 		border-radius: 50%;
 	// 		font-size: 0.7em;
 	// 	}
-	// 	.icon_box.no-image > .fa{
+	//
+	// 	.icon_box.no-image > .fa {
 	// 		width: 30px;
 	// 		height: 30px;
 	//
@@ -17952,7 +17955,7 @@ function containsObject(obj, list) {
 // 			<label class="chip" v-for="( option, index ) in selected">
 // 				{{option.name}}
 // 				<a href="#" class="btn btn-clear" aria-label="Close" @click.prevent="removeSelected(index)"
-// 				   role="button" v-if="!is_one"></a>
+// 				   role="button"></a>
 // 			</label>
 //
 // 			<!-- autocomplete real input box -->
@@ -17963,7 +17966,7 @@ function containsObject(obj, list) {
 // 		</div>
 //
 // 		<!-- autocomplete suggestion list -->
-// 		<ul class="menu" ref="autocomplete_results" :class="is_visible" v-if="!is_one"
+// 		<ul class="menu" ref="autocomplete_results" :class="is_visible"
 // 		    style="overflow-y: scroll; max-height: 120px">
 // 			<!-- menu list chips -->
 // 			<li class="menu-item" v-for="( option, index ) in options" v-if="filterSearch(option)">
@@ -18010,7 +18013,7 @@ module.exports = {
 			type: Array
 		},
 		placeHolderText: {
-			default: '',
+			default: 'Please select somthing',
 			type: String
 		},
 		changedSelection: {
@@ -18025,20 +18028,47 @@ module.exports = {
 		}
 	},
 	mounted: function mounted() {
-		var index = 0;
 		var _iteratorNormalCompletion = true;
 		var _didIteratorError = false;
 		var _iteratorError = undefined;
 
 		try {
-			for (var _iterator = (0, _getIterator3.default)(this.options), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-				var option = _step.value;
+			for (var _iterator = (0, _getIterator3.default)(this.selected), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+				var selection = _step.value;
 
-				if (boolean(option.selected)) {
-					this.addToSelected(index);
+				if (selection.selected) {
+					var index = 0;
+					var _iteratorNormalCompletion2 = true;
+					var _didIteratorError2 = false;
+					var _iteratorError2 = undefined;
+
+					try {
+						for (var _iterator2 = (0, _getIterator3.default)(this.options), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+							var option = _step2.value;
+
+							if (option.value === selection.value) {
+								this.options[index].selected = selection.selected;
+							}
+							index++;
+						}
+					} catch (err) {
+						_didIteratorError2 = true;
+						_iteratorError2 = err;
+					} finally {
+						try {
+							if (!_iteratorNormalCompletion2 && _iterator2.return) {
+								_iterator2.return();
+							}
+						} finally {
+							if (_didIteratorError2) {
+								throw _iteratorError2;
+							}
+						}
+					}
 				}
-				index++;
 			}
+
+			// this.$emit( 'update', this.search )
 		} catch (err) {
 			_didIteratorError = true;
 			_iteratorError = err;
@@ -18050,61 +18080,6 @@ module.exports = {
 			} finally {
 				if (_didIteratorError) {
 					throw _iteratorError;
-				}
-			}
-		}
-
-		var _iteratorNormalCompletion2 = true;
-		var _didIteratorError2 = false;
-		var _iteratorError2 = undefined;
-
-		try {
-			for (var _iterator2 = (0, _getIterator3.default)(this.selected), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-				var selection = _step2.value;
-
-				if (selection.selected) {
-					index = 0;
-					var _iteratorNormalCompletion3 = true;
-					var _didIteratorError3 = false;
-					var _iteratorError3 = undefined;
-
-					try {
-						for (var _iterator3 = (0, _getIterator3.default)(this.options), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-							var _option = _step3.value;
-
-							if (_option.value === selection.value) {
-								this.options[index].selected = selection.selected;
-							}
-							index++;
-						}
-					} catch (err) {
-						_didIteratorError3 = true;
-						_iteratorError3 = err;
-					} finally {
-						try {
-							if (!_iteratorNormalCompletion3 && _iterator3.return) {
-								_iterator3.return();
-							}
-						} finally {
-							if (_didIteratorError3) {
-								throw _iteratorError3;
-							}
-						}
-					}
-				}
-			}
-			// this.$emit( 'update', this.search )
-		} catch (err) {
-			_didIteratorError2 = true;
-			_iteratorError2 = err;
-		} finally {
-			try {
-				if (!_iteratorNormalCompletion2 && _iterator2.return) {
-					_iterator2.return();
-				}
-			} finally {
-				if (_didIteratorError2) {
-					throw _iteratorError2;
 				}
 			}
 		}
@@ -18137,7 +18112,7 @@ module.exports = {
 		is_one: function is_one() {
 			if (!this.dontLock) {
 				if (this.options.length === 1 && this.options[0].selected === false) {
-					this.selected.push(this.options[0]);
+					//		this.selected.push(this.options[0])
 					return true;
 				} else if (this.options.length === 1 && this.options[0].selected === true) {
 					return true;
@@ -18146,7 +18121,7 @@ module.exports = {
 			return false;
 		},
 		autocomplete_placeholder: function autocomplete_placeholder() {
-			if (this.is_one) {
+			if (this.selected.length > 0) {
 				return '';
 			}
 			return this.placeHolderText;
@@ -18156,29 +18131,29 @@ module.exports = {
 		},
 		has_results: function has_results() {
 			var found = 0;
-			var _iteratorNormalCompletion4 = true;
-			var _didIteratorError4 = false;
-			var _iteratorError4 = undefined;
+			var _iteratorNormalCompletion3 = true;
+			var _didIteratorError3 = false;
+			var _iteratorError3 = undefined;
 
 			try {
-				for (var _iterator4 = (0, _getIterator3.default)(this.options), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-					var option = _step4.value;
+				for (var _iterator3 = (0, _getIterator3.default)(this.options), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+					var option = _step3.value;
 
 					if (this.filterSearch(option)) {
 						found++;
 					}
 				}
 			} catch (err) {
-				_didIteratorError4 = true;
-				_iteratorError4 = err;
+				_didIteratorError3 = true;
+				_iteratorError3 = err;
 			} finally {
 				try {
-					if (!_iteratorNormalCompletion4 && _iterator4.return) {
-						_iterator4.return();
+					if (!_iteratorNormalCompletion3 && _iterator3.return) {
+						_iterator3.return();
 					}
 				} finally {
-					if (_didIteratorError4) {
-						throw _iteratorError4;
+					if (_didIteratorError3) {
+						throw _iteratorError3;
 					}
 				}
 			}
@@ -18260,7 +18235,7 @@ module.exports = {
 /* 112 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"form-autocomplete\" style=\"width: 100%;\" v-on-clickaway=\"closeDropdown\">\n\t\t<!-- autocomplete input container -->\n\t\t<div class=\"form-autocomplete-input form-input\" :class=\"is_focused\">\n\t\t\t\n\t\t\t<!-- autocomplete chips -->\n\t\t\t<label class=\"chip\" v-for=\"( option, index ) in selected\">\n\t\t\t\t{{option.name}}\n\t\t\t\t<a href=\"#\" class=\"btn btn-clear\" aria-label=\"Close\" @click.prevent=\"removeSelected(index)\"\n\t\t\t\t   role=\"button\" v-if=\"!is_one\"></a>\n\t\t\t</label>\n\t\t\t\n\t\t\t<!-- autocomplete real input box -->\n\t\t\t<input style=\"height: 1.0rem;\" class=\"form-input\" type=\"text\" ref=\"search\" v-model=\"search\"\n\t\t\t       :placeholder=\"autocomplete_placeholder\" @click=\"magic_flag = true\" @focus=\"magic_flag = true\"\n\t\t\t       @keyup=\"magic_flag = true\" @keydown.8=\"popLast()\" @keydown.38=\"highlightItem(true)\"\n\t\t\t       @keydown.40=\"highlightItem()\" :disabled=\"is_disabled\">\n\t\t</div>\n\t\t\n\t\t<!-- autocomplete suggestion list -->\n\t\t<ul class=\"menu\" ref=\"autocomplete_results\" :class=\"is_visible\" v-if=\"!is_one\"\n\t\t    style=\"overflow-y: scroll; max-height: 120px\">\n\t\t\t<!-- menu list chips -->\n\t\t\t<li class=\"menu-item\" v-for=\"( option, index ) in options\" v-if=\"filterSearch(option)\">\n\t\t\t\t<a href=\"#\" @click.prevent=\"addToSelected(index)\" @keydown.38=\"highlightItem(true)\"\n\t\t\t\t   @keydown.40=\"highlightItem()\">\n\t\t\t\t\t<div class=\"tile tile-centered\">\n\t\t\t\t\t\t<div class=\"tile-content\" v-html=\"markMatch(option.name, search)\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</a>\n\t\t\t</li>\n\t\t\t<li v-if=\"has_results\">\n\t\t\t\t<a href=\"#\">\n\t\t\t\t\t<div class=\"tile tile-centered\">\n\t\t\t\t\t\t<div class=\"tile-content\"><i>Nothing found matching \"{{search}}\" ...</i></div>\n\t\t\t\t\t</div>\n\t\t\t\t</a>\n\t\t\t</li>\n\t\t</ul>\n\t</div>\n\n";
+module.exports = "\n\t<div class=\"form-autocomplete\" style=\"width: 100%;\" v-on-clickaway=\"closeDropdown\">\n\t\t<!-- autocomplete input container -->\n\t\t<div class=\"form-autocomplete-input form-input\" :class=\"is_focused\">\n\t\t\t\n\t\t\t<!-- autocomplete chips -->\n\t\t\t<label class=\"chip\" v-for=\"( option, index ) in selected\">\n\t\t\t\t{{option.name}}\n\t\t\t\t<a href=\"#\" class=\"btn btn-clear\" aria-label=\"Close\" @click.prevent=\"removeSelected(index)\"\n\t\t\t\t   role=\"button\"></a>\n\t\t\t</label>\n\t\t\t\n\t\t\t<!-- autocomplete real input box -->\n\t\t\t<input style=\"height: 1.0rem;\" class=\"form-input\" type=\"text\" ref=\"search\" v-model=\"search\"\n\t\t\t       :placeholder=\"autocomplete_placeholder\" @click=\"magic_flag = true\" @focus=\"magic_flag = true\"\n\t\t\t       @keyup=\"magic_flag = true\" @keydown.8=\"popLast()\" @keydown.38=\"highlightItem(true)\"\n\t\t\t       @keydown.40=\"highlightItem()\" :disabled=\"is_disabled\">\n\t\t</div>\n\t\t\n\t\t<!-- autocomplete suggestion list -->\n\t\t<ul class=\"menu\" ref=\"autocomplete_results\" :class=\"is_visible\"\n\t\t    style=\"overflow-y: scroll; max-height: 120px\">\n\t\t\t<!-- menu list chips -->\n\t\t\t<li class=\"menu-item\" v-for=\"( option, index ) in options\" v-if=\"filterSearch(option)\">\n\t\t\t\t<a href=\"#\" @click.prevent=\"addToSelected(index)\" @keydown.38=\"highlightItem(true)\"\n\t\t\t\t   @keydown.40=\"highlightItem()\">\n\t\t\t\t\t<div class=\"tile tile-centered\">\n\t\t\t\t\t\t<div class=\"tile-content\" v-html=\"markMatch(option.name, search)\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</a>\n\t\t\t</li>\n\t\t\t<li v-if=\"has_results\">\n\t\t\t\t<a href=\"#\">\n\t\t\t\t\t<div class=\"tile tile-centered\">\n\t\t\t\t\t\t<div class=\"tile-content\"><i>Nothing found matching \"{{search}}\" ...</i></div>\n\t\t\t\t\t</div>\n\t\t\t\t</a>\n\t\t\t</li>\n\t\t</ul>\n\t</div>\n\n";
 
 /***/ }),
 /* 113 */

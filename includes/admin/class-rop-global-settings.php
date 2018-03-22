@@ -367,11 +367,24 @@ class Rop_Global_Settings {
 			'rop_available_services',
 			self::instance()->services_defaults
 		);
-		if ( $this->has_pro() !== false ) {
-			unset( $available_services['facebook']['allowed_accounts'] );
-			unset( $available_services['twitter']['allowed_accounts'] );
-			unset( $available_services['linkedin']['allowed_accounts'] );
-			unset( $available_services['tumblr']['allowed_accounts'] );
+		/**
+		 * Don't show credentials popup if the service is already authenticated.
+		 */
+		$service_model = new Rop_Services_Model();
+		foreach ( $available_services as $key => $service ) {
+			$registered = $service_model->get_authenticated_services( $key );
+
+			if ( empty( $registered ) ) {
+				continue;
+			}
+			$registered = reset( $registered );
+			if ( empty( $registered['public_credentials'] ) ) {
+
+				continue;
+			}
+			$service['credentials']      = array();
+			$service['two_step_sign_in'] = false;
+			$available_services[ $key ]  = $service;
 		}
 
 		return $available_services;

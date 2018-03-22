@@ -7,7 +7,7 @@
 			<label class="chip" v-for="( option, index ) in selected">
 				{{option.name}}
 				<a href="#" class="btn btn-clear" aria-label="Close" @click.prevent="removeSelected(index)"
-				   role="button" v-if="!is_one"></a>
+				   role="button"></a>
 			</label>
 			
 			<!-- autocomplete real input box -->
@@ -18,7 +18,7 @@
 		</div>
 		
 		<!-- autocomplete suggestion list -->
-		<ul class="menu" ref="autocomplete_results" :class="is_visible" v-if="!is_one"
+		<ul class="menu" ref="autocomplete_results" :class="is_visible"
 		    style="overflow-y: scroll; max-height: 120px">
 			<!-- menu list chips -->
 			<li class="menu-item" v-for="( option, index ) in options" v-if="filterSearch(option)">
@@ -75,7 +75,7 @@
 				type: Array
 			},
 			placeHolderText: {
-				default: '',
+				default: 'Please select somthing',
 				type: String
 			},
 			changedSelection: {
@@ -90,16 +90,9 @@
 			}
 		},
 		mounted() {
-			let index = 0
-			for (let option of this.options) {
-				if (boolean( option.selected)) {
-					this.addToSelected(index)
-				}
-				index++
-			}
 			for (let selection of this.selected) {
 				if (selection.selected) {
-					index = 0
+					let index = 0
 					for (let option of this.options) {
 						if (option.value === selection.value) {
 							this.options[index].selected = selection.selected
@@ -108,6 +101,7 @@
 					}
 				}
 			}
+
 			// this.$emit( 'update', this.search )
 		},
 		data: function () {
@@ -137,7 +131,7 @@
 			is_one: function () {
 				if (!this.dontLock) {
 					if (this.options.length === 1 && this.options[0].selected === false) {
-						this.selected.push(this.options[0])
+						//		this.selected.push(this.options[0])
 						return true
 					} else if (this.options.length === 1 && this.options[0].selected === true) {
 						return true
@@ -146,7 +140,7 @@
 				return false
 			},
 			autocomplete_placeholder: function () {
-				if (this.is_one) {
+				if (this.selected.length > 0) {
 					return ''
 				}
 				return this.placeHolderText

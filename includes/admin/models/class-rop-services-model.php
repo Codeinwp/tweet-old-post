@@ -112,12 +112,24 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 *
 	 * @return array
 	 */
-	public function get_authenticated_services() {
+	public function get_authenticated_services( $service = '' ) {
 
 		$services = $this->get( $this->services_namespace );
+		if ( empty( $service ) ) {
+			return wp_parse_args( $services, array() );
+		}
+		if ( ! is_array( $services ) ) {
+			return array();
+		}
+		$services = array_filter( $services, function ( $value ) use ( $service ) {
+			if ( $value['service'] === $service ) {
+				return true;
+			}
 
-		return wp_parse_args( $services, array() );
-		;
+			return false;
+		} );
+
+		return $services;
 	}
 
 	/**

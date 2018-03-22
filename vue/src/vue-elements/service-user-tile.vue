@@ -2,7 +2,7 @@
 	<div class="tile tile-centered">
 		<div class="tile-icon">
 			<div class="icon_box" :class="service">
-				<img class="service_account_image"  :src="img" v-if="img"/>
+				<img class="service_account_image" :src="img" v-if="img"/>
 				<i class="fa  " :class="icon" aria-hidden="true"></i>
 			</div>
 		</div>
@@ -27,24 +27,24 @@
 		props: ['account_data', 'account_id'],
 		computed: {
 			service: function () {
-				var iconClass = this.account_data.service
+				let iconClass = this.account_data.service;
 				if (this.img !== '') {
 					iconClass = iconClass.concat(' ').concat('has_image')
-				}else{
+				} else {
 					iconClass = iconClass.concat(' ').concat('no-image')
 				}
 				return iconClass
 			},
 			icon: function () {
-				var serviceIcon = 'fa-'
-				if (this.account_data.service === 'facebook') serviceIcon = serviceIcon.concat('facebook-official')
-				if (this.account_data.service === 'twitter') serviceIcon = serviceIcon.concat('twitter')
-				if (this.account_data.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin')
-				if (this.account_data.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr')
+				let serviceIcon = 'fa-';
+				if (this.account_data.service === 'facebook') serviceIcon = serviceIcon.concat('facebook-official');
+				if (this.account_data.service === 'twitter') serviceIcon = serviceIcon.concat('twitter');
+				if (this.account_data.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin');
+				if (this.account_data.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr');
 				return serviceIcon
 			},
 			img: function () {
-				var img = ''
+				let img = '';
 				if (this.account_data.img !== '' && this.account_data.img !== undefined) {
 					img = this.account_data.img
 				}
@@ -54,8 +54,7 @@
 				return this.account_data.user
 			},
 			serviceInfo: function () {
-				let serviceTextInfo = this.account_data.account.concat(' at: ').concat(this.account_data.created)
-				return serviceTextInfo
+				return this.account_data.account.concat(' at: ').concat(this.account_data.created)
 			}
 		},
 		methods: {
@@ -64,7 +63,8 @@
 					req: 'remove_account',
 					data: {account_id: id, current_active: this.$store.state.activeAccounts}
 				}).then(response => {
-					this.$store.dispatch('fetchAJAX', {req: 'get_queue'})
+					this.$store.dispatch('fetchAJAX', {req: 'get_queue'});
+					this.$store.dispatch('fetchAJAX', {req: 'get_authenticated_services'})
 				}, error => {
 					console.error('Got nothing from server. Prompt user to check internet connection and try again', error)
 				})
@@ -102,7 +102,8 @@
 		color: #efefef;
 		position: relative;
 	}
-	.icon_box.has_image .fa{
+	
+	.icon_box.has_image .fa {
 		position: absolute;
 		bottom: 0px;
 		right: 0px;
@@ -110,7 +111,8 @@
 		border-radius: 50%;
 		font-size: 0.7em;
 	}
-	.icon_box.no-image > .fa{
+	
+	.icon_box.no-image > .fa {
 		width: 30px;
 		height: 30px;
 		
