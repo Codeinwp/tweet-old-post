@@ -80,7 +80,14 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 		if ( empty( $new_auth_services ) ) {
 			return false;
 		}
-
+		foreach ( $new_auth_services as $service_key => $service_data ) {
+			$accounts = array();
+			foreach ( $service_data['available_accounts'] as $account ) {
+				$key              = $service_key . '_' . $account['id'];
+				$accounts[ $key ] = $account;
+			}
+			$new_auth_services[$service_key]['available_accounts'] = $accounts;
+		}
 		$this->set( $this->services_namespace, $new_auth_services );
 		$this->sync_active_accounts();
 
@@ -123,12 +130,12 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 		}
 		$services = array_filter(
 			$services, function ( $value ) use ( $service ) {
-				if ( $value['service'] === $service ) {
-					return true;
-				}
-
-				return false;
+			if ( $value['service'] === $service ) {
+				return true;
 			}
+
+			return false;
+		}
 		);
 
 		return $services;

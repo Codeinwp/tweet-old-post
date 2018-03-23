@@ -79,7 +79,7 @@
 				return 'service.url'
 			},
 			available_accounts: function () {
-				console.log('Available accounts changed');
+				//console.log('Available accounts changed');
 				return this.service.available_accounts;
 			},
 			serviceName: function () {
@@ -149,7 +149,7 @@
 					this.$store.dispatch('fetchAJAX', {req: 'get_queue'});
 					this.$store.dispatch('fetchAJAX', {req: 'get_authenticated_services'});
 				}, error => {
-					console.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+					Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
 				})
 			},
 			removeService() {
@@ -160,10 +160,10 @@
 					this.$store.dispatch('fetchAJAXPromise', {req: 'get_active_accounts'}).then(response => {
 						this.$store.dispatch('fetchAJAX', {req: 'get_queue'})
 					}, error => {
-						console.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+						Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
 					})
 				}, error => {
-					console.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+					Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
 				})
 			}
 		},

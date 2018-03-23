@@ -405,7 +405,6 @@
 		},
 		watch: {
 			active_accounts: function () {
-				console.log( 'Accounts changed' )
 				if ( Object.keys( this.$store.state.activeAccounts )[0] && this.selected_account === null ) {
 					let key = Object.keys( this.$store.state.activeAccounts )[0]
 					this.selected_account = key
@@ -413,12 +412,10 @@
 				}
 			},
 			short_url_service: function () {
-				console.log( 'Service changed' )
-				console.log( this.short_url_service )
 				this.$store.dispatch( 'fetchAJAXPromise', { req: 'get_shortner_credentials', data: { short_url_service: this.short_url_service } } ).then( response => {
 					this.shortner_credentials = response
 				}, error => {
-					console.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
+					Vue.$log.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
 				} )
 			}
 		},
@@ -437,14 +434,14 @@
 				this.$store.dispatch( 'fetchAJAXPromise', { req: 'save_post_format', data: { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account, post_format: this.post_format } } ).then( response => {
 					this.$store.dispatch( 'fetchAJAX', { req: 'get_queue' } )
 				}, error => {
-					console.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
+					Vue.$log.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
 				} )
 			},
 			resetPostFormat () {
 				this.$store.dispatch( 'fetchAJAXPromise', { req: 'reset_post_format', data: { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account } } ).then( response => {
 					this.$store.dispatch( 'fetchAJAX', { req: 'get_queue' } )
 				}, error => {
-					console.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
+					Vue.$log.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
 				} )
 				this.$forceUpdate()
 			},

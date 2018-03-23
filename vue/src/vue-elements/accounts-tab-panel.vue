@@ -32,23 +32,28 @@
 							</div>
 						</div>
 					</div>-->
-					<div class="column col-sm-12 col-md-12 col-lg-12 text-left">
-						<hr style="margin-top: 45px"/>
-						<h5>Active Accounts</h5>
-						<div class="empty" v-if="active_accounts.length == 0">
+					<div class="column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts">
+						<h5>Accounts</h5>
+						<div class="empty" v-if="inactive_accounts.length == 0 && active_accounts.length == 0">
 							<div class="empty-icon">
 								<i class="fa fa-3x fa-user-circle-o"></i>
 							</div>
-							<p class="empty-title h5">No active accounts!</p>
+							<p class="empty-title h5">No accounts!</p>
 							<p class="empty-subtitle">Add one from the <b>"Authenticated Services"</b> section.</p>
 						</div>
-						<div v-for="( account, id ) in active_accounts">
-							<service-user-tile :account_data="account" :account_id="id"></service-user-tile>
-							<div class="divider"></div>
+						<h6>Active</h6>
+						<div class="active-accounts">
+							<div class="account" v-for="( account, id ) in active_accounts">
+								<service-user-tile :account_data="account" :account_id="id"></service-user-tile>
+								<div class="divider"></div>
+							</div>
 						</div>
-						<div class="inactive-accounts" v-for="( account, id ) in inactive_accounts">
-							<service-user-tile :account_data="account" :account_id="id"></service-user-tile>
-							<div class="divider"></div>
+						<h6>Inactive</h6>
+						<div class="inactive-accounts">
+							<div class="account" v-for="( account, id ) in inactive_accounts">
+								<service-user-tile :account_data="account" :account_id="id"></service-user-tile>
+								<div class="divider"></div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -78,26 +83,28 @@
 		name: 'account-view',
 		computed: {
 			inactive_accounts: function () {
-				let inactive_accounts = [];
-				let services = this.$store.state.authenticatedServices;
-				for (let key in services) {
+				const inactive_accounts = {};
+				const services = this.$store.state.authenticatedServices;
+				for (const key in services) {
 					if (!services.hasOwnProperty(key)) {
 						continue;
 					}
-					let service = services[key];
-					service.available_accounts.map(function (account) {
-						if (account.active === true) {
-							return;
-						}
-						account.service = service.service;
+					const service = services[key];
 
-						inactive_accounts.push(account);
-					});
+					for (const account_id in service.available_accounts) {
+						if (!service.available_accounts.hasOwnProperty(account_id)) {
+							continue;
+						}
+						if (service.available_accounts[account_id].active === false) {
+							inactive_accounts[account_id] = service.available_accounts[account_id];
+						}
+					}
 				}
-				console.log(inactive_accounts);
+				this.$log.info('Inactive accounts : ', inactive_accounts);
 				return inactive_accounts;
 			},
 			active_accounts: function () {
+				this.$log.info('Active accounts : ', this.$store.state.activeAccounts);
 				return this.$store.state.activeAccounts
 			}
 		},
@@ -109,3 +116,19 @@
 		}
 	}
 </script>
+<style type="text/css">
+	.inactive-accounts .tile-icon,
+	.inactive-accounts .tile-content,
+	.inactive-accounts .tile-action {
+		opacity: 0.5;
+	}
+	
+	.inactive-accounts .tile-action:hover {
+		opacity: 1;
+	}
+	
+	.rop-available-accounts {
+		padding-top: 35px;
+	}
+
+</style>

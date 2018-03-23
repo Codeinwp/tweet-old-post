@@ -164,7 +164,7 @@
 				let self = this
 				window.on( 'select', function () {
 					let first = window.state().get( 'selection' ).first().toJSON()
-					console.log( first )
+					//console.log( first )
 					self.post_edit.post_img = first.url
 					self.custom_img = true
 				} )
@@ -184,7 +184,7 @@
 				return serviceIcon
 			},
 			brokenImg: function () {
-				console.log( 'Image is broken' )
+			//	console.log( 'Image is broken' )
 				this.post.post_img = false
 			},
 			hashtags: function ( string ) {

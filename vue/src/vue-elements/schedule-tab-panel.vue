@@ -289,14 +289,14 @@
 				this.$store.dispatch( 'fetchAJAXPromise', { req: 'save_schedule', data: { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account, schedule: this.schedule } } ).then( response => {
 					this.$store.dispatch( 'fetchAJAX', { req: 'get_queue' } )
 				}, error => {
-					console.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
+					Vue.$log.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
 				} )
 			},
 			resetSchedule () {
 				this.$store.dispatch( 'fetchAJAXPromise', { req: 'reset_schedule', data: { service: this.active_accounts[ this.selected_account ].service, account_id: this.selected_account } } ).then( response => {
 					this.$store.dispatch( 'fetchAJAX', { req: 'get_queue' } )
 				}, error => {
-					console.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
+					Vue.$log.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
 				} )
 				this.$forceUpdate()
 			}

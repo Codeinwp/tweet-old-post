@@ -105,12 +105,11 @@
 				// }, 200 )
 			},
 			getUrlAndGo ( credentials ) {
-				console.log( 'Credentials recieved:', credentials )
 				this.$store.dispatch( 'fetchAJAXPromise', { req: 'get_service_sign_in_url', updateState: false, data: { service: this.selected_network, credentials: credentials } } ).then( response => {
-					console.log( 'Got some data, now lets show something in this component', response )
+					//console.log( 'Got some data, now lets show something in this component', response )
 					this.openPopup( response.url )
 				}, error => {
-					console.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
+					//Vue.$log.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
 				} )
 			},
 			requestAuthentication () {

@@ -10,22 +10,31 @@
 			<div class="tile-title">{{ user }}</div>
 			<div class="tile-subtitle text-gray">{{ serviceInfo }}</div>
 		</div>
-		<div class="tile-action">
-			<div class="dropdown dropdown-right">
-				<a href="#" class="btn btn-link btn-danger" tabindex="0"
-				   @click.prevent="removeActiveAccount( account_id )">
-					<i class="fa fa-trash" aria-hidden="true"></i>
-				</a>
+		<div class="tile-action" v-if="!is_loading">
+			<div class="form-group">
+				<label class="form-switch">
+					<input type="checkbox" v-model="account_data.active" @change="startToggleAccount( account_id, type )"/>
+					<i class="form-icon"></i>
+				</label>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script>
+
+	import Vue from 'vue'
+
 	module.exports = {
 		name: 'service-user-tile',
 		props: ['account_data', 'account_id'],
 		computed: {
+			type: function () {
+				return this.account_data.active === true ? 'active' : 'inactive';
+			},
+			is_loading: function () {
+				return this.$store.state.ajaxLoader;
+			},
 			service: function () {
 				let iconClass = this.account_data.service;
 				if (this.img !== '') {
@@ -58,29 +67,39 @@
 			}
 		},
 		methods: {
-			removeActiveAccount(id) {
+			toggleAccount: function (id, type) {
+				let parts = id.split('_');
+				if (parts.length !== 3) {
+					Vue.$log.error('Invalid id format for active account ', id);
+					return;
+				}
+				let service_id = parts[0] + '_' + parts[1];
+
+				this.$store.state.authenticatedServices[service_id].available_accounts[id].active = (type !== 'inactive');
+				if (type === 'inactive') {
+					Vue.delete(this.$store.state.activeAccounts, id);
+				} else {
+					Vue.set(this.$store.state.activeAccounts, id, this.$store.state.authenticatedServices[service_id].available_accounts[id]);
+				}
 				this.$store.dispatch('fetchAJAXPromise', {
-					req: 'remove_account',
-					data: {account_id: id, current_active: this.$store.state.activeAccounts}
+					req: 'toggle_account',
+					data: {account_id: id, state: type}
 				}).then(response => {
 					this.$store.dispatch('fetchAJAX', {req: 'get_queue'});
 					this.$store.dispatch('fetchAJAX', {req: 'get_authenticated_services'})
 				}, error => {
-					console.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+					Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
 				})
+			},
+			startToggleAccount(id, type) {
+				Vue.$log.info('Toggle account', id, type);
+				setTimeout(function () { this.toggleAccount(id, type) }.bind(this), 1000);
 			}
 		}
 	}
 </script>
 
 <style scoped>
-	#rop_core .btn.btn-link.btn-danger {
-		color: #d50000;
-	}
-	
-	#rop_core .btn.btn-link.btn-danger:hover {
-		color: #b71c1c;
-	}
 	
 	.has_image {
 		border-radius: 50%;

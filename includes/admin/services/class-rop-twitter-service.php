@@ -246,7 +246,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		$user['img']     = $img;
 		$user['service'] = $this->service_name;
 
-		return array( $user );
+		return array( $this->get_service_id(). '_' . $user['id'] => $user );
 	}
 
 	/**
