@@ -18440,7 +18440,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .avatar .avatar-icon[_v-767ba2b6] {\n\t\tbackground: #333;\n\t\tborder-radius: 50%;\n\t\tfont-size: 16px;\n\t\ttext-align: center;\n\t\tline-height: 20px;\n\t}\n\t#rop_core .avatar .avatar-icon.fa-facebook-official[_v-767ba2b6] { background-color: #3b5998; }\n\t#rop_core .avatar .avatar-icon.fa-twitter[_v-767ba2b6] { background-color: #55acee; }\n\t#rop_core .avatar .avatar-icon.fa-linkedin[_v-767ba2b6] { background-color: #007bb5; }\n\t#rop_core .avatar .avatar-icon.fa-tumblr[_v-767ba2b6] { background-color: #32506d; }\n\n\t#rop_core .service.facebook[_v-767ba2b6] {\n\t\tcolor: #3b5998;\n\t}\n\n\t#rop_core .service.twitter[_v-767ba2b6] {\n\t\tcolor: #55acee;\n\t}\n\n\t#rop_core .service.linkedin[_v-767ba2b6] {\n\t\tcolor: #007bb5;\n\t}\n\n\t#rop_core .service.tumblr[_v-767ba2b6] {\n\t\tcolor: #32506d;\n\t}\n", ""]);
+exports.push([module.i, "\n    #rop_core .avatar .avatar-icon[_v-767ba2b6] {\n        background: #333;\n        border-radius: 50%;\n        font-size: 16px;\n        text-align: center;\n        line-height: 20px;\n    }\n\n    #rop_core .avatar .avatar-icon.fa-facebook-official[_v-767ba2b6] {\n        background-color: #3b5998;\n    }\n\n    #rop_core .avatar .avatar-icon.fa-twitter[_v-767ba2b6] {\n        background-color: #55acee;\n    }\n\n    #rop_core .avatar .avatar-icon.fa-linkedin[_v-767ba2b6] {\n        background-color: #007bb5;\n    }\n\n    #rop_core .avatar .avatar-icon.fa-tumblr[_v-767ba2b6] {\n        background-color: #32506d;\n    }\n\n    #rop_core .service.facebook[_v-767ba2b6] {\n        color: #3b5998;\n    }\n\n    #rop_core .service.twitter[_v-767ba2b6] {\n        color: #55acee;\n    }\n\n    #rop_core .service.linkedin[_v-767ba2b6] {\n        color: #007bb5;\n    }\n\n    #rop_core .service.tumblr[_v-767ba2b6] {\n        color: #32506d;\n    }\n\n    #rop_core .rop-selector-account-container.active[_v-767ba2b6] {\n        opacity: 1\n    }\n\n    #rop_core .rop-selector-account-container[_v-767ba2b6] {\n        cursor: pointer;\n        opacity: 0.5;\n        border-top: 1px solid #50596c;\n        padding-top: 10px;\n        padding-bottom: 10px;\n    }\n\n    #rop_core .rop-selector-accounts[_v-767ba2b6]{\n        border-right: 1px solid #50596c;\n    }\n\n    #rop_core .rop-selector-account-container .rop-service-name[_v-767ba2b6] {\n        text-transform: capitalize;\n    }\n\n    #rop_core .rop-selector-account-container p.rop-account-name[_v-767ba2b6] {\n        margin: 0 0 0.1rem;\n        font-style: italic;\n        font-size: 14px;\n    }\n", ""]);
 
 // exports
 
@@ -18463,490 +18463,600 @@ var _emptyActiveAccounts2 = _interopRequireDefault(_emptyActiveAccounts);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 module.exports = {
-	name: 'post-format-view',
-	data: function data() {
-		var key = null;
-		if ((0, _keys2.default)(this.$store.state.activeAccounts)[0] !== undefined) key = (0, _keys2.default)(this.$store.state.activeAccounts)[0];
-		return {
-			selected_account: key,
-			shortner_credentials: []
-		};
-	},
-	mounted: function mounted() {
-		// Uncomment this when not fixed tab on post format
-		this.getAccountpostFormat();
-	},
-	filters: {
-		capitalize: function capitalize(value) {
-			if (!value) return '';
-			value = value.toString();
-			return value.charAt(0).toUpperCase() + value.slice(1);
-		}
-	},
-	computed: {
-		has_pro: function has_pro() {
-			return this.$store.state.has_pro;
-		},
-		computed_chars: function computed_chars() {},
-		accountsCount: function accountsCount() {
-			if (this.$store.state.activeAccounts.isArray) {
-				return this.$store.state.activeAccounts.length;
-			} else {
-				return (0, _keys2.default)(this.$store.state.activeAccounts).length;
-			}
-		},
-		active_accounts: function active_accounts() {
-			return this.$store.state.activeAccounts;
-		},
-		post_format: function post_format() {
-			return this.$store.state.activePostFormat;
-		},
-		short_url_service: function short_url_service() {
-			var postFormat = this.$store.state.activePostFormat;
-			return postFormat.short_url_service;
-		},
-		icon: function icon() {
-			var serviceIcon = 'fa-user';
-			if (this.selected_account !== null) {
-				serviceIcon = 'fa-';
-				var account = this.active_accounts[this.selected_account];
-				if (account.service === 'facebook') serviceIcon = serviceIcon.concat('facebook-official');
-				if (account.service === 'twitter') serviceIcon = serviceIcon.concat('twitter');
-				if (account.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin');
-				if (account.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr');
-			}
-			return serviceIcon;
-		},
-		img: function img() {
-			var img = '';
-			if (this.selected_account !== null && this.active_accounts[this.selected_account].img !== '' && this.active_accounts[this.selected_account].img !== undefined) {
-				img = this.active_accounts[this.selected_account].img;
-			}
-			return img;
-		},
-		service: function service() {
-			var serviceClass = '';
-			if (this.selected_account !== null && this.active_accounts[this.selected_account].service) {
-				serviceClass = this.active_accounts[this.selected_account].service;
-			}
-			return serviceClass;
-		},
-		service_name: function service_name() {
-			if (this.service !== '') return this.service.charAt(0).toUpperCase() + this.service.slice(1);
-			return 'Service';
-		},
-		user_name: function user_name() {
-			if (this.selected_account !== null && this.active_accounts[this.selected_account].user) return this.active_accounts[this.selected_account].user;
-			return 'John Doe';
-		}
-	},
-	watch: {
-		active_accounts: function active_accounts() {
-			if ((0, _keys2.default)(this.$store.state.activeAccounts)[0] && this.selected_account === null) {
-				var key = (0, _keys2.default)(this.$store.state.activeAccounts)[0];
-				this.selected_account = key;
-				this.getAccountpostFormat();
-			}
-		},
-		short_url_service: function short_url_service() {
-			var _this = this;
+    name: 'post-format-view',
+    data: function data() {
+        var key = null;
+        if ((0, _keys2.default)(this.$store.state.activeAccounts)[0] !== undefined) key = (0, _keys2.default)(this.$store.state.activeAccounts)[0];
+        return {
+            selected_account: key,
+            is_loading: false,
+            shortner_credentials: []
+        };
+    },
+    mounted: function mounted() {
+        this.getAccountPostFormat();
+    },
+    filters: {
+        capitalize: function capitalize(value) {
+            if (!value) return '';
+            value = value.toString();
+            return value.charAt(0).toUpperCase() + value.slice(1);
+        }
+    },
+    computed: {
+        has_pro: function has_pro() {
+            return this.$store.state.has_pro;
+        },
+        accountsCount: function accountsCount() {
 
-			this.$store.dispatch('fetchAJAXPromise', { req: 'get_shortner_credentials', data: { short_url_service: this.short_url_service } }).then(function (response) {
-				_this.shortner_credentials = response;
-			}, function (error) {
-				Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
-			});
-		}
-	},
-	methods: {
-		getAccountpostFormat: function getAccountpostFormat() {
-			if (this.active_accounts[this.selected_account] !== undefined) {
-				this.$store.dispatch('fetchAJAX', { req: 'get_post_format',
-					data: {
-						service: this.active_accounts[this.selected_account].service,
-						account_id: this.selected_account
-					}
-				});
-			}
-		},
-		savePostFormat: function savePostFormat() {
-			var _this2 = this;
+            return (0, _keys2.default)(this.$store.state.activeAccounts).length;
+        },
+        active_accounts: function active_accounts() {
+            return this.$store.state.activeAccounts;
+        },
+        post_format: function post_format() {
+            return this.$store.state.activePostFormat;
+        },
+        active_account_name: function active_account_name() {
+            return this.active_accounts[this.selected_account].user;
+        },
+        short_url_service: function short_url_service() {
+            var postFormat = this.$store.state.activePostFormat;
+            return postFormat.short_url_service;
+        }
+    },
+    watch: {
+        active_accounts: function active_accounts() {
+            if ((0, _keys2.default)(this.$store.state.activeAccounts)[0] && this.selected_account === null) {
+                var key = (0, _keys2.default)(this.$store.state.activeAccounts)[0];
+                this.selected_account = key;
+                this.getAccountPostFormat();
+            }
+        },
+        short_url_service: function short_url_service() {
+            var _this = this;
 
-			this.$store.dispatch('fetchAJAXPromise', { req: 'save_post_format', data: { service: this.active_accounts[this.selected_account].service, account_id: this.selected_account, post_format: this.post_format } }).then(function (response) {
-				_this2.$store.dispatch('fetchAJAX', { req: 'get_queue' });
-			}, function (error) {
-				Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
-			});
-		},
-		resetPostFormat: function resetPostFormat() {
-			var _this3 = this;
+            this.$store.dispatch('fetchAJAXPromise', {
+                req: 'get_shortner_credentials',
+                data: { short_url_service: this.short_url_service }
+            }).then(function (response) {
+                _this.shortner_credentials = response;
+            }, function (error) {
+                Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+            });
+        }
+    },
+    methods: {
+        getAccountPostFormat: function getAccountPostFormat() {
+            var _this2 = this;
 
-			this.$store.dispatch('fetchAJAXPromise', { req: 'reset_post_format', data: { service: this.active_accounts[this.selected_account].service, account_id: this.selected_account } }).then(function (response) {
-				_this3.$store.dispatch('fetchAJAX', { req: 'get_queue' });
-			}, function (error) {
-				Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
-			});
-			this.$forceUpdate();
-		},
-		updateShortnerCredentials: function updateShortnerCredentials() {
-			this.$store.commit('updateState', { stateData: this.shortner_credentials, requestName: 'get_shortner_credentials' });
-		}
-	},
-	components: {
-		EmptyActiveAccounts: _emptyActiveAccounts2.default
-	}
-	// </script>
-	//
-	// <style scoped>
-	// 	#rop_core .avatar .avatar-icon {
-	// 		background: #333;
-	// 		border-radius: 50%;
-	// 		font-size: 16px;
-	// 		text-align: center;
-	// 		line-height: 20px;
-	// 	}
-	// 	#rop_core .avatar .avatar-icon.fa-facebook-official { background-color: #3b5998; }
-	// 	#rop_core .avatar .avatar-icon.fa-twitter { background-color: #55acee; }
-	// 	#rop_core .avatar .avatar-icon.fa-linkedin { background-color: #007bb5; }
-	// 	#rop_core .avatar .avatar-icon.fa-tumblr { background-color: #32506d; }
-	//
-	// 	#rop_core .service.facebook {
-	// 		color: #3b5998;
-	// 	}
-	//
-	// 	#rop_core .service.twitter {
-	// 		color: #55acee;
-	// 	}
-	//
-	// 	#rop_core .service.linkedin {
-	// 		color: #007bb5;
-	// 	}
-	//
-	// 	#rop_core .service.tumblr {
-	// 		color: #32506d;
-	// 	}
-	// </style>
+            if (this.is_loading) {
+                this.$log.warn('Request in progress...Bail');
+                return;
+            }
+            if (this.active_accounts[this.selected_account] !== undefined) {
+                this.is_loading = true;
+                this.$store.dispatch('fetchAJAXPromise', {
+                    req: 'get_post_format',
+                    data: {
+                        service: this.active_accounts[this.selected_account].service,
+                        account_id: this.selected_account
+                    }
+                }).then(function (response) {
+                    _this2.$log.info('Successfully fetched post format', _this2.selected_account);
+                    _this2.$store.dispatch('fetchAJAX', { req: 'get_queue' });
+                    _this2.is_loading = false;
+                }, function (error) {
+                    Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+
+                    _this2.is_loading = false;
+                });
+            }
+        },
+        savePostFormat: function savePostFormat() {
+            var _this3 = this;
+
+            if (this.is_loading) {
+                this.$log.warn('Request in progress...Bail');
+                return;
+            }
+            this.is_loading = true;
+            this.$store.dispatch('fetchAJAXPromise', {
+                req: 'save_post_format',
+                data: {
+                    service: this.active_accounts[this.selected_account].service,
+                    account_id: this.selected_account,
+                    post_format: this.post_format
+                }
+            }).then(function (response) {
+                _this3.is_loading = false;
+                _this3.$store.dispatch('fetchAJAX', { req: 'get_queue' });
+            }, function (error) {
+
+                _this3.is_loading = false;
+                Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+            });
+        },
+        getIcon: function getIcon(account) {
+
+            var serviceIcon = 'fa-';
+            if (account.service === 'facebook') serviceIcon = serviceIcon.concat('facebook-official');
+            if (account.service === 'twitter') serviceIcon = serviceIcon.concat('twitter');
+            if (account.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin');
+            if (account.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr');
+
+            return serviceIcon;
+        },
+        resetPostFormat: function resetPostFormat() {
+            var _this4 = this;
+
+            if (this.is_loading) {
+                this.$log.warn('Request in progress...Bail');
+                return;
+            }
+            this.is_loading = true;
+            this.$store.dispatch('fetchAJAXPromise', {
+                req: 'reset_post_format',
+                data: {
+                    service: this.active_accounts[this.selected_account].service,
+                    account_id: this.selected_account
+                }
+            }).then(function (response) {
+                _this4.is_loading = false;
+                _this4.$log.info('Succesfully reseted account');
+                _this4.$store.dispatch('fetchAJAX', { req: 'get_queue' });
+            }, function (error) {
+                _this4.is_loading = false;
+                Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+            });
+            this.$forceUpdate();
+        },
+        setActiveAccount: function setActiveAccount(id) {
+
+            if (this.is_loading) {
+                this.$log.warn("Request in progress...Bail");
+                return;
+            }
+
+            if (this.selected_account === id) {
+                this.$log.info("Account already active");
+                return;
+            }
+
+            this.$log.info('Switched post format account to ', id);
+            this.selected_account = id;
+            this.getAccountPostFormat();
+        },
+        updateShortnerCredentials: function updateShortnerCredentials() {
+            this.$store.commit('updateState', {
+                stateData: this.shortner_credentials,
+                requestName: 'get_shortner_credentials'
+            });
+        }
+    },
+    components: {
+        EmptyActiveAccounts: _emptyActiveAccounts2.default
+    }
+    // </script>
+    //
+    // <style scoped>
+    //     #rop_core .avatar .avatar-icon {
+    //         background: #333;
+    //         border-radius: 50%;
+    //         font-size: 16px;
+    //         text-align: center;
+    //         line-height: 20px;
+    //     }
+    //
+    //     #rop_core .avatar .avatar-icon.fa-facebook-official {
+    //         background-color: #3b5998;
+    //     }
+    //
+    //     #rop_core .avatar .avatar-icon.fa-twitter {
+    //         background-color: #55acee;
+    //     }
+    //
+    //     #rop_core .avatar .avatar-icon.fa-linkedin {
+    //         background-color: #007bb5;
+    //     }
+    //
+    //     #rop_core .avatar .avatar-icon.fa-tumblr {
+    //         background-color: #32506d;
+    //     }
+    //
+    //     #rop_core .service.facebook {
+    //         color: #3b5998;
+    //     }
+    //
+    //     #rop_core .service.twitter {
+    //         color: #55acee;
+    //     }
+    //
+    //     #rop_core .service.linkedin {
+    //         color: #007bb5;
+    //     }
+    //
+    //     #rop_core .service.tumblr {
+    //         color: #32506d;
+    //     }
+    //
+    //     #rop_core .rop-selector-account-container.active {
+    //         opacity: 1
+    //     }
+    //
+    //     #rop_core .rop-selector-account-container {
+    //         cursor: pointer;
+    //         opacity: 0.5;
+    //         border-top: 1px solid #50596c;
+    //         padding-top: 10px;
+    //         padding-bottom: 10px;
+    //     }
+    //
+    //     #rop_core .rop-selector-accounts{
+    //         border-right: 1px solid #50596c;
+    //     }
+    //
+    //     #rop_core .rop-selector-account-container .rop-service-name {
+    //         text-transform: capitalize;
+    //     }
+    //
+    //     #rop_core .rop-selector-account-container p.rop-account-name {
+    //         margin: 0 0 0.1rem;
+    //         font-style: italic;
+    //         font-size: 14px;
+    //     }
+    // </style>
 
 }; // <template>
-// 	<div class="tab-view">
-// 		<div class="panel-body" style="overflow: inherit;">
-// 			<h3>Post Format</h3>
-// 			<figure class="avatar avatar-lg" style="text-align: center;" v-if="accountsCount > 0">
-// 				<img :src="img" v-if="img">
-// 				<i class="fa" :class="icon" style="line-height: 48px;" aria-hidden="true" v-else></i>
-// 				<i class="avatar-icon fa" :class="icon" aria-hidden="true" v-if="img"></i>
-// 				<!--<img src="img/avatar-5.png" class="avatar-icon" alt="...">-->
-// 			</figure>
-// 			<div class="d-inline-block" style="vertical-align: top; margin-left: 16px;" v-if="accountsCount > 0">
-// 				<h6>{{user_name}}</h6>
-// 				<b class="service" :class="service">{{service_name}}</b>
-// 			</div>
-// 			<div class="d-inline-block" style="vertical-align: top; margin-left: 16px; width: 80%">
-// 				<h4><i class="fa fa-info-circle"></i> Info</h4>
-// 				<p><i>Each <b>account</b> can have it's own <b>Post Format</b> for sharing, on the left you can see the
-// 					current selected account and network, bellow are the <b>Post Format</b> options for the account.
-// 					Don't forget to save after each change and remember, you can always reset an account to the network defaults.
-// 				</i></p>
-// 			</div>
-// 			<empty-active-accounts v-if="accountsCount === 0"></empty-active-accounts>
-// 			<div class="container" v-if="accountsCount > 0">
-// 				<div class="columns">
-// 					<div class="column col-sm-12 col-md-12 col-lg-12">
-// 						<div class="columns">
-// 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-// 								<b>Account</b><br/>
-// 								<i>Specify an account to change the settings of.</i>
-// 							</div>
-// 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-// 								<div class="form-group">
-// 									<select class="form-select" v-model="selected_account" @change="getAccountpostFormat()">
-// 										<option v-for="( account, id ) in active_accounts" :value="id" >{{account.user}} - {{account.service}} </option>
-// 									</select>
-// 								</div>
-// 							</div>
-// 						</div>
-// 						<hr/>
+//     <div class="tab-view">
+//         <div class="panel-body">
+//             <h3>Post Format</h3>
+//             <div class="d-inline-block">
+//                 <h4><i class="fa fa-info-circle"></i> Info</h4>
+//                 <p><i>Each <b>account</b> can have it's own <b>Post Format</b> for sharing, on the left you can see the
+//                     current selected account and network, bellow are the <b>Post Format</b> options for the account.
+//                     Don't forget to save after each change and remember, you can always reset an account to the network defaults.
+//                 </i></p>
+//             </div>
+//             <empty-active-accounts v-if="accountsCount === 0"></empty-active-accounts>
+//             <div class="container" v-if="accountsCount > 0">
 //
-// 						<h4>Content</h4>
-// 						<!-- Post Content - where to fetch the content which will be shared
-// 							 (dropdown with 4 options ( post_title, post_content, post_content
-// 							 and title and custom field). If custom field is selected we will
-// 							 have a text field which users will need to fill in to fetch the
-// 							 content from that meta key. -->
-// 						<div class="columns">
-// 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-// 								<b>Post Content</b><br/>
-// 								<i>From where to fetch the content which will be shared.</i>
-// 							</div>
-// 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-// 								<div class="form-group">
-// 									<select class="form-select" v-model="post_format.post_content">
-// 										<option value="post_title">Post Title</option>
-// 										<option value="post_content">Post Content</option>
-// 										<option value="post_title_content">Post Title & Content</option>
-// 										<option value="custom_field">Custom Field</option>
-// 									</select>
-// 								</div>
-// 							</div>
-// 						</div>
-// 						<div class="columns" v-if="post_format.post_content === 'custom_field'">
-// 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-// 								<b>Custom Meta Field</b><br/>
-// 								<i>Meta field name from which to get the content.</i>
-// 							</div>
-// 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-// 								<div class="form-group">
-// 									<input class="form-input" type="text" v-model="post_format.custom_meta_field" value="" placeholder="" />
-// 								</div>
-// 							</div>
-// 						</div>
+//                 <div class="columns">
+//                     <div class="column col-2 rop-selector-accounts">
+//                         <div v-for="( account, id ) in active_accounts">
+//                             <div class="rop-selector-account-container" v-bind:class="{active: selected_account===id}"
+//                                  @click="setActiveAccount(id)">
+//                                 <div class="columns">
 //
-// 						<!-- Maximum length of the message( number field ) which holds the maximum
-// 							 number of chars for the shared content. We striping the content, we need
-// 							 to strip at the last whitespace or dot before reaching the limit, in order
-// 							 to not trim just half of the word. -->
-// 						<div class="columns">
-// 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-// 								<b>Maximum chars</b><br/>
-// 								<i>Maximum length of the message.</i>
-// 							</div>
-// 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-// 								<div class="form-group">
-// 									<input class="form-input" type="number" v-model="post_format.maximum_length" value="" placeholder="" />
-// 								</div>
-// 							</div>
-// 						</div>
+//                                     <div class="col-4 column">
+//                                         <figure class="avatar avatar-lg">
+//                                             <img :src="account.img" v-if="account.img">
+//                                             <i class="fa" :class="'fa-'+account.service" aria-hidden="true" v-else></i>
+//                                             <i class="avatar-icon fa" :class="getIcon(account)" aria-hidden="true"
+//                                                v-if="account.img"></i>
+//                                         </figure>
+//                                     </div>
+//                                     <div class="column col-8">
+//                                         <p class="rop-account-name">{{account.user}}</p>
+//                                         <strong class="rop-service-name">{{account.service}}</strong>
+//                                     </div>
+//                                 </div>
+//                             </div>
+//                         </div>
+//                     </div>
+//                     <div class="column col-10" :class="'rop-tab-state-'+is_loading">
+//                         <!--<div class="columns">-->
+//                         <!--<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">-->
+//                         <!--<b>Account</b><br/>-->
+//                         <!--<i>Specify an account to change the settings of.</i>-->
+//                         <!--</div>-->
+//                         <!--<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">-->
+//                         <!--<div class="form-group">-->
+//                         <!--<select class="form-select" v-model="selected_account"-->
+//                         <!--@change="getAccountpostFormat()">-->
+//                         <!--<option v-for="( account, id ) in active_accounts" :value="id">{{account.user}} - {{account.service}} </option>-->
+//                         <!--</select>-->
+//                         <!--</div>-->
+//                         <!--</div>-->
+//                         <!--</div>-->
 //
-// 						<!-- Additional text field - text field which will be used by the users to a
-// 							 custom content before the fetched post content. -->
-// 						<div class="columns">
-// 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-// 								<b>Additional text</b><br/>
-// 								<i>Add custom content to published items.</i>
-// 							</div>
-// 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-// 								<div class="form-group">
-// 									<textarea class="form-input" v-model="post_format.custom_text" placeholder="Custom content ...">{{post_format.custom_text}}</textarea>
-// 								</div>
-// 							</div>
-// 						</div>
+//                         <h4>Content</h4>
+//                         <!-- Post Content - where to fetch the content which will be shared
+//                              (dropdown with 4 options ( post_title, post_content, post_content
+//                              and title and custom field). If custom field is selected we will
+//                              have a text field which users will need to fill in to fetch the
+//                              content from that meta key. -->
+//                         <div class="columns">
+//                             <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+//                                 <b>Post Content</b><br/>
+//                                 <i>From where to fetch the content which will be shared.</i>
+//                             </div>
+//                             <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+//                                 <div class="form-group">
+//                                     <select class="form-select" v-model="post_format.post_content">
+//                                         <option value="post_title">Post Title</option>
+//                                         <option value="post_content">Post Content</option>
+//                                         <option value="post_title_content">Post Title & Content</option>
+//                                         <option value="custom_field">Custom Field</option>
+//                                     </select>
+//                                 </div>
+//                             </div>
+//                         </div>
+//                         <div class="columns" v-if="post_format.post_content === 'custom_field'">
+//                             <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+//                                 <b>Custom Meta Field</b><br/>
+//                                 <i>Meta field name from which to get the content.</i>
+//                             </div>
+//                             <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+//                                 <div class="form-group">
+//                                     <input class="form-input" type="text" v-model="post_format.custom_meta_field"
+//                                            value="" placeholder=""/>
+//                                 </div>
+//                             </div>
+//                         </div>
 //
-// 						<!-- Additional text at - dropdown with 2 options, begining or end, having the
-// 							 option where to add the additional text content. -->
-// 						<div class="columns">
-// 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-// 								<i>Where to add the custom text</i>
-// 							</div>
-// 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-// 								<div class="form-group">
-// 									<select class="form-select" v-model="post_format.custom_text_pos">
-// 										<option value="beginning">Beginning</option>
-// 										<option value="end">End</option>
-// 									</select>
-// 								</div>
-// 							</div>
-// 						</div>
-// 						<hr/>
+//                         <!-- Maximum length of the message( number field ) which holds the maximum
+//                              number of chars for the shared content. We striping the content, we need
+//                              to strip at the last whitespace or dot before reaching the limit, in order
+//                              to not trim just half of the word. -->
+//                         <div class="columns">
+//                             <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+//                                 <b>Maximum chars</b><br/>
+//                                 <i>Maximum length of the message.</i>
+//                             </div>
+//                             <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+//                                 <div class="form-group">
+//                                     <input class="form-input" type="number" v-model="post_format.maximum_length"
+//                                            value="" placeholder=""/>
+//                                 </div>
+//                             </div>
+//                         </div>
 //
-// 						<h4>Link & URL</h4>
-// 						<!-- Include link - checkbox either we should include the post permalink or not
-// 							 in the shared content. This is will appended at the end of the content. -->
-// 						<div class="columns">
-// 							<div class="column col-sm-12 col-md-12 col-lg-12">
-// 								<div class="columns">
-// 									<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-// 										<b>Include link</b><br/>
-// 										<i>Should include the post permalink or not?</i>
-// 									</div>
-// 									<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-// 										<div class="input-group">
-// 											<label class="form-checkbox">
-// 												<input type="checkbox" v-model="post_format.include_link" />
-// 												<i class="form-icon"></i> Yes
-// 											</label>
-// 										</div>
-// 									</div>
-// 								</div>
-// 							</div>
-// 						</div>
+//                         <!-- Additional text field - text field which will be used by the users to a
+//                              custom content before the fetched post content. -->
+//                         <div class="columns">
+//                             <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+//                                 <b>Additional text</b><br/>
+//                                 <i>Add custom content to published items.</i>
+//                             </div>
+//                             <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+//                                 <div class="form-group">
+//                                     <textarea class="form-input" v-model="post_format.custom_text"
+//                                               placeholder="Custom content ...">{{post_format.custom_text}}</textarea>
+//                                 </div>
+//                             </div>
+//                         </div>
 //
-// 						<!-- Fetch url from custom field - checkbox - either we should fetch the url from
-// 							 a meta field or not. When checked we will open a text field for entering the
-// 							 meta key. -->
-// 						<div class="columns">
-// 							<div class="column col-sm-12 col-md-12 col-lg-12">
-// 								<div class="columns">
-// 									<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-// 										<b>Custom field</b><br/>
-// 										<i>Fetch URL from custom field?</i>
-// 									</div>
-// 									<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-// 										<div class="input-group">
-// 											<label class="form-checkbox">
-// 												<input type="checkbox" v-model="post_format.url_from_meta" />
-// 												<i class="form-icon"></i> Yes
-// 											</label>
-// 										</div>
-// 									</div>
-// 								</div>
-// 							</div>
-// 						</div>
-// 						<div class="columns" v-if="post_format.url_from_meta">
-// 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-// 								<b>Custom Field</b><br/>
-// 								<i>Custom Field from which to get the URL.</i>
-// 							</div>
-// 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-// 								<div class="form-group">
-// 									<input class="form-input" type="text" v-model="post_format.url_meta_key" value="" placeholder="" />
-// 								</div>
-// 							</div>
-// 						</div>
+//                         <!-- Additional text at - dropdown with 2 options, begining or end, having the
+//                              option where to add the additional text content. -->
+//                         <div class="columns">
+//                             <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+//                                 <i>Where to add the custom text</i>
+//                             </div>
+//                             <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+//                                 <div class="form-group">
+//                                     <select class="form-select" v-model="post_format.custom_text_pos">
+//                                         <option value="beginning">Beginning</option>
+//                                         <option value="end">End</option>
+//                                     </select>
+//                                 </div>
+//                             </div>
+//                         </div>
+//                         <hr/>
 //
-// 						<!-- Use url shortner ( checkbox ) , either we should use a shortner when adding
-// 							 the links to the content. When checked we will show a dropdown with the shortners
-// 							 available and the api keys ( if needed ) for each one. The list of shortners will
-// 							 be the same as the old version of the plugin. -->
-// 						<div class="columns">
-// 							<div class="column col-sm-12 col-md-12 col-lg-12">
-// 								<div class="columns">
-// 									<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-// 										<b>Use url shortner</b><br/>
-// 										<i>Should we  use a shortner when adding the links to the content?</i>
-// 									</div>
-// 									<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-// 										<div class="input-group">
-// 											<label class="form-checkbox">
-// 												<input type="checkbox" v-model="post_format.short_url" />
-// 												<i class="form-icon"></i> Yes
-// 											</label>
-// 										</div>
-// 									</div>
-// 								</div>
-// 							</div>
-// 						</div>
-// 						<div class="columns" v-if="post_format.short_url">
-// 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-// 								<b>URL Shorner Service</b><br/>
-// 								<i>Which service to use for URL shortening.</i>
-// 							</div>
-// 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-// 								<div class="form-group">
-// 									<select class="form-select" v-model="post_format.short_url_service">
-// 										<option value="rviv.ly">rviv.ly</option>
-// 										<option value="bit.ly">bit.ly</option>
-// 										<option value="shorte.st">shorte.st</option>
-// 										<option value="goo.gl">goo.gl</option>
-// 										<option value="ow.ly">ow.ly</option>
-// 										<option value="is.gd">is.gd</option>
-// 										<option value="wp_short_url">wp_short_url</option>
-// 									</select>
-// 								</div>
-// 							</div>
-// 						</div>
-// 						<div class="columns" v-for="( credential, key_name ) in shortner_credentials">
-// 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-// 								<b>{{ key_name | capitalize }}</b><br/>
-// 								<i>Add the "{{key_name}}" required by the <b>{{post_format.short_url_service}}</b> service API.</i>
-// 							</div>
-// 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-// 								<div class="form-group">
-// 									<input class="form-input" type="text" v-model="shortner_credentials[key_name]" value="" placeholder="" @change="updateShortnerCredentials()" @keyup="updateShortnerCredentials()" />
-// 								</div>
-// 							</div>
-// 						</div>
-// 						<hr/>
 //
-// 						<h4>Misc.</h4>
-// 						<!-- Hashtags - dropdown - having this options - (Dont add any hashtags, Common hastags
-// 							 for all shares, Create hashtags from categories, Create hashtags from tags, Create
-// 							 hashtags from custom field). If one of those options is selected, except the dont
-// 							 any hashtags options, we will show a number field having the Maximum hashtags length.
-// 							 Moreover for common hashtags option, we will have another text field which will contain
-// 							 the hashtags value. -->
-// 						<div class="columns">
-// 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-// 								<b>Hashtags</b><br/>
-// 								<i>Hashtags to published content.</i>
-// 							</div>
-// 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-// 								<div class="form-group">
-// 									<select class="form-select" v-model="post_format.hashtags">
-// 										<option value="no-hashtags" >Dont add any hashtags</option>
-// 										<option value="common-hashtags">Common hastags for all shares</option>
-// 										<option value="categories-hashtags">Create hashtags from categories</option>
-// 										<option value="tags-hashtags">Create hashtags from tags</option>
-// 										<option value="custom-hashtags">Create hashtags from custom field</option>
-// 									</select>
-// 								</div>
-// 							</div>
-// 						</div>
-// 						<div class="columns" v-if="post_format.hashtags !== 'no-hashtags'">
-// 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-// 								<b>Maximum Hashtags length</b><br/>
-// 								<i>The maximum hashtags length to be used when publishing.</i>
-// 							</div>
-// 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-// 								<div class="form-group">
-// 									<input class="form-input" type="number" v-model="post_format.hashtags_length" value="" placeholder="" />
-// 								</div>
-// 							</div>
-// 						</div>
-// 						<div class="columns" v-if="post_format.hashtags === 'common-hashtags'">
-// 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-// 								<b>Common Hashtags</b><br/>
-// 								<i>List of hastags to use separated by comma ",".</i>
-// 							</div>
-// 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-// 								<div class="form-group">
-// 									<input class="form-input" type="text" v-model="post_format.hashtags_common" value="" placeholder="" />
-// 								</div>
-// 							</div>
-// 						</div>
-// 						<div class="columns" v-if="post_format.hashtags === 'custom-hashtags'">
-// 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-// 								<b>Custom Hashtags</b><br/>
-// 								<i>The name of the meta field that contains the hashtags.</i>
-// 							</div>
-// 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-// 								<div class="form-group">
-// 									<input class="form-input" type="text" v-model="post_format.hashtags_custom" value="" placeholder="" />
-// 								</div>
-// 							</div>
-// 						</div>
+//                         <h4>Link & URL</h4>
+//                         <!-- Include link - checkbox either we should include the post permalink or not
+//                              in the shared content. This is will appended at the end of the content. -->
+//                         <div class="columns">
+//                             <div class="column col-sm-12 col-md-12 col-lg-12">
+//                                 <div class="columns">
+//                                     <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+//                                         <b>Include link</b><br/>
+//                                         <i>Should include the post permalink or not?</i>
+//                                     </div>
+//                                     <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+//                                         <div class="input-group">
+//                                             <label class="form-checkbox">
+//                                                 <input type="checkbox" v-model="post_format.include_link"/>
+//                                                 <i class="form-icon"></i> Yes
+//                                             </label>
+//                                         </div>
+//                                     </div>
+//                                 </div>
+//                             </div>
+//                         </div>
 //
-// 						<!-- Post with image - checkbox (either we should use the featured image when posting) -->
-// 						<div class="columns">
-// 							<div class="column col-sm-12 col-md-12 col-lg-12">
-// 								<div class="columns">
-// 									<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-// 										<b>Post with image</b><br/>
-// 										<i>Use the featured image when posting?</i>
-// 									</div>
-// 									<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-// 										<div class="input-group">
-// 											<label class="form-checkbox">
-// 												<input type="checkbox" v-model="post_format.image" :disabled="!has_pro" />
-// 												<i class="form-icon" ></i> Yes
-// 											</label>
-// 											<span class="chip upsell" style="font-size: 10px; vertical-align: baseline;">PRO</span> <i>Available in PRO version. Add upsell message here.</i>
-// 										</div>
-// 									</div>
-// 								</div>
-// 							</div>
-// 						</div>
-// 						<hr/>
+//                         <!-- Fetch url from custom field - checkbox - either we should fetch the url from
+//                              a meta field or not. When checked we will open a text field for entering the
+//                              meta key. -->
+//                         <div class="columns">
+//                             <div class="column col-sm-12 col-md-12 col-lg-12">
+//                                 <div class="columns">
+//                                     <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+//                                         <b>Custom field</b><br/>
+//                                         <i>Fetch URL from custom field?</i>
+//                                     </div>
+//                                     <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+//                                         <div class="input-group">
+//                                             <label class="form-checkbox">
+//                                                 <input type="checkbox" v-model="post_format.url_from_meta"/>
+//                                                 <i class="form-icon"></i> Yes
+//                                             </label>
+//                                         </div>
+//                                     </div>
+//                                 </div>
+//                             </div>
+//                         </div>
+//                         <div class="columns" v-if="post_format.url_from_meta">
+//                             <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+//                                 <b>Custom Field</b><br/>
+//                                 <i>Custom Field from which to get the URL.</i>
+//                             </div>
+//                             <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+//                                 <div class="form-group">
+//                                     <input class="form-input" type="text" v-model="post_format.url_meta_key" value=""
+//                                            placeholder=""/>
+//                                 </div>
+//                             </div>
+//                         </div>
 //
-// 						<hr/>
-// 					</div>
-// 				</div>
-// 			</div>
-// 		</div>
-// 		<div class="panel-footer" v-if="accountsCount > 0">
-// 			<button class="btn btn-primary" @click="savePostFormat()"><i class="fa fa-check"></i> Save Post Format</button>
-// 			<button class="btn btn-secondary" @click="resetPostFormat()"><i class="fa fa-ban"></i> Reset to Defaults</button>
-// 		</div>
-// 	</div>
+//                         <!-- Use url shortner ( checkbox ) , either we should use a shortner when adding
+//                              the links to the content. When checked we will show a dropdown with the shortners
+//                              available and the api keys ( if needed ) for each one. The list of shortners will
+//                              be the same as the old version of the plugin. -->
+//                         <div class="columns">
+//                             <div class="column col-sm-12 col-md-12 col-lg-12">
+//                                 <div class="columns">
+//                                     <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+//                                         <b>Use url shortner</b><br/>
+//                                         <i>Should we  use a shortner when adding the links to the content?</i>
+//                                     </div>
+//                                     <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+//                                         <div class="input-group">
+//                                             <label class="form-checkbox">
+//                                                 <input type="checkbox" v-model="post_format.short_url"/>
+//                                                 <i class="form-icon"></i> Yes
+//                                             </label>
+//                                         </div>
+//                                     </div>
+//                                 </div>
+//                             </div>
+//                         </div>
+//                         <div class="columns" v-if="post_format.short_url">
+//                             <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+//                                 <b>URL Shorner Service</b><br/>
+//                                 <i>Which service to use for URL shortening.</i>
+//                             </div>
+//                             <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+//                                 <div class="form-group">
+//                                     <select class="form-select" v-model="post_format.short_url_service">
+//                                         <option value="rviv.ly">rviv.ly</option>
+//                                         <option value="bit.ly">bit.ly</option>
+//                                         <option value="shorte.st">shorte.st</option>
+//                                         <option value="goo.gl">goo.gl</option>
+//                                         <option value="ow.ly">ow.ly</option>
+//                                         <option value="is.gd">is.gd</option>
+//                                         <option value="wp_short_url">wp_short_url</option>
+//                                     </select>
+//                                 </div>
+//                             </div>
+//                         </div>
+//                         <div class="columns" v-for="( credential, key_name ) in shortner_credentials">
+//                             <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+//                                 <b>{{ key_name | capitalize }}</b><br/>
+//                                 <i>Add the "{{key_name}}" required by the <b>{{post_format.short_url_service}}</b>
+//                                     service API.</i>
+//                             </div>
+//                             <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+//                                 <div class="form-group">
+//                                     <input class="form-input" type="text" v-model="shortner_credentials[key_name]"
+//                                            value="" placeholder="" @change="updateShortnerCredentials()"
+//                                            @keyup="updateShortnerCredentials()"/>
+//                                 </div>
+//                             </div>
+//                         </div>
+//                         <hr/>
+//
+//                         <h4>Misc.</h4>
+//                         <!-- Hashtags - dropdown - having this options - (Dont add any hashtags, Common hastags
+//                              for all shares, Create hashtags from categories, Create hashtags from tags, Create
+//                              hashtags from custom field). If one of those options is selected, except the dont
+//                              any hashtags options, we will show a number field having the Maximum hashtags length.
+//                              Moreover for common hashtags option, we will have another text field which will contain
+//                              the hashtags value. -->
+//                         <div class="columns">
+//                             <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+//                                 <b>Hashtags</b><br/>
+//                                 <i>Hashtags to published content.</i>
+//                             </div>
+//                             <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+//                                 <div class="form-group">
+//                                     <select class="form-select" v-model="post_format.hashtags">
+//                                         <option value="no-hashtags">Dont add any hashtags</option>
+//                                         <option value="common-hashtags">Common hastags for all shares</option>
+//                                         <option value="categories-hashtags">Create hashtags from categories</option>
+//                                         <option value="tags-hashtags">Create hashtags from tags</option>
+//                                         <option value="custom-hashtags">Create hashtags from custom field</option>
+//                                     </select>
+//                                 </div>
+//                             </div>
+//                         </div>
+//                         <div class="columns" v-if="post_format.hashtags !== 'no-hashtags'">
+//                             <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+//                                 <b>Maximum Hashtags length</b><br/>
+//                                 <i>The maximum hashtags length to be used when publishing.</i>
+//                             </div>
+//                             <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+//                                 <div class="form-group">
+//                                     <input class="form-input" type="number" v-model="post_format.hashtags_length"
+//                                            value="" placeholder=""/>
+//                                 </div>
+//                             </div>
+//                         </div>
+//                         <div class="columns" v-if="post_format.hashtags === 'common-hashtags'">
+//                             <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+//                                 <b>Common Hashtags</b><br/>
+//                                 <i>List of hastags to use separated by comma ",".</i>
+//                             </div>
+//                             <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+//                                 <div class="form-group">
+//                                     <input class="form-input" type="text" v-model="post_format.hashtags_common" value=""
+//                                            placeholder=""/>
+//                                 </div>
+//                             </div>
+//                         </div>
+//                         <div class="columns" v-if="post_format.hashtags === 'custom-hashtags'">
+//                             <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+//                                 <b>Custom Hashtags</b><br/>
+//                                 <i>The name of the meta field that contains the hashtags.</i>
+//                             </div>
+//                             <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+//                                 <div class="form-group">
+//                                     <input class="form-input" type="text" v-model="post_format.hashtags_custom" value=""
+//                                            placeholder=""/>
+//                                 </div>
+//                             </div>
+//                         </div>
+//
+//                         <!-- Post with image - checkbox (either we should use the featured image when posting) -->
+//                         <div class="columns">
+//                             <div class="column col-sm-12 col-md-12 col-lg-12">
+//                                 <div class="columns">
+//                                     <div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
+//                                         <b>Post with image</b><br/>
+//                                         <i>Use the featured image when posting?</i>
+//                                     </div>
+//                                     <div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+//                                         <div class="input-group">
+//                                             <label class="form-checkbox">
+//                                                 <input type="checkbox" v-model="post_format.image"
+//                                                        :disabled="!has_pro"/>
+//                                                 <i class="form-icon"></i> Yes
+//                                             </label>
+//                                             <span class="chip upsell"
+//                                                   style="font-size: 10px; vertical-align: baseline;">PRO</span> <i>Available in PRO version. Add upsell message here.</i>
+//                                         </div>
+//                                     </div>
+//                                 </div>
+//                             </div>
+//                         </div>
+//                         <hr/>
+//                     </div>
+//                 </div>
+//             </div>
+//         </div>
+//         <div class="panel-footer" v-if="accountsCount > 0">
+//             <button class="btn btn-primary" @click="savePostFormat()"><i class="fa fa-check"
+//                                                                          v-if="!this.is_loading"></i> <i
+//                     class="fa fa-spinner fa-spin" v-else></i> Save Post Format
+//             </button>
+//             <button class="btn btn-secondary" @click="resetPostFormat()"><i class="fa fa-ban"
+//                                                                             v-if="!this.is_loading"></i> <i
+//                     class="fa fa-spinner fa-spin" v-else></i> Reset to Defaults for <b>{{active_account_name}}</b>
+//             </button>
+//         </div>
+//     </div>
 // </template>
 //
 // <script>
@@ -18990,7 +19100,7 @@ module.exports = "\n    <div class=\"empty\">\n        <div class=\"empty-icon\"
 /* 124 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\" _v-767ba2b6=\"\">\n\t\t<div class=\"panel-body\" style=\"overflow: inherit;\" _v-767ba2b6=\"\">\n\t\t\t<h3 _v-767ba2b6=\"\">Post Format</h3>\n\t\t\t<figure class=\"avatar avatar-lg\" style=\"text-align: center;\" v-if=\"accountsCount > 0\" _v-767ba2b6=\"\">\n\t\t\t\t<img :src=\"img\" v-if=\"img\" _v-767ba2b6=\"\">\n\t\t\t\t<i class=\"fa\" :class=\"icon\" style=\"line-height: 48px;\" aria-hidden=\"true\" v-else=\"\" _v-767ba2b6=\"\"></i>\n\t\t\t\t<i class=\"avatar-icon fa\" :class=\"icon\" aria-hidden=\"true\" v-if=\"img\" _v-767ba2b6=\"\"></i>\n\t\t\t\t<!--<img src=\"img/avatar-5.png\" class=\"avatar-icon\" alt=\"...\">-->\n\t\t\t</figure>\n\t\t\t<div class=\"d-inline-block\" style=\"vertical-align: top; margin-left: 16px;\" v-if=\"accountsCount > 0\" _v-767ba2b6=\"\">\n\t\t\t\t<h6 _v-767ba2b6=\"\">{{user_name}}</h6>\n\t\t\t\t<b class=\"service\" :class=\"service\" _v-767ba2b6=\"\">{{service_name}}</b>\n\t\t\t</div>\n\t\t\t<div class=\"d-inline-block\" style=\"vertical-align: top; margin-left: 16px; width: 80%\" _v-767ba2b6=\"\">\n\t\t\t\t<h4 _v-767ba2b6=\"\"><i class=\"fa fa-info-circle\" _v-767ba2b6=\"\"></i> Info</h4>\n\t\t\t\t<p _v-767ba2b6=\"\"><i _v-767ba2b6=\"\">Each <b _v-767ba2b6=\"\">account</b> can have it's own <b _v-767ba2b6=\"\">Post Format</b> for sharing, on the left you can see the\n\t\t\t\t\tcurrent selected account and network, bellow are the <b _v-767ba2b6=\"\">Post Format</b> options for the account.\n\t\t\t\t\tDon't forget to save after each change and remember, you can always reset an account to the network defaults.\n\t\t\t\t</i></p>\n\t\t\t</div>\n\t\t\t<empty-active-accounts v-if=\"accountsCount === 0\" _v-767ba2b6=\"\"></empty-active-accounts>\n\t\t\t<div class=\"container\" v-if=\"accountsCount > 0\" _v-767ba2b6=\"\">\n\t\t\t\t<div class=\"columns\" _v-767ba2b6=\"\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t<div class=\"columns\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<b _v-767ba2b6=\"\">Account</b><br _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<i _v-767ba2b6=\"\">Specify an account to change the settings of.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"selected_account\" @change=\"getAccountpostFormat()\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t\t<option v-for=\"( account, id ) in active_accounts\" :value=\"id\" _v-767ba2b6=\"\">{{account.user}} - {{account.service}} </option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<hr _v-767ba2b6=\"\">\n\n\t\t\t\t\t\t<h4 _v-767ba2b6=\"\">Content</h4>\n\t\t\t\t\t\t<!-- Post Content - where to fetch the content which will be shared\n\t\t\t\t\t\t\t (dropdown with 4 options ( post_title, post_content, post_content\n\t\t\t\t\t\t\t and title and custom field). If custom field is selected we will\n\t\t\t\t\t\t\t have a text field which users will need to fill in to fetch the\n\t\t\t\t\t\t\t content from that meta key. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<b _v-767ba2b6=\"\">Post Content</b><br _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<i _v-767ba2b6=\"\">From where to fetch the content which will be shared.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.post_content\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t\t<option value=\"post_title\" _v-767ba2b6=\"\">Post Title</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"post_content\" _v-767ba2b6=\"\">Post Content</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"post_title_content\" _v-767ba2b6=\"\">Post Title &amp; Content</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"custom_field\" _v-767ba2b6=\"\">Custom Field</option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-if=\"post_format.post_content === 'custom_field'\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<b _v-767ba2b6=\"\">Custom Meta Field</b><br _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<i _v-767ba2b6=\"\">Meta field name from which to get the content.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.custom_meta_field\" value=\"\" placeholder=\"\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!-- Maximum length of the message( number field ) which holds the maximum\n\t\t\t\t\t\t\t number of chars for the shared content. We striping the content, we need\n\t\t\t\t\t\t\t to strip at the last whitespace or dot before reaching the limit, in order\n\t\t\t\t\t\t\t to not trim just half of the word. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<b _v-767ba2b6=\"\">Maximum chars</b><br _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<i _v-767ba2b6=\"\">Maximum length of the message.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.maximum_length\" value=\"\" placeholder=\"\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!-- Additional text field - text field which will be used by the users to a\n\t\t\t\t\t\t\t custom content before the fetched post content. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<b _v-767ba2b6=\"\">Additional text</b><br _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<i _v-767ba2b6=\"\">Add custom content to published items.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t<textarea class=\"form-input\" v-model=\"post_format.custom_text\" placeholder=\"Custom content ...\" _v-767ba2b6=\"\">{{post_format.custom_text}}</textarea>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!-- Additional text at - dropdown with 2 options, begining or end, having the\n\t\t\t\t\t\t\t option where to add the additional text content. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<i _v-767ba2b6=\"\">Where to add the custom text</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.custom_text_pos\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t\t<option value=\"beginning\" _v-767ba2b6=\"\">Beginning</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"end\" _v-767ba2b6=\"\">End</option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<hr _v-767ba2b6=\"\">\n\n\t\t\t\t\t\t<h4 _v-767ba2b6=\"\">Link &amp; URL</h4>\n\t\t\t\t\t\t<!-- Include link - checkbox either we should include the post permalink or not\n\t\t\t\t\t\t\t in the shared content. This is will appended at the end of the content. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<div class=\"columns\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-767ba2b6=\"\">Include link</b><br _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t\t<i _v-767ba2b6=\"\">Should include the post permalink or not?</i>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.include_link\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-767ba2b6=\"\"></i> Yes\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!-- Fetch url from custom field - checkbox - either we should fetch the url from\n\t\t\t\t\t\t\t a meta field or not. When checked we will open a text field for entering the\n\t\t\t\t\t\t\t meta key. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<div class=\"columns\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-767ba2b6=\"\">Custom field</b><br _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t\t<i _v-767ba2b6=\"\">Fetch URL from custom field?</i>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.url_from_meta\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-767ba2b6=\"\"></i> Yes\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-if=\"post_format.url_from_meta\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<b _v-767ba2b6=\"\">Custom Field</b><br _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<i _v-767ba2b6=\"\">Custom Field from which to get the URL.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.url_meta_key\" value=\"\" placeholder=\"\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!-- Use url shortner ( checkbox ) , either we should use a shortner when adding\n\t\t\t\t\t\t\t the links to the content. When checked we will show a dropdown with the shortners\n\t\t\t\t\t\t\t available and the api keys ( if needed ) for each one. The list of shortners will\n\t\t\t\t\t\t\t be the same as the old version of the plugin. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<div class=\"columns\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-767ba2b6=\"\">Use url shortner</b><br _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t\t<i _v-767ba2b6=\"\">Should we  use a shortner when adding the links to the content?</i>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.short_url\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-767ba2b6=\"\"></i> Yes\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-if=\"post_format.short_url\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<b _v-767ba2b6=\"\">URL Shorner Service</b><br _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<i _v-767ba2b6=\"\">Which service to use for URL shortening.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.short_url_service\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t\t<option value=\"rviv.ly\" _v-767ba2b6=\"\">rviv.ly</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"bit.ly\" _v-767ba2b6=\"\">bit.ly</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"shorte.st\" _v-767ba2b6=\"\">shorte.st</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"goo.gl\" _v-767ba2b6=\"\">goo.gl</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"ow.ly\" _v-767ba2b6=\"\">ow.ly</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"is.gd\" _v-767ba2b6=\"\">is.gd</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"wp_short_url\" _v-767ba2b6=\"\">wp_short_url</option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-for=\"( credential, key_name ) in shortner_credentials\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<b _v-767ba2b6=\"\">{{ key_name | capitalize }}</b><br _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<i _v-767ba2b6=\"\">Add the \"{{key_name}}\" required by the <b _v-767ba2b6=\"\">{{post_format.short_url_service}}</b> service API.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"shortner_credentials[key_name]\" value=\"\" placeholder=\"\" @change=\"updateShortnerCredentials()\" @keyup=\"updateShortnerCredentials()\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<hr _v-767ba2b6=\"\">\n\n\t\t\t\t\t\t<h4 _v-767ba2b6=\"\">Misc.</h4>\n\t\t\t\t\t\t<!-- Hashtags - dropdown - having this options - (Dont add any hashtags, Common hastags\n\t\t\t\t\t\t\t for all shares, Create hashtags from categories, Create hashtags from tags, Create\n\t\t\t\t\t\t\t hashtags from custom field). If one of those options is selected, except the dont\n\t\t\t\t\t\t\t any hashtags options, we will show a number field having the Maximum hashtags length.\n\t\t\t\t\t\t\t Moreover for common hashtags option, we will have another text field which will contain\n\t\t\t\t\t\t\t the hashtags value. -->\n\t\t\t\t\t\t<div class=\"columns\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<b _v-767ba2b6=\"\">Hashtags</b><br _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<i _v-767ba2b6=\"\">Hashtags to published content.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.hashtags\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t\t<option value=\"no-hashtags\" _v-767ba2b6=\"\">Dont add any hashtags</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"common-hashtags\" _v-767ba2b6=\"\">Common hastags for all shares</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"categories-hashtags\" _v-767ba2b6=\"\">Create hashtags from categories</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"tags-hashtags\" _v-767ba2b6=\"\">Create hashtags from tags</option>\n\t\t\t\t\t\t\t\t\t\t<option value=\"custom-hashtags\" _v-767ba2b6=\"\">Create hashtags from custom field</option>\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-if=\"post_format.hashtags !== 'no-hashtags'\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<b _v-767ba2b6=\"\">Maximum Hashtags length</b><br _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<i _v-767ba2b6=\"\">The maximum hashtags length to be used when publishing.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.hashtags_length\" value=\"\" placeholder=\"\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-if=\"post_format.hashtags === 'common-hashtags'\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<b _v-767ba2b6=\"\">Common Hashtags</b><br _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<i _v-767ba2b6=\"\">List of hastags to use separated by comma \",\".</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_common\" value=\"\" placeholder=\"\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"columns\" v-if=\"post_format.hashtags === 'custom-hashtags'\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<b _v-767ba2b6=\"\">Custom Hashtags</b><br _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<i _v-767ba2b6=\"\">The name of the meta field that contains the hashtags.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_custom\" value=\"\" placeholder=\"\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!-- Post with image - checkbox (either we should use the featured image when posting) -->\n\t\t\t\t\t\t<div class=\"columns\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t<div class=\"columns\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-767ba2b6=\"\">Post with image</b><br _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t\t<i _v-767ba2b6=\"\">Use the featured image when posting?</i>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.image\" :disabled=\"!has_pro\" _v-767ba2b6=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-767ba2b6=\"\"></i> Yes\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t\t<span class=\"chip upsell\" style=\"font-size: 10px; vertical-align: baseline;\" _v-767ba2b6=\"\">PRO</span> <i _v-767ba2b6=\"\">Available in PRO version. Add upsell message here.</i>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<hr _v-767ba2b6=\"\">\n\t\t\t\t\t \n\t\t\t\t\t\t<hr _v-767ba2b6=\"\">\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-767ba2b6=\"\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"savePostFormat()\" _v-767ba2b6=\"\"><i class=\"fa fa-check\" _v-767ba2b6=\"\"></i> Save Post Format</button>\n\t\t\t<button class=\"btn btn-secondary\" @click=\"resetPostFormat()\" _v-767ba2b6=\"\"><i class=\"fa fa-ban\" _v-767ba2b6=\"\"></i> Reset to Defaults</button>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n    <div class=\"tab-view\" _v-767ba2b6=\"\">\n        <div class=\"panel-body\" _v-767ba2b6=\"\">\n            <h3 _v-767ba2b6=\"\">Post Format</h3>\n            <div class=\"d-inline-block\" _v-767ba2b6=\"\">\n                <h4 _v-767ba2b6=\"\"><i class=\"fa fa-info-circle\" _v-767ba2b6=\"\"></i> Info</h4>\n                <p _v-767ba2b6=\"\"><i _v-767ba2b6=\"\">Each <b _v-767ba2b6=\"\">account</b> can have it's own <b _v-767ba2b6=\"\">Post Format</b> for sharing, on the left you can see the\n                    current selected account and network, bellow are the <b _v-767ba2b6=\"\">Post Format</b> options for the account.\n                    Don't forget to save after each change and remember, you can always reset an account to the network defaults.\n                </i></p>\n            </div>\n            <empty-active-accounts v-if=\"accountsCount === 0\" _v-767ba2b6=\"\"></empty-active-accounts>\n            <div class=\"container\" v-if=\"accountsCount > 0\" _v-767ba2b6=\"\">\n\n                <div class=\"columns\" _v-767ba2b6=\"\">\n                    <div class=\"column col-2 rop-selector-accounts\" _v-767ba2b6=\"\">\n                        <div v-for=\"( account, id ) in active_accounts\" _v-767ba2b6=\"\">\n                            <div class=\"rop-selector-account-container\" v-bind:class=\"{active: selected_account===id}\" @click=\"setActiveAccount(id)\" _v-767ba2b6=\"\">\n                                <div class=\"columns\" _v-767ba2b6=\"\">\n\n                                    <div class=\"col-4 column\" _v-767ba2b6=\"\">\n                                        <figure class=\"avatar avatar-lg\" _v-767ba2b6=\"\">\n                                            <img :src=\"account.img\" v-if=\"account.img\" _v-767ba2b6=\"\">\n                                            <i class=\"fa\" :class=\"'fa-'+account.service\" aria-hidden=\"true\" v-else=\"\" _v-767ba2b6=\"\"></i>\n                                            <i class=\"avatar-icon fa\" :class=\"getIcon(account)\" aria-hidden=\"true\" v-if=\"account.img\" _v-767ba2b6=\"\"></i>\n                                        </figure>\n                                    </div>\n                                    <div class=\"column col-8\" _v-767ba2b6=\"\">\n                                        <p class=\"rop-account-name\" _v-767ba2b6=\"\">{{account.user}}</p>\n                                        <strong class=\"rop-service-name\" _v-767ba2b6=\"\">{{account.service}}</strong>\n                                    </div>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                    <div class=\"column col-10\" :class=\"'rop-tab-state-'+is_loading\" _v-767ba2b6=\"\">\n                        <!--<div class=\"columns\">-->\n                        <!--<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">-->\n                        <!--<b>Account</b><br/>-->\n                        <!--<i>Specify an account to change the settings of.</i>-->\n                        <!--</div>-->\n                        <!--<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">-->\n                        <!--<div class=\"form-group\">-->\n                        <!--<select class=\"form-select\" v-model=\"selected_account\"-->\n                        <!--@change=\"getAccountpostFormat()\">-->\n                        <!--<option v-for=\"( account, id ) in active_accounts\" :value=\"id\">{{account.user}} - {{account.service}} </option>-->\n                        <!--</select>-->\n                        <!--</div>-->\n                        <!--</div>-->\n                        <!--</div>-->\n\n                        <h4 _v-767ba2b6=\"\">Content</h4>\n                        <!-- Post Content - where to fetch the content which will be shared\n                             (dropdown with 4 options ( post_title, post_content, post_content\n                             and title and custom field). If custom field is selected we will\n                             have a text field which users will need to fill in to fetch the\n                             content from that meta key. -->\n                        <div class=\"columns\" _v-767ba2b6=\"\">\n                            <div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n                                <b _v-767ba2b6=\"\">Post Content</b><br _v-767ba2b6=\"\">\n                                <i _v-767ba2b6=\"\">From where to fetch the content which will be shared.</i>\n                            </div>\n                            <div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n                                <div class=\"form-group\" _v-767ba2b6=\"\">\n                                    <select class=\"form-select\" v-model=\"post_format.post_content\" _v-767ba2b6=\"\">\n                                        <option value=\"post_title\" _v-767ba2b6=\"\">Post Title</option>\n                                        <option value=\"post_content\" _v-767ba2b6=\"\">Post Content</option>\n                                        <option value=\"post_title_content\" _v-767ba2b6=\"\">Post Title &amp; Content</option>\n                                        <option value=\"custom_field\" _v-767ba2b6=\"\">Custom Field</option>\n                                    </select>\n                                </div>\n                            </div>\n                        </div>\n                        <div class=\"columns\" v-if=\"post_format.post_content === 'custom_field'\" _v-767ba2b6=\"\">\n                            <div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n                                <b _v-767ba2b6=\"\">Custom Meta Field</b><br _v-767ba2b6=\"\">\n                                <i _v-767ba2b6=\"\">Meta field name from which to get the content.</i>\n                            </div>\n                            <div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n                                <div class=\"form-group\" _v-767ba2b6=\"\">\n                                    <input class=\"form-input\" type=\"text\" v-model=\"post_format.custom_meta_field\" value=\"\" placeholder=\"\" _v-767ba2b6=\"\">\n                                </div>\n                            </div>\n                        </div>\n\n                        <!-- Maximum length of the message( number field ) which holds the maximum\n                             number of chars for the shared content. We striping the content, we need\n                             to strip at the last whitespace or dot before reaching the limit, in order\n                             to not trim just half of the word. -->\n                        <div class=\"columns\" _v-767ba2b6=\"\">\n                            <div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n                                <b _v-767ba2b6=\"\">Maximum chars</b><br _v-767ba2b6=\"\">\n                                <i _v-767ba2b6=\"\">Maximum length of the message.</i>\n                            </div>\n                            <div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n                                <div class=\"form-group\" _v-767ba2b6=\"\">\n                                    <input class=\"form-input\" type=\"number\" v-model=\"post_format.maximum_length\" value=\"\" placeholder=\"\" _v-767ba2b6=\"\">\n                                </div>\n                            </div>\n                        </div>\n\n                        <!-- Additional text field - text field which will be used by the users to a\n                             custom content before the fetched post content. -->\n                        <div class=\"columns\" _v-767ba2b6=\"\">\n                            <div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n                                <b _v-767ba2b6=\"\">Additional text</b><br _v-767ba2b6=\"\">\n                                <i _v-767ba2b6=\"\">Add custom content to published items.</i>\n                            </div>\n                            <div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n                                <div class=\"form-group\" _v-767ba2b6=\"\">\n                                    <textarea class=\"form-input\" v-model=\"post_format.custom_text\" placeholder=\"Custom content ...\" _v-767ba2b6=\"\">{{post_format.custom_text}}</textarea>\n                                </div>\n                            </div>\n                        </div>\n\n                        <!-- Additional text at - dropdown with 2 options, begining or end, having the\n                             option where to add the additional text content. -->\n                        <div class=\"columns\" _v-767ba2b6=\"\">\n                            <div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n                                <i _v-767ba2b6=\"\">Where to add the custom text</i>\n                            </div>\n                            <div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n                                <div class=\"form-group\" _v-767ba2b6=\"\">\n                                    <select class=\"form-select\" v-model=\"post_format.custom_text_pos\" _v-767ba2b6=\"\">\n                                        <option value=\"beginning\" _v-767ba2b6=\"\">Beginning</option>\n                                        <option value=\"end\" _v-767ba2b6=\"\">End</option>\n                                    </select>\n                                </div>\n                            </div>\n                        </div>\n                        <hr _v-767ba2b6=\"\">\n\n\n                        <h4 _v-767ba2b6=\"\">Link &amp; URL</h4>\n                        <!-- Include link - checkbox either we should include the post permalink or not\n                             in the shared content. This is will appended at the end of the content. -->\n                        <div class=\"columns\" _v-767ba2b6=\"\">\n                            <div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-767ba2b6=\"\">\n                                <div class=\"columns\" _v-767ba2b6=\"\">\n                                    <div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n                                        <b _v-767ba2b6=\"\">Include link</b><br _v-767ba2b6=\"\">\n                                        <i _v-767ba2b6=\"\">Should include the post permalink or not?</i>\n                                    </div>\n                                    <div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n                                        <div class=\"input-group\" _v-767ba2b6=\"\">\n                                            <label class=\"form-checkbox\" _v-767ba2b6=\"\">\n                                                <input type=\"checkbox\" v-model=\"post_format.include_link\" _v-767ba2b6=\"\">\n                                                <i class=\"form-icon\" _v-767ba2b6=\"\"></i> Yes\n                                            </label>\n                                        </div>\n                                    </div>\n                                </div>\n                            </div>\n                        </div>\n\n                        <!-- Fetch url from custom field - checkbox - either we should fetch the url from\n                             a meta field or not. When checked we will open a text field for entering the\n                             meta key. -->\n                        <div class=\"columns\" _v-767ba2b6=\"\">\n                            <div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-767ba2b6=\"\">\n                                <div class=\"columns\" _v-767ba2b6=\"\">\n                                    <div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n                                        <b _v-767ba2b6=\"\">Custom field</b><br _v-767ba2b6=\"\">\n                                        <i _v-767ba2b6=\"\">Fetch URL from custom field?</i>\n                                    </div>\n                                    <div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n                                        <div class=\"input-group\" _v-767ba2b6=\"\">\n                                            <label class=\"form-checkbox\" _v-767ba2b6=\"\">\n                                                <input type=\"checkbox\" v-model=\"post_format.url_from_meta\" _v-767ba2b6=\"\">\n                                                <i class=\"form-icon\" _v-767ba2b6=\"\"></i> Yes\n                                            </label>\n                                        </div>\n                                    </div>\n                                </div>\n                            </div>\n                        </div>\n                        <div class=\"columns\" v-if=\"post_format.url_from_meta\" _v-767ba2b6=\"\">\n                            <div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n                                <b _v-767ba2b6=\"\">Custom Field</b><br _v-767ba2b6=\"\">\n                                <i _v-767ba2b6=\"\">Custom Field from which to get the URL.</i>\n                            </div>\n                            <div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n                                <div class=\"form-group\" _v-767ba2b6=\"\">\n                                    <input class=\"form-input\" type=\"text\" v-model=\"post_format.url_meta_key\" value=\"\" placeholder=\"\" _v-767ba2b6=\"\">\n                                </div>\n                            </div>\n                        </div>\n\n                        <!-- Use url shortner ( checkbox ) , either we should use a shortner when adding\n                             the links to the content. When checked we will show a dropdown with the shortners\n                             available and the api keys ( if needed ) for each one. The list of shortners will\n                             be the same as the old version of the plugin. -->\n                        <div class=\"columns\" _v-767ba2b6=\"\">\n                            <div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-767ba2b6=\"\">\n                                <div class=\"columns\" _v-767ba2b6=\"\">\n                                    <div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n                                        <b _v-767ba2b6=\"\">Use url shortner</b><br _v-767ba2b6=\"\">\n                                        <i _v-767ba2b6=\"\">Should we  use a shortner when adding the links to the content?</i>\n                                    </div>\n                                    <div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n                                        <div class=\"input-group\" _v-767ba2b6=\"\">\n                                            <label class=\"form-checkbox\" _v-767ba2b6=\"\">\n                                                <input type=\"checkbox\" v-model=\"post_format.short_url\" _v-767ba2b6=\"\">\n                                                <i class=\"form-icon\" _v-767ba2b6=\"\"></i> Yes\n                                            </label>\n                                        </div>\n                                    </div>\n                                </div>\n                            </div>\n                        </div>\n                        <div class=\"columns\" v-if=\"post_format.short_url\" _v-767ba2b6=\"\">\n                            <div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n                                <b _v-767ba2b6=\"\">URL Shorner Service</b><br _v-767ba2b6=\"\">\n                                <i _v-767ba2b6=\"\">Which service to use for URL shortening.</i>\n                            </div>\n                            <div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n                                <div class=\"form-group\" _v-767ba2b6=\"\">\n                                    <select class=\"form-select\" v-model=\"post_format.short_url_service\" _v-767ba2b6=\"\">\n                                        <option value=\"rviv.ly\" _v-767ba2b6=\"\">rviv.ly</option>\n                                        <option value=\"bit.ly\" _v-767ba2b6=\"\">bit.ly</option>\n                                        <option value=\"shorte.st\" _v-767ba2b6=\"\">shorte.st</option>\n                                        <option value=\"goo.gl\" _v-767ba2b6=\"\">goo.gl</option>\n                                        <option value=\"ow.ly\" _v-767ba2b6=\"\">ow.ly</option>\n                                        <option value=\"is.gd\" _v-767ba2b6=\"\">is.gd</option>\n                                        <option value=\"wp_short_url\" _v-767ba2b6=\"\">wp_short_url</option>\n                                    </select>\n                                </div>\n                            </div>\n                        </div>\n                        <div class=\"columns\" v-for=\"( credential, key_name ) in shortner_credentials\" _v-767ba2b6=\"\">\n                            <div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n                                <b _v-767ba2b6=\"\">{{ key_name | capitalize }}</b><br _v-767ba2b6=\"\">\n                                <i _v-767ba2b6=\"\">Add the \"{{key_name}}\" required by the <b _v-767ba2b6=\"\">{{post_format.short_url_service}}</b>\n                                    service API.</i>\n                            </div>\n                            <div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n                                <div class=\"form-group\" _v-767ba2b6=\"\">\n                                    <input class=\"form-input\" type=\"text\" v-model=\"shortner_credentials[key_name]\" value=\"\" placeholder=\"\" @change=\"updateShortnerCredentials()\" @keyup=\"updateShortnerCredentials()\" _v-767ba2b6=\"\">\n                                </div>\n                            </div>\n                        </div>\n                        <hr _v-767ba2b6=\"\">\n\n                        <h4 _v-767ba2b6=\"\">Misc.</h4>\n                        <!-- Hashtags - dropdown - having this options - (Dont add any hashtags, Common hastags\n                             for all shares, Create hashtags from categories, Create hashtags from tags, Create\n                             hashtags from custom field). If one of those options is selected, except the dont\n                             any hashtags options, we will show a number field having the Maximum hashtags length.\n                             Moreover for common hashtags option, we will have another text field which will contain\n                             the hashtags value. -->\n                        <div class=\"columns\" _v-767ba2b6=\"\">\n                            <div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n                                <b _v-767ba2b6=\"\">Hashtags</b><br _v-767ba2b6=\"\">\n                                <i _v-767ba2b6=\"\">Hashtags to published content.</i>\n                            </div>\n                            <div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n                                <div class=\"form-group\" _v-767ba2b6=\"\">\n                                    <select class=\"form-select\" v-model=\"post_format.hashtags\" _v-767ba2b6=\"\">\n                                        <option value=\"no-hashtags\" _v-767ba2b6=\"\">Dont add any hashtags</option>\n                                        <option value=\"common-hashtags\" _v-767ba2b6=\"\">Common hastags for all shares</option>\n                                        <option value=\"categories-hashtags\" _v-767ba2b6=\"\">Create hashtags from categories</option>\n                                        <option value=\"tags-hashtags\" _v-767ba2b6=\"\">Create hashtags from tags</option>\n                                        <option value=\"custom-hashtags\" _v-767ba2b6=\"\">Create hashtags from custom field</option>\n                                    </select>\n                                </div>\n                            </div>\n                        </div>\n                        <div class=\"columns\" v-if=\"post_format.hashtags !== 'no-hashtags'\" _v-767ba2b6=\"\">\n                            <div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n                                <b _v-767ba2b6=\"\">Maximum Hashtags length</b><br _v-767ba2b6=\"\">\n                                <i _v-767ba2b6=\"\">The maximum hashtags length to be used when publishing.</i>\n                            </div>\n                            <div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n                                <div class=\"form-group\" _v-767ba2b6=\"\">\n                                    <input class=\"form-input\" type=\"number\" v-model=\"post_format.hashtags_length\" value=\"\" placeholder=\"\" _v-767ba2b6=\"\">\n                                </div>\n                            </div>\n                        </div>\n                        <div class=\"columns\" v-if=\"post_format.hashtags === 'common-hashtags'\" _v-767ba2b6=\"\">\n                            <div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n                                <b _v-767ba2b6=\"\">Common Hashtags</b><br _v-767ba2b6=\"\">\n                                <i _v-767ba2b6=\"\">List of hastags to use separated by comma \",\".</i>\n                            </div>\n                            <div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n                                <div class=\"form-group\" _v-767ba2b6=\"\">\n                                    <input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_common\" value=\"\" placeholder=\"\" _v-767ba2b6=\"\">\n                                </div>\n                            </div>\n                        </div>\n                        <div class=\"columns\" v-if=\"post_format.hashtags === 'custom-hashtags'\" _v-767ba2b6=\"\">\n                            <div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n                                <b _v-767ba2b6=\"\">Custom Hashtags</b><br _v-767ba2b6=\"\">\n                                <i _v-767ba2b6=\"\">The name of the meta field that contains the hashtags.</i>\n                            </div>\n                            <div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n                                <div class=\"form-group\" _v-767ba2b6=\"\">\n                                    <input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_custom\" value=\"\" placeholder=\"\" _v-767ba2b6=\"\">\n                                </div>\n                            </div>\n                        </div>\n\n                        <!-- Post with image - checkbox (either we should use the featured image when posting) -->\n                        <div class=\"columns\" _v-767ba2b6=\"\">\n                            <div class=\"column col-sm-12 col-md-12 col-lg-12\" _v-767ba2b6=\"\">\n                                <div class=\"columns\" _v-767ba2b6=\"\">\n                                    <div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\" _v-767ba2b6=\"\">\n                                        <b _v-767ba2b6=\"\">Post with image</b><br _v-767ba2b6=\"\">\n                                        <i _v-767ba2b6=\"\">Use the featured image when posting?</i>\n                                    </div>\n                                    <div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\" _v-767ba2b6=\"\">\n                                        <div class=\"input-group\" _v-767ba2b6=\"\">\n                                            <label class=\"form-checkbox\" _v-767ba2b6=\"\">\n                                                <input type=\"checkbox\" v-model=\"post_format.image\" :disabled=\"!has_pro\" _v-767ba2b6=\"\">\n                                                <i class=\"form-icon\" _v-767ba2b6=\"\"></i> Yes\n                                            </label>\n                                            <span class=\"chip upsell\" style=\"font-size: 10px; vertical-align: baseline;\" _v-767ba2b6=\"\">PRO</span> <i _v-767ba2b6=\"\">Available in PRO version. Add upsell message here.</i>\n                                        </div>\n                                    </div>\n                                </div>\n                            </div>\n                        </div>\n                        <hr _v-767ba2b6=\"\">\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-767ba2b6=\"\">\n            <button class=\"btn btn-primary\" @click=\"savePostFormat()\" _v-767ba2b6=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-767ba2b6=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-767ba2b6=\"\"></i> Save Post Format\n            </button>\n            <button class=\"btn btn-secondary\" @click=\"resetPostFormat()\" _v-767ba2b6=\"\"><i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-767ba2b6=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-767ba2b6=\"\"></i> Reset to Defaults for <b _v-767ba2b6=\"\">{{active_account_name}}</b>\n            </button>\n        </div>\n    </div>\n";
 
 /***/ }),
 /* 125 */
