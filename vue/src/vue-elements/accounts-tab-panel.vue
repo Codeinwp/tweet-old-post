@@ -34,27 +34,17 @@
 					</div>-->
 					<div class="column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts">
 						<h5>Accounts</h5>
-						<div class="empty" v-if="inactive_accounts.length == 0 && active_accounts.length == 0">
+						<div class="empty" v-if="accounts.length == 0">
 							<div class="empty-icon">
 								<i class="fa fa-3x fa-user-circle-o"></i>
 							</div>
 							<p class="empty-title h5">No accounts!</p>
 							<p class="empty-subtitle">Add one from the <b>"Authenticated Services"</b> section.</p>
 						</div>
-						<h6>Active</h6>
-						<div class="active-accounts">
-							<div class="account" v-for="( account, id ) in active_accounts">
+							<div class="account-container" v-for="( account, id ) in accounts">
 								<service-user-tile :account_data="account" :account_id="id"></service-user-tile>
 								<div class="divider"></div>
 							</div>
-						</div>
-						<h6>Inactive</h6>
-						<div class="inactive-accounts">
-							<div class="account" v-for="( account, id ) in inactive_accounts">
-								<service-user-tile :account_data="account" :account_id="id"></service-user-tile>
-								<div class="divider"></div>
-							</div>
-						</div>
 					</div>
 				</div>
 			</div>
@@ -82,8 +72,8 @@
 	module.exports = {
 		name: 'account-view',
 		computed: {
-			inactive_accounts: function () {
-				const inactive_accounts = {};
+			accounts: function () {
+				const all_accounts = {};
 				const services = this.$store.state.authenticatedServices;
 				for (const key in services) {
 					if (!services.hasOwnProperty(key)) {
@@ -95,17 +85,15 @@
 						if (!service.available_accounts.hasOwnProperty(account_id)) {
 							continue;
 						}
-						if (service.available_accounts[account_id].active === false) {
-							inactive_accounts[account_id] = service.available_accounts[account_id];
-						}
+						all_accounts[account_id] = service.available_accounts[account_id];
+
 					}
 				}
-				this.$log.info('Inactive accounts : ', inactive_accounts);
-				return inactive_accounts;
+				this.$log.info('All accounts : ', all_accounts);
+				return all_accounts;
 			},
-			active_accounts: function () {
-				this.$log.info('Active accounts : ', this.$store.state.activeAccounts);
-				return this.$store.state.activeAccounts
+            is_loading:function(){
+			    return true;
 			}
 		},
 		components: {
@@ -117,15 +105,7 @@
 	}
 </script>
 <style type="text/css">
-	.inactive-accounts .tile-icon,
-	.inactive-accounts .tile-content,
-	.inactive-accounts .tile-action {
-		opacity: 0.5;
-	}
-	
-	.inactive-accounts .tile-action:hover {
-		opacity: 1;
-	}
+
 	
 	.rop-available-accounts {
 		padding-top: 35px;

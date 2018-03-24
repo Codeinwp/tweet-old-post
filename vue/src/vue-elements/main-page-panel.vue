@@ -9,7 +9,6 @@
 
 		<toast />
 		<countdown v-bind:to="countdownObject" />
-		<ajax-loader />
 		<div class="panel">
 			<div class="panel-nav" style="padding: 8px;">
 				<ul class="tab">
@@ -106,8 +105,7 @@
 			'queue': QueueTab,
 			'logs': LogsTab,
 			'toast': Toast,
-			'countdown': CountDown,
-			'ajax-loader': AjaxLoader
+			'countdown': CountDown
 		}
 	}
 </script>
