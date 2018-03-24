@@ -344,7 +344,7 @@
             </button>
             <button class="btn btn-secondary" @click="resetPostFormat()"><i class="fa fa-ban"
                                                                             v-if="!this.is_loading"></i> <i
-                    class="fa fa-spinner fa-spin" v-else></i> Reset to Defaults for <b>{{active_account_name}}</b>
+                    class="fa fa-spinner fa-spin" v-else></i> Reset format for <b>{{active_account_name}}</b>
             </button>
         </div>
     </div>
