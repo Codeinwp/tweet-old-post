@@ -234,7 +234,7 @@ class Rop_Rest_Api {
 		if ( $schedules->remove_schedule( $data['account_id'] ) ) {
 			$this->response->set_code( '201' )
 			               ->set_message( __( 'Schedule was reset successfully.', 'tweet-old-post' ) )
-			               ->set_data( $schedules->get_schedule( $data['account_id'] ) );
+			               ->set_data( $schedules->get_schedule() );
 		}
 
 		return $this->response->is_not_silent()->to_array();
@@ -256,7 +256,7 @@ class Rop_Rest_Api {
 		$schedules = new Rop_Scheduler_Model();
 		$this->response->set_code( '200' )
 		               ->set_message( __( 'Schedule was retrieved successfully.', 'tweet-old-post' ) )
-		               ->set_data( $schedules->get_schedule( $data['account_id'] ) );
+		               ->set_data( $schedules->get_schedule() );
 
 		return $this->response->to_array();
 	}
@@ -275,26 +275,32 @@ class Rop_Rest_Api {
 	 * @return mixed
 	 */
 	private function get_shortner_credentials( $data ) {
-
+		if ( empty( $data['short_url_service'] ) ) {
+			return $this->response->set_code( '200' )
+			                      ->set_message( __( 'Empty shortner.', 'tweet-old-post' ) )
+			                      ->set_data( array() )->to_array();
+		}
 		if ( $data['short_url_service'] === 'wp_short_url' ) {
+			return $this->response->set_code( '200' )
+			                      ->set_message( __( 'Shortner credentials retrieved successfully.', 'tweet-old-post' ) )
+			                      ->set_data( array() )->to_array();
+		}
+
+		$sh_factory = new Rop_Shortner_Factory();
+
+		$this->response->set_code( '500' )->set_message( __( 'An error occurred when trying to retrieve the sortner service credentials.', 'tweet-old-post' ) );
+
+		try {
+			$shortner = $sh_factory->build( $data['short_url_service'] );
 			$this->response->set_code( '200' )
 			               ->set_message( __( 'Shortner credentials retrieved successfully.', 'tweet-old-post' ) )
-			               ->set_data( array() );
-		} else {
-			$sh_factory = new Rop_Shortner_Factory();
-			$this->response->set_code( '500' )->set_message( __( 'An error occurred when trying to retrieve the sortner service credentials.', 'tweet-old-post' ) );
-			try {
-				$shortner = $sh_factory->build( $data['short_url_service'] );
-				$this->response->set_code( '200' )
-				               ->set_message( __( 'Shortner credentials retrieved successfully.', 'tweet-old-post' ) )
-				               ->set_data( $shortner->get_credentials() );
-			} catch ( Exception $exception ) {
-				// Service not found or can't be built. Maybe log this exception.
-				$log           = new Rop_Logger();
-				$error_message = sprintf( esc_html__( 'The shortner service %1$s can NOT be built or was not found', 'tweet-old-post' ), $data['short_url_service'] );
-				$log->warn( $error_message, $exception );
-				$this->response->set_code( '500' )->set_message( $error_message );
-			}
+			               ->set_data( $shortner->get_credentials() );
+		} catch ( Exception $exception ) {
+			// Service not found or can't be built. Maybe log this exception.
+			$log           = new Rop_Logger();
+			$error_message = sprintf( esc_html__( 'The shortner service %1$s can NOT be built or was not found', 'tweet-old-post' ), $data['short_url_service'] );
+			$log->warn( $error_message . $exception->getMessage() );
+			$this->response->set_code( '500' )->set_message( $error_message );
 		}
 
 		return $this->response->to_array();
@@ -314,7 +320,7 @@ class Rop_Rest_Api {
 	 * @return array
 	 */
 	private function save_post_format( $data ) {
-		$post_format = new Rop_Post_Format_Model( $data['service'] );
+		$post_format = new Rop_Post_Format_Model(   );
 		$sh_factory  = new Rop_Shortner_Factory();
 		$this->response->set_code( '500' )->set_message( __( 'An error occurred when trying to save the post format.', 'tweet-old-post' ) );
 		try {
@@ -337,7 +343,7 @@ class Rop_Rest_Api {
 			$this->response->set_code( '201' )
 			               ->set_message( sprintf( esc_html__( 'Post format was saved successfully. For the %1$s service', 'tweet-old-post' ), $data['service'] ) );
 		}
-		$this->response->set_data( $post_format->get_post_format( $data['account_id'] ) )->is_not_silent();
+		$this->response->set_data( $post_format->get_post_format() )->is_not_silent();
 
 		return $this->response->to_array();
 	}
@@ -355,13 +361,12 @@ class Rop_Rest_Api {
 	 * @return array
 	 */
 	private function reset_post_format( $data ) {
-		$post_format = new Rop_Post_Format_Model( $data['service'] );
-		$this->response->set_code( '500' )->set_message( __( 'An error occurred when trying to reset the post format.', 'tweet-old-post' ) );
-		if ( $post_format->remove_post_format( $data['account_id'] ) ) {
-			$this->response->set_code( '201' )
-			               ->set_message( sprintf( esc_html__( 'Post format was reseted to defaults successfully. For the %1$s service', 'tweet-old-post' ), $data['service'] ) );
-		}
-		$this->response->set_data( $post_format->get_post_format( $data['account_id'] ) );
+		$post_format = new Rop_Post_Format_Model(   );
+		$post_format->remove_post_format( $data['account_id'] );
+		$this->response->set_code( '201' )
+		               ->set_message( sprintf( esc_html__( 'Post format was reseted to defaults successfully. For the %1$s service', 'tweet-old-post' ), $data['service'] ) );
+
+		$this->response->set_data( $post_format->get_post_format() );
 
 		return $this->response->is_not_silent()->to_array();
 	}
@@ -379,10 +384,10 @@ class Rop_Rest_Api {
 	 * @return array
 	 */
 	private function get_post_format( $data ) {
-		$post_format = new Rop_Post_Format_Model( $data['service'] );
+		$post_format = new Rop_Post_Format_Model(  );
 		$this->response->set_code( '200' )
 		               ->set_message( sprintf( esc_html__( 'Post format was retrieved successfully. For the %1$s service', 'tweet-old-post' ), $data['service'] ) )
-		               ->set_data( $post_format->get_post_format( $data['account_id'] ) );
+		               ->set_data( $post_format->get_post_format() );
 
 		return $this->response->to_array();
 	}

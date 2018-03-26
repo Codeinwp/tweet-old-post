@@ -280,13 +280,14 @@
 					</div>
 				</div>
 			</div>
-		</div> 
+		</div>
 	</div>
 </template>
 
 <script>
 	module.exports = {
 		name: "post-format",
+		props: ['account_id'],
 		data: function () {
 			return {
 				shortner_credentials: []
@@ -294,14 +295,14 @@
 		},
 		computed: {
 			post_format: function () {
-				return this.$store.state.activePostFormat
+				return this.$store.state.activePostFormat[this.account_id] ? this.$store.state.activePostFormat[this.account_id] : [];
 			},
 			has_pro: function () {
 				return this.$store.state.has_pro
 			},
 			short_url_service: function () {
-				let postFormat = this.$store.state.activePostFormat
-				return postFormat.short_url_service
+				let postFormat = this.$store.state.activePostFormat[this.account_id] ? this.$store.state.activePostFormat[this.account_id] : [];
+				return (postFormat.short_url_service) ? postFormat.short_url_service : '';
 			}
 		},
 		watch: {

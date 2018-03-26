@@ -38,7 +38,7 @@
 						</div>
 					</div>
 					<div class="column col-10" :class="'rop-tab-state-'+is_loading">
-						<component :is="type"></component>
+						<component :is="type" :account_id="selected_account"></component>
 					</div>
 				</div>
 			</div>
@@ -138,7 +138,9 @@
 				}
 				this.action = action;
 				this.component_label = label;
-				this.getAccountData();
+				if (this.active_data.length === 0) {
+					this.getAccountData();
+				}
 			},
 			getAccountData() {
 				if (this.is_loading) {
@@ -149,10 +151,7 @@
 					this.is_loading = true;
 					this.$store.dispatch('fetchAJAXPromise', {
 						req: 'get_' + this.action,
-						data: {
-							service: this.active_accounts[this.selected_account].service,
-							account_id: this.selected_account
-						}
+						data: {}
 					}).then(response => {
 						this.$log.info('Successfully fetched account data', this.type, this.selected_account);
 						this.$store.dispatch('fetchAJAX', {req: 'get_queue'});
@@ -175,7 +174,7 @@
 					data: {
 						service: this.active_accounts[this.selected_account].service,
 						account_id: this.selected_account,
-						data: this.active_data
+						data: this.active_data[this.selected_account]
 					}
 				}).then(response => {
 					this.is_loading = false;
@@ -219,12 +218,10 @@
 				this.$forceUpdate()
 			},
 			setActiveAccount(id) {
-
 				if (this.is_loading) {
 					this.$log.warn("Request in progress...Bail");
 					return;
 				}
-
 				if (this.selected_account === id) {
 					this.$log.info("Account already active");
 					return;
@@ -232,7 +229,6 @@
 
 				this.$log.info('Switched account data  ', this.type, id);
 				this.selected_account = id;
-				this.getAccountData();
 			}
 		},
 		components: {

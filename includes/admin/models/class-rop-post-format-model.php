@@ -69,13 +69,31 @@ class Rop_Post_Format_Model extends Rop_Model_Abstract {
 	 * @return array
 	 */
 	public function get_post_format( $account_id = false ) {
-		$post_format_from_db  = $this->get( 'post_format' );
+		$post_format_from_db = $this->get_post_formats();
+		if ( empty( $account_id ) ) {
+			return $post_format_from_db;
+		}
 		$selected_post_format = array();
-		if ( $account_id != false && isset( $post_format_from_db[ $account_id ] ) ) {
+		if ( isset( $post_format_from_db[ $account_id ] ) ) {
 			$selected_post_format = $post_format_from_db[ $account_id ];
 		}
 
 		return wp_parse_args( $selected_post_format, $this->defaults );
+	}
+
+	public function get_post_formats() {
+		$services        = new Rop_Services_Model();
+		$active_accounts = $services->get_active_accounts();
+
+		$saved_formats = $this->get( 'post_format' );
+		$saved_formats = ( is_array( $saved_formats ) ) ? $saved_formats : array();
+		$valid_formats = array();
+
+		foreach ( $active_accounts as $account_id => $data ) {
+			$valid_formats[ $account_id ] = isset( $saved_formats[ $account_id ] ) ? $saved_formats[ $account_id ] : $this->defaults[ $data['service'] ];
+		}
+
+		return $valid_formats;
 	}
 
 	/**

@@ -7,7 +7,7 @@
 			</div>
 			<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 				<div class="form-group">
-					<select class="form-select" v-model="schedule.type" :disabled="!has_pro">
+					<select class="form-select" v-model="schedule.type">
 						<option value="recurring">Recurring</option>
 						<option value="fixed">Fixed</option>
 					</select>
@@ -24,7 +24,7 @@
 				<div class="form-group">
 					<button-checkbox v-for="( data, label ) in daysObject" :key="label" :value="data.value"
 					                 :label="label" :checked="data.checked" @add-day="addDay" @rmv-day="rmvDay"
-					                 :disabled="!has_pro"></button-checkbox>
+					></button-checkbox>
 				</div>
 			</div>
 		</div>
@@ -38,14 +38,14 @@
 					<div class="input-group" v-for="( time, index ) in schedule.interval_f.time">
 						<vue-timepicker :minute-interval="5" class="timepicker-style-fix" :value="getTime( index )"
 						                @change="syncTime( $event, index )" hide-clear-button
-						                :disabled="!has_pro"></vue-timepicker>
+						></vue-timepicker>
 						<button class="btn btn-success input-group-btn" v-if="schedule.interval_f.time.length > 1"
-						        @click="rmvTime( index )" :disabled="!has_pro">
+						        @click="rmvTime( index )">
 							<i class="fa fa-fw fa-minus"></i>
 						</button>
 						<button class="btn btn-success input-group-btn"
 						        v-if="index == schedule.interval_f.time.length - 1" @click="addTime()"
-						        :disabled="!has_pro">
+						>
 							<i class="fa fa-fw fa-plus"></i>
 						</button>
 					</div>
@@ -60,7 +60,7 @@
 			<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 				<div class="form-group">
 					<input type="number" class="form-input" v-model="schedule.interval_r"
-					       placeholder="hours.min (Eg. 2.5)" :disabled="!has_pro"/>
+					       placeholder="hours.min (Eg. 2.5)"/>
 				</div>
 			</div>
 		</div>
@@ -73,6 +73,7 @@
 
 	module.exports = {
 		name: 'account-schedule',
+		props: ['account_id'],
 		data: function () {
 			return {
 				days: {
@@ -108,11 +109,8 @@
 			}
 		},
 		computed: {
-			has_pro: function () {
-				return this.$store.state.has_pro
-			},
 			schedule: function () {
-				return this.$store.state.activeSchedule
+				return this.$store.state.activeSchedule[this.account_id] ?  this.$store.state.activeSchedule[this.account_id] : [];
 			},
 			daysObject: function () {
 				let daysObject = this.days
@@ -124,10 +122,8 @@
 		},
 		methods: {
 			isChecked(value) {
-				if (this.schedule.interval_f !== undefined && this.schedule.interval_f.week_days.indexOf(value) > -1) {
-					return true
-				}
-				return false
+				return (this.schedule.interval_f !== undefined && this.schedule.interval_f.week_days.indexOf(value) > -1);
+
 			},
 			getTime(index) {
 				let currentTime = this.schedule.interval_f.time[index]
