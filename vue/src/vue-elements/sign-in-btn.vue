@@ -1,14 +1,19 @@
+
 <template>
 	<div class="sign-in-btn">
 		<div class="input-group">
 			<select class="form-select" v-model="selected_network">
-				<option v-for="( service, network ) in services" v-bind:value="network" :disabled="checkDisabled( service, network )">{{ service.name }}</option>
+				<option v-for="( service, network ) in services" v-bind:value="network"
+				        :disabled="checkDisabled( service, network )">{{ service.name }}
+				</option>
 			</select>
-
-			<button class="btn input-group-btn" :class="serviceClass" @click="requestAuthorization()" :disabled="checkDisabled( selected_service, selected_network )" >
+			
+			<button class="btn input-group-btn" :class="serviceClass" @click="requestAuthorization()"
+			        :disabled="checkDisabled( selected_service, selected_network )">
 				<i class="fa fa-fw" :class="serviceIcon" aria-hidden="true"></i> Sign In
 			</button>
-			<i class="badge" data-badge="PRO" v-if="checkDisabled( selected_service, selected_network ) && !has_pro">More available in the <b>PRO</b> versions.</i>
+			<i class="badge" data-badge="PRO" v-if="checkDisabled( selected_service, selected_network ) && !has_pro">More
+				available in the <b>PRO</b> versions.</i>
 		</div>
 		<div class="modal" :class="modalActiveClass">
 			<div class="modal-overlay"></div>
@@ -21,7 +26,8 @@
 					<div class="content">
 						<div class="form-group" v-for="( field, id ) in modal.data">
 							<label class="form-label" :for="field.id">{{ field.name }}</label>
-							<input class="form-input" type="text" :id="field.id" v-model="field.value" :placeholder="field.name" />
+							<input class="form-input" type="text" :id="field.id" v-model="field.value"
+							       :placeholder="field.name"/>
 							<i>{{ field.description }}</i>
 						</div>
 					</div>
@@ -37,7 +43,7 @@
 <script>
 	module.exports = {
 		name: 'sign-in-btn',
-		created () {
+		created ( ) {
 		},
 		data: function () {
 			return {
@@ -87,33 +93,24 @@
 				}
 			},
 			openPopup ( url ) {
-				this.$store.commit( 'logMessage', [ 'Trying to open popup for url:' + url, 'notice' ] )
-				// let w = 560
-				// let h = 340
-				// let y = window.top.outerHeight / 2 + window.top.screenY - ( w / 2 )
-				// let x = window.top.outerWidth / 2 + window.top.screenX - ( h / 2 )
-				// let newWindow = window.open( url, this.activePopup, 'width=' + w + ', height=' + h + ', dependent=1, toolbar=0, menubar=0, location=0, status=1, top=' + y + ', left=' + x )
+				this.$log.debug( 'Opening popup for url ', url )
+				this.$store.commit( 'logMessage', ['Trying to open popup for url:' + url, 'notice'] )
 				window.open( url, '_self' )
-				// if ( window.focus ) { newWindow.focus() }
-				// console.log( newWindow.document )
-				// let instance = this
-				// let pollTimer = window.setInterval( function () {
-				// 	if ( newWindow.closed !== false ) {
-				// 		window.clearInterval( pollTimer )
-				// 		instance.requestAuthentication()
-				// 	}
-				// }, 200 )
 			},
 			getUrlAndGo ( credentials ) {
-				this.$store.dispatch( 'fetchAJAXPromise', { req: 'get_service_sign_in_url', updateState: false, data: { service: this.selected_network, credentials: credentials } } ).then( response => {
-					//console.log( 'Got some data, now lets show something in this component', response )
+				this.$store.dispatch( 'fetchAJAXPromise', {
+					req: 'get_service_sign_in_url',
+					updateState: false,
+					data: {service: this.selected_network, credentials: credentials}
+				} ).then( response => {
+					//  console.log( 'Got some data, now lets show something in this component', response )
 					this.openPopup( response.url )
 				}, error => {
-					//Vue.$log.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
+					Vue.$log.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
 				} )
 			},
 			requestAuthentication () {
-				this.$store.dispatch( 'fetchAJAX', { req: 'authenticate_service', data: { service: this.selected_network } } )
+				this.$store.dispatch( 'fetchAJAX', {req: 'authenticate_service', data: {service: this.selected_network}} )
 			},
 			openModal: function () {
 				this.modal.isOpen = true
@@ -193,7 +190,7 @@
 		position: absolute;
 		top: 20px;
 	}
-
+	
 	#rop_core .sign-in-btn > .modal > .modal-container {
 		width: 100%;
 	}

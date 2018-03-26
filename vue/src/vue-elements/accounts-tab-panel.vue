@@ -14,24 +14,6 @@
 			<div class="container">
 				
 				<div class="columns">
-					<!--<div class="column col-sm-12 col-md-12 col-lg-6">
-						
-						<div class="columns">
-							<div class="column col-sm-12 col-md-12 col-lg-12 text-left">
-								<hr/>
-								<h5>Authenticated Services</h5>
-								<div class="empty" v-if="authenticated_services.length == 0">
-									<div class="empty-icon">
-										<i class="fa fa-3x fa-cloud"></i>
-									</div>
-									<p class="empty-title h5">No authenticated service!</p>
-									<p class="empty-subtitle">Add one from the <b>"New Service"</b> section.</p>
-								</div>
-								<service-tile v-for="service in authenticated_services" :key="service.id"
-								              :service="service"></service-tile>
-							</div>
-						</div>
-					</div>-->
 					<div class="column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts">
 						<h5>Accounts</h5>
 						<div class="empty" v-if="accounts.length == 0">
@@ -41,10 +23,10 @@
 							<p class="empty-title h5">No accounts!</p>
 							<p class="empty-subtitle">Add one from the <b>"Authenticated Services"</b> section.</p>
 						</div>
-							<div class="account-container" v-for="( account, id ) in accounts">
-								<service-user-tile :account_data="account" :account_id="id"></service-user-tile>
-								<div class="divider"></div>
-							</div>
+						<div class="account-container" v-for="( account, id ) in accounts">
+							<service-user-tile :account_data="account" :account_id="id"></service-user-tile>
+							<div class="divider"></div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -92,8 +74,8 @@
 				this.$log.info('All accounts : ', all_accounts);
 				return all_accounts;
 			},
-            is_loading:function(){
-			    return true;
+			is_loading: function () {
+				return true;
 			}
 		},
 		components: {
@@ -105,7 +87,6 @@
 	}
 </script>
 <style type="text/css">
-
 	
 	.rop-available-accounts {
 		padding-top: 35px;

@@ -4,19 +4,19 @@
 /** 1. Change the default font family in all browsers (opinionated). 2. Correct the line height in all browsers. 3. Prevent adjustments of font size after orientation changes in IE on Windows Phone and in iOS. */
 /* Document ========================================================================== */
 html {
-	font-family: sans-serif;
-	/* 1 */
+    font-family: sans-serif;
+    /* 1 */
 
-	-webkit-text-size-adjust: 100%;
-	/* 3 */
-	-ms-text-size-adjust: 100%;
-	/* 3 */
+    -webkit-text-size-adjust: 100%;
+    /* 3 */
+    -ms-text-size-adjust: 100%;
+    /* 3 */
 }
 
 /* Sections ========================================================================== */
 /** Remove the margin in all browsers (opinionated). */
 body {
-	margin: 0;
+    margin: 0;
 }
 
 /** Add the correct display in IE 9-. */
@@ -26,13 +26,13 @@ footer,
 header,
 nav,
 section {
-	display: block;
+    display: block;
 }
 
 /** Correct the font size and margin on `h1` elements within `section` and `article` contexts in Chrome, Firefox, and Safari. */
 h1 {
-	margin: 0.67em 0;
-	font-size: 2em;
+    margin: 0.67em 0;
+    font-size: 2em;
 }
 
 /* Grouping content ========================================================================== */
@@ -40,49 +40,49 @@ h1 {
 figcaption,
 figure,
 main {
-	/* 1 */
-	display: block;
+    /* 1 */
+    display: block;
 }
 
 /** Add the correct margin in IE 8 (removed). */
 /** 1. Add the correct box sizing in Firefox. 2. Show the overflow in Edge and IE. */
 hr {
-	/* 1 */
-	overflow: visible;
-	box-sizing: content-box;
-	/* 1 */
-	height: 0;
-	/* 2 */
+    /* 1 */
+    overflow: visible;
+    box-sizing: content-box;
+    /* 1 */
+    height: 0;
+    /* 2 */
 }
 
 /** 1. Correct the inheritance and scaling of font size in all browsers. (removed) 2. Correct the odd `em` font sizing in all browsers. */
 /* Text-level semantics ========================================================================== */
 /** 1. Remove the gray background on active links in IE 10. 2. Remove gaps in links underline in iOS 8+ and Safari 8+. */
 a {
-	background-color: transparent;
-	/* 1 */
+    background-color: transparent;
+    /* 1 */
 
-	-webkit-text-decoration-skip: objects;
-	/* 2 */
+    -webkit-text-decoration-skip: objects;
+    /* 2 */
 }
 
 /** Remove the outline on focused links when they are also active or hovered in all browsers (opinionated). */
 a:active,
 a:hover {
-	outline-width: 0;
+    outline-width: 0;
 }
 
 /** 1. Remove the bottom border in Firefox 39-. 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari. (removed) */
 /** Prevent the duplicate application of `bolder` by the next rule in Safari 6. */
 b,
 strong {
-	font-weight: inherit;
+    font-weight: inherit;
 }
 
 /** Add the correct font weight in Chrome, Edge, and Safari. */
 b,
 strong {
-	font-weight: bolder;
+    font-weight: bolder;
 }
 
 /** 1. Correct the inheritance and scaling of font size in all browsers. 2. Correct the odd `em` font sizing in all browsers. */
@@ -90,63 +90,63 @@ code,
 kbd,
 pre,
 samp {
-	font-family: "SF Mono", "Segoe UI Mono", "Roboto Mono", Menlo, Courier, monospace;
-	/* 1 (changed) */
-	font-size: 1em;
-	/* 2 */
+    font-family: "SF Mono", "Segoe UI Mono", "Roboto Mono", Menlo, Courier, monospace;
+    /* 1 (changed) */
+    font-size: 1em;
+    /* 2 */
 }
 
 /** Add the correct font style in Android 4.3-. */
 dfn {
-	font-style: italic;
+    font-style: italic;
 }
 
 /** Add the correct background and color in IE 9-. (Removed) */
 /** Add the correct font size in all browsers. */
 small {
-	font-size: 80%;
-	font-weight: 400;
-	/* (added) */
+    font-size: 80%;
+    font-weight: 400;
+    /* (added) */
 }
 
 /** Prevent `sub` and `sup` elements from affecting the line height in all browsers. */
 sub,
 sup {
-	position: relative;
-	font-size: 75%;
-	line-height: 0;
-	vertical-align: baseline;
+    position: relative;
+    font-size: 75%;
+    line-height: 0;
+    vertical-align: baseline;
 }
 
 sub {
-	bottom: -0.25em;
+    bottom: -0.25em;
 }
 
 sup {
-	top: -0.5em;
+    top: -0.5em;
 }
 
 /* Embedded content ========================================================================== */
 /** Add the correct display in IE 9-. */
 audio,
 video {
-	display: inline-block;
+    display: inline-block;
 }
 
 /** Add the correct display in iOS 4-7. */
 audio:not([controls]) {
-	display: none;
-	height: 0;
+    display: none;
+    height: 0;
 }
 
 /** Remove the border on images inside links in IE 10-. */
 img {
-	border-style: none;
+    border-style: none;
 }
 
 /** Hide the overflow in IE. */
 svg:not(:root) {
-	overflow: hidden;
+    overflow: hidden;
 }
 
 /* Forms ========================================================================== */
@@ -156,28 +156,28 @@ input,
 optgroup,
 select,
 textarea {
-	/* 1 (changed) */
-	margin: 0;
-	font-family: inherit;
-	/* 1 (changed) */
-	font-size: inherit;
-	/* 1 (changed) */
-	line-height: inherit;
-	/* 2 */
+    /* 1 (changed) */
+    margin: 0;
+    font-family: inherit;
+    /* 1 (changed) */
+    font-size: inherit;
+    /* 1 (changed) */
+    line-height: inherit;
+    /* 2 */
 }
 
 /** Show the overflow in IE. 1. Show the overflow in Edge. */
 button,
 input {
-	/* 1 */
-	overflow: visible;
+    /* 1 */
+    overflow: visible;
 }
 
 /** Remove the inheritance of text transform in Edge, Firefox, and IE. 1. Remove the inheritance of text transform in Firefox. */
 button,
 select {
-	/* 1 */
-	text-transform: none;
+    /* 1 */
+    text-transform: none;
 }
 
 /** 1. Prevent a WebKit bug where (2) destroys native `audio` and `video` controls in Android 4. 2. Correct the inability to style clickable types in iOS and Safari. */
@@ -185,8 +185,8 @@ button,
 html [type="button"],
 [type="reset"],
 [type="submit"] {
-	-webkit-appearance: button;
-	/* 2 */
+    -webkit-appearance: button;
+    /* 2 */
 }
 
 /** Remove the inner border and padding in Firefox. */
@@ -194,154 +194,154 @@ button::-moz-focus-inner,
 [type="button"]::-moz-focus-inner,
 [type="reset"]::-moz-focus-inner,
 [type="submit"]::-moz-focus-inner {
-	padding: 0;
-	border-style: none;
+    padding: 0;
+    border-style: none;
 }
 
 /** Restore the focus styles unset by the previous rule (removed). */
 /** Change the border, margin, and padding in all browsers (opinionated) (changed). */
 fieldset {
-	margin: 0;
-	padding: 0;
-	border: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
 }
 
 /** 1. Correct the text wrapping in Edge and IE. 2. Correct the color inheritance from `fieldset` elements in IE. 3. Remove the padding so developers are not caught out when they zero out `fieldset` elements in all browsers. */
 legend {
-	/* 2 */
-	display: table;
-	box-sizing: border-box;
-	/* 1 */
-	max-width: 100%;
-	/* 1 */
-	padding: 0;
-	/* 1 */
-	color: inherit;
-	/* 3 */
-	white-space: normal;
-	/* 1 */
+    /* 2 */
+    display: table;
+    box-sizing: border-box;
+    /* 1 */
+    max-width: 100%;
+    /* 1 */
+    padding: 0;
+    /* 1 */
+    color: inherit;
+    /* 3 */
+    white-space: normal;
+    /* 1 */
 }
 
 /** 1. Add the correct display in IE 9-. 2. Add the correct vertical alignment in Chrome, Firefox, and Opera. */
 progress {
-	display: inline-block;
-	/* 1 */
-	vertical-align: baseline;
-	/* 2 */
+    display: inline-block;
+    /* 1 */
+    vertical-align: baseline;
+    /* 2 */
 }
 
 /** Remove the default vertical scrollbar in IE. */
 textarea {
-	overflow: auto;
+    overflow: auto;
 }
 
 /** 1. Add the correct box sizing in IE 10-. 2. Remove the padding in IE 10-. */
 [type="checkbox"],
 [type="radio"] {
-	box-sizing: border-box;
-	/* 1 */
-	padding: 0;
-	/* 2 */
+    box-sizing: border-box;
+    /* 1 */
+    padding: 0;
+    /* 2 */
 }
 
 /** Correct the cursor style of increment and decrement buttons in Chrome. */
 [type="number"]::-webkit-inner-spin-button,
 [type="number"]::-webkit-outer-spin-button {
-	height: auto;
+    height: auto;
 }
 
 /** 1. Correct the odd appearance in Chrome and Safari. 2. Correct the outline style in Safari. */
 [type="search"] {
-	/* 1 */
-	outline-offset: -2px;
+    /* 1 */
+    outline-offset: -2px;
 
-	-webkit-appearance: textfield;
-	/* 2 */
+    -webkit-appearance: textfield;
+    /* 2 */
 }
 
 /** Remove the inner padding and cancel buttons in Chrome and Safari on macOS. */
 [type="search"]::-webkit-search-cancel-button,
 [type="search"]::-webkit-search-decoration {
-	-webkit-appearance: none;
+    -webkit-appearance: none;
 }
 
 /** 1. Correct the inability to style clickable types in iOS and Safari. 2. Change font properties to `inherit` in Safari. */
 ::-webkit-file-upload-button {
-	/* 1 */
-	font: inherit;
+    /* 1 */
+    font: inherit;
 
-	-webkit-appearance: button;
-	/* 2 */
+    -webkit-appearance: button;
+    /* 2 */
 }
 
 /* Interactive ========================================================================== */
 /* Add the correct display in IE 9-. 1. Add the correct display in Edge, IE, and Firefox. */
 details,
 menu {
-	display: block;
+    display: block;
 }
 
 /* Add the correct display in all browsers. */
 summary {
-	display: list-item;
+    display: list-item;
 }
 
 /* Scripting ========================================================================== */
 /** Add the correct display in IE 9-. */
 canvas {
-	display: inline-block;
+    display: inline-block;
 }
 
 /** Add the correct display in IE. */
 template {
-	display: none;
+    display: none;
 }
 
 /* Hidden ========================================================================== */
 /** Add the correct display in IE 10-. */
 [hidden] {
-	display: none;
+    display: none;
 }
 
 *,
 *::before,
 *::after {
-	box-sizing: inherit;
+    box-sizing: inherit;
 }
 
 html {
-	box-sizing: border-box;
-	font-size: 20px;
-	line-height: 1.428571429;
+    box-sizing: border-box;
+    font-size: 20px;
+    line-height: 1.428571429;
 
-	-webkit-tap-highlight-color: transparent;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
-	overflow-x: hidden;
-	color: #50596c;
-	background: #fff;
-	font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-	font-size: 0.7rem;
-	text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+    color: #50596c;
+    background: #fff;
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    font-size: 0.7rem;
+    text-rendering: optimizeLegibility;
 }
 
 a {
-	outline: none;
-	color: #042440;
-	text-decoration: none;
+    outline: none;
+    color: #042440;
+    text-decoration: none;
 }
 
 a:focus {
-	box-shadow: 0 0 0 0.1rem rgba(4, 36, 64, 0.2);
+    box-shadow: 0 0 0 0.1rem rgba(4, 36, 64, 0.2);
 }
 
 a:focus,
 a:hover,
 a:active,
 a.active {
-	color: #031728;
-	text-decoration: underline;
+    color: #031728;
+    text-decoration: underline;
 }
 
 #rop_core h1,
@@ -350,11 +350,11 @@ a.active {
 #rop_core h4,
 #rop_core h5,
 #rop_core h6 {
-	margin-top: 0;
-	margin-bottom: 0.25em;
-	color: inherit;
-	font-weight: 500;
-	line-height: 1.2;
+    margin-top: 0;
+    margin-bottom: 0.25em;
+    color: inherit;
+    font-weight: 500;
+    line-height: 1.2;
 }
 
 #rop_core .h1,
@@ -363,135 +363,135 @@ a.active {
 #rop_core .h4,
 #rop_core .h5,
 #rop_core .h6 {
-	font-weight: 500;
+    font-weight: 500;
 }
 
 #rop_core h1,
 #rop_core .h1 {
-	font-size: 2rem;
+    font-size: 2rem;
 }
 
 #rop_core h2,
 #rop_core .h2 {
-	font-size: 1.6rem;
+    font-size: 1.6rem;
 }
 
 #rop_core h3,
 #rop_core .h3 {
-	font-size: 1.4rem;
+    font-size: 1.4rem;
 }
 
 #rop_core h4,
 #rop_core .h4 {
-	font-size: 1.2rem;
+    font-size: 1.2rem;
 }
 
 #rop_core h5,
 #rop_core .h5 {
-	font-size: 1rem;
+    font-size: 1rem;
 }
 
 #rop_core h6,
 #rop_core .h6 {
-	font-size: 0.8rem;
+    font-size: 0.8rem;
 }
 
 #rop_core p {
-	margin: 0 0 0.8rem;
-	line-height: 1.2rem;
+    margin: 0 0 0.8rem;
+    line-height: 1.2rem;
 }
 
 #rop_core a,
 #rop_core ins,
 #rop_core u {
-	-webkit-text-decoration-skip: ink edges;
-	text-decoration-skip: ink edges;
+    -webkit-text-decoration-skip: ink edges;
+    text-decoration-skip: ink edges;
 }
 
 #rop_core abbr[title] {
-	border-bottom: 0.05rem dotted;
-	text-decoration: none;
-	cursor: help;
+    border-bottom: 0.05rem dotted;
+    text-decoration: none;
+    cursor: help;
 }
 
 #rop_core kbd {
-	padding: 0.15rem;
-	border-radius: 0.1rem;
-	color: #fff;
-	background: #454d5d;
-	font-size: 0.65rem;
-	line-height: 1;
+    padding: 0.15rem;
+    border-radius: 0.1rem;
+    color: #fff;
+    background: #454d5d;
+    font-size: 0.65rem;
+    line-height: 1;
 }
 
 #rop_core mark {
-	padding: 0.05rem;
-	border-radius: 0.1rem;
-	color: #50596c;
-	background: #ffe9b3;
+    padding: 0.05rem;
+    border-radius: 0.1rem;
+    color: #50596c;
+    background: #ffe9b3;
 }
 
 #rop_core blockquote {
-	margin-left: 0;
-	padding: 0.4rem 0.8rem;
-	border-left: 0.1rem solid #e7e9ed;
+    margin-left: 0;
+    padding: 0.4rem 0.8rem;
+    border-left: 0.1rem solid #e7e9ed;
 }
 
 #rop_core blockquote p:last-child {
-	margin-bottom: 0;
+    margin-bottom: 0;
 }
 
 #rop_core ul,
 #rop_core ol {
-	margin: 0.8rem 0 0.8rem 0.8rem;
-	padding: 0;
+    margin: 0.8rem 0 0.8rem 0.8rem;
+    padding: 0;
 }
 
 #rop_core ul ul,
 #rop_core ul ol,
 #rop_core ol ul,
 #rop_core ol ol {
-	margin: 0.8rem 0 0.8rem 0.8rem;
+    margin: 0.8rem 0 0.8rem 0.8rem;
 }
 
 #rop_core ul li,
 #rop_core ol li {
-	margin-top: 0.4rem;
+    margin-top: 0.4rem;
 }
 
 #rop_core ul {
-	list-style: disc inside;
+    list-style: disc inside;
 }
 
 #rop_core ul ul {
-	list-style-type: circle;
+    list-style-type: circle;
 }
 
 #rop_core ol {
-	list-style: decimal inside;
+    list-style: decimal inside;
 }
 
 #rop_core ol ol {
-	list-style-type: lower-alpha;
+    list-style-type: lower-alpha;
 }
 
 #rop_core dl dt {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 #rop_core dl dd {
-	margin: 0.4rem 0 0.8rem;
+    margin: 0.4rem 0 0.8rem;
 }
 
 #rop_core :lang(zh) {
-	font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", sans-serif;
 }
 
 #rop_core :lang(ja) {
-	font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Hiragino Kaku Gothic Pro", "Yu Gothic", YuGothic, Meiryo, "Helvetica Neue", sans-serif;
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Hiragino Kaku Gothic Pro", "Yu Gothic", YuGothic, Meiryo, "Helvetica Neue", sans-serif;
 }
 
 #rop_core :lang(ko) {
-	font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Malgun Gothic", "Helvetica Neue", sans-serif;
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Malgun Gothic", "Helvetica Neue", sans-serif;
 }
 
 #rop_core :lang(zh) ins,
@@ -500,8 +500,8 @@ a.active {
 #rop_core :lang(ja) u,
 #rop_core .cjk ins,
 #rop_core .cjk u {
-	border-bottom: 0.05rem solid;
-	text-decoration: none;
+    border-bottom: 0.05rem solid;
+    text-decoration: none;
 }
 
 #rop_core :lang(zh) del + del,
@@ -528,818 +528,818 @@ a.active {
 #rop_core .cjk s + s,
 #rop_core .cjk u + ins,
 #rop_core .cjk u + u {
-	margin-left: 0.125em;
+    margin-left: 0.125em;
 }
 
 #rop_core .table {
-	width: 100%;
-	border-spacing: 0;
-	border-collapse: collapse;
-	text-align: left;
+    width: 100%;
+    border-spacing: 0;
+    border-collapse: collapse;
+    text-align: left;
 }
 
 #rop_core .table.table-striped tbody tr:nth-of-type(odd) {
-	background: #f8f9fa;
+    background: #f8f9fa;
 }
 
 #rop_core .table.table-hover tbody tr:hover {
-	background: #f0f1f4;
+    background: #f0f1f4;
 }
 
 #rop_core .table tbody tr.active,
 #rop_core .table.table-striped tbody tr.active {
-	background: #f0f1f4;
+    background: #f0f1f4;
 }
 
 #rop_core .table td,
 #rop_core .table th {
-	padding: 0.6rem 0.4rem;
-	border-bottom: 0.05rem solid #e7e9ed;
+    padding: 0.6rem 0.4rem;
+    border-bottom: 0.05rem solid #e7e9ed;
 }
 
 #rop_core .table th {
-	border-bottom-width: 0.1rem;
+    border-bottom-width: 0.1rem;
 }
 
 #rop_core .btn {
-	display: inline-block;
-	height: 1.6rem;
-	padding: 0.25rem 0.4rem;
-	border: 0.05rem solid #042440;
-	border-radius: 0.1rem;
-	outline: none;
-	color: #042440;
-	background: #fff;
-	font-size: 0.7rem;
-	line-height: 1rem;
-	text-align: center;
-	vertical-align: middle;
-	white-space: nowrap;
-	text-decoration: none;
-	cursor: pointer;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-	-webkit-transition: all 0.2s ease;
-	transition: all 0.2s ease;
+    display: inline-block;
+    height: 1.6rem;
+    padding: 0.25rem 0.4rem;
+    border: 0.05rem solid #042440;
+    border-radius: 0.1rem;
+    outline: none;
+    color: #042440;
+    background: #fff;
+    font-size: 0.7rem;
+    line-height: 1rem;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
 
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
 
 #rop_core .btn:focus {
-	box-shadow: 0 0 0 0.1rem rgba(4, 36, 64, 0.2);
+    box-shadow: 0 0 0 0.1rem rgba(4, 36, 64, 0.2);
 }
 
 #rop_core .btn:focus,
 #rop_core .btn:hover {
-	border-color: #031c32;
-	background: #e85407;
-	text-decoration: none;
+    border-color: #031c32;
+    background: #e85407;
+    text-decoration: none;
 }
 
 #rop_core .btn:active,
 #rop_core .btn.active {
-	border-color: #020e1a;
-	color: #fff;
-	background: #031c32;
-	text-decoration: none;
+    border-color: #020e1a;
+    color: #fff;
+    background: #031c32;
+    text-decoration: none;
 }
 
 #rop_core .btn:active.loading::after,
 #rop_core .btn.active.loading::after {
-	border-bottom-color: #fff;
-	border-left-color: #fff;
+    border-bottom-color: #fff;
+    border-left-color: #fff;
 }
 
 #rop_core .btn[disabled],
 #rop_core .btn:disabled,
 #rop_core .btn.disabled {
-	opacity: 0.5;
-	cursor: default;
-	pointer-events: none;
+    opacity: 0.5;
+    cursor: default;
+    pointer-events: none;
 }
 
 #rop_core .btn.btn-primary {
-	border-color: #031c32;
-	color: #fff;
-	background: #042440;
+    border-color: #031c32;
+    color: #fff;
+    background: #042440;
 }
 
 #rop_core .btn.btn-primary:focus,
 #rop_core .btn.btn-primary:hover {
-	border-color: #020e1a;
-	color: #fff;
-	background: #031728;
+    border-color: #020e1a;
+    color: #fff;
+    background: #031728;
 }
 
 #rop_core .btn.btn-primary:active,
 #rop_core .btn.btn-primary.active {
-	border-color: #010910;
-	color: #fff;
-	background: #02111e;
+    border-color: #010910;
+    color: #fff;
+    background: #02111e;
 }
 
 #rop_core .btn.btn-primary.loading::after {
-	border-bottom-color: #fff;
-	border-left-color: #fff;
+    border-bottom-color: #fff;
+    border-left-color: #fff;
 }
 
 #rop_core .btn.btn-link {
-	border-color: transparent;
-	color: #042440;
-	background: transparent;
+    border-color: transparent;
+    color: #042440;
+    background: transparent;
 }
 
 #rop_core .btn.btn-link:focus,
 #rop_core .btn.btn-link:hover,
 #rop_core .btn.btn-link:active,
 #rop_core .btn.btn-link.active {
-	color: #031728;
+    color: #031728;
 }
 
 #rop_core .btn.btn-facebook {
-	border-color: #37538d;
-	color: #fff;
-	background: #3b5998;
+    border-color: #37538d;
+    color: #fff;
+    background: #3b5998;
 }
 
 #rop_core .btn.btn-facebook:focus {
-	box-shadow: 0 0 0 0.1rem rgba(59, 89, 152, 0.2);
+    box-shadow: 0 0 0 0.1rem rgba(59, 89, 152, 0.2);
 }
 
 #rop_core .btn.btn-facebook:focus,
 #rop_core .btn.btn-facebook:hover {
-	border-color: #344e86;
-	color: #fff;
-	background: #385591;
+    border-color: #344e86;
+    color: #fff;
+    background: #385591;
 }
 
 #rop_core .btn.btn-facebook:active,
 #rop_core .btn.btn-facebook.active {
-	border-color: #2d4373;
-	color: #fff;
-	background: #314a7e;
+    border-color: #2d4373;
+    color: #fff;
+    background: #314a7e;
 }
 
 #rop_core .btn.btn-facebook.loading::after {
-	border-bottom-color: #fff;
-	border-left-color: #fff;
+    border-bottom-color: #fff;
+    border-left-color: #fff;
 }
 
 #rop_core .btn.btn-twitter {
-	border-color: #47a5ed;
-	color: #fff;
-	background: #55acee;
+    border-color: #47a5ed;
+    color: #fff;
+    background: #55acee;
 }
 
 #rop_core .btn.btn-twitter:focus {
-	box-shadow: 0 0 0 0.1rem rgba(85, 172, 238, 0.2);
+    box-shadow: 0 0 0 0.1rem rgba(85, 172, 238, 0.2);
 }
 
 #rop_core .btn.btn-twitter:focus,
 #rop_core .btn.btn-twitter:hover {
-	border-color: #3ea1ec;
-	color: #fff;
-	background: #4ca7ed;
+    border-color: #3ea1ec;
+    color: #fff;
+    background: #4ca7ed;
 }
 
 #rop_core .btn.btn-twitter:active,
 #rop_core .btn.btn-twitter.active {
-	border-color: #2795e9;
-	color: #fff;
-	background: #359ceb;
+    border-color: #2795e9;
+    color: #fff;
+    background: #359ceb;
 }
 
 #rop_core .btn.btn-twitter.loading::after {
-	border-bottom-color: #fff;
-	border-left-color: #fff;
+    border-bottom-color: #fff;
+    border-left-color: #fff;
 }
 
 #rop_core .btn.btn-tumblr {
-	border-color: #304d69;
-	color: #fff;
-	background: #32506d;
+    border-color: #304d69;
+    color: #fff;
+    background: #32506d;
 }
 
 #rop_core .btn.btn-tumblr:focus {
-	box-shadow: 0 0 0 0.1rem rgba(221, 75, 57, 0.2);
+    box-shadow: 0 0 0 0.1rem rgba(221, 75, 57, 0.2);
 }
 
 #rop_core .btn.btn-tumblr:focus,
 #rop_core .btn.btn-tumblr:hover {
-	border-color: #355473;
-	color: #fff;
-	background: #375878;
+    border-color: #355473;
+    color: #fff;
+    background: #375878;
 }
 
 #rop_core .btn.btn-tumblr:active,
 #rop_core .btn.btn-tumblr.active {
-	border-color: #395c7d;
-	color: #fff;
-	background: #3a5e7f;
+    border-color: #395c7d;
+    color: #fff;
+    background: #3a5e7f;
 }
 
 #rop_core .btn.btn-tumblr.loading::after {
-	border-bottom-color: #fff;
-	border-left-color: #fff;
+    border-bottom-color: #fff;
+    border-left-color: #fff;
 }
 
 #rop_core .btn.btn-linkedin {
-	border-color: #0071a6;
-	color: #fff;
-	background: #007bb5;
+    border-color: #0071a6;
+    color: #fff;
+    background: #007bb5;
 }
 
 #rop_core .btn.btn-linkedin:focus {
-	box-shadow: 0 0 0 0.1rem rgba(0, 123, 181, 0.2);
+    box-shadow: 0 0 0 0.1rem rgba(0, 123, 181, 0.2);
 }
 
 #rop_core .btn.btn-linkedin:focus,
 #rop_core .btn.btn-linkedin:hover {
-	border-color: #006a9c;
-	color: #fff;
-	background: #0074ab;
+    border-color: #006a9c;
+    color: #fff;
+    background: #0074ab;
 }
 
 #rop_core .btn.btn-linkedin:active,
 #rop_core .btn.btn-linkedin.active {
-	border-color: #005882;
-	color: #fff;
-	background: #006391;
+    border-color: #005882;
+    color: #fff;
+    background: #006391;
 }
 
 #rop_core .btn.btn-linkedin.loading::after {
-	border-bottom-color: #fff;
-	border-left-color: #fff;
+    border-bottom-color: #fff;
+    border-left-color: #fff;
 }
 
 #rop_core .btn.btn-sm {
-	height: 1.2rem;
-	padding: 0.05rem 0.3rem;
-	font-size: 0.6rem;
+    height: 1.2rem;
+    padding: 0.05rem 0.3rem;
+    font-size: 0.6rem;
 }
 
 #rop_core .btn.btn-lg {
-	height: 2rem;
-	padding: 0.45rem 0.6rem;
-	font-size: 0.8rem;
+    height: 2rem;
+    padding: 0.45rem 0.6rem;
+    font-size: 0.8rem;
 }
 
 #rop_core .btn.btn-block {
-	display: block;
-	width: 100%;
+    display: block;
+    width: 100%;
 }
 
 #rop_core .btn.btn-action {
-	width: 1.6rem;
-	padding-right: 0;
-	padding-left: 0;
+    width: 1.6rem;
+    padding-right: 0;
+    padding-left: 0;
 }
 
 #rop_core .btn.btn-action.btn-sm {
-	width: 1.2rem;
+    width: 1.2rem;
 }
 
 #rop_core .btn.btn-action.btn-lg {
-	width: 2rem;
+    width: 2rem;
 }
 
 #rop_core .btn.btn-clear {
-	width: 0.8rem;
-	height: 0.8rem;
-	margin-right: -2px;
-	margin-left: 0.2rem;
-	padding: 0 2px;
-	border: 0;
-	opacity: 0.45;
-	color: currentColor;
-	background: transparent;
-	line-height: 0.8rem;
-	text-decoration: none;
+    width: 0.8rem;
+    height: 0.8rem;
+    margin-right: -2px;
+    margin-left: 0.2rem;
+    padding: 0 2px;
+    border: 0;
+    opacity: 0.45;
+    color: currentColor;
+    background: transparent;
+    line-height: 0.8rem;
+    text-decoration: none;
 }
 
 #rop_core .btn.btn-clear:hover {
-	opacity: 0.85;
+    opacity: 0.85;
 }
 
 #rop_core .btn.btn-clear::before {
-	content: "\2715";
+    content: "\2715";
 }
 
 #rop_core .btn-group {
-	display: -webkit-inline-box;
-	display: -webkit-inline-flex;
-	display: inline-flex;
-	display: -ms-inline-flexbox;
+    display: -webkit-inline-box;
+    display: -webkit-inline-flex;
+    display: inline-flex;
+    display: -ms-inline-flexbox;
 
-	-webkit-flex-wrap: wrap;
-	-ms-flex-wrap: wrap;
-	flex-wrap: wrap;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
 }
 
 #rop_core .btn-group .btn {
-	-webkit-box-flex: 1;
-	-webkit-flex: 1 0 auto;
-	-ms-flex: 1 0 auto;
-	flex: 1 0 auto;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 0 auto;
+    -ms-flex: 1 0 auto;
+    flex: 1 0 auto;
 }
 
 #rop_core .btn-group .btn:first-child:not(:last-child) {
-	border-top-right-radius: 0;
-	border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
 #rop_core .btn-group .btn:not(:first-child):not(:last-child) {
-	margin-left: -0.05rem;
-	border-radius: 0;
+    margin-left: -0.05rem;
+    border-radius: 0;
 }
 
 #rop_core .btn-group .btn:last-child:not(:first-child) {
-	margin-left: -0.05rem;
-	border-top-left-radius: 0;
-	border-bottom-left-radius: 0;
+    margin-left: -0.05rem;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
 }
 
 #rop_core .btn-group .btn:focus,
 #rop_core .btn-group .btn:hover,
 #rop_core .btn-group .btn:active,
 #rop_core .btn-group .btn.active {
-	z-index: 1;
+    z-index: 1;
 }
 
 #rop_core .btn-group.btn-group-block {
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: flex;
-	display: -ms-flexbox;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    display: -ms-flexbox;
 }
 
 #rop_core .btn-group.btn-group-block .btn {
-	-webkit-box-flex: 1;
-	-webkit-flex: 1 0 0;
-	-ms-flex: 1 0 0;
-	flex: 1 0 0;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 0 0;
+    -ms-flex: 1 0 0;
+    flex: 1 0 0;
 }
 
 #rop_core .form-group:not(:last-child) {
-	margin-bottom: 0.4rem;
+    margin-bottom: 0.4rem;
 }
 
 #rop_core fieldset {
-	margin-bottom: 0.8rem;
+    margin-bottom: 0.8rem;
 }
 
 #rop_core legend {
-	margin-bottom: 0.8rem;
-	font-size: 0.8rem;
-	font-weight: 500;
+    margin-bottom: 0.8rem;
+    font-size: 0.8rem;
+    font-weight: 500;
 }
 
 #rop_core .form-label {
-	display: block;
-	padding: 0.3rem 0;
+    display: block;
+    padding: 0.3rem 0;
 }
 
 #rop_core .form-label.label-sm {
-	padding: 0.1rem 0;
+    padding: 0.1rem 0;
 }
 
 #rop_core .form-label.label-lg {
-	padding: 0.5rem 0;
+    padding: 0.5rem 0;
 }
 
 #rop_core .form-input {
-	display: block;
-	position: relative;
-	width: 100%;
-	max-width: 100%;
-	height: 1.6rem;
-	padding: 0.25rem 0.4rem;
-	border: 0.05rem solid #caced7;
-	border-radius: 0.1rem;
-	outline: none;
-	color: #50596c;
-	background: #fff;
-	background-image: none;
-	font-size: 0.7rem;
-	line-height: 1rem;
-	-webkit-transition: all 0.2s ease;
-	transition: all 0.2s ease;
+    display: block;
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    height: 1.6rem;
+    padding: 0.25rem 0.4rem;
+    border: 0.05rem solid #caced7;
+    border-radius: 0.1rem;
+    outline: none;
+    color: #50596c;
+    background: #fff;
+    background-image: none;
+    font-size: 0.7rem;
+    line-height: 1rem;
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
 
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
 
 #rop_core .form-input:focus {
-	border-color: #042440;
-	box-shadow: 0 0 0 0.1rem rgba(4, 36, 64, 0.2);
+    border-color: #042440;
+    box-shadow: 0 0 0 0.1rem rgba(4, 36, 64, 0.2);
 }
 
 #rop_core .form-input::-webkit-input-placeholder {
-	color: #acb3c2;
+    color: #acb3c2;
 }
 
 #rop_core .form-input:-ms-input-placeholder {
-	color: #acb3c2;
+    color: #acb3c2;
 }
 
 #rop_core .form-input::-moz-placeholder {
-	color: #acb3c2;
+    color: #acb3c2;
 }
 
 #rop_core .form-input::placeholder {
-	color: #acb3c2;
+    color: #acb3c2;
 }
 
 #rop_core .form-input.input-sm {
-	height: 1.2rem;
-	padding: 0.05rem 0.4rem;
-	font-size: 0.6rem;
+    height: 1.2rem;
+    padding: 0.05rem 0.4rem;
+    font-size: 0.6rem;
 }
 
 #rop_core .form-input.input-lg {
-	height: 2rem;
-	padding: 0.45rem 0.4rem;
-	font-size: 0.8rem;
+    height: 2rem;
+    padding: 0.45rem 0.4rem;
+    font-size: 0.8rem;
 }
 
 #rop_core .form-input.input-inline {
-	display: inline-block;
-	width: auto;
-	vertical-align: middle;
+    display: inline-block;
+    width: auto;
+    vertical-align: middle;
 }
 
 #rop_core .form-input[type="file"] {
-	height: auto;
+    height: auto;
 }
 
 #rop_core textarea.form-input {
-	height: auto;
+    height: auto;
 }
 
 #rop_core .form-input-hint {
-	margin-top: 0.2rem;
-	color: #acb3c2;
-	font-size: 0.6rem;
+    margin-top: 0.2rem;
+    color: #acb3c2;
+    font-size: 0.6rem;
 }
 
 .has-success #rop_core .form-input-hint,
 .is-success + #rop_core .form-input-hint {
-	color: #32b643;
+    color: #32b643;
 }
 
 .has-error #rop_core .form-input-hint,
 .is-error + #rop_core .form-input-hint {
-	color: #e85600;
+    color: #e85600;
 }
 
 #rop_core .form-select {
-	width: 100%;
-	height: 1.6rem;
-	padding: 0.25rem 0.4rem;
-	border: 0.05rem solid #caced7;
-	border-radius: 0.1rem;
-	outline: none;
-	color: inherit;
-	font-size: 0.7rem;
-	line-height: 1rem;
-	vertical-align: middle;
+    width: 100%;
+    height: 1.6rem;
+    padding: 0.25rem 0.4rem;
+    border: 0.05rem solid #caced7;
+    border-radius: 0.1rem;
+    outline: none;
+    color: inherit;
+    font-size: 0.7rem;
+    line-height: 1rem;
+    vertical-align: middle;
 
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
 
 #rop_core .form-select[size],
 #rop_core .form-select[multiple] {
-	height: auto;
+    height: auto;
 }
 
 #rop_core .form-select[size] option,
 #rop_core .form-select[multiple] option {
-	padding: 0.1rem 0.2rem;
+    padding: 0.1rem 0.2rem;
 }
 
 #rop_core .form-select:not([multiple]):not([size]) {
-	padding-right: 1.1rem;
-	background: #fff url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23667189' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E") no-repeat right 0.35rem center/0.4rem 0.5rem;
+    padding-right: 1.1rem;
+    background: #fff url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23667189' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E") no-repeat right 0.35rem center/0.4rem 0.5rem;
 }
 
 #rop_core .form-select:focus {
-	border-color: #042440;
-	box-shadow: 0 0 0 0.1rem rgba(4, 36, 64, 0.2);
+    border-color: #042440;
+    box-shadow: 0 0 0 0.1rem rgba(4, 36, 64, 0.2);
 }
 
 #rop_core .form-select::-ms-expand {
-	display: none;
+    display: none;
 }
 
 #rop_core .form-select.select-sm {
-	height: 1.2rem;
-	padding: 0.05rem 1.1rem 0.05rem 0.4rem;
-	font-size: 0.6rem;
+    height: 1.2rem;
+    padding: 0.05rem 1.1rem 0.05rem 0.4rem;
+    font-size: 0.6rem;
 }
 
 #rop_core .form-select.select-lg {
-	height: 2rem;
-	padding: 0.45rem 1.1rem 0.45rem 0.4rem;
-	font-size: 0.8rem;
+    height: 2rem;
+    padding: 0.45rem 1.1rem 0.45rem 0.4rem;
+    font-size: 0.8rem;
 }
 
 #rop_core .has-icon-left,
 #rop_core .has-icon-right {
-	position: relative;
+    position: relative;
 }
 
 #rop_core .has-icon-left .form-icon,
 #rop_core .has-icon-right .form-icon {
-	position: absolute;
-	top: 50%;
-	width: 0.7rem;
-	height: 0.7rem;
-	margin: 0 0.25rem;
-	-webkit-transform: translateY(-50%);
-	-ms-transform: translateY(-50%);
-	transform: translateY(-50%);
+    position: absolute;
+    top: 50%;
+    width: 0.7rem;
+    height: 0.7rem;
+    margin: 0 0.25rem;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
 }
 
 #rop_core .has-icon-left .form-icon {
-	left: 0.05rem;
+    left: 0.05rem;
 }
 
 #rop_core .has-icon-left .form-input {
-	padding-left: 1.2rem;
+    padding-left: 1.2rem;
 }
 
 #rop_core .has-icon-right .form-icon {
-	right: 0.05rem;
+    right: 0.05rem;
 }
 
 #rop_core .has-icon-right .form-input {
-	padding-right: 1.2rem;
+    padding-right: 1.2rem;
 }
 
 #rop_core .form-checkbox,
 #rop_core .form-radio,
 #rop_core .form-switch {
-	display: inline-block;
-	position: relative;
-	padding: 0.1rem 1.1rem;
-	line-height: 1rem;
+    display: inline-block;
+    position: relative;
+    padding: 0.1rem 1.1rem;
+    line-height: 1rem;
 }
 
 #rop_core .form-checkbox input,
 #rop_core .form-radio input,
 #rop_core .form-switch input {
-	overflow: hidden;
-	clip: rect(0, 0, 0, 0);
-	position: absolute;
-	width: 1px;
-	height: 1px;
-	margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
 }
 
 #rop_core .form-checkbox input:focus + .form-icon,
 #rop_core .form-radio input:focus + .form-icon,
 #rop_core .form-switch input:focus + .form-icon {
-	border-color: #042440;
-	box-shadow: 0 0 0 0.1rem rgba(4, 36, 64, 0.2);
+    border-color: #042440;
+    box-shadow: 0 0 0 0.1rem rgba(4, 36, 64, 0.2);
 }
 
 #rop_core .form-checkbox input:checked + .form-icon,
 #rop_core .form-radio input:checked + .form-icon,
 #rop_core .form-switch input:checked + .form-icon {
-	border-color: #042440;
-	background: #042440;
+    border-color: #042440;
+    background: #042440;
 }
 
 #rop_core .form-checkbox .form-icon,
 #rop_core .form-radio .form-icon,
 #rop_core .form-switch .form-icon {
-	display: inline-block;
-	position: absolute;
-	border: 0.05rem solid #caced7;
-	cursor: pointer;
-	-webkit-transition: all 0.2s ease;
-	transition: all 0.2s ease;
+    display: inline-block;
+    position: absolute;
+    border: 0.05rem solid #caced7;
+    cursor: pointer;
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
 }
 
 #rop_core .form-checkbox .form-icon,
 #rop_core .form-radio .form-icon {
-	top: 0.25rem;
-	left: 0;
-	width: 0.7rem;
-	height: 0.7rem;
-	background: #fff;
+    top: 0.25rem;
+    left: 0;
+    width: 0.7rem;
+    height: 0.7rem;
+    background: #fff;
 }
 
 #rop_core .form-checkbox input:active + .form-icon,
 #rop_core .form-radio input:active + .form-icon {
-	background: #f0f1f4;
+    background: #f0f1f4;
 }
 
 #rop_core .form-checkbox .form-icon {
-	border-radius: 0.1rem;
+    border-radius: 0.1rem;
 }
 
 #rop_core .form-checkbox input:checked + .form-icon::before {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	width: 6px;
-	height: 10px;
-	margin-top: -6px;
-	margin-left: -3px;
-	border: 0.1rem solid #fff;
-	border-top-width: 0;
-	border-left-width: 0;
-	background-clip: padding-box;
-	content: "";
-	-webkit-transform: rotate(45deg);
-	-ms-transform: rotate(45deg);
-	transform: rotate(45deg);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 6px;
+    height: 10px;
+    margin-top: -6px;
+    margin-left: -3px;
+    border: 0.1rem solid #fff;
+    border-top-width: 0;
+    border-left-width: 0;
+    background-clip: padding-box;
+    content: "";
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
 }
 
 #rop_core .form-checkbox input:indeterminate + .form-icon {
-	border-color: #042440;
-	background: #042440;
+    border-color: #042440;
+    background: #042440;
 }
 
 #rop_core .form-checkbox input:indeterminate + .form-icon::before {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	width: 10px;
-	height: 2px;
-	margin-top: -1px;
-	margin-left: -5px;
-	background: #fff;
-	content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 2px;
+    margin-top: -1px;
+    margin-left: -5px;
+    background: #fff;
+    content: "";
 }
 
 #rop_core .form-radio .form-icon {
-	border-radius: 0.35rem;
+    border-radius: 0.35rem;
 }
 
 #rop_core .form-radio input:checked + .form-icon::before {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	width: 4px;
-	height: 4px;
-	margin-top: -2px;
-	margin-left: -2px;
-	border-radius: 0.1rem;
-	background: #fff;
-	content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 4px;
+    height: 4px;
+    margin-top: -2px;
+    margin-left: -2px;
+    border-radius: 0.1rem;
+    background: #fff;
+    content: "";
 }
 
 #rop_core .form-switch {
-	padding-left: 2rem;
+    padding-left: 2rem;
 }
 
 #rop_core .form-switch .form-icon {
-	top: 0.15rem;
-	left: 0;
-	width: 1.6rem;
-	height: 0.9rem;
-	border-radius: 0.45rem;
-	background: #e7e9ed;
-	background-clip: padding-box;
+    top: 0.15rem;
+    left: 0;
+    width: 1.6rem;
+    height: 0.9rem;
+    border-radius: 0.45rem;
+    background: #e7e9ed;
+    background-clip: padding-box;
 }
 
 #rop_core .form-switch .form-icon::before {
-	display: block;
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 0.8rem;
-	height: 0.8rem;
-	border-radius: 0.4rem;
-	background: #fff;
-	content: "";
-	-webkit-transition: all 0.2s ease;
-	transition: all 0.2s ease;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 0.4rem;
+    background: #fff;
+    content: "";
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
 }
 
 #rop_core .form-switch input:checked + .form-icon::before {
-	left: 14px;
+    left: 14px;
 }
 
 #rop_core .form-switch input:active + .form-icon::before {
-	background: #f8f9fa;
+    background: #f8f9fa;
 }
 
 #rop_core .input-group {
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: flex;
-	display: -ms-flexbox;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    display: -ms-flexbox;
 }
 
 #rop_core .input-group .input-group-addon {
-	padding: 0.25rem 0.4rem;
-	border: 0.05rem solid #caced7;
-	border-radius: 0.1rem;
-	background: #f8f9fa;
-	line-height: 1rem;
+    padding: 0.25rem 0.4rem;
+    border: 0.05rem solid #caced7;
+    border-radius: 0.1rem;
+    background: #f8f9fa;
+    line-height: 1rem;
 }
 
 #rop_core .input-group .input-group-addon.addon-sm {
-	padding: 0.05rem 0.4rem;
-	font-size: 0.6rem;
+    padding: 0.05rem 0.4rem;
+    font-size: 0.6rem;
 }
 
 #rop_core .input-group .input-group-addon.addon-lg {
-	padding: 0.45rem 0.4rem;
-	font-size: 0.8rem;
+    padding: 0.45rem 0.4rem;
+    font-size: 0.8rem;
 }
 
 #rop_core .input-group .form-input,
 #rop_core .input-group .form-select {
-	-webkit-box-flex: 1;
-	-webkit-flex: 1 1 auto;
-	-ms-flex: 1 1 auto;
-	flex: 1 1 auto;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
 }
 
 #rop_core .input-group .input-group-btn {
-	z-index: 1;
+    z-index: 1;
 }
 
 #rop_core .input-group .form-input:first-child:not(:last-child),
 #rop_core .input-group .form-select:first-child:not(:last-child),
 #rop_core .input-group .input-group-addon:first-child:not(:last-child),
 #rop_core .input-group .input-group-btn:first-child:not(:last-child) {
-	border-top-right-radius: 0;
-	border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
 #rop_core .input-group .form-input:not(:first-child):not(:last-child),
 #rop_core .input-group .form-select:not(:first-child):not(:last-child),
 #rop_core .input-group .input-group-addon:not(:first-child):not(:last-child),
 #rop_core .input-group .input-group-btn:not(:first-child):not(:last-child) {
-	margin-left: -0.05rem;
-	border-radius: 0;
+    margin-left: -0.05rem;
+    border-radius: 0;
 }
 
 #rop_core .input-group .form-input:last-child:not(:first-child),
 #rop_core .input-group .form-select:last-child:not(:first-child),
 #rop_core .input-group .input-group-addon:last-child:not(:first-child),
 #rop_core .input-group .input-group-btn:last-child:not(:first-child) {
-	margin-left: -0.05rem;
-	border-top-left-radius: 0;
-	border-bottom-left-radius: 0;
+    margin-left: -0.05rem;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
 }
 
 #rop_core .input-group .form-input:focus,
 #rop_core .input-group .form-select:focus,
 #rop_core .input-group .input-group-addon:focus,
 #rop_core .input-group .input-group-btn:focus {
-	z-index: 2;
+    z-index: 2;
 }
 
 #rop_core .input-group .form-select {
-	width: auto;
+    width: auto;
 }
 
 #rop_core .input-group.input-inline {
-	display: -webkit-inline-box;
-	display: -webkit-inline-flex;
-	display: inline-flex;
-	display: -ms-inline-flexbox;
+    display: -webkit-inline-box;
+    display: -webkit-inline-flex;
+    display: inline-flex;
+    display: -ms-inline-flexbox;
 }
 
 .has-success #rop_core .form-input,
 #rop_core .form-input.is-success,
 .has-success #rop_core .form-select,
 #rop_core .form-select.is-success {
-	border-color: #32b643;
+    border-color: #32b643;
 }
 
 .has-success #rop_core .form-input:focus,
 #rop_core .form-input.is-success:focus,
 .has-success #rop_core .form-select:focus,
 #rop_core .form-select.is-success:focus {
-	box-shadow: 0 0 0 0.1rem rgba(50, 182, 67, 0.2);
+    box-shadow: 0 0 0 0.1rem rgba(50, 182, 67, 0.2);
 }
 
 .has-error #rop_core .form-input,
 #rop_core .form-input.is-error,
 .has-error #rop_core .form-select,
 #rop_core .form-select.is-error {
-	border-color: #e85600;
+    border-color: #e85600;
 }
 
 .has-error #rop_core .form-input:focus,
 #rop_core .form-input.is-error:focus,
 .has-error #rop_core .form-select:focus,
 #rop_core .form-select.is-error:focus {
-	box-shadow: 0 0 0 0.1rem rgba(232, 86, 0, 0.2);
+    box-shadow: 0 0 0 0.1rem rgba(232, 86, 0, 0.2);
 }
 
 .has-error #rop_core .form-checkbox .form-icon,
@@ -1348,7 +1348,7 @@ a.active {
 #rop_core .form-radio.is-error .form-icon,
 .has-error #rop_core .form-switch .form-icon,
 #rop_core .form-switch.is-error .form-icon {
-	border-color: #e85600;
+    border-color: #e85600;
 }
 
 .has-error #rop_core .form-checkbox input:checked + .form-icon,
@@ -1357,8 +1357,8 @@ a.active {
 #rop_core .form-radio.is-error input:checked + .form-icon,
 .has-error #rop_core .form-switch input:checked + .form-icon,
 #rop_core .form-switch.is-error input:checked + .form-icon {
-	border-color: #e85600;
-	background: #e85600;
+    border-color: #e85600;
+    background: #e85600;
 }
 
 .has-error #rop_core .form-checkbox input:focus + .form-icon,
@@ -1367,229 +1367,229 @@ a.active {
 #rop_core .form-radio.is-error input:focus + .form-icon,
 .has-error #rop_core .form-switch input:focus + .form-icon,
 #rop_core .form-switch.is-error input:focus + .form-icon {
-	border-color: #e85600;
-	box-shadow: 0 0 0 0.1rem rgba(232, 86, 0, 0.2);
+    border-color: #e85600;
+    box-shadow: 0 0 0 0.1rem rgba(232, 86, 0, 0.2);
 }
 
 #rop_core .form-input:not(:placeholder-shown):invalid {
-	border-color: #e85600;
+    border-color: #e85600;
 }
 
 #rop_core .form-input:not(:placeholder-shown):invalid:focus {
-	box-shadow: 0 0 0 0.1rem rgba(232, 86, 0, 0.2);
+    box-shadow: 0 0 0 0.1rem rgba(232, 86, 0, 0.2);
 }
 
 #rop_core .form-input:not(:placeholder-shown):invalid + .form-input-hint {
-	color: #e85600;
+    color: #e85600;
 }
 
 #rop_core .form-input:disabled,
 #rop_core .form-input.disabled,
 #rop_core .form-select:disabled,
 #rop_core .form-select.disabled {
-	opacity: 0.5;
-	background-color: #f0f1f4;
-	cursor: not-allowed;
+    opacity: 0.5;
+    background-color: #f0f1f4;
+    cursor: not-allowed;
 }
 
 #rop_core .form-input[readonly] {
-	background-color: #f8f9fa;
+    background-color: #f8f9fa;
 }
 
 #rop_core input:disabled + .form-icon,
 #rop_core input.disabled + .form-icon {
-	opacity: 0.5;
-	background: #f0f1f4;
-	cursor: not-allowed;
+    opacity: 0.5;
+    background: #f0f1f4;
+    cursor: not-allowed;
 }
 
 #rop_core .form-switch input:disabled + .form-icon::before,
 #rop_core .form-switch input.disabled + .form-icon::before {
-	background: #fff;
+    background: #fff;
 }
 
 #rop_core .form-horizontal {
-	padding: 0.4rem;
+    padding: 0.4rem;
 }
 
 #rop_core .form-horizontal .form-group {
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: flex;
-	display: -ms-flexbox;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    display: -ms-flexbox;
 }
 
 #rop_core .form-horizontal .form-checkbox,
 #rop_core .form-horizontal .form-radio,
 #rop_core .form-horizontal .form-switch {
-	margin: 0.2rem 0;
+    margin: 0.2rem 0;
 }
 
 #rop_core .label {
-	display: inline-block;
-	padding: 0.15rem;
-	border-radius: 0.1rem;
-	color: #5b657a;
-	background: #f8f9fa;
-	line-height: 1;
+    display: inline-block;
+    padding: 0.15rem;
+    border-radius: 0.1rem;
+    color: #5b657a;
+    background: #f8f9fa;
+    line-height: 1;
 }
 
 #rop_core .label.label-rounded {
-	padding-right: 0.4rem;
-	padding-left: 0.4rem;
-	border-radius: 5rem;
+    padding-right: 0.4rem;
+    padding-left: 0.4rem;
+    border-radius: 5rem;
 }
 
 #rop_core .label.label-primary {
-	color: #fff;
-	background: #042440;
+    color: #fff;
+    background: #042440;
 }
 
 #rop_core .label.label-secondary {
-	color: #042440;
-	background: #e85407;
+    color: #042440;
+    background: #e85407;
 }
 
 #rop_core .label.label-success {
-	color: #fff;
-	background: #32b643;
+    color: #fff;
+    background: #32b643;
 }
 
 #rop_core .label.label-warning {
-	color: #fff;
-	background: #ffb700;
+    color: #fff;
+    background: #ffb700;
 }
 
 #rop_core .label.label-error {
-	color: #fff;
-	background: #e85600;
+    color: #fff;
+    background: #e85600;
 }
 
 #rop_core code {
-	padding: 0.15rem;
-	border-radius: 0.1rem;
-	color: #e06870;
-	background: #fdf4f4;
-	font-size: 0.65rem;
-	line-height: 1;
+    padding: 0.15rem;
+    border-radius: 0.1rem;
+    color: #e06870;
+    background: #fdf4f4;
+    font-size: 0.65rem;
+    line-height: 1;
 }
 
 #rop_core .code {
-	position: relative;
-	border-radius: 0.1rem;
-	color: #50596c;
-	line-height: 1rem;
+    position: relative;
+    border-radius: 0.1rem;
+    color: #50596c;
+    line-height: 1rem;
 }
 
 #rop_core .code::before {
-	position: absolute;
-	top: 0.1rem;
-	right: 0.4rem;
-	color: #acb3c2;
-	font-size: 0.6rem;
-	content: attr(data-lang);
+    position: absolute;
+    top: 0.1rem;
+    right: 0.4rem;
+    color: #acb3c2;
+    font-size: 0.6rem;
+    content: attr(data-lang);
 }
 
 #rop_core .code code {
-	display: block;
-	overflow-x: auto;
-	width: 100%;
-	padding: 1rem;
-	color: inherit;
-	background: #f8f9fa;
-	line-height: inherit;
+    display: block;
+    overflow-x: auto;
+    width: 100%;
+    padding: 1rem;
+    color: inherit;
+    background: #f8f9fa;
+    line-height: inherit;
 }
 
 #rop_core .img-responsive {
-	display: block;
-	max-width: 100%;
-	height: auto;
+    display: block;
+    max-width: 100%;
+    height: auto;
 }
 
 #rop_core .img-fit-cover {
-	object-fit: cover;
+    object-fit: cover;
 }
 
 #rop_core .img-fit-contain {
-	object-fit: contain;
+    object-fit: contain;
 }
 
 #rop_core .video-responsive {
-	display: block;
-	overflow: hidden;
-	position: relative;
-	width: 100%;
-	padding: 0;
+    display: block;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    padding: 0;
 }
 
 #rop_core .video-responsive::before {
-	display: block;
-	padding-bottom: 56.25%;
-	content: "";
+    display: block;
+    padding-bottom: 56.25%;
+    content: "";
 }
 
 #rop_core .video-responsive iframe,
 #rop_core .video-responsive object,
 #rop_core .video-responsive embed {
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	border: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
 }
 
 #rop_core .video-responsive video {
-	width: 100%;
-	max-width: 100%;
-	height: auto;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
 }
 
 #rop_core .video-responsive-4-3::before {
-	padding-bottom: 75%;
+    padding-bottom: 75%;
 }
 
 #rop_core .video-responsive-1-1::before {
-	padding-bottom: 100%;
+    padding-bottom: 100%;
 }
 
 #rop_core .figure {
-	margin: 0 0 0.4rem;
+    margin: 0 0 0.4rem;
 }
 
 #rop_core .figure .figure-caption {
-	margin-top: 0.4rem;
-	color: #727e96;
+    margin-top: 0.4rem;
+    color: #727e96;
 }
 
 #rop_core .container {
-	width: 100%;
-	margin-right: auto;
-	margin-left: auto;
-	padding-right: 0.4rem;
-	padding-left: 0.4rem;
+    width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+    padding-right: 0.4rem;
+    padding-left: 0.4rem;
 }
 
 #rop_core .container.grid-xl {
-	max-width: 1296px;
+    max-width: 1296px;
 }
 
 #rop_core .container.grid-lg {
-	max-width: 976px;
+    max-width: 976px;
 }
 
 #rop_core .container.grid-md {
-	max-width: 856px;
+    max-width: 856px;
 }
 
 #rop_core .container.grid-sm {
-	max-width: 616px;
+    max-width: 616px;
 }
 
 #rop_core .container.grid-xs {
-	max-width: 496px;
+    max-width: 496px;
 }
 
 #rop_core .show-xs,
@@ -1597,49 +1597,49 @@ a.active {
 #rop_core .show-md,
 #rop_core .show-lg,
 #rop_core .show-xl {
-	display: none !important;
+    display: none !important;
 }
 
 #rop_core .columns {
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: flex;
-	display: -ms-flexbox;
-	margin-right: -0.4rem;
-	margin-left: -0.4rem;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    display: -ms-flexbox;
+    margin-right: -0.4rem;
+    margin-left: -0.4rem;
 
-	-webkit-flex-wrap: wrap;
-	-ms-flex-wrap: wrap;
-	flex-wrap: wrap;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
 }
 
 #rop_core .columns.col-gapless {
-	margin-right: 0;
-	margin-left: 0;
+    margin-right: 0;
+    margin-left: 0;
 }
 
 #rop_core .columns.col-gapless > .column {
-	padding-right: 0;
-	padding-left: 0;
+    padding-right: 0;
+    padding-left: 0;
 }
 
 #rop_core .columns.col-oneline {
-	overflow-x: auto;
+    overflow-x: auto;
 
-	-webkit-flex-wrap: nowrap;
-	-ms-flex-wrap: nowrap;
-	flex-wrap: nowrap;
+    -webkit-flex-wrap: nowrap;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
 }
 
 #rop_core .column {
-	max-width: 100%;
-	padding-right: 0.4rem;
-	padding-left: 0.4rem;
+    max-width: 100%;
+    padding-right: 0.4rem;
+    padding-left: 0.4rem;
 
-	-webkit-box-flex: 1;
-	-webkit-flex: 1;
-	-ms-flex: 1;
-	flex: 1;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
 }
 
 #rop_core .column.col-12,
@@ -1654,2327 +1654,2467 @@ a.active {
 #rop_core .column.col-3,
 #rop_core .column.col-2,
 #rop_core .column.col-1 {
-	-webkit-box-flex: 0;
-	-webkit-flex: none;
-	-ms-flex: none;
-	flex: none;
+    -webkit-box-flex: 0;
+    -webkit-flex: none;
+    -ms-flex: none;
+    flex: none;
 }
 
 #rop_core .col-12 {
-	width: 100%;
+    width: 100%;
 }
 
 #rop_core .col-11 {
-	width: 91.66666667%;
+    width: 91.66666667%;
 }
 
 #rop_core .col-10 {
-	width: 83.33333333%;
+    width: 83.33333333%;
 }
 
 #rop_core .col-9 {
-	width: 75%;
+    width: 75%;
 }
 
 #rop_core .col-8 {
-	width: 66.66666667%;
+    width: 66.66666667%;
 }
 
 #rop_core .col-7 {
-	width: 58.33333333%;
+    width: 58.33333333%;
 }
 
 #rop_core .col-6 {
-	width: 50%;
+    width: 50%;
 }
 
 #rop_core .col-5 {
-	width: 41.66666667%;
+    width: 41.66666667%;
 }
 
 #rop_core .col-4 {
-	width: 33.33333333%;
+    width: 33.33333333%;
 }
 
 #rop_core .col-3 {
-	width: 25%;
+    width: 25%;
 }
 
 #rop_core .col-2 {
-	width: 16.66666667%;
+    width: 16.66666667%;
 }
 
 #rop_core .col-1 {
-	width: 8.33333333%;
+    width: 8.33333333%;
 }
 
 #rop_core .col-auto {
-	width: auto;
-	max-width: none;
+    width: auto;
+    max-width: none;
 
-	-webkit-box-flex: 0;
-	-webkit-flex: 0 0 auto;
-	-ms-flex: 0 0 auto;
-	flex: 0 0 auto;
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 0 auto;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
 }
 
 #rop_core .col-mx-auto {
-	margin-right: auto;
-	margin-left: auto;
+    margin-right: auto;
+    margin-left: auto;
 }
 
 #rop_core .col-ml-auto {
-	margin-left: auto;
+    margin-left: auto;
 }
 
 #rop_core .col-mr-auto {
-	margin-right: auto;
+    margin-right: auto;
 }
 
 @media (max-width: 1280px) {
-	#rop_core .col-xl-12,
-	#rop_core .col-xl-11,
-	#rop_core .col-xl-10,
-	#rop_core .col-xl-9,
-	#rop_core .col-xl-8,
-	#rop_core .col-xl-7,
-	#rop_core .col-xl-6,
-	#rop_core .col-xl-5,
-	#rop_core .col-xl-4,
-	#rop_core .col-xl-3,
-	#rop_core .col-xl-2,
-	#rop_core .col-xl-1 {
-		-webkit-box-flex: 0;
-		-webkit-flex: none;
-		-ms-flex: none;
-		flex: none;
-	}
+    #rop_core .col-xl-12,
+    #rop_core .col-xl-11,
+    #rop_core .col-xl-10,
+    #rop_core .col-xl-9,
+    #rop_core .col-xl-8,
+    #rop_core .col-xl-7,
+    #rop_core .col-xl-6,
+    #rop_core .col-xl-5,
+    #rop_core .col-xl-4,
+    #rop_core .col-xl-3,
+    #rop_core .col-xl-2,
+    #rop_core .col-xl-1 {
+        -webkit-box-flex: 0;
+        -webkit-flex: none;
+        -ms-flex: none;
+        flex: none;
+    }
 
-	#rop_core .col-xl-12 {
-		width: 100%;
-	}
+    #rop_core .col-xl-12 {
+        width: 100%;
+    }
 
-	#rop_core .col-xl-11 {
-		width: 91.66666667%;
-	}
+    #rop_core .col-xl-11 {
+        width: 91.66666667%;
+    }
 
-	#rop_core .col-xl-10 {
-		width: 83.33333333%;
-	}
+    #rop_core .col-xl-10 {
+        width: 83.33333333%;
+    }
 
-	#rop_core .col-xl-9 {
-		width: 75%;
-	}
+    #rop_core .col-xl-9 {
+        width: 75%;
+    }
 
-	#rop_core .col-xl-8 {
-		width: 66.66666667%;
-	}
+    #rop_core .col-xl-8 {
+        width: 66.66666667%;
+    }
 
-	#rop_core .col-xl-7 {
-		width: 58.33333333%;
-	}
+    #rop_core .col-xl-7 {
+        width: 58.33333333%;
+    }
 
-	#rop_core .col-xl-6 {
-		width: 50%;
-	}
+    #rop_core .col-xl-6 {
+        width: 50%;
+    }
 
-	#rop_core .col-xl-5 {
-		width: 41.66666667%;
-	}
+    #rop_core .col-xl-5 {
+        width: 41.66666667%;
+    }
 
-	#rop_core .col-xl-4 {
-		width: 33.33333333%;
-	}
+    #rop_core .col-xl-4 {
+        width: 33.33333333%;
+    }
 
-	#rop_core .col-xl-3 {
-		width: 25%;
-	}
+    #rop_core .col-xl-3 {
+        width: 25%;
+    }
 
-	#rop_core .col-xl-2 {
-		width: 16.66666667%;
-	}
+    #rop_core .col-xl-2 {
+        width: 16.66666667%;
+    }
 
-	#rop_core .col-xl-1 {
-		width: 8.33333333%;
-	}
+    #rop_core .col-xl-1 {
+        width: 8.33333333%;
+    }
 
-	#rop_core .hide-xl {
-		display: none !important;
-	}
+    #rop_core .hide-xl {
+        display: none !important;
+    }
 
-	#rop_core .show-xl {
-		display: block !important;
-	}
+    #rop_core .show-xl {
+        display: block !important;
+    }
 }
 
 @media (max-width: 960px) {
-	#rop_core .col-lg-12,
-	#rop_core .col-lg-11,
-	#rop_core .col-lg-10,
-	#rop_core .col-lg-9,
-	#rop_core .col-lg-8,
-	#rop_core .col-lg-7,
-	#rop_core .col-lg-6,
-	#rop_core .col-lg-5,
-	#rop_core .col-lg-4,
-	#rop_core .col-lg-3,
-	#rop_core .col-lg-2,
-	#rop_core .col-lg-1 {
-		-webkit-box-flex: 0;
-		-webkit-flex: none;
-		-ms-flex: none;
-		flex: none;
-	}
+    #rop_core .col-lg-12,
+    #rop_core .col-lg-11,
+    #rop_core .col-lg-10,
+    #rop_core .col-lg-9,
+    #rop_core .col-lg-8,
+    #rop_core .col-lg-7,
+    #rop_core .col-lg-6,
+    #rop_core .col-lg-5,
+    #rop_core .col-lg-4,
+    #rop_core .col-lg-3,
+    #rop_core .col-lg-2,
+    #rop_core .col-lg-1 {
+        -webkit-box-flex: 0;
+        -webkit-flex: none;
+        -ms-flex: none;
+        flex: none;
+    }
 
-	#rop_core .col-lg-12 {
-		width: 100%;
-	}
+    #rop_core .col-lg-12 {
+        width: 100%;
+    }
 
-	#rop_core .col-lg-11 {
-		width: 91.66666667%;
-	}
+    #rop_core .col-lg-11 {
+        width: 91.66666667%;
+    }
 
-	#rop_core .col-lg-10 {
-		width: 83.33333333%;
-	}
+    #rop_core .col-lg-10 {
+        width: 83.33333333%;
+    }
 
-	#rop_core .col-lg-9 {
-		width: 75%;
-	}
+    #rop_core .col-lg-9 {
+        width: 75%;
+    }
 
-	#rop_core .col-lg-8 {
-		width: 66.66666667%;
-	}
+    #rop_core .col-lg-8 {
+        width: 66.66666667%;
+    }
 
-	#rop_core .col-lg-7 {
-		width: 58.33333333%;
-	}
+    #rop_core .col-lg-7 {
+        width: 58.33333333%;
+    }
 
-	#rop_core .col-lg-6 {
-		width: 50%;
-	}
+    #rop_core .col-lg-6 {
+        width: 50%;
+    }
 
-	#rop_core .col-lg-5 {
-		width: 41.66666667%;
-	}
+    #rop_core .col-lg-5 {
+        width: 41.66666667%;
+    }
 
-	#rop_core .col-lg-4 {
-		width: 33.33333333%;
-	}
+    #rop_core .col-lg-4 {
+        width: 33.33333333%;
+    }
 
-	#rop_core .col-lg-3 {
-		width: 25%;
-	}
+    #rop_core .col-lg-3 {
+        width: 25%;
+    }
 
-	#rop_core .col-lg-2 {
-		width: 16.66666667%;
-	}
+    #rop_core .col-lg-2 {
+        width: 16.66666667%;
+    }
 
-	#rop_core .col-lg-1 {
-		width: 8.33333333%;
-	}
+    #rop_core .col-lg-1 {
+        width: 8.33333333%;
+    }
 
-	#rop_core .hide-lg {
-		display: none !important;
-	}
+    #rop_core .hide-lg {
+        display: none !important;
+    }
 
-	#rop_core .show-lg {
-		display: block !important;
-	}
+    #rop_core .show-lg {
+        display: block !important;
+    }
 }
 
 @media (max-width: 840px) {
-	#rop_core .col-md-12,
-	#rop_core .col-md-11,
-	#rop_core .col-md-10,
-	#rop_core .col-md-9,
-	#rop_core .col-md-8,
-	#rop_core .col-md-7,
-	#rop_core .col-md-6,
-	#rop_core .col-md-5,
-	#rop_core .col-md-4,
-	#rop_core .col-md-3,
-	#rop_core .col-md-2,
-	#rop_core .col-md-1 {
-		-webkit-box-flex: 0;
-		-webkit-flex: none;
-		-ms-flex: none;
-		flex: none;
-	}
+    #rop_core .col-md-12,
+    #rop_core .col-md-11,
+    #rop_core .col-md-10,
+    #rop_core .col-md-9,
+    #rop_core .col-md-8,
+    #rop_core .col-md-7,
+    #rop_core .col-md-6,
+    #rop_core .col-md-5,
+    #rop_core .col-md-4,
+    #rop_core .col-md-3,
+    #rop_core .col-md-2,
+    #rop_core .col-md-1 {
+        -webkit-box-flex: 0;
+        -webkit-flex: none;
+        -ms-flex: none;
+        flex: none;
+    }
 
-	#rop_core .col-md-12 {
-		width: 100%;
-	}
+    #rop_core .col-md-12 {
+        width: 100%;
+    }
 
-	#rop_core .col-md-11 {
-		width: 91.66666667%;
-	}
+    #rop_core .col-md-11 {
+        width: 91.66666667%;
+    }
 
-	#rop_core .col-md-10 {
-		width: 83.33333333%;
-	}
+    #rop_core .col-md-10 {
+        width: 83.33333333%;
+    }
 
-	#rop_core .col-md-9 {
-		width: 75%;
-	}
+    #rop_core .col-md-9 {
+        width: 75%;
+    }
 
-	#rop_core .col-md-8 {
-		width: 66.66666667%;
-	}
+    #rop_core .col-md-8 {
+        width: 66.66666667%;
+    }
 
-	#rop_core .col-md-7 {
-		width: 58.33333333%;
-	}
+    #rop_core .col-md-7 {
+        width: 58.33333333%;
+    }
 
-	#rop_core .col-md-6 {
-		width: 50%;
-	}
+    #rop_core .col-md-6 {
+        width: 50%;
+    }
 
-	#rop_core .col-md-5 {
-		width: 41.66666667%;
-	}
+    #rop_core .col-md-5 {
+        width: 41.66666667%;
+    }
 
-	#rop_core .col-md-4 {
-		width: 33.33333333%;
-	}
+    #rop_core .col-md-4 {
+        width: 33.33333333%;
+    }
 
-	#rop_core .col-md-3 {
-		width: 25%;
-	}
+    #rop_core .col-md-3 {
+        width: 25%;
+    }
 
-	#rop_core .col-md-2 {
-		width: 16.66666667%;
-	}
+    #rop_core .col-md-2 {
+        width: 16.66666667%;
+    }
 
-	#rop_core .col-md-1 {
-		width: 8.33333333%;
-	}
+    #rop_core .col-md-1 {
+        width: 8.33333333%;
+    }
 
-	#rop_core .hide-md {
-		display: none !important;
-	}
+    #rop_core .hide-md {
+        display: none !important;
+    }
 
-	#rop_core .show-md {
-		display: block !important;
-	}
+    #rop_core .show-md {
+        display: block !important;
+    }
 }
 
 @media (max-width: 600px) {
-	#rop_core .col-sm-12,
-	#rop_core .col-sm-11,
-	#rop_core .col-sm-10,
-	#rop_core .col-sm-9,
-	#rop_core .col-sm-8,
-	#rop_core .col-sm-7,
-	#rop_core .col-sm-6,
-	#rop_core .col-sm-5,
-	#rop_core .col-sm-4,
-	#rop_core .col-sm-3,
-	#rop_core .col-sm-2,
-	#rop_core .col-sm-1 {
-		-webkit-box-flex: 0;
-		-webkit-flex: none;
-		-ms-flex: none;
-		flex: none;
-	}
+    #rop_core .col-sm-12,
+    #rop_core .col-sm-11,
+    #rop_core .col-sm-10,
+    #rop_core .col-sm-9,
+    #rop_core .col-sm-8,
+    #rop_core .col-sm-7,
+    #rop_core .col-sm-6,
+    #rop_core .col-sm-5,
+    #rop_core .col-sm-4,
+    #rop_core .col-sm-3,
+    #rop_core .col-sm-2,
+    #rop_core .col-sm-1 {
+        -webkit-box-flex: 0;
+        -webkit-flex: none;
+        -ms-flex: none;
+        flex: none;
+    }
 
-	#rop_core .col-sm-12 {
-		width: 100%;
-	}
+    #rop_core .col-sm-12 {
+        width: 100%;
+    }
 
-	#rop_core .col-sm-11 {
-		width: 91.66666667%;
-	}
+    #rop_core .col-sm-11 {
+        width: 91.66666667%;
+    }
 
-	#rop_core .col-sm-10 {
-		width: 83.33333333%;
-	}
+    #rop_core .col-sm-10 {
+        width: 83.33333333%;
+    }
 
-	#rop_core .col-sm-9 {
-		width: 75%;
-	}
+    #rop_core .col-sm-9 {
+        width: 75%;
+    }
 
-	#rop_core .col-sm-8 {
-		width: 66.66666667%;
-	}
+    #rop_core .col-sm-8 {
+        width: 66.66666667%;
+    }
 
-	#rop_core .col-sm-7 {
-		width: 58.33333333%;
-	}
+    #rop_core .col-sm-7 {
+        width: 58.33333333%;
+    }
 
-	#rop_core .col-sm-6 {
-		width: 50%;
-	}
+    #rop_core .col-sm-6 {
+        width: 50%;
+    }
 
-	#rop_core .col-sm-5 {
-		width: 41.66666667%;
-	}
+    #rop_core .col-sm-5 {
+        width: 41.66666667%;
+    }
 
-	#rop_core .col-sm-4 {
-		width: 33.33333333%;
-	}
+    #rop_core .col-sm-4 {
+        width: 33.33333333%;
+    }
 
-	#rop_core .col-sm-3 {
-		width: 25%;
-	}
+    #rop_core .col-sm-3 {
+        width: 25%;
+    }
 
-	#rop_core .col-sm-2 {
-		width: 16.66666667%;
-	}
+    #rop_core .col-sm-2 {
+        width: 16.66666667%;
+    }
 
-	#rop_core .col-sm-1 {
-		width: 8.33333333%;
-	}
+    #rop_core .col-sm-1 {
+        width: 8.33333333%;
+    }
 
-	#rop_core .hide-sm {
-		display: none !important;
-	}
+    #rop_core .hide-sm {
+        display: none !important;
+    }
 
-	#rop_core .show-sm {
-		display: block !important;
-	}
+    #rop_core .show-sm {
+        display: block !important;
+    }
 }
 
 @media (max-width: 480px) {
-	#rop_core .col-xs-12,
-	#rop_core .col-xs-11,
-	#rop_core .col-xs-10,
-	#rop_core .col-xs-9,
-	#rop_core .col-xs-8,
-	#rop_core .col-xs-7,
-	#rop_core .col-xs-6,
-	#rop_core .col-xs-5,
-	#rop_core .col-xs-4,
-	#rop_core .col-xs-3,
-	#rop_core .col-xs-2,
-	#rop_core .col-xs-1 {
-		-webkit-box-flex: 0;
-		-webkit-flex: none;
-		-ms-flex: none;
-		flex: none;
-	}
+    #rop_core .col-xs-12,
+    #rop_core .col-xs-11,
+    #rop_core .col-xs-10,
+    #rop_core .col-xs-9,
+    #rop_core .col-xs-8,
+    #rop_core .col-xs-7,
+    #rop_core .col-xs-6,
+    #rop_core .col-xs-5,
+    #rop_core .col-xs-4,
+    #rop_core .col-xs-3,
+    #rop_core .col-xs-2,
+    #rop_core .col-xs-1 {
+        -webkit-box-flex: 0;
+        -webkit-flex: none;
+        -ms-flex: none;
+        flex: none;
+    }
 
-	#rop_core .col-xs-12 {
-		width: 100%;
-	}
+    #rop_core .col-xs-12 {
+        width: 100%;
+    }
 
-	#rop_core .col-xs-11 {
-		width: 91.66666667%;
-	}
+    #rop_core .col-xs-11 {
+        width: 91.66666667%;
+    }
 
-	#rop_core .col-xs-10 {
-		width: 83.33333333%;
-	}
+    #rop_core .col-xs-10 {
+        width: 83.33333333%;
+    }
 
-	#rop_core .col-xs-9 {
-		width: 75%;
-	}
+    #rop_core .col-xs-9 {
+        width: 75%;
+    }
 
-	#rop_core .col-xs-8 {
-		width: 66.66666667%;
-	}
+    #rop_core .col-xs-8 {
+        width: 66.66666667%;
+    }
 
-	#rop_core .col-xs-7 {
-		width: 58.33333333%;
-	}
+    #rop_core .col-xs-7 {
+        width: 58.33333333%;
+    }
 
-	#rop_core .col-xs-6 {
-		width: 50%;
-	}
+    #rop_core .col-xs-6 {
+        width: 50%;
+    }
 
-	#rop_core .col-xs-5 {
-		width: 41.66666667%;
-	}
+    #rop_core .col-xs-5 {
+        width: 41.66666667%;
+    }
 
-	#rop_core .col-xs-4 {
-		width: 33.33333333%;
-	}
+    #rop_core .col-xs-4 {
+        width: 33.33333333%;
+    }
 
-	#rop_core .col-xs-3 {
-		width: 25%;
-	}
+    #rop_core .col-xs-3 {
+        width: 25%;
+    }
 
-	#rop_core .col-xs-2 {
-		width: 16.66666667%;
-	}
+    #rop_core .col-xs-2 {
+        width: 16.66666667%;
+    }
 
-	#rop_core .col-xs-1 {
-		width: 8.33333333%;
-	}
+    #rop_core .col-xs-1 {
+        width: 8.33333333%;
+    }
 
-	#rop_core .hide-xs {
-		display: none !important;
-	}
+    #rop_core .hide-xs {
+        display: none !important;
+    }
 
-	#rop_core .show-xs {
-		display: block !important;
-	}
+    #rop_core .show-xs {
+        display: block !important;
+    }
 }
 
 #rop_core .navbar {
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: flex;
-	display: -ms-flexbox;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    display: -ms-flexbox;
 
-	-webkit-align-items: stretch;
-	align-items: stretch;
-	-webkit-box-align: stretch;
-	-webkit-box-pack: justify;
-	-ms-flex-align: stretch;
-	-ms-flex-pack: justify;
-	-webkit-flex-wrap: wrap;
-	-ms-flex-wrap: wrap;
-	flex-wrap: wrap;
-	-webkit-justify-content: space-between;
-	justify-content: space-between;
+    -webkit-align-items: stretch;
+    align-items: stretch;
+    -webkit-box-align: stretch;
+    -webkit-box-pack: justify;
+    -ms-flex-align: stretch;
+    -ms-flex-pack: justify;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
 }
 
 #rop_core .navbar .navbar-section {
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: flex;
-	display: -ms-flexbox;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    display: -ms-flexbox;
 
-	-webkit-align-items: center;
-	align-items: center;
-	-webkit-box-align: center;
-	-webkit-box-flex: 1;
-	-webkit-flex: 1 0 0;
-	-ms-flex: 1 0 0;
-	flex: 1 0 0;
-	-ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-box-align: center;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 0 0;
+    -ms-flex: 1 0 0;
+    flex: 1 0 0;
+    -ms-flex-align: center;
 }
 
 #rop_core .navbar .navbar-section:last-child {
-	-webkit-box-pack: end;
-	-ms-flex-pack: end;
-	-webkit-justify-content: flex-end;
-	justify-content: flex-end;
+    -webkit-box-pack: end;
+    -ms-flex-pack: end;
+    -webkit-justify-content: flex-end;
+    justify-content: flex-end;
 }
 
 #rop_core .navbar .navbar-center {
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: flex;
-	display: -ms-flexbox;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    display: -ms-flexbox;
 
-	-webkit-align-items: center;
-	align-items: center;
-	-webkit-box-align: center;
-	-webkit-box-flex: 0;
-	-webkit-flex: 0 0 auto;
-	-ms-flex: 0 0 auto;
-	flex: 0 0 auto;
-	-ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-box-align: center;
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 0 auto;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    -ms-flex-align: center;
 }
 
 #rop_core .navbar .navbar-brand {
-	font-size: 0.8rem;
-	font-weight: 500;
-	text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-decoration: none;
 }
 
 #rop_core .accordion .accordion-item input:checked ~ .accordion-header .icon {
-	-webkit-transform: rotate(90deg);
-	-ms-transform: rotate(90deg);
-	transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    transform: rotate(90deg);
 }
 
 #rop_core .accordion .accordion-item input:checked ~ .accordion-body {
-	max-height: 50rem;
+    max-height: 50rem;
 }
 
 #rop_core .accordion .accordion-item .accordion-header {
-	display: block;
-	padding: 0.2rem 0.4rem;
+    display: block;
+    padding: 0.2rem 0.4rem;
 }
 
 #rop_core .accordion .accordion-item .accordion-header .icon {
-	-webkit-transition: all 0.2s ease;
-	transition: all 0.2s ease;
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
 }
 
 #rop_core .accordion .accordion-item .accordion-body {
-	overflow: hidden;
-	max-height: 0;
-	margin-bottom: 0.4rem;
-	-webkit-transition: max-height 0.2s ease;
-	transition: max-height 0.2s ease;
+    overflow: hidden;
+    max-height: 0;
+    margin-bottom: 0.4rem;
+    -webkit-transition: max-height 0.2s ease;
+    transition: max-height 0.2s ease;
 }
 
 #rop_core .form-autocomplete {
-	position: relative;
+    position: relative;
 }
 
 #rop_core .form-autocomplete .form-autocomplete-input {
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: flex;
-	display: -ms-flexbox;
-	height: auto;
-	min-height: 1.6rem;
-	padding: 0.1rem;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    display: -ms-flexbox;
+    height: auto;
+    min-height: 1.6rem;
+    padding: 0.1rem;
 
-	-webkit-align-content: flex-start;
-	align-content: flex-start;
-	-ms-flex-line-pack: start;
-	-webkit-flex-wrap: wrap;
-	-ms-flex-wrap: wrap;
-	flex-wrap: wrap;
+    -webkit-align-content: flex-start;
+    align-content: flex-start;
+    -ms-flex-line-pack: start;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
 }
 
 #rop_core .form-autocomplete .form-autocomplete-input.is-focused {
-	border-color: #042440;
-	box-shadow: 0 0 0 0.1rem rgba(4, 36, 64, 0.2);
+    border-color: #042440;
+    box-shadow: 0 0 0 0.1rem rgba(4, 36, 64, 0.2);
 }
 
 #rop_core .form-autocomplete .form-autocomplete-input .form-input {
-	display: inline-block;
-	width: auto;
-	height: 1.2rem;
-	margin: 0.1rem;
-	border-color: transparent;
-	box-shadow: none;
-	line-height: 0.8rem;
+    display: inline-block;
+    width: auto;
+    height: 1.2rem;
+    margin: 0.1rem;
+    border-color: transparent;
+    box-shadow: none;
+    line-height: 0.8rem;
 
-	-webkit-box-flex: 1;
-	-webkit-flex: 1 0 auto;
-	-ms-flex: 1 0 auto;
-	flex: 1 0 auto;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 0 auto;
+    -ms-flex: 1 0 auto;
+    flex: 1 0 auto;
 }
 
 #rop_core .form-autocomplete .menu {
-	position: absolute;
-	top: 100%;
-	left: 0;
-	width: 100%;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
 }
 
 #rop_core .avatar {
-	display: inline-block;
-	position: relative;
-	width: 1.6rem;
-	height: 1.6rem;
-	margin: 0;
-	border-radius: 50%;
-	color: rgba(255, 255, 255, 0.85);
-	background: #042440;
-	font-size: 0.8rem;
-	font-weight: 300;
-	line-height: 1;
-	vertical-align: middle;
+    display: inline-block;
+    position: relative;
+    width: 1.6rem;
+    height: 1.6rem;
+    margin: 0;
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.85);
+    background: #042440;
+    font-size: 0.8rem;
+    font-weight: 300;
+    line-height: 1;
+    vertical-align: middle;
 }
 
 #rop_core .avatar.avatar-xs {
-	width: 0.8rem;
-	height: 0.8rem;
-	font-size: 0.4rem;
+    width: 0.8rem;
+    height: 0.8rem;
+    font-size: 0.4rem;
 }
 
 #rop_core .avatar.avatar-sm {
-	width: 1.2rem;
-	height: 1.2rem;
-	font-size: 0.6rem;
+    width: 1.2rem;
+    height: 1.2rem;
+    font-size: 0.6rem;
 }
 
 #rop_core .avatar.avatar-lg {
-	width: 2.4rem;
-	height: 2.4rem;
-	font-size: 1.2rem;
+    width: 2.4rem;
+    height: 2.4rem;
+    font-size: 1.2rem;
 }
 
 #rop_core .avatar.avatar-xl {
-	width: 3.2rem;
-	height: 3.2rem;
-	font-size: 1.6rem;
+    width: 3.2rem;
+    height: 3.2rem;
+    font-size: 1.6rem;
 }
 
 #rop_core .avatar img {
-	position: relative;
-	z-index: 1;
-	width: 100%;
-	height: 100%;
-	border-radius: 50%;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
 }
 
 #rop_core .avatar .avatar-icon,
 #rop_core .avatar .avatar-presence {
-	position: absolute;
-	z-index: 2;
-	right: 14.64%;
-	bottom: 14.64%;
-	width: 50%;
-	height: 50%;
-	padding: 0.1rem;
-	background: #fff;
-	-webkit-transform: translate(50%, 50%);
-	-ms-transform: translate(50%, 50%);
-	transform: translate(50%, 50%);
+    position: absolute;
+    z-index: 2;
+    right: 14.64%;
+    bottom: 14.64%;
+    width: 50%;
+    height: 50%;
+    padding: 0.1rem;
+    background: #fff;
+    -webkit-transform: translate(50%, 50%);
+    -ms-transform: translate(50%, 50%);
+    transform: translate(50%, 50%);
 }
 
 #rop_core .avatar .avatar-presence {
-	width: 0.5em;
-	height: 0.5em;
-	border-radius: 50%;
-	background: #acb3c2;
-	box-shadow: 0 0 0 0.1rem #fff;
+    width: 0.5em;
+    height: 0.5em;
+    border-radius: 50%;
+    background: #acb3c2;
+    box-shadow: 0 0 0 0.1rem #fff;
 }
 
 #rop_core .avatar .avatar-presence.online {
-	background: #32b643;
+    background: #32b643;
 }
 
 #rop_core .avatar .avatar-presence.busy {
-	background: #e85600;
+    background: #e85600;
 }
 
 #rop_core .avatar .avatar-presence.away {
-	background: #ffb700;
+    background: #ffb700;
 }
 
 #rop_core .avatar[data-initial]::before {
-	position: absolute;
-	z-index: 1;
-	top: 50%;
-	left: 50%;
-	color: currentColor;
-	content: attr(data-initial);
-	-webkit-transform: translate(-50%, -50%);
-	-ms-transform: translate(-50%, -50%);
-	transform: translate(-50%, -50%);
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    left: 50%;
+    color: currentColor;
+    content: attr(data-initial);
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
 }
 
 #rop_core .badge {
-	position: relative;
-	white-space: nowrap;
+    position: relative;
+    white-space: nowrap;
 }
 
 #rop_core .badge[data-badge]::after,
 #rop_core .badge:not([data-badge])::after {
-	display: inline-block;
-	border-radius: 0.5rem;
-	color: #fff;
-	background: #042440;
-	background-clip: padding-box;
-	box-shadow: 0 0 0 0.1rem #fff;
-	content: attr(data-badge);
-	-webkit-transform: translate(-0.1rem, -0.5rem);
-	-ms-transform: translate(-0.1rem, -0.5rem);
-	transform: translate(-0.1rem, -0.5rem);
+    display: inline-block;
+    border-radius: 0.5rem;
+    color: #fff;
+    background: #042440;
+    background-clip: padding-box;
+    box-shadow: 0 0 0 0.1rem #fff;
+    content: attr(data-badge);
+    -webkit-transform: translate(-0.1rem, -0.5rem);
+    -ms-transform: translate(-0.1rem, -0.5rem);
+    transform: translate(-0.1rem, -0.5rem);
 }
 
 #rop_core .badge[data-badge]::after {
-	min-width: 18px;
-	height: 18px;
-	padding: 3px 5px;
-	font-size: 0.6rem;
-	line-height: 1;
-	text-align: center;
-	white-space: nowrap;
+    min-width: 18px;
+    height: 18px;
+    padding: 3px 5px;
+    font-size: 0.6rem;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
 }
 
 #rop_core .badge:not([data-badge])::after,
 #rop_core .badge[data-badge=""]::after {
-	width: 6px;
-	min-width: 6px;
-	height: 6px;
-	padding: 0;
+    width: 6px;
+    min-width: 6px;
+    height: 6px;
+    padding: 0;
 }
 
 #rop_core .badge.btn::after {
-	position: absolute;
-	top: 0;
-	right: 0;
-	-webkit-transform: translate(50%, -50%);
-	-ms-transform: translate(50%, -50%);
-	transform: translate(50%, -50%);
+    position: absolute;
+    top: 0;
+    right: 0;
+    -webkit-transform: translate(50%, -50%);
+    -ms-transform: translate(50%, -50%);
+    transform: translate(50%, -50%);
 }
 
 #rop_core .badge.avatar::after {
-	position: absolute;
-	z-index: 100;
-	top: 14.64%;
-	right: 14.64%;
-	-webkit-transform: translate(50%, -50%);
-	-ms-transform: translate(50%, -50%);
-	transform: translate(50%, -50%);
+    position: absolute;
+    z-index: 100;
+    top: 14.64%;
+    right: 14.64%;
+    -webkit-transform: translate(50%, -50%);
+    -ms-transform: translate(50%, -50%);
+    transform: translate(50%, -50%);
 }
 
 #rop_core .badge.avatar-xs::after {
-	width: 0.4rem;
-	min-width: 0.4rem;
-	height: 0.4rem;
-	padding: 0;
-	content: "";
+    width: 0.4rem;
+    min-width: 0.4rem;
+    height: 0.4rem;
+    padding: 0;
+    content: "";
 }
 
 #rop_core .breadcrumb {
-	margin: 0.2rem 0;
-	padding: 0.2rem 0;
-	list-style: none;
+    margin: 0.2rem 0;
+    padding: 0.2rem 0;
+    list-style: none;
 }
 
 #rop_core .breadcrumb .breadcrumb-item {
-	display: inline-block;
-	margin: 0;
-	padding: 0.2rem 0;
-	color: #727e96;
+    display: inline-block;
+    margin: 0;
+    padding: 0.2rem 0;
+    color: #727e96;
 }
 
 #rop_core .breadcrumb .breadcrumb-item:not(:last-child) {
-	margin-right: 0.2rem;
+    margin-right: 0.2rem;
 }
 
 #rop_core .breadcrumb .breadcrumb-item:not(:last-child) a {
-	color: #727e96;
+    color: #727e96;
 }
 
 #rop_core .breadcrumb .breadcrumb-item:not(:first-child)::before {
-	padding-right: 0.2rem;
-	color: #e7e9ed;
-	content: "/";
+    padding-right: 0.2rem;
+    color: #e7e9ed;
+    content: "/";
 }
 
 #rop_core .bar {
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: flex;
-	display: -ms-flexbox;
-	width: 100%;
-	height: 0.8rem;
-	border-radius: 0.1rem;
-	background: #f0f1f4;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    display: -ms-flexbox;
+    width: 100%;
+    height: 0.8rem;
+    border-radius: 0.1rem;
+    background: #f0f1f4;
 
-	-webkit-flex-wrap: nowrap;
-	-ms-flex-wrap: nowrap;
-	flex-wrap: nowrap;
+    -webkit-flex-wrap: nowrap;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
 }
 
 #rop_core .bar.bar-sm {
-	height: 0.2rem;
+    height: 0.2rem;
 }
 
 #rop_core .bar .bar-item {
-	display: block;
-	position: relative;
-	width: 0;
-	height: 100%;
-	color: #fff;
-	background: #042440;
-	font-size: 0.6rem;
-	line-height: 0.8rem;
-	text-align: center;
+    display: block;
+    position: relative;
+    width: 0;
+    height: 100%;
+    color: #fff;
+    background: #042440;
+    font-size: 0.6rem;
+    line-height: 0.8rem;
+    text-align: center;
 
-	-ms-flex-negative: 0;
-	-webkit-flex-shrink: 0;
-	flex-shrink: 0;
+    -ms-flex-negative: 0;
+    -webkit-flex-shrink: 0;
+    flex-shrink: 0;
 }
 
 #rop_core .bar .bar-item:first-child {
-	border-top-left-radius: 0.1rem;
-	border-bottom-left-radius: 0.1rem;
+    border-top-left-radius: 0.1rem;
+    border-bottom-left-radius: 0.1rem;
 }
 
 #rop_core .bar .bar-item:last-child {
-	border-top-right-radius: 0.1rem;
-	border-bottom-right-radius: 0.1rem;
+    border-top-right-radius: 0.1rem;
+    border-bottom-right-radius: 0.1rem;
 
-	-ms-flex-negative: 1;
-	-webkit-flex-shrink: 1;
-	flex-shrink: 1;
+    -ms-flex-negative: 1;
+    -webkit-flex-shrink: 1;
+    flex-shrink: 1;
 }
 
 #rop_core .bar-slider {
-	position: relative;
-	height: 0.1rem;
-	margin: 0.4rem 0;
+    position: relative;
+    height: 0.1rem;
+    margin: 0.4rem 0;
 }
 
 #rop_core .bar-slider .bar-item {
-	position: absolute;
-	left: 0;
-	padding: 0;
+    position: absolute;
+    left: 0;
+    padding: 0;
 }
 
 #rop_core .bar-slider .bar-item:not(:last-child):first-child {
-	z-index: 1;
-	background: #f0f1f4;
+    z-index: 1;
+    background: #f0f1f4;
 }
 
 #rop_core .bar-slider .bar-slider-btn {
-	position: absolute;
-	top: 50%;
-	right: 0;
-	width: 0.6rem;
-	height: 0.6rem;
-	padding: 0;
-	border: 0;
-	border-radius: 50%;
-	background: #042440;
-	-webkit-transform: translate(50%, -50%);
-	-ms-transform: translate(50%, -50%);
-	transform: translate(50%, -50%);
+    position: absolute;
+    top: 50%;
+    right: 0;
+    width: 0.6rem;
+    height: 0.6rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: #042440;
+    -webkit-transform: translate(50%, -50%);
+    -ms-transform: translate(50%, -50%);
+    transform: translate(50%, -50%);
 }
 
 #rop_core .bar-slider .bar-slider-btn:active {
-	box-shadow: 0 0 0 0.1rem #042440;
+    box-shadow: 0 0 0 0.1rem #042440;
 }
 
 #rop_core .card {
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: flex;
-	display: -ms-flexbox;
-	flex-direction: column;
-	border: 0.05rem solid #e7e9ed;
-	border-radius: 0.1rem;
-	background: #fff;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    display: -ms-flexbox;
+    flex-direction: column;
+    border: 0.05rem solid #e7e9ed;
+    border-radius: 0.1rem;
+    background: #fff;
 
-	-webkit-box-direction: normal;
-	-webkit-box-orient: vertical;
-	-webkit-flex-direction: column;
-	-ms-flex-direction: column;
+    -webkit-box-direction: normal;
+    -webkit-box-orient: vertical;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
 }
 
 #rop_core .card .card-header,
 #rop_core .card .card-body,
 #rop_core .card .card-footer {
-	padding: 0.8rem;
-	padding-bottom: 0;
+    padding: 0.8rem;
+    padding-bottom: 0;
 }
 
 #rop_core .card .card-header:last-child,
 #rop_core .card .card-body:last-child,
 #rop_core .card .card-footer:last-child {
-	padding-bottom: 0.8rem;
+    padding-bottom: 0.8rem;
 }
 
 #rop_core .card .card-image {
-	padding-top: 0.8rem;
+    padding-top: 0.8rem;
 }
 
 #rop_core .card .card-image:first-child {
-	padding-top: 0;
+    padding-top: 0;
 }
 
 #rop_core .card .card-image:first-child img {
-	border-top-left-radius: 0.1rem;
-	border-top-right-radius: 0.1rem;
+    border-top-left-radius: 0.1rem;
+    border-top-right-radius: 0.1rem;
 }
 
 #rop_core .card .card-image:last-child img {
-	border-bottom-right-radius: 0.1rem;
-	border-bottom-left-radius: 0.1rem;
+    border-bottom-right-radius: 0.1rem;
+    border-bottom-left-radius: 0.1rem;
 }
 
 #rop_core .chip {
-	display: -ms-inline-flexbox;
-	display: -webkit-inline-box;
-	display: -webkit-inline-flex;
-	display: inline-flex;
-	max-width: 100%;
-	height: 1.2rem;
-	margin: 0.1rem;
-	padding: 0.1rem 0.5rem;
-	border-radius: 5rem;
-	color: #727e96;
-	background: #f0f1f4;
-	vertical-align: middle;
-	text-decoration: none;
+    display: -ms-inline-flexbox;
+    display: -webkit-inline-box;
+    display: -webkit-inline-flex;
+    display: inline-flex;
+    max-width: 100%;
+    height: 1.2rem;
+    margin: 0.1rem;
+    padding: 0.1rem 0.5rem;
+    border-radius: 5rem;
+    color: #727e96;
+    background: #f0f1f4;
+    vertical-align: middle;
+    text-decoration: none;
 
-	-webkit-align-items: center;
-	align-items: center;
-	-webkit-box-align: center;
-	-ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
 }
 
 #rop_core .chip.active {
-	color: #fff;
-	background: #042440;
+    color: #fff;
+    background: #042440;
 }
 
 #rop_core .chip .avatar {
-	margin-right: 0.2rem;
-	margin-left: -0.5rem;
+    margin-right: 0.2rem;
+    margin-left: -0.5rem;
 }
 
 #rop_core .dropdown {
-	display: inline-block;
-	position: relative;
+    display: inline-block;
+    position: relative;
 }
 
 #rop_core .dropdown .menu {
-	display: none;
-	overflow-y: auto;
-	position: absolute;
-	top: 100%;
-	left: 0;
-	max-height: 50vh;
-	-webkit-animation: slide-down 0.15s ease 1;
-	animation: slide-down 0.15s ease 1;
+    display: none;
+    overflow-y: auto;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    max-height: 50vh;
+    -webkit-animation: slide-down 0.15s ease 1;
+    animation: slide-down 0.15s ease 1;
 }
 
 #rop_core .dropdown.dropdown-right .menu {
-	right: 0;
-	left: auto;
+    right: 0;
+    left: auto;
 }
 
 #rop_core .dropdown.active .menu,
 #rop_core .dropdown .dropdown-toggle:focus + .menu,
 #rop_core .dropdown .menu:hover {
-	display: block;
+    display: block;
 }
 
 #rop_core .dropdown .btn-group .dropdown-toggle:nth-last-child(2) {
-	border-top-right-radius: 0.1rem;
-	border-bottom-right-radius: 0.1rem;
+    border-top-right-radius: 0.1rem;
+    border-bottom-right-radius: 0.1rem;
 }
 
 #rop_core .empty {
-	padding: 1.6rem;
-	border-radius: 0.1rem;
-	color: #727e96;
-	background: #f8f9fa;
-	text-align: center;
+    padding: 1.6rem;
+    border-radius: 0.1rem;
+    color: #727e96;
+    background: #f8f9fa;
+    text-align: center;
 }
 
 #rop_core .empty .empty-icon {
-	margin-bottom: 0.8rem;
+    margin-bottom: 0.8rem;
 }
 
 #rop_core .empty .empty-title,
 #rop_core .empty .empty-subtitle {
-	margin: 0.4rem auto;
+    margin: 0.4rem auto;
 }
 
 #rop_core .empty .empty-action {
-	margin-top: 0.8rem;
+    margin-top: 0.8rem;
 }
 
 #rop_core .menu {
-	z-index: 100;
-	min-width: 180px;
-	margin: 0;
-	padding: 0.4rem;
-	border-radius: 0.1rem;
-	background: #fff;
-	box-shadow: 0 0.05rem 0.2rem rgba(69, 77, 93, 0.3);
-	list-style: none;
-	-webkit-transform: translateY(0.2rem);
-	-ms-transform: translateY(0.2rem);
-	transform: translateY(0.2rem);
+    z-index: 100;
+    min-width: 180px;
+    margin: 0;
+    padding: 0.4rem;
+    border-radius: 0.1rem;
+    background: #fff;
+    box-shadow: 0 0.05rem 0.2rem rgba(69, 77, 93, 0.3);
+    list-style: none;
+    -webkit-transform: translateY(0.2rem);
+    -ms-transform: translateY(0.2rem);
+    transform: translateY(0.2rem);
 }
 
 #rop_core .menu.menu-nav {
-	background: transparent;
-	box-shadow: none;
+    background: transparent;
+    box-shadow: none;
 }
 
 #rop_core .menu .menu-item {
-	margin-top: 0;
-	padding: 0 0.4rem;
-	text-decoration: none;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
+    margin-top: 0;
+    padding: 0 0.4rem;
+    text-decoration: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 #rop_core .menu .menu-item > a {
-	display: block;
-	margin: 0 -0.4rem;
-	padding: 0.2rem 0.4rem;
-	border-radius: 0.1rem;
-	color: inherit;
-	text-decoration: none;
+    display: block;
+    margin: 0 -0.4rem;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.1rem;
+    color: inherit;
+    text-decoration: none;
 }
 
 #rop_core .menu .menu-item > a:focus,
 #rop_core .menu .menu-item > a:hover {
-	color: #042440;
-	background: #e85407;
+    color: #042440;
+    background: #e85407;
 }
 
 #rop_core .menu .menu-item > a:active,
 #rop_core .menu .menu-item > a.active {
-	color: #042440;
-	background: #e85407;
+    color: #042440;
+    background: #e85407;
 }
 
 #rop_core .menu .menu-item + .menu-item {
-	margin-top: 0.2rem;
+    margin-top: 0.2rem;
 }
 
 #rop_core .menu .menu-badge {
-	float: right;
-	padding: 0.2rem 0;
+    float: right;
+    padding: 0.2rem 0;
 }
 
 #rop_core .menu .menu-badge .btn {
-	margin-top: -0.1rem;
+    margin-top: -0.1rem;
 }
 
 #rop_core .modal {
-	display: none;
-	overflow: hidden;
-	position: fixed;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	padding: 0.4rem;
-	opacity: 0;
+    display: none;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 0.4rem;
+    opacity: 0;
 
-	-webkit-align-items: center;
-	align-items: center;
-	-webkit-box-align: center;
-	-webkit-box-pack: center;
-	-ms-flex-align: center;
-	-ms-flex-pack: center;
-	-webkit-justify-content: center;
-	justify-content: center;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-box-align: center;
+    -webkit-box-pack: center;
+    -ms-flex-align: center;
+    -ms-flex-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
 }
 
 #rop_core .modal:target,
 #rop_core .modal.active {
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: flex;
-	display: -ms-flexbox;
-	z-index: 400;
-	opacity: 1;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    display: -ms-flexbox;
+    z-index: 400;
+    opacity: 1;
 }
 
 #rop_core .modal:target .modal-overlay,
 #rop_core .modal.active .modal-overlay {
-	display: block;
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	background: rgba(248, 249, 250, 0.75);
-	cursor: default;
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(248, 249, 250, 0.75);
+    cursor: default;
 }
 
 #rop_core .modal:target .modal-container,
 #rop_core .modal.active .modal-container {
-	z-index: 1;
-	max-width: 640px;
-	-webkit-animation: slide-down 0.2s ease 1;
-	animation: slide-down 0.2s ease 1;
+    z-index: 1;
+    max-width: 640px;
+    -webkit-animation: slide-down 0.2s ease 1;
+    animation: slide-down 0.2s ease 1;
 }
 
 #rop_core .modal.modal-sm .modal-container {
-	max-width: 320px;
+    max-width: 320px;
 }
 
 #rop_core .modal-container {
-	display: block;
-	padding: 0;
-	border-radius: 0.1rem;
-	background: #fff;
-	box-shadow: 0 0.2rem 0.5rem rgba(69, 77, 93, 0.3);
-	text-align: left;
+    display: block;
+    padding: 0;
+    border-radius: 0.1rem;
+    background: #fff;
+    box-shadow: 0 0.2rem 0.5rem rgba(69, 77, 93, 0.3);
+    text-align: left;
 }
 
 #rop_core .modal-container .modal-header {
-	padding: 0.8rem;
+    padding: 0.8rem;
 }
 
 #rop_core .modal-container .modal-header .modal-title {
-	margin: 0;
+    margin: 0;
 }
 
 #rop_core .modal-container .modal-body {
-	overflow-y: auto;
-	position: relative;
-	max-height: 50vh;
-	padding: 0.8rem;
+    overflow-y: auto;
+    position: relative;
+    max-height: 50vh;
+    padding: 0.8rem;
 }
 
 #rop_core .modal-container .modal-footer {
-	padding: 0.8rem;
-	text-align: right;
+    padding: 0.8rem;
+    text-align: right;
 }
 
 #rop_core .nav {
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: flex;
-	display: -ms-flexbox;
-	flex-direction: column;
-	margin: 0.2rem 0;
-	list-style: none;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    display: -ms-flexbox;
+    flex-direction: column;
+    margin: 0.2rem 0;
+    list-style: none;
 
-	-webkit-box-direction: normal;
-	-webkit-box-orient: vertical;
-	-webkit-flex-direction: column;
-	-ms-flex-direction: column;
+    -webkit-box-direction: normal;
+    -webkit-box-orient: vertical;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
 }
 
 #rop_core .nav .nav-item a {
-	padding: 0.2rem 0.4rem;
-	color: #727e96;
-	text-decoration: none;
+    padding: 0.2rem 0.4rem;
+    color: #727e96;
+    text-decoration: none;
 }
 
 #rop_core .nav .nav-item a:focus,
 #rop_core .nav .nav-item a:hover {
-	color: #042440;
+    color: #042440;
 }
 
 #rop_core .nav .nav-item.active > a {
-	color: #5b657a;
-	font-weight: bold;
+    color: #5b657a;
+    font-weight: bold;
 }
 
 #rop_core .nav .nav-item.active > a:focus,
 #rop_core .nav .nav-item.active > a:hover {
-	color: #042440;
+    color: #042440;
 }
 
 #rop_core .nav .nav {
-	margin-bottom: 0.4rem;
-	margin-left: 0.8rem;
+    margin-bottom: 0.4rem;
+    margin-left: 0.8rem;
 }
 
 #rop_core .pagination {
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: flex;
-	display: -ms-flexbox;
-	margin: 0.2rem 0;
-	padding: 0.2rem 0;
-	list-style: none;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    display: -ms-flexbox;
+    margin: 0.2rem 0;
+    padding: 0.2rem 0;
+    list-style: none;
 }
 
 #rop_core .pagination .page-item {
-	margin: 0.2rem 0.05rem;
+    margin: 0.2rem 0.05rem;
 }
 
 #rop_core .pagination .page-item span {
-	display: inline-block;
-	padding: 0.2rem;
+    display: inline-block;
+    padding: 0.2rem;
 }
 
 #rop_core .pagination .page-item a {
-	display: inline-block;
-	padding: 0.2rem 0.4rem;
-	border-radius: 0.1rem;
-	color: #727e96;
-	text-decoration: none;
+    display: inline-block;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.1rem;
+    color: #727e96;
+    text-decoration: none;
 }
 
 #rop_core .pagination .page-item a:focus,
 #rop_core .pagination .page-item a:hover {
-	color: #042440;
+    color: #042440;
 }
 
 #rop_core .pagination .page-item.disabled a {
-	opacity: 0.5;
-	cursor: default;
-	pointer-events: none;
+    opacity: 0.5;
+    cursor: default;
+    pointer-events: none;
 }
 
 #rop_core .pagination .page-item.active a {
-	color: #fff;
-	background: #042440;
+    color: #fff;
+    background: #042440;
 }
 
 #rop_core .pagination .page-item.page-prev,
 #rop_core .pagination .page-item.page-next {
-	-webkit-box-flex: 1;
-	-webkit-flex: 1 0 50%;
-	-ms-flex: 1 0 50%;
-	flex: 1 0 50%;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 0 50%;
+    -ms-flex: 1 0 50%;
+    flex: 1 0 50%;
 }
 
 #rop_core .pagination .page-item.page-next {
-	text-align: right;
+    text-align: right;
 }
 
 #rop_core .pagination .page-item .page-item-title {
-	margin: 0;
+    margin: 0;
 }
 
 #rop_core .pagination .page-item .page-item-subtitle {
-	margin: 0;
-	opacity: 0.5;
+    margin: 0;
+    opacity: 0.5;
 }
 
 #rop_core .panel {
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: flex;
-	display: -ms-flexbox;
-	flex-direction: column;
-	border: 0.05rem solid #e7e9ed;
-	border-radius: 0.1rem;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    display: -ms-flexbox;
+    flex-direction: column;
+    border: 0.05rem solid #e7e9ed;
+    border-radius: 0.1rem;
 
-	-webkit-box-direction: normal;
-	-webkit-box-orient: vertical;
-	-webkit-flex-direction: column;
-	-ms-flex-direction: column;
+    -webkit-box-direction: normal;
+    -webkit-box-orient: vertical;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
 }
 
 #rop_core .panel .panel-header,
 #rop_core .panel .panel-footer {
-	padding: 0.8rem;
+    padding: 0.8rem;
 
-	-webkit-box-flex: 0;
-	-webkit-flex: 0 0 auto;
-	-ms-flex: 0 0 auto;
-	flex: 0 0 auto;
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 0 auto;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
 }
 
 #rop_core .panel .panel-nav {
-	-webkit-box-flex: 0;
-	-webkit-flex: 0 0 auto;
-	-ms-flex: 0 0 auto;
-	flex: 0 0 auto;
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 0 auto;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
 }
 
 #rop_core .panel .panel-body {
-	overflow-y: auto;
-	padding: 0 0.8rem;
+    overflow-y: auto;
+    padding: 0 0.8rem;
 
-	-webkit-box-flex: 1;
-	-webkit-flex: 1 1 auto;
-	-ms-flex: 1 1 auto;
-	flex: 1 1 auto;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
 }
 
 #rop_core .popover {
-	display: inline-block;
-	position: relative;
+    display: inline-block;
+    position: relative;
 }
 
 #rop_core .popover .popover-container {
-	position: absolute;
-	z-index: 400;
-	top: 0;
-	left: 50%;
-	width: 320px;
-	padding: 0.4rem;
-	opacity: 0;
-	content: attr(data-tooltip);
-	-webkit-transition: -webkit-transform 0.2s ease;
-	transition: -webkit-transform 0.2s ease;
-	transition: transform 0.2s ease;
-	transition: transform 0.2s ease, -webkit-transform 0.2s ease;
-	-webkit-transform: translate(-50%, -50%) scale(0);
-	-ms-transform: translate(-50%, -50%) scale(0);
-	transform: translate(-50%, -50%) scale(0);
+    position: absolute;
+    z-index: 400;
+    top: 0;
+    left: 50%;
+    width: 320px;
+    padding: 0.4rem;
+    opacity: 0;
+    content: attr(data-tooltip);
+    -webkit-transition: -webkit-transform 0.2s ease;
+    transition: -webkit-transform 0.2s ease;
+    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, -webkit-transform 0.2s ease;
+    -webkit-transform: translate(-50%, -50%) scale(0);
+    -ms-transform: translate(-50%, -50%) scale(0);
+    transform: translate(-50%, -50%) scale(0);
 }
 
 #rop_core .popover :focus + .popover-container,
 #rop_core .popover:hover .popover-container,
 #rop_core .popover .popover-container:hover {
-	display: block;
-	opacity: 1;
-	-webkit-transform: translate(-50%, -100%) scale(1);
-	-ms-transform: translate(-50%, -100%) scale(1);
-	transform: translate(-50%, -100%) scale(1);
+    display: block;
+    opacity: 1;
+    -webkit-transform: translate(-50%, -100%) scale(1);
+    -ms-transform: translate(-50%, -100%) scale(1);
+    transform: translate(-50%, -100%) scale(1);
 }
 
 #rop_core .popover.popover-right .popover-container {
-	top: 50%;
-	left: 100%;
+    top: 50%;
+    left: 100%;
 }
 
 #rop_core .popover.popover-right :focus + .popover-container,
 #rop_core .popover.popover-right:hover .popover-container,
 #rop_core .popover.popover-right .popover-container:hover {
-	-webkit-transform: translate(0, -50%) scale(1);
-	-ms-transform: translate(0, -50%) scale(1);
-	transform: translate(0, -50%) scale(1);
+    -webkit-transform: translate(0, -50%) scale(1);
+    -ms-transform: translate(0, -50%) scale(1);
+    transform: translate(0, -50%) scale(1);
 }
 
 #rop_core .popover.popover-bottom .popover-container {
-	top: 100%;
-	left: 50%;
+    top: 100%;
+    left: 50%;
 }
 
 #rop_core .popover.popover-bottom :focus + .popover-container,
 #rop_core .popover.popover-bottom:hover .popover-container,
 #rop_core .popover.popover-bottom .popover-container:hover {
-	-webkit-transform: translate(-50%, 0) scale(1);
-	-ms-transform: translate(-50%, 0) scale(1);
-	transform: translate(-50%, 0) scale(1);
+    -webkit-transform: translate(-50%, 0) scale(1);
+    -ms-transform: translate(-50%, 0) scale(1);
+    transform: translate(-50%, 0) scale(1);
 }
 
 #rop_core .popover.popover-left .popover-container {
-	top: 50%;
-	left: 0;
+    top: 50%;
+    left: 0;
 }
 
 #rop_core .popover.popover-left :focus + .popover-container,
 #rop_core .popover.popover-left:hover .popover-container,
 #rop_core .popover.popover-left .popover-container:hover {
-	-webkit-transform: translate(-100%, -50%) scale(1);
-	-ms-transform: translate(-100%, -50%) scale(1);
-	transform: translate(-100%, -50%) scale(1);
+    -webkit-transform: translate(-100%, -50%) scale(1);
+    -ms-transform: translate(-100%, -50%) scale(1);
+    transform: translate(-100%, -50%) scale(1);
 }
 
 #rop_core .popover .card {
-	border: 0;
-	box-shadow: 0 0.2rem 0.5rem rgba(69, 77, 93, 0.3);
+    border: 0;
+    box-shadow: 0 0.2rem 0.5rem rgba(69, 77, 93, 0.3);
 }
 
 #rop_core .step {
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: flex;
-	display: -ms-flexbox;
-	width: 100%;
-	margin: 0.2rem 0;
-	list-style: none;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    display: -ms-flexbox;
+    width: 100%;
+    margin: 0.2rem 0;
+    list-style: none;
 
-	-webkit-flex-wrap: nowrap;
-	-ms-flex-wrap: nowrap;
-	flex-wrap: nowrap;
+    -webkit-flex-wrap: nowrap;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
 }
 
 #rop_core .step .step-item {
-	position: relative;
-	min-height: 1rem;
-	margin-top: 0;
-	text-align: center;
+    position: relative;
+    min-height: 1rem;
+    margin-top: 0;
+    text-align: center;
 
-	-webkit-box-flex: 1;
-	-webkit-flex: 1 1 0;
-	-ms-flex: 1 1 0;
-	flex: 1 1 0;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 1 0;
+    -ms-flex: 1 1 0;
+    flex: 1 1 0;
 }
 
 #rop_core .step .step-item:not(:first-child)::before {
-	position: absolute;
-	top: 9px;
-	left: -50%;
-	width: 100%;
-	height: 2px;
-	background: #042440;
-	content: "";
+    position: absolute;
+    top: 9px;
+    left: -50%;
+    width: 100%;
+    height: 2px;
+    background: #042440;
+    content: "";
 }
 
 #rop_core .step .step-item a {
-	display: inline-block;
-	padding: 20px 10px 0;
-	color: #acb3c2;
-	text-decoration: none;
+    display: inline-block;
+    padding: 20px 10px 0;
+    color: #acb3c2;
+    text-decoration: none;
 }
 
 #rop_core .step .step-item a::before {
-	display: block;
-	position: absolute;
-	z-index: 1;
-	top: 0.2rem;
-	left: 50%;
-	width: 0.6rem;
-	height: 0.6rem;
-	border: 0.1rem solid #fff;
-	border-radius: 50%;
-	background: #042440;
-	content: "";
-	-webkit-transform: translateX(-50%);
-	-ms-transform: translateX(-50%);
-	transform: translateX(-50%);
+    display: block;
+    position: absolute;
+    z-index: 1;
+    top: 0.2rem;
+    left: 50%;
+    width: 0.6rem;
+    height: 0.6rem;
+    border: 0.1rem solid #fff;
+    border-radius: 50%;
+    background: #042440;
+    content: "";
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
 }
 
 #rop_core .step .step-item.active a::before {
-	border: 0.1rem solid #042440;
-	background: #fff;
+    border: 0.1rem solid #042440;
+    background: #fff;
 }
 
 #rop_core .step .step-item.active ~ .step-item::before {
-	background: #e7e9ed;
+    background: #e7e9ed;
 }
 
 #rop_core .step .step-item.active ~ .step-item a::before {
-	background: #e7e9ed;
+    background: #e7e9ed;
 }
 
 #rop_core .tab {
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: flex;
-	display: -ms-flexbox;
-	margin: 0.2rem 0 0.15rem;
-	border-bottom: 0.05rem solid #e7e9ed;
-	list-style: none;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    display: -ms-flexbox;
+    margin: 0.2rem 0 0.15rem;
+    border-bottom: 0.05rem solid #e7e9ed;
+    list-style: none;
 
-	-webkit-align-items: center;
-	align-items: center;
-	-webkit-box-align: center;
-	-ms-flex-align: center;
-	-webkit-flex-wrap: wrap;
-	-ms-flex-wrap: wrap;
-	flex-wrap: wrap;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
 }
 
 #rop_core .tab .tab-item {
-	margin-top: 0;
+    margin-top: 0;
 }
 
 #rop_core .tab .tab-item.tab-action {
-	text-align: right;
+    text-align: right;
 
-	-webkit-box-flex: 1;
-	-webkit-flex: 1 0 auto;
-	-ms-flex: 1 0 auto;
-	flex: 1 0 auto;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 0 auto;
+    -ms-flex: 1 0 auto;
+    flex: 1 0 auto;
 }
 
 #rop_core .tab .tab-item a {
-	display: block;
-	margin: 0 0.4rem 0 0;
-	padding: 0.4rem 0.2rem 0.3rem;
-	border-bottom: 0.1rem solid transparent;
-	color: inherit;
-	text-decoration: none;
+    display: block;
+    margin: 0 0.4rem 0 0;
+    padding: 0.4rem 0.2rem 0.3rem;
+    border-bottom: 0.1rem solid transparent;
+    color: inherit;
+    text-decoration: none;
 }
 
 #rop_core .tab .tab-item a:focus,
 #rop_core .tab .tab-item a:hover {
-	color: #042440;
+    color: #042440;
 }
 
 #rop_core .tab .tab-item.active a,
 #rop_core .tab .tab-item a.active {
-	border-bottom-color: #042440;
-	color: #042440;
+    border-bottom-color: #042440;
+    color: #042440;
 }
 
 #rop_core .tab.tab-block .tab-item {
-	text-align: center;
+    text-align: center;
 
-	-webkit-box-flex: 1;
-	-webkit-flex: 1 0 0;
-	-ms-flex: 1 0 0;
-	flex: 1 0 0;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 0 0;
+    -ms-flex: 1 0 0;
+    flex: 1 0 0;
 }
 
 #rop_core .tab.tab-block .tab-item a {
-	margin: 0;
+    margin: 0;
 }
 
 #rop_core .tab.tab-block .tab-item .badge[data-badge]::after {
-	position: absolute;
-	top: -4px;
-	right: -4px;
-	-webkit-transform: translate(0, 0);
-	-ms-transform: translate(0, 0);
-	transform: translate(0, 0);
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    -webkit-transform: translate(0, 0);
+    -ms-transform: translate(0, 0);
+    transform: translate(0, 0);
 }
 
 #rop_core .tab:not(.tab-block) .badge {
-	padding-right: 2px;
+    padding-right: 2px;
 }
 
 #rop_core .tile {
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: flex;
-	display: -ms-flexbox;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    display: -ms-flexbox;
 
-	-webkit-align-content: space-between;
-	align-content: space-between;
-	-webkit-align-items: flex-start;
-	align-items: flex-start;
-	-webkit-box-align: start;
-	-ms-flex-align: start;
-	-ms-flex-line-pack: justify;
+    -webkit-align-content: space-between;
+    align-content: space-between;
+    -webkit-align-items: flex-start;
+    align-items: flex-start;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
+    -ms-flex-line-pack: justify;
 }
 
 #rop_core .tile .tile-icon,
 #rop_core .tile .tile-action {
-	-webkit-box-flex: 0;
-	-webkit-flex: 0 0 auto;
-	-ms-flex: 0 0 auto;
-	flex: 0 0 auto;
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 0 auto;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
 }
 
 #rop_core .tile .tile-content {
-	-webkit-box-flex: 1;
-	-webkit-flex: 1 1 auto;
-	-ms-flex: 1 1 auto;
-	flex: 1 1 auto;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
 }
 
 #rop_core .tile .tile-content:not(:first-child) {
-	padding-left: 0.4rem;
+    padding-left: 0.4rem;
 }
 
 #rop_core .tile .tile-content:not(:last-child) {
-	padding-right: 0.4rem;
+    padding-right: 0.4rem;
 }
 
 #rop_core .tile .tile-title,
 #rop_core .tile .tile-subtitle {
-	line-height: 1rem;
+    line-height: 1rem;
 }
 
 #rop_core .tile.tile-centered {
-	-webkit-align-items: center;
-	align-items: center;
-	-webkit-box-align: center;
-	-ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
 }
 
 #rop_core .tile.tile-centered .tile-content {
-	overflow: hidden;
+    overflow: hidden;
 }
 
 #rop_core .tile.tile-centered .tile-title,
 #rop_core .tile.tile-centered .tile-subtitle {
-	overflow: hidden;
-	margin-bottom: 0;
-	white-space: nowrap;
-	text-overflow: ellipsis;
+    overflow: hidden;
+    margin-bottom: 0;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 #rop_core .toast {
-	display: block;
-	width: 100%;
-	padding: 0.4rem;
-	border: 0.05rem solid #454d5d;
-	border-color: #454d5d;
-	border-radius: 0.1rem;
-	color: #fff;
-	background: rgba(69, 77, 93, 0.9);
+    display: block;
+    width: 100%;
+    padding: 0.4rem;
+    border: 0.05rem solid #454d5d;
+    border-color: #454d5d;
+    border-radius: 0.1rem;
+    color: #fff;
+    background: rgba(69, 77, 93, 0.9);
 }
 
 #rop_core .toast.toast-primary {
-	border-color: #042440;
-	background: rgba(4, 36, 64, 0.9);
+    border-color: #042440;
+    background: rgba(4, 36, 64, 0.9);
 }
 
 #rop_core .toast.toast-success {
-	border-color: #32b643;
-	background: rgba(50, 182, 67, 0.9);
+    border-color: #32b643;
+    background: rgba(50, 182, 67, 0.9);
 }
 
 #rop_core .toast.toast-warning {
-	border-color: #ffb700;
-	background: rgba(255, 183, 0, 0.9);
+    border-color: #ffb700;
+    background: rgba(255, 183, 0, 0.9);
 }
 
 #rop_core .toast.toast-error {
-	border-color: #e85600;
-	background: rgba(232, 86, 0, 0.9);
+    border-color: #e85600;
+    background: rgba(232, 86, 0, 0.9);
 }
 
 #rop_core .toast a {
-	color: #fff;
-	text-decoration: underline;
+    color: #fff;
+    text-decoration: underline;
 }
 
 #rop_core .toast a:focus,
 #rop_core .toast a:hover,
 #rop_core .toast a:active,
 #rop_core .toast a.active {
-	opacity: 0.75;
+    opacity: 0.75;
 }
 
 #rop_core .toast .btn-clear {
-	margin: 2px -2px 2px 4px;
+    margin: 2px -2px 2px 4px;
 }
 
 #rop_core .tooltip {
-	position: relative;
+    position: relative;
 }
 
 #rop_core .tooltip::after {
-	display: block;
-	overflow: hidden;
-	position: absolute;
-	z-index: 300;
-	bottom: 100%;
-	left: 50%;
-	max-width: 320px;
-	padding: 0.2rem 0.4rem;
-	border-radius: 0.1rem;
-	opacity: 0;
-	color: #fff;
-	background: rgba(69, 77, 93, 0.9);
-	font-size: 0.6rem;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	content: attr(data-tooltip);
-	-webkit-transition: all 0.2s ease;
-	transition: all 0.2s ease;
-	-webkit-transform: translate(-50%, 0.4rem);
-	-ms-transform: translate(-50%, 0.4rem);
-	transform: translate(-50%, 0.4rem);
-	pointer-events: none;
+    display: block;
+    overflow: hidden;
+    position: absolute;
+    z-index: 300;
+    bottom: 100%;
+    left: 50%;
+    max-width: 320px;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.1rem;
+    opacity: 0;
+    color: #fff;
+    background: rgba(69, 77, 93, 0.9);
+    font-size: 0.6rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    content: attr(data-tooltip);
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+    -webkit-transform: translate(-50%, 0.4rem);
+    -ms-transform: translate(-50%, 0.4rem);
+    transform: translate(-50%, 0.4rem);
+    pointer-events: none;
 }
 
 #rop_core .tooltip:focus::after,
 #rop_core .tooltip:hover::after {
-	opacity: 1;
-	-webkit-transform: translate(-50%, -0.2rem);
-	-ms-transform: translate(-50%, -0.2rem);
-	transform: translate(-50%, -0.2rem);
+    opacity: 1;
+    -webkit-transform: translate(-50%, -0.2rem);
+    -ms-transform: translate(-50%, -0.2rem);
+    transform: translate(-50%, -0.2rem);
 }
 
 #rop_core .tooltip[disabled],
 #rop_core .tooltip.disabled {
-	pointer-events: auto;
+    pointer-events: auto;
 }
 
 #rop_core .tooltip.tooltip-right::after {
-	bottom: 50%;
-	left: 100%;
-	-webkit-transform: translate(-0.2rem, 50%);
-	-ms-transform: translate(-0.2rem, 50%);
-	transform: translate(-0.2rem, 50%);
+    bottom: 50%;
+    left: 100%;
+    -webkit-transform: translate(-0.2rem, 50%);
+    -ms-transform: translate(-0.2rem, 50%);
+    transform: translate(-0.2rem, 50%);
 }
 
 #rop_core .tooltip.tooltip-right:focus::after,
 #rop_core .tooltip.tooltip-right:hover::after {
-	-webkit-transform: translate(0.2rem, 50%);
-	-ms-transform: translate(0.2rem, 50%);
-	transform: translate(0.2rem, 50%);
+    -webkit-transform: translate(0.2rem, 50%);
+    -ms-transform: translate(0.2rem, 50%);
+    transform: translate(0.2rem, 50%);
 }
 
 #rop_core .tooltip.tooltip-bottom::after {
-	top: 100%;
-	bottom: auto;
-	-webkit-transform: translate(-50%, -0.4rem);
-	-ms-transform: translate(-50%, -0.4rem);
-	transform: translate(-50%, -0.4rem);
+    top: 100%;
+    bottom: auto;
+    -webkit-transform: translate(-50%, -0.4rem);
+    -ms-transform: translate(-50%, -0.4rem);
+    transform: translate(-50%, -0.4rem);
 }
 
 #rop_core .tooltip.tooltip-bottom:focus::after,
 #rop_core .tooltip.tooltip-bottom:hover::after {
-	-webkit-transform: translate(-50%, 0.2rem);
-	-ms-transform: translate(-50%, 0.2rem);
-	transform: translate(-50%, 0.2rem);
+    -webkit-transform: translate(-50%, 0.2rem);
+    -ms-transform: translate(-50%, 0.2rem);
+    transform: translate(-50%, 0.2rem);
 }
 
 #rop_core .tooltip.tooltip-left::after {
-	right: 100%;
-	bottom: 50%;
-	left: auto;
-	-webkit-transform: translate(0.4rem, 50%);
-	-ms-transform: translate(0.4rem, 50%);
-	transform: translate(0.4rem, 50%);
+    right: 100%;
+    bottom: 50%;
+    left: auto;
+    -webkit-transform: translate(0.4rem, 50%);
+    -ms-transform: translate(0.4rem, 50%);
+    transform: translate(0.4rem, 50%);
 }
 
 #rop_core .tooltip.tooltip-left:focus::after,
 #rop_core .tooltip.tooltip-left:hover::after {
-	-webkit-transform: translate(-0.2rem, 50%);
-	-ms-transform: translate(-0.2rem, 50%);
-	transform: translate(-0.2rem, 50%);
+    -webkit-transform: translate(-0.2rem, 50%);
+    -ms-transform: translate(-0.2rem, 50%);
+    transform: translate(-0.2rem, 50%);
 }
 
 @-webkit-keyframes loading {
-	0% {
-		-webkit-transform: rotate(0deg);
-		transform: rotate(0deg);
-	}
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
 
-	100% {
-		-webkit-transform: rotate(360deg);
-		transform: rotate(360deg);
-	}
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
 }
 
 @keyframes loading {
-	0% {
-		-webkit-transform: rotate(0deg);
-		transform: rotate(0deg);
-	}
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
 
-	100% {
-		-webkit-transform: rotate(360deg);
-		transform: rotate(360deg);
-	}
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
 }
 
 @-webkit-keyframes slide-down {
-	0% {
-		opacity: 0;
-		-webkit-transform: translateY(-1.6rem);
-		transform: translateY(-1.6rem);
-	}
+    0% {
+        opacity: 0;
+        -webkit-transform: translateY(-1.6rem);
+        transform: translateY(-1.6rem);
+    }
 
-	100% {
-		opacity: 1;
-		-webkit-transform: translateY(0);
-		transform: translateY(0);
-	}
+    100% {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+    }
 }
 
 @keyframes slide-down {
-	0% {
-		opacity: 0;
-		-webkit-transform: translateY(-1.6rem);
-		transform: translateY(-1.6rem);
-	}
+    0% {
+        opacity: 0;
+        -webkit-transform: translateY(-1.6rem);
+        transform: translateY(-1.6rem);
+    }
 
-	100% {
-		opacity: 1;
-		-webkit-transform: translateY(0);
-		transform: translateY(0);
-	}
+    100% {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+    }
 }
 
 #rop_core .text-primary {
-	color: #042440;
+    color: #042440;
 }
 
 #rop_core a.text-primary:focus,
 #rop_core a.text-primary:hover {
-	color: #031728;
+    color: #031728;
 }
 
 #rop_core .text-secondary {
-	color: #d94f07;
+    color: #d94f07;
 }
 
 #rop_core a.text-secondary:focus,
 #rop_core a.text-secondary:hover {
-	color: #c04606;
+    color: #c04606;
 }
 
 #rop_core .text-gray {
-	color: #acb3c2;
+    color: #acb3c2;
 }
 
 #rop_core a.text-gray:focus,
 #rop_core a.text-gray:hover {
-	color: #9ea6b7;
+    color: #9ea6b7;
 }
 
 #rop_core .text-light {
-	color: #fff;
+    color: #fff;
 }
 
 #rop_core a.text-light:focus,
 #rop_core a.text-light:hover {
-	color: #f2f2f2;
+    color: #f2f2f2;
 }
 
 #rop_core .text-success {
-	color: #32b643;
+    color: #32b643;
 }
 
 #rop_core a.text-success:focus,
 #rop_core a.text-success:hover {
-	color: #2da23c;
+    color: #2da23c;
 }
 
 #rop_core .text-warning {
-	color: #ffb700;
+    color: #ffb700;
 }
 
 #rop_core a.text-warning:focus,
 #rop_core a.text-warning:hover {
-	color: #e6a500;
+    color: #e6a500;
 }
 
 #rop_core .text-error {
-	color: #e85600;
+    color: #e85600;
 }
 
 #rop_core a.text-error:focus,
 #rop_core a.text-error:hover {
-	color: #cf4d00;
+    color: #cf4d00;
 }
 
 #rop_core .bg-primary {
-	background: #042440;
+    background: #042440;
 }
 
 #rop_core .bg-secondary {
-	background: #e85407;
+    background: #e85407;
 }
 
 #rop_core .bg-dark {
-	background: #454d5d;
+    background: #454d5d;
 }
 
 #rop_core .bg-gray {
-	background: #f8f9fa;
+    background: #f8f9fa;
 }
 
 #rop_core .bg-success {
-	background: #32b643;
+    background: #32b643;
 }
 
 #rop_core .bg-warning {
-	background: #ffb700;
+    background: #ffb700;
 }
 
 #rop_core .bg-error {
-	background: #e85600;
+    background: #e85600;
 }
 
 #rop_core .c-hand {
-	cursor: pointer;
+    cursor: pointer;
 }
 
 #rop_core .c-move {
-	cursor: move;
+    cursor: move;
 }
 
 #rop_core .c-zoom-in {
-	cursor: -webkit-zoom-in;
-	cursor: zoom-in;
+    cursor: -webkit-zoom-in;
+    cursor: zoom-in;
 }
 
 #rop_core .c-zoom-out {
-	cursor: -webkit-zoom-out;
-	cursor: zoom-out;
+    cursor: -webkit-zoom-out;
+    cursor: zoom-out;
 }
 
 #rop_core .c-not-allowed {
-	cursor: not-allowed;
+    cursor: not-allowed;
 }
 
 #rop_core .c-auto {
-	cursor: auto;
+    cursor: auto;
 }
 
 #rop_core .d-block {
-	display: block;
+    display: block;
 }
 
 #rop_core .d-inline {
-	display: inline;
+    display: inline;
 }
 
 #rop_core .d-inline-block {
-	display: inline-block;
+    display: inline-block;
 }
 
 #rop_core .d-flex {
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: flex;
-	display: -ms-flexbox;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    display: -ms-flexbox;
 }
 
 #rop_core .d-inline-flex {
-	display: -webkit-inline-box;
-	display: -webkit-inline-flex;
-	display: inline-flex;
-	display: -ms-inline-flexbox;
+    display: -webkit-inline-box;
+    display: -webkit-inline-flex;
+    display: inline-flex;
+    display: -ms-inline-flexbox;
 }
 
 #rop_core .d-none,
 #rop_core .d-hide {
-	display: none !important;
+    display: none !important;
 }
 
 #rop_core .d-visible {
-	visibility: visible;
+    visibility: visible;
 }
 
 #rop_core .d-invisible {
-	visibility: hidden;
+    visibility: hidden;
 }
 
 #rop_core .text-hide {
-	border: 0;
-	color: transparent;
-	background: transparent;
-	text-shadow: none;
-	font-size: 0;
-	line-height: 0;
+    border: 0;
+    color: transparent;
+    background: transparent;
+    text-shadow: none;
+    font-size: 0;
+    line-height: 0;
 }
 
 #rop_core .text-assistive {
-	overflow: hidden;
-	clip: rect(0, 0, 0, 0);
-	position: absolute;
-	width: 1px;
-	height: 1px;
-	margin: -1px;
-	padding: 0;
-	border: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
 }
 
 #rop_core .divider,
 #rop_core .divider-vert {
-	display: block;
-	position: relative;
+    display: block;
+    position: relative;
 }
 
 #rop_core .divider[data-content]::after,
 #rop_core .divider-vert[data-content]::after {
-	display: inline-block;
-	padding: 0 0.4rem;
-	color: #acb3c2;
-	background: #fff;
-	font-size: 0.6rem;
-	content: attr(data-content);
-	-webkit-transform: translateY(-0.55rem);
-	-ms-transform: translateY(-0.55rem);
-	transform: translateY(-0.55rem);
+    display: inline-block;
+    padding: 0 0.4rem;
+    color: #acb3c2;
+    background: #fff;
+    font-size: 0.6rem;
+    content: attr(data-content);
+    -webkit-transform: translateY(-0.55rem);
+    -ms-transform: translateY(-0.55rem);
+    transform: translateY(-0.55rem);
 }
 
 #rop_core .divider {
-	height: 0.05rem;
-	margin: 0.4rem 0;
-	border-top: 0.05rem solid #e7e9ed;
+    height: 0.05rem;
+    margin: 0.4rem 0;
+    border-top: 0.05rem solid #e7e9ed;
 }
 
 #rop_core .divider[data-content] {
-	margin: 0.8rem 0;
+    margin: 0.8rem 0;
 }
 
 #rop_core .divider-vert {
-	display: block;
-	padding: 0.8rem;
+    display: block;
+    padding: 0.8rem;
 }
 
 #rop_core .divider-vert::before {
-	display: block;
-	position: absolute;
-	top: 0.4rem;
-	bottom: 0.4rem;
-	left: 50%;
-	border-left: 0.05rem solid #e7e9ed;
-	content: "";
-	-webkit-transform: translateX(-50%);
-	-ms-transform: translateX(-50%);
-	transform: translateX(-50%);
+    display: block;
+    position: absolute;
+    top: 0.4rem;
+    bottom: 0.4rem;
+    left: 50%;
+    border-left: 0.05rem solid #e7e9ed;
+    content: "";
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
 }
 
 #rop_core .divider-vert[data-content]::after {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	padding: 0.2rem 0;
-	-webkit-transform: translate(-50%, -50%);
-	-ms-transform: translate(-50%, -50%);
-	transform: translate(-50%, -50%);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    padding: 0.2rem 0;
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
 }
 
 #rop_core .loading {
-	position: relative;
-	min-height: 0.8rem;
-	color: transparent !important;
-	pointer-events: none;
+    position: relative;
+    min-height: 0.8rem;
+    color: transparent !important;
+    pointer-events: none;
 }
 
 #rop_core .loading::after {
-	display: block;
-	position: absolute;
-	z-index: 1;
-	top: 50%;
-	left: 50%;
-	width: 0.8rem;
-	height: 0.8rem;
-	margin-top: -0.4rem;
-	margin-left: -0.4rem;
-	border: 0.1rem solid #042440;
-	border-top-color: transparent;
-	border-right-color: transparent;
-	border-radius: 50%;
-	content: "";
-	-webkit-animation: loading 500ms infinite linear;
-	animation: loading 500ms infinite linear;
+    display: block;
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    left: 50%;
+    width: 0.8rem;
+    height: 0.8rem;
+    margin-top: -0.4rem;
+    margin-left: -0.4rem;
+    border: 0.1rem solid #042440;
+    border-top-color: transparent;
+    border-right-color: transparent;
+    border-radius: 50%;
+    content: "";
+    -webkit-animation: loading 500ms infinite linear;
+    animation: loading 500ms infinite linear;
 }
 
 #rop_core .loading.loading-lg {
-	min-height: 2rem;
+    min-height: 2rem;
 }
 
 #rop_core .loading.loading-lg::after {
-	width: 1.6rem;
-	height: 1.6rem;
-	margin-top: -0.8rem;
-	margin-left: -0.8rem;
+    width: 1.6rem;
+    height: 1.6rem;
+    margin-top: -0.8rem;
+    margin-left: -0.8rem;
 }
 
 #rop_core .clearfix::after,
 #rop_core .container::after {
-	display: table;
-	clear: both;
-	content: "";
+    display: table;
+    clear: both;
+    content: "";
 }
 
 #rop_core .float-left {
-	float: left !important;
+    float: left !important;
 }
 
 #rop_core .float-right {
-	float: right !important;
+    float: right !important;
 }
 
 #rop_core .relative {
-	position: relative;
+    position: relative;
 }
 
 #rop_core .absolute {
-	position: absolute;
+    position: absolute;
 }
 
 #rop_core .fixed {
-	position: fixed;
+    position: fixed;
 }
 
 #rop_core .centered {
-	display: block;
-	float: none;
-	margin-right: auto;
-	margin-left: auto;
+    display: block;
+    float: none;
+    margin-right: auto;
+    margin-left: auto;
 }
 
 #rop_core .m-0 {
-	margin: 0;
+    margin: 0;
 }
 
 #rop_core .mb-0 {
-	margin-bottom: 0;
+    margin-bottom: 0;
 }
 
 #rop_core .ml-0 {
-	margin-left: 0;
+    margin-left: 0;
 }
 
 #rop_core .mr-0 {
-	margin-right: 0;
+    margin-right: 0;
 }
 
 #rop_core .mt-0 {
-	margin-top: 0;
+    margin-top: 0;
 }
 
 #rop_core .mx-0 {
-	margin-right: 0;
-	margin-left: 0;
+    margin-right: 0;
+    margin-left: 0;
 }
 
 #rop_core .my-0 {
-	margin-top: 0;
-	margin-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 #rop_core .m-1 {
-	margin: 0.2rem;
+    margin: 0.2rem;
 }
 
 #rop_core .mb-1 {
-	margin-bottom: 0.2rem;
+    margin-bottom: 0.2rem;
 }
 
 #rop_core .ml-1 {
-	margin-left: 0.2rem;
+    margin-left: 0.2rem;
 }
 
 #rop_core .mr-1 {
-	margin-right: 0.2rem;
+    margin-right: 0.2rem;
 }
 
 #rop_core .mt-1 {
-	margin-top: 0.2rem;
+    margin-top: 0.2rem;
 }
 
 #rop_core .mx-1 {
-	margin-right: 0.2rem;
-	margin-left: 0.2rem;
+    margin-right: 0.2rem;
+    margin-left: 0.2rem;
 }
 
 #rop_core .my-1 {
-	margin-top: 0.2rem;
-	margin-bottom: 0.2rem;
+    margin-top: 0.2rem;
+    margin-bottom: 0.2rem;
 }
 
 #rop_core .m-2 {
-	margin: 0.4rem;
+    margin: 0.4rem;
 }
 
 #rop_core .mb-2 {
-	margin-bottom: 0.4rem;
+    margin-bottom: 0.4rem;
 }
 
 #rop_core .ml-2 {
-	margin-left: 0.4rem;
+    margin-left: 0.4rem;
 }
 
 #rop_core .mr-2 {
-	margin-right: 0.4rem;
+    margin-right: 0.4rem;
 }
 
 #rop_core .mt-2 {
-	margin-top: 0.4rem;
+    margin-top: 0.4rem;
 }
 
 #rop_core .mx-2 {
-	margin-right: 0.4rem;
-	margin-left: 0.4rem;
+    margin-right: 0.4rem;
+    margin-left: 0.4rem;
 }
 
 #rop_core .my-2 {
-	margin-top: 0.4rem;
-	margin-bottom: 0.4rem;
+    margin-top: 0.4rem;
+    margin-bottom: 0.4rem;
 }
 
 #rop_core .p-0 {
-	padding: 0;
+    padding: 0;
 }
 
 #rop_core .pb-0 {
-	padding-bottom: 0;
+    padding-bottom: 0;
 }
 
 #rop_core .pl-0 {
-	padding-left: 0;
+    padding-left: 0;
 }
 
 #rop_core .pr-0 {
-	padding-right: 0;
+    padding-right: 0;
 }
 
 #rop_core .pt-0 {
-	padding-top: 0;
+    padding-top: 0;
 }
 
 #rop_core .px-0 {
-	padding-right: 0;
-	padding-left: 0;
+    padding-right: 0;
+    padding-left: 0;
 }
 
 #rop_core .py-0 {
-	padding-top: 0;
-	padding-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 #rop_core .p-1 {
-	padding: 0.2rem;
+    padding: 0.2rem;
 }
 
 #rop_core .pb-1 {
-	padding-bottom: 0.2rem;
+    padding-bottom: 0.2rem;
 }
 
 #rop_core .pl-1 {
-	padding-left: 0.2rem;
+    padding-left: 0.2rem;
 }
 
 #rop_core .pr-1 {
-	padding-right: 0.2rem;
+    padding-right: 0.2rem;
 }
 
 #rop_core .pt-1 {
-	padding-top: 0.2rem;
+    padding-top: 0.2rem;
 }
 
 #rop_core .px-1 {
-	padding-right: 0.2rem;
-	padding-left: 0.2rem;
+    padding-right: 0.2rem;
+    padding-left: 0.2rem;
 }
 
 #rop_core .py-1 {
-	padding-top: 0.2rem;
-	padding-bottom: 0.2rem;
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
 }
 
 #rop_core .p-2 {
-	padding: 0.4rem;
+    padding: 0.4rem;
 }
 
 #rop_core .pb-2 {
-	padding-bottom: 0.4rem;
+    padding-bottom: 0.4rem;
 }
 
 #rop_core .pl-2 {
-	padding-left: 0.4rem;
+    padding-left: 0.4rem;
 }
 
 #rop_core .pr-2 {
-	padding-right: 0.4rem;
+    padding-right: 0.4rem;
 }
 
 #rop_core .pt-2 {
-	padding-top: 0.4rem;
+    padding-top: 0.4rem;
 }
 
 #rop_core .px-2 {
-	padding-right: 0.4rem;
-	padding-left: 0.4rem;
+    padding-right: 0.4rem;
+    padding-left: 0.4rem;
 }
 
 #rop_core .py-2 {
-	padding-top: 0.4rem;
-	padding-bottom: 0.4rem;
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
 }
 
 #rop_core .rounded {
-	border-radius: 0.1rem;
+    border-radius: 0.1rem;
 }
 
 #rop_core .circle {
-	border-radius: 50%;
+    border-radius: 50%;
 }
 
 #rop_core .text-left {
-	text-align: left;
+    text-align: left;
 }
 
 #rop_core .text-right {
-	text-align: right;
+    text-align: right;
 }
 
 #rop_core .text-center {
-	text-align: center;
+    text-align: center;
 }
 
 #rop_core .text-justify {
-	text-align: justify;
+    text-align: justify;
 }
 
 #rop_core .text-lowercase {
-	text-transform: lowercase;
+    text-transform: lowercase;
 }
 
 #rop_core .text-uppercase {
-	text-transform: uppercase;
+    text-transform: uppercase;
 }
 
 #rop_core .text-capitalize {
-	text-transform: capitalize;
+    text-transform: capitalize;
 }
 
 #rop_core .text-normal {
-	font-weight: normal;
+    font-weight: normal;
 }
 
 #rop_core .text-bold {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 #rop_core .text-italic {
-	font-style: italic;
+    font-style: italic;
 }
 
 #rop_core .text-large {
-	font-size: 1.2em;
+    font-size: 1.2em;
 }
 
 #rop_core .text-ellipsis {
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 #rop_core .text-clip {
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: clip;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: clip;
 }
 
 #rop_core .text-break {
-	word-wrap: break-word;
-	word-break: break-word;
-	-webkit-hyphens: auto;
-	hyphens: auto;
+    word-wrap: break-word;
+    word-break: break-word;
+    -webkit-hyphens: auto;
+    hyphens: auto;
 
-	-ms-hyphens: auto;
+    -ms-hyphens: auto;
+}
+
+.ajax-loader {
+    position: absolute;
+    top: 2px;
+    left: -20px;
+}
+
+.rop-inactive-account .tile-icon,
+.rop-inactive-account .tile-content,
+.rop-inactive-account .tile-action {
+    opacity: 0.5;
+}
+
+.rop-account .form-switch {
+    position: relative;
+}
+
+.rop-inactive-account .tile-action:hover {
+    opacity: 1;
+}
+
+.service_account_image {
+    width: 150%;
+    border-radius: 50%;
+    margin-left: -25%;
+    margin-top: -25%;
+}
+
+.icon_box {
+    width: 45px;
+    border-radius: 50%;
+    height: 45px;
+    padding: 7px;
+    text-align: center;
+    background-color: #333333;
+    color: #efefef;
+    position: relative;
+}
+
+.icon_box.has_image .fa {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    padding: 4px;
+    border-radius: 50%;
+    font-size: 0.7em;
+}
+
+.icon_box.no-image > .fa {
+    width: 30px;
+    height: 30px;
+
+    font-size: 30px;
+}
+
+.facebook, .fa-facebook-official {
+    background-color: #3b5998;
+}
+
+.twitter, .fa-twitter {
+    background-color: #55acee;
+}
+
+.linkedin, .fa-linkedin {
+    background-color: #007bb5;
+}
+
+.tumblr, .fa-tumblr {
+    background-color: #32506d;
+}
+
+#rop_core .avatar .avatar-icon {
+    background: #333;
+    border-radius: 50%;
+    font-size: 16px;
+    text-align: center;
+    line-height: 20px;
+}
+
+#rop_core .avatar .avatar-icon.fa-facebook-official {
+    background-color: #3b5998;
+}
+
+#rop_core .avatar .avatar-icon.fa-twitter {
+    background-color: #55acee;
+}
+
+#rop_core .avatar .avatar-icon.fa-linkedin {
+    background-color: #007bb5;
+}
+
+#rop_core .avatar .avatar-icon.fa-tumblr {
+    background-color: #32506d;
+}
+
+#rop_core .service.facebook {
+    color: #3b5998;
+}
+
+#rop_core .service.twitter {
+    color: #55acee;
+}
+
+#rop_core .service.linkedin {
+    color: #007bb5;
+}
+
+#rop_core .service.tumblr {
+    color: #32506d;
+}
+
+#rop_core .rop-selector-account-container.active {
+    opacity: 1
+}
+
+#rop_core .rop-selector-account-container {
+    cursor: pointer;
+    opacity: 0.5;
+    border-top: 1px solid #50596c;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#rop_core .rop-selector-accounts .rop-account-name {
+    line-height: inherit;
+}
+
+#rop_core .rop-selector-accounts {
+    border-right: 1px solid #50596c;
+}
+
+#rop_core .rop-selector-account-container .rop-service-name {
+    text-transform: capitalize;
+}
+
+#rop_core .rop-selector-account-container p.rop-account-name {
+    margin: 0 0 0.1rem;
+    font-style: italic;
+    font-size: 14px;
 }

@@ -31,7 +31,7 @@
 					</li>
 				</ul>
 			</div>
-			<component :is="page.view"></component>
+			<component :is="page.template" :type="page.view"></component>
 		</div>
 	</div>
 </template>
@@ -40,13 +40,11 @@
 	/* global ROP_ASSETS_URL */
 	import AccountsTab from './accounts-tab-panel.vue'
 	import SettingsTab from './settings-tab-panel.vue'
-	import PostFormatTab from './post-format-tab-panel.vue'
-	import ScheduleTab from './schedule-tab-panel.vue'
+	import AccountsSelectorTab from './accounts-selector-panel.vue'
 	import QueueTab from './queue-tab-panel.vue'
 	import LogsTab from './logs-tab-panel.vue'
 	import Toast from './reusables/toast.vue'
 	import CountDown from './reusables/countdown.vue'
-	import AjaxLoader from './reusables/ajax-loader.vue'
 
 	module.exports = {
 		name: 'main-page-panel',
@@ -91,17 +89,13 @@
 				this.$store.dispatch( 'fetchAJAX', { req: 'update_settings_toggle', data: { custom_messages: this.$store.state.generalSettings.custom_messages, beta_user: this.$store.state.generalSettings.beta_user, remote_check: this.$store.state.generalSettings.remote_check } } )
 			},
 			displayProBadge: function ( slug ) {
-				if ( !this.has_pro && ( slug === 'schedule' || slug === 'queue' ) ) {
-					return true
-				}
-				return false
+				return  ( ! this.has_pro && ( slug === 'schedule' || slug === 'queue' ) )
 			}
 		},
 		components: {
 			'accounts': AccountsTab,
 			'settings': SettingsTab,
-			'post-format': PostFormatTab,
-			'schedule': ScheduleTab,
+			'accounts-selector': AccountsSelectorTab,
 			'queue': QueueTab,
 			'logs': LogsTab,
 			'toast': Toast,

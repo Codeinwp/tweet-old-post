@@ -11,6 +11,9 @@ window.onload = function () {
 	var RopApp = new Vue( {
 		el: '#rop_core',
 		store,
+		components: {
+			MainPagePanel
+		},
 		created () {
 			store.dispatch( 'fetchAJAX', { req: 'manage_cron', data: { action: 'status' } } )
 			store.dispatch( 'fetchAJAXPromise', { req: 'get_available_services' } )
@@ -19,8 +22,5 @@ window.onload = function () {
 			store.dispatch( 'fetchAJAX', { req: 'get_queue' } )
 			store.dispatch( 'fetchAJAX', { req: 'get_log' } )
 		},
-		components: {
-			MainPagePanel
-		}
 	} )
 }

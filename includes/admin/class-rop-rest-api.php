@@ -318,9 +318,9 @@ class Rop_Rest_Api {
 		$sh_factory  = new Rop_Shortner_Factory();
 		$this->response->set_code( '500' )->set_message( __( 'An error occurred when trying to save the post format.', 'tweet-old-post' ) );
 		try {
-			if ( $data['post_format']['short_url_service'] !== 'wp_short_url' ) {
-				$shortner = $sh_factory->build( $data['post_format']['short_url_service'] );
-				$shortner->set_credentials( $data['post_format']['shortner_credentials'] );
+			if ( $data['data']['short_url_service'] !== 'wp_short_url' ) {
+				$shortner = $sh_factory->build( $data['data']['short_url_service'] );
+				$shortner->set_credentials( $data['data']['shortner_credentials'] );
 			}
 			$this->response->set_code( '201' )
 			               ->set_message( __( 'Shortner and credentials set successfully.', 'tweet-old-post' ) );
@@ -328,12 +328,12 @@ class Rop_Rest_Api {
 			// Service not found or can't be built. Maybe log this exception.
 			// Also shorten service not updated at this point.
 			$log           = new Rop_Logger();
-			$error_message = sprintf( esc_html__( 'The shortner service %1$s can NOT be built or was not found', 'tweet-old-post' ), $data['post_format']['short_url_service'] );
+			$error_message = sprintf( esc_html__( 'The shortner service %1$s can NOT be built or was not found', 'tweet-old-post' ), $data['data']['short_url_service'] );
 			$log->info( __( 'Shortner service can NOT be updated.', 'tweet-old-post' ) );
-			$log->warn( $error_message, $exception );
+			$log->warn( $error_message . $exception->getMessage() );
 			$this->response->set_code( '500' )->set_message( $error_message );
 		}
-		if ( $post_format->add_update_post_format( $data['account_id'], $data['post_format'] ) ) {
+		if ( $post_format->add_update_post_format( $data['account_id'], $data['data'] ) ) {
 			$this->response->set_code( '201' )
 			               ->set_message( sprintf( esc_html__( 'Post format was saved successfully. For the %1$s service', 'tweet-old-post' ), $data['service'] ) );
 		}
