@@ -222,8 +222,8 @@ class Rop_Global_Settings {
 		'type'        => 'fixed',
 		'interval_r'  => '2.5',
 		'interval_f'  => array(
-			'week_days' => array( '1', '3', '5' ),
-			'time'      => array( '10:30', '11:30' ),
+			'week_days' => array( '1', '2','3','4', '5', '6', '7' ),
+			'time'      => array( '9:30' ),
 		),
 		'timestamp'   => null,
 		'first_share' => null,

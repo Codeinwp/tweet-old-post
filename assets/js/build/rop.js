@@ -20411,9 +20411,7 @@ module.exports = {
 			}
 			this.action = action;
 			this.component_label = label;
-			if (this.active_data.length === 0) {
-				this.getAccountData();
-			}
+			this.checkActiveData();
 		},
 		getAccountData: function getAccountData() {
 			var _this = this;
@@ -20496,6 +20494,11 @@ module.exports = {
 			});
 			this.$forceUpdate();
 		},
+		checkActiveData: function checkActiveData() {
+			if (typeof this.active_data[this.selected_account] === 'undefined') {
+				this.getAccountData();
+			}
+		},
 		setActiveAccount: function setActiveAccount(id) {
 			if (this.is_loading) {
 				this.$log.warn("Request in progress...Bail");
@@ -20508,6 +20511,10 @@ module.exports = {
 
 			this.$log.info('Switched account data  ', this.type, id);
 			this.selected_account = id;
+			/**
+    * When a new account is added and we don't have any data for it.
+    */
+			this.checkActiveData();
 		}
 	},
 	components: {

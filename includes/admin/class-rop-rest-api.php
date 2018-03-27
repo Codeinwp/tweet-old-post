@@ -230,12 +230,11 @@ class Rop_Rest_Api {
 	 */
 	private function reset_schedule( $data ) {
 		$schedules = new Rop_Scheduler_Model();
-		$this->response->set_code( '500' )->set_message( __( 'An error occurred when trying to update the schedule.', 'tweet-old-post' ) );
-		if ( $schedules->remove_schedule( $data['account_id'] ) ) {
-			$this->response->set_code( '201' )
-			               ->set_message( __( 'Schedule was reset successfully.', 'tweet-old-post' ) )
-			               ->set_data( $schedules->get_schedule() );
-		}
+		$schedules->remove_schedule( $data['account_id'] );
+		$this->response->set_code( '201' )
+		               ->set_message( __( 'Schedule was reset successfully.', 'tweet-old-post' ) )
+		               ->set_data( $schedules->get_schedule() );
+
 
 		return $this->response->is_not_silent()->to_array();
 	}
@@ -320,7 +319,7 @@ class Rop_Rest_Api {
 	 * @return array
 	 */
 	private function save_post_format( $data ) {
-		$post_format = new Rop_Post_Format_Model(   );
+		$post_format = new Rop_Post_Format_Model();
 		$sh_factory  = new Rop_Shortner_Factory();
 		$this->response->set_code( '500' )->set_message( __( 'An error occurred when trying to save the post format.', 'tweet-old-post' ) );
 		try {
@@ -361,7 +360,7 @@ class Rop_Rest_Api {
 	 * @return array
 	 */
 	private function reset_post_format( $data ) {
-		$post_format = new Rop_Post_Format_Model(   );
+		$post_format = new Rop_Post_Format_Model();
 		$post_format->remove_post_format( $data['account_id'] );
 		$this->response->set_code( '201' )
 		               ->set_message( sprintf( esc_html__( 'Post format was reseted to defaults successfully. For the %1$s service', 'tweet-old-post' ), $data['service'] ) );
@@ -384,7 +383,7 @@ class Rop_Rest_Api {
 	 * @return array
 	 */
 	private function get_post_format( $data ) {
-		$post_format = new Rop_Post_Format_Model(  );
+		$post_format = new Rop_Post_Format_Model();
 		$this->response->set_code( '200' )
 		               ->set_message( sprintf( esc_html__( 'Post format was retrieved successfully. For the %1$s service', 'tweet-old-post' ), $data['service'] ) )
 		               ->set_data( $post_format->get_post_format() );

@@ -138,9 +138,7 @@
 				}
 				this.action = action;
 				this.component_label = label;
-				if (this.active_data.length === 0) {
-					this.getAccountData();
-				}
+				this.checkActiveData();
 			},
 			getAccountData() {
 				if (this.is_loading) {
@@ -217,6 +215,11 @@
 				})
 				this.$forceUpdate()
 			},
+			checkActiveData(){
+				if (typeof  this.active_data[this.selected_account] === 'undefined') {
+					this.getAccountData();
+				}
+			},
 			setActiveAccount(id) {
 				if (this.is_loading) {
 					this.$log.warn("Request in progress...Bail");
@@ -229,6 +232,10 @@
 
 				this.$log.info('Switched account data  ', this.type, id);
 				this.selected_account = id;
+				/**
+				 * When a new account is added and we don't have any data for it.
+				 */
+				this.checkActiveData();
 			}
 		},
 		components: {
