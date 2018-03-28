@@ -75,12 +75,11 @@ class Rop_Rest_Api {
 		$response         = $this->response;
 		$method_requested = $request->get_param( 'req' );
 		if ( method_exists( $this, $method_requested ) ) {
-			$data = json_decode( $request->get_body(), true );
-			if ( ! empty( $data ) ) {
-				$response = $this->$method_requested( $data );
-			} else {
-				$response = $this->$method_requested();
-			}
+			$data     = json_decode( $request->get_body(), true );
+			$data     = is_array( $data ) ? $data : array();
+			$response = $this->$method_requested( $data );
+
+
 		}
 
 		return $response;
@@ -111,7 +110,7 @@ class Rop_Rest_Api {
 	 * API method called to publish a queue event and return active queue.
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
-	 * @Throws Exception If a service can not be built.
+	 * @Throws  Exception If a service can not be built.
 	 *
 	 * @since   8.0.0
 	 * @access  private
@@ -263,7 +262,7 @@ class Rop_Rest_Api {
 	 * API method called to get shortner service credentials.
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
-	 * @Throws Exception Throws an exception if a short url service can't be built.
+	 * @Throws  Exception Throws an exception if a short url service can't be built.
 	 *
 	 * @since   8.0.0
 	 * @access  private
@@ -308,7 +307,7 @@ class Rop_Rest_Api {
 	 * API method called to save a post format.
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
-	 * @Throws Exception Throws an exception if a short url service can't be built.
+	 * @Throws  Exception Throws an exception if a short url service can't be built.
 	 *
 	 * @since   8.0.0
 	 * @access  private
@@ -674,7 +673,7 @@ class Rop_Rest_Api {
 	 * API method called to try and authenticate a service.
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
-	 * @Throws Exception Throws an exception if a service can't be built.
+	 * @Throws  Exception Throws an exception if a service can't be built.
 	 *
 	 * @since   8.0.0
 	 * @access  private
@@ -729,7 +728,7 @@ class Rop_Rest_Api {
 	 * API method called to retrieve a service sign in url.
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
-	 * @Throws Exception Throws an exception if the service can't be built.
+	 * @Throws  Exception Throws an exception if the service can't be built.
 	 *
 	 * @since   8.0.0
 	 * @access  private

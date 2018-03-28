@@ -141,9 +141,9 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $account_id The account ID.
+	 * @param   string $account_id    The account ID.
 	 * @param   bool   $schedule_data The schedule data.
-	 * @param   bool   $last_share A last share timestamp if needed.
+	 * @param   bool   $last_share    A last share timestamp if needed.
 	 *
 	 * @return mixed
 	 */
@@ -224,53 +224,40 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 				}
 
 				sort( $week_days );
-				/**
-				 * Get first available week days.
-				 */
-				$next_pos   = $this->get_days_start_pos( $week_days );
-				$size       = count( $week_days );
-				$event_time = $this->get_current_time();
-				/**
-				 * Get the start $event_date as today related to the current time.
-				 */
-				$event_date = strtotime( 'today', $this->get_current_time() );
-				$i          = 0;
-				$times      = array_map( function ( $time ) {
+				$times = array_map( function ( $time ) {
 					return $this->convert_string_to_float( $time );
 				}, $times );
 				sort( $times );
+				/**
+				 * Get first available week days.
+				 */
+				$start_week = $this->get_week_start();
+				$i          = 0;
+
 				while ( $i < $future_events ) {
 					/**
 					 * Get the first available day comparing with the previous event.
 					 */
-					foreach ( $times as $time ) {
-						$event_time = $event_date + $time;
-						/**
-						 * If event is older than today, bail.
-						 */
-						if ( $event_time < $this->get_current_time() ) {
-							continue;
+					foreach ( $week_days as $day ) {
+						$event_day = $start_week + ( ( intval( $day ) - 1 ) * DAY_IN_SECONDS );
+						foreach ( $times as $time ) {
+							$event_time = $event_day + $time;
+							/**
+							 * If event is older than today, bail.
+							 */
+							if ( $event_time < $this->get_current_time() ) {
+								continue;
+							}
+							$i ++;
+							array_push( $list[ $account_id ], $event_time );
+
 						}
-						$i ++;
-						array_push( $list[ $account_id ], $event_time );
-					}
 
-					$event_date = $this->next_day_of_week( $event_time, $week_days[ $next_pos ] );
-					$reset_week = strtotime( 'next monday', $event_time );
-
-					if ( $reset_week < $event_date ) {
-						$next_pos   = 0;
-						$event_date = $this->next_day_of_week( $event_time, $week_days[ $next_pos ] );
+						$start_week = strtotime( '+1 week', $start_week );
 					}
-					$next_pos = $this->next_pos_in_size( $next_pos, $size );
 				}
 				$to_sort = $list[ $account_id ];
-				uasort(
-					$to_sort,
-					function ( $a, $b ) {
-						return $a - $b;
-					}
-				);
+				sort($to_sort);
 				$list[ $account_id ] = array_slice( $to_sort, 0, $future_events );
 				$list[ $account_id ] = array_map( function ( $value ) {
 					return date( "Y-m-d H:i:s", $value );
@@ -287,7 +274,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  private
 	 *
-	 * @param   float $value The value to be converted.
+	 * @param   float $value    The value to be converted.
 	 * @param   bool  $as_array Flag to change return type to array.
 	 *
 	 * @return array|string
@@ -312,8 +299,8 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  private
 	 *
-	 * @param   string $time The time to append to.
-	 * @param   int    $hours The hours to be added.
+	 * @param   string $time    The time to append to.
+	 * @param   int    $hours   The hours to be added.
 	 * @param   int    $minutes The minutes to be added.
 	 *
 	 * @return false|string
@@ -322,37 +309,6 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		$timestamp = strtotime( '+' . $hours . ' hour +' . $minutes . ' minutes', $time );
 
 		return $timestamp;
-	}
-
-	/**
-	 * Computes the next available day of the week from current time
-	 * with respect to the days of the week array passed from the schedules.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 *
-	 * @param   array $days_of_week The days of the week array.
-	 *
-	 * @return int
-	 */
-	private function get_days_start_pos( $days_of_week ) {
-
-		for ( $i = 0; $i < sizeof( $days_of_week ); $i ++ ) {
-			if ( intval( $days_of_week[ $i ] ) >= intval( date( 'N', $this->get_current_time() ) ) ) {
-				return $i;
-			}
-		}
-
-		return 0;
-	}
-
-	/**
-	 * Get current timestamp regardless of the blog settings.
-	 *
-	 * @return int
-	 */
-	public function get_current_time() {
-		return current_time( 'timestamp' );
 	}
 
 	/**
@@ -375,12 +331,34 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	}
 
 	/**
+	 *
+	 * Return current timestamp for the current week.
+	 *
+	 * @return false|string
+	 */
+	private function get_week_start() {
+		$strtotime = date( 'o-\WW', $this->get_current_time() );
+		$start     = strtotime( $strtotime );
+
+		return intval( $start );
+	}
+
+	/**
+	 * Get current timestamp regardless of the blog settings.
+	 *
+	 * @return int
+	 */
+	public function get_current_time() {
+		return current_time( 'timestamp' );
+	}
+
+	/**
 	 * Method to compute next day specified day of the week from given date.
 	 *
 	 * @since   8.0.0
 	 * @access  private
 	 *
-	 * @param   int            $base Start timestamp.
+	 * @param   int            $base            Start timestamp.
 	 * @param   string|integer $day_of_the_week The number of the day of the week.
 	 *
 	 * @return false|string
@@ -410,8 +388,8 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @access  private
 	 *
 	 * @param   int $current_pos The current position.
-	 * @param   int $size The upper limit.
-	 * @param   int $first_pos The lower limit.
+	 * @param   int $size        The upper limit.
+	 * @param   int $first_pos   The lower limit.
 	 *
 	 * @return int
 	 */
@@ -422,6 +400,28 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		}
 
 		return $first_pos;
+	}
+
+	/**
+	 * Computes the next available day of the week from current time
+	 * with respect to the days of the week array passed from the schedules.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 *
+	 * @param   array $days_of_week The days of the week array.
+	 *
+	 * @return int
+	 */
+	private function get_days_start_pos( $days_of_week ) {
+
+		for ( $i = 0; $i < sizeof( $days_of_week ); $i ++ ) {
+			if ( intval( $days_of_week[ $i ] ) >= intval( date( 'N', $this->get_current_time() ) ) ) {
+				return $i;
+			}
+		}
+
+		return 0;
 	}
 
 }
