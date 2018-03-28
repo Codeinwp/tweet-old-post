@@ -235,7 +235,6 @@ class Rop_Rest_Api {
 		               ->set_message( __( 'Schedule was reset successfully.', 'tweet-old-post' ) )
 		               ->set_data( $schedules->get_schedule() );
 
-
 		return $this->response->is_not_silent()->to_array();
 	}
 
@@ -595,6 +594,25 @@ class Rop_Rest_Api {
 	}
 
 	/**
+	 * API method called to reset services.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @return array
+	 */
+	private function reset_accounts() {
+		$model = new Rop_Services_Model();
+		$model->reset_authenticated_services();
+		$this->response->set_code( '200' )
+		               ->set_message( __( 'Reseted.', 'tweet-old-post' ) )
+		               ->set_data( array() );
+
+		return $this->response->to_array();
+	}
+
+	/**
 	 * API method called to update active accounts.
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
@@ -634,13 +652,12 @@ class Rop_Rest_Api {
 	 */
 	private function toggle_account( $data ) {
 		$model = new Rop_Services_Model();
-		//$post_format = new Rop_Post_Format_Model();
-		//$schedules   = new Rop_Scheduler_Model();
-		//$queue       = new Rop_Queue_Model();
-
-		//$post_format->remove_post_format( $data['account_id'] );
-		//$schedules->remove_schedule( $data['account_id'] );
-		//$queue->remove_account_from_queue( $data['account_id'] );
+		// $post_format = new Rop_Post_Format_Model();
+		// $schedules   = new Rop_Scheduler_Model();
+		// $queue       = new Rop_Queue_Model();
+		// $post_format->remove_post_format( $data['account_id'] );
+		// $schedules->remove_schedule( $data['account_id'] );
+		// $queue->remove_account_from_queue( $data['account_id'] );
 		if ( $data['state'] === 'active' ) {
 			$model->add_active_accounts( $data['account_id'] );
 		} else {

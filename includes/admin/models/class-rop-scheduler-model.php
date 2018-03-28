@@ -63,8 +63,8 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 
 		$schedules       = ( $this->get( 'schedules' ) != null ) ? $this->get( 'schedules' ) : array();
 		$valid_schedules = array();
-
 		foreach ( $active_accounts as $account_id => $data ) {
+
 			$valid_schedules[ $account_id ] = isset( $schedules[ $account_id ] ) ? $schedules[ $account_id ] : $this->create_schedule( $this->schedule_defaults );
 		}
 		$valid_schedules = array_filter( $valid_schedules );
@@ -189,6 +189,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 */
 	public function list_upcomming_schedules( $future_events = 10 ) {
 		$this->schedules = $this->get_schedules();
+
 		$list            = array();
 		foreach ( $this->schedules as $account_id => $schedule ) {
 			$list[ $account_id ] = array();

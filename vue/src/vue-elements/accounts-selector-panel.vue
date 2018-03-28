@@ -14,7 +14,7 @@
 			<div class="container" v-if="accountsCount > 0">
 				
 				<div class="columns">
-					<div class="column col-2 rop-selector-accounts">
+					<div class="column col-2 col-sm-12 col-md-3 col-xl-3 col-lg-3 col-xs-12 col-rop-selector-accounts">
 						<div v-for="( account, id ) in active_accounts">
 							<div class="rop-selector-account-container" v-bind:class="{active: selected_account===id}"
 							     @click="setActiveAccount(id)">
@@ -37,22 +37,24 @@
 							</div>
 						</div>
 					</div>
-					<div class="column col-10" :class="'rop-tab-state-'+is_loading">
-						<component :is="type" :account_id="selected_account"></component>
+					<div class="column col-10 col-sm-12  col-md-9  col-xl-9 col-lg-9 col-xs-12" :class="'rop-tab-state-'+is_loading">
+						<component :is="type" :account_id="selected_account" :license="license"></component>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="panel-footer" v-if="accountsCount > 0">
-			<button class="btn btn-primary" @click="saveAccountData()"><i class="fa fa-check"
-			                                                              v-if="!this.is_loading"></i> <i
-					class="fa fa-spinner fa-spin" v-else></i> Save {{component_label}}
-			</button>
-			<button class="btn btn-secondary" @click="resetAccountData()"><i class="fa fa-ban"
-			                                                                 v-if="!this.is_loading"></i> <i
-					class="fa fa-spinner fa-spin" v-else></i> Reset {{component_label}} for
-				<b>{{active_account_name}}</b>
-			</button>
+		<div class="panel-footer">
+			<div class="panel-actions" v-if="allow_footer">
+				<button class="btn btn-primary" @click="saveAccountData()"><i class="fa fa-check"
+				                                                              v-if="!this.is_loading"></i> <i
+						class="fa fa-spinner fa-spin" v-else></i> Save {{component_label}}
+				</button>
+				<button class="btn btn-secondary" @click="resetAccountData()"><i class="fa fa-ban"
+				                                                                 v-if="!this.is_loading"></i> <i
+						class="fa fa-spinner fa-spin" v-else></i> Reset {{component_label}} for
+					<b>{{active_account_name}}</b>
+				</button>
+			</div>
 		</div>
 	</div>
 </template>
@@ -73,11 +75,14 @@
 			}
 		},
 		data: function () {
-			let key = null
+			let key = null;
 			if (Object.keys(this.$store.state.activeAccounts)[0] !== undefined) key = Object.keys(this.$store.state.activeAccounts)[0];
+
 			return {
 				selected_account: key,
 				component_label: '',
+				allow_footer: true,
+				license: this.$store.state.licence,
 				action: '',
 				is_loading: false
 			}
@@ -93,9 +98,6 @@
 			}
 		},
 		computed: {
-			has_pro: function () {
-				return this.$store.state.has_pro
-			},
 			active_data: function () {
 				if (this.type === 'post-format') {
 					return this.$store.state.activePostFormat;
@@ -132,9 +134,14 @@
 				let label = '';
 				if (this.type === 'post-format') {
 					label = 'post format'
+					this.allow_footer = true;
 				}
 				if (this.type === 'schedule') {
-					label = 'schedule'
+					label = 'schedule';
+					/**
+					 * Allow footer if we have a valid license.
+					 */
+					this.allow_footer = (this.license > 1);
 				}
 				this.action = action;
 				this.component_label = label;
@@ -152,7 +159,6 @@
 						data: {}
 					}).then(response => {
 						this.$log.info('Successfully fetched account data', this.type, this.selected_account);
-						this.$store.dispatch('fetchAJAX', {req: 'get_queue'});
 						this.is_loading = false;
 					}, error => {
 						Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
@@ -176,7 +182,6 @@
 					}
 				}).then(response => {
 					this.is_loading = false;
-					this.$store.dispatch('fetchAJAX', {req: 'get_queue'})
 				}, error => {
 
 					this.is_loading = false;
@@ -208,14 +213,13 @@
 				}).then(response => {
 					this.is_loading = false;
 					this.$log.info('Succesfully reseted account', this.type,);
-					this.$store.dispatch('fetchAJAX', {req: 'get_queue'})
 				}, error => {
 					this.is_loading = false;
 					Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
 				})
 				this.$forceUpdate()
 			},
-			checkActiveData(){
+			checkActiveData() {
 				if (typeof  this.active_data[this.selected_account] === 'undefined') {
 					this.getAccountData();
 				}

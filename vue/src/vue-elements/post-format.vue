@@ -258,10 +258,9 @@
 			</div>
 		</div>
 		
-		<!-- Post with image - checkbox (either we should use the featured image when posting) -->
-		<div class="columns">
+		<div class="columns" :class="'rop-control-container-'+isPro">
 			<div class="column col-sm-12 col-md-12 col-lg-12">
-				<div class="columns">
+				<div class="columns rop-control">
 					<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
 						<b>Post with image</b><br/>
 						<i>Use the featured image when posting?</i>
@@ -270,13 +269,17 @@
 						<div class="input-group">
 							<label class="form-checkbox">
 								<input type="checkbox" v-model="post_format.image"
-								       :disabled="!has_pro"/>
+								       :disabled="!isPro"/>
 								<i class="form-icon"></i> Yes
 							</label>
-							<span class="chip upsell"
-							      style="font-size: 10px; vertical-align: baseline;">PRO</span> <i>Available
-							in PRO version. Add upsell message here.</i>
 						</div>
+					
+					</div>
+				</div>
+				<div class="columns rop-upsell-message" v-if="! isPro">
+					<div class="col-4"></div>
+					<div class="col-7   text-left">
+						<p><i class="fa fa-lock"></i> Posting with images ia available in the pro version. </p>
 					</div>
 				</div>
 			</div>
@@ -287,7 +290,7 @@
 <script>
 	module.exports = {
 		name: "post-format",
-		props: ['account_id'],
+		props: ['account_id', 'license'],
 		data: function () {
 			return {
 				shortner_credentials: []
@@ -297,8 +300,8 @@
 			post_format: function () {
 				return this.$store.state.activePostFormat[this.account_id] ? this.$store.state.activePostFormat[this.account_id] : [];
 			},
-			has_pro: function () {
-				return this.$store.state.has_pro
+			isPro: function () {
+				return (this.license > 0);
 			},
 			short_url_service: function () {
 				let postFormat = this.$store.state.activePostFormat[this.account_id] ? this.$store.state.activePostFormat[this.account_id] : [];

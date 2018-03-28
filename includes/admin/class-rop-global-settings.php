@@ -219,10 +219,10 @@ class Rop_Global_Settings {
 	 * @var     array $schedule_defaults The class schedule defaults.
 	 */
 	private $schedule_defaults = array(
-		'type'        => 'fixed',
+		'type'        => 'recurring',
 		'interval_r'  => '2.5',
 		'interval_f'  => array(
-			'week_days' => array( '1', '2','3','4', '5', '6', '7' ),
+			'week_days' => array( '1', '2', '3', '4', '5', '6', '7' ),
 			'time'      => array( '9:30' ),
 		),
 		'timestamp'   => null,
@@ -251,6 +251,7 @@ class Rop_Global_Settings {
 		$schedule               = self::instance()->schedule;
 		$settings_model         = new Rop_Settings_Model();
 		$schedule['interval_r'] = $settings_model->get_interval();
+		$schedule['type'] = 'recurring';
 
 		return $schedule;
 	}
@@ -291,21 +292,44 @@ class Rop_Global_Settings {
 	}
 
 	/**
-	 * Method to check if the PRO classes exist.
+	 * Get license plan.
+	 *      -1 - Pro is not present nor installed.
+	 *      0 - pro is installed but not active.
+	 *      1,2,3 - plans that the user is using.
 	 *
 	 * @since   8.0.0
 	 * @access  public
-	 * @return bool
+	 * @return  int
 	 */
-	public function has_pro() {
-		// return 'business';
-		if ( class_exists( 'Rop_Pro' ) ) {
-			$pro = new Rop_Pro();
+	public function license_type() {
+		$pro_check      = defined( 'ROP_PRO_VERSION' );
+		$product_key    = 'tweet_old_post_pro';
+		$license_status = get_option( $product_key . '_license_status', '' );
+		/**
+		 * If we have an invalid license but the pro is installed.
+		 */
+		if ( $license_status !== 'active' ) {
+			if ( $pro_check ) {
+				return 0;
+			}
 
-			return $pro->is_business(); // TODO should return a string 'pro' or 'business' based on licence type
+			return ( - 1 );
+		}
+		$plan = get_option( $product_key . '_license_plan', - 1 );
+		$plan = intval( $plan );
+		/**
+		 * If the plan is not fetched but we have pro.
+		 */
+		if ( $plan < 1 ) {
+			if ( $pro_check ) {
+				return 0;
+			}
+
+			return - 1;
 		}
 
-		return false;
+		return $plan;
+
 	}
 
 	/**

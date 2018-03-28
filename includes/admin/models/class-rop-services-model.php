@@ -46,6 +46,17 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 */
 	public function reset_authenticated_services() {
 		$this->set( $this->services_namespace, array() );
+		$this->reset_active_accounts();
+	}
+
+	/**
+	 * Utility method to clear active accounts.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 */
+	public function reset_active_accounts() {
+		$this->set( $this->accounts_namespace, array() );
 	}
 
 	/**
@@ -86,7 +97,7 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 				$key              = $service_key . '_' . $account['id'];
 				$accounts[ $key ] = $account;
 			}
-			$new_auth_services[$service_key]['available_accounts'] = $accounts;
+			$new_auth_services[ $service_key ]['available_accounts'] = $accounts;
 		}
 		$this->set( $this->services_namespace, $new_auth_services );
 		$this->sync_active_accounts();
@@ -266,16 +277,6 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 		$this->update_authenticated_services( $services );
 
 		return $services;
-	}
-
-	/**
-	 * Utility method to clear active accounts.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 */
-	public function reset_active_accounts() {
-		$this->set( $this->accounts_namespace, array() );
 	}
 
 	/**

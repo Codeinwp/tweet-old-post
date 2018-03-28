@@ -322,6 +322,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			$user_details['account']      = $user->getEmail();
 			$user_details['img']          = $img['url'];
 			$user_details['access_token'] = $key['access_token'];
+			$user_details['active']       = false;
 			$pages_array[]                = $user_details;
 		}
 

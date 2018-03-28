@@ -9,7 +9,6 @@
  * @subpackage Rop/includes/admin/helpers
  */
 
-
 /**
  * Rop_Cron_Helper Class
  *
@@ -19,59 +18,19 @@
  * @author     ThemeIsle <friends@themeisle.com>
  */
 class Rop_Cron_Helper {
-
 	/**
-	 * Utility method to manage cron.
-	 *
-	 * @since   8.0.0rc
-	 * @access  public
-	 * @return bool
+	 * Cron action name.
 	 */
-	public function manage_cron( $request ) {
-		if ( $request['action'] == 'start' ) {
-			$this->create_cron();
-		} elseif ( $request['action'] == 'stop' ) {
-			$this->remove_cron();
-		}
-		return array( 'current_status' => (boolean) wp_next_scheduled( 'rop_cron_job' ) );
-
-	}
-
-	/**
-	 * Utility method to start a cron.
-	 *
-	 * @since   8.0.0rc
-	 * @access  public
-	 * @return bool
-	 */
-	public function create_cron() {
-		if ( ! wp_next_scheduled( 'rop_cron_job' ) ) {
-			wp_schedule_event( time(), '5min', 'rop_cron_job' );
-		}
-		return true;
-	}
-
-	/**
-	 * Utility method to stop a cron.
-	 *
-	 * @since   8.0.0rc
-	 * @access  public
-	 * @return bool
-	 */
-	public function remove_cron() {
-		$timestamp = wp_next_scheduled( 'rop_cron_job' );
-		if ( $timestamp ) {
-			wp_unschedule_event( $timestamp, 'rop_cron_job' );
-		}
-		return false;
-	}
+	const CRON_NAMESPACE = 'rop_cron_job';
 
 	/**
 	 * Defines new schedules for cron use.
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
 	 * @param   array $schedules The schedules array.
+	 *
 	 * @return mixed
 	 */
 	public static function rop_cron_schedules( $schedules ) {
@@ -87,6 +46,64 @@ class Rop_Cron_Helper {
 				'display'  => __( 'Once every 30 minutes', 'tweet-old-post' ),
 			);
 		}
+
 		return $schedules;
+	}
+
+	/**
+	 * Utility method to manage cron.
+	 *
+	 * @since   8.0.0rc
+	 * @access  public
+	 * @return  array Current status.
+	 */
+	public function manage_cron( $request ) {
+		if ( $request['action'] == 'start' ) {
+			$this->create_cron();
+		} elseif ( $request['action'] == 'stop' ) {
+			$this->remove_cron();
+		}
+
+		return array( 'current_status' => $this->get_status() );
+	}
+
+	/**
+	 * Utility method to start a cron.
+	 *
+	 * @since   8.0.0rc
+	 * @access  public
+	 * @return bool
+	 */
+	public function create_cron() {
+		if ( ! wp_next_scheduled( self::CRON_NAMESPACE ) ) {
+			wp_schedule_event( time(), '5min', self::CRON_NAMESPACE );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Utility method to stop a cron.
+	 *
+	 * @since   8.0.0rc
+	 * @access  public
+	 * @return bool
+	 */
+	public function remove_cron() {
+		$timestamp = wp_next_scheduled( self::CRON_NAMESPACE );
+		if ( $timestamp ) {
+			wp_unschedule_event( $timestamp, self::CRON_NAMESPACE );
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get cron status.
+	 *
+	 * @return bool Cron status.
+	 */
+	public function get_status() {
+		return (bool) wp_next_scheduled( self::CRON_NAMESPACE );
 	}
 }

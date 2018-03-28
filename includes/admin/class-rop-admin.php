@@ -118,7 +118,7 @@ class Rop_Admin {
 				);
 			}
 			$global_settings        = new Rop_Global_Settings();
-			$array_nonce['has_pro'] = $global_settings->has_pro();
+			$array_nonce['license_type'] = $global_settings->license_type();
 			wp_localize_script( $this->plugin_name . '_main', 'ropApiSettings', $array_nonce );
 			wp_localize_script( $this->plugin_name . '_main', 'ROP_ASSETS_URL', ROP_LITE_URL . 'assets/' );
 			wp_enqueue_script( $this->plugin_name . '_main' );

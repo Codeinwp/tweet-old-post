@@ -2,36 +2,57 @@
 	<div>
 		<div class="panel title-panel" style="margin-bottom: 40px; padding-bottom: 20px;">
 			<div class="panel-header">
-				<img :src="plugin_logo" style="float: left; margin-right: 10px;" />
-				<h1 class="d-inline-block">Revive Old Posts</h1><span class="powered"> by <a href="https://themeisle.com" target="_blank"><b>ThemeIsle</b></a></span>
+				<img :src="plugin_logo" style="float: left; margin-right: 10px;"/>
+				<h1 class="d-inline-block">Revive Old Posts</h1><span class="powered"> by <a
+					href="https://themeisle.com" target="_blank"><b>ThemeIsle</b></a></span>
 			</div>
 		</div>
-
-		<toast />
-		<countdown v-bind:to="countdownObject" />
-		<div class="panel">
-			<div class="panel-nav" style="padding: 8px;">
-				<ul class="tab">
-					<li class="tab-item" v-for="tab in displayTabs" :class="{ active: tab.isActive, badge: displayProBadge( tab.slug ), upsell: displayProBadge( tab.slug ) }" data-badge="PRO"><a href="#" @click="switchTab( tab.slug )">{{ tab.name }}</a></li>
-					<li class="tab-item tab-action">
-						<div class="form-group">
-							<label class="form-switch">
-								<input type="checkbox" v-model="generalSettings.custom_messages" @change="updateSettings" :disabled="!has_pro" />
-								<i class="form-icon" v-if="has_pro"></i><i class="badge" data-badge="PRO" v-else></i> <span class="hide-sm">Custom Share Messages</span>
-							</label>
-							<label class="form-switch">
-								<input type="checkbox" v-model="generalSettings.beta_user" @change="updateSettings" />
-								<i class="form-icon"></i> <span class="hide-sm">Beta User</span>
-							</label>
-							<label class="form-switch">
-								<input type="checkbox" v-model="generalSettings.remote_check" @change="updateSettings" />
-								<i class="form-icon"></i> <span class="hide-sm">Remote Check</span>
-							</label>
-						</div>
-					</li>
-				</ul>
+		
+		<toast/>
+		<countdown v-bind:to="countdownObject"/>
+		<div class="columns">
+			<div class="panel  column col-10 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-9">
+				<div class="panel-nav" style="padding: 8px;">
+					<ul class="tab">
+						<li class="tab-item" v-for="tab in displayTabs"
+						    :class="{ active: tab.isActive }"><a href="#" @click="switchTab( tab.slug )">{{ tab.name
+							}}</a>
+						</li>
+						<li class="tab-item tab-action">
+							<div class="form-group">
+								<label class="form-switch">
+									<input type="checkbox" v-model="generalSettings.custom_messages"
+									       @change="updateSettings"/>
+									<i class="form-icon"></i><span class="hide-sm">Custom Share Messages</span>
+								</label>
+							</div>
+						</li>
+					</ul>
+				</div>
+				<component :is="page.template" :type="page.view"></component>
 			</div>
-			<component :is="page.template" :type="page.view"></component>
+			
+			<div class="sidebar column col-2 col-xs-12 col-sm-12  col-md-12 col-lg-12 col-xl-3 "
+			     :class="'rop-license-plan-'+license">
+				<div class="card rop-container-start">
+					<button class="btn" :class="btn_class"
+					        data-tooltip="You will need
+					         at least one active account
+					         to start sharing."
+					        @click="togglePosting()" :disabled="haveAccounts">
+						<i class="fa fa-play" v-if="!is_loading && !start_status"></i>
+						<i class="fa fa-stop" v-else-if="!is_loading && start_status"></i>
+						<i class="fa fa-spinner fa-spin" v-else></i>
+						{{( start_status ? 'Stop' : 'Start' )}} Sharing
+					</button>
+				</div>
+				<div class="card rop-upsell-pro-card" v-if="license  < 1 ">
+					Buy the pro version
+				</div>
+				<div class="card rop-upsell-business-card" v-if="license  === 1">
+					Buy the business version
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
@@ -49,24 +70,57 @@
 	module.exports = {
 		name: 'main-page-panel',
 		computed: {
+			/**
+			 * Display the clicked tab.
+			 *
+			 * @returns {module.exports.computed.displayTabs|*[]}
+			 */
 			displayTabs: function () {
 				return this.$store.state.displayTabs
 			},
+			/**
+			 * Get active page.
+			 */
 			page: function () {
 				return this.$store.state.page
 			},
+			/**
+			 * Get btn start class.
+			 */
+			btn_class: function () {
+				let btn_class = ('btn-' + (this.start_status ? 'danger' : 'success'));
+				if (this.haveAccounts) {
+					btn_class += ' tooltip button-disabled ';
+				}
+				return btn_class;
+			},
+			/**
+			 * Check if we have accounts active.
+			 *
+			 * @returns {boolean}
+			 */
+			haveAccounts: function () {
+				return !(Object.keys(this.$store.state.activeAccounts).length > 0);
+			},
+			/*
+			* Check if the sharing is started.
+			*/
+			start_status: function () {
+				return this.$store.state.cron_status
+			},
+			/**
+			 * Get general settings.
+			 * @returns {module.exports.computed.generalSettings|Array|*}
+			 */
 			generalSettings: function () {
 				return this.$store.state.generalSettings
 			},
-			has_pro: function () {
-				return this.$store.state.has_pro
-			},
-			countdownObject () {
+			countdownObject() {
 				let queue = this.$store.state.queue
 				let toTime = null
 				let isOn = this.$store.state.cron_status
-				if ( queue !== undefined && queue[Object.keys( queue )[0]] && isOn ) {
-					toTime = queue[Object.keys( queue )[0]].time
+				if (queue !== undefined && queue[Object.keys(queue)[0]] && isOn) {
+					toTime = queue[Object.keys(queue)[0]].time
 				}
 				return {
 					toTime: toTime,
@@ -74,23 +128,57 @@
 				}
 			}
 		},
-		created () {
+		created() {
 		},
 		data: function () {
 			return {
-				plugin_logo: ROP_ASSETS_URL + 'img/logo_rop.png'
+				plugin_logo: ROP_ASSETS_URL + 'img/logo_rop.png',
+				license: this.$store.state.licence,
+				is_loading: false,
 			}
 		},
 		methods: {
-			switchTab ( slug ) {
-				this.$store.commit( 'setTabView', slug )
+			/**
+			 * Toggle sharing.
+			 */
+			togglePosting() {
+				if (this.is_loading) {
+					this.$log.warn('Request in progress...Bail');
+					return;
+				}
+				this.is_loading = true;
+				this.$store.dispatch('fetchAJAXPromise', {
+					req: 'manage_cron',
+					data: {
+						'action': this.start_status === false ? 'start' : 'stop'
+					}
+				}).then(response => {
+					this.is_loading = false;
+				}, error => {
+					this.is_loading = false;
+					Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+				})
 			},
-			updateSettings () {
-				this.$store.dispatch( 'fetchAJAX', { req: 'update_settings_toggle', data: { custom_messages: this.$store.state.generalSettings.custom_messages, beta_user: this.$store.state.generalSettings.beta_user, remote_check: this.$store.state.generalSettings.remote_check } } )
+			/**
+			 * Toggle tab active.
+			 * @param slug
+			 */
+			switchTab(slug) {
+				this.$store.commit('setTabView', slug)
 			},
-			displayProBadge: function ( slug ) {
-				return  ( ! this.has_pro && ( slug === 'schedule' || slug === 'queue' ) )
-			}
+			/**
+			 * Update settings outside the general settings tab.
+			 */
+			updateSettings() {
+				this.$store.dispatch('fetchAJAX', {
+					req: 'update_settings_toggle',
+					data: {
+						custom_messages: this.$store.state.generalSettings.custom_messages,
+						beta_user: this.$store.state.generalSettings.beta_user,
+						remote_check: this.$store.state.generalSettings.remote_check
+					}
+				})
+			},
 		},
 		components: {
 			'accounts': AccountsTab,

@@ -1,17 +1,48 @@
 <template>
 	<div class="tab-view">
-		<div class="panel-body" style="overflow: inherit;">
+		<div class="panel-body" :class="'rop-tab-state-'+is_loading">
 			<h3>Sharing Queue</h3>
-			<div class="empty" v-if="queueCount === 0">
+			<!-- When sharing is not started -->
+			<div class="columns" v-if="! start_status">
+				<div class="column col-12 text-center empty-container">
+					<div class="empty-icon">
+						<i class="fa fa-3x fa-info-circle"></i>
+					</div>
+					<p class="empty-title h5">Sharing is not started!</p>
+					<p class="empty-subtitle">You need to start sharing in order to see any posts in the queue.</p>
+				</div>
+			</div>
+			
+			<!-- When sharing is started and we have items in Q. -->
+			<div class="columns" v-else-if="start_status && queueCount > 0 ">
+				
+				<!-- When sharing is started but we don't have the business plan. -->
+				<div class="column col-12 text-center" v-if="! is_business">
+					<i class="fa fa-2x fa-lock"></i>
+					<p>You ca edit the posts from the queue only the Business version of the
+						plugin. View more details here.</p>
+				</div>
+				
+				<!-- When sharing is started but we  have the business plan. -->
+				<div class="column col-12 text-center" v-else>
+					<i class="fa fa-2x fa-info-circle"></i>
+					<p>You can choose to edit any of the post, skip the sharing or block a specific one from sharing in
+						the future,.</p>
+				</div>
+			</div>
+			<!-- When sharing is started there is nothing in the Q. -->
+			<div class="empty" v-else-if="start_status && queueCount === 0">
 				<div class="empty-icon">
 					<i class="fa fa-3x fa-info-circle"></i>
 				</div>
 				<p class="empty-title h5">No queued posts!</p>
-				<p class="empty-subtitle">Check if you have at least an <b>"Active account"</b>, what posts and pages are selected in <b>"General Settings"</b> and if a <b>"Schedule"</b> is defined.</p>
+				<p class="empty-subtitle">Check if you have at least an <b>"Active account"</b>, what posts and pages
+					are selected in <b>"General Settings"</b> and if a <b>"Schedule"</b> is defined.</p>
 			</div>
-			<div class="container columns">
+			<div class="container columns" v-if="start_status && queueCount > 0">
 				<div class="column col-sm-12 col-3 text-left" v-for=" (data, index) in queue ">
-					<queue-card :account_id="data.account_id" :post="data.post" :time="data.time" :key="index" :id="index" />
+					<queue-card :account_id="data.account_id" :post="data.post" :time="data.time" :key="index"
+					            :id="index" :enabled="is_business"/>
 				</div>
 			</div>
 		</div>
@@ -28,21 +59,54 @@
 		name: 'queue-view',
 		computed: {
 			queueCount: function () {
-				return this.$store.state.queue.length
+				return Object.keys(this.$store.state.queue).length
 			},
 			queue: function () {
 				return this.$store.state.queue
 			},
-			has_pro: function () {
-				return this.$store.state.has_pro
+			start_status: function () {
+				return this.$store.state.cron_status
+			},
+			is_business: function () {
+				return (this.$store.state.licence > 1)
+			},
+			is_loading: function () {
+				return this.$store.state.ajaxLoader;
+			}
+		},
+		data: function () {
+			return {
+				is_loading: false,
+			}
+		},
+		watch: {
+			start_status: function (new_val) {
+				if (new_val) {
+					this.refreshQueue();
+				} else {
+					this.queue = {};
+					this.queueCount = 0;
+				}
 			}
 		},
 		mounted: function () {
-			this.$store.dispatch( 'fetchAJAX', { req: 'get_queue' } )
+			if (this.start_status) {
+				this.refreshQueue();
+			}
 		},
 		methods: {
 			refreshQueue: function () {
-				this.$store.dispatch( 'fetchAJAX', { req: 'get_queue' } )
+				if (this.is_loading) {
+					this.$log.warn('Request in progress...Bail');
+					return;
+				}
+				this.is_loading = true;
+				this.$store.dispatch('fetchAJAXPromise', {req: 'get_queue'}).then(response => {
+					this.is_loading = false;
+				}, error => {
+					this.is_loading = false;
+					Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+				})
 			}
 		},
 		components: {

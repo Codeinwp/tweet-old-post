@@ -146,7 +146,7 @@
 				return this.placeHolderText
 			},
 			is_disabled: function () {
-				return !this.disabled;
+				return ! this.disabled;
 			},
 			has_results: function () {
 				let found = 0
@@ -206,6 +206,9 @@
 				return false
 			},
 			addToSelected(index) {
+				if(this.is_disabled){
+					return;
+				}
 				let newSelection = this.options[index]
 				newSelection.selected = true
 				this.selected.push(newSelection)
@@ -215,6 +218,9 @@
 				this.changedSelection(this.selected)
 			},
 			removeSelected(index) {
+				if(this.is_disabled){
+					return;
+				}
 				this.selected.splice(index, 1)
 				this.$refs.search.focus()
 				this.magic_flag = false

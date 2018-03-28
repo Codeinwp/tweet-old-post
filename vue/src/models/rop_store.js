@@ -26,35 +26,6 @@ Vue.use( Vuex );
 Vue.use( VueResource );
 Vue.use( VueLogger, logOptions );
 
-function stringToBoolean( string ) {
-	switch ( string.toLowerCase().trim() ) {
-	case 'true':
-	case 'yes':
-	case '1':
-		return true
-	case 'false':
-	case 'no':
-	case '0':
-	case null:
-		return false
-	default:
-		return Boolean( string )
-	}
-}
-
-function licenceType( string ) {
-	switch ( string.toLowerCase().trim() ) {
-	case 'business':
-		return 'business'
-	case 'pro':
-	case 'true':
-	case 'yes':
-		return 'pro'
-	default:
-		return 'lite'
-	}
-}
-
 export default new Vuex.Store( {
 	state: {
 		page: {
@@ -111,15 +82,14 @@ export default new Vuex.Store( {
 				isActive: false
 			}
 		],
-		licence: licenceType( ropApiSettings.has_pro ),
-		has_pro: stringToBoolean( ropApiSettings.has_pro ),
+		licence: parseInt( ropApiSettings.license_type ),
 		availableServices: [],
 		generalSettings: [],
 		authenticatedServices: [],
-		activeAccounts: [],
+		activeAccounts: {},
 		activePostFormat: [],
 		activeSchedule: [],
-		queue: []
+		queue: {}
 	},
 	mutations: {
 
@@ -201,6 +171,10 @@ export default new Vuex.Store( {
 			case 'save_post_format':
 			case 'reset_post_format':
 				state.activePostFormat = stateData
+				break
+			case 'reset_accounts':
+				state.activeAccounts = [];
+				state.authenticatedServices = [];
 				break
 			case 'get_shortner_credentials':
 				state.activePostFormat['shortner_credentials'] = stateData

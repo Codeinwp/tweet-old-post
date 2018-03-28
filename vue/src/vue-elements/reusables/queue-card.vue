@@ -1,14 +1,17 @@
 <template>
-	<div class="card col-12" style="max-width: 100%; min-height: 350px;">
+	<div class="card col-12 rop-queue-post" style="max-width: 100%; min-height: 350px;" >
 		<div style="position: absolute; display: block; top: 0; right: 0;">
-			<button class="btn btn-sm btn-primary" @click="toggleEditState" v-if="edit === false" :disabled="!has_pro">
+			<button class="btn btn-sm btn-primary" @click="toggleEditState" v-if="edit === false"
+			        :disabled=" ! enabled">
 				<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 			</button>
-			<button class="btn btn-sm btn-success" @click="saveChanges" v-if="edit" :disabled="!has_pro"><i
-					class="fa fa-check" aria-hidden="true"></i> Save
+			<button class="btn btn-sm btn-success" @click="saveChanges" v-if="edit" :disabled=" ! enabled">
+				<i class="fa fa-check" aria-hidden="true"></i>
+				Save
 			</button>
-			<button class="btn btn-sm btn-warning" @click="cancelChanges" v-if="edit" :disabled="!has_pro"><i
-					class="fa fa-times" aria-hidden="true"></i> Cancel
+			<button class="btn btn-sm btn-warning" @click="cancelChanges" v-if="edit" :disabled=" ! enabled">
+				<i class="fa fa-times" aria-hidden="true"></i>
+				Cancel
 			</button>
 		</div>
 		<div class="card-header">
@@ -71,16 +74,16 @@
 			</div>
 		</div>
 		<div style="position: absolute; display: block; bottom: 0; right: 0;" v-if="edit === false">
-			<button class="btn btn-sm btn-success" @click="publishNow" :disabled="!has_pro"><i class="fa fa-share"
-			                                                                                   aria-hidden="true"></i>
+			<button class="btn btn-sm btn-success" @click="publishNow" :disabled=" ! enabled">
+				<i class="fa fa-share" aria-hidden="true"></i>
 				Share Now
 			</button>
-			<button class="btn btn-sm btn-warning" @click="skipPost" :disabled="!has_pro"><i class="fa fa-step-forward"
-			                                                                                 aria-hidden="true"></i>
+			<button class="btn btn-sm btn-warning" @click="skipPost" :disabled=" ! enabled">
+				<i class="fa fa-step-forward" aria-hidden="true"></i>
 				Skip
 			</button>
-			<button class="btn btn-sm btn-danger" @click="blockPost" :disabled="!has_pro"><i class="fa fa-ban"
-			                                                                                 aria-hidden="true"></i>
+			<button class="btn btn-sm btn-danger" @click="blockPost" :disabled=" ! enabled">
+				<i class="fa fa-ban" aria-hidden="true"></i>
 				Block
 			</button>
 		</div>
@@ -109,6 +112,10 @@
 			time: {
 				default: '',
 				type: String
+			},
+			enabled: {
+				default: false,
+				type: Boolean
 			}
 		},
 		data: function () {
@@ -119,9 +126,6 @@
 			}
 		},
 		computed: {
-			has_pro: function () {
-				return this.$store.state.has_pro
-			},
 			post_defaults: function () {
 				return JSON.parse(JSON.stringify(this.post)) // This removes the observable/reactivity
 			},
@@ -237,96 +241,3 @@
 		}
 	}
 </script>
-
-<style scoped>
-	#rop_core .avatar .avatar-icon {
-		background: #333;
-		border-radius: 50%;
-		font-size: 16px;
-		text-align: center;
-		line-height: 20px;
-	}
-	
-	#rop_core .avatar .avatar-icon.fa-facebook-official {
-		background-color: #3b5998;
-	}
-	
-	#rop_core .avatar .avatar-icon.fa-twitter {
-		background-color: #55acee;
-	}
-	
-	#rop_core .avatar .avatar-icon.fa-linkedin {
-		background-color: #007bb5;
-	}
-	
-	#rop_core .avatar .avatar-icon.fa-tumblr {
-		background-color: #32506d;
-	}
-	
-	#rop_core .service.facebook {
-		color: #3b5998;
-	}
-	
-	#rop_core .service.twitter {
-		color: #55acee;
-	}
-	
-	#rop_core .service.linkedin {
-		color: #007bb5;
-	}
-	
-	#rop_core .service.tumblr {
-		color: #32506d;
-	}
-	
-	#rop_core .btn-warning {
-		background-color: #ef6c00;
-		border-color: #e65100;
-		color: #FFF;
-	}
-	
-	#rop_core .btn-warning:hover, #rop_core .btn-warning:focus {
-		border-color: #e65100;
-		background-color: #fff;
-		color: #ef6c00;
-	}
-	
-	#rop_core .btn-warning.active, #rop_core .btn-warning:active {
-		background-color: #e65100;
-		border-color: #ef6c00;
-	}
-	
-	#rop_core .btn-danger {
-		background-color: #c62828;
-		border-color: #b71c1c;
-		color: #FFF;
-	}
-	
-	#rop_core .btn-danger:hover, #rop_core .btn-danger:focus {
-		border-color: #b71c1c;
-		background-color: #fff;
-		color: #c62828;
-	}
-	
-	#rop_core .btn-danger.active, #rop_core .btn-danger:active {
-		background-color: #b71c1c;
-		border-color: #c62828;
-	}
-	
-	#rop_core .btn-success {
-		background-color: #8bc34a;
-		border-color: #33691e;
-		color: #FFF;
-	}
-	
-	#rop_core .btn-success:hover, #rop_core .btn-success:focus {
-		border-color: #33691e;
-		background-color: #fff;
-		color: #8bc34a;
-	}
-	
-	#rop_core .btn-success.active, #rop_core .btn-success:active {
-		background-color: #33691e;
-		border-color: #8bc34a;
-	}
-</style>

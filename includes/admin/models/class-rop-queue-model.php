@@ -388,6 +388,13 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @return array
 	 */
 	public function get_ordered_queue() {
+		$cron_helper = new Rop_Cron_Helper();
+		/**
+		 * Bail if the sharing is not started.
+		 */
+		if ( $cron_helper->get_status() === false ) {
+			return array();
+		}
 		$this->queue = $this->build_and_update_queue();
 		$queue       = $this->queue;
 		$ordered     = array();
@@ -405,8 +412,8 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 
 		uasort(
 			$ordered, function ( $alpha, $beta ) {
-				return strtotime( $alpha['time'] ) - strtotime( $beta['time'] );
-			}
+			return strtotime( $alpha['time'] ) - strtotime( $beta['time'] );
+		}
 		);
 
 		return $ordered;

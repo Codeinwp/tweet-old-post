@@ -1,6 +1,6 @@
 <template>
-	<div>
-		<div class="columns">
+	<div :class="'rop-control-container-'+ ( license>1 ) ">
+		<div class="columns  rop-control">
 			<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
 				<b>Schedule Type</b><br/>
 				<i>What type of schedule to use.</i>
@@ -15,7 +15,7 @@
 			</div>
 		</div>
 		
-		<div class="columns" v-if="schedule.type === 'fixed'">
+		<div class="columns  rop-control" v-if="schedule.type === 'fixed'">
 			<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
 				<b>Fixed Schedule Days</b><br/>
 				<i>The days when to share for this account.</i>
@@ -28,7 +28,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="columns" v-if="schedule.type === 'fixed'">
+		<div class="columns  rop-control" v-if="schedule.type === 'fixed'">
 			<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
 				<b>Fixed Schedule Time</b><br/>
 				<i>The time at witch to share for this account.</i>
@@ -52,7 +52,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="columns" v-else>
+		<div class="columns rop-control" v-else>
 			<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
 				<b>Recurring Schedule Interval</b><br/>
 				<i>A recurring interval to use for sharing. Once every 'X' hours.</i>
@@ -61,6 +61,17 @@
 				<div class="form-group">
 					<input type="number" class="form-input" v-model="schedule.interval_r"
 					       placeholder="hours.min (Eg. 2.5)"/>
+				</div>
+			</div>
+		</div>
+		<div class="columns rop-upsell-message" v-if=" license < 1 ">
+			<div class="column col-12">
+				<div class="columns">
+					<div class="column col-12 text-center">
+						<h5><i class="fa fa-lock "></i> Extend</h5>
+						<p>The Custom Schedule is available only in the Business version.
+						</p>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -73,7 +84,7 @@
 
 	module.exports = {
 		name: 'account-schedule',
-		props: ['account_id'],
+		props: ['account_id', 'license'],
 		data: function () {
 			return {
 				days: {
@@ -110,7 +121,7 @@
 		},
 		computed: {
 			schedule: function () {
-				return this.$store.state.activeSchedule[this.account_id] ?  this.$store.state.activeSchedule[this.account_id] : [];
+				return this.$store.state.activeSchedule[this.account_id] ? this.$store.state.activeSchedule[this.account_id] : [];
 			},
 			daysObject: function () {
 				let daysObject = this.days
@@ -159,77 +170,4 @@
 			VueTimepicker
 		}
 	}
-</script>
-<style scoped>
-	#rop_core .avatar .avatar-icon {
-		background: #333;
-		border-radius: 50%;
-		font-size: 16px;
-		text-align: center;
-		line-height: 20px;
-	}
-	
-	#rop_core .avatar .avatar-icon.fa-facebook-official {
-		background-color: #3b5998;
-	}
-	
-	#rop_core .avatar .avatar-icon.fa-twitter {
-		background-color: #55acee;
-	}
-	
-	#rop_core .avatar .avatar-icon.fa-linkedin {
-		background-color: #007bb5;
-	}
-	
-	#rop_core .avatar .avatar-icon.fa-tumblr {
-		background-color: #32506d;
-	}
-	
-	#rop_core .service.facebook {
-		color: #3b5998;
-	}
-	
-	#rop_core .service.twitter {
-		color: #55acee;
-	}
-	
-	#rop_core .service.linkedin {
-		color: #007bb5;
-	}
-	
-	#rop_core .service.tumblr {
-		color: #32506d;
-	}
-</style>
-<style>
-	#rop_core .time-picker.timepicker-style-fix .dropdown {
-		top: 4px;
-	}
-	
-	#rop_core .time-picker.timepicker-style-fix ul {
-		margin: 0;
-	}
-	
-	#rop_core .time-picker.timepicker-style-fix ul li {
-		list-style: none;
-	}
-	
-	#rop_core .time-picker.timepicker-style-fix .dropdown ul li.active,
-	#rop_core .time-picker.timepicker-style-fix .dropdown ul li.active:hover {
-		background: #e85407;
-	}
-	
-	#rop_core #main_schedules {
-		position: relative;
-	}
-	
-	#rop_core .empty.upsell {
-		position: absolute;
-		top: 50px;
-		left: 0;
-		width: 100%;
-		height: 80%;
-		z-index: 2;
-		background-color: rgba(255, 255, 255, 0.9);
-	}
-</style>
+</script> 
