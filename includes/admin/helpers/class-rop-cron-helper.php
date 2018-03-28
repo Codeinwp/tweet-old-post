@@ -74,8 +74,13 @@ class Rop_Cron_Helper {
 	 * @access  public
 	 * @return bool
 	 */
-	public function create_cron() {
+	public function create_cron( $first = true ) {
 		if ( ! wp_next_scheduled( self::CRON_NAMESPACE ) ) {
+			if ( $first ) {
+				$settings = new Rop_Global_Settings();
+				$settings->update_start_time();
+				wp_schedule_single_event( time() + 30, self::CRON_NAMESPACE );
+			}
 			wp_schedule_event( time(), '5min', self::CRON_NAMESPACE );
 		}
 
@@ -94,6 +99,8 @@ class Rop_Cron_Helper {
 		if ( $timestamp ) {
 			wp_unschedule_event( $timestamp, self::CRON_NAMESPACE );
 		}
+		$settings = new Rop_Global_Settings();
+		$settings->reset_start_time();
 
 		return false;
 	}

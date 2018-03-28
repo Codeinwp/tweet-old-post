@@ -146,6 +146,17 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	}
 
 	/**
+	 * Getter for start time types.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return  int
+	 */
+	public function get_start_time() {
+		return $this->settings['start_time'];
+	}
+
+	/**
 	 * Method to save general settings.
 	 *
 	 * @since   8.0.0

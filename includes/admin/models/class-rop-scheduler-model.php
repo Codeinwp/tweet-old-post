@@ -22,6 +22,14 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @var     array $schedules The current schedules.
 	 */
 	private $schedules;
+	/**
+	 * Get the start time.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @var     int $current_time The current time.
+	 */
+	private $start_time;
 
 	/**
 	 * The defaults to be returned for a non existing schedule.
@@ -44,8 +52,8 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		$global_settings = new Rop_Global_Settings();
 
 		$this->schedule_defaults = $global_settings->get_default_schedule();
-
-		$this->schedules = $this->get_schedules();
+		$this->start_time        = $global_settings->get_start_time();
+		$this->schedules         = $this->get_schedules();
 	}
 
 	/**
@@ -94,11 +102,6 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 
 		if ( isset( $schedule_data['interval_f'] ) ) {
 			$schedule['interval_f'] = $schedule_data['interval_f'];
-		}
-
-		$schedule['first_share'] = strtotime( '+15 seconds', current_time( 'timestamp', 0 ) );
-		if ( isset( $schedule_data['first_share'] ) && $schedule_data['first_share'] != null ) {
-			$schedule['first_share'] = $schedule_data['first_share'];
 		}
 
 		if ( isset( $schedule_data['last_share'] ) && $schedule_data['last_share'] != null ) {
@@ -189,56 +192,89 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 */
 	public function list_upcomming_schedules( $future_events = 10 ) {
 		$this->schedules = $this->get_schedules();
-
 		$list            = array();
 		foreach ( $this->schedules as $account_id => $schedule ) {
 			$list[ $account_id ] = array();
-			if ( $schedule['type'] == 'recurring' ) {
-				$i    = 0;
-				$time = $this->convert_float_to_time( $schedule['interval_r'] );
-				if ( $schedule['last_share'] == null ) {
-					$event_time             = $this->add_to_time( $schedule['first_share'], $time['hours'], $time['minutes'], true );
-					$schedule['last_share'] = $event_time;
-					array_push( $list[ $account_id ], $event_time );
-					$i ++;
-				}
-				for ( $i; $i < $future_events; $i ++ ) {
-					$event_time             = $this->add_to_time( $schedule['last_share'], $time['hours'], $time['minutes'], false );
-					$schedule['last_share'] = $event_time;
+			/**
+			 * If we just started the sharing, share the post in the next 30s.
+			 */
+			if ( ( time() - $this->start_time ) < 15 ) {
+				array_push( $list[ $account_id ], time() + 20 );
+			}
+
+			if ( $schedule['type'] === 'recurring' ) {
+				$time       = $this->convert_float_to_time( $schedule['interval_r'] );
+				$event_time = time();
+				for ( $i = 0; $i < $future_events; $i ++ ) {
+					$event_time = $this->add_to_time( $event_time, $time['hours'], $time['minutes'] );
 					array_push( $list[ $account_id ], $event_time );
 				}
 			} else {
 				$week_days = $schedule['interval_f']['week_days'];
-				$times     = $schedule['interval_f']['time'];
-				$next_pos  = $this->get_days_start_pos( $week_days );
-				$size      = sizeof( $week_days );
-				$i         = 0;
-				if ( $schedule['last_share'] == null ) {
-					$event_date = $this->next_day_of_week( $schedule['first_share'], $week_days[ $next_pos ], true );
+				/**
+				 * If we  don't have any weekdays/times set, bail.
+				 * TODO Log the error.
+				 */
+				if ( count( $week_days ) === 0 ) {
+					continue;
+				}
+				$times = $schedule['interval_f']['time'];
+				if ( count( $times ) === 0 ) {
+					continue;
+				}
+
+				sort( $week_days );
+				/**
+				 * Get first available week days.
+				 */
+				$next_pos   = $this->get_days_start_pos( $week_days );
+				$size       = count( $week_days );
+				$event_time = $this->get_current_time();
+				/**
+				 * Get the start $event_date as today related to the current time.
+				 */
+				$event_date = strtotime( 'today', $this->get_current_time() );
+				$i          = 0;
+				$times      = array_map( function ( $time ) {
+					return $this->convert_string_to_float( $time );
+				}, $times );
+				sort( $times );
+				while ( $i < $future_events ) {
+					/**
+					 * Get the first available day comparing with the previous event.
+					 */
 					foreach ( $times as $time ) {
-						$event_time             = $event_date . ' ' . $time;
-						$schedule['last_share'] = $event_time;
+						$event_time = $event_date + $time;
+						/**
+						 * If event is older than today, bail.
+						 */
+						if ( $event_time < $this->get_current_time() ) {
+							continue;
+						}
+						$i ++;
 						array_push( $list[ $account_id ], $event_time );
 					}
-					$next_pos = $this->next_pos_in_size( $next_pos, $size );
-					$i ++;
-				}
-				for ( $i; $i < $future_events; $i ++ ) {
-					$event_date = $this->next_day_of_week( $schedule['last_share'], $week_days[ $next_pos ], false );
-					foreach ( $times as $time ) {
-						$event_time             = $event_date . ' ' . $time;
-						$schedule['last_share'] = $event_time;
-						array_push( $list[ $account_id ], $event_time );
+
+					$event_date = $this->next_day_of_week( $event_time, $week_days[ $next_pos ] );
+					$reset_week = strtotime( 'next monday', $event_time );
+
+					if ( $reset_week < $event_date ) {
+						$next_pos   = 0;
+						$event_date = $this->next_day_of_week( $event_time, $week_days[ $next_pos ] );
 					}
 					$next_pos = $this->next_pos_in_size( $next_pos, $size );
 				}
 				$to_sort = $list[ $account_id ];
 				uasort(
-					$to_sort, function ( $a, $b ) {
-					return strtotime( $a ) - strtotime( $b );
-				}
+					$to_sort,
+					function ( $a, $b ) {
+						return $a - $b;
+					}
 				);
 				$list[ $account_id ] = array_slice( $to_sort, 0, $future_events );
+				$list[ $account_id ] = array_map( function ( $value ) {
+					return date( "Y-m-d H:i:s", $value );
+				}, $list[ $account_id ] );
 			} // End if().
 		} // End foreach().
 
@@ -257,6 +293,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @return array|string
 	 */
 	private function convert_float_to_time( $value, $as_array = true ) {
+		$value   = floatval( $value );
 		$hours   = floor( $value );
 		$minutes = ( ( $value * 60 ) % 60 );
 		if ( ! $as_array ) {
@@ -278,19 +315,13 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @param   string $time The time to append to.
 	 * @param   int    $hours The hours to be added.
 	 * @param   int    $minutes The minutes to be added.
-	 * @param   bool   $is_timestamp Flag to specify if time is a timestamp.
-	 * @param   string $format The date/time format of the return.
 	 *
 	 * @return false|string
 	 */
-	private function add_to_time( $time, $hours, $minutes, $is_timestamp = false, $format = 'Y-m-d H:i' ) {
-		if ( $is_timestamp ) {
-			$timestamp = strtotime( '+' . $hours . ' hour +' . $minutes . ' minutes', $time );
-		} else {
-			$timestamp = strtotime( '+' . $hours . ' hour +' . $minutes . ' minutes', strtotime( $time ) );
-		}
+	private function add_to_time( $time, $hours = 0, $minutes = 0 ) {
+		$timestamp = strtotime( '+' . $hours . ' hour +' . $minutes . ' minutes', $time );
 
-		return date( $format, $timestamp );
+		return $timestamp;
 	}
 
 	/**
@@ -305,8 +336,9 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @return int
 	 */
 	private function get_days_start_pos( $days_of_week ) {
+
 		for ( $i = 0; $i < sizeof( $days_of_week ); $i ++ ) {
-			if ( $days_of_week[ $i ] >= date( 'N', current_time( 'timestamp', 0 ) ) ) {
+			if ( intval( $days_of_week[ $i ] ) >= intval( date( 'N', $this->get_current_time() ) ) ) {
 				return $i;
 			}
 		}
@@ -315,19 +347,45 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	}
 
 	/**
+	 * Get current timestamp regardless of the blog settings.
+	 *
+	 * @return int
+	 */
+	public function get_current_time() {
+		return current_time( 'timestamp' );
+	}
+
+	/**
+	 * Utility method to convert a time string to int seconds.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 *
+	 * @param   string $value The value to be converted.
+	 *
+	 * @return integer
+	 */
+	private function convert_string_to_float( $value ) {
+		$parts = explode( ':', $value );
+		if ( count( $parts ) !== 2 ) {
+			return 0;
+		}
+
+		return intval( $parts[0] ) * 3600 + intval( $parts[1] ) * 60;
+	}
+
+	/**
 	 * Method to compute next day specified day of the week from given date.
 	 *
 	 * @since   8.0.0
 	 * @access  private
 	 *
-	 * @param   string         $from_date Start date.
+	 * @param   int            $base Start timestamp.
 	 * @param   string|integer $day_of_the_week The number of the day of the week.
-	 * @param   bool           $is_timestamp Flag to specify if given date is timestamp.
-	 * @param   string         $format The return format for the date.
 	 *
 	 * @return false|string
 	 */
-	private function next_day_of_week( $from_date, $day_of_the_week, $is_timestamp = false, $format = 'Y-m-d' ) {
+	private function next_day_of_week( $base, $day_of_the_week ) {
 		$days = array(
 			'1' => 'monday',
 			'2' => 'tuesday',
@@ -337,13 +395,10 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 			'6' => 'saturday',
 			'7' => 'sunday',
 		);
-		if ( $is_timestamp ) {
-			$timestamp = strtotime( 'next ' . $days[ $day_of_the_week ], $from_date );
-		} else {
-			$timestamp = strtotime( 'next ' . $days[ $day_of_the_week ], strtotime( $from_date ) );
-		}
 
-		return date( $format, $timestamp );
+		$timestamp = strtotime( 'next ' . $days[ $day_of_the_week ], $base );
+
+		return $timestamp;
 	}
 
 	/**

@@ -131,6 +131,7 @@ class Rop_Global_Settings {
 		'beta_user'            => false,
 		'remote_check'         => false,
 		'custom_messages'      => false,
+		'start_time'           => false,
 	);
 
 	/**
@@ -219,15 +220,12 @@ class Rop_Global_Settings {
 	 * @var     array $schedule_defaults The class schedule defaults.
 	 */
 	private $schedule_defaults = array(
-		'type'        => 'recurring',
-		'interval_r'  => '2.5',
-		'interval_f'  => array(
+		'type'       => 'recurring',
+		'interval_r' => '2.5',
+		'interval_f' => array(
 			'week_days' => array( '1', '2', '3', '4', '5', '6', '7' ),
 			'time'      => array( '9:30' ),
 		),
-		'timestamp'   => null,
-		'first_share' => null,
-		'last_share'  => null,
 	);
 
 	/**
@@ -251,7 +249,7 @@ class Rop_Global_Settings {
 		$schedule               = self::instance()->schedule;
 		$settings_model         = new Rop_Settings_Model();
 		$schedule['interval_r'] = $settings_model->get_interval();
-		$schedule['type'] = 'recurring';
+		$schedule['type']       = 'recurring';
 
 		return $schedule;
 	}
@@ -302,6 +300,7 @@ class Rop_Global_Settings {
 	 * @return  int
 	 */
 	public function license_type() {
+		return 2;
 		$pro_check      = defined( 'ROP_PRO_VERSION' );
 		$product_key    = 'tweet_old_post_pro';
 		$license_status = get_option( $product_key . '_license_status', '' );
@@ -412,6 +411,52 @@ class Rop_Global_Settings {
 		}
 
 		return $available_services;
+	}
+
+	/**
+	 * Get the base time.
+	 *
+	 * @return int Base time.
+	 */
+	public function get_time() {
+		return time();
+	}
+
+	/**
+	 * Update the time.
+	 *
+	 * @return void
+	 */
+	public function update_start_time() {
+		$settings_model         = new Rop_Settings_Model();
+		$settings               = $settings_model->get_settings();
+		$settings['start_time'] = time();
+		$settings_model->save_settings( $settings );
+
+	}
+
+	/**
+	 * Update the time.
+	 *
+	 * @return int
+	 */
+	public function get_start_time() {
+		$settings_model = new Rop_Settings_Model();
+
+		return $settings_model->get_start_time();
+
+	}
+
+	/**
+	 * Update the time.
+	 *
+	 * @return void
+	 */
+	public function reset_start_time() {
+		$settings_model         = new Rop_Settings_Model();
+		$settings               = $settings_model->get_settings();
+		$settings['start_time'] = false;
+		$settings_model->save_settings( $settings );
 	}
 
 	/**
