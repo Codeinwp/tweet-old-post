@@ -65,7 +65,7 @@
 				return this.$store.state.queue
 			},
 			start_status: function () {
-				return this.$store.state.cron_status
+				return this.$store.state.cron_status.current_status
 			},
 			is_business: function () {
 				return (this.$store.state.licence > 1)

@@ -34,7 +34,11 @@
 			
 			<div class="sidebar column col-2 col-xs-12 col-sm-12  col-md-12 col-lg-12 col-xl-3 "
 			     :class="'rop-license-plan-'+license">
+				
 				<div class="card rop-container-start">
+					<div class="toast toast-success rop-current-time" v-if="formatedDate">
+						Now: {{ formatedDate }}
+					</div>
 					<button class="btn" :class="btn_class"
 					        data-tooltip="You will need
 					         at least one active account
@@ -66,6 +70,7 @@
 	import LogsTab from './logs-tab-panel.vue'
 	import Toast from './reusables/toast.vue'
 	import CountDown from './reusables/countdown.vue'
+	import moment from 'moment'
 
 	module.exports = {
 		name: 'main-page-panel',
@@ -83,6 +88,18 @@
 			 */
 			page: function () {
 				return this.$store.state.page
+			},
+			current_time: {
+				get: function () {
+					return this.$store.state.cron_status.current_time;
+				},
+				set: function (value) {
+					this.$store.state.cron_status.current_time = value;
+				}
+			},
+			date_format: function () {
+
+				return this.$store.state.cron_status.date_format;
 			},
 			/**
 			 * Get btn start class.
@@ -106,8 +123,9 @@
 			* Check if the sharing is started.
 			*/
 			start_status: function () {
-				return this.$store.state.cron_status
+				return this.$store.state.cron_status.current_status
 			},
+
 			/**
 			 * Get general settings.
 			 * @returns {module.exports.computed.generalSettings|Array|*}
@@ -115,10 +133,21 @@
 			generalSettings: function () {
 				return this.$store.state.generalSettings
 			},
+			/**
+			 * Get general settings.
+			 * @returns {module.exports.computed.generalSettings|Array|*}
+			 */
+			formatedDate: function () {
+				if (typeof this.date_format === 'undefined') {
+					return '';
+				}
+				//this.$log.info('Formating ', this.current_time, this.date_format);
+				return moment.utc(this.current_time, 'X').format(this.date_format.replace('mm', 'mm:ss'));
+			},
 			countdownObject() {
 				let queue = this.$store.state.queue
 				let toTime = null
-				let isOn = this.$store.state.cron_status
+				let isOn = this.$store.state.cron_status.current_status
 				if (queue !== undefined && queue[Object.keys(queue)[0]] && isOn) {
 					toTime = queue[Object.keys(queue)[0]].time
 				}
@@ -127,6 +156,14 @@
 					isOn: isOn
 				}
 			}
+		},
+		mounted: function () {
+			setInterval(() => {
+				//this.$log.info('counting');
+				if (this.current_time > 0) {
+					this.current_time++;
+				}
+			}, 1000);
 		},
 		created() {
 		},

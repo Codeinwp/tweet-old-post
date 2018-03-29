@@ -141,9 +141,9 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $account_id    The account ID.
+	 * @param   string $account_id The account ID.
 	 * @param   bool   $schedule_data The schedule data.
-	 * @param   bool   $last_share    A last share timestamp if needed.
+	 * @param   bool   $last_share A last share timestamp if needed.
 	 *
 	 * @return mixed
 	 */
@@ -204,7 +204,8 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 
 			if ( $schedule['type'] === 'recurring' ) {
 				$time       = $this->convert_float_to_time( $schedule['interval_r'] );
-				$event_time = time();
+				$event_time = self::get_current_time();
+
 				for ( $i = 0; $i < $future_events; $i ++ ) {
 					$event_time = $this->add_to_time( $event_time, $time['hours'], $time['minutes'] );
 					array_push( $list[ $account_id ], $event_time );
@@ -232,7 +233,8 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 				 * Get first available week days.
 				 */
 				$start_week = $this->get_week_start();
-				$i          = 0;
+
+				$i = 0;
 
 				while ( $i < $future_events ) {
 					/**
@@ -240,29 +242,32 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 					 */
 					foreach ( $week_days as $day ) {
 						$event_day = $start_week + ( ( intval( $day ) - 1 ) * DAY_IN_SECONDS );
+
 						foreach ( $times as $time ) {
 							$event_time = $event_day + $time;
+
 							/**
 							 * If event is older than today, bail.
 							 */
-							if ( $event_time < $this->get_current_time() ) {
+							if ( $event_time < self::get_current_time() ) {
 								continue;
 							}
 							$i ++;
 							array_push( $list[ $account_id ], $event_time );
 
 						}
-
-						$start_week = strtotime( '+1 week', $start_week );
 					}
+
+					$start_week = strtotime( '+1 week', $start_week );
 				}
 				$to_sort = $list[ $account_id ];
-				sort($to_sort);
+				sort( $to_sort );
 				$list[ $account_id ] = array_slice( $to_sort, 0, $future_events );
-				$list[ $account_id ] = array_map( function ( $value ) {
-					return date( "Y-m-d H:i:s", $value );
-				}, $list[ $account_id ] );
+
 			} // End if().
+			$list[ $account_id ] = array_map( function ( $value ) {
+				return self::get_date( $value );
+			}, $list[ $account_id ] );
 		} // End foreach().
 
 		return $list;
@@ -274,7 +279,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  private
 	 *
-	 * @param   float $value    The value to be converted.
+	 * @param   float $value The value to be converted.
 	 * @param   bool  $as_array Flag to change return type to array.
 	 *
 	 * @return array|string
@@ -294,13 +299,22 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	}
 
 	/**
+	 * Get current timestamp regardless of the blog settings.
+	 *
+	 * @return int
+	 */
+	public static function get_current_time() {
+		return current_time( 'timestamp' );
+	}
+
+	/**
 	 * Utility method to add to specified time.
 	 *
 	 * @since   8.0.0
 	 * @access  private
 	 *
-	 * @param   string $time    The time to append to.
-	 * @param   int    $hours   The hours to be added.
+	 * @param   string $time The time to append to.
+	 * @param   int    $hours The hours to be added.
 	 * @param   int    $minutes The minutes to be added.
 	 *
 	 * @return false|string
@@ -337,91 +351,34 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @return false|string
 	 */
 	private function get_week_start() {
-		$strtotime = date( 'o-\WW', $this->get_current_time() );
+		$strtotime = date( 'o-\WW', self::get_current_time() );
 		$start     = strtotime( $strtotime );
 
 		return intval( $start );
 	}
 
 	/**
-	 * Get current timestamp regardless of the blog settings.
+	 * Get date according to WordPress settings.
+	 *
+	 * @param int $timestamp Timestamp to format.
 	 *
 	 * @return int
 	 */
-	public function get_current_time() {
-		return current_time( 'timestamp' );
-	}
-
-	/**
-	 * Method to compute next day specified day of the week from given date.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 *
-	 * @param   int            $base            Start timestamp.
-	 * @param   string|integer $day_of_the_week The number of the day of the week.
-	 *
-	 * @return false|string
-	 */
-	private function next_day_of_week( $base, $day_of_the_week ) {
-		$days = array(
-			'1' => 'monday',
-			'2' => 'tuesday',
-			'3' => 'wednesday',
-			'4' => 'thursday',
-			'5' => 'friday',
-			'6' => 'saturday',
-			'7' => 'sunday',
-		);
-
-		$timestamp = strtotime( 'next ' . $days[ $day_of_the_week ], $base );
-
-		return $timestamp;
-	}
-
-	/**
-	 * Utility method to give a position bounded by two dimensions.
-	 *
-	 * Used to loop through the days of the week array and the times array as many times as needed.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 *
-	 * @param   int $current_pos The current position.
-	 * @param   int $size        The upper limit.
-	 * @param   int $first_pos   The lower limit.
-	 *
-	 * @return int
-	 */
-	private function next_pos_in_size( $current_pos, $size = 1, $first_pos = 0 ) {
-		$next_pos = $current_pos + 1;
-		if ( $next_pos < $size ) {
-			return $next_pos;
+	public static function get_date( $timestamp = 0 ) {
+		if ( empty( $timestamp ) ) {
+			$timestamp = self::get_current_time();
 		}
 
-		return $first_pos;
+		return date( self::get_date_format(), $timestamp );
 	}
 
 	/**
-	 * Computes the next available day of the week from current time
-	 * with respect to the days of the week array passed from the schedules.
+	 * Return date format according to WordPress settings.
 	 *
-	 * @since   8.0.0
-	 * @access  private
-	 *
-	 * @param   array $days_of_week The days of the week array.
-	 *
-	 * @return int
+	 * @return string Current date format.
 	 */
-	private function get_days_start_pos( $days_of_week ) {
-
-		for ( $i = 0; $i < sizeof( $days_of_week ); $i ++ ) {
-			if ( intval( $days_of_week[ $i ] ) >= intval( date( 'N', $this->get_current_time() ) ) ) {
-				return $i;
-			}
-		}
-
-		return 0;
+	public static function get_date_format() {
+		return get_option( 'date_format', '' ) . ' ' . get_option( 'time_format', '' );
 	}
 
 }

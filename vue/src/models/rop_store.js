@@ -35,7 +35,7 @@ export default new Vuex.Store( {
 			view: 'accounts',
 			template: 'accounts',
 		},
-		cron_status: false,
+		cron_status: {},
 		toast: {
 			type: 'success',
 			show: false,
@@ -111,7 +111,7 @@ export default new Vuex.Store( {
 			Vue.$log.debug( 'State change for ', requestName );
 			switch ( requestName ) {
 			case 'manage_cron':
-				state.cron_status = stateData.current_status
+				state.cron_status = stateData
 			case 'get_log':
 				state.page.logs = stateData.pretty
 				state.page.logs_verbose = stateData.verbose
