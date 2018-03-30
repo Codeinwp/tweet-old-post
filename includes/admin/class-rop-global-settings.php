@@ -127,7 +127,6 @@ class Rop_Global_Settings {
 		'selected_posts'       => array(),
 		'exclude_posts'        => true,
 		'ga_tracking'          => false,
-		'post_limit'           => 20,
 		'beta_user'            => false,
 		'remote_check'         => false,
 		'custom_messages'      => false,

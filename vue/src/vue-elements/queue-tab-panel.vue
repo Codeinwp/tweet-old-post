@@ -40,9 +40,8 @@
 					are selected in <b>"General Settings"</b> and if a <b>"Schedule"</b> is defined.</p>
 			</div>
 			<div class="container columns" v-if="start_status && queueCount > 0">
-				<div class="column col-sm-12 col-3 text-left" v-for=" (data, index) in queue ">
-					<queue-card :account_id="data.account_id" :post="data.post" :time="data.time" :key="index"
-					            :id="index" :enabled="is_business"/>
+				<div class="column col-12 text-left" v-for=" (data, index) in queue ">
+					<queue-card :card_data="data.post_data" :id="index" :enabled="is_business"/>
 				</div>
 			</div>
 		</div>
@@ -70,23 +69,15 @@
 			is_business: function () {
 				return (this.$store.state.licence > 1)
 			},
-			is_loading: function () {
-				return this.$store.state.ajaxLoader;
-			}
 		},
 		data: function () {
 			return {
-				is_loading: false,
+				is_loading: false
 			}
 		},
 		watch: {
 			start_status: function (new_val) {
-				if (new_val) {
 					this.refreshQueue();
-				} else {
-					this.queue = {};
-					this.queueCount = 0;
-				}
 			}
 		},
 		mounted: function () {

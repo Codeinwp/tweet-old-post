@@ -167,10 +167,37 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function save_settings( $data = array() ) {
+		$this->validate_settings( $data );
+
 		$this->settings = $data;
 		unset( $data['available_post_types'] );
+		$this->set( 'general_settings', $data );
+		$queue = new Rop_Queue_Model();
+		$queue->clear_queue();
+	}
 
-		return $this->set( 'general_settings', $data );
+	private function validate_settings( $data ) {
+		if ( isset( $data['default_interval'] ) ) {
+			$data['default_interval'] = floatval( $data['default_interval'] );
+			if ( $data['default_interval'] < 0.1 ) {
+				// TODO log wrong default intervak. MIn is 6min.
+				$data['default_interval'] = 0.1;
+			}
+			$data['default_interval'] = number_format( $data['default_interval'], 1 );
+		}
+		if ( isset( $data['number_of_posts'] ) ) {
+			$data['number_of_posts'] = intval( $data['number_of_posts'] );
+			if ( $data['number_of_posts'] < 0 ) {
+				// TODO log wrong no. of posts . MIn is 1.
+				$data['number_of_posts'] = 1;
+			}
+			if ( $data['number_of_posts'] > 5 ) {
+				// TODO log wrong no. of posts . Max is 15
+				$data['number_of_posts'] = 5;
+			}
+		}
+
+		return $data;
 	}
 
 	/**
@@ -237,7 +264,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_more_than_once() {
-		return $this->settings['more_than_once'];
+		return (bool) $this->settings['more_than_once'];
 	}
 
 	/**
@@ -284,16 +311,6 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 		return $this->settings['exclude_posts'];
 	}
 
-	/**
-	 * Getter for the post limit.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return mixed
-	 */
-	public function get_post_limit() {
-		return $this->settings['post_limit'];
-	}
 
 	/**
 	 * Getter for the beta user option.

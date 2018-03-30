@@ -59,7 +59,7 @@ class Rop_Cron_Helper {
 	 */
 	public function manage_cron( $request ) {
 		if ( $request['action'] == 'start' ) {
-			$this->create_cron();
+			$this->create_cron( true );
 		} elseif ( $request['action'] == 'stop' ) {
 			$this->remove_cron();
 		}
@@ -101,11 +101,25 @@ class Rop_Cron_Helper {
 	 */
 	public function remove_cron() {
 		$timestamp = wp_next_scheduled( self::CRON_NAMESPACE );
-		if ( $timestamp ) {
-			wp_unschedule_event( $timestamp, self::CRON_NAMESPACE );
+		if ( is_int( $timestamp ) ) {
+			wp_clear_scheduled_hook( self::CRON_NAMESPACE );
 		}
+		/**
+		 * Reset start time.
+		 */
 		$settings = new Rop_Global_Settings();
 		$settings->reset_start_time();
+		/**
+		 * Reset timeline events.
+		 */
+		$scheduler = new Rop_Scheduler_Model();
+		$scheduler->refresh_events();
+
+		/**
+		 * Reset queue events.
+		 */
+		$scheduler = new Rop_Queue_Model();
+		$scheduler->clear_queue();
 
 		return false;
 	}
@@ -116,7 +130,7 @@ class Rop_Cron_Helper {
 	 * @return bool Cron status.
 	 */
 	public function get_status() {
-		return (bool) wp_next_scheduled( self::CRON_NAMESPACE );
+		return is_int( wp_next_scheduled( self::CRON_NAMESPACE ) );
 	}
 
 	private function convert_phpformat_to_js( $format ) {

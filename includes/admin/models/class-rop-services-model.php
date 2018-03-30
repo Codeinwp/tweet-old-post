@@ -189,6 +189,8 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 * @param   boolean $state The desired state (true/false).
 	 */
 	private function toggle_account_state( $index, $state ) {
+		$scheduler = new Rop_Scheduler_Model();
+		$queue     = new Rop_Queue_Model();
 
 		$services = $this->get_authenticated_services();
 		$return   = array();
@@ -196,6 +198,14 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 		if ( count( $services[ $service . '_' . $service_id ]['available_accounts'] ) > 0 ) {
 			foreach ( $services[ $service . '_' . $service_id ]['available_accounts'] as $key => $account ) {
 				if ( $account['id'] == $account_id ) {
+					/**
+					 * Reset events timeline for this account when switching state.
+					 */
+					$scheduler->refresh_events( $account_id );
+					/**
+					 * Clear queue on switching account.
+					 */
+					$queue->clear_queue( $account_id );
 					$services[ $service . '_' . $service_id ]['available_accounts'][ $key ]['active'] = $state;
 					$return                                                                           = $services[ $service . '_' . $service_id ]['available_accounts'][ $key ];
 				}

@@ -110,8 +110,10 @@ class Rop_Post_Format_Model extends Rop_Model_Abstract {
 	public function add_update_post_format( $account_id, $data ) {
 		$data                             = wp_parse_args( $data, $this->defaults );
 		$this->post_format[ $account_id ] = $data;
+		$this->set( 'post_format', $this->post_format );
 
-		return $this->set( 'post_format', $this->post_format );
+		$queue = new Rop_Queue_Model();
+		$queue->clear_queue( $account_id );
 	}
 
 	/**
@@ -127,7 +129,9 @@ class Rop_Post_Format_Model extends Rop_Model_Abstract {
 	public function remove_post_format( $account_id ) {
 		unset( $this->post_format[ $account_id ] );
 
-		return $this->set( 'post_format', $this->post_format );
+		$queue = new Rop_Queue_Model();
+		$queue->clear_queue( $account_id );
+		$this->set( 'post_format', $this->post_format );
 	}
 
 }

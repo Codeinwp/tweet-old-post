@@ -268,9 +268,8 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function select( $account_id = false ) {
-		$post_types  = $this->build_post_types();
-		$tax_queries = $this->build_tax_query();
-
+		$post_types       = $this->build_post_types();
+		$tax_queries      = $this->build_tax_query();
 		$include          = array();
 		$excluded_by_user = array();
 		$required         = array();
@@ -282,6 +281,9 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 					array_push( $include, $post['value'] );
 				}
 			}
+			/**
+			 * TODO implement always include posts mechanism. Now this is disabled.
+			 */
 			if ( $this->settings->get_exclude_posts() != true ) {
 				$required = get_posts(
 					array(
@@ -294,19 +296,19 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		}
 
 		$results = $this->query_results( $account_id, $post_types, $tax_queries, $excluded_by_user );
-
-		if ( empty( $results ) && $this->has_buffer_items( $account_id ) ) {
+		/**
+		 * If share more than once is active, we have no more posts and the buffer is filled
+		 * reset the buffer and query again.
+		 */
+		if ( empty( $results ) && $this->has_buffer_items( $account_id ) && $this->settings->get_more_than_once() ) {
 			$this->clear_buffer( $account_id );
 
 			$results = $this->query_results( $account_id, $post_types, $tax_queries, $excluded_by_user );
 
 		}
 
-		$results = wp_parse_args( $results, $required );
-
 		$this->selection = $results;
 
-		// print_r( $results );
 		return $results;
 	}
 
@@ -325,12 +327,21 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 */
 	private function query_results( $account_id, $post_types, $tax_queries, $excluded_by_user ) {
 		$exclude = $this->build_exclude( $account_id, $excluded_by_user );
-		$args    = $this->build_query_args( $post_types, $tax_queries, $exclude );
-		// print_r( $args );
-		// print_r( get_posts( $args ) );
+		if ( ! is_array( $exclude ) ) {
+			$exclude = array();
+		}
+		$args  = $this->build_query_args( $post_types, $tax_queries, $exclude );
 		$query = new WP_Query( $args );
 		$posts = $query->posts;
+		/**
+		 * Exclude the ids from the excluded array.
+		 */
+		$posts = array_diff( $posts, $exclude );
 		wp_reset_postdata();
+		/**
+		 * Reset indexes to avoid missing ones.
+		 */
+		$posts = array_filter( $posts );
 
 		return $posts;
 	}
@@ -344,6 +355,9 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @param   string $account_id The account ID.
 	 * @param   array  $excluded_by_user Excluded post ID's by the user.
 	 *
+	 * @uses $blocked buffer ( banned posts ).
+	 * @uses $buffer ( skipped or already shared posts ).
+	 *
 	 * @return array|mixed
 	 */
 	private function build_exclude( $account_id, $excluded_by_user = array() ) {
@@ -354,6 +368,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			$exclude = array_merge( $exclude, $blocked );
 		}
 		$exclude = array_merge( $exclude, $excluded_by_user );
+		$exclude = array_unique( $exclude );
 
 		return $exclude;
 	}
@@ -372,11 +387,13 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 */
 	private function build_query_args( $post_types, $tax_queries, $exclude ) {
 		$args    = array(
-			'no_found_rows'  => true,
-			'posts_per_page' => '20',
-			'post_type'      => $post_types,
-			'tax_query'      => $tax_queries,
-			'exclude'        => $exclude,
+			'no_found_rows'          => true,
+			'posts_per_page'         => ( 1000 + count( $exclude ) ),
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+			'fields'                 => 'ids',
+			'post_type'              => $post_types,
+			'tax_query'              => $tax_queries,
 		);
 		$min_age = $this->settings->get_minimum_post_age();
 		if ( ! empty( $min_age ) ) {
@@ -391,9 +408,6 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		}
 		if ( empty( $tax_queries ) ) {
 			unset( $args['tax_query'] );
-		}
-		if ( empty( $exclude ) ) {
-			unset( $args['exclude'] );
 		}
 
 		return $args;

@@ -4323,3 +4323,22 @@ a.active {
     padding: 2px 10px;
     margin-bottom: 3px;
 }
+
+#rop_core .rop-queue-post .card-top-header.columns  {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    margin-left: 0px;
+    margin-right: 0px;
+
+}
+#rop_core .rop-queue-post .card-top-footer.columns  {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    width: 100%;
+    margin-left: 0px;
+    margin-right: 0px;
+
+}

@@ -30,7 +30,11 @@ class Rop_Deactivator {
 	 * @since    8.0.0
 	 */
 	public static function deactivate() {
-		wp_clear_scheduled_hook( 'rop_cron_job' );
+		/**
+		 * Stop posting action.
+		 */
+		$cron_helper = new Rop_Cron_Helper();
+		$cron_helper->remove_cron();
 	}
 
 }
