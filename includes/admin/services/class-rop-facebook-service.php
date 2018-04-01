@@ -407,6 +407,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		$api    = $this->get_api( $credentials['app_id'], $credentials['secret'] );
 		$helper = $api->getRedirectLoginHelper();
+
 		$url    = $helper->getLoginUrl( $this->get_endpoint_url( 'authorize' ), $this->permissions );
 
 		return $url;

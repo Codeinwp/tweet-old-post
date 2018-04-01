@@ -11,7 +11,7 @@
 		<toast/>
 		<countdown v-bind:to="countdownObject"/>
 		<div class="columns">
-			<div class="panel  column col-10 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-9">
+			<div class="panel  column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-8 ">
 				<div class="panel-nav" style="padding: 8px;">
 					<ul class="tab">
 						<li class="tab-item" v-for="tab in displayTabs"
@@ -32,7 +32,7 @@
 				<component :is="page.template" :type="page.view"></component>
 			</div>
 			
-			<div class="sidebar column col-2 col-xs-12 col-sm-12  col-md-12 col-lg-12 col-xl-3 "
+			<div class="sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12 col-xl-4 "
 			     :class="'rop-license-plan-'+license">
 				
 				<div class="card rop-container-start">

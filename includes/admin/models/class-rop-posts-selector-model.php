@@ -341,7 +341,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		/**
 		 * Reset indexes to avoid missing ones.
 		 */
-		$posts = array_filter( $posts );
+		$posts = array_values( $posts );
 
 		return $posts;
 	}

@@ -125,7 +125,7 @@ class Rop_Post_Format_Helper {
 		$custom_messages = get_post_meta( $post_id, 'rop_custom_messages_group', true );
 
 		if ( ! empty( $custom_messages ) ) {
-			$custom_messages = array_filter( $custom_messages );
+			$custom_messages = array_values( $custom_messages );
 			$random_index    = rand( 0, ( count( $custom_messages ) - 1 ) );
 			$share_content   = $custom_messages[ $random_index ]['rop_custom_description'];
 			$share_content   = $content_helper->token_truncate( $share_content, $max_length );

@@ -74,8 +74,8 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $account_id The account ID.
-	 * @param   int    $post_id The post ID referenced.
+	 * @param   string $account_id  The account ID.
+	 * @param   int    $post_id     The post ID referenced.
 	 * @param   array  $custom_data The custom data.
 	 *
 	 * @return bool
@@ -112,7 +112,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @access  private
 	 *
 	 * @param   string $account_id The account ID.
-	 * @param   int    $post_id The post ID.
+	 * @param   int    $post_id    The post ID.
 	 *
 	 * @return bool|int|null|string
 	 */
@@ -140,8 +140,8 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @access  private
 	 *
 	 * @param   string $key_name The key to use for lookup.
-	 * @param   mixed  $value The value to match against.
-	 * @param   array  $array The array where to search.
+	 * @param   mixed  $value    The value to match against.
+	 * @param   array  $array    The array where to search.
 	 *
 	 * @return int|null|string
 	 */
@@ -162,7 +162,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $account_id The account ID.
+	 * @param   string $account_id        The account ID.
 	 * @param   bool   $update_last_share Flag to specify if scheduler for the account should be updated.
 	 *
 	 * @return mixed
@@ -185,7 +185,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $index The base64 uid.
+	 * @param   string $index      The base64 uid.
 	 * @param   string $account_id The account ID.
 	 *
 	 * @return mixed
@@ -221,7 +221,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $index The base64 uid.
+	 * @param   string $index      The base64 uid.
 	 * @param   string $account_id The account ID.
 	 */
 	public function ban_post( $index, $account_id ) {
@@ -251,7 +251,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @access  private
 	 *
 	 * @param   string $account_id The account ID.
-	 * @param   int    $post_id The post ID.
+	 * @param   int    $post_id    The post ID.
 	 */
 	private function replace_post_in_queue( $account_id, $post_id ) {
 		$post_pool = $this->selector->select( $account_id );
@@ -273,7 +273,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  private
 	 *
-	 * @param   integer $post_id A WordPress Post Object.
+	 * @param   integer $post_id    A WordPress Post Object.
 	 * @param   string  $account_id The account ID.
 	 *
 	 * @return array
@@ -301,17 +301,27 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 		if ( $cron_helper->get_status() === false ) {
 			return array();
 		}
-		$queue = $this->build_queue();
+		$queue             = $this->build_queue();
+		$events_timestamps = $this->scheduler->get_all_upcoming_events();
+
+		$ordered           = array();
 		foreach ( $queue as $account_id => $data ) {
-			foreach ( $data as $index => $event ) {
-				$ordered[ $index ] = array(
-					'time'      => $event['time'],
-					'post_data' => $event,
-					'post_id'   => $event['post_id'],
+			$account_timestamps = $events_timestamps[ $account_id ];
+			foreach ( $data as $index => $post ) {
+				$ordered[] = array(
+					'time'      => $account_timestamps[ $index ],
+					'post_data' => array(
+						'time'       => $account_timestamps[ $index ],
+						'account_id' => $account_id,
+						'date'       => Rop_Scheduler_Model::get_date( $account_timestamps[ $index ] ),
+						'post_id'    => $post,
+						'content'    => $this->prepare_post_object( $post, $account_id ),
+					),
+					'post_id'   => $post,
 				);
 			}
 		}
-		uasort(
+		usort(
 			$ordered,
 			function ( $a, $b ) {
 				return ( ( $a['time'] ) - ( $b['time'] ) );
@@ -338,42 +348,44 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 			return array();
 		}
 		foreach ( $upcoming_events as $account_id => $events ) {
-			$account_queue  = isset ( $current_queue[ $account_id ] ) ? $current_queue[ $account_id ] : array();
-			$queue_max_size = count( $events ) * $no_of_posts;
+			$account_queue      = isset( $current_queue[ $account_id ] ) ? $current_queue[ $account_id ] : array();
+
+			$queue_max_size     = count( $events ) * $no_of_posts;
+			$current_queue_size = count( $account_queue );
 			/**
 			 * Bail if we have queue already filled for this account.
 			 */
-			if ( count( $current_queue[ $account_id ] ) === $queue_max_size ) {
+			if ( $current_queue_size === $queue_max_size ) {
+				continue;
+			}
+			/**
+			 * If we have more posts in queue than necessary, slice them.
+			 * This might happen when user changes the no of posts shared.
+			 */
+			if ( $current_queue_size > $queue_max_size ) {
+				$current_queue[ $account_id ] = array_slice( $account_queue, 0, $queue_max_size );
 				continue;
 			}
 			$post_pool = $this->selector->select( $account_id );
-			foreach ( $events as $index => $time ) {
-				for ( $i = 0; $i < $no_of_posts; $i ++ ) {
-					$rand_key = rand( 0, count( $post_pool ) - 1 );
-					$post_id  = $post_pool[ $rand_key ];
-					$uid      = $this->create_uid( $account_id, $time, $post_id );
-					/**
-					 * If we have already this post scheduled for sharing at the same, bail.
-					 */
-					if ( isset( $account_queue[ $uid ] ) ) {
-						continue;
-					}
-					$account_queue[ $uid ] = array(
-						'time'       => $time,
-						'account_id' => $account_id,
-						'date'       => Rop_Scheduler_Model::get_date( $time ),
-						'post_id'    => $post_id,
-						'content'    => $this->prepare_post_object( $post_id, $account_id ),
-					);
-					unset( $post_pool[ $rand_key ] );
-					$post_pool = array_filter( $post_pool );
-				}
+			if ( empty( $post_pool ) ) {
+				// TODO error no posts to share for this account.
+				continue;
 			}
-			$queue[ $account_id ] = $account_queue;
+			$items_needed = $queue_max_size - $current_queue_size;
+			$i = 0;
+			while ( $i <= $items_needed ) {
+				$rand_key        = rand( 0, count( $post_pool ) - 1 );
+				$post_id         = $post_pool[ $rand_key ];
+				$account_queue[] = $post_id;
+				$i ++;
+				unset( $post_pool[ $rand_key ] );
+				$post_pool = array_values( $post_pool );
+			}
+			$current_queue[ $account_id ] = array_values( $account_queue );
 		}
-		$this->set( $this->queue_namespace, $queue );
+		$this->set( $this->queue_namespace, $current_queue );
 
-		return $queue;
+		return $current_queue;
 	}
 
 	/**
@@ -385,22 +397,6 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 */
 	public function get_queue() {
 		return $this->queue;
-	}
-
-	/**
-	 * Method to generate an uid.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 *
-	 * @param   string  $account_id The account ID.
-	 * @param   integer $time A timestamp of the event.
-	 * @param   integer $post_id Post ID.
-	 *
-	 * @return string
-	 */
-	private function create_uid( $account_id, $time, $post_id ) {
-		return md5( $time . $account_id . $post_id );
 	}
 
 	/**
@@ -425,7 +421,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $index The base64 uid.
+	 * @param   string $index      The base64 uid.
 	 * @param   string $account_id The account ID.
 	 *
 	 * @return bool
@@ -452,6 +448,22 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Method to generate an uid.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 *
+	 * @param   string  $account_id The account ID.
+	 * @param   integer $time       A timestamp of the event.
+	 * @param   integer $post_id    Post ID.
+	 *
+	 * @return string
+	 */
+	private function create_uid( $account_id, $time, $post_id ) {
+		return md5( $time . $account_id . $post_id );
 	}
 
 }

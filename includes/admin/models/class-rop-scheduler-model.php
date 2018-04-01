@@ -84,7 +84,6 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		foreach ( $active_accounts as $account_id => $data ) {
 			$valid_schedules[ $account_id ] = isset( $schedules[ $account_id ] ) ? $schedules[ $account_id ] : $this->create_schedule( $this->schedule_defaults );
 		}
-		$valid_schedules = array_filter( $valid_schedules );
 
 		return $valid_schedules;
 	}
@@ -289,6 +288,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		 */
 		if ( ( time() - $this->start_time ) < 15 ) {
 			array_push( $list, self::get_current_time() + 20 );
+			$limit -- ;
 		}
 
 		if ( $schedule['type'] === 'recurring' ) {
@@ -363,7 +363,6 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 			}
 		} // End if().
 		sort( $list );
-
 		return $list;
 	}
 
