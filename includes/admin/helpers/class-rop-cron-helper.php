@@ -66,6 +66,7 @@ class Rop_Cron_Helper {
 
 		return array(
 			'current_status'   => $this->get_status(),
+			'next_event_on'    => $this->next_event(),
 			'date_format'      => $this->convert_phpformat_to_js( Rop_Scheduler_Model::get_date_format() ),
 			'current_php_date' => Rop_Scheduler_Model::get_date(),
 			'current_time'     => Rop_Scheduler_Model::get_current_time(),
@@ -120,6 +121,11 @@ class Rop_Cron_Helper {
 		 */
 		$scheduler = new Rop_Queue_Model();
 		$scheduler->clear_queue();
+		/**
+		 * Clear buffer for all accounts.
+		 */
+		$selector = new Rop_Posts_Selector_Model();
+		$selector->clear_buffer();
 
 		return false;
 	}
@@ -131,6 +137,31 @@ class Rop_Cron_Helper {
 	 */
 	public function get_status() {
 		return is_int( wp_next_scheduled( self::CRON_NAMESPACE ) );
+	}
+
+	/**
+	 * Get next event timestamp.
+	 *
+	 * @return int Timestamp.
+	 */
+	public function next_event() {
+		if ( $this->get_status() === false ) {
+			return 0;
+		}
+
+		$scheduler = new Rop_Scheduler_Model();
+		$events    = $scheduler->get_all_upcoming_events();
+		$min       = PHP_INT_MAX;
+		foreach ( $events as $account_events ) {
+			foreach($account_events as $event_time) {
+
+				if ( ( $event_time < $min ) && $event_time > Rop_Scheduler_Model::get_current_time() ) {
+					$min = $event_time;
+				}
+			}
+		}
+
+		return $min;
 	}
 
 	private function convert_phpformat_to_js( $format ) {

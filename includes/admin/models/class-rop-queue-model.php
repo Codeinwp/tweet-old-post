@@ -74,85 +74,22 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $account_id  The account ID.
-	 * @param   int    $post_id     The post ID referenced.
+	 * @param   string $account_id The account ID.
+	 * @param   int    $post_id The post ID referenced.
 	 * @param   array  $custom_data The custom data.
 	 *
 	 * @return bool
 	 */
 	public function update_queue_object( $account_id, $post_id, $custom_data ) {
-		$key_to_edit = $this->queue_object_exists( $account_id, $post_id );
-		if ( $key_to_edit === false ) {
-			return false;
+		$key             = '_rop_edit_' . md5( $account_id );
+		$custom_data_old = get_post_meta( $post_id, $key, true );
+		if ( ! is_array( $custom_data_old ) ) {
+			$custom_data_old = array();
 		}
-
-		$edit = $this->queue[ $account_id ][ $key_to_edit ];
-
-		if ( isset( $custom_data['custom_content'] ) ) {
-			$edit['post']['custom_content'] = $custom_data['custom_content'];
-		}
-		if ( isset( $custom_data['custom_img'] ) ) {
-			$edit['post']['custom_img'] = $custom_data['custom_img'];
-		}
-		if ( isset( $custom_data['post_img'] ) ) {
-			$edit['post']['post_img'] = $custom_data['post_img'];
-		}
-
-		$this->queue[ $account_id ][ $key_to_edit ] = $edit;
-
-		$this->set( $this->queue_namespace, $this->queue );
+		$custom_data = wp_parse_args( $custom_data, $custom_data_old );
+		update_post_meta( $post_id, $key, $custom_data );
 
 		return true;
-	}
-
-	/**
-	 * Check if the object exists in queue and returns the key if found.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 *
-	 * @param   string $account_id The account ID.
-	 * @param   int    $post_id    The post ID.
-	 *
-	 * @return bool|int|null|string
-	 */
-	private function queue_object_exists( $account_id, $post_id ) {
-		if ( empty( $this->queue ) ) {
-			return false;
-		}
-		if ( ! isset( $this->queue[ $account_id ] ) || empty( $this->queue[ $account_id ] ) ) {
-			return false;
-		}
-
-		$key_to_edit = $this->search_array_by_key( 'post_id', $post_id, $this->queue[ $account_id ] );
-		if ( $key_to_edit === null ) {
-			return false;
-		}
-
-		return $key_to_edit;
-	}
-
-	/**
-	 * Utility  method to search an associative array
-	 * and return the key of the first found element.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 *
-	 * @param   string $key_name The key to use for lookup.
-	 * @param   mixed  $value    The value to match against.
-	 * @param   array  $array    The array where to search.
-	 *
-	 * @return int|null|string
-	 */
-	private function search_array_by_key( $key_name, $value, $array ) {
-		foreach ( $array as $key => $val ) {
-			if ( $val['post'][ $key_name ] == $value ) {
-				return $key;
-			}
-		}
-
-		return null;
 	}
 
 	/**
@@ -162,7 +99,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $account_id        The account ID.
+	 * @param   string $account_id The account ID.
 	 * @param   bool   $update_last_share Flag to specify if scheduler for the account should be updated.
 	 *
 	 * @return mixed
@@ -185,7 +122,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $index      The base64 uid.
+	 * @param   string $index The base64 uid.
 	 * @param   string $account_id The account ID.
 	 *
 	 * @return mixed
@@ -221,134 +158,45 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $index      The base64 uid.
+	 * @param   string $index The base64 uid.
 	 * @param   string $account_id The account ID.
 	 */
-	public function ban_post( $index, $account_id ) {
-		if ( ! empty( $this->queue ) ) {
-			$queue = $this->queue;
-			if ( isset( $queue[ $account_id ] [ $index ] ) ) {
-				$skip_id = $queue[ $account_id ][ $index ]['post']['post_id'];
-				$this->selector->mark_as_blocked( $account_id, $skip_id );
-				$this->replace_post_in_queue( $account_id, $skip_id );
-
-				$this->set( $this->queue_namespace, $this->queue );
-
-				return true;
-			}
-
+	public function ban_post( $post_id, $account_id ) {
+		$queue = $this->get_queue();
+		if ( empty( $queue ) ) {
 			return false;
 		}
 
-		return false;
-
-	}
-
-	/**
-	 * Utility method to replace given post ID from queue.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 *
-	 * @param   string $account_id The account ID.
-	 * @param   int    $post_id    The post ID.
-	 */
-	private function replace_post_in_queue( $account_id, $post_id ) {
-		$post_pool = $this->selector->select( $account_id );
-		$shuffler  = $this->create_shuffler( 0, sizeof( $post_pool ) - 1, sizeof( $this->queue[ $account_id ] ) );
-		$iterator  = 0;
-		foreach ( $this->queue[ $account_id ] as $index => $event ) {
-			if ( $event['post']['post_id'] == $post_id ) {
-				$pos                                          = $shuffler[ $iterator ++ ];
-				$this->queue[ $account_id ][ $index ]['post'] = $this->prepare_post_object( $post_pool[ $pos ], $account_id );
-			}
+		if ( ! isset( $queue[ $account_id ] ) ) {
+			return false;
 		}
-	}
+		$this->selector->mark_as_blocked( $account_id, $post_id );
+		$queue[ $account_id ] = array_diff( $queue[ $account_id ], array( $post_id ) );
+		$queue[ $account_id ] = array_values( $queue[ $account_id ] );
+		$this->update_queue( $queue );
 
+		return true;
 
-	/**
-	 * Rebuilds the post object using the updated post format
-	 * and preserving the old user settings. Or creates a new one.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 *
-	 * @param   integer $post_id    A WordPress Post Object.
-	 * @param   string  $account_id The account ID.
-	 *
-	 * @return array
-	 */
-	private function prepare_post_object( $post_id, $account_id ) {
-		$post_format_helper = new Rop_Post_Format_Helper();
-		$post_format_helper->set_post_format( $account_id );
-		$filtered_post = $post_format_helper->get_formated_object( $post_id );
-
-		return $filtered_post;
 	}
 
 	/**
-	 * Method to retrieve the queue formatted for display.
+	 * Method to retrieve the queue based on the number of timeline events.
+	 * It creates the queue order, refill it in case that we don't have enought elements.
 	 *
 	 * @since   8.0.0
 	 * @access  public
 	 * @return array
 	 */
-	public function get_ordered_queue() {
-		$cron_helper = new Rop_Cron_Helper();
-		/**
-		 * Bail if the sharing is not started.
-		 */
-		if ( $cron_helper->get_status() === false ) {
-			return array();
-		}
-		$queue             = $this->build_queue();
-		$events_timestamps = $this->scheduler->get_all_upcoming_events();
-
-		$ordered           = array();
-		foreach ( $queue as $account_id => $data ) {
-			$account_timestamps = $events_timestamps[ $account_id ];
-			foreach ( $data as $index => $post ) {
-				$ordered[] = array(
-					'time'      => $account_timestamps[ $index ],
-					'post_data' => array(
-						'time'       => $account_timestamps[ $index ],
-						'account_id' => $account_id,
-						'date'       => Rop_Scheduler_Model::get_date( $account_timestamps[ $index ] ),
-						'post_id'    => $post,
-						'content'    => $this->prepare_post_object( $post, $account_id ),
-					),
-					'post_id'   => $post,
-				);
-			}
-		}
-		usort(
-			$ordered,
-			function ( $a, $b ) {
-				return ( ( $a['time'] ) - ( $b['time'] ) );
-			}
-		);
-
-		return $ordered;
-	}
-
-	/**
-	 * Method to build and update the queue.
-	 * It builds, rebuilds and refills the queue as needed.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return array
-	 */
-	public function build_queue() {
+	public function get_queue() {
 		$settings        = new Rop_Settings_Model();
 		$no_of_posts     = $settings->get_number_of_posts();
 		$upcoming_events = $this->scheduler->get_all_upcoming_events();
-		$current_queue   = $this->get_queue();
+		$current_queue   = $this->queue;
 		if ( empty( $upcoming_events ) ) {
 			return array();
 		}
 		foreach ( $upcoming_events as $account_id => $events ) {
-			$account_queue      = isset( $current_queue[ $account_id ] ) ? $current_queue[ $account_id ] : array();
+			$account_queue = isset( $current_queue[ $account_id ] ) ? $current_queue[ $account_id ] : array();
 
 			$queue_max_size     = count( $events ) * $no_of_posts;
 			$current_queue_size = count( $account_queue );
@@ -372,8 +220,12 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 				continue;
 			}
 			$items_needed = $queue_max_size - $current_queue_size;
-			$i = 0;
+			$i            = 0;
+
 			while ( $i <= $items_needed ) {
+				if ( empty( $post_pool ) ) {
+					break;
+				}
 				$rand_key        = rand( 0, count( $post_pool ) - 1 );
 				$post_id         = $post_pool[ $rand_key ];
 				$account_queue[] = $post_id;
@@ -384,19 +236,120 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 			$current_queue[ $account_id ] = array_values( $account_queue );
 		}
 		$this->set( $this->queue_namespace, $current_queue );
+		$this->queue = $current_queue;
 
 		return $current_queue;
 	}
 
 	/**
-	 * Method to retrieve the queue
+	 * Update queue object.
+	 *
+	 *
+	 * @param array $queue New queue to update.
+	 */
+	public function update_queue( $queue ) {
+
+		$this->set( $this->queue_namespace, $queue );
+		$this->queue = $queue;
+	}
+
+	/**
+	 * Method to retrieve the queue formatted for display.
 	 *
 	 * @since   8.0.0
 	 * @access  public
 	 * @return array
 	 */
-	public function get_queue() {
-		return $this->queue;
+	public function get_ordered_queue() {
+		$cron_helper = new Rop_Cron_Helper();
+		/**
+		 * Bail if the sharing is not started.
+		 */
+		if ( $cron_helper->get_status() === false ) {
+			return array();
+		}
+		$queue = $this->build_queue();
+
+		foreach ( $queue as $account_id => $data ) {
+			foreach ( $data as $index => $post ) {
+				if ( empty( $post ) ) {
+					continue;
+				}
+				$ordered[] = array(
+					'time'      => $post['time'],
+					'post_data' => array(
+						'time'       => $post['time'],
+						'account_id' => $account_id,
+						'date'       => Rop_Scheduler_Model::get_date( $post['time'] ),
+						'post_id'    => $post['id'],
+						'content'    => $this->prepare_post_object( $post['id'], $account_id ),
+					),
+					'post_id'   => $post['id'],
+				);
+			}
+		}
+		usort(
+			$ordered,
+			function ( $a, $b ) {
+				return ( ( $a['time'] ) - ( $b['time'] ) );
+			}
+		);
+
+		return $ordered;
+	}
+
+	/**
+	 * Method to build the queue according to the timeline.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return array
+	 */
+	public function build_queue() {
+		$queue            = $this->get_queue();
+		$settings         = new Rop_Settings_Model();
+		$no_of_posts      = $settings->get_number_of_posts();
+		$upcoming_events  = $this->scheduler->get_all_upcoming_events();
+		$normalized_queue = array();
+		foreach ( $upcoming_events as $account_id => $events ) {
+			$account_queue                   = $queue[ $account_id ];
+			$normalized_queue[ $account_id ] = array();
+			foreach ( $events as $index => $event ) {
+				for ( $i = 0; $i < $no_of_posts; $i ++ ) {
+					$post_index = $i + $index;
+					if ( ! isset( $account_queue[ $post_index ] ) ) {
+						continue;
+					}
+					$normalized_queue[ $account_id ][] = array(
+						'time' => $event,
+						'id'   => $account_queue[ $post_index ],
+					);
+				}
+
+			}
+		}
+
+		return $normalized_queue;
+	}
+
+	/**
+	 * Rebuilds the post object using the updated post format
+	 * and preserving the old user settings. Or creates a new one.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 *
+	 * @param   integer $post_id A WordPress Post Object.
+	 * @param   string  $account_id The account ID.
+	 *
+	 * @return array
+	 */
+	private function prepare_post_object( $post_id, $account_id ) {
+		$post_format_helper = new Rop_Post_Format_Helper();
+		$post_format_helper->set_post_format( $account_id );
+		$filtered_post = $post_format_helper->get_formated_object( $post_id );
+
+		return $filtered_post;
 	}
 
 	/**
@@ -421,49 +374,96 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $index      The base64 uid.
+	 * @param   string $index The base64 uid.
 	 * @param   string $account_id The account ID.
 	 *
 	 * @return bool
 	 */
-	public function skip_post( $index, $account_id ) {
-		if ( ! empty( $this->queue ) ) {
-			$queue = $this->queue;
-			if ( isset( $queue[ $account_id ][ $index ] ) ) {
-				$skip_id = $queue[ $account_id ][ $index ]['post']['post_id'];
-				$this->selector->update_buffer( $account_id, $skip_id );
-				$post = $this->selector->select( $account_id );
-				if ( isset( $post[0] ) && ! empty( $post[0] ) ) {
-					$this->queue[ $account_id ][ $index ]['post'] = $this->prepare_post_object( $post[0], $account_id );
-					$this->set( $this->queue_namespace, $this->queue );
-					$this->build_queue();
-
-					return true;
-				}
-
-				return false;
-			}
-
+	public function skip_post( $post_id, $account_id ) {
+		$queue = $this->get_queue();
+		if ( empty( $queue ) ) {
 			return false;
 		}
 
-		return false;
+		if ( ! isset( $queue[ $account_id ] ) ) {
+			return false;
+		}
+		$this->selector->update_buffer( $account_id, $post_id );
+		$queue[ $account_id ] = array_diff( $queue[ $account_id ], array( $post_id ) );
+		$queue[ $account_id ] = array_values( $queue[ $account_id ] );
+		$this->update_queue( $queue );
+
+		return true;
 	}
 
 	/**
-	 * Method to generate an uid.
+	 * Check if the object exists in queue and returns the key if found.
 	 *
 	 * @since   8.0.0
 	 * @access  private
 	 *
-	 * @param   string  $account_id The account ID.
-	 * @param   integer $time       A timestamp of the event.
-	 * @param   integer $post_id    Post ID.
+	 * @param   string $account_id The account ID.
+	 * @param   int    $post_id The post ID.
 	 *
-	 * @return string
+	 * @return bool|int|null|string
 	 */
-	private function create_uid( $account_id, $time, $post_id ) {
-		return md5( $time . $account_id . $post_id );
+	private function queue_object_exists( $account_id, $post_id ) {
+		if ( empty( $this->queue ) ) {
+			return false;
+		}
+		if ( ! isset( $this->queue[ $account_id ] ) || empty( $this->queue[ $account_id ] ) ) {
+			return false;
+		}
+
+		$key_to_edit = $this->search_array_by_key( 'post_id', $post_id, $this->queue[ $account_id ] );
+		if ( $key_to_edit === null ) {
+			return false;
+		}
+
+		return $key_to_edit;
 	}
 
+	/**
+	 * Utility  method to search an associative array
+	 * and return the key of the first found element.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 *
+	 * @param   string $key_name The key to use for lookup.
+	 * @param   mixed  $value The value to match against.
+	 * @param   array  $array The array where to search.
+	 *
+	 * @return int|null|string
+	 */
+	private function search_array_by_key( $key_name, $value, $array ) {
+		foreach ( $array as $key => $val ) {
+			if ( $val['post'][ $key_name ] == $value ) {
+				return $key;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Utility method to replace given post ID from queue.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 *
+	 * @param   string $account_id The account ID.
+	 * @param   int    $post_id The post ID.
+	 */
+	private function replace_post_in_queue( $account_id, $post_id ) {
+		$post_pool = $this->selector->select( $account_id );
+		$shuffler  = $this->create_shuffler( 0, sizeof( $post_pool ) - 1, sizeof( $this->queue[ $account_id ] ) );
+		$iterator  = 0;
+		foreach ( $this->queue[ $account_id ] as $index => $event ) {
+			if ( $event['post']['post_id'] == $post_id ) {
+				$pos                                          = $shuffler[ $iterator ++ ];
+				$this->queue[ $account_id ][ $index ]['post'] = $this->prepare_post_object( $post_pool[ $pos ], $account_id );
+			}
+		}
+	}
 }

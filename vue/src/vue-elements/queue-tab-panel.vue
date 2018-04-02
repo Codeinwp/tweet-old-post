@@ -46,7 +46,12 @@
 			</div>
 		</div>
 		<div class="panel-footer">
-			<button class="btn btn-secondary" @click="refreshQueue"><i class="fa fa-refresh"></i> Refresh Queue</button>
+			<button class="btn btn-secondary" @click="refreshQueue(true)">
+				
+				<i class="fa fa-refresh" v-if="!is_loading"></i>
+				<i class="fa fa-spinner fa-spin" v-else></i>
+				Refresh Queue
+			</button>
 		</div>
 	</div>
 </template>
@@ -77,7 +82,7 @@
 		},
 		watch: {
 			start_status: function (new_val) {
-					this.refreshQueue();
+				this.refreshQueue();
 			}
 		},
 		mounted: function () {
@@ -86,14 +91,15 @@
 			}
 		},
 		methods: {
-			refreshQueue: function () {
+			refreshQueue: function (force) {
 				if (this.is_loading) {
 					this.$log.warn('Request in progress...Bail');
 					return;
 				}
 				this.is_loading = true;
-				this.$store.dispatch('fetchAJAXPromise', {req: 'get_queue'}).then(response => {
+				this.$store.dispatch('fetchAJAXPromise', {req: 'get_queue', data: {force: force}}).then(response => {
 					this.is_loading = false;
+					this.$store.dispatch('fetchAJAX', {req: 'manage_cron'});
 				}, error => {
 					this.is_loading = false;
 					Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)

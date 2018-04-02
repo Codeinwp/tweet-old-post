@@ -78,10 +78,9 @@ class Rop_Rest_Api {
 			$data     = json_decode( $request->get_body(), true );
 			$data     = is_array( $data ) ? $data : array();
 			$response = $this->$method_requested( $data );
-
-
 		}
-
+		$logger = new Rop_Logger();
+		$logger->info('here we go');
 		return $response;
 	}
 
@@ -188,8 +187,11 @@ class Rop_Rest_Api {
 	 * @access  private
 	 * @return array
 	 */
-	private function get_queue() {
+	private function get_queue( $data ) {
 		$queue = new Rop_Queue_Model();
+		if ( isset( $data['force'] ) ) {
+			$queue->clear_queue();
+		}
 		$this->response->set_code( '200' )
 		               ->set_message( __( 'Queue retrieved successfully.', 'tweet-old-post' ) )
 		               ->set_data( $queue->get_ordered_queue() );
@@ -780,7 +782,7 @@ class Rop_Rest_Api {
 		$log = new Rop_Logger();
 		$this->response->set_code( '200' )
 		               ->set_message( __( 'Logs retrieved successfully.', 'tweet-old-post' ) )
-		               ->set_data( array( 'pretty' => $log->read(), 'verbose' => $log->read( true ) ) );
+		               ->set_data( array( 'logs' => $log->get_logs() ) );
 
 		return $this->response->to_array();
 	}

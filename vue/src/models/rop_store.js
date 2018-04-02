@@ -190,6 +190,7 @@ export default new Vuex.Store( {
 			case 'skip_queue_event':
 			case 'block_queue_event':
 				state.queue = stateData
+
 				break
 			case 'update_toast':
 				state.toast = stateData

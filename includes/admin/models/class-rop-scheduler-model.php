@@ -247,7 +247,26 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 			$events     = array_merge( $account_events, $events_new );
 		}
 		sort( $events );
+		$prev                          = null;
+		$events                        = array_filter( $events, function ( $value ) use ( &$prev ) {
+			if ( empty( $prev ) ) {
+				$prev = $value;
+
+				return true;
+			}
+			/**
+			 * Dont allow consecutive shared events on less than 60s diff.
+			 */
+			if ( abs( $value - $prev ) < 60 ) {
+				return false;
+			}
+			$prev = $value;
+
+			return true;
+
+		} );
 		$current_events[ $account_id ] = $events;
+
 		$this->update_timeline( $current_events );
 
 		return $events;
@@ -288,7 +307,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		 */
 		if ( ( time() - $this->start_time ) < 15 ) {
 			array_push( $list, self::get_current_time() + 20 );
-			$limit -- ;
+			$limit --;
 		}
 
 		if ( $schedule['type'] === 'recurring' ) {
@@ -363,6 +382,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 			}
 		} // End if().
 		sort( $list );
+
 		return $list;
 	}
 

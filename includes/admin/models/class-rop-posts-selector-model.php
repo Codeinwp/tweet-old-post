@@ -332,6 +332,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		}
 		$args  = $this->build_query_args( $post_types, $tax_queries, $exclude );
 		$query = new WP_Query( $args );
+
 		$posts = $query->posts;
 		/**
 		 * Exclude the ids from the excluded array.

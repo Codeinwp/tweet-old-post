@@ -60,7 +60,6 @@ class Rop_Post_Format_Helper {
 		$service = $parts[0];
 
 		$content = $this->build_content( $post_id );
-
 		$filtered_post                         = array();
 		$filtered_post['post_id']              = $post_id;
 		$filtered_post['account_id']           = $this->account_id;
@@ -110,8 +109,9 @@ class Rop_Post_Format_Helper {
 		/**
 		 * Content edited thru queue.
 		 */
+
 		$custom_content = get_post_meta( $post_id, '_rop_edit_' . md5( $this->account_id ), true );
-		if ( ! empty( $custom_messages ) ) {
+		if ( ! empty( $custom_content ) ) {
 			$share_content = isset( $custom_content['text'] ) ? $custom_content['text'] : '';
 			if ( ! empty( $share_content ) ) {
 				$share_content = $content_helper->token_truncate( $share_content, $max_length );
@@ -445,7 +445,7 @@ class Rop_Post_Format_Helper {
 	 */
 	public function build_image( $post_id ) {
 		$custom_content = get_post_meta( $post_id, '_rop_edit_' . md5( $this->account_id ), true );
-		if ( ! empty( $custom_messages ) ) {
+		if ( ! empty( $custom_content ) ) {
 			$share_image = isset( $custom_content['image'] ) ? $custom_content['image'] : '';
 			if ( ! empty( $share_image ) ) {
 				return $share_image;

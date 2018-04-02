@@ -7,9 +7,6 @@
 					href="https://themeisle.com" target="_blank"><b>ThemeIsle</b></a></span>
 			</div>
 		</div>
-		
-		<toast/>
-		<countdown v-bind:to="countdownObject"/>
 		<div class="columns">
 			<div class="panel  column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-8 ">
 				<div class="panel-nav" style="padding: 8px;">
@@ -39,6 +36,7 @@
 					<div class="toast toast-success rop-current-time" v-if="formatedDate">
 						Now: {{ formatedDate }}
 					</div>
+					<countdown :current_time="current_time"/>
 					<button class="btn" :class="btn_class"
 					        data-tooltip="You will need
 					         at least one active account
@@ -49,6 +47,7 @@
 						<i class="fa fa-spinner fa-spin" v-else></i>
 						{{( start_status ? 'Stop' : 'Start' )}} Sharing
 					</button>
+				
 				</div>
 				<div class="card rop-upsell-pro-card" v-if="license  < 1 ">
 					Buy the pro version
@@ -141,27 +140,14 @@
 				if (typeof this.date_format === 'undefined') {
 					return '';
 				}
-				//this.$log.info('Formating ', this.current_time, this.date_format);
 				return moment.utc(this.current_time, 'X').format(this.date_format.replace('mm', 'mm:ss'));
 			},
-			countdownObject() {
-				let queue = this.$store.state.queue
-				let toTime = null
-				let isOn = this.$store.state.cron_status.current_status
-				if (queue !== undefined && queue[Object.keys(queue)[0]] && isOn) {
-					toTime = queue[Object.keys(queue)[0]].time
-				}
-				return {
-					toTime: toTime,
-					isOn: isOn
-				}
-			}
 		},
 		mounted: function () {
 			setInterval(() => {
 				//this.$log.info('counting');
 				if (this.current_time > 0) {
-					this.current_time++;
+					this.current_time += 1;
 				}
 			}, 1000);
 		},
