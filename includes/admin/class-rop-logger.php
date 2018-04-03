@@ -49,10 +49,11 @@ class Rop_Logger {
 	 */
 	public function __construct() {
 
-		$this->stream = new Rop_Log_Handler( 'rop_logs' );
-		$formatter    = new LineFormatter( '%message% %context% %extra%' . PHP_EOL, 'd-m-Y H:i:s', false, true );
+		$this->stream = new Rop_Log_Handler( 'rop_logs', Logger::ALERT );
+		$formatter    = new LineFormatter( '%message% %extra%' . PHP_EOL, 'd-m-Y H:i:s', false, true );
 		$this->stream->setFormatter( $formatter );
 		$this->logger = new Logger( 'rop_logs' );
+		//	$this->stream->clear_logs();
 		$this->logger->pushHandler( $this->stream );
 
 	}
@@ -71,6 +72,34 @@ class Rop_Logger {
 	}
 
 	/**
+	 * Logs an alert error message.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 *
+	 * @param   string $message The message to log.
+	 * @param   array  $context [optional] A context for the message, if needed.
+	 */
+	public function alert_error( $message = '', $context = array() ) {
+		$context_new = array_merge( $context, array( 'type' => 'error' ) );
+		$this->logger->alert( $message, $context_new );
+	}
+
+	/**
+	 * Logs an alert success message.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 *
+	 * @param   string $message The message to log.
+	 * @param   array  $context [optional] A context for the message, if needed.
+	 */
+	public function alert_success( $message = '', $context = array() ) {
+		$context_new = array_merge( $context, array( 'type' => 'success' ) );
+		$this->logger->alert( $message, $context_new );
+	}
+
+	/**
 	 * Get all logs.
 	 *
 	 * @since   8.0.0
@@ -81,6 +110,18 @@ class Rop_Logger {
 		$logs = $this->stream->get_logs();
 
 		return $logs;
+	}
+
+	/**
+	 * Clear user logs.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 *
+	 */
+	public function clear_user_logs() {
+		$this->stream->clear_logs();
+
 	}
 
 	/**

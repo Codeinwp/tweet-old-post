@@ -67,6 +67,7 @@ class Rop_Cron_Helper {
 		return array(
 			'current_status'   => $this->get_status(),
 			'next_event_on'    => $this->next_event(),
+			'logs_number'      => $this->get_logs_number(),
 			'date_format'      => $this->convert_phpformat_to_js( Rop_Scheduler_Model::get_date_format() ),
 			'current_php_date' => Rop_Scheduler_Model::get_date(),
 			'current_time'     => Rop_Scheduler_Model::get_current_time(),
@@ -153,7 +154,7 @@ class Rop_Cron_Helper {
 		$events    = $scheduler->get_all_upcoming_events();
 		$min       = PHP_INT_MAX;
 		foreach ( $events as $account_events ) {
-			foreach($account_events as $event_time) {
+			foreach ( $account_events as $event_time ) {
 
 				if ( ( $event_time < $min ) && $event_time > Rop_Scheduler_Model::get_current_time() ) {
 					$min = $event_time;
@@ -162,6 +163,17 @@ class Rop_Cron_Helper {
 		}
 
 		return $min;
+	}
+
+	/**
+	 * Get number of active logs.
+	 *
+	 * @return int Timestamp.
+	 */
+	public function get_logs_number() {
+		$logger = new Rop_Logger();
+		$logs   = $logger->get_logs();
+		return count( $logs );
 	}
 
 	private function convert_phpformat_to_js( $format ) {

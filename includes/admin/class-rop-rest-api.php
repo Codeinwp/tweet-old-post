@@ -80,7 +80,8 @@ class Rop_Rest_Api {
 			$response = $this->$method_requested( $data );
 		}
 		$logger = new Rop_Logger();
-		$logger->info('here we go');
+		$logger->alert_success( 'here we go' );
+
 		return $response;
 	}
 
@@ -778,11 +779,14 @@ class Rop_Rest_Api {
 	 * @access  private
 	 * @return string
 	 */
-	private function get_log() {
+	private function get_log( $data ) {
 		$log = new Rop_Logger();
+		if ( isset( $data['force'] ) ) {
+			$log->clear_user_logs();
+		}
 		$this->response->set_code( '200' )
 		               ->set_message( __( 'Logs retrieved successfully.', 'tweet-old-post' ) )
-		               ->set_data( array( 'logs' => $log->get_logs() ) );
+		               ->set_data( $log->get_logs() );
 
 		return $this->response->to_array();
 	}

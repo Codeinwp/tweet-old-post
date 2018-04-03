@@ -66,7 +66,7 @@ class Rop_Log_Handler extends AbstractProcessingHandler {
 			$this->initialize();
 		}
 
-		return $this->current_logs;
+		return array_reverse( $this->current_logs );
 	}
 
 	/*
@@ -82,9 +82,34 @@ class Rop_Log_Handler extends AbstractProcessingHandler {
 		$this->initialized  = true;
 	}
 
+	/**
+	 * Clear active logs.
+	 *
+	 * @return array Logs array.
+	 */
+	public function clear_logs() {
+		if ( ! $this->initialized ) {
+			$this->initialize();
+		}
+
+		$this->current_logs = array();
+		$this->save_logs();
+	}
+
 	/*
 	 * Get all logs.
 	 */
+
+	/**
+	 * Save logs utility.
+	 * Check the logs limit is reached, truncate the logs.
+	 */
+	private function save_logs() {
+		if ( count( $this->current_logs ) > $this->limit ) {
+			$this->current_logs = array_slice( $this->current_logs, count( $this->current_logs ) - $this->limit, $this->limit );
+		}
+		update_option( $this->namespace, $this->current_logs, 'no' );
+	}
 
 	/**
 	 * Write log handler.
@@ -97,21 +122,11 @@ class Rop_Log_Handler extends AbstractProcessingHandler {
 		}
 		$this->current_logs[] = array(
 			'channel' => $record['channel'],
+			'type'    => isset( $record['context']['type'] ) ? $record['context']['type'] : 'info',
 			'level'   => $record['level'],
 			'message' => $record['formatted'],
 			'time'    => Rop_Scheduler_Model::get_current_time(),
 		);
 		$this->save_logs();
-	}
-
-	/**
-	 * Save logs utility.
-	 * Check the logs limit is reached, truncate the logs.
-	 */
-	private function save_logs() {
-		if ( count( $this->current_logs ) > $this->limit ) {
-			$this->current_logs = array_slice( $this->current_logs, count( $this->current_logs ) - $this->limit, $this->limit );
-		}
-		update_option( $this->namespace, $this->current_logs, 'no' );
 	}
 }

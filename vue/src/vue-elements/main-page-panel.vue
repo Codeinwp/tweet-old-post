@@ -10,10 +10,12 @@
 		<div class="columns">
 			<div class="panel  column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-8 ">
 				<div class="panel-nav" style="padding: 8px;">
-					<ul class="tab">
+					<ul class="tab ">
 						<li class="tab-item" v-for="tab in displayTabs"
-						    :class="{ active: tab.isActive }"><a href="#" @click="switchTab( tab.slug )">{{ tab.name
-							}}</a>
+						    :class="{ active: tab.isActive }">
+							<a href="#" :class=" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' "
+							   :data-badge="logs_no"
+							   @click="switchTab( tab.slug )">{{ tab.name }}</a>
 						</li>
 						<li class="tab-item tab-action">
 							<div class="form-group">
@@ -99,6 +101,10 @@
 			date_format: function () {
 
 				return this.$store.state.cron_status.date_format;
+			},
+			logs_no: function () {
+
+				return this.$store.state.cron_status.logs_number;
 			},
 			/**
 			 * Get btn start class.
@@ -220,5 +226,14 @@
 		position: absolute;
 		bottom: -16px;
 		right: 0px;
+	}
+	
+	#rop_core .badge.badge-logs::after {
+		right: auto;
+		top: 0px;
+	}
+	
+	#rop_core .badge.badge-logs {
+		padding-right: 10px;
 	}
 </style>

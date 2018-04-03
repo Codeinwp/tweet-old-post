@@ -28533,8 +28533,7 @@ exports.default = new _vuex2.default.Store({
 	state: {
 		page: {
 			debug: false,
-			logs: '### Here starts the log \n\n',
-			logs_verbose: '### Here starts the log \n\n',
+			logs: [],
 			view: 'accounts',
 			template: 'accounts'
 		},
@@ -28610,10 +28609,11 @@ exports.default = new _vuex2.default.Store({
 			switch (requestName) {
 				case 'manage_cron':
 					state.cron_status = stateData;
-				case 'get_log':
-					state.page.logs = stateData.pretty;
-					state.page.logs_verbose = stateData.verbose;
 					break;
+				case 'get_log':
+					state.page.logs = stateData;
+					break;
+				case 'update_settings_toggle':
 				case 'get_general_settings':
 					state.generalSettings = stateData;
 					break;
@@ -31401,7 +31401,7 @@ Object.defineProperty(exports, "__esModule", {value: !0}), exports.default = fun
 var __vue_script__, __vue_template__
 __webpack_require__(166)
 __vue_script__ = __webpack_require__(168)
-__vue_template__ = __webpack_require__(267)
+__vue_template__ = __webpack_require__(268)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -31452,7 +31452,7 @@ exports = module.exports = __webpack_require__(2)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .badge[data-badge]::after {\n\t\tposition: absolute;\n\t\tbottom: -16px;\n\t\tright: 0px;\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop_core .badge[data-badge]::after {\n\t\tposition: absolute;\n\t\tbottom: -16px;\n\t\tright: 0px;\n\t}\n\t\n\t#rop_core .badge.badge-logs::after {\n\t\tright: auto;\n\t\ttop: 0px;\n\t}\n\t\n\t#rop_core .badge.badge-logs {\n\t\tpadding-right: 10px;\n\t}\n", ""]);
 
 // exports
 
@@ -31514,10 +31514,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 		<div class="columns">
 // 			<div class="panel  column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-8 ">
 // 				<div class="panel-nav" style="padding: 8px;">
-// 					<ul class="tab">
+// 					<ul class="tab ">
 // 						<li class="tab-item" v-for="tab in displayTabs"
-// 						    :class="{ active: tab.isActive }"><a href="#" @click="switchTab( tab.slug )">{{ tab.name
-// 							}}</a>
+// 						    :class="{ active: tab.isActive }">
+// 							<a href="#" :class=" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' "
+// 							   :data-badge="logs_no"
+// 							   @click="switchTab( tab.slug )">{{ tab.name }}</a>
 // 						</li>
 // 						<li class="tab-item tab-action">
 // 							<div class="form-group">
@@ -31594,6 +31596,10 @@ module.exports = {
 		date_format: function date_format() {
 
 			return this.$store.state.cron_status.date_format;
+		},
+		logs_no: function logs_no() {
+
+			return this.$store.state.cron_status.logs_number;
 		},
 		/**
    * Get btn start class.
@@ -31720,6 +31726,15 @@ module.exports = {
 	// 		position: absolute;
 	// 		bottom: -16px;
 	// 		right: 0px;
+	// 	}
+	//
+	// 	#rop_core .badge.badge-logs::after {
+	// 		right: auto;
+	// 		top: 0px;
+	// 	}
+	//
+	// 	#rop_core .badge.badge-logs {
+	// 		padding-right: 10px;
 	// 	}
 	// </style>
 
@@ -35938,8 +35953,9 @@ module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\" :c
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
+__webpack_require__(269)
 __vue_script__ = __webpack_require__(252)
-__vue_template__ = __webpack_require__(253)
+__vue_template__ = __webpack_require__(271)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -35962,50 +35978,119 @@ if (false) {(function () {  module.hot.accept()
 "use strict";
 
 
-// <template>
+var _moment = __webpack_require__(0);
+
+var _moment2 = _interopRequireDefault(_moment);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+module.exports = {
+	name: 'logs-view',
+	props: ['model'],
+	data: function data() {
+		return {
+			is_loading: false
+		};
+	},
+	mounted: function mounted() {
+		this.getLogs();
+	},
+	computed: {
+		logs: function logs() {
+			return this.$store.state.page.logs;
+		}
+	},
+	methods: {
+		getLogs: function getLogs(force) {
+			var _this = this;
+
+			if (this.is_loading) {
+				this.$log.warn('Request in progress...Bail');
+				return;
+			}
+			this.is_loading = true;
+			this.$store.dispatch('fetchAJAXPromise', {
+				req: 'get_log',
+				data: { force: force }
+			}).then(function (response) {
+				_this.$log.info('Succesfully fetched logs.');
+				_this.is_loading = false;
+				_this.$store.dispatch('fetchAJAX', { req: 'manage_cron', data: { action: 'status' } });
+			}, function (error) {
+				Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+
+				_this.is_loading = false;
+			});
+		},
+		formatDate: function formatDate(value) {
+			var format = this.$store.state.cron_status.date_format;
+			if (format === 'undefined') {
+				return '';
+			}
+			return _moment2.default.utc(value, 'X').format(format.replace('mm', 'mm:ss'));
+		}
+	}
+	// </script>
+	// <style type="text/css" scoped>
+	// 	#rop_core .toast.log-toast p {
+	// 		margin: 0px;
+	// 		line-height: inherit;
+	// 	}
+	//
+	// 	#rop_core .toast.log-toast:hover {
+	// 		opacity: 0.9;
+	// 	}
+	//
+	// 	#rop_core .toast.log-toast {
+	// 		padding: 0.1rem;
+	// 		padding-left: 10px;
+	// 		margin-top: 2px;
+	// 	}
+	//
+	// 	#rop_core .container {
+	// 		min-height: 400px;
+	// 	}
+	// </style>
+
+}; // <template>
 // 	<div class="container">
 // 		<h3>Logs</h3>
-// 		<div class="columns">
-// 			<div class="column col-6">
-// 				<pre class="code" data-lang="User Friendly Logs">
-// 					<code>{{ logs }}</code>
-// 				</pre>
+// 		<div class=" columns " v-if="logs.length > 0">
+// 			<div class="column  col-12 text-right ">
+// 				<button class="btn  btn-secondary " @click="getLogs(true)">
+// 					<i class="fa fa-remove" v-if="!is_loading"></i>
+// 					<i class="fa fa-spinner fa-spin" v-else></i>
+// 					Clear logs
+// 				</button>
 // 			</div>
-// 			<div class="column col-6">
-// 				<pre class="code" data-lang="Verbose Logs">
-// 					<code>{{ logs_verbose }}</code>
-// 				</pre>
+// 		</div>
+// 		<div class="columns">
+// 			<div class="empty column col-12" v-if="is_loading">
+// 				<div class="empty-icon">
+// 					<i class="fa fa-3x fa-spinner fa-spin"></i>
+// 				</div>
+// 			</div>
+// 			<div class="empty column col-12" v-else-if="logs.length === 0">
+// 				<div class="empty-icon">
+// 					<i class="fa fa-3x fa-user-circle-o"></i>
+// 				</div>
+// 				<p class="empty-title h5">No recent logs!</p>
+// 			</div>
+//
+// 			<div class="column col-12" v-for=" (data, index) in logs " v-else-if="logs.length >  0">
+// 				<div class="toast log-toast" :class="'toast-' + data.type">
+// 					<small class="pull-right text-right">{{formatDate ( data.time ) }}</small>
+// 					<p>{{data.message}}</p>
+// 				</div>
 // 			</div>
 // 		</div>
 // 	</div>
 // </template>
 //
 // <script>
-module.exports = {
-	name: 'logs-view',
-	props: ['model'],
-	mounted: function mounted() {
-		this.$store.dispatch('fetchAJAX', { req: 'get_log' });
-	},
-	computed: {
-		logs: function logs() {
-			return this.$store.state.page.logs;
-		},
-		logs_verbose: function logs_verbose() {
-			return this.$store.state.page.logs_verbose;
-		}
-	}
-	// </script>
-
-};
 
 /***/ }),
-/* 253 */
-/***/ (function(module, exports) {
-
-module.exports = "\n\t<div class=\"container\">\n\t\t<h3>Logs</h3>\n\t\t<div class=\"columns\">\n\t\t\t<div class=\"column col-6\">\n\t\t\t\t<pre class=\"code\" data-lang=\"User Friendly Logs\">\n\t\t\t\t\t<code>{{ logs }}</code>\n\t\t\t\t</pre>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6\">\n\t\t\t\t<pre class=\"code\" data-lang=\"Verbose Logs\">\n\t\t\t\t\t<code>{{ logs_verbose }}</code>\n\t\t\t\t</pre>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
-
-/***/ }),
+/* 253 */,
 /* 254 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -36135,7 +36220,7 @@ module.exports = "\n\t<div class=\"toast\" :class=\"toastTypeClass\" >\n\t\t<but
 
 var __vue_script__, __vue_template__
 __vue_script__ = __webpack_require__(260)
-__vue_template__ = __webpack_require__(266)
+__vue_template__ = __webpack_require__(267)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -36166,7 +36251,7 @@ var _moment = __webpack_require__(0);
 
 var _moment2 = _interopRequireDefault(_moment);
 
-__webpack_require__(268);
+__webpack_require__(266);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -36550,18 +36635,6 @@ webpackContext.id = 265;
 
 /***/ }),
 /* 266 */
-/***/ (function(module, exports) {
-
-module.exports = "\n\t<div class=\"toast toast-success rop-current-time\" v-if=\"isOn\">\n\t\t<span v-if=\"diff_seconds>0\"> <b><i class=\"fa fa-fast-forward\"></i> Next share</b> in</span>\n\t\t<small v-if=\"timediff !== ''\">{{timediff}}</small>\n\t</div>\n";
-
-/***/ }),
-/* 267 */
-/***/ (function(module, exports) {
-
-module.exports = "\n\t<div>\n\t\t<div class=\"panel title-panel\" style=\"margin-bottom: 40px; padding-bottom: 20px;\">\n\t\t\t<div class=\"panel-header\">\n\t\t\t\t<img :src=\"plugin_logo\" style=\"float: left; margin-right: 10px;\"/>\n\t\t\t\t<h1 class=\"d-inline-block\">Revive Old Posts</h1><span class=\"powered\"> by <a\n\t\t\t\t\thref=\"https://themeisle.com\" target=\"_blank\"><b>ThemeIsle</b></a></span>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns\">\n\t\t\t<div class=\"panel  column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-8 \">\n\t\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t\t<ul class=\"tab\">\n\t\t\t\t\t\t<li class=\"tab-item\" v-for=\"tab in displayTabs\"\n\t\t\t\t\t\t    :class=\"{ active: tab.isActive }\"><a href=\"#\" @click=\"switchTab( tab.slug )\">{{ tab.name\n\t\t\t\t\t\t\t}}</a>\n\t\t\t\t\t\t</li>\n\t\t\t\t\t\t<li class=\"tab-item tab-action\">\n\t\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.custom_messages\"\n\t\t\t\t\t\t\t\t\t       @change=\"updateSettings\"/>\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i><span class=\"hide-sm\">Custom Share Messages</span>\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t\t<component :is=\"page.template\" :type=\"page.view\"></component>\n\t\t\t</div>\n\t\t\t\n\t\t\t<div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12 col-xl-4 \"\n\t\t\t     :class=\"'rop-license-plan-'+license\">\n\t\t\t\t\n\t\t\t\t<div class=\"card rop-container-start\">\n\t\t\t\t\t<div class=\"toast toast-success rop-current-time\" v-if=\"formatedDate\">\n\t\t\t\t\t\tNow: {{ formatedDate }}\n\t\t\t\t\t</div>\n\t\t\t\t\t<countdown :current_time=\"current_time\"/>\n\t\t\t\t\t<button class=\"btn\" :class=\"btn_class\"\n\t\t\t\t\t        data-tooltip=\"You will need\n\t\t\t\t\t         at least one active account\n\t\t\t\t\t         to start sharing.\"\n\t\t\t\t\t        @click=\"togglePosting()\" :disabled=\"haveAccounts\">\n\t\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t\t\t{{( start_status ? 'Stop' : 'Start' )}} Sharing\n\t\t\t\t\t</button>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \">\n\t\t\t\t\tBuy the pro version\n\t\t\t\t</div>\n\t\t\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1\">\n\t\t\t\t\tBuy the business version\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
-
-/***/ }),
-/* 268 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! Moment Duration Format v2.2.2
@@ -38241,6 +38314,64 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     return init;
 });
 
+
+/***/ }),
+/* 267 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div class=\"toast toast-success rop-current-time\" v-if=\"isOn\">\n\t\t<span v-if=\"diff_seconds>0\"> <b><i class=\"fa fa-fast-forward\"></i> Next share</b> in</span>\n\t\t<small v-if=\"timediff !== ''\">{{timediff}}</small>\n\t</div>\n";
+
+/***/ }),
+/* 268 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div>\n\t\t<div class=\"panel title-panel\" style=\"margin-bottom: 40px; padding-bottom: 20px;\">\n\t\t\t<div class=\"panel-header\">\n\t\t\t\t<img :src=\"plugin_logo\" style=\"float: left; margin-right: 10px;\"/>\n\t\t\t\t<h1 class=\"d-inline-block\">Revive Old Posts</h1><span class=\"powered\"> by <a\n\t\t\t\t\thref=\"https://themeisle.com\" target=\"_blank\"><b>ThemeIsle</b></a></span>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns\">\n\t\t\t<div class=\"panel  column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-8 \">\n\t\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t\t<ul class=\"tab \">\n\t\t\t\t\t\t<li class=\"tab-item\" v-for=\"tab in displayTabs\"\n\t\t\t\t\t\t    :class=\"{ active: tab.isActive }\">\n\t\t\t\t\t\t\t<a href=\"#\" :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\n\t\t\t\t\t\t\t   :data-badge=\"logs_no\"\n\t\t\t\t\t\t\t   @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\n\t\t\t\t\t\t</li>\n\t\t\t\t\t\t<li class=\"tab-item tab-action\">\n\t\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.custom_messages\"\n\t\t\t\t\t\t\t\t\t       @change=\"updateSettings\"/>\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i><span class=\"hide-sm\">Custom Share Messages</span>\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t\t<component :is=\"page.template\" :type=\"page.view\"></component>\n\t\t\t</div>\n\t\t\t\n\t\t\t<div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12 col-xl-4 \"\n\t\t\t     :class=\"'rop-license-plan-'+license\">\n\t\t\t\t\n\t\t\t\t<div class=\"card rop-container-start\">\n\t\t\t\t\t<div class=\"toast toast-success rop-current-time\" v-if=\"formatedDate\">\n\t\t\t\t\t\tNow: {{ formatedDate }}\n\t\t\t\t\t</div>\n\t\t\t\t\t<countdown :current_time=\"current_time\"/>\n\t\t\t\t\t<button class=\"btn\" :class=\"btn_class\"\n\t\t\t\t\t        data-tooltip=\"You will need\n\t\t\t\t\t         at least one active account\n\t\t\t\t\t         to start sharing.\"\n\t\t\t\t\t        @click=\"togglePosting()\" :disabled=\"haveAccounts\">\n\t\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t\t\t{{( start_status ? 'Stop' : 'Start' )}} Sharing\n\t\t\t\t\t</button>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \">\n\t\t\t\t\tBuy the pro version\n\t\t\t\t</div>\n\t\t\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1\">\n\t\t\t\t\tBuy the business version\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+
+/***/ }),
+/* 269 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(270);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(6)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2724a52d&file=logs-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./logs-tab-panel.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2724a52d&file=logs-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./logs-tab-panel.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 270 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(2)();
+// imports
+
+
+// module
+exports.push([module.i, "\n\t#rop_core .toast.log-toast p[_v-2724a52d] {\n\t\tmargin: 0px;\n\t\tline-height: inherit;\n\t}\n\t\n\t#rop_core .toast.log-toast[_v-2724a52d]:hover {\n\t\topacity: 0.9;\n\t}\n\t\n\t#rop_core .toast.log-toast[_v-2724a52d] {\n\t\tpadding: 0.1rem;\n\t\tpadding-left: 10px;\n\t\tmargin-top: 2px;\n\t}\n\t\n\t#rop_core .container[_v-2724a52d] {\n\t\tmin-height: 400px;\n\t}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 271 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div class=\"container\" _v-2724a52d=\"\">\n\t\t<h3 _v-2724a52d=\"\">Logs</h3>\n\t\t<div class=\" columns \" v-if=\"logs.length > 0\" _v-2724a52d=\"\">\n\t\t\t<div class=\"column  col-12 text-right \" _v-2724a52d=\"\">\n\t\t\t\t<button class=\"btn  btn-secondary \" @click=\"getLogs(true)\" _v-2724a52d=\"\">\n\t\t\t\t\t<i class=\"fa fa-remove\" v-if=\"!is_loading\" _v-2724a52d=\"\"></i>\n\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-2724a52d=\"\"></i>\n\t\t\t\t\tClear logs\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns\" _v-2724a52d=\"\">\n\t\t\t<div class=\"empty column col-12\" v-if=\"is_loading\" _v-2724a52d=\"\">\n\t\t\t\t<div class=\"empty-icon\" _v-2724a52d=\"\">\n\t\t\t\t\t<i class=\"fa fa-3x fa-spinner fa-spin\" _v-2724a52d=\"\"></i>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"empty column col-12\" v-else-if=\"logs.length === 0\" _v-2724a52d=\"\">\n\t\t\t\t<div class=\"empty-icon\" _v-2724a52d=\"\">\n\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\" _v-2724a52d=\"\"></i>\n\t\t\t\t</div>\n\t\t\t\t<p class=\"empty-title h5\" _v-2724a52d=\"\">No recent logs!</p>\n\t\t\t</div>\n\t\t\t\n\t\t\t<div class=\"column col-12\" v-for=\" (data, index) in logs \" v-else-if=\"logs.length >  0\" _v-2724a52d=\"\">\n\t\t\t\t<div class=\"toast log-toast\" :class=\"'toast-' + data.type\" _v-2724a52d=\"\">\n\t\t\t\t\t<small class=\"pull-right text-right\" _v-2724a52d=\"\">{{formatDate ( data.time ) }}</small>\n\t\t\t\t\t<p _v-2724a52d=\"\">{{data.message}}</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ })
 /******/ ]);

@@ -30,8 +30,7 @@ export default new Vuex.Store( {
 	state: {
 		page: {
 			debug: false,
-			logs: '### Here starts the log \n\n',
-			logs_verbose: '### Here starts the log \n\n',
+			logs: [],
 			view: 'accounts',
 			template: 'accounts',
 		},
@@ -111,11 +110,12 @@ export default new Vuex.Store( {
 			Vue.$log.debug( 'State change for ', requestName );
 			switch ( requestName ) {
 			case 'manage_cron':
-				state.cron_status = stateData
+				state.cron_status = stateData;
+				break;
 			case 'get_log':
-				state.page.logs = stateData.pretty
-				state.page.logs_verbose = stateData.verbose
+				state.page.logs = stateData
 				break
+			case 'update_settings_toggle':
 			case 'get_general_settings':
 				state.generalSettings = stateData
 				break

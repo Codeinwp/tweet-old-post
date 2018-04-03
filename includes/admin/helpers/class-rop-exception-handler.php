@@ -84,13 +84,14 @@ class Rop_Exception_Handler {
 	 * @param   string $message The message.
 	 */
 	public function throw_exception( $header, $message ) {
+
+		$this->logger->alert_error( $message );
 		if ( ! ROP_TEST ) {
 			return;
 		}
 		header( 'HTTP/1.0 ' . $header );
 		$backtrace = wp_debug_backtrace_summary();
-		$this->logger->error( $message . ' BackTrace: ' . $backtrace );
-		echo $message;
+		echo $message . ' BackTrace: ' . $backtrace;
 		exit;
 	}
 

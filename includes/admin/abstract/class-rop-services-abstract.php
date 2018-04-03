@@ -160,7 +160,7 @@ abstract class Rop_Services_Abstract {
 			$model->add_authenticated_service( $new_service );
 
 		} catch ( Exception $exception ) {
-			$this->error->throw_exception( 'Error', sprintf( 'The service "' . $this->display_name . '" can NOT be built or was not found %s', $exception->getMessage() ) );
+			$this->error->throw_exception( 'Error', sprintf( 'The service "' . $this->display_name . '" can not be authorized %s', $exception->getMessage() ) );
 		}
 
 		exit( wp_redirect( admin_url( 'admin.php?page=TweetOldPost' ) ) );
@@ -250,12 +250,12 @@ abstract class Rop_Services_Abstract {
 
 		$active_accounts = array_filter(
 			$service_details['available_accounts'], function ( $value ) {
-				if ( ! isset( $value['active'] ) ) {
-					return false;
-				}
-
-				return $value['active'];
+			if ( ! isset( $value['active'] ) ) {
+				return false;
 			}
+
+			return $value['active'];
+		}
 		);
 		$accounts_ids    = array();
 		foreach ( $active_accounts as $account ) {
