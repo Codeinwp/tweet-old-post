@@ -376,14 +376,16 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 
 		try {
 			$api->createPost( $args['id'] . '.tumblr.com', $new_post );
-			$this->logger->alert_success( sprintf( 'Successfully shared %s to %s on %s ',
-				get_the_title( $post_details['post_id'] ),
-				$args['user'],
-				$post_details['service']
-			) );
+			$this->logger->alert_success(
+				sprintf(
+					'Successfully shared %s to %s on %s ',
+					get_the_title( $post_details['post_id'] ),
+					$args['user'],
+					$post_details['service']
+				)
+			);
 		} catch ( Exception $exception ) {
 			$this->logger->alert_error( 'Posting failed for Tumblr. Error: ' . $exception->getMessage() );
-
 			return false;
 		}
 

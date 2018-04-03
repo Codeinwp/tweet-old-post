@@ -260,12 +260,12 @@ abstract class Rop_Services_Abstract {
 
 		$active_accounts = array_filter(
 			$service_details['available_accounts'], function ( $value ) {
-			if ( ! isset( $value['active'] ) ) {
-				return false;
-			}
+				if ( ! isset( $value['active'] ) ) {
+					return false;
+				}
 
-			return $value['active'];
-		}
+				return $value['active'];
+			}
 		);
 		$accounts_ids    = array();
 		foreach ( $active_accounts as $account ) {

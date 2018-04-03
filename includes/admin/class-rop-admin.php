@@ -107,7 +107,7 @@ class Rop_Admin {
 			wp_enqueue_media();
 			wp_enqueue_style( $this->plugin_name . '_fa', ROP_LITE_URL . 'assets/css/font-awesome.min.css', array(), $this->version );
 
-			wp_register_script( $this->plugin_name . '_main', ROP_LITE_URL . 'assets/js/build/rop.js', array(), time(), false );
+			wp_register_script( $this->plugin_name . '_main', ROP_LITE_URL . 'assets/js/build/rop.' . ( ROP_DEBUG ) ? '' : 'min' . 'js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
 			$array_nonce = array(
 				'root' => esc_url_raw( rest_url( '/tweet-old-post/v8/api/' ) ),
 			);
@@ -173,17 +173,20 @@ class Rop_Admin {
 				 * Trigger share if we have an event in the past, and the timestamp of that event is in the last 15mins.
 				 */
 				if ( $event['time'] <= Rop_Scheduler_Model::get_current_time() && ( Rop_Scheduler_Model::get_current_time() - $event['time'] ) < ( 15 * MINUTE_IN_SECONDS ) ) {
-
+					$posts = $event['posts'];
+					$queue->remove_from_queue( $event['time'], $account );
 					$account_data = $services_model->find_account( $account );
-					try {
-						$service = $service_factory->build( $account_data['service'] );
-						$service->set_credentials( $account_data['credentials'] );
-						$queue->remove_from_queue( $index, $event['id'], $account );
-						$post_data = $queue->prepare_post_object( $event['id'], $account );
-						$service->share( $post_data, $account_data );
-					} catch ( Exception $exception ) {
-						$error_message = sprintf( esc_html__( 'The %1$s service can not be used or was not found', 'tweet-old-post' ), $account_data['service'] );
-						$logger->alert_error( $error_message . ' Error: ' . $exception->getTrace() );
+					foreach ( $posts as $post ) {
+						try {
+							$service = $service_factory->build( $account_data['service'] );
+							$service->set_credentials( $account_data['credentials'] );
+							$post_data = $queue->prepare_post_object( $post, $account );
+							$logger->info( 'Posting', array( 'extra' => $post_data ) );
+							$service->share( $post_data, $account_data );
+						} catch ( Exception $exception ) {
+							$error_message = sprintf( esc_html__( 'The %1$s service can not be used or was not found', 'tweet-old-post' ), $account_data['service'] );
+							$logger->alert_error( $error_message . ' Error: ' . $exception->getTrace() );
+						}
 					}
 				}
 			}

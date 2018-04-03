@@ -326,14 +326,14 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		$this->set_api( $this->credentials['oauth_token'], $this->credentials['oauth_token_secret'] );
 		$api      = $this->get_api();
 		$new_post = array();
-		if ( isset( $post_details['post_image'] ) && ! empty( $post_details['post_image'] ) ) {
-			$media_response = $api->upload( 'media/upload', array( 'media' => $post_details['post']['post_img'] ) );
+		if ( ! empty( $post_details['post_image'] ) ) {
+			$media_response = $api->upload( 'media/upload', array( 'media' => $post_details['post_image'] ) );
 			if ( $media_response->media_id_string ) {
 				$new_post['media_ids'] = $media_response->media_id_string;
 			}
 		}
 
-		$message = $post_details['post_content'];
+		$message = $post_details['content'];
 
 		$link = $this->get_url( $post_details );
 
@@ -341,13 +341,18 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 
 		$response = $api->post( 'statuses/update', $new_post );
 		if ( isset( $response->id ) ) {
-			$this->logger->alert_success( sprintf( 'Successfully shared %s to %s on %s ',
-				get_the_title( $post_details['post_id'] ),
-				$args['user'],
-				$post_details['service']
-			) );
+			$this->logger->alert_success(
+				sprintf(
+					'Successfully shared %s to %s on %s ',
+					get_the_title( $post_details['post_id'] ),
+					$args['user'],
+					$post_details['service']
+				)
+			);
 
 			return true;
+		} else {
+			$this->logger->alert_error( sprintf( 'Error posting on twitter. ' ) );
 		}
 
 		return false;

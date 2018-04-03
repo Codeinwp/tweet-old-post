@@ -429,8 +429,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		$new_post = array();
 
 		if ( ! empty( $post_details['post_image'] ) ) {
-			$new_post['picture'] = $post_details['post_img'];
-			$new_post['link']    = $post_details['post_img'];
+			$new_post['picture'] = $post_details['post_image'];
 		}
 
 		$new_post['message'] = $post_details['content'];
@@ -438,6 +437,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		if ( ! empty( $post_details['post_url'] ) ) {
 			$link                = ' ' . $this->get_url( $post_details );
 			$new_post['message'] = $new_post['message'] . $link;
+			$new_post['link']    = $link;
 		}
 
 		if ( ! isset( $args['id'] ) || ! isset( $args['access_token'] ) ) {
@@ -447,11 +447,14 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		}
 
 		if ( $this->try_post( $new_post, $args['id'], $args['access_token'] ) ) {
-			$this->logger->alert_success( sprintf( 'Successfully shared %s to %s on %s ',
-				get_the_title( $post_details['post_id'] ),
-				$args['user'],
-				$post_details['service']
-			) );
+			$this->logger->alert_success(
+				sprintf(
+					'Successfully shared %s to %s on %s ',
+					get_the_title( $post_details['post_id'] ),
+					$args['user'],
+					$post_details['service']
+				)
+			);
 		} else {
 			return false;
 		}
@@ -479,11 +482,11 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 			return true;
 		} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
-			$this->logger->alert_error( 'Unable to share post for facebook. ', $e->getMessage() );
+			$this->logger->alert_error( 'Unable to share post for facebook.  Error: ' . $e->getMessage() );
 
 			return false;
 		} catch ( Facebook\Exceptions\FacebookSDKException $e ) {
-			$this->logger->alert_error( 'Unable to share post for facebook. ', $e->getMessage() );
+			$this->logger->alert_error( 'Unable to share post for facebook.  Error: ' . $e->getMessage() );
 
 			return false;
 		}

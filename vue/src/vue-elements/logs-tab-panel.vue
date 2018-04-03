@@ -56,6 +56,11 @@
 				return this.$store.state.cron_status.logs_number;
 			},
 		},
+		watch: {
+			logs_no: function () {
+				this.getLogs();
+			}
+		},
 		methods: {
 			getLogs(force) {
 				if (this.is_loading) {

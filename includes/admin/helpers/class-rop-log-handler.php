@@ -8,7 +8,6 @@
  * @copyright   Copyright (c) 2017, Marius Cristea
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
  * @since
- *
  */
 
 use Monolog\Handler\AbstractProcessingHandler;
@@ -32,6 +31,7 @@ class Rop_Log_Handler extends AbstractProcessingHandler {
 	private $namespace;
 	/**
 	 * List of logs.
+	 *
 	 * @var array $current_logs List  of logs.
 	 */
 	private $current_logs;
@@ -44,7 +44,6 @@ class Rop_Log_Handler extends AbstractProcessingHandler {
 
 	/**
 	 * Rop_Log_Handler constructor.
-	 *
 	 *
 	 * @param string $option_name Option where to save this.
 	 * @param int    $level Level of log.

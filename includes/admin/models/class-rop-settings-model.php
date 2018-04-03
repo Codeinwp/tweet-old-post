@@ -15,6 +15,14 @@
 class Rop_Settings_Model extends Rop_Model_Abstract {
 
 	/**
+	 * Holds the logger
+	 *
+	 * @since   8.0.0
+	 * @access  protected
+	 * @var     Rop_Logger $logger The logger handler.
+	 */
+	protected $logger;
+	/**
 	 * Holds the general settings data.
 	 *
 	 * @since   8.0.0
@@ -39,6 +47,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 */
 	private function setup_settings() {
 		$global_settings = new Rop_Global_Settings();
+		$this->logger    = new Rop_Logger();
 		$default         = $global_settings->get_default_settings();
 		$settings        = wp_parse_args( $this->get( 'general_settings' ), $default );
 		$this->settings  = $this->normalize_settings( $settings );
@@ -180,7 +189,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 		if ( isset( $data['default_interval'] ) ) {
 			$data['default_interval'] = floatval( $data['default_interval'] );
 			if ( $data['default_interval'] < 0.1 ) {
-				// TODO log wrong default intervak. MIn is 6min.
+				$this->logger->alert_error( 'Minimum interval between consecutive shares is 6mins.' );
 				$data['default_interval'] = 0.1;
 			}
 			$data['default_interval'] = number_format( $data['default_interval'], 1 );
@@ -188,11 +197,11 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 		if ( isset( $data['number_of_posts'] ) ) {
 			$data['number_of_posts'] = intval( $data['number_of_posts'] );
 			if ( $data['number_of_posts'] < 0 ) {
-				// TODO log wrong no. of posts . MIn is 1.
+				$this->logger->alert_error( 'Minimum posts to share is 1.' );
 				$data['number_of_posts'] = 1;
 			}
 			if ( $data['number_of_posts'] > 5 ) {
-				// TODO log wrong no. of posts . Max is 15
+				$this->logger->alert_error( 'Maximum posts to share is 5.' );
 				$data['number_of_posts'] = 5;
 			}
 		}
