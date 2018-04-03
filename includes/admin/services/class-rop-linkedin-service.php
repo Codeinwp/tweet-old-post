@@ -361,30 +361,24 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 				'code' => 'anyone',
 			),
 		);
-
-		// $new_post['content']['title'] = '';
-		// $new_post['content']['description'] = '';
-		if ( isset( $post_details['post']['post_img'] ) && $post_details['post']['post_img'] !== '' && $post_details['post']['post_img'] !== false ) {
-			$new_post['content']['submitted-image-url'] = $post_details['post']['post_img'];
-			// $new_post['content']['submitted-image-url'] = 'www.gettyimages.ca/gi-resources/images/Homepage/Hero/UK/CMS_Creative_164657191_Kingfisher.jpg';
+		if ( ! empty( $post_details['post_image'] ) ) {
+			$new_post['content']['submitted-image-url'] = $post_details['post_img'];
 		}
 
-		$new_post['comment'] = $post_details['post']['post_content'];
-		if ( $post_details['post']['custom_content'] !== '' ) {
-			$new_post['comment'] = $post_details['post']['custom_content'];
-		}
-
+		$new_post['comment']                  = $post_details['content'];
 		$new_post['content']['submitted-url'] = $this->get_url( $post_details );
 
 		$new_post['visibility']['code'] = 'anyone';
 
 		try {
 			$api->post( 'people/~/shares?format=json', $new_post );
+			$this->logger->alert_success( sprintf( 'Successfully shared %s to %s on %s ',
+				get_the_title( $post_details['post_id'] ),
+				$args['user'],
+				$post_details['service']
+			) );
 		} catch ( Exception $exception ) {
-			var_dump( $exception );
-			// Maybe log this.
-			$log = new Rop_Logger();
-			$log->warn( 'Posting failed for LinkedIn.', $exception->getTrace() );
+			$this->logger->alert_error( 'Can not share to linkedin. Error:  ' . $exception->getMessage() );
 
 			return false;
 		}

@@ -59,16 +59,18 @@ class Rop_Post_Format_Helper {
 		$parts   = explode( '_', $this->account_id );
 		$service = $parts[0];
 
-		$content = $this->build_content( $post_id );
-		$filtered_post                         = array();
-		$filtered_post['post_id']              = $post_id;
-		$filtered_post['account_id']           = $this->account_id;
-		$filtered_post['service']              = $service;
-		$filtered_post['content']              = $content['display_content'];
-		$filtered_post['hashtags']             = $content['hashtags'];
-		$filtered_post['post_url']             = $this->build_url( $post_id );
-		$filtered_post['post_image']           = $this->build_image( $post_id );
-		$filtered_post['short_url_service']    = $this->post_format['short_url_service'];
+		$content                            = $this->build_content( $post_id );
+		$filtered_post                      = array();
+		$filtered_post['post_id']           = $post_id;
+		$filtered_post['account_id']        = $this->account_id;
+		$filtered_post['service']           = $service;
+		$filtered_post['content']           = $content['display_content'];
+		$filtered_post['hashtags']          = $content['hashtags'];
+		$filtered_post['post_url']          = $this->build_url( $post_id );
+		$filtered_post['post_image']        = $this->post_format['image'] ? $this->build_image( $post_id ) : '';
+		$filtered_post['short_url_service'] = $this->post_format['short_url_service'];
+		$filtered_post['post_with_image']   = $this->post_format['image'];
+
 		$filtered_post['shortner_credentials'] = ( isset( $this->post_format['shortner_credentials'] ) ) ? $this->post_format['shortner_credentials'] : array();
 
 		return $filtered_post;
@@ -483,7 +485,7 @@ class Rop_Post_Format_Helper {
 			$short_url = $shortner_service->shorten_url( $url );
 		} catch ( Exception $exception ) {
 			$log = new Rop_Logger();
-			$log->warn( 'Could NOT get short URL.' . $exception );
+			$log->alert_error( 'Could NOT get short URL. Error: ' . $exception->getMessage() );
 			$short_url = $url;
 		}
 

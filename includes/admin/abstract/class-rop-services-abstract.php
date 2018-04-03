@@ -69,6 +69,15 @@ abstract class Rop_Services_Abstract {
 	 * @var     Rop_Exception_Handler $error The exception handler.
 	 */
 	protected $error;
+
+	/**
+	 * Holds the logger
+	 *
+	 * @since   8.0.0
+	 * @access  protected
+	 * @var     Rop_Logger $logger The logger handler.
+	 */
+	protected $logger;
 	/**
 	 * Default account template array.
 	 *
@@ -94,6 +103,7 @@ abstract class Rop_Services_Abstract {
 	 */
 	public function __construct() {
 		$this->error                   = new Rop_Exception_Handler();
+		$this->logger                  = new Rop_Logger();
 		$this->user_default['created'] = date( 'd/m/Y H:i' );
 		$this->user_default['service'] = $this->service_name;
 		$this->init();
@@ -303,15 +313,15 @@ abstract class Rop_Services_Abstract {
 	 */
 	protected function get_url( $post_details ) {
 
-		$link = ( isset( $post_details['post']['post_url'] ) ) ? $post_details['post']['post_url'] : '';
-		if ( $post_details['post']['short_url_service'] === 'wp_short_url' ) {
-			$link = wp_get_shortlink( $post_details['post']['post_id'] );
+		$link = ( isset( $post_details['post_url'] ) ) ? $post_details['post_url'] : '';
+		if ( empty( $link ) ) {
+			return '';
+		}
+		if ( $post_details['short_url_service'] === 'wp_short_url' ) {
+			$link = wp_get_shortlink( $post_details['post_id'] );
 		} else {
-			if ( isset( $post_details['post']['post_url'] ) && $post_details['post']['post_url'] != '' ) {
-				$post_format_helper = new Rop_Post_Format_Helper();
-				$link               = ' ' . $post_format_helper->get_short_url( 'www.themeisle.com', $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
-				// $link = ' ' . $post_format_helper->get_short_url( $post_details['post']['post_url'], $post_details['post']['short_url_service'], $post_details['post']['shortner_credentials'] );
-			}
+			$post_format_helper = new Rop_Post_Format_Helper();
+			$link               = ' ' . $post_format_helper->get_short_url( $post_details['post_url'], $post_details['short_url_service'], $post_details['shortner_credentials'] );
 		}
 
 		return $link;

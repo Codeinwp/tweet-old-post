@@ -79,8 +79,6 @@ class Rop_Rest_Api {
 			$data     = is_array( $data ) ? $data : array();
 			$response = $this->$method_requested( $data );
 		}
-		$logger = new Rop_Logger();
-		$logger->alert_success( 'here we go' );
 
 		return $response;
 	}

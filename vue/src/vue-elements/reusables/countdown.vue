@@ -1,5 +1,5 @@
 <template>
-	<div class="toast toast-success rop-current-time" v-if="isOn">
+	<div class="toast toast-success rop-current-time" v-if="isOn && accounts_no > 0">
 		<span v-if="diff_seconds>0"> <b><i class="fa fa-fast-forward"></i> Next share</b> in</span>
 		<small v-if="timediff !== ''">{{timediff}}</small>
 	</div>
@@ -27,6 +27,9 @@
 			},
 			isOn: function () {
 				return this.$store.state.cron_status.current_status
+			},
+			accounts_no: function () {
+				return Object.keys(this.$store.state.activeAccounts).length
 			},
 		},
 		watch: {

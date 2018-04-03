@@ -96,6 +96,7 @@
 					this.$log.warn('Request in progress...Bail');
 					return;
 				}
+				this.$store.state.queue = [];
 				this.is_loading = true;
 				this.$store.dispatch('fetchAJAXPromise', {req: 'get_queue', data: {force: force}}).then(response => {
 					this.is_loading = false;

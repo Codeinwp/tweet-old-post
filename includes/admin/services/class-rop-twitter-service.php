@@ -151,6 +151,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		$token = $_SESSION['rop_twitter_oauth_token'];
 		unset( $_SESSION['rop_twitter_oauth_token'] );
 		unset( $_SESSION['rop_twitter_request_token'] );
+
 		return $this->authenticate( $token );
 	}
 
@@ -241,7 +242,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			$img = $data->profile_image_url_https;
 		}
 		$user['id']      = $data->id;
-		$user['account']    = $data->name;
+		$user['account'] = $data->name;
 		$user['user']    = '@' . $data->screen_name;
 		$user['img']     = $img;
 		$user['service'] = $this->service_name;
@@ -323,28 +324,29 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 */
 	public function share( $post_details, $args = array() ) {
 		$this->set_api( $this->credentials['oauth_token'], $this->credentials['oauth_token_secret'] );
-		$api = $this->get_api();
-
+		$api      = $this->get_api();
 		$new_post = array();
-		if ( isset( $post_details['post']['post_img'] ) && $post_details['post']['post_img'] !== '' && $post_details['post']['post_img'] !== false ) {
+		if ( isset( $post_details['post_image'] ) && ! empty( $post_details['post_image'] ) ) {
 			$media_response = $api->upload( 'media/upload', array( 'media' => $post_details['post']['post_img'] ) );
 			if ( $media_response->media_id_string ) {
 				$new_post['media_ids'] = $media_response->media_id_string;
 			}
 		}
 
-		$message = $post_details['post']['post_content'];
-		if ( $post_details['post']['custom_content'] !== '' ) {
-			$message = $post_details['post']['custom_content'];
-		}
+		$message = $post_details['post_content'];
 
 		$link = $this->get_url( $post_details );
 
 		$new_post['status'] = $message . $link;
 
 		$response = $api->post( 'statuses/update', $new_post );
-
 		if ( isset( $response->id ) ) {
+			$this->logger->alert_success( sprintf( 'Successfully shared %s to %s on %s ',
+				get_the_title( $post_details['post_id'] ),
+				$args['user'],
+				$post_details['service']
+			) );
+
 			return true;
 		}
 
