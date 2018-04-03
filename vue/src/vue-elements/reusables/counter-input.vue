@@ -97,6 +97,7 @@
 <style>
 	#rop_core .input-group.rop-counter-group {
 		position: relative;
+		width: 100%;
 	}
 	#rop_core .btn.increment-btn {
 		position: absolute;

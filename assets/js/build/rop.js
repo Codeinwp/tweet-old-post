@@ -28713,8 +28713,8 @@ exports.default = new _vuex2.default.Store({
 		page: {
 			debug: false,
 			logs: [],
-			view: 'queue',
-			template: 'queue'
+			view: 'accounts',
+			template: 'accounts'
 		},
 		cron_status: {},
 		toast: {
@@ -28895,7 +28895,7 @@ exports.default = new _vuex2.default.Store({
 					responseType: 'json'
 				}).then(function (response) {
 					commit('setAjaxState', false);
-					var display = response.data.show_to_user;
+					var display = false;
 					if (display) {
 						var toast = {
 							type: response.data.status,
@@ -28906,6 +28906,7 @@ exports.default = new _vuex2.default.Store({
 						commit('updateState', { stateData: toast, requestName: 'update_toast' });
 					}
 					var stateData = response.data;
+					console.log(stateData);
 					if (response.data.data) {
 						stateData = response.data.data;
 					}
@@ -33098,7 +33099,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t.rop-tab-state-true {\n\t\topacity: 0.2;\n\t}\n\t\n\t.rop-tab-state-false {\n\t\topacity: 1;\n\t}\n", ""]);
+exports.push([module.i, "\n\t.rop-tab-state-true {\n\t\topacity: 0.2;\n\t}\n\n\t.rop-tab-state-false {\n\t\topacity: 1;\n\t}\n\t#rop_core .panel-body .text-gray {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n", ""]);
 
 // exports
 
@@ -33125,97 +33126,90 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 		<div class="panel-body">
 // 			<h3>General Settings</h3>
 // 			<div class="container" :class="'rop-tab-state-'+is_loading">
-// 				<div class="columns">
-// 					<div class="column col-sm-12 col-md-12 col-lg-12">
-// 						<div class="columns">
-// 							<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-right">
-// 								<b>Minimum interval between shares</b><br/>
-// 								<i>Minimum time between shares (hour/hours), 0.4 can be used.</i>
-// 							</div>
-// 							<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-left">
-// 								<counter-input id="default_interval" :value.sync="generalSettings.default_interval"/>
-// 							</div>
-// 						</div>
+// 				<!-- Min Interval Between Shares -->
+// 				<div class="columns text-right py-2">
+// 					<div class="column col-6 col-sm-12">
+// 						<b>Minimum interval between shares</b><br/>
+// 						<p class="text-gray">Minimum time between shares (hour/hours), 0.4 can be used.</p>
+// 					</div>
+// 					<div class="column col-6 col-sm-12 vertical-align">
+// 						<counter-input id="default_interval"
+// 									   :value.sync="generalSettings.default_interval"/>
 // 					</div>
 // 				</div>
-// 				<div class="columns">
-// 					<div class="column col-sm-12 col-md-12 col-lg-6">
-// 						<div class="columns">
-// 							<div class="column col-sm-12 col-md-6 col-xl-6 col-8 text-right">
-// 								<b>Minimum post age</b><br/>
-// 								<i>Minimum age of posts available for sharing, in days.</i>
-// 							</div>
-// 							<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-left">
-// 								<counter-input id="min_post_age" :maxVal="365"
-// 								               :value.sync="generalSettings.minimum_post_age"/>
-// 							</div>
-// 						</div>
+// 				<span class="divider"></span>
+// 				<!-- Min Post Age -->
+// 				<div class="columns text-right py-2">
+// 					<div class="column col-6 col-sm-12">
+// 						<b>Minimum post age</b><br/>
+// 						<p class="text-gray">Minimum age of posts available for sharing, in days.</p>
 // 					</div>
-// 					<div class="column col-sm-12 col-md-12 col-lg-6">
-// 						<div class="columns">
-// 							<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-right">
-// 								<counter-input id="max_post_age" :maxVal="365"
-// 								               :value.sync="generalSettings.maximum_post_age"/>
-// 							</div>
-// 							<div class="column col-sm-12 col-md-6 col-xl-6 col-8 text-left">
-// 								<b>Maximum post age</b><br/>
-// 								<i>Maximum age of posts available for sharing, in days.</i>
-// 							</div>
-// 						</div>
+// 					<div class="column col-6 col-sm-12 vertical-align">
+// 						<counter-Input id="min_post_age" :max-val="365"
+// 									   :value.sync="generalSettings.minimum_post_age"/>
 // 					</div>
 // 				</div>
-// 				<hr/>
-// 				<div class="columns">
-// 					<div class="column col-sm-12 col-md-12 col-lg-6">
-// 						<div class="columns">
-// 							<div class="column col-sm-12 col-md-6 col-xl-6 col-8 text-right">
-// 								<b>Number of posts</b><br/>
-// 								<i>Number of posts to share per. account per. trigger of scheduled job.</i>
-// 							</div>
-// 							<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-left">
-// 								<counter-input id="no_of_posts" :value.sync="generalSettings.number_of_posts"/>
-// 							</div>
-// 						</div>
+// 				<!-- Max Post Age -->
+// 				<div class="columns text-right py-2">
+// 					<div class="column col-6 col-sm-12">
+// 						<b>Maximum post age</b><br/>
+// 						<p class="text-gray">Maximum age of posts available for sharing, in days.</p>
 // 					</div>
-// 					<div class="column col-sm-12 col-md-12 col-lg-6">
-// 						<div class="columns">
-// 							<div class="column col-sm-12 col-md-2 col-xl-2 col-1 text-right">
-// 								<div class="form-group">
-// 									<label class="form-checkbox">
-// 										<input type="checkbox" v-model="generalSettings.more_than_once"/>
-// 										<i class="form-icon"></i> Yes
-// 									</label>
-// 								</div>
-// 							</div>
-// 							<div class="column col-sm-12 col-md-10 col-xl-10 col-11 text-left">
-// 								<b>Share more than once?</b><br/>
-// 								<i>If there are no more posts to share, we should start re-sharing the one we previously
-// 									shared.</i>
-// 							</div>
-// 						</div>
+// 					<div class="column col-6 col-sm-12 vertical-align">
+// 						<counter-input id="max_post_age" :max-val="365"
+// 									   :value.sync="generalSettings.maximum_post_age"/>
 // 					</div>
 // 				</div>
-// 				<hr/>
-// 				<div class="columns" :class="'rop-control-container-'+isPro">
-// 					<div class="column col-sm-12 col-md-12 col-lg-12">
-// 						<div class="columns rop-control">
-// 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-// 								<b>Post types</b><br/>
-// 								<i>Post types available to share - what post types are available for share</i>
-// 							</div>
-// 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-// 								<multiple-select :options="postTypes" :disabled="isPro"
-// 								                 :selected="generalSettings.selected_post_types"
-// 								                 :changedSelection="updatedPostTypes"/>
-// 							</div>
-// 						</div>
 //
-// 						<div class="columns rop-upsell-message" v-if="! isPro">
-// 							<div class="col-12 text-center">
-// 								<p><i class="fa fa-lock"></i> Selecting custom post types is available in the pro
-// 									version. </p>
-// 							</div>
+// 				<span class="divider"></span>
+//
+// 				<!-- No. of posts -->
+// 				<div class="columns text-right py-2">
+// 					<div class="column col-6 col-sm-12">
+// 						<b>Number of posts</b><br/>
+// 						<p class="text-gray">Number of posts to share per. account per. trigger of scheduled job.</p>
+// 					</div>
+// 					<div class="column col-6 col-sm-12 vertical-align">
+// 						<counter-input id="no_of_posts" :value.sync="generalSettings.number_of_posts"/>
+// 					</div>
+// 				</div>
+// 				<span class="divider"></span>
+//
+// 				<!-- Share more than once -->
+// 				<div class="columns text-right py-2">
+// 					<div class="column col-6 col-sm-12">
+// 						<b>Share more than once?</b><br/>
+// 						<p class="text-gray">If there are no more posts to share, we should start re-sharing the one we previously
+// 							shared.</p>
+// 					</div>
+// 					<div class="column col-6 col-sm-12 vertical-align">
+// 						<div class="form-group">
+// 							<label class="form-checkbox">
+// 								<input type="checkbox" v-model="generalSettings.more_than_once"/>
+// 								<i class="form-icon"></i> Yes
+// 							</label>
 // 						</div>
+// 					</div>
+// 				</div>
+// 				<span class="divider"></span>
+//
+// 				<!-- Post Types -->
+// 				<div class="columns text-right py-2" :class="'rop-control-container-'+isPro">
+// 					<div class="column col-6 col-sm-12">
+// 						<b>Post types</b><br/>
+// 						<p class="text-gray">Post types available to share - what post types are available for share</p>
+// 					</div>
+// 					<div class="column col-6 col-sm-12 vertical-align text-left">
+// 						<multiple-select :options="postTypes" :disabled="isPro"
+// 										 :selected="generalSettings.selected_post_types"
+// 										 :changed-selection="updatedPostTypes"/>
+// 					</div>
+// 				</div>
+//
+// 				<div class="columns text-right py-2" v-if="! isPro">
+// 					<div class="col-12 text-center">
+// 						<p><i class="fa fa-lock"></i> Selecting custom post types is available in the pro
+// 							version. </p>
 // 					</div>
 // 				</div>
 // 				<hr/>
@@ -33230,12 +33224,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 // 								<div class="input-group">
 // 									<multiple-select :options="taxonomies"
-// 									                 :selected="generalSettings.selected_taxonomies"
-// 									                 :changedSelection="updatedTaxonomies"/>
+// 													 :selected="generalSettings.selected_taxonomies"
+// 													 :changedSelection="updatedTaxonomies"/>
 // 									<span class="input-group-addon">
 // 										<label class="form-checkbox">
 // 											<input type="checkbox" v-model="generalSettings.exclude_taxonomies"
-// 											       @change="exludeTaxonomiesChange"/>
+// 												   @change="exludeTaxonomiesChange"/>
 // 											<i class="form-icon"></i> Exclude?
 // 										</label>
 // 									</span>
@@ -33255,7 +33249,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
 // 								<div class="input-group">
 // 									<multiple-select :searchQuery="searchQuery" @update="searchUpdate"
-// 									                 :options="postsAvailable" :dontLock="true"
+// 									                 :options="postsAvailable" :dont-lock="true"
 // 									                 :selected="generalSettings.selected_posts"
 // 									                 :changedSelection="updatedPosts"/>
 //
@@ -33429,17 +33423,22 @@ module.exports = {
 		}
 	},
 	components: {
-		CounterInput: _counterInput2.default,
-		MultipleSelect: _multipleSelect2.default
+		'counterInput': _counterInput2.default,
+		'MultipleSelect': _multipleSelect2.default
 	}
 	// </script>
-	// <style type="text/css">
+	//
+	// <style>
 	// 	.rop-tab-state-true {
 	// 		opacity: 0.2;
 	// 	}
 	//
 	// 	.rop-tab-state-false {
 	// 		opacity: 1;
+	// 	}
+	// 	#rop_core .panel-body .text-gray {
+	// 		margin: 0;
+	// 		line-height: normal;
 	// 	}
 	// </style>
 
@@ -33503,7 +33502,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .input-group.rop-counter-group {\n\t\tposition: relative;\n\t}\n\t#rop_core .btn.increment-btn {\n\t\tposition: absolute;\n\t\tright: 0;\n\t\twidth: 1rem;\n\t\theight: 0.85rem;\n\t\tpadding: 0.025rem 0.010rem;\n\t\tline-height: 0.3rem;\n\t\tz-index: 2;\n\t}\n\n\t#rop_core .btn.increment-btn.up { top: 0; }\n\t#rop_core .btn.increment-btn.down { bottom: 0; }\n\n\tinput.rop-counter::-webkit-inner-spin-button {\n\t\tdisplay: none;\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop_core .input-group.rop-counter-group {\n\t\tposition: relative;\n\t\twidth: 100%;\n\t}\n\t#rop_core .btn.increment-btn {\n\t\tposition: absolute;\n\t\tright: 0;\n\t\twidth: 1rem;\n\t\theight: 0.85rem;\n\t\tpadding: 0.025rem 0.010rem;\n\t\tline-height: 0.3rem;\n\t\tz-index: 2;\n\t}\n\n\t#rop_core .btn.increment-btn.up { top: 0; }\n\t#rop_core .btn.increment-btn.down { bottom: 0; }\n\n\tinput.rop-counter::-webkit-inner-spin-button {\n\t\tdisplay: none;\n\t}\n", ""]);
 
 // exports
 
@@ -33613,6 +33612,7 @@ module.exports = {
 	// <style>
 	// 	#rop_core .input-group.rop-counter-group {
 	// 		position: relative;
+	// 		width: 100%;
 	// 	}
 	// 	#rop_core .btn.increment-btn {
 	// 		position: absolute;
@@ -34070,7 +34070,7 @@ module.exports = "\n\t<div class=\"form-autocomplete\" style=\"width: 100%;\" v-
 /* 221 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\">\n\t\t\t<h3>General Settings</h3>\n\t\t\t<div class=\"container\" :class=\"'rop-tab-state-'+is_loading\">\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Minimum interval between shares</b><br/>\n\t\t\t\t\t\t\t\t<i>Minimum time between shares (hour/hours), 0.4 can be used.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<counter-input id=\"default_interval\" :value.sync=\"generalSettings.default_interval\"/>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t\t<b>Minimum post age</b><br/>\n\t\t\t\t\t\t\t\t<i>Minimum age of posts available for sharing, in days.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<counter-input id=\"min_post_age\" :maxVal=\"365\"\n\t\t\t\t\t\t\t\t               :value.sync=\"generalSettings.minimum_post_age\"/>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-right\">\n\t\t\t\t\t\t\t\t<counter-input id=\"max_post_age\" :maxVal=\"365\"\n\t\t\t\t\t\t\t\t               :value.sync=\"generalSettings.maximum_post_age\"/>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-left\">\n\t\t\t\t\t\t\t\t<b>Maximum post age</b><br/>\n\t\t\t\t\t\t\t\t<i>Maximum age of posts available for sharing, in days.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-8 text-right\">\n\t\t\t\t\t\t\t\t<b>Number of posts</b><br/>\n\t\t\t\t\t\t\t\t<i>Number of posts to share per. account per. trigger of scheduled job.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-6 col-xl-6 col-4 text-left\">\n\t\t\t\t\t\t\t\t<counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\"/>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-6\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-2 col-xl-2 col-1 text-right\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\"/>\n\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Yes\n\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-10 col-xl-10 col-11 text-left\">\n\t\t\t\t\t\t\t\t<b>Share more than once?</b><br/>\n\t\t\t\t\t\t\t\t<i>If there are no more posts to share, we should start re-sharing the one we previously\n\t\t\t\t\t\t\t\t\tshared.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\" :class=\"'rop-control-container-'+isPro\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns rop-control\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Post types</b><br/>\n\t\t\t\t\t\t\t\t<i>Post types available to share - what post types are available for share</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<multiple-select :options=\"postTypes\" :disabled=\"isPro\"\n\t\t\t\t\t\t\t\t                 :selected=\"generalSettings.selected_post_types\"\n\t\t\t\t\t\t\t\t                 :changedSelection=\"updatedPostTypes\"/>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div class=\"columns rop-upsell-message\" v-if=\"! isPro\">\n\t\t\t\t\t\t\t<div class=\"col-12 text-center\">\n\t\t\t\t\t\t\t\t<p><i class=\"fa fa-lock\"></i> Selecting custom post types is available in the pro\n\t\t\t\t\t\t\t\t\tversion. </p>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Taxonomies</b><br/>\n\t\t\t\t\t\t\t\t<i>Taxonomies available for the selected post types. Use to include or exclude\n\t\t\t\t\t\t\t\t\tposts.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\"\n\t\t\t\t\t\t\t\t\t                 :selected=\"generalSettings.selected_taxonomies\"\n\t\t\t\t\t\t\t\t\t                 :changedSelection=\"updatedTaxonomies\"/>\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\">\n\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\"\n\t\t\t\t\t\t\t\t\t\t\t       @change=\"exludeTaxonomiesChange\"/>\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Exclude?\n\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Posts</b><br/>\n\t\t\t\t\t\t\t\t<i>Posts excluded/included in sharing, filtered based on previous selections.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t\t\t\t<multiple-select :searchQuery=\"searchQuery\" @update=\"searchUpdate\"\n\t\t\t\t\t\t\t\t\t                 :options=\"postsAvailable\" :dontLock=\"true\"\n\t\t\t\t\t\t\t\t\t                 :selected=\"generalSettings.selected_posts\"\n\t\t\t\t\t\t\t\t\t                 :changedSelection=\"updatedPosts\"/>\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Enable Google Analytics Tracking</b><br/>\n\t\t\t\t\t\t\t\t<i>If checked an utm query willbe added to URL's so that you cand better track\n\t\t\t\t\t\t\t\t\ttrafic.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.ga_tracking\"/>\n\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Yes\n\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\"><i class=\"fa fa-check\"\n\t\t\t                                                                  v-if=\"!this.is_loading\"></i> <i\n\t\t\t\t\tclass=\"fa fa-spinner fa-spin\" v-else></i> Save\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\">\n\t\t\t<h3>General Settings</h3>\n\t\t\t<div class=\"container\" :class=\"'rop-tab-state-'+is_loading\">\n\t\t\t\t<!-- Min Interval Between Shares -->\n\t\t\t\t<div class=\"columns text-right py-2\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12\">\n\t\t\t\t\t\t<b>Minimum interval between shares</b><br/>\n\t\t\t\t\t\t<p class=\"text-gray\">Minimum time between shares (hour/hours), 0.4 can be used.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\">\n\t\t\t\t\t\t<counter-input id=\"default_interval\"\n\t\t\t\t\t\t\t\t\t   :value.sync=\"generalSettings.default_interval\"/>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\"></span>\n\t\t\t\t<!-- Min Post Age -->\n\t\t\t\t<div class=\"columns text-right py-2\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12\">\n\t\t\t\t\t\t<b>Minimum post age</b><br/>\n\t\t\t\t\t\t<p class=\"text-gray\">Minimum age of posts available for sharing, in days.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\">\n\t\t\t\t\t\t<counter-Input id=\"min_post_age\" :max-val=\"365\"\n\t\t\t\t\t\t\t\t\t   :value.sync=\"generalSettings.minimum_post_age\"/>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- Max Post Age -->\n\t\t\t\t<div class=\"columns text-right py-2\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12\">\n\t\t\t\t\t\t<b>Maximum post age</b><br/>\n\t\t\t\t\t\t<p class=\"text-gray\">Maximum age of posts available for sharing, in days.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\">\n\t\t\t\t\t\t<counter-input id=\"max_post_age\" :max-val=\"365\"\n\t\t\t\t\t\t\t\t\t   :value.sync=\"generalSettings.maximum_post_age\"/>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\"></span>\n\n\t\t\t\t<!-- No. of posts -->\n\t\t\t\t<div class=\"columns text-right py-2\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12\">\n\t\t\t\t\t\t<b>Number of posts</b><br/>\n\t\t\t\t\t\t<p class=\"text-gray\">Number of posts to share per. account per. trigger of scheduled job.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\">\n\t\t\t\t\t\t<counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\"/>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\"></span>\n\n\t\t\t\t<!-- Share more than once -->\n\t\t\t\t<div class=\"columns text-right py-2\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12\">\n\t\t\t\t\t\t<b>Share more than once?</b><br/>\n\t\t\t\t\t\t<p class=\"text-gray\">If there are no more posts to share, we should start re-sharing the one we previously\n\t\t\t\t\t\t\tshared.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\">\n\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\"/>\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Yes\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\"></span>\n\n\t\t\t\t<!-- Post Types -->\n\t\t\t\t<div class=\"columns text-right py-2\" :class=\"'rop-control-container-'+isPro\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12\">\n\t\t\t\t\t\t<b>Post types</b><br/>\n\t\t\t\t\t\t<p class=\"text-gray\">Post types available to share - what post types are available for share</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\">\n\t\t\t\t\t\t<multiple-select :options=\"postTypes\" :disabled=\"isPro\"\n\t\t\t\t\t\t\t\t\t\t :selected=\"generalSettings.selected_post_types\"\n\t\t\t\t\t\t\t\t\t\t :changed-selection=\"updatedPostTypes\"/>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"columns text-right py-2\" v-if=\"! isPro\">\n\t\t\t\t\t<div class=\"col-12 text-center\">\n\t\t\t\t\t\t<p><i class=\"fa fa-lock\"></i> Selecting custom post types is available in the pro\n\t\t\t\t\t\t\tversion. </p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Taxonomies</b><br/>\n\t\t\t\t\t\t\t\t<i>Taxonomies available for the selected post types. Use to include or exclude\n\t\t\t\t\t\t\t\t\tposts.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\"\n\t\t\t\t\t\t\t\t\t\t\t\t\t :selected=\"generalSettings.selected_taxonomies\"\n\t\t\t\t\t\t\t\t\t\t\t\t\t :changedSelection=\"updatedTaxonomies\"/>\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\">\n\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\"\n\t\t\t\t\t\t\t\t\t\t\t\t   @change=\"exludeTaxonomiesChange\"/>\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Exclude?\n\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Posts</b><br/>\n\t\t\t\t\t\t\t\t<i>Posts excluded/included in sharing, filtered based on previous selections.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t\t\t\t<multiple-select :searchQuery=\"searchQuery\" @update=\"searchUpdate\"\n\t\t\t\t\t\t\t\t\t                 :options=\"postsAvailable\" :dont-lock=\"true\"\n\t\t\t\t\t\t\t\t\t                 :selected=\"generalSettings.selected_posts\"\n\t\t\t\t\t\t\t\t\t                 :changedSelection=\"updatedPosts\"/>\n\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Enable Google Analytics Tracking</b><br/>\n\t\t\t\t\t\t\t\t<i>If checked an utm query willbe added to URL's so that you cand better track\n\t\t\t\t\t\t\t\t\ttrafic.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.ga_tracking\"/>\n\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Yes\n\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\"><i class=\"fa fa-check\"\n\t\t\t                                                                  v-if=\"!this.is_loading\"></i> <i\n\t\t\t\t\tclass=\"fa fa-spinner fa-spin\" v-else></i> Save\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 222 */

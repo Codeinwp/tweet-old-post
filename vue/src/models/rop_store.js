@@ -31,8 +31,8 @@ export default new Vuex.Store( {
 		page: {
 			debug: false,
 			logs: [],
-			view: 'queue',
-			template: 'queue',
+			view: 'accounts',
+			template: 'accounts',
 		},
 		cron_status: {},
 		toast: {
@@ -216,7 +216,7 @@ export default new Vuex.Store( {
 					responseType: 'json'
 				} ).then( function ( response ) {
 					commit( 'setAjaxState', false )
-					let display = response.data.show_to_user
+					let display = false;
 					if ( display ) {
 						let toast = {
 							type: response.data.status,
