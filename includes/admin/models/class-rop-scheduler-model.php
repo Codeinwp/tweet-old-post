@@ -256,23 +256,25 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		}
 		sort( $events );
 		$prev                          = null;
-		$events                        = array_filter( $events, function ( $value ) use ( &$prev ) {
-			if ( empty( $prev ) ) {
+		$events                        = array_filter(
+			$events, function ( $value ) use ( &$prev ) {
+				if ( empty( $prev ) ) {
+					$prev = $value;
+
+					return true;
+				}
+				/**
+			 * Dont allow consecutive shared events on less than 60s diff.
+			 */
+				if ( abs( $value - $prev ) < 60 ) {
+					return false;
+				}
 				$prev = $value;
 
 				return true;
-			}
-			/**
-			 * Dont allow consecutive shared events on less than 60s diff.
-			 */
-			if ( abs( $value - $prev ) < 60 ) {
-				return false;
-			}
-			$prev = $value;
 
-			return true;
-
-		} );
+			}
+		);
 		$current_events[ $account_id ] = $events;
 
 		$this->update_timeline( $current_events );
@@ -350,9 +352,11 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 			 * Convert time string repres to no. of seconds in that day.
 			 * i.e 17:10 ->  ( 17 * 3600 + 10 * 60 )
 			 */
-			$times = array_map( function ( $time ) {
-				return $this->convert_string_to_float( $time );
-			}, $times );
+			$times = array_map(
+				function ( $time ) {
+						return $this->convert_string_to_float( $time );
+				}, $times
+			);
 			sort( $times );
 			/**
 			 * Get timestamp for the start of the week.

@@ -341,11 +341,14 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 
 		$response = $api->post( 'statuses/update', $new_post );
 		if ( isset( $response->id ) ) {
-			$this->logger->alert_success( sprintf( 'Successfully shared %s to %s on %s ',
-				get_the_title( $post_details['post_id'] ),
-				$args['user'],
-				$post_details['service']
-			) );
+			$this->logger->alert_success(
+				sprintf(
+					'Successfully shared %s to %s on %s ',
+					get_the_title( $post_details['post_id'] ),
+					$args['user'],
+					$post_details['service']
+				)
+			);
 
 			return true;
 		} else {

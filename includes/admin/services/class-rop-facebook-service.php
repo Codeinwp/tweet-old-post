@@ -447,11 +447,14 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		}
 
 		if ( $this->try_post( $new_post, $args['id'], $args['access_token'] ) ) {
-			$this->logger->alert_success( sprintf( 'Successfully shared %s to %s on %s ',
-				get_the_title( $post_details['post_id'] ),
-				$args['user'],
-				$post_details['service']
-			) );
+			$this->logger->alert_success(
+				sprintf(
+					'Successfully shared %s to %s on %s ',
+					get_the_title( $post_details['post_id'] ),
+					$args['user'],
+					$post_details['service']
+				)
+			);
 		} else {
 			return false;
 		}

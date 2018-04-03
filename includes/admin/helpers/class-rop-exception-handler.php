@@ -86,7 +86,7 @@ class Rop_Exception_Handler {
 	public function throw_exception( $header, $message ) {
 
 		$this->logger->alert_error( $message );
-		if ( ! ROP_TEST ) {
+		if ( ! ROP_DEBUG ) {
 			return;
 		}
 		header( 'HTTP/1.0 ' . $header );

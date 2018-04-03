@@ -372,11 +372,14 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$new_post['visibility']['code'] = 'anyone';
 
 		try {
-			$this->logger->alert_success( sprintf( 'Successfully shared %s to %s on %s ',
-				get_the_title( $post_details['post_id'] ),
-				$args['user'],
-				$post_details['service']
-			) );
+			$this->logger->alert_success(
+				sprintf(
+					'Successfully shared %s to %s on %s ',
+					get_the_title( $post_details['post_id'] ),
+					$args['user'],
+					$post_details['service']
+				)
+			);
 		} catch ( Exception $exception ) {
 			$this->logger->alert_error( 'Can not share to linkedin. Error:  ' . $exception->getMessage() );
 

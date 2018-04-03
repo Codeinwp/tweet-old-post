@@ -125,7 +125,6 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	/**
 	 * Update queue object.
 	 *
-	 *
 	 * @param array $queue New queue to update.
 	 */
 	public function update_queue( $queue ) {

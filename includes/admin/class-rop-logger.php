@@ -49,11 +49,10 @@ class Rop_Logger {
 	 */
 	public function __construct() {
 
-		$this->stream = new Rop_Log_Handler( 'rop_logs', Logger::DEBUG );
+		$this->stream = new Rop_Log_Handler( 'rop_logs', ( ROP_DEBUG ) ? Logger::DEBUG : Logger::ALERT );
 		$formatter    = new LineFormatter( '%message% %context.extra%' . PHP_EOL, 'd-m-Y H:i:s', false, true );
 		$this->stream->setFormatter( $formatter );
 		$this->logger = new Logger( 'rop_logs' );
-		//	$this->stream->clear_logs();
 		$this->logger->pushHandler( $this->stream );
 
 	}
@@ -105,7 +104,6 @@ class Rop_Logger {
 	 *
 	 * @since   8.0.0
 	 * @access  public
-	 *
 	 */
 	public function get_logs() {
 		$logs = $this->stream->get_logs();
@@ -118,7 +116,6 @@ class Rop_Logger {
 	 *
 	 * @since   8.0.0
 	 * @access  public
-	 *
 	 */
 	public function clear_user_logs() {
 		$this->stream->clear_logs();
