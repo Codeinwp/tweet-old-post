@@ -39,7 +39,7 @@
 				<p class="empty-subtitle">Check if you have at least an <b>"Active account"</b>, what posts and pages
 					are selected in <b>"General Settings"</b> and if a <b>"Schedule"</b> is defined.</p>
 			</div>
-			<div class="container columns" v-if="start_status && queueCount > 0">
+			<div class="columns" v-if="start_status && queueCount > 0">
 				<div class="column col-12 text-left" v-for=" (data, index) in queue ">
 					<queue-card :card_data="data.post_data" :id="index" :enabled="is_business"/>
 				</div>

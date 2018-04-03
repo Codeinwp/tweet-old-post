@@ -1,88 +1,108 @@
 <template>
-	<div class="card col-12 rop-queue-post" style="max-width: 100%; min-height: 100px;">
-		<div class="card-top-header columns">
-			<div class="column col-6">
-				<p class="text-gray text-left "><i class="fa fa-clock-o"></i> {{card_data.date}} <b><i
-						class="fa fa-at"></i></b> <i class="service fa"
-				                                     :class="iconClass( card_data.account_id )"></i>
-					{{getAccountName(card_data.account_id)}}</p>
+	<div class="card">
+		<div class="columns">
+			<div class="column col-sm-12 col-justified">
+				<div class="columns">
+					<div class="column">
+						<p class="text-gray text-left "><i class="fa fa-clock-o"></i> {{card_data.date}} <b><i
+								class="fa fa-at"></i></b> <i class="service fa"
+															 :class="iconClass( card_data.account_id )"></i>
+							{{getAccountName(card_data.account_id)}}</p>
+					</div>
+				</div>
+				<div class="columns" v-if="!edit">
+					<div class="column col-12">
+						<p v-html="hashtags( content.content )"></p>
+					</div>
+				</div>
+				<div class="form-group columns" v-if="edit">
+					<div class="column col-12" v-if="content.post_with_image">
+						<label class="form-label" for="image">Image</label>
+						<div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-file-image-o"></i></span>
+							<input id="image" type="text" class="form-input" :value="content.post_image" readonly>
+							<button class="btn btn-primary input-group-btn tooltip" @click="uploadImage" data-tooltip="Upload">
+								<i class="fa fa-upload" aria-hidden="true"></i>
+							</button>
+							<button class="btn btn-danger input-group-btn tooltip" @click="removeImage" data-tooltip="Remove">
+								<i class="fa fa-remove" aria-hidden="true"></i>
+							</button>
+						</div>
+					</div>
+					<div class="column col-12">
+						<label class="form-label" for="content">Content</label>
+						<textarea class="form-input" id="content" placeholder="Textarea" rows="3" @keyup="checkCount">{{content.content}}</textarea>
+					</div>
+				</div>
+				<div class="columns col-justified" v-if="!edit">
+					<div class="column col-3">
+						<button class="btn btn-sm btn-block btn-warning tooltip tooltip-right"
+								@click="skipPost(card_data.account_id, card_data.post_id)"
+								data-tooltip="Reschedule this post."
+								:disabled=" ! enabled">
+							<i class="fa fa-spinner fa-spin" v-if=" is_loading === 'skip'"></i>
+							<i class="fa fa-step-forward" v-else aria-hidden="true"></i>
+							Skip
+						</button>
+					</div>
+					<div class="column col-3">
+						<button class="btn btn-sm btn-block btn-danger tooltip  tooltip-right"
+								data-tooltip="Ban this post from sharing in the future."
+								@click="blockPost(card_data.account_id, card_data.post_id)" :disabled=" ! enabled">
+							<i class="fa fa-spinner fa-spin" v-if=" is_loading === 'block'"></i>
+							<i class="fa fa-ban" aria-hidden="true" v-else></i>
+							Block
+						</button>
+					</div>
+					<div class="column col-3">
+						<button class="btn btn-sm btn-block btn-primary" @click="toggleEditState" v-if="!edit"
+								:disabled=" ! enabled">
+							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+						</button>
+					</div>
+					<div class="column col-3 col-ml-auto text-right">
+						<p class="m-0">
+							<b>Link:</b>
+							<a :href="content.post_url" target="_blank" class="tooltip"
+							   :data-tooltip="'Link shortned using ' + content.short_url_service +' service'">
+								{{'{' + content.short_url_service + '}'}}</a>
+						</p>
+					</div>
+				</div>
+				<div class="columns" v-else>
+					<div class="column col-3">
+						<button class="btn btn-sm btn-block btn-success"
+								@click="saveChanges(card_data.account_id, card_data.post_id)"
+								v-if="edit" :disabled=" ! enabled">
+							<i class="fa fa-spinner fa-spin" v-if=" is_loading === 'edit'"></i>
+							<i class="fa fa-check" aria-hidden="true" v-else></i>
+							Save
+						</button>
+					</div>
+					<div class="column col-3">
+						<button class="btn btn-sm btn-block btn-warning" @click="cancelChanges" v-if="edit"
+								:disabled=" ! enabled">
+							<i class="fa fa-times" aria-hidden="true"></i>
+							Cancel
+						</button>
+					</div>
+				</div>
 			</div>
-			<div class="column col-6 text-right">
-				<button class="btn btn-sm btn-primary" @click="toggleEditState" v-if="edit === false"
-				        :disabled=" ! enabled">
-					<i class="fa fa-pencil" aria-hidden="true"></i> Edit
-				</button>
-				<button class="btn btn-sm btn-success" @click="saveChanges(card_data.account_id, card_data.post_id)"
-				        v-if="edit" :disabled=" ! enabled">
-					<i class="fa fa-spinner fa-spin" v-if=" is_loading === 'edit'"></i>
-					<i class="fa fa-check" aria-hidden="true" v-else></i>
-					Save
-				</button>
-				<button class="btn btn-sm btn-warning" @click="cancelChanges" v-if="edit" :disabled=" ! enabled">
-					<i class="fa fa-times" aria-hidden="true"></i>
-					Cancel
-				</button>
-			</div>
-		</div>
-		<div class="card-body columns" v-if="! edit ">
-			<div class="column col-9">
-				<p v-html="hashtags( content.content )"></p>
-			
-			</div>
-			<div class="column col-3 text-right">
-				<div class="rop-image-placeholder" v-if="content.post_with_image">
+			<div class="column col-4 vertical-align" v-if="!edit">
+				<div v-if="content.post_with_image">
 					<figure class="figure" v-if="content.post_image !== ''">
-						<img :src="content.post_image" class="img-fit-cover" style="max-height:50px">
+						<img :src="content.post_image" class="img-fit-cover">
 					</figure>
-					<summary v-else>
+					<summary class="rop-image-placeholder" v-else>
 						<i class="fa fa-file-image-o"></i>
 						No Image
 					</summary>
 				</div>
-				<p>
-					<b>Link:</b>
-					<a :href="content.post_url" target="_blank" class="tooltip"
-					   :data-tooltip="'Link shortned using ' + content.short_url_service +' service'">
-						{{'{' + content.short_url_service + '}'}}</a>
-				</p>
 			</div>
-		
-		</div>
-		<div class="card-body  columns" v-if="edit">
-			<div class="form-group column col-12">
-				<div class="rop-image-queue-input" v-if="content.post_with_image">
-					<label class="form-label" for="image">Image</label>
-					<div class="input-group">
-						<span class="input-group-addon"><i class="fa fa-file-image-o"></i></span>
-						<input id="image" type="text" class="form-input" :value="content.post_image" readonly>
-						<button class="btn btn-primary input-group-btn" @click="uploadImage">
-							<i class="fa fa-upload" aria-hidden="true"></i>
-						</button>
-					</div>
-				</div>
-				<label class="form-label" for="content">Content</label>
-				<textarea class="form-input" id="content" placeholder="Textarea" rows="3" @keyup="checkCount">{{content.content}}</textarea>
-			</div>
-		</div>
-		<div class="card-top-footer columns" v-if="edit === false">
-			<button class="btn btn-sm btn-warning tooltip tooltip-right"
-			        @click="skipPost(card_data.account_id, card_data.post_id)"
-			        data-tooltip="Reschedule this post."
-			        :disabled=" ! enabled">
-				<i class="fa fa-spinner fa-spin" v-if=" is_loading === 'skip'"></i>
-				<i class="fa fa-step-forward" v-else aria-hidden="true"></i>
-				Skip
-			</button>
-			<button class="btn btn-sm btn-danger tooltip  tooltip-right"
-			        data-tooltip="Ban this post from sharing in the future."
-			        @click="blockPost(card_data.account_id, card_data.post_id)" :disabled=" ! enabled">
-				<i class="fa fa-spinner fa-spin" v-if=" is_loading === 'block'"></i>
-				<i class="fa fa-ban" aria-hidden="true" v-else></i>
-				Block
-			</button>
 		</div>
 	</div>
 </template>
+
 
 <script>
 	/* global wp */
@@ -218,6 +238,10 @@
 
 				window.open()
 			},
+			removeImage: function () {
+			    let self = this;
+                self.content.post_image = null;
+			},
 			iconClass: function (accountId) {
 				let serviceIcon = 'fa-user'
 				if (accountId !== null) {
@@ -243,3 +267,17 @@
 		}
 	}
 </script>
+
+<style scoped>
+.fa {
+	background: transparent;
+}
+#rop_core .figure {
+	margin: 0;
+}
+	@media (max-width: 600px) {
+		#rop_core .vertical-align {
+			margin: 10px auto 0;
+		}
+	}
+</style>

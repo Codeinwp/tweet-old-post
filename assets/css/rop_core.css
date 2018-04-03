@@ -1508,6 +1508,9 @@ a.active {
 
 #rop_core .img-fit-cover {
     object-fit: cover;
+    width: auto;
+    max-height: 200px;
+    max-width: 100%;
 }
 
 #rop_core .img-fit-contain {
@@ -4333,6 +4336,11 @@ a.active {
     margin-left: 0px;
     margin-right: 0px;
 
+}
+#rop_core .column.col-justified {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
 }
 @keyframes move {
     0% {
