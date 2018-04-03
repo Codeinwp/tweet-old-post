@@ -26,8 +26,8 @@
 				<!-- When sharing is started but we  have the business plan. -->
 				<div class="column col-12 text-center" v-else>
 					<i class="fa fa-2x fa-info-circle"></i>
-					<p>You can choose to edit any of the post, skip the sharing or block a specific one from sharing in
-						the future,.</p>
+					<p class="text-gray">You can choose to edit any of the post, skip the sharing or block a specific one from sharing in
+						the future.</p>
 				</div>
 			</div>
 			<!-- When sharing is started there is nothing in the Q. -->
