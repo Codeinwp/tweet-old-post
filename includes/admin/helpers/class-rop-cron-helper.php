@@ -127,6 +127,11 @@ class Rop_Cron_Helper {
 		 */
 		$selector = new Rop_Posts_Selector_Model();
 		$selector->clear_buffer();
+		/**
+		 * Clear logs.
+		 */
+		$logger = new Rop_Logger();
+		$logger->clear_user_logs();
 
 		return false;
 	}
@@ -173,6 +178,7 @@ class Rop_Cron_Helper {
 	public function get_logs_number() {
 		$logger = new Rop_Logger();
 		$logs   = $logger->get_logs();
+
 		return count( $logs );
 	}
 

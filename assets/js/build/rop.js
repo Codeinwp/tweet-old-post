@@ -35998,6 +35998,9 @@ module.exports = {
 	computed: {
 		logs: function logs() {
 			return this.$store.state.page.logs;
+		},
+		logs_no: function logs_no() {
+			return this.$store.state.cron_status.logs_number;
 		}
 	},
 	methods: {
@@ -36055,7 +36058,7 @@ module.exports = {
 }; // <template>
 // 	<div class="container">
 // 		<h3>Logs</h3>
-// 		<div class=" columns " v-if="logs.length > 0">
+// 		<div class=" columns " v-if="logs_no > 0">
 // 			<div class="column  col-12 text-right ">
 // 				<button class="btn  btn-secondary " @click="getLogs(true)">
 // 					<i class="fa fa-remove" v-if="!is_loading"></i>
@@ -36070,14 +36073,14 @@ module.exports = {
 // 					<i class="fa fa-3x fa-spinner fa-spin"></i>
 // 				</div>
 // 			</div>
-// 			<div class="empty column col-12" v-else-if="logs.length === 0">
+// 			<div class="empty column col-12" v-else-if="logs_no === 0">
 // 				<div class="empty-icon">
 // 					<i class="fa fa-3x fa-user-circle-o"></i>
 // 				</div>
 // 				<p class="empty-title h5">No recent logs!</p>
 // 			</div>
 //
-// 			<div class="column col-12" v-for=" (data, index) in logs " v-else-if="logs.length >  0">
+// 			<div class="column col-12" v-for=" (data, index) in logs " v-else-if="logs_no >  0">
 // 				<div class="toast log-toast" :class="'toast-' + data.type">
 // 					<small class="pull-right text-right">{{formatDate ( data.time ) }}</small>
 // 					<p>{{data.message}}</p>
@@ -38371,7 +38374,7 @@ exports.push([module.i, "\n\t#rop_core .toast.log-toast p[_v-2724a52d] {\n\t\tma
 /* 271 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"container\" _v-2724a52d=\"\">\n\t\t<h3 _v-2724a52d=\"\">Logs</h3>\n\t\t<div class=\" columns \" v-if=\"logs.length > 0\" _v-2724a52d=\"\">\n\t\t\t<div class=\"column  col-12 text-right \" _v-2724a52d=\"\">\n\t\t\t\t<button class=\"btn  btn-secondary \" @click=\"getLogs(true)\" _v-2724a52d=\"\">\n\t\t\t\t\t<i class=\"fa fa-remove\" v-if=\"!is_loading\" _v-2724a52d=\"\"></i>\n\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-2724a52d=\"\"></i>\n\t\t\t\t\tClear logs\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns\" _v-2724a52d=\"\">\n\t\t\t<div class=\"empty column col-12\" v-if=\"is_loading\" _v-2724a52d=\"\">\n\t\t\t\t<div class=\"empty-icon\" _v-2724a52d=\"\">\n\t\t\t\t\t<i class=\"fa fa-3x fa-spinner fa-spin\" _v-2724a52d=\"\"></i>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"empty column col-12\" v-else-if=\"logs.length === 0\" _v-2724a52d=\"\">\n\t\t\t\t<div class=\"empty-icon\" _v-2724a52d=\"\">\n\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\" _v-2724a52d=\"\"></i>\n\t\t\t\t</div>\n\t\t\t\t<p class=\"empty-title h5\" _v-2724a52d=\"\">No recent logs!</p>\n\t\t\t</div>\n\t\t\t\n\t\t\t<div class=\"column col-12\" v-for=\" (data, index) in logs \" v-else-if=\"logs.length >  0\" _v-2724a52d=\"\">\n\t\t\t\t<div class=\"toast log-toast\" :class=\"'toast-' + data.type\" _v-2724a52d=\"\">\n\t\t\t\t\t<small class=\"pull-right text-right\" _v-2724a52d=\"\">{{formatDate ( data.time ) }}</small>\n\t\t\t\t\t<p _v-2724a52d=\"\">{{data.message}}</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"container\" _v-2724a52d=\"\">\n\t\t<h3 _v-2724a52d=\"\">Logs</h3>\n\t\t<div class=\" columns \" v-if=\"logs_no > 0\" _v-2724a52d=\"\">\n\t\t\t<div class=\"column  col-12 text-right \" _v-2724a52d=\"\">\n\t\t\t\t<button class=\"btn  btn-secondary \" @click=\"getLogs(true)\" _v-2724a52d=\"\">\n\t\t\t\t\t<i class=\"fa fa-remove\" v-if=\"!is_loading\" _v-2724a52d=\"\"></i>\n\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-2724a52d=\"\"></i>\n\t\t\t\t\tClear logs\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns\" _v-2724a52d=\"\">\n\t\t\t<div class=\"empty column col-12\" v-if=\"is_loading\" _v-2724a52d=\"\">\n\t\t\t\t<div class=\"empty-icon\" _v-2724a52d=\"\">\n\t\t\t\t\t<i class=\"fa fa-3x fa-spinner fa-spin\" _v-2724a52d=\"\"></i>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"empty column col-12\" v-else-if=\"logs_no === 0\" _v-2724a52d=\"\">\n\t\t\t\t<div class=\"empty-icon\" _v-2724a52d=\"\">\n\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\" _v-2724a52d=\"\"></i>\n\t\t\t\t</div>\n\t\t\t\t<p class=\"empty-title h5\" _v-2724a52d=\"\">No recent logs!</p>\n\t\t\t</div>\n\t\t\t\n\t\t\t<div class=\"column col-12\" v-for=\" (data, index) in logs \" v-else-if=\"logs_no >  0\" _v-2724a52d=\"\">\n\t\t\t\t<div class=\"toast log-toast\" :class=\"'toast-' + data.type\" _v-2724a52d=\"\">\n\t\t\t\t\t<small class=\"pull-right text-right\" _v-2724a52d=\"\">{{formatDate ( data.time ) }}</small>\n\t\t\t\t\t<p _v-2724a52d=\"\">{{data.message}}</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ })
 /******/ ]);

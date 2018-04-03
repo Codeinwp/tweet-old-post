@@ -1,7 +1,7 @@
 <template>
 	<div class="container">
 		<h3>Logs</h3>
-		<div class=" columns " v-if="logs.length > 0">
+		<div class=" columns " v-if="logs_no > 0">
 			<div class="column  col-12 text-right ">
 				<button class="btn  btn-secondary " @click="getLogs(true)">
 					<i class="fa fa-remove" v-if="!is_loading"></i>
@@ -16,14 +16,14 @@
 					<i class="fa fa-3x fa-spinner fa-spin"></i>
 				</div>
 			</div>
-			<div class="empty column col-12" v-else-if="logs.length === 0">
+			<div class="empty column col-12" v-else-if="logs_no === 0">
 				<div class="empty-icon">
 					<i class="fa fa-3x fa-user-circle-o"></i>
 				</div>
 				<p class="empty-title h5">No recent logs!</p>
 			</div>
 			
-			<div class="column col-12" v-for=" (data, index) in logs " v-else-if="logs.length >  0">
+			<div class="column col-12" v-for=" (data, index) in logs " v-else-if="logs_no >  0">
 				<div class="toast log-toast" :class="'toast-' + data.type">
 					<small class="pull-right text-right">{{formatDate ( data.time ) }}</small>
 					<p>{{data.message}}</p>
@@ -51,6 +51,9 @@
 		computed: {
 			logs: function () {
 				return this.$store.state.page.logs
+			},
+			logs_no: function () {
+				return this.$store.state.cron_status.logs_number;
 			},
 		},
 		methods: {
