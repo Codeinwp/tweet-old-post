@@ -107,7 +107,7 @@ class Rop_Admin {
 			wp_enqueue_media();
 			wp_enqueue_style( $this->plugin_name . '_fa', ROP_LITE_URL . 'assets/css/font-awesome.min.css', array(), $this->version );
 
-			wp_register_script( $this->plugin_name . '_main', ROP_LITE_URL . 'assets/js/build/rop.js', array(), time(), false );
+			wp_register_script( $this->plugin_name . '_main', ROP_LITE_URL . 'assets/js/build/rop.' . ( ROP_DEBUG ) ? '' : 'min' . 'js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
 			$array_nonce = array(
 				'root' => esc_url_raw( rest_url( '/tweet-old-post/v8/api/' ) ),
 			);

@@ -478,7 +478,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		$api = $this->get_api();
 
 		try {
-			print_r( $new_post );
 			$api->post( '/' . $page_id . '/feed', $new_post, $token );
 
 			return true;

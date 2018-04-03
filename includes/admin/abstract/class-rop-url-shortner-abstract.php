@@ -261,7 +261,6 @@ abstract class Rop_Url_Shortner_Abstract {
 			'response' => $body,
 			'error'    => $error,
 		);
-		// self::writeDebug( "Calling ". $url. " with headers = " . print_r($header, true) . ", fields = " . print_r($params, true) . " returning raw response " . print_r($body,true) . " and finally returning " . print_r($array,true));
 		return $array;
 	}
 }

@@ -67,7 +67,6 @@ class Rop_Logger {
 	 * @param   array  $context [optional] A context for the message, if needed.
 	 */
 	public function info( $message = '', $context = array() ) {
-		print_r( $context );
 		$this->logger->info( $message, $context );
 	}
 
