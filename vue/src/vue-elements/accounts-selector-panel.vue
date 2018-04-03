@@ -3,22 +3,22 @@
 		<div class="panel-body">
 			<h3>Post Format</h3>
 			<div class="d-inline-block">
-				<h4><i class="fa fa-info-circle"></i> Info</h4>
-				<p><i>Each <b>account</b> can have it's own <b>Post Format</b> for sharing, on the left you can see the
+				<h6><i class="fa fa-info-circle"></i> Info</h6>
+				<p class="text-gray">Each <b>account</b> can have it's own <b>Post Format</b> for sharing, on the left you can see the
 					current selected account and network, bellow are the <b>Post Format</b> options for the account.
 					Don't forget to save after each change and remember, you can always reset an account to the network
 					defaults.
-				</i></p>
+				</p>
 			</div>
 			<empty-active-accounts v-if="accountsCount === 0"></empty-active-accounts>
 			<div class="container" v-if="accountsCount > 0">
 				
 				<div class="columns">
 					<div class="column col-2 col-sm-12 col-md-3 col-xl-3 col-lg-3 col-xs-12 col-rop-selector-accounts">
+						<span class="divider"></span>
 						<div v-for="( account, id ) in active_accounts">
 							<div class="rop-selector-account-container" v-bind:class="{active: selected_account===id}"
 							     @click="setActiveAccount(id)">
-								<div class="columns">
 									<div class="tile tile-centered rop-account">
 										<div class="tile-icon">
 											<div class="icon_box"
@@ -33,8 +33,8 @@
 											<strong class="rop-service-name">{{account.service}}</strong>
 										</div>
 									</div>
-								</div>
 							</div>
+							<span class="divider"></span>
 						</div>
 					</div>
 					<div class="column col-10 col-sm-12  col-md-9  col-xl-9 col-lg-9 col-xs-12" :class="'rop-tab-state-'+is_loading">
@@ -249,3 +249,25 @@
 		}
 	}
 </script>
+
+<style scoped>
+	.icon_box {
+		width: 30px;
+		height: 30px;
+		padding: 5px;
+	}
+	.icon_box.no-image  {
+		padding: 0;
+	}
+	.icon_box.has_image > .fa {
+		width: 15px;
+		height: 15px;
+		padding: 0;
+		line-height: 15px;
+	}
+	.icon_box.no-image > .fa {
+		font-size: 20px;
+		background: transparent;
+		line-height: 30px;
+	}
+</style>

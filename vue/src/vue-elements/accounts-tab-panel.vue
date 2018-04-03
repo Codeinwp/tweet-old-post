@@ -40,16 +40,16 @@
 					</div>
 				</div>
 			</div>
-			<div class="columns">
-				<div class="column col-12">
-					<h4><i class="fa fa-info-circle"></i> Info</h4>
-					<p>Authenticate a new service (eg. Facebook, Twitter etc. ), select the accounts you want to add
-						from that service and <b>activate</b> them. Only the active accounts will be used for
-						sharing.</p>
-				</div>
-			</div>
 			<div class="panel-footer" v-if="accountsCount > 0">
-				
+				<div class="columns">
+					<div class="column col-12">
+						<h6><i class="fa fa-info-circle"></i> Info</h6>
+						<p class="text-gray">Authenticate a new service (eg. Facebook, Twitter etc. ), select the accounts you want to add
+							from that service and <b>activate</b> them. Only the active accounts will be used for
+							sharing.</p>
+					</div>
+				</div>
+
 				<button class="btn btn-secondary" @click="resetAccountData()">
 					<i class="fa fa-ban" v-if="!this.is_loading"></i>
 					<i class="fa fa-spinner fa-spin" v-else></i>

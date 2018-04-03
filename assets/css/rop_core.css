@@ -1635,7 +1635,6 @@ a.active {
     max-width: 100%;
     padding-right: 0.4rem;
     padding-left: 0.4rem;
-
     -webkit-box-flex: 1;
     -webkit-flex: 1;
     -ms-flex: 1;
@@ -1711,7 +1710,6 @@ a.active {
 #rop_core .col-auto {
     width: auto;
     max-width: none;
-
     -webkit-box-flex: 0;
     -webkit-flex: 0 0 auto;
     -ms-flex: 0 0 auto;
@@ -2530,7 +2528,6 @@ a.active {
     border: 0.05rem solid #e7e9ed;
     border-radius: 0.1rem;
     background: #fff;
-
     -webkit-box-direction: normal;
     -webkit-box-orient: vertical;
     -webkit-flex-direction: column;
@@ -2912,7 +2909,6 @@ a.active {
     flex-direction: column;
     border: 0.05rem solid #e7e9ed;
     border-radius: 0.1rem;
-
     -webkit-box-direction: normal;
     -webkit-box-orient: vertical;
     -webkit-flex-direction: column;
@@ -2922,7 +2918,6 @@ a.active {
 #rop_core .panel .panel-header,
 #rop_core .panel .panel-footer {
     padding: 0.8rem;
-
     -webkit-box-flex: 0;
     -webkit-flex: 0 0 auto;
     -ms-flex: 0 0 auto;
@@ -2937,9 +2932,8 @@ a.active {
 }
 
 #rop_core .panel .panel-body {
-    overflow-y: auto;
+    overflow-y: visible;
     padding: 0 0.8rem;
-
     -webkit-box-flex: 1;
     -webkit-flex: 1 1 auto;
     -ms-flex: 1 1 auto;
@@ -4096,9 +4090,6 @@ a.active {
 #rop_core .rop-selector-account-container {
     cursor: pointer;
     opacity: 0.5;
-    border-top: 1px solid #50596c;
-    padding-top: 10px;
-    padding-bottom: 10px;
 }
 
 #rop_core .rop-selector-accounts .rop-account-name {
@@ -4111,12 +4102,13 @@ a.active {
 
 #rop_core .rop-selector-account-container .rop-service-name {
     text-transform: capitalize;
+    font-size: 13px;
 }
 
 #rop_core .rop-selector-account-container p.rop-account-name {
     margin: 0 0 0.1rem;
-    font-style: italic;
     font-size: 14px;
+    line-height: normal;
 }
 
 #rop_core .sign-in-btn > .modal {
