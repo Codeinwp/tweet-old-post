@@ -98,18 +98,21 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $index The base64 uid.
+	 * @param   int    $timestamp The timestamp which we should clear.
 	 * @param   string $account_id The account ID.
 	 *
 	 * @return mixed
 	 */
-	public function remove_from_queue( $index, $post_id, $account_id ) {
-		$to_remove_from_queue = $this->queue[ $account_id ][ $index ];
+	public function remove_from_queue( $timestamp, $account_id ) {
+		$index = $this->scheduler->remove_timestamp( $timestamp, $account_id );
+		$posts = $this->queue[ $account_id ][ $index ];
 		unset( $this->queue[ $account_id ][ $index ] );
 		$this->update_queue( $this->queue );
-		$this->selector->update_buffer( $account_id, $post_id );
+		foreach ( $posts as $post ) {
+			$this->selector->update_buffer( $account_id, $post );
+		}
 
-		return $to_remove_from_queue;
+		return true;
 	}
 
 	/**

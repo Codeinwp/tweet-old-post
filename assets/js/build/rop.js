@@ -36014,6 +36014,11 @@ module.exports = {
 			return this.$store.state.cron_status.logs_number;
 		}
 	},
+	watch: {
+		logs_no: function logs_no() {
+			this.getLogs();
+		}
+	},
 	methods: {
 		getLogs: function getLogs(force) {
 			var _this = this;

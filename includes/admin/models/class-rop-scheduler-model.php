@@ -513,6 +513,25 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	}
 
 	/**
+	 * Remove timestamp from timeline.
+	 *
+	 * @param int    $timestamp Timestamp value.
+	 * @param string $account_id Account id.
+	 *
+	 * @return int Index to remove.
+	 */
+	public function remove_timestamp( $timestamp, $account_id ) {
+
+		$schedule     = $this->get_upcoming_events( $account_id );
+		$key          = array_search( $timestamp, $schedule );
+		$new_schedule = array_diff( $schedule, array( $timestamp ) );
+		$new_schedule = array_values( $new_schedule );
+		$this->update_timeline( $new_schedule );
+
+		return $key;
+	}
+
+	/**
 	 * Method to remove a schedule from DB.
 	 *
 	 * @since   8.0.0

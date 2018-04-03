@@ -333,7 +333,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			}
 		}
 
-		$message = $post_details['post_content'];
+		$message = $post_details['content'];
 
 		$link = $this->get_url( $post_details );
 

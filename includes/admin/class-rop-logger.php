@@ -81,7 +81,7 @@ class Rop_Logger {
 	 * @param   array  $context [optional] A context for the message, if needed.
 	 */
 	public function alert_error( $message = '', $context = array() ) {
-		$context_new = array_merge( $context, array( 'type' => 'error' ) );
+		$context_new = array_merge( array( 'type' => 'error' ), $context );
 		$this->logger->alert( $message, $context_new );
 	}
 
@@ -95,7 +95,7 @@ class Rop_Logger {
 	 * @param   array  $context [optional] A context for the message, if needed.
 	 */
 	public function alert_success( $message = '', $context = array() ) {
-		$context_new = array_merge( $context, array( 'type' => 'success' ) );
+		$context_new = array_merge( array( 'type' => 'success' ), $context );
 		$this->logger->alert( $message, $context_new );
 	}
 

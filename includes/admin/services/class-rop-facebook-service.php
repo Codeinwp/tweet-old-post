@@ -479,11 +479,11 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 			return true;
 		} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
-			$this->logger->alert_error( 'Unable to share post for facebook. ', $e->getMessage() );
+			$this->logger->alert_error( 'Unable to share post for facebook.  Error: ' . $e->getMessage() );
 
 			return false;
 		} catch ( Facebook\Exceptions\FacebookSDKException $e ) {
-			$this->logger->alert_error( 'Unable to share post for facebook. ', $e->getMessage() );
+			$this->logger->alert_error( 'Unable to share post for facebook.  Error: ' . $e->getMessage() );
 
 			return false;
 		}
