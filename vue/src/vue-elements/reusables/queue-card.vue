@@ -93,7 +93,10 @@
 					<figure class="figure" v-if="content.post_image !== ''">
 						<img :src="content.post_image" class="img-fit-cover">
 					</figure>
-					<summary class="rop-image-placeholder" v-else>
+
+				</div>
+				<div class="rop-image-placeholder" v-else>
+					<summary>
 						<i class="fa fa-file-image-o"></i>
 						No Image
 					</summary>
@@ -241,6 +244,7 @@
 			removeImage: function () {
 			    let self = this;
                 self.content.post_image = null;
+                self.post_edit.image = null;
 			},
 			iconClass: function (accountId) {
 				let serviceIcon = 'fa-user'
@@ -272,9 +276,7 @@
 .fa {
 	background: transparent;
 }
-#rop_core .figure {
-	margin: 0;
-}
+
 	@media (max-width: 600px) {
 		#rop_core .vertical-align {
 			margin: 10px auto 0;

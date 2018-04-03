@@ -14,7 +14,7 @@
 			<div class="container" v-if="accountsCount > 0">
 				
 				<div class="columns">
-					<div class="column col-2 col-sm-12 col-md-3 col-xl-3 col-lg-3 col-xs-12 col-rop-selector-accounts">
+					<div class="column col-2 col-sm-12 col-md-12 col-xl-3 col-lg-12 col-xs-12 col-rop-selector-accounts">
 						<span class="divider"></span>
 						<div v-for="( account, id ) in active_accounts">
 							<div class="rop-selector-account-container" v-bind:class="{active: selected_account===id}"
@@ -37,7 +37,7 @@
 							<span class="divider"></span>
 						</div>
 					</div>
-					<div class="column col-10 col-sm-12  col-md-9  col-xl-9 col-lg-9 col-xs-12" :class="'rop-tab-state-'+is_loading">
+					<div class="column col-10 col-sm-12  col-md-12  col-xl-9 col-lg-12 col-xs-12" :class="'rop-tab-state-'+is_loading">
 						<component :is="type" :account_id="selected_account" :license="license"></component>
 					</div>
 				</div>

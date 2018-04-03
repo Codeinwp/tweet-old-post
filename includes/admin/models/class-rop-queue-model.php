@@ -69,6 +69,30 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	}
 
 	/**
+	 * Update a queue object with custom data, passed by the user.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 *
+	 * @param   string $account_id The account ID.
+	 * @param   int    $post_id The post ID referenced.
+	 * @param   array  $custom_data The custom data.
+	 *
+	 * @return bool
+	 */
+	public function update_queue_object( $account_id, $post_id, $custom_data ) {
+		$key             = '_rop_edit_' . md5( $account_id );
+		$custom_data_old = get_post_meta( $post_id, $key, true );
+		if ( ! is_array( $custom_data_old ) ) {
+			$custom_data_old = array();
+		}
+		$custom_data = wp_parse_args( $custom_data, $custom_data_old );
+		update_post_meta( $post_id, $key, $custom_data );
+
+		return true;
+	}
+
+	/**
 	 * Utility method to remove from queue.
 	 *
 	 * @since   8.0.0
@@ -81,9 +105,9 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 */
 	public function remove_from_queue( $index, $post_id, $account_id ) {
 		$to_remove_from_queue = $this->queue[ $account_id ][ $index ];
-		$this->selector->update_buffer( $account_id, $post_id );
 		unset( $this->queue[ $account_id ][ $index ] );
 		$this->update_queue( $this->queue );
+		$this->selector->update_buffer( $account_id, $post_id );
 
 		return $to_remove_from_queue;
 	}
@@ -132,8 +156,10 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 			return false;
 		}
 		$this->selector->mark_as_blocked( $account_id, $post_id );
-		$queue[ $account_id ] = array_diff( $queue[ $account_id ], array( $post_id ) );
-		$queue[ $account_id ] = array_values( $queue[ $account_id ] );
+		foreach ( $queue[ $account_id ] as $key => $posts ) {
+			$queue[ $account_id ][ $key ] = array_diff( $posts, array( $post_id ) );
+			$queue[ $account_id ][ $key ] = array_values( $queue[ $account_id ][ $key ] );
+		}
 		$this->update_queue( $queue );
 
 		return true;
@@ -149,57 +175,64 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @return array
 	 */
 	public function get_queue() {
-		$settings        = new Rop_Settings_Model();
-		$no_of_posts     = $settings->get_number_of_posts();
+		$settings    = new Rop_Settings_Model();
+		$no_of_posts = $settings->get_number_of_posts();
+
 		$upcoming_events = $this->scheduler->get_all_upcoming_events();
 		$current_queue   = $this->queue;
 		if ( empty( $upcoming_events ) ) {
 			return array();
 		}
+		$normalized_queue = array();
+
 		foreach ( $upcoming_events as $account_id => $events ) {
-			$account_queue = isset( $current_queue[ $account_id ] ) ? $current_queue[ $account_id ] : array();
-
-			$queue_max_size     = count( $events ) * $no_of_posts;
-			$current_queue_size = count( $account_queue );
-			/**
-			 * Bail if we have queue already filled for this account.
-			 */
-			if ( $current_queue_size === $queue_max_size ) {
-				continue;
-			}
-			/**
-			 * If we have more posts in queue than necessary, slice them.
-			 * This might happen when user changes the no of posts shared.
-			 */
-			if ( $current_queue_size > $queue_max_size ) {
-				$current_queue[ $account_id ] = array_slice( $account_queue, 0, $queue_max_size );
-				continue;
-			}
-			$post_pool = $this->selector->select( $account_id );
+			$account_queue                   = isset( $current_queue[ $account_id ] ) ? $current_queue[ $account_id ] : array();
+			$normalized_queue[ $account_id ] = array();
+			$post_pool                       = $this->selector->select( $account_id );
 			if ( empty( $post_pool ) ) {
-				// TODO error no posts to share for this account.
 				continue;
 			}
-			$items_needed = $queue_max_size - $current_queue_size;
-			$i            = 0;
-
-			while ( $i <= $items_needed ) {
-				if ( empty( $post_pool ) ) {
-					break;
+			foreach ( $events as $index => $event ) {
+				$event_queue = isset( $account_queue[ $index ] ) ? $account_queue[ $index ] : array();
+				/**
+				 * Bail if we have queue already filled for this account.
+				 */
+				if ( count( $event_queue ) === $no_of_posts ) {
+					$normalized_queue[ $account_id ][ $index ] = $event_queue;
+					continue;
 				}
-				$rand_key        = rand( 0, count( $post_pool ) - 1 );
-				$post_id         = $post_pool[ $rand_key ];
-				$account_queue[] = $post_id;
-				$i ++;
-				unset( $post_pool[ $rand_key ] );
-				$post_pool = array_values( $post_pool );
-			}
-			$current_queue[ $account_id ] = array_values( $account_queue );
-		}
-		$this->set( $this->queue_namespace, $current_queue );
-		$this->queue = $current_queue;
+				/**
+				 * If we have more posts in queue than necessary, slice them.
+				 * This might happen when user changes the no of posts shared.
+				 */
+				if ( count( $event_queue ) > $no_of_posts ) {
+					$normalized_queue[ $account_id ][ $index ] = array_slice( $event_queue, 0, $no_of_posts );
+					continue;
+				}
+				if ( empty( $post_pool ) ) {
+					continue;
+				}
 
-		return $current_queue;
+				$items_needed = $no_of_posts - count( $event_queue );
+				$i            = 0;
+				while ( $i < $items_needed ) {
+					if ( empty( $post_pool ) ) {
+						break;
+					}
+					$rand_key      = rand( 0, count( $post_pool ) - 1 );
+					$post_id       = $post_pool[ $rand_key ];
+					$event_queue[] = $post_id;
+					$i ++;
+					unset( $post_pool[ $rand_key ] );
+					$post_pool = array_values( $post_pool );
+				}
+				$normalized_queue[ $account_id ][ $index ] = $event_queue;
+			}
+		}
+		$this->set( $this->queue_namespace, $normalized_queue );
+		$this->queue = $normalized_queue;
+
+		return $normalized_queue;
 	}
 
 	/**
@@ -220,21 +253,23 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 		$queue   = $this->build_queue();
 		$ordered = array();
 		foreach ( $queue as $account_id => $data ) {
-			foreach ( $data as $index => $post ) {
-				if ( empty( $post ) ) {
+			foreach ( $data as $index => $events_posts ) {
+				if ( ! isset( $events_posts['posts'] ) ) {
 					continue;
 				}
-				$ordered[] = array(
-					'time'      => $post['time'],
-					'post_data' => array(
-						'time'       => $post['time'],
-						'account_id' => $account_id,
-						'date'       => Rop_Scheduler_Model::get_date( $post['time'] ),
-						'post_id'    => $post['id'],
-						'content'    => $this->prepare_post_object( $post['id'], $account_id ),
-					),
-					'post_id'   => $post['id'],
-				);
+				foreach ( $events_posts['posts'] as $post_id ) {
+					$ordered[] = array(
+						'time'      => $events_posts['time'],
+						'post_data' => array(
+							'time'       => $events_posts['time'],
+							'account_id' => $account_id,
+							'date'       => Rop_Scheduler_Model::get_date( $events_posts['time'] ),
+							'post_id'    => $post_id,
+							'content'    => $this->prepare_post_object( $post_id, $account_id ),
+						),
+						'post_id'   => $post_id,
+					);
+				}
 			}
 		}
 		usort(
@@ -256,25 +291,19 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 */
 	public function build_queue() {
 		$queue            = $this->get_queue();
-		$settings         = new Rop_Settings_Model();
-		$no_of_posts      = $settings->get_number_of_posts();
 		$upcoming_events  = $this->scheduler->get_all_upcoming_events();
 		$normalized_queue = array();
 		foreach ( $upcoming_events as $account_id => $events ) {
 			$account_queue                   = $queue[ $account_id ];
 			$normalized_queue[ $account_id ] = array();
 			foreach ( $events as $index => $event ) {
-				for ( $i = 0; $i < $no_of_posts; $i ++ ) {
-					$post_index = $i + $index;
-					if ( ! isset( $account_queue[ $post_index ] ) ) {
-						continue;
-					}
-					$normalized_queue[ $account_id ][] = array(
-						'time' => $event,
-						'id'   => $account_queue[ $post_index ],
-					);
+				if ( empty( $account_queue[ $index ] ) ) {
+					continue;
 				}
-
+				$normalized_queue[ $account_id ][ $index ] = array(
+					'time'  => $event,
+					'posts' => $account_queue[ $index ],
+				);
 			}
 		}
 
@@ -338,8 +367,10 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 			return false;
 		}
 		$this->selector->update_buffer( $account_id, $post_id );
-		$queue[ $account_id ] = array_diff( $queue[ $account_id ], array( $post_id ) );
-		$queue[ $account_id ] = array_values( $queue[ $account_id ] );
+		foreach ( $queue[ $account_id ] as $key => $posts ) {
+			$queue[ $account_id ][ $key ] = array_diff( $posts, array( $post_id ) );
+			$queue[ $account_id ][ $key ] = array_values( $queue[ $account_id ][ $key ] );
+		}
 		$this->update_queue( $queue );
 
 		return true;
