@@ -49,8 +49,8 @@ class Rop_Logger {
 	 */
 	public function __construct() {
 
-		$this->stream = new Rop_Log_Handler( 'rop_logs', Logger::ALERT );
-		$formatter    = new LineFormatter( '%message% %extra%' . PHP_EOL, 'd-m-Y H:i:s', false, true );
+		$this->stream = new Rop_Log_Handler( 'rop_logs', Logger::DEBUG );
+		$formatter    = new LineFormatter( '%message% %context.extra%' . PHP_EOL, 'd-m-Y H:i:s', false, true );
 		$this->stream->setFormatter( $formatter );
 		$this->logger = new Logger( 'rop_logs' );
 		//	$this->stream->clear_logs();
@@ -68,7 +68,8 @@ class Rop_Logger {
 	 * @param   array  $context [optional] A context for the message, if needed.
 	 */
 	public function info( $message = '', $context = array() ) {
-		$this->logger->info( $message );
+		print_r( $context );
+		$this->logger->info( $message, $context );
 	}
 
 	/**

@@ -366,12 +366,12 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		}
 
 		$new_post['comment']                  = $post_details['content'];
+		$new_post['content']['description']   = $post_details['content'];
 		$new_post['content']['submitted-url'] = $this->get_url( $post_details );
 
 		$new_post['visibility']['code'] = 'anyone';
 
 		try {
-			$api->post( 'people/~/shares?format=json', $new_post );
 			$this->logger->alert_success( sprintf( 'Successfully shared %s to %s on %s ',
 				get_the_title( $post_details['post_id'] ),
 				$args['user'],

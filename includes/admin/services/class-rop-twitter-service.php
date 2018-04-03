@@ -326,8 +326,8 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		$this->set_api( $this->credentials['oauth_token'], $this->credentials['oauth_token_secret'] );
 		$api      = $this->get_api();
 		$new_post = array();
-		if ( isset( $post_details['post_image'] ) && ! empty( $post_details['post_image'] ) ) {
-			$media_response = $api->upload( 'media/upload', array( 'media' => $post_details['post']['post_img'] ) );
+		if ( ! empty( $post_details['post_image'] ) ) {
+			$media_response = $api->upload( 'media/upload', array( 'media' => $post_details['post_image'] ) );
 			if ( $media_response->media_id_string ) {
 				$new_post['media_ids'] = $media_response->media_id_string;
 			}
@@ -348,6 +348,8 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			) );
 
 			return true;
+		} else {
+			$this->logger->alert_error( sprintf( 'Error posting on twitter. ' ) );
 		}
 
 		return false;

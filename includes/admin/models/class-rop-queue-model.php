@@ -16,6 +16,14 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 
 
 	/**
+	 * Holds the logger
+	 *
+	 * @since   8.0.0
+	 * @access  protected
+	 * @var     Rop_Logger $logger The logger handler.
+	 */
+	protected $logger;
+	/**
 	 * Holds the queue namespace.
 	 *
 	 * @since   8.0.0
@@ -23,7 +31,6 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @var     string $queue The queue option key.
 	 */
 	private $queue_namespace = 'queue';
-
 	/**
 	 * Holds the active queue.
 	 *
@@ -32,7 +39,6 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @var     array $queue The active queue array.
 	 */
 	private $queue;
-
 	/**
 	 * An instance of the Posts Selector.
 	 *
@@ -61,6 +67,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 		parent::__construct( 'rop_queue' );
 
 		$this->selector  = new Rop_Posts_Selector_Model();
+		$this->logger    = new Rop_Logger();
 		$this->scheduler = new Rop_Scheduler_Model();
 		$this->queue     = $this->get( $this->queue_namespace );
 		if ( ! is_array( $this->queue ) ) {
@@ -193,6 +200,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 			$normalized_queue[ $account_id ] = array();
 			$post_pool                       = $this->selector->select( $account_id );
 			if ( empty( $post_pool ) ) {
+				$this->logger->error( 'No posts available to share for this account. Try to activate Share more than once setting or change the time interval to extends the selection. ' );
 				continue;
 			}
 			foreach ( $events as $index => $event ) {

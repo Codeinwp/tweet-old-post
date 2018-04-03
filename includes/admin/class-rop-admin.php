@@ -181,6 +181,7 @@ class Rop_Admin {
 							$service = $service_factory->build( $account_data['service'] );
 							$service->set_credentials( $account_data['credentials'] );
 							$post_data = $queue->prepare_post_object( $post, $account );
+							$logger->info( 'Posting', array( 'extra' => $post_data ) );
 							$service->share( $post_data, $account_data );
 						} catch ( Exception $exception ) {
 							$error_message = sprintf( esc_html__( 'The %1$s service can not be used or was not found', 'tweet-old-post' ), $account_data['service'] );

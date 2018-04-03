@@ -429,8 +429,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		$new_post = array();
 
 		if ( ! empty( $post_details['post_image'] ) ) {
-			$new_post['picture'] = $post_details['post_img'];
-			$new_post['link']    = $post_details['post_img'];
+			$new_post['picture'] = $post_details['post_image'];
 		}
 
 		$new_post['message'] = $post_details['content'];
@@ -438,6 +437,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		if ( ! empty( $post_details['post_url'] ) ) {
 			$link                = ' ' . $this->get_url( $post_details );
 			$new_post['message'] = $new_post['message'] . $link;
+			$new_post['link']    = $link;
 		}
 
 		if ( ! isset( $args['id'] ) || ! isset( $args['access_token'] ) ) {
@@ -475,6 +475,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		$api = $this->get_api();
 
 		try {
+			print_r( $new_post );
 			$api->post( '/' . $page_id . '/feed', $new_post, $token );
 
 			return true;

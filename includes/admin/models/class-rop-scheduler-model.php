@@ -18,6 +18,14 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 */
 	const EVENTS_PER_ACCOUNT = 10;
 	/**
+	 * Holds the logger
+	 *
+	 * @since   8.0.0
+	 * @access  protected
+	 * @var     Rop_Logger $logger The logger handler.
+	 */
+	protected $logger;
+	/**
 	 * Stores the current schedules per account.
 	 *
 	 * @since   8.0.0
@@ -31,7 +39,6 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @var string Events option key.
 	 */
 	private $events_namespace = 'rop_events_timeline';
-
 	/**
 	 * Get the start time.
 	 *
@@ -60,6 +67,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		parent::__construct( 'rop_schedules_data' );
 
 		$global_settings = new Rop_Global_Settings();
+		$this->logger    = new Rop_Logger();
 
 		$this->schedule_defaults = $global_settings->get_default_schedule();
 		$this->start_time        = $global_settings->get_start_time();
@@ -324,13 +332,16 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 			$week_days = $schedule['interval_f']['week_days'];
 			/**
 			 * If we  don't have any weekdays/times set, bail.
-			 * TODO Log the error.
 			 */
 			if ( count( $week_days ) === 0 ) {
+				$this->logger->alert_error( 'No week days selected in custom schedule for this account' );
+
 				return array();
 			}
 			$times = $schedule['interval_f']['time'];
 			if ( count( $times ) === 0 ) {
+				$this->logger->alert_error( 'No times selected in custom schedule for this account' );
+
 				return array();
 			}
 
