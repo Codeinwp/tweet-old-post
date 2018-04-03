@@ -35588,6 +35588,7 @@ module.exports = {
 				this.$log.warn('Request in progress...Bail');
 				return;
 			}
+			this.$store.state.queue = [];
 			this.is_loading = true;
 			this.$store.dispatch('fetchAJAXPromise', { req: 'get_queue', data: { force: force } }).then(function (response) {
 				_this.is_loading = false;
@@ -35699,7 +35700,7 @@ if (false) {(function () {  module.hot.accept()
 // 				<p class="text-gray text-left "><i class="fa fa-clock-o"></i> {{card_data.date}} <b><i
 // 						class="fa fa-at"></i></b> <i class="service fa"
 // 				                                     :class="iconClass( card_data.account_id )"></i>
-// 					{{active_accounts[card_data.account_id].user}}</p>
+// 					{{getAccountName(card_data.account_id)}}</p>
 // 			</div>
 // 			<div class="column col-6 text-right">
 // 				<button class="btn btn-sm btn-primary" @click="toggleEditState" v-if="edit === false"
@@ -35724,13 +35725,15 @@ if (false) {(function () {  module.hot.accept()
 //
 // 			</div>
 // 			<div class="column col-3 text-right">
-// 				<figure class="figure" v-if="content.post_image !== ''">
-// 					<img :src="content.post_image" class="img-fit-cover" style="max-height:50px">
-// 				</figure>
-// 				<summary v-else>
-// 					<i class="fa fa-file-image-o"></i>
-// 					No Image
-// 				</summary>
+// 				<div class="rop-image-placeholder" v-if="content.post_with_image">
+// 					<figure class="figure" v-if="content.post_image !== ''">
+// 						<img :src="content.post_image" class="img-fit-cover" style="max-height:50px">
+// 					</figure>
+// 					<summary v-else>
+// 						<i class="fa fa-file-image-o"></i>
+// 						No Image
+// 					</summary>
+// 				</div>
 // 				<p>
 // 					<b>Link:</b>
 // 					<a :href="content.post_url" target="_blank" class="tooltip"
@@ -35742,13 +35745,15 @@ if (false) {(function () {  module.hot.accept()
 // 		</div>
 // 		<div class="card-body  columns" v-if="edit">
 // 			<div class="form-group column col-12">
-// 				<label class="form-label" for="image">Image</label>
-// 				<div class="input-group">
-// 					<span class="input-group-addon"><i class="fa fa-file-image-o"></i></span>
-// 					<input id="image" type="text" class="form-input" :value="content.post_image" readonly>
-// 					<button class="btn btn-primary input-group-btn" @click="uploadImage">
-// 						<i class="fa fa-upload" aria-hidden="true"></i>
-// 					</button>
+// 				<div class="rop-image-queue-input" v-if="content.post_with_image">
+// 					<label class="form-label" for="image">Image</label>
+// 					<div class="input-group">
+// 						<span class="input-group-addon"><i class="fa fa-file-image-o"></i></span>
+// 						<input id="image" type="text" class="form-input" :value="content.post_image" readonly>
+// 						<button class="btn btn-primary input-group-btn" @click="uploadImage">
+// 							<i class="fa fa-upload" aria-hidden="true"></i>
+// 						</button>
+// 					</div>
 // 				</div>
 // 				<label class="form-label" for="content">Content</label>
 // 				<textarea class="form-input" id="content" placeholder="Textarea" rows="3" @keyup="checkCount">{{content.content}}</textarea>
@@ -35854,6 +35859,12 @@ module.exports = {
 		toggleEditState: function toggleEditState() {
 			this.edit = !this.edit;
 		},
+		getAccountName: function getAccountName(key) {
+			if (typeof this.active_accounts[key] === 'undefined') {
+				return '';
+			}
+			return this.active_accounts[key].user;
+		},
 		checkCount: function checkCount(evt) {
 			this.post_edit.text = '';
 			if (this.post_edit.text !== evt.srcElement.value) {
@@ -35940,7 +35951,7 @@ module.exports = {
 /* 249 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"card col-12 rop-queue-post\" style=\"max-width: 100%; min-height: 100px;\">\n\t\t<div class=\"card-top-header columns\">\n\t\t\t<div class=\"column col-6\">\n\t\t\t\t<p class=\"text-gray text-left \"><i class=\"fa fa-clock-o\"></i> {{card_data.date}} <b><i\n\t\t\t\t\t\tclass=\"fa fa-at\"></i></b> <i class=\"service fa\"\n\t\t\t\t                                     :class=\"iconClass( card_data.account_id )\"></i>\n\t\t\t\t\t{{active_accounts[card_data.account_id].user}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 text-right\">\n\t\t\t\t<button class=\"btn btn-sm btn-primary\" @click=\"toggleEditState\" v-if=\"edit === false\"\n\t\t\t\t        :disabled=\" ! enabled\">\n\t\t\t\t\t<i class=\"fa fa-pencil\" aria-hidden=\"true\"></i> Edit\n\t\t\t\t</button>\n\t\t\t\t<button class=\"btn btn-sm btn-success\" @click=\"saveChanges(card_data.account_id, card_data.post_id)\"\n\t\t\t\t        v-if=\"edit\" :disabled=\" ! enabled\">\n\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'edit'\"></i>\n\t\t\t\t\t<i class=\"fa fa-check\" aria-hidden=\"true\" v-else></i>\n\t\t\t\t\tSave\n\t\t\t\t</button>\n\t\t\t\t<button class=\"btn btn-sm btn-warning\" @click=\"cancelChanges\" v-if=\"edit\" :disabled=\" ! enabled\">\n\t\t\t\t\t<i class=\"fa fa-times\" aria-hidden=\"true\"></i>\n\t\t\t\t\tCancel\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"card-body columns\" v-if=\"! edit \">\n\t\t\t<div class=\"column col-9\">\n\t\t\t\t<p v-html=\"hashtags( content.content )\"></p>\n\t\t\t\n\t\t\t</div>\n\t\t\t<div class=\"column col-3 text-right\">\n\t\t\t\t<figure class=\"figure\" v-if=\"content.post_image !== ''\">\n\t\t\t\t\t<img :src=\"content.post_image\" class=\"img-fit-cover\" style=\"max-height:50px\">\n\t\t\t\t</figure>\n\t\t\t\t<summary v-else>\n\t\t\t\t\t<i class=\"fa fa-file-image-o\"></i>\n\t\t\t\t\tNo Image\n\t\t\t\t</summary>\n\t\t\t\t<p>\n\t\t\t\t\t<b>Link:</b>\n\t\t\t\t\t<a :href=\"content.post_url\" target=\"_blank\" class=\"tooltip\"\n\t\t\t\t\t   :data-tooltip=\"'Link shortned using ' + content.short_url_service +' service'\">\n\t\t\t\t\t\t{{'{' + content.short_url_service + '}'}}</a>\n\t\t\t\t</p>\n\t\t\t</div>\n\t\t\n\t\t</div>\n\t\t<div class=\"card-body  columns\" v-if=\"edit\">\n\t\t\t<div class=\"form-group column col-12\">\n\t\t\t\t<label class=\"form-label\" for=\"image\">Image</label>\n\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t<span class=\"input-group-addon\"><i class=\"fa fa-file-image-o\"></i></span>\n\t\t\t\t\t<input id=\"image\" type=\"text\" class=\"form-input\" :value=\"content.post_image\" readonly>\n\t\t\t\t\t<button class=\"btn btn-primary input-group-btn\" @click=\"uploadImage\">\n\t\t\t\t\t\t<i class=\"fa fa-upload\" aria-hidden=\"true\"></i>\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t\t<label class=\"form-label\" for=\"content\">Content</label>\n\t\t\t\t<textarea class=\"form-input\" id=\"content\" placeholder=\"Textarea\" rows=\"3\" @keyup=\"checkCount\">{{content.content}}</textarea>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"card-top-footer columns\" v-if=\"edit === false\">\n\t\t\t<button class=\"btn btn-sm btn-warning tooltip tooltip-right\"\n\t\t\t        @click=\"skipPost(card_data.account_id, card_data.post_id)\"\n\t\t\t        data-tooltip=\"Reschedule this post.\"\n\t\t\t        :disabled=\" ! enabled\">\n\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'skip'\"></i>\n\t\t\t\t<i class=\"fa fa-step-forward\" v-else aria-hidden=\"true\"></i>\n\t\t\t\tSkip\n\t\t\t</button>\n\t\t\t<button class=\"btn btn-sm btn-danger tooltip  tooltip-right\"\n\t\t\t        data-tooltip=\"Ban this post from sharing in the future.\"\n\t\t\t        @click=\"blockPost(card_data.account_id, card_data.post_id)\" :disabled=\" ! enabled\">\n\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'block'\"></i>\n\t\t\t\t<i class=\"fa fa-ban\" aria-hidden=\"true\" v-else></i>\n\t\t\t\tBlock\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"card col-12 rop-queue-post\" style=\"max-width: 100%; min-height: 100px;\">\n\t\t<div class=\"card-top-header columns\">\n\t\t\t<div class=\"column col-6\">\n\t\t\t\t<p class=\"text-gray text-left \"><i class=\"fa fa-clock-o\"></i> {{card_data.date}} <b><i\n\t\t\t\t\t\tclass=\"fa fa-at\"></i></b> <i class=\"service fa\"\n\t\t\t\t                                     :class=\"iconClass( card_data.account_id )\"></i>\n\t\t\t\t\t{{getAccountName(card_data.account_id)}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 text-right\">\n\t\t\t\t<button class=\"btn btn-sm btn-primary\" @click=\"toggleEditState\" v-if=\"edit === false\"\n\t\t\t\t        :disabled=\" ! enabled\">\n\t\t\t\t\t<i class=\"fa fa-pencil\" aria-hidden=\"true\"></i> Edit\n\t\t\t\t</button>\n\t\t\t\t<button class=\"btn btn-sm btn-success\" @click=\"saveChanges(card_data.account_id, card_data.post_id)\"\n\t\t\t\t        v-if=\"edit\" :disabled=\" ! enabled\">\n\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'edit'\"></i>\n\t\t\t\t\t<i class=\"fa fa-check\" aria-hidden=\"true\" v-else></i>\n\t\t\t\t\tSave\n\t\t\t\t</button>\n\t\t\t\t<button class=\"btn btn-sm btn-warning\" @click=\"cancelChanges\" v-if=\"edit\" :disabled=\" ! enabled\">\n\t\t\t\t\t<i class=\"fa fa-times\" aria-hidden=\"true\"></i>\n\t\t\t\t\tCancel\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"card-body columns\" v-if=\"! edit \">\n\t\t\t<div class=\"column col-9\">\n\t\t\t\t<p v-html=\"hashtags( content.content )\"></p>\n\t\t\t\n\t\t\t</div>\n\t\t\t<div class=\"column col-3 text-right\">\n\t\t\t\t<div class=\"rop-image-placeholder\" v-if=\"content.post_with_image\">\n\t\t\t\t\t<figure class=\"figure\" v-if=\"content.post_image !== ''\">\n\t\t\t\t\t\t<img :src=\"content.post_image\" class=\"img-fit-cover\" style=\"max-height:50px\">\n\t\t\t\t\t</figure>\n\t\t\t\t\t<summary v-else>\n\t\t\t\t\t\t<i class=\"fa fa-file-image-o\"></i>\n\t\t\t\t\t\tNo Image\n\t\t\t\t\t</summary>\n\t\t\t\t</div>\n\t\t\t\t<p>\n\t\t\t\t\t<b>Link:</b>\n\t\t\t\t\t<a :href=\"content.post_url\" target=\"_blank\" class=\"tooltip\"\n\t\t\t\t\t   :data-tooltip=\"'Link shortned using ' + content.short_url_service +' service'\">\n\t\t\t\t\t\t{{'{' + content.short_url_service + '}'}}</a>\n\t\t\t\t</p>\n\t\t\t</div>\n\t\t\n\t\t</div>\n\t\t<div class=\"card-body  columns\" v-if=\"edit\">\n\t\t\t<div class=\"form-group column col-12\">\n\t\t\t\t<div class=\"rop-image-queue-input\" v-if=\"content.post_with_image\">\n\t\t\t\t\t<label class=\"form-label\" for=\"image\">Image</label>\n\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t<span class=\"input-group-addon\"><i class=\"fa fa-file-image-o\"></i></span>\n\t\t\t\t\t\t<input id=\"image\" type=\"text\" class=\"form-input\" :value=\"content.post_image\" readonly>\n\t\t\t\t\t\t<button class=\"btn btn-primary input-group-btn\" @click=\"uploadImage\">\n\t\t\t\t\t\t\t<i class=\"fa fa-upload\" aria-hidden=\"true\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<label class=\"form-label\" for=\"content\">Content</label>\n\t\t\t\t<textarea class=\"form-input\" id=\"content\" placeholder=\"Textarea\" rows=\"3\" @keyup=\"checkCount\">{{content.content}}</textarea>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"card-top-footer columns\" v-if=\"edit === false\">\n\t\t\t<button class=\"btn btn-sm btn-warning tooltip tooltip-right\"\n\t\t\t        @click=\"skipPost(card_data.account_id, card_data.post_id)\"\n\t\t\t        data-tooltip=\"Reschedule this post.\"\n\t\t\t        :disabled=\" ! enabled\">\n\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'skip'\"></i>\n\t\t\t\t<i class=\"fa fa-step-forward\" v-else aria-hidden=\"true\"></i>\n\t\t\t\tSkip\n\t\t\t</button>\n\t\t\t<button class=\"btn btn-sm btn-danger tooltip  tooltip-right\"\n\t\t\t        data-tooltip=\"Ban this post from sharing in the future.\"\n\t\t\t        @click=\"blockPost(card_data.account_id, card_data.post_id)\" :disabled=\" ! enabled\">\n\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'block'\"></i>\n\t\t\t\t<i class=\"fa fa-ban\" aria-hidden=\"true\" v-else></i>\n\t\t\t\tBlock\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 250 */
@@ -36246,6 +36257,10 @@ if (false) {(function () {  module.hot.accept()
 "use strict";
 
 
+var _keys = __webpack_require__(3);
+
+var _keys2 = _interopRequireDefault(_keys);
+
 var _trunc = __webpack_require__(261);
 
 var _trunc2 = _interopRequireDefault(_trunc);
@@ -36259,7 +36274,7 @@ __webpack_require__(266);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // <template>
-// 	<div class="toast toast-success rop-current-time" v-if="isOn">
+// 	<div class="toast toast-success rop-current-time" v-if="isOn && accounts_no > 0">
 // 		<span v-if="diff_seconds>0"> <b><i class="fa fa-fast-forward"></i> Next share</b> in</span>
 // 		<small v-if="timediff !== ''">{{timediff}}</small>
 // 	</div>
@@ -36285,6 +36300,9 @@ module.exports = {
 		},
 		isOn: function isOn() {
 			return this.$store.state.cron_status.current_status;
+		},
+		accounts_no: function accounts_no() {
+			return (0, _keys2.default)(this.$store.state.activeAccounts).length;
 		}
 	},
 	watch: {
@@ -38322,7 +38340,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 /* 267 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"toast toast-success rop-current-time\" v-if=\"isOn\">\n\t\t<span v-if=\"diff_seconds>0\"> <b><i class=\"fa fa-fast-forward\"></i> Next share</b> in</span>\n\t\t<small v-if=\"timediff !== ''\">{{timediff}}</small>\n\t</div>\n";
+module.exports = "\n\t<div class=\"toast toast-success rop-current-time\" v-if=\"isOn && accounts_no > 0\">\n\t\t<span v-if=\"diff_seconds>0\"> <b><i class=\"fa fa-fast-forward\"></i> Next share</b> in</span>\n\t\t<small v-if=\"timediff !== ''\">{{timediff}}</small>\n\t</div>\n";
 
 /***/ }),
 /* 268 */

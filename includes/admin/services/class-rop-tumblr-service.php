@@ -332,7 +332,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		$requestHandler = $api->getRequestHandler();
 		$requestHandler->setBaseUrl( 'https://www.tumblr.com/' );
 
-		$resp = $requestHandler->request(
+		$resp   = $requestHandler->request(
 			'POST', 'oauth/request_token', array(
 				'oauth_callback' => $this->get_endpoint_url( 'authorize' ),
 			)
@@ -367,29 +367,22 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			'description' => '',
 		);
 
-		// var_dump( $api->getBlogInfo( $args['id'] ) ); die();
-		$new_post['thumbnail'] = 'http://www.gettyimages.ca/gi-resources/images/Homepage/Hero/UK/CMS_Creative_164657191_Kingfisher.jpg';
-		if ( isset( $post_details['post']['post_img'] ) && $post_details['post']['post_img'] !== '' && $post_details['post']['post_img'] !== false ) {
-			$new_post['thumbnail'] = $post_details['post']['post_img'];
-			// $new_post['thumbnail'] = 'http://www.gettyimages.ca/gi-resources/images/Homepage/Hero/UK/CMS_Creative_164657191_Kingfisher.jpg';
+		if ( ! empty( $post_details['post_image'] ) ) {
+			$new_post['thumbnail'] = $post_details['post_image'];
 		}
 
-		$new_post['description'] = $post_details['post']['post_content'];
-		if ( $post_details['post']['custom_content'] !== '' ) {
-			$new_post['description'] = $post_details['post']['custom_content'];
-		}
+		$new_post['description'] = $post_details['content'];
+		$new_post['url']         = ' ' . $this->get_url( $post_details );
 
-		if ( isset( $post_details['post']['post_url'] ) && $post_details['post']['post_url'] != '' ) {
-			$new_post['url'] = ' ' . $this->get_url( $post_details );
-		}
-
-		// print_r( $new_post ); die();
 		try {
 			$api->createPost( $args['id'] . '.tumblr.com', $new_post );
+			$this->logger->alert_success( sprintf( 'Successfully shared %s to %s on %s ',
+				get_the_title( $post_details['post_id'] ),
+				$args['user'],
+				$post_details['service']
+			) );
 		} catch ( Exception $exception ) {
-			// Maybe log this.
-			$log = new Rop_Logger();
-			$log->warn( 'Posting failed for Tumblr.', array( $exception ) );
+			$this->logger->alert_error( 'Posting failed for Tumblr. Error: ' . $exception->getMessage() );
 
 			return false;
 		}

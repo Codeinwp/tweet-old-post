@@ -5,7 +5,7 @@
 				<p class="text-gray text-left "><i class="fa fa-clock-o"></i> {{card_data.date}} <b><i
 						class="fa fa-at"></i></b> <i class="service fa"
 				                                     :class="iconClass( card_data.account_id )"></i>
-					{{active_accounts[card_data.account_id].user}}</p>
+					{{getAccountName(card_data.account_id)}}</p>
 			</div>
 			<div class="column col-6 text-right">
 				<button class="btn btn-sm btn-primary" @click="toggleEditState" v-if="edit === false"
@@ -30,13 +30,15 @@
 			
 			</div>
 			<div class="column col-3 text-right">
-				<figure class="figure" v-if="content.post_image !== ''">
-					<img :src="content.post_image" class="img-fit-cover" style="max-height:50px">
-				</figure>
-				<summary v-else>
-					<i class="fa fa-file-image-o"></i>
-					No Image
-				</summary>
+				<div class="rop-image-placeholder" v-if="content.post_with_image">
+					<figure class="figure" v-if="content.post_image !== ''">
+						<img :src="content.post_image" class="img-fit-cover" style="max-height:50px">
+					</figure>
+					<summary v-else>
+						<i class="fa fa-file-image-o"></i>
+						No Image
+					</summary>
+				</div>
 				<p>
 					<b>Link:</b>
 					<a :href="content.post_url" target="_blank" class="tooltip"
@@ -48,13 +50,15 @@
 		</div>
 		<div class="card-body  columns" v-if="edit">
 			<div class="form-group column col-12">
-				<label class="form-label" for="image">Image</label>
-				<div class="input-group">
-					<span class="input-group-addon"><i class="fa fa-file-image-o"></i></span>
-					<input id="image" type="text" class="form-input" :value="content.post_image" readonly>
-					<button class="btn btn-primary input-group-btn" @click="uploadImage">
-						<i class="fa fa-upload" aria-hidden="true"></i>
-					</button>
+				<div class="rop-image-queue-input" v-if="content.post_with_image">
+					<label class="form-label" for="image">Image</label>
+					<div class="input-group">
+						<span class="input-group-addon"><i class="fa fa-file-image-o"></i></span>
+						<input id="image" type="text" class="form-input" :value="content.post_image" readonly>
+						<button class="btn btn-primary input-group-btn" @click="uploadImage">
+							<i class="fa fa-upload" aria-hidden="true"></i>
+						</button>
+					</div>
 				</div>
 				<label class="form-label" for="content">Content</label>
 				<textarea class="form-input" id="content" placeholder="Textarea" rows="3" @keyup="checkCount">{{content.content}}</textarea>
@@ -155,6 +159,12 @@
 			},
 			toggleEditState: function () {
 				this.edit = !this.edit;
+			},
+			getAccountName: function (key) {
+				if (typeof  this.active_accounts[key] === 'undefined') {
+					return '';
+				}
+				return this.active_accounts[key].user
 			},
 			checkCount: function (evt) {
 				this.post_edit.text = ''
