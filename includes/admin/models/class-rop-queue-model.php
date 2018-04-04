@@ -152,8 +152,10 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $index The base64 uid.
+	 * @param   int    $post_id The post id.
 	 * @param   string $account_id The account ID.
+	 *
+	 * @return bool Ban status.
 	 */
 	public function ban_post( $post_id, $account_id ) {
 		$queue = $this->get_queue();
@@ -344,7 +346,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  public
-	 * @return array
+	 * @return void
 	 */
 	public function clear_queue( $account_id = false ) {
 		if ( empty( $account_id ) ) {
@@ -361,7 +363,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $index The base64 uid.
+	 * @param   int    $post_id The post uid.
 	 * @param   string $account_id The account ID.
 	 *
 	 * @return bool

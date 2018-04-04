@@ -47,7 +47,7 @@ class Rop_Post_Format_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $service_name The name of the service. Default false. Returns all.
+	 * @param   string|bool $service_name The name of the service. Default false. Returns all.
 	 */
 	public function __construct( $service_name = false ) {
 		parent::__construct();
@@ -81,6 +81,11 @@ class Rop_Post_Format_Model extends Rop_Model_Abstract {
 		return $selected_post_format;
 	}
 
+	/**
+	 * Return post formats array.
+	 *
+	 * @return array Array of formats.
+	 */
 	public function get_post_formats() {
 		$services        = new Rop_Services_Model();
 		$active_accounts = $services->get_active_accounts();
@@ -104,7 +109,7 @@ class Rop_Post_Format_Model extends Rop_Model_Abstract {
 	 * @param   string $account_id The account ID for which to add post format.
 	 * @param   array  $data The post format data.
 	 *
-	 * @return bool
+	 * @return void
 	 */
 	public function add_update_post_format( $account_id, $data ) {
 		$data                             = wp_parse_args( $data, $this->defaults );

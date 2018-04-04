@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Revive Old Post (Former Tweet Old Post) 8.0.0\n"
 "Report-Msgid-Bugs-To: https://github.com/Codeinwp/tweet-old-post/issues\n"
-"POT-Creation-Date: 2018-03-22 13:16:50+00:00\n"
+"POT-Creation-Date: 2018-04-04 14:44:21+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,23 +24,15 @@ msgstr ""
 "X-Poedit-Bookmarks: \n"
 "X-Textdomain-Support: yes\n"
 
-#: includes/admin/class-rop-admin.php:150
-msgid "Revive Old Posts"
+#: includes/admin/class-rop-admin.php:151
+msgid "Revive Old Post"
 msgstr ""
 
-#: includes/admin/class-rop-admin.php:182
-msgid "The post was shared successfully with the %1$s network"
+#: includes/admin/class-rop-admin.php:189
+msgid "The %1$s service can not be used or was not found"
 msgstr ""
 
-#: includes/admin/class-rop-admin.php:185
-msgid "The post was not shared with the %1$s network. An error occured."
-msgstr ""
-
-#: includes/admin/class-rop-admin.php:190
-msgid "The service %1$s can NOT be built or was not found"
-msgstr ""
-
-#: includes/admin/class-rop-rest-api.php:104
+#: includes/admin/class-rop-rest-api.php:101
 msgid "Cron manager response."
 msgstr ""
 
@@ -48,114 +40,114 @@ msgstr ""
 msgid "Queue retrieved successfully."
 msgstr ""
 
-#: includes/admin/class-rop-rest-api.php:233
-msgid "An error occurred when trying to update the schedule."
-msgstr ""
-
-#: includes/admin/class-rop-rest-api.php:236
+#: includes/admin/class-rop-rest-api.php:235
 msgid "Schedule was reset successfully."
 msgstr ""
 
-#: includes/admin/class-rop-rest-api.php:258
+#: includes/admin/class-rop-rest-api.php:256
 msgid "Schedule was retrieved successfully."
 msgstr ""
 
-#: includes/admin/class-rop-rest-api.php:281
-#: includes/admin/class-rop-rest-api.php:289
+#: includes/admin/class-rop-rest-api.php:278
+msgid "Empty shortner."
+msgstr ""
+
+#: includes/admin/class-rop-rest-api.php:283
+#: includes/admin/class-rop-rest-api.php:294
 msgid "Shortner credentials retrieved successfully."
 msgstr ""
 
-#: includes/admin/class-rop-rest-api.php:285
+#: includes/admin/class-rop-rest-api.php:289
 msgid "An error occurred when trying to retrieve the sortner service credentials."
 msgstr ""
 
-#: includes/admin/class-rop-rest-api.php:294
-#: includes/admin/class-rop-rest-api.php:331
+#: includes/admin/class-rop-rest-api.php:299
+#: includes/admin/class-rop-rest-api.php:335
 msgid "The shortner service %1$s can NOT be built or was not found"
 msgstr ""
 
-#: includes/admin/class-rop-rest-api.php:319
+#: includes/admin/class-rop-rest-api.php:323
 msgid "An error occurred when trying to save the post format."
 msgstr ""
 
-#: includes/admin/class-rop-rest-api.php:326
+#: includes/admin/class-rop-rest-api.php:330
 msgid "Shortner and credentials set successfully."
 msgstr ""
 
-#: includes/admin/class-rop-rest-api.php:332
+#: includes/admin/class-rop-rest-api.php:336
 msgid "Shortner service can NOT be updated."
 msgstr ""
 
-#: includes/admin/class-rop-rest-api.php:338
+#: includes/admin/class-rop-rest-api.php:342
 msgid "Post format was saved successfully. For the %1$s service"
 msgstr ""
 
-#: includes/admin/class-rop-rest-api.php:359
-msgid "An error occurred when trying to reset the post format."
-msgstr ""
-
-#: includes/admin/class-rop-rest-api.php:362
+#: includes/admin/class-rop-rest-api.php:365
 msgid "Post format was reseted to defaults successfully. For the %1$s service"
 msgstr ""
 
-#: includes/admin/class-rop-rest-api.php:384
+#: includes/admin/class-rop-rest-api.php:387
 msgid "Post format was retrieved successfully. For the %1$s service"
 msgstr ""
 
-#: includes/admin/class-rop-rest-api.php:402
+#: includes/admin/class-rop-rest-api.php:405
 msgid "Selected posts from the database. Here are the results."
 msgstr ""
 
-#: includes/admin/class-rop-rest-api.php:420
+#: includes/admin/class-rop-rest-api.php:423
 msgid "Retrieved general settings from the database."
 msgstr ""
 
-#: includes/admin/class-rop-rest-api.php:443
+#: includes/admin/class-rop-rest-api.php:446
 msgid "Something happened when trying to retrieve taxonomies."
 msgstr ""
 
-#: includes/admin/class-rop-rest-api.php:446
+#: includes/admin/class-rop-rest-api.php:449
 msgid "Taxonomies retrieved successfully."
 msgstr ""
 
-#: includes/admin/class-rop-rest-api.php:471
+#: includes/admin/class-rop-rest-api.php:474
 msgid "Retrieved available posts from the database."
 msgstr ""
 
-#: includes/admin/class-rop-rest-api.php:505
-#: includes/admin/class-rop-rest-api.php:531
+#: includes/admin/class-rop-rest-api.php:508
+#: includes/admin/class-rop-rest-api.php:534
 msgid "Updated settings"
 msgstr ""
 
-#: includes/admin/class-rop-rest-api.php:549
+#: includes/admin/class-rop-rest-api.php:552
 msgid "Retrieved available services."
 msgstr ""
 
-#: includes/admin/class-rop-rest-api.php:568
+#: includes/admin/class-rop-rest-api.php:571
 msgid "Retrieved authenticated services."
 msgstr ""
 
-#: includes/admin/class-rop-rest-api.php:587
+#: includes/admin/class-rop-rest-api.php:590
 msgid "Retrieved active accounts."
 msgstr ""
 
-#: includes/admin/class-rop-rest-api.php:613
+#: includes/admin/class-rop-rest-api.php:609
+msgid "Reseted."
+msgstr ""
+
+#: includes/admin/class-rop-rest-api.php:635
 msgid "Active accounts updated."
 msgstr ""
 
-#: includes/admin/class-rop-rest-api.php:641
-msgid "Account has been removed."
+#: includes/admin/class-rop-rest-api.php:667
+msgid "Account updated."
 msgstr ""
 
-#: includes/admin/class-rop-rest-api.php:758
+#: includes/admin/class-rop-rest-api.php:786
 msgid "Logs retrieved successfully."
 msgstr ""
 
-#: includes/admin/helpers/class-rop-cron-helper.php:81
+#: includes/admin/helpers/class-rop-cron-helper.php:40
 msgid "Once every 5 minutes"
 msgstr ""
 
-#: includes/admin/helpers/class-rop-cron-helper.php:87
+#: includes/admin/helpers/class-rop-cron-helper.php:46
 msgid "Once every 30 minutes"
 msgstr ""
 

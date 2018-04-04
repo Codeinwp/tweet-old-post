@@ -24,31 +24,46 @@
 }
 
 #rop_core .vertical-align {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
 	display: flex;
 	flex-direction: column;
+
+	-webkit-box-direction: normal;
+	-webkit-box-orient: vertical;
+	-webkit-box-pack: center;
+	-webkit-flex-direction: column;
+	-ms-flex-direction: column;
+	-ms-flex-pack: center;
+	-webkit-justify-content: center;
 	justify-content: center;
 }
 
 #rop_core .rop-image-placeholder .figure {
-	margin :0;
 	max-height: 250px;
+	margin: 0;
 }
+
 #rop_core .rop-image-placeholder {
-    margin: 0 auto;
+	margin: 0 auto;
 }
+
 #rop_core .upsell {
 	margin-bottom: 0;
-	background: #8492a0;
-	color: #fff;
 	padding: 5px 10px;
+	color: #fff;
+	background: #8492a0;
 }
-#rop_core .panel-body h3{
+
+#rop_core .panel-body h3 {
 	padding: 10px 0;
 }
 
 .rop-tab-state-true {
 	opacity: 0.2;
 }
+
 .rop-tab-state-false {
 	opacity: 1;
 }
@@ -57,18 +72,20 @@
 	#rop_core .panel .panel-header h1 {
 		font-size: 21px;
 	}
+
 	#rop_core .sidebar.column {
-		padding: 0;
 		margin-top: 20px;
+		padding: 0;
 	}
 }
 
 @media (max-width: 1000px) {
 	#rop_core .sidebar.column {
 		width: 100%;
-		padding: 0;
 		margin-top: 20px;
+		padding: 0;
 	}
+
 	#rop_core .panel {
 		width: 100%;
 	}

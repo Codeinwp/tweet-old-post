@@ -185,6 +185,13 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 		$queue->clear_queue();
 	}
 
+	/**
+	 * Sanitize settings data.
+	 *
+	 * @param array $data Data to validate.
+	 *
+	 * @return mixed Sanitized data.
+	 */
 	private function validate_settings( $data ) {
 		if ( isset( $data['default_interval'] ) ) {
 			$data['default_interval'] = floatval( $data['default_interval'] );

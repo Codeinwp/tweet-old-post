@@ -43,8 +43,8 @@ class Rop_Post_Format_Helper {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string  $account_id The account ID.
-	 * @param   WP_Post $post The post object to format.
+	 * @param   int        $post_id The post ID.
+	 * @param   string|int $account_id The post account id.
 	 *
 	 * @return array
 	 */
@@ -98,7 +98,7 @@ class Rop_Post_Format_Helper {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   WP_Post $post The post object.
+	 * @param   int $post_id The post object.
 	 *
 	 * @return array
 	 */
@@ -176,7 +176,7 @@ class Rop_Post_Format_Helper {
 	 * @since   8.0.0
 	 * @access  private
 	 *
-	 * @param   WP_Post $post The post object.
+	 * @param   int $post_id The post object.
 	 *
 	 * @return mixed|string
 	 */

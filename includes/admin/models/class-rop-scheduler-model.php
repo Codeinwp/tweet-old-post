@@ -228,7 +228,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 *
 	 * If the events are missing or are less than the limit, regenerate them.
 	 *
-	 * @param int $account_id
+	 * @param string $account_id Account to update.
 	 *
 	 * @return array List of upcoming events.
 	 */

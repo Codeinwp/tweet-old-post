@@ -185,7 +185,7 @@ class Rop_Cron_Helper {
 	/**
 	 * Convert PHP Format to JS
 	 *
-	 * @param $format
+	 * @param string $format Php format.
 	 *
 	 * @return string
 	 */

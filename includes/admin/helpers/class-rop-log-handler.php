@@ -47,7 +47,7 @@ class Rop_Log_Handler extends AbstractProcessingHandler {
 	 *
 	 * @param string $option_name Option where to save this.
 	 * @param int    $level Level of log.
-	 * @param bool   $bubble
+	 * @param bool   $bubble Bubble.
 	 */
 	public function __construct( $option_name, $level = Logger::DEBUG, $bubble = true ) {
 		$this->namespace = $option_name;
@@ -68,10 +68,9 @@ class Rop_Log_Handler extends AbstractProcessingHandler {
 		return array_reverse( $this->current_logs );
 	}
 
-	/*
+	/**
 	 * Initilize logger.
 	 */
-
 	private function initialize() {
 		$current_logs = get_option( $this->namespace, array() );
 		if ( ! is_array( $current_logs ) ) {
@@ -84,7 +83,7 @@ class Rop_Log_Handler extends AbstractProcessingHandler {
 	/**
 	 * Clear active logs.
 	 *
-	 * @return array Logs array.
+	 * @return void
 	 */
 	public function clear_logs() {
 		if ( ! $this->initialized ) {
