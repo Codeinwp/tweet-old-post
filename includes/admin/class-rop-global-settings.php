@@ -113,9 +113,9 @@ class Rop_Global_Settings {
 	 * @var     array $settings_defaults The class defaults for settings.
 	 */
 	private $settings_defaults = array(
-		'default_interval'     => 8,
-		'minimum_post_age'     => 15,
-		'maximum_post_age'     => 60,
+		'default_interval'     => 4,
+		'minimum_post_age'     => 30,
+		'maximum_post_age'     => 0,
 		'number_of_posts'      => 1,
 		'more_than_once'       => true,
 		'available_post_types' => array(),
@@ -126,7 +126,7 @@ class Rop_Global_Settings {
 		'available_posts'      => array(), // get_posts(),
 		'selected_posts'       => array(),
 		'exclude_posts'        => true,
-		'ga_tracking'          => false,
+		'ga_tracking'          => true,
 		'beta_user'            => false,
 		'remote_check'         => false,
 		'custom_messages'      => false,
@@ -144,7 +144,7 @@ class Rop_Global_Settings {
 		'facebook' => array(
 			'post_content'      => 'post_title',
 			'custom_meta_field' => '',
-			'maximum_length'    => '160',
+			'maximum_length'    => '1000',
 			'custom_text'       => '',
 			'custom_text_pos'   => 'beginning',
 			'include_link'      => true,
@@ -153,7 +153,7 @@ class Rop_Global_Settings {
 			'short_url'         => true,
 			'short_url_service' => 'rviv.ly',
 			'hashtags'          => 'no-hashtags',
-			'hashtags_length'   => '10',
+			'hashtags_length'   => '20',
 			'hashtags_common'   => '',
 			'hashtags_custom'   => '',
 			'image'             => false,
@@ -161,7 +161,7 @@ class Rop_Global_Settings {
 		'twitter'  => array(
 			'post_content'      => 'post_title',
 			'custom_meta_field' => '',
-			'maximum_length'    => '160',
+			'maximum_length'    => '140',
 			'custom_text'       => '',
 			'custom_text_pos'   => 'beginning',
 			'include_link'      => true,
@@ -178,7 +178,7 @@ class Rop_Global_Settings {
 		'linkedin' => array(
 			'post_content'      => 'post_title',
 			'custom_meta_field' => '',
-			'maximum_length'    => '160',
+			'maximum_length'    => '1000',
 			'custom_text'       => '',
 			'custom_text_pos'   => 'beginning',
 			'include_link'      => true,
@@ -195,7 +195,7 @@ class Rop_Global_Settings {
 		'tumblr'   => array(
 			'post_content'      => 'post_title',
 			'custom_meta_field' => '',
-			'maximum_length'    => '160',
+			'maximum_length'    => '1000',
 			'custom_text'       => '',
 			'custom_text_pos'   => 'beginning',
 			'include_link'      => true,
@@ -299,7 +299,7 @@ class Rop_Global_Settings {
 	 * @return  int
 	 */
 	public function license_type() {
-		return 2;
+		//return 2;
 		$pro_check      = defined( 'ROP_PRO_VERSION' );
 		$product_key    = 'tweet_old_post_pro';
 		$license_status = get_option( $product_key . '_license_status', '' );
@@ -410,15 +410,6 @@ class Rop_Global_Settings {
 		}
 
 		return $available_services;
-	}
-
-	/**
-	 * Get the base time.
-	 *
-	 * @return int Base time.
-	 */
-	public function get_time() {
-		return time();
 	}
 
 	/**

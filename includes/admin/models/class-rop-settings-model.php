@@ -176,7 +176,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function save_settings( $data = array() ) {
-		$this->validate_settings( $data );
+		$data = $this->validate_settings( $data );
 
 		$this->settings = $data;
 		unset( $data['available_post_types'] );
@@ -217,7 +217,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_interval() {
-		return $this->settings['default_interval'];
+		return round( $this->settings['default_interval'], 2 );
 	}
 
 	/**
@@ -317,7 +317,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_exclude_posts() {
-		return $this->settings['exclude_posts'];
+		return ! is_array( $this->settings['exclude_posts'] ) ? array() : $this->settings['exclude_posts'];
 	}
 
 

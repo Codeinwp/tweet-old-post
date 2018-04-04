@@ -37,7 +37,9 @@ class Rop_Bitly_Shortner extends Rop_Url_Shortner_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
 	 * @param   string $url The url to shorten.
+	 *
 	 * @return string
 	 */
 	public function shorten_url( $url ) {
@@ -49,14 +51,20 @@ class Rop_Bitly_Shortner extends Rop_Url_Shortner_Abstract {
 
 		$response = $this->callAPI(
 			'https://api-ssl.bit.ly/v3/shorten',
-			array('method' => 'get'),
-			array('longUrl' => $url, 'format' => 'txt', 'login' => $this->credentials['user'], 'apiKey' => $this->credentials['key'] ),
+			array( 'method' => 'get' ),
+			array(
+				'longUrl' => $url,
+				'format'  => 'txt',
+				'login'   => $this->credentials['user'],
+				'apiKey'  => $this->credentials['key'],
+			),
 			null
 		);
 		$shortURL = $url;
 		if ( intval( $response['error'] ) == 200 ) {
 			$shortURL = $response['response'];
 		}
-		return $shortURL;
+
+		return trim( $shortURL );
 	}
 }

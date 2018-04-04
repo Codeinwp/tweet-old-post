@@ -85,7 +85,7 @@ abstract class Rop_Services_Abstract {
 	 * @since   8.0.0
 	 * @var array Default account values.
 	 */
-	protected $user_default = array(
+	public $user_default = array(
 		'account' => '',
 		'user'    => '',
 		'created' => 0,
