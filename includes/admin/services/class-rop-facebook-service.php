@@ -246,7 +246,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		$user       = $response->getGraphUser();
 		$this->user = $user;
-		if ( empty( $user->getId() ) ) {
+		$user_id = $user->getId();
+		if ( empty( $user_id ) ) {
 			return false;
 		}
 		$user_details                 = $this->user_default;
