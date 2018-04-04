@@ -182,6 +182,13 @@ class Rop_Cron_Helper {
 		return count( $logs );
 	}
 
+	/**
+	 * Convert PHP Format to JS
+	 *
+	 * @param $format
+	 *
+	 * @return string
+	 */
 	private function convert_phpformat_to_js( $format ) {
 		$replacements = [
 			'd' => 'DD',

@@ -17,3 +17,52 @@
 #rop_core .title-panel {
 	border-top: 4px solid #e85407;
 }
+
+#rop_core .card {
+	max-width: 100%;
+	margin: 10px 0;
+}
+
+#rop_core .vertical-align {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+#rop_core .rop-image-placeholder .figure {
+	margin :0;
+	max-height: 250px;
+}
+#rop_core .rop-image-placeholder {
+    margin: 0 auto;
+}
+#rop_core .upsell {
+	margin-bottom: 0;
+	background: #8492a0;
+	color: #fff;
+	padding: 5px 10px;
+}
+#rop_core .panel-body h3{
+	padding: 10px 0;
+}
+
+@media (max-width: 960px) {
+	#rop_core .panel .panel-header h1 {
+		font-size: 21px;
+	}
+	#rop_core .sidebar.column {
+		padding: 0;
+		margin-top: 20px;
+	}
+}
+
+@media (max-width: 1000px) {
+	#rop_core .sidebar.column {
+		width: 100%;
+		padding: 0;
+		margin-top: 20px;
+	}
+	#rop_core .panel {
+		width: 100%;
+	}
+}

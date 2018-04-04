@@ -75,7 +75,7 @@
 				type: Array
 			},
 			placeHolderText: {
-				default: 'Please select somthing',
+				default: 'Please select something',
 				type: String
 			},
 			changedSelection: {

@@ -1,9 +1,9 @@
 <template>
 	<div>
-		<div class="panel title-panel" style="margin-bottom: 40px; padding-bottom: 20px;">
+		<div class="panel title-panel" style="margin-bottom: 40px;">
 			<div class="panel-header">
 				<img :src="plugin_logo" style="float: left; margin-right: 10px;"/>
-				<h1 class="d-inline-block">Revive Old Posts</h1><span class="powered"> by <a
+				<h1 class="d-inline-block">Revive Old Post</h1><span class="powered"> by <a
 					href="https://themeisle.com" target="_blank"><b>ThemeIsle</b></a></span>
 			</div>
 		</div>
@@ -19,7 +19,7 @@
 						</li>
 						<li class="tab-item tab-action">
 							<div class="form-group">
-								<label class="form-switch">
+								<label class="form-switch col-ml-auto">
 									<input type="checkbox" v-model="generalSettings.custom_messages"
 									       @change="updateSettings"/>
 									<i class="form-icon"></i><span class="hide-sm">Custom Share Messages</span>

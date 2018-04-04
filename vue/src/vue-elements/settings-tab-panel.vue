@@ -1,170 +1,162 @@
 <template>
 	<div class="tab-view">
 		<div class="panel-body">
-			<h3>General Settings</h3>
+			<div class="column col-12">
+				<h3>General Settings</h3>
+				<span class="divider"></span>
+			</div>
 			<div class="container" :class="'rop-tab-state-'+is_loading">
-				<div class="columns">
-					<div class="column col-sm-12 col-md-12 col-lg-12">
-						<div class="columns">
-							<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-right">
-								<b>Minimum interval between shares</b><br/>
-								<i>Minimum time between shares (hour/hours), 0.4 can be used.</i>
-							</div>
-							<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-left">
-								<counter-input id="default_interval" :value.sync="generalSettings.default_interval"/>
-							</div>
+				<!-- Min Interval Between Shares -->
+				<div class="columns text-right py-2">
+					<div class="column col-6 col-sm-12 vertical-align">
+						<b>Minimum interval between shares</b>
+						<p class="text-gray">Minimum time between shares (hour/hours), 0.4 can be used.</p>
+					</div>
+					<div class="column col-6 col-sm-12 vertical-align">
+						<counter-input id="default_interval"
+									   :value.sync="generalSettings.default_interval"></counter-input>
+					</div>
+				</div>
+				<span class="divider"></span>
+				<!-- Min Post Age -->
+				<div class="columns text-right py-2">
+					<div class="column col-6 col-sm-12 vertical-align">
+						<b>Minimum post age</b>
+						<p class="text-gray">Minimum age of posts available for sharing, in days.</p>
+					</div>
+					<div class="column col-6 col-sm-12 vertical-align">
+						<counter-Input id="min_post_age" :max-val="365"
+									   :value.sync="generalSettings.minimum_post_age"></counter-Input>
+					</div>
+				</div>
+				<!-- Max Post Age -->
+				<div class="columns text-right py-2">
+					<div class="column col-6 col-sm-12 vertical-align">
+						<b>Maximum post age</b>
+						<p class="text-gray">Maximum age of posts available for sharing, in days.</p>
+					</div>
+					<div class="column col-6 col-sm-12 vertical-align">
+						<counter-input id="max_post_age" :max-val="365"
+									   :value.sync="generalSettings.maximum_post_age"></counter-input>
+					</div>
+				</div>
+
+				<span class="divider"></span>
+
+				<!-- No. of posts -->
+				<div class="columns text-right py-2">
+					<div class="column col-6 col-sm-12 vertical-align">
+						<b>Number of posts</b>
+						<p class="text-gray">Number of posts to share per. account per. trigger of scheduled job.</p>
+					</div>
+					<div class="column col-6 col-sm-12 vertical-align">
+						<counter-input id="no_of_posts" :value.sync="generalSettings.number_of_posts"></counter-input>
+					</div>
+				</div>
+				<span class="divider"></span>
+
+				<!-- Share more than once -->
+				<div class="columns text-right py-2">
+					<div class="column col-6 col-sm-12 vertical-align">
+						<b>Share more than once?</b>
+						<p class="text-gray">If there are no more posts to share, we should start re-sharing the one we previously shared.</p>
+					</div>
+					<div class="column col-6 col-sm-12 vertical-align text-left">
+						<div class="form-group">
+							<label class="form-checkbox">
+								<input type="checkbox" v-model="generalSettings.more_than_once"/>
+								<i class="form-icon"></i> Yes
+							</label>
 						</div>
 					</div>
 				</div>
-				<div class="columns">
-					<div class="column col-sm-12 col-md-12 col-lg-6">
-						<div class="columns">
-							<div class="column col-sm-12 col-md-6 col-xl-6 col-8 text-right">
-								<b>Minimum post age</b><br/>
-								<i>Minimum age of posts available for sharing, in days.</i>
-							</div>
-							<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-left">
-								<counter-input id="min_post_age" :maxVal="365"
-								               :value.sync="generalSettings.minimum_post_age"/>
-							</div>
-						</div>
+				<span class="divider"></span>
+
+				<!-- Post Types -->
+				<div class="columns text-right py-2" :class="'rop-control-container-'+isPro">
+					<div class="column col-6 col-sm-12 vertical-align rop-control">
+						<b>Post types</b>
+						<p class="text-gray">Post types available to share - what post types are available for share</p>
 					</div>
-					<div class="column col-sm-12 col-md-12 col-lg-6">
-						<div class="columns">
-							<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-right">
-								<counter-input id="max_post_age" :maxVal="365"
-								               :value.sync="generalSettings.maximum_post_age"/>
-							</div>
-							<div class="column col-sm-12 col-md-6 col-xl-6 col-8 text-left">
-								<b>Maximum post age</b><br/>
-								<i>Maximum age of posts available for sharing, in days.</i>
-							</div>
+					<div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+						<multiple-select :options="postTypes" :disabled="isPro"
+										 :selected="generalSettings.selected_post_types"
+										 :changed-selection="updatedPostTypes"></multiple-select>
+					</div>
+				</div>
+
+				<!-- Upsell -->
+				<div class="columns py-2" v-if="!isPro">
+					<div class="column text-center">
+						<p class="upsell"><i class="fa fa-lock"></i> Selecting custom post types is available in the pro version.</p>
+					</div>
+				</div>
+
+				<span class="divider"></span>
+
+				<!-- Taxonomies -->
+				<div class="columns text-right py-2">
+					<div class="column col-6 col-sm-12 vertical-align">
+						<b>Taxonomies</b>
+						<p class="text-gray">Taxonomies available for the selected post types. Use to include or exclude posts.</p>
+					</div>
+					<div class="column col-6 col-sm-12 vertical-align text-left">
+						<div class="input-group">
+							<multiple-select :options="taxonomies"
+											 :selected="generalSettings.selected_taxonomies"
+											 :changed-selection="updatedTaxonomies"></multiple-select>
+							<span class="input-group-addon vertical-align">
+								<label class="form-checkbox">
+									<input type="checkbox" v-model="generalSettings.exclude_taxonomies"
+										   @change="exludeTaxonomiesChange"/>
+									<i class="form-icon"></i>Exclude?
+								</label>
+							</span>
+
+						</div>
+
+					</div>
+
+				</div>
+
+				<span class="divider"></span>
+				<!-- Posts -->
+				<div class="columns text-right py-2">
+					<div class="column col-6 col-sm-12 vertical-align">
+						<b>Posts</b>
+						<p class="text-gray">Posts excluded/included in sharing, filtered based on previous selections.</p>
+					</div>
+					<div class="column col-6 col-sm-12 vertical-align text-left">
+						<div class="input-group">
+							<multiple-select :searchQuery="searchQuery" @update="searchUpdate"
+											 :options="postsAvailable" :dont-lock="true"
+											 :selected="generalSettings.selected_posts"
+											 :changed-selection="updatedPosts"></multiple-select>
+
 						</div>
 					</div>
 				</div>
-				<hr/>
-				<div class="columns">
-					<div class="column col-sm-12 col-md-12 col-lg-6">
-						<div class="columns">
-							<div class="column col-sm-12 col-md-6 col-xl-6 col-8 text-right">
-								<b>Number of posts</b><br/>
-								<i>Number of posts to share per. account per. trigger of scheduled job.</i>
-							</div>
-							<div class="column col-sm-12 col-md-6 col-xl-6 col-4 text-left">
-								<counter-input id="no_of_posts" :value.sync="generalSettings.number_of_posts"/>
-							</div>
-						</div>
+				<span class="divider"></span>
+
+				<!-- Google Analytics -->
+				<div class="columns text-right py-2">
+					<div class="column col-6 col-sm-12 vertical-align">
+						<b>Enable Google Analytics Tracking</b>
+						<p class="text-gray">If checked an utm query willbe added to URL's so that you cand better track trafic.</p>
 					</div>
-					<div class="column col-sm-12 col-md-12 col-lg-6">
-						<div class="columns">
-							<div class="column col-sm-12 col-md-2 col-xl-2 col-1 text-right">
-								<div class="form-group">
-									<label class="form-checkbox">
-										<input type="checkbox" v-model="generalSettings.more_than_once"/>
-										<i class="form-icon"></i> Yes
-									</label>
-								</div>
-							</div>
-							<div class="column col-sm-12 col-md-10 col-xl-10 col-11 text-left">
-								<b>Share more than once?</b><br/>
-								<i>If there are no more posts to share, we should start re-sharing the one we previously
-									shared.</i>
-							</div>
+					<div class="column col-6 col-sm-12 vertical-align text-left">
+						<div class="form-group">
+							<label class="form-checkbox">
+								<input type="checkbox" v-model="generalSettings.ga_tracking"/>
+								<i class="form-icon"></i>Yes
+							</label>
 						</div>
 					</div>
 				</div>
-				<hr/>
-				<div class="columns" :class="'rop-control-container-'+isPro">
-					<div class="column col-sm-12 col-md-12 col-lg-12">
-						<div class="columns rop-control">
-							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-								<b>Post types</b><br/>
-								<i>Post types available to share - what post types are available for share</i>
-							</div>
-							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-								<multiple-select :options="postTypes" :disabled="isPro"
-								                 :selected="generalSettings.selected_post_types"
-								                 :changedSelection="updatedPostTypes"/>
-							</div>
-						</div>
-						
-						<div class="columns rop-upsell-message" v-if="! isPro">
-							<div class="col-12 text-center">
-								<p><i class="fa fa-lock"></i> Selecting custom post types is available in the pro
-									version. </p>
-							</div>
-						</div>
-					</div>
-				</div>
-				<hr/>
-				<div class="columns">
-					<div class="column col-sm-12 col-md-12 col-lg-12">
-						<div class="columns">
-							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-								<b>Taxonomies</b><br/>
-								<i>Taxonomies available for the selected post types. Use to include or exclude
-									posts.</i>
-							</div>
-							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-								<div class="input-group">
-									<multiple-select :options="taxonomies"
-									                 :selected="generalSettings.selected_taxonomies"
-									                 :changedSelection="updatedTaxonomies"/>
-									<span class="input-group-addon">
-										<label class="form-checkbox">
-											<input type="checkbox" v-model="generalSettings.exclude_taxonomies"
-											       @change="exludeTaxonomiesChange"/>
-											<i class="form-icon"></i> Exclude?
-										</label>
-									</span>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<hr/>
-				<div class="columns">
-					<div class="column col-sm-12 col-md-12 col-lg-12">
-						<div class="columns">
-							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-								<b>Posts</b><br/>
-								<i>Posts excluded/included in sharing, filtered based on previous selections.</i>
-							</div>
-							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-								<div class="input-group">
-									<multiple-select :searchQuery="searchQuery" @update="searchUpdate"
-									                 :options="postsAvailable" :dontLock="true"
-									                 :selected="generalSettings.selected_posts"
-									                 :changedSelection="updatedPosts"/>
-								
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<hr/>
-				<div class="columns">
-					<div class="column col-sm-12 col-md-12 col-lg-12">
-						<div class="columns">
-							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-								<b>Enable Google Analytics Tracking</b><br/>
-								<i>If checked an utm query willbe added to URL's so that you cand better track
-									trafic.</i>
-							</div>
-							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-								<div class="form-group">
-									<label class="form-checkbox">
-										<input type="checkbox" v-model="generalSettings.ga_tracking"/>
-										<i class="form-icon"></i> Yes
-									</label>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
+				<span class="divider"></span>
 			</div>
 		</div>
-		<div class="panel-footer">
+		<div class="panel-footer text-right">
 			<button class="btn btn-primary" @click="saveGeneralSettings()"><i class="fa fa-check"
 			                                                                  v-if="!this.is_loading"></i> <i
 					class="fa fa-spinner fa-spin" v-else></i> Save
@@ -174,7 +166,7 @@
 </template>
 
 <script>
-	import CounterInput from './reusables/counter-input.vue'
+	import counterInput from './reusables/counter-input.vue'
 	import MultipleSelect from './reusables/multiple-select.vue'
 
 	module.exports = {
@@ -307,17 +299,39 @@
 			}
 		},
 		components: {
-			CounterInput,
+			counterInput,
 			MultipleSelect
 		}
 	}
 </script>
-<style type="text/css">
+
+<style scoped>
 	.rop-tab-state-true {
 		opacity: 0.2;
 	}
-	
 	.rop-tab-state-false {
 		opacity: 1;
+	}
+	#rop_core .panel-body .text-gray {
+		margin: 0;
+		line-height: normal;
+	}
+	#rop_core .input-group {
+		width: 100%;
+	}
+	b {
+		margin-bottom :5px;
+		display: block;
+	}
+	#rop_core .input-group .input-group-addon {
+		padding: 3px 5px;
+	}
+	@media( max-width: 600px ) {
+		#rop_core .panel-body .text-gray {
+			margin-bottom: 10px;
+		}
+		#rop_core .text-right {
+			text-align: left;
+		}
 	}
 </style>

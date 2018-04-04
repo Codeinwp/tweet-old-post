@@ -66,23 +66,23 @@ For updates follow https://twitter.com/ReviveSocial If you have anything you can
 
 Following are the steps to install the Revive Old Post plugin
 
-1. Download the latest version of the Revive Old Posts Plugin to your computer from here.
+1. Download the latest version of the Revive Old Post Plugin to your computer from here.
 2. With an FTP program, access your sites server.
 3. Upload (copy) the Plugin file(s) or folder to the /wp-content/plugins folder.
 4. In your WordPress Administration Panels, click on Plugins from the menu.
-5. You should see Revive Old Posts Plugin listed. If not, with your FTP program, check the folder to see if it is installed. If it isn�t, upload the file(s) again. If it is, delete the files and upload them again.
-6. To turn the Revive Old Posts Plugin on, click Activate.
+5. You should see Revive Old Post Plugin listed. If not, with your FTP program, check the folder to see if it is installed. If it isn�t, upload the file(s) again. If it is, delete the files and upload them again.
+6. To turn the Revive Old Post Plugin on, click Activate.
 7. Check your Administration Panels or WordPress blog to see if the Plugin is working.
-8. You can change the plugin options from Revive Old Posts under settings menu.
+8. You can change the plugin options from Revive Old Post under settings menu.
 
 Alternatively you can also follow the following steps to install the Revive Old Post plugin
 
 1. In your WordPress Administration Panels, click on Add New option under Plugins from the menu.
 2. Click on upload at the top.
 3. Browse the location and select the Tweet old post Plugin and click install now.
-4. To turn the Revive Old Posts Plugin on, click Activate.
+4. To turn the Revive Old Post Plugin on, click Activate.
 5. Check your Administration Panels or WordPress blog to see if the Plugin is working.
-6. You can change the plugin options from Revive Old Posts under settings menu.
+6. You can change the plugin options from Revive Old Post under settings menu.
 
 ## Frequently Asked Questions
 If you have any questions please get in touch with us at,

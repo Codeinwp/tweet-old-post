@@ -78,11 +78,8 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		if ( empty( $post_formats ) ) {
 			return false;
 		}
-
 		foreach ( $post_formats as $post_type_name ) {
-			if ( ! $post_type_name['selected'] ) {
-				continue;
-			}
+
 			$post_type_taxonomies = get_object_taxonomies( $post_type_name, 'objects' );
 			$post_type_taxonomies = $this->ignore_taxonomies( $post_type_taxonomies );
 			$taxonomies           = array();
