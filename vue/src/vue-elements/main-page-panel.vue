@@ -52,10 +52,14 @@
 				
 				</div>
 				<div class="card rop-upsell-pro-card" v-if="license  < 1 ">
-					Buy the pro version
+					<a href="#" target="_blank">
+						<img class="img-responsive"  :src="to_pro_upsell" alt="Upgrade to Pro">
+					</a>
 				</div>
 				<div class="card rop-upsell-business-card" v-if="license  === 1">
-					Buy the business version
+					<a href="#" target="_blank">
+						<img class="img-responsive"  :src="to_business_upsell" alt="Upgrade to Business">
+					</a>
 				</div>
 			</div>
 		</div>
@@ -161,6 +165,8 @@
 		},
 		data: function () {
 			return {
+				to_pro_upsell: ROP_ASSETS_URL + 'img/to_pro.png',
+				to_business_upsell: ROP_ASSETS_URL + 'img/to_business.png',
 				plugin_logo: ROP_ASSETS_URL + 'img/logo_rop.png',
 				license: this.$store.state.licence,
 				is_loading: false,
@@ -235,5 +241,9 @@
 	
 	#rop_core .badge.badge-logs {
 		padding-right: 10px;
+	}
+	#rop_core .rop-upsell-business-card,
+	#rop_core .rop-upsell-pro-card {
+		padding: 0;
 	}
 </style>

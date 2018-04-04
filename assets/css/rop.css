@@ -89,4 +89,8 @@
 	#rop_core .panel {
 		width: 100%;
 	}
+	#rop_core .rop-upsell-business-card img.img-responsive,
+	#rop_core .rop-upsell-pro-card img.img-responsive {
+		width: 100%;
+	}
 }
