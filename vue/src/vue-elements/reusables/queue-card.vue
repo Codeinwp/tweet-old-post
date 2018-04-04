@@ -6,7 +6,7 @@
 					<div class="column">
 						<p class="text-gray text-left "><i class="fa fa-clock-o"></i> {{card_data.date}} <b><i
 								class="fa fa-at"></i></b> <i class="service fa"
-															 :class="iconClass( card_data.account_id )"></i>
+						                                     :class="iconClass( card_data.account_id )"></i>
 							{{getAccountName(card_data.account_id)}}</p>
 					</div>
 				</div>
@@ -21,10 +21,12 @@
 						<div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-file-image-o"></i></span>
 							<input id="image" type="text" class="form-input" :value="content.post_image" readonly>
-							<button class="btn btn-primary input-group-btn tooltip" @click="uploadImage" data-tooltip="Upload">
+							<button class="btn btn-primary input-group-btn tooltip" @click="uploadImage"
+							        data-tooltip="Upload">
 								<i class="fa fa-upload" aria-hidden="true"></i>
 							</button>
-							<button class="btn btn-danger input-group-btn tooltip" @click="removeImage" data-tooltip="Remove">
+							<button class="btn btn-danger input-group-btn tooltip" @click="removeImage"
+							        data-tooltip="Remove">
 								<i class="fa fa-remove" aria-hidden="true"></i>
 							</button>
 						</div>
@@ -36,19 +38,19 @@
 				</div>
 				<div class="columns col-justified" v-if="!edit">
 					<div class="column col-3">
-						<button class="btn btn-sm btn-block btn-warning tooltip tooltip-right"
-								@click="skipPost(card_data.account_id, card_data.post_id)"
-								data-tooltip="Reschedule this post."
-								:disabled=" ! enabled">
+						<button class="btn btn-sm btn-block btn-warning tooltip   tooltip-bottom "
+						        @click="skipPost(card_data.account_id, card_data.post_id)"
+						        data-tooltip="Reschedule this post."
+						        :disabled=" ! enabled">
 							<i class="fa fa-spinner fa-spin" v-if=" is_loading === 'skip'"></i>
 							<i class="fa fa-step-forward" v-else aria-hidden="true"></i>
 							Skip
 						</button>
 					</div>
 					<div class="column col-3">
-						<button class="btn btn-sm btn-block btn-danger tooltip  tooltip-right"
-								data-tooltip="Ban this post from sharing in the future."
-								@click="blockPost(card_data.account_id, card_data.post_id)" :disabled=" ! enabled">
+						<button class="btn btn-sm btn-block btn-danger tooltip     tooltip-bottom  "
+						        data-tooltip="Ban this post from sharing in the future."
+						        @click="blockPost(card_data.account_id, card_data.post_id)" :disabled=" ! enabled">
 							<i class="fa fa-spinner fa-spin" v-if=" is_loading === 'block'"></i>
 							<i class="fa fa-ban" aria-hidden="true" v-else></i>
 							Block
@@ -56,7 +58,7 @@
 					</div>
 					<div class="column col-3">
 						<button class="btn btn-sm btn-block btn-primary" @click="toggleEditState" v-if="!edit"
-								:disabled=" ! enabled">
+						        :disabled=" ! enabled">
 							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 						</button>
 					</div>
@@ -72,8 +74,8 @@
 				<div class="columns" v-else>
 					<div class="column col-3">
 						<button class="btn btn-sm btn-block btn-success"
-								@click="saveChanges(card_data.account_id, card_data.post_id)"
-								v-if="edit" :disabled=" ! enabled">
+						        @click="saveChanges(card_data.account_id, card_data.post_id)"
+						        v-if="edit" :disabled=" ! enabled">
 							<i class="fa fa-spinner fa-spin" v-if=" is_loading === 'edit'"></i>
 							<i class="fa fa-check" aria-hidden="true" v-else></i>
 							Save
@@ -81,7 +83,7 @@
 					</div>
 					<div class="column col-3">
 						<button class="btn btn-sm btn-block btn-warning" @click="cancelChanges" v-if="edit"
-								:disabled=" ! enabled">
+						        :disabled=" ! enabled">
 							<i class="fa fa-times" aria-hidden="true"></i>
 							Cancel
 						</button>
@@ -93,7 +95,7 @@
 					<figure class="figure" v-if="content.post_image !== ''">
 						<img :src="content.post_image" class="img-fit-cover img-responsive">
 					</figure>
-
+				
 				</div>
 				<div class="rop-image-placeholder" v-else>
 					<summary>
@@ -105,7 +107,6 @@
 		</div>
 	</div>
 </template>
-
 
 <script>
 	/* global wp */
@@ -242,9 +243,9 @@
 				window.open()
 			},
 			removeImage: function () {
-			    let self = this;
-                self.content.post_image = null;
-                self.post_edit.image = null;
+				let self = this;
+				self.content.post_image = null;
+				self.post_edit.image = null;
 			},
 			iconClass: function (accountId) {
 				let serviceIcon = 'fa-user'
@@ -273,19 +274,23 @@
 </script>
 
 <style scoped>
-.fa {
-	background: transparent;
-}
-#rop_core .vertical-align {
-	align-items: flex-end;
-}
-#rop_core figure.figure {
-	margin: -.7em -2em -1em 0;
-}
+	.fa {
+		background: transparent;
+	}
+	
+	#rop_core .vertical-align {
+		align-items: flex-end;
+	}
+	
+	#rop_core figure.figure {
+		margin: -.7em -2em -1em 0;
+	}
+	
 	@media (max-width: 600px) {
 		#rop_core .vertical-align {
 			align-items: center;
 		}
+		
 		#rop_core figure.figure {
 			margin: 10px auto 0;
 		}
