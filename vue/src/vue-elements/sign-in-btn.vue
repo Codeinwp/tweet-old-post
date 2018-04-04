@@ -28,7 +28,7 @@
 							<label class="form-label" :for="field.id">{{ field.name }}</label>
 							<input class="form-input" type="text" :id="field.id" v-model="field.value"
 							       :placeholder="field.name"/>
-							<i>{{ field.description }}</i>
+							<p class="text-gray">{{ field.description }}</p>
 						</div>
 					</div>
 				</div>
