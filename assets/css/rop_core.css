@@ -1086,7 +1086,7 @@ a.active {
 #rop_core .form-checkbox,
 #rop_core .form-radio,
 #rop_core .form-switch {
-    display: inline-block;
+    display: table;
     position: relative;
     padding: 0.1rem 1.1rem;
     line-height: 1rem;

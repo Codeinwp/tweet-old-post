@@ -28713,8 +28713,8 @@ exports.default = new _vuex2.default.Store({
 		page: {
 			debug: false,
 			logs: [],
-			view: 'accounts',
-			template: 'accounts'
+			view: 'settings',
+			template: 'settings'
 		},
 		cron_status: {},
 		toast: {
@@ -28906,7 +28906,6 @@ exports.default = new _vuex2.default.Store({
 						commit('updateState', { stateData: toast, requestName: 'update_toast' });
 					}
 					var stateData = response.data;
-					console.log(stateData);
 					if (response.data.data) {
 						stateData = response.data.data;
 					}
@@ -33046,9 +33045,9 @@ module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\">\n
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(209)
+__webpack_require__(276)
 __vue_script__ = __webpack_require__(211)
-__vue_template__ = __webpack_require__(221)
+__vue_template__ = __webpack_require__(278)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -33065,46 +33064,8 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 209 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(210);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0249af62&file=settings-tab-panel.vue!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./settings-tab-panel.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0249af62&file=settings-tab-panel.vue!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./settings-tab-panel.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 210 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(1)();
-// imports
-
-
-// module
-exports.push([module.i, "\n\t.rop-tab-state-true {\n\t\topacity: 0.2;\n\t}\n\n\t.rop-tab-state-false {\n\t\topacity: 1;\n\t}\n\t#rop_core .panel-body .text-gray {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n", ""]);
-
-// exports
-
-
-/***/ }),
+/* 209 */,
+/* 210 */,
 /* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -33128,8 +33089,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 			<div class="container" :class="'rop-tab-state-'+is_loading">
 // 				<!-- Min Interval Between Shares -->
 // 				<div class="columns text-right py-2">
-// 					<div class="column col-6 col-sm-12">
-// 						<b>Minimum interval between shares</b><br/>
+// 					<div class="column col-6 col-sm-12 vertical-align">
+// 						<b>Minimum interval between shares</b>
 // 						<p class="text-gray">Minimum time between shares (hour/hours), 0.4 can be used.</p>
 // 					</div>
 // 					<div class="column col-6 col-sm-12 vertical-align">
@@ -33140,8 +33101,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 				<span class="divider"></span>
 // 				<!-- Min Post Age -->
 // 				<div class="columns text-right py-2">
-// 					<div class="column col-6 col-sm-12">
-// 						<b>Minimum post age</b><br/>
+// 					<div class="column col-6 col-sm-12 vertical-align">
+// 						<b>Minimum post age</b>
 // 						<p class="text-gray">Minimum age of posts available for sharing, in days.</p>
 // 					</div>
 // 					<div class="column col-6 col-sm-12 vertical-align">
@@ -33151,8 +33112,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 				</div>
 // 				<!-- Max Post Age -->
 // 				<div class="columns text-right py-2">
-// 					<div class="column col-6 col-sm-12">
-// 						<b>Maximum post age</b><br/>
+// 					<div class="column col-6 col-sm-12 vertical-align">
+// 						<b>Maximum post age</b>
 // 						<p class="text-gray">Maximum age of posts available for sharing, in days.</p>
 // 					</div>
 // 					<div class="column col-6 col-sm-12 vertical-align">
@@ -33165,8 +33126,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 // 				<!-- No. of posts -->
 // 				<div class="columns text-right py-2">
-// 					<div class="column col-6 col-sm-12">
-// 						<b>Number of posts</b><br/>
+// 					<div class="column col-6 col-sm-12 vertical-align">
+// 						<b>Number of posts</b>
 // 						<p class="text-gray">Number of posts to share per. account per. trigger of scheduled job.</p>
 // 					</div>
 // 					<div class="column col-6 col-sm-12 vertical-align">
@@ -33177,12 +33138,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 // 				<!-- Share more than once -->
 // 				<div class="columns text-right py-2">
-// 					<div class="column col-6 col-sm-12">
-// 						<b>Share more than once?</b><br/>
-// 						<p class="text-gray">If there are no more posts to share, we should start re-sharing the one we previously
-// 							shared.</p>
-// 					</div>
 // 					<div class="column col-6 col-sm-12 vertical-align">
+// 						<b>Share more than once?</b>
+// 						<p class="text-gray">If there are no more posts to share, we should start re-sharing the one we previously shared.</p>
+// 					</div>
+// 					<div class="column col-6 col-sm-12 vertical-align text-left">
 // 						<div class="form-group">
 // 							<label class="form-checkbox">
 // 								<input type="checkbox" v-model="generalSettings.more_than_once"/>
@@ -33195,8 +33155,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 // 				<!-- Post Types -->
 // 				<div class="columns text-right py-2" :class="'rop-control-container-'+isPro">
-// 					<div class="column col-6 col-sm-12">
-// 						<b>Post types</b><br/>
+// 					<div class="column col-6 col-sm-12 vertical-align">
+// 						<b>Post types</b>
 // 						<p class="text-gray">Post types available to share - what post types are available for share</p>
 // 					</div>
 // 					<div class="column col-6 col-sm-12 vertical-align text-left">
@@ -33206,78 +33166,72 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 					</div>
 // 				</div>
 //
-// 				<div class="columns text-right py-2" v-if="! isPro">
-// 					<div class="col-12 text-center">
-// 						<p><i class="fa fa-lock"></i> Selecting custom post types is available in the pro
-// 							version. </p>
+// 				<!-- Upsell -->
+// 				<div class="columns text-right py-2" v-if="!isPro">
+// 					<div class="column ol-12 text-center">
+// 						<p class="text-light bg-dark upsell"><i class="fa fa-lock"></i> Selecting custom post types is available in the pro version.</p>
 // 					</div>
 // 				</div>
-// 				<hr/>
-// 				<div class="columns">
-// 					<div class="column col-sm-12 col-md-12 col-lg-12">
-// 						<div class="columns">
-// 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-// 								<b>Taxonomies</b><br/>
-// 								<i>Taxonomies available for the selected post types. Use to include or exclude
-// 									posts.</i>
-// 							</div>
-// 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-// 								<div class="input-group">
-// 									<multiple-select :options="taxonomies"
-// 													 :selected="generalSettings.selected_taxonomies"
-// 													 :changedSelection="updatedTaxonomies"/>
-// 									<span class="input-group-addon">
-// 										<label class="form-checkbox">
-// 											<input type="checkbox" v-model="generalSettings.exclude_taxonomies"
-// 												   @change="exludeTaxonomiesChange"/>
-// 											<i class="form-icon"></i> Exclude?
-// 										</label>
-// 									</span>
-// 								</div>
-// 							</div>
-// 						</div>
-// 					</div>
-// 				</div>
-// 				<hr/>
-// 				<div class="columns">
-// 					<div class="column col-sm-12 col-md-12 col-lg-12">
-// 						<div class="columns">
-// 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-// 								<b>Posts</b><br/>
-// 								<i>Posts excluded/included in sharing, filtered based on previous selections.</i>
-// 							</div>
-// 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-// 								<div class="input-group">
-// 									<multiple-select :searchQuery="searchQuery" @update="searchUpdate"
-// 									                 :options="postsAvailable" :dont-lock="true"
-// 									                 :selected="generalSettings.selected_posts"
-// 									                 :changedSelection="updatedPosts"/>
 //
-// 								</div>
-// 							</div>
+// 				<span class="divider"></span>
+//
+// 				<!-- Taxonomies -->
+// 				<div class="columns text-right py-2" :class="'rop-control-container-'+isPro">
+// 					<div class="column col-6 col-sm-12 vertical-align">
+// 						<b>Taxonomies</b>
+// 						<p class="text-gray">Taxonomies available for the selected post types. Use to include or exclude posts.</p>
+// 					</div>
+// 					<div class="column col-6 col-sm-12 vertical-align text-left">
+// 						<div class="input-group">
+// 							<multiple-select :options="taxonomies"
+// 											 :selected="generalSettings.selected_taxonomies"
+// 											 :changed-selection="updatedTaxonomies"/>
+// 							<span class="input-group-addon">
+// 								<label class="form-checkbox">
+// 									<input type="checkbox" v-model="generalSettings.exclude_taxonomies"
+// 										   @change="exludeTaxonomiesChange"/>
+// 									<i class="form-icon"></i>Exclude?
+// 								</label>
+// 							</span>
 // 						</div>
 // 					</div>
 // 				</div>
-// 				<hr/>
-// 				<div class="columns">
-// 					<div class="column col-sm-12 col-md-12 col-lg-12">
-// 						<div class="columns">
-// 							<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-// 								<b>Enable Google Analytics Tracking</b><br/>
-// 								<i>If checked an utm query willbe added to URL's so that you cand better track
-// 									trafic.</i>
-// 							</div>
-// 							<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-// 								<div class="form-group">
-// 									<label class="form-checkbox">
-// 										<input type="checkbox" v-model="generalSettings.ga_tracking"/>
-// 										<i class="form-icon"></i> Yes
-// 									</label>
-// 								</div>
-// 							</div>
+//
+// 				<span class="divider"></span>
+// 				<!-- Posts -->
+// 				<div class="columns text-right py-2">
+// 					<div class="column col-6 col-sm-12 vertical-align">
+// 						<b>Posts</b>
+// 						<p class="text-gray">Posts excluded/included in sharing, filtered based on previous selections.</p>
+// 					</div>
+// 					<div class="column col-6 col-sm-12 vertical-align text-left">
+// 						<div class="input-group">
+// 							<multiple-select :searchQuery="searchQuery" @update="searchUpdate"
+// 											 :options="postsAvailable" :dont-lock="true"
+// 											 :selected="generalSettings.selected_posts"
+// 											 :changed-selection="updatedPosts"/>
+//
 // 						</div>
 // 					</div>
 // 				</div>
+// 				<span class="divider"></span>
+//
+// 				<!-- Google Analytics -->
+// 				<div class="columns text-right py-2">
+// 					<div class="column col-6 col-sm-12 vertical-align">
+// 						<b>Enable Google Analytics Tracking</b>
+// 						<p class="text-gray">If checked an utm query willbe added to URL's so that you cand better track trafic.</p>
+// 					</div>
+// 					<div class="column col-6 col-sm-12 vertical-align text-left">
+// 						<div class="form-group">
+// 							<label class="form-checkbox">
+// 								<input type="checkbox" v-model="generalSettings.ga_tracking"/>
+// 								<i class="form-icon"></i>Yes
+// 							</label>
+// 						</div>
+// 					</div>
+// 				</div>
+// 				<span class="divider"></span>
 // 			</div>
 // 		</div>
 // 		<div class="panel-footer">
@@ -33423,12 +33377,12 @@ module.exports = {
 		}
 	},
 	components: {
-		'counterInput': _counterInput2.default,
-		'MultipleSelect': _multipleSelect2.default
+		counterInput: _counterInput2.default,
+		MultipleSelect: _multipleSelect2.default
 	}
 	// </script>
 	//
-	// <style>
+	// <style scoped>
 	// 	.rop-tab-state-true {
 	// 		opacity: 0.2;
 	// 	}
@@ -33439,6 +33393,25 @@ module.exports = {
 	// 	#rop_core .panel-body .text-gray {
 	// 		margin: 0;
 	// 		line-height: normal;
+	// 	}
+	// 	#rop_core .input-group {
+	// 		width: 100%;
+	// 	}
+	// 	b {
+	// 		margin-bottom :5px;
+	// 		display: block;
+	// 	}
+	// 	#rop_core p.upsell {
+	// 		margin-bottom: 0;
+	// 	}
+	//
+	// 	@media( max-width: 600px ) {
+	// 		#rop_core .panel-body .text-gray {
+	// 			margin-bottom: 10px;
+	// 		}
+	// 		#rop_core .text-right {
+	// 			text-align: left;
+	// 		}
 	// 	}
 	// </style>
 
@@ -34067,12 +34040,7 @@ exports.mixin = mixin;
 module.exports = "\n\t<div class=\"form-autocomplete\" style=\"width: 100%;\" v-on-clickaway=\"closeDropdown\">\n\t\t<!-- autocomplete input container -->\n\t\t<div class=\"form-autocomplete-input form-input\" :class=\"is_focused\">\n\t\t\t\n\t\t\t<!-- autocomplete chips -->\n\t\t\t<label class=\"chip\" v-for=\"( option, index ) in selected\">\n\t\t\t\t{{option.name}}\n\t\t\t\t<a href=\"#\" class=\"btn btn-clear\" aria-label=\"Close\" @click.prevent=\"removeSelected(index)\"\n\t\t\t\t   role=\"button\"></a>\n\t\t\t</label>\n\t\t\t\n\t\t\t<!-- autocomplete real input box -->\n\t\t\t<input style=\"height: 1.0rem;\" class=\"form-input\" type=\"text\" ref=\"search\" v-model=\"search\"\n\t\t\t       :placeholder=\"autocomplete_placeholder\" @click=\"magic_flag = true\" @focus=\"magic_flag = true\"\n\t\t\t       @keyup=\"magic_flag = true\" @keydown.8=\"popLast()\" @keydown.38=\"highlightItem(true)\"\n\t\t\t       @keydown.40=\"highlightItem()\" :disabled=\"is_disabled\">\n\t\t</div>\n\t\t\n\t\t<!-- autocomplete suggestion list -->\n\t\t<ul class=\"menu\" ref=\"autocomplete_results\" :class=\"is_visible\"\n\t\t    style=\"overflow-y: scroll; max-height: 120px\">\n\t\t\t<!-- menu list chips -->\n\t\t\t<li class=\"menu-item\" v-for=\"( option, index ) in options\" v-if=\"filterSearch(option)\">\n\t\t\t\t<a href=\"#\" @click.prevent=\"addToSelected(index)\" @keydown.38=\"highlightItem(true)\"\n\t\t\t\t   @keydown.40=\"highlightItem()\">\n\t\t\t\t\t<div class=\"tile tile-centered\">\n\t\t\t\t\t\t<div class=\"tile-content\" v-html=\"markMatch(option.name, search)\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</a>\n\t\t\t</li>\n\t\t\t<li v-if=\"has_results\">\n\t\t\t\t<a href=\"#\">\n\t\t\t\t\t<div class=\"tile tile-centered\">\n\t\t\t\t\t\t<div class=\"tile-content\"><i>Nothing found matching \"{{search}}\" ...</i></div>\n\t\t\t\t\t</div>\n\t\t\t\t</a>\n\t\t\t</li>\n\t\t</ul>\n\t</div>\n\n";
 
 /***/ }),
-/* 221 */
-/***/ (function(module, exports) {
-
-module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\">\n\t\t\t<h3>General Settings</h3>\n\t\t\t<div class=\"container\" :class=\"'rop-tab-state-'+is_loading\">\n\t\t\t\t<!-- Min Interval Between Shares -->\n\t\t\t\t<div class=\"columns text-right py-2\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12\">\n\t\t\t\t\t\t<b>Minimum interval between shares</b><br/>\n\t\t\t\t\t\t<p class=\"text-gray\">Minimum time between shares (hour/hours), 0.4 can be used.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\">\n\t\t\t\t\t\t<counter-input id=\"default_interval\"\n\t\t\t\t\t\t\t\t\t   :value.sync=\"generalSettings.default_interval\"/>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\"></span>\n\t\t\t\t<!-- Min Post Age -->\n\t\t\t\t<div class=\"columns text-right py-2\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12\">\n\t\t\t\t\t\t<b>Minimum post age</b><br/>\n\t\t\t\t\t\t<p class=\"text-gray\">Minimum age of posts available for sharing, in days.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\">\n\t\t\t\t\t\t<counter-Input id=\"min_post_age\" :max-val=\"365\"\n\t\t\t\t\t\t\t\t\t   :value.sync=\"generalSettings.minimum_post_age\"/>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- Max Post Age -->\n\t\t\t\t<div class=\"columns text-right py-2\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12\">\n\t\t\t\t\t\t<b>Maximum post age</b><br/>\n\t\t\t\t\t\t<p class=\"text-gray\">Maximum age of posts available for sharing, in days.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\">\n\t\t\t\t\t\t<counter-input id=\"max_post_age\" :max-val=\"365\"\n\t\t\t\t\t\t\t\t\t   :value.sync=\"generalSettings.maximum_post_age\"/>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\"></span>\n\n\t\t\t\t<!-- No. of posts -->\n\t\t\t\t<div class=\"columns text-right py-2\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12\">\n\t\t\t\t\t\t<b>Number of posts</b><br/>\n\t\t\t\t\t\t<p class=\"text-gray\">Number of posts to share per. account per. trigger of scheduled job.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\">\n\t\t\t\t\t\t<counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\"/>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\"></span>\n\n\t\t\t\t<!-- Share more than once -->\n\t\t\t\t<div class=\"columns text-right py-2\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12\">\n\t\t\t\t\t\t<b>Share more than once?</b><br/>\n\t\t\t\t\t\t<p class=\"text-gray\">If there are no more posts to share, we should start re-sharing the one we previously\n\t\t\t\t\t\t\tshared.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\">\n\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\"/>\n\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Yes\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\"></span>\n\n\t\t\t\t<!-- Post Types -->\n\t\t\t\t<div class=\"columns text-right py-2\" :class=\"'rop-control-container-'+isPro\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12\">\n\t\t\t\t\t\t<b>Post types</b><br/>\n\t\t\t\t\t\t<p class=\"text-gray\">Post types available to share - what post types are available for share</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\">\n\t\t\t\t\t\t<multiple-select :options=\"postTypes\" :disabled=\"isPro\"\n\t\t\t\t\t\t\t\t\t\t :selected=\"generalSettings.selected_post_types\"\n\t\t\t\t\t\t\t\t\t\t :changed-selection=\"updatedPostTypes\"/>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"columns text-right py-2\" v-if=\"! isPro\">\n\t\t\t\t\t<div class=\"col-12 text-center\">\n\t\t\t\t\t\t<p><i class=\"fa fa-lock\"></i> Selecting custom post types is available in the pro\n\t\t\t\t\t\t\tversion. </p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Taxonomies</b><br/>\n\t\t\t\t\t\t\t\t<i>Taxonomies available for the selected post types. Use to include or exclude\n\t\t\t\t\t\t\t\t\tposts.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\"\n\t\t\t\t\t\t\t\t\t\t\t\t\t :selected=\"generalSettings.selected_taxonomies\"\n\t\t\t\t\t\t\t\t\t\t\t\t\t :changedSelection=\"updatedTaxonomies\"/>\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\">\n\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\"\n\t\t\t\t\t\t\t\t\t\t\t\t   @change=\"exludeTaxonomiesChange\"/>\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Exclude?\n\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Posts</b><br/>\n\t\t\t\t\t\t\t\t<i>Posts excluded/included in sharing, filtered based on previous selections.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\">\n\t\t\t\t\t\t\t\t\t<multiple-select :searchQuery=\"searchQuery\" @update=\"searchUpdate\"\n\t\t\t\t\t\t\t\t\t                 :options=\"postsAvailable\" :dont-lock=\"true\"\n\t\t\t\t\t\t\t\t\t                 :selected=\"generalSettings.selected_posts\"\n\t\t\t\t\t\t\t\t\t                 :changedSelection=\"updatedPosts\"/>\n\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<hr/>\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12\">\n\t\t\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right\">\n\t\t\t\t\t\t\t\t<b>Enable Google Analytics Tracking</b><br/>\n\t\t\t\t\t\t\t\t<i>If checked an utm query willbe added to URL's so that you cand better track\n\t\t\t\t\t\t\t\t\ttrafic.</i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left\">\n\t\t\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.ga_tracking\"/>\n\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i> Yes\n\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\"><i class=\"fa fa-check\"\n\t\t\t                                                                  v-if=\"!this.is_loading\"></i> <i\n\t\t\t\t\tclass=\"fa fa-spinner fa-spin\" v-else></i> Save\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
-
-/***/ }),
+/* 221 */,
 /* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -38650,6 +38618,52 @@ module.exports = "\n\t<div class=\"toast toast-success rop-current-time\" v-if=\
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div>\n\t\t<div class=\"panel title-panel\" style=\"margin-bottom: 40px;\">\n\t\t\t<div class=\"panel-header\">\n\t\t\t\t<img :src=\"plugin_logo\" style=\"float: left; margin-right: 10px;\"/>\n\t\t\t\t<h1 class=\"d-inline-block\">Revive Old Posts</h1><span class=\"powered\"> by <a\n\t\t\t\t\thref=\"https://themeisle.com\" target=\"_blank\"><b>ThemeIsle</b></a></span>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns\">\n\t\t\t<div class=\"panel  column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-8 \">\n\t\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t\t<ul class=\"tab \">\n\t\t\t\t\t\t<li class=\"tab-item\" v-for=\"tab in displayTabs\"\n\t\t\t\t\t\t    :class=\"{ active: tab.isActive }\">\n\t\t\t\t\t\t\t<a href=\"#\" :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\n\t\t\t\t\t\t\t   :data-badge=\"logs_no\"\n\t\t\t\t\t\t\t   @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\n\t\t\t\t\t\t</li>\n\t\t\t\t\t\t<li class=\"tab-item tab-action\">\n\t\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.custom_messages\"\n\t\t\t\t\t\t\t\t\t       @change=\"updateSettings\"/>\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i><span class=\"hide-sm\">Custom Share Messages</span>\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t\t<component :is=\"page.template\" :type=\"page.view\"></component>\n\t\t\t</div>\n\t\t\t\n\t\t\t<div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12 col-xl-4 \"\n\t\t\t     :class=\"'rop-license-plan-'+license\">\n\t\t\t\t\n\t\t\t\t<div class=\"card rop-container-start\">\n\t\t\t\t\t<div class=\"toast toast-success rop-current-time\" v-if=\"formatedDate\">\n\t\t\t\t\t\tNow: {{ formatedDate }}\n\t\t\t\t\t</div>\n\t\t\t\t\t<countdown :current_time=\"current_time\"/>\n\t\t\t\t\t<button class=\"btn\" :class=\"btn_class\"\n\t\t\t\t\t        data-tooltip=\"You will need\n\t\t\t\t\t         at least one active account\n\t\t\t\t\t         to start sharing.\"\n\t\t\t\t\t        @click=\"togglePosting()\" :disabled=\"haveAccounts\">\n\t\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t\t\t{{( start_status ? 'Stop' : 'Start' )}} Sharing\n\t\t\t\t\t</button>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \">\n\t\t\t\t\tBuy the pro version\n\t\t\t\t</div>\n\t\t\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1\">\n\t\t\t\t\tBuy the business version\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+
+/***/ }),
+/* 276 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(277);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(2)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0249af62&file=settings-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./settings-tab-panel.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0249af62&file=settings-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./settings-tab-panel.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 277 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(1)();
+// imports
+
+
+// module
+exports.push([module.i, "\n\t.rop-tab-state-true[_v-0249af62] {\n\t\topacity: 0.2;\n\t}\n\n\t.rop-tab-state-false[_v-0249af62] {\n\t\topacity: 1;\n\t}\n\t#rop_core .panel-body .text-gray[_v-0249af62] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\t#rop_core .input-group[_v-0249af62] {\n\t\twidth: 100%;\n\t}\n\tb[_v-0249af62] {\n\t\tmargin-bottom :5px;\n\t\tdisplay: block;\n\t}\n\t#rop_core p.upsell[_v-0249af62] {\n\t\tmargin-bottom: 0;\n\t}\n\n\t@media( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-0249af62] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\t\t#rop_core .text-right[_v-0249af62] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 278 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div class=\"tab-view\" _v-0249af62=\"\">\n\t\t<div class=\"panel-body\" _v-0249af62=\"\">\n\t\t\t<h3 _v-0249af62=\"\">General Settings</h3>\n\t\t\t<div class=\"container\" :class=\"'rop-tab-state-'+is_loading\" _v-0249af62=\"\">\n\t\t\t\t<!-- Min Interval Between Shares -->\n\t\t\t\t<div class=\"columns text-right py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Minimum interval between shares</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">Minimum time between shares (hour/hours), 0.4 can be used.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<counter-input id=\"default_interval\" :value.sync=\"generalSettings.default_interval\" _v-0249af62=\"\">\n\t\t\t\t\t</counter-input></div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\t\t\t\t<!-- Min Post Age -->\n\t\t\t\t<div class=\"columns text-right py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Minimum post age</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">Minimum age of posts available for sharing, in days.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<counter-input id=\"min_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.minimum_post_age\" _v-0249af62=\"\">\n\t\t\t\t\t</counter-input></div>\n\t\t\t\t</div>\n\t\t\t\t<!-- Max Post Age -->\n\t\t\t\t<div class=\"columns text-right py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Maximum post age</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">Maximum age of posts available for sharing, in days.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<counter-input id=\"max_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.maximum_post_age\" _v-0249af62=\"\">\n\t\t\t\t\t</counter-input></div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\n\t\t\t\t<!-- No. of posts -->\n\t\t\t\t<div class=\"columns text-right py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Number of posts</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">Number of posts to share per. account per. trigger of scheduled job.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\" _v-0249af62=\"\">\n\t\t\t\t\t</counter-input></div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\n\t\t\t\t<!-- Share more than once -->\n\t\t\t\t<div class=\"columns text-right py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Share more than once?</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">If there are no more posts to share, we should start re-sharing the one we previously shared.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-0249af62=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-0249af62=\"\"></i> Yes\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\n\t\t\t\t<!-- Post Types -->\n\t\t\t\t<div class=\"columns text-right py-2\" :class=\"'rop-control-container-'+isPro\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Post types</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">Post types available to share - what post types are available for share</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-0249af62=\"\">\n\t\t\t\t\t\t<multiple-select :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-0249af62=\"\">\n\t\t\t\t\t</multiple-select></div>\n\t\t\t\t</div>\n\n\t\t\t\t<!-- Upsell -->\n\t\t\t\t<div class=\"columns text-right py-2\" v-if=\"!isPro\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column ol-12 text-center\" _v-0249af62=\"\">\n\t\t\t\t\t\t<p class=\"text-light bg-dark upsell\" _v-0249af62=\"\"><i class=\"fa fa-lock\" _v-0249af62=\"\"></i> Selecting custom post types is available in the pro version.</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\n\t\t\t\t<!-- Taxonomies -->\n\t\t\t\t<div class=\"columns text-right py-2\" :class=\"'rop-control-container-'+isPro\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Taxonomies</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">Taxonomies available for the selected post types. Use to include or exclude posts.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-0249af62=\"\">\n\t\t\t\t\t\t<div class=\"input-group\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t<span class=\"input-group-addon\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" @change=\"exludeTaxonomiesChange\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-0249af62=\"\"></i>Exclude?\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t</multiple-select></div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\t\t\t\t<!-- Posts -->\n\t\t\t\t<div class=\"columns text-right py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Posts</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">Posts excluded/included in sharing, filtered based on previous selections.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-0249af62=\"\">\n\t\t\t\t\t\t<div class=\"input-group\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t<multiple-select :searchquery=\"searchQuery\" @update=\"searchUpdate\" :options=\"postsAvailable\" :dont-lock=\"true\" :selected=\"generalSettings.selected_posts\" :changed-selection=\"updatedPosts\" _v-0249af62=\"\">\n\n\t\t\t\t\t\t</multiple-select></div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\n\t\t\t\t<!-- Google Analytics -->\n\t\t\t\t<div class=\"columns text-right py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Enable Google Analytics Tracking</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">If checked an utm query willbe added to URL's so that you cand better track trafic.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-0249af62=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.ga_tracking\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-0249af62=\"\"></i>Yes\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\" _v-0249af62=\"\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\" _v-0249af62=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-0249af62=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-0249af62=\"\"></i> Save\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ })
 /******/ ]);
