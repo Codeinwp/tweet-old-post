@@ -1,24 +1,26 @@
 <template>
 	<div class="tab-view">
 		<div class="panel-body">
-			<h3>Accounts</h3>
+			<div class="column col-12">
+				<h3>Accounts</h3>
+				<span class="divider"></span>
+			</div>
 			<div class="columns">
-				<div class="column col-sm-12 col-md-12 col-xl-12 col-12 text-center">
-					<b>New Service</b><br/>
-					<i>Select a service and sign in with an account for that service.</i>
+				<div class="column col-sm-12 col-md-12 col-xl-12 col-12 text-center py-2">
+					<b>New Service</b>
+					<p class="text-gray">Select a service and sign in with an account for that service.</p>
 				</div>
-				<div class="column col-sm-12 col-md-12 col-xl-6 col-4 text-center centered">
+				<div class="column col-sm-12 col-md-12 col-xl-6 col-4 pb-2 text-center centered">
 					<sign-in-btn></sign-in-btn>
 				</div>
 			</div>
-			
+			<span class="divider mt-2 pb-2"></span>
+
 			<div class="container">
 				<div class="columns" v-if="checkLicense">
-					<div class="column col-12 text-left">
-						<h5><i class="fa fa-lock "></i> Extend</h5>
-						<p>You are allowed to add a maximum 1 account for Twitter and 1 account for Facebook. For using
-							more
-							accounts and networks, you need to check the <strong>FULL</strong> version.
+					<div class="column col-12 text-center">
+						<p class="upsell">
+							<i class="fa fa-lock "></i>You are allowed to add a maximum 1 account for Twitter and 1 account for Facebook. For using more accounts and networks, you need to check the <strong>FULL</strong> version.
 						</p>
 					</div>
 				</div>
@@ -35,7 +37,7 @@
 						</div>
 						<div class="account-container" v-for="( account, id ) in accounts">
 							<service-user-tile :account_data="account" :account_id="id"></service-user-tile>
-							<div class="divider"></div>
+							<span class="divider"></span>
 						</div>
 					</div>
 				</div>
@@ -49,12 +51,13 @@
 							sharing.</p>
 					</div>
 				</div>
-
+				<div class="column col-12 text-right">
 				<button class="btn btn-secondary" @click="resetAccountData()">
 					<i class="fa fa-ban" v-if="!this.is_loading"></i>
 					<i class="fa fa-spinner fa-spin" v-else></i>
 					Remove all accounts
 				</button>
+				</div>
 			</div>
 		</div>
 	

@@ -19,7 +19,7 @@
 						</li>
 						<li class="tab-item tab-action">
 							<div class="form-group">
-								<label class="form-switch">
+								<label class="form-switch col-ml-auto">
 									<input type="checkbox" v-model="generalSettings.custom_messages"
 									       @change="updateSettings"/>
 									<i class="form-icon"></i><span class="hide-sm">Custom Share Messages</span>

@@ -1,11 +1,19 @@
 <template>
 	<div :class="'rop-control-container-'+ ( license>1 ) ">
-		<div class="columns  rop-control">
-			<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-				<b>Schedule Type</b><br/>
-				<i>What type of schedule to use.</i>
+		<div class="columns mt-0">
+			<div class="column col-12 mt-0">
+				<span class="divider"></span>
+				<h4 class="label my-2">Custom Schedule</h4>
 			</div>
-			<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+		</div>
+
+		<!-- Schedule Type -->
+		<div class="columns text-right py-2 rop-control">
+			<div class="column col-6 col-sm-12 vertical-align">
+				<b>Schedule Type</b>
+				<p class="text-gray">What type of schedule to use.</p>
+			</div>
+			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="form-group">
 					<select class="form-select" v-model="schedule.type">
 						<option value="recurring">Recurring</option>
@@ -14,32 +22,35 @@
 				</div>
 			</div>
 		</div>
-		
-		<div class="columns  rop-control" v-if="schedule.type === 'fixed'">
-			<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-				<b>Fixed Schedule Days</b><br/>
-				<i>The days when to share for this account.</i>
+
+		<!-- Fixed Schedule Days -->
+		<div class="columns text-right py-2 rop-control" v-if="schedule.type === 'fixed'">
+			<div class="column col-6 col-sm-12 vertical-align">
+				<b>Fixed Schedule Days</b>
+				<p class="text-gray">The days when to share for this account.</p>
 			</div>
-			<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
-				<div class="form-group">
+			<div class="column col-6 col-sm-12 vertical-align">
+				<div class="form-group input-group">
 					<button-checkbox v-for="( data, label ) in daysObject" :key="label" :value="data.value"
 					                 :label="label" :checked="data.checked" @add-day="addDay" @rmv-day="rmvDay"
 					></button-checkbox>
 				</div>
 			</div>
 		</div>
-		<div class="columns  rop-control" v-if="schedule.type === 'fixed'">
-			<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-				<b>Fixed Schedule Time</b><br/>
-				<i>The time at witch to share for this account.</i>
+
+		<!-- Fixed Schedule time -->
+		<div class="columns text-right py-2 rop-control" v-if="schedule.type === 'fixed'">
+			<div class="column col-6 col-sm-12 vertical-align">
+				<b>Fixed Schedule Time</b>
+				<p class="text-gray">The time at witch to share for this account.</p>
 			</div>
-			<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="form-group">
 					<div class="input-group" v-for="( time, index ) in schedule.interval_f.time">
 						<vue-timepicker :minute-interval="5" class="timepicker-style-fix" :value="getTime( index )"
 						                @change="syncTime( $event, index )" hide-clear-button
 						></vue-timepicker>
-						<button class="btn btn-success input-group-btn" v-if="schedule.interval_f.time.length > 1"
+						<button class="btn btn-danger input-group-btn" v-if="schedule.interval_f.time.length > 1"
 						        @click="rmvTime( index )">
 							<i class="fa fa-fw fa-minus"></i>
 						</button>
@@ -52,29 +63,28 @@
 				</div>
 			</div>
 		</div>
-		<div class="columns rop-control" v-else>
-			<div class="column col-sm-12 col-md-4 col-xl-3 col-ml-2 col-4 text-right">
-				<b>Recurring Schedule Interval</b><br/>
-				<i>A recurring interval to use for sharing. Once every 'X' hours.</i>
+
+		<!-- Recurring Schedule Interval -->
+		<div class="columns text-right py-2 rop-control" v-else>
+			<div class="column col-6 col-sm-12 vertical-align">
+				<b>Recurring Schedule Interval</b>
+				<p class="text-gray">A recurring interval to use for sharing. Once every 'X' hours.</p>
 			</div>
-			<div class="column col-sm-12 col-md-8 col-xl-9 col-mr-4 col-7 text-left">
+			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="form-group">
 					<input type="number" class="form-input" v-model="schedule.interval_r"
 					       placeholder="hours.min (Eg. 2.5)"/>
 				</div>
 			</div>
 		</div>
-		<div class="columns rop-upsell-message" v-if=" license < 1 ">
-			<div class="column col-12">
-				<div class="columns">
-					<div class="column col-12 text-center">
-						<h5><i class="fa fa-lock "></i> Extend</h5>
-						<p>The Custom Schedule is available only in the Business version.
-						</p>
-					</div>
-				</div>
+
+		<!-- Upsell -->
+		<div class="columns py-2" v-if="license < 1">
+			<div class="column text-center">
+				<p class="upsell"><i class="fa fa-lock"></i> The Custom Schedule is available only in the Business version.</p>
 			</div>
 		</div>
+		<span class="divider"></span>
 	</div>
 </template>
 
@@ -96,7 +106,7 @@
 						'value': '2',
 						'checked': false
 					},
-					'Wen': {
+					'Wed': {
 						'value': '3',
 						'checked': false
 					},
@@ -170,4 +180,28 @@
 			VueTimepicker
 		}
 	}
-</script> 
+</script>
+<style scoped>
+	#rop_core .panel-body .text-gray {
+		margin: 0;
+		line-height: normal;
+	}
+	b {
+		margin-bottom :5px;
+		display: block;
+	}
+	#rop_core .input-group .input-group-addon {
+		padding: 3px 5px;
+	}
+	.time-picker {
+		margin-bottom: 10px;
+	}
+	@media( max-width: 600px ) {
+		#rop_core .panel-body .text-gray {
+			margin-bottom: 10px;
+		}
+		#rop_core .text-right {
+			text-align: left;
+		}
+	}
+</style>

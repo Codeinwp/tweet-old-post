@@ -4176,12 +4176,21 @@ a.active {
     color: #32506d;
 }
 
+#rop_core .time-picker.timepicker-style-fix,
+#rop_core .time-picker.timepicker-style-fix input {
+    width: 100%;
+}
 #rop_core .time-picker.timepicker-style-fix .dropdown {
-    top: 4px;
+    top: 100%;
+    position: absolute;
+    width: 100%;
 }
 
 #rop_core .time-picker.timepicker-style-fix ul {
     margin: 0;
+}
+#rop_core .time-picker.timepicker-style-fix .select-list {
+    width: 100%;
 }
 
 #rop_core .time-picker.timepicker-style-fix ul li {

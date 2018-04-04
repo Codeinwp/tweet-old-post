@@ -1,5 +1,5 @@
 <template>
-	<button class="btn" :class="is_active" @click="toggleThis()" >{{label}}</button>
+	<button class="btn input-group-addon column" :class="is_active" @click="toggleThis()" >{{label}}</button>
 </template>
 
 <script>
@@ -58,3 +58,10 @@
 		}
 	}
 </script>
+<style scoped>
+	#rop_core .input-group .input-group-addon.btn.active {
+		background-color: #8bc34a;
+		border-color: #33691e;
+		color: #FFF;
+	}
+</style>

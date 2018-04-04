@@ -1,7 +1,10 @@
 <template>
 	<div class="tab-view">
 		<div class="panel-body" :class="'rop-tab-state-'+is_loading">
-			<h3>Sharing Queue</h3>
+			<div class="column col-12">
+				<h3>Sharing Queue</h3>
+				<span class="divider"></span>
+			</div>
 			<!-- When sharing is not started -->
 			<div class="columns" v-if="! start_status">
 				<div class="column col-12 text-center empty-container">
@@ -14,20 +17,21 @@
 			</div>
 			
 			<!-- When sharing is started and we have items in Q. -->
-			<div class="columns" v-else-if="start_status && queueCount > 0 ">
+			<div v-else-if="start_status && queueCount > 0 ">
 				
 				<!-- When sharing is started but we don't have the business plan. -->
-				<div class="column col-12 text-center" v-if="! is_business">
-					<i class="fa fa-2x fa-lock"></i>
-					<p>You ca edit the posts from the queue only the Business version of the
-						plugin. View more details here.</p>
+				<!-- Upsell -->
+				<div class="columns py-2" v-if="! is_business">
+					<div class="column text-center">
+						<p class="upsell"><i class="fa fa-lock"></i> You ca edit the posts from the queue only the Business version of the
+							plugin. View more details here.</p>
+					</div>
 				</div>
 				
 				<!-- When sharing is started but we  have the business plan. -->
-				<div class="column col-12 text-center" v-else>
-					<i class="fa fa-2x fa-info-circle"></i>
-					<p class="text-gray">You can choose to edit any of the post, skip the sharing or block a specific one from sharing in
-						the future.</p>
+				<div class="d-inline-block mt-2 column col-12">
+					<h6><i class="fa fa-info-circle"></i> Info</h6>
+					<p class="text-gray">You can choose to edit any of the post, skip the sharing or block a specific one from sharing in the future.</p>
 				</div>
 			</div>
 			<!-- When sharing is started there is nothing in the Q. -->
@@ -45,7 +49,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="panel-footer">
+		<div class="panel-footer text-rightcade">
 			<button class="btn btn-secondary" @click="refreshQueue(true)">
 				
 				<i class="fa fa-refresh" v-if="!is_loading"></i>

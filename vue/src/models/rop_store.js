@@ -31,8 +31,8 @@ export default new Vuex.Store( {
 		page: {
 			debug: false,
 			logs: [],
-			view: 'settings',
-			template: 'settings',
+			view: 'accounts',
+			template: 'accounts',
 		},
 		cron_status: {},
 		toast: {

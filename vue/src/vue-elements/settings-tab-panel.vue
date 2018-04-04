@@ -1,7 +1,10 @@
 <template>
 	<div class="tab-view">
 		<div class="panel-body">
-			<h3>General Settings</h3>
+			<div class="column col-12">
+				<h3>General Settings</h3>
+				<span class="divider"></span>
+			</div>
 			<div class="container" :class="'rop-tab-state-'+is_loading">
 				<!-- Min Interval Between Shares -->
 				<div class="columns text-right py-2">
@@ -11,7 +14,7 @@
 					</div>
 					<div class="column col-6 col-sm-12 vertical-align">
 						<counter-input id="default_interval"
-									   :value.sync="generalSettings.default_interval"/>
+									   :value.sync="generalSettings.default_interval"></counter-input>
 					</div>
 				</div>
 				<span class="divider"></span>
@@ -23,7 +26,7 @@
 					</div>
 					<div class="column col-6 col-sm-12 vertical-align">
 						<counter-Input id="min_post_age" :max-val="365"
-									   :value.sync="generalSettings.minimum_post_age"/>
+									   :value.sync="generalSettings.minimum_post_age"></counter-Input>
 					</div>
 				</div>
 				<!-- Max Post Age -->
@@ -34,7 +37,7 @@
 					</div>
 					<div class="column col-6 col-sm-12 vertical-align">
 						<counter-input id="max_post_age" :max-val="365"
-									   :value.sync="generalSettings.maximum_post_age"/>
+									   :value.sync="generalSettings.maximum_post_age"></counter-input>
 					</div>
 				</div>
 
@@ -47,7 +50,7 @@
 						<p class="text-gray">Number of posts to share per. account per. trigger of scheduled job.</p>
 					</div>
 					<div class="column col-6 col-sm-12 vertical-align">
-						<counter-input id="no_of_posts" :value.sync="generalSettings.number_of_posts"/>
+						<counter-input id="no_of_posts" :value.sync="generalSettings.number_of_posts"></counter-input>
 					</div>
 				</div>
 				<span class="divider"></span>
@@ -71,28 +74,28 @@
 
 				<!-- Post Types -->
 				<div class="columns text-right py-2" :class="'rop-control-container-'+isPro">
-					<div class="column col-6 col-sm-12 vertical-align">
+					<div class="column col-6 col-sm-12 vertical-align rop-control">
 						<b>Post types</b>
 						<p class="text-gray">Post types available to share - what post types are available for share</p>
 					</div>
-					<div class="column col-6 col-sm-12 vertical-align text-left">
+					<div class="column col-6 col-sm-12 vertical-align text-left rop-control">
 						<multiple-select :options="postTypes" :disabled="isPro"
 										 :selected="generalSettings.selected_post_types"
-										 :changed-selection="updatedPostTypes"/>
+										 :changed-selection="updatedPostTypes"></multiple-select>
 					</div>
 				</div>
 
 				<!-- Upsell -->
-				<div class="columns text-right py-2" v-if="!isPro">
-					<div class="column ol-12 text-center">
-						<p class="text-light bg-dark upsell"><i class="fa fa-lock"></i> Selecting custom post types is available in the pro version.</p>
+				<div class="columns py-2" v-if="!isPro">
+					<div class="column text-center">
+						<p class="upsell"><i class="fa fa-lock"></i> Selecting custom post types is available in the pro version.</p>
 					</div>
 				</div>
 
 				<span class="divider"></span>
 
 				<!-- Taxonomies -->
-				<div class="columns text-right py-2" :class="'rop-control-container-'+isPro">
+				<div class="columns text-right py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
 						<b>Taxonomies</b>
 						<p class="text-gray">Taxonomies available for the selected post types. Use to include or exclude posts.</p>
@@ -101,16 +104,19 @@
 						<div class="input-group">
 							<multiple-select :options="taxonomies"
 											 :selected="generalSettings.selected_taxonomies"
-											 :changed-selection="updatedTaxonomies"/>
-							<span class="input-group-addon">
+											 :changed-selection="updatedTaxonomies"></multiple-select>
+							<span class="input-group-addon vertical-align">
 								<label class="form-checkbox">
 									<input type="checkbox" v-model="generalSettings.exclude_taxonomies"
 										   @change="exludeTaxonomiesChange"/>
 									<i class="form-icon"></i>Exclude?
 								</label>
 							</span>
+
 						</div>
+
 					</div>
+
 				</div>
 
 				<span class="divider"></span>
@@ -125,7 +131,7 @@
 							<multiple-select :searchQuery="searchQuery" @update="searchUpdate"
 											 :options="postsAvailable" :dont-lock="true"
 											 :selected="generalSettings.selected_posts"
-											 :changed-selection="updatedPosts"/>
+											 :changed-selection="updatedPosts"></multiple-select>
 
 						</div>
 					</div>
@@ -150,7 +156,7 @@
 				<span class="divider"></span>
 			</div>
 		</div>
-		<div class="panel-footer">
+		<div class="panel-footer text-right">
 			<button class="btn btn-primary" @click="saveGeneralSettings()"><i class="fa fa-check"
 			                                                                  v-if="!this.is_loading"></i> <i
 					class="fa fa-spinner fa-spin" v-else></i> Save
@@ -303,7 +309,6 @@
 	.rop-tab-state-true {
 		opacity: 0.2;
 	}
-
 	.rop-tab-state-false {
 		opacity: 1;
 	}
@@ -318,10 +323,9 @@
 		margin-bottom :5px;
 		display: block;
 	}
-	#rop_core p.upsell {
-		margin-bottom: 0;
+	#rop_core .input-group .input-group-addon {
+		padding: 3px 5px;
 	}
-
 	@media( max-width: 600px ) {
 		#rop_core .panel-body .text-gray {
 			margin-bottom: 10px;

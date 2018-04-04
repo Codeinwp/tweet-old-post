@@ -1,8 +1,11 @@
 <template>
 	<div class="tab-view">
 		<div class="panel-body">
-			<h3>Post Format</h3>
-			<div class="d-inline-block">
+			<div class="column col-12">
+				<h3>Post Format</h3>
+				<span class="divider"></span>
+			</div>
+			<div class="d-inline-block mt-2 column col-12">
 				<h6><i class="fa fa-info-circle"></i> Info</h6>
 				<p class="text-gray">Each <b>account</b> can have it's own <b>Post Format</b> for sharing, on the left you can see the
 					current selected account and network, bellow are the <b>Post Format</b> options for the account.
@@ -14,7 +17,7 @@
 			<div class="container" v-if="accountsCount > 0">
 				
 				<div class="columns">
-					<div class="column col-2 col-sm-12 col-md-12 col-xl-3 col-lg-12 col-xs-12 col-rop-selector-accounts">
+					<div class="column col-3 col-sm-12 col-md-12 col-xl-12 col-lg-12 col-xs-12 col-rop-selector-accounts">
 						<span class="divider"></span>
 						<div v-for="( account, id ) in active_accounts">
 							<div class="rop-selector-account-container" v-bind:class="{active: selected_account===id}"
@@ -37,22 +40,22 @@
 							<span class="divider"></span>
 						</div>
 					</div>
-					<div class="column col-10 col-sm-12  col-md-12  col-xl-9 col-lg-12 col-xs-12" :class="'rop-tab-state-'+is_loading">
+					<div class="column col-9 col-sm-12  col-md-12  col-xl-12 col-lg-12 col-xs-12" :class="'rop-tab-state-'+is_loading">
 						<component :is="type" :account_id="selected_account" :license="license"></component>
 					</div>
 				</div>
 			</div>
 		</div>
 		<div class="panel-footer">
-			<div class="panel-actions" v-if="allow_footer">
+			<div class="panel-actions text-right" v-if="allow_footer">
+				<button class="btn btn-secondary" @click="resetAccountData()"><i class="fa fa-ban"
+																				 v-if="!this.is_loading"></i> <i
+						class="fa fa-spinner fa-spin" v-else></i> Reset {{component_label}} for
+					<b>{{active_account_name}}</b>
+				</button>
 				<button class="btn btn-primary" @click="saveAccountData()"><i class="fa fa-check"
 				                                                              v-if="!this.is_loading"></i> <i
 						class="fa fa-spinner fa-spin" v-else></i> Save {{component_label}}
-				</button>
-				<button class="btn btn-secondary" @click="resetAccountData()"><i class="fa fa-ban"
-				                                                                 v-if="!this.is_loading"></i> <i
-						class="fa fa-spinner fa-spin" v-else></i> Reset {{component_label}} for
-					<b>{{active_account_name}}</b>
 				</button>
 			</div>
 		</div>

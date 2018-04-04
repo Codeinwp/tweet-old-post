@@ -26,7 +26,6 @@
 #rop_core .vertical-align {
 	display: flex;
 	flex-direction: column;
-	/* align-items: center; */
 	justify-content: center;
 }
 
@@ -36,6 +35,15 @@
 }
 #rop_core .rop-image-placeholder {
     margin: 0 auto;
+}
+#rop_core .upsell {
+	margin-bottom: 0;
+	background: #8492a0;
+	color: #fff;
+	padding: 5px 10px;
+}
+#rop_core .panel-body h3{
+	padding: 10px 0;
 }
 
 @media (max-width: 960px) {
