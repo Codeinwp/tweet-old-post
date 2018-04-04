@@ -3,7 +3,7 @@
 		<div class="panel title-panel" style="margin-bottom: 40px;">
 			<div class="panel-header">
 				<img :src="plugin_logo" style="float: left; margin-right: 10px;"/>
-				<h1 class="d-inline-block">Revive Old Posts</h1><span class="powered"> by <a
+				<h1 class="d-inline-block">Revive Old Post</h1><span class="powered"> by <a
 					href="https://themeisle.com" target="_blank"><b>ThemeIsle</b></a></span>
 			</div>
 		</div>
