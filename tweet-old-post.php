@@ -25,6 +25,7 @@
  * WordPress Available:  yes
  * Pro Slug:          tweet-old-post-pro
  * Requires License:    no
+ * Requires PHP: 5.4
  * License:           GPLv2 or later
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: tweet-old-post
