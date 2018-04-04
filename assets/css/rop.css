@@ -46,6 +46,13 @@
 	padding: 10px 0;
 }
 
+.rop-tab-state-true {
+	opacity: 0.2;
+}
+.rop-tab-state-false {
+	opacity: 1;
+}
+
 @media (max-width: 960px) {
 	#rop_core .panel .panel-header h1 {
 		font-size: 21px;

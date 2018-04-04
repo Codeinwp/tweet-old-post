@@ -33101,7 +33101,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t.rop-tab-state-true[_v-0249af62] {\n\t\topacity: 0.2;\n\t}\n\t.rop-tab-state-false[_v-0249af62] {\n\t\topacity: 1;\n\t}\n\t#rop_core .panel-body .text-gray[_v-0249af62] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\t#rop_core .input-group[_v-0249af62] {\n\t\twidth: 100%;\n\t}\n\tb[_v-0249af62] {\n\t\tmargin-bottom :5px;\n\t\tdisplay: block;\n\t}\n\t#rop_core .input-group .input-group-addon[_v-0249af62] {\n\t\tpadding: 3px 5px;\n\t}\n\t@media( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-0249af62] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\t\t#rop_core .text-right[_v-0249af62] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-0249af62] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\t#rop_core .input-group[_v-0249af62] {\n\t\twidth: 100%;\n\t}\n\tb[_v-0249af62] {\n\t\tmargin-bottom :5px;\n\t\tdisplay: block;\n\t}\n\t#rop_core .input-group .input-group-addon[_v-0249af62] {\n\t\tpadding: 3px 5px;\n\t}\n\t@media( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-0249af62] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\t\t#rop_core .text-right[_v-0249af62] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n", ""]);
 
 // exports
 
@@ -33430,12 +33430,6 @@ module.exports = {
 	// </script>
 	//
 	// <style scoped>
-	// 	.rop-tab-state-true {
-	// 		opacity: 0.2;
-	// 	}
-	// 	.rop-tab-state-false {
-	// 		opacity: 1;
-	// 	}
 	// 	#rop_core .panel-body .text-gray {
 	// 		margin: 0;
 	// 		line-height: normal;

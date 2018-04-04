@@ -306,12 +306,6 @@
 </script>
 
 <style scoped>
-	.rop-tab-state-true {
-		opacity: 0.2;
-	}
-	.rop-tab-state-false {
-		opacity: 1;
-	}
 	#rop_core .panel-body .text-gray {
 		margin: 0;
 		line-height: normal;
