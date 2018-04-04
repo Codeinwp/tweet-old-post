@@ -141,12 +141,12 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 		}
 		$services = array_filter(
 			$services, function ( $value ) use ( $service ) {
-				if ( $value['service'] === $service ) {
-					return true;
-				}
-
-				return false;
+			if ( $value['service'] === $service ) {
+				return true;
 			}
+
+			return false;
+		}
 		);
 
 		return $services;
@@ -160,7 +160,7 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   array $new_active_accounts The new account array.
+	 * @param   array|string $new_active_accounts The new account array.
 	 *
 	 * @return mixed|null
 	 */

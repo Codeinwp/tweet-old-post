@@ -7,23 +7,29 @@
         convertWarningsToExceptions="true"
 >
     <testsuites>
-        <testsuite>
-            <directory prefix="test-" suffix=".php">./tests/</directory>
+        <testsuite name="general">
+            <directory>./tests/test-plugin.php</directory>
+        </testsuite>
+        <testsuite name="logger">
+            <directory>./tests/test-logger.php</directory>
+        </testsuite>
+        <testsuite name="accounts">
+            <directory>./tests/test-accounts.php</directory>
+        </testsuite>
+        <testsuite name="post-format">
+            <directory>./tests/test-post-format.php</directory>
+        </testsuite>
+        <testsuite name="scheduler">
+            <directory>./tests/test-scheduler.php</directory>
+        </testsuite>
+        <testsuite name="content">
+            <directory>./tests/test-content.php</directory>
+        </testsuite>
+        <testsuite name="queue">
+            <directory>./tests/test-queue.php</directory>
+        </testsuite>
+        <testsuite name="selector">
+            <directory>./tests/test-selector.php</directory>
         </testsuite>
     </testsuites>
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">includes/admin</directory>
-            <exclude>
-                <file>*index.php</file>
-                <file>includes/admin/class-rop-admin.php</file>
-                <file>includes/admin/class-rop-global-settings.php</file>
-                <file>includes/admin/class-rop-rest-api.php</file>
-                <file>includes/admin/abstract/class-rop-model-abstract.php</file>
-                <directory suffix=".php">includes/admin/models</directory>
-                <directory suffix=".php">includes/admin/helpers</directory>
-                <directory suffix=".php">includes/admin/views</directory>
-            </exclude>
-        </whitelist>
-    </filter>
 </phpunit>

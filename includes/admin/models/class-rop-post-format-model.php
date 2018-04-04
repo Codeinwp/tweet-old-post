@@ -78,7 +78,7 @@ class Rop_Post_Format_Model extends Rop_Model_Abstract {
 			$selected_post_format = $post_format_from_db[ $account_id ];
 		}
 
-		return wp_parse_args( $selected_post_format, $this->defaults );
+		return $selected_post_format;
 	}
 
 	public function get_post_formats() {
@@ -88,9 +88,8 @@ class Rop_Post_Format_Model extends Rop_Model_Abstract {
 		$saved_formats = $this->get( 'post_format' );
 		$saved_formats = ( is_array( $saved_formats ) ) ? $saved_formats : array();
 		$valid_formats = array();
-
 		foreach ( $active_accounts as $account_id => $data ) {
-			$valid_formats[ $account_id ] = isset( $saved_formats[ $account_id ] ) ? $saved_formats[ $account_id ] : $this->defaults[ $data['service'] ];
+			$valid_formats[ $account_id ] = isset( $saved_formats[ $account_id ] ) ? $saved_formats[ $account_id ] : ( empty( $this->service_name ) ? $this->defaults[ $data['service'] ] : $this->defaults );
 		}
 
 		return $valid_formats;

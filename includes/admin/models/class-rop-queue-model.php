@@ -193,7 +193,6 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 			return array();
 		}
 		$normalized_queue = array();
-
 		foreach ( $upcoming_events as $account_id => $events ) {
 			$account_queue                   = isset( $current_queue[ $account_id ] ) ? $current_queue[ $account_id ] : array();
 			$normalized_queue[ $account_id ] = array();
