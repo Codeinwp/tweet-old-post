@@ -199,7 +199,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 				$this->logger->alert_error( 'Minimum interval between consecutive shares is 6mins.' );
 				$data['default_interval'] = 0.1;
 			}
-			$data['default_interval'] = number_format( $data['default_interval'], 1 );
+			$data['default_interval'] = round( $data['default_interval'], 1 );
 		}
 		if ( isset( $data['number_of_posts'] ) ) {
 			$data['number_of_posts'] = intval( $data['number_of_posts'] );

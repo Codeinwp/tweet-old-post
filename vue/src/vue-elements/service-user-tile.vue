@@ -96,7 +96,7 @@
 			 */
 			icon: function () {
 				let serviceIcon = 'fa-';
-				if (this.account_data.service === 'facebook') serviceIcon = serviceIcon.concat('facebook-official');
+				if (this.account_data.service === 'facebook') serviceIcon = serviceIcon.concat('facebook');
 				if (this.account_data.service === 'twitter') serviceIcon = serviceIcon.concat('twitter');
 				if (this.account_data.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin');
 				if (this.account_data.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr');

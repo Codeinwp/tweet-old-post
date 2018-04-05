@@ -1,13 +1,9 @@
 <template>
 	<div class="tab-view">
 		<div class="panel-body">
-			<div class="column col-12">
-				<h3>General Settings</h3>
-				<span class="divider"></span>
-			</div>
 			<div class="container" :class="'rop-tab-state-'+is_loading">
 				<!-- Min Interval Between Shares -->
-				<div class="columns text-right py-2">
+				<div class="columns py-2" v-if="! isPro">
 					<div class="column col-6 col-sm-12 vertical-align">
 						<b>Minimum interval between shares</b>
 						<p class="text-gray">Minimum time between shares (hour/hours), 0.4 can be used.</p>
@@ -19,7 +15,7 @@
 				</div>
 				<span class="divider"></span>
 				<!-- Min Post Age -->
-				<div class="columns text-right py-2">
+				<div class="columns py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
 						<b>Minimum post age</b>
 						<p class="text-gray">Minimum age of posts available for sharing, in days.</p>
@@ -30,7 +26,7 @@
 					</div>
 				</div>
 				<!-- Max Post Age -->
-				<div class="columns text-right py-2">
+				<div class="columns py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
 						<b>Maximum post age</b>
 						<p class="text-gray">Maximum age of posts available for sharing, in days.</p>
@@ -44,7 +40,7 @@
 				<span class="divider"></span>
 
 				<!-- No. of posts -->
-				<div class="columns text-right py-2">
+				<div class="columns py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
 						<b>Number of posts</b>
 						<p class="text-gray">Number of posts to share per. account per. trigger of scheduled job.</p>
@@ -56,7 +52,7 @@
 				<span class="divider"></span>
 
 				<!-- Share more than once -->
-				<div class="columns text-right py-2">
+				<div class="columns py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
 						<b>Share more than once?</b>
 						<p class="text-gray">If there are no more posts to share, we should start re-sharing the one we previously shared.</p>
@@ -73,7 +69,7 @@
 				<span class="divider"></span>
 
 				<!-- Post Types -->
-				<div class="columns text-right py-2" :class="'rop-control-container-'+isPro">
+				<div class="columns py-2" :class="'rop-control-container-'+isPro">
 					<div class="column col-6 col-sm-12 vertical-align rop-control">
 						<b>Post types</b>
 						<p class="text-gray">Post types available to share - what post types are available for share</p>
@@ -95,7 +91,7 @@
 				<span class="divider"></span>
 
 				<!-- Taxonomies -->
-				<div class="columns text-right py-2">
+				<div class="columns py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
 						<b>Taxonomies</b>
 						<p class="text-gray">Taxonomies available for the selected post types. Use to include or exclude posts.</p>
@@ -121,7 +117,7 @@
 
 				<span class="divider"></span>
 				<!-- Posts -->
-				<div class="columns text-right py-2">
+				<div class="columns py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
 						<b>Posts</b>
 						<p class="text-gray">Posts excluded/included in sharing, filtered based on previous selections.</p>
@@ -139,7 +135,7 @@
 				<span class="divider"></span>
 
 				<!-- Google Analytics -->
-				<div class="columns text-right py-2">
+				<div class="columns py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
 						<b>Enable Google Analytics Tracking</b>
 						<p class="text-gray">If checked an utm query willbe added to URL's so that you cand better track trafic.</p>
@@ -154,11 +150,29 @@
 					</div>
 				</div>
 				<span class="divider"></span>
+
+				<!-- Custom Share Messages -->
+				<div class="columns py-2">
+					<div class="column col-6 col-sm-12 vertical-align">
+						<b>Custom Share Messages</b>
+						<p class="text-gray">If checked a metabox will be added so you can edit the share message.</p>
+					</div>
+					<div class="column col-6 col-sm-12 vertical-align text-left">
+						<div class="form-group">
+							<label class="form-checkbox">
+								<input type="checkbox" v-model="generalSettings.custom_messages"/>
+								<i class="form-icon"></i>Yes
+							</label>
+						</div>
+					</div>
+				</div>
+				<span class="divider"></span>
+
 			</div>
 		</div>
 		<div class="panel-footer text-right">
 			<button class="btn btn-primary" @click="saveGeneralSettings()"><i class="fa fa-check"
-			                                                                  v-if="!this.is_loading"></i> <i
+																			  v-if="!this.is_loading"></i> <i
 					class="fa fa-spinner fa-spin" v-else></i> Save
 			</button>
 		</div>
@@ -285,7 +299,8 @@
 						taxonomies: taxonomiesSelected,
 						exclude_taxonomies: excludeTaxonomies,
 						posts: postsSelected,
-						ga_tracking: this.generalSettings.ga_tracking
+						ga_tracking: this.generalSettings.ga_tracking,
+						custom_messages: this.generalSettings.custom_messages
 					}
 				}).then(response => {
 					this.is_loading = false;

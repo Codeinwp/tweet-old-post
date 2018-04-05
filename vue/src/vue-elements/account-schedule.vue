@@ -1,14 +1,8 @@
 <template>
 	<div :class="'rop-control-container-'+ ( license>1 ) ">
-		<div class="columns mt-0">
-			<div class="column col-12 mt-0">
-				<span class="divider"></span>
-				<h4 class="label my-2">Custom Schedule</h4>
-			</div>
-		</div>
 
 		<!-- Schedule Type -->
-		<div class="columns text-right py-2 rop-control">
+		<div class="columns py-2 rop-control">
 			<div class="column col-6 col-sm-12 vertical-align">
 				<b>Schedule Type</b>
 				<p class="text-gray">What type of schedule to use.</p>
@@ -24,7 +18,7 @@
 		</div>
 
 		<!-- Fixed Schedule Days -->
-		<div class="columns text-right py-2 rop-control" v-if="schedule.type === 'fixed'">
+		<div class="columns py-2 rop-control" v-if="schedule.type === 'fixed'">
 			<div class="column col-6 col-sm-12 vertical-align">
 				<b>Fixed Schedule Days</b>
 				<p class="text-gray">The days when to share for this account.</p>
@@ -39,7 +33,7 @@
 		</div>
 
 		<!-- Fixed Schedule time -->
-		<div class="columns text-right py-2 rop-control" v-if="schedule.type === 'fixed'">
+		<div class="columns py-2 rop-control" v-if="schedule.type === 'fixed'">
 			<div class="column col-6 col-sm-12 vertical-align">
 				<b>Fixed Schedule Time</b>
 				<p class="text-gray">The time at witch to share for this account.</p>
@@ -65,7 +59,7 @@
 		</div>
 
 		<!-- Recurring Schedule Interval -->
-		<div class="columns text-right py-2 rop-control" v-else>
+		<div class="columns py-2 rop-control" v-else>
 			<div class="column col-6 col-sm-12 vertical-align">
 				<b>Recurring Schedule Interval</b>
 				<p class="text-gray">A recurring interval to use for sharing. Once every 'X' hours.</p>

@@ -1,13 +1,8 @@
 <template>
 	<div class="tab-view">
 		<div class="panel-body">
-			<div class="column col-12">
-				<h3>Post Format</h3>
-				<span class="divider"></span>
-			</div>
 			<div class="d-inline-block mt-2 column col-12">
-				<h6><i class="fa fa-info-circle"></i> Info</h6>
-				<p class="text-gray">Each <b>account</b> can have it's own <b>Post Format</b> for sharing, on the left you can see the
+				<p class="text-gray"><i class="fa fa-info-circle"></i> Each <b>account</b> can have it's own <b>Post Format</b> for sharing, on the left you can see the
 					current selected account and network, bellow are the <b>Post Format</b> options for the account.
 					Don't forget to save after each change and remember, you can always reset an account to the network
 					defaults.
@@ -194,7 +189,7 @@
 			getIcon(account) {
 
 				let serviceIcon = 'fa-'
-				if (account.service === 'facebook') serviceIcon = serviceIcon.concat('facebook-official')
+				if (account.service === 'facebook') serviceIcon = serviceIcon.concat('facebook')
 				if (account.service === 'twitter') serviceIcon = serviceIcon.concat('twitter')
 				if (account.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin')
 				if (account.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr')

@@ -1,10 +1,6 @@
 <template>
 	<div class="tab-view">
 		<div class="panel-body" :class="'rop-tab-state-'+is_loading">
-			<div class="column col-12">
-				<h3>Sharing Queue</h3>
-				<span class="divider"></span>
-			</div>
 			<!-- When sharing is not started -->
 			<div class="columns" v-if="! start_status">
 				<div class="column col-12 text-center empty-container">
@@ -30,8 +26,7 @@
 				
 				<!-- When sharing is started but we  have the business plan. -->
 				<div class="d-inline-block mt-2 column col-12">
-					<h6><i class="fa fa-info-circle"></i> Info</h6>
-					<p class="text-gray">You can choose to edit any of the post, skip the sharing or block a specific one from sharing in the future.</p>
+					<p class="text-gray info-paragraph"><i class="fa fa-info-circle"></i> You can choose to edit any of the post, skip the sharing or block a specific one from sharing in the future.</p>
 				</div>
 			</div>
 			<!-- When sharing is started there is nothing in the Q. -->

@@ -1,14 +1,30 @@
 <template>
 	<div>
-		<div class="panel title-panel" style="margin-bottom: 40px;">
-			<div class="panel-header">
-				<img :src="plugin_logo" style="float: left; margin-right: 10px;"/>
-				<h1 class="d-inline-block">Revive Old Post</h1><span class="powered"> by <a
-					href="https://themeisle.com" target="_blank"><b>ThemeIsle</b></a></span>
+		<div class="panel-header">
+			<img :src="plugin_logo" class="plugin-logo avatar avatar-lg"/><h1 class="plugin-title d-inline-block">Revive Old Post</h1><span class="powered d-inline-block"> by <a href="https://revive.social" target="_blank"><b>Revive.Social</b></a></span>
+		</div>
+		<div class="columns mb-2 text-center sidebar-top">
+			<div class="column col-2">
+				<button class="btn btn btn-block" :class="btn_class"
+						data-tooltip="You will need
+					         at least one active account
+					         to start sharing."
+						@click="togglePosting()" :disabled="haveAccounts">
+					<i class="fa fa-play" v-if="!is_loading && !start_status"></i>
+					<i class="fa fa-stop" v-else-if="!is_loading && start_status"></i>
+					<i class="fa fa-spinner fa-spin" v-else></i>
+					{{( start_status ? 'Stop' : 'Start' )}} Sharing
+				</button>
+			</div>
+			<div class="column col-5"><div class="toast rop-current-time" v-if="formatedDate">
+				Now: {{ formatedDate }}
+			</div></div>
+			<div class="column col-5">
+				<countdown :current_time="current_time"/>
 			</div>
 		</div>
 		<div class="columns">
-			<div class="panel  column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-8 ">
+			<div class="panel  column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 				<div class="panel-nav" style="padding: 8px;">
 					<ul class="tab ">
 						<li class="tab-item" v-for="tab in displayTabs"
@@ -17,25 +33,16 @@
 							   :data-badge="logs_no"
 							   @click="switchTab( tab.slug )">{{ tab.name }}</a>
 						</li>
-						<li class="tab-item tab-action">
-							<div class="form-group">
-								<label class="form-switch col-ml-auto">
-									<input type="checkbox" v-model="generalSettings.custom_messages"
-									       @change="updateSettings"/>
-									<i class="form-icon"></i><span class="hide-sm">Custom Share Messages</span>
-								</label>
-							</div>
-						</li>
 					</ul>
 				</div>
 				<component :is="page.template" :type="page.view"></component>
 			</div>
 			
-			<div class="sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12 col-xl-4 "
+			<div class="sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12"
 			     :class="'rop-license-plan-'+license">
 				
 				<div class="card rop-container-start">
-					<div class="toast toast-success rop-current-time" v-if="formatedDate">
+					<div class="toast rop-current-time" v-if="formatedDate">
 						Now: {{ formatedDate }}
 					</div>
 					<countdown :current_time="current_time"/>
@@ -49,7 +56,6 @@
 						<i class="fa fa-spinner fa-spin" v-else></i>
 						{{( start_status ? 'Stop' : 'Start' )}} Sharing
 					</button>
-				
 				</div>
 				<div class="card rop-upsell-pro-card" v-if="license  < 1 ">
 					<a href="#" target="_blank">
@@ -200,19 +206,6 @@
 			 */
 			switchTab(slug) {
 				this.$store.commit('setTabView', slug)
-			},
-			/**
-			 * Update settings outside the general settings tab.
-			 */
-			updateSettings() {
-				this.$store.dispatch('fetchAJAX', {
-					req: 'update_settings_toggle',
-					data: {
-						custom_messages: this.$store.state.generalSettings.custom_messages,
-						beta_user: this.$store.state.generalSettings.beta_user,
-						remote_check: this.$store.state.generalSettings.remote_check
-					}
-				})
 			},
 		},
 		components: {

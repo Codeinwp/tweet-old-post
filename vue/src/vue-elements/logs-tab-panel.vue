@@ -1,10 +1,6 @@
 <template>
 	<div class="tab-view">
 		<div class="panel-body">
-			<div class="column col-12">
-				<h3>Logs</h3>
-				<span class="divider"></span>
-			</div>
 			<div class=" columns mt-2" v-if="logs_no > 0">
 				<div class="column  col-12 text-right ">
 					<button class="btn  btn-secondary " @click="getLogs(true)">

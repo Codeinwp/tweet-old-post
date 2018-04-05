@@ -29,7 +29,6 @@
 	display: -ms-flexbox;
 	display: flex;
 	flex-direction: column;
-
 	-webkit-box-direction: normal;
 	-webkit-box-orient: vertical;
 	-webkit-box-pack: center;
@@ -60,12 +59,25 @@
 	padding: 10px 0;
 }
 
+#rop_core .plugin-title {
+	font-size: 30px;
+	margin: 0;
+	margin-right: 5px;
+}
+#rop_core .plugin-logo {
+	margin-bottom: 15px;
+	margin-right: 10px;
+}
+
 .rop-tab-state-true {
 	opacity: 0.2;
 }
 
 .rop-tab-state-false {
 	opacity: 1;
+}
+#rop_core .sidebar-top {
+	display: none;
 }
 
 @media (max-width: 960px) {
@@ -92,5 +104,21 @@
 	#rop_core .rop-upsell-business-card img.img-responsive,
 	#rop_core .rop-upsell-pro-card img.img-responsive {
 		width: 100%;
+	}
+}
+@media (max-width: 1280px) {
+	#rop_core .sidebar {
+		display: none;
+	}
+	#rop_core .sidebar-top {
+		display: flex;
+	}
+}
+@media (max-width: 840px) {
+	#rop_core .sidebar {
+		display: block;
+	}
+	#rop_core .sidebar-top {
+		display: none;
 	}
 }

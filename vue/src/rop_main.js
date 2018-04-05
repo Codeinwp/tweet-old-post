@@ -19,7 +19,6 @@ window.onload = function () {
 			store.dispatch( 'fetchAJAXPromise', { req: 'get_available_services' } )
 			store.dispatch( 'fetchAJAXPromise', { req: 'get_authenticated_services' } )
 			store.dispatch( 'fetchAJAXPromise', { req: 'get_active_accounts' } )
-			store.dispatch( 'fetchAJAX', { req: 'get_general_settings' } )
 		},
 	} )
 }

@@ -28389,7 +28389,6 @@ window.onload = function () {
 			_rop_store2.default.dispatch('fetchAJAXPromise', { req: 'get_available_services' });
 			_rop_store2.default.dispatch('fetchAJAXPromise', { req: 'get_authenticated_services' });
 			_rop_store2.default.dispatch('fetchAJAXPromise', { req: 'get_active_accounts' });
-			_rop_store2.default.dispatch('fetchAJAX', { req: 'get_general_settings' });
 		}
 	});
 }; // jshint ignore: start
@@ -31613,15 +31612,31 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // <template>
 // 	<div>
-// 		<div class="panel title-panel" style="margin-bottom: 40px;">
-// 			<div class="panel-header">
-// 				<img :src="plugin_logo" style="float: left; margin-right: 10px;"/>
-// 				<h1 class="d-inline-block">Revive Old Post</h1><span class="powered"> by <a
-// 					href="https://themeisle.com" target="_blank"><b>ThemeIsle</b></a></span>
+// 		<div class="panel-header">
+// 			<img :src="plugin_logo" class="plugin-logo avatar avatar-lg"/><h1 class="plugin-title d-inline-block">Revive Old Post</h1><span class="powered d-inline-block"> by <a href="https://revive.social" target="_blank"><b>Revive.Social</b></a></span>
+// 		</div>
+// 		<div class="columns mb-2 text-center sidebar-top">
+// 			<div class="column col-2">
+// 				<button class="btn btn btn-block" :class="btn_class"
+// 						data-tooltip="You will need
+// 					         at least one active account
+// 					         to start sharing."
+// 						@click="togglePosting()" :disabled="haveAccounts">
+// 					<i class="fa fa-play" v-if="!is_loading && !start_status"></i>
+// 					<i class="fa fa-stop" v-else-if="!is_loading && start_status"></i>
+// 					<i class="fa fa-spinner fa-spin" v-else></i>
+// 					{{( start_status ? 'Stop' : 'Start' )}} Sharing
+// 				</button>
+// 			</div>
+// 			<div class="column col-5"><div class="toast rop-current-time" v-if="formatedDate">
+// 				Now: {{ formatedDate }}
+// 			</div></div>
+// 			<div class="column col-5">
+// 				<countdown :current_time="current_time"/>
 // 			</div>
 // 		</div>
 // 		<div class="columns">
-// 			<div class="panel  column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-8 ">
+// 			<div class="panel  column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 // 				<div class="panel-nav" style="padding: 8px;">
 // 					<ul class="tab ">
 // 						<li class="tab-item" v-for="tab in displayTabs"
@@ -31630,25 +31645,16 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 							   :data-badge="logs_no"
 // 							   @click="switchTab( tab.slug )">{{ tab.name }}</a>
 // 						</li>
-// 						<li class="tab-item tab-action">
-// 							<div class="form-group">
-// 								<label class="form-switch col-ml-auto">
-// 									<input type="checkbox" v-model="generalSettings.custom_messages"
-// 									       @change="updateSettings"/>
-// 									<i class="form-icon"></i><span class="hide-sm">Custom Share Messages</span>
-// 								</label>
-// 							</div>
-// 						</li>
 // 					</ul>
 // 				</div>
 // 				<component :is="page.template" :type="page.view"></component>
 // 			</div>
 //
-// 			<div class="sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12 col-xl-4 "
+// 			<div class="sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12"
 // 			     :class="'rop-license-plan-'+license">
 //
 // 				<div class="card rop-container-start">
-// 					<div class="toast toast-success rop-current-time" v-if="formatedDate">
+// 					<div class="toast rop-current-time" v-if="formatedDate">
 // 						Now: {{ formatedDate }}
 // 					</div>
 // 					<countdown :current_time="current_time"/>
@@ -31662,7 +31668,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 						<i class="fa fa-spinner fa-spin" v-else></i>
 // 						{{( start_status ? 'Stop' : 'Start' )}} Sharing
 // 					</button>
-//
 // 				</div>
 // 				<div class="card rop-upsell-pro-card" v-if="license  < 1 ">
 // 					<a href="#" target="_blank">
@@ -31809,20 +31814,6 @@ module.exports = {
    */
 		switchTab: function switchTab(slug) {
 			this.$store.commit('setTabView', slug);
-		},
-
-		/**
-   * Update settings outside the general settings tab.
-   */
-		updateSettings: function updateSettings() {
-			this.$store.dispatch('fetchAJAX', {
-				req: 'update_settings_toggle',
-				data: {
-					custom_messages: this.$store.state.generalSettings.custom_messages,
-					beta_user: this.$store.state.generalSettings.beta_user,
-					remote_check: this.$store.state.generalSettings.remote_check
-				}
-			});
 		}
 	},
 	components: {
@@ -32055,8 +32046,9 @@ module.exports = function (it, S) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
+__webpack_require__(282)
 __vue_script__ = __webpack_require__(183)
-__vue_template__ = __webpack_require__(207)
+__vue_template__ = __webpack_require__(284)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32096,16 +32088,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // <template>
 // 	<div class="tab-view">
 // 		<div class="panel-body">
-// 			<div class="column col-12">
-// 				<h3>Accounts</h3>
-// 				<span class="divider"></span>
-// 			</div>
-// 			<div class="columns">
-// 				<div class="column col-sm-12 col-md-12 col-xl-12 col-12 text-center py-2">
+// 			<div class="columns py-2">
+// 				<div class="column col-6 col-sm-12 vertical-align">
 // 					<b>New Service</b>
 // 					<p class="text-gray">Select a service and sign in with an account for that service.</p>
 // 				</div>
-// 				<div class="column col-sm-12 col-md-12 col-xl-6 col-4 pb-2 text-center centered">
+// 				<div class="column col-6 col-sm-12 vertical-align">
 // 					<sign-in-btn></sign-in-btn>
 // 				</div>
 // 			</div>
@@ -32121,7 +32109,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 				</div>
 // 				<div class="columns" :class="'rop-tab-state-'+is_loading">
 // 					<div class="column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts">
-//
 // 						<h5>Accounts</h5>
 // 						<div class="empty" v-if="accountsCount === 0">
 // 							<div class="empty-icon">
@@ -32140,10 +32127,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 			<div class="panel-footer" v-if="accountsCount > 0">
 // 				<div class="columns">
 // 					<div class="column col-12">
-// 						<h6><i class="fa fa-info-circle"></i> Info</h6>
-// 						<p class="text-gray">Authenticate a new service (eg. Facebook, Twitter etc. ), select the accounts you want to add
-// 							from that service and <b>activate</b> them. Only the active accounts will be used for
-// 							sharing.</p>
+// 						<p class="text-gray"><i class="fa fa-info-circle"></i> Authenticate a new service (eg. Facebook, Twitter etc. ), select the accounts you want to add from that service and <b>activate</b> them. Only the active accounts will be used for sharing.</p>
 // 					</div>
 // 				</div>
 // 				<div class="column col-12 text-right">
@@ -32227,6 +32211,36 @@ module.exports = {
 		ServiceUserTile: _serviceUserTile2.default
 	}
 	// </script>
+	// <style scoped>
+	// 	#rop_core .columns.py-2 .text-gray {
+	// 		margin: 0;
+	// 		line-height: normal;
+	// 	}
+	// 	#rop_core .input-group {
+	// 		width: 100%;
+	// 	}
+	// 	b {
+	// 		margin-bottom :5px;
+	// 		display: block;
+	// 	}
+	// 	#rop_core .text-gray b {
+	// 		display: inline;
+	// 	}
+	// 	#rop_core .input-group .input-group-addon {
+	// 		padding: 3px 5px;
+	// 	}
+	// 	#rop_core .rop-available-accounts h5 {
+	// 		margin-bottom: 15px;
+	// 	}
+	// 	@media( max-width: 600px ) {
+	// 		#rop_core .panel-body .text-gray {
+	// 			margin-bottom: 10px;
+	// 		}
+	// 		#rop_core .text-right {
+	// 			text-align: left;
+	// 		}
+	// 	}
+	// </style>
 
 };
 
@@ -32235,8 +32249,9 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
+__webpack_require__(285)
 __vue_script__ = __webpack_require__(185)
-__vue_template__ = __webpack_require__(203)
+__vue_template__ = __webpack_require__(287)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32271,18 +32286,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // <template>
 // 	<div id="rop-sign-in-area">
-// 		<p class="sign-in-btn">
-// 		<div class="input-group">
-// 			<select class="form-select" v-model="selected_network">
-// 				<option v-for="( service, network ) in services" v-bind:value="network"
-// 				        :disabled="checkDisabled( service, network )">{{ service.name }}
-// 				</option>
-// 			</select>
-//
-// 			<button class="btn input-group-btn" :class="serviceClass" @click="requestAuthorization()"
-// 			        :disabled="checkDisabled( selected_service, selected_network )">
-// 				<i class="fa fa-fw" :class="serviceIcon" aria-hidden="true"></i> Sign In
-// 			</button>
+// 		<div class="input-group text-right">
+// 			<button v-for="( service, network ) in services"
+// 					:disabled="checkDisabled( service, network )"
+// 					class="btn input-group-btn"
+// 					:class="'btn-' + network"
+// 					@click="requestAuthorization( network )">
+// 				<i class="fa fa-fw" :class="'fa-' + network"></i>{{service.name}}</button>
 //
 // 		</div>
 //
@@ -32364,7 +32374,8 @@ module.exports = {
 		/**
    * Request authorization popup.
    */
-		requestAuthorization: function requestAuthorization() {
+		requestAuthorization: function requestAuthorization(network) {
+			this.selected_network = network;
 			this.$store.state.auth_in_progress = true;
 			if (this.$store.state.availableServices[this.selected_network].two_step_sign_in) {
 				this.modal.serviceName = this.$store.state.availableServices[this.selected_network].name;
@@ -32477,29 +32488,17 @@ module.exports = {
 				'active': this.modal.isOpen === true
 			};
 		},
-		serviceClass: function serviceClass() {
-			return {
-				'btn-twitter': this.selected_network === 'twitter',
-				'btn-facebook': this.selected_network === 'facebook',
-				'btn-linkedin': this.selected_network === 'linkedin',
-				'btn-tumblr': this.selected_network === 'tumblr',
-				'loading': this.$store.state.auth_in_progress
-			};
-		},
-		serviceIcon: function serviceIcon() {
-			return {
-				'fa-twitter': this.selected_network === 'twitter',
-				'fa-facebook-official': this.selected_network === 'facebook',
-				'fa-linkedin': this.selected_network === 'linkedin',
-				'fa-tumblr': this.selected_network === 'tumblr'
-			};
-		},
 		serviceId: function serviceId() {
 			return 'service-' + this.modal.serviceName.toLowerCase();
 		}
 	}
 	// </script>
-	//
+	// <style scoped>
+	// 	#rop_core .input-group {
+	// 		display: block;
+	// 		justify-content: flex-end;
+	// 	}
+	// </style>
 
 };
 
@@ -32825,12 +32824,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 203 */
-/***/ (function(module, exports) {
-
-module.exports = "\n\t<div id=\"rop-sign-in-area\">\n\t\t<p class=\"sign-in-btn\">\n\t\t<div class=\"input-group\">\n\t\t\t<select class=\"form-select\" v-model=\"selected_network\">\n\t\t\t\t<option v-for=\"( service, network ) in services\" v-bind:value=\"network\"\n\t\t\t\t        :disabled=\"checkDisabled( service, network )\">{{ service.name }}\n\t\t\t\t</option>\n\t\t\t</select>\n\t\t\t\n\t\t\t<button class=\"btn input-group-btn\" :class=\"serviceClass\" @click=\"requestAuthorization()\"\n\t\t\t        :disabled=\"checkDisabled( selected_service, selected_network )\">\n\t\t\t\t<i class=\"fa fa-fw\" :class=\"serviceIcon\" aria-hidden=\"true\"></i> Sign In\n\t\t\t</button>\n\t\t\n\t\t</div>\n\t\t\n\t\t<div class=\"modal\" :class=\"modalActiveClass\">\n\t\t\t<div class=\"modal-overlay\"></div>\n\t\t\t<div class=\"modal-container\">\n\t\t\t\t<div class=\"modal-header\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"cancelModal()\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\">{{ modal.serviceName }} Service Credentials</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\">\n\t\t\t\t\t<div class=\"content\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" :id=\"field.id\" v-model=\"field.value\"\n\t\t\t\t\t\t\t       :placeholder=\"field.name\"/>\n\t\t\t\t\t\t\t<p class=\"text-gray\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-footer\">\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\">Sign in</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
-
-/***/ }),
+/* 203 */,
 /* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -32931,7 +32925,7 @@ module.exports = {
    */
 		icon: function icon() {
 			var serviceIcon = 'fa-';
-			if (this.account_data.service === 'facebook') serviceIcon = serviceIcon.concat('facebook-official');
+			if (this.account_data.service === 'facebook') serviceIcon = serviceIcon.concat('facebook');
 			if (this.account_data.service === 'twitter') serviceIcon = serviceIcon.concat('twitter');
 			if (this.account_data.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin');
 			if (this.account_data.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr');
@@ -33048,12 +33042,7 @@ module.exports = {
 module.exports = "\n\t<div class=\"tile tile-centered rop-account\" :class=\"'rop-'+type+'-account'\">\n\t\t<div class=\"tile-icon\">\n\t\t\t<div class=\"icon_box\" :class=\"service\">\n\t\t\t\t<img class=\"service_account_image\" :src=\"img\" v-if=\"img\"/>\n\t\t\t\t<i class=\"fa  \" :class=\"icon\" aria-hidden=\"true\"></i>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"tile-content\">\n\t\t\t<div class=\"tile-title\">{{ user }}</div>\n\t\t\t<div class=\"tile-subtitle text-gray\">{{ serviceInfo }}</div>\n\t\t</div>\n\t\t<div class=\"tile-action\">\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t<div class=\"ajax-loader \"><i class=\"fa fa-spinner fa-spin\" v-show=\"is_loading\"></i></div>\n\t\t\t\t\t<input :disabled=\"checkDisabled\" type=\"checkbox\" v-model=\"account_data.active\"\n\t\t\t\t\t       @change=\"startToggleAccount( account_id, type )\"/>\n\t\t\t\t\t<i class=\"form-icon\"></i>\n\t\t\t\t</label>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 207 */
-/***/ (function(module, exports) {
-
-module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\">\n\t\t\t<div class=\"column col-12\">\n\t\t\t\t<h3>Accounts</h3>\n\t\t\t\t<span class=\"divider\"></span>\n\t\t\t</div>\n\t\t\t<div class=\"columns\">\n\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-xl-12 col-12 text-center py-2\">\n\t\t\t\t\t<b>New Service</b>\n\t\t\t\t\t<p class=\"text-gray\">Select a service and sign in with an account for that service.</p>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-xl-6 col-4 pb-2 text-center centered\">\n\t\t\t\t\t<sign-in-btn></sign-in-btn>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<span class=\"divider mt-2 pb-2\"></span>\n\n\t\t\t<div class=\"container\">\n\t\t\t\t<div class=\"columns\" v-if=\"checkLicense\">\n\t\t\t\t\t<div class=\"column col-12 text-center\">\n\t\t\t\t\t\t<p class=\"upsell\">\n\t\t\t\t\t\t\t<i class=\"fa fa-lock \"></i>You are allowed to add a maximum 1 account for Twitter and 1 account for Facebook. For using more accounts and networks, you need to check the <strong>FULL</strong> version.\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" :class=\"'rop-tab-state-'+is_loading\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts\">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<h5>Accounts</h5>\n\t\t\t\t\t\t<div class=\"empty\" v-if=\"accountsCount === 0\">\n\t\t\t\t\t\t\t<div class=\"empty-icon\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\"></i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<p class=\"empty-title h5\">No accounts!</p>\n\t\t\t\t\t\t\t<p class=\"empty-subtitle\">Sign in and add your social accounts.</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"account-container\" v-for=\"( account, id ) in accounts\">\n\t\t\t\t\t\t\t<service-user-tile :account_data=\"account\" :account_id=\"id\"></service-user-tile>\n\t\t\t\t\t\t\t<span class=\"divider\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\">\n\t\t\t\t<div class=\"columns\">\n\t\t\t\t\t<div class=\"column col-12\">\n\t\t\t\t\t\t<h6><i class=\"fa fa-info-circle\"></i> Info</h6>\n\t\t\t\t\t\t<p class=\"text-gray\">Authenticate a new service (eg. Facebook, Twitter etc. ), select the accounts you want to add\n\t\t\t\t\t\t\tfrom that service and <b>activate</b> them. Only the active accounts will be used for\n\t\t\t\t\t\t\tsharing.</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 text-right\">\n\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\">\n\t\t\t\t\t<i class=\"fa fa-ban\" v-if=\"!this.is_loading\"></i>\n\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t\tRemove all accounts\n\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\n\t</div>\n";
-
-/***/ }),
+/* 207 */,
 /* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -33136,13 +33125,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // <template>
 // 	<div class="tab-view">
 // 		<div class="panel-body">
-// 			<div class="column col-12">
-// 				<h3>General Settings</h3>
-// 				<span class="divider"></span>
-// 			</div>
 // 			<div class="container" :class="'rop-tab-state-'+is_loading">
 // 				<!-- Min Interval Between Shares -->
-// 				<div class="columns text-right py-2">
+// 				<div class="columns py-2" v-if="! isPro">
 // 					<div class="column col-6 col-sm-12 vertical-align">
 // 						<b>Minimum interval between shares</b>
 // 						<p class="text-gray">Minimum time between shares (hour/hours), 0.4 can be used.</p>
@@ -33154,7 +33139,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 				</div>
 // 				<span class="divider"></span>
 // 				<!-- Min Post Age -->
-// 				<div class="columns text-right py-2">
+// 				<div class="columns py-2">
 // 					<div class="column col-6 col-sm-12 vertical-align">
 // 						<b>Minimum post age</b>
 // 						<p class="text-gray">Minimum age of posts available for sharing, in days.</p>
@@ -33165,7 +33150,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 					</div>
 // 				</div>
 // 				<!-- Max Post Age -->
-// 				<div class="columns text-right py-2">
+// 				<div class="columns py-2">
 // 					<div class="column col-6 col-sm-12 vertical-align">
 // 						<b>Maximum post age</b>
 // 						<p class="text-gray">Maximum age of posts available for sharing, in days.</p>
@@ -33179,7 +33164,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 				<span class="divider"></span>
 //
 // 				<!-- No. of posts -->
-// 				<div class="columns text-right py-2">
+// 				<div class="columns py-2">
 // 					<div class="column col-6 col-sm-12 vertical-align">
 // 						<b>Number of posts</b>
 // 						<p class="text-gray">Number of posts to share per. account per. trigger of scheduled job.</p>
@@ -33191,7 +33176,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 				<span class="divider"></span>
 //
 // 				<!-- Share more than once -->
-// 				<div class="columns text-right py-2">
+// 				<div class="columns py-2">
 // 					<div class="column col-6 col-sm-12 vertical-align">
 // 						<b>Share more than once?</b>
 // 						<p class="text-gray">If there are no more posts to share, we should start re-sharing the one we previously shared.</p>
@@ -33208,7 +33193,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 				<span class="divider"></span>
 //
 // 				<!-- Post Types -->
-// 				<div class="columns text-right py-2" :class="'rop-control-container-'+isPro">
+// 				<div class="columns py-2" :class="'rop-control-container-'+isPro">
 // 					<div class="column col-6 col-sm-12 vertical-align rop-control">
 // 						<b>Post types</b>
 // 						<p class="text-gray">Post types available to share - what post types are available for share</p>
@@ -33230,7 +33215,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 				<span class="divider"></span>
 //
 // 				<!-- Taxonomies -->
-// 				<div class="columns text-right py-2">
+// 				<div class="columns py-2">
 // 					<div class="column col-6 col-sm-12 vertical-align">
 // 						<b>Taxonomies</b>
 // 						<p class="text-gray">Taxonomies available for the selected post types. Use to include or exclude posts.</p>
@@ -33256,7 +33241,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 // 				<span class="divider"></span>
 // 				<!-- Posts -->
-// 				<div class="columns text-right py-2">
+// 				<div class="columns py-2">
 // 					<div class="column col-6 col-sm-12 vertical-align">
 // 						<b>Posts</b>
 // 						<p class="text-gray">Posts excluded/included in sharing, filtered based on previous selections.</p>
@@ -33274,7 +33259,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 				<span class="divider"></span>
 //
 // 				<!-- Google Analytics -->
-// 				<div class="columns text-right py-2">
+// 				<div class="columns py-2">
 // 					<div class="column col-6 col-sm-12 vertical-align">
 // 						<b>Enable Google Analytics Tracking</b>
 // 						<p class="text-gray">If checked an utm query willbe added to URL's so that you cand better track trafic.</p>
@@ -33289,11 +33274,29 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 					</div>
 // 				</div>
 // 				<span class="divider"></span>
+//
+// 				<!-- Custom Share Messages -->
+// 				<div class="columns py-2">
+// 					<div class="column col-6 col-sm-12 vertical-align">
+// 						<b>Custom Share Messages</b>
+// 						<p class="text-gray">If checked a metabox will be added so you can edit the share message.</p>
+// 					</div>
+// 					<div class="column col-6 col-sm-12 vertical-align text-left">
+// 						<div class="form-group">
+// 							<label class="form-checkbox">
+// 								<input type="checkbox" v-model="generalSettings.custom_messages"/>
+// 								<i class="form-icon"></i>Yes
+// 							</label>
+// 						</div>
+// 					</div>
+// 				</div>
+// 				<span class="divider"></span>
+//
 // 			</div>
 // 		</div>
 // 		<div class="panel-footer text-right">
 // 			<button class="btn btn-primary" @click="saveGeneralSettings()"><i class="fa fa-check"
-// 			                                                                  v-if="!this.is_loading"></i> <i
+// 																			  v-if="!this.is_loading"></i> <i
 // 					class="fa fa-spinner fa-spin" v-else></i> Save
 // 			</button>
 // 		</div>
@@ -33420,7 +33423,8 @@ module.exports = {
 					taxonomies: taxonomiesSelected,
 					exclude_taxonomies: excludeTaxonomies,
 					posts: postsSelected,
-					ga_tracking: this.generalSettings.ga_tracking
+					ga_tracking: this.generalSettings.ga_tracking,
+					custom_messages: this.generalSettings.custom_messages
 				}
 			}).then(function (response) {
 				_this2.is_loading = false;
@@ -33524,7 +33528,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .input-group.rop-counter-group {\n\t\tposition: relative;\n\t\twidth: 100%;\n\t}\n\t#rop_core .btn.increment-btn {\n\t\tposition: absolute;\n\t\tright: 0;\n\t\twidth: 1rem;\n\t\theight: 0.85rem;\n\t\tpadding: 0.025rem 0.010rem;\n\t\tline-height: 0.3rem;\n\t\tz-index: 2;\n\t}\n\n\t#rop_core .btn.increment-btn.up { top: 0; }\n\t#rop_core .btn.increment-btn.down { bottom: 0; }\n\n\tinput.rop-counter::-webkit-inner-spin-button {\n\t\tdisplay: none;\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop_core .input-group.rop-counter-group {\n\t\tposition: relative;\n\t\twidth: 100%;\n\t}\n\t#rop_core .btn.increment-btn {\n\t\tposition: absolute;\n\t\tright: 0;\n\t\twidth: 1rem;\n\t\theight: 0.85rem;\n\t\tpadding: 0.025rem 0.010rem;\n\t\tline-height: 0.3rem;\n\t\tz-index: 2;\n\t\tcolor: #ababab;\n\t\tborder-color: #ababab;\n\t}\n\t#rop_core .btn.increment-btn:hover, #rop_core .btn.increment-btn:active, #rop_core .btn.increment-btn:focus {\n\t\tbackground-color: #00a6e3;\n\t\tcolor: #fff;\n\t\tborder-color: #00a6e3;\n\t}\n\n\t#rop_core .btn.increment-btn.up { top: 0; }\n\t#rop_core .btn.increment-btn.down { bottom: 0; }\n\n\tinput.rop-counter::-webkit-inner-spin-button {\n\t\tdisplay: none;\n\t}\n", ""]);
 
 // exports
 
@@ -33538,7 +33542,7 @@ exports.push([module.i, "\n\t#rop_core .input-group.rop-counter-group {\n\t\tpos
 
 // <template>
 // 	<div class="input-group rop-counter-group">
-// 		<input class="form-input rop-counter" type="number" v-model="inputValueC" :id="id"  >
+// 		<input class="form-input rop-counter" type="text" v-model="inputValueC" :id="id"  >
 // 		<button class="btn input-group-btn increment-btn up" @mousedown="isPressed('up')" @mouseup="isReleased('up')"><i class="fa fa-fw fa-caret-up"></i></button>
 // 		<button class="btn input-group-btn increment-btn down" @mousedown="isPressed('down')" @mouseup="isReleased('down')"><i class="fa fa-fw fa-caret-down"></i></button>
 // 	</div>
@@ -33584,7 +33588,7 @@ module.exports = {
 				return this.value;
 			},
 			set: function set(newValue) {
-				this.inputValue = parseInt(newValue);
+				this.inputValue = parseFloat(newValue);
 				this.$emit('update:value', this.inputValue);
 			}
 
@@ -33644,6 +33648,13 @@ module.exports = {
 	// 		padding: 0.025rem 0.010rem;
 	// 		line-height: 0.3rem;
 	// 		z-index: 2;
+	// 		color: #ababab;
+	// 		border-color: #ababab;
+	// 	}
+	// 	#rop_core .btn.increment-btn:hover, #rop_core .btn.increment-btn:active, #rop_core .btn.increment-btn:focus {
+	// 		background-color: #00a6e3;
+	// 		color: #fff;
+	// 		border-color: #00a6e3;
 	// 	}
 	//
 	// 	#rop_core .btn.increment-btn.up { top: 0; }
@@ -33660,7 +33671,7 @@ module.exports = {
 /* 216 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"input-group rop-counter-group\">\n\t\t<input class=\"form-input rop-counter\" type=\"number\" v-model=\"inputValueC\" :id=\"id\"  >\n\t\t<button class=\"btn input-group-btn increment-btn up\" @mousedown=\"isPressed('up')\" @mouseup=\"isReleased('up')\"><i class=\"fa fa-fw fa-caret-up\"></i></button>\n\t\t<button class=\"btn input-group-btn increment-btn down\" @mousedown=\"isPressed('down')\" @mouseup=\"isReleased('down')\"><i class=\"fa fa-fw fa-caret-down\"></i></button>\n\t</div>\n";
+module.exports = "\n\t<div class=\"input-group rop-counter-group\">\n\t\t<input class=\"form-input rop-counter\" type=\"text\" v-model=\"inputValueC\" :id=\"id\"  >\n\t\t<button class=\"btn input-group-btn increment-btn up\" @mousedown=\"isPressed('up')\" @mouseup=\"isReleased('up')\"><i class=\"fa fa-fw fa-caret-up\"></i></button>\n\t\t<button class=\"btn input-group-btn increment-btn down\" @mousedown=\"isPressed('down')\" @mouseup=\"isReleased('down')\"><i class=\"fa fa-fw fa-caret-down\"></i></button>\n\t</div>\n";
 
 /***/ }),
 /* 217 */
@@ -34092,7 +34103,7 @@ module.exports = "\n\t<div class=\"form-autocomplete\" style=\"width: 100%;\" v-
 /* 221 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\" _v-0249af62=\"\">\n\t\t<div class=\"panel-body\" _v-0249af62=\"\">\n\t\t\t<div class=\"column col-12\" _v-0249af62=\"\">\n\t\t\t\t<h3 _v-0249af62=\"\">General Settings</h3>\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\t\t\t</div>\n\t\t\t<div class=\"container\" :class=\"'rop-tab-state-'+is_loading\" _v-0249af62=\"\">\n\t\t\t\t<!-- Min Interval Between Shares -->\n\t\t\t\t<div class=\"columns text-right py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Minimum interval between shares</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">Minimum time between shares (hour/hours), 0.4 can be used.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<counter-input id=\"default_interval\" :value.sync=\"generalSettings.default_interval\" _v-0249af62=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\t\t\t\t<!-- Min Post Age -->\n\t\t\t\t<div class=\"columns text-right py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Minimum post age</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">Minimum age of posts available for sharing, in days.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<counter-input id=\"min_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.minimum_post_age\" _v-0249af62=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- Max Post Age -->\n\t\t\t\t<div class=\"columns text-right py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Maximum post age</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">Maximum age of posts available for sharing, in days.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<counter-input id=\"max_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.maximum_post_age\" _v-0249af62=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\n\t\t\t\t<!-- No. of posts -->\n\t\t\t\t<div class=\"columns text-right py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Number of posts</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">Number of posts to share per. account per. trigger of scheduled job.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\" _v-0249af62=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\n\t\t\t\t<!-- Share more than once -->\n\t\t\t\t<div class=\"columns text-right py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Share more than once?</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">If there are no more posts to share, we should start re-sharing the one we previously shared.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-0249af62=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-0249af62=\"\"></i> Yes\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\n\t\t\t\t<!-- Post Types -->\n\t\t\t\t<div class=\"columns text-right py-2\" :class=\"'rop-control-container-'+isPro\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Post types</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">Post types available to share - what post types are available for share</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-0249af62=\"\">\n\t\t\t\t\t\t<multiple-select :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-0249af62=\"\"></multiple-select>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<!-- Upsell -->\n\t\t\t\t<div class=\"columns py-2\" v-if=\"!isPro\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column text-center\" _v-0249af62=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-0249af62=\"\"><i class=\"fa fa-lock\" _v-0249af62=\"\"></i> Selecting custom post types is available in the pro version.</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\n\t\t\t\t<!-- Taxonomies -->\n\t\t\t\t<div class=\"columns text-right py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Taxonomies</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">Taxonomies available for the selected post types. Use to include or exclude posts.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-0249af62=\"\">\n\t\t\t\t\t\t<div class=\"input-group\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" _v-0249af62=\"\"></multiple-select>\n\t\t\t\t\t\t\t<span class=\"input-group-addon vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" @change=\"exludeTaxonomiesChange\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-0249af62=\"\"></i>Exclude?\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</span>\n\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t</div>\n\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\t\t\t\t<!-- Posts -->\n\t\t\t\t<div class=\"columns text-right py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Posts</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">Posts excluded/included in sharing, filtered based on previous selections.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-0249af62=\"\">\n\t\t\t\t\t\t<div class=\"input-group\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t<multiple-select :searchquery=\"searchQuery\" @update=\"searchUpdate\" :options=\"postsAvailable\" :dont-lock=\"true\" :selected=\"generalSettings.selected_posts\" :changed-selection=\"updatedPosts\" _v-0249af62=\"\"></multiple-select>\n\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\n\t\t\t\t<!-- Google Analytics -->\n\t\t\t\t<div class=\"columns text-right py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Enable Google Analytics Tracking</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">If checked an utm query willbe added to URL's so that you cand better track trafic.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-0249af62=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.ga_tracking\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-0249af62=\"\"></i>Yes\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer text-right\" _v-0249af62=\"\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\" _v-0249af62=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-0249af62=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-0249af62=\"\"></i> Save\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\" _v-0249af62=\"\">\n\t\t<div class=\"panel-body\" _v-0249af62=\"\">\n\t\t\t<div class=\"container\" :class=\"'rop-tab-state-'+is_loading\" _v-0249af62=\"\">\n\t\t\t\t<!-- Min Interval Between Shares -->\n\t\t\t\t<div class=\"columns py-2\" v-if=\"! isPro\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Minimum interval between shares</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">Minimum time between shares (hour/hours), 0.4 can be used.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<counter-input id=\"default_interval\" :value.sync=\"generalSettings.default_interval\" _v-0249af62=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\t\t\t\t<!-- Min Post Age -->\n\t\t\t\t<div class=\"columns py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Minimum post age</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">Minimum age of posts available for sharing, in days.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<counter-input id=\"min_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.minimum_post_age\" _v-0249af62=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- Max Post Age -->\n\t\t\t\t<div class=\"columns py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Maximum post age</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">Maximum age of posts available for sharing, in days.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<counter-input id=\"max_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.maximum_post_age\" _v-0249af62=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\n\t\t\t\t<!-- No. of posts -->\n\t\t\t\t<div class=\"columns py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Number of posts</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">Number of posts to share per. account per. trigger of scheduled job.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\" _v-0249af62=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\n\t\t\t\t<!-- Share more than once -->\n\t\t\t\t<div class=\"columns py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Share more than once?</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">If there are no more posts to share, we should start re-sharing the one we previously shared.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-0249af62=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-0249af62=\"\"></i> Yes\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\n\t\t\t\t<!-- Post Types -->\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Post types</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">Post types available to share - what post types are available for share</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-0249af62=\"\">\n\t\t\t\t\t\t<multiple-select :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-0249af62=\"\"></multiple-select>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<!-- Upsell -->\n\t\t\t\t<div class=\"columns py-2\" v-if=\"!isPro\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column text-center\" _v-0249af62=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-0249af62=\"\"><i class=\"fa fa-lock\" _v-0249af62=\"\"></i> Selecting custom post types is available in the pro version.</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\n\t\t\t\t<!-- Taxonomies -->\n\t\t\t\t<div class=\"columns py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Taxonomies</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">Taxonomies available for the selected post types. Use to include or exclude posts.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-0249af62=\"\">\n\t\t\t\t\t\t<div class=\"input-group\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" _v-0249af62=\"\"></multiple-select>\n\t\t\t\t\t\t\t<span class=\"input-group-addon vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" @change=\"exludeTaxonomiesChange\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-0249af62=\"\"></i>Exclude?\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</span>\n\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t</div>\n\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\t\t\t\t<!-- Posts -->\n\t\t\t\t<div class=\"columns py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Posts</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">Posts excluded/included in sharing, filtered based on previous selections.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-0249af62=\"\">\n\t\t\t\t\t\t<div class=\"input-group\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t<multiple-select :searchquery=\"searchQuery\" @update=\"searchUpdate\" :options=\"postsAvailable\" :dont-lock=\"true\" :selected=\"generalSettings.selected_posts\" :changed-selection=\"updatedPosts\" _v-0249af62=\"\"></multiple-select>\n\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\n\t\t\t\t<!-- Google Analytics -->\n\t\t\t\t<div class=\"columns py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Enable Google Analytics Tracking</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">If checked an utm query willbe added to URL's so that you cand better track trafic.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-0249af62=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.ga_tracking\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-0249af62=\"\"></i>Yes\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\n\t\t\t\t<!-- Custom Share Messages -->\n\t\t\t\t<div class=\"columns py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Custom Share Messages</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">If checked a metabox will be added so you can edit the share message.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-0249af62=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.custom_messages\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-0249af62=\"\"></i>Yes\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer text-right\" _v-0249af62=\"\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\" _v-0249af62=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-0249af62=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-0249af62=\"\"></i> Save\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 222 */
@@ -34313,7 +34324,7 @@ module.exports = {
 		getIcon: function getIcon(account) {
 
 			var serviceIcon = 'fa-';
-			if (account.service === 'facebook') serviceIcon = serviceIcon.concat('facebook-official');
+			if (account.service === 'facebook') serviceIcon = serviceIcon.concat('facebook');
 			if (account.service === 'twitter') serviceIcon = serviceIcon.concat('twitter');
 			if (account.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin');
 			if (account.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr');
@@ -34398,13 +34409,8 @@ module.exports = {
 }; // <template>
 // 	<div class="tab-view">
 // 		<div class="panel-body">
-// 			<div class="column col-12">
-// 				<h3>Post Format</h3>
-// 				<span class="divider"></span>
-// 			</div>
 // 			<div class="d-inline-block mt-2 column col-12">
-// 				<h6><i class="fa fa-info-circle"></i> Info</h6>
-// 				<p class="text-gray">Each <b>account</b> can have it's own <b>Post Format</b> for sharing, on the left you can see the
+// 				<p class="text-gray"><i class="fa fa-info-circle"></i> Each <b>account</b> can have it's own <b>Post Format</b> for sharing, on the left you can see the
 // 					current selected account and network, bellow are the <b>Post Format</b> options for the account.
 // 					Don't forget to save after each change and remember, you can always reset an account to the network
 // 					defaults.
@@ -34590,19 +34596,12 @@ exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-55cfd432] {\n\t
 
 // <template>
 // 	<div>
-// 		<div class="columns mt-0">
-// 			<div class="column col-12 mt-0">
-// 				<span class="divider"></span>
-// 				<h4 class="label my-2">Content</h4>
-// 			</div>
-// 		</div>
-//
 // 		<!-- Post Content - where to fetch the content which will be shared
 // 			 (dropdown with 4 options ( post_title, post_content, post_content
 // 			 and title and custom field). If custom field is selected we will
 // 			 have a text field which users will need to fill in to fetch the
 // 			 content from that meta key. -->
-// 		<div class="columns text-right py-2">
+// 		<div class="columns py-2">
 // 			<div class="column col-6 col-sm-12 vertical-align">
 // 				<b>Post Content</b>
 // 				<p class="text-gray">From where to fetch the content which will be shared.</p>
@@ -34619,7 +34618,7 @@ exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-55cfd432] {\n\t
 // 			</div>
 // 		</div>
 // 		<!-- Custom Meta Field -->
-// 		<div class="columns text-right py-2" v-if="post_format.post_content === 'custom_field'">
+// 		<div class="columns py-2" v-if="post_format.post_content === 'custom_field'">
 // 			<div class="column col-6 col-sm-12 vertical-align">
 // 				<b>Custom Meta Field</b>
 // 				<p class="text-gray">Meta field name from which to get the content.</p>
@@ -34637,7 +34636,7 @@ exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-55cfd432] {\n\t
 // 			 number of chars for the shared content. We striping the content, we need
 // 			 to strip at the last whitespace or dot before reaching the limit, in order
 // 			 to not trim just half of the word. -->
-// 		<div class="columns text-right py-2">
+// 		<div class="columns py-2">
 // 			<div class="column col-6 col-sm-12 vertical-align">
 // 				<b>Maximum chars</b>
 // 				<p class="text-gray">Maximum length of the message.</p>
@@ -34653,7 +34652,7 @@ exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-55cfd432] {\n\t
 //
 // 		<!-- Additional text field - text field which will be used by the users to a
 // 			 custom content before the fetched post content. -->
-// 		<div class="columns text-right py-2">
+// 		<div class="columns py-2">
 // 			<div class="column col-6 col-sm-12 vertical-align">
 // 				<b>Additional text</b>
 // 				<p class="text-gray">Add custom content to published items.</p>
@@ -34668,7 +34667,7 @@ exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-55cfd432] {\n\t
 //
 // 		<!-- Additional text at - dropdown with 2 options, begining or end, having the
 // 			 option where to add the additional text content. -->
-// 		<div class="columns text-right py-2">
+// 		<div class="columns py-2">
 // 			<div class="column col-6 col-sm-12 vertical-align">
 // 				<p class="text-gray">Where to add the custom text.</p>
 // 			</div>
@@ -34682,15 +34681,9 @@ exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-55cfd432] {\n\t
 // 			</div>
 // 		</div>
 //
-// 		<div class="columns mt-0">
-// 			<div class="column col-12 mt-0">
-// 				<span class="divider"></span>
-// 				<h4 class="label my-2">Link & URL</h4>
-// 			</div>
-// 		</div>
 // 		<!-- Include link - checkbox either we should include the post permalink or not
 // 			 in the shared content. This is will appended at the end of the content. -->
-//         <div class="columns text-right py-2">
+//         <div class="columns py-2">
 //             <div class="column col-6 col-sm-12 vertical-align">
 //                 <b>Include link</b>
 //                 <p class="text-gray">Should include the post permalink or not?</p>
@@ -34708,7 +34701,7 @@ exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-55cfd432] {\n\t
 // 		<!-- Fetch url from custom field - checkbox - either we should fetch the url from
 // 			 a meta field or not. When checked we will open a text field for entering the
 // 			 meta key. -->
-// 		<div class="columns text-right py-2">
+// 		<div class="columns py-2">
 // 			<div class="column col-6 col-sm-12 vertical-align">
 // 				<b>Custom field</b>
 // 				<p class="text-gray">Fetch URL from custom field?</p>
@@ -34723,7 +34716,7 @@ exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-55cfd432] {\n\t
 // 			</div>
 // 		</div>
 // 		<!-- Custom Field -->
-// 		<div class="columns text-right py-2" v-if="post_format.url_from_meta">
+// 		<div class="columns py-2" v-if="post_format.url_from_meta">
 // 			<div class="column col-6 col-sm-12 vertical-align">
 // 				<b>Custom Field</b>
 // 				<p class="text-gray">Custom Field from which to get the URL.</p>
@@ -34740,7 +34733,7 @@ exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-55cfd432] {\n\t
 // 			 the links to the content. When checked we will show a dropdown with the shortners
 // 			 available and the api keys ( if needed ) for each one. The list of shortners will
 // 			 be the same as the old version of the plugin. -->
-// 		<div class="columns text-right py-2">
+// 		<div class="columns py-2">
 // 			<div class="column col-6 col-sm-12 vertical-align">
 // 				<b>Use url shortner</b>
 // 				<p class="text-gray">Should we use a shortner when adding the links to the content?</p>
@@ -34755,7 +34748,7 @@ exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-55cfd432] {\n\t
 // 			</div>
 // 		</div>
 // 		<!-- Shortner Service -->
-// 		<div class="columns text-right py-2" v-if="post_format.short_url">
+// 		<div class="columns py-2" v-if="post_format.short_url">
 // 			<div class="column col-6 col-sm-12 vertical-align">
 // 				<b>URL Shorner Service</b>
 // 				<p class="text-gray">Which service to use for URL shortening.</p>
@@ -34775,7 +34768,7 @@ exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-55cfd432] {\n\t
 // 			</div>
 // 		</div>
 //
-// 		<div class="columns text-right py-2" v-if="post_format.short_url" v-for="( credential, key_name ) in shortner_credentials">
+// 		<div class="columns py-2" v-if="post_format.short_url" v-for="( credential, key_name ) in shortner_credentials">
 // 			<div class="column col-6 col-sm-12 vertical-align">
 // 				<b>{{ key_name | capitalize }}</b>
 // 				<p class="text-gray">Add the "{{key_name}}" required by the <strong>{{post_format.short_url_service}}</strong> service API.</p>
@@ -34789,19 +34782,13 @@ exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-55cfd432] {\n\t
 // 			</div>
 // 		</div>
 //
-// 		<div class="columns mt-0">
-// 			<div class="column col-12 mt-0">
-// 				<span class="divider"></span>
-// 				<h4 class="label my-2">Misc.</h4>
-// 			</div>
-// 		</div>
 // 		<!-- Hashtags - dropdown - having this options - (Dont add any hashtags, Common hastags
 // 			 for all shares, Create hashtags from categories, Create hashtags from tags, Create
 // 			 hashtags from custom field). If one of those options is selected, except the dont
 // 			 any hashtags options, we will show a number field having the Maximum hashtags length.
 // 			 Moreover for common hashtags option, we will have another text field which will contain
 // 			 the hashtags value. -->
-// 		<div class="columns text-right py-2">
+// 		<div class="columns py-2">
 // 			<div class="column col-6 col-sm-12 vertical-align">
 // 				<b>Hashtags</b>
 // 				<p class="text-gray">Hashtags to published content.</p>
@@ -34819,7 +34806,7 @@ exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-55cfd432] {\n\t
 // 			</div>
 // 		</div>
 // 		<!-- Common Hashtags -->
-// 		<div class="columns text-right py-2" v-if="post_format.hashtags === 'common-hashtags'">
+// 		<div class="columns py-2" v-if="post_format.hashtags === 'common-hashtags'">
 // 			<div class="column col-6 col-sm-12 vertical-align">
 // 				<b>Common Hashtags</b>
 // 				<p class="text-gray">List of hastags to use separated by comma ",".</p>
@@ -34833,7 +34820,7 @@ exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-55cfd432] {\n\t
 // 		</div>
 //
 // 		<!-- Custom Hashtags -->
-// 		<div class="columns text-right py-2" v-if="post_format.hashtags === 'custom-hashtags'">
+// 		<div class="columns py-2" v-if="post_format.hashtags === 'custom-hashtags'">
 // 			<div class="column col-6 col-sm-12 vertical-align">
 // 				<b>Custom Hashtags</b>
 // 				<p class="text-gray">The name of the meta field that contains the hashtags.</p>
@@ -34847,7 +34834,7 @@ exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-55cfd432] {\n\t
 // 		</div>
 //
 // 		<!-- Hashtags Length -->
-// 		<div class="columns text-right py-2" v-if="post_format.hashtags !== 'no-hashtags'">
+// 		<div class="columns py-2" v-if="post_format.hashtags !== 'no-hashtags'">
 // 			<div class="column col-6 col-sm-12 vertical-align">
 // 				<b>Maximum Hashtags length</b>
 // 				<p class="text-gray">The maximum hashtags length to be used when publishing.</p>
@@ -34862,7 +34849,7 @@ exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-55cfd432] {\n\t
 //
 // 		<span class="divider"></span>
 //
-// 		<div class="columns text-right py-2" :class="'rop-control-container-'+isPro">
+// 		<div class="columns py-2" :class="'rop-control-container-'+isPro">
 // 			<div class="column col-6 col-sm-12 vertical-align">
 // 				<b>Post with image</b>
 // 				<p class="text-gray">Use the featured image when posting?</p>
@@ -34967,7 +34954,7 @@ module.exports = {
 /* 233 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div _v-55cfd432=\"\">\n\t\t<div class=\"columns mt-0\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-12 mt-0\" _v-55cfd432=\"\">\n\t\t\t\t<span class=\"divider\" _v-55cfd432=\"\"></span>\n\t\t\t\t<h4 class=\"label my-2\" _v-55cfd432=\"\">Content</h4>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Post Content - where to fetch the content which will be shared\n\t\t\t (dropdown with 4 options ( post_title, post_content, post_content\n\t\t\t and title and custom field). If custom field is selected we will\n\t\t\t have a text field which users will need to fill in to fetch the\n\t\t\t content from that meta key. -->\n\t\t<div class=\"columns text-right py-2\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Post Content</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">From where to fetch the content which will be shared.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.post_content\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<option value=\"post_title\" _v-55cfd432=\"\">Post Title</option>\n\t\t\t\t\t\t<option value=\"post_content\" _v-55cfd432=\"\">Post Content</option>\n\t\t\t\t\t\t<option value=\"post_title_content\" _v-55cfd432=\"\">Post Title &amp; Content</option>\n\t\t\t\t\t\t<option value=\"custom_field\" _v-55cfd432=\"\">Custom Field</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Custom Meta Field -->\n\t\t<div class=\"columns text-right py-2\" v-if=\"post_format.post_content === 'custom_field'\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Custom Meta Field</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Meta field name from which to get the content.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.custom_meta_field\" value=\"\" placeholder=\"\" _v-55cfd432=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-55cfd432=\"\"></span>\n\n\t\t<!-- Maximum length of the message( number field ) which holds the maximum\n\t\t\t number of chars for the shared content. We striping the content, we need\n\t\t\t to strip at the last whitespace or dot before reaching the limit, in order\n\t\t\t to not trim just half of the word. -->\n\t\t<div class=\"columns text-right py-2\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Maximum chars</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Maximum length of the message.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.maximum_length\" value=\"\" placeholder=\"\" _v-55cfd432=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-55cfd432=\"\"></span>\n\n\t\t<!-- Additional text field - text field which will be used by the users to a\n\t\t\t custom content before the fetched post content. -->\n\t\t<div class=\"columns text-right py-2\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Additional text</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Add custom content to published items.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<textarea class=\"form-input\" v-model=\"post_format.custom_text\" placeholder=\"Custom content ...\" _v-55cfd432=\"\">{{post_format.custom_text}}</textarea>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Additional text at - dropdown with 2 options, begining or end, having the\n\t\t\t option where to add the additional text content. -->\n\t\t<div class=\"columns text-right py-2\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Where to add the custom text.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.custom_text_pos\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<option value=\"beginning\" _v-55cfd432=\"\">Beginning</option>\n\t\t\t\t\t\t<option value=\"end\" _v-55cfd432=\"\">End</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns mt-0\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-12 mt-0\" _v-55cfd432=\"\">\n\t\t\t\t<span class=\"divider\" _v-55cfd432=\"\"></span>\n\t\t\t\t<h4 class=\"label my-2\" _v-55cfd432=\"\">Link &amp; URL</h4>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Include link - checkbox either we should include the post permalink or not\n\t\t\t in the shared content. This is will appended at the end of the content. -->\n        <div class=\"columns text-right py-2\" _v-55cfd432=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n                <b _v-55cfd432=\"\">Include link</b>\n                <p class=\"text-gray\" _v-55cfd432=\"\">Should include the post permalink or not?</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n                <div class=\"input-group\" _v-55cfd432=\"\">\n                    <label class=\"form-checkbox\" _v-55cfd432=\"\">\n                        <input type=\"checkbox\" v-model=\"post_format.include_link\" _v-55cfd432=\"\">\n                        <i class=\"form-icon\" _v-55cfd432=\"\"></i> Yes\n                    </label>\n                </div>\n            </div>\n        </div>\n\t\t<span class=\"divider\" _v-55cfd432=\"\"></span>\n\t\t<!-- Fetch url from custom field - checkbox - either we should fetch the url from\n\t\t\t a meta field or not. When checked we will open a text field for entering the\n\t\t\t meta key. -->\n\t\t<div class=\"columns text-right py-2\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Custom field</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Fetch URL from custom field?</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"input-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.url_from_meta\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-55cfd432=\"\"></i> Yes\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Custom Field -->\n\t\t<div class=\"columns text-right py-2\" v-if=\"post_format.url_from_meta\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Custom Field</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Custom Field from which to get the URL.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.url_meta_key\" value=\"\" placeholder=\"\" _v-55cfd432=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-55cfd432=\"\"></span>\n\t\t<!-- Use url shortner ( checkbox ) , either we should use a shortner when adding\n\t\t\t the links to the content. When checked we will show a dropdown with the shortners\n\t\t\t available and the api keys ( if needed ) for each one. The list of shortners will\n\t\t\t be the same as the old version of the plugin. -->\n\t\t<div class=\"columns text-right py-2\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Use url shortner</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Should we use a shortner when adding the links to the content?</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"input-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.short_url\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-55cfd432=\"\"></i> Yes\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Shortner Service -->\n\t\t<div class=\"columns text-right py-2\" v-if=\"post_format.short_url\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">URL Shorner Service</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Which service to use for URL shortening.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.short_url_service\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<option value=\"rviv.ly\" _v-55cfd432=\"\">rviv.ly</option>\n\t\t\t\t\t\t<option value=\"bit.ly\" _v-55cfd432=\"\">bit.ly</option>\n\t\t\t\t\t\t<option value=\"shorte.st\" _v-55cfd432=\"\">shorte.st</option>\n\t\t\t\t\t\t<option value=\"goo.gl\" _v-55cfd432=\"\">goo.gl</option>\n\t\t\t\t\t\t<option value=\"ow.ly\" _v-55cfd432=\"\">ow.ly</option>\n\t\t\t\t\t\t<option value=\"is.gd\" _v-55cfd432=\"\">is.gd</option>\n\t\t\t\t\t\t<option value=\"wp_short_url\" _v-55cfd432=\"\">wp_short_url</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns text-right py-2\" v-if=\"post_format.short_url\" v-for=\"( credential, key_name ) in shortner_credentials\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">{{ key_name | capitalize }}</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Add the \"{{key_name}}\" required by the <strong _v-55cfd432=\"\">{{post_format.short_url_service}}</strong> service API.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"shortner_credentials[key_name]\" value=\"\" placeholder=\"\" @change=\"updateShortnerCredentials()\" @keyup=\"updateShortnerCredentials()\" _v-55cfd432=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns mt-0\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-12 mt-0\" _v-55cfd432=\"\">\n\t\t\t\t<span class=\"divider\" _v-55cfd432=\"\"></span>\n\t\t\t\t<h4 class=\"label my-2\" _v-55cfd432=\"\">Misc.</h4>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Hashtags - dropdown - having this options - (Dont add any hashtags, Common hastags\n\t\t\t for all shares, Create hashtags from categories, Create hashtags from tags, Create\n\t\t\t hashtags from custom field). If one of those options is selected, except the dont\n\t\t\t any hashtags options, we will show a number field having the Maximum hashtags length.\n\t\t\t Moreover for common hashtags option, we will have another text field which will contain\n\t\t\t the hashtags value. -->\n\t\t<div class=\"columns text-right py-2\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Hashtags</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Hashtags to published content.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.hashtags\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<option value=\"no-hashtags\" _v-55cfd432=\"\">Dont add any hashtags</option>\n\t\t\t\t\t\t<option value=\"common-hashtags\" _v-55cfd432=\"\">Common hastags for all shares</option>\n\t\t\t\t\t\t<option value=\"categories-hashtags\" _v-55cfd432=\"\">Create hashtags from categories</option>\n\t\t\t\t\t\t<option value=\"tags-hashtags\" _v-55cfd432=\"\">Create hashtags from tags</option>\n\t\t\t\t\t\t<option value=\"custom-hashtags\" _v-55cfd432=\"\">Create hashtags from custom field</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Common Hashtags -->\n\t\t<div class=\"columns text-right py-2\" v-if=\"post_format.hashtags === 'common-hashtags'\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Common Hashtags</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">List of hastags to use separated by comma \",\".</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_common\" value=\"\" placeholder=\"\" _v-55cfd432=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Custom Hashtags -->\n\t\t<div class=\"columns text-right py-2\" v-if=\"post_format.hashtags === 'custom-hashtags'\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Custom Hashtags</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">The name of the meta field that contains the hashtags.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_custom\" value=\"\" placeholder=\"\" _v-55cfd432=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Hashtags Length -->\n\t\t<div class=\"columns text-right py-2\" v-if=\"post_format.hashtags !== 'no-hashtags'\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Maximum Hashtags length</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">The maximum hashtags length to be used when publishing.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.hashtags_length\" value=\"\" placeholder=\"\" _v-55cfd432=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<span class=\"divider\" _v-55cfd432=\"\"></span>\n\n\t\t<div class=\"columns text-right py-2\" :class=\"'rop-control-container-'+isPro\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Post with image</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Use the featured image when posting?</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"input-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.image\" :disabled=\"!isPro\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-55cfd432=\"\"></i> Yes\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Upsell -->\n\t\t<div class=\"columns py-2\" v-if=\"!isPro\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column text-center\" _v-55cfd432=\"\">\n\t\t\t\t<p class=\"upsell\" _v-55cfd432=\"\"><i class=\"fa fa-lock\" _v-55cfd432=\"\"></i> Posting with images ia available in the pro version. </p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-55cfd432=\"\"></span>\n\t</div>\n";
+module.exports = "\n\t<div _v-55cfd432=\"\">\n\t\t<!-- Post Content - where to fetch the content which will be shared\n\t\t\t (dropdown with 4 options ( post_title, post_content, post_content\n\t\t\t and title and custom field). If custom field is selected we will\n\t\t\t have a text field which users will need to fill in to fetch the\n\t\t\t content from that meta key. -->\n\t\t<div class=\"columns py-2\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Post Content</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">From where to fetch the content which will be shared.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.post_content\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<option value=\"post_title\" _v-55cfd432=\"\">Post Title</option>\n\t\t\t\t\t\t<option value=\"post_content\" _v-55cfd432=\"\">Post Content</option>\n\t\t\t\t\t\t<option value=\"post_title_content\" _v-55cfd432=\"\">Post Title &amp; Content</option>\n\t\t\t\t\t\t<option value=\"custom_field\" _v-55cfd432=\"\">Custom Field</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Custom Meta Field -->\n\t\t<div class=\"columns py-2\" v-if=\"post_format.post_content === 'custom_field'\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Custom Meta Field</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Meta field name from which to get the content.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.custom_meta_field\" value=\"\" placeholder=\"\" _v-55cfd432=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-55cfd432=\"\"></span>\n\n\t\t<!-- Maximum length of the message( number field ) which holds the maximum\n\t\t\t number of chars for the shared content. We striping the content, we need\n\t\t\t to strip at the last whitespace or dot before reaching the limit, in order\n\t\t\t to not trim just half of the word. -->\n\t\t<div class=\"columns py-2\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Maximum chars</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Maximum length of the message.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.maximum_length\" value=\"\" placeholder=\"\" _v-55cfd432=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-55cfd432=\"\"></span>\n\n\t\t<!-- Additional text field - text field which will be used by the users to a\n\t\t\t custom content before the fetched post content. -->\n\t\t<div class=\"columns py-2\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Additional text</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Add custom content to published items.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<textarea class=\"form-input\" v-model=\"post_format.custom_text\" placeholder=\"Custom content ...\" _v-55cfd432=\"\">{{post_format.custom_text}}</textarea>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Additional text at - dropdown with 2 options, begining or end, having the\n\t\t\t option where to add the additional text content. -->\n\t\t<div class=\"columns py-2\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Where to add the custom text.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.custom_text_pos\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<option value=\"beginning\" _v-55cfd432=\"\">Beginning</option>\n\t\t\t\t\t\t<option value=\"end\" _v-55cfd432=\"\">End</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Include link - checkbox either we should include the post permalink or not\n\t\t\t in the shared content. This is will appended at the end of the content. -->\n        <div class=\"columns py-2\" _v-55cfd432=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n                <b _v-55cfd432=\"\">Include link</b>\n                <p class=\"text-gray\" _v-55cfd432=\"\">Should include the post permalink or not?</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n                <div class=\"input-group\" _v-55cfd432=\"\">\n                    <label class=\"form-checkbox\" _v-55cfd432=\"\">\n                        <input type=\"checkbox\" v-model=\"post_format.include_link\" _v-55cfd432=\"\">\n                        <i class=\"form-icon\" _v-55cfd432=\"\"></i> Yes\n                    </label>\n                </div>\n            </div>\n        </div>\n\t\t<span class=\"divider\" _v-55cfd432=\"\"></span>\n\t\t<!-- Fetch url from custom field - checkbox - either we should fetch the url from\n\t\t\t a meta field or not. When checked we will open a text field for entering the\n\t\t\t meta key. -->\n\t\t<div class=\"columns py-2\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Custom field</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Fetch URL from custom field?</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"input-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.url_from_meta\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-55cfd432=\"\"></i> Yes\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Custom Field -->\n\t\t<div class=\"columns py-2\" v-if=\"post_format.url_from_meta\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Custom Field</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Custom Field from which to get the URL.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.url_meta_key\" value=\"\" placeholder=\"\" _v-55cfd432=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-55cfd432=\"\"></span>\n\t\t<!-- Use url shortner ( checkbox ) , either we should use a shortner when adding\n\t\t\t the links to the content. When checked we will show a dropdown with the shortners\n\t\t\t available and the api keys ( if needed ) for each one. The list of shortners will\n\t\t\t be the same as the old version of the plugin. -->\n\t\t<div class=\"columns py-2\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Use url shortner</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Should we use a shortner when adding the links to the content?</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"input-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.short_url\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-55cfd432=\"\"></i> Yes\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Shortner Service -->\n\t\t<div class=\"columns py-2\" v-if=\"post_format.short_url\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">URL Shorner Service</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Which service to use for URL shortening.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.short_url_service\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<option value=\"rviv.ly\" _v-55cfd432=\"\">rviv.ly</option>\n\t\t\t\t\t\t<option value=\"bit.ly\" _v-55cfd432=\"\">bit.ly</option>\n\t\t\t\t\t\t<option value=\"shorte.st\" _v-55cfd432=\"\">shorte.st</option>\n\t\t\t\t\t\t<option value=\"goo.gl\" _v-55cfd432=\"\">goo.gl</option>\n\t\t\t\t\t\t<option value=\"ow.ly\" _v-55cfd432=\"\">ow.ly</option>\n\t\t\t\t\t\t<option value=\"is.gd\" _v-55cfd432=\"\">is.gd</option>\n\t\t\t\t\t\t<option value=\"wp_short_url\" _v-55cfd432=\"\">wp_short_url</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.short_url\" v-for=\"( credential, key_name ) in shortner_credentials\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">{{ key_name | capitalize }}</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Add the \"{{key_name}}\" required by the <strong _v-55cfd432=\"\">{{post_format.short_url_service}}</strong> service API.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"shortner_credentials[key_name]\" value=\"\" placeholder=\"\" @change=\"updateShortnerCredentials()\" @keyup=\"updateShortnerCredentials()\" _v-55cfd432=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Hashtags - dropdown - having this options - (Dont add any hashtags, Common hastags\n\t\t\t for all shares, Create hashtags from categories, Create hashtags from tags, Create\n\t\t\t hashtags from custom field). If one of those options is selected, except the dont\n\t\t\t any hashtags options, we will show a number field having the Maximum hashtags length.\n\t\t\t Moreover for common hashtags option, we will have another text field which will contain\n\t\t\t the hashtags value. -->\n\t\t<div class=\"columns py-2\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Hashtags</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Hashtags to published content.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.hashtags\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<option value=\"no-hashtags\" _v-55cfd432=\"\">Dont add any hashtags</option>\n\t\t\t\t\t\t<option value=\"common-hashtags\" _v-55cfd432=\"\">Common hastags for all shares</option>\n\t\t\t\t\t\t<option value=\"categories-hashtags\" _v-55cfd432=\"\">Create hashtags from categories</option>\n\t\t\t\t\t\t<option value=\"tags-hashtags\" _v-55cfd432=\"\">Create hashtags from tags</option>\n\t\t\t\t\t\t<option value=\"custom-hashtags\" _v-55cfd432=\"\">Create hashtags from custom field</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Common Hashtags -->\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags === 'common-hashtags'\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Common Hashtags</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">List of hastags to use separated by comma \",\".</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_common\" value=\"\" placeholder=\"\" _v-55cfd432=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Custom Hashtags -->\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags === 'custom-hashtags'\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Custom Hashtags</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">The name of the meta field that contains the hashtags.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_custom\" value=\"\" placeholder=\"\" _v-55cfd432=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Hashtags Length -->\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags !== 'no-hashtags'\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Maximum Hashtags length</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">The maximum hashtags length to be used when publishing.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.hashtags_length\" value=\"\" placeholder=\"\" _v-55cfd432=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<span class=\"divider\" _v-55cfd432=\"\"></span>\n\n\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Post with image</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Use the featured image when posting?</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"input-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.image\" :disabled=\"!isPro\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-55cfd432=\"\"></i> Yes\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Upsell -->\n\t\t<div class=\"columns py-2\" v-if=\"!isPro\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column text-center\" _v-55cfd432=\"\">\n\t\t\t\t<p class=\"upsell\" _v-55cfd432=\"\"><i class=\"fa fa-lock\" _v-55cfd432=\"\"></i> Posting with images ia available in the pro version. </p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-55cfd432=\"\"></span>\n\t</div>\n";
 
 /***/ }),
 /* 234 */
@@ -35051,15 +35038,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // <template>
 // 	<div :class="'rop-control-container-'+ ( license>1 ) ">
-// 		<div class="columns mt-0">
-// 			<div class="column col-12 mt-0">
-// 				<span class="divider"></span>
-// 				<h4 class="label my-2">Custom Schedule</h4>
-// 			</div>
-// 		</div>
 //
 // 		<!-- Schedule Type -->
-// 		<div class="columns text-right py-2 rop-control">
+// 		<div class="columns py-2 rop-control">
 // 			<div class="column col-6 col-sm-12 vertical-align">
 // 				<b>Schedule Type</b>
 // 				<p class="text-gray">What type of schedule to use.</p>
@@ -35075,7 +35056,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 		</div>
 //
 // 		<!-- Fixed Schedule Days -->
-// 		<div class="columns text-right py-2 rop-control" v-if="schedule.type === 'fixed'">
+// 		<div class="columns py-2 rop-control" v-if="schedule.type === 'fixed'">
 // 			<div class="column col-6 col-sm-12 vertical-align">
 // 				<b>Fixed Schedule Days</b>
 // 				<p class="text-gray">The days when to share for this account.</p>
@@ -35090,7 +35071,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 		</div>
 //
 // 		<!-- Fixed Schedule time -->
-// 		<div class="columns text-right py-2 rop-control" v-if="schedule.type === 'fixed'">
+// 		<div class="columns py-2 rop-control" v-if="schedule.type === 'fixed'">
 // 			<div class="column col-6 col-sm-12 vertical-align">
 // 				<b>Fixed Schedule Time</b>
 // 				<p class="text-gray">The time at witch to share for this account.</p>
@@ -35116,7 +35097,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 		</div>
 //
 // 		<!-- Recurring Schedule Interval -->
-// 		<div class="columns text-right py-2 rop-control" v-else>
+// 		<div class="columns py-2 rop-control" v-else>
 // 			<div class="column col-6 col-sm-12 vertical-align">
 // 				<b>Recurring Schedule Interval</b>
 // 				<p class="text-gray">A recurring interval to use for sharing. Once every 'X' hours.</p>
@@ -35900,13 +35881,13 @@ module.exports = "\n<span class=\"time-picker\">\n  <input class=\"display-time\
 /* 252 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div :class=\"'rop-control-container-'+ ( license>1 ) \" _v-6c5946b8=\"\">\n\t\t<div class=\"columns mt-0\" _v-6c5946b8=\"\">\n\t\t\t<div class=\"column col-12 mt-0\" _v-6c5946b8=\"\">\n\t\t\t\t<span class=\"divider\" _v-6c5946b8=\"\"></span>\n\t\t\t\t<h4 class=\"label my-2\" _v-6c5946b8=\"\">Custom Schedule</h4>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Schedule Type -->\n\t\t<div class=\"columns text-right py-2 rop-control\" _v-6c5946b8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<b _v-6c5946b8=\"\">Schedule Type</b>\n\t\t\t\t<p class=\"text-gray\" _v-6c5946b8=\"\">What type of schedule to use.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-6c5946b8=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"schedule.type\" _v-6c5946b8=\"\">\n\t\t\t\t\t\t<option value=\"recurring\" _v-6c5946b8=\"\">Recurring</option>\n\t\t\t\t\t\t<option value=\"fixed\" _v-6c5946b8=\"\">Fixed</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule Days -->\n\t\t<div class=\"columns text-right py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-6c5946b8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<b _v-6c5946b8=\"\">Fixed Schedule Days</b>\n\t\t\t\t<p class=\"text-gray\" _v-6c5946b8=\"\">The days when to share for this account.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<div class=\"form-group input-group\" _v-6c5946b8=\"\">\n\t\t\t\t\t<button-checkbox v-for=\"( data, label ) in daysObject\" :key=\"label\" :value=\"data.value\" :label=\"label\" :checked=\"data.checked\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" _v-6c5946b8=\"\"></button-checkbox>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule time -->\n\t\t<div class=\"columns text-right py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-6c5946b8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<b _v-6c5946b8=\"\">Fixed Schedule Time</b>\n\t\t\t\t<p class=\"text-gray\" _v-6c5946b8=\"\">The time at witch to share for this account.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-6c5946b8=\"\">\n\t\t\t\t\t<div class=\"input-group\" v-for=\"( time, index ) in schedule.interval_f.time\" _v-6c5946b8=\"\">\n\t\t\t\t\t\t<vue-timepicker :minute-interval=\"5\" class=\"timepicker-style-fix\" :value=\"getTime( index )\" @change=\"syncTime( $event, index )\" hide-clear-button=\"\" _v-6c5946b8=\"\"></vue-timepicker>\n\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn\" v-if=\"schedule.interval_f.time.length > 1\" @click=\"rmvTime( index )\" _v-6c5946b8=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-minus\" _v-6c5946b8=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t\t<button class=\"btn btn-success input-group-btn\" v-if=\"index == schedule.interval_f.time.length - 1\" @click=\"addTime()\" _v-6c5946b8=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-plus\" _v-6c5946b8=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Recurring Schedule Interval -->\n\t\t<div class=\"columns text-right py-2 rop-control\" v-else=\"\" _v-6c5946b8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<b _v-6c5946b8=\"\">Recurring Schedule Interval</b>\n\t\t\t\t<p class=\"text-gray\" _v-6c5946b8=\"\">A recurring interval to use for sharing. Once every 'X' hours.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-6c5946b8=\"\">\n\t\t\t\t\t<input type=\"number\" class=\"form-input\" v-model=\"schedule.interval_r\" placeholder=\"hours.min (Eg. 2.5)\" _v-6c5946b8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Upsell -->\n\t\t<div class=\"columns py-2\" v-if=\"license < 1\" _v-6c5946b8=\"\">\n\t\t\t<div class=\"column text-center\" _v-6c5946b8=\"\">\n\t\t\t\t<p class=\"upsell\" _v-6c5946b8=\"\"><i class=\"fa fa-lock\" _v-6c5946b8=\"\"></i> The Custom Schedule is available only in the Business version.</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-6c5946b8=\"\"></span>\n\t</div>\n";
+module.exports = "\n\t<div :class=\"'rop-control-container-'+ ( license>1 ) \" _v-6c5946b8=\"\">\n\n\t\t<!-- Schedule Type -->\n\t\t<div class=\"columns py-2 rop-control\" _v-6c5946b8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<b _v-6c5946b8=\"\">Schedule Type</b>\n\t\t\t\t<p class=\"text-gray\" _v-6c5946b8=\"\">What type of schedule to use.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-6c5946b8=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"schedule.type\" _v-6c5946b8=\"\">\n\t\t\t\t\t\t<option value=\"recurring\" _v-6c5946b8=\"\">Recurring</option>\n\t\t\t\t\t\t<option value=\"fixed\" _v-6c5946b8=\"\">Fixed</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule Days -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-6c5946b8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<b _v-6c5946b8=\"\">Fixed Schedule Days</b>\n\t\t\t\t<p class=\"text-gray\" _v-6c5946b8=\"\">The days when to share for this account.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<div class=\"form-group input-group\" _v-6c5946b8=\"\">\n\t\t\t\t\t<button-checkbox v-for=\"( data, label ) in daysObject\" :key=\"label\" :value=\"data.value\" :label=\"label\" :checked=\"data.checked\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" _v-6c5946b8=\"\"></button-checkbox>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule time -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-6c5946b8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<b _v-6c5946b8=\"\">Fixed Schedule Time</b>\n\t\t\t\t<p class=\"text-gray\" _v-6c5946b8=\"\">The time at witch to share for this account.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-6c5946b8=\"\">\n\t\t\t\t\t<div class=\"input-group\" v-for=\"( time, index ) in schedule.interval_f.time\" _v-6c5946b8=\"\">\n\t\t\t\t\t\t<vue-timepicker :minute-interval=\"5\" class=\"timepicker-style-fix\" :value=\"getTime( index )\" @change=\"syncTime( $event, index )\" hide-clear-button=\"\" _v-6c5946b8=\"\"></vue-timepicker>\n\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn\" v-if=\"schedule.interval_f.time.length > 1\" @click=\"rmvTime( index )\" _v-6c5946b8=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-minus\" _v-6c5946b8=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t\t<button class=\"btn btn-success input-group-btn\" v-if=\"index == schedule.interval_f.time.length - 1\" @click=\"addTime()\" _v-6c5946b8=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-plus\" _v-6c5946b8=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Recurring Schedule Interval -->\n\t\t<div class=\"columns py-2 rop-control\" v-else=\"\" _v-6c5946b8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<b _v-6c5946b8=\"\">Recurring Schedule Interval</b>\n\t\t\t\t<p class=\"text-gray\" _v-6c5946b8=\"\">A recurring interval to use for sharing. Once every 'X' hours.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-6c5946b8=\"\">\n\t\t\t\t\t<input type=\"number\" class=\"form-input\" v-model=\"schedule.interval_r\" placeholder=\"hours.min (Eg. 2.5)\" _v-6c5946b8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Upsell -->\n\t\t<div class=\"columns py-2\" v-if=\"license < 1\" _v-6c5946b8=\"\">\n\t\t\t<div class=\"column text-center\" _v-6c5946b8=\"\">\n\t\t\t\t<p class=\"upsell\" _v-6c5946b8=\"\"><i class=\"fa fa-lock\" _v-6c5946b8=\"\"></i> The Custom Schedule is available only in the Business version.</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-6c5946b8=\"\"></span>\n\t</div>\n";
 
 /***/ }),
 /* 253 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\" _v-2c842a80=\"\">\n\t\t<div class=\"panel-body\" _v-2c842a80=\"\">\n\t\t\t<div class=\"column col-12\" _v-2c842a80=\"\">\n\t\t\t\t<h3 _v-2c842a80=\"\">Post Format</h3>\n\t\t\t\t<span class=\"divider\" _v-2c842a80=\"\"></span>\n\t\t\t</div>\n\t\t\t<div class=\"d-inline-block mt-2 column col-12\" _v-2c842a80=\"\">\n\t\t\t\t<h6 _v-2c842a80=\"\"><i class=\"fa fa-info-circle\" _v-2c842a80=\"\"></i> Info</h6>\n\t\t\t\t<p class=\"text-gray\" _v-2c842a80=\"\">Each <b _v-2c842a80=\"\">account</b> can have it's own <b _v-2c842a80=\"\">Post Format</b> for sharing, on the left you can see the\n\t\t\t\t\tcurrent selected account and network, bellow are the <b _v-2c842a80=\"\">Post Format</b> options for the account.\n\t\t\t\t\tDon't forget to save after each change and remember, you can always reset an account to the network\n\t\t\t\t\tdefaults.\n\t\t\t\t</p>\n\t\t\t</div>\n\t\t\t<empty-active-accounts v-if=\"accountsCount === 0\" _v-2c842a80=\"\"></empty-active-accounts>\n\t\t\t<div class=\"container\" v-if=\"accountsCount > 0\" _v-2c842a80=\"\">\n\t\t\t\t\n\t\t\t\t<div class=\"columns\" _v-2c842a80=\"\">\n\t\t\t\t\t<div class=\"column col-3 col-sm-12 col-md-12 col-xl-12 col-lg-12 col-xs-12 col-rop-selector-accounts\" _v-2c842a80=\"\">\n\t\t\t\t\t\t<span class=\"divider\" _v-2c842a80=\"\"></span>\n\t\t\t\t\t\t<div v-for=\"( account, id ) in active_accounts\" _v-2c842a80=\"\">\n\t\t\t\t\t\t\t<div class=\"rop-selector-account-container\" v-bind:class=\"{active: selected_account===id}\" @click=\"setActiveAccount(id)\" _v-2c842a80=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"tile tile-centered rop-account\" _v-2c842a80=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"tile-icon\" _v-2c842a80=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"icon_box\" :class=\" (account.img ? 'has_image' : 'no-image' ) + ' ' +account.service \" _v-2c842a80=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<img class=\"service_account_image\" :src=\"account.img\" v-if=\"account.img\" _v-2c842a80=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"fa  \" :class=\"getIcon(account)\" aria-hidden=\"true\" _v-2c842a80=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t<div class=\"tile-content\" _v-2c842a80=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<p class=\"rop-account-name\" _v-2c842a80=\"\">{{account.user}}</p>\n\t\t\t\t\t\t\t\t\t\t\t<strong class=\"rop-service-name\" _v-2c842a80=\"\">{{account.service}}</strong>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-2c842a80=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-9 col-sm-12  col-md-12  col-xl-12 col-lg-12 col-xs-12\" :class=\"'rop-tab-state-'+is_loading\" _v-2c842a80=\"\">\n\t\t\t\t\t\t<component :is=\"type\" :account_id=\"selected_account\" :license=\"license\" _v-2c842a80=\"\"></component>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\" _v-2c842a80=\"\">\n\t\t\t<div class=\"panel-actions text-right\" v-if=\"allow_footer\" _v-2c842a80=\"\">\n\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-2c842a80=\"\"><i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-2c842a80=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-2c842a80=\"\"></i> Reset {{component_label}} for\n\t\t\t\t\t<b _v-2c842a80=\"\">{{active_account_name}}</b>\n\t\t\t\t</button>\n\t\t\t\t<button class=\"btn btn-primary\" @click=\"saveAccountData()\" _v-2c842a80=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-2c842a80=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-2c842a80=\"\"></i> Save {{component_label}}\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\" _v-2c842a80=\"\">\n\t\t<div class=\"panel-body\" _v-2c842a80=\"\">\n\t\t\t<div class=\"d-inline-block mt-2 column col-12\" _v-2c842a80=\"\">\n\t\t\t\t<p class=\"text-gray\" _v-2c842a80=\"\"><i class=\"fa fa-info-circle\" _v-2c842a80=\"\"></i> Each <b _v-2c842a80=\"\">account</b> can have it's own <b _v-2c842a80=\"\">Post Format</b> for sharing, on the left you can see the\n\t\t\t\t\tcurrent selected account and network, bellow are the <b _v-2c842a80=\"\">Post Format</b> options for the account.\n\t\t\t\t\tDon't forget to save after each change and remember, you can always reset an account to the network\n\t\t\t\t\tdefaults.\n\t\t\t\t</p>\n\t\t\t</div>\n\t\t\t<empty-active-accounts v-if=\"accountsCount === 0\" _v-2c842a80=\"\"></empty-active-accounts>\n\t\t\t<div class=\"container\" v-if=\"accountsCount > 0\" _v-2c842a80=\"\">\n\t\t\t\t\n\t\t\t\t<div class=\"columns\" _v-2c842a80=\"\">\n\t\t\t\t\t<div class=\"column col-3 col-sm-12 col-md-12 col-xl-12 col-lg-12 col-xs-12 col-rop-selector-accounts\" _v-2c842a80=\"\">\n\t\t\t\t\t\t<span class=\"divider\" _v-2c842a80=\"\"></span>\n\t\t\t\t\t\t<div v-for=\"( account, id ) in active_accounts\" _v-2c842a80=\"\">\n\t\t\t\t\t\t\t<div class=\"rop-selector-account-container\" v-bind:class=\"{active: selected_account===id}\" @click=\"setActiveAccount(id)\" _v-2c842a80=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"tile tile-centered rop-account\" _v-2c842a80=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"tile-icon\" _v-2c842a80=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"icon_box\" :class=\" (account.img ? 'has_image' : 'no-image' ) + ' ' +account.service \" _v-2c842a80=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<img class=\"service_account_image\" :src=\"account.img\" v-if=\"account.img\" _v-2c842a80=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"fa  \" :class=\"getIcon(account)\" aria-hidden=\"true\" _v-2c842a80=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t<div class=\"tile-content\" _v-2c842a80=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<p class=\"rop-account-name\" _v-2c842a80=\"\">{{account.user}}</p>\n\t\t\t\t\t\t\t\t\t\t\t<strong class=\"rop-service-name\" _v-2c842a80=\"\">{{account.service}}</strong>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-2c842a80=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-9 col-sm-12  col-md-12  col-xl-12 col-lg-12 col-xs-12\" :class=\"'rop-tab-state-'+is_loading\" _v-2c842a80=\"\">\n\t\t\t\t\t\t<component :is=\"type\" :account_id=\"selected_account\" :license=\"license\" _v-2c842a80=\"\"></component>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\" _v-2c842a80=\"\">\n\t\t\t<div class=\"panel-actions text-right\" v-if=\"allow_footer\" _v-2c842a80=\"\">\n\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-2c842a80=\"\"><i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-2c842a80=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-2c842a80=\"\"></i> Reset {{component_label}} for\n\t\t\t\t\t<b _v-2c842a80=\"\">{{active_account_name}}</b>\n\t\t\t\t</button>\n\t\t\t\t<button class=\"btn btn-primary\" @click=\"saveAccountData()\" _v-2c842a80=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-2c842a80=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-2c842a80=\"\"></i> Save {{component_label}}\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 254 */
@@ -36005,10 +35986,6 @@ module.exports = {
 }; // <template>
 // 	<div class="tab-view">
 // 		<div class="panel-body" :class="'rop-tab-state-'+is_loading">
-// 			<div class="column col-12">
-// 				<h3>Sharing Queue</h3>
-// 				<span class="divider"></span>
-// 			</div>
 // 			<!-- When sharing is not started -->
 // 			<div class="columns" v-if="! start_status">
 // 				<div class="column col-12 text-center empty-container">
@@ -36034,8 +36011,7 @@ module.exports = {
 //
 // 				<!-- When sharing is started but we  have the business plan. -->
 // 				<div class="d-inline-block mt-2 column col-12">
-// 					<h6><i class="fa fa-info-circle"></i> Info</h6>
-// 					<p class="text-gray">You can choose to edit any of the post, skip the sharing or block a specific one from sharing in the future.</p>
+// 					<p class="text-gray info-paragraph"><i class="fa fa-info-circle"></i> You can choose to edit any of the post, skip the sharing or block a specific one from sharing in the future.</p>
 // 				</div>
 // 			</div>
 // 			<!-- When sharing is started there is nothing in the Q. -->
@@ -36396,7 +36372,7 @@ module.exports = {
 			if (accountId !== null) {
 				serviceIcon = 'fa-';
 				var account = this.active_accounts[accountId];
-				if (account !== undefined && account.service === 'facebook') serviceIcon = serviceIcon.concat('facebook-official facebook');
+				if (account !== undefined && account.service === 'facebook') serviceIcon = serviceIcon.concat('facebook facebook');
 				if (account !== undefined && account.service === 'twitter') serviceIcon = serviceIcon.concat('twitter twitter');
 				if (account !== undefined && account.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin linkedin');
 				if (account !== undefined && account.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr tumblr');
@@ -36452,7 +36428,7 @@ module.exports = "\n\t<div class=\"card\" _v-26d4e7c0=\"\">\n\t\t<div class=\"co
 /* 261 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\" :class=\"'rop-tab-state-'+is_loading\">\n\t\t\t<div class=\"column col-12\">\n\t\t\t\t<h3>Sharing Queue</h3>\n\t\t\t\t<span class=\"divider\"></span>\n\t\t\t</div>\n\t\t\t<!-- When sharing is not started -->\n\t\t\t<div class=\"columns\" v-if=\"! start_status\">\n\t\t\t\t<div class=\"column col-12 text-center empty-container\">\n\t\t\t\t\t<div class=\"empty-icon\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t\t<p class=\"empty-title h5\">Sharing is not started!</p>\n\t\t\t\t\t<p class=\"empty-subtitle\">You need to start sharing in order to see any posts in the queue.</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t\n\t\t\t<!-- When sharing is started and we have items in Q. -->\n\t\t\t<div v-else-if=\"start_status && queueCount > 0 \">\n\t\t\t\t\n\t\t\t\t<!-- When sharing is started but we don't have the business plan. -->\n\t\t\t\t<!-- Upsell -->\n\t\t\t\t<div class=\"columns py-2\" v-if=\"! is_business\">\n\t\t\t\t\t<div class=\"column text-center\">\n\t\t\t\t\t\t<p class=\"upsell\"><i class=\"fa fa-lock\"></i> You ca edit the posts from the queue only the Business version of the\n\t\t\t\t\t\t\tplugin. View more details here.</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<!-- When sharing is started but we  have the business plan. -->\n\t\t\t\t<div class=\"d-inline-block mt-2 column col-12\">\n\t\t\t\t\t<h6><i class=\"fa fa-info-circle\"></i> Info</h6>\n\t\t\t\t\t<p class=\"text-gray\">You can choose to edit any of the post, skip the sharing or block a specific one from sharing in the future.</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<!-- When sharing is started there is nothing in the Q. -->\n\t\t\t<div class=\"empty\" v-else-if=\"start_status && queueCount === 0\">\n\t\t\t\t<div class=\"empty-icon\">\n\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\"></i>\n\t\t\t\t</div>\n\t\t\t\t<p class=\"empty-title h5\">No queued posts!</p>\n\t\t\t\t<p class=\"empty-subtitle\">Check if you have at least an <b>\"Active account\"</b>, what posts and pages\n\t\t\t\t\tare selected in <b>\"General Settings\"</b> and if a <b>\"Schedule\"</b> is defined.</p>\n\t\t\t</div>\n\t\t\t<div class=\"columns\" v-if=\"start_status && queueCount > 0\">\n\t\t\t\t<div class=\"column col-12 text-left\" v-for=\" (data, index) in queue \">\n\t\t\t\t\t<queue-card :card_data=\"data.post_data\" :id=\"index\" :enabled=\"is_business\"/>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer text-rightcade\">\n\t\t\t<button class=\"btn btn-secondary\" @click=\"refreshQueue(true)\">\n\t\t\t\t\n\t\t\t\t<i class=\"fa fa-refresh\" v-if=\"!is_loading\"></i>\n\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\tRefresh Queue\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\" :class=\"'rop-tab-state-'+is_loading\">\n\t\t\t<!-- When sharing is not started -->\n\t\t\t<div class=\"columns\" v-if=\"! start_status\">\n\t\t\t\t<div class=\"column col-12 text-center empty-container\">\n\t\t\t\t\t<div class=\"empty-icon\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t\t<p class=\"empty-title h5\">Sharing is not started!</p>\n\t\t\t\t\t<p class=\"empty-subtitle\">You need to start sharing in order to see any posts in the queue.</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t\n\t\t\t<!-- When sharing is started and we have items in Q. -->\n\t\t\t<div v-else-if=\"start_status && queueCount > 0 \">\n\t\t\t\t\n\t\t\t\t<!-- When sharing is started but we don't have the business plan. -->\n\t\t\t\t<!-- Upsell -->\n\t\t\t\t<div class=\"columns py-2\" v-if=\"! is_business\">\n\t\t\t\t\t<div class=\"column text-center\">\n\t\t\t\t\t\t<p class=\"upsell\"><i class=\"fa fa-lock\"></i> You ca edit the posts from the queue only the Business version of the\n\t\t\t\t\t\t\tplugin. View more details here.</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<!-- When sharing is started but we  have the business plan. -->\n\t\t\t\t<div class=\"d-inline-block mt-2 column col-12\">\n\t\t\t\t\t<p class=\"text-gray info-paragraph\"><i class=\"fa fa-info-circle\"></i> You can choose to edit any of the post, skip the sharing or block a specific one from sharing in the future.</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<!-- When sharing is started there is nothing in the Q. -->\n\t\t\t<div class=\"empty\" v-else-if=\"start_status && queueCount === 0\">\n\t\t\t\t<div class=\"empty-icon\">\n\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\"></i>\n\t\t\t\t</div>\n\t\t\t\t<p class=\"empty-title h5\">No queued posts!</p>\n\t\t\t\t<p class=\"empty-subtitle\">Check if you have at least an <b>\"Active account\"</b>, what posts and pages\n\t\t\t\t\tare selected in <b>\"General Settings\"</b> and if a <b>\"Schedule\"</b> is defined.</p>\n\t\t\t</div>\n\t\t\t<div class=\"columns\" v-if=\"start_status && queueCount > 0\">\n\t\t\t\t<div class=\"column col-12 text-left\" v-for=\" (data, index) in queue \">\n\t\t\t\t\t<queue-card :card_data=\"data.post_data\" :id=\"index\" :enabled=\"is_business\"/>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer text-rightcade\">\n\t\t\t<button class=\"btn btn-secondary\" @click=\"refreshQueue(true)\">\n\t\t\t\t\n\t\t\t\t<i class=\"fa fa-refresh\" v-if=\"!is_loading\"></i>\n\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\tRefresh Queue\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 262 */
@@ -36609,10 +36585,6 @@ module.exports = {
 }; // <template>
 // 	<div class="tab-view">
 // 		<div class="panel-body">
-// 			<div class="column col-12">
-// 				<h3>Logs</h3>
-// 				<span class="divider"></span>
-// 			</div>
 // 			<div class=" columns mt-2" v-if="logs_no > 0">
 // 				<div class="column  col-12 text-right ">
 // 					<button class="btn  btn-secondary " @click="getLogs(true)">
@@ -36948,7 +36920,7 @@ webpackContext.id = 267;
 /* 268 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\" _v-53f1df5b=\"\">\n\t\t<div class=\"panel-body\" _v-53f1df5b=\"\">\n\t\t\t<div class=\"column col-12\" _v-53f1df5b=\"\">\n\t\t\t\t<h3 _v-53f1df5b=\"\">Logs</h3>\n\t\t\t\t<span class=\"divider\" _v-53f1df5b=\"\"></span>\n\t\t\t</div>\n\t\t\t<div class=\" columns mt-2\" v-if=\"logs_no > 0\" _v-53f1df5b=\"\">\n\t\t\t\t<div class=\"column  col-12 text-right \" _v-53f1df5b=\"\">\n\t\t\t\t\t<button class=\"btn  btn-secondary \" @click=\"getLogs(true)\" _v-53f1df5b=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-remove\" v-if=\"!is_loading\" _v-53f1df5b=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-53f1df5b=\"\"></i>\n\t\t\t\t\t\tClear logs\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"columns\" _v-53f1df5b=\"\">\n\t\t\t\t<div class=\"empty column col-12\" v-if=\"is_loading\" _v-53f1df5b=\"\">\n\t\t\t\t\t<div class=\"empty-icon\" _v-53f1df5b=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-spinner fa-spin\" _v-53f1df5b=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"empty column col-12\" v-else-if=\"logs_no === 0\" _v-53f1df5b=\"\">\n\t\t\t\t\t<div class=\"empty-icon\" _v-53f1df5b=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\" _v-53f1df5b=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t\t<p class=\"empty-title h5\" _v-53f1df5b=\"\">No recent logs!</p>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"column col-12 mt-2\" v-for=\" (data, index) in logs \" v-else-if=\"logs_no >  0\" _v-53f1df5b=\"\">\n\t\t\t\t\t<div class=\"toast log-toast\" :class=\"'toast-' + data.type\" _v-53f1df5b=\"\">\n\t\t\t\t\t\t<small class=\"pull-right text-right\" _v-53f1df5b=\"\">{{formatDate ( data.time ) }}</small>\n\t\t\t\t\t\t<p _v-53f1df5b=\"\">{{data.message}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\" _v-53f1df5b=\"\">\n\t\t<div class=\"panel-body\" _v-53f1df5b=\"\">\n\t\t\t<div class=\" columns mt-2\" v-if=\"logs_no > 0\" _v-53f1df5b=\"\">\n\t\t\t\t<div class=\"column  col-12 text-right \" _v-53f1df5b=\"\">\n\t\t\t\t\t<button class=\"btn  btn-secondary \" @click=\"getLogs(true)\" _v-53f1df5b=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-remove\" v-if=\"!is_loading\" _v-53f1df5b=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-53f1df5b=\"\"></i>\n\t\t\t\t\t\tClear logs\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"columns\" _v-53f1df5b=\"\">\n\t\t\t\t<div class=\"empty column col-12\" v-if=\"is_loading\" _v-53f1df5b=\"\">\n\t\t\t\t\t<div class=\"empty-icon\" _v-53f1df5b=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-spinner fa-spin\" _v-53f1df5b=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"empty column col-12\" v-else-if=\"logs_no === 0\" _v-53f1df5b=\"\">\n\t\t\t\t\t<div class=\"empty-icon\" _v-53f1df5b=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\" _v-53f1df5b=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t\t<p class=\"empty-title h5\" _v-53f1df5b=\"\">No recent logs!</p>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"column col-12 mt-2\" v-for=\" (data, index) in logs \" v-else-if=\"logs_no >  0\" _v-53f1df5b=\"\">\n\t\t\t\t\t<div class=\"toast log-toast\" :class=\"'toast-' + data.type\" _v-53f1df5b=\"\">\n\t\t\t\t\t\t<small class=\"pull-right text-right\" _v-53f1df5b=\"\">{{formatDate ( data.time ) }}</small>\n\t\t\t\t\t\t<p _v-53f1df5b=\"\">{{data.message}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 269 */
@@ -38898,7 +38870,99 @@ module.exports = "\n\t<div class=\"toast toast-success rop-current-time\" v-if=\
 /* 281 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div>\n\t\t<div class=\"panel title-panel\" style=\"margin-bottom: 40px;\">\n\t\t\t<div class=\"panel-header\">\n\t\t\t\t<img :src=\"plugin_logo\" style=\"float: left; margin-right: 10px;\"/>\n\t\t\t\t<h1 class=\"d-inline-block\">Revive Old Post</h1><span class=\"powered\"> by <a\n\t\t\t\t\thref=\"https://themeisle.com\" target=\"_blank\"><b>ThemeIsle</b></a></span>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns\">\n\t\t\t<div class=\"panel  column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-8 \">\n\t\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t\t<ul class=\"tab \">\n\t\t\t\t\t\t<li class=\"tab-item\" v-for=\"tab in displayTabs\"\n\t\t\t\t\t\t    :class=\"{ active: tab.isActive }\">\n\t\t\t\t\t\t\t<a href=\"#\" :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\n\t\t\t\t\t\t\t   :data-badge=\"logs_no\"\n\t\t\t\t\t\t\t   @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\n\t\t\t\t\t\t</li>\n\t\t\t\t\t\t<li class=\"tab-item tab-action\">\n\t\t\t\t\t\t\t<div class=\"form-group\">\n\t\t\t\t\t\t\t\t<label class=\"form-switch col-ml-auto\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.custom_messages\"\n\t\t\t\t\t\t\t\t\t       @change=\"updateSettings\"/>\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\"></i><span class=\"hide-sm\">Custom Share Messages</span>\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t\t<component :is=\"page.template\" :type=\"page.view\"></component>\n\t\t\t</div>\n\t\t\t\n\t\t\t<div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12 col-xl-4 \"\n\t\t\t     :class=\"'rop-license-plan-'+license\">\n\t\t\t\t\n\t\t\t\t<div class=\"card rop-container-start\">\n\t\t\t\t\t<div class=\"toast toast-success rop-current-time\" v-if=\"formatedDate\">\n\t\t\t\t\t\tNow: {{ formatedDate }}\n\t\t\t\t\t</div>\n\t\t\t\t\t<countdown :current_time=\"current_time\"/>\n\t\t\t\t\t<button class=\"btn\" :class=\"btn_class\"\n\t\t\t\t\t        data-tooltip=\"You will need\n\t\t\t\t\t         at least one active account\n\t\t\t\t\t         to start sharing.\"\n\t\t\t\t\t        @click=\"togglePosting()\" :disabled=\"haveAccounts\">\n\t\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t\t\t{{( start_status ? 'Stop' : 'Start' )}} Sharing\n\t\t\t\t\t</button>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \">\n\t\t\t\t\t<a href=\"#\" target=\"_blank\">\n\t\t\t\t\t\t<img class=\"img-responsive\"  :src=\"to_pro_upsell\" alt=\"Upgrade to Pro\">\n\t\t\t\t\t</a>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1\">\n\t\t\t\t\t<a href=\"#\" target=\"_blank\">\n\t\t\t\t\t\t<img class=\"img-responsive\"  :src=\"to_business_upsell\" alt=\"Upgrade to Business\">\n\t\t\t\t\t</a>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div>\n\t\t<div class=\"panel-header\">\n\t\t\t<img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/><h1 class=\"plugin-title d-inline-block\">Revive Old Post</h1><span class=\"powered d-inline-block\"> by <a href=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\n\t\t</div>\n\t\t<div class=\"columns mb-2 text-center sidebar-top\">\n\t\t\t<div class=\"column col-2\">\n\t\t\t\t<button class=\"btn btn btn-block\" :class=\"btn_class\"\n\t\t\t\t\t\tdata-tooltip=\"You will need\n\t\t\t\t\t         at least one active account\n\t\t\t\t\t         to start sharing.\"\n\t\t\t\t\t\t@click=\"togglePosting()\" :disabled=\"haveAccounts\">\n\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t\t{{( start_status ? 'Stop' : 'Start' )}} Sharing\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t\t<div class=\"column col-5\"><div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n\t\t\t\tNow: {{ formatedDate }}\n\t\t\t</div></div>\n\t\t\t<div class=\"column col-5\">\n\t\t\t\t<countdown :current_time=\"current_time\"/>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns\">\n\t\t\t<div class=\"panel  column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\n\t\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t\t<ul class=\"tab \">\n\t\t\t\t\t\t<li class=\"tab-item\" v-for=\"tab in displayTabs\"\n\t\t\t\t\t\t    :class=\"{ active: tab.isActive }\">\n\t\t\t\t\t\t\t<a href=\"#\" :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\n\t\t\t\t\t\t\t   :data-badge=\"logs_no\"\n\t\t\t\t\t\t\t   @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\n\t\t\t\t\t\t</li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t\t<component :is=\"page.template\" :type=\"page.view\"></component>\n\t\t\t</div>\n\t\t\t\n\t\t\t<div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\n\t\t\t     :class=\"'rop-license-plan-'+license\">\n\t\t\t\t\n\t\t\t\t<div class=\"card rop-container-start\">\n\t\t\t\t\t<div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n\t\t\t\t\t\tNow: {{ formatedDate }}\n\t\t\t\t\t</div>\n\t\t\t\t\t<countdown :current_time=\"current_time\"/>\n\t\t\t\t\t<button class=\"btn\" :class=\"btn_class\"\n\t\t\t\t\t        data-tooltip=\"You will need\n\t\t\t\t\t         at least one active account\n\t\t\t\t\t         to start sharing.\"\n\t\t\t\t\t        @click=\"togglePosting()\" :disabled=\"haveAccounts\">\n\t\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t\t\t{{( start_status ? 'Stop' : 'Start' )}} Sharing\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \">\n\t\t\t\t\t<a href=\"#\" target=\"_blank\">\n\t\t\t\t\t\t<img class=\"img-responsive\"  :src=\"to_pro_upsell\" alt=\"Upgrade to Pro\">\n\t\t\t\t\t</a>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1\">\n\t\t\t\t\t<a href=\"#\" target=\"_blank\">\n\t\t\t\t\t\t<img class=\"img-responsive\"  :src=\"to_business_upsell\" alt=\"Upgrade to Business\">\n\t\t\t\t\t</a>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+
+/***/ }),
+/* 282 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(283);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(2)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-9524525c&file=accounts-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-tab-panel.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-9524525c&file=accounts-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-tab-panel.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 283 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(1)();
+// imports
+
+
+// module
+exports.push([module.i, "\n\t#rop_core .columns.py-2 .text-gray[_v-9524525c] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\t#rop_core .input-group[_v-9524525c] {\n\t\twidth: 100%;\n\t}\n\tb[_v-9524525c] {\n\t\tmargin-bottom :5px;\n\t\tdisplay: block;\n\t}\n\t#rop_core .text-gray b[_v-9524525c] {\n\t\tdisplay: inline;\n\t}\n\t#rop_core .input-group .input-group-addon[_v-9524525c] {\n\t\tpadding: 3px 5px;\n\t}\n\t#rop_core .rop-available-accounts h5[_v-9524525c] {\n\t\tmargin-bottom: 15px;\n\t}\n\t@media( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-9524525c] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\t\t#rop_core .text-right[_v-9524525c] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 284 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div class=\"tab-view\" _v-9524525c=\"\">\n\t\t<div class=\"panel-body\" _v-9524525c=\"\">\n\t\t\t<div class=\"columns py-2\" _v-9524525c=\"\">\n\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-9524525c=\"\">\n\t\t\t\t\t<b _v-9524525c=\"\">New Service</b>\n\t\t\t\t\t<p class=\"text-gray\" _v-9524525c=\"\">Select a service and sign in with an account for that service.</p>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-9524525c=\"\">\n\t\t\t\t\t<sign-in-btn _v-9524525c=\"\"></sign-in-btn>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<span class=\"divider mt-2 pb-2\" _v-9524525c=\"\"></span>\n\n\t\t\t<div class=\"container\" _v-9524525c=\"\">\n\t\t\t\t<div class=\"columns\" v-if=\"checkLicense\" _v-9524525c=\"\">\n\t\t\t\t\t<div class=\"column col-12 text-center\" _v-9524525c=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-9524525c=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-lock \" _v-9524525c=\"\"></i>You are allowed to add a maximum 1 account for Twitter and 1 account for Facebook. For using more accounts and networks, you need to check the <strong _v-9524525c=\"\">FULL</strong> version.\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" :class=\"'rop-tab-state-'+is_loading\" _v-9524525c=\"\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts\" _v-9524525c=\"\">\n\t\t\t\t\t\t<h5 _v-9524525c=\"\">Accounts</h5>\n\t\t\t\t\t\t<div class=\"empty\" v-if=\"accountsCount === 0\" _v-9524525c=\"\">\n\t\t\t\t\t\t\t<div class=\"empty-icon\" _v-9524525c=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\" _v-9524525c=\"\"></i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<p class=\"empty-title h5\" _v-9524525c=\"\">No accounts!</p>\n\t\t\t\t\t\t\t<p class=\"empty-subtitle\" _v-9524525c=\"\">Sign in and add your social accounts.</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"account-container\" v-for=\"( account, id ) in accounts\" _v-9524525c=\"\">\n\t\t\t\t\t\t\t<service-user-tile :account_data=\"account\" :account_id=\"id\" _v-9524525c=\"\"></service-user-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-9524525c=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-9524525c=\"\">\n\t\t\t\t<div class=\"columns\" _v-9524525c=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-9524525c=\"\">\n\t\t\t\t\t\t<p class=\"text-gray\" _v-9524525c=\"\"><i class=\"fa fa-info-circle\" _v-9524525c=\"\"></i> Authenticate a new service (eg. Facebook, Twitter etc. ), select the accounts you want to add from that service and <b _v-9524525c=\"\">activate</b> them. Only the active accounts will be used for sharing.</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 text-right\" _v-9524525c=\"\">\n\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-9524525c=\"\">\n\t\t\t\t\t<i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-9524525c=\"\"></i>\n\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-9524525c=\"\"></i>\n\t\t\t\t\tRemove all accounts\n\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\n\t</div>\n";
+
+/***/ }),
+/* 285 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(286);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(2)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5e4333e7&file=sign-in-btn.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./sign-in-btn.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5e4333e7&file=sign-in-btn.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./sign-in-btn.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 286 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(1)();
+// imports
+
+
+// module
+exports.push([module.i, "\n\t#rop_core .input-group[_v-5e4333e7] {\n\t\tdisplay: block;\n\t\t-ms-flex-pack: end;\n\t\t    justify-content: flex-end;\n\t}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 287 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div id=\"rop-sign-in-area\" _v-5e4333e7=\"\">\n\t\t<div class=\"input-group text-right\" _v-5e4333e7=\"\">\n\t\t\t<button v-for=\"( service, network ) in services\" :disabled=\"checkDisabled( service, network )\" class=\"btn input-group-btn\" :class=\"'btn-' + network\" @click=\"requestAuthorization( network )\" _v-5e4333e7=\"\">\n\t\t\t\t<i class=\"fa fa-fw\" :class=\"'fa-' + network\" _v-5e4333e7=\"\"></i>{{service.name}}</button>\n\t\t\n\t\t</div>\n\t\t\n\t\t<div class=\"modal\" :class=\"modalActiveClass\" _v-5e4333e7=\"\">\n\t\t\t<div class=\"modal-overlay\" _v-5e4333e7=\"\"></div>\n\t\t\t<div class=\"modal-container\" _v-5e4333e7=\"\">\n\t\t\t\t<div class=\"modal-header\" _v-5e4333e7=\"\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"cancelModal()\" _v-5e4333e7=\"\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\" _v-5e4333e7=\"\">{{ modal.serviceName }} Service Credentials</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\" _v-5e4333e7=\"\">\n\t\t\t\t\t<div class=\"content\" _v-5e4333e7=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-5e4333e7=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-5e4333e7=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-5e4333e7=\"\">\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-5e4333e7=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-footer\" _v-5e4333e7=\"\">\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-5e4333e7=\"\">Sign in</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ })
 /******/ ]);

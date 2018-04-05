@@ -1,16 +1,12 @@
 <template>
 	<div class="tab-view">
 		<div class="panel-body">
-			<div class="column col-12">
-				<h3>Accounts</h3>
-				<span class="divider"></span>
-			</div>
-			<div class="columns">
-				<div class="column col-sm-12 col-md-12 col-xl-12 col-12 text-center py-2">
+			<div class="columns py-2">
+				<div class="column col-6 col-sm-12 vertical-align">
 					<b>New Service</b>
 					<p class="text-gray">Select a service and sign in with an account for that service.</p>
 				</div>
-				<div class="column col-sm-12 col-md-12 col-xl-6 col-4 pb-2 text-center centered">
+				<div class="column col-6 col-sm-12 vertical-align">
 					<sign-in-btn></sign-in-btn>
 				</div>
 			</div>
@@ -26,7 +22,6 @@
 				</div>
 				<div class="columns" :class="'rop-tab-state-'+is_loading">
 					<div class="column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts">
-						
 						<h5>Accounts</h5>
 						<div class="empty" v-if="accountsCount === 0">
 							<div class="empty-icon">
@@ -45,10 +40,7 @@
 			<div class="panel-footer" v-if="accountsCount > 0">
 				<div class="columns">
 					<div class="column col-12">
-						<h6><i class="fa fa-info-circle"></i> Info</h6>
-						<p class="text-gray">Authenticate a new service (eg. Facebook, Twitter etc. ), select the accounts you want to add
-							from that service and <b>activate</b> them. Only the active accounts will be used for
-							sharing.</p>
+						<p class="text-gray"><i class="fa fa-info-circle"></i> Authenticate a new service (eg. Facebook, Twitter etc. ), select the accounts you want to add from that service and <b>activate</b> them. Only the active accounts will be used for sharing.</p>
 					</div>
 				</div>
 				<div class="column col-12 text-right">
@@ -135,3 +127,33 @@
 		}
 	}
 </script>
+<style scoped>
+	#rop_core .columns.py-2 .text-gray {
+		margin: 0;
+		line-height: normal;
+	}
+	#rop_core .input-group {
+		width: 100%;
+	}
+	b {
+		margin-bottom :5px;
+		display: block;
+	}
+	#rop_core .text-gray b {
+		display: inline;
+	}
+	#rop_core .input-group .input-group-addon {
+		padding: 3px 5px;
+	}
+	#rop_core .rop-available-accounts h5 {
+		margin-bottom: 15px;
+	}
+	@media( max-width: 600px ) {
+		#rop_core .panel-body .text-gray {
+			margin-bottom: 10px;
+		}
+		#rop_core .text-right {
+			text-align: left;
+		}
+	}
+</style>
