@@ -4,7 +4,7 @@
 			<img :src="plugin_logo" class="plugin-logo avatar avatar-lg"/><h1 class="plugin-title d-inline-block">Revive Old Post</h1><span class="powered d-inline-block"> by <a href="https://revive.social" target="_blank"><b>Revive.Social</b></a></span>
 		</div>
 		<div class="columns mb-2 text-center sidebar-top">
-			<div class="column col-2">
+			<div class="column col-2 pl-0">
 				<button class="btn btn btn-block" :class="btn_class"
 						data-tooltip="You will need
 					         at least one active account
@@ -19,7 +19,7 @@
 			<div class="column col-5"><div class="toast rop-current-time" v-if="formatedDate">
 				Now: {{ formatedDate }}
 			</div></div>
-			<div class="column col-5">
+			<div class="column col-5 pr-0">
 				<countdown :current_time="current_time"/>
 			</div>
 		</div>

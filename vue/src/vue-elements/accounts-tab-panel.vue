@@ -2,11 +2,11 @@
 	<div class="tab-view">
 		<div class="panel-body">
 			<div class="columns py-2">
-				<div class="column col-6 col-sm-12 vertical-align">
+				<div class="column col-6 col-md-12 vertical-align">
 					<b>New Service</b>
 					<p class="text-gray">Select a service and sign in with an account for that service.</p>
 				</div>
-				<div class="column col-6 col-sm-12 vertical-align">
+				<div class="column col-6 col-md-12 vertical-align p-2">
 					<sign-in-btn></sign-in-btn>
 				</div>
 			</div>

@@ -2,8 +2,8 @@
 	<div class="tab-view">
 		<div class="panel-body">
 			<div class="d-inline-block mt-2 column col-12">
-				<p class="text-gray"><i class="fa fa-info-circle"></i> Each <b>account</b> can have it's own <b>Post Format</b> for sharing, on the left you can see the
-					current selected account and network, bellow are the <b>Post Format</b> options for the account.
+				<p class="text-gray"><i class="fa fa-info-circle"></i> Each <b>account</b> can have it's own options for sharing, on the left you can see the
+					current selected account and network, bellow are the options for the account.
 					Don't forget to save after each change and remember, you can always reset an account to the network
 					defaults.
 				</p>
@@ -12,7 +12,7 @@
 			<div class="container" v-if="accountsCount > 0">
 				
 				<div class="columns">
-					<div class="column col-3 col-sm-12 col-md-12 col-xl-12 col-lg-12 col-xs-12 col-rop-selector-accounts">
+					<div class="column col-3 col-sm-12 col-md-12 col-xl-3 col-lg-3 col-xs-12 col-rop-selector-accounts">
 						<span class="divider"></span>
 						<div v-for="( account, id ) in active_accounts">
 							<div class="rop-selector-account-container" v-bind:class="{active: selected_account===id}"
@@ -35,7 +35,7 @@
 							<span class="divider"></span>
 						</div>
 					</div>
-					<div class="column col-9 col-sm-12  col-md-12  col-xl-12 col-lg-12 col-xs-12" :class="'rop-tab-state-'+is_loading">
+					<div class="column col-9 col-sm-12  col-md-12  col-xl-9 col-lg-9 col-xs-12" :class="'rop-tab-state-'+is_loading">
 						<component :is="type" :account_id="selected_account" :license="license"></component>
 					</div>
 				</div>

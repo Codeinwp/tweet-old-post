@@ -1,6 +1,6 @@
 <template>
 	<div id="rop-sign-in-area">
-		<div class="input-group text-right">
+		<div class="input-group text-right buttons-wrap">
 			<button v-for="( service, network ) in services"
 					:disabled="checkDisabled( service, network )"
 					class="btn input-group-btn"
@@ -185,6 +185,10 @@
 <style scoped>
 	#rop_core .input-group {
 		display: block;
-		justify-content: flex-end;
+		/*justify-content: flex-end;*/
+	}
+	#rop_core .buttons-wrap {
+		display: flex;
+		justify-content: center;
 	}
 </style>

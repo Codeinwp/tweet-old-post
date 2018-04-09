@@ -120,7 +120,7 @@
 				<div class="columns py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
 						<b>Posts</b>
-						<p class="text-gray">Posts excluded/included in sharing, filtered based on previous selections.</p>
+						<p class="text-gray">Posts excluded from sharing, filtered based on previous selections.</p>
 					</div>
 					<div class="column col-6 col-sm-12 vertical-align text-left">
 						<div class="input-group">

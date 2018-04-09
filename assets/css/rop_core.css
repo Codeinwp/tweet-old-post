@@ -2912,7 +2912,6 @@ a.active {
 	flex-direction: column;
 	border: 0.05rem solid #e7e9ed;
 	border-radius: 0.1rem;
-
 	-webkit-box-direction: normal;
 	-webkit-box-orient: vertical;
 	-webkit-flex-direction: column;
@@ -2920,7 +2919,7 @@ a.active {
 }
 
 #rop_core .panel .panel-footer {
-	padding: 0.8rem;
+	padding: 0.8rem 0;
 	-webkit-box-flex: 0;
 	-webkit-flex: 0 0 auto;
 	-ms-flex: 0 0 auto;
@@ -4032,22 +4031,22 @@ a.active {
 }
 
 .facebook,
-.fa-facebook {
+.icon_box .fa-facebook {
 	background-color: #3b5998;
 }
 
 .twitter,
-.fa-twitter {
+.icon_box .fa-twitter {
 	background-color: #55acee;
 }
 
 .linkedin,
-.fa-linkedin {
+.icon_box .fa-linkedin {
 	background-color: #007bb5;
 }
 
 .tumblr,
-.fa-tumblr {
+.icon_box .fa-tumblr {
 	background-color: #32506d;
 }
 
@@ -4341,6 +4340,7 @@ a.active {
 }
 #rop_core .sidebar-top .rop-current-time {
 	padding: 0.25rem 0.4rem;
+	height: 1.6rem;
 }
 
 #rop_core .rop-queue-post .card-top-header.columns {
