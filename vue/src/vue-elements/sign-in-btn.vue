@@ -182,13 +182,3 @@
 		}
 	}
 </script>
-<style scoped>
-	#rop_core .input-group {
-		display: block;
-		/*justify-content: flex-end;*/
-	}
-	#rop_core .buttons-wrap {
-		display: flex;
-		justify-content: center;
-	}
-</style>

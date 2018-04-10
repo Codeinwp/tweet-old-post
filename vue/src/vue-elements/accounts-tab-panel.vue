@@ -1,28 +1,9 @@
 <template>
 	<div class="tab-view">
 		<div class="panel-body">
-			<div class="columns py-2">
-				<div class="column col-6 col-md-12 vertical-align">
-					<b>New Service</b>
-					<p class="text-gray">Select a service and sign in with an account for that service.</p>
-				</div>
-				<div class="column col-6 col-md-12 vertical-align p-2">
-					<sign-in-btn></sign-in-btn>
-				</div>
-			</div>
-			<span class="divider mt-2 pb-2"></span>
-
 			<div class="container">
-				<div class="columns" v-if="checkLicense">
-					<div class="column col-12 text-center">
-						<p class="upsell">
-							<i class="fa fa-lock "></i>You are allowed to add a maximum 1 account for Twitter and 1 account for Facebook. For using more accounts and networks, you need to check the <strong>FULL</strong> version.
-						</p>
-					</div>
-				</div>
 				<div class="columns" :class="'rop-tab-state-'+is_loading">
 					<div class="column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts">
-						<h5>Accounts</h5>
 						<div class="empty" v-if="accountsCount === 0">
 							<div class="empty-icon">
 								<i class="fa fa-3x fa-user-circle-o"></i>
@@ -32,6 +13,10 @@
 						</div>
 						<div class="account-container" v-for="( account, id ) in accounts">
 							<service-user-tile :account_data="account" :account_id="id"></service-user-tile>
+							<span class="divider"></span>
+						</div>
+						<div class="add-accounts">
+							<add-account-tile></add-account-tile>
 							<span class="divider"></span>
 						</div>
 					</div>
@@ -59,11 +44,13 @@
 <script>
 	import SignInBtn from './sign-in-btn.vue'
 	import ServiceUserTile from './service-user-tile.vue'
+	import AddAccountTile from './reusables/add-account-tile.vue'
 
 	module.exports = {
 		name: 'account-view',
 		data: function () {
 			return {
+				addAccountActive: false,
 				accountsCount: 0,
 				is_loading: false
 			}
@@ -93,14 +80,6 @@
 				this.accountsCount = Object.keys(all_accounts).length;
 				return all_accounts;
 			},
-			/**
-			 * Check if we have a pro license.
-			 * @returns {boolean}
-			 */
-			checkLicense: function () {
-				return (this.$store.state.licence < 1);
-			}
-
 		},
 
 		methods: {
@@ -123,7 +102,8 @@
 		},
 		components: {
 			SignInBtn,
-			ServiceUserTile
+			ServiceUserTile,
+			AddAccountTile
 		}
 	}
 </script>

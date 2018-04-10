@@ -66,8 +66,7 @@
 			</div>
 			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="form-group">
-					<input type="number" class="form-input" v-model="schedule.interval_r"
-					       placeholder="hours.min (Eg. 2.5)"/>
+					<counter-input id="interval_r" :value.sync="schedule.interval_r"></counter-input>
 				</div>
 			</div>
 		</div>
@@ -85,6 +84,7 @@
 <script>
 	import ButtonCheckbox from './reusables/button-checkbox.vue'
 	import VueTimepicker from 'vue2-timepicker'
+	import CounterInput from './reusables/counter-input.vue'
 
 	module.exports = {
 		name: 'account-schedule',
@@ -171,7 +171,8 @@
 		},
 		components: {
 			ButtonCheckbox,
-			VueTimepicker
+            CounterInput,
+            VueTimepicker
 		}
 	}
 </script>

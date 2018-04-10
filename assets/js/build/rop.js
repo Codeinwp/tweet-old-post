@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 157);
+/******/ 	return __webpack_require__(__webpack_require__.s = 159);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1902,7 +1902,7 @@
             try {
                 oldLocale = globalLocale._abbr;
                 var aliasedRequire = require;
-                __webpack_require__(271)("./" + name);
+                __webpack_require__(274)("./" + name);
                 getSetGlobalLocale(oldLocale);
             } catch (e) {}
         }
@@ -4574,7 +4574,7 @@
 
 })));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(270)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(273)(module)))
 
 /***/ }),
 /* 1 */
@@ -4888,7 +4888,7 @@ function updateLink(linkElement, obj) {
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(170), __esModule: true };
+module.exports = { "default": __webpack_require__(172), __esModule: true };
 
 /***/ }),
 /* 4 */
@@ -15906,7 +15906,7 @@ Vue.compile = compileToFunctions;
 
 /* harmony default export */ __webpack_exports__["default"] = (Vue);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(9), __webpack_require__(14), __webpack_require__(158).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(9), __webpack_require__(14), __webpack_require__(160).setImmediate))
 
 /***/ }),
 /* 9 */
@@ -16179,7 +16179,7 @@ module.exports = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // to indexed object, toObject with fallback for non-array-like ES3 strings
-var IObject = __webpack_require__(173);
+var IObject = __webpack_require__(175);
 var defined = __webpack_require__(15);
 module.exports = function (it) {
   return IObject(defined(it));
@@ -16215,7 +16215,7 @@ module.exports = function (key) {
 
 var global = __webpack_require__(5);
 var core = __webpack_require__(4);
-var ctx = __webpack_require__(178);
+var ctx = __webpack_require__(180);
 var hide = __webpack_require__(7);
 var has = __webpack_require__(10);
 var PROTOTYPE = 'prototype';
@@ -16282,8 +16282,8 @@ module.exports = $export;
 /***/ (function(module, exports, __webpack_require__) {
 
 var anObject = __webpack_require__(11);
-var IE8_DOM_DEFINE = __webpack_require__(180);
-var toPrimitive = __webpack_require__(181);
+var IE8_DOM_DEFINE = __webpack_require__(182);
+var toPrimitive = __webpack_require__(183);
 var dP = Object.defineProperty;
 
 exports.f = __webpack_require__(12) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
@@ -16337,7 +16337,7 @@ module.exports = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.14 / 15.2.3.14 Object.keys(O)
-var $keys = __webpack_require__(172);
+var $keys = __webpack_require__(174);
 var enumBugKeys = __webpack_require__(28);
 
 module.exports = Object.keys || function keys(O) {
@@ -16420,22 +16420,44 @@ module.exports = function (bitmap, value) {
 /* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(190), __esModule: true };
+var __vue_script__, __vue_template__
+__vue_script__ = __webpack_require__(188)
+__vue_template__ = __webpack_require__(206)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/Andrei/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/sign-in-btn.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
 
 /***/ }),
 /* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
+module.exports = { "default": __webpack_require__(189), __esModule: true };
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 
-var LIBRARY = __webpack_require__(195);
+var LIBRARY = __webpack_require__(194);
 var $export = __webpack_require__(19);
-var redefine = __webpack_require__(196);
+var redefine = __webpack_require__(195);
 var hide = __webpack_require__(7);
 var Iterators = __webpack_require__(13);
-var $iterCreate = __webpack_require__(197);
-var setToStringTag = __webpack_require__(33);
-var getPrototypeOf = __webpack_require__(201);
+var $iterCreate = __webpack_require__(196);
+var setToStringTag = __webpack_require__(34);
+var getPrototypeOf = __webpack_require__(200);
 var ITERATOR = __webpack_require__(6)('iterator');
 var BUGGY = !([].keys && 'next' in [].keys()); // Safari has buggy iterators w/o `next`
 var FF_ITERATOR = '@@iterator';
@@ -16499,7 +16521,7 @@ module.exports = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var def = __webpack_require__(20).f;
@@ -16512,7 +16534,30 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 34 */
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(220)
+__vue_script__ = __webpack_require__(222)
+__vue_template__ = __webpack_require__(223)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/Andrei/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/counter-input.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16589,7 +16634,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 35 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16728,7 +16773,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 36 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16791,7 +16836,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 37 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16854,7 +16899,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 38 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16980,7 +17025,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 39 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17043,7 +17088,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 40 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17151,7 +17196,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 41 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17214,7 +17259,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 42 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17323,7 +17368,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 43 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17459,7 +17504,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 44 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17553,7 +17598,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 45 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17615,7 +17660,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 46 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17738,7 +17783,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 47 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17861,7 +17906,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 48 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17973,7 +18018,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 49 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18128,7 +18173,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 50 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18220,7 +18265,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 51 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18403,7 +18448,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 52 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18470,7 +18515,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 53 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18554,7 +18599,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 54 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18618,7 +18663,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 55 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18698,7 +18743,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 56 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18778,7 +18823,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 57 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18858,7 +18903,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 58 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18961,7 +19006,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 59 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19065,7 +19110,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 60 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19136,7 +19181,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 61 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19203,7 +19248,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 62 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19274,7 +19319,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 63 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19345,7 +19390,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 64 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19411,7 +19456,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 65 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19482,7 +19527,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 66 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19557,7 +19602,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 67 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19653,7 +19698,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 68 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19749,7 +19794,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 69 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19836,7 +19881,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 70 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19920,7 +19965,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 71 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19990,7 +20035,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 72 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20100,7 +20145,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 73 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20213,7 +20258,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 74 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20277,7 +20322,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 75 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20364,7 +20409,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 76 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20442,7 +20487,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 77 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20524,7 +20569,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 78 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20603,7 +20648,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 79 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20683,7 +20728,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 80 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20764,7 +20809,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 81 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20891,7 +20936,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 82 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21019,7 +21064,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 83 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21120,7 +21165,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 84 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21248,7 +21293,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 85 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21406,7 +21451,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 86 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21520,7 +21565,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 87 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21619,7 +21664,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 88 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21705,7 +21750,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 89 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21841,7 +21886,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 90 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21914,7 +21959,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 91 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22010,7 +22055,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 92 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22096,7 +22141,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 93 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22189,7 +22234,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 94 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22280,7 +22325,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 95 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22394,7 +22439,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 96 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22524,7 +22569,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 97 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22609,7 +22654,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 98 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22700,7 +22745,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 99 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22840,7 +22885,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 100 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22914,7 +22959,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 101 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23036,7 +23081,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 102 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23137,7 +23182,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 103 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23253,7 +23298,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 104 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23321,7 +23366,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 105 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23415,7 +23460,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 106 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23500,7 +23545,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 107 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23608,7 +23653,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 108 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23772,7 +23817,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 109 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23858,7 +23903,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 110 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23944,7 +23989,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 111 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24008,7 +24053,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 112 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24105,7 +24150,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 113 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24171,7 +24216,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 114 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24298,7 +24343,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 115 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24389,7 +24434,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 116 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24480,7 +24525,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 117 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24544,7 +24589,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 118 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24672,7 +24717,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 119 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24802,7 +24847,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 120 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24871,7 +24916,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 121 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24936,7 +24981,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 122 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25015,7 +25060,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 123 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25201,7 +25246,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 124 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25303,7 +25348,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 125 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25367,7 +25412,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 126 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25442,7 +25487,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 127 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25602,7 +25647,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 128 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25779,7 +25824,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 129 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25851,7 +25896,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 130 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25966,7 +26011,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 131 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26081,7 +26126,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 132 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26173,7 +26218,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 133 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26246,7 +26291,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 134 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26309,7 +26354,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 135 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26442,7 +26487,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 136 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26535,7 +26580,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 137 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26606,7 +26651,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 138 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26726,7 +26771,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 139 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26797,7 +26842,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 140 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26863,7 +26908,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 141 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26989,7 +27034,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 142 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -27087,7 +27132,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 143 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27182,7 +27227,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 144 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27244,7 +27289,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 145 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27306,7 +27351,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 146 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js language configuration
@@ -27429,7 +27474,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 147 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27584,7 +27629,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 148 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27686,7 +27731,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 149 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27748,7 +27793,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 150 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27810,7 +27855,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 151 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27893,7 +27938,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 152 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27965,7 +28010,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 153 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28029,7 +28074,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 154 */
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28143,7 +28188,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 155 */
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28250,7 +28295,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 156 */
+/* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28357,7 +28402,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 157 */
+/* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28367,11 +28412,11 @@ var _vue = __webpack_require__(8);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _rop_store = __webpack_require__(160);
+var _rop_store = __webpack_require__(162);
 
 var _rop_store2 = _interopRequireDefault(_rop_store);
 
-var _mainPagePanel = __webpack_require__(166);
+var _mainPagePanel = __webpack_require__(168);
 
 var _mainPagePanel2 = _interopRequireDefault(_mainPagePanel);
 
@@ -28396,7 +28441,7 @@ window.onload = function () {
 /* exported RopApp */
 
 /***/ }),
-/* 158 */
+/* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var apply = Function.prototype.apply;
@@ -28449,7 +28494,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(159);
+__webpack_require__(161);
 // On some exotic environments, it's not clear which object `setimmeidate` was
 // able to install onto.  Search each possibility in the same order as the
 // `setimmediate` library.
@@ -28463,7 +28508,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
 
 /***/ }),
-/* 159 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -28656,7 +28701,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14), __webpack_require__(9)))
 
 /***/ }),
-/* 160 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28670,15 +28715,15 @@ var _vue = __webpack_require__(8);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _vuex = __webpack_require__(161);
+var _vuex = __webpack_require__(163);
 
 var _vuex2 = _interopRequireDefault(_vuex);
 
-var _vueResource = __webpack_require__(162);
+var _vueResource = __webpack_require__(164);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _vuejsLogger = __webpack_require__(164);
+var _vuejsLogger = __webpack_require__(166);
 
 var _vuejsLogger2 = _interopRequireDefault(_vuejsLogger);
 
@@ -28955,7 +29000,7 @@ exports.default = new _vuex2.default.Store({
 });
 
 /***/ }),
-/* 161 */
+/* 163 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -29902,7 +29947,7 @@ var index_esm = {
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(9)))
 
 /***/ }),
-/* 162 */
+/* 164 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -31001,7 +31046,7 @@ function xhrClient (request) {
 
 function nodeClient (request) {
 
-    var client = __webpack_require__(163);
+    var client = __webpack_require__(165);
 
     return new PromiseObj(function (resolve) {
 
@@ -31469,13 +31514,13 @@ if (typeof window !== 'undefined' && window.Vue) {
 
 
 /***/ }),
-/* 163 */
+/* 165 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 164 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31485,7 +31530,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _logger = __webpack_require__(165);
+var _logger = __webpack_require__(167);
 
 var _logger2 = _interopRequireDefault(_logger);
 
@@ -31496,20 +31541,20 @@ exports.default = {
 };
 
 /***/ }),
-/* 165 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 function _toConsumableArray(o){if(Array.isArray(o)){for(var e=0,r=Array(o.length);e<o.length;e++)r[e]=o[e];return r}return Array.from(o)}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=function(){function o(o,r){var t={};return r.forEach(function(a){r.indexOf(a)>=r.indexOf(o.logLevel)?t[a]=function(){for(var r=arguments.length,t=Array(r),s=0;s<r;s++)t[s]=arguments[s];var l=n(),i=o.showMethodName?l+" "+o.separator+" ":"",g=o.showLogLevel?a+" "+o.separator+" ":"",f=o.stringifyArguments?t.map(function(o){return JSON.stringify(o)}):t;e(a,g,i,f,o.showConsoleColors)}:t[a]=function(){}}),t}function e(){var o=arguments.length>0&&void 0!==arguments[0]&&arguments[0],e=arguments.length>1&&void 0!==arguments[1]&&arguments[1],r=arguments.length>2&&void 0!==arguments[2]&&arguments[2],t=arguments.length>3&&void 0!==arguments[3]&&arguments[3];if(arguments.length>4&&void 0!==arguments[4]&&arguments[4]&&("warn"===o||"error"===o||"fatal"===o)){var n;(n=console)["fatal"===o?"error":o].apply(n,[e,r].concat(_toConsumableArray(t)))}else{var a;(a=console).log.apply(a,[e,r].concat(_toConsumableArray(t)))}}function r(o,e){return!!(o.logLevel&&"string"==typeof o.logLevel&&e.indexOf(o.logLevel)>-1)&&((!o.stringifyArguments||"boolean"==typeof o.stringifyArguments)&&((!o.showLogLevel||"boolean"==typeof o.showLogLevel)&&((!o.showConsoleColors||"boolean"==typeof o.showConsoleColors)&&((!o.separator||!("string"!=typeof o.separator||"string"==typeof o.separator&&o.separator.length>3))&&!(o.showMethodName&&"boolean"!=typeof o.showMethodName)))))}function t(e,t){if(t=Object.assign(a,t),!r(t,s))throw new Error("Provided options for vuejs-logger are not valid.");e.$log=o(t,s),e.prototype.$log=e.$log}function n(){var o={};try{throw new Error("")}catch(e){o=e}var e=o.stack.split("\n")[3];return/ /.test(e)&&(e=e.trim().split(" ")[1]),e&&e.includes(".")&&(e=e.split(".")[1]),e}var a={logLevel:"debug",separator:"|",stringifyArguments:!1,showLogLevel:!1,showMethodName:!1,showConsoleColors:!1},s=["debug","info","warn","error","fatal"];return{install:t,isValidOptions:r,print:e,initLoggerInstance:o,logLevels:s}}();
 
 /***/ }),
-/* 166 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(167)
-__vue_script__ = __webpack_require__(169)
-__vue_template__ = __webpack_require__(285)
+__webpack_require__(169)
+__vue_script__ = __webpack_require__(171)
+__vue_template__ = __webpack_require__(288)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -31526,13 +31571,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 167 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(168);
+var content = __webpack_require__(170);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -31552,7 +31597,7 @@ if(false) {
 }
 
 /***/ }),
-/* 168 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -31566,7 +31611,7 @@ exports.push([module.i, "\n\t#rop_core .badge[data-badge]::after {\n\t\tposition
 
 
 /***/ }),
-/* 169 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31576,31 +31621,31 @@ var _keys = __webpack_require__(3);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _accountsTabPanel = __webpack_require__(182);
+var _accountsTabPanel = __webpack_require__(184);
 
 var _accountsTabPanel2 = _interopRequireDefault(_accountsTabPanel);
 
-var _settingsTabPanel = __webpack_require__(212);
+var _settingsTabPanel = __webpack_require__(216);
 
 var _settingsTabPanel2 = _interopRequireDefault(_settingsTabPanel);
 
-var _accountsSelectorPanel = __webpack_require__(226);
+var _accountsSelectorPanel = __webpack_require__(229);
 
 var _accountsSelectorPanel2 = _interopRequireDefault(_accountsSelectorPanel);
 
-var _queueTabPanel = __webpack_require__(258);
+var _queueTabPanel = __webpack_require__(261);
 
 var _queueTabPanel2 = _interopRequireDefault(_queueTabPanel);
 
-var _logsTabPanel = __webpack_require__(266);
+var _logsTabPanel = __webpack_require__(269);
 
 var _logsTabPanel2 = _interopRequireDefault(_logsTabPanel);
 
-var _toast = __webpack_require__(273);
+var _toast = __webpack_require__(276);
 
 var _toast2 = _interopRequireDefault(_toast);
 
-var _countdown = __webpack_require__(278);
+var _countdown = __webpack_require__(281);
 
 var _countdown2 = _interopRequireDefault(_countdown);
 
@@ -31612,12 +31657,18 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // <template>
 // 	<div>
-// 		<div class="panel-header">
+// 		<div class="columns panel-header">
+// 			<div class="column header-logo vertical-align">
+// 				<div>
 // 			<img :src="plugin_logo" class="plugin-logo avatar avatar-lg"/><h1 class="plugin-title d-inline-block">Revive Old Post</h1><span class="powered d-inline-block"> by <a href="https://revive.social" target="_blank"><b>Revive.Social</b></a></span>
-// 		</div>
-// 		<div class="columns mb-2 text-center sidebar-top">
-// 			<div class="column col-2 pl-0">
-// 				<button class="btn btn btn-block" :class="btn_class"
+// 				</div>
+// 			</div>
+// 			<div class="sidebar sidebar-top card rop-container-start">
+// 				<div class="toast rop-current-time" v-if="formatedDate">
+// 					Now: {{ formatedDate }}
+// 				</div>
+// 				<countdown :current_time="current_time"/>
+// 				<button class="btn btn-sm" :class="btn_class"
 // 						data-tooltip="You will need
 // 					         at least one active account
 // 					         to start sharing."
@@ -31628,20 +31679,15 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 					{{( start_status ? 'Stop' : 'Start' )}} Sharing
 // 				</button>
 // 			</div>
-// 			<div class="column col-5"><div class="toast rop-current-time" v-if="formatedDate">
-// 				Now: {{ formatedDate }}
-// 			</div></div>
-// 			<div class="column col-5 pr-0">
-// 				<countdown :current_time="current_time"/>
-// 			</div>
 // 		</div>
+//
 // 		<div class="columns">
-// 			<div class="panel  column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+// 			<div class="panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 // 				<div class="panel-nav" style="padding: 8px;">
 // 					<ul class="tab ">
 // 						<li class="tab-item" v-for="tab in displayTabs"
 // 						    :class="{ active: tab.isActive }">
-// 							<a href="#" :class=" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' "
+// 							<a :class=" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' "
 // 							   :data-badge="logs_no"
 // 							   @click="switchTab( tab.slug )">{{ tab.name }}</a>
 // 						</li>
@@ -31851,22 +31897,22 @@ module.exports = {
 };
 
 /***/ }),
-/* 170 */
+/* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(171);
+__webpack_require__(173);
 module.exports = __webpack_require__(4).Object.keys;
 
 
 /***/ }),
-/* 171 */
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.14 Object.keys(O)
 var toObject = __webpack_require__(23);
 var $keys = __webpack_require__(24);
 
-__webpack_require__(177)('keys', function () {
+__webpack_require__(179)('keys', function () {
   return function keys(it) {
     return $keys(toObject(it));
   };
@@ -31874,12 +31920,12 @@ __webpack_require__(177)('keys', function () {
 
 
 /***/ }),
-/* 172 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var has = __webpack_require__(10);
 var toIObject = __webpack_require__(16);
-var arrayIndexOf = __webpack_require__(174)(false);
+var arrayIndexOf = __webpack_require__(176)(false);
 var IE_PROTO = __webpack_require__(18)('IE_PROTO');
 
 module.exports = function (object, names) {
@@ -31897,7 +31943,7 @@ module.exports = function (object, names) {
 
 
 /***/ }),
-/* 173 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for non-array-like ES3 and non-enumerable old V8 strings
@@ -31909,14 +31955,14 @@ module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
 
 
 /***/ }),
-/* 174 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // false -> Array#indexOf
 // true  -> Array#includes
 var toIObject = __webpack_require__(16);
-var toLength = __webpack_require__(175);
-var toAbsoluteIndex = __webpack_require__(176);
+var toLength = __webpack_require__(177);
+var toAbsoluteIndex = __webpack_require__(178);
 module.exports = function (IS_INCLUDES) {
   return function ($this, el, fromIndex) {
     var O = toIObject($this);
@@ -31938,7 +31984,7 @@ module.exports = function (IS_INCLUDES) {
 
 
 /***/ }),
-/* 175 */
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.15 ToLength
@@ -31950,7 +31996,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 176 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var toInteger = __webpack_require__(17);
@@ -31963,7 +32009,7 @@ module.exports = function (index, length) {
 
 
 /***/ }),
-/* 177 */
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // most Object methods by ES6 should accept primitives
@@ -31979,11 +32025,11 @@ module.exports = function (KEY, exec) {
 
 
 /***/ }),
-/* 178 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // optional / simple context binding
-var aFunction = __webpack_require__(179);
+var aFunction = __webpack_require__(181);
 module.exports = function (fn, that, length) {
   aFunction(fn);
   if (that === undefined) return fn;
@@ -32005,7 +32051,7 @@ module.exports = function (fn, that, length) {
 
 
 /***/ }),
-/* 179 */
+/* 181 */
 /***/ (function(module, exports) {
 
 module.exports = function (it) {
@@ -32015,7 +32061,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 180 */
+/* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = !__webpack_require__(12) && !__webpack_require__(22)(function () {
@@ -32024,7 +32070,7 @@ module.exports = !__webpack_require__(12) && !__webpack_require__(22)(function (
 
 
 /***/ }),
-/* 181 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.1 ToPrimitive(input [, PreferredType])
@@ -32042,13 +32088,13 @@ module.exports = function (it, S) {
 
 
 /***/ }),
-/* 182 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(183)
-__vue_script__ = __webpack_require__(185)
-__vue_template__ = __webpack_require__(211)
+__webpack_require__(185)
+__vue_script__ = __webpack_require__(187)
+__vue_template__ = __webpack_require__(215)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32065,13 +32111,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 183 */
+/* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(184);
+var content = __webpack_require__(186);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -32091,7 +32137,7 @@ if(false) {
 }
 
 /***/ }),
-/* 184 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -32105,7 +32151,7 @@ exports.push([module.i, "\n\t#rop_core .columns.py-2 .text-gray[_v-9524525c] {\n
 
 
 /***/ }),
-/* 185 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32115,79 +32161,25 @@ var _keys = __webpack_require__(3);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _signInBtn = __webpack_require__(186);
+var _signInBtn = __webpack_require__(31);
 
 var _signInBtn2 = _interopRequireDefault(_signInBtn);
 
-var _serviceUserTile = __webpack_require__(208);
+var _serviceUserTile = __webpack_require__(207);
 
 var _serviceUserTile2 = _interopRequireDefault(_serviceUserTile);
 
+var _addAccountTile = __webpack_require__(210);
+
+var _addAccountTile2 = _interopRequireDefault(_addAccountTile);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// <template>
-// 	<div class="tab-view">
-// 		<div class="panel-body">
-// 			<div class="columns py-2">
-// 				<div class="column col-6 col-md-12 vertical-align">
-// 					<b>New Service</b>
-// 					<p class="text-gray">Select a service and sign in with an account for that service.</p>
-// 				</div>
-// 				<div class="column col-6 col-md-12 vertical-align p-2">
-// 					<sign-in-btn></sign-in-btn>
-// 				</div>
-// 			</div>
-// 			<span class="divider mt-2 pb-2"></span>
-//
-// 			<div class="container">
-// 				<div class="columns" v-if="checkLicense">
-// 					<div class="column col-12 text-center">
-// 						<p class="upsell">
-// 							<i class="fa fa-lock "></i>You are allowed to add a maximum 1 account for Twitter and 1 account for Facebook. For using more accounts and networks, you need to check the <strong>FULL</strong> version.
-// 						</p>
-// 					</div>
-// 				</div>
-// 				<div class="columns" :class="'rop-tab-state-'+is_loading">
-// 					<div class="column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts">
-// 						<h5>Accounts</h5>
-// 						<div class="empty" v-if="accountsCount === 0">
-// 							<div class="empty-icon">
-// 								<i class="fa fa-3x fa-user-circle-o"></i>
-// 							</div>
-// 							<p class="empty-title h5">No accounts!</p>
-// 							<p class="empty-subtitle">Sign in and add your social accounts.</p>
-// 						</div>
-// 						<div class="account-container" v-for="( account, id ) in accounts">
-// 							<service-user-tile :account_data="account" :account_id="id"></service-user-tile>
-// 							<span class="divider"></span>
-// 						</div>
-// 					</div>
-// 				</div>
-// 			</div>
-// 			<div class="panel-footer" v-if="accountsCount > 0">
-// 				<div class="columns">
-// 					<div class="column col-12">
-// 						<p class="text-gray"><i class="fa fa-info-circle"></i> Authenticate a new service (eg. Facebook, Twitter etc. ), select the accounts you want to add from that service and <b>activate</b> them. Only the active accounts will be used for sharing.</p>
-// 					</div>
-// 				</div>
-// 				<div class="column col-12 text-right">
-// 				<button class="btn btn-secondary" @click="resetAccountData()">
-// 					<i class="fa fa-ban" v-if="!this.is_loading"></i>
-// 					<i class="fa fa-spinner fa-spin" v-else></i>
-// 					Remove all accounts
-// 				</button>
-// 				</div>
-// 			</div>
-// 		</div>
-//
-// 	</div>
-// </template>
-//
-// <script>
 module.exports = {
 	name: 'account-view',
 	data: function data() {
 		return {
+			addAccountActive: false,
 			accountsCount: 0,
 			is_loading: false
 		};
@@ -32215,15 +32207,7 @@ module.exports = {
 			this.$log.info('All accounts : ', all_accounts);
 			this.accountsCount = (0, _keys2.default)(all_accounts).length;
 			return all_accounts;
-		},
-		/**
-   * Check if we have a pro license.
-   * @returns {boolean}
-   */
-		checkLicense: function checkLicense() {
-			return this.$store.state.licence < 1;
 		}
-
 	},
 
 	methods: {
@@ -32248,7 +32232,8 @@ module.exports = {
 	},
 	components: {
 		SignInBtn: _signInBtn2.default,
-		ServiceUserTile: _serviceUserTile2.default
+		ServiceUserTile: _serviceUserTile2.default,
+		AddAccountTile: _addAccountTile2.default
 	}
 	// </script>
 	// <style scoped>
@@ -32282,73 +32267,53 @@ module.exports = {
 	// 	}
 	// </style>
 
-};
-
-/***/ }),
-/* 186 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(187)
-__vue_script__ = __webpack_require__(189)
-__vue_template__ = __webpack_require__(207)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/Users/Andrei/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/sign-in-btn.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-/* 187 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(188);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5e4333e7&file=sign-in-btn.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./sign-in-btn.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5e4333e7&file=sign-in-btn.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./sign-in-btn.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
+}; // <template>
+// 	<div class="tab-view">
+// 		<div class="panel-body">
+// 			<div class="container">
+// 				<div class="columns" :class="'rop-tab-state-'+is_loading">
+// 					<div class="column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts">
+// 						<div class="empty" v-if="accountsCount === 0">
+// 							<div class="empty-icon">
+// 								<i class="fa fa-3x fa-user-circle-o"></i>
+// 							</div>
+// 							<p class="empty-title h5">No accounts!</p>
+// 							<p class="empty-subtitle">Sign in and add your social accounts.</p>
+// 						</div>
+// 						<div class="account-container" v-for="( account, id ) in accounts">
+// 							<service-user-tile :account_data="account" :account_id="id"></service-user-tile>
+// 							<span class="divider"></span>
+// 						</div>
+// 						<div class="add-accounts">
+// 							<add-account-tile></add-account-tile>
+// 							<span class="divider"></span>
+// 						</div>
+// 					</div>
+// 				</div>
+// 			</div>
+// 			<div class="panel-footer" v-if="accountsCount > 0">
+// 				<div class="columns">
+// 					<div class="column col-12">
+// 						<p class="text-gray"><i class="fa fa-info-circle"></i> Authenticate a new service (eg. Facebook, Twitter etc. ), select the accounts you want to add from that service and <b>activate</b> them. Only the active accounts will be used for sharing.</p>
+// 					</div>
+// 				</div>
+// 				<div class="column col-12 text-right">
+// 				<button class="btn btn-secondary" @click="resetAccountData()">
+// 					<i class="fa fa-ban" v-if="!this.is_loading"></i>
+// 					<i class="fa fa-spinner fa-spin" v-else></i>
+// 					Remove all accounts
+// 				</button>
+// 				</div>
+// 			</div>
+// 		</div>
+//
+// 	</div>
+// </template>
+//
+// <script>
 
 /***/ }),
 /* 188 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(1)();
-// imports
-
-
-// module
-exports.push([module.i, "\n\t#rop_core .input-group[_v-5e4333e7] {\n\t\tdisplay: block;\n\t\t/*justify-content: flex-end;*/\n\t}\n\t#rop_core .buttons-wrap[_v-5e4333e7] {\n\t\tdisplay: -ms-flexbox;\n\t\tdisplay: flex;\n\t\t-ms-flex-pack: center;\n\t\t    justify-content: center;\n\t}\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 189 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32358,7 +32323,7 @@ var _keys = __webpack_require__(3);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _getIterator2 = __webpack_require__(31);
+var _getIterator2 = __webpack_require__(32);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -32573,33 +32538,23 @@ module.exports = {
 		}
 	}
 	// </script>
-	// <style scoped>
-	// 	#rop_core .input-group {
-	// 		display: block;
-	// 		/*justify-content: flex-end;*/
-	// 	}
-	// 	#rop_core .buttons-wrap {
-	// 		display: flex;
-	// 		justify-content: center;
-	// 	}
-	// </style>
 
 };
+
+/***/ }),
+/* 189 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(190);
+__webpack_require__(201);
+module.exports = __webpack_require__(203);
+
 
 /***/ }),
 /* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(191);
-__webpack_require__(202);
-module.exports = __webpack_require__(204);
-
-
-/***/ }),
-/* 191 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(192);
 var global = __webpack_require__(5);
 var hide = __webpack_require__(7);
 var Iterators = __webpack_require__(13);
@@ -32621,13 +32576,13 @@ for (var i = 0; i < DOMIterables.length; i++) {
 
 
 /***/ }),
-/* 192 */
+/* 191 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var addToUnscopables = __webpack_require__(193);
-var step = __webpack_require__(194);
+var addToUnscopables = __webpack_require__(192);
+var step = __webpack_require__(193);
 var Iterators = __webpack_require__(13);
 var toIObject = __webpack_require__(16);
 
@@ -32635,7 +32590,7 @@ var toIObject = __webpack_require__(16);
 // 22.1.3.13 Array.prototype.keys()
 // 22.1.3.29 Array.prototype.values()
 // 22.1.3.30 Array.prototype[@@iterator]()
-module.exports = __webpack_require__(32)(Array, 'Array', function (iterated, kind) {
+module.exports = __webpack_require__(33)(Array, 'Array', function (iterated, kind) {
   this._t = toIObject(iterated); // target
   this._i = 0;                   // next index
   this._k = kind;                // kind
@@ -32662,14 +32617,14 @@ addToUnscopables('entries');
 
 
 /***/ }),
-/* 193 */
+/* 192 */
 /***/ (function(module, exports) {
 
 module.exports = function () { /* empty */ };
 
 
 /***/ }),
-/* 194 */
+/* 193 */
 /***/ (function(module, exports) {
 
 module.exports = function (done, value) {
@@ -32678,28 +32633,28 @@ module.exports = function (done, value) {
 
 
 /***/ }),
-/* 195 */
+/* 194 */
 /***/ (function(module, exports) {
 
 module.exports = true;
 
 
 /***/ }),
-/* 196 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(7);
 
 
 /***/ }),
-/* 197 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var create = __webpack_require__(198);
+var create = __webpack_require__(197);
 var descriptor = __webpack_require__(30);
-var setToStringTag = __webpack_require__(33);
+var setToStringTag = __webpack_require__(34);
 var IteratorPrototype = {};
 
 // 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
@@ -32712,12 +32667,12 @@ module.exports = function (Constructor, NAME, next) {
 
 
 /***/ }),
-/* 198 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
 var anObject = __webpack_require__(11);
-var dPs = __webpack_require__(199);
+var dPs = __webpack_require__(198);
 var enumBugKeys = __webpack_require__(28);
 var IE_PROTO = __webpack_require__(18)('IE_PROTO');
 var Empty = function () { /* empty */ };
@@ -32732,7 +32687,7 @@ var createDict = function () {
   var gt = '>';
   var iframeDocument;
   iframe.style.display = 'none';
-  __webpack_require__(200).appendChild(iframe);
+  __webpack_require__(199).appendChild(iframe);
   iframe.src = 'javascript:'; // eslint-disable-line no-script-url
   // createDict = iframe.contentWindow.Object;
   // html.removeChild(iframe);
@@ -32759,7 +32714,7 @@ module.exports = Object.create || function create(O, Properties) {
 
 
 /***/ }),
-/* 199 */
+/* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var dP = __webpack_require__(20);
@@ -32778,7 +32733,7 @@ module.exports = __webpack_require__(12) ? Object.defineProperties : function de
 
 
 /***/ }),
-/* 200 */
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var document = __webpack_require__(5).document;
@@ -32786,7 +32741,7 @@ module.exports = document && document.documentElement;
 
 
 /***/ }),
-/* 201 */
+/* 200 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
@@ -32805,15 +32760,15 @@ module.exports = Object.getPrototypeOf || function (O) {
 
 
 /***/ }),
-/* 202 */
+/* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var $at = __webpack_require__(203)(true);
+var $at = __webpack_require__(202)(true);
 
 // 21.1.3.27 String.prototype[@@iterator]()
-__webpack_require__(32)(String, 'String', function (iterated) {
+__webpack_require__(33)(String, 'String', function (iterated) {
   this._t = String(iterated); // target
   this._i = 0;                // next index
 // 21.1.5.2.1 %StringIteratorPrototype%.next()
@@ -32829,7 +32784,7 @@ __webpack_require__(32)(String, 'String', function (iterated) {
 
 
 /***/ }),
-/* 203 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var toInteger = __webpack_require__(17);
@@ -32852,11 +32807,11 @@ module.exports = function (TO_STRING) {
 
 
 /***/ }),
-/* 204 */
+/* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var anObject = __webpack_require__(11);
-var get = __webpack_require__(205);
+var get = __webpack_require__(204);
 module.exports = __webpack_require__(4).getIterator = function (it) {
   var iterFn = get(it);
   if (typeof iterFn != 'function') throw TypeError(it + ' is not iterable!');
@@ -32865,10 +32820,10 @@ module.exports = __webpack_require__(4).getIterator = function (it) {
 
 
 /***/ }),
-/* 205 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var classof = __webpack_require__(206);
+var classof = __webpack_require__(205);
 var ITERATOR = __webpack_require__(6)('iterator');
 var Iterators = __webpack_require__(13);
 module.exports = __webpack_require__(4).getIteratorMethod = function (it) {
@@ -32879,7 +32834,7 @@ module.exports = __webpack_require__(4).getIteratorMethod = function (it) {
 
 
 /***/ }),
-/* 206 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // getting tag from 19.1.3.6 Object.prototype.toString()
@@ -32908,18 +32863,18 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 207 */
+/* 206 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div id=\"rop-sign-in-area\" _v-5e4333e7=\"\">\n\t\t<div class=\"input-group text-right buttons-wrap\" _v-5e4333e7=\"\">\n\t\t\t<button v-for=\"( service, network ) in services\" :disabled=\"checkDisabled( service, network )\" class=\"btn input-group-btn\" :class=\"'btn-' + network\" @click=\"requestAuthorization( network )\" _v-5e4333e7=\"\">\n\t\t\t\t<i class=\"fa fa-fw\" :class=\"'fa-' + network\" _v-5e4333e7=\"\"></i>{{service.name}}</button>\n\t\t\n\t\t</div>\n\t\t\n\t\t<div class=\"modal\" :class=\"modalActiveClass\" _v-5e4333e7=\"\">\n\t\t\t<div class=\"modal-overlay\" _v-5e4333e7=\"\"></div>\n\t\t\t<div class=\"modal-container\" _v-5e4333e7=\"\">\n\t\t\t\t<div class=\"modal-header\" _v-5e4333e7=\"\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"cancelModal()\" _v-5e4333e7=\"\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\" _v-5e4333e7=\"\">{{ modal.serviceName }} Service Credentials</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\" _v-5e4333e7=\"\">\n\t\t\t\t\t<div class=\"content\" _v-5e4333e7=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-5e4333e7=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-5e4333e7=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-5e4333e7=\"\">\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-5e4333e7=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-footer\" _v-5e4333e7=\"\">\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-5e4333e7=\"\">Sign in</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div id=\"rop-sign-in-area\">\n\t\t<div class=\"input-group text-right buttons-wrap\">\n\t\t\t<button v-for=\"( service, network ) in services\"\n\t\t\t\t\t:disabled=\"checkDisabled( service, network )\"\n\t\t\t\t\tclass=\"btn input-group-btn\"\n\t\t\t\t\t:class=\"'btn-' + network\"\n\t\t\t\t\t@click=\"requestAuthorization( network )\">\n\t\t\t\t<i class=\"fa fa-fw\" :class=\"'fa-' + network\"></i>{{service.name}}</button>\n\t\t\n\t\t</div>\n\t\t\n\t\t<div class=\"modal\" :class=\"modalActiveClass\">\n\t\t\t<div class=\"modal-overlay\"></div>\n\t\t\t<div class=\"modal-container\">\n\t\t\t\t<div class=\"modal-header\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"cancelModal()\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\">{{ modal.serviceName }} Service Credentials</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\">\n\t\t\t\t\t<div class=\"content\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" :id=\"field.id\" v-model=\"field.value\"\n\t\t\t\t\t\t\t       :placeholder=\"field.name\"/>\n\t\t\t\t\t\t\t<p class=\"text-gray\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-footer\">\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\">Sign in</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 208 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(209)
-__vue_template__ = __webpack_require__(210)
+__vue_script__ = __webpack_require__(208)
+__vue_template__ = __webpack_require__(209)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32936,7 +32891,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 209 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33125,25 +33080,183 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 210 */
+/* 209 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"tile tile-centered rop-account\" :class=\"'rop-'+type+'-account'\">\n\t\t<div class=\"tile-icon\">\n\t\t\t<div class=\"icon_box\" :class=\"service\">\n\t\t\t\t<img class=\"service_account_image\" :src=\"img\" v-if=\"img\"/>\n\t\t\t\t<i class=\"fa  \" :class=\"icon\" aria-hidden=\"true\"></i>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"tile-content\">\n\t\t\t<div class=\"tile-title\">{{ user }}</div>\n\t\t\t<div class=\"tile-subtitle text-gray\">{{ serviceInfo }}</div>\n\t\t</div>\n\t\t<div class=\"tile-action\">\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t<div class=\"ajax-loader \"><i class=\"fa fa-spinner fa-spin\" v-show=\"is_loading\"></i></div>\n\t\t\t\t\t<input :disabled=\"checkDisabled\" type=\"checkbox\" v-model=\"account_data.active\"\n\t\t\t\t\t       @change=\"startToggleAccount( account_id, type )\"/>\n\t\t\t\t\t<i class=\"form-icon\"></i>\n\t\t\t\t</label>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 211 */
-/***/ (function(module, exports) {
+/* 210 */
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = "\n\t<div class=\"tab-view\" _v-9524525c=\"\">\n\t\t<div class=\"panel-body\" _v-9524525c=\"\">\n\t\t\t<div class=\"columns py-2\" _v-9524525c=\"\">\n\t\t\t\t<div class=\"column col-6 col-md-12 vertical-align\" _v-9524525c=\"\">\n\t\t\t\t\t<b _v-9524525c=\"\">New Service</b>\n\t\t\t\t\t<p class=\"text-gray\" _v-9524525c=\"\">Select a service and sign in with an account for that service.</p>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-6 col-md-12 vertical-align p-2\" _v-9524525c=\"\">\n\t\t\t\t\t<sign-in-btn _v-9524525c=\"\"></sign-in-btn>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<span class=\"divider mt-2 pb-2\" _v-9524525c=\"\"></span>\n\n\t\t\t<div class=\"container\" _v-9524525c=\"\">\n\t\t\t\t<div class=\"columns\" v-if=\"checkLicense\" _v-9524525c=\"\">\n\t\t\t\t\t<div class=\"column col-12 text-center\" _v-9524525c=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-9524525c=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-lock \" _v-9524525c=\"\"></i>You are allowed to add a maximum 1 account for Twitter and 1 account for Facebook. For using more accounts and networks, you need to check the <strong _v-9524525c=\"\">FULL</strong> version.\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" :class=\"'rop-tab-state-'+is_loading\" _v-9524525c=\"\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts\" _v-9524525c=\"\">\n\t\t\t\t\t\t<h5 _v-9524525c=\"\">Accounts</h5>\n\t\t\t\t\t\t<div class=\"empty\" v-if=\"accountsCount === 0\" _v-9524525c=\"\">\n\t\t\t\t\t\t\t<div class=\"empty-icon\" _v-9524525c=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\" _v-9524525c=\"\"></i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<p class=\"empty-title h5\" _v-9524525c=\"\">No accounts!</p>\n\t\t\t\t\t\t\t<p class=\"empty-subtitle\" _v-9524525c=\"\">Sign in and add your social accounts.</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"account-container\" v-for=\"( account, id ) in accounts\" _v-9524525c=\"\">\n\t\t\t\t\t\t\t<service-user-tile :account_data=\"account\" :account_id=\"id\" _v-9524525c=\"\"></service-user-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-9524525c=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-9524525c=\"\">\n\t\t\t\t<div class=\"columns\" _v-9524525c=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-9524525c=\"\">\n\t\t\t\t\t\t<p class=\"text-gray\" _v-9524525c=\"\"><i class=\"fa fa-info-circle\" _v-9524525c=\"\"></i> Authenticate a new service (eg. Facebook, Twitter etc. ), select the accounts you want to add from that service and <b _v-9524525c=\"\">activate</b> them. Only the active accounts will be used for sharing.</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 text-right\" _v-9524525c=\"\">\n\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-9524525c=\"\">\n\t\t\t\t\t<i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-9524525c=\"\"></i>\n\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-9524525c=\"\"></i>\n\t\t\t\t\tRemove all accounts\n\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\n\t</div>\n";
+var __vue_script__, __vue_template__
+__webpack_require__(211)
+__vue_script__ = __webpack_require__(213)
+__vue_template__ = __webpack_require__(214)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/Andrei/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/add-account-tile.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 211 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(212);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(2)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-c6c90524&file=add-account-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./add-account-tile.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-c6c90524&file=add-account-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./add-account-tile.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
 
 /***/ }),
 /* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
+exports = module.exports = __webpack_require__(1)();
+// imports
+
+
+// module
+exports.push([module.i, "\n    .icon_box[_v-c6c90524] {\n        background: #efefef;\n        padding: 0;\n        transition: .3s ease;\n    }\n\n    .icon_box.close .fa[_v-c6c90524] {\n        line-height: 1.6em;\n    }\n\n    .icon_box.open .fa[_v-c6c90524] {\n        line-height: 1.7em;\n        width: 20px;\n        transform: rotate(-135deg);\n        -webkit-transform: rotate(-135deg);\n    }\n\n    .fa[_v-c6c90524] {\n        transition: all .3s cubic-bezier(.34, 1.61, .7, 1);\n    }\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 213 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _signInBtn = __webpack_require__(31);
+
+var _signInBtn2 = _interopRequireDefault(_signInBtn);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+module.exports = {
+    name: "add-account-tile",
+    data: function data() {
+        return {
+            addAccountActive: false
+        };
+    },
+    computed: {
+        /**
+         * Check if we have a pro license.
+         * @returns {boolean}
+         */
+        checkLicense: function checkLicense() {
+            return this.$store.state.licence < 1;
+        }
+    },
+    components: {
+        SignInBtn: _signInBtn2.default
+    }
+    // </script>
+    //
+    // <style scoped>
+    //     .icon_box {
+    //         background: #efefef;
+    //         padding: 0;
+    //         transition: .3s ease;
+    //     }
+    //
+    //     .icon_box.close .fa {
+    //         line-height: 1.6em;
+    //     }
+    //
+    //     .icon_box.open .fa {
+    //         line-height: 1.7em;
+    //         width: 20px;
+    //         transform: rotate(-135deg);
+    //         -webkit-transform: rotate(-135deg);
+    //     }
+    //
+    //     .fa {
+    //         transition: all .3s cubic-bezier(.34, 1.61, .7, 1);
+    //     }
+    // </style>
+
+}; // <template>
+//     <div>
+//         <div class="tile tile-centered rop-add-account">
+//             <a class="tile-icon c-hand" @click="addAccountActive = !addAccountActive">
+//                 <div class="icon_box" :class="(addAccountActive) ? 'close bg-error' : 'open bg-success'">
+//                     <i class="fa fa-2x fa-close" aria-hidden="true"></i>
+//                 </div>
+//             </a>
+//             <div class="tile-content">
+//                 <div class="tile-title">Add Account</div>
+//             </div>
+//             <transition name="fade">
+//                 <div class="tile-action" v-if="addAccountActive">
+//                     <sign-in-btn></sign-in-btn>
+//                 </div>
+//             </transition>
+//         </div>
+//         <transition name="fade">
+//             <div class="columns my-2" v-if="checkLicense && addAccountActive">
+//                 <div class="column col-12 text-center">
+//                     <p class="upsell">
+//                         <i class="fa fa-lock "></i> You are allowed to add a maximum 1 account for Twitter and 1 account for
+//                         Facebook. For using more accounts and networks, you need to check the <strong>FULL</strong> version.
+//                     </p>
+//                 </div>
+//             </div>
+//         </transition>
+//     </div>
+// </template>
+//
+// <script>
+
+/***/ }),
+/* 214 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div _v-c6c90524=\"\">\n        <div class=\"tile tile-centered rop-add-account\" _v-c6c90524=\"\">\n            <a class=\"tile-icon c-hand\" @click=\"addAccountActive = !addAccountActive\" _v-c6c90524=\"\">\n                <div class=\"icon_box\" :class=\"(addAccountActive) ? 'close bg-error' : 'open bg-success'\" _v-c6c90524=\"\">\n                    <i class=\"fa fa-2x fa-close\" aria-hidden=\"true\" _v-c6c90524=\"\"></i>\n                </div>\n            </a>\n            <div class=\"tile-content\" _v-c6c90524=\"\">\n                <div class=\"tile-title\" _v-c6c90524=\"\">Add Account</div>\n            </div>\n            <transition name=\"fade\" _v-c6c90524=\"\">\n                <div class=\"tile-action\" v-if=\"addAccountActive\" _v-c6c90524=\"\">\n                    <sign-in-btn _v-c6c90524=\"\"></sign-in-btn>\n                </div>\n            </transition>\n        </div>\n        <transition name=\"fade\" _v-c6c90524=\"\">\n            <div class=\"columns my-2\" v-if=\"checkLicense &amp;&amp; addAccountActive\" _v-c6c90524=\"\">\n                <div class=\"column col-12 text-center\" _v-c6c90524=\"\">\n                    <p class=\"upsell\" _v-c6c90524=\"\">\n                        <i class=\"fa fa-lock \" _v-c6c90524=\"\"></i> You are allowed to add a maximum 1 account for Twitter and 1 account for\n                        Facebook. For using more accounts and networks, you need to check the <strong _v-c6c90524=\"\">FULL</strong> version.\n                    </p>\n                </div>\n            </div>\n        </transition>\n    </div>\n";
+
+/***/ }),
+/* 215 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div class=\"tab-view\" _v-9524525c=\"\">\n\t\t<div class=\"panel-body\" _v-9524525c=\"\">\n\t\t\t<div class=\"container\" _v-9524525c=\"\">\n\t\t\t\t<div class=\"columns\" :class=\"'rop-tab-state-'+is_loading\" _v-9524525c=\"\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts\" _v-9524525c=\"\">\n\t\t\t\t\t\t<div class=\"empty\" v-if=\"accountsCount === 0\" _v-9524525c=\"\">\n\t\t\t\t\t\t\t<div class=\"empty-icon\" _v-9524525c=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\" _v-9524525c=\"\"></i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<p class=\"empty-title h5\" _v-9524525c=\"\">No accounts!</p>\n\t\t\t\t\t\t\t<p class=\"empty-subtitle\" _v-9524525c=\"\">Sign in and add your social accounts.</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"account-container\" v-for=\"( account, id ) in accounts\" _v-9524525c=\"\">\n\t\t\t\t\t\t\t<service-user-tile :account_data=\"account\" :account_id=\"id\" _v-9524525c=\"\"></service-user-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-9524525c=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"add-accounts\" _v-9524525c=\"\">\n\t\t\t\t\t\t\t<add-account-tile _v-9524525c=\"\"></add-account-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-9524525c=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-9524525c=\"\">\n\t\t\t\t<div class=\"columns\" _v-9524525c=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-9524525c=\"\">\n\t\t\t\t\t\t<p class=\"text-gray\" _v-9524525c=\"\"><i class=\"fa fa-info-circle\" _v-9524525c=\"\"></i> Authenticate a new service (eg. Facebook, Twitter etc. ), select the accounts you want to add from that service and <b _v-9524525c=\"\">activate</b> them. Only the active accounts will be used for sharing.</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 text-right\" _v-9524525c=\"\">\n\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-9524525c=\"\">\n\t\t\t\t\t<i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-9524525c=\"\"></i>\n\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-9524525c=\"\"></i>\n\t\t\t\t\tRemove all accounts\n\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\n\t</div>\n";
+
+/***/ }),
+/* 216 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var __vue_script__, __vue_template__
-__webpack_require__(213)
-__vue_script__ = __webpack_require__(215)
-__vue_template__ = __webpack_require__(225)
+__webpack_require__(217)
+__vue_script__ = __webpack_require__(219)
+__vue_template__ = __webpack_require__(228)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -33160,13 +33273,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 213 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(214);
+var content = __webpack_require__(218);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -33186,7 +33299,7 @@ if(false) {
 }
 
 /***/ }),
-/* 214 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -33200,17 +33313,17 @@ exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-0249af62] {\n\t
 
 
 /***/ }),
-/* 215 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _counterInput = __webpack_require__(216);
+var _counterInput = __webpack_require__(35);
 
 var _counterInput2 = _interopRequireDefault(_counterInput);
 
-var _multipleSelect = __webpack_require__(221);
+var _multipleSelect = __webpack_require__(224);
 
 var _multipleSelect2 = _interopRequireDefault(_multipleSelect);
 
@@ -33565,36 +33678,13 @@ module.exports = {
 };
 
 /***/ }),
-/* 216 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(217)
-__vue_script__ = __webpack_require__(219)
-__vue_template__ = __webpack_require__(220)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/Users/Andrei/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/counter-input.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-/* 217 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(218);
+var content = __webpack_require__(221);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -33614,7 +33704,7 @@ if(false) {
 }
 
 /***/ }),
-/* 218 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -33628,7 +33718,7 @@ exports.push([module.i, "\n\t#rop_core .input-group.rop-counter-group {\n\t\tpos
 
 
 /***/ }),
-/* 219 */
+/* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33762,18 +33852,18 @@ module.exports = {
 };
 
 /***/ }),
-/* 220 */
+/* 223 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"input-group rop-counter-group\">\n\t\t<input class=\"form-input rop-counter\" type=\"text\" v-model=\"inputValueC\" :id=\"id\"  >\n\t\t<button class=\"btn input-group-btn increment-btn up\" @mousedown=\"isPressed('up')\" @mouseup=\"isReleased('up')\"><i class=\"fa fa-fw fa-caret-up\"></i></button>\n\t\t<button class=\"btn input-group-btn increment-btn down\" @mousedown=\"isPressed('down')\" @mouseup=\"isReleased('down')\"><i class=\"fa fa-fw fa-caret-down\"></i></button>\n\t</div>\n";
 
 /***/ }),
-/* 221 */
+/* 224 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(222)
-__vue_template__ = __webpack_require__(224)
+__vue_script__ = __webpack_require__(225)
+__vue_template__ = __webpack_require__(227)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -33790,17 +33880,17 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 222 */
+/* 225 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _getIterator2 = __webpack_require__(31);
+var _getIterator2 = __webpack_require__(32);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
-var _vueClickaway = __webpack_require__(223);
+var _vueClickaway = __webpack_require__(226);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -34104,7 +34194,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 223 */
+/* 226 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34188,25 +34278,25 @@ exports.mixin = mixin;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ }),
-/* 224 */
+/* 227 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"form-autocomplete\" style=\"width: 100%;\" v-on-clickaway=\"closeDropdown\">\n\t\t<!-- autocomplete input container -->\n\t\t<div class=\"form-autocomplete-input form-input\" :class=\"is_focused\">\n\t\t\t\n\t\t\t<!-- autocomplete chips -->\n\t\t\t<label class=\"chip\" v-for=\"( option, index ) in selected\">\n\t\t\t\t{{option.name}}\n\t\t\t\t<a href=\"#\" class=\"btn btn-clear\" aria-label=\"Close\" @click.prevent=\"removeSelected(index)\"\n\t\t\t\t   role=\"button\"></a>\n\t\t\t</label>\n\t\t\t\n\t\t\t<!-- autocomplete real input box -->\n\t\t\t<input style=\"height: 1.0rem;\" class=\"form-input\" type=\"text\" ref=\"search\" v-model=\"search\"\n\t\t\t       :placeholder=\"autocomplete_placeholder\" @click=\"magic_flag = true\" @focus=\"magic_flag = true\"\n\t\t\t       @keyup=\"magic_flag = true\" @keydown.8=\"popLast()\" @keydown.38=\"highlightItem(true)\"\n\t\t\t       @keydown.40=\"highlightItem()\" :disabled=\"is_disabled\">\n\t\t</div>\n\t\t\n\t\t<!-- autocomplete suggestion list -->\n\t\t<ul class=\"menu\" ref=\"autocomplete_results\" :class=\"is_visible\"\n\t\t    style=\"overflow-y: scroll; max-height: 120px\">\n\t\t\t<!-- menu list chips -->\n\t\t\t<li class=\"menu-item\" v-for=\"( option, index ) in options\" v-if=\"filterSearch(option)\">\n\t\t\t\t<a href=\"#\" @click.prevent=\"addToSelected(index)\" @keydown.38=\"highlightItem(true)\"\n\t\t\t\t   @keydown.40=\"highlightItem()\">\n\t\t\t\t\t<div class=\"tile tile-centered\">\n\t\t\t\t\t\t<div class=\"tile-content\" v-html=\"markMatch(option.name, search)\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</a>\n\t\t\t</li>\n\t\t\t<li v-if=\"has_results\">\n\t\t\t\t<a href=\"#\">\n\t\t\t\t\t<div class=\"tile tile-centered\">\n\t\t\t\t\t\t<div class=\"tile-content\"><i>Nothing found matching \"{{search}}\" ...</i></div>\n\t\t\t\t\t</div>\n\t\t\t\t</a>\n\t\t\t</li>\n\t\t</ul>\n\t</div>\n\n";
 
 /***/ }),
-/* 225 */
+/* 228 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"tab-view\" _v-0249af62=\"\">\n\t\t<div class=\"panel-body\" _v-0249af62=\"\">\n\t\t\t<div class=\"container\" :class=\"'rop-tab-state-'+is_loading\" _v-0249af62=\"\">\n\t\t\t\t<!-- Min Interval Between Shares -->\n\t\t\t\t<div class=\"columns py-2\" v-if=\"! isPro\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Minimum interval between shares</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">Minimum time between shares (hour/hours), 0.4 can be used.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<counter-input id=\"default_interval\" :value.sync=\"generalSettings.default_interval\" _v-0249af62=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\t\t\t\t<!-- Min Post Age -->\n\t\t\t\t<div class=\"columns py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Minimum post age</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">Minimum age of posts available for sharing, in days.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<counter-input id=\"min_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.minimum_post_age\" _v-0249af62=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- Max Post Age -->\n\t\t\t\t<div class=\"columns py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Maximum post age</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">Maximum age of posts available for sharing, in days.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<counter-input id=\"max_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.maximum_post_age\" _v-0249af62=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\n\t\t\t\t<!-- No. of posts -->\n\t\t\t\t<div class=\"columns py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Number of posts</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">Number of posts to share per. account per. trigger of scheduled job.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\" _v-0249af62=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\n\t\t\t\t<!-- Share more than once -->\n\t\t\t\t<div class=\"columns py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Share more than once?</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">If there are no more posts to share, we should start re-sharing the one we previously shared.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-0249af62=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-0249af62=\"\"></i> Yes\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\n\t\t\t\t<!-- Post Types -->\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Post types</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">Post types available to share - what post types are available for share</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-0249af62=\"\">\n\t\t\t\t\t\t<multiple-select :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-0249af62=\"\"></multiple-select>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<!-- Upsell -->\n\t\t\t\t<div class=\"columns py-2\" v-if=\"!isPro\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column text-center\" _v-0249af62=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-0249af62=\"\"><i class=\"fa fa-lock\" _v-0249af62=\"\"></i> Selecting custom post types is available in the pro version.</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\n\t\t\t\t<!-- Taxonomies -->\n\t\t\t\t<div class=\"columns py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Taxonomies</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">Taxonomies available for the selected post types. Use to include or exclude posts.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-0249af62=\"\">\n\t\t\t\t\t\t<div class=\"input-group\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" _v-0249af62=\"\"></multiple-select>\n\t\t\t\t\t\t\t<span class=\"input-group-addon vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" @change=\"exludeTaxonomiesChange\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-0249af62=\"\"></i>Exclude?\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</span>\n\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t</div>\n\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\t\t\t\t<!-- Posts -->\n\t\t\t\t<div class=\"columns py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Posts</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">Posts excluded from sharing, filtered based on previous selections.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-0249af62=\"\">\n\t\t\t\t\t\t<div class=\"input-group\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t<multiple-select :searchquery=\"searchQuery\" @update=\"searchUpdate\" :options=\"postsAvailable\" :dont-lock=\"true\" :selected=\"generalSettings.selected_posts\" :changed-selection=\"updatedPosts\" _v-0249af62=\"\"></multiple-select>\n\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\n\t\t\t\t<!-- Google Analytics -->\n\t\t\t\t<div class=\"columns py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Enable Google Analytics Tracking</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">If checked an utm query willbe added to URL's so that you cand better track trafic.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-0249af62=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.ga_tracking\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-0249af62=\"\"></i>Yes\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\n\t\t\t\t<!-- Custom Share Messages -->\n\t\t\t\t<div class=\"columns py-2\" _v-0249af62=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-0249af62=\"\">\n\t\t\t\t\t\t<b _v-0249af62=\"\">Custom Share Messages</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-0249af62=\"\">If checked a metabox will be added so you can edit the share message.</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-0249af62=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.custom_messages\" _v-0249af62=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-0249af62=\"\"></i>Yes\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-0249af62=\"\"></span>\n\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer text-right\" _v-0249af62=\"\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\" _v-0249af62=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-0249af62=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-0249af62=\"\"></i> Save\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 226 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(227)
-__vue_script__ = __webpack_require__(229)
-__vue_template__ = __webpack_require__(257)
+__webpack_require__(230)
+__vue_script__ = __webpack_require__(232)
+__vue_template__ = __webpack_require__(260)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -34223,13 +34313,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 227 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(228);
+var content = __webpack_require__(231);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -34249,7 +34339,7 @@ if(false) {
 }
 
 /***/ }),
-/* 228 */
+/* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -34263,7 +34353,7 @@ exports.push([module.i, "\n\t.icon_box[_v-2c842a80] {\n\t\twidth: 30px;\n\t\thei
 
 
 /***/ }),
-/* 229 */
+/* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34273,15 +34363,15 @@ var _keys = __webpack_require__(3);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _emptyActiveAccounts = __webpack_require__(230);
+var _emptyActiveAccounts = __webpack_require__(233);
 
 var _emptyActiveAccounts2 = _interopRequireDefault(_emptyActiveAccounts);
 
-var _postFormat = __webpack_require__(233);
+var _postFormat = __webpack_require__(236);
 
 var _postFormat2 = _interopRequireDefault(_postFormat);
 
-var _accountSchedule = __webpack_require__(238);
+var _accountSchedule = __webpack_require__(241);
 
 var _accountSchedule2 = _interopRequireDefault(_accountSchedule);
 
@@ -34562,12 +34652,12 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 230 */
+/* 233 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(231)
-__vue_template__ = __webpack_require__(232)
+__vue_script__ = __webpack_require__(234)
+__vue_template__ = __webpack_require__(235)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -34584,7 +34674,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 231 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34613,19 +34703,19 @@ module.exports = {
 };
 
 /***/ }),
-/* 232 */
+/* 235 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div class=\"empty\">\n        <div class=\"empty-icon\">\n            <i class=\"fa fa-3x fa-user-circle-o\"></i>\n        </div>\n        <p class=\"empty-title h5\">No active accounts!</p>\n        <p class=\"empty-subtitle\">Add one from the <b>\"Accounts\"</b> section.</p>\n        <button class=\"btn btn-primary\" @click=\"goToAccounts()\">Go to Accounts</button>\n    </div>\n";
 
 /***/ }),
-/* 233 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(234)
-__vue_script__ = __webpack_require__(236)
-__vue_template__ = __webpack_require__(237)
+__webpack_require__(237)
+__vue_script__ = __webpack_require__(239)
+__vue_template__ = __webpack_require__(240)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -34642,13 +34732,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 234 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(235);
+var content = __webpack_require__(238);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -34668,7 +34758,7 @@ if(false) {
 }
 
 /***/ }),
-/* 235 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -34682,7 +34772,7 @@ exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-55cfd432] {\n\t
 
 
 /***/ }),
-/* 236 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34720,10 +34810,11 @@ exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-55cfd432] {\n\t
 // 			<div class="column col-6 col-sm-12 vertical-align">
 // 				<div class="form-group">
 // 					<input class="form-input" type="text" v-model="post_format.custom_meta_field"
-// 					       value="" placeholder=""/>
+// 						   value="" placeholder=""/>
 // 				</div>
 // 			</div>
 // 		</div>
+//
 // 		<span class="divider"></span>
 //
 // 		<!-- Maximum length of the message( number field ) which holds the maximum
@@ -35045,19 +35136,19 @@ module.exports = {
 };
 
 /***/ }),
-/* 237 */
+/* 240 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div _v-55cfd432=\"\">\n\t\t<!-- Post Content - where to fetch the content which will be shared\n\t\t\t (dropdown with 4 options ( post_title, post_content, post_content\n\t\t\t and title and custom field). If custom field is selected we will\n\t\t\t have a text field which users will need to fill in to fetch the\n\t\t\t content from that meta key. -->\n\t\t<div class=\"columns py-2\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Post Content</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">From where to fetch the content which will be shared.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.post_content\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<option value=\"post_title\" _v-55cfd432=\"\">Post Title</option>\n\t\t\t\t\t\t<option value=\"post_content\" _v-55cfd432=\"\">Post Content</option>\n\t\t\t\t\t\t<option value=\"post_title_content\" _v-55cfd432=\"\">Post Title &amp; Content</option>\n\t\t\t\t\t\t<option value=\"custom_field\" _v-55cfd432=\"\">Custom Field</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Custom Meta Field -->\n\t\t<div class=\"columns py-2\" v-if=\"post_format.post_content === 'custom_field'\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Custom Meta Field</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Meta field name from which to get the content.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.custom_meta_field\" value=\"\" placeholder=\"\" _v-55cfd432=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-55cfd432=\"\"></span>\n\n\t\t<!-- Maximum length of the message( number field ) which holds the maximum\n\t\t\t number of chars for the shared content. We striping the content, we need\n\t\t\t to strip at the last whitespace or dot before reaching the limit, in order\n\t\t\t to not trim just half of the word. -->\n\t\t<div class=\"columns py-2\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Maximum chars</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Maximum length of the message.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.maximum_length\" value=\"\" placeholder=\"\" _v-55cfd432=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-55cfd432=\"\"></span>\n\n\t\t<!-- Additional text field - text field which will be used by the users to a\n\t\t\t custom content before the fetched post content. -->\n\t\t<div class=\"columns py-2\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Additional text</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Add custom content to published items.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<textarea class=\"form-input\" v-model=\"post_format.custom_text\" placeholder=\"Custom content ...\" _v-55cfd432=\"\">{{post_format.custom_text}}</textarea>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Additional text at - dropdown with 2 options, begining or end, having the\n\t\t\t option where to add the additional text content. -->\n\t\t<div class=\"columns py-2\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Where to add the custom text.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.custom_text_pos\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<option value=\"beginning\" _v-55cfd432=\"\">Beginning</option>\n\t\t\t\t\t\t<option value=\"end\" _v-55cfd432=\"\">End</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Include link - checkbox either we should include the post permalink or not\n\t\t\t in the shared content. This is will appended at the end of the content. -->\n        <div class=\"columns py-2\" _v-55cfd432=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n                <b _v-55cfd432=\"\">Include link</b>\n                <p class=\"text-gray\" _v-55cfd432=\"\">Should include the post permalink or not?</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n                <div class=\"input-group\" _v-55cfd432=\"\">\n                    <label class=\"form-checkbox\" _v-55cfd432=\"\">\n                        <input type=\"checkbox\" v-model=\"post_format.include_link\" _v-55cfd432=\"\">\n                        <i class=\"form-icon\" _v-55cfd432=\"\"></i> Yes\n                    </label>\n                </div>\n            </div>\n        </div>\n\t\t<span class=\"divider\" _v-55cfd432=\"\"></span>\n\t\t<!-- Fetch url from custom field - checkbox - either we should fetch the url from\n\t\t\t a meta field or not. When checked we will open a text field for entering the\n\t\t\t meta key. -->\n\t\t<div class=\"columns py-2\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Custom field</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Fetch URL from custom field?</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"input-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.url_from_meta\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-55cfd432=\"\"></i> Yes\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Custom Field -->\n\t\t<div class=\"columns py-2\" v-if=\"post_format.url_from_meta\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Custom Field</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Custom Field from which to get the URL.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.url_meta_key\" value=\"\" placeholder=\"\" _v-55cfd432=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-55cfd432=\"\"></span>\n\t\t<!-- Use url shortner ( checkbox ) , either we should use a shortner when adding\n\t\t\t the links to the content. When checked we will show a dropdown with the shortners\n\t\t\t available and the api keys ( if needed ) for each one. The list of shortners will\n\t\t\t be the same as the old version of the plugin. -->\n\t\t<div class=\"columns py-2\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Use url shortner</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Should we use a shortner when adding the links to the content?</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"input-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.short_url\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-55cfd432=\"\"></i> Yes\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Shortner Service -->\n\t\t<div class=\"columns py-2\" v-if=\"post_format.short_url\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">URL Shorner Service</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Which service to use for URL shortening.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.short_url_service\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<option value=\"rviv.ly\" _v-55cfd432=\"\">rviv.ly</option>\n\t\t\t\t\t\t<option value=\"bit.ly\" _v-55cfd432=\"\">bit.ly</option>\n\t\t\t\t\t\t<option value=\"shorte.st\" _v-55cfd432=\"\">shorte.st</option>\n\t\t\t\t\t\t<option value=\"goo.gl\" _v-55cfd432=\"\">goo.gl</option>\n\t\t\t\t\t\t<option value=\"ow.ly\" _v-55cfd432=\"\">ow.ly</option>\n\t\t\t\t\t\t<option value=\"is.gd\" _v-55cfd432=\"\">is.gd</option>\n\t\t\t\t\t\t<option value=\"wp_short_url\" _v-55cfd432=\"\">wp_short_url</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.short_url\" v-for=\"( credential, key_name ) in shortner_credentials\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">{{ key_name | capitalize }}</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Add the \"{{key_name}}\" required by the <strong _v-55cfd432=\"\">{{post_format.short_url_service}}</strong> service API.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"shortner_credentials[key_name]\" value=\"\" placeholder=\"\" @change=\"updateShortnerCredentials()\" @keyup=\"updateShortnerCredentials()\" _v-55cfd432=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Hashtags - dropdown - having this options - (Dont add any hashtags, Common hastags\n\t\t\t for all shares, Create hashtags from categories, Create hashtags from tags, Create\n\t\t\t hashtags from custom field). If one of those options is selected, except the dont\n\t\t\t any hashtags options, we will show a number field having the Maximum hashtags length.\n\t\t\t Moreover for common hashtags option, we will have another text field which will contain\n\t\t\t the hashtags value. -->\n\t\t<div class=\"columns py-2\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Hashtags</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Hashtags to published content.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.hashtags\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<option value=\"no-hashtags\" _v-55cfd432=\"\">Dont add any hashtags</option>\n\t\t\t\t\t\t<option value=\"common-hashtags\" _v-55cfd432=\"\">Common hastags for all shares</option>\n\t\t\t\t\t\t<option value=\"categories-hashtags\" _v-55cfd432=\"\">Create hashtags from categories</option>\n\t\t\t\t\t\t<option value=\"tags-hashtags\" _v-55cfd432=\"\">Create hashtags from tags</option>\n\t\t\t\t\t\t<option value=\"custom-hashtags\" _v-55cfd432=\"\">Create hashtags from custom field</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Common Hashtags -->\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags === 'common-hashtags'\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Common Hashtags</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">List of hastags to use separated by comma \",\".</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_common\" value=\"\" placeholder=\"\" _v-55cfd432=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Custom Hashtags -->\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags === 'custom-hashtags'\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Custom Hashtags</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">The name of the meta field that contains the hashtags.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_custom\" value=\"\" placeholder=\"\" _v-55cfd432=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Hashtags Length -->\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags !== 'no-hashtags'\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Maximum Hashtags length</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">The maximum hashtags length to be used when publishing.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.hashtags_length\" value=\"\" placeholder=\"\" _v-55cfd432=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<span class=\"divider\" _v-55cfd432=\"\"></span>\n\n\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Post with image</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Use the featured image when posting?</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"input-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.image\" :disabled=\"!isPro\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-55cfd432=\"\"></i> Yes\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Upsell -->\n\t\t<div class=\"columns py-2\" v-if=\"!isPro\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column text-center\" _v-55cfd432=\"\">\n\t\t\t\t<p class=\"upsell\" _v-55cfd432=\"\"><i class=\"fa fa-lock\" _v-55cfd432=\"\"></i> Posting with images ia available in the pro version. </p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-55cfd432=\"\"></span>\n\t</div>\n";
+module.exports = "\n\t<div _v-55cfd432=\"\">\n\t\t<!-- Post Content - where to fetch the content which will be shared\n\t\t\t (dropdown with 4 options ( post_title, post_content, post_content\n\t\t\t and title and custom field). If custom field is selected we will\n\t\t\t have a text field which users will need to fill in to fetch the\n\t\t\t content from that meta key. -->\n\t\t<div class=\"columns py-2\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Post Content</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">From where to fetch the content which will be shared.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.post_content\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<option value=\"post_title\" _v-55cfd432=\"\">Post Title</option>\n\t\t\t\t\t\t<option value=\"post_content\" _v-55cfd432=\"\">Post Content</option>\n\t\t\t\t\t\t<option value=\"post_title_content\" _v-55cfd432=\"\">Post Title &amp; Content</option>\n\t\t\t\t\t\t<option value=\"custom_field\" _v-55cfd432=\"\">Custom Field</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Custom Meta Field -->\n\t\t<div class=\"columns py-2\" v-if=\"post_format.post_content === 'custom_field'\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Custom Meta Field</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Meta field name from which to get the content.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.custom_meta_field\" value=\"\" placeholder=\"\" _v-55cfd432=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<span class=\"divider\" _v-55cfd432=\"\"></span>\n\n\t\t<!-- Maximum length of the message( number field ) which holds the maximum\n\t\t\t number of chars for the shared content. We striping the content, we need\n\t\t\t to strip at the last whitespace or dot before reaching the limit, in order\n\t\t\t to not trim just half of the word. -->\n\t\t<div class=\"columns py-2\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Maximum chars</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Maximum length of the message.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.maximum_length\" value=\"\" placeholder=\"\" _v-55cfd432=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-55cfd432=\"\"></span>\n\n\t\t<!-- Additional text field - text field which will be used by the users to a\n\t\t\t custom content before the fetched post content. -->\n\t\t<div class=\"columns py-2\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Additional text</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Add custom content to published items.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<textarea class=\"form-input\" v-model=\"post_format.custom_text\" placeholder=\"Custom content ...\" _v-55cfd432=\"\">{{post_format.custom_text}}</textarea>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Additional text at - dropdown with 2 options, begining or end, having the\n\t\t\t option where to add the additional text content. -->\n\t\t<div class=\"columns py-2\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Where to add the custom text.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.custom_text_pos\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<option value=\"beginning\" _v-55cfd432=\"\">Beginning</option>\n\t\t\t\t\t\t<option value=\"end\" _v-55cfd432=\"\">End</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Include link - checkbox either we should include the post permalink or not\n\t\t\t in the shared content. This is will appended at the end of the content. -->\n        <div class=\"columns py-2\" _v-55cfd432=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n                <b _v-55cfd432=\"\">Include link</b>\n                <p class=\"text-gray\" _v-55cfd432=\"\">Should include the post permalink or not?</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n                <div class=\"input-group\" _v-55cfd432=\"\">\n                    <label class=\"form-checkbox\" _v-55cfd432=\"\">\n                        <input type=\"checkbox\" v-model=\"post_format.include_link\" _v-55cfd432=\"\">\n                        <i class=\"form-icon\" _v-55cfd432=\"\"></i> Yes\n                    </label>\n                </div>\n            </div>\n        </div>\n\t\t<span class=\"divider\" _v-55cfd432=\"\"></span>\n\t\t<!-- Fetch url from custom field - checkbox - either we should fetch the url from\n\t\t\t a meta field or not. When checked we will open a text field for entering the\n\t\t\t meta key. -->\n\t\t<div class=\"columns py-2\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Custom field</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Fetch URL from custom field?</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"input-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.url_from_meta\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-55cfd432=\"\"></i> Yes\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Custom Field -->\n\t\t<div class=\"columns py-2\" v-if=\"post_format.url_from_meta\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Custom Field</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Custom Field from which to get the URL.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.url_meta_key\" value=\"\" placeholder=\"\" _v-55cfd432=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-55cfd432=\"\"></span>\n\t\t<!-- Use url shortner ( checkbox ) , either we should use a shortner when adding\n\t\t\t the links to the content. When checked we will show a dropdown with the shortners\n\t\t\t available and the api keys ( if needed ) for each one. The list of shortners will\n\t\t\t be the same as the old version of the plugin. -->\n\t\t<div class=\"columns py-2\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Use url shortner</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Should we use a shortner when adding the links to the content?</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"input-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.short_url\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-55cfd432=\"\"></i> Yes\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Shortner Service -->\n\t\t<div class=\"columns py-2\" v-if=\"post_format.short_url\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">URL Shorner Service</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Which service to use for URL shortening.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.short_url_service\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<option value=\"rviv.ly\" _v-55cfd432=\"\">rviv.ly</option>\n\t\t\t\t\t\t<option value=\"bit.ly\" _v-55cfd432=\"\">bit.ly</option>\n\t\t\t\t\t\t<option value=\"shorte.st\" _v-55cfd432=\"\">shorte.st</option>\n\t\t\t\t\t\t<option value=\"goo.gl\" _v-55cfd432=\"\">goo.gl</option>\n\t\t\t\t\t\t<option value=\"ow.ly\" _v-55cfd432=\"\">ow.ly</option>\n\t\t\t\t\t\t<option value=\"is.gd\" _v-55cfd432=\"\">is.gd</option>\n\t\t\t\t\t\t<option value=\"wp_short_url\" _v-55cfd432=\"\">wp_short_url</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.short_url\" v-for=\"( credential, key_name ) in shortner_credentials\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">{{ key_name | capitalize }}</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Add the \"{{key_name}}\" required by the <strong _v-55cfd432=\"\">{{post_format.short_url_service}}</strong> service API.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"shortner_credentials[key_name]\" value=\"\" placeholder=\"\" @change=\"updateShortnerCredentials()\" @keyup=\"updateShortnerCredentials()\" _v-55cfd432=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Hashtags - dropdown - having this options - (Dont add any hashtags, Common hastags\n\t\t\t for all shares, Create hashtags from categories, Create hashtags from tags, Create\n\t\t\t hashtags from custom field). If one of those options is selected, except the dont\n\t\t\t any hashtags options, we will show a number field having the Maximum hashtags length.\n\t\t\t Moreover for common hashtags option, we will have another text field which will contain\n\t\t\t the hashtags value. -->\n\t\t<div class=\"columns py-2\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Hashtags</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Hashtags to published content.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.hashtags\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<option value=\"no-hashtags\" _v-55cfd432=\"\">Dont add any hashtags</option>\n\t\t\t\t\t\t<option value=\"common-hashtags\" _v-55cfd432=\"\">Common hastags for all shares</option>\n\t\t\t\t\t\t<option value=\"categories-hashtags\" _v-55cfd432=\"\">Create hashtags from categories</option>\n\t\t\t\t\t\t<option value=\"tags-hashtags\" _v-55cfd432=\"\">Create hashtags from tags</option>\n\t\t\t\t\t\t<option value=\"custom-hashtags\" _v-55cfd432=\"\">Create hashtags from custom field</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Common Hashtags -->\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags === 'common-hashtags'\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Common Hashtags</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">List of hastags to use separated by comma \",\".</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_common\" value=\"\" placeholder=\"\" _v-55cfd432=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Custom Hashtags -->\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags === 'custom-hashtags'\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Custom Hashtags</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">The name of the meta field that contains the hashtags.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_custom\" value=\"\" placeholder=\"\" _v-55cfd432=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Hashtags Length -->\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags !== 'no-hashtags'\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Maximum Hashtags length</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">The maximum hashtags length to be used when publishing.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"form-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.hashtags_length\" value=\"\" placeholder=\"\" _v-55cfd432=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<span class=\"divider\" _v-55cfd432=\"\"></span>\n\n\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<b _v-55cfd432=\"\">Post with image</b>\n\t\t\t\t<p class=\"text-gray\" _v-55cfd432=\"\">Use the featured image when posting?</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-55cfd432=\"\">\n\t\t\t\t<div class=\"input-group\" _v-55cfd432=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.image\" :disabled=\"!isPro\" _v-55cfd432=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-55cfd432=\"\"></i> Yes\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Upsell -->\n\t\t<div class=\"columns py-2\" v-if=\"!isPro\" _v-55cfd432=\"\">\n\t\t\t<div class=\"column text-center\" _v-55cfd432=\"\">\n\t\t\t\t<p class=\"upsell\" _v-55cfd432=\"\"><i class=\"fa fa-lock\" _v-55cfd432=\"\"></i> Posting with images ia available in the pro version. </p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-55cfd432=\"\"></span>\n\t</div>\n";
 
 /***/ }),
-/* 238 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(239)
-__vue_script__ = __webpack_require__(241)
-__vue_template__ = __webpack_require__(256)
+__webpack_require__(242)
+__vue_script__ = __webpack_require__(244)
+__vue_template__ = __webpack_require__(259)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -35074,13 +35165,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 239 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(240);
+var content = __webpack_require__(243);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -35100,7 +35191,7 @@ if(false) {
 }
 
 /***/ }),
-/* 240 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -35114,107 +35205,26 @@ exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-6c5946b8] {\n\t
 
 
 /***/ }),
-/* 241 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _buttonCheckbox = __webpack_require__(242);
+var _buttonCheckbox = __webpack_require__(245);
 
 var _buttonCheckbox2 = _interopRequireDefault(_buttonCheckbox);
 
-var _vue2Timepicker = __webpack_require__(247);
+var _vue2Timepicker = __webpack_require__(250);
 
 var _vue2Timepicker2 = _interopRequireDefault(_vue2Timepicker);
 
+var _counterInput = __webpack_require__(35);
+
+var _counterInput2 = _interopRequireDefault(_counterInput);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// <template>
-// 	<div :class="'rop-control-container-'+ ( license>1 ) ">
-//
-// 		<!-- Schedule Type -->
-// 		<div class="columns py-2 rop-control">
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<b>Schedule Type</b>
-// 				<p class="text-gray">What type of schedule to use.</p>
-// 			</div>
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<div class="form-group">
-// 					<select class="form-select" v-model="schedule.type">
-// 						<option value="recurring">Recurring</option>
-// 						<option value="fixed">Fixed</option>
-// 					</select>
-// 				</div>
-// 			</div>
-// 		</div>
-//
-// 		<!-- Fixed Schedule Days -->
-// 		<div class="columns py-2 rop-control" v-if="schedule.type === 'fixed'">
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<b>Fixed Schedule Days</b>
-// 				<p class="text-gray">The days when to share for this account.</p>
-// 			</div>
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<div class="form-group input-group">
-// 					<button-checkbox v-for="( data, label ) in daysObject" :key="label" :value="data.value"
-// 					                 :label="label" :checked="data.checked" @add-day="addDay" @rmv-day="rmvDay"
-// 					></button-checkbox>
-// 				</div>
-// 			</div>
-// 		</div>
-//
-// 		<!-- Fixed Schedule time -->
-// 		<div class="columns py-2 rop-control" v-if="schedule.type === 'fixed'">
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<b>Fixed Schedule Time</b>
-// 				<p class="text-gray">The time at witch to share for this account.</p>
-// 			</div>
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<div class="form-group">
-// 					<div class="input-group" v-for="( time, index ) in schedule.interval_f.time">
-// 						<vue-timepicker :minute-interval="5" class="timepicker-style-fix" :value="getTime( index )"
-// 						                @change="syncTime( $event, index )" hide-clear-button
-// 						></vue-timepicker>
-// 						<button class="btn btn-danger input-group-btn" v-if="schedule.interval_f.time.length > 1"
-// 						        @click="rmvTime( index )">
-// 							<i class="fa fa-fw fa-minus"></i>
-// 						</button>
-// 						<button class="btn btn-success input-group-btn"
-// 						        v-if="index == schedule.interval_f.time.length - 1" @click="addTime()"
-// 						>
-// 							<i class="fa fa-fw fa-plus"></i>
-// 						</button>
-// 					</div>
-// 				</div>
-// 			</div>
-// 		</div>
-//
-// 		<!-- Recurring Schedule Interval -->
-// 		<div class="columns py-2 rop-control" v-else>
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<b>Recurring Schedule Interval</b>
-// 				<p class="text-gray">A recurring interval to use for sharing. Once every 'X' hours.</p>
-// 			</div>
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<div class="form-group">
-// 					<input type="number" class="form-input" v-model="schedule.interval_r"
-// 					       placeholder="hours.min (Eg. 2.5)"/>
-// 				</div>
-// 			</div>
-// 		</div>
-//
-// 		<!-- Upsell -->
-// 		<div class="columns py-2" v-if="license < 1">
-// 			<div class="column text-center">
-// 				<p class="upsell"><i class="fa fa-lock"></i> The Custom Schedule is available only in the Business version.</p>
-// 			</div>
-// 		</div>
-// 		<span class="divider"></span>
-// 	</div>
-// </template>
-//
-// <script>
 module.exports = {
 	name: 'account-schedule',
 	props: ['account_id', 'license'],
@@ -35299,6 +35309,7 @@ module.exports = {
 	},
 	components: {
 		ButtonCheckbox: _buttonCheckbox2.default,
+		CounterInput: _counterInput2.default,
 		VueTimepicker: _vue2Timepicker2.default
 	}
 	// </script>
@@ -35327,16 +35338,99 @@ module.exports = {
 	// 	}
 	// </style>
 
-};
+}; // <template>
+// 	<div :class="'rop-control-container-'+ ( license>1 ) ">
+//
+// 		<!-- Schedule Type -->
+// 		<div class="columns py-2 rop-control">
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<b>Schedule Type</b>
+// 				<p class="text-gray">What type of schedule to use.</p>
+// 			</div>
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<div class="form-group">
+// 					<select class="form-select" v-model="schedule.type">
+// 						<option value="recurring">Recurring</option>
+// 						<option value="fixed">Fixed</option>
+// 					</select>
+// 				</div>
+// 			</div>
+// 		</div>
+//
+// 		<!-- Fixed Schedule Days -->
+// 		<div class="columns py-2 rop-control" v-if="schedule.type === 'fixed'">
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<b>Fixed Schedule Days</b>
+// 				<p class="text-gray">The days when to share for this account.</p>
+// 			</div>
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<div class="form-group input-group">
+// 					<button-checkbox v-for="( data, label ) in daysObject" :key="label" :value="data.value"
+// 					                 :label="label" :checked="data.checked" @add-day="addDay" @rmv-day="rmvDay"
+// 					></button-checkbox>
+// 				</div>
+// 			</div>
+// 		</div>
+//
+// 		<!-- Fixed Schedule time -->
+// 		<div class="columns py-2 rop-control" v-if="schedule.type === 'fixed'">
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<b>Fixed Schedule Time</b>
+// 				<p class="text-gray">The time at witch to share for this account.</p>
+// 			</div>
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<div class="form-group">
+// 					<div class="input-group" v-for="( time, index ) in schedule.interval_f.time">
+// 						<vue-timepicker :minute-interval="5" class="timepicker-style-fix" :value="getTime( index )"
+// 						                @change="syncTime( $event, index )" hide-clear-button
+// 						></vue-timepicker>
+// 						<button class="btn btn-danger input-group-btn" v-if="schedule.interval_f.time.length > 1"
+// 						        @click="rmvTime( index )">
+// 							<i class="fa fa-fw fa-minus"></i>
+// 						</button>
+// 						<button class="btn btn-success input-group-btn"
+// 						        v-if="index == schedule.interval_f.time.length - 1" @click="addTime()"
+// 						>
+// 							<i class="fa fa-fw fa-plus"></i>
+// 						</button>
+// 					</div>
+// 				</div>
+// 			</div>
+// 		</div>
+//
+// 		<!-- Recurring Schedule Interval -->
+// 		<div class="columns py-2 rop-control" v-else>
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<b>Recurring Schedule Interval</b>
+// 				<p class="text-gray">A recurring interval to use for sharing. Once every 'X' hours.</p>
+// 			</div>
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<div class="form-group">
+// 					<counter-input id="interval_r" :value.sync="schedule.interval_r"></counter-input>
+// 				</div>
+// 			</div>
+// 		</div>
+//
+// 		<!-- Upsell -->
+// 		<div class="columns py-2" v-if="license < 1">
+// 			<div class="column text-center">
+// 				<p class="upsell"><i class="fa fa-lock"></i> The Custom Schedule is available only in the Business version.</p>
+// 			</div>
+// 		</div>
+// 		<span class="divider"></span>
+// 	</div>
+// </template>
+//
+// <script>
 
 /***/ }),
-/* 242 */
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(243)
-__vue_script__ = __webpack_require__(245)
-__vue_template__ = __webpack_require__(246)
+__webpack_require__(246)
+__vue_script__ = __webpack_require__(248)
+__vue_template__ = __webpack_require__(249)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -35353,13 +35447,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 243 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(244);
+var content = __webpack_require__(247);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -35379,7 +35473,7 @@ if(false) {
 }
 
 /***/ }),
-/* 244 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -35393,7 +35487,7 @@ exports.push([module.i, "\n\t#rop_core .input-group .input-group-addon.btn.activ
 
 
 /***/ }),
-/* 245 */
+/* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35469,26 +35563,26 @@ module.exports = {
 };
 
 /***/ }),
-/* 246 */
+/* 249 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<button class=\"btn input-group-addon column\" :class=\"is_active\" @click=\"toggleThis()\" _v-6552e83a=\"\">{{label}}</button>\n";
 
 /***/ }),
-/* 247 */
+/* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(248)
+module.exports = __webpack_require__(251)
 
 
 /***/ }),
-/* 248 */
+/* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(249)
-__vue_script__ = __webpack_require__(252)
-__vue_template__ = __webpack_require__(255)
+__webpack_require__(252)
+__vue_script__ = __webpack_require__(255)
+__vue_template__ = __webpack_require__(258)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -35505,13 +35599,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 249 */
+/* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(250);
+var content = __webpack_require__(253);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -35531,12 +35625,12 @@ if(false) {
 }
 
 /***/ }),
-/* 250 */
+/* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
 // imports
-exports.i(__webpack_require__(251), "");
+exports.i(__webpack_require__(254), "");
 
 // module
 exports.push([module.i, "\n", ""]);
@@ -35545,7 +35639,7 @@ exports.push([module.i, "\n", ""]);
 
 
 /***/ }),
-/* 251 */
+/* 254 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -35559,7 +35653,7 @@ exports.push([module.i, ".time-picker {\n  display: inline-block;\n  position: r
 
 
 /***/ }),
-/* 252 */
+/* 255 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35573,7 +35667,7 @@ var _keys = __webpack_require__(3);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _stringify = __webpack_require__(253);
+var _stringify = __webpack_require__(256);
 
 var _stringify2 = _interopRequireDefault(_stringify);
 
@@ -35949,13 +36043,13 @@ exports.default = {
 };
 
 /***/ }),
-/* 253 */
+/* 256 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(254), __esModule: true };
+module.exports = { "default": __webpack_require__(257), __esModule: true };
 
 /***/ }),
-/* 254 */
+/* 257 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var core = __webpack_require__(4);
@@ -35966,30 +36060,30 @@ module.exports = function stringify(it) { // eslint-disable-line no-unused-vars
 
 
 /***/ }),
-/* 255 */
+/* 258 */
 /***/ (function(module, exports) {
 
 module.exports = "\n<span class=\"time-picker\">\n  <input class=\"display-time\" :id=\"id\" v-model=\"displayTime\" @click.stop=\"toggleDropdown\" type=\"text\" readonly />\n  <span class=\"clear-btn\" v-if=\"!hideClearButton\" v-show=\"!showDropdown && showClearBtn\" @click.stop=\"clearTime\">&times;</span>\n  <div class=\"time-picker-overlay\" v-if=\"showDropdown\" @click.stop=\"toggleDropdown\"></div>\n  <div class=\"dropdown\" v-show=\"showDropdown\">\n    <div class=\"select-list\">\n      <ul class=\"hours\">\n        <li class=\"hint\" v-text=\"hourType\"></li>\n        <li v-for=\"hr in hours\" v-text=\"hr\" :class=\"{active: hour === hr}\" @click.stop=\"select('hour', hr)\"></li>\n      </ul>\n      <ul class=\"minutes\">\n        <li class=\"hint\" v-text=\"minuteType\"></li>\n        <li v-for=\"m in minutes\" v-text=\"m\" :class=\"{active: minute === m}\" @click.stop=\"select('minute', m)\"></li>\n      </ul>\n      <ul class=\"seconds\" v-if=\"secondType\">\n        <li class=\"hint\" v-text=\"secondType\"></li>\n        <li v-for=\"s in seconds\" v-text=\"s\" :class=\"{active: second === s}\" @click.stop=\"select('second', s)\"></li>\n      </ul>\n      <ul class=\"apms\" v-if=\"apmType\">\n        <li class=\"hint\" v-text=\"apmType\"></li>\n        <li v-for=\"a in apms\" v-text=\"a\" :class=\"{active: apm === a}\" @click.stop=\"select('apm', a)\"></li>\n      </ul>\n    </div>\n  </div>\n</span>\n";
 
 /***/ }),
-/* 256 */
+/* 259 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div :class=\"'rop-control-container-'+ ( license>1 ) \" _v-6c5946b8=\"\">\n\n\t\t<!-- Schedule Type -->\n\t\t<div class=\"columns py-2 rop-control\" _v-6c5946b8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<b _v-6c5946b8=\"\">Schedule Type</b>\n\t\t\t\t<p class=\"text-gray\" _v-6c5946b8=\"\">What type of schedule to use.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-6c5946b8=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"schedule.type\" _v-6c5946b8=\"\">\n\t\t\t\t\t\t<option value=\"recurring\" _v-6c5946b8=\"\">Recurring</option>\n\t\t\t\t\t\t<option value=\"fixed\" _v-6c5946b8=\"\">Fixed</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule Days -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-6c5946b8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<b _v-6c5946b8=\"\">Fixed Schedule Days</b>\n\t\t\t\t<p class=\"text-gray\" _v-6c5946b8=\"\">The days when to share for this account.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<div class=\"form-group input-group\" _v-6c5946b8=\"\">\n\t\t\t\t\t<button-checkbox v-for=\"( data, label ) in daysObject\" :key=\"label\" :value=\"data.value\" :label=\"label\" :checked=\"data.checked\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" _v-6c5946b8=\"\"></button-checkbox>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule time -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-6c5946b8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<b _v-6c5946b8=\"\">Fixed Schedule Time</b>\n\t\t\t\t<p class=\"text-gray\" _v-6c5946b8=\"\">The time at witch to share for this account.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-6c5946b8=\"\">\n\t\t\t\t\t<div class=\"input-group\" v-for=\"( time, index ) in schedule.interval_f.time\" _v-6c5946b8=\"\">\n\t\t\t\t\t\t<vue-timepicker :minute-interval=\"5\" class=\"timepicker-style-fix\" :value=\"getTime( index )\" @change=\"syncTime( $event, index )\" hide-clear-button=\"\" _v-6c5946b8=\"\"></vue-timepicker>\n\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn\" v-if=\"schedule.interval_f.time.length > 1\" @click=\"rmvTime( index )\" _v-6c5946b8=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-minus\" _v-6c5946b8=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t\t<button class=\"btn btn-success input-group-btn\" v-if=\"index == schedule.interval_f.time.length - 1\" @click=\"addTime()\" _v-6c5946b8=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-plus\" _v-6c5946b8=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Recurring Schedule Interval -->\n\t\t<div class=\"columns py-2 rop-control\" v-else=\"\" _v-6c5946b8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<b _v-6c5946b8=\"\">Recurring Schedule Interval</b>\n\t\t\t\t<p class=\"text-gray\" _v-6c5946b8=\"\">A recurring interval to use for sharing. Once every 'X' hours.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-6c5946b8=\"\">\n\t\t\t\t\t<input type=\"number\" class=\"form-input\" v-model=\"schedule.interval_r\" placeholder=\"hours.min (Eg. 2.5)\" _v-6c5946b8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Upsell -->\n\t\t<div class=\"columns py-2\" v-if=\"license < 1\" _v-6c5946b8=\"\">\n\t\t\t<div class=\"column text-center\" _v-6c5946b8=\"\">\n\t\t\t\t<p class=\"upsell\" _v-6c5946b8=\"\"><i class=\"fa fa-lock\" _v-6c5946b8=\"\"></i> The Custom Schedule is available only in the Business version.</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-6c5946b8=\"\"></span>\n\t</div>\n";
+module.exports = "\n\t<div :class=\"'rop-control-container-'+ ( license>1 ) \" _v-6c5946b8=\"\">\n\n\t\t<!-- Schedule Type -->\n\t\t<div class=\"columns py-2 rop-control\" _v-6c5946b8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<b _v-6c5946b8=\"\">Schedule Type</b>\n\t\t\t\t<p class=\"text-gray\" _v-6c5946b8=\"\">What type of schedule to use.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-6c5946b8=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"schedule.type\" _v-6c5946b8=\"\">\n\t\t\t\t\t\t<option value=\"recurring\" _v-6c5946b8=\"\">Recurring</option>\n\t\t\t\t\t\t<option value=\"fixed\" _v-6c5946b8=\"\">Fixed</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule Days -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-6c5946b8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<b _v-6c5946b8=\"\">Fixed Schedule Days</b>\n\t\t\t\t<p class=\"text-gray\" _v-6c5946b8=\"\">The days when to share for this account.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<div class=\"form-group input-group\" _v-6c5946b8=\"\">\n\t\t\t\t\t<button-checkbox v-for=\"( data, label ) in daysObject\" :key=\"label\" :value=\"data.value\" :label=\"label\" :checked=\"data.checked\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" _v-6c5946b8=\"\"></button-checkbox>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule time -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-6c5946b8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<b _v-6c5946b8=\"\">Fixed Schedule Time</b>\n\t\t\t\t<p class=\"text-gray\" _v-6c5946b8=\"\">The time at witch to share for this account.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-6c5946b8=\"\">\n\t\t\t\t\t<div class=\"input-group\" v-for=\"( time, index ) in schedule.interval_f.time\" _v-6c5946b8=\"\">\n\t\t\t\t\t\t<vue-timepicker :minute-interval=\"5\" class=\"timepicker-style-fix\" :value=\"getTime( index )\" @change=\"syncTime( $event, index )\" hide-clear-button=\"\" _v-6c5946b8=\"\"></vue-timepicker>\n\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn\" v-if=\"schedule.interval_f.time.length > 1\" @click=\"rmvTime( index )\" _v-6c5946b8=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-minus\" _v-6c5946b8=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t\t<button class=\"btn btn-success input-group-btn\" v-if=\"index == schedule.interval_f.time.length - 1\" @click=\"addTime()\" _v-6c5946b8=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-plus\" _v-6c5946b8=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Recurring Schedule Interval -->\n\t\t<div class=\"columns py-2 rop-control\" v-else=\"\" _v-6c5946b8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<b _v-6c5946b8=\"\">Recurring Schedule Interval</b>\n\t\t\t\t<p class=\"text-gray\" _v-6c5946b8=\"\">A recurring interval to use for sharing. Once every 'X' hours.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-6c5946b8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-6c5946b8=\"\">\n\t\t\t\t\t<counter-input id=\"interval_r\" :value.sync=\"schedule.interval_r\" _v-6c5946b8=\"\"></counter-input>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Upsell -->\n\t\t<div class=\"columns py-2\" v-if=\"license < 1\" _v-6c5946b8=\"\">\n\t\t\t<div class=\"column text-center\" _v-6c5946b8=\"\">\n\t\t\t\t<p class=\"upsell\" _v-6c5946b8=\"\"><i class=\"fa fa-lock\" _v-6c5946b8=\"\"></i> The Custom Schedule is available only in the Business version.</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-6c5946b8=\"\"></span>\n\t</div>\n";
 
 /***/ }),
-/* 257 */
+/* 260 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"tab-view\" _v-2c842a80=\"\">\n\t\t<div class=\"panel-body\" _v-2c842a80=\"\">\n\t\t\t<div class=\"d-inline-block mt-2 column col-12\" _v-2c842a80=\"\">\n\t\t\t\t<p class=\"text-gray\" _v-2c842a80=\"\"><i class=\"fa fa-info-circle\" _v-2c842a80=\"\"></i> Each <b _v-2c842a80=\"\">account</b> can have it's own options for sharing, on the left you can see the\n\t\t\t\t\tcurrent selected account and network, bellow are the options for the account.\n\t\t\t\t\tDon't forget to save after each change and remember, you can always reset an account to the network\n\t\t\t\t\tdefaults.\n\t\t\t\t</p>\n\t\t\t</div>\n\t\t\t<empty-active-accounts v-if=\"accountsCount === 0\" _v-2c842a80=\"\"></empty-active-accounts>\n\t\t\t<div class=\"container\" v-if=\"accountsCount > 0\" _v-2c842a80=\"\">\n\t\t\t\t\n\t\t\t\t<div class=\"columns\" _v-2c842a80=\"\">\n\t\t\t\t\t<div class=\"column col-3 col-sm-12 col-md-12 col-xl-3 col-lg-3 col-xs-12 col-rop-selector-accounts\" _v-2c842a80=\"\">\n\t\t\t\t\t\t<span class=\"divider\" _v-2c842a80=\"\"></span>\n\t\t\t\t\t\t<div v-for=\"( account, id ) in active_accounts\" _v-2c842a80=\"\">\n\t\t\t\t\t\t\t<div class=\"rop-selector-account-container\" v-bind:class=\"{active: selected_account===id}\" @click=\"setActiveAccount(id)\" _v-2c842a80=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"tile tile-centered rop-account\" _v-2c842a80=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"tile-icon\" _v-2c842a80=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"icon_box\" :class=\" (account.img ? 'has_image' : 'no-image' ) + ' ' +account.service \" _v-2c842a80=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<img class=\"service_account_image\" :src=\"account.img\" v-if=\"account.img\" _v-2c842a80=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"fa  \" :class=\"getIcon(account)\" aria-hidden=\"true\" _v-2c842a80=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t<div class=\"tile-content\" _v-2c842a80=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<p class=\"rop-account-name\" _v-2c842a80=\"\">{{account.user}}</p>\n\t\t\t\t\t\t\t\t\t\t\t<strong class=\"rop-service-name\" _v-2c842a80=\"\">{{account.service}}</strong>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-2c842a80=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-9 col-sm-12  col-md-12  col-xl-9 col-lg-9 col-xs-12\" :class=\"'rop-tab-state-'+is_loading\" _v-2c842a80=\"\">\n\t\t\t\t\t\t<component :is=\"type\" :account_id=\"selected_account\" :license=\"license\" _v-2c842a80=\"\"></component>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\" _v-2c842a80=\"\">\n\t\t\t<div class=\"panel-actions text-right\" v-if=\"allow_footer\" _v-2c842a80=\"\">\n\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-2c842a80=\"\"><i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-2c842a80=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-2c842a80=\"\"></i> Reset {{component_label}} for\n\t\t\t\t\t<b _v-2c842a80=\"\">{{active_account_name}}</b>\n\t\t\t\t</button>\n\t\t\t\t<button class=\"btn btn-primary\" @click=\"saveAccountData()\" _v-2c842a80=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-2c842a80=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-2c842a80=\"\"></i> Save {{component_label}}\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 258 */
+/* 261 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(259)
-__vue_template__ = __webpack_require__(265)
+__vue_script__ = __webpack_require__(262)
+__vue_template__ = __webpack_require__(268)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -36006,7 +36100,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 259 */
+/* 262 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36016,7 +36110,7 @@ var _keys = __webpack_require__(3);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _queueCard = __webpack_require__(260);
+var _queueCard = __webpack_require__(263);
 
 var _queueCard2 = _interopRequireDefault(_queueCard);
 
@@ -36137,13 +36231,13 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 260 */
+/* 263 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(261)
-__vue_script__ = __webpack_require__(263)
-__vue_template__ = __webpack_require__(264)
+__webpack_require__(264)
+__vue_script__ = __webpack_require__(266)
+__vue_template__ = __webpack_require__(267)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -36160,13 +36254,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 261 */
+/* 264 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(262);
+var content = __webpack_require__(265);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -36186,7 +36280,7 @@ if(false) {
 }
 
 /***/ }),
-/* 262 */
+/* 265 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -36200,7 +36294,7 @@ exports.push([module.i, "\n\t.fa[_v-26d4e7c0] {\n\t\tbackground: transparent;\n\
 
 
 /***/ }),
-/* 263 */
+/* 266 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36513,25 +36607,25 @@ module.exports = {
 };
 
 /***/ }),
-/* 264 */
+/* 267 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"card\" _v-26d4e7c0=\"\">\n\t\t<div class=\"columns\" _v-26d4e7c0=\"\">\n\t\t\t<div class=\"column col-sm-12 col-justified\" _v-26d4e7c0=\"\">\n\t\t\t\t<div class=\"columns\" _v-26d4e7c0=\"\">\n\t\t\t\t\t<div class=\"column\" _v-26d4e7c0=\"\">\n\t\t\t\t\t\t<p class=\"text-gray text-left \" _v-26d4e7c0=\"\"><i class=\"fa fa-clock-o\" _v-26d4e7c0=\"\"></i> {{card_data.date}} <b _v-26d4e7c0=\"\"><i class=\"fa fa-at\" _v-26d4e7c0=\"\"></i></b> <i class=\"service fa\" :class=\"iconClass( card_data.account_id )\" _v-26d4e7c0=\"\"></i>\n\t\t\t\t\t\t\t{{getAccountName(card_data.account_id)}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-if=\"!edit\" _v-26d4e7c0=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-26d4e7c0=\"\">\n\t\t\t\t\t\t<p v-html=\"hashtags( content.content )\" _v-26d4e7c0=\"\"></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"form-group columns\" v-if=\"edit\" _v-26d4e7c0=\"\">\n\t\t\t\t\t<div class=\"column col-12\" v-if=\"content.post_with_image\" _v-26d4e7c0=\"\">\n\t\t\t\t\t\t<label class=\"form-label\" for=\"image\" _v-26d4e7c0=\"\">Image</label>\n\t\t\t\t\t\t<div class=\"input-group\" _v-26d4e7c0=\"\">\n\t\t\t\t\t\t\t<span class=\"input-group-addon\" _v-26d4e7c0=\"\"><i class=\"fa fa-file-image-o\" _v-26d4e7c0=\"\"></i></span>\n\t\t\t\t\t\t\t<input id=\"image\" type=\"text\" class=\"form-input\" :value=\"content.post_image\" readonly=\"\" _v-26d4e7c0=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary input-group-btn tooltip\" @click=\"uploadImage\" data-tooltip=\"Upload\" _v-26d4e7c0=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-upload\" aria-hidden=\"true\" _v-26d4e7c0=\"\"></i>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn tooltip\" @click=\"removeImage\" data-tooltip=\"Remove\" _v-26d4e7c0=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-remove\" aria-hidden=\"true\" _v-26d4e7c0=\"\"></i>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-12\" _v-26d4e7c0=\"\">\n\t\t\t\t\t\t<label class=\"form-label\" for=\"content\" _v-26d4e7c0=\"\">Content</label>\n\t\t\t\t\t\t<textarea class=\"form-input\" id=\"content\" placeholder=\"Textarea\" rows=\"3\" @keyup=\"checkCount\" _v-26d4e7c0=\"\">{{content.content}}</textarea>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns col-justified\" v-if=\"!edit\" _v-26d4e7c0=\"\">\n\t\t\t\t\t<div class=\"column col-3\" _v-26d4e7c0=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-warning tooltip   tooltip-bottom \" @click=\"skipPost(card_data.account_id, card_data.post_id)\" data-tooltip=\"Reschedule this post.\" :disabled=\" ! enabled\" _v-26d4e7c0=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'skip'\" _v-26d4e7c0=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-step-forward\" v-else=\"\" aria-hidden=\"true\" _v-26d4e7c0=\"\"></i>\n\t\t\t\t\t\t\tSkip\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-26d4e7c0=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-danger tooltip     tooltip-bottom  \" data-tooltip=\"Ban this post from sharing in the future.\" @click=\"blockPost(card_data.account_id, card_data.post_id)\" :disabled=\" ! enabled\" _v-26d4e7c0=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'block'\" _v-26d4e7c0=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-ban\" aria-hidden=\"true\" v-else=\"\" _v-26d4e7c0=\"\"></i>\n\t\t\t\t\t\t\tBlock\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-26d4e7c0=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-primary\" @click=\"toggleEditState\" v-if=\"!edit\" :disabled=\" ! enabled\" _v-26d4e7c0=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-pencil\" aria-hidden=\"true\" _v-26d4e7c0=\"\"></i> Edit\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3 col-ml-auto text-right\" _v-26d4e7c0=\"\">\n\t\t\t\t\t\t<p class=\"m-0\" _v-26d4e7c0=\"\">\n\t\t\t\t\t\t\t<b _v-26d4e7c0=\"\">Link:</b>\n\t\t\t\t\t\t\t<a :href=\"content.post_url\" target=\"_blank\" class=\"tooltip\" :data-tooltip=\"'Link shortned using ' + content.short_url_service +' service'\" _v-26d4e7c0=\"\">\n\t\t\t\t\t\t\t\t{{'{' + content.short_url_service + '}'}}</a>\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-else=\"\" _v-26d4e7c0=\"\">\n\t\t\t\t\t<div class=\"column col-3\" _v-26d4e7c0=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-success\" @click=\"saveChanges(card_data.account_id, card_data.post_id)\" v-if=\"edit\" :disabled=\" ! enabled\" _v-26d4e7c0=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'edit'\" _v-26d4e7c0=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-check\" aria-hidden=\"true\" v-else=\"\" _v-26d4e7c0=\"\"></i>\n\t\t\t\t\t\t\tSave\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-26d4e7c0=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-warning\" @click=\"cancelChanges\" v-if=\"edit\" :disabled=\" ! enabled\" _v-26d4e7c0=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-times\" aria-hidden=\"true\" _v-26d4e7c0=\"\"></i>\n\t\t\t\t\t\t\tCancel\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"column col-4 col-sm-12 vertical-align\" v-if=\"!edit\" _v-26d4e7c0=\"\">\n\t\t\t\t<div v-if=\"content.post_with_image\" _v-26d4e7c0=\"\">\n\t\t\t\t\t<figure class=\"figure\" v-if=\"content.post_image !== ''\" _v-26d4e7c0=\"\">\n\t\t\t\t\t\t<img :src=\"content.post_image\" class=\"img-fit-cover img-responsive\" _v-26d4e7c0=\"\">\n\t\t\t\t\t</figure>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\t<div class=\"rop-image-placeholder\" v-else=\"\" _v-26d4e7c0=\"\">\n\t\t\t\t\t<summary _v-26d4e7c0=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-26d4e7c0=\"\"></i>\n\t\t\t\t\t\tNo Image\n\t\t\t\t\t</summary>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 265 */
+/* 268 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\" :class=\"'rop-tab-state-'+is_loading\">\n\t\t\t<!-- When sharing is not started -->\n\t\t\t<div class=\"columns\" v-if=\"! start_status\">\n\t\t\t\t<div class=\"column col-12 text-center empty-container\">\n\t\t\t\t\t<div class=\"empty-icon\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t\t<p class=\"empty-title h5\">Sharing is not started!</p>\n\t\t\t\t\t<p class=\"empty-subtitle\">You need to start sharing in order to see any posts in the queue.</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t\n\t\t\t<!-- When sharing is started and we have items in Q. -->\n\t\t\t<div v-else-if=\"start_status && queueCount > 0 \">\n\t\t\t\t\n\t\t\t\t<!-- When sharing is started but we don't have the business plan. -->\n\t\t\t\t<!-- Upsell -->\n\t\t\t\t<div class=\"columns py-2\" v-if=\"! is_business\">\n\t\t\t\t\t<div class=\"column text-center\">\n\t\t\t\t\t\t<p class=\"upsell\"><i class=\"fa fa-lock\"></i> You ca edit the posts from the queue only the Business version of the\n\t\t\t\t\t\t\tplugin. View more details here.</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<!-- When sharing is started but we  have the business plan. -->\n\t\t\t\t<div class=\"d-inline-block mt-2 column col-12\">\n\t\t\t\t\t<p class=\"text-gray info-paragraph\"><i class=\"fa fa-info-circle\"></i> You can choose to edit any of the post, skip the sharing or block a specific one from sharing in the future.</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<!-- When sharing is started there is nothing in the Q. -->\n\t\t\t<div class=\"empty\" v-else-if=\"start_status && queueCount === 0\">\n\t\t\t\t<div class=\"empty-icon\">\n\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\"></i>\n\t\t\t\t</div>\n\t\t\t\t<p class=\"empty-title h5\">No queued posts!</p>\n\t\t\t\t<p class=\"empty-subtitle\">Check if you have at least an <b>\"Active account\"</b>, what posts and pages\n\t\t\t\t\tare selected in <b>\"General Settings\"</b> and if a <b>\"Schedule\"</b> is defined.</p>\n\t\t\t</div>\n\t\t\t<div class=\"columns\" v-if=\"start_status && queueCount > 0\">\n\t\t\t\t<div class=\"column col-12 text-left\" v-for=\" (data, index) in queue \">\n\t\t\t\t\t<queue-card :card_data=\"data.post_data\" :id=\"index\" :enabled=\"is_business\"/>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer text-rightcade\">\n\t\t\t<button class=\"btn btn-secondary\" @click=\"refreshQueue(true)\">\n\t\t\t\t\n\t\t\t\t<i class=\"fa fa-refresh\" v-if=\"!is_loading\"></i>\n\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\tRefresh Queue\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 266 */
+/* 269 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(267)
-__vue_script__ = __webpack_require__(269)
-__vue_template__ = __webpack_require__(272)
+__webpack_require__(270)
+__vue_script__ = __webpack_require__(272)
+__vue_template__ = __webpack_require__(275)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -36548,13 +36642,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 267 */
+/* 270 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(268);
+var content = __webpack_require__(271);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -36574,7 +36668,7 @@ if(false) {
 }
 
 /***/ }),
-/* 268 */
+/* 271 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -36588,7 +36682,7 @@ exports.push([module.i, "\n\t#rop_core .toast.log-toast p[_v-53f1df5b] {\n\t\tma
 
 
 /***/ }),
-/* 269 */
+/* 272 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36715,7 +36809,7 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 270 */
+/* 273 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -36743,256 +36837,256 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 271 */
+/* 274 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
-	"./af": 34,
-	"./af.js": 34,
-	"./ar": 35,
-	"./ar-dz": 36,
-	"./ar-dz.js": 36,
-	"./ar-kw": 37,
-	"./ar-kw.js": 37,
-	"./ar-ly": 38,
-	"./ar-ly.js": 38,
-	"./ar-ma": 39,
-	"./ar-ma.js": 39,
-	"./ar-sa": 40,
-	"./ar-sa.js": 40,
-	"./ar-tn": 41,
-	"./ar-tn.js": 41,
-	"./ar.js": 35,
-	"./az": 42,
-	"./az.js": 42,
-	"./be": 43,
-	"./be.js": 43,
-	"./bg": 44,
-	"./bg.js": 44,
-	"./bm": 45,
-	"./bm.js": 45,
-	"./bn": 46,
-	"./bn.js": 46,
-	"./bo": 47,
-	"./bo.js": 47,
-	"./br": 48,
-	"./br.js": 48,
-	"./bs": 49,
-	"./bs.js": 49,
-	"./ca": 50,
-	"./ca.js": 50,
-	"./cs": 51,
-	"./cs.js": 51,
-	"./cv": 52,
-	"./cv.js": 52,
-	"./cy": 53,
-	"./cy.js": 53,
-	"./da": 54,
-	"./da.js": 54,
-	"./de": 55,
-	"./de-at": 56,
-	"./de-at.js": 56,
-	"./de-ch": 57,
-	"./de-ch.js": 57,
-	"./de.js": 55,
-	"./dv": 58,
-	"./dv.js": 58,
-	"./el": 59,
-	"./el.js": 59,
-	"./en-au": 60,
-	"./en-au.js": 60,
-	"./en-ca": 61,
-	"./en-ca.js": 61,
-	"./en-gb": 62,
-	"./en-gb.js": 62,
-	"./en-ie": 63,
-	"./en-ie.js": 63,
-	"./en-il": 64,
-	"./en-il.js": 64,
-	"./en-nz": 65,
-	"./en-nz.js": 65,
-	"./eo": 66,
-	"./eo.js": 66,
-	"./es": 67,
-	"./es-do": 68,
-	"./es-do.js": 68,
-	"./es-us": 69,
-	"./es-us.js": 69,
-	"./es.js": 67,
-	"./et": 70,
-	"./et.js": 70,
-	"./eu": 71,
-	"./eu.js": 71,
-	"./fa": 72,
-	"./fa.js": 72,
-	"./fi": 73,
-	"./fi.js": 73,
-	"./fo": 74,
-	"./fo.js": 74,
-	"./fr": 75,
-	"./fr-ca": 76,
-	"./fr-ca.js": 76,
-	"./fr-ch": 77,
-	"./fr-ch.js": 77,
-	"./fr.js": 75,
-	"./fy": 78,
-	"./fy.js": 78,
-	"./gd": 79,
-	"./gd.js": 79,
-	"./gl": 80,
-	"./gl.js": 80,
-	"./gom-latn": 81,
-	"./gom-latn.js": 81,
-	"./gu": 82,
-	"./gu.js": 82,
-	"./he": 83,
-	"./he.js": 83,
-	"./hi": 84,
-	"./hi.js": 84,
-	"./hr": 85,
-	"./hr.js": 85,
-	"./hu": 86,
-	"./hu.js": 86,
-	"./hy-am": 87,
-	"./hy-am.js": 87,
-	"./id": 88,
-	"./id.js": 88,
-	"./is": 89,
-	"./is.js": 89,
-	"./it": 90,
-	"./it.js": 90,
-	"./ja": 91,
-	"./ja.js": 91,
-	"./jv": 92,
-	"./jv.js": 92,
-	"./ka": 93,
-	"./ka.js": 93,
-	"./kk": 94,
-	"./kk.js": 94,
-	"./km": 95,
-	"./km.js": 95,
-	"./kn": 96,
-	"./kn.js": 96,
-	"./ko": 97,
-	"./ko.js": 97,
-	"./ky": 98,
-	"./ky.js": 98,
-	"./lb": 99,
-	"./lb.js": 99,
-	"./lo": 100,
-	"./lo.js": 100,
-	"./lt": 101,
-	"./lt.js": 101,
-	"./lv": 102,
-	"./lv.js": 102,
-	"./me": 103,
-	"./me.js": 103,
-	"./mi": 104,
-	"./mi.js": 104,
-	"./mk": 105,
-	"./mk.js": 105,
-	"./ml": 106,
-	"./ml.js": 106,
-	"./mn": 107,
-	"./mn.js": 107,
-	"./mr": 108,
-	"./mr.js": 108,
-	"./ms": 109,
-	"./ms-my": 110,
-	"./ms-my.js": 110,
-	"./ms.js": 109,
-	"./mt": 111,
-	"./mt.js": 111,
-	"./my": 112,
-	"./my.js": 112,
-	"./nb": 113,
-	"./nb.js": 113,
-	"./ne": 114,
-	"./ne.js": 114,
-	"./nl": 115,
-	"./nl-be": 116,
-	"./nl-be.js": 116,
-	"./nl.js": 115,
-	"./nn": 117,
-	"./nn.js": 117,
-	"./pa-in": 118,
-	"./pa-in.js": 118,
-	"./pl": 119,
-	"./pl.js": 119,
-	"./pt": 120,
-	"./pt-br": 121,
-	"./pt-br.js": 121,
-	"./pt.js": 120,
-	"./ro": 122,
-	"./ro.js": 122,
-	"./ru": 123,
-	"./ru.js": 123,
-	"./sd": 124,
-	"./sd.js": 124,
-	"./se": 125,
-	"./se.js": 125,
-	"./si": 126,
-	"./si.js": 126,
-	"./sk": 127,
-	"./sk.js": 127,
-	"./sl": 128,
-	"./sl.js": 128,
-	"./sq": 129,
-	"./sq.js": 129,
-	"./sr": 130,
-	"./sr-cyrl": 131,
-	"./sr-cyrl.js": 131,
-	"./sr.js": 130,
-	"./ss": 132,
-	"./ss.js": 132,
-	"./sv": 133,
-	"./sv.js": 133,
-	"./sw": 134,
-	"./sw.js": 134,
-	"./ta": 135,
-	"./ta.js": 135,
-	"./te": 136,
-	"./te.js": 136,
-	"./tet": 137,
-	"./tet.js": 137,
-	"./tg": 138,
-	"./tg.js": 138,
-	"./th": 139,
-	"./th.js": 139,
-	"./tl-ph": 140,
-	"./tl-ph.js": 140,
-	"./tlh": 141,
-	"./tlh.js": 141,
-	"./tr": 142,
-	"./tr.js": 142,
-	"./tzl": 143,
-	"./tzl.js": 143,
-	"./tzm": 144,
-	"./tzm-latn": 145,
-	"./tzm-latn.js": 145,
-	"./tzm.js": 144,
-	"./ug-cn": 146,
-	"./ug-cn.js": 146,
-	"./uk": 147,
-	"./uk.js": 147,
-	"./ur": 148,
-	"./ur.js": 148,
-	"./uz": 149,
-	"./uz-latn": 150,
-	"./uz-latn.js": 150,
-	"./uz.js": 149,
-	"./vi": 151,
-	"./vi.js": 151,
-	"./x-pseudo": 152,
-	"./x-pseudo.js": 152,
-	"./yo": 153,
-	"./yo.js": 153,
-	"./zh-cn": 154,
-	"./zh-cn.js": 154,
-	"./zh-hk": 155,
-	"./zh-hk.js": 155,
-	"./zh-tw": 156,
-	"./zh-tw.js": 156
+	"./af": 36,
+	"./af.js": 36,
+	"./ar": 37,
+	"./ar-dz": 38,
+	"./ar-dz.js": 38,
+	"./ar-kw": 39,
+	"./ar-kw.js": 39,
+	"./ar-ly": 40,
+	"./ar-ly.js": 40,
+	"./ar-ma": 41,
+	"./ar-ma.js": 41,
+	"./ar-sa": 42,
+	"./ar-sa.js": 42,
+	"./ar-tn": 43,
+	"./ar-tn.js": 43,
+	"./ar.js": 37,
+	"./az": 44,
+	"./az.js": 44,
+	"./be": 45,
+	"./be.js": 45,
+	"./bg": 46,
+	"./bg.js": 46,
+	"./bm": 47,
+	"./bm.js": 47,
+	"./bn": 48,
+	"./bn.js": 48,
+	"./bo": 49,
+	"./bo.js": 49,
+	"./br": 50,
+	"./br.js": 50,
+	"./bs": 51,
+	"./bs.js": 51,
+	"./ca": 52,
+	"./ca.js": 52,
+	"./cs": 53,
+	"./cs.js": 53,
+	"./cv": 54,
+	"./cv.js": 54,
+	"./cy": 55,
+	"./cy.js": 55,
+	"./da": 56,
+	"./da.js": 56,
+	"./de": 57,
+	"./de-at": 58,
+	"./de-at.js": 58,
+	"./de-ch": 59,
+	"./de-ch.js": 59,
+	"./de.js": 57,
+	"./dv": 60,
+	"./dv.js": 60,
+	"./el": 61,
+	"./el.js": 61,
+	"./en-au": 62,
+	"./en-au.js": 62,
+	"./en-ca": 63,
+	"./en-ca.js": 63,
+	"./en-gb": 64,
+	"./en-gb.js": 64,
+	"./en-ie": 65,
+	"./en-ie.js": 65,
+	"./en-il": 66,
+	"./en-il.js": 66,
+	"./en-nz": 67,
+	"./en-nz.js": 67,
+	"./eo": 68,
+	"./eo.js": 68,
+	"./es": 69,
+	"./es-do": 70,
+	"./es-do.js": 70,
+	"./es-us": 71,
+	"./es-us.js": 71,
+	"./es.js": 69,
+	"./et": 72,
+	"./et.js": 72,
+	"./eu": 73,
+	"./eu.js": 73,
+	"./fa": 74,
+	"./fa.js": 74,
+	"./fi": 75,
+	"./fi.js": 75,
+	"./fo": 76,
+	"./fo.js": 76,
+	"./fr": 77,
+	"./fr-ca": 78,
+	"./fr-ca.js": 78,
+	"./fr-ch": 79,
+	"./fr-ch.js": 79,
+	"./fr.js": 77,
+	"./fy": 80,
+	"./fy.js": 80,
+	"./gd": 81,
+	"./gd.js": 81,
+	"./gl": 82,
+	"./gl.js": 82,
+	"./gom-latn": 83,
+	"./gom-latn.js": 83,
+	"./gu": 84,
+	"./gu.js": 84,
+	"./he": 85,
+	"./he.js": 85,
+	"./hi": 86,
+	"./hi.js": 86,
+	"./hr": 87,
+	"./hr.js": 87,
+	"./hu": 88,
+	"./hu.js": 88,
+	"./hy-am": 89,
+	"./hy-am.js": 89,
+	"./id": 90,
+	"./id.js": 90,
+	"./is": 91,
+	"./is.js": 91,
+	"./it": 92,
+	"./it.js": 92,
+	"./ja": 93,
+	"./ja.js": 93,
+	"./jv": 94,
+	"./jv.js": 94,
+	"./ka": 95,
+	"./ka.js": 95,
+	"./kk": 96,
+	"./kk.js": 96,
+	"./km": 97,
+	"./km.js": 97,
+	"./kn": 98,
+	"./kn.js": 98,
+	"./ko": 99,
+	"./ko.js": 99,
+	"./ky": 100,
+	"./ky.js": 100,
+	"./lb": 101,
+	"./lb.js": 101,
+	"./lo": 102,
+	"./lo.js": 102,
+	"./lt": 103,
+	"./lt.js": 103,
+	"./lv": 104,
+	"./lv.js": 104,
+	"./me": 105,
+	"./me.js": 105,
+	"./mi": 106,
+	"./mi.js": 106,
+	"./mk": 107,
+	"./mk.js": 107,
+	"./ml": 108,
+	"./ml.js": 108,
+	"./mn": 109,
+	"./mn.js": 109,
+	"./mr": 110,
+	"./mr.js": 110,
+	"./ms": 111,
+	"./ms-my": 112,
+	"./ms-my.js": 112,
+	"./ms.js": 111,
+	"./mt": 113,
+	"./mt.js": 113,
+	"./my": 114,
+	"./my.js": 114,
+	"./nb": 115,
+	"./nb.js": 115,
+	"./ne": 116,
+	"./ne.js": 116,
+	"./nl": 117,
+	"./nl-be": 118,
+	"./nl-be.js": 118,
+	"./nl.js": 117,
+	"./nn": 119,
+	"./nn.js": 119,
+	"./pa-in": 120,
+	"./pa-in.js": 120,
+	"./pl": 121,
+	"./pl.js": 121,
+	"./pt": 122,
+	"./pt-br": 123,
+	"./pt-br.js": 123,
+	"./pt.js": 122,
+	"./ro": 124,
+	"./ro.js": 124,
+	"./ru": 125,
+	"./ru.js": 125,
+	"./sd": 126,
+	"./sd.js": 126,
+	"./se": 127,
+	"./se.js": 127,
+	"./si": 128,
+	"./si.js": 128,
+	"./sk": 129,
+	"./sk.js": 129,
+	"./sl": 130,
+	"./sl.js": 130,
+	"./sq": 131,
+	"./sq.js": 131,
+	"./sr": 132,
+	"./sr-cyrl": 133,
+	"./sr-cyrl.js": 133,
+	"./sr.js": 132,
+	"./ss": 134,
+	"./ss.js": 134,
+	"./sv": 135,
+	"./sv.js": 135,
+	"./sw": 136,
+	"./sw.js": 136,
+	"./ta": 137,
+	"./ta.js": 137,
+	"./te": 138,
+	"./te.js": 138,
+	"./tet": 139,
+	"./tet.js": 139,
+	"./tg": 140,
+	"./tg.js": 140,
+	"./th": 141,
+	"./th.js": 141,
+	"./tl-ph": 142,
+	"./tl-ph.js": 142,
+	"./tlh": 143,
+	"./tlh.js": 143,
+	"./tr": 144,
+	"./tr.js": 144,
+	"./tzl": 145,
+	"./tzl.js": 145,
+	"./tzm": 146,
+	"./tzm-latn": 147,
+	"./tzm-latn.js": 147,
+	"./tzm.js": 146,
+	"./ug-cn": 148,
+	"./ug-cn.js": 148,
+	"./uk": 149,
+	"./uk.js": 149,
+	"./ur": 150,
+	"./ur.js": 150,
+	"./uz": 151,
+	"./uz-latn": 152,
+	"./uz-latn.js": 152,
+	"./uz.js": 151,
+	"./vi": 153,
+	"./vi.js": 153,
+	"./x-pseudo": 154,
+	"./x-pseudo.js": 154,
+	"./yo": 155,
+	"./yo.js": 155,
+	"./zh-cn": 156,
+	"./zh-cn.js": 156,
+	"./zh-hk": 157,
+	"./zh-hk.js": 157,
+	"./zh-tw": 158,
+	"./zh-tw.js": 158
 };
 function webpackContext(req) {
 	return __webpack_require__(webpackContextResolve(req));
@@ -37008,22 +37102,22 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 271;
+webpackContext.id = 274;
 
 /***/ }),
-/* 272 */
+/* 275 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"tab-view\" _v-53f1df5b=\"\">\n\t\t<div class=\"panel-body\" _v-53f1df5b=\"\">\n\t\t\t<div class=\" columns mt-2\" v-if=\"logs_no > 0\" _v-53f1df5b=\"\">\n\t\t\t\t<div class=\"column  col-12 text-right \" _v-53f1df5b=\"\">\n\t\t\t\t\t<button class=\"btn  btn-secondary \" @click=\"getLogs(true)\" _v-53f1df5b=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-remove\" v-if=\"!is_loading\" _v-53f1df5b=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-53f1df5b=\"\"></i>\n\t\t\t\t\t\tClear logs\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"columns\" _v-53f1df5b=\"\">\n\t\t\t\t<div class=\"empty column col-12\" v-if=\"is_loading\" _v-53f1df5b=\"\">\n\t\t\t\t\t<div class=\"empty-icon\" _v-53f1df5b=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-spinner fa-spin\" _v-53f1df5b=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"empty column col-12\" v-else-if=\"logs_no === 0\" _v-53f1df5b=\"\">\n\t\t\t\t\t<div class=\"empty-icon\" _v-53f1df5b=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\" _v-53f1df5b=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t\t<p class=\"empty-title h5\" _v-53f1df5b=\"\">No recent logs!</p>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"column col-12 mt-2\" v-for=\" (data, index) in logs \" v-else-if=\"logs_no >  0\" _v-53f1df5b=\"\">\n\t\t\t\t\t<div class=\"toast log-toast\" :class=\"'toast-' + data.type\" _v-53f1df5b=\"\">\n\t\t\t\t\t\t<small class=\"pull-right text-right\" _v-53f1df5b=\"\">{{formatDate ( data.time ) }}</small>\n\t\t\t\t\t\t<p _v-53f1df5b=\"\">{{data.message}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 273 */
+/* 276 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(274)
-__vue_script__ = __webpack_require__(276)
-__vue_template__ = __webpack_require__(277)
+__webpack_require__(277)
+__vue_script__ = __webpack_require__(279)
+__vue_template__ = __webpack_require__(280)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -37040,13 +37134,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 274 */
+/* 277 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(275);
+var content = __webpack_require__(278);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -37066,7 +37160,7 @@ if(false) {
 }
 
 /***/ }),
-/* 275 */
+/* 278 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -37080,7 +37174,7 @@ exports.push([module.i, "\n\t#rop_core .toast.hidden {\n\t\tdisplay: none;\n\t}\
 
 
 /***/ }),
-/* 276 */
+/* 279 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37135,18 +37229,18 @@ module.exports = {
 };
 
 /***/ }),
-/* 277 */
+/* 280 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"toast\" :class=\"toastTypeClass\" >\n\t\t<button class=\"btn btn-clear float-right\" @click=\"closeThis\"></button>\n\t\t<b><i class=\"fa\" :class=\"iconClass\"></i> {{ toast.title }}</b><br/>\n\t\t<small>{{ toast.message }}</small>\n\t</div>\n";
 
 /***/ }),
-/* 278 */
+/* 281 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(279)
-__vue_template__ = __webpack_require__(284)
+__vue_script__ = __webpack_require__(282)
+__vue_template__ = __webpack_require__(287)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -37163,7 +37257,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 279 */
+/* 282 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37173,7 +37267,7 @@ var _keys = __webpack_require__(3);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _trunc = __webpack_require__(280);
+var _trunc = __webpack_require__(283);
 
 var _trunc2 = _interopRequireDefault(_trunc);
 
@@ -37181,7 +37275,7 @@ var _moment = __webpack_require__(0);
 
 var _moment2 = _interopRequireDefault(_moment);
 
-__webpack_require__(283);
+__webpack_require__(286);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -37245,21 +37339,21 @@ module.exports = {
 };
 
 /***/ }),
-/* 280 */
+/* 283 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(281), __esModule: true };
+module.exports = { "default": __webpack_require__(284), __esModule: true };
 
 /***/ }),
-/* 281 */
+/* 284 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(282);
+__webpack_require__(285);
 module.exports = __webpack_require__(4).Math.trunc;
 
 
 /***/ }),
-/* 282 */
+/* 285 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.34 Math.trunc(x)
@@ -37273,7 +37367,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 283 */
+/* 286 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! Moment Duration Format v2.2.2
@@ -38955,16 +39049,16 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 /***/ }),
-/* 284 */
+/* 287 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"toast toast-success rop-current-time\" v-if=\"isOn && accounts_no > 0\">\n\t\t<span v-if=\"diff_seconds>0\"> <b><i class=\"fa fa-fast-forward\"></i> Next share</b> in</span>\n\t\t<small v-if=\"timediff !== ''\">{{timediff}}</small>\n\t</div>\n";
 
 /***/ }),
-/* 285 */
+/* 288 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div>\n\t\t<div class=\"panel-header\">\n\t\t\t<img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/><h1 class=\"plugin-title d-inline-block\">Revive Old Post</h1><span class=\"powered d-inline-block\"> by <a href=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\n\t\t</div>\n\t\t<div class=\"columns mb-2 text-center sidebar-top\">\n\t\t\t<div class=\"column col-2 pl-0\">\n\t\t\t\t<button class=\"btn btn btn-block\" :class=\"btn_class\"\n\t\t\t\t\t\tdata-tooltip=\"You will need\n\t\t\t\t\t         at least one active account\n\t\t\t\t\t         to start sharing.\"\n\t\t\t\t\t\t@click=\"togglePosting()\" :disabled=\"haveAccounts\">\n\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t\t{{( start_status ? 'Stop' : 'Start' )}} Sharing\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t\t<div class=\"column col-5\"><div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n\t\t\t\tNow: {{ formatedDate }}\n\t\t\t</div></div>\n\t\t\t<div class=\"column col-5 pr-0\">\n\t\t\t\t<countdown :current_time=\"current_time\"/>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns\">\n\t\t\t<div class=\"panel  column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\n\t\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t\t<ul class=\"tab \">\n\t\t\t\t\t\t<li class=\"tab-item\" v-for=\"tab in displayTabs\"\n\t\t\t\t\t\t    :class=\"{ active: tab.isActive }\">\n\t\t\t\t\t\t\t<a href=\"#\" :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\n\t\t\t\t\t\t\t   :data-badge=\"logs_no\"\n\t\t\t\t\t\t\t   @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\n\t\t\t\t\t\t</li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t\t<component :is=\"page.template\" :type=\"page.view\"></component>\n\t\t\t</div>\n\t\t\t\n\t\t\t<div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\n\t\t\t     :class=\"'rop-license-plan-'+license\">\n\t\t\t\t\n\t\t\t\t<div class=\"card rop-container-start\">\n\t\t\t\t\t<div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n\t\t\t\t\t\tNow: {{ formatedDate }}\n\t\t\t\t\t</div>\n\t\t\t\t\t<countdown :current_time=\"current_time\"/>\n\t\t\t\t\t<button class=\"btn\" :class=\"btn_class\"\n\t\t\t\t\t        data-tooltip=\"You will need\n\t\t\t\t\t         at least one active account\n\t\t\t\t\t         to start sharing.\"\n\t\t\t\t\t        @click=\"togglePosting()\" :disabled=\"haveAccounts\">\n\t\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t\t\t{{( start_status ? 'Stop' : 'Start' )}} Sharing\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \">\n\t\t\t\t\t<a href=\"#\" target=\"_blank\">\n\t\t\t\t\t\t<img class=\"img-responsive\"  :src=\"to_pro_upsell\" alt=\"Upgrade to Pro\">\n\t\t\t\t\t</a>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1\">\n\t\t\t\t\t<a href=\"#\" target=\"_blank\">\n\t\t\t\t\t\t<img class=\"img-responsive\"  :src=\"to_business_upsell\" alt=\"Upgrade to Business\">\n\t\t\t\t\t</a>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div>\n\t\t<div class=\"columns panel-header\">\n\t\t\t<div class=\"column header-logo vertical-align\">\n\t\t\t\t<div>\n\t\t\t<img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/><h1 class=\"plugin-title d-inline-block\">Revive Old Post</h1><span class=\"powered d-inline-block\"> by <a href=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"sidebar sidebar-top card rop-container-start\">\n\t\t\t\t<div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n\t\t\t\t\tNow: {{ formatedDate }}\n\t\t\t\t</div>\n\t\t\t\t<countdown :current_time=\"current_time\"/>\n\t\t\t\t<button class=\"btn btn-sm\" :class=\"btn_class\"\n\t\t\t\t\t\tdata-tooltip=\"You will need\n\t\t\t\t\t         at least one active account\n\t\t\t\t\t         to start sharing.\"\n\t\t\t\t\t\t@click=\"togglePosting()\" :disabled=\"haveAccounts\">\n\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t\t{{( start_status ? 'Stop' : 'Start' )}} Sharing\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns\">\n\t\t\t<div class=\"panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\n\t\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t\t<ul class=\"tab \">\n\t\t\t\t\t\t<li class=\"tab-item\" v-for=\"tab in displayTabs\"\n\t\t\t\t\t\t    :class=\"{ active: tab.isActive }\">\n\t\t\t\t\t\t\t<a :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\n\t\t\t\t\t\t\t   :data-badge=\"logs_no\"\n\t\t\t\t\t\t\t   @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\n\t\t\t\t\t\t</li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t\t<component :is=\"page.template\" :type=\"page.view\"></component>\n\t\t\t</div>\n\t\t\t\n\t\t\t<div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\n\t\t\t     :class=\"'rop-license-plan-'+license\">\n\t\t\t\t\n\t\t\t\t<div class=\"card rop-container-start\">\n\t\t\t\t\t<div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n\t\t\t\t\t\tNow: {{ formatedDate }}\n\t\t\t\t\t</div>\n\t\t\t\t\t<countdown :current_time=\"current_time\"/>\n\t\t\t\t\t<button class=\"btn\" :class=\"btn_class\"\n\t\t\t\t\t        data-tooltip=\"You will need\n\t\t\t\t\t         at least one active account\n\t\t\t\t\t         to start sharing.\"\n\t\t\t\t\t        @click=\"togglePosting()\" :disabled=\"haveAccounts\">\n\t\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t\t\t{{( start_status ? 'Stop' : 'Start' )}} Sharing\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \">\n\t\t\t\t\t<a href=\"#\" target=\"_blank\">\n\t\t\t\t\t\t<img class=\"img-responsive\"  :src=\"to_pro_upsell\" alt=\"Upgrade to Pro\">\n\t\t\t\t\t</a>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1\">\n\t\t\t\t\t<a href=\"#\" target=\"_blank\">\n\t\t\t\t\t\t<img class=\"img-responsive\"  :src=\"to_business_upsell\" alt=\"Upgrade to Business\">\n\t\t\t\t\t</a>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ })
 /******/ ]);

@@ -49,6 +49,7 @@
 }
 
 #rop_core .upsell {
+	border-radius: 0.1rem;
 	margin-bottom: 0;
 	padding: 5px 10px;
 	color: #fff;
@@ -78,6 +79,13 @@
 }
 #rop_core .sidebar-top {
 	display: none;
+}
+
+#rop_core .fade-enter-active, #rop_core .fade-leave-active {
+	transition: opacity .2s;
+}
+#rop_core .fade-enter, #rop_core .fade-leave-to {
+	opacity: 0
 }
 
 @media (max-width: 960px) {

@@ -30,10 +30,11 @@
 			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="form-group">
 					<input class="form-input" type="text" v-model="post_format.custom_meta_field"
-					       value="" placeholder=""/>
+						   value="" placeholder=""/>
 				</div>
 			</div>
 		</div>
+
 		<span class="divider"></span>
 
 		<!-- Maximum length of the message( number field ) which holds the maximum

@@ -1,11 +1,17 @@
 <template>
 	<div>
-		<div class="panel-header">
+		<div class="columns panel-header">
+			<div class="column header-logo vertical-align">
+				<div>
 			<img :src="plugin_logo" class="plugin-logo avatar avatar-lg"/><h1 class="plugin-title d-inline-block">Revive Old Post</h1><span class="powered d-inline-block"> by <a href="https://revive.social" target="_blank"><b>Revive.Social</b></a></span>
-		</div>
-		<div class="columns mb-2 text-center sidebar-top">
-			<div class="column col-2 pl-0">
-				<button class="btn btn btn-block" :class="btn_class"
+				</div>
+			</div>
+			<div class="sidebar sidebar-top card rop-container-start">
+				<div class="toast rop-current-time" v-if="formatedDate">
+					Now: {{ formatedDate }}
+				</div>
+				<countdown :current_time="current_time"/>
+				<button class="btn btn-sm" :class="btn_class"
 						data-tooltip="You will need
 					         at least one active account
 					         to start sharing."
@@ -16,20 +22,15 @@
 					{{( start_status ? 'Stop' : 'Start' )}} Sharing
 				</button>
 			</div>
-			<div class="column col-5"><div class="toast rop-current-time" v-if="formatedDate">
-				Now: {{ formatedDate }}
-			</div></div>
-			<div class="column col-5 pr-0">
-				<countdown :current_time="current_time"/>
-			</div>
 		</div>
+
 		<div class="columns">
-			<div class="panel  column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<div class="panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 				<div class="panel-nav" style="padding: 8px;">
 					<ul class="tab ">
 						<li class="tab-item" v-for="tab in displayTabs"
 						    :class="{ active: tab.isActive }">
-							<a href="#" :class=" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' "
+							<a :class=" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' "
 							   :data-badge="logs_no"
 							   @click="switchTab( tab.slug )">{{ tab.name }}</a>
 						</li>

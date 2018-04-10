@@ -299,7 +299,7 @@ class Rop_Global_Settings {
 	 * @return  int
 	 */
 	public function license_type() {
-		return 2;
+//		return 2;
 		$pro_check      = defined( 'ROP_PRO_VERSION' );
 		$product_key    = 'tweet_old_post_pro';
 		$license_status = get_option( $product_key . '_license_status', '' );

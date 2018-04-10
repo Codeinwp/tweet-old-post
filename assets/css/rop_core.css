@@ -927,7 +927,6 @@ a.active {
 	line-height: 1rem;
 	-webkit-transition: all 0.2s ease;
 	transition: all 0.2s ease;
-
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	appearance: none;
@@ -3233,8 +3232,8 @@ a.active {
 }
 
 #rop_core .toast {
-	/* display: block; */
-	/* width: 100%; */
+	display: block;
+	width: 100%;
 	padding: 0.4rem;
 	border: 0.05rem solid #454d5d;
 	border-color: #454d5d;
@@ -4324,9 +4323,6 @@ a.active {
 	margin-bottom: 30px;
 	min-width: 0;
 }
-#rop_core .sidebar-top.card {
-	margin: 0 -0.4rem 0.4rem;
-}
 
 #rop_core .rop-container-start .tooltip::after {
 	white-space: initial;
@@ -4337,10 +4333,6 @@ a.active {
 	margin-bottom: 3px;
 	padding: 2px 10px;
 	font-size: 0.6rem;
-}
-#rop_core .sidebar-top .rop-current-time {
-	padding: 0.25rem 0.4rem;
-	height: 1.6rem;
 }
 
 #rop_core .rop-queue-post .card-top-header.columns {
