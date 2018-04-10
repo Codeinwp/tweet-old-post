@@ -4,7 +4,7 @@
 			<div class="container">
 				<div class="columns" :class="'rop-tab-state-'+is_loading">
 					<div class="column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts">
-						<div class="empty" v-if="accountsCount === 0">
+						<div class="empty mb-2" v-if="accountsCount === 0">
 							<div class="empty-icon">
 								<i class="fa fa-3x fa-user-circle-o"></i>
 							</div>
