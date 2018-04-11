@@ -12,7 +12,7 @@
 /**
  * Rop_Cron_Helper Class
  *
- * @since   8.0.0rc
+ * @since      8.0.0rc
  * @package    Rop
  * @subpackage Rop/includes/admin/helpers
  * @author     ThemeIsle <friends@themeisle.com>
@@ -37,13 +37,7 @@ class Rop_Cron_Helper {
 		if ( ! isset( $schedules['5min'] ) ) {
 			$schedules['5min'] = array(
 				'interval' => 5 * 60,
-				'display'  => __( 'Once every 5 minutes', 'tweet-old-post' ),
-			);
-		}
-		if ( ! isset( $schedules['30min'] ) ) {
-			$schedules['30min'] = array(
-				'interval' => 30 * 60,
-				'display'  => __( 'Once every 30 minutes', 'tweet-old-post' ),
+				'display'  => Rop_I18n::get_labels( 'general.cron_interval' ),
 			);
 		}
 

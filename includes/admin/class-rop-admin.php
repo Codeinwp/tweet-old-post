@@ -46,7 +46,7 @@ class Rop_Admin {
 	 * @since    8.0.0
 	 *
 	 * @param      string $plugin_name The name of this plugin.
-	 * @param      string $version The version of this plugin.
+	 * @param      string $version     The version of this plugin.
 	 */
 	public function __construct( $plugin_name, $version ) {
 
@@ -189,7 +189,7 @@ class Rop_Admin {
 							$logger->info( 'Posting', array( 'extra' => $post_data ) );
 							$service->share( $post_data, $account_data );
 						} catch ( Exception $exception ) {
-							$error_message = sprintf( esc_html__( 'The %1$s service can not be used or was not found', 'tweet-old-post' ), $account_data['service'] );
+							$error_message = sprintf( Rop_I18n::get_labels( 'accounts.service_error' ), $account_data['service'] );
 							$logger->alert_error( $error_message . ' Error: ' . $exception->getTrace() );
 						}
 					}

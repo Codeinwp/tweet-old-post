@@ -86,9 +86,9 @@ class Rop_Api_Response {
 	 */
 	public function __construct() {
 		$this->code    = '403';
-		$this->title   = __( 'An error occurred', 'tweet-old-post' );
+		$this->title   = '';
 		$this->status  = 'error';
-		$this->message = __( 'Requested operation is not allowed. No further action will be taken.', 'tweet-old-post' );
+		$this->message = 'Requested operation is not allowed. No further action will be taken.';
 		$this->silent  = true;
 		$this->data    = array();
 	}
@@ -98,7 +98,9 @@ class Rop_Api_Response {
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
 	 * @param   string $code A new status code to be set.
+	 *
 	 * @return Rop_Api_Response $this
 	 */
 	public function set_code( $code ) {
@@ -106,25 +108,26 @@ class Rop_Api_Response {
 			$this->code = $code;
 			switch ( $code ) {
 				case '200':
-					$this->title  = __( 'Info', 'tweet-old-post' );
+					$this->title  = 'Info';
 					$this->status = 'info';
 					break;
 				case '201':
-					$this->title  = __( 'Everything looks ok', 'tweet-old-post' );
+					$this->title  = 'Everything looks ok';
 					$this->status = 'success';
 					break;
 				case '400':
 				case '401':
-					$this->title  = __( 'Oho! Something happened', 'tweet-old-post' );
+					$this->title  = 'Oho! Something happened';
 					$this->status = 'warning';
 					break;
 				case '403':
 				default: // code 500 assumed
-					$this->title  = __( 'An error occurred', 'tweet-old-post' );
+					$this->title  = 'An error occurred';
 					$this->status = 'error';
 					break;
 			}
 		}
+
 		return $this;
 	}
 
@@ -137,6 +140,7 @@ class Rop_Api_Response {
 	 */
 	public function is_not_silent() {
 		$this->silent = false;
+
 		return $this;
 	}
 
@@ -145,13 +149,16 @@ class Rop_Api_Response {
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
 	 * @param   string $message A new message for the response.
+	 *
 	 * @return Rop_Api_Response $this
 	 */
 	public function set_message( $message ) {
 		if ( isset( $message ) && $message != '' ) {
 			$this->message = $message;
 		}
+
 		return $this;
 	}
 
@@ -160,13 +167,16 @@ class Rop_Api_Response {
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
 	 * @param   array $data The data to be set.
+	 *
 	 * @return Rop_Api_Response $this
 	 */
 	public function set_data( $data = array() ) {
 		if ( ! empty( $data ) ) {
 			$this->data = $data;
 		}
+
 		return $this;
 	}
 

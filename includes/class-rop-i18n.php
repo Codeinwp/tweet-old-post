@@ -79,6 +79,7 @@ class Rop_I18n {
 				'fb_app_id_title'         => __( 'Please add the APP ID from your Facebook app.', 'tweet-old-post' ),
 				'fb_app_secret_title'     => __( 'Please add the APP SECRET from your Facebook app.', 'tweet-old-post' ),
 				'fb_app_desc'             => sprintf( __( 'You can check %1$shere%2$s how you get this details.', 'tweet-old-post' ), '<a href="#" target="_blank">', '</a>' ),
+				'service_error' =>__( 'The %1$s service can not be used or was not found', 'tweet-old-post' )
 			),
 			'settings'    => array(
 				'menu_item'           => __( 'General Settings', 'tweet-old-post' ),
@@ -233,6 +234,7 @@ class Rop_I18n {
 				'multiselect_not_found'  => __( 'Nothing found matching', 'tweet-old-post' ),
 				'next_share'             => __( 'Next share', 'tweet-old-post' ),
 				'sharing_now'            => __( 'Sharing...', 'tweet-old-post' ),
+				'cron_interval'            => __( 'Once every 5 minutes', 'tweet-old-post' ),
 			),
 			'post_editor' => array(
 				'remove_message'      => __( 'Remove Custom Message', 'tweet-old-post' ),
