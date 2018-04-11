@@ -6,7 +6,7 @@
 					<button class="btn  btn-secondary " @click="getLogs(true)">
 						<i class="fa fa-remove" v-if="!is_loading"></i>
 						<i class="fa fa-spinner fa-spin" v-else></i>
-						Clear logs
+						{{labels.clear_btn}}
 					</button>
 				</div>
 			</div>
@@ -20,9 +20,9 @@
 					<div class="empty-icon">
 						<i class="fa fa-3x fa-user-circle-o"></i>
 					</div>
-					<p class="empty-title h5">No recent logs!</p>
+					<p class="empty-title h5">{{labels.no_logs}}</p>
 				</div>
-
+				
 				<div class="column col-12 mt-2" v-for=" (data, index) in logs " v-else-if="logs_no >  0">
 					<div class="toast log-toast" :class="'toast-' + data.type">
 						<small class="pull-right text-right">{{formatDate ( data.time ) }}</small>
@@ -44,6 +44,8 @@
 		data: function () {
 			return {
 				is_loading: false,
+				labels: this.$store.state.labels.logs,
+				upsell_link: ropApiSettings.upsell_link,
 			}
 		},
 		mounted: function () {

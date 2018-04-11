@@ -501,6 +501,7 @@ class Rop_Rest_Api {
 			'exclude_taxonomies'  => $data['exclude_taxonomies'],
 			'selected_posts'      => $data['posts'],
 			'ga_tracking'         => $data['ga_tracking'],
+			'custom_messages'     => $data['custom_messages'],
 		);
 		$settings_model   = new Rop_Settings_Model();
 		$settings_model->save_settings( $general_settings );

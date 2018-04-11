@@ -2,10 +2,7 @@
 	<div class="tab-view">
 		<div class="panel-body">
 			<div class="d-inline-block mt-2 column col-12">
-				<p class="text-gray"><i class="fa fa-info-circle"></i> Each <b>account</b> can have it's own options for sharing, on the left you can see the
-					current selected account and network, bellow are the options for the account.
-					Don't forget to save after each change and remember, you can always reset an account to the network
-					defaults.
+				<p class="text-gray"><i class="fa fa-info-circle"></i> <span v-html="labels.accounts_selector"></span>
 				</p>
 			</div>
 			<empty-active-accounts v-if="accountsCount === 0"></empty-active-accounts>
@@ -17,25 +14,26 @@
 						<div v-for="( account, id ) in active_accounts">
 							<div class="rop-selector-account-container" v-bind:class="{active: selected_account===id}"
 							     @click="setActiveAccount(id)">
-									<div class="tile tile-centered rop-account">
-										<div class="tile-icon">
-											<div class="icon_box"
-											     :class=" (account.img ? 'has_image' : 'no-image' ) + ' ' +account.service ">
-												<img class="service_account_image" :src="account.img"
-												     v-if="account.img"/>
-												<i class="fa  " :class="getIcon(account)" aria-hidden="true"></i>
-											</div>
-										</div>
-										<div class="tile-content">
-											<p class="rop-account-name">{{account.user}}</p>
-											<strong class="rop-service-name">{{account.service}}</strong>
+								<div class="tile tile-centered rop-account">
+									<div class="tile-icon">
+										<div class="icon_box"
+										     :class=" (account.img ? 'has_image' : 'no-image' ) + ' ' +account.service ">
+											<img class="service_account_image" :src="account.img"
+											     v-if="account.img"/>
+											<i class="fa  " :class="getIcon(account)" aria-hidden="true"></i>
 										</div>
 									</div>
+									<div class="tile-content">
+										<p class="rop-account-name">{{account.user}}</p>
+										<strong class="rop-service-name">{{account.service}}</strong>
+									</div>
+								</div>
 							</div>
 							<span class="divider"></span>
 						</div>
 					</div>
-					<div class="column col-9 col-sm-12  col-md-12  col-xl-9 col-lg-9 col-xs-12" :class="'rop-tab-state-'+is_loading">
+					<div class="column col-9 col-sm-12  col-md-12  col-xl-9 col-lg-9 col-xs-12"
+					     :class="'rop-tab-state-'+is_loading">
 						<component :is="type" :account_id="selected_account" :license="license"></component>
 					</div>
 				</div>
@@ -44,13 +42,14 @@
 		<div class="panel-footer">
 			<div class="panel-actions text-right" v-if="allow_footer">
 				<button class="btn btn-secondary" @click="resetAccountData()"><i class="fa fa-ban"
-																				 v-if="!this.is_loading"></i> <i
-						class="fa fa-spinner fa-spin" v-else></i> Reset {{component_label}} for
+				                                                                 v-if="!this.is_loading"></i> <i
+						class="fa fa-spinner fa-spin" v-else></i> {{labels.reset_selector_btn}} {{component_label}}
+					{{labels.for}}
 					<b>{{active_account_name}}</b>
 				</button>
 				<button class="btn btn-primary" @click="saveAccountData()"><i class="fa fa-check"
 				                                                              v-if="!this.is_loading"></i> <i
-						class="fa fa-spinner fa-spin" v-else></i> Save {{component_label}}
+						class="fa fa-spinner fa-spin" v-else></i> {{labels.save_selector_btn}} {{component_label}}
 				</button>
 			</div>
 		</div>
@@ -82,6 +81,8 @@
 				allow_footer: true,
 				license: this.$store.state.licence,
 				action: '',
+				labels: this.$store.state.labels.accounts,
+				upsell_link: ropApiSettings.upsell_link,
 				is_loading: false
 			}
 		},
@@ -254,15 +255,18 @@
 		height: 30px;
 		padding: 5px;
 	}
-	.icon_box.no-image  {
+	
+	.icon_box.no-image {
 		padding: 0;
 	}
+	
 	.icon_box.has_image > .fa {
 		width: 15px;
 		height: 15px;
 		padding: 0;
 		line-height: 15px;
 	}
+	
 	.icon_box.no-image > .fa {
 		font-size: 20px;
 		background: transparent;

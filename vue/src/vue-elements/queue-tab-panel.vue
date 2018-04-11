@@ -1,42 +1,35 @@
 <template>
 	<div class="tab-view">
 		<div class="panel-body" :class="'rop-tab-state-'+is_loading">
-			<!-- When sharing is not started -->
 			<div class="columns" v-if="! start_status">
 				<div class="column col-12 text-center empty-container">
 					<div class="empty-icon">
 						<i class="fa fa-3x fa-info-circle"></i>
 					</div>
-					<p class="empty-title h5">Sharing is not started!</p>
-					<p class="empty-subtitle">You need to start sharing in order to see any posts in the queue.</p>
+					<p class="empty-title h5">{{labels.sharing_not_started}}</p>
+					<p class="empty-subtitle">{{labels.sharing_not_started_desc}}</p>
 				</div>
 			</div>
 			
-			<!-- When sharing is started and we have items in Q. -->
 			<div v-else-if="start_status && queueCount > 0 ">
 				
-				<!-- When sharing is started but we don't have the business plan. -->
-				<!-- Upsell -->
 				<div class="columns py-2" v-if="! is_business">
 					<div class="column text-center">
-						<p class="upsell"><i class="fa fa-lock"></i> You ca edit the posts from the queue only the Business version of the
-							plugin. View more details here.</p>
+						<p class="upsell"><i class="fa fa-lock"></i> <span v-html="labels.biz_only"></span></p>
 					</div>
 				</div>
 				
 				<!-- When sharing is started but we  have the business plan. -->
 				<div class="d-inline-block mt-2 column col-12">
-					<p class="text-gray info-paragraph"><i class="fa fa-info-circle"></i> You can choose to edit any of the post, skip the sharing or block a specific one from sharing in the future.</p>
+					<p class="text-gray info-paragraph"><i class="fa fa-info-circle"></i> {{labels.queue_desc}}</p>
 				</div>
 			</div>
-			<!-- When sharing is started there is nothing in the Q. -->
 			<div class="empty" v-else-if="start_status && queueCount === 0">
 				<div class="empty-icon">
 					<i class="fa fa-3x fa-info-circle"></i>
 				</div>
-				<p class="empty-title h5">No queued posts!</p>
-				<p class="empty-subtitle">Check if you have at least an <b>"Active account"</b>, what posts and pages
-					are selected in <b>"General Settings"</b> and if a <b>"Schedule"</b> is defined.</p>
+				<p class="empty-title h5">{{labels.no_posts}}</p>
+				<p class="empty-subtitle" v-html="labels.no_posts_desc"></p>
 			</div>
 			<div class="columns" v-if="start_status && queueCount > 0">
 				<div class="column col-12 text-left" v-for=" (data, index) in queue ">
@@ -44,12 +37,11 @@
 				</div>
 			</div>
 		</div>
-		<div class="panel-footer text-rightcade">
+		<div class="panel-footer text-rightcade" v-if="start_status">
 			<button class="btn btn-secondary" @click="refreshQueue(true)">
-				
 				<i class="fa fa-refresh" v-if="!is_loading"></i>
 				<i class="fa fa-spinner fa-spin" v-else></i>
-				Refresh Queue
+				{{labels.refresh_btn}}
 			</button>
 		</div>
 	</div>
@@ -76,7 +68,9 @@
 		},
 		data: function () {
 			return {
-				is_loading: false
+				is_loading: false,
+				labels: this.$store.state.labels.queue,
+				upsell_link: ropApiSettings.upsell_link,
 			}
 		},
 		watch: {

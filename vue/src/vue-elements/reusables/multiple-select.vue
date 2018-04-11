@@ -32,7 +32,7 @@
 			<li v-if="has_results">
 				<a href="#">
 					<div class="tile tile-centered">
-						<div class="tile-content"><i>Nothing found matching "{{search}}" ...</i></div>
+						<div class="tile-content"><i>{{labels.multiselect_not_found}}"{{search}}" ...</i></div>
 					</div>
 				</a>
 			</li>
@@ -109,6 +109,8 @@
 				search: '',
 				highlighted: -1,
 				no_results: false,
+				labels: this.$store.state.labels.general,
+				upsell_link: ropApiSettings.upsell_link,
 				magic_flag: false
 			}
 		},
@@ -146,7 +148,7 @@
 				return this.placeHolderText
 			},
 			is_disabled: function () {
-				return ! this.disabled;
+				return !this.disabled;
 			},
 			has_results: function () {
 				let found = 0
@@ -206,7 +208,7 @@
 				return false
 			},
 			addToSelected(index) {
-				if(this.is_disabled){
+				if (this.is_disabled) {
 					return;
 				}
 				let newSelection = this.options[index]
@@ -218,7 +220,7 @@
 				this.changedSelection(this.selected)
 			},
 			removeSelected(index) {
-				if(this.is_disabled){
+				if (this.is_disabled) {
 					return;
 				}
 				this.selected.splice(index, 1)

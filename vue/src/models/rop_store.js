@@ -10,7 +10,7 @@ import VueLogger from 'vuejs-logger'
 
 const logOptions = {
 	// required ['debug', 'info', 'warn', 'error', 'fatal']
-	logLevel: 'info',
+	logLevel: ( ( ropApiSettings.debug === 'yes' ) ? 'info' : 'error' ),
 	// optional : defaults to false if not specified
 	stringifyArguments: false,
 	// optional : defaults to false if not specified
@@ -38,50 +38,51 @@ export default new Vuex.Store( {
 		toast: {
 			type: 'success',
 			show: false,
-			title: 'Title placeholder',
-			message: 'Lorem ipsum content message placeholder. This is the default.'
+			title: '',
+			message: ''
 		},
 		ajaxLoader: false,
 		auth_in_progress: false,
 		displayTabs: [
 			{
-				name: 'Accounts',
+				name: ropApiSettings.labels.accounts.menu_item,
 				slug: 'accounts',
 				view: 'accounts',
 				isActive: true
 			},
 			{
-				name: 'General Settings',
+				name: ropApiSettings.labels.settings.menu_item,
 				slug: 'settings',
 				view: 'settings',
 				isActive: false
 			},
 			{
-				name: 'Post Format',
+				name: ropApiSettings.labels.post_format.menu_item,
 				slug: 'post-format',
 				view: 'accounts-selector',
 				isActive: false
 			},
 			{
-				name: 'Custom Schedule',
+				name: ropApiSettings.labels.schedule.menu_item,
 				slug: 'schedule',
 				view: 'accounts-selector',
 				isActive: false
 			},
 			{
-				name: 'Sharing Queue',
+				name: ropApiSettings.labels.queue.menu_item,
 				slug: 'queue',
 				view: 'queue',
 				isActive: false
 			},
 			{
-				name: 'Logs',
+				name: ropApiSettings.labels.logs.menu_item,
 				slug: 'logs',
 				view: 'logs',
 				isActive: false
 			}
 		],
 		licence: parseInt( ropApiSettings.license_type ),
+		labels: ropApiSettings.labels,
 		availableServices: [],
 		generalSettings: [],
 		authenticatedServices: [],

@@ -1,50 +1,40 @@
 <template>
 	<div>
-		<!-- Post Content - where to fetch the content which will be shared
-			 (dropdown with 4 options ( post_title, post_content, post_content
-			 and title and custom field). If custom field is selected we will
-			 have a text field which users will need to fill in to fetch the
-			 content from that meta key. -->
 		<div class="columns py-2">
 			<div class="column col-6 col-sm-12 vertical-align">
-				<b>Post Content</b>
-				<p class="text-gray">From where to fetch the content which will be shared.</p>
+				<b>{{labels.post_content_title}}</b>
+				<p class="text-gray">{{labels.post_content_desc}}</p>
 			</div>
 			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="form-group">
 					<select class="form-select" v-model="post_format.post_content">
-						<option value="post_title">Post Title</option>
-						<option value="post_content">Post Content</option>
-						<option value="post_title_content">Post Title & Content</option>
-						<option value="custom_field">Custom Field</option>
+						<option value="post_title">{{labels.post_content_option_title}}</option>
+						<option value="post_content">{{labels.post_content_option_content}}</option>
+						<option value="post_title_content">{{labels.post_content_option_title_content}}</option>
+						<option value="custom_field">{{labels.post_content_option_custom_field}}</option>
 					</select>
 				</div>
 			</div>
 		</div>
-		<!-- Custom Meta Field -->
 		<div class="columns py-2" v-if="post_format.post_content === 'custom_field'">
 			<div class="column col-6 col-sm-12 vertical-align">
-				<b>Custom Meta Field</b>
-				<p class="text-gray">Meta field name from which to get the content.</p>
+				<b>{{labels.custom_meta_title}}</b>
+				<p class="text-gray">{{labels.custom_meta_desc}}</p>
 			</div>
 			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="form-group">
 					<input class="form-input" type="text" v-model="post_format.custom_meta_field"
-						   value="" placeholder=""/>
+					       value="" placeholder=""/>
 				</div>
 			</div>
 		</div>
-
+		
 		<span class="divider"></span>
-
-		<!-- Maximum length of the message( number field ) which holds the maximum
-			 number of chars for the shared content. We striping the content, we need
-			 to strip at the last whitespace or dot before reaching the limit, in order
-			 to not trim just half of the word. -->
+		
 		<div class="columns py-2">
 			<div class="column col-6 col-sm-12 vertical-align">
-				<b>Maximum chars</b>
-				<p class="text-gray">Maximum length of the message.</p>
+				<b>{{labels.max_char_title}}</b>
+				<p class="text-gray">{{labels.max_char_desc}}</p>
 			</div>
 			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="form-group">
@@ -54,68 +44,58 @@
 			</div>
 		</div>
 		<span class="divider"></span>
-
-		<!-- Additional text field - text field which will be used by the users to a
-			 custom content before the fetched post content. -->
+		
 		<div class="columns py-2">
 			<div class="column col-6 col-sm-12 vertical-align">
-				<b>Additional text</b>
-				<p class="text-gray">Add custom content to published items.</p>
+				<b>{{labels.add_char_title}}</b>
+				<p class="text-gray">{{labels.add_char_desc}}</p>
 			</div>
 			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="form-group">
 					<textarea class="form-input" v-model="post_format.custom_text"
-						placeholder="Custom content ...">{{post_format.custom_text}}</textarea>
+					          placeholder="">{{post_format.custom_text}}</textarea>
 				</div>
 			</div>
 		</div>
-
-		<!-- Additional text at - dropdown with 2 options, begining or end, having the
-			 option where to add the additional text content. -->
+		
 		<div class="columns py-2">
 			<div class="column col-6 col-sm-12 vertical-align">
-				<p class="text-gray">Where to add the custom text.</p>
+				<p class="text-gray">{{labels.add_pos_title}}</p>
 			</div>
 			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="form-group">
 					<select class="form-select" v-model="post_format.custom_text_pos">
-						<option value="beginning">Beginning</option>
-						<option value="end">End</option>
+						<option value="beginning">{{labels.add_pos_option_start}}</option>
+						<option value="end">{{labels.add_pos_option_end}}</option>
 					</select>
 				</div>
 			</div>
 		</div>
-
-		<!-- Include link - checkbox either we should include the post permalink or not
-			 in the shared content. This is will appended at the end of the content. -->
-        <div class="columns py-2">
-            <div class="column col-6 col-sm-12 vertical-align">
-                <b>Include link</b>
-                <p class="text-gray">Should include the post permalink or not?</p>
-            </div>
-            <div class="column col-6 col-sm-12 vertical-align">
-                <div class="input-group">
-                    <label class="form-checkbox">
-                        <input type="checkbox" v-model="post_format.include_link"/>
-                        <i class="form-icon"></i> Yes
-                    </label>
-                </div>
-            </div>
-        </div>
-		<span class="divider"></span>
-		<!-- Fetch url from custom field - checkbox - either we should fetch the url from
-			 a meta field or not. When checked we will open a text field for entering the
-			 meta key. -->
 		<div class="columns py-2">
 			<div class="column col-6 col-sm-12 vertical-align">
-				<b>Custom field</b>
-				<p class="text-gray">Fetch URL from custom field?</p>
+				<b>{{labels.add_link_title}}</b>
+				<p class="text-gray">{{labels.add_link_desc}}</p>
+			</div>
+			<div class="column col-6 col-sm-12 vertical-align">
+				<div class="input-group">
+					<label class="form-checkbox">
+						<input type="checkbox" v-model="post_format.include_link"/>
+						<i class="form-icon"></i> {{labels.add_link_yes}}
+					</label>
+				</div>
+			</div>
+		</div>
+		<span class="divider"></span>
+		<div class="columns py-2">
+			<div class="column col-6 col-sm-12 vertical-align">
+				<b>{{labels.meta_link_title}}</b>
+				<p class="text-gray">{{labels.meta_link_desc}}</p>
 			</div>
 			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="input-group">
 					<label class="form-checkbox">
 						<input type="checkbox" v-model="post_format.url_from_meta"/>
-						<i class="form-icon"></i> Yes
+						<i class="form-icon"></i> {{labels.meta_link_yes}}
 					</label>
 				</div>
 			</div>
@@ -123,8 +103,8 @@
 		<!-- Custom Field -->
 		<div class="columns py-2" v-if="post_format.url_from_meta">
 			<div class="column col-6 col-sm-12 vertical-align">
-				<b>Custom Field</b>
-				<p class="text-gray">Custom Field from which to get the URL.</p>
+				<b>{{labels.meta_link_name_title}}</b>
+				<p class="text-gray">{{labels.meta_link_name_desc}}</p>
 			</div>
 			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="form-group">
@@ -134,29 +114,24 @@
 			</div>
 		</div>
 		<span class="divider"></span>
-		<!-- Use url shortner ( checkbox ) , either we should use a shortner when adding
-			 the links to the content. When checked we will show a dropdown with the shortners
-			 available and the api keys ( if needed ) for each one. The list of shortners will
-			 be the same as the old version of the plugin. -->
 		<div class="columns py-2">
 			<div class="column col-6 col-sm-12 vertical-align">
-				<b>Use url shortner</b>
-				<p class="text-gray">Should we use a shortner when adding the links to the content?</p>
+				<b>{{labels.use_shortner_title}}</b>
+				<p class="text-gray">{{labels.use_shortner_desc}}</p>
 			</div>
 			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="input-group">
 					<label class="form-checkbox">
 						<input type="checkbox" v-model="post_format.short_url"/>
-						<i class="form-icon"></i> Yes
+						<i class="form-icon"></i> {{labels.use_shortner_yes}}
 					</label>
 				</div>
 			</div>
 		</div>
-		<!-- Shortner Service -->
 		<div class="columns py-2" v-if="post_format.short_url">
 			<div class="column col-6 col-sm-12 vertical-align">
-				<b>URL Shorner Service</b>
-				<p class="text-gray">Which service to use for URL shortening.</p>
+				<b>{{labels.shortner_title}}</b>
+				<p class="text-gray">{{labels.shortner_desc}}</p>
 			</div>
 			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="form-group">
@@ -172,11 +147,13 @@
 				</div>
 			</div>
 		</div>
-
+		
 		<div class="columns py-2" v-if="post_format.short_url" v-for="( credential, key_name ) in shortner_credentials">
 			<div class="column col-6 col-sm-12 vertical-align">
 				<b>{{ key_name | capitalize }}</b>
-				<p class="text-gray">Add the "{{key_name}}" required by the <strong>{{post_format.short_url_service}}</strong> service API.</p>
+				<p class="text-gray">{{labels.shortner_field_desc_start}} "{{key_name}}"
+					{{labels.shortner_field_desc_end}}
+					<strong>{{post_format.short_url_service}}</strong> {{labels.shortner_api_field}}.</p>
 			</div>
 			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="form-group">
@@ -186,35 +163,28 @@
 				</div>
 			</div>
 		</div>
-
-		<!-- Hashtags - dropdown - having this options - (Dont add any hashtags, Common hastags
-			 for all shares, Create hashtags from categories, Create hashtags from tags, Create
-			 hashtags from custom field). If one of those options is selected, except the dont
-			 any hashtags options, we will show a number field having the Maximum hashtags length.
-			 Moreover for common hashtags option, we will have another text field which will contain
-			 the hashtags value. -->
+		
 		<div class="columns py-2">
 			<div class="column col-6 col-sm-12 vertical-align">
-				<b>Hashtags</b>
-				<p class="text-gray">Hashtags to published content.</p>
+				<b>{{labels.hashtags_title}}</b>
+				<p class="text-gray">{{labels.hashtags_desc}}</p>
 			</div>
 			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="form-group">
 					<select class="form-select" v-model="post_format.hashtags">
-						<option value="no-hashtags">Dont add any hashtags</option>
-						<option value="common-hashtags">Common hastags for all shares</option>
-						<option value="categories-hashtags">Create hashtags from categories</option>
-						<option value="tags-hashtags">Create hashtags from tags</option>
-						<option value="custom-hashtags">Create hashtags from custom field</option>
+						<option value="no-hashtags">{{labels.hashtags_option_no}}</option>
+						<option value="common-hashtags">{{labels.hashtags_option_common}}</option>
+						<option value="categories-hashtags">{{labels.hashtags_option_cats}}</option>
+						<option value="tags-hashtags">{{labels.hashtags_option_tags}}</option>
+						<option value="custom-hashtags">{{labels.hashtags_option_field}}</option>
 					</select>
 				</div>
 			</div>
 		</div>
-		<!-- Common Hashtags -->
 		<div class="columns py-2" v-if="post_format.hashtags === 'common-hashtags'">
 			<div class="column col-6 col-sm-12 vertical-align">
-				<b>Common Hashtags</b>
-				<p class="text-gray">List of hastags to use separated by comma ",".</p>
+				<b>{{labels.hastags_common_title}}</b>
+				<p class="text-gray">{{labels.hastags_common_desc}} ",".</p>
 			</div>
 			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="form-group">
@@ -223,12 +193,11 @@
 				</div>
 			</div>
 		</div>
-
-		<!-- Custom Hashtags -->
+		
 		<div class="columns py-2" v-if="post_format.hashtags === 'custom-hashtags'">
 			<div class="column col-6 col-sm-12 vertical-align">
-				<b>Custom Hashtags</b>
-				<p class="text-gray">The name of the meta field that contains the hashtags.</p>
+				<b>{{labels.hastags_field_title}}</b>
+				<p class="text-gray">{{labels.hastags_field_desc}}</p>
 			</div>
 			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="form-group">
@@ -237,43 +206,41 @@
 				</div>
 			</div>
 		</div>
-
-		<!-- Hashtags Length -->
+		
 		<div class="columns py-2" v-if="post_format.hashtags !== 'no-hashtags'">
 			<div class="column col-6 col-sm-12 vertical-align">
-				<b>Maximum Hashtags length</b>
-				<p class="text-gray">The maximum hashtags length to be used when publishing.</p>
+				<b>{{labels.hashtags_length_title}}</b>
+				<p class="text-gray">{{labels.hashtags_length_desc}}</p>
 			</div>
 			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="form-group">
 					<input class="form-input" type="number" v-model="post_format.hashtags_length"
-						   value="" placeholder=""/>
+					       value="" placeholder=""/>
 				</div>
 			</div>
 		</div>
-
+		
 		<span class="divider"></span>
-
+		
 		<div class="columns py-2" :class="'rop-control-container-'+isPro">
 			<div class="column col-6 col-sm-12 vertical-align">
-				<b>Post with image</b>
-				<p class="text-gray">Use the featured image when posting?</p>
+				<b>{{labels.image_title}}</b>
+				<p class="text-gray">{{labels.image_desc}}</p>
 			</div>
 			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="input-group">
 					<label class="form-checkbox">
 						<input type="checkbox" v-model="post_format.image"
-							   :disabled="!isPro"/>
-						<i class="form-icon"></i> Yes
+						       :disabled="!isPro"/>
+						<i class="form-icon"></i> {{labels.image_yes}}
 					</label>
 				</div>
 			</div>
 		</div>
-
-		<!-- Upsell -->
+		
 		<div class="columns py-2" v-if="!isPro">
 			<div class="column text-center">
-				<p class="upsell"><i class="fa fa-lock"></i> Posting with images ia available in the pro version. </p>
+				<p class="upsell"><i class="fa fa-lock"></i> {{labels.image_upsell}}</p>
 			</div>
 		</div>
 		<span class="divider"></span>
@@ -286,7 +253,9 @@
 		props: ['account_id', 'license'],
 		data: function () {
 			return {
-				shortner_credentials: []
+				shortner_credentials: [],
+				labels: this.$store.state.labels.post_format,
+				upsell_link: ropApiSettings.upsell_link,
 			}
 		},
 		computed: {
@@ -321,13 +290,13 @@
 				})
 			}
 		},
-        filters: {
-            capitalize: function (value) {
-                if (!value) return ''
-                value = value.toString()
-                return value.charAt(0).toUpperCase() + value.slice(1)
-            }
-        }
+		filters: {
+			capitalize: function (value) {
+				if (!value) return ''
+				value = value.toString()
+				return value.charAt(0).toUpperCase() + value.slice(1)
+			}
+		}
 	}
 </script>
 <style scoped>
@@ -335,17 +304,21 @@
 		margin: 0;
 		line-height: normal;
 	}
+	
 	b {
-		margin-bottom :5px;
+		margin-bottom: 5px;
 		display: block;
 	}
+	
 	#rop_core .input-group .input-group-addon {
 		padding: 3px 5px;
 	}
-	@media( max-width: 600px ) {
+	
+	@media ( max-width: 600px ) {
 		#rop_core .panel-body .text-gray {
 			margin-bottom: 10px;
 		}
+		
 		#rop_core .text-right {
 			text-align: left;
 		}

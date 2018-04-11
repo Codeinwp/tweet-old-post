@@ -17,56 +17,56 @@
 				</div>
 				<div class="form-group columns" v-if="edit">
 					<div class="column col-12" v-if="content.post_with_image">
-						<label class="form-label" for="image">Image</label>
+						<label class="form-label" for="image">{{labels.queue_image}}</label>
 						<div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-file-image-o"></i></span>
 							<input id="image" type="text" class="form-input" :value="content.post_image" readonly>
 							<button class="btn btn-primary input-group-btn tooltip" @click="uploadImage"
-							        data-tooltip="Upload">
+							        :data-tooltip="labels.upload_image">
 								<i class="fa fa-upload" aria-hidden="true"></i>
 							</button>
 							<button class="btn btn-danger input-group-btn tooltip" @click="removeImage"
-							        data-tooltip="Remove">
+							        :data-tooltip="labels.remove_image">
 								<i class="fa fa-remove" aria-hidden="true"></i>
 							</button>
 						</div>
 					</div>
 					<div class="column col-12">
-						<label class="form-label" for="content">Content</label>
-						<textarea class="form-input" id="content" placeholder="Textarea" rows="3" @keyup="checkCount">{{content.content}}</textarea>
+						<label class="form-label" for="content">{{labels.queue_content}}</label>
+						<textarea class="form-input" id="content" placeholder="" rows="3" @keyup="checkCount">{{content.content}}</textarea>
 					</div>
 				</div>
 				<div class="columns col-justified" v-if="!edit">
 					<div class="column col-3">
 						<button class="btn btn-sm btn-block btn-warning tooltip   tooltip-bottom "
 						        @click="skipPost(card_data.account_id, card_data.post_id)"
-						        data-tooltip="Reschedule this post."
+						        :data-tooltip="labels.reschedule_post"
 						        :disabled=" ! enabled">
 							<i class="fa fa-spinner fa-spin" v-if=" is_loading === 'skip'"></i>
 							<i class="fa fa-step-forward" v-else aria-hidden="true"></i>
-							Skip
+							{{labels.skip_btn_queue}}
 						</button>
 					</div>
 					<div class="column col-3">
 						<button class="btn btn-sm btn-block btn-danger tooltip     tooltip-bottom  "
-						        data-tooltip="Ban this post from sharing in the future."
+						        :data-tooltip="labels.ban_post"
 						        @click="blockPost(card_data.account_id, card_data.post_id)" :disabled=" ! enabled">
 							<i class="fa fa-spinner fa-spin" v-if=" is_loading === 'block'"></i>
 							<i class="fa fa-ban" aria-hidden="true" v-else></i>
-							Block
+							{{labels.block_btn_queue}}
 						</button>
 					</div>
 					<div class="column col-3">
 						<button class="btn btn-sm btn-block btn-primary" @click="toggleEditState" v-if="!edit"
 						        :disabled=" ! enabled">
-							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+							<i class="fa fa-pencil" aria-hidden="true"></i> {{labels.edit_queue}}
 						</button>
 					</div>
 					<div class="column col-3 col-ml-auto text-right">
 						<p class="m-0">
-							<b>Link:</b>
+							<b>{{labels.link_title}}:</b>
 							<a :href="content.post_url" target="_blank" class="tooltip"
-							   :data-tooltip="'Link shortned using ' + content.short_url_service +' service'">
+							   :data-tooltip="labels.link_shortned_start + ' ' + content.short_url_service +' ' + labels.link_shortner_service">
 								{{'{' + content.short_url_service + '}'}}</a>
 						</p>
 					</div>
@@ -78,14 +78,14 @@
 						        v-if="edit" :disabled=" ! enabled">
 							<i class="fa fa-spinner fa-spin" v-if=" is_loading === 'edit'"></i>
 							<i class="fa fa-check" aria-hidden="true" v-else></i>
-							Save
+							{{labels.save_edit}}
 						</button>
 					</div>
 					<div class="column col-3">
 						<button class="btn btn-sm btn-block btn-warning" @click="cancelChanges" v-if="edit"
 						        :disabled=" ! enabled">
 							<i class="fa fa-times" aria-hidden="true"></i>
-							Cancel
+							{{labels.cancel_edit}}
 						</button>
 					</div>
 				</div>
@@ -100,7 +100,7 @@
 				<div class="rop-image-placeholder" v-else>
 					<summary>
 						<i class="fa fa-file-image-o"></i>
-						No Image
+						{{labels.queue_no_image}}
 					</summary>
 				</div>
 			</div>
@@ -129,6 +129,8 @@
 		data: function () {
 			return {
 				edit: false,
+				labels: this.$store.state.labels.queue,
+				upsell_link: ropApiSettings.upsell_link,
 				is_loading: false,
 				post_edit: {}
 			}
@@ -224,12 +226,12 @@
 			},
 			uploadImage: function () {
 				let window = wp.media({
-					title: 'Insert a media',
+					title: this.labels.insert_media_title,
 					library: {
 						type: 'image'
 					},
 					multiple: false,
-					button: {text: 'Insert'}
+					button: {text: this.labels.insert_media_btn}
 				})
 
 				let self = this

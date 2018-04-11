@@ -8,8 +8,8 @@
 							<div class="empty-icon">
 								<i class="fa fa-3x fa-user-circle-o"></i>
 							</div>
-							<p class="empty-title h5">No accounts!</p>
-							<p class="empty-subtitle">Sign in and add your social accounts.</p>
+							<p class="empty-title h5">{{labels.no_accounts}}</p>
+							<p class="empty-subtitle">{{labels.no_accounts_desc}}</p>
 						</div>
 						<div class="account-container" v-for="( account, id ) in accounts">
 							<service-user-tile :account_data="account" :account_id="id"></service-user-tile>
@@ -25,15 +25,15 @@
 			<div class="panel-footer" v-if="accountsCount > 0">
 				<div class="columns">
 					<div class="column col-12">
-						<p class="text-gray"><i class="fa fa-info-circle"></i> Authenticate a new service (eg. Facebook, Twitter etc. ), select the accounts you want to add from that service and <b>activate</b> them. Only the active accounts will be used for sharing.</p>
+						<p class="text-gray"><i class="fa fa-info-circle"></i> <span v-html="labels.has_accounts_desc"></span></p>
 					</div>
 				</div>
 				<div class="column col-12 text-right">
-				<button class="btn btn-secondary" @click="resetAccountData()">
-					<i class="fa fa-ban" v-if="!this.is_loading"></i>
-					<i class="fa fa-spinner fa-spin" v-else></i>
-					Remove all accounts
-				</button>
+					<button class="btn btn-secondary" @click="resetAccountData()">
+						<i class="fa fa-ban" v-if="!this.is_loading"></i>
+						<i class="fa fa-spinner fa-spin" v-else></i>
+						{{labels.remove_all_cta}}
+					</button>
 				</div>
 			</div>
 		</div>
@@ -52,7 +52,9 @@
 			return {
 				addAccountActive: false,
 				accountsCount: 0,
-				is_loading: false
+				is_loading: false,
+				labels: this.$store.state.labels.accounts,
+				upsell_link: ropApiSettings.upsell_link,
 			}
 		},
 		computed: {
@@ -76,7 +78,7 @@
 
 					}
 				}
-				this.$log.info('All accounts : ', all_accounts);
+				this.$log.info('All accounts: ', all_accounts);
 				this.accountsCount = Object.keys(all_accounts).length;
 				return all_accounts;
 			},
@@ -112,26 +114,33 @@
 		margin: 0;
 		line-height: normal;
 	}
+	
 	#rop_core .input-group {
 		width: 100%;
 	}
+	
 	b {
-		margin-bottom :5px;
+		margin-bottom: 5px;
 		display: block;
 	}
+	
 	#rop_core .text-gray b {
 		display: inline;
 	}
+	
 	#rop_core .input-group .input-group-addon {
 		padding: 3px 5px;
 	}
+	
 	#rop_core .rop-available-accounts h5 {
 		margin-bottom: 15px;
 	}
-	@media( max-width: 600px ) {
+	
+	@media ( max-width: 600px ) {
 		#rop_core .panel-body .text-gray {
 			margin-bottom: 10px;
 		}
+		
 		#rop_core .text-right {
 			text-align: left;
 		}

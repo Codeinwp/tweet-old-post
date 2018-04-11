@@ -1,6 +1,7 @@
 <template>
 	<div class="toast toast-success rop-current-time" v-if="isOn && accounts_no > 0">
-		<span v-if="diff_seconds>0"> <b><i class="fa fa-fast-forward"></i> Next share</b> in</span>
+		<span v-if="diff_seconds>0"> <b><i
+				class="fa fa-fast-forward"></i> {{labels.next_share}}</b> {{labels.in}}</span>
 		<small v-if="timediff !== ''">{{timediff}}</small>
 	</div>
 </template>
@@ -17,7 +18,9 @@
 			return {
 				now: Math.trunc((new Date()).getTime() / 1000),
 				timediff: '',
-				diff_seconds: 0
+				diff_seconds: 0,
+				labels: this.$store.state.labels.general,
+				upsell_link: ropApiSettings.upsell_link,
 			}
 		},
 		computed: {
@@ -50,7 +53,7 @@
 					this.timediff = diff.format("d [days], h [hours], m [minutes], s [seconds]");
 				} else {
 					this.$store.dispatch('fetchAJAX', {req: 'manage_cron'});
-					this.timediff = 'Sharing .... ';
+					this.timediff = this.labels.sharing_now;
 				}
 			}
 		}

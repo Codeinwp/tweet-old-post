@@ -120,6 +120,9 @@ class Rop_Admin {
 			}
 			$global_settings             = new Rop_Global_Settings();
 			$array_nonce['license_type'] = $global_settings->license_type();
+			$array_nonce['labels']       = Rop_I18n::get_labels();
+			$array_nonce['upsell_link']  = Rop_I18n::UPSELL_LINK;
+			$array_nonce['debug']        = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
 			wp_localize_script( $this->plugin_name . '_main', 'ropApiSettings', $array_nonce );
 			wp_localize_script( $this->plugin_name . '_main', 'ROP_ASSETS_URL', ROP_LITE_URL . 'assets/' );
 			wp_enqueue_script( $this->plugin_name . '_main' );

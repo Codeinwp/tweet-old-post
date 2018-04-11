@@ -2,166 +2,157 @@
 	<div class="tab-view">
 		<div class="panel-body">
 			<div class="container" :class="'rop-tab-state-'+is_loading">
-				<!-- Min Interval Between Shares -->
 				<div class="columns py-2" v-if="! isPro">
 					<div class="column col-6 col-sm-12 vertical-align">
-						<b>Minimum interval between shares</b>
-						<p class="text-gray">Minimum time between shares (hour/hours), 0.4 can be used.</p>
+						<b>{{labels.min_interval_title}}</b>
+						<p class="text-gray">{{labels.min_interval_desc}}</p>
 					</div>
 					<div class="column col-6 col-sm-12 vertical-align">
 						<counter-input id="default_interval"
-									   :value.sync="generalSettings.default_interval"></counter-input>
+						               :value.sync="generalSettings.default_interval"></counter-input>
 					</div>
 				</div>
 				<span class="divider"></span>
-				<!-- Min Post Age -->
 				<div class="columns py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
-						<b>Minimum post age</b>
-						<p class="text-gray">Minimum age of posts available for sharing, in days.</p>
+						<b>{{labels.min_days_title}}</b>
+						<p class="text-gray">{{labels.min_days_desc}}</p>
 					</div>
 					<div class="column col-6 col-sm-12 vertical-align">
 						<counter-Input id="min_post_age" :max-val="365"
-									   :value.sync="generalSettings.minimum_post_age"></counter-Input>
+						               :value.sync="generalSettings.minimum_post_age"></counter-Input>
 					</div>
 				</div>
 				<!-- Max Post Age -->
 				<div class="columns py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
-						<b>Maximum post age</b>
-						<p class="text-gray">Maximum age of posts available for sharing, in days.</p>
+						<b>{{labels.max_days_title}}</b>
+						<p class="text-gray">{{labels.max_days_desc}}</p>
 					</div>
 					<div class="column col-6 col-sm-12 vertical-align">
 						<counter-input id="max_post_age" :max-val="365"
-									   :value.sync="generalSettings.maximum_post_age"></counter-input>
+						               :value.sync="generalSettings.maximum_post_age"></counter-input>
 					</div>
 				</div>
-
+				
 				<span class="divider"></span>
-
-				<!-- No. of posts -->
+				
 				<div class="columns py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
-						<b>Number of posts</b>
-						<p class="text-gray">Number of posts to share per. account per. trigger of scheduled job.</p>
+						<b>{{labels.no_posts_title}}</b>
+						<p class="text-gray">{{labels.no_posts_desc}}</p>
 					</div>
 					<div class="column col-6 col-sm-12 vertical-align">
 						<counter-input id="no_of_posts" :value.sync="generalSettings.number_of_posts"></counter-input>
 					</div>
 				</div>
 				<span class="divider"></span>
-
+				
 				<!-- Share more than once -->
 				<div class="columns py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
-						<b>Share more than once?</b>
-						<p class="text-gray">If there are no more posts to share, we should start re-sharing the one we previously shared.</p>
+						<b>{{labels.share_once_title}}</b>
+						<p class="text-gray">{{labels.share_once_desc}}</p>
 					</div>
 					<div class="column col-6 col-sm-12 vertical-align text-left">
 						<div class="form-group">
 							<label class="form-checkbox">
 								<input type="checkbox" v-model="generalSettings.more_than_once"/>
-								<i class="form-icon"></i> Yes
+								<i class="form-icon"></i> {{labels.share_once_yes}}
 							</label>
 						</div>
 					</div>
 				</div>
 				<span class="divider"></span>
-
-				<!-- Post Types -->
 				<div class="columns py-2" :class="'rop-control-container-'+isPro">
 					<div class="column col-6 col-sm-12 vertical-align rop-control">
-						<b>Post types</b>
-						<p class="text-gray">Post types available to share - what post types are available for share</p>
+						<b>{{labels.post_types_title}}</b>
+						<p class="text-gray">{{labels.post_types_desc}}</p>
 					</div>
 					<div class="column col-6 col-sm-12 vertical-align text-left rop-control">
 						<multiple-select :options="postTypes" :disabled="isPro"
-										 :selected="generalSettings.selected_post_types"
-										 :changed-selection="updatedPostTypes"></multiple-select>
+						                 :selected="generalSettings.selected_post_types"
+						                 :changed-selection="updatedPostTypes"></multiple-select>
 					</div>
 				</div>
-
-				<!-- Upsell -->
+				
 				<div class="columns py-2" v-if="!isPro">
 					<div class="column text-center">
-						<p class="upsell"><i class="fa fa-lock"></i> Selecting custom post types is available in the pro version.</p>
+						<p class="upsell"><i class="fa fa-lock"></i> {{labels.post_types_upsell}}</p>
 					</div>
 				</div>
-
+				
 				<span class="divider"></span>
-
+				
 				<!-- Taxonomies -->
 				<div class="columns py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
-						<b>Taxonomies</b>
-						<p class="text-gray">Taxonomies available for the selected post types. Use to include or exclude posts.</p>
+						<b>{{labels.taxonomies_title}}</b>
+						<p class="text-gray">{{labels.taxonomies_desc}}</p>
 					</div>
 					<div class="column col-6 col-sm-12 vertical-align text-left">
 						<div class="input-group">
 							<multiple-select :options="taxonomies"
-											 :selected="generalSettings.selected_taxonomies"
-											 :changed-selection="updatedTaxonomies"></multiple-select>
+							                 :selected="generalSettings.selected_taxonomies"
+							                 :changed-selection="updatedTaxonomies"></multiple-select>
 							<span class="input-group-addon vertical-align">
 								<label class="form-checkbox">
 									<input type="checkbox" v-model="generalSettings.exclude_taxonomies"
-										   @change="exludeTaxonomiesChange"/>
-									<i class="form-icon"></i>Exclude?
+									       @change="exludeTaxonomiesChange"/>
+									<i class="form-icon"></i>{{labels.taxonomies_exclude}}
 								</label>
 							</span>
-
+						
 						</div>
-
+					
 					</div>
-
+				
 				</div>
-
+				
 				<span class="divider"></span>
-				<!-- Posts -->
 				<div class="columns py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
-						<b>Posts</b>
-						<p class="text-gray">Posts excluded from sharing, filtered based on previous selections.</p>
+						<b>{{labels.posts_title}}</b>
+						<p class="text-gray">{{labels.posts_desc}}</p>
 					</div>
 					<div class="column col-6 col-sm-12 vertical-align text-left">
 						<div class="input-group">
 							<multiple-select :searchQuery="searchQuery" @update="searchUpdate"
-											 :options="postsAvailable" :dont-lock="true"
-											 :selected="generalSettings.selected_posts"
-											 :changed-selection="updatedPosts"></multiple-select>
-
+							                 :options="postsAvailable" :dont-lock="true"
+							                 :selected="generalSettings.selected_posts"
+							                 :changed-selection="updatedPosts"></multiple-select>
+						
 						</div>
 					</div>
 				</div>
 				<span class="divider"></span>
-
-				<!-- Google Analytics -->
+				
 				<div class="columns py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
-						<b>Enable Google Analytics Tracking</b>
-						<p class="text-gray">If checked an utm query willbe added to URL's so that you cand better track trafic.</p>
+						<b>{{labels.ga_title}}</b>
+						<p class="text-gray">{{labels.ga_desc}}</p>
 					</div>
 					<div class="column col-6 col-sm-12 vertical-align text-left">
 						<div class="form-group">
 							<label class="form-checkbox">
 								<input type="checkbox" v-model="generalSettings.ga_tracking"/>
-								<i class="form-icon"></i>Yes
+								<i class="form-icon"></i>{{labels.ga_yes}}
 							</label>
 						</div>
 					</div>
 				</div>
 				<span class="divider"></span>
-
-				<!-- Custom Share Messages -->
+				
 				<div class="columns py-2" :class="'rop-control-container-'+isPro">
 					<div class="column col-6 col-sm-12 vertical-align rop-control">
-						<b>Custom Share Messages</b>
-						<p class="text-gray">These messages will override the post format settings. You can go to each post and add multiple custom messages.</p>
+						<b>{{labels.custom_share_title}}</b>
+						<p class="text-gray">{{labels.custom_share_desc}}</p>
 					</div>
 					<div class="column col-6 col-sm-12 vertical-align text-left rop-control">
 						<div class="form-group">
 							<label class="form-checkbox">
 								<input type="checkbox" :disabled="!isPro" v-model="generalSettings.custom_messages"/>
-								<i class="form-icon"></i>Yes
+								<i class="form-icon"></i>{{labels.custom_share_yes}}
 							</label>
 						</div>
 					</div>
@@ -169,17 +160,17 @@
 				<!-- Upsell -->
 				<div class="columns py-2" v-if="!isPro">
 					<div class="column text-center">
-						<p class="upsell"><i class="fa fa-lock"></i> Using a custom share message is available in the pro version.</p>
+						<p class="upsell"><i class="fa fa-lock"></i> {{labels.custom_share_upsell}}</p>
 					</div>
 				</div>
 				<span class="divider"></span>
-
+			
 			</div>
 		</div>
 		<div class="panel-footer text-right">
 			<button class="btn btn-primary" @click="saveGeneralSettings()"><i class="fa fa-check"
-																			  v-if="!this.is_loading"></i> <i
-					class="fa fa-spinner fa-spin" v-else></i> Save
+			                                                                  v-if="!this.is_loading"></i> <i
+					class="fa fa-spinner fa-spin" v-else></i> {{labels.save}}
 			</button>
 		</div>
 	</div>
@@ -195,6 +186,8 @@
 			return {
 				searchQuery: '',
 				postTimeout: '',
+				labels: this.$store.state.labels.settings,
+				upsell_link: ropApiSettings.upsell_link,
 				is_loading: false,
 			}
 		},
@@ -331,20 +324,25 @@
 		margin: 0;
 		line-height: normal;
 	}
+	
 	#rop_core .input-group {
 		width: 100%;
 	}
+	
 	b {
-		margin-bottom :5px;
+		margin-bottom: 5px;
 		display: block;
 	}
+	
 	#rop_core .input-group .input-group-addon {
 		padding: 3px 5px;
 	}
-	@media( max-width: 600px ) {
+	
+	@media ( max-width: 600px ) {
 		#rop_core .panel-body .text-gray {
 			margin-bottom: 10px;
 		}
+		
 		#rop_core .text-right {
 			text-align: left;
 		}

@@ -82,6 +82,7 @@
 }
 
 #rop_core .fade-enter-active, #rop_core .fade-leave-active {
+	-webkit-transition: opacity .2s;
 	transition: opacity .2s;
 }
 #rop_core .fade-enter, #rop_core .fade-leave-to {
@@ -119,6 +120,9 @@
 		display: none;
 	}
 	#rop_core .sidebar-top {
+		display: -webkit-box;
+		display: -webkit-flex;
+		display: -ms-flexbox;
 		display: flex;
 	}
 }

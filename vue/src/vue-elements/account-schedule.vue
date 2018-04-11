@@ -1,27 +1,26 @@
 <template>
 	<div :class="'rop-control-container-'+ ( license>1 ) ">
-
-		<!-- Schedule Type -->
+		
 		<div class="columns py-2 rop-control">
 			<div class="column col-6 col-sm-12 vertical-align">
-				<b>Schedule Type</b>
-				<p class="text-gray">What type of schedule to use.</p>
+				<b>{{labels.schedule_type_title}}</b>
+				<p class="text-gray">{{labels.schedule_type_desc}}</p>
 			</div>
 			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="form-group">
 					<select class="form-select" v-model="schedule.type">
-						<option value="recurring">Recurring</option>
-						<option value="fixed">Fixed</option>
+						<option value="recurring">{{labels.schedule_type_option_rec}}</option>
+						<option value="fixed">{{labels.schedule_type_option_fix}}</option>
 					</select>
 				</div>
 			</div>
 		</div>
-
+		
 		<!-- Fixed Schedule Days -->
 		<div class="columns py-2 rop-control" v-if="schedule.type === 'fixed'">
 			<div class="column col-6 col-sm-12 vertical-align">
-				<b>Fixed Schedule Days</b>
-				<p class="text-gray">The days when to share for this account.</p>
+				<b>{{labels.schedule_fixed_days_title}}</b>
+				<p class="text-gray">{{labels.schedule_fixed_days_desc}}</p>
 			</div>
 			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="form-group input-group">
@@ -31,12 +30,12 @@
 				</div>
 			</div>
 		</div>
-
+		
 		<!-- Fixed Schedule time -->
 		<div class="columns py-2 rop-control" v-if="schedule.type === 'fixed'">
 			<div class="column col-6 col-sm-12 vertical-align">
-				<b>Fixed Schedule Time</b>
-				<p class="text-gray">The time at witch to share for this account.</p>
+				<b>{{labels.schedule_fixed_time_title}}</b>
+				<p class="text-gray">{{labels.schedule_fixed_time_desc}}</p>
 			</div>
 			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="form-group">
@@ -57,12 +56,11 @@
 				</div>
 			</div>
 		</div>
-
-		<!-- Recurring Schedule Interval -->
+		
 		<div class="columns py-2 rop-control" v-else>
 			<div class="column col-6 col-sm-12 vertical-align">
-				<b>Recurring Schedule Interval</b>
-				<p class="text-gray">A recurring interval to use for sharing. Once every 'X' hours.</p>
+				<b>{{labels.schedule_rec_title}}</b>
+				<p class="text-gray">{{labels.schedule_rec_desc}}</p>
 			</div>
 			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="form-group">
@@ -70,11 +68,11 @@
 				</div>
 			</div>
 		</div>
-
+		
 		<!-- Upsell -->
 		<div class="columns py-2" v-if="license < 1">
 			<div class="column text-center">
-				<p class="upsell"><i class="fa fa-lock"></i> The Custom Schedule is available only in the Business version.</p>
+				<p class="upsell"><i class="fa fa-lock"></i> {{labels.schedule_upsell}}</p>
 			</div>
 		</div>
 		<span class="divider"></span>
@@ -120,7 +118,9 @@
 						'value': '7',
 						'checked': false
 					}
-				}
+				},
+				labels: this.$store.state.labels.schedule,
+				upsell_link: ropApiSettings.upsell_link,
 			}
 		},
 		computed: {
@@ -171,8 +171,8 @@
 		},
 		components: {
 			ButtonCheckbox,
-            CounterInput,
-            VueTimepicker
+			CounterInput,
+			VueTimepicker
 		}
 	}
 </script>
@@ -181,20 +181,25 @@
 		margin: 0;
 		line-height: normal;
 	}
+	
 	b {
-		margin-bottom :5px;
+		margin-bottom: 5px;
 		display: block;
 	}
+	
 	#rop_core .input-group .input-group-addon {
 		padding: 3px 5px;
 	}
+	
 	.time-picker {
 		margin-bottom: 10px;
 	}
-	@media( max-width: 600px ) {
+	
+	@media ( max-width: 600px ) {
 		#rop_core .panel-body .text-gray {
 			margin-bottom: 10px;
 		}
+		
 		#rop_core .text-right {
 			text-align: left;
 		}

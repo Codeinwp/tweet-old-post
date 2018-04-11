@@ -2,11 +2,12 @@
 	<div id="rop-sign-in-area">
 		<div class="input-group text-right buttons-wrap">
 			<button v-for="( service, network ) in services"
-					:disabled="checkDisabled( service, network )"
-					class="btn input-group-btn"
-					:class="'btn-' + network"
-					@click="requestAuthorization( network )">
-				<i class="fa fa-fw" :class="'fa-' + network"></i>{{service.name}}</button>
+			        :disabled="checkDisabled( service, network )"
+			        class="btn input-group-btn"
+			        :class="'btn-' + network"
+			        @click="requestAuthorization( network )">
+				<i class="fa fa-fw" :class="'fa-' + network"></i>{{service.name}}
+			</button>
 		
 		</div>
 		
@@ -15,7 +16,7 @@
 			<div class="modal-container">
 				<div class="modal-header">
 					<button class="btn btn-clear float-right" @click="cancelModal()"></button>
-					<div class="modal-title h5">{{ modal.serviceName }} Service Credentials</div>
+					<div class="modal-title h5">{{ modal.serviceName }} {{labels.service_popup_title}}</div>
 				</div>
 				<div class="modal-body">
 					<div class="content">
@@ -28,7 +29,8 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button class="btn btn-primary" @click="closeModal()">Sign in</button>
+					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
+					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 				</div>
 			</div>
 		</div>
@@ -45,8 +47,11 @@
 				modal: {
 					isOpen: false,
 					serviceName: '',
+					description: '',
 					data: {}
 				},
+				labels: this.$store.state.labels.accounts,
+				upsell_link: ropApiSettings.upsell_link,
 				activePopup: ''
 			}
 		},
@@ -88,10 +93,11 @@
 			 * Request authorization popup.
 			 */
 			requestAuthorization: function (network) {
-			    this.selected_network = network;
+				this.selected_network = network;
 				this.$store.state.auth_in_progress = true
 				if (this.$store.state.availableServices[this.selected_network].two_step_sign_in) {
 					this.modal.serviceName = this.$store.state.availableServices[this.selected_network].name
+					this.modal.description = this.$store.state.availableServices[this.selected_network].description
 					this.modal.data = this.$store.state.availableServices[this.selected_network].credentials
 					this.openModal()
 				} else {

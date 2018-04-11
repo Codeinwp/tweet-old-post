@@ -80,14 +80,15 @@ class Rop_Global_Settings {
 			'credentials'      => array(
 				'app_id' => array(
 					'name'        => 'APP ID',
-					'description' => 'Please add the APP ID from your Facebook app.',
+					'description' => '',
 				),
 				'secret' => array(
 					'name'        => 'APP SECRET',
-					'description' => 'Please add the APP SECRET from your Facebook app.',
+					'description' => '',
 				),
 			),
 			'allowed_accounts' => 1,
+			'description'      => '',
 		),
 		'twitter'  => array(
 			'active'           => true,
@@ -263,12 +264,13 @@ class Rop_Global_Settings {
 	 */
 	public static function instance() {
 		if ( ! isset( self::$instance ) && ! ( self::$instance instanceof Rop_Global_Settings ) ) {
-			self::$instance           = new Rop_Global_Settings;
-			self::$instance->services = apply_filters(
+			self::$instance                                                               = new Rop_Global_Settings;
+			self::$instance->services                                                     = apply_filters(
 				'rop_available_services',
 				self::$instance->services_defaults
 			);
-			self::$instance->settings = apply_filters(
+
+			self::$instance->settings                                                     = apply_filters(
 				'rop_general_settings_defaults',
 				self::$instance->settings_defaults
 			);
@@ -300,13 +302,22 @@ class Rop_Global_Settings {
 	 */
 	public function license_type() {
 //		return 2;
-		$pro_check      = defined( 'ROP_PRO_VERSION' );
-		$product_key    = 'tweet_old_post_pro';
-		$license_status = get_option( $product_key . '_license_status', '' );
+		$pro_check = defined( 'ROP_PRO_VERSION' );
+		if ( ! $pro_check ) {
+			return - 1;
+		}
+		$product_key  = 'tweet_old_post_pro_new';
+		$license_data = get_option( $product_key . '_license_data', '' );
+		if ( empty( $license_data ) ) {
+			return - 1;
+		}
+		if ( ! isset( $license_data->license ) ) {
+			return - 1;
+		}
 		/**
 		 * If we have an invalid license but the pro is installed.
 		 */
-		if ( $license_status !== 'active' ) {
+		if ( $license_data->license !== 'valid' ) {
 			if ( $pro_check ) {
 				return 0;
 			}
@@ -314,6 +325,7 @@ class Rop_Global_Settings {
 			return ( - 1 );
 		}
 		$plan = get_option( $product_key . '_license_plan', - 1 );
+
 		$plan = intval( $plan );
 		/**
 		 * If the plan is not fetched but we have pro.

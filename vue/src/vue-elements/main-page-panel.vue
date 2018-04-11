@@ -3,27 +3,27 @@
 		<div class="columns panel-header">
 			<div class="column header-logo vertical-align">
 				<div>
-			<img :src="plugin_logo" class="plugin-logo avatar avatar-lg"/><h1 class="plugin-title d-inline-block">Revive Old Post</h1><span class="powered d-inline-block"> by <a href="https://revive.social" target="_blank"><b>Revive.Social</b></a></span>
+					<img :src="plugin_logo" class="plugin-logo avatar avatar-lg"/>
+					<h1 class="plugin-title d-inline-block">Revive Old Post</h1><span class="powered d-inline-block"> {{labels.by}} <a
+						href="https://revive.social" target="_blank"><b>Revive.Social</b></a></span>
 				</div>
 			</div>
 			<div class="sidebar sidebar-top card rop-container-start">
 				<div class="toast rop-current-time" v-if="formatedDate">
-					Now: {{ formatedDate }}
+					{{labels.now}}: {{ formatedDate }}
 				</div>
 				<countdown :current_time="current_time"/>
 				<button class="btn btn-sm" :class="btn_class"
-						data-tooltip="You will need
-					         at least one active account
-					         to start sharing."
-						@click="togglePosting()" :disabled="haveAccounts">
+				        :data-tooltip="labels.active_account_warning"
+				        @click="togglePosting()" :disabled="haveAccounts">
 					<i class="fa fa-play" v-if="!is_loading && !start_status"></i>
 					<i class="fa fa-stop" v-else-if="!is_loading && start_status"></i>
 					<i class="fa fa-spinner fa-spin" v-else></i>
-					{{( start_status ? 'Stop' : 'Start' )}} Sharing
+					{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}
 				</button>
 			</div>
 		</div>
-
+		
 		<div class="columns">
 			<div class="panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 				<div class="panel-nav" style="padding: 8px;">
@@ -44,28 +44,26 @@
 				
 				<div class="card rop-container-start">
 					<div class="toast rop-current-time" v-if="formatedDate">
-						Now: {{ formatedDate }}
+						{{labels.now}}: {{ formatedDate }}
 					</div>
 					<countdown :current_time="current_time"/>
 					<button class="btn" :class="btn_class"
-					        data-tooltip="You will need
-					         at least one active account
-					         to start sharing."
+					        :data-tooltip="labels.active_account_warning"
 					        @click="togglePosting()" :disabled="haveAccounts">
 						<i class="fa fa-play" v-if="!is_loading && !start_status"></i>
 						<i class="fa fa-stop" v-else-if="!is_loading && start_status"></i>
 						<i class="fa fa-spinner fa-spin" v-else></i>
-						{{( start_status ? 'Stop' : 'Start' )}} Sharing
+						{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}
 					</button>
 				</div>
 				<div class="card rop-upsell-pro-card" v-if="license  < 1 ">
-					<a href="#" target="_blank">
-						<img class="img-responsive"  :src="to_pro_upsell" alt="Upgrade to Pro">
+					<a :href="upsell_link" target="_blank">
+						<img class="img-responsive" :src="to_pro_upsell" :alt="labels.upgrade_pro_cta">
 					</a>
 				</div>
 				<div class="card rop-upsell-business-card" v-if="license  === 1">
-					<a href="#" target="_blank">
-						<img class="img-responsive"  :src="to_business_upsell" alt="Upgrade to Business">
+					<a :href="upsell_link"  target="_blank">
+						<img class="img-responsive" :src="to_business_upsell" :alt="labels.upgrade_biz_cta">
 					</a>
 				</div>
 			</div>
@@ -176,6 +174,8 @@
 				to_business_upsell: ROP_ASSETS_URL + 'img/to_business.png',
 				plugin_logo: ROP_ASSETS_URL + 'img/logo_rop.png',
 				license: this.$store.state.licence,
+				labels: this.$store.state.labels.general,
+				upsell_link: ropApiSettings.upsell_link,
 				is_loading: false,
 			}
 		},
@@ -236,6 +236,7 @@
 	#rop_core .badge.badge-logs {
 		padding-right: 10px;
 	}
+	
 	#rop_core .rop-upsell-business-card,
 	#rop_core .rop-upsell-pro-card {
 		padding: 0;

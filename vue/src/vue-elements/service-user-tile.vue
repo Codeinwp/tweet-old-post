@@ -26,7 +26,7 @@
 <script>
 
 	import Vue from 'vue'
-	
+
 	module.exports = {
 		name: 'service-user-tile',
 		props: ['account_data', 'account_id'],
@@ -35,7 +35,9 @@
 				/**
 				 * Loading state used for showing animations.
 				 */
-				is_loading: false
+				is_loading: false,
+				labels: this.$store.state.labels.accounts,
+				upsell_link: ropApiSettings.upsell_link,
 			}
 		},
 		computed: {
@@ -124,7 +126,7 @@
 			 * @returns {T[]}
 			 */
 			serviceInfo: function () {
-				return this.account_data.account.concat(' at: ').concat(this.account_data.created)
+				return this.account_data.account.concat(' ' + this.labels.at + ': ').concat(this.account_data.created)
 			}
 		},
 		methods: {
