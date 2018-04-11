@@ -155,7 +155,7 @@
 				<div class="columns py-2" :class="'rop-control-container-'+isPro">
 					<div class="column col-6 col-sm-12 vertical-align rop-control">
 						<b>Custom Share Messages</b>
-						<p class="text-gray">If checked a metabox will be added so you can edit the share message.</p>
+						<p class="text-gray">These messages will override the post format settings. You can go to each post and add multiple custom messages.</p>
 					</div>
 					<div class="column col-6 col-sm-12 vertical-align text-left rop-control">
 						<div class="form-group">
