@@ -152,18 +152,24 @@
 				<span class="divider"></span>
 
 				<!-- Custom Share Messages -->
-				<div class="columns py-2">
-					<div class="column col-6 col-sm-12 vertical-align">
+				<div class="columns py-2" :class="'rop-control-container-'+isPro">
+					<div class="column col-6 col-sm-12 vertical-align rop-control">
 						<b>Custom Share Messages</b>
 						<p class="text-gray">If checked a metabox will be added so you can edit the share message.</p>
 					</div>
-					<div class="column col-6 col-sm-12 vertical-align text-left">
+					<div class="column col-6 col-sm-12 vertical-align text-left rop-control">
 						<div class="form-group">
 							<label class="form-checkbox">
-								<input type="checkbox" v-model="generalSettings.custom_messages"/>
+								<input type="checkbox" :disabled="!isPro" v-model="generalSettings.custom_messages"/>
 								<i class="form-icon"></i>Yes
 							</label>
 						</div>
+					</div>
+				</div>
+				<!-- Upsell -->
+				<div class="columns py-2" v-if="!isPro">
+					<div class="column text-center">
+						<p class="upsell"><i class="fa fa-lock"></i> Using a custom share message is available in the pro version.</p>
 					</div>
 				</div>
 				<span class="divider"></span>

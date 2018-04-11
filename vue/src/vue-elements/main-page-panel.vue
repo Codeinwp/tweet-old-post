@@ -28,7 +28,7 @@
 			<div class="panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 				<div class="panel-nav" style="padding: 8px;">
 					<ul class="tab ">
-						<li class="tab-item" v-for="tab in displayTabs"
+						<li class="tab-item c-hand" v-for="tab in displayTabs"
 						    :class="{ active: tab.isActive }">
 							<a :class=" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' "
 							   :data-badge="logs_no"
