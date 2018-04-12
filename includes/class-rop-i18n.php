@@ -48,6 +48,13 @@ class Rop_I18n {
 
 	}
 
+	/**
+	 * Localize service labels.
+	 *
+	 * @param array $services Services available.
+	 *
+	 * @return mixed Services localized.
+	 */
 	public function load_service_locals( $services ) {
 		$services['facebook']['credentials']['secret']['description'] = Rop_I18n::get_labels( 'accounts.fb_app_secret_title' );
 		$services['facebook']['credentials']['app_id']['description'] = Rop_I18n::get_labels( 'accounts.fb_app_id_title' );
@@ -56,6 +63,13 @@ class Rop_I18n {
 		return $services;
 	}
 
+	/**
+	 * Get labels by key or return all of them.
+	 *
+	 * @param string $key Access key.
+	 *
+	 * @return array|mixed|string String localized
+	 */
 	public static function get_labels( $key = '' ) {
 		$labels = array(
 			'accounts'    => array(
@@ -79,7 +93,7 @@ class Rop_I18n {
 				'fb_app_id_title'         => __( 'Please add the APP ID from your Facebook app.', 'tweet-old-post' ),
 				'fb_app_secret_title'     => __( 'Please add the APP SECRET from your Facebook app.', 'tweet-old-post' ),
 				'fb_app_desc'             => sprintf( __( 'You can check %1$shere%2$s how you get this details.', 'tweet-old-post' ), '<a href="#" target="_blank">', '</a>' ),
-				'service_error' =>__( 'The %1$s service can not be used or was not found', 'tweet-old-post' )
+				'service_error'           => __( 'The %1$s service can not be used or was not found', 'tweet-old-post' ),
 			),
 			'settings'    => array(
 				'menu_item'           => __( 'General Settings', 'tweet-old-post' ),
@@ -199,21 +213,21 @@ class Rop_I18n {
 				'refresh_btn'              => __( 'Refresh Queue', 'tweet-old-post' ),
 				'queue_image'              => __( 'Image', 'tweet-old-post' ),
 				'upload_image'             => __( 'Upload', 'tweet-old-post' ),
-				'remove_image'             => __( 'Remove', 'tweet-dold-post' ),
-				'queue_content'            => __( 'Content', 'tweet-dold-post' ),
-				'reschedule_post'          => __( 'Reschedule this post.', 'tweet-dold-post' ),
-				'ban_post'                 => __( 'Ban this post from sharing in the future.', 'tweet-dold-post' ),
-				'edit_queue'               => __( 'Edit', 'tweet-dold-post' ),
-				'link_title'               => __( 'Link', 'tweet-dold-post' ),
-				'link_shortner_service'    => __( 'service', 'tweet-dold-post' ),
-				'link_shortned_start'      => __( 'Link shortned using', 'tweet-dold-post' ),
-				'save_edit'                => __( 'Save', 'tweet-dold-post' ),
-				'cancel_edit'              => __( 'Cancel', 'tweet-dold-post' ),
-				'queue_no_image'           => __( 'No Image', 'tweet-dold-post' ),
-				'skip_btn_queue'           => __( 'Skip', 'tweet-dold-post' ),
-				'block_btn_queue'          => __( 'Block', 'tweet-dold-post' ),
-				'insert_media_title'       => __( 'Insert a media', 'tweet-dold-post' ),
-				'insert_media_btn'         => __( 'Insert', 'tweet-dold-post' ),
+				'remove_image'             => __( 'Remove', 'tweet-old-post' ),
+				'queue_content'            => __( 'Content', 'tweet-old-post' ),
+				'reschedule_post'          => __( 'Reschedule this post.', 'tweet-old-post' ),
+				'ban_post'                 => __( 'Ban this post from sharing in the future.', 'tweet-old-post' ),
+				'edit_queue'               => __( 'Edit', 'tweet-old-post' ),
+				'link_title'               => __( 'Link', 'tweet-old-post' ),
+				'link_shortner_service'    => __( 'service', 'tweet-old-post' ),
+				'link_shortned_start'      => __( 'Link shortned using', 'tweet-old-post' ),
+				'save_edit'                => __( 'Save', 'tweet-old-post' ),
+				'cancel_edit'              => __( 'Cancel', 'tweet-old-post' ),
+				'queue_no_image'           => __( 'No Image', 'tweet-old-post' ),
+				'skip_btn_queue'           => __( 'Skip', 'tweet-old-post' ),
+				'block_btn_queue'          => __( 'Block', 'tweet-old-post' ),
+				'insert_media_title'       => __( 'Insert a media', 'tweet-old-post' ),
+				'insert_media_btn'         => __( 'Insert', 'tweet-old-post' ),
 
 			),
 			'logs'        => array(
@@ -234,7 +248,7 @@ class Rop_I18n {
 				'multiselect_not_found'  => __( 'Nothing found matching', 'tweet-old-post' ),
 				'next_share'             => __( 'Next share', 'tweet-old-post' ),
 				'sharing_now'            => __( 'Sharing...', 'tweet-old-post' ),
-				'cron_interval'            => __( 'Once every 5 minutes', 'tweet-old-post' ),
+				'cron_interval'          => __( 'Once every 5 minutes', 'tweet-old-post' ),
 			),
 			'post_editor' => array(
 				'remove_message'      => __( 'Remove Custom Message', 'tweet-old-post' ),

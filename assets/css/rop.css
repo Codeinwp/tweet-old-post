@@ -29,6 +29,7 @@
 	display: -ms-flexbox;
 	display: flex;
 	flex-direction: column;
+
 	-webkit-box-direction: normal;
 	-webkit-box-orient: vertical;
 	-webkit-box-pack: center;
@@ -49,9 +50,9 @@
 }
 
 #rop_core .upsell {
-	border-radius: 0.1rem;
 	margin-bottom: 0;
 	padding: 5px 10px;
+	border-radius: 0.1rem;
 	color: #fff;
 	background: #8492a0;
 }
@@ -61,13 +62,14 @@
 }
 
 #rop_core .plugin-title {
-	font-size: 30px;
 	margin: 0;
 	margin-right: 5px;
+	font-size: 30px;
 }
+
 #rop_core .plugin-logo {
-	margin-bottom: 15px;
 	margin-right: 10px;
+	margin-bottom: 15px;
 }
 
 .rop-tab-state-true {
@@ -77,16 +79,20 @@
 .rop-tab-state-false {
 	opacity: 1;
 }
+
 #rop_core .sidebar-top {
 	display: none;
 }
 
-#rop_core .fade-enter-active, #rop_core .fade-leave-active {
-	-webkit-transition: opacity .2s;
-	transition: opacity .2s;
+#rop_core .fade-enter-active,
+#rop_core .fade-leave-active {
+	-webkit-transition: opacity 0.2s;
+	transition: opacity 0.2s;
 }
-#rop_core .fade-enter, #rop_core .fade-leave-to {
-	opacity: 0
+
+#rop_core .fade-enter,
+#rop_core .fade-leave-to {
+	opacity: 0;
 }
 
 @media (max-width: 960px) {
@@ -110,15 +116,18 @@
 	#rop_core .panel {
 		width: 100%;
 	}
+
 	#rop_core .rop-upsell-business-card img.img-responsive,
 	#rop_core .rop-upsell-pro-card img.img-responsive {
 		width: 100%;
 	}
 }
+
 @media (max-width: 1280px) {
 	#rop_core .sidebar {
 		display: none;
 	}
+
 	#rop_core .sidebar-top {
 		display: -webkit-box;
 		display: -webkit-flex;
@@ -126,10 +135,12 @@
 		display: flex;
 	}
 }
+
 @media (max-width: 840px) {
 	#rop_core .sidebar {
 		display: block;
 	}
+
 	#rop_core .sidebar-top {
 		display: none;
 	}
