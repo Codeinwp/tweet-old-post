@@ -56,9 +56,7 @@ class Rop_Post_Format_Helper {
 				return array();
 			}
 		}
-		$parts   = explode( '_', $this->account_id );
-		$service = $parts[0];
-
+		$service                            = $this->get_service();
 		$content                            = $this->build_content( $post_id );
 		$filtered_post                      = array();
 		$filtered_post['post_id']           = $post_id;
@@ -68,7 +66,8 @@ class Rop_Post_Format_Helper {
 		$filtered_post['hashtags']          = $content['hashtags'];
 		$filtered_post['post_url']          = $this->build_url( $post_id );
 		$filtered_post['post_image']        = $this->post_format['image'] ? $this->build_image( $post_id ) : '';
-		$filtered_post['short_url_service'] = $this->post_format['short_url_service'];
+		$filtered_post['short_url']         = $this->post_format['short_url'];
+		$filtered_post['short_url_service'] = ( $this->post_format['short_url'] ) ? $this->post_format['short_url_service'] : '';
 		$filtered_post['post_with_image']   = $this->post_format['image'];
 
 		$filtered_post['shortner_credentials'] = ( isset( $this->post_format['shortner_credentials'] ) ) ? $this->post_format['shortner_credentials'] : array();
@@ -93,6 +92,18 @@ class Rop_Post_Format_Helper {
 	}
 
 	/**
+	 * Get service by account name.
+	 *
+	 * @return string Service slug.
+	 */
+	private function get_service() {
+		$parts   = explode( '_', $this->account_id );
+		$service = $parts[0];
+
+		return $service;
+	}
+
+	/**
 	 * Utility method to prepare the content based on the post format settings.
 	 *
 	 * @since   8.0.0
@@ -107,7 +118,6 @@ class Rop_Post_Format_Helper {
 		$content_helper  = new Rop_Content_Helper();
 		$max_length      = $this->post_format['maximum_length'];
 
-		$general_settings = new Rop_Settings_Model();
 		/**
 		 * Content edited thru queue.
 		 */
@@ -153,6 +163,10 @@ class Rop_Post_Format_Helper {
 		$size = $max_length - ( strlen( $hashtags ) ) - $custom_length;
 		if ( $size <= 0 ) {
 			$size = $max_length;
+		}
+		$service = $this->get_service();
+		if ( $service === 'twitter' && $this->post_format['include_link'] ) {
+			$max_length = $max_length - 24;
 		}
 		$base_content = $content_helper->token_truncate( $base_content, $size );
 
@@ -491,5 +505,4 @@ class Rop_Post_Format_Helper {
 
 		return $short_url;
 	}
-
 }

@@ -62,7 +62,7 @@
 							<i class="fa fa-pencil" aria-hidden="true"></i> {{labels.edit_queue}}
 						</button>
 					</div>
-					<div class="column col-3 col-ml-auto text-right">
+					<div class="column col-3 col-ml-auto text-right" v-if="content.short_url_service !== '' ">
 						<p class="m-0">
 							<b>{{labels.link_title}}:</b>
 							<a :href="content.post_url" target="_blank" class="tooltip"

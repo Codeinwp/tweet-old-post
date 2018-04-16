@@ -27,58 +27,6 @@ abstract class Rop_Services_Abstract {
 	 */
 	public $display_name;
 	/**
-	 * Stores the service details.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @var     array $service The service details.
-	 */
-	protected $service;
-	/**
-	 * Stores the service name in slug format.
-	 *
-	 * @since   8.0.0
-	 * @access  protected
-	 * @var     string $service_name The service name in slug format.
-	 */
-	protected $service_name;
-
-	/**
-	 * Stores a reference to the API to be used.
-	 *
-	 * @since   8.0.0
-	 * @access  protected
-	 * @var     object $api The API object.
-	 */
-	protected $api = null;
-
-	/**
-	 * The array with the credentials for auth-ing the service.
-	 *
-	 * @since   8.0.0
-	 * @access  protected
-	 * @var     array $credentials The credentials array used for auth.
-	 */
-	protected $credentials;
-
-	/**
-	 * Holds the Rop_Exception_Handler
-	 *
-	 * @since   8.0.0
-	 * @access  protected
-	 * @var     Rop_Exception_Handler $error The exception handler.
-	 */
-	protected $error;
-
-	/**
-	 * Holds the logger
-	 *
-	 * @since   8.0.0
-	 * @access  protected
-	 * @var     Rop_Logger $logger The logger handler.
-	 */
-	protected $logger;
-	/**
 	 * Default account template array.
 	 *
 	 * @access  protected
@@ -94,6 +42,54 @@ abstract class Rop_Services_Abstract {
 		'img'     => '',
 		'service' => '',
 	);
+	/**
+	 * Stores the service details.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @var     array $service The service details.
+	 */
+	protected $service;
+	/**
+	 * Stores the service name in slug format.
+	 *
+	 * @since   8.0.0
+	 * @access  protected
+	 * @var     string $service_name The service name in slug format.
+	 */
+	protected $service_name;
+	/**
+	 * Stores a reference to the API to be used.
+	 *
+	 * @since   8.0.0
+	 * @access  protected
+	 * @var     object $api The API object.
+	 */
+	protected $api = null;
+	/**
+	 * The array with the credentials for auth-ing the service.
+	 *
+	 * @since   8.0.0
+	 * @access  protected
+	 * @var     array $credentials The credentials array used for auth.
+	 */
+	protected $credentials;
+	/**
+	 * Holds the Rop_Exception_Handler
+	 *
+	 * @since   8.0.0
+	 * @access  protected
+	 * @var     Rop_Exception_Handler $error The exception handler.
+	 */
+	protected $error;
+	/**
+	 * Holds the logger
+	 *
+	 * @since   8.0.0
+	 * @access  protected
+	 * @var     Rop_Logger $logger The logger handler.
+	 */
+	protected $logger;
 
 	/**
 	 * Rop_Services_Abstract constructor.
@@ -317,6 +313,9 @@ abstract class Rop_Services_Abstract {
 		if ( empty( $link ) ) {
 			return '';
 		}
+		if ( ! $post_details['short_url'] ) {
+			return $link;
+		}
 		if ( $post_details['short_url_service'] === 'wp_short_url' ) {
 			$link = wp_get_shortlink( $post_details['post_id'] );
 		} else {
@@ -382,5 +381,6 @@ abstract class Rop_Services_Abstract {
 			}
 		);
 	}
+
 
 }
