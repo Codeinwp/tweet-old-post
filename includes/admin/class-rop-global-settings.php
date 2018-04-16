@@ -264,13 +264,13 @@ class Rop_Global_Settings {
 	 */
 	public static function instance() {
 		if ( ! isset( self::$instance ) && ! ( self::$instance instanceof Rop_Global_Settings ) ) {
-			self::$instance                                                               = new Rop_Global_Settings;
-			self::$instance->services                                                     = apply_filters(
+			self::$instance           = new Rop_Global_Settings;
+			self::$instance->services = apply_filters(
 				'rop_available_services',
 				self::$instance->services_defaults
 			);
 
-			self::$instance->settings                                                     = apply_filters(
+			self::$instance->settings = apply_filters(
 				'rop_general_settings_defaults',
 				self::$instance->settings_defaults
 			);
@@ -305,11 +305,12 @@ class Rop_Global_Settings {
 		if ( ! $pro_check ) {
 			return - 1;
 		}
-		$product_key  = 'tweet_old_post_pro_new';
+		$product_key  = 'tweet_old_post_pro';
 		$license_data = get_option( $product_key . '_license_data', '' );
 		if ( empty( $license_data ) ) {
 			return - 1;
 		}
+
 		if ( ! isset( $license_data->license ) ) {
 			return - 1;
 		}
@@ -322,6 +323,9 @@ class Rop_Global_Settings {
 			}
 
 			return ( - 1 );
+		}
+		if ( isset( $license_data->price_id ) ) {
+			return intval( $license_data->price_id );
 		}
 		$plan = get_option( $product_key . '_license_plan', - 1 );
 

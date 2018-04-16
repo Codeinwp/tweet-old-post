@@ -113,7 +113,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		}
 
 		if ( isset( $schedule_data['interval_r'] ) ) {
-			$schedule['interval_r'] = $schedule_data['interval_r'];
+			$schedule['interval_r'] = round( $schedule_data['interval_r'], 2 );
 		}
 
 		if ( isset( $schedule_data['interval_f'] ) ) {
@@ -354,7 +354,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 			 */
 			$times = array_map(
 				function ( $time ) {
-						return $this->convert_string_to_float( $time );
+					return $this->convert_string_to_float( $time );
 				}, $times
 			);
 			sort( $times );

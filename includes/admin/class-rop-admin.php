@@ -46,7 +46,7 @@ class Rop_Admin {
 	 * @since    8.0.0
 	 *
 	 * @param      string $plugin_name The name of this plugin.
-	 * @param      string $version     The version of this plugin.
+	 * @param      string $version The version of this plugin.
 	 */
 	public function __construct( $plugin_name, $version ) {
 
@@ -181,17 +181,17 @@ class Rop_Admin {
 					$posts = $event['posts'];
 					$queue->remove_from_queue( $event['time'], $account );
 					$account_data = $services_model->find_account( $account );
-					foreach ( $posts as $post ) {
-						try {
-							$service = $service_factory->build( $account_data['service'] );
-							$service->set_credentials( $account_data['credentials'] );
+					try {
+						$service = $service_factory->build( $account_data['service'] );
+						$service->set_credentials( $account_data['credentials'] );
+						foreach ( $posts as $post ) {
 							$post_data = $queue->prepare_post_object( $post, $account );
 							$logger->info( 'Posting', array( 'extra' => $post_data ) );
 							$service->share( $post_data, $account_data );
-						} catch ( Exception $exception ) {
-							$error_message = sprintf( Rop_I18n::get_labels( 'accounts.service_error' ), $account_data['service'] );
-							$logger->alert_error( $error_message . ' Error: ' . $exception->getTrace() );
 						}
+					} catch ( Exception $exception ) {
+						$error_message = sprintf( Rop_I18n::get_labels( 'accounts.service_error' ), $account_data['service'] );
+						$logger->alert_error( $error_message . ' Error: ' . $exception->getTrace() );
 					}
 				}
 			}

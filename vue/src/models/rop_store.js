@@ -174,7 +174,7 @@ export default new Vuex.Store( {
 				state.activePostFormat = stateData
 				break
 			case 'reset_accounts':
-				state.activeAccounts = [];
+				state.activeAccounts = {};
 				state.authenticatedServices = [];
 				break
 			case 'get_shortner_credentials':

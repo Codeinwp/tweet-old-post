@@ -138,7 +138,6 @@
 					<select class="form-select" v-model="post_format.short_url_service">
 						<option value="rviv.ly">rviv.ly</option>
 						<option value="bit.ly">bit.ly</option>
-						<option value="shorte.st">shorte.st</option>
 						<option value="goo.gl">goo.gl</option>
 						<option value="ow.ly">ow.ly</option>
 						<option value="is.gd">is.gd</option>

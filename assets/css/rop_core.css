@@ -617,7 +617,7 @@ a.active {
 #rop_core .btn[disabled],
 #rop_core .btn:disabled,
 #rop_core .btn.disabled {
-	opacity: 0.5;
+	opacity: 1;
 	cursor: default;
 	pointer-events: none;
 }

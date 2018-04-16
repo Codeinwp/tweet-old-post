@@ -196,7 +196,7 @@
 				return this.$store.state.generalSettings
 			},
 			isPro: function () {
-				return (this.$store.state.licence > 0);
+				return (this.$store.state.licence > 1);
 			},
 			postTypes: function () {
 				return this.$store.state.generalSettings.available_post_types;

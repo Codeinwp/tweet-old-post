@@ -121,12 +121,11 @@ class Rop_Cron_Helper {
 		 */
 		$selector = new Rop_Posts_Selector_Model();
 		$selector->clear_buffer();
-		/**
-		 * Clear logs.
-		 */
-		$logger = new Rop_Logger();
-		$logger->clear_user_logs();
-
+		// **
+		// * Clear logs.
+		// */
+		// $logger = new Rop_Logger();
+		// $logger->clear_user_logs();
 		return false;
 	}
 

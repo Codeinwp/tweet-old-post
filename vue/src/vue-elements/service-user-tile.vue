@@ -145,6 +145,7 @@
 				let service_id = parts[0] + '_' + parts[1];
 
 				this.$store.state.authenticatedServices[service_id].available_accounts[id].active = (type !== 'inactive');
+				this.$log.info("Before toggle ", this.$store.state.activeAccounts);
 				if (type === 'inactive') {
 					Vue.delete(this.$store.state.activeAccounts, id);
 				} else {

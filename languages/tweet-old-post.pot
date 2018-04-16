@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Revive Old Post (Former Tweet Old Post) 8.0.0\n"
 "Report-Msgid-Bugs-To: https://github.com/Codeinwp/tweet-old-post/issues\n"
-"POT-Creation-Date: 2018-04-12 11:37:21+00:00\n"
+"POT-Creation-Date: 2018-04-16 12:17:09+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -476,7 +476,7 @@ msgstr ""
 
 #: includes/class-rop-i18n.php:210
 msgid ""
-"You ca edit the posts from the queue only the Business version of the "
+"You can edit the posts from the queue only the Business version of the "
 "plugin. View more details %1$shere%2$s."
 msgstr ""
 

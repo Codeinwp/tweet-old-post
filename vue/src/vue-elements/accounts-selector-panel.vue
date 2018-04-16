@@ -12,7 +12,7 @@
 					<div class="column col-3 col-sm-12 col-md-12 col-xl-3 col-lg-3 col-xs-12 col-rop-selector-accounts">
 						<span class="divider"></span>
 						<div v-for="( account, id ) in active_accounts">
-							<div class="rop-selector-account-container" v-bind:class="{active: selected_account===id}"
+							<div class="rop-selector-account-container" :class="{active: selected_account===id}"
 							     @click="setActiveAccount(id)">
 								<div class="tile tile-centered rop-account">
 									<div class="tile-icon">
@@ -39,7 +39,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="panel-footer">
+		<div class="panel-footer" v-if="accountsCount > 0">
 			<div class="panel-actions text-right" v-if="allow_footer">
 				<button class="btn btn-secondary" @click="resetAccountData()"><i class="fa fa-ban"
 				                                                                 v-if="!this.is_loading"></i> <i
@@ -109,20 +109,32 @@
 			accountsCount: function () {
 				return Object.keys(this.$store.state.activeAccounts).length
 			},
-			active_accounts: function () {
-				return this.$store.state.activeAccounts
+			active_accounts: {
+				get: function () {
+					const active_accounts = this.$store.state.activeAccounts;
+
+					const normalized_accounts = {};
+					for (const key in active_accounts) {
+						if (!active_accounts.hasOwnProperty(key)) {
+							continue;
+						}
+						normalized_accounts[key] = active_accounts[key];
+
+					}
+					this.$log.info('Available accounts', normalized_accounts)
+					return normalized_accounts;
+				},
+				set: function (value) {
+					this.setupData();
+				}
 			},
 			active_account_name: function () {
+				
 				return this.active_accounts[this.selected_account].user;
+
 			},
 		},
 		watch: {
-			active_accounts: function () {
-				if (Object.keys(this.$store.state.activeAccounts)[0] && this.selected_account === null) {
-					this.selected_account = Object.keys(this.$store.state.activeAccounts)[0];
-					this.getAccountData();
-				}
-			},
 			type: function () {
 				this.setupData();
 			}
