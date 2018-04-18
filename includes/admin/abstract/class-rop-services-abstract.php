@@ -382,5 +382,15 @@ abstract class Rop_Services_Abstract {
 		);
 	}
 
+	/**
+	 * Strip non-ascii chars.
+	 *
+	 * @param string $string String to check.
+	 *
+	 * @return string Normalized string.
+	 */
+	protected function normalize_string( $string ) {
+		return preg_replace( '/[[:^print:]]/', '', $string );
+	}
 
 }

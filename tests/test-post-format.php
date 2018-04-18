@@ -57,12 +57,6 @@ class Test_RopPostFormat extends WP_UnitTestCase {
 		$this->assertNotFalse( filter_var( $short_url, FILTER_VALIDATE_URL ) );
 		$this->assertNotEquals( $short_url, '' );
 
-		// shorte.st Test
-		$shortest = new Rop_Shortest_Shortner();
-		$key      = 'e3b65f77eddddc7c0bf1f3a2f5a13f59';
-		$shortest->set_credentials( array( 'key' => $key ) );
-		$short_url = $shortest->shorten_url( $url );
-
 		$this->assertNotEquals( $url, $short_url );
 		$this->assertNotFalse( filter_var( $short_url, FILTER_VALIDATE_URL ) );
 		$this->assertNotEquals( $short_url, '' );

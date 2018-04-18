@@ -155,11 +155,9 @@ class Rop_Post_Format_Helper {
 
 		$custom_length = $this->get_custom_length();
 
-		$result   = $this->make_hashtags( $base_content, $content_helper, $post_id );
+		$result = $this->make_hashtags( $base_content, $content_helper, $post_id );
+
 		$hashtags = $result['hashtags'];
-		if ( ! empty( $hashtags ) ) {
-			$hashtags .= ' ' . $hashtags;
-		}
 		$size = $max_length - ( strlen( $hashtags ) ) - $custom_length;
 		if ( $size <= 0 ) {
 			$size = $max_length;

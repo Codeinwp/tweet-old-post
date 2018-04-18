@@ -254,8 +254,8 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			$user_details = wp_parse_args(
 				array(
 					'id'      => $page->name,
-					'user'    => $page->title,
-					'account' => $page->name,
+					'user'    => $this->normalize_string( $page->title ),
+					'account' => $this->normalize_string( $page->name ),
 					'img'     => $img,
 				), $this->user_default
 			);
@@ -386,6 +386,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			);
 		} catch ( Exception $exception ) {
 			$this->logger->alert_error( 'Posting failed for Tumblr. Error: ' . $exception->getMessage() );
+
 			return false;
 		}
 

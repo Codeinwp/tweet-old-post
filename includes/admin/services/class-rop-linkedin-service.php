@@ -254,8 +254,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		}
 		$user_details            = $this->user_default;
 		$user_details['id']      = $data['id'];
-		$user_details['account'] = $data['formattedName'];
-		$user_details['user']    = $data['formattedName'];
+		$user_details['account'] = $this->normalize_string( $data['formattedName'] );
+		$user_details['user']    = $this->normalize_string( $data['formattedName'] );
 		$user_details['img']     = $img;
 
 		return array( $user_details );

@@ -246,13 +246,13 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		$user       = $response->getGraphUser();
 		$this->user = $user;
-		$user_id = $user->getId();
+		$user_id    = $user->getId();
 		if ( empty( $user_id ) ) {
 			return false;
 		}
 		$user_details                 = $this->user_default;
 		$user_details['id']           = $user->getId();
-		$user_details['user']         = $user['name'];
+		$user_details['user']         = $this->normalize_string( $user['name'] );
 		$user_details['account']      = $user->getEmail();
 		$user_details['img']          = $user->getPicture()->getUrl();
 		$user_details['access_token'] = $token;
@@ -319,7 +319,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			$img                          = $img->getGraphNode()->asArray();
 			$user_details                 = $this->user_default;
 			$user_details['id']           = $key['id'];
-			$user_details['user']         = $key['name'];
+			$user_details['user']         = $this->normalize_string( $key['name'] );
 			$user_details['account']      = $user->getEmail();
 			$user_details['img']          = $img['url'];
 			$user_details['access_token'] = $key['access_token'];

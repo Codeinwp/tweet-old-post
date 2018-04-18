@@ -242,8 +242,8 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			$img = $data->profile_image_url_https;
 		}
 		$user['id']      = $data->id;
-		$user['account'] = $data->name;
-		$user['user']    = '@' . $data->screen_name;
+		$user['account'] = $this->normalize_string( $data->name );
+		$user['user']    = '@' . $this->normalize_string( $data->screen_name );
 		$user['img']     = $img;
 		$user['service'] = $this->service_name;
 
