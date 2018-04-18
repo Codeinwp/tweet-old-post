@@ -18,6 +18,12 @@ use Monolog\Logger;
  */
 class Rop_Log_Handler extends AbstractProcessingHandler {
 	/**
+	 * List of logs.
+	 *
+	 * @var array $current_logs List  of logs.
+	 */
+	static private $current_logs;
+	/**
 	 * Hold initialization status.
 	 *
 	 * @var bool Init status.
@@ -29,12 +35,6 @@ class Rop_Log_Handler extends AbstractProcessingHandler {
 	 * @var string $namespace Option key.
 	 */
 	private $namespace;
-	/**
-	 * List of logs.
-	 *
-	 * @var array $current_logs List  of logs.
-	 */
-	private $current_logs;
 	/**
 	 * How many logs to save.
 	 *
@@ -65,7 +65,7 @@ class Rop_Log_Handler extends AbstractProcessingHandler {
 			$this->initialize();
 		}
 
-		return array_reverse( $this->current_logs );
+		return array_reverse( self::$current_logs );
 	}
 
 	/**
@@ -76,7 +76,7 @@ class Rop_Log_Handler extends AbstractProcessingHandler {
 		if ( ! is_array( $current_logs ) ) {
 			$current_logs = array();
 		}
-		$this->current_logs = $current_logs;
+		self::$current_logs = $current_logs;
 		$this->initialized  = true;
 	}
 
@@ -90,8 +90,8 @@ class Rop_Log_Handler extends AbstractProcessingHandler {
 			$this->initialize();
 		}
 
-		$this->current_logs = array();
-		$this->save_logs();
+		self::$current_logs = array();
+		$this->save_logs( array() );
 	}
 
 	/*
@@ -101,12 +101,11 @@ class Rop_Log_Handler extends AbstractProcessingHandler {
 	/**
 	 * Save logs utility.
 	 * Check the logs limit is reached, truncate the logs.
+	 *
+	 * @param array $logs Logs to save.
 	 */
-	private function save_logs() {
-		if ( count( $this->current_logs ) > $this->limit ) {
-			$this->current_logs = array_slice( $this->current_logs, count( $this->current_logs ) - $this->limit, $this->limit );
-		}
-		update_option( $this->namespace, $this->current_logs, 'no' );
+	private function save_logs( $logs ) {
+		update_option( $this->namespace, $logs, 'no' );
 	}
 
 	/**
@@ -118,13 +117,16 @@ class Rop_Log_Handler extends AbstractProcessingHandler {
 		if ( ! $this->initialized ) {
 			$this->initialize();
 		}
-		$this->current_logs[] = array(
+		self::$current_logs[] = array(
 			'channel' => $record['channel'],
 			'type'    => isset( $record['context']['type'] ) ? $record['context']['type'] : 'info',
 			'level'   => $record['level'],
 			'message' => $record['formatted'],
 			'time'    => Rop_Scheduler_Model::get_current_time(),
 		);
-		$this->save_logs();
+		if ( count( self::$current_logs ) > $this->limit ) {
+			$this->current_logs = array_slice( self::$current_logs, count( self::$current_logs ) - $this->limit, $this->limit );
+		}
+		$this->save_logs( self::$current_logs );
 	}
 }

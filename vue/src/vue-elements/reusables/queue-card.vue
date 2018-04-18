@@ -90,8 +90,8 @@
 					</div>
 				</div>
 			</div>
-			<div class="column col-4 col-sm-12 vertical-align" v-if="!edit">
-				<div v-if="content.post_with_image">
+			<div class="column col-4 col-sm-12 vertical-align" v-if="!edit && content.post_with_image">
+				<div v-if="content.post_image !== ''">
 					<figure class="figure" v-if="content.post_image !== ''">
 						<img :src="content.post_image" class="img-fit-cover img-responsive">
 					</figure>
