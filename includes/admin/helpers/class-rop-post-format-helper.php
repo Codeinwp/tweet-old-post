@@ -164,7 +164,7 @@ class Rop_Post_Format_Helper {
 		}
 		$service = $this->get_service();
 		if ( $service === 'twitter' && $this->post_format['include_link'] ) {
-			$max_length = $max_length - 24;
+			$size = $size - 24;
 		}
 		$base_content = $content_helper->token_truncate( $base_content, $size );
 
