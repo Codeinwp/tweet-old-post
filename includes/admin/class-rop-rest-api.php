@@ -292,7 +292,7 @@ class Rop_Rest_Api {
 	 * @return array
 	 */
 	private function save_post_format( $data ) {
-		$post_format = new Rop_Post_Format_Model();
+		$post_format = new Rop_Post_Format_Model( $data['service'] );
 		$sh_factory  = new Rop_Shortner_Factory();
 		$this->response->set_code( '500' );
 		try {

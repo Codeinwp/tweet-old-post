@@ -4444,8 +4444,9 @@ a.active {
 	color: inherit;
 	font-weight: bold;
 }
-#rop_core button.btn-block[disabled]{
-	cursor: not-allowed;
+
+#rop_core button.btn-block[disabled] {
 	opacity: 0.5;
+	cursor: not-allowed;
 	pointer-events: auto;
 }

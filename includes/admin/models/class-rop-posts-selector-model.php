@@ -217,7 +217,6 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @return array
 	 */
 	private function build_tax_query( $custom_data = array() ) {
-		$tax_queries = array( 'relation' => 'OR' );
 
 		$exclude    = $this->settings->get_exclude_taxonomies();
 		$taxonomies = $this->settings->get_selected_taxonomies();
@@ -226,9 +225,9 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			$exclude    = $custom_data['exclude'];
 			$taxonomies = $custom_data['taxonomies'];
 		}
+		$operator = ( $exclude === true ) ? 'NOT IN' : 'IN';
 
-		$operator = ( $exclude == true ) ? 'NOT IN' : 'IN';
-
+		$tax_queries = array( 'relation' => $exclude ? 'AND' : 'OR' );
 		if ( ! empty( $taxonomies ) ) {
 			foreach ( $taxonomies as $taxonomy ) {
 				$tmp_query = array();
@@ -239,7 +238,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 				if ( $term_id === 'all' ) {
 					continue;
 				}
-				$tmp_query['relation'] = 'OR';
+				$tmp_query['relation'] = ( $exclude ) ? 'AND' : 'OR';
 				$tmp_query['taxonomy'] = $taxonomy['tax'];
 
 				$tmp_query['terms']            = $term_id;
@@ -291,7 +290,6 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 				);
 			}
 		}
-
 		$results = $this->query_results( $account_id, $post_types, $tax_queries, $excluded_by_user );
 		/**
 		 * If share more than once is active, we have no more posts and the buffer is filled
@@ -327,7 +325,8 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		if ( ! is_array( $exclude ) ) {
 			$exclude = array();
 		}
-		$args  = $this->build_query_args( $post_types, $tax_queries, $exclude );
+		$args = $this->build_query_args( $post_types, $tax_queries, $exclude );
+
 		$query = new WP_Query( $args );
 
 		$posts = $query->posts;
@@ -340,6 +339,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		 * Reset indexes to avoid missing ones.
 		 */
 		$posts = array_values( $posts );
+
 		return $posts;
 	}
 

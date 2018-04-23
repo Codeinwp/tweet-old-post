@@ -147,7 +147,7 @@
 			</div>
 		</div>
 		
-		<div class="columns py-2" v-if="post_format.short_url" v-for="( credential, key_name ) in shortner_credentials">
+		<div class="columns py-2" v-if="post_format.short_url" v-for="( credential, key_name ) in post_format.shortner_credentials">
 			<div class="column col-6 col-sm-12 vertical-align">
 				<b>{{ key_name | capitalize }}</b>
 				<p class="text-gray">{{labels.shortner_field_desc_start}} "{{key_name}}"
@@ -156,9 +156,7 @@
 			</div>
 			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="form-group">
-					<input class="form-input" type="text" v-model="shortner_credentials[key_name]"
-					       value="" placeholder="" @change="updateShortnerCredentials()"
-					       @keyup="updateShortnerCredentials()"/>
+					<input class="form-input" type="text" v-model="post_format.shortner_credentials[key_name]">
 				</div>
 			</div>
 		</div>
@@ -252,7 +250,6 @@
 		props: ['account_id', 'license'],
 		data: function () {
 			return {
-				shortner_credentials: [],
 				labels: this.$store.state.labels.post_format,
 				upsell_link: ropApiSettings.upsell_link,
 			}
@@ -275,17 +272,9 @@
 					req: 'get_shortner_credentials',
 					data: {short_url_service: this.short_url_service}
 				}).then(response => {
-					this.shortner_credentials = response
+					this.post_format.shortner_credentials = response
 				}, error => {
 					Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
-				})
-			}
-		},
-		methods: {
-			updateShortnerCredentials() {
-				this.$store.commit('updateState', {
-					stateData: this.shortner_credentials,
-					requestName: 'get_shortner_credentials'
 				})
 			}
 		},
