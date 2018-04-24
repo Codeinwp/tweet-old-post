@@ -269,6 +269,13 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 					continue;
 				}
 				foreach ( $events_posts['posts'] as $post_id ) {
+					/**
+					 * Prevent showing due posts in the frontend queue.
+					 * It will cover delays between posts are sent to the networks and removal from the queue.
+					 */
+					if ( Rop_Scheduler_Model::get_current_time() > $events_posts['time'] ) {
+						continue;
+					}
 					$ordered[] = array(
 						'time'      => $events_posts['time'],
 						'post_data' => array(
