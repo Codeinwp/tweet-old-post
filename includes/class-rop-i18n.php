@@ -186,7 +186,7 @@ class Rop_I18n {
 				'image_title'                       => __( 'Post with image', 'tweet-old-post' ),
 				'image_desc'                        => __( 'Use the featured image when posting?', 'tweet-old-post' ),
 				'image_yes'                         => __( 'Yes', 'tweet-old-post' ),
-				'image_upsell'                      => __( 'Posting with images ia available in the pro version.', 'tweet-old-post' ),
+				'image_upsell'                      => __( 'Posting with images is available in the pro version.', 'tweet-old-post' ),
 			),
 			'schedule'    => array(
 				'menu_item'                 => __( 'Custom Schedule', 'tweet-old-post' ),

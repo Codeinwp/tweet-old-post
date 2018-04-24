@@ -1,28 +1,31 @@
 # Copyright (C) 2018 revive.social
 # This file is distributed under the no.
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Revive Old Post (Former Tweet Old Post) 8.0.0\n"
 "Report-Msgid-Bugs-To: https://github.com/Codeinwp/tweet-old-post/issues\n"
-"POT-Creation-Date: 2018-04-24 07:48:56+00:00\n"
+"POT-Creation-Date: 2018-04-24 17:55-0400\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: 2018-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Themeisle Translate Team <friends@themeisle.com>\n"
 "Language-Team: Themeisle Translate <friends@themeisle.com>\n"
-"X-Generator: grunt-wp-i18n 0.5.4\n"
-"X-Poedit-KeywordsList: "
-"__;_e;_x:1,2c;_ex:1,2c;_n:1,2;_nx:1,2,4c;_n_noop:1,2;_nx_noop:1,2,3c;esc_"
-"attr__;esc_html__;esc_attr_e;esc_html_e;esc_attr_x:1,2c;esc_html_x:1,2c;\n"
+"X-Generator: Poedit 2.0.7\n"
+"X-Poedit-KeywordsList: __;_e;_x:1,2c;_ex:1,2c;_n:1,2;_nx:1,2,4c;_n_noop:1,2;"
+"_nx_noop:1,2,3c;esc_attr__;esc_html__;esc_attr_e;esc_html_e;esc_attr_x:1,2c;"
+"esc_html_x:1,2c\n"
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Poedit-Country: United States\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-Basepath: ../\n"
-"X-Poedit-SearchPath-0: .\n"
-"X-Poedit-Bookmarks: \n"
+"X-Poedit-Basepath: ..\n"
 "X-Textdomain-Support: yes\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: assets/js/build/rop.min.js:16
+msgid "GET"
+msgstr ""
 
 #: includes/admin/class-rop-admin.php:154
 msgid "Revive Old Post"
@@ -78,9 +81,9 @@ msgstr ""
 #: includes/class-rop-i18n.php:87
 msgid ""
 "Each <b>account</b> can have it's own options for sharing, on the left you "
-"can see the current selected account and network, bellow are the options "
-"for the account. Don't forget to save after each change and remember, you "
-"can always reset an account to the network defaults."
+"can see the current selected account and network, bellow are the options for "
+"the account. Don't forget to save after each change and remember, you can "
+"always reset an account to the network defaults."
 msgstr ""
 
 #: includes/class-rop-i18n.php:88 includes/class-rop-i18n.php:138
@@ -116,10 +119,12 @@ msgid "Please add the APP SECRET from your Facebook app."
 msgstr ""
 
 #: includes/class-rop-i18n.php:95
+#, php-format
 msgid "You can check %1$shere%2$s how you get this details."
 msgstr ""
 
 #: includes/class-rop-i18n.php:96
+#, php-format
 msgid "The %1$s service can not be used or was not found"
 msgstr ""
 
@@ -170,7 +175,7 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: includes/class-rop-i18n.php:110
+#: includes/class-rop-i18n.php:111
 msgid ""
 "If there are no more posts to share, we should start re-sharing the one we\n"
 "\t\t\t\t\t\t\tpreviously shared."
@@ -184,7 +189,7 @@ msgstr ""
 msgid "Post types available to share - what post types are available for share"
 msgstr ""
 
-#: includes/class-rop-i18n.php:116
+#: includes/class-rop-i18n.php:117
 msgid ""
 "Selecting custom post types is available in the pro\n"
 "\t\t\t\t\t\t\tversion."
@@ -194,7 +199,7 @@ msgstr ""
 msgid "Taxonomies"
 msgstr ""
 
-#: includes/class-rop-i18n.php:121
+#: includes/class-rop-i18n.php:122
 msgid ""
 "Taxonomies available for the selected post types. Use to include or exclude\n"
 "\t\t\t\t\t\t\tposts."
@@ -216,7 +221,7 @@ msgstr ""
 msgid "Enable Google Analytics Tracking"
 msgstr ""
 
-#: includes/class-rop-i18n.php:129
+#: includes/class-rop-i18n.php:130
 msgid ""
 "If checked an utm query willbe added to URL's so that you cand better track\n"
 "\t\t\t\t\t\t\ttrafic."
@@ -405,7 +410,7 @@ msgid "Use the featured image when posting?"
 msgstr ""
 
 #: includes/class-rop-i18n.php:189
-msgid "Posting with images ia available in the pro version."
+msgid "Posting with images is available in the pro version."
 msgstr ""
 
 #: includes/class-rop-i18n.php:192
@@ -470,11 +475,12 @@ msgstr ""
 
 #: includes/class-rop-i18n.php:209
 msgid ""
-"You can choose to edit any of the post, skip the sharing or block a "
-"specific one from sharing in the future."
+"You can choose to edit any of the post, skip the sharing or block a specific "
+"one from sharing in the future."
 msgstr ""
 
 #: includes/class-rop-i18n.php:210
+#, php-format
 msgid ""
 "You can edit the posts from the queue only the Business version of the "
 "plugin. View more details %1$shere%2$s."
@@ -487,8 +493,8 @@ msgstr ""
 #: includes/class-rop-i18n.php:212
 msgid ""
 "Check if you have at least an <b>\"Active account\"</b>, what posts and "
-"pages are selected in <b>\"General Settings\"</b> and if a "
-"<b>\"Schedule\"</b> is defined."
+"pages are selected in <b>\"General Settings\"</b> and if a <b>\"Schedule\"</"
+"b> is defined."
 msgstr ""
 
 #: includes/class-rop-i18n.php:213
@@ -639,27 +645,4 @@ msgstr ""
 
 #: includes/class-rop-i18n.php:257
 msgid "Custom message #"
-msgstr ""
-
-#. Plugin Name of the plugin/theme
-msgid "Revive Old Post (Former Tweet Old Post)"
-msgstr ""
-
-#. Author URI of the plugin/theme
-msgid "https://revive.social/"
-msgstr ""
-
-#. Description of the plugin/theme
-msgid ""
-"WordPress plugin that helps you to keeps your old posts alive by sharing "
-"them and driving more traffic to them from twitter/facebook or linkedin. It "
-"also helps you to promote your content. You can set time and no of posts to "
-"share to drive more traffic.For questions, comments, or feature requests, "
-"<a "
-"href=\"http://revive.social/support/?utm_source=plugindesc&utm_medium="
-"announce&utm_campaign=top\">contact </a> us!"
-msgstr ""
-
-#. Author of the plugin/theme
-msgid "revive.social"
 msgstr ""
