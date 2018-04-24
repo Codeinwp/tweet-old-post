@@ -13,7 +13,7 @@ Automatically share your WordPress posts on Twitter, Facebook, LinkedIn. Get mor
 
 ### What the plugin can do ?
 
-This plugin helps you keep your old posts alive by automatically sharing them and driving more traffic to them from Social Networks. It also helps you to promote your content. You can set sharing interval and number of posts to share to drive more traffic.For questions, comments, or feature requests, <a href="http://revive.social/support/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">contact us</a>!
+This plugin helps you keep your old posts alive by automatically sharing them and driving more traffic to them from Social Networks. It also helps you to promote your content. You can set sharing interval and number of posts to share to drive more traffic. For questions, comments, or feature requests, <a href="http://revive.social/support/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">contact us</a>!
 
 ROP can work as a facebook or twitter auto-poster and using it you can easily auto-share your posts on social media.
 
@@ -187,7 +187,7 @@ http://revive.social/plugins/revive-old-post
 
 **New in v7.3.1**
 
-* Fixed compatibility with old php versions.  
+* Fixed compatibility with old php versions.
 
 **New in v7.3**
 
@@ -860,4 +860,3 @@ http://www.ajaymatharu.com/major-update-to-tweet-old-post/
 - Randomness interval - This is a contributing factor in minimum interval so that posts are randomly chosen and tweeted from your blog.
 - Minimum age of post to be eligible for tweet - This allows you to set how old your post should be in order to be eligible for the tweet.
 - Categories to omit from tweets - This will protect posts from the selected categories from being tweeted.
-

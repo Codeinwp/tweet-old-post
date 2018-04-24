@@ -4,7 +4,7 @@
 			<div class="column header-logo vertical-align">
 				<div>
 					<img :src="plugin_logo" class="plugin-logo avatar avatar-lg"/>
-					<h1 class="plugin-title d-inline-block">Revive Old Post</h1><span class="powered d-inline-block"> {{labels.by}} <a
+					<h1 class="plugin-title d-inline-block">Revive Old Posts</h1><span class="powered d-inline-block"> {{labels.by}} <a
 						href="https://revive.social" target="_blank"><b>Revive.Social</b></a></span>
 				</div>
 			</div>
@@ -23,7 +23,7 @@
 				</button>
 			</div>
 		</div>
-		
+
 		<div class="columns">
 			<div class="panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 				<div class="panel-nav" style="padding: 8px;">
@@ -38,10 +38,10 @@
 				</div>
 				<component :is="page.template" :type="page.view"></component>
 			</div>
-			
+
 			<div class="sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12"
 			     :class="'rop-license-plan-'+license">
-				
+
 				<div class="card rop-container-start">
 					<div class="toast rop-current-time" v-if="formatedDate">
 						{{labels.now}}: {{ formatedDate }}
@@ -227,16 +227,16 @@
 		bottom: -16px;
 		right: 0px;
 	}
-	
+
 	#rop_core .badge.badge-logs::after {
 		right: auto;
 		top: 0px;
 	}
-	
+
 	#rop_core .badge.badge-logs {
 		padding-right: 10px;
 	}
-	
+
 	#rop_core .rop-upsell-business-card,
 	#rop_core .rop-upsell-pro-card {
 		padding: 0;
