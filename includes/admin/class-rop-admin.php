@@ -139,11 +139,11 @@ class Rop_Admin {
 	public function rop_main_page() {
 		if ( defined( 'ROP_PRO_VERSION' ) && ( - 1 === version_compare( ROP_PRO_VERSION, '2.0.0' ) ) ) {
 			?>
-            <div class="error">
-                <p>In order to use the premium features for <b>v8.0</b> of Revive Old Post you will need to update the
-                    Premium addon to at least 2.0. In case that you don't see the update, please download from your <a
-                            href="https://revive.social/your-purchases/" target="_blank">purchase history</a></p>
-            </div>
+			<div class="error">
+				<p>In order to use the premium features for <b>v8.0</b> of Revive Old Post you will need to update the
+					Premium addon to at least 2.0. In case that you don't see the update, please download from your <a
+							href="https://revive.social/your-purchases/" target="_blank">purchase history</a></p>
+			</div>
 			<?php
 		}
 		echo '

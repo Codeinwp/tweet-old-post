@@ -318,7 +318,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			$img                          = $img->getGraphNode()->asArray();
 			$user_details                 = $this->user_default;
 			$user_details['id']           = $key['id'];
-			$user_details['user']         = $this->normalize_string( empty ( $key['name'] ) ? '' : $key['name'] );
+			$user_details['user']         = $this->normalize_string( empty( $key['name'] ) ? '' : $key['name'] );
 			$user_details['account']      = $user->getEmail();
 			$user_details['img']          = $img['url'];
 			$user_details['access_token'] = $key['access_token'];

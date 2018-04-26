@@ -133,7 +133,6 @@ class Rop_Db_Upgrade {
 						$active_accounts                                 = array_merge( $active_accounts, $facebook_service->get_service_active_accounts() );
 						break;
 					case 'linkedin' && defined( 'ROP_PRO_DIR_URL' ):
-
 						$linkedin_service = new Rop_Linkedin_Service();
 						$app_id           = get_option( 'cwp_top_lk_app_id' );
 						$secret           = get_option( 'cwp_top_lk_app_secret' );

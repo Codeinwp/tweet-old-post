@@ -299,9 +299,11 @@ class Rop_Post_Format_Helper {
 		}
 		$hashtags = '';
 		$result   = array_filter( $result, 'strlen' );
-		$result   = array_map( function ( $value ) {
-			return str_replace( '#', '', $value );
-		}, $result );
+		$result   = array_map(
+			function ( $value ) {
+					return str_replace( '#', '', $value );
+			}, $result
+		);
 		foreach ( $result as $hashtag ) {
 			if ( $content_helper->mark_hashtags( $content, $hashtag ) !== false ) { // if the hashtag exists in $content
 				$content = $content_helper->mark_hashtags( $content, $hashtag ); // simply add a # there
