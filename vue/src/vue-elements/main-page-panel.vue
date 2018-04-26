@@ -4,7 +4,7 @@
 			<div class="column header-logo vertical-align">
 				<div>
 					<img :src="plugin_logo" class="plugin-logo avatar avatar-lg"/>
-					<h1 class="plugin-title d-inline-block">Revive Old Post</h1><span class="powered d-inline-block"> {{labels.by}} <a
+					<h1 class="plugin-title d-inline-block">Revive Old Posts</h1><span class="powered d-inline-block"> {{labels.by}} <a
 						href="https://revive.social" target="_blank"><b>Revive.Social</b></a></span>
 				</div>
 			</div>
