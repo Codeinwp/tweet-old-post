@@ -32075,6 +32075,7 @@ module.exports = {
 			addAccountActive: false,
 			accountsCount: 0,
 			is_loading: false,
+			twitter_warning: false,
 			labels: this.$store.state.labels.accounts,
 			upsell_link: ropApiSettings.upsell_link
 		};
@@ -32085,20 +32086,24 @@ module.exports = {
    */
 		accounts: function accounts() {
 			var all_accounts = {};
+			var twitter = false;
 			var services = this.$store.state.authenticatedServices;
 			for (var key in services) {
 				if (!services.hasOwnProperty(key)) {
 					continue;
 				}
 				var service = services[key];
-
 				for (var account_id in service.available_accounts) {
 					if (!service.available_accounts.hasOwnProperty(account_id)) {
 						continue;
 					}
 					all_accounts[account_id] = service.available_accounts[account_id];
+					if (service.service === 'twitter') {
+						twitter = (0, _keys2.default)(all_accounts).length > 1;
+					}
 				}
 			}
+			this.twitter_warning = twitter;
 			this.$log.info('All accounts: ', all_accounts);
 			this.accountsCount = (0, _keys2.default)(all_accounts).length;
 			return all_accounts;
@@ -32172,6 +32177,9 @@ module.exports = {
 }; // <template>
 // 	<div class="tab-view">
 // 		<div class="panel-body">
+// 			<div class="toast  toast-warning" v-html="labels.twitter_warning" v-if="twitter_warning">
+//
+// 			</div>
 // 			<div class="container">
 // 				<div class="columns" :class="'rop-tab-state-'+is_loading">
 // 					<div class="column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2">
@@ -32196,7 +32204,8 @@ module.exports = {
 // 			<div class="panel-footer" v-if="accountsCount > 0">
 // 				<div class="columns">
 // 					<div class="column col-12">
-// 						<p class="text-gray"><i class="fa fa-info-circle"></i> <span v-html="labels.has_accounts_desc"></span></p>
+// 						<p class="text-gray"><i class="fa fa-info-circle"></i> <span
+// 								v-html="labels.has_accounts_desc"></span></p>
 // 					</div>
 // 				</div>
 // 				<div class="column col-12 text-right">
@@ -33159,7 +33168,7 @@ module.exports = "\n\t<div _v-31a58026=\"\">\n\t\t<div class=\"tile tile-centere
 /* 214 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\" _v-f97538b8=\"\">\n\t\t<div class=\"panel-body\" _v-f97538b8=\"\">\n\t\t\t<div class=\"container\" _v-f97538b8=\"\">\n\t\t\t\t<div class=\"columns\" :class=\"'rop-tab-state-'+is_loading\" _v-f97538b8=\"\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2\" _v-f97538b8=\"\">\n\t\t\t\t\t\t<div class=\"empty mb-2\" v-if=\"accountsCount === 0\" _v-f97538b8=\"\">\n\t\t\t\t\t\t\t<div class=\"empty-icon\" _v-f97538b8=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\" _v-f97538b8=\"\"></i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<p class=\"empty-title h5\" _v-f97538b8=\"\">{{labels.no_accounts}}</p>\n\t\t\t\t\t\t\t<p class=\"empty-subtitle\" _v-f97538b8=\"\">{{labels.no_accounts_desc}}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"account-container\" v-for=\"( account, id ) in accounts\" _v-f97538b8=\"\">\n\t\t\t\t\t\t\t<service-user-tile :account_data=\"account\" :account_id=\"id\" _v-f97538b8=\"\"></service-user-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-f97538b8=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"add-accounts\" _v-f97538b8=\"\">\n\t\t\t\t\t\t\t<add-account-tile _v-f97538b8=\"\"></add-account-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-f97538b8=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-f97538b8=\"\">\n\t\t\t\t<div class=\"columns\" _v-f97538b8=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-f97538b8=\"\">\n\t\t\t\t\t\t<p class=\"text-gray\" _v-f97538b8=\"\"><i class=\"fa fa-info-circle\" _v-f97538b8=\"\"></i> <span v-html=\"labels.has_accounts_desc\" _v-f97538b8=\"\"></span></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 text-right\" _v-f97538b8=\"\">\n\t\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-f97538b8=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-f97538b8=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-f97538b8=\"\"></i>\n\t\t\t\t\t\t{{labels.remove_all_cta}}\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\" _v-f97538b8=\"\">\n\t\t<div class=\"panel-body\" _v-f97538b8=\"\">\n\t\t\t<div class=\"toast  toast-warning\" v-html=\"labels.twitter_warning\" v-if=\"twitter_warning\" _v-f97538b8=\"\">\n\t\t\t\n\t\t\t</div>\n\t\t\t<div class=\"container\" _v-f97538b8=\"\">\n\t\t\t\t<div class=\"columns\" :class=\"'rop-tab-state-'+is_loading\" _v-f97538b8=\"\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2\" _v-f97538b8=\"\">\n\t\t\t\t\t\t<div class=\"empty mb-2\" v-if=\"accountsCount === 0\" _v-f97538b8=\"\">\n\t\t\t\t\t\t\t<div class=\"empty-icon\" _v-f97538b8=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\" _v-f97538b8=\"\"></i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<p class=\"empty-title h5\" _v-f97538b8=\"\">{{labels.no_accounts}}</p>\n\t\t\t\t\t\t\t<p class=\"empty-subtitle\" _v-f97538b8=\"\">{{labels.no_accounts_desc}}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"account-container\" v-for=\"( account, id ) in accounts\" _v-f97538b8=\"\">\n\t\t\t\t\t\t\t<service-user-tile :account_data=\"account\" :account_id=\"id\" _v-f97538b8=\"\"></service-user-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-f97538b8=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"add-accounts\" _v-f97538b8=\"\">\n\t\t\t\t\t\t\t<add-account-tile _v-f97538b8=\"\"></add-account-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-f97538b8=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-f97538b8=\"\">\n\t\t\t\t<div class=\"columns\" _v-f97538b8=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-f97538b8=\"\">\n\t\t\t\t\t\t<p class=\"text-gray\" _v-f97538b8=\"\"><i class=\"fa fa-info-circle\" _v-f97538b8=\"\"></i> <span v-html=\"labels.has_accounts_desc\" _v-f97538b8=\"\"></span></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 text-right\" _v-f97538b8=\"\">\n\t\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-f97538b8=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-f97538b8=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-f97538b8=\"\"></i>\n\t\t\t\t\t\t{{labels.remove_all_cta}}\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\n\t</div>\n";
 
 /***/ }),
 /* 215 */

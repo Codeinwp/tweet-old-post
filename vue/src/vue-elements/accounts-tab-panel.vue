@@ -1,6 +1,9 @@
 <template>
 	<div class="tab-view">
 		<div class="panel-body">
+			<div class="toast  toast-warning" v-html="labels.twitter_warning" v-if="twitter_warning">
+			
+			</div>
 			<div class="container">
 				<div class="columns" :class="'rop-tab-state-'+is_loading">
 					<div class="column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2">
@@ -25,7 +28,8 @@
 			<div class="panel-footer" v-if="accountsCount > 0">
 				<div class="columns">
 					<div class="column col-12">
-						<p class="text-gray"><i class="fa fa-info-circle"></i> <span v-html="labels.has_accounts_desc"></span></p>
+						<p class="text-gray"><i class="fa fa-info-circle"></i> <span
+								v-html="labels.has_accounts_desc"></span></p>
 					</div>
 				</div>
 				<div class="column col-12 text-right">
@@ -53,6 +57,7 @@
 				addAccountActive: false,
 				accountsCount: 0,
 				is_loading: false,
+				twitter_warning: false,
 				labels: this.$store.state.labels.accounts,
 				upsell_link: ropApiSettings.upsell_link,
 			}
@@ -63,21 +68,24 @@
 			 */
 			accounts: function () {
 				const all_accounts = {};
+				let twitter = false;
 				const services = this.$store.state.authenticatedServices;
 				for (const key in services) {
 					if (!services.hasOwnProperty(key)) {
 						continue;
 					}
 					const service = services[key];
-
 					for (const account_id in service.available_accounts) {
 						if (!service.available_accounts.hasOwnProperty(account_id)) {
 							continue;
 						}
 						all_accounts[account_id] = service.available_accounts[account_id];
-
+						if (service.service === 'twitter') {
+							twitter = Object.keys(all_accounts).length > 1;
+						}
 					}
 				}
+				this.twitter_warning = twitter;
 				this.$log.info('All accounts: ', all_accounts);
 				this.accountsCount = Object.keys(all_accounts).length;
 				return all_accounts;

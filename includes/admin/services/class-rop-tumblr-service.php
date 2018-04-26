@@ -141,6 +141,12 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function set_api( $consumer_key = '', $consumer_secret = '', $token = null, $token_secret = null ) {
+		if ( ! class_exists( 'Tumblr\API\Client' ) ) {
+			return false;
+		}
+		if ( ! function_exists( 'curl_reset' ) ) {
+			return false;
+		}
 		$this->api = new \Tumblr\API\Client( $consumer_key, $consumer_secret, $token, $token_secret );
 
 	}
@@ -204,6 +210,10 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			return false;
 		}
 		$api = $this->get_api( $args['consumer_key'], $args['consumer_secret'], $args['oauth_token'], $args['oauth_token_secret'] );
+
+		if ( empty( $api ) ) {
+			return false;
+		}
 		$api->getRequestHandler()->setBaseUrl( 'https://api.tumblr.com/' );
 		$profile = $api->getUserInfo();
 		if ( ! isset( $profile->user->name ) ) {
