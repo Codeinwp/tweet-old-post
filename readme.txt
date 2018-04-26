@@ -874,5 +874,5 @@ http://www.ajaymatharu.com/major-update-to-tweet-old-post/
 
 == Upgrade Notice ==
 
-= 8.0 =
+= 8.0.0 =
 8.0 is a major update. Make sure to backup your site before upgrading.
