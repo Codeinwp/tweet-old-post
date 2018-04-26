@@ -3,7 +3,7 @@ Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisl
 Tags:twitter, facebook, linkedin, automatic, tweet, share, wordpress, marketing, sharing, Tweet old post, Tweets,evergreen
 Requires at least: 4.7
 Tested up to: 4.9
-Requires PHP: 5.4
+Requires PHP: 5.5
 Stable tag: trunk
 
 
