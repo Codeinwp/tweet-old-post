@@ -865,4 +865,4 @@ http://www.ajaymatharu.com/major-update-to-tweet-old-post/
 == Upgrade Notice ==
 
 = 8.0 =
-8.0 is a major update. Make sure you will test it on a testing site before as well as backup your site before upgrading.
+8.0 is a major update. Make sure to backup your site before upgrading.
