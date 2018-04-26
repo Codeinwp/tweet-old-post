@@ -252,7 +252,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		$user_details                 = $this->user_default;
 		$user_details['id']           = $user->getId();
 		$user_details['user']         = $this->normalize_string( $user['name'] );
-		$user_details['account']      = empty( $user->getEmail() ) ? '' : $user->getEmail();
+		$email                        = $user->getEmail();
+		$user_details['account']      = empty( $email ) ? '' : $email;
 		$user_details['img']          = $user->getPicture()->getUrl();
 		$user_details['access_token'] = $token;
 		$this->service                = array(
