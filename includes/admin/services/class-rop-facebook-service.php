@@ -90,10 +90,9 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		try {
 			$api = $this->get_api( $credentials['app_id'], $credentials['secret'] );
 
-			$helper = $api->getRedirectLoginHelper();
-
+			$helper          = $api->getRedirectLoginHelper();
 			$longAccessToken = '';
-			$accessToken     = $helper->getAccessToken();
+			$accessToken     = $helper->getAccessToken( $this->get_endpoint_url( 'authorize' ) );
 			if ( ! isset( $accessToken ) ) {
 				if ( $helper->getError() ) {
 					$this->error->throw_exception( '401 Unauthorized', $this->error->get_fb_exeption_message( $helper ) );
@@ -253,7 +252,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		$user_details                 = $this->user_default;
 		$user_details['id']           = $user->getId();
 		$user_details['user']         = $this->normalize_string( $user['name'] );
-		$user_details['account']      = $user->getEmail();
+		$user_details['account']      = empty( $user->getEmail() ) ? '' : $user->getEmail();
 		$user_details['img']          = $user->getPicture()->getUrl();
 		$user_details['access_token'] = $token;
 		$this->service                = array(
@@ -319,7 +318,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			$img                          = $img->getGraphNode()->asArray();
 			$user_details                 = $this->user_default;
 			$user_details['id']           = $key['id'];
-			$user_details['user']         = $this->normalize_string( $key['name'] );
+			$user_details['user']         = $this->normalize_string( empty ( $key['name'] ) ? '' : $key['name'] );
 			$user_details['account']      = $user->getEmail();
 			$user_details['img']          = $img['url'];
 			$user_details['access_token'] = $key['access_token'];
@@ -421,7 +420,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @access  public
 	 *
 	 * @param   array $post_details The post details to be published by the service.
-	 * @param   array $args Optional arguments needed by the method.
+	 * @param   array $args         Optional arguments needed by the method.
 	 *
 	 * @return mixed
 	 */
@@ -469,8 +468,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @access  private
 	 *
 	 * @param   array  $new_post The Facebook post format array.
-	 * @param   int    $page_id The Facebook page ID.
-	 * @param   string $token The Facebook page token.
+	 * @param   int    $page_id  The Facebook page ID.
+	 * @param   string $token    The Facebook page token.
 	 *
 	 * @return bool
 	 */

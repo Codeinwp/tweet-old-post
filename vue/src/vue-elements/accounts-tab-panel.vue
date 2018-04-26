@@ -68,7 +68,7 @@
 			 */
 			accounts: function () {
 				const all_accounts = {};
-				let twitter = false;
+				let twitter = 0;
 				const services = this.$store.state.authenticatedServices;
 				for (const key in services) {
 					if (!services.hasOwnProperty(key)) {
@@ -81,11 +81,11 @@
 						}
 						all_accounts[account_id] = service.available_accounts[account_id];
 						if (service.service === 'twitter') {
-							twitter = Object.keys(all_accounts).length > 1;
+						    twitter += Object.keys(service.available_accounts).length;
 						}
 					}
 				}
-				this.twitter_warning = twitter;
+				this.twitter_warning = twitter > 1;
 				this.$log.info('All accounts: ', all_accounts);
 				this.accountsCount = Object.keys(all_accounts).length;
 				return all_accounts;
