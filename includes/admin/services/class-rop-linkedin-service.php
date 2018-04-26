@@ -103,7 +103,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $client_id The Client ID. Default empty.
+	 * @param   string $client_id     The Client ID. Default empty.
 	 * @param   string $client_secret The Client Secret. Default empty.
 	 *
 	 * @return mixed
@@ -122,12 +122,15 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $client_id The Client ID. Default empty.
+	 * @param   string $client_id     The Client ID. Default empty.
 	 * @param   string $client_secret The Client Secret. Default empty.
 	 *
 	 * @return mixed
 	 */
 	public function set_api( $client_id = '', $client_secret = '' ) {
+		if ( ! class_exists( '\LinkedIn\Client' ) ) {
+			return false;
+		}
 		$this->api = new \LinkedIn\Client( $client_id, $client_secret );
 
 		$this->api->setRedirectUrl( $this->get_endpoint_url( 'authorize' ) );
@@ -339,7 +342,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @access  public
 	 *
 	 * @param   array $post_details The post details to be published by the service.
-	 * @param   array $args Optional arguments needed by the method.
+	 * @param   array $args         Optional arguments needed by the method.
 	 *
 	 * @return mixed
 	 */

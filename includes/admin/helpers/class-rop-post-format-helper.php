@@ -43,7 +43,7 @@ class Rop_Post_Format_Helper {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   int        $post_id The post ID.
+	 * @param   int        $post_id    The post ID.
 	 * @param   string|int $account_id The post account id.
 	 *
 	 * @return array
@@ -158,7 +158,7 @@ class Rop_Post_Format_Helper {
 		$result = $this->make_hashtags( $base_content, $content_helper, $post_id );
 
 		$hashtags = $result['hashtags'];
-		$size = $max_length - ( strlen( $hashtags ) ) - $custom_length;
+		$size     = $max_length - ( strlen( $hashtags ) ) - $custom_length;
 		if ( $size <= 0 ) {
 			$size = $max_length;
 		}
@@ -223,7 +223,7 @@ class Rop_Post_Format_Helper {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   int    $post_id The post ID.
+	 * @param   int    $post_id   The post ID.
 	 * @param   string $field_key The field key name.
 	 *
 	 * @return mixed
@@ -259,9 +259,9 @@ class Rop_Post_Format_Helper {
 	 * @since   8.0.0
 	 * @access  private
 	 *
-	 * @param   string             $content The content to filter.
+	 * @param   string             $content        The content to filter.
 	 * @param   Rop_Content_Helper $content_helper The content helper class. Used for processing.
-	 * @param   int                $post The post object.
+	 * @param   int                $post           The post object.
 	 *
 	 * @return array
 	 */
@@ -298,6 +298,12 @@ class Rop_Post_Format_Helper {
 			);
 		}
 		$hashtags = '';
+		$result   = array_filter( $result, 'strlen' );
+		$result   = array_map(
+			function ( $value ) {
+					return str_replace( '#', '', $value );
+			}, $result
+		);
 		foreach ( $result as $hashtag ) {
 			if ( $content_helper->mark_hashtags( $content, $hashtag ) !== false ) { // if the hashtag exists in $content
 				$content = $content_helper->mark_hashtags( $content, $hashtag ); // simply add a # there
@@ -323,7 +329,7 @@ class Rop_Post_Format_Helper {
 	 * @return array
 	 */
 	private function get_common_hashtags() {
-		$hashtags_list = explode( ',', str_replace( ' ', '', $this->post_format['hashtags_common'] ) );
+		$hashtags_list = explode( ',', str_replace( ' ', ',', $this->post_format['hashtags_common'] ) );
 		if ( empty( $hashtags_list ) ) {
 			return array();
 		}
@@ -476,14 +482,14 @@ class Rop_Post_Format_Helper {
 	/**
 	 * Returns the short url for the given service.
 	 *
-	 * @Throws Exception If a service can not be built and defaults to passed URL.
+	 * @Throws  Exception If a service can not be built and defaults to passed URL.
 	 *
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $url The URL to shorten.
+	 * @param   string $url               The URL to shorten.
 	 * @param   string $short_url_service The shorten service. Used by the factory to build the service.
-	 * @param   array  $credentials Optional. If needed the service credentials.
+	 * @param   array  $credentials       Optional. If needed the service credentials.
 	 *
 	 * @return string
 	 */

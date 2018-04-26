@@ -93,6 +93,9 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 		}
 		foreach ( $new_auth_services as $service_key => $service_data ) {
 			$accounts = array();
+			if ( ! is_array( $service_data['available_accounts'] ) ) {
+				$service_data['available_accounts'] = array();
+			}
 			foreach ( $service_data['available_accounts'] as $account ) {
 				$key              = $service_key . '_' . $account['id'];
 				$accounts[ $key ] = $account;
@@ -272,7 +275,7 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 * @access  public
 	 *
 	 * @param   string $service_id The service ID.
-	 * @param   string $service The service name.
+	 * @param   string $service    The service name.
 	 *
 	 * @return mixed|null
 	 */
