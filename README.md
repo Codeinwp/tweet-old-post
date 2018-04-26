@@ -1,25 +1,25 @@
-﻿=== Revive Old Posts - Auto Post to Social Media ===
-Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle, rsocial, uriahs-victor
-Tags:twitter, facebook, linkedin, automatic, tweet, share, wordpress, marketing, sharing, Tweet old post, Tweets,evergreen
-Requires at least: 4.7
-Tested up to: 4.9
-Requires PHP: 5.5
-Stable tag: trunk
+# Revive Old Post - Auto Post to Social Media
+
+- **Contributors:** codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle, rsocial, uriahs-victor
+- **Tags:** twitter, facebook, linkedin, automatic, tweet, share, wordpress, marketing, sharing, Tweet old post, Tweets,evergreen
+- **Requires at least:** 2.7
+- **Tested up to:** 4.7.3
+- **Stable tag:** trunk
 
 
 Automatically share your WordPress posts on Twitter, Facebook, LinkedIn. Get more visitors to your website and keep your content alive.
 
-== Description ==
+## Description
 
 ### What the plugin can do ?
 
-This plugin helps you keep your old posts alive by automatically sharing them and driving more traffic to them from Social Networks. It also helps you to promote your content. You can set sharing interval and number of posts to share to drive more traffic. For questions, comments, or feature requests, <a href="http://revive.social/support/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">contact us</a>!
+This plugin helps you keep your old posts alive by automatically sharing them and driving more traffic to them from Social Networks. It also helps you to promote your content. You can set sharing interval and number of posts to share to drive more traffic.For questions, comments, or feature requests, <a href="http://revive.social/support/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">contact us</a>!
 
 ROP can work as a facebook or twitter auto-poster and using it you can easily auto-share your posts on social media.
 
 
 
-**Revive Old Posts provides the following features**
+**Revive Old Post provides the following features**
 
 - Share new and old posts.
 - Choose the time between posts.
@@ -58,33 +58,33 @@ For updates follow https://twitter.com/ReviveSocial If you have anything you can
 - Read more about WordPress on our <a href="http://www.codeinwp.com/blog/" rel="nofollow" target="_blank">blog</a>.
 
 
-= Translations =
+## Translations
 
 * sk_SK translation by Patrik Žec (PATWIST) of http://patwist.com
 
-== Installation ==
+## Installation 
 
-Following are the steps to install the Revive Old Posts plugin
+Following are the steps to install the Revive Old Post plugin
 
-1. Download the latest version of the Revive Old Posts Plugin to your computer from here.
+1. Download the latest version of the Revive Old Post Plugin to your computer from here.
 2. With an FTP program, access your sites server.
 3. Upload (copy) the Plugin file(s) or folder to the /wp-content/plugins folder.
 4. In your WordPress Administration Panels, click on Plugins from the menu.
-5. You should see Revive Old Posts Plugin listed. If not, with your FTP program, check the folder to see if it is installed. If it isn�t, upload the file(s) again. If it is, delete the files and upload them again.
-6. To turn the Revive Old Posts Plugin on, click Activate.
+5. You should see Revive Old Post Plugin listed. If not, with your FTP program, check the folder to see if it is installed. If it isn�t, upload the file(s) again. If it is, delete the files and upload them again.
+6. To turn the Revive Old Post Plugin on, click Activate.
 7. Check your Administration Panels or WordPress blog to see if the Plugin is working.
-8. You can change the plugin options from Revive Old Posts under settings menu.
+8. You can change the plugin options from Revive Old Post under settings menu.
 
-Alternatively you can also follow the following steps to install the Revive Old Posts plugin
+Alternatively you can also follow the following steps to install the Revive Old Post plugin
 
 1. In your WordPress Administration Panels, click on Add New option under Plugins from the menu.
 2. Click on upload at the top.
 3. Browse the location and select the Tweet old post Plugin and click install now.
-4. To turn the Revive Old Posts Plugin on, click Activate.
+4. To turn the Revive Old Post Plugin on, click Activate.
 5. Check your Administration Panels or WordPress blog to see if the Plugin is working.
-6. You can change the plugin options from Revive Old Posts under settings menu.
+6. You can change the plugin options from Revive Old Post under settings menu.
 
-== Frequently Asked Questions ==
+## Frequently Asked Questions
 If you have any questions please get in touch with us at,
 http://revive.social/support/
 
@@ -116,11 +116,11 @@ http://revive.social/support/
 
 **Any more questions or doubts?**
 
-- Contact us at http://revive.social/support/ and send us also a copy from Revive Old Posts -> System Info
+- Contact us at http://revive.social/support/ and send us also a copy from Revive Old Post -> System Info
 
 
 
-== Screenshots ==
+## Screenshots
 
 1. Screenshot 1 Basic configurable options for Tweet Old Post to function, with ability to tweet at random interval.
 
@@ -130,7 +130,7 @@ for more you can check out
 http://revive.social/plugins/revive-old-post
 
 
-== Changelog ==
+### Changelog
 
 **New in v7.4.8**
 
@@ -291,7 +291,7 @@ Added Facebook and Linkedin, Facebook is also enabled for the free users
 Improved Post with image feature, we can also pull the image from post
 Fixed Tweet over 140 chars error
 Added Google Analytics Campaign Tracking
-Rebranded into Revive Old Posts
+Rebranded into Revive Old Post
 
 **New in v6.7.5**
 
@@ -861,8 +861,3 @@ http://www.ajaymatharu.com/major-update-to-tweet-old-post/
 - Minimum age of post to be eligible for tweet - This allows you to set how old your post should be in order to be eligible for the tweet.
 - Categories to omit from tweets - This will protect posts from the selected categories from being tweeted.
 
-
-== Upgrade Notice ==
-
-= 8.0 =
-8.0 is a major update. Make sure to backup your site before upgrading.

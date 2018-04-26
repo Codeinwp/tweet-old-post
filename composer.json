@@ -1,0 +1,30 @@
+{
+  "name": "codeinwp/tweet-old-post",
+  "description": "Tweet Old Post for WordPress.",
+  "keywords": [
+    "wordpress",
+    "share"
+  ],
+  "homepage": "https://themeisle.com/plugins/tweet-old-post/",
+  "license": "GPL-2.0+",
+  "authors": [
+    {
+      "name": "ThemeIsle Team",
+      "email": "friends@themeisle.com.com",
+      "homepage": "https://themeisle.com"
+    }
+  ],
+  "type": "wordpress-plugin",
+  "support": {
+    "issues": "https://github.com/Codeinwp/tweet-old-post/issues",
+    "source": "https://github.com/Codeinwp/tweet-old-post"
+  },
+  "require": {
+    "codeinwp/themeisle-sdk": "master",
+    "facebook/graph-sdk": "^5.6",
+    "abraham/twitteroauth": "^0.7.4",
+    "monolog/monolog": "^1.23"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}

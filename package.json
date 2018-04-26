@@ -1,0 +1,70 @@
+{
+  "name": "tweet-old-post",
+  "version": "8.0.0",
+  "description": "Tweet Old Posts plugin",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Codeinwp/tweet-old-post.git"
+  },
+  "keywords": [
+    "wordpress-plugin"
+  ],
+  "category": "plugins",
+  "textdomain": "tweet-old-post",
+  "author": "ThemeIsle <friends@themeisle.com>",
+  "license": "GPL-2.0+",
+  "bugs": {
+    "url": "https://github.com/Codeinwp/tweet-old-post/issues"
+  },
+  "pot": {
+    "reportmsgidbugsto": "https://github.com/Codeinwp/tweet-old-post/issues",
+    "languageteam": "Themeisle Translate <friends@themeisle.com>",
+    "lasttranslator": "Themeisle Translate Team <friends@themeisle.com>"
+  },
+  "scripts": {
+    "dev": "cross-env WEBPACK_ENV=dev webpack --progress --colors --watch",
+    "build": "cross-env WEBPACK_ENV=production webpack"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.0.1",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "babel-runtime": "^6.26.0",
+    "cross-env": "^5.1.3",
+    "css-loader": "^0.23.0",
+    "eslint": "^4.19.1",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-loader": "^1.9.0",
+    "eslint-plugin-html": "^3.2.2",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-node": "^5.2.0",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "eslint-plugin-vue": "^4.4.0",
+    "file-loader": "^0.11.2",
+    "grunt-plugin-fleet": "codeinwp/grunt-plugin-fleet",
+    "html-loader": "^0.5.1",
+    "load-project-config": "~0.2.0",
+    "style-loader": "^0.13.0",
+    "stylelint": "^8.2.0",
+    "stylelint-config-recommended": "^1.0.0",
+    "vue-hot-reload-api": "^2.1.1",
+    "vue-html-loader": "^1.0.0",
+    "vue-loader": "^7.3.0",
+    "webpack": "^3.5.5"
+  },
+  "dependencies": {
+    "moment-duration-format": "^2.2.2",
+    "vue": "^2.4.2",
+    "vue-clickaway": "^2.1.0",
+    "vue-moment": "^3.2.0",
+    "vue-resource": "^1.3.4",
+    "vue2-timepicker": "^0.1.4",
+    "vuejs-logger": "1.3.4",
+    "vuex": "^2.4.0"
+  }
+}

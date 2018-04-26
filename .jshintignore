@@ -1,0 +1,5 @@
+assets/js/build/*.js
+vue
+node_modules
+Gruntfile.js
+webpack.config.js

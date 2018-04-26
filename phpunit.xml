@@ -1,0 +1,35 @@
+<phpunit
+        bootstrap="tests/bootstrap.php"
+        backupGlobals="false"
+        colors="true"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+>
+    <testsuites>
+        <testsuite name="general">
+            <directory>./tests/test-plugin.php</directory>
+        </testsuite>
+        <testsuite name="logger">
+            <directory>./tests/test-logger.php</directory>
+        </testsuite>
+        <testsuite name="accounts">
+            <directory>./tests/test-accounts.php</directory>
+        </testsuite>
+        <testsuite name="post-format">
+            <directory>./tests/test-post-format.php</directory>
+        </testsuite>
+        <testsuite name="scheduler">
+            <directory>./tests/test-scheduler.php</directory>
+        </testsuite>
+        <testsuite name="content">
+            <directory>./tests/test-content.php</directory>
+        </testsuite>
+        <testsuite name="queue">
+            <directory>./tests/test-queue.php</directory>
+        </testsuite>
+        <testsuite name="selector">
+            <directory>./tests/test-selector.php</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
