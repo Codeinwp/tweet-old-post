@@ -861,3 +861,8 @@ http://www.ajaymatharu.com/major-update-to-tweet-old-post/
 - Minimum age of post to be eligible for tweet - This allows you to set how old your post should be in order to be eligible for the tweet.
 - Categories to omit from tweets - This will protect posts from the selected categories from being tweeted.
 
+
+== Upgrade Notice ==
+
+= 8.0 =
+8.0 is a major update. Make sure you will test it on a testing site before as well as backup your site before upgrading.
