@@ -1,15 +1,15 @@
-﻿=== Revive Old Posts - Auto Post to Social Media ===
-Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle, rsocial, uriahs-victor
+# Revive Old Posts - Auto Post to Social Media #
+**Contributors:** [codeinwp](https://profiles.wordpress.org/codeinwp), [marius2012](https://profiles.wordpress.org/marius2012), [marius_codeinwp](https://profiles.wordpress.org/marius_codeinwp), [hardeepasrani](https://profiles.wordpress.org/hardeepasrani), [Madalin_Themeisle](https://profiles.wordpress.org/Madalin_Themeisle), [rsocial](https://profiles.wordpress.org/rsocial), [uriahs-victor](https://profiles.wordpress.org/uriahs-victor)  
 Tags:twitter, facebook, linkedin, automatic, tweet, share, wordpress, marketing, sharing, Tweet old post, Tweets,evergreen
-Requires at least: 4.7
-Tested up to: 4.9
-Requires PHP: 5.5
-Stable tag: trunk
+**Requires at least:** 4.7  
+**Tested up to:** 4.9  
+**Requires PHP:** 5.5  
+**Stable tag:** trunk  
 
 
 Automatically share your WordPress posts on Twitter, Facebook, LinkedIn. Get more visitors to your website and keep your content alive.
 
-== Description ==
+## Description ##
 
 ### What the plugin can do ?
 
@@ -58,11 +58,11 @@ For updates follow https://twitter.com/ReviveSocial If you have anything you can
 - Read more about WordPress on our <a href="http://www.codeinwp.com/blog/" rel="nofollow" target="_blank">blog</a>.
 
 
-= Translations =
+### Translations ###
 
 * sk_SK translation by Patrik Žec (PATWIST) of http://patwist.com
 
-== Installation ==
+## Installation ##
 
 Following are the steps to install the Revive Old Posts plugin
 
@@ -84,7 +84,7 @@ Alternatively you can also follow the following steps to install the Revive Old 
 5. Check your Administration Panels or WordPress blog to see if the Plugin is working.
 6. You can change the plugin options from Revive Old Posts under settings menu.
 
-== Frequently Asked Questions ==
+## Frequently Asked Questions ##
 If you have any questions please get in touch with us at,
 http://revive.social/support/
 
@@ -120,7 +120,7 @@ http://revive.social/support/
 
 
 
-== Screenshots ==
+## Screenshots ##
 
 1. Screenshot 1 Basic configurable options for Tweet Old Post to function, with ability to tweet at random interval.
 
@@ -130,8 +130,8 @@ for more you can check out
 http://revive.social/plugins/revive-old-post
 
 
-== Changelog ==
-= 8.0.0 - 2018-04-26  = 
+## Changelog ##
+### 8.0.0 - 2018-04-26  ###
 
 * Major improvements to the codebase.
 * Adds schedule and format per accounts, not per networks as it was before.
@@ -626,7 +626,7 @@ http://www.ajaymatharu.com/major-update-to-tweet-old-post/
 - Categories to omit from tweets - This will protect posts from the selected categories from being tweeted.
 
 
-== Other Notes ==
+## Other Notes ##
 
 
 
@@ -872,7 +872,7 @@ http://www.ajaymatharu.com/major-update-to-tweet-old-post/
 - Categories to omit from tweets - This will protect posts from the selected categories from being tweeted.
 
 
-== Upgrade Notice ==
+## Upgrade Notice ##
 
-= 8.0 =
+### 8.0 ###
 8.0 is a major update. Make sure to backup your site before upgrading.

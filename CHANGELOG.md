@@ -1,4 +1,13 @@
 
+ ### v8.0.0 - 2018-04-26 
+ **Changes:** 
+ * Major improvements to the codebase.
+* Adds schedule and format per accounts, not per networks as it was before.
+* Improve settings UI as well as the accounts authentication workflow.
+* Improve posts selections per accounts.
+* Improves logs reporting and messages.
+* Adds major improvements to schedules trigger, implementing a new way of using wp-cron events for the plugin sharing.
+ 
 ### 7.4.8 - 06/04/2017
 **Changes:** 
 - update description
