@@ -1,4 +1,12 @@
 
+ ### v8.0.1 - 2018-04-26 
+ **Changes:** 
+ * Fix Linkedin error on loading SDK class.
+* Fix multiple twitter accounts warning message.
+* Fix foreach loop on the services model.
+* Fix Facebook authentication issues with application url.
+* Adds notice when using an old Pro version.
+ 
  ### v8.0.0 - 2018-04-26 
  **Changes:** 
  * Major improvements to the codebase.
