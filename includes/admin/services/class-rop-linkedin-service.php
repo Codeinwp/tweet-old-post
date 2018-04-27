@@ -103,10 +103,10 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $client_id     The Client ID. Default empty.
+	 * @param   string $client_id The Client ID. Default empty.
 	 * @param   string $client_secret The Client Secret. Default empty.
 	 *
-	 * @return mixed
+	 * @return \LinkedIn\Client Client Linkedin.
 	 */
 	public function get_api( $client_id = '', $client_secret = '' ) {
 		if ( $this->api == null ) {
@@ -122,7 +122,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $client_id     The Client ID. Default empty.
+	 * @param   string $client_id The Client ID. Default empty.
 	 * @param   string $client_secret The Client Secret. Default empty.
 	 *
 	 * @return mixed
@@ -205,10 +205,13 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$this->credentials['secret']    = $args['secret'];
 
 		$api->setAccessToken( new LinkedIn\AccessToken( $args['token'] ) );
-
-		$profile = $api->get(
-			'people/~:(id,email-address,first-name,last-name,formatted-name,picture-url)'
-		);
+		try {
+			$profile = $api->api(
+				'people/~:(id,email-address,first-name,last-name,formatted-name,picture-url)', array(), 'GET'
+			);
+		} catch ( Exception $e ) {
+			$this->logger->alert_error( 'Can not get linkedin user details. Error ' . $e->getMessage() );
+		}
 		if ( ! isset( $profile['id'] ) ) {
 			return false;
 		}
@@ -342,7 +345,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @access  public
 	 *
 	 * @param   array $post_details The post details to be published by the service.
-	 * @param   array $args         Optional arguments needed by the method.
+	 * @param   array $args Optional arguments needed by the method.
 	 *
 	 * @return mixed
 	 */

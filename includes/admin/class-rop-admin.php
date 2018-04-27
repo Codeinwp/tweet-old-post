@@ -46,7 +46,7 @@ class Rop_Admin {
 	 * @since    8.0.0
 	 *
 	 * @param      string $plugin_name The name of this plugin.
-	 * @param      string $version     The version of this plugin.
+	 * @param      string $version The version of this plugin.
 	 */
 	public function __construct( $plugin_name, $version ) {
 
@@ -128,6 +128,22 @@ class Rop_Admin {
 			wp_enqueue_script( $this->plugin_name . '_main' );
 		}
 
+	}
+
+	/**
+	 * Legacy auth callback.
+	 */
+	public function fb_legacy_auth() {
+		$code  = sanitize_text_field( isset( $_GET['code'] ) ? $_GET['code'] : '' );
+		$state = sanitize_text_field( isset( $_GET['state'] ) ? $_GET['state'] : '' );
+		if ( empty( $code ) ) {
+			return;
+		}
+		if ( empty( $state ) ) {
+			return;
+		}
+		$fb_service = new Rop_Facebook_Service();
+		$fb_service->authorize();
 	}
 
 	/**

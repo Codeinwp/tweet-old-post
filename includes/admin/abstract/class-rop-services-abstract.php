@@ -63,7 +63,7 @@ abstract class Rop_Services_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  protected
-	 * @var     object $api The API object.
+	 * @var     mixed $api The API object.
 	 */
 	protected $api = null;
 	/**

@@ -63,7 +63,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  public
-	 * @return mixed
 	 */
 	public function expose_endpoints() {
 		$this->register_endpoint( 'authorize', 'authorize' );
@@ -92,7 +91,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 			$helper          = $api->getRedirectLoginHelper();
 			$longAccessToken = '';
-			$accessToken     = $helper->getAccessToken( $this->get_endpoint_url( 'authorize' ) );
+			$accessToken     = $helper->getAccessToken( $this->get_legacy_url() );
 			if ( ! isset( $accessToken ) ) {
 				if ( $helper->getError() ) {
 					$this->error->throw_exception( '401 Unauthorized', $this->error->get_fb_exeption_message( $helper ) );
@@ -110,7 +109,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		$token = $longAccessToken->getValue();
 
-		$_SESSION['rop_facebook_token'] = $token->getValue();
+		$_SESSION['rop_facebook_token'] = $token;
 
 		parent::authorize();
 		// echo '<script>window.setTimeout("window.close()", 500);</script>';
@@ -147,13 +146,28 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function set_api( $app_id = '', $secret = '' ) {
-		$this->api = new \Facebook\Facebook(
-			array(
-				'app_id'                => $app_id,
-				'app_secret'            => $secret,
-				'default_graph_version' => 'v2.10',
-			)
-		);
+		try {
+			$this->api = new \Facebook\Facebook(
+				array(
+					'app_id'                => $app_id,
+					'app_secret'            => $secret,
+					'default_graph_version' => 'v2.10',
+				)
+			);
+		} catch ( Exception $exception ) {
+			$this->logger->alert_error( 'Can not load Facebook api. Error: ' . $exception->getMessage() );
+		}
+	}
+
+	/**
+	 * Facebook legacy redirect url.
+	 *
+	 * @return string Old legacy url.
+	 */
+	public function get_legacy_url() {
+		$url = get_admin_url( get_current_blog_id(), 'admin.php?page=TweetOldPost' );
+
+		return str_replace( ':80', '', $url );
 	}
 
 	/**
@@ -242,8 +256,11 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 			return false;
 		}
-
-		$user       = $response->getGraphUser();
+		try {
+			$user = $response->getGraphUser();
+		} catch ( Exception $exception ) {
+			$this->logger->alert_error( 'Can not load Facebook user. Error: ' . $exception->getMessage() );
+		}
 		$this->user = $user;
 		$user_id    = $user->getId();
 		if ( empty( $user_id ) ) {
@@ -408,8 +425,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		$api    = $this->get_api( $credentials['app_id'], $credentials['secret'] );
 		$helper = $api->getRedirectLoginHelper();
-
-		$url = $helper->getLoginUrl( $this->get_endpoint_url( 'authorize' ), $this->permissions );
+		$url    = $helper->getLoginUrl( $this->get_legacy_url(), $this->permissions );
 
 		return $url;
 	}
@@ -421,7 +437,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @access  public
 	 *
 	 * @param   array $post_details The post details to be published by the service.
-	 * @param   array $args         Optional arguments needed by the method.
+	 * @param   array $args Optional arguments needed by the method.
 	 *
 	 * @return mixed
 	 */
@@ -469,8 +485,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @access  private
 	 *
 	 * @param   array  $new_post The Facebook post format array.
-	 * @param   int    $page_id  The Facebook page ID.
-	 * @param   string $token    The Facebook page token.
+	 * @param   int    $page_id The Facebook page ID.
+	 * @param   string $token The Facebook page token.
 	 *
 	 * @return bool
 	 */
