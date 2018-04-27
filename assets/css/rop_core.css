@@ -4450,3 +4450,11 @@ a.active {
 	cursor: not-allowed;
 	pointer-events: auto;
 }
+
+.toplevel_page_TweetOldPost #wpbody-content > * {
+	display: none !important;
+}
+
+.toplevel_page_TweetOldPost #wpbody-content > #rop_core {
+	display: block !important;
+}
