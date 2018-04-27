@@ -269,26 +269,14 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		$include          = array();
 		$excluded_by_user = array();
 		$required         = array();
-		if ( $this->settings->get_selected_posts() ) {
-			foreach ( $this->settings->get_selected_posts() as $post ) {
-				if ( $this->settings->get_exclude_posts() == true ) {
-					array_push( $excluded_by_user, $post['value'] );
-				} else {
-					array_push( $include, $post['value'] );
-				}
+		$excluded_posts   = $this->settings->get_selected_posts();
+		if ( ! empty( $excluded_posts ) ) {
+			foreach ( $excluded_posts as $post ) {
+				array_push( $excluded_by_user, $post['value'] );
 			}
 			/**
 			 * TODO implement always include posts mechanism. Now this is disabled.
 			 */
-			if ( $this->settings->get_exclude_posts() != true ) {
-				$required = get_posts(
-					array(
-						'posts_per_page' => 100,
-						'posts__in'      => $include,
-						'no_found_rows'  => true,
-					)
-				);
-			}
 		}
 		$results = $this->query_results( $account_id, $post_types, $tax_queries, $excluded_by_user );
 		/**
