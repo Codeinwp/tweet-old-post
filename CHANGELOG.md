@@ -1,4 +1,13 @@
 
+ ### v8.0.2 - 2018-04-27 
+ **Changes:** 
+ * Fix issue with old Facebook applications and strict OAuth urls settings.
+* Fix issue taxonomies filter setting. 
+* Fix filter by excluded posts issue.
+* Fix issue when LinkedIn exceptions on login.
+* Adds more exceptions handling for Facebook authentications.
+* Fix compatibility with pro version for post_types and custom share messages.
+ 
  ### v8.0.1 - 2018-04-26 
  **Changes:** 
  * Fix Linkedin error on loading SDK class.
