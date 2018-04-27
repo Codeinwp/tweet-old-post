@@ -68,7 +68,7 @@ class Rop {
 	public function __construct() {
 
 		$this->plugin_name = 'rop';
-		$this->version     = '8.0.1';
+		$this->version     = '8.0.2';
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -125,6 +125,7 @@ class Rop {
 
 		$plugin_admin = new Rop_Admin( $this->get_plugin_name(), $this->get_version() );
 
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'fb_legacy_auth', 2 );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'menu_pages' );

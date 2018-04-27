@@ -93,17 +93,34 @@ class Rop_InitAccounts {
 		if ( $time_shift ) {
 			$date = date( 'Y-m-d H:i:s', strtotime( $time_shift ) );
 		}
-
+		$tags = array();
+		$cats = array();
+		// Setup terms.
+		for ( $i = 0; $i < 5; $i ++ ) {
+			$tag_name = sprintf( 'Tag %s', $i );
+			$tag      = wp_insert_term( $tag_name, 'post_tag' );
+			$tags[]   = $tag;
+		}
+		for ( $i = 0; $i < 5; $i ++ ) {
+			$cat_name = sprintf( 'Category %s', $i );
+			$cat      = wp_insert_term( $cat_name, 'category' );
+			$cats[]   = $cat;
+		}
 		//var_dump( $date );
 		for ( $i = 0; $i < $count; $i ++ ) {
-			$content = file_get_contents( 'https://loripsum.net/api/5/medium/plaintext' );
-			$id      = self::$factory->post->create( array(
+			$content   = file_get_contents( 'https://loripsum.net/api/5/medium/plaintext' );
+			$id        = self::$factory->post->create( array(
 				'post_title'   => 'Test Post ' . str_pad( $i + 1, 2, "0", STR_PAD_LEFT ),
 				'post_content' => $content,
 				'post_type'    => $type,
 				'post_date'    => $date,
 				'post_status'  => 'publish'
 			) );
+			$tag_value = $tags[ rand( 0, count( $tags ) - 1 ) ];
+			$cat_value = $cats[ rand( 0, count( $cats ) -1  )  ];
+
+			wp_set_post_terms( $id, $tag_value['term_id'], 'post_tag' );
+			wp_set_post_terms( $id, $cat_value['term_id'], 'category' );
 			array_push( $post_ids, $id );
 		}
 

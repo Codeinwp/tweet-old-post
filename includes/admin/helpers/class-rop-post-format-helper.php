@@ -371,7 +371,7 @@ class Rop_Post_Format_Helper {
 	private function get_tags_hashtags( $post_id ) {
 
 		$tags = wp_get_post_tags( $post_id );
-		if ( empty( $postTags ) ) {
+		if ( empty( $tags ) ) {
 			return array();
 		}
 

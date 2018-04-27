@@ -10,15 +10,19 @@
  */
 
 require_once dirname( __FILE__ ) . '/helpers/class-setup-accounts.php';
+
 /**
  * Test post format related actions. class.
  */
 class Test_RopPostFormat extends WP_UnitTestCase {
+	static public $post_ids;
+
 	/**
 	 * Init test accounts.
 	 */
 	public static function setUpBeforeClass() {
 		Rop_InitAccounts::init();
+		self::$post_ids = Rop_InitAccounts::generatePosts( 10, 'post', '-2 month' );
 	}
 
 	/**
@@ -30,7 +34,6 @@ class Test_RopPostFormat extends WP_UnitTestCase {
 	 * @covers Rop_Url_Shortner_Abstract
 	 * @covers Rop_Rvivly_Shortner
 	 * @covers Rop_Bitly_Shortner
-	 * @covers Rop_Shortest_Shortner
 	 * @covers Rop_Googl_Shortner
 	 * @covers Rop_Isgd_Shortner
 	 */
@@ -81,6 +84,67 @@ class Test_RopPostFormat extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Test categories hashtags option.
+	 */
+	public function test_hashtags_from_categories() {
+		$service              = Rop_InitAccounts::ROP_TEST_SERVICE_NAME;
+		$account_id           = Rop_InitAccounts::get_account_id();
+		$post_format          = new Rop_Post_Format_Model( $service );
+		$new_data             = $post_format->get_post_format( $account_id );
+		$new_data['hashtags'] = 'tags-hashtags';
+
+		$post_format->add_update_post_format( $account_id, $new_data );
+
+		$format  = new Rop_Post_Format_Helper();
+		$post_id = self::$post_ids[ rand( 0, count( self::$post_ids ) - 1 ) ];
+
+		$formated_post = $format->get_formated_object( $post_id, $account_id );
+
+		$this->assertFalse( empty( $formated_post['hashtags'] ), 'Tags hashtags not working' );
+	}
+
+	/**
+	 * Test tags hashtags option.
+	 */
+	public function test_hashtags_from_tags() {
+		$service              = Rop_InitAccounts::ROP_TEST_SERVICE_NAME;
+		$account_id           = Rop_InitAccounts::get_account_id();
+		$post_format          = new Rop_Post_Format_Model( $service );
+		$new_data             = $post_format->get_post_format( $account_id );
+		$new_data['hashtags'] = 'categories-hashtags';
+
+		$post_format->add_update_post_format( $account_id, $new_data );
+
+		$format  = new Rop_Post_Format_Helper();
+		$post_id = self::$post_ids[ rand( 0, count( self::$post_ids ) - 1 ) ];
+
+		$formated_post = $format->get_formated_object( $post_id, $account_id );
+
+		$this->assertFalse( empty( $formated_post['hashtags'] ), 'Cats hashtags not working' );
+	}
+
+	/**
+	 * Test common hashtags option.
+	 */
+	public function test_hashtags_from_common_text() {
+		$service                     = Rop_InitAccounts::ROP_TEST_SERVICE_NAME;
+		$account_id                  = Rop_InitAccounts::get_account_id();
+		$post_format                 = new Rop_Post_Format_Model( $service );
+		$new_data                    = $post_format->get_post_format( $account_id );
+		$new_data['hashtags']        = 'common-hashtags';
+		$new_data['hashtags_common'] = 'testtag, anotherone';
+
+		$post_format->add_update_post_format( $account_id, $new_data );
+		$post_id = self::$post_ids[ rand( 0, count( self::$post_ids ) - 1 ) ];
+
+		$format        = new Rop_Post_Format_Helper();
+		$formated_post = $format->get_formated_object( $post_id, $account_id );
+
+		$this->assertNotFalse( strpos( $formated_post['content'], 'testtag' ), 'Common hashtags not working' );
+
+	}
+
+	/**
 	 * Testing post format
 	 *
 	 * @since   8.0.0
@@ -90,26 +154,8 @@ class Test_RopPostFormat extends WP_UnitTestCase {
 	 * @covers Rop_Post_Format_Model::<public>
 	 */
 	public function test_post_format() {
-		$service    = Rop_InitAccounts::ROP_TEST_SERVICE_NAME;
-		$account_id = Rop_InitAccounts::get_account_id();
-//		$post_format_data = array(
-//			'post_content'      => 'post_title',
-//			'custom_meta_field' => '',
-//			'maximum_length'    => '190',
-//			'custom_text'       => 'I am the King of Random!',
-//			'custom_text_pos'   => 'beginning',
-//			'include_link'      => true,
-//			'url_from_meta'     => false,
-//			'url_meta_key'      => '',
-//			'short_url'         => true,
-//			'short_url_service' => 'rviv.ly',
-//			'hashtags'          => 'common-hashtags',
-//			'hashtags_length'   => '15',
-//			'hashtags_common'   => '#testLikeABoss, #themeIsle',
-//			'hashtags_custom'   => '',
-//			'image'             => true,
-//		);
-
+		$service         = Rop_InitAccounts::ROP_TEST_SERVICE_NAME;
+		$account_id      = Rop_InitAccounts::get_account_id();
 		$global_settings = new Rop_Global_Settings();
 		$defaults        = $global_settings->get_default_post_format( $service );
 

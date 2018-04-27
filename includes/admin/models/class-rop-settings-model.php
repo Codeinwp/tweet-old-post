@@ -14,6 +14,7 @@
  */
 class Rop_Settings_Model extends Rop_Model_Abstract {
 
+
 	/**
 	 * Holds the logger
 	 *
@@ -30,6 +31,14 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @var     array $settings The settings array.
 	 */
 	private $settings = array();
+	/**
+	 * Holds the defaults settings data.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @var     array $settings The settings array.
+	 */
+	private $defaults = array();
 
 	/**
 	 * Rop_Settings_Model constructor.
@@ -49,6 +58,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 		$global_settings = new Rop_Global_Settings();
 		$this->logger    = new Rop_Logger();
 		$default         = $global_settings->get_default_settings();
+		$this->defaults  = $default;
 		$settings        = wp_parse_args( $this->get( 'general_settings' ), $default );
 		$this->settings  = $this->normalize_settings( $settings );
 	}
@@ -73,6 +83,9 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 
 				}, $setting
 			);
+		}
+		if ( empty( $settings['selected_post_types'] ) ) {
+			$settings['selected_post_types'] = $this->defaults['selected_post_types'];
 		}
 
 		return $settings;
@@ -200,6 +213,10 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 				$data['default_interval'] = 0.1;
 			}
 			$data['default_interval'] = round( $data['default_interval'], 1 );
+		}
+		if ( empty( $data['selected_post_types'] ) ) {
+			$this->logger->alert_error( 'You need to have at least one post type to share.' );
+			$data['selected_post_types'] = $this->defaults['selected_post_types'];
 		}
 		if ( isset( $data['number_of_posts'] ) ) {
 			$data['number_of_posts'] = intval( $data['number_of_posts'] );
