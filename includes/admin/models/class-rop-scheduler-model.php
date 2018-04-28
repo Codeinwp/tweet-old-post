@@ -47,6 +47,14 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @var     int $current_time The current time.
 	 */
 	private $start_time;
+	/**
+	 * License type.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 * @var     int $license_type License plan type.
+	 */
+	private $license_type;
 
 	/**
 	 * The defaults to be returned for a non existing schedule.
@@ -70,6 +78,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		$this->logger    = new Rop_Logger();
 
 		$this->schedule_defaults = $global_settings->get_default_schedule();
+		$this->license_type      = $global_settings->license_type();
 		$this->start_time        = $global_settings->get_start_time();
 		$this->schedules         = $this->get_schedules();
 	}
@@ -90,6 +99,10 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		$schedules       = ( $this->get( 'schedules' ) != null ) ? $this->get( 'schedules' ) : array();
 		$valid_schedules = array();
 		foreach ( $active_accounts as $account_id => $data ) {
+			if ( $this->license_type < 2 ) {
+				$valid_schedules[ $account_id ] = $this->create_schedule( $this->schedule_defaults );
+				continue;
+			}
 			$valid_schedules[ $account_id ] = isset( $schedules[ $account_id ] ) ? $schedules[ $account_id ] : $this->create_schedule( $this->schedule_defaults );
 		}
 
@@ -162,7 +175,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $account_id The account ID.
+	 * @param   string $account_id    The account ID.
 	 * @param   bool   $schedule_data The schedule data.
 	 *
 	 * @return mixed
@@ -289,7 +302,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   int    $base Timestamp to reffer to.
+	 * @param   int    $base       Timestamp to reffer to.
 	 * @param   string $account_id Timestamp to reffer to.
 	 *
 	 * @return array
@@ -414,7 +427,6 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	public function get_schedule( $account_id = null ) {
 
 		$this->schedules = $this->get_schedules();
-
 		if ( empty( $account_id ) ) {
 			return $this->schedules;
 		}
@@ -431,7 +443,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  private
 	 *
-	 * @param   float $value The value to be converted.
+	 * @param   float $value    The value to be converted.
 	 * @param   bool  $as_array Flag to change return type to array.
 	 *
 	 * @return array|string
@@ -456,8 +468,8 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  private
 	 *
-	 * @param   string $time The time to append to.
-	 * @param   int    $hours The hours to be added.
+	 * @param   string $time    The time to append to.
+	 * @param   int    $hours   The hours to be added.
 	 * @param   int    $minutes The minutes to be added.
 	 *
 	 * @return false|string
@@ -530,7 +542,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	/**
 	 * Remove timestamp from timeline.
 	 *
-	 * @param int    $timestamp Timestamp value.
+	 * @param int    $timestamp  Timestamp value.
 	 * @param string $account_id Account id.
 	 *
 	 * @return int Index to remove.
