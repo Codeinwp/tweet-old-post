@@ -216,7 +216,7 @@ abstract class Rop_Services_Abstract {
 	 * @access  public
 	 *
 	 * @param   array $post_details The post details to be published by the service.
-	 * @param   array $args Optional arguments needed by the method.
+	 * @param   array $args         Optional arguments needed by the method.
 	 *
 	 * @return mixed
 	 */
@@ -330,7 +330,7 @@ abstract class Rop_Services_Abstract {
 	 * Utility method to check array if has certain keys set and not empty.
 	 *
 	 * @param array $array Array to check.
-	 * @param array $list List of keys to check.
+	 * @param array $list  List of keys to check.
 	 *
 	 * @return bool Valid or not.
 	 */
@@ -363,9 +363,9 @@ abstract class Rop_Services_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $path The path for the endpoint.
+	 * @param   string $path     The path for the endpoint.
 	 * @param   string $callback The method name from the service class.
-	 * @param   string $method The request type ( GET, POST, PUT, DELETE etc. ).
+	 * @param   string $method   The request type ( GET, POST, PUT, DELETE etc. ).
 	 */
 	protected function register_endpoint( $path, $callback, $method = 'GET' ) {
 		add_action(
@@ -380,6 +380,20 @@ abstract class Rop_Services_Abstract {
 				);
 			}
 		);
+	}
+
+	/**
+	 * Facebook legacy redirect url.
+	 *
+	 * @return string Old legacy url.
+	 */
+	protected function get_legacy_url( $network = '' ) {
+		$url = get_admin_url( get_current_blog_id(), 'admin.php?page=TweetOldPost' );
+		if ( ! empty( $network ) ) {
+			$url = add_query_arg( array( 'network' => $network ), $url );
+		}
+
+		return str_replace( ':80', '', $url );
 	}
 
 	/**

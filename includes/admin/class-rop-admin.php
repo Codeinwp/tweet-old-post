@@ -46,7 +46,7 @@ class Rop_Admin {
 	 * @since    8.0.0
 	 *
 	 * @param      string $plugin_name The name of this plugin.
-	 * @param      string $version The version of this plugin.
+	 * @param      string $version     The version of this plugin.
 	 */
 	public function __construct( $plugin_name, $version ) {
 
@@ -134,16 +134,25 @@ class Rop_Admin {
 	 * Legacy auth callback.
 	 */
 	public function fb_legacy_auth() {
-		$code  = sanitize_text_field( isset( $_GET['code'] ) ? $_GET['code'] : '' );
-		$state = sanitize_text_field( isset( $_GET['state'] ) ? $_GET['state'] : '' );
+		$code    = sanitize_text_field( isset( $_GET['code'] ) ? $_GET['code'] : '' );
+		$state   = sanitize_text_field( isset( $_GET['state'] ) ? $_GET['state'] : '' );
+		$network = sanitize_text_field( isset( $_GET['network'] ) ? $_GET['network'] : '' );
 		if ( empty( $code ) ) {
 			return;
 		}
 		if ( empty( $state ) ) {
 			return;
 		}
-		$fb_service = new Rop_Facebook_Service();
-		$fb_service->authorize();
+		switch ( $network ) {
+			case 'linkedin':
+
+				$lk_service = new Rop_Linkedin_Service();
+				$lk_service->authorize();
+				break;
+			default:
+				$fb_service = new Rop_Facebook_Service();
+				$fb_service->authorize();
+		}
 	}
 
 	/**
