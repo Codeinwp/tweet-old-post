@@ -131,6 +131,12 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.0.3 - 2018-04-28  = 
+
+* Fix schedule synchronization issues.
+* Fix LinkedIn authentication with the wrong redirect_url.
+
+
 = 8.0.2 - 2018-04-27  = 
 
 * Fix issue with old Facebook applications and strict OAuth urls settings.

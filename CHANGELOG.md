@@ -1,4 +1,9 @@
 
+ ### v8.0.3 - 2018-04-28 
+ **Changes:** 
+ * Fix schedule synchronization issues.
+* Fix LinkedIn authentication with the wrong redirect_url.
+ 
  ### v8.0.2 - 2018-04-27 
  **Changes:** 
  * Fix issue with old Facebook applications and strict OAuth urls settings.
