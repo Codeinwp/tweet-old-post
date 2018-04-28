@@ -2,7 +2,7 @@
 	<div class="tab-view">
 		<div class="panel-body">
 			<div class="container" :class="'rop-tab-state-'+is_loading">
-				<div class="columns py-2" v-if="! isPro">
+				<div class="columns py-2" v-if="! isBiz">
 					<div class="column col-6 col-sm-12 vertical-align">
 						<b>{{labels.min_interval_title}}</b>
 						<p class="text-gray">{{labels.min_interval_desc}}</p>
@@ -197,6 +197,9 @@
 			},
 			isPro: function () {
 				return (this.$store.state.licence >= 1);
+			},
+			isBiz: function () {
+				return (this.$store.state.licence > 1);
 			},
 			postTypes: function () {
 				return this.$store.state.generalSettings.available_post_types;
