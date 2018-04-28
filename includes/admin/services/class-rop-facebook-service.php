@@ -159,16 +159,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		}
 	}
 
-	/**
-	 * Facebook legacy redirect url.
-	 *
-	 * @return string Old legacy url.
-	 */
-	public function get_legacy_url() {
-		$url = get_admin_url( get_current_blog_id(), 'admin.php?page=TweetOldPost' );
 
-		return str_replace( ':80', '', $url );
-	}
 
 	/**
 	 * Method for authenticate the service.

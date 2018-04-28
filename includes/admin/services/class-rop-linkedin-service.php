@@ -103,7 +103,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $client_id The Client ID. Default empty.
+	 * @param   string $client_id     The Client ID. Default empty.
 	 * @param   string $client_secret The Client Secret. Default empty.
 	 *
 	 * @return \LinkedIn\Client Client Linkedin.
@@ -122,7 +122,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $client_id The Client ID. Default empty.
+	 * @param   string $client_id     The Client ID. Default empty.
 	 * @param   string $client_secret The Client Secret. Default empty.
 	 *
 	 * @return mixed
@@ -133,7 +133,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		}
 		$this->api = new \LinkedIn\Client( $client_id, $client_secret );
 
-		$this->api->setRedirectUrl( $this->get_endpoint_url( 'authorize' ) );
+		$this->api->setRedirectUrl( $this->get_legacy_url( 'linkedin' ) );
 	}
 
 	/**
@@ -295,7 +295,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		}
 
 		$api           = $this->get_api();
-		$request_token = $api->oauth( 'oauth/request_token', array( 'oauth_callback' => $this->get_endpoint_url( 'authorize' ) ) );
+		$request_token = $api->oauth( 'oauth/request_token', array( 'oauth_callback' => $this->get_legacy_url( 'linkedin' ) ) );
 
 		$_SESSION['rop_twitter_request_token'] = $request_token;
 
@@ -345,7 +345,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @access  public
 	 *
 	 * @param   array $post_details The post details to be published by the service.
-	 * @param   array $args Optional arguments needed by the method.
+	 * @param   array $args         Optional arguments needed by the method.
 	 *
 	 * @return mixed
 	 */
