@@ -62,12 +62,12 @@
 							<i class="fa fa-pencil" aria-hidden="true"></i> {{labels.edit_queue}}
 						</button>
 					</div>
-					<div class="column col-3 col-ml-auto text-right" v-if="content.short_url_service !== '' ">
+					<div class="column col-3 col-ml-auto text-right" v-if="content.post_url !== ''">
 						<p class="m-0">
 							<b>{{labels.link_title}}:</b>
 							<a :href="content.post_url" target="_blank" class="tooltip"
-							   :data-tooltip="labels.link_shortned_start + ' ' + content.short_url_service +' ' + labels.link_shortner_service">
-								{{'{' + content.short_url_service + '}'}}</a>
+							   :data-tooltip="labels.link_shortned_start + ' ' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service )  ">
+								{{'{' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service ) + '}'}}</a>
 						</p>
 					</div>
 				</div>

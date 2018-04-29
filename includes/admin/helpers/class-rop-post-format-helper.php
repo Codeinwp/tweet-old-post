@@ -301,7 +301,7 @@ class Rop_Post_Format_Helper {
 		$result   = array_filter( $result, 'strlen' );
 		$result   = array_map(
 			function ( $value ) {
-					return str_replace( '#', '', $value );
+				return str_replace( '#', '', $value );
 			}, $result
 		);
 		foreach ( $result as $hashtag ) {
@@ -440,10 +440,17 @@ class Rop_Post_Format_Helper {
 	 * @return mixed
 	 */
 	public function build_url( $post ) {
-		$post_url = get_permalink( $post );
-		if ( empty( $this->post_format['include_link'] ) ) {
-			return $post_url;
+		$include_link = (bool) $this->post_format['include_link'];
+		if ( ! $include_link ) {
+			return '';
 		}
+
+		if ( $this->post_format['short_url'] && $this->post_format['short_url_service'] === 'wp_short_url' ) {
+			$post_url = wp_get_shortlink( $post );
+		}else{
+			$post_url = get_permalink( $post );
+		}
+
 		if ( isset( $this->post_format['url_from_meta'] ) && $this->post_format['url_from_meta'] && isset( $this->post_format['url_meta_key'] ) && ! empty( $this->post_format['url_meta_key'] ) ) {
 			preg_match_all( '#\bhttps?://[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/))#', get_post_meta( $post, $this->post_format['url_meta_key'], true ), $match );
 			if ( isset( $match[0] ) ) {
@@ -451,6 +458,14 @@ class Rop_Post_Format_Helper {
 					$post_url = trim( $match[0][0] );
 				}
 			}
+		}
+		$settings = new Rop_Settings_Model();
+		if ( $settings->get_ga_tracking() ) {
+			$params                 = array();
+			$params['utm_source']   = 'ReviveOldPost';
+			$params['utm_medium']   = 'social';
+			$params['utm_campaign'] = 'ReviveOldPost';
+			$post_url               = add_query_arg( $params, $post_url );
 		}
 
 		return $post_url;
@@ -495,6 +510,7 @@ class Rop_Post_Format_Helper {
 	 */
 	public function get_short_url( $url, $short_url_service, $credentials = array() ) {
 		$shortner_factory = new Rop_Shortner_Factory();
+
 		try {
 			$shortner_service = $shortner_factory->build( $short_url_service );
 			if ( ! empty( $credentials ) ) {
