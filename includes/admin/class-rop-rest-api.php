@@ -528,7 +528,6 @@ class Rop_Rest_Api {
 	 */
 	private function get_authenticated_services() {
 		$model = new Rop_Services_Model();
-		// $model->reset_authenticated_services();
 		$this->response->set_code( '200' )
 					   ->set_data( $model->get_authenticated_services() );
 
@@ -610,12 +609,6 @@ class Rop_Rest_Api {
 	 */
 	private function toggle_account( $data ) {
 		$model = new Rop_Services_Model();
-		// $post_format = new Rop_Post_Format_Model();
-		// $schedules   = new Rop_Scheduler_Model();
-		// $queue       = new Rop_Queue_Model();
-		// $post_format->remove_post_format( $data['account_id'] );
-		// $schedules->remove_schedule( $data['account_id'] );
-		// $queue->remove_account_from_queue( $data['account_id'] );
 		if ( $data['state'] === 'active' ) {
 			$model->add_active_accounts( $data['account_id'] );
 		} else {
@@ -624,6 +617,22 @@ class Rop_Rest_Api {
 		$this->response->set_code( '200' )
 					   ->set_data( $data );
 
+		return $this->response->to_array();
+	}
+
+	/**
+	 * Remove account from the available list.
+	 *
+	 * @param array $data Data from the request.
+	 *
+	 * @return array Data received.
+	 */
+	private function remove_account( $data ){
+		$this->response->set_code( '200' )
+		               ->set_data( $data );
+
+		$model = new Rop_Services_Model();
+		$model->remove_service_account($data['account_id']);
 		return $this->response->to_array();
 	}
 

@@ -1,5 +1,10 @@
 <template>
 	<div class="tile tile-centered rop-account" :class="'rop-'+type+'-account'">
+
+		<div class="tile-icon rop-remove-account tooltip tooltip-right" @click="removeAccount(account_id) "  data-tooltip="{{labels.remove_account}}" v-if=" ! account_data.active">
+			<i class="fa fa-trash" v-if=" ! is_loading"></i>
+			<i class="fa fa-spinner fa-spin" v-else></i>
+		</div>
 		<div class="tile-icon">
 			<div class="icon_box" :class="service">
 				<img class="service_account_image" :src="img" v-if="img"/>
@@ -130,6 +135,32 @@
 			}
 		},
 		methods: {
+		    /**
+			 * Remove inactivate account.
+			 *
+			 * @param id Account to remove.
+			 */
+		    removeAccount(id){
+                Vue.$log.info('Remove account', id);
+                if (this.is_loading) {
+                    Vue.$log.warn('Request in progress...Bail...', id);
+                    return;
+                }
+                this.is_loading = true;
+                this.$store.dispatch('fetchAJAXPromise', {
+                    req: 'remove_account',
+                    data: {account_id: id}
+                }).then(response => {
+                    this.$store.dispatch('fetchAJAXPromise', {req: 'get_authenticated_services'}).then(response =>{
+                        this.is_loading = false;
+                    },error => {
+                        this.is_loading = false;
+                    });
+                }, error => {
+                    this.is_loading = false;
+                    Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+                });
+			},
 			/**
 			 * Toggle account state.
 			 *
@@ -155,8 +186,11 @@
 					req: 'toggle_account',
 					data: {account_id: id, state: type}
 				}).then(response => {
-					this.is_loading = false;
-					this.$store.dispatch('fetchAJAX', {req: 'get_authenticated_services'})
+					this.$store.dispatch('fetchAJAXPromise', {req: 'get_authenticated_services'}).then(response =>{
+                        this.is_loading = false;
+					},error => {
+					    this.is_loading = false;
+					});
 				}, error => {
 					this.is_loading = false;
 					Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
@@ -180,3 +214,20 @@
 		}
 	}
 </script>
+<style scoped>
+	.rop-remove-account{
+		width:15px;
+		text-align: center;
+		cursor: pointer;
+	    padding-right: 10px;
+		margin-right: 10px;
+		height: 100%;
+		display: none;
+		-ms-flex: 0 0 auto;
+		line-height: 40px;
+		opacity: 1;
+	}
+	.rop-account:hover .rop-remove-account{
+		display: block;
+	}
+</style>

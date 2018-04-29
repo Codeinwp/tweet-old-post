@@ -77,6 +77,7 @@ class Rop_I18n {
 				'service_popup_title'     => __( 'Service Credentials', 'tweet-old-post' ),
 				'sign_in_btn'             => __( 'Sign In', 'tweet-old-post' ),
 				'at'                      => __( 'at', 'tweet-old-post' ),
+				'remove_account'          => __( 'Remove accounts from the list.', 'tweet-old-post' ),
 				'no_accounts'             => __( 'No accounts!', 'tweet-old-post' ),
 				'no_active_accounts'      => __( 'No active accounts!', 'tweet-old-post' ),
 				'no_active_accounts_desc' => __( 'Add one from the <b>"Accounts"</b> section.', 'tweet-old-post' ),

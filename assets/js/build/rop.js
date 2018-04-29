@@ -28736,7 +28736,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var logOptions = {
 	// required ['debug', 'info', 'warn', 'error', 'fatal']
-	logLevel: ropApiSettings.debug === 'yes' ? 'info' : 'error',
+	logLevel: ropApiSettings.debug === 'yes' ? 'debug' : 'error',
 	// optional : defaults to false if not specified
 	stringifyArguments: false,
 	// optional : defaults to false if not specified
@@ -32899,8 +32899,9 @@ module.exports = "\n\t<div id=\"rop-sign-in-area\">\n\t\t<div class=\"input-grou
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
+__webpack_require__(289)
 __vue_script__ = __webpack_require__(208)
-__vue_template__ = __webpack_require__(209)
+__vue_template__ = __webpack_require__(291)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -33030,13 +33031,42 @@ module.exports = {
 	},
 	methods: {
 		/**
+  * Remove inactivate account.
+  *
+  * @param id Account to remove.
+  */
+		removeAccount: function removeAccount(id) {
+			var _this = this;
+
+			_vue2.default.$log.info('Remove account', id);
+			if (this.is_loading) {
+				_vue2.default.$log.warn('Request in progress...Bail...', id);
+				return;
+			}
+			this.is_loading = true;
+			this.$store.dispatch('fetchAJAXPromise', {
+				req: 'remove_account',
+				data: { account_id: id }
+			}).then(function (response) {
+				_this.$store.dispatch('fetchAJAXPromise', { req: 'get_authenticated_services' }).then(function (response) {
+					_this.is_loading = false;
+				}, function (error) {
+					_this.is_loading = false;
+				});
+			}, function (error) {
+				_this.is_loading = false;
+				_vue2.default.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+			});
+		},
+
+		/**
    * Toggle account state.
    *
    * @param id
    * @param type
    */
 		toggleAccount: function toggleAccount(id, type) {
-			var _this = this;
+			var _this2 = this;
 
 			var parts = id.split('_');
 			if (parts.length !== 3) {
@@ -33056,10 +33086,13 @@ module.exports = {
 				req: 'toggle_account',
 				data: { account_id: id, state: type }
 			}).then(function (response) {
-				_this.is_loading = false;
-				_this.$store.dispatch('fetchAJAX', { req: 'get_authenticated_services' });
+				_this2.$store.dispatch('fetchAJAXPromise', { req: 'get_authenticated_services' }).then(function (response) {
+					_this2.is_loading = false;
+				}, function (error) {
+					_this2.is_loading = false;
+				});
 			}, function (error) {
-				_this.is_loading = false;
+				_this2.is_loading = false;
 				_vue2.default.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
 			});
 		},
@@ -33079,10 +33112,32 @@ module.exports = {
 		}
 	}
 	// </script>
+	// <style scoped>
+	// 	.rop-remove-account{
+	// 		width:15px;
+	// 		text-align: center;
+	// 		cursor: pointer;
+	// 	    padding-right: 10px;
+	// 		margin-right: 10px;
+	// 		height: 100%;
+	// 		display: none;
+	// 		-ms-flex: 0 0 auto;
+	// 		line-height: 40px;
+	// 		opacity: 1;
+	// 	}
+	// 	.rop-account:hover .rop-remove-account{
+	// 		display: block;
+	// 	}
+	// </style>
 	//
 
 }; // <template>
 // 	<div class="tile tile-centered rop-account" :class="'rop-'+type+'-account'">
+//
+// 		<div class="tile-icon rop-remove-account tooltip tooltip-right" @click="removeAccount(account_id) "  data-tooltip="Remove account from list" v-if=" ! account_data.active">
+// 			<i class="fa fa-trash" v-if=" ! is_loading"></i>
+// 			<i class="fa fa-spinner fa-spin" v-else></i>
+// 		</div>
 // 		<div class="tile-icon">
 // 			<div class="icon_box" :class="service">
 // 				<img class="service_account_image" :src="img" v-if="img"/>
@@ -33109,12 +33164,7 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 209 */
-/***/ (function(module, exports) {
-
-module.exports = "\n\t<div class=\"tile tile-centered rop-account\" :class=\"'rop-'+type+'-account'\">\n\t\t<div class=\"tile-icon\">\n\t\t\t<div class=\"icon_box\" :class=\"service\">\n\t\t\t\t<img class=\"service_account_image\" :src=\"img\" v-if=\"img\"/>\n\t\t\t\t<i class=\"fa  \" :class=\"icon\" aria-hidden=\"true\"></i>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"tile-content\">\n\t\t\t<div class=\"tile-title\">{{ user }}</div>\n\t\t\t<div class=\"tile-subtitle text-gray\">{{ serviceInfo }}</div>\n\t\t</div>\n\t\t<div class=\"tile-action\">\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<label class=\"form-switch\">\n\t\t\t\t\t<div class=\"ajax-loader \"><i class=\"fa fa-spinner fa-spin\" v-show=\"is_loading\"></i></div>\n\t\t\t\t\t<input :disabled=\"checkDisabled\" type=\"checkbox\" v-model=\"account_data.active\"\n\t\t\t\t\t       @change=\"startToggleAccount( account_id, type )\"/>\n\t\t\t\t\t<i class=\"form-icon\"></i>\n\t\t\t\t</label>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
-
-/***/ }),
+/* 209 */,
 /* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -33363,7 +33413,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 	<div class="tab-view">
 // 		<div class="panel-body">
 // 			<div class="container" :class="'rop-tab-state-'+is_loading">
-// 				<div class="columns py-2" v-if="! isPro">
+// 				<div class="columns py-2" v-if="! isBiz">
 // 					<div class="column col-6 col-sm-12 vertical-align">
 // 						<b>{{labels.min_interval_title}}</b>
 // 						<p class="text-gray">{{labels.min_interval_desc}}</p>
@@ -33554,6 +33604,9 @@ module.exports = {
 			return this.$store.state.generalSettings;
 		},
 		isPro: function isPro() {
+			return this.$store.state.licence >= 1;
+		},
+		isBiz: function isBiz() {
 			return this.$store.state.licence > 1;
 		},
 		postTypes: function postTypes() {
@@ -34334,7 +34387,7 @@ module.exports = "\n\t<div class=\"form-autocomplete\" style=\"width: 100%;\" v-
 /* 228 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\" _v-5f496420=\"\">\n\t\t<div class=\"panel-body\" _v-5f496420=\"\">\n\t\t\t<div class=\"container\" :class=\"'rop-tab-state-'+is_loading\" _v-5f496420=\"\">\n\t\t\t\t<div class=\"columns py-2\" v-if=\"! isPro\" _v-5f496420=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-5f496420=\"\">\n\t\t\t\t\t\t<b _v-5f496420=\"\">{{labels.min_interval_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-5f496420=\"\">{{labels.min_interval_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-5f496420=\"\">\n\t\t\t\t\t\t<counter-input id=\"default_interval\" :value.sync=\"generalSettings.default_interval\" _v-5f496420=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-5f496420=\"\"></span>\n\t\t\t\t<div class=\"columns py-2\" _v-5f496420=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-5f496420=\"\">\n\t\t\t\t\t\t<b _v-5f496420=\"\">{{labels.min_days_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-5f496420=\"\">{{labels.min_days_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-5f496420=\"\">\n\t\t\t\t\t\t<counter-input id=\"min_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.minimum_post_age\" _v-5f496420=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- Max Post Age -->\n\t\t\t\t<div class=\"columns py-2\" _v-5f496420=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-5f496420=\"\">\n\t\t\t\t\t\t<b _v-5f496420=\"\">{{labels.max_days_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-5f496420=\"\">{{labels.max_days_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-5f496420=\"\">\n\t\t\t\t\t\t<counter-input id=\"max_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.maximum_post_age\" _v-5f496420=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<span class=\"divider\" _v-5f496420=\"\"></span>\n\t\t\t\t\n\t\t\t\t<div class=\"columns py-2\" _v-5f496420=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-5f496420=\"\">\n\t\t\t\t\t\t<b _v-5f496420=\"\">{{labels.no_posts_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-5f496420=\"\">{{labels.no_posts_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-5f496420=\"\">\n\t\t\t\t\t\t<counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\" _v-5f496420=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-5f496420=\"\"></span>\n\t\t\t\t\n\t\t\t\t<!-- Share more than once -->\n\t\t\t\t<div class=\"columns py-2\" _v-5f496420=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-5f496420=\"\">\n\t\t\t\t\t\t<b _v-5f496420=\"\">{{labels.share_once_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-5f496420=\"\">{{labels.share_once_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-5f496420=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-5f496420=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-5f496420=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\" _v-5f496420=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-5f496420=\"\"></i> {{labels.share_once_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-5f496420=\"\"></span>\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-5f496420=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-5f496420=\"\">\n\t\t\t\t\t\t<b _v-5f496420=\"\">{{labels.post_types_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-5f496420=\"\">{{labels.post_types_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-5f496420=\"\">\n\t\t\t\t\t\t<multiple-select :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-5f496420=\"\"></multiple-select>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<div class=\"columns py-2\" v-if=\"!isPro\" _v-5f496420=\"\">\n\t\t\t\t\t<div class=\"column text-center\" _v-5f496420=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-5f496420=\"\"><i class=\"fa fa-lock\" _v-5f496420=\"\"></i> {{labels.post_types_upsell}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<span class=\"divider\" _v-5f496420=\"\"></span>\n\t\t\t\t\n\t\t\t\t<!-- Taxonomies -->\n\t\t\t\t<div class=\"columns py-2\" _v-5f496420=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-5f496420=\"\">\n\t\t\t\t\t\t<b _v-5f496420=\"\">{{labels.taxonomies_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-5f496420=\"\">{{labels.taxonomies_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-5f496420=\"\">\n\t\t\t\t\t\t<div class=\"input-group\" _v-5f496420=\"\">\n\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" _v-5f496420=\"\"></multiple-select>\n\t\t\t\t\t\t\t<span class=\"input-group-addon vertical-align\" _v-5f496420=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-5f496420=\"\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" @change=\"exludeTaxonomiesChange\" _v-5f496420=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-5f496420=\"\"></i>{{labels.taxonomies_exclude}}\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\n\t\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<span class=\"divider\" _v-5f496420=\"\"></span>\n\t\t\t\t<div class=\"columns py-2\" _v-5f496420=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-5f496420=\"\">\n\t\t\t\t\t\t<b _v-5f496420=\"\">{{labels.posts_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-5f496420=\"\">{{labels.posts_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-5f496420=\"\">\n\t\t\t\t\t\t<div class=\"input-group\" _v-5f496420=\"\">\n\t\t\t\t\t\t\t<multiple-select :searchquery=\"searchQuery\" @update=\"searchUpdate\" :options=\"postsAvailable\" :dont-lock=\"true\" :selected=\"generalSettings.selected_posts\" :changed-selection=\"updatedPosts\" _v-5f496420=\"\"></multiple-select>\n\t\t\t\t\t\t\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-5f496420=\"\"></span>\n\t\t\t\t\n\t\t\t\t<div class=\"columns py-2\" _v-5f496420=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-5f496420=\"\">\n\t\t\t\t\t\t<b _v-5f496420=\"\">{{labels.ga_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-5f496420=\"\">{{labels.ga_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-5f496420=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-5f496420=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-5f496420=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.ga_tracking\" _v-5f496420=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-5f496420=\"\"></i>{{labels.ga_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-5f496420=\"\"></span>\n\t\t\t\t\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-5f496420=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-5f496420=\"\">\n\t\t\t\t\t\t<b _v-5f496420=\"\">{{labels.custom_share_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-5f496420=\"\">{{labels.custom_share_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-5f496420=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-5f496420=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-5f496420=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" :disabled=\"!isPro\" v-model=\"generalSettings.custom_messages\" _v-5f496420=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-5f496420=\"\"></i>{{labels.custom_share_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- Upsell -->\n\t\t\t\t<div class=\"columns py-2\" v-if=\"!isPro\" _v-5f496420=\"\">\n\t\t\t\t\t<div class=\"column text-center\" _v-5f496420=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-5f496420=\"\"><i class=\"fa fa-lock\" _v-5f496420=\"\"></i> {{labels.custom_share_upsell}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-5f496420=\"\"></span>\n\t\t\t\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer text-right\" _v-5f496420=\"\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\" _v-5f496420=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-5f496420=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-5f496420=\"\"></i> {{labels.save}}\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\" _v-5f496420=\"\">\n\t\t<div class=\"panel-body\" _v-5f496420=\"\">\n\t\t\t<div class=\"container\" :class=\"'rop-tab-state-'+is_loading\" _v-5f496420=\"\">\n\t\t\t\t<div class=\"columns py-2\" v-if=\"! isBiz\" _v-5f496420=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-5f496420=\"\">\n\t\t\t\t\t\t<b _v-5f496420=\"\">{{labels.min_interval_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-5f496420=\"\">{{labels.min_interval_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-5f496420=\"\">\n\t\t\t\t\t\t<counter-input id=\"default_interval\" :value.sync=\"generalSettings.default_interval\" _v-5f496420=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-5f496420=\"\"></span>\n\t\t\t\t<div class=\"columns py-2\" _v-5f496420=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-5f496420=\"\">\n\t\t\t\t\t\t<b _v-5f496420=\"\">{{labels.min_days_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-5f496420=\"\">{{labels.min_days_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-5f496420=\"\">\n\t\t\t\t\t\t<counter-input id=\"min_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.minimum_post_age\" _v-5f496420=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- Max Post Age -->\n\t\t\t\t<div class=\"columns py-2\" _v-5f496420=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-5f496420=\"\">\n\t\t\t\t\t\t<b _v-5f496420=\"\">{{labels.max_days_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-5f496420=\"\">{{labels.max_days_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-5f496420=\"\">\n\t\t\t\t\t\t<counter-input id=\"max_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.maximum_post_age\" _v-5f496420=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<span class=\"divider\" _v-5f496420=\"\"></span>\n\t\t\t\t\n\t\t\t\t<div class=\"columns py-2\" _v-5f496420=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-5f496420=\"\">\n\t\t\t\t\t\t<b _v-5f496420=\"\">{{labels.no_posts_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-5f496420=\"\">{{labels.no_posts_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-5f496420=\"\">\n\t\t\t\t\t\t<counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\" _v-5f496420=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-5f496420=\"\"></span>\n\t\t\t\t\n\t\t\t\t<!-- Share more than once -->\n\t\t\t\t<div class=\"columns py-2\" _v-5f496420=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-5f496420=\"\">\n\t\t\t\t\t\t<b _v-5f496420=\"\">{{labels.share_once_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-5f496420=\"\">{{labels.share_once_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-5f496420=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-5f496420=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-5f496420=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\" _v-5f496420=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-5f496420=\"\"></i> {{labels.share_once_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-5f496420=\"\"></span>\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-5f496420=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-5f496420=\"\">\n\t\t\t\t\t\t<b _v-5f496420=\"\">{{labels.post_types_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-5f496420=\"\">{{labels.post_types_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-5f496420=\"\">\n\t\t\t\t\t\t<multiple-select :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-5f496420=\"\"></multiple-select>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<div class=\"columns py-2\" v-if=\"!isPro\" _v-5f496420=\"\">\n\t\t\t\t\t<div class=\"column text-center\" _v-5f496420=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-5f496420=\"\"><i class=\"fa fa-lock\" _v-5f496420=\"\"></i> {{labels.post_types_upsell}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<span class=\"divider\" _v-5f496420=\"\"></span>\n\t\t\t\t\n\t\t\t\t<!-- Taxonomies -->\n\t\t\t\t<div class=\"columns py-2\" _v-5f496420=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-5f496420=\"\">\n\t\t\t\t\t\t<b _v-5f496420=\"\">{{labels.taxonomies_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-5f496420=\"\">{{labels.taxonomies_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-5f496420=\"\">\n\t\t\t\t\t\t<div class=\"input-group\" _v-5f496420=\"\">\n\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" _v-5f496420=\"\"></multiple-select>\n\t\t\t\t\t\t\t<span class=\"input-group-addon vertical-align\" _v-5f496420=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-5f496420=\"\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" @change=\"exludeTaxonomiesChange\" _v-5f496420=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-5f496420=\"\"></i>{{labels.taxonomies_exclude}}\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\n\t\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<span class=\"divider\" _v-5f496420=\"\"></span>\n\t\t\t\t<div class=\"columns py-2\" _v-5f496420=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-5f496420=\"\">\n\t\t\t\t\t\t<b _v-5f496420=\"\">{{labels.posts_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-5f496420=\"\">{{labels.posts_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-5f496420=\"\">\n\t\t\t\t\t\t<div class=\"input-group\" _v-5f496420=\"\">\n\t\t\t\t\t\t\t<multiple-select :searchquery=\"searchQuery\" @update=\"searchUpdate\" :options=\"postsAvailable\" :dont-lock=\"true\" :selected=\"generalSettings.selected_posts\" :changed-selection=\"updatedPosts\" _v-5f496420=\"\"></multiple-select>\n\t\t\t\t\t\t\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-5f496420=\"\"></span>\n\t\t\t\t\n\t\t\t\t<div class=\"columns py-2\" _v-5f496420=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-5f496420=\"\">\n\t\t\t\t\t\t<b _v-5f496420=\"\">{{labels.ga_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-5f496420=\"\">{{labels.ga_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-5f496420=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-5f496420=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-5f496420=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.ga_tracking\" _v-5f496420=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-5f496420=\"\"></i>{{labels.ga_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-5f496420=\"\"></span>\n\t\t\t\t\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-5f496420=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-5f496420=\"\">\n\t\t\t\t\t\t<b _v-5f496420=\"\">{{labels.custom_share_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-5f496420=\"\">{{labels.custom_share_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-5f496420=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-5f496420=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-5f496420=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" :disabled=\"!isPro\" v-model=\"generalSettings.custom_messages\" _v-5f496420=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-5f496420=\"\"></i>{{labels.custom_share_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- Upsell -->\n\t\t\t\t<div class=\"columns py-2\" v-if=\"!isPro\" _v-5f496420=\"\">\n\t\t\t\t\t<div class=\"column text-center\" _v-5f496420=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-5f496420=\"\"><i class=\"fa fa-lock\" _v-5f496420=\"\"></i> {{labels.custom_share_upsell}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-5f496420=\"\"></span>\n\t\t\t\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer text-right\" _v-5f496420=\"\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\" _v-5f496420=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-5f496420=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-5f496420=\"\"></i> {{labels.save}}\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 229 */
@@ -39093,6 +39146,52 @@ module.exports = "\n\t<div class=\"toast toast-success rop-current-time\" v-if=\
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div>\n\t\t<div class=\"columns panel-header\">\n\t\t\t<div class=\"column header-logo vertical-align\">\n\t\t\t\t<div>\n\t\t\t\t\t<img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/>\n\t\t\t\t\t<h1 class=\"plugin-title d-inline-block\">Revive Old Posts</h1><span class=\"powered d-inline-block\"> {{labels.by}} <a\n\t\t\t\t\t\thref=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"sidebar sidebar-top card rop-container-start\">\n\t\t\t\t<div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n\t\t\t\t\t{{labels.now}}: {{ formatedDate }}\n\t\t\t\t</div>\n\t\t\t\t<countdown :current_time=\"current_time\"/>\n\t\t\t\t<button class=\"btn btn-sm\" :class=\"btn_class\"\n\t\t\t\t        :data-tooltip=\"labels.active_account_warning\"\n\t\t\t\t        @click=\"togglePosting()\" :disabled=\"haveAccounts\">\n\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t\t{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\t\t\n\t\t<div class=\"columns\">\n\t\t\t<div class=\"panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\n\t\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t\t<ul class=\"tab \">\n\t\t\t\t\t\t<li class=\"tab-item c-hand\" v-for=\"tab in displayTabs\"\n\t\t\t\t\t\t    :class=\"{ active: tab.isActive }\">\n\t\t\t\t\t\t\t<a :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\n\t\t\t\t\t\t\t   :data-badge=\"logs_no\"\n\t\t\t\t\t\t\t   @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\n\t\t\t\t\t\t</li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t\t<component :is=\"page.template\" :type=\"page.view\"></component>\n\t\t\t</div>\n\t\t\t\n\t\t\t<div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\n\t\t\t     :class=\"'rop-license-plan-'+license\">\n\t\t\t\t\n\t\t\t\t<div class=\"card rop-container-start\">\n\t\t\t\t\t<div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n\t\t\t\t\t\t{{labels.now}}: {{ formatedDate }}\n\t\t\t\t\t</div>\n\t\t\t\t\t<countdown :current_time=\"current_time\"/>\n\t\t\t\t\t<button class=\"btn\" :class=\"btn_class\"\n\t\t\t\t\t        :data-tooltip=\"labels.active_account_warning\"\n\t\t\t\t\t        @click=\"togglePosting()\" :disabled=\"haveAccounts\">\n\t\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t\t\t{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \">\n\t\t\t\t\t<a :href=\"upsell_link\" target=\"_blank\">\n\t\t\t\t\t\t<img class=\"img-responsive\" :src=\"to_pro_upsell\" :alt=\"labels.upgrade_pro_cta\">\n\t\t\t\t\t</a>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1\">\n\t\t\t\t\t<a :href=\"upsell_link\"  target=\"_blank\">\n\t\t\t\t\t\t<img class=\"img-responsive\" :src=\"to_business_upsell\" :alt=\"labels.upgrade_biz_cta\">\n\t\t\t\t\t</a>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+
+/***/ }),
+/* 289 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(290);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(2)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-10419e7a&file=service-user-tile.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./service-user-tile.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-10419e7a&file=service-user-tile.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./service-user-tile.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 290 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(1)();
+// imports
+
+
+// module
+exports.push([module.i, "\n\t.rop-remove-account[_v-10419e7a]{\n\t\twidth:15px;\n\t\ttext-align: center;\n\t\tcursor: pointer;\n\t    padding-right: 10px;\n\t\tmargin-right: 10px;\n\t\theight: 100%;\n\t\tdisplay: none;\n\t\t-ms-flex: 0 0 auto;\n\t\tline-height: 40px;\n\t\topacity: 1;\n\t}\n\t.rop-account:hover .rop-remove-account[_v-10419e7a]{\n\t\tdisplay: block;\n\t}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 291 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div class=\"tile tile-centered rop-account\" :class=\"'rop-'+type+'-account'\" _v-10419e7a=\"\">\n\n\t\t<div class=\"tile-icon rop-remove-account tooltip tooltip-right\" @click=\"removeAccount(account_id) \" data-tooltip=\"Remove account from list\" v-if=\" ! account_data.active\" _v-10419e7a=\"\">\n\t\t\t<i class=\"fa fa-trash\" v-if=\" ! is_loading\" _v-10419e7a=\"\"></i>\n\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-10419e7a=\"\"></i>\n\t\t</div>\n\t\t<div class=\"tile-icon\" _v-10419e7a=\"\">\n\t\t\t<div class=\"icon_box\" :class=\"service\" _v-10419e7a=\"\">\n\t\t\t\t<img class=\"service_account_image\" :src=\"img\" v-if=\"img\" _v-10419e7a=\"\">\n\t\t\t\t<i class=\"fa  \" :class=\"icon\" aria-hidden=\"true\" _v-10419e7a=\"\"></i>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"tile-content\" _v-10419e7a=\"\">\n\t\t\t<div class=\"tile-title\" _v-10419e7a=\"\">{{ user }}</div>\n\t\t\t<div class=\"tile-subtitle text-gray\" _v-10419e7a=\"\">{{ serviceInfo }}</div>\n\t\t</div>\n\t\t<div class=\"tile-action\" _v-10419e7a=\"\">\n\t\t\t<div class=\"form-group\" _v-10419e7a=\"\">\n\t\t\t\t<label class=\"form-switch\" _v-10419e7a=\"\">\n\t\t\t\t\t<div class=\"ajax-loader \" _v-10419e7a=\"\"><i class=\"fa fa-spinner fa-spin\" v-show=\"is_loading\" _v-10419e7a=\"\"></i></div>\n\t\t\t\t\t<input :disabled=\"checkDisabled\" type=\"checkbox\" v-model=\"account_data.active\" @change=\"startToggleAccount( account_id, type )\" _v-10419e7a=\"\">\n\t\t\t\t\t<i class=\"form-icon\" _v-10419e7a=\"\"></i>\n\t\t\t\t</label>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ })
 /******/ ]);

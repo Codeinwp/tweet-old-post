@@ -136,14 +136,21 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	public function get_authenticated_services( $service = '' ) {
 
 		$services = $this->get( $this->services_namespace );
-		if ( empty( $service ) ) {
-			return wp_parse_args( $services, array() );
-		}
+
 		if ( ! is_array( $services ) ) {
 			return array();
 		}
+
 		$services = array_filter(
-			$services, function ( $value ) use ( $service ) {
+			$services,
+			function ( $value ) use ( $service ) {
+
+				if ( ! isset( $value['service'] ) ) {
+					return false;
+				}
+				if ( empty( $service ) ) {
+					return true;
+				}
 				if ( $value['service'] === $service ) {
 					return true;
 				}
@@ -290,6 +297,34 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 		$this->update_authenticated_services( $services );
 
 		return $services;
+	}
+
+	/**
+	 * Remove account id from the service.
+	 *
+	 * @param string $account_id Account id to remove.
+	 *
+	 * @return bool Update status.
+	 */
+	public function remove_service_account( $account_id = '' ) {
+		if ( empty( $account_id ) ) {
+			return false;
+		}
+
+		$parts = explode( '_', $account_id );
+		if ( count( $parts ) !== 3 ) {
+			return false;
+		}
+
+		$service_id = $parts[0] . '_' . $parts[1];
+
+		$services = $this->get_authenticated_services();
+		unset( $services[ $service_id ]['available_accounts'][ $account_id ] );
+
+		$this->update_authenticated_services( $services );
+
+		return true;
+
 	}
 
 	/**

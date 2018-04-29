@@ -10,7 +10,7 @@ import VueLogger from 'vuejs-logger'
 
 const logOptions = {
 	// required ['debug', 'info', 'warn', 'error', 'fatal']
-	logLevel: ( ( ropApiSettings.debug === 'yes' ) ? 'info' : 'error' ),
+	logLevel: ( ( ropApiSettings.debug === 'yes' ) ? 'debug' : 'error' ),
 	// optional : defaults to false if not specified
 	stringifyArguments: false,
 	// optional : defaults to false if not specified

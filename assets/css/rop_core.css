@@ -4004,6 +4004,7 @@ a.active {
 
 .service_account_image {
 	width: 150%;
+	max-width: 150% !important;
 	margin-top: -25%;
 	margin-left: -25%;
 	border-radius: 50%;
