@@ -43,7 +43,7 @@ class Test_RopScheduler extends WP_UnitTestCase {
 		$new_data         = $schedule_defaults;
 		$new_data['type'] = 'fixed';
 		$scheduler->add_update_schedule( $account_id, $new_data );
-		$this->assertEquals( $scheduler->get_schedule( $account_id ), $new_data );
+		$this->assertNotEquals( $scheduler->get_schedule( $account_id ), $new_data );
 		$schedule_fixed = $scheduler->get_schedule( $account_id );
 		$this->assertNotEmpty( $schedule_fixed['interval_f']['week_days'] );
 		$this->assertEquals( 7, count( $schedule_fixed['interval_f']['week_days'] ) );

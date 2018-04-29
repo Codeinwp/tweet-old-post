@@ -145,7 +145,6 @@ class Rop_Admin {
 		}
 		switch ( $network ) {
 			case 'linkedin':
-
 				$lk_service = new Rop_Linkedin_Service();
 				$lk_service->authorize();
 				break;
