@@ -19,6 +19,11 @@
     "issues": "https://github.com/Codeinwp/tweet-old-post/issues",
     "source": "https://github.com/Codeinwp/tweet-old-post"
   },
+  "autoload": {
+    "files": [
+      "vendor/codeinwp/themeisle-sdk/load.php"
+    ]
+  },
   "require": {
     "codeinwp/themeisle-sdk": "master",
     "facebook/graph-sdk": "^5.6",
