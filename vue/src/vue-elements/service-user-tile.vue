@@ -1,7 +1,7 @@
 <template>
 	<div class="tile tile-centered rop-account" :class="'rop-'+type+'-account'">
 
-		<div class="tile-icon rop-remove-account tooltip tooltip-right" @click="removeAccount(account_id) "  data-tooltip="{{labels.remove_account}}" v-if=" ! account_data.active">
+		<div class="tile-icon rop-remove-account tooltip tooltip-right" @click="removeAccount(account_id) "  :data-tooltip="labels.remove_account" v-if=" ! account_data.active">
 			<i class="fa fa-trash" v-if=" ! is_loading"></i>
 			<i class="fa fa-spinner fa-spin" v-else></i>
 		</div>
@@ -222,12 +222,14 @@
 	    padding-right: 10px;
 		margin-right: 10px;
 		height: 100%;
-		display: none;
 		-ms-flex: 0 0 auto;
 		line-height: 40px;
-		opacity: 1;
+		opacity: 0;
+		margin-left:-20px;
+		transition:all 0.3s linear;
 	}
 	.rop-account:hover .rop-remove-account{
-		display: block;
+		opacity:1;
+		margin-left:0px;
 	}
 </style>
