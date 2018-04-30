@@ -41,7 +41,6 @@ class Rop_Googl_Shortner extends Rop_Url_Shortner_Abstract {
 	 */
 	public function shorten_url( $url ) {
 
-
 		$response = $this->callAPI(
 			'https://www.googleapis.com/urlshortener/v1/url?key=' . $this->credentials['key'],
 			array( 'method' => 'json', 'json' => true ),

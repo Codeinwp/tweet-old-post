@@ -447,7 +447,7 @@ class Rop_Post_Format_Helper {
 
 		if ( $this->post_format['short_url'] && $this->post_format['short_url_service'] === 'wp_short_url' ) {
 			$post_url = wp_get_shortlink( $post );
-		}else{
+		} else {
 			$post_url = get_permalink( $post );
 		}
 

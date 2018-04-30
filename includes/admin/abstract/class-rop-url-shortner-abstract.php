@@ -216,9 +216,11 @@ abstract class Rop_Url_Shortner_Abstract {
 	 */
 	private function build_url( $url, $props, $params ) {
 		if ( $props && isset( $props['method'] ) && $props['method'] === 'get' ) {
-			$params = array_map( function ( $value ) {
-				return urlencode( $value );
-			}, $params );
+			$params = array_map(
+				function ( $value ) {
+						return urlencode( $value );
+				}, $params
+			);
 			$url    = add_query_arg( $params, $url );
 		}
 

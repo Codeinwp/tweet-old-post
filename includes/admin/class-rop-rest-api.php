@@ -627,12 +627,12 @@ class Rop_Rest_Api {
 	 *
 	 * @return array Data received.
 	 */
-	private function remove_account( $data ){
+	private function remove_account( $data ) {
 		$this->response->set_code( '200' )
-		               ->set_data( $data );
+					   ->set_data( $data );
 
 		$model = new Rop_Services_Model();
-		$model->remove_service_account($data['account_id']);
+		$model->remove_service_account( $data['account_id'] );
 		return $this->response->to_array();
 	}
 
