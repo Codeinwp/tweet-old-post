@@ -131,6 +131,7 @@
 			 * @returns {T[]}
 			 */
 			serviceInfo: function () {
+				
 				return this.account_data.account.concat(' ' + this.labels.at + ': ').concat(this.account_data.created)
 			}
 		},
