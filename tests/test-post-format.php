@@ -84,6 +84,26 @@ class Test_RopPostFormat extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Test url include option.
+	 */
+	public function test_url_include() {
+		$service                  = Rop_InitAccounts::ROP_TEST_SERVICE_NAME;
+		$account_id               = Rop_InitAccounts::get_account_id();
+		$post_format              = new Rop_Post_Format_Model( $service );
+		$post_id = self::$post_ids[ rand( 0, count( self::$post_ids ) - 1 ) ];
+		$format  = new Rop_Post_Format_Helper();
+		$formated_post = $format->get_formated_object( $post_id, $account_id );
+		$this->assertFalse( empty( $formated_post['post_url'] ), 'By default link should be included.' );
+
+		$new_data                 = $post_format->get_post_format( $account_id );
+		$new_data['include_link'] = false;
+		$post_format->add_update_post_format( $account_id, $new_data );
+		$formated_post = $format->get_formated_object( $post_id, $account_id );
+		$this->assertTrue( empty( $formated_post['post_url'] ), 'Link include is not working.' );
+
+	}
+
+	/**
 	 * Test categories hashtags option.
 	 */
 	public function test_hashtags_from_categories() {

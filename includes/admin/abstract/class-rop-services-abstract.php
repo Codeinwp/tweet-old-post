@@ -313,15 +313,18 @@ abstract class Rop_Services_Abstract {
 		if ( empty( $link ) ) {
 			return '';
 		}
+
 		if ( ! $post_details['short_url'] ) {
 			return $link;
 		}
-		if ( $post_details['short_url_service'] === 'wp_short_url' ) {
-			$link = wp_get_shortlink( $post_details['post_id'] );
-		} else {
-			$post_format_helper = new Rop_Post_Format_Helper();
-			$link               = ' ' . $post_format_helper->get_short_url( $post_details['post_url'], $post_details['short_url_service'], $post_details['shortner_credentials'] );
+		if ( empty( $post_details['short_url_service'] ) ) {
+			return $link;
 		}
+		if ( $post_details['short_url_service'] === 'wp_short_url' ) {
+			return $link;
+		}
+		$post_format_helper = new Rop_Post_Format_Helper();
+		$link               = ' ' . $post_format_helper->get_short_url( $post_details['post_url'], $post_details['short_url_service'], $post_details['shortner_credentials'] );
 
 		return $link;
 	}

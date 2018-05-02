@@ -93,12 +93,15 @@ abstract class Rop_Url_Shortner_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
 	 * @param   array $credentials An array of credentials to save.
+	 *
 	 * @return mixed
 	 */
 	public function set_credentials( $credentials ) {
 		$this->model->save( $credentials );
 		$this->credentials = $this->get_credentials();
+
 		return $this->credentials;
 	}
 
@@ -107,7 +110,9 @@ abstract class Rop_Url_Shortner_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
 	 * @param   string $url The url to shorten.
+	 *
 	 * @return string
 	 */
 	public abstract function shorten_url( $url );
@@ -126,81 +131,11 @@ abstract class Rop_Url_Shortner_Abstract {
 		$randStringLen = 64;
 
 		$randString = '';
-		for ( $i = 0; $i < $randStringLen; $i++ ) {
+		for ( $i = 0; $i < $randStringLen; $i ++ ) {
 			$randString .= $charset[ mt_rand( 0, strlen( $charset ) - 1 ) ];
 		}
 
 		return $randString;
-	}
-
-	/**
-	 * Utility method to build the request url for cURL.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 * @param   string $url The URL to shorten.
-	 * @param   array  $props cURL props.
-	 * @param   array  $params Params to be appended to URL.
-	 * @return string
-	 */
-	private function build_url( $url, $props, $params ) {
-		if ( $props && isset( $props['method'] ) && $props['method'] === 'get' ) {
-			$url .= '?';
-			foreach ( $params as $k => $v ) {
-				$url .= "$k=$v&";
-			}
-		}
-		return $url;
-	}
-
-	/**
-	 * Utility method to append utm params to url.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @param   string $url An url to use.
-	 * @return string
-	 */
-	public function append_utm( $url ) {
-		$url_parts = parse_url( $url );
-		if ( isset( $url_parts['query'] ) ) {
-			parse_str( $url_parts['query'], $params );
-		} else {
-			$params             = array();
-			$url_parts['query'] = '';
-		}
-
-		$params['utm_source']   = 'ReviveOldPost';
-		$params['utm_medium']   = 'social';
-		$params['utm_campaign'] = 'ReviveOldPost';
-
-		$url_parts['query'] = http_build_query( $params );
-
-		if ( ! isset( $url_parts['scheme'] ) ) {
-			$url_parts['scheme'] = 'http';
-		}
-
-		if ( ! isset( $url_parts['host'] ) ) {
-			$url_parts['host'] = '';
-		}
-
-		return $url_parts['scheme'] . '://' . $url_parts['host'] . $url_parts['path'] . '?' . $url_parts['query'];
-	}
-
-	/**
-	 * Utility method to build the headers.
-	 *
-	 * @since   8.0.0
-	 * @access  private
-	 * @param array $headers The headers to be added to cURL.
-	 * @return array
-	 */
-	private function build_headers( $headers ) {
-		$header = array();
-		foreach ( $headers as $key => $val ) {
-			$header[] = "$key: $val";
-		}
-		return $header;
 	}
 
 	/**
@@ -210,10 +145,12 @@ abstract class Rop_Url_Shortner_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  protected
-	 * @param   string $url The URL to shorten.
-	 * @param   array  $props cURL props.
-	 * @param   array  $params Params to be passed to API.
+	 *
+	 * @param   string $url     The URL to shorten.
+	 * @param   array  $props   cURL props.
+	 * @param   array  $params  Params to be passed to API.
 	 * @param   array  $headers Additional headers if needed.
+	 *
 	 * @return array
 	 */
 	protected final function callAPI( $url, $props = array(), $params = array(), $headers = array() ) {
@@ -261,6 +198,51 @@ abstract class Rop_Url_Shortner_Abstract {
 			'response' => $body,
 			'error'    => $error,
 		);
+
 		return $array;
+	}
+
+	/**
+	 * Utility method to build the request url for cURL.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 *
+	 * @param   string $url    The URL to shorten.
+	 * @param   array  $props  cURL props.
+	 * @param   array  $params Params to be appended to URL.
+	 *
+	 * @return string
+	 */
+	private function build_url( $url, $props, $params ) {
+		if ( $props && isset( $props['method'] ) && $props['method'] === 'get' ) {
+			$params = array_map(
+				function ( $value ) {
+						return urlencode( $value );
+				}, $params
+			);
+			$url    = add_query_arg( $params, $url );
+		}
+
+		return $url;
+	}
+
+	/**
+	 * Utility method to build the headers.
+	 *
+	 * @since   8.0.0
+	 * @access  private
+	 *
+	 * @param array $headers The headers to be added to cURL.
+	 *
+	 * @return array
+	 */
+	private function build_headers( $headers ) {
+		$header = array();
+		foreach ( $headers as $key => $val ) {
+			$header[] = "$key: $val";
+		}
+
+		return $header;
 	}
 }

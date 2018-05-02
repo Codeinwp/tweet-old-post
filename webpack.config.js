@@ -2,8 +2,11 @@ const webpack = require( 'webpack' )
 const path    = require( 'path' )
 
 // Naming and path settings
-let appName      = 'rop'
-const entryPoint = './vue/src/rop_main.js'
+let appName      = '';
+const entryPoint = {
+	dashboard: './vue/src/rop_main.js' ,
+	exclude: './vue/src/rop_exclude_posts.js' ,
+};
 const exportPath = path.resolve( __dirname, './assets/js/build' )
 
 // Enviroment flag
@@ -25,9 +28,9 @@ if ( env === 'production' ) {
 		)
 	)
 
-	appName = appName + '.min.js'
+	appName =  '.min.js'
 } else {
-	appName = appName + '.js'
+	appName =  '.js'
 }
 
 // Main Settings config
@@ -35,7 +38,7 @@ module.exports = {
 	entry: entryPoint,
 	output: {
 		path: exportPath,
-		filename: appName,
+		filename: '[name]' + appName,
 		publicPath: '/'
 	},
 	module: {
@@ -48,17 +51,17 @@ module.exports = {
 				query: {
 					presets: ['es2015']
 				}
-		},
+			},
 			{
 				enforce: 'pre',
 				test: /\.vue$/,
 				loader: 'eslint-loader',
 				exclude: /node_modules/
-		},
+			},
 			{
 				test: /\.vue$/,
 				loader: 'vue-loader'
-		}
+			}
 		]
 	},
 	resolve: {

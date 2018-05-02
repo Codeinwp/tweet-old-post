@@ -68,7 +68,7 @@ class Rop {
 	public function __construct() {
 
 		$this->plugin_name = 'rop';
-		$this->version     = '8.0.3';
+		$this->version     = '8.0.4';
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -135,7 +135,10 @@ class Rop {
 		$this->loader->add_action( 'wp_loaded', $this, 'upgrade', 2 );
 
 		$rop_cron_helper = new Rop_Cron_Helper();
-		$this->loader->add_filter( 'cron_schedules', $rop_cron_helper, 'rop_cron_schedules' );
+		/**
+		 * Use use PHP_INT_MAX to make sure the schedule is added. Some shitty plugins add their schedule by clearing the previous values.
+		 */
+		$this->loader->add_filter( 'cron_schedules', $rop_cron_helper, 'rop_cron_schedules', PHP_INT_MAX );
 	}
 
 	/**

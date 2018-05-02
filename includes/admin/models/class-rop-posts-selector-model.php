@@ -76,15 +76,18 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	public function get_taxonomies( $post_formats = array() ) {
 
 		if ( empty( $post_formats ) ) {
-			return false;
+			return array();
 		}
+		$taxonomies = array();
 		foreach ( $post_formats as $post_type_name ) {
 
 			$post_type_taxonomies = get_object_taxonomies( $post_type_name, 'objects' );
+
 			$post_type_taxonomies = $this->ignore_taxonomies( $post_type_taxonomies );
-			$taxonomies           = array();
+
 			foreach ( $post_type_taxonomies as $post_type_taxonomy ) {
 				$taxonomy = get_taxonomy( $post_type_taxonomy->name );
+
 				if ( empty( $taxonomy ) ) {
 					continue;
 				}
@@ -137,48 +140,75 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @access  public
 	 *
 	 * @param   array  $selected_post_types The selected post types.
-	 * @param   array  $taxonomies The taxonomies.
+	 * @param   array  $taxonomies The selected taxonomies.
 	 * @param   string $search A search query.
-	 * @param   bool   $exclude The exclude flag.
+	 * @param   bool   $exclude The exclude taxonomies flag.
 	 *
 	 * @return array
 	 */
-	public function get_posts( $selected_post_types, $taxonomies, $search, $exclude, $selected_posts ) {
-		$search_query = '';
-		if ( isset( $search ) && $search != '' ) {
-			$search_query = $search;
-		}
-		$selected = array();
-		if ( ! empty( $selected_posts ) && is_array( $selected_posts ) ) {
-			$selected = wp_list_pluck( $selected_posts, 'value' );
-		}
-		$post_types  = $this->build_post_types( $selected_post_types );
-		$tax_queries = $this->build_tax_query( array( 'taxonomies' => $taxonomies, 'exclude' => $exclude ) );
+	public function get_posts( $selected_post_types, $taxonomies, $search = '', $exclude, $show_excluded_posts = false, $page = 1 ) {
+		$search = strval( $search );
 
-		$posts_array     = new WP_Query(
-			array(
-				'posts_per_page'         => 10,
-				'no_found_rows'          => true,
-				'post__not_in'           => $selected,
-				'update_post_meta_cache' => false,
-				'post_type'              => $post_types,
-				's'                      => $search_query,
-				'tax_query'              => $tax_queries,
-			)
+		$args = array(
+			'posts_per_page'         => 100,
+			'update_post_meta_cache' => false,
 		);
+		if ( $page === false ) {
+			$args['no_found_rows']  = false;
+			$args['posts_per_page'] = 500;
+		} else {
+			$args['paged'] = $page;
+		}
+		if ( ! empty( $search ) ) {
+			$args['s'] = $search;
+		}
+		$excluded = $this->get_excluded_posts();
+		/**
+		 * Return empty if the excluded list is empty and we want to show excluded posts.
+		 */
+		if ( empty( $excluded ) && $show_excluded_posts ) {
+			return array();
+		}
+		if ( $show_excluded_posts && ! empty( $excluded ) ) {
+			$args['post__in'] = $excluded;
+		} else {
+			$post_types        = $this->build_post_types( $selected_post_types );
+			$tax_queries       = $this->build_tax_query( array( 'taxonomies' => $taxonomies, 'exclude' => $exclude ) );
+			$args['post_type'] = $post_types;
+			$args['tax_query'] = $tax_queries;
+		}
+		$posts_array     = new WP_Query( $args );
 		$formatted_posts = array();
+
 		foreach ( $posts_array->posts as $post ) {
 			array_push(
 				$formatted_posts, array(
 					'name'     => $post->post_title,
 					'value'    => $post->ID,
-					'selected' => false,
+					'selected' => $show_excluded_posts ? true : in_array( $post->ID, $excluded ),
 				)
 			);
 		}
 		wp_reset_postdata();
 
 		return $formatted_posts;
+	}
+
+	/**
+	 * Get excluded posts ids.
+	 *
+	 * @return array Excluded posts ids.
+	 */
+	private function get_excluded_posts() {
+		$excluded_posts = $this->settings->get_selected_posts();
+		if ( empty( $excluded_posts ) ) {
+			return array();
+		}
+		if ( ! isset( $excluded_posts[0]['value'] ) ) {
+			return $excluded_posts;
+		}
+
+		return wp_list_pluck( $excluded_posts, 'value' );
 	}
 
 	/**
@@ -266,19 +296,8 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	public function select( $account_id = false ) {
 		$post_types       = $this->build_post_types();
 		$tax_queries      = $this->build_tax_query();
-		$include          = array();
-		$excluded_by_user = array();
-		$required         = array();
-		$excluded_posts   = $this->settings->get_selected_posts();
-		if ( ! empty( $excluded_posts ) ) {
-			foreach ( $excluded_posts as $post ) {
-				array_push( $excluded_by_user, $post['value'] );
-			}
-			/**
-			 * TODO implement always include posts mechanism. Now this is disabled.
-			 */
-		}
-		$results = $this->query_results( $account_id, $post_types, $tax_queries, $excluded_by_user );
+		$excluded_by_user = $this->get_excluded_posts();
+		$results          = $this->query_results( $account_id, $post_types, $tax_queries, $excluded_by_user );
 		/**
 		 * If share more than once is active, we have no more posts and the buffer is filled
 		 * reset the buffer and query again.

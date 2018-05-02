@@ -136,14 +136,21 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	public function get_authenticated_services( $service = '' ) {
 
 		$services = $this->get( $this->services_namespace );
-		if ( empty( $service ) ) {
-			return wp_parse_args( $services, array() );
-		}
+
 		if ( ! is_array( $services ) ) {
 			return array();
 		}
+
 		$services = array_filter(
-			$services, function ( $value ) use ( $service ) {
+			$services,
+			function ( $value ) use ( $service ) {
+
+				if ( ! isset( $value['service'] ) ) {
+					return false;
+				}
+				if ( empty( $service ) ) {
+					return true;
+				}
 				if ( $value['service'] === $service ) {
 					return true;
 				}
@@ -151,8 +158,35 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 				return false;
 			}
 		);
+		$services = array_map(
+			function ( $service ) {
+
+				$service['available_accounts'] = array_map(
+					function ( $account ) {
+						return $this->normalize_account( $account );
+					}, $service['available_accounts']
+				);
+
+				return $service;
+			}, $services
+		);
 
 		return $services;
+	}
+
+	/**
+	 * Normalize account component by removing null values.
+	 *
+	 * @param array $account Account data.
+	 *
+	 * @return array Normalized array.
+	 */
+	private function normalize_account( $account ) {
+		return array_map(
+			function ( $value ) {
+				return is_null( $value ) ? '' : $value;
+			}, $account
+		);
 	}
 
 	/**
@@ -245,6 +279,14 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 */
 	public function get_active_accounts() {
 		$accounts = $this->get( $this->accounts_namespace );
+		if ( ! is_array( $accounts ) ) {
+			$accounts = array();
+		}
+		$accounts = array_map(
+			function ( $account ) {
+				return $this->normalize_account( $account );
+			}, $accounts
+		);
 
 		return wp_parse_args( $accounts, array() );
 	}
@@ -275,7 +317,7 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 * @access  public
 	 *
 	 * @param   string $service_id The service ID.
-	 * @param   string $service    The service name.
+	 * @param   string $service The service name.
 	 *
 	 * @return mixed|null
 	 */
@@ -290,6 +332,34 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 		$this->update_authenticated_services( $services );
 
 		return $services;
+	}
+
+	/**
+	 * Remove account id from the service.
+	 *
+	 * @param string $account_id Account id to remove.
+	 *
+	 * @return bool Update status.
+	 */
+	public function remove_service_account( $account_id = '' ) {
+		if ( empty( $account_id ) ) {
+			return false;
+		}
+
+		$parts = explode( '_', $account_id );
+		if ( count( $parts ) !== 3 ) {
+			return false;
+		}
+
+		$service_id = $parts[0] . '_' . $parts[1];
+
+		$services = $this->get_authenticated_services();
+		unset( $services[ $service_id ]['available_accounts'][ $account_id ] );
+
+		$this->update_authenticated_services( $services );
+
+		return true;
+
 	}
 
 	/**
