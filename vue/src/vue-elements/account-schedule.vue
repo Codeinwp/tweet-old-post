@@ -177,6 +177,9 @@
 	}
 </script>
 <style scoped>
+	.rop-control-container-false  {
+		cursor:not-allowed !important;
+	}
 	#rop_core .panel-body .text-gray {
 		margin: 0;
 		line-height: normal;
@@ -204,4 +207,5 @@
 			text-align: left;
 		}
 	}
+	
 </style>

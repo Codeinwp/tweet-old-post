@@ -55,17 +55,9 @@
 						<i class="fa fa-spinner fa-spin" v-else></i>
 						{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}
 					</button>
+					<upsell-sidebar></upsell-sidebar>
 				</div>
-				<div class="card rop-upsell-pro-card" v-if="license  < 1 ">
-					<a :href="upsell_link" target="_blank">
-						<img class="img-responsive" :src="to_pro_upsell" :alt="labels.upgrade_pro_cta">
-					</a>
-				</div>
-				<div class="card rop-upsell-business-card" v-if="license  === 1">
-					<a :href="upsell_link"  target="_blank">
-						<img class="img-responsive" :src="to_business_upsell" :alt="labels.upgrade_biz_cta">
-					</a>
-				</div>
+			
 			</div>
 		</div>
 	</div>
@@ -81,6 +73,7 @@
 	import Toast from './reusables/toast.vue'
 	import CountDown from './reusables/countdown.vue'
 	import moment from 'moment'
+	import upsellSidebar from './upsell-sidebar.vue'
 
 	module.exports = {
 		name: 'main-page-panel',
@@ -215,6 +208,7 @@
 			'accounts-selector': AccountsSelectorTab,
 			'queue': QueueTab,
 			'logs': LogsTab,
+			'upsell-sidebar': upsellSidebar,
 			'toast': Toast,
 			'countdown': CountDown
 		}
@@ -235,10 +229,5 @@
 	
 	#rop_core .badge.badge-logs {
 		padding-right: 10px;
-	}
-	
-	#rop_core .rop-upsell-business-card,
-	#rop_core .rop-upsell-pro-card {
-		padding: 0;
 	}
 </style>

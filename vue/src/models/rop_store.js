@@ -166,7 +166,12 @@ export default new Vuex.Store( {
 				state.generalSettings.available_taxonomies = stateData
 				break
 			case 'get_posts':
-				state.generalSettings.available_posts = stateData
+				if( stateData.page === 1 ){
+					state.generalSettings.available_posts = stateData.posts;
+				}else{
+					state.generalSettings.available_posts = state.generalSettings.available_posts.concat( stateData.posts );
+				}
+
 				break
 			case 'get_post_format':
 			case 'save_post_format':
@@ -197,6 +202,8 @@ export default new Vuex.Store( {
 				state.toast = stateData
 				break
 			case 'toggle_account':
+			case 'exclude_post':
+			case 'exclude_post_batch':
 
 				break
 			default:

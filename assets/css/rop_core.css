@@ -4438,7 +4438,6 @@ a.active {
 	content: "";
 	-webkit-animation: move 2s linear infinite;
 	animation: move 2s linear infinite;
-	animation: move 2s linear infinite;
 }
 
 .upsell a {
@@ -4452,10 +4451,12 @@ a.active {
 	pointer-events: auto;
 }
 
-.toplevel_page_TweetOldPost #wpbody-content > * {
+.toplevel_page_TweetOldPost #wpbody-content > *,
+.revive-old-posts_page_rop_content_filters #wpbody-content > * {
 	display: none !important;
 }
 
+.revive-old-posts_page_rop_content_filters #wpbody-content > #rop_content_filters,
 .toplevel_page_TweetOldPost #wpbody-content > #rop_core {
 	display: block !important;
 }
