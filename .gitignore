@@ -6,5 +6,4 @@ artifact
 vendor
 composer.lock
 bin/
-build
 package-lock.json

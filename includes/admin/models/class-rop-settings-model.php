@@ -179,17 +179,6 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	}
 
 	/**
-	 * Method to retrieve the default interval that should be used.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return mixed
-	 */
-	public function get_interval() {
-		return round( $this->settings['default_interval'], 2 );
-	}
-
-	/**
 	 * Method to retrieve if Google Analytics tracking should be used.
 	 *
 	 * @since   8.0.0
@@ -295,15 +284,15 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 
 		$post_id                = array_map(
 			function ( $value ) {
-					return array(
-						'value' => intval( $value ),
-					);
+				return array(
+					'value' => intval( $value ),
+				);
 			}, $post_id
 		);
 		$post_id                = array_filter(
 			$post_id, function ( $value ) use ( $check ) {
-				return ! in_array( $value['value'], $check );
-			}
+			return ! in_array( $value['value'], $check );
+		}
 		);
 		$posts                  = array_merge( $posts, $post_id );
 		$data['selected_posts'] = $posts;
@@ -336,6 +325,14 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	public function save_settings( $data = array() ) {
 		$data = $this->validate_settings( $data );
 		$data = wp_parse_args( $data, $this->settings );
+
+		/**
+		 * Check if we need to update timeline.
+		 */
+		if ( $this->get_interval() != $data['default_interval'] ) {
+			$schedule = new Rop_Scheduler_Model();
+			$schedule->refresh_events();
+		}
 
 		$this->settings = $data;
 		unset( $data['available_post_types'] );
@@ -377,6 +374,17 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Method to retrieve the default interval that should be used.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return mixed
+	 */
+	public function get_interval() {
+		return round( $this->settings['default_interval'], 1 );
 	}
 
 	/**
