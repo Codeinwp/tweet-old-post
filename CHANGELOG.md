@@ -1,4 +1,13 @@
 
+ ### v8.0.4 - 2018-05-02 
+ **Changes:** 
+ * Fix issue with UTM tags and shortner consistency.
+* Adds Exclude Posts as a separate page. 
+* Fix issue with sharing stopped after the first share. 
+* Fix timeline events refresh when the min interval changes. 
+* Fix Facebook page accounts not showing in certain environments.
+* Adds remove account feature for permanently delete an account from the list.
+ 
  ### v8.0.3 - 2018-04-28 
  **Changes:** 
  * Fix schedule synchronization issues.
