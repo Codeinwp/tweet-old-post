@@ -34,12 +34,10 @@ class Rop_Cron_Helper {
 	 * @return mixed
 	 */
 	public static function rop_cron_schedules( $schedules ) {
-		if ( ! isset( $schedules['5min'] ) ) {
-			$schedules['5min'] = array(
-				'interval' => 5 * 60,
-				'display'  => Rop_I18n::get_labels( 'general.cron_interval' ),
-			);
-		}
+		$schedules['5min'] = array(
+			'interval' => 5 * 60,
+			'display'  => Rop_I18n::get_labels( 'general.cron_interval' ),
+		);
 
 		return $schedules;
 	}
