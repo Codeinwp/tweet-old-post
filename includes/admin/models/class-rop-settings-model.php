@@ -291,8 +291,8 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 		);
 		$post_id                = array_filter(
 			$post_id, function ( $value ) use ( $check ) {
-			return ! in_array( $value['value'], $check );
-		}
+				return ! in_array( $value['value'], $check );
+			}
 		);
 		$posts                  = array_merge( $posts, $post_id );
 		$data['selected_posts'] = $posts;
