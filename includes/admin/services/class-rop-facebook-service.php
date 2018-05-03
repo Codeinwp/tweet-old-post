@@ -160,7 +160,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	}
 
 
-
 	/**
 	 * Method for authenticate the service.
 	 *
@@ -319,20 +318,25 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	public function get_pages( $user ) {
 		$pages_array = array();
 		$api         = $this->get_api();
-		$pages       = $api->get( '/me/accounts' );
-		$pages       = $pages->getGraphEdge()->asArray();
-
-		foreach ( $pages as $key ) {
-			$img                          = $api->sendRequest( 'GET', '/' . $key['id'] . '/picture', array( 'redirect' => false ) );
-			$img                          = $img->getGraphNode()->asArray();
-			$user_details                 = $this->user_default;
-			$user_details['id']           = $key['id'];
-			$user_details['user']         = $this->normalize_string( empty( $key['name'] ) ? '' : $key['name'] );
-			$user_details['account']      = $user->getEmail();
-			$user_details['img']          = $img['url'];
-			$user_details['access_token'] = $key['access_token'];
-			$user_details['active']       = false;
-			$pages_array[]                = $user_details;
+		try {
+			$pages = $api->get( '/me/accounts' );
+			$pages = $pages->getGraphEdge();
+			do {
+				foreach ( $pages->asArray() as $key ) {
+					$img                          = $api->sendRequest( 'GET', '/' . $key['id'] . '/picture', array( 'redirect' => false ) );
+					$img                          = $img->getGraphNode()->asArray();
+					$user_details                 = $this->user_default;
+					$user_details['id']           = $key['id'];
+					$user_details['user']         = $this->normalize_string( empty( $key['name'] ) ? '' : $key['name'] );
+					$user_details['account']      = $user->getEmail();
+					$user_details['img']          = $img['url'];
+					$user_details['access_token'] = $key['access_token'];
+					$user_details['active']       = false;
+					$pages_array[]                = $user_details;
+				}
+			} while ( $pages = $api->next( $pages ) );
+		} catch ( Exception $e ) {
+			$this->logger->alert_error( 'Can not fetch pages for facebook. Error: ' . $e->getMessage() );
 		}
 
 		return $pages_array;
