@@ -1,4 +1,27 @@
 
+ ### v8.0.4 - 2018-05-02 
+ **Changes:** 
+ * Fix issue with UTM tags and shortner consistency.
+* Adds Exclude Posts as a separate page. 
+* Fix issue with sharing stopped after the first share. 
+* Fix timeline events refresh when the min interval changes. 
+* Fix Facebook page accounts not showing in certain environments.
+* Adds remove account feature for permanently delete an account from the list.
+ 
+ ### v8.0.3 - 2018-04-28 
+ **Changes:** 
+ * Fix schedule synchronization issues.
+* Fix LinkedIn authentication with the wrong redirect_url.
+ 
+ ### v8.0.2 - 2018-04-27 
+ **Changes:** 
+ * Fix issue with old Facebook applications and strict OAuth urls settings.
+* Fix issue taxonomies filter setting. 
+* Fix filter by excluded posts issue.
+* Fix issue when LinkedIn exceptions on login.
+* Adds more exceptions handling for Facebook authentications.
+* Fix compatibility with pro version for post_types and custom share messages.
+ 
  ### v8.0.1 - 2018-04-26 
  **Changes:** 
  * Fix Linkedin error on loading SDK class.
