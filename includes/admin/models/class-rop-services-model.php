@@ -158,8 +158,44 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 				return false;
 			}
 		);
+		$services = array_map(
+			function ( $service ) {
+				/**
+				 * Normalize available accounts by remove null values.
+				 */
+				$service['available_accounts'] = array_map(
+					function ( $account ) {
+						return $this->normalize_account( $account );
+					}, $service['available_accounts']
+				);
+
+				/**
+				 * If there is no available account, clear the service app.
+				 */
+				if ( empty( $service['available_accounts'] ) ) {
+					return array();
+				}
+
+				return $service;
+			}, $services
+		);
 
 		return $services;
+	}
+
+	/**
+	 * Normalize account component by removing null values.
+	 *
+	 * @param array $account Account data.
+	 *
+	 * @return array Normalized array.
+	 */
+	private function normalize_account( $account ) {
+		return array_map(
+			function ( $value ) {
+				return is_null( $value ) ? '' : $value;
+			}, $account
+		);
 	}
 
 	/**
@@ -252,6 +288,14 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 */
 	public function get_active_accounts() {
 		$accounts = $this->get( $this->accounts_namespace );
+		if ( ! is_array( $accounts ) ) {
+			$accounts = array();
+		}
+		$accounts = array_map(
+			function ( $account ) {
+				return $this->normalize_account( $account );
+			}, $accounts
+		);
 
 		return wp_parse_args( $accounts, array() );
 	}
@@ -282,7 +326,7 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 * @access  public
 	 *
 	 * @param   string $service_id The service ID.
-	 * @param   string $service    The service name.
+	 * @param   string $service The service name.
 	 *
 	 * @return mixed|null
 	 */

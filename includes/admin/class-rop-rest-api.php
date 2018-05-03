@@ -407,8 +407,8 @@ class Rop_Rest_Api {
 	 * @return array
 	 */
 	private function get_taxonomies( $data ) {
-		$post_selector = new Rop_Posts_Selector_Model();
-		$taxonomies    = $post_selector->get_taxonomies( $data['post_types'] );
+		$settings_model = new Rop_Settings_Model();
+		$taxonomies     = $settings_model->get_available_taxonomies( $data );
 		$this->response->set_code( '400' );
 		if ( $taxonomies != false ) {
 			$this->response->set_code( '200' )
@@ -416,6 +416,59 @@ class Rop_Rest_Api {
 		}
 
 		return $this->response->to_array();
+	}
+
+	/**
+	 * API method to exclude single post
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
+	 *
+	 * @since   8.0.4
+	 * @access  private
+	 *
+	 * @param   array $data Data passed from the AJAX call.
+	 *
+	 * @return array
+	 */
+	private function exclude_post( $data ) {
+
+		$settings_model = new Rop_Settings_Model();
+		$flag           = (bool) $data['exclude'];
+		if ( ! $flag ) {
+			$settings_model->add_excluded_posts( $data['post_id'] );
+		} else {
+			$settings_model->remove_excluded_posts( $data['post_id'] );
+		}
+
+		$this->response->set_code( '200' )
+					   ->set_data( $data );
+
+		return $this->response->to_array( $data );
+	}
+
+	/**
+	 * Api method to exclude posts based on keywords.
+	 *
+	 * @since   8.0.4
+	 * @access  private
+	 *
+	 * @param   array $data Data passed from the AJAX call.
+	 *
+	 * @return array
+	 */
+	private function exclude_post_batch( $data ) {
+		$search = sanitize_text_field( $data['search'] );
+		$post_selector   = new Rop_Posts_Selector_Model();
+		$available_posts = $post_selector->get_posts( $data['post_types'], $data['taxonomies'], $search, $data['exclude'], false, false );
+		$post_ids        = wp_list_pluck( $available_posts, 'value' );
+
+		$settings_model  = new Rop_Settings_Model();
+		$settings_model->add_excluded_posts( $post_ids );
+
+		$this->response->set_code( '200' )
+					   ->set_data( $data );
+
+		return $this->response->to_array( $data );
 	}
 
 	/**
@@ -433,10 +486,15 @@ class Rop_Rest_Api {
 	 */
 	private function get_posts( $data ) {
 		$post_selector   = new Rop_Posts_Selector_Model();
-		$available_posts = $post_selector->get_posts( $data['post_types'], $data['taxonomies'], $data['search_query'], $data['exclude'], $data['selected'] );
+		$available_posts = $post_selector->get_posts( $data['post_types'], $data['taxonomies'], $data['search_query'], $data['exclude'], $data['show_excluded'], $data['page'] );
 
 		$this->response->set_code( '200' )
-					   ->set_data( $available_posts );
+					->set_data(
+						array(
+							'posts' => $available_posts,
+							'page'  => $data['page'],
+						)
+					);
 
 		return $this->response->to_array();
 	}
@@ -454,21 +512,9 @@ class Rop_Rest_Api {
 	 * @return array
 	 */
 	private function save_general_settings( $data ) {
-		$general_settings = array(
-			'default_interval'    => $data['default_interval'],
-			'minimum_post_age'    => $data['minimum_post_age'],
-			'maximum_post_age'    => $data['maximum_post_age'],
-			'number_of_posts'     => $data['number_of_posts'],
-			'more_than_once'      => $data['more_than_once'],
-			'selected_post_types' => $data['post_types'],
-			'selected_taxonomies' => $data['taxonomies'],
-			'exclude_taxonomies'  => $data['exclude_taxonomies'],
-			'selected_posts'      => $data['posts'],
-			'ga_tracking'         => $data['ga_tracking'],
-			'custom_messages'     => $data['custom_messages'],
-		);
-		$settings_model   = new Rop_Settings_Model();
-		$settings_model->save_settings( $general_settings );
+
+		$settings_model = new Rop_Settings_Model();
+		$settings_model->save_settings( $data );
 		$this->response->set_code( '200' )
 					   ->set_data( $settings_model->get_settings() );
 
@@ -633,6 +679,7 @@ class Rop_Rest_Api {
 
 		$model = new Rop_Services_Model();
 		$model->remove_service_account( $data['account_id'] );
+
 		return $this->response->to_array();
 	}
 

@@ -179,72 +179,6 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	}
 
 	/**
-	 * Method to save general settings.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   array $data The array data to save.
-	 *
-	 * @return mixed
-	 */
-	public function save_settings( $data = array() ) {
-		$data = $this->validate_settings( $data );
-
-		$this->settings = $data;
-		unset( $data['available_post_types'] );
-		$this->set( 'general_settings', $data );
-		$queue = new Rop_Queue_Model();
-		$queue->clear_queue();
-	}
-
-	/**
-	 * Sanitize settings data.
-	 *
-	 * @param array $data Data to validate.
-	 *
-	 * @return mixed Sanitized data.
-	 */
-	private function validate_settings( $data ) {
-		if ( isset( $data['default_interval'] ) ) {
-			$data['default_interval'] = floatval( $data['default_interval'] );
-			if ( $data['default_interval'] < 0.1 ) {
-				$this->logger->alert_error( 'Minimum interval between consecutive shares is 6mins.' );
-				$data['default_interval'] = 0.1;
-			}
-			$data['default_interval'] = round( $data['default_interval'], 1 );
-		}
-		if ( empty( $data['selected_post_types'] ) ) {
-			$this->logger->alert_error( 'You need to have at least one post type to share.' );
-			$data['selected_post_types'] = $this->defaults['selected_post_types'];
-		}
-		if ( isset( $data['number_of_posts'] ) ) {
-			$data['number_of_posts'] = intval( $data['number_of_posts'] );
-			if ( $data['number_of_posts'] < 0 ) {
-				$this->logger->alert_error( 'Minimum posts to share is 1.' );
-				$data['number_of_posts'] = 1;
-			}
-			if ( $data['number_of_posts'] > 5 ) {
-				$this->logger->alert_error( 'Maximum posts to share is 5.' );
-				$data['number_of_posts'] = 5;
-			}
-		}
-
-		return $data;
-	}
-
-	/**
-	 * Method to retrieve the default interval that should be used.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return mixed
-	 */
-	public function get_interval() {
-		return round( $this->settings['default_interval'], 2 );
-	}
-
-	/**
 	 * Method to retrieve if Google Analytics tracking should be used.
 	 *
 	 * @since   8.0.0
@@ -323,6 +257,51 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	}
 
 	/**
+	 * Add one post or a list of posts to the excluded posts list.
+	 *
+	 * @since   8.0.4
+	 * @access  public
+	 *
+	 * @param int|array $post_id Post id.
+	 *
+	 * @return bool
+	 */
+	public function add_excluded_posts( $post_id ) {
+		if ( ! is_numeric( $post_id ) && ! is_array( $post_id ) ) {
+			return false;
+		}
+		$posts = $this->get_selected_posts();
+		$check = wp_list_pluck( $posts, 'value' );
+
+		if ( is_numeric( $post_id ) ) {
+			$post_id = intval( $post_id );
+			$post_id = array(
+				array(
+					'value' => $post_id,
+				),
+			);
+		}
+
+		$post_id                = array_map(
+			function ( $value ) {
+				return array(
+					'value' => intval( $value ),
+				);
+			}, $post_id
+		);
+		$post_id                = array_filter(
+			$post_id, function ( $value ) use ( $check ) {
+				return ! in_array( $value['value'], $check );
+			}
+		);
+		$posts                  = array_merge( $posts, $post_id );
+		$data['selected_posts'] = $posts;
+		$this->save_settings( $data );
+
+		return true;
+	}
+
+	/**
 	 * Getter for selected posts.
 	 *
 	 * @since   8.0.0
@@ -334,16 +313,105 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	}
 
 	/**
-	 * Getter for excluded posts.
+	 * Method to save general settings.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 *
+	 * @param   array $data The array data to save.
+	 *
+	 * @return mixed
+	 */
+	public function save_settings( $data = array() ) {
+		$data = $this->validate_settings( $data );
+		$data = wp_parse_args( $data, $this->settings );
+
+		/**
+		 * Check if we need to update timeline.
+		 */
+		if ( $this->get_interval() != $data['default_interval'] ) {
+			$schedule = new Rop_Scheduler_Model();
+			$schedule->refresh_events();
+		}
+
+		$this->settings = $data;
+		unset( $data['available_post_types'] );
+		$this->set( 'general_settings', $data );
+		$queue = new Rop_Queue_Model();
+		$queue->clear_queue();
+	}
+
+	/**
+	 * Sanitize settings data.
+	 *
+	 * @param array $data Data to validate.
+	 *
+	 * @return mixed Sanitized data.
+	 */
+	private function validate_settings( $data ) {
+		if ( isset( $data['default_interval'] ) ) {
+			$data['default_interval'] = floatval( $data['default_interval'] );
+			if ( $data['default_interval'] < 0.1 ) {
+				$this->logger->alert_error( 'Minimum interval between consecutive shares is 6mins.' );
+				$data['default_interval'] = 0.1;
+			}
+			$data['default_interval'] = round( $data['default_interval'], 1 );
+		}
+		if ( empty( $data['selected_post_types'] ) ) {
+			$this->logger->alert_error( 'You need to have at least one post type to share.' );
+			$data['selected_post_types'] = $this->defaults['selected_post_types'];
+		}
+		if ( isset( $data['number_of_posts'] ) ) {
+			$data['number_of_posts'] = intval( $data['number_of_posts'] );
+			if ( $data['number_of_posts'] < 0 ) {
+				$this->logger->alert_error( 'Minimum posts to share is 1.' );
+				$data['number_of_posts'] = 1;
+			}
+			if ( $data['number_of_posts'] > 5 ) {
+				$this->logger->alert_error( 'Maximum posts to share is 5.' );
+				$data['number_of_posts'] = 5;
+			}
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Method to retrieve the default interval that should be used.
 	 *
 	 * @since   8.0.0
 	 * @access  public
 	 * @return mixed
 	 */
-	public function get_exclude_posts() {
-		return ! is_array( $this->settings['exclude_posts'] ) ? array() : $this->settings['exclude_posts'];
+	public function get_interval() {
+		return round( $this->settings['default_interval'], 1 );
 	}
 
+	/**
+	 * Remove post id from excluded list.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return mixed
+	 */
+	public function remove_excluded_posts( $post_id ) {
+		if ( ! is_numeric( $post_id ) ) {
+			return false;
+		}
+		$post_id = intval( $post_id );
+		$posts   = $this->get_selected_posts();
+		$values  = wp_list_pluck( $posts, 'value' );
+		$key     = array_search( $post_id, $values );
+		if ( $key === false ) {
+			return false;
+		}
+		unset( $posts[ $key ] );
+		$posts                  = array_values( $posts );
+		$data['selected_posts'] = $posts;
+		$this->save_settings( $data );
+
+		return true;
+	}
 
 	/**
 	 * Getter for the beta user option.

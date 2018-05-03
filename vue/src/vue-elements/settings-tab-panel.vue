@@ -97,8 +97,7 @@
 							                 :changed-selection="updatedTaxonomies"></multiple-select>
 							<span class="input-group-addon vertical-align">
 								<label class="form-checkbox">
-									<input type="checkbox" v-model="generalSettings.exclude_taxonomies"
-									       @change="exludeTaxonomiesChange"/>
+									<input type="checkbox" v-model="generalSettings.exclude_taxonomies"/>
 									<i class="form-icon"></i>{{labels.taxonomies_exclude}}
 								</label>
 							</span>
@@ -109,22 +108,6 @@
 				
 				</div>
 				
-				<span class="divider"></span>
-				<div class="columns py-2">
-					<div class="column col-6 col-sm-12 vertical-align">
-						<b>{{labels.posts_title}}</b>
-						<p class="text-gray">{{labels.posts_desc}}</p>
-					</div>
-					<div class="column col-6 col-sm-12 vertical-align text-left">
-						<div class="input-group">
-							<multiple-select :searchQuery="searchQuery" @update="searchUpdate"
-							                 :options="postsAvailable" :dont-lock="true"
-							                 :selected="generalSettings.selected_posts"
-							                 :changed-selection="updatedPosts"></multiple-select>
-						
-						</div>
-					</div>
-				</div>
 				<span class="divider"></span>
 				
 				<div class="columns py-2">
@@ -205,12 +188,8 @@
 				return this.$store.state.generalSettings.available_post_types;
 			},
 			taxonomies: function () {
-				this.requestPostUpdate()
 				return this.$store.state.generalSettings.available_taxonomies
 			},
-			postsAvailable: function () {
-				return this.$store.state.generalSettings.available_posts
-			}
 		},
 		mounted: function () {
 			this.$log.info('In General Settings state ');
@@ -232,7 +211,6 @@
 			},
 			searchUpdate(newQuery) {
 				this.searchQuery = newQuery
-				this.requestPostUpdate()
 			},
 			updatedPostTypes(data) {
 				let postTypes = []
@@ -242,7 +220,6 @@
 
 				this.$store.commit('updateState', {stateData: data, requestName: 'update_selected_post_types'})
 				this.$store.dispatch('fetchAJAX', {req: 'get_taxonomies', data: {post_types: postTypes}})
-				this.requestPostUpdate()
 			},
 			updatedTaxonomies(data) {
 				let taxonomies = []
@@ -250,35 +227,6 @@
 					taxonomies.push(data[index].value)
 				}
 				this.$store.commit('updateState', {stateData: data, requestName: 'update_selected_taxonomies'})
-				this.requestPostUpdate()
-			},
-			updatedPosts(data) {
-				this.$store.commit('updateState', {stateData: data, requestName: 'update_selected_posts'})
-			},
-			exludeTaxonomiesChange() {
-				this.requestPostUpdate()
-			},
-			doPostUpdate() {
-				let postTypesSelected = this.$store.state.generalSettings.selected_post_types
-				let taxonomiesSelected = this.$store.state.generalSettings.selected_taxonomies
-
-				this.$store.dispatch('fetchAJAX', {
-					req: 'get_posts',
-					data: {
-						post_types: postTypesSelected,
-						search_query: this.searchQuery,
-						taxonomies: taxonomiesSelected,
-						exclude: this.generalSettings.exclude_taxonomies,
-						selected: this.generalSettings.selected_posts
-					}
-				})
-			},
-			requestPostUpdate() {
-				if (this.postTimeout !== '') {
-					clearTimeout(this.postTimeout);
-				}
-				this.postTimeout = setTimeout(this.doPostUpdate, 500);
-
 			},
 			saveGeneralSettings() {
 				let postTypesSelected = this.$store.state.generalSettings.selected_post_types
@@ -297,10 +245,9 @@
 						maximum_post_age: this.generalSettings.maximum_post_age,
 						number_of_posts: this.generalSettings.number_of_posts,
 						more_than_once: this.generalSettings.more_than_once,
-						post_types: postTypesSelected,
-						taxonomies: taxonomiesSelected,
+						selected_post_types: postTypesSelected,
+						selected_taxonomies: taxonomiesSelected,
 						exclude_taxonomies: excludeTaxonomies,
-						posts: postsSelected,
 						ga_tracking: this.generalSettings.ga_tracking,
 						custom_messages: this.generalSettings.custom_messages
 					}

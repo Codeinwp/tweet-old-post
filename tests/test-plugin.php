@@ -59,7 +59,7 @@ class Test_ROP extends WP_UnitTestCase {
 		$settings = new Rop_Settings_Model();
 		$this->assertFalse( $settings->get_start_time(), 'Start time should be false by default.' );
 		$this->assertFalse( $settings->get_custom_messages(), 'Custom messages should be off by default.' );
-		$this->assertEmpty( $settings->get_exclude_posts(), 'Exclude posts should be empty by default.' );
+		$this->assertEmpty( $settings->get_selected_posts(), 'Exclude posts should be empty by default.' );
 		$this->assertTrue( $settings->get_ga_tracking(), 'GA tags should be on by default.' );
 		$this->assertEquals( 10.00, $settings->get_interval(), 'Default interval should be 4 hours.' );
 		$this->assertEquals( 0, $settings->get_maximum_post_age(), 'Default maximum age should be 0' );

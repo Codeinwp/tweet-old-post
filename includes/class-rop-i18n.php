@@ -77,7 +77,7 @@ class Rop_I18n {
 				'service_popup_title'     => __( 'Service Credentials', 'tweet-old-post' ),
 				'sign_in_btn'             => __( 'Sign In', 'tweet-old-post' ),
 				'at'                      => __( 'at', 'tweet-old-post' ),
-				'remove_account'          => __( 'Remove accounts from the list.', 'tweet-old-post' ),
+				'remove_account'          => __( 'Remove account from the list.', 'tweet-old-post' ),
 				'no_accounts'             => __( 'No accounts!', 'tweet-old-post' ),
 				'no_active_accounts'      => __( 'No active accounts!', 'tweet-old-post' ),
 				'no_active_accounts_desc' => __( 'Add one from the <b>"Accounts"</b> section.', 'tweet-old-post' ),
@@ -102,46 +102,55 @@ class Rop_I18n {
 				),
 			),
 			'settings'    => array(
-				'menu_item'           => __( 'General Settings', 'tweet-old-post' ),
-				'min_interval_title'  => __( 'Minimum interval between shares', 'tweet-old-post' ),
-				'min_interval_desc'   => __( 'Minimum time between shares (hour/hours), 0.4 can be used.', 'tweet-old-post' ),
-				'min_days_title'      => __( 'Minimum post age', 'tweet-old-post' ),
-				'min_days_desc'       => __( 'Minimum age of posts available for sharing, in days.', 'tweet-old-post' ),
-				'max_days_title'      => __( 'Maximum post age', 'tweet-old-post' ),
-				'max_days_desc'       => __( 'Maximum age of posts available for sharing, in days.', 'tweet-old-post' ),
-				'no_posts_title'      => __( 'Number of posts', 'tweet-old-post' ),
-				'no_posts_desc'       => __( 'Number of posts to share per. account per. trigger of scheduled job.', 'tweet-old-post' ),
-				'share_once_title'    => __( 'Share more than once?', 'tweet-old-post' ),
-				'share_once_yes'      => __( 'Yes', 'tweet-old-post' ),
-				'share_once_desc'     => __(
+				'menu_item'                   => __( 'General Settings', 'tweet-old-post' ),
+				'min_interval_title'          => __( 'Minimum interval between shares', 'tweet-old-post' ),
+				'min_interval_desc'           => __( 'Minimum time between shares (hour/hours), 0.4 can be used.', 'tweet-old-post' ),
+				'min_days_title'              => __( 'Minimum post age', 'tweet-old-post' ),
+				'min_days_desc'               => __( 'Minimum age of posts available for sharing, in days.', 'tweet-old-post' ),
+				'max_days_title'              => __( 'Maximum post age', 'tweet-old-post' ),
+				'max_days_desc'               => __( 'Maximum age of posts available for sharing, in days.', 'tweet-old-post' ),
+				'no_posts_title'              => __( 'Number of posts', 'tweet-old-post' ),
+				'no_posts_desc'               => __( 'Number of posts to share per. account per. trigger of scheduled job.', 'tweet-old-post' ),
+				'share_once_title'            => __( 'Share more than once?', 'tweet-old-post' ),
+				'share_once_yes'              => __( 'Yes', 'tweet-old-post' ),
+				'share_once_desc'             => __(
 					'If there are no more posts to share, we should start re-sharing the one we
 							previously shared.', 'tweet-old-post'
 				),
-				'post_types_title'    => __( 'Post types', 'tweet-old-post' ),
-				'post_types_desc'     => __( 'Post types available to share - what post types are available for share', 'tweet-old-post' ),
-				'post_types_upsell'   => __(
+				'post_types_title'            => __( 'Post types', 'tweet-old-post' ),
+				'post_types_desc'             => __( 'Post types available to share - what post types are available for share', 'tweet-old-post' ),
+				'post_types_upsell'           => __(
 					'Selecting custom post types is available in the pro
 							version.', 'tweet-old-post'
 				),
-				'taxonomies_title'    => __( 'Taxonomies', 'tweet-old-post' ),
-				'taxonomies_desc'     => __(
+				'taxonomies_title'            => __( 'Taxonomies', 'tweet-old-post' ),
+				'taxonomies_desc'             => __(
 					'Taxonomies available for the selected post types. Use to include or exclude
 							posts.', 'tweet-old-post'
 				),
-				'taxonomies_exclude'  => __( 'Exclude?', 'tweet-old-post' ),
-				'posts_title'         => __( 'Posts', 'tweet-old-post' ),
-				'posts_desc'          => __( 'Posts excluded from sharing, filtered based on previous selections.', 'tweet-old-post' ),
-				'ga_title'            => __( 'Enable Google Analytics Tracking', 'tweet-old-post' ),
-				'ga_desc'             => __(
+				'taxonomies_exclude'          => __( 'Exclude?', 'tweet-old-post' ),
+				'posts_title'                 => __( 'Posts', 'tweet-old-post' ),
+				'posts_desc'                  => __( 'Posts excluded from sharing, filtered based on previous selections.', 'tweet-old-post' ),
+				'ga_title'                    => __( 'Enable Google Analytics Tracking', 'tweet-old-post' ),
+				'ga_desc'                     => __(
 					'If checked an utm query willbe added to URL\'s so that you cand better track
 							trafic.', 'tweet-old-post'
 				),
-				'ga_yes'              => __( 'Yes', 'tweet-old-post' ),
-				'custom_share_title'  => __( 'Custom Share Messages', 'tweet-old-post' ),
-				'custom_share_desc'   => __( 'These messages will override the post format settings. You can go to each post and add multiple custom messages.', 'tweet-old-post' ),
-				'custom_share_yes'    => __( 'Yes', 'tweet-old-post' ),
-				'custom_share_upsell' => __( 'Using a custom share message is available in the pro version.', 'tweet-old-post' ),
-				'save'                => __( 'Save', 'tweet-old-post' ),
+				'ga_yes'                      => __( 'Yes', 'tweet-old-post' ),
+				'custom_share_title'          => __( 'Custom Share Messages', 'tweet-old-post' ),
+				'custom_share_desc'           => __( 'These messages will override the post format settings. You can go to each post and add multiple custom messages.', 'tweet-old-post' ),
+				'custom_share_yes'            => __( 'Yes', 'tweet-old-post' ),
+				'custom_share_upsell'         => __( 'Using a custom share message is available in the pro version.', 'tweet-old-post' ),
+				'save'                        => __( 'Save', 'tweet-old-post' ),
+				'taxonomies_exclude_explicit' => __( 'Exclude taxononmies', 'tweet-old-post' ),
+				'save_filters'                => __( 'Save filters', 'tweet-old-post' ),
+				'search_posts_to_exclude'     => __( 'Search post to exclude...', 'tweet-old-post' ),
+				'search_posts_show_excluded'  => __( 'Show only excluded posts', 'tweet-old-post' ),
+				'exclude_matching'            => __( 'Exclude all matching', 'tweet-old-post' ),
+				'include_single_post'         => __( 'Include this post', 'tweet-old-post' ),
+				'exclude_single_post'         => __( 'Exclude this post', 'tweet-old-post' ),
+				'no_posts_found'              => __( 'No posts found.', 'tweet-old-post' ),
+				'load_more_posts'             => __( 'Load more posts.', 'tweet-old-post' ),
 			),
 			'post_format' => array(
 				'menu_item'                         => __( 'Post Format', 'tweet-old-post' ),
@@ -253,7 +262,7 @@ class Rop_I18n {
 				'multiselect_not_found'  => __( 'Nothing found matching', 'tweet-old-post' ),
 				'next_share'             => __( 'Next share', 'tweet-old-post' ),
 				'sharing_now'            => __( 'Sharing...', 'tweet-old-post' ),
-				'cron_interval'          => __( 'Once every 5 minutes', 'tweet-old-post' ),
+				'cron_interval'          => __( 'Once every 1 min', 'tweet-old-post' ),
 			),
 			'post_editor' => array(
 				'remove_message'      => __( 'Remove Custom Message', 'tweet-old-post' ),

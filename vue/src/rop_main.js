@@ -14,11 +14,11 @@ window.onload = function () {
 		components: {
 			MainPagePanel
 		},
-		created () {
-			store.dispatch( 'fetchAJAX', { req: 'manage_cron', data: { action: 'status' } } )
-			store.dispatch( 'fetchAJAXPromise', { req: 'get_available_services' } )
-			store.dispatch( 'fetchAJAXPromise', { req: 'get_authenticated_services' } )
-			store.dispatch( 'fetchAJAXPromise', { req: 'get_active_accounts' } )
+		created() {
+			store.dispatch( 'fetchAJAX', {req: 'manage_cron', data: {action: 'status'}} )
+			store.dispatch( 'fetchAJAXPromise', {req: 'get_available_services'} )
+			store.dispatch( 'fetchAJAXPromise', {req: 'get_authenticated_services'} )
+			store.dispatch( 'fetchAJAXPromise', {req: 'get_active_accounts'} )
 		},
-	} )
+	} );
 }
