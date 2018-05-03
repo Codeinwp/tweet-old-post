@@ -166,6 +166,9 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 						return $this->normalize_account( $account );
 					}, $service['available_accounts']
 				);
+				if ( empty( $service['available_accounts'] ) ) {
+					return array();
+				}
 
 				return $service;
 			}, $services

@@ -20658,8 +20658,9 @@ module.exports = "\n\t<div id=\"rop-upsell-box\" _v-6aa195a8=\"\">\n\t\t<div cla
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
+__webpack_require__(302)
 __vue_script__ = __webpack_require__(214)
-__vue_template__ = __webpack_require__(215)
+__vue_template__ = __webpack_require__(304)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -33437,16 +33438,18 @@ module.exports = {
 		}
 	}
 	// </script>
+	// <style scoped>
+	// 	#rop-sign-in-area .btn[disabled]{
+	// 		cursor:not-allowed;
+	// 		pointer-events: auto;
+	// 		opacity: 0.3;
+	// 	}
+	// 	</style>
 
 };
 
 /***/ }),
-/* 215 */
-/***/ (function(module, exports) {
-
-module.exports = "\n\t<div id=\"rop-sign-in-area\">\n\t\t<div class=\"input-group text-right buttons-wrap\">\n\t\t\t<button v-for=\"( service, network ) in services\"\n\t\t\t        :disabled=\"checkDisabled( service, network )\"\n\t\t\t        class=\"btn input-group-btn\"\n\t\t\t        :class=\"'btn-' + network\"\n\t\t\t        @click=\"requestAuthorization( network )\">\n\t\t\t\t<i class=\"fa fa-fw\" :class=\"'fa-' + network\"></i>{{service.name}}\n\t\t\t</button>\n\t\t\n\t\t</div>\n\t\t\n\t\t<div class=\"modal\" :class=\"modalActiveClass\">\n\t\t\t<div class=\"modal-overlay\"></div>\n\t\t\t<div class=\"modal-container\">\n\t\t\t\t<div class=\"modal-header\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"cancelModal()\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\">{{ modal.serviceName }} {{labels.service_popup_title}}</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\">\n\t\t\t\t\t<div class=\"content\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" :id=\"field.id\" v-model=\"field.value\"\n\t\t\t\t\t\t\t       :placeholder=\"field.name\"/>\n\t\t\t\t\t\t\t<p class=\"text-gray\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-footer\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
-
-/***/ }),
+/* 215 */,
 /* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -39276,6 +39279,58 @@ module.exports = "\n\t<div class=\"toast toast-success rop-current-time\" v-if=\
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div>\n\t\t<div class=\"columns panel-header\">\n\t\t\t<div class=\"column header-logo vertical-align\">\n\t\t\t\t<div>\n\t\t\t\t\t<img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/>\n\t\t\t\t\t<h1 class=\"plugin-title d-inline-block\">Revive Old Posts</h1><span class=\"powered d-inline-block\"> {{labels.by}} <a\n\t\t\t\t\t\thref=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"sidebar sidebar-top card rop-container-start\">\n\t\t\t\t<div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n\t\t\t\t\t{{labels.now}}: {{ formatedDate }}\n\t\t\t\t</div>\n\t\t\t\t<countdown :current_time=\"current_time\"/>\n\t\t\t\t<button class=\"btn btn-sm\" :class=\"btn_class\"\n\t\t\t\t        :data-tooltip=\"labels.active_account_warning\"\n\t\t\t\t        @click=\"togglePosting()\" :disabled=\"haveAccounts\">\n\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t\t{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\t\t\n\t\t<div class=\"columns\">\n\t\t\t<div class=\"panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\n\t\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t\t<ul class=\"tab \">\n\t\t\t\t\t\t<li class=\"tab-item c-hand\" v-for=\"tab in displayTabs\"\n\t\t\t\t\t\t    :class=\"{ active: tab.isActive }\">\n\t\t\t\t\t\t\t<a :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\n\t\t\t\t\t\t\t   :data-badge=\"logs_no\"\n\t\t\t\t\t\t\t   @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\n\t\t\t\t\t\t</li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t\t<component :is=\"page.template\" :type=\"page.view\"></component>\n\t\t\t</div>\n\t\t\t\n\t\t\t<div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\n\t\t\t     :class=\"'rop-license-plan-'+license\">\n\t\t\t\t\n\t\t\t\t<div class=\"card rop-container-start\">\n\t\t\t\t\t<div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n\t\t\t\t\t\t{{labels.now}}: {{ formatedDate }}\n\t\t\t\t\t</div>\n\t\t\t\t\t<countdown :current_time=\"current_time\"/>\n\t\t\t\t\t<button class=\"btn\" :class=\"btn_class\"\n\t\t\t\t\t        :data-tooltip=\"labels.active_account_warning\"\n\t\t\t\t\t        @click=\"togglePosting()\" :disabled=\"haveAccounts\">\n\t\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t\t\t{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n\t\t\t\t\t</button>\n\t\t\t\t\t<upsell-sidebar></upsell-sidebar>\n\t\t\t\t</div>\n\t\t\t\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+
+/***/ }),
+/* 296 */,
+/* 297 */,
+/* 298 */,
+/* 299 */,
+/* 300 */,
+/* 301 */,
+/* 302 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(303);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(2)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4a2ca5c8&file=sign-in-btn.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./sign-in-btn.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4a2ca5c8&file=sign-in-btn.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./sign-in-btn.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 303 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(1)();
+// imports
+
+
+// module
+exports.push([module.i, "\n\t#rop-sign-in-area .btn[disabled][_v-4a2ca5c8]{\n\t\tcursor:not-allowed;\n\t\tpointer-events: auto;\n\t\topacity: 0.3;\n\t}\n\t", ""]);
+
+// exports
+
+
+/***/ }),
+/* 304 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div id=\"rop-sign-in-area\" _v-4a2ca5c8=\"\">\n\t\t<div class=\"input-group text-right buttons-wrap\" _v-4a2ca5c8=\"\">\n\t\t\t<button v-for=\"( service, network ) in services\" :disabled=\"checkDisabled( service, network )\" class=\"btn input-group-btn\" :class=\"'btn-' + network\" @click=\"requestAuthorization( network )\" _v-4a2ca5c8=\"\">\n\t\t\t\t<i class=\"fa fa-fw\" :class=\"'fa-' + network\" _v-4a2ca5c8=\"\"></i>{{service.name}}\n\t\t\t</button>\n\t\t\n\t\t</div>\n\t\t\n\t\t<div class=\"modal\" :class=\"modalActiveClass\" _v-4a2ca5c8=\"\">\n\t\t\t<div class=\"modal-overlay\" _v-4a2ca5c8=\"\"></div>\n\t\t\t<div class=\"modal-container\" _v-4a2ca5c8=\"\">\n\t\t\t\t<div class=\"modal-header\" _v-4a2ca5c8=\"\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"cancelModal()\" _v-4a2ca5c8=\"\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\" _v-4a2ca5c8=\"\">{{ modal.serviceName }} {{labels.service_popup_title}}</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\" _v-4a2ca5c8=\"\">\n\t\t\t\t\t<div class=\"content\" _v-4a2ca5c8=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-4a2ca5c8=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-4a2ca5c8=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-4a2ca5c8=\"\">\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-4a2ca5c8=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-footer\" _v-4a2ca5c8=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-4a2ca5c8=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-4a2ca5c8=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ })
 /******/ ]);
