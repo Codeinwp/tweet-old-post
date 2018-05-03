@@ -160,12 +160,21 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 		);
 		$services = array_map(
 			function ( $service ) {
-
+				/**
+				 * Normalize available accounts by remove null values.
+				 */
 				$service['available_accounts'] = array_map(
 					function ( $account ) {
 						return $this->normalize_account( $account );
 					}, $service['available_accounts']
 				);
+
+				/**
+				 * If there is no available account, clear the service app.
+				 */
+				if ( empty( $service['available_accounts'] ) ) {
+					return array();
+				}
 
 				return $service;
 			}, $services

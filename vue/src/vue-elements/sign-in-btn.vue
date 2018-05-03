@@ -188,3 +188,10 @@
 		}
 	}
 </script>
+<style scoped>
+	#rop-sign-in-area .btn[disabled]{
+		cursor:not-allowed;
+		pointer-events: auto;
+		opacity: 0.3;
+	}
+	</style>

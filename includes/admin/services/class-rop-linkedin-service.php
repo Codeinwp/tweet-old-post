@@ -368,7 +368,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			),
 		);
 		if ( ! empty( $post_details['post_image'] ) ) {
-			$new_post['content']['submitted-image-url'] = $post_details['post_img'];
+			$new_post['content']['submitted-image-url'] = $post_details['post_image'];
 		}
 
 		$new_post['comment']                  = $post_details['content'];
@@ -378,6 +378,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$new_post['visibility']['code'] = 'anyone';
 
 		try {
+
+			$api->post( 'people/~/shares?format=json', $new_post );
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
