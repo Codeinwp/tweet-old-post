@@ -160,6 +160,41 @@ class Rop {
 	}
 
 	/**
+	 * detects if is a staging environment
+	 *
+	 * @since     8.0.3
+	 * @return    bool   true/false
+	 */
+
+	 public function rop_is_staging(){
+
+		 //JETPACK_STAGING_MODE if jetpack jetpack is installed  picks up on a staging environment we're not aware of
+		 $rop_known_staging = array( 'TEST_STAGING', 'IS_WPE_SNAPSHOT', 'KINSTA_DEV_ENV', 'WPSTAGECOACH_STAGING', 'JETPACK_STAGING_MODE' );
+
+		 foreach( $rop_known_staging as $rop_staging_const ){
+
+			 if ( defined( $rop_staging_const ) ){
+
+				 return true;
+
+			 }
+
+		 }
+
+			 if( function_exists( 'is_wpe_snapshot' ) ){
+
+				 if ( is_wpe_snapshot() == 1 ){
+					 return true;
+				 }
+
+			 }
+
+			 return false;
+
+	 }
+
+
+	/**
 	 * Method used to register API endpoints later.
 	 * Before it did not register some endpoints.
 	 *

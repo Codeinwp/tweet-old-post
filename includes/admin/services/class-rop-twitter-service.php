@@ -342,7 +342,12 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 
 		$new_post['status'] = $message . ' ' . $link;
 		$this->logger->info( sprintf( 'Before twitter share: %s', json_encode( $new_post ) ) );
+
+		if( ! rop_is_staging() ){
 		$response = $api->post( 'statuses/update', $new_post );
+	}else{
+		$this->logger->alert_error( __( 'This is a staging site', 'tweet-old-post') );
+	}
 		if ( isset( $response->id ) ) {
 			$this->logger->alert_success(
 				sprintf(
