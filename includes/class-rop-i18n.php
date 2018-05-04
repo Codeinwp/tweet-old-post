@@ -262,7 +262,7 @@ class Rop_I18n {
 				'multiselect_not_found'  => __( 'Nothing found matching', 'tweet-old-post' ),
 				'next_share'             => __( 'Next share', 'tweet-old-post' ),
 				'sharing_now'            => __( 'Sharing...', 'tweet-old-post' ),
-				'cron_interval'          => __( 'Once every 5 minutes', 'tweet-old-post' ),
+				'cron_interval'          => __( 'Once every 1 min', 'tweet-old-post' ),
 			),
 			'post_editor' => array(
 				'remove_message'      => __( 'Remove Custom Message', 'tweet-old-post' ),

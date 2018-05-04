@@ -35,7 +35,7 @@ class Rop_Cron_Helper {
 	 */
 	public static function rop_cron_schedules( $schedules ) {
 		$schedules['5min'] = array(
-			'interval' => 5 * 60,
+			'interval' => 1 * 60,
 			'display'  => Rop_I18n::get_labels( 'general.cron_interval' ),
 		);
 
@@ -75,7 +75,9 @@ class Rop_Cron_Helper {
 	 */
 	public function create_cron( $first = true ) {
 		if ( ! wp_next_scheduled( self::CRON_NAMESPACE ) ) {
+
 			if ( $first ) {
+				$this->fresh_start();
 				$settings = new Rop_Global_Settings();
 				$settings->update_start_time();
 				wp_schedule_single_event( time() + 30, self::CRON_NAMESPACE );
@@ -98,32 +100,7 @@ class Rop_Cron_Helper {
 		if ( is_int( $timestamp ) ) {
 			wp_clear_scheduled_hook( self::CRON_NAMESPACE );
 		}
-		/**
-		 * Reset start time.
-		 */
-		$settings = new Rop_Global_Settings();
-		$settings->reset_start_time();
-		/**
-		 * Reset timeline events.
-		 */
-		$scheduler = new Rop_Scheduler_Model();
-		$scheduler->refresh_events();
-
-		/**
-		 * Reset queue events.
-		 */
-		$scheduler = new Rop_Queue_Model();
-		$scheduler->clear_queue();
-		/**
-		 * Clear buffer for all accounts.
-		 */
-		$selector = new Rop_Posts_Selector_Model();
-		$selector->clear_buffer();
-		// **
-		// * Clear logs.
-		// */
-		// $logger = new Rop_Logger();
-		// $logger->clear_user_logs();
+		$this->fresh_start();
 		return false;
 	}
 
@@ -133,6 +110,7 @@ class Rop_Cron_Helper {
 	 * @return bool Cron status.
 	 */
 	public function get_status() {
+
 		return is_int( wp_next_scheduled( self::CRON_NAMESPACE ) );
 	}
 
@@ -223,5 +201,32 @@ class Rop_Cron_Helper {
 		$momentFormat = strtr( $format, $replacements );
 
 		return $momentFormat;
+	}
+
+	/**
+	 * Clear all queue related data.
+	 */
+	private function fresh_start() {
+		/**
+		 * Reset start time.
+		 */
+		$settings = new Rop_Global_Settings();
+		$settings->reset_start_time();
+		/**
+		 * Reset timeline events.
+		 */
+		$scheduler = new Rop_Scheduler_Model();
+		$scheduler->refresh_events();
+
+		/**
+		 * Reset queue events.
+		 */
+		$scheduler = new Rop_Queue_Model();
+		$scheduler->clear_queue();
+		/**
+		 * Clear buffer for all accounts.
+		 */
+		$selector = new Rop_Posts_Selector_Model();
+		$selector->clear_buffer();
 	}
 }

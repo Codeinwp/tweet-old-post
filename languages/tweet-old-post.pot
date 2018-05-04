@@ -2,9 +2,9 @@
 # This file is distributed under the no.
 msgid ""
 msgstr ""
-"Project-Id-Version: Revive Old Posts (Former Tweet Old Post) 8.0.3\n"
+"Project-Id-Version: Revive Old Posts (Former Tweet Old Post) 8.0.5\n"
 "Report-Msgid-Bugs-To: https://github.com/Codeinwp/tweet-old-post/issues\n"
-"POT-Creation-Date: 2018-05-02 14:28:00+00:00\n"
+"POT-Creation-Date: 2018-05-04 09:15:16+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -677,7 +677,7 @@ msgid "Sharing..."
 msgstr ""
 
 #: includes/class-rop-i18n.php:265
-msgid "Once every 5 minutes"
+msgid "Once every 1 min"
 msgstr ""
 
 #: includes/class-rop-i18n.php:268

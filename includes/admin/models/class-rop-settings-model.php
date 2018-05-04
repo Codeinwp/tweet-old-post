@@ -272,16 +272,12 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 		}
 		$posts = $this->get_selected_posts();
 		$check = wp_list_pluck( $posts, 'value' );
-
 		if ( is_numeric( $post_id ) ) {
 			$post_id = intval( $post_id );
 			$post_id = array(
-				array(
-					'value' => $post_id,
-				),
+				$post_id,
 			);
 		}
-
 		$post_id                = array_map(
 			function ( $value ) {
 				return array(
