@@ -458,20 +458,26 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		if ( $this->try_post( $new_post, $args['id'], $args['access_token'] ) ) {
-			$this->logger->alert_success(
-				sprintf(
-					'Successfully shared %s to %s on %s ',
-					get_the_title( $post_details['post_id'] ),
-					$args['user'],
-					$post_details['service']
-				)
-			);
+		$rop_staging_status = new Rop();
+
+		if ( ! $rop_staging_status->rop_site_is_staging() ) {
+			if ( $this->try_post( $new_post, $args['id'], $args['access_token'] ) ) {
+				$this->logger->alert_success(
+					sprintf(
+						'Successfully shared %s to %s on %s ',
+						get_the_title( $post_details['post_id'] ),
+						$args['user'],
+						$post_details['service']
+					)
+				);
+			} else {
+				return false;
+			}
 		} else {
-			return false;
+			$this->logger->alert_error( __( 'This is a staging site, posts won\'t share to Facebook.', 'tweet-old-post' ) );
+			return;
 		}
 	}
-
 	/**
 	 * Method to try and share on facebook.
 	 * Moved to a separated method to drive the NPath complexity down.

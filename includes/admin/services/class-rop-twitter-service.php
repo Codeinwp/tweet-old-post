@@ -146,24 +146,24 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 				'rop_twitter_oauth_token',
 			)
 		) ) {
-			return false;
+				return false;
 		}
-		$token = $_SESSION['rop_twitter_oauth_token'];
-		unset( $_SESSION['rop_twitter_oauth_token'] );
-		unset( $_SESSION['rop_twitter_request_token'] );
+			$token = $_SESSION['rop_twitter_oauth_token'];
+			unset( $_SESSION['rop_twitter_oauth_token'] );
+			unset( $_SESSION['rop_twitter_request_token'] );
 
-		return $this->authenticate( $token );
+			return $this->authenticate( $token );
 	}
 
-	/**
-	 * Method for authenticate the service.
-	 *
-	 * @codeCoverageIgnore
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return bool
-	 */
+		/**
+		 * Method for authenticate the service.
+		 *
+		 * @codeCoverageIgnore
+		 *
+		 * @since   8.0.0
+		 * @access  public
+		 * @return bool
+		 */
 	public function authenticate( $args = array() ) {
 
 		if ( ! $this->is_set_not_empty(
@@ -172,59 +172,59 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 				'oauth_token_secret',
 			)
 		) ) {
-			return false;
+				return false;
 		}
-		$this->set_api( $args['oauth_token'], $args['oauth_token_secret'] );
-		$api = $this->get_api();
+			$this->set_api( $args['oauth_token'], $args['oauth_token_secret'] );
+			$api = $this->get_api();
 
-		$this->set_credentials(
-			array(
-				'oauth_token'        => $args['oauth_token'],
-				'oauth_token_secret' => $args['oauth_token_secret'],
-			)
-		);
+			$this->set_credentials(
+				array(
+					'oauth_token'        => $args['oauth_token'],
+					'oauth_token_secret' => $args['oauth_token_secret'],
+				)
+			);
 
-		$response = $api->get( 'account/verify_credentials' );
+			$response = $api->get( 'account/verify_credentials' );
 
 		if ( ! isset( $response->id ) ) {
 			return false;
 		}
-		$this->service = array(
-			'id'                 => $response->id,
-			'service'            => $this->service_name,
-			'credentials'        => $this->credentials,
-			'public_credentials' => false,
-			'available_accounts' => $this->get_users( $response ),
-		);
+			$this->service = array(
+				'id'                 => $response->id,
+				'service'            => $this->service_name,
+				'credentials'        => $this->credentials,
+				'public_credentials' => false,
+				'available_accounts' => $this->get_users( $response ),
+			);
 
-		return true;
+			return true;
 
 	}
 
-	/**
-	 * Method to register credentials for the service.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   array $args The credentials array.
-	 */
+			/**
+			 * Method to register credentials for the service.
+			 *
+			 * @since   8.0.0
+			 * @access  public
+			 *
+			 * @param   array $args The credentials array.
+			 */
 	public function set_credentials( $args ) {
 		$this->credentials = $args;
 	}
 
-	/**
-	 * Utility method to retrieve users from the Twitter account.
-	 *
-	 * @codeCoverageIgnore
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   object $data Response data from Twitter.
-	 *
-	 * @return array
-	 */
+			/**
+			 * Utility method to retrieve users from the Twitter account.
+			 *
+			 * @codeCoverageIgnore
+			 *
+			 * @since   8.0.0
+			 * @access  public
+			 *
+			 * @param   object $data Response data from Twitter.
+			 *
+			 * @return array
+			 */
 	private function get_users( $data = null ) {
 		$user = $this->user_default;
 		if ( $data == null ) {
@@ -250,29 +250,29 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		return array( $this->get_service_id() . '_' . $user['id'] => $user );
 	}
 
-	/**
-	 * Returns information for the current service.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return mixed
-	 */
+			/**
+			 * Returns information for the current service.
+			 *
+			 * @since   8.0.0
+			 * @access  public
+			 * @return mixed
+			 */
 	public function get_service() {
 		return $this->service;
 	}
 
-	/**
-	 * Generate the sign in URL.
-	 *
-	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   array $data The data from the user.
-	 *
-	 * @return mixed
-	 */
+			/**
+			 * Generate the sign in URL.
+			 *
+			 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+			 *
+			 * @since   8.0.0
+			 * @access  public
+			 *
+			 * @param   array $data The data from the user.
+			 *
+			 * @return mixed
+			 */
 	public function sign_in_url( $data ) {
 		$request_token = $this->request_api_token();
 		$this->set_api( $request_token['oauth_token'], $request_token['oauth_token_secret'] );
@@ -289,15 +289,15 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		return $url;
 	}
 
-	/**
-	 * Method to request a token from api.
-	 *
-	 * @codeCoverageIgnore
-	 *
-	 * @since   8.0.0
-	 * @access  protected
-	 * @return mixed
-	 */
+			/**
+			 * Method to request a token from api.
+			 *
+			 * @codeCoverageIgnore
+			 *
+			 * @since   8.0.0
+			 * @access  protected
+			 * @return mixed
+			 */
 	public function request_api_token() {
 		if ( ! session_id() ) {
 			session_start();
@@ -311,17 +311,17 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		return $request_token;
 	}
 
-	/**
-	 * Method for publishing with Twitter service.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   array $post_details The post details to be published by the service.
-	 * @param   array $args Optional arguments needed by the method.
-	 *
-	 * @return mixed
-	 */
+			/**
+			 * Method for publishing with Twitter service.
+			 *
+			 * @since   8.0.0
+			 * @access  public
+			 *
+			 * @param   array $post_details The post details to be published by the service.
+			 * @param   array $args Optional arguments needed by the method.
+			 *
+			 * @return mixed
+			 */
 	public function share( $post_details, $args = array() ) {
 		$this->set_api( $this->credentials['oauth_token'], $this->credentials['oauth_token_secret'] );
 		$api      = $this->get_api();
@@ -342,12 +342,15 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 
 		$new_post['status'] = $message . ' ' . $link;
 		$this->logger->info( sprintf( 'Before twitter share: %s', json_encode( $new_post ) ) );
+		$rop_staging_status = new Rop();
 
-		if( ! rop_is_staging() ){
-		$response = $api->post( 'statuses/update', $new_post );
-	}else{
-		$this->logger->alert_error( __( 'This is a staging site', 'tweet-old-post') );
-	}
+		if ( ! $rop_staging_status->rop_site_is_staging() ) {
+			$response = $api->post( 'statuses/update', $new_post );
+		} else {
+			$this->logger->alert_error( __( 'This is a staging site, posts won\'t share to Twitter.', 'tweet-old-post' ) );
+			return;
+		}
+
 		if ( isset( $response->id ) ) {
 			$this->logger->alert_success(
 				sprintf(
@@ -358,23 +361,23 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 				)
 			);
 
-			return true;
+				return true;
 		} else {
 			$this->logger->alert_error( sprintf( 'Error posting on twitter. Error: %s', json_encode( $response ) ) );
 		}
 
-		return false;
+			return false;
 	}
 
-	/**
-	 * Get Image file path if exists, return default image_url if not.
-	 *
-	 * Used where file_get_contents might not work with urls, we provide the file path.
-	 *
-	 * @param string $image_url Image url.
-	 *
-	 * @return string Image path.
-	 */
+				/**
+				 * Get Image file path if exists, return default image_url if not.
+				 *
+				 * Used where file_get_contents might not work with urls, we provide the file path.
+				 *
+				 * @param string $image_url Image url.
+				 *
+				 * @return string Image path.
+				 */
 	private function get_path_by_url( $image_url ) {
 
 		$dir = wp_upload_dir();

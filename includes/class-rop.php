@@ -163,38 +163,37 @@ class Rop {
 	}
 
 	/**
-	 * detects if is a staging environment
+	 * Detects if is a staging environment
 	 *
-	 * @since     8.0.3
+	 * @since     8.0.4
 	 * @return    bool   true/false
 	 */
+	public function rop_site_is_staging() {
 
-	 public function rop_is_staging(){
+		// JETPACK_STAGING_MODE if jetpack is installed and picks up on a staging environment we're not aware of
+		$rop_known_staging = array( 'IS_WPE_SNAPSHOT', 'KINSTA_DEV_ENV', 'WPSTAGECOACH_STAGING', 'JETPACK_STAGING_MODE' );
 
-		 //JETPACK_STAGING_MODE if jetpack jetpack is installed  picks up on a staging environment we're not aware of
-		 $rop_known_staging = array( 'TEST_STAGING', 'IS_WPE_SNAPSHOT', 'KINSTA_DEV_ENV', 'WPSTAGECOACH_STAGING', 'JETPACK_STAGING_MODE' );
+		foreach ( $rop_known_staging as $rop_staging_const ) {
 
-		 foreach( $rop_known_staging as $rop_staging_const ){
+			if ( defined( $rop_staging_const ) ) {
 
-			 if ( defined( $rop_staging_const ) ){
+				return apply_filters( 'rop_dont_work_on_staging', true );
 
-				 return true;
+			}
+		}
+			   // wp engine staging function
+		if ( function_exists( 'is_wpe_snapshot' ) ) {
 
-			 }
+			if ( is_wpe_snapshot() ) {
 
-		 }
+				return apply_filters( 'rop_dont_work_on_staging', true );
 
-			 if( function_exists( 'is_wpe_snapshot' ) ){
+			}
+		}
 
-				 if ( is_wpe_snapshot() == 1 ){
-					 return true;
-				 }
+			return false;
 
-			 }
-
-			 return false;
-
-	 }
+	}
 
 
 	/**
