@@ -1,4 +1,17 @@
 
+ ### v8.0.5 - 2018-05-04 
+ **Changes:** 
+ * Fix issue with common hashtags using post content.
+* Fix issue with add service when an account was removed from the list.
+* Fix issue with cron lag between shares
+* Improve disable state for pro services.
+* Fix exclude posts inconsistency. 
+* Fix incomplete UTM tags on certain shortners. 
+* Fix refresh queue on start sharing. 
+* Fix freezing message in frontend when the sharing is happening. 
+* Fix Facebook limits regarding the number of accounts fetched. 
+* Fix compatibility with PRO version regarding sharing on LinkedIn. 
+ 
  ### v8.0.4 - 2018-05-02 
  **Changes:** 
  * Fix issue with UTM tags and shortner consistency.
