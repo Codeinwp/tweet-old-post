@@ -170,7 +170,7 @@ abstract class Rop_Url_Shortner_Abstract {
 		}
 		if ( $props && isset( $props['method'] ) ) {
 			if ( in_array( $props['method'], array( 'post', 'put' ) ) ) {
-				curl_setopt( $conn, CURLOPT_POSTFIELDS, urldecode( http_build_query( $params ) ) );
+				curl_setopt( $conn, CURLOPT_POSTFIELDS, $params );
 			}
 			if ( $props['method'] === 'json' ) {
 				curl_setopt( $conn, CURLOPT_POSTFIELDS, json_encode( $params ) );
@@ -183,13 +183,9 @@ abstract class Rop_Url_Shortner_Abstract {
 			$body  = curl_exec( $conn );
 			$error = curl_getinfo( $conn, CURLINFO_HTTP_CODE );
 		} catch ( Exception $e ) {
-			$this->error->throw_exception( 'Exception ' . $e->getMessage() );
+			$this->error->throw_exception( 'Error', 'Exception ' . $e->getMessage() );
 		}
-		if ( curl_errno( $conn ) ) {
-			var_dump( 'Error for request: ' . $url . ' : ' . curl_error( $conn ), 'error' );
-			// self::addNotice("Error for request: " . $url . " : ". curl_error($conn), 'error');
-			// self::writeDebug("curl_errno ".curl_error($conn));
-		}
+
 		curl_close( $conn );
 		if ( $props && isset( $props['json'] ) && $props['json'] ) {
 			$body = json_decode( $body, true );

@@ -242,21 +242,23 @@ class Rop_Admin {
 				/**
 				 * Trigger share if we have an event in the past, and the timestamp of that event is in the last 15mins.
 				 */
-				if ( $event['time'] <= Rop_Scheduler_Model::get_current_time() && ( Rop_Scheduler_Model::get_current_time() - $event['time'] ) < ( 15 * MINUTE_IN_SECONDS ) ) {
+				if ( $event['time'] <= Rop_Scheduler_Model::get_current_time() ) {
 					$posts = $event['posts'];
 					$queue->remove_from_queue( $event['time'], $account );
-					$account_data = $services_model->find_account( $account );
-					try {
-						$service = $service_factory->build( $account_data['service'] );
-						$service->set_credentials( $account_data['credentials'] );
-						foreach ( $posts as $post ) {
-							$post_data = $queue->prepare_post_object( $post, $account );
-							$logger->info( 'Posting', array( 'extra' => $post_data ) );
-							$service->share( $post_data, $account_data );
+					if ( ( Rop_Scheduler_Model::get_current_time() - $event['time'] ) < ( 15 * MINUTE_IN_SECONDS ) ) {
+						$account_data = $services_model->find_account( $account );
+						try {
+							$service = $service_factory->build( $account_data['service'] );
+							$service->set_credentials( $account_data['credentials'] );
+							foreach ( $posts as $post ) {
+								$post_data = $queue->prepare_post_object( $post, $account );
+								$logger->info( 'Posting', array( 'extra' => $post_data ) );
+								$service->share( $post_data, $account_data );
+							}
+						} catch ( Exception $exception ) {
+							$error_message = sprintf( Rop_I18n::get_labels( 'accounts.service_error' ), $account_data['service'] );
+							$logger->alert_error( $error_message . ' Error: ' . $exception->getTrace() );
 						}
-					} catch ( Exception $exception ) {
-						$error_message = sprintf( Rop_I18n::get_labels( 'accounts.service_error' ), $account_data['service'] );
-						$logger->alert_error( $error_message . ' Error: ' . $exception->getTrace() );
 					}
 				}
 			}
