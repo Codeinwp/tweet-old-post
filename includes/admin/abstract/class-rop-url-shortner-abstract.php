@@ -183,7 +183,7 @@ abstract class Rop_Url_Shortner_Abstract {
 			$body  = curl_exec( $conn );
 			$error = curl_getinfo( $conn, CURLINFO_HTTP_CODE );
 		} catch ( Exception $e ) {
-			$this->error->throw_exception( 'Error','Exception ' . $e->getMessage() );
+			$this->error->throw_exception( 'Error', 'Exception ' . $e->getMessage() );
 		}
 
 		curl_close( $conn );
