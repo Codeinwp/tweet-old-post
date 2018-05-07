@@ -147,6 +147,9 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 */
 	public function set_api( $app_id = '', $secret = '' ) {
 		try {
+			if ( empty( $app_id ) || empty( $secret ) ) {
+				return false;
+			}
 			$this->api = new \Facebook\Facebook(
 				array(
 					'app_id'                => $app_id,

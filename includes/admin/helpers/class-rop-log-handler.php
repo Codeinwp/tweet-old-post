@@ -125,7 +125,8 @@ class Rop_Log_Handler extends AbstractProcessingHandler {
 			'time'    => Rop_Scheduler_Model::get_current_time(),
 		);
 		if ( count( self::$current_logs ) > $this->limit ) {
-			$this->current_logs = array_slice( self::$current_logs, count( self::$current_logs ) - $this->limit, $this->limit );
+
+			self::$current_logs = array_slice( self::$current_logs, count( self::$current_logs ) - $this->limit, $this->limit );
 		}
 		$this->save_logs( self::$current_logs );
 	}
