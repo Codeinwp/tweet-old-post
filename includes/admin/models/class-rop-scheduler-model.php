@@ -175,7 +175,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $account_id    The account ID.
+	 * @param   string $account_id The account ID.
 	 * @param   bool   $schedule_data The schedule data.
 	 *
 	 * @return mixed
@@ -522,7 +522,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 *
 	 * @return bool Success or not.
 	 */
-	public function update_timeline( $new_events ) {
+	public function update_timeline( $new_events, $account_id = '' ) {
 		if ( ! is_array( $new_events ) ) {
 			return false;
 		}
@@ -531,10 +531,12 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		 */
 		$valid_events = array();
 		$schedules    = $this->get_schedules();
+		$old_events   = $this->get( $this->events_namespace );
 		foreach ( $schedules as $id => $schedule ) {
-			$valid_events[ $id ] = isset( $new_events[ $id ] ) ? $new_events[ $id ] : array();
+			$valid_events[ $id ] = isset( $old_events[ $id ] ) ? $old_events[ $id ] : array();
+			$valid_events[ $id ] = empty( $account_id ) ? $new_events[ $id ] : ( $id === $account_id ? $new_events : $valid_events[ $id ] );
 		}
-		$this->set( $this->events_namespace, $new_events );
+		$this->set( $this->events_namespace, $valid_events );
 
 		return true;
 	}
@@ -542,7 +544,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	/**
 	 * Remove timestamp from timeline.
 	 *
-	 * @param int    $timestamp  Timestamp value.
+	 * @param int    $timestamp Timestamp value.
 	 * @param string $account_id Account id.
 	 *
 	 * @return int Index to remove.
@@ -553,7 +555,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		$key          = array_search( $timestamp, $schedule );
 		$new_schedule = array_diff( $schedule, array( $timestamp ) );
 		$new_schedule = array_values( $new_schedule );
-		$this->update_timeline( $new_schedule );
+		$this->update_timeline( $new_schedule, $account_id );
 
 		return $key;
 	}
