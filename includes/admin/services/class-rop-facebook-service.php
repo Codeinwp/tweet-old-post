@@ -450,9 +450,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		$new_post['message'] = $post_details['content'];
 
 		if ( ! empty( $post_details['post_url'] ) ) {
-			$link                = ' ' . $this->get_url( $post_details );
-			$new_post['message'] = $new_post['message'] . $link;
-			$new_post['link']    = $link;
+			$new_post['link']    =  $this->get_url( $post_details );
 		}
 
 		if ( ! isset( $args['id'] ) || ! isset( $args['access_token'] ) ) {
