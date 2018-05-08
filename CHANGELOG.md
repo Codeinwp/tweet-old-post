@@ -1,4 +1,12 @@
 
+ ### v8.0.6 - 2018-05-08 
+ **Changes:** 
+ * Fix hashtags issue when using post content as a source.
+* Fix LinkedIn broken link when no image is used.
+* Fix issue with sharing when multiple accounts are used with different custom schedules.
+* Adds link only in the preview, remove from facebook message content.
+* Adds limit for the number of logs.
+ 
  ### v8.0.5 - 2018-05-04 
  **Changes:** 
  * Fix issue with common hashtags using post content.
