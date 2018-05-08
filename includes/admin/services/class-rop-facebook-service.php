@@ -450,7 +450,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		$new_post['message'] = $post_details['content'];
 
 		if ( ! empty( $post_details['post_url'] ) ) {
-			$new_post['link']    =  $this->get_url( $post_details );
+			$new_post['name'] = get_the_title( $post_details['post_id'] );
+			$new_post['link'] = $this->get_url( $post_details );
 		}
 
 		if ( ! isset( $args['id'] ) || ! isset( $args['access_token'] ) ) {
@@ -489,7 +490,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	private function try_post( $new_post, $page_id, $token ) {
 		$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
 		$api = $this->get_api();
-
 		try {
 			$api->post( '/' . $page_id . '/feed', $new_post, $token );
 
