@@ -371,6 +371,11 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function share( $post_details, $args = array() ) {
+		if ( $this->rop_site_is_staging() ) {
+			$this->logger->alert_error( __( 'This is a staging site, posts won\'t share to Tumblr.', 'tweet-old-post' ) );
+			return;
+		}
+
 		$api = $this->get_api( $this->credentials['consumer_key'], $this->credentials['consumer_secret'], $this->credentials['oauth_token'], $this->credentials['oauth_token_secret'] );
 
 		$new_post = array(
@@ -391,14 +396,9 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			$new_post['body'] = $post_details['content'];
 		}
 		try {
-			$rop_staging_status = new Rop();
 
-			if ( ! $rop_staging_status->rop_site_is_staging() ) {
 				$api->createPost( $args['id'] . '.tumblr.com', $new_post );
-			} else {
-				$this->logger->alert_error( __( 'This is a staging site, posts won\'t share to Tumblr.', 'tweet-old-post' ) );
-				return;
-			}
+
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',

@@ -350,6 +350,11 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function share( $post_details, $args = array() ) {
+		if ( $this->rop_site_is_staging() ) {
+			$this->logger->alert_error( __( 'This is a staging site, posts won\'t share to LinkedIn.', 'tweet-old-post' ) );
+			return;
+		}
+
 		$this->set_api( $this->credentials['client_id'], $this->credentials['secret'] );
 		$api   = $this->get_api();
 		$token = new \LinkedIn\AccessToken( $this->credentials['token'] );
@@ -378,14 +383,9 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$new_post['visibility']['code'] = 'anyone';
 
 		try {
-			$rop_staging_status = new Rop();
 
-			if ( ! $rop_staging_status->rop_site_is_staging() ) {
-				$api->post( 'people/~/shares?format=json', $new_post );
-			} else {
-				$this->logger->alert_error( __( 'This is a staging site, posts won\'t share to LinkedIn.', 'tweet-old-post' ) );
-				return;
-			}
+			$api->post( 'people/~/shares?format=json', $new_post );
+
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',

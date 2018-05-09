@@ -323,6 +323,11 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function share( $post_details, $args = array() ) {
+		if ( $this->rop_site_is_staging() ) {
+			$this->logger->alert_error( __( 'This is a staging site, posts won\'t share to Twitter.', 'tweet-old-post' ) );
+			return;
+		}
+
 		$this->set_api( $this->credentials['oauth_token'], $this->credentials['oauth_token_secret'] );
 		$api      = $this->get_api();
 		$new_post = array();
@@ -342,15 +347,8 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 
 		$new_post['status'] = $message . ' ' . $link;
 		$this->logger->info( sprintf( 'Before twitter share: %s', json_encode( $new_post ) ) );
-		$rop_staging_status = new Rop();
 
-		if ( ! $rop_staging_status->rop_site_is_staging() ) {
-			$response = $api->post( 'statuses/update', $new_post );
-		} else {
-			$this->logger->alert_error( __( 'This is a staging site, posts won\'t share to Twitter.', 'tweet-old-post' ) );
-			return;
-		}
-
+		$response = $api->post( 'statuses/update', $new_post );
 		if ( isset( $response->id ) ) {
 			$this->logger->alert_success(
 				sprintf(
