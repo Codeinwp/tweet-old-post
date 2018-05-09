@@ -152,7 +152,7 @@ class Rop_Post_Format_Helper {
 		 */
 
 		$base_content = $this->build_base_content( $post_id );
-
+		$base_content = $content_helper->token_truncate( $base_content, $max_length );
 		$custom_length = $this->get_custom_length();
 
 		$result = $this->make_hashtags( $base_content, $content_helper, $post_id );

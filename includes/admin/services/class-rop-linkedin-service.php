@@ -103,7 +103,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $client_id     The Client ID. Default empty.
+	 * @param   string $client_id The Client ID. Default empty.
 	 * @param   string $client_secret The Client Secret. Default empty.
 	 *
 	 * @return \LinkedIn\Client Client Linkedin.
@@ -122,7 +122,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $client_id     The Client ID. Default empty.
+	 * @param   string $client_id The Client ID. Default empty.
 	 * @param   string $client_secret The Client Secret. Default empty.
 	 *
 	 * @return mixed
@@ -345,7 +345,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @access  public
 	 *
 	 * @param   array $post_details The post details to be published by the service.
-	 * @param   array $args         Optional arguments needed by the method.
+	 * @param   array $args Optional arguments needed by the method.
 	 *
 	 * @return mixed
 	 */
@@ -358,10 +358,9 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$new_post = array(
 			'comment'    => '',
 			'content'    => array(
-				'title'               => '',
-				'description'         => '',
-				'submitted-url'       => '',
-				'submitted-image-url' => '',
+				'title'         => '',
+				'description'   => '',
+				'submitted-url' => '',
 			),
 			'visibility' => array(
 				'code' => 'anyone',
@@ -373,6 +372,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		$new_post['comment']                  = $post_details['content'];
 		$new_post['content']['description']   = $post_details['content'];
+		$new_post['content']['title']         = get_the_title( $post_details['post_id'] );
 		$new_post['content']['submitted-url'] = $this->get_url( $post_details );
 
 		$new_post['visibility']['code'] = 'anyone';

@@ -73,7 +73,8 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 				'rop_tumblr_credentials',
 				'rop_tumblr_request_token',
 			)
-		) ) {
+		)
+		) {
 			return false;
 		}
 
@@ -108,10 +109,10 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $consumer_key The Consumer Key. Default empty.
+	 * @param   string $consumer_key    The Consumer Key. Default empty.
 	 * @param   string $consumer_secret The Consumer Secret. Default empty.
-	 * @param   string $token The Consumer Key. Default NULL.
-	 * @param   string $token_secret The Consumer Secret. Default NULL.
+	 * @param   string $token           The Consumer Key. Default NULL.
+	 * @param   string $token_secret    The Consumer Secret. Default NULL.
 	 *
 	 * @return mixed
 	 */
@@ -133,10 +134,10 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $consumer_key The Consumer Key. Default empty.
+	 * @param   string $consumer_key    The Consumer Key. Default empty.
 	 * @param   string $consumer_secret The Consumer Secret. Default empty.
-	 * @param   string $token The Consumer Key. Default NULL.
-	 * @param   string $token_secret The Consumer Secret. Default NULL.
+	 * @param   string $token           The Consumer Key. Default NULL.
+	 * @param   string $token_secret    The Consumer Secret. Default NULL.
 	 *
 	 * @return mixed
 	 */
@@ -170,7 +171,8 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 				'rop_tumblr_credentials',
 				'rop_tumblr_token',
 			)
-		) ) {
+		)
+		) {
 			return false;
 		}
 		if ( ! $this->is_set_not_empty(
@@ -178,7 +180,8 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 				'oauth_token',
 				'oauth_token_secret',
 			)
-		) ) {
+		)
+		) {
 			return false;
 		}
 		$credentials                       = $_SESSION['rop_tumblr_credentials'];
@@ -206,7 +209,8 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 				'consumer_key',
 				'consumer_secret',
 			)
-		) ) {
+		)
+		) {
 			return false;
 		}
 		$api = $this->get_api( $args['consumer_key'], $args['consumer_secret'], $args['oauth_token'], $args['oauth_token_secret'] );
@@ -362,7 +366,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	 * @access  public
 	 *
 	 * @param   array $post_details The post details to be published by the service.
-	 * @param   array $args Optional arguments needed by the method.
+	 * @param   array $args         Optional arguments needed by the method.
 	 *
 	 * @return mixed
 	 */
@@ -370,10 +374,6 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		$api = $this->get_api( $this->credentials['consumer_key'], $this->credentials['consumer_secret'], $this->credentials['oauth_token'], $this->credentials['oauth_token_secret'] );
 
 		$new_post = array(
-			'type'        => 'link',
-			'author'      => 'me',
-			'title'       => '',
-			'url'         => '',
 			'description' => '',
 		);
 
@@ -381,9 +381,15 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			$new_post['thumbnail'] = $post_details['post_image'];
 		}
 
-		$new_post['description'] = $post_details['content'];
-		$new_post['url']         = ' ' . $this->get_url( $post_details );
-
+		if ( ! empty( $post_details['post_url'] ) ) {
+			$new_post['url']         = trim( $this->get_url( $post_details ) );
+			$new_post['title']       = get_the_title( $post_details['post_id'] );
+			$new_post['type']        = 'link';
+			$new_post['description'] = $post_details['content'];
+		} else {
+			$new_post['type'] = 'text';
+			$new_post['body'] = $post_details['content'];
+		}
 		try {
 			$rop_staging_status = new Rop();
 

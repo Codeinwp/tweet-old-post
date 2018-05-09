@@ -131,6 +131,29 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.0.6 - 2018-05-08  = 
+
+* Fix hashtags issue when using post content as a source.
+* Fix LinkedIn broken link when no image is used.
+* Fix issue with sharing when multiple accounts are used with different custom schedules.
+* Adds link only in the preview, remove from facebook message content.
+* Adds limit for the number of logs.
+
+
+= 8.0.5 - 2018-05-04  = 
+
+* Fix issue with common hashtags using post content.
+* Fix issue with add service when an account was removed from the list.
+* Fix issue with cron lag between shares
+* Improve disable state for pro services.
+* Fix exclude posts inconsistency. 
+* Fix incomplete UTM tags on certain shortners. 
+* Fix refresh queue on start sharing. 
+* Fix freezing message in frontend when the sharing is happening. 
+* Fix Facebook limits regarding the number of accounts fetched. 
+* Fix compatibility with PRO version regarding sharing on LinkedIn. 
+
+
 = 8.0.4 - 2018-05-02  = 
 
 * Fix issue with UTM tags and shortner consistency.

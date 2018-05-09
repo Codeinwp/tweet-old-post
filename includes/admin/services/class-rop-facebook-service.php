@@ -147,6 +147,9 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 */
 	public function set_api( $app_id = '', $secret = '' ) {
 		try {
+			if ( empty( $app_id ) || empty( $secret ) ) {
+				return false;
+			}
 			$this->api = new \Facebook\Facebook(
 				array(
 					'app_id'                => $app_id,
@@ -447,9 +450,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		$new_post['message'] = $post_details['content'];
 
 		if ( ! empty( $post_details['post_url'] ) ) {
-			$link                = ' ' . $this->get_url( $post_details );
-			$new_post['message'] = $new_post['message'] . $link;
-			$new_post['link']    = $link;
+			$new_post['name'] = get_the_title( $post_details['post_id'] );
+			$new_post['link'] = $this->get_url( $post_details );
 		}
 
 		if ( ! isset( $args['id'] ) || ! isset( $args['access_token'] ) ) {
@@ -494,7 +496,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	private function try_post( $new_post, $page_id, $token ) {
 		$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
 		$api = $this->get_api();
-
 		try {
 			$api->post( '/' . $page_id . '/feed', $new_post, $token );
 
