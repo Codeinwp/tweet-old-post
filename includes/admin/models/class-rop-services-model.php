@@ -403,7 +403,8 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 					if ( $service == 'facebook' ) {
 						$response['access_token'] = $services[ $service . '_' . $service_id ]['available_accounts'][ $key ]['access_token'];
 					}
-					$response['user'] = isset( $account['user'] ) ? $account['user'] : '';
+					$response['user']       = isset( $account['user'] ) ? $account['user'] : '';
+					$response['is_company'] = ! isset( $account['is_company'] ) ? false : $account['is_company'];
 
 					return $response;
 				}
