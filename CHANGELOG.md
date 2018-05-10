@@ -1,4 +1,11 @@
 
+ ### v8.0.7 - 2018-05-10 
+ **Changes:** 
+ * Fix status migration issue from v7.
+* Fix compatibility with the PRO version for the linkedin sharing on company pages.
+* Fix compatibility with the PRO version for the thumblr sharing issues.
+* Fix small typos in the plugin settings. 
+ 
  ### v8.0.6 - 2018-05-08 
  **Changes:** 
  * Fix hashtags issue when using post content as a source.
