@@ -264,7 +264,28 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$user_details['user']    = $this->normalize_string( $data['formattedName'] );
 		$user_details['img']     = $img;
 
-		return array( $user_details );
+		$users     = array( $user_details );
+		$companies = $this->api->api(
+			'companies?format=json&is-company-admin=true', array(), 'GET'
+		);
+		if ( empty( $companies ) ) {
+			return $users;
+		}
+		if ( empty( $companies['values'] ) ) {
+			return $users;
+		}
+		foreach ( $companies['values'] as $company ) {
+			$users[] = wp_parse_args(
+				array(
+					'id'         => $company['id'],
+					'account'    => $company['name'],
+					'is_company' => true,
+					'user'       => $company['name'],
+				), $this->user_default
+			);
+		}
+
+		return $users;
 	}
 
 
@@ -354,7 +375,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$api   = $this->get_api();
 		$token = new \LinkedIn\AccessToken( $this->credentials['token'] );
 		$api->setAccessToken( $token );
-
 		$new_post = array(
 			'comment'    => '',
 			'content'    => array(
@@ -378,8 +398,12 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$new_post['visibility']['code'] = 'anyone';
 
 		try {
+			if ( isset( $args['is_company'] ) && $args['is_company'] === true ) {
+				$api->post( sprintf( 'companies/%s/shares?format=json', $args['id'] ), $new_post );
 
-			$api->post( 'people/~/shares?format=json', $new_post );
+			} else {
+				$api->post( 'people/~/shares?format=json', $new_post );
+			}
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
