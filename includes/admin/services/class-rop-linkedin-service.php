@@ -408,7 +408,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			} else {
 				$api->post( 'people/~/shares?format=json', $new_post );
 			}
-
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
