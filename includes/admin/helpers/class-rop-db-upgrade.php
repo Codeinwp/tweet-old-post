@@ -308,9 +308,9 @@ class Rop_Db_Upgrade {
 			/**
 			 * Unimplemented method for PHP < 5.5
 			 *
-			 * @param array  $input      The input array.
+			 * @param array  $input The input array.
 			 * @param string $column_key A key to select.
-			 * @param null   $index_key  Index key.
+			 * @param null   $index_key Index key.
 			 *
 			 * @return array
 			 */
@@ -462,5 +462,11 @@ class Rop_Db_Upgrade {
 		}
 		$general_settings->save_settings( $setting );
 
+		$is_started = get_option( 'cwp_topnew_active_status', 'no' );
+		if ( $is_started === 'yes' ) {
+			$cron = new Rop_Cron_Helper();
+			$cron->create_cron( true );
+		}
 	}
+
 }
