@@ -129,6 +129,11 @@ class Rop_Admin {
 	 * Legacy auth callback.
 	 */
 	public function fb_legacy_auth() {
+
+		$page = sanitize_text_field( isset( $_GET['page'] ) ? $_GET['page'] : '' );
+		if ( $page !== 'TweetOldPost' ) {
+			return;
+		}
 		$code    = sanitize_text_field( isset( $_GET['code'] ) ? $_GET['code'] : '' );
 		$state   = sanitize_text_field( isset( $_GET['state'] ) ? $_GET['state'] : '' );
 		$network = sanitize_text_field( isset( $_GET['network'] ) ? $_GET['network'] : '' );
