@@ -51,6 +51,7 @@ class Rop_Content_Helper {
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
 	 * @param   int  $length A maximum length to use for processing the string. Default 160.
 	 * @param   bool $end_ellipse Flag to specify if ellipses should be use. Default false.
 	 */
@@ -66,7 +67,9 @@ class Rop_Content_Helper {
 	 *
 	 * @since   8.0.0
 	 * @access  private
+	 *
 	 * @param   int $length The maximum length targeted.
+	 *
 	 * @return int
 	 */
 	private function adjust_for_ellipse( $length ) {
@@ -74,6 +77,7 @@ class Rop_Content_Helper {
 			// remove ellipse chars from length to accommodate ellipse and 1 space.
 			$length = $length - strlen( $this->ellipse ) - 1;
 		}
+
 		return $length;
 	}
 
@@ -82,6 +86,7 @@ class Rop_Content_Helper {
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
 	 * @param   bool   $use Flag to specify if ellipse should be used. Default true.
 	 * @param   string $ellipse A string to use as ellipse. Default '...'.
 	 */
@@ -95,8 +100,10 @@ class Rop_Content_Helper {
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
 	 * @param   string   $string The text to process.
 	 * @param   bool|int $new_length Optional. Param for specifying a new desired maximum length. Default false.
+	 *
 	 * @return string
 	 */
 	public function token_truncate( $string, $new_length = false ) {
@@ -108,13 +115,21 @@ class Rop_Content_Helper {
 		$parts_count = count( $parts );
 
 		$length = 0;
-		for ( $last_part = 0; $last_part < $parts_count; ++$last_part ) {
+		for ( $last_part = 0; $last_part < $parts_count; ++ $last_part ) {
 			$length += strlen( $parts[ $last_part ] );
 			if ( $length > $this->length ) {
-				break; }
+				break;
+			}
 		}
-		$output = rtrim( implode( array_slice( $parts, 0, $last_part ) ) );
 
+		$output = rtrim( implode( array_slice( $parts, 0, $last_part ) ) );
+		/**
+		 * If the string contains a single word, larger than the length,
+		 * we should get the substring of it.
+		 */
+		if ( empty( $output ) && $parts_count === 1 ) {
+			$output = substr( $string, 0, $new_length );
+		}
 		// add ellipse only if set and originating text is longer than set length
 		if ( $this->end_ellipse && strlen( $string ) > $this->length ) {
 			$output .= ' ' . $this->ellipse;
@@ -131,14 +146,16 @@ class Rop_Content_Helper {
 	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
 	 * @param  string $string The regular text in the Tweet.
 	 * @param  string $hashtag The hashtag to include in $string, if possible.
+	 *
 	 * @return mixed  The new $string or false if the $string doesn't contain the $hashtag
 	 */
 	public function mark_hashtags( $string, $hashtag ) {
 		$location = stripos( $string, ' ' . $hashtag . ' ' );
 		if ( $location !== false ) {
-			$location++; // the actual # location will be past the space
+			$location ++; // the actual # location will be past the space
 		} elseif ( stripos( $string, $hashtag . ' ' ) === 0 ) {
 			// see if the hashtag is at the beginning
 			$location = 0;
