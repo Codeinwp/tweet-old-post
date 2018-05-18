@@ -96,7 +96,7 @@ class Rop_I18n {
 				'fb_app_desc'             => sprintf( __( 'You can check %1$shere%2$s how you get this details.', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/349-how-to-create-a-facebook-application-for-revive-old-post" target="_blank">', '</a>' ),
 				'service_error'           => __( 'The %1$s service can not be used or was not found', 'tweet-old-post' ),
 				'twitter_warning'         => __(
-					' 
+					'
 					 It seems like you are using more than 1 Twitter account for sharing. On March 23rd Twitter changed it\'s policy regarding automatic posting across multiple accounts. You should ensure you comply with this new policy by sharing to only one twitter account at a time or risk getting one of your accounts banned.  Read more about this change <a href="https://blog.twitter.com/developer/en_us/topics/tips/2018/automation-and-the-use-of-multiple-accounts.html" target="_blank"><b>here</b></a>.
 			', 'tweet-old-post'
 				),
@@ -263,6 +263,7 @@ class Rop_I18n {
 				'next_share'             => __( 'Next share', 'tweet-old-post' ),
 				'sharing_now'            => __( 'Sharing...', 'tweet-old-post' ),
 				'cron_interval'          => __( 'Once every 1 min', 'tweet-old-post' ),
+				'staging_status'         => __( 'This is a staging website, posts will not share to your accounts.', 'tweet-old-post' ),
 			),
 			'post_editor' => array(
 				'remove_message'      => __( 'Remove Custom Message', 'tweet-old-post' ),

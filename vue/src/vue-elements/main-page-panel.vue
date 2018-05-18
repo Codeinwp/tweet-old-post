@@ -23,7 +23,7 @@
 				</button>
 			</div>
 		</div>
-		
+
 		<div class="columns">
 			<div class="panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 				<div class="panel-nav" style="padding: 8px;">
@@ -38,10 +38,10 @@
 				</div>
 				<component :is="page.template" :type="page.view"></component>
 			</div>
-			
+
 			<div class="sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12"
 			     :class="'rop-license-plan-'+license">
-				
+
 				<div class="card rop-container-start">
 					<div class="toast rop-current-time" v-if="formatedDate">
 						{{labels.now}}: {{ formatedDate }}
@@ -55,9 +55,12 @@
 						<i class="fa fa-spinner fa-spin" v-else></i>
 						{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}
 					</button>
+					<div id="staging-status" v-if="ropIsStaging.staging">
+						{{labels.staging_status}}
+					</div>
 					<upsell-sidebar></upsell-sidebar>
 				</div>
-			
+
 			</div>
 		</div>
 	</div>
@@ -221,12 +224,12 @@
 		bottom: -16px;
 		right: 0px;
 	}
-	
+
 	#rop_core .badge.badge-logs::after {
 		right: auto;
 		top: 0px;
 	}
-	
+
 	#rop_core .badge.badge-logs {
 		padding-right: 10px;
 	}

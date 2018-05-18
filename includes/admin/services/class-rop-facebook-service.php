@@ -440,8 +440,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function share( $post_details, $args = array() ) {
-		if ( $this->rop_site_is_staging() ) {
-			$this->logger->alert_error( __( 'This is a staging site, posts won\'t share to Facebook.', 'tweet-old-post' ) );
+		if ( Rop_Admin::rop_site_is_staging() ) {
 			return;
 		}
 
