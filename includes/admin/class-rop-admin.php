@@ -117,7 +117,7 @@ class Rop_Admin {
 		$array_nonce['license_type'] = $global_settings->license_type();
 		$array_nonce['labels']       = Rop_I18n::get_labels();
 		$array_nonce['upsell_link']  = Rop_I18n::UPSELL_LINK;
-		$array_nonce['staging']          = $this->rop_site_is_staging();
+		$array_nonce['staging']      = $this->rop_site_is_staging();
 		$array_nonce['debug']        = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
 
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ropApiSettings', $array_nonce );
@@ -255,7 +255,7 @@ class Rop_Admin {
 							foreach ( $posts as $post ) {
 								$post_data = $queue->prepare_post_object( $post, $account );
 								$logger->info( 'Posting', array( 'extra' => $post_data ) );
-								$service->share( $post_data, $account_data ); // NOTE to check
+								$service->share( $post_data, $account_data );
 							}
 						} catch ( Exception $exception ) {
 							$error_message = sprintf( Rop_I18n::get_labels( 'accounts.service_error' ), $account_data['service'] );
