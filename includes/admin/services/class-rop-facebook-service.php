@@ -450,7 +450,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		$new_post['message'] = $post_details['content'];
 
 		if ( ! empty( $post_details['post_url'] ) ) {
-			$new_post['name'] = get_the_title( $post_details['post_id'] );
+			$new_post['name'] = html_entity_decode( get_the_title( $post_details['post_id'] ) );
 			$new_post['link'] = $this->get_url( $post_details );
 		}
 
@@ -464,7 +464,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
-					get_the_title( $post_details['post_id'] ),
+					html_entity_decode( get_the_title( $post_details['post_id'] ) ),
 					$args['user'],
 					$post_details['service']
 				)

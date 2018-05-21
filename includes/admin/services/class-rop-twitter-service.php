@@ -347,7 +347,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
-					get_the_title( $post_details['post_id'] ),
+					html_entity_decode( get_the_title( $post_details['post_id'] ) ),
 					$args['user'],
 					$post_details['service']
 				)
