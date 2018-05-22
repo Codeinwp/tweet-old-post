@@ -6,7 +6,7 @@
 html {
 	font-family: sans-serif;
 	/* 1 */
-
+    font-size: 20px !important;
 	-webkit-text-size-adjust: 100%;
 	/* 3 */
 	-ms-text-size-adjust: 100%;
