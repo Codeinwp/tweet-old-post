@@ -43,7 +43,7 @@ class Rop_Post_Format_Helper {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   int        $post_id    The post ID.
+	 * @param   int        $post_id The post ID.
 	 * @param   string|int $account_id The post account id.
 	 *
 	 * @return array
@@ -151,8 +151,8 @@ class Rop_Post_Format_Helper {
 		 * Generate content based on the post format settings.
 		 */
 
-		$base_content = $this->build_base_content( $post_id );
-		$base_content = $content_helper->token_truncate( $base_content, $max_length );
+		$base_content  = $this->build_base_content( $post_id );
+		$base_content  = $content_helper->token_truncate( $base_content, $max_length );
 		$custom_length = $this->get_custom_length();
 
 		$result = $this->make_hashtags( $base_content, $content_helper, $post_id );
@@ -210,6 +210,7 @@ class Rop_Post_Format_Helper {
 				$content = '';
 				break;
 		}
+		$content = strip_shortcodes( $content );
 		$content = wp_strip_all_tags( html_entity_decode( $content, ENT_QUOTES ) );
 
 		$content = trim( $content );
@@ -223,7 +224,7 @@ class Rop_Post_Format_Helper {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   int    $post_id   The post ID.
+	 * @param   int    $post_id The post ID.
 	 * @param   string $field_key The field key name.
 	 *
 	 * @return mixed
@@ -259,9 +260,9 @@ class Rop_Post_Format_Helper {
 	 * @since   8.0.0
 	 * @access  private
 	 *
-	 * @param   string             $content        The content to filter.
+	 * @param   string             $content The content to filter.
 	 * @param   Rop_Content_Helper $content_helper The content helper class. Used for processing.
-	 * @param   int                $post           The post object.
+	 * @param   int                $post The post object.
 	 *
 	 * @return array
 	 */
@@ -502,9 +503,9 @@ class Rop_Post_Format_Helper {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $url               The URL to shorten.
+	 * @param   string $url The URL to shorten.
 	 * @param   string $short_url_service The shorten service. Used by the factory to build the service.
-	 * @param   array  $credentials       Optional. If needed the service credentials.
+	 * @param   array  $credentials Optional. If needed the service credentials.
 	 *
 	 * @return string
 	 */
