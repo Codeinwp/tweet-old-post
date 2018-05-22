@@ -55,7 +55,7 @@
 						<i class="fa fa-spinner fa-spin" v-else></i>
 						{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}
 					</button>
-					<div id="staging-status" v-if="ropIsStaging.staging">
+					<div id="staging-status" v-if="staging">
 						{{labels.staging_status}}
 					</div>
 					<upsell-sidebar></upsell-sidebar>
@@ -172,6 +172,7 @@
 				license: this.$store.state.licence,
 				labels: this.$store.state.labels.general,
 				upsell_link: ropApiSettings.upsell_link,
+				staging: ropApiSettings.staging,
 				is_loading: false,
 			}
 		},

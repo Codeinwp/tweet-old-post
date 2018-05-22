@@ -121,7 +121,6 @@ class Rop_Admin {
 		$array_nonce['debug']        = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
 
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ropApiSettings', $array_nonce );
-		wp_localize_script( $this->plugin_name . '-' . $page, 'ropIsStaging', $array_nonce );
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ROP_ASSETS_URL', ROP_LITE_URL . 'assets/' );
 		wp_enqueue_script( $this->plugin_name . '-' . $page );
 
