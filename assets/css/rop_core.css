@@ -6,7 +6,8 @@
 html {
 	font-family: sans-serif;
 	/* 1 */
-    font-size: 20px !important;
+	font-size: 20px !important;
+
 	-webkit-text-size-adjust: 100%;
 	/* 3 */
 	-ms-text-size-adjust: 100%;
@@ -1208,7 +1209,7 @@ a.active {
 	width: 1.6rem;
 	height: 0.9rem;
 	border-radius: 0.45rem;
-	background: #e7e9ed;
+	background: #454d5d;
 	background-clip: padding-box;
 }
 

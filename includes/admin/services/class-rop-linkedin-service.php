@@ -264,10 +264,14 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$user_details['user']    = $this->normalize_string( $data['formattedName'] );
 		$user_details['img']     = $img;
 
-		$users     = array( $user_details );
-		$companies = $this->api->api(
-			'companies?format=json&is-company-admin=true', array(), 'GET'
-		);
+		$users = array( $user_details );
+		try {
+			$companies = $this->api->api(
+				'companies?format=json&is-company-admin=true', array(), 'GET'
+			);
+		} catch ( Exception $e ) {
+			return $users;
+		}
 		if ( empty( $companies ) ) {
 			return $users;
 		}

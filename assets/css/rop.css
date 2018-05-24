@@ -23,15 +23,15 @@
 	margin: 10px 0;
 }
 
-#rop_core #staging-status{
-	margin-top: 3px;
+#rop_core #staging-status {
 	display: block;
 	width: 100%;
+	margin-top: 3px;
 	padding: 0.4rem;
 	border-radius: 0.1rem;
 	color: #fff;
 	background: #e85600;
-	}
+}
 
 #rop_core .vertical-align {
 	display: -webkit-box;
