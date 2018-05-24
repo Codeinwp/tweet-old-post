@@ -131,6 +131,14 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.0.7 - 2018-05-10  = 
+
+* Fix status migration issue from v7.
+* Fix compatibility with the PRO version for the linkedin sharing on company pages.
+* Fix compatibility with the PRO version for the thumblr sharing issues.
+* Fix small typos in the plugin settings. 
+
+
 = 8.0.6 - 2018-05-08  = 
 
 * Fix hashtags issue when using post content as a source.
