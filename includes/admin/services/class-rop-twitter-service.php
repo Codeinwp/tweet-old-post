@@ -323,6 +323,10 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function share( $post_details, $args = array() ) {
+		if ( Rop_Admin::rop_site_is_staging() ) {
+				return;
+		}
+
 		$this->set_api( $this->credentials['oauth_token'], $this->credentials['oauth_token_secret'] );
 		$api      = $this->get_api();
 		$new_post = array();
@@ -342,6 +346,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 
 		$new_post['status'] = $message . ' ' . $link;
 		$this->logger->info( sprintf( 'Before twitter share: %s', json_encode( $new_post ) ) );
+
 		$response = $api->post( 'statuses/update', $new_post );
 		if ( isset( $response->id ) ) {
 			$this->logger->alert_success(

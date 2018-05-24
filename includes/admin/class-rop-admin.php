@@ -117,6 +117,7 @@ class Rop_Admin {
 		$array_nonce['license_type'] = $global_settings->license_type();
 		$array_nonce['labels']       = Rop_I18n::get_labels();
 		$array_nonce['upsell_link']  = Rop_I18n::UPSELL_LINK;
+		$array_nonce['staging']      = $this->rop_site_is_staging();
 		$array_nonce['debug']        = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
 
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ropApiSettings', $array_nonce );
@@ -129,11 +130,6 @@ class Rop_Admin {
 	 * Legacy auth callback.
 	 */
 	public function fb_legacy_auth() {
-
-		$page = sanitize_text_field( isset( $_GET['page'] ) ? $_GET['page'] : '' );
-		if ( $page !== 'TweetOldPost' ) {
-			return;
-		}
 		$code    = sanitize_text_field( isset( $_GET['code'] ) ? $_GET['code'] : '' );
 		$state   = sanitize_text_field( isset( $_GET['state'] ) ? $_GET['state'] : '' );
 		$network = sanitize_text_field( isset( $_GET['network'] ) ? $_GET['network'] : '' );
@@ -268,6 +264,42 @@ class Rop_Admin {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Detects if is a staging environment
+	 *
+	 * @since     8.0.4
+	 * @return    bool   true/false
+	 */
+	public static function rop_site_is_staging() {
+
+		// JETPACK_STAGING_MODE if jetpack is installed and picks up on a staging environment we're not aware of
+		$rop_known_staging = array(
+			'IS_WPE_SNAPSHOT',
+			'KINSTA_DEV_ENV',
+			'WPSTAGECOACH_STAGING',
+			'JETPACK_STAGING_MODE',
+		);
+
+		foreach ( $rop_known_staging as $rop_staging_const ) {
+			if ( defined( $rop_staging_const ) ) {
+
+				return apply_filters( 'rop_dont_work_on_staging', true );
+
+			}
+		}
+				 // wp engine staging function
+		if ( function_exists( 'is_wpe_snapshot' ) ) {
+			if ( is_wpe_snapshot() ) {
+
+				return apply_filters( 'rop_dont_work_on_staging', true );
+
+			}
+		}
+
+			return false;
+
 	}
 
 }

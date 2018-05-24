@@ -440,6 +440,9 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function share( $post_details, $args = array() ) {
+		if ( Rop_Admin::rop_site_is_staging() ) {
+			return;
+		}
 
 		$new_post = array();
 
@@ -473,7 +476,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			return false;
 		}
 	}
-
 	/**
 	 * Method to try and share on facebook.
 	 * Moved to a separated method to drive the NPath complexity down.

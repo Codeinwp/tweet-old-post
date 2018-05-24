@@ -371,6 +371,10 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function share( $post_details, $args = array() ) {
+		if ( Rop_Admin::rop_site_is_staging() ) {
+			return;
+		}
+
 		$this->set_api( $this->credentials['client_id'], $this->credentials['secret'] );
 		$api   = $this->get_api();
 		$token = new \LinkedIn\AccessToken( $this->credentials['token'] );
@@ -400,7 +404,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		try {
 			if ( isset( $args['is_company'] ) && $args['is_company'] === true ) {
 				$api->post( sprintf( 'companies/%s/shares?format=json', $args['id'] ), $new_post );
-
 			} else {
 				$api->post( 'people/~/shares?format=json', $new_post );
 			}
