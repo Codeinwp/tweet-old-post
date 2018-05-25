@@ -131,6 +131,14 @@ http://revive.social/plugins/revive-old-post
 
 
 ## Changelog ##
+### 8.0.8 - 2018-05-25  ###
+
+* Prevent sharing when the website is in the staging environment.
+* Improve UI accessibility. 
+* Adds possibility to fetch more post types.  
+* Strip redundant shortcodes on post content sharing.
+
+
 ### 8.0.7 - 2018-05-10  ###
 
 * Fix status migration issue from v7.
