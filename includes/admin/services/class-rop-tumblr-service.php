@@ -371,6 +371,10 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function share( $post_details, $args = array() ) {
+		if ( Rop_Admin::rop_site_is_staging() ) {
+			return;
+		}
+
 		$api = $this->get_api( $this->credentials['consumer_key'], $this->credentials['consumer_secret'], $this->credentials['oauth_token'], $this->credentials['oauth_token_secret'] );
 
 		$new_post = array(
@@ -391,11 +395,13 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			$new_post['body'] = $post_details['content'];
 		}
 		try {
-			$api->createPost( $args['id'] . '.tumblr.com', $new_post );
+
+				$api->createPost( $args['id'] . '.tumblr.com', $new_post );
+
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
-					get_the_title( $post_details['post_id'] ),
+					html_entity_decode( get_the_title( $post_details['post_id'] ) ),
 					$args['user'],
 					$post_details['service']
 				)

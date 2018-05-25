@@ -2,9 +2,9 @@
 # This file is distributed under the no.
 msgid ""
 msgstr ""
-"Project-Id-Version: Revive Old Posts (Former Tweet Old Post) 8.0.5\n"
+"Project-Id-Version: Revive Old Posts (Former Tweet Old Post) 8.0.7\n"
 "Report-Msgid-Bugs-To: https://github.com/Codeinwp/tweet-old-post/issues\n"
-"POT-Creation-Date: 2018-05-08 10:01:55+00:00\n"
+"POT-Creation-Date: 2018-05-24 08:56:40+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,15 +24,15 @@ msgstr ""
 "X-Poedit-Bookmarks: \n"
 "X-Textdomain-Support: yes\n"
 
-#: includes/admin/class-rop-admin.php:205
+#: includes/admin/class-rop-admin.php:206
 msgid "Revive Old Posts"
 msgstr ""
 
-#: includes/admin/class-rop-admin.php:213
+#: includes/admin/class-rop-admin.php:214
 msgid "Dashboard"
 msgstr ""
 
-#: includes/admin/class-rop-admin.php:220
+#: includes/admin/class-rop-admin.php:221
 msgid "Exclude Posts"
 msgstr ""
 
@@ -137,7 +137,7 @@ msgstr ""
 
 #: includes/class-rop-i18n.php:98
 msgid ""
-" \n"
+"\n"
 "\t\t\t\t\t It seems like you are using more than 1 Twitter account for "
 "sharing. On March 23rd Twitter changed it's policy regarding automatic "
 "posting across multiple accounts. You should ensure you comply with this "
@@ -680,21 +680,25 @@ msgstr ""
 msgid "Once every 1 min"
 msgstr ""
 
-#: includes/class-rop-i18n.php:268
-msgid "Remove Custom Message"
+#: includes/class-rop-i18n.php:266
+msgid "This is a staging website, posts will not share to your accounts."
 msgstr ""
 
 #: includes/class-rop-i18n.php:269
-msgid "Add New Custom Message"
+msgid "Remove Custom Message"
 msgstr ""
 
 #: includes/class-rop-i18n.php:270
+msgid "Add New Custom Message"
+msgstr ""
+
+#: includes/class-rop-i18n.php:271
 msgid ""
 "A custom message that will be selected randomly for each share and will "
 "overwrite the default post."
 msgstr ""
 
-#: includes/class-rop-i18n.php:271
+#: includes/class-rop-i18n.php:272
 msgid "Custom message #"
 msgstr ""
 

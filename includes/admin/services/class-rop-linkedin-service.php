@@ -264,10 +264,14 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$user_details['user']    = $this->normalize_string( $data['formattedName'] );
 		$user_details['img']     = $img;
 
-		$users     = array( $user_details );
-		$companies = $this->api->api(
-			'companies?format=json&is-company-admin=true', array(), 'GET'
-		);
+		$users = array( $user_details );
+		try {
+			$companies = $this->api->api(
+				'companies?format=json&is-company-admin=true', array(), 'GET'
+			);
+		} catch ( Exception $e ) {
+			return $users;
+		}
 		if ( empty( $companies ) ) {
 			return $users;
 		}
@@ -371,6 +375,10 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function share( $post_details, $args = array() ) {
+		if ( Rop_Admin::rop_site_is_staging() ) {
+			return;
+		}
+
 		$this->set_api( $this->credentials['client_id'], $this->credentials['secret'] );
 		$api   = $this->get_api();
 		$token = new \LinkedIn\AccessToken( $this->credentials['token'] );
@@ -392,7 +400,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		$new_post['comment']                  = $post_details['content'];
 		$new_post['content']['description']   = $post_details['content'];
-		$new_post['content']['title']         = get_the_title( $post_details['post_id'] );
+		$new_post['content']['title']         = html_entity_decode( get_the_title( $post_details['post_id'] ) );
 		$new_post['content']['submitted-url'] = $this->get_url( $post_details );
 
 		$new_post['visibility']['code'] = 'anyone';
@@ -400,14 +408,13 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		try {
 			if ( isset( $args['is_company'] ) && $args['is_company'] === true ) {
 				$api->post( sprintf( 'companies/%s/shares?format=json', $args['id'] ), $new_post );
-
 			} else {
 				$api->post( 'people/~/shares?format=json', $new_post );
 			}
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
-					get_the_title( $post_details['post_id'] ),
+					html_entity_decode( get_the_title( $post_details['post_id'] ) ),
 					$args['user'],
 					$post_details['service']
 				)

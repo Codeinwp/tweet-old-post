@@ -148,7 +148,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 */
 	public function get_available_post_types() {
 
-		$args             = array( 'public' => true, 'show_in_nav_menus' => true );
+		$args             = array( 'public' => true, 'show_ui' => true );
 		$post_types       = get_post_types( $args, 'objects' );
 		$post_types_array = array();
 		$selected         = $this->get_selected_post_types();
