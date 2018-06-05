@@ -1,4 +1,11 @@
 
+ ### v8.0.8 - 2018-05-25 
+ **Changes:** 
+ * Prevent sharing when the website is in the staging environment.
+* Improve UI accessibility. 
+* Adds possibility to fetch more post types.  
+* Strip redundant shortcodes on post content sharing.
+ 
  ### v8.0.7 - 2018-05-10 
  **Changes:** 
  * Fix status migration issue from v7.
