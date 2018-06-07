@@ -14,6 +14,50 @@
 	cursor: pointer;
 }
 
+#rop_share_social {
+	display: inline-block;
+	margin-left: 40px;
+}
+
+#rop_share_social a {
+	border-radius: 3px;
+	color: #ffffff;
+	display: inline-block;
+	font-weight: bold;
+	line-height: 2;
+	margin-right: 15px;
+	padding-right: 10px;
+	text-decoration: none;
+	text-transform: uppercase;
+}
+
+#rop_share_social .tweet-about-it {
+    background: #52c4ef;
+		text-shadow: 0px 1px 0px #33a4ce;
+}
+
+#rop_share_social .leave-a-review {
+    background: #f9866b;
+		text-shadow: 0px 1px 0px #e46b3d;
+}
+
+#rop_share_social .tweet-about-it span, #rop_share_social .leave-a-review span {
+  width: 30px;
+  height: 30px;
+  display: block;
+  float: left;
+  border-radius: 3px 0px 0px 3px;
+  margin-right: 10px;
+}
+
+#rop_share_social .tweet-about-it span{
+ background: url("../img/twitter_icon.png") no-repeat center center, #3eaed8;
+}
+
+#rop_share_social .leave-a-review span{
+	background: url("../img/review_icon.png") no-repeat center center, #f16848;
+}
+
 #rop_core .title-panel {
 	border-top: 4px solid #e85407;
 }
