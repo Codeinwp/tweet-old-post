@@ -2,9 +2,9 @@
 # This file is distributed under the no.
 msgid ""
 msgstr ""
-"Project-Id-Version: Revive Old Posts (Former Tweet Old Post) 8.0.7\n"
+"Project-Id-Version: Revive Old Posts (Former Tweet Old Post) 8.0.8\n"
 "Report-Msgid-Bugs-To: https://github.com/Codeinwp/tweet-old-post/issues\n"
-"POT-Creation-Date: 2018-05-24 08:56:40+00:00\n"
+"POT-Creation-Date: 2018-06-05 13:06:25+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,15 +24,15 @@ msgstr ""
 "X-Poedit-Bookmarks: \n"
 "X-Textdomain-Support: yes\n"
 
-#: includes/admin/class-rop-admin.php:206
+#: includes/admin/class-rop-admin.php:253
 msgid "Revive Old Posts"
 msgstr ""
 
-#: includes/admin/class-rop-admin.php:214
+#: includes/admin/class-rop-admin.php:261
 msgid "Dashboard"
 msgstr ""
 
-#: includes/admin/class-rop-admin.php:221
+#: includes/admin/class-rop-admin.php:268
 msgid "Exclude Posts"
 msgstr ""
 

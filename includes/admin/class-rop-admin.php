@@ -27,8 +27,8 @@ class Rop_Admin {
 	 * @var array Array of page slugs.
 	 */
 	private $allowed_screens = array(
-		'dashboard' => 'toplevel_page_TweetOldPost',
-		'exclude'   => 'revive-old-posts_page_rop_content_filters',
+		'dashboard' => 'TweetOldPost',
+		'exclude'   => 'rop_content_filters',
 	);
 	/**
 	 * The ID of this plugin.
@@ -70,12 +70,8 @@ class Rop_Admin {
 	 */
 	public function enqueue_styles() {
 
-		$screen = get_current_screen();
-		if ( ! isset( $screen->id ) ) {
-			return;
-		}
-
-		if ( ! in_array( $screen->id, $this->allowed_screens ) ) {
+		$page = $this->get_current_page();
+		if ( empty( $page ) ) {
 			return;
 		}
 		wp_enqueue_style( $this->plugin_name . '_core', ROP_LITE_URL . 'assets/css/rop_core.css', array(), $this->version, 'all' );
@@ -91,19 +87,12 @@ class Rop_Admin {
 	 */
 	public function enqueue_scripts() {
 
-		$screen = get_current_screen();
-		if ( ! isset( $screen->id ) ) {
+		$page = $this->get_current_page();
+		if ( empty( $page ) ) {
 			return;
 		}
-		if ( ! in_array( $screen->id, $this->allowed_screens ) ) {
-			return;
-		}
-		wp_enqueue_media();
 		wp_register_script( $this->plugin_name . '-dashboard', ROP_LITE_URL . 'assets/js/build/dashboard' . ( ( ROP_DEBUG ) ? '' : '.min' ) . '.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
 		wp_register_script( $this->plugin_name . '-exclude', ROP_LITE_URL . 'assets/js/build/exclude' . ( ( ROP_DEBUG ) ? '' : '.min' ) . '.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
-
-		$page = array_search( $screen->id, $this->allowed_screens );
-
 		$array_nonce = array(
 			'root' => esc_url_raw( rest_url( '/tweet-old-post/v8/api/' ) ),
 		);
@@ -123,6 +112,64 @@ class Rop_Admin {
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ropApiSettings', $array_nonce );
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ROP_ASSETS_URL', ROP_LITE_URL . 'assets/' );
 		wp_enqueue_script( $this->plugin_name . '-' . $page );
+
+	}
+
+	/**
+	 * Return current ROP admin page.
+	 *
+	 * @return bool|string Page slug.
+	 */
+	private function get_current_page() {
+		$screen = get_current_screen();
+
+		if ( ! isset( $screen->id ) ) {
+			return false;
+		}
+		$page = false;
+		foreach ( $this->allowed_screens as $script => $id ) {
+			if ( strpos( $screen->id, $id ) !== false ) {
+				$page = $script;
+				continue;
+			}
+		}
+
+		return $page;
+	}
+
+	/**
+	 * Detects if is a staging environment
+	 *
+	 * @since     8.0.4
+	 * @return    bool   true/false
+	 */
+	public static function rop_site_is_staging() {
+
+		// JETPACK_STAGING_MODE if jetpack is installed and picks up on a staging environment we're not aware of
+		$rop_known_staging = array(
+			'IS_WPE_SNAPSHOT',
+			'KINSTA_DEV_ENV',
+			'WPSTAGECOACH_STAGING',
+			'JETPACK_STAGING_MODE',
+		);
+
+		foreach ( $rop_known_staging as $rop_staging_const ) {
+			if ( defined( $rop_staging_const ) ) {
+
+				return apply_filters( 'rop_dont_work_on_staging', true );
+
+			}
+		}
+		// wp engine staging function
+		if ( function_exists( 'is_wpe_snapshot' ) ) {
+			if ( is_wpe_snapshot() ) {
+
+				return apply_filters( 'rop_dont_work_on_staging', true );
+
+			}
+		}
+
+		return false;
 
 	}
 
@@ -264,42 +311,6 @@ class Rop_Admin {
 				}
 			}
 		}
-	}
-
-	/**
-	 * Detects if is a staging environment
-	 *
-	 * @since     8.0.4
-	 * @return    bool   true/false
-	 */
-	public static function rop_site_is_staging() {
-
-		// JETPACK_STAGING_MODE if jetpack is installed and picks up on a staging environment we're not aware of
-		$rop_known_staging = array(
-			'IS_WPE_SNAPSHOT',
-			'KINSTA_DEV_ENV',
-			'WPSTAGECOACH_STAGING',
-			'JETPACK_STAGING_MODE',
-		);
-
-		foreach ( $rop_known_staging as $rop_staging_const ) {
-			if ( defined( $rop_staging_const ) ) {
-
-				return apply_filters( 'rop_dont_work_on_staging', true );
-
-			}
-		}
-				 // wp engine staging function
-		if ( function_exists( 'is_wpe_snapshot' ) ) {
-			if ( is_wpe_snapshot() ) {
-
-				return apply_filters( 'rop_dont_work_on_staging', true );
-
-			}
-		}
-
-			return false;
-
 	}
 
 }

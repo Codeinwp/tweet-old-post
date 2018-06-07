@@ -7,7 +7,7 @@ import Vue from 'vue'
 import store from './models/rop_store.js'
 import MainPagePanel from './vue-elements/main-page-panel.vue'
 
-window.onload = function () {
+window.addEventListener( 'load', function () {
 	var RopApp = new Vue( {
 		el: '#rop_core',
 		store,
@@ -21,4 +21,4 @@ window.onload = function () {
 			store.dispatch( 'fetchAJAXPromise', {req: 'get_active_accounts'} )
 		},
 	} );
-}
+} );

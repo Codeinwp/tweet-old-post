@@ -32565,7 +32565,7 @@ var _mainPagePanel2 = _interopRequireDefault(_mainPagePanel);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-window.onload = function () {
+window.addEventListener('load', function () {
 	var RopApp = new _vue2.default({
 		el: '#rop_core',
 		store: _rop_store2.default,
@@ -32579,7 +32579,7 @@ window.onload = function () {
 			_rop_store2.default.dispatch('fetchAJAXPromise', { req: 'get_active_accounts' });
 		}
 	});
-}; // jshint ignore: start
+}); // jshint ignore: start
 /* eslint no-unused-vars: 0 */
 /* exported RopApp */
 
