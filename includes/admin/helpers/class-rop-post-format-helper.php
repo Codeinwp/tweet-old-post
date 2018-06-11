@@ -62,7 +62,7 @@ class Rop_Post_Format_Helper {
 		$filtered_post['post_id']           = $post_id;
 		$filtered_post['account_id']        = $this->account_id;
 		$filtered_post['service']           = $service;
-		$filtered_post['content']           = $content['display_content'];
+		$filtered_post['content']           = apply_filters( 'rop_content_filter', $content['display_content'], $post_id, $account_id, $service );
 		$filtered_post['hashtags']          = $content['hashtags'];
 		$filtered_post['post_url']          = $this->build_url( $post_id );
 		$filtered_post['post_image']        = $this->post_format['image'] ? $this->build_image( $post_id ) : '';
