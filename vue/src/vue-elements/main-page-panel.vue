@@ -6,7 +6,13 @@
 					<img :src="plugin_logo" class="plugin-logo avatar avatar-lg"/>
 					<h1 class="plugin-title d-inline-block">Revive Old Posts</h1><span class="powered d-inline-block"> {{labels.by}} <a
 						href="https://revive.social" target="_blank"><b>Revive.Social</b></a></span>
+					<div id="rop_social_actions">
+					<a href="https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial" target="_blank" class="tweet-about-it"><span></span> {{labels.tweet_about_it}}</a>
+					<a href="https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post" target="_blank" class="leave-a-review"><span></span> {{labels.review_it}}</a>
+					</div>
 				</div>
+			</div>
+			<div v-if=" is_rest_api_error " class="toast toast-error rop-api-not-available" v-html="labels.api_not_available">
 			</div>
 			<div class="sidebar sidebar-top card rop-container-start">
 				<div class="toast rop-current-time" v-if="formatedDate">
@@ -94,6 +100,12 @@
 			 */
 			page: function () {
 				return this.$store.state.page
+			},
+			/**
+			 * Check if rest api is available.
+			 */
+			is_rest_api_error: function () {
+				return this.$store.state.api_not_available
 			},
 			current_time: {
 				get: function () {
@@ -224,6 +236,9 @@
 		position: absolute;
 		bottom: -16px;
 		right: 0px;
+	}
+	#rop_core .rop-api-not-available {
+		margin:10px 0px 10px 0px;
 	}
 
 	#rop_core .badge.badge-logs::after {

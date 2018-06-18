@@ -14,6 +14,52 @@
 	cursor: pointer;
 }
 
+#rop_social_actions {
+	display: inline-block;
+	float: right;
+	margin-left: 40px;
+}
+
+#rop_social_actions a {
+	display: inline-block;
+	margin-right: 15px;
+	padding-right: 10px;
+	border-radius: 3px;
+	color: #fff;
+	font-weight: bold;
+	line-height: 2;
+	text-decoration: none;
+	text-transform: uppercase;
+}
+
+#rop_social_actions .tweet-about-it {
+	background: #52c4ef;
+	text-shadow: 0 1px 0 #33a4ce;
+}
+
+#rop_social_actions .leave-a-review {
+	background: #f9866b;
+	text-shadow: 0 1px 0 #e46b3d;
+}
+
+#rop_social_actions .tweet-about-it span,
+#rop_social_actions .leave-a-review span {
+	display: block;
+	float: left;
+	width: 30px;
+	height: 30px;
+	margin-right: 10px;
+	border-radius: 3px 0 0 3px;
+}
+
+#rop_social_actions .tweet-about-it span {
+	background: url("../img/twitter_icon.png") no-repeat center center, #3eaed8;
+}
+
+#rop_social_actions .leave-a-review span {
+	background: url("../img/review_icon.png") no-repeat center center, #f16848;
+}
+
 #rop_core .title-panel {
 	border-top: 4px solid #e85407;
 }

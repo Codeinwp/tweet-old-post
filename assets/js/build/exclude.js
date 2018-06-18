@@ -12325,6 +12325,7 @@ exports.default = new _vuex2.default.Store({
 			message: ''
 		},
 		ajaxLoader: false,
+		api_not_available: false,
 		auth_in_progress: false,
 		displayTabs: [{
 			name: ropApiSettings.labels.accounts.menu_item,
@@ -12381,6 +12382,9 @@ exports.default = new _vuex2.default.Store({
 		},
 		setAjaxState: function setAjaxState(state, data) {
 			state.ajaxLoader = data;
+		},
+		apiNotAvailable: function apiNotAvailable(state, data) {
+			state.api_not_available = data;
 		},
 		updateState: function updateState(state, _ref) {
 			var stateData = _ref.stateData,
@@ -12555,6 +12559,8 @@ exports.default = new _vuex2.default.Store({
 						}
 					}, function () {
 						commit('setAjaxState', false);
+						commit('apiNotAvailable', true);
+
 						_vue2.default.$log.error('Error when trying to do request: ', data.req);
 					});
 				});
@@ -16378,7 +16384,7 @@ var _excludePostsPage2 = _interopRequireDefault(_excludePostsPage);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-window.onload = function () {
+window.addEventListener('load', function () {
 	var RopExcludePosts = new _vue2.default({
 		el: '#rop_content_filters',
 		store: _rop_store2.default,
@@ -16387,7 +16393,7 @@ window.onload = function () {
 		},
 		created: function created() {}
 	});
-}; // jshint ignore: start
+}); // jshint ignore: start
 /* eslint no-unused-vars: 0 */
 /* exported RopExcludePosts */
 

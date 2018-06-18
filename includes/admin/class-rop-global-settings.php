@@ -93,7 +93,17 @@ class Rop_Global_Settings {
 		'twitter'  => array(
 			'active'           => true,
 			'name'             => 'Twitter',
-			'two_step_sign_in' => false,
+			'credentials'      => array(
+				'consumer_key'    => array(
+					'name'        => 'Consumer Key',
+					'description' => 'Your Twitter application api key',
+				),
+				'consumer_secret' => array(
+					'name'        => 'Consumer Secret',
+					'description' => 'Your Twitter application api secret',
+				),
+			),
+			'two_step_sign_in' => true,
 			'allowed_accounts' => 1,
 		),
 		'linkedin' => array(
@@ -412,15 +422,19 @@ class Rop_Global_Settings {
 		 * Don't show credentials popup if the service is already authenticated.
 		 */
 		$service_model = new Rop_Services_Model();
+
 		foreach ( $available_services as $key => $service ) {
 			$registered = $service_model->get_authenticated_services( $key );
 
 			if ( empty( $registered ) ) {
 				continue;
 			}
-			$registered = reset( $registered );
-			if ( empty( $registered['public_credentials'] ) ) {
-
+			$registered = array_filter(
+				$registered, function ( $value ) {
+					return ! empty( $value['public_credentials'] );
+				}
+			);
+			if ( empty( $registered ) ) {
 				continue;
 			}
 			$service['credentials']      = array();

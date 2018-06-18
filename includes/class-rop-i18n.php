@@ -59,6 +59,7 @@ class Rop_I18n {
 		$services['facebook']['credentials']['secret']['description'] = Rop_I18n::get_labels( 'accounts.fb_app_secret_title' );
 		$services['facebook']['credentials']['app_id']['description'] = Rop_I18n::get_labels( 'accounts.fb_app_id_title' );
 		$services['facebook']['description']                          = Rop_I18n::get_labels( 'accounts.fb_app_desc' );
+		$services['twitter']['description']                           = Rop_I18n::get_labels( 'accounts.twt_app_desc' );
 
 		return $services;
 	}
@@ -93,7 +94,8 @@ class Rop_I18n {
 				'upsell_accounts'         => __( 'You are allowed to add a maximum 1 account for Twitter and 1 account for Facebook. For using more accounts and networks, you need to check the <strong>Extended</strong> version.', 'tweet-old-post' ),
 				'fb_app_id_title'         => __( 'Please add the APP ID from your Facebook app.', 'tweet-old-post' ),
 				'fb_app_secret_title'     => __( 'Please add the APP SECRET from your Facebook app.', 'tweet-old-post' ),
-				'fb_app_desc'             => sprintf( __( 'You can check %1$shere%2$s how you get this details.', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/349-how-to-create-a-facebook-application-for-revive-old-post" target="_blank">', '</a>' ),
+				'fb_app_desc'             => sprintf( __( 'You can check %1$shere%2$s how you get this details.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/349-how-to-create-a-facebook-application-for-revive-old-post" target="_blank">', '</a>' ),
+				'twt_app_desc'            => sprintf( __( 'You can check %1$shere%2$s how to get this details.', 'tweet-old-post' ), '<a class="text-bold " href="https://docs.revive.social/article/914-how-to-create-a-twitter-application-for-revive-old-post" target="_blank">', '</a>' ),
 				'service_error'           => __( 'The %1$s service can not be used or was not found', 'tweet-old-post' ),
 				'twitter_warning'         => __(
 					'
@@ -251,6 +253,8 @@ class Rop_I18n {
 			),
 			'general'     => array(
 				'by'                     => __( 'by', 'tweet-old-post' ),
+				'tweet_about_it'         => __( 'Show your love', 'tweet-old-post' ),
+				'review_it'              => __( 'Leave a review', 'tweet-old-post' ),
 				'in'                     => __( 'in', 'tweet-old-post' ),
 				'now'                    => __( 'Now', 'tweet-old-post' ),
 				'start'                  => __( 'Start', 'tweet-old-post' ),
@@ -264,6 +268,11 @@ class Rop_I18n {
 				'sharing_now'            => __( 'Sharing...', 'tweet-old-post' ),
 				'cron_interval'          => __( 'Once every 1 min', 'tweet-old-post' ),
 				'staging_status'         => __( 'This is a staging website, posts will not share to your accounts.', 'tweet-old-post' ),
+				'api_not_available'      => __(
+					'It seems there is an issue with your WordPress configuration and the core REST API functionality is not available. This is crucial as Revive Old Post relies on this functionality in order to work.<br/>
+The root cause might be either a security plugin which blocks this feature or some faulty server configuration which constrain this WordPress feature. <br/>
+You can try to disable any of the security plugins that you use in order to see if the issue persists or ask the hosting company to further investigate.', 'tweet-old-post'
+				),
 			),
 			'post_editor' => array(
 				'remove_message'      => __( 'Remove Custom Message', 'tweet-old-post' ),

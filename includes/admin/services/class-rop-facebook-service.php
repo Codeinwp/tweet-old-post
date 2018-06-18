@@ -441,7 +441,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 */
 	public function share( $post_details, $args = array() ) {
 		if ( Rop_Admin::rop_site_is_staging() ) {
-			return;
+			return false;
 		}
 
 		$new_post = array();

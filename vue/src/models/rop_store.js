@@ -42,6 +42,7 @@ export default new Vuex.Store( {
 			message: ''
 		},
 		ajaxLoader: false,
+		api_not_available: false,
 		auth_in_progress: false,
 		displayTabs: [
 			{
@@ -107,6 +108,9 @@ export default new Vuex.Store( {
 		setAjaxState( state, data ) {
 			state.ajaxLoader = data
 		},
+		apiNotAvailable( state, data ) {
+			state.api_not_available = data
+		},
 		updateState( state, {stateData, requestName} ) {
 			Vue.$log.debug( 'State change for ', requestName );
 			switch ( requestName ) {
@@ -166,9 +170,9 @@ export default new Vuex.Store( {
 				state.generalSettings.available_taxonomies = stateData
 				break
 			case 'get_posts':
-				if( stateData.page === 1 ){
+				if ( stateData.page === 1 ) {
 					state.generalSettings.available_posts = stateData.posts;
-				}else{
+				} else {
 					state.generalSettings.available_posts = state.generalSettings.available_posts.concat( stateData.posts );
 				}
 
@@ -272,7 +276,9 @@ export default new Vuex.Store( {
 							commit( 'updateState', {stateData, requestName} )
 						}
 					}, function () {
-						commit( 'setAjaxState', false )
+						commit( 'setAjaxState', false );
+						commit( 'apiNotAvailable', true );
+
 						Vue.$log.error( 'Error when trying to do request: ', data.req );
 					} )
 				} )
