@@ -131,6 +131,14 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.0.9 - 2018-06-18  = 
+
+* Fix issue with Exclude posts blank page on non-English websites.
+* Adds dedicated app workflow for Twitter authentication. 
+* Adds tweet intent and review buttons in the header.
+* Adds filter for content before sharing.
+
+
 = 8.0.8 - 2018-05-25  = 
 
 * Prevent sharing when the website is in the staging environment.
