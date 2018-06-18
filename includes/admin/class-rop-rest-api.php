@@ -457,12 +457,12 @@ class Rop_Rest_Api {
 	 * @return array
 	 */
 	private function exclude_post_batch( $data ) {
-		$search = sanitize_text_field( $data['search'] );
+		$search          = sanitize_text_field( $data['search'] );
 		$post_selector   = new Rop_Posts_Selector_Model();
 		$available_posts = $post_selector->get_posts( $data['post_types'], $data['taxonomies'], $search, $data['exclude'], false, false );
 		$post_ids        = wp_list_pluck( $available_posts, 'value' );
 
-		$settings_model  = new Rop_Settings_Model();
+		$settings_model = new Rop_Settings_Model();
 		$settings_model->add_excluded_posts( $post_ids );
 
 		$this->response->set_code( '200' )
@@ -761,6 +761,11 @@ class Rop_Rest_Api {
 				$authenticated_services = new Rop_Services_Model();
 				$service                = $authenticated_services->get_authenticated_services( $data['service'] );
 				if ( ! empty( $service ) ) {
+					$service = array_filter(
+						$service, function ( $value ) {
+							return ! empty( $value['public_credentials'] );
+						}
+					);
 					$service = reset( $service );
 					if ( ! empty( $service['public_credentials'] ) ) {
 						$data['credentials'] = array_combine( array_keys( $service['public_credentials'] ), wp_list_pluck( $service['public_credentials'], 'value' ) );

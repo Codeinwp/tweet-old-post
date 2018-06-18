@@ -12,6 +12,8 @@
 					</div>
 				</div>
 			</div>
+			<div v-if=" is_rest_api_error " class="toast toast-error rop-api-not-available" v-html="labels.api_not_available">
+			</div>
 			<div class="sidebar sidebar-top card rop-container-start">
 				<div class="toast rop-current-time" v-if="formatedDate">
 					{{labels.now}}: {{ formatedDate }}
@@ -98,6 +100,12 @@
 			 */
 			page: function () {
 				return this.$store.state.page
+			},
+			/**
+			 * Check if rest api is available.
+			 */
+			is_rest_api_error: function () {
+				return this.$store.state.api_not_available
 			},
 			current_time: {
 				get: function () {
@@ -228,6 +236,9 @@
 		position: absolute;
 		bottom: -16px;
 		right: 0px;
+	}
+	#rop_core .rop-api-not-available {
+		margin:10px 0px 10px 0px;
 	}
 
 	#rop_core .badge.badge-logs::after {

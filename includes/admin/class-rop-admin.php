@@ -81,6 +81,28 @@ class Rop_Admin {
 	}
 
 	/**
+	 * Return current ROP admin page.
+	 *
+	 * @return bool|string Page slug.
+	 */
+	private function get_current_page() {
+		$screen = get_current_screen();
+
+		if ( ! isset( $screen->id ) ) {
+			return false;
+		}
+		$page = false;
+		foreach ( $this->allowed_screens as $script => $id ) {
+			if ( strpos( $screen->id, $id ) !== false ) {
+				$page = $script;
+				continue;
+			}
+		}
+
+		return $page;
+	}
+
+	/**
 	 * Register the JavaScript for the admin area.
 	 *
 	 * @since    8.0.0
@@ -113,28 +135,6 @@ class Rop_Admin {
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ROP_ASSETS_URL', ROP_LITE_URL . 'assets/' );
 		wp_enqueue_script( $this->plugin_name . '-' . $page );
 
-	}
-
-	/**
-	 * Return current ROP admin page.
-	 *
-	 * @return bool|string Page slug.
-	 */
-	private function get_current_page() {
-		$screen = get_current_screen();
-
-		if ( ! isset( $screen->id ) ) {
-			return false;
-		}
-		$page = false;
-		foreach ( $this->allowed_screens as $script => $id ) {
-			if ( strpos( $screen->id, $id ) !== false ) {
-				$page = $script;
-				continue;
-			}
-		}
-
-		return $page;
 	}
 
 	/**
@@ -176,20 +176,33 @@ class Rop_Admin {
 	/**
 	 * Legacy auth callback.
 	 */
-	public function fb_legacy_auth() {
+	public function legacy_auth() {
 		$code    = sanitize_text_field( isset( $_GET['code'] ) ? $_GET['code'] : '' );
 		$state   = sanitize_text_field( isset( $_GET['state'] ) ? $_GET['state'] : '' );
 		$network = sanitize_text_field( isset( $_GET['network'] ) ? $_GET['network'] : '' );
-		if ( empty( $code ) ) {
+		/**
+		 * For twitter we don't have code/state params.
+		 */
+		if ( ( empty( $code ) || empty( $state ) ) && $network !== 'twitter' ) {
 			return;
 		}
-		if ( empty( $state ) ) {
+
+		$oauth_token    = sanitize_text_field( isset( $_GET['oauth_token'] ) ? $_GET['oauth_token'] : '' );
+		$oauth_verifier = sanitize_text_field( isset( $_GET['oauth_verifier'] ) ? $_GET['oauth_verifier'] : '' );
+		/**
+		 * For twitter we don't have code/state params.
+		 */
+		if ( ( empty( $oauth_token ) || empty( $oauth_verifier ) ) && $network === 'twitter' ) {
 			return;
 		}
 		switch ( $network ) {
 			case 'linkedin':
 				$lk_service = new Rop_Linkedin_Service();
 				$lk_service->authorize();
+				break;
+			case 'twitter':
+				$twitter_service = new Rop_Twitter_Service();
+				$twitter_service->authorize();
 				break;
 			default:
 				$fb_service = new Rop_Facebook_Service();
