@@ -16090,7 +16090,7 @@ exports.push([module.i, "\n\t#rop-upsell-box[_v-17665f29]{\n\t\tmargin-top:20px;
 
 
 // <template>
-// 	<div id="rop-upsell-box">
+// 	<div v-if="this.$store.state.cron_status.current_status" id="rop-upsell-box">
 // 		<div class="card rop-upsell-pro-card" v-if="license  < 1 ">
 // 			<a :href="upsell_link" target="_blank">
 // 				<img class="img-responsive" :src="to_pro_upsell" :alt="labels.upgrade_pro_cta">
@@ -16134,7 +16134,7 @@ module.exports = {
 /* 76 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div id=\"rop-upsell-box\" _v-17665f29=\"\">\n\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \" _v-17665f29=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-17665f29=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_pro_upsell\" :alt=\"labels.upgrade_pro_cta\" _v-17665f29=\"\">\n\t\t\t</a>\n\t\t</div>\n\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1\" _v-17665f29=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-17665f29=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_business_upsell\" :alt=\"labels.upgrade_biz_cta\" _v-17665f29=\"\">\n\t\t\t</a>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div v-if=\"this.$store.state.cron_status.current_status\" id=\"rop-upsell-box\" _v-17665f29=\"\">\n\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \" _v-17665f29=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-17665f29=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_pro_upsell\" :alt=\"labels.upgrade_pro_cta\" _v-17665f29=\"\">\n\t\t\t</a>\n\t\t</div>\n\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1\" _v-17665f29=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-17665f29=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_business_upsell\" :alt=\"labels.upgrade_biz_cta\" _v-17665f29=\"\">\n\t\t\t</a>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 77 */,

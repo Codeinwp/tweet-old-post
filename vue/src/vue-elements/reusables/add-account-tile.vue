@@ -2,11 +2,11 @@
 	<div>
 		<div class="tile tile-centered rop-add-account">
 			<div class="tile-content">
-				<strong class="tile-title">{{labels.add_account}}</strong>
+				<p class="tile-title">{{labels.add_account}}</p>
 			</div>
-				<div class="tile-action">
-					<sign-in-btn></sign-in-btn>
-				</div>
+			<div class="tile-action">
+				<sign-in-btn></sign-in-btn>
+			</div>
 		</div>
 		<transition name="fade">
 			<div class="columns my-2" v-if="checkLicense">
