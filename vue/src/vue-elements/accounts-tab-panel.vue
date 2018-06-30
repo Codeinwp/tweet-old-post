@@ -2,17 +2,21 @@
 	<div class="tab-view">
 		<div class="panel-body">
 			<div class="toast  toast-warning" v-html="labels.twitter_warning" v-if="twitter_warning">
-			
 			</div>
 			<div class="container">
 				<div class="columns" :class="'rop-tab-state-'+is_loading">
 					<div class="column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2">
-						<div class="empty mb-2" v-if="accountsCount === 0">
-							<div class="empty-icon">
-								<i class="fa fa-3x fa-user-circle-o"></i>
+						<div class="empty mb-2 text-center" v-if="accountsCount === 0">
+							<div v-if="this.$store.state.ajaxLoader && ! this.$store.state.availableServices.lenght > 0">
+								<i class="fa fa-spinner fa-spin fa-3x"></i>
 							</div>
-							<p class="empty-title h5">{{labels.no_accounts}}</p>
-							<p class="empty-subtitle">{{labels.no_accounts_desc}}</p>
+							<template v-else>
+								<div class="empty-icon">
+									<i class="fa fa-3x fa-user-circle-o"></i>
+								</div>
+								<p class="empty-title h5">{{labels.no_accounts}}</p>
+								<p class="empty-subtitle">{{labels.no_accounts_desc}}</p>
+							</template>
 						</div>
 						<div class="account-container" v-for="( account, id ) in accounts">
 							<service-user-tile :account_data="account" :account_id="id"></service-user-tile>
@@ -41,7 +45,7 @@
 				</div>
 			</div>
 		</div>
-	
+
 	</div>
 </template>
 
@@ -122,33 +126,33 @@
 		margin: 0;
 		line-height: normal;
 	}
-	
+
 	#rop_core .input-group {
 		width: 100%;
 	}
-	
+
 	b {
 		margin-bottom: 5px;
 		display: block;
 	}
-	
+
 	#rop_core .text-gray b {
 		display: inline;
 	}
-	
+
 	#rop_core .input-group .input-group-addon {
 		padding: 3px 5px;
 	}
-	
+
 	#rop_core .rop-available-accounts h5 {
 		margin-bottom: 15px;
 	}
-	
+
 	@media ( max-width: 600px ) {
 		#rop_core .panel-body .text-gray {
 			margin-bottom: 10px;
 		}
-		
+
 		#rop_core .text-right {
 			text-align: left;
 		}
