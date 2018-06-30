@@ -7,23 +7,32 @@
 				<div class="columns" :class="'rop-tab-state-'+is_loading">
 					<div class="column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2">
 						<div class="empty mb-2 text-center" v-if="accountsCount === 0">
-							<div v-if="this.$store.state.ajaxLoader && ! this.$store.state.availableServices.lenght > 0">
-								<i class="fa fa-spinner fa-spin fa-3x"></i>
+							<div class="empty-icon">
+								<i class="fa fa-3x fa-user-circle-o"></i>
 							</div>
-							<template v-else>
-								<div class="empty-icon">
-									<i class="fa fa-3x fa-user-circle-o"></i>
-								</div>
-								<p class="empty-title h5">{{labels.no_accounts}}</p>
-								<p class="empty-subtitle">{{labels.no_accounts_desc}}</p>
-							</template>
+							<p class="empty-title h5">{{labels.no_accounts}}</p>
+							<p class="empty-subtitle">{{labels.no_accounts_desc}}</p>
 						</div>
 						<div class="account-container" v-for="( account, id ) in accounts">
 							<service-user-tile :account_data="account" :account_id="id"></service-user-tile>
 							<span class="divider"></span>
 						</div>
 						<div class="add-accounts">
-							<add-account-tile></add-account-tile>
+							<div class="tile tile-centered rop-add-account">
+								<div class="tile-content">
+									<strong class="tile-title">{{labels.add_account}}</strong>
+								</div>
+								<div class="tile-action">
+									<sign-in-btn></sign-in-btn>
+								</div>
+							</div>
+							<div class="columns my-2" v-if="this.$store.state.licence < 1">
+								<div class="column col-12 text-center">
+									<p class="upsell">
+										<i class="fa fa-lock "></i> <span v-html="labels.upsell_accounts"></span>
+									</p>
+								</div>
+							</div>
 							<span class="divider"></span>
 						</div>
 					</div>
@@ -74,44 +83,44 @@
 				const all_accounts = {};
 				let twitter = 0;
 				const services = this.$store.state.authenticatedServices;
-				for (const key in services) {
-					if (!services.hasOwnProperty(key)) {
+				for ( const key in services ) {
+					if ( !services.hasOwnProperty( key ) ) {
 						continue;
 					}
-					const service = services[key];
-					for (const account_id in service.available_accounts) {
-						if (!service.available_accounts.hasOwnProperty(account_id)) {
+					const service = services[ key ];
+					for ( const account_id in service.available_accounts ) {
+						if ( !service.available_accounts.hasOwnProperty( account_id ) ) {
 							continue;
 						}
-						all_accounts[account_id] = service.available_accounts[account_id];
-						if (service.service === 'twitter') {
-						    twitter += Object.keys(service.available_accounts).length;
+						all_accounts[ account_id ] = service.available_accounts[ account_id ];
+						if ( service.service === 'twitter' ) {
+							twitter += Object.keys( service.available_accounts ).length;
 						}
 					}
 				}
 				this.twitter_warning = twitter > 1;
-				this.$log.info('All accounts: ', all_accounts);
-				this.accountsCount = Object.keys(all_accounts).length;
+				this.$log.info( 'All accounts: ', all_accounts );
+				this.accountsCount = Object.keys( all_accounts ).length;
 				return all_accounts;
 			},
 		},
 
 		methods: {
 			resetAccountData: function () {
-				if (this.is_loading) {
-					this.$log.warn('Request in progress...Bail');
+				if ( this.is_loading ) {
+					this.$log.warn( 'Request in progress...Bail' );
 					return;
 				}
 				this.is_loading = true;
-				this.$store.dispatch('fetchAJAXPromise', {
+				this.$store.dispatch( 'fetchAJAXPromise', {
 					req: 'reset_accounts',
 					data: {}
-				}).then(response => {
+				} ).then( response => {
 					this.is_loading = false;
 				}, error => {
 					this.is_loading = false;
-					Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
-				})
+					Vue.$log.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
+				} )
 			}
 		},
 		components: {

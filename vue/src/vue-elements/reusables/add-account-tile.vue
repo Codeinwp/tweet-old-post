@@ -1,22 +1,6 @@
 <template>
 	<div>
-		<div class="tile tile-centered rop-add-account">
-			<div class="tile-content">
-				<p class="tile-title">{{labels.add_account}}</p>
-			</div>
-			<div class="tile-action">
-				<sign-in-btn></sign-in-btn>
-			</div>
-		</div>
-		<transition name="fade">
-			<div class="columns my-2" v-if="checkLicense">
-				<div class="column col-12 text-center">
-					<p class="upsell">
-						<i class="fa fa-lock "></i> <span v-html="labels.upsell_accounts"></span>
-					</p>
-				</div>
-			</div>
-		</transition>
+
 	</div>
 </template>
 
