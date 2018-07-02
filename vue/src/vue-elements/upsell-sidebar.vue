@@ -1,5 +1,5 @@
 <template>
-	<div v-if="this.$store.state.cron_status.current_status" id="rop-upsell-box">
+	<div id="rop-upsell-box">
 		<div class="card rop-upsell-pro-card" v-if="license  < 1 ">
 			<a :href="upsell_link" target="_blank">
 				<img class="img-responsive" :src="to_pro_upsell" :alt="labels.upgrade_pro_cta">
