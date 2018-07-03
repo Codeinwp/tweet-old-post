@@ -377,7 +377,9 @@ class Rop_Post_Format_Helper {
 			return array();
 		}
 
-		return wp_list_pluck( $tags, 'name' );
+		$hashtags = wp_list_pluck( $tags, 'name' );
+
+		return str_replace( ' ', '', $hashtags );
 	}
 
 	/**
