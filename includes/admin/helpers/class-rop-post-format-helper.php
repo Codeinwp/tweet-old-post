@@ -355,8 +355,9 @@ class Rop_Post_Format_Helper {
 			return array();
 		}
 
-		return wp_list_pluck( $post_categories, 'slug' );
+		$hashtags = wp_list_pluck( $post_categories, 'name' );
 
+		return str_replace( ' ', '', $hashtags );
 	}
 
 	/**
@@ -376,7 +377,7 @@ class Rop_Post_Format_Helper {
 			return array();
 		}
 
-		return wp_list_pluck( $tags, 'slug' );
+		return wp_list_pluck( $tags, 'name' );
 	}
 
 	/**
