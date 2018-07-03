@@ -61,7 +61,6 @@
 <script>
 	import SignInBtn from './sign-in-btn.vue'
 	import ServiceUserTile from './service-user-tile.vue'
-	import AddAccountTile from './reusables/add-account-tile.vue'
 
 	module.exports = {
 		name: 'account-view',
@@ -126,7 +125,6 @@
 		components: {
 			SignInBtn,
 			ServiceUserTile,
-			AddAccountTile
 		}
 	}
 </script>
@@ -155,6 +153,10 @@
 
 	#rop_core .rop-available-accounts h5 {
 		margin-bottom: 15px;
+	}
+
+	#rop_core .rop-add-account {
+		margin: 20px 0;
 	}
 
 	@media ( max-width: 600px ) {

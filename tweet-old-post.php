@@ -13,7 +13,7 @@
  * @package           ROP
  *
  * @wordpress-plugin
- * Plugin Name: Revive Old Posts (Former Tweet Old Post)
+ * Plugin Name: Revive Old Post (Former Tweet Old Post)
  * Plugin URI: https://revive.social/
  * Description: WordPress plugin that helps you to keeps your old posts alive by sharing them and driving more traffic to them from twitter/facebook or linkedin. It also helps you to promote your content. You can set time and no of posts to share to drive more traffic.For questions, comments, or feature requests, <a href="http://revive.social/support/?utm_source=plugindesc&utm_medium=announce&utm_campaign=top">contact </a> us!
  * Version:           8.0.10
