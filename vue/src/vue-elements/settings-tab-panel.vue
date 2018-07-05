@@ -34,9 +34,9 @@
 						               :value.sync="generalSettings.maximum_post_age"></counter-input>
 					</div>
 				</div>
-				
+
 				<span class="divider"></span>
-				
+
 				<div class="columns py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
 						<b>{{labels.no_posts_title}}</b>
@@ -47,7 +47,7 @@
 					</div>
 				</div>
 				<span class="divider"></span>
-				
+
 				<!-- Share more than once -->
 				<div class="columns py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
@@ -75,15 +75,15 @@
 						                 :changed-selection="updatedPostTypes"></multiple-select>
 					</div>
 				</div>
-				
+
 				<div class="columns py-2" v-if="!isPro">
 					<div class="column text-center">
 						<p class="upsell"><i class="fa fa-lock"></i> {{labels.post_types_upsell}}</p>
 					</div>
 				</div>
-				
+
 				<span class="divider"></span>
-				
+
 				<!-- Taxonomies -->
 				<div class="columns py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
@@ -101,15 +101,16 @@
 									<i class="form-icon"></i>{{labels.taxonomies_exclude}}
 								</label>
 							</span>
-						
+
 						</div>
-					
+
 					</div>
-				
+
 				</div>
-				
+
 				<span class="divider"></span>
-				
+
+				<!-- Google Analytics -->
 				<div class="columns py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
 						<b>{{labels.ga_title}}</b>
@@ -124,8 +125,33 @@
 						</div>
 					</div>
 				</div>
+
+				<div class="columns py-2" v-if="generalSettings.ga_tracking && isPro">
+					<div class="column col-6 col-sm-12 vertical-align">
+						<b>{{labels.ga_utm_medium}}</b>
+						<p class="text-gray">{{labels.ga_utm_medium_desc}}</p>
+					</div>
+					<div class="column col-6 col-sm-12 vertical-align text-left">
+						<div class="form-group">
+								<input type="text" class="form-input" v-model="generalSettings.ga_utm_medium"/>
+						</div>
+					</div>
+				</div>
+
+				<div class="columns py-2" v-if="generalSettings.ga_tracking && isPro">
+					<div class="column col-6 col-sm-12 vertical-align">
+						<b>{{labels.ga_utm_name}}</b>
+						<p class="text-gray">{{labels.ga_utm_name_desc}}</p>
+					</div>
+					<div class="column col-6 col-sm-12 vertical-align text-left">
+						<div class="form-group">
+								<input type="text" class="form-input" v-model="generalSettings.ga_utm_source"/>
+						</div>
+					</div>
+				</div>
+
 				<span class="divider"></span>
-				
+
 				<div class="columns py-2" :class="'rop-control-container-'+isPro">
 					<div class="column col-6 col-sm-12 vertical-align rop-control">
 						<b>{{labels.custom_share_title}}</b>
@@ -147,7 +173,7 @@
 					</div>
 				</div>
 				<span class="divider"></span>
-			
+
 			</div>
 		</div>
 		<div class="panel-footer text-right">
@@ -249,6 +275,8 @@
 						selected_taxonomies: taxonomiesSelected,
 						exclude_taxonomies: excludeTaxonomies,
 						ga_tracking: this.generalSettings.ga_tracking,
+						ga_tracking_medium: this.generalSettings.ga_utm_medium,
+						ga_tracking_name: this.generalSettings.ga_utm_source,
 						custom_messages: this.generalSettings.custom_messages
 					}
 				}).then(response => {
@@ -274,25 +302,25 @@
 		margin: 0;
 		line-height: normal;
 	}
-	
+
 	#rop_core .input-group {
 		width: 100%;
 	}
-	
+
 	b {
 		margin-bottom: 5px;
 		display: block;
 	}
-	
+
 	#rop_core .input-group .input-group-addon {
 		padding: 3px 5px;
 	}
-	
+
 	@media ( max-width: 600px ) {
 		#rop_core .panel-body .text-gray {
 			margin-bottom: 10px;
 		}
-		
+
 		#rop_core .text-right {
 			text-align: left;
 		}
