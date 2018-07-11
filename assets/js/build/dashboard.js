@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 202);
+/******/ 	return __webpack_require__(__webpack_require__.s = 201);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1902,7 +1902,7 @@
             try {
                 oldLocale = globalLocale._abbr;
                 var aliasedRequire = require;
-                __webpack_require__(283)("./" + name);
+                __webpack_require__(278)("./" + name);
                 getSetGlobalLocale(oldLocale);
             } catch (e) {}
         }
@@ -4574,7 +4574,7 @@
 
 })));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(282)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(277)(module)))
 
 /***/ }),
 /* 1 */
@@ -16161,7 +16161,7 @@ module.exports = g;
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(207), __esModule: true };
+module.exports = { "default": __webpack_require__(206), __esModule: true };
 
 /***/ }),
 /* 15 */
@@ -20664,32 +20664,9 @@ module.exports = "\n\t<div id=\"rop-upsell-box\" _v-3bafc00a=\"\">\n\t\t<div cla
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(214)
-__vue_script__ = __webpack_require__(216)
-__vue_template__ = __webpack_require__(217)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "C:\\Users\\UVDev\\Source\\Repos\\tweet-old-post\\vue\\src\\vue-elements\\sign-in-btn.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-/* 78 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(233)
-__vue_script__ = __webpack_require__(235)
-__vue_template__ = __webpack_require__(236)
+__webpack_require__(228)
+__vue_script__ = __webpack_require__(230)
+__vue_template__ = __webpack_require__(231)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -20706,7 +20683,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 79 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20783,7 +20760,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 80 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20922,7 +20899,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 81 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20985,7 +20962,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 82 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21048,7 +21025,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 83 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21174,7 +21151,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 84 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21237,7 +21214,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 85 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21345,7 +21322,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 86 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21408,7 +21385,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 87 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21517,7 +21494,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 88 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21653,7 +21630,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 89 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21747,7 +21724,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 90 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21809,7 +21786,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 91 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21932,7 +21909,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 92 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22055,7 +22032,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 93 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22167,7 +22144,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 94 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22322,7 +22299,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 95 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22414,7 +22391,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 96 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22597,7 +22574,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 97 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22664,7 +22641,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 98 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22748,7 +22725,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 99 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22812,7 +22789,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 100 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22892,7 +22869,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 101 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22972,7 +22949,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 102 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23052,7 +23029,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 103 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23155,7 +23132,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 104 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23259,7 +23236,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 105 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23330,7 +23307,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 106 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23397,7 +23374,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 107 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23468,7 +23445,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 108 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23539,7 +23516,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 109 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23605,7 +23582,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 110 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23676,7 +23653,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 111 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23751,7 +23728,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 112 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23847,7 +23824,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 113 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23943,7 +23920,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 114 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24030,7 +24007,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 115 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24114,7 +24091,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 116 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24184,7 +24161,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 117 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24294,7 +24271,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 118 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24407,7 +24384,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 119 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24471,7 +24448,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 120 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24558,7 +24535,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 121 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24636,7 +24613,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 122 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24718,7 +24695,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 123 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24797,7 +24774,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 124 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24877,7 +24854,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 125 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24958,7 +24935,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 126 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25085,7 +25062,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 127 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25213,7 +25190,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 128 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25314,7 +25291,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 129 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25442,7 +25419,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 130 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25600,7 +25577,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 131 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25714,7 +25691,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 132 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25813,7 +25790,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 133 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25899,7 +25876,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 134 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26035,7 +26012,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 135 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26108,7 +26085,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 136 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26204,7 +26181,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 137 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26290,7 +26267,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 138 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26383,7 +26360,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 139 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26474,7 +26451,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 140 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26588,7 +26565,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 141 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26718,7 +26695,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 142 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26803,7 +26780,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 143 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26894,7 +26871,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 144 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27034,7 +27011,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 145 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27108,7 +27085,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 146 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27230,7 +27207,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 147 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27331,7 +27308,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 148 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27447,7 +27424,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 149 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27515,7 +27492,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 150 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27609,7 +27586,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 151 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27694,7 +27671,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 152 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27802,7 +27779,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 153 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27966,7 +27943,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 154 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28052,7 +28029,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 155 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28138,7 +28115,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 156 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28202,7 +28179,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 157 */
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28299,7 +28276,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 158 */
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28365,7 +28342,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 159 */
+/* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28492,7 +28469,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 160 */
+/* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28583,7 +28560,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 161 */
+/* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28674,7 +28651,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 162 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28738,7 +28715,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 163 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28866,7 +28843,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 164 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28996,7 +28973,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 165 */
+/* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29065,7 +29042,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 166 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29130,7 +29107,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 167 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29209,7 +29186,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 168 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29395,7 +29372,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 169 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29497,7 +29474,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 170 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29561,7 +29538,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 171 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29636,7 +29613,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 172 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29796,7 +29773,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 173 */
+/* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29973,7 +29950,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 174 */
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30045,7 +30022,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 175 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30160,7 +30137,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 176 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30275,7 +30252,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 177 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30367,7 +30344,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 178 */
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30440,7 +30417,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 179 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30503,7 +30480,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 180 */
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30636,7 +30613,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 181 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30729,7 +30706,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 182 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30800,7 +30777,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 183 */
+/* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30920,7 +30897,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 184 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30991,7 +30968,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 185 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31057,7 +31034,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 186 */
+/* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31183,7 +31160,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 187 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -31281,7 +31258,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 188 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31376,7 +31353,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 189 */
+/* 188 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31438,7 +31415,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 190 */
+/* 189 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31500,7 +31477,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 191 */
+/* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js language configuration
@@ -31623,7 +31600,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 192 */
+/* 191 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31778,7 +31755,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 193 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31880,7 +31857,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 194 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31942,7 +31919,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 195 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32004,7 +31981,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 196 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32087,7 +32064,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 197 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32159,7 +32136,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 198 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32223,7 +32200,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 199 */
+/* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32337,7 +32314,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 200 */
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32444,7 +32421,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 201 */
+/* 200 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32551,7 +32528,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 202 */
+/* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32565,7 +32542,7 @@ var _rop_store = __webpack_require__(36);
 
 var _rop_store2 = _interopRequireDefault(_rop_store);
 
-var _mainPagePanel = __webpack_require__(203);
+var _mainPagePanel = __webpack_require__(202);
 
 var _mainPagePanel2 = _interopRequireDefault(_mainPagePanel);
 
@@ -32590,13 +32567,13 @@ window.addEventListener('load', function () {
 /* exported RopApp */
 
 /***/ }),
-/* 203 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(204)
-__vue_script__ = __webpack_require__(206)
-__vue_template__ = __webpack_require__(297)
+__webpack_require__(203)
+__vue_script__ = __webpack_require__(205)
+__vue_template__ = __webpack_require__(292)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32613,13 +32590,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 204 */
+/* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(205);
+var content = __webpack_require__(204);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -32639,7 +32616,7 @@ if(false) {
 }
 
 /***/ }),
-/* 205 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -32653,7 +32630,7 @@ exports.push([module.i, "\r\n\t#rop_core .badge[data-badge]::after {\r\n\t\tposi
 
 
 /***/ }),
-/* 206 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32663,31 +32640,31 @@ var _keys = __webpack_require__(14);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _accountsTabPanel = __webpack_require__(210);
+var _accountsTabPanel = __webpack_require__(209);
 
 var _accountsTabPanel2 = _interopRequireDefault(_accountsTabPanel);
 
-var _settingsTabPanel = __webpack_require__(229);
+var _settingsTabPanel = __webpack_require__(224);
 
 var _settingsTabPanel2 = _interopRequireDefault(_settingsTabPanel);
 
-var _accountsSelectorPanel = __webpack_require__(238);
+var _accountsSelectorPanel = __webpack_require__(233);
 
 var _accountsSelectorPanel2 = _interopRequireDefault(_accountsSelectorPanel);
 
-var _queueTabPanel = __webpack_require__(270);
+var _queueTabPanel = __webpack_require__(265);
 
 var _queueTabPanel2 = _interopRequireDefault(_queueTabPanel);
 
-var _logsTabPanel = __webpack_require__(278);
+var _logsTabPanel = __webpack_require__(273);
 
 var _logsTabPanel2 = _interopRequireDefault(_logsTabPanel);
 
-var _toast = __webpack_require__(285);
+var _toast = __webpack_require__(280);
 
 var _toast2 = _interopRequireDefault(_toast);
 
-var _countdown = __webpack_require__(290);
+var _countdown = __webpack_require__(285);
 
 var _countdown2 = _interopRequireDefault(_countdown);
 
@@ -32879,7 +32856,7 @@ module.exports = {
 // 			<div class="column header-logo vertical-align">
 // 				<div>
 // 					<img :src="plugin_logo" class="plugin-logo avatar avatar-lg"/>
-// 					<h1 class="plugin-title d-inline-block">Revive Old Posts</h1><span class="powered d-inline-block"> {{labels.by}} <a
+// 					<h1 class="plugin-title d-inline-block">Revive Old Post</h1><span class="powered d-inline-block"> {{labels.by}} <a
 // 						href="https://revive.social" target="_blank"><b>Revive.Social</b></a></span>
 // 					<div id="rop_social_actions">
 // 					<a href="https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial" target="_blank" class="tweet-about-it"><span></span> {{labels.tweet_about_it}}</a>
@@ -32951,22 +32928,22 @@ module.exports = {
 /* global ROP_ASSETS_URL */
 
 /***/ }),
-/* 207 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(208);
+__webpack_require__(207);
 module.exports = __webpack_require__(5).Object.keys;
 
 
 /***/ }),
-/* 208 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.14 Object.keys(O)
 var toObject = __webpack_require__(31);
 var $keys = __webpack_require__(32);
 
-__webpack_require__(209)('keys', function () {
+__webpack_require__(208)('keys', function () {
   return function keys(it) {
     return $keys(toObject(it));
   };
@@ -32974,7 +32951,7 @@ __webpack_require__(209)('keys', function () {
 
 
 /***/ }),
-/* 209 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // most Object methods by ES6 should accept primitives
@@ -32990,13 +32967,13 @@ module.exports = function (KEY, exec) {
 
 
 /***/ }),
-/* 210 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(211)
-__vue_script__ = __webpack_require__(213)
-__vue_template__ = __webpack_require__(228)
+__webpack_require__(210)
+__vue_script__ = __webpack_require__(212)
+__vue_template__ = __webpack_require__(223)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -33013,13 +32990,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 211 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(212);
+var content = __webpack_require__(211);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -33039,7 +33016,7 @@ if(false) {
 }
 
 /***/ }),
-/* 212 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -33047,13 +33024,13 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\r\n\t#rop_core .columns.py-2 .text-gray[_v-564242b8] {\r\n\t\tmargin: 0;\r\n\t\tline-height: normal;\r\n\t}\r\n\t\r\n\t#rop_core .input-group[_v-564242b8] {\r\n\t\twidth: 100%;\r\n\t}\r\n\t\r\n\tb[_v-564242b8] {\r\n\t\tmargin-bottom: 5px;\r\n\t\tdisplay: block;\r\n\t}\r\n\t\r\n\t#rop_core .text-gray b[_v-564242b8] {\r\n\t\tdisplay: inline;\r\n\t}\r\n\t\r\n\t#rop_core .input-group .input-group-addon[_v-564242b8] {\r\n\t\tpadding: 3px 5px;\r\n\t}\r\n\t\r\n\t#rop_core .rop-available-accounts h5[_v-564242b8] {\r\n\t\tmargin-bottom: 15px;\r\n\t}\r\n\t\r\n\t@media ( max-width: 600px ) {\r\n\t\t#rop_core .panel-body .text-gray[_v-564242b8] {\r\n\t\t\tmargin-bottom: 10px;\r\n\t\t}\r\n\t\t\r\n\t\t#rop_core .text-right[_v-564242b8] {\r\n\t\t\ttext-align: left;\r\n\t\t}\r\n\t}\r\n", ""]);
+exports.push([module.i, "\r\n\t#rop_core .columns.py-2 .text-gray[_v-564242b8] {\r\n\t\tmargin: 0;\r\n\t\tline-height: normal;\r\n\t}\r\n\r\n\t#rop_core .input-group[_v-564242b8] {\r\n\t\twidth: 100%;\r\n\t}\r\n\r\n\tb[_v-564242b8] {\r\n\t\tmargin-bottom: 5px;\r\n\t\tdisplay: block;\r\n\t}\r\n\r\n\t#rop_core .text-gray b[_v-564242b8] {\r\n\t\tdisplay: inline;\r\n\t}\r\n\r\n\t#rop_core .input-group .input-group-addon[_v-564242b8] {\r\n\t\tpadding: 3px 5px;\r\n\t}\r\n\r\n\t#rop_core .rop-available-accounts h5[_v-564242b8] {\r\n\t\tmargin-bottom: 15px;\r\n\t}\r\n\r\n\t#rop_core .rop-add-account[_v-564242b8] {\r\n\t\tmargin: 20px 0;\r\n\t}\r\n\r\n\t@media ( max-width: 600px ) {\r\n\t\t#rop_core .panel-body .text-gray[_v-564242b8] {\r\n\t\t\tmargin-bottom: 10px;\r\n\t\t}\r\n\r\n\t\t#rop_core .text-right[_v-564242b8] {\r\n\t\t\ttext-align: left;\r\n\t\t}\r\n\t}\r\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 213 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33063,7 +33040,7 @@ var _keys = __webpack_require__(14);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _signInBtn = __webpack_require__(77);
+var _signInBtn = __webpack_require__(213);
 
 var _signInBtn2 = _interopRequireDefault(_signInBtn);
 
@@ -33071,12 +33048,69 @@ var _serviceUserTile = __webpack_require__(218);
 
 var _serviceUserTile2 = _interopRequireDefault(_serviceUserTile);
 
-var _addAccountTile = __webpack_require__(223);
-
-var _addAccountTile2 = _interopRequireDefault(_addAccountTile);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// <template>
+// 	<div class="tab-view">
+// 		<div class="panel-body">
+// 			<div class="toast  toast-warning" v-html="labels.twitter_warning" v-if="twitter_warning">
+// 			</div>
+// 			<div class="container">
+// 				<div class="columns" :class="'rop-tab-state-'+is_loading">
+// 					<div class="column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2">
+// 						<div class="empty mb-2 text-center" v-if="accountsCount === 0">
+// 							<div class="empty-icon">
+// 								<i class="fa fa-3x fa-user-circle-o"></i>
+// 							</div>
+// 							<p class="empty-title h5">{{labels.no_accounts}}</p>
+// 							<p class="empty-subtitle">{{labels.no_accounts_desc}}</p>
+// 						</div>
+// 						<div class="account-container" v-for="( account, id ) in accounts">
+// 							<service-user-tile :account_data="account" :account_id="id"></service-user-tile>
+// 							<span class="divider"></span>
+// 						</div>
+// 						<div class="add-accounts">
+// 							<div class="tile tile-centered rop-add-account">
+// 								<div class="tile-content">
+// 									<strong class="tile-title">{{labels.add_account}}</strong>
+// 								</div>
+// 								<div class="tile-action">
+// 									<sign-in-btn></sign-in-btn>
+// 								</div>
+// 							</div>
+// 							<div class="columns my-2" v-if="this.$store.state.licence < 1">
+// 								<div class="column col-12 text-center">
+// 									<p class="upsell">
+// 										<i class="fa fa-lock "></i> <span v-html="labels.upsell_accounts"></span>
+// 									</p>
+// 								</div>
+// 							</div>
+// 							<span class="divider"></span>
+// 						</div>
+// 					</div>
+// 				</div>
+// 			</div>
+// 			<div class="panel-footer" v-if="accountsCount > 0">
+// 				<div class="columns">
+// 					<div class="column col-12">
+// 						<p class="text-gray"><i class="fa fa-info-circle"></i> <span
+// 								v-html="labels.has_accounts_desc"></span></p>
+// 					</div>
+// 				</div>
+// 				<div class="column col-12 text-right">
+// 					<button class="btn btn-secondary" @click="resetAccountData()">
+// 						<i class="fa fa-ban" v-if="!this.is_loading"></i>
+// 						<i class="fa fa-spinner fa-spin" v-else></i>
+// 						{{labels.remove_all_cta}}
+// 					</button>
+// 				</div>
+// 			</div>
+// 		</div>
+//
+// 	</div>
+// </template>
+//
+// <script>
 module.exports = {
 	name: 'account-view',
 	data: function data() {
@@ -33141,8 +33175,7 @@ module.exports = {
 	},
 	components: {
 		SignInBtn: _signInBtn2.default,
-		ServiceUserTile: _serviceUserTile2.default,
-		AddAccountTile: _addAccountTile2.default
+		ServiceUserTile: _serviceUserTile2.default
 	}
 	// </script>
 	// <style scoped>
@@ -33172,6 +33205,10 @@ module.exports = {
 	// 		margin-bottom: 15px;
 	// 	}
 	//
+	// 	#rop_core .rop-add-account {
+	// 		margin: 20px 0;
+	// 	}
+	//
 	// 	@media ( max-width: 600px ) {
 	// 		#rop_core .panel-body .text-gray {
 	// 			margin-bottom: 10px;
@@ -33183,54 +33220,30 @@ module.exports = {
 	// 	}
 	// </style>
 
-}; // <template>
-// 	<div class="tab-view">
-// 		<div class="panel-body">
-// 			<div class="toast  toast-warning" v-html="labels.twitter_warning" v-if="twitter_warning">
-//
-// 			</div>
-// 			<div class="container">
-// 				<div class="columns" :class="'rop-tab-state-'+is_loading">
-// 					<div class="column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2">
-// 						<div class="empty mb-2" v-if="accountsCount === 0">
-// 							<div class="empty-icon">
-// 								<i class="fa fa-3x fa-user-circle-o"></i>
-// 							</div>
-// 							<p class="empty-title h5">{{labels.no_accounts}}</p>
-// 							<p class="empty-subtitle">{{labels.no_accounts_desc}}</p>
-// 						</div>
-// 						<div class="account-container" v-for="( account, id ) in accounts">
-// 							<service-user-tile :account_data="account" :account_id="id"></service-user-tile>
-// 							<span class="divider"></span>
-// 						</div>
-// 						<div class="add-accounts">
-// 							<add-account-tile></add-account-tile>
-// 							<span class="divider"></span>
-// 						</div>
-// 					</div>
-// 				</div>
-// 			</div>
-// 			<div class="panel-footer" v-if="accountsCount > 0">
-// 				<div class="columns">
-// 					<div class="column col-12">
-// 						<p class="text-gray"><i class="fa fa-info-circle"></i> <span
-// 								v-html="labels.has_accounts_desc"></span></p>
-// 					</div>
-// 				</div>
-// 				<div class="column col-12 text-right">
-// 					<button class="btn btn-secondary" @click="resetAccountData()">
-// 						<i class="fa fa-ban" v-if="!this.is_loading"></i>
-// 						<i class="fa fa-spinner fa-spin" v-else></i>
-// 						{{labels.remove_all_cta}}
-// 					</button>
-// 				</div>
-// 			</div>
-// 		</div>
-//
-// 	</div>
-// </template>
-//
-// <script>
+};
+
+/***/ }),
+/* 213 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(214)
+__vue_script__ = __webpack_require__(216)
+__vue_template__ = __webpack_require__(217)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "C:\\Users\\UVDev\\Source\\Repos\\tweet-old-post\\vue\\src\\vue-elements\\sign-in-btn.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
 
 /***/ }),
 /* 214 */
@@ -33846,177 +33859,18 @@ module.exports = "\n\t<div class=\"tile tile-centered rop-account\" :class=\"'ro
 
 /***/ }),
 /* 223 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-var __vue_script__, __vue_template__
-__webpack_require__(224)
-__vue_script__ = __webpack_require__(226)
-__vue_template__ = __webpack_require__(227)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "C:\\Users\\UVDev\\Source\\Repos\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\add-account-tile.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
+module.exports = "\n\t<div class=\"tab-view\" _v-564242b8=\"\">\n\t\t<div class=\"panel-body\" _v-564242b8=\"\">\n\t\t\t<div class=\"toast  toast-warning\" v-html=\"labels.twitter_warning\" v-if=\"twitter_warning\" _v-564242b8=\"\">\n\t\t\t</div>\n\t\t\t<div class=\"container\" _v-564242b8=\"\">\n\t\t\t\t<div class=\"columns\" :class=\"'rop-tab-state-'+is_loading\" _v-564242b8=\"\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2\" _v-564242b8=\"\">\n\t\t\t\t\t\t<div class=\"empty mb-2 text-center\" v-if=\"accountsCount === 0\" _v-564242b8=\"\">\n\t\t\t\t\t\t\t<div class=\"empty-icon\" _v-564242b8=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\" _v-564242b8=\"\"></i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<p class=\"empty-title h5\" _v-564242b8=\"\">{{labels.no_accounts}}</p>\n\t\t\t\t\t\t\t<p class=\"empty-subtitle\" _v-564242b8=\"\">{{labels.no_accounts_desc}}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"account-container\" v-for=\"( account, id ) in accounts\" _v-564242b8=\"\">\n\t\t\t\t\t\t\t<service-user-tile :account_data=\"account\" :account_id=\"id\" _v-564242b8=\"\"></service-user-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-564242b8=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"add-accounts\" _v-564242b8=\"\">\n\t\t\t\t\t\t\t<div class=\"tile tile-centered rop-add-account\" _v-564242b8=\"\">\n\t\t\t\t\t\t\t\t<div class=\"tile-content\" _v-564242b8=\"\">\n\t\t\t\t\t\t\t\t\t<strong class=\"tile-title\" _v-564242b8=\"\">{{labels.add_account}}</strong>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t<div class=\"tile-action\" _v-564242b8=\"\">\n\t\t\t\t\t\t\t\t\t<sign-in-btn _v-564242b8=\"\"></sign-in-btn>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"columns my-2\" v-if=\"this.$store.state.licence < 1\" _v-564242b8=\"\">\n\t\t\t\t\t\t\t\t<div class=\"column col-12 text-center\" _v-564242b8=\"\">\n\t\t\t\t\t\t\t\t\t<p class=\"upsell\" _v-564242b8=\"\">\n\t\t\t\t\t\t\t\t\t\t<i class=\"fa fa-lock \" _v-564242b8=\"\"></i> <span v-html=\"labels.upsell_accounts\" _v-564242b8=\"\"></span>\n\t\t\t\t\t\t\t\t\t</p>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-564242b8=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-564242b8=\"\">\n\t\t\t\t<div class=\"columns\" _v-564242b8=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-564242b8=\"\">\n\t\t\t\t\t\t<p class=\"text-gray\" _v-564242b8=\"\"><i class=\"fa fa-info-circle\" _v-564242b8=\"\"></i> <span v-html=\"labels.has_accounts_desc\" _v-564242b8=\"\"></span></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 text-right\" _v-564242b8=\"\">\n\t\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-564242b8=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-564242b8=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-564242b8=\"\"></i>\n\t\t\t\t\t\t{{labels.remove_all_cta}}\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t</div>\n";
 
 /***/ }),
 /* 224 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(225);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-711bbaed&file=add-account-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./add-account-tile.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-711bbaed&file=add-account-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./add-account-tile.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 225 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(1)();
-// imports
-
-
-// module
-exports.push([module.i, "\r\n\t.icon_box[_v-711bbaed] {\r\n\t\tbackground: #efefef;\r\n\t\tpadding: 0;\r\n\t\ttransition: .3s ease;\r\n\t}\r\n\t\r\n\t.icon_box.close .fa[_v-711bbaed] {\r\n\t\tline-height: 1.6em;\r\n\t}\r\n\t\r\n\t.icon_box.open .fa[_v-711bbaed] {\r\n\t\tline-height: 1.7em;\r\n\t\twidth: 20px;\r\n\t\ttransform: rotate(-135deg);\r\n\t\t-webkit-transform: rotate(-135deg);\r\n\t}\r\n\t\r\n\t.fa[_v-711bbaed] {\r\n\t\ttransition: all .3s cubic-bezier(.34, 1.61, .7, 1);\r\n\t}\r\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 226 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _signInBtn = __webpack_require__(77);
-
-var _signInBtn2 = _interopRequireDefault(_signInBtn);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-module.exports = {
-	name: "add-account-tile",
-	data: function data() {
-		return {
-			addAccountActive: false,
-			labels: this.$store.state.labels.accounts,
-			upsell_link: ropApiSettings.upsell_link
-		};
-	},
-	computed: {
-		/**
-   * Check if we have a pro license.
-   * @returns {boolean}
-   */
-		checkLicense: function checkLicense() {
-			return this.$store.state.licence < 1;
-		}
-	},
-	components: {
-		SignInBtn: _signInBtn2.default
-	}
-	// </script>
-	//
-	// <style scoped>
-	// 	.icon_box {
-	// 		background: #efefef;
-	// 		padding: 0;
-	// 		transition: .3s ease;
-	// 	}
-	//
-	// 	.icon_box.close .fa {
-	// 		line-height: 1.6em;
-	// 	}
-	//
-	// 	.icon_box.open .fa {
-	// 		line-height: 1.7em;
-	// 		width: 20px;
-	// 		transform: rotate(-135deg);
-	// 		-webkit-transform: rotate(-135deg);
-	// 	}
-	//
-	// 	.fa {
-	// 		transition: all .3s cubic-bezier(.34, 1.61, .7, 1);
-	// 	}
-	// </style>
-
-}; // <template>
-// 	<div>
-// 		<div class="tile tile-centered rop-add-account">
-// 			<a class="tile-icon c-hand" @click="addAccountActive = !addAccountActive">
-// 				<div class="icon_box" :class="(addAccountActive) ? 'close bg-error' : 'open bg-success'">
-// 					<i class="fa fa-2x fa-close" aria-hidden="true"></i>
-// 				</div>
-// 			</a>
-// 			<div class="tile-content">
-// 				<div class="tile-title">{{labels.add_account}}</div>
-// 			</div>
-// 			<transition name="fade">
-// 				<div class="tile-action" v-if="addAccountActive">
-// 					<sign-in-btn></sign-in-btn>
-// 				</div>
-// 			</transition>
-// 		</div>
-// 		<transition name="fade">
-// 			<div class="columns my-2" v-if="checkLicense && addAccountActive">
-// 				<div class="column col-12 text-center">
-// 					<p class="upsell">
-// 						<i class="fa fa-lock "></i> <span v-html="labels.upsell_accounts"></span>
-// 					</p>
-// 				</div>
-// 			</div>
-// 		</transition>
-// 	</div>
-// </template>
-//
-// <script>
-
-/***/ }),
-/* 227 */
-/***/ (function(module, exports) {
-
-module.exports = "\n\t<div _v-711bbaed=\"\">\n\t\t<div class=\"tile tile-centered rop-add-account\" _v-711bbaed=\"\">\n\t\t\t<a class=\"tile-icon c-hand\" @click=\"addAccountActive = !addAccountActive\" _v-711bbaed=\"\">\n\t\t\t\t<div class=\"icon_box\" :class=\"(addAccountActive) ? 'close bg-error' : 'open bg-success'\" _v-711bbaed=\"\">\n\t\t\t\t\t<i class=\"fa fa-2x fa-close\" aria-hidden=\"true\" _v-711bbaed=\"\"></i>\n\t\t\t\t</div>\n\t\t\t</a>\n\t\t\t<div class=\"tile-content\" _v-711bbaed=\"\">\n\t\t\t\t<div class=\"tile-title\" _v-711bbaed=\"\">{{labels.add_account}}</div>\n\t\t\t</div>\n\t\t\t<transition name=\"fade\" _v-711bbaed=\"\">\n\t\t\t\t<div class=\"tile-action\" v-if=\"addAccountActive\" _v-711bbaed=\"\">\n\t\t\t\t\t<sign-in-btn _v-711bbaed=\"\"></sign-in-btn>\n\t\t\t\t</div>\n\t\t\t</transition>\n\t\t</div>\n\t\t<transition name=\"fade\" _v-711bbaed=\"\">\n\t\t\t<div class=\"columns my-2\" v-if=\"checkLicense &amp;&amp; addAccountActive\" _v-711bbaed=\"\">\n\t\t\t\t<div class=\"column col-12 text-center\" _v-711bbaed=\"\">\n\t\t\t\t\t<p class=\"upsell\" _v-711bbaed=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-lock \" _v-711bbaed=\"\"></i> <span v-html=\"labels.upsell_accounts\" _v-711bbaed=\"\"></span>\n\t\t\t\t\t</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</transition>\n\t</div>\n";
-
-/***/ }),
-/* 228 */
-/***/ (function(module, exports) {
-
-module.exports = "\n\t<div class=\"tab-view\" _v-564242b8=\"\">\n\t\t<div class=\"panel-body\" _v-564242b8=\"\">\n\t\t\t<div class=\"toast  toast-warning\" v-html=\"labels.twitter_warning\" v-if=\"twitter_warning\" _v-564242b8=\"\">\n\t\t\t\n\t\t\t</div>\n\t\t\t<div class=\"container\" _v-564242b8=\"\">\n\t\t\t\t<div class=\"columns\" :class=\"'rop-tab-state-'+is_loading\" _v-564242b8=\"\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2\" _v-564242b8=\"\">\n\t\t\t\t\t\t<div class=\"empty mb-2\" v-if=\"accountsCount === 0\" _v-564242b8=\"\">\n\t\t\t\t\t\t\t<div class=\"empty-icon\" _v-564242b8=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\" _v-564242b8=\"\"></i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<p class=\"empty-title h5\" _v-564242b8=\"\">{{labels.no_accounts}}</p>\n\t\t\t\t\t\t\t<p class=\"empty-subtitle\" _v-564242b8=\"\">{{labels.no_accounts_desc}}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"account-container\" v-for=\"( account, id ) in accounts\" _v-564242b8=\"\">\n\t\t\t\t\t\t\t<service-user-tile :account_data=\"account\" :account_id=\"id\" _v-564242b8=\"\"></service-user-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-564242b8=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"add-accounts\" _v-564242b8=\"\">\n\t\t\t\t\t\t\t<add-account-tile _v-564242b8=\"\"></add-account-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-564242b8=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-564242b8=\"\">\n\t\t\t\t<div class=\"columns\" _v-564242b8=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-564242b8=\"\">\n\t\t\t\t\t\t<p class=\"text-gray\" _v-564242b8=\"\"><i class=\"fa fa-info-circle\" _v-564242b8=\"\"></i> <span v-html=\"labels.has_accounts_desc\" _v-564242b8=\"\"></span></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 text-right\" _v-564242b8=\"\">\n\t\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-564242b8=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-564242b8=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-564242b8=\"\"></i>\n\t\t\t\t\t\t{{labels.remove_all_cta}}\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\n\t</div>\n";
-
-/***/ }),
-/* 229 */
-/***/ (function(module, exports, __webpack_require__) {
-
 var __vue_script__, __vue_template__
-__webpack_require__(230)
-__vue_script__ = __webpack_require__(232)
-__vue_template__ = __webpack_require__(237)
+__webpack_require__(225)
+__vue_script__ = __webpack_require__(227)
+__vue_template__ = __webpack_require__(232)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -34033,13 +33887,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 230 */
+/* 225 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(231);
+var content = __webpack_require__(226);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -34059,7 +33913,7 @@ if(false) {
 }
 
 /***/ }),
-/* 231 */
+/* 226 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -34073,13 +33927,13 @@ exports.push([module.i, "\r\n\t#rop_core .panel-body .text-gray[_v-1e4c3021] {\r
 
 
 /***/ }),
-/* 232 */
+/* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _counterInput = __webpack_require__(78);
+var _counterInput = __webpack_require__(77);
 
 var _counterInput2 = _interopRequireDefault(_counterInput);
 
@@ -34164,12 +34018,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 						<multiple-select :options="postTypes" :disabled="isPro"
 // 						                 :selected="generalSettings.selected_post_types"
 // 						                 :changed-selection="updatedPostTypes"></multiple-select>
-// 					</div>
-// 				</div>
-//
-// 				<div class="columns py-2" v-if="!isPro">
-// 					<div class="column text-center">
-// 						<p class="upsell"><i class="fa fa-lock"></i> {{labels.post_types_upsell}}</p>
+// 						<p class="option-upsell" v-if="!isPro"><i class="fa fa-lock"></i> {{labels.post_types_upsell}}</p>
 // 					</div>
 // 				</div>
 //
@@ -34230,13 +34079,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 								<input type="checkbox" :disabled="!isPro" v-model="generalSettings.custom_messages"/>
 // 								<i class="form-icon"></i>{{labels.custom_share_yes}}
 // 							</label>
+// 							<p class="option-upsell" v-if="!isPro"><i class="fa fa-lock"></i> {{labels.custom_share_upsell}}</p>
 // 						</div>
-// 					</div>
-// 				</div>
-// 				<!-- Upsell -->
-// 				<div class="columns py-2" v-if="!isPro">
-// 					<div class="column text-center">
-// 						<p class="upsell"><i class="fa fa-lock"></i> {{labels.custom_share_upsell}}</p>
 // 					</div>
 // 				</div>
 // 				<span class="divider"></span>
@@ -34396,13 +34240,13 @@ module.exports = {
 };
 
 /***/ }),
-/* 233 */
+/* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(234);
+var content = __webpack_require__(229);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -34422,7 +34266,7 @@ if(false) {
 }
 
 /***/ }),
-/* 234 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -34436,7 +34280,7 @@ exports.push([module.i, "\r\n\t#rop_core .input-group.rop-counter-group {\r\n\t\
 
 
 /***/ }),
-/* 235 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34581,25 +34425,25 @@ module.exports = {
 };
 
 /***/ }),
-/* 236 */
+/* 231 */
 /***/ (function(module, exports) {
 
 module.exports = "\r\n\t<div class=\"input-group rop-counter-group\">\r\n\t\t<input class=\"form-input rop-counter\" type=\"text\" v-model=\"inputValueC\" :id=\"id\">\r\n\t\t<button class=\"btn input-group-btn increment-btn up\" @mousedown=\"isPressed('up')\" @mouseup=\"isReleased('up')\"><i\r\n\t\t\t\tclass=\"fa fa-fw fa-caret-up\"></i></button>\r\n\t\t<button class=\"btn input-group-btn increment-btn down\" @mousedown=\"isPressed('down')\"\r\n\t\t        @mouseup=\"isReleased('down')\"><i class=\"fa fa-fw fa-caret-down\"></i></button>\r\n\t</div>\r\n";
 
 /***/ }),
-/* 237 */
+/* 232 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\" _v-1e4c3021=\"\">\n\t\t<div class=\"panel-body\" _v-1e4c3021=\"\">\n\t\t\t<div class=\"container\" :class=\"'rop-tab-state-'+is_loading\" _v-1e4c3021=\"\">\n\t\t\t\t<div class=\"columns py-2\" v-if=\"! isBiz\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.min_interval_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.min_interval_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<counter-input id=\"default_interval\" :value.sync=\"generalSettings.default_interval\" _v-1e4c3021=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-1e4c3021=\"\"></span>\n\t\t\t\t<div class=\"columns py-2\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.min_days_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.min_days_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<counter-input id=\"min_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.minimum_post_age\" _v-1e4c3021=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- Max Post Age -->\n\t\t\t\t<div class=\"columns py-2\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.max_days_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.max_days_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<counter-input id=\"max_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.maximum_post_age\" _v-1e4c3021=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-1e4c3021=\"\"></span>\n\n\t\t\t\t<div class=\"columns py-2\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.no_posts_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.no_posts_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\" _v-1e4c3021=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-1e4c3021=\"\"></span>\n\n\t\t\t\t<!-- Share more than once -->\n\t\t\t\t<div class=\"columns py-2\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.share_once_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.share_once_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-1e4c3021=\"\"></i> {{labels.share_once_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-1e4c3021=\"\"></span>\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.post_types_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.post_types_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<multiple-select :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-1e4c3021=\"\"></multiple-select>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"columns py-2\" v-if=\"!isPro\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column text-center\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-1e4c3021=\"\"><i class=\"fa fa-lock\" _v-1e4c3021=\"\"></i> {{labels.post_types_upsell}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-1e4c3021=\"\"></span>\n\n\t\t\t\t<!-- Taxonomies -->\n\t\t\t\t<div class=\"columns py-2\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.taxonomies_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.taxonomies_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<div class=\"input-group\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" _v-1e4c3021=\"\"></multiple-select>\n\t\t\t\t\t\t\t<span class=\"input-group-addon vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-1e4c3021=\"\"></i>{{labels.taxonomies_exclude}}\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</span>\n\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t</div>\n\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-1e4c3021=\"\"></span>\n\n\t\t\t\t<!-- Google Analytics -->\n\t\t\t\t<div class=\"columns py-2\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.ga_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.ga_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.ga_tracking\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-1e4c3021=\"\"></i>{{labels.ga_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-1e4c3021=\"\"></span>\n\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.custom_share_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.custom_share_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" :disabled=\"!isPro\" v-model=\"generalSettings.custom_messages\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-1e4c3021=\"\"></i>{{labels.custom_share_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- Upsell -->\n\t\t\t\t<div class=\"columns py-2\" v-if=\"!isPro\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column text-center\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-1e4c3021=\"\"><i class=\"fa fa-lock\" _v-1e4c3021=\"\"></i> {{labels.custom_share_upsell}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-1e4c3021=\"\"></span>\n\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer text-right\" _v-1e4c3021=\"\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\" _v-1e4c3021=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-1e4c3021=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-1e4c3021=\"\"></i> {{labels.save}}\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\" _v-1e4c3021=\"\">\n\t\t<div class=\"panel-body\" _v-1e4c3021=\"\">\n\t\t\t<div class=\"container\" :class=\"'rop-tab-state-'+is_loading\" _v-1e4c3021=\"\">\n\t\t\t\t<div class=\"columns py-2\" v-if=\"! isBiz\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.min_interval_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.min_interval_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<counter-input id=\"default_interval\" :value.sync=\"generalSettings.default_interval\" _v-1e4c3021=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-1e4c3021=\"\"></span>\n\t\t\t\t<div class=\"columns py-2\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.min_days_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.min_days_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<counter-input id=\"min_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.minimum_post_age\" _v-1e4c3021=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- Max Post Age -->\n\t\t\t\t<div class=\"columns py-2\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.max_days_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.max_days_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<counter-input id=\"max_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.maximum_post_age\" _v-1e4c3021=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-1e4c3021=\"\"></span>\n\n\t\t\t\t<div class=\"columns py-2\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.no_posts_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.no_posts_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\" _v-1e4c3021=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-1e4c3021=\"\"></span>\n\n\t\t\t\t<!-- Share more than once -->\n\t\t\t\t<div class=\"columns py-2\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.share_once_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.share_once_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-1e4c3021=\"\"></i> {{labels.share_once_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-1e4c3021=\"\"></span>\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.post_types_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.post_types_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<multiple-select :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-1e4c3021=\"\"></multiple-select>\n\t\t\t\t\t\t<p class=\"option-upsell\" v-if=\"!isPro\" _v-1e4c3021=\"\"><i class=\"fa fa-lock\" _v-1e4c3021=\"\"></i> {{labels.post_types_upsell}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-1e4c3021=\"\"></span>\n\n\t\t\t\t<!-- Taxonomies -->\n\t\t\t\t<div class=\"columns py-2\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.taxonomies_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.taxonomies_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<div class=\"input-group\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" _v-1e4c3021=\"\"></multiple-select>\n\t\t\t\t\t\t\t<span class=\"input-group-addon vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-1e4c3021=\"\"></i>{{labels.taxonomies_exclude}}\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</span>\n\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t</div>\n\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-1e4c3021=\"\"></span>\n\n\t\t\t\t<!-- Google Analytics -->\n\t\t\t\t<div class=\"columns py-2\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.ga_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.ga_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.ga_tracking\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-1e4c3021=\"\"></i>{{labels.ga_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-1e4c3021=\"\"></span>\n\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.custom_share_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.custom_share_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" :disabled=\"!isPro\" v-model=\"generalSettings.custom_messages\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-1e4c3021=\"\"></i>{{labels.custom_share_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<p class=\"option-upsell\" v-if=\"!isPro\" _v-1e4c3021=\"\"><i class=\"fa fa-lock\" _v-1e4c3021=\"\"></i> {{labels.custom_share_upsell}}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-1e4c3021=\"\"></span>\n\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer text-right\" _v-1e4c3021=\"\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\" _v-1e4c3021=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-1e4c3021=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-1e4c3021=\"\"></i> {{labels.save}}\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 238 */
+/* 233 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(239)
-__vue_script__ = __webpack_require__(241)
-__vue_template__ = __webpack_require__(269)
+__webpack_require__(234)
+__vue_script__ = __webpack_require__(236)
+__vue_template__ = __webpack_require__(264)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -34616,13 +34460,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 239 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(240);
+var content = __webpack_require__(235);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -34642,7 +34486,7 @@ if(false) {
 }
 
 /***/ }),
-/* 240 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -34656,7 +34500,7 @@ exports.push([module.i, "\r\n\t.icon_box[_v-63f935ee] {\r\n\t\twidth: 30px;\r\n\
 
 
 /***/ }),
-/* 241 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34666,15 +34510,15 @@ var _keys = __webpack_require__(14);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _emptyActiveAccounts = __webpack_require__(242);
+var _emptyActiveAccounts = __webpack_require__(237);
 
 var _emptyActiveAccounts2 = _interopRequireDefault(_emptyActiveAccounts);
 
-var _postFormat = __webpack_require__(245);
+var _postFormat = __webpack_require__(240);
 
 var _postFormat2 = _interopRequireDefault(_postFormat);
 
-var _accountSchedule = __webpack_require__(250);
+var _accountSchedule = __webpack_require__(245);
 
 var _accountSchedule2 = _interopRequireDefault(_accountSchedule);
 
@@ -34969,12 +34813,12 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 242 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(243)
-__vue_template__ = __webpack_require__(244)
+__vue_script__ = __webpack_require__(238)
+__vue_template__ = __webpack_require__(239)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -34991,7 +34835,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 243 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35026,19 +34870,19 @@ module.exports = {
 };
 
 /***/ }),
-/* 244 */
+/* 239 */
 /***/ (function(module, exports) {
 
 module.exports = "\r\n\t<div class=\"empty\">\r\n\t\t<div class=\"empty-icon\">\r\n\t\t\t<i class=\"fa fa-3x fa-user-circle-o\"></i>\r\n\t\t</div>\r\n\t\t<p class=\"empty-title h5\">{{labels.no_active_accounts}}</p>\r\n\t\t<p class=\"empty-subtitle\" v-html=\"labels.no_active_accounts_desc\"></p>\r\n\t\t<button class=\"btn btn-primary\" @click=\"goToAccounts()\">{{labels.go_to_accounts_btn}}</button>\r\n\t</div>\r\n";
 
 /***/ }),
-/* 245 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(246)
-__vue_script__ = __webpack_require__(248)
-__vue_template__ = __webpack_require__(249)
+__webpack_require__(241)
+__vue_script__ = __webpack_require__(243)
+__vue_template__ = __webpack_require__(244)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -35055,13 +34899,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 246 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(247);
+var content = __webpack_require__(242);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -35081,7 +34925,7 @@ if(false) {
 }
 
 /***/ }),
-/* 247 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -35095,7 +34939,7 @@ exports.push([module.i, "\r\n\t#rop_core .panel-body .text-gray[_v-4abf5356] {\r
 
 
 /***/ }),
-/* 248 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35323,11 +35167,11 @@ exports.push([module.i, "\r\n\t#rop_core .panel-body .text-gray[_v-4abf5356] {\r
 // 		<span class="divider"></span>
 //
 // 		<div class="columns py-2" :class="'rop-control-container-'+isPro">
-// 			<div class="column col-6 col-sm-12 vertical-align">
+// 			<div class="column col-6 col-sm-12 vertical-align rop-control">
 // 				<b>{{labels.image_title}}</b>
 // 				<p class="text-gray">{{labels.image_desc}}</p>
 // 			</div>
-// 			<div class="column col-6 col-sm-12 vertical-align">
+// 			<div class="column col-6 col-sm-12 vertical-align rop-control">
 // 				<div class="input-group">
 // 					<label class="form-checkbox">
 // 						<input type="checkbox" v-model="post_format.image"
@@ -35335,12 +35179,7 @@ exports.push([module.i, "\r\n\t#rop_core .panel-body .text-gray[_v-4abf5356] {\r
 // 						<i class="form-icon"></i> {{labels.image_yes}}
 // 					</label>
 // 				</div>
-// 			</div>
-// 		</div>
-//
-// 		<div class="columns py-2" v-if="!isPro">
-// 			<div class="column text-center">
-// 				<p class="upsell"><i class="fa fa-lock"></i> {{labels.image_upsell}}</p>
+// 				<p class="option-upsell" v-if="!isPro"><i class="fa fa-lock"></i> {{labels.image_upsell}}</p>
 // 			</div>
 // 		</div>
 // 		<span class="divider"></span>
@@ -35447,19 +35286,19 @@ module.exports = {
 };
 
 /***/ }),
-/* 249 */
+/* 244 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div _v-4abf5356=\"\">\n\t\t<div class=\"columns py-2\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.post_content_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.post_content_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.post_content\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<option value=\"post_title\" _v-4abf5356=\"\">{{labels.post_content_option_title}}</option>\n\t\t\t\t\t\t<option value=\"post_content\" _v-4abf5356=\"\">{{labels.post_content_option_content}}</option>\n\t\t\t\t\t\t<option value=\"post_title_content\" _v-4abf5356=\"\">{{labels.post_content_option_title_content}}</option>\n\t\t\t\t\t\t<option value=\"custom_field\" _v-4abf5356=\"\">{{labels.post_content_option_custom_field}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" v-if=\"post_format.post_content === 'custom_field'\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.custom_meta_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.custom_meta_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.custom_meta_field\" value=\"\" placeholder=\"\" _v-4abf5356=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<span class=\"divider\" _v-4abf5356=\"\"></span>\n\n\t\t<div class=\"columns py-2\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.max_char_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.max_char_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.maximum_length\" value=\"\" placeholder=\"\" _v-4abf5356=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-4abf5356=\"\"></span>\n\n\t\t<div class=\"columns py-2\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.add_char_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.add_char_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<textarea class=\"form-input\" v-model=\"post_format.custom_text\" placeholder=\"\" _v-4abf5356=\"\">{{post_format.custom_text}}</textarea>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.add_pos_title}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.custom_text_pos\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<option value=\"beginning\" _v-4abf5356=\"\">{{labels.add_pos_option_start}}</option>\n\t\t\t\t\t\t<option value=\"end\" _v-4abf5356=\"\">{{labels.add_pos_option_end}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.add_link_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.add_link_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"input-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.include_link\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-4abf5356=\"\"></i> {{labels.add_link_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-4abf5356=\"\"></span>\n\t\t<div class=\"columns py-2\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.meta_link_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.meta_link_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"input-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.url_from_meta\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-4abf5356=\"\"></i> {{labels.meta_link_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Custom Field -->\n\t\t<div class=\"columns py-2\" v-if=\"post_format.url_from_meta\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.meta_link_name_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.meta_link_name_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.url_meta_key\" value=\"\" placeholder=\"\" _v-4abf5356=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-4abf5356=\"\"></span>\n\t\t<div class=\"columns py-2\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.use_shortner_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.use_shortner_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"input-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.short_url\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-4abf5356=\"\"></i> {{labels.use_shortner_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" v-if=\"post_format.short_url\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.shortner_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.shortner_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.short_url_service\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<option value=\"rviv.ly\" _v-4abf5356=\"\">rviv.ly</option>\n\t\t\t\t\t\t<option value=\"bit.ly\" _v-4abf5356=\"\">bit.ly</option>\n\t\t\t\t\t\t<option value=\"goo.gl\" _v-4abf5356=\"\">goo.gl</option>\n\t\t\t\t\t\t<option value=\"ow.ly\" _v-4abf5356=\"\">ow.ly</option>\n\t\t\t\t\t\t<option value=\"is.gd\" _v-4abf5356=\"\">is.gd</option>\n\t\t\t\t\t\t<option value=\"wp_short_url\" _v-4abf5356=\"\">wp_short_url</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.short_url\" v-for=\"( credential, key_name ) in post_format.shortner_credentials\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{ key_name | capitalize }}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.shortner_field_desc_start}} \"{{key_name}}\"\n\t\t\t\t\t{{labels.shortner_field_desc_end}}\n\t\t\t\t\t<strong _v-4abf5356=\"\">{{post_format.short_url_service}}</strong> {{labels.shortner_api_field}}.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.shortner_credentials[key_name]\" _v-4abf5356=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.hashtags_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.hashtags_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.hashtags\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<option value=\"no-hashtags\" _v-4abf5356=\"\">{{labels.hashtags_option_no}}</option>\n\t\t\t\t\t\t<option value=\"common-hashtags\" _v-4abf5356=\"\">{{labels.hashtags_option_common}}</option>\n\t\t\t\t\t\t<option value=\"categories-hashtags\" _v-4abf5356=\"\">{{labels.hashtags_option_cats}}</option>\n\t\t\t\t\t\t<option value=\"tags-hashtags\" _v-4abf5356=\"\">{{labels.hashtags_option_tags}}</option>\n\t\t\t\t\t\t<option value=\"custom-hashtags\" _v-4abf5356=\"\">{{labels.hashtags_option_field}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags === 'common-hashtags'\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.hastags_common_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.hastags_common_desc}} \",\".</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_common\" value=\"\" placeholder=\"\" _v-4abf5356=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags === 'custom-hashtags'\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.hastags_field_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.hastags_field_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_custom\" value=\"\" placeholder=\"\" _v-4abf5356=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags !== 'no-hashtags'\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.hashtags_length_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.hashtags_length_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.hashtags_length\" value=\"\" placeholder=\"\" _v-4abf5356=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<span class=\"divider\" _v-4abf5356=\"\"></span>\n\n\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.image_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.image_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"input-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.image\" :disabled=\"!isPro\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-4abf5356=\"\"></i> {{labels.image_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"!isPro\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column text-center\" _v-4abf5356=\"\">\n\t\t\t\t<p class=\"upsell\" _v-4abf5356=\"\"><i class=\"fa fa-lock\" _v-4abf5356=\"\"></i> {{labels.image_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-4abf5356=\"\"></span>\n\t\t<!-- Google Analytics -->\n\t\t<div class=\"columns py-2\" v-if=\"isPro\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.utm_campaign_medium}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.utm_campaign_medium_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<input type=\"text\" class=\"form-input\" v-model=\"post_format.utm_campaign_medium\" _v-4abf5356=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"isPro\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.utm_campaign_name}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.utm_campaign_name_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<input type=\"text\" class=\"form-input\" v-model=\"post_format.utm_campaign_name\" _v-4abf5356=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<span class=\"divider\" _v-4abf5356=\"\"></span>\n\t</div>\n";
+module.exports = "\n\t<div _v-4abf5356=\"\">\n\t\t<div class=\"columns py-2\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.post_content_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.post_content_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.post_content\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<option value=\"post_title\" _v-4abf5356=\"\">{{labels.post_content_option_title}}</option>\n\t\t\t\t\t\t<option value=\"post_content\" _v-4abf5356=\"\">{{labels.post_content_option_content}}</option>\n\t\t\t\t\t\t<option value=\"post_title_content\" _v-4abf5356=\"\">{{labels.post_content_option_title_content}}</option>\n\t\t\t\t\t\t<option value=\"custom_field\" _v-4abf5356=\"\">{{labels.post_content_option_custom_field}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" v-if=\"post_format.post_content === 'custom_field'\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.custom_meta_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.custom_meta_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.custom_meta_field\" value=\"\" placeholder=\"\" _v-4abf5356=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<span class=\"divider\" _v-4abf5356=\"\"></span>\n\n\t\t<div class=\"columns py-2\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.max_char_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.max_char_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.maximum_length\" value=\"\" placeholder=\"\" _v-4abf5356=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-4abf5356=\"\"></span>\n\n\t\t<div class=\"columns py-2\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.add_char_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.add_char_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<textarea class=\"form-input\" v-model=\"post_format.custom_text\" placeholder=\"\" _v-4abf5356=\"\">{{post_format.custom_text}}</textarea>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.add_pos_title}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.custom_text_pos\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<option value=\"beginning\" _v-4abf5356=\"\">{{labels.add_pos_option_start}}</option>\n\t\t\t\t\t\t<option value=\"end\" _v-4abf5356=\"\">{{labels.add_pos_option_end}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.add_link_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.add_link_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"input-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.include_link\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-4abf5356=\"\"></i> {{labels.add_link_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-4abf5356=\"\"></span>\n\t\t<div class=\"columns py-2\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.meta_link_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.meta_link_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"input-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.url_from_meta\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-4abf5356=\"\"></i> {{labels.meta_link_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Custom Field -->\n\t\t<div class=\"columns py-2\" v-if=\"post_format.url_from_meta\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.meta_link_name_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.meta_link_name_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.url_meta_key\" value=\"\" placeholder=\"\" _v-4abf5356=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-4abf5356=\"\"></span>\n\t\t<div class=\"columns py-2\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.use_shortner_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.use_shortner_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"input-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.short_url\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-4abf5356=\"\"></i> {{labels.use_shortner_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" v-if=\"post_format.short_url\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.shortner_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.shortner_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.short_url_service\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<option value=\"rviv.ly\" _v-4abf5356=\"\">rviv.ly</option>\n\t\t\t\t\t\t<option value=\"bit.ly\" _v-4abf5356=\"\">bit.ly</option>\n\t\t\t\t\t\t<option value=\"goo.gl\" _v-4abf5356=\"\">goo.gl</option>\n\t\t\t\t\t\t<option value=\"ow.ly\" _v-4abf5356=\"\">ow.ly</option>\n\t\t\t\t\t\t<option value=\"is.gd\" _v-4abf5356=\"\">is.gd</option>\n\t\t\t\t\t\t<option value=\"wp_short_url\" _v-4abf5356=\"\">wp_short_url</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.short_url\" v-for=\"( credential, key_name ) in post_format.shortner_credentials\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{ key_name | capitalize }}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.shortner_field_desc_start}} \"{{key_name}}\"\n\t\t\t\t\t{{labels.shortner_field_desc_end}}\n\t\t\t\t\t<strong _v-4abf5356=\"\">{{post_format.short_url_service}}</strong> {{labels.shortner_api_field}}.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.shortner_credentials[key_name]\" _v-4abf5356=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.hashtags_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.hashtags_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.hashtags\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<option value=\"no-hashtags\" _v-4abf5356=\"\">{{labels.hashtags_option_no}}</option>\n\t\t\t\t\t\t<option value=\"common-hashtags\" _v-4abf5356=\"\">{{labels.hashtags_option_common}}</option>\n\t\t\t\t\t\t<option value=\"categories-hashtags\" _v-4abf5356=\"\">{{labels.hashtags_option_cats}}</option>\n\t\t\t\t\t\t<option value=\"tags-hashtags\" _v-4abf5356=\"\">{{labels.hashtags_option_tags}}</option>\n\t\t\t\t\t\t<option value=\"custom-hashtags\" _v-4abf5356=\"\">{{labels.hashtags_option_field}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags === 'common-hashtags'\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.hastags_common_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.hastags_common_desc}} \",\".</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_common\" value=\"\" placeholder=\"\" _v-4abf5356=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags === 'custom-hashtags'\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.hastags_field_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.hastags_field_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_custom\" value=\"\" placeholder=\"\" _v-4abf5356=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags !== 'no-hashtags'\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.hashtags_length_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.hashtags_length_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.hashtags_length\" value=\"\" placeholder=\"\" _v-4abf5356=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<span class=\"divider\" _v-4abf5356=\"\"></span>\n\n\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.image_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.image_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"input-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.image\" :disabled=\"!isPro\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-4abf5356=\"\"></i> {{labels.image_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t\t<p class=\"option-upsell\" v-if=\"!isPro\" _v-4abf5356=\"\"><i class=\"fa fa-lock\" _v-4abf5356=\"\"></i> {{labels.image_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-4abf5356=\"\"></span>\n\t\t<!-- Google Analytics -->\n\t\t<div class=\"columns py-2\" v-if=\"isPro\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.utm_campaign_medium}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.utm_campaign_medium_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<input type=\"text\" class=\"form-input\" v-model=\"post_format.utm_campaign_medium\" _v-4abf5356=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"isPro\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.utm_campaign_name}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.utm_campaign_name_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<input type=\"text\" class=\"form-input\" v-model=\"post_format.utm_campaign_name\" _v-4abf5356=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<span class=\"divider\" _v-4abf5356=\"\"></span>\n\t</div>\n";
 
 /***/ }),
-/* 250 */
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(251)
-__vue_script__ = __webpack_require__(253)
-__vue_template__ = __webpack_require__(268)
+__webpack_require__(246)
+__vue_script__ = __webpack_require__(248)
+__vue_template__ = __webpack_require__(263)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -35476,13 +35315,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 251 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(252);
+var content = __webpack_require__(247);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -35502,7 +35341,7 @@ if(false) {
 }
 
 /***/ }),
-/* 252 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -35516,21 +35355,21 @@ exports.push([module.i, "\r\n\t.rop-control-container-false[_v-29af9e14]  {\r\n\
 
 
 /***/ }),
-/* 253 */
+/* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _buttonCheckbox = __webpack_require__(254);
+var _buttonCheckbox = __webpack_require__(249);
 
 var _buttonCheckbox2 = _interopRequireDefault(_buttonCheckbox);
 
-var _vue2Timepicker = __webpack_require__(259);
+var _vue2Timepicker = __webpack_require__(254);
 
 var _vue2Timepicker2 = _interopRequireDefault(_vue2Timepicker);
 
-var _counterInput = __webpack_require__(78);
+var _counterInput = __webpack_require__(77);
 
 var _counterInput2 = _interopRequireDefault(_counterInput);
 
@@ -35744,13 +35583,13 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 254 */
+/* 249 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(255)
-__vue_script__ = __webpack_require__(257)
-__vue_template__ = __webpack_require__(258)
+__webpack_require__(250)
+__vue_script__ = __webpack_require__(252)
+__vue_template__ = __webpack_require__(253)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -35767,13 +35606,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 255 */
+/* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(256);
+var content = __webpack_require__(251);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -35793,7 +35632,7 @@ if(false) {
 }
 
 /***/ }),
-/* 256 */
+/* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -35807,7 +35646,7 @@ exports.push([module.i, "\r\n\t#rop_core .input-group .input-group-addon.btn.act
 
 
 /***/ }),
-/* 257 */
+/* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35883,26 +35722,26 @@ module.exports = {
 };
 
 /***/ }),
-/* 258 */
+/* 253 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<button class=\"btn input-group-addon column\" :class=\"is_active\" @click=\"toggleThis()\" _v-4b257edb=\"\">{{label}}</button>\n";
 
 /***/ }),
-/* 259 */
+/* 254 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(260)
+module.exports = __webpack_require__(255)
 
 
 /***/ }),
-/* 260 */
+/* 255 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(261)
-__vue_script__ = __webpack_require__(264)
-__vue_template__ = __webpack_require__(267)
+__webpack_require__(256)
+__vue_script__ = __webpack_require__(259)
+__vue_template__ = __webpack_require__(262)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -35919,13 +35758,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 261 */
+/* 256 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(262);
+var content = __webpack_require__(257);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -35945,12 +35784,12 @@ if(false) {
 }
 
 /***/ }),
-/* 262 */
+/* 257 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
 // imports
-exports.i(__webpack_require__(263), "");
+exports.i(__webpack_require__(258), "");
 
 // module
 exports.push([module.i, "\n", ""]);
@@ -35959,7 +35798,7 @@ exports.push([module.i, "\n", ""]);
 
 
 /***/ }),
-/* 263 */
+/* 258 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -35973,7 +35812,7 @@ exports.push([module.i, ".time-picker {\n  display: inline-block;\n  position: r
 
 
 /***/ }),
-/* 264 */
+/* 259 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35987,7 +35826,7 @@ var _keys = __webpack_require__(14);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _stringify = __webpack_require__(265);
+var _stringify = __webpack_require__(260);
 
 var _stringify2 = _interopRequireDefault(_stringify);
 
@@ -36363,13 +36202,13 @@ exports.default = {
 };
 
 /***/ }),
-/* 265 */
+/* 260 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(266), __esModule: true };
+module.exports = { "default": __webpack_require__(261), __esModule: true };
 
 /***/ }),
-/* 266 */
+/* 261 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var core = __webpack_require__(5);
@@ -36380,30 +36219,30 @@ module.exports = function stringify(it) { // eslint-disable-line no-unused-vars
 
 
 /***/ }),
-/* 267 */
+/* 262 */
 /***/ (function(module, exports) {
 
 module.exports = "\n<span class=\"time-picker\">\n  <input class=\"display-time\" :id=\"id\" v-model=\"displayTime\" @click.stop=\"toggleDropdown\" type=\"text\" readonly />\n  <span class=\"clear-btn\" v-if=\"!hideClearButton\" v-show=\"!showDropdown && showClearBtn\" @click.stop=\"clearTime\">&times;</span>\n  <div class=\"time-picker-overlay\" v-if=\"showDropdown\" @click.stop=\"toggleDropdown\"></div>\n  <div class=\"dropdown\" v-show=\"showDropdown\">\n    <div class=\"select-list\">\n      <ul class=\"hours\">\n        <li class=\"hint\" v-text=\"hourType\"></li>\n        <li v-for=\"hr in hours\" v-text=\"hr\" :class=\"{active: hour === hr}\" @click.stop=\"select('hour', hr)\"></li>\n      </ul>\n      <ul class=\"minutes\">\n        <li class=\"hint\" v-text=\"minuteType\"></li>\n        <li v-for=\"m in minutes\" v-text=\"m\" :class=\"{active: minute === m}\" @click.stop=\"select('minute', m)\"></li>\n      </ul>\n      <ul class=\"seconds\" v-if=\"secondType\">\n        <li class=\"hint\" v-text=\"secondType\"></li>\n        <li v-for=\"s in seconds\" v-text=\"s\" :class=\"{active: second === s}\" @click.stop=\"select('second', s)\"></li>\n      </ul>\n      <ul class=\"apms\" v-if=\"apmType\">\n        <li class=\"hint\" v-text=\"apmType\"></li>\n        <li v-for=\"a in apms\" v-text=\"a\" :class=\"{active: apm === a}\" @click.stop=\"select('apm', a)\"></li>\n      </ul>\n    </div>\n  </div>\n</span>\n";
 
 /***/ }),
-/* 268 */
+/* 263 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div :class=\"'rop-control-container-'+ ( license>1 ) \" _v-29af9e14=\"\">\n\t\t\n\t\t<div class=\"columns py-2 rop-control\" _v-29af9e14=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-29af9e14=\"\">\n\t\t\t\t<b _v-29af9e14=\"\">{{labels.schedule_type_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-29af9e14=\"\">{{labels.schedule_type_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-29af9e14=\"\">\n\t\t\t\t<div class=\"form-group\" _v-29af9e14=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"schedule.type\" _v-29af9e14=\"\">\n\t\t\t\t\t\t<option value=\"recurring\" _v-29af9e14=\"\">{{labels.schedule_type_option_rec}}</option>\n\t\t\t\t\t\t<option value=\"fixed\" _v-29af9e14=\"\">{{labels.schedule_type_option_fix}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t\n\t\t<!-- Fixed Schedule Days -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-29af9e14=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-29af9e14=\"\">\n\t\t\t\t<b _v-29af9e14=\"\">{{labels.schedule_fixed_days_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-29af9e14=\"\">{{labels.schedule_fixed_days_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-29af9e14=\"\">\n\t\t\t\t<div class=\"form-group input-group\" _v-29af9e14=\"\">\n\t\t\t\t\t<button-checkbox v-for=\"( data, label ) in daysObject\" :key=\"label\" :value=\"data.value\" :label=\"label\" :checked=\"data.checked\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" _v-29af9e14=\"\"></button-checkbox>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t\n\t\t<!-- Fixed Schedule time -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-29af9e14=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-29af9e14=\"\">\n\t\t\t\t<b _v-29af9e14=\"\">{{labels.schedule_fixed_time_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-29af9e14=\"\">{{labels.schedule_fixed_time_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-29af9e14=\"\">\n\t\t\t\t<div class=\"form-group\" _v-29af9e14=\"\">\n\t\t\t\t\t<div class=\"input-group\" v-for=\"( time, index ) in schedule.interval_f.time\" _v-29af9e14=\"\">\n\t\t\t\t\t\t<vue-timepicker :minute-interval=\"5\" class=\"timepicker-style-fix\" :value=\"getTime( index )\" @change=\"syncTime( $event, index )\" hide-clear-button=\"\" _v-29af9e14=\"\"></vue-timepicker>\n\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn\" v-if=\"schedule.interval_f.time.length > 1\" @click=\"rmvTime( index )\" _v-29af9e14=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-minus\" _v-29af9e14=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t\t<button class=\"btn btn-success input-group-btn\" v-if=\"index == schedule.interval_f.time.length - 1\" @click=\"addTime()\" _v-29af9e14=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-plus\" _v-29af9e14=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t\n\t\t<div class=\"columns py-2 rop-control\" v-else=\"\" _v-29af9e14=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-29af9e14=\"\">\n\t\t\t\t<b _v-29af9e14=\"\">{{labels.schedule_rec_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-29af9e14=\"\">{{labels.schedule_rec_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-29af9e14=\"\">\n\t\t\t\t<div class=\"form-group\" _v-29af9e14=\"\">\n\t\t\t\t\t<counter-input id=\"interval_r\" :value.sync=\"schedule.interval_r\" _v-29af9e14=\"\"></counter-input>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t\n\t\t<!-- Upsell -->\n\t\t<div class=\"columns py-2\" v-if=\"license < 2\" _v-29af9e14=\"\">\n\t\t\t<div class=\"column text-center\" _v-29af9e14=\"\">\n\t\t\t\t<p class=\"upsell\" _v-29af9e14=\"\"><i class=\"fa fa-lock\" _v-29af9e14=\"\"></i> {{labels.schedule_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-29af9e14=\"\"></span>\n\t</div>\n";
 
 /***/ }),
-/* 269 */
+/* 264 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"tab-view\" _v-63f935ee=\"\">\n\t\t<div class=\"panel-body\" _v-63f935ee=\"\">\n\t\t\t<div class=\"d-inline-block mt-2 column col-12\" _v-63f935ee=\"\">\n\t\t\t\t<p class=\"text-gray\" _v-63f935ee=\"\"><i class=\"fa fa-info-circle\" _v-63f935ee=\"\"></i> <span v-html=\"labels.accounts_selector\" _v-63f935ee=\"\"></span>\n\t\t\t\t</p>\n\t\t\t</div>\n\t\t\t<empty-active-accounts v-if=\"accountsCount === 0\" _v-63f935ee=\"\"></empty-active-accounts>\n\t\t\t<div class=\"container\" v-if=\"accountsCount > 0\" _v-63f935ee=\"\">\n\t\t\t\t\n\t\t\t\t<div class=\"columns\" _v-63f935ee=\"\">\n\t\t\t\t\t<div class=\"column col-3 col-sm-12 col-md-12 col-xl-3 col-lg-3 col-xs-12 col-rop-selector-accounts\" _v-63f935ee=\"\">\n\t\t\t\t\t\t<span class=\"divider\" _v-63f935ee=\"\"></span>\n\t\t\t\t\t\t<div v-for=\"( account, id ) in active_accounts\" _v-63f935ee=\"\">\n\t\t\t\t\t\t\t<div class=\"rop-selector-account-container\" :class=\"{active: selected_account===id}\" @click=\"setActiveAccount(id)\" _v-63f935ee=\"\">\n\t\t\t\t\t\t\t\t<div class=\"tile tile-centered rop-account\" _v-63f935ee=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"tile-icon\" _v-63f935ee=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"icon_box\" :class=\" (account.img ? 'has_image' : 'no-image' ) + ' ' +account.service \" _v-63f935ee=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<img class=\"service_account_image\" :src=\"account.img\" v-if=\"account.img\" _v-63f935ee=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"fa  \" :class=\"getIcon(account)\" aria-hidden=\"true\" _v-63f935ee=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"tile-content\" _v-63f935ee=\"\">\n\t\t\t\t\t\t\t\t\t\t<p class=\"rop-account-name\" _v-63f935ee=\"\">{{account.user}}</p>\n\t\t\t\t\t\t\t\t\t\t<strong class=\"rop-service-name\" _v-63f935ee=\"\">{{account.service}}</strong>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-63f935ee=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-9 col-sm-12  col-md-12  col-xl-9 col-lg-9 col-xs-12\" :class=\"'rop-tab-state-'+is_loading\" _v-63f935ee=\"\">\n\t\t\t\t\t\t<component :is=\"type\" :account_id=\"selected_account\" :license=\"license\" _v-63f935ee=\"\"></component>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-63f935ee=\"\">\n\t\t\t<div class=\"panel-actions text-right\" v-if=\"allow_footer\" _v-63f935ee=\"\">\n\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-63f935ee=\"\"><i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-63f935ee=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-63f935ee=\"\"></i> {{labels.reset_selector_btn}} {{component_label}}\n\t\t\t\t\t{{labels.for}}\n\t\t\t\t\t<b _v-63f935ee=\"\">{{active_account_name}}</b>\n\t\t\t\t</button>\n\t\t\t\t<button class=\"btn btn-primary\" @click=\"saveAccountData()\" _v-63f935ee=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-63f935ee=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-63f935ee=\"\"></i> {{labels.save_selector_btn}} {{component_label}}\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 270 */
+/* 265 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(271)
-__vue_template__ = __webpack_require__(277)
+__vue_script__ = __webpack_require__(266)
+__vue_template__ = __webpack_require__(272)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -36420,7 +36259,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 271 */
+/* 266 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36430,7 +36269,7 @@ var _keys = __webpack_require__(14);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _queueCard = __webpack_require__(272);
+var _queueCard = __webpack_require__(267);
 
 var _queueCard2 = _interopRequireDefault(_queueCard);
 
@@ -36545,13 +36384,13 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 272 */
+/* 267 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(273)
-__vue_script__ = __webpack_require__(275)
-__vue_template__ = __webpack_require__(276)
+__webpack_require__(268)
+__vue_script__ = __webpack_require__(270)
+__vue_template__ = __webpack_require__(271)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -36568,13 +36407,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 273 */
+/* 268 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(274);
+var content = __webpack_require__(269);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -36594,7 +36433,7 @@ if(false) {
 }
 
 /***/ }),
-/* 274 */
+/* 269 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -36608,7 +36447,7 @@ exports.push([module.i, "\r\n\t.fa[_v-0c961f02] {\r\n\t\tbackground: transparent
 
 
 /***/ }),
-/* 275 */
+/* 270 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36923,25 +36762,25 @@ module.exports = {
 };
 
 /***/ }),
-/* 276 */
+/* 271 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"card\" _v-0c961f02=\"\">\n\t\t<div class=\"columns\" _v-0c961f02=\"\">\n\t\t\t<div class=\"column col-sm-12 col-justified\" _v-0c961f02=\"\">\n\t\t\t\t<div class=\"columns\" _v-0c961f02=\"\">\n\t\t\t\t\t<div class=\"column\" _v-0c961f02=\"\">\n\t\t\t\t\t\t<p class=\"text-gray text-left \" _v-0c961f02=\"\"><i class=\"fa fa-clock-o\" _v-0c961f02=\"\"></i> {{card_data.date}} <b _v-0c961f02=\"\"><i class=\"fa fa-at\" _v-0c961f02=\"\"></i></b> <i class=\"service fa\" :class=\"iconClass( card_data.account_id )\" _v-0c961f02=\"\"></i>\n\t\t\t\t\t\t\t{{getAccountName(card_data.account_id)}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-if=\"!edit\" _v-0c961f02=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-0c961f02=\"\">\n\t\t\t\t\t\t<p v-html=\"hashtags( content.content )\" _v-0c961f02=\"\"></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"form-group columns\" v-if=\"edit\" _v-0c961f02=\"\">\n\t\t\t\t\t<div class=\"column col-12\" v-if=\"content.post_with_image\" _v-0c961f02=\"\">\n\t\t\t\t\t\t<label class=\"form-label\" for=\"image\" _v-0c961f02=\"\">{{labels.queue_image}}</label>\n\t\t\t\t\t\t<div class=\"input-group\" _v-0c961f02=\"\">\n\t\t\t\t\t\t\t<span class=\"input-group-addon\" _v-0c961f02=\"\"><i class=\"fa fa-file-image-o\" _v-0c961f02=\"\"></i></span>\n\t\t\t\t\t\t\t<input id=\"image\" type=\"text\" class=\"form-input\" :value=\"content.post_image\" readonly=\"\" _v-0c961f02=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary input-group-btn tooltip\" @click=\"uploadImage\" :data-tooltip=\"labels.upload_image\" _v-0c961f02=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-upload\" aria-hidden=\"true\" _v-0c961f02=\"\"></i>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn tooltip\" @click=\"removeImage\" :data-tooltip=\"labels.remove_image\" _v-0c961f02=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-remove\" aria-hidden=\"true\" _v-0c961f02=\"\"></i>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-12\" _v-0c961f02=\"\">\n\t\t\t\t\t\t<label class=\"form-label\" for=\"content\" _v-0c961f02=\"\">{{labels.queue_content}}</label>\n\t\t\t\t\t\t<textarea class=\"form-input\" id=\"content\" placeholder=\"\" rows=\"3\" @keyup=\"checkCount\" _v-0c961f02=\"\">{{content.content}}</textarea>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns col-justified\" v-if=\"!edit\" _v-0c961f02=\"\">\n\t\t\t\t\t<div class=\"column col-3\" _v-0c961f02=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-warning tooltip   tooltip-bottom \" @click=\"skipPost(card_data.account_id, card_data.post_id)\" :data-tooltip=\"labels.reschedule_post\" :disabled=\" ! enabled\" _v-0c961f02=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'skip'\" _v-0c961f02=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-step-forward\" v-else=\"\" aria-hidden=\"true\" _v-0c961f02=\"\"></i>\n\t\t\t\t\t\t\t{{labels.skip_btn_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-0c961f02=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-danger tooltip     tooltip-bottom  \" :data-tooltip=\"labels.ban_post\" @click=\"blockPost(card_data.account_id, card_data.post_id)\" :disabled=\" ! enabled\" _v-0c961f02=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'block'\" _v-0c961f02=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-ban\" aria-hidden=\"true\" v-else=\"\" _v-0c961f02=\"\"></i>\n\t\t\t\t\t\t\t{{labels.block_btn_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-0c961f02=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-primary\" @click=\"toggleEditState\" v-if=\"!edit\" :disabled=\" ! enabled\" _v-0c961f02=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-pencil\" aria-hidden=\"true\" _v-0c961f02=\"\"></i> {{labels.edit_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3 col-ml-auto text-right\" v-if=\"content.post_url !== ''\" _v-0c961f02=\"\">\n\t\t\t\t\t\t<p class=\"m-0\" _v-0c961f02=\"\">\n\t\t\t\t\t\t\t<b _v-0c961f02=\"\">{{labels.link_title}}:</b>\n\t\t\t\t\t\t\t<a :href=\"content.post_url\" target=\"_blank\" class=\"tooltip\" :data-tooltip=\"labels.link_shortned_start + ' ' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service )  \" _v-0c961f02=\"\">\n\t\t\t\t\t\t\t\t{{'{' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service ) + '}'}}</a>\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-else=\"\" _v-0c961f02=\"\">\n\t\t\t\t\t<div class=\"column col-3\" _v-0c961f02=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-success\" @click=\"saveChanges(card_data.account_id, card_data.post_id)\" v-if=\"edit\" :disabled=\" ! enabled\" _v-0c961f02=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'edit'\" _v-0c961f02=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-check\" aria-hidden=\"true\" v-else=\"\" _v-0c961f02=\"\"></i>\n\t\t\t\t\t\t\t{{labels.save_edit}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-0c961f02=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-warning\" @click=\"cancelChanges\" v-if=\"edit\" :disabled=\" ! enabled\" _v-0c961f02=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-times\" aria-hidden=\"true\" _v-0c961f02=\"\"></i>\n\t\t\t\t\t\t\t{{labels.cancel_edit}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"column col-4 col-sm-12 vertical-align\" v-if=\"!edit &amp;&amp; content.post_with_image\" _v-0c961f02=\"\">\n\t\t\t\t<div v-if=\"content.post_image !== ''\" _v-0c961f02=\"\">\n\t\t\t\t\t<figure class=\"figure\" v-if=\"content.post_image !== ''\" _v-0c961f02=\"\">\n\t\t\t\t\t\t<img :src=\"content.post_image\" class=\"img-fit-cover img-responsive\" _v-0c961f02=\"\">\n\t\t\t\t\t</figure>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\t<div class=\"rop-image-placeholder\" v-else=\"\" _v-0c961f02=\"\">\n\t\t\t\t\t<summary _v-0c961f02=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-0c961f02=\"\"></i>\n\t\t\t\t\t\t{{labels.queue_no_image}}\n\t\t\t\t\t</summary>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 277 */
+/* 272 */
 /***/ (function(module, exports) {
 
 module.exports = "\r\n\t<div class=\"tab-view\">\r\n\t\t<div class=\"panel-body\" :class=\"'rop-tab-state-'+is_loading\">\r\n\t\t\t<div class=\"columns\" v-if=\"! start_status\">\r\n\t\t\t\t<div class=\"column col-12 text-center empty-container\">\r\n\t\t\t\t\t<div class=\"empty-icon\">\r\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\"></i>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\t<p class=\"empty-title h5\">{{labels.sharing_not_started}}</p>\r\n\t\t\t\t\t<p class=\"empty-subtitle\">{{labels.sharing_not_started_desc}}</p>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\t\t\t\r\n\t\t\t<div v-else-if=\"start_status && queueCount > 0 \">\r\n\t\t\t\t\r\n\t\t\t\t<div class=\"columns py-2\" v-if=\"! is_business\">\r\n\t\t\t\t\t<div class=\"column text-center\">\r\n\t\t\t\t\t\t<p class=\"upsell\"><i class=\"fa fa-lock\"></i> <span v-html=\"labels.biz_only\"></span></p>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</div>\r\n\t\t\t\t\r\n\t\t\t\t<!-- When sharing is started but we  have the business plan. -->\r\n\t\t\t\t<div class=\"d-inline-block mt-2 column col-12\">\r\n\t\t\t\t\t<p class=\"text-gray info-paragraph\"><i class=\"fa fa-info-circle\"></i> {{labels.queue_desc}}</p>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\t\t\t<div class=\"empty\" v-else-if=\"start_status && queueCount === 0\">\r\n\t\t\t\t<div class=\"empty-icon\">\r\n\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\"></i>\r\n\t\t\t\t</div>\r\n\t\t\t\t<p class=\"empty-title h5\">{{labels.no_posts}}</p>\r\n\t\t\t\t<p class=\"empty-subtitle\" v-html=\"labels.no_posts_desc\"></p>\r\n\t\t\t</div>\r\n\t\t\t<div class=\"columns\" v-if=\"start_status && queueCount > 0\">\r\n\t\t\t\t<div class=\"column col-12 text-left\" v-for=\" (data, index) in queue \">\r\n\t\t\t\t\t<queue-card :card_data=\"data.post_data\" :id=\"index\" :enabled=\"is_business\"/>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\t\t</div>\r\n\t\t<div class=\"panel-footer text-rightcade\" v-if=\"start_status\">\r\n\t\t\t<button class=\"btn btn-secondary\" @click=\"refreshQueue(true)\">\r\n\t\t\t\t<i class=\"fa fa-refresh\" v-if=\"!is_loading\"></i>\r\n\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\r\n\t\t\t\t{{labels.refresh_btn}}\r\n\t\t\t</button>\r\n\t\t</div>\r\n\t</div>\r\n";
 
 /***/ }),
-/* 278 */
+/* 273 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(279)
-__vue_script__ = __webpack_require__(281)
-__vue_template__ = __webpack_require__(284)
+__webpack_require__(274)
+__vue_script__ = __webpack_require__(276)
+__vue_template__ = __webpack_require__(279)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -36958,13 +36797,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 279 */
+/* 274 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(280);
+var content = __webpack_require__(275);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -36984,7 +36823,7 @@ if(false) {
 }
 
 /***/ }),
-/* 280 */
+/* 275 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -36998,7 +36837,7 @@ exports.push([module.i, "\r\n\t#rop_core .toast.log-toast p[_v-1eb3a02d] {\r\n\t
 
 
 /***/ }),
-/* 281 */
+/* 276 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37127,7 +36966,7 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 282 */
+/* 277 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -37155,256 +36994,256 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 283 */
+/* 278 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
-	"./af": 79,
-	"./af.js": 79,
-	"./ar": 80,
-	"./ar-dz": 81,
-	"./ar-dz.js": 81,
-	"./ar-kw": 82,
-	"./ar-kw.js": 82,
-	"./ar-ly": 83,
-	"./ar-ly.js": 83,
-	"./ar-ma": 84,
-	"./ar-ma.js": 84,
-	"./ar-sa": 85,
-	"./ar-sa.js": 85,
-	"./ar-tn": 86,
-	"./ar-tn.js": 86,
-	"./ar.js": 80,
-	"./az": 87,
-	"./az.js": 87,
-	"./be": 88,
-	"./be.js": 88,
-	"./bg": 89,
-	"./bg.js": 89,
-	"./bm": 90,
-	"./bm.js": 90,
-	"./bn": 91,
-	"./bn.js": 91,
-	"./bo": 92,
-	"./bo.js": 92,
-	"./br": 93,
-	"./br.js": 93,
-	"./bs": 94,
-	"./bs.js": 94,
-	"./ca": 95,
-	"./ca.js": 95,
-	"./cs": 96,
-	"./cs.js": 96,
-	"./cv": 97,
-	"./cv.js": 97,
-	"./cy": 98,
-	"./cy.js": 98,
-	"./da": 99,
-	"./da.js": 99,
-	"./de": 100,
-	"./de-at": 101,
-	"./de-at.js": 101,
-	"./de-ch": 102,
-	"./de-ch.js": 102,
-	"./de.js": 100,
-	"./dv": 103,
-	"./dv.js": 103,
-	"./el": 104,
-	"./el.js": 104,
-	"./en-au": 105,
-	"./en-au.js": 105,
-	"./en-ca": 106,
-	"./en-ca.js": 106,
-	"./en-gb": 107,
-	"./en-gb.js": 107,
-	"./en-ie": 108,
-	"./en-ie.js": 108,
-	"./en-il": 109,
-	"./en-il.js": 109,
-	"./en-nz": 110,
-	"./en-nz.js": 110,
-	"./eo": 111,
-	"./eo.js": 111,
-	"./es": 112,
-	"./es-do": 113,
-	"./es-do.js": 113,
-	"./es-us": 114,
-	"./es-us.js": 114,
-	"./es.js": 112,
-	"./et": 115,
-	"./et.js": 115,
-	"./eu": 116,
-	"./eu.js": 116,
-	"./fa": 117,
-	"./fa.js": 117,
-	"./fi": 118,
-	"./fi.js": 118,
-	"./fo": 119,
-	"./fo.js": 119,
-	"./fr": 120,
-	"./fr-ca": 121,
-	"./fr-ca.js": 121,
-	"./fr-ch": 122,
-	"./fr-ch.js": 122,
-	"./fr.js": 120,
-	"./fy": 123,
-	"./fy.js": 123,
-	"./gd": 124,
-	"./gd.js": 124,
-	"./gl": 125,
-	"./gl.js": 125,
-	"./gom-latn": 126,
-	"./gom-latn.js": 126,
-	"./gu": 127,
-	"./gu.js": 127,
-	"./he": 128,
-	"./he.js": 128,
-	"./hi": 129,
-	"./hi.js": 129,
-	"./hr": 130,
-	"./hr.js": 130,
-	"./hu": 131,
-	"./hu.js": 131,
-	"./hy-am": 132,
-	"./hy-am.js": 132,
-	"./id": 133,
-	"./id.js": 133,
-	"./is": 134,
-	"./is.js": 134,
-	"./it": 135,
-	"./it.js": 135,
-	"./ja": 136,
-	"./ja.js": 136,
-	"./jv": 137,
-	"./jv.js": 137,
-	"./ka": 138,
-	"./ka.js": 138,
-	"./kk": 139,
-	"./kk.js": 139,
-	"./km": 140,
-	"./km.js": 140,
-	"./kn": 141,
-	"./kn.js": 141,
-	"./ko": 142,
-	"./ko.js": 142,
-	"./ky": 143,
-	"./ky.js": 143,
-	"./lb": 144,
-	"./lb.js": 144,
-	"./lo": 145,
-	"./lo.js": 145,
-	"./lt": 146,
-	"./lt.js": 146,
-	"./lv": 147,
-	"./lv.js": 147,
-	"./me": 148,
-	"./me.js": 148,
-	"./mi": 149,
-	"./mi.js": 149,
-	"./mk": 150,
-	"./mk.js": 150,
-	"./ml": 151,
-	"./ml.js": 151,
-	"./mn": 152,
-	"./mn.js": 152,
-	"./mr": 153,
-	"./mr.js": 153,
-	"./ms": 154,
-	"./ms-my": 155,
-	"./ms-my.js": 155,
-	"./ms.js": 154,
-	"./mt": 156,
-	"./mt.js": 156,
-	"./my": 157,
-	"./my.js": 157,
-	"./nb": 158,
-	"./nb.js": 158,
-	"./ne": 159,
-	"./ne.js": 159,
-	"./nl": 160,
-	"./nl-be": 161,
-	"./nl-be.js": 161,
-	"./nl.js": 160,
-	"./nn": 162,
-	"./nn.js": 162,
-	"./pa-in": 163,
-	"./pa-in.js": 163,
-	"./pl": 164,
-	"./pl.js": 164,
-	"./pt": 165,
-	"./pt-br": 166,
-	"./pt-br.js": 166,
-	"./pt.js": 165,
-	"./ro": 167,
-	"./ro.js": 167,
-	"./ru": 168,
-	"./ru.js": 168,
-	"./sd": 169,
-	"./sd.js": 169,
-	"./se": 170,
-	"./se.js": 170,
-	"./si": 171,
-	"./si.js": 171,
-	"./sk": 172,
-	"./sk.js": 172,
-	"./sl": 173,
-	"./sl.js": 173,
-	"./sq": 174,
-	"./sq.js": 174,
-	"./sr": 175,
-	"./sr-cyrl": 176,
-	"./sr-cyrl.js": 176,
-	"./sr.js": 175,
-	"./ss": 177,
-	"./ss.js": 177,
-	"./sv": 178,
-	"./sv.js": 178,
-	"./sw": 179,
-	"./sw.js": 179,
-	"./ta": 180,
-	"./ta.js": 180,
-	"./te": 181,
-	"./te.js": 181,
-	"./tet": 182,
-	"./tet.js": 182,
-	"./tg": 183,
-	"./tg.js": 183,
-	"./th": 184,
-	"./th.js": 184,
-	"./tl-ph": 185,
-	"./tl-ph.js": 185,
-	"./tlh": 186,
-	"./tlh.js": 186,
-	"./tr": 187,
-	"./tr.js": 187,
-	"./tzl": 188,
-	"./tzl.js": 188,
-	"./tzm": 189,
-	"./tzm-latn": 190,
-	"./tzm-latn.js": 190,
-	"./tzm.js": 189,
-	"./ug-cn": 191,
-	"./ug-cn.js": 191,
-	"./uk": 192,
-	"./uk.js": 192,
-	"./ur": 193,
-	"./ur.js": 193,
-	"./uz": 194,
-	"./uz-latn": 195,
-	"./uz-latn.js": 195,
-	"./uz.js": 194,
-	"./vi": 196,
-	"./vi.js": 196,
-	"./x-pseudo": 197,
-	"./x-pseudo.js": 197,
-	"./yo": 198,
-	"./yo.js": 198,
-	"./zh-cn": 199,
-	"./zh-cn.js": 199,
-	"./zh-hk": 200,
-	"./zh-hk.js": 200,
-	"./zh-tw": 201,
-	"./zh-tw.js": 201
+	"./af": 78,
+	"./af.js": 78,
+	"./ar": 79,
+	"./ar-dz": 80,
+	"./ar-dz.js": 80,
+	"./ar-kw": 81,
+	"./ar-kw.js": 81,
+	"./ar-ly": 82,
+	"./ar-ly.js": 82,
+	"./ar-ma": 83,
+	"./ar-ma.js": 83,
+	"./ar-sa": 84,
+	"./ar-sa.js": 84,
+	"./ar-tn": 85,
+	"./ar-tn.js": 85,
+	"./ar.js": 79,
+	"./az": 86,
+	"./az.js": 86,
+	"./be": 87,
+	"./be.js": 87,
+	"./bg": 88,
+	"./bg.js": 88,
+	"./bm": 89,
+	"./bm.js": 89,
+	"./bn": 90,
+	"./bn.js": 90,
+	"./bo": 91,
+	"./bo.js": 91,
+	"./br": 92,
+	"./br.js": 92,
+	"./bs": 93,
+	"./bs.js": 93,
+	"./ca": 94,
+	"./ca.js": 94,
+	"./cs": 95,
+	"./cs.js": 95,
+	"./cv": 96,
+	"./cv.js": 96,
+	"./cy": 97,
+	"./cy.js": 97,
+	"./da": 98,
+	"./da.js": 98,
+	"./de": 99,
+	"./de-at": 100,
+	"./de-at.js": 100,
+	"./de-ch": 101,
+	"./de-ch.js": 101,
+	"./de.js": 99,
+	"./dv": 102,
+	"./dv.js": 102,
+	"./el": 103,
+	"./el.js": 103,
+	"./en-au": 104,
+	"./en-au.js": 104,
+	"./en-ca": 105,
+	"./en-ca.js": 105,
+	"./en-gb": 106,
+	"./en-gb.js": 106,
+	"./en-ie": 107,
+	"./en-ie.js": 107,
+	"./en-il": 108,
+	"./en-il.js": 108,
+	"./en-nz": 109,
+	"./en-nz.js": 109,
+	"./eo": 110,
+	"./eo.js": 110,
+	"./es": 111,
+	"./es-do": 112,
+	"./es-do.js": 112,
+	"./es-us": 113,
+	"./es-us.js": 113,
+	"./es.js": 111,
+	"./et": 114,
+	"./et.js": 114,
+	"./eu": 115,
+	"./eu.js": 115,
+	"./fa": 116,
+	"./fa.js": 116,
+	"./fi": 117,
+	"./fi.js": 117,
+	"./fo": 118,
+	"./fo.js": 118,
+	"./fr": 119,
+	"./fr-ca": 120,
+	"./fr-ca.js": 120,
+	"./fr-ch": 121,
+	"./fr-ch.js": 121,
+	"./fr.js": 119,
+	"./fy": 122,
+	"./fy.js": 122,
+	"./gd": 123,
+	"./gd.js": 123,
+	"./gl": 124,
+	"./gl.js": 124,
+	"./gom-latn": 125,
+	"./gom-latn.js": 125,
+	"./gu": 126,
+	"./gu.js": 126,
+	"./he": 127,
+	"./he.js": 127,
+	"./hi": 128,
+	"./hi.js": 128,
+	"./hr": 129,
+	"./hr.js": 129,
+	"./hu": 130,
+	"./hu.js": 130,
+	"./hy-am": 131,
+	"./hy-am.js": 131,
+	"./id": 132,
+	"./id.js": 132,
+	"./is": 133,
+	"./is.js": 133,
+	"./it": 134,
+	"./it.js": 134,
+	"./ja": 135,
+	"./ja.js": 135,
+	"./jv": 136,
+	"./jv.js": 136,
+	"./ka": 137,
+	"./ka.js": 137,
+	"./kk": 138,
+	"./kk.js": 138,
+	"./km": 139,
+	"./km.js": 139,
+	"./kn": 140,
+	"./kn.js": 140,
+	"./ko": 141,
+	"./ko.js": 141,
+	"./ky": 142,
+	"./ky.js": 142,
+	"./lb": 143,
+	"./lb.js": 143,
+	"./lo": 144,
+	"./lo.js": 144,
+	"./lt": 145,
+	"./lt.js": 145,
+	"./lv": 146,
+	"./lv.js": 146,
+	"./me": 147,
+	"./me.js": 147,
+	"./mi": 148,
+	"./mi.js": 148,
+	"./mk": 149,
+	"./mk.js": 149,
+	"./ml": 150,
+	"./ml.js": 150,
+	"./mn": 151,
+	"./mn.js": 151,
+	"./mr": 152,
+	"./mr.js": 152,
+	"./ms": 153,
+	"./ms-my": 154,
+	"./ms-my.js": 154,
+	"./ms.js": 153,
+	"./mt": 155,
+	"./mt.js": 155,
+	"./my": 156,
+	"./my.js": 156,
+	"./nb": 157,
+	"./nb.js": 157,
+	"./ne": 158,
+	"./ne.js": 158,
+	"./nl": 159,
+	"./nl-be": 160,
+	"./nl-be.js": 160,
+	"./nl.js": 159,
+	"./nn": 161,
+	"./nn.js": 161,
+	"./pa-in": 162,
+	"./pa-in.js": 162,
+	"./pl": 163,
+	"./pl.js": 163,
+	"./pt": 164,
+	"./pt-br": 165,
+	"./pt-br.js": 165,
+	"./pt.js": 164,
+	"./ro": 166,
+	"./ro.js": 166,
+	"./ru": 167,
+	"./ru.js": 167,
+	"./sd": 168,
+	"./sd.js": 168,
+	"./se": 169,
+	"./se.js": 169,
+	"./si": 170,
+	"./si.js": 170,
+	"./sk": 171,
+	"./sk.js": 171,
+	"./sl": 172,
+	"./sl.js": 172,
+	"./sq": 173,
+	"./sq.js": 173,
+	"./sr": 174,
+	"./sr-cyrl": 175,
+	"./sr-cyrl.js": 175,
+	"./sr.js": 174,
+	"./ss": 176,
+	"./ss.js": 176,
+	"./sv": 177,
+	"./sv.js": 177,
+	"./sw": 178,
+	"./sw.js": 178,
+	"./ta": 179,
+	"./ta.js": 179,
+	"./te": 180,
+	"./te.js": 180,
+	"./tet": 181,
+	"./tet.js": 181,
+	"./tg": 182,
+	"./tg.js": 182,
+	"./th": 183,
+	"./th.js": 183,
+	"./tl-ph": 184,
+	"./tl-ph.js": 184,
+	"./tlh": 185,
+	"./tlh.js": 185,
+	"./tr": 186,
+	"./tr.js": 186,
+	"./tzl": 187,
+	"./tzl.js": 187,
+	"./tzm": 188,
+	"./tzm-latn": 189,
+	"./tzm-latn.js": 189,
+	"./tzm.js": 188,
+	"./ug-cn": 190,
+	"./ug-cn.js": 190,
+	"./uk": 191,
+	"./uk.js": 191,
+	"./ur": 192,
+	"./ur.js": 192,
+	"./uz": 193,
+	"./uz-latn": 194,
+	"./uz-latn.js": 194,
+	"./uz.js": 193,
+	"./vi": 195,
+	"./vi.js": 195,
+	"./x-pseudo": 196,
+	"./x-pseudo.js": 196,
+	"./yo": 197,
+	"./yo.js": 197,
+	"./zh-cn": 198,
+	"./zh-cn.js": 198,
+	"./zh-hk": 199,
+	"./zh-hk.js": 199,
+	"./zh-tw": 200,
+	"./zh-tw.js": 200
 };
 function webpackContext(req) {
 	return __webpack_require__(webpackContextResolve(req));
@@ -37420,22 +37259,22 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 283;
+webpackContext.id = 278;
 
 /***/ }),
-/* 284 */
+/* 279 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"tab-view\" _v-1eb3a02d=\"\">\n\t\t<div class=\"panel-body\" _v-1eb3a02d=\"\">\n\t\t\t<div class=\" columns mt-2\" v-if=\"logs_no > 0\" _v-1eb3a02d=\"\">\n\t\t\t\t<div class=\"column  col-12 text-right \" _v-1eb3a02d=\"\">\n\t\t\t\t\t<button class=\"btn  btn-secondary \" @click=\"getLogs(true)\" _v-1eb3a02d=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-remove\" v-if=\"!is_loading\" _v-1eb3a02d=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-1eb3a02d=\"\"></i>\n\t\t\t\t\t\t{{labels.clear_btn}}\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"columns\" _v-1eb3a02d=\"\">\n\t\t\t\t<div class=\"empty column col-12\" v-if=\"is_loading\" _v-1eb3a02d=\"\">\n\t\t\t\t\t<div class=\"empty-icon\" _v-1eb3a02d=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-spinner fa-spin\" _v-1eb3a02d=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"empty column col-12\" v-else-if=\"logs_no === 0\" _v-1eb3a02d=\"\">\n\t\t\t\t\t<div class=\"empty-icon\" _v-1eb3a02d=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\" _v-1eb3a02d=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t\t<p class=\"empty-title h5\" _v-1eb3a02d=\"\">{{labels.no_logs}}</p>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<div class=\"column col-12 mt-2\" v-for=\" (data, index) in logs \" v-else-if=\"logs_no >  0\" _v-1eb3a02d=\"\">\n\t\t\t\t\t<div class=\"toast log-toast\" :class=\"'toast-' + data.type\" _v-1eb3a02d=\"\">\n\t\t\t\t\t\t<small class=\"pull-right text-right\" _v-1eb3a02d=\"\">{{formatDate ( data.time ) }}</small>\n\t\t\t\t\t\t<p _v-1eb3a02d=\"\">{{data.message}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 285 */
+/* 280 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(286)
-__vue_script__ = __webpack_require__(288)
-__vue_template__ = __webpack_require__(289)
+__webpack_require__(281)
+__vue_script__ = __webpack_require__(283)
+__vue_template__ = __webpack_require__(284)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -37452,13 +37291,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 286 */
+/* 281 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(287);
+var content = __webpack_require__(282);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -37478,7 +37317,7 @@ if(false) {
 }
 
 /***/ }),
-/* 287 */
+/* 282 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -37492,7 +37331,7 @@ exports.push([module.i, "\r\n\t#rop_core .toast.hidden {\r\n\t\tdisplay: none;\r
 
 
 /***/ }),
-/* 288 */
+/* 283 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37547,18 +37386,18 @@ module.exports = {
 };
 
 /***/ }),
-/* 289 */
+/* 284 */
 /***/ (function(module, exports) {
 
 module.exports = "\r\n\t<div class=\"toast\" :class=\"toastTypeClass\" >\r\n\t\t<button class=\"btn btn-clear float-right\" @click=\"closeThis\"></button>\r\n\t\t<b><i class=\"fa\" :class=\"iconClass\"></i> {{ toast.title }}</b><br/>\r\n\t\t<small>{{ toast.message }}</small>\r\n\t</div>\r\n";
 
 /***/ }),
-/* 290 */
+/* 285 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(291)
-__vue_template__ = __webpack_require__(296)
+__vue_script__ = __webpack_require__(286)
+__vue_template__ = __webpack_require__(291)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -37575,7 +37414,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 291 */
+/* 286 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37585,7 +37424,7 @@ var _keys = __webpack_require__(14);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _trunc = __webpack_require__(292);
+var _trunc = __webpack_require__(287);
 
 var _trunc2 = _interopRequireDefault(_trunc);
 
@@ -37593,7 +37432,7 @@ var _moment = __webpack_require__(0);
 
 var _moment2 = _interopRequireDefault(_moment);
 
-__webpack_require__(295);
+__webpack_require__(290);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -37660,21 +37499,21 @@ module.exports = {
 };
 
 /***/ }),
-/* 292 */
+/* 287 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(293), __esModule: true };
+module.exports = { "default": __webpack_require__(288), __esModule: true };
 
 /***/ }),
-/* 293 */
+/* 288 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(294);
+__webpack_require__(289);
 module.exports = __webpack_require__(5).Math.trunc;
 
 
 /***/ }),
-/* 294 */
+/* 289 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.34 Math.trunc(x)
@@ -37688,7 +37527,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 295 */
+/* 290 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! Moment Duration Format v2.2.2
@@ -39370,16 +39209,16 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 /***/ }),
-/* 296 */
+/* 291 */
 /***/ (function(module, exports) {
 
 module.exports = "\r\n\t<div class=\"toast toast-success rop-current-time\" v-if=\"isOn && accounts_no > 0\">\r\n\t\t<span v-if=\"diff_seconds>0\"> <b><i\r\n\t\t\t\tclass=\"fa fa-fast-forward\"></i> {{labels.next_share}}</b> {{labels.in}}</span>\r\n\t\t<small v-if=\"timediff !== ''\">{{timediff}}</small>\r\n\t</div>\r\n";
 
 /***/ }),
-/* 297 */
+/* 292 */
 /***/ (function(module, exports) {
 
-module.exports = "\r\n\t<div>\r\n\t\t<div class=\"columns panel-header\">\r\n\t\t\t<div class=\"column header-logo vertical-align\">\r\n\t\t\t\t<div>\r\n\t\t\t\t\t<img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/>\r\n\t\t\t\t\t<h1 class=\"plugin-title d-inline-block\">Revive Old Posts</h1><span class=\"powered d-inline-block\"> {{labels.by}} <a\r\n\t\t\t\t\t\thref=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\r\n\t\t\t\t\t<div id=\"rop_social_actions\">\r\n\t\t\t\t\t<a href=\"https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial\" target=\"_blank\" class=\"tweet-about-it\"><span></span> {{labels.tweet_about_it}}</a>\r\n\t\t\t\t\t<a href=\"https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post\" target=\"_blank\" class=\"leave-a-review\"><span></span> {{labels.review_it}}</a>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\t\t\t<div v-if=\" is_rest_api_error \" class=\"toast toast-error rop-api-not-available\" v-html=\"labels.api_not_available\">\r\n\t\t\t</div>\r\n\t\t\t<div class=\"sidebar sidebar-top card rop-container-start\">\r\n\t\t\t\t<div class=\"toast rop-current-time\" v-if=\"formatedDate\">\r\n\t\t\t\t\t{{labels.now}}: {{ formatedDate }}\r\n\t\t\t\t</div>\r\n\t\t\t\t<countdown :current_time=\"current_time\"/>\r\n\t\t\t\t<button class=\"btn btn-sm\" :class=\"btn_class\"\r\n\t\t\t\t        :data-tooltip=\"labels.active_account_warning\"\r\n\t\t\t\t        @click=\"togglePosting()\" :disabled=\"haveAccounts\">\r\n\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\r\n\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\r\n\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\r\n\t\t\t\t\t{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\r\n\t\t\t\t</button>\r\n\t\t\t</div>\r\n\t\t</div>\r\n\r\n\t\t<div class=\"columns\">\r\n\t\t\t<div class=\"panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\r\n\t\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\r\n\t\t\t\t\t<ul class=\"tab \">\r\n\t\t\t\t\t\t<li class=\"tab-item c-hand\" v-for=\"tab in displayTabs\"\r\n\t\t\t\t\t\t    :class=\"{ active: tab.isActive }\">\r\n\t\t\t\t\t\t\t<a :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\r\n\t\t\t\t\t\t\t   :data-badge=\"logs_no\"\r\n\t\t\t\t\t\t\t   @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\r\n\t\t\t\t\t\t</li>\r\n\t\t\t\t\t</ul>\r\n\t\t\t\t</div>\r\n\t\t\t\t<component :is=\"page.template\" :type=\"page.view\"></component>\r\n\t\t\t</div>\r\n\r\n\t\t\t<div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\r\n\t\t\t     :class=\"'rop-license-plan-'+license\">\r\n\r\n\t\t\t\t<div class=\"card rop-container-start\">\r\n\t\t\t\t\t<div class=\"toast rop-current-time\" v-if=\"formatedDate\">\r\n\t\t\t\t\t\t{{labels.now}}: {{ formatedDate }}\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\t<countdown :current_time=\"current_time\"/>\r\n\t\t\t\t\t<button class=\"btn\" :class=\"btn_class\"\r\n\t\t\t\t\t        :data-tooltip=\"labels.active_account_warning\"\r\n\t\t\t\t\t        @click=\"togglePosting()\" :disabled=\"haveAccounts\">\r\n\t\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\r\n\t\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\r\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\r\n\t\t\t\t\t\t{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\r\n\t\t\t\t\t</button>\r\n\t\t\t\t\t<div id=\"staging-status\" v-if=\"staging\">\r\n\t\t\t\t\t\t{{labels.staging_status}}\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\t<upsell-sidebar></upsell-sidebar>\r\n\t\t\t\t</div>\r\n\r\n\t\t\t</div>\r\n\t\t</div>\r\n\t</div>\r\n";
+module.exports = "\r\n\t<div>\r\n\t\t<div class=\"columns panel-header\">\r\n\t\t\t<div class=\"column header-logo vertical-align\">\r\n\t\t\t\t<div>\r\n\t\t\t\t\t<img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/>\r\n\t\t\t\t\t<h1 class=\"plugin-title d-inline-block\">Revive Old Post</h1><span class=\"powered d-inline-block\"> {{labels.by}} <a\r\n\t\t\t\t\t\thref=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\r\n\t\t\t\t\t<div id=\"rop_social_actions\">\r\n\t\t\t\t\t<a href=\"https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial\" target=\"_blank\" class=\"tweet-about-it\"><span></span> {{labels.tweet_about_it}}</a>\r\n\t\t\t\t\t<a href=\"https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post\" target=\"_blank\" class=\"leave-a-review\"><span></span> {{labels.review_it}}</a>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\t\t\t<div v-if=\" is_rest_api_error \" class=\"toast toast-error rop-api-not-available\" v-html=\"labels.api_not_available\">\r\n\t\t\t</div>\r\n\t\t\t<div class=\"sidebar sidebar-top card rop-container-start\">\r\n\t\t\t\t<div class=\"toast rop-current-time\" v-if=\"formatedDate\">\r\n\t\t\t\t\t{{labels.now}}: {{ formatedDate }}\r\n\t\t\t\t</div>\r\n\t\t\t\t<countdown :current_time=\"current_time\"/>\r\n\t\t\t\t<button class=\"btn btn-sm\" :class=\"btn_class\"\r\n\t\t\t\t        :data-tooltip=\"labels.active_account_warning\"\r\n\t\t\t\t        @click=\"togglePosting()\" :disabled=\"haveAccounts\">\r\n\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\r\n\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\r\n\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\r\n\t\t\t\t\t{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\r\n\t\t\t\t</button>\r\n\t\t\t</div>\r\n\t\t</div>\r\n\r\n\t\t<div class=\"columns\">\r\n\t\t\t<div class=\"panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\r\n\t\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\r\n\t\t\t\t\t<ul class=\"tab \">\r\n\t\t\t\t\t\t<li class=\"tab-item c-hand\" v-for=\"tab in displayTabs\"\r\n\t\t\t\t\t\t    :class=\"{ active: tab.isActive }\">\r\n\t\t\t\t\t\t\t<a :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\r\n\t\t\t\t\t\t\t   :data-badge=\"logs_no\"\r\n\t\t\t\t\t\t\t   @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\r\n\t\t\t\t\t\t</li>\r\n\t\t\t\t\t</ul>\r\n\t\t\t\t</div>\r\n\t\t\t\t<component :is=\"page.template\" :type=\"page.view\"></component>\r\n\t\t\t</div>\r\n\r\n\t\t\t<div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\r\n\t\t\t     :class=\"'rop-license-plan-'+license\">\r\n\r\n\t\t\t\t<div class=\"card rop-container-start\">\r\n\t\t\t\t\t<div class=\"toast rop-current-time\" v-if=\"formatedDate\">\r\n\t\t\t\t\t\t{{labels.now}}: {{ formatedDate }}\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\t<countdown :current_time=\"current_time\"/>\r\n\t\t\t\t\t<button class=\"btn\" :class=\"btn_class\"\r\n\t\t\t\t\t        :data-tooltip=\"labels.active_account_warning\"\r\n\t\t\t\t\t        @click=\"togglePosting()\" :disabled=\"haveAccounts\">\r\n\t\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\r\n\t\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\r\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\r\n\t\t\t\t\t\t{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\r\n\t\t\t\t\t</button>\r\n\t\t\t\t\t<div id=\"staging-status\" v-if=\"staging\">\r\n\t\t\t\t\t\t{{labels.staging_status}}\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\t<upsell-sidebar></upsell-sidebar>\r\n\t\t\t\t</div>\r\n\r\n\t\t\t</div>\r\n\t\t</div>\r\n\t</div>\r\n";
 
 /***/ })
 /******/ ]);

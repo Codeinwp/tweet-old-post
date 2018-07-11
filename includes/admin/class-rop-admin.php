@@ -263,7 +263,7 @@ class Rop_Admin {
 	 */
 	public function menu_pages() {
 		add_menu_page(
-			__( 'Revive Old Posts', 'tweet-old-post' ), __( 'Revive Old Posts', 'tweet-old-post' ), 'manage_options', 'TweetOldPost',
+			__( 'Revive Old Post', 'tweet-old-post' ), __( 'Revive Old Post', 'tweet-old-post' ), 'manage_options', 'TweetOldPost',
 			array(
 				$this,
 				'rop_main_page',
