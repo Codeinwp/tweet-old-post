@@ -126,30 +126,6 @@
 					</div>
 				</div>
 
-				<div class="columns py-2" v-if="generalSettings.ga_tracking && isPro">
-					<div class="column col-6 col-sm-12 vertical-align">
-						<b>{{labels.ga_utm_medium}}</b>
-						<p class="text-gray">{{labels.ga_utm_medium_desc}}</p>
-					</div>
-					<div class="column col-6 col-sm-12 vertical-align text-left">
-						<div class="form-group">
-								<input type="text" class="form-input" v-model="generalSettings.ga_utm_medium"/>
-						</div>
-					</div>
-				</div>
-
-				<div class="columns py-2" v-if="generalSettings.ga_tracking && isPro">
-					<div class="column col-6 col-sm-12 vertical-align">
-						<b>{{labels.ga_utm_name}}</b>
-						<p class="text-gray">{{labels.ga_utm_name_desc}}</p>
-					</div>
-					<div class="column col-6 col-sm-12 vertical-align text-left">
-						<div class="form-group">
-								<input type="text" class="form-input" v-model="generalSettings.ga_utm_source"/>
-						</div>
-					</div>
-				</div>
-
 				<span class="divider"></span>
 
 				<div class="columns py-2" :class="'rop-control-container-'+isPro">
@@ -275,8 +251,6 @@
 						selected_taxonomies: taxonomiesSelected,
 						exclude_taxonomies: excludeTaxonomies,
 						ga_tracking: this.generalSettings.ga_tracking,
-						ga_tracking_medium: this.generalSettings.ga_utm_medium,
-						ga_tracking_name: this.generalSettings.ga_utm_source,
 						custom_messages: this.generalSettings.custom_messages
 					}
 				}).then(response => {

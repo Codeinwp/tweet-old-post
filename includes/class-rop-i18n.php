@@ -139,10 +139,6 @@ class Rop_I18n {
 							trafic.', 'tweet-old-post'
 				),
 				'ga_yes'                      => __( 'Yes', 'tweet-old-post' ),
-				'ga_utm_medium'               => __( 'Campaign Medium', 'tweet-old-post' ),
-				'ga_utm_medium_desc'          => __( 'The marketing medium you want to show in Google Analytics e.g: "social", "website", etc.', 'tweet-old-post' ),
-				'ga_utm_name'               	=> __( 'Campaign Name', 'tweet-old-post' ),
-				'ga_utm_name_desc'            => __( 'The campaign name you want to show in Google Analytics e.g: "november_sale" etc.', 'tweet-old-post' ),
 				'custom_share_title'          => __( 'Custom Share Messages', 'tweet-old-post' ),
 				'custom_share_desc'           => __( 'These messages will override the post format settings. You can go to each post and add multiple custom messages.', 'tweet-old-post' ),
 				'custom_share_yes'            => __( 'Yes', 'tweet-old-post' ),
@@ -207,6 +203,10 @@ class Rop_I18n {
 				'image_title'                       => __( 'Post with image', 'tweet-old-post' ),
 				'image_desc'                        => __( 'Use the featured image when posting?', 'tweet-old-post' ),
 				'image_yes'                         => __( 'Yes', 'tweet-old-post' ),
+				'utm_campaign_medium'               => __( 'Campaign Medium', 'tweet-old-post' ),
+				'utm_campaign_medium_desc'          => __( 'The marketing medium you want to show in Google Analytics e.g: "social", "website", etc.', 'tweet-old-post' ),
+				'utm_campaign_name'                 => __( 'Campaign Name', 'tweet-old-post' ),
+				'utm_campaign_name_desc'            => __( 'The campaign name you want to show in Google Analytics e.g: "november_sale" etc.', 'tweet-old-post' ),
 				'image_upsell'                      => __( 'Posting with images is available in the pro version.', 'tweet-old-post' ),
 			),
 			'schedule'    => array(
