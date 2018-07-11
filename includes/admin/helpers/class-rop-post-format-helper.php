@@ -322,6 +322,22 @@ class Rop_Post_Format_Helper {
 	}
 
 	/**
+	 * Removes certain characters from hashtags.
+	 *
+	 * @since   8.1.0
+	 * @access  private
+	 *
+	 * @param   array $hashtags The hashtags to clean.
+	 * @return array
+	 */
+	private function clean_hashtags( $hashtags ) {
+		// WP terms with > and < are stored as entities
+		$find = apply_filters( 'clean_hashtags', array( ' ', '&lt;', '&gt;', '>', '<', "'", '/', '\\', '"' ) );
+		$cleaned = str_replace( $find, '', $hashtags );
+		return $cleaned;
+	}
+
+	/**
 	 * Utility method to generate the common hashtags.
 	 *
 	 * @since   8.0.0
@@ -335,6 +351,7 @@ class Rop_Post_Format_Helper {
 			return array();
 		}
 
+		$hashtags_list = $this->clean_hashtags( $hashtags_list );
 		return $hashtags_list;
 	}
 
@@ -356,8 +373,8 @@ class Rop_Post_Format_Helper {
 		}
 
 		$hashtags = wp_list_pluck( $post_categories, 'name' );
-
-		return str_replace( ' ', '', $hashtags );
+		$hashtags = $this->clean_hashtags( $hashtags );
+		return $hashtags;
 	}
 
 	/**
@@ -378,8 +395,8 @@ class Rop_Post_Format_Helper {
 		}
 
 		$hashtags = wp_list_pluck( $tags, 'name' );
-
-		return str_replace( ' ', '', $hashtags );
+		$hashtags = $this->clean_hashtags( $hashtags );
+		return $hashtags;
 	}
 
 	/**
@@ -403,7 +420,8 @@ class Rop_Post_Format_Helper {
 			return array();
 		}
 
-		return array( $hashtag );
+		$hashtag = $this->clean_hashtags( array( $hashtag ) );
+		return $hashtag;
 	}
 
 	/**
