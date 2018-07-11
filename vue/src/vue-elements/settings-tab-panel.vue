@@ -73,12 +73,7 @@
 						<multiple-select :options="postTypes" :disabled="isPro"
 						                 :selected="generalSettings.selected_post_types"
 						                 :changed-selection="updatedPostTypes"></multiple-select>
-					</div>
-				</div>
-				
-				<div class="columns py-2" v-if="!isPro">
-					<div class="column text-center">
-						<p class="upsell"><i class="fa fa-lock"></i> {{labels.post_types_upsell}}</p>
+						<p class="option-upsell" v-if="!isPro"><i class="fa fa-lock"></i> {{labels.post_types_upsell}}</p>
 					</div>
 				</div>
 				
@@ -137,13 +132,8 @@
 								<input type="checkbox" :disabled="!isPro" v-model="generalSettings.custom_messages"/>
 								<i class="form-icon"></i>{{labels.custom_share_yes}}
 							</label>
+							<p class="option-upsell" v-if="!isPro"><i class="fa fa-lock"></i> {{labels.custom_share_upsell}}</p>
 						</div>
-					</div>
-				</div>
-				<!-- Upsell -->
-				<div class="columns py-2" v-if="!isPro">
-					<div class="column text-center">
-						<p class="upsell"><i class="fa fa-lock"></i> {{labels.custom_share_upsell}}</p>
 					</div>
 				</div>
 				<span class="divider"></span>
