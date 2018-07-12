@@ -280,6 +280,10 @@ You can try to disable any of the security plugins that you use in order to see 
 				'random_message_info' => __( 'A custom message that will be selected randomly for each share and will overwrite the default post.', 'tweet-old-post' ),
 				'message_no'          => __( 'Custom message #', 'tweet-old-post' ),
 			),
+			// pro only.
+			'publish_now' => array(
+				'share_on_update'      => __( 'Share on publish/update', 'tweet-old-post' ),
+			),
 
 		);
 		if ( empty( $key ) ) {

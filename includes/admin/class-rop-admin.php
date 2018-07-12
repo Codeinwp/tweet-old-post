@@ -24,11 +24,12 @@ class Rop_Admin {
 	/**
 	 * Allowed screen ids used for assets enqueue.
 	 *
-	 * @var array Array of page slugs.
+	 * @var array Array of script vs. page slugs. If page slugs is an array, then an exact match will occur.
 	 */
 	private $allowed_screens = array(
 		'dashboard' => 'TweetOldPost',
 		'exclude'   => 'rop_content_filters',
+		'publish_now'   => array( 'post' ),
 	);
 	/**
 	 * The ID of this plugin.
@@ -74,8 +75,13 @@ class Rop_Admin {
 		if ( empty( $page ) ) {
 			return;
 		}
-		wp_enqueue_style( $this->plugin_name . '_core', ROP_LITE_URL . 'assets/css/rop_core.css', array(), $this->version, 'all' );
-		wp_enqueue_style( $this->plugin_name, ROP_LITE_URL . 'assets/css/rop.css', array( $this->plugin_name . '_core' ), $this->version, 'all' );
+
+		$deps	= array();
+		if ( 'publish_now' !== $page ) {
+			wp_enqueue_style( $this->plugin_name . '_core', ROP_LITE_URL . 'assets/css/rop_core.css', array(), $this->version, 'all' );
+			$deps	= array( $this->plugin_name . '_core' );
+		}
+		wp_enqueue_style( $this->plugin_name, ROP_LITE_URL . 'assets/css/rop.css', $deps, $this->version, 'all' );
 		wp_enqueue_style( $this->plugin_name . '_fa', ROP_LITE_URL . 'assets/css/font-awesome.min.css', array(), $this->version );
 
 	}
@@ -93,9 +99,18 @@ class Rop_Admin {
 		}
 		$page = false;
 		foreach ( $this->allowed_screens as $script => $id ) {
-			if ( strpos( $screen->id, $id ) !== false ) {
-				$page = $script;
-				continue;
+			if ( is_array( $id ) ) {
+				foreach ( $id as $page_id ) {
+					if ( $screen->id === $page_id ) {
+						$page = $script;
+						break;
+					}
+				}
+			} else {
+				if ( strpos( $screen->id, $id ) !== false ) {
+					$page = $script;
+					continue;
+				}
 			}
 		}
 
@@ -113,8 +128,10 @@ class Rop_Admin {
 		if ( empty( $page ) ) {
 			return;
 		}
+
 		wp_register_script( $this->plugin_name . '-dashboard', ROP_LITE_URL . 'assets/js/build/dashboard' . ( ( ROP_DEBUG ) ? '' : '.min' ) . '.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
 		wp_register_script( $this->plugin_name . '-exclude', ROP_LITE_URL . 'assets/js/build/exclude' . ( ( ROP_DEBUG ) ? '' : '.min' ) . '.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
+
 		$array_nonce = array(
 			'root' => esc_url_raw( rest_url( '/tweet-old-post/v8/api/' ) ),
 		);
@@ -130,6 +147,14 @@ class Rop_Admin {
 		$array_nonce['upsell_link']  = Rop_I18n::UPSELL_LINK;
 		$array_nonce['staging']      = $this->rop_site_is_staging();
 		$array_nonce['debug']        = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
+		$array_nonce['publish_now']	 = array(
+			'action'	=> true,
+			'accounts'	=> array()
+		);
+
+		if ( 'publish_now' === $page && $global_settings->license_type() > 0 ) {
+			wp_register_script( $this->plugin_name . '-publish_now', ROP_LITE_URL . 'assets/js/build/publish_now' . ( ( ROP_DEBUG ) ? '' : '.min' ) . '.js', array(), ( ROP_DEBUG ) ?	time() : $this->version, false );
+		}
 
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ropApiSettings', $array_nonce );
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ROP_ASSETS_URL', ROP_LITE_URL . 'assets/' );
