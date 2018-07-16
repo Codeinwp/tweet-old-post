@@ -390,9 +390,11 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			$new_post['title']       = get_the_title( $post_details['post_id'] );
 			$new_post['type']        = 'link';
 			$new_post['description'] = $post_details['content'];
+			$new_post['tags'] = $post_details['hashtags'];
 		} else {
 			$new_post['type'] = 'text';
 			$new_post['body'] = $post_details['content'];
+			$new_post['tags'] = $post_details['hashtags'];
 		}
 		try {
 

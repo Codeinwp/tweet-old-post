@@ -167,8 +167,8 @@ class Rop_Post_Format_Helper {
 			$size = $size - 24;
 		}
 		$base_content = $content_helper->token_truncate( $base_content, $size );
-
-		$base_content = $base_content . $hashtags;
+		// NOTE removed $hashtags from below
+		$base_content = $base_content;
 		$base_content = $this->append_custom_text( $base_content );
 		/**
 		 * Adds safe check for content length.
@@ -310,7 +310,11 @@ class Rop_Post_Format_Helper {
 				$content = $content_helper->mark_hashtags( $content, $hashtag ); // simply add a # there
 				$hashtags_length --; // subtract 1 for the # we added to $content
 			} elseif ( strlen( $hashtag . $hashtags ) <= $hashtags_length || $hashtags_length == 0 ) {
+				if ( $this->get_service() == 'tumblr' ){ //tumblr creates hashtags differently
+				  $hashtags = $hashtags . preg_replace( '/-/', '', strtolower( $hashtag ) ) . ',';
+				}else{
 				$hashtags = $hashtags . ' #' . preg_replace( '/-/', '', strtolower( $hashtag ) );
+				}
 			}
 		}
 

@@ -95,7 +95,7 @@
 					<figure class="figure" v-if="content.post_image !== ''">
 						<img :src="content.post_image" class="img-fit-cover img-responsive">
 					</figure>
-				
+
 				</div>
 				<div class="rop-image-placeholder" v-else>
 					<summary>
@@ -279,20 +279,20 @@
 	.fa {
 		background: transparent;
 	}
-	
+
 	#rop_core .vertical-align {
 		align-items: flex-end;
 	}
-	
+
 	#rop_core figure.figure {
 		margin: -.7em -2em -1em 0;
 	}
-	
+
 	@media (max-width: 600px) {
 		#rop_core .vertical-align {
 			align-items: center;
 		}
-		
+
 		#rop_core figure.figure {
 			margin: 10px auto 0;
 		}

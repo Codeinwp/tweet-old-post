@@ -450,7 +450,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			$new_post['picture'] = $post_details['post_image'];
 		}
 
-		$new_post['message'] = $post_details['content'];
+		$new_post['message'] = $post_details['content'] . $post_details['hashtags'];
 
 		if ( ! empty( $post_details['post_url'] ) ) {
 			$new_post['name'] = html_entity_decode( get_the_title( $post_details['post_id'] ) );
