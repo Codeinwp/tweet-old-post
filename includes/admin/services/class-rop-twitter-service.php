@@ -423,7 +423,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 
 		$link = $this->get_url( $post_details );
 
-		$new_post['status'] = $message . ' ' . $link . $post_details['hashtags'];
+		$new_post['status'] = $message . ' ' . $link . ' ' . $post_details['hashtags'];
 		$this->logger->info( sprintf( 'Before twitter share: %s', json_encode( $new_post ) ) );
 
 		$response = $api->post( 'statuses/update', $new_post );

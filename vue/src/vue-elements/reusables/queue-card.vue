@@ -12,7 +12,7 @@
 				</div>
 				<div class="columns" v-if="!edit">
 					<div class="column col-12">
-						<p v-html="hashtags( content.content )"></p>
+						<p v-html="content.content + hashtags( content.hashtags )"></p>
 					</div>
 				</div>
 				<div class="form-group columns" v-if="edit">
