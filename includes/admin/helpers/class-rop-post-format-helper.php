@@ -167,7 +167,7 @@ class Rop_Post_Format_Helper {
 			$size = $size - 24;
 		}
 		$base_content = $content_helper->token_truncate( $base_content, $size );
-		// NOTE removed $hashtags from below
+
 		$base_content = $base_content;
 		$base_content = $this->append_custom_text( $base_content );
 		/**
