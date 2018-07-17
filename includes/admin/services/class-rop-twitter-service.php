@@ -341,7 +341,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		if ( empty( $request_token ) ) {
 			return $this->get_legacy_url();
 		}
-		$this->set_api( $request_token['oauth_token'], $request_token['oauth_token_secret'], $data['consumer_key'], $data['consumer_secret'] );
+		$this->set_api( $request_token['oauth_token'], $request_token['oauth_token_secret'], $credentials['consumer_key'], $credentials['consumer_secret'] );
 		$api = $this->get_api();
 
 		$url = $api->url(
