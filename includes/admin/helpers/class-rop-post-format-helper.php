@@ -168,7 +168,6 @@ class Rop_Post_Format_Helper {
 		}
 		$base_content = $content_helper->token_truncate( $base_content, $size );
 
-		$base_content = $base_content;
 		$base_content = $this->append_custom_text( $base_content );
 		/**
 		 * Adds safe check for content length.
