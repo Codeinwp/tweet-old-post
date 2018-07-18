@@ -130,6 +130,7 @@ class Rop {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'menu_pages' );
 		$this->loader->add_action( 'rop_cron_job', $plugin_admin, 'rop_cron_job' );
+		$this->loader->add_action( 'rop_cron_job_publish_now', $plugin_admin, 'rop_cron_job_publish_now' );
 		$this->loader->add_action( 'wp_loaded', $this, 'register_service_api_endpoints', 1 );
 
 		$this->loader->add_action( 'wp_loaded', $this, 'upgrade', 2 );

@@ -6,14 +6,14 @@
 					<div class="column col-9 col-sm-9 vertical-align text-left">
 						<div class="form-group">
 							<label class="form-checkbox">
-								<input type="checkbox" :checked="share_on_update == true" name="share_on_update"/>
+								<input type="checkbox" :checked="share_on_update_enabled" v-on:click="share_on_update_enabled = !share_on_update_enabled" name="publish_now" value="1"/>
 								<i class="form-icon"></i> {{labels.share_on_update}}
 							</label>
 						</div>
-						<div class="form-group" v-if=" share_on_update " v-for="account in accounts">
+						<div class="form-group" v-if="share_on_update_enabled" v-for="(account, key) in accounts">
 							<label class="form-checkbox">
-								<input type="checkbox"/>
-								<i class="form-icon"></i> {{labels.share_on_update}}
+								<input type="checkbox" :checked="active != null && active.indexOf(key) >= 0" :value="key" name="publish_now_accounts[]"/>
+								<i class="form-icon"></i> {{account.account}} ({{account.service}})
 							</label>
 						</div>
 					</div>
@@ -39,6 +39,8 @@
 			return {
 				labels: this.$store.state.labels.publish_now,
     accounts: this.$store.state.publish_now.accounts,
+    active: this.$store.state.publish_now.active,
+    share_on_update_enabled: this.$store.state.publish_now.action === true,
 			}
 		},
 		components: {

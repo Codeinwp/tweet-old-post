@@ -76,10 +76,10 @@ class Rop_Admin {
 			return;
 		}
 
-		$deps	= array();
+		$deps   = array();
 		if ( 'publish_now' !== $page ) {
 			wp_enqueue_style( $this->plugin_name . '_core', ROP_LITE_URL . 'assets/css/rop_core.css', array(), $this->version, 'all' );
-			$deps	= array( $this->plugin_name . '_core' );
+			$deps   = array( $this->plugin_name . '_core' );
 		}
 		wp_enqueue_style( $this->plugin_name, ROP_LITE_URL . 'assets/css/rop.css', $deps, $this->version, 'all' );
 		wp_enqueue_style( $this->plugin_name . '_fa', ROP_LITE_URL . 'assets/css/font-awesome.min.css', array(), $this->version );
@@ -141,19 +141,24 @@ class Rop_Admin {
 				'nonce' => wp_create_nonce( 'wp_rest' ),
 			);
 		}
+
+		$services        = new Rop_Services_Model();
+		$active_accounts = $services->get_active_accounts();
+
 		$global_settings             = new Rop_Global_Settings();
 		$array_nonce['license_type'] = $global_settings->license_type();
 		$array_nonce['labels']       = Rop_I18n::get_labels();
 		$array_nonce['upsell_link']  = Rop_I18n::UPSELL_LINK;
 		$array_nonce['staging']      = $this->rop_site_is_staging();
 		$array_nonce['debug']        = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
-		$array_nonce['publish_now']	 = array(
-			'action'	=> true,
-			'accounts'	=> array()
+		$array_nonce['publish_now']  = array(
+			'action'    => false,
+			'accounts'  => $active_accounts,
 		);
 
 		if ( 'publish_now' === $page && $global_settings->license_type() > 0 ) {
-			wp_register_script( $this->plugin_name . '-publish_now', ROP_LITE_URL . 'assets/js/build/publish_now' . ( ( ROP_DEBUG ) ? '' : '.min' ) . '.js', array(), ( ROP_DEBUG ) ?	time() : $this->version, false );
+			$array_nonce['publish_now']  = apply_filters( 'rop_publish_now_attributes', $array_nonce['publish_now'] );
+			wp_register_script( $this->plugin_name . '-publish_now', ROP_LITE_URL . 'assets/js/build/publish_now' . ( ( ROP_DEBUG ) ? '' : '.min' ) . '.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
 		}
 
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ropApiSettings', $array_nonce );
@@ -309,6 +314,40 @@ class Rop_Admin {
 				'content_filters',
 			)
 		);
+	}
+
+	/**
+	 * The publish now Cron Job for the plugin.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 */
+	public function rop_cron_job_publish_now() {
+		$queue           = new Rop_Queue_Model();
+		$services_model  = new Rop_Services_Model();
+		$logger          = new Rop_Logger();
+		$service_factory = new Rop_Services_Factory();
+
+		$queue_stack     = $queue->build_queue_publish_now();
+		$logger->info( 'Fetching publish now queue', array( 'queue' => $queue_stack ) );
+		foreach ( $queue_stack as $account => $events ) {
+			foreach ( $events as $index => $event ) {
+				$posts = $event['posts'];
+				$account_data = $services_model->find_account( $account );
+				try {
+					$service = $service_factory->build( $account_data['service'] );
+					$service->set_credentials( $account_data['credentials'] );
+					foreach ( $posts as $post ) {
+						$post_data = $queue->prepare_post_object( $post, $account );
+						$logger->info( 'Posting', array( 'extra' => $post_data ) );
+						$service->share( $post_data, $account_data );
+					}
+				} catch ( Exception $exception ) {
+					$error_message = sprintf( Rop_I18n::get_labels( 'accounts.service_error' ), $account_data['service'] );
+					$logger->alert_error( $error_message . ' Error: ' . $exception->getTrace() );
+				}
+			}
+		}
 	}
 
 	/**
