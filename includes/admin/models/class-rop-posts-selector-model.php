@@ -489,4 +489,49 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 
 		$this->set( 'posts_buffer', $this->buffer );
 	}
+
+
+	/**
+	 * Get posts to be published now.
+	 *
+	 * @access public
+	 * @return array
+	 */
+	public function get_publish_now_posts() {
+		$settings_model     = new Rop_Settings_Model();
+		$post_types         = wp_list_pluck( $settings_model->get_selected_post_types(), 'value' );
+
+		// fetch all post_types that were modified in the last 30 seconds and need to be published now.
+		$query              = new WP_Query(
+			array(
+				'post_type'     => $post_types,
+				'date_query'    => array(
+					array(
+						'column' => 'post_modified_gmt',
+						'after'  => '30 seconds ago',
+					),
+				),
+				'meta_query'    => array(
+					array(
+						'key'   => 'rop_publish_now',
+						'value' => 'yes',
+					),
+				),
+				'numberposts'   => 300,
+				'orderby'       => 'modified',
+				'order'         => 'ASC',
+				'fields'        => 'ids',
+			)
+		);
+
+		$posts  = array();
+
+		if ( $query->have_posts() ) {
+			while ( $query->have_posts() ) {
+				$query->the_post();
+				$posts[]    = $query->post;
+			}
+		}
+		return $posts;
+	}
 }

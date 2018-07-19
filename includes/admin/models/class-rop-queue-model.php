@@ -307,48 +307,26 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @return array
 	 */
 	public function build_queue_publish_now() {
-		$settings_model     = new Rop_Settings_Model();
-		$post_types         = wp_list_pluck( $settings_model->get_selected_post_types(), 'value' );
-
-		// fetch all post_types that were modified in the last 30 seconds and need to be published now.
-		$query              = new WP_Query(
-			array(
-				'post_type'     => $post_types,
-				'date_query'    => array(
-					array(
-						'column' => 'post_modified_gmt',
-						'after'  => '30 seconds ago',
-					),
-				),
-				'meta_query'    => array(
-					array(
-						'key'   => 'rop_publish_now',
-						'value' => 'yes',
-					),
-				),
-				'numberposts'   => 300,
-				'orderby'       => 'modified',
-				'order'         => 'ASC',
-				'fields'        => 'ids',
-			)
-		);
+		$selector           = new Rop_Posts_Selector_Model();
+		$posts              = $selector->get_publish_now_posts();
 
 		$normalized_queue   = array();
-		if ( $query->have_posts() ) {
-			$index          = 0;
-			while ( $query->have_posts() ) {
-				$query->the_post();
-				$post_id    = $query->post;
-				$accounts   = get_post_meta( $post_id, 'rop_publish_now_accounts', true );
-				if ( $accounts ) {
-					foreach ( $accounts as $account_id ) {
-						$normalized_queue[ $account_id ][ $index ] = array(
-							'posts' => array( $post_id ),
-						);
-					}
-				}
-				$index++;
+		if ( ! $posts ) {
+			return $normalized_queue;
+		}
+
+		$index              = 0;
+		foreach ( $posts as $post_id ) {
+			$accounts   = get_post_meta( $post_id, 'rop_publish_now_accounts', true );
+			if ( ! $accounts ) {
+				continue;
 			}
+			foreach ( $accounts as $account_id ) {
+				$normalized_queue[ $account_id ][ $index ] = array(
+					'posts' => array( $post_id ),
+				);
+			}
+			$index++;
 		}
 
 		return $normalized_queue;
