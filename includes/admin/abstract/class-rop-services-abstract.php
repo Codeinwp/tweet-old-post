@@ -184,9 +184,10 @@ abstract class Rop_Services_Abstract {
 	 *
 	 * @return mixed Normalized name.
 	 */
-	protected function strip_underscore($name){
-		return str_replace('_','---',$name );
+	protected function strip_underscore( $name ) {
+		return str_replace( '_', '---', $name );
 	}
+
 	/**
 	 * Adds back the underscore.
 	 *
@@ -194,8 +195,8 @@ abstract class Rop_Services_Abstract {
 	 *
 	 * @return mixed Unsafe name.
 	 */
-	protected function unstrip_underscore($name){
-		return str_replace('---','_',$name );
+	protected function unstrip_underscore( $name ) {
+		return str_replace( '---', '_', $name );
 	}
 	/**
 	 * Method for checking authentication the service.
