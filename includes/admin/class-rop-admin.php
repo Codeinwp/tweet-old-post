@@ -326,4 +326,52 @@ class Rop_Admin {
 		}
 	}
 
+	/**
+	 * Media attachment custom field.
+	 *
+	 * @since   8.1.0
+	 * @access  public
+	 */
+	public function rop_media_attachment_field( $form_fields, $post ){
+
+	$accepted_mime_types = array( 'image/jpeg', 'image/png', 'image/gif' );
+
+	if ( !in_array( get_post_mime_type( $post->ID ), $accepted_mime_types ) ){
+		return;
+	}
+
+	$selected = get_post_meta( $post->ID, '_rop_media_share', true );
+
+	if ( $selected == 'on' ){
+		$output = "<input type='checkbox' name='attachments[{$post->ID}][rop_media_share]' id='attachments[{$post->ID}][rop_media_share]' checked>";
+	}else{
+		$output = "<input type='checkbox' name='attachments[{$post->ID}][rop_media_share]' id='attachments[{$post->ID}][rop_media_share]' >";
+	}
+
+	$form_fields["rop_media_share"] = array(
+		"label" => __( "Share to networks" ),
+		"input" => "html",
+		"html" => $output );
+
+		return $form_fields;
+	}
+
+	/**
+	 * Save attachment custom field.
+	 *
+	 * @since   8.1.0
+	 * @access  public
+	 */
+	public function save_rop_media_attachment_field( $post, $attachment ){
+
+		if( isset( $attachment['rop_media_share'] ) ){
+			update_post_meta( $post['ID'], '_rop_media_share', $attachment['rop_media_share'] );
+		}else{
+			delete_post_meta( $post['ID'], '_rop_media_share' );
+		}
+
+		return $post;
+	}
+
+
 }

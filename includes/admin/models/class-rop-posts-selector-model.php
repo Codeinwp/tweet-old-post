@@ -334,9 +334,13 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		}
 		$args = $this->build_query_args( $post_types, $tax_queries, $exclude );
 
+		$media_args = $this->build_media_query_args( $exclude );
+
 		$query = new WP_Query( $args );
+		$media_query = new WP_Query( $media_args );
 
 		$posts = $query->posts;
+		$media_posts = $media_query->posts;
 		/**
 		 * Exclude the ids from the excluded array.
 		 */
@@ -346,6 +350,8 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		 * Reset indexes to avoid missing ones.
 		 */
 		$posts = array_values( $posts );
+		// $media_posts = array_values( $media_posts );
+		$posts = array_merge( $posts, $media_posts );
 
 		return $posts;
 	}
@@ -399,6 +405,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			'post_type'              => $post_types,
 			'tax_query'              => $tax_queries,
 		);
+
 		$min_age = $this->settings->get_minimum_post_age();
 		if ( ! empty( $min_age ) ) {
 			$args['date_query'][]['before'] = date( 'Y-m-d', strtotime( '-' . $this->settings->get_minimum_post_age() . ' days' ) );
@@ -416,6 +423,61 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 
 		return $args;
 	}
+
+	/**
+	 * Utility method to build the args array for the attachments in get post method.
+	 *
+	 * @since   8.1.0
+	 * @access  private
+	 *
+	 * @param   array $exclude The excluded posts array.
+	 *
+	 * @return array
+	 */
+	 private function build_media_query_args( $exclude ) {
+		 // TODO: Add filter for mime types
+		$args    = array(
+	 		'no_found_rows'          => true,
+	 		'posts_per_page'         => ( 1000 + count( $exclude ) ),
+	 		'post_status' 					 => 'inherit',
+	 		'post_mime_type' 				 => 'image/jpeg',
+	 		'update_post_meta_cache' => false,
+	 		'update_post_term_cache' => false,
+	 		'fields'                 => 'ids',
+	 		'post_type'              => 'attachment',
+	 		'meta_key'             	 => '_rop_media_share',
+	 		'meta_value'             => 'on',
+	 	);
+
+		return $args;
+	}
+
+	/**
+	 * Utility method to build the args array for the attachments in get post method.
+	 *
+	 * @since   8.1.0
+	 * @access  private
+	 *
+	 * @param   int $post_id The excluded posts array.
+	 *
+	 * @return  array
+	 */
+	 public function media_post( $post_id ){
+
+		 if ( get_post_type( $post_id ) ==  'attachment' ){
+			 $media_post_array = array();
+			 $post_object = get_post( $post_id );
+
+			 $media_post_array['source'] 			= wp_get_attachment_url( $post_id );
+			 $media_post_array['title'] 			= $post_object->post_title;
+			 $media_post_array['caption'] 		= $post_object->post_excerpt;
+			 $media_post_array['description'] = $post_object->post_content;
+		 }else{
+			 return null;
+		 }
+
+		 return $media_post_array;
+	 }
 
 	/**
 	 * Method to determine if the buffer is empty or not.

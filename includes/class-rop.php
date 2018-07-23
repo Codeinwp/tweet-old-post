@@ -136,9 +136,12 @@ class Rop {
 
 		$rop_cron_helper = new Rop_Cron_Helper();
 		/**
-		 * Use use PHP_INT_MAX to make sure the schedule is added. Some shitty plugins add their schedule by clearing the previous values.
+		 * Use PHP_INT_MAX to make sure the schedule is added. Some shitty plugins add their schedule by clearing the previous values.
 		 */
 		$this->loader->add_filter( 'cron_schedules', $rop_cron_helper, 'rop_cron_schedules', PHP_INT_MAX );
+		$this->loader->add_filter( 'attachment_fields_to_edit', $plugin_admin, "rop_media_attachment_field", null, 2 );
+		$this->loader->add_filter( 'attachment_fields_to_save', $plugin_admin, 'save_rop_media_attachment_field', null, 2 );
+
 	}
 
 	/**
