@@ -168,7 +168,7 @@ class Rop_Admin {
 			}
 		}
 
-		if ( defined( 'JETPACK_STAGING_MODE' ) && JETPACK_STAGING_MODE == true ){
+		if ( defined( 'JETPACK_STAGING_MODE' ) && JETPACK_STAGING_MODE == true ) {
 
 			return apply_filters( 'rop_dont_work_on_staging', true );
 
