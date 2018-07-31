@@ -409,7 +409,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		);
 		$api      = $this->get_api();
 		$new_post = array();
-		if ( ! empty( $post_details['post_image'] ) ) {
+		if ( ! empty( $post_details['post_image'] ) && empty( $post_type->media_post( $post_id ) ) ) {
 			$file_path      = $this->get_path_by_url( $post_details['post_image'] );
 			$media_response = $api->upload( 'media/upload', array( 'media' => $file_path ) );
 			if ( isset( $media_response->media_id_string ) ) {
@@ -418,6 +418,16 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 				$this->logger->alert_error( sprintf( 'Can not upload photo. Error: %s', json_encode( $media_response ) ) );
 			}
 		}
+
+		if ( ! empty( $post_type->media_post( $post_id ) ) ) {
+					$media_response = $api->upload( 'media/upload', array( 'media' => $post_type->media_post( $post_id )['source'] ) );
+					if ( isset( $media_response->media_id_string ) ) {
+						$new_post['media_ids'] = $media_response->media_id_string;
+					} else {
+						$this->logger->alert_error( sprintf( 'Can not upload photo. Error: %s', json_encode( $media_response ) ) );
+					}
+					//add check for URL and stuff
+			}
 
 		$message = $post_details['content'];
 

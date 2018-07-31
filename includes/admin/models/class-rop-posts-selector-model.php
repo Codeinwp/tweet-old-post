@@ -458,7 +458,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @since   8.1.0
 	 * @access  private
 	 *
-	 * @param   int $post_id The excluded posts array.
+	 * @param   int $post_id The post ID
 	 *
 	 * @return  array
 	 */

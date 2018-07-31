@@ -201,7 +201,6 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 			$post_pool                       = $this->selector->select( $account_id );
 			if ( empty( $post_pool ) ) {
 				$this->logger->error( 'No posts available to share for this account. Try to activate Share more than once setting or change the time interval to extends the selection. ' );
-				// $this->logger->error( var_dump($post_pool) );
 				continue;
 			}
 			foreach ( $events as $index => $event ) {
