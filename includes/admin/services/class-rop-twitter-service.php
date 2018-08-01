@@ -412,7 +412,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 
 		$post_id = $post_details['post_id'];
 		$post_type = new Rop_Posts_Selector_Model;
-		
+
 		if ( ! empty( $post_details['post_image'] ) && empty( $post_type->media_post( $post_id ) ) ) {
 			$file_path      = $this->get_path_by_url( $post_details['post_image'] );
 			$media_response = $api->upload( 'media/upload', array( 'media' => $file_path ) );
@@ -430,7 +430,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 					} else {
 						$this->logger->alert_error( sprintf( 'Can not upload photo. Error: %s', json_encode( $media_response ) ) );
 					}
-					//add check for URL and stuff
+					//TODO add check for URL and stuff
 			}
 
 		$message = $post_details['content'];
