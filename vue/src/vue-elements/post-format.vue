@@ -237,26 +237,27 @@
 		</div>
 		<span class="divider"></span>
 		<!-- Google Analytics -->
-		<div class="columns py-2" v-if="isPro">
-			<div class="column col-6 col-sm-12 vertical-align">
+		<div class="columns py-2" :class="'rop-control-container-'+isPro">
+			<div class="column col-6 col-sm-12 vertical-align rop-control">
 				<b>{{labels.utm_campaign_medium}}</b>
 				<p class="text-gray">{{labels.utm_campaign_medium_desc}}</p>
 			</div>
-			<div class="column col-6 col-sm-12 vertical-align text-left">
+			<div class="column col-6 col-sm-12 vertical-align text-left rop-control">
 				<div class="form-group">
-						<input type="text" class="form-input" v-model="post_format.utm_campaign_medium"/>
+						<input type="text" :disabled="!isPro" class="form-input" v-model="post_format.utm_campaign_medium" placeholder="social"/>
 				</div>
 			</div>
 		</div>
 
-		<div class="columns py-2" v-if="isPro">
-			<div class="column col-6 col-sm-12 vertical-align">
+		<div class="columns py-2" :class="'rop-control-container-'+isPro">
+			<div class="column col-6 col-sm-12 vertical-align rop-control">
 				<b>{{labels.utm_campaign_name}}</b>
 				<p class="text-gray">{{labels.utm_campaign_name_desc}}</p>
 			</div>
-			<div class="column col-6 col-sm-12 vertical-align text-left">
+			<div class="column col-6 col-sm-12 vertical-align text-left rop-control">
 				<div class="form-group">
-						<input type="text" class="form-input" v-model="post_format.utm_campaign_name"/>
+						<input type="text" :disabled="!isPro" class="form-input" v-model="post_format.utm_campaign_name" placeholder="ReviveOldPost"/>
+						<p class="option-upsell" v-if="!isPro"><i class="fa fa-lock"></i> {{labels.custom_utm_upsell}}</p>
 				</div>
 			</div>
 		</div>
