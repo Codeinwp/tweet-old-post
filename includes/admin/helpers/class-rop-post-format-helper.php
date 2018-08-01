@@ -56,21 +56,22 @@ class Rop_Post_Format_Helper {
 				return array();
 			}
 		}
-		$service                            = $this->get_service();
-		$content                            = $this->build_content( $post_id );
-		$filtered_post                      = array();
-		$filtered_post['post_id']           = $post_id;
-		$filtered_post['account_id']        = $this->account_id;
-		$filtered_post['service']           = $service;
-		$filtered_post['content']           = apply_filters( 'rop_content_filter', $content['display_content'], $post_id, $account_id, $service );
-		$filtered_post['hashtags']          = $content['hashtags'];
-		$filtered_post['post_url']          = $this->build_url( $post_id );
-		$filtered_post['post_image']        = $this->post_format['image'] ? $this->build_image( $post_id ) : '';
-		$filtered_post['short_url']         = $this->post_format['short_url'];
-		$filtered_post['short_url_service'] = ( $this->post_format['short_url'] ) ? $this->post_format['short_url_service'] : '';
-		$filtered_post['post_with_image']   = $this->post_format['image'];
+		$service                            		= $this->get_service();
+		$content                            		= $this->build_content( $post_id );
+		$filtered_post                      		= array();
+		$filtered_post['post_id']           		= $post_id;
+		$filtered_post['account_id']        		= $this->account_id;
+		$filtered_post['service']           		= $service;
+		$filtered_post['content']           		= apply_filters( 'rop_content_filter', $content['display_content'], $post_id, $account_id, $service );
+		$filtered_post['hashtags']          		= $content['hashtags'];
+		$filtered_post['post_url']          		= $this->build_url( $post_id );
+		$filtered_post['post_image']        		= $this->post_format['image'] ? $this->build_image( $post_id ) : '';
+		$filtered_post['short_url']         		= $this->post_format['short_url'];
+		$filtered_post['short_url_service'] 		= ( $this->post_format['short_url'] ) ? $this->post_format['short_url_service'] : '';
+		$filtered_post['post_with_image']   		= $this->post_format['image'];
+		$filtered_post['media_post_content'] 		= $this->post_format['media_post'];
 
-		$filtered_post['shortner_credentials'] = ( isset( $this->post_format['shortner_credentials'] ) ) ? $this->post_format['shortner_credentials'] : array();
+		$filtered_post['shortner_credentials'] 	= ( isset( $this->post_format['shortner_credentials'] ) ) ? $this->post_format['shortner_credentials'] : array();
 
 		return $filtered_post;
 	}
@@ -491,6 +492,9 @@ class Rop_Post_Format_Helper {
 			return get_the_post_thumbnail_url( $post_id, 'large' );
 		}
 
+		if ( get_post_type( $post_id ) ==  'attachment' ){
+	    return wp_get_attachment_url( $post_id );
+	  }
 		return '';
 
 	}

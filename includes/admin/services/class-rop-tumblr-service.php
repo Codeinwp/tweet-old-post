@@ -385,8 +385,9 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			$new_post['thumbnail'] = $post_details['post_image'];
 		}
 
-		$post_id = $post_details['post_id'];
 		$post_type = new Rop_Posts_Selector_Model;
+		$post_id = $post_details['post_id'];
+		$media_post_content =  $post_details['media_post_content'];
 
 		// NOTE delete below variable, just testing to not conflict with other pull request
 		$hashtags = "tag1, tag2, tag3";
@@ -400,9 +401,9 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 
 		} elseif ( ! empty( $post_type->media_post( $post_id ) ) ) {
 			 $new_post['type']        = 'photo';
-			 $new_post['source_url']  = 'https://youtube.com';//esc_url( get_site_url() );
+			 $new_post['source_url']  = esc_url( get_site_url() );
 			 $new_post['data'] 			 	= $post_type->media_post( $post_id )['source'];
-			 $new_post['caption'] 	 	= $post_type->media_post( $post_id )['caption'];
+			 $new_post['caption'] 	 	= $post_type->media_post( $post_id )[$media_post_content];
 			 $new_post['tags'] 			 	= $hashtags;
 
 		}else{

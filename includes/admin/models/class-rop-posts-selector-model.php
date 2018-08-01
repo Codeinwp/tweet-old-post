@@ -435,12 +435,14 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @return array
 	 */
 	 private function build_media_query_args( $exclude ) {
-		 // TODO: Add filter for mime types
+		 //TODO test exclude
+		$accepted_mime_types = apply_filters( 'accepted_mime_types', array( 'image/jpeg', 'image/png', 'image/gif' ) );
+
 		$args    = array(
 	 		'no_found_rows'          => true,
 	 		'posts_per_page'         => ( 1000 + count( $exclude ) ),
 	 		'post_status' 					 => 'inherit',
-	 		'post_mime_type' 				 => 'image/jpeg',
+	 		'post_mime_type' 				 => $accepted_mime_types,
 	 		'update_post_meta_cache' => false,
 	 		'update_post_term_cache' => false,
 	 		'fields'                 => 'ids',

@@ -204,6 +204,12 @@ class Rop_I18n {
 				'image_desc'                        => __( 'Use the featured image when posting?', 'tweet-old-post' ),
 				'image_yes'                         => __( 'Yes', 'tweet-old-post' ),
 				'image_upsell'                      => __( 'Posting with images is available in the pro version.', 'tweet-old-post' ),
+				'media_post_title'                  => __( 'Media Posts Content', 'tweet-old-post' ),
+				'media_post_desc'                   => __( 'Which content should we share for media posts?', 'tweet-old-post' ),
+				'media_post_option_title'           => __( 'Title', 'tweet-old-post' ),
+				'media_post_option_caption'         => __( 'Caption', 'tweet-old-post' ),
+				'media_post_option_description'     => __( 'Description', 'tweet-old-post' ),
+				'media_post_upsell'     						=> __( 'Media posting is available in the pro version.', 'tweet-old-post' ),
 			),
 			'schedule'    => array(
 				'menu_item'                 => __( 'Custom Schedule', 'tweet-old-post' ),

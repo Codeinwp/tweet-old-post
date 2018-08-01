@@ -337,11 +337,11 @@ class Rop_Admin {
 	$settings = new Rop_Settings_Model;
 	$post_types = wp_list_pluck( $settings->get_selected_post_types(), 'value' );
 
-	 if ( !in_array( 'attachment', $post_types ) ){
+	 if ( ! in_array( 'attachment', $post_types ) ){
 		return;
 	}
 
-	$accepted_mime_types = apply_filters( '$accepted_mime_types', array( 'image/jpeg', 'image/png', 'image/gif' ) );
+	$accepted_mime_types = apply_filters( 'accepted_mime_types', array( 'image/jpeg', 'image/png', 'image/gif' ) );
 
 	if ( ! in_array( get_post_mime_type( $post->ID ), $accepted_mime_types ) ){
 		return;
@@ -374,13 +374,7 @@ class Rop_Admin {
 		$settings = new Rop_Settings_Model;
 		$post_types = wp_list_pluck( $settings->get_selected_post_types(), 'value' );
 
-		 if ( !in_array( 'attachment', $post_types ) ){
-			return;
-		}
-
-		$post_types = new Rop_Settings_Model;
-
-		if( ! is_array( $post_types ) && ! in_array( 'attachment' ) ){
+		 if ( ! in_array( 'attachment', $post_types ) ){
 			return;
 		}
 
