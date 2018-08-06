@@ -88,7 +88,6 @@ class Test_RopPostFormat extends WP_UnitTestCase {
 		$short_url = $rebrandly->shorten_url( $url );
 
 		$this->assertNotEquals( $url, $short_url );
-		$this->assertNotFalse( filter_var( $short_url, FILTER_VALIDATE_URL ) );
 		$this->assertNotEquals( $short_url, '' );
 
 	}
