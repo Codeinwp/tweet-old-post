@@ -119,7 +119,7 @@ class Rop_Post_Format_Helper {
 		$max_length      = $this->post_format['maximum_length'];
 
 		/**
-		 * Content edited thru queue.
+		 * Content edited through queue.
 		 */
 
 		$custom_content = get_post_meta( $post_id, '_rop_edit_' . md5( $this->account_id ), true );
