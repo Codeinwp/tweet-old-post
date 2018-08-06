@@ -283,6 +283,7 @@ You can try to disable any of the security plugins that you use in order to see 
 			// pro only.
 			'publish_now' => array(
 				'share_on_update'      => __( 'Share on publish/update', 'tweet-old-post' ),
+				'clear_on_share'       => __( 'These checkboxes will be cleared once the post is shared.', 'tweet-old-post' ),
 			),
 
 		);

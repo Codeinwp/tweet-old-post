@@ -16,6 +16,7 @@
 								<i class="form-icon"></i> {{account.account}} ({{account.service}})
 							</label>
 						</div>
+       <div class="rop_clear_on_share"> {{labels.clear_on_share}} </div>
 					</div>
 				</div>
 
