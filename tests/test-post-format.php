@@ -84,7 +84,7 @@ class Test_RopPostFormat extends WP_UnitTestCase {
 		// rebrand.ly Test
 		$rebrandly = new Rop_Rebrandly_Shortner();
 		$key   = '6f74a48c3e114ed9973feaa45ccdd632';
-		$googl->set_credentials( array( 'key' => $key ) );
+		$rebrandly->set_credentials( array( 'key' => $key ) );
 		$short_url = $rebrandly->shorten_url( $url );
 
 		$this->assertNotEquals( $url, $short_url );
