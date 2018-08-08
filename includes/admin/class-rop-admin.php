@@ -303,6 +303,9 @@ class Rop_Admin {
 		$logger          = new Rop_Logger();
 		$queue_stack     = $queue->build_queue();
 		$service_factory = new Rop_Services_Factory();
+
+		$cron            = new Rop_Cron_Helper();
+		$cron->create_cron( false );
 		foreach ( $queue_stack as $account => $events ) {
 			foreach ( $events as $index => $event ) {
 				/**
@@ -329,6 +332,8 @@ class Rop_Admin {
 				}
 			}
 		}
+
+		$cron->create_cron( false );
 	}
 
 }
