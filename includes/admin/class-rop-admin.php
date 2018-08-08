@@ -204,6 +204,10 @@ class Rop_Admin {
 				$twitter_service = new Rop_Twitter_Service();
 				$twitter_service->authorize();
 				break;
+			case 'pinterest':
+				$pinterest_service = new Rop_Pinterest_Service();
+				$pinterest_service->authorize();
+				break;
 			default:
 				$fb_service = new Rop_Facebook_Service();
 				$fb_service->authorize();

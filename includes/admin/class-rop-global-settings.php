@@ -114,6 +114,10 @@ class Rop_Global_Settings {
 			'active' => false,
 			'name'   => 'Tumblr',
 		),
+		'pinterest' => array(
+			'active'           => false,
+			'name'             => 'Pinterest',
+		),
 	);
 
 	/**
@@ -224,6 +228,24 @@ class Rop_Global_Settings {
 			'hashtags_custom'      => '',
 			'image'                => false,
 		),
+		'pinterest' => array(
+			'post_content'         => 'post_title',
+			'custom_meta_field'    => '',
+			'maximum_length'       => '1000',
+			'custom_text'          => '',
+			'custom_text_pos'      => 'beginning',
+			'include_link'         => true,
+			'url_from_meta'        => false,
+			'url_meta_key'         => '',
+			'short_url'            => true,
+			'short_url_service'    => 'rviv.ly',
+			'hashtags'             => 'no-hashtags',
+			'hashtags_length'      => '20',
+			'hashtags_common'      => '',
+			'hashtags_custom'      => '',
+			'shortner_credentials' => array(),
+			'image'                => true,
+		),
 	);
 
 	/**
@@ -315,6 +337,7 @@ class Rop_Global_Settings {
 	 * @return  int
 	 */
 	public function license_type() {
+		return 10;
 		$pro_check = defined( 'ROP_PRO_VERSION' );
 		if ( ! $pro_check ) {
 			return - 1;

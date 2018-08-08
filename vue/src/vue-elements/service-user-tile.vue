@@ -107,6 +107,7 @@
 				if (this.account_data.service === 'twitter') serviceIcon = serviceIcon.concat('twitter');
 				if (this.account_data.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin');
 				if (this.account_data.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr');
+				if (this.account_data.service === 'pinterest') serviceIcon = serviceIcon.concat('pinterest');
 				return serviceIcon
 			},
 			/**
