@@ -350,7 +350,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		 * Reset indexes to avoid missing ones.
 		 */
 		$posts = array_values( $posts );
-		// $media_posts = array_values( $media_posts );
+		// NOTE $media_posts = array_values( $media_posts );
 		$posts = array_merge( $posts, $media_posts );
 
 		return $posts;
@@ -430,12 +430,10 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @since   8.1.0
 	 * @access  private
 	 *
-	 * @param   array $exclude The excluded posts array.
-	 *
 	 * @return array
 	 */
-	 private function build_media_query_args( $exclude ) {
-		 //TODO test exclude
+	 private function build_media_query_args() {
+
 		$accepted_mime_types = apply_filters( 'accepted_mime_types', array( 'image/jpeg', 'image/png', 'image/gif' ) );
 
 		$args    = array(

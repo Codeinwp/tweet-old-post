@@ -394,14 +394,26 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 				'code' => 'anyone',
 			),
 		);
+
+		$post_type = new Rop_Posts_Selector_Model;
+		$post_id = $post_details['post_id'];
+	  $media_post_content =  $post_details['media_post_content'];
+
 		if ( ! empty( $post_details['post_image'] ) ) {
 			$new_post['content']['submitted-image-url'] = $post_details['post_image'];
 		}
 
+		if ( empty( $post_type->media_post( $post_id ) ) ){
 		$new_post['comment']                  = $post_details['content'];
 		$new_post['content']['description']   = $post_details['content'];
 		$new_post['content']['title']         = html_entity_decode( get_the_title( $post_details['post_id'] ) );
 		$new_post['content']['submitted-url'] = $this->get_url( $post_details );
+		}else{
+		$new_post['comment']                  = $post_type->media_post( $post_id )[ $media_post_content ];
+		$new_post['content']['description']   = $post_type->media_post( $post_id )[ $media_post_content ];
+		$new_post['content']['title']         = $post_type->media_post( $post_id )[ $media_post_content ];
+		$new_post['content']['submitted-url'] = $post_type->media_post( $post_id )['source'];
+		}
 
 		$new_post['visibility']['code'] = 'anyone';
 

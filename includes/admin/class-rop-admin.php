@@ -356,7 +356,7 @@ class Rop_Admin {
 	}
 
 	$form_fields["rop_media_share"] = array(
-		"label" => __( "Share to networks" ),
+		"label" => __( "Share to social networks" ),
 		"input" => "html",
 		"html" => $output );
 
