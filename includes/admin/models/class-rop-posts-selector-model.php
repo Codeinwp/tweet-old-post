@@ -501,16 +501,10 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		$settings_model     = new Rop_Settings_Model();
 		$post_types         = wp_list_pluck( $settings_model->get_selected_post_types(), 'value' );
 
-		// fetch all post_types that were modified in the last 30 seconds and need to be published now.
+		// fetch all post_types that need to be published now.
 		$query              = new WP_Query(
 			array(
 				'post_type'     => $post_types,
-				'date_query'    => array(
-					array(
-						'column' => 'post_modified_gmt',
-						'after'  => '30 seconds ago',
-					),
-				),
 				'meta_query'    => array(
 					array(
 						'key'   => 'rop_publish_now',
@@ -530,11 +524,11 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			while ( $query->have_posts() ) {
 				$query->the_post();
 				$posts[]    = $query->post;
-				// delete these meta so that when the post loads again after publishing, the checkboxes are cleared.
+				// delete the meta so that when the post loads again after publishing, the checkboxes are cleared.
 				delete_post_meta( $query->post, 'rop_publish_now' );
-				delete_post_meta( $query->post, 'rop_publish_now_accounts' );
 			}
 		}
+
 		return $posts;
 	}
 }

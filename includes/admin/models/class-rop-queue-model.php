@@ -321,6 +321,10 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 			if ( ! $accounts ) {
 				continue;
 			}
+
+			// delete the meta so that when the post loads again after publishing, the checkboxes are cleared.
+			delete_post_meta( $post_id, 'rop_publish_now_accounts' );
+
 			foreach ( $accounts as $account_id ) {
 				$normalized_queue[ $account_id ][ $index ] = array(
 					'posts' => array( $post_id ),
