@@ -6,6 +6,7 @@ let appName      = '';
 const entryPoint = {
 	dashboard: './vue/src/rop_main.js' ,
 	exclude: './vue/src/rop_exclude_posts.js' ,
+	publish_now: './vue/src/rop_publish_now.js' ,
 };
 const exportPath = path.resolve( __dirname, './assets/js/build' )
 
