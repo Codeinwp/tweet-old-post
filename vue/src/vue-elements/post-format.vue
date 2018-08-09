@@ -141,6 +141,7 @@
 						<option value="goo.gl">goo.gl</option>
 						<option value="ow.ly">ow.ly</option>
 						<option value="is.gd">is.gd</option>
+						<option value="rebrand.ly">rebrand.ly</option>
 						<option value="wp_short_url">wp_short_url</option>
 					</select>
 				</div>
