@@ -150,7 +150,6 @@ class Rop_Admin {
 			'IS_WPE_SNAPSHOT',
 			'KINSTA_DEV_ENV',
 			'WPSTAGECOACH_STAGING',
-			'JETPACK_STAGING_MODE',
 		);
 
 		foreach ( $rop_known_staging as $rop_staging_const ) {
@@ -167,6 +166,12 @@ class Rop_Admin {
 				return apply_filters( 'rop_dont_work_on_staging', true );
 
 			}
+		}
+
+		if ( defined( 'JETPACK_STAGING_MODE' ) && JETPACK_STAGING_MODE == true ) {
+
+			return apply_filters( 'rop_dont_work_on_staging', true );
+
 		}
 
 		return false;
@@ -263,7 +268,7 @@ class Rop_Admin {
 	 */
 	public function menu_pages() {
 		add_menu_page(
-			__( 'Revive Old Posts', 'tweet-old-post' ), __( 'Revive Old Posts', 'tweet-old-post' ), 'manage_options', 'TweetOldPost',
+			__( 'Revive Old Post', 'tweet-old-post' ), __( 'Revive Old Post', 'tweet-old-post' ), 'manage_options', 'TweetOldPost',
 			array(
 				$this,
 				'rop_main_page',
@@ -298,6 +303,9 @@ class Rop_Admin {
 		$logger          = new Rop_Logger();
 		$queue_stack     = $queue->build_queue();
 		$service_factory = new Rop_Services_Factory();
+
+		$cron            = new Rop_Cron_Helper();
+		$cron->create_cron( false );
 		foreach ( $queue_stack as $account => $events ) {
 			foreach ( $events as $index => $event ) {
 				/**
@@ -324,6 +332,8 @@ class Rop_Admin {
 				}
 			}
 		}
+
+		$cron->create_cron( false );
 	}
 
 }

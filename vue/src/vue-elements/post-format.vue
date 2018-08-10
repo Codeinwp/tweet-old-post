@@ -221,11 +221,11 @@
 		<span class="divider"></span>
 		
 		<div class="columns py-2" :class="'rop-control-container-'+isPro">
-			<div class="column col-6 col-sm-12 vertical-align">
+			<div class="column col-6 col-sm-12 vertical-align rop-control">
 				<b>{{labels.image_title}}</b>
 				<p class="text-gray">{{labels.image_desc}}</p>
 			</div>
-			<div class="column col-6 col-sm-12 vertical-align">
+			<div class="column col-6 col-sm-12 vertical-align rop-control">
 				<div class="input-group">
 					<label class="form-checkbox">
 						<input type="checkbox" v-model="post_format.image"
@@ -233,12 +233,7 @@
 						<i class="form-icon"></i> {{labels.image_yes}}
 					</label>
 				</div>
-			</div>
-		</div>
-		
-		<div class="columns py-2" v-if="!isPro">
-			<div class="column text-center">
-				<p class="upsell"><i class="fa fa-lock"></i> {{labels.image_upsell}}</p>
+				<p class="option-upsell" v-if="!isPro"><i class="fa fa-lock"></i> {{labels.image_upsell}}</p>
 			</div>
 		</div>
 		<span class="divider"></span>
