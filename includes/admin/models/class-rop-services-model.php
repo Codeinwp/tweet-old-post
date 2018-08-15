@@ -296,9 +296,7 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 				return $this->normalize_account( $account );
 			}, $accounts
 		);
-		$accounts = array_filter( $accounts, function ( $value ) {
-			return ! empty( $value );
-		} );
+
 		return wp_parse_args( $accounts, array() );
 	}
 

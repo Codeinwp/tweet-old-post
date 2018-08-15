@@ -2,11 +2,12 @@
 	<div class="tab-view">
 		<div class="panel-body">
 			<div class="toast  toast-warning" v-html="labels.twitter_warning" v-if="twitter_warning">
+			
 			</div>
 			<div class="container">
 				<div class="columns" :class="'rop-tab-state-'+is_loading">
 					<div class="column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2">
-						<div class="empty mb-2 text-center" v-if="accountsCount === 0">
+						<div class="empty mb-2" v-if="accountsCount === 0">
 							<div class="empty-icon">
 								<i class="fa fa-3x fa-user-circle-o"></i>
 							</div>
@@ -18,21 +19,7 @@
 							<span class="divider"></span>
 						</div>
 						<div class="add-accounts">
-							<div class="tile tile-centered rop-add-account">
-								<div class="tile-content">
-									<strong class="tile-title">{{labels.add_account}}</strong>
-								</div>
-								<div class="tile-action">
-									<sign-in-btn></sign-in-btn>
-								</div>
-							</div>
-							<div class="columns my-2" v-if="this.$store.state.licence < 1">
-								<div class="column col-12 text-center">
-									<p class="upsell">
-										<i class="fa fa-lock "></i> <span v-html="labels.upsell_accounts"></span>
-									</p>
-								</div>
-							</div>
+							<add-account-tile></add-account-tile>
 							<span class="divider"></span>
 						</div>
 					</div>
@@ -54,13 +41,14 @@
 				</div>
 			</div>
 		</div>
-
+	
 	</div>
 </template>
 
 <script>
 	import SignInBtn from './sign-in-btn.vue'
 	import ServiceUserTile from './service-user-tile.vue'
+	import AddAccountTile from './reusables/add-account-tile.vue'
 
 	module.exports = {
 		name: 'account-view',
@@ -82,49 +70,50 @@
 				const all_accounts = {};
 				let twitter = 0;
 				const services = this.$store.state.authenticatedServices;
-				for ( const key in services ) {
-					if ( !services.hasOwnProperty( key ) ) {
+				for (const key in services) {
+					if (!services.hasOwnProperty(key)) {
 						continue;
 					}
-					const service = services[ key ];
-					for ( const account_id in service.available_accounts ) {
-						if ( !service.available_accounts.hasOwnProperty( account_id ) ) {
+					const service = services[key];
+					for (const account_id in service.available_accounts) {
+						if (!service.available_accounts.hasOwnProperty(account_id)) {
 							continue;
 						}
-						all_accounts[ account_id ] = service.available_accounts[ account_id ];
-						if ( service.service === 'twitter' ) {
-							twitter += Object.keys( service.available_accounts ).length;
+						all_accounts[account_id] = service.available_accounts[account_id];
+						if (service.service === 'twitter') {
+						    twitter += Object.keys(service.available_accounts).length;
 						}
 					}
 				}
 				this.twitter_warning = twitter > 1;
-				this.$log.info( 'All accounts: ', all_accounts );
-				this.accountsCount = Object.keys( all_accounts ).length;
+				this.$log.info('All accounts: ', all_accounts);
+				this.accountsCount = Object.keys(all_accounts).length;
 				return all_accounts;
 			},
 		},
 
 		methods: {
 			resetAccountData: function () {
-				if ( this.is_loading ) {
-					this.$log.warn( 'Request in progress...Bail' );
+				if (this.is_loading) {
+					this.$log.warn('Request in progress...Bail');
 					return;
 				}
 				this.is_loading = true;
-				this.$store.dispatch( 'fetchAJAXPromise', {
+				this.$store.dispatch('fetchAJAXPromise', {
 					req: 'reset_accounts',
 					data: {}
-				} ).then( response => {
+				}).then(response => {
 					this.is_loading = false;
 				}, error => {
 					this.is_loading = false;
-					Vue.$log.error( 'Got nothing from server. Prompt user to check internet connection and try again', error )
-				} )
+					Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+				})
 			}
 		},
 		components: {
 			SignInBtn,
 			ServiceUserTile,
+			AddAccountTile
 		}
 	}
 </script>
@@ -133,37 +122,33 @@
 		margin: 0;
 		line-height: normal;
 	}
-
+	
 	#rop_core .input-group {
 		width: 100%;
 	}
-
+	
 	b {
 		margin-bottom: 5px;
 		display: block;
 	}
-
+	
 	#rop_core .text-gray b {
 		display: inline;
 	}
-
+	
 	#rop_core .input-group .input-group-addon {
 		padding: 3px 5px;
 	}
-
+	
 	#rop_core .rop-available-accounts h5 {
 		margin-bottom: 15px;
 	}
-
-	#rop_core .rop-add-account {
-		margin: 20px 0;
-	}
-
+	
 	@media ( max-width: 600px ) {
 		#rop_core .panel-body .text-gray {
 			margin-bottom: 10px;
 		}
-
+		
 		#rop_core .text-right {
 			text-align: left;
 		}
