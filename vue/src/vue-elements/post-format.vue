@@ -28,9 +28,9 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<span class="divider"></span>
-		
+
 		<div class="columns py-2">
 			<div class="column col-6 col-sm-12 vertical-align">
 				<b>{{labels.max_char_title}}</b>
@@ -44,7 +44,7 @@
 			</div>
 		</div>
 		<span class="divider"></span>
-		
+
 		<div class="columns py-2">
 			<div class="column col-6 col-sm-12 vertical-align">
 				<b>{{labels.add_char_title}}</b>
@@ -57,7 +57,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<div class="columns py-2">
 			<div class="column col-6 col-sm-12 vertical-align">
 				<p class="text-gray">{{labels.add_pos_title}}</p>
@@ -141,12 +141,13 @@
 						<option value="goo.gl">goo.gl</option>
 						<option value="ow.ly">ow.ly</option>
 						<option value="is.gd">is.gd</option>
+						<option value="rebrand.ly">rebrand.ly</option>
 						<option value="wp_short_url">wp_short_url</option>
 					</select>
 				</div>
 			</div>
 		</div>
-		
+
 		<div class="columns py-2" v-if="post_format.short_url" v-for="( credential, key_name ) in post_format.shortner_credentials">
 			<div class="column col-6 col-sm-12 vertical-align">
 				<b>{{ key_name | capitalize }}</b>
@@ -160,7 +161,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<div class="columns py-2">
 			<div class="column col-6 col-sm-12 vertical-align">
 				<b>{{labels.hashtags_title}}</b>
@@ -190,7 +191,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<div class="columns py-2" v-if="post_format.hashtags === 'custom-hashtags'">
 			<div class="column col-6 col-sm-12 vertical-align">
 				<b>{{labels.hastags_field_title}}</b>
@@ -203,7 +204,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<div class="columns py-2" v-if="post_format.hashtags !== 'no-hashtags'">
 			<div class="column col-6 col-sm-12 vertical-align">
 				<b>{{labels.hashtags_length_title}}</b>
@@ -216,15 +217,15 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<span class="divider"></span>
-		
+
 		<div class="columns py-2" :class="'rop-control-container-'+isPro">
-			<div class="column col-6 col-sm-12 vertical-align rop-control">
+			<div class="column col-6 col-sm-12 vertical-align">
 				<b>{{labels.image_title}}</b>
 				<p class="text-gray">{{labels.image_desc}}</p>
 			</div>
-			<div class="column col-6 col-sm-12 vertical-align rop-control">
+			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="input-group">
 					<label class="form-checkbox">
 						<input type="checkbox" v-model="post_format.image"
@@ -232,9 +233,41 @@
 						<i class="form-icon"></i> {{labels.image_yes}}
 					</label>
 				</div>
-				<p class="option-upsell" v-if="!isPro"><i class="fa fa-lock"></i> {{labels.image_upsell}}</p>
 			</div>
 		</div>
+		
+		<div class="columns py-2" v-if="!isPro">
+			<div class="column text-center">
+				<p class="upsell"><i class="fa fa-lock"></i> {{labels.image_upsell}}</p>
+			</div>
+		</div>
+		<span class="divider"></span>
+		<!-- Google Analytics -->
+		<div class="columns py-2" :class="'rop-control-container-'+isPro">
+			<div class="column col-6 col-sm-12 vertical-align rop-control">
+				<b>{{labels.utm_campaign_medium}}</b>
+				<p class="text-gray">{{labels.utm_campaign_medium_desc}}</p>
+			</div>
+			<div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+				<div class="form-group">
+						<input type="text" :disabled="!isPro" class="form-input" v-model="post_format.utm_campaign_medium" placeholder="social"/>
+				</div>
+			</div>
+		</div>
+
+		<div class="columns py-2" :class="'rop-control-container-'+isPro">
+			<div class="column col-6 col-sm-12 vertical-align rop-control">
+				<b>{{labels.utm_campaign_name}}</b>
+				<p class="text-gray">{{labels.utm_campaign_name_desc}}</p>
+			</div>
+			<div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+				<div class="form-group">
+						<input type="text" :disabled="!isPro" class="form-input" v-model="post_format.utm_campaign_name" placeholder="ReviveOldPost"/>
+						<p class="option-upsell" v-if="!isPro"><i class="fa fa-lock"></i> {{labels.custom_utm_upsell}}</p>
+				</div>
+			</div>
+		</div>
+
 		<span class="divider"></span>
 	</div>
 </template>
@@ -287,21 +320,21 @@
 		margin: 0;
 		line-height: normal;
 	}
-	
+
 	b {
 		margin-bottom: 5px;
 		display: block;
 	}
-	
+
 	#rop_core .input-group .input-group-addon {
 		padding: 3px 5px;
 	}
-	
+
 	@media ( max-width: 600px ) {
 		#rop_core .panel-body .text-gray {
 			margin-bottom: 10px;
 		}
-		
+
 		#rop_core .text-right {
 			text-align: left;
 		}

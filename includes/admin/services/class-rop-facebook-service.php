@@ -451,9 +451,9 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		}
 
 		$new_post['message'] = $post_details['content'] . $post_details['hashtags'];
-		$new_post['name'] = html_entity_decode( get_the_title( $post_details['post_id'] ) );
 
 		if ( ! empty( $post_details['post_url'] ) ) {
+			$new_post['name'] = html_entity_decode( get_the_title( $post_details['post_id'] ) );
 			$new_post['link'] = $this->get_url( $post_details );
 		}
 
@@ -493,15 +493,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
 		$api = $this->get_api();
 		try {
-			if ( isset( $new_post['link'] ) ) {
-				// normal post.
-				$api->post( '/' . $page_id . '/feed', $new_post, $token );
-			} elseif ( isset( $new_post['picture'] ) ) {
-				// post only photo with text, no link.
-				$api->post( '/' . $page_id . '/photos', array( 'url' => $new_post['picture'], 'caption' => $new_post['name'] ), $token );
-			} else {
-				$this->logger->alert_error( sprintf( 'Neither link nor picture provided for post with title "%s". Will not post!', $new_post['name'] ) );
-			}
+			$api->post( '/' . $page_id . '/feed', $new_post, $token );
 
 			return true;
 		} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
