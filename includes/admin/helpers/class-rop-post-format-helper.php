@@ -355,8 +355,9 @@ class Rop_Post_Format_Helper {
 			return array();
 		}
 
-		return wp_list_pluck( $post_categories, 'slug' );
+		$hashtags = wp_list_pluck( $post_categories, 'name' );
 
+		return str_replace( ' ', '', $hashtags );
 	}
 
 	/**
@@ -376,7 +377,9 @@ class Rop_Post_Format_Helper {
 			return array();
 		}
 
-		return wp_list_pluck( $tags, 'slug' );
+		$hashtags = wp_list_pluck( $tags, 'name' );
+
+		return str_replace( ' ', '', $hashtags );
 	}
 
 	/**
@@ -431,6 +434,41 @@ class Rop_Post_Format_Helper {
 	}
 
 	/**
+	 * Sets UTM tags
+	 *
+	 * @since   8.1.0
+	 * @access  public
+	 *
+	 * @param   array $tag The UTM tag to set from get_utm_tags().
+	 *
+	 * @return string
+	 */
+	public function set_utm_tags( $tag ) {
+		$tags = array();
+
+		$tags['utm_campaign_source']  = $this->get_service();
+		$tags['utm_campaign_medium']    = $this->post_format['utm_campaign_medium'];
+		$tags['utm_campaign_name']      = $this->post_format['utm_campaign_name'];
+
+		return urlencode( $tags[ $tag ] );
+	}
+
+
+	/**
+	 * Gets UTM tags
+	 *
+	 * @since   8.1.0
+	 * @access  public
+	 *
+	 * @param   array $tag The UTM tag to pull.
+	 *
+	 * @return string
+	 */
+	public function get_utm_tags( $tag ) {
+		return $this->set_utm_tags( $tag );
+	}
+
+	/**
 	 * Method to build the URL for a given post object.
 	 *
 	 * @since   8.0.0
@@ -460,12 +498,27 @@ class Rop_Post_Format_Helper {
 				}
 			}
 		}
-		$settings = new Rop_Settings_Model();
-		if ( $settings->get_ga_tracking() ) {
-			$params                 = array();
+
+		$global_settings = new Rop_Global_Settings();
+		$settings_model  = new Rop_Settings_Model();
+
+		if ( $settings_model->get_ga_tracking() && $global_settings->license_type() <= 0 ) {
+			$params   = array();
 			$params['utm_source']   = 'ReviveOldPost';
 			$params['utm_medium']   = 'social';
 			$params['utm_campaign'] = 'ReviveOldPost';
+			$post_url               = add_query_arg( $params, $post_url );
+		}
+
+		if ( $settings_model->get_ga_tracking() && $global_settings->license_type() > 0 ) {
+			$utm_source     = $this->get_utm_tags( 'utm_campaign_source' );
+			$utm_medium     = $this->get_utm_tags( 'utm_campaign_medium' );
+			$utm_campaign = $this->get_utm_tags( 'utm_campaign_name' );
+
+			$params                 = array();
+			$params['utm_source']   = empty( $utm_source ) ? 'ReviveOldPost' : $utm_source;
+			$params['utm_medium']   = empty( $utm_medium ) ? 'social' : $utm_medium;
+			$params['utm_campaign'] = empty( $utm_campaign ) ? 'ReviveOldPost' : $utm_campaign;
 			$post_url               = add_query_arg( $params, $post_url );
 		}
 

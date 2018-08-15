@@ -187,6 +187,8 @@ class Rop_Global_Settings {
 			'shortner_credentials' => array(),
 			'hashtags_custom'      => '',
 			'image'                => false,
+			'utm_campaign_medium'  => 'social',
+			'utm_campaign_name'    => 'ReviveOldPost',
 		),
 		'linkedin' => array(
 			'post_content'         => 'post_title',
@@ -223,6 +225,8 @@ class Rop_Global_Settings {
 			'hashtags_common'      => '',
 			'hashtags_custom'      => '',
 			'image'                => false,
+			'utm_campaign_medium'  => 'social',
+			'utm_campaign_name'    => 'ReviveOldPost',
 		),
 	);
 

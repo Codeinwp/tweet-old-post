@@ -203,6 +203,11 @@ class Rop_I18n {
 				'image_title'                       => __( 'Post with image', 'tweet-old-post' ),
 				'image_desc'                        => __( 'Use the featured image when posting?', 'tweet-old-post' ),
 				'image_yes'                         => __( 'Yes', 'tweet-old-post' ),
+				'utm_campaign_medium'               => __( 'Campaign Medium', 'tweet-old-post' ),
+				'utm_campaign_medium_desc'          => __( 'The marketing medium you want to show in Google Analytics e.g: "social", "website", etc.', 'tweet-old-post' ),
+				'utm_campaign_name'                 => __( 'Campaign Name', 'tweet-old-post' ),
+				'utm_campaign_name_desc'            => __( 'The campaign name you want to show in Google Analytics e.g: "november_sale" etc.', 'tweet-old-post' ),
+				'custom_utm_upsell'                 => __( 'Custom UTMs are only available in the pro version.', 'tweet-old-post' ),
 				'image_upsell'                      => __( 'Posting with images is available in the pro version.', 'tweet-old-post' ),
 			),
 			'schedule'    => array(
