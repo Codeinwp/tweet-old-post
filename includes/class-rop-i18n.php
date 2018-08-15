@@ -203,6 +203,11 @@ class Rop_I18n {
 				'image_title'                       => __( 'Post with image', 'tweet-old-post' ),
 				'image_desc'                        => __( 'Use the featured image when posting?', 'tweet-old-post' ),
 				'image_yes'                         => __( 'Yes', 'tweet-old-post' ),
+				'utm_campaign_medium'               => __( 'Campaign Medium', 'tweet-old-post' ),
+				'utm_campaign_medium_desc'          => __( 'The marketing medium you want to show in Google Analytics e.g: "social", "website", etc.', 'tweet-old-post' ),
+				'utm_campaign_name'                 => __( 'Campaign Name', 'tweet-old-post' ),
+				'utm_campaign_name_desc'            => __( 'The campaign name you want to show in Google Analytics e.g: "november_sale" etc.', 'tweet-old-post' ),
+				'custom_utm_upsell'                 => __( 'Custom UTMs are only available in the pro version.', 'tweet-old-post' ),
 				'image_upsell'                      => __( 'Posting with images is available in the pro version.', 'tweet-old-post' ),
 			),
 			'schedule'    => array(
@@ -279,6 +284,11 @@ You can try to disable any of the security plugins that you use in order to see 
 				'add_message'         => __( 'Add New Custom Message', 'tweet-old-post' ),
 				'random_message_info' => __( 'A custom message that will be selected randomly for each share and will overwrite the default post.', 'tweet-old-post' ),
 				'message_no'          => __( 'Custom message #', 'tweet-old-post' ),
+			),
+			// pro only.
+			'publish_now' => array(
+				'share_on_update'      => __( 'Share on publish/update', 'tweet-old-post' ),
+				'clear_on_share'       => __( 'These checkboxes will be cleared once the post is shared.', 'tweet-old-post' ),
 			),
 
 		);

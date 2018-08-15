@@ -81,6 +81,15 @@ class Test_RopPostFormat extends WP_UnitTestCase {
 		$this->assertNotFalse( filter_var( $short_url, FILTER_VALIDATE_URL ) );
 		$this->assertNotEquals( $short_url, '' );
 
+		// rebrand.ly Test
+		$rebrandly = new Rop_Rebrandly_Shortner();
+		$key   = '6f74a48c3e114ed9973feaa45ccdd632';
+		$rebrandly->set_credentials( array( 'key' => $key, 'domain' => '' ) );
+		$short_url = $rebrandly->shorten_url( $url );
+
+		$this->assertNotEquals( $url, $short_url );
+		$this->assertNotEquals( $short_url, '' );
+
 	}
 
 	/**
