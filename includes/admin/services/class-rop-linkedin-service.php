@@ -398,7 +398,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			$new_post['content']['submitted-image-url'] = $post_details['post_image'];
 		}
 
-		$new_post['comment']                  = $post_details['content'];
+		$new_post['comment']                  = $post_details['content'] . $post_details['hashtags'];
 		$new_post['content']['description']   = $post_details['content'];
 		$new_post['content']['title']         = html_entity_decode( get_the_title( $post_details['post_id'] ) );
 		$new_post['content']['submitted-url'] = $this->get_url( $post_details );

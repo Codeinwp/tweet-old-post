@@ -119,7 +119,7 @@ class Rop_Post_Format_Helper {
 		$max_length      = $this->post_format['maximum_length'];
 
 		/**
-		 * Content edited thru queue.
+		 * Content edited through queue.
 		 */
 
 		$custom_content = get_post_meta( $post_id, '_rop_edit_' . md5( $this->account_id ), true );
@@ -168,7 +168,6 @@ class Rop_Post_Format_Helper {
 		}
 		$base_content = $content_helper->token_truncate( $base_content, $size );
 
-		$base_content = $base_content . $hashtags;
 		$base_content = $this->append_custom_text( $base_content );
 		/**
 		 * Adds safe check for content length.
