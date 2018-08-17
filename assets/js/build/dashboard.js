@@ -20540,7 +20540,7 @@ exports.mixin = mixin;
 /* 71 */
 /***/ (function(module, exports) {
 
-module.exports = "\r\n\t<div class=\"form-autocomplete\" style=\"width: 100%;\" v-on-clickaway=\"closeDropdown\">\r\n\t\t<!-- autocomplete input container -->\r\n\t\t<div class=\"form-autocomplete-input form-input\" :class=\"is_focused\">\r\n\t\t\t\r\n\t\t\t<!-- autocomplete chips -->\r\n\t\t\t<label class=\"chip\" v-for=\"( option, index ) in selected\">\r\n\t\t\t\t{{option.name}}\r\n\t\t\t\t<a href=\"#\" class=\"btn btn-clear\" aria-label=\"Close\" @click.prevent=\"removeSelected(index)\"\r\n\t\t\t\t   role=\"button\"></a>\r\n\t\t\t</label>\r\n\t\t\t\r\n\t\t\t<!-- autocomplete real input box -->\r\n\t\t\t<input style=\"height: 1.0rem;\" class=\"form-input\" type=\"text\" ref=\"search\" v-model=\"search\"\r\n\t\t\t       :placeholder=\"autocomplete_placeholder\" @click=\"magic_flag = true\" @focus=\"magic_flag = true\"\r\n\t\t\t       @keyup=\"magic_flag = true\" @keydown.8=\"popLast()\" @keydown.38=\"highlightItem(true)\"\r\n\t\t\t       @keydown.40=\"highlightItem()\" :disabled=\"is_disabled\">\r\n\t\t</div>\r\n\t\t\r\n\t\t<!-- autocomplete suggestion list -->\r\n\t\t<ul class=\"menu\" ref=\"autocomplete_results\" :class=\"is_visible\"\r\n\t\t    style=\"overflow-y: scroll; max-height: 120px\">\r\n\t\t\t<!-- menu list chips -->\r\n\t\t\t<li class=\"menu-item\" v-for=\"( option, index ) in options\" v-if=\"filterSearch(option)\">\r\n\t\t\t\t<a href=\"#\" @click.prevent=\"addToSelected(index)\" @keydown.38=\"highlightItem(true)\"\r\n\t\t\t\t   @keydown.40=\"highlightItem()\">\r\n\t\t\t\t\t<div class=\"tile tile-centered\">\r\n\t\t\t\t\t\t<div class=\"tile-content\" v-html=\"markMatch(option.name, search)\"></div>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</a>\r\n\t\t\t</li>\r\n\t\t\t<li v-if=\"has_results\">\r\n\t\t\t\t<a href=\"#\">\r\n\t\t\t\t\t<div class=\"tile tile-centered\">\r\n\t\t\t\t\t\t<div class=\"tile-content\"><i>{{labels.multiselect_not_found}}\"{{search}}\" ...</i></div>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</a>\r\n\t\t\t</li>\r\n\t\t</ul>\r\n\t</div>\r\n\r\n";
+module.exports = "\n\t<div class=\"form-autocomplete\" style=\"width: 100%;\" v-on-clickaway=\"closeDropdown\">\n\t\t<!-- autocomplete input container -->\n\t\t<div class=\"form-autocomplete-input form-input\" :class=\"is_focused\">\n\t\t\t\n\t\t\t<!-- autocomplete chips -->\n\t\t\t<label class=\"chip\" v-for=\"( option, index ) in selected\">\n\t\t\t\t{{option.name}}\n\t\t\t\t<a href=\"#\" class=\"btn btn-clear\" aria-label=\"Close\" @click.prevent=\"removeSelected(index)\"\n\t\t\t\t   role=\"button\"></a>\n\t\t\t</label>\n\t\t\t\n\t\t\t<!-- autocomplete real input box -->\n\t\t\t<input style=\"height: 1.0rem;\" class=\"form-input\" type=\"text\" ref=\"search\" v-model=\"search\"\n\t\t\t       :placeholder=\"autocomplete_placeholder\" @click=\"magic_flag = true\" @focus=\"magic_flag = true\"\n\t\t\t       @keyup=\"magic_flag = true\" @keydown.8=\"popLast()\" @keydown.38=\"highlightItem(true)\"\n\t\t\t       @keydown.40=\"highlightItem()\" :disabled=\"is_disabled\">\n\t\t</div>\n\t\t\n\t\t<!-- autocomplete suggestion list -->\n\t\t<ul class=\"menu\" ref=\"autocomplete_results\" :class=\"is_visible\"\n\t\t    style=\"overflow-y: scroll; max-height: 120px\">\n\t\t\t<!-- menu list chips -->\n\t\t\t<li class=\"menu-item\" v-for=\"( option, index ) in options\" v-if=\"filterSearch(option)\">\n\t\t\t\t<a href=\"#\" @click.prevent=\"addToSelected(index)\" @keydown.38=\"highlightItem(true)\"\n\t\t\t\t   @keydown.40=\"highlightItem()\">\n\t\t\t\t\t<div class=\"tile tile-centered\">\n\t\t\t\t\t\t<div class=\"tile-content\" v-html=\"markMatch(option.name, search)\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</a>\n\t\t\t</li>\n\t\t\t<li v-if=\"has_results\">\n\t\t\t\t<a href=\"#\">\n\t\t\t\t\t<div class=\"tile tile-centered\">\n\t\t\t\t\t\t<div class=\"tile-content\"><i>{{labels.multiselect_not_found}}\"{{search}}\" ...</i></div>\n\t\t\t\t\t</div>\n\t\t\t\t</a>\n\t\t\t</li>\n\t\t</ul>\n\t</div>\n\n";
 
 /***/ }),
 /* 72 */
@@ -20600,7 +20600,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\r\n\t#rop-upsell-box[_v-3bafc00a]{\r\n\t\tmargin-top:20px;\r\n\t}\r\n\t#rop_core .rop-upsell-business-card[_v-3bafc00a],\r\n\t#rop_core .rop-upsell-pro-card[_v-3bafc00a] {\r\n\t\tpadding: 0;\r\n\t}\r\n", ""]);
+exports.push([module.i, "\n\t#rop-upsell-box[_v-3bafc00a]{\n\t\tmargin-top:20px;\n\t}\n\t#rop_core .rop-upsell-business-card[_v-3bafc00a],\n\t#rop_core .rop-upsell-pro-card[_v-3bafc00a] {\n\t\tpadding: 0;\n\t}\n", ""]);
 
 // exports
 
@@ -33280,7 +33280,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\r\n\t#rop-sign-in-area .btn[disabled][_v-63cb7455]{\r\n\t\tcursor:not-allowed;\r\n\t\tpointer-events: auto;\r\n\t\topacity: 0.3;\r\n\t}\r\n\t", ""]);
+exports.push([module.i, "\n\t#rop-sign-in-area .btn[disabled][_v-63cb7455]{\n\t\tcursor:not-allowed;\n\t\tpointer-events: auto;\n\t\topacity: 0.3;\n\t}\n\t", ""]);
 
 // exports
 
@@ -34271,7 +34271,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\r\n\t#rop_core .input-group.rop-counter-group {\r\n\t\tposition: relative;\r\n\t\twidth: 100%;\r\n\t}\r\n\t\r\n\t#rop_core .btn.increment-btn {\r\n\t\tposition: absolute;\r\n\t\tright: 0;\r\n\t\twidth: 1rem;\r\n\t\theight: 0.85rem;\r\n\t\tpadding: 0.025rem 0.010rem;\r\n\t\tline-height: 0.3rem;\r\n\t\tz-index: 2;\r\n\t\tcolor: #ababab;\r\n\t\tborder-color: #ababab;\r\n\t}\r\n\t\r\n\t#rop_core .btn.increment-btn:hover, #rop_core .btn.increment-btn:active, #rop_core .btn.increment-btn:focus {\r\n\t\tbackground-color: #00a6e3;\r\n\t\tcolor: #fff;\r\n\t\tborder-color: #00a6e3;\r\n\t}\r\n\t\r\n\t#rop_core .btn.increment-btn.up {\r\n\t\ttop: 0;\r\n\t}\r\n\t\r\n\t#rop_core .btn.increment-btn.down {\r\n\t\tbottom: 0;\r\n\t}\r\n\t\r\n\tinput.rop-counter::-webkit-inner-spin-button {\r\n\t\tdisplay: none;\r\n\t}\r\n", ""]);
+exports.push([module.i, "\n\t#rop_core .input-group.rop-counter-group {\n\t\tposition: relative;\n\t\twidth: 100%;\n\t}\n\t\n\t#rop_core .btn.increment-btn {\n\t\tposition: absolute;\n\t\tright: 0;\n\t\twidth: 1rem;\n\t\theight: 0.85rem;\n\t\tpadding: 0.025rem 0.010rem;\n\t\tline-height: 0.3rem;\n\t\tz-index: 2;\n\t\tcolor: #ababab;\n\t\tborder-color: #ababab;\n\t}\n\t\n\t#rop_core .btn.increment-btn:hover, #rop_core .btn.increment-btn:active, #rop_core .btn.increment-btn:focus {\n\t\tbackground-color: #00a6e3;\n\t\tcolor: #fff;\n\t\tborder-color: #00a6e3;\n\t}\n\t\n\t#rop_core .btn.increment-btn.up {\n\t\ttop: 0;\n\t}\n\t\n\t#rop_core .btn.increment-btn.down {\n\t\tbottom: 0;\n\t}\n\t\n\tinput.rop-counter::-webkit-inner-spin-button {\n\t\tdisplay: none;\n\t}\n", ""]);
 
 // exports
 
@@ -34425,7 +34425,7 @@ module.exports = {
 /* 231 */
 /***/ (function(module, exports) {
 
-module.exports = "\r\n\t<div class=\"input-group rop-counter-group\">\r\n\t\t<input class=\"form-input rop-counter\" type=\"text\" v-model=\"inputValueC\" :id=\"id\">\r\n\t\t<button class=\"btn input-group-btn increment-btn up\" @mousedown=\"isPressed('up')\" @mouseup=\"isReleased('up')\"><i\r\n\t\t\t\tclass=\"fa fa-fw fa-caret-up\"></i></button>\r\n\t\t<button class=\"btn input-group-btn increment-btn down\" @mousedown=\"isPressed('down')\"\r\n\t\t        @mouseup=\"isReleased('down')\"><i class=\"fa fa-fw fa-caret-down\"></i></button>\r\n\t</div>\r\n";
+module.exports = "\n\t<div class=\"input-group rop-counter-group\">\n\t\t<input class=\"form-input rop-counter\" type=\"text\" v-model=\"inputValueC\" :id=\"id\">\n\t\t<button class=\"btn input-group-btn increment-btn up\" @mousedown=\"isPressed('up')\" @mouseup=\"isReleased('up')\"><i\n\t\t\t\tclass=\"fa fa-fw fa-caret-up\"></i></button>\n\t\t<button class=\"btn input-group-btn increment-btn down\" @mousedown=\"isPressed('down')\"\n\t\t        @mouseup=\"isReleased('down')\"><i class=\"fa fa-fw fa-caret-down\"></i></button>\n\t</div>\n";
 
 /***/ }),
 /* 232 */
@@ -34870,7 +34870,7 @@ module.exports = {
 /* 239 */
 /***/ (function(module, exports) {
 
-module.exports = "\r\n\t<div class=\"empty\">\r\n\t\t<div class=\"empty-icon\">\r\n\t\t\t<i class=\"fa fa-3x fa-user-circle-o\"></i>\r\n\t\t</div>\r\n\t\t<p class=\"empty-title h5\">{{labels.no_active_accounts}}</p>\r\n\t\t<p class=\"empty-subtitle\" v-html=\"labels.no_active_accounts_desc\"></p>\r\n\t\t<button class=\"btn btn-primary\" @click=\"goToAccounts()\">{{labels.go_to_accounts_btn}}</button>\r\n\t</div>\r\n";
+module.exports = "\n\t<div class=\"empty\">\n\t\t<div class=\"empty-icon\">\n\t\t\t<i class=\"fa fa-3x fa-user-circle-o\"></i>\n\t\t</div>\n\t\t<p class=\"empty-title h5\">{{labels.no_active_accounts}}</p>\n\t\t<p class=\"empty-subtitle\" v-html=\"labels.no_active_accounts_desc\"></p>\n\t\t<button class=\"btn btn-primary\" @click=\"goToAccounts()\">{{labels.go_to_accounts_btn}}</button>\n\t</div>\n";
 
 /***/ }),
 /* 240 */
@@ -35340,7 +35340,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\r\n\t.rop-control-container-false[_v-29af9e14]  {\r\n\t\tcursor:not-allowed !important;\r\n\t}\r\n\t#rop_core .panel-body .text-gray[_v-29af9e14] {\r\n\t\tmargin: 0;\r\n\t\tline-height: normal;\r\n\t}\r\n\t\r\n\tb[_v-29af9e14] {\r\n\t\tmargin-bottom: 5px;\r\n\t\tdisplay: block;\r\n\t}\r\n\t\r\n\t#rop_core .input-group .input-group-addon[_v-29af9e14] {\r\n\t\tpadding: 3px 5px;\r\n\t}\r\n\t\r\n\t.time-picker[_v-29af9e14] {\r\n\t\tmargin-bottom: 10px;\r\n\t}\r\n\t\r\n\t@media ( max-width: 600px ) {\r\n\t\t#rop_core .panel-body .text-gray[_v-29af9e14] {\r\n\t\t\tmargin-bottom: 10px;\r\n\t\t}\r\n\t\t\r\n\t\t#rop_core .text-right[_v-29af9e14] {\r\n\t\t\ttext-align: left;\r\n\t\t}\r\n\t}\r\n\t\r\n", ""]);
+exports.push([module.i, "\n\t.rop-control-container-false[_v-29af9e14]  {\n\t\tcursor:not-allowed !important;\n\t}\n\t#rop_core .panel-body .text-gray[_v-29af9e14] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\t\n\tb[_v-29af9e14] {\n\t\tmargin-bottom: 5px;\n\t\tdisplay: block;\n\t}\n\t\n\t#rop_core .input-group .input-group-addon[_v-29af9e14] {\n\t\tpadding: 3px 5px;\n\t}\n\t\n\t.time-picker[_v-29af9e14] {\n\t\tmargin-bottom: 10px;\n\t}\n\t\n\t@media ( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-29af9e14] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\t\t\n\t\t#rop_core .text-right[_v-29af9e14] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n\t\n", ""]);
 
 // exports
 
@@ -35631,7 +35631,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\r\n\t#rop_core .input-group .input-group-addon.btn.active[_v-4b257edb] {\r\n\t\tbackground-color: #8bc34a;\r\n\t\tborder-color: #33691e;\r\n\t\tcolor: #FFF;\r\n\t}\r\n", ""]);
+exports.push([module.i, "\n\t#rop_core .input-group .input-group-addon.btn.active[_v-4b257edb] {\n\t\tbackground-color: #8bc34a;\n\t\tborder-color: #33691e;\n\t\tcolor: #FFF;\n\t}\n", ""]);
 
 // exports
 
@@ -36822,7 +36822,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\r\n\t#rop_core .toast.log-toast p[_v-1eb3a02d] {\r\n\t\tmargin: 0px;\r\n\t\tline-height: inherit;\r\n\t}\r\n\t\r\n\t#rop_core .toast.log-toast[_v-1eb3a02d]:hover {\r\n\t\topacity: 0.9;\r\n\t}\r\n\t\r\n\t#rop_core .toast.log-toast[_v-1eb3a02d] {\r\n\t\tpadding: 0.1rem;\r\n\t\tpadding-left: 10px;\r\n\t\tmargin-top: 2px;\r\n\t}\r\n\t\r\n\t#rop_core .container[_v-1eb3a02d] {\r\n\t\tmin-height: 400px;\r\n\t}\r\n", ""]);
+exports.push([module.i, "\n\t#rop_core .toast.log-toast p[_v-1eb3a02d] {\n\t\tmargin: 0px;\n\t\tline-height: inherit;\n\t}\n\t\n\t#rop_core .toast.log-toast[_v-1eb3a02d]:hover {\n\t\topacity: 0.9;\n\t}\n\t\n\t#rop_core .toast.log-toast[_v-1eb3a02d] {\n\t\tpadding: 0.1rem;\n\t\tpadding-left: 10px;\n\t\tmargin-top: 2px;\n\t}\n\t\n\t#rop_core .container[_v-1eb3a02d] {\n\t\tmin-height: 400px;\n\t}\n", ""]);
 
 // exports
 
@@ -37316,7 +37316,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\r\n\t#rop_core .toast.hidden {\r\n\t\tdisplay: none;\r\n\t}\r\n", ""]);
+exports.push([module.i, "\n\t#rop_core .toast.hidden {\n\t\tdisplay: none;\n\t}\n", ""]);
 
 // exports
 
@@ -37380,7 +37380,7 @@ module.exports = {
 /* 284 */
 /***/ (function(module, exports) {
 
-module.exports = "\r\n\t<div class=\"toast\" :class=\"toastTypeClass\" >\r\n\t\t<button class=\"btn btn-clear float-right\" @click=\"closeThis\"></button>\r\n\t\t<b><i class=\"fa\" :class=\"iconClass\"></i> {{ toast.title }}</b><br/>\r\n\t\t<small>{{ toast.message }}</small>\r\n\t</div>\r\n";
+module.exports = "\n\t<div class=\"toast\" :class=\"toastTypeClass\" >\n\t\t<button class=\"btn btn-clear float-right\" @click=\"closeThis\"></button>\n\t\t<b><i class=\"fa\" :class=\"iconClass\"></i> {{ toast.title }}</b><br/>\n\t\t<small>{{ toast.message }}</small>\n\t</div>\n";
 
 /***/ }),
 /* 285 */
@@ -39203,7 +39203,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 /* 291 */
 /***/ (function(module, exports) {
 
-module.exports = "\r\n\t<div class=\"toast toast-success rop-current-time\" v-if=\"isOn && accounts_no > 0\">\r\n\t\t<span v-if=\"diff_seconds>0\"> <b><i\r\n\t\t\t\tclass=\"fa fa-fast-forward\"></i> {{labels.next_share}}</b> {{labels.in}}</span>\r\n\t\t<small v-if=\"timediff !== ''\">{{timediff}}</small>\r\n\t</div>\r\n";
+module.exports = "\n\t<div class=\"toast toast-success rop-current-time\" v-if=\"isOn && accounts_no > 0\">\n\t\t<span v-if=\"diff_seconds>0\"> <b><i\n\t\t\t\tclass=\"fa fa-fast-forward\"></i> {{labels.next_share}}</b> {{labels.in}}</span>\n\t\t<small v-if=\"timediff !== ''\">{{timediff}}</small>\n\t</div>\n";
 
 /***/ }),
 /* 292 */
