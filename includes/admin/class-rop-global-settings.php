@@ -170,6 +170,8 @@ class Rop_Global_Settings {
 			'shortner_credentials' => array(),
 			'image'                => false,
 			'media_post'           => 'title',
+			'utm_campaign_medium'  => 'social',
+			'utm_campaign_name'    => 'ReviveOldPost',
 		),
 		'twitter'  => array(
 			'post_content'         => 'post_title',
@@ -189,6 +191,8 @@ class Rop_Global_Settings {
 			'hashtags_custom'      => '',
 			'image'                => false,
 			'media_post'           => 'title',
+			'utm_campaign_medium'  => 'social',
+			'utm_campaign_name'    => 'ReviveOldPost',
 		),
 		'linkedin' => array(
 			'post_content'         => 'post_title',
@@ -208,6 +212,8 @@ class Rop_Global_Settings {
 			'hashtags_custom'      => '',
 			'image'                => false,
 			'media_post'           => 'title',
+			'utm_campaign_medium'  => 'social',
+			'utm_campaign_name'    => 'ReviveOldPost',
 		),
 		'tumblr'   => array(
 			'post_content'         => 'post_title',
@@ -227,6 +233,8 @@ class Rop_Global_Settings {
 			'hashtags_custom'      => '',
 			'image'                => false,
 			'media_post'           => 'title',
+			'utm_campaign_medium'  => 'social',
+			'utm_campaign_name'    => 'ReviveOldPost',
 		),
 	);
 

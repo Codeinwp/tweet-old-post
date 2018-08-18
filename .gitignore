@@ -7,5 +7,4 @@ vendor
 composer.lock
 bin/
 package-lock.json
-install-wp-tests.sh
 tweet-old-post.zip

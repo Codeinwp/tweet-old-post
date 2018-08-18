@@ -81,6 +81,15 @@ class Test_RopPostFormat extends WP_UnitTestCase {
 		$this->assertNotFalse( filter_var( $short_url, FILTER_VALIDATE_URL ) );
 		$this->assertNotEquals( $short_url, '' );
 
+		// rebrand.ly Test
+		$rebrandly = new Rop_Rebrandly_Shortner();
+		$key   = '6f74a48c3e114ed9973feaa45ccdd632';
+		$rebrandly->set_credentials( array( 'key' => $key, 'domain' => '' ) );
+		$short_url = $rebrandly->shorten_url( $url );
+
+		$this->assertNotEquals( $url, $short_url );
+		$this->assertNotEquals( $short_url, '' );
+
 	}
 
 	/**
@@ -145,7 +154,12 @@ class Test_RopPostFormat extends WP_UnitTestCase {
 
 	/**
 	 * Test common hashtags option.
+	 *
+	 * Obsolete test, we're no longer including the common hashtags
+	 * inside the content body, we're instead adding them in share method.
 	 */
+
+	/*
 	public function test_hashtags_from_common_text() {
 		$service                     = Rop_InitAccounts::ROP_TEST_SERVICE_NAME;
 		$account_id                  = Rop_InitAccounts::get_account_id();
@@ -162,7 +176,7 @@ class Test_RopPostFormat extends WP_UnitTestCase {
 
 		$this->assertNotFalse( strpos( $formated_post['content'], 'testtag' ), 'Common hashtags not working' );
 
-	}
+	}*/
 
 	/**
 	 * Testing post format

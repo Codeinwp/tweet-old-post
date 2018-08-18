@@ -389,8 +389,9 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		$post_id = $post_details['post_id'];
 		$media_post_content =  $post_details['media_post_content'];
 
-		// NOTE delete below variable, just testing to not conflict with other pull request
-		$hashtags = "tag1, tag2, tag3";
+		// Tumblr creates hashtags differently
+		$hashtags = preg_replace( array( '/ /', '/#/' ), array( '', ',' ), $post_details['hashtags'] );
+		$hashtags = ltrim( $hashtags, ',' );
 
 		if ( ! empty( $post_details['post_url'] ) && empty( $post_type->media_post( $post_id ) ) ) {
 			 $new_post['type']        = 'link';
@@ -400,17 +401,25 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			 $new_post['tags'] 			 	= $hashtags;
 
 		} elseif ( ! empty( $post_type->media_post( $post_id ) ) ) {
-			 $new_post['type']        = 'photo';
-			 $new_post['source_url']  = esc_url( get_site_url() );
-			 $new_post['data'] 			 	= $post_type->media_post( $post_id )['source'];
-			 $new_post['caption'] 	 	= $post_type->media_post( $post_id )[$media_post_content] . ' ' . trim( $this->get_url( $post_details ) );
-			 $new_post['tags'] 			 	= $hashtags;
+			$uploaded_to_link = get_permalink( $post_type->media_post( $post_id )['post'] );
+			if( ! empty( $uploaded_to_link ) ){
+				$post_details['post_url'] = $uploaded_to_link;
+			}else{
+				$post_details['post_url'] = $post_type->media_post( $post_id )['source'];
+			}
+
+			 $new_post['type']         = 'photo';
+			 $new_post['source_url']   = esc_url( get_site_url() );
+			 $new_post['data'] 			 	 = $post_type->media_post( $post_id )['source'];
+			 $new_post['caption'] 	 	 = $post_type->media_post( $post_id )[$media_post_content] . ' ' . trim( $this->get_url( $post_details ) );
+			 $new_post['tags'] 			 	 = $hashtags;
 
 		}else{
 			 $new_post['type'] = 'text';
 			 $new_post['body'] = $post_details['content'];
 			 $new_post['tags'] = $hashtags;
 		}
+
 		try {
 
 				$api->createPost( $args['id'] . '.tumblr.com', $new_post );

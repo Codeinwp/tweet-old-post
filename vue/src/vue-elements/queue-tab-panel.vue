@@ -10,15 +10,15 @@
 					<p class="empty-subtitle">{{labels.sharing_not_started_desc}}</p>
 				</div>
 			</div>
-			
+
 			<div v-else-if="start_status && queueCount > 0 ">
-				
+
 				<div class="columns py-2" v-if="! is_business">
 					<div class="column text-center">
 						<p class="upsell"><i class="fa fa-lock"></i> <span v-html="labels.biz_only"></span></p>
 					</div>
 				</div>
-				
+
 				<!-- When sharing is started but we  have the business plan. -->
 				<div class="d-inline-block mt-2 column col-12">
 					<p class="text-gray info-paragraph"><i class="fa fa-info-circle"></i> {{labels.queue_desc}}</p>

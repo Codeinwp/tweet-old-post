@@ -468,6 +468,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			 $media_post_array = array();
 			 $post_object = get_post( $post_id );
 
+			 $media_post_array['post'] 				= $post_object->post_parent;
 			 $media_post_array['source'] 			= wp_get_attachment_url( $post_id );
 			 $media_post_array['title'] 			= $post_object->post_title;
 			 $media_post_array['caption'] 		= $post_object->post_excerpt;
@@ -550,5 +551,47 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		}
 
 		$this->set( 'posts_buffer', $this->buffer );
+	}
+
+
+	/**
+	 * Get posts to be published now.
+	 *
+	 * @access public
+	 * @return array
+	 */
+	public function get_publish_now_posts() {
+		$settings_model     = new Rop_Settings_Model();
+		$post_types         = wp_list_pluck( $settings_model->get_selected_post_types(), 'value' );
+
+		// fetch all post_types that need to be published now.
+		$query              = new WP_Query(
+			array(
+				'post_type'     => $post_types,
+				'meta_query'    => array(
+					array(
+						'key'   => 'rop_publish_now',
+						'value' => 'yes',
+					),
+				),
+				'numberposts'   => 300,
+				'orderby'       => 'modified',
+				'order'         => 'ASC',
+				'fields'        => 'ids',
+			)
+		);
+
+		$posts  = array();
+
+		if ( $query->have_posts() ) {
+			while ( $query->have_posts() ) {
+				$query->the_post();
+				$posts[]    = $query->post;
+				// delete the meta so that when the post loads again after publishing, the checkboxes are cleared.
+				delete_post_meta( $query->post, 'rop_publish_now' );
+			}
+		}
+
+		return $posts;
 	}
 }

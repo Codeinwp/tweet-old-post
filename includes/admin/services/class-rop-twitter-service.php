@@ -434,13 +434,19 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 					} else {
 						$this->logger->alert_error( sprintf( 'Can not upload photo. Error: %s', json_encode( $media_response ) ) );
 					}
-					//TODO add check for URL and stuff
+
+					$uploaded_to_link = get_permalink( $post_type->media_post( $post_id )['post'] );	
+					if( ! empty( $uploaded_to_link ) ){
+						$post_details['post_url'] = $uploaded_to_link;
+					}else{
+						$post_details['post_url'] = $post_type->media_post( $post_id )['source'];
+					}
 					$message = $post_type->media_post( $post_id )[$media_post_content];
 			}
 
 		$link = $this->get_url( $post_details );
 
-		$new_post['status'] = $message . ' ' . $link;
+		$new_post['status'] = $message . $link . $post_details['hashtags'];
 		$this->logger->info( sprintf( 'Before twitter share: %s', json_encode( $new_post ) ) );
 
 		$response = $api->post( 'statuses/update', $new_post );

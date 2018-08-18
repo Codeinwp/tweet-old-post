@@ -301,6 +301,42 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	}
 
 	/**
+	 * Method to build the queue for posts to be published on update/create.
+	 *
+	 * @access  public
+	 * @return array
+	 */
+	public function build_queue_publish_now() {
+		$selector           = new Rop_Posts_Selector_Model();
+		$posts              = $selector->get_publish_now_posts();
+
+		$normalized_queue   = array();
+		if ( ! $posts ) {
+			return $normalized_queue;
+		}
+
+		$index              = 0;
+		foreach ( $posts as $post_id ) {
+			$accounts   = get_post_meta( $post_id, 'rop_publish_now_accounts', true );
+			if ( ! $accounts ) {
+				continue;
+			}
+
+			// delete the meta so that when the post loads again after publishing, the checkboxes are cleared.
+			delete_post_meta( $post_id, 'rop_publish_now_accounts' );
+
+			foreach ( $accounts as $account_id ) {
+				$normalized_queue[ $account_id ][ $index ] = array(
+					'posts' => array( $post_id ),
+				);
+			}
+			$index++;
+		}
+
+		return $normalized_queue;
+	}
+
+	/**
 	 * Method to build the queue according to the timeline.
 	 *
 	 * @since   8.0.0

@@ -45,10 +45,13 @@
 							<option value="description">{{labels.media_post_option_description}}</option>
 						</select>
 					</div>
-						<p class="option-upsell" v-if="!isPro"><i class="fa fa-lock"></i> {{labels.media_post_upsell}}</p>
 					</div>
 				</div>
-
+				<div class="columns py-2" v-if="!isPro">
+					<div class="column text-center">
+						<p class="upsell"><i class="fa fa-lock"></i> {{labels.media_post_upsell}}</p>
+					</div>
+				</div>
 		<span class="divider"></span>
 
 		<div class="columns py-2">
@@ -161,6 +164,7 @@
 						<option value="goo.gl">goo.gl</option>
 						<option value="ow.ly">ow.ly</option>
 						<option value="is.gd">is.gd</option>
+						<option value="rebrand.ly">rebrand.ly</option>
 						<option value="wp_short_url">wp_short_url</option>
 					</select>
 				</div>
@@ -240,11 +244,11 @@
 		<span class="divider"></span>
 
 		<div class="columns py-2" :class="'rop-control-container-'+isPro">
-			<div class="column col-6 col-sm-12 vertical-align rop-control">
+			<div class="column col-6 col-sm-12 vertical-align">
 				<b>{{labels.image_title}}</b>
 				<p class="text-gray">{{labels.image_desc}}</p>
 			</div>
-			<div class="column col-6 col-sm-12 vertical-align rop-control">
+			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="input-group">
 					<label class="form-checkbox">
 						<input type="checkbox" v-model="post_format.image"
@@ -252,7 +256,42 @@
 						<i class="form-icon"></i> {{labels.image_yes}}
 					</label>
 				</div>
-				<p class="option-upsell" v-if="!isPro"><i class="fa fa-lock"></i> {{labels.image_upsell}}</p>
+			</div>
+		</div>
+
+		<div class="columns py-2" v-if="!isPro">
+			<div class="column text-center">
+				<p class="upsell"><i class="fa fa-lock"></i> {{labels.image_upsell}}</p>
+			</div>
+		</div>
+		<span class="divider"></span>
+		<!-- Google Analytics -->
+		<div class="columns py-2" :class="'rop-control-container-'+isPro">
+			<div class="column col-6 col-sm-12 vertical-align rop-control">
+				<b>{{labels.utm_campaign_medium}}</b>
+				<p class="text-gray">{{labels.utm_campaign_medium_desc}}</p>
+			</div>
+			<div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+				<div class="form-group">
+						<input type="text" :disabled="!isPro" class="form-input" v-model="post_format.utm_campaign_medium" placeholder="social"/>
+				</div>
+			</div>
+		</div>
+
+		<div class="columns py-2" :class="'rop-control-container-'+isPro">
+			<div class="column col-6 col-sm-12 vertical-align rop-control">
+				<b>{{labels.utm_campaign_name}}</b>
+				<p class="text-gray">{{labels.utm_campaign_name_desc}}</p>
+			</div>
+			<div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+				<div class="form-group">
+						<input type="text" :disabled="!isPro" class="form-input" v-model="post_format.utm_campaign_name" placeholder="ReviveOldPost"/>
+				</div>
+			</div>
+		</div>
+		<div class="columns py-2" v-if="!isPro">
+			<div class="column text-center">
+				<p class="upsell"><i class="fa fa-lock"></i> {{labels.custom_utm_upsell}}</p>
 			</div>
 		</div>
 		<span class="divider"></span>

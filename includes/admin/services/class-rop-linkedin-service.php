@@ -404,12 +404,19 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		}
 
 		if ( empty( $post_type->media_post( $post_id ) ) ){
-		$new_post['comment']                  = $post_details['content'];
+		$new_post['comment']                  = $post_details['content'] . $post_details['hashtags'];;
 		$new_post['content']['description']   = $post_details['content'];
 		$new_post['content']['title']         = html_entity_decode( get_the_title( $post_details['post_id'] ) );
 		$new_post['content']['submitted-url'] = $this->get_url( $post_details );
 		}else{
-		$new_post['comment']                  = $post_type->media_post( $post_id )[ $media_post_content ];
+		$uploaded_to_link = get_permalink( $post_type->media_post( $post_id )['post'] );	
+		if( ! empty( $uploaded_to_link ) ){
+			$post_details['post_url'] = $uploaded_to_link;
+		}else{
+			$post_details['post_url'] = $post_type->media_post( $post_id )['source'];
+		}
+
+		$new_post['comment']                  = $post_type->media_post( $post_id )[ $media_post_content ] . $this->get_url( $post_details ) . $post_details['hashtags'];
 		$new_post['content']['description']   = $post_type->media_post( $post_id )[ $media_post_content ];
 		$new_post['content']['title']         = $post_type->media_post( $post_id )[ $media_post_content ];
 		$new_post['content']['submitted-url'] = $post_type->media_post( $post_id )['source'];

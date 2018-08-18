@@ -445,16 +445,35 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		}
 
 		$new_post = array();
+		$post_type = new Rop_Posts_Selector_Model;
+
+		$post_id = $post_details['post_id'];
+		$media_post_content =  $post_details['media_post_content'];
+
+		if ( ! empty( $post_type->media_post( $post_id ) ) ){
+			$uploaded_to_link = get_permalink( $post_type->media_post( $post_id )['post'] );
+			if( ! empty( $uploaded_to_link ) ){
+				$post_details['post_url'] = $uploaded_to_link;
+			}else{
+				$post_details['post_url'] = $post_type->media_post( $post_id )['source'];
+			}
+			$new_post['picture'] = $post_type->media_post( $post_id )['source'];
+			$new_post['message'] =  $post_type->media_post( $post_id )[$media_post_content] . $post_details['hashtags'];
+			$new_post['link'] = $this->get_url( $post_details );
+
+		}else{
 
 		if ( ! empty( $post_details['post_image'] ) ) {
 			$new_post['picture'] = $post_details['post_image'];
 		}
 
-		$new_post['message'] = $post_details['content'];
+		$new_post['message'] = $post_details['content'] . $post_details['hashtags'];
 
 		if ( ! empty( $post_details['post_url'] ) ) {
 			$new_post['name'] = html_entity_decode( get_the_title( $post_details['post_id'] ) );
 			$new_post['link'] = $this->get_url( $post_details );
+		}
+
 		}
 
 		if ( ! isset( $args['id'] ) || ! isset( $args['access_token'] ) ) {
