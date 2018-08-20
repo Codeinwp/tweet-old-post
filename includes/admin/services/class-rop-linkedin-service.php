@@ -259,7 +259,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			$img = $data['pictureUrl'];
 		}
 		$user_details            = $this->user_default;
-		$user_details['id']      = $this->strip_underscore( $data['id'] );
+		$user_details['id']      = $data['id'];
 		$user_details['account'] = $this->normalize_string( $data['formattedName'] );
 		$user_details['user']    = $this->normalize_string( $data['formattedName'] );
 		$user_details['img']     = $img;
@@ -281,7 +281,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		foreach ( $companies['values'] as $company ) {
 			$users[] = wp_parse_args(
 				array(
-					'id'         => $this->strip_underscore( $company['id'] ),
+					'id'         => $company['id'],
 					'account'    => $company['name'],
 					'is_company' => true,
 					'user'       => $company['name'],
@@ -398,7 +398,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			$new_post['content']['submitted-image-url'] = $post_details['post_image'];
 		}
 
-		$new_post['comment']                  = $post_details['content'];
+		$new_post['comment']                  = $post_details['content'] . $post_details['hashtags'];
 		$new_post['content']['description']   = $post_details['content'];
 		$new_post['content']['title']         = html_entity_decode( get_the_title( $post_details['post_id'] ) );
 		$new_post['content']['submitted-url'] = $this->get_url( $post_details );
@@ -407,7 +407,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		try {
 			if ( isset( $args['is_company'] ) && $args['is_company'] === true ) {
-				$api->post( sprintf( 'companies/%s/shares?format=json', $this->unstrip_underscore( $args['id'] ) ), $new_post );
+				$api->post( sprintf( 'companies/%s/shares?format=json', $args['id'] ), $new_post );
 			} else {
 				$api->post( 'people/~/shares?format=json', $new_post );
 			}

@@ -24,11 +24,12 @@ class Rop_Admin {
 	/**
 	 * Allowed screen ids used for assets enqueue.
 	 *
-	 * @var array Array of page slugs.
+	 * @var array Array of script vs. page slugs. If page slugs is an array, then an exact match will occur.
 	 */
 	private $allowed_screens = array(
 		'dashboard' => 'TweetOldPost',
 		'exclude'   => 'rop_content_filters',
+		'publish_now'   => array( 'post' ),
 	);
 	/**
 	 * The ID of this plugin.
@@ -74,8 +75,13 @@ class Rop_Admin {
 		if ( empty( $page ) ) {
 			return;
 		}
-		wp_enqueue_style( $this->plugin_name . '_core', ROP_LITE_URL . 'assets/css/rop_core.css', array(), $this->version, 'all' );
-		wp_enqueue_style( $this->plugin_name, ROP_LITE_URL . 'assets/css/rop.css', array( $this->plugin_name . '_core' ), $this->version, 'all' );
+
+		$deps   = array();
+		if ( 'publish_now' !== $page ) {
+			wp_enqueue_style( $this->plugin_name . '_core', ROP_LITE_URL . 'assets/css/rop_core.css', array(), $this->version, 'all' );
+			$deps   = array( $this->plugin_name . '_core' );
+		}
+		wp_enqueue_style( $this->plugin_name, ROP_LITE_URL . 'assets/css/rop.css', $deps, $this->version, 'all' );
 		wp_enqueue_style( $this->plugin_name . '_fa', ROP_LITE_URL . 'assets/css/font-awesome.min.css', array(), $this->version );
 
 	}
@@ -93,9 +99,18 @@ class Rop_Admin {
 		}
 		$page = false;
 		foreach ( $this->allowed_screens as $script => $id ) {
-			if ( strpos( $screen->id, $id ) !== false ) {
-				$page = $script;
-				continue;
+			if ( is_array( $id ) ) {
+				foreach ( $id as $page_id ) {
+					if ( $screen->id === $page_id ) {
+						$page = $script;
+						break;
+					}
+				}
+			} else {
+				if ( strpos( $screen->id, $id ) !== false ) {
+					$page = $script;
+					continue;
+				}
 			}
 		}
 
@@ -113,8 +128,10 @@ class Rop_Admin {
 		if ( empty( $page ) ) {
 			return;
 		}
+
 		wp_register_script( $this->plugin_name . '-dashboard', ROP_LITE_URL . 'assets/js/build/dashboard' . ( ( ROP_DEBUG ) ? '' : '.min' ) . '.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
 		wp_register_script( $this->plugin_name . '-exclude', ROP_LITE_URL . 'assets/js/build/exclude' . ( ( ROP_DEBUG ) ? '' : '.min' ) . '.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
+
 		$array_nonce = array(
 			'root' => esc_url_raw( rest_url( '/tweet-old-post/v8/api/' ) ),
 		);
@@ -124,12 +141,25 @@ class Rop_Admin {
 				'nonce' => wp_create_nonce( 'wp_rest' ),
 			);
 		}
+
+		$services        = new Rop_Services_Model();
+		$active_accounts = $services->get_active_accounts();
+
 		$global_settings             = new Rop_Global_Settings();
 		$array_nonce['license_type'] = $global_settings->license_type();
 		$array_nonce['labels']       = Rop_I18n::get_labels();
 		$array_nonce['upsell_link']  = Rop_I18n::UPSELL_LINK;
 		$array_nonce['staging']      = $this->rop_site_is_staging();
 		$array_nonce['debug']        = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
+		$array_nonce['publish_now']  = array(
+			'action'    => false,
+			'accounts'  => $active_accounts,
+		);
+
+		if ( 'publish_now' === $page && $global_settings->license_type() > 0 ) {
+			$array_nonce['publish_now']  = apply_filters( 'rop_publish_now_attributes', $array_nonce['publish_now'] );
+			wp_register_script( $this->plugin_name . '-publish_now', ROP_LITE_URL . 'assets/js/build/publish_now' . ( ( ROP_DEBUG ) ? '' : '.min' ) . '.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
+		}
 
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ropApiSettings', $array_nonce );
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ROP_ASSETS_URL', ROP_LITE_URL . 'assets/' );
@@ -150,6 +180,7 @@ class Rop_Admin {
 			'IS_WPE_SNAPSHOT',
 			'KINSTA_DEV_ENV',
 			'WPSTAGECOACH_STAGING',
+			'JETPACK_STAGING_MODE',
 		);
 
 		foreach ( $rop_known_staging as $rop_staging_const ) {
@@ -166,12 +197,6 @@ class Rop_Admin {
 				return apply_filters( 'rop_dont_work_on_staging', true );
 
 			}
-		}
-
-		if ( defined( 'JETPACK_STAGING_MODE' ) && JETPACK_STAGING_MODE == true ) {
-
-			return apply_filters( 'rop_dont_work_on_staging', true );
-
 		}
 
 		return false;
@@ -272,7 +297,7 @@ class Rop_Admin {
 	 */
 	public function menu_pages() {
 		add_menu_page(
-			__( 'Revive Old Post', 'tweet-old-post' ), __( 'Revive Old Post', 'tweet-old-post' ), 'manage_options', 'TweetOldPost',
+			__( 'Revive Old Posts', 'tweet-old-post' ), __( 'Revive Old Posts', 'tweet-old-post' ), 'manage_options', 'TweetOldPost',
 			array(
 				$this,
 				'rop_main_page',
@@ -296,6 +321,40 @@ class Rop_Admin {
 	}
 
 	/**
+	 * The publish now Cron Job for the plugin.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 */
+	public function rop_cron_job_publish_now() {
+		$queue           = new Rop_Queue_Model();
+		$services_model  = new Rop_Services_Model();
+		$logger          = new Rop_Logger();
+		$service_factory = new Rop_Services_Factory();
+
+		$queue_stack     = $queue->build_queue_publish_now();
+		$logger->info( 'Fetching publish now queue', array( 'queue' => $queue_stack ) );
+		foreach ( $queue_stack as $account => $events ) {
+			foreach ( $events as $index => $event ) {
+				$posts = $event['posts'];
+				$account_data = $services_model->find_account( $account );
+				try {
+					$service = $service_factory->build( $account_data['service'] );
+					$service->set_credentials( $account_data['credentials'] );
+					foreach ( $posts as $post ) {
+						$post_data = $queue->prepare_post_object( $post, $account );
+						$logger->info( 'Posting', array( 'extra' => $post_data ) );
+						$service->share( $post_data, $account_data );
+					}
+				} catch ( Exception $exception ) {
+					$error_message = sprintf( Rop_I18n::get_labels( 'accounts.service_error' ), $account_data['service'] );
+					$logger->alert_error( $error_message . ' Error: ' . $exception->getTrace() );
+				}
+			}
+		}
+	}
+
+	/**
 	 * The Cron Job for the plugin.
 	 *
 	 * @since   8.0.0
@@ -307,9 +366,6 @@ class Rop_Admin {
 		$logger          = new Rop_Logger();
 		$queue_stack     = $queue->build_queue();
 		$service_factory = new Rop_Services_Factory();
-
-		$cron            = new Rop_Cron_Helper();
-		$cron->create_cron( false );
 		foreach ( $queue_stack as $account => $events ) {
 			foreach ( $events as $index => $event ) {
 				/**
@@ -336,8 +392,6 @@ class Rop_Admin {
 				}
 			}
 		}
-
-		$cron->create_cron( false );
 	}
 
 }

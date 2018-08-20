@@ -34,9 +34,9 @@
 						               :value.sync="generalSettings.maximum_post_age"></counter-input>
 					</div>
 				</div>
-				
+
 				<span class="divider"></span>
-				
+
 				<div class="columns py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
 						<b>{{labels.no_posts_title}}</b>
@@ -47,7 +47,7 @@
 					</div>
 				</div>
 				<span class="divider"></span>
-				
+
 				<!-- Share more than once -->
 				<div class="columns py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
@@ -73,12 +73,17 @@
 						<multiple-select :options="postTypes" :disabled="isPro"
 						                 :selected="generalSettings.selected_post_types"
 						                 :changed-selection="updatedPostTypes"></multiple-select>
-						<p class="option-upsell" v-if="!isPro"><i class="fa fa-lock"></i> {{labels.post_types_upsell}}</p>
 					</div>
 				</div>
 				
+				<div class="columns py-2" v-if="!isPro">
+					<div class="column text-center">
+						<p class="upsell"><i class="fa fa-lock"></i> {{labels.post_types_upsell}}</p>
+					</div>
+				</div>
+
 				<span class="divider"></span>
-				
+
 				<!-- Taxonomies -->
 				<div class="columns py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
@@ -96,15 +101,16 @@
 									<i class="form-icon"></i>{{labels.taxonomies_exclude}}
 								</label>
 							</span>
-						
+
 						</div>
-					
+
 					</div>
-				
+
 				</div>
-				
+
 				<span class="divider"></span>
-				
+
+				<!-- Google Analytics -->
 				<div class="columns py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
 						<b>{{labels.ga_title}}</b>
@@ -119,8 +125,9 @@
 						</div>
 					</div>
 				</div>
+
 				<span class="divider"></span>
-				
+
 				<div class="columns py-2" :class="'rop-control-container-'+isPro">
 					<div class="column col-6 col-sm-12 vertical-align rop-control">
 						<b>{{labels.custom_share_title}}</b>
@@ -132,12 +139,17 @@
 								<input type="checkbox" :disabled="!isPro" v-model="generalSettings.custom_messages"/>
 								<i class="form-icon"></i>{{labels.custom_share_yes}}
 							</label>
-							<p class="option-upsell" v-if="!isPro"><i class="fa fa-lock"></i> {{labels.custom_share_upsell}}</p>
 						</div>
 					</div>
 				</div>
+				<!-- Upsell -->
+				<div class="columns py-2" v-if="!isPro">
+					<div class="column text-center">
+						<p class="upsell"><i class="fa fa-lock"></i> {{labels.custom_share_upsell}}</p>
+					</div>
+				</div>
 				<span class="divider"></span>
-			
+
 			</div>
 		</div>
 		<div class="panel-footer text-right">
@@ -264,25 +276,25 @@
 		margin: 0;
 		line-height: normal;
 	}
-	
+
 	#rop_core .input-group {
 		width: 100%;
 	}
-	
+
 	b {
 		margin-bottom: 5px;
 		display: block;
 	}
-	
+
 	#rop_core .input-group .input-group-addon {
 		padding: 3px 5px;
 	}
-	
+
 	@media ( max-width: 600px ) {
 		#rop_core .panel-body .text-gray {
 			margin-bottom: 10px;
 		}
-		
+
 		#rop_core .text-right {
 			text-align: left;
 		}

@@ -385,14 +385,20 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			$new_post['thumbnail'] = $post_details['post_image'];
 		}
 
+		// Tumblr creates hashtags differently
+		$hashtags = preg_replace( array( '/ /', '/#/' ), array( '', ',' ), $post_details['hashtags'] );
+		$hashtags = ltrim( $hashtags, ',' );
+
 		if ( ! empty( $post_details['post_url'] ) ) {
 			$new_post['url']         = trim( $this->get_url( $post_details ) );
 			$new_post['title']       = get_the_title( $post_details['post_id'] );
 			$new_post['type']        = 'link';
 			$new_post['description'] = $post_details['content'];
+			$new_post['tags']            = $hashtags;
 		} else {
 			$new_post['type'] = 'text';
 			$new_post['body'] = $post_details['content'];
+			$new_post['tags'] = $hashtags;
 		}
 		try {
 
