@@ -214,7 +214,7 @@ class Rop_I18n {
 				'media_post_option_title'           => __( 'Title', 'tweet-old-post' ),
 				'media_post_option_caption'         => __( 'Caption', 'tweet-old-post' ),
 				'media_post_option_description'     => __( 'Description', 'tweet-old-post' ),
-				'media_post_upsell'     						=> __( 'Media posting is available in the pro version.', 'tweet-old-post' ),
+				'media_post_upsell'                             => __( 'Media posting is available in the pro version.', 'tweet-old-post' ),
 			),
 			'schedule'    => array(
 				'menu_item'                 => __( 'Custom Schedule', 'tweet-old-post' ),

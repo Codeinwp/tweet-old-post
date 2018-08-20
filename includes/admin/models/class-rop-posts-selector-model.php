@@ -332,15 +332,11 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		if ( ! is_array( $exclude ) ) {
 			$exclude = array();
 		}
+
 		$args = $this->build_query_args( $post_types, $tax_queries, $exclude );
-
-		$media_args = $this->build_media_query_args( $exclude );
-
 		$query = new WP_Query( $args );
-		$media_query = new WP_Query( $media_args );
-
 		$posts = $query->posts;
-		$media_posts = $media_query->posts;
+
 		/**
 		 * Exclude the ids from the excluded array.
 		 */
@@ -350,8 +346,19 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		 * Reset indexes to avoid missing ones.
 		 */
 		$posts = array_values( $posts );
-		// NOTE $media_posts = array_values( $media_posts );
-		$posts = array_merge( $posts, $media_posts );
+
+		$settings = new Rop_Settings_Model;
+		$post_types = wp_list_pluck( $settings->get_selected_post_types(), 'value' );
+
+		if ( in_array( 'attachment', $post_types ) ) {
+
+			$media_args = $this->build_media_query_args();
+			$media_query = new WP_Query( $media_args );
+			$media_posts = $media_query->posts;
+
+			// NOTE $media_posts = array_values( $media_posts );
+			$posts = array_merge( $posts, $media_posts );
+		}
 
 		return $posts;
 	}
@@ -432,22 +439,34 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 *
 	 * @return array
 	 */
-	 private function build_media_query_args() {
+	private function build_media_query_args() {
 
 		$accepted_mime_types = apply_filters( 'accepted_mime_types', array( 'image/jpeg', 'image/png', 'image/gif' ) );
 
 		$args    = array(
-	 		'no_found_rows'          => true,
-	 		'posts_per_page'         => ( 1000 + count( $exclude ) ),
-	 		'post_status' 					 => 'inherit',
-	 		'post_mime_type' 				 => $accepted_mime_types,
-	 		'update_post_meta_cache' => false,
-	 		'update_post_term_cache' => false,
-	 		'fields'                 => 'ids',
-	 		'post_type'              => 'attachment',
-	 		'meta_key'             	 => '_rop_media_share',
-	 		'meta_value'             => 'on',
-	 	);
+			'no_found_rows'          => true,
+			'posts_per_page'         => ( 1000 ),
+			'post_status'                    => 'inherit',
+			'post_mime_type'                 => $accepted_mime_types,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+			'fields'                 => 'ids',
+			'post_type'              => 'attachment',
+			'meta_key'               => '_rop_media_share',
+			'meta_value'             => 'on',
+		);
+
+		$min_age = $this->settings->get_minimum_post_age();
+		if ( ! empty( $min_age ) ) {
+			$args['date_query'][]['before'] = date( 'Y-m-d', strtotime( '-' . $this->settings->get_minimum_post_age() . ' days' ) );
+		}
+		$max_age = $this->settings->get_maximum_post_age();
+		if ( ! empty( $max_age ) ) {
+			$args['date_query'][]['after'] = date( 'Y-m-d', strtotime( '-' . $this->settings->get_maximum_post_age() . ' days' ) );
+		}
+		if ( ! empty( $args['date_query'] ) ) {
+			$args['date_query']['relation'] = 'AND';
+		}
 
 		return $args;
 	}
@@ -462,23 +481,23 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 *
 	 * @return  array
 	 */
-	 public function media_post( $post_id ){
+	public function media_post( $post_id ) {
 
-		 if ( get_post_type( $post_id ) ==  'attachment' ){
-			 $media_post_array = array();
-			 $post_object = get_post( $post_id );
+		if ( get_post_type( $post_id ) == 'attachment' ) {
+			$media_post_array = array();
+			$post_object = get_post( $post_id );
 
-			 $media_post_array['post'] 				= $post_object->post_parent;
-			 $media_post_array['source'] 			= wp_get_attachment_url( $post_id );
-			 $media_post_array['title'] 			= $post_object->post_title;
-			 $media_post_array['caption'] 		= $post_object->post_excerpt;
-			 $media_post_array['description'] = $post_object->post_content;
-		 }else{
-			 return null;
-		 }
+			$media_post_array['post']              = $post_object->post_parent;
+			$media_post_array['source']            = wp_get_attachment_url( $post_id );
+			$media_post_array['title']             = $post_object->post_title;
+			$media_post_array['caption']       = $post_object->post_excerpt;
+			$media_post_array['description'] = $post_object->post_content;
+		} else {
+			return null;
+		}
 
-		 return $media_post_array;
-	 }
+		return $media_post_array;
+	}
 
 	/**
 	 * Method to determine if the buffer is empty or not.

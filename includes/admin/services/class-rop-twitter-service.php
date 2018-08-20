@@ -413,7 +413,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		$post_type = new Rop_Posts_Selector_Model;
 
 		$post_id = $post_details['post_id'];
-		$media_post_content =  $post_details['media_post_content'];
+		$media_post_content = $post_details['media_post_content'];
 
 		$message = $post_details['content'];
 
@@ -429,20 +429,17 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 
 		if ( ! empty( $post_type->media_post( $post_id ) ) ) {
 					$media_response = $api->upload( 'media/upload', array( 'media' => $post_type->media_post( $post_id )['source'] ) );
-					if ( isset( $media_response->media_id_string ) ) {
-						$new_post['media_ids'] = $media_response->media_id_string;
-					} else {
-						$this->logger->alert_error( sprintf( 'Can not upload photo. Error: %s', json_encode( $media_response ) ) );
-					}
-
-					$uploaded_to_link = get_permalink( $post_type->media_post( $post_id )['post'] );	
-					if( ! empty( $uploaded_to_link ) ){
-						$post_details['post_url'] = $uploaded_to_link;
-					}else{
-						$post_details['post_url'] = $post_type->media_post( $post_id )['source'];
-					}
-					$message = $post_type->media_post( $post_id )[$media_post_content];
+			if ( isset( $media_response->media_id_string ) ) {
+				$new_post['media_ids'] = $media_response->media_id_string;
+			} else {
+				$this->logger->alert_error( sprintf( 'Can not upload photo. Error: %s', json_encode( $media_response ) ) );
 			}
+
+					$uploaded_to_link = get_permalink( $post_type->media_post( $post_id )['post'] );
+					$post_details['post_url'] = ( ! empty( $uploaded_to_link ) ) ? $uploaded_to_link : null;
+
+					$message = $post_type->media_post( $post_id )[ $media_post_content ];
+		}
 
 		$link = $this->get_url( $post_details );
 
