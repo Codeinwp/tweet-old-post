@@ -398,15 +398,15 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			 $new_post['url']         = trim( $this->get_url( $post_details ) );
 			 $new_post['title']       = get_the_title( $post_details['post_id'] );
 			 $new_post['description'] = $post_details['content'];
-			 $new_post['tags']              = $hashtags;
+			 $new_post['tags']        = $hashtags;
 
 		} elseif ( ! empty( $post_type->media_post( $post_id ) ) ) {
 
 			 $new_post['type']         = 'photo';
 			 $new_post['source_url']   = esc_url( get_site_url() );
-			 $new_post['data']               = $post_type->media_post( $post_id )['source'];
-			 $new_post['caption']        = $post_type->media_post( $post_id )[ $media_post_content ] . ' ' . trim( $this->get_url( $post_details ) );
-			 $new_post['tags']               = $hashtags;
+			 $new_post['data']         = $post_type->media_post( $post_id )['source'];
+			 $new_post['caption']      = $post_type->media_post( $post_id )[ $media_post_content ] . ' ' . trim( $this->get_url( $post_details ) );
+			 $new_post['tags']         = $hashtags;
 
 		} else {
 			 $new_post['type'] = 'text';

@@ -533,18 +533,19 @@ class Rop_Post_Format_Helper {
 			$utm_medium     = $this->get_utm_tags( 'utm_campaign_medium' );
 			$utm_campaign   = $this->get_utm_tags( 'utm_campaign_name' );
 
-			$post_type = new Rop_Posts_Selector_Model;
-
+			$post_type = new Rop_Posts_Selector_Model();
+			//If post is a media post the we get the post it was uploaded to
+			//If it was not uploaded to any post then we return nothing
 			if ( ! empty( $post_type->media_post( $post ) ) ) {
 				 $uploaded_to_link = get_permalink( $post_type->media_post( $post )['post'] );
 				 $post_url  = ( ! empty( $uploaded_to_link ) ) ? $uploaded_to_link : '';
 			}
 
-						$params                 = array();
-						$params['utm_source']   = empty( $utm_source ) ? 'ReviveOldPost' : $utm_source;
-						$params['utm_medium']   = empty( $utm_medium ) ? 'social' : $utm_medium;
-						$params['utm_campaign'] = empty( $utm_campaign ) ? 'ReviveOldPost' : $utm_campaign;
-						$post_url               = empty( $post_url ) ? '' : add_query_arg( $params, $post_url );
+			$params                 = array();
+			$params['utm_source']   = empty( $utm_source ) ? 'ReviveOldPost' : $utm_source;
+			$params['utm_medium']   = empty( $utm_medium ) ? 'social' : $utm_medium;
+			$params['utm_campaign'] = empty( $utm_campaign ) ? 'ReviveOldPost' : $utm_campaign;
+			$post_url               = empty( $post_url ) ? '' : add_query_arg( $params, $post_url );
 
 		}
 
