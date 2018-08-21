@@ -330,36 +330,38 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	private function query_results( $account_id, $post_types, $tax_queries, $excluded_by_user ) {
 		$exclude = $this->build_exclude( $account_id, $excluded_by_user );
 		if ( ! is_array( $exclude ) ) {
-			$exclude = array();
+		  $exclude = array();
 		}
 
 		$args = $this->build_query_args( $post_types, $tax_queries, $exclude );
 		$query = new WP_Query( $args );
 		$posts = $query->posts;
 
+		$settings = new Rop_Settings_Model();
+		$post_types = wp_list_pluck( $settings->get_selected_post_types(), 'value' );
+
+		//only get media posts if attachment post type selected
+		  if ( in_array( 'attachment', $post_types ) ) {
+
+		    $media_args = $this->build_media_query_args();
+		    $media_query = new WP_Query( $media_args );
+		    $media_posts = $media_query->posts;
+
+		    $posts = array_merge( $posts, $media_posts );
+
+		  }
+
 		/**
 		 * Exclude the ids from the excluded array.
 		 */
 		$posts = array_diff( $posts, $exclude );
-		wp_reset_postdata();
+
 		/**
 		 * Reset indexes to avoid missing ones.
 		 */
 		$posts = array_values( $posts );
 
-		$settings = new Rop_Settings_Model;
-		$post_types = wp_list_pluck( $settings->get_selected_post_types(), 'value' );
-
-		if ( in_array( 'attachment', $post_types ) ) {
-
-			$media_args = $this->build_media_query_args();
-			$media_query = new WP_Query( $media_args );
-			$media_posts = $media_query->posts;
-
-			// NOTE $media_posts = array_values( $media_posts );
-			$posts = array_merge( $posts, $media_posts );
-		}
-
+		wp_reset_postdata();
 		return $posts;
 	}
 
@@ -446,8 +448,8 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		$args    = array(
 			'no_found_rows'          => true,
 			'posts_per_page'         => ( 1000 ),
-			'post_status'                    => 'inherit',
-			'post_mime_type'                 => $accepted_mime_types,
+			'post_status'            => 'inherit',
+			'post_mime_type'         => $accepted_mime_types,
 			'update_post_meta_cache' => false,
 			'update_post_term_cache' => false,
 			'fields'                 => 'ids',
