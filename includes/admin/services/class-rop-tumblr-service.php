@@ -385,7 +385,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			$new_post['thumbnail'] = $post_details['post_image'];
 		}
 
-		$post_type = new Rop_Posts_Selector_Model;
+		$post_type = new Rop_Posts_Selector_Model();
 		$post_id = $post_details['post_id'];
 		$media_post_content = $post_details['media_post_content'];
 
