@@ -360,6 +360,26 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	}
 
 	/**
+	 * Method for getting post author.
+	 *
+	 * @since   8.1.0
+	 * @access  private
+	 *
+	 * @param   int $post_id The post id.
+	 *
+	 * @return
+	 */
+
+	private function get_author( $post_id ){
+		$author_id = get_post_field ( 'post_author', $post_id );
+		$author = get_the_author_meta( 'display_name' , $author_id );
+
+		$author = ( $author !== 'admin' ) ?	$author : '';
+		//allow users to not include author in shared posts
+		return apply_filters( 'tumblr_post_author', $author );
+	}
+
+	/**
 	 * Method for publishing with Twitter service.
 	 *
 	 * @since   8.0.0
@@ -398,6 +418,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			 $new_post['url']         = trim( $this->get_url( $post_details ) );
 			 $new_post['title']       = get_the_title( $post_details['post_id'] );
 			 $new_post['description'] = $post_details['content'];
+			 $new_post['author'] 			= $this->get_author( $post_id );
 			 $new_post['tags']        = $hashtags;
 
 		} elseif ( ! empty( $post_type->media_post( $post_id ) ) ) {

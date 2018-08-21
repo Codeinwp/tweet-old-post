@@ -402,10 +402,10 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		if ( ! empty( $post_details['post_image'] ) ) {
 			$new_post['content']['submitted-image-url'] = $post_details['post_image'];
 		}
-
+		
+		//if not a media post
 		if ( empty( $post_type->media_post( $post_id ) ) ) {
 			$new_post['comment']                  = $post_details['content'] . $post_details['hashtags'];
-			;
 			$new_post['content']['description']   = $post_details['content'];
 			$new_post['content']['title']         = html_entity_decode( get_the_title( $post_details['post_id'] ) );
 			$new_post['content']['submitted-url'] = $this->get_url( $post_details );
