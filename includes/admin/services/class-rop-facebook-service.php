@@ -464,7 +464,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			if ( ! empty( $post_details['post_url'] ) ) {
 				$new_post['name'] = html_entity_decode( get_the_title( $post_details['post_id'] ) );
 				$new_post['link'] = $this->get_url( $post_details );
-			}elseif(  empty( $post_details['post_url'] ) && ! empty( $post_details['post_image'] ) ){
+			}elseif( empty( $post_details['post_url'] ) && ! empty( $post_details['post_image'] ) ){
 				//if "Include Link" option is unchecked, and we have a featured image, lets upload it as a normal image to FB
 				$new_post['source'] = $api->fileToUpload( $post_details['post_image'] );
 				$post_no_link = true;
