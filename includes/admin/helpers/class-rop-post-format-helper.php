@@ -517,6 +517,15 @@ class Rop_Post_Format_Helper {
 			}
 		}
 
+		$post_type = new Rop_Posts_Selector_Model();
+		/*If post is a media post then we get the post it was uploaded to
+		*If it was not uploaded to any post then we return nothing 
+		*/
+		if ( ! empty( $post_type->media_post( $post ) ) ) {
+			 $uploaded_to_link = get_permalink( $post_type->media_post( $post )['post'] );
+			 $post_url  = ( ! empty( $uploaded_to_link ) ) ? $uploaded_to_link : '';
+		}
+
 		$global_settings = new Rop_Global_Settings();
 		$settings_model  = new Rop_Settings_Model();
 
@@ -532,14 +541,6 @@ class Rop_Post_Format_Helper {
 			$utm_source     = $this->get_utm_tags( 'utm_campaign_source' );
 			$utm_medium     = $this->get_utm_tags( 'utm_campaign_medium' );
 			$utm_campaign   = $this->get_utm_tags( 'utm_campaign_name' );
-
-			$post_type = new Rop_Posts_Selector_Model();
-			//If post is a media post then we get the post it was uploaded to
-			//If it was not uploaded to any post then we return nothing
-			if ( ! empty( $post_type->media_post( $post ) ) ) {
-				 $uploaded_to_link = get_permalink( $post_type->media_post( $post )['post'] );
-				 $post_url  = ( ! empty( $uploaded_to_link ) ) ? $uploaded_to_link : '';
-			}
 
 			$params                 = array();
 			$params['utm_source']   = empty( $utm_source ) ? 'ReviveOldPost' : $utm_source;
