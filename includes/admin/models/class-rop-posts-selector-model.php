@@ -434,6 +434,31 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	}
 
 	/**
+	 * Set our supported post types.
+	 *
+	 * @since   8.1.0
+	 * @access  public
+	 *
+	 * @return array
+	 */
+	public function rop_supported_mime_types() {
+		return apply_filters(
+			'accepted_mime_types',
+			array(
+				'image/jpeg',
+				'image/png',
+				'image/gif',
+				'video/mp4',
+				'video/x-m4v',
+				'video/quicktime',
+				'video/x-ms-asf',
+				'video/x-ms-wmv',
+				'video/avi',
+			)
+		);
+	}
+
+	/**
 	 * Utility method to build the args array for the attachments in get post method.
 	 *
 	 * @since   8.1.0
@@ -443,7 +468,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 */
 	private function build_media_query_args() {
 
-		$accepted_mime_types = apply_filters( 'accepted_mime_types', array( 'image/jpeg', 'image/png', 'image/gif' ) );
+		$accepted_mime_types = $this->rop_supported_mime_types();
 
 		$args    = array(
 			'no_found_rows'          => true,
@@ -493,8 +518,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			$media_post_array['source']            = wp_get_attachment_url( $post_id );
 			$media_post_array['title']             = $post_object->post_title;
 			$media_post_array['caption']           = $post_object->post_excerpt;
-			$media_post_array['alt']                       = get_post_meta( $post_id, '_wp_attachment_image_alt', true );
-			;
+			$media_post_array['alt']               = get_post_meta( $post_id, '_wp_attachment_image_alt', true );
 			$media_post_array['description']       = $post_object->post_content;
 		} else {
 			return null;

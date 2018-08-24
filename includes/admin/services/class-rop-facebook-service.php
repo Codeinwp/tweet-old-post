@@ -429,6 +429,29 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	}
 
 	/**
+	 * Defines Facebook supported video types.
+	 *
+	 * @since   8.1.0
+	 * @access  private
+	 *
+	 * @return array
+	 */
+	private function fb_supported_video_types() {
+		// mp4, m4v, mov, wmv, avi
+		return apply_filters(
+			'fb_supported_video_types',
+			array(
+				'video/mp4',
+				'video/x-m4v',
+				'video/quicktime',
+				'video/x-ms-asf',
+				'video/x-ms-wmv',
+				'video/avi',
+			)
+		);
+	}
+
+	/**
 	 * Method for publishing with Facebook service.
 	 *
 	 * @since   8.0.0
@@ -454,7 +477,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		$media_post_content = $post_details['media_post_content'];
 
-		// if is not a media post
+		// If is not a media post
 		if ( empty( $post_type->media_post( $post_id ) ) ) {
 
 			if ( ! empty( $post_details['post_image'] ) ) {
@@ -472,11 +495,19 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 			$new_post['message'] = $post_details['content'] . $post_details['hashtags'];
 
-		} else {
+		}
 
+		// If is Media posts (non-video)
+		if ( ! empty( $post_type->media_post( $post_id ) ) && ! in_array( get_post_mime_type( $post_id ), $this->fb_supported_video_types() ) ) {
 			$new_post['source'] = $api->fileToUpload( $post_type->media_post( $post_id )['source'] );
 			$new_post['message'] = $post_type->media_post( $post_id )[ $media_post_content ] . $this->get_url( $post_details ) . $post_details['hashtags'];
+		}
 
+		// If is video post
+		if ( ! empty( $post_type->media_post( $post_id ) ) && in_array( get_post_mime_type( $post_id ), $this->fb_supported_video_types() ) ) {
+			$new_post['source'] = $api->fileToUpload( $post_type->media_post( $post_id )['source'] );
+			$new_post['title'] = $post_type->media_post( $post_id )['title'];
+			$new_post['description'] = $post_type->media_post( $post_id )[ $media_post_content ] . $this->get_url( $post_details ) . $post_details['hashtags'];
 		}
 
 		if ( ! isset( $args['id'] ) || ! isset( $args['access_token'] ) ) {
@@ -515,13 +546,27 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		$post_type = new Rop_Posts_Selector_Model();
 		$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
 		$api = $this->get_api();
+
+		$fb_supported_video_types = $this->fb_supported_video_types();
+
 		try {
-			// single photos need to be posted to photos endpoint to get desired result
+
+			// If is video posts
+			if ( ! empty( $post_type->media_post( $post_id ) ) && in_array( get_post_mime_type( $post_id ), $fb_supported_video_types ) ) {
+				$api->post( '/' . $page_id . '/videos', $new_post, $token );
+
+				return true;
+			}
+
+			// Single photos need to be posted to photos endpoint to get desired result
 			if ( ! empty( $post_type->media_post( $post_id ) ) || $post_no_link ) {
 				$api->post( '/' . $page_id . '/photos', $new_post, $token );
 
 				return true;
-			} else {
+			}
+
+			// Regular posts
+			if ( empty( $post_type->media_post( $post_id ) ) ) {
 				$api->post( '/' . $page_id . '/feed', $new_post, $token );
 
 				return true;
