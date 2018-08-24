@@ -492,8 +492,10 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			$media_post_array['post']              = $post_object->post_parent;
 			$media_post_array['source']            = wp_get_attachment_url( $post_id );
 			$media_post_array['title']             = $post_object->post_title;
-			$media_post_array['caption']       = $post_object->post_excerpt;
-			$media_post_array['description'] = $post_object->post_content;
+			$media_post_array['caption']           = $post_object->post_excerpt;
+			$media_post_array['alt']                       = get_post_meta( $post_id, '_wp_attachment_image_alt', true );
+			;
+			$media_post_array['description']       = $post_object->post_content;
 		} else {
 			return null;
 		}

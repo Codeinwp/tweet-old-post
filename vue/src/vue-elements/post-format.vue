@@ -42,6 +42,7 @@
 						<select class="form-select" v-model="post_format.media_post">
 							<option value="title">{{labels.media_post_option_title}}</option>
 							<option value="caption">{{labels.media_post_option_caption}}</option>
+							<option value="alt">{{labels.media_post_option_alt_text}}</option>
 							<option value="description">{{labels.media_post_option_description}}</option>
 						</select>
 					</div>
