@@ -454,7 +454,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		$media_post_content = $post_details['media_post_content'];
 
-		//if is not a media post
+		// if is not a media post
 		if ( empty( $post_type->media_post( $post_id ) ) ) {
 
 			if ( ! empty( $post_details['post_image'] ) ) {
@@ -464,8 +464,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			if ( ! empty( $post_details['post_url'] ) ) {
 				$new_post['name'] = html_entity_decode( get_the_title( $post_details['post_id'] ) );
 				$new_post['link'] = $this->get_url( $post_details );
-			}elseif( empty( $post_details['post_url'] ) && ! empty( $post_details['post_image'] ) ){
-				//if "Include Link" option is unchecked, and we have a featured image, lets upload it as a normal image to FB
+			} elseif ( empty( $post_details['post_url'] ) && ! empty( $post_details['post_image'] ) ) {
+				// if "Include Link" option is unchecked, and we have a featured image, lets upload it as a normal image to FB
 				$new_post['source'] = $api->fileToUpload( $post_details['post_image'] );
 				$post_no_link = true;
 			}
@@ -516,16 +516,16 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
 		$api = $this->get_api();
 		try {
-			//single photos need to be posted to photos endpoint to get desired result
+			// single photos need to be posted to photos endpoint to get desired result
 			if ( ! empty( $post_type->media_post( $post_id ) ) || $post_no_link ) {
 				$api->post( '/' . $page_id . '/photos', $new_post, $token );
 
 				return true;
-			}else{
-			$api->post( '/' . $page_id . '/feed', $new_post, $token );
+			} else {
+				$api->post( '/' . $page_id . '/feed', $new_post, $token );
 
-			return true;
-		}
+				return true;
+			}
 		} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
 			$this->logger->alert_error( 'Unable to share post for facebook.  Error: ' . $e->getMessage() );
 

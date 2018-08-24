@@ -399,7 +399,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$post_id = $post_details['post_id'];
 		$media_post_content = $post_details['media_post_content'];
 
-		//if not a media post
+		// if not a media post
 		if ( empty( $post_type->media_post( $post_id ) ) ) {
 			$new_post['comment']                  = $post_details['content'] . $post_details['hashtags'];
 			$new_post['content']['description']   = $post_details['content'];
@@ -409,7 +409,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 				$new_post['content']['submitted-image-url'] = $post_details['post_image'];
 			}
 		} else {
-			/*LinkedIn will only show URL in comment if there is more than one.
+			/*
+			LinkedIn will only show URL in comment if there is more than one.
 			*Hashtags count as a link: http://rviv.ly/PJI89d (hashtags by itself will show)
 			*The Link in comment will not show if there are no hashtags.
 			*/
@@ -420,15 +421,14 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			*If image was not uploaded to a post, set the share link title to the image title field from WP.
 			*Not doing this would cause share to have a title same as full image URL
 			*/
-			if( empty( $this->get_url( $post_details ) ) ){
+			if ( empty( $this->get_url( $post_details ) ) ) {
 				$new_post['content']['title']       = html_entity_decode( $post_type->media_post( $post_id )['title'] );
 				$new_post['content']['submitted-url'] = $post_type->media_post( $post_id )['source'];
-			}else{
+			} else {
 				$new_post['content']['title']       = html_entity_decode( get_the_title( $post_type->media_post( $post_id )['post'] ) );
 				$new_post['content']['submitted-image-url'] = $post_type->media_post( $post_id )['source'];
 				$new_post['content']['submitted-url'] = $this->get_url( $post_details );
 			}
-
 		}
 
 		$new_post['visibility']['code'] = 'anyone';

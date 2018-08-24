@@ -518,8 +518,10 @@ class Rop_Post_Format_Helper {
 		}
 
 		$post_type = new Rop_Posts_Selector_Model();
-		/*If post is a media post then we get the post it was uploaded to
-		*If it was not uploaded to any post then we return nothing 
+
+		/*
+		*If post is a media post then we get the post it was uploaded to.
+		*If it was not uploaded to any post then we return nothing.
 		*/
 		if ( ! empty( $post_type->media_post( $post ) ) ) {
 			 $uploaded_to_link = get_permalink( $post_type->media_post( $post )['post'] );

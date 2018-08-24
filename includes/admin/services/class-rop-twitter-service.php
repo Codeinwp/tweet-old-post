@@ -427,7 +427,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			}
 		}
 
-		//if media post
+		// if media post
 		if ( ! empty( $post_type->media_post( $post_id ) ) ) {
 					$media_response = $api->upload( 'media/upload', array( 'media' => $post_type->media_post( $post_id )['source'] ) );
 			if ( isset( $media_response->media_id_string ) ) {

@@ -330,7 +330,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	private function query_results( $account_id, $post_types, $tax_queries, $excluded_by_user ) {
 		$exclude = $this->build_exclude( $account_id, $excluded_by_user );
 		if ( ! is_array( $exclude ) ) {
-		  $exclude = array();
+			$exclude = array();
 		}
 
 		$args = $this->build_query_args( $post_types, $tax_queries, $exclude );
@@ -340,16 +340,16 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		$settings = new Rop_Settings_Model();
 		$post_types = wp_list_pluck( $settings->get_selected_post_types(), 'value' );
 
-		//only get media posts if attachment post type selected
-		  if ( in_array( 'attachment', $post_types ) ) {
+		// only get media posts if attachment post type selected
+		if ( in_array( 'attachment', $post_types ) ) {
 
-		    $media_args = $this->build_media_query_args();
-		    $media_query = new WP_Query( $media_args );
-		    $media_posts = $media_query->posts;
+			$media_args = $this->build_media_query_args();
+			$media_query = new WP_Query( $media_args );
+			$media_posts = $media_query->posts;
 
-		    $posts = array_merge( $posts, $media_posts );
+			$posts = array_merge( $posts, $media_posts );
 
-		  }
+		}
 
 		/**
 		 * Exclude the ids from the excluded array.
@@ -479,7 +479,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @since   8.1.0
 	 * @access  private
 	 *
-	 * @param   int $post_id The post ID
+	 * @param   int $post_id The post ID.
 	 *
 	 * @return  array
 	 */
