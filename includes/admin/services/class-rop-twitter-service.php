@@ -427,8 +427,8 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			}
 		}
 
-		// if media post
-		if ( ! empty( $post_type->media_post( $post_id ) ) ) {
+		// Photo posts
+		if ( ! empty( $post_type->media_post( $post_id ) ) && ! in_array( get_post_mime_type( $post_id ), $post_type->rop_supported_mime_types()['video'] ) ) {
 					$media_response = $api->upload( 'media/upload', array( 'media' => $post_type->media_post( $post_id )['source'] ) );
 			if ( isset( $media_response->media_id_string ) ) {
 				$new_post['media_ids'] = $media_response->media_id_string;
@@ -438,9 +438,31 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 					$message = $post_type->media_post( $post_id )[ $media_post_content ];
 		}
 
-		$link = $this->get_url( $post_details );
+		// Video post
+		if ( ! empty( $post_type->media_post( $post_id ) ) && get_post_mime_type( $post_id ) == 'video/mp4' ) {
+			 // returning false due to issues with video uploads. See here: https://is.gd/MWwuw8
+			return false;
 
-		$new_post['status'] = $message . $link . $post_details['hashtags'];
+			$media_response = $api->upload( 'media/upload', array( 'media' => $post_type->media_post( $post_id )['source'], 'media_type' => 'video/mp4', 'media_category' => 'tweet_video' ), true );
+
+			if ( isset( $media_response->media_id_string ) ) {
+
+				$new_post['media_ids'] = $media_response->media_id_string;
+
+				$limit = 0;
+				do {
+					$upload_status = $api->mediaStatus( $media_response->media_id_string );
+					sleep( 5 );
+					$limit++;
+				} while ( $upload_status->processing_info->state !== 'succeeded' && $limit <= 10 );
+
+			} else {
+				$this->logger->alert_error( sprintf( 'Can not upload video. Error: %s', json_encode( $media_response ) ) );
+			}
+					$message = $post_type->media_post( $post_id )[ $media_post_content ];
+		}
+
+		$new_post['status'] = $message . $this->get_url( $post_details ) . $post_details['hashtags'];
 		$this->logger->info( sprintf( 'Before twitter share: %s', json_encode( $new_post ) ) );
 
 		$response = $api->post( 'statuses/update', $new_post );

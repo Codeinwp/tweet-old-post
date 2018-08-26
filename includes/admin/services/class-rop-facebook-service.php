@@ -454,7 +454,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		$media_post_content = $post_details['media_post_content'];
 
-		// If is not a media post
+		// Regular posts
 		if ( empty( $post_type->media_post( $post_id ) ) ) {
 
 			if ( ! empty( $post_details['post_image'] ) ) {
@@ -474,13 +474,13 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		}
 
-		// If is Media posts (non-video)
+		// Photo posts
 		if ( ! empty( $post_type->media_post( $post_id ) ) && ! in_array( get_post_mime_type( $post_id ), $post_type->rop_supported_mime_types()['video'] ) ) {
 			$new_post['source'] = $api->fileToUpload( $post_type->media_post( $post_id )['source'] );
 			$new_post['message'] = $post_type->media_post( $post_id )[ $media_post_content ] . $this->get_url( $post_details ) . $post_details['hashtags'];
 		}
 
-		// If is video post
+		// Video posts
 		if ( ! empty( $post_type->media_post( $post_id ) ) && in_array( get_post_mime_type( $post_id ), $post_type->rop_supported_mime_types()['video'] ) ) {
 			$new_post['source'] = $api->fileToUpload( $post_type->media_post( $post_id )['source'] );
 			$new_post['title'] = $post_type->media_post( $post_id )['title'];
