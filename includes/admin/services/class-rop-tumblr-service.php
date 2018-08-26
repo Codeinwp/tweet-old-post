@@ -426,7 +426,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		}
 
 		// Photo post
-		if ( ! empty( $post_type->media_post( $post_id ) ) && get_post_mime_type( $post_id ) !== 'video/mp4' ) {
+		if ( ! empty( $post_type->media_post( $post_id ) ) && ! in_array( get_post_mime_type( $post_id ), $post_type->rop_supported_mime_types()['video'] ) ) {
 			 $new_post['type']         = 'photo';
 			 $new_post['source_url']   = esc_url( get_site_url() );
 			 $new_post['data']         = $post_type->media_post( $post_id )['source'];
@@ -434,7 +434,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			 $new_post['tags']         = $hashtags;
 		}
 
-		// Video post
+		// Video post| HTML5 video doesn't support all our initially set video formats
 		if ( ! empty( $post_type->media_post( $post_id ) ) && get_post_mime_type( $post_id ) == 'video/mp4' ) {
 			$new_post['type']         = 'video';
 			$new_post['source_url']   = esc_url( get_site_url() );

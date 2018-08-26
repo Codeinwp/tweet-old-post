@@ -441,22 +441,38 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 *
 	 * @return array
 	 */
-	public function rop_supported_mime_types() {
-		return apply_filters(
-			'accepted_mime_types',
-			array(
-				'image/jpeg',
-				'image/png',
-				'image/gif',
-				'video/mp4',
-				'video/x-m4v',
-				'video/quicktime',
-				'video/x-ms-asf',
-				'video/x-ms-wmv',
-				'video/avi',
-			)
-		);
-	}
+	 public function rop_supported_mime_types(){
+
+ 		$accepted_mime_types = array();
+
+ 		$image_mime_types = apply_filters(
+ 			'accepted_image_mime_types',
+ 			array(
+ 						'image/jpeg',
+ 						'image/png',
+ 						'image/gif',
+ 					) );
+
+ 		$video_mime_types = apply_filters(
+ 			'accepted_video_mime_types',
+ 			array(
+ 						'video/mp4',
+ 						'video/x-m4v',
+ 						'video/quicktime',
+ 						'video/x-ms-asf',
+ 						'video/x-ms-wmv',
+ 						'video/avi',
+ 					) );
+
+ 	$accepted_mime_types['image'] = $image_mime_types;
+
+ 	$accepted_mime_types['video'] = $video_mime_types;
+
+ 	$accepted_mime_types['all'] 	= array_merge( $image_mime_types, $video_mime_types );
+
+ 	return $accepted_mime_types;
+
+ 	}
 
 	/**
 	 * Utility method to build the args array for the attachments in get post method.
@@ -468,7 +484,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 */
 	private function build_media_query_args() {
 
-		$accepted_mime_types = $this->rop_supported_mime_types();
+		$accepted_mime_types = $this->rop_supported_mime_types()['all'];
 
 		$args    = array(
 			'no_found_rows'          => true,

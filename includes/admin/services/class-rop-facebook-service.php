@@ -429,29 +429,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	}
 
 	/**
-	 * Defines Facebook supported video types.
-	 *
-	 * @since   8.1.0
-	 * @access  private
-	 *
-	 * @return array
-	 */
-	private function fb_supported_video_types() {
-		// mp4, m4v, mov, wmv, avi
-		return apply_filters(
-			'fb_supported_video_types',
-			array(
-				'video/mp4',
-				'video/x-m4v',
-				'video/quicktime',
-				'video/x-ms-asf',
-				'video/x-ms-wmv',
-				'video/avi',
-			)
-		);
-	}
-
-	/**
 	 * Method for publishing with Facebook service.
 	 *
 	 * @since   8.0.0
@@ -498,13 +475,13 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		}
 
 		// If is Media posts (non-video)
-		if ( ! empty( $post_type->media_post( $post_id ) ) && ! in_array( get_post_mime_type( $post_id ), $this->fb_supported_video_types() ) ) {
+		if ( ! empty( $post_type->media_post( $post_id ) ) && ! in_array( get_post_mime_type( $post_id ), $post_type->rop_supported_mime_types()['video'] ) ) {
 			$new_post['source'] = $api->fileToUpload( $post_type->media_post( $post_id )['source'] );
 			$new_post['message'] = $post_type->media_post( $post_id )[ $media_post_content ] . $this->get_url( $post_details ) . $post_details['hashtags'];
 		}
 
 		// If is video post
-		if ( ! empty( $post_type->media_post( $post_id ) ) && in_array( get_post_mime_type( $post_id ), $this->fb_supported_video_types() ) ) {
+		if ( ! empty( $post_type->media_post( $post_id ) ) && in_array( get_post_mime_type( $post_id ), $post_type->rop_supported_mime_types()['video'] ) ) {
 			$new_post['source'] = $api->fileToUpload( $post_type->media_post( $post_id )['source'] );
 			$new_post['title'] = $post_type->media_post( $post_id )['title'];
 			$new_post['description'] = $post_type->media_post( $post_id )[ $media_post_content ] . $this->get_url( $post_details ) . $post_details['hashtags'];
@@ -547,7 +524,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
 		$api = $this->get_api();
 
-		$fb_supported_video_types = $this->fb_supported_video_types();
+		$fb_supported_video_types = $post_type->rop_supported_mime_types()['video'];
 
 		try {
 
