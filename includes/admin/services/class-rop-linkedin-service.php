@@ -408,19 +408,22 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			if ( ! empty( $post_details['post_image'] ) ) {
 				$new_post['content']['submitted-image-url'] = $post_details['post_image'];
 			}
-		} else {
-			/*
-			LinkedIn will only show URL in comment if there is more than one.
-			*Hashtags count as a link: http://rviv.ly/PJI89d (hashtags by itself will show)
-			*The Link in comment will not show if there are no hashtags.
-			*/
-			$new_post['comment']                  = $post_type->media_post( $post_id )[ $media_post_content ] . $this->get_url( $post_details ) . $post_details['hashtags'];
-			$new_post['content']['description']   = $post_type->media_post( $post_id )[ $media_post_content ] . $this->get_url( $post_details ) . $post_details['hashtags'];
+		}
 
-			/*
-			*If image was not uploaded to a post, set the share link title to the image title field from WP.
-			*Not doing this would cause share to have a title same as full image URL
-			*/
+		// Media Posts
+		if ( ! empty( $post_type->media_post( $post_id ) ) && ! in_array( get_post_mime_type( $post_id ), $post_type->rop_supported_mime_types()['video'] ) ) {
+				/*
+				LinkedIn will only show URL in comment if there is more than one.
+				*Hashtags count as a link: http://rviv.ly/PJI89d (hashtags by itself will show)
+				*The Link in comment will not show if there are no hashtags.
+				*/
+				$new_post['comment']                  = $post_type->media_post( $post_id )[ $media_post_content ] . $this->get_url( $post_details ) . $post_details['hashtags'];
+				$new_post['content']['description']   = $post_type->media_post( $post_id )[ $media_post_content ] . $this->get_url( $post_details ) . $post_details['hashtags'];
+
+				/*
+				*If image was not uploaded to a post, set the share link title to the image title field from WP.
+				*Not doing this would cause share to have a title same as full image URL
+				*/
 			if ( empty( $this->get_url( $post_details ) ) ) {
 				$new_post['content']['title']       = html_entity_decode( $post_type->media_post( $post_id )['title'] );
 				$new_post['content']['submitted-url'] = $post_type->media_post( $post_id )['source'];
@@ -429,6 +432,20 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 				$new_post['content']['submitted-image-url'] = $post_type->media_post( $post_id )['source'];
 				$new_post['content']['submitted-url'] = $this->get_url( $post_details );
 			}
+		}
+
+		// Video Posts
+		if ( ! empty( $post_type->media_post( $post_id ) ) && in_array( get_post_mime_type( $post_id ), $post_type->rop_supported_mime_types()['video'] ) ) {
+
+			$placeholder = esc_url( plugins_url( '../assets/img/video_placeholder.jpg', dirname( __DIR__ ) ) );
+
+			$new_post['comment']                            = $post_type->media_post( $post_id )[ $media_post_content ] . $this->get_url( $post_details ) . $post_details['hashtags'];
+			$new_post['content']['description']             = $post_type->media_post( $post_id )[ $media_post_content ] . $this->get_url( $post_details ) . $post_details['hashtags'];
+			$new_post['content']['title']                       = $post_type->media_post( $post_id )['title'];
+			// set a custom placeholder image
+			$new_post['content']['submitted-image-url'] = apply_filters( 'rop_video_placeholder', $placeholder );
+			$new_post['content']['submitted-url']           = $post_type->media_post( $post_id )['source'];
+
 		}
 
 		$new_post['visibility']['code'] = 'anyone';
