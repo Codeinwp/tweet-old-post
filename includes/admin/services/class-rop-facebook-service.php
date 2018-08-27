@@ -451,7 +451,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		$post_type = new Rop_Posts_Selector_Model();
 		$post_id = $post_details['post_id'];
-
+		$post_no_link = false;
 		$media_post_content = $post_details['media_post_content'];
 
 		// Regular posts
@@ -536,7 +536,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			}
 
 			// Single photos need to be posted to photos endpoint to get desired result
-			if ( ! empty( $post_type->media_post( $post_id ) ) || $post_no_link ) {
+			if ( ! empty( $post_type->media_post( $post_id ) ) || $post_no_link == true ) {
 				$api->post( '/' . $page_id . '/photos', $new_post, $token );
 
 				return true;
