@@ -438,12 +438,10 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 					$message = $post_type->media_post( $post_id )[ $media_post_content ];
 		}
 
-		// Video post
+		// Video post | Twitter primarily supports MP4 video, so lets only allow that
 		if ( ! empty( $post_type->media_post( $post_id ) ) && get_post_mime_type( $post_id ) == 'video/mp4' ) {
-			 // returning false due to issues with video uploads. See here: https://is.gd/MWwuw8
-			return false;
 
-			$media_response = $api->upload( 'media/upload', array( 'media' => $post_type->media_post( $post_id )['source'], 'media_type' => 'video/mp4', 'media_category' => 'tweet_video' ), true );
+			$media_response = $api->upload( 'media/upload', array( 'media' => get_attached_file( $post_id ), 'media_type' => 'video/mp4', 'media_category' => 'tweet_video' ), true );
 
 			if ( isset( $media_response->media_id_string ) ) {
 
