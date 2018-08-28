@@ -517,7 +517,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	}
 
 	/**
-	 * Utility method to build the args array for the attachments in get post method.
+	 * Method to get determine media posts and get thier content.
 	 *
 	 * @since   8.1.0
 	 * @access  private
@@ -538,6 +538,13 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			$media_post_array['caption']           = $post_object->post_excerpt;
 			$media_post_array['alt']               = get_post_meta( $post_id, '_wp_attachment_image_alt', true );
 			$media_post_array['description']       = $post_object->post_content;
+
+			if ( ! in_array( get_post_mime_type( $post_id ), $this->rop_supported_mime_types()['video'] ) ){
+				 $media_post_array['alt'] 				= get_post_meta( $post_id, '_wp_attachment_image_alt', true);
+			 }else{
+				 $media_post_array['alt'] 				= $post_object->post_title;
+			 }
+
 		} else {
 			return null;
 		}
