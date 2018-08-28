@@ -429,11 +429,15 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 
 		// Photo posts
 		if ( ! empty( $post_type->media_post( $post_id ) ) && ! in_array( get_post_mime_type( $post_id ), $post_type->rop_supported_mime_types()['video'] ) ) {
-					$media_response = $api->upload( 'media/upload', array( 'media' => $post_type->media_post( $post_id )['source'] ) );
-			if ( isset( $media_response->media_id_string ) ) {
-				$new_post['media_ids'] = $media_response->media_id_string;
+			if ( ! empty( get_attached_file( $post_id ) ) ) {
+					$media_response = $api->upload( 'media/upload', array( 'media' => get_attached_file( $post_id ) ) );
+				if ( isset( $media_response->media_id_string ) ) {
+					$new_post['media_ids'] = $media_response->media_id_string;
+				} else {
+					$this->logger->alert_error( sprintf( 'Can not upload photo. Error: %s', json_encode( $media_response ) ) );
+				}
 			} else {
-				$this->logger->alert_error( sprintf( 'Can not upload photo. Error: %s', json_encode( $media_response ) ) );
+				$this->logger->alert_error( 'Twitter: Not a valid photo media file. ID: ' . $post_id );
 			}
 					$message = $post_type->media_post( $post_id )[ $media_post_content ];
 		}
@@ -441,21 +445,26 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		// Video post | Twitter primarily supports MP4 video, so lets only allow that
 		if ( ! empty( $post_type->media_post( $post_id ) ) && get_post_mime_type( $post_id ) == 'video/mp4' ) {
 
-			$media_response = $api->upload( 'media/upload', array( 'media' => get_attached_file( $post_id ), 'media_type' => 'video/mp4', 'media_category' => 'tweet_video' ), true );
+			if ( ! empty( get_attached_file( $post_id ) ) ) {
 
-			if ( isset( $media_response->media_id_string ) ) {
+				$media_response = $api->upload( 'media/upload', array( 'media' => get_attached_file( $post_id ), 'media_type' => 'video/mp4', 'media_category' => 'tweet_video' ), true );
 
-				$new_post['media_ids'] = $media_response->media_id_string;
+				if ( isset( $media_response->media_id_string ) ) {
 
-				$limit = 0;
-				do {
-					$upload_status = $api->mediaStatus( $media_response->media_id_string );
-					sleep( 5 );
-					$limit++;
-				} while ( $upload_status->processing_info->state !== 'succeeded' && $limit <= 10 );
+					$new_post['media_ids'] = $media_response->media_id_string;
 
+					$limit = 0;
+					do {
+						$upload_status = $api->mediaStatus( $media_response->media_id_string );
+						sleep( 6 );
+						$limit++;
+					} while ( $upload_status->processing_info->state !== 'succeeded' && $limit <= 10 );
+
+				} else {
+					$this->logger->alert_error( sprintf( 'Can not upload video. Error: %s', json_encode( $media_response ) ) );
+				}
 			} else {
-				$this->logger->alert_error( sprintf( 'Can not upload video. Error: %s', json_encode( $media_response ) ) );
+						$this->logger->alert_error( 'Twitter: Not a valid video media file. ID: ' . $post_id );
 			}
 					$message = $post_type->media_post( $post_id )[ $media_post_content ];
 		}
