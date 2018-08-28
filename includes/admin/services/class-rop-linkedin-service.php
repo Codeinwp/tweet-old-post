@@ -397,12 +397,11 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		$post_type = new Rop_Posts_Selector_Model;
 		$post_id = $post_details['post_id'];
-		$media_post_content = $post_details['media_post_content'];
 
 		// if not a media post
 		if ( empty( $post_type->media_post( $post_id ) ) ) {
-			$new_post['comment']                  = $post_details['content'] . $post_details['hashtags'];
-			$new_post['content']['description']   = $post_details['content'];
+			$new_post['comment']                  = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
+			$new_post['content']['description']   = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
 			$new_post['content']['title']         = html_entity_decode( get_the_title( $post_id ) );
 			$new_post['content']['submitted-url'] = $this->get_url( $post_details );
 			if ( ! empty( $post_details['post_image'] ) ) {
@@ -410,15 +409,15 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			}
 		}
 
-		// Media Posts
+		// Photo Posts
 		if ( ! empty( $post_type->media_post( $post_id ) ) && ! in_array( get_post_mime_type( $post_id ), $post_type->rop_supported_mime_types()['video'] ) ) {
 				/*
 				LinkedIn will only show URL in comment if there is more than one.
 				*Hashtags count as a link: http://rviv.ly/PJI89d (hashtags by itself will show)
 				*The Link in comment will not show if there are no hashtags.
 				*/
-				$new_post['comment']                  = $post_type->media_post( $post_id )[ $media_post_content ] . $this->get_url( $post_details ) . $post_details['hashtags'];
-				$new_post['content']['description']   = $post_type->media_post( $post_id )[ $media_post_content ] . $this->get_url( $post_details ) . $post_details['hashtags'];
+				$new_post['comment']                  = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
+				$new_post['content']['description']   = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
 
 				/*
 				*If image was not uploaded to a post, set the share link title to the image title field from WP.
@@ -439,11 +438,11 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 			$placeholder = esc_url( plugins_url( '../assets/img/video_placeholder.jpg', dirname( __DIR__ ) ) );
 
-			$new_post['comment']                            = $post_type->media_post( $post_id )[ $media_post_content ] . $this->get_url( $post_details ) . $post_details['hashtags'];
-			$new_post['content']['description']             = $post_type->media_post( $post_id )[ $media_post_content ] . $this->get_url( $post_details ) . $post_details['hashtags'];
-			$new_post['content']['title']                       = $post_type->media_post( $post_id )['title'];
+			$new_post['comment']                            = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
+			$new_post['content']['description']             = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
+			$new_post['content']['title']                   = $post_type->media_post( $post_id )['title'];
 			// set a custom placeholder image
-			$new_post['content']['submitted-image-url'] = apply_filters( 'rop_video_placeholder', $placeholder );
+			$new_post['content']['submitted-image-url']         = apply_filters( 'rop_video_placeholder', $placeholder );
 			$new_post['content']['submitted-url']           = $post_type->media_post( $post_id )['source'];
 
 		}

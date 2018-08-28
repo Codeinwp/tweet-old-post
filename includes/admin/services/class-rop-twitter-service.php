@@ -413,8 +413,6 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		$post_type = new Rop_Posts_Selector_Model;
 
 		$post_id = $post_details['post_id'];
-		$media_post_content = $post_details['media_post_content'];
-
 		$message = $post_details['content'];
 
 		if ( ! empty( $post_details['post_image'] ) && empty( $post_type->media_post( $post_id ) ) ) {
@@ -439,7 +437,6 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			} else {
 				$this->logger->alert_error( 'Twitter: Not a valid photo media file. ID: ' . $post_id );
 			}
-					$message = $post_type->media_post( $post_id )[ $media_post_content ];
 		}
 
 		// Video post | Twitter primarily supports MP4 video, so lets only allow that
@@ -466,7 +463,6 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			} else {
 						$this->logger->alert_error( 'Twitter: Not a valid video media file. ID: ' . $post_id );
 			}
-					$message = $post_type->media_post( $post_id )[ $media_post_content ];
 		}
 
 		$new_post['status'] = $message . $this->get_url( $post_details ) . $post_details['hashtags'];

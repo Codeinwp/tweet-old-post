@@ -402,7 +402,6 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 
 		$post_type = new Rop_Posts_Selector_Model();
 		$post_id = $post_details['post_id'];
-		$media_post_content = $post_details['media_post_content'];
 
 		// Tumblr creates hashtags differently
 		$hashtags = preg_replace( array( '/ /', '/#/' ), array( '', ',' ), $post_details['hashtags'] );
@@ -430,7 +429,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			 $new_post['type']         = 'photo';
 			 $new_post['source_url']   = esc_url( get_site_url() );
 			 $new_post['data']         = $post_type->media_post( $post_id )['source'];
-			 $new_post['caption']      = $post_type->media_post( $post_id )[ $media_post_content ] . ' ' . trim( $this->get_url( $post_details ) );
+			 $new_post['caption']      = $post_details['content'] . ' ' . trim( $this->get_url( $post_details ) );
 			 $new_post['tags']         = $hashtags;
 		}
 
@@ -442,7 +441,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
   																 <source src="' . $post_type->media_post( $post_id )['source'] . '" type="video/mp4">
 																	 Your browser does not support the video tag.
 																	 </video>';
-			$new_post['caption']      = $post_type->media_post( $post_id )[ $media_post_content ] . ' ' . trim( $this->get_url( $post_details ) );
+			$new_post['caption']      = $post_details['content'] . ' ' . trim( $this->get_url( $post_details ) );
 			$new_post['tags']         = $hashtags;
 		}
 

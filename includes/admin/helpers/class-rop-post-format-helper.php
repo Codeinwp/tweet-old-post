@@ -193,23 +193,33 @@ class Rop_Post_Format_Helper {
 	 * @return mixed|string
 	 */
 	private function build_base_content( $post_id ) {
-		switch ( $this->post_format['post_content'] ) {
-			case 'post_title':
-				$content = get_the_title( $post_id );
-				break;
-			case 'post_content':
-				$content = apply_filters( 'the_content', get_post_field( 'post_content', $post_id ) );
-				break;
-			case 'post_title_content':
-				$content = get_the_title( $post_id ) . ' ' . apply_filters( 'the_content', get_post_field( 'post_content', $post_id ) );
-				break;
-			case 'custom_field':
-				$content = $this->get_custom_field_value( $post_id, $this->post_format['custom_meta_field'] );
-				break;
-			default:
-				$content = '';
-				break;
+		$post_type = new Rop_Posts_Selector_Model();
+
+		// If not media post.
+		if ( empty( $post_type->media_post( $post_id ) ) ) {
+
+			switch ( $this->post_format['post_content'] ) {
+				case 'post_title':
+					$content = get_the_title( $post_id );
+					break;
+				case 'post_content':
+					$content = apply_filters( 'the_content', get_post_field( 'post_content', $post_id ) );
+					break;
+				case 'post_title_content':
+					$content = get_the_title( $post_id ) . ' ' . apply_filters( 'the_content', get_post_field( 'post_content', $post_id ) );
+					break;
+				case 'custom_field':
+					$content = $this->get_custom_field_value( $post_id, $this->post_format['custom_meta_field'] );
+					break;
+				default:
+					$content = '';
+					break;
+			}
+		} else {
+			$media_post_content = $this->post_format['media_post'];
+			$content = $post_type->media_post( $post_id )[ $media_post_content ];
 		}
+
 		$content = strip_shortcodes( $content );
 		$content = wp_strip_all_tags( html_entity_decode( $content, ENT_QUOTES ) );
 
