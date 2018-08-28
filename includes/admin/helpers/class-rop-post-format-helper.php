@@ -570,6 +570,14 @@ class Rop_Post_Format_Helper {
 				return $share_image;
 			}
 		}
+
+		$post_selector = new Rop_Posts_Selector_Model;
+		// Show video placeholder in queue.
+		if ( in_array( get_post_mime_type( $post_id ), $post_selector->rop_supported_mime_types()['video'] ) ) {
+			$video_placeholder = esc_url( plugins_url( '../assets/img/video_placeholder.jpg', dirname( __DIR__ ) ) );
+			return $video_placeholder;
+		}
+
 		if ( has_post_thumbnail( $post_id ) ) {
 			return get_the_post_thumbnail_url( $post_id, 'large' );
 		}
