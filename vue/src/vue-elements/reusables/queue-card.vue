@@ -258,6 +258,7 @@
 					if (account !== undefined && account.service === 'twitter') serviceIcon = serviceIcon.concat('twitter twitter')
 					if (account !== undefined && account.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin linkedin')
 					if (account !== undefined && account.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr tumblr')
+					if (account !== undefined && account.service === 'pinterest') serviceIcon = serviceIcon.concat('pinterest pinterest')
 				}
 				return serviceIcon
 			},

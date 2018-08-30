@@ -114,6 +114,10 @@ class Rop_Global_Settings {
 			'active' => false,
 			'name'   => 'Tumblr',
 		),
+		'pinterest' => array(
+			'active'           => false,
+			'name'             => 'Pinterest',
+		),
 	);
 
 	/**
@@ -231,6 +235,24 @@ class Rop_Global_Settings {
 			'image'                => false,
 			'utm_campaign_medium'  => 'social',
 			'utm_campaign_name'    => 'ReviveOldPost',
+		),
+		'pinterest' => array(
+			'post_content'         => 'post_title',
+			'custom_meta_field'    => '',
+			'maximum_length'       => '1000',
+			'custom_text'          => '',
+			'custom_text_pos'      => 'beginning',
+			'include_link'         => true,
+			'url_from_meta'        => false,
+			'url_meta_key'         => '',
+			'short_url'            => true,
+			'short_url_service'    => 'rviv.ly',
+			'hashtags'             => 'no-hashtags',
+			'hashtags_length'      => '20',
+			'hashtags_common'      => '',
+			'hashtags_custom'      => '',
+			'shortner_credentials' => array(),
+			'image'                => true,
 		),
 	);
 
