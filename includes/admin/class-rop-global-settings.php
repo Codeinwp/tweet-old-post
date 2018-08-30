@@ -341,8 +341,8 @@ class Rop_Global_Settings {
 	/**
 	 * Get license plan.
 	 *      -1 - Pro is not present nor installed.
-	 *      0 - pro is installed but not active.
-	 *      1,2,3 - plans that the user is using.
+	 *      0 - Pro is installed but not active.
+	 *      1,2,3 - Plans that the user is using.
 	 *
 	 * @since   8.0.0
 	 * @access  public

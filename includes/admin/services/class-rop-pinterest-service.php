@@ -352,6 +352,13 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 		if ( Rop_Admin::rop_site_is_staging() ) {
 			return false;
 		}
+		$post_id = $post_details['post_id'];
+		$post_type = new Rop_Posts_Selector_Model;
+
+		// Doesn't support native video.
+		if ( in_array( get_post_mime_type( $post_id ), $post_type->rop_supported_mime_types()['video'] ) ) {
+			return false;
+		}
 
 		$this->set_api(
 			$this->credentials['app_id'],
@@ -361,18 +368,36 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 		$api      = $this->get_api();
 		$api->auth->setOAuthToken( $args['credentials']['token'] );
 
-		if ( empty( $post_details['post_image'] ) ) {
-			$this->logger->alert_error( sprintf( 'No image present in %s to pin to %s for %s', html_entity_decode( get_the_title( $post_details['post_id'] ) ), $args['id'], $post_details['service'] ) );
-			return false;
+		// Regular Posts
+		if ( empty( $post_type->media_post( $post_id ) ) ) {
+
+			if ( empty( $post_details['post_image'] ) ) {
+				$this->logger->alert_error( sprintf( 'No image present in %s to pin to %s for %s', html_entity_decode( get_the_title( $post_details['post_id'] ) ), $args['id'], $post_details['service'] ) );
+				return false;
+			}
+
+			$pin            = $api->pins->create(
+				array(
+					'note'          => $post_details['content'] . $post_details['hashtags'],
+					'image_url'     => $post_details['post_image'],
+					'board'         => $args['id'],
+				)
+			);
+
 		}
 
-		$pin            = $api->pins->create(
-			array(
-				'note'          => $post_details['content'],
-				'image_url'     => $post_details['post_image'],
-				'board'         => $args['id'],
-			)
-		);
+		// Photo Posts
+		if ( ! empty( $post_type->media_post( $post_id ) ) && in_array( get_post_mime_type( $post_id ), $post_type->rop_supported_mime_types()['image'] ) ) {
+
+			$pin            = $api->pins->create(
+				array(
+					'note'          => $post_details['content'] . $post_details['hashtags'],
+					'image_url'     => $post_type->media_post( $post_id )['source'],
+					'board'         => $args['id'],
+				)
+			);
+
+		}
 
 		if ( empty( $pin ) ) {
 			$this->logger->alert_error( sprintf( 'Unable to pin to %s for %s', $args['id'], $post_details['service'] ) );
