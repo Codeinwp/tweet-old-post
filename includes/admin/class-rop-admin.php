@@ -336,9 +336,9 @@ class Rop_Admin {
 		$global_settings = new Rop_Global_Settings();
 
 		if ( $global_settings->license_type() <= 0 ) {
-	echo '<p style="background: #8bc34a;color: #fff;margin: 20px;padding: 5px;text-align:center;">
-						Push to your social networks on publish/update with <a href="https://revive.social/plugins/revive-old-post/#prices" target="_blank">
-						Revive Old Post - Business Version</a>
+	echo '<p style="background: #8bc34a;border-radius: 2px;color: #fff;margin: 20px;padding: 5px;text-align:center;">'.
+						__( 'Push to your social networks on publish/update with <a href="https://revive.social/plugins/revive-old-post/#prices" target="_blank">
+						Revive Old Post - Business Version', 'tweet-old-post' ) . '</a>
 						</p>';
 	}
 	}
