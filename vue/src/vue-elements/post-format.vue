@@ -16,6 +16,7 @@
 				</div>
 			</div>
 		</div>
+
 		<div class="columns py-2" v-if="post_format.post_content === 'custom_field'">
 			<div class="column col-6 col-sm-12 vertical-align">
 				<b>{{labels.custom_meta_title}}</b>
@@ -29,6 +30,29 @@
 			</div>
 		</div>
 
+		<span class="divider"></span>
+
+			<div class="columns py-2" :class="'rop-control-container-'+ ( license > 1 )">
+					<div class="column col-6 col-sm-12 vertical-align rop-control">
+						<b>{{labels.media_post_title}}</b>
+						<p class="text-gray">{{labels.media_post_desc}}</p>
+					</div>
+					<div class="column col-6 col-sm-12 vertical-align rop-control">
+						<div class="form-group">
+						<select class="form-select" v-model="post_format.media_post">
+							<option value="title">{{labels.media_post_option_title}}</option>
+							<option value="caption">{{labels.media_post_option_caption}}</option>
+							<option value="alt">{{labels.media_post_option_alt_text}}</option>
+							<option value="description">{{labels.media_post_option_description}}</option>
+						</select>
+					</div>
+					</div>
+				</div>
+				<div class="columns py-2" v-if="license < 2">
+					<div class="column text-center">
+						<p class="upsell"><i class="fa fa-lock"></i> {{labels.media_post_upsell}}</p>
+					</div>
+				</div>
 		<span class="divider"></span>
 
 		<div class="columns py-2">
@@ -235,7 +259,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<div class="columns py-2" v-if="!isPro">
 			<div class="column text-center">
 				<p class="upsell"><i class="fa fa-lock"></i> {{labels.image_upsell}}</p>
@@ -263,11 +287,14 @@
 			<div class="column col-6 col-sm-12 vertical-align text-left rop-control">
 				<div class="form-group">
 						<input type="text" :disabled="!isPro" class="form-input" v-model="post_format.utm_campaign_name" placeholder="ReviveOldPost"/>
-						<p class="option-upsell" v-if="!isPro"><i class="fa fa-lock"></i> {{labels.custom_utm_upsell}}</p>
 				</div>
 			</div>
 		</div>
-
+		<div class="columns py-2" v-if="!isPro">
+			<div class="column text-center">
+				<p class="upsell"><i class="fa fa-lock"></i> {{labels.custom_utm_upsell}}</p>
+			</div>
+		</div>
 		<span class="divider"></span>
 	</div>
 </template>

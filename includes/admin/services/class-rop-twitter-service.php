@@ -409,8 +409,14 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		);
 		$api      = $this->get_api();
 		$new_post = array();
-		if ( ! empty( $post_details['post_image'] ) ) {
-			$file_path      = $this->get_path_by_url( $post_details['post_image'] );
+
+		$post_type = new Rop_Posts_Selector_Model;
+
+		$post_id = $post_details['post_id'];
+		$message = $post_details['content'];
+
+		if ( ! empty( $post_details['post_image'] ) && empty( $post_type->media_post( $post_id ) ) ) {
+			$file_path      = get_attached_file( get_post_thumbnail_id( $post_id ) );
 			$media_response = $api->upload( 'media/upload', array( 'media' => $file_path ) );
 			if ( isset( $media_response->media_id_string ) ) {
 				$new_post['media_ids'] = $media_response->media_id_string;
@@ -419,11 +425,47 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			}
 		}
 
-		$message = $post_details['content'];
+		// Photo posts
+		if ( ! empty( $post_type->media_post( $post_id ) ) && ! in_array( get_post_mime_type( $post_id ), $post_type->rop_supported_mime_types()['video'] ) ) {
+			if ( ! empty( get_attached_file( $post_id ) ) ) {
+					$media_response = $api->upload( 'media/upload', array( 'media' => get_attached_file( $post_id ) ) );
+				if ( isset( $media_response->media_id_string ) ) {
+					$new_post['media_ids'] = $media_response->media_id_string;
+				} else {
+					$this->logger->alert_error( sprintf( 'Can not upload photo. Error: %s', json_encode( $media_response ) ) );
+				}
+			} else {
+				$this->logger->alert_error( 'Twitter: Not a valid photo media file. ID: ' . $post_id );
+			}
+		}
 
-		$link = $this->get_url( $post_details );
+		// Video post | Twitter primarily supports MP4 video, so lets only allow that
+		if ( ! empty( $post_type->media_post( $post_id ) ) && get_post_mime_type( $post_id ) == 'video/mp4' ) {
 
-		$new_post['status'] = $message . $link . $post_details['hashtags'];
+			if ( ! empty( get_attached_file( $post_id ) ) ) {
+
+				$media_response = $api->upload( 'media/upload', array( 'media' => get_attached_file( $post_id ), 'media_type' => 'video/mp4', 'media_category' => 'tweet_video' ), true );
+
+				if ( isset( $media_response->media_id_string ) ) {
+
+					$new_post['media_ids'] = $media_response->media_id_string;
+
+					$limit = 0;
+					do {
+						$upload_status = $api->mediaStatus( $media_response->media_id_string );
+						sleep( 6 );
+						$limit++;
+					} while ( $upload_status->processing_info->state !== 'succeeded' && $limit <= 10 );
+
+				} else {
+					$this->logger->alert_error( sprintf( 'Can not upload video. Error: %s', json_encode( $media_response ) ) );
+				}
+			} else {
+						$this->logger->alert_error( 'Twitter: Not a valid video media file. ID: ' . $post_id );
+			}
+		}
+
+		$new_post['status'] = $message . $this->get_url( $post_details ) . $post_details['hashtags'];
 		$this->logger->info( sprintf( 'Before twitter share: %s', json_encode( $new_post ) ) );
 
 		$response = $api->post( 'statuses/update', $new_post );
@@ -431,7 +473,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
-					html_entity_decode( get_the_title( $post_details['post_id'] ) ),
+					html_entity_decode( get_the_title( $post_id ) ),
 					$args['user'],
 					$post_details['service']
 				)
@@ -445,82 +487,4 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		return false;
 	}
 
-	/**
-	 * Get Image file path if exists, return default image_url if not.
-	 *
-	 * Used where file_get_contents might not work with urls, we provide the file path.
-	 *
-	 * @param string $image_url Image url.
-	 *
-	 * @return string Image path.
-	 */
-	private function get_path_by_url( $image_url ) {
-
-		$dir = wp_upload_dir();
-
-		if ( false === strpos( $image_url, $dir['baseurl'] . '/' ) ) {
-			return $image_url;
-		}
-
-		$file     = basename( $image_url );
-		$query    = array(
-			'post_type'      => 'attachment',
-			'fields'         => 'ids',
-			'posts_per_page' => '20',
-			'no_found_rows'  => true,
-			'meta_query'     => array(
-				array(
-					'key'     => '_wp_attached_file',
-					'value'   => $file,
-					'compare' => 'LIKE',
-				),
-			),
-		);
-		$ids      = get_posts( $query );
-		$id_found = false;
-		if ( ! empty( $ids ) ) {
-
-			foreach ( $ids as $id ) {
-				if ( $image_url === array_shift( wp_get_attachment_image_src( $id, 'full' ) ) ) {
-					$id_found = $id;
-					break;
-				}
-			}
-		}
-		if ( $id_found === false ) {
-			$query['meta_query'][0]['key'] = '_wp_attachment_metadata';
-
-			// query attachments again
-			$ids = get_posts( $query );
-
-			if ( empty( $ids ) ) {
-				return $image_url;
-			}
-
-			foreach ( $ids as $id ) {
-
-				$meta = wp_get_attachment_metadata( $id );
-
-				foreach ( $meta['sizes'] as $size => $values ) {
-
-					if ( $values['file'] === $file && $image_url === array_shift( wp_get_attachment_image_src( $id, $size ) ) ) {
-						$id_found = $id;
-						break;
-					}
-				}
-				if ( $id_found === false ) {
-					break;
-				}
-			}
-		}
-		if ( $id_found === false ) {
-			return $image_url;
-		}
-		$path = get_attached_file( $id_found );
-		if ( empty( $path ) ) {
-			return $image_url;
-		}
-
-		return $path;
-	}
 }

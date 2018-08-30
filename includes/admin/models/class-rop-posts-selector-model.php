@@ -332,21 +332,36 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		if ( ! is_array( $exclude ) ) {
 			$exclude = array();
 		}
+
 		$args = $this->build_query_args( $post_types, $tax_queries, $exclude );
-
 		$query = new WP_Query( $args );
-
 		$posts = $query->posts;
+
+		$settings = new Rop_Settings_Model();
+		$post_types = wp_list_pluck( $settings->get_selected_post_types(), 'value' );
+
+		// only get media posts if attachment post type selected
+		if ( in_array( 'attachment', $post_types ) ) {
+
+			$media_args = $this->build_media_query_args();
+			$media_query = new WP_Query( $media_args );
+			$media_posts = $media_query->posts;
+
+			$posts = array_merge( $posts, $media_posts );
+
+		}
+
 		/**
 		 * Exclude the ids from the excluded array.
 		 */
 		$posts = array_diff( $posts, $exclude );
-		wp_reset_postdata();
+
 		/**
 		 * Reset indexes to avoid missing ones.
 		 */
 		$posts = array_values( $posts );
 
+		wp_reset_postdata();
 		return $posts;
 	}
 
@@ -399,6 +414,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			'post_type'              => $post_types,
 			'tax_query'              => $tax_queries,
 		);
+
 		$min_age = $this->settings->get_minimum_post_age();
 		if ( ! empty( $min_age ) ) {
 			$args['date_query'][]['before'] = date( 'Y-m-d', strtotime( '-' . $this->settings->get_minimum_post_age() . ' days' ) );
@@ -415,6 +431,124 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		}
 
 		return $args;
+	}
+
+	/**
+	 * Set our supported post types.
+	 *
+	 * @since   8.1.0
+	 * @access  public
+	 *
+	 * @return array
+	 */
+	public function rop_supported_mime_types() {
+
+		$accepted_mime_types = array();
+
+		$image_mime_types = apply_filters(
+			'accepted_image_mime_types',
+			array(
+				'image/jpeg',
+				'image/png',
+				'image/gif',
+			)
+		);
+
+		$video_mime_types = apply_filters(
+			'accepted_video_mime_types',
+			array(
+				'video/mp4',
+				'video/x-m4v',
+				'video/quicktime',
+				'video/x-ms-asf',
+				'video/x-ms-wmv',
+				'video/avi',
+			)
+		);
+
+		$accepted_mime_types['image'] = $image_mime_types;
+
+		$accepted_mime_types['video'] = $video_mime_types;
+
+		$accepted_mime_types['all']     = array_merge( $image_mime_types, $video_mime_types );
+
+		return $accepted_mime_types;
+
+	}
+
+	/**
+	 * Utility method to build the args array for the attachments in get post method.
+	 *
+	 * @since   8.1.0
+	 * @access  private
+	 *
+	 * @return array
+	 */
+	private function build_media_query_args() {
+
+		$accepted_mime_types = $this->rop_supported_mime_types()['all'];
+
+		$args    = array(
+			'no_found_rows'          => true,
+			'posts_per_page'         => ( 1000 ),
+			'post_status'            => 'inherit',
+			'post_mime_type'         => $accepted_mime_types,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+			'fields'                 => 'ids',
+			'post_type'              => 'attachment',
+			'meta_key'               => '_rop_media_share',
+			'meta_value'             => 'on',
+		);
+
+		$min_age = $this->settings->get_minimum_post_age();
+		if ( ! empty( $min_age ) ) {
+			$args['date_query'][]['before'] = date( 'Y-m-d', strtotime( '-' . $this->settings->get_minimum_post_age() . ' days' ) );
+		}
+		$max_age = $this->settings->get_maximum_post_age();
+		if ( ! empty( $max_age ) ) {
+			$args['date_query'][]['after'] = date( 'Y-m-d', strtotime( '-' . $this->settings->get_maximum_post_age() . ' days' ) );
+		}
+		if ( ! empty( $args['date_query'] ) ) {
+			$args['date_query']['relation'] = 'AND';
+		}
+
+		return $args;
+	}
+
+	/**
+	 * Method to get determine media posts and get thier content.
+	 *
+	 * @since   8.1.0
+	 * @access  private
+	 *
+	 * @param   int $post_id The post ID.
+	 *
+	 * @return  array
+	 */
+	public function media_post( $post_id ) {
+
+		if ( get_post_type( $post_id ) == 'attachment' ) {
+			$media_post_array = array();
+			$post_object = get_post( $post_id );
+
+			$media_post_array['post']              = $post_object->post_parent;
+			$media_post_array['source']            = wp_get_attachment_url( $post_id );
+			$media_post_array['title']             = $post_object->post_title;
+			$media_post_array['caption']           = $post_object->post_excerpt;
+			$media_post_array['alt']               = get_post_meta( $post_id, '_wp_attachment_image_alt', true );
+			$media_post_array['description']       = $post_object->post_content;
+
+			if ( ! in_array( get_post_mime_type( $post_id ), $this->rop_supported_mime_types()['video'] ) ) {
+				 $media_post_array['alt']               = get_post_meta( $post_id, '_wp_attachment_image_alt', true );
+			} else {
+				$media_post_array['alt']               = $post_object->post_title;
+			}
+		} else {
+			return null;
+		}
+
+		return $media_post_array;
 	}
 
 	/**

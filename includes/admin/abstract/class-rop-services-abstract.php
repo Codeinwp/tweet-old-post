@@ -310,7 +310,8 @@ abstract class Rop_Services_Abstract {
 	 */
 	protected function get_url( $post_details ) {
 
-		$link = ( isset( $post_details['post_url'] ) ) ? ' ' . $post_details['post_url'] : '';
+		$link = ( ! empty( $post_details['post_url'] ) ) ? ' ' . $post_details['post_url'] : '';
+
 		if ( empty( $link ) ) {
 			return '';
 		}

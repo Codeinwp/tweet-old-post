@@ -1,6 +1,6 @@
 <template>
-	<div :class="'rop-control-container-'+ ( license>1 ) ">
-		
+	<div :class="'rop-control-container-'+ ( license > 1 ) ">
+
 		<div class="columns py-2 rop-control">
 			<div class="column col-6 col-sm-12 vertical-align">
 				<b>{{labels.schedule_type_title}}</b>
@@ -15,7 +15,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<!-- Fixed Schedule Days -->
 		<div class="columns py-2 rop-control" v-if="schedule.type === 'fixed'">
 			<div class="column col-6 col-sm-12 vertical-align">
@@ -30,7 +30,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<!-- Fixed Schedule time -->
 		<div class="columns py-2 rop-control" v-if="schedule.type === 'fixed'">
 			<div class="column col-6 col-sm-12 vertical-align">
@@ -56,7 +56,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<div class="columns py-2 rop-control" v-else>
 			<div class="column col-6 col-sm-12 vertical-align">
 				<b>{{labels.schedule_rec_title}}</b>
@@ -68,7 +68,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<!-- Upsell -->
 		<div class="columns py-2" v-if="license < 2">
 			<div class="column text-center">
@@ -184,28 +184,28 @@
 		margin: 0;
 		line-height: normal;
 	}
-	
+
 	b {
 		margin-bottom: 5px;
 		display: block;
 	}
-	
+
 	#rop_core .input-group .input-group-addon {
 		padding: 3px 5px;
 	}
-	
+
 	.time-picker {
 		margin-bottom: 10px;
 	}
-	
+
 	@media ( max-width: 600px ) {
 		#rop_core .panel-body .text-gray {
 			margin-bottom: 10px;
 		}
-		
+
 		#rop_core .text-right {
 			text-align: left;
 		}
 	}
-	
+
 </style>
