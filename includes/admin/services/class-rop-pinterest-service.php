@@ -405,14 +405,14 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 		}
 
 		$this->logger->alert_success(
-			sprintf(
-				'Successfully pinned %s in %s to %s on %s',
-				$post_details['post_image'],
-				html_entity_decode( get_the_title( $post_details['post_id'] ) ),
-				$args['id'],
-				$post_details['service']
-			)
-		);
+				sprintf(
+					'Successfully pinned %s in %s to %s on %s',
+					basename( $post_details['post_image'] ),
+					html_entity_decode( get_the_title( $post_id ) ),
+					$args['id'],
+					$post_details['service']
+				)
+			);
 		return true;
 	}
 

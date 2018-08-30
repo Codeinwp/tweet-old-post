@@ -257,6 +257,9 @@ class Rop_Global_Settings {
 			'hashtags_custom'      => '',
 			'shortner_credentials' => array(),
 			'image'                => true,
+			'media_post'           => 'title',
+			'utm_campaign_medium'  => 'social',
+			'utm_campaign_name'    => 'ReviveOldPost',
 		),
 	);
 
