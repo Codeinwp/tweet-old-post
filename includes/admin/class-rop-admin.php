@@ -180,7 +180,6 @@ class Rop_Admin {
 			'IS_WPE_SNAPSHOT',
 			'KINSTA_DEV_ENV',
 			'WPSTAGECOACH_STAGING',
-			'JETPACK_STAGING_MODE',
 		);
 
 		foreach ( $rop_known_staging as $rop_staging_const ) {
@@ -197,6 +196,10 @@ class Rop_Admin {
 				return apply_filters( 'rop_dont_work_on_staging', true );
 
 			}
+		}
+
+		if ( defined( 'JETPACK_STAGING_MODE' ) && JETPACK_STAGING_MODE == true ) {
+					return apply_filters( 'rop_dont_work_on_staging', true );
 		}
 
 		return false;
