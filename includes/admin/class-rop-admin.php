@@ -321,6 +321,29 @@ class Rop_Admin {
 	}
 
 	/**
+	 * Publish now upsell
+	 *
+	 * @since   8.1.0
+	 * @access  public
+	 */
+	public function publish_now_upsell(){
+
+		$page = $this->get_current_page();
+		if ( empty( $page ) ) {
+			return;
+		}
+
+		$global_settings = new Rop_Global_Settings();
+
+		if ( $global_settings->license_type() <= 0 ) {
+	echo '<p style="background: #8bc34a;color: #fff;margin: 20px;padding: 5px;text-align:center;">
+						Push to your social networks on publish/update with <a href="https://revive.social/plugins/revive-old-post/#prices" target="_blank">
+						Revive Old Post - Business Version</a>
+						</p>';
+	}
+	}
+
+	/**
 	 * The publish now Cron Job for the plugin.
 	 *
 	 * @since   8.1.0
