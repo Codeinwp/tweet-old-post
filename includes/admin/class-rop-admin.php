@@ -323,7 +323,7 @@ class Rop_Admin {
 	/**
 	 * The publish now Cron Job for the plugin.
 	 *
-	 * @since   8.0.0
+	 * @since   8.1.0
 	 * @access  public
 	 */
 	public function rop_cron_job_publish_now() {

@@ -32,7 +32,7 @@
 
 		<span class="divider"></span>
 
-			<div class="columns py-2" :class="'rop-control-container-'+isPro">
+			<div class="columns py-2" :class="'rop-control-container-'+ ( license > 1 )">
 					<div class="column col-6 col-sm-12 vertical-align rop-control">
 						<b>{{labels.media_post_title}}</b>
 						<p class="text-gray">{{labels.media_post_desc}}</p>
@@ -48,7 +48,7 @@
 					</div>
 					</div>
 				</div>
-				<div class="columns py-2" v-if="!isPro">
+				<div class="columns py-2" v-if="license < 2">
 					<div class="column text-center">
 						<p class="upsell"><i class="fa fa-lock"></i> {{labels.media_post_upsell}}</p>
 					</div>
