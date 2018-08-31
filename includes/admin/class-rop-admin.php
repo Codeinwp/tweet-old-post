@@ -339,12 +339,10 @@ class Rop_Admin {
 		$global_settings = new Rop_Global_Settings();
 
 		if ( $global_settings->license_type() <= 0 ) {
-			echo '<p style="background: #8bc34a;border-radius: 2px;color: #fff;margin: 20px;padding: 5px;text-align:center;">' .
-				 __(
-					 'Push to your social networks on publish/update with <a href="https://revive.social/plugins/revive-old-post/#prices" target="_blank">
-						Revive Old Post - Business Version', 'tweet-old-post'
-				 ) . '</a>
-						</p>';
+			echo '<div class="misc-pub-section  " style="font-size: 13px;text-align: center;line-height: 1.7em;color: #888;"><span class="dashicons dashicons-lock"></span>' .
+			     __(
+				     'Instant social sharing is available on pro version for ', 'tweet-old-post' ) . '<a href="' . ROP_PRO_URL . '" target="_blank">Revive Old Post </a>
+						</div>';
 		}
 	}
 

@@ -403,9 +403,7 @@ class Rop_Post_Format_Helper {
 			return array();
 		}
 
-		$hashtags = wp_list_pluck( $tags, 'name' );
-
-		return $hashtags;
+		return wp_list_pluck( $tags, 'name' );
 	}
 
 	/**
