@@ -341,7 +341,7 @@ class Rop_Admin {
 		if ( $global_settings->license_type() <= 0 ) {
 			echo '<div class="misc-pub-section  " style="font-size: 13px;text-align: center;line-height: 1.7em;color: #888;"><span class="dashicons dashicons-lock"></span>' .
 			     __(
-				     'Instant social sharing is available on pro version for ', 'tweet-old-post' ) . '<a href="' . ROP_PRO_URL . '" target="_blank">Revive Old Post </a>
+				     'Instant social sharing is available on the extended version for ', 'tweet-old-post' ) . '<a href="' . ROP_PRO_URL . '" target="_blank">Revive Old Post </a>
 						</div>';
 		}
 	}
