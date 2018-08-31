@@ -446,7 +446,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		$accepted_mime_types = array();
 
 		$image_mime_types = apply_filters(
-			'accepted_image_mime_types',
+			'rop_accepted_image_mime_types',
 			array(
 				'image/jpeg',
 				'image/png',
@@ -455,7 +455,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		);
 
 		$video_mime_types = apply_filters(
-			'accepted_video_mime_types',
+			'rop_accepted_video_mime_types',
 			array(
 				'video/mp4',
 				'video/x-m4v',

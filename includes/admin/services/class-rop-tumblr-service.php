@@ -375,7 +375,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 
 		$author = ( $author !== 'admin' ) ? $author : '';
 		// allow users to not include author in shared posts
-		return apply_filters( 'tumblr_post_author', $author );
+		return apply_filters( 'rop_tumblr_post_author', $author );
 	}
 
 	/**

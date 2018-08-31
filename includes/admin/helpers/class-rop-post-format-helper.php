@@ -381,9 +381,7 @@ class Rop_Post_Format_Helper {
 			return array();
 		}
 
-		$hashtags = wp_list_pluck( $post_categories, 'name' );
-
-		return $hashtags;
+		return  wp_list_pluck( $post_categories, 'name' );;
 	}
 
 	/**
@@ -744,7 +742,7 @@ class Rop_Post_Format_Helper {
 		$post_selector = new Rop_Posts_Selector_Model;
 		// Show video placeholder in queue.
 		if ( in_array( get_post_mime_type( $post_id ), $post_selector->rop_supported_mime_types()['video'] ) ) {
-			$video_placeholder = esc_url( plugins_url( '../assets/img/video_placeholder.jpg', dirname( __DIR__ ) ) );
+			$video_placeholder = esc_url( ROP_LITE_URL . 'assets/img/video_placeholder.jpg' );
 
 			return $video_placeholder;
 		}
