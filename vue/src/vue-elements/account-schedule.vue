@@ -1,5 +1,5 @@
 <template>
-	<div :class="'rop-control-container-'+ ( license > 1 ) ">
+	<div :class="'rop-control-container-'+ ( license > 1 ) +  '  rop-schedule-tab-container'">
 
 		<div class="columns py-2 rop-control">
 			<div class="column col-6 col-sm-12 vertical-align">

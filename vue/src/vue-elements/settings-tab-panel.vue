@@ -76,7 +76,7 @@
 					</div>
 				</div>
 				
-				<div class="columns py-2" v-if="!isPro">
+				<div class="columns " v-if="!isPro">
 					<div class="column text-center">
 						<p class="upsell"><i class="fa fa-lock"></i> {{labels.post_types_upsell}}</p>
 					</div>
@@ -143,7 +143,7 @@
 					</div>
 				</div>
 				<!-- Upsell -->
-				<div class="columns py-2" v-if="!isPro">
+				<div class="columns " v-if="!isPro">
 					<div class="column text-center">
 						<p class="upsell"><i class="fa fa-lock"></i> {{labels.custom_share_upsell}}</p>
 					</div>

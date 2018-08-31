@@ -1,5 +1,5 @@
 <template>
-	<div class="tab-view">
+	<div class="tab-view rop-queue-tab-container">
 		<div class="panel-body" :class="'rop-tab-state-'+is_loading">
 			<div class="columns" v-if="! start_status">
 				<div class="column col-12 text-center empty-container">

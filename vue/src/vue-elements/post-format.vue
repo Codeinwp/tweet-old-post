@@ -48,7 +48,7 @@
 					</div>
 					</div>
 				</div>
-				<div class="columns py-2" v-if="license < 2">
+				<div class="columns " v-if="license < 2">
 					<div class="column text-center">
 						<p class="upsell"><i class="fa fa-lock"></i> {{labels.media_post_upsell}}</p>
 					</div>
@@ -260,7 +260,7 @@
 			</div>
 		</div>
 
-		<div class="columns py-2" v-if="!isPro">
+		<div class="columns " v-if="!isPro">
 			<div class="column text-center">
 				<p class="upsell"><i class="fa fa-lock"></i> {{labels.image_upsell}}</p>
 			</div>
@@ -290,7 +290,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="columns py-2" v-if="!isPro">
+		<div class="columns " v-if="!isPro">
 			<div class="column text-center">
 				<p class="upsell"><i class="fa fa-lock"></i> {{labels.custom_utm_upsell}}</p>
 			</div>
