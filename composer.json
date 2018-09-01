@@ -28,8 +28,7 @@
     "codeinwp/themeisle-sdk": "master",
     "facebook/graph-sdk": "^5.6",
     "abraham/twitteroauth": "^0.9.2",
-    "monolog/monolog": "^1.23",
-    "dirkgroenen/Pinterest-API-PHP": "^0.2.11"
+    "monolog/monolog": "^1.23"
   },
   "minimum-stability": "dev",
   "prefer-stable": true

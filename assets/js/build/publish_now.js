@@ -3737,9 +3737,9 @@ window.addEventListener('load', function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(308)
-__vue_script__ = __webpack_require__(306)
-__vue_template__ = __webpack_require__(307)
+__webpack_require__(306)
+__vue_script__ = __webpack_require__(308)
+__vue_template__ = __webpack_require__(309)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -3747,7 +3747,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "D:\\local\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\pro\\publish-now.vue"
+  var id = "/Users/selul/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/pro/publish-now.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -3758,6 +3758,48 @@ if (false) {(function () {  module.hot.accept()
 /***/ }),
 
 /***/ 306:
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(307);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(2)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-019c72cb&file=publish-now.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./publish-now.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-019c72cb&file=publish-now.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./publish-now.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+
+/***/ 307:
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(1)();
+// imports
+
+
+// module
+exports.push([module.i, "\n\t.rop-publish-now-branding{\n\t\ttext-align: right;\n\t\twidth:100%;\n\t\tfloat:right;\n\t}\n\t.rop-publish-now-account{\n\t\tmargin-left: 17px;\n\t}\n\t.rop-publish-now-accounts-wrapper{\n\t\tmargin-top:5px;\n\t}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ 308:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3779,6 +3821,7 @@ module.exports = {
 		}
 	},
 	data: function data() {
+
 		return {
 			labels: this.$store.state.labels.publish_now,
 			accounts: this.$store.state.publish_now.accounts,
@@ -3791,6 +3834,7 @@ module.exports = {
 	},
 	methods: {
 		getServiceClass: function getServiceClass(service) {
+
 			var serviceIcon = 'fa-';
 			if (service === 'facebook') serviceIcon = serviceIcon.concat('facebook');
 			if (service === 'twitter') serviceIcon = serviceIcon.concat('twitter');
@@ -3818,7 +3862,7 @@ module.exports = {
 	//
 
 }; // <template>
-// 	<div class="rop-control-container">
+// 	<div class="rop-control-container" v-if="Object.keys(accounts).length > 0" >
 //
 // 		<!-- Share on update -->
 // 		<fieldset>
@@ -3830,7 +3874,7 @@ module.exports = {
 // 			</label>
 //
 // 			<div class="form-group rop-publish-now-accounts-wrapper" v-if="share_on_update_enabled" v-for="(account, key) in accounts">
-// 				<label class="form-checkbox" class="rop-publish-now-account">
+// 				<label class="form-checkbox rop-publish-now-account">
 // 					<input type="checkbox" :checked="active != null && active.indexOf(key) >= 0" :value="key"
 // 					       name="publish_now_accounts[]"/>
 // 					<i class=" fa " :class="getServiceClass(account.service)"></i> {{account.user}}
@@ -3845,52 +3889,10 @@ module.exports = {
 
 /***/ }),
 
-/***/ 307:
+/***/ 309:
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"rop-control-container\">\n\t\t\n\t\t<!-- Share on update -->\n\t\t<fieldset>\n\t\t\t<input type=\"checkbox\" :checked=\"share_on_update_enabled\"\n\t\t\t       v-on:click=\"share_on_update_enabled = !share_on_update_enabled\" name=\"publish_now\" value=\"1\"/>\n\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\n\t\t\t\t  <span v-html=\" labels.share_on_update\"></span>\n\t\t\t</label>\n\t\t\t\n\t\t\t<div class=\"form-group rop-publish-now-accounts-wrapper\" v-if=\"share_on_update_enabled\" v-for=\"(account, key) in accounts\">\n\t\t\t\t<label class=\"form-checkbox\" class=\"rop-publish-now-account\">\n\t\t\t\t\t<input type=\"checkbox\" :checked=\"active != null && active.indexOf(key) >= 0\" :value=\"key\"\n\t\t\t\t\t       name=\"publish_now_accounts[]\"/>\n\t\t\t\t\t<i class=\" fa \" :class=\"getServiceClass(account.service)\"></i> {{account.user}}\n\t\t\t\t</label>\n\t\t\t</div>\n\t\t</fieldset>\n\t\n\t</div>\n";
-
-/***/ }),
-
-/***/ 308:
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(309);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2ce46b26&file=publish-now.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./publish-now.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2ce46b26&file=publish-now.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./publish-now.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-
-/***/ 309:
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(1)();
-// imports
-
-
-// module
-exports.push([module.i, "\n\t.rop-publish-now-branding{\n\t\ttext-align: right;\n\t\twidth:100%;\n\t\tfloat:right;\n\t}\n\t.rop-publish-now-account{\n\t\tmargin-left: 17px;\n\t}\n\t.rop-publish-now-accounts-wrapper{\n\t\tmargin-top:5px;\n\t}\n", ""]);
-
-// exports
-
+module.exports = "\n\t<div class=\"rop-control-container\" v-if=\"Object.keys(accounts).length > 0\" >\n\t\t\n\t\t<!-- Share on update -->\n\t\t<fieldset>\n\t\t\t<input type=\"checkbox\" :checked=\"share_on_update_enabled\"\n\t\t\t       v-on:click=\"share_on_update_enabled = !share_on_update_enabled\" name=\"publish_now\" value=\"1\"/>\n\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t\n\t\t\t\t  <span v-html=\" labels.share_on_update\"></span>\n\t\t\t</label>\n\t\t\t\n\t\t\t<div class=\"form-group rop-publish-now-accounts-wrapper\" v-if=\"share_on_update_enabled\" v-for=\"(account, key) in accounts\">\n\t\t\t\t<label class=\"form-checkbox rop-publish-now-account\">\n\t\t\t\t\t<input type=\"checkbox\" :checked=\"active != null && active.indexOf(key) >= 0\" :value=\"key\"\n\t\t\t\t\t       name=\"publish_now_accounts[]\"/>\n\t\t\t\t\t<i class=\" fa \" :class=\"getServiceClass(account.service)\"></i> {{account.user}}\n\t\t\t\t</label>\n\t\t\t</div>\n\t\t</fieldset>\n\t\n\t</div>\n";
 
 /***/ }),
 
@@ -14876,7 +14878,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "D:\\local\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\button-checkbox.vue"
+  var id = "/Users/selul/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/button-checkbox.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -14901,8 +14903,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3c5281f2&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3c5281f2&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-049a2a2c&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-049a2a2c&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -14921,7 +14923,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .input-group .input-group-addon.btn.active[_v-3c5281f2] {\n\t\tbackground-color: #8bc34a;\n\t\tborder-color: #33691e;\n\t\tcolor: #FFF;\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop_core .input-group .input-group-addon.btn.active[_v-049a2a2c] {\n\t\tbackground-color: #8bc34a;\n\t\tborder-color: #33691e;\n\t\tcolor: #FFF;\n\t}\n", ""]);
 
 // exports
 
@@ -15008,7 +15010,7 @@ module.exports = {
 /***/ 76:
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<button class=\"btn input-group-addon column\" :class=\"is_active\" @click=\"toggleThis()\" _v-3c5281f2=\"\">{{label}}</button>\n";
+module.exports = "\n\t<button class=\"btn input-group-addon column\" :class=\"is_active\" @click=\"toggleThis()\" _v-049a2a2c=\"\">{{label}}</button>\n";
 
 /***/ }),
 

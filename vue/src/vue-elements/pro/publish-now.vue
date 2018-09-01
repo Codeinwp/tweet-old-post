@@ -1,5 +1,5 @@
 <template>
-	<div class="rop-control-container">
+	<div class="rop-control-container" v-if="Object.keys(accounts).length > 0" >
 		
 		<!-- Share on update -->
 		<fieldset>
@@ -11,7 +11,7 @@
 			</label>
 			
 			<div class="form-group rop-publish-now-accounts-wrapper" v-if="share_on_update_enabled" v-for="(account, key) in accounts">
-				<label class="form-checkbox" class="rop-publish-now-account">
+				<label class="form-checkbox rop-publish-now-account">
 					<input type="checkbox" :checked="active != null && active.indexOf(key) >= 0" :value="key"
 					       name="publish_now_accounts[]"/>
 					<i class=" fa " :class="getServiceClass(account.service)"></i> {{account.user}}
@@ -32,9 +32,10 @@
 		computed: {
 			share_on_update: function () {
 				return this.$store.state.publish_now.action === true;
-			},
+			}
 		},
 		data: function () {
+
 			return {
 				labels: this.$store.state.labels.publish_now,
 				accounts: this.$store.state.publish_now.accounts,
@@ -47,6 +48,7 @@
 		},
 		methods: {
 			getServiceClass: function (service) {
+
 				let serviceIcon = 'fa-'
 				if (service === 'facebook') serviceIcon = serviceIcon.concat('facebook')
 				if (service === 'twitter') serviceIcon = serviceIcon.concat('twitter')
