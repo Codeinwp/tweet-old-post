@@ -34,9 +34,9 @@
 						               :value.sync="generalSettings.maximum_post_age"></counter-input>
 					</div>
 				</div>
-
+				
 				<span class="divider"></span>
-
+				
 				<div class="columns py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
 						<b>{{labels.no_posts_title}}</b>
@@ -47,7 +47,7 @@
 					</div>
 				</div>
 				<span class="divider"></span>
-
+				
 				<!-- Share more than once -->
 				<div class="columns py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
@@ -73,6 +73,8 @@
 						<multiple-select :options="postTypes" :disabled="isPro"
 						                 :selected="generalSettings.selected_post_types"
 						                 :changed-selection="updatedPostTypes"></multiple-select>
+						
+						<p class="text-primary rop-post-type-badge" v-if="checkMediaPostType " v-html="labels.post_types_attachament_info"> </p>
 					</div>
 				</div>
 				
@@ -81,9 +83,9 @@
 						<p class="upsell"><i class="fa fa-lock"></i> {{labels.post_types_upsell}}</p>
 					</div>
 				</div>
-
+				
 				<span class="divider"></span>
-
+				
 				<!-- Taxonomies -->
 				<div class="columns py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
@@ -101,15 +103,15 @@
 									<i class="form-icon"></i>{{labels.taxonomies_exclude}}
 								</label>
 							</span>
-
+						
 						</div>
-
+					
 					</div>
-
+				
 				</div>
-
+				
 				<span class="divider"></span>
-
+				
 				<!-- Google Analytics -->
 				<div class="columns py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
@@ -125,9 +127,9 @@
 						</div>
 					</div>
 				</div>
-
+				
 				<span class="divider"></span>
-
+				
 				<div class="columns py-2" :class="'rop-control-container-'+isPro">
 					<div class="column col-6 col-sm-12 vertical-align rop-control">
 						<b>{{labels.custom_share_title}}</b>
@@ -149,7 +151,7 @@
 					</div>
 				</div>
 				<span class="divider"></span>
-
+			
 			</div>
 		</div>
 		<div class="panel-footer text-right">
@@ -192,6 +194,20 @@
 			taxonomies: function () {
 				return this.$store.state.generalSettings.available_taxonomies
 			},
+			checkMediaPostType() {
+				let post_type = this.$store.state.generalSettings.selected_post_types;
+				
+				if (post_type === undefined || post_type === null ) {
+					return false;
+				}
+				
+				if (post_type.length < 0) {
+					return false;
+				}
+
+				var result = post_type.map(a => a.value);
+				return (result.indexOf('attachment') > -1);
+			},
 		},
 		mounted: function () {
 			this.$log.info('In General Settings state ');
@@ -223,6 +239,7 @@
 				this.$store.commit('updateState', {stateData: data, requestName: 'update_selected_post_types'})
 				this.$store.dispatch('fetchAJAX', {req: 'get_taxonomies', data: {post_types: postTypes}})
 			},
+		
 			updatedTaxonomies(data) {
 				let taxonomies = []
 				for (let index in data) {
@@ -276,27 +293,32 @@
 		margin: 0;
 		line-height: normal;
 	}
-
+	
 	#rop_core .input-group {
 		width: 100%;
 	}
-
+	
 	b {
 		margin-bottom: 5px;
 		display: block;
 	}
-
+	
 	#rop_core .input-group .input-group-addon {
 		padding: 3px 5px;
 	}
-
+	
 	@media ( max-width: 600px ) {
 		#rop_core .panel-body .text-gray {
 			margin-bottom: 10px;
 		}
-
+		
 		#rop_core .text-right {
 			text-align: left;
 		}
+	}
+	
+	.rop-post-type-badge{
+		text-align: center;
+		
 	}
 </style>

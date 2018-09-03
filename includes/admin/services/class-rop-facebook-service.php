@@ -444,47 +444,11 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		$new_post = array();
-
 		$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
-		$api = $this->get_api();
 
-		$post_type = new Rop_Posts_Selector_Model();
 		$post_id = $post_details['post_id'];
-		$post_no_link = false;
 
-		// Regular posts
-		if ( empty( $post_type->media_post( $post_id ) ) ) {
-
-			if ( ! empty( $post_details['post_image'] ) ) {
-				$new_post['picture'] = $post_details['post_image'];
-			}
-
-			if ( ! empty( $post_details['post_url'] ) ) {
-				$new_post['name'] = html_entity_decode( get_the_title( $post_details['post_id'] ) );
-				$new_post['link'] = $this->get_url( $post_details );
-			} elseif ( empty( $post_details['post_url'] ) && ! empty( $post_details['post_image'] ) ) {
-				// if "Include Link" option is unchecked, and we have a featured image, lets upload it as a normal image to FB
-				$new_post['source'] = $api->fileToUpload( $post_details['post_image'] );
-				$post_no_link = true;
-			}
-
-			$new_post['message'] = $post_details['content'] . $post_details['hashtags'];
-
-		}
-
-		// Photo posts
-		if ( ! empty( $post_type->media_post( $post_id ) ) && ! in_array( get_post_mime_type( $post_id ), $post_type->rop_supported_mime_types()['video'] ) ) {
-			$new_post['source'] = $api->fileToUpload( $post_type->media_post( $post_id )['source'] );
-			$new_post['message'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
-		}
-
-		// Video posts
-		if ( ! empty( $post_type->media_post( $post_id ) ) && in_array( get_post_mime_type( $post_id ), $post_type->rop_supported_mime_types()['video'] ) ) {
-			$new_post['source'] = $api->fileToUpload( $post_type->media_post( $post_id )['source'] );
-			$new_post['title'] = $post_type->media_post( $post_id )['title'];
-			$new_post['description'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
-		}
+		$sharing_data = $this->prepare_for_sharing( $post_details );
 
 		if ( ! isset( $args['id'] ) || ! isset( $args['access_token'] ) ) {
 			$this->logger->alert_error( 'Unable to authenticate to facebook, no access_token/id provided. ' );
@@ -492,7 +456,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		if ( $this->try_post( $new_post, $args['id'], $args['access_token'], $post_id, $post_no_link ) ) {
+		if ( $this->try_post( $sharing_data['post_data'], $args['id'], $args['access_token'], $post_id, $sharing_data['type'] ) ) {
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
@@ -505,6 +469,77 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			return false;
 		}
 	}
+
+	private function prepare_for_sharing( $post_details ) {
+		$post_id = $post_details['post_id'];
+
+		/**
+		 * If is not an attachment and we do have an url share it as regular post.
+		 *
+		 * TODO Add in the post format tab, for facebook, an posting behaviour option,
+		 * where we should allow user to choose how the posting with image will work, as regular post or photo post.
+		 */
+		if ( get_post_type( $post_id ) !== 'attachment' && ! empty( $post_details['post_url'] ) ) {
+
+			$new_post['message'] = $post_details['content'] . $post_details['hashtags'];
+
+			if ( ! empty( $post_details['post_url'] ) ) {
+				$new_post['name'] = html_entity_decode( get_the_title( $post_details['post_id'] ) );
+				$new_post['link'] = $this->get_url( $post_details );
+			}
+			if ( ! empty( $post_details['post_image'] ) ) {
+				$new_post['picture'] = $post_details['post_image'];
+			}
+
+			return [
+				'post_data' => $new_post,
+				'type'      => 'post',
+			];
+		}
+
+		// If we don't have an image link share as regular post.
+		if ( empty( $post_details['post_image'] ) ) {
+
+			$new_post['message'] = $post_details['content'] . $post_details['hashtags'];
+
+			if ( ! empty( $post_details['post_url'] ) ) {
+				$new_post['name'] = html_entity_decode( get_the_title( $post_details['post_id'] ) );
+				$new_post['link'] = $this->get_url( $post_details );
+			}
+
+			return [
+				'post_data' => $new_post,
+				'type'      => 'post',
+			];
+		}
+
+		$api = $this->get_api();
+
+		if ( strpos( $post_details['mimetype']['type'], 'image' ) !== false ) {
+
+			$new_post['source'] = $api->fileToUpload( $post_details['post_image'] );
+
+			$new_post['message'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
+
+			return [
+				'post_data' => $new_post,
+				'type'      => 'photo',
+			];
+		}
+		if ( strpos( $post_details['mimetype']['type'], 'video' ) !== false ) {
+
+			$new_post['source']      = $api->fileToUpload( $post_details['post_image'] );
+			$new_post['title']       = html_entity_decode( get_the_title( $post_id ) );
+			$new_post['description'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
+
+			return [
+				'post_data' => $new_post,
+				'type'      => 'video',
+			];
+		}
+
+	}
+
 	/**
 	 * Method to try and share on facebook.
 	 * Moved to a separated method to drive the NPath complexity down.
@@ -515,38 +550,29 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @param   array  $new_post The Facebook post format array.
 	 * @param   int    $page_id The Facebook page ID.
 	 * @param   string $token The Facebook page token.
+	 * @param   string $posting_type Type of posting.
 	 *
 	 * @return bool
 	 */
-	private function try_post( $new_post, $page_id, $token, $post_id, $post_no_link ) {
-		$post_type = new Rop_Posts_Selector_Model();
+	private function try_post( $new_post, $page_id, $token, $post_id, $posting_type ) {
+
 		$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
 		$api = $this->get_api();
 
-		$fb_supported_video_types = $post_type->rop_supported_mime_types()['video'];
-
 		try {
-
-			// If is video posts
-			if ( ! empty( $post_type->media_post( $post_id ) ) && in_array( get_post_mime_type( $post_id ), $fb_supported_video_types ) ) {
-				$api->post( '/' . $page_id . '/videos', $new_post, $token );
-
-				return true;
+			switch ( $posting_type ) {
+				case 'photo':
+					$api->post( '/' . $page_id . '/photos', $new_post, $token );
+					break;
+				case 'video':
+					$api->post( '/' . $page_id . '/videos', $new_post, $token );
+					break;
+				default:
+					$api->post( '/' . $page_id . '/feed', $new_post, $token );
+					break;
 			}
 
-			// Single photos need to be posted to photos endpoint to get desired result
-			if ( ! empty( $post_type->media_post( $post_id ) ) || $post_no_link == true ) {
-				$api->post( '/' . $page_id . '/photos', $new_post, $token );
-
-				return true;
-			}
-
-			// Regular posts
-			if ( empty( $post_type->media_post( $post_id ) ) ) {
-				$api->post( '/' . $page_id . '/feed', $new_post, $token );
-
-				return true;
-			}
+			return true;
 		} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
 			$this->logger->alert_error( 'Unable to share post for facebook.  Error: ' . $e->getMessage() );
 

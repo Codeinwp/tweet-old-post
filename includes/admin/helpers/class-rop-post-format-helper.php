@@ -56,20 +56,20 @@ class Rop_Post_Format_Helper {
 				return array();
 			}
 		}
-		$service                             = $this->get_service();
-		$content                             = $this->build_content( $post_id );
-		$filtered_post                       = array();
-		$filtered_post['post_id']            = $post_id;
-		$filtered_post['account_id']         = $this->account_id;
-		$filtered_post['service']            = $service;
-		$filtered_post['content']            = apply_filters( 'rop_content_filter', $content['display_content'], $post_id, $account_id, $service );
-		$filtered_post['hashtags']           = $content['hashtags'];
-		$filtered_post['post_url']           = $this->build_url( $post_id );
-		$filtered_post['post_image']         = $this->post_format['image'] ? $this->build_image( $post_id ) : '';
-		$filtered_post['short_url']          = $this->post_format['short_url'];
-		$filtered_post['short_url_service']  = ( $this->post_format['short_url'] ) ? $this->post_format['short_url_service'] : '';
-		$filtered_post['post_with_image']    = $this->post_format['image'];
-		$filtered_post['media_post_content'] = $this->post_format['media_post'];
+		$service                            = $this->get_service();
+		$content                            = $this->build_content( $post_id );
+		$filtered_post                      = array();
+		$filtered_post['post_id']           = $post_id;
+		$filtered_post['account_id']        = $this->account_id;
+		$filtered_post['service']           = $service;
+		$filtered_post['content']           = apply_filters( 'rop_content_filter', $content['display_content'], $post_id, $account_id, $service );
+		$filtered_post['hashtags']          = $content['hashtags'];
+		$filtered_post['post_url']          = $this->build_url( $post_id );
+		$filtered_post['post_image']        = $this->post_format['image'] ? $this->build_image( $post_id ) : '';
+		$filtered_post['mimetype']          = empty( $filtered_post['post_image'] ) ? '' : wp_check_filetype( $filtered_post['post_image'] );
+		$filtered_post['short_url']         = $this->post_format['short_url'];
+		$filtered_post['short_url_service'] = ( $this->post_format['short_url'] ) ? $this->post_format['short_url_service'] : '';
+		$filtered_post['post_with_image']   = $this->post_format['image'];
 
 		$filtered_post['shortner_credentials'] = ( isset( $this->post_format['shortner_credentials'] ) ) ? $this->post_format['shortner_credentials'] : array();
 
@@ -193,31 +193,23 @@ class Rop_Post_Format_Helper {
 	 * @return mixed|string
 	 */
 	private function build_base_content( $post_id ) {
-		$post_type = new Rop_Posts_Selector_Model();
 
-		// If not media post.
-		if ( empty( $post_type->media_post( $post_id ) ) ) {
-
-			switch ( $this->post_format['post_content'] ) {
-				case 'post_title':
-					$content = get_the_title( $post_id );
-					break;
-				case 'post_content':
-					$content = apply_filters( 'the_content', get_post_field( 'post_content', $post_id ) );
-					break;
-				case 'post_title_content':
-					$content = get_the_title( $post_id ) . ' ' . apply_filters( 'the_content', get_post_field( 'post_content', $post_id ) );
-					break;
-				case 'custom_field':
-					$content = $this->get_custom_field_value( $post_id, $this->post_format['custom_meta_field'] );
-					break;
-				default:
-					$content = '';
-					break;
-			}
-		} else {
-			$media_post_content = $this->post_format['media_post'];
-			$content            = $post_type->media_post( $post_id )[ $media_post_content ];
+		switch ( $this->post_format['post_content'] ) {
+			case 'post_title':
+				$content = get_the_title( $post_id );
+				break;
+			case 'post_content':
+				$content = apply_filters( 'the_content', get_post_field( 'post_content', $post_id ) );
+				break;
+			case 'post_title_content':
+				$content = get_the_title( $post_id ) . ' ' . apply_filters( 'the_content', get_post_field( 'post_content', $post_id ) );
+				break;
+			case 'custom_field':
+				$content = $this->get_custom_field_value( $post_id, $this->post_format['custom_meta_field'] );
+				break;
+			default:
+				$content = '';
+				break;
 		}
 
 		$content = strip_shortcodes( $content );
@@ -381,7 +373,8 @@ class Rop_Post_Format_Helper {
 			return array();
 		}
 
-		return  wp_list_pluck( $post_categories, 'name' );;
+		return wp_list_pluck( $post_categories, 'name' );
+		;
 	}
 
 	/**
@@ -651,17 +644,7 @@ class Rop_Post_Format_Helper {
 			}
 		}
 
-		$post_type = new Rop_Posts_Selector_Model();
-
-		/*
-		*If post is a media post then we get the post it was uploaded to.
-		*If it was not uploaded to any post then we return nothing.
-		*/
-		if ( ! empty( $post_type->media_post( $post ) ) ) {
-			$uploaded_to_link = get_permalink( $post_type->media_post( $post )['post'] );
-			$post_url         = ( ! empty( $uploaded_to_link ) ) ? $uploaded_to_link : '';
-		}
-
+		$post_url        = apply_filters( 'rop_raw_post_url', $post_url, $post );
 		$global_settings = new Rop_Global_Settings();
 		$settings_model  = new Rop_Settings_Model();
 
@@ -737,14 +720,6 @@ class Rop_Post_Format_Helper {
 			if ( ! empty( $share_image ) ) {
 				return $share_image;
 			}
-		}
-
-		$post_selector = new Rop_Posts_Selector_Model;
-		// Show video placeholder in queue.
-		if ( in_array( get_post_mime_type( $post_id ), $post_selector->rop_supported_mime_types()['video'] ) ) {
-			$video_placeholder = esc_url( ROP_LITE_URL . 'assets/img/video_placeholder.jpg' );
-
-			return $video_placeholder;
 		}
 
 		if ( has_post_thumbnail( $post_id ) ) {

@@ -109,10 +109,10 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $consumer_key    The Consumer Key. Default empty.
+	 * @param   string $consumer_key The Consumer Key. Default empty.
 	 * @param   string $consumer_secret The Consumer Secret. Default empty.
-	 * @param   string $token           The Consumer Key. Default NULL.
-	 * @param   string $token_secret    The Consumer Secret. Default NULL.
+	 * @param   string $token The Consumer Key. Default NULL.
+	 * @param   string $token_secret The Consumer Secret. Default NULL.
 	 *
 	 * @return mixed
 	 */
@@ -134,10 +134,10 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $consumer_key    The Consumer Key. Default empty.
+	 * @param   string $consumer_key The Consumer Key. Default empty.
 	 * @param   string $consumer_secret The Consumer Secret. Default empty.
-	 * @param   string $token           The Consumer Key. Default NULL.
-	 * @param   string $token_secret    The Consumer Secret. Default NULL.
+	 * @param   string $token The Consumer Key. Default NULL.
+	 * @param   string $token_secret The Consumer Secret. Default NULL.
 	 *
 	 * @return mixed
 	 */
@@ -360,32 +360,13 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	}
 
 	/**
-	 * Method for getting post author.
-	 *
-	 * @since   8.1.0
-	 * @access  private
-	 *
-	 * @param   int $post_id The post id.
-	 *
-	 * @return string
-	 */
-	private function get_author( $post_id ) {
-		$author_id = get_post_field( 'post_author', $post_id );
-		$author = get_the_author_meta( 'display_name', $author_id );
-
-		$author = ( $author !== 'admin' ) ? $author : '';
-		// allow users to not include author in shared posts
-		return apply_filters( 'rop_tumblr_post_author', $author );
-	}
-
-	/**
 	 * Method for publishing with Twitter service.
 	 *
 	 * @since   8.0.0
 	 * @access  public
 	 *
 	 * @param   array $post_details The post details to be published by the service.
-	 * @param   array $args         Optional arguments needed by the method.
+	 * @param   array $args Optional arguments needed by the method.
 	 *
 	 * @return mixed
 	 */
@@ -401,54 +382,54 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		}
 
 		$post_type = new Rop_Posts_Selector_Model();
-		$post_id = $post_details['post_id'];
+		$post_id   = $post_details['post_id'];
 
 		// Tumblr creates hashtags differently
 		$hashtags = preg_replace( array( '/ /', '/#/' ), array( '', ',' ), $post_details['hashtags'] );
 		$hashtags = ltrim( $hashtags, ',' );
 
 		// Link post
-		if ( ! empty( $post_details['post_url'] ) && empty( $post_type->media_post( $post_id ) ) ) {
-			 $new_post['type']        = 'link';
-			 $new_post['url']         = trim( $this->get_url( $post_details ) );
-			 $new_post['title']       = get_the_title( $post_details['post_id'] );
-			 $new_post['description'] = $post_details['content'];
-			 $new_post['author']      = $this->get_author( $post_id );
-			 $new_post['tags']        = $hashtags;
+		if ( ! empty( $post_details['post_url'] ) && empty( $post_details['post_image'] ) ) {
+			$new_post['type']        = 'link';
+			$new_post['url']         = trim( $this->get_url( $post_details ) );
+			$new_post['title']       = get_the_title( $post_details['post_id'] );
+			$new_post['description'] = $post_details['content'];
+			$new_post['author']      = $this->get_author( $post_id );
+			$new_post['tags']        = $hashtags;
 		}
 
 		// Text post
-		if ( empty( $post_type->media_post( $post_id ) ) && empty( $post_details['post_url'] ) ) {
-			 $new_post['type'] = 'text';
-			 $new_post['body'] = $post_details['content'];
-			 $new_post['tags'] = $hashtags;
+		if ( empty( $post_details['post_url'] ) && empty( $post_details['post_image'] ) ) {
+			$new_post['type'] = 'text';
+			$new_post['body'] = $post_details['content'];
+			$new_post['tags'] = $hashtags;
 		}
 
 		// Photo post
-		if ( ! empty( $post_type->media_post( $post_id ) ) && ! in_array( get_post_mime_type( $post_id ), $post_type->rop_supported_mime_types()['video'] ) ) {
-			 $new_post['type']         = 'photo';
-			 $new_post['source_url']   = esc_url( get_site_url() );
-			 $new_post['data']         = $post_type->media_post( $post_id )['source'];
-			 $new_post['caption']      = $post_details['content'] . ' ' . trim( $this->get_url( $post_details ) );
-			 $new_post['tags']         = $hashtags;
+		if ( ! empty( $post_details['post_image'] ) && strpos( $post_details['mimetype']['type'], 'image' ) !== false ) {
+
+			$new_post['type']       = 'photo';
+			$new_post['source_url'] = esc_url( get_site_url() );
+			$new_post['data']       = $post_details['post_image'];
+			$new_post['caption']    = $post_details['content'] . ' ' . trim( $this->get_url( $post_details ) );
+			$new_post['tags']       = $hashtags;
 		}
 
 		// Video post| HTML5 video doesn't support all our initially set video formats
-		if ( ! empty( $post_type->media_post( $post_id ) ) && get_post_mime_type( $post_id ) == 'video/mp4' ) {
-			$new_post['type']         = 'video';
-			$new_post['source_url']   = esc_url( get_site_url() );
-			$new_post['embed']        = '<video width="100%" height="auto" controls>
-  																 <source src="' . $post_type->media_post( $post_id )['source'] . '" type="video/mp4">
+		if ( ! empty( $post_details['post_image'] ) && strpos( $post_details['mimetype']['type'], 'video' ) !== false ) {
+			$new_post['type']       = 'video';
+			$new_post['source_url'] = esc_url( get_site_url() );
+			$new_post['embed']      = '<video width="100%" height="auto" controls>
+  																 <source src="' . $post_details['post_url'] . '" type="video / mp4">
 																	 Your browser does not support the video tag.
 																	 </video>';
-			$new_post['caption']      = $post_details['content'] . ' ' . trim( $this->get_url( $post_details ) );
-			$new_post['tags']         = $hashtags;
+			$new_post['caption']    = $post_details['content'] . ' ' . trim( $this->get_url( $post_details ) );
+			$new_post['tags']       = $hashtags;
 		}
 
 		try {
 
-				$api->createPost( $args['id'] . '.tumblr.com', $new_post );
-
+			$api->createPost( $args['id'] . '.tumblr.com', $new_post );
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
@@ -464,5 +445,25 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Method for getting post author.
+	 *
+	 * @since   8.1.0
+	 * @access  private
+	 *
+	 * @param   int $post_id The post id.
+	 *
+	 * @return string
+	 */
+	private function get_author( $post_id ) {
+		$author_id = get_post_field( 'post_author', $post_id );
+		$author    = get_the_author_meta( 'display_name', $author_id );
+
+		$author = ( $author !== 'admin' ) ? $author : '';
+
+		// allow users to not include author in shared posts
+		return apply_filters( 'rop_tumblr_post_author', $author );
 	}
 }
