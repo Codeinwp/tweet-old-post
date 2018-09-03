@@ -470,6 +470,16 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		}
 	}
 
+	/**
+	 * Method for preparing post to share with Facebook service.
+	 *
+	 * @since   8.1.0
+	 * @access  private
+	 *
+	 * @param   array $post_details The post details to be published by the service.
+	 *
+	 * @return array
+	 */
 	private function prepare_for_sharing( $post_details ) {
 		$post_id = $post_details['post_id'];
 
@@ -550,6 +560,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @param   array  $new_post The Facebook post format array.
 	 * @param   int    $page_id The Facebook page ID.
 	 * @param   string $token The Facebook page token.
+	 * @param   int    $post_id The post ID.
 	 * @param   string $posting_type Type of posting.
 	 *
 	 * @return bool
