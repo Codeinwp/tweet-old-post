@@ -61,6 +61,30 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		$this->settings = new Rop_Settings_Model();
 		$this->buffer   = wp_parse_args( $this->get( 'posts_buffer' ), $this->buffer );
 		$this->blocked  = wp_parse_args( $this->get( 'posts_blocked' ), $this->blocked );
+		add_filter( 'rop_raw_post_url', [ $this, 'alter_attachment_url' ], 10, 2 );
+	}
+
+	/**
+	 * Alter attachment post url and send attached post urls.
+	 *
+	 * @param string $post_url Original post url.
+	 * @param int    $post_id Post id.
+	 *
+	 * @return string New post url.
+	 */
+	public function alter_attachment_url( $post_url, $post_id ) {
+		$post_types = $this->settings->get_selected_post_types();
+		$post_types = wp_list_pluck( $post_types, 'value' );
+		if ( ! in_array( 'attachment', $post_types ) ) {
+			return $post_url;
+		}
+		if ( get_post_type( $post_id ) !== 'attachment' ) {
+			return $post_url;
+		}
+
+		$post_parent_id = wp_get_post_parent_id( $post_id );
+
+		return get_permalink( $post_parent_id );
 	}
 
 	/**
@@ -333,23 +357,10 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			$exclude = array();
 		}
 
-		$args = $this->build_query_args( $post_types, $tax_queries, $exclude );
+		$args  = $this->build_query_args( $post_types, $tax_queries, $exclude );
 		$query = new WP_Query( $args );
+		// echo $query->request;
 		$posts = $query->posts;
-
-		$settings = new Rop_Settings_Model();
-		$post_types = wp_list_pluck( $settings->get_selected_post_types(), 'value' );
-
-		// only get media posts if attachment post type selected
-		if ( in_array( 'attachment', $post_types ) ) {
-
-			$media_args = $this->build_media_query_args();
-			$media_query = new WP_Query( $media_args );
-			$media_posts = $media_query->posts;
-
-			$posts = array_merge( $posts, $media_posts );
-
-		}
 
 		/**
 		 * Exclude the ids from the excluded array.
@@ -362,6 +373,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		$posts = array_values( $posts );
 
 		wp_reset_postdata();
+
 		return $posts;
 	}
 
@@ -405,16 +417,39 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @return array
 	 */
 	private function build_query_args( $post_types, $tax_queries, $exclude ) {
-		$args    = array(
+		$args = array(
 			'no_found_rows'          => true,
 			'posts_per_page'         => ( 1000 + count( $exclude ) ),
 			'update_post_meta_cache' => false,
 			'update_post_term_cache' => false,
+			'post_status'            => [ 'publish' ],
 			'fields'                 => 'ids',
 			'post_type'              => $post_types,
 			'tax_query'              => $tax_queries,
 		);
-
+		// Special arguments for attachment post type.
+		if ( in_array( 'attachment', $post_types ) ) {
+			$args['post_mime_type'] = $this->rop_supported_mime_types()['all'];
+			$args['post_status'][]  = 'inherit';
+			$args['meta_query']     = array(
+				'relation' => 'OR',
+				array(
+					'relation' => 'AND',
+					array(
+						'key'   => '_rop_media_share',
+						'value' => 'on',
+					),
+					array(
+						'key'     => '_wp_attached_file',
+						'compare' => 'EXISTS',
+					),
+				),
+				array(
+					'key'     => '_wp_attached_file',
+					'compare' => 'NOT EXISTS',
+				),
+			);
+		}
 		$min_age = $this->settings->get_minimum_post_age();
 		if ( ! empty( $min_age ) ) {
 			$args['date_query'][]['before'] = date( 'Y-m-d', strtotime( '-' . $this->settings->get_minimum_post_age() . ' days' ) );
@@ -469,86 +504,11 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		$accepted_mime_types['image'] = $image_mime_types;
 
 		$accepted_mime_types['video'] = $video_mime_types;
-
-		$accepted_mime_types['all']     = array_merge( $image_mime_types, $video_mime_types );
+		// We use empty for non-attachament posts query.
+		$accepted_mime_types['all'] = array_merge( $image_mime_types, $video_mime_types, array( '' ) );
 
 		return $accepted_mime_types;
 
-	}
-
-	/**
-	 * Utility method to build the args array for the attachments in get post method.
-	 *
-	 * @since   8.1.0
-	 * @access  private
-	 *
-	 * @return array
-	 */
-	private function build_media_query_args() {
-
-		$accepted_mime_types = $this->rop_supported_mime_types()['all'];
-
-		$args    = array(
-			'no_found_rows'          => true,
-			'posts_per_page'         => ( 1000 ),
-			'post_status'            => 'inherit',
-			'post_mime_type'         => $accepted_mime_types,
-			'update_post_meta_cache' => false,
-			'update_post_term_cache' => false,
-			'fields'                 => 'ids',
-			'post_type'              => 'attachment',
-			'meta_key'               => '_rop_media_share',
-			'meta_value'             => 'on',
-		);
-
-		$min_age = $this->settings->get_minimum_post_age();
-		if ( ! empty( $min_age ) ) {
-			$args['date_query'][]['before'] = date( 'Y-m-d', strtotime( '-' . $this->settings->get_minimum_post_age() . ' days' ) );
-		}
-		$max_age = $this->settings->get_maximum_post_age();
-		if ( ! empty( $max_age ) ) {
-			$args['date_query'][]['after'] = date( 'Y-m-d', strtotime( '-' . $this->settings->get_maximum_post_age() . ' days' ) );
-		}
-		if ( ! empty( $args['date_query'] ) ) {
-			$args['date_query']['relation'] = 'AND';
-		}
-
-		return $args;
-	}
-
-	/**
-	 * Method to get determine media posts and get thier content.
-	 *
-	 * @since   8.1.0
-	 * @access  private
-	 *
-	 * @param   int $post_id The post ID.
-	 *
-	 * @return  array
-	 */
-	public function media_post( $post_id ) {
-
-		if ( get_post_type( $post_id ) == 'attachment' ) {
-			$media_post_array = array();
-			$post_object = get_post( $post_id );
-
-			$media_post_array['post']              = $post_object->post_parent;
-			$media_post_array['source']            = wp_get_attachment_url( $post_id );
-			$media_post_array['title']             = $post_object->post_title;
-			$media_post_array['caption']           = $post_object->post_excerpt;
-			$media_post_array['alt']               = get_post_meta( $post_id, '_wp_attachment_image_alt', true );
-			$media_post_array['description']       = $post_object->post_content;
-
-			if ( ! in_array( get_post_mime_type( $post_id ), $this->rop_supported_mime_types()['video'] ) ) {
-				 $media_post_array['alt']               = get_post_meta( $post_id, '_wp_attachment_image_alt', true );
-			} else {
-				$media_post_array['alt']               = $post_object->post_title;
-			}
-		} else {
-			return null;
-		}
-
-		return $media_post_array;
 	}
 
 	/**
@@ -583,6 +543,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		}
 		$this->set( 'posts_buffer', $this->buffer );
 	}
+
 
 	/**
 	 * Utility method to mark a post ID as blocked.
@@ -624,7 +585,6 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		$this->set( 'posts_buffer', $this->buffer );
 	}
 
-
 	/**
 	 * Get posts to be published now.
 	 *
@@ -632,32 +592,32 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @return array
 	 */
 	public function get_publish_now_posts() {
-		$settings_model     = new Rop_Settings_Model();
-		$post_types         = wp_list_pluck( $settings_model->get_selected_post_types(), 'value' );
+		$settings_model = new Rop_Settings_Model();
+		$post_types     = wp_list_pluck( $settings_model->get_selected_post_types(), 'value' );
 
 		// fetch all post_types that need to be published now.
-		$query              = new WP_Query(
+		$query = new WP_Query(
 			array(
-				'post_type'     => $post_types,
-				'meta_query'    => array(
+				'post_type'   => $post_types,
+				'meta_query'  => array(
 					array(
 						'key'   => 'rop_publish_now',
 						'value' => 'yes',
 					),
 				),
-				'numberposts'   => 300,
-				'orderby'       => 'modified',
-				'order'         => 'ASC',
-				'fields'        => 'ids',
+				'numberposts' => 300,
+				'orderby'     => 'modified',
+				'order'       => 'ASC',
+				'fields'      => 'ids',
 			)
 		);
 
-		$posts  = array();
+		$posts = array();
 
 		if ( $query->have_posts() ) {
 			while ( $query->have_posts() ) {
 				$query->the_post();
-				$posts[]    = $query->post;
+				$posts[] = $query->post;
 				// delete the meta so that when the post loads again after publishing, the checkboxes are cleared.
 				delete_post_meta( $query->post, 'rop_publish_now' );
 			}

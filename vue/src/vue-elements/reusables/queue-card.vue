@@ -67,7 +67,8 @@
 							<b>{{labels.link_title}}:</b>
 							<a :href="content.post_url" target="_blank" class="tooltip"
 							   :data-tooltip="labels.link_shortned_start + ' ' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service )  ">
-								{{'{' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service ) + '}'}}</a>
+								{{'{' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service ) +
+								'}'}}</a>
 						</p>
 					</div>
 				</div>
@@ -93,9 +94,10 @@
 			<div class="column col-4 col-sm-12 vertical-align" v-if="!edit && content.post_with_image">
 				<div v-if="content.post_image !== ''">
 					<figure class="figure" v-if="content.post_image !== ''">
-						<img :src="content.post_image" class="img-fit-cover img-responsive">
+						<img :src="( content.mimetype.type.indexOf('image') > -1 ? content.post_image : video_placeholder )"
+						     class="img-fit-cover img-responsive">
 					</figure>
-
+				
 				</div>
 				<div class="rop-image-placeholder" v-else>
 					<summary>
@@ -131,6 +133,7 @@
 				edit: false,
 				labels: this.$store.state.labels.queue,
 				upsell_link: ropApiSettings.upsell_link,
+				video_placeholder: ROP_ASSETS_URL + 'img/video_placeholder.jpg',
 				is_loading: false,
 				post_edit: {}
 			}
@@ -280,20 +283,20 @@
 	.fa {
 		background: transparent;
 	}
-
+	
 	#rop_core .vertical-align {
 		align-items: flex-end;
 	}
-
+	
 	#rop_core figure.figure {
 		margin: -.7em -2em -1em 0;
 	}
-
+	
 	@media (max-width: 600px) {
 		#rop_core .vertical-align {
 			align-items: center;
 		}
-
+		
 		#rop_core figure.figure {
 			margin: 10px auto 0;
 		}

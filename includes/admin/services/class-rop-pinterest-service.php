@@ -91,6 +91,27 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	}
 
 	/**
+	 * Method to request a token from api.
+	 *
+	 * @codeCoverageIgnore
+	 *
+	 * @since   8.0.0
+	 * @access  protected
+	 * @return mixed
+	 */
+	public function request_api_token() {
+		$credentials = $_SESSION['rop_pinterest_credentials'];
+
+		$api = $this->get_api( $credentials['app_id'], $credentials['secret'] );
+
+		if ( isset( $_GET['code'] ) ) {
+			$token = $api->auth->getOAuthToken( $_GET['code'] );
+			$api->auth->setOAuthToken( $token->access_token );
+			$_SESSION['rop_pinterest_token'] = $token->access_token;
+		}
+	}
+
+	/**
 	 * Method to retrieve the api object.
 	 *
 	 * @since   8.0.0
@@ -131,7 +152,6 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 			$this->logger->alert_error( 'Can not load Pinterest api. Error: ' . $exception->getMessage() );
 		}
 	}
-
 
 	/**
 	 * Method for authenticate the service.
@@ -213,7 +233,7 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 			)
 		);
 
-		$this->service      = array(
+		$this->service = array(
 			'id'                 => $user->id,
 			'service'            => $this->service_name,
 			'credentials'        => $this->credentials,
@@ -237,39 +257,6 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	}
 
 	/**
-	 * Gets the details of all boards.
-	 *
-	 * @param object $api The api object.
-	 * @param object $user The user object.
-	 */
-	private function get_boards( $api, $user ) {
-		$user_boards    = array();
-		$boards = $api->users->getMeBoards(
-			array(
-				'fields' => 'name',
-			)
-		);
-
-		foreach ( $boards as $board ) {
-			$board_details              = array();
-			$board_details['id']        = $user->username . '/' . str_replace( ' ', '-', $board->name );
-			$board_details['account']   = $this->normalize_string( sprintf( '%s %s', $user->first_name, $user->last_name ) );
-			$board_details['user']      = $this->normalize_string( $board->name );
-			$board_details['active']    = false;
-			$board_details['service']   = $this->service_name;
-			$img                        = '';
-			if ( is_array( $user->image['small'] ) && ! empty( $user->image['small']['url'] ) ) {
-				$img                    = $user->image['small']['url'];
-			}
-			$board_details['img']       = $img;
-			$board_details['created']   = $this->user_default['created'];
-			$user_boards[]              = $board_details;
-		}
-
-		return $user_boards;
-	}
-
-	/**
 	 * Method to register credentials for the service.
 	 *
 	 * @since   8.0.0
@@ -279,6 +266,39 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	 */
 	public function set_credentials( $args ) {
 		$this->credentials = $args;
+	}
+
+	/**
+	 * Gets the details of all boards.
+	 *
+	 * @param object $api The api object.
+	 * @param object $user The user object.
+	 */
+	private function get_boards( $api, $user ) {
+		$user_boards = array();
+		$boards      = $api->users->getMeBoards(
+			array(
+				'fields' => 'name',
+			)
+		);
+
+		foreach ( $boards as $board ) {
+			$board_details            = array();
+			$board_details['id']      = $user->username . '/' . str_replace( ' ', '-', $board->name );
+			$board_details['account'] = $this->normalize_string( sprintf( '%s %s', $user->first_name, $user->last_name ) );
+			$board_details['user']    = $this->normalize_string( $board->name );
+			$board_details['active']  = false;
+			$board_details['service'] = $this->service_name;
+			$img                      = '';
+			if ( is_array( $user->image['small'] ) && ! empty( $user->image['small']['url'] ) ) {
+				$img = $user->image['small']['url'];
+			}
+			$board_details['img']     = $img;
+			$board_details['created'] = $this->user_default['created'];
+			$user_boards[]            = $board_details;
+		}
+
+		return $user_boards;
 	}
 
 	/**
@@ -310,31 +330,10 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 
 		$_SESSION['rop_pinterest_credentials'] = $credentials;
 
-		$api    = $this->get_api( $credentials['app_id'], $credentials['secret'] );
-		$url    = $api->auth->getLoginUrl( $this->get_legacy_url( $this->service_name ), $this->permissions );
+		$api = $this->get_api( $credentials['app_id'], $credentials['secret'] );
+		$url = $api->auth->getLoginUrl( $this->get_legacy_url( $this->service_name ), $this->permissions );
 
 		return $url;
-	}
-
-	/**
-	 * Method to request a token from api.
-	 *
-	 * @codeCoverageIgnore
-	 *
-	 * @since   8.0.0
-	 * @access  protected
-	 * @return mixed
-	 */
-	public function request_api_token() {
-		$credentials = $_SESSION['rop_pinterest_credentials'];
-
-		$api = $this->get_api( $credentials['app_id'], $credentials['secret'] );
-
-		if ( isset( $_GET['code'] ) ) {
-			$token = $api->auth->getOAuthToken( $_GET['code'] );
-			$api->auth->setOAuthToken( $token->access_token );
-			$_SESSION['rop_pinterest_token'] = $token->access_token;
-		}
 	}
 
 	/**
@@ -353,54 +352,39 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 			return false;
 		}
 		$post_id = $post_details['post_id'];
-		$post_type = new Rop_Posts_Selector_Model;
-
-		// Doesn't support native video.
-		if ( in_array( get_post_mime_type( $post_id ), $post_type->rop_supported_mime_types()['video'] ) ) {
-			return false;
-		}
-
 		$this->set_api(
 			$this->credentials['app_id'],
 			$this->credentials['secret']
 		);
 
-		$api      = $this->get_api();
+		$api = $this->get_api();
 		$api->auth->setOAuthToken( $args['credentials']['token'] );
 
-		// Regular Posts
-		if ( empty( $post_type->media_post( $post_id ) ) ) {
+		// Check if image is present.
+		if ( empty( $post_details['post_image'] ) ) {
+			$this->logger->alert_error( sprintf( 'No image present in %s to pin to %s for %s', html_entity_decode( get_the_title( $post_details['post_id'] ) ), $args['id'], $post_details['service'] ) );
 
-			if ( empty( $post_details['post_image'] ) ) {
-				$this->logger->alert_error( sprintf( 'No image present in %s to pin to %s for %s', html_entity_decode( get_the_title( $post_details['post_id'] ) ), $args['id'], $post_details['service'] ) );
-				return false;
-			}
-
-			$pin            = $api->pins->create(
-				array(
-					'note'          => $post_details['content'] . $post_details['hashtags'],
-					'image_url'     => $post_details['post_image'],
-					'board'         => $args['id'],
-				)
-			);
-
+			return false;
 		}
 
-		// Photo Posts
-		if ( ! empty( $post_type->media_post( $post_id ) ) && in_array( get_post_mime_type( $post_id ), $post_type->rop_supported_mime_types()['image'] ) ) {
+		if ( strpos( $post_details['mimetype']['type'], 'image' ) === false ) {
 
-			$pin            = $api->pins->create(
-				array(
-					'note'          => $post_details['content'] . $post_details['hashtags'],
-					'image_url'     => $post_type->media_post( $post_id )['source'],
-					'board'         => $args['id'],
-				)
-			);
+			$this->logger->alert_error( sprintf( 'No valid image present in %s to pin to %s for %s', html_entity_decode( get_the_title( $post_details['post_id'] ) ), $args['id'], $post_details['service'] ) );
 
+			return false;
 		}
+
+		$pin = $api->pins->create(
+			array(
+				'note'      => $post_details['content'] . $post_details['hashtags'],
+				'image_url' => $post_details['post_image'],
+				'board'     => $args['id'],
+			)
+		);
 
 		if ( empty( $pin ) ) {
 			$this->logger->alert_error( sprintf( 'Unable to pin to %s for %s', $args['id'], $post_details['service'] ) );
+
 			return false;
 		}
 
@@ -413,6 +397,7 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 				$post_details['service']
 			)
 		);
+
 		return true;
 	}
 

@@ -4332,3 +4332,6 @@
 		display: none;
 	}
 }
+.modal-footer a,.rop-post-type-badge a {
+    text-decoration: underline;
+}

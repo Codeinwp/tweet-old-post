@@ -259,7 +259,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			$img = $data['pictureUrl'];
 		}
 		$user_details            = $this->user_default;
-		$user_details['id']      = $data['id'];
+		$user_details['id']      = $this->strip_underscore( $data['id'] );
 		$user_details['account'] = $this->normalize_string( $data['formattedName'] );
 		$user_details['user']    = $this->normalize_string( $data['formattedName'] );
 		$user_details['img']     = $img;
@@ -281,7 +281,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		foreach ( $companies['values'] as $company ) {
 			$users[] = wp_parse_args(
 				array(
-					'id'         => $company['id'],
+					'id'         => $this->strip_underscore( $company['id'] ),
 					'account'    => $company['name'],
 					'is_company' => true,
 					'user'       => $company['name'],
@@ -376,13 +376,14 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 */
 	public function share( $post_details, $args = array() ) {
 		if ( Rop_Admin::rop_site_is_staging() ) {
-			return;
+			return false;
 		}
 
 		$this->set_api( $this->credentials['client_id'], $this->credentials['secret'] );
 		$api   = $this->get_api();
 		$token = new \LinkedIn\AccessToken( $this->credentials['token'] );
 		$api->setAccessToken( $token );
+
 		$new_post = array(
 			'comment'    => '',
 			'content'    => array(
@@ -394,71 +395,28 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 				'code' => 'anyone',
 			),
 		);
-
-		$post_type = new Rop_Posts_Selector_Model;
-		$post_id = $post_details['post_id'];
-
-		// if not a media post
-		if ( empty( $post_type->media_post( $post_id ) ) ) {
-			$new_post['comment']                  = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
-			$new_post['content']['description']   = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
-			$new_post['content']['title']         = html_entity_decode( get_the_title( $post_id ) );
-			$new_post['content']['submitted-url'] = $this->get_url( $post_details );
-			if ( ! empty( $post_details['post_image'] ) ) {
-				$new_post['content']['submitted-image-url'] = $post_details['post_image'];
-			}
+		// If we have an image and is not a video, share it.
+		if ( ! empty( $post_details['post_image'] ) && strpos( $post_details['mimetype']['type'], 'video' ) === false ) {
+			$new_post['content']['submitted-image-url'] = $post_details['post_image'];
 		}
 
-		// Photo Posts
-		if ( ! empty( $post_type->media_post( $post_id ) ) && ! in_array( get_post_mime_type( $post_id ), $post_type->rop_supported_mime_types()['video'] ) ) {
-				/*
-				LinkedIn will only show URL in comment if there is more than one.
-				*Hashtags count as a link: http://rviv.ly/PJI89d (hashtags by itself will show)
-				*The Link in comment will not show if there are no hashtags.
-				*/
-				$new_post['comment']                  = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
-				$new_post['content']['description']   = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
-
-				/*
-				*If image was not uploaded to a post, set the share link title to the image title field from WP.
-				*Not doing this would cause share to have a title same as full image URL
-				*/
-			if ( empty( $this->get_url( $post_details ) ) ) {
-				$new_post['content']['title']       = html_entity_decode( $post_type->media_post( $post_id )['title'] );
-				$new_post['content']['submitted-url'] = $post_type->media_post( $post_id )['source'];
-			} else {
-				$new_post['content']['title']       = html_entity_decode( get_the_title( $post_type->media_post( $post_id )['post'] ) );
-				$new_post['content']['submitted-image-url'] = $post_type->media_post( $post_id )['source'];
-				$new_post['content']['submitted-url'] = $this->get_url( $post_details );
-			}
-		}
-
-		// Video Posts
-		if ( ! empty( $post_type->media_post( $post_id ) ) && in_array( get_post_mime_type( $post_id ), $post_type->rop_supported_mime_types()['video'] ) ) {
-
-			$placeholder = esc_url( plugins_url( '../assets/img/video_placeholder.jpg', dirname( __DIR__ ) ) );
-
-			$new_post['comment']                            = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
-			$new_post['content']['description']             = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
-			$new_post['content']['title']                   = $post_type->media_post( $post_id )['title'];
-			// set a custom placeholder image
-			$new_post['content']['submitted-image-url']         = apply_filters( 'rop_video_placeholder', $placeholder );
-			$new_post['content']['submitted-url']           = $post_type->media_post( $post_id )['source'];
-
-		}
+		$new_post['comment']                  = $post_details['content'] . $post_details['hashtags'];
+		$new_post['content']['description']   = $post_details['content'];
+		$new_post['content']['title']         = html_entity_decode( get_the_title( $post_details['post_id'] ) );
+		$new_post['content']['submitted-url'] = $this->get_url( $post_details );
 
 		$new_post['visibility']['code'] = 'anyone';
 
 		try {
 			if ( isset( $args['is_company'] ) && $args['is_company'] === true ) {
-				$api->post( sprintf( 'companies/%s/shares?format=json', $args['id'] ), $new_post );
+				$api->post( sprintf( 'companies/%s/shares?format=json', $this->unstrip_underscore( $args['id'] ) ), $new_post );
 			} else {
 				$api->post( 'people/~/shares?format=json', $new_post );
 			}
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
-					html_entity_decode( get_the_title( $post_id ) ),
+					html_entity_decode( get_the_title( $post_details['post_id'] ) ),
 					$args['user'],
 					$post_details['service']
 				)

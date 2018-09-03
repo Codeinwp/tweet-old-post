@@ -159,7 +159,11 @@ abstract class Rop_Services_Abstract {
 
 			if ( $authenticated ) {
 				$service                    = $this->get_service();
-				$service_id                 = $service['service'] . '_' . $service['id'];
+				/**
+				 * For LinkedIn, it seems they include '_' char into the service id and
+				 * we need to replace with something else in order to not mess with the way we store the indices.
+				 */
+				$service_id                 = $service['service'] . '_' . $this->strip_underscore( $service['id'] );
 				$new_service[ $service_id ] = $service;
 			}
 
@@ -411,5 +415,24 @@ abstract class Rop_Services_Abstract {
 	protected function normalize_string( $string ) {
 		return preg_replace( '/[[:^print:]]/', '', $string );
 	}
-
+	/**
+	 * Strip underscore and replace with safe char.
+	 *
+	 * @param string $name Original name.
+	 *
+	 * @return mixed Normalized name.
+	 */
+	protected function strip_underscore( $name ) {
+		return str_replace( '_', '---', $name );
+	}
+	/**
+	 * Adds back the underscore.
+	 *
+	 * @param string $name Safe name.
+	 *
+	 * @return mixed Unsafe name.
+	 */
+	protected function unstrip_underscore( $name ) {
+		return str_replace( '---', '_', $name );
+	}
 }
