@@ -725,6 +725,13 @@ a.active {
 	background: #32506d;
 }
 
+#rop_core .btn.btn-pinterest {
+	border-color: #BD081C;
+	color: #fff;
+	background: #BD081C;
+}
+
+
 #rop_core .btn.btn-tumblr:focus {
 	box-shadow: 0 0 0 0.1rem rgba(221, 75, 57, 0.2);
 }
@@ -4056,6 +4063,11 @@ a.active {
 .tumblr,
 .icon_box .fa-tumblr {
 	background-color: #32506d;
+}
+
+.pinterest,
+.icon_box .fa-pinterest {
+	background-color: #BD081C;
 }
 
 #rop_core .avatar .avatar-icon {

@@ -98,8 +98,8 @@ class Rop_InitAccounts {
 		// Setup terms.
 		for ( $i = 0; $i < 5; $i ++ ) {
 			$tag_name = sprintf( 'Tag %s', $i );
-			$tag      = wp_insert_term( $tag_name, 'post_tag' );
-			$tags[]   = $tag;
+			//$tag      = wp_insert_term( $tag_name, 'post_tag' );
+			$tags[]   = $tag_name;
 		}
 		for ( $i = 0; $i < 5; $i ++ ) {
 			$cat_name = sprintf( 'Category %s', $i );
@@ -119,7 +119,7 @@ class Rop_InitAccounts {
 			$tag_value = $tags[ rand( 0, count( $tags ) - 1 ) ];
 			$cat_value = $cats[ rand( 0, count( $cats ) -1  )  ];
 
-			wp_set_post_terms( $id, $tag_value['term_id'], 'post_tag' );
+			wp_set_post_terms( $id, $tag_value, 'post_tag' );
 			wp_set_post_terms( $id, $cat_value['term_id'], 'category' );
 			array_push( $post_ids, $id );
 		}

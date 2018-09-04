@@ -73,10 +73,12 @@
 						<multiple-select :options="postTypes" :disabled="isPro"
 						                 :selected="generalSettings.selected_post_types"
 						                 :changed-selection="updatedPostTypes"></multiple-select>
+						
+						<p class="text-primary rop-post-type-badge" v-if="checkMediaPostType " v-html="labels.post_types_attachament_info"> </p>
 					</div>
 				</div>
 				
-				<div class="columns py-2" v-if="!isPro">
+				<div class="columns " v-if="!isPro">
 					<div class="column text-center">
 						<p class="upsell"><i class="fa fa-lock"></i> {{labels.post_types_upsell}}</p>
 					</div>
@@ -110,6 +112,7 @@
 				
 				<span class="divider"></span>
 				
+				<!-- Google Analytics -->
 				<div class="columns py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
 						<b>{{labels.ga_title}}</b>
@@ -124,6 +127,7 @@
 						</div>
 					</div>
 				</div>
+				
 				<span class="divider"></span>
 				
 				<div class="columns py-2" :class="'rop-control-container-'+isPro">
@@ -141,7 +145,7 @@
 					</div>
 				</div>
 				<!-- Upsell -->
-				<div class="columns py-2" v-if="!isPro">
+				<div class="columns " v-if="!isPro">
 					<div class="column text-center">
 						<p class="upsell"><i class="fa fa-lock"></i> {{labels.custom_share_upsell}}</p>
 					</div>
@@ -190,6 +194,20 @@
 			taxonomies: function () {
 				return this.$store.state.generalSettings.available_taxonomies
 			},
+			checkMediaPostType() {
+				let post_type = this.$store.state.generalSettings.selected_post_types;
+				
+				if (post_type === undefined || post_type === null ) {
+					return false;
+				}
+				
+				if (post_type.length < 0) {
+					return false;
+				}
+
+				var result = post_type.map(a => a.value);
+				return (result.indexOf('attachment') > -1);
+			},
 		},
 		mounted: function () {
 			this.$log.info('In General Settings state ');
@@ -221,6 +239,7 @@
 				this.$store.commit('updateState', {stateData: data, requestName: 'update_selected_post_types'})
 				this.$store.dispatch('fetchAJAX', {req: 'get_taxonomies', data: {post_types: postTypes}})
 			},
+		
 			updatedTaxonomies(data) {
 				let taxonomies = []
 				for (let index in data) {
@@ -296,5 +315,10 @@
 		#rop_core .text-right {
 			text-align: left;
 		}
+	}
+	
+	.rop-post-type-badge{
+		text-align: center;
+		
 	}
 </style>

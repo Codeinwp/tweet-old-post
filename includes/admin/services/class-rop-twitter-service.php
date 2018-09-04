@@ -341,7 +341,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		if ( empty( $request_token ) ) {
 			return $this->get_legacy_url();
 		}
-		$this->set_api( $request_token['oauth_token'], $request_token['oauth_token_secret'], $data['consumer_key'], $data['consumer_secret'] );
+		$this->set_api( $request_token['oauth_token'], $request_token['oauth_token_secret'], $credentials['consumer_key'], $credentials['consumer_secret'] );
 		$api = $this->get_api();
 
 		$url = $api->url(
@@ -409,21 +409,62 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		);
 		$api      = $this->get_api();
 		$new_post = array();
+
+		$post_id = $post_details['post_id'];
+		$message = $post_details['content'];
+
 		if ( ! empty( $post_details['post_image'] ) ) {
-			$file_path      = $this->get_path_by_url( $post_details['post_image'] );
-			$media_response = $api->upload( 'media/upload', array( 'media' => $file_path ) );
+
+			$upload_args  = [
+				'media' => $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] ),
+			];
+			$status_check = false;
+
+			if ( strpos( $post_details['mimetype']['type'], 'video' ) !== false ) {
+				$upload_args['media_type']     = $post_details['mimetype']['type'];
+				$upload_args['media_category'] = 'tweet_video';
+				$status_check                  = true;
+			}
+
+			if ( strpos( $post_details['mimetype']['type'], 'image/gif' ) !== false ) {
+				$upload_args['media_type']     = $post_details['mimetype']['type'];
+				$upload_args['media_category'] = 'tweet_gif';
+				$status_check                  = true;
+			}
+
+			$this->logger->info( 'Before upload to twitter . ' . json_encode( $upload_args ) );
+			$media_response = $api->upload( 'media/upload', $upload_args, true );
+
 			if ( isset( $media_response->media_id_string ) ) {
-				$new_post['media_ids'] = $media_response->media_id_string;
+
+				$media_id = $media_response->media_id_string;
+
+				$limit = 0;
+				do {
+					if ( ! $status_check ) {
+						break;
+					}
+					$upload_status = $api->mediaStatus( $media_response->media_id_string );
+					if ( $upload_status->processing_info->state === 'failed' ) {
+						$media_id = '';
+						break;
+					}
+					$media_id = $media_response->media_id_string;
+					$this->logger->info( 'State : ' . json_encode( $upload_status ) );
+					sleep( 3 );
+					$limit ++;
+				} while ( $upload_status->processing_info->state !== 'succeeded' && $limit <= 10 );
+
+				if ( ! empty( $media_id ) ) {
+					$new_post['media_ids'] = $media_id;
+				}
 			} else {
-				$this->logger->alert_error( sprintf( 'Can not upload photo. Error: %s', json_encode( $media_response ) ) );
+				$this->logger->alert_error( sprintf( 'Can not upload media to twitter. Error: %s', json_encode( $media_response ) ) );
 			}
 		}
 
-		$message = $post_details['content'];
+		$new_post['status'] = $message . $this->get_url( $post_details ) . $post_details['hashtags'];
 
-		$link = $this->get_url( $post_details );
-
-		$new_post['status'] = $message . ' ' . $link;
 		$this->logger->info( sprintf( 'Before twitter share: %s', json_encode( $new_post ) ) );
 
 		$response = $api->post( 'statuses/update', $new_post );
@@ -431,7 +472,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
-					html_entity_decode( get_the_title( $post_details['post_id'] ) ),
+					html_entity_decode( get_the_title( $post_id ) ),
 					$args['user'],
 					$post_details['service']
 				)
@@ -454,7 +495,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 *
 	 * @return string Image path.
 	 */
-	private function get_path_by_url( $image_url ) {
+	private function get_path_by_url( $image_url, $mimetype ) {
 
 		$dir = wp_upload_dir();
 
@@ -478,6 +519,13 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		);
 		$ids      = get_posts( $query );
 		$id_found = false;
+		if ( strpos( $mimetype['type'], 'video' ) !== false ) {
+			if ( empty( $ids ) ) {
+				return $image_url;
+			}
+
+			return get_attached_file( reset( $ids ) );
+		}
 		if ( ! empty( $ids ) ) {
 
 			foreach ( $ids as $id ) {
@@ -523,4 +571,5 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 
 		return $path;
 	}
+
 }

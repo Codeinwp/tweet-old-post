@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 202);
+/******/ 	return __webpack_require__(__webpack_require__.s = 207);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1541,9 +1541,9 @@
 
             mom = createUTC([2000, 1]).day(i);
             if (strict && !this._fullWeekdaysParse[i]) {
-                this._fullWeekdaysParse[i] = new RegExp('^' + this.weekdays(mom, '').replace('.', '\.?') + '$', 'i');
-                this._shortWeekdaysParse[i] = new RegExp('^' + this.weekdaysShort(mom, '').replace('.', '\.?') + '$', 'i');
-                this._minWeekdaysParse[i] = new RegExp('^' + this.weekdaysMin(mom, '').replace('.', '\.?') + '$', 'i');
+                this._fullWeekdaysParse[i] = new RegExp('^' + this.weekdays(mom, '').replace('.', '\\.?') + '$', 'i');
+                this._shortWeekdaysParse[i] = new RegExp('^' + this.weekdaysShort(mom, '').replace('.', '\\.?') + '$', 'i');
+                this._minWeekdaysParse[i] = new RegExp('^' + this.weekdaysMin(mom, '').replace('.', '\\.?') + '$', 'i');
             }
             if (!this._weekdaysParse[i]) {
                 regex = '^' + this.weekdays(mom, '') + '|^' + this.weekdaysShort(mom, '') + '|^' + this.weekdaysMin(mom, '');
@@ -2346,7 +2346,7 @@
 
     function preprocessRFC2822(s) {
         // Remove comments and folding whitespace and replace multiple-spaces with a single space
-        return s.replace(/\([^)]*\)|[\n\t]/g, ' ').replace(/(\s\s+)/g, ' ').trim();
+        return s.replace(/\([^)]*\)|[\n\t]/g, ' ').replace(/(\s\s+)/g, ' ').replace(/^\s\s*/, '').replace(/\s\s*$/, '');
     }
 
     function checkWeekday(weekdayStr, parsedInput, config) {
@@ -4525,7 +4525,7 @@
     // Side effect imports
 
 
-    hooks.version = '2.22.1';
+    hooks.version = '2.22.2';
 
     setHookCallback(createLocal);
 
@@ -4888,6 +4888,204 @@ function updateLink(linkElement, obj) {
 /* 3 */
 /***/ (function(module, exports) {
 
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+var core = module.exports = { version: '2.5.7' };
+if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
 // https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
 var global = module.exports = typeof window != 'undefined' && window.Math == Math
   ? window : typeof self != 'undefined' && self.Math == Math ? self
@@ -4897,12 +5095,12 @@ if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
 
 
 /***/ }),
-/* 4 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var store = __webpack_require__(23)('wks');
-var uid = __webpack_require__(24);
-var Symbol = __webpack_require__(3).Symbol;
+var store = __webpack_require__(31)('wks');
+var uid = __webpack_require__(33);
+var Symbol = __webpack_require__(5).Symbol;
 var USE_SYMBOL = typeof Symbol == 'function';
 
 var $exports = module.exports = function (name) {
@@ -4914,35 +5112,13 @@ $exports.store = store;
 
 
 /***/ }),
-/* 5 */
-/***/ (function(module, exports) {
-
-var core = module.exports = { version: '2.5.5' };
-if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var dP = __webpack_require__(19);
-var createDesc = __webpack_require__(28);
-module.exports = __webpack_require__(11) ? function (object, key, value) {
-  return dP.f(object, key, createDesc(1, value));
-} : function (object, key, value) {
-  object[key] = value;
-  return object;
-};
-
-
-/***/ }),
 /* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* WEBPACK VAR INJECTION */(function(process, global, setImmediate) {/*!
- * Vue.js v2.5.16
+ * Vue.js v2.5.17
  * (c) 2014-2018 Evan You
  * Released under the MIT License.
  */
@@ -10031,7 +10207,7 @@ Object.defineProperty(Vue, 'FunctionalRenderContext', {
   value: FunctionalRenderContext
 });
 
-Vue.version = '2.5.16';
+Vue.version = '2.5.17';
 
 /*  */
 
@@ -15900,238 +16076,10 @@ Vue.compile = compileToFunctions;
 
 /* harmony default export */ __webpack_exports__["default"] = (Vue);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(8), __webpack_require__(13), __webpack_require__(34).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(3), __webpack_require__(8), __webpack_require__(22).setImmediate))
 
 /***/ }),
 /* 8 */
-/***/ (function(module, exports) {
-
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports) {
-
-var hasOwnProperty = {}.hasOwnProperty;
-module.exports = function (it, key) {
-  return hasOwnProperty.call(it, key);
-};
-
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var isObject = __webpack_require__(20);
-module.exports = function (it) {
-  if (!isObject(it)) throw TypeError(it + ' is not an object!');
-  return it;
-};
-
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// Thank's IE8 for his funny defineProperty
-module.exports = !__webpack_require__(21)(function () {
-  return Object.defineProperty({}, 'a', { get: function () { return 7; } }).a != 7;
-});
-
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports) {
-
-module.exports = {};
-
-
-/***/ }),
-/* 13 */
 /***/ (function(module, exports) {
 
 var g;
@@ -16158,10 +16106,62 @@ module.exports = g;
 
 
 /***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var dP = __webpack_require__(19);
+var createDesc = __webpack_require__(37);
+module.exports = __webpack_require__(12) ? function (object, key, value) {
+  return dP.f(object, key, createDesc(1, value));
+} : function (object, key, value) {
+  object[key] = value;
+  return object;
+};
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+var hasOwnProperty = {}.hasOwnProperty;
+module.exports = function (it, key) {
+  return hasOwnProperty.call(it, key);
+};
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isObject = __webpack_require__(20);
+module.exports = function (it) {
+  if (!isObject(it)) throw TypeError(it + ' is not an object!');
+  return it;
+};
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Thank's IE8 for his funny defineProperty
+module.exports = !__webpack_require__(21)(function () {
+  return Object.defineProperty({}, 'a', { get: function () { return 7; } }).a != 7;
+});
+
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports) {
+
+module.exports = {};
+
+
+/***/ }),
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(207), __esModule: true };
+module.exports = { "default": __webpack_require__(212), __esModule: true };
 
 /***/ }),
 /* 15 */
@@ -16179,7 +16179,7 @@ module.exports = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // to indexed object, toObject with fallback for non-array-like ES3 strings
-var IObject = __webpack_require__(43);
+var IObject = __webpack_require__(44);
 var defined = __webpack_require__(15);
 module.exports = function (it) {
   return IObject(defined(it));
@@ -16202,8 +16202,8 @@ module.exports = function (it) {
 /* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var shared = __webpack_require__(23)('keys');
-var uid = __webpack_require__(24);
+var shared = __webpack_require__(31)('keys');
+var uid = __webpack_require__(33);
 module.exports = function (key) {
   return shared[key] || (shared[key] = uid(key));
 };
@@ -16213,12 +16213,12 @@ module.exports = function (key) {
 /* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var anObject = __webpack_require__(10);
-var IE8_DOM_DEFINE = __webpack_require__(49);
-var toPrimitive = __webpack_require__(50);
+var anObject = __webpack_require__(11);
+var IE8_DOM_DEFINE = __webpack_require__(50);
+var toPrimitive = __webpack_require__(51);
 var dP = Object.defineProperty;
 
-exports.f = __webpack_require__(11) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
+exports.f = __webpack_require__(12) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
   anObject(O);
   P = toPrimitive(P, true);
   anObject(Attributes);
@@ -16255,264 +16255,6 @@ module.exports = function (exec) {
 
 /***/ }),
 /* 22 */
-/***/ (function(module, exports) {
-
-var toString = {}.toString;
-
-module.exports = function (it) {
-  return toString.call(it).slice(8, -1);
-};
-
-
-/***/ }),
-/* 23 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var global = __webpack_require__(3);
-var SHARED = '__core-js_shared__';
-var store = global[SHARED] || (global[SHARED] = {});
-module.exports = function (key) {
-  return store[key] || (store[key] = {});
-};
-
-
-/***/ }),
-/* 24 */
-/***/ (function(module, exports) {
-
-var id = 0;
-var px = Math.random();
-module.exports = function (key) {
-  return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
-};
-
-
-/***/ }),
-/* 25 */
-/***/ (function(module, exports) {
-
-// IE 8- don't enum bug keys
-module.exports = (
-  'constructor,hasOwnProperty,isPrototypeOf,propertyIsEnumerable,toLocaleString,toString,valueOf'
-).split(',');
-
-
-/***/ }),
-/* 26 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var global = __webpack_require__(3);
-var core = __webpack_require__(5);
-var ctx = __webpack_require__(47);
-var hide = __webpack_require__(6);
-var has = __webpack_require__(9);
-var PROTOTYPE = 'prototype';
-
-var $export = function (type, name, source) {
-  var IS_FORCED = type & $export.F;
-  var IS_GLOBAL = type & $export.G;
-  var IS_STATIC = type & $export.S;
-  var IS_PROTO = type & $export.P;
-  var IS_BIND = type & $export.B;
-  var IS_WRAP = type & $export.W;
-  var exports = IS_GLOBAL ? core : core[name] || (core[name] = {});
-  var expProto = exports[PROTOTYPE];
-  var target = IS_GLOBAL ? global : IS_STATIC ? global[name] : (global[name] || {})[PROTOTYPE];
-  var key, own, out;
-  if (IS_GLOBAL) source = name;
-  for (key in source) {
-    // contains in native
-    own = !IS_FORCED && target && target[key] !== undefined;
-    if (own && has(exports, key)) continue;
-    // export native or passed
-    out = own ? target[key] : source[key];
-    // prevent global pollution for namespaces
-    exports[key] = IS_GLOBAL && typeof target[key] != 'function' ? source[key]
-    // bind timers to global for call from export context
-    : IS_BIND && own ? ctx(out, global)
-    // wrap global constructors for prevent change them in library
-    : IS_WRAP && target[key] == out ? (function (C) {
-      var F = function (a, b, c) {
-        if (this instanceof C) {
-          switch (arguments.length) {
-            case 0: return new C();
-            case 1: return new C(a);
-            case 2: return new C(a, b);
-          } return new C(a, b, c);
-        } return C.apply(this, arguments);
-      };
-      F[PROTOTYPE] = C[PROTOTYPE];
-      return F;
-    // make static versions for prototype methods
-    })(out) : IS_PROTO && typeof out == 'function' ? ctx(Function.call, out) : out;
-    // export proto methods to core.%CONSTRUCTOR%.methods.%NAME%
-    if (IS_PROTO) {
-      (exports.virtual || (exports.virtual = {}))[key] = out;
-      // export proto methods to core.%CONSTRUCTOR%.prototype.%NAME%
-      if (type & $export.R && expProto && !expProto[key]) hide(expProto, key, out);
-    }
-  }
-};
-// type bitmap
-$export.F = 1;   // forced
-$export.G = 2;   // global
-$export.S = 4;   // static
-$export.P = 8;   // proto
-$export.B = 16;  // bind
-$export.W = 32;  // wrap
-$export.U = 64;  // safe
-$export.R = 128; // real proto method for `library`
-module.exports = $export;
-
-
-/***/ }),
-/* 27 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var isObject = __webpack_require__(20);
-var document = __webpack_require__(3).document;
-// typeof document.createElement is 'object' in old IE
-var is = isObject(document) && isObject(document.createElement);
-module.exports = function (it) {
-  return is ? document.createElement(it) : {};
-};
-
-
-/***/ }),
-/* 28 */
-/***/ (function(module, exports) {
-
-module.exports = function (bitmap, value) {
-  return {
-    enumerable: !(bitmap & 1),
-    configurable: !(bitmap & 2),
-    writable: !(bitmap & 4),
-    value: value
-  };
-};
-
-
-/***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var LIBRARY = __webpack_require__(56);
-var $export = __webpack_require__(26);
-var redefine = __webpack_require__(57);
-var hide = __webpack_require__(6);
-var Iterators = __webpack_require__(12);
-var $iterCreate = __webpack_require__(58);
-var setToStringTag = __webpack_require__(30);
-var getPrototypeOf = __webpack_require__(62);
-var ITERATOR = __webpack_require__(4)('iterator');
-var BUGGY = !([].keys && 'next' in [].keys()); // Safari has buggy iterators w/o `next`
-var FF_ITERATOR = '@@iterator';
-var KEYS = 'keys';
-var VALUES = 'values';
-
-var returnThis = function () { return this; };
-
-module.exports = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCED) {
-  $iterCreate(Constructor, NAME, next);
-  var getMethod = function (kind) {
-    if (!BUGGY && kind in proto) return proto[kind];
-    switch (kind) {
-      case KEYS: return function keys() { return new Constructor(this, kind); };
-      case VALUES: return function values() { return new Constructor(this, kind); };
-    } return function entries() { return new Constructor(this, kind); };
-  };
-  var TAG = NAME + ' Iterator';
-  var DEF_VALUES = DEFAULT == VALUES;
-  var VALUES_BUG = false;
-  var proto = Base.prototype;
-  var $native = proto[ITERATOR] || proto[FF_ITERATOR] || DEFAULT && proto[DEFAULT];
-  var $default = $native || getMethod(DEFAULT);
-  var $entries = DEFAULT ? !DEF_VALUES ? $default : getMethod('entries') : undefined;
-  var $anyNative = NAME == 'Array' ? proto.entries || $native : $native;
-  var methods, key, IteratorPrototype;
-  // Fix native
-  if ($anyNative) {
-    IteratorPrototype = getPrototypeOf($anyNative.call(new Base()));
-    if (IteratorPrototype !== Object.prototype && IteratorPrototype.next) {
-      // Set @@toStringTag to native iterators
-      setToStringTag(IteratorPrototype, TAG, true);
-      // fix for some old engines
-      if (!LIBRARY && typeof IteratorPrototype[ITERATOR] != 'function') hide(IteratorPrototype, ITERATOR, returnThis);
-    }
-  }
-  // fix Array#{values, @@iterator}.name in V8 / FF
-  if (DEF_VALUES && $native && $native.name !== VALUES) {
-    VALUES_BUG = true;
-    $default = function values() { return $native.call(this); };
-  }
-  // Define iterator
-  if ((!LIBRARY || FORCED) && (BUGGY || VALUES_BUG || !proto[ITERATOR])) {
-    hide(proto, ITERATOR, $default);
-  }
-  // Plug for library
-  Iterators[NAME] = $default;
-  Iterators[TAG] = returnThis;
-  if (DEFAULT) {
-    methods = {
-      values: DEF_VALUES ? $default : getMethod(VALUES),
-      keys: IS_SET ? $default : getMethod(KEYS),
-      entries: $entries
-    };
-    if (FORCED) for (key in methods) {
-      if (!(key in proto)) redefine(proto, key, methods[key]);
-    } else $export($export.P + $export.F * (BUGGY || VALUES_BUG), NAME, methods);
-  }
-  return methods;
-};
-
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var def = __webpack_require__(19).f;
-var has = __webpack_require__(9);
-var TAG = __webpack_require__(4)('toStringTag');
-
-module.exports = function (it, tag, stat) {
-  if (it && !has(it = stat ? it : it.prototype, TAG)) def(it, TAG, { configurable: true, value: tag });
-};
-
-
-/***/ }),
-/* 31 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// 7.1.13 ToObject(argument)
-var defined = __webpack_require__(15);
-module.exports = function (it) {
-  return Object(defined(it));
-};
-
-
-/***/ }),
-/* 32 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// 19.1.2.14 / 15.2.3.14 Object.keys(O)
-var $keys = __webpack_require__(42);
-var enumBugKeys = __webpack_require__(25);
-
-module.exports = Object.keys || function keys(O) {
-  return $keys(O, enumBugKeys);
-};
-
-
-/***/ }),
-/* 33 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = { "default": __webpack_require__(51), __esModule: true };
-
-/***/ }),
-/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
@@ -16568,7 +16310,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(35);
+__webpack_require__(23);
 // On some exotic environments, it's not clear which object `setimmediate` was
 // able to install onto.  Search each possibility in the same order as the
 // `setimmediate` library.
@@ -16579,10 +16321,10 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
                          (typeof global !== "undefined" && global.clearImmediate) ||
                          (this && this.clearImmediate);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
-/* 35 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -16772,10 +16514,10 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13), __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(3)))
 
 /***/ }),
-/* 36 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16789,15 +16531,15 @@ var _vue = __webpack_require__(7);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _vuex = __webpack_require__(37);
+var _vuex = __webpack_require__(25);
 
 var _vuex2 = _interopRequireDefault(_vuex);
 
-var _vueResource = __webpack_require__(38);
+var _vueResource = __webpack_require__(26);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _vuejsLogger = __webpack_require__(40);
+var _vuejsLogger = __webpack_require__(28);
 
 var _vuejsLogger2 = _interopRequireDefault(_vuejsLogger);
 
@@ -16883,7 +16625,8 @@ exports.default = new _vuex2.default.Store({
 		activeAccounts: {},
 		activePostFormat: [],
 		activeSchedule: [],
-		queue: {}
+		queue: {},
+		publish_now: ropApiSettings.publish_now
 	},
 	mutations: {
 		setTabView: function setTabView(state, view) {
@@ -17088,7 +16831,7 @@ exports.default = new _vuex2.default.Store({
 });
 
 /***/ }),
-/* 37 */
+/* 25 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -18032,10 +17775,10 @@ var index_esm = {
 
 /* harmony default export */ __webpack_exports__["default"] = (index_esm);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(3)))
 
 /***/ }),
-/* 38 */
+/* 26 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -18044,7 +17787,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Http", function() { return Http; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Resource", function() { return Resource; });
 /*!
- * vue-resource v1.5.0
+ * vue-resource v1.5.1
  * https://github.com/pagekit/vue-resource
  * Released under the MIT License.
  */
@@ -19134,7 +18877,7 @@ function xhrClient (request) {
 
 function nodeClient (request) {
 
-    var client = __webpack_require__(39);
+    var client = __webpack_require__(27);
 
     return new PromiseObj(function (resolve) {
 
@@ -19602,13 +19345,13 @@ if (typeof window !== 'undefined' && window.Vue) {
 
 
 /***/ }),
-/* 39 */
+/* 27 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 40 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19618,7 +19361,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _logger = __webpack_require__(41);
+var _logger = __webpack_require__(29);
 
 var _logger2 = _interopRequireDefault(_logger);
 
@@ -19629,19 +19372,290 @@ exports.default = {
 };
 
 /***/ }),
-/* 41 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 function _toConsumableArray(o){if(Array.isArray(o)){for(var e=0,r=Array(o.length);e<o.length;e++)r[e]=o[e];return r}return Array.from(o)}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=function(){function o(o,r){var t={};return r.forEach(function(a){r.indexOf(a)>=r.indexOf(o.logLevel)?t[a]=function(){for(var r=arguments.length,t=Array(r),s=0;s<r;s++)t[s]=arguments[s];var l=n(),i=o.showMethodName?l+" "+o.separator+" ":"",g=o.showLogLevel?a+" "+o.separator+" ":"",f=o.stringifyArguments?t.map(function(o){return JSON.stringify(o)}):t;e(a,g,i,f,o.showConsoleColors)}:t[a]=function(){}}),t}function e(){var o=arguments.length>0&&void 0!==arguments[0]&&arguments[0],e=arguments.length>1&&void 0!==arguments[1]&&arguments[1],r=arguments.length>2&&void 0!==arguments[2]&&arguments[2],t=arguments.length>3&&void 0!==arguments[3]&&arguments[3];if(arguments.length>4&&void 0!==arguments[4]&&arguments[4]&&("warn"===o||"error"===o||"fatal"===o)){var n;(n=console)["fatal"===o?"error":o].apply(n,[e,r].concat(_toConsumableArray(t)))}else{var a;(a=console).log.apply(a,[e,r].concat(_toConsumableArray(t)))}}function r(o,e){return!!(o.logLevel&&"string"==typeof o.logLevel&&e.indexOf(o.logLevel)>-1)&&((!o.stringifyArguments||"boolean"==typeof o.stringifyArguments)&&((!o.showLogLevel||"boolean"==typeof o.showLogLevel)&&((!o.showConsoleColors||"boolean"==typeof o.showConsoleColors)&&((!o.separator||!("string"!=typeof o.separator||"string"==typeof o.separator&&o.separator.length>3))&&!(o.showMethodName&&"boolean"!=typeof o.showMethodName)))))}function t(e,t){if(t=Object.assign(a,t),!r(t,s))throw new Error("Provided options for vuejs-logger are not valid.");e.$log=o(t,s),e.prototype.$log=e.$log}function n(){var o={};try{throw new Error("")}catch(e){o=e}var e=o.stack.split("\n")[3];return/ /.test(e)&&(e=e.trim().split(" ")[1]),e&&e.includes(".")&&(e=e.split(".")[1]),e}var a={logLevel:"debug",separator:"|",stringifyArguments:!1,showLogLevel:!1,showMethodName:!1,showConsoleColors:!1},s=["debug","info","warn","error","fatal"];return{install:t,isValidOptions:r,print:e,initLoggerInstance:o,logLevels:s}}();
 
 /***/ }),
+/* 30 */
+/***/ (function(module, exports) {
+
+var toString = {}.toString;
+
+module.exports = function (it) {
+  return toString.call(it).slice(8, -1);
+};
+
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var core = __webpack_require__(4);
+var global = __webpack_require__(5);
+var SHARED = '__core-js_shared__';
+var store = global[SHARED] || (global[SHARED] = {});
+
+(module.exports = function (key, value) {
+  return store[key] || (store[key] = value !== undefined ? value : {});
+})('versions', []).push({
+  version: core.version,
+  mode: __webpack_require__(32) ? 'pure' : 'global',
+  copyright: '© 2018 Denis Pushkarev (zloirock.ru)'
+});
+
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports) {
+
+module.exports = true;
+
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports) {
+
+var id = 0;
+var px = Math.random();
+module.exports = function (key) {
+  return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
+};
+
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports) {
+
+// IE 8- don't enum bug keys
+module.exports = (
+  'constructor,hasOwnProperty,isPrototypeOf,propertyIsEnumerable,toLocaleString,toString,valueOf'
+).split(',');
+
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var global = __webpack_require__(5);
+var core = __webpack_require__(4);
+var ctx = __webpack_require__(48);
+var hide = __webpack_require__(9);
+var has = __webpack_require__(10);
+var PROTOTYPE = 'prototype';
+
+var $export = function (type, name, source) {
+  var IS_FORCED = type & $export.F;
+  var IS_GLOBAL = type & $export.G;
+  var IS_STATIC = type & $export.S;
+  var IS_PROTO = type & $export.P;
+  var IS_BIND = type & $export.B;
+  var IS_WRAP = type & $export.W;
+  var exports = IS_GLOBAL ? core : core[name] || (core[name] = {});
+  var expProto = exports[PROTOTYPE];
+  var target = IS_GLOBAL ? global : IS_STATIC ? global[name] : (global[name] || {})[PROTOTYPE];
+  var key, own, out;
+  if (IS_GLOBAL) source = name;
+  for (key in source) {
+    // contains in native
+    own = !IS_FORCED && target && target[key] !== undefined;
+    if (own && has(exports, key)) continue;
+    // export native or passed
+    out = own ? target[key] : source[key];
+    // prevent global pollution for namespaces
+    exports[key] = IS_GLOBAL && typeof target[key] != 'function' ? source[key]
+    // bind timers to global for call from export context
+    : IS_BIND && own ? ctx(out, global)
+    // wrap global constructors for prevent change them in library
+    : IS_WRAP && target[key] == out ? (function (C) {
+      var F = function (a, b, c) {
+        if (this instanceof C) {
+          switch (arguments.length) {
+            case 0: return new C();
+            case 1: return new C(a);
+            case 2: return new C(a, b);
+          } return new C(a, b, c);
+        } return C.apply(this, arguments);
+      };
+      F[PROTOTYPE] = C[PROTOTYPE];
+      return F;
+    // make static versions for prototype methods
+    })(out) : IS_PROTO && typeof out == 'function' ? ctx(Function.call, out) : out;
+    // export proto methods to core.%CONSTRUCTOR%.methods.%NAME%
+    if (IS_PROTO) {
+      (exports.virtual || (exports.virtual = {}))[key] = out;
+      // export proto methods to core.%CONSTRUCTOR%.prototype.%NAME%
+      if (type & $export.R && expProto && !expProto[key]) hide(expProto, key, out);
+    }
+  }
+};
+// type bitmap
+$export.F = 1;   // forced
+$export.G = 2;   // global
+$export.S = 4;   // static
+$export.P = 8;   // proto
+$export.B = 16;  // bind
+$export.W = 32;  // wrap
+$export.U = 64;  // safe
+$export.R = 128; // real proto method for `library`
+module.exports = $export;
+
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isObject = __webpack_require__(20);
+var document = __webpack_require__(5).document;
+// typeof document.createElement is 'object' in old IE
+var is = isObject(document) && isObject(document.createElement);
+module.exports = function (it) {
+  return is ? document.createElement(it) : {};
+};
+
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports) {
+
+module.exports = function (bitmap, value) {
+  return {
+    enumerable: !(bitmap & 1),
+    configurable: !(bitmap & 2),
+    writable: !(bitmap & 4),
+    value: value
+  };
+};
+
+
+/***/ }),
+/* 38 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var LIBRARY = __webpack_require__(32);
+var $export = __webpack_require__(35);
+var redefine = __webpack_require__(57);
+var hide = __webpack_require__(9);
+var Iterators = __webpack_require__(13);
+var $iterCreate = __webpack_require__(58);
+var setToStringTag = __webpack_require__(39);
+var getPrototypeOf = __webpack_require__(62);
+var ITERATOR = __webpack_require__(6)('iterator');
+var BUGGY = !([].keys && 'next' in [].keys()); // Safari has buggy iterators w/o `next`
+var FF_ITERATOR = '@@iterator';
+var KEYS = 'keys';
+var VALUES = 'values';
+
+var returnThis = function () { return this; };
+
+module.exports = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCED) {
+  $iterCreate(Constructor, NAME, next);
+  var getMethod = function (kind) {
+    if (!BUGGY && kind in proto) return proto[kind];
+    switch (kind) {
+      case KEYS: return function keys() { return new Constructor(this, kind); };
+      case VALUES: return function values() { return new Constructor(this, kind); };
+    } return function entries() { return new Constructor(this, kind); };
+  };
+  var TAG = NAME + ' Iterator';
+  var DEF_VALUES = DEFAULT == VALUES;
+  var VALUES_BUG = false;
+  var proto = Base.prototype;
+  var $native = proto[ITERATOR] || proto[FF_ITERATOR] || DEFAULT && proto[DEFAULT];
+  var $default = $native || getMethod(DEFAULT);
+  var $entries = DEFAULT ? !DEF_VALUES ? $default : getMethod('entries') : undefined;
+  var $anyNative = NAME == 'Array' ? proto.entries || $native : $native;
+  var methods, key, IteratorPrototype;
+  // Fix native
+  if ($anyNative) {
+    IteratorPrototype = getPrototypeOf($anyNative.call(new Base()));
+    if (IteratorPrototype !== Object.prototype && IteratorPrototype.next) {
+      // Set @@toStringTag to native iterators
+      setToStringTag(IteratorPrototype, TAG, true);
+      // fix for some old engines
+      if (!LIBRARY && typeof IteratorPrototype[ITERATOR] != 'function') hide(IteratorPrototype, ITERATOR, returnThis);
+    }
+  }
+  // fix Array#{values, @@iterator}.name in V8 / FF
+  if (DEF_VALUES && $native && $native.name !== VALUES) {
+    VALUES_BUG = true;
+    $default = function values() { return $native.call(this); };
+  }
+  // Define iterator
+  if ((!LIBRARY || FORCED) && (BUGGY || VALUES_BUG || !proto[ITERATOR])) {
+    hide(proto, ITERATOR, $default);
+  }
+  // Plug for library
+  Iterators[NAME] = $default;
+  Iterators[TAG] = returnThis;
+  if (DEFAULT) {
+    methods = {
+      values: DEF_VALUES ? $default : getMethod(VALUES),
+      keys: IS_SET ? $default : getMethod(KEYS),
+      entries: $entries
+    };
+    if (FORCED) for (key in methods) {
+      if (!(key in proto)) redefine(proto, key, methods[key]);
+    } else $export($export.P + $export.F * (BUGGY || VALUES_BUG), NAME, methods);
+  }
+  return methods;
+};
+
+
+/***/ }),
+/* 39 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var def = __webpack_require__(19).f;
+var has = __webpack_require__(10);
+var TAG = __webpack_require__(6)('toStringTag');
+
+module.exports = function (it, tag, stat) {
+  if (it && !has(it = stat ? it : it.prototype, TAG)) def(it, TAG, { configurable: true, value: tag });
+};
+
+
+/***/ }),
+/* 40 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 7.1.13 ToObject(argument)
+var defined = __webpack_require__(15);
+module.exports = function (it) {
+  return Object(defined(it));
+};
+
+
+/***/ }),
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 19.1.2.14 / 15.2.3.14 Object.keys(O)
+var $keys = __webpack_require__(43);
+var enumBugKeys = __webpack_require__(34);
+
+module.exports = Object.keys || function keys(O) {
+  return $keys(O, enumBugKeys);
+};
+
+
+/***/ }),
 /* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var has = __webpack_require__(9);
+module.exports = { "default": __webpack_require__(52), __esModule: true };
+
+/***/ }),
+/* 43 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var has = __webpack_require__(10);
 var toIObject = __webpack_require__(16);
-var arrayIndexOf = __webpack_require__(44)(false);
+var arrayIndexOf = __webpack_require__(45)(false);
 var IE_PROTO = __webpack_require__(18)('IE_PROTO');
 
 module.exports = function (object, names) {
@@ -19659,11 +19673,11 @@ module.exports = function (object, names) {
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for non-array-like ES3 and non-enumerable old V8 strings
-var cof = __webpack_require__(22);
+var cof = __webpack_require__(30);
 // eslint-disable-next-line no-prototype-builtins
 module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
   return cof(it) == 'String' ? it.split('') : Object(it);
@@ -19671,14 +19685,14 @@ module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // false -> Array#indexOf
 // true  -> Array#includes
 var toIObject = __webpack_require__(16);
-var toLength = __webpack_require__(45);
-var toAbsoluteIndex = __webpack_require__(46);
+var toLength = __webpack_require__(46);
+var toAbsoluteIndex = __webpack_require__(47);
 module.exports = function (IS_INCLUDES) {
   return function ($this, el, fromIndex) {
     var O = toIObject($this);
@@ -19700,7 +19714,7 @@ module.exports = function (IS_INCLUDES) {
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.15 ToLength
@@ -19712,7 +19726,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var toInteger = __webpack_require__(17);
@@ -19725,11 +19739,11 @@ module.exports = function (index, length) {
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // optional / simple context binding
-var aFunction = __webpack_require__(48);
+var aFunction = __webpack_require__(49);
 module.exports = function (fn, that, length) {
   aFunction(fn);
   if (that === undefined) return fn;
@@ -19751,7 +19765,7 @@ module.exports = function (fn, that, length) {
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports) {
 
 module.exports = function (it) {
@@ -19761,16 +19775,16 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = !__webpack_require__(11) && !__webpack_require__(21)(function () {
-  return Object.defineProperty(__webpack_require__(27)('div'), 'a', { get: function () { return 7; } }).a != 7;
+module.exports = !__webpack_require__(12) && !__webpack_require__(21)(function () {
+  return Object.defineProperty(__webpack_require__(36)('div'), 'a', { get: function () { return 7; } }).a != 7;
 });
 
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.1 ToPrimitive(input [, PreferredType])
@@ -19788,23 +19802,23 @@ module.exports = function (it, S) {
 
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(52);
+__webpack_require__(53);
 __webpack_require__(63);
 module.exports = __webpack_require__(65);
 
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(53);
-var global = __webpack_require__(3);
-var hide = __webpack_require__(6);
-var Iterators = __webpack_require__(12);
-var TO_STRING_TAG = __webpack_require__(4)('toStringTag');
+__webpack_require__(54);
+var global = __webpack_require__(5);
+var hide = __webpack_require__(9);
+var Iterators = __webpack_require__(13);
+var TO_STRING_TAG = __webpack_require__(6)('toStringTag');
 
 var DOMIterables = ('CSSRuleList,CSSStyleDeclaration,CSSValueList,ClientRectList,DOMRectList,DOMStringList,' +
   'DOMTokenList,DataTransferItemList,FileList,HTMLAllCollection,HTMLCollection,HTMLFormElement,HTMLSelectElement,' +
@@ -19822,21 +19836,21 @@ for (var i = 0; i < DOMIterables.length; i++) {
 
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var addToUnscopables = __webpack_require__(54);
-var step = __webpack_require__(55);
-var Iterators = __webpack_require__(12);
+var addToUnscopables = __webpack_require__(55);
+var step = __webpack_require__(56);
+var Iterators = __webpack_require__(13);
 var toIObject = __webpack_require__(16);
 
 // 22.1.3.4 Array.prototype.entries()
 // 22.1.3.13 Array.prototype.keys()
 // 22.1.3.29 Array.prototype.values()
 // 22.1.3.30 Array.prototype[@@iterator]()
-module.exports = __webpack_require__(29)(Array, 'Array', function (iterated, kind) {
+module.exports = __webpack_require__(38)(Array, 'Array', function (iterated, kind) {
   this._t = toIObject(iterated); // target
   this._i = 0;                   // next index
   this._k = kind;                // kind
@@ -19863,14 +19877,14 @@ addToUnscopables('entries');
 
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports) {
 
 module.exports = function () { /* empty */ };
 
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports) {
 
 module.exports = function (done, value) {
@@ -19879,17 +19893,10 @@ module.exports = function (done, value) {
 
 
 /***/ }),
-/* 56 */
-/***/ (function(module, exports) {
-
-module.exports = true;
-
-
-/***/ }),
 /* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(6);
+module.exports = __webpack_require__(9);
 
 
 /***/ }),
@@ -19899,12 +19906,12 @@ module.exports = __webpack_require__(6);
 "use strict";
 
 var create = __webpack_require__(59);
-var descriptor = __webpack_require__(28);
-var setToStringTag = __webpack_require__(30);
+var descriptor = __webpack_require__(37);
+var setToStringTag = __webpack_require__(39);
 var IteratorPrototype = {};
 
 // 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-__webpack_require__(6)(IteratorPrototype, __webpack_require__(4)('iterator'), function () { return this; });
+__webpack_require__(9)(IteratorPrototype, __webpack_require__(6)('iterator'), function () { return this; });
 
 module.exports = function (Constructor, NAME, next) {
   Constructor.prototype = create(IteratorPrototype, { next: descriptor(1, next) });
@@ -19917,9 +19924,9 @@ module.exports = function (Constructor, NAME, next) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
-var anObject = __webpack_require__(10);
+var anObject = __webpack_require__(11);
 var dPs = __webpack_require__(60);
-var enumBugKeys = __webpack_require__(25);
+var enumBugKeys = __webpack_require__(34);
 var IE_PROTO = __webpack_require__(18)('IE_PROTO');
 var Empty = function () { /* empty */ };
 var PROTOTYPE = 'prototype';
@@ -19927,7 +19934,7 @@ var PROTOTYPE = 'prototype';
 // Create object with fake `null` prototype: use iframe Object with cleared prototype
 var createDict = function () {
   // Thrash, waste and sodomy: IE GC bug
-  var iframe = __webpack_require__(27)('iframe');
+  var iframe = __webpack_require__(36)('iframe');
   var i = enumBugKeys.length;
   var lt = '<';
   var gt = '>';
@@ -19964,10 +19971,10 @@ module.exports = Object.create || function create(O, Properties) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var dP = __webpack_require__(19);
-var anObject = __webpack_require__(10);
-var getKeys = __webpack_require__(32);
+var anObject = __webpack_require__(11);
+var getKeys = __webpack_require__(41);
 
-module.exports = __webpack_require__(11) ? Object.defineProperties : function defineProperties(O, Properties) {
+module.exports = __webpack_require__(12) ? Object.defineProperties : function defineProperties(O, Properties) {
   anObject(O);
   var keys = getKeys(Properties);
   var length = keys.length;
@@ -19982,7 +19989,7 @@ module.exports = __webpack_require__(11) ? Object.defineProperties : function de
 /* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var document = __webpack_require__(3).document;
+var document = __webpack_require__(5).document;
 module.exports = document && document.documentElement;
 
 
@@ -19991,8 +19998,8 @@ module.exports = document && document.documentElement;
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
-var has = __webpack_require__(9);
-var toObject = __webpack_require__(31);
+var has = __webpack_require__(10);
+var toObject = __webpack_require__(40);
 var IE_PROTO = __webpack_require__(18)('IE_PROTO');
 var ObjectProto = Object.prototype;
 
@@ -20014,7 +20021,7 @@ module.exports = Object.getPrototypeOf || function (O) {
 var $at = __webpack_require__(64)(true);
 
 // 21.1.3.27 String.prototype[@@iterator]()
-__webpack_require__(29)(String, 'String', function (iterated) {
+__webpack_require__(38)(String, 'String', function (iterated) {
   this._t = String(iterated); // target
   this._i = 0;                // next index
 // 21.1.5.2.1 %StringIteratorPrototype%.next()
@@ -20056,9 +20063,9 @@ module.exports = function (TO_STRING) {
 /* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var anObject = __webpack_require__(10);
+var anObject = __webpack_require__(11);
 var get = __webpack_require__(66);
-module.exports = __webpack_require__(5).getIterator = function (it) {
+module.exports = __webpack_require__(4).getIterator = function (it) {
   var iterFn = get(it);
   if (typeof iterFn != 'function') throw TypeError(it + ' is not iterable!');
   return anObject(iterFn.call(it));
@@ -20070,9 +20077,9 @@ module.exports = __webpack_require__(5).getIterator = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var classof = __webpack_require__(67);
-var ITERATOR = __webpack_require__(4)('iterator');
-var Iterators = __webpack_require__(12);
-module.exports = __webpack_require__(5).getIteratorMethod = function (it) {
+var ITERATOR = __webpack_require__(6)('iterator');
+var Iterators = __webpack_require__(13);
+module.exports = __webpack_require__(4).getIteratorMethod = function (it) {
   if (it != undefined) return it[ITERATOR]
     || it['@@iterator']
     || Iterators[classof(it)];
@@ -20084,8 +20091,8 @@ module.exports = __webpack_require__(5).getIteratorMethod = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // getting tag from 19.1.3.6 Object.prototype.toString()
-var cof = __webpack_require__(22);
-var TAG = __webpack_require__(4)('toStringTag');
+var cof = __webpack_require__(30);
+var TAG = __webpack_require__(6)('toStringTag');
 // ES3 wrong here
 var ARG = cof(function () { return arguments; }()) == 'Arguments';
 
@@ -20122,7 +20129,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\mariu\\Local Sites\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\multiple-select.vue"
+  var id = "D:\\local\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\multiple-select.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -20137,7 +20144,7 @@ if (false) {(function () {  module.hot.accept()
 "use strict";
 
 
-var _getIterator2 = __webpack_require__(33);
+var _getIterator2 = __webpack_require__(42);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -20534,7 +20541,7 @@ var mixin = {
 exports.version = version;
 exports.directive = directive;
 exports.mixin = mixin;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
 /* 71 */
@@ -20557,7 +20564,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\mariu\\Local Sites\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\upsell-sidebar.vue"
+  var id = "D:\\local\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\button-checkbox.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -20581,8 +20588,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6aa195a8&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6aa195a8&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3c5281f2&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3c5281f2&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -20600,13 +20607,158 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop-upsell-box[_v-6aa195a8]{\n\t\tmargin-top:20px;\n\t}\n\t#rop_core .rop-upsell-business-card[_v-6aa195a8],\n\t#rop_core .rop-upsell-pro-card[_v-6aa195a8] {\n\t\tpadding: 0;\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop_core .input-group .input-group-addon.btn.active[_v-3c5281f2] {\n\t\tbackground-color: #8bc34a;\n\t\tborder-color: #33691e;\n\t\tcolor: #FFF;\n\t}\n", ""]);
 
 // exports
 
 
 /***/ }),
 /* 75 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// <template>
+// 	<button class="btn input-group-addon column" :class="is_active" @click="toggleThis()" >{{label}}</button>
+// </template>
+//
+// <script>
+module.exports = {
+	name: 'button-checkbox',
+	props: {
+		value: {
+			default: '0',
+			type: String
+		},
+		label: {
+			default: '',
+			type: String
+		},
+		id: {
+			default: function _default() {
+				var base = 'day';
+				if (this.label !== '' && this.label !== undefined) {
+					base = base + '_' + this.label.toLowerCase();
+				}
+
+				return base;
+			}
+		},
+		checked: {
+			default: false,
+			type: Boolean
+		}
+	},
+	data: function data() {
+		return {
+			componentCheckState: this.checked
+		};
+	},
+	computed: {
+		is_active: function is_active() {
+			return {
+				'active': this.componentCheckState === true
+			};
+		}
+	},
+	watch: {
+		checked: function checked() {
+			this.componentCheckState = this.checked;
+		}
+	},
+	methods: {
+		toggleThis: function toggleThis() {
+			this.componentCheckState = !this.componentCheckState;
+			if (this.componentCheckState) {
+				this.$emit('add-day', this.value);
+			} else {
+				this.$emit('rmv-day', this.value);
+			}
+		}
+	}
+	// </script>
+	// <style scoped>
+	// 	#rop_core .input-group .input-group-addon.btn.active {
+	// 		background-color: #8bc34a;
+	// 		border-color: #33691e;
+	// 		color: #FFF;
+	// 	}
+	// </style>
+
+};
+
+/***/ }),
+/* 76 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<button class=\"btn input-group-addon column\" :class=\"is_active\" @click=\"toggleThis()\" _v-3c5281f2=\"\">{{label}}</button>\n";
+
+/***/ }),
+/* 77 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(78)
+__vue_script__ = __webpack_require__(80)
+__vue_template__ = __webpack_require__(81)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "D:\\local\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\upsell-sidebar.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 78 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(79);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(2)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6c3d434f&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6c3d434f&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 79 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(1)();
+// imports
+
+
+// module
+exports.push([module.i, "\n\t#rop-upsell-box[_v-6c3d434f]{\n\t\tmargin-top:20px;\n\t}\n\t#rop_core .rop-upsell-business-card[_v-6c3d434f],\n\t#rop_core .rop-upsell-pro-card[_v-6c3d434f] {\n\t\tpadding: 0;\n\t}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20654,19 +20806,19 @@ module.exports = {
 };
 
 /***/ }),
-/* 76 */
+/* 81 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div id=\"rop-upsell-box\" _v-6aa195a8=\"\">\n\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \" _v-6aa195a8=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-6aa195a8=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_pro_upsell\" :alt=\"labels.upgrade_pro_cta\" _v-6aa195a8=\"\">\n\t\t\t</a>\n\t\t</div>\n\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1\" _v-6aa195a8=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-6aa195a8=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_business_upsell\" :alt=\"labels.upgrade_biz_cta\" _v-6aa195a8=\"\">\n\t\t\t</a>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div id=\"rop-upsell-box\" _v-6c3d434f=\"\">\n\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \" _v-6c3d434f=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-6c3d434f=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_pro_upsell\" :alt=\"labels.upgrade_pro_cta\" _v-6c3d434f=\"\">\n\t\t\t</a>\n\t\t</div>\n\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1\" _v-6c3d434f=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-6c3d434f=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_business_upsell\" :alt=\"labels.upgrade_biz_cta\" _v-6c3d434f=\"\">\n\t\t\t</a>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 77 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(214)
-__vue_script__ = __webpack_require__(216)
-__vue_template__ = __webpack_require__(217)
+__webpack_require__(219)
+__vue_script__ = __webpack_require__(221)
+__vue_template__ = __webpack_require__(222)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -20674,7 +20826,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\mariu\\Local Sites\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\sign-in-btn.vue"
+  var id = "D:\\local\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\sign-in-btn.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -20683,13 +20835,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 78 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(233)
-__vue_script__ = __webpack_require__(235)
-__vue_template__ = __webpack_require__(236)
+__webpack_require__(238)
+__vue_script__ = __webpack_require__(240)
+__vue_template__ = __webpack_require__(241)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -20697,7 +20849,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\mariu\\Local Sites\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\counter-input.vue"
+  var id = "D:\\local\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\counter-input.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -20706,7 +20858,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 79 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20783,7 +20935,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 80 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20922,7 +21074,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 81 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20985,7 +21137,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 82 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21048,7 +21200,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 83 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21174,7 +21326,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 84 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21237,7 +21389,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 85 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21345,7 +21497,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 86 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21408,7 +21560,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 87 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21467,7 +21619,7 @@ if (false) {(function () {  module.hot.accept()
         relativeTime : {
             future : '%s sonra',
             past : '%s əvvəl',
-            s : 'birneçə saniyyə',
+            s : 'birneçə saniyə',
             ss : '%d saniyə',
             m : 'bir dəqiqə',
             mm : '%d dəqiqə',
@@ -21517,7 +21669,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 88 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21562,7 +21714,7 @@ if (false) {(function () {  module.hot.accept()
         weekdays : {
             format: 'нядзелю_панядзелак_аўторак_сераду_чацвер_пятніцу_суботу'.split('_'),
             standalone: 'нядзеля_панядзелак_аўторак_серада_чацвер_пятніца_субота'.split('_'),
-            isFormat: /\[ ?[Вв] ?(?:мінулую|наступную)? ?\] ?dddd/
+            isFormat: /\[ ?[Ууў] ?(?:мінулую|наступную)? ?\] ?dddd/
         },
         weekdaysShort : 'нд_пн_ат_ср_чц_пт_сб'.split('_'),
         weekdaysMin : 'нд_пн_ат_ср_чц_пт_сб'.split('_'),
@@ -21653,7 +21805,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 89 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21747,7 +21899,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 90 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21809,7 +21961,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 91 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21932,7 +22084,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 92 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22055,7 +22207,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 93 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22167,7 +22319,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 94 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22322,7 +22474,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 95 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22414,7 +22566,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 96 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22597,7 +22749,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 97 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22664,7 +22816,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 98 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22748,7 +22900,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 99 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22812,7 +22964,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 100 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22892,7 +23044,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 101 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22972,7 +23124,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 102 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23052,7 +23204,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 103 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23155,7 +23307,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 104 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23259,7 +23411,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 105 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23330,7 +23482,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 106 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23397,7 +23549,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 107 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23468,7 +23620,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 108 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23539,7 +23691,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 109 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23605,7 +23757,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 110 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23676,7 +23828,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 111 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23751,7 +23903,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 112 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23847,7 +23999,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 113 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23943,7 +24095,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 114 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24030,7 +24182,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 115 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24114,7 +24266,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 116 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24184,7 +24336,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 117 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24294,7 +24446,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 118 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24407,7 +24559,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 119 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24471,7 +24623,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 120 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24558,7 +24710,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 121 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24636,7 +24788,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 122 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24718,7 +24870,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 123 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24797,7 +24949,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 124 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24877,7 +25029,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 125 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24958,7 +25110,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 126 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25085,7 +25237,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 127 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25213,7 +25365,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 128 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25314,7 +25466,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 129 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25442,7 +25594,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 130 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25600,7 +25752,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 131 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25714,7 +25866,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 132 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25813,7 +25965,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 133 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25899,7 +26051,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 134 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26035,7 +26187,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 135 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26108,7 +26260,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 136 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26204,7 +26356,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 137 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26290,7 +26442,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 138 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26383,7 +26535,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 139 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26474,7 +26626,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 140 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26588,7 +26740,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 141 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26718,7 +26870,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 142 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26803,7 +26955,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 143 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26894,7 +27046,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 144 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27034,7 +27186,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 145 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27108,7 +27260,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 146 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27230,7 +27382,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 147 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27331,7 +27483,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 148 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27447,7 +27599,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 149 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27515,7 +27667,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 150 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27609,7 +27761,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 151 */
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27694,7 +27846,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 152 */
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27802,7 +27954,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 153 */
+/* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27966,7 +28118,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 154 */
+/* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28052,7 +28204,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 155 */
+/* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28138,7 +28290,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 156 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28202,7 +28354,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 157 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28299,7 +28451,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 158 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28365,7 +28517,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 159 */
+/* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28492,7 +28644,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 160 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28583,7 +28735,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 161 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28674,7 +28826,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 162 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28738,7 +28890,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 163 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28793,7 +28945,7 @@ if (false) {(function () {  module.hot.accept()
         calendar : {
             sameDay : '[ਅਜ] LT',
             nextDay : '[ਕਲ] LT',
-            nextWeek : 'dddd, LT',
+            nextWeek : '[ਅਗਲਾ] dddd, LT',
             lastDay : '[ਕਲ] LT',
             lastWeek : '[ਪਿਛਲੇ] dddd, LT',
             sameElse : 'L'
@@ -28866,7 +29018,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 164 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28996,7 +29148,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 165 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29065,7 +29217,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 166 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29130,7 +29282,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 167 */
+/* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29209,7 +29361,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 168 */
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29395,7 +29547,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 169 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29497,7 +29649,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 170 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29561,7 +29713,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 171 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29636,7 +29788,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 172 */
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29796,7 +29948,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 173 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29973,7 +30125,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 174 */
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30045,7 +30197,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 175 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30160,7 +30312,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 176 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30275,7 +30427,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 177 */
+/* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30367,7 +30519,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 178 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30440,7 +30592,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 179 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30503,7 +30655,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 180 */
+/* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30636,7 +30788,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 181 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30729,7 +30881,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 182 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30800,7 +30952,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 183 */
+/* 188 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30920,7 +31072,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 184 */
+/* 189 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30991,7 +31143,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 185 */
+/* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31057,7 +31209,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 186 */
+/* 191 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31183,7 +31335,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 187 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -31281,7 +31433,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 188 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31376,7 +31528,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 189 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31438,7 +31590,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 190 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31500,7 +31652,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 191 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js language configuration
@@ -31623,7 +31775,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 192 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31778,7 +31930,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 193 */
+/* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31880,7 +32032,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 194 */
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31942,7 +32094,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 195 */
+/* 200 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32004,7 +32156,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 196 */
+/* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32087,7 +32239,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 197 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32159,7 +32311,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 198 */
+/* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32223,7 +32375,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 199 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32337,7 +32489,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 200 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32444,7 +32596,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 201 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32551,7 +32703,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 202 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32561,11 +32713,11 @@ var _vue = __webpack_require__(7);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _rop_store = __webpack_require__(36);
+var _rop_store = __webpack_require__(24);
 
 var _rop_store2 = _interopRequireDefault(_rop_store);
 
-var _mainPagePanel = __webpack_require__(203);
+var _mainPagePanel = __webpack_require__(208);
 
 var _mainPagePanel2 = _interopRequireDefault(_mainPagePanel);
 
@@ -32590,12 +32742,12 @@ window.addEventListener('load', function () {
 /* exported RopApp */
 
 /***/ }),
-/* 203 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(204)
-__vue_script__ = __webpack_require__(206)
+__webpack_require__(209)
+__vue_script__ = __webpack_require__(211)
 __vue_template__ = __webpack_require__(297)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
@@ -32604,7 +32756,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\mariu\\Local Sites\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\main-page-panel.vue"
+  var id = "D:\\local\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\main-page-panel.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -32613,13 +32765,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 204 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(205);
+var content = __webpack_require__(210);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -32628,8 +32780,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-047202de&file=main-page-panel.vue!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./main-page-panel.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-047202de&file=main-page-panel.vue!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./main-page-panel.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-364c0a17&file=main-page-panel.vue!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./main-page-panel.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-364c0a17&file=main-page-panel.vue!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./main-page-panel.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -32639,7 +32791,7 @@ if(false) {
 }
 
 /***/ }),
-/* 205 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -32653,7 +32805,7 @@ exports.push([module.i, "\n\t#rop_core .badge[data-badge]::after {\n\t\tposition
 
 
 /***/ }),
-/* 206 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32663,15 +32815,15 @@ var _keys = __webpack_require__(14);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _accountsTabPanel = __webpack_require__(210);
+var _accountsTabPanel = __webpack_require__(215);
 
 var _accountsTabPanel2 = _interopRequireDefault(_accountsTabPanel);
 
-var _settingsTabPanel = __webpack_require__(229);
+var _settingsTabPanel = __webpack_require__(234);
 
 var _settingsTabPanel2 = _interopRequireDefault(_settingsTabPanel);
 
-var _accountsSelectorPanel = __webpack_require__(238);
+var _accountsSelectorPanel = __webpack_require__(243);
 
 var _accountsSelectorPanel2 = _interopRequireDefault(_accountsSelectorPanel);
 
@@ -32695,7 +32847,7 @@ var _moment = __webpack_require__(0);
 
 var _moment2 = _interopRequireDefault(_moment);
 
-var _upsellSidebar = __webpack_require__(72);
+var _upsellSidebar = __webpack_require__(77);
 
 var _upsellSidebar2 = _interopRequireDefault(_upsellSidebar);
 
@@ -32951,22 +33103,22 @@ module.exports = {
 /* global ROP_ASSETS_URL */
 
 /***/ }),
-/* 207 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(208);
-module.exports = __webpack_require__(5).Object.keys;
+__webpack_require__(213);
+module.exports = __webpack_require__(4).Object.keys;
 
 
 /***/ }),
-/* 208 */
+/* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.14 Object.keys(O)
-var toObject = __webpack_require__(31);
-var $keys = __webpack_require__(32);
+var toObject = __webpack_require__(40);
+var $keys = __webpack_require__(41);
 
-__webpack_require__(209)('keys', function () {
+__webpack_require__(214)('keys', function () {
   return function keys(it) {
     return $keys(toObject(it));
   };
@@ -32974,12 +33126,12 @@ __webpack_require__(209)('keys', function () {
 
 
 /***/ }),
-/* 209 */
+/* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // most Object methods by ES6 should accept primitives
-var $export = __webpack_require__(26);
-var core = __webpack_require__(5);
+var $export = __webpack_require__(35);
+var core = __webpack_require__(4);
 var fails = __webpack_require__(21);
 module.exports = function (KEY, exec) {
   var fn = (core.Object || {})[KEY] || Object[KEY];
@@ -32990,13 +33142,13 @@ module.exports = function (KEY, exec) {
 
 
 /***/ }),
-/* 210 */
+/* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(211)
-__vue_script__ = __webpack_require__(213)
-__vue_template__ = __webpack_require__(228)
+__webpack_require__(216)
+__vue_script__ = __webpack_require__(218)
+__vue_template__ = __webpack_require__(233)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -33004,7 +33156,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\mariu\\Local Sites\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\accounts-tab-panel.vue"
+  var id = "D:\\local\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\accounts-tab-panel.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -33013,13 +33165,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 211 */
+/* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(212);
+var content = __webpack_require__(217);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -33028,8 +33180,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-19c8945e&file=accounts-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-tab-panel.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-19c8945e&file=accounts-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-tab-panel.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3e4a37f8&file=accounts-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-tab-panel.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3e4a37f8&file=accounts-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-tab-panel.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -33039,7 +33191,7 @@ if(false) {
 }
 
 /***/ }),
-/* 212 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -33047,13 +33199,13 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .columns.py-2 .text-gray[_v-19c8945e] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\t\n\t#rop_core .input-group[_v-19c8945e] {\n\t\twidth: 100%;\n\t}\n\t\n\tb[_v-19c8945e] {\n\t\tmargin-bottom: 5px;\n\t\tdisplay: block;\n\t}\n\t\n\t#rop_core .text-gray b[_v-19c8945e] {\n\t\tdisplay: inline;\n\t}\n\t\n\t#rop_core .input-group .input-group-addon[_v-19c8945e] {\n\t\tpadding: 3px 5px;\n\t}\n\t\n\t#rop_core .rop-available-accounts h5[_v-19c8945e] {\n\t\tmargin-bottom: 15px;\n\t}\n\t\n\t@media ( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-19c8945e] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\t\t\n\t\t#rop_core .text-right[_v-19c8945e] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop_core .columns.py-2 .text-gray[_v-3e4a37f8] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\t\n\t#rop_core .input-group[_v-3e4a37f8] {\n\t\twidth: 100%;\n\t}\n\t\n\tb[_v-3e4a37f8] {\n\t\tmargin-bottom: 5px;\n\t\tdisplay: block;\n\t}\n\t\n\t#rop_core .text-gray b[_v-3e4a37f8] {\n\t\tdisplay: inline;\n\t}\n\t\n\t#rop_core .input-group .input-group-addon[_v-3e4a37f8] {\n\t\tpadding: 3px 5px;\n\t}\n\t\n\t#rop_core .rop-available-accounts h5[_v-3e4a37f8] {\n\t\tmargin-bottom: 15px;\n\t}\n\t\n\t@media ( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-3e4a37f8] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\t\t\n\t\t#rop_core .text-right[_v-3e4a37f8] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 213 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33063,15 +33215,15 @@ var _keys = __webpack_require__(14);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _signInBtn = __webpack_require__(77);
+var _signInBtn = __webpack_require__(82);
 
 var _signInBtn2 = _interopRequireDefault(_signInBtn);
 
-var _serviceUserTile = __webpack_require__(218);
+var _serviceUserTile = __webpack_require__(223);
 
 var _serviceUserTile2 = _interopRequireDefault(_serviceUserTile);
 
-var _addAccountTile = __webpack_require__(223);
+var _addAccountTile = __webpack_require__(228);
 
 var _addAccountTile2 = _interopRequireDefault(_addAccountTile);
 
@@ -33233,13 +33385,13 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 214 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(215);
+var content = __webpack_require__(220);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -33248,8 +33400,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4a2ca5c8&file=sign-in-btn.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./sign-in-btn.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4a2ca5c8&file=sign-in-btn.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./sign-in-btn.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-7f153181&file=sign-in-btn.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./sign-in-btn.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-7f153181&file=sign-in-btn.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./sign-in-btn.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -33259,7 +33411,7 @@ if(false) {
 }
 
 /***/ }),
-/* 215 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -33267,13 +33419,13 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop-sign-in-area .btn[disabled][_v-4a2ca5c8]{\n\t\tcursor:not-allowed;\n\t\tpointer-events: auto;\n\t\topacity: 0.3;\n\t}\n\t", ""]);
+exports.push([module.i, "\n\t#rop-sign-in-area .btn[disabled][_v-7f153181]{\n\t\tcursor:not-allowed;\n\t\tpointer-events: auto;\n\t\topacity: 0.3;\n\t}\n\t", ""]);
 
 // exports
 
 
 /***/ }),
-/* 216 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33283,7 +33435,7 @@ var _keys = __webpack_require__(14);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _getIterator2 = __webpack_require__(33);
+var _getIterator2 = __webpack_require__(42);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -33515,19 +33667,19 @@ module.exports = {
 };
 
 /***/ }),
-/* 217 */
+/* 222 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div id=\"rop-sign-in-area\" _v-4a2ca5c8=\"\">\n\t\t<div class=\"input-group text-right buttons-wrap\" _v-4a2ca5c8=\"\">\n\t\t\t<button v-for=\"( service, network ) in services\" :disabled=\"checkDisabled( service, network )\" class=\"btn input-group-btn\" :class=\"'btn-' + network\" @click=\"requestAuthorization( network )\" _v-4a2ca5c8=\"\">\n\t\t\t\t<i class=\"fa fa-fw\" :class=\"'fa-' + network\" _v-4a2ca5c8=\"\"></i>{{service.name}}\n\t\t\t</button>\n\t\t\n\t\t</div>\n\t\t\n\t\t<div class=\"modal\" :class=\"modalActiveClass\" _v-4a2ca5c8=\"\">\n\t\t\t<div class=\"modal-overlay\" _v-4a2ca5c8=\"\"></div>\n\t\t\t<div class=\"modal-container\" _v-4a2ca5c8=\"\">\n\t\t\t\t<div class=\"modal-header\" _v-4a2ca5c8=\"\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"cancelModal()\" _v-4a2ca5c8=\"\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\" _v-4a2ca5c8=\"\">{{ modal.serviceName }} {{labels.service_popup_title}}</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\" _v-4a2ca5c8=\"\">\n\t\t\t\t\t<div class=\"content\" _v-4a2ca5c8=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-4a2ca5c8=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-4a2ca5c8=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-4a2ca5c8=\"\">\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-4a2ca5c8=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-footer\" _v-4a2ca5c8=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-4a2ca5c8=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-4a2ca5c8=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div id=\"rop-sign-in-area\" _v-7f153181=\"\">\n\t\t<div class=\"input-group text-right buttons-wrap\" _v-7f153181=\"\">\n\t\t\t<button v-for=\"( service, network ) in services\" :disabled=\"checkDisabled( service, network )\" class=\"btn input-group-btn\" :class=\"'btn-' + network\" @click=\"requestAuthorization( network )\" _v-7f153181=\"\">\n\t\t\t\t<i class=\"fa fa-fw\" :class=\"'fa-' + network\" _v-7f153181=\"\"></i>{{service.name}}\n\t\t\t</button>\n\t\t\n\t\t</div>\n\t\t\n\t\t<div class=\"modal\" :class=\"modalActiveClass\" _v-7f153181=\"\">\n\t\t\t<div class=\"modal-overlay\" _v-7f153181=\"\"></div>\n\t\t\t<div class=\"modal-container\" _v-7f153181=\"\">\n\t\t\t\t<div class=\"modal-header\" _v-7f153181=\"\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"cancelModal()\" _v-7f153181=\"\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\" _v-7f153181=\"\">{{ modal.serviceName }} {{labels.service_popup_title}}</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\" _v-7f153181=\"\">\n\t\t\t\t\t<div class=\"content\" _v-7f153181=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-7f153181=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-7f153181=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-7f153181=\"\">\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-7f153181=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-footer\" _v-7f153181=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-7f153181=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-7f153181=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 218 */
+/* 223 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(219)
-__vue_script__ = __webpack_require__(221)
-__vue_template__ = __webpack_require__(222)
+__webpack_require__(224)
+__vue_script__ = __webpack_require__(226)
+__vue_template__ = __webpack_require__(227)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -33535,7 +33687,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\mariu\\Local Sites\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\service-user-tile.vue"
+  var id = "D:\\local\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\service-user-tile.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -33544,13 +33696,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 219 */
+/* 224 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(220);
+var content = __webpack_require__(225);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -33559,8 +33711,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-8e2f7d48&file=service-user-tile.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./service-user-tile.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-8e2f7d48&file=service-user-tile.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./service-user-tile.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-47454356&file=service-user-tile.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./service-user-tile.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-47454356&file=service-user-tile.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./service-user-tile.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -33570,7 +33722,7 @@ if(false) {
 }
 
 /***/ }),
-/* 220 */
+/* 225 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -33578,13 +33730,13 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t.rop-remove-account[_v-8e2f7d48]{\n\t\twidth:15px;\n\t\ttext-align: center;\n\t\tcursor: pointer;\n\t    padding-right: 10px;\n\t\tmargin-right: 10px;\n\t\theight: 100%;\n\t\t-ms-flex: 0 0 auto;\n\t\tline-height: 40px;\n\t\topacity: 0;\n\t\tmargin-left:-20px;\n\t\ttransition-timing-function: ease-in;\n\t\ttransition: 1s;\n\t\ttransform: translateX(130%);\n\t}\n\t.rop-account:hover .rop-remove-account[_v-8e2f7d48]{\n\t\topacity:1;\n\t\tz-index:9999;\n\t\tmargin-left:0px;\n\t\ttransition-timing-function: ease-out;\n\t\ttransition: 0.25s;\n\t\ttransform: translateX(0);\n\t}\n", ""]);
+exports.push([module.i, "\n\t.rop-remove-account[_v-47454356]{\n\t\twidth:15px;\n\t\ttext-align: center;\n\t\tcursor: pointer;\n\t    padding-right: 10px;\n\t\tmargin-right: 10px;\n\t\theight: 100%;\n\t\t-ms-flex: 0 0 auto;\n\t\tline-height: 40px;\n\t\topacity: 0;\n\t\tmargin-left:-20px;\n\t\ttransition-timing-function: ease-in;\n\t\ttransition: 1s;\n\t\ttransform: translateX(130%);\n\t}\n\t.rop-account:hover .rop-remove-account[_v-47454356]{\n\t\topacity:1;\n\t\tz-index:9999;\n\t\tmargin-left:0px;\n\t\ttransition-timing-function: ease-out;\n\t\ttransition: 0.25s;\n\t\ttransform: translateX(0);\n\t}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 221 */
+/* 226 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33668,6 +33820,7 @@ module.exports = {
 			if (this.account_data.service === 'twitter') serviceIcon = serviceIcon.concat('twitter');
 			if (this.account_data.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin');
 			if (this.account_data.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr');
+			if (this.account_data.service === 'pinterest') serviceIcon = serviceIcon.concat('pinterest');
 			return serviceIcon;
 		},
 		/**
@@ -33839,19 +33992,19 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 222 */
+/* 227 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tile tile-centered rop-account\" :class=\"'rop-'+type+'-account'\" _v-8e2f7d48=\"\">\n\n\t\t<div class=\"tile-icon rop-remove-account tooltip tooltip-right\" @click=\"removeAccount(account_id) \" :data-tooltip=\"labels.remove_account\" v-if=\" ! account_data.active\" _v-8e2f7d48=\"\">\n\t\t\t<i class=\"fa fa-trash\" v-if=\" ! is_loading\" _v-8e2f7d48=\"\"></i>\n\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-8e2f7d48=\"\"></i>\n\t\t</div>\n\t\t<div class=\"tile-icon\" _v-8e2f7d48=\"\">\n\t\t\t<div class=\"icon_box\" :class=\"service\" _v-8e2f7d48=\"\">\n\t\t\t\t<img class=\"service_account_image\" :src=\"img\" v-if=\"img\" _v-8e2f7d48=\"\">\n\t\t\t\t<i class=\"fa  \" :class=\"icon\" aria-hidden=\"true\" _v-8e2f7d48=\"\"></i>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"tile-content\" _v-8e2f7d48=\"\">\n\t\t\t<div class=\"tile-title\" _v-8e2f7d48=\"\">{{ user }}</div>\n\t\t\t<div class=\"tile-subtitle text-gray\" _v-8e2f7d48=\"\">{{ serviceInfo }}</div>\n\t\t</div>\n\t\t<div class=\"tile-action\" _v-8e2f7d48=\"\">\n\t\t\t<div class=\"form-group\" _v-8e2f7d48=\"\">\n\t\t\t\t<label class=\"form-switch\" _v-8e2f7d48=\"\">\n\t\t\t\t\t<div class=\"ajax-loader \" _v-8e2f7d48=\"\"><i class=\"fa fa-spinner fa-spin\" v-show=\"is_loading\" _v-8e2f7d48=\"\"></i></div>\n\t\t\t\t\t<input :disabled=\"checkDisabled\" type=\"checkbox\" v-model=\"account_data.active\" @change=\"startToggleAccount( account_id, type )\" _v-8e2f7d48=\"\">\n\t\t\t\t\t<i class=\"form-icon\" _v-8e2f7d48=\"\"></i>\n\t\t\t\t</label>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tile tile-centered rop-account\" :class=\"'rop-'+type+'-account'\" _v-47454356=\"\">\n\n\t\t<div class=\"tile-icon rop-remove-account tooltip tooltip-right\" @click=\"removeAccount(account_id) \" :data-tooltip=\"labels.remove_account\" v-if=\" ! account_data.active\" _v-47454356=\"\">\n\t\t\t<i class=\"fa fa-trash\" v-if=\" ! is_loading\" _v-47454356=\"\"></i>\n\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-47454356=\"\"></i>\n\t\t</div>\n\t\t<div class=\"tile-icon\" _v-47454356=\"\">\n\t\t\t<div class=\"icon_box\" :class=\"service\" _v-47454356=\"\">\n\t\t\t\t<img class=\"service_account_image\" :src=\"img\" v-if=\"img\" _v-47454356=\"\">\n\t\t\t\t<i class=\"fa  \" :class=\"icon\" aria-hidden=\"true\" _v-47454356=\"\"></i>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"tile-content\" _v-47454356=\"\">\n\t\t\t<div class=\"tile-title\" _v-47454356=\"\">{{ user }}</div>\n\t\t\t<div class=\"tile-subtitle text-gray\" _v-47454356=\"\">{{ serviceInfo }}</div>\n\t\t</div>\n\t\t<div class=\"tile-action\" _v-47454356=\"\">\n\t\t\t<div class=\"form-group\" _v-47454356=\"\">\n\t\t\t\t<label class=\"form-switch\" _v-47454356=\"\">\n\t\t\t\t\t<div class=\"ajax-loader \" _v-47454356=\"\"><i class=\"fa fa-spinner fa-spin\" v-show=\"is_loading\" _v-47454356=\"\"></i></div>\n\t\t\t\t\t<input :disabled=\"checkDisabled\" type=\"checkbox\" v-model=\"account_data.active\" @change=\"startToggleAccount( account_id, type )\" _v-47454356=\"\">\n\t\t\t\t\t<i class=\"form-icon\" _v-47454356=\"\"></i>\n\t\t\t\t</label>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 223 */
+/* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(224)
-__vue_script__ = __webpack_require__(226)
-__vue_template__ = __webpack_require__(227)
+__webpack_require__(229)
+__vue_script__ = __webpack_require__(231)
+__vue_template__ = __webpack_require__(232)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -33859,7 +34012,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\mariu\\Local Sites\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\add-account-tile.vue"
+  var id = "D:\\local\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\add-account-tile.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -33868,13 +34021,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 224 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(225);
+var content = __webpack_require__(230);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -33883,8 +34036,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1c99151a&file=add-account-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./add-account-tile.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1c99151a&file=add-account-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./add-account-tile.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-9edaff7e&file=add-account-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./add-account-tile.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-9edaff7e&file=add-account-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./add-account-tile.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -33894,7 +34047,7 @@ if(false) {
 }
 
 /***/ }),
-/* 225 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -33902,19 +34055,19 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t.icon_box[_v-1c99151a] {\n\t\tbackground: #efefef;\n\t\tpadding: 0;\n\t\ttransition: .3s ease;\n\t}\n\t\n\t.icon_box.close .fa[_v-1c99151a] {\n\t\tline-height: 1.6em;\n\t}\n\t\n\t.icon_box.open .fa[_v-1c99151a] {\n\t\tline-height: 1.7em;\n\t\twidth: 20px;\n\t\ttransform: rotate(-135deg);\n\t\t-webkit-transform: rotate(-135deg);\n\t}\n\t\n\t.fa[_v-1c99151a] {\n\t\ttransition: all .3s cubic-bezier(.34, 1.61, .7, 1);\n\t}\n", ""]);
+exports.push([module.i, "\n\t.icon_box[_v-9edaff7e] {\n\t\tbackground: #efefef;\n\t\tpadding: 0;\n\t\ttransition: .3s ease;\n\t}\n\t\n\t.icon_box.close .fa[_v-9edaff7e] {\n\t\tline-height: 1.6em;\n\t}\n\t\n\t.icon_box.open .fa[_v-9edaff7e] {\n\t\tline-height: 1.7em;\n\t\twidth: 20px;\n\t\ttransform: rotate(-135deg);\n\t\t-webkit-transform: rotate(-135deg);\n\t}\n\t\n\t.fa[_v-9edaff7e] {\n\t\ttransition: all .3s cubic-bezier(.34, 1.61, .7, 1);\n\t}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 226 */
+/* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _signInBtn = __webpack_require__(77);
+var _signInBtn = __webpack_require__(82);
 
 var _signInBtn2 = _interopRequireDefault(_signInBtn);
 
@@ -33998,25 +34151,25 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 227 */
+/* 232 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div _v-1c99151a=\"\">\n\t\t<div class=\"tile tile-centered rop-add-account\" _v-1c99151a=\"\">\n\t\t\t<a class=\"tile-icon c-hand\" @click=\"addAccountActive = !addAccountActive\" _v-1c99151a=\"\">\n\t\t\t\t<div class=\"icon_box\" :class=\"(addAccountActive) ? 'close bg-error' : 'open bg-success'\" _v-1c99151a=\"\">\n\t\t\t\t\t<i class=\"fa fa-2x fa-close\" aria-hidden=\"true\" _v-1c99151a=\"\"></i>\n\t\t\t\t</div>\n\t\t\t</a>\n\t\t\t<div class=\"tile-content\" _v-1c99151a=\"\">\n\t\t\t\t<div class=\"tile-title\" _v-1c99151a=\"\">{{labels.add_account}}</div>\n\t\t\t</div>\n\t\t\t<transition name=\"fade\" _v-1c99151a=\"\">\n\t\t\t\t<div class=\"tile-action\" v-if=\"addAccountActive\" _v-1c99151a=\"\">\n\t\t\t\t\t<sign-in-btn _v-1c99151a=\"\"></sign-in-btn>\n\t\t\t\t</div>\n\t\t\t</transition>\n\t\t</div>\n\t\t<transition name=\"fade\" _v-1c99151a=\"\">\n\t\t\t<div class=\"columns my-2\" v-if=\"checkLicense &amp;&amp; addAccountActive\" _v-1c99151a=\"\">\n\t\t\t\t<div class=\"column col-12 text-center\" _v-1c99151a=\"\">\n\t\t\t\t\t<p class=\"upsell\" _v-1c99151a=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-lock \" _v-1c99151a=\"\"></i> <span v-html=\"labels.upsell_accounts\" _v-1c99151a=\"\"></span>\n\t\t\t\t\t</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</transition>\n\t</div>\n";
+module.exports = "\n\t<div _v-9edaff7e=\"\">\n\t\t<div class=\"tile tile-centered rop-add-account\" _v-9edaff7e=\"\">\n\t\t\t<a class=\"tile-icon c-hand\" @click=\"addAccountActive = !addAccountActive\" _v-9edaff7e=\"\">\n\t\t\t\t<div class=\"icon_box\" :class=\"(addAccountActive) ? 'close bg-error' : 'open bg-success'\" _v-9edaff7e=\"\">\n\t\t\t\t\t<i class=\"fa fa-2x fa-close\" aria-hidden=\"true\" _v-9edaff7e=\"\"></i>\n\t\t\t\t</div>\n\t\t\t</a>\n\t\t\t<div class=\"tile-content\" _v-9edaff7e=\"\">\n\t\t\t\t<div class=\"tile-title\" _v-9edaff7e=\"\">{{labels.add_account}}</div>\n\t\t\t</div>\n\t\t\t<transition name=\"fade\" _v-9edaff7e=\"\">\n\t\t\t\t<div class=\"tile-action\" v-if=\"addAccountActive\" _v-9edaff7e=\"\">\n\t\t\t\t\t<sign-in-btn _v-9edaff7e=\"\"></sign-in-btn>\n\t\t\t\t</div>\n\t\t\t</transition>\n\t\t</div>\n\t\t<transition name=\"fade\" _v-9edaff7e=\"\">\n\t\t\t<div class=\"columns my-2\" v-if=\"checkLicense &amp;&amp; addAccountActive\" _v-9edaff7e=\"\">\n\t\t\t\t<div class=\"column col-12 text-center\" _v-9edaff7e=\"\">\n\t\t\t\t\t<p class=\"upsell\" _v-9edaff7e=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-lock \" _v-9edaff7e=\"\"></i> <span v-html=\"labels.upsell_accounts\" _v-9edaff7e=\"\"></span>\n\t\t\t\t\t</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</transition>\n\t</div>\n";
 
 /***/ }),
-/* 228 */
+/* 233 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\" _v-19c8945e=\"\">\n\t\t<div class=\"panel-body\" _v-19c8945e=\"\">\n\t\t\t<div class=\"toast  toast-warning\" v-html=\"labels.twitter_warning\" v-if=\"twitter_warning\" _v-19c8945e=\"\">\n\t\t\t\n\t\t\t</div>\n\t\t\t<div class=\"container\" _v-19c8945e=\"\">\n\t\t\t\t<div class=\"columns\" :class=\"'rop-tab-state-'+is_loading\" _v-19c8945e=\"\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2\" _v-19c8945e=\"\">\n\t\t\t\t\t\t<div class=\"empty mb-2\" v-if=\"accountsCount === 0\" _v-19c8945e=\"\">\n\t\t\t\t\t\t\t<div class=\"empty-icon\" _v-19c8945e=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\" _v-19c8945e=\"\"></i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<p class=\"empty-title h5\" _v-19c8945e=\"\">{{labels.no_accounts}}</p>\n\t\t\t\t\t\t\t<p class=\"empty-subtitle\" _v-19c8945e=\"\">{{labels.no_accounts_desc}}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"account-container\" v-for=\"( account, id ) in accounts\" _v-19c8945e=\"\">\n\t\t\t\t\t\t\t<service-user-tile :account_data=\"account\" :account_id=\"id\" _v-19c8945e=\"\"></service-user-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-19c8945e=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"add-accounts\" _v-19c8945e=\"\">\n\t\t\t\t\t\t\t<add-account-tile _v-19c8945e=\"\"></add-account-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-19c8945e=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-19c8945e=\"\">\n\t\t\t\t<div class=\"columns\" _v-19c8945e=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-19c8945e=\"\">\n\t\t\t\t\t\t<p class=\"text-gray\" _v-19c8945e=\"\"><i class=\"fa fa-info-circle\" _v-19c8945e=\"\"></i> <span v-html=\"labels.has_accounts_desc\" _v-19c8945e=\"\"></span></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 text-right\" _v-19c8945e=\"\">\n\t\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-19c8945e=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-19c8945e=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-19c8945e=\"\"></i>\n\t\t\t\t\t\t{{labels.remove_all_cta}}\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\" _v-3e4a37f8=\"\">\n\t\t<div class=\"panel-body\" _v-3e4a37f8=\"\">\n\t\t\t<div class=\"toast  toast-warning\" v-html=\"labels.twitter_warning\" v-if=\"twitter_warning\" _v-3e4a37f8=\"\">\n\t\t\t\n\t\t\t</div>\n\t\t\t<div class=\"container\" _v-3e4a37f8=\"\">\n\t\t\t\t<div class=\"columns\" :class=\"'rop-tab-state-'+is_loading\" _v-3e4a37f8=\"\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2\" _v-3e4a37f8=\"\">\n\t\t\t\t\t\t<div class=\"empty mb-2\" v-if=\"accountsCount === 0\" _v-3e4a37f8=\"\">\n\t\t\t\t\t\t\t<div class=\"empty-icon\" _v-3e4a37f8=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\" _v-3e4a37f8=\"\"></i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<p class=\"empty-title h5\" _v-3e4a37f8=\"\">{{labels.no_accounts}}</p>\n\t\t\t\t\t\t\t<p class=\"empty-subtitle\" _v-3e4a37f8=\"\">{{labels.no_accounts_desc}}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"account-container\" v-for=\"( account, id ) in accounts\" _v-3e4a37f8=\"\">\n\t\t\t\t\t\t\t<service-user-tile :account_data=\"account\" :account_id=\"id\" _v-3e4a37f8=\"\"></service-user-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-3e4a37f8=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"add-accounts\" _v-3e4a37f8=\"\">\n\t\t\t\t\t\t\t<add-account-tile _v-3e4a37f8=\"\"></add-account-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-3e4a37f8=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-3e4a37f8=\"\">\n\t\t\t\t<div class=\"columns\" _v-3e4a37f8=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-3e4a37f8=\"\">\n\t\t\t\t\t\t<p class=\"text-gray\" _v-3e4a37f8=\"\"><i class=\"fa fa-info-circle\" _v-3e4a37f8=\"\"></i> <span v-html=\"labels.has_accounts_desc\" _v-3e4a37f8=\"\"></span></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 text-right\" _v-3e4a37f8=\"\">\n\t\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-3e4a37f8=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-3e4a37f8=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-3e4a37f8=\"\"></i>\n\t\t\t\t\t\t{{labels.remove_all_cta}}\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\n\t</div>\n";
 
 /***/ }),
-/* 229 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(230)
-__vue_script__ = __webpack_require__(232)
-__vue_template__ = __webpack_require__(237)
+__webpack_require__(235)
+__vue_script__ = __webpack_require__(237)
+__vue_template__ = __webpack_require__(242)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -34024,7 +34177,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\mariu\\Local Sites\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\settings-tab-panel.vue"
+  var id = "D:\\local\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\settings-tab-panel.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -34033,13 +34186,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 230 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(231);
+var content = __webpack_require__(236);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -34048,8 +34201,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3c89074e&file=settings-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./settings-tab-panel.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3c89074e&file=settings-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./settings-tab-panel.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-f090ed16&file=settings-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./settings-tab-panel.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-f090ed16&file=settings-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./settings-tab-panel.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -34059,7 +34212,7 @@ if(false) {
 }
 
 /***/ }),
-/* 231 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -34067,19 +34220,19 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-3c89074e] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\t\n\t#rop_core .input-group[_v-3c89074e] {\n\t\twidth: 100%;\n\t}\n\t\n\tb[_v-3c89074e] {\n\t\tmargin-bottom: 5px;\n\t\tdisplay: block;\n\t}\n\t\n\t#rop_core .input-group .input-group-addon[_v-3c89074e] {\n\t\tpadding: 3px 5px;\n\t}\n\t\n\t@media ( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-3c89074e] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\t\t\n\t\t#rop_core .text-right[_v-3c89074e] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-f090ed16] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\t\n\t#rop_core .input-group[_v-f090ed16] {\n\t\twidth: 100%;\n\t}\n\t\n\tb[_v-f090ed16] {\n\t\tmargin-bottom: 5px;\n\t\tdisplay: block;\n\t}\n\t\n\t#rop_core .input-group .input-group-addon[_v-f090ed16] {\n\t\tpadding: 3px 5px;\n\t}\n\t\n\t@media ( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-f090ed16] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\t\t\n\t\t#rop_core .text-right[_v-f090ed16] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n\t\n\t.rop-post-type-badge[_v-f090ed16]{\n\t\ttext-align: center;\n\t\t\n\t}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 232 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _counterInput = __webpack_require__(78);
+var _counterInput = __webpack_require__(83);
 
 var _counterInput2 = _interopRequireDefault(_counterInput);
 
@@ -34164,10 +34317,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 						<multiple-select :options="postTypes" :disabled="isPro"
 // 						                 :selected="generalSettings.selected_post_types"
 // 						                 :changed-selection="updatedPostTypes"></multiple-select>
+//
+// 						<p class="text-primary rop-post-type-badge" v-if="checkMediaPostType " v-html="labels.post_types_attachament_info"> </p>
 // 					</div>
 // 				</div>
 //
-// 				<div class="columns py-2" v-if="!isPro">
+// 				<div class="columns " v-if="!isPro">
 // 					<div class="column text-center">
 // 						<p class="upsell"><i class="fa fa-lock"></i> {{labels.post_types_upsell}}</p>
 // 					</div>
@@ -34201,6 +34356,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 // 				<span class="divider"></span>
 //
+// 				<!-- Google Analytics -->
 // 				<div class="columns py-2">
 // 					<div class="column col-6 col-sm-12 vertical-align">
 // 						<b>{{labels.ga_title}}</b>
@@ -34215,6 +34371,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 						</div>
 // 					</div>
 // 				</div>
+//
 // 				<span class="divider"></span>
 //
 // 				<div class="columns py-2" :class="'rop-control-container-'+isPro">
@@ -34232,7 +34389,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 					</div>
 // 				</div>
 // 				<!-- Upsell -->
-// 				<div class="columns py-2" v-if="!isPro">
+// 				<div class="columns " v-if="!isPro">
 // 					<div class="column text-center">
 // 						<p class="upsell"><i class="fa fa-lock"></i> {{labels.custom_share_upsell}}</p>
 // 					</div>
@@ -34277,6 +34434,22 @@ module.exports = {
 		},
 		taxonomies: function taxonomies() {
 			return this.$store.state.generalSettings.available_taxonomies;
+		},
+		checkMediaPostType: function checkMediaPostType() {
+			var post_type = this.$store.state.generalSettings.selected_post_types;
+
+			if (post_type === undefined || post_type === null) {
+				return false;
+			}
+
+			if (post_type.length < 0) {
+				return false;
+			}
+
+			var result = post_type.map(function (a) {
+				return a.value;
+			});
+			return result.indexOf('attachment') > -1;
 		}
 	},
 	mounted: function mounted() {
@@ -34388,18 +34561,24 @@ module.exports = {
 	// 			text-align: left;
 	// 		}
 	// 	}
+	//
+	// 	.rop-post-type-badge{
+	// 		text-align: center;
+	//
+	// 	}
 	// </style>
+	//
 
 };
 
 /***/ }),
-/* 233 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(234);
+var content = __webpack_require__(239);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -34408,8 +34587,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-37f53849&file=counter-input.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./counter-input.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-37f53849&file=counter-input.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./counter-input.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5bd612fc&file=counter-input.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./counter-input.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5bd612fc&file=counter-input.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./counter-input.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -34419,7 +34598,7 @@ if(false) {
 }
 
 /***/ }),
-/* 234 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -34433,7 +34612,7 @@ exports.push([module.i, "\n\t#rop_core .input-group.rop-counter-group {\n\t\tpos
 
 
 /***/ }),
-/* 235 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34578,24 +34757,24 @@ module.exports = {
 };
 
 /***/ }),
-/* 236 */
+/* 241 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"input-group rop-counter-group\">\n\t\t<input class=\"form-input rop-counter\" type=\"text\" v-model=\"inputValueC\" :id=\"id\">\n\t\t<button class=\"btn input-group-btn increment-btn up\" @mousedown=\"isPressed('up')\" @mouseup=\"isReleased('up')\"><i\n\t\t\t\tclass=\"fa fa-fw fa-caret-up\"></i></button>\n\t\t<button class=\"btn input-group-btn increment-btn down\" @mousedown=\"isPressed('down')\"\n\t\t        @mouseup=\"isReleased('down')\"><i class=\"fa fa-fw fa-caret-down\"></i></button>\n\t</div>\n";
 
 /***/ }),
-/* 237 */
+/* 242 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\" _v-3c89074e=\"\">\n\t\t<div class=\"panel-body\" _v-3c89074e=\"\">\n\t\t\t<div class=\"container\" :class=\"'rop-tab-state-'+is_loading\" _v-3c89074e=\"\">\n\t\t\t\t<div class=\"columns py-2\" v-if=\"! isBiz\" _v-3c89074e=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-3c89074e=\"\">\n\t\t\t\t\t\t<b _v-3c89074e=\"\">{{labels.min_interval_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-3c89074e=\"\">{{labels.min_interval_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-3c89074e=\"\">\n\t\t\t\t\t\t<counter-input id=\"default_interval\" :value.sync=\"generalSettings.default_interval\" _v-3c89074e=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-3c89074e=\"\"></span>\n\t\t\t\t<div class=\"columns py-2\" _v-3c89074e=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-3c89074e=\"\">\n\t\t\t\t\t\t<b _v-3c89074e=\"\">{{labels.min_days_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-3c89074e=\"\">{{labels.min_days_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-3c89074e=\"\">\n\t\t\t\t\t\t<counter-input id=\"min_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.minimum_post_age\" _v-3c89074e=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- Max Post Age -->\n\t\t\t\t<div class=\"columns py-2\" _v-3c89074e=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-3c89074e=\"\">\n\t\t\t\t\t\t<b _v-3c89074e=\"\">{{labels.max_days_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-3c89074e=\"\">{{labels.max_days_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-3c89074e=\"\">\n\t\t\t\t\t\t<counter-input id=\"max_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.maximum_post_age\" _v-3c89074e=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<span class=\"divider\" _v-3c89074e=\"\"></span>\n\t\t\t\t\n\t\t\t\t<div class=\"columns py-2\" _v-3c89074e=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-3c89074e=\"\">\n\t\t\t\t\t\t<b _v-3c89074e=\"\">{{labels.no_posts_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-3c89074e=\"\">{{labels.no_posts_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-3c89074e=\"\">\n\t\t\t\t\t\t<counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\" _v-3c89074e=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-3c89074e=\"\"></span>\n\t\t\t\t\n\t\t\t\t<!-- Share more than once -->\n\t\t\t\t<div class=\"columns py-2\" _v-3c89074e=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-3c89074e=\"\">\n\t\t\t\t\t\t<b _v-3c89074e=\"\">{{labels.share_once_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-3c89074e=\"\">{{labels.share_once_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-3c89074e=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-3c89074e=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-3c89074e=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\" _v-3c89074e=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-3c89074e=\"\"></i> {{labels.share_once_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-3c89074e=\"\"></span>\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-3c89074e=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-3c89074e=\"\">\n\t\t\t\t\t\t<b _v-3c89074e=\"\">{{labels.post_types_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-3c89074e=\"\">{{labels.post_types_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-3c89074e=\"\">\n\t\t\t\t\t\t<multiple-select :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-3c89074e=\"\"></multiple-select>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<div class=\"columns py-2\" v-if=\"!isPro\" _v-3c89074e=\"\">\n\t\t\t\t\t<div class=\"column text-center\" _v-3c89074e=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-3c89074e=\"\"><i class=\"fa fa-lock\" _v-3c89074e=\"\"></i> {{labels.post_types_upsell}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<span class=\"divider\" _v-3c89074e=\"\"></span>\n\t\t\t\t\n\t\t\t\t<!-- Taxonomies -->\n\t\t\t\t<div class=\"columns py-2\" _v-3c89074e=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-3c89074e=\"\">\n\t\t\t\t\t\t<b _v-3c89074e=\"\">{{labels.taxonomies_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-3c89074e=\"\">{{labels.taxonomies_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-3c89074e=\"\">\n\t\t\t\t\t\t<div class=\"input-group\" _v-3c89074e=\"\">\n\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" _v-3c89074e=\"\"></multiple-select>\n\t\t\t\t\t\t\t<span class=\"input-group-addon vertical-align\" _v-3c89074e=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-3c89074e=\"\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" _v-3c89074e=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-3c89074e=\"\"></i>{{labels.taxonomies_exclude}}\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\n\t\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<span class=\"divider\" _v-3c89074e=\"\"></span>\n\t\t\t\t\n\t\t\t\t<div class=\"columns py-2\" _v-3c89074e=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-3c89074e=\"\">\n\t\t\t\t\t\t<b _v-3c89074e=\"\">{{labels.ga_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-3c89074e=\"\">{{labels.ga_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-3c89074e=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-3c89074e=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-3c89074e=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.ga_tracking\" _v-3c89074e=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-3c89074e=\"\"></i>{{labels.ga_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-3c89074e=\"\"></span>\n\t\t\t\t\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-3c89074e=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-3c89074e=\"\">\n\t\t\t\t\t\t<b _v-3c89074e=\"\">{{labels.custom_share_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-3c89074e=\"\">{{labels.custom_share_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-3c89074e=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-3c89074e=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-3c89074e=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" :disabled=\"!isPro\" v-model=\"generalSettings.custom_messages\" _v-3c89074e=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-3c89074e=\"\"></i>{{labels.custom_share_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- Upsell -->\n\t\t\t\t<div class=\"columns py-2\" v-if=\"!isPro\" _v-3c89074e=\"\">\n\t\t\t\t\t<div class=\"column text-center\" _v-3c89074e=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-3c89074e=\"\"><i class=\"fa fa-lock\" _v-3c89074e=\"\"></i> {{labels.custom_share_upsell}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-3c89074e=\"\"></span>\n\t\t\t\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer text-right\" _v-3c89074e=\"\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\" _v-3c89074e=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-3c89074e=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-3c89074e=\"\"></i> {{labels.save}}\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\" _v-f090ed16=\"\">\n\t\t<div class=\"panel-body\" _v-f090ed16=\"\">\n\t\t\t<div class=\"container\" :class=\"'rop-tab-state-'+is_loading\" _v-f090ed16=\"\">\n\t\t\t\t<div class=\"columns py-2\" v-if=\"! isBiz\" _v-f090ed16=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-f090ed16=\"\">\n\t\t\t\t\t\t<b _v-f090ed16=\"\">{{labels.min_interval_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-f090ed16=\"\">{{labels.min_interval_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-f090ed16=\"\">\n\t\t\t\t\t\t<counter-input id=\"default_interval\" :value.sync=\"generalSettings.default_interval\" _v-f090ed16=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-f090ed16=\"\"></span>\n\t\t\t\t<div class=\"columns py-2\" _v-f090ed16=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-f090ed16=\"\">\n\t\t\t\t\t\t<b _v-f090ed16=\"\">{{labels.min_days_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-f090ed16=\"\">{{labels.min_days_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-f090ed16=\"\">\n\t\t\t\t\t\t<counter-input id=\"min_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.minimum_post_age\" _v-f090ed16=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- Max Post Age -->\n\t\t\t\t<div class=\"columns py-2\" _v-f090ed16=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-f090ed16=\"\">\n\t\t\t\t\t\t<b _v-f090ed16=\"\">{{labels.max_days_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-f090ed16=\"\">{{labels.max_days_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-f090ed16=\"\">\n\t\t\t\t\t\t<counter-input id=\"max_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.maximum_post_age\" _v-f090ed16=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<span class=\"divider\" _v-f090ed16=\"\"></span>\n\t\t\t\t\n\t\t\t\t<div class=\"columns py-2\" _v-f090ed16=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-f090ed16=\"\">\n\t\t\t\t\t\t<b _v-f090ed16=\"\">{{labels.no_posts_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-f090ed16=\"\">{{labels.no_posts_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-f090ed16=\"\">\n\t\t\t\t\t\t<counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\" _v-f090ed16=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-f090ed16=\"\"></span>\n\t\t\t\t\n\t\t\t\t<!-- Share more than once -->\n\t\t\t\t<div class=\"columns py-2\" _v-f090ed16=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-f090ed16=\"\">\n\t\t\t\t\t\t<b _v-f090ed16=\"\">{{labels.share_once_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-f090ed16=\"\">{{labels.share_once_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-f090ed16=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-f090ed16=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-f090ed16=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\" _v-f090ed16=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-f090ed16=\"\"></i> {{labels.share_once_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-f090ed16=\"\"></span>\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-f090ed16=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-f090ed16=\"\">\n\t\t\t\t\t\t<b _v-f090ed16=\"\">{{labels.post_types_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-f090ed16=\"\">{{labels.post_types_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-f090ed16=\"\">\n\t\t\t\t\t\t<multiple-select :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-f090ed16=\"\"></multiple-select>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<p class=\"text-primary rop-post-type-badge\" v-if=\"checkMediaPostType \" v-html=\"labels.post_types_attachament_info\" _v-f090ed16=\"\"> </p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<div class=\"columns \" v-if=\"!isPro\" _v-f090ed16=\"\">\n\t\t\t\t\t<div class=\"column text-center\" _v-f090ed16=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-f090ed16=\"\"><i class=\"fa fa-lock\" _v-f090ed16=\"\"></i> {{labels.post_types_upsell}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<span class=\"divider\" _v-f090ed16=\"\"></span>\n\t\t\t\t\n\t\t\t\t<!-- Taxonomies -->\n\t\t\t\t<div class=\"columns py-2\" _v-f090ed16=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-f090ed16=\"\">\n\t\t\t\t\t\t<b _v-f090ed16=\"\">{{labels.taxonomies_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-f090ed16=\"\">{{labels.taxonomies_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-f090ed16=\"\">\n\t\t\t\t\t\t<div class=\"input-group\" _v-f090ed16=\"\">\n\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" _v-f090ed16=\"\"></multiple-select>\n\t\t\t\t\t\t\t<span class=\"input-group-addon vertical-align\" _v-f090ed16=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-f090ed16=\"\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" _v-f090ed16=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-f090ed16=\"\"></i>{{labels.taxonomies_exclude}}\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\n\t\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<span class=\"divider\" _v-f090ed16=\"\"></span>\n\t\t\t\t\n\t\t\t\t<!-- Google Analytics -->\n\t\t\t\t<div class=\"columns py-2\" _v-f090ed16=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-f090ed16=\"\">\n\t\t\t\t\t\t<b _v-f090ed16=\"\">{{labels.ga_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-f090ed16=\"\">{{labels.ga_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-f090ed16=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-f090ed16=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-f090ed16=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.ga_tracking\" _v-f090ed16=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-f090ed16=\"\"></i>{{labels.ga_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<span class=\"divider\" _v-f090ed16=\"\"></span>\n\t\t\t\t\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-f090ed16=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-f090ed16=\"\">\n\t\t\t\t\t\t<b _v-f090ed16=\"\">{{labels.custom_share_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-f090ed16=\"\">{{labels.custom_share_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-f090ed16=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-f090ed16=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-f090ed16=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" :disabled=\"!isPro\" v-model=\"generalSettings.custom_messages\" _v-f090ed16=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-f090ed16=\"\"></i>{{labels.custom_share_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- Upsell -->\n\t\t\t\t<div class=\"columns \" v-if=\"!isPro\" _v-f090ed16=\"\">\n\t\t\t\t\t<div class=\"column text-center\" _v-f090ed16=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-f090ed16=\"\"><i class=\"fa fa-lock\" _v-f090ed16=\"\"></i> {{labels.custom_share_upsell}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-f090ed16=\"\"></span>\n\t\t\t\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer text-right\" _v-f090ed16=\"\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\" _v-f090ed16=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-f090ed16=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-f090ed16=\"\"></i> {{labels.save}}\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 238 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(239)
-__vue_script__ = __webpack_require__(241)
+__webpack_require__(244)
+__vue_script__ = __webpack_require__(246)
 __vue_template__ = __webpack_require__(269)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
@@ -34604,7 +34783,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\mariu\\Local Sites\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\accounts-selector-panel.vue"
+  var id = "D:\\local\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\accounts-selector-panel.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -34613,13 +34792,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 239 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(240);
+var content = __webpack_require__(245);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -34628,8 +34807,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0c165a3e&file=accounts-selector-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-selector-panel.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0c165a3e&file=accounts-selector-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-selector-panel.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-d7d6ddcc&file=accounts-selector-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-selector-panel.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-d7d6ddcc&file=accounts-selector-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-selector-panel.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -34639,7 +34818,7 @@ if(false) {
 }
 
 /***/ }),
-/* 240 */
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -34647,13 +34826,13 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t.icon_box[_v-0c165a3e] {\n\t\twidth: 30px;\n\t\theight: 30px;\n\t\tpadding: 5px;\n\t}\n\t\n\t.icon_box.no-image[_v-0c165a3e] {\n\t\tpadding: 0;\n\t}\n\t\n\t.icon_box.has_image > .fa[_v-0c165a3e] {\n\t\twidth: 15px;\n\t\theight: 15px;\n\t\tpadding: 0;\n\t\tline-height: 15px;\n\t}\n\t\n\t.icon_box.no-image > .fa[_v-0c165a3e] {\n\t\tfont-size: 20px;\n\t\tbackground: transparent;\n\t\tline-height: 30px;\n\t}\n", ""]);
+exports.push([module.i, "\n\t.icon_box[_v-d7d6ddcc] {\n\t\twidth: 30px;\n\t\theight: 30px;\n\t\tpadding: 5px;\n\t}\n\t\n\t.icon_box.no-image[_v-d7d6ddcc] {\n\t\tpadding: 0;\n\t}\n\t\n\t.icon_box.has_image > .fa[_v-d7d6ddcc] {\n\t\twidth: 15px;\n\t\theight: 15px;\n\t\tpadding: 0;\n\t\tline-height: 15px;\n\t}\n\t\n\t.icon_box.no-image > .fa[_v-d7d6ddcc] {\n\t\tfont-size: 20px;\n\t\tbackground: transparent;\n\t\tline-height: 30px;\n\t}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 241 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34663,15 +34842,15 @@ var _keys = __webpack_require__(14);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _emptyActiveAccounts = __webpack_require__(242);
+var _emptyActiveAccounts = __webpack_require__(247);
 
 var _emptyActiveAccounts2 = _interopRequireDefault(_emptyActiveAccounts);
 
-var _postFormat = __webpack_require__(245);
+var _postFormat = __webpack_require__(250);
 
 var _postFormat2 = _interopRequireDefault(_postFormat);
 
-var _accountSchedule = __webpack_require__(250);
+var _accountSchedule = __webpack_require__(255);
 
 var _accountSchedule2 = _interopRequireDefault(_accountSchedule);
 
@@ -34824,6 +35003,7 @@ module.exports = {
 			if (account.service === 'twitter') serviceIcon = serviceIcon.concat('twitter');
 			if (account.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin');
 			if (account.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr');
+			if (account.service === 'pinterest') serviceIcon = serviceIcon.concat('pinterest');
 
 			return serviceIcon;
 		},
@@ -34966,12 +35146,12 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 242 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(243)
-__vue_template__ = __webpack_require__(244)
+__vue_script__ = __webpack_require__(248)
+__vue_template__ = __webpack_require__(249)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -34979,7 +35159,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\mariu\\Local Sites\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\empty-active-accounts.vue"
+  var id = "D:\\local\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\empty-active-accounts.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -34988,7 +35168,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 243 */
+/* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35023,19 +35203,19 @@ module.exports = {
 };
 
 /***/ }),
-/* 244 */
+/* 249 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"empty\">\n\t\t<div class=\"empty-icon\">\n\t\t\t<i class=\"fa fa-3x fa-user-circle-o\"></i>\n\t\t</div>\n\t\t<p class=\"empty-title h5\">{{labels.no_active_accounts}}</p>\n\t\t<p class=\"empty-subtitle\" v-html=\"labels.no_active_accounts_desc\"></p>\n\t\t<button class=\"btn btn-primary\" @click=\"goToAccounts()\">{{labels.go_to_accounts_btn}}</button>\n\t</div>\n";
 
 /***/ }),
-/* 245 */
+/* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(246)
-__vue_script__ = __webpack_require__(248)
-__vue_template__ = __webpack_require__(249)
+__webpack_require__(251)
+__vue_script__ = __webpack_require__(253)
+__vue_template__ = __webpack_require__(254)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -35043,7 +35223,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\mariu\\Local Sites\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\post-format.vue"
+  var id = "D:\\local\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\post-format.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -35052,13 +35232,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 246 */
+/* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(247);
+var content = __webpack_require__(252);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -35067,8 +35247,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-7dfcf070&file=post-format.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./post-format.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-7dfcf070&file=post-format.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./post-format.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-142bd8fe&file=post-format.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./post-format.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-142bd8fe&file=post-format.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./post-format.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -35078,7 +35258,7 @@ if(false) {
 }
 
 /***/ }),
-/* 247 */
+/* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -35086,13 +35266,13 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-7dfcf070] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\t\n\tb[_v-7dfcf070] {\n\t\tmargin-bottom: 5px;\n\t\tdisplay: block;\n\t}\n\t\n\t#rop_core .input-group .input-group-addon[_v-7dfcf070] {\n\t\tpadding: 3px 5px;\n\t}\n\t\n\t@media ( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-7dfcf070] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\t\t\n\t\t#rop_core .text-right[_v-7dfcf070] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-142bd8fe] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\n\tb[_v-142bd8fe] {\n\t\tmargin-bottom: 5px;\n\t\tdisplay: block;\n\t}\n\n\t#rop_core .input-group .input-group-addon[_v-142bd8fe] {\n\t\tpadding: 3px 5px;\n\t}\n\n\t@media ( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-142bd8fe] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\n\t\t#rop_core .text-right[_v-142bd8fe] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 248 */
+/* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35116,6 +35296,7 @@ exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-7dfcf070] {\n\t
 // 				</div>
 // 			</div>
 // 		</div>
+//
 // 		<div class="columns py-2" v-if="post_format.post_content === 'custom_field'">
 // 			<div class="column col-6 col-sm-12 vertical-align">
 // 				<b>{{labels.custom_meta_title}}</b>
@@ -35241,6 +35422,7 @@ exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-7dfcf070] {\n\t
 // 						<option value="goo.gl">goo.gl</option>
 // 						<option value="ow.ly">ow.ly</option>
 // 						<option value="is.gd">is.gd</option>
+// 						<option value="rebrand.ly">rebrand.ly</option>
 // 						<option value="wp_short_url">wp_short_url</option>
 // 					</select>
 // 				</div>
@@ -35335,9 +35517,39 @@ exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-7dfcf070] {\n\t
 // 			</div>
 // 		</div>
 //
-// 		<div class="columns py-2" v-if="!isPro">
+// 		<div class="columns " v-if="!isPro">
 // 			<div class="column text-center">
 // 				<p class="upsell"><i class="fa fa-lock"></i> {{labels.image_upsell}}</p>
+// 			</div>
+// 		</div>
+// 		<span class="divider"></span>
+// 		<!-- Google Analytics -->
+// 		<div class="columns py-2" :class="'rop-control-container-'+isPro">
+// 			<div class="column col-6 col-sm-12 vertical-align rop-control">
+// 				<b>{{labels.utm_campaign_medium}}</b>
+// 				<p class="text-gray">{{labels.utm_campaign_medium_desc}}</p>
+// 			</div>
+// 			<div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+// 				<div class="form-group">
+// 						<input type="text" :disabled="!isPro" class="form-input" v-model="post_format.utm_campaign_medium" placeholder="social"/>
+// 				</div>
+// 			</div>
+// 		</div>
+//
+// 		<div class="columns py-2" :class="'rop-control-container-'+isPro">
+// 			<div class="column col-6 col-sm-12 vertical-align rop-control">
+// 				<b>{{labels.utm_campaign_name}}</b>
+// 				<p class="text-gray">{{labels.utm_campaign_name_desc}}</p>
+// 			</div>
+// 			<div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+// 				<div class="form-group">
+// 						<input type="text" :disabled="!isPro" class="form-input" v-model="post_format.utm_campaign_name" placeholder="ReviveOldPost"/>
+// 				</div>
+// 			</div>
+// 		</div>
+// 		<div class="columns " v-if="!isPro">
+// 			<div class="column text-center">
+// 				<p class="upsell"><i class="fa fa-lock"></i> {{labels.custom_utm_upsell}}</p>
 // 			</div>
 // 		</div>
 // 		<span class="divider"></span>
@@ -35413,22 +35625,23 @@ module.exports = {
 	// 		}
 	// 	}
 	// </style>
+	//
 
 };
 
 /***/ }),
-/* 249 */
+/* 254 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div _v-7dfcf070=\"\">\n\t\t<div class=\"columns py-2\" _v-7dfcf070=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<b _v-7dfcf070=\"\">{{labels.post_content_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-7dfcf070=\"\">{{labels.post_content_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<div class=\"form-group\" _v-7dfcf070=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.post_content\" _v-7dfcf070=\"\">\n\t\t\t\t\t\t<option value=\"post_title\" _v-7dfcf070=\"\">{{labels.post_content_option_title}}</option>\n\t\t\t\t\t\t<option value=\"post_content\" _v-7dfcf070=\"\">{{labels.post_content_option_content}}</option>\n\t\t\t\t\t\t<option value=\"post_title_content\" _v-7dfcf070=\"\">{{labels.post_content_option_title_content}}</option>\n\t\t\t\t\t\t<option value=\"custom_field\" _v-7dfcf070=\"\">{{labels.post_content_option_custom_field}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" v-if=\"post_format.post_content === 'custom_field'\" _v-7dfcf070=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<b _v-7dfcf070=\"\">{{labels.custom_meta_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-7dfcf070=\"\">{{labels.custom_meta_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<div class=\"form-group\" _v-7dfcf070=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.custom_meta_field\" value=\"\" placeholder=\"\" _v-7dfcf070=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t\n\t\t<span class=\"divider\" _v-7dfcf070=\"\"></span>\n\t\t\n\t\t<div class=\"columns py-2\" _v-7dfcf070=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<b _v-7dfcf070=\"\">{{labels.max_char_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-7dfcf070=\"\">{{labels.max_char_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<div class=\"form-group\" _v-7dfcf070=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.maximum_length\" value=\"\" placeholder=\"\" _v-7dfcf070=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-7dfcf070=\"\"></span>\n\t\t\n\t\t<div class=\"columns py-2\" _v-7dfcf070=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<b _v-7dfcf070=\"\">{{labels.add_char_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-7dfcf070=\"\">{{labels.add_char_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<div class=\"form-group\" _v-7dfcf070=\"\">\n\t\t\t\t\t<textarea class=\"form-input\" v-model=\"post_format.custom_text\" placeholder=\"\" _v-7dfcf070=\"\">{{post_format.custom_text}}</textarea>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t\n\t\t<div class=\"columns py-2\" _v-7dfcf070=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<p class=\"text-gray\" _v-7dfcf070=\"\">{{labels.add_pos_title}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<div class=\"form-group\" _v-7dfcf070=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.custom_text_pos\" _v-7dfcf070=\"\">\n\t\t\t\t\t\t<option value=\"beginning\" _v-7dfcf070=\"\">{{labels.add_pos_option_start}}</option>\n\t\t\t\t\t\t<option value=\"end\" _v-7dfcf070=\"\">{{labels.add_pos_option_end}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" _v-7dfcf070=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<b _v-7dfcf070=\"\">{{labels.add_link_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-7dfcf070=\"\">{{labels.add_link_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<div class=\"input-group\" _v-7dfcf070=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-7dfcf070=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.include_link\" _v-7dfcf070=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-7dfcf070=\"\"></i> {{labels.add_link_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-7dfcf070=\"\"></span>\n\t\t<div class=\"columns py-2\" _v-7dfcf070=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<b _v-7dfcf070=\"\">{{labels.meta_link_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-7dfcf070=\"\">{{labels.meta_link_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<div class=\"input-group\" _v-7dfcf070=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-7dfcf070=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.url_from_meta\" _v-7dfcf070=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-7dfcf070=\"\"></i> {{labels.meta_link_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Custom Field -->\n\t\t<div class=\"columns py-2\" v-if=\"post_format.url_from_meta\" _v-7dfcf070=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<b _v-7dfcf070=\"\">{{labels.meta_link_name_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-7dfcf070=\"\">{{labels.meta_link_name_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<div class=\"form-group\" _v-7dfcf070=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.url_meta_key\" value=\"\" placeholder=\"\" _v-7dfcf070=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-7dfcf070=\"\"></span>\n\t\t<div class=\"columns py-2\" _v-7dfcf070=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<b _v-7dfcf070=\"\">{{labels.use_shortner_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-7dfcf070=\"\">{{labels.use_shortner_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<div class=\"input-group\" _v-7dfcf070=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-7dfcf070=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.short_url\" _v-7dfcf070=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-7dfcf070=\"\"></i> {{labels.use_shortner_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" v-if=\"post_format.short_url\" _v-7dfcf070=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<b _v-7dfcf070=\"\">{{labels.shortner_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-7dfcf070=\"\">{{labels.shortner_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<div class=\"form-group\" _v-7dfcf070=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.short_url_service\" _v-7dfcf070=\"\">\n\t\t\t\t\t\t<option value=\"rviv.ly\" _v-7dfcf070=\"\">rviv.ly</option>\n\t\t\t\t\t\t<option value=\"bit.ly\" _v-7dfcf070=\"\">bit.ly</option>\n\t\t\t\t\t\t<option value=\"goo.gl\" _v-7dfcf070=\"\">goo.gl</option>\n\t\t\t\t\t\t<option value=\"ow.ly\" _v-7dfcf070=\"\">ow.ly</option>\n\t\t\t\t\t\t<option value=\"is.gd\" _v-7dfcf070=\"\">is.gd</option>\n\t\t\t\t\t\t<option value=\"wp_short_url\" _v-7dfcf070=\"\">wp_short_url</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t\n\t\t<div class=\"columns py-2\" v-if=\"post_format.short_url\" v-for=\"( credential, key_name ) in post_format.shortner_credentials\" _v-7dfcf070=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<b _v-7dfcf070=\"\">{{ key_name | capitalize }}</b>\n\t\t\t\t<p class=\"text-gray\" _v-7dfcf070=\"\">{{labels.shortner_field_desc_start}} \"{{key_name}}\"\n\t\t\t\t\t{{labels.shortner_field_desc_end}}\n\t\t\t\t\t<strong _v-7dfcf070=\"\">{{post_format.short_url_service}}</strong> {{labels.shortner_api_field}}.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<div class=\"form-group\" _v-7dfcf070=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.shortner_credentials[key_name]\" _v-7dfcf070=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t\n\t\t<div class=\"columns py-2\" _v-7dfcf070=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<b _v-7dfcf070=\"\">{{labels.hashtags_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-7dfcf070=\"\">{{labels.hashtags_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<div class=\"form-group\" _v-7dfcf070=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.hashtags\" _v-7dfcf070=\"\">\n\t\t\t\t\t\t<option value=\"no-hashtags\" _v-7dfcf070=\"\">{{labels.hashtags_option_no}}</option>\n\t\t\t\t\t\t<option value=\"common-hashtags\" _v-7dfcf070=\"\">{{labels.hashtags_option_common}}</option>\n\t\t\t\t\t\t<option value=\"categories-hashtags\" _v-7dfcf070=\"\">{{labels.hashtags_option_cats}}</option>\n\t\t\t\t\t\t<option value=\"tags-hashtags\" _v-7dfcf070=\"\">{{labels.hashtags_option_tags}}</option>\n\t\t\t\t\t\t<option value=\"custom-hashtags\" _v-7dfcf070=\"\">{{labels.hashtags_option_field}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags === 'common-hashtags'\" _v-7dfcf070=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<b _v-7dfcf070=\"\">{{labels.hastags_common_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-7dfcf070=\"\">{{labels.hastags_common_desc}} \",\".</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<div class=\"form-group\" _v-7dfcf070=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_common\" value=\"\" placeholder=\"\" _v-7dfcf070=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags === 'custom-hashtags'\" _v-7dfcf070=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<b _v-7dfcf070=\"\">{{labels.hastags_field_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-7dfcf070=\"\">{{labels.hastags_field_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<div class=\"form-group\" _v-7dfcf070=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_custom\" value=\"\" placeholder=\"\" _v-7dfcf070=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags !== 'no-hashtags'\" _v-7dfcf070=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<b _v-7dfcf070=\"\">{{labels.hashtags_length_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-7dfcf070=\"\">{{labels.hashtags_length_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<div class=\"form-group\" _v-7dfcf070=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.hashtags_length\" value=\"\" placeholder=\"\" _v-7dfcf070=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t\n\t\t<span class=\"divider\" _v-7dfcf070=\"\"></span>\n\t\t\n\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-7dfcf070=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<b _v-7dfcf070=\"\">{{labels.image_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-7dfcf070=\"\">{{labels.image_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-7dfcf070=\"\">\n\t\t\t\t<div class=\"input-group\" _v-7dfcf070=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-7dfcf070=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.image\" :disabled=\"!isPro\" _v-7dfcf070=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-7dfcf070=\"\"></i> {{labels.image_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t\n\t\t<div class=\"columns py-2\" v-if=\"!isPro\" _v-7dfcf070=\"\">\n\t\t\t<div class=\"column text-center\" _v-7dfcf070=\"\">\n\t\t\t\t<p class=\"upsell\" _v-7dfcf070=\"\"><i class=\"fa fa-lock\" _v-7dfcf070=\"\"></i> {{labels.image_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-7dfcf070=\"\"></span>\n\t</div>\n";
+module.exports = "\n\t<div _v-142bd8fe=\"\">\n\t\t<div class=\"columns py-2\" _v-142bd8fe=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<b _v-142bd8fe=\"\">{{labels.post_content_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-142bd8fe=\"\">{{labels.post_content_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<div class=\"form-group\" _v-142bd8fe=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.post_content\" _v-142bd8fe=\"\">\n\t\t\t\t\t\t<option value=\"post_title\" _v-142bd8fe=\"\">{{labels.post_content_option_title}}</option>\n\t\t\t\t\t\t<option value=\"post_content\" _v-142bd8fe=\"\">{{labels.post_content_option_content}}</option>\n\t\t\t\t\t\t<option value=\"post_title_content\" _v-142bd8fe=\"\">{{labels.post_content_option_title_content}}</option>\n\t\t\t\t\t\t<option value=\"custom_field\" _v-142bd8fe=\"\">{{labels.post_content_option_custom_field}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.post_content === 'custom_field'\" _v-142bd8fe=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<b _v-142bd8fe=\"\">{{labels.custom_meta_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-142bd8fe=\"\">{{labels.custom_meta_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<div class=\"form-group\" _v-142bd8fe=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.custom_meta_field\" value=\"\" placeholder=\"\" _v-142bd8fe=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n \n\t\t<span class=\"divider\" _v-142bd8fe=\"\"></span>\n\n\t\t<div class=\"columns py-2\" _v-142bd8fe=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<b _v-142bd8fe=\"\">{{labels.max_char_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-142bd8fe=\"\">{{labels.max_char_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<div class=\"form-group\" _v-142bd8fe=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.maximum_length\" value=\"\" placeholder=\"\" _v-142bd8fe=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-142bd8fe=\"\"></span>\n\n\t\t<div class=\"columns py-2\" _v-142bd8fe=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<b _v-142bd8fe=\"\">{{labels.add_char_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-142bd8fe=\"\">{{labels.add_char_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<div class=\"form-group\" _v-142bd8fe=\"\">\n\t\t\t\t\t<textarea class=\"form-input\" v-model=\"post_format.custom_text\" placeholder=\"\" _v-142bd8fe=\"\">{{post_format.custom_text}}</textarea>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" _v-142bd8fe=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<p class=\"text-gray\" _v-142bd8fe=\"\">{{labels.add_pos_title}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<div class=\"form-group\" _v-142bd8fe=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.custom_text_pos\" _v-142bd8fe=\"\">\n\t\t\t\t\t\t<option value=\"beginning\" _v-142bd8fe=\"\">{{labels.add_pos_option_start}}</option>\n\t\t\t\t\t\t<option value=\"end\" _v-142bd8fe=\"\">{{labels.add_pos_option_end}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" _v-142bd8fe=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<b _v-142bd8fe=\"\">{{labels.add_link_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-142bd8fe=\"\">{{labels.add_link_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<div class=\"input-group\" _v-142bd8fe=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-142bd8fe=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.include_link\" _v-142bd8fe=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-142bd8fe=\"\"></i> {{labels.add_link_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-142bd8fe=\"\"></span>\n\t\t<div class=\"columns py-2\" _v-142bd8fe=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<b _v-142bd8fe=\"\">{{labels.meta_link_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-142bd8fe=\"\">{{labels.meta_link_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<div class=\"input-group\" _v-142bd8fe=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-142bd8fe=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.url_from_meta\" _v-142bd8fe=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-142bd8fe=\"\"></i> {{labels.meta_link_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Custom Field -->\n\t\t<div class=\"columns py-2\" v-if=\"post_format.url_from_meta\" _v-142bd8fe=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<b _v-142bd8fe=\"\">{{labels.meta_link_name_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-142bd8fe=\"\">{{labels.meta_link_name_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<div class=\"form-group\" _v-142bd8fe=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.url_meta_key\" value=\"\" placeholder=\"\" _v-142bd8fe=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-142bd8fe=\"\"></span>\n\t\t<div class=\"columns py-2\" _v-142bd8fe=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<b _v-142bd8fe=\"\">{{labels.use_shortner_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-142bd8fe=\"\">{{labels.use_shortner_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<div class=\"input-group\" _v-142bd8fe=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-142bd8fe=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.short_url\" _v-142bd8fe=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-142bd8fe=\"\"></i> {{labels.use_shortner_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" v-if=\"post_format.short_url\" _v-142bd8fe=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<b _v-142bd8fe=\"\">{{labels.shortner_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-142bd8fe=\"\">{{labels.shortner_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<div class=\"form-group\" _v-142bd8fe=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.short_url_service\" _v-142bd8fe=\"\">\n\t\t\t\t\t\t<option value=\"rviv.ly\" _v-142bd8fe=\"\">rviv.ly</option>\n\t\t\t\t\t\t<option value=\"bit.ly\" _v-142bd8fe=\"\">bit.ly</option>\n\t\t\t\t\t\t<option value=\"goo.gl\" _v-142bd8fe=\"\">goo.gl</option>\n\t\t\t\t\t\t<option value=\"ow.ly\" _v-142bd8fe=\"\">ow.ly</option>\n\t\t\t\t\t\t<option value=\"is.gd\" _v-142bd8fe=\"\">is.gd</option>\n\t\t\t\t\t\t<option value=\"rebrand.ly\" _v-142bd8fe=\"\">rebrand.ly</option>\n\t\t\t\t\t\t<option value=\"wp_short_url\" _v-142bd8fe=\"\">wp_short_url</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.short_url\" v-for=\"( credential, key_name ) in post_format.shortner_credentials\" _v-142bd8fe=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<b _v-142bd8fe=\"\">{{ key_name | capitalize }}</b>\n\t\t\t\t<p class=\"text-gray\" _v-142bd8fe=\"\">{{labels.shortner_field_desc_start}} \"{{key_name}}\"\n\t\t\t\t\t{{labels.shortner_field_desc_end}}\n\t\t\t\t\t<strong _v-142bd8fe=\"\">{{post_format.short_url_service}}</strong> {{labels.shortner_api_field}}.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<div class=\"form-group\" _v-142bd8fe=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.shortner_credentials[key_name]\" _v-142bd8fe=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" _v-142bd8fe=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<b _v-142bd8fe=\"\">{{labels.hashtags_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-142bd8fe=\"\">{{labels.hashtags_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<div class=\"form-group\" _v-142bd8fe=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.hashtags\" _v-142bd8fe=\"\">\n\t\t\t\t\t\t<option value=\"no-hashtags\" _v-142bd8fe=\"\">{{labels.hashtags_option_no}}</option>\n\t\t\t\t\t\t<option value=\"common-hashtags\" _v-142bd8fe=\"\">{{labels.hashtags_option_common}}</option>\n\t\t\t\t\t\t<option value=\"categories-hashtags\" _v-142bd8fe=\"\">{{labels.hashtags_option_cats}}</option>\n\t\t\t\t\t\t<option value=\"tags-hashtags\" _v-142bd8fe=\"\">{{labels.hashtags_option_tags}}</option>\n\t\t\t\t\t\t<option value=\"custom-hashtags\" _v-142bd8fe=\"\">{{labels.hashtags_option_field}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags === 'common-hashtags'\" _v-142bd8fe=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<b _v-142bd8fe=\"\">{{labels.hastags_common_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-142bd8fe=\"\">{{labels.hastags_common_desc}} \",\".</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<div class=\"form-group\" _v-142bd8fe=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_common\" value=\"\" placeholder=\"\" _v-142bd8fe=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags === 'custom-hashtags'\" _v-142bd8fe=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<b _v-142bd8fe=\"\">{{labels.hastags_field_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-142bd8fe=\"\">{{labels.hastags_field_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<div class=\"form-group\" _v-142bd8fe=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_custom\" value=\"\" placeholder=\"\" _v-142bd8fe=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags !== 'no-hashtags'\" _v-142bd8fe=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<b _v-142bd8fe=\"\">{{labels.hashtags_length_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-142bd8fe=\"\">{{labels.hashtags_length_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<div class=\"form-group\" _v-142bd8fe=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.hashtags_length\" value=\"\" placeholder=\"\" _v-142bd8fe=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<span class=\"divider\" _v-142bd8fe=\"\"></span>\n\n\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-142bd8fe=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<b _v-142bd8fe=\"\">{{labels.image_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-142bd8fe=\"\">{{labels.image_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-142bd8fe=\"\">\n\t\t\t\t<div class=\"input-group\" _v-142bd8fe=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-142bd8fe=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.image\" :disabled=\"!isPro\" _v-142bd8fe=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-142bd8fe=\"\"></i> {{labels.image_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns \" v-if=\"!isPro\" _v-142bd8fe=\"\">\n\t\t\t<div class=\"column text-center\" _v-142bd8fe=\"\">\n\t\t\t\t<p class=\"upsell\" _v-142bd8fe=\"\"><i class=\"fa fa-lock\" _v-142bd8fe=\"\"></i> {{labels.image_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-142bd8fe=\"\"></span>\n\t\t<!-- Google Analytics -->\n\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-142bd8fe=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-142bd8fe=\"\">\n\t\t\t\t<b _v-142bd8fe=\"\">{{labels.utm_campaign_medium}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-142bd8fe=\"\">{{labels.utm_campaign_medium_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-142bd8fe=\"\">\n\t\t\t\t<div class=\"form-group\" _v-142bd8fe=\"\">\n\t\t\t\t\t\t<input type=\"text\" :disabled=\"!isPro\" class=\"form-input\" v-model=\"post_format.utm_campaign_medium\" placeholder=\"social\" _v-142bd8fe=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-142bd8fe=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-142bd8fe=\"\">\n\t\t\t\t<b _v-142bd8fe=\"\">{{labels.utm_campaign_name}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-142bd8fe=\"\">{{labels.utm_campaign_name_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-142bd8fe=\"\">\n\t\t\t\t<div class=\"form-group\" _v-142bd8fe=\"\">\n\t\t\t\t\t\t<input type=\"text\" :disabled=\"!isPro\" class=\"form-input\" v-model=\"post_format.utm_campaign_name\" placeholder=\"ReviveOldPost\" _v-142bd8fe=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns \" v-if=\"!isPro\" _v-142bd8fe=\"\">\n\t\t\t<div class=\"column text-center\" _v-142bd8fe=\"\">\n\t\t\t\t<p class=\"upsell\" _v-142bd8fe=\"\"><i class=\"fa fa-lock\" _v-142bd8fe=\"\"></i> {{labels.custom_utm_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-142bd8fe=\"\"></span>\n\t</div>\n";
 
 /***/ }),
-/* 250 */
+/* 255 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(251)
-__vue_script__ = __webpack_require__(253)
+__webpack_require__(256)
+__vue_script__ = __webpack_require__(258)
 __vue_template__ = __webpack_require__(268)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
@@ -35437,7 +35650,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\mariu\\Local Sites\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\account-schedule.vue"
+  var id = "D:\\local\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\account-schedule.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -35446,13 +35659,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 251 */
+/* 256 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(252);
+var content = __webpack_require__(257);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -35461,8 +35674,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3b1aef63&file=account-schedule.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./account-schedule.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3b1aef63&file=account-schedule.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./account-schedule.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4481cf4a&file=account-schedule.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./account-schedule.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4481cf4a&file=account-schedule.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./account-schedule.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -35472,7 +35685,7 @@ if(false) {
 }
 
 /***/ }),
-/* 252 */
+/* 257 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -35480,19 +35693,19 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t.rop-control-container-false[_v-3b1aef63]  {\n\t\tcursor:not-allowed !important;\n\t}\n\t#rop_core .panel-body .text-gray[_v-3b1aef63] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\t\n\tb[_v-3b1aef63] {\n\t\tmargin-bottom: 5px;\n\t\tdisplay: block;\n\t}\n\t\n\t#rop_core .input-group .input-group-addon[_v-3b1aef63] {\n\t\tpadding: 3px 5px;\n\t}\n\t\n\t.time-picker[_v-3b1aef63] {\n\t\tmargin-bottom: 10px;\n\t}\n\t\n\t@media ( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-3b1aef63] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\t\t\n\t\t#rop_core .text-right[_v-3b1aef63] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n\t\n", ""]);
+exports.push([module.i, "\n\t.rop-control-container-false[_v-4481cf4a]  {\n\t\tcursor:not-allowed !important;\n\t}\n\t#rop_core .panel-body .text-gray[_v-4481cf4a] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\n\tb[_v-4481cf4a] {\n\t\tmargin-bottom: 5px;\n\t\tdisplay: block;\n\t}\n\n\t#rop_core .input-group .input-group-addon[_v-4481cf4a] {\n\t\tpadding: 3px 5px;\n\t}\n\n\t.time-picker[_v-4481cf4a] {\n\t\tmargin-bottom: 10px;\n\t}\n\n\t@media ( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-4481cf4a] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\n\t\t#rop_core .text-right[_v-4481cf4a] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 253 */
+/* 258 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _buttonCheckbox = __webpack_require__(254);
+var _buttonCheckbox = __webpack_require__(72);
 
 var _buttonCheckbox2 = _interopRequireDefault(_buttonCheckbox);
 
@@ -35500,7 +35713,7 @@ var _vue2Timepicker = __webpack_require__(259);
 
 var _vue2Timepicker2 = _interopRequireDefault(_vue2Timepicker);
 
-var _counterInput = __webpack_require__(78);
+var _counterInput = __webpack_require__(83);
 
 var _counterInput2 = _interopRequireDefault(_counterInput);
 
@@ -35629,9 +35842,10 @@ module.exports = {
 	// 	}
 	//
 	// </style>
+	//
 
 }; // <template>
-// 	<div :class="'rop-control-container-'+ ( license>1 ) ">
+// 	<div :class="'rop-control-container-'+ ( license > 1 ) +  '  rop-schedule-tab-container'">
 //
 // 		<div class="columns py-2 rop-control">
 // 			<div class="column col-6 col-sm-12 vertical-align">
@@ -35714,151 +35928,6 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 254 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(255)
-__vue_script__ = __webpack_require__(257)
-__vue_template__ = __webpack_require__(258)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "C:\\Users\\mariu\\Local Sites\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\button-checkbox.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-/* 255 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(256);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-50adab0e&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-50adab0e&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 256 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(1)();
-// imports
-
-
-// module
-exports.push([module.i, "\n\t#rop_core .input-group .input-group-addon.btn.active[_v-50adab0e] {\n\t\tbackground-color: #8bc34a;\n\t\tborder-color: #33691e;\n\t\tcolor: #FFF;\n\t}\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 257 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-// <template>
-// 	<button class="btn input-group-addon column" :class="is_active" @click="toggleThis()" >{{label}}</button>
-// </template>
-//
-// <script>
-module.exports = {
-	name: 'button-checkbox',
-	props: {
-		value: {
-			default: '0',
-			type: String
-		},
-		label: {
-			default: '',
-			type: String
-		},
-		id: {
-			default: function _default() {
-				var base = 'day';
-				if (this.label !== '' && this.label !== undefined) {
-					base = base + '_' + this.label.toLowerCase();
-				}
-
-				return base;
-			}
-		},
-		checked: {
-			default: false,
-			type: Boolean
-		}
-	},
-	data: function data() {
-		return {
-			componentCheckState: this.checked
-		};
-	},
-	computed: {
-		is_active: function is_active() {
-			return {
-				'active': this.componentCheckState === true
-			};
-		}
-	},
-	watch: {
-		checked: function checked() {
-			this.componentCheckState = this.checked;
-		}
-	},
-	methods: {
-		toggleThis: function toggleThis() {
-			this.componentCheckState = !this.componentCheckState;
-			if (this.componentCheckState) {
-				this.$emit('add-day', this.value);
-			} else {
-				this.$emit('rmv-day', this.value);
-			}
-		}
-	}
-	// </script>
-	// <style scoped>
-	// 	#rop_core .input-group .input-group-addon.btn.active {
-	// 		background-color: #8bc34a;
-	// 		border-color: #33691e;
-	// 		color: #FFF;
-	// 	}
-	// </style>
-
-};
-
-/***/ }),
-/* 258 */
-/***/ (function(module, exports) {
-
-module.exports = "\n\t<button class=\"btn input-group-addon column\" :class=\"is_active\" @click=\"toggleThis()\" _v-50adab0e=\"\">{{label}}</button>\n";
-
-/***/ }),
 /* 259 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -35880,7 +35949,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\mariu\\Local Sites\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\node_modules\\vue2-timepicker\\src\\vue-timepicker.vue"
+  var id = "D:\\local\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\node_modules\\vue2-timepicker\\src\\vue-timepicker.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -35904,8 +35973,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../css-loader/index.js!../../vue-loader/lib/style-rewriter.js?id=_v-b9b40df0&file=vue-timepicker.vue!../../vue-loader/lib/selector.js?type=style&index=0!./vue-timepicker.vue", function() {
-			var newContent = require("!!../../css-loader/index.js!../../vue-loader/lib/style-rewriter.js?id=_v-b9b40df0&file=vue-timepicker.vue!../../vue-loader/lib/selector.js?type=style&index=0!./vue-timepicker.vue");
+		module.hot.accept("!!../../css-loader/index.js!../../vue-loader/lib/style-rewriter.js?id=_v-371f642f&file=vue-timepicker.vue!../../vue-loader/lib/selector.js?type=style&index=0!./vue-timepicker.vue", function() {
+			var newContent = require("!!../../css-loader/index.js!../../vue-loader/lib/style-rewriter.js?id=_v-371f642f&file=vue-timepicker.vue!../../vue-loader/lib/selector.js?type=style&index=0!./vue-timepicker.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -36342,7 +36411,7 @@ module.exports = { "default": __webpack_require__(266), __esModule: true };
 /* 266 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var core = __webpack_require__(5);
+var core = __webpack_require__(4);
 var $JSON = core.JSON || (core.JSON = { stringify: JSON.stringify });
 module.exports = function stringify(it) { // eslint-disable-line no-unused-vars
   return $JSON.stringify.apply($JSON, arguments);
@@ -36359,13 +36428,13 @@ module.exports = "\n<span class=\"time-picker\">\n  <input class=\"display-time\
 /* 268 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div :class=\"'rop-control-container-'+ ( license>1 ) \" _v-3b1aef63=\"\">\n\t\t\n\t\t<div class=\"columns py-2 rop-control\" _v-3b1aef63=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-3b1aef63=\"\">\n\t\t\t\t<b _v-3b1aef63=\"\">{{labels.schedule_type_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-3b1aef63=\"\">{{labels.schedule_type_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-3b1aef63=\"\">\n\t\t\t\t<div class=\"form-group\" _v-3b1aef63=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"schedule.type\" _v-3b1aef63=\"\">\n\t\t\t\t\t\t<option value=\"recurring\" _v-3b1aef63=\"\">{{labels.schedule_type_option_rec}}</option>\n\t\t\t\t\t\t<option value=\"fixed\" _v-3b1aef63=\"\">{{labels.schedule_type_option_fix}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t\n\t\t<!-- Fixed Schedule Days -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-3b1aef63=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-3b1aef63=\"\">\n\t\t\t\t<b _v-3b1aef63=\"\">{{labels.schedule_fixed_days_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-3b1aef63=\"\">{{labels.schedule_fixed_days_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-3b1aef63=\"\">\n\t\t\t\t<div class=\"form-group input-group\" _v-3b1aef63=\"\">\n\t\t\t\t\t<button-checkbox v-for=\"( data, label ) in daysObject\" :key=\"label\" :value=\"data.value\" :label=\"label\" :checked=\"data.checked\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" _v-3b1aef63=\"\"></button-checkbox>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t\n\t\t<!-- Fixed Schedule time -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-3b1aef63=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-3b1aef63=\"\">\n\t\t\t\t<b _v-3b1aef63=\"\">{{labels.schedule_fixed_time_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-3b1aef63=\"\">{{labels.schedule_fixed_time_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-3b1aef63=\"\">\n\t\t\t\t<div class=\"form-group\" _v-3b1aef63=\"\">\n\t\t\t\t\t<div class=\"input-group\" v-for=\"( time, index ) in schedule.interval_f.time\" _v-3b1aef63=\"\">\n\t\t\t\t\t\t<vue-timepicker :minute-interval=\"5\" class=\"timepicker-style-fix\" :value=\"getTime( index )\" @change=\"syncTime( $event, index )\" hide-clear-button=\"\" _v-3b1aef63=\"\"></vue-timepicker>\n\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn\" v-if=\"schedule.interval_f.time.length > 1\" @click=\"rmvTime( index )\" _v-3b1aef63=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-minus\" _v-3b1aef63=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t\t<button class=\"btn btn-success input-group-btn\" v-if=\"index == schedule.interval_f.time.length - 1\" @click=\"addTime()\" _v-3b1aef63=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-plus\" _v-3b1aef63=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t\n\t\t<div class=\"columns py-2 rop-control\" v-else=\"\" _v-3b1aef63=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-3b1aef63=\"\">\n\t\t\t\t<b _v-3b1aef63=\"\">{{labels.schedule_rec_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-3b1aef63=\"\">{{labels.schedule_rec_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-3b1aef63=\"\">\n\t\t\t\t<div class=\"form-group\" _v-3b1aef63=\"\">\n\t\t\t\t\t<counter-input id=\"interval_r\" :value.sync=\"schedule.interval_r\" _v-3b1aef63=\"\"></counter-input>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t\n\t\t<!-- Upsell -->\n\t\t<div class=\"columns py-2\" v-if=\"license < 2\" _v-3b1aef63=\"\">\n\t\t\t<div class=\"column text-center\" _v-3b1aef63=\"\">\n\t\t\t\t<p class=\"upsell\" _v-3b1aef63=\"\"><i class=\"fa fa-lock\" _v-3b1aef63=\"\"></i> {{labels.schedule_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-3b1aef63=\"\"></span>\n\t</div>\n";
+module.exports = "\n\t<div :class=\"'rop-control-container-'+ ( license > 1 ) +  '  rop-schedule-tab-container'\" _v-4481cf4a=\"\">\n\n\t\t<div class=\"columns py-2 rop-control\" _v-4481cf4a=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4481cf4a=\"\">\n\t\t\t\t<b _v-4481cf4a=\"\">{{labels.schedule_type_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4481cf4a=\"\">{{labels.schedule_type_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4481cf4a=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4481cf4a=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"schedule.type\" _v-4481cf4a=\"\">\n\t\t\t\t\t\t<option value=\"recurring\" _v-4481cf4a=\"\">{{labels.schedule_type_option_rec}}</option>\n\t\t\t\t\t\t<option value=\"fixed\" _v-4481cf4a=\"\">{{labels.schedule_type_option_fix}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule Days -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-4481cf4a=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4481cf4a=\"\">\n\t\t\t\t<b _v-4481cf4a=\"\">{{labels.schedule_fixed_days_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4481cf4a=\"\">{{labels.schedule_fixed_days_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4481cf4a=\"\">\n\t\t\t\t<div class=\"form-group input-group\" _v-4481cf4a=\"\">\n\t\t\t\t\t<button-checkbox v-for=\"( data, label ) in daysObject\" :key=\"label\" :value=\"data.value\" :label=\"label\" :checked=\"data.checked\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" _v-4481cf4a=\"\"></button-checkbox>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule time -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-4481cf4a=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4481cf4a=\"\">\n\t\t\t\t<b _v-4481cf4a=\"\">{{labels.schedule_fixed_time_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4481cf4a=\"\">{{labels.schedule_fixed_time_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4481cf4a=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4481cf4a=\"\">\n\t\t\t\t\t<div class=\"input-group\" v-for=\"( time, index ) in schedule.interval_f.time\" _v-4481cf4a=\"\">\n\t\t\t\t\t\t<vue-timepicker :minute-interval=\"5\" class=\"timepicker-style-fix\" :value=\"getTime( index )\" @change=\"syncTime( $event, index )\" hide-clear-button=\"\" _v-4481cf4a=\"\"></vue-timepicker>\n\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn\" v-if=\"schedule.interval_f.time.length > 1\" @click=\"rmvTime( index )\" _v-4481cf4a=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-minus\" _v-4481cf4a=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t\t<button class=\"btn btn-success input-group-btn\" v-if=\"index == schedule.interval_f.time.length - 1\" @click=\"addTime()\" _v-4481cf4a=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-plus\" _v-4481cf4a=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2 rop-control\" v-else=\"\" _v-4481cf4a=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4481cf4a=\"\">\n\t\t\t\t<b _v-4481cf4a=\"\">{{labels.schedule_rec_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4481cf4a=\"\">{{labels.schedule_rec_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4481cf4a=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4481cf4a=\"\">\n\t\t\t\t\t<counter-input id=\"interval_r\" :value.sync=\"schedule.interval_r\" _v-4481cf4a=\"\"></counter-input>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Upsell -->\n\t\t<div class=\"columns py-2\" v-if=\"license < 2\" _v-4481cf4a=\"\">\n\t\t\t<div class=\"column text-center\" _v-4481cf4a=\"\">\n\t\t\t\t<p class=\"upsell\" _v-4481cf4a=\"\"><i class=\"fa fa-lock\" _v-4481cf4a=\"\"></i> {{labels.schedule_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-4481cf4a=\"\"></span>\n\t</div>\n";
 
 /***/ }),
 /* 269 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\" _v-0c165a3e=\"\">\n\t\t<div class=\"panel-body\" _v-0c165a3e=\"\">\n\t\t\t<div class=\"d-inline-block mt-2 column col-12\" _v-0c165a3e=\"\">\n\t\t\t\t<p class=\"text-gray\" _v-0c165a3e=\"\"><i class=\"fa fa-info-circle\" _v-0c165a3e=\"\"></i> <span v-html=\"labels.accounts_selector\" _v-0c165a3e=\"\"></span>\n\t\t\t\t</p>\n\t\t\t</div>\n\t\t\t<empty-active-accounts v-if=\"accountsCount === 0\" _v-0c165a3e=\"\"></empty-active-accounts>\n\t\t\t<div class=\"container\" v-if=\"accountsCount > 0\" _v-0c165a3e=\"\">\n\t\t\t\t\n\t\t\t\t<div class=\"columns\" _v-0c165a3e=\"\">\n\t\t\t\t\t<div class=\"column col-3 col-sm-12 col-md-12 col-xl-3 col-lg-3 col-xs-12 col-rop-selector-accounts\" _v-0c165a3e=\"\">\n\t\t\t\t\t\t<span class=\"divider\" _v-0c165a3e=\"\"></span>\n\t\t\t\t\t\t<div v-for=\"( account, id ) in active_accounts\" _v-0c165a3e=\"\">\n\t\t\t\t\t\t\t<div class=\"rop-selector-account-container\" :class=\"{active: selected_account===id}\" @click=\"setActiveAccount(id)\" _v-0c165a3e=\"\">\n\t\t\t\t\t\t\t\t<div class=\"tile tile-centered rop-account\" _v-0c165a3e=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"tile-icon\" _v-0c165a3e=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"icon_box\" :class=\" (account.img ? 'has_image' : 'no-image' ) + ' ' +account.service \" _v-0c165a3e=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<img class=\"service_account_image\" :src=\"account.img\" v-if=\"account.img\" _v-0c165a3e=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"fa  \" :class=\"getIcon(account)\" aria-hidden=\"true\" _v-0c165a3e=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"tile-content\" _v-0c165a3e=\"\">\n\t\t\t\t\t\t\t\t\t\t<p class=\"rop-account-name\" _v-0c165a3e=\"\">{{account.user}}</p>\n\t\t\t\t\t\t\t\t\t\t<strong class=\"rop-service-name\" _v-0c165a3e=\"\">{{account.service}}</strong>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-0c165a3e=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-9 col-sm-12  col-md-12  col-xl-9 col-lg-9 col-xs-12\" :class=\"'rop-tab-state-'+is_loading\" _v-0c165a3e=\"\">\n\t\t\t\t\t\t<component :is=\"type\" :account_id=\"selected_account\" :license=\"license\" _v-0c165a3e=\"\"></component>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-0c165a3e=\"\">\n\t\t\t<div class=\"panel-actions text-right\" v-if=\"allow_footer\" _v-0c165a3e=\"\">\n\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-0c165a3e=\"\"><i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-0c165a3e=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-0c165a3e=\"\"></i> {{labels.reset_selector_btn}} {{component_label}}\n\t\t\t\t\t{{labels.for}}\n\t\t\t\t\t<b _v-0c165a3e=\"\">{{active_account_name}}</b>\n\t\t\t\t</button>\n\t\t\t\t<button class=\"btn btn-primary\" @click=\"saveAccountData()\" _v-0c165a3e=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-0c165a3e=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-0c165a3e=\"\"></i> {{labels.save_selector_btn}} {{component_label}}\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\" _v-d7d6ddcc=\"\">\n\t\t<div class=\"panel-body\" _v-d7d6ddcc=\"\">\n\t\t\t<div class=\"d-inline-block mt-2 column col-12\" _v-d7d6ddcc=\"\">\n\t\t\t\t<p class=\"text-gray\" _v-d7d6ddcc=\"\"><i class=\"fa fa-info-circle\" _v-d7d6ddcc=\"\"></i> <span v-html=\"labels.accounts_selector\" _v-d7d6ddcc=\"\"></span>\n\t\t\t\t</p>\n\t\t\t</div>\n\t\t\t<empty-active-accounts v-if=\"accountsCount === 0\" _v-d7d6ddcc=\"\"></empty-active-accounts>\n\t\t\t<div class=\"container\" v-if=\"accountsCount > 0\" _v-d7d6ddcc=\"\">\n\t\t\t\t\n\t\t\t\t<div class=\"columns\" _v-d7d6ddcc=\"\">\n\t\t\t\t\t<div class=\"column col-3 col-sm-12 col-md-12 col-xl-3 col-lg-3 col-xs-12 col-rop-selector-accounts\" _v-d7d6ddcc=\"\">\n\t\t\t\t\t\t<span class=\"divider\" _v-d7d6ddcc=\"\"></span>\n\t\t\t\t\t\t<div v-for=\"( account, id ) in active_accounts\" _v-d7d6ddcc=\"\">\n\t\t\t\t\t\t\t<div class=\"rop-selector-account-container\" :class=\"{active: selected_account===id}\" @click=\"setActiveAccount(id)\" _v-d7d6ddcc=\"\">\n\t\t\t\t\t\t\t\t<div class=\"tile tile-centered rop-account\" _v-d7d6ddcc=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"tile-icon\" _v-d7d6ddcc=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"icon_box\" :class=\" (account.img ? 'has_image' : 'no-image' ) + ' ' +account.service \" _v-d7d6ddcc=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<img class=\"service_account_image\" :src=\"account.img\" v-if=\"account.img\" _v-d7d6ddcc=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"fa  \" :class=\"getIcon(account)\" aria-hidden=\"true\" _v-d7d6ddcc=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"tile-content\" _v-d7d6ddcc=\"\">\n\t\t\t\t\t\t\t\t\t\t<p class=\"rop-account-name\" _v-d7d6ddcc=\"\">{{account.user}}</p>\n\t\t\t\t\t\t\t\t\t\t<strong class=\"rop-service-name\" _v-d7d6ddcc=\"\">{{account.service}}</strong>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-d7d6ddcc=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-9 col-sm-12  col-md-12  col-xl-9 col-lg-9 col-xs-12\" :class=\"'rop-tab-state-'+is_loading\" _v-d7d6ddcc=\"\">\n\t\t\t\t\t\t<component :is=\"type\" :account_id=\"selected_account\" :license=\"license\" _v-d7d6ddcc=\"\"></component>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-d7d6ddcc=\"\">\n\t\t\t<div class=\"panel-actions text-right\" v-if=\"allow_footer\" _v-d7d6ddcc=\"\">\n\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-d7d6ddcc=\"\"><i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-d7d6ddcc=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-d7d6ddcc=\"\"></i> {{labels.reset_selector_btn}} {{component_label}}\n\t\t\t\t\t{{labels.for}}\n\t\t\t\t\t<b _v-d7d6ddcc=\"\">{{active_account_name}}</b>\n\t\t\t\t</button>\n\t\t\t\t<button class=\"btn btn-primary\" @click=\"saveAccountData()\" _v-d7d6ddcc=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-d7d6ddcc=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-d7d6ddcc=\"\"></i> {{labels.save_selector_btn}} {{component_label}}\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 270 */
@@ -36381,7 +36450,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\mariu\\Local Sites\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\queue-tab-panel.vue"
+  var id = "D:\\local\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\queue-tab-panel.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -36462,9 +36531,10 @@ module.exports = {
 		QueueCard: _queueCard2.default
 	}
 	// </script>
+	//
 
 }; // <template>
-// 	<div class="tab-view">
+// 	<div class="tab-view rop-queue-tab-container">
 // 		<div class="panel-body" :class="'rop-tab-state-'+is_loading">
 // 			<div class="columns" v-if="! start_status">
 // 				<div class="column col-12 text-center empty-container">
@@ -36529,7 +36599,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\mariu\\Local Sites\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\queue-card.vue"
+  var id = "D:\\local\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\queue-card.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -36553,8 +36623,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-7c18b06c&file=queue-card.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./queue-card.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-7c18b06c&file=queue-card.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./queue-card.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-94a1765a&file=queue-card.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./queue-card.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-94a1765a&file=queue-card.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./queue-card.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -36572,7 +36642,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t.fa[_v-7c18b06c] {\n\t\tbackground: transparent;\n\t}\n\t\n\t#rop_core .vertical-align[_v-7c18b06c] {\n\t\t-ms-flex-align: end;\n\t\t    align-items: flex-end;\n\t}\n\t\n\t#rop_core figure.figure[_v-7c18b06c] {\n\t\tmargin: -.7em -2em -1em 0;\n\t}\n\t\n\t@media (max-width: 600px) {\n\t\t#rop_core .vertical-align[_v-7c18b06c] {\n\t\t\t-ms-flex-align: center;\n\t\t\t    align-items: center;\n\t\t}\n\t\t\n\t\t#rop_core figure.figure[_v-7c18b06c] {\n\t\t\tmargin: 10px auto 0;\n\t\t}\n\t}\n", ""]);
+exports.push([module.i, "\n\t.fa[_v-94a1765a] {\n\t\tbackground: transparent;\n\t}\n\t\n\t#rop_core .vertical-align[_v-94a1765a] {\n\t\t-ms-flex-align: end;\n\t\t    align-items: flex-end;\n\t}\n\t\n\t#rop_core figure.figure[_v-94a1765a] {\n\t\tmargin: -.7em -2em -1em 0;\n\t}\n\t\n\t@media (max-width: 600px) {\n\t\t#rop_core .vertical-align[_v-94a1765a] {\n\t\t\t-ms-flex-align: center;\n\t\t\t    align-items: center;\n\t\t}\n\t\t\n\t\t#rop_core figure.figure[_v-94a1765a] {\n\t\t\tmargin: 10px auto 0;\n\t\t}\n\t}\n", ""]);
 
 // exports
 
@@ -36598,7 +36668,7 @@ exports.push([module.i, "\n\t.fa[_v-7c18b06c] {\n\t\tbackground: transparent;\n\
 // 				</div>
 // 				<div class="columns" v-if="!edit">
 // 					<div class="column col-12">
-// 						<p v-html="hashtags( content.content )"></p>
+// 						<p v-html="content.content + hashtags( content.hashtags )"></p>
 // 					</div>
 // 				</div>
 // 				<div class="form-group columns" v-if="edit">
@@ -36653,7 +36723,8 @@ exports.push([module.i, "\n\t.fa[_v-7c18b06c] {\n\t\tbackground: transparent;\n\
 // 							<b>{{labels.link_title}}:</b>
 // 							<a :href="content.post_url" target="_blank" class="tooltip"
 // 							   :data-tooltip="labels.link_shortned_start + ' ' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service )  ">
-// 								{{'{' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service ) + '}'}}</a>
+// 								{{'{' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service ) +
+// 								'}'}}</a>
 // 						</p>
 // 					</div>
 // 				</div>
@@ -36679,7 +36750,8 @@ exports.push([module.i, "\n\t.fa[_v-7c18b06c] {\n\t\tbackground: transparent;\n\
 // 			<div class="column col-4 col-sm-12 vertical-align" v-if="!edit && content.post_with_image">
 // 				<div v-if="content.post_image !== ''">
 // 					<figure class="figure" v-if="content.post_image !== ''">
-// 						<img :src="content.post_image" class="img-fit-cover img-responsive">
+// 						<img :src="( content.mimetype.type.indexOf('image') > -1 ? content.post_image : video_placeholder )"
+// 						     class="img-fit-cover img-responsive">
 // 					</figure>
 //
 // 				</div>
@@ -36717,6 +36789,7 @@ module.exports = {
 			edit: false,
 			labels: this.$store.state.labels.queue,
 			upsell_link: ropApiSettings.upsell_link,
+			video_placeholder: ROP_ASSETS_URL + 'img/video_placeholder.jpg',
 			is_loading: false,
 			post_edit: {}
 		};
@@ -36850,6 +36923,7 @@ module.exports = {
 				if (account !== undefined && account.service === 'twitter') serviceIcon = serviceIcon.concat('twitter twitter');
 				if (account !== undefined && account.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin linkedin');
 				if (account !== undefined && account.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr tumblr');
+				if (account !== undefined && account.service === 'pinterest') serviceIcon = serviceIcon.concat('pinterest pinterest');
 			}
 			return serviceIcon;
 		},
@@ -36889,6 +36963,7 @@ module.exports = {
 	// 		}
 	// 	}
 	// </style>
+	//
 
 };
 
@@ -36896,13 +36971,13 @@ module.exports = {
 /* 276 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"card\" _v-7c18b06c=\"\">\n\t\t<div class=\"columns\" _v-7c18b06c=\"\">\n\t\t\t<div class=\"column col-sm-12 col-justified\" _v-7c18b06c=\"\">\n\t\t\t\t<div class=\"columns\" _v-7c18b06c=\"\">\n\t\t\t\t\t<div class=\"column\" _v-7c18b06c=\"\">\n\t\t\t\t\t\t<p class=\"text-gray text-left \" _v-7c18b06c=\"\"><i class=\"fa fa-clock-o\" _v-7c18b06c=\"\"></i> {{card_data.date}} <b _v-7c18b06c=\"\"><i class=\"fa fa-at\" _v-7c18b06c=\"\"></i></b> <i class=\"service fa\" :class=\"iconClass( card_data.account_id )\" _v-7c18b06c=\"\"></i>\n\t\t\t\t\t\t\t{{getAccountName(card_data.account_id)}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-if=\"!edit\" _v-7c18b06c=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-7c18b06c=\"\">\n\t\t\t\t\t\t<p v-html=\"hashtags( content.content )\" _v-7c18b06c=\"\"></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"form-group columns\" v-if=\"edit\" _v-7c18b06c=\"\">\n\t\t\t\t\t<div class=\"column col-12\" v-if=\"content.post_with_image\" _v-7c18b06c=\"\">\n\t\t\t\t\t\t<label class=\"form-label\" for=\"image\" _v-7c18b06c=\"\">{{labels.queue_image}}</label>\n\t\t\t\t\t\t<div class=\"input-group\" _v-7c18b06c=\"\">\n\t\t\t\t\t\t\t<span class=\"input-group-addon\" _v-7c18b06c=\"\"><i class=\"fa fa-file-image-o\" _v-7c18b06c=\"\"></i></span>\n\t\t\t\t\t\t\t<input id=\"image\" type=\"text\" class=\"form-input\" :value=\"content.post_image\" readonly=\"\" _v-7c18b06c=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary input-group-btn tooltip\" @click=\"uploadImage\" :data-tooltip=\"labels.upload_image\" _v-7c18b06c=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-upload\" aria-hidden=\"true\" _v-7c18b06c=\"\"></i>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn tooltip\" @click=\"removeImage\" :data-tooltip=\"labels.remove_image\" _v-7c18b06c=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-remove\" aria-hidden=\"true\" _v-7c18b06c=\"\"></i>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-12\" _v-7c18b06c=\"\">\n\t\t\t\t\t\t<label class=\"form-label\" for=\"content\" _v-7c18b06c=\"\">{{labels.queue_content}}</label>\n\t\t\t\t\t\t<textarea class=\"form-input\" id=\"content\" placeholder=\"\" rows=\"3\" @keyup=\"checkCount\" _v-7c18b06c=\"\">{{content.content}}</textarea>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns col-justified\" v-if=\"!edit\" _v-7c18b06c=\"\">\n\t\t\t\t\t<div class=\"column col-3\" _v-7c18b06c=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-warning tooltip   tooltip-bottom \" @click=\"skipPost(card_data.account_id, card_data.post_id)\" :data-tooltip=\"labels.reschedule_post\" :disabled=\" ! enabled\" _v-7c18b06c=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'skip'\" _v-7c18b06c=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-step-forward\" v-else=\"\" aria-hidden=\"true\" _v-7c18b06c=\"\"></i>\n\t\t\t\t\t\t\t{{labels.skip_btn_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-7c18b06c=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-danger tooltip     tooltip-bottom  \" :data-tooltip=\"labels.ban_post\" @click=\"blockPost(card_data.account_id, card_data.post_id)\" :disabled=\" ! enabled\" _v-7c18b06c=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'block'\" _v-7c18b06c=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-ban\" aria-hidden=\"true\" v-else=\"\" _v-7c18b06c=\"\"></i>\n\t\t\t\t\t\t\t{{labels.block_btn_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-7c18b06c=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-primary\" @click=\"toggleEditState\" v-if=\"!edit\" :disabled=\" ! enabled\" _v-7c18b06c=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-pencil\" aria-hidden=\"true\" _v-7c18b06c=\"\"></i> {{labels.edit_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3 col-ml-auto text-right\" v-if=\"content.post_url !== ''\" _v-7c18b06c=\"\">\n\t\t\t\t\t\t<p class=\"m-0\" _v-7c18b06c=\"\">\n\t\t\t\t\t\t\t<b _v-7c18b06c=\"\">{{labels.link_title}}:</b>\n\t\t\t\t\t\t\t<a :href=\"content.post_url\" target=\"_blank\" class=\"tooltip\" :data-tooltip=\"labels.link_shortned_start + ' ' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service )  \" _v-7c18b06c=\"\">\n\t\t\t\t\t\t\t\t{{'{' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service ) + '}'}}</a>\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-else=\"\" _v-7c18b06c=\"\">\n\t\t\t\t\t<div class=\"column col-3\" _v-7c18b06c=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-success\" @click=\"saveChanges(card_data.account_id, card_data.post_id)\" v-if=\"edit\" :disabled=\" ! enabled\" _v-7c18b06c=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'edit'\" _v-7c18b06c=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-check\" aria-hidden=\"true\" v-else=\"\" _v-7c18b06c=\"\"></i>\n\t\t\t\t\t\t\t{{labels.save_edit}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-7c18b06c=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-warning\" @click=\"cancelChanges\" v-if=\"edit\" :disabled=\" ! enabled\" _v-7c18b06c=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-times\" aria-hidden=\"true\" _v-7c18b06c=\"\"></i>\n\t\t\t\t\t\t\t{{labels.cancel_edit}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"column col-4 col-sm-12 vertical-align\" v-if=\"!edit &amp;&amp; content.post_with_image\" _v-7c18b06c=\"\">\n\t\t\t\t<div v-if=\"content.post_image !== ''\" _v-7c18b06c=\"\">\n\t\t\t\t\t<figure class=\"figure\" v-if=\"content.post_image !== ''\" _v-7c18b06c=\"\">\n\t\t\t\t\t\t<img :src=\"content.post_image\" class=\"img-fit-cover img-responsive\" _v-7c18b06c=\"\">\n\t\t\t\t\t</figure>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\t<div class=\"rop-image-placeholder\" v-else=\"\" _v-7c18b06c=\"\">\n\t\t\t\t\t<summary _v-7c18b06c=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-7c18b06c=\"\"></i>\n\t\t\t\t\t\t{{labels.queue_no_image}}\n\t\t\t\t\t</summary>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"card\" _v-94a1765a=\"\">\n\t\t<div class=\"columns\" _v-94a1765a=\"\">\n\t\t\t<div class=\"column col-sm-12 col-justified\" _v-94a1765a=\"\">\n\t\t\t\t<div class=\"columns\" _v-94a1765a=\"\">\n\t\t\t\t\t<div class=\"column\" _v-94a1765a=\"\">\n\t\t\t\t\t\t<p class=\"text-gray text-left \" _v-94a1765a=\"\"><i class=\"fa fa-clock-o\" _v-94a1765a=\"\"></i> {{card_data.date}} <b _v-94a1765a=\"\"><i class=\"fa fa-at\" _v-94a1765a=\"\"></i></b> <i class=\"service fa\" :class=\"iconClass( card_data.account_id )\" _v-94a1765a=\"\"></i>\n\t\t\t\t\t\t\t{{getAccountName(card_data.account_id)}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-if=\"!edit\" _v-94a1765a=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-94a1765a=\"\">\n\t\t\t\t\t\t<p v-html=\"content.content + hashtags( content.hashtags )\" _v-94a1765a=\"\"></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"form-group columns\" v-if=\"edit\" _v-94a1765a=\"\">\n\t\t\t\t\t<div class=\"column col-12\" v-if=\"content.post_with_image\" _v-94a1765a=\"\">\n\t\t\t\t\t\t<label class=\"form-label\" for=\"image\" _v-94a1765a=\"\">{{labels.queue_image}}</label>\n\t\t\t\t\t\t<div class=\"input-group\" _v-94a1765a=\"\">\n\t\t\t\t\t\t\t<span class=\"input-group-addon\" _v-94a1765a=\"\"><i class=\"fa fa-file-image-o\" _v-94a1765a=\"\"></i></span>\n\t\t\t\t\t\t\t<input id=\"image\" type=\"text\" class=\"form-input\" :value=\"content.post_image\" readonly=\"\" _v-94a1765a=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary input-group-btn tooltip\" @click=\"uploadImage\" :data-tooltip=\"labels.upload_image\" _v-94a1765a=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-upload\" aria-hidden=\"true\" _v-94a1765a=\"\"></i>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn tooltip\" @click=\"removeImage\" :data-tooltip=\"labels.remove_image\" _v-94a1765a=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-remove\" aria-hidden=\"true\" _v-94a1765a=\"\"></i>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-12\" _v-94a1765a=\"\">\n\t\t\t\t\t\t<label class=\"form-label\" for=\"content\" _v-94a1765a=\"\">{{labels.queue_content}}</label>\n\t\t\t\t\t\t<textarea class=\"form-input\" id=\"content\" placeholder=\"\" rows=\"3\" @keyup=\"checkCount\" _v-94a1765a=\"\">{{content.content}}</textarea>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns col-justified\" v-if=\"!edit\" _v-94a1765a=\"\">\n\t\t\t\t\t<div class=\"column col-3\" _v-94a1765a=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-warning tooltip   tooltip-bottom \" @click=\"skipPost(card_data.account_id, card_data.post_id)\" :data-tooltip=\"labels.reschedule_post\" :disabled=\" ! enabled\" _v-94a1765a=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'skip'\" _v-94a1765a=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-step-forward\" v-else=\"\" aria-hidden=\"true\" _v-94a1765a=\"\"></i>\n\t\t\t\t\t\t\t{{labels.skip_btn_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-94a1765a=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-danger tooltip     tooltip-bottom  \" :data-tooltip=\"labels.ban_post\" @click=\"blockPost(card_data.account_id, card_data.post_id)\" :disabled=\" ! enabled\" _v-94a1765a=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'block'\" _v-94a1765a=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-ban\" aria-hidden=\"true\" v-else=\"\" _v-94a1765a=\"\"></i>\n\t\t\t\t\t\t\t{{labels.block_btn_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-94a1765a=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-primary\" @click=\"toggleEditState\" v-if=\"!edit\" :disabled=\" ! enabled\" _v-94a1765a=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-pencil\" aria-hidden=\"true\" _v-94a1765a=\"\"></i> {{labels.edit_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3 col-ml-auto text-right\" v-if=\"content.post_url !== ''\" _v-94a1765a=\"\">\n\t\t\t\t\t\t<p class=\"m-0\" _v-94a1765a=\"\">\n\t\t\t\t\t\t\t<b _v-94a1765a=\"\">{{labels.link_title}}:</b>\n\t\t\t\t\t\t\t<a :href=\"content.post_url\" target=\"_blank\" class=\"tooltip\" :data-tooltip=\"labels.link_shortned_start + ' ' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service )  \" _v-94a1765a=\"\">\n\t\t\t\t\t\t\t\t{{'{' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service ) +\n\t\t\t\t\t\t\t\t'}'}}</a>\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-else=\"\" _v-94a1765a=\"\">\n\t\t\t\t\t<div class=\"column col-3\" _v-94a1765a=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-success\" @click=\"saveChanges(card_data.account_id, card_data.post_id)\" v-if=\"edit\" :disabled=\" ! enabled\" _v-94a1765a=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'edit'\" _v-94a1765a=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-check\" aria-hidden=\"true\" v-else=\"\" _v-94a1765a=\"\"></i>\n\t\t\t\t\t\t\t{{labels.save_edit}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-94a1765a=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-warning\" @click=\"cancelChanges\" v-if=\"edit\" :disabled=\" ! enabled\" _v-94a1765a=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-times\" aria-hidden=\"true\" _v-94a1765a=\"\"></i>\n\t\t\t\t\t\t\t{{labels.cancel_edit}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"column col-4 col-sm-12 vertical-align\" v-if=\"!edit &amp;&amp; content.post_with_image\" _v-94a1765a=\"\">\n\t\t\t\t<div v-if=\"content.post_image !== ''\" _v-94a1765a=\"\">\n\t\t\t\t\t<figure class=\"figure\" v-if=\"content.post_image !== ''\" _v-94a1765a=\"\">\n\t\t\t\t\t\t<img :src=\"( content.mimetype.type.indexOf('image') > -1 ? content.post_image : video_placeholder )\" class=\"img-fit-cover img-responsive\" _v-94a1765a=\"\">\n\t\t\t\t\t</figure>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\t<div class=\"rop-image-placeholder\" v-else=\"\" _v-94a1765a=\"\">\n\t\t\t\t\t<summary _v-94a1765a=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-94a1765a=\"\"></i>\n\t\t\t\t\t\t{{labels.queue_no_image}}\n\t\t\t\t\t</summary>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 277 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\">\n\t\t<div class=\"panel-body\" :class=\"'rop-tab-state-'+is_loading\">\n\t\t\t<div class=\"columns\" v-if=\"! start_status\">\n\t\t\t\t<div class=\"column col-12 text-center empty-container\">\n\t\t\t\t\t<div class=\"empty-icon\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t\t<p class=\"empty-title h5\">{{labels.sharing_not_started}}</p>\n\t\t\t\t\t<p class=\"empty-subtitle\">{{labels.sharing_not_started_desc}}</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t\n\t\t\t<div v-else-if=\"start_status && queueCount > 0 \">\n\t\t\t\t\n\t\t\t\t<div class=\"columns py-2\" v-if=\"! is_business\">\n\t\t\t\t\t<div class=\"column text-center\">\n\t\t\t\t\t\t<p class=\"upsell\"><i class=\"fa fa-lock\"></i> <span v-html=\"labels.biz_only\"></span></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<!-- When sharing is started but we  have the business plan. -->\n\t\t\t\t<div class=\"d-inline-block mt-2 column col-12\">\n\t\t\t\t\t<p class=\"text-gray info-paragraph\"><i class=\"fa fa-info-circle\"></i> {{labels.queue_desc}}</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"empty\" v-else-if=\"start_status && queueCount === 0\">\n\t\t\t\t<div class=\"empty-icon\">\n\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\"></i>\n\t\t\t\t</div>\n\t\t\t\t<p class=\"empty-title h5\">{{labels.no_posts}}</p>\n\t\t\t\t<p class=\"empty-subtitle\" v-html=\"labels.no_posts_desc\"></p>\n\t\t\t</div>\n\t\t\t<div class=\"columns\" v-if=\"start_status && queueCount > 0\">\n\t\t\t\t<div class=\"column col-12 text-left\" v-for=\" (data, index) in queue \">\n\t\t\t\t\t<queue-card :card_data=\"data.post_data\" :id=\"index\" :enabled=\"is_business\"/>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer text-rightcade\" v-if=\"start_status\">\n\t\t\t<button class=\"btn btn-secondary\" @click=\"refreshQueue(true)\">\n\t\t\t\t<i class=\"fa fa-refresh\" v-if=\"!is_loading\"></i>\n\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t{{labels.refresh_btn}}\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view rop-queue-tab-container\">\n\t\t<div class=\"panel-body\" :class=\"'rop-tab-state-'+is_loading\">\n\t\t\t<div class=\"columns\" v-if=\"! start_status\">\n\t\t\t\t<div class=\"column col-12 text-center empty-container\">\n\t\t\t\t\t<div class=\"empty-icon\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t\t<p class=\"empty-title h5\">{{labels.sharing_not_started}}</p>\n\t\t\t\t\t<p class=\"empty-subtitle\">{{labels.sharing_not_started_desc}}</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\n\t\t\t<div v-else-if=\"start_status && queueCount > 0 \">\n\n\t\t\t\t<div class=\"columns py-2\" v-if=\"! is_business\">\n\t\t\t\t\t<div class=\"column text-center\">\n\t\t\t\t\t\t<p class=\"upsell\"><i class=\"fa fa-lock\"></i> <span v-html=\"labels.biz_only\"></span></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<!-- When sharing is started but we  have the business plan. -->\n\t\t\t\t<div class=\"d-inline-block mt-2 column col-12\">\n\t\t\t\t\t<p class=\"text-gray info-paragraph\"><i class=\"fa fa-info-circle\"></i> {{labels.queue_desc}}</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"empty\" v-else-if=\"start_status && queueCount === 0\">\n\t\t\t\t<div class=\"empty-icon\">\n\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\"></i>\n\t\t\t\t</div>\n\t\t\t\t<p class=\"empty-title h5\">{{labels.no_posts}}</p>\n\t\t\t\t<p class=\"empty-subtitle\" v-html=\"labels.no_posts_desc\"></p>\n\t\t\t</div>\n\t\t\t<div class=\"columns\" v-if=\"start_status && queueCount > 0\">\n\t\t\t\t<div class=\"column col-12 text-left\" v-for=\" (data, index) in queue \">\n\t\t\t\t\t<queue-card :card_data=\"data.post_data\" :id=\"index\" :enabled=\"is_business\"/>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer text-rightcade\" v-if=\"start_status\">\n\t\t\t<button class=\"btn btn-secondary\" @click=\"refreshQueue(true)\">\n\t\t\t\t<i class=\"fa fa-refresh\" v-if=\"!is_loading\"></i>\n\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t{{labels.refresh_btn}}\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 278 */
@@ -36919,7 +36994,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\mariu\\Local Sites\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\logs-tab-panel.vue"
+  var id = "D:\\local\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\logs-tab-panel.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -36943,8 +37018,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-b1a5d44c&file=logs-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./logs-tab-panel.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-b1a5d44c&file=logs-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./logs-tab-panel.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-ae6e78fe&file=logs-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./logs-tab-panel.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-ae6e78fe&file=logs-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./logs-tab-panel.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -36962,7 +37037,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .toast.log-toast p[_v-b1a5d44c] {\n\t\tmargin: 0px;\n\t\tline-height: inherit;\n\t}\n\t\n\t#rop_core .toast.log-toast[_v-b1a5d44c]:hover {\n\t\topacity: 0.9;\n\t}\n\t\n\t#rop_core .toast.log-toast[_v-b1a5d44c] {\n\t\tpadding: 0.1rem;\n\t\tpadding-left: 10px;\n\t\tmargin-top: 2px;\n\t}\n\t\n\t#rop_core .container[_v-b1a5d44c] {\n\t\tmin-height: 400px;\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop_core .toast.log-toast p[_v-ae6e78fe] {\n\t\tmargin: 0px;\n\t\tline-height: inherit;\n\t}\n\t\n\t#rop_core .toast.log-toast[_v-ae6e78fe]:hover {\n\t\topacity: 0.9;\n\t}\n\t\n\t#rop_core .toast.log-toast[_v-ae6e78fe] {\n\t\tpadding: 0.1rem;\n\t\tpadding-left: 10px;\n\t\tmargin-top: 2px;\n\t}\n\t\n\t#rop_core .container[_v-ae6e78fe] {\n\t\tmin-height: 400px;\n\t}\n", ""]);
 
 // exports
 
@@ -37129,252 +37204,252 @@ module.exports = function(module) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
-	"./af": 79,
-	"./af.js": 79,
-	"./ar": 80,
-	"./ar-dz": 81,
-	"./ar-dz.js": 81,
-	"./ar-kw": 82,
-	"./ar-kw.js": 82,
-	"./ar-ly": 83,
-	"./ar-ly.js": 83,
-	"./ar-ma": 84,
-	"./ar-ma.js": 84,
-	"./ar-sa": 85,
-	"./ar-sa.js": 85,
-	"./ar-tn": 86,
-	"./ar-tn.js": 86,
-	"./ar.js": 80,
-	"./az": 87,
-	"./az.js": 87,
-	"./be": 88,
-	"./be.js": 88,
-	"./bg": 89,
-	"./bg.js": 89,
-	"./bm": 90,
-	"./bm.js": 90,
-	"./bn": 91,
-	"./bn.js": 91,
-	"./bo": 92,
-	"./bo.js": 92,
-	"./br": 93,
-	"./br.js": 93,
-	"./bs": 94,
-	"./bs.js": 94,
-	"./ca": 95,
-	"./ca.js": 95,
-	"./cs": 96,
-	"./cs.js": 96,
-	"./cv": 97,
-	"./cv.js": 97,
-	"./cy": 98,
-	"./cy.js": 98,
-	"./da": 99,
-	"./da.js": 99,
-	"./de": 100,
-	"./de-at": 101,
-	"./de-at.js": 101,
-	"./de-ch": 102,
-	"./de-ch.js": 102,
-	"./de.js": 100,
-	"./dv": 103,
-	"./dv.js": 103,
-	"./el": 104,
-	"./el.js": 104,
-	"./en-au": 105,
-	"./en-au.js": 105,
-	"./en-ca": 106,
-	"./en-ca.js": 106,
-	"./en-gb": 107,
-	"./en-gb.js": 107,
-	"./en-ie": 108,
-	"./en-ie.js": 108,
-	"./en-il": 109,
-	"./en-il.js": 109,
-	"./en-nz": 110,
-	"./en-nz.js": 110,
-	"./eo": 111,
-	"./eo.js": 111,
-	"./es": 112,
-	"./es-do": 113,
-	"./es-do.js": 113,
-	"./es-us": 114,
-	"./es-us.js": 114,
-	"./es.js": 112,
-	"./et": 115,
-	"./et.js": 115,
-	"./eu": 116,
-	"./eu.js": 116,
-	"./fa": 117,
-	"./fa.js": 117,
-	"./fi": 118,
-	"./fi.js": 118,
-	"./fo": 119,
-	"./fo.js": 119,
-	"./fr": 120,
-	"./fr-ca": 121,
-	"./fr-ca.js": 121,
-	"./fr-ch": 122,
-	"./fr-ch.js": 122,
-	"./fr.js": 120,
-	"./fy": 123,
-	"./fy.js": 123,
-	"./gd": 124,
-	"./gd.js": 124,
-	"./gl": 125,
-	"./gl.js": 125,
-	"./gom-latn": 126,
-	"./gom-latn.js": 126,
-	"./gu": 127,
-	"./gu.js": 127,
-	"./he": 128,
-	"./he.js": 128,
-	"./hi": 129,
-	"./hi.js": 129,
-	"./hr": 130,
-	"./hr.js": 130,
-	"./hu": 131,
-	"./hu.js": 131,
-	"./hy-am": 132,
-	"./hy-am.js": 132,
-	"./id": 133,
-	"./id.js": 133,
-	"./is": 134,
-	"./is.js": 134,
-	"./it": 135,
-	"./it.js": 135,
-	"./ja": 136,
-	"./ja.js": 136,
-	"./jv": 137,
-	"./jv.js": 137,
-	"./ka": 138,
-	"./ka.js": 138,
-	"./kk": 139,
-	"./kk.js": 139,
-	"./km": 140,
-	"./km.js": 140,
-	"./kn": 141,
-	"./kn.js": 141,
-	"./ko": 142,
-	"./ko.js": 142,
-	"./ky": 143,
-	"./ky.js": 143,
-	"./lb": 144,
-	"./lb.js": 144,
-	"./lo": 145,
-	"./lo.js": 145,
-	"./lt": 146,
-	"./lt.js": 146,
-	"./lv": 147,
-	"./lv.js": 147,
-	"./me": 148,
-	"./me.js": 148,
-	"./mi": 149,
-	"./mi.js": 149,
-	"./mk": 150,
-	"./mk.js": 150,
-	"./ml": 151,
-	"./ml.js": 151,
-	"./mn": 152,
-	"./mn.js": 152,
-	"./mr": 153,
-	"./mr.js": 153,
-	"./ms": 154,
-	"./ms-my": 155,
-	"./ms-my.js": 155,
-	"./ms.js": 154,
-	"./mt": 156,
-	"./mt.js": 156,
-	"./my": 157,
-	"./my.js": 157,
-	"./nb": 158,
-	"./nb.js": 158,
-	"./ne": 159,
-	"./ne.js": 159,
-	"./nl": 160,
-	"./nl-be": 161,
-	"./nl-be.js": 161,
-	"./nl.js": 160,
-	"./nn": 162,
-	"./nn.js": 162,
-	"./pa-in": 163,
-	"./pa-in.js": 163,
-	"./pl": 164,
-	"./pl.js": 164,
-	"./pt": 165,
-	"./pt-br": 166,
-	"./pt-br.js": 166,
-	"./pt.js": 165,
-	"./ro": 167,
-	"./ro.js": 167,
-	"./ru": 168,
-	"./ru.js": 168,
-	"./sd": 169,
-	"./sd.js": 169,
-	"./se": 170,
-	"./se.js": 170,
-	"./si": 171,
-	"./si.js": 171,
-	"./sk": 172,
-	"./sk.js": 172,
-	"./sl": 173,
-	"./sl.js": 173,
-	"./sq": 174,
-	"./sq.js": 174,
-	"./sr": 175,
-	"./sr-cyrl": 176,
-	"./sr-cyrl.js": 176,
-	"./sr.js": 175,
-	"./ss": 177,
-	"./ss.js": 177,
-	"./sv": 178,
-	"./sv.js": 178,
-	"./sw": 179,
-	"./sw.js": 179,
-	"./ta": 180,
-	"./ta.js": 180,
-	"./te": 181,
-	"./te.js": 181,
-	"./tet": 182,
-	"./tet.js": 182,
-	"./tg": 183,
-	"./tg.js": 183,
-	"./th": 184,
-	"./th.js": 184,
-	"./tl-ph": 185,
-	"./tl-ph.js": 185,
-	"./tlh": 186,
-	"./tlh.js": 186,
-	"./tr": 187,
-	"./tr.js": 187,
-	"./tzl": 188,
-	"./tzl.js": 188,
-	"./tzm": 189,
-	"./tzm-latn": 190,
-	"./tzm-latn.js": 190,
-	"./tzm.js": 189,
-	"./ug-cn": 191,
-	"./ug-cn.js": 191,
-	"./uk": 192,
-	"./uk.js": 192,
-	"./ur": 193,
-	"./ur.js": 193,
-	"./uz": 194,
-	"./uz-latn": 195,
-	"./uz-latn.js": 195,
-	"./uz.js": 194,
-	"./vi": 196,
-	"./vi.js": 196,
-	"./x-pseudo": 197,
-	"./x-pseudo.js": 197,
-	"./yo": 198,
-	"./yo.js": 198,
-	"./zh-cn": 199,
-	"./zh-cn.js": 199,
-	"./zh-hk": 200,
-	"./zh-hk.js": 200,
-	"./zh-tw": 201,
-	"./zh-tw.js": 201
+	"./af": 84,
+	"./af.js": 84,
+	"./ar": 85,
+	"./ar-dz": 86,
+	"./ar-dz.js": 86,
+	"./ar-kw": 87,
+	"./ar-kw.js": 87,
+	"./ar-ly": 88,
+	"./ar-ly.js": 88,
+	"./ar-ma": 89,
+	"./ar-ma.js": 89,
+	"./ar-sa": 90,
+	"./ar-sa.js": 90,
+	"./ar-tn": 91,
+	"./ar-tn.js": 91,
+	"./ar.js": 85,
+	"./az": 92,
+	"./az.js": 92,
+	"./be": 93,
+	"./be.js": 93,
+	"./bg": 94,
+	"./bg.js": 94,
+	"./bm": 95,
+	"./bm.js": 95,
+	"./bn": 96,
+	"./bn.js": 96,
+	"./bo": 97,
+	"./bo.js": 97,
+	"./br": 98,
+	"./br.js": 98,
+	"./bs": 99,
+	"./bs.js": 99,
+	"./ca": 100,
+	"./ca.js": 100,
+	"./cs": 101,
+	"./cs.js": 101,
+	"./cv": 102,
+	"./cv.js": 102,
+	"./cy": 103,
+	"./cy.js": 103,
+	"./da": 104,
+	"./da.js": 104,
+	"./de": 105,
+	"./de-at": 106,
+	"./de-at.js": 106,
+	"./de-ch": 107,
+	"./de-ch.js": 107,
+	"./de.js": 105,
+	"./dv": 108,
+	"./dv.js": 108,
+	"./el": 109,
+	"./el.js": 109,
+	"./en-au": 110,
+	"./en-au.js": 110,
+	"./en-ca": 111,
+	"./en-ca.js": 111,
+	"./en-gb": 112,
+	"./en-gb.js": 112,
+	"./en-ie": 113,
+	"./en-ie.js": 113,
+	"./en-il": 114,
+	"./en-il.js": 114,
+	"./en-nz": 115,
+	"./en-nz.js": 115,
+	"./eo": 116,
+	"./eo.js": 116,
+	"./es": 117,
+	"./es-do": 118,
+	"./es-do.js": 118,
+	"./es-us": 119,
+	"./es-us.js": 119,
+	"./es.js": 117,
+	"./et": 120,
+	"./et.js": 120,
+	"./eu": 121,
+	"./eu.js": 121,
+	"./fa": 122,
+	"./fa.js": 122,
+	"./fi": 123,
+	"./fi.js": 123,
+	"./fo": 124,
+	"./fo.js": 124,
+	"./fr": 125,
+	"./fr-ca": 126,
+	"./fr-ca.js": 126,
+	"./fr-ch": 127,
+	"./fr-ch.js": 127,
+	"./fr.js": 125,
+	"./fy": 128,
+	"./fy.js": 128,
+	"./gd": 129,
+	"./gd.js": 129,
+	"./gl": 130,
+	"./gl.js": 130,
+	"./gom-latn": 131,
+	"./gom-latn.js": 131,
+	"./gu": 132,
+	"./gu.js": 132,
+	"./he": 133,
+	"./he.js": 133,
+	"./hi": 134,
+	"./hi.js": 134,
+	"./hr": 135,
+	"./hr.js": 135,
+	"./hu": 136,
+	"./hu.js": 136,
+	"./hy-am": 137,
+	"./hy-am.js": 137,
+	"./id": 138,
+	"./id.js": 138,
+	"./is": 139,
+	"./is.js": 139,
+	"./it": 140,
+	"./it.js": 140,
+	"./ja": 141,
+	"./ja.js": 141,
+	"./jv": 142,
+	"./jv.js": 142,
+	"./ka": 143,
+	"./ka.js": 143,
+	"./kk": 144,
+	"./kk.js": 144,
+	"./km": 145,
+	"./km.js": 145,
+	"./kn": 146,
+	"./kn.js": 146,
+	"./ko": 147,
+	"./ko.js": 147,
+	"./ky": 148,
+	"./ky.js": 148,
+	"./lb": 149,
+	"./lb.js": 149,
+	"./lo": 150,
+	"./lo.js": 150,
+	"./lt": 151,
+	"./lt.js": 151,
+	"./lv": 152,
+	"./lv.js": 152,
+	"./me": 153,
+	"./me.js": 153,
+	"./mi": 154,
+	"./mi.js": 154,
+	"./mk": 155,
+	"./mk.js": 155,
+	"./ml": 156,
+	"./ml.js": 156,
+	"./mn": 157,
+	"./mn.js": 157,
+	"./mr": 158,
+	"./mr.js": 158,
+	"./ms": 159,
+	"./ms-my": 160,
+	"./ms-my.js": 160,
+	"./ms.js": 159,
+	"./mt": 161,
+	"./mt.js": 161,
+	"./my": 162,
+	"./my.js": 162,
+	"./nb": 163,
+	"./nb.js": 163,
+	"./ne": 164,
+	"./ne.js": 164,
+	"./nl": 165,
+	"./nl-be": 166,
+	"./nl-be.js": 166,
+	"./nl.js": 165,
+	"./nn": 167,
+	"./nn.js": 167,
+	"./pa-in": 168,
+	"./pa-in.js": 168,
+	"./pl": 169,
+	"./pl.js": 169,
+	"./pt": 170,
+	"./pt-br": 171,
+	"./pt-br.js": 171,
+	"./pt.js": 170,
+	"./ro": 172,
+	"./ro.js": 172,
+	"./ru": 173,
+	"./ru.js": 173,
+	"./sd": 174,
+	"./sd.js": 174,
+	"./se": 175,
+	"./se.js": 175,
+	"./si": 176,
+	"./si.js": 176,
+	"./sk": 177,
+	"./sk.js": 177,
+	"./sl": 178,
+	"./sl.js": 178,
+	"./sq": 179,
+	"./sq.js": 179,
+	"./sr": 180,
+	"./sr-cyrl": 181,
+	"./sr-cyrl.js": 181,
+	"./sr.js": 180,
+	"./ss": 182,
+	"./ss.js": 182,
+	"./sv": 183,
+	"./sv.js": 183,
+	"./sw": 184,
+	"./sw.js": 184,
+	"./ta": 185,
+	"./ta.js": 185,
+	"./te": 186,
+	"./te.js": 186,
+	"./tet": 187,
+	"./tet.js": 187,
+	"./tg": 188,
+	"./tg.js": 188,
+	"./th": 189,
+	"./th.js": 189,
+	"./tl-ph": 190,
+	"./tl-ph.js": 190,
+	"./tlh": 191,
+	"./tlh.js": 191,
+	"./tr": 192,
+	"./tr.js": 192,
+	"./tzl": 193,
+	"./tzl.js": 193,
+	"./tzm": 194,
+	"./tzm-latn": 195,
+	"./tzm-latn.js": 195,
+	"./tzm.js": 194,
+	"./ug-cn": 196,
+	"./ug-cn.js": 196,
+	"./uk": 197,
+	"./uk.js": 197,
+	"./ur": 198,
+	"./ur.js": 198,
+	"./uz": 199,
+	"./uz-latn": 200,
+	"./uz-latn.js": 200,
+	"./uz.js": 199,
+	"./vi": 201,
+	"./vi.js": 201,
+	"./x-pseudo": 202,
+	"./x-pseudo.js": 202,
+	"./yo": 203,
+	"./yo.js": 203,
+	"./zh-cn": 204,
+	"./zh-cn.js": 204,
+	"./zh-hk": 205,
+	"./zh-hk.js": 205,
+	"./zh-tw": 206,
+	"./zh-tw.js": 206
 };
 function webpackContext(req) {
 	return __webpack_require__(webpackContextResolve(req));
@@ -37396,7 +37471,7 @@ webpackContext.id = 283;
 /* 284 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\" _v-b1a5d44c=\"\">\n\t\t<div class=\"panel-body\" _v-b1a5d44c=\"\">\n\t\t\t<div class=\" columns mt-2\" v-if=\"logs_no > 0\" _v-b1a5d44c=\"\">\n\t\t\t\t<div class=\"column  col-12 text-right \" _v-b1a5d44c=\"\">\n\t\t\t\t\t<button class=\"btn  btn-secondary \" @click=\"getLogs(true)\" _v-b1a5d44c=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-remove\" v-if=\"!is_loading\" _v-b1a5d44c=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-b1a5d44c=\"\"></i>\n\t\t\t\t\t\t{{labels.clear_btn}}\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"columns\" _v-b1a5d44c=\"\">\n\t\t\t\t<div class=\"empty column col-12\" v-if=\"is_loading\" _v-b1a5d44c=\"\">\n\t\t\t\t\t<div class=\"empty-icon\" _v-b1a5d44c=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-spinner fa-spin\" _v-b1a5d44c=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"empty column col-12\" v-else-if=\"logs_no === 0\" _v-b1a5d44c=\"\">\n\t\t\t\t\t<div class=\"empty-icon\" _v-b1a5d44c=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\" _v-b1a5d44c=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t\t<p class=\"empty-title h5\" _v-b1a5d44c=\"\">{{labels.no_logs}}</p>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<div class=\"column col-12 mt-2\" v-for=\" (data, index) in logs \" v-else-if=\"logs_no >  0\" _v-b1a5d44c=\"\">\n\t\t\t\t\t<div class=\"toast log-toast\" :class=\"'toast-' + data.type\" _v-b1a5d44c=\"\">\n\t\t\t\t\t\t<small class=\"pull-right text-right\" _v-b1a5d44c=\"\">{{formatDate ( data.time ) }}</small>\n\t\t\t\t\t\t<p _v-b1a5d44c=\"\">{{data.message}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\" _v-ae6e78fe=\"\">\n\t\t<div class=\"panel-body\" _v-ae6e78fe=\"\">\n\t\t\t<div class=\" columns mt-2\" v-if=\"logs_no > 0\" _v-ae6e78fe=\"\">\n\t\t\t\t<div class=\"column  col-12 text-right \" _v-ae6e78fe=\"\">\n\t\t\t\t\t<button class=\"btn  btn-secondary \" @click=\"getLogs(true)\" _v-ae6e78fe=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-remove\" v-if=\"!is_loading\" _v-ae6e78fe=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-ae6e78fe=\"\"></i>\n\t\t\t\t\t\t{{labels.clear_btn}}\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"columns\" _v-ae6e78fe=\"\">\n\t\t\t\t<div class=\"empty column col-12\" v-if=\"is_loading\" _v-ae6e78fe=\"\">\n\t\t\t\t\t<div class=\"empty-icon\" _v-ae6e78fe=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-spinner fa-spin\" _v-ae6e78fe=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"empty column col-12\" v-else-if=\"logs_no === 0\" _v-ae6e78fe=\"\">\n\t\t\t\t\t<div class=\"empty-icon\" _v-ae6e78fe=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\" _v-ae6e78fe=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t\t<p class=\"empty-title h5\" _v-ae6e78fe=\"\">{{labels.no_logs}}</p>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<div class=\"column col-12 mt-2\" v-for=\" (data, index) in logs \" v-else-if=\"logs_no >  0\" _v-ae6e78fe=\"\">\n\t\t\t\t\t<div class=\"toast log-toast\" :class=\"'toast-' + data.type\" _v-ae6e78fe=\"\">\n\t\t\t\t\t\t<small class=\"pull-right text-right\" _v-ae6e78fe=\"\">{{formatDate ( data.time ) }}</small>\n\t\t\t\t\t\t<p _v-ae6e78fe=\"\">{{data.message}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 285 */
@@ -37413,7 +37488,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\mariu\\Local Sites\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\toast.vue"
+  var id = "D:\\local\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\toast.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -37437,8 +37512,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-70e1ea92&file=toast.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./toast.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-70e1ea92&file=toast.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./toast.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0d2ddc20&file=toast.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./toast.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0d2ddc20&file=toast.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./toast.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -37536,7 +37611,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\mariu\\Local Sites\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\countdown.vue"
+  var id = "D:\\local\\rop\\app\\public\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\countdown.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -37640,7 +37715,7 @@ module.exports = { "default": __webpack_require__(293), __esModule: true };
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(294);
-module.exports = __webpack_require__(5).Math.trunc;
+module.exports = __webpack_require__(4).Math.trunc;
 
 
 /***/ }),
@@ -37648,7 +37723,7 @@ module.exports = __webpack_require__(5).Math.trunc;
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.34 Math.trunc(x)
-var $export = __webpack_require__(26);
+var $export = __webpack_require__(35);
 
 $export($export.S, 'Math', {
   trunc: function trunc(it) {

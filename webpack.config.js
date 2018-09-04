@@ -6,6 +6,7 @@ let appName      = '';
 const entryPoint = {
 	dashboard: './vue/src/rop_main.js' ,
 	exclude: './vue/src/rop_exclude_posts.js' ,
+	publish_now: './vue/src/rop_publish_now.js' ,
 };
 const exportPath = path.resolve( __dirname, './assets/js/build' )
 
@@ -28,9 +29,9 @@ if ( env === 'production' ) {
 		)
 	)
 
-	appName =  '.min.js'
+	appName = '.min.js'
 } else {
-	appName =  '.js'
+	appName = '.js'
 }
 
 // Main Settings config
@@ -51,17 +52,17 @@ module.exports = {
 				query: {
 					presets: ['es2015']
 				}
-			},
+		},
 			{
 				enforce: 'pre',
 				test: /\.vue$/,
 				loader: 'eslint-loader',
 				exclude: /node_modules/
-			},
+		},
 			{
 				test: /\.vue$/,
 				loader: 'vue-loader'
-			}
+		}
 		]
 	},
 	resolve: {
