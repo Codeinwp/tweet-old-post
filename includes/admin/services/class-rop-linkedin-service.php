@@ -395,15 +395,29 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 				'code' => 'anyone',
 			),
 		);
-		// If we have an image and is not a video, share it.
-		if ( ! empty( $post_details['post_image'] ) && strpos( $post_details['mimetype']['type'], 'video' ) === false ) {
-			$new_post['content']['submitted-image-url'] = $post_details['post_image'];
+
+		if ( ! empty( $post_details['post_image'] ) ) {
+			// If we have an video, share the placeholder, otherwise, share the image.
+			if ( strpos( $post_details['mimetype']['type'], 'video' ) === false ) {
+				$new_post['content']['submitted-image-url'] = $post_details['post_image'];
+			} else {
+				$new_post['content']['submitted-image-url'] = ROP_LITE_URL . 'assets/img/video_placeholder.jpg';
+			}
+
 		}
 
-		$new_post['comment']                  = $post_details['content'] . $post_details['hashtags'];
-		$new_post['content']['description']   = $post_details['content'];
-		$new_post['content']['title']         = html_entity_decode( get_the_title( $post_details['post_id'] ) );
-		$new_post['content']['submitted-url'] = $this->get_url( $post_details );
+		$new_post['comment']                = $post_details['content'] . $post_details['hashtags'];
+		$new_post['content']['description'] = $post_details['content'];
+		$new_post['content']['title']       = html_entity_decode( get_the_title( $post_details['post_id'] ) );
+
+		$url_to_share = $this->get_url( $post_details );
+		/**
+		 * If the url is not present, use the image instead in order for the share to be successful.
+		 */
+		if ( empty( $url_to_share ) && ! empty( $post_details['post_image'] ) ) {
+			$url_to_share = $post_details['post_image'];
+		}
+		$new_post['content']['submitted-url'] = $url_to_share;
 
 		$new_post['visibility']['code'] = 'anyone';
 

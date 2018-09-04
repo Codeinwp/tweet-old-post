@@ -120,7 +120,7 @@ class Rop_I18n {
 							previously shared.', 'tweet-old-post'
 				),
 				'post_types_title'            => __( 'Post types', 'tweet-old-post' ),
-				'post_types_attachament_info' => sprintf( __( 'You need to select the media files which you want to share, find out more information %1$shere%2$s.', 'tweet-old-post' ), '<a href="#" target="_blank">', '</a>' ),
+				'post_types_attachament_info' => sprintf( __( 'You need to select the media files which you want to share, find out more information %1$shere%2$s.', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/934-how-to-use-revive-old-post-media-sharing-feature" target="_blank">', '</a>' ),
 				'post_types_desc'             => __( 'Post types available to share - what post types are available for share', 'tweet-old-post' ),
 				'post_types_upsell'           => __(
 					'Selecting custom post types is available in the pro
