@@ -403,7 +403,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			} else {
 				$new_post['content']['submitted-image-url'] = ROP_LITE_URL . 'assets/img/video_placeholder.jpg';
 			}
-
 		}
 
 		$new_post['comment']                = $post_details['content'] . $post_details['hashtags'];
