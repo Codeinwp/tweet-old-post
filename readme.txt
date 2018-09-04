@@ -130,6 +130,16 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.1.0 - 2018-09-04  = 
+
+* Adds support for Pinterest sharing feature
+* Adds support for library media sharing feature
+* Adds support for immediate post sharing feature
+* Changed hashtags placement for Twitter
+* Fixed hashtags for Tumblr
+* Fixed Jetpack staging mode check
+
+
 = 8.0.9 - 2018-06-18  =
 
 * Fix issue with Exclude posts blank page on non-English websites.
