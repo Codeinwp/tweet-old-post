@@ -112,7 +112,7 @@ class Test_RopPostFormat extends WP_UnitTestCase {
 		$post_format          = new Rop_Post_Format_Model( $service );
 		$new_data             = $post_format->get_post_format( $account_id );
 		$new_data['hashtags'] = 'categories-hashtags';
-		$new_data['hashtags_length'] = '10';
+		$new_data['hashtags_length'] = '30';
 
 		$post_format->add_update_post_format( $account_id, $new_data );
 
@@ -133,7 +133,7 @@ class Test_RopPostFormat extends WP_UnitTestCase {
 		$post_format          = new Rop_Post_Format_Model( $service );
 		$new_data             = $post_format->get_post_format( $account_id );
 		$new_data['hashtags'] = 'tags-hashtags';
-		$new_data['hashtags_length'] = '10';
+		$new_data['hashtags_length'] = '30';
 		$post_format->add_update_post_format( $account_id, $new_data );
 
 		$format  = new Rop_Post_Format_Helper();
