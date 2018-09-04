@@ -29,9 +29,9 @@ if ( env === 'production' ) {
 		)
 	)
 
-	appName =  '.min.js'
+	appName = '.min.js'
 } else {
-	appName =  '.js'
+	appName = '.js'
 }
 
 // Main Settings config
@@ -52,17 +52,17 @@ module.exports = {
 				query: {
 					presets: ['es2015']
 				}
-			},
+		},
 			{
 				enforce: 'pre',
 				test: /\.vue$/,
 				loader: 'eslint-loader',
 				exclude: /node_modules/
-			},
+		},
 			{
 				test: /\.vue$/,
 				loader: 'vue-loader'
-			}
+		}
 		]
 	},
 	resolve: {

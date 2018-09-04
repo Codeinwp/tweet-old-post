@@ -420,7 +420,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			$new_post['type']       = 'video';
 			$new_post['source_url'] = esc_url( get_site_url() );
 			$new_post['embed']      = '<video width="100%" height="auto" controls>
-  																 <source src="' . $post_details['post_image'] . '" type="video / mp4">
+  																 <source src="' . $post_details['post_image'] . '" type="video/mp4">
 																	 Your browser does not support the video tag.
 																	 </video>';
 			$new_post['caption']    = $post_details['content'] . ' ' . trim( $this->get_url( $post_details ) );

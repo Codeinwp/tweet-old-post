@@ -35,7 +35,7 @@ ROP can work as a facebook or twitter auto-poster and using it you can easily au
 
 > ### Why to upgrade to PRO ?
 
-> Using the [PRO version](http://revive.social/plugins/revive-old-post/) of Revive Old Post unlocks a host of new features sure to improve social traffic to your website.
+> Using the [PRO version](http://revive.social/plugins/revive-old-post/) of Revive Old Posts unlocks a host of new features sure to improve social traffic to your website.
 
 > Awesome features in Pro:
 
@@ -99,11 +99,11 @@ If you have any questions please ask on the support forum and we will try our be
 
 **Plugin doesn't post at the regular interval or sends more posts than it should send to social networks.**
 
-- Have a look at this document for [how to fix this Revive Old Post Schedule.](https://docs.revive.social/article/686-fix-revive-old-post-not-posting)
+- Have a look at this document for [how to fix this Revive Old Posts Schedule.](https://docs.revive.social/article/686-fix-revive-old-post-not-posting)
 
 **Post are not sent to the social networks and I always see the green badge with 'Sharing'**
 
-- Have a look at this document for [how to fix this Revive Old Post not posting.](https://docs.revive.social/article/686-fix-revive-old-post-not-posting)
+- Have a look at this document for [how to fix this Revive Old Posts not posting.](https://docs.revive.social/article/686-fix-revive-old-post-not-posting)
 
 **How do I add a Facebook account**
 

@@ -282,7 +282,7 @@ class Rop_I18n {
 				'cron_interval'          => __( 'Once every 1 min', 'tweet-old-post' ),
 				'staging_status'         => __( 'This is a staging website, posts will not share to your accounts.', 'tweet-old-post' ),
 				'api_not_available'      => __(
-					'It seems there is an issue with your WordPress configuration and the core REST API functionality is not available. This is crucial as Revive Old Post relies on this functionality in order to work.<br/>
+					'It seems there is an issue with your WordPress configuration and the core REST API functionality is not available. This is crucial as Revive Old Posts relies on this functionality in order to work.<br/>
 The root cause might be either a security plugin which blocks this feature or some faulty server configuration which constrain this WordPress feature. <br/>
 You can try to disable any of the security plugins that you use in order to see if the issue persists or ask the hosting company to further investigate.', 'tweet-old-post'
 				),
@@ -295,7 +295,7 @@ You can try to disable any of the security plugins that you use in order to see 
 			),
 			// pro only.
 			'publish_now' => array(
-				'share_on_update' => __( 'Share <b>immediately</b> via <small>Revive Old Post</small>  ', 'tweet-old-post' ),
+				'share_on_update' => __( 'Share <b>immediately</b> via <small>Revive Old Posts</small>  ', 'tweet-old-post' ),
 				'clear_on_share'  => __( 'These checkboxes will be cleared once the post is shared.', 'tweet-old-post' ),
 			),
 
