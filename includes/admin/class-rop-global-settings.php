@@ -73,7 +73,7 @@ class Rop_Global_Settings {
 	 * @var     array $services_defaults The class defaults for services.
 	 */
 	private $services_defaults = array(
-		'facebook' => array(
+		'facebook'  => array(
 			'active'           => true,
 			'name'             => 'Facebook',
 			'two_step_sign_in' => true,
@@ -90,7 +90,7 @@ class Rop_Global_Settings {
 			'allowed_accounts' => 1,
 			'description'      => '',
 		),
-		'twitter'  => array(
+		'twitter'   => array(
 			'active'           => true,
 			'name'             => 'Twitter',
 			'credentials'      => array(
@@ -106,17 +106,17 @@ class Rop_Global_Settings {
 			'two_step_sign_in' => true,
 			'allowed_accounts' => 1,
 		),
-		'linkedin' => array(
+		'linkedin'  => array(
 			'active' => false,
 			'name'   => 'LinkedIn',
 		),
-		'tumblr'   => array(
+		'tumblr'    => array(
 			'active' => false,
 			'name'   => 'Tumblr',
 		),
 		'pinterest' => array(
-			'active'           => false,
-			'name'             => 'Pinterest',
+			'active' => false,
+			'name'   => 'Pinterest',
 		),
 	);
 
@@ -156,7 +156,7 @@ class Rop_Global_Settings {
 	 * @var     array $post_format_defaults The class defaults for post format.
 	 */
 	private $post_format_defaults = array(
-		'facebook' => array(
+		'facebook'  => array(
 			'post_content'         => 'post_title',
 			'custom_meta_field'    => '',
 			'maximum_length'       => '1000',
@@ -176,7 +176,7 @@ class Rop_Global_Settings {
 			'utm_campaign_medium'  => 'social',
 			'utm_campaign_name'    => 'ReviveOldPost',
 		),
-		'twitter'  => array(
+		'twitter'   => array(
 			'post_content'         => 'post_title',
 			'custom_meta_field'    => '',
 			'maximum_length'       => '140',
@@ -196,7 +196,7 @@ class Rop_Global_Settings {
 			'utm_campaign_medium'  => 'social',
 			'utm_campaign_name'    => 'ReviveOldPost',
 		),
-		'linkedin' => array(
+		'linkedin'  => array(
 			'post_content'         => 'post_title',
 			'custom_meta_field'    => '',
 			'maximum_length'       => '1000',
@@ -216,7 +216,7 @@ class Rop_Global_Settings {
 			'utm_campaign_medium'  => 'social',
 			'utm_campaign_name'    => 'ReviveOldPost',
 		),
-		'tumblr'   => array(
+		'tumblr'    => array(
 			'post_content'         => 'post_title',
 			'custom_meta_field'    => '',
 			'maximum_length'       => '1000',
