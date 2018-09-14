@@ -336,9 +336,10 @@ class Rop_Admin {
 			return;
 		}
 
-		$global_settings = new Rop_Global_Settings();
+		$global_settings = new Rop_Global_Settings;
+		$settings = new Rop_Settings_Model;
 
-		if ( $global_settings->license_type() <= 0 ) {
+		if ( $global_settings->license_type() <= 0 && $settings->get_instant_sharing() ) {
 			echo '<div class="misc-pub-section  " style="font-size: 13px;text-align: center;line-height: 1.7em;color: #888;"><span class="dashicons dashicons-lock"></span>' .
 				__(
 					'Instant social sharing is available on the extended version for ', 'tweet-old-post'

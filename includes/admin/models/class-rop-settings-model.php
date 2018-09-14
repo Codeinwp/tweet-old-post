@@ -441,4 +441,15 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	public function get_custom_messages() {
 		return $this->settings['custom_messages'];
 	}
+
+	/**
+	 * Getter for instant sharing option.
+	 *
+	 * @since   8.1.1
+	 * @access  public
+	 * @return mixed
+	 */
+	public function get_instant_sharing() {
+		return $this->settings['instant_share'];
+	}
 }
