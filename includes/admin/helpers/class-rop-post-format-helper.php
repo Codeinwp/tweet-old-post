@@ -414,9 +414,9 @@ class Rop_Post_Format_Helper {
 
 			return array();
 		}
-		
+
 		$hashtag = get_post_meta( $post_id, $this->post_format['hashtags_custom'], true );
-		$hashtag = explode( '#', $hashtag );
+		$hashtag = preg_split( "/\s|#/", $hashtag );
 
 		if ( empty( $hashtag ) ) {
 			return array();
