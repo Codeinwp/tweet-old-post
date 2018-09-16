@@ -80,7 +80,8 @@ function run_rop() {
 		require_once $vendor_file;
 	}
 	add_filter(
-		'themeisle_sdk_products', function ( $products ) {
+		'themeisle_sdk_products',
+		function ( $products ) {
 			$products[] = ROP_LITE_BASE_FILE;
 
 			return $products;

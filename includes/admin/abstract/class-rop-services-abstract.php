@@ -260,7 +260,8 @@ abstract class Rop_Services_Abstract {
 		}
 
 		$active_accounts = array_filter(
-			$service_details['available_accounts'], function ( $value ) {
+			$service_details['available_accounts'],
+			function ( $value ) {
 				if ( ! isset( $value['active'] ) ) {
 					return false;
 				}
@@ -381,7 +382,9 @@ abstract class Rop_Services_Abstract {
 			'rest_api_init',
 			function () use ( $path, $callback, $method ) {
 				register_rest_route(
-					'tweet-old-post/v8', '/' . $this->service_name . '/' . $path, array(
+					'tweet-old-post/v8',
+					'/' . $this->service_name . '/' . $path,
+					array(
 						'methods'  => $method,
 						'callback' => array( $this, $callback ),
 

@@ -167,7 +167,8 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 			session_start();
 		}
 		if ( ! $this->is_set_not_empty(
-			$_SESSION, array(
+			$_SESSION,
+			array(
 				'rop_pinterest_token',
 				'rop_pinterest_credentials',
 			)
@@ -176,7 +177,8 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 		}
 
 		if ( ! $this->is_set_not_empty(
-			$_SESSION['rop_pinterest_credentials'], array(
+			$_SESSION['rop_pinterest_credentials'],
+			array(
 				'app_id',
 				'secret',
 			)
@@ -204,7 +206,8 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	 */
 	public function authenticate( $args = array() ) {
 		if ( ! $this->is_set_not_empty(
-			$args, array(
+			$args,
+			array(
 				'app_id',
 				'secret',
 				'token',
