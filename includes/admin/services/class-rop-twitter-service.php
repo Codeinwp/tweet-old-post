@@ -160,7 +160,8 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			session_start();
 		}
 		if ( ! $this->is_set_not_empty(
-			$_SESSION, array(
+			$_SESSION,
+			array(
 				'rop_twitter_oauth_token',
 				'rop_twitter_credentials',
 			)
@@ -189,7 +190,8 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	public function authenticate( $args = array() ) {
 
 		if ( ! $this->is_set_not_empty(
-			$args, array(
+			$args,
+			array(
 				'oauth_token',
 				'oauth_token_secret',
 				'consumer_key',
@@ -205,7 +207,8 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 
 		$this->set_credentials(
 			array_intersect_key(
-				$args, array(
+				$args,
+				array(
 					'oauth_token'        => '',
 					'oauth_token_secret' => '',
 					'consumer_key'       => '',
@@ -345,7 +348,8 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		$api = $this->get_api();
 
 		$url = $api->url(
-			'oauth/authorize', [
+			'oauth/authorize',
+			[
 				'oauth_token' => $request_token['oauth_token'],
 				'force_login' => false,
 			]

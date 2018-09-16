@@ -300,7 +300,10 @@ class Rop_Admin {
 	 */
 	public function menu_pages() {
 		add_menu_page(
-			__( 'Revive Old Posts', 'tweet-old-post' ), __( 'Revive Old Posts', 'tweet-old-post' ), 'manage_options', 'TweetOldPost',
+			__( 'Revive Old Posts', 'tweet-old-post' ),
+			__( 'Revive Old Posts', 'tweet-old-post' ),
+			'manage_options',
+			'TweetOldPost',
 			array(
 				$this,
 				'rop_main_page',
@@ -308,14 +311,22 @@ class Rop_Admin {
 			'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjIuMyAxMjIuMyI+PGRlZnM+PHN0eWxlPi5he2ZpbGw6I2U2ZTdlODt9PC9zdHlsZT48L2RlZnM+PHRpdGxlPkFzc2V0IDI8L3RpdGxlPjxwYXRoIGNsYXNzPSJhIiBkPSJNNjEuMTUsMEE2MS4xNSw2MS4xNSwwLDEsMCwxMjIuMyw2MS4xNSw2MS4yMiw2MS4yMiwwLDAsMCw2MS4xNSwwWm00MC41NCw2MC4xMUw4Ni41Nyw3NS42Miw0Ny45MywzMi4zOWwtMzMuMDcsMjdIMTJhNDkuMTksNDkuMTksMCwwLDEsOTguMzUsMS4yNFpNMTA5LjM1LDcxYTQ5LjIsNDkuMiwwLDAsMS05Ni42My0xLjJoNS44NEw0Ni44LDQ2Ljc0LDg2LjI0LDkwLjg2bDE5LjU3LTIwLjA3WiIvPjwvc3ZnPg=='
 		);
 		add_submenu_page(
-			'TweetOldPost', __( 'Dashboard', 'tweet-old-post' ), __( 'Dashboard', 'tweet-old-post' ), 'manage_options', 'TweetOldPost',
+			'TweetOldPost',
+			__( 'Dashboard', 'tweet-old-post' ),
+			__( 'Dashboard', 'tweet-old-post' ),
+			'manage_options',
+			'TweetOldPost',
 			array(
 				$this,
 				'rop_main_page',
 			)
 		);
 		add_submenu_page(
-			'TweetOldPost', __( 'Exclude Posts', 'tweet-old-post' ), __( 'Exclude Posts', 'tweet-old-post' ), 'manage_options', 'rop_content_filters',
+			'TweetOldPost',
+			__( 'Exclude Posts', 'tweet-old-post' ),
+			__( 'Exclude Posts', 'tweet-old-post' ),
+			'manage_options',
+			'rop_content_filters',
 			array(
 				$this,
 				'content_filters',
@@ -342,7 +353,8 @@ class Rop_Admin {
 		if ( $global_settings->license_type() <= 0 && $settings->get_instant_sharing() ) {
 			echo '<div class="misc-pub-section  " style="font-size: 13px;text-align: center;line-height: 1.7em;color: #888;"><span class="dashicons dashicons-lock"></span>' .
 				__(
-					'Instant social sharing is available on the extended version for ', 'tweet-old-post'
+					'Instant social sharing is available on the extended version for ',
+					'tweet-old-post'
 				) . '<a href="' . ROP_PRO_URL . '" target="_blank">Revive Old Posts </a>
 						</div>';
 		}

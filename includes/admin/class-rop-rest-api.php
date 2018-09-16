@@ -47,9 +47,12 @@ class Rop_Rest_Api {
 	 */
 	public function register() {
 		add_action(
-			'rest_api_init', function () {
+			'rest_api_init',
+			function () {
 				register_rest_route(
-					'tweet-old-post/v8', '/api', array(
+					'tweet-old-post/v8',
+					'/api',
+					array(
 						'methods'             => array( 'GET', 'POST' ),
 						'callback'            => array( $this, 'api' ),
 						'permission_callback' => function () {
@@ -762,7 +765,8 @@ class Rop_Rest_Api {
 				$service                = $authenticated_services->get_authenticated_services( $data['service'] );
 				if ( ! empty( $service ) ) {
 					$service = array_filter(
-						$service, function ( $value ) {
+						$service,
+						function ( $value ) {
 							return ! empty( $value['public_credentials'] );
 						}
 					);

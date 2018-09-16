@@ -81,7 +81,8 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 
 					return $value;
 
-				}, $setting
+				},
+				$setting
 			);
 		}
 		if ( empty( $settings['selected_post_types'] ) ) {
@@ -156,7 +157,8 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 		foreach ( $post_types as $type ) {
 
 			array_push(
-				$post_types_array, array(
+				$post_types_array,
+				array(
 					'name'     => $type->label,
 					'value'    => $type->name,
 					'selected' => in_array( $type->name, $selected ),
@@ -283,10 +285,12 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 				return array(
 					'value' => intval( $value ),
 				);
-			}, $post_id
+			},
+			$post_id
 		);
 		$post_id                = array_filter(
-			$post_id, function ( $value ) use ( $check ) {
+			$post_id,
+			function ( $value ) use ( $check ) {
 				return ! in_array( $value['value'], $check );
 			}
 		);

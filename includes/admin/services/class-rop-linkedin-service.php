@@ -150,7 +150,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			session_start();
 		}
 		if ( ! $this->is_set_not_empty(
-			$_SESSION, array(
+			$_SESSION,
+			array(
 				'rop_linkedin_credentials',
 				'rop_linkedin_token',
 			)
@@ -158,7 +159,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			return false;
 		}
 		if ( ! $this->is_set_not_empty(
-			$_SESSION['rop_linkedin_credentials'], array(
+			$_SESSION['rop_linkedin_credentials'],
+			array(
 				'client_id',
 				'secret',
 			)
@@ -187,7 +189,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 */
 	public function authenticate( $args ) {
 		if ( ! $this->is_set_not_empty(
-			$args, array(
+			$args,
+			array(
 				'client_id',
 				'token',
 				'secret',
@@ -207,7 +210,9 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$api->setAccessToken( new LinkedIn\AccessToken( $args['token'] ) );
 		try {
 			$profile = $api->api(
-				'people/~:(id,email-address,first-name,last-name,formatted-name,picture-url)', array(), 'GET'
+				'people/~:(id,email-address,first-name,last-name,formatted-name,picture-url)',
+				array(),
+				'GET'
 			);
 		} catch ( Exception $e ) {
 			$this->logger->alert_error( 'Can not get linkedin user details. Error ' . $e->getMessage() );
@@ -267,7 +272,9 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$users = array( $user_details );
 		try {
 			$companies = $this->api->api(
-				'companies?format=json&is-company-admin=true', array(), 'GET'
+				'companies?format=json&is-company-admin=true',
+				array(),
+				'GET'
 			);
 		} catch ( Exception $e ) {
 			return $users;
@@ -285,7 +292,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 					'account'    => $company['name'],
 					'is_company' => true,
 					'user'       => $company['name'],
-				), $this->user_default
+				),
+				$this->user_default
 			);
 		}
 

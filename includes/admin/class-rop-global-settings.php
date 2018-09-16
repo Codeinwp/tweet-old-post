@@ -463,7 +463,8 @@ class Rop_Global_Settings {
 				continue;
 			}
 			$registered = array_filter(
-				$registered, function ( $value ) {
+				$registered,
+				function ( $value ) {
 					return ! empty( $value['public_credentials'] );
 				}
 			);

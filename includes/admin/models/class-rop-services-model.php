@@ -169,7 +169,8 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 				$service['available_accounts'] = array_map(
 					function ( $account ) {
 						return $this->normalize_account( $account );
-					}, $service['available_accounts']
+					},
+					$service['available_accounts']
 				);
 
 				/**
@@ -180,7 +181,8 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 				}
 
 				return $service;
-			}, $services
+			},
+			$services
 		);
 
 		return $services;
@@ -197,7 +199,8 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 		return array_map(
 			function ( $value ) {
 				return is_null( $value ) ? '' : $value;
-			}, $account
+			},
+			$account
 		);
 	}
 
@@ -297,7 +300,8 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 		$accounts = array_map(
 			function ( $account ) {
 				return $this->normalize_account( $account );
-			}, $accounts
+			},
+			$accounts
 		);
 
 		return wp_parse_args( $accounts, array() );

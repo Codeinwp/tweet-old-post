@@ -124,7 +124,8 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 				$tax_name = $taxonomy->labels->singular_name;
 				foreach ( $terms as $term ) {
 					array_push(
-						$taxonomies, array(
+						$taxonomies,
+						array(
 							'name'     => $tax_name . ': ' . $term->name,
 							'value'    => $term->term_id,
 							'tax'      => $taxonomy->name,
@@ -206,7 +207,8 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 
 		foreach ( $posts_array->posts as $post ) {
 			array_push(
-				$formatted_posts, array(
+				$formatted_posts,
+				array(
 					'name'     => $post->post_title,
 					'value'    => $post->ID,
 					'selected' => $show_excluded_posts ? true : in_array( $post->ID, $excluded ),

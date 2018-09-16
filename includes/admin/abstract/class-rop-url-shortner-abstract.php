@@ -215,7 +215,8 @@ abstract class Rop_Url_Shortner_Abstract {
 			$params = array_map(
 				function ( $value ) {
 						return urlencode( $value );
-				}, $params
+				},
+				$params
 			);
 			$url    = add_query_arg( $params, $url );
 		}
