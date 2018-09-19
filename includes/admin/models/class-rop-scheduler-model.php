@@ -270,7 +270,8 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		sort( $events );
 		$prev                          = null;
 		$events                        = array_filter(
-			$events, function ( $value ) use ( &$prev ) {
+			$events,
+			function ( $value ) use ( &$prev ) {
 				if ( empty( $prev ) ) {
 					$prev = $value;
 
@@ -368,7 +369,8 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 			$times = array_map(
 				function ( $time ) {
 					return $this->convert_string_to_float( $time );
-				}, $times
+				},
+				$times
 			);
 			sort( $times );
 			/**

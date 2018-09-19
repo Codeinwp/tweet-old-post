@@ -325,7 +325,8 @@ class Rop_Db_Upgrade {
 						}
 
 						return $d[ $column_key ];
-					}, $input
+					},
+					$input
 				);
 
 				if ( $index_key !== null ) {
@@ -383,7 +384,8 @@ class Rop_Db_Upgrade {
 			foreach ( $post_types as $type ) {
 				if ( ! in_array( $type->name, array( 'attachment' ) ) && in_array( $type->name, $top_opt_post_type ) ) {
 					array_push(
-						$post_types_array, array(
+						$post_types_array,
+						array(
 							'name'  => $type->label,
 							'value' => $type->name,
 						)
@@ -447,7 +449,8 @@ class Rop_Db_Upgrade {
 			);
 			foreach ( $query->posts as $post ) {
 				array_push(
-					$formatted_posts, array(
+					$formatted_posts,
+					array(
 						'name'     => $post->post_title,
 						'value'    => $post->ID,
 						'selected' => true,

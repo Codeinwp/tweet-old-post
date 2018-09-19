@@ -73,7 +73,7 @@ class Rop_Global_Settings {
 	 * @var     array $services_defaults The class defaults for services.
 	 */
 	private $services_defaults = array(
-		'facebook' => array(
+		'facebook'  => array(
 			'active'           => true,
 			'name'             => 'Facebook',
 			'two_step_sign_in' => true,
@@ -90,7 +90,7 @@ class Rop_Global_Settings {
 			'allowed_accounts' => 1,
 			'description'      => '',
 		),
-		'twitter'  => array(
+		'twitter'   => array(
 			'active'           => true,
 			'name'             => 'Twitter',
 			'credentials'      => array(
@@ -106,13 +106,17 @@ class Rop_Global_Settings {
 			'two_step_sign_in' => true,
 			'allowed_accounts' => 1,
 		),
-		'linkedin' => array(
+		'linkedin'  => array(
 			'active' => false,
 			'name'   => 'LinkedIn',
 		),
-		'tumblr'   => array(
+		'tumblr'    => array(
 			'active' => false,
 			'name'   => 'Tumblr',
+		),
+		'pinterest' => array(
+			'active' => false,
+			'name'   => 'Pinterest',
 		),
 	);
 
@@ -141,6 +145,7 @@ class Rop_Global_Settings {
 		'beta_user'            => false,
 		'remote_check'         => false,
 		'custom_messages'      => false,
+		'instant_share'        => true,
 		'start_time'           => false,
 	);
 
@@ -152,7 +157,7 @@ class Rop_Global_Settings {
 	 * @var     array $post_format_defaults The class defaults for post format.
 	 */
 	private $post_format_defaults = array(
-		'facebook' => array(
+		'facebook'  => array(
 			'post_content'         => 'post_title',
 			'custom_meta_field'    => '',
 			'maximum_length'       => '1000',
@@ -169,8 +174,10 @@ class Rop_Global_Settings {
 			'hashtags_custom'      => '',
 			'shortner_credentials' => array(),
 			'image'                => false,
+			'utm_campaign_medium'  => 'social',
+			'utm_campaign_name'    => 'ReviveOldPost',
 		),
-		'twitter'  => array(
+		'twitter'   => array(
 			'post_content'         => 'post_title',
 			'custom_meta_field'    => '',
 			'maximum_length'       => '140',
@@ -187,8 +194,10 @@ class Rop_Global_Settings {
 			'shortner_credentials' => array(),
 			'hashtags_custom'      => '',
 			'image'                => false,
+			'utm_campaign_medium'  => 'social',
+			'utm_campaign_name'    => 'ReviveOldPost',
 		),
-		'linkedin' => array(
+		'linkedin'  => array(
 			'post_content'         => 'post_title',
 			'custom_meta_field'    => '',
 			'maximum_length'       => '1000',
@@ -205,8 +214,10 @@ class Rop_Global_Settings {
 			'hashtags_common'      => '',
 			'hashtags_custom'      => '',
 			'image'                => false,
+			'utm_campaign_medium'  => 'social',
+			'utm_campaign_name'    => 'ReviveOldPost',
 		),
-		'tumblr'   => array(
+		'tumblr'    => array(
 			'post_content'         => 'post_title',
 			'custom_meta_field'    => '',
 			'maximum_length'       => '1000',
@@ -223,6 +234,28 @@ class Rop_Global_Settings {
 			'hashtags_common'      => '',
 			'hashtags_custom'      => '',
 			'image'                => false,
+			'utm_campaign_medium'  => 'social',
+			'utm_campaign_name'    => 'ReviveOldPost',
+		),
+		'pinterest' => array(
+			'post_content'         => 'post_title',
+			'custom_meta_field'    => '',
+			'maximum_length'       => '1000',
+			'custom_text'          => '',
+			'custom_text_pos'      => 'beginning',
+			'include_link'         => true,
+			'url_from_meta'        => false,
+			'url_meta_key'         => '',
+			'short_url'            => true,
+			'short_url_service'    => 'rviv.ly',
+			'hashtags'             => 'no-hashtags',
+			'hashtags_length'      => '20',
+			'hashtags_common'      => '',
+			'hashtags_custom'      => '',
+			'shortner_credentials' => array(),
+			'image'                => true,
+			'utm_campaign_medium'  => 'social',
+			'utm_campaign_name'    => 'ReviveOldPost',
 		),
 	);
 
@@ -307,8 +340,8 @@ class Rop_Global_Settings {
 	/**
 	 * Get license plan.
 	 *      -1 - Pro is not present nor installed.
-	 *      0 - pro is installed but not active.
-	 *      1,2,3 - plans that the user is using.
+	 *      0 - Pro is installed but not active.
+	 *      1,2,3 - Plans that the user is using.
 	 *
 	 * @since   8.0.0
 	 * @access  public
@@ -430,7 +463,8 @@ class Rop_Global_Settings {
 				continue;
 			}
 			$registered = array_filter(
-				$registered, function ( $value ) {
+				$registered,
+				function ( $value ) {
 					return ! empty( $value['public_credentials'] );
 				}
 			);

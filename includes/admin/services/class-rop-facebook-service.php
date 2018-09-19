@@ -177,7 +177,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			session_start();
 		}
 		if ( ! $this->is_set_not_empty(
-			$_SESSION, array(
+			$_SESSION,
+			array(
 				'rop_facebook_token',
 				'rop_facebook_credentials',
 			)
@@ -186,7 +187,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		}
 
 		if ( ! $this->is_set_not_empty(
-			$_SESSION['rop_facebook_credentials'], array(
+			$_SESSION['rop_facebook_credentials'],
+			array(
 				'app_id',
 				'secret',
 			)
@@ -214,7 +216,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 */
 	public function authenticate( $args = array() ) {
 		if ( ! $this->is_set_not_empty(
-			$args, array(
+			$args,
+			array(
 				'app_id',
 				'secret',
 				'token',
@@ -444,18 +447,11 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		$new_post = array();
+		$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
 
-		if ( ! empty( $post_details['post_image'] ) ) {
-			$new_post['picture'] = $post_details['post_image'];
-		}
+		$post_id = $post_details['post_id'];
 
-		$new_post['message'] = $post_details['content'];
-		$new_post['name'] = html_entity_decode( get_the_title( $post_details['post_id'] ) );
-
-		if ( ! empty( $post_details['post_url'] ) ) {
-			$new_post['link'] = $this->get_url( $post_details );
-		}
+		$sharing_data = $this->prepare_for_sharing( $post_details );
 
 		if ( ! isset( $args['id'] ) || ! isset( $args['access_token'] ) ) {
 			$this->logger->alert_error( 'Unable to authenticate to facebook, no access_token/id provided. ' );
@@ -463,11 +459,11 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		if ( $this->try_post( $new_post, $args['id'], $args['access_token'] ) ) {
+		if ( $this->try_post( $sharing_data['post_data'], $args['id'], $args['access_token'], $post_id, $sharing_data['type'] ) ) {
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
-					html_entity_decode( get_the_title( $post_details['post_id'] ) ),
+					html_entity_decode( get_the_title( $post_id ) ),
 					$args['user'],
 					$post_details['service']
 				)
@@ -476,6 +472,87 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			return false;
 		}
 	}
+
+	/**
+	 * Method for preparing post to share with Facebook service.
+	 *
+	 * @since   8.1.0
+	 * @access  private
+	 *
+	 * @param   array $post_details The post details to be published by the service.
+	 *
+	 * @return array
+	 */
+	private function prepare_for_sharing( $post_details ) {
+		$post_id = $post_details['post_id'];
+
+		/**
+		 * If is not an attachment and we do have an url share it as regular post.
+		 *
+		 * TODO Add in the post format tab, for facebook, an posting behaviour option,
+		 * where we should allow user to choose how the posting with image will work, as regular post or photo post.
+		 */
+		if ( get_post_type( $post_id ) !== 'attachment' && ! empty( $post_details['post_url'] ) ) {
+
+			$new_post['message'] = $post_details['content'] . $post_details['hashtags'];
+
+			if ( ! empty( $post_details['post_url'] ) ) {
+				$new_post['name'] = html_entity_decode( get_the_title( $post_details['post_id'] ) );
+				$new_post['link'] = $this->get_url( $post_details );
+			}
+			if ( ! empty( $post_details['post_image'] ) ) {
+				$new_post['picture'] = $post_details['post_image'];
+			}
+
+			return [
+				'post_data' => $new_post,
+				'type'      => 'post',
+			];
+		}
+
+		// If we don't have an image link share as regular post.
+		if ( empty( $post_details['post_image'] ) ) {
+
+			$new_post['message'] = $post_details['content'] . $post_details['hashtags'];
+
+			if ( ! empty( $post_details['post_url'] ) ) {
+				$new_post['name'] = html_entity_decode( get_the_title( $post_details['post_id'] ) );
+				$new_post['link'] = $this->get_url( $post_details );
+			}
+
+			return [
+				'post_data' => $new_post,
+				'type'      => 'post',
+			];
+		}
+
+		$api = $this->get_api();
+
+		if ( strpos( $post_details['mimetype']['type'], 'image' ) !== false ) {
+
+			$new_post['source'] = $api->fileToUpload( $post_details['post_image'] );
+
+			$new_post['message'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
+
+			return [
+				'post_data' => $new_post,
+				'type'      => 'photo',
+			];
+		}
+		if ( strpos( $post_details['mimetype']['type'], 'video' ) !== false ) {
+
+			$new_post['source']      = $api->fileToUpload( $post_details['post_image'] );
+			$new_post['title']       = html_entity_decode( get_the_title( $post_id ) );
+			$new_post['description'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
+
+			return [
+				'post_data' => $new_post,
+				'type'      => 'video',
+			];
+		}
+
+	}
+
 	/**
 	 * Method to try and share on facebook.
 	 * Moved to a separated method to drive the NPath complexity down.
@@ -486,21 +563,27 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @param   array  $new_post The Facebook post format array.
 	 * @param   int    $page_id The Facebook page ID.
 	 * @param   string $token The Facebook page token.
+	 * @param   int    $post_id The post ID.
+	 * @param   string $posting_type Type of posting.
 	 *
 	 * @return bool
 	 */
-	private function try_post( $new_post, $page_id, $token ) {
+	private function try_post( $new_post, $page_id, $token, $post_id, $posting_type ) {
+
 		$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
 		$api = $this->get_api();
+
 		try {
-			if ( isset( $new_post['link'] ) ) {
-				// normal post.
-				$api->post( '/' . $page_id . '/feed', $new_post, $token );
-			} elseif ( isset( $new_post['picture'] ) ) {
-				// post only photo with text, no link.
-				$api->post( '/' . $page_id . '/photos', array( 'url' => $new_post['picture'], 'caption' => $new_post['name'] ), $token );
-			} else {
-				$this->logger->alert_error( sprintf( 'Neither link nor picture provided for post with title "%s". Will not post!', $new_post['name'] ) );
+			switch ( $posting_type ) {
+				case 'photo':
+					$api->post( '/' . $page_id . '/photos', $new_post, $token );
+					break;
+				case 'video':
+					$api->post( '/' . $page_id . '/videos', $new_post, $token );
+					break;
+				default:
+					$api->post( '/' . $page_id . '/feed', $new_post, $token );
+					break;
 			}
 
 			return true;

@@ -150,7 +150,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			session_start();
 		}
 		if ( ! $this->is_set_not_empty(
-			$_SESSION, array(
+			$_SESSION,
+			array(
 				'rop_linkedin_credentials',
 				'rop_linkedin_token',
 			)
@@ -158,7 +159,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			return false;
 		}
 		if ( ! $this->is_set_not_empty(
-			$_SESSION['rop_linkedin_credentials'], array(
+			$_SESSION['rop_linkedin_credentials'],
+			array(
 				'client_id',
 				'secret',
 			)
@@ -187,7 +189,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 */
 	public function authenticate( $args ) {
 		if ( ! $this->is_set_not_empty(
-			$args, array(
+			$args,
+			array(
 				'client_id',
 				'token',
 				'secret',
@@ -207,7 +210,9 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$api->setAccessToken( new LinkedIn\AccessToken( $args['token'] ) );
 		try {
 			$profile = $api->api(
-				'people/~:(id,email-address,first-name,last-name,formatted-name,picture-url)', array(), 'GET'
+				'people/~:(id,email-address,first-name,last-name,formatted-name,picture-url)',
+				array(),
+				'GET'
 			);
 		} catch ( Exception $e ) {
 			$this->logger->alert_error( 'Can not get linkedin user details. Error ' . $e->getMessage() );
@@ -267,7 +272,9 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$users = array( $user_details );
 		try {
 			$companies = $this->api->api(
-				'companies?format=json&is-company-admin=true', array(), 'GET'
+				'companies?format=json&is-company-admin=true',
+				array(),
+				'GET'
 			);
 		} catch ( Exception $e ) {
 			return $users;
@@ -285,7 +292,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 					'account'    => $company['name'],
 					'is_company' => true,
 					'user'       => $company['name'],
-				), $this->user_default
+				),
+				$this->user_default
 			);
 		}
 
@@ -376,13 +384,14 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 */
 	public function share( $post_details, $args = array() ) {
 		if ( Rop_Admin::rop_site_is_staging() ) {
-			return;
+			return false;
 		}
 
 		$this->set_api( $this->credentials['client_id'], $this->credentials['secret'] );
 		$api   = $this->get_api();
 		$token = new \LinkedIn\AccessToken( $this->credentials['token'] );
 		$api->setAccessToken( $token );
+
 		$new_post = array(
 			'comment'    => '',
 			'content'    => array(
@@ -394,14 +403,28 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 				'code' => 'anyone',
 			),
 		);
+
 		if ( ! empty( $post_details['post_image'] ) ) {
-			$new_post['content']['submitted-image-url'] = $post_details['post_image'];
+			// If we have an video, share the placeholder, otherwise, share the image.
+			if ( strpos( $post_details['mimetype']['type'], 'video' ) === false ) {
+				$new_post['content']['submitted-image-url'] = $post_details['post_image'];
+			} else {
+				$new_post['content']['submitted-image-url'] = ROP_LITE_URL . 'assets/img/video_placeholder.jpg';
+			}
 		}
 
-		$new_post['comment']                  = $post_details['content'];
-		$new_post['content']['description']   = $post_details['content'];
-		$new_post['content']['title']         = html_entity_decode( get_the_title( $post_details['post_id'] ) );
-		$new_post['content']['submitted-url'] = $this->get_url( $post_details );
+		$new_post['comment']                = $post_details['content'] . $post_details['hashtags'];
+		$new_post['content']['description'] = $post_details['content'];
+		$new_post['content']['title']       = html_entity_decode( get_the_title( $post_details['post_id'] ) );
+
+		$url_to_share = $this->get_url( $post_details );
+		/**
+		 * If the url is not present, use the image instead in order for the share to be successful.
+		 */
+		if ( empty( $url_to_share ) && ! empty( $post_details['post_image'] ) ) {
+			$url_to_share = $post_details['post_image'];
+		}
+		$new_post['content']['submitted-url'] = $url_to_share;
 
 		$new_post['visibility']['code'] = 'anyone';
 

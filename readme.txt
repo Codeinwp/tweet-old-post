@@ -1,9 +1,9 @@
-﻿=== Revive Old Post - Auto Post to Social Media ===
+﻿=== Revive Old Posts - Auto Post to Social Media ===
 Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle, rsocial, uriahs-victor
 Tags:twitter, facebook, linkedin, automatic, tweet, share, wordpress, marketing, sharing, Tweet old post, Tweets,evergreen
 Requires at least: 4.7
 Tested up to: 4.9
-Requires PHP: 5.5
+Requires PHP: 5.6
 Stable tag: trunk
 
 
@@ -13,110 +13,109 @@ Automatically share your WordPress posts on Twitter, Facebook, LinkedIn. Get mor
 
 ### What the plugin can do ?
 
-This plugin helps you keep your old posts alive by automatically sharing them and driving more traffic to them from Social Networks. It also helps you to promote your content. You can set sharing interval and number of posts to share to drive more traffic. For questions, comments, or feature requests, <a href="http://revive.social/support/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">contact us</a>!
+This plugin helps you keep your old posts alive by automatically sharing them and driving more traffic to them from Social Networks. It also helps you to promote your content. You can set sharing interval and number of posts to share to drive more traffic. For questions, comments, or feature requests, [contact us](http://revive.social/support/?utm_source=readmetop&utm_medium=announce&utm_campaign=top)!
 
 ROP can work as a facebook or twitter auto-poster and using it you can easily auto-share your posts on social media.
 
 
 
-**Revive Old Post provides the following features**
+**Revive Old Posts provides the following features**
 
 - Share new and old posts.
 - Choose the time between posts.
 - Choose the number of posts to share.
 - Use hashtags to focus on topics.
 - Include links back to your site.
-- Exclude categories
+- Exclude categories.
 - Exclude specific posts.
 - Integrated with Google Analytics.
 - Compatible with URL Shortners.
-- WP to Twitter
+- WP to Twitter.
 
 
 > ### Why to upgrade to PRO ?
 
-> Using the <a rel="nofollow" href="http://revive.social/plugins/revive-old-post/">PRO version</a> of the plugin you will unleash the most important functionality : images in tweets . Using those your RT/CTR will go crazy.
+> Using the [PRO version](http://revive.social/plugins/revive-old-post/) of Revive Old Posts unlocks a host of new features sure to improve social traffic to your website.
 
-> Other notable features :
+> Awesome features in Pro:
 
+> * Share Posts Immediately to Your Social Accounts on Publish/Update
 > * Multiple Social Accounts
+> * Custom UTM tags
+> * Share Images and Video From Your Media Library
 > * Custom Post Types support
-> * LinkedIn support
+> * LinkedIn, Tumblr, Pinterest Support
 > * Post with image
 > * Custom Schedule
 > * Custom Share Messages
-> * Post to Xing / Tumblr
 
-Some of you reported some scheduling issues, after investigation work looks like this is coming from some web hosts, make sure you check-out this post about <a rel="nofollow" href="http://www.codeinwp.com/blog/best-wordpress-shared-hosting-providers/">shared WordPress hosting</a>, which should help you pick a good one that works.
 
-For updates follow https://twitter.com/ReviveSocial If you have anything you can let us know <a href="http://revive.social/support/?utm_source=readmetop&utm_medium=announce&utm_campaign=top">here</a>.
+For updates follow us on [Twitter](https://twitter.com/ReviveSocial). Post questions and issues on the [Support Forum](https://wordpress.org/support/plugin/tweet-old-post).
 
-** Useful Resources **
+**Useful Resources**
 
-- Check-out our <a href="http://docs.revive.social" rel="nofollow" target="_blank">tutorials site</a>
-- Take a look at our other <a href="http://themeisle.com/wordpress-plugins/" rel="nofollow" target="_blank">plugins</a>.
-- Read more about WordPress on our <a href="http://www.codeinwp.com/blog/" rel="nofollow" target="_blank">blog</a>.
+- Check-out our [documentation and tutorials here.](http://docs.revive.social)
+- Take a look at our other [plugins.](http://themeisle.com/wordpress-plugins/)
+- Read more about WordPress on our [blog.](http://www.codeinwp.com/blog/)
 
 
 = Translations =
 
-* sk_SK translation by Patrik Žec (PATWIST) of http://patwist.com
+* sk_SK translation by Patrik Žec [PATWIST](http://patwist.com)
 
 == Installation ==
 
-Following are the steps to install the Revive Old Post plugin
-
-1. Download the latest version of the Revive Old Post Plugin to your computer from here.
-2. With an FTP program, access your sites server.
-3. Upload (copy) the Plugin file(s) or folder to the /wp-content/plugins folder.
-4. In your WordPress Administration Panels, click on Plugins from the menu.
-5. You should see Revive Old Post Plugin listed. If not, with your FTP program, check the folder to see if it is installed. If it isn�t, upload the file(s) again. If it is, delete the files and upload them again.
-6. To turn the Revive Old Post Plugin on, click Activate.
-7. Check your Administration Panels or WordPress blog to see if the Plugin is working.
-8. You can change the plugin options from Revive Old Post under settings menu.
-
-Alternatively you can also follow the following steps to install the Revive Old Post plugin
+**The following are the steps to install the Revive Old Posts plugin**
 
 1. In your WordPress Administration Panels, click on Add New option under Plugins from the menu.
 2. Click on upload at the top.
 3. Browse the location and select the Tweet old post Plugin and click install now.
-4. To turn the Revive Old Post Plugin on, click Activate.
+4. To turn the Revive Old Posts Plugin on, click Activate.
 5. Check your Administration Panels or WordPress blog to see if the Plugin is working.
-6. You can change the plugin options from Revive Old Post under settings menu.
+6. You can change the plugin options from Revive Old Posts under settings menu.
+
+**Alternatively, you can use the following steps to install the Revive Old Posts plugin**
+
+1. Download the latest version of the Revive Old Posts Plugin to your computer from here.
+2. With an FTP program, access your sites server.
+3. Upload (copy) the Plugin file(s) or folder to the /wp-content/plugins folder.
+4. In your WordPress Administration Panels, click on Plugins from the menu.
+5. You should see Revive Old Posts Plugin listed. If not, with your FTP program, check the folder to see if it is installed. If it isn't, upload the file(s) again. If it is, delete the files and upload them again.
+6. To turn the Revive Old Posts Plugin on, click Activate.
+7. Check your Administration Panels or WordPress blog to see if the Plugin is working.
+8. You can change the plugin options from Revive Old Posts under settings menu.
 
 == Frequently Asked Questions ==
-If you have any questions please get in touch with us at,
-http://revive.social/support/
 
-**Before asking any question you need to check if you have the latest version, either PRO or FREE.**
+If you have any questions please ask on the support forum and we will try our best to assist.
 
+**REST API error**
+
+- This issue is normally caused by an antimalware or firewall plugin. Please try disabling all plugins(except Revive Old Posts) to see if the issue persists. If not then enable each plugin one by one while checking Revive Old Posts dashboard to see if the issue returns, that will help you determine the conflicting plugin.
+
+**Facebook Error 200 requires manage_pages and publish_pages permission**
+
+- Facebook has changed their policies requiring a review of your application. See here on [how to go through the review process.](https://docs.revive.social/article/926-how-to-go-through-the-facebook-review-process)
 
 **Plugin doesn't post at the regular interval or sends more posts than it should send to social networks.**
 
-- Unfortunately wp_cron function isn't perfect, it trigger just when somebody visit your site, so you nobody visit your site in 3 hours, ROP won't trigger. In order to achieve this you need to enable Remote Check and add this line to your wp-config.php right after the lines with database credentials:
+- Have a look at this document for [how to fix this Revive Old Posts Schedule.](https://docs.revive.social/article/686-fix-revive-old-post-not-posting)
 
-> define('DISABLE_WP_CRON', true);
+**Post are not sent to the social networks and I always see the green badge with 'Sharing'**
 
-**Post are not sent to the social networks and i always see the green badge with 'You can refresh the page to see the next schedule !'**
+- Have a look at this document for [how to fix this Revive Old Posts not posting.](https://docs.revive.social/article/686-fix-revive-old-post-not-posting)
 
-- You need to add this line to your wp-config.php right after the lines with database credentials:
+**How do I add a Facebook account**
 
-  > define('ALTERNATE_WP_CRON', true);
+ - Please follow this [Tutorial.](http://docs.revive.social/article/349-how-to-create-a-facebook-application-for-revive-old-post)
 
-**How do i add a facebook account**
+**How do I go back to an older version?**
 
- - Please fallow this tutorial : http://docs.revive.social/article/349-how-to-create-a-facebook-application-for-revive-old-post
-
-**If new version doesn't works**
-
-- Try other versions from http://wordpress.org/extend/plugins/tweet-old-post/download/
-- Manually upload it in your plugins folder, activate and use.
-- Note: Do not upgrade your plugin if you want to use the older version.
-
+- We DO NOT recommend this. But you can download previous versions of the plugin from [HERE.](https://wordpress.org/plugins/tweet-old-post/advanced/#download-previous-link)
 
 **Any more questions or doubts?**
 
-- Contact us at http://revive.social/support/ and send us also a copy from Revive Old Post -> System Info
+- Contact us at [HERE.](http://revive.social/support/) (enter "free" in the license field)
 
 
 
@@ -131,31 +130,41 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
-= 8.0.9 - 2018-06-18  = 
+= 8.1.0 - 2018-09-04  = 
+
+* Adds support for Pinterest sharing feature
+* Adds support for library media sharing feature
+* Adds support for immediate post sharing feature
+* Changed hashtags placement for Twitter
+* Fixed hashtags for Tumblr
+* Fixed Jetpack staging mode check
+
+
+= 8.0.9 - 2018-06-18  =
 
 * Fix issue with Exclude posts blank page on non-English websites.
-* Adds dedicated app workflow for Twitter authentication. 
+* Adds dedicated app workflow for Twitter authentication.
 * Adds tweet intent and review buttons in the header.
 * Adds filter for content before sharing.
 
 
-= 8.0.8 - 2018-05-25  = 
+= 8.0.8 - 2018-05-25  =
 
 * Prevent sharing when the website is in the staging environment.
-* Improve UI accessibility. 
-* Adds possibility to fetch more post types.  
+* Improve UI accessibility.
+* Adds possibility to fetch more post types.
 * Strip redundant shortcodes on post content sharing.
 
 
-= 8.0.7 - 2018-05-10  = 
+= 8.0.7 - 2018-05-10  =
 
 * Fix status migration issue from v7.
 * Fix compatibility with the PRO version for the linkedin sharing on company pages.
 * Fix compatibility with the PRO version for the thumblr sharing issues.
-* Fix small typos in the plugin settings. 
+* Fix small typos in the plugin settings.
 
 
-= 8.0.6 - 2018-05-08  = 
+= 8.0.6 - 2018-05-08  =
 
 * Fix hashtags issue when using post content as a source.
 * Fix LinkedIn broken link when no image is used.
@@ -164,47 +173,47 @@ http://revive.social/plugins/revive-old-post
 * Adds limit for the number of logs.
 
 
-= 8.0.5 - 2018-05-04  = 
+= 8.0.5 - 2018-05-04  =
 
 * Fix issue with common hashtags using post content.
 * Fix issue with add service when an account was removed from the list.
 * Fix issue with cron lag between shares
 * Improve disable state for pro services.
-* Fix exclude posts inconsistency. 
-* Fix incomplete UTM tags on certain shortners. 
-* Fix refresh queue on start sharing. 
-* Fix freezing message in frontend when the sharing is happening. 
-* Fix Facebook limits regarding the number of accounts fetched. 
-* Fix compatibility with PRO version regarding sharing on LinkedIn. 
+* Fix exclude posts inconsistency.
+* Fix incomplete UTM tags on certain shortners.
+* Fix refresh queue on start sharing.
+* Fix freezing message in frontend when the sharing is happening.
+* Fix Facebook limits regarding the number of accounts fetched.
+* Fix compatibility with PRO version regarding sharing on LinkedIn.
 
 
-= 8.0.4 - 2018-05-02  = 
+= 8.0.4 - 2018-05-02  =
 
 * Fix issue with UTM tags and shortner consistency.
-* Adds Exclude Posts as a separate page. 
-* Fix issue with sharing stopped after the first share. 
-* Fix timeline events refresh when the min interval changes. 
+* Adds Exclude Posts as a separate page.
+* Fix issue with sharing stopped after the first share.
+* Fix timeline events refresh when the min interval changes.
 * Fix Facebook page accounts not showing in certain environments.
 * Adds remove account feature for permanently delete an account from the list.
 
 
-= 8.0.3 - 2018-04-28  = 
+= 8.0.3 - 2018-04-28  =
 
 * Fix schedule synchronization issues.
 * Fix LinkedIn authentication with the wrong redirect_url.
 
 
-= 8.0.2 - 2018-04-27  = 
+= 8.0.2 - 2018-04-27  =
 
 * Fix issue with old Facebook applications and strict OAuth urls settings.
-* Fix issue taxonomies filter setting. 
+* Fix issue taxonomies filter setting.
 * Fix filter by excluded posts issue.
 * Fix issue when LinkedIn exceptions on login.
 * Adds more exceptions handling for Facebook authentications.
 * Fix compatibility with pro version for post_types and custom share messages.
 
 
-= 8.0.1 - 2018-04-26  = 
+= 8.0.1 - 2018-04-26  =
 
 * Fix Linkedin error on loading SDK class.
 * Fix multiple twitter accounts warning message.
@@ -213,7 +222,7 @@ http://revive.social/plugins/revive-old-post
 * Adds notice when using an old Pro version.
 
 
-= 8.0.0 - 2018-04-26  = 
+= 8.0.0 - 2018-04-26  =
 
 * Major improvements to the codebase.
 * Adds schedule and format per accounts, not per networks as it was before.
@@ -279,7 +288,7 @@ http://revive.social/plugins/revive-old-post
 
 **New in v7.3.1**
 
-* Fixed compatibility with old php versions.  
+* Fixed compatibility with old php versions.
 
 **New in v7.3**
 
@@ -383,7 +392,7 @@ Added Facebook and Linkedin, Facebook is also enabled for the free users
 Improved Post with image feature, we can also pull the image from post
 Fixed Tweet over 140 chars error
 Added Google Analytics Campaign Tracking
-Rebranded into Revive Old Post
+Rebranded into Revive Old Posts
 
 **New in v6.7.5**
 

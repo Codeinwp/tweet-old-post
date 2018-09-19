@@ -100,7 +100,8 @@ class Rop_I18n {
 				'twitter_warning'         => __(
 					'
 					 It seems like you are using more than 1 Twitter account for sharing. On March 23rd Twitter changed it\'s policy regarding automatic posting across multiple accounts. You should ensure you comply with this new policy by sharing to only one twitter account at a time or risk getting one of your accounts banned.  Read more about this change <a href="https://blog.twitter.com/developer/en_us/topics/tips/2018/automation-and-the-use-of-multiple-accounts.html" target="_blank"><b>here</b></a>.
-			', 'tweet-old-post'
+			',
+					'tweet-old-post'
 				),
 			),
 			'settings'    => array(
@@ -117,18 +118,22 @@ class Rop_I18n {
 				'share_once_yes'              => __( 'Yes', 'tweet-old-post' ),
 				'share_once_desc'             => __(
 					'If there are no more posts to share, we should start re-sharing the one we
-							previously shared.', 'tweet-old-post'
+							previously shared.',
+					'tweet-old-post'
 				),
 				'post_types_title'            => __( 'Post types', 'tweet-old-post' ),
+				'post_types_attachament_info' => sprintf( __( 'You need to select the media files which you want to share, find out more information %1$shere%2$s.', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/934-how-to-use-revive-old-post-media-sharing-feature" target="_blank">', '</a>' ),
 				'post_types_desc'             => __( 'Post types available to share - what post types are available for share', 'tweet-old-post' ),
 				'post_types_upsell'           => __(
 					'Selecting custom post types is available in the pro
-							version.', 'tweet-old-post'
+							version.',
+					'tweet-old-post'
 				),
 				'taxonomies_title'            => __( 'Taxonomies', 'tweet-old-post' ),
 				'taxonomies_desc'             => __(
 					'Taxonomies available for the selected post types. Use to include or exclude
-							posts.', 'tweet-old-post'
+							posts.',
+					'tweet-old-post'
 				),
 				'taxonomies_exclude'          => __( 'Exclude?', 'tweet-old-post' ),
 				'posts_title'                 => __( 'Posts', 'tweet-old-post' ),
@@ -136,13 +141,17 @@ class Rop_I18n {
 				'ga_title'                    => __( 'Enable Google Analytics Tracking', 'tweet-old-post' ),
 				'ga_desc'                     => __(
 					'If checked an utm query willbe added to URL\'s so that you cand better track
-							trafic.', 'tweet-old-post'
+							trafic.',
+					'tweet-old-post'
 				),
 				'ga_yes'                      => __( 'Yes', 'tweet-old-post' ),
-				'custom_share_title'          => __( 'Custom Share Messages', 'tweet-old-post' ),
+				'custom_share_title'          => __( 'Enable Custom Share Messages', 'tweet-old-post' ),
 				'custom_share_desc'           => __( 'These messages will override the post format settings. You can go to each post and add multiple custom messages.', 'tweet-old-post' ),
 				'custom_share_yes'            => __( 'Yes', 'tweet-old-post' ),
 				'custom_share_upsell'         => __( 'Using a custom share message is available in the pro version.', 'tweet-old-post' ),
+				'instant_share_title'         => __( 'Enable Instant Sharing', 'tweet-old-post' ),
+				'instant_share_desc'          => __( 'Share posts on publish/update.', 'tweet-old-post' ),
+				'instant_share_yes'           => __( 'Yes', 'tweet-old-post' ),
 				'save'                        => __( 'Save', 'tweet-old-post' ),
 				'taxonomies_exclude_explicit' => __( 'Exclude taxononmies', 'tweet-old-post' ),
 				'save_filters'                => __( 'Save filters', 'tweet-old-post' ),
@@ -203,7 +212,19 @@ class Rop_I18n {
 				'image_title'                       => __( 'Post with image', 'tweet-old-post' ),
 				'image_desc'                        => __( 'Use the featured image when posting?', 'tweet-old-post' ),
 				'image_yes'                         => __( 'Yes', 'tweet-old-post' ),
+				'utm_campaign_medium'               => __( 'Campaign Medium', 'tweet-old-post' ),
+				'utm_campaign_medium_desc'          => __( 'The marketing medium you want to show in Google Analytics e.g: "social", "website", etc.', 'tweet-old-post' ),
+				'utm_campaign_name'                 => __( 'Campaign Name', 'tweet-old-post' ),
+				'utm_campaign_name_desc'            => __( 'The campaign name you want to show in Google Analytics e.g: "november_sale" etc.', 'tweet-old-post' ),
+				'custom_utm_upsell'                 => __( 'Custom UTMs are only available in the pro version.', 'tweet-old-post' ),
 				'image_upsell'                      => __( 'Posting with images is available in the pro version.', 'tweet-old-post' ),
+				'media_post_title'                  => __( 'Media Posts Content', 'tweet-old-post' ),
+				'media_post_desc'                   => __( 'Which content should we share for media posts?', 'tweet-old-post' ),
+				'media_post_option_title'           => __( 'Title', 'tweet-old-post' ),
+				'media_post_option_caption'         => __( 'Caption', 'tweet-old-post' ),
+				'media_post_option_alt_text'        => __( 'Alt Text', 'tweet-old-post' ),
+				'media_post_option_description'     => __( 'Description', 'tweet-old-post' ),
+				'media_post_upsell'                 => __( 'Media posting is available in the Business version.', 'tweet-old-post' ),
 			),
 			'schedule'    => array(
 				'menu_item'                 => __( 'Custom Schedule', 'tweet-old-post' ),
@@ -269,9 +290,10 @@ class Rop_I18n {
 				'cron_interval'          => __( 'Once every 1 min', 'tweet-old-post' ),
 				'staging_status'         => __( 'This is a staging website, posts will not share to your accounts.', 'tweet-old-post' ),
 				'api_not_available'      => __(
-					'It seems there is an issue with your WordPress configuration and the core REST API functionality is not available. This is crucial as Revive Old Post relies on this functionality in order to work.<br/>
+					'It seems there is an issue with your WordPress configuration and the core REST API functionality is not available. This is crucial as Revive Old Posts relies on this functionality in order to work.<br/>
 The root cause might be either a security plugin which blocks this feature or some faulty server configuration which constrain this WordPress feature. <br/>
-You can try to disable any of the security plugins that you use in order to see if the issue persists or ask the hosting company to further investigate.', 'tweet-old-post'
+You can try to disable any of the security plugins that you use in order to see if the issue persists or ask the hosting company to further investigate.',
+					'tweet-old-post'
 				),
 			),
 			'post_editor' => array(
@@ -279,6 +301,11 @@ You can try to disable any of the security plugins that you use in order to see 
 				'add_message'         => __( 'Add New Custom Message', 'tweet-old-post' ),
 				'random_message_info' => __( 'A custom message that will be selected randomly for each share and will overwrite the default post.', 'tweet-old-post' ),
 				'message_no'          => __( 'Custom message #', 'tweet-old-post' ),
+			),
+			// pro only.
+			'publish_now' => array(
+				'share_on_update' => __( 'Share <b>immediately</b> via <small>Revive Old Posts</small>  ', 'tweet-old-post' ),
+				'clear_on_share'  => __( 'These checkboxes will be cleared once the post is shared.', 'tweet-old-post' ),
 			),
 
 		);

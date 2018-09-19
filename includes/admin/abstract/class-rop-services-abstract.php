@@ -178,27 +178,6 @@ abstract class Rop_Services_Abstract {
 	}
 
 	/**
-	 * Strip underscore and replace with safe char.
-	 *
-	 * @param string $name Original name.
-	 *
-	 * @return mixed Normalized name.
-	 */
-	protected function strip_underscore( $name ) {
-		return str_replace( '_', '---', $name );
-	}
-
-	/**
-	 * Adds back the underscore.
-	 *
-	 * @param string $name Safe name.
-	 *
-	 * @return mixed Unsafe name.
-	 */
-	protected function unstrip_underscore( $name ) {
-		return str_replace( '---', '_', $name );
-	}
-	/**
 	 * Method for checking authentication the service.
 	 *
 	 * @since   8.0.0
@@ -281,7 +260,8 @@ abstract class Rop_Services_Abstract {
 		}
 
 		$active_accounts = array_filter(
-			$service_details['available_accounts'], function ( $value ) {
+			$service_details['available_accounts'],
+			function ( $value ) {
 				if ( ! isset( $value['active'] ) ) {
 					return false;
 				}
@@ -335,7 +315,8 @@ abstract class Rop_Services_Abstract {
 	 */
 	protected function get_url( $post_details ) {
 
-		$link = ( isset( $post_details['post_url'] ) ) ? $post_details['post_url'] : '';
+		$link = ( ! empty( $post_details['post_url'] ) ) ? ' ' . $post_details['post_url'] : '';
+
 		if ( empty( $link ) ) {
 			return '';
 		}
@@ -401,7 +382,9 @@ abstract class Rop_Services_Abstract {
 			'rest_api_init',
 			function () use ( $path, $callback, $method ) {
 				register_rest_route(
-					'tweet-old-post/v8', '/' . $this->service_name . '/' . $path, array(
+					'tweet-old-post/v8',
+					'/' . $this->service_name . '/' . $path,
+					array(
 						'methods'  => $method,
 						'callback' => array( $this, $callback ),
 
@@ -435,5 +418,24 @@ abstract class Rop_Services_Abstract {
 	protected function normalize_string( $string ) {
 		return preg_replace( '/[[:^print:]]/', '', $string );
 	}
-
+	/**
+	 * Strip underscore and replace with safe char.
+	 *
+	 * @param string $name Original name.
+	 *
+	 * @return mixed Normalized name.
+	 */
+	protected function strip_underscore( $name ) {
+		return str_replace( '_', '---', $name );
+	}
+	/**
+	 * Adds back the underscore.
+	 *
+	 * @param string $name Safe name.
+	 *
+	 * @return mixed Unsafe name.
+	 */
+	protected function unstrip_underscore( $name ) {
+		return str_replace( '---', '_', $name );
+	}
 }

@@ -90,7 +90,8 @@ export default new Vuex.Store( {
 		activeAccounts: {},
 		activePostFormat: [],
 		activeSchedule: [],
-		queue: {}
+		queue: {},
+        publish_now: ropApiSettings.publish_now
 	},
 	mutations: {
 

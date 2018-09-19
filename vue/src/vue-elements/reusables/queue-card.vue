@@ -12,7 +12,7 @@
 				</div>
 				<div class="columns" v-if="!edit">
 					<div class="column col-12">
-						<p v-html="hashtags( content.content )"></p>
+						<p v-html="content.content + hashtags( content.hashtags )"></p>
 					</div>
 				</div>
 				<div class="form-group columns" v-if="edit">
@@ -67,7 +67,8 @@
 							<b>{{labels.link_title}}:</b>
 							<a :href="content.post_url" target="_blank" class="tooltip"
 							   :data-tooltip="labels.link_shortned_start + ' ' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service )  ">
-								{{'{' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service ) + '}'}}</a>
+								{{'{' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service ) +
+								'}'}}</a>
 						</p>
 					</div>
 				</div>
@@ -93,7 +94,8 @@
 			<div class="column col-4 col-sm-12 vertical-align" v-if="!edit && content.post_with_image">
 				<div v-if="content.post_image !== ''">
 					<figure class="figure" v-if="content.post_image !== ''">
-						<img :src="content.post_image" class="img-fit-cover img-responsive">
+						<img :src="( content.mimetype.type.indexOf('image') > -1 ? content.post_image : video_placeholder )"
+						     class="img-fit-cover img-responsive">
 					</figure>
 				
 				</div>
@@ -131,6 +133,7 @@
 				edit: false,
 				labels: this.$store.state.labels.queue,
 				upsell_link: ropApiSettings.upsell_link,
+				video_placeholder: ROP_ASSETS_URL + 'img/video_placeholder.jpg',
 				is_loading: false,
 				post_edit: {}
 			}
@@ -258,6 +261,7 @@
 					if (account !== undefined && account.service === 'twitter') serviceIcon = serviceIcon.concat('twitter twitter')
 					if (account !== undefined && account.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin linkedin')
 					if (account !== undefined && account.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr tumblr')
+					if (account !== undefined && account.service === 'pinterest') serviceIcon = serviceIcon.concat('pinterest pinterest')
 				}
 				return serviceIcon
 			},

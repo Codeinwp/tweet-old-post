@@ -114,6 +114,9 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	private function sync_active_accounts() {
 		$services = $this->get_authenticated_services();
 		foreach ( $services as $service_key => $service_details ) {
+			if ( empty( $service_details['available_accounts'] ) ) {
+				continue;
+			}
 			foreach ( $service_details['available_accounts'] as $account ) {
 				$id = $service_details['service'] . '_' . $service_details['id'] . '_' . $account['id'];
 				if ( $account['active'] ) {
@@ -166,7 +169,8 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 				$service['available_accounts'] = array_map(
 					function ( $account ) {
 						return $this->normalize_account( $account );
-					}, $service['available_accounts']
+					},
+					$service['available_accounts']
 				);
 
 				/**
@@ -177,7 +181,8 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 				}
 
 				return $service;
-			}, $services
+			},
+			$services
 		);
 
 		return $services;
@@ -194,7 +199,8 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 		return array_map(
 			function ( $value ) {
 				return is_null( $value ) ? '' : $value;
-			}, $account
+			},
+			$account
 		);
 	}
 
@@ -294,11 +300,10 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 		$accounts = array_map(
 			function ( $account ) {
 				return $this->normalize_account( $account );
-			}, $accounts
+			},
+			$accounts
 		);
-		$accounts = array_filter( $accounts, function ( $value ) {
-			return ! empty( $value );
-		} );
+
 		return wp_parse_args( $accounts, array() );
 	}
 
