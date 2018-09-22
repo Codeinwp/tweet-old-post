@@ -321,7 +321,8 @@ class Rop_Post_Format_Helper {
 		$result   = array_map(
 			function ( $value ) {
 				return str_replace( '#', '', $value );
-			}, $result
+			},
+			$result
 		);
 		foreach ( $result as $hashtag ) {
 			if ( $content_helper->mark_hashtags( $content, $hashtag ) !== false ) { // if the hashtag exists in $content
@@ -374,7 +375,7 @@ class Rop_Post_Format_Helper {
 		}
 
 		return wp_list_pluck( $post_categories, 'name' );
-		;
+
 	}
 
 	/**
@@ -413,7 +414,10 @@ class Rop_Post_Format_Helper {
 
 			return array();
 		}
+
 		$hashtag = get_post_meta( $post_id, $this->post_format['hashtags_custom'], true );
+		$hashtag = preg_split( '/\s|#/', $hashtag );
+
 		if ( empty( $hashtag ) ) {
 			return array();
 		}
@@ -452,7 +456,8 @@ class Rop_Post_Format_Helper {
 				}
 
 				return implode( '', $matches[2] );
-			}, $hashtags
+			},
+			$hashtags
 		);
 
 		return $hashtags;

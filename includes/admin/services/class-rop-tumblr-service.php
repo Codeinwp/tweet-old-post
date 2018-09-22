@@ -69,7 +69,8 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			session_start();
 		}
 		if ( ! $this->is_set_not_empty(
-			$_SESSION, array(
+			$_SESSION,
+			array(
 				'rop_tumblr_credentials',
 				'rop_tumblr_request_token',
 			)
@@ -167,7 +168,8 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		}
 
 		if ( ! $this->is_set_not_empty(
-			$_SESSION, array(
+			$_SESSION,
+			array(
 				'rop_tumblr_credentials',
 				'rop_tumblr_token',
 			)
@@ -176,7 +178,8 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			return false;
 		}
 		if ( ! $this->is_set_not_empty(
-			$_SESSION['rop_tumblr_token'], array(
+			$_SESSION['rop_tumblr_token'],
+			array(
 				'oauth_token',
 				'oauth_token_secret',
 			)
@@ -203,7 +206,8 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	public function authenticate( $args ) {
 
 		if ( ! $this->is_set_not_empty(
-			$args, array(
+			$args,
+			array(
 				'oauth_token',
 				'oauth_token_secret',
 				'consumer_key',
@@ -271,7 +275,8 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 					'user'    => $this->normalize_string( $page->title ),
 					'account' => $this->normalize_string( $page->name ),
 					'img'     => $img,
-				), $this->user_default
+				),
+				$this->user_default
 			);
 			$users[]      = $user_details;
 		}
@@ -347,7 +352,9 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		$requestHandler->setBaseUrl( 'https://www.tumblr.com/' );
 
 		$resp   = $requestHandler->request(
-			'POST', 'oauth/request_token', array(
+			'POST',
+			'oauth/request_token',
+			array(
 				'oauth_callback' => $this->get_endpoint_url( 'authorize' ),
 			)
 		);
