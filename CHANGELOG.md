@@ -1,4 +1,9 @@
 
+ ### v8.1.1 - 2018-09-22 
+ **Changes:** 
+ * Fix rebrandly shortner missing feature.
+* Adds option to disable the instant sharing feature.
+ 
  ### v8.1.0 - 2018-09-04 
  **Changes:** 
  * Adds support for Pinterest sharing feature

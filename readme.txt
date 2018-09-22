@@ -130,6 +130,12 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.1.1 - 2018-09-22  = 
+
+* Fix rebrandly shortner missing feature.
+* Adds option to disable the instant sharing feature.
+
+
 = 8.1.0 - 2018-09-04  = 
 
 * Adds support for Pinterest sharing feature
