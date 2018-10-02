@@ -297,12 +297,12 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 		if ( ! is_array( $accounts ) ) {
 			$accounts = array();
 		}
-		$accounts = array_map(
-			function ( $account ) {
-				return $this->normalize_account( $account );
-			},
-			$accounts
-		);
+				$accounts = array_map(
+					function ( $account ) {
+								return $this->normalize_account( $account );
+					},
+					$accounts
+				);
 
 		return wp_parse_args( $accounts, array() );
 	}
