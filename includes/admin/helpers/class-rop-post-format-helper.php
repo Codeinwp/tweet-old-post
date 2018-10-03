@@ -153,10 +153,10 @@ class Rop_Post_Format_Helper {
 		 */
 
 		$base_content  = $this->build_base_content( $post_id );
-		$base_content  = $content_helper->token_truncate( $base_content, $max_length );
-		$custom_length = $this->get_custom_length();
-
 		$result = $this->make_hashtags( $base_content, $content_helper, $post_id );
+
+		$base_content  = $content_helper->token_truncate( $result['content'], $max_length );
+		$custom_length = $this->get_custom_length();
 
 		$hashtags = $result['hashtags'];
 		$size     = $max_length - ( $this->string_length( $hashtags ) ) - $custom_length;
@@ -289,6 +289,7 @@ class Rop_Post_Format_Helper {
 			return array(
 				'hashtags_length' => 0,
 				'hashtags'        => '',
+				'content'         => $content,
 			);
 		}
 		switch ( $this->post_format['hashtags'] ) {
@@ -313,6 +314,7 @@ class Rop_Post_Format_Helper {
 			return array(
 				'hashtags_length' => 0,
 				'hashtags'        => '',
+				'content'         => $content,
 			);
 		}
 		$result   = $this->clean_hashtags( $result );
@@ -324,8 +326,11 @@ class Rop_Post_Format_Helper {
 			},
 			$result
 		);
+
+		$service = $this->get_service();
+
 		foreach ( $result as $hashtag ) {
-			if ( $content_helper->mark_hashtags( $content, $hashtag ) !== false ) { // if the hashtag exists in $content
+			if ( $content_helper->mark_hashtags( $content, $hashtag ) !== false && $service !== 'tumblr' ) { // if the hashtag exists in $content
 				$content = $content_helper->mark_hashtags( $content, $hashtag ); // simply add a # there
 				$hashtags_length --; // subtract 1 for the # we added to $content
 			} elseif ( $this->string_length( $hashtag . $hashtags ) <= $hashtags_length || $hashtags_length == 0 ) {
@@ -336,6 +341,7 @@ class Rop_Post_Format_Helper {
 		return array(
 			'hashtags_length' => $hashtags_length,
 			'hashtags'        => $hashtags,
+			'content'         => $content,
 		);
 
 	}
