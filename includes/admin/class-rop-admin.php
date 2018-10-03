@@ -65,6 +65,25 @@ class Rop_Admin {
 	}
 
 	/**
+	 * Shows a notice for sites running PHP less than 5.6.
+	 *
+	 * @since    8.1.2
+	 */
+	public function rop_php_notice() {
+
+		if ( version_compare( PHP_VERSION, '5.6.0', '<' ) ) {
+			?>
+
+			<div class="notice notice-error is-dismissible">
+				<?php printf( __( '%1$s You\'re using a PHP version lower than 5.6! Revive Old Posts requires at least %2$sPHP 5.6%3$s to function properly. %4$sLearn more here%5$s. %6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/947-how-to-update-your-php-version" target="_blank">', '</a>', '</p>' ); ?>
+			</div>
+			<?php
+
+		}
+
+	}
+
+	/**
 	 * Register the stylesheets for the admin area.
 	 *
 	 * @since    8.0.0
