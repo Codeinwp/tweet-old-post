@@ -289,6 +289,7 @@ class Rop_Post_Format_Helper {
 			return array(
 				'hashtags_length' => 0,
 				'hashtags'        => '',
+				'content'         => $content,
 			);
 		}
 		switch ( $this->post_format['hashtags'] ) {
@@ -313,6 +314,7 @@ class Rop_Post_Format_Helper {
 			return array(
 				'hashtags_length' => 0,
 				'hashtags'        => '',
+				'content'         => $content,
 			);
 		}
 		$result   = $this->clean_hashtags( $result );
@@ -339,7 +341,7 @@ class Rop_Post_Format_Helper {
 		return array(
 			'hashtags_length' => $hashtags_length,
 			'hashtags'        => $hashtags,
-			'content'                   => $content,
+			'content'         => $content,
 		);
 
 	}
