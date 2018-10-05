@@ -65,7 +65,7 @@ class Test_RopPostFormat extends WP_UnitTestCase {
 		$this->assertNotEquals( $short_url, '' );
 
 		// firebase Test
-		$googl = new Rop_Googl_Shortner();
+		$googl = new Rop_Firebase_Shortner();
 		$key   = 'AIzaSyAXI8IA7oRqnKkebPBPhxEcdwC7zXqoAvQ';
 		$googl->set_credentials( array( 'key' => $key, 'domain' => 'https://somethingps.page.link' ) );
 		$short_url = $googl->shorten_url( $url );
