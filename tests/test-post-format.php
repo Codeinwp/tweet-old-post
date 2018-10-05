@@ -64,10 +64,10 @@ class Test_RopPostFormat extends WP_UnitTestCase {
 		$this->assertNotFalse( filter_var( $short_url, FILTER_VALIDATE_URL ) );
 		$this->assertNotEquals( $short_url, '' );
 
-		// goo.gl Test
+		// firebase Test
 		$googl = new Rop_Googl_Shortner();
-		$key   = 'AIzaSyAqNtuEu-xXurkpV-p57r5oAqQgcAyMSN4';
-		$googl->set_credentials( array( 'key' => $key ) );
+		$key   = 'AIzaSyAXI8IA7oRqnKkebPBPhxEcdwC7zXqoAvQ';
+		$googl->set_credentials( array( 'key' => $key, 'domain' => 'https://somethingps.page.link' ) );
 		$short_url = $googl->shorten_url( $url );
 
 		$this->assertNotEquals( $url, $short_url );
