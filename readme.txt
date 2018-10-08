@@ -131,6 +131,13 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.1.2 - 2018-10-08  = 
+
+* Fixed issue with hashtags in content
+* Adds notice for PHP versions lower than 5.6
+* Replaced goo.gl shortener with firebase dynamic links
+
+
 = 8.1.1 - 2018-09-22  =
 
 * Fix rebrandly shortner missing feature.

@@ -1,4 +1,10 @@
 
+ ### v8.1.2 - 2018-10-08 
+ **Changes:** 
+ * Fixed issue with hashtags in content
+* Adds notice for PHP versions lower than 5.6
+* Replaced goo.gl shortener with firebase dynamic links
+ 
  ### v8.1.1 - 2018-09-22 
  **Changes:** 
  * Fix rebrandly shortner missing feature.
