@@ -10,12 +10,12 @@
  */
 
 /**
- * Class Rop_Googl_Shortner
+ * Class Rop_Firebase_Shortner
  *
  * @since   8.0.0
  * @link    https://themeisle.com/
  */
-class Rop_Googl_Shortner extends Rop_Url_Shortner_Abstract {
+class Rop_Firebase_Shortner extends Rop_Url_Shortner_Abstract {
 
 	/**
 	 * Method to inject functionality into constructor.
@@ -25,9 +25,10 @@ class Rop_Googl_Shortner extends Rop_Url_Shortner_Abstract {
 	 * @return mixed
 	 */
 	public function init() {
-		$this->service_name = 'goo.gl';
+		$this->service_name = 'firebase';
 		$this->credentials  = array(
 			'key' => '',
+			'domain' => '',
 		);
 	}
 
@@ -42,14 +43,15 @@ class Rop_Googl_Shortner extends Rop_Url_Shortner_Abstract {
 	public function shorten_url( $url ) {
 
 		$response = $this->callAPI(
-			'https://www.googleapis.com/urlshortener/v1/url?key=' . $this->credentials['key'],
+			'https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=' . $this->credentials['key'],
 			array( 'method' => 'json', 'json' => true ),
-			array( 'longUrl' => urldecode( $url ) ),
+			array( 'longDynamicLink' => $this->credentials['domain'] . '?link=' . urlencode( $url ) ),
 			array( 'Content-Type' => 'application/json' )
 		);
+
 		$shortURL = $url;
 		if ( intval( $response['error'] ) == 200 && ! isset( $response['response']['error'] ) ) {
-			$shortURL = $response['response']['id'];
+			$shortURL = $response['response']['shortLink'];
 		}
 		return $shortURL;
 	}

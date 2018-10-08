@@ -303,7 +303,12 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 			},
 			$accounts
 		);
-
+		$accounts = array_filter(
+			$accounts,
+			function ( $account ) {
+				return ! empty( $account );
+			}
+		);
 		return wp_parse_args( $accounts, array() );
 	}
 
