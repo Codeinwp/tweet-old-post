@@ -141,6 +141,15 @@ class Rop_Post_Format_Helper {
 			$custom_messages = array_values( $custom_messages );
 			$random_index    = rand( 0, ( count( $custom_messages ) - 1 ) );
 			$share_content   = $custom_messages[ $random_index ]['rop_custom_description'];
+
+			if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) ) {
+				$pro_format_helper = new Rop_Pro_Post_Format_Helper;
+			}
+
+			if( ! empty( $pro_format_helper ) ){
+					$share_content = $pro_format_helper->rop_replace_magic_tags( $share_content, $post_id );
+				}
+
 			$share_content   = $content_helper->token_truncate( $share_content, $max_length );
 
 			return wp_parse_args( array( 'display_content' => $share_content ), $default_content );
@@ -169,7 +178,7 @@ class Rop_Post_Format_Helper {
 		}
 		$base_content = $content_helper->token_truncate( $base_content, $size );
 
-		$base_content = $this->append_custom_text( $base_content );
+		$base_content = $this->append_custom_text( $base_content, $post_id );
 		/**
 		 * Adds safe check for content length.
 		 */
@@ -422,6 +431,7 @@ class Rop_Post_Format_Helper {
 		}
 
 		$hashtag = get_post_meta( $post_id, $this->post_format['hashtags_custom'], true );
+		//split custom hashtags by space or pound sign
 		$hashtag = preg_split( '/\s|#/', $hashtag );
 
 		if ( empty( $hashtag ) ) {
@@ -607,7 +617,15 @@ class Rop_Post_Format_Helper {
 	 *
 	 * @return string
 	 */
-	private function append_custom_text( $content ) {
+	private function append_custom_text( $content, $post_id ) {
+
+		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) ) {
+					$pro_format_helper = new Rop_Pro_Post_Format_Helper;
+				}
+
+				if( ! empty( $pro_format_helper ) ){
+					$this->post_format['custom_text'] = $pro_format_helper->rop_replace_magic_tags( $this->post_format['custom_text'], $post_id );
+				}
 
 		if ( empty( $this->post_format['custom_text'] ) > 0 ) {
 			return $content;
