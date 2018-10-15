@@ -119,6 +119,10 @@ class Rop_Post_Format_Helper {
 		$content_helper  = new Rop_Content_Helper();
 		$max_length      = $this->post_format['maximum_length'];
 
+		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) ) {
+			$pro_format_helper = new Rop_Pro_Post_Format_Helper;
+		}
+
 		/**
 		 * Content edited through queue.
 		 */
@@ -126,6 +130,9 @@ class Rop_Post_Format_Helper {
 		$custom_content = get_post_meta( $post_id, '_rop_edit_' . md5( $this->account_id ), true );
 		if ( ! empty( $custom_content ) ) {
 			$share_content = isset( $custom_content['text'] ) ? $custom_content['text'] : '';
+			if ( isset( $pro_format_helper ) ) {
+				$share_content = $pro_format_helper->rop_replace_magic_tags( $share_content, $post_id );
+			}
 			if ( ! empty( $share_content ) ) {
 				$share_content = $content_helper->token_truncate( $share_content, $max_length );
 
@@ -141,10 +148,6 @@ class Rop_Post_Format_Helper {
 			$custom_messages = array_values( $custom_messages );
 			$random_index    = rand( 0, ( count( $custom_messages ) - 1 ) );
 			$share_content   = $custom_messages[ $random_index ]['rop_custom_description'];
-
-			if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) ) {
-				$pro_format_helper = new Rop_Pro_Post_Format_Helper;
-			}
 
 			if ( isset( $pro_format_helper ) ) {
 					$share_content = $pro_format_helper->rop_replace_magic_tags( $share_content, $post_id );
