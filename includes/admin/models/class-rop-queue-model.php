@@ -1,6 +1,6 @@
 <?php
 /**
- * The model for maneging the posts queued for sharing.
+ * The model for managing the posts queued for sharing.
  *
  * @link       https://themeisle.com
  * @since      8.0.0
