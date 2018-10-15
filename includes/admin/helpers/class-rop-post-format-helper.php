@@ -387,12 +387,19 @@ class Rop_Post_Format_Helper {
 	 */
 	private function get_categories_hashtags( $post_id ) {
 
-		$post_categories = get_the_category( $post_id );
-		if ( empty( $post_categories ) ) {
-			return array();
+		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) ) {
+				$pro_format_helper = new Rop_Pro_Post_Format_Helper;
 		}
 
-		return wp_list_pluck( $post_categories, 'name' );
+		if ( ! isset( $pro_format_helper ) ) {
+			$post_categories = get_the_category( $post_id );
+			if ( empty( $post_categories ) ) {
+				return array();
+			}
+			return wp_list_pluck( $post_categories, 'name' );
+		} else {
+			return $pro_format_helper->pro_get_categories_hashtags( $post_id );
+		}
 
 	}
 
@@ -408,12 +415,20 @@ class Rop_Post_Format_Helper {
 	 */
 	private function get_tags_hashtags( $post_id ) {
 
-		$tags = wp_get_post_tags( $post_id );
-		if ( empty( $tags ) ) {
-			return array();
+		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) ) {
+				$pro_format_helper = new Rop_Pro_Post_Format_Helper;
 		}
 
-		return wp_list_pluck( $tags, 'name' );
+		if ( ! isset( $pro_format_helper ) ) {
+			$tags = wp_get_post_tags( $post_id );
+			if ( empty( $tags ) ) {
+				return array();
+			}
+			return wp_list_pluck( $tags, 'name' );
+		} else {
+			return $pro_format_helper->pro_get_tags_hashtags( $post_id );
+		}
+
 	}
 
 	/**
