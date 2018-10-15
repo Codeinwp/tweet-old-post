@@ -146,7 +146,7 @@ class Rop_Post_Format_Helper {
 				$pro_format_helper = new Rop_Pro_Post_Format_Helper;
 			}
 
-			if ( ! empty( $pro_format_helper ) ) {
+			if ( isset( $pro_format_helper ) ) {
 					$share_content = $pro_format_helper->rop_replace_magic_tags( $share_content, $post_id );
 			}
 
@@ -620,10 +620,10 @@ class Rop_Post_Format_Helper {
 	private function append_custom_text( $content, $post_id ) {
 
 		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) ) {
-					$pro_format_helper = new Rop_Pro_Post_Format_Helper;
+			$pro_format_helper = new Rop_Pro_Post_Format_Helper;
 		}
 
-		if ( ! empty( $pro_format_helper ) ) {
+		if ( isset( $pro_format_helper ) ) {
 			$this->post_format['custom_text'] = $pro_format_helper->rop_replace_magic_tags( $this->post_format['custom_text'], $post_id );
 		}
 
