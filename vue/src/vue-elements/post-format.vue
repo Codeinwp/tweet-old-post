@@ -29,7 +29,7 @@
 				</div>
 			</div>
 		</div>
- 
+
 		<span class="divider"></span>
 
 		<div class="columns py-2">
@@ -49,12 +49,12 @@
 		<div class="columns py-2">
 			<div class="column col-6 col-sm-12 vertical-align">
 				<b>{{labels.add_char_title}}</b>
-				<p class="text-gray">{{labels.add_char_desc}}</p>
+				<p class="text-gray"><span v-html="labels.add_char_desc"></span></p>
 			</div>
 			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="form-group">
 					<textarea class="form-input" v-model="post_format.custom_text"
-					          placeholder="">{{post_format.custom_text}}</textarea>
+					          v-bind:placeholder="labels.add_char_placeholder">{{post_format.custom_text}}</textarea> 
 				</div>
 			</div>
 		</div>

@@ -25,7 +25,7 @@
 			<td width="15%">
 				<b>' . Rop_I18n::get_labels( 'post_editor.message_no' ) . $i ++ . '</b><br/>
 				<small><i>' . Rop_I18n::get_labels( 'post_editor.random_message_info' ) . '</i></small>
-			</td> 
+			</td>
 			<td width="70%">
 				<textarea placeholder="Description" cols="55" rows="5" name="rop_custom_description[]" style="width: 100%;">' . ( ( $field['rop_custom_description'] != '' ) ? esc_attr( $field['rop_custom_description'] ) : '' ) . '</textarea></td>
 			<td width="15%"><a class="button remove-row" href="#1">' . Rop_I18n::get_labels( 'post_editor.remove_message' ) . '</a></td>
@@ -39,8 +39,8 @@
 				<b>' . Rop_I18n::get_labels( 'post_editor.message_no' ) . '</b><br/>
 				<small><i>' . Rop_I18n::get_labels( 'post_editor.random_message_info' ) . '</i></small>
 			</td>
-			<td width="70%"> 
-				<textarea  placeholder="" name="rop_custom_description[]" cols="55" rows="5" style="width: 100%;"></textarea>
+			<td width="70%">
+				<textarea  placeholder="' . Rop_Pro_I18n::get_labels( 'magic_tags.example' ) . '" name="rop_custom_description[]" cols="55" rows="5" style="width: 100%;"></textarea>
 			</td>
 			<td width="15%"></td>
 	    </tr>
@@ -54,7 +54,7 @@
 				<i><?php echo Rop_I18n::get_labels( 'post_editor.random_message_info' ); ?></i>
 			</small>
 		<td width="70%">
-			<textarea placeholder="Description" cols="55" rows="5" name="rop_custom_description[]"
+			<textarea placeholder="<?php echo Rop_Pro_I18n::get_labels( 'magic_tags.example' ); ?>" cols="55" rows="5" name="rop_custom_description[]"
 					  style="width: 100%;"></textarea>
 		</td>
 		<td width="15%"><a class="button remove-row"

@@ -176,7 +176,8 @@ class Rop_I18n {
 				'max_char_title'                    => __( 'Maximum chars', 'tweet-old-post' ),
 				'max_char_desc'                     => __( 'Maximum length of the message.', 'tweet-old-post' ),
 				'add_char_title'                    => __( 'Additional text', 'tweet-old-post' ),
-				'add_char_desc'                     => __( 'Add custom content to published items.', 'tweet-old-post' ),
+				'add_char_desc'                     => sprintf( __( 'Add custom content to published items. Supports %1$smagic tags.%2$s', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/952-available-magic-tags-in-revive-old-posts" target="_blank">', '</a>' ),
+				'add_char_placeholder'              => __( 'written by {author} on {date}.', 'tweet-old-post' ),
 				'add_pos_title'                     => __( 'Where to add the custom text.', 'tweet-old-post' ),
 				'add_pos_option_start'              => __( 'Beginning', 'tweet-old-post' ),
 				'add_pos_option_end'                => __( 'End', 'tweet-old-post' ),
@@ -299,7 +300,7 @@ You can try to disable any of the security plugins that you use in order to see 
 			'post_editor' => array(
 				'remove_message'      => __( 'Remove Custom Message', 'tweet-old-post' ),
 				'add_message'         => __( 'Add New Custom Message', 'tweet-old-post' ),
-				'random_message_info' => __( 'A custom message that will be selected randomly for each share and will overwrite the default post.', 'tweet-old-post' ),
+				'random_message_info' => sprintf( __( 'A custom message that will be selected randomly for each share and will overwrite the default post. Supports %1$smagic tags%2$s.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/952-available-magic-tags-in-revive-old-posts" target="_blank">', '</a>' ),
 				'message_no'          => __( 'Custom message #', 'tweet-old-post' ),
 			),
 			// pro only.
