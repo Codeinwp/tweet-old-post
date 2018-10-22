@@ -177,7 +177,7 @@ class Rop_I18n {
 				'max_char_desc'                     => __( 'Maximum length of the message.', 'tweet-old-post' ),
 				'add_char_title'                    => __( 'Additional text', 'tweet-old-post' ),
 				'add_char_desc'                     => sprintf( __( 'Add custom content to published items. Supports %1$smagic tags.%2$s', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/952-available-magic-tags-in-revive-old-posts" target="_blank">', '</a>' ),
-				'add_char_placeholder'              => __( '{title} written by {author} on {date}. Currently {comment_count}!', 'tweet-old-post' ),
+				'add_char_placeholder'              => __( 'written by {author} on {date}.', 'tweet-old-post' ),
 				'add_pos_title'                     => __( 'Where to add the custom text.', 'tweet-old-post' ),
 				'add_pos_option_start'              => __( 'Beginning', 'tweet-old-post' ),
 				'add_pos_option_end'                => __( 'End', 'tweet-old-post' ),

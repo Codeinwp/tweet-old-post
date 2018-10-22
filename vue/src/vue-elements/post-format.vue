@@ -54,7 +54,7 @@
 			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="form-group">
 					<textarea class="form-input" v-model="post_format.custom_text"
-					          placeholder="labels.add_char_placeholder">{{post_format.custom_text}}</textarea>
+					          v-bind:placeholder="labels.add_char_placeholder">{{post_format.custom_text}}</textarea> 
 				</div>
 			</div>
 		</div>
