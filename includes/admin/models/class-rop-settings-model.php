@@ -456,4 +456,16 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	public function get_instant_sharing() {
 		return $this->settings['instant_share'];
 	}
+
+	/**
+	 * Getter for instant sharing enabled by default option.
+	 *
+	 * @since   8.1.1
+	 * @access  public
+	 * @return mixed
+	 */
+	public function get_instant_sharing_by_default() {
+		return $this->settings['instant_share_default'];
+	}
+
 }

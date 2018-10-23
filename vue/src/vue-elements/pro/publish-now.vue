@@ -12,7 +12,7 @@
 			
 			<div class="form-group rop-publish-now-accounts-wrapper" v-if="share_on_update_enabled" v-for="(account, key) in accounts">
 				<label class="form-checkbox rop-publish-now-account">
-					<input type="checkbox" :checked="active != null && active.indexOf(key) >= 0" :value="key"
+					<input type="checkbox" :checked="(active != null && active.indexOf(key) >= 0) || share_on_update_enabled" :value="key"
 					       name="publish_now_accounts[]"/>
 					<i class=" fa " :class="getServiceClass(account.service)"></i> {{account.user}}
 				</label>
@@ -30,7 +30,7 @@
 		created() {
 		},
 		computed: {
-			share_on_update: function () {
+			share_on_update_enabled: function () {
 				return this.$store.state.publish_now.action === true;
 			}
 		},
@@ -40,7 +40,7 @@
 				labels: this.$store.state.labels.publish_now,
 				accounts: this.$store.state.publish_now.accounts,
 				active: this.$store.state.publish_now.active,
-				share_on_update_enabled: this.$store.state.publish_now.action === true,
+				share_on_update_enabled: this.$store.state.publish_now.action
 			}
 		},
 		components: {
