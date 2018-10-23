@@ -165,7 +165,7 @@ class Rop_Admin {
 		$active_accounts = $services->get_active_accounts();
 
 		$global_settings             = new Rop_Global_Settings();
-		$settings					= new Rop_Settings_Model();
+		$settings                   = new Rop_Settings_Model();
 
 		$array_nonce['license_type'] = $global_settings->license_type();
 		$array_nonce['labels']       = Rop_I18n::get_labels();
