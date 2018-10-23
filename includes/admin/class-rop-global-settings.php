@@ -146,6 +146,7 @@ class Rop_Global_Settings {
 		'remote_check'         => false,
 		'custom_messages'      => false,
 		'instant_share'        => true,
+		'instant_share_default'=> false,
 		'start_time'           => false,
 	);
 
