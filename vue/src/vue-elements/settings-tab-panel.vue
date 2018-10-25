@@ -186,6 +186,22 @@
 				</div>
 				<span class="divider"></span>
 
+				<div class="columns py-2">
+						<div class="column col-6 col-sm-12 vertical-align rop-control">
+							<b>{{labels.housekeeping}}</b>
+							<p class="text-gray">{{labels.housekeeping_desc}}</p>
+						</div>
+						<div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+							<div class="form-group">
+								<label class="form-checkbox">
+									<input type="checkbox" v-model="generalSettings.housekeeping"/>
+									<i class="form-icon"></i>{{labels.housekeeping_yes}}
+								</label>
+							</div>
+						</div>
+					</div>
+					<span class="divider"></span>
+
 			</div>
 		</div>
 		<div class="panel-footer text-right">
@@ -307,7 +323,8 @@
 						ga_tracking: this.generalSettings.ga_tracking,
 						custom_messages: this.generalSettings.custom_messages,
 						instant_share: this.generalSettings.instant_share,
-						instant_share_default: this.generalSettings.instant_share_default
+						instant_share_default: this.generalSettings.instant_share_default,
+						housekeeping: this.generalSettings.housekeeping,
 					}
 				}).then(response => {
 					this.is_loading = false;

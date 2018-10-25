@@ -3,22 +3,6 @@
 /**
  * Fired when the plugin is uninstalled.
  *
- * When populating this file, consider the following flow
- * of control:
- *
- * - This method should be static
- * - Check if the $_REQUEST content actually is the plugin name
- * - Run an admin referrer check to make sure it goes through authentication
- * - Verify the output of $_GET makes sense
- * - Repeat with other user roles. Best directly by using the links/query string parameters.
- * - Repeat things for multisite. Once for a single site in the network, once sitewide.
- *
- * This file may be updated more in future version of the Boilerplate; however, this is the
- * general skeleton and outline for how the file should work.
- *
- * For more information, see the following discussion:
- * https://github.com/tommcfarlin/WordPress-Plugin-Boilerplate/pull/123#issuecomment-28541913
- *
  * @link       https://themeisle.com/
  * @since      8.0.0
  *
@@ -28,4 +12,48 @@
 // If uninstall not called from WordPress, then exit.
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
+}
+
+$settings = get_option( 'rop_data' );
+$housekeeping = $settings['general_settings']['housekeeping'];
+
+if ( isset( $housekeeping ) && $housekeeping ) {
+
+	$option_keys = array(
+		// Sharing
+		'rop_data',
+		'rop_queue',
+		'rop_schedules_data',
+		'rop-settings',
+		'rop_opt_cat_filter',
+		'rop_current_network_oauth',
+		// Shortners
+		'rop_shortners_bitly',
+		'rop_shortners_rvivly',
+		'rop_shortners_owly',
+		'rop_shortners_rebrandly',
+		'rop_shortners_isgd',
+		'rop_shortners_googl',
+		'rop_shortners_firebase',
+		// Licensing
+		'tweet_old_post_pro_failed_checks',
+		'tweet_old_post_pro_license_data',
+		'tweet_old_post_pro_hide_valid',
+		'tweet_old_post_pro_license_plan',
+		'tweet_old_post_install',
+		'tweet_old_post_pro_install',
+		'tweet_old_post_review_flag',
+		// Misc
+		'rop_logs',
+		'cwp_rop_remote_trigger',
+		'rop_notice_active',
+	);
+
+	foreach ( $option_keys as $key ) {
+		delete_option( $key );
+	}
+
+	global $wpdb;
+	$post_meta = $wpdb->prefix . 'postmeta';
+	$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->postmeta WHERE meta_key = %s", 'rop_custom_messages_group' ) );
 }
