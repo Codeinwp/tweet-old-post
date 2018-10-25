@@ -181,18 +181,6 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	}
 
 	/**
-	 * Method to retrieve if Google Analytics tracking should be used.
-	 *
-	 * @since   8.0.0
-	 * @access  public
-	 * @return mixed
-	 */
-	public function get_ga_tracking() {
-
-		return isset( $this->settings['ga_tracking'] ) ? $this->settings['ga_tracking'] : false;
-	}
-
-	/**
 	 * Getter for minimum post age.
 	 *
 	 * @since   8.0.0
@@ -436,6 +424,17 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	}
 
 	/**
+	 * Method to retrieve if Google Analytics tracking should be used.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return mixed
+	 */
+	public function get_ga_tracking() {
+		return isset( $this->settings['ga_tracking'] ) ? $this->settings['ga_tracking'] : false;
+	}
+
+	/**
 	 * Getter for custom messages option.
 	 *
 	 * @since   8.0.0
@@ -443,7 +442,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_custom_messages() {
-		return $this->settings['custom_messages'];
+		return isset( $this->settings['custom_messages'] ) ? $this->settings['custom_messages'] : false;
 	}
 
 	/**
@@ -454,18 +453,18 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 */
 	public function get_instant_sharing() {
-		return $this->settings['instant_share'];
+		return isset( $this->settings['instant_share'] ) ? $this->settings['instant_share'] : false;
 	}
 
 	/**
 	 * Getter for instant sharing enabled by default option.
 	 *
-	 * @since   8.1.1
+	 * @since   8.1.3
 	 * @access  public
-	 * @return mixed
+	 * @return bool
 	 */
 	public function get_instant_sharing_by_default() {
-		return $this->settings['instant_share_default'];
+		return isset( $this->settings['instant_share_default'] ) ? $this->settings['instant_share_default'] : false;
 	}
 
 }
