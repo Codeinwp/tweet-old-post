@@ -57,7 +57,7 @@ class Rop_Admin {
 	 * @param      string $plugin_name The name of this plugin.
 	 * @param      string $version The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function __construct( $plugin_name = '', $version = '' ) {
 
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
@@ -189,6 +189,49 @@ class Rop_Admin {
 	}
 
 	/**
+	 * Set our supported mime types.
+	 *
+	 * @since   8.1.0
+	 * @access  public
+	 *
+	 * @return array
+	 */
+	public function rop_supported_mime_types() {
+
+		$accepted_mime_types = array();
+
+		$image_mime_types = apply_filters(
+			'rop_accepted_image_mime_types',
+			array(
+				'image/jpeg',
+				'image/png',
+				'image/gif',
+			)
+		);
+
+		$video_mime_types = apply_filters(
+			'rop_accepted_video_mime_types',
+			array(
+				'video/mp4',
+				'video/x-m4v',
+				'video/quicktime',
+				'video/x-ms-asf',
+				'video/x-ms-wmv',
+				'video/avi',
+			)
+		);
+
+		$accepted_mime_types['image'] = $image_mime_types;
+
+		$accepted_mime_types['video'] = $video_mime_types;
+		// We use empty for non-attachament posts query.
+		$accepted_mime_types['all'] = array_merge( $image_mime_types, $video_mime_types, array( '' ) );
+
+		return $accepted_mime_types;
+
+	}
+
+	/**
 	 * Detects if is a staging environment
 	 *
 	 * @since     8.0.4
@@ -196,7 +239,6 @@ class Rop_Admin {
 	 */
 	public static function rop_site_is_staging() {
 
-		// JETPACK_STAGING_MODE if jetpack is installed and picks up on a staging environment we're not aware of
 		$rop_known_staging = array(
 			'IS_WPE_SNAPSHOT',
 			'KINSTA_DEV_ENV',
@@ -218,7 +260,7 @@ class Rop_Admin {
 
 			}
 		}
-
+		// JETPACK_STAGING_MODE if jetpack is installed and picks up on a staging environment we're not aware of
 		if ( defined( 'JETPACK_STAGING_MODE' ) && JETPACK_STAGING_MODE == true ) {
 			return apply_filters( 'rop_dont_work_on_staging', true );
 		}
