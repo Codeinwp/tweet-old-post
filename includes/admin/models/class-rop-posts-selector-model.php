@@ -419,6 +419,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @return array
 	 */
 	private function build_query_args( $post_types, $tax_queries, $exclude ) {
+		$admin = new Rop_Admin();
 		$args = array(
 			'no_found_rows'          => true,
 			'posts_per_page'         => ( 1000 + count( $exclude ) ),
@@ -431,7 +432,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		);
 		// Special arguments for attachment post type.
 		if ( in_array( 'attachment', $post_types ) ) {
-			$args['post_mime_type'] = $this->rop_supported_mime_types()['all'];
+			$args['post_mime_type'] = $admin->rop_supported_mime_types()['all'];
 			$args['post_status'][]  = 'inherit';
 			$args['meta_query']     = array(
 				'relation' => 'OR',
@@ -468,49 +469,6 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		}
 
 		return $args;
-	}
-
-	/**
-	 * Set our supported post types.
-	 *
-	 * @since   8.1.0
-	 * @access  public
-	 *
-	 * @return array
-	 */
-	public function rop_supported_mime_types() {
-
-		$accepted_mime_types = array();
-
-		$image_mime_types = apply_filters(
-			'rop_accepted_image_mime_types',
-			array(
-				'image/jpeg',
-				'image/png',
-				'image/gif',
-			)
-		);
-
-		$video_mime_types = apply_filters(
-			'rop_accepted_video_mime_types',
-			array(
-				'video/mp4',
-				'video/x-m4v',
-				'video/quicktime',
-				'video/x-ms-asf',
-				'video/x-ms-wmv',
-				'video/avi',
-			)
-		);
-
-		$accepted_mime_types['image'] = $image_mime_types;
-
-		$accepted_mime_types['video'] = $video_mime_types;
-		// We use empty for non-attachament posts query.
-		$accepted_mime_types['all'] = array_merge( $image_mime_types, $video_mime_types, array( '' ) );
-
-		return $accepted_mime_types;
-
 	}
 
 	/**
