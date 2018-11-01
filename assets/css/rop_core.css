@@ -726,11 +726,10 @@ a.active {
 }
 
 #rop_core .btn.btn-pinterest {
-	border-color: #BD081C;
+	border-color: #bd081c;
 	color: #fff;
-	background: #BD081C;
+	background: #bd081c;
 }
-
 
 #rop_core .btn.btn-tumblr:focus {
 	box-shadow: 0 0 0 0.1rem rgba(221, 75, 57, 0.2);
@@ -952,10 +951,6 @@ a.active {
 }
 
 #rop_core .form-input:-ms-input-placeholder {
-	color: #acb3c2;
-}
-
-#rop_core .form-input::-moz-placeholder {
 	color: #acb3c2;
 }
 
@@ -4067,7 +4062,7 @@ a.active {
 
 .pinterest,
 .icon_box .fa-pinterest {
-	background-color: #BD081C;
+	background-color: #bd081c;
 }
 
 #rop_core .avatar .avatar-icon {
@@ -4427,16 +4422,6 @@ a.active {
 	border-top-right-radius: 8px;
 	border-bottom-right-radius: 8px;
 	border-bottom-left-radius: 20px;
-	background-image: -webkit-linear-gradient(
-	135deg,
-	rgba(255, 255, 255, 0.1) 25%,
-	transparent 25%,
-	transparent 50%,
-	rgba(255, 255, 255, 0.1) 50%,
-	rgba(255, 255, 255, 0.1) 75%,
-	transparent 75%,
-	transparent
-	);
 	background-image: linear-gradient(
 	-45deg,
 	rgba(255, 255, 255, 0.1) 25%,

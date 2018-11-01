@@ -378,6 +378,11 @@ abstract class Rop_Services_Abstract {
 	 * @param   string $method The request type ( GET, POST, PUT, DELETE etc. ).
 	 */
 	protected function register_endpoint( $path, $callback, $method = 'GET' ) {
+
+		if ( $callback == false ) {
+			return;
+		}
+
 		add_action(
 			'rest_api_init',
 			function () use ( $path, $callback, $method ) {

@@ -91,7 +91,18 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		if ( ! session_id() ) {
 			session_start();
 		}
+
+		if ( ! $this->is_set_not_empty(
+			$_SESSION,
+			array(
+				'rop_twitter_request_token',
+			)
+		) ) {
+			return false;
+		}
+
 		$request_token = $_SESSION['rop_twitter_request_token'];
+
 		$api           = $this->get_api( $request_token['oauth_token'], $request_token['oauth_token_secret'] );
 
 		$access_token = $api->oauth( 'oauth/access_token', [ 'oauth_verifier' => $_GET['oauth_verifier'] ] );
@@ -228,12 +239,12 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			'credentials'        => $this->credentials,
 			'public_credentials' => array(
 				'consumer_key'    => array(
-					'name'    => 'Consumer Key',
+					'name'    => 'API Key',
 					'value'   => $this->consumer_key,
 					'private' => false,
 				),
 				'consumer_secret' => array(
-					'name'    => 'Consumer Secret',
+					'name'    => 'API secret key',
 					'value'   => $this->consumer_secret,
 					'private' => true,
 				),

@@ -2,9 +2,9 @@
 # This file is distributed under the no.
 msgid ""
 msgstr ""
-"Project-Id-Version: Revive Old Posts (Former Tweet Old Post) 8.1.0\n"
+"Project-Id-Version: Revive Old Posts (Former Tweet Old Post) 8.1.2\n"
 "Report-Msgid-Bugs-To: https://github.com/Codeinwp/tweet-old-post/issues\n"
-"POT-Creation-Date: 2018-09-04 16:58:01+00:00\n"
+"POT-Creation-Date: 2018-10-23 07:51:25+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,19 +24,28 @@ msgstr ""
 "X-Poedit-Bookmarks: \n"
 "X-Textdomain-Support: yes\n"
 
-#: includes/admin/class-rop-admin.php:303
+#: includes/admin/class-rop-admin.php:78
+msgid ""
+"%1$s You're using a PHP version lower than 5.6! Revive Old Posts requires "
+"at least %2$sPHP 5.6%3$s to function properly. %4$sLearn more here%5$s. %6$s"
+msgstr ""
+
+#: includes/admin/class-rop-admin.php:324
+#: includes/admin/class-rop-admin.php:325
 msgid "Revive Old Posts"
 msgstr ""
 
-#: includes/admin/class-rop-admin.php:311
+#: includes/admin/class-rop-admin.php:336
+#: includes/admin/class-rop-admin.php:337
 msgid "Dashboard"
 msgstr ""
 
-#: includes/admin/class-rop-admin.php:318
+#: includes/admin/class-rop-admin.php:347
+#: includes/admin/class-rop-admin.php:348
 msgid "Exclude Posts"
 msgstr ""
 
-#: includes/admin/class-rop-admin.php:343
+#: includes/admin/class-rop-admin.php:376
 msgid "Instant social sharing is available on the extended version for "
 msgstr ""
 
@@ -99,8 +108,8 @@ msgid ""
 "can always reset an account to the network defaults."
 msgstr ""
 
-#: includes/class-rop-i18n.php:90 includes/class-rop-i18n.php:147
-#: includes/class-rop-i18n.php:253
+#: includes/class-rop-i18n.php:90 includes/class-rop-i18n.php:158
+#: includes/class-rop-i18n.php:265
 msgid "Save"
 msgstr ""
 
@@ -156,609 +165,626 @@ msgid ""
 "\t\t\t"
 msgstr ""
 
-#: includes/class-rop-i18n.php:107
+#: includes/class-rop-i18n.php:108
 msgid "General Settings"
 msgstr ""
 
-#: includes/class-rop-i18n.php:108
+#: includes/class-rop-i18n.php:109
 msgid "Minimum interval between shares"
 msgstr ""
 
-#: includes/class-rop-i18n.php:109
+#: includes/class-rop-i18n.php:110
 msgid "Minimum time between shares (hour/hours), 0.4 can be used."
 msgstr ""
 
-#: includes/class-rop-i18n.php:110
+#: includes/class-rop-i18n.php:111
 msgid "Minimum post age"
 msgstr ""
 
-#: includes/class-rop-i18n.php:111
+#: includes/class-rop-i18n.php:112
 msgid "Minimum age of posts available for sharing, in days."
 msgstr ""
 
-#: includes/class-rop-i18n.php:112
+#: includes/class-rop-i18n.php:113
 msgid "Maximum post age"
 msgstr ""
 
-#: includes/class-rop-i18n.php:113
+#: includes/class-rop-i18n.php:114
 msgid "Maximum age of posts available for sharing, in days."
 msgstr ""
 
-#: includes/class-rop-i18n.php:114
+#: includes/class-rop-i18n.php:115
 msgid "Number of posts"
 msgstr ""
 
-#: includes/class-rop-i18n.php:115
+#: includes/class-rop-i18n.php:116
 msgid "Number of posts to share per. account per. trigger of scheduled job."
 msgstr ""
 
-#: includes/class-rop-i18n.php:116
+#: includes/class-rop-i18n.php:117
 msgid "Share more than once?"
 msgstr ""
 
-#: includes/class-rop-i18n.php:117 includes/class-rop-i18n.php:142
-#: includes/class-rop-i18n.php:145 includes/class-rop-i18n.php:177
-#: includes/class-rop-i18n.php:180 includes/class-rop-i18n.php:185
-#: includes/class-rop-i18n.php:206
+#: includes/class-rop-i18n.php:118 includes/class-rop-i18n.php:147
+#: includes/class-rop-i18n.php:150 includes/class-rop-i18n.php:154
+#: includes/class-rop-i18n.php:157 includes/class-rop-i18n.php:189
+#: includes/class-rop-i18n.php:192 includes/class-rop-i18n.php:197
+#: includes/class-rop-i18n.php:218
 msgid "Yes"
 msgstr ""
 
-#: includes/class-rop-i18n.php:118
+#: includes/class-rop-i18n.php:119
 msgid ""
 "If there are no more posts to share, we should start re-sharing the one we\n"
 "\t\t\t\t\t\t\tpreviously shared."
 msgstr ""
 
-#: includes/class-rop-i18n.php:122
+#: includes/class-rop-i18n.php:124
 msgid "Post types"
 msgstr ""
 
-#: includes/class-rop-i18n.php:123
+#: includes/class-rop-i18n.php:125
 msgid ""
 "You need to select the media files which you want to share, find out more "
 "information %1$shere%2$s."
 msgstr ""
 
-#: includes/class-rop-i18n.php:124
+#: includes/class-rop-i18n.php:126
 msgid "Post types available to share - what post types are available for share"
 msgstr ""
 
-#: includes/class-rop-i18n.php:125
+#: includes/class-rop-i18n.php:127
 msgid ""
 "Selecting custom post types is available in the pro\n"
 "\t\t\t\t\t\t\tversion."
 msgstr ""
 
-#: includes/class-rop-i18n.php:129
+#: includes/class-rop-i18n.php:132
 msgid "Taxonomies"
 msgstr ""
 
-#: includes/class-rop-i18n.php:130
+#: includes/class-rop-i18n.php:133
 msgid ""
 "Taxonomies available for the selected post types. Use to include or exclude\n"
 "\t\t\t\t\t\t\tposts."
 msgstr ""
 
-#: includes/class-rop-i18n.php:134
+#: includes/class-rop-i18n.php:138
 msgid "Exclude?"
 msgstr ""
 
-#: includes/class-rop-i18n.php:135
+#: includes/class-rop-i18n.php:139
 msgid "Posts"
 msgstr ""
 
-#: includes/class-rop-i18n.php:136
+#: includes/class-rop-i18n.php:140
 msgid "Posts excluded from sharing, filtered based on previous selections."
 msgstr ""
 
-#: includes/class-rop-i18n.php:137
+#: includes/class-rop-i18n.php:141
 msgid "Enable Google Analytics Tracking"
 msgstr ""
 
-#: includes/class-rop-i18n.php:138
+#: includes/class-rop-i18n.php:142
 msgid ""
 "If checked an utm query willbe added to URL's so that you cand better track\n"
 "\t\t\t\t\t\t\ttrafic."
 msgstr ""
 
-#: includes/class-rop-i18n.php:143
-msgid "Custom Share Messages"
+#: includes/class-rop-i18n.php:148
+msgid "Enable Custom Share Messages"
 msgstr ""
 
-#: includes/class-rop-i18n.php:144
+#: includes/class-rop-i18n.php:149
 msgid ""
 "These messages will override the post format settings. You can go to each "
 "post and add multiple custom messages."
 msgstr ""
 
-#: includes/class-rop-i18n.php:146
+#: includes/class-rop-i18n.php:151
 msgid "Using a custom share message is available in the pro version."
 msgstr ""
 
-#: includes/class-rop-i18n.php:148
-msgid "Exclude taxononmies"
-msgstr ""
-
-#: includes/class-rop-i18n.php:149
-msgid "Save filters"
-msgstr ""
-
-#: includes/class-rop-i18n.php:150
-msgid "Search post to exclude..."
-msgstr ""
-
-#: includes/class-rop-i18n.php:151
-msgid "Show only excluded posts"
-msgstr ""
-
 #: includes/class-rop-i18n.php:152
-msgid "Exclude all matching"
+msgid "Enable Instant Sharing option"
 msgstr ""
 
 #: includes/class-rop-i18n.php:153
-msgid "Include this post"
-msgstr ""
-
-#: includes/class-rop-i18n.php:154
-msgid "Exclude this post"
+msgid "Allow sharing immediately posts on publish/update."
 msgstr ""
 
 #: includes/class-rop-i18n.php:155
-msgid "No posts found."
-msgstr ""
-
-#: includes/class-rop-i18n.php:156
-msgid "Load more posts."
+msgid "Enable instant sharing by default"
 msgstr ""
 
 #: includes/class-rop-i18n.php:159
-msgid "Post Format"
+msgid "Exclude taxononmies"
 msgstr ""
 
-#: includes/class-rop-i18n.php:160 includes/class-rop-i18n.php:163
-msgid "Post Content"
+#: includes/class-rop-i18n.php:160
+msgid "Save filters"
 msgstr ""
 
 #: includes/class-rop-i18n.php:161
-msgid "From where to fetch the content which will be shared."
+msgid "Search post to exclude..."
 msgstr ""
 
 #: includes/class-rop-i18n.php:162
-msgid "Post Title"
+msgid "Show only excluded posts"
+msgstr ""
+
+#: includes/class-rop-i18n.php:163
+msgid "Exclude all matching"
 msgstr ""
 
 #: includes/class-rop-i18n.php:164
-msgid "Post Title & Content"
+msgid "Include this post"
 msgstr ""
 
-#: includes/class-rop-i18n.php:165 includes/class-rop-i18n.php:181
-msgid "Custom Field"
+#: includes/class-rop-i18n.php:165
+msgid "Exclude this post"
 msgstr ""
 
 #: includes/class-rop-i18n.php:166
-msgid "Custom Meta Field"
+msgid "No posts found."
 msgstr ""
 
 #: includes/class-rop-i18n.php:167
-msgid "Meta field name from which to get the content."
-msgstr ""
-
-#: includes/class-rop-i18n.php:168
-msgid "Maximum chars"
-msgstr ""
-
-#: includes/class-rop-i18n.php:169
-msgid "Maximum length of the message."
+msgid "Load more posts."
 msgstr ""
 
 #: includes/class-rop-i18n.php:170
-msgid "Additional text"
+msgid "Post Format"
 msgstr ""
 
-#: includes/class-rop-i18n.php:171
-msgid "Add custom content to published items."
+#: includes/class-rop-i18n.php:171 includes/class-rop-i18n.php:174
+msgid "Post Content"
 msgstr ""
 
 #: includes/class-rop-i18n.php:172
-msgid "Where to add the custom text."
+msgid "From where to fetch the content which will be shared."
 msgstr ""
 
 #: includes/class-rop-i18n.php:173
-msgid "Beginning"
-msgstr ""
-
-#: includes/class-rop-i18n.php:174
-msgid "End"
+msgid "Post Title"
 msgstr ""
 
 #: includes/class-rop-i18n.php:175
-msgid "Include link"
+msgid "Post Title & Content"
 msgstr ""
 
-#: includes/class-rop-i18n.php:176
-msgid "Should include the post permalink or not?"
+#: includes/class-rop-i18n.php:176 includes/class-rop-i18n.php:193
+msgid "Custom Field"
+msgstr ""
+
+#: includes/class-rop-i18n.php:177
+msgid "Custom Meta Field"
 msgstr ""
 
 #: includes/class-rop-i18n.php:178
-msgid "Custom field"
+msgid "Meta field name from which to get the content."
 msgstr ""
 
 #: includes/class-rop-i18n.php:179
-msgid "Fetch URL from custom field?"
+msgid "Maximum chars"
+msgstr ""
+
+#: includes/class-rop-i18n.php:180
+msgid "Maximum length of the message."
+msgstr ""
+
+#: includes/class-rop-i18n.php:181
+msgid "Additional text"
 msgstr ""
 
 #: includes/class-rop-i18n.php:182
-msgid "Custom Field from which to get the URL."
+msgid "Add custom content to published items. Supports %1$smagic tags.%2$s"
 msgstr ""
 
 #: includes/class-rop-i18n.php:183
-msgid "Use url shortner"
+msgid "written by {author} on {date}."
 msgstr ""
 
 #: includes/class-rop-i18n.php:184
-msgid "Should we use a shortner when adding the links to the content?"
+msgid "Where to add the custom text."
+msgstr ""
+
+#: includes/class-rop-i18n.php:185
+msgid "Beginning"
 msgstr ""
 
 #: includes/class-rop-i18n.php:186
-msgid "URL Shorner Service"
+msgid "End"
 msgstr ""
 
 #: includes/class-rop-i18n.php:187
-msgid "Which service to use for URL shortening?"
+msgid "Include link"
 msgstr ""
 
 #: includes/class-rop-i18n.php:188
-msgid "service API"
-msgstr ""
-
-#: includes/class-rop-i18n.php:189
-msgid "Add the"
+msgid "Should include the post permalink or not?"
 msgstr ""
 
 #: includes/class-rop-i18n.php:190
-msgid "required by the"
+msgid "Custom field"
 msgstr ""
 
 #: includes/class-rop-i18n.php:191
-msgid "Hashtags"
-msgstr ""
-
-#: includes/class-rop-i18n.php:192
-msgid "Hashtags to published content."
-msgstr ""
-
-#: includes/class-rop-i18n.php:193
-msgid "Dont add any hashtags"
+msgid "Fetch URL from custom field?"
 msgstr ""
 
 #: includes/class-rop-i18n.php:194
-msgid "Common hastags for all shares"
+msgid "Custom Field from which to get the URL."
 msgstr ""
 
 #: includes/class-rop-i18n.php:195
-msgid "Create hashtags from categories"
+msgid "Use url shortener"
 msgstr ""
 
 #: includes/class-rop-i18n.php:196
-msgid "Create hashtags from tags"
-msgstr ""
-
-#: includes/class-rop-i18n.php:197
-msgid "Create hashtags from custom field"
+msgid "Should we use a shortener when adding the links to the content?"
 msgstr ""
 
 #: includes/class-rop-i18n.php:198
-msgid "Common Hashtags"
+msgid "URL Shortener Service"
 msgstr ""
 
 #: includes/class-rop-i18n.php:199
-msgid "List of hastags to use separated by comma"
+msgid "Which service to use for URL shortening?"
 msgstr ""
 
 #: includes/class-rop-i18n.php:200
-msgid "Custom Hashtags"
+msgid "service API"
 msgstr ""
 
 #: includes/class-rop-i18n.php:201
-msgid "The name of the meta field that contains the hashtags."
+msgid "Add the"
 msgstr ""
 
 #: includes/class-rop-i18n.php:202
-msgid "Maximum Hashtags length"
+msgid "required by the"
 msgstr ""
 
 #: includes/class-rop-i18n.php:203
-msgid "The maximum hashtags length to be used when publishing."
+msgid "Hashtags"
 msgstr ""
 
 #: includes/class-rop-i18n.php:204
-msgid "Post with image"
+msgid "Hashtags to published content."
 msgstr ""
 
 #: includes/class-rop-i18n.php:205
-msgid "Use the featured image when posting?"
+msgid "Dont add any hashtags"
+msgstr ""
+
+#: includes/class-rop-i18n.php:206
+msgid "Common hastags for all shares"
 msgstr ""
 
 #: includes/class-rop-i18n.php:207
-msgid "Campaign Medium"
+msgid "Create hashtags from categories"
 msgstr ""
 
 #: includes/class-rop-i18n.php:208
+msgid "Create hashtags from tags"
+msgstr ""
+
+#: includes/class-rop-i18n.php:209
+msgid "Create hashtags from custom field"
+msgstr ""
+
+#: includes/class-rop-i18n.php:210
+msgid "Common Hashtags"
+msgstr ""
+
+#: includes/class-rop-i18n.php:211
+msgid "List of hastags to use separated by comma"
+msgstr ""
+
+#: includes/class-rop-i18n.php:212
+msgid "Custom Hashtags"
+msgstr ""
+
+#: includes/class-rop-i18n.php:213
+msgid "The name of the meta field that contains the hashtags."
+msgstr ""
+
+#: includes/class-rop-i18n.php:214
+msgid "Maximum Hashtags length"
+msgstr ""
+
+#: includes/class-rop-i18n.php:215
+msgid "The maximum hashtags length to be used when publishing."
+msgstr ""
+
+#: includes/class-rop-i18n.php:216
+msgid "Post with image"
+msgstr ""
+
+#: includes/class-rop-i18n.php:217
+msgid "Use the featured image when posting?"
+msgstr ""
+
+#: includes/class-rop-i18n.php:219
+msgid "Campaign Medium"
+msgstr ""
+
+#: includes/class-rop-i18n.php:220
 msgid ""
 "The marketing medium you want to show in Google Analytics e.g: \"social\", "
 "\"website\", etc."
 msgstr ""
 
-#: includes/class-rop-i18n.php:209
+#: includes/class-rop-i18n.php:221
 msgid "Campaign Name"
 msgstr ""
 
-#: includes/class-rop-i18n.php:210
+#: includes/class-rop-i18n.php:222
 msgid ""
 "The campaign name you want to show in Google Analytics e.g: "
 "\"november_sale\" etc."
 msgstr ""
 
-#: includes/class-rop-i18n.php:211
+#: includes/class-rop-i18n.php:223
 msgid "Custom UTMs are only available in the pro version."
 msgstr ""
 
-#: includes/class-rop-i18n.php:212
+#: includes/class-rop-i18n.php:224
 msgid "Posting with images is available in the pro version."
 msgstr ""
 
-#: includes/class-rop-i18n.php:213
+#: includes/class-rop-i18n.php:225
 msgid "Media Posts Content"
 msgstr ""
 
-#: includes/class-rop-i18n.php:214
+#: includes/class-rop-i18n.php:226
 msgid "Which content should we share for media posts?"
 msgstr ""
 
-#: includes/class-rop-i18n.php:215
+#: includes/class-rop-i18n.php:227
 msgid "Title"
 msgstr ""
 
-#: includes/class-rop-i18n.php:216
+#: includes/class-rop-i18n.php:228
 msgid "Caption"
 msgstr ""
 
-#: includes/class-rop-i18n.php:217
+#: includes/class-rop-i18n.php:229
 msgid "Alt Text"
 msgstr ""
 
-#: includes/class-rop-i18n.php:218
+#: includes/class-rop-i18n.php:230
 msgid "Description"
 msgstr ""
 
-#: includes/class-rop-i18n.php:219
+#: includes/class-rop-i18n.php:231
 msgid "Media posting is available in the Business version."
 msgstr ""
 
-#: includes/class-rop-i18n.php:222
+#: includes/class-rop-i18n.php:234
 msgid "Custom Schedule"
 msgstr ""
 
-#: includes/class-rop-i18n.php:223
+#: includes/class-rop-i18n.php:235
 msgid "Schedule Type"
 msgstr ""
 
-#: includes/class-rop-i18n.php:224
+#: includes/class-rop-i18n.php:236
 msgid "What type of schedule to use."
 msgstr ""
 
-#: includes/class-rop-i18n.php:225
+#: includes/class-rop-i18n.php:237
 msgid "Fixed"
 msgstr ""
 
-#: includes/class-rop-i18n.php:226
+#: includes/class-rop-i18n.php:238
 msgid "Recurring"
 msgstr ""
 
-#: includes/class-rop-i18n.php:227
+#: includes/class-rop-i18n.php:239
 msgid "Fixed Schedule Days"
 msgstr ""
 
-#: includes/class-rop-i18n.php:228
+#: includes/class-rop-i18n.php:240
 msgid "The days when to share for this account."
 msgstr ""
 
-#: includes/class-rop-i18n.php:229
+#: includes/class-rop-i18n.php:241
 msgid "Fixed Schedule Time."
 msgstr ""
 
-#: includes/class-rop-i18n.php:230
+#: includes/class-rop-i18n.php:242
 msgid "The time at witch to share for this account."
 msgstr ""
 
-#: includes/class-rop-i18n.php:231
+#: includes/class-rop-i18n.php:243
 msgid "Recurring Schedule Interval."
 msgstr ""
 
-#: includes/class-rop-i18n.php:232
+#: includes/class-rop-i18n.php:244
 msgid "A recurring interval to use for sharing. Once every 'X' hours."
 msgstr ""
 
-#: includes/class-rop-i18n.php:233
+#: includes/class-rop-i18n.php:245
 msgid "The Custom Schedule is available only in the Business version."
 msgstr ""
 
-#: includes/class-rop-i18n.php:236
+#: includes/class-rop-i18n.php:248
 msgid "Sharing Queue"
 msgstr ""
 
-#: includes/class-rop-i18n.php:237
+#: includes/class-rop-i18n.php:249
 msgid "Sharing is not started!"
 msgstr ""
 
-#: includes/class-rop-i18n.php:238
+#: includes/class-rop-i18n.php:250
 msgid "You need to start sharing in order to see any posts in the queue."
 msgstr ""
 
-#: includes/class-rop-i18n.php:239
+#: includes/class-rop-i18n.php:251
 msgid ""
 "You can choose to edit any of the post, skip the sharing or block a "
 "specific one from sharing in the future."
 msgstr ""
 
-#: includes/class-rop-i18n.php:240
+#: includes/class-rop-i18n.php:252
 msgid ""
 "You can edit the posts from the queue only the Business version of the "
 "plugin. View more details %1$shere%2$s."
 msgstr ""
 
-#: includes/class-rop-i18n.php:241
+#: includes/class-rop-i18n.php:253
 msgid "No queued posts!"
 msgstr ""
 
-#: includes/class-rop-i18n.php:242
+#: includes/class-rop-i18n.php:254
 msgid ""
 "Check if you have at least an <b>\"Active account\"</b>, what posts and "
 "pages are selected in <b>\"General Settings\"</b> and if a "
 "<b>\"Schedule\"</b> is defined."
 msgstr ""
 
-#: includes/class-rop-i18n.php:243
+#: includes/class-rop-i18n.php:255
 msgid "Refresh Queue"
 msgstr ""
 
-#: includes/class-rop-i18n.php:244
+#: includes/class-rop-i18n.php:256
 msgid "Image"
 msgstr ""
 
-#: includes/class-rop-i18n.php:245
+#: includes/class-rop-i18n.php:257
 msgid "Upload"
 msgstr ""
 
-#: includes/class-rop-i18n.php:246
+#: includes/class-rop-i18n.php:258
 msgid "Remove"
 msgstr ""
 
-#: includes/class-rop-i18n.php:247
+#: includes/class-rop-i18n.php:259
 msgid "Content"
 msgstr ""
 
-#: includes/class-rop-i18n.php:248
+#: includes/class-rop-i18n.php:260
 msgid "Reschedule this post."
 msgstr ""
 
-#: includes/class-rop-i18n.php:249
+#: includes/class-rop-i18n.php:261
 msgid "Ban this post from sharing in the future."
 msgstr ""
 
-#: includes/class-rop-i18n.php:250
+#: includes/class-rop-i18n.php:262
 msgid "Edit"
 msgstr ""
 
-#: includes/class-rop-i18n.php:251
+#: includes/class-rop-i18n.php:263
 msgid "Link"
 msgstr ""
 
-#: includes/class-rop-i18n.php:252
+#: includes/class-rop-i18n.php:264
 msgid "Link using"
 msgstr ""
 
-#: includes/class-rop-i18n.php:254
+#: includes/class-rop-i18n.php:266
 msgid "Cancel"
 msgstr ""
 
-#: includes/class-rop-i18n.php:255
+#: includes/class-rop-i18n.php:267
 msgid "No Image"
 msgstr ""
 
-#: includes/class-rop-i18n.php:256
+#: includes/class-rop-i18n.php:268
 msgid "Skip"
 msgstr ""
 
-#: includes/class-rop-i18n.php:257
+#: includes/class-rop-i18n.php:269
 msgid "Block"
 msgstr ""
 
-#: includes/class-rop-i18n.php:258
+#: includes/class-rop-i18n.php:270
 msgid "Insert a media"
 msgstr ""
 
-#: includes/class-rop-i18n.php:259
+#: includes/class-rop-i18n.php:271
 msgid "Insert"
 msgstr ""
 
-#: includes/class-rop-i18n.php:263
+#: includes/class-rop-i18n.php:275
 msgid "Logs"
 msgstr ""
 
-#: includes/class-rop-i18n.php:264
+#: includes/class-rop-i18n.php:276
 msgid "Clear logs"
 msgstr ""
 
-#: includes/class-rop-i18n.php:265
+#: includes/class-rop-i18n.php:277
 msgid "No recent logs!"
 msgstr ""
 
-#: includes/class-rop-i18n.php:268
+#: includes/class-rop-i18n.php:280
 msgid "by"
 msgstr ""
 
-#: includes/class-rop-i18n.php:269
+#: includes/class-rop-i18n.php:281
 msgid "Show your love"
 msgstr ""
 
-#: includes/class-rop-i18n.php:270
+#: includes/class-rop-i18n.php:282
 msgid "Leave a review"
 msgstr ""
 
-#: includes/class-rop-i18n.php:271
+#: includes/class-rop-i18n.php:283
 msgid "in"
 msgstr ""
 
-#: includes/class-rop-i18n.php:272
+#: includes/class-rop-i18n.php:284
 msgid "Now"
 msgstr ""
 
-#: includes/class-rop-i18n.php:273
+#: includes/class-rop-i18n.php:285
 msgid "Start"
 msgstr ""
 
-#: includes/class-rop-i18n.php:274
+#: includes/class-rop-i18n.php:286
 msgid "Stop"
 msgstr ""
 
-#: includes/class-rop-i18n.php:275
+#: includes/class-rop-i18n.php:287
 msgid "Sharing"
 msgstr ""
 
-#: includes/class-rop-i18n.php:276
+#: includes/class-rop-i18n.php:288
 msgid "You will need at least one active account to start sharing."
 msgstr ""
 
-#: includes/class-rop-i18n.php:277
+#: includes/class-rop-i18n.php:289
 msgid "Upgrade to Pro."
 msgstr ""
 
-#: includes/class-rop-i18n.php:278
+#: includes/class-rop-i18n.php:290
 msgid "Upgrade to Business."
 msgstr ""
 
-#: includes/class-rop-i18n.php:279
+#: includes/class-rop-i18n.php:291
 msgid "Nothing found matching"
 msgstr ""
 
-#: includes/class-rop-i18n.php:280
+#: includes/class-rop-i18n.php:292
 msgid "Next share"
 msgstr ""
 
-#: includes/class-rop-i18n.php:281
+#: includes/class-rop-i18n.php:293
 msgid "Sharing..."
 msgstr ""
 
-#: includes/class-rop-i18n.php:282
+#: includes/class-rop-i18n.php:294
 msgid "Once every 1 min"
 msgstr ""
 
-#: includes/class-rop-i18n.php:283
+#: includes/class-rop-i18n.php:295
 msgid "This is a staging website, posts will not share to your accounts."
 msgstr ""
 
-#: includes/class-rop-i18n.php:284
+#: includes/class-rop-i18n.php:296
 msgid ""
 "It seems there is an issue with your WordPress configuration and the core "
 "REST API functionality is not available. This is crucial as Revive Old "
@@ -770,29 +796,29 @@ msgid ""
 "see if the issue persists or ask the hosting company to further investigate."
 msgstr ""
 
-#: includes/class-rop-i18n.php:291
+#: includes/class-rop-i18n.php:304
 msgid "Remove Custom Message"
 msgstr ""
 
-#: includes/class-rop-i18n.php:292
+#: includes/class-rop-i18n.php:305
 msgid "Add New Custom Message"
 msgstr ""
 
-#: includes/class-rop-i18n.php:293
+#: includes/class-rop-i18n.php:306
 msgid ""
 "A custom message that will be selected randomly for each share and will "
-"overwrite the default post."
+"overwrite the default post. Supports %1$smagic tags%2$s."
 msgstr ""
 
-#: includes/class-rop-i18n.php:294
+#: includes/class-rop-i18n.php:307
 msgid "Custom message #"
 msgstr ""
 
-#: includes/class-rop-i18n.php:298
+#: includes/class-rop-i18n.php:311
 msgid "Share <b>immediately</b> via <small>Revive Old Posts</small>  "
 msgstr ""
 
-#: includes/class-rop-i18n.php:299
+#: includes/class-rop-i18n.php:312
 msgid "These checkboxes will be cleared once the post is shared."
 msgstr ""
 

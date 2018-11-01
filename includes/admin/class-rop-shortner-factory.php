@@ -34,7 +34,7 @@ class Rop_Shortner_Factory {
 			return new $shortner;
 		}
 		// @codeCoverageIgnoreStart
-		throw new Exception( 'Invalid shortner name given.' );
+		throw new Exception( 'Invalid shortener name given.' );
 		// @codeCoverageIgnoreEnd
 	}
 }
