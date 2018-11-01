@@ -95,11 +95,11 @@ class Rop_Global_Settings {
 			'name'             => 'Twitter',
 			'credentials'      => array(
 				'consumer_key'    => array(
-					'name'        => 'Consumer Key',
+					'name'        => 'API Key',
 					'description' => 'Your Twitter application api key',
 				),
 				'consumer_secret' => array(
-					'name'        => 'Consumer Secret',
+					'name'        => 'API secret key',
 					'description' => 'Your Twitter application api secret',
 				),
 			),
