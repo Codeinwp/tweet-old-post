@@ -1,4 +1,15 @@
 
+ ### v8.1.3 - 2018-11-01 
+ **Changes:** 
+ * - Adds: Option to delete plugin settings on uninstall
+* - Fix: Change twitter credential labels to match that on developer.twitter.com apps
+* - Fix: Various typos
+* - Fix: Issue with media library not loading when PRO plugin is installed in some cases
+* - Fix: Error when other plugins also try to authenticate with Facebook
+* - PRO: Adds support for magic tags for Custom Share Messages and Additional Text
+* - PRO: Adds support for custom post type taxonomy hashtags
+* - PRO: Adds Option to make share instantly option checked by default
+ 
  ### v8.1.2 - 2018-10-08 
  **Changes:** 
  * Fixed issue with hashtags in content
