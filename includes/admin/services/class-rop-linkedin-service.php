@@ -86,6 +86,15 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			session_start();
 		}
 
+		if ( ! $this->is_set_not_empty(
+			$_SESSION,
+			array(
+				'rop_linkedin_credentials',
+			)
+		) ) {
+			return false;
+		}
+
 		$credentials = $_SESSION['rop_linkedin_credentials'];
 
 		$api         = $this->get_api( $credentials['client_id'], $credentials['secret'] );

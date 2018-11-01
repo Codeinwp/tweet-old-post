@@ -84,6 +84,15 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			session_start();
 		}
 
+		if ( ! $this->is_set_not_empty(
+			$_SESSION,
+			array(
+				'rop_facebook_credentials',
+			)
+		) ) {
+			return false;
+		}
+
 		$credentials = $_SESSION['rop_facebook_credentials'];
 
 		try {
