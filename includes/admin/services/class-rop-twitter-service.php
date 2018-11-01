@@ -239,12 +239,12 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			'credentials'        => $this->credentials,
 			'public_credentials' => array(
 				'consumer_key'    => array(
-					'name'    => 'Consumer Key',
+					'name'    => 'API Key',
 					'value'   => $this->consumer_key,
 					'private' => false,
 				),
 				'consumer_secret' => array(
-					'name'    => 'Consumer Secret',
+					'name'    => 'API secret key',
 					'value'   => $this->consumer_secret,
 					'private' => true,
 				),
