@@ -35,7 +35,7 @@
 				<div class="panel-nav" style="padding: 8px;">
 					<ul class="tab ">
 						<li class="tab-item c-hand" v-for="tab in displayTabs"
-						    :class="{ active: tab.isActive }">
+						    :class="{ active: tab.isActive }" v-bind:id="tab.name.replace(' ', '')">
 							<a :class=" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' "
 							   :data-badge="logs_no"
 							   @click="switchTab( tab.slug )">{{ tab.name }}</a>

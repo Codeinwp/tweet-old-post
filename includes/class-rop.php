@@ -138,7 +138,7 @@ class Rop {
 
 		$rop_cron_helper = new Rop_Cron_Helper();
 		/**
-		 * Use PHP_INT_MAX to make sure the schedule is added. Some shitty plugins add their schedule by clearing the previous values.
+		 * Use PHP_INT_MAX to make sure the schedule is added. Some plugins add their schedule by clearing the previous values.
 		 */
 		$this->loader->add_filter( 'cron_schedules', $rop_cron_helper, 'rop_cron_schedules', PHP_INT_MAX );
 		$this->loader->add_action( 'post_submitbox_misc_actions', $plugin_admin, 'publish_now_upsell' );
