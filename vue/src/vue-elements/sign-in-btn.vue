@@ -8,9 +8,9 @@
 			        @click="requestAuthorization( network )">
 				<i class="fa fa-fw" :class="'fa-' + network"></i>{{service.name}}
 			</button>
-		
+
 		</div>
-		
+
 		<div class="modal" :class="modalActiveClass">
 			<div class="modal-overlay"></div>
 			<div class="modal-container">

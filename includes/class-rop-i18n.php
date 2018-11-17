@@ -140,8 +140,8 @@ class Rop_I18n {
 				'posts_desc'                  => __( 'Posts excluded from sharing, filtered based on previous selections.', 'tweet-old-post' ),
 				'ga_title'                    => __( 'Enable Google Analytics Tracking', 'tweet-old-post' ),
 				'ga_desc'                     => __(
-					'If checked an utm query willbe added to URL\'s so that you cand better track
-							trafic.',
+					'If checked, UTM query tags will be added to URL of shares so that you can better track
+							traffic from Revive Old Posts.',
 					'tweet-old-post'
 				),
 				'ga_yes'                      => __( 'Yes', 'tweet-old-post' ),

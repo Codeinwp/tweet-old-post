@@ -2907,7 +2907,7 @@
 	border-color: #454d5d;
 	border-radius: 0.1rem;
 	color: #fff;
-	background: rgba(69, 77, 93, 0.9);
+	background: #1d466b;
 }
 
 #rop_core .toast.toast-primary {
@@ -4323,4 +4323,33 @@
 .modal-footer a,
 .rop-post-type-badge a {
 	text-decoration: underline;
+}
+
+.rop-pointer-buttons .close {
+    float: left;
+    margin: 4px 20px;
+}
+
+#rop_core .rop-steps{
+	background: #1d466b;
+	border-radius: 3px;
+	margin-bottom: 3px;
+	padding: 10px;
+	text-align: center;
+}
+
+#rop_core .rop-step{
+	margin-right: 5px;
+}
+
+#rop_core .rop-step-incomplete{
+	color: #ff0000;
+	font-weight: bold;
+	margin-bottom: 0px;
+}
+
+#rop_core .rop-step-complete{
+	color: #8bc34a;
+	font-weight: bold;
+	margin-bottom: 0px;
 }
