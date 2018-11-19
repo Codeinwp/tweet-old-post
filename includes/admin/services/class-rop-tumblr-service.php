@@ -149,7 +149,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		if ( ! function_exists( 'curl_reset' ) ) {
 			return false;
 		}
-		$this->api = new \Tumblr\API\Client( $consumer_key, $consumer_secret, $token, $token_secret );
+		$this->api = new \Tumblr\API\Client( $this->strip_whitespace( $consumer_key ), $this->strip_whitespace( $consumer_secret ), $this->strip_whitespace( $token ), $this->strip_whitespace( $token_secret ) );
 
 	}
 

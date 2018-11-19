@@ -140,7 +140,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		if ( ! class_exists( '\LinkedIn\Client' ) ) {
 			return false;
 		}
-		$this->api = new \LinkedIn\Client( $client_id, $client_secret );
+		$this->api = new \LinkedIn\Client( $this->strip_whitespace( $client_id ), $this->strip_whitespace( $client_secret ) );
 
 		$this->api->setRedirectUrl( $this->get_legacy_url( 'linkedin' ) );
 	}

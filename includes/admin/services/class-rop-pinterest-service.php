@@ -147,7 +147,7 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 				return false;
 			}
 
-			$this->api = new DirkGroenen\Pinterest\Pinterest( $app_id, $secret );
+			$this->api = new DirkGroenen\Pinterest\Pinterest( $this->strip_whitespace( $app_id ), $this->strip_whitespace( $secret ) );
 		} catch ( Exception $exception ) {
 			$this->logger->alert_error( 'Can not load Pinterest api. Error: ' . $exception->getMessage() );
 		}
