@@ -443,4 +443,16 @@ abstract class Rop_Services_Abstract {
 	protected function unstrip_underscore( $name ) {
 		return str_replace( '---', '_', $name );
 	}
+
+	/**
+	 * Strips white space from credentials
+	 *
+	 * @param string $data the credential.
+	 *
+	 * @return string Cleaned credential.
+	 */
+	protected function strip_whitespace( $data ) {
+		$data = rtrim( ltrim( $data ) );
+		return $data;
+	}
 }

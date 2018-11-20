@@ -157,7 +157,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			$consumer_secret = $this->consumer_secret;
 		}
 
-		$this->api = new \Abraham\TwitterOAuth\TwitterOAuth( $consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret );
+		$this->api = new \Abraham\TwitterOAuth\TwitterOAuth( $this->strip_whitespace( $consumer_key ), $this->strip_whitespace( $consumer_secret ), $this->strip_whitespace( $oauth_token ), $this->strip_whitespace( $oauth_token_secret ) );
 
 	}
 

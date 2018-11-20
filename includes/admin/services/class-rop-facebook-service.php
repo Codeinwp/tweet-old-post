@@ -161,8 +161,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			}
 			$this->api = new \Facebook\Facebook(
 				array(
-					'app_id'                => $app_id,
-					'app_secret'            => $secret,
+					'app_id'                => $this->strip_whitespace( $app_id ),
+					'app_secret'            => $this->strip_whitespace( $secret ),
 					'default_graph_version' => 'v2.10',
 				)
 			);
