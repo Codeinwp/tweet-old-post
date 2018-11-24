@@ -426,7 +426,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		$new_post = array();
 
 		$post_id = $post_details['post_id'];
-		$message = $post_details['content'];
+		$message = strip_excess_blank_lines( $post_details['content'] );
 
 		if ( ! empty( $post_details['post_image'] ) ) {
 

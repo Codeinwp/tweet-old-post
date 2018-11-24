@@ -379,7 +379,7 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 
 		$pin = $api->pins->create(
 			array(
-				'note'      => $post_details['content'] . $post_details['hashtags'],
+				'note'      => strip_excess_blank_lines( $post_details['content'] ) . $post_details['hashtags'],
 				'image_url' => $post_details['post_image'],
 				'board'     => $args['id'],
 			)

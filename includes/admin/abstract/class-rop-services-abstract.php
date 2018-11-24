@@ -455,4 +455,18 @@ abstract class Rop_Services_Abstract {
 		$data = rtrim( ltrim( $data ) );
 		return $data;
 	}
+
+	/**
+	 * Strips excess blank lines left by media blocks in Gutenberg editor
+	 *
+	 * @param string $content the content to clean.
+	 *
+	 * @return string The cleaned content.
+	 */
+	protected function strip_excess_blank_lines( $content ) {
+		$content = preg_replace("/([\r\n]{4,}|[\n]{2,}|[\r]{2,})/", "\n\n", $content);
+		return $content;
+	}
+
+
 }
