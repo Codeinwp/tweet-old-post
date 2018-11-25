@@ -422,7 +422,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			}
 		}
 
-		$new_post['comment']                = strip_excess_blank_lines( $post_details['content'] ) . $post_details['hashtags'];
+		$new_post['comment']                = $this->strip_excess_blank_lines( $post_details['content'] ) . $post_details['hashtags'];
 		$new_post['content']['description'] = $post_details['content'];
 		$new_post['content']['title']       = html_entity_decode( get_the_title( $post_details['post_id'] ) );
 

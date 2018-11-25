@@ -464,7 +464,7 @@ abstract class Rop_Services_Abstract {
 	 * @return string The cleaned content.
 	 */
 	protected function strip_excess_blank_lines( $content ) {
-		$content = preg_replace("/([\r\n]{4,}|[\n]{2,}|[\r]{2,})/", "\n\n", $content);
+		$content = preg_replace( "/([\r\n]{4,}|[\n]{3,}|[\r]{3,})/", "\n\n", $content );
 		return $content;
 	}
 
