@@ -503,7 +503,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		 */
 		if ( get_post_type( $post_id ) !== 'attachment' && ! empty( $post_details['post_url'] ) ) {
 
-			$new_post['message'] = $post_details['content'] . $post_details['hashtags'];
+			$new_post['message'] = $this->strip_excess_blank_lines( $post_details['content'] ) . $post_details['hashtags'];
 
 			if ( ! empty( $post_details['post_url'] ) ) {
 				$new_post['name'] = html_entity_decode( get_the_title( $post_details['post_id'] ) );
