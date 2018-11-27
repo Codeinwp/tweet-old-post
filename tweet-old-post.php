@@ -57,6 +57,31 @@ register_activation_hook( __FILE__, 'activate_rop' );
 register_deactivation_hook( __FILE__, 'deactivate_rop' );
 
 /**
+ * Shows a notice for sites running PHP less than 5.6.
+ *
+ * @since    8.1.4
+ */
+function rop_php_notice() {
+		?>
+
+		<div class="notice notice-error is-dismissible">
+			<?php echo sprintf( __( '%1$s You\'re using a PHP version lower than 5.6! Revive Old Posts requires at least %2$sPHP 5.6%3$s to function properly. Plugin has been deactivated. %4$sLearn more here%5$s. %6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/947-how-to-update-your-php-version" target="_blank">', '</a>', '</p>' ); ?>
+		</div>
+		<?php
+}
+
+/**
+ * Deactivates Revive Old Posts.
+ *
+ * @since    8.1.4
+ */
+function rop_php_deactivate() {
+	if ( is_plugin_active( 'tweet-old-post/tweet-old-post.php' ) ) {
+			deactivate_plugins( 'tweet-old-post/tweet-old-post.php' );
+	}
+}
+
+/**
  * Begins execution of the plugin.
  *
  * Since everything within the plugin is registered via hooks,
@@ -66,6 +91,11 @@ register_deactivation_hook( __FILE__, 'deactivate_rop' );
  * @since    8.0.0
  */
 function run_rop() {
+
+	if ( version_compare( PHP_VERSION, '5.6.0', '<' ) ) {
+		add_action( 'admin_notices', 'rop_php_notice' );
+		add_action( 'admin_init', 'rop_php_deactivate' );
+	}
 
 	define( 'ROP_PRO_URL', 'http://revive.social/plugins/revive-old-post/' );
 	define( 'ROP_LITE_VERSION', '8.1.3' );
