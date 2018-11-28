@@ -41,7 +41,7 @@ if ( ! defined( 'WPINC' ) ) {
  * The code that runs during plugin activation.
  * This action is documented in includes/class-rop-activator.php
  */
-function activate_rop() {
+function rop_activation() {
 	Rop_Activator::activate();
 }
 
@@ -49,12 +49,12 @@ function activate_rop() {
  * The code that runs during plugin deactivation.
  * This action is documented in includes/class-rop-deactivator.php
  */
-function deactivate_rop() {
+function rop_deactivation() {
 	Rop_Deactivator::deactivate();
 }
 
-register_activation_hook( __FILE__, 'activate_rop' );
-register_deactivation_hook( __FILE__, 'deactivate_rop' );
+register_activation_hook( __FILE__, 'rop_activation' );
+register_deactivation_hook( __FILE__, 'rop_deactivation' );
 
 /**
  * Shows a notice for sites running PHP less than 5.6.
@@ -75,7 +75,7 @@ function rop_php_notice() {
  *
  * @since    8.1.4
  */
-function rop_php_deactivate() {
+function deactivate_rop() {
 	if ( is_plugin_active( 'tweet-old-post/tweet-old-post.php' ) ) {
 			deactivate_plugins( 'tweet-old-post/tweet-old-post.php' );
 	}
@@ -94,7 +94,7 @@ function run_rop() {
 
 	if ( version_compare( PHP_VERSION, '5.6.0', '<' ) ) {
 		add_action( 'admin_notices', 'rop_php_notice' );
-		add_action( 'admin_init', 'rop_php_deactivate' );
+		add_action( 'admin_init', 'deactivate_rop' );
 	}
 
 	define( 'ROP_PRO_URL', 'http://revive.social/plugins/revive-old-post/' );
