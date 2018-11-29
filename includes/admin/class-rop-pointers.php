@@ -424,6 +424,8 @@ class Rop_Pointers{
       case 'toplevel_page_TweetOldPost':
       $pointers = $this->create_rop_personal_plan_tutorial();
       break;
+      default:
+      return;
     }
 
     $pointers = wp_json_encode( $pointers );
