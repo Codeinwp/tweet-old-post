@@ -147,7 +147,7 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 				return false;
 			}
 
-			$this->api = new DirkGroenen\Pinterest\Pinterest( $app_id, $secret );
+			$this->api = new DirkGroenen\Pinterest\Pinterest( $this->strip_whitespace( $app_id ), $this->strip_whitespace( $secret ) );
 		} catch ( Exception $exception ) {
 			$this->logger->alert_error( 'Can not load Pinterest api. Error: ' . $exception->getMessage() );
 		}
@@ -379,7 +379,7 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 
 		$pin = $api->pins->create(
 			array(
-				'note'      => $post_details['content'] . $post_details['hashtags'],
+				'note'      => $this->strip_excess_blank_lines( $post_details['content'] ) . $post_details['hashtags'],
 				'image_url' => $post_details['post_image'],
 				'board'     => $args['id'],
 			)
