@@ -25,7 +25,7 @@ class Rop_Pointers{
     echo "
     <style>
     html{
-    scroll-behavior: smooth !important;
+    scroll-behavior: smooth;
     }
     .rop-pointer-buttons .close {
       float: $side;
@@ -444,10 +444,10 @@ class Rop_Pointers{
                   window.scrollBy(0, 350);
                   break;
                   case 'custom-share':
-                  window.scrollBy(0, 120);
+                  window.scrollBy(0, 190);
                   break;
                   case 'post-format':
-                  window.scrollBy(0, -560);
+                  window.scrollBy(0, -590);
                   break;
                 }
               });
