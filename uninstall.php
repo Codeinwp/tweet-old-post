@@ -47,9 +47,8 @@ if ( isset( $housekeeping ) && $housekeeping ) {
 		'rop_logs',
 		'cwp_rop_remote_trigger',
 		'rop_notice_active',
-		'rop_tutorial_queued',
-		'rop_end_activation',
-		'rop_start_activation',
+		'rop_menu_pointer_queued',
+		'rop_dashboard_pointers_queued',
 	);
 
 	foreach ( $option_keys as $key ) {

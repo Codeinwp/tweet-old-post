@@ -3,132 +3,61 @@
 class Rop_Pointers{
 
   /**
-  * Determines if the tutorial has run.
+  * Pointer support script and CSS.
   *
   * @since   8.1.4
   * @access  public
   */
   public function rop_setup_pointer_support(){
     wp_enqueue_style( 'wp-pointer' );
-		wp_enqueue_script( 'wp-pointer' );
+    wp_enqueue_script( 'wp-pointer' );
   }
 
-  /**
-  * Determines if the tutorial has run.
-  *
-  * @since   8.1.4
-  * @access  public
-  */
-  public function rop_get_tutorial_status(){
-    ( !empty( get_option( 'rop_tutorial_queued' ) ) ? true : false );
-  }
+    /**
+    * Tutorial pointers for personal plan.
+    *
+    * @since   8.1.4
+    * @access  public
+    */
+    public function create_rop_menu_pointer() {
 
+      if( get_option( 'rop_menu_pointer_queued' ) ){
+        return;
+      }
 
-  /**
-  * Tutorial pointers for personal plan.
-  *
-  * @since   8.1.4
-  * @access  public
-  */
-  public function create_rop_license_activation_tutorial_first() {
+      $pointers = array(
+        'pointers' => array(
+          'settings'          => array(
+            'target'       => '#toplevel_page_TweetOldPost',
+            'next'         => '',
+            'next_trigger' => array(),
+            'options'      => array(
+              'content'  => '<h3>' . esc_html__( 'Get Started', 'tweet-old-post' ) . '</h3>' .
+              '<p>' . esc_html__( 'Click here to get started with Revive Old Posts (ROP).', 'tweet-old-post' ) . '</p>',
+              'position' => array(
+                'edge'  => 'left',
+                'align' => 'left',
+              ),
+            ),
+          ),
+        ),
+      );
 
-    //Run activation pointer for Pro plugin if exists and activation has not run pointer
-    if( ! class_exists( 'Rop_Pro' ) || get_option( 'rop_start_activation' ) ){
-      return;
+      update_option( 'rop_menu_pointer_queued', 1 );
+      return $pointers;
     }
 
-    // if( ! class_exists( 'Rop_Pro' ) ){
-    // 	return;
-    // }
-
-
-    $pointers = array(
-      'pointers' => array(
-        'settings'          => array(
-          'target'       => '#menu-settings',
-          'next'         => '',
-          'next_trigger' => array(
-            'target' => '#menu-settings',
-            'event'  => 'click',
-          ),
-          'options'      => array(
-            'content'  => '<h3>' . esc_html__( 'Activate Your New Plugin', 'tweet-old-post' ) . '</h3>' .
-            '<p>' . esc_html__( 'Click here to start activating Revive Old Posts(ROP).', 'tweet-old-post' ) . '</p>',
-            'position' => array(
-              'edge'  => 'left',
-              'align' => 'right',
-            ),
-          ),
-        ),
-      ),
-    );
-
-    update_option( 'rop_start_activation', 1 );
-    return $pointers;
-  }
-
   /**
   * Tutorial pointers for personal plan.
   *
   * @since   8.1.4
   * @access  public
   */
-  public function create_rop_license_activation_tutorial_last() {
+  public function create_rop_dashboard_pointers() {
 
-    //Only show if plugin was activated
-    if ( get_option( 'rop_end_activation' ) ){
-      return;
-    };
-
-    $pointers = array(
-      'pointers' => array(
-        'settings'          => array(
-          'target'       => '#tweet_old_post_pro_license',
-          'next'         => 'rop-menu',
-          'next_trigger' => array(
-            'target' => '#tweet_old_post_pro_license',
-            'event'  => 'click',
-          ),
-          'options'      => array(
-            'content'  => '<h3>' . esc_html__( 'Enter License Key', 'tweet-old-post' ) . '</h3>' .
-            '<p>' . __( sprintf('Grab your license key from your purchase history %shere%s. Then activate it.', '<a href="https://revive.social/your-purchases/" target="_blank">', '</a>'), 'tweet-old-post' ) . '</p>',
-            'position' => array(
-              'edge'  => 'left',
-              'align' => 'right',
-            ),
-          ),
-        ),
-        'rop-menu'        => array(
-          'target'       => '#toplevel_page_TweetOldPost',
-          'next'         => '',
-          'next_trigger' => array(),
-          'options'      => array(
-            'content'  => '<h3>' . esc_html__( 'Learn How it Works', 'tweet-old-post' ) . '</h3>' .
-            '<p>' . esc_html__( 'Then click here to get started with your new plugin.', 'tweet-old-post' ) . '</p>',
-            'position' => array(
-              'edge'  => 'left',
-              'align' => 'right',
-            ),
-          ),
-        ),
-      ),
-    );
-
-    update_option( 'rop_end_activation', 1 );
-    return $pointers;
-  }
-
-  /**
-  * Tutorial pointers for personal plan.
-  *
-  * @since   8.1.4
-  * @access  public
-  */
-  public function create_rop_personal_plan_tutorial() {
-
-    // if( get_option( 'rop_tutorial_queued' ) ){
-    // 	return;
-    // }
+    if( get_option( 'rop_dashboard_pointers_queued' ) ){
+    	return;
+    }
 
     $pointers = array(
       'pointers' => array(
@@ -157,7 +86,7 @@ class Rop_Pointers{
           ),
           'options'      => array(
             'content'  => '<h3>' . esc_html__( 'Adding Accounts', 'tweet-old-post' ) . '</h3>' .
-            '<p>' . esc_html__( 'You can add your social media accounts by clicking this button. Let\'s do this later.', 'tweet-old-post' ) . '</p>',
+            '<p>' . __( sprintf( 'You can add your social media accounts by clicking this button. %sLet\'s do this later%s.', '<strong>', '</strong>' ), 'tweet-old-post' ) . '</p>',
             'position' => array(
               'edge'  => 'bottom',
               'align' => 'left',
@@ -254,7 +183,9 @@ class Rop_Pointers{
           ),
           'options'      => array(
             'content'  => '<h3>' . esc_html__( 'Post types', 'tweet-old-post' ) . '</h3>' .
-            '<p>' . esc_html__( 'Rop works with any post type, from products to posts, to custom post types.', 'tweet-old-post' ) . '</p>',
+            '<p>' . esc_html__( 'Rop works with any post type, from products to posts, to custom post types.', 'tweet-old-post' ) . '</p>' .
+            '<p>' . esc_html__( 'You can share media straight from your media library!', 'tweet-old-post' ) . '</p>' .
+            '<p>' . __( sprintf( '%s%sLearn more about this feature%s%s', '<strong>', '<a href="https://docs.revive.social/article/968-share-different-post-types-w-revive-old-posts" target="_blank">', '</a>', '</strong>' ), 'tweet-old-post' ) . '</p>',
             'position' => array(
               'edge'  => 'left',
               'align' => 'right',
@@ -289,7 +220,8 @@ class Rop_Pointers{
           ),
           'options'      => array(
             'content'  => '<h3>' . esc_html__( 'Share on Publish', 'tweet-old-post' ) . '</h3>' .
-            '<p>' . esc_html__( 'ROP not only works on autopilot, it can also be used to push new posts to your social networks immediately!', 'tweet-old-post' ) . '</p>',
+            '<p>' . esc_html__( 'ROP not only works on autopilot, it can also be used to push new posts to your social networks immediately.', 'tweet-old-post' ) . '</p>' .
+            '<p>' . __( sprintf( '%s%sLearn more about this feature%s%s', '<strong>', '<a href="https://docs.revive.social/article/933-how-to-share-posts-immediately-with-revive-old-posts" target="_blank">', '</a>', '</strong>' ), 'tweet-old-post' ) . '</p>',
             'position' => array(
               'edge'  => 'left',
               'align' => 'right',
@@ -304,8 +236,9 @@ class Rop_Pointers{
             'event'  => 'input click change',
           ),
           'options'      => array(
-            'content'  => '<h3>' . esc_html__( 'Custom Messages', 'tweet-old-post' ) . '</h3>' .
-            '<p>' . esc_html__( 'You can add multiple custom messages to individual posts! ROP will randomly select one to share.', 'tweet-old-post' ) . '</p>',
+            'content'  => '<h3>' . esc_html__( 'Share Content Variations', 'tweet-old-post' ) . '</h3>' .
+            '<p>' . esc_html__( 'You can add multiple custom messages to individual posts as share variations! ROP will randomly select one to share.', 'tweet-old-post' ) . '</p>' .
+            '<p>' . __( sprintf( '%s%sLearn more about this feature%s%s', '<strong>', '<a href="https://docs.revive.social/article/971-how-to-add-variations-to-revive-old-posts-shares" target="_blank">', '</a>', '</strong>' ), 'tweet-old-post' ) . '</p>',
             'position' => array(
               'edge'  => 'left',
               'align' => 'right',
@@ -338,7 +271,7 @@ class Rop_Pointers{
           'options'      => array(
             'content'  => '<h3>' . esc_html__( 'Custom Schedule', 'tweet-old-post' ) . '</h3>' .
             '<p>' . esc_html__( 'Custom scheduling allows you to refine the post times and days of your posts.', 'tweet-old-post' ) . '</p>',
-            '<p>' . __( sprintf( '%sLearn More Here%s', '<a href="#" target="_blank">', '</a>' ), 'tweet-old-post' ) . '</p>',
+            '<p>' . __( sprintf( '%s%sLearn more about this feature%s%s', '<strong>', '<a href="https://docs.revive.social/article/972-revive-old-posts-custom-schedule-feature" target="_blank">', '</a>', '</strong>' ), 'tweet-old-post' ) . '</p>',
             'position' => array(
               'edge'  => 'left',
               'align' => 'right',
@@ -354,8 +287,8 @@ class Rop_Pointers{
           ),
           'options'      => array(
             'content'  => '<h3>' . esc_html__( 'Sharing Queue', 'tweet-old-post' ) . '</h3>' .
-            '<p>' . esc_html__( 'You\'ll be able to have look at the posts scheduled to go out by ROP. You can even schedule or ban them from sharing in the future!', 'tweet-old-post' ) . '</p>' .
-            '<p>' . __( sprintf( '%s%sLearn More Here%s%s', '<strong>', '<a href="#" target="_blank">', '</a>', '</strong>'), 'tweet-old-post' ) . '</p>',
+            '<p>' . esc_html__( 'You\'ll be able to have look at the posts scheduled to go out by ROP. You can even skip or block them from sharing in the future!', 'tweet-old-post' ) . '</p>' .
+            '<p>' . __( sprintf( '%s%sLearn more about this feature%s%s', '<strong>', '<a href="https://docs.revive.social/article/973-working-with-revive-old-posts-sharing-queue" target="_blank">', '</a>', '</strong>' ), 'tweet-old-post' ) . '</p>',
             'position' => array(
               'edge'  => 'left',
               'align' => 'right',
@@ -366,8 +299,8 @@ class Rop_Pointers{
           'target'       => '#logs',
           'next'         => 'start-stop',
           'next_trigger' => array(
-            'target' => '',
-            'event'  => '',
+            'target' => '#logs',
+            'event'  => 'click change',
           ),
           'options'      => array(
             'content'  => '<h3>' . esc_html__( 'Share Log', 'tweet-old-post' ) . '</h3>' .
@@ -398,12 +331,12 @@ class Rop_Pointers{
       ),
     );
 
-    update_option( 'rop_tutorial_queued', 1 );
+    update_option( 'rop_dashboard_pointers_queued', 1 );
     return $pointers;
   }
 
   /**
-  * Enqueus the pointer's scripts.
+  * Enqueues the pointer's scripts.
   *
   * @since   8.1.4
   * @access  public
@@ -414,15 +347,14 @@ class Rop_Pointers{
       return;
     }
 
+    $general_settings = new Rop_Global_Settings;
+
     switch ( $screen->id ) {
       case 'plugins':
-      $pointers = $this->create_rop_license_activation_tutorial_first();
-      break;
-      case 'options-general':
-      $pointers = $this->create_rop_license_activation_tutorial_last();
+      $pointers = $this->create_rop_menu_pointer();
       break;
       case 'toplevel_page_TweetOldPost':
-      $pointers = $this->create_rop_personal_plan_tutorial();
+      $pointers = $this->create_rop_dashboard_pointers();
       break;
       default:
       return;
@@ -433,7 +365,9 @@ class Rop_Pointers{
     ?>
     <script type="text/javascript">
     jQuery( function( $ ) {
+
       var rop_pointer = <?php echo $pointers ?>;
+      var rop_license = <?php echo $general_settings->license_type() ?>;
 
       setTimeout( init_rop_pointer, 800 );
 
@@ -450,53 +384,58 @@ class Rop_Pointers{
           pointerClass: 'wp-pointer rop-pointer',
           close: function() {
             if ( pointer.next ) {
+              // Minimum sharing schedule option not present in Business and Marketer plans
+              if ( pointer.next == 'min-interval' && rop_license > 1 ){
+                pointer = rop_pointer.pointers[ 'min-interval' ];
+              }
               show_rop_pointer( pointer.next );
             }
           },
           buttons: function( event, t ) {
-            if (pointer.next !== 'min-interval') {
 
-            var close   = " <?php echo esc_js( __( 'Dismiss', 'tweet-old-post' ) ) ?>",
-            next    = "<?php echo esc_js( __( 'Next', 'tweet-old-post' ) ) ?>",
+            if ( pointer.next !== 'min-interval' ) {
 
-            button  = $( '<a class=\"close\" href=\"#\">' + close + '</a>' ),
-            button2 = $( '<a class=\"button button-primary next\" href=\"#\">' + next + '</a>' ),
-            wrapper = $( '<div class=\"rop-pointer-buttons\" />' );
+              var close   = " <?php echo esc_js( __( 'Dismiss', 'tweet-old-post' ) ) ?>",
+              next    = "<?php echo esc_js( __( 'Next', 'tweet-old-post' ) ) ?>",
 
-            button.bind( 'click.pointer', function(e) {
-              e.preventDefault();
-              t.element.pointer('destroy');
-            });
+              button  = $( '<a class=\"close\" href=\"#\">' + close + '</a>' ),
+              button2 = $( '<a class=\"button button-primary next\" href=\"#\">' + next + '</a>' ),
+              wrapper = $( '<div class=\"rop-pointer-buttons\" />' );
 
-            button2.bind( 'click.pointer', function(e) {
-              e.preventDefault();
-              t.element.pointer('close');
+              button.bind( 'click.pointer', function(e) {
+                e.preventDefault();
+                t.element.pointer('destroy');
+              });
 
-              switch( pointer.next ){
-                case 'activate-rop':
-                window.scrollBy(0, 400);
-                break;
-                case 'rop-menu':
-                window.scrollBy(0, 400);
-                break;
-                case 'post-types':
-                window.scrollBy(0, 400);
-                break;
-                case 'custom-share':
-                window.scrollBy(0, 100);
-                break;
-                case 'post-format':
-                window.scrollBy(0, -550);
-                break;
-              }
-            });
+              button2.bind( 'click.pointer', function(e) {
+                e.preventDefault();
+                t.element.pointer('close');
 
-            wrapper.append( button );
-            wrapper.append( button2 );
+                switch( pointer.next ){
+                  case 'activate-rop':
+                  window.scrollBy(0, 400);
+                  break;
+                  case 'rop-menu':
+                  window.scrollBy(0, 400);
+                  break;
+                  case 'post-types':
+                  window.scrollBy(0, 350);
+                  break;
+                  case 'custom-share':
+                  window.scrollBy(0, 120);
+                  break;
+                  case 'post-format':
+                  window.scrollBy(0, -560);
+                  break;
+                }
+              });
 
-            return wrapper;
-          }
-        },
+              wrapper.append( button );
+              wrapper.append( button2 );
+
+              return wrapper;
+            }
+          },
         } );
 
         var this_pointer = $( pointer.target ).pointer( options );
