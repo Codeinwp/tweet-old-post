@@ -13,39 +13,61 @@ class Rop_Pointers{
     wp_enqueue_script( 'wp-pointer' );
   }
 
-    /**
-    * Tutorial pointers for personal plan.
-    *
-    * @since   8.1.4
-    * @access  public
-    */
-    public function create_rop_menu_pointer() {
+  /**
+  * Fix dismiss button orientation.
+  *
+  * @since   8.1.4
+  * @access  public
+  */
+  public function rop_pointer_button_css(){
+    $side = is_rtl() ? 'right' : 'left';
 
-      if( get_option( 'rop_menu_pointer_queued' ) ){
-        return;
-      }
+    echo "
+    <style>
+    html{
+    scroll-behavior: smooth !important;
+    }
+    .rop-pointer-buttons .close {
+      float: $side;
+      margin: 4px 20px;
+    }
+    </style>
+    ";
+  }
 
-      $pointers = array(
-        'pointers' => array(
-          'settings'          => array(
-            'target'       => '#toplevel_page_TweetOldPost',
-            'next'         => '',
-            'next_trigger' => array(),
-            'options'      => array(
-              'content'  => '<h3>' . esc_html__( 'Get Started', 'tweet-old-post' ) . '</h3>' .
-              '<p>' . esc_html__( 'Click here to get started with Revive Old Posts (ROP).', 'tweet-old-post' ) . '</p>',
-              'position' => array(
-                'edge'  => 'left',
-                'align' => 'left',
-              ),
+  /**
+  * Tutorial pointers for plugin dashboard.
+  *
+  * @since   8.1.4
+  * @access  public
+  */
+  public function create_rop_menu_pointer() {
+
+    if( get_option( 'rop_menu_pointer_queued' ) ){
+      return;
+    }
+
+    $pointers = array(
+      'pointers' => array(
+        'settings'          => array(
+          'target'       => '#toplevel_page_TweetOldPost',
+          'next'         => '',
+          'next_trigger' => array(),
+          'options'      => array(
+            'content'  => '<h3>' . esc_html__( 'Get Started', 'tweet-old-post' ) . '</h3>' .
+            '<p>' . esc_html__( 'Click here to get started with Revive Old Posts (ROP).', 'tweet-old-post' ) . '</p>',
+            'position' => array(
+              'edge'  => 'left',
+              'align' => 'left',
             ),
           ),
         ),
-      );
+      ),
+    );
 
-      update_option( 'rop_menu_pointer_queued', 1 );
-      return $pointers;
-    }
+    update_option( 'rop_menu_pointer_queued', 1 );
+    return $pointers;
+  }
 
   /**
   * Tutorial pointers for personal plan.
@@ -56,7 +78,7 @@ class Rop_Pointers{
   public function create_rop_dashboard_pointers() {
 
     if( get_option( 'rop_dashboard_pointers_queued' ) ){
-    	return;
+      return;
     }
 
     $pointers = array(
@@ -185,7 +207,7 @@ class Rop_Pointers{
             'content'  => '<h3>' . esc_html__( 'Post types', 'tweet-old-post' ) . '</h3>' .
             '<p>' . esc_html__( 'Rop works with any post type, from products to posts, to custom post types.', 'tweet-old-post' ) . '</p>' .
             '<p>' . esc_html__( 'You can share media straight from your media library!', 'tweet-old-post' ) . '</p>' .
-            '<p>' . __( sprintf( '%s%sLearn more about this feature%s%s', '<strong>', '<a href="https://docs.revive.social/article/968-share-different-post-types-w-revive-old-posts" target="_blank">', '</a>', '</strong>' ), 'tweet-old-post' ) . '</p>',
+            '<p>' . __( sprintf( '%s%sLearn more about this feature%s%s.', '<strong>', '<a href="https://docs.revive.social/article/968-share-different-post-types-w-revive-old-posts" target="_blank">', '</a>', '</strong>' ), 'tweet-old-post' ) . '</p>',
             'position' => array(
               'edge'  => 'left',
               'align' => 'right',
@@ -221,7 +243,7 @@ class Rop_Pointers{
           'options'      => array(
             'content'  => '<h3>' . esc_html__( 'Share on Publish', 'tweet-old-post' ) . '</h3>' .
             '<p>' . esc_html__( 'ROP not only works on autopilot, it can also be used to push new posts to your social networks immediately.', 'tweet-old-post' ) . '</p>' .
-            '<p>' . __( sprintf( '%s%sLearn more about this feature%s%s', '<strong>', '<a href="https://docs.revive.social/article/933-how-to-share-posts-immediately-with-revive-old-posts" target="_blank">', '</a>', '</strong>' ), 'tweet-old-post' ) . '</p>',
+            '<p>' . __( sprintf( '%s%sLearn more about this feature%s%s.', '<strong>', '<a href="https://docs.revive.social/article/933-how-to-share-posts-immediately-with-revive-old-posts" target="_blank">', '</a>', '</strong>' ), 'tweet-old-post' ) . '</p>',
             'position' => array(
               'edge'  => 'left',
               'align' => 'right',
@@ -238,7 +260,7 @@ class Rop_Pointers{
           'options'      => array(
             'content'  => '<h3>' . esc_html__( 'Share Content Variations', 'tweet-old-post' ) . '</h3>' .
             '<p>' . esc_html__( 'You can add multiple custom messages to individual posts as share variations! ROP will randomly select one to share.', 'tweet-old-post' ) . '</p>' .
-            '<p>' . __( sprintf( '%s%sLearn more about this feature%s%s', '<strong>', '<a href="https://docs.revive.social/article/971-how-to-add-variations-to-revive-old-posts-shares" target="_blank">', '</a>', '</strong>' ), 'tweet-old-post' ) . '</p>',
+            '<p>' . __( sprintf( '%s%sLearn more about this feature%s%s.', '<strong>', '<a href="https://docs.revive.social/article/971-how-to-add-variations-to-revive-old-posts-shares" target="_blank">', '</a>', '</strong>' ), 'tweet-old-post' ) . '</p>',
             'position' => array(
               'edge'  => 'left',
               'align' => 'right',
@@ -271,7 +293,7 @@ class Rop_Pointers{
           'options'      => array(
             'content'  => '<h3>' . esc_html__( 'Custom Schedule', 'tweet-old-post' ) . '</h3>' .
             '<p>' . esc_html__( 'Custom scheduling allows you to refine the post times and days of your posts.', 'tweet-old-post' ) . '</p>',
-            '<p>' . __( sprintf( '%s%sLearn more about this feature%s%s', '<strong>', '<a href="https://docs.revive.social/article/972-revive-old-posts-custom-schedule-feature" target="_blank">', '</a>', '</strong>' ), 'tweet-old-post' ) . '</p>',
+            '<p>' . __( sprintf( '%s%sLearn more about this feature%s%s.', '<strong>', '<a href="https://docs.revive.social/article/972-revive-old-posts-custom-schedule-feature" target="_blank">', '</a>', '</strong>' ), 'tweet-old-post' ) . '</p>',
             'position' => array(
               'edge'  => 'left',
               'align' => 'right',
@@ -287,8 +309,8 @@ class Rop_Pointers{
           ),
           'options'      => array(
             'content'  => '<h3>' . esc_html__( 'Sharing Queue', 'tweet-old-post' ) . '</h3>' .
-            '<p>' . esc_html__( 'You\'ll be able to have look at the posts scheduled to go out by ROP. You can even skip or block them from sharing in the future!', 'tweet-old-post' ) . '</p>' .
-            '<p>' . __( sprintf( '%s%sLearn more about this feature%s%s', '<strong>', '<a href="https://docs.revive.social/article/973-working-with-revive-old-posts-sharing-queue" target="_blank">', '</a>', '</strong>' ), 'tweet-old-post' ) . '</p>',
+            '<p>' . esc_html__( 'You\'ll be able to have look at the posts scheduled to go out by ROP. You can even skip or block them from sharing in the future.', 'tweet-old-post' ) . '</p>' .
+            '<p>' . __( sprintf( '%s%sLearn more about this feature%s%s.', '<strong>', '<a href="https://docs.revive.social/article/973-working-with-revive-old-posts-sharing-queue" target="_blank">', '</a>', '</strong>' ), 'tweet-old-post' ) . '</p>',
             'position' => array(
               'edge'  => 'left',
               'align' => 'right',
@@ -305,7 +327,7 @@ class Rop_Pointers{
           'options'      => array(
             'content'  => '<h3>' . esc_html__( 'Share Log', 'tweet-old-post' ) . '</h3>' .
             '<p>' . esc_html__( 'You can track the success and failings of your shares here.', 'tweet-old-post' ) . '</p>' .
-            '<p>' . __( sprintf( 'The resolution to most of these possible errors can be found %s%sHere%s%s', '<strong>', '<a href="https://docs.revive.social/" target="_blank">', '</a>', '</strong>' ), 'tweet-old-post' ) . '</p>',
+            '<p>' . __( sprintf( 'The resolution to most of these possible errors can be found %s%sHere%s%s.', '<strong>', '<a href="https://docs.revive.social/" target="_blank">', '</a>', '</strong>' ), 'tweet-old-post' ) . '</p>',
             'position' => array(
               'edge'  => 'left',
               'align' => 'right',

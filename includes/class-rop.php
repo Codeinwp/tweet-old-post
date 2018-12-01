@@ -130,6 +130,7 @@ class Rop {
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'legacy_auth', 2 );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'admin_head', $tutorial_pointers, 'rop_pointer_button_css' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $tutorial_pointers, 'rop_setup_pointer_support' );
 		$this->loader->add_action( 'admin_print_footer_scripts', $tutorial_pointers, 'rop_enqueue_pointers' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'menu_pages' );

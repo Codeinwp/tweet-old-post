@@ -4325,11 +4325,6 @@
 	text-decoration: underline;
 }
 
-.rop-pointer-buttons .close {
-    float: left;
-    margin: 4px 20px;
-}
-
 #rop_core .rop-steps{
 	background: #1d466b;
 	border-radius: 3px;
