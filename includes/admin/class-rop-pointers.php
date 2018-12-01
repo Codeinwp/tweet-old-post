@@ -43,7 +43,7 @@ class Rop_Pointers{
   */
   public function create_rop_menu_pointer() {
 
-    if( get_option( 'rop_menu_pointer_queued' ) ){
+    if( get_option( 'rop_menu_pointer_queued' ) || !empty( get_option( 'rop_data' ) ) ){
       return;
     }
 
@@ -77,7 +77,7 @@ class Rop_Pointers{
   */
   public function create_rop_dashboard_pointers() {
 
-    if( get_option( 'rop_dashboard_pointers_queued' ) ){
+    if( get_option( 'rop_dashboard_pointers_queued' ) || !empty( get_option( 'rop_data' ) ) ){
       return;
     }
 
