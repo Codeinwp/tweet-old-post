@@ -33418,7 +33418,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop-sign-in-area .btn[disabled][_v-63cb7455]{\n\t\tcursor:not-allowed;\n\t\tpointer-events: auto;\n\t\topacity: 0.3;\n\t}\n\t", ""]);
+exports.push([module.i, "\r\n\t#rop-sign-in-area .btn[disabled][_v-63cb7455]{\r\n\t\tcursor:not-allowed;\r\n\t\tpointer-events: auto;\r\n\t\topacity: 0.3;\r\n\t}\r\n\t", ""]);
 
 // exports
 
@@ -37095,7 +37095,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .toast.log-toast p[_v-1eb3a02d] {\n\t\tmargin: 0px;\n\t\tline-height: inherit;\n\t}\n\n\t#rop_core .toast.log-toast[_v-1eb3a02d]:hover {\n\t\topacity: 0.9;\n\t}\n\n\t#rop_core .toast.log-toast[_v-1eb3a02d] {\n\t\tpadding: 0.1rem;\n\t\tpadding-left: 10px;\n\t\tmargin-top: 2px;\n\t}\n\n\t#rop_core .container[_v-1eb3a02d] {\n\t\tmin-height: 400px;\n\t}\n", ""]);
+exports.push([module.i, "\r\n\t#rop_core .toast.log-toast p[_v-1eb3a02d] {\r\n\t\tmargin: 0px;\r\n\t\tline-height: inherit;\r\n\t}\r\n\r\n\t#rop_core .toast.log-toast[_v-1eb3a02d]:hover {\r\n\t\topacity: 0.9;\r\n\t}\r\n\r\n\t#rop_core .toast.log-toast[_v-1eb3a02d] {\r\n\t\tpadding: 0.1rem;\r\n\t\tpadding-left: 10px;\r\n\t\tmargin-top: 2px;\r\n\t}\r\n\r\n\t#rop_core .container[_v-1eb3a02d] {\r\n\t\tmin-height: 400px;\r\n\t}\r\n", ""]);
 
 // exports
 
