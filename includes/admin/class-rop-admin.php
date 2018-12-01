@@ -26,11 +26,8 @@ class Rop_Admin {
 	 *
 	 * @var array Array of script vs. page slugs. If page slugs is an array, then an exact match will occur.
 	 */
-	private $allowed_screens = array(
-		'dashboard'   => 'TweetOldPost',
-		'exclude'     => 'rop_content_filters',
-		'publish_now' => array( 'post' ),
-	);
+	private $allowed_screens;
+
 	/**
 	 * The ID of this plugin.
 	 *
@@ -61,6 +58,18 @@ class Rop_Admin {
 
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
+
+		$general_settings = new Rop_Settings_Model;
+
+		$post_types = wp_list_pluck( $general_settings->get_selected_post_types(), 'value' );
+		$attachment_post_type = array_search( 'attachment', $post_types );
+		unset( $post_types[ $attachment_post_type ] );
+
+		$this->allowed_screens = array(
+			'dashboard'   => 'TweetOldPost',
+			'exclude'     => 'rop_content_filters',
+			'publish_now' => $post_types,
+		);
 
 	}
 
