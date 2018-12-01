@@ -1,5 +1,15 @@
 <?php
-
+/**
+ * The plugin pointers class.
+ *
+ * This is used to help users get familiar with the plugin's options
+ *
+ *
+ * @since      8.1.4
+ * @package    Rop
+ * @subpackage Rop/includes
+ * @author     ThemeIsle <friends@revive.social>
+ */
 class Rop_Pointers{
 
   /**
@@ -108,7 +118,7 @@ class Rop_Pointers{
           ),
           'options'      => array(
             'content'  => '<h3>' . esc_html__( 'Adding Accounts', 'tweet-old-post' ) . '</h3>' .
-            '<p>' . __( sprintf( 'You can add your social media accounts by clicking this button. %sLet\'s do this later%s.', '<strong>', '</strong>' ), 'tweet-old-post' ) . '</p>',
+            '<p>' . sprintf( esc_html__( 'You can add your social media accounts by clicking this button. %sLet\'s do this later%s.', 'tweet-old-post' ), '<strong>', '</strong>' ) . '</p>',
             'position' => array(
               'edge'  => 'bottom',
               'align' => 'left',
@@ -207,7 +217,7 @@ class Rop_Pointers{
             'content'  => '<h3>' . esc_html__( 'Post types', 'tweet-old-post' ) . '</h3>' .
             '<p>' . esc_html__( 'Rop works with any post type, from products to posts, to custom post types.', 'tweet-old-post' ) . '</p>' .
             '<p>' . esc_html__( 'You can share media straight from your media library!', 'tweet-old-post' ) . '</p>' .
-            '<p>' . __( sprintf( '%s%sLearn more about this feature%s%s.', '<strong>', '<a href="https://docs.revive.social/article/968-share-different-post-types-w-revive-old-posts" target="_blank">', '</a>', '</strong>' ), 'tweet-old-post' ) . '</p>',
+            '<p>' . sprintf( __( '%s%sLearn more about this feature%s%s.', 'tweet-old-post' ), '<strong>', '<a href="https://docs.revive.social/article/968-share-different-post-types-w-revive-old-posts" target="_blank">', '</a>', '</strong>' ) . '</p>',
             'position' => array(
               'edge'  => 'left',
               'align' => 'right',
@@ -224,9 +234,9 @@ class Rop_Pointers{
           'options'      => array(
             'content'  => '<h3>' . esc_html__( 'Taxonomy filtering', 'tweet-old-post' ) . '</h3>' .
             '<p>' . esc_html__( 'Here you can set which WordPress taxonomies you\'d like to include/exclude from sharing.', 'tweet-old-post' ) . '</p>' .
-            '<p>' . __( sprintf( '%sNote:%s', '<strong>', '</strong>' ), 'tweet-old-post' ) . '</p>' .
-            '<p>' . __( sprintf( 'Selecting options here and %1$schecking%2$s the Exclude box will %1$sprevent%2$s posts in those taxonomies from sharing.', '<strong>', '</strong>' ), 'tweet-old-post' ) . '</p>' .
-            '<p>' . __( sprintf( 'Selecting options here and leaving the Exclude box %1$sunchecked%2$s will %1$sonly share%2$s posts in those taxonomies.', '<strong>', '</strong>' ), 'tweet-old-post' ) . '</p>',
+            '<p>' . sprintf( __( '%sNote:%s', 'tweet-old-post' ), '<strong>', '</strong>' ) . '</p>' .
+            '<p>' . sprintf( __( 'Selecting options here and %1$schecking%2$s the Exclude box will %1$sprevent%2$s posts in those taxonomies from sharing.', 'tweet-old-post' ), '<strong>', '</strong>' ) . '</p>' .
+            '<p>' . sprintf( __( 'Selecting options here and leaving the Exclude box %1$sunchecked%2$s will %1$sonly share%2$s posts in those taxonomies.', 'tweet-old-post' ), '<strong>', '</strong>' ) . '</p>',
             'position' => array(
               'edge'  => 'left',
               'align' => 'right',
@@ -243,7 +253,7 @@ class Rop_Pointers{
           'options'      => array(
             'content'  => '<h3>' . esc_html__( 'Share on Publish', 'tweet-old-post' ) . '</h3>' .
             '<p>' . esc_html__( 'ROP not only works on autopilot, it can also be used to push new posts to your social networks immediately.', 'tweet-old-post' ) . '</p>' .
-            '<p>' . __( sprintf( '%s%sLearn more about this feature%s%s.', '<strong>', '<a href="https://docs.revive.social/article/933-how-to-share-posts-immediately-with-revive-old-posts" target="_blank">', '</a>', '</strong>' ), 'tweet-old-post' ) . '</p>',
+            '<p>' . sprintf( __( '%s%sLearn more about this feature%s%s.', 'tweet-old-post' ), '<strong>', '<a href="https://docs.revive.social/article/933-how-to-share-posts-immediately-with-revive-old-posts" target="_blank">', '</a>', '</strong>' ) . '</p>',
             'position' => array(
               'edge'  => 'left',
               'align' => 'right',
@@ -260,7 +270,7 @@ class Rop_Pointers{
           'options'      => array(
             'content'  => '<h3>' . esc_html__( 'Share Content Variations', 'tweet-old-post' ) . '</h3>' .
             '<p>' . esc_html__( 'You can add multiple custom messages to individual posts as share variations! ROP will randomly select one to share.', 'tweet-old-post' ) . '</p>' .
-            '<p>' . __( sprintf( '%s%sLearn more about this feature%s%s.', '<strong>', '<a href="https://docs.revive.social/article/971-how-to-add-variations-to-revive-old-posts-shares" target="_blank">', '</a>', '</strong>' ), 'tweet-old-post' ) . '</p>',
+            '<p>' . sprintf( __( '%s%sLearn more about this feature%s%s.', 'tweet-old-post' ), '<strong>', '<a href="https://docs.revive.social/article/971-how-to-add-variations-to-revive-old-posts-shares" target="_blank">', '</a>', '</strong>' ) . '</p>',
             'position' => array(
               'edge'  => 'left',
               'align' => 'right',
@@ -293,7 +303,7 @@ class Rop_Pointers{
           'options'      => array(
             'content'  => '<h3>' . esc_html__( 'Custom Schedule', 'tweet-old-post' ) . '</h3>' .
             '<p>' . esc_html__( 'Custom scheduling allows you to refine the post times and days of your posts.', 'tweet-old-post' ) . '</p>',
-            '<p>' . __( sprintf( '%s%sLearn more about this feature%s%s.', '<strong>', '<a href="https://docs.revive.social/article/972-revive-old-posts-custom-schedule-feature" target="_blank">', '</a>', '</strong>' ), 'tweet-old-post' ) . '</p>',
+            '<p>' . sprintf( __( '%s%sLearn more about this feature%s%s.', 'tweet-old-post' ), '<strong>', '<a href="https://docs.revive.social/article/972-revive-old-posts-custom-schedule-feature" target="_blank">', '</a>', '</strong>' ) . '</p>',
             'position' => array(
               'edge'  => 'left',
               'align' => 'right',
@@ -310,7 +320,7 @@ class Rop_Pointers{
           'options'      => array(
             'content'  => '<h3>' . esc_html__( 'Sharing Queue', 'tweet-old-post' ) . '</h3>' .
             '<p>' . esc_html__( 'You\'ll be able to have look at the posts scheduled to go out by ROP. You can even skip or block them from sharing in the future.', 'tweet-old-post' ) . '</p>' .
-            '<p>' . __( sprintf( '%s%sLearn more about this feature%s%s.', '<strong>', '<a href="https://docs.revive.social/article/973-working-with-revive-old-posts-sharing-queue" target="_blank">', '</a>', '</strong>' ), 'tweet-old-post' ) . '</p>',
+            '<p>' . sprintf( __( '%s%sLearn more about this feature%s%s.', 'tweet-old-post' ), '<strong>', '<a href="https://docs.revive.social/article/973-working-with-revive-old-posts-sharing-queue" target="_blank">', '</a>', '</strong>' ) . '</p>',
             'position' => array(
               'edge'  => 'left',
               'align' => 'right',
@@ -327,7 +337,7 @@ class Rop_Pointers{
           'options'      => array(
             'content'  => '<h3>' . esc_html__( 'Share Log', 'tweet-old-post' ) . '</h3>' .
             '<p>' . esc_html__( 'You can track the success and failings of your shares here.', 'tweet-old-post' ) . '</p>' .
-            '<p>' . __( sprintf( 'The resolution to most of these possible errors can be found %s%sHere%s%s.', '<strong>', '<a href="https://docs.revive.social/" target="_blank">', '</a>', '</strong>' ), 'tweet-old-post' ) . '</p>',
+            '<p>' . sprintf( __( 'The resolution to most of these possible errors can be found %s%sHere%s%s.', 'tweet-old-post' ), '<strong>', '<a href="https://docs.revive.social/" target="_blank">', '</a>', '</strong>' ) . '</p>',
             'position' => array(
               'edge'  => 'left',
               'align' => 'right',
