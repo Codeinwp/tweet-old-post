@@ -125,9 +125,14 @@ class Rop {
 
 		$plugin_admin = new Rop_Admin( $this->get_plugin_name(), $this->get_version() );
 
+		$tutorial_pointers = new Rop_Pointers();
+
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'legacy_auth', 2 );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'admin_head', $tutorial_pointers, 'rop_pointer_button_css' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $tutorial_pointers, 'rop_setup_pointer_support' );
+		$this->loader->add_action( 'admin_print_footer_scripts', $tutorial_pointers, 'rop_enqueue_pointers' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'menu_pages' );
 		$this->loader->add_action( 'rop_cron_job', $plugin_admin, 'rop_cron_job' );
 		$this->loader->add_action( 'rop_cron_job_publish_now', $plugin_admin, 'rop_cron_job_publish_now' );
@@ -137,7 +142,7 @@ class Rop {
 
 		$rop_cron_helper = new Rop_Cron_Helper();
 		/**
-		 * Use PHP_INT_MAX to make sure the schedule is added. Some shitty plugins add their schedule by clearing the previous values.
+		 * Use PHP_INT_MAX to make sure the schedule is added. Some plugins add their schedule by clearing the previous values.
 		 */
 		$this->loader->add_filter( 'cron_schedules', $rop_cron_helper, 'rop_cron_schedules', PHP_INT_MAX );
 		$this->loader->add_action( 'post_submitbox_misc_actions', $plugin_admin, 'publish_now_upsell' );
