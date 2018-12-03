@@ -443,4 +443,30 @@ abstract class Rop_Services_Abstract {
 	protected function unstrip_underscore( $name ) {
 		return str_replace( '---', '_', $name );
 	}
+
+	/**
+	 * Strips white space from credentials
+	 *
+	 * @param string $data the credential.
+	 *
+	 * @return string Cleaned credential.
+	 */
+	protected function strip_whitespace( $data ) {
+		$data = rtrim( ltrim( $data ) );
+		return $data;
+	}
+
+	/**
+	 * Strips excess blank lines left by media blocks in Gutenberg editor
+	 *
+	 * @param string $content the content to clean.
+	 *
+	 * @return string The cleaned content.
+	 */
+	protected function strip_excess_blank_lines( $content ) {
+		$content = preg_replace( "/([\r\n]{4,}|[\n]{3,}|[\r]{3,})/", "\n\n", $content );
+		return $content;
+	}
+
+
 }

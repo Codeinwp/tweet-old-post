@@ -16,16 +16,16 @@
  * Plugin Name: Revive Old Posts (Former Tweet Old Post)
  * Plugin URI: https://revive.social/
  * Description: WordPress plugin that helps you to keeps your old posts alive by sharing them and driving more traffic to them from twitter/facebook or linkedin. It also helps you to promote your content. You can set time and no of posts to share to drive more traffic.For questions, comments, or feature requests, <a href="http://revive.social/support/?utm_source=plugindesc&utm_medium=announce&utm_campaign=top">contact </a> us!
- * Version:           8.1.3
+ * Version:           8.1.4
  * Author:            revive.social
  * Author URI:        https://revive.social/
  * Requires at least: 3.5
- * Tested up to:      4.8
+ * Tested up to:      5.0
  * Stable tag:        trunk
  * WordPress Available:  yes
  * Pro Slug:          tweet-old-post-pro
  * Requires License:    no
- * Requires PHP: 5.4
+ * Requires PHP: 5.6
  * License:           GPLv2 or later
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: tweet-old-post
@@ -41,7 +41,7 @@ if ( ! defined( 'WPINC' ) ) {
  * The code that runs during plugin activation.
  * This action is documented in includes/class-rop-activator.php
  */
-function activate_rop() {
+function rop_activation() {
 	Rop_Activator::activate();
 }
 
@@ -49,12 +49,37 @@ function activate_rop() {
  * The code that runs during plugin deactivation.
  * This action is documented in includes/class-rop-deactivator.php
  */
-function deactivate_rop() {
+function rop_deactivation() {
 	Rop_Deactivator::deactivate();
 }
 
-register_activation_hook( __FILE__, 'activate_rop' );
-register_deactivation_hook( __FILE__, 'deactivate_rop' );
+register_activation_hook( __FILE__, 'rop_activation' );
+register_deactivation_hook( __FILE__, 'rop_deactivation' );
+
+/**
+ * Shows a notice for sites running PHP less than 5.6.
+ *
+ * @since    8.1.4
+ */
+function rop_php_notice() {
+		?>
+
+		<div class="notice notice-error is-dismissible">
+			<?php echo sprintf( __( '%1$s You\'re using a PHP version lower than 5.6! Revive Old Posts requires at least %2$sPHP 5.6%3$s to function properly. Plugin has been deactivated. %4$sLearn more here%5$s. %6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/947-how-to-update-your-php-version" target="_blank">', '</a>', '</p>' ); ?>
+		</div>
+		<?php
+}
+
+/**
+ * Deactivates Revive Old Posts.
+ *
+ * @since    8.1.4
+ */
+function deactivate_rop() {
+	if ( is_plugin_active( 'tweet-old-post/tweet-old-post.php' ) ) {
+			deactivate_plugins( 'tweet-old-post/tweet-old-post.php' );
+	}
+}
 
 /**
  * Begins execution of the plugin.
@@ -67,8 +92,13 @@ register_deactivation_hook( __FILE__, 'deactivate_rop' );
  */
 function run_rop() {
 
+	if ( version_compare( PHP_VERSION, '5.6.0', '<' ) ) {
+		add_action( 'admin_notices', 'rop_php_notice' );
+		add_action( 'admin_init', 'deactivate_rop' );
+	}
+
 	define( 'ROP_PRO_URL', 'http://revive.social/plugins/revive-old-post/' );
-	define( 'ROP_LITE_VERSION', '8.1.3' );
+	define( 'ROP_LITE_VERSION', '8.1.4' );
 	define( 'ROP_LITE_BASE_FILE', __FILE__ );
 	define( 'ROP_DEBUG', false );
 	define( 'ROP_LITE_PATH', plugin_dir_path( __FILE__ ) );

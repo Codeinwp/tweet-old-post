@@ -140,13 +140,13 @@ class Rop_I18n {
 				'posts_desc'                  => __( 'Posts excluded from sharing, filtered based on previous selections.', 'tweet-old-post' ),
 				'ga_title'                    => __( 'Enable Google Analytics Tracking', 'tweet-old-post' ),
 				'ga_desc'                     => __(
-					'If checked an utm query willbe added to URL\'s so that you cand better track
-							trafic.',
+					'If checked, UTM query tags will be added to URL of shares so that you can better track
+							traffic from Revive Old Posts.',
 					'tweet-old-post'
 				),
 				'ga_yes'                      => __( 'Yes', 'tweet-old-post' ),
-				'custom_share_title'          => __( 'Enable Custom Share Messages', 'tweet-old-post' ),
-				'custom_share_desc'           => __( 'These messages will override the post format settings. You can go to each post and add multiple custom messages.', 'tweet-old-post' ),
+				'custom_share_title'          => __( 'Enable Share Variations (Custom Share Messages)', 'tweet-old-post' ),
+				'custom_share_desc'           => __( 'These messages will override the Post Content option in Post Format settings. You can go to each post and add multiple share content variations.', 'tweet-old-post' ),
 				'custom_share_yes'            => __( 'Yes', 'tweet-old-post' ),
 				'custom_share_upsell'         => __( 'Using a custom share message is available in the pro version.', 'tweet-old-post' ),
 				'instant_share_title'         => __( 'Enable Instant Sharing option', 'tweet-old-post' ),
@@ -304,10 +304,10 @@ You can try to disable any of the security plugins that you use in order to see 
 				),
 			),
 			'post_editor' => array(
-				'remove_message'      => __( 'Remove Custom Message', 'tweet-old-post' ),
-				'add_message'         => __( 'Add New Custom Message', 'tweet-old-post' ),
-				'random_message_info' => sprintf( __( 'A custom message that will be selected randomly for each share and will overwrite the default post. Supports %1$smagic tags%2$s.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/952-available-magic-tags-in-revive-old-posts" target="_blank">', '</a>' ),
-				'message_no'          => __( 'Custom message #', 'tweet-old-post' ),
+				'remove_message'      => __( 'Remove Share Variation', 'tweet-old-post' ),
+				'add_message'         => __( 'Add New Share Variation', 'tweet-old-post' ),
+				'random_message_info' => sprintf( __( 'A share variation that will be selected randomly for each share and will overwrite the post share content. Supports %1$smagic tags%2$s.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/952-available-magic-tags-in-revive-old-posts" target="_blank">', '</a>' ),
+				'message_no'          => __( 'Share Variation #', 'tweet-old-post' ),
 			),
 			// pro only.
 			'publish_now' => array(

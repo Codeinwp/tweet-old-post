@@ -26,11 +26,8 @@ class Rop_Admin {
 	 *
 	 * @var array Array of script vs. page slugs. If page slugs is an array, then an exact match will occur.
 	 */
-	private $allowed_screens = array(
-		'dashboard'   => 'TweetOldPost',
-		'exclude'     => 'rop_content_filters',
-		'publish_now' => array( 'post' ),
-	);
+	private $allowed_screens;
+
 	/**
 	 * The ID of this plugin.
 	 *
@@ -62,24 +59,17 @@ class Rop_Admin {
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
 
-	}
+		$general_settings = new Rop_Settings_Model;
 
-	/**
-	 * Shows a notice for sites running PHP less than 5.6.
-	 *
-	 * @since    8.1.2
-	 */
-	public function rop_php_notice() {
+		$post_types = wp_list_pluck( $general_settings->get_selected_post_types(), 'value' );
+		$attachment_post_type = array_search( 'attachment', $post_types );
+		unset( $post_types[ $attachment_post_type ] );
 
-		if ( version_compare( PHP_VERSION, '5.6.0', '<' ) ) {
-			?>
-
-			<div class="notice notice-error is-dismissible">
-				<?php printf( __( '%1$s You\'re using a PHP version lower than 5.6! Revive Old Posts requires at least %2$sPHP 5.6%3$s to function properly. %4$sLearn more here%5$s. %6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/947-how-to-update-your-php-version" target="_blank">', '</a>', '</p>' ); ?>
-			</div>
-			<?php
-
-		}
+		$this->allowed_screens = array(
+			'dashboard'   => 'TweetOldPost',
+			'exclude'     => 'rop_content_filters',
+			'publish_now' => $post_types,
+		);
 
 	}
 

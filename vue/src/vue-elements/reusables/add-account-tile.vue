@@ -2,7 +2,7 @@
 	<div>
 		<div class="tile tile-centered rop-add-account">
 			<a class="tile-icon c-hand" @click="addAccountActive = !addAccountActive">
-				<div class="icon_box" :class="(addAccountActive) ? 'close bg-error' : 'open bg-success'">
+				<div class="icon_box" id="rop-add-account-btn" :class="(addAccountActive) ? 'close bg-error' : 'open bg-success'">
 					<i class="fa fa-2x fa-close" aria-hidden="true"></i>
 				</div>
 			</a>
@@ -60,18 +60,18 @@
 		padding: 0;
 		transition: .3s ease;
 	}
-	
+
 	.icon_box.close .fa {
 		line-height: 1.6em;
 	}
-	
+
 	.icon_box.open .fa {
 		line-height: 1.7em;
 		width: 20px;
 		transform: rotate(-135deg);
 		-webkit-transform: rotate(-135deg);
 	}
-	
+
 	.fa {
 		transition: all .3s cubic-bezier(.34, 1.61, .7, 1);
 	}

@@ -7,7 +7,6 @@
 			</div>
 			<empty-active-accounts v-if="accountsCount === 0"></empty-active-accounts>
 			<div class="container" v-if="accountsCount > 0">
-				
 				<div class="columns">
 					<div class="column col-3 col-sm-12 col-md-12 col-xl-3 col-lg-3 col-xs-12 col-rop-selector-accounts">
 						<span class="divider"></span>
@@ -129,7 +128,7 @@
 				}
 			},
 			active_account_name: function () {
-				
+
 				return this.active_accounts[this.selected_account].user;
 
 			},
@@ -268,18 +267,18 @@
 		height: 30px;
 		padding: 5px;
 	}
-	
+
 	.icon_box.no-image {
 		padding: 0;
 	}
-	
+
 	.icon_box.has_image > .fa {
 		width: 15px;
 		height: 15px;
 		padding: 0;
 		line-height: 15px;
 	}
-	
+
 	.icon_box.no-image > .fa {
 		font-size: 20px;
 		background: transparent;

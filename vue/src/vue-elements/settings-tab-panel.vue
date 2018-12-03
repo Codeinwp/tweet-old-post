@@ -56,7 +56,7 @@
 					</div>
 					<div class="column col-6 col-sm-12 vertical-align text-left">
 						<div class="form-group">
-							<label class="form-checkbox">
+							<label class="form-checkbox" id="share_more_than_once">
 								<input type="checkbox" v-model="generalSettings.more_than_once"/>
 								<i class="form-icon"></i> {{labels.share_once_yes}}
 							</label>
@@ -70,7 +70,7 @@
 						<p class="text-gray">{{labels.post_types_desc}}</p>
 					</div>
 					<div class="column col-6 col-sm-12 vertical-align text-left rop-control">
-						<multiple-select :options="postTypes" :disabled="isPro"
+						<multiple-select id="rop_post_types" :options="postTypes" :disabled="isPro"
 						                 :selected="generalSettings.selected_post_types"
 						                 :changed-selection="updatedPostTypes"></multiple-select>
 
@@ -92,7 +92,7 @@
 						<b>{{labels.taxonomies_title}}</b>
 						<p class="text-gray">{{labels.taxonomies_desc}}</p>
 					</div>
-					<div class="column col-6 col-sm-12 vertical-align text-left">
+					<div id="rop_taxonomies" class="column col-6 col-sm-12 vertical-align text-left">
 						<div class="input-group">
 							<multiple-select :options="taxonomies"
 							                 :selected="generalSettings.selected_taxonomies"
@@ -137,7 +137,7 @@
 									</div>
 									<div class="column col-6 col-sm-12 vertical-align text-left rop-control">
 										<div class="form-group">
-											<label class="form-checkbox">
+											<label id="rop_instant_share" class="form-checkbox">
 												<input type="checkbox" v-model="generalSettings.instant_share"/>
 												<i class="form-icon"></i>{{labels.instant_share_yes}}
 											</label>
@@ -171,7 +171,7 @@
 					</div>
 					<div class="column col-6 col-sm-12 vertical-align text-left rop-control">
 						<div class="form-group">
-							<label class="form-checkbox">
+							<label id="rop_custom_share_msg" class="form-checkbox">
 								<input type="checkbox" :disabled="!isPro" v-model="generalSettings.custom_messages"/>
 								<i class="form-icon"></i>{{labels.custom_share_yes}}
 							</label>

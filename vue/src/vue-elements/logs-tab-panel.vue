@@ -18,11 +18,11 @@
 				</div>
 				<div class="empty column col-12" v-else-if="logs_no === 0">
 					<div class="empty-icon">
-						<i class="fa fa-3x fa-user-circle-o"></i>
+						<i class="fa fa-3x fa-info-circle"></i>
 					</div>
 					<p class="empty-title h5">{{labels.no_logs}}</p>
 				</div>
-				
+
 				<div class="column col-12 mt-2" v-for=" (data, index) in logs " v-else-if="logs_no >  0">
 					<div class="toast log-toast" :class="'toast-' + data.type">
 						<small class="pull-right text-right">{{formatDate ( data.time ) }}</small>
@@ -100,17 +100,17 @@
 		margin: 0px;
 		line-height: inherit;
 	}
-	
+
 	#rop_core .toast.log-toast:hover {
 		opacity: 0.9;
 	}
-	
+
 	#rop_core .toast.log-toast {
 		padding: 0.1rem;
 		padding-left: 10px;
 		margin-top: 2px;
 	}
-	
+
 	#rop_core .container {
 		min-height: 400px;
 	}

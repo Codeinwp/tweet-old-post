@@ -27,7 +27,7 @@
 				<small><i>' . Rop_I18n::get_labels( 'post_editor.random_message_info' ) . '</i></small>
 			</td>
 			<td width="70%">
-				<textarea placeholder="Description" cols="55" rows="5" name="rop_custom_description[]" style="width: 100%;">' . ( ( $field['rop_custom_description'] != '' ) ? esc_attr( $field['rop_custom_description'] ) : '' ) . '</textarea></td>
+				<textarea placeholder="' . Rop_Pro_I18n::get_labels( 'magic_tags.example' ) . '" cols="55" rows="5" name="rop_custom_description[]" style="width: 100%;">' . ( ( $field['rop_custom_description'] != '' ) ? esc_attr( $field['rop_custom_description'] ) : '' ) . '</textarea></td>
 			<td width="15%"><a class="button remove-row" href="#1">' . Rop_I18n::get_labels( 'post_editor.remove_message' ) . '</a></td>
 		</tr>
 		';
