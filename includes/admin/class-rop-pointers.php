@@ -213,7 +213,7 @@ class Rop_Pointers {
 						'event'  => 'input click change',
 					),
 					'options'      => array(
-						'content'  => '<h3>' . esc_html__( 'Post types', 'tweet-old-post' ) . '</h3>' .
+						'content'  => '<h3>' . esc_html__( 'Post Types', 'tweet-old-post' ) . '</h3>' .
 						'<p>' . esc_html__( 'Rop works with any post type, from products to posts, to custom post types.', 'tweet-old-post' ) . '</p>' .
 						'<p>' . esc_html__( 'You can share media straight from your media library!', 'tweet-old-post' ) . '</p>' .
 						'<p>' . sprintf( __( '%1$s%2$sLearn more about this feature%3$s%4$s.', 'tweet-old-post' ), '<strong>', '<a href="https://docs.revive.social/article/968-share-different-post-types-w-revive-old-posts" target="_blank">', '</a>', '</strong>' ) . '</p>',
@@ -231,7 +231,7 @@ class Rop_Pointers {
 						'event'  => 'input click change',
 					),
 					'options'      => array(
-						'content'  => '<h3>' . esc_html__( 'Taxonomy filtering', 'tweet-old-post' ) . '</h3>' .
+						'content'  => '<h3>' . esc_html__( 'Taxonomy Filtering', 'tweet-old-post' ) . '</h3>' .
 						'<p>' . esc_html__( 'Here you can set which WordPress taxonomies you\'d like to include/exclude from sharing.', 'tweet-old-post' ) . '</p>' .
 						'<p>' . sprintf( __( '%1$sNote:%2$s', 'tweet-old-post' ), '<strong>', '</strong>' ) . '</p>' .
 						'<p>' . sprintf( __( 'Selecting options here and %1$schecking%2$s the Exclude box will %1$sprevent%2$s posts in those taxonomies from sharing.', 'tweet-old-post' ), '<strong>', '</strong>' ) . '</p>' .
