@@ -1,4 +1,12 @@
 
+ ### v8.1.4 - 2018-12-03 
+ **Changes:** 
+ * New: Admin pointers for new plugin installs
+* Change: Rename custom messages to "Share Variations"
+* Fix: Automatically remove whitespace when adding credentials
+* Fix: Excess blank space in shares caused by Gutenberg Editor
+* PRO Fix: Publish now not showing on custom post types edit screens
+ 
  ### v8.1.3 - 2018-11-01 
  **Changes:** 
  * - Adds: Option to delete plugin settings on uninstall
