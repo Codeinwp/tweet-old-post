@@ -78,6 +78,28 @@ abstract class Rop_Url_Shortner_Abstract {
 	public abstract function init();
 
 	/**
+	 * Notify a save credentials action.
+	 *
+	 * @since   ?
+	 * @access  public
+	 * @return mixed
+	 */
+	public function save( $credentials ) {
+		return $credentials;
+	}
+
+	/**
+	 * Method to filter credentials before processing them.
+	 *
+	 * @since   ?
+	 * @access  public
+	 * @return mixed
+	 */
+	public function filter_credentials( $credentials ) {
+		return $credentials;
+	}
+
+	/**
 	 * Returns the stored credentials from DB.
 	 *
 	 * @since   8.0.0
@@ -85,7 +107,7 @@ abstract class Rop_Url_Shortner_Abstract {
 	 * @return mixed
 	 */
 	public function get_credentials() {
-		return $this->model->credentials();
+		return $this->filter_credentials( $this->model->credentials() );
 	}
 
 	/**
@@ -99,9 +121,8 @@ abstract class Rop_Url_Shortner_Abstract {
 	 * @return mixed
 	 */
 	public function set_credentials( $credentials ) {
-		$this->model->save( $credentials );
+		$this->save( $this->model->save( $credentials ) );
 		$this->credentials = $this->get_credentials();
-
 		return $this->credentials;
 	}
 
