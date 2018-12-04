@@ -52,7 +52,7 @@ class Test_RopPostFormat extends WP_UnitTestCase {
 		// bit.ly Test
 		$bitly = new Rop_Bitly_Shortner();
 		$key   = '604a207ee7119fb60f66b1296ff0d9fa74cf8e01';
-		$bitly->set_credentials( array( 'generic_access_token' => $user ) );
+		$bitly->set_credentials( array( 'generic_access_token' => $key ) );
 		$short_url = $bitly->shorten_url( $url );
 		$this->assertNotEquals( $url, $short_url );
 
