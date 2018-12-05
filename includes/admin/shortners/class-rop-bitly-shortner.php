@@ -32,6 +32,24 @@ class Rop_Bitly_Shortner extends Rop_Url_Shortner_Abstract {
 	}
 
 	/**
+	 * Handles upgrade from old authentication to new oauth2 keys authentication.
+	 *
+	 * @since   ?
+	 * @access  public
+	 * @return mixed
+	 */
+	public function filter_credentials( $credentials ) {
+		// if the keys are the same, no sweat.
+		// if they are anything but identical, we should assume these need to be refreshed as this could be an upgrade to oauth2 keys.
+		$prev   = array_keys( $credentials );
+		$now    = array_keys( $this->credentials );
+		if ( ! empty( $diff = array_diff( $prev, $now ) ) ) {
+			return $this->credentials;
+		}
+		return $credentials;
+	}
+
+	/**
 	 * Method to retrieve the shorten url from the API call.
 	 *
 	 * @since   8.0.0
