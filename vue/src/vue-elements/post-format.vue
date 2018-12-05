@@ -312,9 +312,13 @@
 		},
 		filters: {
 			capitalize: function (value) {
-				if (!value) return ''
-				value = value.toString()
-				return value.charAt(0).toUpperCase() + value.slice(1)
+				if (!value) return '';
+				value = value.toString().split('_');
+    var name = '';
+    for(var x = 0; x < value.length; x++){
+        name += value[x].charAt(0).toUpperCase() + value[x].slice(1) + ' ';
+    }
+				return name;
 			}
 		}
 	}
