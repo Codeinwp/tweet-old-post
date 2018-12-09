@@ -391,7 +391,7 @@ class Rop_Pointers {
 				return;
 		}
 
-		if( empty(	$pointers ) ){
+		if ( empty( $pointers ) ) {
 					return;
 		}
 
