@@ -211,10 +211,10 @@ class Rop_Post_Format_Helper {
 				$content = get_the_title( $post_id );
 				break;
 			case 'post_content':
-				$content = apply_filters( 'the_content', get_post_field( 'post_content', $post_id ) );
+				$content = get_post_field( apply_filters( 'rop_content','post_content', $post_id ), $post_id );
 				break;
 			case 'post_title_content':
-				$content = get_the_title( $post_id ) . ' ' . apply_filters( 'the_content', get_post_field( 'post_content', $post_id ) );
+				$content = get_the_title( $post_id ) . ' ' . get_post_field( apply_filters( 'rop_content','post_content', $post_id ), $post_id );
 				break;
 			case 'custom_field':
 				$content = $this->get_custom_field_value( $post_id, $this->post_format['custom_meta_field'] );
