@@ -106,8 +106,11 @@ abstract class Rop_Url_Shortner_Abstract {
 	 * @access  public
 	 * @return mixed
 	 */
-	public function get_credentials() {
-		return $this->filter_credentials( $this->model->credentials() );
+	public function get_credentials( $use_filter = false ) {
+		if ( $use_filter ) {
+			return $this->filter_credentials( $this->model->credentials() );
+		}
+		return $this->model->credentials();
 	}
 
 	/**
@@ -122,7 +125,7 @@ abstract class Rop_Url_Shortner_Abstract {
 	 */
 	public function set_credentials( $credentials ) {
 		$this->save( $this->model->save( $credentials ) );
-		$this->credentials = $this->get_credentials();
+		$this->credentials = $this->get_credentials( true );
 		return $this->credentials;
 	}
 

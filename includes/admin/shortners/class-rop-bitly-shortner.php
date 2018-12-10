@@ -60,13 +60,27 @@ class Rop_Bitly_Shortner extends Rop_Url_Shortner_Abstract {
 	 * @return string
 	 */
 	public function shorten_url( $url ) {
+		$credentials    = array();
+		if ( array_key_exists( 'generic_access_token', $this->credentials ) ) {
+			$credentials    = array(
+				'access_token'   => $this->credentials['generic_access_token'],
+			);
+		} else {
+			$credentials    = array(
+				'login'   => $this->credentials['user'],
+				'apiKey'  => $this->credentials['key'],
+			);
+		}
+
 		$response = $this->callAPI(
 			'https://api-ssl.bit.ly/v3/shorten',
 			array( 'method' => 'get' ),
-			array(
-				'longUrl' => $url,
-				'format'  => 'txt',
-				'access_token'   => $this->credentials['generic_access_token'],
+			array_merge(
+				array(
+					'longUrl' => $url,
+					'format'  => 'txt',
+				),
+				$credentials
 			),
 			null
 		);
