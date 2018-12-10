@@ -53,11 +53,6 @@
 						{{labels.now}}: {{ formatedDate }}
 					</div>
 					<countdown :current_time="current_time"/>
-					<div class="rop-steps" v-if="!start_status">
-					<span class="rop-step rop-step-incomplete" v-if="haveAccounts && !start_status"><i class="fa fa-times-circle"> Connect An Account</i></span>
-					<span class="rop-step rop-step-complete" v-if="!haveAccounts && !start_status"><i class="fa fa-check-circle"> Connected</i></span>
-					<span class="rop-step rop-step-incomplete" v-if="!start_status"><i class="fa fa-times-circle"> Start Plugin</i></span>
-					</div>
 					<button  id="rop_start_stop_btn" class="btn" :class="btn_class"
 					        :data-tooltip="labels.active_account_warning"
 					        @click="togglePosting()" :disabled="haveAccounts">
