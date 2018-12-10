@@ -51,8 +51,8 @@ class Test_RopPostFormat extends WP_UnitTestCase {
 
 		// bit.ly Test
 		$bitly = new Rop_Bitly_Shortner();
-		$user  = 'o_57qgimegp1';
-		$key   = 'R_9a63d988de77438aaa6b3cd8e0830b6b';
+		$user  = getenv( 'BITLY_U' );
+		$key   = getenv( 'BITLY_P' );
 		$bitly->set_credentials( array( 'user' => $user, 'key' => $key ) );
 		$short_url = $bitly->shorten_url( $url );
 		$this->assertNotEquals( $url, $short_url );
@@ -66,7 +66,7 @@ class Test_RopPostFormat extends WP_UnitTestCase {
 
 		// firebase Test
 		$googl = new Rop_Firebase_Shortner();
-		$key   = 'AIzaSyAXI8IA7oRqnKkebPBPhxEcdwC7zXqoAvQ';
+		$key   = getenv( 'FIREBASE_K' );
 		$googl->set_credentials( array( 'key' => $key, 'domain' => 'https://somethingps.page.link' ) );
 		$short_url = $googl->shorten_url( $url );
 
@@ -83,7 +83,7 @@ class Test_RopPostFormat extends WP_UnitTestCase {
 
 		// rebrand.ly Test. Disabled until we find a way of testing it  without tmp keys.
 //		$rebrandly = new Rop_Rebrandly_Shortner();
-//		$key   = '6f74a48c3e114ed9973feaa45ccdd632';
+//		$key   = getenv( 'REBRANDLY_K' );
 //		$rebrandly->set_credentials( array( 'key' => $key, 'domain' => '' ) );
 //		$short_url = $rebrandly->shorten_url( $url );
 //
