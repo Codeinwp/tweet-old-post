@@ -391,6 +391,10 @@ class Rop_Pointers {
 				return;
 		}
 
+		if ( empty( $pointers ) ) {
+					return;
+		}
+
 		$pointers = wp_json_encode( $pointers );
 
 		?>
