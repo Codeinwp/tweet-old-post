@@ -60,15 +60,16 @@ class Rop_Bitly_Shortner extends Rop_Url_Shortner_Abstract {
 	 * @return string
 	 */
 	public function shorten_url( $url ) {
+		$saved          = $this->get_credentials();
 		$credentials    = array();
-		if ( array_key_exists( 'generic_access_token', $this->credentials ) ) {
+		if ( array_key_exists( 'generic_access_token', $saved ) ) {
 			$credentials    = array(
-				'access_token'   => $this->credentials['generic_access_token'],
+				'access_token'   => $saved['generic_access_token'],
 			);
 		} else {
 			$credentials    = array(
-				'login'   => $this->credentials['user'],
-				'apiKey'  => $this->credentials['key'],
+				'login'   => $saved['user'],
+				'apiKey'  => $saved['key'],
 			);
 		}
 
