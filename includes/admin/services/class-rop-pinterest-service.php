@@ -377,7 +377,7 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		//don't shorten post link, pinterest might reject post if shortened and it also looks bad on pinterest with a shortlink
+		// Don't shorten post link, pinterest might reject post if shortened and it also looks bad on pinterest with a shortlink
 		$pin = $api->pins->create(
 			array(
 				'note'      => $this->strip_excess_blank_lines( $post_details['content'] ) . $post_details['hashtags'],
