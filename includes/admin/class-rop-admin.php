@@ -58,7 +58,7 @@ class Rop_Admin {
 
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
-    $this->get_publish_now_post_types();
+		$this->get_publish_now_post_types();
 
 	}
 
@@ -85,20 +85,18 @@ class Rop_Admin {
 	}
 
 	/**
-	* Initialize the class and set its properties.
-	*
-	* @since    8.1.5
-	*
-	*
-	*/
-	private function  get_publish_now_post_types(){
+	 * Initialize the class and set its properties.
+	 *
+	 * @since    8.1.5
+	 */
+	private function get_publish_now_post_types() {
 
 		$general_settings = new Rop_Settings_Model;
 
 		$post_types = wp_list_pluck( $general_settings->get_selected_post_types(), 'value' );
 		$attachment_post_type = array_search( 'attachment', $post_types );
 
-		if( ! empty( $attachment_post_type ) ){
+		if ( ! empty( $attachment_post_type ) ) {
 			unset( $post_types[ $attachment_post_type ] );
 		}
 
