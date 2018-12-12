@@ -27,9 +27,26 @@ class Rop_Bitly_Shortner extends Rop_Url_Shortner_Abstract {
 	public function init() {
 		$this->service_name = 'bit.ly';
 		$this->credentials  = array(
-			'user' => '',
-			'key'  => '',
+			'generic_access_token'  => '',
 		);
+	}
+
+	/**
+	 * Handles upgrade from old authentication to new oauth2 keys authentication.
+	 *
+	 * @since   ?
+	 * @access  public
+	 * @return mixed
+	 */
+	public function filter_credentials( $credentials ) {
+		// if the keys are the same, no sweat.
+		// if they are anything but identical, we should assume these need to be refreshed as this could be an upgrade to oauth2 keys.
+		$prev   = array_keys( $credentials );
+		$now    = array_keys( $this->credentials );
+		if ( ! empty( $diff = array_diff( $prev, $now ) ) ) {
+			return $this->credentials;
+		}
+		return $credentials;
 	}
 
 	/**
@@ -43,15 +60,28 @@ class Rop_Bitly_Shortner extends Rop_Url_Shortner_Abstract {
 	 * @return string
 	 */
 	public function shorten_url( $url ) {
+		$saved          = $this->get_credentials();
+		$credentials    = array();
+		if ( array_key_exists( 'generic_access_token', $saved ) ) {
+			$credentials    = array(
+				'access_token'   => $saved['generic_access_token'],
+			);
+		} else {
+			$credentials    = array(
+				'login'   => $saved['user'],
+				'apiKey'  => $saved['key'],
+			);
+		}
 
 		$response = $this->callAPI(
 			'https://api-ssl.bit.ly/v3/shorten',
 			array( 'method' => 'get' ),
-			array(
-				'longUrl' => $url,
-				'format'  => 'txt',
-				'login'   => $this->credentials['user'],
-				'apiKey'  => $this->credentials['key'],
+			array_merge(
+				array(
+					'longUrl' => $url,
+					'format'  => 'txt',
+				),
+				$credentials
 			),
 			null
 		);
