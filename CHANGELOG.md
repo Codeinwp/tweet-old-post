@@ -1,4 +1,13 @@
 
+ ### v8.1.5 - 2018-12-13 
+ **Changes:** 
+ * New: Made post share content filterable, you can now use post excerpt field (see docs)
+* New: Pinterest shares will now link to the post on your website
+* Changed: Bit.ly authentication method, old method will be deprecated in the future
+* Changed: Custom message labels
+* Fix: Pointer JavaScript error
+* PRO Fix: Publish now feature not always showing
+ 
  ### v8.1.4 - 2018-12-03 
  **Changes:** 
  * New: Admin pointers for new plugin installs
