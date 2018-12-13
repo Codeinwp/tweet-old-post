@@ -98,6 +98,8 @@ class Rop_Admin {
 		$model = new Rop_Post_Format_Model;
 		$post_format = $model->get_post_format();
 
+	  $shorteners = array();
+
 		foreach ( $post_format as $account_id => $option ) {
 			$shorteners[] = $option['short_url_service'];
 		}
