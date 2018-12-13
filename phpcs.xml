@@ -33,7 +33,8 @@
         <exclude name="WordPress.Arrays.ArrayDeclarationSpacing" />
         <exclude name="Squiz.PHP.CommentedOutCode" />
         <exclude name="WordPress.WP.I18n.MissingTranslatorsComment" />
-         <exclude name="WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned" />
+        <exclude name="WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned" />
+        <exclude name="Generic.Files.LineEndings.InvalidEOLChar" />
     </rule>
     <rule ref="WordPress-Docs">
 

@@ -566,6 +566,14 @@ process.umask = function() { return 0; };
 /* 4 */
 /***/ (function(module, exports) {
 
+var core = module.exports = { version: '2.5.7' };
+if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
 // https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
 var global = module.exports = typeof window != 'undefined' && window.Math == Math
   ? window : typeof self != 'undefined' && self.Math == Math ? self
@@ -575,12 +583,12 @@ if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var store = __webpack_require__(31)('wks');
-var uid = __webpack_require__(32);
-var Symbol = __webpack_require__(4).Symbol;
+var uid = __webpack_require__(33);
+var Symbol = __webpack_require__(5).Symbol;
 var USE_SYMBOL = typeof Symbol == 'function';
 
 var $exports = module.exports = function (name) {
@@ -592,7 +600,7 @@ $exports.store = store;
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11556,10 +11564,10 @@ Vue.compile = compileToFunctions;
 
 /* harmony default export */ __webpack_exports__["default"] = (Vue);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(3), __webpack_require__(7), __webpack_require__(22).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(3), __webpack_require__(8), __webpack_require__(22).setImmediate))
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports) {
 
 var g;
@@ -11586,19 +11594,11 @@ module.exports = g;
 
 
 /***/ }),
-/* 8 */
-/***/ (function(module, exports) {
-
-var core = module.exports = { version: '2.5.5' };
-if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
-
-
-/***/ }),
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var dP = __webpack_require__(19);
-var createDesc = __webpack_require__(36);
+var createDesc = __webpack_require__(37);
 module.exports = __webpack_require__(12) ? function (object, key, value) {
   return dP.f(object, key, createDesc(1, value));
 } : function (object, key, value) {
@@ -11662,7 +11662,7 @@ module.exports = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // to indexed object, toObject with fallback for non-array-like ES3 strings
-var IObject = __webpack_require__(43);
+var IObject = __webpack_require__(44);
 var defined = __webpack_require__(15);
 module.exports = function (it) {
   return IObject(defined(it));
@@ -11686,7 +11686,7 @@ module.exports = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var shared = __webpack_require__(31)('keys');
-var uid = __webpack_require__(32);
+var uid = __webpack_require__(33);
 module.exports = function (key) {
   return shared[key] || (shared[key] = uid(key));
 };
@@ -11697,8 +11697,8 @@ module.exports = function (key) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var anObject = __webpack_require__(11);
-var IE8_DOM_DEFINE = __webpack_require__(49);
-var toPrimitive = __webpack_require__(50);
+var IE8_DOM_DEFINE = __webpack_require__(50);
+var toPrimitive = __webpack_require__(51);
 var dP = Object.defineProperty;
 
 exports.f = __webpack_require__(12) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
@@ -11804,7 +11804,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
                          (typeof global !== "undefined" && global.clearImmediate) ||
                          (this && this.clearImmediate);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
 /* 23 */
@@ -11997,7 +11997,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(3)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(3)))
 
 /***/ }),
 /* 24 */
@@ -12010,7 +12010,7 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _vue = __webpack_require__(6);
+var _vue = __webpack_require__(7);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -13270,7 +13270,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Http", function() { return Http; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Resource", function() { return Resource; });
 /*!
- * vue-resource v1.5.0
+ * vue-resource v1.5.1
  * https://github.com/pagekit/vue-resource
  * Released under the MIT License.
  */
@@ -14876,16 +14876,29 @@ module.exports = function (it) {
 /* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var global = __webpack_require__(4);
+var core = __webpack_require__(4);
+var global = __webpack_require__(5);
 var SHARED = '__core-js_shared__';
 var store = global[SHARED] || (global[SHARED] = {});
-module.exports = function (key) {
-  return store[key] || (store[key] = {});
-};
+
+(module.exports = function (key, value) {
+  return store[key] || (store[key] = value !== undefined ? value : {});
+})('versions', []).push({
+  version: core.version,
+  mode: __webpack_require__(32) ? 'pure' : 'global',
+  copyright: '© 2018 Denis Pushkarev (zloirock.ru)'
+});
 
 
 /***/ }),
 /* 32 */
+/***/ (function(module, exports) {
+
+module.exports = true;
+
+
+/***/ }),
+/* 33 */
 /***/ (function(module, exports) {
 
 var id = 0;
@@ -14896,7 +14909,7 @@ module.exports = function (key) {
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports) {
 
 // IE 8- don't enum bug keys
@@ -14906,12 +14919,12 @@ module.exports = (
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var global = __webpack_require__(4);
-var core = __webpack_require__(8);
-var ctx = __webpack_require__(47);
+var global = __webpack_require__(5);
+var core = __webpack_require__(4);
+var ctx = __webpack_require__(48);
 var hide = __webpack_require__(9);
 var has = __webpack_require__(10);
 var PROTOTYPE = 'prototype';
@@ -14974,11 +14987,11 @@ module.exports = $export;
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isObject = __webpack_require__(20);
-var document = __webpack_require__(4).document;
+var document = __webpack_require__(5).document;
 // typeof document.createElement is 'object' in old IE
 var is = isObject(document) && isObject(document.createElement);
 module.exports = function (it) {
@@ -14987,7 +15000,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports) {
 
 module.exports = function (bitmap, value) {
@@ -15001,20 +15014,20 @@ module.exports = function (bitmap, value) {
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var LIBRARY = __webpack_require__(56);
-var $export = __webpack_require__(34);
+var LIBRARY = __webpack_require__(32);
+var $export = __webpack_require__(35);
 var redefine = __webpack_require__(57);
 var hide = __webpack_require__(9);
 var Iterators = __webpack_require__(13);
 var $iterCreate = __webpack_require__(58);
-var setToStringTag = __webpack_require__(38);
+var setToStringTag = __webpack_require__(39);
 var getPrototypeOf = __webpack_require__(62);
-var ITERATOR = __webpack_require__(5)('iterator');
+var ITERATOR = __webpack_require__(6)('iterator');
 var BUGGY = !([].keys && 'next' in [].keys()); // Safari has buggy iterators w/o `next`
 var FF_ITERATOR = '@@iterator';
 var KEYS = 'keys';
@@ -15077,12 +15090,12 @@ module.exports = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var def = __webpack_require__(19).f;
 var has = __webpack_require__(10);
-var TAG = __webpack_require__(5)('toStringTag');
+var TAG = __webpack_require__(6)('toStringTag');
 
 module.exports = function (it, tag, stat) {
   if (it && !has(it = stat ? it : it.prototype, TAG)) def(it, TAG, { configurable: true, value: tag });
@@ -15090,7 +15103,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.13 ToObject(argument)
@@ -15101,12 +15114,12 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.14 / 15.2.3.14 Object.keys(O)
-var $keys = __webpack_require__(42);
-var enumBugKeys = __webpack_require__(33);
+var $keys = __webpack_require__(43);
+var enumBugKeys = __webpack_require__(34);
 
 module.exports = Object.keys || function keys(O) {
   return $keys(O, enumBugKeys);
@@ -15114,18 +15127,18 @@ module.exports = Object.keys || function keys(O) {
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(51), __esModule: true };
+module.exports = { "default": __webpack_require__(52), __esModule: true };
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var has = __webpack_require__(10);
 var toIObject = __webpack_require__(16);
-var arrayIndexOf = __webpack_require__(44)(false);
+var arrayIndexOf = __webpack_require__(45)(false);
 var IE_PROTO = __webpack_require__(18)('IE_PROTO');
 
 module.exports = function (object, names) {
@@ -15143,7 +15156,7 @@ module.exports = function (object, names) {
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for non-array-like ES3 and non-enumerable old V8 strings
@@ -15155,14 +15168,14 @@ module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // false -> Array#indexOf
 // true  -> Array#includes
 var toIObject = __webpack_require__(16);
-var toLength = __webpack_require__(45);
-var toAbsoluteIndex = __webpack_require__(46);
+var toLength = __webpack_require__(46);
+var toAbsoluteIndex = __webpack_require__(47);
 module.exports = function (IS_INCLUDES) {
   return function ($this, el, fromIndex) {
     var O = toIObject($this);
@@ -15184,7 +15197,7 @@ module.exports = function (IS_INCLUDES) {
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.15 ToLength
@@ -15196,7 +15209,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var toInteger = __webpack_require__(17);
@@ -15209,11 +15222,11 @@ module.exports = function (index, length) {
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // optional / simple context binding
-var aFunction = __webpack_require__(48);
+var aFunction = __webpack_require__(49);
 module.exports = function (fn, that, length) {
   aFunction(fn);
   if (that === undefined) return fn;
@@ -15235,7 +15248,7 @@ module.exports = function (fn, that, length) {
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports) {
 
 module.exports = function (it) {
@@ -15245,16 +15258,16 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = !__webpack_require__(12) && !__webpack_require__(21)(function () {
-  return Object.defineProperty(__webpack_require__(35)('div'), 'a', { get: function () { return 7; } }).a != 7;
+  return Object.defineProperty(__webpack_require__(36)('div'), 'a', { get: function () { return 7; } }).a != 7;
 });
 
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.1 ToPrimitive(input [, PreferredType])
@@ -15272,23 +15285,23 @@ module.exports = function (it, S) {
 
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(52);
+__webpack_require__(53);
 __webpack_require__(63);
 module.exports = __webpack_require__(65);
 
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(53);
-var global = __webpack_require__(4);
+__webpack_require__(54);
+var global = __webpack_require__(5);
 var hide = __webpack_require__(9);
 var Iterators = __webpack_require__(13);
-var TO_STRING_TAG = __webpack_require__(5)('toStringTag');
+var TO_STRING_TAG = __webpack_require__(6)('toStringTag');
 
 var DOMIterables = ('CSSRuleList,CSSStyleDeclaration,CSSValueList,ClientRectList,DOMRectList,DOMStringList,' +
   'DOMTokenList,DataTransferItemList,FileList,HTMLAllCollection,HTMLCollection,HTMLFormElement,HTMLSelectElement,' +
@@ -15306,13 +15319,13 @@ for (var i = 0; i < DOMIterables.length; i++) {
 
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var addToUnscopables = __webpack_require__(54);
-var step = __webpack_require__(55);
+var addToUnscopables = __webpack_require__(55);
+var step = __webpack_require__(56);
 var Iterators = __webpack_require__(13);
 var toIObject = __webpack_require__(16);
 
@@ -15320,7 +15333,7 @@ var toIObject = __webpack_require__(16);
 // 22.1.3.13 Array.prototype.keys()
 // 22.1.3.29 Array.prototype.values()
 // 22.1.3.30 Array.prototype[@@iterator]()
-module.exports = __webpack_require__(37)(Array, 'Array', function (iterated, kind) {
+module.exports = __webpack_require__(38)(Array, 'Array', function (iterated, kind) {
   this._t = toIObject(iterated); // target
   this._i = 0;                   // next index
   this._k = kind;                // kind
@@ -15347,26 +15360,19 @@ addToUnscopables('entries');
 
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports) {
 
 module.exports = function () { /* empty */ };
 
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports) {
 
 module.exports = function (done, value) {
   return { value: value, done: !!done };
 };
-
-
-/***/ }),
-/* 56 */
-/***/ (function(module, exports) {
-
-module.exports = true;
 
 
 /***/ }),
@@ -15383,12 +15389,12 @@ module.exports = __webpack_require__(9);
 "use strict";
 
 var create = __webpack_require__(59);
-var descriptor = __webpack_require__(36);
-var setToStringTag = __webpack_require__(38);
+var descriptor = __webpack_require__(37);
+var setToStringTag = __webpack_require__(39);
 var IteratorPrototype = {};
 
 // 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-__webpack_require__(9)(IteratorPrototype, __webpack_require__(5)('iterator'), function () { return this; });
+__webpack_require__(9)(IteratorPrototype, __webpack_require__(6)('iterator'), function () { return this; });
 
 module.exports = function (Constructor, NAME, next) {
   Constructor.prototype = create(IteratorPrototype, { next: descriptor(1, next) });
@@ -15403,7 +15409,7 @@ module.exports = function (Constructor, NAME, next) {
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
 var anObject = __webpack_require__(11);
 var dPs = __webpack_require__(60);
-var enumBugKeys = __webpack_require__(33);
+var enumBugKeys = __webpack_require__(34);
 var IE_PROTO = __webpack_require__(18)('IE_PROTO');
 var Empty = function () { /* empty */ };
 var PROTOTYPE = 'prototype';
@@ -15411,7 +15417,7 @@ var PROTOTYPE = 'prototype';
 // Create object with fake `null` prototype: use iframe Object with cleared prototype
 var createDict = function () {
   // Thrash, waste and sodomy: IE GC bug
-  var iframe = __webpack_require__(35)('iframe');
+  var iframe = __webpack_require__(36)('iframe');
   var i = enumBugKeys.length;
   var lt = '<';
   var gt = '>';
@@ -15449,7 +15455,7 @@ module.exports = Object.create || function create(O, Properties) {
 
 var dP = __webpack_require__(19);
 var anObject = __webpack_require__(11);
-var getKeys = __webpack_require__(40);
+var getKeys = __webpack_require__(41);
 
 module.exports = __webpack_require__(12) ? Object.defineProperties : function defineProperties(O, Properties) {
   anObject(O);
@@ -15466,7 +15472,7 @@ module.exports = __webpack_require__(12) ? Object.defineProperties : function de
 /* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var document = __webpack_require__(4).document;
+var document = __webpack_require__(5).document;
 module.exports = document && document.documentElement;
 
 
@@ -15476,7 +15482,7 @@ module.exports = document && document.documentElement;
 
 // 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
 var has = __webpack_require__(10);
-var toObject = __webpack_require__(39);
+var toObject = __webpack_require__(40);
 var IE_PROTO = __webpack_require__(18)('IE_PROTO');
 var ObjectProto = Object.prototype;
 
@@ -15498,7 +15504,7 @@ module.exports = Object.getPrototypeOf || function (O) {
 var $at = __webpack_require__(64)(true);
 
 // 21.1.3.27 String.prototype[@@iterator]()
-__webpack_require__(37)(String, 'String', function (iterated) {
+__webpack_require__(38)(String, 'String', function (iterated) {
   this._t = String(iterated); // target
   this._i = 0;                // next index
 // 21.1.5.2.1 %StringIteratorPrototype%.next()
@@ -15542,7 +15548,7 @@ module.exports = function (TO_STRING) {
 
 var anObject = __webpack_require__(11);
 var get = __webpack_require__(66);
-module.exports = __webpack_require__(8).getIterator = function (it) {
+module.exports = __webpack_require__(4).getIterator = function (it) {
   var iterFn = get(it);
   if (typeof iterFn != 'function') throw TypeError(it + ' is not iterable!');
   return anObject(iterFn.call(it));
@@ -15554,9 +15560,9 @@ module.exports = __webpack_require__(8).getIterator = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var classof = __webpack_require__(67);
-var ITERATOR = __webpack_require__(5)('iterator');
+var ITERATOR = __webpack_require__(6)('iterator');
 var Iterators = __webpack_require__(13);
-module.exports = __webpack_require__(8).getIteratorMethod = function (it) {
+module.exports = __webpack_require__(4).getIteratorMethod = function (it) {
   if (it != undefined) return it[ITERATOR]
     || it['@@iterator']
     || Iterators[classof(it)];
@@ -15569,7 +15575,7 @@ module.exports = __webpack_require__(8).getIteratorMethod = function (it) {
 
 // getting tag from 19.1.3.6 Object.prototype.toString()
 var cof = __webpack_require__(30);
-var TAG = __webpack_require__(5)('toStringTag');
+var TAG = __webpack_require__(6)('toStringTag');
 // ES3 wrong here
 var ARG = cof(function () { return arguments; }()) == 'Arguments';
 
@@ -15606,7 +15612,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\UVDev\\Source\\Repos\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\multiple-select.vue"
+  var id = "E:\\work\\projects\\webdesign\\wordpress4.8\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\multiple-select.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -15621,7 +15627,7 @@ if (false) {(function () {  module.hot.accept()
 "use strict";
 
 
-var _getIterator2 = __webpack_require__(41);
+var _getIterator2 = __webpack_require__(42);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -15937,7 +15943,7 @@ module.exports = {
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
-var Vue = __webpack_require__(6);
+var Vue = __webpack_require__(7);
 Vue = 'default' in Vue ? Vue['default'] : Vue;
 
 var version = '2.2.2';
@@ -16024,7 +16030,7 @@ exports.mixin = mixin;
 /* 71 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"form-autocomplete\" style=\"width: 100%;\" v-on-clickaway=\"closeDropdown\">\n\t\t<!-- autocomplete input container -->\n\t\t<div class=\"form-autocomplete-input form-input\" :class=\"is_focused\">\n\t\t\t\n\t\t\t<!-- autocomplete chips -->\n\t\t\t<label class=\"chip\" v-for=\"( option, index ) in selected\">\n\t\t\t\t{{option.name}}\n\t\t\t\t<a href=\"#\" class=\"btn btn-clear\" aria-label=\"Close\" @click.prevent=\"removeSelected(index)\"\n\t\t\t\t   role=\"button\"></a>\n\t\t\t</label>\n\t\t\t\n\t\t\t<!-- autocomplete real input box -->\n\t\t\t<input style=\"height: 1.0rem;\" class=\"form-input\" type=\"text\" ref=\"search\" v-model=\"search\"\n\t\t\t       :placeholder=\"autocomplete_placeholder\" @click=\"magic_flag = true\" @focus=\"magic_flag = true\"\n\t\t\t       @keyup=\"magic_flag = true\" @keydown.8=\"popLast()\" @keydown.38=\"highlightItem(true)\"\n\t\t\t       @keydown.40=\"highlightItem()\" :disabled=\"is_disabled\">\n\t\t</div>\n\t\t\n\t\t<!-- autocomplete suggestion list -->\n\t\t<ul class=\"menu\" ref=\"autocomplete_results\" :class=\"is_visible\"\n\t\t    style=\"overflow-y: scroll; max-height: 120px\">\n\t\t\t<!-- menu list chips -->\n\t\t\t<li class=\"menu-item\" v-for=\"( option, index ) in options\" v-if=\"filterSearch(option)\">\n\t\t\t\t<a href=\"#\" @click.prevent=\"addToSelected(index)\" @keydown.38=\"highlightItem(true)\"\n\t\t\t\t   @keydown.40=\"highlightItem()\">\n\t\t\t\t\t<div class=\"tile tile-centered\">\n\t\t\t\t\t\t<div class=\"tile-content\" v-html=\"markMatch(option.name, search)\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</a>\n\t\t\t</li>\n\t\t\t<li v-if=\"has_results\">\n\t\t\t\t<a href=\"#\">\n\t\t\t\t\t<div class=\"tile tile-centered\">\n\t\t\t\t\t\t<div class=\"tile-content\"><i>{{labels.multiselect_not_found}}\"{{search}}\" ...</i></div>\n\t\t\t\t\t</div>\n\t\t\t\t</a>\n\t\t\t</li>\n\t\t</ul>\n\t</div>\n\n";
+module.exports = "\r\n\t<div class=\"form-autocomplete\" style=\"width: 100%;\" v-on-clickaway=\"closeDropdown\">\r\n\t\t<!-- autocomplete input container -->\r\n\t\t<div class=\"form-autocomplete-input form-input\" :class=\"is_focused\">\r\n\t\t\t\r\n\t\t\t<!-- autocomplete chips -->\r\n\t\t\t<label class=\"chip\" v-for=\"( option, index ) in selected\">\r\n\t\t\t\t{{option.name}}\r\n\t\t\t\t<a href=\"#\" class=\"btn btn-clear\" aria-label=\"Close\" @click.prevent=\"removeSelected(index)\"\r\n\t\t\t\t   role=\"button\"></a>\r\n\t\t\t</label>\r\n\t\t\t\r\n\t\t\t<!-- autocomplete real input box -->\r\n\t\t\t<input style=\"height: 1.0rem;\" class=\"form-input\" type=\"text\" ref=\"search\" v-model=\"search\"\r\n\t\t\t       :placeholder=\"autocomplete_placeholder\" @click=\"magic_flag = true\" @focus=\"magic_flag = true\"\r\n\t\t\t       @keyup=\"magic_flag = true\" @keydown.8=\"popLast()\" @keydown.38=\"highlightItem(true)\"\r\n\t\t\t       @keydown.40=\"highlightItem()\" :disabled=\"is_disabled\">\r\n\t\t</div>\r\n\t\t\r\n\t\t<!-- autocomplete suggestion list -->\r\n\t\t<ul class=\"menu\" ref=\"autocomplete_results\" :class=\"is_visible\"\r\n\t\t    style=\"overflow-y: scroll; max-height: 120px\">\r\n\t\t\t<!-- menu list chips -->\r\n\t\t\t<li class=\"menu-item\" v-for=\"( option, index ) in options\" v-if=\"filterSearch(option)\">\r\n\t\t\t\t<a href=\"#\" @click.prevent=\"addToSelected(index)\" @keydown.38=\"highlightItem(true)\"\r\n\t\t\t\t   @keydown.40=\"highlightItem()\">\r\n\t\t\t\t\t<div class=\"tile tile-centered\">\r\n\t\t\t\t\t\t<div class=\"tile-content\" v-html=\"markMatch(option.name, search)\"></div>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</a>\r\n\t\t\t</li>\r\n\t\t\t<li v-if=\"has_results\">\r\n\t\t\t\t<a href=\"#\">\r\n\t\t\t\t\t<div class=\"tile tile-centered\">\r\n\t\t\t\t\t\t<div class=\"tile-content\"><i>{{labels.multiselect_not_found}}\"{{search}}\" ...</i></div>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</a>\r\n\t\t\t</li>\r\n\t\t</ul>\r\n\t</div>\r\n\r\n";
 
 /***/ }),
 /* 72 */,
@@ -16046,7 +16052,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\UVDev\\Source\\Repos\\tweet-old-post\\vue\\src\\vue-elements\\upsell-sidebar.vue"
+  var id = "E:\\work\\projects\\webdesign\\wordpress4.8\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\upsell-sidebar.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -16070,8 +16076,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3bafc00a&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3bafc00a&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-44ed45d8&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-44ed45d8&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -16089,7 +16095,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop-upsell-box[_v-3bafc00a]{\n\t\tmargin-top:20px;\n\t}\n\t#rop_core .rop-upsell-business-card[_v-3bafc00a],\n\t#rop_core .rop-upsell-pro-card[_v-3bafc00a] {\n\t\tpadding: 0;\n\t}\n", ""]);
+exports.push([module.i, "\r\n\t#rop-upsell-box[_v-44ed45d8]{\r\n\t\tmargin-top:20px;\r\n\t}\r\n\t#rop_core .rop-upsell-business-card[_v-44ed45d8],\r\n\t#rop_core .rop-upsell-pro-card[_v-44ed45d8] {\r\n\t\tpadding: 0;\r\n\t}\r\n", ""]);
 
 // exports
 
@@ -16146,7 +16152,7 @@ module.exports = {
 /* 81 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div id=\"rop-upsell-box\" _v-3bafc00a=\"\">\n\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \" _v-3bafc00a=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-3bafc00a=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_pro_upsell\" :alt=\"labels.upgrade_pro_cta\" _v-3bafc00a=\"\">\n\t\t\t</a>\n\t\t</div>\n\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1\" _v-3bafc00a=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-3bafc00a=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_business_upsell\" :alt=\"labels.upgrade_biz_cta\" _v-3bafc00a=\"\">\n\t\t\t</a>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div id=\"rop-upsell-box\" _v-44ed45d8=\"\">\n\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \" _v-44ed45d8=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-44ed45d8=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_pro_upsell\" :alt=\"labels.upgrade_pro_cta\" _v-44ed45d8=\"\">\n\t\t\t</a>\n\t\t</div>\n\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1\" _v-44ed45d8=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-44ed45d8=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_business_upsell\" :alt=\"labels.upgrade_biz_cta\" _v-44ed45d8=\"\">\n\t\t\t</a>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 82 */,
@@ -16371,7 +16377,7 @@ module.exports = "\n\t<div id=\"rop-upsell-box\" _v-3bafc00a=\"\">\n\t\t<div cla
 "use strict";
 
 
-var _vue = __webpack_require__(6);
+var _vue = __webpack_require__(7);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -16413,7 +16419,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\UVDev\\Source\\Repos\\tweet-old-post\\vue\\src\\vue-elements\\exclude-posts-page.vue"
+  var id = "E:\\work\\projects\\webdesign\\wordpress4.8\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\exclude-posts-page.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -16437,8 +16443,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-7d17709b&file=exclude-posts-page.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./exclude-posts-page.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-7d17709b&file=exclude-posts-page.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./exclude-posts-page.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0aec5ff8&file=exclude-posts-page.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./exclude-posts-page.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0aec5ff8&file=exclude-posts-page.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./exclude-posts-page.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -16456,7 +16462,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop-sidebar-selector[_v-7d17709b] {\n\t\tborder: 1px solid #e5e5e5;\n\t\tbackground: #fff;\n\t}\n\t\n\t#rop-posts-listing .rop-post-item td[_v-7d17709b] {\n\t\tposition: relative;\n\t}\n\t\n\t#rop-posts-table[_v-7d17709b] {\n\t\tmargin-top: 20px;\n\t}\n\t\n\t#rop-posts-listing .rop-post-item:hover button.rop-exclude-post[_v-7d17709b] {\n\t\tdisplay: block;\n\t}\n\t\n\t#rop-posts-listing .rop-post-item td button.rop-exclude-post[_v-7d17709b] {\n\t\tposition: absolute;\n\t\ttop: 5px;\n\t\tright: 10px;\n\t\tdisplay: none;\n\t\tpadding: 0px 20px;\n\t}\n\t\n\t.rop-post-true[_v-7d17709b] {\n\t\topacity: 0.8;\n\t\tbackground-color: #F6DBDA;\n\t\t\n\t}\n\t\n\t.rop-load-more-posts[_v-7d17709b] {\n\t\ttext-align: center;\n\t}\n", ""]);
+exports.push([module.i, "\r\n\t#rop-sidebar-selector[_v-0aec5ff8] {\r\n\t\tborder: 1px solid #e5e5e5;\r\n\t\tbackground: #fff;\r\n\t}\r\n\t\r\n\t#rop-posts-listing .rop-post-item td[_v-0aec5ff8] {\r\n\t\tposition: relative;\r\n\t}\r\n\t\r\n\t#rop-posts-table[_v-0aec5ff8] {\r\n\t\tmargin-top: 20px;\r\n\t}\r\n\t\r\n\t#rop-posts-listing .rop-post-item:hover button.rop-exclude-post[_v-0aec5ff8] {\r\n\t\tdisplay: block;\r\n\t}\r\n\t\r\n\t#rop-posts-listing .rop-post-item td button.rop-exclude-post[_v-0aec5ff8] {\r\n\t\tposition: absolute;\r\n\t\ttop: 5px;\r\n\t\tright: 10px;\r\n\t\tdisplay: none;\r\n\t\tpadding: 0px 20px;\r\n\t}\r\n\t\r\n\t.rop-post-true[_v-0aec5ff8] {\r\n\t\topacity: 0.8;\r\n\t\tbackground-color: #F6DBDA;\r\n\t\t\r\n\t}\r\n\t\r\n\t.rop-load-more-posts[_v-0aec5ff8] {\r\n\t\ttext-align: center;\r\n\t}\r\n", ""]);
 
 // exports
 
@@ -16476,7 +16482,7 @@ var _upsellSidebar = __webpack_require__(77);
 
 var _upsellSidebar2 = _interopRequireDefault(_upsellSidebar);
 
-var _vue = __webpack_require__(6);
+var _vue = __webpack_require__(7);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -16870,7 +16876,7 @@ module.exports = {
 /* 303 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div id=\"rop_core\" class=\"columns \" _v-7d17709b=\"\">\n\t\t<div id=\"rop-sidebar-selector\" class=\"column col-3   col-xl-5 col-lg-5 col-md-6 col-sm-6 col-xs-12  pull-right\" _v-7d17709b=\"\">\n\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-7d17709b=\"\">\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align rop-control\" _v-7d17709b=\"\">\n\t\t\t\t\t<b _v-7d17709b=\"\">{{labels.post_types_title}}</b>\n\t\t\t\t\t<p class=\"text-gray\" _v-7d17709b=\"\">{{labels.post_types_desc}}</p>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align text-left rop-control\" _v-7d17709b=\"\">\n\t\t\t\t\t<multiple-select :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-7d17709b=\"\"></multiple-select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t\n\t\t\t<span class=\"divider\" _v-7d17709b=\"\"></span>\n\t\t\t<div class=\"columns py-2\" v-if=\"!isPro\" _v-7d17709b=\"\">\n\t\t\t\t<div class=\"column text-center\" _v-7d17709b=\"\">\n\t\t\t\t\t<p class=\"upsell\" _v-7d17709b=\"\"><i class=\"fa fa-lock\" _v-7d17709b=\"\"></i> {{labels.post_types_upsell}}</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"columns py-2\" _v-7d17709b=\"\">\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align\" _v-7d17709b=\"\">\n\t\t\t\t\t<b _v-7d17709b=\"\">{{labels.taxonomies_title}}</b>\n\t\t\t\t\t<p class=\"text-gray\" _v-7d17709b=\"\">{{labels.taxonomies_desc}}</p>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align text-left\" _v-7d17709b=\"\">\n\t\t\t\t\t<div class=\"input-group\" _v-7d17709b=\"\">\n\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" _v-7d17709b=\"\"></multiple-select>\n\t\t\t\t\t\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"columns\" _v-7d17709b=\"\">\n\t\t\t\t\t\t<span class=\"input-group-addon column col-6 pull-right vertical-align\" _v-7d17709b=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-7d17709b=\"\">{{labels.taxonomies_exclude_explicit}}\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" @change=\"excludeTaxonomiesChange\" _v-7d17709b=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-7d17709b=\"\"></i>\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</span>\n\t\t\t\t\t\t<div class=\"column col-6 py-2 text-right\" _v-7d17709b=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings\" _v-7d17709b=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-save \" v-if=\"!this.is_loading\" _v-7d17709b=\"\"></i>\n\t\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-7d17709b=\"\"></i>\n\t\t\t\t\t\t\t\t{{labels.save_filters}}\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\n\t\t\t</div>\n\t\t\t<upsell-sidebar _v-7d17709b=\"\"></upsell-sidebar>\n\t\t</div>\n\t\t<div id=\"rop-posts-listing\" class=\"column col-9  col-xl-7 col-lg-7 col-md-6 col-sm-6 col-xs-12 col- pull-left\" _v-7d17709b=\"\">\n\t\t\t<div class=\"columns py-2\" _v-7d17709b=\"\">\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align\" _v-7d17709b=\"\">\n\t\t\t\t\t<div class=\"input-group has-icon-right\" _v-7d17709b=\"\">\n\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"searchQuery\" :placeholder=\"labels.search_posts_to_exclude\" _v-7d17709b=\"\">\n\t\t\t\t\t\t<i class=\"form-icon loading\" v-if=\"is_loading\" _v-7d17709b=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 col-sm-12 mt-2\" _v-7d17709b=\"\">\n\t\t\t\t\t<div class=\"form-group pull-right\" v-if=\"searchQuery != '' &amp;&amp; ! show_excluded\" _v-7d17709b=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"excludePostsBatch\" _v-7d17709b=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-save \" v-if=\"!this.is_loading\" _v-7d17709b=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-7d17709b=\"\"></i>\n\t\t\t\t\t\t\t{{labels.exclude_matching}} \"{{searchQuery}}\"\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"form-group pull-right \" _v-7d17709b=\"\">\n\t\t\t\t\t\t<label class=\"form-switch\" _v-7d17709b=\"\">\n\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"show_excluded\" @change=\"excludePostsChange\" _v-7d17709b=\"\">\n\t\t\t\t\t\t\t<i class=\"form-icon\" _v-7d17709b=\"\"></i>{{labels.search_posts_show_excluded}}\n\t\t\t\t\t\t</label>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12  px-2\" v-if=\"postsAvailable\" _v-7d17709b=\"\">\n\t\t\t\t\t<div v-if=\"postsAvailable.length === 0 &amp;&amp; !is_loading\" _v-7d17709b=\"\">\n\t\t\t\t\t\t{{labels.no_posts_found}}\n\t\t\t\t\t</div>\n\t\t\t\t\t<div v-else=\"\" _v-7d17709b=\"\">\n\t\t\t\t\t\t<table id=\"rop-posts-table\" class=\"table table-striped table-hover\" v-if=\" ! is_loading\" _v-7d17709b=\"\">\n\t\t\t\t\t\t\t<tbody _v-7d17709b=\"\"><tr v-for=\"(post,index ) in postsAvailable\" class=\"rop-post-item\" _v-7d17709b=\"\">\n\t\t\t\t\t\t\t\t<td :class=\"'rop-post-' + post.selected\" _v-7d17709b=\"\">{{post.name}}\n\t\t\t\t\t\t\t\t\t<button class=\"btn btn-error rop-exclude-post\" @click=\"excludeSinglePost(post.value,post.selected)\" _v-7d17709b=\"\">\n\t\t\t\t\t\t\t\t\t\t<i class=\"fa\" :class=\"'fa-' + (post.selected ? 'plus' : 'remove') \" v-if=\"!is_loading_single\" _v-7d17709b=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-7d17709b=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t<span v-html=\" ( post.selected ? labels.include_single_post  : labels.exclude_single_post) \" _v-7d17709b=\"\"> </span>\n\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t<tr v-if=\"has_pages\" _v-7d17709b=\"\">\n\t\t\t\t\t\t\t\t<td class=\"rop-load-more-posts\" _v-7d17709b=\"\">\n\t\t\t\t\t\t\t\t\t<button class=\"btn btn-error\" @click=\"loadMorePosts()\" _v-7d17709b=\"\">\n\t\t\t\t\t\t\t\t\t\t<i class=\"fa fa-newspaper-o \" v-if=\"!is_loading_single\" _v-7d17709b=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-7d17709b=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t{{labels.load_more_posts}}\n\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t</tbody></table>\n\t\t\t\t\t\t<div class=\"loading loading-lg\" v-else=\"\" _v-7d17709b=\"\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\n\t</div>\n";
+module.exports = "\n\t<div id=\"rop_core\" class=\"columns \" _v-0aec5ff8=\"\">\n\t\t<div id=\"rop-sidebar-selector\" class=\"column col-3   col-xl-5 col-lg-5 col-md-6 col-sm-6 col-xs-12  pull-right\" _v-0aec5ff8=\"\">\n\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-0aec5ff8=\"\">\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align rop-control\" _v-0aec5ff8=\"\">\n\t\t\t\t\t<b _v-0aec5ff8=\"\">{{labels.post_types_title}}</b>\n\t\t\t\t\t<p class=\"text-gray\" _v-0aec5ff8=\"\">{{labels.post_types_desc}}</p>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align text-left rop-control\" _v-0aec5ff8=\"\">\n\t\t\t\t\t<multiple-select :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-0aec5ff8=\"\"></multiple-select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t\n\t\t\t<span class=\"divider\" _v-0aec5ff8=\"\"></span>\n\t\t\t<div class=\"columns py-2\" v-if=\"!isPro\" _v-0aec5ff8=\"\">\n\t\t\t\t<div class=\"column text-center\" _v-0aec5ff8=\"\">\n\t\t\t\t\t<p class=\"upsell\" _v-0aec5ff8=\"\"><i class=\"fa fa-lock\" _v-0aec5ff8=\"\"></i> {{labels.post_types_upsell}}</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"columns py-2\" _v-0aec5ff8=\"\">\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align\" _v-0aec5ff8=\"\">\n\t\t\t\t\t<b _v-0aec5ff8=\"\">{{labels.taxonomies_title}}</b>\n\t\t\t\t\t<p class=\"text-gray\" _v-0aec5ff8=\"\">{{labels.taxonomies_desc}}</p>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align text-left\" _v-0aec5ff8=\"\">\n\t\t\t\t\t<div class=\"input-group\" _v-0aec5ff8=\"\">\n\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" _v-0aec5ff8=\"\"></multiple-select>\n\t\t\t\t\t\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"columns\" _v-0aec5ff8=\"\">\n\t\t\t\t\t\t<span class=\"input-group-addon column col-6 pull-right vertical-align\" _v-0aec5ff8=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-0aec5ff8=\"\">{{labels.taxonomies_exclude_explicit}}\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" @change=\"excludeTaxonomiesChange\" _v-0aec5ff8=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-0aec5ff8=\"\"></i>\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</span>\n\t\t\t\t\t\t<div class=\"column col-6 py-2 text-right\" _v-0aec5ff8=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings\" _v-0aec5ff8=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-save \" v-if=\"!this.is_loading\" _v-0aec5ff8=\"\"></i>\n\t\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-0aec5ff8=\"\"></i>\n\t\t\t\t\t\t\t\t{{labels.save_filters}}\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\n\t\t\t</div>\n\t\t\t<upsell-sidebar _v-0aec5ff8=\"\"></upsell-sidebar>\n\t\t</div>\n\t\t<div id=\"rop-posts-listing\" class=\"column col-9  col-xl-7 col-lg-7 col-md-6 col-sm-6 col-xs-12 col- pull-left\" _v-0aec5ff8=\"\">\n\t\t\t<div class=\"columns py-2\" _v-0aec5ff8=\"\">\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align\" _v-0aec5ff8=\"\">\n\t\t\t\t\t<div class=\"input-group has-icon-right\" _v-0aec5ff8=\"\">\n\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"searchQuery\" :placeholder=\"labels.search_posts_to_exclude\" _v-0aec5ff8=\"\">\n\t\t\t\t\t\t<i class=\"form-icon loading\" v-if=\"is_loading\" _v-0aec5ff8=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 col-sm-12 mt-2\" _v-0aec5ff8=\"\">\n\t\t\t\t\t<div class=\"form-group pull-right\" v-if=\"searchQuery != '' &amp;&amp; ! show_excluded\" _v-0aec5ff8=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"excludePostsBatch\" _v-0aec5ff8=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-save \" v-if=\"!this.is_loading\" _v-0aec5ff8=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-0aec5ff8=\"\"></i>\n\t\t\t\t\t\t\t{{labels.exclude_matching}} \"{{searchQuery}}\"\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"form-group pull-right \" _v-0aec5ff8=\"\">\n\t\t\t\t\t\t<label class=\"form-switch\" _v-0aec5ff8=\"\">\n\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"show_excluded\" @change=\"excludePostsChange\" _v-0aec5ff8=\"\">\n\t\t\t\t\t\t\t<i class=\"form-icon\" _v-0aec5ff8=\"\"></i>{{labels.search_posts_show_excluded}}\n\t\t\t\t\t\t</label>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12  px-2\" v-if=\"postsAvailable\" _v-0aec5ff8=\"\">\n\t\t\t\t\t<div v-if=\"postsAvailable.length === 0 &amp;&amp; !is_loading\" _v-0aec5ff8=\"\">\n\t\t\t\t\t\t{{labels.no_posts_found}}\n\t\t\t\t\t</div>\n\t\t\t\t\t<div v-else=\"\" _v-0aec5ff8=\"\">\n\t\t\t\t\t\t<table id=\"rop-posts-table\" class=\"table table-striped table-hover\" v-if=\" ! is_loading\" _v-0aec5ff8=\"\">\n\t\t\t\t\t\t\t<tbody _v-0aec5ff8=\"\"><tr v-for=\"(post,index ) in postsAvailable\" class=\"rop-post-item\" _v-0aec5ff8=\"\">\n\t\t\t\t\t\t\t\t<td :class=\"'rop-post-' + post.selected\" _v-0aec5ff8=\"\">{{post.name}}\n\t\t\t\t\t\t\t\t\t<button class=\"btn btn-error rop-exclude-post\" @click=\"excludeSinglePost(post.value,post.selected)\" _v-0aec5ff8=\"\">\n\t\t\t\t\t\t\t\t\t\t<i class=\"fa\" :class=\"'fa-' + (post.selected ? 'plus' : 'remove') \" v-if=\"!is_loading_single\" _v-0aec5ff8=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-0aec5ff8=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t<span v-html=\" ( post.selected ? labels.include_single_post  : labels.exclude_single_post) \" _v-0aec5ff8=\"\"> </span>\n\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t<tr v-if=\"has_pages\" _v-0aec5ff8=\"\">\n\t\t\t\t\t\t\t\t<td class=\"rop-load-more-posts\" _v-0aec5ff8=\"\">\n\t\t\t\t\t\t\t\t\t<button class=\"btn btn-error\" @click=\"loadMorePosts()\" _v-0aec5ff8=\"\">\n\t\t\t\t\t\t\t\t\t\t<i class=\"fa fa-newspaper-o \" v-if=\"!is_loading_single\" _v-0aec5ff8=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-0aec5ff8=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t{{labels.load_more_posts}}\n\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t</tbody></table>\n\t\t\t\t\t\t<div class=\"loading loading-lg\" v-else=\"\" _v-0aec5ff8=\"\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\n\t</div>\n";
 
 /***/ })
 /******/ ]);

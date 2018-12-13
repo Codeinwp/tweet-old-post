@@ -269,7 +269,7 @@ class Rop_Rest_Api {
 		try {
 			$shortner = $sh_factory->build( $data['short_url_service'] );
 			$this->response->set_code( '200' )
-						   ->set_data( $shortner->get_credentials() );
+						   ->set_data( $shortner->get_credentials( true ) );
 		} catch ( Exception $exception ) {
 			// Service not found or can't be built. Maybe log this exception.
 			$log           = new Rop_Logger();

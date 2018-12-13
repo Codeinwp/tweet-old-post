@@ -58,18 +58,7 @@ class Rop_Admin {
 
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
-
-		$general_settings = new Rop_Settings_Model;
-
-		$post_types = wp_list_pluck( $general_settings->get_selected_post_types(), 'value' );
-		$attachment_post_type = array_search( 'attachment', $post_types );
-		unset( $post_types[ $attachment_post_type ] );
-
-		$this->allowed_screens = array(
-			'dashboard'   => 'TweetOldPost',
-			'exclude'     => 'rop_content_filters',
-			'publish_now' => $post_types,
-		);
+		$this->set_allowed_screens();
 
 	}
 
@@ -92,6 +81,74 @@ class Rop_Admin {
 		}
 		wp_enqueue_style( $this->plugin_name, ROP_LITE_URL . 'assets/css/rop.css', $deps, $this->version, 'all' );
 		wp_enqueue_style( $this->plugin_name . '_fa', ROP_LITE_URL . 'assets/css/font-awesome.min.css', array(), $this->version );
+
+	}
+
+	/**
+	 * Check if a shortener is in use.
+	 *
+	 * @since    8.1.5
+	 *
+	 * @param string $shortener The shortener to check.
+	 *
+	 * @return bool If shortener is in use.
+	 */
+	public function check_shortener_service( $shortener ) {
+
+		$model = new Rop_Post_Format_Model;
+		$post_format = $model->get_post_format();
+
+		foreach ( $post_format as $account_id => $option ) {
+			$shorteners[] = $option['short_url_service'];
+		}
+
+		return ( in_array( $shortener, $shorteners ) ) ? true : false;
+	}
+
+	/**
+	 * Show notice to upgrade bitly.
+	 *
+	 * @since    8.1.5
+	 */
+	public function bitly_shortener_upgrade_notice() {
+
+		if ( ! $this->check_shortener_service( 'bit.ly' ) ) {
+			return;
+		}
+
+		$bitly = get_option( 'rop_shortners_bitly' );
+
+		if ( array_key_exists( 'generic_access_token', $bitly['bitly_credentials'] ) ) {
+			return;
+		}
+		?>
+			<div class="notice notice-error is-dismissible">
+				<?php echo sprintf( __( '%1$s%2$sRevive Old Posts:%3$s Please upgrade your Bit.ly keys. See this %4$sarticle for instructions.%5$s%6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/976-how-to-connect-bit-ly-to-revive-old-posts" target="_blank">', '</a>', '</p>' ); ?>
+			</div>
+			<?php
+	}
+
+	/**
+	 * Initialize the class and set its properties.
+	 *
+	 * @since    8.1.5
+	 */
+	private function set_allowed_screens() {
+
+		$general_settings = new Rop_Settings_Model;
+
+		$post_types = wp_list_pluck( $general_settings->get_selected_post_types(), 'value' );
+		$attachment_post_type = array_search( 'attachment', $post_types );
+
+		if ( ! empty( $attachment_post_type ) ) {
+			unset( $post_types[ $attachment_post_type ] );
+		}
+
+		$this->allowed_screens = array(
+			'dashboard'   => 'TweetOldPost',
+			'exclude'     => 'rop_content_filters',
+			'publish_now' => $post_types,
+		);
 
 	}
 

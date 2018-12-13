@@ -68,7 +68,7 @@ class Rop {
 	public function __construct() {
 
 		$this->plugin_name = 'rop';
-		$this->version     = '8.1.4';
+		$this->version     = '8.1.5';
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -128,6 +128,7 @@ class Rop {
 		$tutorial_pointers = new Rop_Pointers();
 
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'legacy_auth', 2 );
+		$this->loader->add_action( 'admin_notices', $plugin_admin, 'bitly_shortener_upgrade_notice' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_head', $tutorial_pointers, 'rop_pointer_button_css' );
