@@ -1,4 +1,8 @@
 
+ ### v8.1.6 - 2018-12-13 
+ **Changes:** 
+ * Fixed undefined variable error
+ 
  ### v8.1.5 - 2018-12-13 
  **Changes:** 
  * New: Made post share content filterable, you can now use post excerpt field (see docs)

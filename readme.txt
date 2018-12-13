@@ -133,6 +133,11 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.1.6 - 2018-12-13  = 
+
+* Fixed undefined variable error
+
+
 = 8.1.5 - 2018-12-13  = 
 
 * New: Made post share content filterable, you can now use post excerpt field (see docs)
