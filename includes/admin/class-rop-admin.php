@@ -58,7 +58,7 @@ class Rop_Admin {
 
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
-		$this->get_publish_now_post_types();
+		$this->set_allowed_screens();
 
 	}
 
@@ -85,11 +85,55 @@ class Rop_Admin {
 	}
 
 	/**
+	 * Check if a shortener is in use.
+	 *
+	 * @since    8.1.5
+	 *
+	 * @param string $shortener The shortener to check.
+	 *
+	 * @return bool If shortener is in use.
+	 */
+	public function check_shortener_service( $shortener ) {
+
+		$model = new Rop_Post_Format_Model;
+		$post_format = $model->get_post_format();
+
+		foreach ( $post_format as $account_id => $option ) {
+			$shorteners[] = $option['short_url_service'];
+		}
+
+		return ( in_array( $shortener, $shorteners ) ) ? true : false;
+	}
+
+	/**
+	 * Show notice to upgrade bitly.
+	 *
+	 * @since    8.1.5
+	 */
+	public function bitly_shortener_upgrade_notice() {
+
+		if ( ! $this->check_shortener_service( 'bit.ly' ) ) {
+			return;
+		}
+
+		$bitly = get_option( 'rop_shortners_bitly' );
+
+		if ( array_key_exists( 'generic_access_token', $bitly['bitly_credentials'] ) ) {
+			return;
+		}
+		?>
+			<div class="notice notice-error is-dismissible">
+				<?php echo sprintf( __( '%1$s%2$sRevive Old Posts:%3$s Please upgrade your Bit.ly keys. See this %4$sarticle for instructions.%5$s%6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/475-how-to-setup-shortening-in-revive-old-post" target="_blank">', '</a>', '</p>' ); ?>
+			</div>
+			<?php
+	}
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    8.1.5
 	 */
-	private function get_publish_now_post_types() {
+	private function set_allowed_screens() {
 
 		$general_settings = new Rop_Settings_Model;
 
