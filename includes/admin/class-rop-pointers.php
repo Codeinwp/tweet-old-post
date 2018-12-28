@@ -484,7 +484,7 @@ class Rop_Pointers {
 	  }
 	});
 	</script>
-	<?php
+		<?php
 
 	}
 

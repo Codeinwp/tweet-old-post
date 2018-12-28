@@ -4102,8 +4102,8 @@
 	pointer-events: auto;
 }
 
-.toplevel_page_TweetOldPost #wpbody-content > *,
-.revive-old-posts_page_rop_content_filters #wpbody-content > * {
+.toplevel_page_TweetOldPost #wpbody-content > *:not(.themeisle-sdk-notice),
+.revive-old-posts_page_rop_content_filters #wpbody-content > *:not(.themeisle-sdk-notice) {
 	display: none !important;
 }
 
