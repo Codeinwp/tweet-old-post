@@ -22,7 +22,6 @@ before_install:
 install:
 - chmod +x bin/install-dependencies.sh
 - ". ./bin/install-dependencies.sh"
-- phpcs --version
 script:
 - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then  grunt travis; fi;
 before_deploy:
