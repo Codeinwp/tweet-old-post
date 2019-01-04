@@ -2,7 +2,7 @@
 Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle, rsocial, uriahs-victor
 Tags:twitter, facebook, linkedin, automatic, tweet, share, wordpress, marketing, sharing, Tweet old post, Tweets,evergreen
 Requires at least: 4.7
-Tested up to: 4.9
+Tested up to: 5.0
 Requires PHP: 5.6
 Stable tag: trunk
 
@@ -133,12 +133,12 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
-= 8.1.6 - 2018-12-13  = 
+= 8.1.6 - 2018-12-13  =
 
 * Fixed undefined variable error
 
 
-= 8.1.5 - 2018-12-13  = 
+= 8.1.5 - 2018-12-13  =
 
 * New: Made post share content filterable, you can now use post excerpt field (see docs)
 * New: Pinterest shares will now link to the post on your website
@@ -148,7 +148,7 @@ http://revive.social/plugins/revive-old-post
 * PRO Fix: Publish now feature not always showing
 
 
-= 8.1.4 - 2018-12-03  = 
+= 8.1.4 - 2018-12-03  =
 
 * New: Admin pointers for new plugin installs
 * Change: Rename custom messages to "Share Variations"
@@ -157,7 +157,7 @@ http://revive.social/plugins/revive-old-post
 * PRO Fix: Publish now not showing on custom post types edit screens
 
 
-= 8.1.3 - 2018-11-01  = 
+= 8.1.3 - 2018-11-01  =
 
 * - Adds: Option to delete plugin settings on uninstall
 * - Fix: Change twitter credential labels to match that on developer.twitter.com apps
