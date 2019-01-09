@@ -21,19 +21,6 @@ class Test_ROP extends WP_UnitTestCase {
 	private static $settings;
 
 	/**
-	 * Testing SDK loading.
-	 *
-	 * @access public
-	 */
-	public function test_sdk() {
-		$this->assertTrue( class_exists( 'ThemeIsle_SDK_Loader' ), ' ThemeIsle SDK Is NOT present.' );
-		$all_plugins = apply_filters( 'themeisle_sdk_products', array() );
-		$this->assertContains( ROP_LITE_BASE_FILE, $all_plugins, 'ThemeIsle is NOT loaded' );
-
-		$this->assertFalse( ROP_DEBUG );
-	}
-
-	/**
 	 * Testing General Settings.
 	 *
 	 * @access public
