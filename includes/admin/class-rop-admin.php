@@ -344,7 +344,7 @@ class Rop_Admin {
 
 		// reddit does not pass back the network parameter we will suffix the state parameter with an indicator that this is reddit.
 		if ( strpos( $state, '_reddit' ) !== false ) {
-			$network	= 'reddit';
+			$network    = 'reddit';
 		}
 
 		switch ( $network ) {

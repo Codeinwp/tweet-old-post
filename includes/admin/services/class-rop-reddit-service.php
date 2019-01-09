@@ -233,7 +233,7 @@ class Rop_Reddit_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		$profile	= (array) $profile['subreddit'];
+		$profile    = (array) $profile['subreddit'];
 		$this->service = array(
 			'id'                 => $this->strip_underscore( $profile['display_name'] ),
 			'service'            => $this->service_name,
@@ -270,19 +270,19 @@ class Rop_Reddit_Service extends Rop_Services_Abstract {
 	 * @return array
 	 */
 	private function get_subreddits( $api ) {
-		$subscriptions	= array();
-		$subreddits	= $api->getSubreddits('subscriber');
+		$subscriptions  = array();
+		$subreddits = $api->getSubreddits( 'subscriber' );
 		if ( isset( $subreddits->data ) ) {
 			foreach ( $subreddits->data->children as $child ) {
 				$subscriptions[] = array(
-					'id'	=> $child->data->id,
-					'user'	=> $this->normalize_string( $child->data->display_name ),
-					'account'	=> $this->normalize_string( $child->data->display_name ),
-					'img'	=> $child->data->icon_img,
-					'access_token'	=> $api->getAccessToken(true),
-					'active'	=> false,
-					'service'	=> $this->service_name,
-					'created'	=> current_time( 'Y-m-d' ),
+					'id'    => $child->data->id,
+					'user'  => $this->normalize_string( $child->data->display_name ),
+					'account'   => $this->normalize_string( $child->data->display_name ),
+					'img'   => $child->data->icon_img,
+					'access_token'  => $api->getAccessToken( true ),
+					'active'    => false,
+					'service'   => $this->service_name,
+					'created'   => current_time( 'Y-m-d' ),
 				);
 			}
 		}
@@ -397,7 +397,7 @@ class Rop_Reddit_Service extends Rop_Services_Abstract {
 					)
 				);
 			} else {
-				$this->logger->alert_error( 'Can not share to reddit. Error:  ' . print_r($response,true));
+				$this->logger->alert_error( 'Can not share to reddit. Error:  ' . print_r( $response, true ) );
 			}
 		} catch ( Exception $exception ) {
 			$this->logger->alert_error( 'Can not share to reddit. Error:  ' . $exception->getMessage() );
