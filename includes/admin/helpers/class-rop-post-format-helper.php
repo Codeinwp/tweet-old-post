@@ -148,6 +148,11 @@ class Rop_Post_Format_Helper {
 			$custom_messages = array_values( $custom_messages );
 			$random_index    = rand( 0, ( count( $custom_messages ) - 1 ) );
 			$share_content   = $custom_messages[ $random_index ]['rop_custom_description'];
+			$custom_utm_campaign   = $custom_messages[ $random_index ]['rop_custom_utm_campaign'];
+
+			if( ! empty( $custom_utm_campaign ) ){
+			$this->post_format['utm_campaign_name'] = $custom_utm_campaign;
+}
 
 			if ( isset( $pro_format_helper ) ) {
 					$share_content = $pro_format_helper->rop_replace_magic_tags( $share_content, $post_id );

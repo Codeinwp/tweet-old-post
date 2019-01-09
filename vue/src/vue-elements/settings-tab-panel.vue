@@ -178,6 +178,25 @@
 						</div>
 					</div>
 				</div>
+				<span class="divider"></span>
+
+
+				<div class="columns py-2" :class="'rop-control-container-'+isPro" v-if="isCustomMsgs">
+					<div class="column col-6 col-sm-12 vertical-align rop-control">
+						<b>{{labels.custom_share_utm_title}}</b>
+						<p class="text-gray">{{labels.custom_share_utm_desc}}</p>
+					</div>
+					<div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+						<div class="form-group">
+							<label id="rop_custom_share_msg" class="form-checkbox">
+								<input type="checkbox" :disabled="!isPro" v-model="generalSettings.custom_messages_utm"/>
+								<i class="form-icon"></i>{{labels.custom_share_utm_yes}}
+							</label>
+						</div>
+					</div>
+				</div>
+				<span class="divider" v-if="isCustomMsgs"></span>
+
 				<!-- Upsell -->
 				<div class="columns " v-if="!isPro">
 					<div class="column text-center">
@@ -260,6 +279,9 @@
 			},
    isInstantShare: function() {
        return this.$store.state.generalSettings.instant_share;
+   },
+   isCustomMsgs: function() {
+       return this.$store.state.generalSettings.custom_messages;
    }
 		},
 		mounted: function () {
@@ -322,6 +344,7 @@
 						exclude_taxonomies: excludeTaxonomies,
 						ga_tracking: this.generalSettings.ga_tracking,
 						custom_messages: this.generalSettings.custom_messages,
+						custom_messages_utm: this.generalSettings.custom_messages_utm,
 						instant_share: this.generalSettings.instant_share,
 						instant_share_default: this.generalSettings.instant_share_default,
 						housekeeping: this.generalSettings.housekeeping,

@@ -145,6 +145,7 @@ class Rop_Global_Settings {
 		'beta_user'            => false,
 		'remote_check'         => false,
 		'custom_messages'      => false,
+		'custom_messages_utm'  => false,
 		'instant_share'        => true,
 		'instant_share_default' => false,
 		'start_time'           => false,

@@ -435,7 +435,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	}
 
 	/**
-	 * Getter for custom messages option.
+	 * Getter for custom messages(share variations) option.
 	 *
 	 * @since   8.0.0
 	 * @access  public
@@ -443,6 +443,17 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 */
 	public function get_custom_messages() {
 		return isset( $this->settings['custom_messages'] ) ? $this->settings['custom_messages'] : false;
+	}
+
+	/**
+	 * Getter for custom messages utm campaign option.
+	 *
+	 * @since   8.0.0
+	 * @access  public
+	 * @return mixed
+	 */
+	public function get_custom_messages_utm() {
+		return isset( $this->settings['custom_messages_utm'] ) ? $this->settings['custom_messages_utm'] : false;
 	}
 
 	/**
