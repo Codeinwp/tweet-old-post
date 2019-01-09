@@ -166,6 +166,22 @@ class Rop_Db_Upgrade {
 						$services[ $tumblr_service->get_service_id() ] = $tumblr_service->get_service();
 						$active_accounts                               = array_merge( $active_accounts, $tumblr_service->get_service_active_accounts() );
 						break;
+					case 'reddit' && defined( 'ROP_PRO_DIR_URL' ):
+						$reddit_service     = new Rop_Reddit_Service();
+						$app_id           = get_option( 'cwp_top_rd_app_id' );
+						$secret           = get_option( 'cwp_top_rd_app_secret' );
+						$token            = get_option( 'top_reddit_token' );
+						$reddit_service->authenticate(
+							array(
+								'client_id' => $app_id,
+								'secret'    => $secret,
+								'token'     => $token,
+							)
+						);
+
+						$services[ $reddit_service->get_service_id() ] = $reddit_service->get_service();
+						$active_accounts                                 = array_merge( $active_accounts, $reddit_service->get_service_active_accounts() );
+						break;
 				}// End switch().
 			}// End foreach().
 

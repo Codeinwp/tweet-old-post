@@ -156,6 +156,7 @@ abstract class Rop_Services_Abstract {
 		try {
 
 			$authenticated = $this->maybe_authenticate();
+			$new_service = null;
 
 			if ( $authenticated ) {
 				$service                    = $this->get_service();

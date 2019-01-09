@@ -118,6 +118,10 @@ class Rop_Global_Settings {
 			'active' => false,
 			'name'   => 'Pinterest',
 		),
+		'reddit' => array(
+			'active' => false,
+			'name'   => 'Reddit',
+		),
 	);
 
 	/**
@@ -255,6 +259,26 @@ class Rop_Global_Settings {
 			'hashtags_custom'      => '',
 			'shortner_credentials' => array(),
 			'image'                => true,
+			'utm_campaign_medium'  => 'social',
+			'utm_campaign_name'    => 'ReviveOldPost',
+		),
+		'reddit'  => array(
+			'post_content'         => 'post_title',
+			'custom_meta_field'    => '',
+			'maximum_length'       => '1000',
+			'custom_text'          => '',
+			'custom_text_pos'      => 'beginning',
+			'include_link'         => true,
+			'url_from_meta'        => false,
+			'shortner_credentials' => array(),
+			'url_meta_key'         => '',
+			'short_url'            => true,
+			'short_url_service'    => 'rviv.ly',
+			'hashtags'             => 'no-hashtags',
+			'hashtags_length'      => '10',
+			'hashtags_common'      => '',
+			'hashtags_custom'      => '',
+			'image'                => false,
 			'utm_campaign_medium'  => 'social',
 			'utm_campaign_name'    => 'ReviveOldPost',
 		),

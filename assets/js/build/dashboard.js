@@ -33822,6 +33822,7 @@ module.exports = {
 			if (this.account_data.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin');
 			if (this.account_data.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr');
 			if (this.account_data.service === 'pinterest') serviceIcon = serviceIcon.concat('pinterest');
+			if (this.account_data.service === 'reddit') serviceIcon = serviceIcon.concat('reddit');
 			return serviceIcon;
 		},
 		/**
@@ -35063,6 +35064,7 @@ module.exports = {
 			if (account.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin');
 			if (account.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr');
 			if (account.service === 'pinterest') serviceIcon = serviceIcon.concat('pinterest');
+			if (account.service === 'reddit') serviceIcon = serviceIcon.concat('reddit');
 
 			return serviceIcon;
 		},
@@ -36987,6 +36989,7 @@ module.exports = {
 				if (account !== undefined && account.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin linkedin');
 				if (account !== undefined && account.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr tumblr');
 				if (account !== undefined && account.service === 'pinterest') serviceIcon = serviceIcon.concat('pinterest pinterest');
+				if (account !== undefined && account.service === 'reddit') serviceIcon = serviceIcon.concat('reddit reddit');
 			}
 			return serviceIcon;
 		},

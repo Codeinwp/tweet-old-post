@@ -325,6 +325,7 @@ class Rop_Admin {
 		$code    = sanitize_text_field( isset( $_GET['code'] ) ? $_GET['code'] : '' );
 		$state   = sanitize_text_field( isset( $_GET['state'] ) ? $_GET['state'] : '' );
 		$network = sanitize_text_field( isset( $_GET['network'] ) ? $_GET['network'] : '' );
+
 		/**
 		 * For twitter we don't have code/state params.
 		 */
@@ -340,6 +341,12 @@ class Rop_Admin {
 		if ( ( empty( $oauth_token ) || empty( $oauth_verifier ) ) && $network === 'twitter' ) {
 			return;
 		}
+
+		// reddit does not pass back the network parameter we will suffix the state parameter with an indicator that this is reddit.
+		if ( strpos( $state, '_reddit' ) !== false ) {
+			$network	= 'reddit';
+		}
+
 		switch ( $network ) {
 			case 'linkedin':
 				$lk_service = new Rop_Linkedin_Service();
@@ -352,6 +359,10 @@ class Rop_Admin {
 			case 'pinterest':
 				$pinterest_service = new Rop_Pinterest_Service();
 				$pinterest_service->authorize();
+				break;
+			case 'reddit':
+				$rd_service = new Rop_Reddit_Service();
+				$rd_service->authorize();
 				break;
 			default:
 				$fb_service = new Rop_Facebook_Service();
