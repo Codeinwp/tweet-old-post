@@ -152,14 +152,14 @@ abstract class Rop_Url_Shortner_Abstract {
 	 */
 	protected function getSalt() {
 		$charset       = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/\\][{}\'";:?.>,<!@#$%^&*()-_=+|';
-		$randStringLen = 64;
+		$rand_len = 64;
 
-		$randString = '';
-		for ( $i = 0; $i < $randStringLen; $i ++ ) {
-			$randString .= $charset[ mt_rand( 0, strlen( $charset ) - 1 ) ];
+		$rand_string = '';
+		for ( $i = 0; $i < $rand_len; $i ++ ) {
+			$rand_string .= $charset[ mt_rand( 0, strlen( $charset ) - 1 ) ];
 		}
 
-		return $randString;
+		return $rand_string;
 	}
 
 	/**

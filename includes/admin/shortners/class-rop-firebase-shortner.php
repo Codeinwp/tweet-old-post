@@ -49,10 +49,10 @@ class Rop_Firebase_Shortner extends Rop_Url_Shortner_Abstract {
 			array( 'Content-Type' => 'application/json' )
 		);
 
-		$shortURL = $url;
+		$short_url = $url;
 		if ( intval( $response['error'] ) == 200 && ! isset( $response['response']['error'] ) ) {
-			$shortURL = $response['response']['shortLink'];
+			$short_url = $response['response']['shortLink'];
 		}
-		return $shortURL;
+		return $short_url;
 	}
 }

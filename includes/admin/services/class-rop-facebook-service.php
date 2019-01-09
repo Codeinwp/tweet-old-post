@@ -99,9 +99,9 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			$api = $this->get_api( $credentials['app_id'], $credentials['secret'] );
 
 			$helper          = $api->getRedirectLoginHelper();
-			$longAccessToken = '';
-			$accessToken     = $helper->getAccessToken( $this->get_legacy_url() );
-			if ( ! isset( $accessToken ) ) {
+			$long_access_token = '';
+			$access_token     = $helper->getAccessToken( $this->get_legacy_url() );
+			if ( ! isset( $access_token ) ) {
 				if ( $helper->getError() ) {
 					$this->error->throw_exception( '401 Unauthorized', $this->error->get_fb_exeption_message( $helper ) );
 				} else {
@@ -109,14 +109,14 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				}
 			}
 			$expires         = time() + ( 120 * 24 * 60 * 60 ); // 120 days; 24 hours; 60 minutes; 60 seconds.
-			$longAccessToken = new \Facebook\Authentication\AccessToken( $accessToken, $expires );
+			$long_access_token = new \Facebook\Authentication\AccessToken( $access_token, $expires );
 		} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
 			$this->error->throw_exception( '400 Bad Request', 'Graph returned an error: ' . $e->getMessage() );
 		} catch ( Facebook\Exceptions\FacebookSDKException $e ) {
 			$this->error->throw_exception( '400 Bad Request', 'Facebook SDK returned an error: ' . $e->getMessage() );
 		}
 
-		$token = $longAccessToken->getValue();
+		$token = $long_access_token->getValue();
 
 		$_SESSION['rop_facebook_token'] = $token;
 
@@ -375,15 +375,15 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		$helper = $api->getRedirectLoginHelper();
 
 		if ( isset( $token ) && $token != '' && $token != null ) {
-			$longAccessToken = new \Facebook\Authentication\AccessToken( $this->token );
-			$token           = $longAccessToken->getValue();
+			$long_access_token = new \Facebook\Authentication\AccessToken( $this->token );
+			$token           = $long_access_token->getValue();
 
 			return $token->getValue();
 		}
 
 		try {
-			$accessToken = $helper->getAccessToken();
-			if ( ! isset( $accessToken ) ) {
+			$access_token = $helper->getAccessToken();
+			if ( ! isset( $access_token ) ) {
 				if ( $helper->getError() ) {
 					$this->error->throw_exception( '401 Unauthorized', $this->error->get_fb_exeption_message( $helper ) );
 				} else {
@@ -391,8 +391,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				}
 			}
 			$expires         = time() + ( 120 * 24 * 60 * 60 ); // 120 days; 24 hours; 60 minutes; 60 seconds.
-			$longAccessToken = new \Facebook\Authentication\AccessToken( $accessToken, $expires );
-			$token           = $longAccessToken->getValue();
+			$long_access_token = new \Facebook\Authentication\AccessToken( $access_token, $expires );
+			$token           = $long_access_token->getValue();
 
 			return $token->getValue();
 		} catch ( Facebook\Exceptions\FacebookResponseException $e ) {

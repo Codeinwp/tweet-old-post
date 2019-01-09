@@ -98,9 +98,9 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$credentials = $_SESSION['rop_linkedin_credentials'];
 
 		$api         = $this->get_api( $credentials['client_id'], $credentials['secret'] );
-		$accessToken = $api->getAccessToken( $_GET['code'] );
+		$access_token = $api->getAccessToken( $_GET['code'] );
 
-		$_SESSION['rop_linkedin_token'] = $accessToken->getToken();
+		$_SESSION['rop_linkedin_token'] = $access_token->getToken();
 
 		parent::authorize();
 		// echo '<script>window.setTimeout("window.close()", 500);</script>';

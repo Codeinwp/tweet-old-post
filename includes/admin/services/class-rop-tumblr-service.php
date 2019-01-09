@@ -83,22 +83,22 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		$tmp_token   = $_SESSION['rop_tumblr_request_token'];
 
 		$api            = $this->get_api( $credentials['consumer_key'], $credentials['consumer_secret'], $tmp_token['oauth_token'], $tmp_token['oauth_token_secret'] );
-		$requestHandler = $api->getRequestHandler();
-		$requestHandler->setBaseUrl( 'https://www.tumblr.com/' );
+		$request_handler = $api->getRequestHandler();
+		$request_handler->setBaseUrl( 'https://www.tumblr.com/' );
 
 		if ( ! empty( $_GET['oauth_verifier'] ) ) {
 			// exchange the verifier for the keys
 			$verifier = trim( $_GET['oauth_verifier'] );
 
-			$resp = $requestHandler->request( 'POST', 'oauth/access_token', array( 'oauth_verifier' => $verifier ) );
+			$resp = $request_handler->request( 'POST', 'oauth/access_token', array( 'oauth_verifier' => $verifier ) );
 
 			$out         = (string) $resp->body;
-			$accessToken = array();
+			$access_token = array();
 
-			parse_str( $out, $accessToken );
+			parse_str( $out, $access_token );
 
 			unset( $_SESSION['rop_tumblr_request_token'] );
-			$_SESSION['rop_tumblr_token'] = $accessToken;
+			$_SESSION['rop_tumblr_token'] = $access_token;
 		}
 		parent::authorize();
 		// echo '<script>window.setTimeout("window.close()", 500);</script>';
@@ -348,10 +348,10 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		}
 
 		$api            = $this->get_api();
-		$requestHandler = $api->getRequestHandler();
-		$requestHandler->setBaseUrl( 'https://www.tumblr.com/' );
+		$request_handler = $api->getRequestHandler();
+		$request_handler->setBaseUrl( 'https://www.tumblr.com/' );
 
-		$resp   = $requestHandler->request(
+		$resp   = $request_handler->request(
 			'POST',
 			'oauth/request_token',
 			array(

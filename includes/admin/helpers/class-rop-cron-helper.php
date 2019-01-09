@@ -220,9 +220,9 @@ class Rop_Cron_Helper {
 			'r' => '', // no equivalent
 			'U' => 'X',
 		];
-		$momentFormat = strtr( $format, $replacements );
+		$moment_format = strtr( $format, $replacements );
 
-		return $momentFormat;
+		return $moment_format;
 	}
 
 	/**

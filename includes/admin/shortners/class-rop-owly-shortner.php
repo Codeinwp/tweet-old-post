@@ -47,10 +47,10 @@ class Rop_Owly_Shortner extends Rop_Url_Shortner_Abstract {
 			array( 'longUrl' => $url, 'apiKey' => $this->credentials['key'] ),
 			null
 		);
-		$shortURL = $url;
+		$short_url = $url;
 		if ( intval( $response['error'] ) == 200 && ! isset( $response['response']['error'] ) ) {
-			$shortURL = $response['response']['results']['shortUrl'];
+			$short_url = $response['response']['results']['shortUrl'];
 		}
-		return $shortURL;
+		return $short_url;
 	}
 }

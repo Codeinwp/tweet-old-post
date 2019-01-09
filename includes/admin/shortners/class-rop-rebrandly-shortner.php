@@ -55,16 +55,16 @@ class Rop_Rebrandly_Shortner extends Rop_Url_Shortner_Abstract {
 			array( 'apikey' => $this->credentials['key'], 'Content-Type' => 'application/json' )
 		);
 
-		$shortURL = $url;
+		$short_url = $url;
 		if ( intval( $response['error'] ) === 200 ) {
 			if ( ! array_key_exists( 'httpCode', $response['response'] ) ) {
-				$shortURL = $response['response']['shortUrl'];
+				$short_url = $response['response']['shortUrl'];
 			} else {
 				$this->error->throw_exception( 'Error', "Error from {$this->service_name} " . $response['response']['message'] );
 			}
 		} else {
 			$this->error->throw_exception( 'Error', "Error from {$this->service_name} " . $response['error'] );
 		}
-		return $shortURL;
+		return $short_url;
 	}
 }

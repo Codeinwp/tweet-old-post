@@ -45,10 +45,10 @@ class Rop_Isgd_Shortner extends Rop_Url_Shortner_Abstract {
 			array( 'longurl' => $url),
 			null
 		);
-		$shortURL = $url;
+		$short_url = $url;
 		if ( intval( $response['error'] ) == 200 ) {
-			$shortURL = $response['response'];
+			$short_url = $response['response'];
 		}
-		return $shortURL;
+		return $short_url;
 	}
 }

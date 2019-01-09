@@ -85,11 +85,11 @@ class Rop_Bitly_Shortner extends Rop_Url_Shortner_Abstract {
 			),
 			null
 		);
-		$shortURL = $url;
+		$short_url = $url;
 		if ( intval( $response['error'] ) == 200 ) {
-			$shortURL = $response['response'];
+			$short_url = $response['response'];
 		}
 
-		return trim( $shortURL );
+		return trim( $short_url );
 	}
 }

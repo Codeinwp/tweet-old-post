@@ -98,10 +98,10 @@ class Rop_Reddit_Service extends Rop_Services_Abstract {
 		$credentials = $_SESSION['rop_reddit_credentials'];
 
 		$api         = $this->get_api( $credentials['client_id'], $credentials['secret'] );
-		$accessToken = $api->getAccessToken();
+		$access_token = $api->getAccessToken();
 
-		$_SESSION['rop_reddit_token'] = $accessToken['token'];
-		$_SESSION['rop_reddit_token_type'] = $accessToken['type'];
+		$_SESSION['rop_reddit_token'] = $access_token['token'];
+		$_SESSION['rop_reddit_token_type'] = $access_token['type'];
 
 		parent::authorize();
 		// echo '<script>window.setTimeout("window.close()", 500);</script>';
