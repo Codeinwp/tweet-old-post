@@ -374,6 +374,10 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		 */
 		$posts = array_values( $posts );
 
+		if ( function_exists( 'icl_object_id' ) ) {
+				$posts = $this->rop_wpml_id( $posts );
+		}
+
 		wp_reset_postdata();
 
 		return $posts;
@@ -584,5 +588,50 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		}
 
 		return $posts;
+	}
+
+	/**
+	 * Method to get WPML post id
+	 *
+	 * @since   8.1.7
+	 * @access   public
+	 *
+	 * @param   mixed $post_id The post ID.
+	 * @return  mixed
+	 */
+	public function rop_wpml_id( $post_id ) {
+
+		$default_lang = apply_filters( 'wpml_default_language', null );
+		$lang_code = apply_filters( 'rop_wpml_lang', $default_lang );
+
+		if ( is_array( $post_id ) ) {
+			foreach ( $post_id as $id ) {
+				$wpml_post = apply_filters( 'wpml_object_id', $id, $post_type, false, $lang_code );
+				if ( ! empty( $wpml_post ) ) {
+					$post[] = $wpml_post;
+				}
+			}
+		} else {
+			$post_type = get_post_type( $post_id );
+			$post = apply_filters( 'wpml_object_id', $post_id, $post_type, false, $lang_code );
+		}
+
+		return $post;
+	}
+
+	/**
+	 * Method to get WPML modified URL for appropriate language
+	 *
+	 * @since   8.1.7
+	 * @access   public
+	 *
+	 * @param   string $url The post URL.
+	 * @return  string
+	 */
+	public function rop_wpml_link( $url ) {
+		$default_lang = apply_filters( 'wpml_default_language', null );
+		$lang_code = apply_filters( 'rop_wpml_lang', $default_lang );
+		$wpml_url = apply_filters( 'wpml_permalink', $url, $lang_code );
+		return $wpml_url;
 	}
 }
