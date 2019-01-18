@@ -56,6 +56,12 @@ class Rop_Post_Format_Helper {
 				return array();
 			}
 		}
+
+		if ( function_exists( 'icl_object_id' ) ) {
+				$selector = new Rop_Posts_Selector_Model;
+				$post_id = $selector->rop_wpml_id( $post_id );
+		}
+
 		$service                            = $this->get_service();
 		$content                            = $this->build_content( $post_id );
 		$filtered_post                      = array();
@@ -666,24 +672,29 @@ class Rop_Post_Format_Helper {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   int $post The post object.
+	 * @param   int $post_id The post ID.
 	 *
 	 * @return mixed
 	 */
-	public function build_url( $post ) {
+	public function build_url( $post_id ) {
 		$include_link = (bool) $this->post_format['include_link'];
 		if ( ! $include_link ) {
 			return '';
 		}
 
 		if ( $this->post_format['short_url'] && $this->post_format['short_url_service'] === 'wp_short_url' ) {
-			$post_url = wp_get_shortlink( $post );
+			$post_url = wp_get_shortlink( $post_id );
 		} else {
-			$post_url = get_permalink( $post );
+			$post_url = get_permalink( $post_id );
+		}
+
+		if ( function_exists( 'icl_object_id' ) ) {
+			$selector = new Rop_Posts_Selector_Model;
+			$post_url = $selector->rop_wpml_link( $post_url );
 		}
 
 		if ( isset( $this->post_format['url_from_meta'] ) && $this->post_format['url_from_meta'] && isset( $this->post_format['url_meta_key'] ) && ! empty( $this->post_format['url_meta_key'] ) ) {
-			preg_match_all( '#\bhttps?://[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/))#', get_post_meta( $post, $this->post_format['url_meta_key'], true ), $match );
+			preg_match_all( '#\bhttps?://[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/))#', get_post_meta( $post_id, $this->post_format['url_meta_key'], true ), $match );
 			if ( isset( $match[0] ) ) {
 				if ( isset( $match[0][0] ) ) {
 					$post_url = trim( $match[0][0] );
@@ -691,7 +702,7 @@ class Rop_Post_Format_Helper {
 			}
 		}
 
-		$post_url        = apply_filters( 'rop_raw_post_url', $post_url, $post );
+		$post_url        = apply_filters( 'rop_raw_post_url', $post_url, $post_id );
 		$global_settings = new Rop_Global_Settings();
 		$settings_model  = new Rop_Settings_Model();
 
