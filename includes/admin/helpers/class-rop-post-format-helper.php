@@ -146,22 +146,46 @@ class Rop_Post_Format_Helper {
 
 		if ( ! empty( $custom_messages ) ) {
 			$custom_messages = array_values( $custom_messages );
-			$random_index    = rand( 0, ( count( $custom_messages ) - 1 ) );
-			$share_content   = $custom_messages[ $random_index ]['rop_custom_description'];
-			$custom_utm_campaign   = $custom_messages[ $random_index ]['rop_custom_utm_campaign'];
 
-			if( ! empty( $custom_utm_campaign ) ){
-			$this->post_format['utm_campaign_name'] = $custom_utm_campaign;
-}
+			$settings = new Rop_Settings_Model();
+			$custom_messages_share_order = $settings->get_custom_messages_share_order();
+
+			if ( $custom_messages_share_order ) {
+				$sequential_index = get_post_meta( $post_id, 'rop_variation_index', true );
+				$sequential_index = ( ! empty( $sequential_index ) ) ? $sequential_index : 0;
+
+					$share_content = $custom_messages[ $sequential_index ]['rop_custom_description'];
+					$custom_utm_campaign = $custom_messages[ $sequential_index ]['rop_custom_utm_campaign'];
+
+				$new_index = $sequential_index + 1;
+				$count = count( $custom_messages ) - 1;
+
+				if ( $new_index <= $count ) {
+					update_post_meta( $post_id, 'rop_variation_index', $new_index );
+				} else {
+					delete_post_meta( $post_id, 'rop_variation_index' );
+				}
+			} else {
+
+				$random_index    = rand( 0, ( count( $custom_messages ) - 1 ) );
+				$share_content   = $custom_messages[ $random_index ]['rop_custom_description'];
+				$custom_utm_campaign = $custom_messages[ $random_index ]['rop_custom_utm_campaign'];
+
+			}
+
+			if ( ! empty( $custom_utm_campaign ) ) {
+				$this->post_format['utm_campaign_name'] = $custom_utm_campaign;
+			}
 
 			if ( isset( $pro_format_helper ) ) {
-					$share_content = $pro_format_helper->rop_replace_magic_tags( $share_content, $post_id );
+				$share_content = $pro_format_helper->rop_replace_magic_tags( $share_content, $post_id );
 			}
 
 			$share_content   = $content_helper->token_truncate( $share_content, $max_length );
 
 			return wp_parse_args( array( 'display_content' => $share_content ), $default_content );
 		}
+
 		if ( empty( $this->post_format ) ) {
 			return $default_content;
 		}

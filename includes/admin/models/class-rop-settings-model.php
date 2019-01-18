@@ -448,12 +448,23 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	/**
 	 * Getter for custom messages utm campaign option.
 	 *
-	 * @since   8.0.0
+	 * @since   8.1.7
 	 * @access  public
 	 * @return mixed
 	 */
 	public function get_custom_messages_utm() {
 		return isset( $this->settings['custom_messages_utm'] ) ? $this->settings['custom_messages_utm'] : false;
+	}
+
+	/**
+	 * Getter for custom messages order.
+	 *
+	 * @since   8.1.7
+	 * @access  public
+	 * @return mixed
+	 */
+	public function get_custom_messages_share_order() {
+		return isset( $this->settings['custom_messages_share_order'] ) ? $this->settings['custom_messages_share_order'] : false;
 	}
 
 	/**
