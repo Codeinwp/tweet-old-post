@@ -2,7 +2,7 @@
 **Contributors:** [codeinwp](https://profiles.wordpress.org/codeinwp), [marius2012](https://profiles.wordpress.org/marius2012), [marius_codeinwp](https://profiles.wordpress.org/marius_codeinwp), [hardeepasrani](https://profiles.wordpress.org/hardeepasrani), [Madalin_Themeisle](https://profiles.wordpress.org/Madalin_Themeisle), [rsocial](https://profiles.wordpress.org/rsocial), [uriahs-victor](https://profiles.wordpress.org/uriahs-victor)  
 Tags:twitter, facebook, linkedin, automatic, tweet, share, wordpress, marketing, sharing, Tweet old post, Tweets,evergreen
 **Requires at least:** 4.7  
-**Tested up to:** 4.9  
+**Tested up to:** 5.0  
 **Requires PHP:** 5.6  
 **Stable tag:** trunk  
 
@@ -133,6 +133,13 @@ http://revive.social/plugins/revive-old-post
 
 
 ## Changelog ##
+### 8.1.7 - 2019-01-18  ###
+
+* New: Adds basic support for WPML content sharing(see revive.social docs)
+* Fix: Low PHP version notice was not showing the right text
+* Fix: Minor bugs
+
+
 ### 8.1.6 - 2018-12-13  ###
 
 * Fixed undefined variable error
