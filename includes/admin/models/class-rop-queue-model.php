@@ -114,10 +114,10 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 		$index = $this->scheduler->remove_timestamp( $timestamp, $account_id );
 		$posts = $this->queue[ $account_id ][ $index ];
 
-		if( empty( $posts ) ){
+		if ( empty( $posts ) ) {
 			return false;
 		}
-		
+
 		unset( $this->queue[ $account_id ][ $index ] );
 		$this->update_queue( $this->queue );
 		foreach ( $posts as $post ) {
