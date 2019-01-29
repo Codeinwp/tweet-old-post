@@ -1,4 +1,8 @@
 
+ ### v8.1.8 - 2019-01-29 
+ **Changes:** 
+ * Fix: Minor bugs
+ 
  ### v8.1.7 - 2019-01-18 
  **Changes:** 
  * New: Adds basic support for WPML content sharing(see revive.social docs)

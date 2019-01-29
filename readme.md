@@ -133,6 +133,11 @@ http://revive.social/plugins/revive-old-post
 
 
 ## Changelog ##
+### 8.1.8 - 2019-01-29  ###
+
+* Fix: Minor bugs
+
+
 ### 8.1.7 - 2019-01-18  ###
 
 * New: Adds basic support for WPML content sharing(see revive.social docs)
