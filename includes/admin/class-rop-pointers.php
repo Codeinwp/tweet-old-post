@@ -52,7 +52,9 @@ class Rop_Pointers {
 	 */
 	public function create_rop_menu_pointer() {
 
-		if ( get_option( 'rop_menu_pointer_queued' ) || ! empty( get_option( 'rop_data' ) ) ) {
+$rop_data = get_option( 'rop_data' );
+
+		if ( get_option( 'rop_menu_pointer_queued' ) || ! empty( $rop_data ) ) {
 			return;
 		}
 
