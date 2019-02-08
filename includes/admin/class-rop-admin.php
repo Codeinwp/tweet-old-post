@@ -447,32 +447,6 @@ class Rop_Admin {
 	}
 
 	/**
-	 * Publish now upsell
-	 *
-	 * @since   8.1.0
-	 * @access  public
-	 */
-	public function publish_now_upsell() {
-
-		$page = $this->get_current_page();
-		if ( empty( $page ) ) {
-			return;
-		}
-
-		$global_settings = new Rop_Global_Settings;
-		$settings = new Rop_Settings_Model;
-
-		if ( $global_settings->license_type() <= 0 && $settings->get_instant_sharing() ) {
-			echo '<div class="misc-pub-section  " style="font-size: 13px;text-align: center;line-height: 1.7em;color: #888;"><span class="dashicons dashicons-lock"></span>' .
-				__(
-					'Instant social sharing is available on the extended version for ',
-					'tweet-old-post'
-				) . '<a href="' . ROP_PRO_URL . '" target="_blank">Revive Old Posts </a>
-						</div>';
-		}
-	}
-
-	/**
 	 * Adds the publish now buttons.
 	 */
 	public function add_publish_actions() {
