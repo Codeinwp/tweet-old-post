@@ -226,7 +226,7 @@ class Rop_Admin {
 			'accounts' => $active_accounts,
 		);
 
-		if ( 'publish_now' === $page && $global_settings->license_type() > 0 ) {
+		if ( 'publish_now' === $page ) {
 			$array_nonce['publish_now'] = apply_filters( 'rop_publish_now_attributes', $array_nonce['publish_now'] );
 			wp_register_script( $this->plugin_name . '-publish_now', ROP_LITE_URL . 'assets/js/build/publish_now' . ( ( ROP_DEBUG ) ? '' : '.min' ) . '.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
 		}
@@ -471,6 +471,91 @@ class Rop_Admin {
 						</div>';
 		}
 	}
+
+	/**
+	 * Adds the publish now buttons.
+	 */
+	public function add_publish_actions() {
+		global $post, $pagenow;
+
+		$settings_model  = new Rop_Settings_Model();
+		$global_settings = new Rop_Global_Settings();
+
+		$post_types = wp_list_pluck( $settings_model->get_selected_post_types(), 'value' );
+		if ( in_array( $post->post_type, $post_types ) && in_array(
+			$pagenow,
+			array(
+				'post.php',
+				'post-new.php',
+			)
+		) && ( ( method_exists( $settings_model, 'get_instant_sharing' ) && $settings_model->get_instant_sharing() ) || ! method_exists( $settings_model, 'get_instant_sharing' ) )
+		) {
+			wp_nonce_field( 'rop_publish_now_nonce', 'rop_publish_now_nonce' );
+			include_once ROP_LITE_PATH . '/includes/admin/views/publish_now.php';
+		}
+	}
+
+		/**
+		 * Publish now attributes to be provided to the javascript.
+		 *
+		 * @param   array $default The default attributes.
+		 */
+	public function publish_now_attributes( $default ) {
+		global $post;
+
+		if ( 'publish' === $post->post_status ) {
+			$default['action'] = 'yes' === get_post_meta( $post->ID, 'rop_publish_now', true );
+		}
+		$default['active'] = get_post_meta( $post->ID, 'rop_publish_now_accounts', true );
+
+		return $default;
+	}
+
+		/**
+		 * Publish now, if enabled.
+		 *
+		 * @param   int $post_id The post ID.
+		 */
+	public function maybe_publish_now( $post_id ) {
+		if ( ! isset( $_POST['rop_publish_now_nonce'] ) || ! wp_verify_nonce( $_POST['rop_publish_now_nonce'], 'rop_publish_now_nonce' ) ) {
+			return;
+		}
+
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+
+		if ( ! isset( $_POST['publish_now'] ) || empty( $_POST['publish_now'] ) ) {
+			delete_post_meta( $post_id, 'rop_publish_now' );
+			delete_post_meta( $post_id, 'rop_publish_now_accounts' );
+
+			return;
+		}
+
+		$enabled = $_POST['publish_now_accounts'];
+
+		$services = new Rop_Services_Model();
+		$active   = array_keys( $services->get_active_accounts() );
+		// has something been added extra?
+		$extra = array_diff( $enabled, $active );
+		// reject the extra.
+		$enabled = array_diff( $enabled, $extra );
+
+		update_post_meta( $post_id, 'rop_publish_now', 'yes' );
+		update_post_meta( $post_id, 'rop_publish_now_accounts', $enabled );
+
+		if ( ! $enabled ) {
+			return;
+		}
+
+		$cron = new Rop_Cron_Helper();
+		$cron->manage_cron( array( 'action' => 'publish-now' ) );
+	}
+
 
 	/**
 	 * The publish now Cron Job for the plugin.
