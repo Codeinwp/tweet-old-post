@@ -1,4 +1,8 @@
 
+ ### v8.2.0 - 2019-02-09 
+ **Changes:** 
+ * New: The share post on publish feature is now in the lite version of the plugin. This should help with Facebook app review process (see revive.social docs)
+ 
  ### v8.1.8 - 2019-01-29 
  **Changes:** 
  * Fix: Minor bugs
