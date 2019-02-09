@@ -453,11 +453,11 @@ class Rop_Admin {
 	 * @access  public
 	 */
 	public function publish_now_upsell() {
- 		$page = $this->get_current_page();
+		$page = $this->get_current_page();
 		if ( empty( $page ) ) {
 			return;
 		}
- 		$global_settings = new Rop_Global_Settings;
+		$global_settings = new Rop_Global_Settings;
 		$settings = new Rop_Settings_Model;
 
 		$services        = new Rop_Services_Model();
