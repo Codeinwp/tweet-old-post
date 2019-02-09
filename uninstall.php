@@ -55,6 +55,8 @@ if ( isset( $housekeeping ) && $housekeeping ) {
 		delete_option( $key );
 	}
 
+	delete_metadata( 'user', 0, 'rop_publish_now_notice_dismissed', '', true );
+
 	global $wpdb;
 	$post_meta = $wpdb->prefix . 'postmeta';
 	$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->postmeta WHERE meta_key = %s", 'rop_custom_messages_group' ) );
