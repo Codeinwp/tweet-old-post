@@ -1,4 +1,8 @@
 
+ ### v8.2.1 - 2019-03-01 
+ **Changes:** 
+ * Fix: Sharing queue issue with sites running WPML plugin
+ 
  ### v8.2.0 - 2019-02-09 
  **Changes:** 
  * New: The share post on publish feature is now in the lite version of the plugin. This should help with Facebook app review process (see revive.social docs)

@@ -133,6 +133,11 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.2.1 - 2019-03-01  = 
+
+* Fix: Sharing queue issue with sites running WPML plugin
+
+
 = 8.2.0 - 2019-02-09  =
 
 * New: The share post on publish feature is now in the lite version of the plugin. This should help with Facebook app review process (see revive.social docs)

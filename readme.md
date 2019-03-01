@@ -2,7 +2,7 @@
 **Contributors:** [codeinwp](https://profiles.wordpress.org/codeinwp), [marius2012](https://profiles.wordpress.org/marius2012), [marius_codeinwp](https://profiles.wordpress.org/marius_codeinwp), [hardeepasrani](https://profiles.wordpress.org/hardeepasrani), [Madalin_Themeisle](https://profiles.wordpress.org/Madalin_Themeisle), [rsocial](https://profiles.wordpress.org/rsocial), [uriahs-victor](https://profiles.wordpress.org/uriahs-victor)  
 Tags:twitter, facebook, linkedin, automatic, tweet, share, wordpress, marketing, sharing, Tweet old post, Tweets,evergreen
 **Requires at least:** 4.7  
-**Tested up to:** 5.0  
+**Tested up to:** 5.1  
 **Requires PHP:** 5.6  
 **Stable tag:** trunk  
 
@@ -133,6 +133,11 @@ http://revive.social/plugins/revive-old-post
 
 
 ## Changelog ##
+### 8.2.1 - 2019-03-01  ###
+
+* Fix: Sharing queue issue with sites running WPML plugin
+
+
 ### 8.2.0 - 2019-02-09  ###
 
 * New: The share post on publish feature is now in the lite version of the plugin. This should help with Facebook app review process (see revive.social docs)
