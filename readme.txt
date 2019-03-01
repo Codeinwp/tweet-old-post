@@ -2,7 +2,7 @@
 Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle, rsocial, uriahs-victor
 Tags:twitter, facebook, linkedin, automatic, tweet, share, wordpress, marketing, sharing, Tweet old post, Tweets,evergreen
 Requires at least: 4.7
-Tested up to: 5.0
+Tested up to: 5.1
 Requires PHP: 5.6
 Stable tag: trunk
 
@@ -133,17 +133,17 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
-= 8.2.0 - 2019-02-09  = 
+= 8.2.0 - 2019-02-09  =
 
 * New: The share post on publish feature is now in the lite version of the plugin. This should help with Facebook app review process (see revive.social docs)
 
 
-= 8.1.8 - 2019-01-29  = 
+= 8.1.8 - 2019-01-29  =
 
 * Fix: Minor bugs
 
 
-= 8.1.7 - 2019-01-18  = 
+= 8.1.7 - 2019-01-18  =
 
 * New: Adds basic support for WPML content sharing(see revive.social docs)
 * Fix: Low PHP version notice was not showing the right text
