@@ -606,6 +606,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 
 		if ( is_array( $post_id ) ) {
 			foreach ( $post_id as $id ) {
+				$post_type = get_post_type( $id );
 				$wpml_post = apply_filters( 'wpml_object_id', $id, $post_type, false, $lang_code );
 				if ( ! empty( $wpml_post ) ) {
 					$post[] = $wpml_post;
