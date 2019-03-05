@@ -60,4 +60,5 @@ if ( isset( $housekeeping ) && $housekeeping ) {
 	global $wpdb;
 	$post_meta = $wpdb->prefix . 'postmeta';
 	$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->postmeta WHERE meta_key = %s", 'rop_custom_messages_group' ) );
+	$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->postmeta WHERE meta_key = %s", 'rop_variation_index' ) );
 }
