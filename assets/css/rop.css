@@ -4152,8 +4152,14 @@
 	text-shadow: 0 1px 0 #e46b3d;
 }
 
+#rop_social_actions .submit-feedback{
+	background: #f5d426;
+  text-shadow: 0 1px 0 #ccad0e;
+}
+
 #rop_social_actions .tweet-about-it span,
-#rop_social_actions .leave-a-review span {
+#rop_social_actions .leave-a-review span,
+#rop_social_actions .submit-feedback span {
 	display: block;
 	float: left;
 	width: 30px;
@@ -4163,11 +4169,18 @@
 }
 
 #rop_social_actions .tweet-about-it span {
-	background: url("../img/twitter_icon.png") no-repeat center center, #3eaed8;
+	text-align: center;
+	background: #3eaed8;
 }
 
 #rop_social_actions .leave-a-review span {
-	background: url("../img/review_icon.png") no-repeat center center, #f16848;
+	text-align: center;
+	background: #f16848;
+}
+
+#rop_social_actions .submit-feedback span {
+	text-align: center;
+	background: #d8b70e;
 }
 
 #rop_core .title-panel {
