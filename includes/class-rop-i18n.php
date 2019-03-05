@@ -149,9 +149,6 @@ class Rop_I18n {
 				'custom_share_desc'           => __( 'These messages will override the Post Content option in Post Format settings. You can go to each post and add multiple share content variations.', 'tweet-old-post' ),
 				'custom_share_yes'            => __( 'Yes', 'tweet-old-post' ),
 				'custom_share_upsell'         => __( 'Using a custom share message is available in the pro version.', 'tweet-old-post' ),
-				'custom_share_utm_title'      => __( 'Enable Custom UTM Campaign', 'tweet-old-post' ),
-				'custom_share_utm_desc'       => __( 'Add custom UTM Campaign option to share variations.', 'tweet-old-post' ),
-				'custom_share_utm_yes'        => __( 'Yes', 'tweet-old-post' ),
 				'custom_share_order_title'    => __( 'Share message variations in order they are added.', 'tweet-old-post' ),
 				'custom_share_order_desc'     => __( 'By default message variations are shared randomly. Checking this box will cause them to share in the order they were added.', 'tweet-old-post' ),
 				'custom_share_order_yes'      => __( 'Yes', 'tweet-old-post' ),
@@ -289,6 +286,7 @@ class Rop_I18n {
 				'by'                     => __( 'by', 'tweet-old-post' ),
 				'tweet_about_it'         => __( 'Show your love', 'tweet-old-post' ),
 				'review_it'              => __( 'Leave a review', 'tweet-old-post' ),
+				'help_improve'           => __( 'Help us improve', 'tweet-old-post' ),
 				'in'                     => __( 'in', 'tweet-old-post' ),
 				'now'                    => __( 'Now', 'tweet-old-post' ),
 				'start'                  => __( 'Start', 'tweet-old-post' ),
@@ -315,8 +313,6 @@ You can try to disable any of the security plugins that you use in order to see 
 				'new_variation'         => __( 'New Content Variation', 'tweet-old-post' ),
 				'custom_message_info'   => sprintf( __( 'Add share message variations to this post %1$sLearn More%2$s.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/971-how-to-add-variations-to-revive-old-posts-shares" target="_blank">', '</a>' ),
 				'variation_num'         => __( 'Content Variation #', 'tweet-old-post' ),
-				'custom_utm_campaign'   => __( 'UTM Campaign', 'tweet-old-post' ),
-				'utm_placeholder'       => __( 'variation_x', 'tweet-old-post' ),
 			),
 			// pro only.
 			'publish_now' => array(

@@ -7,8 +7,9 @@
 					<h1 class="plugin-title d-inline-block">Revive Old Posts</h1><span class="powered d-inline-block"> {{labels.by}} <a
 						href="https://revive.social" target="_blank"><b>Revive.Social</b></a></span>
 					<div id="rop_social_actions">
-					<a href="https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial" target="_blank" class="tweet-about-it"><span></span> {{labels.tweet_about_it}}</a>
-					<a href="https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post" target="_blank" class="leave-a-review"><span></span> {{labels.review_it}}</a>
+					<a href="https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform" target="_blank" class="submit-feedback"><span><i class="fa fa-commenting" aria-hidden="true"></i></span> {{labels.help_improve}}</a>
+					<a href="https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial" target="_blank" class="tweet-about-it"><span><i class="fa fa-twitter" aria-hidden="true"></i></span> {{labels.tweet_about_it}}</a>
+					<a href="https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post" target="_blank" class="leave-a-review"><span><i class="fa fa-star" aria-hidden="true"></i></span> {{labels.review_it}}</a>
 					</div>
 				</div>
 			</div>

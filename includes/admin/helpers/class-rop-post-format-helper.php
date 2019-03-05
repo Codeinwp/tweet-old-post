@@ -146,7 +146,7 @@ class Rop_Post_Format_Helper {
 			}
 		}
 		/**
-		 * Check custom messages if exists.
+		 * Check custom messages(share variations) if exists.
 		 */
 		$custom_messages = get_post_meta( $post_id, 'rop_custom_messages_group', true );
 
@@ -161,7 +161,6 @@ class Rop_Post_Format_Helper {
 				$sequential_index = ( ! empty( $sequential_index ) ) ? $sequential_index : 0;
 
 					$share_content = $custom_messages[ $sequential_index ]['rop_custom_description'];
-					$custom_utm_campaign = $custom_messages[ $sequential_index ]['rop_custom_utm_campaign'];
 
 				$new_index = $sequential_index + 1;
 				$count = count( $custom_messages ) - 1;
@@ -175,12 +174,7 @@ class Rop_Post_Format_Helper {
 
 				$random_index    = rand( 0, ( count( $custom_messages ) - 1 ) );
 				$share_content   = $custom_messages[ $random_index ]['rop_custom_description'];
-				$custom_utm_campaign = $custom_messages[ $random_index ]['rop_custom_utm_campaign'];
 
-			}
-
-			if ( ! empty( $custom_utm_campaign ) ) {
-				$this->post_format['utm_campaign_name'] = $custom_utm_campaign;
 			}
 
 			if ( isset( $pro_format_helper ) ) {

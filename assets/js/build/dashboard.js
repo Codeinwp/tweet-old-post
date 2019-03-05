@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 207);
+/******/ 	return __webpack_require__(__webpack_require__.s = 208);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1328,7 +1328,7 @@
 
     var defaultLocaleWeek = {
         dow : 0, // Sunday is the first day of the week.
-        doy : 6  // The week that contains Jan 1st is the first week of the year.
+        doy : 6  // The week that contains Jan 6th is the first week of the year.
     };
 
     function localeFirstDayOfWeek () {
@@ -1541,9 +1541,9 @@
 
             mom = createUTC([2000, 1]).day(i);
             if (strict && !this._fullWeekdaysParse[i]) {
-                this._fullWeekdaysParse[i] = new RegExp('^' + this.weekdays(mom, '').replace('.', '\.?') + '$', 'i');
-                this._shortWeekdaysParse[i] = new RegExp('^' + this.weekdaysShort(mom, '').replace('.', '\.?') + '$', 'i');
-                this._minWeekdaysParse[i] = new RegExp('^' + this.weekdaysMin(mom, '').replace('.', '\.?') + '$', 'i');
+                this._fullWeekdaysParse[i] = new RegExp('^' + this.weekdays(mom, '').replace('.', '\\.?') + '$', 'i');
+                this._shortWeekdaysParse[i] = new RegExp('^' + this.weekdaysShort(mom, '').replace('.', '\\.?') + '$', 'i');
+                this._minWeekdaysParse[i] = new RegExp('^' + this.weekdaysMin(mom, '').replace('.', '\\.?') + '$', 'i');
             }
             if (!this._weekdaysParse[i]) {
                 regex = '^' + this.weekdays(mom, '') + '|^' + this.weekdaysShort(mom, '') + '|^' + this.weekdaysMin(mom, '');
@@ -1902,7 +1902,7 @@
             try {
                 oldLocale = globalLocale._abbr;
                 var aliasedRequire = require;
-                __webpack_require__(283)("./" + name);
+                __webpack_require__(284)("./" + name);
                 getSetGlobalLocale(oldLocale);
             } catch (e) {}
         }
@@ -2204,13 +2204,13 @@
                     weekdayOverflow = true;
                 }
             } else if (w.e != null) {
-                // local weekday -- counting starts from begining of week
+                // local weekday -- counting starts from beginning of week
                 weekday = w.e + dow;
                 if (w.e < 0 || w.e > 6) {
                     weekdayOverflow = true;
                 }
             } else {
-                // default to begining of week
+                // default to beginning of week
                 weekday = dow;
             }
         }
@@ -2346,7 +2346,7 @@
 
     function preprocessRFC2822(s) {
         // Remove comments and folding whitespace and replace multiple-spaces with a single space
-        return s.replace(/\([^)]*\)|[\n\t]/g, ' ').replace(/(\s\s+)/g, ' ').trim();
+        return s.replace(/\([^)]*\)|[\n\t]/g, ' ').replace(/(\s\s+)/g, ' ').replace(/^\s\s*/, '').replace(/\s\s*$/, '');
     }
 
     function checkWeekday(weekdayStr, parsedInput, config) {
@@ -2804,7 +2804,7 @@
             years = normalizedInput.year || 0,
             quarters = normalizedInput.quarter || 0,
             months = normalizedInput.month || 0,
-            weeks = normalizedInput.week || 0,
+            weeks = normalizedInput.week || normalizedInput.isoWeek || 0,
             days = normalizedInput.day || 0,
             hours = normalizedInput.hour || 0,
             minutes = normalizedInput.minute || 0,
@@ -3108,7 +3108,7 @@
                 ms : toInt(absRound(match[MILLISECOND] * 1000)) * sign // the millisecond decimal point is included in the match
             };
         } else if (!!(match = isoRegex.exec(input))) {
-            sign = (match[1] === '-') ? -1 : (match[1] === '+') ? 1 : 1;
+            sign = (match[1] === '-') ? -1 : 1;
             duration = {
                 y : parseIso(match[2], sign),
                 M : parseIso(match[3], sign),
@@ -3259,7 +3259,7 @@
         if (!(this.isValid() && localInput.isValid())) {
             return false;
         }
-        units = normalizeUnits(!isUndefined(units) ? units : 'millisecond');
+        units = normalizeUnits(units) || 'millisecond';
         if (units === 'millisecond') {
             return this.valueOf() > localInput.valueOf();
         } else {
@@ -3272,7 +3272,7 @@
         if (!(this.isValid() && localInput.isValid())) {
             return false;
         }
-        units = normalizeUnits(!isUndefined(units) ? units : 'millisecond');
+        units = normalizeUnits(units) || 'millisecond';
         if (units === 'millisecond') {
             return this.valueOf() < localInput.valueOf();
         } else {
@@ -3281,9 +3281,14 @@
     }
 
     function isBetween (from, to, units, inclusivity) {
+        var localFrom = isMoment(from) ? from : createLocal(from),
+            localTo = isMoment(to) ? to : createLocal(to);
+        if (!(this.isValid() && localFrom.isValid() && localTo.isValid())) {
+            return false;
+        }
         inclusivity = inclusivity || '()';
-        return (inclusivity[0] === '(' ? this.isAfter(from, units) : !this.isBefore(from, units)) &&
-            (inclusivity[1] === ')' ? this.isBefore(to, units) : !this.isAfter(to, units));
+        return (inclusivity[0] === '(' ? this.isAfter(localFrom, units) : !this.isBefore(localFrom, units)) &&
+            (inclusivity[1] === ')' ? this.isBefore(localTo, units) : !this.isAfter(localTo, units));
     }
 
     function isSame (input, units) {
@@ -3292,7 +3297,7 @@
         if (!(this.isValid() && localInput.isValid())) {
             return false;
         }
-        units = normalizeUnits(units || 'millisecond');
+        units = normalizeUnits(units) || 'millisecond';
         if (units === 'millisecond') {
             return this.valueOf() === localInput.valueOf();
         } else {
@@ -3302,11 +3307,11 @@
     }
 
     function isSameOrAfter (input, units) {
-        return this.isSame(input, units) || this.isAfter(input,units);
+        return this.isSame(input, units) || this.isAfter(input, units);
     }
 
     function isSameOrBefore (input, units) {
-        return this.isSame(input, units) || this.isBefore(input,units);
+        return this.isSame(input, units) || this.isBefore(input, units);
     }
 
     function diff (input, units, asFloat) {
@@ -4525,7 +4530,7 @@
     // Side effect imports
 
 
-    hooks.version = '2.22.1';
+    hooks.version = '2.23.0';
 
     setHookCallback(createLocal);
 
@@ -4566,7 +4571,7 @@
         TIME: 'HH:mm',                                  // <input type="time" />
         TIME_SECONDS: 'HH:mm:ss',                       // <input type="time" step="1" />
         TIME_MS: 'HH:mm:ss.SSS',                        // <input type="time" step="0.001" />
-        WEEK: 'YYYY-[W]WW',                             // <input type="week" />
+        WEEK: 'GGGG-[W]WW',                             // <input type="week" />
         MONTH: 'YYYY-MM'                                // <input type="month" />
     };
 
@@ -4574,7 +4579,7 @@
 
 })));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(282)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(283)(module)))
 
 /***/ }),
 /* 1 */
@@ -5078,6 +5083,14 @@ process.umask = function() { return 0; };
 /* 4 */
 /***/ (function(module, exports) {
 
+var core = module.exports = { version: '2.6.1' };
+if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
 // https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
 var global = module.exports = typeof window != 'undefined' && window.Math == Math
   ? window : typeof self != 'undefined' && self.Math == Math ? self
@@ -5087,12 +5100,12 @@ if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var store = __webpack_require__(31)('wks');
-var uid = __webpack_require__(32);
-var Symbol = __webpack_require__(4).Symbol;
+var uid = __webpack_require__(33);
+var Symbol = __webpack_require__(5).Symbol;
 var USE_SYMBOL = typeof Symbol == 'function';
 
 var $exports = module.exports = function (name) {
@@ -5104,13 +5117,13 @@ $exports.store = store;
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* WEBPACK VAR INJECTION */(function(process, global, setImmediate) {/*!
- * Vue.js v2.5.16
+ * Vue.js v2.5.21
  * (c) 2014-2018 Evan You
  * Released under the MIT License.
  */
@@ -5118,8 +5131,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 var emptyObject = Object.freeze({});
 
-// these helpers produces better vm code in JS engines due to their
-// explicitness and function inlining
+// These helpers produce better VM code in JS engines due to their
+// explicitness and function inlining.
 function isUndef (v) {
   return v === undefined || v === null
 }
@@ -5137,7 +5150,7 @@ function isFalse (v) {
 }
 
 /**
- * Check if value is primitive
+ * Check if value is primitive.
  */
 function isPrimitive (value) {
   return (
@@ -5159,7 +5172,7 @@ function isObject (obj) {
 }
 
 /**
- * Get the raw type string of a value e.g. [object Object]
+ * Get the raw type string of a value, e.g., [object Object].
  */
 var _toString = Object.prototype.toString;
 
@@ -5199,7 +5212,7 @@ function toString (val) {
 }
 
 /**
- * Convert a input value to a number for persistence.
+ * Convert an input value to a number for persistence.
  * If the conversion fails, return original string.
  */
 function toNumber (val) {
@@ -5231,12 +5244,12 @@ function makeMap (
 var isBuiltInTag = makeMap('slot,component', true);
 
 /**
- * Check if a attribute is a reserved attribute.
+ * Check if an attribute is a reserved attribute.
  */
 var isReservedAttribute = makeMap('key,ref,slot,slot-scope,is');
 
 /**
- * Remove an item from an array
+ * Remove an item from an array.
  */
 function remove (arr, item) {
   if (arr.length) {
@@ -5248,7 +5261,7 @@ function remove (arr, item) {
 }
 
 /**
- * Check whether the object has the property.
+ * Check whether an object has the property.
  */
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 function hasOwn (obj, key) {
@@ -5290,11 +5303,11 @@ var hyphenate = cached(function (str) {
 });
 
 /**
- * Simple bind polyfill for environments that do not support it... e.g.
- * PhantomJS 1.x. Technically we don't need this anymore since native bind is
- * now more performant in most browsers, but removing it would be breaking for
- * code that was able to run in PhantomJS 1.x, so this must be kept for
- * backwards compatibility.
+ * Simple bind polyfill for environments that do not support it,
+ * e.g., PhantomJS 1.x. Technically, we don't need this anymore
+ * since native bind is now performant enough in most browsers.
+ * But removing it would mean breaking code that was able to run in
+ * PhantomJS 1.x, so this must be kept for backward compatibility.
  */
 
 /* istanbul ignore next */
@@ -5356,10 +5369,12 @@ function toObject (arr) {
   return res
 }
 
+/* eslint-disable no-unused-vars */
+
 /**
  * Perform no operation.
  * Stubbing args to make Flow happy without leaving useless transpiled code
- * with ...rest (https://flow.org/blog/2017/05/07/Strict-Function-Call-Arity/)
+ * with ...rest (https://flow.org/blog/2017/05/07/Strict-Function-Call-Arity/).
  */
 function noop (a, b, c) {}
 
@@ -5368,13 +5383,15 @@ function noop (a, b, c) {}
  */
 var no = function (a, b, c) { return false; };
 
+/* eslint-enable no-unused-vars */
+
 /**
- * Return same value
+ * Return the same value.
  */
 var identity = function (_) { return _; };
 
 /**
- * Generate a static keys string from compiler modules.
+ * Generate a string containing static keys from compiler modules.
  */
 function genStaticKeys (modules) {
   return modules.reduce(function (keys, m) {
@@ -5398,6 +5415,8 @@ function looseEqual (a, b) {
         return a.length === b.length && a.every(function (e, i) {
           return looseEqual(e, b[i])
         })
+      } else if (a instanceof Date && b instanceof Date) {
+        return a.getTime() === b.getTime()
       } else if (!isArrayA && !isArrayB) {
         var keysA = Object.keys(a);
         var keysB = Object.keys(b);
@@ -5419,6 +5438,11 @@ function looseEqual (a, b) {
   }
 }
 
+/**
+ * Return the first index at which a loosely equal value can be
+ * found in the array (if value is a plain object, the array must
+ * contain an object of the same shape), or -1 if it is not present.
+ */
 function looseIndexOf (arr, val) {
   for (var i = 0; i < arr.length; i++) {
     if (looseEqual(arr[i], val)) { return i }
@@ -5462,6 +5486,8 @@ var LIFECYCLE_HOOKS = [
 ];
 
 /*  */
+
+
 
 var config = ({
   /**
@@ -5546,10 +5572,16 @@ var config = ({
   mustUseProp: no,
 
   /**
+   * Perform updates asynchronously. Intended to be used by Vue Test Utils
+   * This will significantly reduce performance if set to false.
+   */
+  async: true,
+
+  /**
    * Exposed for legacy reasons
    */
   _lifecycleHooks: LIFECYCLE_HOOKS
-})
+});
 
 /*  */
 
@@ -5634,7 +5666,7 @@ var isServerRendering = function () {
     if (!inBrowser && !inWeex && typeof global !== 'undefined') {
       // detect presence of vue-server-renderer and avoid
       // Webpack shimming the process
-      _isServer = global['process'].env.VUE_ENV === 'server';
+      _isServer = global['process'] && global['process'].env.VUE_ENV === 'server';
     } else {
       _isServer = false;
     }
@@ -5661,7 +5693,7 @@ if (typeof Set !== 'undefined' && isNative(Set)) {
   _Set = Set;
 } else {
   // a non-standard Set polyfill that only works with primitive keys.
-  _Set = (function () {
+  _Set = /*@__PURE__*/(function () {
     function Set () {
       this.set = Object.create(null);
     }
@@ -5775,7 +5807,6 @@ if (process.env.NODE_ENV !== 'production') {
 
 /*  */
 
-
 var uid = 0;
 
 /**
@@ -5804,6 +5835,12 @@ Dep.prototype.depend = function depend () {
 Dep.prototype.notify = function notify () {
   // stabilize the subscriber list first
   var subs = this.subs.slice();
+  if (process.env.NODE_ENV !== 'production' && !config.async) {
+    // subs aren't sorted in scheduler if not running async
+    // we need to sort them now to make sure they fire in correct
+    // order
+    subs.sort(function (a, b) { return a.id - b.id; });
+  }
   for (var i = 0, l = subs.length; i < l; i++) {
     subs[i].update();
   }
@@ -5815,13 +5852,14 @@ Dep.prototype.notify = function notify () {
 Dep.target = null;
 var targetStack = [];
 
-function pushTarget (_target) {
-  if (Dep.target) { targetStack.push(Dep.target); }
-  Dep.target = _target;
+function pushTarget (target) {
+  targetStack.push(target);
+  Dep.target = target;
 }
 
 function popTarget () {
-  Dep.target = targetStack.pop();
+  targetStack.pop();
+  Dep.target = targetStack[targetStack.length - 1];
 }
 
 /*  */
@@ -5892,7 +5930,10 @@ function cloneVNode (vnode) {
   var cloned = new VNode(
     vnode.tag,
     vnode.data,
-    vnode.children,
+    // #7975
+    // clone children array to avoid mutating original in case of cloning
+    // a child.
+    vnode.children && vnode.children.slice(),
     vnode.text,
     vnode.elm,
     vnode.context,
@@ -5906,6 +5947,7 @@ function cloneVNode (vnode) {
   cloned.fnContext = vnode.fnContext;
   cloned.fnOptions = vnode.fnOptions;
   cloned.fnScopeId = vnode.fnScopeId;
+  cloned.asyncMeta = vnode.asyncMeta;
   cloned.isCloned = true;
   return cloned
 }
@@ -5983,10 +6025,11 @@ var Observer = function Observer (value) {
   this.vmCount = 0;
   def(value, '__ob__', this);
   if (Array.isArray(value)) {
-    var augment = hasProto
-      ? protoAugment
-      : copyAugment;
-    augment(value, arrayMethods, arrayKeys);
+    if (hasProto) {
+      protoAugment(value, arrayMethods);
+    } else {
+      copyAugment(value, arrayMethods, arrayKeys);
+    }
     this.observeArray(value);
   } else {
     this.walk(value);
@@ -5994,14 +6037,14 @@ var Observer = function Observer (value) {
 };
 
 /**
- * Walk through each property and convert them into
+ * Walk through all properties and convert them into
  * getter/setters. This method should only be called when
  * value type is Object.
  */
 Observer.prototype.walk = function walk (obj) {
   var keys = Object.keys(obj);
   for (var i = 0; i < keys.length; i++) {
-    defineReactive(obj, keys[i]);
+    defineReactive$$1(obj, keys[i]);
   }
 };
 
@@ -6017,17 +6060,17 @@ Observer.prototype.observeArray = function observeArray (items) {
 // helpers
 
 /**
- * Augment an target Object or Array by intercepting
+ * Augment a target Object or Array by intercepting
  * the prototype chain using __proto__
  */
-function protoAugment (target, src, keys) {
+function protoAugment (target, src) {
   /* eslint-disable no-proto */
   target.__proto__ = src;
   /* eslint-enable no-proto */
 }
 
 /**
- * Augment an target Object or Array by defining
+ * Augment a target Object or Array by defining
  * hidden properties.
  */
 /* istanbul ignore next */
@@ -6068,7 +6111,7 @@ function observe (value, asRootData) {
 /**
  * Define a reactive property on an Object.
  */
-function defineReactive (
+function defineReactive$$1 (
   obj,
   key,
   val,
@@ -6084,10 +6127,10 @@ function defineReactive (
 
   // cater for pre-defined getter/setters
   var getter = property && property.get;
-  if (!getter && arguments.length === 2) {
+  var setter = property && property.set;
+  if ((!getter || setter) && arguments.length === 2) {
     val = obj[key];
   }
-  var setter = property && property.set;
 
   var childOb = !shallow && observe(val);
   Object.defineProperty(obj, key, {
@@ -6116,6 +6159,8 @@ function defineReactive (
       if (process.env.NODE_ENV !== 'production' && customSetter) {
         customSetter();
       }
+      // #7981: for accessor properties without setter
+      if (getter && !setter) { return }
       if (setter) {
         setter.call(obj, newVal);
       } else {
@@ -6159,7 +6204,7 @@ function set (target, key, val) {
     target[key] = val;
     return val
   }
-  defineReactive(ob.value, key, val);
+  defineReactive$$1(ob.value, key, val);
   ob.dep.notify();
   return val
 }
@@ -6246,7 +6291,11 @@ function mergeData (to, from) {
     fromVal = from[key];
     if (!hasOwn(to, key)) {
       set(to, key, fromVal);
-    } else if (isPlainObject(toVal) && isPlainObject(fromVal)) {
+    } else if (
+      toVal !== fromVal &&
+      isPlainObject(toVal) &&
+      isPlainObject(fromVal)
+    ) {
       mergeData(toVal, fromVal);
     }
   }
@@ -6569,15 +6618,22 @@ function mergeOptions (
   normalizeProps(child, vm);
   normalizeInject(child, vm);
   normalizeDirectives(child);
-  var extendsFrom = child.extends;
-  if (extendsFrom) {
-    parent = mergeOptions(parent, extendsFrom, vm);
-  }
-  if (child.mixins) {
-    for (var i = 0, l = child.mixins.length; i < l; i++) {
-      parent = mergeOptions(parent, child.mixins[i], vm);
+  
+  // Apply extends and mixins on the child options,
+  // but only if it is a raw options object that isn't
+  // the result of another mergeOptions call.
+  // Only merged options has the _base property.
+  if (!child._base) {
+    if (child.extends) {
+      parent = mergeOptions(parent, child.extends, vm);
+    }
+    if (child.mixins) {
+      for (var i = 0, l = child.mixins.length; i < l; i++) {
+        parent = mergeOptions(parent, child.mixins[i], vm);
+      }
     }
   }
+
   var options = {};
   var key;
   for (key in parent) {
@@ -6630,6 +6686,8 @@ function resolveAsset (
 
 /*  */
 
+
+
 function validateProp (
   key,
   propOptions,
@@ -6666,7 +6724,7 @@ function validateProp (
   if (
     process.env.NODE_ENV !== 'production' &&
     // skip validation for weex recycle-list child component props
-    !(false && isObject(value) && ('@binding' in value))
+    !(false)
   ) {
     assertProp(prop, key, value, vm, absent);
   }
@@ -6739,11 +6797,10 @@ function assertProp (
       valid = assertedType.valid;
     }
   }
+
   if (!valid) {
     warn(
-      "Invalid prop: type check failed for prop \"" + name + "\"." +
-      " Expected " + (expectedTypes.map(capitalize).join(', ')) +
-      ", got " + (toRawType(value)) + ".",
+      getInvalidTypeMessage(name, value, expectedTypes),
       vm
     );
     return
@@ -6810,6 +6867,49 @@ function getTypeIndex (type, expectedTypes) {
   return -1
 }
 
+function getInvalidTypeMessage (name, value, expectedTypes) {
+  var message = "Invalid prop: type check failed for prop \"" + name + "\"." +
+    " Expected " + (expectedTypes.map(capitalize).join(', '));
+  var expectedType = expectedTypes[0];
+  var receivedType = toRawType(value);
+  var expectedValue = styleValue(value, expectedType);
+  var receivedValue = styleValue(value, receivedType);
+  // check if we need to specify expected value
+  if (expectedTypes.length === 1 &&
+      isExplicable(expectedType) &&
+      !isBoolean(expectedType, receivedType)) {
+    message += " with value " + expectedValue;
+  }
+  message += ", got " + receivedType + " ";
+  // check if we need to specify received value
+  if (isExplicable(receivedType)) {
+    message += "with value " + receivedValue + ".";
+  }
+  return message
+}
+
+function styleValue (value, type) {
+  if (type === 'String') {
+    return ("\"" + value + "\"")
+  } else if (type === 'Number') {
+    return ("" + (Number(value)))
+  } else {
+    return ("" + value)
+  }
+}
+
+function isExplicable (value) {
+  var explicitTypes = ['string', 'number', 'boolean'];
+  return explicitTypes.some(function (elem) { return value.toLowerCase() === elem; })
+}
+
+function isBoolean () {
+  var args = [], len = arguments.length;
+  while ( len-- ) args[ len ] = arguments[ len ];
+
+  return args.some(function (elem) { return elem.toLowerCase() === 'boolean'; })
+}
+
 /*  */
 
 function handleError (err, vm, info) {
@@ -6856,7 +6956,6 @@ function logError (err, vm, info) {
 }
 
 /*  */
-/* globals MessageChannel */
 
 var callbacks = [];
 var pending = false;
@@ -6934,9 +7033,11 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
 function withMacroTask (fn) {
   return fn._withTask || (fn._withTask = function () {
     useMacroTask = true;
-    var res = fn.apply(null, arguments);
-    useMacroTask = false;
-    return res
+    try {
+      return fn.apply(null, arguments)
+    } finally {
+      useMacroTask = false;    
+    }
   })
 }
 
@@ -7017,6 +7118,16 @@ if (process.env.NODE_ENV !== 'production') {
     );
   };
 
+  var warnReservedPrefix = function (target, key) {
+    warn(
+      "Property \"" + key + "\" must be accessed with \"$data." + key + "\" because " +
+      'properties starting with "$" or "_" are not proxied in the Vue instance to ' +
+      'prevent conflicts with Vue internals' +
+      'See: https://vuejs.org/v2/api/#data',
+      target
+    );
+  };
+
   var hasProxy =
     typeof Proxy !== 'undefined' && isNative(Proxy);
 
@@ -7038,9 +7149,11 @@ if (process.env.NODE_ENV !== 'production') {
   var hasHandler = {
     has: function has (target, key) {
       var has = key in target;
-      var isAllowed = allowedGlobals(key) || key.charAt(0) === '_';
+      var isAllowed = allowedGlobals(key) ||
+        (typeof key === 'string' && key.charAt(0) === '_' && !(key in target.$data));
       if (!has && !isAllowed) {
-        warnNonPresent(target, key);
+        if (key in target.$data) { warnReservedPrefix(target, key); }
+        else { warnNonPresent(target, key); }
       }
       return has || !isAllowed
     }
@@ -7049,7 +7162,8 @@ if (process.env.NODE_ENV !== 'production') {
   var getHandler = {
     get: function get (target, key) {
       if (typeof key === 'string' && !(key in target)) {
-        warnNonPresent(target, key);
+        if (key in target.$data) { warnReservedPrefix(target, key); }
+        else { warnNonPresent(target, key); }
       }
       return target[key]
     }
@@ -7147,14 +7261,14 @@ function updateListeners (
   oldOn,
   add,
   remove$$1,
+  createOnceHandler,
   vm
 ) {
-  var name, def, cur, old, event;
+  var name, def$$1, cur, old, event;
   for (name in on) {
-    def = cur = on[name];
+    def$$1 = cur = on[name];
     old = oldOn[name];
     event = normalizeEvent(name);
-    /* istanbul ignore if */
     if (isUndef(cur)) {
       process.env.NODE_ENV !== 'production' && warn(
         "Invalid handler for event \"" + (event.name) + "\": got " + String(cur),
@@ -7164,7 +7278,10 @@ function updateListeners (
       if (isUndef(cur.fns)) {
         cur = on[name] = createFnInvoker(cur);
       }
-      add(event.name, cur, event.once, event.capture, event.passive, event.params);
+      if (isTrue(event.once)) {
+        cur = on[name] = createOnceHandler(event.name, cur, event.capture);
+      }
+      add(event.name, cur, event.capture, event.passive, event.params);
     } else if (cur !== old) {
       old.fns = cur;
       on[name] = old;
@@ -7419,9 +7536,13 @@ function resolveAsyncComponent (
     var contexts = factory.contexts = [context];
     var sync = true;
 
-    var forceRender = function () {
+    var forceRender = function (renderCompleted) {
       for (var i = 0, l = contexts.length; i < l; i++) {
         contexts[i].$forceUpdate();
+      }
+
+      if (renderCompleted) {
+        contexts.length = 0;
       }
     };
 
@@ -7431,7 +7552,7 @@ function resolveAsyncComponent (
       // invoke callbacks only if this is not a synchronous resolve
       // (async resolves are shimmed as synchronous during SSR)
       if (!sync) {
-        forceRender();
+        forceRender(true);
       }
     });
 
@@ -7442,7 +7563,7 @@ function resolveAsyncComponent (
       );
       if (isDef(factory.errorComp)) {
         factory.error = true;
-        forceRender();
+        forceRender(true);
       }
     });
 
@@ -7469,7 +7590,7 @@ function resolveAsyncComponent (
             setTimeout(function () {
               if (isUndef(factory.resolved) && isUndef(factory.error)) {
                 factory.loading = true;
-                forceRender();
+                forceRender(false);
               }
             }, res.delay || 200);
           }
@@ -7532,16 +7653,22 @@ function initEvents (vm) {
 
 var target;
 
-function add (event, fn, once) {
-  if (once) {
-    target.$once(event, fn);
-  } else {
-    target.$on(event, fn);
-  }
+function add (event, fn) {
+  target.$on(event, fn);
 }
 
 function remove$1 (event, fn) {
   target.$off(event, fn);
+}
+
+function createOnceHandler (event, fn) {
+  var _target = target;
+  return function onceHandler () {
+    var res = fn.apply(null, arguments);
+    if (res !== null) {
+      _target.$off(event, onceHandler);
+    }
+  }
 }
 
 function updateComponentListeners (
@@ -7550,19 +7677,17 @@ function updateComponentListeners (
   oldListeners
 ) {
   target = vm;
-  updateListeners(listeners, oldListeners || {}, add, remove$1, vm);
+  updateListeners(listeners, oldListeners || {}, add, remove$1, createOnceHandler, vm);
   target = undefined;
 }
 
 function eventsMixin (Vue) {
   var hookRE = /^hook:/;
   Vue.prototype.$on = function (event, fn) {
-    var this$1 = this;
-
     var vm = this;
     if (Array.isArray(event)) {
       for (var i = 0, l = event.length; i < l; i++) {
-        this$1.$on(event[i], fn);
+        vm.$on(event[i], fn);
       }
     } else {
       (vm._events[event] || (vm._events[event] = [])).push(fn);
@@ -7587,8 +7712,6 @@ function eventsMixin (Vue) {
   };
 
   Vue.prototype.$off = function (event, fn) {
-    var this$1 = this;
-
     var vm = this;
     // all
     if (!arguments.length) {
@@ -7598,7 +7721,7 @@ function eventsMixin (Vue) {
     // array of events
     if (Array.isArray(event)) {
       for (var i = 0, l = event.length; i < l; i++) {
-        this$1.$off(event[i], fn);
+        vm.$off(event[i], fn);
       }
       return vm
     }
@@ -7727,6 +7850,14 @@ function resolveScopedSlots (
 var activeInstance = null;
 var isUpdatingChildComponent = false;
 
+function setActiveInstance(vm) {
+  var prevActiveInstance = activeInstance;
+  activeInstance = vm;
+  return function () {
+    activeInstance = prevActiveInstance;
+  }
+}
+
 function initLifecycle (vm) {
   var options = vm.$options;
 
@@ -7756,31 +7887,20 @@ function initLifecycle (vm) {
 function lifecycleMixin (Vue) {
   Vue.prototype._update = function (vnode, hydrating) {
     var vm = this;
-    if (vm._isMounted) {
-      callHook(vm, 'beforeUpdate');
-    }
     var prevEl = vm.$el;
     var prevVnode = vm._vnode;
-    var prevActiveInstance = activeInstance;
-    activeInstance = vm;
+    var restoreActiveInstance = setActiveInstance(vm);
     vm._vnode = vnode;
     // Vue.prototype.__patch__ is injected in entry points
     // based on the rendering backend used.
     if (!prevVnode) {
       // initial render
-      vm.$el = vm.__patch__(
-        vm.$el, vnode, hydrating, false /* removeOnly */,
-        vm.$options._parentElm,
-        vm.$options._refElm
-      );
-      // no need for the ref nodes after initial patch
-      // this prevents keeping a detached DOM tree in memory (#5851)
-      vm.$options._parentElm = vm.$options._refElm = null;
+      vm.$el = vm.__patch__(vm.$el, vnode, hydrating, false /* removeOnly */);
     } else {
       // updates
       vm.$el = vm.__patch__(prevVnode, vnode);
     }
-    activeInstance = prevActiveInstance;
+    restoreActiveInstance();
     // update __vue__ reference
     if (prevEl) {
       prevEl.__vue__ = null;
@@ -7903,7 +8023,13 @@ function mountComponent (
   // we set this to vm._watcher inside the watcher's constructor
   // since the watcher's initial patch may call $forceUpdate (e.g. inside child
   // component's mounted hook), which relies on vm._watcher being already defined
-  new Watcher(vm, updateComponent, noop, null, true /* isRenderWatcher */);
+  new Watcher(vm, updateComponent, noop, {
+    before: function before () {
+      if (vm._isMounted && !vm._isDestroyed) {
+        callHook(vm, 'beforeUpdate');
+      }
+    }
+  }, true /* isRenderWatcher */);
   hydrating = false;
 
   // manually mounted instance, call mounted on self
@@ -8043,7 +8169,6 @@ function callHook (vm, hook) {
 
 /*  */
 
-
 var MAX_UPDATE_COUNT = 100;
 
 var queue = [];
@@ -8087,6 +8212,9 @@ function flushSchedulerQueue () {
   // as we run existing watchers
   for (index = 0; index < queue.length; index++) {
     watcher = queue[index];
+    if (watcher.before) {
+      watcher.before();
+    }
     id = watcher.id;
     has[id] = null;
     watcher.run();
@@ -8129,7 +8257,7 @@ function callUpdatedHooks (queue) {
   while (i--) {
     var watcher = queue[i];
     var vm = watcher.vm;
-    if (vm._watcher === watcher && vm._isMounted) {
+    if (vm._watcher === watcher && vm._isMounted && !vm._isDestroyed) {
       callHook(vm, 'updated');
     }
   }
@@ -8176,12 +8304,19 @@ function queueWatcher (watcher) {
     // queue the flush
     if (!waiting) {
       waiting = true;
+
+      if (process.env.NODE_ENV !== 'production' && !config.async) {
+        flushSchedulerQueue();
+        return
+      }
       nextTick(flushSchedulerQueue);
     }
   }
 }
 
 /*  */
+
+
 
 var uid$1 = 0;
 
@@ -8208,6 +8343,7 @@ var Watcher = function Watcher (
     this.user = !!options.user;
     this.lazy = !!options.lazy;
     this.sync = !!options.sync;
+    this.before = options.before;
   } else {
     this.deep = this.user = this.lazy = this.sync = false;
   }
@@ -8228,7 +8364,7 @@ var Watcher = function Watcher (
   } else {
     this.getter = parsePath(expOrFn);
     if (!this.getter) {
-      this.getter = function () {};
+      this.getter = noop;
       process.env.NODE_ENV !== 'production' && warn(
         "Failed watching path: \"" + expOrFn + "\" " +
         'Watcher only accepts simple dot-delimited paths. ' +
@@ -8287,13 +8423,11 @@ Watcher.prototype.addDep = function addDep (dep) {
  * Clean up for dependency collection.
  */
 Watcher.prototype.cleanupDeps = function cleanupDeps () {
-    var this$1 = this;
-
   var i = this.deps.length;
   while (i--) {
-    var dep = this$1.deps[i];
-    if (!this$1.newDepIds.has(dep.id)) {
-      dep.removeSub(this$1);
+    var dep = this.deps[i];
+    if (!this.newDepIds.has(dep.id)) {
+      dep.removeSub(this);
     }
   }
   var tmp = this.depIds;
@@ -8365,11 +8499,9 @@ Watcher.prototype.evaluate = function evaluate () {
  * Depend on all deps collected by this watcher.
  */
 Watcher.prototype.depend = function depend () {
-    var this$1 = this;
-
   var i = this.deps.length;
   while (i--) {
-    this$1.deps[i].depend();
+    this.deps[i].depend();
   }
 };
 
@@ -8377,8 +8509,6 @@ Watcher.prototype.depend = function depend () {
  * Remove self from all dependencies' subscriber list.
  */
 Watcher.prototype.teardown = function teardown () {
-    var this$1 = this;
-
   if (this.active) {
     // remove self from vm's watcher list
     // this is a somewhat expensive operation so we skip it
@@ -8388,7 +8518,7 @@ Watcher.prototype.teardown = function teardown () {
     }
     var i = this.deps.length;
     while (i--) {
-      this$1.deps[i].removeSub(this$1);
+      this.deps[i].removeSub(this);
     }
     this.active = false;
   }
@@ -8453,8 +8583,8 @@ function initProps (vm, propsOptions) {
           vm
         );
       }
-      defineReactive(props, key, value, function () {
-        if (vm.$parent && !isUpdatingChildComponent) {
+      defineReactive$$1(props, key, value, function () {
+        if (!isRoot && !isUpdatingChildComponent) {
           warn(
             "Avoid mutating a prop directly since the value will be " +
             "overwritten whenever the parent component re-renders. " +
@@ -8465,7 +8595,7 @@ function initProps (vm, propsOptions) {
         }
       });
     } else {
-      defineReactive(props, key, value);
+      defineReactive$$1(props, key, value);
     }
     // static props are already proxied on the component's prototype
     // during Vue.extend(). We only need to proxy props defined at
@@ -8586,17 +8716,15 @@ function defineComputed (
   if (typeof userDef === 'function') {
     sharedPropertyDefinition.get = shouldCache
       ? createComputedGetter(key)
-      : userDef;
+      : createGetterInvoker(userDef);
     sharedPropertyDefinition.set = noop;
   } else {
     sharedPropertyDefinition.get = userDef.get
       ? shouldCache && userDef.cache !== false
         ? createComputedGetter(key)
-        : userDef.get
+        : createGetterInvoker(userDef.get)
       : noop;
-    sharedPropertyDefinition.set = userDef.set
-      ? userDef.set
-      : noop;
+    sharedPropertyDefinition.set = userDef.set || noop;
   }
   if (process.env.NODE_ENV !== 'production' &&
       sharedPropertyDefinition.set === noop) {
@@ -8625,13 +8753,19 @@ function createComputedGetter (key) {
   }
 }
 
+function createGetterInvoker(fn) {
+  return function computedGetter () {
+    return fn.call(this, this)
+  }
+}
+
 function initMethods (vm, methods) {
   var props = vm.$options.props;
   for (var key in methods) {
     if (process.env.NODE_ENV !== 'production') {
-      if (methods[key] == null) {
+      if (typeof methods[key] !== 'function') {
         warn(
-          "Method \"" + key + "\" has an undefined value in the component definition. " +
+          "Method \"" + key + "\" has type \"" + (typeof methods[key]) + "\" in the component definition. " +
           "Did you reference the function correctly?",
           vm
         );
@@ -8649,7 +8783,7 @@ function initMethods (vm, methods) {
         );
       }
     }
-    vm[key] = methods[key] == null ? noop : bind(methods[key], vm);
+    vm[key] = typeof methods[key] !== 'function' ? noop : bind(methods[key], vm);
   }
 }
 
@@ -8691,7 +8825,7 @@ function stateMixin (Vue) {
   var propsDef = {};
   propsDef.get = function () { return this._props };
   if (process.env.NODE_ENV !== 'production') {
-    dataDef.set = function (newData) {
+    dataDef.set = function () {
       warn(
         'Avoid replacing instance root $data. ' +
         'Use nested data properties instead.',
@@ -8721,7 +8855,11 @@ function stateMixin (Vue) {
     options.user = true;
     var watcher = new Watcher(vm, expOrFn, cb, options);
     if (options.immediate) {
-      cb.call(vm, watcher.value);
+      try {
+        cb.call(vm, watcher.value);
+      } catch (error) {
+        handleError(error, vm, ("callback for immediate watcher \"" + (watcher.expression) + "\""));
+      }
     }
     return function unwatchFn () {
       watcher.teardown();
@@ -8747,7 +8885,7 @@ function initInjections (vm) {
     Object.keys(result).forEach(function (key) {
       /* istanbul ignore else */
       if (process.env.NODE_ENV !== 'production') {
-        defineReactive(vm, key, result[key], function () {
+        defineReactive$$1(vm, key, result[key], function () {
           warn(
             "Avoid mutating an injected value directly since the changes will be " +
             "overwritten whenever the provided component re-renders. " +
@@ -8756,7 +8894,7 @@ function initInjections (vm) {
           );
         });
       } else {
-        defineReactive(vm, key, result[key]);
+        defineReactive$$1(vm, key, result[key]);
       }
     });
     toggleObserving(true);
@@ -8828,9 +8966,10 @@ function renderList (
       ret[i] = render(val[key], key, i);
     }
   }
-  if (isDef(ret)) {
-    (ret)._isVList = true;
+  if (!isDef(ret)) {
+    ret = [];
   }
+  (ret)._isVList = true;
   return ret
 }
 
@@ -8860,19 +8999,7 @@ function renderSlot (
     }
     nodes = scopedSlotFn(props) || fallback;
   } else {
-    var slotNodes = this.$slots[name];
-    // warn duplicate slot usage
-    if (slotNodes) {
-      if (process.env.NODE_ENV !== 'production' && slotNodes._rendered) {
-        warn(
-          "Duplicate presence of slot \"" + name + "\" found in the same render tree " +
-          "- this will likely cause render errors.",
-          this
-        );
-      }
-      slotNodes._rendered = true;
-    }
-    nodes = slotNodes || fallback;
+    nodes = this.$slots[name] || fallback;
   }
 
   var target = props && props.slot;
@@ -8960,12 +9087,13 @@ function bindObjectProps (
             ? data.domProps || (data.domProps = {})
             : data.attrs || (data.attrs = {});
         }
-        if (!(key in hash)) {
+        var camelizedKey = camelize(key);
+        if (!(key in hash) && !(camelizedKey in hash)) {
           hash[key] = value[key];
 
           if (isSync) {
             var on = data.on || (data.on = {});
-            on[("update:" + key)] = function ($event) {
+            on[("update:" + camelizedKey)] = function ($event) {
               value[key] = $event;
             };
           }
@@ -9171,24 +9299,27 @@ function createFunctionalComponent (
   var vnode = options.render.call(null, renderContext._c, renderContext);
 
   if (vnode instanceof VNode) {
-    return cloneAndMarkFunctionalResult(vnode, data, renderContext.parent, options)
+    return cloneAndMarkFunctionalResult(vnode, data, renderContext.parent, options, renderContext)
   } else if (Array.isArray(vnode)) {
     var vnodes = normalizeChildren(vnode) || [];
     var res = new Array(vnodes.length);
     for (var i = 0; i < vnodes.length; i++) {
-      res[i] = cloneAndMarkFunctionalResult(vnodes[i], data, renderContext.parent, options);
+      res[i] = cloneAndMarkFunctionalResult(vnodes[i], data, renderContext.parent, options, renderContext);
     }
     return res
   }
 }
 
-function cloneAndMarkFunctionalResult (vnode, data, contextVm, options) {
+function cloneAndMarkFunctionalResult (vnode, data, contextVm, options, renderContext) {
   // #7817 clone node before setting fnContext, otherwise if the node is reused
   // (e.g. it was from a cached normal slot) the fnContext causes named slots
   // that should not be matched to match.
   var clone = cloneVNode(vnode);
   clone.fnContext = contextVm;
   clone.fnOptions = options;
+  if (process.env.NODE_ENV !== 'production') {
+    (clone.devtoolsMeta = clone.devtoolsMeta || {}).renderContext = renderContext;
+  }
   if (data.slot) {
     (clone.data || (clone.data = {})).slot = data.slot;
   }
@@ -9203,20 +9334,7 @@ function mergeProps (to, from) {
 
 /*  */
 
-
-
-
-// Register the component hook to weex native render engine.
-// The hook will be triggered by native, not javascript.
-
-
-// Updates the state of the component to weex native render engine.
-
 /*  */
-
-// https://github.com/Hanks10100/weex-native-directive/tree/master/component
-
-// listening on native callback
 
 /*  */
 
@@ -9224,12 +9342,7 @@ function mergeProps (to, from) {
 
 // inline hooks to be invoked on component VNodes during patch
 var componentVNodeHooks = {
-  init: function init (
-    vnode,
-    hydrating,
-    parentElm,
-    refElm
-  ) {
+  init: function init (vnode, hydrating) {
     if (
       vnode.componentInstance &&
       !vnode.componentInstance._isDestroyed &&
@@ -9241,9 +9354,7 @@ var componentVNodeHooks = {
     } else {
       var child = vnode.componentInstance = createComponentInstanceForVnode(
         vnode,
-        activeInstance,
-        parentElm,
-        refElm
+        activeInstance
       );
       child.$mount(hydrating ? vnode.elm : undefined, hydrating);
     }
@@ -9392,25 +9503,17 @@ function createComponent (
     asyncFactory
   );
 
-  // Weex specific: invoke recycle-list optimized @render function for
-  // extracting cell-slot template.
-  // https://github.com/Hanks10100/weex-native-directive/tree/master/component
-  /* istanbul ignore if */
   return vnode
 }
 
 function createComponentInstanceForVnode (
   vnode, // we know it's MountedComponentVNode but flow doesn't
-  parent, // activeInstance in lifecycle state
-  parentElm,
-  refElm
+  parent // activeInstance in lifecycle state
 ) {
   var options = {
     _isComponent: true,
-    parent: parent,
     _parentVnode: vnode,
-    _parentElm: parentElm || null,
-    _refElm: refElm || null
+    parent: parent
   };
   // check inline-template render functions
   var inlineTemplate = vnode.data.inlineTemplate;
@@ -9425,20 +9528,43 @@ function installComponentHooks (data) {
   var hooks = data.hook || (data.hook = {});
   for (var i = 0; i < hooksToMerge.length; i++) {
     var key = hooksToMerge[i];
-    hooks[key] = componentVNodeHooks[key];
+    var existing = hooks[key];
+    var toMerge = componentVNodeHooks[key];
+    if (existing !== toMerge && !(existing && existing._merged)) {
+      hooks[key] = existing ? mergeHook$1(toMerge, existing) : toMerge;
+    }
   }
+}
+
+function mergeHook$1 (f1, f2) {
+  var merged = function (a, b) {
+    // flow complains about extra args which is why we use any
+    f1(a, b);
+    f2(a, b);
+  };
+  merged._merged = true;
+  return merged
 }
 
 // transform component v-model info (value and callback) into
 // prop and event handler respectively.
 function transformModel (options, data) {
   var prop = (options.model && options.model.prop) || 'value';
-  var event = (options.model && options.model.event) || 'input';(data.props || (data.props = {}))[prop] = data.model.value;
+  var event = (options.model && options.model.event) || 'input'
+  ;(data.props || (data.props = {}))[prop] = data.model.value;
   var on = data.on || (data.on = {});
-  if (isDef(on[event])) {
-    on[event] = [data.model.callback].concat(on[event]);
+  var existing = on[event];
+  var callback = data.model.callback;
+  if (isDef(existing)) {
+    if (
+      Array.isArray(existing)
+        ? existing.indexOf(callback) === -1
+        : existing !== callback
+    ) {
+      on[event] = [callback].concat(existing);
+    }
   } else {
-    on[event] = data.model.callback;
+    on[event] = callback;
   }
 }
 
@@ -9526,7 +9652,7 @@ function _createElement (
         config.parsePlatformTagName(tag), data, children,
         undefined, undefined, context
       );
-    } else if (isDef(Ctor = resolveAsset(context.$options, 'components', tag))) {
+    } else if ((!data || !data.pre) && isDef(Ctor = resolveAsset(context.$options, 'components', tag))) {
       // component
       vnode = createComponent(Ctor, data, context, children, tag);
     } else {
@@ -9608,15 +9734,15 @@ function initRender (vm) {
 
   /* istanbul ignore else */
   if (process.env.NODE_ENV !== 'production') {
-    defineReactive(vm, '$attrs', parentData && parentData.attrs || emptyObject, function () {
+    defineReactive$$1(vm, '$attrs', parentData && parentData.attrs || emptyObject, function () {
       !isUpdatingChildComponent && warn("$attrs is readonly.", vm);
     }, true);
-    defineReactive(vm, '$listeners', options._parentListeners || emptyObject, function () {
+    defineReactive$$1(vm, '$listeners', options._parentListeners || emptyObject, function () {
       !isUpdatingChildComponent && warn("$listeners is readonly.", vm);
     }, true);
   } else {
-    defineReactive(vm, '$attrs', parentData && parentData.attrs || emptyObject, null, true);
-    defineReactive(vm, '$listeners', options._parentListeners || emptyObject, null, true);
+    defineReactive$$1(vm, '$attrs', parentData && parentData.attrs || emptyObject, null, true);
+    defineReactive$$1(vm, '$listeners', options._parentListeners || emptyObject, null, true);
   }
 }
 
@@ -9634,14 +9760,6 @@ function renderMixin (Vue) {
     var render = ref.render;
     var _parentVnode = ref._parentVnode;
 
-    // reset _rendered flag on slots for duplicate slot check
-    if (process.env.NODE_ENV !== 'production') {
-      for (var key in vm.$slots) {
-        // $flow-disable-line
-        vm.$slots[key]._rendered = false;
-      }
-    }
-
     if (_parentVnode) {
       vm.$scopedSlots = _parentVnode.data.scopedSlots || emptyObject;
     }
@@ -9658,15 +9776,11 @@ function renderMixin (Vue) {
       // return error render result,
       // or previous vnode to prevent render error causing blank component
       /* istanbul ignore else */
-      if (process.env.NODE_ENV !== 'production') {
-        if (vm.$options.renderError) {
-          try {
-            vnode = vm.$options.renderError.call(vm._renderProxy, vm.$createElement, e);
-          } catch (e) {
-            handleError(e, vm, "renderError");
-            vnode = vm._vnode;
-          }
-        } else {
+      if (process.env.NODE_ENV !== 'production' && vm.$options.renderError) {
+        try {
+          vnode = vm.$options.renderError.call(vm._renderProxy, vm.$createElement, e);
+        } catch (e) {
+          handleError(e, vm, "renderError");
           vnode = vm._vnode;
         }
       } else {
@@ -9759,8 +9873,6 @@ function initInternalComponent (vm, options) {
   var parentVnode = options._parentVnode;
   opts.parent = options.parent;
   opts._parentVnode = parentVnode;
-  opts._parentElm = options._parentElm;
-  opts._refElm = options._refElm;
 
   var vnodeComponentOptions = parentVnode.componentOptions;
   opts.propsData = vnodeComponentOptions.propsData;
@@ -10003,6 +10115,8 @@ function initAssetRegisters (Vue) {
 
 /*  */
 
+
+
 function getComponentName (opts) {
   return opts && (opts.Ctor.options.name || opts.tag)
 }
@@ -10066,10 +10180,8 @@ var KeepAlive = {
   },
 
   destroyed: function destroyed () {
-    var this$1 = this;
-
-    for (var key in this$1.cache) {
-      pruneCacheEntry(this$1.cache, key, this$1.keys);
+    for (var key in this.cache) {
+      pruneCacheEntry(this.cache, key, this.keys);
     }
   },
 
@@ -10129,11 +10241,11 @@ var KeepAlive = {
     }
     return vnode || (slot && slot[0])
   }
-}
+};
 
 var builtInComponents = {
   KeepAlive: KeepAlive
-}
+};
 
 /*  */
 
@@ -10157,7 +10269,7 @@ function initGlobalAPI (Vue) {
     warn: warn,
     extend: extend,
     mergeOptions: mergeOptions,
-    defineReactive: defineReactive
+    defineReactive: defineReactive$$1
   };
 
   Vue.set = set;
@@ -10199,7 +10311,7 @@ Object.defineProperty(Vue, 'FunctionalRenderContext', {
   value: FunctionalRenderContext
 });
 
-Vue.version = '2.5.16';
+Vue.version = '2.5.21';
 
 /*  */
 
@@ -10477,20 +10589,19 @@ function setStyleScope (node, scopeId) {
   node.setAttribute(scopeId, '');
 }
 
-
-var nodeOps = Object.freeze({
-	createElement: createElement$1,
-	createElementNS: createElementNS,
-	createTextNode: createTextNode,
-	createComment: createComment,
-	insertBefore: insertBefore,
-	removeChild: removeChild,
-	appendChild: appendChild,
-	parentNode: parentNode,
-	nextSibling: nextSibling,
-	tagName: tagName,
-	setTextContent: setTextContent,
-	setStyleScope: setStyleScope
+var nodeOps = /*#__PURE__*/Object.freeze({
+  createElement: createElement$1,
+  createElementNS: createElementNS,
+  createTextNode: createTextNode,
+  createComment: createComment,
+  insertBefore: insertBefore,
+  removeChild: removeChild,
+  appendChild: appendChild,
+  parentNode: parentNode,
+  nextSibling: nextSibling,
+  tagName: tagName,
+  setTextContent: setTextContent,
+  setStyleScope: setStyleScope
 });
 
 /*  */
@@ -10508,7 +10619,7 @@ var ref = {
   destroy: function destroy (vnode) {
     registerRef(vnode, true);
   }
-}
+};
 
 function registerRef (vnode, isRemoval) {
   var key = vnode.data.ref;
@@ -10609,13 +10720,13 @@ function createPatchFunction (backend) {
   }
 
   function createRmCb (childElm, listeners) {
-    function remove () {
-      if (--remove.listeners === 0) {
+    function remove$$1 () {
+      if (--remove$$1.listeners === 0) {
         removeNode(childElm);
       }
     }
-    remove.listeners = listeners;
-    return remove
+    remove$$1.listeners = listeners;
+    return remove$$1
   }
 
   function removeNode (el) {
@@ -10716,7 +10827,7 @@ function createPatchFunction (backend) {
     if (isDef(i)) {
       var isReactivated = isDef(vnode.componentInstance) && i.keepAlive;
       if (isDef(i = i.hook) && isDef(i = i.init)) {
-        i(vnode, false /* hydrating */, parentElm, refElm);
+        i(vnode, false /* hydrating */);
       }
       // after calling the init hook, if the vnode is a child component
       // it should've created a child instance and mounted it. the child
@@ -10724,6 +10835,7 @@ function createPatchFunction (backend) {
       // in that case we can just return the element and be done.
       if (isDef(vnode.componentInstance)) {
         initComponent(vnode, insertedVnodeQueue);
+        insert(parentElm, vnode.elm, refElm);
         if (isTrue(isReactivated)) {
           reactivateComponent(vnode, insertedVnodeQueue, parentElm, refElm);
         }
@@ -10775,7 +10887,7 @@ function createPatchFunction (backend) {
   function insert (parent, elm, ref$$1) {
     if (isDef(parent)) {
       if (isDef(ref$$1)) {
-        if (ref$$1.parentNode === parent) {
+        if (nodeOps.parentNode(ref$$1) === parent) {
           nodeOps.insertBefore(parent, elm, ref$$1);
         }
       } else {
@@ -10930,20 +11042,20 @@ function createPatchFunction (backend) {
       } else if (isUndef(oldEndVnode)) {
         oldEndVnode = oldCh[--oldEndIdx];
       } else if (sameVnode(oldStartVnode, newStartVnode)) {
-        patchVnode(oldStartVnode, newStartVnode, insertedVnodeQueue);
+        patchVnode(oldStartVnode, newStartVnode, insertedVnodeQueue, newCh, newStartIdx);
         oldStartVnode = oldCh[++oldStartIdx];
         newStartVnode = newCh[++newStartIdx];
       } else if (sameVnode(oldEndVnode, newEndVnode)) {
-        patchVnode(oldEndVnode, newEndVnode, insertedVnodeQueue);
+        patchVnode(oldEndVnode, newEndVnode, insertedVnodeQueue, newCh, newEndIdx);
         oldEndVnode = oldCh[--oldEndIdx];
         newEndVnode = newCh[--newEndIdx];
       } else if (sameVnode(oldStartVnode, newEndVnode)) { // Vnode moved right
-        patchVnode(oldStartVnode, newEndVnode, insertedVnodeQueue);
+        patchVnode(oldStartVnode, newEndVnode, insertedVnodeQueue, newCh, newEndIdx);
         canMove && nodeOps.insertBefore(parentElm, oldStartVnode.elm, nodeOps.nextSibling(oldEndVnode.elm));
         oldStartVnode = oldCh[++oldStartIdx];
         newEndVnode = newCh[--newEndIdx];
       } else if (sameVnode(oldEndVnode, newStartVnode)) { // Vnode moved left
-        patchVnode(oldEndVnode, newStartVnode, insertedVnodeQueue);
+        patchVnode(oldEndVnode, newStartVnode, insertedVnodeQueue, newCh, newStartIdx);
         canMove && nodeOps.insertBefore(parentElm, oldEndVnode.elm, oldStartVnode.elm);
         oldEndVnode = oldCh[--oldEndIdx];
         newStartVnode = newCh[++newStartIdx];
@@ -10957,7 +11069,7 @@ function createPatchFunction (backend) {
         } else {
           vnodeToMove = oldCh[idxInOld];
           if (sameVnode(vnodeToMove, newStartVnode)) {
-            patchVnode(vnodeToMove, newStartVnode, insertedVnodeQueue);
+            patchVnode(vnodeToMove, newStartVnode, insertedVnodeQueue, newCh, newStartIdx);
             oldCh[idxInOld] = undefined;
             canMove && nodeOps.insertBefore(parentElm, vnodeToMove.elm, oldStartVnode.elm);
           } else {
@@ -11001,9 +11113,21 @@ function createPatchFunction (backend) {
     }
   }
 
-  function patchVnode (oldVnode, vnode, insertedVnodeQueue, removeOnly) {
+  function patchVnode (
+    oldVnode,
+    vnode,
+    insertedVnodeQueue,
+    ownerArray,
+    index,
+    removeOnly
+  ) {
     if (oldVnode === vnode) {
       return
+    }
+
+    if (isDef(vnode.elm) && isDef(ownerArray)) {
+      // clone reused vnode
+      vnode = ownerArray[index] = cloneVNode(vnode);
     }
 
     var elm = vnode.elm = oldVnode.elm;
@@ -11046,6 +11170,9 @@ function createPatchFunction (backend) {
       if (isDef(oldCh) && isDef(ch)) {
         if (oldCh !== ch) { updateChildren(elm, oldCh, ch, insertedVnodeQueue, removeOnly); }
       } else if (isDef(ch)) {
+        if (process.env.NODE_ENV !== 'production') {
+          checkDuplicateKeys(ch);
+        }
         if (isDef(oldVnode.text)) { nodeOps.setTextContent(elm, ''); }
         addVnodes(elm, null, ch, 0, ch.length - 1, insertedVnodeQueue);
       } else if (isDef(oldCh)) {
@@ -11187,7 +11314,7 @@ function createPatchFunction (backend) {
     }
   }
 
-  return function patch (oldVnode, vnode, hydrating, removeOnly, parentElm, refElm) {
+  return function patch (oldVnode, vnode, hydrating, removeOnly) {
     if (isUndef(vnode)) {
       if (isDef(oldVnode)) { invokeDestroyHook(oldVnode); }
       return
@@ -11199,12 +11326,12 @@ function createPatchFunction (backend) {
     if (isUndef(oldVnode)) {
       // empty mount (likely as component), create new root element
       isInitialPatch = true;
-      createElm(vnode, insertedVnodeQueue, parentElm, refElm);
+      createElm(vnode, insertedVnodeQueue);
     } else {
       var isRealElement = isDef(oldVnode.nodeType);
       if (!isRealElement && sameVnode(oldVnode, vnode)) {
         // patch existing root node
-        patchVnode(oldVnode, vnode, insertedVnodeQueue, removeOnly);
+        patchVnode(oldVnode, vnode, insertedVnodeQueue, null, null, removeOnly);
       } else {
         if (isRealElement) {
           // mounting to a real element
@@ -11235,7 +11362,7 @@ function createPatchFunction (backend) {
 
         // replacing existing element
         var oldElm = oldVnode.elm;
-        var parentElm$1 = nodeOps.parentNode(oldElm);
+        var parentElm = nodeOps.parentNode(oldElm);
 
         // create new node
         createElm(
@@ -11244,7 +11371,7 @@ function createPatchFunction (backend) {
           // extremely rare edge case: do not insert if old element is in a
           // leaving transition. Only happens when combining transition +
           // keep-alive + HOCs. (#4590)
-          oldElm._leaveCb ? null : parentElm$1,
+          oldElm._leaveCb ? null : parentElm,
           nodeOps.nextSibling(oldElm)
         );
 
@@ -11279,8 +11406,8 @@ function createPatchFunction (backend) {
         }
 
         // destroy old node
-        if (isDef(parentElm$1)) {
-          removeVnodes(parentElm$1, [oldVnode], 0, 0);
+        if (isDef(parentElm)) {
+          removeVnodes(parentElm, [oldVnode], 0, 0);
         } else if (isDef(oldVnode.tag)) {
           invokeDestroyHook(oldVnode);
         }
@@ -11300,7 +11427,7 @@ var directives = {
   destroy: function unbindDirectives (vnode) {
     updateDirectives(vnode, emptyNode);
   }
-}
+};
 
 function updateDirectives (oldVnode, vnode) {
   if (oldVnode.data.directives || vnode.data.directives) {
@@ -11411,7 +11538,7 @@ function callHook$1 (dir, hook, vnode, oldVnode, isDestroy) {
 var baseModules = [
   ref,
   directives
-]
+];
 
 /*  */
 
@@ -11495,7 +11622,7 @@ function baseSetAttr (el, key, value) {
     /* istanbul ignore if */
     if (
       isIE && !isIE9 &&
-      el.tagName === 'TEXTAREA' &&
+      (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') &&
       key === 'placeholder' && !el.__ieph
     ) {
       var blocker = function (e) {
@@ -11513,7 +11640,7 @@ function baseSetAttr (el, key, value) {
 var attrs = {
   create: updateAttrs,
   update: updateAttrs
-}
+};
 
 /*  */
 
@@ -11551,7 +11678,7 @@ function updateClass (oldVnode, vnode) {
 var klass = {
   create: updateClass,
   update: updateClass
-}
+};
 
 /*  */
 
@@ -11715,6 +11842,18 @@ function addHandler (
     );
   }
 
+  // normalize click.right and click.middle since they don't actually fire
+  // this is technically browser-specific, but at least for now browsers are
+  // the only target envs that have right/middle clicks.
+  if (name === 'click') {
+    if (modifiers.right) {
+      name = 'contextmenu';
+      delete modifiers.right;
+    } else if (modifiers.middle) {
+      name = 'mouseup';
+    }
+  }
+
   // check capture modifier
   if (modifiers.capture) {
     delete modifiers.capture;
@@ -11728,18 +11867,6 @@ function addHandler (
   if (modifiers.passive) {
     delete modifiers.passive;
     name = '&' + name; // mark the event as passive
-  }
-
-  // normalize click.right and click.middle since they don't actually fire
-  // this is technically browser-specific, but at least for now browsers are
-  // the only target envs that have right/middle clicks.
-  if (name === 'click') {
-    if (modifiers.right) {
-      name = 'contextmenu';
-      delete modifiers.right;
-    } else if (modifiers.middle) {
-      name = 'mouseup';
-    }
   }
 
   var events;
@@ -11842,7 +11969,7 @@ function genComponentModel (
 
   el.model = {
     value: ("(" + value + ")"),
-    expression: ("\"" + value + "\""),
+    expression: JSON.stringify(value),
     callback: ("function (" + baseValueExpression + ") {" + assignment + "}")
   };
 }
@@ -11877,12 +12004,7 @@ function genAssignmentCode (
  *
  */
 
-var len;
-var str;
-var chr;
-var index$1;
-var expressionPos;
-var expressionEndPos;
+var len, str, chr, index$1, expressionPos, expressionEndPos;
 
 
 
@@ -12163,7 +12285,7 @@ function normalizeEvents (on) {
 
 var target$1;
 
-function createOnceHandler (handler, event, capture) {
+function createOnceHandler$1 (event, handler, capture) {
   var _target = target$1; // save current target element in closure
   return function onceHandler () {
     var res = handler.apply(null, arguments);
@@ -12176,12 +12298,10 @@ function createOnceHandler (handler, event, capture) {
 function add$1 (
   event,
   handler,
-  once$$1,
   capture,
   passive
 ) {
   handler = withMacroTask(handler);
-  if (once$$1) { handler = createOnceHandler(handler, event, capture); }
   target$1.addEventListener(
     event,
     handler,
@@ -12212,14 +12332,14 @@ function updateDOMListeners (oldVnode, vnode) {
   var oldOn = oldVnode.data.on || {};
   target$1 = vnode.elm;
   normalizeEvents(on);
-  updateListeners(on, oldOn, add$1, remove$2, vnode.context);
+  updateListeners(on, oldOn, add$1, remove$2, createOnceHandler$1, vnode.context);
   target$1 = undefined;
 }
 
 var events = {
   create: updateDOMListeners,
   update: updateDOMListeners
-}
+};
 
 /*  */
 
@@ -12313,7 +12433,7 @@ function isDirtyWithModifiers (elm, newVal) {
 var domProps = {
   create: updateDOMProps,
   update: updateDOMProps
-}
+};
 
 /*  */
 
@@ -12474,9 +12594,11 @@ function updateStyle (oldVnode, vnode) {
 var style = {
   create: updateStyle,
   update: updateStyle
-}
+};
 
 /*  */
+
+var whitespaceRE = /\s+/;
 
 /**
  * Add class with compatibility for SVG since classList is not supported on
@@ -12491,7 +12613,7 @@ function addClass (el, cls) {
   /* istanbul ignore else */
   if (el.classList) {
     if (cls.indexOf(' ') > -1) {
-      cls.split(/\s+/).forEach(function (c) { return el.classList.add(c); });
+      cls.split(whitespaceRE).forEach(function (c) { return el.classList.add(c); });
     } else {
       el.classList.add(cls);
     }
@@ -12516,7 +12638,7 @@ function removeClass (el, cls) {
   /* istanbul ignore else */
   if (el.classList) {
     if (cls.indexOf(' ') > -1) {
-      cls.split(/\s+/).forEach(function (c) { return el.classList.remove(c); });
+      cls.split(whitespaceRE).forEach(function (c) { return el.classList.remove(c); });
     } else {
       el.classList.remove(cls);
     }
@@ -12540,20 +12662,20 @@ function removeClass (el, cls) {
 
 /*  */
 
-function resolveTransition (def) {
-  if (!def) {
+function resolveTransition (def$$1) {
+  if (!def$$1) {
     return
   }
   /* istanbul ignore else */
-  if (typeof def === 'object') {
+  if (typeof def$$1 === 'object') {
     var res = {};
-    if (def.css !== false) {
-      extend(res, autoCssTransition(def.name || 'v'));
+    if (def$$1.css !== false) {
+      extend(res, autoCssTransition(def$$1.name || 'v'));
     }
-    extend(res, def);
+    extend(res, def$$1);
     return res
-  } else if (typeof def === 'string') {
-    return autoCssTransition(def)
+  } else if (typeof def$$1 === 'string') {
+    return autoCssTransition(def$$1)
   }
 }
 
@@ -12656,11 +12778,12 @@ var transformRE = /\b(transform|all)(,|$)/;
 
 function getTransitionInfo (el, expectedType) {
   var styles = window.getComputedStyle(el);
-  var transitionDelays = styles[transitionProp + 'Delay'].split(', ');
-  var transitionDurations = styles[transitionProp + 'Duration'].split(', ');
+  // JSDOM may return undefined for transition properties
+  var transitionDelays = (styles[transitionProp + 'Delay'] || '').split(', ');
+  var transitionDurations = (styles[transitionProp + 'Duration'] || '').split(', ');
   var transitionTimeout = getTimeout(transitionDelays, transitionDurations);
-  var animationDelays = styles[animationProp + 'Delay'].split(', ');
-  var animationDurations = styles[animationProp + 'Duration'].split(', ');
+  var animationDelays = (styles[animationProp + 'Delay'] || '').split(', ');
+  var animationDurations = (styles[animationProp + 'Duration'] || '').split(', ');
   var animationTimeout = getTimeout(animationDelays, animationDurations);
 
   var type;
@@ -12714,8 +12837,12 @@ function getTimeout (delays, durations) {
   }))
 }
 
+// Old versions of Chromium (below 61.0.3163.100) formats floating pointer numbers
+// in a locale-dependent way, using a comma instead of a dot.
+// If comma is not replaced with a dot, the input will be rounded down (i.e. acting
+// as a floor function) causing unexpected behaviors
 function toMs (s) {
-  return Number(s.slice(0, -1)) * 1000
+  return Number(s.slice(0, -1).replace(',', '.')) * 1000
 }
 
 /*  */
@@ -12947,7 +13074,7 @@ function leave (vnode, rm) {
       return
     }
     // record leaving element
-    if (!vnode.data.show) {
+    if (!vnode.data.show && el.parentNode) {
       (el.parentNode._pending || (el.parentNode._pending = {}))[(vnode.key)] = vnode;
     }
     beforeLeave && beforeLeave(el);
@@ -13036,7 +13163,7 @@ var transition = inBrowser ? {
       rm();
     }
   }
-} : {}
+} : {};
 
 var platformModules = [
   attrs,
@@ -13045,7 +13172,7 @@ var platformModules = [
   domProps,
   style,
   transition
-]
+];
 
 /*  */
 
@@ -13256,17 +13383,14 @@ var show = {
       el.style.display = el.__vOriginalDisplay;
     }
   }
-}
+};
 
 var platformDirectives = {
   model: directive,
   show: show
-}
+};
 
 /*  */
-
-// Provides transition support for a single element/component.
-// supports transition mode (out-in / in-out)
 
 var transitionProps = {
   name: String,
@@ -13333,6 +13457,10 @@ function isSameChild (child, oldChild) {
   return oldChild.key === child.key && oldChild.tag === child.tag
 }
 
+var isNotTextNode = function (c) { return c.tag || isAsyncPlaceholder(c); };
+
+var isVShowDirective = function (d) { return d.name === 'show'; };
+
 var Transition = {
   name: 'transition',
   props: transitionProps,
@@ -13347,7 +13475,7 @@ var Transition = {
     }
 
     // filter out text nodes (possible whitespaces)
-    children = children.filter(function (c) { return c.tag || isAsyncPlaceholder(c); });
+    children = children.filter(isNotTextNode);
     /* istanbul ignore if */
     if (!children.length) {
       return
@@ -13412,7 +13540,7 @@ var Transition = {
 
     // mark v-show
     // so that the transition module can hand over the control to the directive
-    if (child.data.directives && child.data.directives.some(function (d) { return d.name === 'show'; })) {
+    if (child.data.directives && child.data.directives.some(isVShowDirective)) {
       child.data.show = true;
     }
 
@@ -13450,20 +13578,9 @@ var Transition = {
 
     return rawChild
   }
-}
+};
 
 /*  */
-
-// Provides transition support for list items.
-// supports move transitions using the FLIP technique.
-
-// Because the vdom's children update algorithm is "unstable" - i.e.
-// it doesn't guarantee the relative positioning of removed elements,
-// we force transition-group to update its children into two passes:
-// in the first pass, we remove all nodes that need to be removed,
-// triggering their leaving transition; in the second pass, we insert/move
-// into the final desired state. This way in the second pass removed
-// nodes will remain where they should be.
 
 var props = extend({
   tag: String,
@@ -13474,6 +13591,25 @@ delete props.mode;
 
 var TransitionGroup = {
   props: props,
+
+  beforeMount: function beforeMount () {
+    var this$1 = this;
+
+    var update = this._update;
+    this._update = function (vnode, hydrating) {
+      var restoreActiveInstance = setActiveInstance(this$1);
+      // force removing pass
+      this$1.__patch__(
+        this$1._vnode,
+        this$1.kept,
+        false, // hydrating
+        true // removeOnly (!important, avoids unnecessary moves)
+      );
+      this$1._vnode = this$1.kept;
+      restoreActiveInstance();
+      update.call(this$1, vnode, hydrating);
+    };
+  },
 
   render: function render (h) {
     var tag = this.tag || this.$vnode.data.tag || 'span';
@@ -13518,17 +13654,6 @@ var TransitionGroup = {
     return h(tag, null, children)
   },
 
-  beforeUpdate: function beforeUpdate () {
-    // force removing pass
-    this.__patch__(
-      this._vnode,
-      this.kept,
-      false, // hydrating
-      true // removeOnly (!important, avoids unnecessary moves)
-    );
-    this._vnode = this.kept;
-  },
-
   updated: function updated () {
     var children = this.prevChildren;
     var moveClass = this.moveClass || ((this.name || 'v') + '-move');
@@ -13554,6 +13679,9 @@ var TransitionGroup = {
         addTransitionClass(el, moveClass);
         s.transform = s.WebkitTransform = s.transitionDuration = '';
         el.addEventListener(transitionEndEvent, el._moveCb = function cb (e) {
+          if (e && e.target !== el) {
+            return
+          }
           if (!e || /transform$/.test(e.propertyName)) {
             el.removeEventListener(transitionEndEvent, cb);
             el._moveCb = null;
@@ -13591,7 +13719,7 @@ var TransitionGroup = {
       return (this._hasMove = info.hasTransform)
     }
   }
-}
+};
 
 function callPendingCbs (c) {
   /* istanbul ignore if */
@@ -13624,7 +13752,7 @@ function applyTranslation (c) {
 var platformComponents = {
   Transition: Transition,
   TransitionGroup: TransitionGroup
-}
+};
 
 /*  */
 
@@ -13685,7 +13813,7 @@ if (inBrowser) {
 
 /*  */
 
-var defaultTagRE = /\{\{((?:.|\n)+?)\}\}/g;
+var defaultTagRE = /\{\{((?:.|\r?\n)+?)\}\}/g;
 var regexEscapeRE = /[-.*+?^${}()|[\]\/\\]/g;
 
 var buildRegex = cached(function (delimiters) {
@@ -13771,7 +13899,7 @@ var klass$1 = {
   staticKeys: ['staticClass'],
   transformNode: transformNode,
   genData: genData
-}
+};
 
 /*  */
 
@@ -13815,7 +13943,7 @@ var style$1 = {
   staticKeys: ['staticStyle'],
   transformNode: transformNode$1,
   genData: genData$1
-}
+};
 
 /*  */
 
@@ -13827,7 +13955,7 @@ var he = {
     decoder.innerHTML = html;
     return decoder.textContent
   }
-}
+};
 
 /*  */
 
@@ -13856,13 +13984,6 @@ var isNonPhrasingTag = makeMap(
  * Not type-checking this file because it's mostly vendor code.
  */
 
-/*!
- * HTML Parser By John Resig (ejohn.org)
- * Modified by Juriy "kangax" Zaytsev
- * Original code by Erik Arvidsson, Mozilla Public License
- * http://erik.eae.net/simplehtmlparser/simplehtmlparser.js
- */
-
 // Regular Expressions for parsing tags and attributes
 var attribute = /^\s*([^\s"'<>\/=]+)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/;
 // could use https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-QName
@@ -13876,11 +13997,6 @@ var doctype = /^<!DOCTYPE [^>]+>/i;
 // #7298: escape - to avoid being pased as HTML comment when inlined in page
 var comment = /^<!\--/;
 var conditionalComment = /^<!\[/;
-
-var IS_REGEX_CAPTURING_BROKEN = false;
-'x'.replace(/x(.)?/g, function (m, g) {
-  IS_REGEX_CAPTURING_BROKEN = g === '';
-});
 
 // Special Elements (can contain anything)
 var isPlainTextElement = makeMap('script,style,textarea', true);
@@ -13962,7 +14078,7 @@ function parseHTML (html, options) {
         var startTagMatch = parseStartTag();
         if (startTagMatch) {
           handleStartTag(startTagMatch);
-          if (shouldIgnoreFirstNewline(lastTag, html)) {
+          if (shouldIgnoreFirstNewline(startTagMatch.tagName, html)) {
             advance(1);
           }
           continue
@@ -14079,12 +14195,6 @@ function parseHTML (html, options) {
     var attrs = new Array(l);
     for (var i = 0; i < l; i++) {
       var args = match.attrs[i];
-      // hackish work around FF bug https://bugzilla.mozilla.org/show_bug.cgi?id=369778
-      if (IS_REGEX_CAPTURING_BROKEN && args[0].indexOf('""') === -1) {
-        if (args[3] === '') { delete args[3]; }
-        if (args[4] === '') { delete args[4]; }
-        if (args[5] === '') { delete args[5]; }
-      }
       var value = args[3] || args[4] || args[5] || '';
       var shouldDecodeNewlines = tagName === 'a' && args[1] === 'href'
         ? options.shouldDecodeNewlinesForHref
@@ -14110,12 +14220,9 @@ function parseHTML (html, options) {
     if (start == null) { start = index; }
     if (end == null) { end = index; }
 
-    if (tagName) {
-      lowerCasedTagName = tagName.toLowerCase();
-    }
-
     // Find the closest opened tag of the same type
     if (tagName) {
+      lowerCasedTagName = tagName.toLowerCase();
       for (pos = stack.length - 1; pos >= 0; pos--) {
         if (stack[pos].lowerCasedTag === lowerCasedTagName) {
           break
@@ -14164,7 +14271,7 @@ function parseHTML (html, options) {
 
 var onRE = /^@|^v-on:/;
 var dirRE = /^v-|^@|^:/;
-var forAliasRE = /([^]*?)\s+(?:in|of)\s+([^]*)/;
+var forAliasRE = /([\s\S]*?)\s+(?:in|of)\s+([\s\S]*)/;
 var forIteratorRE = /,([^,\}\]]*)(?:,([^,\}\]]*))?$/;
 var stripParensRE = /^\(|\)$/g;
 
@@ -14349,7 +14456,8 @@ function parse (
           processIfConditions(element, currentParent);
         } else if (element.slotScope) { // scoped slot
           currentParent.plain = false;
-          var name = element.slotTarget || '"default"';(currentParent.scopedSlots || (currentParent.scopedSlots = {}))[name] = element;
+          var name = element.slotTarget || '"default"'
+          ;(currentParent.scopedSlots || (currentParent.scopedSlots = {}))[name] = element;
         } else {
           currentParent.children.push(element);
           element.parent = currentParent;
@@ -14473,8 +14581,20 @@ function processElement (element, options) {
 function processKey (el) {
   var exp = getBindingAttr(el, 'key');
   if (exp) {
-    if (process.env.NODE_ENV !== 'production' && el.tag === 'template') {
-      warn$2("<template> cannot be keyed. Place the key on real elements instead.");
+    if (process.env.NODE_ENV !== 'production') {
+      if (el.tag === 'template') {
+        warn$2("<template> cannot be keyed. Place the key on real elements instead.");
+      }
+      if (el.for) {
+        var iterator = el.iterator2 || el.iterator1;
+        var parent = el.parent;
+        if (iterator && iterator === exp && parent && parent.tag === 'transition-group') {
+          warn$2(
+            "Do not use v-for index as key on <transition-group> children, " +
+            "this is the same as not using keys."
+          );
+        }
+      }
     }
     el.key = exp;
   }
@@ -14512,7 +14632,7 @@ function parseFor (exp) {
   var alias = inMatch[1].trim().replace(stripParensRE, '');
   var iteratorMatch = alias.match(forIteratorRE);
   if (iteratorMatch) {
-    res.alias = alias.replace(forIteratorRE, '');
+    res.alias = alias.replace(forIteratorRE, '').trim();
     res.iterator1 = iteratorMatch[1].trim();
     if (iteratorMatch[2]) {
       res.iterator2 = iteratorMatch[2].trim();
@@ -14665,6 +14785,14 @@ function processAttrs (el) {
         name = name.replace(bindRE, '');
         value = parseFilters(value);
         isProp = false;
+        if (
+          process.env.NODE_ENV !== 'production' &&
+          value.trim().length === 0
+        ) {
+          warn$2(
+            ("The value for a v-bind expression cannot be empty. Found in \"v-bind:" + name + "\"")
+          );
+        }
         if (modifiers) {
           if (modifiers.prop) {
             isProp = true;
@@ -14813,16 +14941,6 @@ function checkForAliasModel (el, value) {
 
 /*  */
 
-/**
- * Expand input[v-model] with dyanmic type bindings into v-if-else chains
- * Turn this:
- *   <input v-model="data[type]" :type="type">
- * into this:
- *   <input v-if="type === 'checkbox'" type="checkbox" v-model="data[type]">
- *   <input v-else-if="type === 'radio'" type="radio" v-model="data[type]">
- *   <input v-else :type="type" v-model="data[type]">
- */
-
 function preTransformNode (el, options) {
   if (el.tag === 'input') {
     var map = el.attrsMap;
@@ -14889,15 +15007,15 @@ function cloneASTElement (el) {
   return createASTElement(el.tag, el.attrsList.slice(), el.parent)
 }
 
-var model$2 = {
+var model$1 = {
   preTransformNode: preTransformNode
-}
+};
 
 var modules$1 = [
   klass$1,
   style$1,
-  model$2
-]
+  model$1
+];
 
 /*  */
 
@@ -14919,7 +15037,7 @@ var directives$1 = {
   model: model,
   text: text,
   html: html
-}
+};
 
 /*  */
 
@@ -15083,16 +15201,19 @@ var keyCodes = {
 
 // KeyboardEvent.key aliases
 var keyNames = {
-  esc: 'Escape',
+  // #7880: IE11 and Edge use `Esc` for Escape key name.
+  esc: ['Esc', 'Escape'],
   tab: 'Tab',
   enter: 'Enter',
-  space: ' ',
+  // #9112: IE11 uses `Spacebar` for Space key name.
+  space: [' ', 'Spacebar'],
   // #7806: IE11 uses key names without `Arrow` prefix for arrow keys.
   up: ['Up', 'ArrowUp'],
   left: ['Left', 'ArrowLeft'],
   right: ['Right', 'ArrowRight'],
   down: ['Down', 'ArrowDown'],
-  'delete': ['Backspace', 'Delete']
+  // #9112: IE11 uses `Del` for Delete key name.
+  'delete': ['Backspace', 'Delete', 'Del']
 };
 
 // #4868: modifiers that prevent the execution of the listener
@@ -15115,8 +15236,7 @@ var modifierCode = {
 
 function genHandlers (
   events,
-  isNative,
-  warn
+  isNative
 ) {
   var res = isNative ? 'nativeOn:{' : 'on:{';
   for (var name in events) {
@@ -15144,7 +15264,6 @@ function genHandler (
     if (isMethodPath || isFunctionExpression) {
       return handler.value
     }
-    /* istanbul ignore if */
     return ("function($event){" + (handler.value) + "}") // inline statement
   } else {
     var code = '';
@@ -15181,7 +15300,6 @@ function genHandler (
       : isFunctionExpression
         ? ("return (" + (handler.value) + ")($event)")
         : handler.value;
-    /* istanbul ignore if */
     return ("function($event){" + code + handlerCode + "}")
   }
 }
@@ -15230,9 +15348,13 @@ var baseDirectives = {
   on: on,
   bind: bind$1,
   cloak: noop
-}
+};
 
 /*  */
+
+
+
+
 
 var CodegenState = function CodegenState (options) {
   this.options = options;
@@ -15241,9 +15363,10 @@ var CodegenState = function CodegenState (options) {
   this.dataGenFns = pluckModuleFunction(options.modules, 'genData');
   this.directives = extend(extend({}, baseDirectives), options.directives);
   var isReservedTag = options.isReservedTag || no;
-  this.maybeComponent = function (el) { return !isReservedTag(el.tag); };
+  this.maybeComponent = function (el) { return !(isReservedTag(el.tag) && !el.component); };
   this.onceId = 0;
   this.staticRenderFns = [];
+  this.pre = false;
 };
 
 
@@ -15261,6 +15384,10 @@ function generate (
 }
 
 function genElement (el, state) {
+  if (el.parent) {
+    el.pre = el.pre || el.parent.pre;
+  }
+
   if (el.staticRoot && !el.staticProcessed) {
     return genStatic(el, state)
   } else if (el.once && !el.onceProcessed) {
@@ -15269,7 +15396,7 @@ function genElement (el, state) {
     return genFor(el, state)
   } else if (el.if && !el.ifProcessed) {
     return genIf(el, state)
-  } else if (el.tag === 'template' && !el.slotTarget) {
+  } else if (el.tag === 'template' && !el.slotTarget && !state.pre) {
     return genChildren(el, state) || 'void 0'
   } else if (el.tag === 'slot') {
     return genSlot(el, state)
@@ -15279,7 +15406,10 @@ function genElement (el, state) {
     if (el.component) {
       code = genComponent(el.component, el, state);
     } else {
-      var data = el.plain ? undefined : genData$2(el, state);
+      var data;
+      if (!el.plain || (el.pre && state.maybeComponent(el))) {
+        data = genData$2(el, state);
+      }
 
       var children = el.inlineTemplate ? null : genChildren(el, state, true);
       code = "_c('" + (el.tag) + "'" + (data ? ("," + data) : '') + (children ? ("," + children) : '') + ")";
@@ -15295,7 +15425,15 @@ function genElement (el, state) {
 // hoist static sub-trees out
 function genStatic (el, state) {
   el.staticProcessed = true;
+  // Some elements (templates) need to behave differently inside of a v-pre
+  // node.  All pre nodes are static roots, so we can use this as a location to
+  // wrap a state change and reset it upon exiting the pre node.
+  var originalPreState = state.pre;
+  if (el.pre) {
+    state.pre = el.pre;
+  }
   state.staticRenderFns.push(("with(this){return " + (genElement(el, state)) + "}"));
+  state.pre = originalPreState;
   return ("_m(" + (state.staticRenderFns.length - 1) + (el.staticInFor ? ',true' : '') + ")")
 }
 
@@ -15436,10 +15574,10 @@ function genData$2 (el, state) {
   }
   // event handlers
   if (el.events) {
-    data += (genHandlers(el.events, false, state.warn)) + ",";
+    data += (genHandlers(el.events, false)) + ",";
   }
   if (el.nativeEvents) {
-    data += (genHandlers(el.nativeEvents, true, state.warn)) + ",";
+    data += (genHandlers(el.nativeEvents, true)) + ",";
   }
   // slot target
   // only for non-scoped slots
@@ -15531,7 +15669,7 @@ function genScopedSlot (
   var fn = "function(" + (String(el.slotScope)) + "){" +
     "return " + (el.tag === 'template'
       ? el.if
-        ? ((el.if) + "?" + (genChildren(el, state) || 'undefined') + ":undefined")
+        ? ("(" + (el.if) + ")?" + (genChildren(el, state) || 'undefined') + ":undefined")
         : genChildren(el, state) || 'undefined'
       : genElement(el, state)) + "}";
   return ("{key:" + key + ",fn:" + fn + "}")
@@ -15569,13 +15707,16 @@ function genChildren (
       el$1.tag !== 'template' &&
       el$1.tag !== 'slot'
     ) {
-      return (altGenElement || genElement)(el$1, state)
+      var normalizationType = checkSkip
+        ? state.maybeComponent(el$1) ? ",1" : ",0"
+        : "";
+      return ("" + ((altGenElement || genElement)(el$1, state)) + normalizationType)
     }
-    var normalizationType = checkSkip
+    var normalizationType$1 = checkSkip
       ? getNormalizationType(children, state.maybeComponent)
       : 0;
     var gen = altGenNode || genNode;
-    return ("[" + (children.map(function (c) { return gen(c, state); }).join(',')) + "]" + (normalizationType ? ("," + normalizationType) : ''))
+    return ("[" + (children.map(function (c) { return gen(c, state); }).join(',')) + "]" + (normalizationType$1 ? ("," + normalizationType$1) : ''))
   }
 }
 
@@ -15613,7 +15754,7 @@ function needsNormalization (el) {
 function genNode (node, state) {
   if (node.type === 1) {
     return genElement(node, state)
-  } if (node.type === 3 && node.isComment) {
+  } else if (node.type === 3 && node.isComment) {
     return genComment(node)
   } else {
     return genText(node)
@@ -15786,6 +15927,8 @@ function checkExpression (exp, text, errors) {
 
 /*  */
 
+
+
 function createFunction (code, errors) {
   try {
     return new Function(code)
@@ -15957,6 +16100,7 @@ var createCompiler = createCompilerCreator(function baseCompile (
 /*  */
 
 var ref$1 = createCompiler(baseOptions);
+var compile = ref$1.compile;
 var compileToFunctions = ref$1.compileToFunctions;
 
 /*  */
@@ -16068,10 +16212,10 @@ Vue.compile = compileToFunctions;
 
 /* harmony default export */ __webpack_exports__["default"] = (Vue);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(3), __webpack_require__(7), __webpack_require__(22).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(3), __webpack_require__(8), __webpack_require__(22).setImmediate))
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports) {
 
 var g;
@@ -16098,19 +16242,11 @@ module.exports = g;
 
 
 /***/ }),
-/* 8 */
-/***/ (function(module, exports) {
-
-var core = module.exports = { version: '2.5.5' };
-if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
-
-
-/***/ }),
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var dP = __webpack_require__(19);
-var createDesc = __webpack_require__(36);
+var createDesc = __webpack_require__(37);
 module.exports = __webpack_require__(12) ? function (object, key, value) {
   return dP.f(object, key, createDesc(1, value));
 } : function (object, key, value) {
@@ -16161,7 +16297,7 @@ module.exports = {};
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(212), __esModule: true };
+module.exports = { "default": __webpack_require__(213), __esModule: true };
 
 /***/ }),
 /* 15 */
@@ -16179,7 +16315,7 @@ module.exports = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // to indexed object, toObject with fallback for non-array-like ES3 strings
-var IObject = __webpack_require__(43);
+var IObject = __webpack_require__(44);
 var defined = __webpack_require__(15);
 module.exports = function (it) {
   return IObject(defined(it));
@@ -16203,7 +16339,7 @@ module.exports = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var shared = __webpack_require__(31)('keys');
-var uid = __webpack_require__(32);
+var uid = __webpack_require__(33);
 module.exports = function (key) {
   return shared[key] || (shared[key] = uid(key));
 };
@@ -16214,8 +16350,8 @@ module.exports = function (key) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var anObject = __webpack_require__(11);
-var IE8_DOM_DEFINE = __webpack_require__(49);
-var toPrimitive = __webpack_require__(50);
+var IE8_DOM_DEFINE = __webpack_require__(50);
+var toPrimitive = __webpack_require__(51);
 var dP = Object.defineProperty;
 
 exports.f = __webpack_require__(12) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
@@ -16321,7 +16457,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
                          (typeof global !== "undefined" && global.clearImmediate) ||
                          (this && this.clearImmediate);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
 /* 23 */
@@ -16514,7 +16650,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(3)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(3)))
 
 /***/ }),
 /* 24 */
@@ -16527,7 +16663,7 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _vue = __webpack_require__(6);
+var _vue = __webpack_require__(7);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -17787,7 +17923,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Http", function() { return Http; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Resource", function() { return Resource; });
 /*!
- * vue-resource v1.5.0
+ * vue-resource v1.5.1
  * https://github.com/pagekit/vue-resource
  * Released under the MIT License.
  */
@@ -19393,16 +19529,29 @@ module.exports = function (it) {
 /* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var global = __webpack_require__(4);
+var core = __webpack_require__(4);
+var global = __webpack_require__(5);
 var SHARED = '__core-js_shared__';
 var store = global[SHARED] || (global[SHARED] = {});
-module.exports = function (key) {
-  return store[key] || (store[key] = {});
-};
+
+(module.exports = function (key, value) {
+  return store[key] || (store[key] = value !== undefined ? value : {});
+})('versions', []).push({
+  version: core.version,
+  mode: __webpack_require__(32) ? 'pure' : 'global',
+  copyright: '© 2018 Denis Pushkarev (zloirock.ru)'
+});
 
 
 /***/ }),
 /* 32 */
+/***/ (function(module, exports) {
+
+module.exports = true;
+
+
+/***/ }),
+/* 33 */
 /***/ (function(module, exports) {
 
 var id = 0;
@@ -19413,7 +19562,7 @@ module.exports = function (key) {
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports) {
 
 // IE 8- don't enum bug keys
@@ -19423,12 +19572,12 @@ module.exports = (
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var global = __webpack_require__(4);
-var core = __webpack_require__(8);
-var ctx = __webpack_require__(47);
+var global = __webpack_require__(5);
+var core = __webpack_require__(4);
+var ctx = __webpack_require__(48);
 var hide = __webpack_require__(9);
 var has = __webpack_require__(10);
 var PROTOTYPE = 'prototype';
@@ -19491,11 +19640,11 @@ module.exports = $export;
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isObject = __webpack_require__(20);
-var document = __webpack_require__(4).document;
+var document = __webpack_require__(5).document;
 // typeof document.createElement is 'object' in old IE
 var is = isObject(document) && isObject(document.createElement);
 module.exports = function (it) {
@@ -19504,7 +19653,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports) {
 
 module.exports = function (bitmap, value) {
@@ -19518,20 +19667,20 @@ module.exports = function (bitmap, value) {
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var LIBRARY = __webpack_require__(56);
-var $export = __webpack_require__(34);
+var LIBRARY = __webpack_require__(32);
+var $export = __webpack_require__(35);
 var redefine = __webpack_require__(57);
 var hide = __webpack_require__(9);
 var Iterators = __webpack_require__(13);
 var $iterCreate = __webpack_require__(58);
-var setToStringTag = __webpack_require__(38);
+var setToStringTag = __webpack_require__(39);
 var getPrototypeOf = __webpack_require__(62);
-var ITERATOR = __webpack_require__(5)('iterator');
+var ITERATOR = __webpack_require__(6)('iterator');
 var BUGGY = !([].keys && 'next' in [].keys()); // Safari has buggy iterators w/o `next`
 var FF_ITERATOR = '@@iterator';
 var KEYS = 'keys';
@@ -19594,12 +19743,12 @@ module.exports = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var def = __webpack_require__(19).f;
 var has = __webpack_require__(10);
-var TAG = __webpack_require__(5)('toStringTag');
+var TAG = __webpack_require__(6)('toStringTag');
 
 module.exports = function (it, tag, stat) {
   if (it && !has(it = stat ? it : it.prototype, TAG)) def(it, TAG, { configurable: true, value: tag });
@@ -19607,7 +19756,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.13 ToObject(argument)
@@ -19618,12 +19767,12 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.14 / 15.2.3.14 Object.keys(O)
-var $keys = __webpack_require__(42);
-var enumBugKeys = __webpack_require__(33);
+var $keys = __webpack_require__(43);
+var enumBugKeys = __webpack_require__(34);
 
 module.exports = Object.keys || function keys(O) {
   return $keys(O, enumBugKeys);
@@ -19631,18 +19780,18 @@ module.exports = Object.keys || function keys(O) {
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(51), __esModule: true };
+module.exports = { "default": __webpack_require__(52), __esModule: true };
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var has = __webpack_require__(10);
 var toIObject = __webpack_require__(16);
-var arrayIndexOf = __webpack_require__(44)(false);
+var arrayIndexOf = __webpack_require__(45)(false);
 var IE_PROTO = __webpack_require__(18)('IE_PROTO');
 
 module.exports = function (object, names) {
@@ -19660,7 +19809,7 @@ module.exports = function (object, names) {
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for non-array-like ES3 and non-enumerable old V8 strings
@@ -19672,14 +19821,14 @@ module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // false -> Array#indexOf
 // true  -> Array#includes
 var toIObject = __webpack_require__(16);
-var toLength = __webpack_require__(45);
-var toAbsoluteIndex = __webpack_require__(46);
+var toLength = __webpack_require__(46);
+var toAbsoluteIndex = __webpack_require__(47);
 module.exports = function (IS_INCLUDES) {
   return function ($this, el, fromIndex) {
     var O = toIObject($this);
@@ -19701,7 +19850,7 @@ module.exports = function (IS_INCLUDES) {
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.15 ToLength
@@ -19713,7 +19862,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var toInteger = __webpack_require__(17);
@@ -19726,11 +19875,11 @@ module.exports = function (index, length) {
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // optional / simple context binding
-var aFunction = __webpack_require__(48);
+var aFunction = __webpack_require__(49);
 module.exports = function (fn, that, length) {
   aFunction(fn);
   if (that === undefined) return fn;
@@ -19752,7 +19901,7 @@ module.exports = function (fn, that, length) {
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports) {
 
 module.exports = function (it) {
@@ -19762,16 +19911,16 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = !__webpack_require__(12) && !__webpack_require__(21)(function () {
-  return Object.defineProperty(__webpack_require__(35)('div'), 'a', { get: function () { return 7; } }).a != 7;
+  return Object.defineProperty(__webpack_require__(36)('div'), 'a', { get: function () { return 7; } }).a != 7;
 });
 
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.1 ToPrimitive(input [, PreferredType])
@@ -19789,23 +19938,23 @@ module.exports = function (it, S) {
 
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(52);
+__webpack_require__(53);
 __webpack_require__(63);
 module.exports = __webpack_require__(65);
 
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(53);
-var global = __webpack_require__(4);
+__webpack_require__(54);
+var global = __webpack_require__(5);
 var hide = __webpack_require__(9);
 var Iterators = __webpack_require__(13);
-var TO_STRING_TAG = __webpack_require__(5)('toStringTag');
+var TO_STRING_TAG = __webpack_require__(6)('toStringTag');
 
 var DOMIterables = ('CSSRuleList,CSSStyleDeclaration,CSSValueList,ClientRectList,DOMRectList,DOMStringList,' +
   'DOMTokenList,DataTransferItemList,FileList,HTMLAllCollection,HTMLCollection,HTMLFormElement,HTMLSelectElement,' +
@@ -19823,13 +19972,13 @@ for (var i = 0; i < DOMIterables.length; i++) {
 
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var addToUnscopables = __webpack_require__(54);
-var step = __webpack_require__(55);
+var addToUnscopables = __webpack_require__(55);
+var step = __webpack_require__(56);
 var Iterators = __webpack_require__(13);
 var toIObject = __webpack_require__(16);
 
@@ -19837,7 +19986,7 @@ var toIObject = __webpack_require__(16);
 // 22.1.3.13 Array.prototype.keys()
 // 22.1.3.29 Array.prototype.values()
 // 22.1.3.30 Array.prototype[@@iterator]()
-module.exports = __webpack_require__(37)(Array, 'Array', function (iterated, kind) {
+module.exports = __webpack_require__(38)(Array, 'Array', function (iterated, kind) {
   this._t = toIObject(iterated); // target
   this._i = 0;                   // next index
   this._k = kind;                // kind
@@ -19864,26 +20013,19 @@ addToUnscopables('entries');
 
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports) {
 
 module.exports = function () { /* empty */ };
 
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports) {
 
 module.exports = function (done, value) {
   return { value: value, done: !!done };
 };
-
-
-/***/ }),
-/* 56 */
-/***/ (function(module, exports) {
-
-module.exports = true;
 
 
 /***/ }),
@@ -19900,12 +20042,12 @@ module.exports = __webpack_require__(9);
 "use strict";
 
 var create = __webpack_require__(59);
-var descriptor = __webpack_require__(36);
-var setToStringTag = __webpack_require__(38);
+var descriptor = __webpack_require__(37);
+var setToStringTag = __webpack_require__(39);
 var IteratorPrototype = {};
 
 // 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-__webpack_require__(9)(IteratorPrototype, __webpack_require__(5)('iterator'), function () { return this; });
+__webpack_require__(9)(IteratorPrototype, __webpack_require__(6)('iterator'), function () { return this; });
 
 module.exports = function (Constructor, NAME, next) {
   Constructor.prototype = create(IteratorPrototype, { next: descriptor(1, next) });
@@ -19920,7 +20062,7 @@ module.exports = function (Constructor, NAME, next) {
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
 var anObject = __webpack_require__(11);
 var dPs = __webpack_require__(60);
-var enumBugKeys = __webpack_require__(33);
+var enumBugKeys = __webpack_require__(34);
 var IE_PROTO = __webpack_require__(18)('IE_PROTO');
 var Empty = function () { /* empty */ };
 var PROTOTYPE = 'prototype';
@@ -19928,7 +20070,7 @@ var PROTOTYPE = 'prototype';
 // Create object with fake `null` prototype: use iframe Object with cleared prototype
 var createDict = function () {
   // Thrash, waste and sodomy: IE GC bug
-  var iframe = __webpack_require__(35)('iframe');
+  var iframe = __webpack_require__(36)('iframe');
   var i = enumBugKeys.length;
   var lt = '<';
   var gt = '>';
@@ -19966,7 +20108,7 @@ module.exports = Object.create || function create(O, Properties) {
 
 var dP = __webpack_require__(19);
 var anObject = __webpack_require__(11);
-var getKeys = __webpack_require__(40);
+var getKeys = __webpack_require__(41);
 
 module.exports = __webpack_require__(12) ? Object.defineProperties : function defineProperties(O, Properties) {
   anObject(O);
@@ -19983,7 +20125,7 @@ module.exports = __webpack_require__(12) ? Object.defineProperties : function de
 /* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var document = __webpack_require__(4).document;
+var document = __webpack_require__(5).document;
 module.exports = document && document.documentElement;
 
 
@@ -19993,7 +20135,7 @@ module.exports = document && document.documentElement;
 
 // 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
 var has = __webpack_require__(10);
-var toObject = __webpack_require__(39);
+var toObject = __webpack_require__(40);
 var IE_PROTO = __webpack_require__(18)('IE_PROTO');
 var ObjectProto = Object.prototype;
 
@@ -20015,7 +20157,7 @@ module.exports = Object.getPrototypeOf || function (O) {
 var $at = __webpack_require__(64)(true);
 
 // 21.1.3.27 String.prototype[@@iterator]()
-__webpack_require__(37)(String, 'String', function (iterated) {
+__webpack_require__(38)(String, 'String', function (iterated) {
   this._t = String(iterated); // target
   this._i = 0;                // next index
 // 21.1.5.2.1 %StringIteratorPrototype%.next()
@@ -20059,7 +20201,7 @@ module.exports = function (TO_STRING) {
 
 var anObject = __webpack_require__(11);
 var get = __webpack_require__(66);
-module.exports = __webpack_require__(8).getIterator = function (it) {
+module.exports = __webpack_require__(4).getIterator = function (it) {
   var iterFn = get(it);
   if (typeof iterFn != 'function') throw TypeError(it + ' is not iterable!');
   return anObject(iterFn.call(it));
@@ -20071,9 +20213,9 @@ module.exports = __webpack_require__(8).getIterator = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var classof = __webpack_require__(67);
-var ITERATOR = __webpack_require__(5)('iterator');
+var ITERATOR = __webpack_require__(6)('iterator');
 var Iterators = __webpack_require__(13);
-module.exports = __webpack_require__(8).getIteratorMethod = function (it) {
+module.exports = __webpack_require__(4).getIteratorMethod = function (it) {
   if (it != undefined) return it[ITERATOR]
     || it['@@iterator']
     || Iterators[classof(it)];
@@ -20086,7 +20228,7 @@ module.exports = __webpack_require__(8).getIteratorMethod = function (it) {
 
 // getting tag from 19.1.3.6 Object.prototype.toString()
 var cof = __webpack_require__(30);
-var TAG = __webpack_require__(5)('toStringTag');
+var TAG = __webpack_require__(6)('toStringTag');
 // ES3 wrong here
 var ARG = cof(function () { return arguments; }()) == 'Arguments';
 
@@ -20123,7 +20265,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\UVDev\\Source\\Repos\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\multiple-select.vue"
+  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/reusables/multiple-select.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -20138,7 +20280,7 @@ if (false) {(function () {  module.hot.accept()
 "use strict";
 
 
-var _getIterator2 = __webpack_require__(41);
+var _getIterator2 = __webpack_require__(42);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -20454,7 +20596,7 @@ module.exports = {
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
-var Vue = __webpack_require__(6);
+var Vue = __webpack_require__(7);
 Vue = 'default' in Vue ? Vue['default'] : Vue;
 
 var version = '2.2.2';
@@ -20558,7 +20700,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\UVDev\\Source\\Repos\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\button-checkbox.vue"
+  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/reusables/button-checkbox.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -20582,8 +20724,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4b257edb&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4b257edb&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1bfc9917&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1bfc9917&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -20601,7 +20743,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .input-group .input-group-addon.btn.active[_v-4b257edb] {\n\t\tbackground-color: #8bc34a;\n\t\tborder-color: #33691e;\n\t\tcolor: #FFF;\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop_core .input-group .input-group-addon.btn.active[_v-1bfc9917] {\n\t\tbackground-color: #8bc34a;\n\t\tborder-color: #33691e;\n\t\tcolor: #FFF;\n\t}\n", ""]);
 
 // exports
 
@@ -20686,7 +20828,7 @@ module.exports = {
 /* 76 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<button class=\"btn input-group-addon column\" :class=\"is_active\" @click=\"toggleThis()\" _v-4b257edb=\"\">{{label}}</button>\n";
+module.exports = "\n\t<button class=\"btn input-group-addon column\" :class=\"is_active\" @click=\"toggleThis()\" _v-1bfc9917=\"\">{{label}}</button>\n";
 
 /***/ }),
 /* 77 */
@@ -20703,7 +20845,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\UVDev\\Source\\Repos\\tweet-old-post\\vue\\src\\vue-elements\\upsell-sidebar.vue"
+  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/upsell-sidebar.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -20727,8 +20869,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3bafc00a&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3bafc00a&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-e57ad328&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-e57ad328&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -20746,7 +20888,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop-upsell-box[_v-3bafc00a]{\n\t\tmargin-top:20px;\n\t}\n\t#rop_core .rop-upsell-business-card[_v-3bafc00a],\n\t#rop_core .rop-upsell-pro-card[_v-3bafc00a] {\n\t\tpadding: 0;\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop-upsell-box[_v-e57ad328]{\n\t\tmargin-top:20px;\n\t}\n\t#rop_core .rop-upsell-business-card[_v-e57ad328],\n\t#rop_core .rop-upsell-pro-card[_v-e57ad328] {\n\t\tpadding: 0;\n\t}\n", ""]);
 
 // exports
 
@@ -20803,16 +20945,16 @@ module.exports = {
 /* 81 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div id=\"rop-upsell-box\" _v-3bafc00a=\"\">\n\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \" _v-3bafc00a=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-3bafc00a=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_pro_upsell\" :alt=\"labels.upgrade_pro_cta\" _v-3bafc00a=\"\">\n\t\t\t</a>\n\t\t</div>\n\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1\" _v-3bafc00a=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-3bafc00a=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_business_upsell\" :alt=\"labels.upgrade_biz_cta\" _v-3bafc00a=\"\">\n\t\t\t</a>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div id=\"rop-upsell-box\" _v-e57ad328=\"\">\n\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \" _v-e57ad328=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-e57ad328=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_pro_upsell\" :alt=\"labels.upgrade_pro_cta\" _v-e57ad328=\"\">\n\t\t\t</a>\n\t\t</div>\n\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1\" _v-e57ad328=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-e57ad328=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_business_upsell\" :alt=\"labels.upgrade_biz_cta\" _v-e57ad328=\"\">\n\t\t\t</a>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(219)
-__vue_script__ = __webpack_require__(221)
-__vue_template__ = __webpack_require__(222)
+__webpack_require__(220)
+__vue_script__ = __webpack_require__(222)
+__vue_template__ = __webpack_require__(223)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -20820,7 +20962,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\UVDev\\Source\\Repos\\tweet-old-post\\vue\\src\\vue-elements\\sign-in-btn.vue"
+  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/sign-in-btn.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -20833,9 +20975,9 @@ if (false) {(function () {  module.hot.accept()
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(238)
-__vue_script__ = __webpack_require__(240)
-__vue_template__ = __webpack_require__(241)
+__webpack_require__(239)
+__vue_script__ = __webpack_require__(241)
+__vue_template__ = __webpack_require__(242)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -20843,7 +20985,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\UVDev\\Source\\Repos\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\counter-input.vue"
+  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/reusables/counter-input.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -21058,7 +21200,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 6, // Saturday is the first day of the week.
-            doy : 12  // The week that contains Jan 1st is the first week of the year.
+            doy : 12  // The week that contains Jan 12th is the first week of the year.
         }
     });
 
@@ -21121,7 +21263,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
-            doy : 4  // The week that contains Jan 1st is the first week of the year.
+            doy : 4  // The week that contains Jan 4th is the first week of the year.
         }
     });
 
@@ -21184,7 +21326,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
-            doy : 12  // The week that contains Jan 1st is the first week of the year.
+            doy : 12  // The week that contains Jan 12th is the first week of the year.
         }
     });
 
@@ -21310,7 +21452,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 6, // Saturday is the first day of the week.
-            doy : 12  // The week that contains Jan 1st is the first week of the year.
+            doy : 12  // The week that contains Jan 12th is the first week of the year.
         }
     });
 
@@ -21373,7 +21515,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 6, // Saturday is the first day of the week.
-            doy : 12  // The week that contains Jan 1st is the first week of the year.
+            doy : 12  // The week that contains Jan 12th is the first week of the year.
         }
     });
 
@@ -21481,7 +21623,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
-            doy : 6  // The week that contains Jan 1st is the first week of the year.
+            doy : 6  // The week that contains Jan 6th is the first week of the year.
         }
     });
 
@@ -21613,7 +21755,7 @@ if (false) {(function () {  module.hot.accept()
         relativeTime : {
             future : '%s sonra',
             past : '%s əvvəl',
-            s : 'birneçə saniyyə',
+            s : 'birneçə saniyə',
             ss : '%d saniyə',
             m : 'bir dəqiqə',
             mm : '%d dəqiqə',
@@ -21653,7 +21795,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
@@ -21708,7 +21850,7 @@ if (false) {(function () {  module.hot.accept()
         weekdays : {
             format: 'нядзелю_панядзелак_аўторак_сераду_чацвер_пятніцу_суботу'.split('_'),
             standalone: 'нядзеля_панядзелак_аўторак_серада_чацвер_пятніца_субота'.split('_'),
-            isFormat: /\[ ?[Вв] ?(?:мінулую|наступную)? ?\] ?dddd/
+            isFormat: /\[ ?[Ууў] ?(?:мінулую|наступную)? ?\] ?dddd/
         },
         weekdaysShort : 'нд_пн_ат_ср_чц_пт_сб'.split('_'),
         weekdaysMin : 'нд_пн_ат_ср_чц_пт_сб'.split('_'),
@@ -21789,7 +21931,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
@@ -21883,7 +22025,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
@@ -22068,7 +22210,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
-            doy : 6  // The week that contains Jan 1st is the first week of the year.
+            doy : 6  // The week that contains Jan 6th is the first week of the year.
         }
     });
 
@@ -22191,7 +22333,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
-            doy : 6  // The week that contains Jan 1st is the first week of the year.
+            doy : 6  // The week that contains Jan 6th is the first week of the year.
         }
     });
 
@@ -22458,7 +22600,7 @@ if (false) {(function () {  module.hot.accept()
         ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
@@ -22800,7 +22942,7 @@ if (false) {(function () {  module.hot.accept()
         ordinal : '%d-мӗш',
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
@@ -23291,7 +23433,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 7,  // Sunday is the first day of the week.
-            doy : 12  // The week that contains Jan 1st is the first week of the year.
+            doy : 12  // The week that contains Jan 12th is the first week of the year.
         }
     });
 
@@ -23887,7 +24029,7 @@ if (false) {(function () {  module.hot.accept()
         ordinal : '%da',
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
@@ -24166,7 +24308,7 @@ if (false) {(function () {  module.hot.accept()
         ordinal : '%dº',
         week : {
             dow : 0, // Sunday is the first day of the week.
-            doy : 6  // The week that contains Jan 1st is the first week of the year.
+            doy : 6  // The week that contains Jan 6th is the first week of the year.
         }
     });
 
@@ -24320,7 +24462,7 @@ if (false) {(function () {  module.hot.accept()
         ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
@@ -24430,7 +24572,7 @@ if (false) {(function () {  module.hot.accept()
         ordinal : '%dم',
         week : {
             dow : 6, // Saturday is the first day of the week.
-            doy : 12 // The week that contains Jan 1st is the first week of the year.
+            doy : 12 // The week that contains Jan 12th is the first week of the year.
         }
     });
 
@@ -25349,7 +25491,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week: {
             dow: 0, // Sunday is the first day of the week.
-            doy: 6 // The week that contains Jan 1st is the first week of the year.
+            doy: 6 // The week that contains Jan 6th is the first week of the year.
         }
     });
 
@@ -25578,7 +25720,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
-            doy : 6  // The week that contains Jan 1st is the first week of the year.
+            doy : 6  // The week that contains Jan 6th is the first week of the year.
         }
     });
 
@@ -25736,7 +25878,7 @@ if (false) {(function () {  module.hot.accept()
         ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
@@ -25949,7 +26091,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
@@ -26035,7 +26177,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
@@ -26426,7 +26568,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
@@ -26610,7 +26752,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
@@ -26854,7 +26996,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
-            doy : 6  // The week that contains Jan 1st is the first week of the year.
+            doy : 6  // The week that contains Jan 6th is the first week of the year.
         }
     });
 
@@ -26961,6 +27103,129 @@ if (false) {(function () {  module.hot.accept()
 }(this, (function (moment) { 'use strict';
 
 
+    var symbolMap = {
+        '1': '١',
+        '2': '٢',
+        '3': '٣',
+        '4': '٤',
+        '5': '٥',
+        '6': '٦',
+        '7': '٧',
+        '8': '٨',
+        '9': '٩',
+        '0': '٠'
+    }, numberMap = {
+        '١': '1',
+        '٢': '2',
+        '٣': '3',
+        '٤': '4',
+        '٥': '5',
+        '٦': '6',
+        '٧': '7',
+        '٨': '8',
+        '٩': '9',
+        '٠': '0'
+    },
+    months = [
+        'کانونی دووەم',
+        'شوبات',
+        'ئازار',
+        'نیسان',
+        'ئایار',
+        'حوزەیران',
+        'تەمموز',
+        'ئاب',
+        'ئەیلوول',
+        'تشرینی یەكەم',
+        'تشرینی دووەم',
+        'كانونی یەکەم'
+    ];
+
+
+    var ku = moment.defineLocale('ku', {
+        months : months,
+        monthsShort : months,
+        weekdays : 'یه‌كشه‌ممه‌_دووشه‌ممه‌_سێشه‌ممه‌_چوارشه‌ممه‌_پێنجشه‌ممه‌_هه‌ینی_شه‌ممه‌'.split('_'),
+        weekdaysShort : 'یه‌كشه‌م_دووشه‌م_سێشه‌م_چوارشه‌م_پێنجشه‌م_هه‌ینی_شه‌ممه‌'.split('_'),
+        weekdaysMin : 'ی_د_س_چ_پ_ه_ش'.split('_'),
+        weekdaysParseExact : true,
+        longDateFormat : {
+            LT : 'HH:mm',
+            LTS : 'HH:mm:ss',
+            L : 'DD/MM/YYYY',
+            LL : 'D MMMM YYYY',
+            LLL : 'D MMMM YYYY HH:mm',
+            LLLL : 'dddd, D MMMM YYYY HH:mm'
+        },
+        meridiemParse: /ئێواره‌|به‌یانی/,
+        isPM: function (input) {
+            return /ئێواره‌/.test(input);
+        },
+        meridiem : function (hour, minute, isLower) {
+            if (hour < 12) {
+                return 'به‌یانی';
+            } else {
+                return 'ئێواره‌';
+            }
+        },
+        calendar : {
+            sameDay : '[ئه‌مرۆ كاتژمێر] LT',
+            nextDay : '[به‌یانی كاتژمێر] LT',
+            nextWeek : 'dddd [كاتژمێر] LT',
+            lastDay : '[دوێنێ كاتژمێر] LT',
+            lastWeek : 'dddd [كاتژمێر] LT',
+            sameElse : 'L'
+        },
+        relativeTime : {
+            future : 'له‌ %s',
+            past : '%s',
+            s : 'چه‌ند چركه‌یه‌ك',
+            ss : 'چركه‌ %d',
+            m : 'یه‌ك خوله‌ك',
+            mm : '%d خوله‌ك',
+            h : 'یه‌ك كاتژمێر',
+            hh : '%d كاتژمێر',
+            d : 'یه‌ك ڕۆژ',
+            dd : '%d ڕۆژ',
+            M : 'یه‌ك مانگ',
+            MM : '%d مانگ',
+            y : 'یه‌ك ساڵ',
+            yy : '%d ساڵ'
+        },
+        preparse: function (string) {
+            return string.replace(/[١٢٣٤٥٦٧٨٩٠]/g, function (match) {
+                return numberMap[match];
+            }).replace(/،/g, ',');
+        },
+        postformat: function (string) {
+            return string.replace(/\d/g, function (match) {
+                return symbolMap[match];
+            }).replace(/,/g, '،');
+        },
+        week : {
+            dow : 6, // Saturday is the first day of the week.
+            doy : 12 // The week that contains Jan 12th is the first week of the year.
+        }
+    });
+
+    return ku;
+
+})));
+
+
+/***/ }),
+/* 149 */
+/***/ (function(module, exports, __webpack_require__) {
+
+//! moment.js locale configuration
+
+;(function (global, factory) {
+    true ? factory(__webpack_require__(0)) :
+   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
+   factory(global.moment)
+}(this, (function (moment) { 'use strict';
+
+
     var suffixes = {
         0: '-чү',
         1: '-чи',
@@ -27002,8 +27267,8 @@ if (false) {(function () {  module.hot.accept()
             sameDay : '[Бүгүн саат] LT',
             nextDay : '[Эртең саат] LT',
             nextWeek : 'dddd [саат] LT',
-            lastDay : '[Кече саат] LT',
-            lastWeek : '[Өткен аптанын] dddd [күнү] [саат] LT',
+            lastDay : '[Кечээ саат] LT',
+            lastWeek : '[Өткөн аптанын] dddd [күнү] [саат] LT',
             sameElse : 'L'
         },
         relativeTime : {
@@ -27030,7 +27295,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
@@ -27040,7 +27305,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 149 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27180,7 +27445,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 150 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27254,7 +27519,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 151 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27376,7 +27641,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 152 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27477,7 +27742,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 153 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27583,7 +27848,7 @@ if (false) {(function () {  module.hot.accept()
         ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
@@ -27593,7 +27858,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 154 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27661,7 +27926,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 155 */
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27745,7 +28010,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
@@ -27755,7 +28020,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 156 */
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27840,7 +28105,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 157 */
+/* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27948,7 +28213,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 158 */
+/* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28102,7 +28367,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
-            doy : 6  // The week that contains Jan 1st is the first week of the year.
+            doy : 6  // The week that contains Jan 6th is the first week of the year.
         }
     });
 
@@ -28112,7 +28377,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 159 */
+/* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28188,7 +28453,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
@@ -28198,7 +28463,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 160 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28274,7 +28539,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
@@ -28284,7 +28549,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 161 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28348,7 +28613,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 162 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28435,7 +28700,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week: {
             dow: 1, // Monday is the first day of the week.
-            doy: 4 // The week that contains Jan 1st is the first week of the year.
+            doy: 4 // The week that contains Jan 4th is the first week of the year.
         }
     });
 
@@ -28445,7 +28710,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 163 */
+/* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28511,7 +28776,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 164 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28628,7 +28893,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
-            doy : 6  // The week that contains Jan 1st is the first week of the year.
+            doy : 6  // The week that contains Jan 6th is the first week of the year.
         }
     });
 
@@ -28638,7 +28903,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 165 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28654,7 +28919,7 @@ if (false) {(function () {  module.hot.accept()
         monthsShortWithoutDots = 'jan_feb_mrt_apr_mei_jun_jul_aug_sep_okt_nov_dec'.split('_');
 
     var monthsParse = [/^jan/i, /^feb/i, /^maart|mrt.?$/i, /^apr/i, /^mei$/i, /^jun[i.]?$/i, /^jul[i.]?$/i, /^aug/i, /^sep/i, /^okt/i, /^nov/i, /^dec/i];
-    var monthsRegex = /^(januari|februari|maart|april|mei|april|ju[nl]i|augustus|september|oktober|november|december|jan\.?|feb\.?|mrt\.?|apr\.?|ju[nl]\.?|aug\.?|sep\.?|okt\.?|nov\.?|dec\.?)/i;
+    var monthsRegex = /^(januari|februari|maart|april|mei|ju[nl]i|augustus|september|oktober|november|december|jan\.?|feb\.?|mrt\.?|apr\.?|ju[nl]\.?|aug\.?|sep\.?|okt\.?|nov\.?|dec\.?)/i;
 
     var nl = moment.defineLocale('nl', {
         months : 'januari_februari_maart_april_mei_juni_juli_augustus_september_oktober_november_december'.split('_'),
@@ -28670,7 +28935,7 @@ if (false) {(function () {  module.hot.accept()
 
         monthsRegex: monthsRegex,
         monthsShortRegex: monthsRegex,
-        monthsStrictRegex: /^(januari|februari|maart|mei|ju[nl]i|april|augustus|september|oktober|november|december)/i,
+        monthsStrictRegex: /^(januari|februari|maart|april|mei|ju[nl]i|augustus|september|oktober|november|december)/i,
         monthsShortStrictRegex: /^(jan\.?|feb\.?|mrt\.?|apr\.?|mei|ju[nl]\.?|aug\.?|sep\.?|okt\.?|nov\.?|dec\.?)/i,
 
         monthsParse : monthsParse,
@@ -28729,7 +28994,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 166 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28745,7 +29010,7 @@ if (false) {(function () {  module.hot.accept()
         monthsShortWithoutDots = 'jan_feb_mrt_apr_mei_jun_jul_aug_sep_okt_nov_dec'.split('_');
 
     var monthsParse = [/^jan/i, /^feb/i, /^maart|mrt.?$/i, /^apr/i, /^mei$/i, /^jun[i.]?$/i, /^jul[i.]?$/i, /^aug/i, /^sep/i, /^okt/i, /^nov/i, /^dec/i];
-    var monthsRegex = /^(januari|februari|maart|april|mei|april|ju[nl]i|augustus|september|oktober|november|december|jan\.?|feb\.?|mrt\.?|apr\.?|ju[nl]\.?|aug\.?|sep\.?|okt\.?|nov\.?|dec\.?)/i;
+    var monthsRegex = /^(januari|februari|maart|april|mei|ju[nl]i|augustus|september|oktober|november|december|jan\.?|feb\.?|mrt\.?|apr\.?|ju[nl]\.?|aug\.?|sep\.?|okt\.?|nov\.?|dec\.?)/i;
 
     var nlBe = moment.defineLocale('nl-be', {
         months : 'januari_februari_maart_april_mei_juni_juli_augustus_september_oktober_november_december'.split('_'),
@@ -28761,7 +29026,7 @@ if (false) {(function () {  module.hot.accept()
 
         monthsRegex: monthsRegex,
         monthsShortRegex: monthsRegex,
-        monthsStrictRegex: /^(januari|februari|maart|mei|ju[nl]i|april|augustus|september|oktober|november|december)/i,
+        monthsStrictRegex: /^(januari|februari|maart|april|mei|ju[nl]i|augustus|september|oktober|november|december)/i,
         monthsShortStrictRegex: /^(jan\.?|feb\.?|mrt\.?|apr\.?|mei|ju[nl]\.?|aug\.?|sep\.?|okt\.?|nov\.?|dec\.?)/i,
 
         monthsParse : monthsParse,
@@ -28820,7 +29085,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 167 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28884,7 +29149,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 168 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28922,7 +29187,7 @@ if (false) {(function () {  module.hot.accept()
     };
 
     var paIn = moment.defineLocale('pa-in', {
-        // There are months name as per Nanakshahi Calender but they are not used as rigidly in modern Punjabi.
+        // There are months name as per Nanakshahi Calendar but they are not used as rigidly in modern Punjabi.
         months : 'ਜਨਵਰੀ_ਫ਼ਰਵਰੀ_ਮਾਰਚ_ਅਪ੍ਰੈਲ_ਮਈ_ਜੂਨ_ਜੁਲਾਈ_ਅਗਸਤ_ਸਤੰਬਰ_ਅਕਤੂਬਰ_ਨਵੰਬਰ_ਦਸੰਬਰ'.split('_'),
         monthsShort : 'ਜਨਵਰੀ_ਫ਼ਰਵਰੀ_ਮਾਰਚ_ਅਪ੍ਰੈਲ_ਮਈ_ਜੂਨ_ਜੁਲਾਈ_ਅਗਸਤ_ਸਤੰਬਰ_ਅਕਤੂਬਰ_ਨਵੰਬਰ_ਦਸੰਬਰ'.split('_'),
         weekdays : 'ਐਤਵਾਰ_ਸੋਮਵਾਰ_ਮੰਗਲਵਾਰ_ਬੁਧਵਾਰ_ਵੀਰਵਾਰ_ਸ਼ੁੱਕਰਵਾਰ_ਸ਼ਨੀਚਰਵਾਰ'.split('_'),
@@ -28939,7 +29204,7 @@ if (false) {(function () {  module.hot.accept()
         calendar : {
             sameDay : '[ਅਜ] LT',
             nextDay : '[ਕਲ] LT',
-            nextWeek : 'dddd, LT',
+            nextWeek : '[ਅਗਲਾ] dddd, LT',
             lastDay : '[ਕਲ] LT',
             lastWeek : '[ਪਿਛਲੇ] dddd, LT',
             sameElse : 'L'
@@ -29002,7 +29267,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
-            doy : 6  // The week that contains Jan 1st is the first week of the year.
+            doy : 6  // The week that contains Jan 6th is the first week of the year.
         }
     });
 
@@ -29012,7 +29277,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 169 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29142,7 +29407,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 170 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29211,7 +29476,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 171 */
+/* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29276,7 +29541,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 172 */
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29345,7 +29610,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
@@ -29355,7 +29620,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 173 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29541,7 +29806,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 174 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29643,7 +29908,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 175 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29707,7 +29972,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 176 */
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29782,7 +30047,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 177 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29942,7 +30207,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 178 */
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29967,7 +30232,7 @@ if (false) {(function () {  module.hot.accept()
                 } else if (number < 5) {
                     result += withoutSuffix || isFuture ? 'sekunde' : 'sekundah';
                 } else {
-                    result += withoutSuffix || isFuture ? 'sekund' : 'sekund';
+                    result += 'sekund';
                 }
                 return result;
             case 'm':
@@ -30109,7 +30374,7 @@ if (false) {(function () {  module.hot.accept()
         ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
@@ -30119,7 +30384,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 179 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30191,7 +30456,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 180 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30296,7 +30561,7 @@ if (false) {(function () {  module.hot.accept()
         ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
@@ -30306,7 +30571,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 181 */
+/* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30411,7 +30676,7 @@ if (false) {(function () {  module.hot.accept()
         ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
@@ -30421,7 +30686,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 182 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30513,7 +30778,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 183 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30586,7 +30851,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 184 */
+/* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30639,7 +30904,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
@@ -30649,7 +30914,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 185 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30772,7 +31037,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
-            doy : 6  // The week that contains Jan 1st is the first week of the year.
+            doy : 6  // The week that contains Jan 6th is the first week of the year.
         }
     });
 
@@ -30782,7 +31047,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 186 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30865,7 +31130,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
-            doy : 6  // The week that contains Jan 1st is the first week of the year.
+            doy : 6  // The week that contains Jan 6th is the first week of the year.
         }
     });
 
@@ -30875,7 +31140,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 187 */
+/* 188 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30946,7 +31211,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 188 */
+/* 189 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31066,7 +31331,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 189 */
+/* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31137,7 +31402,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 190 */
+/* 191 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31203,7 +31468,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 191 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31329,7 +31594,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 192 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -31417,7 +31682,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
@@ -31427,7 +31692,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 193 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31522,7 +31787,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 194 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31574,7 +31839,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 6, // Saturday is the first day of the week.
-            doy : 12  // The week that contains Jan 1st is the first week of the year.
+            doy : 12  // The week that contains Jan 12th is the first week of the year.
         }
     });
 
@@ -31584,7 +31849,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 195 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31636,7 +31901,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 6, // Saturday is the first day of the week.
-            doy : 12  // The week that contains Jan 1st is the first week of the year.
+            doy : 12  // The week that contains Jan 12th is the first week of the year.
         }
     });
 
@@ -31646,7 +31911,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 196 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js language configuration
@@ -31769,7 +32034,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 197 */
+/* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31914,7 +32179,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
@@ -31924,7 +32189,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 198 */
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32026,7 +32291,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 199 */
+/* 200 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32088,7 +32353,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 200 */
+/* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32140,7 +32405,7 @@ if (false) {(function () {  module.hot.accept()
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
@@ -32150,7 +32415,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 201 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32233,7 +32498,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 202 */
+/* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32305,7 +32570,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 203 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32369,7 +32634,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 204 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32483,7 +32748,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 205 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32590,7 +32855,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 206 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32697,13 +32962,13 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 207 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _vue = __webpack_require__(6);
+var _vue = __webpack_require__(7);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -32711,7 +32976,7 @@ var _rop_store = __webpack_require__(24);
 
 var _rop_store2 = _interopRequireDefault(_rop_store);
 
-var _mainPagePanel = __webpack_require__(208);
+var _mainPagePanel = __webpack_require__(209);
 
 var _mainPagePanel2 = _interopRequireDefault(_mainPagePanel);
 
@@ -32736,13 +33001,13 @@ window.addEventListener('load', function () {
 /* exported RopApp */
 
 /***/ }),
-/* 208 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(209)
-__vue_script__ = __webpack_require__(211)
-__vue_template__ = __webpack_require__(297)
+__webpack_require__(210)
+__vue_script__ = __webpack_require__(212)
+__vue_template__ = __webpack_require__(298)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32750,7 +33015,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\UVDev\\Source\\Repos\\tweet-old-post\\vue\\src\\vue-elements\\main-page-panel.vue"
+  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/main-page-panel.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -32759,13 +33024,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 209 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(210);
+var content = __webpack_require__(211);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -32774,8 +33039,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-7dbcc2eb&file=main-page-panel.vue!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./main-page-panel.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-7dbcc2eb&file=main-page-panel.vue!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./main-page-panel.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-35f11a9a&file=main-page-panel.vue!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./main-page-panel.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-35f11a9a&file=main-page-panel.vue!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./main-page-panel.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -32785,7 +33050,7 @@ if(false) {
 }
 
 /***/ }),
-/* 210 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -32793,13 +33058,13 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\r\n\t#rop_core .badge[data-badge]::after {\r\n\t\tposition: absolute;\r\n\t\tbottom: -16px;\r\n\t\tright: 0px;\r\n\t}\r\n\t#rop_core .rop-api-not-available {\r\n\t\tmargin:10px 0px 10px 0px;\r\n\t}\r\n\r\n\t#rop_core .badge.badge-logs::after {\r\n\t\tright: auto;\r\n\t\ttop: 0px;\r\n\t}\r\n\r\n\t#rop_core .badge.badge-logs {\r\n\t\tpadding-right: 10px;\r\n\t}\r\n", ""]);
+exports.push([module.i, "\n\t#rop_core .badge[data-badge]::after {\n\t\tposition: absolute;\n\t\tbottom: -16px;\n\t\tright: 0px;\n\t}\n\t#rop_core .rop-api-not-available {\n\t\tmargin:10px 0px 10px 0px;\n\t}\n\n\t#rop_core .badge.badge-logs::after {\n\t\tright: auto;\n\t\ttop: 0px;\n\t}\n\n\t#rop_core .badge.badge-logs {\n\t\tpadding-right: 10px;\n\t}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 211 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32809,31 +33074,31 @@ var _keys = __webpack_require__(14);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _accountsTabPanel = __webpack_require__(215);
+var _accountsTabPanel = __webpack_require__(216);
 
 var _accountsTabPanel2 = _interopRequireDefault(_accountsTabPanel);
 
-var _settingsTabPanel = __webpack_require__(234);
+var _settingsTabPanel = __webpack_require__(235);
 
 var _settingsTabPanel2 = _interopRequireDefault(_settingsTabPanel);
 
-var _accountsSelectorPanel = __webpack_require__(243);
+var _accountsSelectorPanel = __webpack_require__(244);
 
 var _accountsSelectorPanel2 = _interopRequireDefault(_accountsSelectorPanel);
 
-var _queueTabPanel = __webpack_require__(270);
+var _queueTabPanel = __webpack_require__(271);
 
 var _queueTabPanel2 = _interopRequireDefault(_queueTabPanel);
 
-var _logsTabPanel = __webpack_require__(278);
+var _logsTabPanel = __webpack_require__(279);
 
 var _logsTabPanel2 = _interopRequireDefault(_logsTabPanel);
 
-var _toast = __webpack_require__(285);
+var _toast = __webpack_require__(286);
 
 var _toast2 = _interopRequireDefault(_toast);
 
-var _countdown = __webpack_require__(290);
+var _countdown = __webpack_require__(291);
 
 var _countdown2 = _interopRequireDefault(_countdown);
 
@@ -33028,8 +33293,9 @@ module.exports = {
 // 					<h1 class="plugin-title d-inline-block">Revive Old Posts</h1><span class="powered d-inline-block"> {{labels.by}} <a
 // 						href="https://revive.social" target="_blank"><b>Revive.Social</b></a></span>
 // 					<div id="rop_social_actions">
-// 					<a href="https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial" target="_blank" class="tweet-about-it"><span></span> {{labels.tweet_about_it}}</a>
-// 					<a href="https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post" target="_blank" class="leave-a-review"><span></span> {{labels.review_it}}</a>
+// 					<a href="https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform" target="_blank" class="submit-feedback"><span><i class="fa fa-commenting" aria-hidden="true"></i></span> {{labels.help_improve}}</a>
+// 					<a href="https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial" target="_blank" class="tweet-about-it"><span><i class="fa fa-twitter" aria-hidden="true"></i></span> {{labels.tweet_about_it}}</a>
+// 					<a href="https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post" target="_blank" class="leave-a-review"><span><i class="fa fa-star" aria-hidden="true"></i></span> {{labels.review_it}}</a>
 // 					</div>
 // 				</div>
 // 			</div>
@@ -33097,22 +33363,22 @@ module.exports = {
 /* global ROP_ASSETS_URL */
 
 /***/ }),
-/* 212 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(213);
-module.exports = __webpack_require__(8).Object.keys;
-
-
-/***/ }),
 /* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// 19.1.2.14 Object.keys(O)
-var toObject = __webpack_require__(39);
-var $keys = __webpack_require__(40);
+__webpack_require__(214);
+module.exports = __webpack_require__(4).Object.keys;
 
-__webpack_require__(214)('keys', function () {
+
+/***/ }),
+/* 214 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 19.1.2.14 Object.keys(O)
+var toObject = __webpack_require__(40);
+var $keys = __webpack_require__(41);
+
+__webpack_require__(215)('keys', function () {
   return function keys(it) {
     return $keys(toObject(it));
   };
@@ -33120,12 +33386,12 @@ __webpack_require__(214)('keys', function () {
 
 
 /***/ }),
-/* 214 */
+/* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // most Object methods by ES6 should accept primitives
-var $export = __webpack_require__(34);
-var core = __webpack_require__(8);
+var $export = __webpack_require__(35);
+var core = __webpack_require__(4);
 var fails = __webpack_require__(21);
 module.exports = function (KEY, exec) {
   var fn = (core.Object || {})[KEY] || Object[KEY];
@@ -33136,13 +33402,13 @@ module.exports = function (KEY, exec) {
 
 
 /***/ }),
-/* 215 */
+/* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(216)
-__vue_script__ = __webpack_require__(218)
-__vue_template__ = __webpack_require__(233)
+__webpack_require__(217)
+__vue_script__ = __webpack_require__(219)
+__vue_template__ = __webpack_require__(234)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -33150,7 +33416,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\UVDev\\Source\\Repos\\tweet-old-post\\vue\\src\\vue-elements\\accounts-tab-panel.vue"
+  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/accounts-tab-panel.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -33159,13 +33425,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 216 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(217);
+var content = __webpack_require__(218);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -33174,8 +33440,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-564242b8&file=accounts-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-tab-panel.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-564242b8&file=accounts-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-tab-panel.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2ff296d6&file=accounts-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-tab-panel.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2ff296d6&file=accounts-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-tab-panel.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -33185,7 +33451,7 @@ if(false) {
 }
 
 /***/ }),
-/* 217 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -33193,13 +33459,13 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\r\n\t#rop_core .columns.py-2 .text-gray[_v-564242b8] {\r\n\t\tmargin: 0;\r\n\t\tline-height: normal;\r\n\t}\r\n\t\r\n\t#rop_core .input-group[_v-564242b8] {\r\n\t\twidth: 100%;\r\n\t}\r\n\t\r\n\tb[_v-564242b8] {\r\n\t\tmargin-bottom: 5px;\r\n\t\tdisplay: block;\r\n\t}\r\n\t\r\n\t#rop_core .text-gray b[_v-564242b8] {\r\n\t\tdisplay: inline;\r\n\t}\r\n\t\r\n\t#rop_core .input-group .input-group-addon[_v-564242b8] {\r\n\t\tpadding: 3px 5px;\r\n\t}\r\n\t\r\n\t#rop_core .rop-available-accounts h5[_v-564242b8] {\r\n\t\tmargin-bottom: 15px;\r\n\t}\r\n\t\r\n\t@media ( max-width: 600px ) {\r\n\t\t#rop_core .panel-body .text-gray[_v-564242b8] {\r\n\t\t\tmargin-bottom: 10px;\r\n\t\t}\r\n\t\t\r\n\t\t#rop_core .text-right[_v-564242b8] {\r\n\t\t\ttext-align: left;\r\n\t\t}\r\n\t}\r\n", ""]);
+exports.push([module.i, "\n\t#rop_core .columns.py-2 .text-gray[_v-2ff296d6] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\t\n\t#rop_core .input-group[_v-2ff296d6] {\n\t\twidth: 100%;\n\t}\n\t\n\tb[_v-2ff296d6] {\n\t\tmargin-bottom: 5px;\n\t\tdisplay: block;\n\t}\n\t\n\t#rop_core .text-gray b[_v-2ff296d6] {\n\t\tdisplay: inline;\n\t}\n\t\n\t#rop_core .input-group .input-group-addon[_v-2ff296d6] {\n\t\tpadding: 3px 5px;\n\t}\n\t\n\t#rop_core .rop-available-accounts h5[_v-2ff296d6] {\n\t\tmargin-bottom: 15px;\n\t}\n\t\n\t@media ( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-2ff296d6] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\t\t\n\t\t#rop_core .text-right[_v-2ff296d6] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 218 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33213,11 +33479,11 @@ var _signInBtn = __webpack_require__(82);
 
 var _signInBtn2 = _interopRequireDefault(_signInBtn);
 
-var _serviceUserTile = __webpack_require__(223);
+var _serviceUserTile = __webpack_require__(224);
 
 var _serviceUserTile2 = _interopRequireDefault(_serviceUserTile);
 
-var _addAccountTile = __webpack_require__(228);
+var _addAccountTile = __webpack_require__(229);
 
 var _addAccountTile2 = _interopRequireDefault(_addAccountTile);
 
@@ -33379,13 +33645,13 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 219 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(220);
+var content = __webpack_require__(221);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -33394,8 +33660,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-63cb7455&file=sign-in-btn.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./sign-in-btn.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-63cb7455&file=sign-in-btn.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./sign-in-btn.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2f84fb84&file=sign-in-btn.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./sign-in-btn.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2f84fb84&file=sign-in-btn.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./sign-in-btn.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -33405,7 +33671,7 @@ if(false) {
 }
 
 /***/ }),
-/* 220 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -33413,13 +33679,13 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\r\n\t#rop-sign-in-area .btn[disabled][_v-63cb7455]{\r\n\t\tcursor:not-allowed;\r\n\t\tpointer-events: auto;\r\n\t\topacity: 0.3;\r\n\t}\r\n\t", ""]);
+exports.push([module.i, "\n\t#rop-sign-in-area .btn[disabled][_v-2f84fb84]{\n\t\tcursor:not-allowed;\n\t\tpointer-events: auto;\n\t\topacity: 0.3;\n\t}\n\t", ""]);
 
 // exports
 
 
 /***/ }),
-/* 221 */
+/* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33429,7 +33695,7 @@ var _keys = __webpack_require__(14);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _getIterator2 = __webpack_require__(41);
+var _getIterator2 = __webpack_require__(42);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -33662,19 +33928,19 @@ module.exports = {
 };
 
 /***/ }),
-/* 222 */
+/* 223 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div id=\"rop-sign-in-area\" _v-63cb7455=\"\">\n\t\t<div class=\"input-group text-right buttons-wrap\" _v-63cb7455=\"\">\n\t\t\t<button v-for=\"( service, network ) in services\" :disabled=\"checkDisabled( service, network )\" class=\"btn input-group-btn\" :class=\"'btn-' + network\" @click=\"requestAuthorization( network )\" _v-63cb7455=\"\">\n\t\t\t\t<i class=\"fa fa-fw\" :class=\"'fa-' + network\" _v-63cb7455=\"\"></i>{{service.name}}\n\t\t\t</button>\n\n\t\t</div>\n\n\t\t<div class=\"modal\" :class=\"modalActiveClass\" _v-63cb7455=\"\">\n\t\t\t<div class=\"modal-overlay\" _v-63cb7455=\"\"></div>\n\t\t\t<div class=\"modal-container\" _v-63cb7455=\"\">\n\t\t\t\t<div class=\"modal-header\" _v-63cb7455=\"\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"cancelModal()\" _v-63cb7455=\"\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\" _v-63cb7455=\"\">{{ modal.serviceName }} {{labels.service_popup_title}}</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\" _v-63cb7455=\"\">\n\t\t\t\t\t<div class=\"content\" _v-63cb7455=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-63cb7455=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-63cb7455=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-63cb7455=\"\">\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-63cb7455=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-footer\" _v-63cb7455=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-63cb7455=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-63cb7455=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div id=\"rop-sign-in-area\" _v-2f84fb84=\"\">\n\t\t<div class=\"input-group text-right buttons-wrap\" _v-2f84fb84=\"\">\n\t\t\t<button v-for=\"( service, network ) in services\" :disabled=\"checkDisabled( service, network )\" class=\"btn input-group-btn\" :class=\"'btn-' + network\" @click=\"requestAuthorization( network )\" _v-2f84fb84=\"\">\n\t\t\t\t<i class=\"fa fa-fw\" :class=\"'fa-' + network\" _v-2f84fb84=\"\"></i>{{service.name}}\n\t\t\t</button>\n\n\t\t</div>\n\n\t\t<div class=\"modal\" :class=\"modalActiveClass\" _v-2f84fb84=\"\">\n\t\t\t<div class=\"modal-overlay\" _v-2f84fb84=\"\"></div>\n\t\t\t<div class=\"modal-container\" _v-2f84fb84=\"\">\n\t\t\t\t<div class=\"modal-header\" _v-2f84fb84=\"\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"cancelModal()\" _v-2f84fb84=\"\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\" _v-2f84fb84=\"\">{{ modal.serviceName }} {{labels.service_popup_title}}</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\" _v-2f84fb84=\"\">\n\t\t\t\t\t<div class=\"content\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-2f84fb84=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-2f84fb84=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-footer\" _v-2f84fb84=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-2f84fb84=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-2f84fb84=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 223 */
+/* 224 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(224)
-__vue_script__ = __webpack_require__(226)
-__vue_template__ = __webpack_require__(227)
+__webpack_require__(225)
+__vue_script__ = __webpack_require__(227)
+__vue_template__ = __webpack_require__(228)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -33682,7 +33948,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\UVDev\\Source\\Repos\\tweet-old-post\\vue\\src\\vue-elements\\service-user-tile.vue"
+  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/service-user-tile.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -33691,13 +33957,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 224 */
+/* 225 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(225);
+var content = __webpack_require__(226);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -33706,8 +33972,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0a833229&file=service-user-tile.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./service-user-tile.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0a833229&file=service-user-tile.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./service-user-tile.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-f1ff4bd0&file=service-user-tile.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./service-user-tile.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-f1ff4bd0&file=service-user-tile.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./service-user-tile.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -33717,7 +33983,7 @@ if(false) {
 }
 
 /***/ }),
-/* 225 */
+/* 226 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -33725,19 +33991,19 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\r\n\t.rop-remove-account[_v-0a833229]{\r\n\t\twidth:15px;\r\n\t\ttext-align: center;\r\n\t\tcursor: pointer;\r\n\t    padding-right: 10px;\r\n\t\tmargin-right: 10px;\r\n\t\theight: 100%;\r\n\t\t-ms-flex: 0 0 auto;\r\n\t\tline-height: 40px;\r\n\t\topacity: 0;\r\n\t\tmargin-left:-20px;\r\n\t\ttransition-timing-function: ease-in;\r\n\t\ttransition: 1s;\r\n\t\ttransform: translateX(130%);\r\n\t}\r\n\t.rop-account:hover .rop-remove-account[_v-0a833229]{\r\n\t\topacity:1;\r\n\t\tz-index:9999;\r\n\t\tmargin-left:0px;\r\n\t\ttransition-timing-function: ease-out;\r\n\t\ttransition: 0.25s;\r\n\t\ttransform: translateX(0);\r\n\t}\r\n", ""]);
+exports.push([module.i, "\n\t.rop-remove-account[_v-f1ff4bd0]{\n\t\twidth:15px;\n\t\ttext-align: center;\n\t\tcursor: pointer;\n\t    padding-right: 10px;\n\t\tmargin-right: 10px;\n\t\theight: 100%;\n\t\t-ms-flex: 0 0 auto;\n\t\tline-height: 40px;\n\t\topacity: 0;\n\t\tmargin-left:-20px;\n\t\ttransition-timing-function: ease-in;\n\t\ttransition: 1s;\n\t\ttransform: translateX(130%);\n\t}\n\t.rop-account:hover .rop-remove-account[_v-f1ff4bd0]{\n\t\topacity:1;\n\t\tz-index:9999;\n\t\tmargin-left:0px;\n\t\ttransition-timing-function: ease-out;\n\t\ttransition: 0.25s;\n\t\ttransform: translateX(0);\n\t}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 226 */
+/* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _vue = __webpack_require__(6);
+var _vue = __webpack_require__(7);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -33987,19 +34253,19 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 227 */
+/* 228 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tile tile-centered rop-account\" :class=\"'rop-'+type+'-account'\" _v-0a833229=\"\">\n\n\t\t<div class=\"tile-icon rop-remove-account tooltip tooltip-right\" @click=\"removeAccount(account_id) \" :data-tooltip=\"labels.remove_account\" v-if=\" ! account_data.active\" _v-0a833229=\"\">\n\t\t\t<i class=\"fa fa-trash\" v-if=\" ! is_loading\" _v-0a833229=\"\"></i>\n\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-0a833229=\"\"></i>\n\t\t</div>\n\t\t<div class=\"tile-icon\" _v-0a833229=\"\">\n\t\t\t<div class=\"icon_box\" :class=\"service\" _v-0a833229=\"\">\n\t\t\t\t<img class=\"service_account_image\" :src=\"img\" v-if=\"img\" _v-0a833229=\"\">\n\t\t\t\t<i class=\"fa  \" :class=\"icon\" aria-hidden=\"true\" _v-0a833229=\"\"></i>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"tile-content\" _v-0a833229=\"\">\n\t\t\t<div class=\"tile-title\" _v-0a833229=\"\">{{ user }}</div>\n\t\t\t<div class=\"tile-subtitle text-gray\" _v-0a833229=\"\">{{ serviceInfo }}</div>\n\t\t</div>\n\t\t<div class=\"tile-action\" _v-0a833229=\"\">\n\t\t\t<div class=\"form-group\" _v-0a833229=\"\">\n\t\t\t\t<label class=\"form-switch\" _v-0a833229=\"\">\n\t\t\t\t\t<div class=\"ajax-loader \" _v-0a833229=\"\"><i class=\"fa fa-spinner fa-spin\" v-show=\"is_loading\" _v-0a833229=\"\"></i></div>\n\t\t\t\t\t<input :disabled=\"checkDisabled\" type=\"checkbox\" v-model=\"account_data.active\" @change=\"startToggleAccount( account_id, type )\" _v-0a833229=\"\">\n\t\t\t\t\t<i class=\"form-icon\" _v-0a833229=\"\"></i>\n\t\t\t\t</label>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tile tile-centered rop-account\" :class=\"'rop-'+type+'-account'\" _v-f1ff4bd0=\"\">\n\n\t\t<div class=\"tile-icon rop-remove-account tooltip tooltip-right\" @click=\"removeAccount(account_id) \" :data-tooltip=\"labels.remove_account\" v-if=\" ! account_data.active\" _v-f1ff4bd0=\"\">\n\t\t\t<i class=\"fa fa-trash\" v-if=\" ! is_loading\" _v-f1ff4bd0=\"\"></i>\n\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-f1ff4bd0=\"\"></i>\n\t\t</div>\n\t\t<div class=\"tile-icon\" _v-f1ff4bd0=\"\">\n\t\t\t<div class=\"icon_box\" :class=\"service\" _v-f1ff4bd0=\"\">\n\t\t\t\t<img class=\"service_account_image\" :src=\"img\" v-if=\"img\" _v-f1ff4bd0=\"\">\n\t\t\t\t<i class=\"fa  \" :class=\"icon\" aria-hidden=\"true\" _v-f1ff4bd0=\"\"></i>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"tile-content\" _v-f1ff4bd0=\"\">\n\t\t\t<div class=\"tile-title\" _v-f1ff4bd0=\"\">{{ user }}</div>\n\t\t\t<div class=\"tile-subtitle text-gray\" _v-f1ff4bd0=\"\">{{ serviceInfo }}</div>\n\t\t</div>\n\t\t<div class=\"tile-action\" _v-f1ff4bd0=\"\">\n\t\t\t<div class=\"form-group\" _v-f1ff4bd0=\"\">\n\t\t\t\t<label class=\"form-switch\" _v-f1ff4bd0=\"\">\n\t\t\t\t\t<div class=\"ajax-loader \" _v-f1ff4bd0=\"\"><i class=\"fa fa-spinner fa-spin\" v-show=\"is_loading\" _v-f1ff4bd0=\"\"></i></div>\n\t\t\t\t\t<input :disabled=\"checkDisabled\" type=\"checkbox\" v-model=\"account_data.active\" @change=\"startToggleAccount( account_id, type )\" _v-f1ff4bd0=\"\">\n\t\t\t\t\t<i class=\"form-icon\" _v-f1ff4bd0=\"\"></i>\n\t\t\t\t</label>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 228 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(229)
-__vue_script__ = __webpack_require__(231)
-__vue_template__ = __webpack_require__(232)
+__webpack_require__(230)
+__vue_script__ = __webpack_require__(232)
+__vue_template__ = __webpack_require__(233)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -34007,7 +34273,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\UVDev\\Source\\Repos\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\add-account-tile.vue"
+  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/reusables/add-account-tile.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -34016,13 +34282,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 229 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(230);
+var content = __webpack_require__(231);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -34031,8 +34297,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-711bbaed&file=add-account-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./add-account-tile.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-711bbaed&file=add-account-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./add-account-tile.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-89b02f9e&file=add-account-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./add-account-tile.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-89b02f9e&file=add-account-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./add-account-tile.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -34042,7 +34308,7 @@ if(false) {
 }
 
 /***/ }),
-/* 230 */
+/* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -34050,13 +34316,13 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\r\n\t.icon_box[_v-711bbaed] {\r\n\t\tbackground: #efefef;\r\n\t\tpadding: 0;\r\n\t\ttransition: .3s ease;\r\n\t}\r\n\r\n\t.icon_box.close .fa[_v-711bbaed] {\r\n\t\tline-height: 1.6em;\r\n\t}\r\n\r\n\t.icon_box.open .fa[_v-711bbaed] {\r\n\t\tline-height: 1.7em;\r\n\t\twidth: 20px;\r\n\t\ttransform: rotate(-135deg);\r\n\t\t-webkit-transform: rotate(-135deg);\r\n\t}\r\n\r\n\t.fa[_v-711bbaed] {\r\n\t\ttransition: all .3s cubic-bezier(.34, 1.61, .7, 1);\r\n\t}\r\n", ""]);
+exports.push([module.i, "\n\t.icon_box[_v-89b02f9e] {\n\t\tbackground: #efefef;\n\t\tpadding: 0;\n\t\ttransition: .3s ease;\n\t}\n\n\t.icon_box.close .fa[_v-89b02f9e] {\n\t\tline-height: 1.6em;\n\t}\n\n\t.icon_box.open .fa[_v-89b02f9e] {\n\t\tline-height: 1.7em;\n\t\twidth: 20px;\n\t\ttransform: rotate(-135deg);\n\t\t-webkit-transform: rotate(-135deg);\n\t}\n\n\t.fa[_v-89b02f9e] {\n\t\ttransition: all .3s cubic-bezier(.34, 1.61, .7, 1);\n\t}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 231 */
+/* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34147,25 +34413,25 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 232 */
-/***/ (function(module, exports) {
-
-module.exports = "\n\t<div _v-711bbaed=\"\">\n\t\t<div class=\"tile tile-centered rop-add-account\" _v-711bbaed=\"\">\n\t\t\t<a class=\"tile-icon c-hand\" @click=\"addAccountActive = !addAccountActive\" _v-711bbaed=\"\">\n\t\t\t\t<div class=\"icon_box\" id=\"rop-add-account-btn\" :class=\"(addAccountActive) ? 'close bg-error' : 'open bg-success'\" _v-711bbaed=\"\">\n\t\t\t\t\t<i class=\"fa fa-2x fa-close\" aria-hidden=\"true\" _v-711bbaed=\"\"></i>\n\t\t\t\t</div>\n\t\t\t</a>\n\t\t\t<div class=\"tile-content\" _v-711bbaed=\"\">\n\t\t\t\t<div class=\"tile-title\" _v-711bbaed=\"\">{{labels.add_account}}</div>\n\t\t\t</div>\n\t\t\t<transition name=\"fade\" _v-711bbaed=\"\">\n\t\t\t\t<div class=\"tile-action\" v-if=\"addAccountActive\" _v-711bbaed=\"\">\n\t\t\t\t\t<sign-in-btn _v-711bbaed=\"\"></sign-in-btn>\n\t\t\t\t</div>\n\t\t\t</transition>\n\t\t</div>\n\t\t<transition name=\"fade\" _v-711bbaed=\"\">\n\t\t\t<div class=\"columns my-2\" v-if=\"checkLicense &amp;&amp; addAccountActive\" _v-711bbaed=\"\">\n\t\t\t\t<div class=\"column col-12 text-center\" _v-711bbaed=\"\">\n\t\t\t\t\t<p class=\"upsell\" _v-711bbaed=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-lock \" _v-711bbaed=\"\"></i> <span v-html=\"labels.upsell_accounts\" _v-711bbaed=\"\"></span>\n\t\t\t\t\t</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</transition>\n\t</div>\n";
-
-/***/ }),
 /* 233 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\" _v-564242b8=\"\">\n\t\t<div class=\"panel-body\" _v-564242b8=\"\">\n\t\t\t<div class=\"toast  toast-warning\" v-html=\"labels.twitter_warning\" v-if=\"twitter_warning\" _v-564242b8=\"\">\n\t\t\t\n\t\t\t</div>\n\t\t\t<div class=\"container\" _v-564242b8=\"\">\n\t\t\t\t<div class=\"columns\" :class=\"'rop-tab-state-'+is_loading\" _v-564242b8=\"\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2\" _v-564242b8=\"\">\n\t\t\t\t\t\t<div class=\"empty mb-2\" v-if=\"accountsCount === 0\" _v-564242b8=\"\">\n\t\t\t\t\t\t\t<div class=\"empty-icon\" _v-564242b8=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\" _v-564242b8=\"\"></i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<p class=\"empty-title h5\" _v-564242b8=\"\">{{labels.no_accounts}}</p>\n\t\t\t\t\t\t\t<p class=\"empty-subtitle\" _v-564242b8=\"\">{{labels.no_accounts_desc}}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"account-container\" v-for=\"( account, id ) in accounts\" _v-564242b8=\"\">\n\t\t\t\t\t\t\t<service-user-tile :account_data=\"account\" :account_id=\"id\" _v-564242b8=\"\"></service-user-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-564242b8=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"add-accounts\" _v-564242b8=\"\">\n\t\t\t\t\t\t\t<add-account-tile _v-564242b8=\"\"></add-account-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-564242b8=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-564242b8=\"\">\n\t\t\t\t<div class=\"columns\" _v-564242b8=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-564242b8=\"\">\n\t\t\t\t\t\t<p class=\"text-gray\" _v-564242b8=\"\"><i class=\"fa fa-info-circle\" _v-564242b8=\"\"></i> <span v-html=\"labels.has_accounts_desc\" _v-564242b8=\"\"></span></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 text-right\" _v-564242b8=\"\">\n\t\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-564242b8=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-564242b8=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-564242b8=\"\"></i>\n\t\t\t\t\t\t{{labels.remove_all_cta}}\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\n\t</div>\n";
+module.exports = "\n\t<div _v-89b02f9e=\"\">\n\t\t<div class=\"tile tile-centered rop-add-account\" _v-89b02f9e=\"\">\n\t\t\t<a class=\"tile-icon c-hand\" @click=\"addAccountActive = !addAccountActive\" _v-89b02f9e=\"\">\n\t\t\t\t<div class=\"icon_box\" id=\"rop-add-account-btn\" :class=\"(addAccountActive) ? 'close bg-error' : 'open bg-success'\" _v-89b02f9e=\"\">\n\t\t\t\t\t<i class=\"fa fa-2x fa-close\" aria-hidden=\"true\" _v-89b02f9e=\"\"></i>\n\t\t\t\t</div>\n\t\t\t</a>\n\t\t\t<div class=\"tile-content\" _v-89b02f9e=\"\">\n\t\t\t\t<div class=\"tile-title\" _v-89b02f9e=\"\">{{labels.add_account}}</div>\n\t\t\t</div>\n\t\t\t<transition name=\"fade\" _v-89b02f9e=\"\">\n\t\t\t\t<div class=\"tile-action\" v-if=\"addAccountActive\" _v-89b02f9e=\"\">\n\t\t\t\t\t<sign-in-btn _v-89b02f9e=\"\"></sign-in-btn>\n\t\t\t\t</div>\n\t\t\t</transition>\n\t\t</div>\n\t\t<transition name=\"fade\" _v-89b02f9e=\"\">\n\t\t\t<div class=\"columns my-2\" v-if=\"checkLicense &amp;&amp; addAccountActive\" _v-89b02f9e=\"\">\n\t\t\t\t<div class=\"column col-12 text-center\" _v-89b02f9e=\"\">\n\t\t\t\t\t<p class=\"upsell\" _v-89b02f9e=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-lock \" _v-89b02f9e=\"\"></i> <span v-html=\"labels.upsell_accounts\" _v-89b02f9e=\"\"></span>\n\t\t\t\t\t</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</transition>\n\t</div>\n";
 
 /***/ }),
 /* 234 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div class=\"tab-view\" _v-2ff296d6=\"\">\n\t\t<div class=\"panel-body\" _v-2ff296d6=\"\">\n\t\t\t<div class=\"toast  toast-warning\" v-html=\"labels.twitter_warning\" v-if=\"twitter_warning\" _v-2ff296d6=\"\">\n\t\t\t\n\t\t\t</div>\n\t\t\t<div class=\"container\" _v-2ff296d6=\"\">\n\t\t\t\t<div class=\"columns\" :class=\"'rop-tab-state-'+is_loading\" _v-2ff296d6=\"\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t<div class=\"empty mb-2\" v-if=\"accountsCount === 0\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t<div class=\"empty-icon\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\" _v-2ff296d6=\"\"></i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<p class=\"empty-title h5\" _v-2ff296d6=\"\">{{labels.no_accounts}}</p>\n\t\t\t\t\t\t\t<p class=\"empty-subtitle\" _v-2ff296d6=\"\">{{labels.no_accounts_desc}}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"account-container\" v-for=\"( account, id ) in accounts\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t<service-user-tile :account_data=\"account\" :account_id=\"id\" _v-2ff296d6=\"\"></service-user-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-2ff296d6=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"add-accounts\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t<add-account-tile _v-2ff296d6=\"\"></add-account-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-2ff296d6=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-2ff296d6=\"\">\n\t\t\t\t<div class=\"columns\" _v-2ff296d6=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t<p class=\"text-gray\" _v-2ff296d6=\"\"><i class=\"fa fa-info-circle\" _v-2ff296d6=\"\"></i> <span v-html=\"labels.has_accounts_desc\" _v-2ff296d6=\"\"></span></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 text-right\" _v-2ff296d6=\"\">\n\t\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-2ff296d6=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-2ff296d6=\"\"></i>\n\t\t\t\t\t\t{{labels.remove_all_cta}}\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\n\t</div>\n";
+
+/***/ }),
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(235)
-__vue_script__ = __webpack_require__(237)
-__vue_template__ = __webpack_require__(242)
+__webpack_require__(236)
+__vue_script__ = __webpack_require__(238)
+__vue_template__ = __webpack_require__(243)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -34173,7 +34439,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\UVDev\\Source\\Repos\\tweet-old-post\\vue\\src\\vue-elements\\settings-tab-panel.vue"
+  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/settings-tab-panel.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -34182,13 +34448,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 235 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(236);
+var content = __webpack_require__(237);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -34197,8 +34463,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1e4c3021&file=settings-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./settings-tab-panel.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1e4c3021&file=settings-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./settings-tab-panel.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-31740612&file=settings-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./settings-tab-panel.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-31740612&file=settings-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./settings-tab-panel.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -34208,7 +34474,7 @@ if(false) {
 }
 
 /***/ }),
-/* 236 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -34216,13 +34482,13 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\r\n\t#rop_core .panel-body .text-gray[_v-1e4c3021] {\r\n\t\tmargin: 0;\r\n\t\tline-height: normal;\r\n\t}\r\n\r\n\t#rop_core .input-group[_v-1e4c3021] {\r\n\t\twidth: 100%;\r\n\t}\r\n\r\n\tb[_v-1e4c3021] {\r\n\t\tmargin-bottom: 5px;\r\n\t\tdisplay: block;\r\n\t}\r\n\r\n\t#rop_core .input-group .input-group-addon[_v-1e4c3021] {\r\n\t\tpadding: 3px 5px;\r\n\t}\r\n\r\n\t@media ( max-width: 600px ) {\r\n\t\t#rop_core .panel-body .text-gray[_v-1e4c3021] {\r\n\t\t\tmargin-bottom: 10px;\r\n\t\t}\r\n\r\n\t\t#rop_core .text-right[_v-1e4c3021] {\r\n\t\t\ttext-align: left;\r\n\t\t}\r\n\t}\r\n\r\n\t.rop-post-type-badge[_v-1e4c3021]{\r\n\t\ttext-align: center;\r\n\r\n\t}\r\n", ""]);
+exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-31740612] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\n\t#rop_core .input-group[_v-31740612] {\n\t\twidth: 100%;\n\t}\n\n\tb[_v-31740612] {\n\t\tmargin-bottom: 5px;\n\t\tdisplay: block;\n\t}\n\n\t#rop_core .input-group .input-group-addon[_v-31740612] {\n\t\tpadding: 3px 5px;\n\t}\n\n\t@media ( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-31740612] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\n\t\t#rop_core .text-right[_v-31740612] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n\n\t.rop-post-type-badge[_v-31740612]{\n\t\ttext-align: center;\n\n\t}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 237 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34435,22 +34701,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 						</div>
 // 					</div>
 // 				</div>
-// 				<span class="divider" v-if="isCustomMsgs"></span>
 //
-// 				<div class="columns py-2" :class="'rop-control-container-'+isPro" v-if="isCustomMsgs">
-// 					<div class="column col-6 col-sm-12 vertical-align rop-control">
-// 						<b>{{labels.custom_share_utm_title}}</b>
-// 						<p class="text-gray">{{labels.custom_share_utm_desc}}</p>
-// 					</div>
-// 					<div class="column col-6 col-sm-12 vertical-align text-left rop-control">
-// 						<div class="form-group">
-// 							<label id="rop_custom_share_msg" class="form-checkbox">
-// 								<input type="checkbox" :disabled="!isPro" v-model="generalSettings.custom_messages_utm"/>
-// 								<i class="form-icon"></i>{{labels.custom_share_utm_yes}}
-// 							</label>
-// 						</div>
-// 					</div>
-// 				</div>
 // 				<!-- Upsell -->
 // 				<div class="columns " v-if="!isPro">
 // 					<div class="column text-center">
@@ -34601,7 +34852,6 @@ module.exports = {
 					exclude_taxonomies: excludeTaxonomies,
 					ga_tracking: this.generalSettings.ga_tracking,
 					custom_messages: this.generalSettings.custom_messages,
-					custom_messages_utm: this.generalSettings.custom_messages_utm,
 					custom_messages_share_order: this.generalSettings.custom_messages_share_order,
 					instant_share: this.generalSettings.instant_share,
 					instant_share_default: this.generalSettings.instant_share_default,
@@ -34663,13 +34913,13 @@ module.exports = {
 };
 
 /***/ }),
-/* 238 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(239);
+var content = __webpack_require__(240);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -34678,8 +34928,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-bc0cc954&file=counter-input.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./counter-input.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-bc0cc954&file=counter-input.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./counter-input.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-15ebd6dc&file=counter-input.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./counter-input.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-15ebd6dc&file=counter-input.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./counter-input.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -34689,7 +34939,7 @@ if(false) {
 }
 
 /***/ }),
-/* 239 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -34703,7 +34953,7 @@ exports.push([module.i, "\n\t#rop_core .input-group.rop-counter-group {\n\t\tpos
 
 
 /***/ }),
-/* 240 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34848,25 +35098,25 @@ module.exports = {
 };
 
 /***/ }),
-/* 241 */
+/* 242 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"input-group rop-counter-group\">\n\t\t<input class=\"form-input rop-counter\" type=\"text\" v-model=\"inputValueC\" :id=\"id\">\n\t\t<button class=\"btn input-group-btn increment-btn up\" @mousedown=\"isPressed('up')\" @mouseup=\"isReleased('up')\"><i\n\t\t\t\tclass=\"fa fa-fw fa-caret-up\"></i></button>\n\t\t<button class=\"btn input-group-btn increment-btn down\" @mousedown=\"isPressed('down')\"\n\t\t        @mouseup=\"isReleased('down')\"><i class=\"fa fa-fw fa-caret-down\"></i></button>\n\t</div>\n";
 
 /***/ }),
-/* 242 */
+/* 243 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\" _v-1e4c3021=\"\">\n\t\t<div class=\"panel-body\" _v-1e4c3021=\"\">\n\t\t\t<div class=\"container\" :class=\"'rop-tab-state-'+is_loading\" _v-1e4c3021=\"\">\n\t\t\t\t<div class=\"columns py-2\" v-if=\"! isBiz\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.min_interval_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.min_interval_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<counter-input id=\"default_interval\" :value.sync=\"generalSettings.default_interval\" _v-1e4c3021=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-1e4c3021=\"\"></span>\n\t\t\t\t<div class=\"columns py-2\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.min_days_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.min_days_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<counter-input id=\"min_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.minimum_post_age\" _v-1e4c3021=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- Max Post Age -->\n\t\t\t\t<div class=\"columns py-2\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.max_days_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.max_days_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<counter-input id=\"max_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.maximum_post_age\" _v-1e4c3021=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-1e4c3021=\"\"></span>\n\n\t\t\t\t<div class=\"columns py-2\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.no_posts_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.no_posts_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\" _v-1e4c3021=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-1e4c3021=\"\"></span>\n\n\t\t\t\t<!-- Share more than once -->\n\t\t\t\t<div class=\"columns py-2\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.share_once_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.share_once_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" id=\"share_more_than_once\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-1e4c3021=\"\"></i> {{labels.share_once_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-1e4c3021=\"\"></span>\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.post_types_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.post_types_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<multiple-select id=\"rop_post_types\" :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-1e4c3021=\"\"></multiple-select>\n\n\t\t\t\t\t\t<p class=\"text-primary rop-post-type-badge\" v-if=\"checkMediaPostType \" v-html=\"labels.post_types_attachament_info\" _v-1e4c3021=\"\"> </p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"columns \" v-if=\"!isPro\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column text-center\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-1e4c3021=\"\"><i class=\"fa fa-lock\" _v-1e4c3021=\"\"></i> {{labels.post_types_upsell}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-1e4c3021=\"\"></span>\n\n\t\t\t\t<!-- Taxonomies -->\n\t\t\t\t<div class=\"columns py-2\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.taxonomies_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.taxonomies_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div id=\"rop_taxonomies\" class=\"column col-6 col-sm-12 vertical-align text-left\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<div class=\"input-group\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" _v-1e4c3021=\"\"></multiple-select>\n\t\t\t\t\t\t\t<span class=\"input-group-addon vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-1e4c3021=\"\"></i>{{labels.taxonomies_exclude}}\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</span>\n\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t</div>\n\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-1e4c3021=\"\"></span>\n\n\t\t\t\t<!-- Google Analytics -->\n\t\t\t\t<div class=\"columns py-2\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.ga_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.ga_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.ga_tracking\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-1e4c3021=\"\"></i>{{labels.ga_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-1e4c3021=\"\"></span>\n\n\t\t\t\t\t\t\t<div class=\"columns py-2\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.instant_share_title}}</b>\n\t\t\t\t\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.instant_share_desc}}</p>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label id=\"rop_instant_share\" class=\"form-checkbox\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.instant_share\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-1e4c3021=\"\"></i>{{labels.instant_share_yes}}\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t\t<span class=\"divider\" _v-1e4c3021=\"\"></span>\n\n\t\t\t\t\t\t\t<div class=\"columns py-2\" v-if=\"isInstantShare\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.instant_share_default_title}}</b>\n\t\t\t\t\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.instant_share_default_desc}}</p>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.instant_share_default\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-1e4c3021=\"\"></i>{{labels.instant_share_default_yes}}\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t\t<span class=\"divider\" v-if=\"isInstantShare\" _v-1e4c3021=\"\"></span>\n\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.custom_share_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.custom_share_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t<label id=\"rop_custom_share_msg\" class=\"form-checkbox\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" :disabled=\"!isPro\" v-model=\"generalSettings.custom_messages\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-1e4c3021=\"\"></i>{{labels.custom_share_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-1e4c3021=\"\"></span>\n\n\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" v-if=\"isCustomMsgs\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.custom_share_order_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.custom_share_order_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t<label id=\"rop_custom_share_msg\" class=\"form-checkbox\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" :disabled=\"!isPro\" v-model=\"generalSettings.custom_messages_share_order\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-1e4c3021=\"\"></i>{{labels.custom_share_order_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" v-if=\"isCustomMsgs\" _v-1e4c3021=\"\"></span>\n\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" v-if=\"isCustomMsgs\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.custom_share_utm_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.custom_share_utm_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t<label id=\"rop_custom_share_msg\" class=\"form-checkbox\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" :disabled=\"!isPro\" v-model=\"generalSettings.custom_messages_utm\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-1e4c3021=\"\"></i>{{labels.custom_share_utm_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- Upsell -->\n\t\t\t\t<div class=\"columns \" v-if=\"!isPro\" _v-1e4c3021=\"\">\n\t\t\t\t\t<div class=\"column text-center\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-1e4c3021=\"\"><i class=\"fa fa-lock\" _v-1e4c3021=\"\"></i> {{labels.custom_share_upsell}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" v-if=\"isCustomMsgs\" _v-1e4c3021=\"\"></span>\n\n\t\t\t\t<div class=\"columns py-2\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t<b _v-1e4c3021=\"\">{{labels.housekeeping}}</b>\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-1e4c3021=\"\">{{labels.housekeeping_desc}}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t<div class=\"form-group\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.housekeeping\" _v-1e4c3021=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-1e4c3021=\"\"></i>{{labels.housekeeping_yes}}\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<span class=\"divider\" _v-1e4c3021=\"\"></span>\n\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer text-right\" _v-1e4c3021=\"\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\" _v-1e4c3021=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-1e4c3021=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-1e4c3021=\"\"></i> {{labels.save}}\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\" _v-31740612=\"\">\n\t\t<div class=\"panel-body\" _v-31740612=\"\">\n\t\t\t<div class=\"container\" :class=\"'rop-tab-state-'+is_loading\" _v-31740612=\"\">\n\t\t\t\t<div class=\"columns py-2\" v-if=\"! isBiz\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.min_interval_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.min_interval_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<counter-input id=\"default_interval\" :value.sync=\"generalSettings.default_interval\" _v-31740612=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\t\t\t\t<div class=\"columns py-2\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.min_days_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.min_days_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<counter-input id=\"min_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.minimum_post_age\" _v-31740612=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- Max Post Age -->\n\t\t\t\t<div class=\"columns py-2\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.max_days_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.max_days_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<counter-input id=\"max_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.maximum_post_age\" _v-31740612=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\n\t\t\t\t<div class=\"columns py-2\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.no_posts_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.no_posts_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\" _v-31740612=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\n\t\t\t\t<!-- Share more than once -->\n\t\t\t\t<div class=\"columns py-2\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.share_once_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.share_once_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-31740612=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-31740612=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" id=\"share_more_than_once\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-31740612=\"\"></i> {{labels.share_once_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.post_types_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.post_types_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t<multiple-select id=\"rop_post_types\" :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-31740612=\"\"></multiple-select>\n\n\t\t\t\t\t\t<p class=\"text-primary rop-post-type-badge\" v-if=\"checkMediaPostType \" v-html=\"labels.post_types_attachament_info\" _v-31740612=\"\"> </p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"columns \" v-if=\"!isPro\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column text-center\" _v-31740612=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-31740612=\"\"><i class=\"fa fa-lock\" _v-31740612=\"\"></i> {{labels.post_types_upsell}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\n\t\t\t\t<!-- Taxonomies -->\n\t\t\t\t<div class=\"columns py-2\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.taxonomies_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.taxonomies_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div id=\"rop_taxonomies\" class=\"column col-6 col-sm-12 vertical-align text-left\" _v-31740612=\"\">\n\t\t\t\t\t\t<div class=\"input-group\" _v-31740612=\"\">\n\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" _v-31740612=\"\"></multiple-select>\n\t\t\t\t\t\t\t<span class=\"input-group-addon vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-31740612=\"\"></i>{{labels.taxonomies_exclude}}\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</span>\n\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t</div>\n\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\n\t\t\t\t<!-- Google Analytics -->\n\t\t\t\t<div class=\"columns py-2\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.ga_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.ga_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-31740612=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-31740612=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.ga_tracking\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-31740612=\"\"></i>{{labels.ga_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\n\t\t\t\t\t\t\t<div class=\"columns py-2\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.instant_share_title}}</b>\n\t\t\t\t\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.instant_share_desc}}</p>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label id=\"rop_instant_share\" class=\"form-checkbox\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.instant_share\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-31740612=\"\"></i>{{labels.instant_share_yes}}\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\n\t\t\t\t\t\t\t<div class=\"columns py-2\" v-if=\"isInstantShare\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.instant_share_default_title}}</b>\n\t\t\t\t\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.instant_share_default_desc}}</p>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.instant_share_default\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-31740612=\"\"></i>{{labels.instant_share_default_yes}}\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t\t<span class=\"divider\" v-if=\"isInstantShare\" _v-31740612=\"\"></span>\n\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.custom_share_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.custom_share_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-31740612=\"\">\n\t\t\t\t\t\t\t<label id=\"rop_custom_share_msg\" class=\"form-checkbox\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" :disabled=\"!isPro\" v-model=\"generalSettings.custom_messages\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-31740612=\"\"></i>{{labels.custom_share_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\n\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" v-if=\"isCustomMsgs\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.custom_share_order_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.custom_share_order_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-31740612=\"\">\n\t\t\t\t\t\t\t<label id=\"rop_custom_share_msg\" class=\"form-checkbox\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" :disabled=\"!isPro\" v-model=\"generalSettings.custom_messages_share_order\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-31740612=\"\"></i>{{labels.custom_share_order_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<!-- Upsell -->\n\t\t\t\t<div class=\"columns \" v-if=\"!isPro\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column text-center\" _v-31740612=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-31740612=\"\"><i class=\"fa fa-lock\" _v-31740612=\"\"></i> {{labels.custom_share_upsell}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" v-if=\"isCustomMsgs\" _v-31740612=\"\"></span>\n\n\t\t\t\t<div class=\"columns py-2\" _v-31740612=\"\">\n\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.housekeeping}}</b>\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.housekeeping_desc}}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t\t<div class=\"form-group\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.housekeeping\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-31740612=\"\"></i>{{labels.housekeeping_yes}}\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer text-right\" _v-31740612=\"\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\" _v-31740612=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-31740612=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-31740612=\"\"></i> {{labels.save}}\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 243 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(244)
-__vue_script__ = __webpack_require__(246)
-__vue_template__ = __webpack_require__(269)
+__webpack_require__(245)
+__vue_script__ = __webpack_require__(247)
+__vue_template__ = __webpack_require__(270)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -34874,7 +35124,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\UVDev\\Source\\Repos\\tweet-old-post\\vue\\src\\vue-elements\\accounts-selector-panel.vue"
+  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/accounts-selector-panel.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -34883,13 +35133,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 244 */
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(245);
+var content = __webpack_require__(246);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -34898,8 +35148,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-63f935ee&file=accounts-selector-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-selector-panel.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-63f935ee&file=accounts-selector-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-selector-panel.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-44ae6e9d&file=accounts-selector-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-selector-panel.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-44ae6e9d&file=accounts-selector-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-selector-panel.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -34909,7 +35159,7 @@ if(false) {
 }
 
 /***/ }),
-/* 245 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -34917,13 +35167,13 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\r\n\t.icon_box[_v-63f935ee] {\r\n\t\twidth: 30px;\r\n\t\theight: 30px;\r\n\t\tpadding: 5px;\r\n\t}\r\n\r\n\t.icon_box.no-image[_v-63f935ee] {\r\n\t\tpadding: 0;\r\n\t}\r\n\r\n\t.icon_box.has_image > .fa[_v-63f935ee] {\r\n\t\twidth: 15px;\r\n\t\theight: 15px;\r\n\t\tpadding: 0;\r\n\t\tline-height: 15px;\r\n\t}\r\n\r\n\t.icon_box.no-image > .fa[_v-63f935ee] {\r\n\t\tfont-size: 20px;\r\n\t\tbackground: transparent;\r\n\t\tline-height: 30px;\r\n\t}\r\n", ""]);
+exports.push([module.i, "\n\t.icon_box[_v-44ae6e9d] {\n\t\twidth: 30px;\n\t\theight: 30px;\n\t\tpadding: 5px;\n\t}\n\n\t.icon_box.no-image[_v-44ae6e9d] {\n\t\tpadding: 0;\n\t}\n\n\t.icon_box.has_image > .fa[_v-44ae6e9d] {\n\t\twidth: 15px;\n\t\theight: 15px;\n\t\tpadding: 0;\n\t\tline-height: 15px;\n\t}\n\n\t.icon_box.no-image > .fa[_v-44ae6e9d] {\n\t\tfont-size: 20px;\n\t\tbackground: transparent;\n\t\tline-height: 30px;\n\t}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 246 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34933,15 +35183,15 @@ var _keys = __webpack_require__(14);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _emptyActiveAccounts = __webpack_require__(247);
+var _emptyActiveAccounts = __webpack_require__(248);
 
 var _emptyActiveAccounts2 = _interopRequireDefault(_emptyActiveAccounts);
 
-var _postFormat = __webpack_require__(250);
+var _postFormat = __webpack_require__(251);
 
 var _postFormat2 = _interopRequireDefault(_postFormat);
 
-var _accountSchedule = __webpack_require__(255);
+var _accountSchedule = __webpack_require__(256);
 
 var _accountSchedule2 = _interopRequireDefault(_accountSchedule);
 
@@ -35237,12 +35487,12 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 247 */
+/* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(248)
-__vue_template__ = __webpack_require__(249)
+__vue_script__ = __webpack_require__(249)
+__vue_template__ = __webpack_require__(250)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -35250,7 +35500,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\UVDev\\Source\\Repos\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\empty-active-accounts.vue"
+  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/reusables/empty-active-accounts.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -35259,7 +35509,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 248 */
+/* 249 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35294,19 +35544,19 @@ module.exports = {
 };
 
 /***/ }),
-/* 249 */
+/* 250 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"empty\">\n\t\t<div class=\"empty-icon\">\n\t\t\t<i class=\"fa fa-3x fa-user-circle-o\"></i>\n\t\t</div>\n\t\t<p class=\"empty-title h5\">{{labels.no_active_accounts}}</p>\n\t\t<p class=\"empty-subtitle\" v-html=\"labels.no_active_accounts_desc\"></p>\n\t\t<button class=\"btn btn-primary\" @click=\"goToAccounts()\">{{labels.go_to_accounts_btn}}</button>\n\t</div>\n";
 
 /***/ }),
-/* 250 */
+/* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(251)
-__vue_script__ = __webpack_require__(253)
-__vue_template__ = __webpack_require__(254)
+__webpack_require__(252)
+__vue_script__ = __webpack_require__(254)
+__vue_template__ = __webpack_require__(255)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -35314,7 +35564,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\UVDev\\Source\\Repos\\tweet-old-post\\vue\\src\\vue-elements\\post-format.vue"
+  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/post-format.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -35323,13 +35573,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 251 */
+/* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(252);
+var content = __webpack_require__(253);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -35338,8 +35588,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4abf5356&file=post-format.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./post-format.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4abf5356&file=post-format.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./post-format.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-b34c44f8&file=post-format.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./post-format.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-b34c44f8&file=post-format.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./post-format.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -35349,7 +35599,7 @@ if(false) {
 }
 
 /***/ }),
-/* 252 */
+/* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -35357,13 +35607,13 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\r\n\t#rop_core .panel-body .text-gray[_v-4abf5356] {\r\n\t\tmargin: 0;\r\n\t\tline-height: normal;\r\n\t}\r\n\r\n\tb[_v-4abf5356] {\r\n\t\tmargin-bottom: 5px;\r\n\t\tdisplay: block;\r\n\t}\r\n\r\n\t#rop_core .input-group .input-group-addon[_v-4abf5356] {\r\n\t\tpadding: 3px 5px;\r\n\t}\r\n\r\n\t@media ( max-width: 600px ) {\r\n\t\t#rop_core .panel-body .text-gray[_v-4abf5356] {\r\n\t\t\tmargin-bottom: 10px;\r\n\t\t}\r\n\r\n\t\t#rop_core .text-right[_v-4abf5356] {\r\n\t\t\ttext-align: left;\r\n\t\t}\r\n\t}\r\n", ""]);
+exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-b34c44f8] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\n\tb[_v-b34c44f8] {\n\t\tmargin-bottom: 5px;\n\t\tdisplay: block;\n\t}\n\n\t#rop_core .input-group .input-group-addon[_v-b34c44f8] {\n\t\tpadding: 3px 5px;\n\t}\n\n\t@media ( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-b34c44f8] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\n\t\t#rop_core .text-right[_v-b34c44f8] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 253 */
+/* 254 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35725,19 +35975,19 @@ module.exports = {
 };
 
 /***/ }),
-/* 254 */
+/* 255 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div _v-4abf5356=\"\">\n\t\t<div class=\"columns py-2\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.post_content_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.post_content_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.post_content\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<option value=\"post_title\" _v-4abf5356=\"\">{{labels.post_content_option_title}}</option>\n\t\t\t\t\t\t<option value=\"post_content\" _v-4abf5356=\"\">{{labels.post_content_option_content}}</option>\n\t\t\t\t\t\t<option value=\"post_title_content\" _v-4abf5356=\"\">{{labels.post_content_option_title_content}}</option>\n\t\t\t\t\t\t<option value=\"custom_field\" _v-4abf5356=\"\">{{labels.post_content_option_custom_field}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.post_content === 'custom_field'\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.custom_meta_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.custom_meta_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.custom_meta_field\" value=\"\" placeholder=\"\" _v-4abf5356=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<span class=\"divider\" _v-4abf5356=\"\"></span>\n\n\t\t<div class=\"columns py-2\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.max_char_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.max_char_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.maximum_length\" value=\"\" placeholder=\"\" _v-4abf5356=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-4abf5356=\"\"></span>\n\n\t\t<div class=\"columns py-2\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.add_char_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\"><span v-html=\"labels.add_char_desc\" _v-4abf5356=\"\"></span></p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<textarea class=\"form-input\" v-model=\"post_format.custom_text\" v-bind:placeholder=\"labels.add_char_placeholder\" _v-4abf5356=\"\">{{post_format.custom_text}}</textarea> \n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.add_pos_title}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.custom_text_pos\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<option value=\"beginning\" _v-4abf5356=\"\">{{labels.add_pos_option_start}}</option>\n\t\t\t\t\t\t<option value=\"end\" _v-4abf5356=\"\">{{labels.add_pos_option_end}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.add_link_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.add_link_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"input-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.include_link\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-4abf5356=\"\"></i> {{labels.add_link_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-4abf5356=\"\"></span>\n\t\t<div class=\"columns py-2\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.meta_link_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.meta_link_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"input-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.url_from_meta\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-4abf5356=\"\"></i> {{labels.meta_link_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Custom Field -->\n\t\t<div class=\"columns py-2\" v-if=\"post_format.url_from_meta\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.meta_link_name_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.meta_link_name_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.url_meta_key\" value=\"\" placeholder=\"\" _v-4abf5356=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-4abf5356=\"\"></span>\n\t\t<div class=\"columns py-2\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.use_shortner_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.use_shortner_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"input-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.short_url\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-4abf5356=\"\"></i> {{labels.use_shortner_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" v-if=\"post_format.short_url\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.shortner_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.shortner_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.short_url_service\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<option value=\"rviv.ly\" _v-4abf5356=\"\">rviv.ly</option>\n\t\t\t\t\t\t<option value=\"bit.ly\" _v-4abf5356=\"\">bit.ly</option>\n\t\t\t\t\t\t<option value=\"firebase\" _v-4abf5356=\"\">google firebase</option>\n\t\t\t\t\t\t<option value=\"ow.ly\" _v-4abf5356=\"\">ow.ly</option>\n\t\t\t\t\t\t<option value=\"is.gd\" _v-4abf5356=\"\">is.gd</option>\n      <option value=\"rebrand.ly\" _v-4abf5356=\"\">rebrand.ly</option>\n      <option value=\"wp_short_url\" _v-4abf5356=\"\">wp_short_url</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.short_url\" v-for=\"( credential, key_name ) in post_format.shortner_credentials\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{ key_name | capitalize }}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.shortner_field_desc_start}} \"{{key_name}}\"\n\t\t\t\t\t{{labels.shortner_field_desc_end}}\n\t\t\t\t\t<strong _v-4abf5356=\"\">{{post_format.short_url_service}}</strong> {{labels.shortner_api_field}}.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.shortner_credentials[key_name]\" _v-4abf5356=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.hashtags_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.hashtags_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.hashtags\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<option value=\"no-hashtags\" _v-4abf5356=\"\">{{labels.hashtags_option_no}}</option>\n\t\t\t\t\t\t<option value=\"common-hashtags\" _v-4abf5356=\"\">{{labels.hashtags_option_common}}</option>\n\t\t\t\t\t\t<option value=\"categories-hashtags\" _v-4abf5356=\"\">{{labels.hashtags_option_cats}}</option>\n\t\t\t\t\t\t<option value=\"tags-hashtags\" _v-4abf5356=\"\">{{labels.hashtags_option_tags}}</option>\n\t\t\t\t\t\t<option value=\"custom-hashtags\" _v-4abf5356=\"\">{{labels.hashtags_option_field}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags === 'common-hashtags'\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.hastags_common_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.hastags_common_desc}} \",\".</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_common\" value=\"\" placeholder=\"\" _v-4abf5356=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags === 'custom-hashtags'\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.hastags_field_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.hastags_field_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_custom\" value=\"\" placeholder=\"\" _v-4abf5356=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags !== 'no-hashtags'\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.hashtags_length_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.hashtags_length_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.hashtags_length\" value=\"\" placeholder=\"\" _v-4abf5356=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<span class=\"divider\" _v-4abf5356=\"\"></span>\n\n\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.image_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.image_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"input-group\" _v-4abf5356=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.image\" :disabled=\"!isPro\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-4abf5356=\"\"></i> {{labels.image_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns \" v-if=\"!isPro\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column text-center\" _v-4abf5356=\"\">\n\t\t\t\t<p class=\"upsell\" _v-4abf5356=\"\"><i class=\"fa fa-lock\" _v-4abf5356=\"\"></i> {{labels.image_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-4abf5356=\"\"></span>\n\t\t<!-- Google Analytics -->\n\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.utm_campaign_medium}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.utm_campaign_medium_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<input type=\"text\" :disabled=\"!isPro\" class=\"form-input\" v-model=\"post_format.utm_campaign_medium\" placeholder=\"social\" _v-4abf5356=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-4abf5356=\"\">\n\t\t\t\t<b _v-4abf5356=\"\">{{labels.utm_campaign_name}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-4abf5356=\"\">{{labels.utm_campaign_name_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-4abf5356=\"\">\n\t\t\t\t<div class=\"form-group\" _v-4abf5356=\"\">\n\t\t\t\t\t\t<input type=\"text\" :disabled=\"!isPro\" class=\"form-input\" v-model=\"post_format.utm_campaign_name\" placeholder=\"ReviveOldPost\" _v-4abf5356=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns \" v-if=\"!isPro\" _v-4abf5356=\"\">\n\t\t\t<div class=\"column text-center\" _v-4abf5356=\"\">\n\t\t\t\t<p class=\"upsell\" _v-4abf5356=\"\"><i class=\"fa fa-lock\" _v-4abf5356=\"\"></i> {{labels.custom_utm_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-4abf5356=\"\"></span>\n\t</div>\n";
+module.exports = "\n\t<div _v-b34c44f8=\"\">\n\t\t<div class=\"columns py-2\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.post_content_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.post_content_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.post_content\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<option value=\"post_title\" _v-b34c44f8=\"\">{{labels.post_content_option_title}}</option>\n\t\t\t\t\t\t<option value=\"post_content\" _v-b34c44f8=\"\">{{labels.post_content_option_content}}</option>\n\t\t\t\t\t\t<option value=\"post_title_content\" _v-b34c44f8=\"\">{{labels.post_content_option_title_content}}</option>\n\t\t\t\t\t\t<option value=\"custom_field\" _v-b34c44f8=\"\">{{labels.post_content_option_custom_field}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.post_content === 'custom_field'\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.custom_meta_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.custom_meta_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.custom_meta_field\" value=\"\" placeholder=\"\" _v-b34c44f8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<span class=\"divider\" _v-b34c44f8=\"\"></span>\n\n\t\t<div class=\"columns py-2\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.max_char_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.max_char_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.maximum_length\" value=\"\" placeholder=\"\" _v-b34c44f8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-b34c44f8=\"\"></span>\n\n\t\t<div class=\"columns py-2\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.add_char_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\"><span v-html=\"labels.add_char_desc\" _v-b34c44f8=\"\"></span></p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<textarea class=\"form-input\" v-model=\"post_format.custom_text\" v-bind:placeholder=\"labels.add_char_placeholder\" _v-b34c44f8=\"\">{{post_format.custom_text}}</textarea> \n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.add_pos_title}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.custom_text_pos\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<option value=\"beginning\" _v-b34c44f8=\"\">{{labels.add_pos_option_start}}</option>\n\t\t\t\t\t\t<option value=\"end\" _v-b34c44f8=\"\">{{labels.add_pos_option_end}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.add_link_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.add_link_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"input-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.include_link\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-b34c44f8=\"\"></i> {{labels.add_link_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-b34c44f8=\"\"></span>\n\t\t<div class=\"columns py-2\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.meta_link_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.meta_link_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"input-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.url_from_meta\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-b34c44f8=\"\"></i> {{labels.meta_link_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Custom Field -->\n\t\t<div class=\"columns py-2\" v-if=\"post_format.url_from_meta\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.meta_link_name_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.meta_link_name_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.url_meta_key\" value=\"\" placeholder=\"\" _v-b34c44f8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-b34c44f8=\"\"></span>\n\t\t<div class=\"columns py-2\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.use_shortner_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.use_shortner_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"input-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.short_url\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-b34c44f8=\"\"></i> {{labels.use_shortner_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" v-if=\"post_format.short_url\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.shortner_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.shortner_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.short_url_service\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<option value=\"rviv.ly\" _v-b34c44f8=\"\">rviv.ly</option>\n\t\t\t\t\t\t<option value=\"bit.ly\" _v-b34c44f8=\"\">bit.ly</option>\n\t\t\t\t\t\t<option value=\"firebase\" _v-b34c44f8=\"\">google firebase</option>\n\t\t\t\t\t\t<option value=\"ow.ly\" _v-b34c44f8=\"\">ow.ly</option>\n\t\t\t\t\t\t<option value=\"is.gd\" _v-b34c44f8=\"\">is.gd</option>\n      <option value=\"rebrand.ly\" _v-b34c44f8=\"\">rebrand.ly</option>\n      <option value=\"wp_short_url\" _v-b34c44f8=\"\">wp_short_url</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.short_url\" v-for=\"( credential, key_name ) in post_format.shortner_credentials\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{ key_name | capitalize }}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.shortner_field_desc_start}} \"{{key_name}}\"\n\t\t\t\t\t{{labels.shortner_field_desc_end}}\n\t\t\t\t\t<strong _v-b34c44f8=\"\">{{post_format.short_url_service}}</strong> {{labels.shortner_api_field}}.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.shortner_credentials[key_name]\" _v-b34c44f8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.hashtags_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.hashtags_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.hashtags\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<option value=\"no-hashtags\" _v-b34c44f8=\"\">{{labels.hashtags_option_no}}</option>\n\t\t\t\t\t\t<option value=\"common-hashtags\" _v-b34c44f8=\"\">{{labels.hashtags_option_common}}</option>\n\t\t\t\t\t\t<option value=\"categories-hashtags\" _v-b34c44f8=\"\">{{labels.hashtags_option_cats}}</option>\n\t\t\t\t\t\t<option value=\"tags-hashtags\" _v-b34c44f8=\"\">{{labels.hashtags_option_tags}}</option>\n\t\t\t\t\t\t<option value=\"custom-hashtags\" _v-b34c44f8=\"\">{{labels.hashtags_option_field}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags === 'common-hashtags'\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.hastags_common_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.hastags_common_desc}} \",\".</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_common\" value=\"\" placeholder=\"\" _v-b34c44f8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags === 'custom-hashtags'\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.hastags_field_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.hastags_field_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_custom\" value=\"\" placeholder=\"\" _v-b34c44f8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags !== 'no-hashtags'\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.hashtags_length_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.hashtags_length_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.hashtags_length\" value=\"\" placeholder=\"\" _v-b34c44f8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<span class=\"divider\" _v-b34c44f8=\"\"></span>\n\n\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.image_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.image_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"input-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.image\" :disabled=\"!isPro\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-b34c44f8=\"\"></i> {{labels.image_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns \" v-if=\"!isPro\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column text-center\" _v-b34c44f8=\"\">\n\t\t\t\t<p class=\"upsell\" _v-b34c44f8=\"\"><i class=\"fa fa-lock\" _v-b34c44f8=\"\"></i> {{labels.image_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-b34c44f8=\"\"></span>\n\t\t<!-- Google Analytics -->\n\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.utm_campaign_medium}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.utm_campaign_medium_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<input type=\"text\" :disabled=\"!isPro\" class=\"form-input\" v-model=\"post_format.utm_campaign_medium\" placeholder=\"social\" _v-b34c44f8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.utm_campaign_name}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.utm_campaign_name_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<input type=\"text\" :disabled=\"!isPro\" class=\"form-input\" v-model=\"post_format.utm_campaign_name\" placeholder=\"ReviveOldPost\" _v-b34c44f8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns \" v-if=\"!isPro\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column text-center\" _v-b34c44f8=\"\">\n\t\t\t\t<p class=\"upsell\" _v-b34c44f8=\"\"><i class=\"fa fa-lock\" _v-b34c44f8=\"\"></i> {{labels.custom_utm_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-b34c44f8=\"\"></span>\n\t</div>\n";
 
 /***/ }),
-/* 255 */
+/* 256 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(256)
-__vue_script__ = __webpack_require__(258)
-__vue_template__ = __webpack_require__(268)
+__webpack_require__(257)
+__vue_script__ = __webpack_require__(259)
+__vue_template__ = __webpack_require__(269)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -35745,7 +35995,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\UVDev\\Source\\Repos\\tweet-old-post\\vue\\src\\vue-elements\\account-schedule.vue"
+  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/account-schedule.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -35754,13 +36004,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 256 */
+/* 257 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(257);
+var content = __webpack_require__(258);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -35769,8 +36019,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-29af9e14&file=account-schedule.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./account-schedule.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-29af9e14&file=account-schedule.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./account-schedule.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-397ecf27&file=account-schedule.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./account-schedule.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-397ecf27&file=account-schedule.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./account-schedule.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -35780,7 +36030,7 @@ if(false) {
 }
 
 /***/ }),
-/* 257 */
+/* 258 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -35788,13 +36038,13 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\r\n\t.rop-control-container-false[_v-29af9e14]  {\r\n\t\tcursor:not-allowed !important;\r\n\t}\r\n\t#rop_core .panel-body .text-gray[_v-29af9e14] {\r\n\t\tmargin: 0;\r\n\t\tline-height: normal;\r\n\t}\r\n\r\n\tb[_v-29af9e14] {\r\n\t\tmargin-bottom: 5px;\r\n\t\tdisplay: block;\r\n\t}\r\n\r\n\t#rop_core .input-group .input-group-addon[_v-29af9e14] {\r\n\t\tpadding: 3px 5px;\r\n\t}\r\n\r\n\t.time-picker[_v-29af9e14] {\r\n\t\tmargin-bottom: 10px;\r\n\t}\r\n\r\n\t@media ( max-width: 600px ) {\r\n\t\t#rop_core .panel-body .text-gray[_v-29af9e14] {\r\n\t\t\tmargin-bottom: 10px;\r\n\t\t}\r\n\r\n\t\t#rop_core .text-right[_v-29af9e14] {\r\n\t\t\ttext-align: left;\r\n\t\t}\r\n\t}\r\n\r\n", ""]);
+exports.push([module.i, "\n\t.rop-control-container-false[_v-397ecf27]  {\n\t\tcursor:not-allowed !important;\n\t}\n\t#rop_core .panel-body .text-gray[_v-397ecf27] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\n\tb[_v-397ecf27] {\n\t\tmargin-bottom: 5px;\n\t\tdisplay: block;\n\t}\n\n\t#rop_core .input-group .input-group-addon[_v-397ecf27] {\n\t\tpadding: 3px 5px;\n\t}\n\n\t.time-picker[_v-397ecf27] {\n\t\tmargin-bottom: 10px;\n\t}\n\n\t@media ( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-397ecf27] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\n\t\t#rop_core .text-right[_v-397ecf27] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 258 */
+/* 259 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35804,7 +36054,7 @@ var _buttonCheckbox = __webpack_require__(72);
 
 var _buttonCheckbox2 = _interopRequireDefault(_buttonCheckbox);
 
-var _vue2Timepicker = __webpack_require__(259);
+var _vue2Timepicker = __webpack_require__(260);
 
 var _vue2Timepicker2 = _interopRequireDefault(_vue2Timepicker);
 
@@ -36023,20 +36273,20 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 259 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(260)
-
-
-/***/ }),
 /* 260 */
 /***/ (function(module, exports, __webpack_require__) {
 
+module.exports = __webpack_require__(261)
+
+
+/***/ }),
+/* 261 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var __vue_script__, __vue_template__
-__webpack_require__(261)
-__vue_script__ = __webpack_require__(264)
-__vue_template__ = __webpack_require__(267)
+__webpack_require__(262)
+__vue_script__ = __webpack_require__(265)
+__vue_template__ = __webpack_require__(268)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -36044,7 +36294,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\UVDev\\Source\\Repos\\tweet-old-post\\node_modules\\vue2-timepicker\\src\\vue-timepicker.vue"
+  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/node_modules/vue2-timepicker/src/vue-timepicker.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -36053,13 +36303,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 261 */
+/* 262 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(262);
+var content = __webpack_require__(263);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -36068,8 +36318,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../css-loader/index.js!../../vue-loader/lib/style-rewriter.js?id=_v-10aec24a&file=vue-timepicker.vue!../../vue-loader/lib/selector.js?type=style&index=0!./vue-timepicker.vue", function() {
-			var newContent = require("!!../../css-loader/index.js!../../vue-loader/lib/style-rewriter.js?id=_v-10aec24a&file=vue-timepicker.vue!../../vue-loader/lib/selector.js?type=style&index=0!./vue-timepicker.vue");
+		module.hot.accept("!!../../css-loader/index.js!../../vue-loader/lib/style-rewriter.js?id=_v-0ad98b58&file=vue-timepicker.vue!../../vue-loader/lib/selector.js?type=style&index=0!./vue-timepicker.vue", function() {
+			var newContent = require("!!../../css-loader/index.js!../../vue-loader/lib/style-rewriter.js?id=_v-0ad98b58&file=vue-timepicker.vue!../../vue-loader/lib/selector.js?type=style&index=0!./vue-timepicker.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -36079,12 +36329,12 @@ if(false) {
 }
 
 /***/ }),
-/* 262 */
+/* 263 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
 // imports
-exports.i(__webpack_require__(263), "");
+exports.i(__webpack_require__(264), "");
 
 // module
 exports.push([module.i, "\n", ""]);
@@ -36093,7 +36343,7 @@ exports.push([module.i, "\n", ""]);
 
 
 /***/ }),
-/* 263 */
+/* 264 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -36107,7 +36357,7 @@ exports.push([module.i, ".time-picker {\n  display: inline-block;\n  position: r
 
 
 /***/ }),
-/* 264 */
+/* 265 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36121,7 +36371,7 @@ var _keys = __webpack_require__(14);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _stringify = __webpack_require__(265);
+var _stringify = __webpack_require__(266);
 
 var _stringify2 = _interopRequireDefault(_stringify);
 
@@ -36497,16 +36747,16 @@ exports.default = {
 };
 
 /***/ }),
-/* 265 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = { "default": __webpack_require__(266), __esModule: true };
-
-/***/ }),
 /* 266 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var core = __webpack_require__(8);
+module.exports = { "default": __webpack_require__(267), __esModule: true };
+
+/***/ }),
+/* 267 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var core = __webpack_require__(4);
 var $JSON = core.JSON || (core.JSON = { stringify: JSON.stringify });
 module.exports = function stringify(it) { // eslint-disable-line no-unused-vars
   return $JSON.stringify.apply($JSON, arguments);
@@ -36514,30 +36764,30 @@ module.exports = function stringify(it) { // eslint-disable-line no-unused-vars
 
 
 /***/ }),
-/* 267 */
+/* 268 */
 /***/ (function(module, exports) {
 
 module.exports = "\n<span class=\"time-picker\">\n  <input class=\"display-time\" :id=\"id\" v-model=\"displayTime\" @click.stop=\"toggleDropdown\" type=\"text\" readonly />\n  <span class=\"clear-btn\" v-if=\"!hideClearButton\" v-show=\"!showDropdown && showClearBtn\" @click.stop=\"clearTime\">&times;</span>\n  <div class=\"time-picker-overlay\" v-if=\"showDropdown\" @click.stop=\"toggleDropdown\"></div>\n  <div class=\"dropdown\" v-show=\"showDropdown\">\n    <div class=\"select-list\">\n      <ul class=\"hours\">\n        <li class=\"hint\" v-text=\"hourType\"></li>\n        <li v-for=\"hr in hours\" v-text=\"hr\" :class=\"{active: hour === hr}\" @click.stop=\"select('hour', hr)\"></li>\n      </ul>\n      <ul class=\"minutes\">\n        <li class=\"hint\" v-text=\"minuteType\"></li>\n        <li v-for=\"m in minutes\" v-text=\"m\" :class=\"{active: minute === m}\" @click.stop=\"select('minute', m)\"></li>\n      </ul>\n      <ul class=\"seconds\" v-if=\"secondType\">\n        <li class=\"hint\" v-text=\"secondType\"></li>\n        <li v-for=\"s in seconds\" v-text=\"s\" :class=\"{active: second === s}\" @click.stop=\"select('second', s)\"></li>\n      </ul>\n      <ul class=\"apms\" v-if=\"apmType\">\n        <li class=\"hint\" v-text=\"apmType\"></li>\n        <li v-for=\"a in apms\" v-text=\"a\" :class=\"{active: apm === a}\" @click.stop=\"select('apm', a)\"></li>\n      </ul>\n    </div>\n  </div>\n</span>\n";
 
 /***/ }),
-/* 268 */
-/***/ (function(module, exports) {
-
-module.exports = "\n\t<div :class=\"'rop-control-container-'+ ( license > 1 ) +  '  rop-schedule-tab-container'\" _v-29af9e14=\"\">\n\n\t\t<div class=\"columns py-2 rop-control\" _v-29af9e14=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-29af9e14=\"\">\n\t\t\t\t<b _v-29af9e14=\"\">{{labels.schedule_type_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-29af9e14=\"\">{{labels.schedule_type_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-29af9e14=\"\">\n\t\t\t\t<div class=\"form-group\" _v-29af9e14=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"schedule.type\" _v-29af9e14=\"\">\n\t\t\t\t\t\t<option value=\"recurring\" _v-29af9e14=\"\">{{labels.schedule_type_option_rec}}</option>\n\t\t\t\t\t\t<option value=\"fixed\" _v-29af9e14=\"\">{{labels.schedule_type_option_fix}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule Days -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-29af9e14=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-29af9e14=\"\">\n\t\t\t\t<b _v-29af9e14=\"\">{{labels.schedule_fixed_days_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-29af9e14=\"\">{{labels.schedule_fixed_days_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-29af9e14=\"\">\n\t\t\t\t<div class=\"form-group input-group\" _v-29af9e14=\"\">\n\t\t\t\t\t<button-checkbox v-for=\"( data, label ) in daysObject\" :key=\"label\" :value=\"data.value\" :label=\"label\" :checked=\"data.checked\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" _v-29af9e14=\"\"></button-checkbox>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule time -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-29af9e14=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-29af9e14=\"\">\n\t\t\t\t<b _v-29af9e14=\"\">{{labels.schedule_fixed_time_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-29af9e14=\"\">{{labels.schedule_fixed_time_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-29af9e14=\"\">\n\t\t\t\t<div class=\"form-group\" _v-29af9e14=\"\">\n\t\t\t\t\t<div class=\"input-group\" v-for=\"( time, index ) in schedule.interval_f.time\" _v-29af9e14=\"\">\n\t\t\t\t\t\t<vue-timepicker :minute-interval=\"5\" class=\"timepicker-style-fix\" :value=\"getTime( index )\" @change=\"syncTime( $event, index )\" hide-clear-button=\"\" _v-29af9e14=\"\"></vue-timepicker>\n\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn\" v-if=\"schedule.interval_f.time.length > 1\" @click=\"rmvTime( index )\" _v-29af9e14=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-minus\" _v-29af9e14=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t\t<button class=\"btn btn-success input-group-btn\" v-if=\"index == schedule.interval_f.time.length - 1\" @click=\"addTime()\" _v-29af9e14=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-plus\" _v-29af9e14=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2 rop-control\" v-else=\"\" _v-29af9e14=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-29af9e14=\"\">\n\t\t\t\t<b _v-29af9e14=\"\">{{labels.schedule_rec_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-29af9e14=\"\">{{labels.schedule_rec_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-29af9e14=\"\">\n\t\t\t\t<div class=\"form-group\" _v-29af9e14=\"\">\n\t\t\t\t\t<counter-input id=\"interval_r\" :value.sync=\"schedule.interval_r\" _v-29af9e14=\"\"></counter-input>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Upsell -->\n\t\t<div class=\"columns py-2\" v-if=\"license < 2\" _v-29af9e14=\"\">\n\t\t\t<div class=\"column text-center\" _v-29af9e14=\"\">\n\t\t\t\t<p class=\"upsell\" _v-29af9e14=\"\"><i class=\"fa fa-lock\" _v-29af9e14=\"\"></i> {{labels.schedule_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-29af9e14=\"\"></span>\n\t</div>\n";
-
-/***/ }),
 /* 269 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\" _v-63f935ee=\"\">\n\t\t<div class=\"panel-body\" _v-63f935ee=\"\">\n\t\t\t<div class=\"d-inline-block mt-2 column col-12\" _v-63f935ee=\"\">\n\t\t\t\t<p class=\"text-gray\" _v-63f935ee=\"\"><i class=\"fa fa-info-circle\" _v-63f935ee=\"\"></i> <span v-html=\"labels.accounts_selector\" _v-63f935ee=\"\"></span>\n\t\t\t\t</p>\n\t\t\t</div>\n\t\t\t<empty-active-accounts v-if=\"accountsCount === 0\" _v-63f935ee=\"\"></empty-active-accounts>\n\t\t\t<div class=\"container\" v-if=\"accountsCount > 0\" _v-63f935ee=\"\">\n\t\t\t\t<div class=\"columns\" _v-63f935ee=\"\">\n\t\t\t\t\t<div class=\"column col-3 col-sm-12 col-md-12 col-xl-3 col-lg-3 col-xs-12 col-rop-selector-accounts\" _v-63f935ee=\"\">\n\t\t\t\t\t\t<span class=\"divider\" _v-63f935ee=\"\"></span>\n\t\t\t\t\t\t<div v-for=\"( account, id ) in active_accounts\" _v-63f935ee=\"\">\n\t\t\t\t\t\t\t<div class=\"rop-selector-account-container\" :class=\"{active: selected_account===id}\" @click=\"setActiveAccount(id)\" _v-63f935ee=\"\">\n\t\t\t\t\t\t\t\t<div class=\"tile tile-centered rop-account\" _v-63f935ee=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"tile-icon\" _v-63f935ee=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"icon_box\" :class=\" (account.img ? 'has_image' : 'no-image' ) + ' ' +account.service \" _v-63f935ee=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<img class=\"service_account_image\" :src=\"account.img\" v-if=\"account.img\" _v-63f935ee=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"fa  \" :class=\"getIcon(account)\" aria-hidden=\"true\" _v-63f935ee=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"tile-content\" _v-63f935ee=\"\">\n\t\t\t\t\t\t\t\t\t\t<p class=\"rop-account-name\" _v-63f935ee=\"\">{{account.user}}</p>\n\t\t\t\t\t\t\t\t\t\t<strong class=\"rop-service-name\" _v-63f935ee=\"\">{{account.service}}</strong>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-63f935ee=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-9 col-sm-12  col-md-12  col-xl-9 col-lg-9 col-xs-12\" :class=\"'rop-tab-state-'+is_loading\" _v-63f935ee=\"\">\n\t\t\t\t\t\t<component :is=\"type\" :account_id=\"selected_account\" :license=\"license\" _v-63f935ee=\"\"></component>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-63f935ee=\"\">\n\t\t\t<div class=\"panel-actions text-right\" v-if=\"allow_footer\" _v-63f935ee=\"\">\n\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-63f935ee=\"\"><i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-63f935ee=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-63f935ee=\"\"></i> {{labels.reset_selector_btn}} {{component_label}}\n\t\t\t\t\t{{labels.for}}\n\t\t\t\t\t<b _v-63f935ee=\"\">{{active_account_name}}</b>\n\t\t\t\t</button>\n\t\t\t\t<button class=\"btn btn-primary\" @click=\"saveAccountData()\" _v-63f935ee=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-63f935ee=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-63f935ee=\"\"></i> {{labels.save_selector_btn}} {{component_label}}\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div :class=\"'rop-control-container-'+ ( license > 1 ) +  '  rop-schedule-tab-container'\" _v-397ecf27=\"\">\n\n\t\t<div class=\"columns py-2 rop-control\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<b _v-397ecf27=\"\">{{labels.schedule_type_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-397ecf27=\"\">{{labels.schedule_type_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<div class=\"form-group\" _v-397ecf27=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"schedule.type\" _v-397ecf27=\"\">\n\t\t\t\t\t\t<option value=\"recurring\" _v-397ecf27=\"\">{{labels.schedule_type_option_rec}}</option>\n\t\t\t\t\t\t<option value=\"fixed\" _v-397ecf27=\"\">{{labels.schedule_type_option_fix}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule Days -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<b _v-397ecf27=\"\">{{labels.schedule_fixed_days_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-397ecf27=\"\">{{labels.schedule_fixed_days_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<div class=\"form-group input-group\" _v-397ecf27=\"\">\n\t\t\t\t\t<button-checkbox v-for=\"( data, label ) in daysObject\" :key=\"label\" :value=\"data.value\" :label=\"label\" :checked=\"data.checked\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" _v-397ecf27=\"\"></button-checkbox>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule time -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<b _v-397ecf27=\"\">{{labels.schedule_fixed_time_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-397ecf27=\"\">{{labels.schedule_fixed_time_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<div class=\"form-group\" _v-397ecf27=\"\">\n\t\t\t\t\t<div class=\"input-group\" v-for=\"( time, index ) in schedule.interval_f.time\" _v-397ecf27=\"\">\n\t\t\t\t\t\t<vue-timepicker :minute-interval=\"5\" class=\"timepicker-style-fix\" :value=\"getTime( index )\" @change=\"syncTime( $event, index )\" hide-clear-button=\"\" _v-397ecf27=\"\"></vue-timepicker>\n\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn\" v-if=\"schedule.interval_f.time.length > 1\" @click=\"rmvTime( index )\" _v-397ecf27=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-minus\" _v-397ecf27=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t\t<button class=\"btn btn-success input-group-btn\" v-if=\"index == schedule.interval_f.time.length - 1\" @click=\"addTime()\" _v-397ecf27=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-plus\" _v-397ecf27=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2 rop-control\" v-else=\"\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<b _v-397ecf27=\"\">{{labels.schedule_rec_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-397ecf27=\"\">{{labels.schedule_rec_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<div class=\"form-group\" _v-397ecf27=\"\">\n\t\t\t\t\t<counter-input id=\"interval_r\" :value.sync=\"schedule.interval_r\" _v-397ecf27=\"\"></counter-input>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Upsell -->\n\t\t<div class=\"columns py-2\" v-if=\"license < 2\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column text-center\" _v-397ecf27=\"\">\n\t\t\t\t<p class=\"upsell\" _v-397ecf27=\"\"><i class=\"fa fa-lock\" _v-397ecf27=\"\"></i> {{labels.schedule_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-397ecf27=\"\"></span>\n\t</div>\n";
 
 /***/ }),
 /* 270 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div class=\"tab-view\" _v-44ae6e9d=\"\">\n\t\t<div class=\"panel-body\" _v-44ae6e9d=\"\">\n\t\t\t<div class=\"d-inline-block mt-2 column col-12\" _v-44ae6e9d=\"\">\n\t\t\t\t<p class=\"text-gray\" _v-44ae6e9d=\"\"><i class=\"fa fa-info-circle\" _v-44ae6e9d=\"\"></i> <span v-html=\"labels.accounts_selector\" _v-44ae6e9d=\"\"></span>\n\t\t\t\t</p>\n\t\t\t</div>\n\t\t\t<empty-active-accounts v-if=\"accountsCount === 0\" _v-44ae6e9d=\"\"></empty-active-accounts>\n\t\t\t<div class=\"container\" v-if=\"accountsCount > 0\" _v-44ae6e9d=\"\">\n\t\t\t\t<div class=\"columns\" _v-44ae6e9d=\"\">\n\t\t\t\t\t<div class=\"column col-3 col-sm-12 col-md-12 col-xl-3 col-lg-3 col-xs-12 col-rop-selector-accounts\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t<span class=\"divider\" _v-44ae6e9d=\"\"></span>\n\t\t\t\t\t\t<div v-for=\"( account, id ) in active_accounts\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t\t<div class=\"rop-selector-account-container\" :class=\"{active: selected_account===id}\" @click=\"setActiveAccount(id)\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t\t\t<div class=\"tile tile-centered rop-account\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"tile-icon\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"icon_box\" :class=\" (account.img ? 'has_image' : 'no-image' ) + ' ' +account.service \" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<img class=\"service_account_image\" :src=\"account.img\" v-if=\"account.img\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"fa  \" :class=\"getIcon(account)\" aria-hidden=\"true\" _v-44ae6e9d=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"tile-content\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t\t\t\t\t<p class=\"rop-account-name\" _v-44ae6e9d=\"\">{{account.user}}</p>\n\t\t\t\t\t\t\t\t\t\t<strong class=\"rop-service-name\" _v-44ae6e9d=\"\">{{account.service}}</strong>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-44ae6e9d=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-9 col-sm-12  col-md-12  col-xl-9 col-lg-9 col-xs-12\" :class=\"'rop-tab-state-'+is_loading\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t<component :is=\"type\" :account_id=\"selected_account\" :license=\"license\" _v-44ae6e9d=\"\"></component>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-44ae6e9d=\"\">\n\t\t\t<div class=\"panel-actions text-right\" v-if=\"allow_footer\" _v-44ae6e9d=\"\">\n\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-44ae6e9d=\"\"><i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-44ae6e9d=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-44ae6e9d=\"\"></i> {{labels.reset_selector_btn}} {{component_label}}\n\t\t\t\t\t{{labels.for}}\n\t\t\t\t\t<b _v-44ae6e9d=\"\">{{active_account_name}}</b>\n\t\t\t\t</button>\n\t\t\t\t<button class=\"btn btn-primary\" @click=\"saveAccountData()\" _v-44ae6e9d=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-44ae6e9d=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-44ae6e9d=\"\"></i> {{labels.save_selector_btn}} {{component_label}}\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+
+/***/ }),
+/* 271 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(271)
-__vue_template__ = __webpack_require__(277)
+__vue_script__ = __webpack_require__(272)
+__vue_template__ = __webpack_require__(278)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -36545,7 +36795,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\UVDev\\Source\\Repos\\tweet-old-post\\vue\\src\\vue-elements\\queue-tab-panel.vue"
+  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/queue-tab-panel.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -36554,7 +36804,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 271 */
+/* 272 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36564,7 +36814,7 @@ var _keys = __webpack_require__(14);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _queueCard = __webpack_require__(272);
+var _queueCard = __webpack_require__(273);
 
 var _queueCard2 = _interopRequireDefault(_queueCard);
 
@@ -36680,13 +36930,13 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 272 */
+/* 273 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(273)
-__vue_script__ = __webpack_require__(275)
-__vue_template__ = __webpack_require__(276)
+__webpack_require__(274)
+__vue_script__ = __webpack_require__(276)
+__vue_template__ = __webpack_require__(277)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -36694,7 +36944,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\UVDev\\Source\\Repos\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\queue-card.vue"
+  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/reusables/queue-card.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -36703,13 +36953,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 273 */
+/* 274 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(274);
+var content = __webpack_require__(275);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -36718,8 +36968,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0c961f02&file=queue-card.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./queue-card.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0c961f02&file=queue-card.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./queue-card.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-16ad60c3&file=queue-card.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./queue-card.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-16ad60c3&file=queue-card.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./queue-card.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -36729,7 +36979,7 @@ if(false) {
 }
 
 /***/ }),
-/* 274 */
+/* 275 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -36737,13 +36987,13 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\r\n\t.fa[_v-0c961f02] {\r\n\t\tbackground: transparent;\r\n\t}\r\n\t\r\n\t#rop_core .vertical-align[_v-0c961f02] {\r\n\t\t-ms-flex-align: end;\r\n\t\t    align-items: flex-end;\r\n\t}\r\n\t\r\n\t#rop_core figure.figure[_v-0c961f02] {\r\n\t\tmargin: -.7em -2em -1em 0;\r\n\t}\r\n\t\r\n\t@media (max-width: 600px) {\r\n\t\t#rop_core .vertical-align[_v-0c961f02] {\r\n\t\t\t-ms-flex-align: center;\r\n\t\t\t    align-items: center;\r\n\t\t}\r\n\t\t\r\n\t\t#rop_core figure.figure[_v-0c961f02] {\r\n\t\t\tmargin: 10px auto 0;\r\n\t\t}\r\n\t}\r\n", ""]);
+exports.push([module.i, "\n\t.fa[_v-16ad60c3] {\n\t\tbackground: transparent;\n\t}\n\t\n\t#rop_core .vertical-align[_v-16ad60c3] {\n\t\t-ms-flex-align: end;\n\t\t    align-items: flex-end;\n\t}\n\t\n\t#rop_core figure.figure[_v-16ad60c3] {\n\t\tmargin: -.7em -2em -1em 0;\n\t}\n\t\n\t@media (max-width: 600px) {\n\t\t#rop_core .vertical-align[_v-16ad60c3] {\n\t\t\t-ms-flex-align: center;\n\t\t\t    align-items: center;\n\t\t}\n\t\t\n\t\t#rop_core figure.figure[_v-16ad60c3] {\n\t\t\tmargin: 10px auto 0;\n\t\t}\n\t}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 275 */
+/* 276 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37063,25 +37313,25 @@ module.exports = {
 };
 
 /***/ }),
-/* 276 */
-/***/ (function(module, exports) {
-
-module.exports = "\n\t<div class=\"card\" _v-0c961f02=\"\">\n\t\t<div class=\"columns\" _v-0c961f02=\"\">\n\t\t\t<div class=\"column col-sm-12 col-justified\" _v-0c961f02=\"\">\n\t\t\t\t<div class=\"columns\" _v-0c961f02=\"\">\n\t\t\t\t\t<div class=\"column\" _v-0c961f02=\"\">\n\t\t\t\t\t\t<p class=\"text-gray text-left \" _v-0c961f02=\"\"><i class=\"fa fa-clock-o\" _v-0c961f02=\"\"></i> {{card_data.date}} <b _v-0c961f02=\"\"><i class=\"fa fa-at\" _v-0c961f02=\"\"></i></b> <i class=\"service fa\" :class=\"iconClass( card_data.account_id )\" _v-0c961f02=\"\"></i>\n\t\t\t\t\t\t\t{{getAccountName(card_data.account_id)}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-if=\"!edit\" _v-0c961f02=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-0c961f02=\"\">\n\t\t\t\t\t\t<p v-html=\"content.content + hashtags( content.hashtags )\" _v-0c961f02=\"\"></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"form-group columns\" v-if=\"edit\" _v-0c961f02=\"\">\n\t\t\t\t\t<div class=\"column col-12\" v-if=\"content.post_with_image\" _v-0c961f02=\"\">\n\t\t\t\t\t\t<label class=\"form-label\" for=\"image\" _v-0c961f02=\"\">{{labels.queue_image}}</label>\n\t\t\t\t\t\t<div class=\"input-group\" _v-0c961f02=\"\">\n\t\t\t\t\t\t\t<span class=\"input-group-addon\" _v-0c961f02=\"\"><i class=\"fa fa-file-image-o\" _v-0c961f02=\"\"></i></span>\n\t\t\t\t\t\t\t<input id=\"image\" type=\"text\" class=\"form-input\" :value=\"content.post_image\" readonly=\"\" _v-0c961f02=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary input-group-btn tooltip\" @click=\"uploadImage\" :data-tooltip=\"labels.upload_image\" _v-0c961f02=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-upload\" aria-hidden=\"true\" _v-0c961f02=\"\"></i>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn tooltip\" @click=\"removeImage\" :data-tooltip=\"labels.remove_image\" _v-0c961f02=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-remove\" aria-hidden=\"true\" _v-0c961f02=\"\"></i>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-12\" _v-0c961f02=\"\">\n\t\t\t\t\t\t<label class=\"form-label\" for=\"content\" _v-0c961f02=\"\">{{labels.queue_content}}</label>\n\t\t\t\t\t\t<textarea class=\"form-input\" id=\"content\" placeholder=\"\" rows=\"3\" @keyup=\"checkCount\" _v-0c961f02=\"\">{{content.content}}</textarea>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns col-justified\" v-if=\"!edit\" _v-0c961f02=\"\">\n\t\t\t\t\t<div class=\"column col-3\" _v-0c961f02=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-warning tooltip   tooltip-bottom \" @click=\"skipPost(card_data.account_id, card_data.post_id)\" :data-tooltip=\"labels.reschedule_post\" :disabled=\" ! enabled\" _v-0c961f02=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'skip'\" _v-0c961f02=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-step-forward\" v-else=\"\" aria-hidden=\"true\" _v-0c961f02=\"\"></i>\n\t\t\t\t\t\t\t{{labels.skip_btn_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-0c961f02=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-danger tooltip     tooltip-bottom  \" :data-tooltip=\"labels.ban_post\" @click=\"blockPost(card_data.account_id, card_data.post_id)\" :disabled=\" ! enabled\" _v-0c961f02=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'block'\" _v-0c961f02=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-ban\" aria-hidden=\"true\" v-else=\"\" _v-0c961f02=\"\"></i>\n\t\t\t\t\t\t\t{{labels.block_btn_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-0c961f02=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-primary\" @click=\"toggleEditState\" v-if=\"!edit\" :disabled=\" ! enabled\" _v-0c961f02=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-pencil\" aria-hidden=\"true\" _v-0c961f02=\"\"></i> {{labels.edit_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3 col-ml-auto text-right\" v-if=\"content.post_url !== ''\" _v-0c961f02=\"\">\n\t\t\t\t\t\t<p class=\"m-0\" _v-0c961f02=\"\">\n\t\t\t\t\t\t\t<b _v-0c961f02=\"\">{{labels.link_title}}:</b>\n\t\t\t\t\t\t\t<a :href=\"content.post_url\" target=\"_blank\" class=\"tooltip\" :data-tooltip=\"labels.link_shortned_start + ' ' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service )  \" _v-0c961f02=\"\">\n\t\t\t\t\t\t\t\t{{'{' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service ) +\n\t\t\t\t\t\t\t\t'}'}}</a>\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-else=\"\" _v-0c961f02=\"\">\n\t\t\t\t\t<div class=\"column col-3\" _v-0c961f02=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-success\" @click=\"saveChanges(card_data.account_id, card_data.post_id)\" v-if=\"edit\" :disabled=\" ! enabled\" _v-0c961f02=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'edit'\" _v-0c961f02=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-check\" aria-hidden=\"true\" v-else=\"\" _v-0c961f02=\"\"></i>\n\t\t\t\t\t\t\t{{labels.save_edit}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-0c961f02=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-warning\" @click=\"cancelChanges\" v-if=\"edit\" :disabled=\" ! enabled\" _v-0c961f02=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-times\" aria-hidden=\"true\" _v-0c961f02=\"\"></i>\n\t\t\t\t\t\t\t{{labels.cancel_edit}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"column col-4 col-sm-12 vertical-align\" v-if=\"!edit &amp;&amp; content.post_with_image\" _v-0c961f02=\"\">\n\t\t\t\t<div v-if=\"content.post_image !== ''\" _v-0c961f02=\"\">\n\t\t\t\t\t<figure class=\"figure\" v-if=\"content.post_image !== ''\" _v-0c961f02=\"\">\n\t\t\t\t\t\t<img :src=\"( content.mimetype.type.indexOf('image') > -1 ? content.post_image : video_placeholder )\" class=\"img-fit-cover img-responsive\" _v-0c961f02=\"\">\n\t\t\t\t\t</figure>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\t<div class=\"rop-image-placeholder\" v-else=\"\" _v-0c961f02=\"\">\n\t\t\t\t\t<summary _v-0c961f02=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-0c961f02=\"\"></i>\n\t\t\t\t\t\t{{labels.queue_no_image}}\n\t\t\t\t\t</summary>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
-
-/***/ }),
 /* 277 */
 /***/ (function(module, exports) {
 
-module.exports = "\r\n\t<div class=\"tab-view rop-queue-tab-container\">\r\n\t\t<div class=\"panel-body\" :class=\"'rop-tab-state-'+is_loading\">\r\n\t\t\t<div class=\"columns\" v-if=\"! start_status\">\r\n\t\t\t\t<div class=\"column col-12 text-center empty-container\">\r\n\t\t\t\t\t<div class=\"empty-icon\">\r\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\"></i>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\t<p class=\"empty-title h5\">{{labels.sharing_not_started}}</p>\r\n\t\t\t\t\t<p class=\"empty-subtitle\">{{labels.sharing_not_started_desc}}</p>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\r\n\t\t\t<div v-else-if=\"start_status && queueCount > 0 \">\r\n\r\n\t\t\t\t<div class=\"columns py-2\" v-if=\"! is_business\">\r\n\t\t\t\t\t<div class=\"column text-center\">\r\n\t\t\t\t\t\t<p class=\"upsell\"><i class=\"fa fa-lock\"></i> <span v-html=\"labels.biz_only\"></span></p>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</div>\r\n\r\n\t\t\t\t<!-- When sharing is started but we  have the business plan. -->\r\n\t\t\t\t<div class=\"d-inline-block mt-2 column col-12\">\r\n\t\t\t\t\t<p class=\"text-gray info-paragraph\"><i class=\"fa fa-info-circle\"></i> {{labels.queue_desc}}</p>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\t\t\t<div class=\"empty\" v-else-if=\"start_status && queueCount === 0\">\r\n\t\t\t\t<div class=\"empty-icon\">\r\n\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\"></i>\r\n\t\t\t\t</div>\r\n\t\t\t\t<p class=\"empty-title h5\">{{labels.no_posts}}</p>\r\n\t\t\t\t<p class=\"empty-subtitle\" v-html=\"labels.no_posts_desc\"></p>\r\n\t\t\t</div>\r\n\t\t\t<div class=\"columns\" v-if=\"start_status && queueCount > 0\">\r\n\t\t\t\t<div class=\"column col-12 text-left\" v-for=\" (data, index) in queue \">\r\n\t\t\t\t\t<queue-card :card_data=\"data.post_data\" :id=\"index\" :enabled=\"is_business\"/>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\t\t</div>\r\n\t\t<div class=\"panel-footer text-rightcade\" v-if=\"start_status\">\r\n\t\t\t<button class=\"btn btn-secondary\" @click=\"refreshQueue(true)\">\r\n\t\t\t\t<i class=\"fa fa-refresh\" v-if=\"!is_loading\"></i>\r\n\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\r\n\t\t\t\t{{labels.refresh_btn}}\r\n\t\t\t</button>\r\n\t\t</div>\r\n\t</div>\r\n";
+module.exports = "\n\t<div class=\"card\" _v-16ad60c3=\"\">\n\t\t<div class=\"columns\" _v-16ad60c3=\"\">\n\t\t\t<div class=\"column col-sm-12 col-justified\" _v-16ad60c3=\"\">\n\t\t\t\t<div class=\"columns\" _v-16ad60c3=\"\">\n\t\t\t\t\t<div class=\"column\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<p class=\"text-gray text-left \" _v-16ad60c3=\"\"><i class=\"fa fa-clock-o\" _v-16ad60c3=\"\"></i> {{card_data.date}} <b _v-16ad60c3=\"\"><i class=\"fa fa-at\" _v-16ad60c3=\"\"></i></b> <i class=\"service fa\" :class=\"iconClass( card_data.account_id )\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t{{getAccountName(card_data.account_id)}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-if=\"!edit\" _v-16ad60c3=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<p v-html=\"content.content + hashtags( content.hashtags )\" _v-16ad60c3=\"\"></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"form-group columns\" v-if=\"edit\" _v-16ad60c3=\"\">\n\t\t\t\t\t<div class=\"column col-12\" v-if=\"content.post_with_image\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<label class=\"form-label\" for=\"image\" _v-16ad60c3=\"\">{{labels.queue_image}}</label>\n\t\t\t\t\t\t<div class=\"input-group\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<span class=\"input-group-addon\" _v-16ad60c3=\"\"><i class=\"fa fa-file-image-o\" _v-16ad60c3=\"\"></i></span>\n\t\t\t\t\t\t\t<input id=\"image\" type=\"text\" class=\"form-input\" :value=\"content.post_image\" readonly=\"\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary input-group-btn tooltip\" @click=\"uploadImage\" :data-tooltip=\"labels.upload_image\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-upload\" aria-hidden=\"true\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn tooltip\" @click=\"removeImage\" :data-tooltip=\"labels.remove_image\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-remove\" aria-hidden=\"true\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-12\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<label class=\"form-label\" for=\"content\" _v-16ad60c3=\"\">{{labels.queue_content}}</label>\n\t\t\t\t\t\t<textarea class=\"form-input\" id=\"content\" placeholder=\"\" rows=\"3\" @keyup=\"checkCount\" _v-16ad60c3=\"\">{{content.content}}</textarea>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns col-justified\" v-if=\"!edit\" _v-16ad60c3=\"\">\n\t\t\t\t\t<div class=\"column col-3\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-warning tooltip   tooltip-bottom \" @click=\"skipPost(card_data.account_id, card_data.post_id)\" :data-tooltip=\"labels.reschedule_post\" :disabled=\" ! enabled\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'skip'\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-step-forward\" v-else=\"\" aria-hidden=\"true\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t{{labels.skip_btn_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-danger tooltip     tooltip-bottom  \" :data-tooltip=\"labels.ban_post\" @click=\"blockPost(card_data.account_id, card_data.post_id)\" :disabled=\" ! enabled\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'block'\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-ban\" aria-hidden=\"true\" v-else=\"\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t{{labels.block_btn_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-primary\" @click=\"toggleEditState\" v-if=\"!edit\" :disabled=\" ! enabled\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-pencil\" aria-hidden=\"true\" _v-16ad60c3=\"\"></i> {{labels.edit_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3 col-ml-auto text-right\" v-if=\"content.post_url !== ''\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<p class=\"m-0\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<b _v-16ad60c3=\"\">{{labels.link_title}}:</b>\n\t\t\t\t\t\t\t<a :href=\"content.post_url\" target=\"_blank\" class=\"tooltip\" :data-tooltip=\"labels.link_shortned_start + ' ' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service )  \" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t\t{{'{' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service ) +\n\t\t\t\t\t\t\t\t'}'}}</a>\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-else=\"\" _v-16ad60c3=\"\">\n\t\t\t\t\t<div class=\"column col-3\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-success\" @click=\"saveChanges(card_data.account_id, card_data.post_id)\" v-if=\"edit\" :disabled=\" ! enabled\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'edit'\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-check\" aria-hidden=\"true\" v-else=\"\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t{{labels.save_edit}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-warning\" @click=\"cancelChanges\" v-if=\"edit\" :disabled=\" ! enabled\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-times\" aria-hidden=\"true\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t{{labels.cancel_edit}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"column col-4 col-sm-12 vertical-align\" v-if=\"!edit &amp;&amp; content.post_with_image\" _v-16ad60c3=\"\">\n\t\t\t\t<div v-if=\"content.post_image !== ''\" _v-16ad60c3=\"\">\n\t\t\t\t\t<figure class=\"figure\" v-if=\"content.post_image !== ''\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<img :src=\"( content.mimetype.type.indexOf('image') > -1 ? content.post_image : video_placeholder )\" class=\"img-fit-cover img-responsive\" _v-16ad60c3=\"\">\n\t\t\t\t\t</figure>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\t<div class=\"rop-image-placeholder\" v-else=\"\" _v-16ad60c3=\"\">\n\t\t\t\t\t<summary _v-16ad60c3=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t{{labels.queue_no_image}}\n\t\t\t\t\t</summary>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 278 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div class=\"tab-view rop-queue-tab-container\">\n\t\t<div class=\"panel-body\" :class=\"'rop-tab-state-'+is_loading\">\n\t\t\t<div class=\"columns\" v-if=\"! start_status\">\n\t\t\t\t<div class=\"column col-12 text-center empty-container\">\n\t\t\t\t\t<div class=\"empty-icon\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t\t<p class=\"empty-title h5\">{{labels.sharing_not_started}}</p>\n\t\t\t\t\t<p class=\"empty-subtitle\">{{labels.sharing_not_started_desc}}</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\n\t\t\t<div v-else-if=\"start_status && queueCount > 0 \">\n\n\t\t\t\t<div class=\"columns py-2\" v-if=\"! is_business\">\n\t\t\t\t\t<div class=\"column text-center\">\n\t\t\t\t\t\t<p class=\"upsell\"><i class=\"fa fa-lock\"></i> <span v-html=\"labels.biz_only\"></span></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<!-- When sharing is started but we  have the business plan. -->\n\t\t\t\t<div class=\"d-inline-block mt-2 column col-12\">\n\t\t\t\t\t<p class=\"text-gray info-paragraph\"><i class=\"fa fa-info-circle\"></i> {{labels.queue_desc}}</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"empty\" v-else-if=\"start_status && queueCount === 0\">\n\t\t\t\t<div class=\"empty-icon\">\n\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\"></i>\n\t\t\t\t</div>\n\t\t\t\t<p class=\"empty-title h5\">{{labels.no_posts}}</p>\n\t\t\t\t<p class=\"empty-subtitle\" v-html=\"labels.no_posts_desc\"></p>\n\t\t\t</div>\n\t\t\t<div class=\"columns\" v-if=\"start_status && queueCount > 0\">\n\t\t\t\t<div class=\"column col-12 text-left\" v-for=\" (data, index) in queue \">\n\t\t\t\t\t<queue-card :card_data=\"data.post_data\" :id=\"index\" :enabled=\"is_business\"/>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer text-rightcade\" v-if=\"start_status\">\n\t\t\t<button class=\"btn btn-secondary\" @click=\"refreshQueue(true)\">\n\t\t\t\t<i class=\"fa fa-refresh\" v-if=\"!is_loading\"></i>\n\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t{{labels.refresh_btn}}\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
+
+/***/ }),
+/* 279 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(279)
-__vue_script__ = __webpack_require__(281)
-__vue_template__ = __webpack_require__(284)
+__webpack_require__(280)
+__vue_script__ = __webpack_require__(282)
+__vue_template__ = __webpack_require__(285)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -37089,7 +37339,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\UVDev\\Source\\Repos\\tweet-old-post\\vue\\src\\vue-elements\\logs-tab-panel.vue"
+  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/logs-tab-panel.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -37098,13 +37348,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 279 */
+/* 280 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(280);
+var content = __webpack_require__(281);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -37113,8 +37363,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1eb3a02d&file=logs-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./logs-tab-panel.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1eb3a02d&file=logs-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./logs-tab-panel.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6c63d2c4&file=logs-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./logs-tab-panel.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6c63d2c4&file=logs-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./logs-tab-panel.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -37124,7 +37374,7 @@ if(false) {
 }
 
 /***/ }),
-/* 280 */
+/* 281 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -37132,13 +37382,13 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\r\n\t#rop_core .toast.log-toast p[_v-1eb3a02d] {\r\n\t\tmargin: 0px;\r\n\t\tline-height: inherit;\r\n\t}\r\n\r\n\t#rop_core .toast.log-toast[_v-1eb3a02d]:hover {\r\n\t\topacity: 0.9;\r\n\t}\r\n\r\n\t#rop_core .toast.log-toast[_v-1eb3a02d] {\r\n\t\tpadding: 0.1rem;\r\n\t\tpadding-left: 10px;\r\n\t\tmargin-top: 2px;\r\n\t}\r\n\r\n\t#rop_core .container[_v-1eb3a02d] {\r\n\t\tmin-height: 400px;\r\n\t}\r\n", ""]);
+exports.push([module.i, "\n\t#rop_core .toast.log-toast p[_v-6c63d2c4] {\n\t\tmargin: 0px;\n\t\tline-height: inherit;\n\t}\n\n\t#rop_core .toast.log-toast[_v-6c63d2c4]:hover {\n\t\topacity: 0.9;\n\t}\n\n\t#rop_core .toast.log-toast[_v-6c63d2c4] {\n\t\tpadding: 0.1rem;\n\t\tpadding-left: 10px;\n\t\tmargin-top: 2px;\n\t}\n\n\t#rop_core .container[_v-6c63d2c4] {\n\t\tmin-height: 400px;\n\t}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 281 */
+/* 282 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37268,7 +37518,7 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 282 */
+/* 283 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -37296,7 +37546,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 283 */
+/* 284 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
@@ -37428,124 +37678,126 @@ var map = {
 	"./kn.js": 146,
 	"./ko": 147,
 	"./ko.js": 147,
-	"./ky": 148,
-	"./ky.js": 148,
-	"./lb": 149,
-	"./lb.js": 149,
-	"./lo": 150,
-	"./lo.js": 150,
-	"./lt": 151,
-	"./lt.js": 151,
-	"./lv": 152,
-	"./lv.js": 152,
-	"./me": 153,
-	"./me.js": 153,
-	"./mi": 154,
-	"./mi.js": 154,
-	"./mk": 155,
-	"./mk.js": 155,
-	"./ml": 156,
-	"./ml.js": 156,
-	"./mn": 157,
-	"./mn.js": 157,
-	"./mr": 158,
-	"./mr.js": 158,
-	"./ms": 159,
-	"./ms-my": 160,
-	"./ms-my.js": 160,
-	"./ms.js": 159,
-	"./mt": 161,
-	"./mt.js": 161,
-	"./my": 162,
-	"./my.js": 162,
-	"./nb": 163,
-	"./nb.js": 163,
-	"./ne": 164,
-	"./ne.js": 164,
-	"./nl": 165,
-	"./nl-be": 166,
-	"./nl-be.js": 166,
-	"./nl.js": 165,
-	"./nn": 167,
-	"./nn.js": 167,
-	"./pa-in": 168,
-	"./pa-in.js": 168,
-	"./pl": 169,
-	"./pl.js": 169,
-	"./pt": 170,
-	"./pt-br": 171,
-	"./pt-br.js": 171,
-	"./pt.js": 170,
-	"./ro": 172,
-	"./ro.js": 172,
-	"./ru": 173,
-	"./ru.js": 173,
-	"./sd": 174,
-	"./sd.js": 174,
-	"./se": 175,
-	"./se.js": 175,
-	"./si": 176,
-	"./si.js": 176,
-	"./sk": 177,
-	"./sk.js": 177,
-	"./sl": 178,
-	"./sl.js": 178,
-	"./sq": 179,
-	"./sq.js": 179,
-	"./sr": 180,
-	"./sr-cyrl": 181,
-	"./sr-cyrl.js": 181,
-	"./sr.js": 180,
-	"./ss": 182,
-	"./ss.js": 182,
-	"./sv": 183,
-	"./sv.js": 183,
-	"./sw": 184,
-	"./sw.js": 184,
-	"./ta": 185,
-	"./ta.js": 185,
-	"./te": 186,
-	"./te.js": 186,
-	"./tet": 187,
-	"./tet.js": 187,
-	"./tg": 188,
-	"./tg.js": 188,
-	"./th": 189,
-	"./th.js": 189,
-	"./tl-ph": 190,
-	"./tl-ph.js": 190,
-	"./tlh": 191,
-	"./tlh.js": 191,
-	"./tr": 192,
-	"./tr.js": 192,
-	"./tzl": 193,
-	"./tzl.js": 193,
-	"./tzm": 194,
-	"./tzm-latn": 195,
-	"./tzm-latn.js": 195,
-	"./tzm.js": 194,
-	"./ug-cn": 196,
-	"./ug-cn.js": 196,
-	"./uk": 197,
-	"./uk.js": 197,
-	"./ur": 198,
-	"./ur.js": 198,
-	"./uz": 199,
-	"./uz-latn": 200,
-	"./uz-latn.js": 200,
-	"./uz.js": 199,
-	"./vi": 201,
-	"./vi.js": 201,
-	"./x-pseudo": 202,
-	"./x-pseudo.js": 202,
-	"./yo": 203,
-	"./yo.js": 203,
-	"./zh-cn": 204,
-	"./zh-cn.js": 204,
-	"./zh-hk": 205,
-	"./zh-hk.js": 205,
-	"./zh-tw": 206,
-	"./zh-tw.js": 206
+	"./ku": 148,
+	"./ku.js": 148,
+	"./ky": 149,
+	"./ky.js": 149,
+	"./lb": 150,
+	"./lb.js": 150,
+	"./lo": 151,
+	"./lo.js": 151,
+	"./lt": 152,
+	"./lt.js": 152,
+	"./lv": 153,
+	"./lv.js": 153,
+	"./me": 154,
+	"./me.js": 154,
+	"./mi": 155,
+	"./mi.js": 155,
+	"./mk": 156,
+	"./mk.js": 156,
+	"./ml": 157,
+	"./ml.js": 157,
+	"./mn": 158,
+	"./mn.js": 158,
+	"./mr": 159,
+	"./mr.js": 159,
+	"./ms": 160,
+	"./ms-my": 161,
+	"./ms-my.js": 161,
+	"./ms.js": 160,
+	"./mt": 162,
+	"./mt.js": 162,
+	"./my": 163,
+	"./my.js": 163,
+	"./nb": 164,
+	"./nb.js": 164,
+	"./ne": 165,
+	"./ne.js": 165,
+	"./nl": 166,
+	"./nl-be": 167,
+	"./nl-be.js": 167,
+	"./nl.js": 166,
+	"./nn": 168,
+	"./nn.js": 168,
+	"./pa-in": 169,
+	"./pa-in.js": 169,
+	"./pl": 170,
+	"./pl.js": 170,
+	"./pt": 171,
+	"./pt-br": 172,
+	"./pt-br.js": 172,
+	"./pt.js": 171,
+	"./ro": 173,
+	"./ro.js": 173,
+	"./ru": 174,
+	"./ru.js": 174,
+	"./sd": 175,
+	"./sd.js": 175,
+	"./se": 176,
+	"./se.js": 176,
+	"./si": 177,
+	"./si.js": 177,
+	"./sk": 178,
+	"./sk.js": 178,
+	"./sl": 179,
+	"./sl.js": 179,
+	"./sq": 180,
+	"./sq.js": 180,
+	"./sr": 181,
+	"./sr-cyrl": 182,
+	"./sr-cyrl.js": 182,
+	"./sr.js": 181,
+	"./ss": 183,
+	"./ss.js": 183,
+	"./sv": 184,
+	"./sv.js": 184,
+	"./sw": 185,
+	"./sw.js": 185,
+	"./ta": 186,
+	"./ta.js": 186,
+	"./te": 187,
+	"./te.js": 187,
+	"./tet": 188,
+	"./tet.js": 188,
+	"./tg": 189,
+	"./tg.js": 189,
+	"./th": 190,
+	"./th.js": 190,
+	"./tl-ph": 191,
+	"./tl-ph.js": 191,
+	"./tlh": 192,
+	"./tlh.js": 192,
+	"./tr": 193,
+	"./tr.js": 193,
+	"./tzl": 194,
+	"./tzl.js": 194,
+	"./tzm": 195,
+	"./tzm-latn": 196,
+	"./tzm-latn.js": 196,
+	"./tzm.js": 195,
+	"./ug-cn": 197,
+	"./ug-cn.js": 197,
+	"./uk": 198,
+	"./uk.js": 198,
+	"./ur": 199,
+	"./ur.js": 199,
+	"./uz": 200,
+	"./uz-latn": 201,
+	"./uz-latn.js": 201,
+	"./uz.js": 200,
+	"./vi": 202,
+	"./vi.js": 202,
+	"./x-pseudo": 203,
+	"./x-pseudo.js": 203,
+	"./yo": 204,
+	"./yo.js": 204,
+	"./zh-cn": 205,
+	"./zh-cn.js": 205,
+	"./zh-hk": 206,
+	"./zh-hk.js": 206,
+	"./zh-tw": 207,
+	"./zh-tw.js": 207
 };
 function webpackContext(req) {
 	return __webpack_require__(webpackContextResolve(req));
@@ -37561,22 +37813,22 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 283;
-
-/***/ }),
-/* 284 */
-/***/ (function(module, exports) {
-
-module.exports = "\n\t<div class=\"tab-view\" _v-1eb3a02d=\"\">\n\t\t<div class=\"panel-body\" _v-1eb3a02d=\"\">\n\t\t\t<div class=\" columns mt-2\" v-if=\"logs_no > 0\" _v-1eb3a02d=\"\">\n\t\t\t\t<div class=\"column  col-12 text-right \" _v-1eb3a02d=\"\">\n\t\t\t\t\t<button class=\"btn  btn-secondary \" @click=\"getLogs(true)\" _v-1eb3a02d=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-remove\" v-if=\"!is_loading\" _v-1eb3a02d=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-1eb3a02d=\"\"></i>\n\t\t\t\t\t\t{{labels.clear_btn}}\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"columns\" _v-1eb3a02d=\"\">\n\t\t\t\t<div class=\"empty column col-12\" v-if=\"is_loading\" _v-1eb3a02d=\"\">\n\t\t\t\t\t<div class=\"empty-icon\" _v-1eb3a02d=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-spinner fa-spin\" _v-1eb3a02d=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"empty column col-12\" v-else-if=\"logs_no === 0\" _v-1eb3a02d=\"\">\n\t\t\t\t\t<div class=\"empty-icon\" _v-1eb3a02d=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\" _v-1eb3a02d=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t\t<p class=\"empty-title h5\" _v-1eb3a02d=\"\">{{labels.no_logs}}</p>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"column col-12 mt-2\" v-for=\" (data, index) in logs \" v-else-if=\"logs_no >  0\" _v-1eb3a02d=\"\">\n\t\t\t\t\t<div class=\"toast log-toast\" :class=\"'toast-' + data.type\" _v-1eb3a02d=\"\">\n\t\t\t\t\t\t<small class=\"pull-right text-right\" _v-1eb3a02d=\"\">{{formatDate ( data.time ) }}</small>\n\t\t\t\t\t\t<p _v-1eb3a02d=\"\">{{data.message}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+webpackContext.id = 284;
 
 /***/ }),
 /* 285 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div class=\"tab-view\" _v-6c63d2c4=\"\">\n\t\t<div class=\"panel-body\" _v-6c63d2c4=\"\">\n\t\t\t<div class=\" columns mt-2\" v-if=\"logs_no > 0\" _v-6c63d2c4=\"\">\n\t\t\t\t<div class=\"column  col-12 text-right \" _v-6c63d2c4=\"\">\n\t\t\t\t\t<button class=\"btn  btn-secondary \" @click=\"getLogs(true)\" _v-6c63d2c4=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-remove\" v-if=\"!is_loading\" _v-6c63d2c4=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-6c63d2c4=\"\"></i>\n\t\t\t\t\t\t{{labels.clear_btn}}\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"columns\" _v-6c63d2c4=\"\">\n\t\t\t\t<div class=\"empty column col-12\" v-if=\"is_loading\" _v-6c63d2c4=\"\">\n\t\t\t\t\t<div class=\"empty-icon\" _v-6c63d2c4=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-spinner fa-spin\" _v-6c63d2c4=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"empty column col-12\" v-else-if=\"logs_no === 0\" _v-6c63d2c4=\"\">\n\t\t\t\t\t<div class=\"empty-icon\" _v-6c63d2c4=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\" _v-6c63d2c4=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t\t<p class=\"empty-title h5\" _v-6c63d2c4=\"\">{{labels.no_logs}}</p>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"column col-12 mt-2\" v-for=\" (data, index) in logs \" v-else-if=\"logs_no >  0\" _v-6c63d2c4=\"\">\n\t\t\t\t\t<div class=\"toast log-toast\" :class=\"'toast-' + data.type\" _v-6c63d2c4=\"\">\n\t\t\t\t\t\t<small class=\"pull-right text-right\" _v-6c63d2c4=\"\">{{formatDate ( data.time ) }}</small>\n\t\t\t\t\t\t<p _v-6c63d2c4=\"\">{{data.message}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+
+/***/ }),
+/* 286 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(286)
-__vue_script__ = __webpack_require__(288)
-__vue_template__ = __webpack_require__(289)
+__webpack_require__(287)
+__vue_script__ = __webpack_require__(289)
+__vue_template__ = __webpack_require__(290)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -37584,7 +37836,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\UVDev\\Source\\Repos\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\toast.vue"
+  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/reusables/toast.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -37593,13 +37845,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 286 */
+/* 287 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(287);
+var content = __webpack_require__(288);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -37608,8 +37860,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-40d9cac4&file=toast.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./toast.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-40d9cac4&file=toast.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./toast.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-08254000&file=toast.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./toast.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-08254000&file=toast.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./toast.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -37619,7 +37871,7 @@ if(false) {
 }
 
 /***/ }),
-/* 287 */
+/* 288 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -37633,7 +37885,7 @@ exports.push([module.i, "\n\t#rop_core .toast.hidden {\n\t\tdisplay: none;\n\t}\
 
 
 /***/ }),
-/* 288 */
+/* 289 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37688,18 +37940,18 @@ module.exports = {
 };
 
 /***/ }),
-/* 289 */
+/* 290 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"toast\" :class=\"toastTypeClass\" >\n\t\t<button class=\"btn btn-clear float-right\" @click=\"closeThis\"></button>\n\t\t<b><i class=\"fa\" :class=\"iconClass\"></i> {{ toast.title }}</b><br/>\n\t\t<small>{{ toast.message }}</small>\n\t</div>\n";
 
 /***/ }),
-/* 290 */
+/* 291 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(291)
-__vue_template__ = __webpack_require__(296)
+__vue_script__ = __webpack_require__(292)
+__vue_template__ = __webpack_require__(297)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -37707,7 +37959,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "C:\\Users\\UVDev\\Source\\Repos\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\countdown.vue"
+  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/reusables/countdown.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -37716,7 +37968,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 291 */
+/* 292 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37726,7 +37978,7 @@ var _keys = __webpack_require__(14);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _trunc = __webpack_require__(292);
+var _trunc = __webpack_require__(293);
 
 var _trunc2 = _interopRequireDefault(_trunc);
 
@@ -37734,7 +37986,7 @@ var _moment = __webpack_require__(0);
 
 var _moment2 = _interopRequireDefault(_moment);
 
-__webpack_require__(295);
+__webpack_require__(296);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -37801,25 +38053,25 @@ module.exports = {
 };
 
 /***/ }),
-/* 292 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = { "default": __webpack_require__(293), __esModule: true };
-
-/***/ }),
 /* 293 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(294);
-module.exports = __webpack_require__(8).Math.trunc;
-
+module.exports = { "default": __webpack_require__(294), __esModule: true };
 
 /***/ }),
 /* 294 */
 /***/ (function(module, exports, __webpack_require__) {
 
+__webpack_require__(295);
+module.exports = __webpack_require__(4).Math.trunc;
+
+
+/***/ }),
+/* 295 */
+/***/ (function(module, exports, __webpack_require__) {
+
 // 20.2.2.34 Math.trunc(x)
-var $export = __webpack_require__(34);
+var $export = __webpack_require__(35);
 
 $export($export.S, 'Math', {
   trunc: function trunc(it) {
@@ -37829,7 +38081,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 295 */
+/* 296 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! Moment Duration Format v2.2.2
@@ -39511,16 +39763,16 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 /***/ }),
-/* 296 */
+/* 297 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"toast toast-success rop-current-time\" v-if=\"isOn && accounts_no > 0\">\n\t\t<span v-if=\"diff_seconds>0\"> <b><i\n\t\t\t\tclass=\"fa fa-fast-forward\"></i> {{labels.next_share}}</b> {{labels.in}}</span>\n\t\t<small v-if=\"timediff !== ''\">{{timediff}}</small>\n\t</div>\n";
 
 /***/ }),
-/* 297 */
+/* 298 */
 /***/ (function(module, exports) {
 
-module.exports = "\r\n\t<div>\r\n\t\t<div class=\"columns panel-header\">\r\n\t\t\t<div class=\"column header-logo vertical-align\">\r\n\t\t\t\t<div>\r\n\t\t\t\t\t<img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/>\r\n\t\t\t\t\t<h1 class=\"plugin-title d-inline-block\">Revive Old Posts</h1><span class=\"powered d-inline-block\"> {{labels.by}} <a\r\n\t\t\t\t\t\thref=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\r\n\t\t\t\t\t<div id=\"rop_social_actions\">\r\n\t\t\t\t\t<a href=\"https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial\" target=\"_blank\" class=\"tweet-about-it\"><span></span> {{labels.tweet_about_it}}</a>\r\n\t\t\t\t\t<a href=\"https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post\" target=\"_blank\" class=\"leave-a-review\"><span></span> {{labels.review_it}}</a>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\t\t\t<div v-if=\" is_rest_api_error \" class=\"toast toast-error rop-api-not-available\" v-html=\"labels.api_not_available\">\r\n\t\t\t</div>\r\n\t\t\t<div class=\"sidebar sidebar-top card rop-container-start\">\r\n\t\t\t\t<div class=\"toast rop-current-time\" v-if=\"formatedDate\">\r\n\t\t\t\t\t{{labels.now}}: {{ formatedDate }}\r\n\t\t\t\t</div>\r\n\t\t\t\t<countdown :current_time=\"current_time\"/>\r\n\t\t\t\t<button class=\"btn btn-sm\" :class=\"btn_class\"\r\n\t\t\t\t        :data-tooltip=\"labels.active_account_warning\"\r\n\t\t\t\t        @click=\"togglePosting()\" :disabled=\"haveAccounts\">\r\n\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\r\n\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\r\n\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\r\n\t\t\t\t\t{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\r\n\t\t\t\t</button>\r\n\t\t\t</div>\r\n\t\t</div>\r\n\r\n\t\t<div class=\"columns\">\r\n\t\t\t<div class=\"panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\r\n\t\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\r\n\t\t\t\t\t<ul class=\"tab \">\r\n\t\t\t\t\t\t<li class=\"tab-item c-hand\" v-for=\"tab in displayTabs\"\r\n\t\t\t\t\t\t    :class=\"{ active: tab.isActive }\" v-bind:id=\"tab.name.replace(' ', '').toLowerCase()\">\r\n\t\t\t\t\t\t\t<a :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\r\n\t\t\t\t\t\t\t   :data-badge=\"logs_no\"\r\n\t\t\t\t\t\t\t   @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\r\n\t\t\t\t\t\t</li>\r\n\t\t\t\t\t</ul>\r\n\t\t\t\t</div>\r\n\t\t\t\t<component :is=\"page.template\" :type=\"page.view\"></component>\r\n\t\t\t</div>\r\n\r\n\t\t\t<div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\r\n\t\t\t     :class=\"'rop-license-plan-'+license\">\r\n\r\n\t\t\t\t<div class=\"card rop-container-start\">\r\n\t\t\t\t\t<div class=\"toast rop-current-time\" v-if=\"formatedDate\">\r\n\t\t\t\t\t\t{{labels.now}}: {{ formatedDate }}\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\t<countdown :current_time=\"current_time\"/>\r\n\t\t\t\t\t<button  id=\"rop_start_stop_btn\" class=\"btn\" :class=\"btn_class\"\r\n\t\t\t\t\t        :data-tooltip=\"labels.active_account_warning\"\r\n\t\t\t\t\t        @click=\"togglePosting()\" :disabled=\"haveAccounts\">\r\n\t\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\r\n\t\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\r\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\r\n\t\t\t\t\t\t{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\r\n\t\t\t\t\t</button>\r\n\t\t\t\t\t<div id=\"staging-status\" v-if=\"staging\">\r\n\t\t\t\t\t\t{{labels.staging_status}}\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\t<upsell-sidebar></upsell-sidebar>\r\n\t\t\t\t</div>\r\n\r\n\t\t\t</div>\r\n\t\t</div>\r\n\t</div>\r\n";
+module.exports = "\n\t<div>\n\t\t<div class=\"columns panel-header\">\n\t\t\t<div class=\"column header-logo vertical-align\">\n\t\t\t\t<div>\n\t\t\t\t\t<img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/>\n\t\t\t\t\t<h1 class=\"plugin-title d-inline-block\">Revive Old Posts</h1><span class=\"powered d-inline-block\"> {{labels.by}} <a\n\t\t\t\t\t\thref=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\n\t\t\t\t\t<div id=\"rop_social_actions\">\n\t\t\t\t\t<a href=\"https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform\" target=\"_blank\" class=\"submit-feedback\"><span><i class=\"fa fa-commenting\" aria-hidden=\"true\"></i></span> {{labels.help_improve}}</a>\n\t\t\t\t\t<a href=\"https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial\" target=\"_blank\" class=\"tweet-about-it\"><span><i class=\"fa fa-twitter\" aria-hidden=\"true\"></i></span> {{labels.tweet_about_it}}</a>\n\t\t\t\t\t<a href=\"https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post\" target=\"_blank\" class=\"leave-a-review\"><span><i class=\"fa fa-star\" aria-hidden=\"true\"></i></span> {{labels.review_it}}</a>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div v-if=\" is_rest_api_error \" class=\"toast toast-error rop-api-not-available\" v-html=\"labels.api_not_available\">\n\t\t\t</div>\n\t\t\t<div class=\"sidebar sidebar-top card rop-container-start\">\n\t\t\t\t<div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n\t\t\t\t\t{{labels.now}}: {{ formatedDate }}\n\t\t\t\t</div>\n\t\t\t\t<countdown :current_time=\"current_time\"/>\n\t\t\t\t<button class=\"btn btn-sm\" :class=\"btn_class\"\n\t\t\t\t        :data-tooltip=\"labels.active_account_warning\"\n\t\t\t\t        @click=\"togglePosting()\" :disabled=\"haveAccounts\">\n\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t\t{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns\">\n\t\t\t<div class=\"panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\n\t\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t\t<ul class=\"tab \">\n\t\t\t\t\t\t<li class=\"tab-item c-hand\" v-for=\"tab in displayTabs\"\n\t\t\t\t\t\t    :class=\"{ active: tab.isActive }\" v-bind:id=\"tab.name.replace(' ', '').toLowerCase()\">\n\t\t\t\t\t\t\t<a :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\n\t\t\t\t\t\t\t   :data-badge=\"logs_no\"\n\t\t\t\t\t\t\t   @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\n\t\t\t\t\t\t</li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t\t<component :is=\"page.template\" :type=\"page.view\"></component>\n\t\t\t</div>\n\n\t\t\t<div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\n\t\t\t     :class=\"'rop-license-plan-'+license\">\n\n\t\t\t\t<div class=\"card rop-container-start\">\n\t\t\t\t\t<div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n\t\t\t\t\t\t{{labels.now}}: {{ formatedDate }}\n\t\t\t\t\t</div>\n\t\t\t\t\t<countdown :current_time=\"current_time\"/>\n\t\t\t\t\t<button  id=\"rop_start_stop_btn\" class=\"btn\" :class=\"btn_class\"\n\t\t\t\t\t        :data-tooltip=\"labels.active_account_warning\"\n\t\t\t\t\t        @click=\"togglePosting()\" :disabled=\"haveAccounts\">\n\t\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t\t\t{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n\t\t\t\t\t</button>\n\t\t\t\t\t<div id=\"staging-status\" v-if=\"staging\">\n\t\t\t\t\t\t{{labels.staging_status}}\n\t\t\t\t\t</div>\n\t\t\t\t\t<upsell-sidebar></upsell-sidebar>\n\t\t\t\t</div>\n\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ })
 /******/ ]);

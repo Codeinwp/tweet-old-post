@@ -20,9 +20,6 @@ jQuery(document).ready(function ($) {
 
 <?php
 
-$settings = new Rop_Settings_Model();
-$custom_utm_campaign = $settings->get_custom_messages_utm();
-
 if ( $rop_custom_messages_group ) {
 	$i = 1;
 	foreach ( $rop_custom_messages_group as $field ) {
@@ -31,11 +28,6 @@ if ( $rop_custom_messages_group ) {
 		<p>
 		<textarea placeholder="' . Rop_Pro_I18n::get_labels( 'magic_tags.example' ) . '" cols="55" rows="5" name="rop_custom_description[]" style="width: 100%;">' . ( ( $field['rop_custom_description'] != '' ) ? esc_attr( $field['rop_custom_description'] ) : '' ) . '</textarea>
 		</p>';
-
-		if ( $custom_utm_campaign ) {
-			echo '<p><b>' . Rop_I18n::get_labels( 'post_editor.custom_utm_campaign' ) . '</b></p>
-		<p><input type="text" name="rop_custom_utm_campaign[]"  placeholder="' . Rop_I18n::get_labels( 'post_editor.utm_placeholder' ) . '" value="' . ( ( $field['rop_custom_utm_campaign'] != '' ) ? esc_attr( $field['rop_custom_utm_campaign'] ) : '' ) . '"/></p>';
-		}
 
 		echo '<p><a class="button remove-row" href="#1">' . Rop_I18n::get_labels( 'post_editor.remove_variation' ) . '</a></p>
 		</div>';
@@ -48,13 +40,6 @@ if ( $rop_custom_messages_group ) {
 	<p><textarea  placeholder="' . Rop_Pro_I18n::get_labels( 'magic_tags.example' ) . '" name="rop_custom_description[]" cols="55" rows="5" style="width: 100%;"></textarea></p>
 ';
 
-	if ( $custom_utm_campaign ) {
-		echo '
-	<p><b>' . Rop_I18n::get_labels( 'post_editor.custom_utm_campaign' ) . '</b></p>
-	<p><input type="text" name="rop_custom_utm_campaign[]"  placeholder="' . Rop_I18n::get_labels( 'post_editor.utm_placeholder' ) . '" /></p>
-	';
-	}
-
 	echo'</div>';
 }
 ?>
@@ -63,10 +48,6 @@ if ( $rop_custom_messages_group ) {
 <p>
 <textarea placeholder="<?php echo Rop_Pro_I18n::get_labels( 'magic_tags.example' ); ?>" cols="55" rows="5" name="rop_custom_description[]" style="width: 100%;"></textarea>
 </p>
-<?php if ( $custom_utm_campaign ) { ?>
-<p><b><?php echo Rop_I18n::get_labels( 'post_editor.custom_utm_campaign' ); ?></b></p>
-<p><input type="text" name="rop_custom_utm_campaign[]" placeholder="<?php echo Rop_I18n::get_labels( 'post_editor.utm_placeholdero' ); ?>'"/></p>
-<?php } ?>
 <p><a class="button remove-row" href="#1"><?php echo Rop_I18n::get_labels( 'post_editor.remove_variation' ); ?></a></p>
 </div>
 
