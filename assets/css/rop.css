@@ -4324,6 +4324,17 @@
 }
 
 @media (max-width: 840px) {
+	#rop_social_actions {
+    display: inline-block;
+    margin-bottom: 11px;
+    text-align: center;
+    width: 100%;
+}
+
+#rop_social_actions a {
+	margin-bottom: 5px;
+}
+
 	#rop_core .sidebar {
 		display: block;
 	}
