@@ -94,8 +94,8 @@ class Rop_I18n {
 				'upsell_accounts'         => __( 'You are allowed to add a maximum 1 account for Twitter and 1 account for Facebook. For using more accounts and networks, you need to check the <strong>Extended</strong> version.', 'tweet-old-post' ),
 				'fb_app_id_title'         => __( 'Please add the APP ID from your Facebook app.', 'tweet-old-post' ),
 				'fb_app_secret_title'     => __( 'Please add the APP SECRET from your Facebook app.', 'tweet-old-post' ),
-				'fb_app_desc'             => sprintf( __( 'You can check %1$shere%2$s how you get this details.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/349-how-to-create-a-facebook-application-for-revive-old-post" target="_blank">', '</a>' ),
-				'twt_app_desc'            => sprintf( __( 'You can check %1$shere%2$s how to get this details.', 'tweet-old-post' ), '<a class="text-bold " href="https://docs.revive.social/article/914-how-to-create-a-twitter-application-for-revive-old-post" target="_blank">', '</a>' ),
+				'fb_app_desc'             => sprintf( __( 'You can check %1$shere%2$s how you get these details.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/349-how-to-create-a-facebook-application-for-revive-old-post" target="_blank">', '</a>' ),
+				'twt_app_desc'            => sprintf( __( 'You can check %1$shere%2$s how to get these details.', 'tweet-old-post' ), '<a class="text-bold " href="https://docs.revive.social/article/914-how-to-create-a-twitter-application-for-revive-old-post" target="_blank">', '</a>' ),
 				'service_error'           => __( 'The %1$s service can not be used or was not found', 'tweet-old-post' ),
 				'twitter_warning'         => __(
 					'
@@ -149,6 +149,9 @@ class Rop_I18n {
 				'custom_share_desc'           => __( 'These messages will override the Post Content option in Post Format settings. You can go to each post and add multiple share content variations.', 'tweet-old-post' ),
 				'custom_share_yes'            => __( 'Yes', 'tweet-old-post' ),
 				'custom_share_upsell'         => __( 'Using a custom share message is available in the pro version.', 'tweet-old-post' ),
+				'custom_share_order_title'    => __( 'Share message variations in order they are added.', 'tweet-old-post' ),
+				'custom_share_order_desc'     => __( 'By default message variations are shared randomly. Checking this box will cause them to share in the order they were added.', 'tweet-old-post' ),
+				'custom_share_order_yes'      => __( 'Yes', 'tweet-old-post' ),
 				'instant_share_title'         => __( 'Enable Instant Sharing option', 'tweet-old-post' ),
 				'instant_share_desc'          => __( 'Allow sharing immediately posts on publish/update.', 'tweet-old-post' ),
 				'instant_share_yes'           => __( 'Yes', 'tweet-old-post' ),
@@ -283,6 +286,7 @@ class Rop_I18n {
 				'by'                     => __( 'by', 'tweet-old-post' ),
 				'tweet_about_it'         => __( 'Show your love', 'tweet-old-post' ),
 				'review_it'              => __( 'Leave a review', 'tweet-old-post' ),
+				'help_improve'           => __( 'Help us improve', 'tweet-old-post' ),
 				'in'                     => __( 'in', 'tweet-old-post' ),
 				'now'                    => __( 'Now', 'tweet-old-post' ),
 				'start'                  => __( 'Start', 'tweet-old-post' ),
@@ -304,10 +308,11 @@ You can try to disable any of the security plugins that you use in order to see 
 				),
 			),
 			'post_editor' => array(
-				'remove_message'      => __( 'Remove Content Variation', 'tweet-old-post' ),
-				'add_message'         => __( 'Add New Content Variation', 'tweet-old-post' ),
-				'random_message_info' => sprintf( __( 'A share content variation that will be selected randomly for each share and will overwrite the post share content. Supports %1$smagic tags%2$s.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/952-available-magic-tags-in-revive-old-posts" target="_blank">', '</a>' ),
-				'message_no'          => __( 'Content Variation #', 'tweet-old-post' ),
+				'remove_variation'      => __( 'Delete', 'tweet-old-post' ),
+				'add_variation'         => __( 'Add New', 'tweet-old-post' ),
+				'new_variation'         => __( 'New Content Variation', 'tweet-old-post' ),
+				'custom_message_info'   => sprintf( __( 'Add share message variations to this post %1$sLearn More%2$s.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/971-how-to-add-variations-to-revive-old-posts-shares" target="_blank">', '</a>' ),
+				'variation_num'         => __( 'Content Variation #', 'tweet-old-post' ),
 			),
 			// pro only.
 			'publish_now' => array(
