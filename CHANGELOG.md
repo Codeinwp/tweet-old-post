@@ -1,4 +1,11 @@
 
+ ### v8.2.2 - 2019-03-20 
+ **Changes:** 
+ * New: Feedback button on plugin dashboard. Help us make ROP better by filling out the form!
+* Fix: Minor typos
+* PRO: You can now share custom messages/share variations in the order they were added.
+* PRO Change: Updated custom messages/share variations metabox design
+ 
  ### v8.2.1 - 2019-03-01 
  **Changes:** 
  * Fix: Sharing queue issue with sites running WPML plugin
