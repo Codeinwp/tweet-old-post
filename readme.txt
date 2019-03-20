@@ -1,6 +1,6 @@
 ﻿=== Revive Old Posts - Auto Post to Social Media ===
 Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle, rsocial, uriahs-victor
-Tags:twitter, facebook, linkedin, automatic, tweet, share, wordpress, marketing, sharing, Tweet old post, Tweets,evergreen
+Tags: auto publish, auto post, social media automation, social media scheduling, automatic, facebook, twitter, linkedin, pinterest, autopilot, analytics, sharing
 Requires at least: 4.7
 Tested up to: 5.1
 Requires PHP: 5.6
@@ -22,6 +22,7 @@ ROP can work as a facebook or twitter auto-poster and using it you can easily au
 **Revive Old Posts provides the following features**
 
 - Share new and old posts.
+- Post to social media on publish.
 - Choose the time between posts.
 - Choose the number of posts to share.
 - Use hashtags to focus on topics.
@@ -133,7 +134,7 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
-= 8.2.1 - 2019-03-01  = 
+= 8.2.1 - 2019-03-01  =
 
 * Fix: Sharing queue issue with sites running WPML plugin
 
