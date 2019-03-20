@@ -1,6 +1,6 @@
 ﻿=== Revive Old Posts - Auto Post to Social Media ===
 Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle, rsocial, uriahs-victor
-Tags: auto publish, auto post, social media automation, social media scheduling, automatic, facebook, twitter, autopilot, analytics, marketing, sharing
+Tags: auto publish, auto post, social media automation, social media scheduling, automatic, facebook, twitter, linkedin, pinterest, autopilot, analytics, sharing
 Requires at least: 4.7
 Tested up to: 5.1
 Requires PHP: 5.6
