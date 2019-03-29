@@ -475,6 +475,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 				}
 			} else {
 				$this->logger->alert_error( sprintf( 'Can not upload media to twitter. Error: %s', json_encode( $media_response ) ) );
+				$this->rop_get_error_docs( $media_response );
 			}
 		}
 
@@ -496,6 +497,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			return true;
 		} else {
 			$this->logger->alert_error( sprintf( 'Error posting on twitter. Error: %s', json_encode( $response ) ) );
+			$this->rop_get_error_docs( $response );
 		}
 
 		return false;
