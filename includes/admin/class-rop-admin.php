@@ -671,10 +671,16 @@ class Rop_Admin {
 	 */
 	public function rop_linkedin_api_v2_notice() {
 
-		// check for install version option
 		if ( ! current_user_can( 'install_plugins' ) ) {
 			return;
 		}
+
+		// This option was introduced the same time we updated Linkedin API to v2.
+		// Gets created on plugin activation hook, old installs would not have this option.
+		// So we return in case this is a brand new install.
+		if( !empty( get_option( 'rop_first_install_version' ) ) ){
+					 return;
+			 }
 
 		$user_id = get_current_user_id();
 
@@ -700,7 +706,7 @@ class Rop_Admin {
 
 		?>
 			<div class="notice notice-error">
-				<?php echo sprintf( __( '%1$s%2$sRevive Old Posts:%3$s PLEASE REFRESH LINKED IN %4$sarticle for instructions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/976-how-to-connect-bit-ly-to-revive-old-posts" target="_blank">', '</a>', '<a style="float: right;" href="?rop-linkedin-api-notice-dismissed">Dismiss</a>', '</p>' ); ?>
+				<?php echo sprintf( __( '%1$s%2$sRevive Old Posts:%3$s The Linkedin API Has been updated. You need to reconnect your LinkedIn account to continue posting to LinkedIn. Please see %4$sthis article for instructions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/1040-how-to-move-to-linkedin-api-v2" target="_blank">', '</a>', '<a style="float: right;" href="?rop-linkedin-api-notice-dismissed">Dismiss</a>', '</p>' ); ?>
 
 			</div>
 			<?php
