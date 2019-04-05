@@ -549,6 +549,11 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$asset = $response['value']['asset'];
 
 		$img = $post_details['post_image'];
+
+		if( ! class_exists('\GuzzleHttp\Client') ){
+			$this->logger->alert_error( 'Error: Cannot find Guzzle' );
+			return;
+		}
 		$guzzle = new \GuzzleHttp\Client();
 		$guzzle->request(
 			'PUT',
@@ -561,11 +566,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 			]
 		);
-
-		$parent_id = wp_get_post_parent_id( $post_details['post_id'] );
-
-		   $post_url = get_permalink( $parent_id );
-		   update_option( 'linkedinparent', $post_url );
 
 		  $new_post = array (
 			  'author' => 'urn:li:person:' . $args['id'],
