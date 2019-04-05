@@ -663,4 +663,62 @@ class Rop_Admin {
 		$cron->create_cron( false );
 	}
 
+	/**
+	 * Linkedin API upgrade notice.
+	 *
+	 * @since   8.2.3
+	 * @access  public
+	 */
+	public function rop_linkedin_api_v2_notice() {
+
+		// check for install version option
+		if ( ! current_user_can( 'install_plugins' ) ) {
+			return;
+		}
+
+		$user_id = get_current_user_id();
+
+		if ( get_user_meta( $user_id, 'rop-linkedin-api-notice-dismissed' ) ) {
+			return;
+		}
+
+		$services_model = new Rop_Services_Model();
+
+		$services = $services_model->get_authenticated_services();
+
+		foreach ( $services as $key => $value ) {
+
+			if ( $value['service'] == 'linkedin' ) {
+				$show_notice = true;
+				break;
+			}
+		}
+
+		if ( ! $show_notice ) {
+			return;
+		}
+
+		?>
+			<div class="notice notice-error">
+				<?php echo sprintf( __( '%1$s%2$sRevive Old Posts:%3$s PLEASE REFRESH LINKED IN %4$sarticle for instructions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/976-how-to-connect-bit-ly-to-revive-old-posts" target="_blank">', '</a>', '<a style="float: right;" href="?rop-linkedin-api-notice-dismissed">Dismiss</a>', '</p>' ); ?>
+
+			</div>
+			<?php
+
+	}
+
+	/**
+	 * Show Linkedin API upgrade notice.
+	 *
+	 * @since   8.2.3
+	 * @access  public
+	 */
+	public function rop_show_linkedin_api_v2_notice() {
+		 $user_id = get_current_user_id();
+		if ( isset( $_GET['rop-linkedin-api-notice-dismissed'] ) ) {
+			add_user_meta( $user_id, 'rop-linkedin-api-notice-dismissed', 'true', true );
+		}
+
+	}
+
 }
