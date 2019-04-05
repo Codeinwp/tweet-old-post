@@ -428,10 +428,20 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$token = new \LinkedIn\AccessToken( $this->credentials['token'] );
 		$api->setAccessToken( $token );
 
-//add conditionals for type of post
-
-		$new_post = $this->linkedin_article_post( $post_details, $args );
-		$new_post = $this->linkedin_image_post( $post_details, $args, $token, $api );
+		if ( get_post_type( $post_details['post_id'] ) !== 'attachment' ) {
+			// If post image option unchecked, share as article post
+		    if( empty( $post_details['post_image'] ) ){
+		    $new_post = $this->linkedin_article_post( $post_details, $args );
+		}else{
+		  $new_post = $this->linkedin_image_post( $post_details, $args, $token, $api );
+		}
+		}elseif( get_post_type( $post_details['post_id'] ) == 'attachment'){
+			// Linkedin Api v2 doesn't support video upload. Share as article post
+			if( strpos( $post_details['mimetype']['type'], 'video' ) !== false  ){
+				$new_post = $this->linkedin_article_post( $post_details, $args );
+			}
+		     $new_post = $this->linkedin_image_post( $post_details, $args, $token, $api);
+		}
 
 		try {
 			if ( isset( $args['is_company'] ) && $args['is_company'] === true ) {
@@ -548,7 +558,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$upload_url = $response['value']['uploadMechanism']['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest']['uploadUrl'];
 		$asset = $response['value']['asset'];
 
-		$img = $post_details['post_image'];
+		$img = wp_get_attachment_url( $post_details['post_id'] );
 
 		if( ! class_exists('\GuzzleHttp\Client') ){
 			$this->logger->alert_error( 'Error: Cannot find Guzzle' );
@@ -576,7 +586,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 				  array (
 					  'shareCommentary' =>
 					  array (
-						  'text' => $this->strip_excess_blank_lines( $post_details['content'] ) . $post_details['hashtags'],
+						  'text' => $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $post_details['hashtags'],
 					  ),
 					  'shareMediaCategory' => 'IMAGE',
 					  'media' =>
