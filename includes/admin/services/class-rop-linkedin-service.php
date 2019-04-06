@@ -44,8 +44,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @var     array $scopes The scopes to authorize with LinkedIn.
 	 */
 	protected $scopes = array( 'r_liteprofile', 'r_emailaddress', 'w_member_social');
-	// protected $scopes = array( 'r_basicprofile', 'r_emailaddress', 'rw_company_admin', 'w_share' );
-
 
 	/**
 	 * Method to inject functionality into constructor.
@@ -143,11 +141,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		}
 		$this->api = new \LinkedIn\Client( $this->strip_whitespace( $client_id ), $this->strip_whitespace( $client_secret ) );
 
-		// $this->api->setApiHeaders([
-		// 'Content-Type' => 'application/json',
-		// 'x-li-format' => 'json',
-		// 'X-Restli-Protocol-Version' => '2.0.0', // use protocol v2
-		// ]);
 		$this->api->setApiRoot( 'https://api.linkedin.com/v2/' );
 
 		$this->api->setRedirectUrl( $this->get_legacy_url( 'linkedin' ) );
@@ -227,7 +220,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$api->setAccessToken( new LinkedIn\AccessToken( $args['token'] ) );
 		try {
 			$profile = $api->api(
-				// 'me',
 				'me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams))',
 				array(),
 				'GET'
@@ -254,7 +246,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 					'private' => true,
 				),
 			),
-			'available_accounts' => $this->get_users( $profile ),
+			'available_accounts' => $this->get_users( $profile, $api ),
 		);
 
 		return true;
@@ -273,39 +265,39 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 *
 	 * @return array
 	 */
-	private function get_users( $data = null ) {
+	private function get_users( $data = null, $api ) {
 		if ( empty( $data ) ) {
 			return array();
-		}
+}
 
-		$img = '';
-		if ( isset( $data['pictureUrl'] ) && $data['pictureUrl'] ) {
-			$img = $data['pictureUrl'];
-		}
+try {
+	$email_array = $api->api(
+		'emailAddress?q=members&projection=(elements*(handle~))',
+		array(),
+		'GET'
+	);
+} catch ( Exception $e ) {
+	$this->logger->alert_error( 'Can not get linkedin user email. Error ' . $e->getMessage() );
+}
 
-		$img = $data['profilePicture(displayImage~:playableStreams)'];
+$email = $email_array['elements']['0']['handle~']['emailAddress'];
+
+		$img = $data['profilePicture']['displayImage~']['elements']['0']['identifiers']['0']['identifier'];
 		$user_details            = $this->user_default;
-		// $name = $data['firstName']['localized']['en_US'] . $data['lastName']['localized']['en_US'];
-		// $name = json_encode($data['firstName'] ). ' ' . json_encode($data['lastName']) . ' ' . json_encode($img);
-		// $fname_array = $data['firstName']['localized'];
+
 		$fname_array = array_values( $data['firstName']['localized'] );
 		$firstname = $fname_array[0];
 
 		$lname_array = array_values( $data['lastName']['localized'] );
 		$lastname = $lname_array[0];
 
-		// $localized = $fname_array['localized'];
-		// $lname_array = $data['lastName']['localized'];
-		// $firstnamekey = array_values($fname_array);
-		// $firstname = $firstnamekey[0];
 		$user_details['id']      = $this->strip_underscore( $data['id'] );
-		$user_details['account'] = $this->normalize_string( $data['id'] );
-		// $user_details['user']    = $this->normalize_string( $name );
+		$user_details['account'] = $email;
 		$user_details['user']    = $firstname . ' ' . $lastname;
-		// $user_details['user']    = $this->normalize_string( $data['formattedName'] );
 		$user_details['img']     = $img;
 
 		$users = array( $user_details );
+
 		try {
 			$companies = $this->api->api(
 				'companies?format=json&is-company-admin=true',
@@ -614,48 +606,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		  );
 
 		return $new_post;
-	}
-
-	private function rop_linkedin_api_v1( $post_details ) {
-
-		$new_post = array(
-			'comment'    => '',
-			'content'    => array(
-				'title'         => '',
-				'description'   => '',
-				'submitted-url' => '',
-			),
-			'visibility' => array(
-				'code' => 'anyone',
-			),
-		);
-
-		if ( ! empty( $post_details['post_image'] ) ) {
-			// If we have an video, share the placeholder, otherwise, share the image.
-			if ( strpos( $post_details['mimetype']['type'], 'video' ) === false ) {
-				$new_post['content']['submitted-image-url'] = $post_details['post_image'];
-			} else {
-				$new_post['content']['submitted-image-url'] = ROP_LITE_URL . 'assets/img/video_placeholder.jpg';
-			}
-		}
-
-		$new_post['comment']                = $this->strip_excess_blank_lines( $post_details['content'] ) . $post_details['hashtags'];
-		$new_post['content']['description'] = $post_details['content'];
-		$new_post['content']['title']       = html_entity_decode( get_the_title( $post_details['post_id'] ) );
-
-		$url_to_share = $this->get_url( $post_details );
-		/**
-		 * If the url is not present, use the image instead in order for the share to be successful.
-		 */
-		if ( empty( $url_to_share ) && ! empty( $post_details['post_image'] ) ) {
-			$url_to_share = $post_details['post_image'];
-		}
-		$new_post['content']['submitted-url'] = $url_to_share;
-
-		$new_post['visibility']['code'] = 'anyone';
-
-		return $new_post;
-
 	}
 
 }
