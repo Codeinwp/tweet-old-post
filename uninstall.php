@@ -56,6 +56,7 @@ if ( isset( $housekeeping ) && $housekeeping ) {
 	}
 
 	delete_metadata( 'user', 0, 'rop_publish_now_notice_dismissed', '', true );
+	delete_metadata( 'user', 0, 'rop_first_install_version', '', true );
 
 	global $wpdb;
 	$post_meta = $wpdb->prefix . 'postmeta';
