@@ -376,7 +376,7 @@ class Rop_Pointers {
 	 */
 	public function rop_enqueue_pointers() {
 
-		if ( ! $screen = get_current_screen() ) {
+		if ( ! $screen == get_current_screen() ) {
 			return;
 		}
 
