@@ -516,7 +516,11 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 
 		$dir = wp_upload_dir();
 
-		if ( false === strpos( $image_url, $dir['baseurl'] . '/' ) ) {
+		$parsed = parse_url( $dir['baseurl'] );
+
+		$dir = $parsed['host'] . $parsed['path'];
+
+		if ( false === strpos( $image_url, $dir ) ) {
 			return $image_url;
 		}
 
