@@ -225,7 +225,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 				'GET'
 			);
 		} catch ( Exception $e ) {
-			$this->logger->alert_error( 'Can not get linkedin user details. Error ' . $e->getMessage() );
+			$this->logger->alert_error( 'Cannot get linkedin user details. Error ' . $e->getMessage() );
 		}
 		if ( ! isset( $profile['id'] ) ) {
 			return false;
@@ -277,7 +277,7 @@ try {
 		'GET'
 	);
 } catch ( Exception $e ) {
-	$this->logger->alert_error( 'Can not get linkedin user email. Error ' . $e->getMessage() );
+	$this->logger->alert_error( 'Cannot get linkedin user email. Error ' . $e->getMessage() );
 }
 
 $email = $email_array['elements']['0']['handle~']['emailAddress'];
@@ -450,7 +450,7 @@ $email = $email_array['elements']['0']['handle~']['emailAddress'];
 				)
 			);
 		} catch ( Exception $exception ) {
-			$this->logger->alert_error( 'Can not share to linkedin. Error:  ' . $exception->getMessage() );
+			$this->logger->alert_error( 'Cannot share to linkedin. Error:  ' . $exception->getMessage() );
 			$this->rop_get_error_docs( $exception->getMessage() );
 
 			return false;
