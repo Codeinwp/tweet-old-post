@@ -33,16 +33,16 @@ class Rop_Activator {
 	public static function activate() {
 
 		// Add version when ROP was first installed on site to DB.
-		$rop_first_install_version = get_option('rop_first_install_version');
-	    
-	    if( class_exists('Rop') ){
-	        $rop = new Rop();
-	        $version = $rop->get_version();
-	    }
+		$rop_first_install_version = get_option( 'rop_first_install_version' );
 
-	    if( empty( $rop_first_install_version ) && ! empty( $version ) ){
-	        add_option( 'rop_first_install_version', $version );
-	    }
+		if ( class_exists( 'Rop' ) ) {
+			$rop = new Rop();
+			$version = $rop->get_version();
+		}
+
+		if ( empty( $rop_first_install_version ) && ! empty( $version ) ) {
+			add_option( 'rop_first_install_version', $version );
+		}
 
 	}
 

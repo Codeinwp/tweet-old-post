@@ -273,19 +273,19 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	private function get_users( $data = null, $api ) {
 		if ( empty( $data ) ) {
 			return array();
-}
+		}
 
-try {
-	$email_array = $api->api(
-		'emailAddress?q=members&projection=(elements*(handle~))',
-		array(),
-		'GET'
-	);
-} catch ( Exception $e ) {
-	$this->logger->alert_error( 'Cannot get linkedin user email. Error ' . $e->getMessage() );
-}
+		try {
+			$email_array = $api->api(
+				'emailAddress?q=members&projection=(elements*(handle~))',
+				array(),
+				'GET'
+			);
+		} catch ( Exception $e ) {
+			$this->logger->alert_error( 'Cannot get linkedin user email. Error ' . $e->getMessage() );
+		}
 
-$email = $email_array['elements']['0']['handle~']['emailAddress'];
+		$email = $email_array['elements']['0']['handle~']['emailAddress'];
 
 		$img = $data['profilePicture']['displayImage~']['elements']['0']['identifiers']['0']['identifier'];
 		$user_details            = $this->user_default;
@@ -303,11 +303,11 @@ $email = $email_array['elements']['0']['handle~']['emailAddress'];
 
 		$users = array( $user_details );
 
+			/*
+		We're not requesting the w_organization_social scope so code below wouldn't be used.
+		See scope property at the top of file for more details.
 
-  // We're not requesting the w_organization_social scope so code below wouldn't be used.
-	// See scope property at the top of file for more details.
-	/*
-	try {
+		try {
 			$companies = $this->api->api(
 				'organizationalEntityAcls?q=roleAssignee&role=ADMINISTRATOR&projection=(elements*(organizationalTarget~(localizedName,vanityName,logoV2)))',
 				array(),
@@ -332,7 +332,8 @@ $email = $email_array['elements']['0']['handle~']['emailAddress'];
 				),
 				$this->user_default
 			);
-		}*/
+		}
+		*/
 
 		return $users;
 	}
@@ -431,17 +432,17 @@ $email = $email_array['elements']['0']['handle~']['emailAddress'];
 
 		if ( get_post_type( $post_details['post_id'] ) !== 'attachment' ) {
 			// If post image option unchecked, share as article post
-		    if( empty( $post_details['post_image'] ) ){
-		    $new_post = $this->linkedin_article_post( $post_details, $args );
-		}else{
-		  $new_post = $this->linkedin_image_post( $post_details, $args, $token, $api );
-		}
-		}elseif( get_post_type( $post_details['post_id'] ) == 'attachment'){
+			if ( empty( $post_details['post_image'] ) ) {
+				$new_post = $this->linkedin_article_post( $post_details, $args );
+			} else {
+				$new_post = $this->linkedin_image_post( $post_details, $args, $token, $api );
+			}
+		} elseif ( get_post_type( $post_details['post_id'] ) == 'attachment' ) {
 			// Linkedin Api v2 doesn't support video upload. Share as article post
-			if( strpos( $post_details['mimetype']['type'], 'video' ) !== false  ){
+			if ( strpos( $post_details['mimetype']['type'], 'video' ) !== false ) {
 				$new_post = $this->linkedin_article_post( $post_details, $args );
 			}
-		     $new_post = $this->linkedin_image_post( $post_details, $args, $token, $api);
+			 $new_post = $this->linkedin_image_post( $post_details, $args, $token, $api );
 		}
 
 		try {
@@ -561,7 +562,7 @@ $email = $email_array['elements']['0']['handle~']['emailAddress'];
 
 		$img = wp_get_attachment_url( $post_details['post_id'] );
 
-		if( ! class_exists('\GuzzleHttp\Client') ){
+		if ( ! class_exists( '\GuzzleHttp\Client' ) ) {
 			$this->logger->alert_error( 'Error: Cannot find Guzzle' );
 			return;
 		}

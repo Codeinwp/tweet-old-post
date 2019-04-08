@@ -678,9 +678,9 @@ class Rop_Admin {
 		// This option was introduced the same time we updated Linkedin API to v2.
 		// Gets created on plugin activation hook, old installs would not have this option.
 		// So we return in case this is a brand new install.
-		if( !empty( get_option( 'rop_first_install_version' ) ) ){
+		if ( ! empty( get_option( 'rop_first_install_version' ) ) ) {
 					 return;
-			 }
+		}
 
 		$user_id = get_current_user_id();
 
