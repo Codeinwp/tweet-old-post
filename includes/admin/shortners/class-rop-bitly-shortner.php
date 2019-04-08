@@ -43,7 +43,9 @@ class Rop_Bitly_Shortner extends Rop_Url_Shortner_Abstract {
 		// if they are anything but identical, we should assume these need to be refreshed as this could be an upgrade to oauth2 keys.
 		$prev   = array_keys( $credentials );
 		$now    = array_keys( $this->credentials );
-		if ( ! empty( $diff == array_diff( $prev, $now ) ) ) {
+		$diff = array_diff( $prev, $now );
+
+		if ( ! empty( $diff ) ) {
 			return $this->credentials;
 		}
 		return $credentials;
