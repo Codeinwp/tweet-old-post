@@ -44,6 +44,11 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @var     array $scopes The scopes to authorize with LinkedIn.
 	 */
 	protected $scopes = array( 'r_liteprofile', 'r_emailaddress', 'w_member_social');
+	// Company(organization) sharing scope cannot be used unless app approved for this scope.
+	// Added here for future reference
+	// https://stackoverflow.com/questions/54821731/in-linkedin-api-v2-0-how-to-get-company-list-by-persons-token
+	// https://business.linkedin.com/marketing-solutions/marketing-partners/become-a-partner/marketing-developer-program
+	// protected $scopes = array( 'r_liteprofile', 'r_emailaddress', 'w_member_social', , 'w_organization_social');
 
 	/**
 	 * Method to inject functionality into constructor.
@@ -298,9 +303,13 @@ $email = $email_array['elements']['0']['handle~']['emailAddress'];
 
 		$users = array( $user_details );
 
-		try {
+
+  // We're not requesting the w_organization_social scope so code below wouldn't be used.
+	// See scope property at the top of file for more details.
+	/*
+	try {
 			$companies = $this->api->api(
-				'companies?format=json&is-company-admin=true',
+				'organizationalEntityAcls?q=roleAssignee&role=ADMINISTRATOR&projection=(elements*(organizationalTarget~(localizedName,vanityName,logoV2)))',
 				array(),
 				'GET'
 			);
@@ -310,20 +319,20 @@ $email = $email_array['elements']['0']['handle~']['emailAddress'];
 		if ( empty( $companies ) ) {
 			return $users;
 		}
-		if ( empty( $companies['values'] ) ) {
+		if ( empty( $companies['elements'] ) ) {
 			return $users;
 		}
-		foreach ( $companies['values'] as $company ) {
+		foreach ( $companies['elements'] as $company ) {
 			$users[] = wp_parse_args(
 				array(
 					'id'         => $this->strip_underscore( $company['id'] ),
-					'account'    => $company['name'],
+					'account'    => $company['localizedName'],
 					'is_company' => true,
-					'user'       => $company['name'],
+					'user'       => $company['localizedName'],
 				),
 				$this->user_default
 			);
-		}
+		}*/
 
 		return $users;
 	}
