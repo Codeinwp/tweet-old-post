@@ -36,6 +36,8 @@
         <exclude name="WordPress.WP.I18n.MissingTranslatorsComment" />
         <exclude name="WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned" />
         <exclude name="Generic.Files.LineEndings.InvalidEOLChar" />
+        <exclude name="WordPress.PHP.StrictComparisons.LooseComparison" />
+        <exclude name="WordPress.PHP.StrictInArray.MissingTrueStrict" />
     </rule>
     <rule ref="WordPress-Docs">
 

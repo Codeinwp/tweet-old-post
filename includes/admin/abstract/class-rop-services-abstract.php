@@ -371,7 +371,7 @@ abstract class Rop_Services_Abstract {
 	 * Utility method to register a REST endpoint via WP.
 	 *
 	 * @since   8.0.0
-	 * @access  public
+	 * @access  protected
 	 *
 	 * @param   string $path The path for the endpoint.
 	 * @param   string $callback The method name from the service class.
@@ -466,6 +466,47 @@ abstract class Rop_Services_Abstract {
 	protected function strip_excess_blank_lines( $content ) {
 		$content = preg_replace( "/([\r\n]{4,}|[\n]{3,}|[\r]{3,})/", "\n\n", $content );
 		return $content;
+	}
+
+	/**
+	 * Gets the appropriate documentation for errors in log.
+	 *
+	 * @since   8.2.3
+	 * @access  public
+	 *
+	 * @param string $response the API error response.
+	 *
+	 * @return string The document link.
+	 */
+	protected function rop_get_error_docs( $response ) {
+
+		$errors_docs = array(
+			// Facebook errors
+			'Only owners of the URL have the ability' => 'https://is.gd/fix_owners_url',
+			'manage_pages and publish_pages as an admin' => 'https://is.gd/fix_manage_pages_error',
+			'Invalid parameter' => 'https://is.gd/fix_link_issue',
+
+			// Twitter errors
+			'Desktop applications only support the oauth_callback value' => 'https://is.gd/fix_oauth_callback_value',
+			'User is over daily status update limit' => 'https://is.gd/fix_over_daily_limit',
+			'Invalid media_id: Some' => 'https://is.gd/fix_invalid_media',
+
+			// LinkedIn errors
+			'&#39;submitted-url&#39; can not be empty' => 'https://is.gd/fix_link_issue',
+
+			// Add more common errors as necessary
+		);
+
+		foreach ( $errors_docs as $error => $link ) {
+
+			if ( strpos( $response, $error ) !== false ) {
+				$link = $link;
+				break;
+			}
+		}
+
+		return $this->logger->alert_error( 'This error is a known one. Please copy and paste the following link in your browser to see the solution: ' . $link );
+
 	}
 
 
