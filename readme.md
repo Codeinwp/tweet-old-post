@@ -134,6 +134,14 @@ http://revive.social/plugins/revive-old-post
 
 
 ## Changelog ##
+### 8.2.3 - 2019-04-10  ###
+
+* New: Filter introduced for Post Title & Content separator (check revive.social docs)
+* New: Known errors will now show a link to the fix in the log area
+* Fix: Twitter images would not share for sites which moved to a different protocol but didn't update their image links in the database
+* PRO Fix: Moved to LinkedIn API v2 (check revive.social docs)
+
+
 ### 8.2.2 - 2019-03-20  ###
 
 * New: Feedback button on plugin dashboard. Help us make ROP better by filling out the form!
