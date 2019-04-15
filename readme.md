@@ -134,6 +134,11 @@ http://revive.social/plugins/revive-old-post
 
 
 ## Changelog ##
+### 8.2.4 - 2019-04-15  ###
+
+* Fix: Minor bugs
+
+
 ### 8.2.3 - 2019-04-10  ###
 
 * New: Filter introduced for Post Title & Content separator (check revive.social docs)

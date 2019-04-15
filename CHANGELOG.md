@@ -1,4 +1,8 @@
 
+ ### v8.2.4 - 2019-04-15 
+ **Changes:** 
+ * Fix: Minor bugs
+ 
  ### v8.2.3 - 2019-04-10 
  **Changes:** 
  * New: Filter introduced for Post Title & Content separator (check revive.social docs)
