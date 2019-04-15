@@ -490,6 +490,7 @@ abstract class Rop_Services_Abstract {
 			'Desktop applications only support the oauth_callback value' => 'https://is.gd/fix_oauth_callback_value',
 			'User is over daily status update limit' => 'https://is.gd/fix_over_daily_limit',
 			'Invalid media_id: Some' => 'https://is.gd/fix_invalid_media',
+			'Callback URL not approved for this client application' => 'https://is.gd/fix_oauth_callback_value',
 
 			// LinkedIn errors
 			'&#39;submitted-url&#39; can not be empty' => 'https://is.gd/fix_link_issue',
