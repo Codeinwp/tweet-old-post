@@ -688,6 +688,8 @@ class Rop_Admin {
 			return;
 		}
 
+		$show_notice = false;
+
 		$services_model = new Rop_Services_Model();
 
 		$services = $services_model->get_authenticated_services();
@@ -700,7 +702,7 @@ class Rop_Admin {
 			}
 		}
 
-		if ( ! $show_notice ) {
+		if ( $show_notice == false ) {
 			return;
 		}
 
