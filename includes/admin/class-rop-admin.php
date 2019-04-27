@@ -729,4 +729,50 @@ class Rop_Admin {
 
 	}
 
+	/**
+	 * WordPress Cron disabled notice.
+	 *
+	 * @since   8.2.5
+	 * @access  public
+	 */
+	public function rop_wp_cron_notice() {
+
+		if ( ! defined( 'DISABLE_WP_CRON' ) ) {
+			return;
+		}
+
+		$user_id = get_current_user_id();
+
+		if ( get_user_meta( $user_id, 'rop-wp-cron-notice-dismissed' ) ) {
+			return;
+		}
+
+		if ( DISABLE_WP_CRON == true ) {
+
+			?>
+			<div class="notice notice-error">
+				<?php echo sprintf( __( '%1$s%2$sRevive Old Posts:%3$s The WordPress Cron seems is disabled on your website. This can cause sharing issues with Revive Old Posts. If sharing is not working, then see %4$shere for solutions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/686-fix-revive-old-post-not-posting" target="_blank">', '</a>', '<a style="float: right;" href="?rop-wp-cron-notice-dismissed">Dismiss</a>', '</p>' ); ?>
+
+			</div>
+			<?php
+
+		}
+
+	}
+
+	/**
+	 * Show WordPress Cron disabled notice.
+	 *
+	 * @since   8.2.5
+	 * @access  public
+	 */
+	public function rop_show_cron_disabled_notice() {
+
+		$user_id = get_current_user_id();
+		if ( isset( $_GET['rop-wp-cron-notice-dismissed'] ) ) {
+			add_user_meta( $user_id, 'rop-wp-cron-notice-dismissed', 'true', true );
+		}
+
+	}
+
 }
