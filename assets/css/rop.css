@@ -4348,3 +4348,21 @@
 .rop-post-type-badge a {
 	text-decoration: underline;
 }
+
+.auth-app {
+	margin-bottom: 10px;
+	width: 100%;
+	font-size: 15px;
+	text-align: center;
+}
+
+#rop_core .btn.btn-primary.big-btn {
+	width: 92%;
+	margin: 0 4% 20px;
+	height: 45px;
+	font-size: 15px;
+}
+
+.auth-app .text-center {
+	font-weight: 600;
+}

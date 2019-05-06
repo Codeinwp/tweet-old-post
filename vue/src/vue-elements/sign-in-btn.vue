@@ -20,6 +20,10 @@
 				</div>
 				<div class="modal-body">
 					<div class="content">
+						<div class="auth-app" v-if="isFacebook && isAllowedFacebook && showBtn">
+							<button class="btn btn-primary big-btn" @click="openPopupFB()">Sign in to Facebook</button>
+							<span class="text-center">or sign in using your own Facebook app</span>
+						</div>
 						<div class="form-group" v-for="( field, id ) in modal.data">
 							<label class="form-label" :for="field.id">{{ field.name }}</label>
 							<input class="form-input" type="text" :id="field.id" v-model="field.value"
@@ -52,7 +56,12 @@
 				},
 				labels: this.$store.state.labels.accounts,
 				upsell_link: ropApiSettings.upsell_link,
-				activePopup: ''
+				activePopup: '',
+				appOrigin: 'https://ropauth.oldrobot.us', // Please change to the real auth app URL
+				appPathFB: '/fb_auth',
+				windowParameters: 'top=20,left=100,width=560,height=670',
+				authPopupWindow: null,
+				showBtn: false
 			}
 		},
 		methods: {
@@ -137,7 +146,8 @@
 			 * Open the modal.
 			 */
 			openModal: function () {
-				this.modal.isOpen = true
+				// this.modal.isOpen = true
+                this.isAllowedFacebook();
 			},
 			closeModal: function () {
 				let credentials = {}
@@ -156,7 +166,74 @@
 			cancelModal: function () {
 				this.$store.state.auth_in_progress = false
 				this.modal.isOpen = false
-			}
+			},
+            /**
+             * Add Facebook account.
+             *
+             * @param data Data.
+             */
+            addAccountFB(data) {
+                this.$store.dispatch('fetchAJAXPromise', {
+                    req: 'add_account_fb',
+                    updateState: false,
+                    data: data
+                }).then(response => {
+                    window.removeEventListener("message", event => this.getChildWindowMessage(event));
+                    this.authPopupWindow.close();
+                    window.location.reload();
+                }, error => {
+                    this.is_loading = false;
+                    Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+                });
+            },
+            getChildWindowMessage: function (event) {
+                if (~event.origin.indexOf(this.appOrigin)) {
+                    this.addAccountFB(JSON.parse(event.data));
+                    console.log(event.data);
+                } else {
+                    return;
+                }
+            },
+            openPopupFB: function () {
+                let loginUrl = this.appOrigin + this.appPathFB + '?callback_url=' + window.location.origin;
+                try {
+                    this.authPopupWindow.close();
+                } catch (e) {
+                    // nothin to do
+                } finally {
+                    this.authPopupWindow = window.open( loginUrl, 'authFB', this.windowParameters);
+                    this.cancelModal();
+                }
+
+                window.addEventListener("message", event => this.getChildWindowMessage(event));
+            },
+            isAllowedFacebook: function () {
+                if (this.modal.serviceName === 'Facebook') {
+                    this.$store.dispatch('fetchAJAXPromise', {
+                        req: 'check_account_fb',
+                        updateState: false
+                    }).then(response => {
+                        if (response === 1) {
+                            this.showBtn = true;
+                            this.modal.isOpen = true;
+                            return true;
+                        } else {
+                            this.showBtn = false;
+                            this.modal.isOpen = true;
+                            return false;
+                        }
+                    }, error => {
+                        this.showBtn = false;
+                        Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+                        this.modal.isOpen = true;
+                        return false;
+                    });
+                } else {
+                    this.showBtn = false;
+                    this.modal.isOpen = true;
+                    return false;
+                }
+            }
 		},
 		computed: {
 			selected_service: function () {
@@ -184,7 +261,10 @@
 			},
 			serviceId: function () {
 				return 'service-' + this.modal.serviceName.toLowerCase()
-			}
+			},
+            isFacebook() {
+                return this.modal.serviceName === 'Facebook';
+            }
 		}
 	}
 </script>

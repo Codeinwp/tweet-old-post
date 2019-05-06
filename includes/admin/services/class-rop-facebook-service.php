@@ -577,36 +577,166 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 *
 	 * @return bool
 	 */
-	private function try_post( $new_post, $page_id, $token, $post_id, $posting_type ) {
+    private function try_post( $new_post, $page_id, $token, $post_id, $posting_type ) {
+        $path = '/' . $page_id . '/feed';
+        switch ( $posting_type ) {
+            case 'photo':
+                $path = '/' . $page_id . '/photos';
+                break;
+            case 'video':
+                $path = '/' . $page_id . '/videos';
+                break;
+            default:
+                break;
+        }
 
-		$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
-		$api = $this->get_api();
+        $this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
 
-		try {
-			switch ( $posting_type ) {
-				case 'photo':
-					$api->post( '/' . $page_id . '/photos', $new_post, $token );
-					break;
-				case 'video':
-					$api->post( '/' . $page_id . '/videos', $new_post, $token );
-					break;
-				default:
-					$api->post( '/' . $page_id . '/feed', $new_post, $token );
-					break;
-			}
+        if ( $this->get_api() ) {
+            // page was added using user application (old method)
+            $api = $this->get_api();
+            try {
+                $api->post( $path, $new_post, $token );
 
-			return true;
-		} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
-			$this->logger->alert_error( 'Unable to share post for facebook.  Error: ' . $e->getMessage() );
-			$this->rop_get_error_docs( $e->getMessage() );
+                return true;
+            } catch ( Facebook\Exceptions\FacebookResponseException $e ) {
+                $errorMsg = $e->getMessage();
 
-			return false;
-		} catch ( Facebook\Exceptions\FacebookSDKException $e ) {
-			$this->logger->alert_error( 'Unable to share post for facebook.  Error: ' . $e->getMessage() );
-			$this->rop_get_error_docs( $e->getMessage() );
+                if ( strpos($errorMsg, '(#100)' ) !== false && !empty( $new_post['name'] )) {
+                    // https://developers.facebook.com/docs/graph-api/reference/v3.2/page/feed#custom-image
+                    // retry without name
+                    unset( $new_post['name'] );
 
-			return false;
-		}
-	}
+                    try {
+                        $api->post( $path, $new_post, $token );
+                        return true;
+                    } catch ( Facebook\Exceptions\FacebookResponseException $e ) {
+                        $this->logger->alert_error('Unable to share post for facebook. (FacebookResponseException) Error: ' . $e->getMessage());
+
+                        return false;
+                    } catch ( Facebook\Exceptions\FacebookSDKException $e ) {
+                        $this->logger->alert_error('Unable to share post for facebook.  Error: ' . $e->getMessage());
+
+                        return false;
+                    }
+
+                } else {
+                    $this->logger->alert_error( 'Unable to share post for facebook. (FacebookResponseException) Error: ' . $errorMsg);
+
+                    return false;
+                }
+            } catch ( Facebook\Exceptions\FacebookSDKException $e ) {
+                $this->logger->alert_error( 'Unable to share post for facebook.  Error: ' . $e->getMessage() );
+
+                return false;
+            }
+        } else {
+            // page was added using ROP application (new method)
+
+            $post_data = $new_post;
+            $post_data['access_token'] = $token;
+
+            if ( $posting_type === 'video' ) {
+                $url = 'https://graph-video.facebook.com' . $path;
+            } else {
+                $url = 'https://graph.facebook.com' . $path;
+            }
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL,$url);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post_data));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+            $response = curl_exec($ch);
+            $response_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+            curl_close ($ch);
+
+            if ( $response_code === 200 ) {
+                return true;
+            } else if ( $response_code === 400 && strpos($response, '(#100)') !== false && !empty($new_post['name'])) {
+                // retry without name
+                unset($post_data['name']);
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL,$url);
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post_data));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                $response = curl_exec($ch);
+                $response_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+                curl_close ($ch);
+
+                if ( $response_code === 200 ) {
+                    return true;
+                } else {
+                    $this->logger->alert_error('Unable to share post for facebook. An unknown error has occurred');
+                    return false;
+                }
+
+            } else {
+                $this->logger->alert_error('Unable to share post for facebook. An unknown error has occurred');
+                return false;
+            }
+        }
+    }
+
+    /**
+     * Method to add pages.
+     * Used in Rest Api.
+     *
+     * @since   ...
+     * @access  public
+     *
+     * @param   array $encoded Facebook pages data.
+     * @return  bool
+     */
+    public function add_account_with_app ( $account_data )
+    {
+
+        if ( !$this->is_set_not_empty(
+            $account_data,
+            array(
+                'id',
+                'pages'
+            )
+        )) {
+            return false;
+        }
+
+        $accounts = array();
+
+        $pages_arr = $account_data['pages'];
+
+        for ( $i = 0; $i < sizeof($pages_arr); $i++ ) {
+
+            $page_data = unserialize( base64_decode( $pages_arr[$i] ));
+            $page = $this->user_default;
+            $page['id'] = $page_data['id'];
+            $page['user'] = $this->normalize_string(empty($page_data['name']) ? '' : $page_data['name']);
+            $page['account'] = $page_data['email'];
+            $page['img'] = $page_data['img'];
+            $page['access_token'] = $page_data['access_token'];
+            if ($i == 0) {
+                $page['active'] = true;
+            } else {
+                $page['active'] = false;
+            }
+            $accounts[] = $page;
+        }
+
+        $this->service = array(
+            'id' => unserialize( base64_decode( $account_data['id'] )),
+            'service' => $this->service_name,
+            'credentials' => $this->credentials,
+            'available_accounts' => $accounts
+        );
+
+        return true;
+    }
 
 }
