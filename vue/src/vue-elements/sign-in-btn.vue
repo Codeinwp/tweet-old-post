@@ -189,7 +189,7 @@
 			getChildWindowMessage: function (event) {
 				if (~event.origin.indexOf(this.appOrigin)) {
 					this.addAccountFB(JSON.parse(event.data));
-					console.log(event.data);
+					// console.log(event.data);
 				} else {
 					return;
 				}

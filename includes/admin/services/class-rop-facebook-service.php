@@ -709,7 +709,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 				if ( $request['response_code'] === 200 ) {
 					return true;
-				} else if ( $request['response_code'] === 400 && strpos( $request['response'], '(#100)' ) !== false && ! empty( $post_data['name'] ) ) {
+				} elseif ( $request['response_code'] === 400 && strpos( $request['response'], '(#100)' ) !== false && ! empty( $post_data['name'] ) ) {
 					// retry without name
 					unset( $post_data['name'] );
 					$request = $this->post_request_curl( $url, $post_data );
@@ -735,7 +735,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @since   ...
 	 * @access  public
 	 *
-	 * @param   array $encoded Facebook pages data.
+	 * @param   array $account_data Facebook pages data.
 	 * @return  bool
 	 */
 	public function add_account_with_app( $account_data ) {
