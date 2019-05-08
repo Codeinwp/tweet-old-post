@@ -147,7 +147,7 @@
 			 */
 			openModal: function () {
 				// this.modal.isOpen = true
-                this.isAllowedFacebook();
+				this.isAllowedFacebook();
 			},
 			closeModal: function () {
 				let credentials = {}
@@ -172,68 +172,67 @@
              *
              * @param data Data.
              */
-            addAccountFB(data) {
-                this.$store.dispatch('fetchAJAXPromise', {
-                    req: 'add_account_fb',
-                    updateState: false,
-                    data: data
-                }).then(response => {
-                    window.removeEventListener("message", event => this.getChildWindowMessage(event));
-                    this.authPopupWindow.close();
-                    window.location.reload();
-                }, error => {
-                    this.is_loading = false;
-                    Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
-                });
-            },
-            getChildWindowMessage: function (event) {
-                if (~event.origin.indexOf(this.appOrigin)) {
-                    this.addAccountFB(JSON.parse(event.data));
-                    console.log(event.data);
-                } else {
-                    return;
-                }
-            },
-            openPopupFB: function () {
-                let loginUrl = this.appOrigin + this.appPathFB + '?callback_url=' + window.location.origin;
-                try {
-                    this.authPopupWindow.close();
-                } catch (e) {
+			addAccountFB(data) {
+				this.$store.dispatch('fetchAJAXPromise', {
+					req: 'add_account_fb',
+					updateState: false,
+					data: data
+				}).then(response => {
+					window.removeEventListener("message", event => this.getChildWindowMessage(event));
+					this.authPopupWindow.close();
+					window.location.reload();
+				}, error => {
+					this.is_loading = false;
+					Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+				});
+			},
+			getChildWindowMessage: function (event) {
+				if (~event.origin.indexOf(this.appOrigin)) {
+					this.addAccountFB(JSON.parse(event.data));
+					console.log(event.data);
+				} else {
+					return;
+				}
+			},
+			openPopupFB: function () {
+				let loginUrl = this.appOrigin + this.appPathFB + '?callback_url=' + window.location.origin;
+				try {
+					this.authPopupWindow.close();
+				} catch (e) {
                     // nothin to do
-                } finally {
-                    this.authPopupWindow = window.open( loginUrl, 'authFB', this.windowParameters);
-                    this.cancelModal();
-                }
-
-                window.addEventListener("message", event => this.getChildWindowMessage(event));
-            },
-            isAllowedFacebook: function () {
-                if (this.modal.serviceName === 'Facebook') {
-                    this.$store.dispatch('fetchAJAXPromise', {
-                        req: 'check_account_fb',
-                        updateState: false
-                    }).then(response => {
-                        if (response === 1) {
-                            this.showBtn = true;
-                            this.modal.isOpen = true;
-                            return true;
-                        } else {
-                            this.showBtn = false;
-                            this.modal.isOpen = true;
-                            return false;
-                        }
-                    }, error => {
-                        this.showBtn = false;
-                        Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
-                        this.modal.isOpen = true;
-                        return false;
-                    });
-                } else {
-                    this.showBtn = false;
-                    this.modal.isOpen = true;
-                    return false;
-                }
-            }
+				} finally {
+					this.authPopupWindow = window.open( loginUrl, 'authFB', this.windowParameters);
+					this.cancelModal();
+				}
+				window.addEventListener("message", event => this.getChildWindowMessage(event));
+			},
+			isAllowedFacebook: function () {
+				if (this.modal.serviceName === 'Facebook') {
+					this.$store.dispatch('fetchAJAXPromise', {
+						req: 'check_account_fb',
+						updateState: false
+					}).then(response => {
+						if (response === 1) {
+							this.showBtn = true;
+							this.modal.isOpen = true;
+							return true;
+						} else {
+							this.showBtn = false;
+							this.modal.isOpen = true;
+							return false;
+						}
+					}, error => {
+						this.showBtn = false;
+						Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+						this.modal.isOpen = true;
+						return false;
+					});
+				} else {
+					this.showBtn = false;
+					this.modal.isOpen = true;
+					return false;
+				}
+			}
 		},
 		computed: {
 			selected_service: function () {
@@ -262,9 +261,9 @@
 			serviceId: function () {
 				return 'service-' + this.modal.serviceName.toLowerCase()
 			},
-            isFacebook() {
-                return this.modal.serviceName === 'Facebook';
-            }
+			isFacebook() {
+				return this.modal.serviceName === 'Facebook';
+			}
 		}
 	}
 </script>

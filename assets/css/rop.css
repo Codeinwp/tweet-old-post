@@ -4076,14 +4076,14 @@
 	border-bottom-right-radius: 8px;
 	border-bottom-left-radius: 20px;
 	background-image: linear-gradient(
-	-45deg,
-	rgba(255, 255, 255, 0.1) 25%,
-	transparent 25%,
-	transparent 50%,
-	rgba(255, 255, 255, 0.1) 50%,
-	rgba(255, 255, 255, 0.1) 75%,
-	transparent 75%,
-	transparent
+			-45deg,
+			rgba(255, 255, 255, 0.1) 25%,
+			transparent 25%,
+			transparent 50%,
+			rgba(255, 255, 255, 0.1) 50%,
+			rgba(255, 255, 255, 0.1) 75%,
+			transparent 75%,
+			transparent
 	);
 	background-size: 64px 64px;
 	content: "";
@@ -4154,7 +4154,7 @@
 
 #rop_social_actions .submit-feedback{
 	background: #f5d426;
-  text-shadow: 0 1px 0 #ccad0e;
+	text-shadow: 0 1px 0 #ccad0e;
 }
 
 #rop_social_actions .tweet-about-it span,
@@ -4325,15 +4325,15 @@
 
 @media (max-width: 840px) {
 	#rop_social_actions {
-    display: inline-block;
-    margin-bottom: 11px;
-    text-align: center;
-    width: 100%;
-}
+		display: inline-block;
+		width: 100%;
+		margin-bottom: 11px;
+		text-align: center;
+	}
 
-#rop_social_actions a {
-	margin-bottom: 5px;
-}
+	#rop_social_actions a {
+		margin-bottom: 5px;
+	}
 
 	#rop_core .sidebar {
 		display: block;
@@ -4350,16 +4350,16 @@
 }
 
 .auth-app {
-	margin-bottom: 10px;
 	width: 100%;
+	margin-bottom: 10px;
 	font-size: 15px;
 	text-align: center;
 }
 
 #rop_core .btn.btn-primary.big-btn {
 	width: 92%;
-	margin: 0 4% 20px;
 	height: 45px;
+	margin: 0 4% 20px;
 	font-size: 15px;
 }
 

@@ -810,80 +810,79 @@ class Rop_Rest_Api {
 		return $this->response->to_array();
 	}
 
-    /**
-     * API method called to add Facebook pages via app.
-     *
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
-     *
-     * @since   ...
-     * @access  private
-     * @param   array  $data Facebook page data.
-     * @return  array
-     */
-    private function add_account_fb( $data ) {
+	/**
+	 * API method called to add Facebook pages via app.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
+	 *
+	 * @since   ...
+	 * @access  private
+	 * @param   array $data Facebook page data.
+	 * @return  array
+	 */
+	private function add_account_fb( $data ) {
 
-        $services         = array();
-        $active_accounts  = array();
-        $facebook_service = new Rop_Facebook_Service();
-        $model            = new Rop_Services_Model();
-        $db               = new Rop_Db_Upgrade();
+		$services         = array();
+		$active_accounts  = array();
+		$facebook_service = new Rop_Facebook_Service();
+		$model            = new Rop_Services_Model();
+		$db               = new Rop_Db_Upgrade();
 
-        $facebook_service->add_account_with_app($data);
+		$facebook_service->add_account_with_app( $data );
 
-        $services[ $facebook_service->get_service_id() ] = $facebook_service->get_service();
-        $active_accounts = array_merge( $active_accounts, $facebook_service->get_service_active_accounts() );
+		$services[ $facebook_service->get_service_id() ] = $facebook_service->get_service();
+		$active_accounts = array_merge( $active_accounts, $facebook_service->get_service_active_accounts() );
 
-        if ( ! empty( $services ) ) {
-            $model->add_authenticated_service( $services );
-        }
+		if ( ! empty( $services ) ) {
+			$model->add_authenticated_service( $services );
+		}
 
-        if ( ! empty( $active_accounts ) ) {
-            $db->migrate_schedule( $active_accounts );
-            $db->migrate_post_formats( $active_accounts );
-        }
-        else {
-            $this->response->set_code( '500' )
-                ->set_data( array() );
-            return $this->response->to_array();
-        }
+		if ( ! empty( $active_accounts ) ) {
+			$db->migrate_schedule( $active_accounts );
+			$db->migrate_post_formats( $active_accounts );
+		} else {
+			$this->response->set_code( '500' )
+				->set_data( array() );
+			return $this->response->to_array();
+		}
 
-        $this->response->set_code( '200' )
-            ->set_message('OK')
-            ->set_data( array() );
+		$this->response->set_code( '200' )
+			->set_message( 'OK' )
+			->set_data( array() );
 
-        return $this->response->to_array();
-    }
+		return $this->response->to_array();
+	}
 
-    /**
-     * API method called to check Facebook account
-     *
-     * @since   ...
-     * @access  private
-     * @return  boolean
-     */
-    private function check_account_fb() {
-        $option_name = 'rop_modal';
-        $option_val = null;
-        $deprecated=' ';
-        $autoload='no';
+	/**
+	 * API method called to check Facebook account
+	 *
+	 * @since   ...
+	 * @access  private
+	 * @return  boolean
+	 */
+	private function check_account_fb() {
+		$option_name = 'rop_modal';
+		$option_val = null;
+		$deprecated = ' ';
+		$autoload = 'no';
 
-        $services_model = new Rop_Services_Model();
-        $services = $services_model->get_authenticated_services();
-        foreach ( $services as $key => $value ) {
-            if ( $value['service'] === 'facebook' && !get_option($option_name) ) {
-                add_option($option_name, 0, $deprecated, $autoload);
-                break;
-            }
-        }
+		$services_model = new Rop_Services_Model();
+		$services = $services_model->get_authenticated_services();
+		foreach ( $services as $key => $value ) {
+			if ( $value['service'] === 'facebook' && ! get_option( $option_name ) ) {
+				add_option( $option_name, 0, $deprecated, $autoload );
+				break;
+			}
+		}
 
-        $option_val = get_option($option_name);
+		$option_val = get_option( $option_name );
 
-        if ($option_val === null || $option_val === false) {
-            add_option($option_name, 1, $deprecated, $autoload);
-            $option_val = 1;
-        }
+		if ( $option_val === null || $option_val === false ) {
+			add_option( $option_name, 1, $deprecated, $autoload );
+			$option_val = 1;
+		}
 
-        return $option_val;
-    }
+		return $option_val;
+	}
 
 }
