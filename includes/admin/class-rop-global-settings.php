@@ -106,6 +106,22 @@ class Rop_Global_Settings {
 			'two_step_sign_in' => true,
 			'allowed_accounts' => 1,
 		),
+		'buffer'   => array(
+			'active'           => true,
+			'name'             => 'Buffer',
+			'credentials'      => array(
+				'client_id'    => array(
+					'name'        => 'Client ID',
+					'description' => 'Your Buffer application api key',
+				),
+				'client_secret' => array(
+					'name'        => 'Client Secret',
+					'description' => 'Your Buffer application api secret',
+				),
+			),
+			'two_step_sign_in' => true,
+			'allowed_accounts' => 1,
+		),
 		'linkedin'  => array(
 			'active' => false,
 			'name'   => 'LinkedIn',
