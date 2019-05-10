@@ -340,6 +340,12 @@ class Rop_Admin {
 		if ( ( empty( $oauth_token ) || empty( $oauth_verifier ) ) && $network === 'twitter' ) {
 			return;
 		}
+
+		// Buffer doesnt't send back network so we use the set state from the auth url
+		if ( strpos( $state, 'buffer' ) !== false ) {
+			$network	= 'buffer';
+		}
+
 		switch ( $network ) {
 			case 'linkedin':
 				$lk_service = new Rop_Linkedin_Service();
@@ -352,6 +358,10 @@ class Rop_Admin {
 			case 'pinterest':
 				$pinterest_service = new Rop_Pinterest_Service();
 				$pinterest_service->authorize();
+				break;
+			case 'buffer':
+				$buffer_service = new Rop_Buffer_Service();
+				$buffer_service->authorize();
 				break;
 			default:
 				$fb_service = new Rop_Facebook_Service();

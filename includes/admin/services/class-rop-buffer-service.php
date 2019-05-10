@@ -53,7 +53,7 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 	 * @access  public
 	 */
 	public function init() {
-		$this->display_name = 'Pinterest';
+		$this->display_name = 'Buffer';
 	}
 
 	/**
@@ -84,7 +84,7 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 			session_start();
 		}
 
-		$this->request_api_token();
+		//$this->request_api_token();
 
 		parent::authorize();
 		// echo '<script>window.setTimeout("window.close()", 500);</script>';
@@ -166,7 +166,7 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 		if ( ! session_id() ) {
 			session_start();
 		}
-		if ( ! $this->is_set_not_empty(
+		/*if ( ! $this->is_set_not_empty(
 			$_SESSION,
 			array(
 				'rop_pinterest_token',
@@ -190,9 +190,10 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 
 		$credentials['token'] = $token;
 		unset( $_SESSION['rop_pinterest_credentials'] );
-		unset( $_SESSION['rop_pinterest_token'] );
+		unset( $_SESSION['rop_pinterest_token'] );*/
 
-		return $this->authenticate( $credentials );
+		//return $this->authenticate( $credentials );
+		return $this->authenticate();
 
 	}
 
@@ -205,7 +206,8 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 	 * @return bool
 	 */
 	public function authenticate( $args = array() ) {
-		if ( ! $this->is_set_not_empty(
+
+	/*	if ( ! $this->is_set_not_empty(
 			$args,
 			array(
 				'app_id',
@@ -235,9 +237,9 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 				'fields' => 'username,first_name,last_name,image[small]',
 			)
 		);
-
+*/
 		$this->service = array(
-			'id'                 => $user->id,
+			'id'                 => '21782', //add unique account ID
 			'service'            => $this->service_name,
 			'credentials'        => $this->credentials,
 			'public_credentials' => array(
@@ -252,7 +254,7 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 					'private' => true,
 				),
 			),
-			'available_accounts' => $this->get_boards( $api, $user ),
+			'available_accounts' => $this->get_profiles(),
 		);
 
 		return true;
@@ -268,6 +270,7 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 	 * @param   array $args The credentials array.
 	 */
 	public function set_credentials( $args ) {
+
 		$this->credentials = $args;
 	}
 
@@ -277,12 +280,13 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 							return ;
 			}
 
+			$buffer_profiles = array();
+
 			$guzzle = new \GuzzleHttp\Client();
 			$response = $guzzle->request('GET', 'https://api.bufferapp.com/1/profiles.json', ['query' => ['access_token' => '']]);
 
-			$profiles = (string) $response->getBody();
-			$profiles_arr = json_decode($profiles, true);
-	        $profile_ids = $profiles_arr[0]['_id'];
+			$response_body = (string) $response->getBody();
+			$response_body = json_decode($response_body , true);
 
 	        $ids = array();
 
@@ -292,41 +296,21 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 
 	        }
 
-				update_option('buffer_profiles', $ids);
+					foreach ( $response_body as $response_field ) {
+						$buffer_profile          = array();
+						$buffer_profile['id']      = $response_field['id'];
+						$buffer_profile['account'] = $response_field['formatted_username'];
+					  $buffer_profile['user']    = $response_field['formatted_service'] . ' - ' . $response_field['formatted_username'];;
+						$buffer_profile['active']  = false;
+						$buffer_profile['service'] = $this->service_name;
 
-	}
+						$buffer_profile['img']     = $response_field['avatar_https'];
+						$buffer_profile['created'] = date("Y-m-d H:i:s", substr($response_field['created_at'], 0, 10));
+						$buffer_profiles[]            = $buffer_profile;
+					}
 
-	/**
-	 * Gets the details of all boards.
-	 *
-	 * @param object $api The api object.
-	 * @param object $user The user object.
-	 */
-	private function get_boards( $api, $user ) {
-		$user_boards = array();
-		$boards      = $api->users->getMeBoards(
-			array(
-				'fields' => 'name',
-			)
-		);
+					return $buffer_profiles;
 
-		foreach ( $boards as $board ) {
-			$board_details            = array();
-			$board_details['id']      = $user->username . '/' . str_replace( ' ', '-', $board->name );
-			$board_details['account'] = $this->normalize_string( sprintf( '%s %s', $user->first_name, $user->last_name ) );
-			$board_details['user']    = $this->normalize_string( $board->name );
-			$board_details['active']  = false;
-			$board_details['service'] = $this->service_name;
-			$img                      = '';
-			if ( is_array( $user->image['small'] ) && ! empty( $user->image['small']['url'] ) ) {
-				$img = $user->image['small']['url'];
-			}
-			$board_details['img']     = $img;
-			$board_details['created'] = $this->user_default['created'];
-			$user_boards[]            = $board_details;
-		}
-
-		return $user_boards;
 	}
 
 	/**
@@ -359,10 +343,7 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
     // TODO might not need this
 		$_SESSION['rop_buffer_credentials'] = $credentials;
 
-		// $api = $this->get_api( $credentials['app_id'], $credentials['secret'] );
-		// $url = $api->auth->getLoginUrl( $this->get_legacy_url( $this->service_name ), $this->permissions );
-
-    $url = 'https://bufferapp.com/oauth2/authorize?client_id='.$credentials['client_id'].'&redirect_uri='.admin_url('/admin.php?page=TweetOldPost').'&response_type=code';
+    $url = 'https://bufferapp.com/oauth2/authorize?client_id='.$credentials['client_id'].'&redirect_uri='.admin_url('/admin.php?page=TweetOldPost').'&response_type=code&state=buffer';
 		return $url;
 	}
 
@@ -371,7 +352,7 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 		if (empty($code)){
 		    return;
 		}
-	 update_option('buffer_before', $code);
+
 			 if ( ! class_exists( '\GuzzleHttp\Client' ) ) {
 							 return ;
 }
