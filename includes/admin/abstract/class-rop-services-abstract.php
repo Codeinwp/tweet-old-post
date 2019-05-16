@@ -510,5 +510,95 @@ abstract class Rop_Services_Abstract {
 
 	}
 
+	/**
+	 * Get Image file path if exists, return default image_url if not.
+	 *
+	 * Used where file_get_contents might not work with urls, we provide the file path.
+	 *
+	 * @param string $image_url Image url.
+	 *
+	 * @return string Image path.
+	 */
+	protected function get_path_by_url( $image_url, $mimetype ) {
+
+		$dir = wp_upload_dir();
+
+		$parsed = parse_url( $dir['baseurl'] );
+
+		$dir = $parsed['host'] . $parsed['path'];
+
+		if ( false === strpos( $image_url, $dir ) ) {
+			return $image_url;
+		}
+
+		$file     = basename( $image_url );
+		$query    = array(
+			'post_type'      => 'attachment',
+			'fields'         => 'ids',
+			'posts_per_page' => '20',
+			'no_found_rows'  => true,
+			'meta_query'     => array(
+				array(
+					'key'     => '_wp_attached_file',
+					'value'   => $file,
+					'compare' => 'LIKE',
+				),
+			),
+		);
+		$ids      = get_posts( $query );
+		$id_found = false;
+		if ( strpos( $mimetype['type'], 'video' ) !== false ) {
+			if ( empty( $ids ) ) {
+				return $image_url;
+			}
+
+			return get_attached_file( reset( $ids ) );
+		}
+		if ( ! empty( $ids ) ) {
+
+			foreach ( $ids as $id ) {
+				if ( $image_url === array_shift( wp_get_attachment_image_src( $id, 'full' ) ) ) {
+					$id_found = $id;
+					break;
+				}
+			}
+		}
+		if ( $id_found === false ) {
+			$query['meta_query'][0]['key'] = '_wp_attachment_metadata';
+
+			// query attachments again
+			$ids = get_posts( $query );
+
+			if ( empty( $ids ) ) {
+				return $image_url;
+			}
+
+			foreach ( $ids as $id ) {
+
+				$meta = wp_get_attachment_metadata( $id );
+
+				foreach ( $meta['sizes'] as $size => $values ) {
+
+					if ( $values['file'] === $file && $image_url === array_shift( wp_get_attachment_image_src( $id, $size ) ) ) {
+						$id_found = $id;
+						break;
+					}
+				}
+				if ( $id_found === false ) {
+					break;
+				}
+			}
+		}
+		if ( $id_found === false ) {
+			return $image_url;
+		}
+		$path = get_attached_file( $id_found );
+		if ( empty( $path ) ) {
+			return $image_url;
+		}
+
+		return $path;
+	}
+
 
 }
