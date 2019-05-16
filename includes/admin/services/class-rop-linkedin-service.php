@@ -441,9 +441,9 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			// Linkedin Api v2 doesn't support video upload. Share as article post
 			if ( strpos( $post_details['mimetype']['type'], 'video' ) !== false ) {
 				$new_post = $this->linkedin_article_post( $post_details, $args );
-			}else{
-			 $new_post = $this->linkedin_image_post( $post_details, $args, $token, $api );
-		 }
+			} else {
+				$new_post = $this->linkedin_image_post( $post_details, $args, $token, $api );
+			}
 		}
 
 		try {
@@ -562,11 +562,11 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$asset = $response['value']['asset'];
 
 		// If this is an attachment post we need to make sure we pass the URL to get_path_by_url() correctly
-        if( get_post_type( $post_details['post_id'] ) === 'attachment' ){
-            $img = $this->get_path_by_url( wp_get_attachment_url( $post_details['post_id']), $post_details['mimetype'] );
-        }else{
-            $img = $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] );
-        }
+		if ( get_post_type( $post_details['post_id'] ) === 'attachment' ) {
+			$img = $this->get_path_by_url( wp_get_attachment_url( $post_details['post_id'] ), $post_details['mimetype'] );
+		} else {
+			$img = $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] );
+		}
 
 		if ( ! class_exists( 'GuzzleHttp\Client' ) ) {
 			$this->logger->alert_error( 'Error: Cannot find Guzzle' );
