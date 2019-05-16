@@ -725,6 +725,17 @@ class Rop_Post_Format_Helper {
 			}
 		}
 
+		if ( get_post_type( $post_id ) === 'attachment' ) {
+
+			$parent_id = wp_get_post_parent_id( $post_id );
+			// If attachment was not uploaded to a post set the URL as site homepage
+			if ( empty( $parent_id ) ) {
+				$post_url = apply_filters( 'rop_attachment_no_parent', get_site_url(), $post_id );
+			} else {
+				$post_url = get_permalink( $parent_id );
+			}
+		}
+
 		$post_url        = apply_filters( 'rop_raw_post_url', $post_url, $post_id );
 		$global_settings = new Rop_Global_Settings();
 		$settings_model  = new Rop_Settings_Model();

@@ -61,30 +61,6 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		$this->settings = new Rop_Settings_Model();
 		$this->buffer   = wp_parse_args( $this->get( 'posts_buffer' ), $this->buffer );
 		$this->blocked  = wp_parse_args( $this->get( 'posts_blocked' ), $this->blocked );
-		add_filter( 'rop_raw_post_url', [ $this, 'alter_attachment_url' ], 10, 2 );
-	}
-
-	/**
-	 * Alter attachment post url and send attached post urls.
-	 *
-	 * @param string $post_url Original post url.
-	 * @param int    $post_id Post id.
-	 *
-	 * @return string New post url.
-	 */
-	public function alter_attachment_url( $post_url, $post_id ) {
-		$post_types = $this->settings->get_selected_post_types();
-		$post_types = wp_list_pluck( $post_types, 'value' );
-		if ( ! in_array( 'attachment', $post_types ) ) {
-			return $post_url;
-		}
-		if ( get_post_type( $post_id ) !== 'attachment' ) {
-			return $post_url;
-		}
-
-		$post_parent_id = wp_get_post_parent_id( $post_id );
-
-		return get_permalink( $post_parent_id );
 	}
 
 	/**
