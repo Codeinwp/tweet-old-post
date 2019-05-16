@@ -238,6 +238,143 @@ class Rop_Admin {
 	}
 
 	/**
+	 * Register the JavaScript for Gutenberg.
+	 *
+	 * @since    8.2.5
+	 */
+	public function enqueue_gutenberg_scripts() {
+		$services			= new Rop_Services_Model();
+		$active_accounts	= $services->get_active_accounts();
+		$settings			= new Rop_Settings_Model();
+
+		$publish = array(
+			'action'   => $settings->get_instant_sharing_by_default(),
+			'accounts' => $active_accounts,
+		);
+
+		wp_enqueue_script( $this->plugin_name . '-publish_now_guten', ROP_LITE_URL . 'assets/js/build/publish_now_guten' . ( ( ROP_DEBUG ) ? '' : '.min' ) . '.js', array( 'wp-api', 'wp-components', 'wp-element', 'wp-edit-post', 'wp-plugins' ), ( ROP_DEBUG ) ? time() : $this->version, false );
+		wp_enqueue_style( $this->plugin_name . '-gutenberg', ROP_LITE_URL . 'assets/css/rop_guten.css', '', $this->version );
+
+		wp_localize_script( $this->plugin_name . '-publish_now_guten', 'ropApiPublish', $publish );
+	}
+	/**
+	 * Register Rest Field
+	 */
+	public function register_endpoints() {
+		register_rest_route(
+			'tweet-old-post/v8',
+			'/gutenberg/get_meta',
+			array(
+				'methods'  => 'GET',
+				'callback' => array( $this, 'get_rop_post_meta' ),
+				'args'		=> array(
+					'id'	=> array(
+						'type'				=> 'number',
+						'required'			=> true,
+						'sanitize_callback' => 'absint'
+					),
+				),
+
+			)
+		);
+
+		register_rest_route(
+			'tweet-old-post/v8',
+			'/gutenberg/update_meta',
+			array(
+				'methods'  => 'POST',
+				'callback' => array( $this, 'update_rop_post_meta' ),
+				'args'		=> array(
+					'id'	=> array(
+						'type'				=> 'number',
+						'required'			=> true,
+						'sanitize_callback' => 'absint'
+					),
+				),
+
+			)
+		);
+	}
+
+	/**
+	 * Get Post Meta Fields
+	 */
+	public function get_rop_post_meta( $post ) {
+		$data = array();
+		$post_id = $post['id'];
+
+		$options = array(
+			'rop_publish_now',
+			'rop_publish_now_accounts',
+		);
+
+		foreach ( $options as $option ) {
+			if ( get_post_meta( $post_id, $option ) ) {
+				$object = get_post_meta( $post_id, $option );
+				$object = $object[0];
+				$data[ $option ] = $object;
+			}
+		}
+
+		if ( ! sizeof( $data ) > 0 ) {
+			return new WP_Error( 'rest_meta_not_available', __( 'Post meta not available.' ), array( 'status' => 404 ) );
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Update Post Meta Fields
+	 */
+	public function update_rop_post_meta( $data ) {
+		if ( ! empty( $data['id'] ) ) {
+			$post_id = $data['id'];
+
+			$options = array(
+				'rop_publish_now',
+				'rop_publish_now_accounts',
+			);
+
+			if ( $data['default'] === 'true' ) {
+				$accounts = array();
+
+				foreach( $data['accounts'] as $key => $value ) {
+					if ( $value === 'true' ) {
+						array_push( $accounts, $key );
+					}
+				}
+	
+				if ( ! get_post_meta( $post_id, 'rop_publish_now' ) ) {
+					update_post_meta( $post_id, 'rop_publish_now', 'yes' );
+				}
+	
+				if ( get_post_meta( $post_id, 'rop_publish_now_accounts' ) ) {
+					delete_post_meta( $post_id, 'rop_publish_now_accounts' );
+					update_post_meta( $post_id, 'rop_publish_now_accounts', $accounts );
+				} else {
+					update_post_meta( $post_id, 'rop_publish_now_accounts', $accounts );
+				}
+
+				$cron = new Rop_Cron_Helper();
+				$cron->manage_cron( array( 'action' => 'publish-now' ) );
+			} else {
+				foreach ( $options as $option ) {
+					if ( get_post_meta( $post_id, $option ) ) {
+						delete_post_meta( $post_id, $option );
+					}
+				}
+			}
+
+			return rest_ensure_response( array(
+				'code' 	  => 'success',
+				'message' => esc_html__( 'Post Updated.', 'tweet-old-post' ),
+			) );
+		}
+
+		return rest_ensure_response( new WP_Error( 'rest_post_id_not_available', esc_html__( 'Post ID not available.', 'tweet-old-post' ), array( 'status' => 404 ) ) );
+	}
+
+	/**
 	 * Set our supported mime types.
 	 *
 	 * @since   8.1.0

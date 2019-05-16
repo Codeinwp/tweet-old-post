@@ -138,6 +138,7 @@ class Rop {
 		$this->loader->add_action( 'admin_print_footer_scripts', $tutorial_pointers, 'rop_enqueue_pointers' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'menu_pages' );
 		$this->loader->add_action( 'rop_cron_job', $plugin_admin, 'rop_cron_job' );
+		$this->loader->add_action( 'rest_api_init', $plugin_admin, 'register_endpoints' );
 
 		$this->loader->add_action( 'rop_cron_job_publish_now', $plugin_admin, 'rop_cron_job_publish_now' );
 		$this->loader->add_action( 'post_submitbox_misc_actions', $plugin_admin, 'add_publish_actions' );
@@ -161,6 +162,10 @@ class Rop {
 		 * Use PHP_INT_MAX to make sure the schedule is added. Some plugins add their schedule by clearing the previous values.
 		 */
 		$this->loader->add_filter( 'cron_schedules', $rop_cron_helper, 'rop_cron_schedules', PHP_INT_MAX );
+
+		if ( function_exists( 'register_block_type' ) ) {
+			$this->loader->add_action( 'enqueue_block_editor_assets', $plugin_admin, 'enqueue_gutenberg_scripts' );
+		}
 	}
 
 	/**
