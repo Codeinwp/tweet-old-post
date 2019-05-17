@@ -243,9 +243,9 @@ class Rop_Admin {
 	 * @since    8.2.5
 	 */
 	public function enqueue_gutenberg_scripts() {
-		$services			= new Rop_Services_Model();
-		$active_accounts	= $services->get_active_accounts();
-		$settings			= new Rop_Settings_Model();
+		$services           = new Rop_Services_Model();
+		$active_accounts    = $services->get_active_accounts();
+		$settings           = new Rop_Settings_Model();
 
 		$publish = array(
 			'action'   => $settings->get_instant_sharing_by_default(),
@@ -267,11 +267,11 @@ class Rop_Admin {
 			array(
 				'methods'  => 'GET',
 				'callback' => array( $this, 'get_rop_post_meta' ),
-				'args'		=> array(
-					'id'	=> array(
-						'type'				=> 'number',
-						'required'			=> true,
-						'sanitize_callback' => 'absint'
+				'args'      => array(
+					'id'    => array(
+						'type'              => 'number',
+						'required'          => true,
+						'sanitize_callback' => 'absint',
 					),
 				),
 
@@ -284,11 +284,11 @@ class Rop_Admin {
 			array(
 				'methods'  => 'POST',
 				'callback' => array( $this, 'update_rop_post_meta' ),
-				'args'		=> array(
-					'id'	=> array(
-						'type'				=> 'number',
-						'required'			=> true,
-						'sanitize_callback' => 'absint'
+				'args'      => array(
+					'id'    => array(
+						'type'              => 'number',
+						'required'          => true,
+						'sanitize_callback' => 'absint',
 					),
 				),
 
@@ -317,7 +317,7 @@ class Rop_Admin {
 		}
 
 		if ( ! sizeof( $data ) > 0 ) {
-			return new WP_Error( 'rest_meta_not_available', __( 'Post meta not available.' ), array( 'status' => 404 ) );
+			return new WP_Error( 'rest_meta_not_available', esc_html__( 'Post meta not available.', 'tweet-old-post' ), array( 'status' => 404 ) );
 		}
 
 		return $data;
@@ -338,16 +338,16 @@ class Rop_Admin {
 			if ( $data['default'] === 'true' ) {
 				$accounts = array();
 
-				foreach( $data['accounts'] as $key => $value ) {
+				foreach ( $data['accounts'] as $key => $value ) {
 					if ( $value === 'true' ) {
 						array_push( $accounts, $key );
 					}
 				}
-	
+
 				if ( ! get_post_meta( $post_id, 'rop_publish_now' ) ) {
 					update_post_meta( $post_id, 'rop_publish_now', 'yes' );
 				}
-	
+
 				if ( get_post_meta( $post_id, 'rop_publish_now_accounts' ) ) {
 					delete_post_meta( $post_id, 'rop_publish_now_accounts' );
 					update_post_meta( $post_id, 'rop_publish_now_accounts', $accounts );
@@ -365,10 +365,12 @@ class Rop_Admin {
 				}
 			}
 
-			return rest_ensure_response( array(
-				'code' 	  => 'success',
-				'message' => esc_html__( 'Post Updated.', 'tweet-old-post' ),
-			) );
+			return rest_ensure_response(
+				array(
+					'code'    => 'success',
+					'message' => esc_html__( 'Post Updated.', 'tweet-old-post' ),
+				)
+			);
 		}
 
 		return rest_ensure_response( new WP_Error( 'rest_post_id_not_available', esc_html__( 'Post ID not available.', 'tweet-old-post' ), array( 'status' => 404 ) ) );
