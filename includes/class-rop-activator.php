@@ -44,6 +44,35 @@ class Rop_Activator {
 			add_option( 'rop_first_install_version', $version );
 		}
 
+		$logger = new Rop_Logger();
+
+		// Get unique token
+		if ( ! class_exists( '\GuzzleHttp\Client' ) ) {
+			$logger->alert_error( 'Error: Cannot find Guzzle' );
+			return;
+		}
+
+		$client = new GuzzleHttp\Client();
+
+		try {
+			$app_url = ROP_AUTH_APP_URL . ROP_APP_ACTIVATION_PATH;
+			$current_url = ( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http' ) . '://' . $_SERVER[ HTTP_HOST ];
+			$email = base64_encode( get_option( 'admin_email' ) );
+
+			$response = $client->request( 'GET', $app_url . '?activate=true&url=' . $current_url . '&data=' . $email );
+			$token = $response->getBody()->getContents();
+
+			if ( ! get_option( ROP_APP_TOKEN_OPTION ) ) {
+				$deprecated = ' ';
+				$autoload = 'no';
+				add_option( ROP_APP_TOKEN_OPTION, $token, $deprecated, $autoload );
+			} else {
+				update_option( ROP_APP_TOKEN_OPTION, $token );
+			}
+		} catch ( GuzzleHttp\Exception\GuzzleException $e ) {
+			$logger->alert_error( 'Error ' . $e->getCode() . '. ' . $e->getMessage() . "\n" . $e->getTrace() );
+
+		}
 	}
 
 }

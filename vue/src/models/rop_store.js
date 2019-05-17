@@ -162,6 +162,11 @@ export default new Vuex.Store( {
 				state.auth_in_progress = false
 				//state.activeAccounts = stateData
 				break
+			case 'check_account_fb':
+			case 'add_account_fb':
+				state.activeAccounts = stateData
+				state.auth_in_progress = true
+				break
 			case 'get_active_accounts':
 			case 'update_active_accounts':
 			case 'remove_account':

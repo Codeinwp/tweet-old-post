@@ -35,6 +35,24 @@ class Rop_Deactivator {
 		 */
 		$cron_helper = new Rop_Cron_Helper();
 		$cron_helper->remove_cron();
+
+		/**
+		 * Clear activation data
+		 */
+		$logger = new Rop_Logger();
+
+		if ( ! class_exists( '\GuzzleHttp\Client' ) ) {
+			$logger->alert_error( 'Error: Cannot find Guzzle' );
+			return;
+		}
+
+		$client = new GuzzleHttp\Client();
+
+		try {
+			$response = $client->request( 'GET', ROP_AUTH_APP_URL . ROP_APP_ACTIVATION_PATH . '?deactivate=true&token=' . get_option( ROP_APP_TOKEN_OPTION ) );
+		} catch ( GuzzleHttp\Exception\GuzzleException $e ) {
+			$logger->alert_error( 'Error ' . $e->getCode() . '. ' . $e->getMessage() . "\n" . $e->getTrace() );
+		}
 	}
 
 }

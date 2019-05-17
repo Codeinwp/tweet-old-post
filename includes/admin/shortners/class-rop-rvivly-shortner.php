@@ -74,6 +74,9 @@ class Rop_Rvivly_Shortner extends Rop_Url_Shortner_Abstract {
 		if ( intval( $response['error'] ) == 200 ) {
 			$shortURL = $response['response'];
 		}
+		if ( $shortURL == null || $shortURL === '' ) {
+			$shortURL = $url;
+		}
 		return $shortURL;
 	}
 }
