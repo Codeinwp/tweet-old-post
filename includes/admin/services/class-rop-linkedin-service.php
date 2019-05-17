@@ -437,12 +437,13 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			} else {
 				$new_post = $this->linkedin_image_post( $post_details, $args, $token, $api );
 			}
-		} elseif ( get_post_type( $post_details['post_id'] ) == 'attachment' ) {
+		} elseif ( get_post_type( $post_details['post_id'] ) === 'attachment' ) {
 			// Linkedin Api v2 doesn't support video upload. Share as article post
-			if ( strpos( $post_details['mimetype']['type'], 'video' ) !== false ) {
+			if ( strpos( get_post_mime_type( $post_details['post_id'] ), 'video' ) !== false ) {
 				$new_post = $this->linkedin_article_post( $post_details, $args );
+			} else {
+				$new_post = $this->linkedin_image_post( $post_details, $args, $token, $api );
 			}
-			 $new_post = $this->linkedin_image_post( $post_details, $args, $token, $api );
 		}
 
 		try {
@@ -483,6 +484,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 */
 	private function linkedin_article_post( $post_details, $args ) {
 
+		$video_post = strpos( get_post_mime_type( $post_details['post_id'] ), 'video' );
+
 		$new_post = array (
 			'author' => 'urn:li:person:' . $args['id'],
 			'lifecycleState' => 'PUBLISHED',
@@ -492,7 +495,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 				array (
 					'shareCommentary' =>
 					array (
-						'text' => $this->strip_excess_blank_lines( $post_details['content'] ) . $post_details['hashtags'],
+						'text' => $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $post_details['hashtags'],
 					),
 					'shareMediaCategory' => 'ARTICLE',
 					'media' =>
@@ -504,7 +507,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 							array (
 								'text' => $this->strip_excess_blank_lines( $post_details['content'] ),
 							),
-							'originalUrl' => trim( $this->get_url( $post_details ) ),
+							'originalUrl' => ( $video_post === false ) ? trim( $this->get_url( $post_details ) ) : get_permalink( $post_details['post_id'] ),
 							'title' =>
 							array (
 								'text' => html_entity_decode( get_the_title( $post_details['post_id'] ) ),
@@ -560,13 +563,18 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$upload_url = $response['value']['uploadMechanism']['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest']['uploadUrl'];
 		$asset = $response['value']['asset'];
 
-		$img = wp_get_attachment_url( $post_details['post_id'] );
+		// If this is an attachment post we need to make sure we pass the URL to get_path_by_url() correctly
+		if ( get_post_type( $post_details['post_id'] ) === 'attachment' ) {
+			$img = $this->get_path_by_url( wp_get_attachment_url( $post_details['post_id'] ), $post_details['mimetype'] );
+		} else {
+			$img = $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] );
+		}
 
-		if ( ! class_exists( '\GuzzleHttp\Client' ) ) {
+		if ( ! class_exists( 'GuzzleHttp\Client' ) ) {
 			$this->logger->alert_error( 'Error: Cannot find Guzzle' );
 			return;
 		}
-		$guzzle = new \GuzzleHttp\Client();
+		$guzzle = new GuzzleHttp\Client();
 		$guzzle->request(
 			'PUT',
 			$upload_url,
