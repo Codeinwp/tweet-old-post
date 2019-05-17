@@ -134,6 +134,14 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.2.5 - 2019-05-17  = 
+
+* New: Show admin notice when WP Cron is turned off, which can cause posting issues with ROP
+* Fix: LinkedIn Image posts were not going through
+* Fix: Posting to some Pinterest boards with special characters was not working
+* Info: Tested on WP 5.2
+
+
 = 8.2.4 - 2019-04-15  = 
 
 * Fix: Minor bugs
