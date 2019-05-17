@@ -191,7 +191,7 @@ class Rop_Global_Settings {
 			'short_url'            => true,
 			'short_url_service'    => 'is.gd',
 			'hashtags'             => 'no-hashtags',
-			'hashtags_length'      => '10',
+			'hashtags_length'      => '20',
 			'hashtags_common'      => '',
 			'shortner_credentials' => array(),
 			'hashtags_custom'      => '',
