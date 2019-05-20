@@ -56,7 +56,7 @@ class Rop_Activator {
 
 		try {
 			$app_url = ROP_AUTH_APP_URL . ROP_APP_ACTIVATION_PATH;
-			$current_url = ( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http' ) . '://' . $_SERVER[ HTTP_HOST ];
+			$current_url = ( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http' ) . '://' . $_SERVER[ 'HTTP_HOST' ];
 			$email = base64_encode( get_option( 'admin_email' ) );
 
 			$response = $client->request( 'GET', $app_url . '?activate=true&url=' . $current_url . '&data=' . $email );
