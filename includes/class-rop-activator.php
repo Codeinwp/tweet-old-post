@@ -18,7 +18,7 @@
  * @since      8.0.0
  * @package    Rop
  * @subpackage Rop/includes
- * @author     ThemeIsle <friends@themeisle.com>
+ * @author     ThemeIsle <friends@revive.social>
  */
 class Rop_Activator {
 
@@ -44,11 +44,21 @@ class Rop_Activator {
 			add_option( 'rop_first_install_version', $version );
 		}
 
-		self::rop_auth_tasks();
+		self::rop_create_install_token();
 
 	}
 
-	private static function rop_auth_tasks(){
+	/**
+	 * ROP installation tasks
+	 *
+	 * Creates unique ID for website used during authentication requests
+	 *
+	 * @since      8.3.0
+	 * @package    Rop
+	 * @subpackage Rop/includes
+	 * @author     ThemeIsle <friends@revive.social>
+	 */
+	private static function rop_create_install_token() {
 
 		$logger = new Rop_Logger();
 
@@ -62,15 +72,15 @@ class Rop_Activator {
 		try {
 			$app_url = ROP_AUTH_APP_URL . ROP_APP_ACTIVATION_PATH;
 
-			if( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] === 'on'  ){
+			if ( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] === 'on' ) {
 				$protocol = 'https';
-			}elseif ( !empty( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https' ) {
-			$protocol = 'https';
-			}else{
+			} elseif ( ! empty( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https' ) {
+				$protocol = 'https';
+			} else {
 				$protocol = 'http';
 			}
 
-			$current_url = $protocol . '://' . $_SERVER[ 'HTTP_HOST' ];
+			$current_url = $protocol . '://' . $_SERVER['HTTP_HOST'];
 			$email = base64_encode( get_option( 'admin_email' ) );
 
 			// Get unique token
@@ -87,7 +97,6 @@ class Rop_Activator {
 		} catch ( GuzzleHttp\Exception\GuzzleException $e ) {
 			$logger->alert_error( 'Error ' . $e->getCode() . '. ' . $e->getMessage() . "\n" . $e->getTrace() );
 		}
-
 
 	}
 
