@@ -64,7 +64,7 @@ class Rop_Activator {
 
 			if( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] === 'on'  ){
 				$protocol = 'https';
-			}elseif ( !empty( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' ) {
+			}elseif ( !empty( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https' ) {
 			$protocol = 'https';
 			}else{
 				$protocol = 'http';
