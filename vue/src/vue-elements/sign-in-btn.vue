@@ -21,8 +21,8 @@
 				<div class="modal-body">
 					<div class="content">
 						<div class="auth-app" v-if="isFacebook && isAllowedFacebook">
-							<button class="btn btn-primary big-btn" @click="openPopupFB()">Sign in to Facebook</button>
-							<span class="text-center">or sign in using your own Facebook app</span>
+							<button class="btn btn-primary big-btn" @click="openPopupFB()">{{labels.fb_app_signin_btn}}</button>
+							<span class="text-center">{{labels.fb_own_app_signin}}</span>
 						</div>
 						<div class="form-group" v-for="( field, id ) in modal.data">
 							<label class="form-label" :for="field.id">{{ field.name }}</label>
@@ -245,7 +245,7 @@
 					if (!this.showFbAppBtn) {
 						showButton = false;
 					}
-				
+
 				return showButton;
 			}
 		}
