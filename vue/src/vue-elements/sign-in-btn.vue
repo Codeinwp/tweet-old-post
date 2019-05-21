@@ -64,6 +64,7 @@
 				appUniqueId: ropAuthAppData.authToken,
 				windowParameters: 'top=20,left=100,width=560,height=670',
 				authPopupWindow: null,
+				showFbAppBtn: ropApiSettings.show_fb_app_btn,
 				showBtn: false
 			}
 		},
@@ -240,11 +241,11 @@
 			},
 			isAllowedFacebook: function () {
 				let showButton = true;
-				for (let authService in this.$store.state.authenticatedServices) {
-					if (this.$store.state.authenticatedServices[authService].service === 'facebook') {
+
+					if (!this.showFbAppBtn) {
 						showButton = false;
 					}
-				}
+				
 				return showButton;
 			}
 		}
