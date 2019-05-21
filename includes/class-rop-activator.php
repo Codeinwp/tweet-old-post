@@ -44,10 +44,15 @@ class Rop_Activator {
 			add_option( 'rop_first_install_version', $version );
 		}
 
+		self::rop_auth_tasks();
+
+	}
+
+	private static function rop_auth_tasks(){
+
 		$logger = new Rop_Logger();
 
-		// Get unique token
-		if ( ! class_exists( '\GuzzleHttp\Client' ) ) {
+		if ( ! class_exists( 'GuzzleHttp\Client' ) ) {
 			$logger->alert_error( 'Error: Cannot find Guzzle' );
 			return;
 		}
@@ -56,9 +61,19 @@ class Rop_Activator {
 
 		try {
 			$app_url = ROP_AUTH_APP_URL . ROP_APP_ACTIVATION_PATH;
-			$current_url = ( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http' ) . '://' . $_SERVER[ 'HTTP_HOST' ];
+
+			if( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] === 'on'  ){
+				$protocol = 'https';
+			}elseif ( !empty( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' ) {
+			$protocol = 'https';
+			}else{
+				$protocol = 'http';
+			}
+
+			$current_url = $protocol . '://' . $_SERVER[ 'HTTP_HOST' ];
 			$email = base64_encode( get_option( 'admin_email' ) );
 
+			// Get unique token
 			$response = $client->request( 'GET', $app_url . '?activate=true&url=' . $current_url . '&data=' . $email );
 			$token = $response->getBody()->getContents();
 
@@ -71,8 +86,9 @@ class Rop_Activator {
 			}
 		} catch ( GuzzleHttp\Exception\GuzzleException $e ) {
 			$logger->alert_error( 'Error ' . $e->getCode() . '. ' . $e->getMessage() . "\n" . $e->getTrace() );
-
 		}
+
+
 	}
 
 }

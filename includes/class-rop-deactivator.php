@@ -41,7 +41,7 @@ class Rop_Deactivator {
 		 */
 		$logger = new Rop_Logger();
 
-		if ( ! class_exists( '\GuzzleHttp\Client' ) ) {
+		if ( ! class_exists( 'GuzzleHttp\Client' ) ) {
 			$logger->alert_error( 'Error: Cannot find Guzzle' );
 			return;
 		}
