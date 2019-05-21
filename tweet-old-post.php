@@ -106,7 +106,7 @@ function run_rop() {
 	define( 'ROP_LITE_URL', plugin_dir_url( __FILE__ ) );
 
 	// Authorization APP Data
-	define( 'ROP_AUTH_APP_URL', 'https://plugins.uriahsvictor.com' );
+	define( 'ROP_AUTH_APP_URL', 'https://app.revive.social' );
 	define( 'ROP_APP_FACEBOOK_PATH', '/fb_auth' );
 	define( 'ROP_APP_ACTIVATION_PATH', '/rop_init_user' );
 	define( 'ROP_APP_TOKEN_OPTION', 'rop_install_token' );

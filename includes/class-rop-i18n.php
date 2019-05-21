@@ -76,8 +76,8 @@ class Rop_I18n {
 			'accounts'    => array(
 				'menu_item'               => __( 'Accounts', 'tweet-old-post' ),
 				'service_popup_title'     => __( 'Service Credentials', 'tweet-old-post' ),
-				'fb_app_signin_btn'     	=> __( 'Sign in to Facebook', 'tweet-old-post' ),
-				'fb_own_app_signin'  			=> __( 'or sign in using your own Facebook app', 'tweet-old-post' ),
+				'fb_app_signin_btn'         => __( 'Sign in to Facebook', 'tweet-old-post' ),
+				'fb_own_app_signin'             => __( 'or sign in using your own Facebook app', 'tweet-old-post' ),
 				'service_popup_title'     => __( 'Service Credentials', 'tweet-old-post' ),
 				'sign_in_btn'             => __( 'Sign In', 'tweet-old-post' ),
 				'at'                      => __( 'at', 'tweet-old-post' ),

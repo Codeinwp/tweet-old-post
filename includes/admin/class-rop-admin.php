@@ -211,7 +211,7 @@ class Rop_Admin {
 		}
 
 		$services        = new Rop_Services_Model();
-		$fb_service			= new Rop_Facebook_Service();
+		$fb_service         = new Rop_Facebook_Service();
 		$active_accounts = $services->get_active_accounts();
 
 		$global_settings             = new Rop_Global_Settings();

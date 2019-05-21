@@ -691,26 +691,25 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	/**
 	 * Method used to decide whether or not to show Facebook button
 	 *
-	 *
 	 * @since   8.3.0
 	 * @access  public
 	 *
 	 * @return  bool
 	 */
-	 public function rop_show_fb_app_btn(){
+	public function rop_show_fb_app_btn() {
 
-		 $installed_at_version = get_option('rop_first_install_version');
+		$installed_at_version = get_option( 'rop_first_install_version' );
 
-		 if(empty($installed_at_version)){
-			 return false;
-		 }
+		if ( empty( $installed_at_version ) ) {
+			return false;
+		}
 
-		 if(version_compare($installed_at_version, '8.3.0', '>=')){
-			 return true;
-		 }
+		if ( version_compare( $installed_at_version, '8.3.0', '>=' ) ) {
+			return true;
+		}
 
-		 return false;
-	 }
+		return false;
+	}
 
 	/**
 	 * Method to add pages.
