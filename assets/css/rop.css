@@ -4325,15 +4325,15 @@
 
 @media (max-width: 840px) {
 	#rop_social_actions {
-    display: inline-block;
-    margin-bottom: 11px;
-    text-align: center;
-    width: 100%;
-}
+		display: inline-block;
+		width: 100%;
+		margin-bottom: 11px;
+		text-align: center;
+	}
 
-#rop_social_actions a {
-	margin-bottom: 5px;
-}
+	#rop_social_actions a {
+		margin-bottom: 5px;
+	}
 
 	#rop_core .sidebar {
 		display: block;
@@ -4347,4 +4347,22 @@
 .modal-footer a,
 .rop-post-type-badge a {
 	text-decoration: underline;
+}
+
+.auth-app {
+	width: 100%;
+	margin-bottom: 10px;
+	font-size: 15px;
+	text-align: center;
+}
+
+#rop_core .btn.btn-primary.big-btn {
+	width: 92%;
+	height: 45px;
+	margin: 0 4% 20px;
+	font-size: 15px;
+}
+
+.auth-app .text-center {
+	font-weight: 600;
 }

@@ -64,10 +64,10 @@ register_deactivation_hook( __FILE__, 'rop_deactivation' );
 function rop_php_notice() {
 	?>
 
-		<div class="notice notice-error is-dismissible">
-			<?php echo sprintf( __( '%1$s You\'re using a PHP version lower than 5.6! Revive Old Posts requires at least %2$sPHP 5.6%3$s to function properly. Plugin has been deactivated. %4$sLearn more here%5$s. %6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/947-how-to-update-your-php-version" target="_blank">', '</a>', '</p>' ); ?>
-		</div>
-		<?php
+	<div class="notice notice-error is-dismissible">
+		<?php echo sprintf( __( '%1$s You\'re using a PHP version lower than 5.6! Revive Old Posts requires at least %2$sPHP 5.6%3$s to function properly. Plugin has been deactivated. %4$sLearn more here%5$s. %6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/947-how-to-update-your-php-version" target="_blank">', '</a>', '</p>' ); ?>
+	</div>
+	<?php
 }
 
 /**
@@ -77,7 +77,7 @@ function rop_php_notice() {
  */
 function deactivate_rop() {
 	if ( is_plugin_active( 'tweet-old-post/tweet-old-post.php' ) ) {
-			deactivate_plugins( 'tweet-old-post/tweet-old-post.php' );
+		deactivate_plugins( 'tweet-old-post/tweet-old-post.php' );
 	}
 }
 
@@ -104,6 +104,12 @@ function run_rop() {
 	define( 'ROP_LITE_PATH', plugin_dir_path( __FILE__ ) );
 	define( 'ROP_PATH', plugin_dir_path( __FILE__ ) );
 	define( 'ROP_LITE_URL', plugin_dir_url( __FILE__ ) );
+
+	// Authorization APP Data
+	define( 'ROP_AUTH_APP_URL', 'https://plugins.uriahsvictor.com' );
+	define( 'ROP_APP_FACEBOOK_PATH', '/fb_auth' );
+	define( 'ROP_APP_ACTIVATION_PATH', '/rop_init_user' );
+	define( 'ROP_APP_TOKEN_OPTION', 'rop_install_token' );
 
 	$vendor_file = ROP_LITE_PATH . '/vendor/autoload.php';
 	if ( is_readable( $vendor_file ) ) {

@@ -214,7 +214,7 @@ class Rop_Admin {
 		$active_accounts = $services->get_active_accounts();
 
 		$global_settings             = new Rop_Global_Settings();
-		$settings                   = new Rop_Settings_Model();
+		$settings                    = new Rop_Settings_Model();
 
 		$array_nonce['license_type'] = $global_settings->license_type();
 		$array_nonce['labels']       = Rop_I18n::get_labels();
@@ -225,6 +225,13 @@ class Rop_Admin {
 			'action'   => $settings->get_instant_sharing_by_default(),
 			'accounts' => $active_accounts,
 		);
+		$rop_auth_app_data = array(
+			'adminEmail'          => base64_encode( get_option( 'admin_email' ) ),
+			'authAppUrl'          => ROP_AUTH_APP_URL,
+			'authAppFacebookPath' => ROP_APP_FACEBOOK_PATH,
+			'authToken'           => get_option( ROP_APP_TOKEN_OPTION ),
+			'adminUrl'            => urlencode( get_admin_url( get_current_blog_id(), 'admin.php?page=TweetOldPost' ) ),
+		);
 
 		if ( 'publish_now' === $page ) {
 			$array_nonce['publish_now'] = apply_filters( 'rop_publish_now_attributes', $array_nonce['publish_now'] );
@@ -233,6 +240,7 @@ class Rop_Admin {
 
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ropApiSettings', $array_nonce );
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ROP_ASSETS_URL', ROP_LITE_URL . 'assets/' );
+		wp_localize_script( $this->plugin_name . '-' . $page, 'ropAuthAppData', $rop_auth_app_data );
 		wp_enqueue_script( $this->plugin_name . '-' . $page );
 
 	}
