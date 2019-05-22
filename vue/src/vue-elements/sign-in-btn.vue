@@ -21,8 +21,8 @@
 				<div class="modal-body">
 					<div class="content">
 						<div class="auth-app" v-if="isFacebook && isAllowedFacebook">
-							<button class="btn btn-primary big-btn" @click="openPopupFB()">Sign in to Facebook</button>
-							<span class="text-center">or sign in using your own Facebook app</span>
+							<button class="btn btn-primary big-btn" @click="openPopupFB()">{{labels.fb_app_signin_btn}}</button>
+							<span class="text-center">{{labels.fb_own_app_signin}}</span>
 						</div>
 						<div class="form-group" v-for="( field, id ) in modal.data">
 							<label class="form-label" :for="field.id">{{ field.name }}</label>
@@ -64,6 +64,7 @@
 				appUniqueId: ropAuthAppData.authToken,
 				windowParameters: 'top=20,left=100,width=560,height=670',
 				authPopupWindow: null,
+				showFbAppBtn: ropApiSettings.show_fb_app_btn,
 				showBtn: false
 			}
 		},
@@ -240,11 +241,11 @@
 			},
 			isAllowedFacebook: function () {
 				let showButton = true;
-				for (let authService in this.$store.state.authenticatedServices) {
-					if (this.$store.state.authenticatedServices[authService].service === 'facebook') {
+
+					if (!this.showFbAppBtn) {
 						showButton = false;
 					}
-				}
+
 				return showButton;
 			}
 		}

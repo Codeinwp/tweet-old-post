@@ -49,6 +49,8 @@ if ( isset( $housekeeping ) && $housekeeping ) {
 		'rop_notice_active',
 		'rop_menu_pointer_queued',
 		'rop_dashboard_pointers_queued',
+		'rop_install_token',
+		'rop_facebook_via_rs_app',
 	);
 
 	foreach ( $option_keys as $key ) {
