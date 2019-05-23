@@ -24,6 +24,10 @@
 							<button class="btn btn-primary big-btn" @click="openPopupFB()">{{labels.fb_app_signin_btn}}</button>
 							<span class="text-center">{{labels.fb_own_app_signin}}</span>
 						</div>
+						<div id="rop-advanced-config" v-if="isFacebook && isAllowedFacebook">
+						<button class="btn btn-primary" v-on:click="showAdvanceConfig = !showAdvanceConfig">{{labels.show_advance_config}}</button>
+					</div>
+						<div v-if="showAdvanceConfig || !isAllowedFacebook">
 						<div class="form-group" v-for="( field, id ) in modal.data">
 							<label class="form-label" :for="field.id">{{ field.name }}</label>
 							<input class="form-input" type="text" :id="field.id" v-model="field.value"
@@ -32,7 +36,8 @@
 						</div>
 					</div>
 				</div>
-				<div class="modal-footer">
+				</div>
+				<div v-if="showAdvanceConfig || !isAllowedFacebook" class="modal-footer">
 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 				</div>
@@ -54,6 +59,7 @@
 					description: '',
 					data: {}
 				},
+				showAdvanceConfig: false,
 				labels: this.$store.state.labels.accounts,
 				upsell_link: ropApiSettings.upsell_link,
 				activePopup: '',
