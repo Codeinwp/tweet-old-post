@@ -683,11 +683,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			// Page was added using ROP application (new method)
 			// Try post via Guzzle 6
 
-			if ( ! class_exists( 'GuzzleHttp\Client' ) ) {
-				$this->logger->alert_error( 'Error: Cannot find Guzzle' );
-				return;
-			}
-
 			$post_data = $new_post;
 			$post_data['access_token'] = $token;
 
@@ -697,42 +692,27 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				$url = 'https://graph.facebook.com' . $path;
 			}
 
-			$client = new GuzzleHttp\Client( ['headers' => ['Content-Type' => 'application/x-www-form-urlencoded']] );
+			$response = wp_remote_post(
+				$url,
+				array(
 
-			try {
-				$client->request(
-					'POST',
-					$url,
-					[
-						'form_params' => $post_data,
-					]
-				);
+					'body' => $post_data,
+					'headers' => array(
+						'Content-Type' => 'application/x-www-form-urlencoded',
+					),
+
+				)
+			);
+
+			 $body = json_decode( wp_remote_retrieve_body( $response ), true );
+
+			 // Facebook only returns id if successful
+			if ( ! empty( $body['id'] ) ) {
 				return true;
-
-			} catch ( GuzzleHttp\Exception\GuzzleException $e ) {
-				$errorCode = $e->getCode();
-				$errorMsg = $e->getMessage();
-				if ( $errorCode === 400 && strpos( $errorMsg, '(#100)' ) !== false && ! empty( $post_data['name'] ) ) {
-					// retry without name
-					unset( $post_data['name'] );
-					try {
-						$client->request(
-							'POST',
-							$url,
-							[
-								'form_params' => $post_data,
-							]
-						);
-						return true;
-					} catch ( GuzzleHttp\Exception\GuzzleException $e ) {
-						$errorMsg = $e->getMessage();
-						$this->logger->alert_error( 'Unable to share post for facebook. ' . $errorMsg );
-						$this->rop_get_error_docs( $errorMsg );
-					}
-				} else {
-					$this->logger->alert_error( 'Unable to share post for facebook. ' . $errorMsg );
-					$this->rop_get_error_docs( $errorMsg );
-				}
+			} else {
+				$this->logger->alert_error( 'Error Posting to Facebook: ' . $body['error']['message'] );
+				$this->rop_get_error_docs( $body['error']['message'] );
+				return false;
 			}
 		}
 	}
