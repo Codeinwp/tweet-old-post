@@ -62,16 +62,7 @@ class Rop_Activator {
 
 		$logger = new Rop_Logger();
 
-		/*
-		if ( ! class_exists( 'GuzzleHttp\Client' ) ) {
-			$logger->alert_error( 'Error: Cannot find Guzzle' );
-			return;
-		}
-
-		$client = new GuzzleHttp\Client();
-		*/
-		// try {
-			$app_url = ROP_AUTH_APP_URL . ROP_APP_ACTIVATION_PATH;
+		$app_url = ROP_AUTH_APP_URL . ROP_APP_ACTIVATION_PATH;
 
 		if ( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] === 'on' ) {
 			$protocol = 'https';
@@ -84,12 +75,15 @@ class Rop_Activator {
 			$current_url = $protocol . '://' . $_SERVER['HTTP_HOST'];
 			$email = base64_encode( get_option( 'admin_email' ) );
 
-			// Get unique token
-
-		$response = wp_remote_get( $app_url . '?activate=true&url=' . $current_url . '&data=' . $email );
+		// Get unique token
+		$response = wp_remote_get( $app_url . '?activate=true&url=' . $current_url . '&data=' . $email . '&time=' . time() );
 		$token = wp_remote_retrieve_body( $response );
 		if ( empty( $token ) ) {
 			$logger->alert_error( 'There was an error creating your install token. Please send us a support ticket. Error:' . print_r( $response, true ) );
+		}
+
+		if ( strpos( $token, 'Rate Limited' ) !== false ) {
+					$logger->alert_error( 'Rate limited, please wait a few minutes then deactivate and reactivate ROP to recieve your install token (Needed to log into Facebook). ' );
 		}
 
 		if ( is_wp_error( $response ) ) {
@@ -102,7 +96,7 @@ class Rop_Activator {
 				add_option( ROP_APP_TOKEN_OPTION, $token, $deprecated, $autoload );
 		} else {
 			// delete old token incase plugin was installed/uninstalled dirty
-			wp_remote_get( $app_url . '?deactivate=true&token=' . get_option( ROP_APP_TOKEN_OPTION ) );
+			 wp_remote_get( $app_url . '?deactivate=true&token=' . get_option( ROP_APP_TOKEN_OPTION ) . '&time=' . time() );
 			update_option( ROP_APP_TOKEN_OPTION, $token );
 		}
 
