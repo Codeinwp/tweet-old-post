@@ -94,7 +94,7 @@ function run_rop() {
 
 	if ( version_compare( PHP_VERSION, '5.6.0', '<' ) ) {
 		add_action( 'admin_notices', 'rop_php_notice' );
-		add_action( 'admin_init', 'deactivate_rop' );
+		add_action( 'admin_init', 'deactivate_rop', 1 );
 	}
 
 	define( 'ROP_PRO_URL', 'http://revive.social/plugins/revive-old-post/' );
