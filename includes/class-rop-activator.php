@@ -62,40 +62,48 @@ class Rop_Activator {
 
 		$logger = new Rop_Logger();
 
+		/*
 		if ( ! class_exists( 'GuzzleHttp\Client' ) ) {
 			$logger->alert_error( 'Error: Cannot find Guzzle' );
 			return;
 		}
 
 		$client = new GuzzleHttp\Client();
-
-		try {
+		*/
+		// try {
 			$app_url = ROP_AUTH_APP_URL . ROP_APP_ACTIVATION_PATH;
 
-			if ( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] === 'on' ) {
-				$protocol = 'https';
-			} elseif ( ! empty( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https' ) {
-				$protocol = 'https';
-			} else {
-				$protocol = 'http';
-			}
+		if ( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] === 'on' ) {
+			$protocol = 'https';
+		} elseif ( ! empty( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https' ) {
+			$protocol = 'https';
+		} else {
+			$protocol = 'http';
+		}
 
 			$current_url = $protocol . '://' . $_SERVER['HTTP_HOST'];
 			$email = base64_encode( get_option( 'admin_email' ) );
 
 			// Get unique token
-			$response = $client->request( 'GET', $app_url . '?activate=true&url=' . $current_url . '&data=' . $email );
-			$token = $response->getBody()->getContents();
 
-			if ( ! get_option( ROP_APP_TOKEN_OPTION ) ) {
+		$response = wp_remote_get( $app_url . '?activate=true&url=' . $current_url . '&data=' . $email );
+		$token = wp_remote_retrieve_body( $response );
+		if ( empty( $token ) ) {
+			$logger->alert_error( 'There was an error creating your install token. Please send us a support ticket. Error:' . print_r( $response, true ) );
+		}
+
+		if ( is_wp_error( $response ) ) {
+			$logger->alert_error( 'There was an error creating your token. Please send us a support ticket: ' . $response->get_error_message() );
+		}
+
+		if ( empty( get_option( ROP_APP_TOKEN_OPTION ) ) ) {
 				$deprecated = ' ';
 				$autoload = 'no';
 				add_option( ROP_APP_TOKEN_OPTION, $token, $deprecated, $autoload );
-			} else {
-				update_option( ROP_APP_TOKEN_OPTION, $token );
-			}
-		} catch ( GuzzleHttp\Exception\GuzzleException $e ) {
-			$logger->alert_error( 'Error ' . $e->getCode() . '. ' . $e->getMessage() . "\n" . $e->getTrace() );
+		} else {
+			// delete old token incase plugin was installed/uninstalled dirty
+			wp_remote_get( $app_url . '?deactivate=true&token=' . get_option( ROP_APP_TOKEN_OPTION ) );
+			update_option( ROP_APP_TOKEN_OPTION, $token );
 		}
 
 	}
