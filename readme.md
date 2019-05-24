@@ -2,7 +2,7 @@
 **Contributors:** [codeinwp](https://profiles.wordpress.org/codeinwp), [marius2012](https://profiles.wordpress.org/marius2012), [marius_codeinwp](https://profiles.wordpress.org/marius_codeinwp), [hardeepasrani](https://profiles.wordpress.org/hardeepasrani), [Madalin_Themeisle](https://profiles.wordpress.org/Madalin_Themeisle), [rsocial](https://profiles.wordpress.org/rsocial), [uriahs-victor](https://profiles.wordpress.org/uriahs-victor)  
 **Tags:** auto publish, auto post, social media automation, social media scheduling, automatic, facebook, twitter, linkedin, pinterest, autopilot, analytics, sharing  
 **Requires at least:** 4.7  
-**Tested up to:** 5.1  
+**Tested up to:** 5.2  
 **Requires PHP:** 5.6  
 **Stable tag:** trunk  
 
@@ -134,6 +134,12 @@ http://revive.social/plugins/revive-old-post
 
 
 ## Changelog ##
+### 8.3.0 - 2019-05-24  ###
+
+* New: Made connecting Facebook pages to plugin much simpler.
+* Fix: When using publish now feature, all services would be checked after page reload even though only one was selected.
+
+
 ### 8.2.5 - 2019-05-17  ###
 
 * New: Show admin notice when WP Cron is turned off, which can cause posting issues with ROP

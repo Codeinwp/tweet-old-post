@@ -1,4 +1,9 @@
 
+ ### v8.3.0 - 2019-05-24 
+ **Changes:** 
+ * New: Made connecting Facebook pages to plugin much simpler.
+* Fix: When using publish now feature, all services would be checked after page reload even though only one was selected.
+ 
  ### v8.2.5 - 2019-05-17 
  **Changes:** 
  * New: Show admin notice when WP Cron is turned off, which can cause posting issues with ROP
