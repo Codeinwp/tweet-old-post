@@ -41,18 +41,14 @@ class Rop_Deactivator {
 		 */
 		$logger = new Rop_Logger();
 
-		if ( ! class_exists( 'GuzzleHttp\Client' ) ) {
-			$logger->alert_error( 'Error: Cannot find Guzzle' );
-			return;
+		$app_url = ROP_AUTH_APP_URL . ROP_APP_ACTIVATION_PATH;
+		$response = wp_remote_get( $app_url . '?deactivate=true&token=' . get_option( ROP_APP_TOKEN_OPTION ) . '&time=' . time() );
+		delete_option( ROP_APP_TOKEN_OPTION );
+
+		if ( is_wp_error( $response ) ) {
+			$logger->alert_error( 'There was an error deleting your token: ' . $response->get_error_message() );
 		}
 
-		$client = new GuzzleHttp\Client();
-
-		try {
-			$response = $client->request( 'GET', ROP_AUTH_APP_URL . ROP_APP_ACTIVATION_PATH . '?deactivate=true&token=' . get_option( ROP_APP_TOKEN_OPTION ) );
-		} catch ( GuzzleHttp\Exception\GuzzleException $e ) {
-			$logger->alert_error( 'Error ' . $e->getCode() . '. ' . $e->getMessage() . "\n" . $e->getTrace() );
-		}
 	}
 
 }

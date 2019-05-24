@@ -285,7 +285,7 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 			)
 		);
 
-		$search = array( ' ', '.', '/', '!', '@', '&', '#', '%', '*', '(', ')', '{', '}', '[', ']', '|', '\\', '$' );
+		$search = array( ' ', '.', ',', '/', '!', '@', '&', '#', '%', '*', '(', ')', '{', '}', '[', ']', '|', '\\', '$' );
 		$replace = array( '-', '' );
 
 		foreach ( $boards as $board ) {
