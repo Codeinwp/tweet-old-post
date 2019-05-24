@@ -134,6 +134,12 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.3.1 - 2019-05-24  = 
+
+* Fix: Use wp_remote_request functions in favor of guzzle which was causing issues on some websites
+* Fix: Posting to Pinterest board names with commas
+
+
 = 8.3.0 - 2019-05-24  = 
 
 * New: Made connecting Facebook pages to plugin much simpler.

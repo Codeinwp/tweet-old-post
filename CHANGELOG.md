@@ -1,4 +1,9 @@
 
+ ### v8.3.1 - 2019-05-24 
+ **Changes:** 
+ * Fix: Use wp_remote_request functions in favor of guzzle which was causing issues on some websites
+* Fix: Posting to Pinterest board names with commas
+ 
  ### v8.3.0 - 2019-05-24 
  **Changes:** 
  * New: Made connecting Facebook pages to plugin much simpler.
