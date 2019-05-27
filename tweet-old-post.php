@@ -108,7 +108,6 @@ function run_rop() {
 	// Authorization APP Data
 	define( 'ROP_AUTH_APP_URL', 'https://app.revive.social' );
 	define( 'ROP_APP_FACEBOOK_PATH', '/fb_auth' );
-	define( 'ROP_APP_ACTIVATION_PATH', '/rop_init_user' );
 	define( 'ROP_APP_TOKEN_OPTION', 'rop_install_token' );
 
 	$vendor_file = ROP_LITE_PATH . '/vendor/autoload.php';
