@@ -134,6 +134,12 @@ http://revive.social/plugins/revive-old-post
 
 
 ## Changelog ##
+### 8.3.2 - 2019-05-27  ###
+
+* Fix: Log would some times show the wrong status message for the share
+* Change: Use button to show app credential fields on new installs
+
+
 ### 8.3.1 - 2019-05-24  ###
 
 * Fix: Use wp_remote_request functions in favor of guzzle which was causing issues on some websites

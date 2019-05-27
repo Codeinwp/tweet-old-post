@@ -1,4 +1,9 @@
 
+ ### v8.3.2 - 2019-05-27 
+ **Changes:** 
+ * Fix: Log would some times show the wrong status message for the share
+* Change: Use button to show app credential fields on new installs
+ 
  ### v8.3.1 - 2019-05-24 
  **Changes:** 
  * Fix: Use wp_remote_request functions in favor of guzzle which was causing issues on some websites
