@@ -100,7 +100,7 @@ function run_rop() {
 	define( 'ROP_PRO_URL', 'http://revive.social/plugins/revive-old-post/' );
 	define( 'ROP_LITE_VERSION', '8.3.1' );
 	define( 'ROP_LITE_BASE_FILE', __FILE__ );
-	define( 'ROP_DEBUG', false );
+	define( 'ROP_DEBUG', true );
 	define( 'ROP_LITE_PATH', plugin_dir_path( __FILE__ ) );
 	define( 'ROP_PATH', plugin_dir_path( __FILE__ ) );
 	define( 'ROP_LITE_URL', plugin_dir_url( __FILE__ ) );
@@ -108,7 +108,6 @@ function run_rop() {
 	// Authorization APP Data
 	define( 'ROP_AUTH_APP_URL', 'https://app.revive.social' );
 	define( 'ROP_APP_FACEBOOK_PATH', '/fb_auth' );
-	define( 'ROP_APP_ACTIVATION_PATH', '/rop_init_user' );
 	define( 'ROP_APP_TOKEN_OPTION', 'rop_install_token' );
 
 	$vendor_file = ROP_LITE_PATH . '/vendor/autoload.php';
