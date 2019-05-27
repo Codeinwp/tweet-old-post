@@ -230,7 +230,7 @@ class Rop_Admin {
 
 		$admin_url = get_admin_url( get_current_blog_id(), 'admin.php?page=TweetOldPost' );
 		$token = get_option( ROP_APP_TOKEN_OPTION );
-		$signature = md5($admin_url . $token);
+		$signature = md5( $admin_url . $token );
 
 		$rop_auth_app_data = array(
 			'adminEmail'          => base64_encode( get_option( 'admin_email' ) ),
@@ -238,7 +238,7 @@ class Rop_Admin {
 			'authAppFacebookPath' => ROP_APP_FACEBOOK_PATH,
 			'authToken'           => $token,
 			'adminUrl'            => urlencode( $admin_url ),
-			'authSignature'				=> $signature
+			'authSignature'             => $signature,
 		);
 
 		if ( 'publish_now' === $page ) {
