@@ -36,19 +36,6 @@ class Rop_Deactivator {
 		$cron_helper = new Rop_Cron_Helper();
 		$cron_helper->remove_cron();
 
-		/**
-		 * Clear activation data
-		 */
-		$logger = new Rop_Logger();
-
-		$app_url = ROP_AUTH_APP_URL . ROP_APP_ACTIVATION_PATH;
-		$response = wp_remote_get( $app_url . '?deactivate=true&token=' . get_option( ROP_APP_TOKEN_OPTION ) . '&time=' . time() );
-		delete_option( ROP_APP_TOKEN_OPTION );
-
-		if ( is_wp_error( $response ) ) {
-			$logger->alert_error( 'There was an error deleting your token: ' . $response->get_error_message() );
-		}
-
 	}
 
 }
