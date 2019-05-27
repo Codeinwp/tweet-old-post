@@ -238,7 +238,7 @@ class Rop_Admin {
 			'authAppFacebookPath' => ROP_APP_FACEBOOK_PATH,
 			'authToken'           => $token,
 			'adminUrl'            => urlencode( $admin_url ),
-			'authSignature'             => $signature,
+			'authSignature'       => $signature,
 		);
 
 		if ( 'publish_now' === $page ) {
