@@ -223,7 +223,7 @@
 				try {
 					this.authPopupWindow.close();
 				} catch (e) {
-					// nothin to do
+					// nothing to do
 				} finally {
 					this.authPopupWindow = window.open( loginUrl, 'authFB', this.windowParameters);
 					this.cancelModal();
