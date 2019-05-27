@@ -83,6 +83,7 @@
 				appAdminEmail: ropAuthAppData.adminEmail,
 				siteAdminUrl: ropAuthAppData.adminUrl,
 				appUniqueId: ropAuthAppData.authToken,
+				appSignature: ropAuthAppData.authSignature,
 				windowParameters: 'top=20,left=100,width=560,height=670',
 				authPopupWindow: null,
 				showFbAppBtn: ropApiSettings.show_fb_app_btn,
@@ -218,7 +219,7 @@
 				}
 			},
 			openPopupFB: function () {
-				let loginUrl = this.appOrigin + this.appPathFB + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&data=' + this.appAdminEmail;
+				let loginUrl = this.appOrigin + this.appPathFB + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
 				try {
 					this.authPopupWindow.close();
 				} catch (e) {

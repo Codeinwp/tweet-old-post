@@ -495,12 +495,57 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	private function prepare_for_sharing( $post_details ) {
 		$post_id = $post_details['post_id'];
 
-		/**
-		 * If is not an attachment and we do have an url share it as regular post.
-		 *
-		 * TODO Add in the post format tab, for facebook, an posting behaviour option,
-		 * where we should allow user to choose how the posting with image will work, as regular post or photo post.
-		 */
+			/**
+			 *
+			 * TODO Add in the post format tab, for facebook, an posting behaviour option,
+			 * where we should allow user to choose how the posting with image will work, as regular post or photo post.
+			 */
+
+			// Fb connected via Revive Social App
+			$installed_with_app = get_option( 'rop_facebook_via_rs_app' );
+
+		if ( ! empty( $installed_with_app ) ) {
+
+				// If is media attachment post
+			if ( get_post_type( $post_id ) === 'attachment' ) {
+
+				// If media video post, share as regular post on FB
+				if ( strpos( get_post_mime_type( $post_id ), 'video' ) !== false ) {
+
+					$new_post['message'] = $post_details['content'] . $post_details['hashtags'];
+					$new_post['link'] = get_permalink( $post_id );
+
+					return [
+						'post_data' => $new_post,
+						'type'      => 'post',
+					];
+				}
+
+				$new_post['url'] = wp_get_attachment_url( $post_id );
+
+				$new_post['caption'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
+
+				return [
+					'post_data' => $new_post,
+					'type'      => 'photo',
+				];
+			}
+
+				// If is regular post, but post with image option checked, post as Image on FB
+			if ( get_post_type( $post_id ) !== 'attachment' && ! empty( $post_details['post_image'] ) ) {
+
+				$new_post['url'] = $post_details['post_image'];
+
+				$new_post['caption'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
+
+				return [
+					'post_data' => $new_post,
+					'type'      => 'photo',
+				];
+
+			}
+		}
+
 		if ( get_post_type( $post_id ) !== 'attachment' && ! empty( $post_details['post_url'] ) ) {
 
 			$new_post['message'] = $this->strip_excess_blank_lines( $post_details['content'] ) . $post_details['hashtags'];
@@ -519,8 +564,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			];
 		}
 
-		// If we don't have an image link share as regular post.
-		if ( empty( $post_details['post_image'] ) ) {
+			// If we don't have an image link share as regular post.
+		if ( get_post_type( $post_id ) !== 'attachment' && empty( $post_details['post_image'] ) ) {
 
 			$new_post['message'] = $post_details['content'] . $post_details['hashtags'];
 
@@ -535,7 +580,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			];
 		}
 
-		$api = $this->get_api();
+			$api = $this->get_api();
 
 		if ( strpos( $post_details['mimetype']['type'], 'image' ) !== false ) {
 
@@ -559,7 +604,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				'type'      => 'video',
 			];
 		}
-
 	}
 
 	/**
@@ -615,31 +659,29 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 						return true;
 					} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
 						$this->logger->alert_error( 'Unable to share post for facebook. (FacebookResponseException) Error: ' . $e->getMessage() );
+						$this->rop_get_error_docs( $e->getMessage() );
 
 						return false;
 					} catch ( Facebook\Exceptions\FacebookSDKException $e ) {
 						$this->logger->alert_error( 'Unable to share post for facebook.  Error: ' . $e->getMessage() );
+						$this->rop_get_error_docs( $e->getMessage() );
 
 						return false;
 					}
 				} else {
 					$this->logger->alert_error( 'Unable to share post for facebook. (FacebookResponseException) Error: ' . $errorMsg );
+					$this->rop_get_error_docs( $e->getMessage() );
 
 					return false;
 				}
 			} catch ( Facebook\Exceptions\FacebookSDKException $e ) {
 				$this->logger->alert_error( 'Unable to share post for facebook.  Error: ' . $e->getMessage() );
-
+				$this->rop_get_error_docs( $e->getMessage() );
 				return false;
 			}
 		} else {
 			// Page was added using ROP application (new method)
 			// Try post via Guzzle 6
-
-			if ( ! class_exists( '\GuzzleHttp\Client' ) ) {
-				$this->logger->alert_error( 'Error: Cannot find Guzzle' );
-				return;
-			}
 
 			$post_data = $new_post;
 			$post_data['access_token'] = $token;
@@ -650,41 +692,26 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				$url = 'https://graph.facebook.com' . $path;
 			}
 
-			$client = new GuzzleHttp\Client( ['headers' => ['Content-Type' => 'application/x-www-form-urlencoded']] );
+			$response = wp_remote_post(
+				$url,
+				array(
 
-			try {
-				$client->request(
-					'POST',
-					$url,
-					[
-						'form_params' => $post_data,
-					]
-				);
-				return true;
+					'body' => $post_data,
+					'headers' => array(
+						'Content-Type' => 'application/x-www-form-urlencoded',
+					),
 
-			} catch ( GuzzleHttp\Exception\GuzzleException $e ) {
-				$errorCode = $e->getCode();
-				$errorMsg = $e->getMessage();
-				if ( $errorCode === 400 && strpos( $errorMsg, '(#100)' ) !== false && ! empty( $post_data['name'] ) ) {
-					// retry without name
-					unset( $post_data['name'] );
-					try {
-						$client->request(
-							'POST',
-							$url,
-							[
-								'form_params' => $post_data,
-							]
-						);
-						return true;
-					} catch ( GuzzleHttp\Exception\GuzzleException $e ) {
-						$errorMsg = $e->getMessage();
-						$this->logger->alert_error( 'Unable to share post for facebook. ' . $errorMsg );
-					}
+				)
+			);
+
+				if ( $response['response']['code'] === 200 ) {
+					return true;
 				} else {
-					$this->logger->alert_error( 'Unable to share post for facebook. ' . $errorMsg );
+					$body = json_decode( wp_remote_retrieve_body( $response ), true );
+					$this->logger->alert_error( 'Error Posting to Facebook: ' . $body['error']['message'] );
+					$this->rop_get_error_docs( $body['error']['message'] );
+					return false;
 				}
-			}
 		}
 	}
 

@@ -56,47 +56,15 @@ class Rop_Activator {
 	 * @since      8.3.0
 	 * @package    Rop
 	 * @subpackage Rop/includes
-	 * @author     ThemeIsle <friends@revive.social>
+	 * @author     Revive Social <friends@revive.social>
 	 */
 	private static function rop_create_install_token() {
 
-		$logger = new Rop_Logger();
+		$url = get_site_url();
 
-		if ( ! class_exists( 'GuzzleHttp\Client' ) ) {
-			$logger->alert_error( 'Error: Cannot find Guzzle' );
-			return;
-		}
+		$token = hash( 'ripemd160', $url . date( 'Y-m-d H:i:s' ) );
 
-		$client = new GuzzleHttp\Client();
-
-		try {
-			$app_url = ROP_AUTH_APP_URL . ROP_APP_ACTIVATION_PATH;
-
-			if ( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] === 'on' ) {
-				$protocol = 'https';
-			} elseif ( ! empty( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https' ) {
-				$protocol = 'https';
-			} else {
-				$protocol = 'http';
-			}
-
-			$current_url = $protocol . '://' . $_SERVER['HTTP_HOST'];
-			$email = base64_encode( get_option( 'admin_email' ) );
-
-			// Get unique token
-			$response = $client->request( 'GET', $app_url . '?activate=true&url=' . $current_url . '&data=' . $email );
-			$token = $response->getBody()->getContents();
-
-			if ( ! get_option( ROP_APP_TOKEN_OPTION ) ) {
-				$deprecated = ' ';
-				$autoload = 'no';
-				add_option( ROP_APP_TOKEN_OPTION, $token, $deprecated, $autoload );
-			} else {
-				update_option( ROP_APP_TOKEN_OPTION, $token );
-			}
-		} catch ( GuzzleHttp\Exception\GuzzleException $e ) {
-			$logger->alert_error( 'Error ' . $e->getCode() . '. ' . $e->getMessage() . "\n" . $e->getTrace() );
-		}
+		update_option( ROP_APP_TOKEN_OPTION, $token, false );
 
 	}
 
