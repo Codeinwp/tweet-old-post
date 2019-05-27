@@ -79,6 +79,7 @@ class Rop_I18n {
 				'show_advance_config'			=> __( 'Use your own keys', 'tweet-old-post' ),
 				'fb_app_signin_btn'       => __( 'Sign in to Facebook', 'tweet-old-post' ),
 				'fb_own_app_signin'       => __( 'Or', 'tweet-old-post' ),
+				'fb_rs_app_info'       		=> sprintf( __( 'We collect some info, learn more %1$shere%2$s.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/1066-info-we-collect-in-seamless-facebook-connect" target="_blank">', '</a>' ),
 				'service_popup_title'     => __( 'Service Credentials', 'tweet-old-post' ),
 				'sign_in_btn'             => __( 'Sign In', 'tweet-old-post' ),
 				'at'                      => __( 'at', 'tweet-old-post' ),
