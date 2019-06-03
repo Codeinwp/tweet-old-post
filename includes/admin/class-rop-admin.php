@@ -211,19 +211,28 @@ class Rop_Admin {
 		}
 
 		$services        = new Rop_Services_Model();
+		$fb_service         = new Rop_Facebook_Service();
 		$active_accounts = $services->get_active_accounts();
 
 		$global_settings             = new Rop_Global_Settings();
-		$settings                   = new Rop_Settings_Model();
+		$settings                    = new Rop_Settings_Model();
 
 		$array_nonce['license_type'] = $global_settings->license_type();
 		$array_nonce['labels']       = Rop_I18n::get_labels();
 		$array_nonce['upsell_link']  = Rop_I18n::UPSELL_LINK;
 		$array_nonce['staging']      = $this->rop_site_is_staging();
+		$array_nonce['show_fb_app_btn'] = $fb_service->rop_show_fb_app_btn();
 		$array_nonce['debug']        = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
 		$array_nonce['publish_now']  = array(
 			'action'   => $settings->get_instant_sharing_by_default(),
 			'accounts' => $active_accounts,
+		);
+		$rop_auth_app_data = array(
+			'adminEmail'          => base64_encode( get_option( 'admin_email' ) ),
+			'authAppUrl'          => ROP_AUTH_APP_URL,
+			'authAppFacebookPath' => ROP_APP_FACEBOOK_PATH,
+			'authToken'           => get_option( ROP_APP_TOKEN_OPTION ),
+			'adminUrl'            => urlencode( get_admin_url( get_current_blog_id(), 'admin.php?page=TweetOldPost' ) ),
 		);
 
 		if ( 'publish_now' === $page ) {
@@ -233,6 +242,7 @@ class Rop_Admin {
 
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ropApiSettings', $array_nonce );
 		wp_localize_script( $this->plugin_name . '-' . $page, 'ROP_ASSETS_URL', ROP_LITE_URL . 'assets/' );
+		wp_localize_script( $this->plugin_name . '-' . $page, 'ropAuthAppData', $rop_auth_app_data );
 		wp_enqueue_script( $this->plugin_name . '-' . $page );
 
 	}
@@ -864,6 +874,52 @@ class Rop_Admin {
 		 $user_id = get_current_user_id();
 		if ( isset( $_GET['rop-linkedin-api-notice-dismissed'] ) ) {
 			add_user_meta( $user_id, 'rop-linkedin-api-notice-dismissed', 'true', true );
+		}
+
+	}
+
+	/**
+	 * WordPress Cron disabled notice.
+	 *
+	 * @since   8.2.5
+	 * @access  public
+	 */
+	public function rop_wp_cron_notice() {
+
+		if ( ! defined( 'DISABLE_WP_CRON' ) ) {
+			return;
+		}
+
+		$user_id = get_current_user_id();
+
+		if ( get_user_meta( $user_id, 'rop-wp-cron-notice-dismissed' ) ) {
+			return;
+		}
+
+		if ( DISABLE_WP_CRON == true ) {
+
+			?>
+			<div class="notice notice-error">
+				<?php echo sprintf( __( '%1$s%2$sRevive Old Posts:%3$s The WordPress Cron seems is disabled on your website. This can cause sharing issues with Revive Old Posts. If sharing is not working, then see %4$shere for solutions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/686-fix-revive-old-post-not-posting" target="_blank">', '</a>', '<a style="float: right;" href="?rop-wp-cron-notice-dismissed">Dismiss</a>', '</p>' ); ?>
+
+			</div>
+			<?php
+
+		}
+
+	}
+
+	/**
+	 * Show WordPress Cron disabled notice.
+	 *
+	 * @since   8.2.5
+	 * @access  public
+	 */
+	public function rop_show_cron_disabled_notice() {
+
+		$user_id = get_current_user_id();
+		if ( isset( $_GET['rop-wp-cron-notice-dismissed'] ) ) {
+			add_user_meta( $user_id, 'rop-wp-cron-notice-dismissed', 'true', true );
 		}
 
 	}

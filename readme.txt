@@ -2,7 +2,7 @@
 Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle, rsocial, uriahs-victor
 Tags: auto publish, auto post, social media automation, social media scheduling, automatic, facebook, twitter, linkedin, pinterest, autopilot, analytics, sharing
 Requires at least: 4.7
-Tested up to: 5.1
+Tested up to: 5.2
 Requires PHP: 5.6
 Stable tag: trunk
 
@@ -134,6 +134,14 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.2.5 - 2019-05-17  = 
+
+* New: Show admin notice when WP Cron is turned off, which can cause posting issues with ROP
+* Fix: LinkedIn Image posts were not going through
+* Fix: Posting to some Pinterest boards with special characters was not working
+* Info: Tested on WP 5.2
+
+
 = 8.2.4 - 2019-04-15  = 
 
 * Fix: Minor bugs
