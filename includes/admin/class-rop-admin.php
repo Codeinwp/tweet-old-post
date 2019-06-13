@@ -328,7 +328,7 @@ class Rop_Admin {
 		/**
 		 * For twitter we don't have code/state params.
 		 */
-		if ( ( empty( $code ) || empty( $state ) ) && $network !== 'twitter' ) {
+		if ( ( empty( $code ) && empty( $state ) ) && $network !== 'twitter' ) {
 			return;
 		}
 
@@ -339,11 +339,6 @@ class Rop_Admin {
 		 */
 		if ( ( empty( $oauth_token ) || empty( $oauth_verifier ) ) && $network === 'twitter' ) {
 			return;
-		}
-
-		// Buffer doesnt't send back network so we use the set state from the auth url
-		if ( strpos( $state, 'buffer' ) !== false ) {
-			$network	= 'buffer';
 		}
 
 		switch ( $network ) {

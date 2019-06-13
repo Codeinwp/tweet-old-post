@@ -43,7 +43,6 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 	 * @access  private
 	 * @var     array $permissions The Pinterest required permissions.
 	 */
-	//private $permissions = array( 'read_public', 'write_public' );
 
 	/**
 	 * Method to inject functionality into constructor.
@@ -84,10 +83,9 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 			session_start();
 		}
 
-		//$this->request_api_token();
+		// $this->request_api_token();
 
 		parent::authorize();
-		// echo '<script>window.setTimeout("window.close()", 500);</script>';
 	}
 
 	/**
@@ -166,34 +164,20 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 		if ( ! session_id() ) {
 			session_start();
 		}
-		/*if ( ! $this->is_set_not_empty(
-			$_SESSION,
-			array(
-				'rop_pinterest_token',
-				'rop_pinterest_credentials',
-			)
-		) ) {
-			return false;
-		}
 
 		if ( ! $this->is_set_not_empty(
-			$_SESSION['rop_pinterest_credentials'],
+			$_SESSION,
 			array(
-				'app_id',
-				'secret',
+				'rop_buffer_credentials',
 			)
 		) ) {
 			return false;
 		}
-		$credentials = $_SESSION['rop_pinterest_credentials'];
-		$token       = $_SESSION['rop_pinterest_token'];
 
+		$token = $_SESSION['rop_buffer_credentials'];
 		$credentials['token'] = $token;
-		unset( $_SESSION['rop_pinterest_credentials'] );
-		unset( $_SESSION['rop_pinterest_token'] );*/
 
-		//return $this->authenticate( $credentials );
-		return $this->authenticate();
+        return $this->authenticate( $credentials );
 
 	}
 
@@ -207,55 +191,26 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 	 */
 	public function authenticate( $args = array() ) {
 
-	/*	if ( ! $this->is_set_not_empty(
-			$args,
-			array(
-				'app_id',
-				'secret',
-				'token',
-			)
-		) ) {
-			return false;
-		}
+    $token = $args['token'];
 
-		$app_id = $args['app_id'];
-		$secret = $args['secret'];
-		$token  = $args['token'];
+    $url = 'https://api.bufferapp.com/1/user.json?access_token=' . $token;
 
-		$api = $this->get_api( $app_id, $secret );
-		$this->set_credentials(
-			array(
-				'app_id' => $app_id,
-				'secret' => $secret,
-				'token'  => $token,
-			)
-		);
+		$response = wp_remote_get( $url );
+		$response = json_decode( wp_remote_retrieve_body( $response ), true );
 
-		$api->auth->setOAuthToken( $token );
-		$user = $api->users->me(
-			array(
-				'fields' => 'username,first_name,last_name,image[small]',
-			)
-		);
-*/
+if( !isset($response['id']) ){
+    $this->logger->alert_error( 'Buffer error: ' . $response['error'] );
+    return false;
+    }
+
 		$this->service = array(
-			'id'                 => '21782', //add unique account ID
+			'id'                 => $response['id'],
 			'service'            => $this->service_name,
-			'credentials'        => $this->credentials,
-			'public_credentials' => array(
-				'app_id' => array(
-					'name'    => 'APP ID',
-					'value'   => $this->credentials['app_id'],
-					'private' => false,
-				),
-				'secret' => array(
-					'name'    => 'APP Secret',
-					'value'   => $this->credentials['secret'],
-					'private' => true,
-				),
-			),
-			'available_accounts' => $this->get_profiles(),
+			'credentials'        => $token,
+			'available_accounts' => $this->get_profiles( $token ),
 		);
+
+        unset( $_SESSION['rop_buffer_credentials'] );
 
 		return true;
 
@@ -274,43 +229,35 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 		$this->credentials = $args;
 	}
 
-	public function get_profiles($token = ''){
+	public function get_profiles( $token = '' ) {
 
-		if ( ! class_exists( '\GuzzleHttp\Client' ) ) {
-							return ;
-			}
+		$url = 'https://api.bufferapp.com/1/profiles.json?access_token=' . $token;
+
+		$response = wp_remote_get( $url );
+		$response = json_decode( wp_remote_retrieve_body( $response ), true );
+
+		if ( isset( $response['error'] ) ) {
+			$this->logger->alert_error( 'Buffer error: ' . $response['error'] );
+			return false;
+		}
 
 			$buffer_profiles = array();
 
-			$guzzle = new \GuzzleHttp\Client();
-			$response = $guzzle->request('GET', 'https://api.bufferapp.com/1/profiles.json', ['query' => ['access_token' => '']]);
+		foreach ( $response as $response_field ) {
+			$buffer_profile          = array();
+			$buffer_profile['id']      = $response_field['id'];
+			$buffer_profile['account'] = $response_field['formatted_username'];
+			$buffer_profile['user']    = $response_field['formatted_service'] . ' - ' . $response_field['formatted_username'];
+			;
+			$buffer_profile['active']  = false;
+			$buffer_profile['service'] = $this->service_name;
 
-			$response_body = (string) $response->getBody();
-			$response_body = json_decode($response_body , true);
-
-	        $ids = array();
-
-	        foreach( $profiles_arr as $profile_ids){
-
-	            $ids[] = $profile_ids['id'];
-
-	        }
-
-					foreach ( $response_body as $response_field ) {
-						$buffer_profile          = array();
-						$buffer_profile['id']      = $response_field['id'];
-						$buffer_profile['account'] = $response_field['formatted_username'];
-					  $buffer_profile['user']    = $response_field['formatted_service'] . ' - ' . $response_field['formatted_username'];;
-						$buffer_profile['active']  = false;
-						$buffer_profile['service'] = $this->service_name;
-
-						$buffer_profile['img']     = $response_field['avatar_https'];
-						$buffer_profile['created'] = date("Y-m-d H:i:s", substr($response_field['created_at'], 0, 10));
-						$buffer_profiles[]            = $buffer_profile;
-					}
+			$buffer_profile['img']     = $response_field['avatar_https'];
+			$buffer_profile['created'] = date( 'Y-m-d H:i:s', substr( $response_field['created_at'], 0, 10 ) );
+			$buffer_profiles[]            = $buffer_profile;
+		}
 
 					return $buffer_profiles;
-
 	}
 
 	/**
@@ -335,46 +282,50 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function sign_in_url( $data ) {
-		$credentials = $data['credentials'];
+
 		if ( ! session_id() ) {
 			session_start();
 		}
 
-    // TODO might not need this
-		$_SESSION['rop_buffer_credentials'] = $credentials;
+		$_SESSION['rop_buffer_credentials'] = $data['credentials']['access_token'];
 
-    $url = 'https://bufferapp.com/oauth2/authorize?client_id='.$credentials['client_id'].'&redirect_uri='.admin_url('/admin.php?page=TweetOldPost').'&response_type=code&state=buffer';
+		 $url = get_site_url() . '/wp-admin/admin.php?page=TweetOldPost&state=buffer&network=buffer';
+
 		return $url;
 	}
 
-  public function get_buffer_access_token(){
-		$code = urldecode($_GET['code']);
-		if (empty($code)){
-		    return;
+	public function get_buffer_access_token() {
+		$code = urldecode( $_GET['code'] );
+		if ( empty( $code ) ) {
+			return;
 		}
 
-			 if ( ! class_exists( '\GuzzleHttp\Client' ) ) {
-							 return ;
-}
+		if ( ! class_exists( '\GuzzleHttp\Client' ) ) {
+						return;
+		}
 
-	 $guzzle = new \GuzzleHttp\Client();
-	 $response = $guzzle->request('POST', 'https://api.bufferapp.com/1/oauth2/token.json', [
-	 'form_params' => [
-			 'client_id' => '',
-			 'client_secret' => '',
-			 'redirect_uri' => 'https://ecom.uriahsvictor.com/wp-admin/admin.php?page=TweetOldPost',
-			 'code' => $code,
-			 'grant_type' => 'authorization_code',
-	 ]
-]);
+		$guzzle = new \GuzzleHttp\Client();
+		$response = $guzzle->request(
+			'POST',
+			'https://api.bufferapp.com/1/oauth2/token.json',
+			[
+				'form_params' => [
+					'client_id' => '',
+					'client_secret' => '',
+					'redirect_uri' => 'https://ecom.uriahsvictor.com/wp-admin/admin.php?page=TweetOldPost',
+					'code' => $code,
+					'grant_type' => 'authorization_code',
+				],
+			]
+		);
 
-$json = (string) $response->getBody();
+		$json = (string) $response->getBody();
 
-$json_arr = json_decode($json, true);
-$access_token = $json_arr['access_token'];
+		$json_arr = json_decode( $json, true );
+		$access_token = $json_arr['access_token'];
 
-return $access_token;
-  }
+		return $access_token;
+	}
 
 	/**
 	 * Method for publishing with Facebook service.
@@ -391,51 +342,48 @@ return $access_token;
 		if ( Rop_Admin::rop_site_is_staging() ) {
 			return false;
 		}
-		$post_id = $post_details['post_id'];
-		$this->set_api(
-			$this->credentials['app_id'],
-			$this->credentials['secret']
+
+			$post_id = $post_details['post_id'];
+
+		$url = 'https://api.bufferapp.com/1/updates/create.json';
+
+		$data = array(
+
+			'pretty' => 'true',
+			'access_token' => $args['credentials'],
+			'profile_ids' => array(
+				$args['id'],
+			),
+			'text' => html_entity_decode( get_the_title( $post_id ) ),
 		);
 
-		$api = $this->get_api();
-		$api->auth->setOAuthToken( $args['credentials']['token'] );
-
-		// Check if image is present.
-		if ( empty( $post_details['post_image'] ) ) {
-			$this->logger->alert_error( sprintf( 'No image present in %s to pin to %s for %s', html_entity_decode( get_the_title( $post_details['post_id'] ) ), $args['id'], $post_details['service'] ) );
-
-			return false;
-		}
-
-		if ( strpos( $post_details['mimetype']['type'], 'image' ) === false ) {
-
-			$this->logger->alert_error( sprintf( 'No valid image present in %s to pin to %s for %s', html_entity_decode( get_the_title( $post_details['post_id'] ) ), $args['id'], $post_details['service'] ) );
-
-			return false;
-		}
-
-		// Don't shorten post link, pinterest might reject post if shortened and it also looks bad on pinterest with a shortlink
-		$pin = $api->pins->create(
+		$response = wp_remote_post(
+			$url,
 			array(
-				'note'      => $this->strip_excess_blank_lines( $post_details['content'] ) . $post_details['hashtags'],
-				'image_url' => $post_details['post_image'],
-				'board'     => $args['id'],
-				'link'     => $post_details['post_url'],
+				'body'    => $data,
+				'headers' => array(
+					'Content-Type' => 'application/x-www-form-urlencoded',
+				),
 			)
 		);
 
-		if ( empty( $pin ) ) {
-			$this->logger->alert_error( sprintf( 'Unable to pin to %s for %s', $args['id'], $post_details['service'] ) );
+		// $this->logger->alert_error( 'Buffer Credentials: ' . print_r( $args['credentials'], true ) );
 
+		$response = wp_remote_retrieve_body( $response );
+		$response = json_decode( $response, true );
+
+		if ( $response['success'] === false ) {
+			$this->logger->alert_error( 'Buffer error: ' . $response['message'] );
 			return false;
 		}
 
+		$this->logger->alert_error( print_r( $response, true ) );
+
 		$this->logger->alert_success(
 			sprintf(
-				'Successfully pinned %s in %s to %s on %s',
-				basename( $post_details['post_image'] ),
+				'Successfully shared %s to %s on %s ',
 				html_entity_decode( get_the_title( $post_id ) ),
-				$args['id'],
+				$args['user'],
 				$post_details['service']
 			)
 		);
