@@ -435,16 +435,14 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			if ( empty( $post_details['post_image'] ) ) {
 				$new_post = $this->linkedin_article_post( $post_details, $args );
 			} else {
-				$new_post = $this->linkedin_article_post( $post_details, $args );
-				// $new_post = $this->linkedin_image_post( $post_details, $args, $token, $api );
+				$new_post = $this->linkedin_image_post( $post_details, $args, $token, $api );
 			}
 		} elseif ( get_post_type( $post_details['post_id'] ) === 'attachment' ) {
 			// Linkedin Api v2 doesn't support video upload. Share as article post
 			if ( strpos( get_post_mime_type( $post_details['post_id'] ), 'video' ) !== false ) {
 				$new_post = $this->linkedin_article_post( $post_details, $args );
 			} else {
-				$new_post = $this->linkedin_article_post( $post_details, $args );
-				// $new_post = $this->linkedin_image_post( $post_details, $args, $token, $api );
+				$new_post = $this->linkedin_image_post( $post_details, $args, $token, $api );
 			}
 		}
 
@@ -570,22 +568,38 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			$img = $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] );
 		}
 
-		if ( ! class_exists( 'GuzzleHttp\Client' ) ) {
-			$this->logger->alert_error( 'Error: Cannot find Guzzle' );
-			return;
+		if ( function_exists( 'curl_version' )) { // check if cURL is installed
+			// use cURL for image post
+			$curl_img_put = curl_init();
+			curl_setopt( $curl_img_put, CURLOPT_URL, $upload_url );
+			curl_setopt( $curl_img_put, CURLOPT_HTTPHEADER, array( 'Authorization: Bearer ' . $token ));
+			curl_setopt( $curl_img_put, CURLOPT_PUT, 1 );
+			curl_setopt( $curl_img_put, CURLOPT_RETURNTRANSFER, 1 );
+			curl_setopt( $curl_img_put, CURLOPT_INFILE, fopen( $img, 'r' ));
+			$curl_response = curl_exec( $curl_img_put );
+			if( !empty( $curl_response ))
+			{
+				$this->logger->alert_error( 'cURL: ' . $curl_response );
+				curl_close( $curl_img_put );
+				exit(1);
+			}
+			curl_close( $curl_img_put );
+		} else {
+			// use 'wp_remote_request' if cURL is not installed
+			$img_mime_type = image_type_to_mime_type( exif_imagetype( $img ));
+			$img_data = fread( fopen( $img, 'r' ), filesize( $img ));
+			$wp_img_put = wp_remote_request( $upload_url, [
+				'method' => 'PUT',
+				'headers' => [ 'Authorization' => 'Bearer ' . $token, 'Content-type' =>  $img_mime_type ],
+				'body' => $img_data,
+			]);
+			if ( !empty( $wp_img_put['body'] )) {
+				$response_code = $wp_img_put['response']['code'];
+				$response_message = $wp_img_put['response']['message'];
+				$this->logger->alert_error( $response_code . ' ' . $response_message );
+				exit(1);
+			}
 		}
-		$guzzle = new GuzzleHttp\Client();
-		$guzzle->request(
-			'PUT',
-			$upload_url,
-			[
-				'headers' => [
-					'Authorization' => 'Bearer ' . $token,
-				],
-				'body' => fopen( $img, 'r' ),
-
-			]
-		);
 
 		  $new_post = array (
 			  'author' => 'urn:li:person:' . $args['id'],
