@@ -104,6 +104,7 @@ function run_rop() {
 	define( 'ROP_LITE_PATH', plugin_dir_path( __FILE__ ) );
 	define( 'ROP_PATH', plugin_dir_path( __FILE__ ) );
 	define( 'ROP_LITE_URL', plugin_dir_url( __FILE__ ) );
+	define( 'ROP_BUFFER_ADDON', plugin_dir_path( __DIR__ ) . 'rop-buffer-addon/buffer-service.php' );
 
 	$vendor_file = ROP_LITE_PATH . '/vendor/autoload.php';
 	if ( is_readable( $vendor_file ) ) {

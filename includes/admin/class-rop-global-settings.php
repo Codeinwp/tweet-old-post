@@ -107,16 +107,8 @@ class Rop_Global_Settings {
 			'allowed_accounts' => 1,
 		),
 		'buffer'   => array(
-			'active'           => true,
+			'active'           => false,
 			'name'             => 'Buffer',
-			'credentials'      => array(
-				'access_token' => array(
-					'name'        => 'Access Token',
-					'description' => 'Your Buffer application access token',
-				),
-			),
-			'two_step_sign_in' => true,
-			'allowed_accounts' => 30,
 		),
 		'linkedin'  => array(
 			'active' => false,

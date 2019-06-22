@@ -807,7 +807,7 @@ class Rop_Post_Format_Helper {
 			return get_the_post_thumbnail_url( $post_id, 'large' );
 		}
 
-		if ( get_post_type( $post_id ) == 'attachment' ) {
+		if ( get_post_type( $post_id ) === 'attachment' ) {
 			return wp_get_attachment_url( $post_id );
 		}
 
