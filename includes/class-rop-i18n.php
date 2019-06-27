@@ -319,6 +319,10 @@ You can try to disable any of the security plugins that you use in order to see 
 				'custom_message_info'   => sprintf( __( 'Add share message variations to this post %1$sLearn More%2$s.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/971-how-to-add-variations-to-revive-old-posts-shares" target="_blank">', '</a>' ),
 				'variation_num'         => __( 'Content Variation #', 'tweet-old-post' ),
 			),
+			'emails' => array(
+				'share_once_sharing_done_subject' => __( 'ROP - All Posts Shared', 'tweet-old-post' ),
+				'share_once_sharing_done_message' => __( 'All posts have been shared to your connected social media accounts. No previously shared posts will be re-shared until you click the button to "Stop Sharing" and "Start Sharing" on the Revive Old Posts plugin dashboard.', 'tweet-old-post' ),
+			),
 			// pro only.
 			'publish_now' => array(
 				'share_on_update' => __( 'Share <b>immediately</b> via <small>Revive Old Posts</small>  ', 'tweet-old-post' ),
