@@ -4349,6 +4349,36 @@
 	text-decoration: underline;
 }
 
+.rop-publish-guten__list {
+	margin-left: 17px;
+}
+
+.rop-icon .components-checkbox-control__label::before {
+	font: normal normal normal 14px/1 FontAwesome;
+	content: "\f099";
+	margin-right: 5px;
+}
+
+.rop-icon-facebook .components-checkbox-control__label::before {
+	content: "\f09a";
+}
+
+.rop-icon-twitter .components-checkbox-control__label::before {
+	content: "\f099";
+}
+
+.rop-icon-linkedin .components-checkbox-control__label::before {
+	content: "\f0e1";
+}
+
+.rop-icon-tumblr .components-checkbox-control__label::before {
+	content: "\f173";
+}
+
+.rop-icon-pinterest .components-checkbox-control__label::before {
+	content: "\f0d2";
+} 
+
 .auth-app {
 	width: 100%;
 	margin-bottom: 10px;

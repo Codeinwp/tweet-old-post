@@ -1,5 +1,6 @@
 assets/js/build/*.js
 vue
+gutenberg
 node_modules
 Gruntfile.js
 webpack.config.js
