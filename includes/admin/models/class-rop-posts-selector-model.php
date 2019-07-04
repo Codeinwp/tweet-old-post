@@ -309,6 +309,35 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 
 			$results = $this->query_results( $account_id, $post_types, $tax_queries, $excluded_by_user );
 
+		} elseif ( empty( $results ) && $this->has_buffer_items( $account_id ) && ! $this->settings->get_more_than_once() ) {
+
+			$service = new Rop_Services_Model;
+			$log = new Rop_Logger();
+			$accounts  = get_option( 'rop_one_time_share_accounts' );
+
+			if ( ! is_array( $accounts ) ) {
+				$accounts = array();
+			}
+
+			if ( in_array( $account_id, $accounts ) ) {
+				return;
+			}
+
+			$admin_email = get_option( 'admin_email' );
+			$subject = Rop_I18n::get_labels( 'emails.share_once_sharing_done_subject' );
+			$message = Rop_I18n::get_labels( 'emails.share_once_sharing_done_message' );
+
+			array_push( $accounts, $account_id );
+			update_option( 'rop_one_time_share_accounts', $accounts );
+
+			$count = count( array_keys( get_option( 'rop_one_time_share_accounts' ) ) );
+			$active_accounts_count = count( array_keys( $service->get_active_accounts() ) );
+
+			if ( $count === $active_accounts_count ) {
+				if ( wp_mail( $admin_email, $subject, $message ) ) {
+							$log->alert_error( $message );
+				}
+			}
 		}
 
 		$this->selection = $results;
@@ -479,6 +508,8 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		if ( isset( $account_id ) && $account_id ) {
 			unset( $this->buffer[ $account_id ] );
 		} else {
+			$admin = new Rop_Admin();
+			$admin->rop_clear_one_time_share_accounts();
 			$this->buffer = array();
 		}
 		$this->set( 'posts_buffer', $this->buffer );

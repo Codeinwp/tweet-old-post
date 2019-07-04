@@ -796,4 +796,23 @@ class Rop_Admin {
 
 	}
 
+	/**
+	 * Clears the array of account IDs.
+	 *
+	 * Delete the db option holding the account IDs used to determine when to send an email
+	 * To website admin, letting them know that all posts have been shared; when the share more than once option is unchecked.
+	 *
+	 * @since   8.3.3
+	 * @access  public
+	 */
+	public function rop_clear_one_time_share_accounts() {
+
+		$settings = new Rop_Settings_Model();
+
+		if ( ! $settings->get_more_than_once() ) {
+			delete_option( 'rop_one_time_share_accounts' );
+		}
+
+	}
+
 }
