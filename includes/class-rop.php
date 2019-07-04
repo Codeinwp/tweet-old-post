@@ -126,7 +126,7 @@ class Rop {
 		$plugin_admin = new Rop_Admin( $this->get_plugin_name(), $this->get_version() );
 
 		$tutorial_pointers = new Rop_Pointers();
-	
+
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'legacy_auth', 2 );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_show_linkedin_api_v2_notice' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_linkedin_api_v2_notice' );
@@ -250,9 +250,9 @@ class Rop {
 		foreach ( $global_settings->get_all_services_handle() as $service ) {
 
 			// Skip if the buffer addon is not active.
-			if( !class_exists('Rop_Buffer_Service') && $service === 'buffer'){
-			        continue;
-			        }
+			if ( ! class_exists( 'Rop_Buffer_Service' ) && $service === 'buffer' ) {
+					continue;
+			}
 
 			try {
 				${$service . '_service'} = $factory->build( $service );
