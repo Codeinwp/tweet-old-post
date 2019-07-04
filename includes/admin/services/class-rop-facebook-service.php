@@ -700,17 +700,21 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 					'headers' => array(
 						'Content-Type' => 'application/x-www-form-urlencoded',
 					),
+					'timeout' => 60,
 
 				)
 			);
 
-			if ( $response['response']['code'] === 200 ) {
+			$body = json_decode( wp_remote_retrieve_body( $response ), true );
+
+			if ( ! empty( $body['id'] ) ) {
 				return true;
-			} else {
-				$body = json_decode( wp_remote_retrieve_body( $response ), true );
+			} elseif ( ! empty( $body['error']['message'] ) ) {
 				$this->logger->alert_error( 'Error Posting to Facebook: ' . $body['error']['message'] );
 				$this->rop_get_error_docs( $body['error']['message'] );
 				return false;
+			} else {
+				$this->logger->alert_error( 'Error Posting to Facebook, response: ' . print_r( $response, true ) );
 			}
 		}
 	}
