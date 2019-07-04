@@ -76,6 +76,11 @@ class Rop_I18n {
 			'accounts'    => array(
 				'menu_item'               => __( 'Accounts', 'tweet-old-post' ),
 				'service_popup_title'     => __( 'Service Credentials', 'tweet-old-post' ),
+				'show_advance_config'           => __( 'Use your own keys', 'tweet-old-post' ),
+				'fb_app_signin_btn'       => __( 'Sign in to Facebook', 'tweet-old-post' ),
+				'fb_own_app_signin'       => __( 'Or', 'tweet-old-post' ),
+				'fb_rs_app_info'            => sprintf( __( 'We collect some info, learn more %1$shere%2$s.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/1066-info-we-collect-in-seamless-facebook-connect" target="_blank">', '</a>' ),
+				'service_popup_title'     => __( 'Service Credentials', 'tweet-old-post' ),
 				'sign_in_btn'             => __( 'Sign In', 'tweet-old-post' ),
 				'at'                      => __( 'at', 'tweet-old-post' ),
 				'remove_account'          => __( 'Remove account from the list.', 'tweet-old-post' ),
@@ -94,8 +99,8 @@ class Rop_I18n {
 				'upsell_accounts'         => __( 'You are allowed to add a maximum 1 account for Twitter and 1 account for Facebook. For using more accounts and networks, you need to check the <strong>Extended</strong> version.', 'tweet-old-post' ),
 				'fb_app_id_title'         => __( 'Please add the APP ID from your Facebook app.', 'tweet-old-post' ),
 				'fb_app_secret_title'     => __( 'Please add the APP SECRET from your Facebook app.', 'tweet-old-post' ),
-				'fb_app_desc'             => sprintf( __( 'You can check %1$shere%2$s how you get these details.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/349-how-to-create-a-facebook-application-for-revive-old-post" target="_blank">', '</a>' ),
-				'twt_app_desc'            => sprintf( __( 'You can check %1$shere%2$s how to get these details.', 'tweet-old-post' ), '<a class="text-bold " href="https://docs.revive.social/article/914-how-to-create-a-twitter-application-for-revive-old-post" target="_blank">', '</a>' ),
+				'fb_app_desc'             => sprintf( __( 'You can check %1$shere%2$s for how to get these details.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/349-how-to-create-a-facebook-application-for-revive-old-post" target="_blank">', '</a>' ),
+				'twt_app_desc'            => sprintf( __( 'You can check %1$shere%2$s for how to get these details.', 'tweet-old-post' ), '<a class="text-bold " href="https://docs.revive.social/article/914-how-to-create-a-twitter-application-for-revive-old-post" target="_blank">', '</a>' ),
 				'service_error'           => __( 'The %1$s service can not be used or was not found', 'tweet-old-post' ),
 				'twitter_warning'         => __(
 					'

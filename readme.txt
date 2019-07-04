@@ -2,7 +2,7 @@
 Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle, rsocial, uriahs-victor
 Tags: auto publish, auto post, social media automation, social media scheduling, automatic, facebook, twitter, linkedin, pinterest, autopilot, analytics, sharing
 Requires at least: 4.7
-Tested up to: 5.1
+Tested up to: 5.2
 Requires PHP: 5.6
 Stable tag: trunk
 
@@ -134,6 +134,37 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.3.2 - 2019-05-27  = 
+
+* Fix: Log would some times show the wrong status message for the share
+* Change: Use button to show app credential fields on new installs
+
+
+= 8.3.1 - 2019-05-24  = 
+
+* Fix: Use wp_remote_request functions in favor of guzzle which was causing issues on some websites
+* Fix: Posting to Pinterest board names with commas
+
+
+= 8.3.0 - 2019-05-24  = 
+
+* New: Made connecting Facebook pages to plugin much simpler.
+* Fix: When using publish now feature, all services would be checked after page reload even though only one was selected.
+
+
+= 8.2.5 - 2019-05-17  = 
+
+* New: Show admin notice when WP Cron is turned off, which can cause posting issues with ROP
+* Fix: LinkedIn Image posts were not going through
+* Fix: Posting to some Pinterest boards with special characters was not working
+* Info: Tested on WP 5.2
+
+
+= 8.2.4 - 2019-04-15  = 
+
+* Fix: Minor bugs
+
+
 = 8.2.3 - 2019-04-10  = 
 
 * New: Filter introduced for Post Title & Content separator (check revive.social docs)

@@ -16835,6 +16835,11 @@ exports.default = new _vuex2.default.Store({
 					state.auth_in_progress = false;
 					//state.activeAccounts = stateData
 					break;
+				case 'check_account_fb':
+				case 'add_account_fb':
+					state.activeAccounts = stateData;
+					state.auth_in_progress = true;
+					break;
 				case 'get_active_accounts':
 				case 'update_active_accounts':
 				case 'remove_account':
@@ -33679,7 +33684,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop-sign-in-area .btn[disabled][_v-2f84fb84]{\n\t\tcursor:not-allowed;\n\t\tpointer-events: auto;\n\t\topacity: 0.3;\n\t}\n\t", ""]);
+exports.push([module.i, "\n\t#rop-sign-in-area .btn[disabled][_v-2f84fb84]{\n\t\tcursor:not-allowed;\n\t\tpointer-events: auto;\n\t\topacity: 0.3;\n\t}\n", ""]);
 
 // exports
 
@@ -33705,10 +33710,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 	<div id="rop-sign-in-area">
 // 		<div class="input-group text-right buttons-wrap">
 // 			<button v-for="( service, network ) in services"
-// 			        :disabled="checkDisabled( service, network )"
-// 			        class="btn input-group-btn"
-// 			        :class="'btn-' + network"
-// 			        @click="requestAuthorization( network )">
+// 					:disabled="checkDisabled( service, network )"
+// 					class="btn input-group-btn"
+// 					:class="'btn-' + network"
+// 					@click="requestAuthorization( network )">
 // 				<i class="fa fa-fw" :class="'fa-' + network"></i>{{service.name}}
 // 			</button>
 //
@@ -33723,15 +33728,39 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 				</div>
 // 				<div class="modal-body">
 // 					<div class="content">
+// 						<div class="auth-app" v-if="isFacebook && isAllowedFacebook">
+// 							<button class="btn btn-primary big-btn" @click="openPopupFB()">{{labels.fb_app_signin_btn}}</button>
+// 							<span class="text-center">{{labels.fb_own_app_signin}}</span>
+// 						</div>
+// 						<div id="rop-advanced-config" v-if="isFacebook && isAllowedFacebook">
+// 						<button class="btn btn-primary" v-on:click="showAdvanceConfig = !showAdvanceConfig">{{labels.show_advance_config}}</button>
+// 					</div>
+// 						<div v-if="showAdvanceConfig || (!isAllowedFacebook && isFacebook)">
 // 						<div class="form-group" v-for="( field, id ) in modal.data">
 // 							<label class="form-label" :for="field.id">{{ field.name }}</label>
 // 							<input class="form-input" type="text" :id="field.id" v-model="field.value"
-// 							       :placeholder="field.name"/>
+// 								   :placeholder="field.name"/>
+// 							<p class="text-gray">{{ field.description }}</p>
+// 						</div>
+// 					</div>
+// 						<div v-if="!isFacebook">
+// 						<div class="form-group" v-for="( field, id ) in modal.data">
+// 							<label class="form-label" :for="field.id">{{ field.name }}</label>
+// 							<input class="form-input" type="text" :id="field.id" v-model="field.value"
+// 								   :placeholder="field.name"/>
 // 							<p class="text-gray">{{ field.description }}</p>
 // 						</div>
 // 					</div>
 // 				</div>
-// 				<div class="modal-footer">
+// 				</div>
+// 				<div v-if="isFacebook && isAllowedFacebook" class="modal-footer">
+// 					<p class="text-left pull-left mr-2" v-html="labels.fb_rs_app_info"></p>
+// 				</div>
+// 				<div v-if="showAdvanceConfig || (!isAllowedFacebook && isFacebook)" class="modal-footer">
+// 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
+// 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
+// 				</div>
+// 				<div v-if="!isFacebook" class="modal-footer">
 // 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 // 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 // 				</div>
@@ -33753,9 +33782,20 @@ module.exports = {
 				description: '',
 				data: {}
 			},
+			showAdvanceConfig: false,
 			labels: this.$store.state.labels.accounts,
 			upsell_link: ropApiSettings.upsell_link,
-			activePopup: ''
+			activePopup: '',
+			appOrigin: ropAuthAppData.authAppUrl,
+			appPathFB: ropAuthAppData.authAppFacebookPath,
+			appAdminEmail: ropAuthAppData.adminEmail,
+			siteAdminUrl: ropAuthAppData.adminUrl,
+			appUniqueId: ropAuthAppData.authToken,
+			appSignature: ropAuthAppData.authSignature,
+			windowParameters: 'top=20,left=100,width=560,height=670',
+			authPopupWindow: null,
+			showFbAppBtn: ropApiSettings.show_fb_app_btn,
+			showBtn: false
 		};
 	},
 	methods: {
@@ -33885,6 +33925,53 @@ module.exports = {
 		cancelModal: function cancelModal() {
 			this.$store.state.auth_in_progress = false;
 			this.modal.isOpen = false;
+		},
+		/**
+   * Add Facebook account.
+   *
+   * @param data Data.
+   */
+		addAccountFB: function addAccountFB(data) {
+			var _this2 = this;
+
+			this.$store.dispatch('fetchAJAXPromise', {
+				req: 'add_account_fb',
+				updateState: false,
+				data: data
+			}).then(function (response) {
+				window.removeEventListener("message", function (event) {
+					return _this2.getChildWindowMessage(event);
+				});
+				_this2.authPopupWindow.close();
+				window.location.reload();
+			}, function (error) {
+				_this2.is_loading = false;
+				Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+			});
+		},
+
+		getChildWindowMessage: function getChildWindowMessage(event) {
+			if (~event.origin.indexOf(this.appOrigin)) {
+				this.addAccountFB(JSON.parse(event.data));
+			} else {
+				return;
+			}
+		},
+		openPopupFB: function openPopupFB() {
+			var _this3 = this;
+
+			var loginUrl = this.appOrigin + this.appPathFB + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
+			try {
+				this.authPopupWindow.close();
+			} catch (e) {
+				// nothing to do
+			} finally {
+				this.authPopupWindow = window.open(loginUrl, 'authFB', this.windowParameters);
+				this.cancelModal();
+			}
+			window.addEventListener("message", function (event) {
+				return _this3.getChildWindowMessage(event);
+			});
 		}
 	},
 	computed: {
@@ -33913,6 +34000,19 @@ module.exports = {
 		},
 		serviceId: function serviceId() {
 			return 'service-' + this.modal.serviceName.toLowerCase();
+		},
+		isFacebook: function isFacebook() {
+			return this.modal.serviceName === 'Facebook';
+		},
+
+		isAllowedFacebook: function isAllowedFacebook() {
+			var showButton = true;
+
+			if (!this.showFbAppBtn) {
+				showButton = false;
+			}
+
+			return showButton;
 		}
 	}
 	// </script>
@@ -33922,7 +34022,7 @@ module.exports = {
 	// 		pointer-events: auto;
 	// 		opacity: 0.3;
 	// 	}
-	// 	</style>
+	// </style>
 	//
 
 };
@@ -33931,7 +34031,7 @@ module.exports = {
 /* 223 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div id=\"rop-sign-in-area\" _v-2f84fb84=\"\">\n\t\t<div class=\"input-group text-right buttons-wrap\" _v-2f84fb84=\"\">\n\t\t\t<button v-for=\"( service, network ) in services\" :disabled=\"checkDisabled( service, network )\" class=\"btn input-group-btn\" :class=\"'btn-' + network\" @click=\"requestAuthorization( network )\" _v-2f84fb84=\"\">\n\t\t\t\t<i class=\"fa fa-fw\" :class=\"'fa-' + network\" _v-2f84fb84=\"\"></i>{{service.name}}\n\t\t\t</button>\n\n\t\t</div>\n\n\t\t<div class=\"modal\" :class=\"modalActiveClass\" _v-2f84fb84=\"\">\n\t\t\t<div class=\"modal-overlay\" _v-2f84fb84=\"\"></div>\n\t\t\t<div class=\"modal-container\" _v-2f84fb84=\"\">\n\t\t\t\t<div class=\"modal-header\" _v-2f84fb84=\"\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"cancelModal()\" _v-2f84fb84=\"\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\" _v-2f84fb84=\"\">{{ modal.serviceName }} {{labels.service_popup_title}}</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\" _v-2f84fb84=\"\">\n\t\t\t\t\t<div class=\"content\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-2f84fb84=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-2f84fb84=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-footer\" _v-2f84fb84=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-2f84fb84=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-2f84fb84=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div id=\"rop-sign-in-area\" _v-2f84fb84=\"\">\n\t\t<div class=\"input-group text-right buttons-wrap\" _v-2f84fb84=\"\">\n\t\t\t<button v-for=\"( service, network ) in services\" :disabled=\"checkDisabled( service, network )\" class=\"btn input-group-btn\" :class=\"'btn-' + network\" @click=\"requestAuthorization( network )\" _v-2f84fb84=\"\">\n\t\t\t\t<i class=\"fa fa-fw\" :class=\"'fa-' + network\" _v-2f84fb84=\"\"></i>{{service.name}}\n\t\t\t</button>\n\n\t\t</div>\n\n\t\t<div class=\"modal\" :class=\"modalActiveClass\" _v-2f84fb84=\"\">\n\t\t\t<div class=\"modal-overlay\" _v-2f84fb84=\"\"></div>\n\t\t\t<div class=\"modal-container\" _v-2f84fb84=\"\">\n\t\t\t\t<div class=\"modal-header\" _v-2f84fb84=\"\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"cancelModal()\" _v-2f84fb84=\"\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\" _v-2f84fb84=\"\">{{ modal.serviceName }} {{labels.service_popup_title}}</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\" _v-2f84fb84=\"\">\n\t\t\t\t\t<div class=\"content\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isFacebook &amp;&amp; isAllowedFacebook\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupFB()\" _v-2f84fb84=\"\">{{labels.fb_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-2f84fb84=\"\">{{labels.fb_own_app_signin}}</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div id=\"rop-advanced-config\" v-if=\"isFacebook &amp;&amp; isAllowedFacebook\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-primary\" v-on:click=\"showAdvanceConfig = !showAdvanceConfig\" _v-2f84fb84=\"\">{{labels.show_advance_config}}</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t\t<div v-if=\"showAdvanceConfig || (!isAllowedFacebook &amp;&amp; isFacebook)\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-2f84fb84=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-2f84fb84=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t\t<div v-if=\"!isFacebook\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-2f84fb84=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-2f84fb84=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"isFacebook &amp;&amp; isAllowedFacebook\" class=\"modal-footer\" _v-2f84fb84=\"\">\n\t\t\t\t\t<p class=\"text-left pull-left mr-2\" v-html=\"labels.fb_rs_app_info\" _v-2f84fb84=\"\"></p>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"showAdvanceConfig || (!isAllowedFacebook &amp;&amp; isFacebook)\" class=\"modal-footer\" _v-2f84fb84=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-2f84fb84=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-2f84fb84=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"!isFacebook\" class=\"modal-footer\" _v-2f84fb84=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-2f84fb84=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-2f84fb84=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 224 */

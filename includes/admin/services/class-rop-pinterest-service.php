@@ -285,9 +285,12 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 			)
 		);
 
+		$search = array( ' ', '.', ',', '/', '!', '@', '&', '#', '%', '*', '(', ')', '{', '}', '[', ']', '|', '\\', '$' );
+		$replace = array( '-', '' );
+
 		foreach ( $boards as $board ) {
 			$board_details            = array();
-			$board_details['id']      = $user->username . '/' . str_replace( ' ', '-', $board->name );
+			$board_details['id']      = $user->username . '/' . str_replace( $search, $replace, $board->name );
 			$board_details['account'] = $this->normalize_string( sprintf( '%s %s', $user->first_name, $user->last_name ) );
 			$board_details['user']    = $this->normalize_string( $board->name );
 			$board_details['active']  = false;

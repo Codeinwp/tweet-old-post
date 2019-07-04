@@ -49,6 +49,9 @@ if ( isset( $housekeeping ) && $housekeeping ) {
 		'rop_notice_active',
 		'rop_menu_pointer_queued',
 		'rop_dashboard_pointers_queued',
+		'rop_install_token',
+		'rop_facebook_via_rs_app',
+		'rop_first_install_version',
 	);
 
 	foreach ( $option_keys as $key ) {
@@ -56,7 +59,8 @@ if ( isset( $housekeeping ) && $housekeeping ) {
 	}
 
 	delete_metadata( 'user', 0, 'rop_publish_now_notice_dismissed', '', true );
-	delete_metadata( 'user', 0, 'rop_first_install_version', '', true );
+	delete_metadata( 'user', 0, 'rop-linkedin-api-notice-dismissed', '', true );
+	delete_metadata( 'user', 0, 'rop-wp-cron-notice-dismissed', '', true );
 
 	global $wpdb;
 	$post_meta = $wpdb->prefix . 'postmeta';

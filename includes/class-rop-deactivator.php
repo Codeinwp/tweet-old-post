@@ -35,6 +35,7 @@ class Rop_Deactivator {
 		 */
 		$cron_helper = new Rop_Cron_Helper();
 		$cron_helper->remove_cron();
+
 	}
 
 }

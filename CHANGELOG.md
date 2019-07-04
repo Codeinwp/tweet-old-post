@@ -1,4 +1,30 @@
 
+ ### v8.3.2 - 2019-05-27 
+ **Changes:** 
+ * Fix: Log would some times show the wrong status message for the share
+* Change: Use button to show app credential fields on new installs
+ 
+ ### v8.3.1 - 2019-05-24 
+ **Changes:** 
+ * Fix: Use wp_remote_request functions in favor of guzzle which was causing issues on some websites
+* Fix: Posting to Pinterest board names with commas
+ 
+ ### v8.3.0 - 2019-05-24 
+ **Changes:** 
+ * New: Made connecting Facebook pages to plugin much simpler.
+* Fix: When using publish now feature, all services would be checked after page reload even though only one was selected.
+ 
+ ### v8.2.5 - 2019-05-17 
+ **Changes:** 
+ * New: Show admin notice when WP Cron is turned off, which can cause posting issues with ROP
+* Fix: LinkedIn Image posts were not going through
+* Fix: Posting to some Pinterest boards with special characters was not working
+* Info: Tested on WP 5.2
+ 
+ ### v8.2.4 - 2019-04-15 
+ **Changes:** 
+ * Fix: Minor bugs
+ 
  ### v8.2.3 - 2019-04-10 
  **Changes:** 
  * New: Filter introduced for Post Title & Content separator (check revive.social docs)

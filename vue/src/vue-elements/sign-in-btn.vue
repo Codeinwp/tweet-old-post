@@ -2,10 +2,10 @@
 	<div id="rop-sign-in-area">
 		<div class="input-group text-right buttons-wrap">
 			<button v-for="( service, network ) in services"
-			        :disabled="checkDisabled( service, network )"
-			        class="btn input-group-btn"
-			        :class="'btn-' + network"
-			        @click="requestAuthorization( network )">
+					:disabled="checkDisabled( service, network )"
+					class="btn input-group-btn"
+					:class="'btn-' + network"
+					@click="requestAuthorization( network )">
 				<i class="fa fa-fw" :class="'fa-' + network"></i>{{service.name}}
 			</button>
 
@@ -20,15 +20,39 @@
 				</div>
 				<div class="modal-body">
 					<div class="content">
+						<div class="auth-app" v-if="isFacebook && isAllowedFacebook">
+							<button class="btn btn-primary big-btn" @click="openPopupFB()">{{labels.fb_app_signin_btn}}</button>
+							<span class="text-center">{{labels.fb_own_app_signin}}</span>
+						</div>
+						<div id="rop-advanced-config" v-if="isFacebook && isAllowedFacebook">
+						<button class="btn btn-primary" v-on:click="showAdvanceConfig = !showAdvanceConfig">{{labels.show_advance_config}}</button>
+					</div>
+						<div v-if="showAdvanceConfig || (!isAllowedFacebook && isFacebook)">
 						<div class="form-group" v-for="( field, id ) in modal.data">
 							<label class="form-label" :for="field.id">{{ field.name }}</label>
 							<input class="form-input" type="text" :id="field.id" v-model="field.value"
-							       :placeholder="field.name"/>
+								   :placeholder="field.name"/>
+							<p class="text-gray">{{ field.description }}</p>
+						</div>
+					</div>
+						<div v-if="!isFacebook">
+						<div class="form-group" v-for="( field, id ) in modal.data">
+							<label class="form-label" :for="field.id">{{ field.name }}</label>
+							<input class="form-input" type="text" :id="field.id" v-model="field.value"
+								   :placeholder="field.name"/>
 							<p class="text-gray">{{ field.description }}</p>
 						</div>
 					</div>
 				</div>
-				<div class="modal-footer">
+				</div>
+				<div v-if="isFacebook && isAllowedFacebook" class="modal-footer">
+					<p class="text-left pull-left mr-2" v-html="labels.fb_rs_app_info"></p>
+				</div>
+				<div v-if="showAdvanceConfig || (!isAllowedFacebook && isFacebook)" class="modal-footer">
+					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
+					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
+				</div>
+				<div v-if="!isFacebook" class="modal-footer">
 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 				</div>
@@ -50,9 +74,20 @@
 					description: '',
 					data: {}
 				},
+				showAdvanceConfig: false,
 				labels: this.$store.state.labels.accounts,
 				upsell_link: ropApiSettings.upsell_link,
-				activePopup: ''
+				activePopup: '',
+				appOrigin: ropAuthAppData.authAppUrl,
+				appPathFB: ropAuthAppData.authAppFacebookPath,
+				appAdminEmail: ropAuthAppData.adminEmail,
+				siteAdminUrl: ropAuthAppData.adminUrl,
+				appUniqueId: ropAuthAppData.authToken,
+				appSignature: ropAuthAppData.authSignature,
+				windowParameters: 'top=20,left=100,width=560,height=670',
+				authPopupWindow: null,
+				showFbAppBtn: ropApiSettings.show_fb_app_btn,
+				showBtn: false
 			}
 		},
 		methods: {
@@ -156,6 +191,44 @@
 			cancelModal: function () {
 				this.$store.state.auth_in_progress = false
 				this.modal.isOpen = false
+			},
+			/**
+			 * Add Facebook account.
+			 *
+			 * @param data Data.
+			 */
+			addAccountFB(data) {
+				this.$store.dispatch('fetchAJAXPromise', {
+					req: 'add_account_fb',
+					updateState: false,
+					data: data
+				}).then(response => {
+					window.removeEventListener("message", event => this.getChildWindowMessage(event));
+					this.authPopupWindow.close();
+					window.location.reload();
+				}, error => {
+					this.is_loading = false;
+					Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+				});
+			},
+			getChildWindowMessage: function (event) {
+				if (~event.origin.indexOf(this.appOrigin)) {
+					this.addAccountFB(JSON.parse(event.data));
+				} else {
+					return;
+				}
+			},
+			openPopupFB: function () {
+				let loginUrl = this.appOrigin + this.appPathFB + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
+				try {
+					this.authPopupWindow.close();
+				} catch (e) {
+					// nothing to do
+				} finally {
+					this.authPopupWindow = window.open( loginUrl, 'authFB', this.windowParameters);
+					this.cancelModal();
+				}
+				window.addEventListener("message", event => this.getChildWindowMessage(event));
 			}
 		},
 		computed: {
@@ -184,6 +257,18 @@
 			},
 			serviceId: function () {
 				return 'service-' + this.modal.serviceName.toLowerCase()
+			},
+			isFacebook() {
+				return this.modal.serviceName === 'Facebook';
+			},
+			isAllowedFacebook: function () {
+				let showButton = true;
+
+					if (!this.showFbAppBtn) {
+						showButton = false;
+					}
+
+				return showButton;
 			}
 		}
 	}
@@ -194,4 +279,4 @@
 		pointer-events: auto;
 		opacity: 0.3;
 	}
-	</style>
+</style>
