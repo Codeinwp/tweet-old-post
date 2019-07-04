@@ -126,9 +126,7 @@ class Rop {
 		$plugin_admin = new Rop_Admin( $this->get_plugin_name(), $this->get_version() );
 
 		$tutorial_pointers = new Rop_Pointers();
-		//$buffer = new Rop_Buffer_Service();
-
-			//$this->loader->add_action( 'admin_init', $buffer, 'get_buffer_access_token' );
+	
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'legacy_auth', 2 );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_show_linkedin_api_v2_notice' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_linkedin_api_v2_notice' );
