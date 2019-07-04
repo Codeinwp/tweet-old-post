@@ -250,7 +250,7 @@ class Rop {
 		foreach ( $global_settings->get_all_services_handle() as $service ) {
 
 			// Skip if the buffer addon is not active.
-			if( is_plugin_active( 'rop-buffer-addon/rop-buffer-addon.php' ) === false && $service === 'buffer'){
+			if( !class_exists('Rop_Buffer_Service') && $service === 'buffer'){
 			        continue;
 			        }
 

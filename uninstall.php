@@ -3,7 +3,7 @@
 /**
  * Fired when the plugin is uninstalled.
  *
- * @link       https://themeisle.com/
+ * @link       https://revive.social/
  * @since      8.0.0
  *
  * @package    Rop

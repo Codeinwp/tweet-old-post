@@ -106,10 +106,6 @@ class Rop_Global_Settings {
 			'two_step_sign_in' => true,
 			'allowed_accounts' => 1,
 		),
-		'buffer'   => array(
-			'active'           => false,
-			'name'             => 'Buffer',
-		),
 		'linkedin'  => array(
 			'active' => false,
 			'name'   => 'LinkedIn',
