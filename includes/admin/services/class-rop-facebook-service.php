@@ -715,6 +715,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				return false;
 			} else {
 				$this->logger->alert_error( 'Error Posting to Facebook, response: ' . print_r( $response, true ) );
+				return false;
 			}
 		}
 	}
