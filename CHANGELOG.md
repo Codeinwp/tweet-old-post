@@ -1,4 +1,11 @@
 
+ ### v8.3.3 - 2019-07-10 
+ **Changes:** 
+ * New: An email will be sent to admin email address if the "Share more than once" option is unchecked and sharing is complete
+* New: Documentation and support buttons on plugin dashboard
+* Fix: LinkedIn Image sharing
+* Fix: Facebook sharing timeout on some servers
+ 
  ### v8.3.2 - 2019-05-27 
  **Changes:** 
  * Fix: Log would some times show the wrong status message for the share
