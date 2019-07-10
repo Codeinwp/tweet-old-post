@@ -311,6 +311,8 @@ The root cause might be either a security plugin which blocks this feature or so
 You can try to disable any of the security plugins that you use in order to see if the issue persists or ask the hosting company to further investigate.',
 					'tweet-old-post'
 				),
+			'rop_support'							=> __('Get Support', 'tweet-old-post'),
+			'rop_docs'								=> __('Documentation', 'tweet-old-post'),	
 			),
 			'post_editor' => array(
 				'remove_variation'      => __( 'Delete', 'tweet-old-post' ),
