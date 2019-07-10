@@ -344,7 +344,7 @@ class Rop_Admin {
 		/**
 		 * For twitter we don't have code/state params.
 		 */
-		if ( ( empty( $code ) || empty( $state ) ) && $network !== 'twitter' ) {
+		if ( ( empty( $code ) && empty( $state ) ) && $network !== 'twitter' ) {
 			return;
 		}
 
@@ -356,6 +356,7 @@ class Rop_Admin {
 		if ( ( empty( $oauth_token ) || empty( $oauth_verifier ) ) && $network === 'twitter' ) {
 			return;
 		}
+
 		switch ( $network ) {
 			case 'linkedin':
 				$lk_service = new Rop_Linkedin_Service();
@@ -368,6 +369,10 @@ class Rop_Admin {
 			case 'pinterest':
 				$pinterest_service = new Rop_Pinterest_Service();
 				$pinterest_service->authorize();
+				break;
+			case 'buffer':
+				$buffer_service = new Rop_Buffer_Service();
+				$buffer_service->authorize();
 				break;
 			default:
 				$fb_service = new Rop_Facebook_Service();
@@ -787,6 +792,25 @@ class Rop_Admin {
 		$user_id = get_current_user_id();
 		if ( isset( $_GET['rop-wp-cron-notice-dismissed'] ) ) {
 			add_user_meta( $user_id, 'rop-wp-cron-notice-dismissed', 'true', true );
+		}
+
+	}
+
+	/**
+	 * Clears the array of account IDs.
+	 *
+	 * Delete the db option holding the account IDs used to determine when to send an email
+	 * To website admin, letting them know that all posts have been shared; when the share more than once option is unchecked.
+	 *
+	 * @since   8.3.3
+	 * @access  public
+	 */
+	public function rop_clear_one_time_share_accounts() {
+
+		$settings = new Rop_Settings_Model();
+
+		if ( ! $settings->get_more_than_once() ) {
+			delete_option( 'rop_one_time_share_accounts' );
 		}
 
 	}
