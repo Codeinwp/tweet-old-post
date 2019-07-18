@@ -560,6 +560,10 @@ class Rop_Admin {
 
 		$enabled = $_POST['publish_now_accounts'];
 
+		if ( !is_array( $enabled ) ){
+		    $enabled = array();
+		}
+
 		$services = new Rop_Services_Model();
 		$active   = array_keys( $services->get_active_accounts() );
 		// has something been added extra?
