@@ -211,7 +211,6 @@ class Rop_Admin {
 		}
 
 		$services        = new Rop_Services_Model();
-		$fb_service         = new Rop_Facebook_Service();
 		$active_accounts = $services->get_active_accounts();
 
 		$global_settings             = new Rop_Global_Settings();
@@ -221,7 +220,6 @@ class Rop_Admin {
 		$array_nonce['labels']       = Rop_I18n::get_labels();
 		$array_nonce['upsell_link']  = Rop_I18n::UPSELL_LINK;
 		$array_nonce['staging']      = $this->rop_site_is_staging();
-		$array_nonce['show_fb_app_btn'] = $fb_service->rop_show_fb_app_btn();
 		$array_nonce['debug']        = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
 		$array_nonce['publish_now']  = array(
 			'action'   => $settings->get_instant_sharing_by_default(),
