@@ -20,14 +20,14 @@
 				</div>
 				<div class="modal-body">
 					<div class="content">
-						<div class="auth-app" v-if="isFacebook && isAllowedFacebook">
+						<div class="auth-app" v-if="isFacebook">
 							<button class="btn btn-primary big-btn" @click="openPopupFB()">{{labels.fb_app_signin_btn}}</button>
 							<span class="text-center">{{labels.fb_own_app_signin}}</span>
 						</div>
-						<div id="rop-advanced-config" v-if="isFacebook && isAllowedFacebook">
+						<div id="rop-advanced-config" v-if="isFacebook">
 						<button class="btn btn-primary" v-on:click="showAdvanceConfig = !showAdvanceConfig">{{labels.show_advance_config}}</button>
 					</div>
-						<div v-if="showAdvanceConfig || (!isAllowedFacebook && isFacebook)">
+						<div v-if="showAdvanceConfig && isFacebook">
 						<div class="form-group" v-for="( field, id ) in modal.data">
 							<label class="form-label" :for="field.id">{{ field.name }}</label>
 							<input class="form-input" type="text" :id="field.id" v-model="field.value"
@@ -45,10 +45,10 @@
 					</div>
 				</div>
 				</div>
-				<div v-if="isFacebook && isAllowedFacebook" class="modal-footer">
+				<div v-if="isFacebook" class="modal-footer">
 					<p class="text-left pull-left mr-2" v-html="labels.fb_rs_app_info"></p>
 				</div>
-				<div v-if="showAdvanceConfig || (!isAllowedFacebook && isFacebook)" class="modal-footer">
+				<div v-if="showAdvanceConfig && isFacebook" class="modal-footer">
 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 				</div>
@@ -86,7 +86,6 @@
 				appSignature: ropAuthAppData.authSignature,
 				windowParameters: 'top=20,left=100,width=560,height=670',
 				authPopupWindow: null,
-				showFbAppBtn: ropApiSettings.show_fb_app_btn,
 				showBtn: false
 			}
 		},
@@ -261,15 +260,6 @@
 			isFacebook() {
 				return this.modal.serviceName === 'Facebook';
 			},
-			isAllowedFacebook: function () {
-				let showButton = true;
-
-					if (!this.showFbAppBtn) {
-						showButton = false;
-					}
-
-				return showButton;
-			}
 		}
 	}
 </script>
