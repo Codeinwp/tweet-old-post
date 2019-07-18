@@ -560,8 +560,8 @@ class Rop_Admin {
 
 		$enabled = $_POST['publish_now_accounts'];
 
-		if ( !is_array( $enabled ) ){
-		    $enabled = array();
+		if ( ! is_array( $enabled ) ) {
+			$enabled = array();
 		}
 
 		$services = new Rop_Services_Model();
