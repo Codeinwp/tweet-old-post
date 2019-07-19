@@ -66,6 +66,9 @@
 						{{labels.staging_status}}
 					</div>
 					<upsell-sidebar></upsell-sidebar>
+					<a href="https://docs.revive.social/" target="_blank" class="btn support_btns">{{labels.rop_docs}}</a>
+					<a v-if="license  >= 1" href="https://revive.social/pro-support/" target="_blank" class="btn support_btns">{{labels.rop_support}}</a>
+					<a v-if="license  < 1" href="https://revive.social/support/" target="_blank" class="btn support_btns">{{labels.rop_support}}</a>
 				</div>
 
 			</div>
