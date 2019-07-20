@@ -55,11 +55,11 @@ class Rop_Cron_Helper {
 	 * @return  array Current status.
 	 */
 	public function manage_cron( $request ) {
-		if ( $request['action'] == 'start' ) {
+		if ( isset($request['action']) && $request['action'] === 'start' ) {
 			$this->create_cron( true );
-		} elseif ( $request['action'] == 'stop' ) {
+		} elseif ( isset($request['action']) && $request['action'] === 'stop' ) {
 			$this->remove_cron();
-		} elseif ( $request['action'] == 'publish-now' ) {
+		} elseif ( isset($request['action']) && $request['action'] === 'publish-now' ) {
 			$this->publish_now();
 		}
 
