@@ -313,6 +313,7 @@ You can try to disable any of the security plugins that you use in order to see 
 				),
 				'rop_support'                           => __( 'Get Support', 'tweet-old-post' ),
 				'rop_docs'                              => __( 'Documentation', 'tweet-old-post' ),
+				'rop_roadmap'                           => __( 'Roadmap & Voting', 'tweet-old-post' ),
 			),
 			'post_editor' => array(
 				'remove_variation'      => __( 'Delete', 'tweet-old-post' ),
