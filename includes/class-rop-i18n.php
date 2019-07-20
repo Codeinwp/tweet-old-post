@@ -291,7 +291,7 @@ class Rop_I18n {
 				'by'                     => __( 'by', 'tweet-old-post' ),
 				'tweet_about_it'         => __( 'Show your love', 'tweet-old-post' ),
 				'review_it'              => __( 'Leave a review', 'tweet-old-post' ),
-				'help_improve'           => __( 'Help us improve', 'tweet-old-post' ),
+				'survey'           			 => __( 'Take the Survey', 'tweet-old-post' ),
 				'in'                     => __( 'in', 'tweet-old-post' ),
 				'now'                    => __( 'Now', 'tweet-old-post' ),
 				'start'                  => __( 'Start', 'tweet-old-post' ),
