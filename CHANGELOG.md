@@ -1,4 +1,11 @@
 
+ ### v8.3.4 - 2019-07-21 
+ **Changes:** 
+ * New: Roadmap & Voting button! See where ROP is headed and vote on or recommend features which matter to you.
+* Fix: PHP warning when Share Immediately feature would receive a non-array of selected accounts in rare cases.
+* Fix: Silent Undefined Index error where Cron would try to fire for non-set actions.
+* Change: Allow users who installed ROP prior to v8.3.0 to connect their Facebook accounts using the Revive Social Facebook App. No more need to go through an App review.
+ 
  ### v8.3.3 - 2019-07-10 
  **Changes:** 
  * New: An email will be sent to admin email address if the "Share more than once" option is unchecked and sharing is complete
