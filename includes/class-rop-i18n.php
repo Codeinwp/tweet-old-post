@@ -291,7 +291,7 @@ class Rop_I18n {
 				'by'                     => __( 'by', 'tweet-old-post' ),
 				'tweet_about_it'         => __( 'Show your love', 'tweet-old-post' ),
 				'review_it'              => __( 'Leave a review', 'tweet-old-post' ),
-				'help_improve'           => __( 'Help us improve', 'tweet-old-post' ),
+				'survey'                     => __( 'Take the Survey', 'tweet-old-post' ),
 				'in'                     => __( 'in', 'tweet-old-post' ),
 				'now'                    => __( 'Now', 'tweet-old-post' ),
 				'start'                  => __( 'Start', 'tweet-old-post' ),
@@ -313,6 +313,7 @@ You can try to disable any of the security plugins that you use in order to see 
 				),
 				'rop_support'                           => __( 'Get Support', 'tweet-old-post' ),
 				'rop_docs'                              => __( 'Documentation', 'tweet-old-post' ),
+				'rop_roadmap'                           => __( 'Roadmap & Voting', 'tweet-old-post' ),
 			),
 			'post_editor' => array(
 				'remove_variation'      => __( 'Delete', 'tweet-old-post' ),
