@@ -7,9 +7,9 @@
 					<h1 class="plugin-title d-inline-block">Revive Old Posts</h1><span class="powered d-inline-block"> {{labels.by}} <a
 						href="https://revive.social" target="_blank"><b>Revive.Social</b></a></span>
 					<div id="rop_social_actions">
-					<a href="https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform" target="_blank" class="submit-feedback"><span><i class="fa fa-commenting" aria-hidden="true"></i></span> {{labels.survey}}</a>
-					<a href="https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial" target="_blank" class="tweet-about-it"><span><i class="fa fa-twitter" aria-hidden="true"></i></span> {{labels.tweet_about_it}}</a>
-					<a href="https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post" target="_blank" class="leave-a-review"><span><i class="fa fa-star" aria-hidden="true"></i></span> {{labels.review_it}}</a>
+					<a v-if="haveAccounts" href="https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform" target="_blank" class="submit-feedback"><span><i class="fa fa-commenting" aria-hidden="true"></i></span> {{labels.survey}}</a>
+					<a v-if="haveAccounts" href="https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial" target="_blank" class="tweet-about-it"><span><i class="fa fa-twitter" aria-hidden="true"></i></span> {{labels.tweet_about_it}}</a>
+					<a v-if="haveAccounts" href="https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post" target="_blank" class="leave-a-review"><span><i class="fa fa-star" aria-hidden="true"></i></span> {{labels.review_it}}</a>
 					</div>
 				</div>
 			</div>
@@ -22,7 +22,7 @@
 				<countdown :current_time="current_time"/>
 				<button class="btn btn-sm" :class="btn_class"
 				        :data-tooltip="labels.active_account_warning"
-				        @click="togglePosting()" :disabled="haveAccounts">
+				        @click="togglePosting()" :disabled="!haveAccountsActive">
 					<i class="fa fa-play" v-if="!is_loading && !start_status"></i>
 					<i class="fa fa-stop" v-else-if="!is_loading && start_status"></i>
 					<i class="fa fa-spinner fa-spin" v-else></i>
@@ -56,7 +56,7 @@
 					<countdown :current_time="current_time"/>
 					<button  id="rop_start_stop_btn" class="btn" :class="btn_class"
 					        :data-tooltip="labels.active_account_warning"
-					        @click="togglePosting()" :disabled="haveAccounts">
+					        @click="togglePosting()" :disabled="!haveAccountsActive">
 						<i class="fa fa-play" v-if="!is_loading && !start_status"></i>
 						<i class="fa fa-stop" v-else-if="!is_loading && start_status"></i>
 						<i class="fa fa-spinner fa-spin" v-else></i>
@@ -66,8 +66,8 @@
 						{{labels.staging_status}}
 					</div>
 					<upsell-sidebar></upsell-sidebar>
-					<a href="https://trello.com/b/svAZqXO1/roadmap-revive-old-posts" target="_blank" class="btn support_btns">{{labels.rop_roadmap}}</a>
-					<a href="https://docs.revive.social/" target="_blank" class="btn support_btns">{{labels.rop_docs}}</a>
+					<a v-if="haveAccounts" href="https://trello.com/b/svAZqXO1/roadmap-revive-old-posts" target="_blank" class="btn support_btns">{{labels.rop_roadmap}}</a>
+					<a v-if="haveAccounts" href="https://docs.revive.social/" target="_blank" class="btn support_btns">{{labels.rop_docs}}</a>
 					<a v-if="license  >= 1" href="https://revive.social/pro-support/" target="_blank" class="btn support_btns">{{labels.rop_support}}</a>
 					<a v-if="license  < 1" href="https://revive.social/support/" target="_blank" class="btn support_btns">{{labels.rop_support}}</a>
 				</div>
@@ -133,18 +133,26 @@
 			 */
 			btn_class: function () {
 				let btn_class = ('btn-' + (this.start_status ? 'danger' : 'success'));
-				if (this.haveAccounts) {
+				if (! this.haveAccountsActive) {
 					btn_class += ' tooltip button-disabled ';
 				}
 				return btn_class;
+			},
+			/**
+			 * Check if we have accounts connected.
+			 *
+			 * @returns {boolean}
+			 */
+			haveAccounts: function () {
+				return (Object.keys(this.$store.state.authenticatedServices).length > 0);
 			},
 			/**
 			 * Check if we have accounts active.
 			 *
 			 * @returns {boolean}
 			 */
-			haveAccounts: function () {
-				return !(Object.keys(this.$store.state.activeAccounts).length > 0);
+			haveAccountsActive: function () {
+				return (Object.keys(this.$store.state.activeAccounts).length > 0);
 			},
 			/*
 			* Check if the sharing is started.
