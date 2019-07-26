@@ -33476,7 +33476,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .columns.py-2 .text-gray[_v-2ff296d6] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\t\n\t#rop_core .input-group[_v-2ff296d6] {\n\t\twidth: 100%;\n\t}\n\t\n\tb[_v-2ff296d6] {\n\t\tmargin-bottom: 5px;\n\t\tdisplay: block;\n\t}\n\t\n\t#rop_core .text-gray b[_v-2ff296d6] {\n\t\tdisplay: inline;\n\t}\n\t\n\t#rop_core .input-group .input-group-addon[_v-2ff296d6] {\n\t\tpadding: 3px 5px;\n\t}\n\t\n\t#rop_core .rop-available-accounts h5[_v-2ff296d6] {\n\t\tmargin-bottom: 15px;\n\t}\n\t\n\t@media ( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-2ff296d6] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\t\t\n\t\t#rop_core .text-right[_v-2ff296d6] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop_core .columns.py-2 .text-gray[_v-2ff296d6] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\n\t#rop_core .input-group[_v-2ff296d6] {\n\t\twidth: 100%;\n\t}\n\n\tb[_v-2ff296d6] {\n\t\tmargin-bottom: 5px;\n\t\tdisplay: block;\n\t}\n\n\t#rop_core .text-gray b[_v-2ff296d6] {\n\t\tdisplay: inline;\n\t}\n\n\t#rop_core .input-group .input-group-addon[_v-2ff296d6] {\n\t\tpadding: 3px 5px;\n\t}\n\n\t#rop_core .rop-available-accounts h5[_v-2ff296d6] {\n\t\tmargin-bottom: 15px;\n\t}\n\n\t@media ( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-2ff296d6] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\n\t\t#rop_core .text-right[_v-2ff296d6] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n", ""]);
 
 // exports
 
@@ -33545,6 +33545,13 @@ module.exports = {
 			this.$log.info('All accounts: ', all_accounts);
 			this.accountsCount = (0, _keys2.default)(all_accounts).length;
 			return all_accounts;
+		},
+		/**
+   * Check if we have a pro license.
+   * @returns {boolean}
+   */
+		checkLicense: function checkLicense() {
+			return this.$store.state.licence < 1;
 		}
 	},
 
@@ -33611,6 +33618,7 @@ module.exports = {
 	// 		}
 	// 	}
 	// </style>
+	//
 
 }; // <template>
 // 	<div class="tab-view">
@@ -33639,10 +33647,17 @@ module.exports = {
 // 					</div>
 // 				</div>
 // 			</div>
-// 			<div class="panel-footer" v-if="accountsCount > 0">
-// 				<div class="columns">
+// 			<div class="panel-footer">
+// 				<div class="columns my-2" v-if="checkLicense && accountsCount === 2">
 // 					<div class="column col-12">
-// 						<p class="text-gray"><i class="fa fa-info-circle"></i> <span
+// 						<p class="upsell">
+// 							<i class="fa fa-lock "></i> <span v-html="labels.upsell_accounts"></span>
+// 						</p>
+// 					</div>
+// 				</div>
+// 				<div class="columns" v-if="accountsCount < 1">
+// 					<div class="column col-12">
+// 						<p><i class="fa fa-info-circle"></i> <span
 // 								v-html="labels.has_accounts_desc"></span></p>
 // 					</div>
 // 				</div>
@@ -34444,15 +34459,7 @@ module.exports = {
 			upsell_link: ropApiSettings.upsell_link
 		};
 	},
-	computed: {
-		/**
-   * Check if we have a pro license.
-   * @returns {boolean}
-   */
-		checkLicense: function checkLicense() {
-			return this.$store.state.licence < 1;
-		}
-	},
+	computed: {},
 	components: {
 		SignInBtn: _signInBtn2.default
 	}
@@ -34485,29 +34492,11 @@ module.exports = {
 }; // <template>
 // 	<div>
 // 		<div class="tile tile-centered rop-add-account">
-// 			<a class="tile-icon c-hand" @click="addAccountActive = !addAccountActive">
-// 				<div class="icon_box" id="rop-add-account-btn" :class="(addAccountActive) ? 'close bg-error' : 'open bg-success'">
-// 					<i class="fa fa-2x fa-close" aria-hidden="true"></i>
-// 				</div>
-// 			</a>
 // 			<div class="tile-content">
-// 				<div class="tile-title">{{labels.add_account}}</div>
+// 				<div class="tile-title"><span v-html="labels.add_account"></span></div>
 // 			</div>
-// 			<transition name="fade">
-// 				<div class="tile-action" v-if="addAccountActive">
 // 					<sign-in-btn></sign-in-btn>
-// 				</div>
-// 			</transition>
 // 		</div>
-// 		<transition name="fade">
-// 			<div class="columns my-2" v-if="checkLicense && addAccountActive">
-// 				<div class="column col-12 text-center">
-// 					<p class="upsell">
-// 						<i class="fa fa-lock "></i> <span v-html="labels.upsell_accounts"></span>
-// 					</p>
-// 				</div>
-// 			</div>
-// 		</transition>
 // 	</div>
 // </template>
 //
@@ -34517,13 +34506,13 @@ module.exports = {
 /* 233 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div _v-89b02f9e=\"\">\n\t\t<div class=\"tile tile-centered rop-add-account\" _v-89b02f9e=\"\">\n\t\t\t<a class=\"tile-icon c-hand\" @click=\"addAccountActive = !addAccountActive\" _v-89b02f9e=\"\">\n\t\t\t\t<div class=\"icon_box\" id=\"rop-add-account-btn\" :class=\"(addAccountActive) ? 'close bg-error' : 'open bg-success'\" _v-89b02f9e=\"\">\n\t\t\t\t\t<i class=\"fa fa-2x fa-close\" aria-hidden=\"true\" _v-89b02f9e=\"\"></i>\n\t\t\t\t</div>\n\t\t\t</a>\n\t\t\t<div class=\"tile-content\" _v-89b02f9e=\"\">\n\t\t\t\t<div class=\"tile-title\" _v-89b02f9e=\"\">{{labels.add_account}}</div>\n\t\t\t</div>\n\t\t\t<transition name=\"fade\" _v-89b02f9e=\"\">\n\t\t\t\t<div class=\"tile-action\" v-if=\"addAccountActive\" _v-89b02f9e=\"\">\n\t\t\t\t\t<sign-in-btn _v-89b02f9e=\"\"></sign-in-btn>\n\t\t\t\t</div>\n\t\t\t</transition>\n\t\t</div>\n\t\t<transition name=\"fade\" _v-89b02f9e=\"\">\n\t\t\t<div class=\"columns my-2\" v-if=\"checkLicense &amp;&amp; addAccountActive\" _v-89b02f9e=\"\">\n\t\t\t\t<div class=\"column col-12 text-center\" _v-89b02f9e=\"\">\n\t\t\t\t\t<p class=\"upsell\" _v-89b02f9e=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-lock \" _v-89b02f9e=\"\"></i> <span v-html=\"labels.upsell_accounts\" _v-89b02f9e=\"\"></span>\n\t\t\t\t\t</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</transition>\n\t</div>\n";
+module.exports = "\n\t<div _v-89b02f9e=\"\">\n\t\t<div class=\"tile tile-centered rop-add-account\" _v-89b02f9e=\"\">\n\t\t\t<div class=\"tile-content\" _v-89b02f9e=\"\">\n\t\t\t\t<div class=\"tile-title\" _v-89b02f9e=\"\"><span v-html=\"labels.add_account\" _v-89b02f9e=\"\"></span></div>\n\t\t\t</div>\n\t\t\t\t\t<sign-in-btn _v-89b02f9e=\"\"></sign-in-btn>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 234 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\" _v-2ff296d6=\"\">\n\t\t<div class=\"panel-body\" _v-2ff296d6=\"\">\n\t\t\t<div class=\"toast  toast-warning\" v-html=\"labels.twitter_warning\" v-if=\"twitter_warning\" _v-2ff296d6=\"\">\n\t\t\t\n\t\t\t</div>\n\t\t\t<div class=\"container\" _v-2ff296d6=\"\">\n\t\t\t\t<div class=\"columns\" :class=\"'rop-tab-state-'+is_loading\" _v-2ff296d6=\"\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t<div class=\"empty mb-2\" v-if=\"accountsCount === 0\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t<div class=\"empty-icon\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\" _v-2ff296d6=\"\"></i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<p class=\"empty-title h5\" _v-2ff296d6=\"\">{{labels.no_accounts}}</p>\n\t\t\t\t\t\t\t<p class=\"empty-subtitle\" _v-2ff296d6=\"\">{{labels.no_accounts_desc}}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"account-container\" v-for=\"( account, id ) in accounts\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t<service-user-tile :account_data=\"account\" :account_id=\"id\" _v-2ff296d6=\"\"></service-user-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-2ff296d6=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"add-accounts\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t<add-account-tile _v-2ff296d6=\"\"></add-account-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-2ff296d6=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-2ff296d6=\"\">\n\t\t\t\t<div class=\"columns\" _v-2ff296d6=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t<p class=\"text-gray\" _v-2ff296d6=\"\"><i class=\"fa fa-info-circle\" _v-2ff296d6=\"\"></i> <span v-html=\"labels.has_accounts_desc\" _v-2ff296d6=\"\"></span></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 text-right\" _v-2ff296d6=\"\">\n\t\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-2ff296d6=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-2ff296d6=\"\"></i>\n\t\t\t\t\t\t{{labels.remove_all_cta}}\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\" _v-2ff296d6=\"\">\n\t\t<div class=\"panel-body\" _v-2ff296d6=\"\">\n\t\t\t<div class=\"toast  toast-warning\" v-html=\"labels.twitter_warning\" v-if=\"twitter_warning\" _v-2ff296d6=\"\">\n\n\t\t\t</div>\n\t\t\t<div class=\"container\" _v-2ff296d6=\"\">\n\t\t\t\t<div class=\"columns\" :class=\"'rop-tab-state-'+is_loading\" _v-2ff296d6=\"\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t<div class=\"empty mb-2\" v-if=\"accountsCount === 0\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t<div class=\"empty-icon\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\" _v-2ff296d6=\"\"></i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<p class=\"empty-title h5\" _v-2ff296d6=\"\">{{labels.no_accounts}}</p>\n\t\t\t\t\t\t\t<p class=\"empty-subtitle\" _v-2ff296d6=\"\">{{labels.no_accounts_desc}}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"account-container\" v-for=\"( account, id ) in accounts\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t<service-user-tile :account_data=\"account\" :account_id=\"id\" _v-2ff296d6=\"\"></service-user-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-2ff296d6=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"add-accounts\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t<add-account-tile _v-2ff296d6=\"\"></add-account-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-2ff296d6=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"panel-footer\" _v-2ff296d6=\"\">\n\t\t\t\t<div class=\"columns my-2\" v-if=\"checkLicense &amp;&amp; accountsCount === 2\" _v-2ff296d6=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-lock \" _v-2ff296d6=\"\"></i> <span v-html=\"labels.upsell_accounts\" _v-2ff296d6=\"\"></span>\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-if=\"accountsCount < 1\" _v-2ff296d6=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t<p _v-2ff296d6=\"\"><i class=\"fa fa-info-circle\" _v-2ff296d6=\"\"></i> <span v-html=\"labels.has_accounts_desc\" _v-2ff296d6=\"\"></span></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 text-right\" _v-2ff296d6=\"\">\n\t\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-2ff296d6=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-2ff296d6=\"\"></i>\n\t\t\t\t\t\t{{labels.remove_all_cta}}\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t</div>\n";
 
 /***/ }),
 /* 235 */

@@ -934,24 +934,21 @@
 
 #rop_core .input-group .form-input:first-child:not(:last-child),
 #rop_core .input-group .form-select:first-child:not(:last-child),
-#rop_core .input-group .input-group-addon:first-child:not(:last-child),
-#rop_core .input-group .input-group-btn:first-child:not(:last-child) {
+#rop_core .input-group .input-group-addon:first-child:not(:last-child){
 	border-top-right-radius: 0;
 	border-bottom-right-radius: 0;
 }
 
 #rop_core .input-group .form-input:not(:first-child):not(:last-child),
 #rop_core .input-group .form-select:not(:first-child):not(:last-child),
-#rop_core .input-group .input-group-addon:not(:first-child):not(:last-child),
-#rop_core .input-group .input-group-btn:not(:first-child):not(:last-child) {
+#rop_core .input-group .input-group-addon:not(:first-child):not(:last-child){
 	margin-left: -0.05rem;
 	border-radius: 0;
 }
 
 #rop_core .input-group .form-input:last-child:not(:first-child),
 #rop_core .input-group .form-select:last-child:not(:first-child),
-#rop_core .input-group .input-group-addon:last-child:not(:first-child),
-#rop_core .input-group .input-group-btn:last-child:not(:first-child) {
+#rop_core .input-group .input-group-addon:last-child:not(:first-child){
 	margin-left: -0.05rem;
 	border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
@@ -4243,10 +4240,7 @@
 
 #rop_core .upsell {
 	margin-bottom: 0;
-	padding: 0 10px;
 	border-radius: 0.1rem;
-	color: #8492a0;
-	text-align: right;
 }
 
 #rop_core .panel-body h3 {
@@ -4374,4 +4368,9 @@
 
 #rop-advanced-config{
 	text-align: center;
+}
+
+#rop-sign-in-area button.btn{
+margin: 2px;
+padding: 0 20px;
 }
