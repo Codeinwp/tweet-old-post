@@ -40,17 +40,16 @@ ROP can work as a facebook or twitter auto-poster and using it you can easily au
 
 > Awesome features in Pro:
 
-> * Share Posts Immediately to Your Social Accounts on Publish/Update
 > * Multiple Social Accounts
-> * Custom UTM tags for analytics
-> * Custom Share Messages
-> * Magic tags for Custom Share Messages
-> * Magic tags for Additional Texts option
-> * Share Images and Video From Your Media Library
-> * Custom Post Types support
+> * [Custom UTM tags for analytics](https://docs.revive.social/article/925-how-to-use-custom-utm-tags)
+> * [Share Content Variations](https://docs.revive.social/article/971-how-to-add-variations-to-revive-old-posts-shares)
+> * [Magic tags for Custom Share Messages](https://docs.revive.social/article/952-available-magic-tags-in-revive-old-posts)
+> * [Magic tags for Additional Texts option](https://docs.revive.social/article/952-available-magic-tags-in-revive-old-posts)
+> * [Share Images and Video From Your Media Library](https://docs.revive.social/article/934-how-to-use-revive-old-post-media-sharing-feature)
+> * [Custom Post Types support](https://docs.revive.social/article/968-how-to-share-different-wordpress-post-types-to-social-media-w-revive-old-posts)
 > * LinkedIn, Tumblr, Pinterest Support
 > * Post with image
-> * Custom Schedule
+> * [Custom Schedule](https://docs.revive.social/article/972-revive-old-posts-custom-schedule-feature)
 
 Checkout the **Free vs Pro** table [HERE](https://docs.revive.social/article/941-revive-old-post-free-vs-pro).
 
@@ -97,21 +96,13 @@ If you have any questions please ask on the support forum and we will try our be
 
 - This issue is normally caused by an antimalware or firewall plugin. Please try disabling all plugins(except Revive Old Posts) to see if the issue persists. If not then enable each plugin one by one while checking Revive Old Posts dashboard to see if the issue returns, that will help you determine the conflicting plugin.
 
-**Facebook Error 200 requires manage_pages and publish_pages permission**
-
-- Facebook has changed their policies requiring a review of your application. See here on [how to go through the review process.](https://docs.revive.social/article/926-how-to-go-through-the-facebook-review-process)
-
 **Plugin doesn't post at the regular interval or sends more posts than it should send to social networks.**
 
-- Have a look at this document for [how to fix this Revive Old Posts Schedule.](https://docs.revive.social/article/686-fix-revive-old-post-not-posting)
+- See this document for [how to fix this Revive Old Posts Schedule.](https://docs.revive.social/article/686-fix-revive-old-post-not-posting)
 
-**Post are not sent to the social networks and I always see the green badge with 'Sharing'**
+**Posts are not sent to the social networks and I always see the green badge with 'Sharing'**
 
-- Have a look at this document for [how to fix this Revive Old Posts not posting.](https://docs.revive.social/article/686-fix-revive-old-post-not-posting)
-
-**How do I add a Facebook account**
-
- - Please follow this [Tutorial.](http://docs.revive.social/article/349-how-to-create-a-facebook-application-for-revive-old-post)
+- See this document for [how to fix this Revive Old Posts not posting.](https://docs.revive.social/article/686-fix-revive-old-post-not-posting)
 
 **How do I go back to an older version after updating?**
 
@@ -134,6 +125,14 @@ http://revive.social/plugins/revive-old-post
 
 
 ## Changelog ##
+### 8.3.4 - 2019-07-21  ###
+
+* New: Roadmap & Voting button! See where ROP is headed and vote on or recommend features which matter to you.
+* Fix: PHP warning when Share Immediately feature would receive a non-array of selected accounts in rare cases.
+* Fix: Silent Undefined Index error where Cron would try to fire for non-set actions.
+* Change: Allow users who installed ROP prior to v8.3.0 to connect their Facebook accounts using the Revive Social Facebook App. No more need to go through an App review.
+
+
 ### 8.3.3 - 2019-07-10  ###
 
 * New: An email will be sent to admin email address if the "Share more than once" option is unchecked and sharing is complete

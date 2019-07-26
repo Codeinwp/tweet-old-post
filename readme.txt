@@ -40,17 +40,16 @@ ROP can work as a facebook or twitter auto-poster and using it you can easily au
 
 > Awesome features in Pro:
 
-> * Share Posts Immediately to Your Social Accounts on Publish/Update
 > * Multiple Social Accounts
-> * Custom UTM tags for analytics
-> * Custom Share Messages
-> * Magic tags for Custom Share Messages
-> * Magic tags for Additional Texts option
-> * Share Images and Video From Your Media Library
-> * Custom Post Types support
+> * [Custom UTM tags for analytics](https://docs.revive.social/article/925-how-to-use-custom-utm-tags)
+> * [Share Content Variations](https://docs.revive.social/article/971-how-to-add-variations-to-revive-old-posts-shares)
+> * [Magic tags for Custom Share Messages](https://docs.revive.social/article/952-available-magic-tags-in-revive-old-posts)
+> * [Magic tags for Additional Texts option](https://docs.revive.social/article/952-available-magic-tags-in-revive-old-posts)
+> * [Share Images and Video From Your Media Library](https://docs.revive.social/article/934-how-to-use-revive-old-post-media-sharing-feature)
+> * [Custom Post Types support](https://docs.revive.social/article/968-how-to-share-different-wordpress-post-types-to-social-media-w-revive-old-posts)
 > * LinkedIn, Tumblr, Pinterest Support
 > * Post with image
-> * Custom Schedule
+> * [Custom Schedule](https://docs.revive.social/article/972-revive-old-posts-custom-schedule-feature)
 
 Checkout the **Free vs Pro** table [HERE](https://docs.revive.social/article/941-revive-old-post-free-vs-pro).
 
@@ -97,21 +96,13 @@ If you have any questions please ask on the support forum and we will try our be
 
 - This issue is normally caused by an antimalware or firewall plugin. Please try disabling all plugins(except Revive Old Posts) to see if the issue persists. If not then enable each plugin one by one while checking Revive Old Posts dashboard to see if the issue returns, that will help you determine the conflicting plugin.
 
-**Facebook Error 200 requires manage_pages and publish_pages permission**
-
-- Facebook has changed their policies requiring a review of your application. See here on [how to go through the review process.](https://docs.revive.social/article/926-how-to-go-through-the-facebook-review-process)
-
 **Plugin doesn't post at the regular interval or sends more posts than it should send to social networks.**
 
-- Have a look at this document for [how to fix this Revive Old Posts Schedule.](https://docs.revive.social/article/686-fix-revive-old-post-not-posting)
+- See this document for [how to fix this Revive Old Posts Schedule.](https://docs.revive.social/article/686-fix-revive-old-post-not-posting)
 
-**Post are not sent to the social networks and I always see the green badge with 'Sharing'**
+**Posts are not sent to the social networks and I always see the green badge with 'Sharing'**
 
-- Have a look at this document for [how to fix this Revive Old Posts not posting.](https://docs.revive.social/article/686-fix-revive-old-post-not-posting)
-
-**How do I add a Facebook account**
-
- - Please follow this [Tutorial.](http://docs.revive.social/article/349-how-to-create-a-facebook-application-for-revive-old-post)
+- See this document for [how to fix this Revive Old Posts not posting.](https://docs.revive.social/article/686-fix-revive-old-post-not-posting)
 
 **How do I go back to an older version after updating?**
 
@@ -134,7 +125,15 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
-= 8.3.3 - 2019-07-10  = 
+= 8.3.4 - 2019-07-21  = 
+
+* New: Roadmap & Voting button! See where ROP is headed and vote on or recommend features which matter to you.
+* Fix: PHP warning when Share Immediately feature would receive a non-array of selected accounts in rare cases.
+* Fix: Silent Undefined Index error where Cron would try to fire for non-set actions.
+* Change: Allow users who installed ROP prior to v8.3.0 to connect their Facebook accounts using the Revive Social Facebook App. No more need to go through an App review.
+
+
+= 8.3.3 - 2019-07-10  =
 
 * New: An email will be sent to admin email address if the "Share more than once" option is unchecked and sharing is complete
 * New: Documentation and support buttons on plugin dashboard
@@ -142,25 +141,25 @@ http://revive.social/plugins/revive-old-post
 * Fix: Facebook sharing timeout on some servers
 
 
-= 8.3.2 - 2019-05-27  = 
+= 8.3.2 - 2019-05-27  =
 
 * Fix: Log would some times show the wrong status message for the share
 * Change: Use button to show app credential fields on new installs
 
 
-= 8.3.1 - 2019-05-24  = 
+= 8.3.1 - 2019-05-24  =
 
 * Fix: Use wp_remote_request functions in favor of guzzle which was causing issues on some websites
 * Fix: Posting to Pinterest board names with commas
 
 
-= 8.3.0 - 2019-05-24  = 
+= 8.3.0 - 2019-05-24  =
 
 * New: Made connecting Facebook pages to plugin much simpler.
 * Fix: When using publish now feature, all services would be checked after page reload even though only one was selected.
 
 
-= 8.2.5 - 2019-05-17  = 
+= 8.2.5 - 2019-05-17  =
 
 * New: Show admin notice when WP Cron is turned off, which can cause posting issues with ROP
 * Fix: LinkedIn Image posts were not going through
@@ -168,12 +167,12 @@ http://revive.social/plugins/revive-old-post
 * Info: Tested on WP 5.2
 
 
-= 8.2.4 - 2019-04-15  = 
+= 8.2.4 - 2019-04-15  =
 
 * Fix: Minor bugs
 
 
-= 8.2.3 - 2019-04-10  = 
+= 8.2.3 - 2019-04-10  =
 
 * New: Filter introduced for Post Title & Content separator (check revive.social docs)
 * New: Known errors will now show a link to the fix in the log area
@@ -181,7 +180,7 @@ http://revive.social/plugins/revive-old-post
 * PRO Fix: Moved to LinkedIn API v2 (check revive.social docs)
 
 
-= 8.2.2 - 2019-03-20  = 
+= 8.2.2 - 2019-03-20  =
 
 * New: Feedback button on plugin dashboard. Help us make ROP better by filling out the form!
 * Fix: Minor typos
