@@ -519,7 +519,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		if ( version_compare( $installed_at_version, '8.3.0', '>=' ) ) {
+		if ( version_compare( $installed_at_version, '8.4.0', '>=' ) ) {
 			return true;
 		}
 
