@@ -24,7 +24,7 @@
 							<button class="btn btn-primary big-btn" @click="openPopupFB()">{{labels.fb_app_signin_btn}}</button>
 							<span class="text-center">{{labels.fb_own_app_signin}}</span>
 						</div>
-						<div class="auth-app" v-if="isTwitter">
+						<div class="auth-app" v-if="isTwitter && isAllowedTwitter">
 							<button class="btn btn-primary big-btn" @click="openPopupTW()">{{labels.tw_app_signin_btn}}</button>
 							<span class="text-center">{{labels.tw_own_app_signin}}</span>
 						</div>
@@ -91,6 +91,8 @@
 				appSignature: ropAuthAppData.authSignature,
 				windowParameters: 'top=20,left=100,width=560,height=670',
 				authPopupWindow: null,
+                showFbAppBtn: ropApiSettings.show_fb_app_btn,
+                showTwAppBtn: ropApiSettings.show_tw_app_btn,
 				showBtn: false
 			}
 		},
@@ -301,9 +303,27 @@
 			isFacebook() {
 				return this.modal.serviceName === 'Facebook';
 			},
+            isAllowedFacebook: function () {
+                let showButton = true;
+
+                if (!this.showFbAppBtn) {
+                    showButton = false;
+                }
+
+                return showButton;
+            },
             // will return true if the current service actions are for Twitter.
             isTwitter() {
                 return this.modal.serviceName === 'Twitter';
+            },
+            isAllowedTwitter: function () {
+                let showButton = true;
+
+                if (!this.showTwAppBtn) {
+                    showButton = false;
+                }
+
+                return showButton;
             }
 		}
 	}
