@@ -503,4 +503,95 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		return false;
 	}
 
+	/**
+	 * Method used to decide whether or not to show Twitter button
+	 *
+	 * @since   8.3.0
+	 * @access  public
+	 *
+	 * @return  bool
+	 */
+	public function rop_show_tw_app_btn() {
+
+		$installed_at_version = get_option( 'rop_first_install_version' );
+
+		if ( empty( $installed_at_version ) ) {
+			return false;
+		}
+
+		if ( version_compare( $installed_at_version, '8.3.0', '>=' ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * This method will load and prepare the account data for Twitter user.
+	 * Used in Rest Api.
+	 *
+	 * @since   8.3.0
+	 * @access  public
+	 *
+	 * @param   array $account_data Twitter pages data.
+	 *
+	 * @return  bool
+	 */
+	public function add_account_with_app( $account_data ) {
+		if ( ! $this->is_set_not_empty( $account_data, array( 'id' ) ) ) {
+			return false;
+		}
+		$the_id       = $account_data['id'];
+		$account_data = $account_data['pages'];
+
+		$this->set_api( $account_data['credentials']['oauth_token'], $account_data['credentials']['oauth_token_secret'], $account_data['credentials']['consumer_key'], $account_data['credentials']['consumer_secret'] );
+		$api = $this->get_api();
+
+		$args = array(
+			'oauth_token'        => $account_data['credentials']['oauth_token'],
+			'oauth_token_secret' => $account_data['credentials']['oauth_token_secret'],
+			'consumer_key'       => $account_data['credentials']['consumer_key'],
+			'consumer_secret'    => $account_data['credentials']['consumer_secret'],
+		);
+
+		$this->set_credentials(
+			array_intersect_key(
+				$args,
+				array(
+					'oauth_token'        => '',
+					'oauth_token_secret' => '',
+					'consumer_key'       => '',
+					'consumer_secret'    => '',
+				)
+			)
+		);
+
+		$response = $api->get( 'account/verify_credentials' );
+
+		if ( ! isset( $response->id ) ) {
+			return false;
+		}
+		// Prepare the data that will be saved as new account added.
+		$this->service = array(
+			'id'                 => $response->id,
+			'service'            => $this->service_name,
+			'credentials'        => $this->credentials,
+			'public_credentials' => array(
+				'consumer_key'    => array(
+					'name'    => 'API Key',
+					'value'   => $account_data['credentials']['consumer_key'],
+					'private' => false,
+				),
+				'consumer_secret' => array(
+					'name'    => 'API secret key',
+					'value'   => $account_data['credentials']['consumer_secret'],
+					'private' => true,
+				),
+			),
+			'available_accounts' => $this->get_users( $response ),
+		);
+
+		return true;
+	}
+
 }

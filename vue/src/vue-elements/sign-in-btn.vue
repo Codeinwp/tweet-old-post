@@ -24,6 +24,10 @@
 							<button class="btn btn-primary big-btn" @click="openPopupFB()">{{labels.fb_app_signin_btn}}</button>
 							<span class="text-center">{{labels.fb_own_app_signin}}</span>
 						</div>
+						<div class="auth-app" v-if="isTwitter && isAllowedTwitter">
+							<button class="btn btn-primary big-btn" @click="openPopupTW()">{{labels.tw_app_signin_btn}}</button>
+							<span class="text-center">{{labels.tw_own_app_signin}}</span>
+						</div>
 						<div id="rop-advanced-config" v-if="isFacebook">
 						<button class="btn btn-primary" v-on:click="showAdvanceConfig = !showAdvanceConfig">{{labels.show_advance_config}}</button>
 					</div>
@@ -80,12 +84,15 @@
 				activePopup: '',
 				appOrigin: ropAuthAppData.authAppUrl,
 				appPathFB: ropAuthAppData.authAppFacebookPath,
+                appPathTW: ropAuthAppData.authAppTwitterPath,
 				appAdminEmail: ropAuthAppData.adminEmail,
 				siteAdminUrl: ropAuthAppData.adminUrl,
 				appUniqueId: ropAuthAppData.authToken,
 				appSignature: ropAuthAppData.authSignature,
 				windowParameters: 'top=20,left=100,width=560,height=670',
 				authPopupWindow: null,
+                showFbAppBtn: ropApiSettings.show_fb_app_btn,
+                showTwAppBtn: ropApiSettings.show_tw_app_btn,
 				showBtn: false
 			}
 		},
@@ -208,11 +215,35 @@
 				}, error => {
 					this.is_loading = false;
 					Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+                });
+            },
+            /**
+             * Add Twitter account.
+             *
+             * @param data Data.
+             */
+            addAccountTW(data) {
+                this.$store.dispatch('fetchAJAXPromise', {
+                    req: 'add_account_tw',
+                    updateState: false,
+                    data: data
+                }).then(response => {
+                    window.removeEventListener("message", event => this.getChildWindowMessage(event));
+                    this.authPopupWindow.close();
+                    window.location.reload();
+                }, error => {
+                    this.is_loading = false;
+                    Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
 				});
 			},
 			getChildWindowMessage: function (event) {
 				if (~event.origin.indexOf(this.appOrigin)) {
-					this.addAccountFB(JSON.parse(event.data));
+                    if ('Twitter' === this.modal.serviceName) {
+                        this.addAccountTW(JSON.parse(event.data));
+                    } else if ('Facebook' === this.modal.serviceName) {
+					    this.addAccountFB(JSON.parse(event.data));
+                    }
+
 				} else {
 					return;
 				}
@@ -228,6 +259,18 @@
 					this.cancelModal();
 				}
 				window.addEventListener("message", event => this.getChildWindowMessage(event));
+            },
+            openPopupTW: function () { // Open the popup specific for Twitter
+                let loginUrl = this.appOrigin + this.appPathTW + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
+                try {
+                    this.authPopupWindow.close();
+                } catch (e) {
+                    // nothing to do
+                } finally {
+                    this.authPopupWindow = window.open(loginUrl, 'authTW', this.windowParameters);
+                    this.cancelModal();
+                }
+                window.addEventListener("message", event => this.getChildWindowMessage(event));
 			}
 		},
 		computed: {
@@ -260,6 +303,28 @@
 			isFacebook() {
 				return this.modal.serviceName === 'Facebook';
 			},
+            isAllowedFacebook: function () {
+                let showButton = true;
+
+                if (!this.showFbAppBtn) {
+                    showButton = false;
+                }
+
+                return showButton;
+            },
+            // will return true if the current service actions are for Twitter.
+            isTwitter() {
+                return this.modal.serviceName === 'Twitter';
+            },
+            isAllowedTwitter: function () {
+                let showButton = true;
+
+                if (!this.showTwAppBtn) {
+                    showButton = false;
+                }
+
+                return showButton;
+            }
 		}
 	}
 </script>
