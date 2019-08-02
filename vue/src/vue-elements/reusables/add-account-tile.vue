@@ -1,29 +1,11 @@
 <template>
 	<div>
 		<div class="tile tile-centered rop-add-account">
-			<a class="tile-icon c-hand" @click="addAccountActive = !addAccountActive">
-				<div class="icon_box" id="rop-add-account-btn" :class="(addAccountActive) ? 'close bg-error' : 'open bg-success'">
-					<i class="fa fa-2x fa-close" aria-hidden="true"></i>
-				</div>
-			</a>
 			<div class="tile-content">
-				<div class="tile-title">{{labels.add_account}}</div>
+				<div class="tile-title"><span v-html="labels.add_account"></span></div>
 			</div>
-			<transition name="fade">
-				<div class="tile-action" v-if="addAccountActive">
 					<sign-in-btn></sign-in-btn>
-				</div>
-			</transition>
 		</div>
-		<transition name="fade">
-			<div class="columns my-2" v-if="checkLicense && addAccountActive">
-				<div class="column col-12 text-center">
-					<p class="upsell">
-						<i class="fa fa-lock "></i> <span v-html="labels.upsell_accounts"></span>
-					</p>
-				</div>
-			</div>
-		</transition>
 	</div>
 </template>
 
@@ -40,13 +22,6 @@
 			}
 		},
 		computed: {
-			/**
-			 * Check if we have a pro license.
-			 * @returns {boolean}
-			 */
-			checkLicense: function () {
-				return (this.$store.state.licence < 1);
-			}
 		},
 		components: {
 			SignInBtn,

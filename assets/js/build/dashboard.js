@@ -33161,18 +33161,26 @@ module.exports = {
    */
 		btn_class: function btn_class() {
 			var btn_class = 'btn-' + (this.start_status ? 'danger' : 'success');
-			if (this.haveAccounts) {
+			if (!this.haveAccountsActive) {
 				btn_class += ' tooltip button-disabled ';
 			}
 			return btn_class;
+		},
+		/**
+   * Check if we have accounts connected.
+   *
+   * @returns {boolean}
+   */
+		haveAccounts: function haveAccounts() {
+			return (0, _keys2.default)(this.$store.state.authenticatedServices).length > 0;
 		},
 		/**
    * Check if we have accounts active.
    *
    * @returns {boolean}
    */
-		haveAccounts: function haveAccounts() {
-			return !((0, _keys2.default)(this.$store.state.activeAccounts).length > 0);
+		haveAccountsActive: function haveAccountsActive() {
+			return (0, _keys2.default)(this.$store.state.activeAccounts).length > 0;
 		},
 		/*
   * Check if the sharing is started.
@@ -33298,9 +33306,9 @@ module.exports = {
 // 					<h1 class="plugin-title d-inline-block">Revive Old Posts</h1><span class="powered d-inline-block"> {{labels.by}} <a
 // 						href="https://revive.social" target="_blank"><b>Revive.Social</b></a></span>
 // 					<div id="rop_social_actions">
-// 					<a href="https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform" target="_blank" class="submit-feedback"><span><i class="fa fa-commenting" aria-hidden="true"></i></span> {{labels.survey}}</a>
-// 					<a href="https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial" target="_blank" class="tweet-about-it"><span><i class="fa fa-twitter" aria-hidden="true"></i></span> {{labels.tweet_about_it}}</a>
-// 					<a href="https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post" target="_blank" class="leave-a-review"><span><i class="fa fa-star" aria-hidden="true"></i></span> {{labels.review_it}}</a>
+// 					<a v-if="haveAccounts" href="https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform" target="_blank" class="submit-feedback"><span><i class="fa fa-commenting" aria-hidden="true"></i></span> {{labels.survey}}</a>
+// 					<a v-if="haveAccounts" href="https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial" target="_blank" class="tweet-about-it"><span><i class="fa fa-twitter" aria-hidden="true"></i></span> {{labels.tweet_about_it}}</a>
+// 					<a v-if="haveAccounts" href="https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post" target="_blank" class="leave-a-review"><span><i class="fa fa-star" aria-hidden="true"></i></span> {{labels.review_it}}</a>
 // 					</div>
 // 				</div>
 // 			</div>
@@ -33313,7 +33321,7 @@ module.exports = {
 // 				<countdown :current_time="current_time"/>
 // 				<button class="btn btn-sm" :class="btn_class"
 // 				        :data-tooltip="labels.active_account_warning"
-// 				        @click="togglePosting()" :disabled="haveAccounts">
+// 				        @click="togglePosting()" :disabled="!haveAccountsActive">
 // 					<i class="fa fa-play" v-if="!is_loading && !start_status"></i>
 // 					<i class="fa fa-stop" v-else-if="!is_loading && start_status"></i>
 // 					<i class="fa fa-spinner fa-spin" v-else></i>
@@ -33341,13 +33349,13 @@ module.exports = {
 // 			     :class="'rop-license-plan-'+license">
 //
 // 				<div class="card rop-container-start">
-// 					<div class="toast rop-current-time" v-if="formatedDate">
+// 					<div class="toast rop-current-time" v-if="formatedDate && haveAccounts">
 // 						{{labels.now}}: {{ formatedDate }}
 // 					</div>
 // 					<countdown :current_time="current_time"/>
 // 					<button  id="rop_start_stop_btn" class="btn" :class="btn_class"
 // 					        :data-tooltip="labels.active_account_warning"
-// 					        @click="togglePosting()" :disabled="haveAccounts">
+// 					        @click="togglePosting()" :disabled="!haveAccountsActive">
 // 						<i class="fa fa-play" v-if="!is_loading && !start_status"></i>
 // 						<i class="fa fa-stop" v-else-if="!is_loading && start_status"></i>
 // 						<i class="fa fa-spinner fa-spin" v-else></i>
@@ -33356,9 +33364,10 @@ module.exports = {
 // 					<div id="staging-status" v-if="staging">
 // 						{{labels.staging_status}}
 // 					</div>
-// 					<upsell-sidebar></upsell-sidebar>
-// 					<a href="https://trello.com/b/svAZqXO1/roadmap-revive-old-posts" target="_blank" class="btn support_btns">{{labels.rop_roadmap}}</a>
-// 					<a href="https://docs.revive.social/" target="_blank" class="btn support_btns">{{labels.rop_docs}}</a>
+// 					<div v-if="!haveAccounts" class="rop-spacer"></div>
+// 					<div v-if="haveAccounts"><upsell-sidebar></upsell-sidebar></div>
+// 					<a v-if="haveAccounts" href="https://trello.com/b/svAZqXO1/roadmap-revive-old-posts" target="_blank" class="btn support_btns">{{labels.rop_roadmap}}</a>
+// 					<a v-if="haveAccounts" href="https://docs.revive.social/" target="_blank" class="btn support_btns">{{labels.rop_docs}}</a>
 // 					<a v-if="license  >= 1" href="https://revive.social/pro-support/" target="_blank" class="btn support_btns">{{labels.rop_support}}</a>
 // 					<a v-if="license  < 1" href="https://revive.social/support/" target="_blank" class="btn support_btns">{{labels.rop_support}}</a>
 // 				</div>
@@ -33468,7 +33477,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .columns.py-2 .text-gray[_v-2ff296d6] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\t\n\t#rop_core .input-group[_v-2ff296d6] {\n\t\twidth: 100%;\n\t}\n\t\n\tb[_v-2ff296d6] {\n\t\tmargin-bottom: 5px;\n\t\tdisplay: block;\n\t}\n\t\n\t#rop_core .text-gray b[_v-2ff296d6] {\n\t\tdisplay: inline;\n\t}\n\t\n\t#rop_core .input-group .input-group-addon[_v-2ff296d6] {\n\t\tpadding: 3px 5px;\n\t}\n\t\n\t#rop_core .rop-available-accounts h5[_v-2ff296d6] {\n\t\tmargin-bottom: 15px;\n\t}\n\t\n\t@media ( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-2ff296d6] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\t\t\n\t\t#rop_core .text-right[_v-2ff296d6] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop_core .columns.py-2 .text-gray[_v-2ff296d6] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\n\t#rop_core .input-group[_v-2ff296d6] {\n\t\twidth: 100%;\n\t}\n\n\tb[_v-2ff296d6] {\n\t\tmargin-bottom: 5px;\n\t\tdisplay: block;\n\t}\n\n\t#rop_core .text-gray b[_v-2ff296d6] {\n\t\tdisplay: inline;\n\t}\n\n\t#rop_core .input-group .input-group-addon[_v-2ff296d6] {\n\t\tpadding: 3px 5px;\n\t}\n\n\t#rop_core .rop-available-accounts h5[_v-2ff296d6] {\n\t\tmargin-bottom: 15px;\n\t}\n\n\t@media ( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-2ff296d6] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\n\t\t#rop_core .text-right[_v-2ff296d6] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n", ""]);
 
 // exports
 
@@ -33537,6 +33546,13 @@ module.exports = {
 			this.$log.info('All accounts: ', all_accounts);
 			this.accountsCount = (0, _keys2.default)(all_accounts).length;
 			return all_accounts;
+		},
+		/**
+   * Check if we have a pro license.
+   * @returns {boolean}
+   */
+		checkLicense: function checkLicense() {
+			return this.$store.state.licence < 1;
 		}
 	},
 
@@ -33603,6 +33619,7 @@ module.exports = {
 	// 		}
 	// 	}
 	// </style>
+	//
 
 }; // <template>
 // 	<div class="tab-view">
@@ -33631,10 +33648,17 @@ module.exports = {
 // 					</div>
 // 				</div>
 // 			</div>
-// 			<div class="panel-footer" v-if="accountsCount > 0">
-// 				<div class="columns">
+// 			<div class="panel-footer">
+// 				<div class="columns my-2" v-if="checkLicense && accountsCount === 2">
 // 					<div class="column col-12">
-// 						<p class="text-gray"><i class="fa fa-info-circle"></i> <span
+// 						<p class="upsell">
+// 							<i class="fa fa-lock "></i> <span v-html="labels.upsell_accounts"></span>
+// 						</p>
+// 					</div>
+// 				</div>
+// 				<div class="columns" v-if="accountsCount < 1">
+// 					<div class="column col-12">
+// 						<p><i class="fa fa-info-circle"></i> <span
 // 								v-html="labels.has_accounts_desc"></span></p>
 // 					</div>
 // 				</div>
@@ -34436,15 +34460,7 @@ module.exports = {
 			upsell_link: ropApiSettings.upsell_link
 		};
 	},
-	computed: {
-		/**
-   * Check if we have a pro license.
-   * @returns {boolean}
-   */
-		checkLicense: function checkLicense() {
-			return this.$store.state.licence < 1;
-		}
-	},
+	computed: {},
 	components: {
 		SignInBtn: _signInBtn2.default
 	}
@@ -34477,29 +34493,11 @@ module.exports = {
 }; // <template>
 // 	<div>
 // 		<div class="tile tile-centered rop-add-account">
-// 			<a class="tile-icon c-hand" @click="addAccountActive = !addAccountActive">
-// 				<div class="icon_box" id="rop-add-account-btn" :class="(addAccountActive) ? 'close bg-error' : 'open bg-success'">
-// 					<i class="fa fa-2x fa-close" aria-hidden="true"></i>
-// 				</div>
-// 			</a>
 // 			<div class="tile-content">
-// 				<div class="tile-title">{{labels.add_account}}</div>
+// 				<div class="tile-title"><span v-html="labels.add_account"></span></div>
 // 			</div>
-// 			<transition name="fade">
-// 				<div class="tile-action" v-if="addAccountActive">
 // 					<sign-in-btn></sign-in-btn>
-// 				</div>
-// 			</transition>
 // 		</div>
-// 		<transition name="fade">
-// 			<div class="columns my-2" v-if="checkLicense && addAccountActive">
-// 				<div class="column col-12 text-center">
-// 					<p class="upsell">
-// 						<i class="fa fa-lock "></i> <span v-html="labels.upsell_accounts"></span>
-// 					</p>
-// 				</div>
-// 			</div>
-// 		</transition>
 // 	</div>
 // </template>
 //
@@ -34509,13 +34507,13 @@ module.exports = {
 /* 233 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div _v-89b02f9e=\"\">\n\t\t<div class=\"tile tile-centered rop-add-account\" _v-89b02f9e=\"\">\n\t\t\t<a class=\"tile-icon c-hand\" @click=\"addAccountActive = !addAccountActive\" _v-89b02f9e=\"\">\n\t\t\t\t<div class=\"icon_box\" id=\"rop-add-account-btn\" :class=\"(addAccountActive) ? 'close bg-error' : 'open bg-success'\" _v-89b02f9e=\"\">\n\t\t\t\t\t<i class=\"fa fa-2x fa-close\" aria-hidden=\"true\" _v-89b02f9e=\"\"></i>\n\t\t\t\t</div>\n\t\t\t</a>\n\t\t\t<div class=\"tile-content\" _v-89b02f9e=\"\">\n\t\t\t\t<div class=\"tile-title\" _v-89b02f9e=\"\">{{labels.add_account}}</div>\n\t\t\t</div>\n\t\t\t<transition name=\"fade\" _v-89b02f9e=\"\">\n\t\t\t\t<div class=\"tile-action\" v-if=\"addAccountActive\" _v-89b02f9e=\"\">\n\t\t\t\t\t<sign-in-btn _v-89b02f9e=\"\"></sign-in-btn>\n\t\t\t\t</div>\n\t\t\t</transition>\n\t\t</div>\n\t\t<transition name=\"fade\" _v-89b02f9e=\"\">\n\t\t\t<div class=\"columns my-2\" v-if=\"checkLicense &amp;&amp; addAccountActive\" _v-89b02f9e=\"\">\n\t\t\t\t<div class=\"column col-12 text-center\" _v-89b02f9e=\"\">\n\t\t\t\t\t<p class=\"upsell\" _v-89b02f9e=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-lock \" _v-89b02f9e=\"\"></i> <span v-html=\"labels.upsell_accounts\" _v-89b02f9e=\"\"></span>\n\t\t\t\t\t</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</transition>\n\t</div>\n";
+module.exports = "\n\t<div _v-89b02f9e=\"\">\n\t\t<div class=\"tile tile-centered rop-add-account\" _v-89b02f9e=\"\">\n\t\t\t<div class=\"tile-content\" _v-89b02f9e=\"\">\n\t\t\t\t<div class=\"tile-title\" _v-89b02f9e=\"\"><span v-html=\"labels.add_account\" _v-89b02f9e=\"\"></span></div>\n\t\t\t</div>\n\t\t\t\t\t<sign-in-btn _v-89b02f9e=\"\"></sign-in-btn>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 234 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\" _v-2ff296d6=\"\">\n\t\t<div class=\"panel-body\" _v-2ff296d6=\"\">\n\t\t\t<div class=\"toast  toast-warning\" v-html=\"labels.twitter_warning\" v-if=\"twitter_warning\" _v-2ff296d6=\"\">\n\t\t\t\n\t\t\t</div>\n\t\t\t<div class=\"container\" _v-2ff296d6=\"\">\n\t\t\t\t<div class=\"columns\" :class=\"'rop-tab-state-'+is_loading\" _v-2ff296d6=\"\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t<div class=\"empty mb-2\" v-if=\"accountsCount === 0\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t<div class=\"empty-icon\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\" _v-2ff296d6=\"\"></i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<p class=\"empty-title h5\" _v-2ff296d6=\"\">{{labels.no_accounts}}</p>\n\t\t\t\t\t\t\t<p class=\"empty-subtitle\" _v-2ff296d6=\"\">{{labels.no_accounts_desc}}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"account-container\" v-for=\"( account, id ) in accounts\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t<service-user-tile :account_data=\"account\" :account_id=\"id\" _v-2ff296d6=\"\"></service-user-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-2ff296d6=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"add-accounts\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t<add-account-tile _v-2ff296d6=\"\"></add-account-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-2ff296d6=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-2ff296d6=\"\">\n\t\t\t\t<div class=\"columns\" _v-2ff296d6=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t<p class=\"text-gray\" _v-2ff296d6=\"\"><i class=\"fa fa-info-circle\" _v-2ff296d6=\"\"></i> <span v-html=\"labels.has_accounts_desc\" _v-2ff296d6=\"\"></span></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 text-right\" _v-2ff296d6=\"\">\n\t\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-2ff296d6=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-2ff296d6=\"\"></i>\n\t\t\t\t\t\t{{labels.remove_all_cta}}\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\" _v-2ff296d6=\"\">\n\t\t<div class=\"panel-body\" _v-2ff296d6=\"\">\n\t\t\t<div class=\"toast  toast-warning\" v-html=\"labels.twitter_warning\" v-if=\"twitter_warning\" _v-2ff296d6=\"\">\n\n\t\t\t</div>\n\t\t\t<div class=\"container\" _v-2ff296d6=\"\">\n\t\t\t\t<div class=\"columns\" :class=\"'rop-tab-state-'+is_loading\" _v-2ff296d6=\"\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t<div class=\"empty mb-2\" v-if=\"accountsCount === 0\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t<div class=\"empty-icon\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\" _v-2ff296d6=\"\"></i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<p class=\"empty-title h5\" _v-2ff296d6=\"\">{{labels.no_accounts}}</p>\n\t\t\t\t\t\t\t<p class=\"empty-subtitle\" _v-2ff296d6=\"\">{{labels.no_accounts_desc}}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"account-container\" v-for=\"( account, id ) in accounts\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t<service-user-tile :account_data=\"account\" :account_id=\"id\" _v-2ff296d6=\"\"></service-user-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-2ff296d6=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"add-accounts\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t<add-account-tile _v-2ff296d6=\"\"></add-account-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-2ff296d6=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"panel-footer\" _v-2ff296d6=\"\">\n\t\t\t\t<div class=\"columns my-2\" v-if=\"checkLicense &amp;&amp; accountsCount === 2\" _v-2ff296d6=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-lock \" _v-2ff296d6=\"\"></i> <span v-html=\"labels.upsell_accounts\" _v-2ff296d6=\"\"></span>\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-if=\"accountsCount < 1\" _v-2ff296d6=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t<p _v-2ff296d6=\"\"><i class=\"fa fa-info-circle\" _v-2ff296d6=\"\"></i> <span v-html=\"labels.has_accounts_desc\" _v-2ff296d6=\"\"></span></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 text-right\" _v-2ff296d6=\"\">\n\t\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-2ff296d6=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-2ff296d6=\"\"></i>\n\t\t\t\t\t\t{{labels.remove_all_cta}}\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t</div>\n";
 
 /***/ }),
 /* 235 */
@@ -39865,11 +39863,7 @@ module.exports = "\n\t<div class=\"toast toast-success rop-current-time\" v-if=\
 /* 298 */
 /***/ (function(module, exports) {
 
-<<<<<<< HEAD
-module.exports = "\n\t<div>\n\t\t<div class=\"columns panel-header\">\n\t\t\t<div class=\"column header-logo vertical-align\">\n\t\t\t\t<div>\n\t\t\t\t\t<img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/>\n\t\t\t\t\t<h1 class=\"plugin-title d-inline-block\">Revive Old Posts</h1><span class=\"powered d-inline-block\"> {{labels.by}} <a\n\t\t\t\t\t\thref=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\n\t\t\t\t\t<div id=\"rop_social_actions\">\n\t\t\t\t\t<a href=\"https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform\" target=\"_blank\" class=\"submit-feedback\"><span><i class=\"fa fa-commenting\" aria-hidden=\"true\"></i></span> {{labels.survey}}</a>\n\t\t\t\t\t<a href=\"https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial\" target=\"_blank\" class=\"tweet-about-it\"><span><i class=\"fa fa-twitter\" aria-hidden=\"true\"></i></span> {{labels.tweet_about_it}}</a>\n\t\t\t\t\t<a href=\"https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post\" target=\"_blank\" class=\"leave-a-review\"><span><i class=\"fa fa-star\" aria-hidden=\"true\"></i></span> {{labels.review_it}}</a>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div v-if=\" is_rest_api_error \" class=\"toast toast-error rop-api-not-available\" v-html=\"labels.api_not_available\">\n\t\t\t</div>\n\t\t\t<div class=\"sidebar sidebar-top card rop-container-start\">\n\t\t\t\t<div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n\t\t\t\t\t{{labels.now}}: {{ formatedDate }}\n\t\t\t\t</div>\n\t\t\t\t<countdown :current_time=\"current_time\"/>\n\t\t\t\t<button class=\"btn btn-sm\" :class=\"btn_class\"\n\t\t\t\t        :data-tooltip=\"labels.active_account_warning\"\n\t\t\t\t        @click=\"togglePosting()\" :disabled=\"haveAccounts\">\n\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t\t{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns\">\n\t\t\t<div class=\"panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\n\t\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t\t<ul class=\"tab \">\n\t\t\t\t\t\t<li class=\"tab-item c-hand\" v-for=\"tab in displayTabs\"\n\t\t\t\t\t\t    :class=\"{ active: tab.isActive }\" v-bind:id=\"tab.name.replace(' ', '').toLowerCase()\">\n\t\t\t\t\t\t\t<a :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\n\t\t\t\t\t\t\t   :data-badge=\"logs_no\"\n\t\t\t\t\t\t\t   @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\n\t\t\t\t\t\t</li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t\t<component :is=\"page.template\" :type=\"page.view\"></component>\n\t\t\t</div>\n\n\t\t\t<div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\n\t\t\t     :class=\"'rop-license-plan-'+license\">\n\n\t\t\t\t<div class=\"card rop-container-start\">\n\t\t\t\t\t<div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n\t\t\t\t\t\t{{labels.now}}: {{ formatedDate }}\n\t\t\t\t\t</div>\n\t\t\t\t\t<countdown :current_time=\"current_time\"/>\n\t\t\t\t\t<button  id=\"rop_start_stop_btn\" class=\"btn\" :class=\"btn_class\"\n\t\t\t\t\t        :data-tooltip=\"labels.active_account_warning\"\n\t\t\t\t\t        @click=\"togglePosting()\" :disabled=\"haveAccounts\">\n\t\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t\t\t{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n\t\t\t\t\t</button>\n\t\t\t\t\t<div id=\"staging-status\" v-if=\"staging\">\n\t\t\t\t\t\t{{labels.staging_status}}\n\t\t\t\t\t</div>\n\t\t\t\t\t<upsell-sidebar></upsell-sidebar>\n\t\t\t\t\t<a href=\"https://docs.revive.social/\" target=\"_blank\" class=\"btn support_btns\">{{labels.rop_docs}}</a>\n\t\t\t\t\t<a v-if=\"license  >= 1\" href=\"https://revive.social/pro-support/\" target=\"_blank\" class=\"btn support_btns\">{{labels.rop_support}}</a>\n\t\t\t\t\t<a v-if=\"license  < 1\" href=\"https://revive.social/support/\" target=\"_blank\" class=\"btn support_btns\">{{labels.rop_support}}</a>\n\t\t\t\t</div>\n\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
-=======
-module.exports = "\n\t<div>\n\t\t<div class=\"columns panel-header\">\n\t\t\t<div class=\"column header-logo vertical-align\">\n\t\t\t\t<div>\n\t\t\t\t\t<img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/>\n\t\t\t\t\t<h1 class=\"plugin-title d-inline-block\">Revive Old Posts</h1><span class=\"powered d-inline-block\"> {{labels.by}} <a\n\t\t\t\t\t\thref=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\n\t\t\t\t\t<div id=\"rop_social_actions\">\n\t\t\t\t\t<a href=\"https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform\" target=\"_blank\" class=\"submit-feedback\"><span><i class=\"fa fa-commenting\" aria-hidden=\"true\"></i></span> {{labels.help_improve}}</a>\n\t\t\t\t\t<a href=\"https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial\" target=\"_blank\" class=\"tweet-about-it\"><span><i class=\"fa fa-twitter\" aria-hidden=\"true\"></i></span> {{labels.tweet_about_it}}</a>\n\t\t\t\t\t<a href=\"https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post\" target=\"_blank\" class=\"leave-a-review\"><span><i class=\"fa fa-star\" aria-hidden=\"true\"></i></span> {{labels.review_it}}</a>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div v-if=\" is_rest_api_error \" class=\"toast toast-error rop-api-not-available\" v-html=\"labels.api_not_available\">\n\t\t\t</div>\n\t\t\t<div class=\"sidebar sidebar-top card rop-container-start\">\n\t\t\t\t<div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n\t\t\t\t\t{{labels.now}}: {{ formatedDate }}\n\t\t\t\t</div>\n\t\t\t\t<countdown :current_time=\"current_time\"/>\n\t\t\t\t<button class=\"btn btn-sm\" :class=\"btn_class\"\n\t\t\t\t        :data-tooltip=\"labels.active_account_warning\"\n\t\t\t\t        @click=\"togglePosting()\" :disabled=\"haveAccounts\">\n\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t\t{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns\">\n\t\t\t<div class=\"panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\n\t\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t\t<ul class=\"tab \">\n\t\t\t\t\t\t<li class=\"tab-item c-hand\" v-for=\"tab in displayTabs\"\n\t\t\t\t\t\t    :class=\"{ active: tab.isActive }\" v-bind:id=\"tab.name.replace(' ', '').toLowerCase()\">\n\t\t\t\t\t\t\t<a :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\n\t\t\t\t\t\t\t   :data-badge=\"logs_no\"\n\t\t\t\t\t\t\t   @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\n\t\t\t\t\t\t</li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t\t<component :is=\"page.template\" :type=\"page.view\"></component>\n\t\t\t</div>\n\n\t\t\t<div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\n\t\t\t     :class=\"'rop-license-plan-'+license\">\n\n\t\t\t\t<div class=\"card rop-container-start\">\n\t\t\t\t\t<div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n\t\t\t\t\t\t{{labels.now}}: {{ formatedDate }}\n\t\t\t\t\t</div>\n\t\t\t\t\t<countdown :current_time=\"current_time\"/>\n\t\t\t\t\t<button  id=\"rop_start_stop_btn\" class=\"btn\" :class=\"btn_class\"\n\t\t\t\t\t        :data-tooltip=\"labels.active_account_warning\"\n\t\t\t\t\t        @click=\"togglePosting()\" :disabled=\"haveAccounts\">\n\t\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t\t\t{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n\t\t\t\t\t</button>\n\t\t\t\t\t<div id=\"staging-status\" v-if=\"staging\">\n\t\t\t\t\t\t{{labels.staging_status}}\n\t\t\t\t\t</div>\n\t\t\t\t\t<upsell-sidebar></upsell-sidebar>\n\t\t\t\t\t<a href=\"https://trello.com/b/svAZqXO1/roadmap-revive-old-posts\" target=\"_blank\" class=\"btn support_btns\">{{labels.rop_roadmap}}</a>\n\t\t\t\t\t<a href=\"https://docs.revive.social/\" target=\"_blank\" class=\"btn support_btns\">{{labels.rop_docs}}</a>\n\t\t\t\t\t<a v-if=\"license  >= 1\" href=\"https://revive.social/pro-support/\" target=\"_blank\" class=\"btn support_btns\">{{labels.rop_support}}</a>\n\t\t\t\t\t<a v-if=\"license  < 1\" href=\"https://revive.social/support/\" target=\"_blank\" class=\"btn support_btns\">{{labels.rop_support}}</a>\n\t\t\t\t</div>\n\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
->>>>>>> 02a26ed694c877e6d5adbca41a754848569a4fa0
+module.exports = "\n\t<div>\n\t\t<div class=\"columns panel-header\">\n\t\t\t<div class=\"column header-logo vertical-align\">\n\t\t\t\t<div>\n\t\t\t\t\t<img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/>\n\t\t\t\t\t<h1 class=\"plugin-title d-inline-block\">Revive Old Posts</h1><span class=\"powered d-inline-block\"> {{labels.by}} <a\n\t\t\t\t\t\thref=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\n\t\t\t\t\t<div id=\"rop_social_actions\">\n\t\t\t\t\t<a v-if=\"haveAccounts\" href=\"https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform\" target=\"_blank\" class=\"submit-feedback\"><span><i class=\"fa fa-commenting\" aria-hidden=\"true\"></i></span> {{labels.survey}}</a>\n\t\t\t\t\t<a v-if=\"haveAccounts\" href=\"https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial\" target=\"_blank\" class=\"tweet-about-it\"><span><i class=\"fa fa-twitter\" aria-hidden=\"true\"></i></span> {{labels.tweet_about_it}}</a>\n\t\t\t\t\t<a v-if=\"haveAccounts\" href=\"https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post\" target=\"_blank\" class=\"leave-a-review\"><span><i class=\"fa fa-star\" aria-hidden=\"true\"></i></span> {{labels.review_it}}</a>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div v-if=\" is_rest_api_error \" class=\"toast toast-error rop-api-not-available\" v-html=\"labels.api_not_available\">\n\t\t\t</div>\n\t\t\t<div class=\"sidebar sidebar-top card rop-container-start\">\n\t\t\t\t<div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n\t\t\t\t\t{{labels.now}}: {{ formatedDate }}\n\t\t\t\t</div>\n\t\t\t\t<countdown :current_time=\"current_time\"/>\n\t\t\t\t<button class=\"btn btn-sm\" :class=\"btn_class\"\n\t\t\t\t        :data-tooltip=\"labels.active_account_warning\"\n\t\t\t\t        @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t\t{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns\">\n\t\t\t<div class=\"panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\n\t\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t\t<ul class=\"tab \">\n\t\t\t\t\t\t<li class=\"tab-item c-hand\" v-for=\"tab in displayTabs\"\n\t\t\t\t\t\t    :class=\"{ active: tab.isActive }\" v-bind:id=\"tab.name.replace(' ', '').toLowerCase()\">\n\t\t\t\t\t\t\t<a :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\n\t\t\t\t\t\t\t   :data-badge=\"logs_no\"\n\t\t\t\t\t\t\t   @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\n\t\t\t\t\t\t</li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t\t<component :is=\"page.template\" :type=\"page.view\"></component>\n\t\t\t</div>\n\n\t\t\t<div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\n\t\t\t     :class=\"'rop-license-plan-'+license\">\n\n\t\t\t\t<div class=\"card rop-container-start\">\n\t\t\t\t\t<div class=\"toast rop-current-time\" v-if=\"formatedDate && haveAccounts\">\n\t\t\t\t\t\t{{labels.now}}: {{ formatedDate }}\n\t\t\t\t\t</div>\n\t\t\t\t\t<countdown :current_time=\"current_time\"/>\n\t\t\t\t\t<button  id=\"rop_start_stop_btn\" class=\"btn\" :class=\"btn_class\"\n\t\t\t\t\t        :data-tooltip=\"labels.active_account_warning\"\n\t\t\t\t\t        @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n\t\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t\t\t{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n\t\t\t\t\t</button>\n\t\t\t\t\t<div id=\"staging-status\" v-if=\"staging\">\n\t\t\t\t\t\t{{labels.staging_status}}\n\t\t\t\t\t</div>\n\t\t\t\t\t<div v-if=\"!haveAccounts\" class=\"rop-spacer\"></div>\n\t\t\t\t\t<div v-if=\"haveAccounts\"><upsell-sidebar></upsell-sidebar></div>\n\t\t\t\t\t<a v-if=\"haveAccounts\" href=\"https://trello.com/b/svAZqXO1/roadmap-revive-old-posts\" target=\"_blank\" class=\"btn support_btns\">{{labels.rop_roadmap}}</a>\n\t\t\t\t\t<a v-if=\"haveAccounts\" href=\"https://docs.revive.social/\" target=\"_blank\" class=\"btn support_btns\">{{labels.rop_docs}}</a>\n\t\t\t\t\t<a v-if=\"license  >= 1\" href=\"https://revive.social/pro-support/\" target=\"_blank\" class=\"btn support_btns\">{{labels.rop_support}}</a>\n\t\t\t\t\t<a v-if=\"license  < 1\" href=\"https://revive.social/support/\" target=\"_blank\" class=\"btn support_btns\">{{labels.rop_support}}</a>\n\t\t\t\t</div>\n\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ })
 /******/ ]);

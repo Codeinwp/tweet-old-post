@@ -2,7 +2,7 @@
 	<div class="tab-view">
 		<div class="panel-body">
 			<div class="toast  toast-warning" v-html="labels.twitter_warning" v-if="twitter_warning">
-			
+
 			</div>
 			<div class="container">
 				<div class="columns" :class="'rop-tab-state-'+is_loading">
@@ -25,10 +25,17 @@
 					</div>
 				</div>
 			</div>
-			<div class="panel-footer" v-if="accountsCount > 0">
-				<div class="columns">
+			<div class="panel-footer">
+				<div class="columns my-2" v-if="checkLicense && accountsCount === 2">
 					<div class="column col-12">
-						<p class="text-gray"><i class="fa fa-info-circle"></i> <span
+						<p class="upsell">
+							<i class="fa fa-lock "></i> <span v-html="labels.upsell_accounts"></span>
+						</p>
+					</div>
+				</div>
+				<div class="columns" v-if="accountsCount < 1">
+					<div class="column col-12">
+						<p><i class="fa fa-info-circle"></i> <span
 								v-html="labels.has_accounts_desc"></span></p>
 					</div>
 				</div>
@@ -41,7 +48,7 @@
 				</div>
 			</div>
 		</div>
-	
+
 	</div>
 </template>
 
@@ -90,6 +97,13 @@
 				this.accountsCount = Object.keys(all_accounts).length;
 				return all_accounts;
 			},
+			/**
+			 * Check if we have a pro license.
+			 * @returns {boolean}
+			 */
+			checkLicense: function () {
+				return (this.$store.state.licence < 1);
+			},
 		},
 
 		methods: {
@@ -122,33 +136,33 @@
 		margin: 0;
 		line-height: normal;
 	}
-	
+
 	#rop_core .input-group {
 		width: 100%;
 	}
-	
+
 	b {
 		margin-bottom: 5px;
 		display: block;
 	}
-	
+
 	#rop_core .text-gray b {
 		display: inline;
 	}
-	
+
 	#rop_core .input-group .input-group-addon {
 		padding: 3px 5px;
 	}
-	
+
 	#rop_core .rop-available-accounts h5 {
 		margin-bottom: 15px;
 	}
-	
+
 	@media ( max-width: 600px ) {
 		#rop_core .panel-body .text-gray {
 			margin-bottom: 10px;
 		}
-		
+
 		#rop_core .text-right {
 			text-align: left;
 		}
