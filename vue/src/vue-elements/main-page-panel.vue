@@ -50,7 +50,7 @@
 			     :class="'rop-license-plan-'+license">
 
 				<div class="card rop-container-start">
-					<div class="toast rop-current-time" v-if="formatedDate">
+					<div class="toast rop-current-time" v-if="formatedDate && haveAccounts">
 						{{labels.now}}: {{ formatedDate }}
 					</div>
 					<countdown :current_time="current_time"/>
@@ -65,7 +65,8 @@
 					<div id="staging-status" v-if="staging">
 						{{labels.staging_status}}
 					</div>
-					<upsell-sidebar></upsell-sidebar>
+					<div v-if="!haveAccounts" class="rop-spacer"></div>
+					<div v-if="haveAccounts"><upsell-sidebar></upsell-sidebar></div>
 					<a v-if="haveAccounts" href="https://trello.com/b/svAZqXO1/roadmap-revive-old-posts" target="_blank" class="btn support_btns">{{labels.rop_roadmap}}</a>
 					<a v-if="haveAccounts" href="https://docs.revive.social/" target="_blank" class="btn support_btns">{{labels.rop_docs}}</a>
 					<a v-if="license  >= 1" href="https://revive.social/pro-support/" target="_blank" class="btn support_btns">{{labels.rop_support}}</a>
