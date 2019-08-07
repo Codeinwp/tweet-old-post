@@ -125,6 +125,11 @@ http://revive.social/plugins/revive-old-post
 
 
 ## Changelog ##
+### 8.3.5 - 2019-08-02  ###
+
+* Change: Made some UX changes to plugin dashboard
+
+
 ### 8.3.4 - 2019-07-21  ###
 
 * New: Roadmap & Voting button! See where ROP is headed and vote on or recommend features which matter to you.

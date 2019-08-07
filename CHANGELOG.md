@@ -1,4 +1,8 @@
 
+ ### v8.3.5 - 2019-08-02 
+ **Changes:** 
+ * Change: Made some UX changes to plugin dashboard
+ 
  ### v8.3.4 - 2019-07-21 
  **Changes:** 
  * New: Roadmap & Voting button! See where ROP is headed and vote on or recommend features which matter to you.

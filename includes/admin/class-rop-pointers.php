@@ -111,7 +111,7 @@ class Rop_Pointers {
 					),
 				),
 				'add-account'        => array(
-					'target'       => '#rop-add-account-btn',
+					'target'       => '#rop-sign-in-area',
 					'next'         => 'general',
 					'next_trigger' => array(
 						'target' => '#rop-add-account-btn',
@@ -119,7 +119,7 @@ class Rop_Pointers {
 					),
 					'options'      => array(
 						'content'  => '<h3>' . esc_html__( 'Adding Accounts', 'tweet-old-post' ) . '</h3>' .
-						'<p>' . sprintf( esc_html__( 'You can add your social media accounts by clicking this button. %1$sLet\'s do this later%2$s.', 'tweet-old-post' ), '<strong>', '</strong>' ) . '</p>',
+						'<p>' . sprintf( esc_html__( 'You can add your social media accounts here. %1$sLet\'s do this later%2$s.', 'tweet-old-post' ), '<strong>', '</strong>' ) . '</p>',
 						'position' => array(
 							'edge'  => 'bottom',
 							'align' => 'left',
