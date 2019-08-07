@@ -97,7 +97,7 @@ class Rop_I18n {
 				'save_selector_btn'       => __( 'Save', 'tweet-old-post' ),
 				'reset_selector_btn'      => __( 'Reset', 'tweet-old-post' ),
 				'for'                     => __( 'for', 'tweet-old-post' ),
-				'add_account'             => __( 'Add Account', 'tweet-old-post' ),
+				'add_account'             => __( '<b>Add Your Accounts:</b>', 'tweet-old-post' ),
 				'upsell_accounts'         => __( 'You are allowed to add a maximum 1 account for Twitter and 1 account for Facebook. For using more accounts and networks, you need to check the <strong>Extended</strong> version.', 'tweet-old-post' ),
 				'fb_app_id_title'         => __( 'Please add the APP ID from your Facebook app.', 'tweet-old-post' ),
 				'fb_app_secret_title'     => __( 'Please add the APP SECRET from your Facebook app.', 'tweet-old-post' ),
