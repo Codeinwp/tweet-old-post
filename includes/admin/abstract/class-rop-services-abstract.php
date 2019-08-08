@@ -479,6 +479,10 @@ abstract class Rop_Services_Abstract {
 	 * @return string The document link.
 	 */
 	protected function rop_get_error_docs( $response ) {
+		if ( is_array( $response ) || is_object( $response ) ) {
+			// Convert arrays and objects to JSON string to match error messages.
+			$response = json_encode( $response );
+		}
 
 		$errors_docs = array(
 			// Facebook errors
@@ -498,12 +502,18 @@ abstract class Rop_Services_Abstract {
 			// Add more common errors as necessary
 		);
 
-		foreach ( $errors_docs as $error => $link ) {
+		$link = false;
 
+		foreach ( $errors_docs as $error => $_link ) {
 			if ( strpos( $response, $error ) !== false ) {
-				$link = $link;
+				$link = $_link;
 				break;
 			}
+		}
+
+		if ( empty( $link ) ) {
+			// No link found for error, bail.
+			return;
 		}
 
 		return $this->logger->alert_error( 'This error is a known one. Please copy and paste the following link in your browser to see the solution: ' . $link );
