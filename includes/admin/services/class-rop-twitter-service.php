@@ -430,9 +430,20 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 
 		if ( ! empty( $post_details['post_image'] ) ) {
 
+			if ( class_exists( 'Jetpack_Photon' ) ) {
+				// Disable Jetpack Photon filter.
+				$photon_bypass = remove_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ) );
+			}
+
 			$upload_args  = [
 				'media' => $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] ),
 			];
+
+			if ( $photon_bypass && class_exists( 'Jetpack_Photon' ) ) {
+				// Re-enable Jetpack Photon filter.
+				add_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ), 10, 3 );
+			}
+
 			$status_check = false;
 
 			if ( strpos( $post_details['mimetype']['type'], 'video' ) !== false ) {
