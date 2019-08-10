@@ -229,6 +229,8 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
+		$buffer_profiles = array();
+
 		// Only allow these types of profiles to be added using buffer
 		$allowed = array( 'Instagram', 'Facebook Group', 'LinkedIn Page' );
 
@@ -240,7 +242,6 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 			$buffer_profile['id']      = $response_field['id'];
 			$buffer_profile['account'] = $response_field['formatted_username'];
 			$buffer_profile['user']    = $response_field['formatted_service'] . ' - ' . $response_field['formatted_username'];
-			;
 			$buffer_profile['active']  = false;
 			$buffer_profile['service'] = $this->service_name;
 
