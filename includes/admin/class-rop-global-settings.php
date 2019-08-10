@@ -118,6 +118,10 @@ class Rop_Global_Settings {
 			'active' => false,
 			'name'   => 'Pinterest',
 		),
+		'buffer' => array(
+			'active' => false,
+			'name'   => 'Buffer',
+		),
 	);
 
 	/**
