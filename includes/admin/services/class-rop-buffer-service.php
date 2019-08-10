@@ -109,7 +109,7 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 	 * @param string $app_id The Pinterest APP ID. Default empty.
 	 * @param string $secret The Pinterest APP Secret. Default empty.
 	 *
-	 * @return
+	 * @return null abstract method not used for this service specifically.
 	 */
 	public function get_api( $app_id = '', $secret = '' ) {
 		return;
@@ -207,6 +207,16 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 		return;
 	}
 
+	/**
+	 * Method to get buffer profiles.
+	 *
+	 * @since  8.3.3
+	 * @access public
+	 *
+	 * @param string $token The access token.
+	 *
+	 * @return array Array of buffer profiles information.
+	 */
 	public function get_profiles( $token = '' ) {
 
 		$url = 'https://api.bufferapp.com/1/profiles.json?access_token=' . $token;
@@ -219,8 +229,7 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		$buffer_profiles = array();
-
+		// Only allow these types of profiles to be added using buffer
 		$allowed = array( 'Instagram', 'Facebook Group', 'LinkedIn Page' );
 
 		foreach ( $response as $response_field ) {
