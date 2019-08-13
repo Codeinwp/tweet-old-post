@@ -104,7 +104,6 @@ function run_rop() {
 	define( 'ROP_LITE_PATH', plugin_dir_path( __FILE__ ) );
 	define( 'ROP_PATH', plugin_dir_path( __FILE__ ) );
 	define( 'ROP_LITE_URL', plugin_dir_url( __FILE__ ) );
-	define( 'ROP_BUFFER_ADDON', plugin_dir_path( __DIR__ ) . 'rop-buffer-addon/buffer-service.php' );
 
 	// Authorization APP Data
 	define( 'ROP_AUTH_APP_URL', 'https://app.revive.social' );
