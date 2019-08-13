@@ -517,7 +517,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	/**
 	 * Method used to decide whether or not to show Twitter button
 	 *
-	 * @since   8.3.0
+	 * @since   8.4.0
 	 * @access  public
 	 *
 	 * @return  bool
@@ -541,7 +541,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 * This method will load and prepare the account data for Twitter user.
 	 * Used in Rest Api.
 	 *
-	 * @since   8.3.0
+	 * @since   8.4.0
 	 * @access  public
 	 *
 	 * @param   array $account_data Twitter pages data.
