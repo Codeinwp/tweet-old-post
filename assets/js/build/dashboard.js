@@ -37009,7 +37009,7 @@ module.exports = {
 	},
 	mounted: function mounted() {
 		if (this.start_status) {
-			this.refreshQueue();
+			this.refreshQueue(true);
 		}
 	},
 	methods: {
