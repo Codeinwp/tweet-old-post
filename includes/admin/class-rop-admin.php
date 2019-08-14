@@ -220,6 +220,7 @@ class Rop_Admin {
 		$array_nonce['license_type'] = $global_settings->license_type();
 		$array_nonce['labels']       = Rop_I18n::get_labels();
 		$array_nonce['upsell_link']  = Rop_I18n::UPSELL_LINK;
+		$array_nonce['pro_installed']= (defined('ROP_PRO_VERSION')) ? true : false;
 		$array_nonce['staging']      = $this->rop_site_is_staging();
 		$array_nonce['show_tw_app_btn'] = $tw_service->rop_show_tw_app_btn();
 		$array_nonce['debug']        = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
