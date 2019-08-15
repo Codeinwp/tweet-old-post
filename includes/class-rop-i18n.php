@@ -91,7 +91,7 @@ class Rop_I18n {
 				'no_active_accounts_desc' => __( 'Add one from the <b>"Accounts"</b> section.', 'tweet-old-post' ),
 				'go_to_accounts_btn'      => __( 'Go to Accounts', 'tweet-old-post' ),
 				'no_accounts_desc'        => __( 'Sign in and add your social accounts.', 'tweet-old-post' ),
-				'has_accounts_desc'       => __( ' Authenticate a new service (eg. Facebook, Twitter etc. ), select the account you want to add from that service and ensure the switch is in the <b>on</b> position. Only the active accounts will be used for sharing.', 'tweet-old-post' ),
+				'has_accounts_desc'       => __( ' Authenticate a new service (eg. Facebook, Twitter etc. ), select the account you want to add from that service and ensure the switch is in the <b>ON</b> position. Only the active accounts will be used for sharing.', 'tweet-old-post' ),
 				'remove_all_cta'          => __( 'Remove all accounts', 'tweet-old-post' ),
 				'accounts_selector'       => __( 'Each <b>account</b> can have it\'s own options for sharing, on the left you can see the current selected account and network, bellow are the options for the account. Don\'t forget to save after each change and remember, you can always reset an account to the network defaults.', 'tweet-old-post' ),
 				'save_selector_btn'       => __( 'Save', 'tweet-old-post' ),
