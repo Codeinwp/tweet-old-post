@@ -810,10 +810,9 @@ class Rop_Admin {
 	 */
 	public function rop_buffer_addon_notice() {
 
-
 		if ( is_plugin_active( 'rop-buffer-addon/rop-buffer-addon.php' ) ) {
 			deactivate_plugins( 'rop-buffer-addon/rop-buffer-addon.php' );
-		}else{
+		} else {
 			return;
 		}
 
