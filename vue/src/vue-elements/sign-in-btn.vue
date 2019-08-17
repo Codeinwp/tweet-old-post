@@ -30,10 +30,10 @@
 							<button class="btn btn-primary big-btn" @click="openPopupTW()">{{labels.tw_app_signin_btn}}</button>
 							<span class="text-center">{{labels.tw_own_app_signin}}</span>
 						</div>
-						<div id="rop-advanced-config" v-if="isFacebook">
+						<div id="rop-advanced-config" v-if="isFacebook || isTwitter">
 						<button class="btn btn-primary" v-on:click="showAdvanceConfig = !showAdvanceConfig">{{labels.show_advance_config}}</button>
 					</div>
-						<div v-if="showAdvanceConfig && isFacebook">
+						<div v-if="showAdvanceConfig && (isFacebook || isTwitter)">
 						<div class="form-group" v-for="( field, id ) in modal.data">
 							<label class="form-label" :for="field.id">{{ field.name }}</label>
 							<input class="form-input" type="text" :id="field.id" v-model="field.value"
@@ -41,7 +41,7 @@
 							<p class="text-gray">{{ field.description }}</p>
 						</div>
 					</div>
-						<div v-if="!isFacebook">
+						<div v-if="!isFacebook && !isTwitter">
 						<div class="form-group" v-for="( field, id ) in modal.data">
 							<label class="form-label" :for="field.id">{{ field.name }}</label>
 							<input class="form-input" type="text" :id="field.id" v-model="field.value"
@@ -51,14 +51,14 @@
 					</div>
 				</div>
 				</div>
-				<div v-if="isFacebook" class="modal-footer">
-					<p class="text-left pull-left mr-2" v-html="labels.fb_rs_app_info"></p>
+				<div v-if="isFacebook || isTwitter" class="modal-footer">
+					<p class="text-left pull-left mr-2" v-html="labels.rs_app_info"></p>
 				</div>
-				<div v-if="showAdvanceConfig && isFacebook" class="modal-footer">
+				<div v-if="showAdvanceConfig && (isFacebook || isTwitter)" class="modal-footer">
 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 				</div>
-				<div v-if="!isFacebook" class="modal-footer">
+				<div v-if="!isFacebook && !isTwitter" class="modal-footer">
 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 				</div>
@@ -86,14 +86,14 @@
 				activePopup: '',
 				appOrigin: ropAuthAppData.authAppUrl,
 				appPathFB: ropAuthAppData.authAppFacebookPath,
-                appPathTW: ropAuthAppData.authAppTwitterPath,
+        appPathTW: ropAuthAppData.authAppTwitterPath,
 				appAdminEmail: ropAuthAppData.adminEmail,
 				siteAdminUrl: ropAuthAppData.adminUrl,
 				appUniqueId: ropAuthAppData.authToken,
 				appSignature: ropAuthAppData.authSignature,
 				windowParameters: 'top=20,left=100,width=560,height=670',
 				authPopupWindow: null,
-                showTwAppBtn: ropApiSettings.show_tw_app_btn,
+        showTwAppBtn: ropApiSettings.show_tw_app_btn,
 				showBtn: false
 			}
 		},
@@ -192,11 +192,11 @@
 
 				this.activePopup = this.selected_network
 				this.getUrlAndGo(credentials)
-
 				this.modal.isOpen = false
 			},
 			cancelModal: function () {
 				this.$store.state.auth_in_progress = false
+				this.showAdvanceConfig = false
 				this.modal.isOpen = false
 			},
 			/**
