@@ -26,7 +26,12 @@
 				</div>
 			</div>
 			<div class="panel-footer">
-				<div class="columns my-2" v-if="checkLicense && accountsCount === 2">
+				<div class="columns my-2" v-if="checkLicense && pro_installed">
+					<div class="column col-12">
+							<i class="fa fa-lock "></i> <span v-html="labels.activate_license"></span>
+					</div>
+				</div>
+				<div class="columns my-2" v-if="(checkLicense && accountsCount === 2) && !pro_installed">
 					<div class="column col-12">
 						<p class="upsell">
 							<i class="fa fa-lock "></i> <span v-html="labels.upsell_accounts"></span>
@@ -67,6 +72,7 @@
 				twitter_warning: false,
 				labels: this.$store.state.labels.accounts,
 				upsell_link: ropApiSettings.upsell_link,
+				pro_installed: ropApiSettings.pro_installed,
 			}
 		},
 		computed: {
