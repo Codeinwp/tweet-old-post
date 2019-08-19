@@ -141,6 +141,15 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.4.0 - 2019-08-19  = 
+
+* PRO: Share to Instagram, Facebook Groups, LinkedIn Company Pages via Buffer integration.
+* New: Made it easier to connect Twitter accounts for new users.
+* Fix: Wrong error solution doc link would sometimes be given in Log.
+* Fix: Fixed a bug where the sharing queue would be duplicated when switching tabs.
+* Fix: Sites with Jetpack Photon feature activated would have issues with sharing images to twitter.
+
+
 = 8.3.5 - 2019-08-02  =
 
 * Change: Made some UX changes to plugin dashboard
