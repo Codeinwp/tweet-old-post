@@ -141,6 +141,11 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.4.1 - 2019-08-19  = 
+
+* Fix: Use own keys button was appearing in Twitter modal for old installs
+
+
 = 8.4.0 - 2019-08-19  = 
 
 * PRO: Share to Instagram, Facebook Groups, LinkedIn Company Pages via Buffer integration.

@@ -1,4 +1,8 @@
 
+ ### v8.4.1 - 2019-08-19 
+ **Changes:** 
+ * Fix: Use own keys button was appearing in Twitter modal for old installs
+ 
  ### v8.4.0 - 2019-08-19 
  **Changes:** 
  * PRO: Share to Instagram, Facebook Groups, LinkedIn Company Pages via Buffer integration.
