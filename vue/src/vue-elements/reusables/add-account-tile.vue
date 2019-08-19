@@ -1,9 +1,9 @@
 <template>
 	<div>
-		<div class="tile tile-centered rop-add-account">
-			<div class="tile-content">
-				<div class="tile-title"><span v-html="labels.add_account"></span></div>
-			</div>
+		<div class="tile-content">
+			<div class="tile-title"><span v-html="labels.add_account"></span></div>
+		</div>
+		<div class="rop-add-account">
 					<sign-in-btn></sign-in-btn>
 		</div>
 	</div>

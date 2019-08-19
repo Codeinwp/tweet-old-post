@@ -211,6 +211,7 @@ class Rop_Admin {
 		}
 
 		$services        = new Rop_Services_Model();
+		$tw_service      = new Rop_Twitter_Service();
 		$active_accounts = $services->get_active_accounts();
 
 		$global_settings             = new Rop_Global_Settings();
@@ -219,7 +220,9 @@ class Rop_Admin {
 		$array_nonce['license_type'] = $global_settings->license_type();
 		$array_nonce['labels']       = Rop_I18n::get_labels();
 		$array_nonce['upsell_link']  = Rop_I18n::UPSELL_LINK;
+		$array_nonce['pro_installed'] = ( defined( 'ROP_PRO_VERSION' ) ) ? true : false;
 		$array_nonce['staging']      = $this->rop_site_is_staging();
+		$array_nonce['show_tw_app_btn'] = $tw_service->rop_show_tw_app_btn();
 		$array_nonce['debug']        = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
 		$array_nonce['publish_now']  = array(
 			'action'   => $settings->get_instant_sharing_by_default(),
@@ -234,6 +237,7 @@ class Rop_Admin {
 			'adminEmail'          => base64_encode( get_option( 'admin_email' ) ),
 			'authAppUrl'          => ROP_AUTH_APP_URL,
 			'authAppFacebookPath' => ROP_APP_FACEBOOK_PATH,
+			'authAppTwitterPath' => ROP_APP_TWITTER_PATH,
 			'authToken'           => $token,
 			'adminUrl'            => urlencode( $admin_url ),
 			'authSignature'       => $signature,
@@ -770,7 +774,7 @@ class Rop_Admin {
 			return;
 		}
 
-		if ( DISABLE_WP_CRON == true ) {
+		if ( DISABLE_WP_CRON === true ) {
 
 			?>
 			<div class="notice notice-error">
@@ -794,6 +798,50 @@ class Rop_Admin {
 		$user_id = get_current_user_id();
 		if ( isset( $_GET['rop-wp-cron-notice-dismissed'] ) ) {
 			add_user_meta( $user_id, 'rop-wp-cron-notice-dismissed', 'true', true );
+		}
+
+	}
+
+	/**
+	 * Buffer addon disabled notice.
+	 *
+	 * @since   8.4.0
+	 * @access  public
+	 */
+	public function rop_buffer_addon_notice() {
+
+		if ( is_plugin_active( 'rop-buffer-addon/rop-buffer-addon.php' ) ) {
+			deactivate_plugins( 'rop-buffer-addon/rop-buffer-addon.php' );
+		} else {
+			return;
+		}
+
+		$user_id = get_current_user_id();
+
+		if ( get_user_meta( $user_id, 'rop-buffer-addon-notice-dismissed' ) ) {
+			return;
+		}
+
+		?>
+
+		<div class="notice notice-error">
+			<?php echo sprintf( __( '%1$s We\'ve bundled the Buffer feature into Revive Old Posts Pro, and therefore deactivated the Buffer Addon automatically to prevent any conflicts. If you were a free user testing out the addon then please send us a support request %2$shere%3$s. %4$s %5$s', 'tweet-old-post' ), '<p>', '<a href="https://revive.social/support/" target="_blank">', '</a>', '<a style="float: right;" href="?rop-wp-cron-notice-dismissed">Dismiss</a>', '</p>' ); ?>
+		</div>
+		<?php
+
+	}
+
+	/**
+	 * Show WordPress Cron disabled notice.
+	 *
+	 * @since   8.4.0
+	 * @access  public
+	 */
+	public function rop_buffer_addon_disabled_notice() {
+
+		$user_id = get_current_user_id();
+		if ( isset( $_GET['rop-buffer-addon-notice-dismissed'] ) ) {
+			add_user_meta( $user_id, 'rop-buffer-addon-notice-dismissed', 'true', true );
 		}
 
 	}

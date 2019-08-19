@@ -6,7 +6,9 @@
 					class="btn input-group-btn"
 					:class="'btn-' + network"
 					@click="requestAuthorization( network )">
-				<i class="fa fa-fw" :class="'fa-' + network"></i>{{service.name}}
+				<i v-if="network !== 'buffer'" class="fa fa-fw" :class="'fa-' + network"></i>
+				<i v-if="network === 'buffer'" class="fa fa-fw fa-plus-square"></i>
+				{{service.name}}
 			</button>
 
 		</div>
@@ -24,10 +26,14 @@
 							<button class="btn btn-primary big-btn" @click="openPopupFB()">{{labels.fb_app_signin_btn}}</button>
 							<span class="text-center">{{labels.fb_own_app_signin}}</span>
 						</div>
-						<div id="rop-advanced-config" v-if="isFacebook">
+						<div class="auth-app" v-if="isTwitter && isAllowedTwitter">
+							<button class="btn btn-primary big-btn" @click="openPopupTW()">{{labels.tw_app_signin_btn}}</button>
+							<span class="text-center">{{labels.tw_own_app_signin}}</span>
+						</div>
+						<div id="rop-advanced-config" v-if="isFacebook || isTwitter">
 						<button class="btn btn-primary" v-on:click="showAdvanceConfig = !showAdvanceConfig">{{labels.show_advance_config}}</button>
 					</div>
-						<div v-if="showAdvanceConfig && isFacebook">
+						<div v-if="showAdvanceConfig && (isFacebook || isTwitter)">
 						<div class="form-group" v-for="( field, id ) in modal.data">
 							<label class="form-label" :for="field.id">{{ field.name }}</label>
 							<input class="form-input" type="text" :id="field.id" v-model="field.value"
@@ -35,7 +41,7 @@
 							<p class="text-gray">{{ field.description }}</p>
 						</div>
 					</div>
-						<div v-if="!isFacebook">
+						<div v-if="!isFacebook && !isTwitter">
 						<div class="form-group" v-for="( field, id ) in modal.data">
 							<label class="form-label" :for="field.id">{{ field.name }}</label>
 							<input class="form-input" type="text" :id="field.id" v-model="field.value"
@@ -45,14 +51,14 @@
 					</div>
 				</div>
 				</div>
-				<div v-if="isFacebook" class="modal-footer">
-					<p class="text-left pull-left mr-2" v-html="labels.fb_rs_app_info"></p>
+				<div v-if="isFacebook || isTwitter" class="modal-footer">
+					<p class="text-left pull-left mr-2" v-html="labels.rs_app_info"></p>
 				</div>
-				<div v-if="showAdvanceConfig && isFacebook" class="modal-footer">
+				<div v-if="showAdvanceConfig && (isFacebook || isTwitter)" class="modal-footer">
 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 				</div>
-				<div v-if="!isFacebook" class="modal-footer">
+				<div v-if="!isFacebook && !isTwitter" class="modal-footer">
 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 				</div>
@@ -80,12 +86,14 @@
 				activePopup: '',
 				appOrigin: ropAuthAppData.authAppUrl,
 				appPathFB: ropAuthAppData.authAppFacebookPath,
+        appPathTW: ropAuthAppData.authAppTwitterPath,
 				appAdminEmail: ropAuthAppData.adminEmail,
 				siteAdminUrl: ropAuthAppData.adminUrl,
 				appUniqueId: ropAuthAppData.authToken,
 				appSignature: ropAuthAppData.authSignature,
 				windowParameters: 'top=20,left=100,width=560,height=670',
 				authPopupWindow: null,
+        showTwAppBtn: ropApiSettings.show_tw_app_btn,
 				showBtn: false
 			}
 		},
@@ -184,11 +192,11 @@
 
 				this.activePopup = this.selected_network
 				this.getUrlAndGo(credentials)
-
 				this.modal.isOpen = false
 			},
 			cancelModal: function () {
 				this.$store.state.auth_in_progress = false
+				this.showAdvanceConfig = false
 				this.modal.isOpen = false
 			},
 			/**
@@ -208,11 +216,35 @@
 				}, error => {
 					this.is_loading = false;
 					Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+                });
+            },
+            /**
+             * Add Twitter account.
+             *
+             * @param data Data.
+             */
+            addAccountTW(data) {
+                this.$store.dispatch('fetchAJAXPromise', {
+                    req: 'add_account_tw',
+                    updateState: false,
+                    data: data
+                }).then(response => {
+                    window.removeEventListener("message", event => this.getChildWindowMessage(event));
+                    this.authPopupWindow.close();
+                    window.location.reload();
+                }, error => {
+                    this.is_loading = false;
+                    Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
 				});
 			},
 			getChildWindowMessage: function (event) {
 				if (~event.origin.indexOf(this.appOrigin)) {
-					this.addAccountFB(JSON.parse(event.data));
+                    if ('Twitter' === this.modal.serviceName) {
+                        this.addAccountTW(JSON.parse(event.data));
+                    } else if ('Facebook' === this.modal.serviceName) {
+					    this.addAccountFB(JSON.parse(event.data));
+                    }
+
 				} else {
 					return;
 				}
@@ -228,6 +260,18 @@
 					this.cancelModal();
 				}
 				window.addEventListener("message", event => this.getChildWindowMessage(event));
+            },
+            openPopupTW: function () { // Open the popup specific for Twitter
+                let loginUrl = this.appOrigin + this.appPathTW + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
+                try {
+                    this.authPopupWindow.close();
+                } catch (e) {
+                    // nothing to do
+                } finally {
+                    this.authPopupWindow = window.open(loginUrl, 'authTW', this.windowParameters);
+                    this.cancelModal();
+                }
+                window.addEventListener("message", event => this.getChildWindowMessage(event));
 			}
 		},
 		computed: {
@@ -260,6 +304,19 @@
 			isFacebook() {
 				return this.modal.serviceName === 'Facebook';
 			},
+            // will return true if the current service actions are for Twitter.
+            isTwitter() {
+                return this.modal.serviceName === 'Twitter';
+            },
+            isAllowedTwitter: function () {
+                let showButton = true;
+
+                if (!this.showTwAppBtn) {
+                    showButton = false;
+                }
+
+                return showButton;
+            }
 		}
 	}
 </script>

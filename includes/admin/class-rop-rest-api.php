@@ -860,4 +860,57 @@ class Rop_Rest_Api {
 		return $this->response->to_array();
 	}
 
+
+	/**
+	 * API method called to add Twitter pages via app.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
+	 *
+	 * @since   ...
+	 * @access  private
+	 *
+	 * @param   array $data Facebook page data.
+	 *
+	 * @return  array
+	 */
+	private function add_account_tw( $data ) {
+		$services        = array();
+		$active_accounts = array();
+		$twitter_service = new Rop_Twitter_Service();
+		$model           = new Rop_Services_Model();
+		$db              = new Rop_Db_Upgrade();
+
+		$twitter_service->add_account_with_app( $data );
+
+		$services[ $twitter_service->get_service_id() ] = $twitter_service->get_service();
+		$active_accounts                                = array_merge( $active_accounts, $twitter_service->get_service_active_accounts() );
+
+		if ( ! empty( $services ) ) {
+			$model->add_authenticated_service( $services );
+		}
+
+		if ( ! empty( $active_accounts ) ) {
+			$db->migrate_schedule( $active_accounts );
+			$db->migrate_post_formats( $active_accounts );
+		} else {
+			$this->response->set_code( '500' )
+						   ->set_data( array() );
+
+			return $this->response->to_array();
+		}
+
+		$this->response->set_code( '200' )
+					   ->set_message( 'OK' )
+					   ->set_data( array() );
+
+		$rop_twitter_via_rs_app_option = 'rop_twitter_via_rs_app';
+		if ( ! get_option( $rop_twitter_via_rs_app_option ) ) {
+			add_option( $rop_twitter_via_rs_app_option, 'true', ' ', 'no' );
+		} else {
+			update_option( $rop_twitter_via_rs_app_option, 'true' );
+		}
+
+		return $this->response->to_array();
+	}
+
 }

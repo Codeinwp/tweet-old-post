@@ -260,8 +260,9 @@
 
 #rop_core .btn:focus,
 #rop_core .btn:hover {
+	color: #fff;
 	border-color: #031c32;
-	background: #e85407;
+	background: #0074ab;
 	text-decoration: none;
 }
 
@@ -339,7 +340,7 @@
 #rop_core .btn.btn-facebook:hover {
 	border-color: #344e86;
 	color: #fff;
-	background: #385591;
+	background: #0074ab;
 }
 
 #rop_core .btn.btn-facebook:active,
@@ -368,7 +369,7 @@
 #rop_core .btn.btn-twitter:hover {
 	border-color: #3ea1ec;
 	color: #fff;
-	background: #4ca7ed;
+	background: #0074ab;
 }
 
 #rop_core .btn.btn-twitter:active,
@@ -397,7 +398,7 @@
 #rop_core .btn.btn-tumblr:hover {
 	border-color: #355473;
 	color: #fff;
-	background: #375878;
+	background: #0074ab;
 }
 
 #rop_core .btn.btn-tumblr:active,
@@ -437,6 +438,64 @@
 }
 
 #rop_core .btn.btn-linkedin.loading::after {
+	border-bottom-color: #fff;
+	border-left-color: #fff;
+}
+
+#rop_core .btn.btn-pinterest {
+	border-color: #0071a6;
+	color: #fff;
+	background: #bd081c;
+}
+
+#rop_core .btn.btn-pinterest:focus {
+	box-shadow: 0 0 0 0.1rem rgba(0, 123, 181, 0.2);
+}
+
+#rop_core .btn.btn-pinterest:focus,
+#rop_core .btn.btn-pinterest:hover {
+	border-color: #006a9c;
+	color: #fff;
+	background: #0074ab;
+}
+
+#rop_core .btn.btn-pinterest:active,
+#rop_core .btn.btn-pinterest.active {
+	border-color: #005882;
+	color: #fff;
+	background: #006391;
+}
+
+#rop_core .btn.btn-pinterest.loading::after {
+	border-bottom-color: #fff;
+	border-left-color: #fff;
+}
+
+#rop_core .btn.btn-buffer {
+	border-color: #0071a6;
+	color: #fff;
+	background: #323b43;
+}
+
+#rop_core .btn.btn-buffer:focus {
+	box-shadow: 0 0 0 0.1rem rgba(0, 123, 181, 0.2);
+}
+
+#rop_core .btn.btn-buffer:focus,
+#rop_core .btn.btn-buffer:hover {
+	border-color: #006a9c;
+	color: #fff;
+	background: #0074ab;
+}
+
+#rop_core .btn.btn-buffer:active,
+#rop_core .btn.btn-buffer.active {
+	border-color: #005882;
+	color: #fff;
+	background: #006391;
+}
+
+#rop_core .btn.btn-buffer.loading::after {
 	border-bottom-color: #fff;
 	border-left-color: #fff;
 }
