@@ -141,6 +141,14 @@ http://revive.social/plugins/revive-old-post
 
 
 ## Changelog ##
+### 8.4.2 - 2019-08-23  ###
+
+* PRO Fix: Unauthorized error when updating Pro plugin 
+* Fix: Error would occur if the user tried to sign in while the API credentials form fields were empty
+* Fix: Timer was not stopped if all accounts were removed using "remove all accounts" button
+* Fix: Removing an account and then immediately trying to add it back would attempt to validate with old API credentials
+
+
 ### 8.4.1 - 2019-08-19  ###
 
 * Fix: Use own keys button was appearing in Twitter modal for old installs
