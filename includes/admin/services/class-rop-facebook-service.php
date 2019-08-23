@@ -433,7 +433,10 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		$_SESSION['rop_facebook_credentials'] = $credentials;
 
-		$api    = $this->get_api( $credentials['app_id'], $credentials['secret'] );
+		$api = $this->get_api( $credentials['app_id'], $credentials['secret'] );
+		if ( empty( $api ) || ! method_exists( $api, 'getRedirectLoginHelper' ) ) {
+			return '';
+		}
 		$helper = $api->getRedirectLoginHelper();
 		$url    = $helper->getLoginUrl( $this->get_legacy_url(), $this->permissions );
 
