@@ -124,6 +124,15 @@
 					data: {}
 				}).then(response => {
 					this.is_loading = false;
+					if ( this.$parent.start_status === true ) {
+						// Stop sharing process if enabled.
+						this.$parent.togglePosting();
+					}
+					this.$store.dispatch( 'fetchAJAXPromise', {
+						req: 'get_available_services'
+					} ).then( response => {
+						this.is_loading = false;
+					} )
 				}, error => {
 					this.is_loading = false;
 					Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)

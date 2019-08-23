@@ -84,6 +84,7 @@ class Rop_I18n {
 				'rs_app_info'            => sprintf( __( 'We collect some info, learn more %1$shere%2$s.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/1066-info-we-collect-in-seamless-social-network-connection" target="_blank">', '</a>' ),
 				'service_popup_title'     => __( 'Service Credentials', 'tweet-old-post' ),
 				'sign_in_btn'             => __( 'Sign In', 'tweet-old-post' ),
+				'field_required'          => __( 'This field is required', 'tweet-old-post' ),
 				'at'                      => __( 'at', 'tweet-old-post' ),
 				'remove_account'          => __( 'Remove account from the list.', 'tweet-old-post' ),
 				'no_accounts'             => __( 'No accounts!', 'tweet-old-post' ),

@@ -232,7 +232,7 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 		$buffer_profiles = array();
 
 		// Only allow these types of profiles to be added using buffer
-		$allowed = array( 'Instagram', 'Facebook Group', 'LinkedIn Page' );
+		$allowed = array( 'Instagram', 'Facebook Group', 'LinkedIn', 'LinkedIn Page' );
 
 		foreach ( $response as $response_field ) {
 			if ( ! in_array( $response_field['formatted_service'], $allowed ) ) {
