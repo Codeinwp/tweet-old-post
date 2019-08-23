@@ -684,7 +684,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			}
 		} else {
 			// Page was added using ROP application (new method)
-			// Try post via Guzzle 6
 
 			$post_data = $new_post;
 			$post_data['access_token'] = $token;
