@@ -36,16 +36,18 @@
 						<div v-if="showAdvanceConfig && (isFacebook ||  (isTwitter && isAllowedTwitter) )">
 						<div class="form-group" v-for="( field, id ) in modal.data">
 							<label class="form-label" :for="field.id">{{ field.name }}</label>
-							<input class="form-input" type="text" :id="field.id" v-model="field.value"
+							<input :class="[ 'form-input', field.error ? ' is-error' : '' ]" type="text" :id="field.id" v-model="field.value"
 								   :placeholder="field.name"/>
+							<small class="text-error" v-if="field.error">{{labels.field_required}}</small>
 							<p class="text-gray">{{ field.description }}</p>
 						</div>
 					</div>
 						<div v-if="(!isTwitter && !isFacebook) || ( isTwitter && !isAllowedTwitter)">
 						<div class="form-group" v-for="( field, id ) in modal.data">
 							<label class="form-label" :for="field.id">{{ field.name }}</label>
-							<input class="form-input" type="text" :id="field.id" v-model="field.value"
+							<input :class="[ 'form-input', field.error ? ' is-error' : '' ]" type="text" :id="field.id" v-model="field.value"
 								   :placeholder="field.name"/>
+							<small class="text-error" v-if="field.error">{{labels.field_required}}</small>
 							<p class="text-gray">{{ field.description }}</p>
 						</div>
 					</div>
@@ -167,7 +169,12 @@
 					data: {service: this.selected_network, credentials: credentials}
 				}).then(response => {
 					//  console.log( 'Got some data, now lets show something in this component', response )
-					this.openPopup(response.url)
+					if ( ! response.url || response.url == '' ) {
+						this.cancelModal()
+						alert( 'Could not authenticate, please make sure you entered the correct credentials.' );
+					} else {
+						this.openPopup(response.url)
+					}
 				}, error => {
 					Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
 				})
@@ -183,11 +190,21 @@
 			},
 			closeModal: function () {
 				let credentials = {}
+				let valid = true;
 				for (const index of Object.keys(this.modal.data)) {
 					credentials[index] = ''
-					if ('value' in this.modal.data[index]) {
-						credentials[index] = this.modal.data[index]['value']
+					if ('value' in this.modal.data[index] && '' !== this.modal.data[index].value) {
+						credentials[index] = this.modal.data[index].value
+						this.modal.data[index].error = false
+					} else {
+						this.modal.data[index].error = true
+						valid = false;
 					}
+				}
+
+				if ( ! valid ) {
+					this.$forceUpdate()
+					return;
 				}
 
 				this.activePopup = this.selected_network
