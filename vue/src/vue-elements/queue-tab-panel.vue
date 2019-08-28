@@ -80,7 +80,7 @@
 		},
 		mounted: function () {
 			if (this.start_status) {
-				this.refreshQueue( true );
+				this.refreshQueue( false );
 			}
 		},
 		methods: {

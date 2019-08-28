@@ -101,7 +101,7 @@ class Rop_Rest_Api {
 	private function manage_cron( $data ) {
 		$cron_helper = new Rop_Cron_Helper();
 		$this->response->set_code( '200' )
-					   ->set_data( $cron_helper->manage_cron( $data ) );
+		               ->set_data( $cron_helper->manage_cron( $data ) );
 
 		return $this->response->to_array();
 	}
@@ -171,11 +171,12 @@ class Rop_Rest_Api {
 	 */
 	private function get_queue( $data ) {
 		$queue = new Rop_Queue_Model();
-		if ( isset( $data['force'] ) ) {
+
+		if ( isset( $data['force'] ) && true === (bool) $data['force'] ) {
 			$queue->clear_queue();
 		}
 		$this->response->set_code( '200' )
-					   ->set_data( $queue->get_ordered_queue() );
+		               ->set_data( $queue->get_ordered_queue() );
 
 		return $this->response->to_array();
 	}
@@ -214,7 +215,7 @@ class Rop_Rest_Api {
 		$schedules = new Rop_Scheduler_Model();
 		$schedules->remove_schedule( $data['account_id'] );
 		$this->response->set_code( '201' )
-					   ->set_data( $schedules->get_schedule() );
+		               ->set_data( $schedules->get_schedule() );
 
 		return $this->response->is_not_silent()->to_array();
 	}
@@ -234,7 +235,7 @@ class Rop_Rest_Api {
 	private function get_schedule( $data ) {
 		$schedules = new Rop_Scheduler_Model();
 		$this->response->set_code( '200' )
-					   ->set_data( $schedules->get_schedule() );
+		               ->set_data( $schedules->get_schedule() );
 
 		return $this->response->to_array();
 	}
@@ -255,11 +256,11 @@ class Rop_Rest_Api {
 	private function get_shortner_credentials( $data ) {
 		if ( empty( $data['short_url_service'] ) ) {
 			return $this->response->set_code( '200' )
-								  ->set_data( array() )->to_array();
+			                      ->set_data( array() )->to_array();
 		}
 		if ( $data['short_url_service'] === 'wp_short_url' ) {
 			return $this->response->set_code( '200' )
-								  ->set_data( array() )->to_array();
+			                      ->set_data( array() )->to_array();
 		}
 
 		$sh_factory = new Rop_Shortner_Factory();
@@ -269,7 +270,7 @@ class Rop_Rest_Api {
 		try {
 			$shortner = $sh_factory->build( $data['short_url_service'] );
 			$this->response->set_code( '200' )
-						   ->set_data( $shortner->get_credentials( true ) );
+			               ->set_data( $shortner->get_credentials( true ) );
 		} catch ( Exception $exception ) {
 			// Service not found or can't be built. Maybe log this exception.
 			$log           = new Rop_Logger();
@@ -357,7 +358,7 @@ class Rop_Rest_Api {
 	private function get_post_format( $data ) {
 		$post_format = new Rop_Post_Format_Model();
 		$this->response->set_code( '200' )
-					   ->set_data( $post_format->get_post_format() );
+		               ->set_data( $post_format->get_post_format() );
 
 		return $this->response->to_array();
 	}
@@ -374,7 +375,7 @@ class Rop_Rest_Api {
 	private function select_posts() {
 		$posts_selector = new Rop_Posts_Selector_Model();
 		$this->response->set_code( '200' )
-					   ->set_data( $posts_selector->select() );
+		               ->set_data( $posts_selector->select() );
 
 		return $this->response->to_array();
 	}
@@ -391,7 +392,7 @@ class Rop_Rest_Api {
 	private function get_general_settings() {
 		$settings_model = new Rop_Settings_Model();
 		$this->response->set_code( '200' )
-					   ->set_data( $settings_model->get_settings( true ) );
+		               ->set_data( $settings_model->get_settings( true ) );
 
 		return $this->response->to_array();
 	}
@@ -415,7 +416,7 @@ class Rop_Rest_Api {
 		$this->response->set_code( '400' );
 		if ( $taxonomies != false ) {
 			$this->response->set_code( '200' )
-						   ->set_data( $taxonomies );
+			               ->set_data( $taxonomies );
 		}
 
 		return $this->response->to_array();
@@ -444,7 +445,7 @@ class Rop_Rest_Api {
 		}
 
 		$this->response->set_code( '200' )
-					   ->set_data( $data );
+		               ->set_data( $data );
 
 		return $this->response->to_array( $data );
 	}
@@ -469,7 +470,7 @@ class Rop_Rest_Api {
 		$settings_model->add_excluded_posts( $post_ids );
 
 		$this->response->set_code( '200' )
-					   ->set_data( $data );
+		               ->set_data( $data );
 
 		return $this->response->to_array( $data );
 	}
@@ -492,12 +493,12 @@ class Rop_Rest_Api {
 		$available_posts = $post_selector->get_posts( $data['post_types'], $data['taxonomies'], $data['search_query'], $data['exclude'], $data['show_excluded'], $data['page'] );
 
 		$this->response->set_code( '200' )
-					->set_data(
-						array(
-							'posts' => $available_posts,
-							'page'  => $data['page'],
-						)
-					);
+		               ->set_data(
+			               array(
+				               'posts' => $available_posts,
+				               'page'  => $data['page'],
+			               )
+		               );
 
 		return $this->response->to_array();
 	}
@@ -519,7 +520,7 @@ class Rop_Rest_Api {
 		$settings_model = new Rop_Settings_Model();
 		$settings_model->save_settings( $data );
 		$this->response->set_code( '200' )
-					   ->set_data( $settings_model->get_settings() );
+		               ->set_data( $settings_model->get_settings() );
 
 		return $this->response->to_array();
 	}
@@ -544,7 +545,7 @@ class Rop_Rest_Api {
 		$general_settings['custom_messages'] = $data['custom_messages'];
 		$settings_model->save_settings( $general_settings );
 		$this->response->set_code( '200' )
-					   ->set_data( $settings_model->get_settings() );
+		               ->set_data( $settings_model->get_settings() );
 
 		return $this->response->to_array();
 	}
@@ -561,7 +562,7 @@ class Rop_Rest_Api {
 	private function get_available_services() {
 		$global_settings = new Rop_Global_Settings();
 		$this->response->set_code( '200' )
-					   ->set_data( $global_settings->get_available_services() );
+		               ->set_data( $global_settings->get_available_services() );
 
 		return $this->response->to_array();
 	}
@@ -578,7 +579,7 @@ class Rop_Rest_Api {
 	private function get_authenticated_services() {
 		$model = new Rop_Services_Model();
 		$this->response->set_code( '200' )
-					   ->set_data( $model->get_authenticated_services() );
+		               ->set_data( $model->get_authenticated_services() );
 
 		return $this->response->to_array();
 	}
@@ -596,7 +597,7 @@ class Rop_Rest_Api {
 		$model = new Rop_Services_Model();
 		// $model->reset_authenticated_services();
 		$this->response->set_code( '200' )
-					   ->set_data( $model->get_active_accounts() );
+		               ->set_data( $model->get_active_accounts() );
 
 		return $this->response->to_array();
 	}
@@ -614,7 +615,7 @@ class Rop_Rest_Api {
 		$model = new Rop_Services_Model();
 		$model->reset_authenticated_services();
 		$this->response->set_code( '200' )
-					   ->set_data( array() );
+		               ->set_data( array() );
 
 		return $this->response->to_array();
 	}
@@ -639,7 +640,7 @@ class Rop_Rest_Api {
 		}
 		$model = new Rop_Services_Model();
 		$this->response->set_code( '200' )
-					   ->set_data( $model->add_active_accounts( $new_active ) );
+		               ->set_data( $model->add_active_accounts( $new_active ) );
 
 		return $this->response->to_array();
 	}
@@ -664,7 +665,7 @@ class Rop_Rest_Api {
 			$model->delete_active_accounts( $data['account_id'] );
 		}
 		$this->response->set_code( '200' )
-					   ->set_data( $data );
+		               ->set_data( $data );
 
 		return $this->response->to_array();
 	}
@@ -678,7 +679,7 @@ class Rop_Rest_Api {
 	 */
 	private function remove_account( $data ) {
 		$this->response->set_code( '200' )
-					   ->set_data( $data );
+		               ->set_data( $data );
 
 		$model = new Rop_Services_Model();
 		$model->remove_service_account( $data['account_id'] );
@@ -805,7 +806,7 @@ class Rop_Rest_Api {
 			$log->clear_user_logs();
 		}
 		$this->response->set_code( '200' )
-					   ->set_data( $log->get_logs() );
+		               ->set_data( $log->get_logs() );
 
 		return $this->response->to_array();
 	}
@@ -817,7 +818,9 @@ class Rop_Rest_Api {
 	 *
 	 * @since   ...
 	 * @access  private
+	 *
 	 * @param   array $data Facebook page data.
+	 *
 	 * @return  array
 	 */
 	private function add_account_fb( $data ) {
@@ -831,7 +834,7 @@ class Rop_Rest_Api {
 		$facebook_service->add_account_with_app( $data );
 
 		$services[ $facebook_service->get_service_id() ] = $facebook_service->get_service();
-		$active_accounts = array_merge( $active_accounts, $facebook_service->get_service_active_accounts() );
+		$active_accounts                                 = array_merge( $active_accounts, $facebook_service->get_service_active_accounts() );
 
 		if ( ! empty( $services ) ) {
 			$model->add_authenticated_service( $services );
@@ -842,13 +845,14 @@ class Rop_Rest_Api {
 			$db->migrate_post_formats( $active_accounts );
 		} else {
 			$this->response->set_code( '500' )
-				->set_data( array() );
+			               ->set_data( array() );
+
 			return $this->response->to_array();
 		}
 
 		$this->response->set_code( '200' )
-			->set_message( 'OK' )
-			->set_data( array() );
+		               ->set_message( 'OK' )
+		               ->set_data( array() );
 
 		$rop_facebook_via_rs_app_option = 'rop_facebook_via_rs_app';
 		if ( ! get_option( $rop_facebook_via_rs_app_option ) ) {
@@ -894,14 +898,14 @@ class Rop_Rest_Api {
 			$db->migrate_post_formats( $active_accounts );
 		} else {
 			$this->response->set_code( '500' )
-						   ->set_data( array() );
+			               ->set_data( array() );
 
 			return $this->response->to_array();
 		}
 
 		$this->response->set_code( '200' )
-					   ->set_message( 'OK' )
-					   ->set_data( array() );
+		               ->set_message( 'OK' )
+		               ->set_data( array() );
 
 		$rop_twitter_via_rs_app_option = 'rop_twitter_via_rs_app';
 		if ( ! get_option( $rop_twitter_via_rs_app_option ) ) {
