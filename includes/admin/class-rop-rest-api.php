@@ -848,6 +848,9 @@ class Rop_Rest_Api {
 				if ( 'error' === $type ) { // Not displaying anything if there's no issue
 					$get_last_err_timestamp = (int) get_option( 'rop_toast', 0 ); // get the last error timestamp
 					if ( $get_last_err_timestamp !== $time ) { // If the time does not match, then proceed further.
+						// Check to see if the error needs to be "translated"
+						$latest_log_entry['message'] = $log->translate_messages( $message );
+
 						$logs_response['data']   = array();
 						$logs_response['data'][] = $latest_log_entry;
 						// Add the timestamp of the error into DB to now show this alert multiple times.

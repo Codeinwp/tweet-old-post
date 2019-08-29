@@ -64,7 +64,7 @@ class Rop_Logger {
 	 * @access  public
 	 *
 	 * @param   string $message The message to log.
-	 * @param   array  $context [optional] A context for the message, if needed.
+	 * @param   array $context [optional] A context for the message, if needed.
 	 */
 	public function info( $message = '', $context = array() ) {
 		$this->logger->info( $message, $context );
@@ -77,7 +77,7 @@ class Rop_Logger {
 	 * @access  public
 	 *
 	 * @param   string $message The message to log.
-	 * @param   array  $context [optional] A context for the message, if needed.
+	 * @param   array $context [optional] A context for the message, if needed.
 	 */
 	public function alert_error( $message = '', $context = array() ) {
 		$context_new = array_merge( array( 'type' => 'error' ), $context );
@@ -91,7 +91,7 @@ class Rop_Logger {
 	 * @access  public
 	 *
 	 * @param   string $message The message to log.
-	 * @param   array  $context [optional] A context for the message, if needed.
+	 * @param   array $context [optional] A context for the message, if needed.
 	 */
 	public function alert_success( $message = '', $context = array() ) {
 		$context_new = array_merge( array( 'type' => 'success' ), $context );
@@ -128,7 +128,7 @@ class Rop_Logger {
 	 * @access  public
 	 *
 	 * @param   string $message The message to log.
-	 * @param   array  $context [optional] A context for the message, if needed.
+	 * @param   array $context [optional] A context for the message, if needed.
 	 */
 	public function warn( $message = '', $context = array() ) {
 		$this->logger->warn( $message );
@@ -141,10 +141,40 @@ class Rop_Logger {
 	 * @access  public
 	 *
 	 * @param   string $message The message to log.
-	 * @param   array  $context [optional] A context for the message, if needed.
+	 * @param   array $context [optional] A context for the message, if needed.
 	 */
 	public function error( $message = '', $context = array() ) {
 		$this->logger->error( $message );
+	}
+
+	/**
+	 * Some error messages received by social media are not very clear
+	 * and the users might not understand what the issue is.
+	 * This function will catch these errors and give a more clear message in return.
+	 *
+	 * @param $direct_message
+	 *
+	 * @return mixed
+	 */
+	public function translate_messages( $direct_message ) {
+		$direct_message = trim( $direct_message );
+		$direct_message = preg_replace( '/\s\s+/', ' ', $direct_message ); // we need to remove extra spaces
+
+		$translated_message = $direct_message;
+
+		$unreadable_messages = array(
+			'Value is empty : pages in Array \( \[id\] => (.*) \[pages\] => Array \( \) \)' => __( 'In order to connect with Facebook it\'s required to select at least one Page in the authentification process.', 'tweet-old-post' ),
+		);
+
+		foreach ( $unreadable_messages as $to_decode => $readable_message ) {
+			preg_match( '/' . $to_decode . '/i', $direct_message, $output_array );
+			if ( ! empty( $output_array ) ) {
+				$translated_message = $readable_message;
+				break;
+			}
+		}
+
+		return $translated_message;
 	}
 
 }
