@@ -812,6 +812,60 @@ class Rop_Rest_Api {
 	}
 
 	/**
+	 * API method called to retrieve the logs for toast.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
+	 *
+	 * @since   8.4.2
+	 * @access  private
+	 * @return string
+	 */
+	private function get_toast( $data ) {
+		$log = new Rop_Logger();
+
+		$this->response->set_code( '200' )
+		               ->set_message( 'OK' )
+		               ->set_data( $log->get_logs() );
+
+		$logs_response = $this->response->to_array();
+		$logs_data     = $logs_response['data'];
+
+		if ( ! empty( $logs_data ) ) {
+			// The logs will contain latest entry  as first element first.
+			reset( $logs_data ); // reset pointer to first element
+			$latest_log_entry = current( $logs_data ); // fetch the latest log entry
+
+			// Making sure it contains the important attributes.
+			if ( isset( $latest_log_entry['message'] ) && isset( $latest_log_entry['type'] ) ) {
+				// fetch log entry data;
+				$channel = $latest_log_entry['channel'];
+				$type    = $latest_log_entry['type'];
+				$level   = $latest_log_entry['level'];
+				$message = $latest_log_entry['message'];
+				$time    = (int) $latest_log_entry['time'];
+
+
+				if ( 'error' === $type ) { // Not displaying anything if there's no issue
+					$get_last_err_timestamp = (int) get_option( 'rop_toast', 0 ); // get the last error timestamp
+					if ( $get_last_err_timestamp !== $time ) { // If the time does not match, then proceed further.
+						$logs_response['data']   = array();
+						$logs_response['data'][] = $latest_log_entry;
+						// Add the timestamp of the error into DB to now show this alert multiple times.
+						update_option( 'rop_toast', $time, 'no' );
+
+						// return the current error
+						return $logs_response;
+					}
+				}
+
+			}
+		}
+		$logs_response['data'] = array();
+
+		return $logs_response;
+	}
+
+	/**
 	 * API method called to add Facebook pages via app.
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.

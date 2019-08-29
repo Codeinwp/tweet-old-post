@@ -17634,7 +17634,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+    value: true
 });
 
 var _vue = __webpack_require__(7);
@@ -17661,288 +17661,292 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /* exported ropApiSettings */
 
 var logOptions = {
-	// required ['debug', 'info', 'warn', 'error', 'fatal']
-	logLevel: ropApiSettings.debug === 'yes' ? 'debug' : 'error',
-	// optional : defaults to false if not specified
-	stringifyArguments: false,
-	// optional : defaults to false if not specified
-	showLogLevel: false,
-	// optional : defaults to false if not specified
-	showMethodName: false,
-	// optional : defaults to '|' if not specified
-	separator: '|',
-	// optional : defaults to false if not specified
-	showConsoleColors: true
+    // required ['debug', 'info', 'warn', 'error', 'fatal']
+    logLevel: ropApiSettings.debug === 'yes' ? 'debug' : 'error',
+    // optional : defaults to false if not specified
+    stringifyArguments: false,
+    // optional : defaults to false if not specified
+    showLogLevel: false,
+    // optional : defaults to false if not specified
+    showMethodName: false,
+    // optional : defaults to '|' if not specified
+    separator: '|',
+    // optional : defaults to false if not specified
+    showConsoleColors: true
 };
 _vue2.default.use(_vuex2.default);
 _vue2.default.use(_vueResource2.default);
 _vue2.default.use(_vuejsLogger2.default, logOptions);
 
 exports.default = new _vuex2.default.Store({
-	state: {
-		page: {
-			debug: false,
-			logs: [],
-			view: 'accounts',
-			template: 'accounts'
-		},
-		cron_status: {},
-		toast: {
-			type: 'success',
-			show: false,
-			title: '',
-			message: ''
-		},
-		ajaxLoader: false,
-		api_not_available: false,
-		auth_in_progress: false,
-		displayTabs: [{
-			name: ropApiSettings.labels.accounts.menu_item,
-			slug: 'accounts',
-			view: 'accounts',
-			isActive: true
-		}, {
-			name: ropApiSettings.labels.settings.menu_item,
-			slug: 'settings',
-			view: 'settings',
-			isActive: false
-		}, {
-			name: ropApiSettings.labels.post_format.menu_item,
-			slug: 'post-format',
-			view: 'accounts-selector',
-			isActive: false
-		}, {
-			name: ropApiSettings.labels.schedule.menu_item,
-			slug: 'schedule',
-			view: 'accounts-selector',
-			isActive: false
-		}, {
-			name: ropApiSettings.labels.queue.menu_item,
-			slug: 'queue',
-			view: 'queue',
-			isActive: false
-		}, {
-			name: ropApiSettings.labels.logs.menu_item,
-			slug: 'logs',
-			view: 'logs',
-			isActive: false
-		}],
-		licence: parseInt(ropApiSettings.license_type),
-		labels: ropApiSettings.labels,
-		availableServices: [],
-		generalSettings: [],
-		authenticatedServices: [],
-		activeAccounts: {},
-		activePostFormat: [],
-		activeSchedule: [],
-		queue: {},
-		publish_now: ropApiSettings.publish_now
-	},
-	mutations: {
-		setTabView: function setTabView(state, view) {
-			_vue2.default.$log.debug('Changing tab to  ', view);
-			for (var tab in state.displayTabs) {
-				state.displayTabs[tab].isActive = false;
-				if (state.displayTabs[tab].slug === view) {
-					state.displayTabs[tab].isActive = true;
-					state.page.view = state.displayTabs[tab].slug;
-					state.page.template = state.displayTabs[tab].view;
-				}
-			}
-		},
-		setAjaxState: function setAjaxState(state, data) {
-			state.ajaxLoader = data;
-		},
-		apiNotAvailable: function apiNotAvailable(state, data) {
-			state.api_not_available = data;
-		},
-		updateState: function updateState(state, _ref) {
-			var stateData = _ref.stateData,
-			    requestName = _ref.requestName;
+    state: {
+        page: {
+            debug: false,
+            logs: [],
+            view: 'accounts',
+            template: 'accounts'
+        },
+        cron_status: {},
+        toast: {
+            type: 'success',
+            show: false,
+            title: '',
+            message: ''
+        },
+        ajaxLoader: false,
+        api_not_available: false,
+        auth_in_progress: false,
+        displayTabs: [{
+            name: ropApiSettings.labels.accounts.menu_item,
+            slug: 'accounts',
+            view: 'accounts',
+            isActive: true
+        }, {
+            name: ropApiSettings.labels.settings.menu_item,
+            slug: 'settings',
+            view: 'settings',
+            isActive: false
+        }, {
+            name: ropApiSettings.labels.post_format.menu_item,
+            slug: 'post-format',
+            view: 'accounts-selector',
+            isActive: false
+        }, {
+            name: ropApiSettings.labels.schedule.menu_item,
+            slug: 'schedule',
+            view: 'accounts-selector',
+            isActive: false
+        }, {
+            name: ropApiSettings.labels.queue.menu_item,
+            slug: 'queue',
+            view: 'queue',
+            isActive: false
+        }, {
+            name: ropApiSettings.labels.logs.menu_item,
+            slug: 'logs',
+            view: 'logs',
+            isActive: false
+        }],
+        licence: parseInt(ropApiSettings.license_type),
+        labels: ropApiSettings.labels,
+        availableServices: [],
+        generalSettings: [],
+        authenticatedServices: [],
+        activeAccounts: {},
+        activePostFormat: [],
+        activeSchedule: [],
+        queue: {},
+        publish_now: ropApiSettings.publish_now
+    },
+    mutations: {
+        setTabView: function setTabView(state, view) {
+            _vue2.default.$log.debug('Changing tab to  ', view);
+            for (var tab in state.displayTabs) {
+                state.displayTabs[tab].isActive = false;
+                if (state.displayTabs[tab].slug === view) {
+                    state.displayTabs[tab].isActive = true;
+                    state.page.view = state.displayTabs[tab].slug;
+                    state.page.template = state.displayTabs[tab].view;
+                }
+            }
+        },
+        setAjaxState: function setAjaxState(state, data) {
+            state.ajaxLoader = data;
+        },
+        apiNotAvailable: function apiNotAvailable(state, data) {
+            state.api_not_available = data;
+        },
+        updateState: function updateState(state, _ref) {
+            var stateData = _ref.stateData,
+                requestName = _ref.requestName;
 
-			_vue2.default.$log.debug('State change for ', requestName);
-			switch (requestName) {
-				case 'manage_cron':
-					state.cron_status = stateData;
-					break;
-				case 'get_log':
-					state.page.logs = stateData;
-					break;
-				case 'update_settings_toggle':
-				case 'get_general_settings':
-					state.generalSettings = stateData;
-					break;
-				case 'update_selected_post_types':
-					state.generalSettings.selected_post_types = stateData;
-					for (var index in state.generalSettings.available_post_types) {
-						state.generalSettings.available_post_types[index].selected = false;
-						for (var indexSelected in stateData) {
-							if (state.generalSettings.available_post_types[index].value === stateData[indexSelected].value) {
-								state.generalSettings.available_post_types[index].selected = true;
-							}
-						}
-					}
-					break;
-				case 'update_selected_taxonomies':
-					state.generalSettings.selected_taxonomies = stateData;
-					for (var _index in state.generalSettings.available_taxonomies) {
-						state.generalSettings.available_taxonomies[_index].selected = false;
-						for (var _indexSelected in stateData) {
-							if (state.generalSettings.available_taxonomies[_index].value === stateData[_indexSelected].value || state.generalSettings.available_taxonomies[_index].parent === stateData[_indexSelected].value) {
-								state.generalSettings.available_taxonomies[_index].selected = true;
-							}
-						}
-					}
-					break;
-				case 'update_selected_posts':
-					state.generalSettings.selected_posts = stateData;
-					break;
-				case 'get_available_services':
-					state.availableServices = stateData;
-					break;
-				case 'get_authenticated_services':
-				case 'remove_service':
-					state.authenticatedServices = stateData;
-					break;
-				case 'authenticate_service':
-					state.authenticatedServices = stateData;
-					state.auth_in_progress = false;
-					//state.activeAccounts = stateData
-					break;
-				case 'check_account_fb':
-				case 'add_account_fb':
-					state.activeAccounts = stateData;
-					state.auth_in_progress = true;
-					break;
-				case 'get_active_accounts':
-				case 'update_active_accounts':
-				case 'remove_account':
-					state.activeAccounts = stateData;
-					break;
-				case 'get_taxonomies':
-					state.generalSettings.available_taxonomies = stateData;
-					break;
-				case 'get_posts':
-					if (stateData.page === 1) {
-						state.generalSettings.available_posts = stateData.posts;
-					} else {
-						state.generalSettings.available_posts = state.generalSettings.available_posts.concat(stateData.posts);
-					}
+            _vue2.default.$log.debug('State change for ', requestName);
+            switch (requestName) {
+                case 'manage_cron':
+                    state.cron_status = stateData;
+                    break;
+                case 'get_log':
+                    state.page.logs = stateData;
+                    break;
+                case 'get_toast':
+                    state.page.logs = stateData;
+                    break;
+                case 'update_settings_toggle':
+                case 'get_general_settings':
+                    state.generalSettings = stateData;
+                    break;
+                case 'update_selected_post_types':
+                    state.generalSettings.selected_post_types = stateData;
+                    for (var index in state.generalSettings.available_post_types) {
+                        state.generalSettings.available_post_types[index].selected = false;
+                        for (var indexSelected in stateData) {
+                            if (state.generalSettings.available_post_types[index].value === stateData[indexSelected].value) {
+                                state.generalSettings.available_post_types[index].selected = true;
+                            }
+                        }
+                    }
+                    break;
+                case 'update_selected_taxonomies':
+                    state.generalSettings.selected_taxonomies = stateData;
+                    for (var _index in state.generalSettings.available_taxonomies) {
+                        state.generalSettings.available_taxonomies[_index].selected = false;
+                        for (var _indexSelected in stateData) {
+                            if (state.generalSettings.available_taxonomies[_index].value === stateData[_indexSelected].value || state.generalSettings.available_taxonomies[_index].parent === stateData[_indexSelected].value) {
+                                state.generalSettings.available_taxonomies[_index].selected = true;
+                            }
+                        }
+                    }
+                    break;
+                case 'update_selected_posts':
+                    state.generalSettings.selected_posts = stateData;
+                    break;
+                case 'get_available_services':
+                    state.availableServices = stateData;
+                    break;
+                case 'get_authenticated_services':
+                case 'remove_service':
+                    state.authenticatedServices = stateData;
+                    break;
+                case 'authenticate_service':
+                    state.authenticatedServices = stateData;
+                    state.auth_in_progress = false;
+                    //state.activeAccounts = stateData
+                    break;
+                case 'check_account_fb':
+                case 'add_account_fb':
+                    state.activeAccounts = stateData;
+                    state.auth_in_progress = true;
+                    break;
+                case 'get_active_accounts':
+                case 'update_active_accounts':
+                case 'remove_account':
+                    state.activeAccounts = stateData;
+                    break;
+                case 'get_taxonomies':
+                    state.generalSettings.available_taxonomies = stateData;
+                    break;
+                case 'get_posts':
+                    if (stateData.page === 1) {
+                        state.generalSettings.available_posts = stateData.posts;
+                    } else {
+                        state.generalSettings.available_posts = state.generalSettings.available_posts.concat(stateData.posts);
+                    }
 
-					break;
-				case 'get_post_format':
-				case 'save_post_format':
-				case 'reset_post_format':
-					state.activePostFormat = stateData;
-					break;
-				case 'reset_accounts':
-					state.activeAccounts = {};
-					state.authenticatedServices = [];
-					break;
-				case 'get_shortner_credentials':
-					state.activePostFormat['shortner_credentials'] = stateData;
-					break;
-				case 'get_schedule':
-				case 'save_schedule':
-				case 'reset_schedule':
-					state.activeSchedule = stateData;
-					break;
-				case 'get_queue':
-				case 'update_queue_event':
-				case 'publish_queue_event':
-				case 'skip_queue_event':
-				case 'block_queue_event':
-					state.queue = stateData;
+                    break;
+                case 'get_post_format':
+                case 'save_post_format':
+                case 'reset_post_format':
+                    state.activePostFormat = stateData;
+                    break;
+                case 'reset_accounts':
+                    state.activeAccounts = {};
+                    state.authenticatedServices = [];
+                    break;
+                case 'get_shortner_credentials':
+                    state.activePostFormat['shortner_credentials'] = stateData;
+                    break;
+                case 'get_schedule':
+                case 'save_schedule':
+                case 'reset_schedule':
+                    state.activeSchedule = stateData;
+                    break;
+                case 'get_queue':
+                case 'update_queue_event':
+                case 'publish_queue_event':
+                case 'skip_queue_event':
+                case 'block_queue_event':
+                    state.queue = stateData;
 
-					break;
-				case 'update_toast':
-					state.toast = stateData;
-					break;
-				case 'toggle_account':
-				case 'exclude_post':
-				case 'exclude_post_batch':
+                    break;
+                case 'update_toast':
+                    state.toast = stateData;
+                    _vue2.default.$log.debug('yes yes here ', requestName);
+                    break;
+                case 'toggle_account':
+                case 'exclude_post':
+                case 'exclude_post_batch':
 
-					break;
-				default:
-					_vue2.default.$log.error('No state request for ', requestName);
-			}
-		}
-	},
-	actions: {
-		fetchAJAX: function fetchAJAX(_ref2, data) {
-			var commit = _ref2.commit;
+                    break;
+                default:
+                    _vue2.default.$log.error('No state request for ', requestName);
+            }
+        }
+    },
+    actions: {
+        fetchAJAX: function fetchAJAX(_ref2, data) {
+            var commit = _ref2.commit;
 
-			if (data.req !== '') {
-				commit('setAjaxState', true);
-				_vue2.default.http({
-					url: ropApiSettings.root,
-					method: 'POST',
-					headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-					params: { 'req': data.req },
-					body: data.data,
-					responseType: 'json'
-				}).then(function (response) {
-					commit('setAjaxState', false);
-					var display = false;
-					if (display) {
-						var toast = {
-							type: response.data.status,
-							show: true,
-							title: response.data.title,
-							message: response.data.message
-						};
-						commit('updateState', { stateData: toast, requestName: 'update_toast' });
-					}
-					var stateData = response.data;
-					if (response.data.data) {
-						stateData = response.data.data;
-					}
-					var requestName = data.req;
-					if (data.updateState !== false) {
-						commit('updateState', { stateData: stateData, requestName: requestName });
-					}
-				}, function () {
-					commit('setAjaxState', false);
-					_vue2.default.$log.error('Error when trying to do request: ', data.req);
-				});
-			}
-			return false;
-		},
-		fetchAJAXPromise: function fetchAJAXPromise(_ref3, data) {
-			var commit = _ref3.commit;
+            if (data.req !== '') {
+                commit('setAjaxState', true);
+                _vue2.default.http({
+                    url: ropApiSettings.root,
+                    method: 'POST',
+                    headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+                    params: { 'req': data.req },
+                    body: data.data,
+                    responseType: 'json'
+                }).then(function (response) {
+                    commit('setAjaxState', false);
+                    var display = false;
+                    if (display) {
+                        var toast = {
+                            type: response.data.status,
+                            show: true,
+                            title: response.data.title,
+                            message: response.data.message
+                        };
+                        commit('updateState', { stateData: toast, requestName: 'update_toast' });
+                    }
+                    var stateData = response.data;
+                    if (response.data.data) {
+                        stateData = response.data.data;
+                    }
+                    var requestName = data.req;
+                    if (data.updateState !== false) {
+                        commit('updateState', { stateData: stateData, requestName: requestName });
+                    }
+                }, function () {
+                    commit('setAjaxState', false);
+                    _vue2.default.$log.error('Error when trying to do request: ', data.req);
+                });
+            }
+            return false;
+        },
+        fetchAJAXPromise: function fetchAJAXPromise(_ref3, data) {
+            var commit = _ref3.commit;
 
-			if (data.req !== '') {
-				commit('setAjaxState', true);
-				return new Promise(function (resolve, reject) {
-					_vue2.default.http({
-						url: ropApiSettings.root,
-						method: 'POST',
-						headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-						params: { 'req': data.req },
-						body: data.data,
-						responseType: 'json'
-					}).then(function (response) {
-						commit('setAjaxState', false);
-						var stateData = response.data;
-						if (response.data.data) {
-							stateData = response.data.data;
-						}
-						var requestName = data.req;
-						resolve(stateData);
-						if (data.updateState !== false) {
-							commit('updateState', { stateData: stateData, requestName: requestName });
-						}
-					}, function () {
-						commit('setAjaxState', false);
-						commit('apiNotAvailable', true);
+            if (data.req !== '') {
+                commit('setAjaxState', true);
+                return new Promise(function (resolve, reject) {
+                    _vue2.default.http({
+                        url: ropApiSettings.root,
+                        method: 'POST',
+                        headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+                        params: { 'req': data.req },
+                        body: data.data,
+                        responseType: 'json'
+                    }).then(function (response) {
+                        commit('setAjaxState', false);
+                        var stateData = response.data;
+                        if (response.data.data) {
+                            stateData = response.data.data;
+                        }
+                        var requestName = data.req;
+                        resolve(stateData);
+                        if (data.updateState !== false) {
+                            commit('updateState', { stateData: stateData, requestName: requestName });
+                        }
+                    }, function () {
+                        commit('setAjaxState', false);
+                        commit('apiNotAvailable', true);
 
-						_vue2.default.$log.error('Error when trying to do request: ', data.req);
-					});
-				});
-			}
-			return false;
-		}
-	}
+                        _vue2.default.$log.error('Error when trying to do request: ', data.req);
+                    });
+                });
+            }
+            return false;
+        }
+    }
 });
 
 /***/ }),
@@ -34267,7 +34271,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .badge[data-badge]::after {\n\t\tposition: absolute;\n\t\tbottom: -16px;\n\t\tright: 0px;\n\t}\n\t#rop_core .rop-api-not-available {\n\t\tmargin:10px 0px 10px 0px;\n\t}\n\n\t#rop_core .badge.badge-logs::after {\n\t\tright: auto;\n\t\ttop: 0px;\n\t}\n\n\t#rop_core .badge.badge-logs {\n\t\tpadding-right: 10px;\n\t}\n", ""]);
+exports.push([module.i, "\n    #rop_core .badge[data-badge]::after {\n        position: absolute;\n        bottom: -16px;\n        right: 0px;\n    }\n\n    #rop_core .rop-api-not-available {\n        margin: 10px 0px 10px 0px;\n    }\n\n    #rop_core .badge.badge-logs::after {\n        right: auto;\n        top: 0px;\n    }\n\n    #rop_core .badge.badge-logs {\n        padding-right: 10px;\n    }\n", ""]);
 
 // exports
 
@@ -34322,263 +34326,308 @@ var _upsellSidebar2 = _interopRequireDefault(_upsellSidebar);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 module.exports = {
-	name: 'main-page-panel',
-	computed: {
-		/**
-   * Display the clicked tab.
-   *
-   * @returns {module.exports.computed.displayTabs|*[]}
-   */
-		displayTabs: function displayTabs() {
-			return this.$store.state.displayTabs;
-		},
-		/**
-   * Get active page.
-   */
-		page: function page() {
-			return this.$store.state.page;
-		},
-		/**
-   * Check if rest api is available.
-   */
-		is_rest_api_error: function is_rest_api_error() {
-			return this.$store.state.api_not_available;
-		},
-		current_time: {
-			get: function get() {
-				return this.$store.state.cron_status.current_time;
-			},
-			set: function set(value) {
-				this.$store.state.cron_status.current_time = value;
-			}
-		},
-		date_format: function date_format() {
+    name: 'main-page-panel',
+    computed: {
+        /**
+         * Display the clicked tab.
+         *
+         * @returns {module.exports.computed.displayTabs|*[]}
+         */
+        displayTabs: function displayTabs() {
+            return this.$store.state.displayTabs;
+        },
+        /**
+         * Get active page.
+         */
+        page: function page() {
+            return this.$store.state.page;
+        },
+        /**
+         * Check if rest api is available.
+         */
+        is_rest_api_error: function is_rest_api_error() {
+            return this.$store.state.api_not_available;
+        },
+        current_time: {
+            get: function get() {
+                return this.$store.state.cron_status.current_time;
+            },
+            set: function set(value) {
+                this.$store.state.cron_status.current_time = value;
+            }
+        },
+        date_format: function date_format() {
 
-			return this.$store.state.cron_status.date_format;
-		},
-		logs_no: function logs_no() {
+            return this.$store.state.cron_status.date_format;
+        },
+        logs_no: function logs_no() {
 
-			return this.$store.state.cron_status.logs_number;
-		},
-		/**
-   * Get btn start class.
-   */
-		btn_class: function btn_class() {
-			var btn_class = 'btn-' + (this.start_status ? 'danger' : 'success');
-			if (!this.haveAccountsActive) {
-				btn_class += ' tooltip button-disabled ';
-			}
-			return btn_class;
-		},
-		/**
-   * Check if we have accounts connected.
-   *
-   * @returns {boolean}
-   */
-		haveAccounts: function haveAccounts() {
-			return (0, _keys2.default)(this.$store.state.authenticatedServices).length > 0;
-		},
-		/**
-   * Check if we have accounts active.
-   *
-   * @returns {boolean}
-   */
-		haveAccountsActive: function haveAccountsActive() {
-			return (0, _keys2.default)(this.$store.state.activeAccounts).length > 0;
-		},
-		/*
-  * Check if the sharing is started.
-  */
-		start_status: function start_status() {
-			return this.$store.state.cron_status.current_status;
-		},
+            return this.$store.state.cron_status.logs_number;
+        },
+        /**
+         * Get btn start class.
+         */
+        btn_class: function btn_class() {
+            var btn_class = 'btn-' + (this.start_status ? 'danger' : 'success');
+            if (!this.haveAccountsActive) {
+                btn_class += ' tooltip button-disabled ';
+            }
+            return btn_class;
+        },
+        /**
+         * Check if we have accounts connected.
+         *
+         * @returns {boolean}
+         */
+        haveAccounts: function haveAccounts() {
+            return (0, _keys2.default)(this.$store.state.authenticatedServices).length > 0;
+        },
+        /**
+         * Check if we have accounts active.
+         *
+         * @returns {boolean}
+         */
+        haveAccountsActive: function haveAccountsActive() {
+            return (0, _keys2.default)(this.$store.state.activeAccounts).length > 0;
+        },
+        /*
+        * Check if the sharing is started.
+        */
+        start_status: function start_status() {
+            return this.$store.state.cron_status.current_status;
+        },
 
-		/**
-   * Get general settings.
-   * @returns {module.exports.computed.generalSettings|Array|*}
-   */
-		generalSettings: function generalSettings() {
-			return this.$store.state.generalSettings;
-		},
-		/**
-   * Get general settings.
-   * @returns {module.exports.computed.generalSettings|Array|*}
-   */
-		formatedDate: function formatedDate() {
-			if (typeof this.date_format === 'undefined') {
-				return '';
-			}
-			return _moment2.default.utc(this.current_time, 'X').format(this.date_format.replace('mm', 'mm:ss'));
-		}
-	},
-	mounted: function mounted() {
-		var _this = this;
+        /**
+         * Get general settings.
+         * @returns {module.exports.computed.generalSettings|Array|*}
+         */
+        generalSettings: function generalSettings() {
+            return this.$store.state.generalSettings;
+        },
+        /**
+         * Get general settings.
+         * @returns {module.exports.computed.generalSettings|Array|*}
+         */
+        formatedDate: function formatedDate() {
+            if (typeof this.date_format === 'undefined') {
+                return '';
+            }
+            return _moment2.default.utc(this.current_time, 'X').format(this.date_format.replace('mm', 'mm:ss'));
+        }
+    },
+    mounted: function mounted() {
+        var _this = this;
 
-		setInterval(function () {
-			//this.$log.info('counting');
-			if (_this.current_time > 0) {
-				_this.current_time += 1;
-			}
-		}, 1000);
-	},
-	created: function created() {},
+        setInterval(function () {
+            //this.$log.info('counting');
+            if (_this.current_time > 0) {
+                _this.current_time += 1;
+            }
+        }, 1000);
 
-	data: function data() {
-		return {
-			to_pro_upsell: ROP_ASSETS_URL + 'img/to_pro.png',
-			to_business_upsell: ROP_ASSETS_URL + 'img/to_business.png',
-			plugin_logo: ROP_ASSETS_URL + 'img/logo_rop.png',
-			license: this.$store.state.licence,
-			labels: this.$store.state.labels.general,
-			upsell_link: ropApiSettings.upsell_link,
-			staging: ropApiSettings.staging,
-			is_loading: false
-		};
-	},
-	methods: {
-		/**
-   * Toggle sharing.
-   */
-		togglePosting: function togglePosting() {
-			var _this2 = this;
+        this.get_toast_message(false);
+    },
+    created: function created() {},
 
-			if (this.is_loading) {
-				this.$log.warn('Request in progress...Bail');
-				return;
-			}
-			this.is_loading = true;
-			this.$store.dispatch('fetchAJAXPromise', {
-				req: 'manage_cron',
-				data: {
-					'action': this.start_status === false ? 'start' : 'stop'
-				}
-			}).then(function (response) {
-				_this2.is_loading = false;
-			}, function (error) {
-				_this2.is_loading = false;
-				Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
-			});
-		},
+    data: function data() {
+        return {
+            to_pro_upsell: ROP_ASSETS_URL + 'img/to_pro.png',
+            to_business_upsell: ROP_ASSETS_URL + 'img/to_business.png',
+            plugin_logo: ROP_ASSETS_URL + 'img/logo_rop.png',
+            license: this.$store.state.licence,
+            labels: this.$store.state.labels.general,
+            upsell_link: ropApiSettings.upsell_link,
+            staging: ropApiSettings.staging,
+            is_loading: false,
+            is_loading_logs: false
+        };
+    },
+    methods: {
+        /**
+         * Toggle sharing.
+         */
+        togglePosting: function togglePosting() {
+            var _this2 = this;
 
-		/**
-   * Toggle tab active.
-   * @param slug
-   */
-		switchTab: function switchTab(slug) {
-			this.$store.commit('setTabView', slug);
-		}
-	},
-	components: {
-		'accounts': _accountsTabPanel2.default,
-		'settings': _settingsTabPanel2.default,
-		'accounts-selector': _accountsSelectorPanel2.default,
-		'queue': _queueTabPanel2.default,
-		'logs': _logsTabPanel2.default,
-		'upsell-sidebar': _upsellSidebar2.default,
-		'toast': _toast2.default,
-		'countdown': _countdown2.default
-	}
-	// </script>
-	//
-	// <style>
-	// 	#rop_core .badge[data-badge]::after {
-	// 		position: absolute;
-	// 		bottom: -16px;
-	// 		right: 0px;
-	// 	}
-	// 	#rop_core .rop-api-not-available {
-	// 		margin:10px 0px 10px 0px;
-	// 	}
-	//
-	// 	#rop_core .badge.badge-logs::after {
-	// 		right: auto;
-	// 		top: 0px;
-	// 	}
-	//
-	// 	#rop_core .badge.badge-logs {
-	// 		padding-right: 10px;
-	// 	}
-	// </style>
-	//
+            if (this.is_loading) {
+                this.$log.warn('Request in progress...Bail');
+                return;
+            }
+            this.is_loading = true;
+            this.$store.dispatch('fetchAJAXPromise', {
+                req: 'manage_cron',
+                data: {
+                    'action': this.start_status === false ? 'start' : 'stop'
+                }
+            }).then(function (response) {
+                _this2.is_loading = false;
+            }, function (error) {
+                _this2.is_loading = false;
+                Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+            });
+        },
+
+        /**
+         * Toggle tab active.
+         * @param slug
+         */
+        switchTab: function switchTab(slug) {
+            this.$store.commit('setTabView', slug);
+        },
+        get_toast_message: function get_toast_message(force) {
+            var _this3 = this;
+
+            if (this.is_loading_logs) {
+                this.$log.warn('Request in progress...Bail');
+                return;
+            }
+            this.is_loading_logs = true;
+            this.$store.dispatch('fetchAJAXPromise', {
+                req: 'get_toast',
+                data: { force: force }
+            }).then(function (response) {
+                _this3.$log.info('Succesfully fetched toast log.');
+                _this3.is_loading_logs = false;
+                _this3.$store.dispatch('fetchAJAX', { req: 'manage_cron', data: { action: 'status' } });
+
+                // Toast message code start
+                if (response.length) {
+                    var toast = {
+                        type: response[0].type,
+                        show: true,
+                        title: 'Error encountered',
+                        message: response[0].message
+                    };
+                    _this3.$store.commit('updateState', { stateData: toast, requestName: 'update_toast' });
+                }
+                // Toast message code end
+            }, function (error) {
+                Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+                _this3.is_loading_logs = false;
+            });
+        }
+    },
+    components: {
+        'accounts': _accountsTabPanel2.default,
+        'settings': _settingsTabPanel2.default,
+        'accounts-selector': _accountsSelectorPanel2.default,
+        'queue': _queueTabPanel2.default,
+        'logs': _logsTabPanel2.default,
+        'upsell-sidebar': _upsellSidebar2.default,
+        'toast': _toast2.default,
+        'countdown': _countdown2.default
+    }
+    // </script>
+    //
+    // <style>
+    //     #rop_core .badge[data-badge]::after {
+    //         position: absolute;
+    //         bottom: -16px;
+    //         right: 0px;
+    //     }
+    //
+    //     #rop_core .rop-api-not-available {
+    //         margin: 10px 0px 10px 0px;
+    //     }
+    //
+    //     #rop_core .badge.badge-logs::after {
+    //         right: auto;
+    //         top: 0px;
+    //     }
+    //
+    //     #rop_core .badge.badge-logs {
+    //         padding-right: 10px;
+    //     }
+    // </style>
+    //
 
 }; // <template>
-// 	<div>
-// 		<div class="columns panel-header">
-// 			<div class="column header-logo vertical-align">
-// 				<div>
-// 					<img :src="plugin_logo" class="plugin-logo avatar avatar-lg"/>
-// 					<h1 class="plugin-title d-inline-block">Revive Old Posts</h1><span class="powered d-inline-block"> {{labels.by}} <a
-// 						href="https://revive.social" target="_blank"><b>Revive.Social</b></a></span>
-// 					<div id="rop_social_actions">
-// 					<a v-if="haveAccounts" href="https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform" target="_blank" class="submit-feedback"><span><i class="fa fa-commenting" aria-hidden="true"></i></span> {{labels.survey}}</a>
-// 					<a v-if="haveAccounts" href="https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial" target="_blank" class="tweet-about-it"><span><i class="fa fa-twitter" aria-hidden="true"></i></span> {{labels.tweet_about_it}}</a>
-// 					<a v-if="haveAccounts" href="https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post" target="_blank" class="leave-a-review"><span><i class="fa fa-star" aria-hidden="true"></i></span> {{labels.review_it}}</a>
-// 					</div>
-// 				</div>
-// 			</div>
-// 			<div v-if=" is_rest_api_error " class="toast toast-error rop-api-not-available" v-html="labels.api_not_available">
-// 			</div>
-// 			<div class="sidebar sidebar-top card rop-container-start">
-// 				<div class="toast rop-current-time" v-if="formatedDate">
-// 					{{labels.now}}: {{ formatedDate }}
-// 				</div>
-// 				<countdown :current_time="current_time"/>
-// 				<button class="btn btn-sm" :class="btn_class"
-// 				        :data-tooltip="labels.active_account_warning"
-// 				        @click="togglePosting()" :disabled="!haveAccountsActive">
-// 					<i class="fa fa-play" v-if="!is_loading && !start_status"></i>
-// 					<i class="fa fa-stop" v-else-if="!is_loading && start_status"></i>
-// 					<i class="fa fa-spinner fa-spin" v-else></i>
-// 					{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}
-// 				</button>
-// 			</div>
-// 		</div>
+//     <div>
+//         <div class="columns panel-header">
+//             <div class="column header-logo vertical-align">
+//                 <div>
+//                     <img :src="plugin_logo" class="plugin-logo avatar avatar-lg"/>
+//                     <h1 class="plugin-title d-inline-block">Revive Old Posts</h1><span class="powered d-inline-block"> {{labels.by}} <a
+//                         href="https://revive.social" target="_blank"><b>Revive.Social</b></a></span>
+//                     <div id="rop_social_actions">
+//                         <a v-if="haveAccounts" href="https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform" target="_blank" class="submit-feedback"><span><i
+//                                 class="fa fa-commenting" aria-hidden="true"></i></span> {{labels.survey}}</a>
+//                         <a v-if="haveAccounts"
+//                            href="https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial"
+//                            target="_blank" class="tweet-about-it"><span><i class="fa fa-twitter" aria-hidden="true"></i></span> {{labels.tweet_about_it}}</a>
+//                         <a v-if="haveAccounts" href="https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post" target="_blank" class="leave-a-review"><span><i class="fa fa-star"
+//                                                                                                                                                                             aria-hidden="true"></i></span>
+//                             {{labels.review_it}}</a>
+//                     </div>
+//                 </div>
+//             </div>
+//             <toast/>
+//             <div v-if=" is_rest_api_error " class="toast toast-error rop-api-not-available" v-html="labels.api_not_available">
+//             </div>
 //
-// 		<div class="columns">
-// 			<div class="panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-// 				<div class="panel-nav" style="padding: 8px;">
-// 					<ul class="tab ">
-// 						<li class="tab-item c-hand" v-for="tab in displayTabs"
-// 						    :class="{ active: tab.isActive }" v-bind:id="tab.name.replace(' ', '').toLowerCase()">
-// 							<a :class=" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' "
-// 							   :data-badge="logs_no"
-// 							   @click="switchTab( tab.slug )">{{ tab.name }}</a>
-// 						</li>
-// 					</ul>
-// 				</div>
-// 				<component :is="page.template" :type="page.view"></component>
-// 			</div>
+//             <div class="sidebar sidebar-top card rop-container-start">
+//                 <div class="toast rop-current-time" v-if="formatedDate">
+//                     {{labels.now}}: {{ formatedDate }}
+//                 </div>
+//                 <countdown :current_time="current_time"/>
+//                 <button class="btn btn-sm" :class="btn_class"
+//                         :data-tooltip="labels.active_account_warning"
+//                         @click="togglePosting()" :disabled="!haveAccountsActive">
+//                     <i class="fa fa-play" v-if="!is_loading && !start_status"></i>
+//                     <i class="fa fa-stop" v-else-if="!is_loading && start_status"></i>
+//                     <i class="fa fa-spinner fa-spin" v-else></i>
+//                     {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}
+//                 </button>
+//             </div>
+//         </div>
 //
-// 			<div class="sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12"
-// 			     :class="'rop-license-plan-'+license">
+//         <div class="columns">
+//             <div class="panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+//                 <div class="panel-nav" style="padding: 8px;">
+//                     <ul class="tab ">
+//                         <li class="tab-item c-hand" v-for="tab in displayTabs"
+//                             :class="{ active: tab.isActive }" v-bind:id="tab.name.replace(' ', '').toLowerCase()">
+//                             <a :class=" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' "
+//                                :data-badge="logs_no"
+//                                @click="switchTab( tab.slug )">{{ tab.name }}</a>
+//                         </li>
+//                     </ul>
+//                 </div>
+//                 <component :is="page.template" :type="page.view"></component>
+//             </div>
 //
-// 				<div class="card rop-container-start">
-// 					<div class="toast rop-current-time" v-if="formatedDate && haveAccounts">
-// 						{{labels.now}}: {{ formatedDate }}
-// 					</div>
-// 					<countdown :current_time="current_time"/>
-// 					<button  id="rop_start_stop_btn" class="btn" :class="btn_class"
-// 					        :data-tooltip="labels.active_account_warning"
-// 					        @click="togglePosting()" :disabled="!haveAccountsActive">
-// 						<i class="fa fa-play" v-if="!is_loading && !start_status"></i>
-// 						<i class="fa fa-stop" v-else-if="!is_loading && start_status"></i>
-// 						<i class="fa fa-spinner fa-spin" v-else></i>
-// 						{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}
-// 					</button>
-// 					<div id="staging-status" v-if="staging">
-// 						{{labels.staging_status}}
-// 					</div>
-// 					<div v-if="!haveAccounts" class="rop-spacer"></div>
-// 					<div v-if="haveAccounts"><upsell-sidebar></upsell-sidebar></div>
-// 					<a v-if="haveAccounts" href="https://trello.com/b/svAZqXO1/roadmap-revive-old-posts" target="_blank" class="btn support_btns">{{labels.rop_roadmap}}</a>
-// 					<a v-if="haveAccounts" href="https://docs.revive.social/" target="_blank" class="btn support_btns">{{labels.rop_docs}}</a>
-// 					<a v-if="license  >= 1" href="https://revive.social/pro-support/" target="_blank" class="btn support_btns">{{labels.rop_support}}</a>
-// 					<a v-if="license  < 1" href="https://revive.social/support/" target="_blank" class="btn support_btns">{{labels.rop_support}}</a>
-// 				</div>
+//             <div class="sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12"
+//                  :class="'rop-license-plan-'+license">
 //
-// 			</div>
-// 		</div>
-// 	</div>
+//                 <div class="card rop-container-start">
+//                     <div class="toast rop-current-time" v-if="formatedDate && haveAccounts">
+//                         {{labels.now}}: {{ formatedDate }}
+//                     </div>
+//                     <countdown :current_time="current_time"/>
+//                     <button id="rop_start_stop_btn" class="btn" :class="btn_class"
+//                             :data-tooltip="labels.active_account_warning"
+//                             @click="togglePosting()" :disabled="!haveAccountsActive">
+//                         <i class="fa fa-play" v-if="!is_loading && !start_status"></i>
+//                         <i class="fa fa-stop" v-else-if="!is_loading && start_status"></i>
+//                         <i class="fa fa-spinner fa-spin" v-else></i>
+//                         {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}
+//                     </button>
+//                     <div id="staging-status" v-if="staging">
+//                         {{labels.staging_status}}
+//                     </div>
+//                     <div v-if="!haveAccounts" class="rop-spacer"></div>
+//                     <div v-if="haveAccounts">
+//                         <upsell-sidebar></upsell-sidebar>
+//                     </div>
+//                     <a v-if="haveAccounts" href="https://trello.com/b/svAZqXO1/roadmap-revive-old-posts" target="_blank" class="btn support_btns">{{labels.rop_roadmap}}</a>
+//                     <a v-if="haveAccounts" href="https://docs.revive.social/" target="_blank" class="btn support_btns">{{labels.rop_docs}}</a>
+//                     <a v-if="license  >= 1" href="https://revive.social/pro-support/" target="_blank" class="btn support_btns">{{labels.rop_support}}</a>
+//                     <a v-if="license  < 1" href="https://revive.social/support/" target="_blank" class="btn support_btns">{{labels.rop_support}}</a>
+//                 </div>
+//
+//             </div>
+//         </div>
+//     </div>
 // </template>
 //
 // <script>
@@ -38837,6 +38886,15 @@ module.exports = {
 				_this.$log.info('Succesfully fetched logs.');
 				_this.is_loading = false;
 				_this.$store.dispatch('fetchAJAX', { req: 'manage_cron', data: { action: 'status' } });
+				if (true === force) {
+					var toast = {
+						type: 'success',
+						show: false,
+						title: '',
+						message: ''
+					};
+					_this.$store.commit('updateState', { stateData: toast, requestName: 'update_toast' });
+				}
 			}, function (error) {
 				Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
 
@@ -39280,7 +39338,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .toast.hidden {\n\t\tdisplay: none;\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop_core .toast.hidden {\n\t\tdisplay: none;\n\t}\n\t#rop_core .toast {\n\t\tmargin: 10px 0;\n\t}\n", ""]);
 
 // exports
 
@@ -39325,6 +39383,9 @@ module.exports = {
 			};
 		}
 	},
+	mounted: function mounted() {},
+	created: function created() {},
+
 	methods: {
 		closeThis: function closeThis() {
 			this.toast.show = false;
@@ -39335,6 +39396,9 @@ module.exports = {
 	// <style>
 	// 	#rop_core .toast.hidden {
 	// 		display: none;
+	// 	}
+	// 	#rop_core .toast {
+	// 		margin: 10px 0;
 	// 	}
 	// </style>
 
@@ -41237,7 +41301,7 @@ module.exports = "\n\t<div class=\"toast toast-success rop-current-time\" v-if=\
 /* 301 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div>\n\t\t<div class=\"columns panel-header\">\n\t\t\t<div class=\"column header-logo vertical-align\">\n\t\t\t\t<div>\n\t\t\t\t\t<img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/>\n\t\t\t\t\t<h1 class=\"plugin-title d-inline-block\">Revive Old Posts</h1><span class=\"powered d-inline-block\"> {{labels.by}} <a\n\t\t\t\t\t\thref=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\n\t\t\t\t\t<div id=\"rop_social_actions\">\n\t\t\t\t\t<a v-if=\"haveAccounts\" href=\"https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform\" target=\"_blank\" class=\"submit-feedback\"><span><i class=\"fa fa-commenting\" aria-hidden=\"true\"></i></span> {{labels.survey}}</a>\n\t\t\t\t\t<a v-if=\"haveAccounts\" href=\"https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial\" target=\"_blank\" class=\"tweet-about-it\"><span><i class=\"fa fa-twitter\" aria-hidden=\"true\"></i></span> {{labels.tweet_about_it}}</a>\n\t\t\t\t\t<a v-if=\"haveAccounts\" href=\"https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post\" target=\"_blank\" class=\"leave-a-review\"><span><i class=\"fa fa-star\" aria-hidden=\"true\"></i></span> {{labels.review_it}}</a>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div v-if=\" is_rest_api_error \" class=\"toast toast-error rop-api-not-available\" v-html=\"labels.api_not_available\">\n\t\t\t</div>\n\t\t\t<div class=\"sidebar sidebar-top card rop-container-start\">\n\t\t\t\t<div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n\t\t\t\t\t{{labels.now}}: {{ formatedDate }}\n\t\t\t\t</div>\n\t\t\t\t<countdown :current_time=\"current_time\"/>\n\t\t\t\t<button class=\"btn btn-sm\" :class=\"btn_class\"\n\t\t\t\t        :data-tooltip=\"labels.active_account_warning\"\n\t\t\t\t        @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t\t{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns\">\n\t\t\t<div class=\"panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\n\t\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t\t<ul class=\"tab \">\n\t\t\t\t\t\t<li class=\"tab-item c-hand\" v-for=\"tab in displayTabs\"\n\t\t\t\t\t\t    :class=\"{ active: tab.isActive }\" v-bind:id=\"tab.name.replace(' ', '').toLowerCase()\">\n\t\t\t\t\t\t\t<a :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\n\t\t\t\t\t\t\t   :data-badge=\"logs_no\"\n\t\t\t\t\t\t\t   @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\n\t\t\t\t\t\t</li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t\t<component :is=\"page.template\" :type=\"page.view\"></component>\n\t\t\t</div>\n\n\t\t\t<div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\n\t\t\t     :class=\"'rop-license-plan-'+license\">\n\n\t\t\t\t<div class=\"card rop-container-start\">\n\t\t\t\t\t<div class=\"toast rop-current-time\" v-if=\"formatedDate && haveAccounts\">\n\t\t\t\t\t\t{{labels.now}}: {{ formatedDate }}\n\t\t\t\t\t</div>\n\t\t\t\t\t<countdown :current_time=\"current_time\"/>\n\t\t\t\t\t<button  id=\"rop_start_stop_btn\" class=\"btn\" :class=\"btn_class\"\n\t\t\t\t\t        :data-tooltip=\"labels.active_account_warning\"\n\t\t\t\t\t        @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n\t\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t\t\t{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n\t\t\t\t\t</button>\n\t\t\t\t\t<div id=\"staging-status\" v-if=\"staging\">\n\t\t\t\t\t\t{{labels.staging_status}}\n\t\t\t\t\t</div>\n\t\t\t\t\t<div v-if=\"!haveAccounts\" class=\"rop-spacer\"></div>\n\t\t\t\t\t<div v-if=\"haveAccounts\"><upsell-sidebar></upsell-sidebar></div>\n\t\t\t\t\t<a v-if=\"haveAccounts\" href=\"https://trello.com/b/svAZqXO1/roadmap-revive-old-posts\" target=\"_blank\" class=\"btn support_btns\">{{labels.rop_roadmap}}</a>\n\t\t\t\t\t<a v-if=\"haveAccounts\" href=\"https://docs.revive.social/\" target=\"_blank\" class=\"btn support_btns\">{{labels.rop_docs}}</a>\n\t\t\t\t\t<a v-if=\"license  >= 1\" href=\"https://revive.social/pro-support/\" target=\"_blank\" class=\"btn support_btns\">{{labels.rop_support}}</a>\n\t\t\t\t\t<a v-if=\"license  < 1\" href=\"https://revive.social/support/\" target=\"_blank\" class=\"btn support_btns\">{{labels.rop_support}}</a>\n\t\t\t\t</div>\n\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n    <div>\n        <div class=\"columns panel-header\">\n            <div class=\"column header-logo vertical-align\">\n                <div>\n                    <img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/>\n                    <h1 class=\"plugin-title d-inline-block\">Revive Old Posts</h1><span class=\"powered d-inline-block\"> {{labels.by}} <a\n                        href=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\n                    <div id=\"rop_social_actions\">\n                        <a v-if=\"haveAccounts\" href=\"https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform\" target=\"_blank\" class=\"submit-feedback\"><span><i\n                                class=\"fa fa-commenting\" aria-hidden=\"true\"></i></span> {{labels.survey}}</a>\n                        <a v-if=\"haveAccounts\"\n                           href=\"https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial\"\n                           target=\"_blank\" class=\"tweet-about-it\"><span><i class=\"fa fa-twitter\" aria-hidden=\"true\"></i></span> {{labels.tweet_about_it}}</a>\n                        <a v-if=\"haveAccounts\" href=\"https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post\" target=\"_blank\" class=\"leave-a-review\"><span><i class=\"fa fa-star\"\n                                                                                                                                                                            aria-hidden=\"true\"></i></span>\n                            {{labels.review_it}}</a>\n                    </div>\n                </div>\n            </div>\n            <toast/>\n            <div v-if=\" is_rest_api_error \" class=\"toast toast-error rop-api-not-available\" v-html=\"labels.api_not_available\">\n            </div>\n\n            <div class=\"sidebar sidebar-top card rop-container-start\">\n                <div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n                    {{labels.now}}: {{ formatedDate }}\n                </div>\n                <countdown :current_time=\"current_time\"/>\n                <button class=\"btn btn-sm\" :class=\"btn_class\"\n                        :data-tooltip=\"labels.active_account_warning\"\n                        @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n                    <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n                    <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n                    <i class=\"fa fa-spinner fa-spin\" v-else></i>\n                    {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n                </button>\n            </div>\n        </div>\n\n        <div class=\"columns\">\n            <div class=\"panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\n                <div class=\"panel-nav\" style=\"padding: 8px;\">\n                    <ul class=\"tab \">\n                        <li class=\"tab-item c-hand\" v-for=\"tab in displayTabs\"\n                            :class=\"{ active: tab.isActive }\" v-bind:id=\"tab.name.replace(' ', '').toLowerCase()\">\n                            <a :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\n                               :data-badge=\"logs_no\"\n                               @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\n                        </li>\n                    </ul>\n                </div>\n                <component :is=\"page.template\" :type=\"page.view\"></component>\n            </div>\n\n            <div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\n                 :class=\"'rop-license-plan-'+license\">\n\n                <div class=\"card rop-container-start\">\n                    <div class=\"toast rop-current-time\" v-if=\"formatedDate && haveAccounts\">\n                        {{labels.now}}: {{ formatedDate }}\n                    </div>\n                    <countdown :current_time=\"current_time\"/>\n                    <button id=\"rop_start_stop_btn\" class=\"btn\" :class=\"btn_class\"\n                            :data-tooltip=\"labels.active_account_warning\"\n                            @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n                        <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n                        <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n                        <i class=\"fa fa-spinner fa-spin\" v-else></i>\n                        {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n                    </button>\n                    <div id=\"staging-status\" v-if=\"staging\">\n                        {{labels.staging_status}}\n                    </div>\n                    <div v-if=\"!haveAccounts\" class=\"rop-spacer\"></div>\n                    <div v-if=\"haveAccounts\">\n                        <upsell-sidebar></upsell-sidebar>\n                    </div>\n                    <a v-if=\"haveAccounts\" href=\"https://trello.com/b/svAZqXO1/roadmap-revive-old-posts\" target=\"_blank\" class=\"btn support_btns\">{{labels.rop_roadmap}}</a>\n                    <a v-if=\"haveAccounts\" href=\"https://docs.revive.social/\" target=\"_blank\" class=\"btn support_btns\">{{labels.rop_docs}}</a>\n                    <a v-if=\"license  >= 1\" href=\"https://revive.social/pro-support/\" target=\"_blank\" class=\"btn support_btns\">{{labels.rop_support}}</a>\n                    <a v-if=\"license  < 1\" href=\"https://revive.social/support/\" target=\"_blank\" class=\"btn support_btns\">{{labels.rop_support}}</a>\n                </div>\n\n            </div>\n        </div>\n    </div>\n";
 
 /***/ })
 /******/ ]);
