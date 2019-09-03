@@ -623,7 +623,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			  ),
 		  );
 
-		return $new_post;
+		  return $new_post;
 	}
 
 }

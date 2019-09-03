@@ -64,7 +64,7 @@ class Rop_Logger {
 	 * @access  public
 	 *
 	 * @param   string $message The message to log.
-	 * @param   array $context [optional] A context for the message, if needed.
+	 * @param   array  $context [optional] A context for the message, if needed.
 	 */
 	public function info( $message = '', $context = array() ) {
 		$this->logger->info( $message, $context );
@@ -77,7 +77,7 @@ class Rop_Logger {
 	 * @access  public
 	 *
 	 * @param   string $message The message to log.
-	 * @param   array $context [optional] A context for the message, if needed.
+	 * @param   array  $context [optional] A context for the message, if needed.
 	 */
 	public function alert_error( $message = '', $context = array() ) {
 		$context_new = array_merge( array( 'type' => 'error' ), $context );
@@ -91,7 +91,7 @@ class Rop_Logger {
 	 * @access  public
 	 *
 	 * @param   string $message The message to log.
-	 * @param   array $context [optional] A context for the message, if needed.
+	 * @param   array  $context [optional] A context for the message, if needed.
 	 */
 	public function alert_success( $message = '', $context = array() ) {
 		$context_new = array_merge( array( 'type' => 'success' ), $context );
@@ -128,7 +128,7 @@ class Rop_Logger {
 	 * @access  public
 	 *
 	 * @param   string $message The message to log.
-	 * @param   array $context [optional] A context for the message, if needed.
+	 * @param   array  $context [optional] A context for the message, if needed.
 	 */
 	public function warn( $message = '', $context = array() ) {
 		$this->logger->warn( $message );
@@ -141,7 +141,7 @@ class Rop_Logger {
 	 * @access  public
 	 *
 	 * @param   string $message The message to log.
-	 * @param   array $context [optional] A context for the message, if needed.
+	 * @param   array  $context [optional] A context for the message, if needed.
 	 */
 	public function error( $message = '', $context = array() ) {
 		$this->logger->error( $message );
