@@ -45,6 +45,7 @@ if ( isset( $housekeeping ) && $housekeeping ) {
 		'tweet_old_post_review_flag',
 		// Misc
 		'rop_logs',
+		'rop_toast',
 		'cwp_rop_remote_trigger',
 		'rop_notice_active',
 		'rop_menu_pointer_queued',

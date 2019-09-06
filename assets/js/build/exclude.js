@@ -13021,7 +13021,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+    value: true
 });
 
 var _vue = __webpack_require__(7);
@@ -13048,288 +13048,292 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /* exported ropApiSettings */
 
 var logOptions = {
-	// required ['debug', 'info', 'warn', 'error', 'fatal']
-	logLevel: ropApiSettings.debug === 'yes' ? 'debug' : 'error',
-	// optional : defaults to false if not specified
-	stringifyArguments: false,
-	// optional : defaults to false if not specified
-	showLogLevel: false,
-	// optional : defaults to false if not specified
-	showMethodName: false,
-	// optional : defaults to '|' if not specified
-	separator: '|',
-	// optional : defaults to false if not specified
-	showConsoleColors: true
+    // required ['debug', 'info', 'warn', 'error', 'fatal']
+    logLevel: ropApiSettings.debug === 'yes' ? 'debug' : 'error',
+    // optional : defaults to false if not specified
+    stringifyArguments: false,
+    // optional : defaults to false if not specified
+    showLogLevel: false,
+    // optional : defaults to false if not specified
+    showMethodName: false,
+    // optional : defaults to '|' if not specified
+    separator: '|',
+    // optional : defaults to false if not specified
+    showConsoleColors: true
 };
 _vue2.default.use(_vuex2.default);
 _vue2.default.use(_vueResource2.default);
 _vue2.default.use(_vuejsLogger2.default, logOptions);
 
 exports.default = new _vuex2.default.Store({
-	state: {
-		page: {
-			debug: false,
-			logs: [],
-			view: 'accounts',
-			template: 'accounts'
-		},
-		cron_status: {},
-		toast: {
-			type: 'success',
-			show: false,
-			title: '',
-			message: ''
-		},
-		ajaxLoader: false,
-		api_not_available: false,
-		auth_in_progress: false,
-		displayTabs: [{
-			name: ropApiSettings.labels.accounts.menu_item,
-			slug: 'accounts',
-			view: 'accounts',
-			isActive: true
-		}, {
-			name: ropApiSettings.labels.settings.menu_item,
-			slug: 'settings',
-			view: 'settings',
-			isActive: false
-		}, {
-			name: ropApiSettings.labels.post_format.menu_item,
-			slug: 'post-format',
-			view: 'accounts-selector',
-			isActive: false
-		}, {
-			name: ropApiSettings.labels.schedule.menu_item,
-			slug: 'schedule',
-			view: 'accounts-selector',
-			isActive: false
-		}, {
-			name: ropApiSettings.labels.queue.menu_item,
-			slug: 'queue',
-			view: 'queue',
-			isActive: false
-		}, {
-			name: ropApiSettings.labels.logs.menu_item,
-			slug: 'logs',
-			view: 'logs',
-			isActive: false
-		}],
-		licence: parseInt(ropApiSettings.license_type),
-		labels: ropApiSettings.labels,
-		availableServices: [],
-		generalSettings: [],
-		authenticatedServices: [],
-		activeAccounts: {},
-		activePostFormat: [],
-		activeSchedule: [],
-		queue: {},
-		publish_now: ropApiSettings.publish_now
-	},
-	mutations: {
-		setTabView: function setTabView(state, view) {
-			_vue2.default.$log.debug('Changing tab to  ', view);
-			for (var tab in state.displayTabs) {
-				state.displayTabs[tab].isActive = false;
-				if (state.displayTabs[tab].slug === view) {
-					state.displayTabs[tab].isActive = true;
-					state.page.view = state.displayTabs[tab].slug;
-					state.page.template = state.displayTabs[tab].view;
-				}
-			}
-		},
-		setAjaxState: function setAjaxState(state, data) {
-			state.ajaxLoader = data;
-		},
-		apiNotAvailable: function apiNotAvailable(state, data) {
-			state.api_not_available = data;
-		},
-		updateState: function updateState(state, _ref) {
-			var stateData = _ref.stateData,
-			    requestName = _ref.requestName;
+    state: {
+        page: {
+            debug: false,
+            logs: [],
+            view: 'accounts',
+            template: 'accounts'
+        },
+        cron_status: {},
+        toast: {
+            type: 'success',
+            show: false,
+            title: '',
+            message: ''
+        },
+        ajaxLoader: false,
+        api_not_available: false,
+        auth_in_progress: false,
+        displayTabs: [{
+            name: ropApiSettings.labels.accounts.menu_item,
+            slug: 'accounts',
+            view: 'accounts',
+            isActive: true
+        }, {
+            name: ropApiSettings.labels.settings.menu_item,
+            slug: 'settings',
+            view: 'settings',
+            isActive: false
+        }, {
+            name: ropApiSettings.labels.post_format.menu_item,
+            slug: 'post-format',
+            view: 'accounts-selector',
+            isActive: false
+        }, {
+            name: ropApiSettings.labels.schedule.menu_item,
+            slug: 'schedule',
+            view: 'accounts-selector',
+            isActive: false
+        }, {
+            name: ropApiSettings.labels.queue.menu_item,
+            slug: 'queue',
+            view: 'queue',
+            isActive: false
+        }, {
+            name: ropApiSettings.labels.logs.menu_item,
+            slug: 'logs',
+            view: 'logs',
+            isActive: false
+        }],
+        licence: parseInt(ropApiSettings.license_type),
+        labels: ropApiSettings.labels,
+        availableServices: [],
+        generalSettings: [],
+        authenticatedServices: [],
+        activeAccounts: {},
+        activePostFormat: [],
+        activeSchedule: [],
+        queue: {},
+        publish_now: ropApiSettings.publish_now
+    },
+    mutations: {
+        setTabView: function setTabView(state, view) {
+            _vue2.default.$log.debug('Changing tab to  ', view);
+            for (var tab in state.displayTabs) {
+                state.displayTabs[tab].isActive = false;
+                if (state.displayTabs[tab].slug === view) {
+                    state.displayTabs[tab].isActive = true;
+                    state.page.view = state.displayTabs[tab].slug;
+                    state.page.template = state.displayTabs[tab].view;
+                }
+            }
+        },
+        setAjaxState: function setAjaxState(state, data) {
+            state.ajaxLoader = data;
+        },
+        apiNotAvailable: function apiNotAvailable(state, data) {
+            state.api_not_available = data;
+        },
+        updateState: function updateState(state, _ref) {
+            var stateData = _ref.stateData,
+                requestName = _ref.requestName;
 
-			_vue2.default.$log.debug('State change for ', requestName);
-			switch (requestName) {
-				case 'manage_cron':
-					state.cron_status = stateData;
-					break;
-				case 'get_log':
-					state.page.logs = stateData;
-					break;
-				case 'update_settings_toggle':
-				case 'get_general_settings':
-					state.generalSettings = stateData;
-					break;
-				case 'update_selected_post_types':
-					state.generalSettings.selected_post_types = stateData;
-					for (var index in state.generalSettings.available_post_types) {
-						state.generalSettings.available_post_types[index].selected = false;
-						for (var indexSelected in stateData) {
-							if (state.generalSettings.available_post_types[index].value === stateData[indexSelected].value) {
-								state.generalSettings.available_post_types[index].selected = true;
-							}
-						}
-					}
-					break;
-				case 'update_selected_taxonomies':
-					state.generalSettings.selected_taxonomies = stateData;
-					for (var _index in state.generalSettings.available_taxonomies) {
-						state.generalSettings.available_taxonomies[_index].selected = false;
-						for (var _indexSelected in stateData) {
-							if (state.generalSettings.available_taxonomies[_index].value === stateData[_indexSelected].value || state.generalSettings.available_taxonomies[_index].parent === stateData[_indexSelected].value) {
-								state.generalSettings.available_taxonomies[_index].selected = true;
-							}
-						}
-					}
-					break;
-				case 'update_selected_posts':
-					state.generalSettings.selected_posts = stateData;
-					break;
-				case 'get_available_services':
-					state.availableServices = stateData;
-					break;
-				case 'get_authenticated_services':
-				case 'remove_service':
-					state.authenticatedServices = stateData;
-					break;
-				case 'authenticate_service':
-					state.authenticatedServices = stateData;
-					state.auth_in_progress = false;
-					//state.activeAccounts = stateData
-					break;
-				case 'check_account_fb':
-				case 'add_account_fb':
-					state.activeAccounts = stateData;
-					state.auth_in_progress = true;
-					break;
-				case 'get_active_accounts':
-				case 'update_active_accounts':
-				case 'remove_account':
-					state.activeAccounts = stateData;
-					break;
-				case 'get_taxonomies':
-					state.generalSettings.available_taxonomies = stateData;
-					break;
-				case 'get_posts':
-					if (stateData.page === 1) {
-						state.generalSettings.available_posts = stateData.posts;
-					} else {
-						state.generalSettings.available_posts = state.generalSettings.available_posts.concat(stateData.posts);
-					}
+            _vue2.default.$log.debug('State change for ', requestName);
+            switch (requestName) {
+                case 'manage_cron':
+                    state.cron_status = stateData;
+                    break;
+                case 'get_log':
+                    state.page.logs = stateData;
+                    break;
+                case 'get_toast':
+                    state.page.logs = stateData;
+                    break;
+                case 'update_settings_toggle':
+                case 'get_general_settings':
+                    state.generalSettings = stateData;
+                    break;
+                case 'update_selected_post_types':
+                    state.generalSettings.selected_post_types = stateData;
+                    for (var index in state.generalSettings.available_post_types) {
+                        state.generalSettings.available_post_types[index].selected = false;
+                        for (var indexSelected in stateData) {
+                            if (state.generalSettings.available_post_types[index].value === stateData[indexSelected].value) {
+                                state.generalSettings.available_post_types[index].selected = true;
+                            }
+                        }
+                    }
+                    break;
+                case 'update_selected_taxonomies':
+                    state.generalSettings.selected_taxonomies = stateData;
+                    for (var _index in state.generalSettings.available_taxonomies) {
+                        state.generalSettings.available_taxonomies[_index].selected = false;
+                        for (var _indexSelected in stateData) {
+                            if (state.generalSettings.available_taxonomies[_index].value === stateData[_indexSelected].value || state.generalSettings.available_taxonomies[_index].parent === stateData[_indexSelected].value) {
+                                state.generalSettings.available_taxonomies[_index].selected = true;
+                            }
+                        }
+                    }
+                    break;
+                case 'update_selected_posts':
+                    state.generalSettings.selected_posts = stateData;
+                    break;
+                case 'get_available_services':
+                    state.availableServices = stateData;
+                    break;
+                case 'get_authenticated_services':
+                case 'remove_service':
+                    state.authenticatedServices = stateData;
+                    break;
+                case 'authenticate_service':
+                    state.authenticatedServices = stateData;
+                    state.auth_in_progress = false;
+                    //state.activeAccounts = stateData
+                    break;
+                case 'check_account_fb':
+                case 'add_account_fb':
+                    state.activeAccounts = stateData;
+                    state.auth_in_progress = true;
+                    break;
+                case 'get_active_accounts':
+                case 'update_active_accounts':
+                case 'remove_account':
+                    state.activeAccounts = stateData;
+                    break;
+                case 'get_taxonomies':
+                    state.generalSettings.available_taxonomies = stateData;
+                    break;
+                case 'get_posts':
+                    if (stateData.page === 1) {
+                        state.generalSettings.available_posts = stateData.posts;
+                    } else {
+                        state.generalSettings.available_posts = state.generalSettings.available_posts.concat(stateData.posts);
+                    }
 
-					break;
-				case 'get_post_format':
-				case 'save_post_format':
-				case 'reset_post_format':
-					state.activePostFormat = stateData;
-					break;
-				case 'reset_accounts':
-					state.activeAccounts = {};
-					state.authenticatedServices = [];
-					break;
-				case 'get_shortner_credentials':
-					state.activePostFormat['shortner_credentials'] = stateData;
-					break;
-				case 'get_schedule':
-				case 'save_schedule':
-				case 'reset_schedule':
-					state.activeSchedule = stateData;
-					break;
-				case 'get_queue':
-				case 'update_queue_event':
-				case 'publish_queue_event':
-				case 'skip_queue_event':
-				case 'block_queue_event':
-					state.queue = stateData;
+                    break;
+                case 'get_post_format':
+                case 'save_post_format':
+                case 'reset_post_format':
+                    state.activePostFormat = stateData;
+                    break;
+                case 'reset_accounts':
+                    state.activeAccounts = {};
+                    state.authenticatedServices = [];
+                    break;
+                case 'get_shortner_credentials':
+                    state.activePostFormat['shortner_credentials'] = stateData;
+                    break;
+                case 'get_schedule':
+                case 'save_schedule':
+                case 'reset_schedule':
+                    state.activeSchedule = stateData;
+                    break;
+                case 'get_queue':
+                case 'update_queue_event':
+                case 'publish_queue_event':
+                case 'skip_queue_event':
+                case 'block_queue_event':
+                    state.queue = stateData;
 
-					break;
-				case 'update_toast':
-					state.toast = stateData;
-					break;
-				case 'toggle_account':
-				case 'exclude_post':
-				case 'exclude_post_batch':
+                    break;
+                case 'update_toast':
+                    state.toast = stateData;
+                    _vue2.default.$log.debug('yes yes here ', requestName);
+                    break;
+                case 'toggle_account':
+                case 'exclude_post':
+                case 'exclude_post_batch':
 
-					break;
-				default:
-					_vue2.default.$log.error('No state request for ', requestName);
-			}
-		}
-	},
-	actions: {
-		fetchAJAX: function fetchAJAX(_ref2, data) {
-			var commit = _ref2.commit;
+                    break;
+                default:
+                    _vue2.default.$log.error('No state request for ', requestName);
+            }
+        }
+    },
+    actions: {
+        fetchAJAX: function fetchAJAX(_ref2, data) {
+            var commit = _ref2.commit;
 
-			if (data.req !== '') {
-				commit('setAjaxState', true);
-				_vue2.default.http({
-					url: ropApiSettings.root,
-					method: 'POST',
-					headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-					params: { 'req': data.req },
-					body: data.data,
-					responseType: 'json'
-				}).then(function (response) {
-					commit('setAjaxState', false);
-					var display = false;
-					if (display) {
-						var toast = {
-							type: response.data.status,
-							show: true,
-							title: response.data.title,
-							message: response.data.message
-						};
-						commit('updateState', { stateData: toast, requestName: 'update_toast' });
-					}
-					var stateData = response.data;
-					if (response.data.data) {
-						stateData = response.data.data;
-					}
-					var requestName = data.req;
-					if (data.updateState !== false) {
-						commit('updateState', { stateData: stateData, requestName: requestName });
-					}
-				}, function () {
-					commit('setAjaxState', false);
-					_vue2.default.$log.error('Error when trying to do request: ', data.req);
-				});
-			}
-			return false;
-		},
-		fetchAJAXPromise: function fetchAJAXPromise(_ref3, data) {
-			var commit = _ref3.commit;
+            if (data.req !== '') {
+                commit('setAjaxState', true);
+                _vue2.default.http({
+                    url: ropApiSettings.root,
+                    method: 'POST',
+                    headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+                    params: { 'req': data.req },
+                    body: data.data,
+                    responseType: 'json'
+                }).then(function (response) {
+                    commit('setAjaxState', false);
+                    var display = false;
+                    if (display) {
+                        var toast = {
+                            type: response.data.status,
+                            show: true,
+                            title: response.data.title,
+                            message: response.data.message
+                        };
+                        commit('updateState', { stateData: toast, requestName: 'update_toast' });
+                    }
+                    var stateData = response.data;
+                    if (response.data.data) {
+                        stateData = response.data.data;
+                    }
+                    var requestName = data.req;
+                    if (data.updateState !== false) {
+                        commit('updateState', { stateData: stateData, requestName: requestName });
+                    }
+                }, function () {
+                    commit('setAjaxState', false);
+                    _vue2.default.$log.error('Error when trying to do request: ', data.req);
+                });
+            }
+            return false;
+        },
+        fetchAJAXPromise: function fetchAJAXPromise(_ref3, data) {
+            var commit = _ref3.commit;
 
-			if (data.req !== '') {
-				commit('setAjaxState', true);
-				return new Promise(function (resolve, reject) {
-					_vue2.default.http({
-						url: ropApiSettings.root,
-						method: 'POST',
-						headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-						params: { 'req': data.req },
-						body: data.data,
-						responseType: 'json'
-					}).then(function (response) {
-						commit('setAjaxState', false);
-						var stateData = response.data;
-						if (response.data.data) {
-							stateData = response.data.data;
-						}
-						var requestName = data.req;
-						resolve(stateData);
-						if (data.updateState !== false) {
-							commit('updateState', { stateData: stateData, requestName: requestName });
-						}
-					}, function () {
-						commit('setAjaxState', false);
-						commit('apiNotAvailable', true);
+            if (data.req !== '') {
+                commit('setAjaxState', true);
+                return new Promise(function (resolve, reject) {
+                    _vue2.default.http({
+                        url: ropApiSettings.root,
+                        method: 'POST',
+                        headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+                        params: { 'req': data.req },
+                        body: data.data,
+                        responseType: 'json'
+                    }).then(function (response) {
+                        commit('setAjaxState', false);
+                        var stateData = response.data;
+                        if (response.data.data) {
+                            stateData = response.data.data;
+                        }
+                        var requestName = data.req;
+                        resolve(stateData);
+                        if (data.updateState !== false) {
+                            commit('updateState', { stateData: stateData, requestName: requestName });
+                        }
+                    }, function () {
+                        commit('setAjaxState', false);
+                        commit('apiNotAvailable', true);
 
-						_vue2.default.$log.error('Error when trying to do request: ', data.req);
-					});
-				});
-			}
-			return false;
-		}
-	}
+                        _vue2.default.$log.error('Error when trying to do request: ', data.req);
+                    });
+                });
+            }
+            return false;
+        }
+    }
 });
 
 /***/ }),
@@ -16631,7 +16635,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/reusables/multiple-select.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/multiple-select.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -17071,7 +17075,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/upsell-sidebar.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/upsell-sidebar.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -17095,8 +17099,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-e57ad328&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-e57ad328&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-87db7594&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-87db7594&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -17114,7 +17118,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop-upsell-box[_v-e57ad328]{\n\t\tmargin-top:20px;\n\t}\n\t#rop_core .rop-upsell-business-card[_v-e57ad328],\n\t#rop_core .rop-upsell-pro-card[_v-e57ad328] {\n\t\tpadding: 0;\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop-upsell-box[_v-87db7594]{\n\t\tmargin-top:20px;\n\t}\n\t#rop_core .rop-upsell-business-card[_v-87db7594],\n\t#rop_core .rop-upsell-pro-card[_v-87db7594] {\n\t\tpadding: 0;\n\t}\n", ""]);
 
 // exports
 
@@ -17171,7 +17175,7 @@ module.exports = {
 /* 81 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div id=\"rop-upsell-box\" _v-e57ad328=\"\">\n\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \" _v-e57ad328=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-e57ad328=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_pro_upsell\" :alt=\"labels.upgrade_pro_cta\" _v-e57ad328=\"\">\n\t\t\t</a>\n\t\t</div>\n\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1\" _v-e57ad328=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-e57ad328=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_business_upsell\" :alt=\"labels.upgrade_biz_cta\" _v-e57ad328=\"\">\n\t\t\t</a>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div id=\"rop-upsell-box\" _v-87db7594=\"\">\n\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \" _v-87db7594=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-87db7594=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_pro_upsell\" :alt=\"labels.upgrade_pro_cta\" _v-87db7594=\"\">\n\t\t\t</a>\n\t\t</div>\n\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1\" _v-87db7594=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-87db7594=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_business_upsell\" :alt=\"labels.upgrade_biz_cta\" _v-87db7594=\"\">\n\t\t\t</a>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 82 */,
@@ -17442,7 +17446,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/exclude-posts-page.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/exclude-posts-page.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -17466,8 +17470,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-df8172e8&file=exclude-posts-page.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./exclude-posts-page.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-df8172e8&file=exclude-posts-page.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./exclude-posts-page.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5ea68056&file=exclude-posts-page.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./exclude-posts-page.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5ea68056&file=exclude-posts-page.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./exclude-posts-page.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -17485,7 +17489,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop-sidebar-selector[_v-df8172e8] {\n\t\tborder: 1px solid #e5e5e5;\n\t\tbackground: #fff;\n\t}\n\t\n\t#rop-posts-listing .rop-post-item td[_v-df8172e8] {\n\t\tposition: relative;\n\t}\n\t\n\t#rop-posts-table[_v-df8172e8] {\n\t\tmargin-top: 20px;\n\t}\n\t\n\t#rop-posts-listing .rop-post-item:hover button.rop-exclude-post[_v-df8172e8] {\n\t\tdisplay: block;\n\t}\n\t\n\t#rop-posts-listing .rop-post-item td button.rop-exclude-post[_v-df8172e8] {\n\t\tposition: absolute;\n\t\ttop: 5px;\n\t\tright: 10px;\n\t\tdisplay: none;\n\t\tpadding: 0px 20px;\n\t}\n\t\n\t.rop-post-true[_v-df8172e8] {\n\t\topacity: 0.8;\n\t\tbackground-color: #F6DBDA;\n\t\t\n\t}\n\t\n\t.rop-load-more-posts[_v-df8172e8] {\n\t\ttext-align: center;\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop-sidebar-selector[_v-5ea68056] {\n\t\tborder: 1px solid #e5e5e5;\n\t\tbackground: #fff;\n\t}\n\t\n\t#rop-posts-listing .rop-post-item td[_v-5ea68056] {\n\t\tposition: relative;\n\t}\n\t\n\t#rop-posts-table[_v-5ea68056] {\n\t\tmargin-top: 20px;\n\t}\n\t\n\t#rop-posts-listing .rop-post-item:hover button.rop-exclude-post[_v-5ea68056] {\n\t\tdisplay: block;\n\t}\n\t\n\t#rop-posts-listing .rop-post-item td button.rop-exclude-post[_v-5ea68056] {\n\t\tposition: absolute;\n\t\ttop: 5px;\n\t\tright: 10px;\n\t\tdisplay: none;\n\t\tpadding: 0px 20px;\n\t}\n\t\n\t.rop-post-true[_v-5ea68056] {\n\t\topacity: 0.8;\n\t\tbackground-color: #F6DBDA;\n\t\t\n\t}\n\t\n\t.rop-load-more-posts[_v-5ea68056] {\n\t\ttext-align: center;\n\t}\n", ""]);
 
 // exports
 
@@ -17899,7 +17903,7 @@ module.exports = {
 /* 307 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div id=\"rop_core\" class=\"columns \" _v-df8172e8=\"\">\n\t\t<div id=\"rop-sidebar-selector\" class=\"column col-3   col-xl-5 col-lg-5 col-md-6 col-sm-6 col-xs-12  pull-right\" _v-df8172e8=\"\">\n\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-df8172e8=\"\">\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align rop-control\" _v-df8172e8=\"\">\n\t\t\t\t\t<b _v-df8172e8=\"\">{{labels.post_types_title}}</b>\n\t\t\t\t\t<p class=\"text-gray\" _v-df8172e8=\"\">{{labels.post_types_desc}}</p>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align text-left rop-control\" _v-df8172e8=\"\">\n\t\t\t\t\t<multiple-select :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-df8172e8=\"\"></multiple-select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t\n\t\t\t<span class=\"divider\" _v-df8172e8=\"\"></span>\n\t\t\t<div class=\"columns py-2\" v-if=\"!isPro\" _v-df8172e8=\"\">\n\t\t\t\t<div class=\"column text-center\" _v-df8172e8=\"\">\n\t\t\t\t\t<p class=\"upsell\" _v-df8172e8=\"\"><i class=\"fa fa-lock\" _v-df8172e8=\"\"></i> {{labels.post_types_upsell}}</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"columns py-2\" _v-df8172e8=\"\">\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align\" _v-df8172e8=\"\">\n\t\t\t\t\t<b _v-df8172e8=\"\">{{labels.taxonomies_title}}</b>\n\t\t\t\t\t<p class=\"text-gray\" _v-df8172e8=\"\">{{labels.taxonomies_desc}}</p>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align text-left\" _v-df8172e8=\"\">\n\t\t\t\t\t<div class=\"input-group\" _v-df8172e8=\"\">\n\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" _v-df8172e8=\"\"></multiple-select>\n\t\t\t\t\t\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"columns\" _v-df8172e8=\"\">\n\t\t\t\t\t\t<span class=\"input-group-addon column col-6 pull-right vertical-align\" _v-df8172e8=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-df8172e8=\"\">{{labels.taxonomies_exclude_explicit}}\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" @change=\"excludeTaxonomiesChange\" _v-df8172e8=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-df8172e8=\"\"></i>\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</span>\n\t\t\t\t\t\t<div class=\"column col-6 py-2 text-right\" _v-df8172e8=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings\" _v-df8172e8=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-save \" v-if=\"!this.is_loading\" _v-df8172e8=\"\"></i>\n\t\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-df8172e8=\"\"></i>\n\t\t\t\t\t\t\t\t{{labels.save_filters}}\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\n\t\t\t</div>\n\t\t\t<upsell-sidebar _v-df8172e8=\"\"></upsell-sidebar>\n\t\t</div>\n\t\t<div id=\"rop-posts-listing\" class=\"column col-9  col-xl-7 col-lg-7 col-md-6 col-sm-6 col-xs-12 col- pull-left\" _v-df8172e8=\"\">\n\t\t\t<div class=\"columns py-2\" _v-df8172e8=\"\">\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align\" _v-df8172e8=\"\">\n\t\t\t\t\t<div class=\"input-group has-icon-right\" _v-df8172e8=\"\">\n\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"searchQuery\" :placeholder=\"labels.search_posts_to_exclude\" _v-df8172e8=\"\">\n\t\t\t\t\t\t<i class=\"form-icon loading\" v-if=\"is_loading\" _v-df8172e8=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 col-sm-12 mt-2\" _v-df8172e8=\"\">\n\t\t\t\t\t<div class=\"form-group pull-right\" v-if=\"searchQuery != '' &amp;&amp; ! show_excluded\" _v-df8172e8=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"excludePostsBatch\" _v-df8172e8=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-save \" v-if=\"!this.is_loading\" _v-df8172e8=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-df8172e8=\"\"></i>\n\t\t\t\t\t\t\t{{labels.exclude_matching}} \"{{searchQuery}}\"\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"form-group pull-right \" _v-df8172e8=\"\">\n\t\t\t\t\t\t<label class=\"form-switch\" _v-df8172e8=\"\">\n\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"show_excluded\" @change=\"excludePostsChange\" _v-df8172e8=\"\">\n\t\t\t\t\t\t\t<i class=\"form-icon\" _v-df8172e8=\"\"></i>{{labels.search_posts_show_excluded}}\n\t\t\t\t\t\t</label>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12  px-2\" v-if=\"postsAvailable\" _v-df8172e8=\"\">\n\t\t\t\t\t<div v-if=\"postsAvailable.length === 0 &amp;&amp; !is_loading\" _v-df8172e8=\"\">\n\t\t\t\t\t\t{{labels.no_posts_found}}\n\t\t\t\t\t</div>\n\t\t\t\t\t<div v-else=\"\" _v-df8172e8=\"\">\n\t\t\t\t\t\t<table id=\"rop-posts-table\" class=\"table table-striped table-hover\" v-if=\" ! is_loading\" _v-df8172e8=\"\">\n\t\t\t\t\t\t\t<tbody _v-df8172e8=\"\"><tr v-for=\"(post,index ) in postsAvailable\" class=\"rop-post-item\" _v-df8172e8=\"\">\n\t\t\t\t\t\t\t\t<td :class=\"'rop-post-' + post.selected\" _v-df8172e8=\"\">{{post.name}}\n\t\t\t\t\t\t\t\t\t<button class=\"btn btn-error rop-exclude-post\" @click=\"excludeSinglePost(post.value,post.selected)\" _v-df8172e8=\"\">\n\t\t\t\t\t\t\t\t\t\t<i class=\"fa\" :class=\"'fa-' + (post.selected ? 'plus' : 'remove') \" v-if=\"!is_loading_single\" _v-df8172e8=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-df8172e8=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t<span v-html=\" ( post.selected ? labels.include_single_post  : labels.exclude_single_post) \" _v-df8172e8=\"\"> </span>\n\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t<tr v-if=\"has_pages\" _v-df8172e8=\"\">\n\t\t\t\t\t\t\t\t<td class=\"rop-load-more-posts\" _v-df8172e8=\"\">\n\t\t\t\t\t\t\t\t\t<button class=\"btn btn-error\" @click=\"loadMorePosts()\" _v-df8172e8=\"\">\n\t\t\t\t\t\t\t\t\t\t<i class=\"fa fa-newspaper-o \" v-if=\"!is_loading_single\" _v-df8172e8=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-df8172e8=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t{{labels.load_more_posts}}\n\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t</tbody></table>\n\t\t\t\t\t\t<div class=\"loading loading-lg\" v-else=\"\" _v-df8172e8=\"\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\n\t</div>\n";
+module.exports = "\n\t<div id=\"rop_core\" class=\"columns \" _v-5ea68056=\"\">\n\t\t<div id=\"rop-sidebar-selector\" class=\"column col-3   col-xl-5 col-lg-5 col-md-6 col-sm-6 col-xs-12  pull-right\" _v-5ea68056=\"\">\n\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-5ea68056=\"\">\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align rop-control\" _v-5ea68056=\"\">\n\t\t\t\t\t<b _v-5ea68056=\"\">{{labels.post_types_title}}</b>\n\t\t\t\t\t<p class=\"text-gray\" _v-5ea68056=\"\">{{labels.post_types_desc}}</p>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align text-left rop-control\" _v-5ea68056=\"\">\n\t\t\t\t\t<multiple-select :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-5ea68056=\"\"></multiple-select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t\n\t\t\t<span class=\"divider\" _v-5ea68056=\"\"></span>\n\t\t\t<div class=\"columns py-2\" v-if=\"!isPro\" _v-5ea68056=\"\">\n\t\t\t\t<div class=\"column text-center\" _v-5ea68056=\"\">\n\t\t\t\t\t<p class=\"upsell\" _v-5ea68056=\"\"><i class=\"fa fa-lock\" _v-5ea68056=\"\"></i> {{labels.post_types_upsell}}</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"columns py-2\" _v-5ea68056=\"\">\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align\" _v-5ea68056=\"\">\n\t\t\t\t\t<b _v-5ea68056=\"\">{{labels.taxonomies_title}}</b>\n\t\t\t\t\t<p class=\"text-gray\" _v-5ea68056=\"\">{{labels.taxonomies_desc}}</p>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align text-left\" _v-5ea68056=\"\">\n\t\t\t\t\t<div class=\"input-group\" _v-5ea68056=\"\">\n\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" _v-5ea68056=\"\"></multiple-select>\n\t\t\t\t\t\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"columns\" _v-5ea68056=\"\">\n\t\t\t\t\t\t<span class=\"input-group-addon column col-6 pull-right vertical-align\" _v-5ea68056=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-5ea68056=\"\">{{labels.taxonomies_exclude_explicit}}\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" @change=\"excludeTaxonomiesChange\" _v-5ea68056=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-5ea68056=\"\"></i>\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</span>\n\t\t\t\t\t\t<div class=\"column col-6 py-2 text-right\" _v-5ea68056=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings\" _v-5ea68056=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-save \" v-if=\"!this.is_loading\" _v-5ea68056=\"\"></i>\n\t\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-5ea68056=\"\"></i>\n\t\t\t\t\t\t\t\t{{labels.save_filters}}\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\n\t\t\t</div>\n\t\t\t<upsell-sidebar _v-5ea68056=\"\"></upsell-sidebar>\n\t\t</div>\n\t\t<div id=\"rop-posts-listing\" class=\"column col-9  col-xl-7 col-lg-7 col-md-6 col-sm-6 col-xs-12 col- pull-left\" _v-5ea68056=\"\">\n\t\t\t<div class=\"columns py-2\" _v-5ea68056=\"\">\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align\" _v-5ea68056=\"\">\n\t\t\t\t\t<div class=\"input-group has-icon-right\" _v-5ea68056=\"\">\n\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"searchQuery\" :placeholder=\"labels.search_posts_to_exclude\" _v-5ea68056=\"\">\n\t\t\t\t\t\t<i class=\"form-icon loading\" v-if=\"is_loading\" _v-5ea68056=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 col-sm-12 mt-2\" _v-5ea68056=\"\">\n\t\t\t\t\t<div class=\"form-group pull-right\" v-if=\"searchQuery != '' &amp;&amp; ! show_excluded\" _v-5ea68056=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"excludePostsBatch\" _v-5ea68056=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-save \" v-if=\"!this.is_loading\" _v-5ea68056=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-5ea68056=\"\"></i>\n\t\t\t\t\t\t\t{{labels.exclude_matching}} \"{{searchQuery}}\"\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"form-group pull-right \" _v-5ea68056=\"\">\n\t\t\t\t\t\t<label class=\"form-switch\" _v-5ea68056=\"\">\n\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"show_excluded\" @change=\"excludePostsChange\" _v-5ea68056=\"\">\n\t\t\t\t\t\t\t<i class=\"form-icon\" _v-5ea68056=\"\"></i>{{labels.search_posts_show_excluded}}\n\t\t\t\t\t\t</label>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12  px-2\" v-if=\"postsAvailable\" _v-5ea68056=\"\">\n\t\t\t\t\t<div v-if=\"postsAvailable.length === 0 &amp;&amp; !is_loading\" _v-5ea68056=\"\">\n\t\t\t\t\t\t{{labels.no_posts_found}}\n\t\t\t\t\t</div>\n\t\t\t\t\t<div v-else=\"\" _v-5ea68056=\"\">\n\t\t\t\t\t\t<table id=\"rop-posts-table\" class=\"table table-striped table-hover\" v-if=\" ! is_loading\" _v-5ea68056=\"\">\n\t\t\t\t\t\t\t<tbody _v-5ea68056=\"\"><tr v-for=\"(post,index ) in postsAvailable\" class=\"rop-post-item\" _v-5ea68056=\"\">\n\t\t\t\t\t\t\t\t<td :class=\"'rop-post-' + post.selected\" _v-5ea68056=\"\">{{post.name}}\n\t\t\t\t\t\t\t\t\t<button class=\"btn btn-error rop-exclude-post\" @click=\"excludeSinglePost(post.value,post.selected)\" _v-5ea68056=\"\">\n\t\t\t\t\t\t\t\t\t\t<i class=\"fa\" :class=\"'fa-' + (post.selected ? 'plus' : 'remove') \" v-if=\"!is_loading_single\" _v-5ea68056=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-5ea68056=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t<span v-html=\" ( post.selected ? labels.include_single_post  : labels.exclude_single_post) \" _v-5ea68056=\"\"> </span>\n\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t<tr v-if=\"has_pages\" _v-5ea68056=\"\">\n\t\t\t\t\t\t\t\t<td class=\"rop-load-more-posts\" _v-5ea68056=\"\">\n\t\t\t\t\t\t\t\t\t<button class=\"btn btn-error\" @click=\"loadMorePosts()\" _v-5ea68056=\"\">\n\t\t\t\t\t\t\t\t\t\t<i class=\"fa fa-newspaper-o \" v-if=\"!is_loading_single\" _v-5ea68056=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-5ea68056=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t{{labels.load_more_posts}}\n\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t</tbody></table>\n\t\t\t\t\t\t<div class=\"loading loading-lg\" v-else=\"\" _v-5ea68056=\"\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\n\t</div>\n";
 
 /***/ })
 /******/ ]);
