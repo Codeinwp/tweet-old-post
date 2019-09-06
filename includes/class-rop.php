@@ -128,12 +128,14 @@ class Rop {
 		$tutorial_pointers = new Rop_Pointers();
 
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'legacy_auth', 2 );
-		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_buffer_addon_disabled_notice' );
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_dismiss_rop_event_not_firing_notice' );
+		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_cron_event_status_notice' );
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_dismiss_buffer_addon_disabled_notice' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_buffer_addon_notice' );
-		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_show_linkedin_api_v2_notice' );
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_dismiss_linkedin_api_v2_notice' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_linkedin_api_v2_notice' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'bitly_shortener_upgrade_notice' );
-		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_show_cron_disabled_notice' );
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_dismiss_cron_disabled_notice' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_wp_cron_notice' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
