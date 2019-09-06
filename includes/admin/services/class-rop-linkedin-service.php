@@ -573,11 +573,11 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 			$wp_img_put = wp_remote_request(
 				$upload_url,
-				[
+				array(
 					'method' => 'PUT',
-					'headers' => [ 'Authorization' => 'Bearer ' . $token, 'Content-type' => $img_mime_type ],
+					'headers' => array( 'Authorization' => 'Bearer ' . $token, 'Content-type' => $img_mime_type ),
 					'body' => $img_data,
-				]
+				)
 			);
 
 		if ( ! empty( $wp_img_put['body'] ) ) {
@@ -623,7 +623,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			  ),
 		  );
 
-		return $new_post;
+		  return $new_post;
 	}
 
 }

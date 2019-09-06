@@ -38,6 +38,7 @@
         <exclude name="Generic.Files.LineEndings.InvalidEOLChar" />
         <exclude name="WordPress.PHP.StrictComparisons.LooseComparison" />
         <exclude name="WordPress.PHP.StrictInArray.MissingTrueStrict" />
+        <exclude name="WordPress.PHP.RestrictedPHPFunctions.date_date" />
     </rule>
     <rule ref="WordPress-Docs">
 

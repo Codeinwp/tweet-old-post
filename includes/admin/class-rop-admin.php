@@ -774,7 +774,7 @@ class Rop_Admin {
 			return;
 		}
 
-		if ( DISABLE_WP_CRON === true ) {
+		if ( DISABLE_WP_CRON ) {
 
 			?>
 			<div class="notice notice-error">
@@ -801,6 +801,37 @@ class Rop_Admin {
 		}
 
 	}
+
+	/**
+	 * Checks to see if the cron schedule is firing.
+	 *
+	 * @since   8.4.3
+	 * @access  public
+	 */
+	public function rop_check_cron_status() {
+
+		$rop_next_task_hit = (int) wp_next_scheduled( 'rop_cron_job' );
+		$rop_current_time = (int) time();
+
+		$rop_cron_elapsed_time = ( $rop_current_time - $rop_next_task_hit ) / 60;
+		$rop_cron_elapsed_time = absint( $rop_cron_elapsed_time );
+
+		// default: 60 minutes
+		$rop_cron_task_excess_elapsed_time = apply_filters( 'rop_cron_task_excess_elapsed_time', 60 );
+
+		if ( $rop_cron_elapsed_time >= $rop_cron_task_excess_elapsed_time ) {
+
+			?>
+			<div class="notice notice-error">
+				<?php echo sprintf( __( '%1$s%2$sRevive Old Posts:%3$s There might be an issue preventing Revive Old Posts from sharing to your connected accounts. If sharing is not working, then see %4$shere for solutions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/686-fix-revive-old-post-not-posting" target="_blank">', '</a>', '<a style="float: right;" href="?rop-wp-cron-notice-dismissed">Dismiss</a>', '</p>' ); ?>
+
+			</div>
+			<?php
+
+		}
+
+	}
+
 
 	/**
 	 * Buffer addon disabled notice.

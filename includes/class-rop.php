@@ -128,6 +128,7 @@ class Rop {
 		$tutorial_pointers = new Rop_Pointers();
 
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'legacy_auth', 2 );
+		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_check_cron_status' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_buffer_addon_disabled_notice' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_buffer_addon_notice' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_show_linkedin_api_v2_notice' );
@@ -183,9 +184,9 @@ class Rop {
 	 */
 	public function change_labels_uf() {
 
-		return [
+		return array(
 			'title' => __( 'Below is a detailed view of all data that ReviveSocial will receive if you fill in this survey. No domain name, email address or IP addresses are transmited after you submit the survey.', 'tweet-old-post' ),
-		];
+		);
 	}
 	/**
 	 * Change review confirm text.
