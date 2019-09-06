@@ -743,12 +743,12 @@ class Rop_Admin {
 	}
 
 	/**
-	 * Show Linkedin API upgrade notice.
+	 * Dismiss Linkedin API upgrade notice.
 	 *
 	 * @since   8.2.3
 	 * @access  public
 	 */
-	public function rop_show_linkedin_api_v2_notice() {
+	public function rop_dismiss_linkedin_api_v2_notice() {
 		 $user_id = get_current_user_id();
 		if ( isset( $_GET['rop-linkedin-api-notice-dismissed'] ) ) {
 			add_user_meta( $user_id, 'rop-linkedin-api-notice-dismissed', 'true', true );
@@ -788,12 +788,12 @@ class Rop_Admin {
 	}
 
 	/**
-	 * Show WordPress Cron disabled notice.
+	 * Dismiss WordPress Cron disabled notice.
 	 *
 	 * @since   8.2.5
 	 * @access  public
 	 */
-	public function rop_show_cron_disabled_notice() {
+	public function rop_dismiss_cron_disabled_notice() {
 
 		$user_id = get_current_user_id();
 		if ( isset( $_GET['rop-wp-cron-notice-dismissed'] ) ) {
@@ -808,7 +808,13 @@ class Rop_Admin {
 	 * @since   8.4.3
 	 * @access  public
 	 */
-	public function rop_check_cron_status() {
+	public function rop_cron_event_status_notice() {
+
+		$user_id = get_current_user_id();
+
+		if ( get_user_meta( $user_id, 'rop-cron-event-status-notice-dismissed' ) ) {
+			return;
+		}
 
 		$rop_next_task_hit = (int) wp_next_scheduled( 'rop_cron_job' );
 		$rop_current_time = (int) time();
@@ -817,13 +823,13 @@ class Rop_Admin {
 		$rop_cron_elapsed_time = absint( $rop_cron_elapsed_time );
 
 		// default: 60 minutes
-		$rop_cron_task_excess_elapsed_time = apply_filters( 'rop_cron_task_excess_elapsed_time', 60 );
+		$rop_cron_event_excess_elapsed_time = apply_filters( 'rop_cron_event_excess_elapsed_time', 60 );
 
-		if ( $rop_cron_elapsed_time >= $rop_cron_task_excess_elapsed_time ) {
+		if ( $rop_cron_elapsed_time >= $rop_cron_event_excess_elapsed_time ) {
 
 			?>
 			<div class="notice notice-error">
-				<?php echo sprintf( __( '%1$s%2$sRevive Old Posts:%3$s There might be an issue preventing Revive Old Posts from sharing to your connected accounts. If sharing is not working, then see %4$shere for solutions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/686-fix-revive-old-post-not-posting" target="_blank">', '</a>', '<a style="float: right;" href="?rop-wp-cron-notice-dismissed">Dismiss</a>', '</p>' ); ?>
+				<?php echo sprintf( __( '%1$s%2$sRevive Old Posts:%3$s There might be an issue preventing Revive Old Posts from sharing to your connected accounts. If sharing is not working, then see %4$shere for solutions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/686-fix-revive-old-post-not-posting" target="_blank">', '</a>', '<a style="float: right;" href="?rop-cron-event-status-notice-dismissed">Dismiss</a>', '</p>' ); ?>
 
 			</div>
 			<?php
@@ -832,6 +838,20 @@ class Rop_Admin {
 
 	}
 
+	/**
+	 * Dismiss rop_cron_job not firing notice.
+	 *
+	 * @since   8.4.3
+	 * @access  public
+	 */
+	public function rop_dismiss_rop_event_not_firing_notice() {
+
+		$user_id = get_current_user_id();
+		if ( isset( $_GET['rop-cron-event-status-notice-dismissed'] ) ) {
+			add_user_meta( $user_id, 'rop-cron-event-status-notice-dismissed', 'true', true );
+		}
+
+	}
 
 	/**
 	 * Buffer addon disabled notice.
@@ -863,12 +883,12 @@ class Rop_Admin {
 	}
 
 	/**
-	 * Show WordPress Cron disabled notice.
+	 * Dismiss WordPress Cron disabled notice.
 	 *
 	 * @since   8.4.0
 	 * @access  public
 	 */
-	public function rop_buffer_addon_disabled_notice() {
+	public function rop_dismiss_buffer_addon_disabled_notice() {
 
 		$user_id = get_current_user_id();
 		if ( isset( $_GET['rop-buffer-addon-notice-dismissed'] ) ) {
