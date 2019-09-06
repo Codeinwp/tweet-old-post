@@ -570,16 +570,16 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		$img_mime_type = image_type_to_mime_type( exif_imagetype( $img ) );
 
-		$img_data = file_get_contents($img);
-		$img_length = strlen($img_data);
+		$img_data = file_get_contents( $img );
+		$img_length = strlen( $img_data );
 
 		$wp_img_put = wp_remote_request(
 			$upload_url,
-			[
+			array(
 				'method' => 'PUT',
-				'headers' => [ 'Authorization' => 'Bearer ' . $token, 'Content-type' => $img_mime_type, 'Content-Length' => $img_length ],
+				'headers' => array( 'Authorization' => 'Bearer ' . $token, 'Content-type' => $img_mime_type, 'Content-Length' => $img_length ),
 				'body' => $img_data,
-			]
+			)
 		);
 
 		if ( ! empty( $wp_img_put['body'] ) ) {
@@ -625,7 +625,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			  ),
 		  );
 
-		return $new_post;
+		  return $new_post;
 	}
 
 }

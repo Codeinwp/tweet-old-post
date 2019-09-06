@@ -105,7 +105,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 
 		$api           = $this->get_api( $request_token['oauth_token'], $request_token['oauth_token_secret'] );
 
-		$access_token = $api->oauth( 'oauth/access_token', [ 'oauth_verifier' => $_GET['oauth_verifier'] ] );
+		$access_token = $api->oauth( 'oauth/access_token', array( 'oauth_verifier' => $_GET['oauth_verifier'] ) );
 
 		$_SESSION['rop_twitter_oauth_token'] = $access_token;
 
@@ -360,10 +360,10 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 
 		$url = $api->url(
 			'oauth/authorize',
-			[
+			array(
 				'oauth_token' => $request_token['oauth_token'],
 				'force_login' => false,
-			]
+			)
 		);
 		if ( empty( $url ) ) {
 			return $this->get_legacy_url();
@@ -435,9 +435,9 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 				$photon_bypass = remove_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ) );
 			}
 
-			$upload_args  = [
+			$upload_args  = array(
 				'media' => $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] ),
-			];
+			);
 
 			if ( $photon_bypass && class_exists( 'Jetpack_Photon' ) ) {
 				// Re-enable Jetpack Photon filter.
