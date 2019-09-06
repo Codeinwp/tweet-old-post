@@ -183,9 +183,9 @@ class Rop {
 	 */
 	public function change_labels_uf() {
 
-		return [
+		return array(
 			'title' => __( 'Below is a detailed view of all data that ReviveSocial will receive if you fill in this survey. No domain name, email address or IP addresses are transmited after you submit the survey.', 'tweet-old-post' ),
-		];
+		);
 	}
 	/**
 	 * Change review confirm text.
