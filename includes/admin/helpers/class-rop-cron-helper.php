@@ -181,7 +181,7 @@ class Rop_Cron_Helper {
 	 * @return string
 	 */
 	private function convert_phpformat_to_js( $format ) {
-		$replacements = [
+		$replacements = array(
 			'd' => 'DD',
 			'D' => 'ddd',
 			'j' => 'D',
@@ -219,7 +219,7 @@ class Rop_Cron_Helper {
 			'c' => '', // no equivalent
 			'r' => '', // no equivalent
 			'U' => 'X',
-		];
+		);
 		$momentFormat = strtr( $format, $replacements );
 
 		return $momentFormat;

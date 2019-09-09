@@ -64,6 +64,7 @@ if ( isset( $housekeeping ) && $housekeeping ) {
 	delete_metadata( 'user', 0, 'rop-linkedin-api-notice-dismissed', '', true );
 	delete_metadata( 'user', 0, 'rop-buffer-addon-notice-dismissed', '', true );
 	delete_metadata( 'user', 0, 'rop-wp-cron-notice-dismissed', '', true );
+	delete_metadata( 'user', 0, 'rop-cron-event-status-notice-dismissed', '', true );
 
 	global $wpdb;
 	$post_meta = $wpdb->prefix . 'postmeta';
