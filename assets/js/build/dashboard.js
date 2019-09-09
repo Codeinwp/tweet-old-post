@@ -35461,7 +35461,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t.rop-remove-account[_v-0145bf0e]{\n\t\twidth:15px;\n\t\ttext-align: center;\n\t\tcursor: pointer;\n\t    padding-right: 10px;\n\t\tmargin-right: 10px;\n\t\theight: 100%;\n\t\t-ms-flex: 0 0 auto;\n\t\tline-height: 40px;\n\t\topacity: 0;\n\t\tmargin-left:-20px;\n\t\ttransition-timing-function: ease-in;\n\t\ttransition: 1s;\n\t\ttransform: translateX(130%);\n\t}\n\t.rop-account:hover .rop-remove-account[_v-0145bf0e]{\n\t\topacity:1;\n\t\tz-index:9999;\n\t\tmargin-left:0px;\n\t\ttransition-timing-function: ease-out;\n\t\ttransition: 0.25s;\n\t\ttransform: translateX(0);\n\t}\n", ""]);
+exports.push([module.i, "\n\t.rop-remove-account[_v-0145bf0e]{\n\t\twidth:15px;\n\t\ttext-align: center;\n\t\tcursor: pointer;\n\t    padding-right: 10px;\n\t\tmargin-right: 10px;\n\t\theight: 100%;\n\t\t-ms-flex: 0 0 auto;\n\t\tline-height: 40px;\n\t\topacity: 1;\n\t\tmargin-left:0;\n\t\ttransition-timing-function: ease-in;\n\t\ttransition: 1s;\n\t\tz-index:9999;\n\t}\n\n", ""]);
 
 // exports
 
@@ -35673,20 +35673,13 @@ module.exports = {
 	// 		height: 100%;
 	// 		-ms-flex: 0 0 auto;
 	// 		line-height: 40px;
-	// 		opacity: 0;
-	// 		margin-left:-20px;
+	// 		opacity: 1;
+	// 		margin-left:0;
 	// 		transition-timing-function: ease-in;
 	// 		transition: 1s;
-	// 		transform: translateX(130%);
-	// 	}
-	// 	.rop-account:hover .rop-remove-account{
-	// 		opacity:1;
 	// 		z-index:9999;
-	// 		margin-left:0px;
-	// 		transition-timing-function: ease-out;
-	// 		transition: 0.25s;
-	// 		transform: translateX(0);
 	// 	}
+	//
 	// </style>
 	//
 
