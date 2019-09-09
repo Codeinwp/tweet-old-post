@@ -816,8 +816,13 @@ class Rop_Admin {
 			return;
 		}
 
-		$rop_next_task_hit = (int) wp_next_scheduled( 'rop_cron_job' );
-		$rop_current_time = (int) time();
+		$rop_next_task_hit = wp_next_scheduled( 'rop_cron_job' );
+		$rop_current_time = time();
+
+		// if sharing not started cron event will not be present
+		if ( ! $rop_next_task_hit ) {
+			return;
+		}
 
 		$rop_cron_elapsed_time = ( $rop_current_time - $rop_next_task_hit ) / 60;
 		$rop_cron_elapsed_time = absint( $rop_cron_elapsed_time );
