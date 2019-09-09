@@ -168,7 +168,9 @@ class Rop_Logger {
 
 		$unreadable_messages = array(
 			'Value is empty : pages in Array \( \[id\] => (.*) \[pages\] => Array \( \) \)' => __( 'In order to connect with Facebook it\'s required to select at least one Page in the authentification process.', 'tweet-old-post' ),
-		);
+			'Callback URL not approved for this client application. Approved callback URLs can be adjusted in your application settings' => __( 'The Callback URL of your Twitter application seems to be wrong.', 'tweet-old-post' ),
+			'Error connecting twitter \{"errors":\[\{"code":32,"message":"Could not authenticate you."\}\]\}' => __( 'Your Twitter credentials seem to be wrong. Please double check your API Key and API Secret Key.', 'tweet-old-post' ),
+	);
 
 		foreach ( $unreadable_messages as $to_decode => $readable_message ) {
 			preg_match( '/' . $to_decode . '/i', $direct_message, $output_array );
