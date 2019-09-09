@@ -148,11 +148,15 @@ class Rop_Logger {
 	}
 
 	/**
+	 * Catches errors and gives a more clear message in return.
+	 *
 	 * Some error messages received by social media are not very clear
 	 * and the users might not understand what the issue is.
-	 * This function will catch these errors and give a more clear message in return.
 	 *
-	 * @param $direct_message
+	 * @since 8.4.3
+	 * @access public
+	 *
+	 * @param string $direct_message The log message to transform.
 	 *
 	 * @return mixed
 	 */
