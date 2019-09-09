@@ -147,4 +147,38 @@ class Rop_Logger {
 		$this->logger->error( $message );
 	}
 
+	/**
+	 * Catches errors and gives a more clear message in return.
+	 *
+	 * Some error messages received by social media are not very clear
+	 * and the users might not understand what the issue is.
+	 *
+	 * @since 8.4.3
+	 * @access public
+	 *
+	 * @param string $direct_message The log message to transform.
+	 *
+	 * @return mixed
+	 */
+	public function translate_messages( $direct_message ) {
+		$direct_message = trim( $direct_message );
+		$direct_message = preg_replace( '/\s\s+/', ' ', $direct_message ); // we need to remove extra spaces
+
+		$translated_message = $direct_message;
+
+		$unreadable_messages = array(
+			'Value is empty : pages in Array \( \[id\] => (.*) \[pages\] => Array \( \) \)' => __( 'In order to connect with Facebook it\'s required to select at least one Page in the authentification process.', 'tweet-old-post' ),
+		);
+
+		foreach ( $unreadable_messages as $to_decode => $readable_message ) {
+			preg_match( '/' . $to_decode . '/i', $direct_message, $output_array );
+			if ( ! empty( $output_array ) ) {
+				$translated_message = $readable_message;
+				break;
+			}
+		}
+
+		return $translated_message;
+	}
+
 }

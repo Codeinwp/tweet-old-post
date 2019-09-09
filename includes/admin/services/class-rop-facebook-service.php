@@ -642,7 +642,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		if ( $this->get_api() ) {
 			// Page was added using user application (old method)
 			// Try post via Facebook Graph SDK
-
 			$api = $this->get_api();
 			try {
 				$api->post( $path, $new_post, $token );
@@ -654,7 +653,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				if ( strpos( $errorMsg, '(#100)' ) !== false && ! empty( $new_post['name'] ) ) {
 					// https://developers.facebook.com/docs/graph-api/reference/v3.2/page/feed#custom-image
 					// retry without name
-
 					unset( $new_post['name'] );
 
 					try {
@@ -684,7 +682,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			}
 		} else {
 			// Page was added using ROP application (new method)
-
 			$post_data = $new_post;
 			$post_data['access_token'] = $token;
 
