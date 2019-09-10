@@ -132,7 +132,7 @@
 			 * @returns {T[]}
 			 */
 			serviceInfo: function () {
-				
+
 				return this.account_data.account.concat(' ' + this.labels.at + ': ').concat(this.account_data.created)
 			}
 		},
@@ -226,18 +226,11 @@
 		height: 100%;
 		-ms-flex: 0 0 auto;
 		line-height: 40px;
-		opacity: 0;
-		margin-left:-20px;
+		opacity: 1;
+		margin-left:0;
 		transition-timing-function: ease-in;
 		transition: 1s;
-		transform: translateX(130%);
-	}
-	.rop-account:hover .rop-remove-account{
-		opacity:1;
 		z-index:9999;
-		margin-left:0px;
-		transition-timing-function: ease-out;
-		transition: 0.25s;
-		transform: translateX(0);
 	}
+
 </style>
