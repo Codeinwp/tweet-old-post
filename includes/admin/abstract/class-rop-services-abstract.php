@@ -487,62 +487,62 @@ abstract class Rop_Services_Abstract {
 		$errors_docs = array(
 			// Facebook errors
 			'Only owners of the URL have the ability' => array(
-			    'message' => __('You need to verify your website with Facebook before sharing posts as article posts.', 'tweet-old-post'),
-			    'link' => 'https://is.gd/fix_owners_url'
-				),
+				'message' => __( 'You need to verify your website with Facebook before sharing posts as article posts.', 'tweet-old-post' ),
+				'link' => 'https://is.gd/fix_owners_url',
+			),
 			'manage_pages and publish_pages as an admin' => array(
-			    'message' => __('You need to put your Facebook app through review.', 'tweet-old-post'),
-			    'link' => 'https://is.gd/fix_manage_pages_error'
-				),
+				'message' => __( 'You need to put your Facebook app through review.', 'tweet-old-post' ),
+				'link' => 'https://is.gd/fix_manage_pages_error',
+			),
 			'Invalid parameter' => array(
-			    'message' => 'There might be an issue with link creations on your website.',
-			    'link' => 'https://is.gd/fix_link_issue'
-				),
+				'message' => 'There might be an issue with link creations on your website.',
+				'link' => 'https://is.gd/fix_link_issue',
+			),
 
 			// Twitter errors
 			'Desktop applications only support the oauth_callback value' => array(
-			    'message' => 'Your Callback URL for your Twitter app might not be correct.',
-			    'link' => 'https://is.gd/fix_oauth_callback_value'
-				),
+				'message' => 'Your Callback URL for your Twitter app might not be correct.',
+				'link' => 'https://is.gd/fix_oauth_callback_value',
+			),
 			'User is over daily status update limit' => array(
-			    'message' => 'You might be over your daily limit for sending tweets or our app has hit a limit.',
-			    'link' => 'https://is.gd/fix_over_daily_limit'
-				),
+				'message' => 'You might be over your daily limit for sending tweets or our app has hit a limit.',
+				'link' => 'https://is.gd/fix_over_daily_limit',
+			),
 			'Invalid media_id: Some' => array(
-			    'message' => 'Our plugin might be having an issue posting tweets with an image to your account.',
-			    'link' => 'https://is.gd/fix_invalid_media'
-				),
+				'message' => 'Our plugin might be having an issue posting tweets with an image to your account.',
+				'link' => 'https://is.gd/fix_invalid_media',
+			),
 			'Callback URL not approved for this client application' => array(
-			    'message' => 'Your Callback URL for your Twitter app might not be correct.',
-			    'link' => 'https://is.gd/fix_oauth_callback_value'
-				),
+				'message' => 'Your Callback URL for your Twitter app might not be correct.',
+				'link' => 'https://is.gd/fix_oauth_callback_value',
+			),
 
 			// LinkedIn errors
 			'&#39;submitted-url&#39; can not be empty' => array(
-			    'message' => 'There might be an issue with link creations on your website.',
-			    'link' => 'https://is.gd/fix_link_issue'
-				),
+				'message' => 'There might be an issue with link creations on your website.',
+				'link' => 'https://is.gd/fix_link_issue',
+			),
 
 			// Add more common errors as necessary
 		);
 
-	$message = '';
-	$link = '';
+		$message = '';
+		$link = '';
 
-	foreach ( $errors_docs as $error => $data ) {
-		if ( strpos( $response, $error ) !== false ) {
-			$message = $data['message'];
-			$link = $data['link'];
-			break;
+		foreach ( $errors_docs as $error => $data ) {
+			if ( strpos( $response, $error ) !== false ) {
+				$message = $data['message'];
+				$link = $data['link'];
+				break;
+			}
 		}
-	}
 		if ( empty( $link ) ) {
 			// No link found for error, bail.
 			return;
 		}
 
-		$known_error = __('This error is a known one. ', 'tweet-old-post');
-		$instructions = __('Please copy and paste the following link in your browser to see the solution: ');
+		$known_error = __( 'This error is a known one. ', 'tweet-old-post' );
+		$instructions = __( 'Please copy and paste the following link in your browser to see the solution: ', 'tweet-old-post' );
 
 		return $this->logger->alert_error( $known_error . $message . $instructions . $link );
 
