@@ -13123,7 +13123,8 @@ exports.default = new _vuex2.default.Store({
         activePostFormat: [],
         activeSchedule: [],
         queue: {},
-        publish_now: ropApiSettings.publish_now
+        publish_now: ropApiSettings.publish_now,
+        fb_exception_toast: ropApiSettings.fb_domain_toast_display
     },
     mutations: {
         setTabView: function setTabView(state, view) {
@@ -13147,7 +13148,7 @@ exports.default = new _vuex2.default.Store({
             var stateData = _ref.stateData,
                 requestName = _ref.requestName;
 
-            _vue2.default.$log.debug('State change for ', requestName);
+            _vue2.default.$log.debug('State change for ', requestName, ' With value: ', stateData);
             switch (requestName) {
                 case 'manage_cron':
                     state.cron_status = stateData;
@@ -13157,6 +13158,9 @@ exports.default = new _vuex2.default.Store({
                     break;
                 case 'get_toast':
                     state.page.logs = stateData;
+                    break;
+                case 'fb_exception_toast':
+                    state.fb_exception_toast = stateData.display;
                     break;
                 case 'update_settings_toggle':
                 case 'get_general_settings':
@@ -13247,7 +13251,7 @@ exports.default = new _vuex2.default.Store({
                     break;
                 case 'update_toast':
                     state.toast = stateData;
-                    _vue2.default.$log.debug('yes yes here ', requestName);
+                    _vue2.default.$log.debug('Toast updated ', requestName);
                     break;
                 case 'toggle_account':
                 case 'exclude_post':
@@ -16635,7 +16639,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/reusables/multiple-select.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/multiple-select.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -17075,7 +17079,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/upsell-sidebar.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/upsell-sidebar.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -17099,8 +17103,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-e57ad328&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-e57ad328&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-87db7594&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-87db7594&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -17118,7 +17122,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop-upsell-box[_v-e57ad328]{\n\t\tmargin-top:20px;\n\t}\n\t#rop_core .rop-upsell-business-card[_v-e57ad328],\n\t#rop_core .rop-upsell-pro-card[_v-e57ad328] {\n\t\tpadding: 0;\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop-upsell-box[_v-87db7594]{\n\t\tmargin-top:20px;\n\t}\n\t#rop_core .rop-upsell-business-card[_v-87db7594],\n\t#rop_core .rop-upsell-pro-card[_v-87db7594] {\n\t\tpadding: 0;\n\t}\n", ""]);
 
 // exports
 
@@ -17175,7 +17179,7 @@ module.exports = {
 /* 81 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div id=\"rop-upsell-box\" _v-e57ad328=\"\">\n\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \" _v-e57ad328=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-e57ad328=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_pro_upsell\" :alt=\"labels.upgrade_pro_cta\" _v-e57ad328=\"\">\n\t\t\t</a>\n\t\t</div>\n\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1\" _v-e57ad328=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-e57ad328=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_business_upsell\" :alt=\"labels.upgrade_biz_cta\" _v-e57ad328=\"\">\n\t\t\t</a>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div id=\"rop-upsell-box\" _v-87db7594=\"\">\n\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \" _v-87db7594=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-87db7594=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_pro_upsell\" :alt=\"labels.upgrade_pro_cta\" _v-87db7594=\"\">\n\t\t\t</a>\n\t\t</div>\n\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1\" _v-87db7594=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-87db7594=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_business_upsell\" :alt=\"labels.upgrade_biz_cta\" _v-87db7594=\"\">\n\t\t\t</a>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 82 */,
@@ -17446,7 +17450,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/exclude-posts-page.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/exclude-posts-page.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -17470,8 +17474,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-df8172e8&file=exclude-posts-page.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./exclude-posts-page.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-df8172e8&file=exclude-posts-page.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./exclude-posts-page.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5ea68056&file=exclude-posts-page.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./exclude-posts-page.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5ea68056&file=exclude-posts-page.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./exclude-posts-page.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -17489,7 +17493,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop-sidebar-selector[_v-df8172e8] {\n\t\tborder: 1px solid #e5e5e5;\n\t\tbackground: #fff;\n\t}\n\t\n\t#rop-posts-listing .rop-post-item td[_v-df8172e8] {\n\t\tposition: relative;\n\t}\n\t\n\t#rop-posts-table[_v-df8172e8] {\n\t\tmargin-top: 20px;\n\t}\n\t\n\t#rop-posts-listing .rop-post-item:hover button.rop-exclude-post[_v-df8172e8] {\n\t\tdisplay: block;\n\t}\n\t\n\t#rop-posts-listing .rop-post-item td button.rop-exclude-post[_v-df8172e8] {\n\t\tposition: absolute;\n\t\ttop: 5px;\n\t\tright: 10px;\n\t\tdisplay: none;\n\t\tpadding: 0px 20px;\n\t}\n\t\n\t.rop-post-true[_v-df8172e8] {\n\t\topacity: 0.8;\n\t\tbackground-color: #F6DBDA;\n\t\t\n\t}\n\t\n\t.rop-load-more-posts[_v-df8172e8] {\n\t\ttext-align: center;\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop-sidebar-selector[_v-5ea68056] {\n\t\tborder: 1px solid #e5e5e5;\n\t\tbackground: #fff;\n\t}\n\t\n\t#rop-posts-listing .rop-post-item td[_v-5ea68056] {\n\t\tposition: relative;\n\t}\n\t\n\t#rop-posts-table[_v-5ea68056] {\n\t\tmargin-top: 20px;\n\t}\n\t\n\t#rop-posts-listing .rop-post-item:hover button.rop-exclude-post[_v-5ea68056] {\n\t\tdisplay: block;\n\t}\n\t\n\t#rop-posts-listing .rop-post-item td button.rop-exclude-post[_v-5ea68056] {\n\t\tposition: absolute;\n\t\ttop: 5px;\n\t\tright: 10px;\n\t\tdisplay: none;\n\t\tpadding: 0px 20px;\n\t}\n\t\n\t.rop-post-true[_v-5ea68056] {\n\t\topacity: 0.8;\n\t\tbackground-color: #F6DBDA;\n\t\t\n\t}\n\t\n\t.rop-load-more-posts[_v-5ea68056] {\n\t\ttext-align: center;\n\t}\n", ""]);
 
 // exports
 
@@ -17903,7 +17907,7 @@ module.exports = {
 /* 307 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div id=\"rop_core\" class=\"columns \" _v-df8172e8=\"\">\n\t\t<div id=\"rop-sidebar-selector\" class=\"column col-3   col-xl-5 col-lg-5 col-md-6 col-sm-6 col-xs-12  pull-right\" _v-df8172e8=\"\">\n\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-df8172e8=\"\">\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align rop-control\" _v-df8172e8=\"\">\n\t\t\t\t\t<b _v-df8172e8=\"\">{{labels.post_types_title}}</b>\n\t\t\t\t\t<p class=\"text-gray\" _v-df8172e8=\"\">{{labels.post_types_desc}}</p>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align text-left rop-control\" _v-df8172e8=\"\">\n\t\t\t\t\t<multiple-select :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-df8172e8=\"\"></multiple-select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t\n\t\t\t<span class=\"divider\" _v-df8172e8=\"\"></span>\n\t\t\t<div class=\"columns py-2\" v-if=\"!isPro\" _v-df8172e8=\"\">\n\t\t\t\t<div class=\"column text-center\" _v-df8172e8=\"\">\n\t\t\t\t\t<p class=\"upsell\" _v-df8172e8=\"\"><i class=\"fa fa-lock\" _v-df8172e8=\"\"></i> {{labels.post_types_upsell}}</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"columns py-2\" _v-df8172e8=\"\">\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align\" _v-df8172e8=\"\">\n\t\t\t\t\t<b _v-df8172e8=\"\">{{labels.taxonomies_title}}</b>\n\t\t\t\t\t<p class=\"text-gray\" _v-df8172e8=\"\">{{labels.taxonomies_desc}}</p>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align text-left\" _v-df8172e8=\"\">\n\t\t\t\t\t<div class=\"input-group\" _v-df8172e8=\"\">\n\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" _v-df8172e8=\"\"></multiple-select>\n\t\t\t\t\t\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"columns\" _v-df8172e8=\"\">\n\t\t\t\t\t\t<span class=\"input-group-addon column col-6 pull-right vertical-align\" _v-df8172e8=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-df8172e8=\"\">{{labels.taxonomies_exclude_explicit}}\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" @change=\"excludeTaxonomiesChange\" _v-df8172e8=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-df8172e8=\"\"></i>\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</span>\n\t\t\t\t\t\t<div class=\"column col-6 py-2 text-right\" _v-df8172e8=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings\" _v-df8172e8=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-save \" v-if=\"!this.is_loading\" _v-df8172e8=\"\"></i>\n\t\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-df8172e8=\"\"></i>\n\t\t\t\t\t\t\t\t{{labels.save_filters}}\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\n\t\t\t</div>\n\t\t\t<upsell-sidebar _v-df8172e8=\"\"></upsell-sidebar>\n\t\t</div>\n\t\t<div id=\"rop-posts-listing\" class=\"column col-9  col-xl-7 col-lg-7 col-md-6 col-sm-6 col-xs-12 col- pull-left\" _v-df8172e8=\"\">\n\t\t\t<div class=\"columns py-2\" _v-df8172e8=\"\">\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align\" _v-df8172e8=\"\">\n\t\t\t\t\t<div class=\"input-group has-icon-right\" _v-df8172e8=\"\">\n\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"searchQuery\" :placeholder=\"labels.search_posts_to_exclude\" _v-df8172e8=\"\">\n\t\t\t\t\t\t<i class=\"form-icon loading\" v-if=\"is_loading\" _v-df8172e8=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 col-sm-12 mt-2\" _v-df8172e8=\"\">\n\t\t\t\t\t<div class=\"form-group pull-right\" v-if=\"searchQuery != '' &amp;&amp; ! show_excluded\" _v-df8172e8=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"excludePostsBatch\" _v-df8172e8=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-save \" v-if=\"!this.is_loading\" _v-df8172e8=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-df8172e8=\"\"></i>\n\t\t\t\t\t\t\t{{labels.exclude_matching}} \"{{searchQuery}}\"\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"form-group pull-right \" _v-df8172e8=\"\">\n\t\t\t\t\t\t<label class=\"form-switch\" _v-df8172e8=\"\">\n\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"show_excluded\" @change=\"excludePostsChange\" _v-df8172e8=\"\">\n\t\t\t\t\t\t\t<i class=\"form-icon\" _v-df8172e8=\"\"></i>{{labels.search_posts_show_excluded}}\n\t\t\t\t\t\t</label>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12  px-2\" v-if=\"postsAvailable\" _v-df8172e8=\"\">\n\t\t\t\t\t<div v-if=\"postsAvailable.length === 0 &amp;&amp; !is_loading\" _v-df8172e8=\"\">\n\t\t\t\t\t\t{{labels.no_posts_found}}\n\t\t\t\t\t</div>\n\t\t\t\t\t<div v-else=\"\" _v-df8172e8=\"\">\n\t\t\t\t\t\t<table id=\"rop-posts-table\" class=\"table table-striped table-hover\" v-if=\" ! is_loading\" _v-df8172e8=\"\">\n\t\t\t\t\t\t\t<tbody _v-df8172e8=\"\"><tr v-for=\"(post,index ) in postsAvailable\" class=\"rop-post-item\" _v-df8172e8=\"\">\n\t\t\t\t\t\t\t\t<td :class=\"'rop-post-' + post.selected\" _v-df8172e8=\"\">{{post.name}}\n\t\t\t\t\t\t\t\t\t<button class=\"btn btn-error rop-exclude-post\" @click=\"excludeSinglePost(post.value,post.selected)\" _v-df8172e8=\"\">\n\t\t\t\t\t\t\t\t\t\t<i class=\"fa\" :class=\"'fa-' + (post.selected ? 'plus' : 'remove') \" v-if=\"!is_loading_single\" _v-df8172e8=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-df8172e8=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t<span v-html=\" ( post.selected ? labels.include_single_post  : labels.exclude_single_post) \" _v-df8172e8=\"\"> </span>\n\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t<tr v-if=\"has_pages\" _v-df8172e8=\"\">\n\t\t\t\t\t\t\t\t<td class=\"rop-load-more-posts\" _v-df8172e8=\"\">\n\t\t\t\t\t\t\t\t\t<button class=\"btn btn-error\" @click=\"loadMorePosts()\" _v-df8172e8=\"\">\n\t\t\t\t\t\t\t\t\t\t<i class=\"fa fa-newspaper-o \" v-if=\"!is_loading_single\" _v-df8172e8=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-df8172e8=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t{{labels.load_more_posts}}\n\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t</tbody></table>\n\t\t\t\t\t\t<div class=\"loading loading-lg\" v-else=\"\" _v-df8172e8=\"\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\n\t</div>\n";
+module.exports = "\n\t<div id=\"rop_core\" class=\"columns \" _v-5ea68056=\"\">\n\t\t<div id=\"rop-sidebar-selector\" class=\"column col-3   col-xl-5 col-lg-5 col-md-6 col-sm-6 col-xs-12  pull-right\" _v-5ea68056=\"\">\n\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-5ea68056=\"\">\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align rop-control\" _v-5ea68056=\"\">\n\t\t\t\t\t<b _v-5ea68056=\"\">{{labels.post_types_title}}</b>\n\t\t\t\t\t<p class=\"text-gray\" _v-5ea68056=\"\">{{labels.post_types_desc}}</p>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align text-left rop-control\" _v-5ea68056=\"\">\n\t\t\t\t\t<multiple-select :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-5ea68056=\"\"></multiple-select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t\n\t\t\t<span class=\"divider\" _v-5ea68056=\"\"></span>\n\t\t\t<div class=\"columns py-2\" v-if=\"!isPro\" _v-5ea68056=\"\">\n\t\t\t\t<div class=\"column text-center\" _v-5ea68056=\"\">\n\t\t\t\t\t<p class=\"upsell\" _v-5ea68056=\"\"><i class=\"fa fa-lock\" _v-5ea68056=\"\"></i> {{labels.post_types_upsell}}</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"columns py-2\" _v-5ea68056=\"\">\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align\" _v-5ea68056=\"\">\n\t\t\t\t\t<b _v-5ea68056=\"\">{{labels.taxonomies_title}}</b>\n\t\t\t\t\t<p class=\"text-gray\" _v-5ea68056=\"\">{{labels.taxonomies_desc}}</p>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align text-left\" _v-5ea68056=\"\">\n\t\t\t\t\t<div class=\"input-group\" _v-5ea68056=\"\">\n\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" _v-5ea68056=\"\"></multiple-select>\n\t\t\t\t\t\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"columns\" _v-5ea68056=\"\">\n\t\t\t\t\t\t<span class=\"input-group-addon column col-6 pull-right vertical-align\" _v-5ea68056=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-5ea68056=\"\">{{labels.taxonomies_exclude_explicit}}\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" @change=\"excludeTaxonomiesChange\" _v-5ea68056=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-5ea68056=\"\"></i>\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</span>\n\t\t\t\t\t\t<div class=\"column col-6 py-2 text-right\" _v-5ea68056=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings\" _v-5ea68056=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-save \" v-if=\"!this.is_loading\" _v-5ea68056=\"\"></i>\n\t\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-5ea68056=\"\"></i>\n\t\t\t\t\t\t\t\t{{labels.save_filters}}\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\n\t\t\t</div>\n\t\t\t<upsell-sidebar _v-5ea68056=\"\"></upsell-sidebar>\n\t\t</div>\n\t\t<div id=\"rop-posts-listing\" class=\"column col-9  col-xl-7 col-lg-7 col-md-6 col-sm-6 col-xs-12 col- pull-left\" _v-5ea68056=\"\">\n\t\t\t<div class=\"columns py-2\" _v-5ea68056=\"\">\n\t\t\t\t<div class=\"column col-12 col-sm-12 vertical-align\" _v-5ea68056=\"\">\n\t\t\t\t\t<div class=\"input-group has-icon-right\" _v-5ea68056=\"\">\n\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"searchQuery\" :placeholder=\"labels.search_posts_to_exclude\" _v-5ea68056=\"\">\n\t\t\t\t\t\t<i class=\"form-icon loading\" v-if=\"is_loading\" _v-5ea68056=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 col-sm-12 mt-2\" _v-5ea68056=\"\">\n\t\t\t\t\t<div class=\"form-group pull-right\" v-if=\"searchQuery != '' &amp;&amp; ! show_excluded\" _v-5ea68056=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"excludePostsBatch\" _v-5ea68056=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-save \" v-if=\"!this.is_loading\" _v-5ea68056=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-5ea68056=\"\"></i>\n\t\t\t\t\t\t\t{{labels.exclude_matching}} \"{{searchQuery}}\"\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"form-group pull-right \" _v-5ea68056=\"\">\n\t\t\t\t\t\t<label class=\"form-switch\" _v-5ea68056=\"\">\n\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"show_excluded\" @change=\"excludePostsChange\" _v-5ea68056=\"\">\n\t\t\t\t\t\t\t<i class=\"form-icon\" _v-5ea68056=\"\"></i>{{labels.search_posts_show_excluded}}\n\t\t\t\t\t\t</label>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12  px-2\" v-if=\"postsAvailable\" _v-5ea68056=\"\">\n\t\t\t\t\t<div v-if=\"postsAvailable.length === 0 &amp;&amp; !is_loading\" _v-5ea68056=\"\">\n\t\t\t\t\t\t{{labels.no_posts_found}}\n\t\t\t\t\t</div>\n\t\t\t\t\t<div v-else=\"\" _v-5ea68056=\"\">\n\t\t\t\t\t\t<table id=\"rop-posts-table\" class=\"table table-striped table-hover\" v-if=\" ! is_loading\" _v-5ea68056=\"\">\n\t\t\t\t\t\t\t<tbody _v-5ea68056=\"\"><tr v-for=\"(post,index ) in postsAvailable\" class=\"rop-post-item\" _v-5ea68056=\"\">\n\t\t\t\t\t\t\t\t<td :class=\"'rop-post-' + post.selected\" _v-5ea68056=\"\">{{post.name}}\n\t\t\t\t\t\t\t\t\t<button class=\"btn btn-error rop-exclude-post\" @click=\"excludeSinglePost(post.value,post.selected)\" _v-5ea68056=\"\">\n\t\t\t\t\t\t\t\t\t\t<i class=\"fa\" :class=\"'fa-' + (post.selected ? 'plus' : 'remove') \" v-if=\"!is_loading_single\" _v-5ea68056=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-5ea68056=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t<span v-html=\" ( post.selected ? labels.include_single_post  : labels.exclude_single_post) \" _v-5ea68056=\"\"> </span>\n\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t<tr v-if=\"has_pages\" _v-5ea68056=\"\">\n\t\t\t\t\t\t\t\t<td class=\"rop-load-more-posts\" _v-5ea68056=\"\">\n\t\t\t\t\t\t\t\t\t<button class=\"btn btn-error\" @click=\"loadMorePosts()\" _v-5ea68056=\"\">\n\t\t\t\t\t\t\t\t\t\t<i class=\"fa fa-newspaper-o \" v-if=\"!is_loading_single\" _v-5ea68056=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-5ea68056=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t{{labels.load_more_posts}}\n\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t</tbody></table>\n\t\t\t\t\t\t<div class=\"loading loading-lg\" v-else=\"\" _v-5ea68056=\"\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\n\t</div>\n";
 
 /***/ })
 /******/ ]);
