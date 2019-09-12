@@ -6,12 +6,14 @@
                     <img :src="plugin_logo" class="plugin-logo avatar avatar-lg"/>
                     <h1 class="plugin-title d-inline-block">Revive Old Posts</h1><span class="powered d-inline-block"> {{labels.by}} <a
                         href="https://revive.social" target="_blank"><b>Revive.Social</b></a></span>
-                    <div id="rop_social_actions">
-                        <a v-if="haveAccounts" href="https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform" target="_blank" class="submit-feedback"><span><i
-                                class="fa fa-commenting" aria-hidden="true"></i></span> {{labels.survey}}</a>
+                    <div id="rop_user_actions">
+                        <a v-if="license  >= 1" href="https://revive.social/pro-support/" target="_blank" class="rop-get-support-btn"><span><i
+                                class="fa fa-commenting" aria-hidden="true"></i></span> {{labels.rop_support}}</a>
+                        <a v-if="license  < 1" href="https://revive.social/support/" target="_blank" class="rop-get-support-btn"><span><i
+                                class="fa fa-commenting" aria-hidden="true"></i></span> {{labels.rop_support}}</a>
                         <a v-if="haveAccounts"
-                           href="https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial"
-                           target="_blank" class="tweet-about-it"><span><i class="fa fa-twitter" aria-hidden="true"></i></span> {{labels.tweet_about_it}}</a>
+                           href="https://docs.revive.social/"
+                           target="_blank" class="rop-docs-btn"><span><i class="fa fa-book" aria-hidden="true"></i></span> {{labels.rop_docs}}</a>
                         <a v-if="haveAccounts" href="https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post" target="_blank" class="leave-a-review"><span><i class="fa fa-star"
                                                                                                                                                                             aria-hidden="true"></i></span>
                             {{labels.review_it}}</a>
@@ -76,10 +78,9 @@
                     <div v-if="haveAccounts">
                         <upsell-sidebar></upsell-sidebar>
                     </div>
-                    <a v-if="haveAccounts" href="https://trello.com/b/svAZqXO1/roadmap-revive-old-posts" target="_blank" class="btn support_btns">{{labels.rop_roadmap}}</a>
-                    <a v-if="haveAccounts" href="https://docs.revive.social/" target="_blank" class="btn support_btns">{{labels.rop_docs}}</a>
-                    <a v-if="license  >= 1" href="https://revive.social/pro-support/" target="_blank" class="btn support_btns">{{labels.rop_support}}</a>
-                    <a v-if="license  < 1" href="https://revive.social/support/" target="_blank" class="btn support_btns">{{labels.rop_support}}</a>
+                    <a v-if="haveAccounts" href="https://trello.com/b/svAZqXO1/roadmap-revive-old-posts" target="_blank" class="btn rop-sidebar-action-btns">{{labels.rop_roadmap}}</a>
+                    <a v-if="haveAccounts" href="https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform" target="_blank" class="btn rop-sidebar-action-btns">{{labels.survey}}</a>
+                    <a v-if="haveAccounts" href="https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial" target="_blank" class="btn rop-sidebar-action-btns">{{labels.tweet_about_it}}</a>
                 </div>
 
             </div>

@@ -294,7 +294,7 @@ class Rop_I18n {
 			),
 			'general'     => array(
 				'by'                     => __( 'by', 'tweet-old-post' ),
-				'tweet_about_it'         => __( 'Show your love', 'tweet-old-post' ),
+				'tweet_about_it'         => __( 'Show Your Love', 'tweet-old-post' ),
 				'review_it'              => __( 'Leave a review', 'tweet-old-post' ),
 				'survey'                     => __( 'Take the Survey', 'tweet-old-post' ),
 				'in'                     => __( 'in', 'tweet-old-post' ),
