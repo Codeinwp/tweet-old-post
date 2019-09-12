@@ -35606,6 +35606,11 @@ module.exports = {
 				}, function (error) {
 					_this.is_loading = false;
 				});
+				// This needs to be run to reset the available services to make the social media auth buttons available again.
+				_this.$store.dispatch('fetchAJAXPromise', { req: 'get_available_services' }).then(function (response) {}, function (error) {
+					_vue2.default.$log.error('service-user-tile.vue => fetchAJAXPromise::get_available_services issue: ', error);
+				});
+				// get_available_services
 			}, function (error) {
 				_this.is_loading = false;
 				_vue2.default.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
