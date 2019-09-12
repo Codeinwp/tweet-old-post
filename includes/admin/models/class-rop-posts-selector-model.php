@@ -434,7 +434,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			'posts_per_page'         => ( 1000 + count( $exclude ) ),
 			'update_post_meta_cache' => false,
 			'update_post_term_cache' => false,
-			'post_status'            => [ 'publish' ],
+			'post_status'            => array( 'publish' ),
 			'fields'                 => 'ids',
 			'post_type'              => $post_types,
 			'tax_query'              => $tax_queries,

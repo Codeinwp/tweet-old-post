@@ -13,6 +13,7 @@
 							</div>
 							<p class="empty-title h5">{{labels.no_accounts}}</p>
 							<p class="empty-subtitle">{{labels.no_accounts_desc}}</p>
+							<p class="empty-subtitle"><span v-html="labels.no_accounts_pro_upsell"></span></p>
 						</div>
 						<div class="account-container" v-for="( account, id ) in accounts">
 							<service-user-tile :account_data="account" :account_id="id"></service-user-tile>

@@ -4049,7 +4049,7 @@
 	margin-bottom: 20px;
 }
 
-#rop_core .sidebar .support_btns{
+#rop_core .sidebar .rop-sidebar-action-btns{
 	margin-bottom: 10px;
 }
 
@@ -4185,13 +4185,13 @@
 	cursor: pointer;
 }
 
-#rop_social_actions {
+#rop_user_actions {
 	display: inline-block;
 	float: right;
 	margin-left: 40px;
 }
 
-#rop_social_actions a {
+#rop_user_actions a {
 	display: inline-block;
 	margin-right: 15px;
 	padding-right: 10px;
@@ -4203,24 +4203,24 @@
 	text-transform: uppercase;
 }
 
-#rop_social_actions .tweet-about-it {
+#rop_user_actions .rop-docs-btn {
 	background: #52c4ef;
 	text-shadow: 0 1px 0 #33a4ce;
 }
 
-#rop_social_actions .leave-a-review {
+#rop_user_actions .leave-a-review {
 	background: #f9866b;
 	text-shadow: 0 1px 0 #e46b3d;
 }
 
-#rop_social_actions .submit-feedback{
+#rop_user_actions .rop-get-support-btn{
 	background: #f5d426;
   text-shadow: 0 1px 0 #ccad0e;
 }
 
-#rop_social_actions .tweet-about-it span,
-#rop_social_actions .leave-a-review span,
-#rop_social_actions .submit-feedback span {
+#rop_user_actions .rop-docs-btn span,
+#rop_user_actions .leave-a-review span,
+#rop_user_actions .rop-get-support-btn span {
 	display: block;
 	float: left;
 	width: 30px;
@@ -4229,17 +4229,17 @@
 	border-radius: 3px 0 0 3px;
 }
 
-#rop_social_actions .tweet-about-it span {
+#rop_user_actions .rop-docs-btn span {
 	text-align: center;
 	background: #3eaed8;
 }
 
-#rop_social_actions .leave-a-review span {
+#rop_user_actions .leave-a-review span {
 	text-align: center;
 	background: #f16848;
 }
 
-#rop_social_actions .submit-feedback span {
+#rop_user_actions .rop-get-support-btn span {
 	text-align: center;
 	background: #d8b70e;
 }
@@ -4382,14 +4382,14 @@
 }
 
 @media (max-width: 840px) {
-	#rop_social_actions {
+	#rop_user_actions {
 		display: inline-block;
 		width: 100%;
 		margin-bottom: 11px;
 		text-align: center;
 	}
 
-	#rop_social_actions a {
+	#rop_user_actions a {
 		margin-bottom: 5px;
 	}
 
