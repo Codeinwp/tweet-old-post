@@ -91,7 +91,8 @@ export default new Vuex.Store({
         activePostFormat: [],
         activeSchedule: [],
         queue: {},
-        publish_now: ropApiSettings.publish_now
+        publish_now: ropApiSettings.publish_now,
+        hide_preloading : 0
     },
     mutations: {
 
@@ -158,7 +159,8 @@ export default new Vuex.Store({
                     break
                 case 'get_authenticated_services':
                 case 'remove_service':
-                    state.authenticatedServices = stateData
+                    state.authenticatedServices = stateData;
+                    state.hide_preloading++;
                     break
                 case 'authenticate_service':
                     state.authenticatedServices = stateData
