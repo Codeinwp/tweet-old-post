@@ -104,6 +104,7 @@ function run_rop() {
 	define( 'ROP_LITE_PATH', plugin_dir_path( __FILE__ ) );
 	define( 'ROP_PATH', plugin_dir_path( __FILE__ ) );
 	define( 'ROP_LITE_URL', plugin_dir_url( __FILE__ ) );
+	define( 'ROP_STATUS_ALERT', 6 );// How many consecutive errors count towards status alert "Status: Error (check logs)"
 
 	// Authorization APP Data
 	define( 'ROP_AUTH_APP_URL', 'https://app.revive.social' );
