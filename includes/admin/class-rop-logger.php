@@ -190,7 +190,7 @@ class Rop_Logger {
 	 * @since 8.4.4
 	 * @access public
 	 *
-	 * @param array $logs
+	 * @param array $logs Contains all the plugin logs, if any.
 	 *
 	 * @return bool
 	 */
