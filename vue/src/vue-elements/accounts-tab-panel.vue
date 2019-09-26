@@ -13,6 +13,7 @@
 							</div>
 							<p class="empty-title h5">{{labels.no_accounts}}</p>
 							<p class="empty-subtitle">{{labels.no_accounts_desc}}</p>
+							<p class="empty-subtitle"><span v-html="labels.no_accounts_pro_upsell"></span></p>
 						</div>
 						<div class="account-container" v-for="( account, id ) in accounts">
 							<service-user-tile :account_data="account" :account_id="id"></service-user-tile>
@@ -128,6 +129,11 @@
 						// Stop sharing process if enabled.
 						this.$parent.togglePosting();
 					}
+					this.$store.dispatch( 'fetchAJAXPromise', {
+						req: 'get_available_services'
+					} ).then( response => {
+						this.is_loading = false;
+					} )
 				}, error => {
 					this.is_loading = false;
 					Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)

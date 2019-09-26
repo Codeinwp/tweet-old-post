@@ -328,6 +328,10 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		$this->set_api( $credentials['consumer_key'], $credentials['consumer_secret'] );
 		$request_token = $this->request_api_token();
 
+		if ( empty( $request_token ) ) {
+			return $this->get_legacy_url();
+		}
+
 		$url = 'https://www.tumblr.com/oauth/authorize?oauth_token=' . $request_token['oauth_token'];
 
 		return $url;
@@ -351,14 +355,21 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		$requestHandler = $api->getRequestHandler();
 		$requestHandler->setBaseUrl( 'https://www.tumblr.com/' );
 
-		$resp   = $requestHandler->request(
+		$resp = $requestHandler->request(
 			'POST',
 			'oauth/request_token',
 			array(
 				'oauth_callback' => $this->get_endpoint_url( 'authorize' ),
 			)
 		);
+
 		$result = (string) $resp->body;
+		if ( 401 === absint( $resp->status ) ) {
+			$this->logger->alert_error( 'Error connecting Tumblr: The Consumer Key/Consumer Secret is not valid. Please ensure that they\'re correct and try again' );
+
+			return '';
+		}
+
 		parse_str( $result, $request_token );
 
 		$_SESSION['rop_tumblr_request_token'] = $request_token;

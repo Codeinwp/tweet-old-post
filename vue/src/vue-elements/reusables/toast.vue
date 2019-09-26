@@ -31,6 +31,12 @@
 				}
 			}
 		},
+		mounted: function () {
+
+		},
+		created() {
+
+		},
 		methods: {
 			closeThis () {
 				this.toast.show = false
@@ -42,5 +48,8 @@
 <style>
 	#rop_core .toast.hidden {
 		display: none;
+	}
+	#rop_core .toast {
+		margin: 10px 0;
 	}
 </style>

@@ -518,20 +518,20 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 					$new_post['message'] = $post_details['content'] . $post_details['hashtags'];
 					$new_post['link'] = get_permalink( $post_id );
 
-					return [
+					return array(
 						'post_data' => $new_post,
 						'type'      => 'post',
-					];
+					);
 				}
 
 				$new_post['url'] = wp_get_attachment_url( $post_id );
 
 				$new_post['caption'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
 
-				return [
+				return array(
 					'post_data' => $new_post,
 					'type'      => 'photo',
-				];
+				);
 			}
 
 				// If is regular post, but post with image option checked, post as Image on FB
@@ -541,10 +541,10 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 				$new_post['caption'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
 
-				return [
+				return array(
 					'post_data' => $new_post,
 					'type'      => 'photo',
-				];
+				);
 
 			}
 		}
@@ -561,10 +561,10 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				$new_post['picture'] = $post_details['post_image'];
 			}
 
-			return [
+			return array(
 				'post_data' => $new_post,
 				'type'      => 'post',
-			];
+			);
 		}
 
 			// If we don't have an image link share as regular post.
@@ -577,10 +577,10 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				$new_post['link'] = $this->get_url( $post_details );
 			}
 
-			return [
+			return array(
 				'post_data' => $new_post,
 				'type'      => 'post',
-			];
+			);
 		}
 
 			$api = $this->get_api();
@@ -591,10 +591,10 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 			$new_post['message'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
 
-			return [
+			return array(
 				'post_data' => $new_post,
 				'type'      => 'photo',
-			];
+			);
 		}
 		if ( strpos( $post_details['mimetype']['type'], 'video' ) !== false ) {
 
@@ -602,10 +602,10 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			$new_post['title']       = html_entity_decode( get_the_title( $post_id ) );
 			$new_post['description'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
 
-			return [
+			return array(
 				'post_data' => $new_post,
 				'type'      => 'video',
-			];
+			);
 		}
 	}
 
@@ -642,7 +642,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		if ( $this->get_api() ) {
 			// Page was added using user application (old method)
 			// Try post via Facebook Graph SDK
-
 			$api = $this->get_api();
 			try {
 				$api->post( $path, $new_post, $token );
@@ -696,8 +695,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			}
 		} else {
 			// Page was added using ROP application (new method)
-			// Try post via Guzzle 6
-
 			$post_data = $new_post;
 			$post_data['access_token'] = $token;
 

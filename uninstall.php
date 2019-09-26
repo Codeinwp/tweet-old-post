@@ -45,6 +45,7 @@ if ( isset( $housekeeping ) && $housekeeping ) {
 		'tweet_old_post_review_flag',
 		// Misc
 		'rop_logs',
+		'rop_toast',
 		'cwp_rop_remote_trigger',
 		'rop_notice_active',
 		'rop_menu_pointer_queued',
@@ -63,6 +64,7 @@ if ( isset( $housekeeping ) && $housekeeping ) {
 	delete_metadata( 'user', 0, 'rop-linkedin-api-notice-dismissed', '', true );
 	delete_metadata( 'user', 0, 'rop-buffer-addon-notice-dismissed', '', true );
 	delete_metadata( 'user', 0, 'rop-wp-cron-notice-dismissed', '', true );
+	delete_metadata( 'user', 0, 'rop-cron-event-status-notice-dismissed', '', true );
 
 	global $wpdb;
 	$post_meta = $wpdb->prefix . 'postmeta';

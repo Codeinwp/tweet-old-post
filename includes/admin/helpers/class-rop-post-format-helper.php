@@ -360,7 +360,7 @@ class Rop_Post_Format_Helper {
 		}
 		$result   = $this->clean_hashtags( $result );
 		$hashtags = '';
-		$result   = array_filter( $result, [ $this, 'string_length' ] );
+		$result   = array_filter( $result, array( $this, 'string_length' ) );
 		$result   = array_map(
 			function ( $value ) {
 				return str_replace( '#', '', $value );
@@ -485,7 +485,7 @@ class Rop_Post_Format_Helper {
 			return array();
 		}
 		if ( is_string( $hashtag ) ) {
-			return [ $hashtag ];
+			return array( $hashtag );
 		}
 
 		return $hashtag;
@@ -504,10 +504,10 @@ class Rop_Post_Format_Helper {
 	private function clean_hashtags( $hashtags ) {
 		// WP terms with > and < are stored as entities
 		if ( is_string( $hashtags ) ) {
-			$hashtags = [ $hashtags ];
+			$hashtags = array( $hashtags );
 		}
 		if ( empty( $hashtags ) ) {
-			return [];
+			return array();
 		}
 		$hashtags = array_map(
 			function ( $value ) {

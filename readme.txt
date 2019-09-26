@@ -141,6 +141,28 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.4.3 - 2019-09-12  = 
+
+* New: Toast message will now show on ROP dashboard when an error is present in the log.
+* New: Added a check to detect when ROP cron event is not firing.
+* Fix: Switching from queue tab to another tab would refresh queue order.
+* Fix: Linkedin 411 length required error.
+* Fix: Users would be redirected to Tumblr homepage if credentials were wrong. An error will now be displayed.
+* Fix: Pressing Twitter account button after deleting a Twitter account from ROP would refresh the page.
+* Change: Edited "no accounts" text area with more details to help users get started.
+* Change: Moved Support & Documentation buttons to top section of ROP dashboard.
+* Change: Set rviv.ly back as default shortener.
+* Change: Delete icon will now show whenever an account is deactivated
+
+
+= 8.4.2 - 2019-08-23  = 
+
+* PRO Fix: Unauthorized error when updating Pro plugin 
+* Fix: Error would occur if the user tried to sign in while the API credentials form fields were empty
+* Fix: Timer was not stopped if all accounts were removed using "remove all accounts" button
+* Fix: Removing an account and then immediately trying to add it back would attempt to validate with old API credentials
+
+
 = 8.4.1 - 2019-08-19  = 
 
 * Fix: Use own keys button was appearing in Twitter modal for old installs
