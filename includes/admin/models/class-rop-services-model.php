@@ -74,7 +74,75 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 			return false;
 		}
 
+		$this->facebook_exception_toast( $new_service );
+
 		return $this->update_authenticated_services( wp_parse_args( $new_service, $this->get_authenticated_services() ) );
+	}
+
+	/**
+	 * When a new facebook account is added we need to inform the user about their domain
+	 * to be verified in the facebook account.
+	 * This function will help us create a toast message to do that.
+	 *
+	 * @since 8.4.3
+	 * @access public
+	 *
+	 * @param $new_service
+	 *
+	 * @return bool
+	 */
+	public function facebook_exception_toast( $new_service ) {
+
+		foreach ( $new_service as $index_account => $account_info ) {
+			if ( isset( $account_info['service'] ) && 'facebook' === $account_info['service'] ) {
+				update_option( 'rop_facebook_domain_toast', 'yes' );
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * If there are no facebook account available
+	 * We will update the facebook toast message option to now display
+	 *
+	 * @since 8.4.3
+	 * @access public
+	 *
+	 * @param $accounts_list
+	 *
+	 * @return bool
+	 */
+	public function facebook_exception_toast_remove( $accounts_list ) {
+		$remove_toast_option = false;
+		// If there are no services in the list, just mark option for removal.
+		if ( empty( $accounts_list ) ) {
+			$remove_toast_option = true;
+		}
+
+		if ( false === $remove_toast_option ) {
+			$fb_valid_accounts = 0;
+			foreach ( $accounts_list as $service_key => $service_data ) {
+				if ( 'facebook' === $service_data['service'] ) {
+					if ( ! empty( $service_data['available_accounts'] ) ) {
+						foreach ( $service_data['available_accounts'] as $account_key => $value ) {
+							if ( true === filter_var( $value['active'], FILTER_VALIDATE_BOOLEAN ) ) {
+								$fb_valid_accounts ++;
+							}
+						}
+					}
+				}
+			}
+			if ( empty( $fb_valid_accounts ) ) {
+				$remove_toast_option = true;
+			}
+		}
+
+		if ( true === $remove_toast_option ) {
+			update_option( 'rop_facebook_domain_toast', 'no' );
+		}
+
+		return true;
 	}
 
 	/**
@@ -102,6 +170,8 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 			}
 			$new_auth_services[ $service_key ]['available_accounts'] = $accounts;
 		}
+
+		$this->facebook_exception_toast_remove( $new_auth_services );
 		$this->set( $this->services_namespace, $new_auth_services );
 		$this->sync_active_accounts();
 
@@ -309,6 +379,7 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 				return ! empty( $account );
 			}
 		);
+
 		return wp_parse_args( $accounts, array() );
 	}
 
@@ -373,8 +444,8 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 		}
 
 		$service_id = $parts[0] . '_' . $parts[1];
+		$services   = $this->get_authenticated_services();
 
-		$services = $this->get_authenticated_services();
 		unset( $services[ $service_id ]['available_accounts'][ $account_id ] );
 
 		$this->update_authenticated_services( $services );

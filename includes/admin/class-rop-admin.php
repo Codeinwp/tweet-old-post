@@ -95,7 +95,7 @@ class Rop_Admin {
 	 */
 	public function check_shortener_service( $shortener ) {
 
-		$model = new Rop_Post_Format_Model;
+		$model       = new Rop_Post_Format_Model;
 		$post_format = $model->get_post_format();
 
 		$shorteners = array();
@@ -124,10 +124,10 @@ class Rop_Admin {
 			return;
 		}
 		?>
-			<div class="notice notice-error is-dismissible">
-				<?php echo sprintf( __( '%1$s%2$sRevive Old Posts:%3$s Please upgrade your Bit.ly keys. See this %4$sarticle for instructions.%5$s%6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/976-how-to-connect-bit-ly-to-revive-old-posts" target="_blank">', '</a>', '</p>' ); ?>
-			</div>
-			<?php
+		<div class="notice notice-error is-dismissible">
+			<?php echo sprintf( __( '%1$s%2$sRevive Old Posts:%3$s Please upgrade your Bit.ly keys. See this %4$sarticle for instructions.%5$s%6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/976-how-to-connect-bit-ly-to-revive-old-posts" target="_blank">', '</a>', '</p>' ); ?>
+		</div>
+		<?php
 	}
 
 	/**
@@ -139,7 +139,7 @@ class Rop_Admin {
 
 		$general_settings = new Rop_Settings_Model;
 
-		$post_types = wp_list_pluck( $general_settings->get_selected_post_types(), 'value' );
+		$post_types           = wp_list_pluck( $general_settings->get_selected_post_types(), 'value' );
 		$attachment_post_type = array_search( 'attachment', $post_types );
 
 		if ( ! empty( $attachment_post_type ) ) {
@@ -186,6 +186,19 @@ class Rop_Admin {
 	}
 
 	/**
+	 * Whether we will display the toast message related to facebook
+	 *
+	 * @since 8.4.3
+	 *
+	 * @return mixed
+	 */
+	private function facebook_exception_toast_display() {
+		$show_the_toast = get_option( 'rop_facebook_domain_toast', 'no' );
+
+		return filter_var( $show_the_toast, FILTER_VALIDATE_BOOLEAN );
+	}
+
+	/**
 	 * Register the JavaScript for the admin area.
 	 *
 	 * @since    8.0.0
@@ -214,30 +227,31 @@ class Rop_Admin {
 		$tw_service      = new Rop_Twitter_Service();
 		$active_accounts = $services->get_active_accounts();
 
-		$global_settings             = new Rop_Global_Settings();
-		$settings                    = new Rop_Settings_Model();
+		$global_settings = new Rop_Global_Settings();
+		$settings        = new Rop_Settings_Model();
 
-		$array_nonce['license_type'] = $global_settings->license_type();
-		$array_nonce['labels']       = Rop_I18n::get_labels();
-		$array_nonce['upsell_link']  = Rop_I18n::UPSELL_LINK;
-		$array_nonce['pro_installed'] = ( defined( 'ROP_PRO_VERSION' ) ) ? true : false;
-		$array_nonce['staging']      = $this->rop_site_is_staging();
-		$array_nonce['show_tw_app_btn'] = $tw_service->rop_show_tw_app_btn();
-		$array_nonce['debug']        = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
-		$array_nonce['publish_now']  = array(
+		$array_nonce['license_type']            = $global_settings->license_type();
+		$array_nonce['fb_domain_toast_display'] = $this->facebook_exception_toast_display();
+		$array_nonce['labels']                  = Rop_I18n::get_labels();
+		$array_nonce['upsell_link']             = Rop_I18n::UPSELL_LINK;
+		$array_nonce['pro_installed']           = ( defined( 'ROP_PRO_VERSION' ) ) ? true : false;
+		$array_nonce['staging']                 = $this->rop_site_is_staging();
+		$array_nonce['show_tw_app_btn']         = $tw_service->rop_show_tw_app_btn();
+		$array_nonce['debug']                   = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
+		$array_nonce['publish_now']             = array(
 			'action'   => $settings->get_instant_sharing_by_default(),
 			'accounts' => $active_accounts,
 		);
 
 		$admin_url = get_admin_url( get_current_blog_id(), 'admin.php?page=TweetOldPost' );
-		$token = get_option( ROP_APP_TOKEN_OPTION );
+		$token     = get_option( ROP_APP_TOKEN_OPTION );
 		$signature = md5( $admin_url . $token );
 
 		$rop_auth_app_data = array(
 			'adminEmail'          => base64_encode( get_option( 'admin_email' ) ),
 			'authAppUrl'          => ROP_AUTH_APP_URL,
 			'authAppFacebookPath' => ROP_APP_FACEBOOK_PATH,
-			'authAppTwitterPath' => ROP_APP_TWITTER_PATH,
+			'authAppTwitterPath'  => ROP_APP_TWITTER_PATH,
 			'authToken'           => $token,
 			'adminUrl'            => urlencode( $admin_url ),
 			'authSignature'       => $signature,
@@ -481,7 +495,7 @@ class Rop_Admin {
 			return;
 		}
 		$global_settings = new Rop_Global_Settings;
-		$settings = new Rop_Settings_Model;
+		$settings        = new Rop_Settings_Model;
 
 		$services        = new Rop_Services_Model();
 		$active_accounts = $services->get_active_accounts();
@@ -519,11 +533,11 @@ class Rop_Admin {
 		}
 	}
 
-		/**
-		 * Publish now attributes to be provided to the javascript.
-		 *
-		 * @param   array $default The default attributes.
-		 */
+	/**
+	 * Publish now attributes to be provided to the javascript.
+	 *
+	 * @param   array $default The default attributes.
+	 */
 	public function publish_now_attributes( $default ) {
 		global $post;
 
@@ -535,11 +549,11 @@ class Rop_Admin {
 		return $default;
 	}
 
-		/**
-		 * Publish now, if enabled.
-		 *
-		 * @param   int $post_id The post ID.
-		 */
+	/**
+	 * Publish now, if enabled.
+	 *
+	 * @param   int $post_id The post ID.
+	 */
 	public function maybe_publish_now( $post_id ) {
 		if ( ! isset( $_POST['rop_publish_now_nonce'] ) || ! wp_verify_nonce( $_POST['rop_publish_now_nonce'], 'rop_publish_now_nonce' ) ) {
 			return;
@@ -706,7 +720,7 @@ class Rop_Admin {
 		// Gets created on plugin activation hook, old installs would not have this option.
 		// So we return in case this is a brand new install.
 		if ( ! empty( get_option( 'rop_first_install_version' ) ) ) {
-					 return;
+			return;
 		}
 
 		$user_id = get_current_user_id();
@@ -734,11 +748,11 @@ class Rop_Admin {
 		}
 
 		?>
-			<div class="notice notice-error">
-				<?php echo sprintf( __( '%1$s%2$sRevive Old Posts:%3$s The Linkedin API Has been updated. You need to reconnect your LinkedIn account to continue posting to LinkedIn. Please see %4$sthis article for instructions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/1040-how-to-move-to-linkedin-api-v2" target="_blank">', '</a>', '<a style="float: right;" href="?rop-linkedin-api-notice-dismissed">Dismiss</a>', '</p>' ); ?>
+		<div class="notice notice-error">
+			<?php echo sprintf( __( '%1$s%2$sRevive Old Posts:%3$s The Linkedin API Has been updated. You need to reconnect your LinkedIn account to continue posting to LinkedIn. Please see %4$sthis article for instructions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/1040-how-to-move-to-linkedin-api-v2" target="_blank">', '</a>', '<a style="float: right;" href="?rop-linkedin-api-notice-dismissed">Dismiss</a>', '</p>' ); ?>
 
-			</div>
-			<?php
+		</div>
+		<?php
 
 	}
 
@@ -749,7 +763,7 @@ class Rop_Admin {
 	 * @access  public
 	 */
 	public function rop_dismiss_linkedin_api_v2_notice() {
-		 $user_id = get_current_user_id();
+		$user_id = get_current_user_id();
 		if ( isset( $_GET['rop-linkedin-api-notice-dismissed'] ) ) {
 			add_user_meta( $user_id, 'rop-linkedin-api-notice-dismissed', 'true', true );
 		}
@@ -817,7 +831,7 @@ class Rop_Admin {
 		}
 
 		$rop_next_task_hit = wp_next_scheduled( 'rop_cron_job' );
-		$rop_current_time = time();
+		$rop_current_time  = time();
 
 		// if sharing not started cron event will not be present
 		if ( ! $rop_next_task_hit ) {

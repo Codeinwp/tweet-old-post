@@ -749,7 +749,8 @@ exports.default = new _vuex2.default.Store({
         activePostFormat: [],
         activeSchedule: [],
         queue: {},
-        publish_now: ropApiSettings.publish_now
+        publish_now: ropApiSettings.publish_now,
+        fb_exception_toast: ropApiSettings.fb_domain_toast_display
     },
     mutations: {
         setTabView: function setTabView(state, view) {
@@ -773,7 +774,7 @@ exports.default = new _vuex2.default.Store({
             var stateData = _ref.stateData,
                 requestName = _ref.requestName;
 
-            _vue2.default.$log.debug('State change for ', requestName);
+            _vue2.default.$log.debug('State change for ', requestName, ' With value: ', stateData);
             switch (requestName) {
                 case 'manage_cron':
                     state.cron_status = stateData;
@@ -783,6 +784,9 @@ exports.default = new _vuex2.default.Store({
                     break;
                 case 'get_toast':
                     state.page.logs = stateData;
+                    break;
+                case 'fb_exception_toast':
+                    state.fb_exception_toast = stateData.display;
                     break;
                 case 'update_settings_toggle':
                 case 'get_general_settings':
@@ -873,7 +877,7 @@ exports.default = new _vuex2.default.Store({
                     break;
                 case 'update_toast':
                     state.toast = stateData;
-                    _vue2.default.$log.debug('yes yes here ', requestName);
+                    _vue2.default.$log.debug('Toast updated ', requestName);
                     break;
                 case 'toggle_account':
                 case 'exclude_post':

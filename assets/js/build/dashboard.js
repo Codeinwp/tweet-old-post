@@ -17736,7 +17736,8 @@ exports.default = new _vuex2.default.Store({
         activePostFormat: [],
         activeSchedule: [],
         queue: {},
-        publish_now: ropApiSettings.publish_now
+        publish_now: ropApiSettings.publish_now,
+        fb_exception_toast: ropApiSettings.fb_domain_toast_display
     },
     mutations: {
         setTabView: function setTabView(state, view) {
@@ -17760,7 +17761,7 @@ exports.default = new _vuex2.default.Store({
             var stateData = _ref.stateData,
                 requestName = _ref.requestName;
 
-            _vue2.default.$log.debug('State change for ', requestName);
+            _vue2.default.$log.debug('State change for ', requestName, ' With value: ', stateData);
             switch (requestName) {
                 case 'manage_cron':
                     state.cron_status = stateData;
@@ -17770,6 +17771,9 @@ exports.default = new _vuex2.default.Store({
                     break;
                 case 'get_toast':
                     state.page.logs = stateData;
+                    break;
+                case 'fb_exception_toast':
+                    state.fb_exception_toast = stateData.display;
                     break;
                 case 'update_settings_toggle':
                 case 'get_general_settings':
@@ -17860,7 +17864,7 @@ exports.default = new _vuex2.default.Store({
                     break;
                 case 'update_toast':
                     state.toast = stateData;
-                    _vue2.default.$log.debug('yes yes here ', requestName);
+                    _vue2.default.$log.debug('Toast updated ', requestName);
                     break;
                 case 'toggle_account':
                 case 'exclude_post':
@@ -34348,6 +34352,12 @@ module.exports = {
         is_rest_api_error: function is_rest_api_error() {
             return this.$store.state.api_not_available;
         },
+        /**
+         * Check if rest api is available.
+         */
+        is_fb_domain_notice: function is_fb_domain_notice() {
+            return this.$store.state.fb_exception_toast;
+        },
         current_time: {
             get: function get() {
                 return this.$store.state.cron_status.current_time;
@@ -34444,10 +34454,33 @@ module.exports = {
     },
     methods: {
         /**
+         *
+         * */
+        close_fb_domain_notice: function close_fb_domain_notice() {
+            var _this2 = this;
+
+            if (this.is_loading) {
+                this.$log.warn('Request in progress...Bail');
+                return;
+            }
+
+            this.$store.dispatch('fetchAJAXPromise', {
+                req: 'fb_exception_toast',
+                data: { action: 'hide' }
+            }).then(function (response) {
+                _this2.$log.info('Succesfully closed facebook domain toast.');
+                _this2.is_loading = false;
+            }, function (error) {
+                _this2.is_loading = false;
+                Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+            });
+        },
+
+        /**
          * Toggle sharing.
          */
         togglePosting: function togglePosting() {
-            var _this2 = this;
+            var _this3 = this;
 
             if (this.is_loading) {
                 this.$log.warn('Request in progress...Bail');
@@ -34460,9 +34493,9 @@ module.exports = {
                     'action': this.start_status === false ? 'start' : 'stop'
                 }
             }).then(function (response) {
-                _this2.is_loading = false;
+                _this3.is_loading = false;
             }, function (error) {
-                _this2.is_loading = false;
+                _this3.is_loading = false;
                 Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
             });
         },
@@ -34475,7 +34508,7 @@ module.exports = {
             this.$store.commit('setTabView', slug);
         },
         get_toast_message: function get_toast_message(force) {
-            var _this3 = this;
+            var _this4 = this;
 
             if (this.is_loading_logs) {
                 this.$log.warn('Request in progress...Bail');
@@ -34486,9 +34519,9 @@ module.exports = {
                 req: 'get_toast',
                 data: { force: force }
             }).then(function (response) {
-                _this3.$log.info('Succesfully fetched toast log.');
-                _this3.is_loading_logs = false;
-                _this3.$store.dispatch('fetchAJAX', { req: 'manage_cron', data: { action: 'status' } });
+                _this4.$log.info('Succesfully fetched toast log.');
+                _this4.is_loading_logs = false;
+                _this4.$store.dispatch('fetchAJAX', { req: 'manage_cron', data: { action: 'status' } });
 
                 // Toast message code start
                 if (response.length) {
@@ -34498,12 +34531,12 @@ module.exports = {
                         title: 'Error encountered',
                         message: response[0].message
                     };
-                    _this3.$store.commit('updateState', { stateData: toast, requestName: 'update_toast' });
+                    _this4.$store.commit('updateState', { stateData: toast, requestName: 'update_toast' });
                 }
                 // Toast message code end
             }, function (error) {
                 Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
-                _this3.is_loading_logs = false;
+                _this4.is_loading_logs = false;
             });
         }
     },
@@ -34566,7 +34599,10 @@ module.exports = {
 //             <toast/>
 //             <div v-if=" is_rest_api_error " class="toast toast-error rop-api-not-available" v-html="labels.api_not_available">
 //             </div>
-//
+//             <div v-if=" is_fb_domain_notice " class="toast toast-primary">
+//                 <button class="btn btn-clear float-right" @click="close_fb_domain_notice()"></button>
+//                 <div v-html="labels.rop_facebook_domain_toast"></div>
+//             </div>
 //             <div class="sidebar sidebar-top card rop-container-start">
 //                 <div class="toast rop-current-time" v-if="formatedDate">
 //                     {{labels.now}}: {{ formatedDate }}
@@ -41301,7 +41337,7 @@ module.exports = "\n\t<div class=\"toast toast-success rop-current-time\" v-if=\
 /* 301 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <div class=\"columns panel-header\">\n            <div class=\"column header-logo vertical-align\">\n                <div>\n                    <img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/>\n                    <h1 class=\"plugin-title d-inline-block\">Revive Old Posts</h1><span class=\"powered d-inline-block\"> {{labels.by}} <a\n                        href=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\n                    <div id=\"rop_user_actions\">\n                        <a v-if=\"license  >= 1\" href=\"https://revive.social/pro-support/\" target=\"_blank\" class=\"rop-get-support-btn\"><span><i\n                                class=\"fa fa-commenting\" aria-hidden=\"true\"></i></span> {{labels.rop_support}}</a>\n                        <a v-if=\"license  < 1\" href=\"https://revive.social/support/\" target=\"_blank\" class=\"rop-get-support-btn\"><span><i\n                                class=\"fa fa-commenting\" aria-hidden=\"true\"></i></span> {{labels.rop_support}}</a>\n                        <a v-if=\"haveAccounts\"\n                           href=\"https://docs.revive.social/\"\n                           target=\"_blank\" class=\"rop-docs-btn\"><span><i class=\"fa fa-book\" aria-hidden=\"true\"></i></span> {{labels.rop_docs}}</a>\n                        <a v-if=\"haveAccounts\" href=\"https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post\" target=\"_blank\" class=\"leave-a-review\"><span><i class=\"fa fa-star\"\n                                                                                                                                                                            aria-hidden=\"true\"></i></span>\n                            {{labels.review_it}}</a>\n                    </div>\n                </div>\n            </div>\n            <toast/>\n            <div v-if=\" is_rest_api_error \" class=\"toast toast-error rop-api-not-available\" v-html=\"labels.api_not_available\">\n            </div>\n\n            <div class=\"sidebar sidebar-top card rop-container-start\">\n                <div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n                    {{labels.now}}: {{ formatedDate }}\n                </div>\n                <countdown :current_time=\"current_time\"/>\n                <button class=\"btn btn-sm\" :class=\"btn_class\"\n                        :data-tooltip=\"labels.active_account_warning\"\n                        @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n                    <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n                    <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n                    <i class=\"fa fa-spinner fa-spin\" v-else></i>\n                    {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n                </button>\n            </div>\n        </div>\n\n        <div class=\"columns\">\n            <div class=\"panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\n                <div class=\"panel-nav\" style=\"padding: 8px;\">\n                    <ul class=\"tab \">\n                        <li class=\"tab-item c-hand\" v-for=\"tab in displayTabs\"\n                            :class=\"{ active: tab.isActive }\" v-bind:id=\"tab.name.replace(' ', '').toLowerCase()\">\n                            <a :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\n                               :data-badge=\"logs_no\"\n                               @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\n                        </li>\n                    </ul>\n                </div>\n                <component :is=\"page.template\" :type=\"page.view\"></component>\n            </div>\n\n            <div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\n                 :class=\"'rop-license-plan-'+license\">\n\n                <div class=\"card rop-container-start\">\n                    <div class=\"toast rop-current-time\" v-if=\"formatedDate && haveAccounts\">\n                        {{labels.now}}: {{ formatedDate }}\n                    </div>\n                    <countdown :current_time=\"current_time\"/>\n                    <button id=\"rop_start_stop_btn\" class=\"btn\" :class=\"btn_class\"\n                            :data-tooltip=\"labels.active_account_warning\"\n                            @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n                        <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n                        <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n                        <i class=\"fa fa-spinner fa-spin\" v-else></i>\n                        {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n                    </button>\n                    <div id=\"staging-status\" v-if=\"staging\">\n                        {{labels.staging_status}}\n                    </div>\n                    <div v-if=\"!haveAccounts\" class=\"rop-spacer\"></div>\n                    <div v-if=\"haveAccounts\">\n                        <upsell-sidebar></upsell-sidebar>\n                    </div>\n                    <a v-if=\"haveAccounts\" href=\"https://trello.com/b/svAZqXO1/roadmap-revive-old-posts\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.rop_roadmap}}</a>\n                    <a v-if=\"haveAccounts\" href=\"https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.survey}}</a>\n                    <a v-if=\"haveAccounts\" href=\"https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.tweet_about_it}}</a>\n                </div>\n\n            </div>\n        </div>\n    </div>\n";
+module.exports = "\n    <div>\n        <div class=\"columns panel-header\">\n            <div class=\"column header-logo vertical-align\">\n                <div>\n                    <img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/>\n                    <h1 class=\"plugin-title d-inline-block\">Revive Old Posts</h1><span class=\"powered d-inline-block\"> {{labels.by}} <a\n                        href=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\n                    <div id=\"rop_user_actions\">\n                        <a v-if=\"license  >= 1\" href=\"https://revive.social/pro-support/\" target=\"_blank\" class=\"rop-get-support-btn\"><span><i\n                                class=\"fa fa-commenting\" aria-hidden=\"true\"></i></span> {{labels.rop_support}}</a>\n                        <a v-if=\"license  < 1\" href=\"https://revive.social/support/\" target=\"_blank\" class=\"rop-get-support-btn\"><span><i\n                                class=\"fa fa-commenting\" aria-hidden=\"true\"></i></span> {{labels.rop_support}}</a>\n                        <a v-if=\"haveAccounts\"\n                           href=\"https://docs.revive.social/\"\n                           target=\"_blank\" class=\"rop-docs-btn\"><span><i class=\"fa fa-book\" aria-hidden=\"true\"></i></span> {{labels.rop_docs}}</a>\n                        <a v-if=\"haveAccounts\" href=\"https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post\" target=\"_blank\" class=\"leave-a-review\"><span><i class=\"fa fa-star\"\n                                                                                                                                                                            aria-hidden=\"true\"></i></span>\n                            {{labels.review_it}}</a>\n                    </div>\n                </div>\n            </div>\n            <toast/>\n            <div v-if=\" is_rest_api_error \" class=\"toast toast-error rop-api-not-available\" v-html=\"labels.api_not_available\">\n            </div>\n            <div v-if=\" is_fb_domain_notice \" class=\"toast toast-primary\">\n                <button class=\"btn btn-clear float-right\" @click=\"close_fb_domain_notice()\"></button>\n                <div v-html=\"labels.rop_facebook_domain_toast\"></div>\n            </div>\n            <div class=\"sidebar sidebar-top card rop-container-start\">\n                <div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n                    {{labels.now}}: {{ formatedDate }}\n                </div>\n                <countdown :current_time=\"current_time\"/>\n                <button class=\"btn btn-sm\" :class=\"btn_class\"\n                        :data-tooltip=\"labels.active_account_warning\"\n                        @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n                    <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n                    <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n                    <i class=\"fa fa-spinner fa-spin\" v-else></i>\n                    {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n                </button>\n            </div>\n        </div>\n\n        <div class=\"columns\">\n            <div class=\"panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\n                <div class=\"panel-nav\" style=\"padding: 8px;\">\n                    <ul class=\"tab \">\n                        <li class=\"tab-item c-hand\" v-for=\"tab in displayTabs\"\n                            :class=\"{ active: tab.isActive }\" v-bind:id=\"tab.name.replace(' ', '').toLowerCase()\">\n                            <a :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\n                               :data-badge=\"logs_no\"\n                               @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\n                        </li>\n                    </ul>\n                </div>\n                <component :is=\"page.template\" :type=\"page.view\"></component>\n            </div>\n\n            <div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\n                 :class=\"'rop-license-plan-'+license\">\n\n                <div class=\"card rop-container-start\">\n                    <div class=\"toast rop-current-time\" v-if=\"formatedDate && haveAccounts\">\n                        {{labels.now}}: {{ formatedDate }}\n                    </div>\n                    <countdown :current_time=\"current_time\"/>\n                    <button id=\"rop_start_stop_btn\" class=\"btn\" :class=\"btn_class\"\n                            :data-tooltip=\"labels.active_account_warning\"\n                            @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n                        <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n                        <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n                        <i class=\"fa fa-spinner fa-spin\" v-else></i>\n                        {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n                    </button>\n                    <div id=\"staging-status\" v-if=\"staging\">\n                        {{labels.staging_status}}\n                    </div>\n                    <div v-if=\"!haveAccounts\" class=\"rop-spacer\"></div>\n                    <div v-if=\"haveAccounts\">\n                        <upsell-sidebar></upsell-sidebar>\n                    </div>\n                    <a v-if=\"haveAccounts\" href=\"https://trello.com/b/svAZqXO1/roadmap-revive-old-posts\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.rop_roadmap}}</a>\n                    <a v-if=\"haveAccounts\" href=\"https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.survey}}</a>\n                    <a v-if=\"haveAccounts\" href=\"https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.tweet_about_it}}</a>\n                </div>\n\n            </div>\n        </div>\n    </div>\n";
 
 /***/ })
 /******/ ]);

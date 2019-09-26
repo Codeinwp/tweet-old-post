@@ -76,12 +76,12 @@ class Rop_I18n {
 			'accounts'    => array(
 				'menu_item'               => __( 'Accounts', 'tweet-old-post' ),
 				'service_popup_title'     => __( 'Service Credentials', 'tweet-old-post' ),
-				'show_advance_config'           => __( 'Use your own keys', 'tweet-old-post' ),
+				'show_advance_config'     => __( 'Use your own keys', 'tweet-old-post' ),
 				'fb_app_signin_btn'       => __( 'Sign in to Facebook', 'tweet-old-post' ),
 				'tw_app_signin_btn'       => __( 'Sign in to Twitter', 'tweet-old-post' ),
 				'fb_own_app_signin'       => __( 'Or', 'tweet-old-post' ),
 				'tw_own_app_signin'       => __( 'Or', 'tweet-old-post' ),
-				'rs_app_info'            => sprintf( __( 'We collect some info, learn more %1$shere%2$s.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/1066-info-we-collect-in-seamless-social-network-connection" target="_blank">', '</a>' ),
+				'rs_app_info'             => sprintf( __( 'We collect some info, learn more %1$shere%2$s.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/1066-info-we-collect-in-seamless-social-network-connection" target="_blank">', '</a>' ),
 				'service_popup_title'     => __( 'Service Credentials', 'tweet-old-post' ),
 				'sign_in_btn'             => __( 'Sign In', 'tweet-old-post' ),
 				'field_required'          => __( 'This field is required', 'tweet-old-post' ),
@@ -316,18 +316,22 @@ The root cause might be either a security plugin which blocks this feature or so
 You can try to disable any of the security plugins that you use in order to see if the issue persists or ask the hosting company to further investigate.',
 					'tweet-old-post'
 				),
-				'rop_support'                           => __( 'Get Support', 'tweet-old-post' ),
-				'rop_docs'                              => __( 'Documentation', 'tweet-old-post' ),
-				'rop_roadmap'                           => __( 'Roadmap & Voting', 'tweet-old-post' ),
+				'rop_support'               => __( 'Get Support', 'tweet-old-post' ),
+				'rop_facebook_domain_toast' => __(
+					'You need to verify your website domain with Facebook so your shares can show as article posts on Facebook. [ <a href="">Read this doc</a> ] for more information',
+					'tweet-old-post'
+				),
+				'rop_docs'                  => __( 'Documentation', 'tweet-old-post' ),
+				'rop_roadmap'               => __( 'Roadmap & Voting', 'tweet-old-post' ),
 			),
 			'post_editor' => array(
-				'remove_variation'      => __( 'Delete', 'tweet-old-post' ),
-				'add_variation'         => __( 'Add New', 'tweet-old-post' ),
-				'new_variation'         => __( 'New Content Variation', 'tweet-old-post' ),
-				'custom_message_info'   => sprintf( __( 'Add share message variations to this post %1$sLearn More%2$s.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/971-how-to-add-variations-to-revive-old-posts-shares" target="_blank">', '</a>' ),
-				'variation_num'         => __( 'Content Variation #', 'tweet-old-post' ),
+				'remove_variation'    => __( 'Delete', 'tweet-old-post' ),
+				'add_variation'       => __( 'Add New', 'tweet-old-post' ),
+				'new_variation'       => __( 'New Content Variation', 'tweet-old-post' ),
+				'custom_message_info' => sprintf( __( 'Add share message variations to this post %1$sLearn More%2$s.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/971-how-to-add-variations-to-revive-old-posts-shares" target="_blank">', '</a>' ),
+				'variation_num'       => __( 'Content Variation #', 'tweet-old-post' ),
 			),
-			'emails' => array(
+			'emails'      => array(
 				'share_once_sharing_done_subject' => __( 'ROP - All Posts Shared', 'tweet-old-post' ),
 				'share_once_sharing_done_message' => __( 'All posts have been shared to your connected social media accounts. No previously shared posts will be re-shared until you click the button to "Stop Sharing" and "Start Sharing" on the Revive Old Posts plugin dashboard.', 'tweet-old-post' ),
 			),

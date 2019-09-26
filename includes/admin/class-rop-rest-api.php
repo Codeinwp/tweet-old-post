@@ -812,6 +812,22 @@ class Rop_Rest_Api {
 	}
 
 	/**
+	 * This will disable facebook domain check toast message.
+	 *
+	 * @param $data
+	 *
+	 * @return array
+	 */
+	private function fb_exception_toast( $data ) {
+		update_option( 'rop_facebook_domain_toast', 'no' );
+		$this->response->set_code( '200' )
+					   ->set_message( 'Facebook domain check toast new status is closed' )
+					   ->set_data( array( 'display' => false ) );
+
+		return $this->response->to_array();
+	}
+
+	/**
 	 * API method called to retrieve the logs for toast.
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
