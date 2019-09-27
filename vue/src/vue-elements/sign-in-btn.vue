@@ -30,6 +30,10 @@
 							<button class="btn btn-primary big-btn" @click="openPopupTW()">{{labels.tw_app_signin_btn}}</button>
 							<span class="text-center">{{labels.tw_own_app_signin}}</span>
 						</div>
+						<div class="auth-app" v-if="isLinkedIn">
+							<button class="btn btn-primary big-btn" @click="openPopupLI()">{{labels.li_app_signin_btn}}</button>
+							<span class="text-center">{{labels.tw_own_app_signin}}</span>
+						</div>
 						<div id="rop-advanced-config" v-if="isFacebook || (isTwitter && isAllowedTwitter)">
 						<button class="btn btn-primary" v-on:click="showAdvanceConfig = !showAdvanceConfig">{{labels.show_advance_config}}</button>
 					</div>
@@ -89,6 +93,7 @@
 				appOrigin: ropAuthAppData.authAppUrl,
 				appPathFB: ropAuthAppData.authAppFacebookPath,
         appPathTW: ropAuthAppData.authAppTwitterPath,
+        appPathLI: ropAuthAppData.authAppLinkedInPath,
 				appAdminEmail: ropAuthAppData.adminEmail,
 				siteAdminUrl: ropAuthAppData.adminUrl,
 				appUniqueId: ropAuthAppData.authToken,
@@ -289,6 +294,18 @@
                     this.cancelModal();
                 }
                 window.addEventListener("message", event => this.getChildWindowMessage(event));
+			},
+            openPopupLI: function () { // Open the popup specific for LinkedIn
+                let loginUrl = this.appOrigin + this.appPathLI + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
+                try {
+                    this.authPopupWindow.close();
+                } catch (e) {
+                    // nothing to do
+                } finally {
+                    this.authPopupWindow = window.open(loginUrl, 'authLI', this.windowParameters);
+                    this.cancelModal();
+                }
+                window.addEventListener("message", event => this.getChildWindowMessage(event));
 			}
 		},
 		computed: {
@@ -324,6 +341,10 @@
             // will return true if the current service actions are for Twitter.
             isTwitter() {
                 return this.modal.serviceName === 'Twitter';
+            },
+            // will return true if the current service actions are for LinkedIn.
+            isLinkedIn() {
+                return this.modal.serviceName === 'LinkedIn';
             },
             isAllowedTwitter: function () {
                 let showButton = true;
