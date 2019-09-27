@@ -3825,9 +3825,9 @@ module.exports = {
 	created: function created() {},
 
 	computed: {
-		share_on_update_enabled: function share_on_update_enabled() {
-			return this.$store.state.publish_now.action === true;
-		}
+		// share_on_update_enabled: function () {
+		// 	return this.$store.state.publish_now.action === true;
+		// }
 	},
 	data: function data() {
 

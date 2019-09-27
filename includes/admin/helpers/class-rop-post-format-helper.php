@@ -43,7 +43,7 @@ class Rop_Post_Format_Helper {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   int        $post_id The post ID.
+	 * @param   int $post_id The post ID.
 	 * @param   string|int $account_id The post account id.
 	 *
 	 * @return array
@@ -58,8 +58,8 @@ class Rop_Post_Format_Helper {
 		}
 
 		if ( function_exists( 'icl_object_id' ) ) {
-				$selector = new Rop_Posts_Selector_Model;
-				$post_id = $selector->rop_wpml_id( $post_id );
+			$selector = new Rop_Posts_Selector_Model;
+			$post_id  = $selector->rop_wpml_id( $post_id );
 		}
 
 		$service                            = $this->get_service();
@@ -149,21 +149,22 @@ class Rop_Post_Format_Helper {
 		 * Check custom messages(share variations) if exists.
 		 */
 		$custom_messages = get_post_meta( $post_id, 'rop_custom_messages_group', true );
+		$custom_images   = get_post_meta( $post_id, 'rop_custom_images_group', true ); // TODO WPRiders add remove?
 
 		if ( ! empty( $custom_messages ) ) {
 			$custom_messages = array_values( $custom_messages );
 
-			$settings = new Rop_Settings_Model();
+			$settings                    = new Rop_Settings_Model();
 			$custom_messages_share_order = $settings->get_custom_messages_share_order();
 
 			if ( $custom_messages_share_order ) {
 				$sequential_index = get_post_meta( $post_id, 'rop_variation_index', true );
 				$sequential_index = ( ! empty( $sequential_index ) ) ? $sequential_index : 0;
 
-					$share_content = $custom_messages[ $sequential_index ]['rop_custom_description'];
+				$share_content = $custom_messages[ $sequential_index ]['rop_custom_description'];
 
 				$new_index = $sequential_index + 1;
-				$count = count( $custom_messages ) - 1;
+				$count     = count( $custom_messages ) - 1;
 
 				if ( $new_index <= $count ) {
 					update_post_meta( $post_id, 'rop_variation_index', $new_index );
@@ -172,8 +173,8 @@ class Rop_Post_Format_Helper {
 				}
 			} else {
 
-				$random_index    = rand( 0, ( count( $custom_messages ) - 1 ) );
-				$share_content   = $custom_messages[ $random_index ]['rop_custom_description'];
+				$random_index  = rand( 0, ( count( $custom_messages ) - 1 ) );
+				$share_content = $custom_messages[ $random_index ]['rop_custom_description'];
 
 			}
 
@@ -181,7 +182,7 @@ class Rop_Post_Format_Helper {
 				$share_content = $pro_format_helper->rop_replace_magic_tags( $share_content, $post_id );
 			}
 
-			$share_content   = $content_helper->token_truncate( $share_content, $max_length );
+			$share_content = $content_helper->token_truncate( $share_content, $max_length );
 
 			return wp_parse_args( array( 'display_content' => $share_content ), $default_content );
 		}
@@ -193,8 +194,8 @@ class Rop_Post_Format_Helper {
 		 * Generate content based on the post format settings.
 		 */
 
-		$base_content  = $this->build_base_content( $post_id );
-		$result = $this->make_hashtags( $base_content, $content_helper, $post_id );
+		$base_content = $this->build_base_content( $post_id );
+		$result       = $this->make_hashtags( $base_content, $content_helper, $post_id );
 
 		$base_content  = $content_helper->token_truncate( $result['content'], $max_length );
 		$custom_length = $this->get_custom_length();
@@ -267,7 +268,7 @@ class Rop_Post_Format_Helper {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   int    $post_id The post ID.
+	 * @param   int $post_id The post ID.
 	 * @param   string $field_key The field key name.
 	 *
 	 * @return mixed
@@ -318,9 +319,9 @@ class Rop_Post_Format_Helper {
 	 * @since   8.0.0
 	 * @access  private
 	 *
-	 * @param   string             $content The content to filter.
+	 * @param   string $content The content to filter.
 	 * @param   Rop_Content_Helper $content_helper The content helper class. Used for processing.
-	 * @param   int                $post The post object.
+	 * @param   int $post The post object.
 	 *
 	 * @return array
 	 */
@@ -417,7 +418,7 @@ class Rop_Post_Format_Helper {
 	private function get_categories_hashtags( $post_id ) {
 
 		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) ) {
-				$pro_format_helper = new Rop_Pro_Post_Format_Helper;
+			$pro_format_helper = new Rop_Pro_Post_Format_Helper;
 		}
 
 		if ( ! isset( $pro_format_helper ) ) {
@@ -425,6 +426,7 @@ class Rop_Post_Format_Helper {
 			if ( empty( $post_categories ) ) {
 				return array();
 			}
+
 			return wp_list_pluck( $post_categories, 'name' );
 		} else {
 			return $pro_format_helper->pro_get_categories_hashtags( $post_id );
@@ -445,7 +447,7 @@ class Rop_Post_Format_Helper {
 	private function get_tags_hashtags( $post_id ) {
 
 		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) ) {
-				$pro_format_helper = new Rop_Pro_Post_Format_Helper;
+			$pro_format_helper = new Rop_Pro_Post_Format_Helper;
 		}
 
 		if ( ! isset( $pro_format_helper ) ) {
@@ -453,6 +455,7 @@ class Rop_Post_Format_Helper {
 			if ( empty( $tags ) ) {
 				return array();
 			}
+
 			return wp_list_pluck( $tags, 'name' );
 		} else {
 			return $pro_format_helper->pro_get_tags_hashtags( $post_id );
@@ -845,7 +848,7 @@ class Rop_Post_Format_Helper {
 	 *
 	 * @param   string $url The URL to shorten.
 	 * @param   string $short_url_service The shorten service. Used by the factory to build the service.
-	 * @param   array  $credentials Optional. If needed the service credentials.
+	 * @param   array $credentials Optional. If needed the service credentials.
 	 *
 	 * @return string
 	 */

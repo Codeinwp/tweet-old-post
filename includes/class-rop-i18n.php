@@ -326,6 +326,7 @@ You can try to disable any of the security plugins that you use in order to see 
 				'new_variation'         => __( 'New Content Variation', 'tweet-old-post' ),
 				'custom_message_info'   => sprintf( __( 'Add share message variations to this post %1$sLearn More%2$s.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/971-how-to-add-variations-to-revive-old-posts-shares" target="_blank">', '</a>' ),
 				'variation_num'         => __( 'Content Variation #', 'tweet-old-post' ),
+				'variation_image'       => __( 'Upload image', 'tweet-old-post' ),
 			),
 			'emails' => array(
 				'share_once_sharing_done_subject' => __( 'ROP - All Posts Shared', 'tweet-old-post' ),
