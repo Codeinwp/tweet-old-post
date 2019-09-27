@@ -615,24 +615,24 @@ return $users;
 			$img = $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] );
 		}
 
-			$img_mime_type = image_type_to_mime_type( exif_imagetype( $img ) );
+		$img_mime_type = image_type_to_mime_type( exif_imagetype( $img ) );
 
-			$img_data = file_get_contents($img);
-			$img_length = strlen($img_data);
+		$img_data = file_get_contents( $img );
+		$img_length = strlen( $img_data );
 
-			$wp_img_put = wp_remote_request(
-				$upload_url,
-				[
-					'method' => 'PUT',
-					'headers' => [ 'Authorization' => 'Bearer ' . $token, 'Content-type' => $img_mime_type, 'Content-Length' => $img_length ],
-					'body' => $img_data,
-				]
-			);
+		$wp_img_put = wp_remote_request(
+			$upload_url,
+			array(
+				'method' => 'PUT',
+				'headers' => array( 'Authorization' => 'Bearer ' . $token, 'Content-type' => $img_mime_type, 'Content-Length' => $img_length ),
+				'body' => $img_data,
+			)
+		);
 
 		if ( ! empty( $wp_img_put['body'] ) ) {
 			$response_code = $wp_img_put['response']['code'];
 			$response_message = $wp_img_put['response']['message'];
-			$this->logger->alert_error( $response_code . ' ' . $response_message );
+			$this->logger->alert_error( 'Cannot share to linkedin. Error:  ' . $response_code . ' ' . $response_message );
 			exit( 1 );
 		}
 
@@ -672,7 +672,7 @@ return $users;
 			  ),
 		  );
 
-		return $new_post;
+		  return $new_post;
 	}
 
 }

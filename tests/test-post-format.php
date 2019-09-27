@@ -204,7 +204,7 @@ class Test_RopPostFormat extends WP_UnitTestCase {
 		$this->assertEquals( 'post_title', $defaults['post_content'] );
 		$this->assertEquals( '140', $defaults['maximum_length'] );
 		$this->assertEquals( true, $defaults['short_url'] );
-		$this->assertEquals( 'is.gd', $defaults['short_url_service'] );
+		$this->assertEquals( 'rviv.ly', $defaults['short_url_service'] );
 		$this->assertEquals( true, $defaults['include_link'] );
 		$new_data                      = $defaults;
 		$new_data['include_link']      = false;
