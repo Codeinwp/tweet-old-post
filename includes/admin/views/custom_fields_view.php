@@ -1,68 +1,68 @@
 <script type="text/javascript">
-    jQuery(document).ready(function ($) {
-        var file_names = {};
-        var rop_elements = $('.rop-content-variation');
-        var count_elements = parseInt(rop_elements.length);
+	jQuery(document).ready(function ($) {
+		var file_names = {};
+		var rop_elements = $('.rop-content-variation');
+		var count_elements = parseInt(rop_elements.length);
 
-        $('#add-row').on('click', function () {
-            count_elements++;
-            var row = $('.empty-row.rop-content-variation.screen-reader-text').clone(true);
-            row.removeClass('empty-row screen-reader-text');
-            row.find('input.rop-image-attach').attr('data-rop-img-id', count_elements);
-            row.insertAfter($('[class^="rop-content-variation"]').last());
-            return false;
-        });
+		$('#add-row').on('click', function () {
+			count_elements++;
+			var row = $('.empty-row.rop-content-variation.screen-reader-text').clone(true);
+			row.removeClass('empty-row screen-reader-text');
+			row.find('input.rop-image-attach').attr('data-rop-img-id', count_elements);
+			row.insertAfter($('[class^="rop-content-variation"]').last());
+			return false;
+		});
 
-        $('.remove-row').on('click', function () {
-            $(this).parents('.rop-content-variation').remove();
-            return false;
-        });
+		$('.remove-row').on('click', function () {
+			$(this).parents('.rop-content-variation').remove();
+			return false;
+		});
 
-        // ROP image upload for variation
-        $('#rop-custom-messages-group').on("click tap", ".rop-image-attach", function (e) {
-            e.preventDefault();
-            var identifier = this.dataset.ropImgId;
-            var row_container = $(this).closest('.rop-content-variation');
-            var wp_media_post_id = wp.media.model.settings.post.id; // Store the old id
-            var image_id = row_container.find('.rop-hidden-attachment-id');
-            var image_src = row_container.find('.rop-img-attached');
-            var this_image = file_names[identifier];
+		// ROP image upload for variation
+		$('#rop-custom-messages-group').on("click tap", ".rop-image-attach", function (e) {
+			e.preventDefault();
+			var identifier = this.dataset.ropImgId;
+			var row_container = $(this).closest('.rop-content-variation');
+			var wp_media_post_id = wp.media.model.settings.post.id; // Store the old id
+			var image_id = row_container.find('.rop-hidden-attachment-id');
+			var image_src = row_container.find('.rop-img-attached');
+			var this_image = file_names[identifier];
 
-            if (this_image) {
-                // Set the post ID to what we want
-                this_image.uploader.uploader.param('post_id', image_id.val());
-                // Open frame
-                this_image.open();
-            } else {
-                // Create the media frame.
-                this_image = wp.media.frames.this_image = wp.media({
-                    title: 'Select a image to upload',
-                    button: {
-                        text: 'Use this image',
-                    },
-                    multiple: false	// Set to true to allow multiple files to be selected
-                });
+			if (this_image) {
+				// Set the post ID to what we want
+				this_image.uploader.uploader.param('post_id', image_id.val());
+				// Open frame
+				this_image.open();
+			} else {
+				// Create the media frame.
+				this_image = wp.media.frames.this_image = wp.media({
+					title: 'Select a image to upload',
+					button: {
+						text: 'Use this image',
+					},
+					multiple: false	// Set to true to allow multiple files to be selected
+				});
 
 
-                // When an image is selected, run a callback.
-                this_image.on('select', function () {
-                    // We set multiple to false so only get one image from the uploader
-                    var attachment = this_image.state().get('selection').first().toJSON();
+				// When an image is selected, run a callback.
+				this_image.on('select', function () {
+					// We set multiple to false so only get one image from the uploader
+					var attachment = this_image.state().get('selection').first().toJSON();
 
-                    // Do something with attachment.id and/or attachment.url here
-                    image_src.attr('src', attachment.url).css('width', 'auto');
-                    image_id.val(attachment.id);
+					// Do something with attachment.id and/or attachment.url here
+					image_src.attr('src', attachment.url).css('width', 'auto');
+					image_id.val(attachment.id);
 
-                    // Restore the main post ID
-                    wp.media.model.settings.post.id = wp_media_post_id;
-                });
+					// Restore the main post ID
+					wp.media.model.settings.post.id = wp_media_post_id;
+				});
 
-                // Finally, open the modal
-                this_image.open();
-            }
+				// Finally, open the modal
+				this_image.open();
+			}
 
-        });
-    });
+		});
+	});
 </script>
 
 <?php echo Rop_I18n::get_labels( 'post_editor.custom_message_info' ); ?>
@@ -194,7 +194,7 @@ DEFAULT_GROUP;
  */
 ?>
 <p>
-    <a id="add-row" class="button" href="#">
+	<a id="add-row" class="button" href="#">
 		<?php echo Rop_I18n::get_labels( 'post_editor.add_variation' ); ?>
-    </a>
+	</a>
 </p>
