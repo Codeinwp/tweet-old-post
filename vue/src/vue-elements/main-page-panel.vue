@@ -23,7 +23,10 @@
             <toast/>
             <div v-if=" is_rest_api_error " class="toast toast-error rop-api-not-available" v-html="labels.api_not_available">
             </div>
-
+            <div v-if=" is_fb_domain_notice " class="toast toast-primary">
+                <button class="btn btn-clear float-right" @click="close_fb_domain_notice()"></button>
+                <div v-html="labels.rop_facebook_domain_toast"></div>
+            </div>
             <div class="sidebar sidebar-top card rop-container-start">
                 <div class="toast rop-current-time" v-if="formatedDate">
                     {{labels.now}}: {{ formatedDate }}
@@ -123,6 +126,12 @@
             is_rest_api_error: function () {
                 return this.$store.state.api_not_available
             },
+            /**
+             * Check if rest api is available.
+             */
+            is_fb_domain_notice: function () {
+                return this.$store.state.fb_exception_toast
+            },
             current_time: {
                 get: function () {
                     return this.$store.state.cron_status.current_time;
@@ -216,6 +225,26 @@
             }
         },
         methods: {
+            /**
+             *
+             * */
+            close_fb_domain_notice() {
+                if (this.is_loading) {
+                    this.$log.warn('Request in progress...Bail');
+                    return;
+                }
+
+                this.$store.dispatch('fetchAJAXPromise', {
+                    req: 'fb_exception_toast',
+                    data: {action: 'hide'}
+                }).then(response => {
+                    this.$log.info('Succesfully closed facebook domain toast.');
+                    this.is_loading = false;
+                }, error => {
+                    this.is_loading = false;
+                    Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+                })
+            },
             /**
              * Toggle sharing.
              */
