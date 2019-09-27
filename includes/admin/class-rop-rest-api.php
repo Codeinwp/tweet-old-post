@@ -814,7 +814,7 @@ class Rop_Rest_Api {
 	/**
 	 * This will disable facebook domain check toast message.
 	 *
-	 * @param $data
+	 * @param mixed $data
 	 *
 	 * @return array
 	 */

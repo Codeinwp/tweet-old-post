@@ -87,7 +87,7 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 * @since 8.4.3
 	 * @access public
 	 *
-	 * @param $new_service
+	 * @param array $new_service The new service array.
 	 *
 	 * @return bool
 	 */
@@ -109,7 +109,7 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 * @since 8.4.3
 	 * @access public
 	 *
-	 * @param $accounts_list
+	 * @param array $accounts_list An array of the connected accounts.
 	 *
 	 * @return bool
 	 */
