@@ -20,14 +20,14 @@
                             <service-user-tile :account_data="account" :account_id="id"></service-user-tile>
                             <span class="divider"></span>
                         </div>
-                        <div class="add-accounts">
+                        <div class="add-accounts" v-if="is_preloading > 0">
                             <add-account-tile></add-account-tile>
                             <span class="divider"></span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="panel-footer">
+            <div class="panel-footer" v-if="is_preloading > 0">
                 <div class="columns my-2" v-if="checkLicense && pro_installed">
                     <div class="column col-12">
                         <i class="fa fa-lock "></i> <span v-html="labels.activate_license"></span>
