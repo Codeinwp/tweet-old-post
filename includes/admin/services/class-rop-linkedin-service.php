@@ -43,7 +43,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @access  protected
 	 * @var     array $scopes The scopes to authorize with LinkedIn.
 	 */
-	protected $scopes = array( 'r_liteprofile', 'r_emailaddress', 'w_member_social');
+	protected $scopes = array( 'r_liteprofile', 'r_emailaddress', 'w_member_social', 'r_organization_social', 'w_organization_social', 'rw_organization_admin');
 	// Company(organization) sharing scope cannot be used unless app approved for this scope.
 	// Added here for future reference
 	// https://stackoverflow.com/questions/54821731/in-linkedin-api-v2-0-how-to-get-company-list-by-persons-token
@@ -303,41 +303,82 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		$users = array( $user_details );
 
-			/*
-		We're not requesting the w_organization_social scope so code below wouldn't be used.
-		See scope property at the top of file for more details.
 
-		try {
-			$companies = $this->api->api(
-				'organizationalEntityAcls?q=roleAssignee&role=ADMINISTRATOR&projection=(elements*(organizationalTarget~(localizedName,vanityName,logoV2)))',
+
+try{
+
+    $admined_linkedin_pages = $this->api->api(
+				//'organizationalEntityAcls?q=roleAssignee&role=ADMINISTRATOR&projection=(elements*(organizationalTarget~(localizedName,vanityName,logoV2)))',
+				'organizationalEntityAcls?q=roleAssignee&role=ADMINISTRATOR&state=APPROVED',
 				array(),
 				'GET'
 			);
+
+
+$all_organization_urns = array();
+foreach( $admined_linkedin_pages as $key => $value ){
+
+    if( $key === 'elements'){
+
+        foreach( $value as $key2 => $value2 ){
+
+           $organizationalTarget = $value2['organizationalTarget'];
+
+           //urn:li:organization:5552231
+           $parts = explode(":", $organizationalTarget);
+
+          if( !in_array($parts[3], $all_organization_urns) ){
+              $all_organization_urns[] = $parts[3];
+          }
+
+        }
+
+    }
+
+}
+
+
+
+
+    }catch ( Exception $e ) {
+		  $this->logger->alert_error( 'Got in exception:  ' . $e);
+			return $users;
+		}
+
+
+	if ( empty( $all_organization_urns ) ) {
+			return $users;
+		}
+
+
+foreach($all_organization_urns as $organization_urn){
+
+		try {
+			$company = $this->api->api(
+				//'organizationalEntityAcls?q=roleAssignee&role=ADMINISTRATOR&projection=(elements*(organizationalTarget~(localizedName,vanityName,logoV2)))',
+				'organizations/'. $organization_urn,
+				array(),
+				'GET'
+			);
+
 		} catch ( Exception $e ) {
+		 $this->logger->alert_error( 'Got in exception:  ' . $e);
 			return $users;
 		}
-		if ( empty( $companies ) ) {
-			return $users;
-		}
-		if ( empty( $companies['elements'] ) ) {
-			return $users;
-		}
-		foreach ( $companies['elements'] as $company ) {
+
 			$users[] = wp_parse_args(
 				array(
 					'id'         => $this->strip_underscore( $company['id'] ),
-					'account'    => $company['localizedName'],
+					'account'    => $email,
 					'is_company' => true,
 					'user'       => $company['localizedName'],
 				),
 				$this->user_default
 			);
-		}
-		*/
 
-		return $users;
 	}
-
+return $users;
+}
 
 	/**
 	 * Method to register credentials for the service.
@@ -447,11 +488,11 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		}
 
 		try {
-			if ( isset( $args['is_company'] ) && $args['is_company'] === true ) {
-				$api->post( sprintf( 'companies/%s/shares?format=json', $this->unstrip_underscore( $args['id'] ) ), $new_post );
-			} else {
+			//if ( isset( $args['is_company'] ) && $args['is_company'] === true ) {
+			//	$api->post( sprintf( 'companies/%s/shares?format=json', $this->unstrip_underscore( $args['id'] ) ), $new_post );
+			//} else {
 				$api->post( 'ugcPosts', $new_post );
-			}
+			//}
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
@@ -484,8 +525,12 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 */
 	private function linkedin_article_post( $post_details, $args ) {
 
+
+    	$author_urn = $args['is_company'] ? 'urn:li:organization:' : 'urn:li:person:';
+
+
 		$new_post = array (
-			'author' => 'urn:li:person:' . $args['id'],
+			'author' => $author_urn . $args['id'],
 			'lifecycleState' => 'PUBLISHED',
 			'specificContent' =>
 			array (
@@ -538,6 +583,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 */
 	private function linkedin_image_post( $post_details, $args, $token, $api ) {
 
+	    $author_urn = $args['is_company'] ? 'urn:li:organization:' : 'urn:li:person:';
+
 		$register_image = array (
 			'registerUploadRequest' =>
 			array (
@@ -545,7 +592,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 				array (
 					0 => 'urn:li:digitalmediaRecipe:feedshare-image',
 				),
-				'owner' => 'urn:li:person:' . $args['id'],
+				'owner' => $author_urn . $args['id'],
 				'serviceRelationships' =>
 				array (
 					0 =>
@@ -569,13 +616,15 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		}
 
 			$img_mime_type = image_type_to_mime_type( exif_imagetype( $img ) );
-			$img_data = fread( fopen( $img, 'r' ), filesize( $img ) );
+
+			$img_data = file_get_contents($img);
+			$img_length = strlen($img_data);
 
 			$wp_img_put = wp_remote_request(
 				$upload_url,
 				[
 					'method' => 'PUT',
-					'headers' => [ 'Authorization' => 'Bearer ' . $token, 'Content-type' => $img_mime_type ],
+					'headers' => [ 'Authorization' => 'Bearer ' . $token, 'Content-type' => $img_mime_type, 'Content-Length' => $img_length ],
 					'body' => $img_data,
 				]
 			);
@@ -588,7 +637,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		}
 
 		  $new_post = array (
-			  'author' => 'urn:li:person:' . $args['id'],
+			  'author' => $author_urn . $args['id'],
 			  'lifecycleState' => 'PUBLISHED',
 			  'specificContent' =>
 			  array (
