@@ -34387,6 +34387,34 @@ module.exports = {
             return btn_class;
         },
         /**
+         * Status label.
+         */
+        status_color_class: function status_color_class() {
+            var status_color_class = 'sharing-status-' + (this.start_status ? 'sharing' : 'notsharing');
+            if (!this.haveAccountsActive) {
+                status_color_class = ' sharing-status-notsharing  ';
+            }
+            if (this.status_is_error_display) {
+                return ' sharing-status-error ';
+            }
+            return status_color_class;
+        },
+        status_label_display: function status_label_display() {
+            var labels = this.$store.state.labels.general;
+            var status_label_display = this.start_status ? labels.sharing_to_account : labels.sharing_not_started;
+            if (!this.haveAccountsActive) {
+                status_label_display = labels.sharing_not_started;
+            }
+
+            if (this.status_is_error_display) {
+                return labels.status + ': ' + labels.error_check_log;
+            }
+            return labels.status + ': ' + status_label_display;
+        },
+        status_is_error_display: function status_is_error_display() {
+            return this.status_is_error_display;
+        },
+        /**
          * Check if we have accounts connected.
          *
          * @returns {boolean}
@@ -34451,7 +34479,8 @@ module.exports = {
             upsell_link: ropApiSettings.upsell_link,
             staging: ropApiSettings.staging,
             is_loading: false,
-            is_loading_logs: false
+            is_loading_logs: false,
+            status_is_error_display: false
         };
     },
     methods: {
@@ -34527,13 +34556,20 @@ module.exports = {
 
                 // Toast message code start
                 if (response.length) {
-                    var toast = {
-                        type: response[0].type,
-                        show: true,
-                        title: 'Error encountered',
-                        message: response[0].message
-                    };
-                    _this4.$store.commit('updateState', { stateData: toast, requestName: 'update_toast' });
+                    for (var index_error in response) {
+                        if ('error' === response[index_error].type) {
+                            var toast = {
+                                type: response[index_error].type,
+                                show: true,
+                                title: 'Error encountered',
+                                message: response[index_error].message
+                            };
+                            _this4.$store.commit('updateState', { stateData: toast, requestName: 'update_toast' });
+                        } else if ('status_error' === response[index_error].type) {
+                            _this4.$log.warn('Status is error check logs, global admin notice will be displayed');
+                            _this4.status_is_error_display = true;
+                        }
+                    }
                 }
                 // Toast message code end
             }, function (error) {
@@ -34640,18 +34676,23 @@ module.exports = {
 //                  :class="'rop-license-plan-'+license">
 //
 //                 <div class="card rop-container-start">
-//                     <div class="toast rop-current-time" v-if="formatedDate && haveAccounts">
-//                         {{labels.now}}: {{ formatedDate }}
-//                     </div>
-//                     <countdown :current_time="current_time"/>
 //                     <button id="rop_start_stop_btn" class="btn" :class="btn_class"
 //                             :data-tooltip="labels.active_account_warning"
 //                             @click="togglePosting()" :disabled="!haveAccountsActive">
 //                         <i class="fa fa-play" v-if="!is_loading && !start_status"></i>
 //                         <i class="fa fa-stop" v-else-if="!is_loading && start_status"></i>
 //                         <i class="fa fa-spinner fa-spin" v-else></i>
-//                         {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}
+//                         {{labels.click}} {{labels.to}} {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}
 //                     </button>
+//
+//                     <div class="sharing-box" :class="status_color_class">{{ status_label_display }}</div>
+//
+//                     <countdown :current_time="current_time"/>
+//
+//                     <div class="toast rop-current-time" v-if="formatedDate && haveAccounts">
+//                         {{labels.now}}: {{ formatedDate }}
+//                     </div>
+//
 //                     <div id="staging-status" v-if="staging">
 //                         {{labels.staging_status}}
 //                     </div>
@@ -34660,8 +34701,11 @@ module.exports = {
 //                         <upsell-sidebar></upsell-sidebar>
 //                     </div>
 //                     <a v-if="haveAccounts" href="https://trello.com/b/svAZqXO1/roadmap-revive-old-posts" target="_blank" class="btn rop-sidebar-action-btns">{{labels.rop_roadmap}}</a>
-//                     <a v-if="haveAccounts" href="https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform" target="_blank" class="btn rop-sidebar-action-btns">{{labels.survey}}</a>
-//                     <a v-if="haveAccounts" href="https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial" target="_blank" class="btn rop-sidebar-action-btns">{{labels.tweet_about_it}}</a>
+//                     <a v-if="haveAccounts" href="https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform" target="_blank"
+//                        class="btn rop-sidebar-action-btns">{{labels.survey}}</a>
+//                     <a v-if="haveAccounts"
+//                        href="https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial"
+//                        target="_blank" class="btn rop-sidebar-action-btns">{{labels.tweet_about_it}}</a>
 //                 </div>
 //
 //             </div>
@@ -41721,7 +41765,7 @@ module.exports = "\n\t<div class=\"toast toast-success rop-current-time\" v-if=\
 /* 311 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <div class=\"columns panel-header\">\n            <div class=\"column header-logo vertical-align\">\n                <div>\n                    <img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/>\n                    <h1 class=\"plugin-title d-inline-block\">Revive Old Posts</h1><span class=\"powered d-inline-block\"> {{labels.by}} <a\n                        href=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\n                    <div id=\"rop_user_actions\">\n                        <a v-if=\"license  >= 1\" href=\"https://revive.social/pro-support/\" target=\"_blank\" class=\"rop-get-support-btn\"><span><i\n                                class=\"fa fa-commenting\" aria-hidden=\"true\"></i></span> {{labels.rop_support}}</a>\n                        <a v-if=\"license  < 1\" href=\"https://revive.social/support/\" target=\"_blank\" class=\"rop-get-support-btn\"><span><i\n                                class=\"fa fa-commenting\" aria-hidden=\"true\"></i></span> {{labels.rop_support}}</a>\n                        <a v-if=\"haveAccounts\"\n                           href=\"https://docs.revive.social/\"\n                           target=\"_blank\" class=\"rop-docs-btn\"><span><i class=\"fa fa-book\" aria-hidden=\"true\"></i></span> {{labels.rop_docs}}</a>\n                        <a v-if=\"haveAccounts\" href=\"https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post\" target=\"_blank\" class=\"leave-a-review\"><span><i class=\"fa fa-star\"\n                                                                                                                                                                            aria-hidden=\"true\"></i></span>\n                            {{labels.review_it}}</a>\n                    </div>\n                </div>\n            </div>\n            <toast/>\n            <div v-if=\" is_rest_api_error \" class=\"toast toast-error rop-api-not-available\" v-html=\"labels.api_not_available\">\n            </div>\n            <div v-if=\" is_fb_domain_notice \" class=\"toast toast-primary\">\n                <button class=\"btn btn-clear float-right\" @click=\"close_fb_domain_notice()\"></button>\n                <div v-html=\"labels.rop_facebook_domain_toast\"></div>\n            </div>\n            <div class=\"sidebar sidebar-top card rop-container-start\">\n                <div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n                    {{labels.now}}: {{ formatedDate }}\n                </div>\n                <countdown :current_time=\"current_time\"/>\n                <button class=\"btn btn-sm\" :class=\"btn_class\"\n                        :data-tooltip=\"labels.active_account_warning\"\n                        @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n                    <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n                    <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n                    <i class=\"fa fa-spinner fa-spin\" v-else></i>\n                    {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n                </button>\n            </div>\n        </div>\n\n        <div class=\"columns\">\n            <div class=\"panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\n                <div class=\"panel-nav\" style=\"padding: 8px;\">\n                    <ul class=\"tab \">\n                        <li class=\"tab-item c-hand\" v-for=\"tab in displayTabs\"\n                            :class=\"{ active: tab.isActive }\" v-bind:id=\"tab.name.replace(' ', '').toLowerCase()\">\n                            <a :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\n                               :data-badge=\"logs_no\"\n                               @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\n                        </li>\n                    </ul>\n                </div>\n                <component :is=\"page.template\" :type=\"page.view\"></component>\n            </div>\n\n            <div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\n                 :class=\"'rop-license-plan-'+license\">\n\n                <div class=\"card rop-container-start\">\n                    <div class=\"toast rop-current-time\" v-if=\"formatedDate && haveAccounts\">\n                        {{labels.now}}: {{ formatedDate }}\n                    </div>\n                    <countdown :current_time=\"current_time\"/>\n                    <button id=\"rop_start_stop_btn\" class=\"btn\" :class=\"btn_class\"\n                            :data-tooltip=\"labels.active_account_warning\"\n                            @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n                        <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n                        <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n                        <i class=\"fa fa-spinner fa-spin\" v-else></i>\n                        {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n                    </button>\n                    <div id=\"staging-status\" v-if=\"staging\">\n                        {{labels.staging_status}}\n                    </div>\n                    <div v-if=\"!haveAccounts\" class=\"rop-spacer\"></div>\n                    <div v-if=\"haveAccounts\">\n                        <upsell-sidebar></upsell-sidebar>\n                    </div>\n                    <a v-if=\"haveAccounts\" href=\"https://trello.com/b/svAZqXO1/roadmap-revive-old-posts\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.rop_roadmap}}</a>\n                    <a v-if=\"haveAccounts\" href=\"https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.survey}}</a>\n                    <a v-if=\"haveAccounts\" href=\"https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.tweet_about_it}}</a>\n                </div>\n\n            </div>\n        </div>\n    </div>\n";
+module.exports = "\n    <div>\n        <div class=\"columns panel-header\">\n            <div class=\"column header-logo vertical-align\">\n                <div>\n                    <img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/>\n                    <h1 class=\"plugin-title d-inline-block\">Revive Old Posts</h1><span class=\"powered d-inline-block\"> {{labels.by}} <a\n                        href=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\n                    <div id=\"rop_user_actions\">\n                        <a v-if=\"license  >= 1\" href=\"https://revive.social/pro-support/\" target=\"_blank\" class=\"rop-get-support-btn\"><span><i\n                                class=\"fa fa-commenting\" aria-hidden=\"true\"></i></span> {{labels.rop_support}}</a>\n                        <a v-if=\"license  < 1\" href=\"https://revive.social/support/\" target=\"_blank\" class=\"rop-get-support-btn\"><span><i\n                                class=\"fa fa-commenting\" aria-hidden=\"true\"></i></span> {{labels.rop_support}}</a>\n                        <a v-if=\"haveAccounts\"\n                           href=\"https://docs.revive.social/\"\n                           target=\"_blank\" class=\"rop-docs-btn\"><span><i class=\"fa fa-book\" aria-hidden=\"true\"></i></span> {{labels.rop_docs}}</a>\n                        <a v-if=\"haveAccounts\" href=\"https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post\" target=\"_blank\" class=\"leave-a-review\"><span><i class=\"fa fa-star\"\n                                                                                                                                                                            aria-hidden=\"true\"></i></span>\n                            {{labels.review_it}}</a>\n                    </div>\n                </div>\n            </div>\n            <toast/>\n            <div v-if=\" is_rest_api_error \" class=\"toast toast-error rop-api-not-available\" v-html=\"labels.api_not_available\">\n            </div>\n            <div v-if=\" is_fb_domain_notice \" class=\"toast toast-primary\">\n                <button class=\"btn btn-clear float-right\" @click=\"close_fb_domain_notice()\"></button>\n                <div v-html=\"labels.rop_facebook_domain_toast\"></div>\n            </div>\n            <div class=\"sidebar sidebar-top card rop-container-start\">\n                <div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n                    {{labels.now}}: {{ formatedDate }}\n                </div>\n                <countdown :current_time=\"current_time\"/>\n                <button class=\"btn btn-sm\" :class=\"btn_class\"\n                        :data-tooltip=\"labels.active_account_warning\"\n                        @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n                    <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n                    <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n                    <i class=\"fa fa-spinner fa-spin\" v-else></i>\n                    {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n                </button>\n            </div>\n        </div>\n\n        <div class=\"columns\">\n            <div class=\"panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\n                <div class=\"panel-nav\" style=\"padding: 8px;\">\n                    <ul class=\"tab \">\n                        <li class=\"tab-item c-hand\" v-for=\"tab in displayTabs\"\n                            :class=\"{ active: tab.isActive }\" v-bind:id=\"tab.name.replace(' ', '').toLowerCase()\">\n                            <a :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\n                               :data-badge=\"logs_no\"\n                               @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\n                        </li>\n                    </ul>\n                </div>\n                <component :is=\"page.template\" :type=\"page.view\"></component>\n            </div>\n\n            <div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\n                 :class=\"'rop-license-plan-'+license\">\n\n                <div class=\"card rop-container-start\">\n                    <button id=\"rop_start_stop_btn\" class=\"btn\" :class=\"btn_class\"\n                            :data-tooltip=\"labels.active_account_warning\"\n                            @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n                        <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n                        <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n                        <i class=\"fa fa-spinner fa-spin\" v-else></i>\n                        {{labels.click}} {{labels.to}} {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n                    </button>\n\n                    <div class=\"sharing-box\" :class=\"status_color_class\">{{ status_label_display }}</div>\n\n                    <countdown :current_time=\"current_time\"/>\n\n                    <div class=\"toast rop-current-time\" v-if=\"formatedDate && haveAccounts\">\n                        {{labels.now}}: {{ formatedDate }}\n                    </div>\n\n                    <div id=\"staging-status\" v-if=\"staging\">\n                        {{labels.staging_status}}\n                    </div>\n                    <div v-if=\"!haveAccounts\" class=\"rop-spacer\"></div>\n                    <div v-if=\"haveAccounts\">\n                        <upsell-sidebar></upsell-sidebar>\n                    </div>\n                    <a v-if=\"haveAccounts\" href=\"https://trello.com/b/svAZqXO1/roadmap-revive-old-posts\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.rop_roadmap}}</a>\n                    <a v-if=\"haveAccounts\" href=\"https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform\" target=\"_blank\"\n                       class=\"btn rop-sidebar-action-btns\">{{labels.survey}}</a>\n                    <a v-if=\"haveAccounts\"\n                       href=\"https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial\"\n                       target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.tweet_about_it}}</a>\n                </div>\n\n            </div>\n        </div>\n    </div>\n";
 
 /***/ })
 /******/ ]);
