@@ -92,7 +92,8 @@ export default new Vuex.Store({
         activeSchedule: [],
         queue: {},
         publish_now: ropApiSettings.publish_now,
-        hide_preloading : 0
+        hide_preloading : 0,
+        fb_exception_toast: ropApiSettings.fb_domain_toast_display
     },
     mutations: {
 
@@ -114,7 +115,7 @@ export default new Vuex.Store({
             state.api_not_available = data
         },
         updateState(state, {stateData, requestName}) {
-            Vue.$log.debug('State change for ', requestName);
+            Vue.$log.debug('State change for ', requestName , ' With value: ', stateData);
             switch (requestName) {
                 case 'manage_cron':
                     state.cron_status = stateData;
@@ -124,6 +125,9 @@ export default new Vuex.Store({
                     break;
                 case 'get_toast':
                     state.page.logs = stateData;
+                    break;
+                case 'fb_exception_toast':
+                    state.fb_exception_toast = stateData.display;
                     break;
                 case 'update_settings_toggle':
                 case 'get_general_settings':
@@ -215,7 +219,7 @@ export default new Vuex.Store({
                     break
                 case 'update_toast':
                     state.toast = stateData;
-                    Vue.$log.debug('yes yes here ', requestName);
+                    Vue.$log.debug('Toast updated ', requestName);
                     break
                 case 'toggle_account':
                 case 'exclude_post':

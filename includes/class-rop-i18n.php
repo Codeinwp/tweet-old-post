@@ -318,9 +318,13 @@ The root cause might be either a security plugin which blocks this feature or so
 You can try to disable any of the security plugins that you use in order to see if the issue persists or ask the hosting company to further investigate.',
 					'tweet-old-post'
 				),
-				'rop_support'            => __( 'Get Support', 'tweet-old-post' ),
-				'rop_docs'               => __( 'Documentation', 'tweet-old-post' ),
-				'rop_roadmap'            => __( 'Roadmap & Voting', 'tweet-old-post' ),
+				'rop_support'               => __( 'Get Support', 'tweet-old-post' ),
+				'rop_facebook_domain_toast' => __(
+					'You need to verify your website domain with Facebook so your shares can show as article posts on Facebook. [ <a href="https://docs.revive.social/article/1136-facebook-text-posts-vs-article-posts" target="_bla">Read this doc</a> ] for more information',
+					'tweet-old-post'
+				),
+				'rop_docs'                  => __( 'Documentation', 'tweet-old-post' ),
+				'rop_roadmap'               => __( 'Roadmap & Voting', 'tweet-old-post' ),
 			),
 			'post_editor' => array(
 				'remove_variation'    => __( 'Delete', 'tweet-old-post' ),
