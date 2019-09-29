@@ -59,7 +59,29 @@ class Rop_Admin {
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
 		$this->set_allowed_screens();
+		add_action( 'admin_notices', array( &$this, 'display_global_status_warning' ) );
+	}
 
+
+	/**
+	 * Will display an admin notice if there are ROP_STATUS_ALERT consecutive errors.
+	 *
+	 * @since 8.4.4
+	 * @access public
+	 */
+	public function display_global_status_warning() {
+		$log                  = new Rop_Logger();
+		$is_status_logs_alert = $log->is_status_error_necessary(); // true | false
+		if ( $is_status_logs_alert ) {
+			?>
+			<div class="notice notice-error is-dismissible">
+				<p>
+					<strong><?php echo esc_html( Rop_I18n::get_labels( 'general.plugin_name' ) ); ?></strong>:
+					<?php echo Rop_I18n::get_labels( 'general.status_error_global' ); ?>
+				</p>
+			</div>
+			<?php
+		}
 	}
 
 	/**

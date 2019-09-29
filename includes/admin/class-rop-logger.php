@@ -167,9 +167,9 @@ class Rop_Logger {
 		$translated_message = $direct_message;
 
 		$unreadable_messages = array(
-			'Value is empty : pages in Array \( \[id\] => (.*) \[pages\] => Array \( \) \)' => __( 'In order to connect with Facebook it\'s required to select at least one Page in the authentification process.', 'tweet-old-post' ),
+			'Value is empty : pages in Array \( \[id\] => (.*) \[pages\] => Array \( \) \)'                                              => __( 'In order to connect with Facebook it\'s required to select at least one Page in the authentification process.', 'tweet-old-post' ),
 			'Callback URL not approved for this client application. Approved callback URLs can be adjusted in your application settings' => __( 'The Callback URL of your Twitter application seems to be wrong.', 'tweet-old-post' ),
-			'Error connecting twitter \{"errors":\[\{"code":32,"message":"Could not authenticate you\."\}\]\}' => __( 'Your Twitter credentials seem to be wrong. Please double check your API Key and API Secret Key.', 'tweet-old-post' ),
+			'Error connecting twitter \{"errors":\[\{"code":32,"message":"Could not authenticate you\."\}\]\}'                           => __( 'Your Twitter credentials seem to be wrong. Please double check your API Key and API Secret Key.', 'tweet-old-post' ),
 		);
 
 		foreach ( $unreadable_messages as $to_decode => $readable_message ) {
@@ -181,6 +181,51 @@ class Rop_Logger {
 		}
 
 		return $translated_message;
+	}
+
+	/**
+	 * Will look into the longs and if there are a number of ROP_STATUS_ALERT
+	 * consecutive errors, this function will return true.
+	 *
+	 * @since 8.4.4
+	 * @access public
+	 *
+	 * @param array $logs Contains all the plugin logs, if any.
+	 *
+	 * @return bool
+	 */
+	public function is_status_error_necessary( $logs = array() ) {
+		if ( empty( $logs ) ) {
+			$data_logs = $this->get_logs();
+		} else {
+			$data_logs = $logs['data'];
+		}
+
+		$consecutive_errors = 0;
+		$it                 = 0;
+
+		if ( ! empty( $data_logs ) ) {
+
+			foreach ( $data_logs as $log_entry ) {
+				if ( 'error' === $log_entry['type'] ) {
+					$consecutive_errors ++;
+				} else {
+					break;
+				}
+				$it ++;
+
+				if ( $it >= ROP_STATUS_ALERT ) {
+					break;
+				}
+			}
+
+			if ( ROP_STATUS_ALERT === $consecutive_errors ) {
+				return true;
+			}
+		}
+
+		return false;
+
 	}
 
 }

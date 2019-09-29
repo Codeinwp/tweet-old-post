@@ -62,18 +62,23 @@
                  :class="'rop-license-plan-'+license">
 
                 <div class="card rop-container-start">
-                    <div class="toast rop-current-time" v-if="formatedDate && haveAccounts">
-                        {{labels.now}}: {{ formatedDate }}
-                    </div>
-                    <countdown :current_time="current_time"/>
                     <button id="rop_start_stop_btn" class="btn" :class="btn_class"
                             :data-tooltip="labels.active_account_warning"
                             @click="togglePosting()" :disabled="!haveAccountsActive">
                         <i class="fa fa-play" v-if="!is_loading && !start_status"></i>
                         <i class="fa fa-stop" v-else-if="!is_loading && start_status"></i>
                         <i class="fa fa-spinner fa-spin" v-else></i>
-                        {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}
+                        {{labels.click}} {{labels.to}} {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}
                     </button>
+
+                    <div class="sharing-box" :class="status_color_class">{{ status_label_display }}</div>
+
+                    <countdown :current_time="current_time"/>
+
+                    <div class="toast rop-current-time" v-if="formatedDate && haveAccounts">
+                        {{labels.now}}: {{ formatedDate }}
+                    </div>
+
                     <div id="staging-status" v-if="staging">
                         {{labels.staging_status}}
                     </div>
@@ -82,8 +87,11 @@
                         <upsell-sidebar></upsell-sidebar>
                     </div>
                     <a v-if="haveAccounts" href="https://trello.com/b/svAZqXO1/roadmap-revive-old-posts" target="_blank" class="btn rop-sidebar-action-btns">{{labels.rop_roadmap}}</a>
-                    <a v-if="haveAccounts" href="https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform" target="_blank" class="btn rop-sidebar-action-btns">{{labels.survey}}</a>
-                    <a v-if="haveAccounts" href="https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial" target="_blank" class="btn rop-sidebar-action-btns">{{labels.tweet_about_it}}</a>
+                    <a v-if="haveAccounts" href="https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform" target="_blank"
+                       class="btn rop-sidebar-action-btns">{{labels.survey}}</a>
+                    <a v-if="haveAccounts"
+                       href="https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial"
+                       target="_blank" class="btn rop-sidebar-action-btns">{{labels.tweet_about_it}}</a>
                 </div>
 
             </div>
@@ -159,6 +167,34 @@
                 return btn_class;
             },
             /**
+             * Status label.
+             */
+            status_color_class: function () {
+                let status_color_class = ('sharing-status-' + (this.start_status ? 'sharing' : 'notsharing'));
+                if (!this.haveAccountsActive) {
+                    status_color_class = ' sharing-status-notsharing  ';
+                }
+                if (this.status_is_error_display) {
+                    return ' sharing-status-error ';
+                }
+                return status_color_class;
+            },
+            status_label_display: function () {
+                let labels = this.$store.state.labels.general;
+                let status_label_display = (this.start_status ? labels.sharing_to_account : labels.sharing_not_started);
+                if (!this.haveAccountsActive) {
+                    status_label_display = labels.sharing_not_started;
+                }
+
+                if (this.status_is_error_display) {
+                    return labels.status + ': ' + labels.error_check_log;
+                }
+                return labels.status + ': ' + status_label_display;
+            },
+            status_is_error_display: function () {
+                return this.status_is_error_display;
+            },
+            /**
              * Check if we have accounts connected.
              *
              * @returns {boolean}
@@ -222,6 +258,7 @@
                 staging: ropApiSettings.staging,
                 is_loading: false,
                 is_loading_logs: false,
+                status_is_error_display: false
             }
         },
         methods: {
@@ -290,13 +327,20 @@
 
                     // Toast message code start
                     if (response.length) {
-                        let toast = {
-                            type: response[0].type,
-                            show: true,
-                            title: 'Error encountered',
-                            message: response[0].message
-                        };
-                        this.$store.commit('updateState', {stateData: toast, requestName: 'update_toast'});
+                        for (let index_error in response) {
+                            if ('error' === response[index_error].type) {
+                                let toast = {
+                                    type: response[index_error].type,
+                                    show: true,
+                                    title: 'Error encountered',
+                                    message: response[index_error].message
+                                };
+                                this.$store.commit('updateState', {stateData: toast, requestName: 'update_toast'});
+                            } else if ('status_error' === response[index_error].type) {
+                                this.$log.warn('Status is error check logs, global admin notice will be displayed');
+                                this.status_is_error_display = true;
+                            }
+                        }
                     }
                     // Toast message code end
 
