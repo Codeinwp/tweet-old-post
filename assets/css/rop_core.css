@@ -4220,12 +4220,6 @@ a.active {
     text-overflow: initial;
 }
 
-#rop_core .sidebar .rop-current-time {
-    margin-bottom: 3px;
-    padding: 2px 10px;
-    font-size: 0.6rem;
-}
-
 #rop_core .rop-queue-post .card-top-header.columns {
     position: absolute;
     top: 0;
@@ -4324,28 +4318,29 @@ a.active {
     pointer-events: auto;
 }
 
+#rop_core .toast.rop-next-share-time{
+  background: #8bc34a;
+  border: none;
+}
+
 .sharing-box{
     padding: 15px 10px;
     font-size: 0.75rem;
-    margin: 10px 0;
-    border: solid 1px black;
+    margin: 10px 0 0;
     text-align: center;
 }
 
 .sharing-status-sharing {
-    border-color: #33691e;
     color: #fff;
-    background-color: #8bc34a;
+    background-color: #46bd55;
 }
 
 .sharing-status-notsharing {
     color: #fff;
-    border-color: #ef6c00;
     background-color: #e65100;
 }
 
 .sharing-status-error {
-    border-color: #b71c1c;
     color: #fff;
     background-color: #c62828;
 }
