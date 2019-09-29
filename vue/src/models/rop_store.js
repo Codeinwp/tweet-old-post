@@ -92,6 +92,7 @@ export default new Vuex.Store({
         activeSchedule: [],
         queue: {},
         publish_now: ropApiSettings.publish_now,
+        hide_preloading : 0,
         fb_exception_toast: ropApiSettings.fb_domain_toast_display
     },
     mutations: {
@@ -162,7 +163,8 @@ export default new Vuex.Store({
                     break
                 case 'get_authenticated_services':
                 case 'remove_service':
-                    state.authenticatedServices = stateData
+                    state.authenticatedServices = stateData;
+                    state.hide_preloading++;
                     break
                 case 'authenticate_service':
                     state.authenticatedServices = stateData
