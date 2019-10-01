@@ -1919,7 +1919,7 @@
             try {
                 oldLocale = globalLocale._abbr;
                 var aliasedRequire = require;
-                __webpack_require__(297)("./" + name);
+                __webpack_require__(283)("./" + name);
                 getSetGlobalLocale(oldLocale);
             } catch (e) {}
         }
@@ -4670,7 +4670,7 @@
 
 })));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(296)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(282)(module)))
 
 /***/ }),
 /* 1 */
@@ -34305,11 +34305,11 @@ var _accountsSelectorPanel = __webpack_require__(257);
 
 var _accountsSelectorPanel2 = _interopRequireDefault(_accountsSelectorPanel);
 
-var _queueTabPanel = __webpack_require__(284);
+var _queueTabPanel = __webpack_require__(286);
 
 var _queueTabPanel2 = _interopRequireDefault(_queueTabPanel);
 
-var _logsTabPanel = __webpack_require__(292);
+var _logsTabPanel = __webpack_require__(294);
 
 var _logsTabPanel2 = _interopRequireDefault(_logsTabPanel);
 
@@ -34443,16 +34443,6 @@ module.exports = {
          */
         generalSettings: function generalSettings() {
             return this.$store.state.generalSettings;
-        },
-        /**
-         * Get general settings.
-         * @returns {module.exports.computed.generalSettings|Array|*}
-         */
-        formatedDate: function formatedDate() {
-            if (typeof this.date_format === 'undefined') {
-                return '';
-            }
-            return _moment2.default.utc(this.current_time, 'X').format(this.date_format.replace('mm', 'mm:ss'));
         }
     },
     mounted: function mounted() {
@@ -34620,18 +34610,6 @@ module.exports = {
 //                     <img :src="plugin_logo" class="plugin-logo avatar avatar-lg"/>
 //                     <h1 class="plugin-title d-inline-block">Revive Old Posts</h1><span class="powered d-inline-block"> {{labels.by}} <a
 //                         href="https://revive.social" target="_blank"><b>Revive.Social</b></a></span>
-//                     <div id="rop_user_actions">
-//                         <a v-if="license  >= 1" href="https://revive.social/pro-support/" target="_blank" class="rop-get-support-btn"><span><i
-//                                 class="fa fa-commenting" aria-hidden="true"></i></span> {{labels.rop_support}}</a>
-//                         <a v-if="license  < 1" href="https://revive.social/support/" target="_blank" class="rop-get-support-btn"><span><i
-//                                 class="fa fa-commenting" aria-hidden="true"></i></span> {{labels.rop_support}}</a>
-//                         <a v-if="haveAccounts"
-//                            href="https://docs.revive.social/"
-//                            target="_blank" class="rop-docs-btn"><span><i class="fa fa-book" aria-hidden="true"></i></span> {{labels.rop_docs}}</a>
-//                         <a v-if="haveAccounts" href="https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post" target="_blank" class="leave-a-review"><span><i class="fa fa-star"
-//                                                                                                                                                                             aria-hidden="true"></i></span>
-//                             {{labels.review_it}}</a>
-//                     </div>
 //                 </div>
 //             </div>
 //             <toast/>
@@ -34642,10 +34620,11 @@ module.exports = {
 //                 <div v-html="labels.rop_facebook_domain_toast"></div>
 //             </div>
 //             <div class="sidebar sidebar-top card rop-container-start">
-//                 <div class="toast rop-current-time" v-if="formatedDate">
-//                     {{labels.now}}: {{ formatedDate }}
-//                 </div>
+//
+//               <!-- Next post count down -->
 //                 <countdown :current_time="current_time"/>
+//                 <!--  -->
+//
 //                 <button class="btn btn-sm" :class="btn_class"
 //                         :data-tooltip="labels.active_account_warning"
 //                         @click="togglePosting()" :disabled="!haveAccountsActive">
@@ -34689,10 +34668,6 @@ module.exports = {
 //
 //                     <countdown :current_time="current_time"/>
 //
-//                     <div class="toast rop-current-time" v-if="formatedDate && haveAccounts">
-//                         {{labels.now}}: {{ formatedDate }}
-//                     </div>
-//
 //                     <div id="staging-status" v-if="staging">
 //                         {{labels.staging_status}}
 //                     </div>
@@ -34700,12 +34675,13 @@ module.exports = {
 //                     <div v-if="haveAccounts">
 //                         <upsell-sidebar></upsell-sidebar>
 //                     </div>
-//                     <a v-if="haveAccounts" href="https://trello.com/b/svAZqXO1/roadmap-revive-old-posts" target="_blank" class="btn rop-sidebar-action-btns">{{labels.rop_roadmap}}</a>
-//                     <a v-if="haveAccounts" href="https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform" target="_blank"
-//                        class="btn rop-sidebar-action-btns">{{labels.survey}}</a>
+//                     <a v-if="license  >= 1" href="https://revive.social/pro-support/" target="_blank" class="btn rop-sidebar-action-btns">{{labels.rop_support}}</a>
+//                     <a v-if="license  < 1" href="https://revive.social/support/" target="_blank" class="btn rop-sidebar-action-btns">{{labels.rop_support}}</a>
+//                     <a v-if="haveAccounts" href="https://docs.revive.social/" target="_blank"
+//                        class="btn rop-sidebar-action-btns">{{labels.rop_docs}}</a>
 //                     <a v-if="haveAccounts"
-//                        href="https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial"
-//                        target="_blank" class="btn rop-sidebar-action-btns">{{labels.tweet_about_it}}</a>
+//                        href="https://wordpress.org/support/plugin/tweet-old-post/reviews/?rate=5#new-post"
+//                        target="_blank" class="btn rop-sidebar-action-btns">{{labels.review_it}}</a>
 //                 </div>
 //
 //             </div>
@@ -37024,7 +37000,7 @@ module.exports = "\n\t<div class=\"tab-view\" _v-31740612=\"\">\n\t\t<div class=
 var __vue_script__, __vue_template__
 __webpack_require__(258)
 __vue_script__ = __webpack_require__(260)
-__vue_template__ = __webpack_require__(283)
+__vue_template__ = __webpack_require__(285)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -37895,7 +37871,7 @@ module.exports = "\n\t<div _v-b34c44f8=\"\">\n\t\t<div class=\"columns py-2\" _v
 var __vue_script__, __vue_template__
 __webpack_require__(270)
 __vue_script__ = __webpack_require__(272)
-__vue_template__ = __webpack_require__(282)
+__vue_template__ = __webpack_require__(284)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -37970,8 +37946,101 @@ var _counterInput = __webpack_require__(83);
 
 var _counterInput2 = _interopRequireDefault(_counterInput);
 
+var _moment = __webpack_require__(0);
+
+var _moment2 = _interopRequireDefault(_moment);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// <template>
+// 	<div :class="'rop-control-container-'+ ( license > 1 ) +  '  rop-schedule-tab-container'">
+//
+// 		<div class="columns py-2 rop-control">
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<b>{{labels.schedule_type_title}}</b>
+// 				<p class="text-gray">{{labels.schedule_type_desc}}</p>
+// 			</div>
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<div class="form-group">
+// 					<select class="form-select" v-model="schedule.type">
+// 						<option value="recurring">{{labels.schedule_type_option_rec}}</option>
+// 						<option value="fixed">{{labels.schedule_type_option_fix}}</option>
+// 					</select>
+// 				</div>
+// 			</div>
+// 		</div>
+//
+// 		<!-- Fixed Schedule Days -->
+// 		<div class="columns py-2 rop-control" v-if="schedule.type === 'fixed'">
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<b>{{labels.schedule_fixed_days_title}}</b>
+// 				<p class="text-gray">{{labels.schedule_fixed_days_desc}}</p>
+// 			</div>
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<div class="form-group input-group">
+// 					<button-checkbox v-for="( data, label ) in daysObject" :key="label" :value="data.value"
+// 					                 :label="label" :checked="data.checked" @add-day="addDay" @rmv-day="rmvDay"
+// 					></button-checkbox>
+// 				</div>
+// 			</div>
+// 		</div>
+//
+// 		<!-- Fixed Schedule time -->
+// 		<div class="columns py-2 rop-control" v-if="schedule.type === 'fixed'">
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<b>{{labels.schedule_fixed_time_title}}</b>
+// 				<p class="text-gray">{{labels.schedule_fixed_time_desc}}</p>
+// 			</div>
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<div class="form-group">
+// 					<div class="input-group" v-for="( time, index ) in schedule.interval_f.time">
+// 						<vue-timepicker :minute-interval="5" class="timepicker-style-fix" :value="getTime( index )"
+// 						                @change="syncTime( $event, index )" hide-clear-button
+// 						></vue-timepicker>
+// 						<button class="btn btn-danger input-group-btn" v-if="schedule.interval_f.time.length > 1"
+// 						        @click="rmvTime( index )">
+// 							<i class="fa fa-fw fa-minus"></i>
+// 						</button>
+// 						<button class="btn btn-success input-group-btn"
+// 						        v-if="index == schedule.interval_f.time.length - 1" @click="addTime()"
+// 						>
+// 							<i class="fa fa-fw fa-plus"></i>
+// 						</button>
+// 					</div>
+// 				</div>
+// 			</div>
+// 		</div>
+//
+// 		<!-- Current time -->
+// <div class="column col-6 col-sm-12 vertical-align float-right" v-if="schedule.type === 'fixed'">
+// 		<div class="toast rop-current-time text-center" v-if="formatedDate">
+// 				{{labels.time_now}}: {{ formatedDate }}
+// 		</div>
+// </div>
+//
+// 		<div class="columns py-2 rop-control" v-else>
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<b>{{labels.schedule_rec_title}}</b>
+// 				<p class="text-gray">{{labels.schedule_rec_desc}}</p>
+// 			</div>
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<div class="form-group">
+// 					<counter-input id="interval_r" :value.sync="schedule.interval_r"></counter-input>
+// 				</div>
+// 			</div>
+// 		</div>
+//
+// 		<!-- Upsell -->
+// 		<div class="columns py-2" v-if="license < 2">
+// 			<div class="column text-center">
+// 				<p class="upsell"><i class="fa fa-lock"></i> {{labels.schedule_upsell}}</p>
+// 			</div>
+// 		</div>
+// 		<span class="divider"></span>
+// 	</div>
+// </template>
+//
+// <script>
 module.exports = {
 	name: 'account-schedule',
 	props: ['account_id', 'license'],
@@ -38021,6 +38090,28 @@ module.exports = {
 				daysObject[day].checked = this.isChecked(daysObject[day].value);
 			}
 			return daysObject;
+		},
+		/**
+   * Get general settings.
+   * @returns {module.exports.computed.generalSettings|Array|*}
+   */
+		formatedDate: function formatedDate() {
+			if (typeof this.date_format === 'undefined') {
+				return '';
+			}
+			return _moment2.default.utc(this.current_time, 'X').format(this.date_format.replace('mm', 'mm:ss'));
+		},
+		current_time: {
+			get: function get() {
+				return this.$store.state.cron_status.current_time;
+			},
+			set: function set(value) {
+				this.$store.state.cron_status.current_time = value;
+			}
+		},
+		date_format: function date_format() {
+
+			return this.$store.state.cron_status.date_format;
 		}
 	},
 	methods: {
@@ -38097,88 +38188,7 @@ module.exports = {
 	// </style>
 	//
 
-}; // <template>
-// 	<div :class="'rop-control-container-'+ ( license > 1 ) +  '  rop-schedule-tab-container'">
-//
-// 		<div class="columns py-2 rop-control">
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<b>{{labels.schedule_type_title}}</b>
-// 				<p class="text-gray">{{labels.schedule_type_desc}}</p>
-// 			</div>
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<div class="form-group">
-// 					<select class="form-select" v-model="schedule.type">
-// 						<option value="recurring">{{labels.schedule_type_option_rec}}</option>
-// 						<option value="fixed">{{labels.schedule_type_option_fix}}</option>
-// 					</select>
-// 				</div>
-// 			</div>
-// 		</div>
-//
-// 		<!-- Fixed Schedule Days -->
-// 		<div class="columns py-2 rop-control" v-if="schedule.type === 'fixed'">
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<b>{{labels.schedule_fixed_days_title}}</b>
-// 				<p class="text-gray">{{labels.schedule_fixed_days_desc}}</p>
-// 			</div>
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<div class="form-group input-group">
-// 					<button-checkbox v-for="( data, label ) in daysObject" :key="label" :value="data.value"
-// 					                 :label="label" :checked="data.checked" @add-day="addDay" @rmv-day="rmvDay"
-// 					></button-checkbox>
-// 				</div>
-// 			</div>
-// 		</div>
-//
-// 		<!-- Fixed Schedule time -->
-// 		<div class="columns py-2 rop-control" v-if="schedule.type === 'fixed'">
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<b>{{labels.schedule_fixed_time_title}}</b>
-// 				<p class="text-gray">{{labels.schedule_fixed_time_desc}}</p>
-// 			</div>
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<div class="form-group">
-// 					<div class="input-group" v-for="( time, index ) in schedule.interval_f.time">
-// 						<vue-timepicker :minute-interval="5" class="timepicker-style-fix" :value="getTime( index )"
-// 						                @change="syncTime( $event, index )" hide-clear-button
-// 						></vue-timepicker>
-// 						<button class="btn btn-danger input-group-btn" v-if="schedule.interval_f.time.length > 1"
-// 						        @click="rmvTime( index )">
-// 							<i class="fa fa-fw fa-minus"></i>
-// 						</button>
-// 						<button class="btn btn-success input-group-btn"
-// 						        v-if="index == schedule.interval_f.time.length - 1" @click="addTime()"
-// 						>
-// 							<i class="fa fa-fw fa-plus"></i>
-// 						</button>
-// 					</div>
-// 				</div>
-// 			</div>
-// 		</div>
-//
-// 		<div class="columns py-2 rop-control" v-else>
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<b>{{labels.schedule_rec_title}}</b>
-// 				<p class="text-gray">{{labels.schedule_rec_desc}}</p>
-// 			</div>
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<div class="form-group">
-// 					<counter-input id="interval_r" :value.sync="schedule.interval_r"></counter-input>
-// 				</div>
-// 			</div>
-// 		</div>
-//
-// 		<!-- Upsell -->
-// 		<div class="columns py-2" v-if="license < 2">
-// 			<div class="column text-center">
-// 				<p class="upsell"><i class="fa fa-lock"></i> {{labels.schedule_upsell}}</p>
-// 			</div>
-// 		</div>
-// 		<span class="divider"></span>
-// 	</div>
-// </template>
-//
-// <script>
+};
 
 /***/ }),
 /* 273 */
@@ -38681,21 +38691,325 @@ module.exports = "\n<span class=\"time-picker\">\n  <input class=\"display-time\
 /* 282 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div :class=\"'rop-control-container-'+ ( license > 1 ) +  '  rop-schedule-tab-container'\" _v-397ecf27=\"\">\n\n\t\t<div class=\"columns py-2 rop-control\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<b _v-397ecf27=\"\">{{labels.schedule_type_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-397ecf27=\"\">{{labels.schedule_type_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<div class=\"form-group\" _v-397ecf27=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"schedule.type\" _v-397ecf27=\"\">\n\t\t\t\t\t\t<option value=\"recurring\" _v-397ecf27=\"\">{{labels.schedule_type_option_rec}}</option>\n\t\t\t\t\t\t<option value=\"fixed\" _v-397ecf27=\"\">{{labels.schedule_type_option_fix}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule Days -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<b _v-397ecf27=\"\">{{labels.schedule_fixed_days_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-397ecf27=\"\">{{labels.schedule_fixed_days_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<div class=\"form-group input-group\" _v-397ecf27=\"\">\n\t\t\t\t\t<button-checkbox v-for=\"( data, label ) in daysObject\" :key=\"label\" :value=\"data.value\" :label=\"label\" :checked=\"data.checked\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" _v-397ecf27=\"\"></button-checkbox>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule time -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<b _v-397ecf27=\"\">{{labels.schedule_fixed_time_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-397ecf27=\"\">{{labels.schedule_fixed_time_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<div class=\"form-group\" _v-397ecf27=\"\">\n\t\t\t\t\t<div class=\"input-group\" v-for=\"( time, index ) in schedule.interval_f.time\" _v-397ecf27=\"\">\n\t\t\t\t\t\t<vue-timepicker :minute-interval=\"5\" class=\"timepicker-style-fix\" :value=\"getTime( index )\" @change=\"syncTime( $event, index )\" hide-clear-button=\"\" _v-397ecf27=\"\"></vue-timepicker>\n\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn\" v-if=\"schedule.interval_f.time.length > 1\" @click=\"rmvTime( index )\" _v-397ecf27=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-minus\" _v-397ecf27=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t\t<button class=\"btn btn-success input-group-btn\" v-if=\"index == schedule.interval_f.time.length - 1\" @click=\"addTime()\" _v-397ecf27=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-plus\" _v-397ecf27=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2 rop-control\" v-else=\"\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<b _v-397ecf27=\"\">{{labels.schedule_rec_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-397ecf27=\"\">{{labels.schedule_rec_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<div class=\"form-group\" _v-397ecf27=\"\">\n\t\t\t\t\t<counter-input id=\"interval_r\" :value.sync=\"schedule.interval_r\" _v-397ecf27=\"\"></counter-input>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Upsell -->\n\t\t<div class=\"columns py-2\" v-if=\"license < 2\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column text-center\" _v-397ecf27=\"\">\n\t\t\t\t<p class=\"upsell\" _v-397ecf27=\"\"><i class=\"fa fa-lock\" _v-397ecf27=\"\"></i> {{labels.schedule_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-397ecf27=\"\"></span>\n\t</div>\n";
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
 
 /***/ }),
 /* 283 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var map = {
+	"./af": 84,
+	"./af.js": 84,
+	"./ar": 85,
+	"./ar-dz": 86,
+	"./ar-dz.js": 86,
+	"./ar-kw": 87,
+	"./ar-kw.js": 87,
+	"./ar-ly": 88,
+	"./ar-ly.js": 88,
+	"./ar-ma": 89,
+	"./ar-ma.js": 89,
+	"./ar-sa": 90,
+	"./ar-sa.js": 90,
+	"./ar-tn": 91,
+	"./ar-tn.js": 91,
+	"./ar.js": 85,
+	"./az": 92,
+	"./az.js": 92,
+	"./be": 93,
+	"./be.js": 93,
+	"./bg": 94,
+	"./bg.js": 94,
+	"./bm": 95,
+	"./bm.js": 95,
+	"./bn": 96,
+	"./bn.js": 96,
+	"./bo": 97,
+	"./bo.js": 97,
+	"./br": 98,
+	"./br.js": 98,
+	"./bs": 99,
+	"./bs.js": 99,
+	"./ca": 100,
+	"./ca.js": 100,
+	"./cs": 101,
+	"./cs.js": 101,
+	"./cv": 102,
+	"./cv.js": 102,
+	"./cy": 103,
+	"./cy.js": 103,
+	"./da": 104,
+	"./da.js": 104,
+	"./de": 105,
+	"./de-at": 106,
+	"./de-at.js": 106,
+	"./de-ch": 107,
+	"./de-ch.js": 107,
+	"./de.js": 105,
+	"./dv": 108,
+	"./dv.js": 108,
+	"./el": 109,
+	"./el.js": 109,
+	"./en-SG": 110,
+	"./en-SG.js": 110,
+	"./en-au": 111,
+	"./en-au.js": 111,
+	"./en-ca": 112,
+	"./en-ca.js": 112,
+	"./en-gb": 113,
+	"./en-gb.js": 113,
+	"./en-ie": 114,
+	"./en-ie.js": 114,
+	"./en-il": 115,
+	"./en-il.js": 115,
+	"./en-nz": 116,
+	"./en-nz.js": 116,
+	"./eo": 117,
+	"./eo.js": 117,
+	"./es": 118,
+	"./es-do": 119,
+	"./es-do.js": 119,
+	"./es-us": 120,
+	"./es-us.js": 120,
+	"./es.js": 118,
+	"./et": 121,
+	"./et.js": 121,
+	"./eu": 122,
+	"./eu.js": 122,
+	"./fa": 123,
+	"./fa.js": 123,
+	"./fi": 124,
+	"./fi.js": 124,
+	"./fo": 125,
+	"./fo.js": 125,
+	"./fr": 126,
+	"./fr-ca": 127,
+	"./fr-ca.js": 127,
+	"./fr-ch": 128,
+	"./fr-ch.js": 128,
+	"./fr.js": 126,
+	"./fy": 129,
+	"./fy.js": 129,
+	"./ga": 130,
+	"./ga.js": 130,
+	"./gd": 131,
+	"./gd.js": 131,
+	"./gl": 132,
+	"./gl.js": 132,
+	"./gom-latn": 133,
+	"./gom-latn.js": 133,
+	"./gu": 134,
+	"./gu.js": 134,
+	"./he": 135,
+	"./he.js": 135,
+	"./hi": 136,
+	"./hi.js": 136,
+	"./hr": 137,
+	"./hr.js": 137,
+	"./hu": 138,
+	"./hu.js": 138,
+	"./hy-am": 139,
+	"./hy-am.js": 139,
+	"./id": 140,
+	"./id.js": 140,
+	"./is": 141,
+	"./is.js": 141,
+	"./it": 142,
+	"./it-ch": 143,
+	"./it-ch.js": 143,
+	"./it.js": 142,
+	"./ja": 144,
+	"./ja.js": 144,
+	"./jv": 145,
+	"./jv.js": 145,
+	"./ka": 146,
+	"./ka.js": 146,
+	"./kk": 147,
+	"./kk.js": 147,
+	"./km": 148,
+	"./km.js": 148,
+	"./kn": 149,
+	"./kn.js": 149,
+	"./ko": 150,
+	"./ko.js": 150,
+	"./ku": 151,
+	"./ku.js": 151,
+	"./ky": 152,
+	"./ky.js": 152,
+	"./lb": 153,
+	"./lb.js": 153,
+	"./lo": 154,
+	"./lo.js": 154,
+	"./lt": 155,
+	"./lt.js": 155,
+	"./lv": 156,
+	"./lv.js": 156,
+	"./me": 157,
+	"./me.js": 157,
+	"./mi": 158,
+	"./mi.js": 158,
+	"./mk": 159,
+	"./mk.js": 159,
+	"./ml": 160,
+	"./ml.js": 160,
+	"./mn": 161,
+	"./mn.js": 161,
+	"./mr": 162,
+	"./mr.js": 162,
+	"./ms": 163,
+	"./ms-my": 164,
+	"./ms-my.js": 164,
+	"./ms.js": 163,
+	"./mt": 165,
+	"./mt.js": 165,
+	"./my": 166,
+	"./my.js": 166,
+	"./nb": 167,
+	"./nb.js": 167,
+	"./ne": 168,
+	"./ne.js": 168,
+	"./nl": 169,
+	"./nl-be": 170,
+	"./nl-be.js": 170,
+	"./nl.js": 169,
+	"./nn": 171,
+	"./nn.js": 171,
+	"./pa-in": 172,
+	"./pa-in.js": 172,
+	"./pl": 173,
+	"./pl.js": 173,
+	"./pt": 174,
+	"./pt-br": 175,
+	"./pt-br.js": 175,
+	"./pt.js": 174,
+	"./ro": 176,
+	"./ro.js": 176,
+	"./ru": 177,
+	"./ru.js": 177,
+	"./sd": 178,
+	"./sd.js": 178,
+	"./se": 179,
+	"./se.js": 179,
+	"./si": 180,
+	"./si.js": 180,
+	"./sk": 181,
+	"./sk.js": 181,
+	"./sl": 182,
+	"./sl.js": 182,
+	"./sq": 183,
+	"./sq.js": 183,
+	"./sr": 184,
+	"./sr-cyrl": 185,
+	"./sr-cyrl.js": 185,
+	"./sr.js": 184,
+	"./ss": 186,
+	"./ss.js": 186,
+	"./sv": 187,
+	"./sv.js": 187,
+	"./sw": 188,
+	"./sw.js": 188,
+	"./ta": 189,
+	"./ta.js": 189,
+	"./te": 190,
+	"./te.js": 190,
+	"./tet": 191,
+	"./tet.js": 191,
+	"./tg": 192,
+	"./tg.js": 192,
+	"./th": 193,
+	"./th.js": 193,
+	"./tl-ph": 194,
+	"./tl-ph.js": 194,
+	"./tlh": 195,
+	"./tlh.js": 195,
+	"./tr": 196,
+	"./tr.js": 196,
+	"./tzl": 197,
+	"./tzl.js": 197,
+	"./tzm": 198,
+	"./tzm-latn": 199,
+	"./tzm-latn.js": 199,
+	"./tzm.js": 198,
+	"./ug-cn": 200,
+	"./ug-cn.js": 200,
+	"./uk": 201,
+	"./uk.js": 201,
+	"./ur": 202,
+	"./ur.js": 202,
+	"./uz": 203,
+	"./uz-latn": 204,
+	"./uz-latn.js": 204,
+	"./uz.js": 203,
+	"./vi": 205,
+	"./vi.js": 205,
+	"./x-pseudo": 206,
+	"./x-pseudo.js": 206,
+	"./yo": 207,
+	"./yo.js": 207,
+	"./zh-cn": 208,
+	"./zh-cn.js": 208,
+	"./zh-hk": 209,
+	"./zh-hk.js": 209,
+	"./zh-tw": 210,
+	"./zh-tw.js": 210
+};
+function webpackContext(req) {
+	return __webpack_require__(webpackContextResolve(req));
+};
+function webpackContextResolve(req) {
+	var id = map[req];
+	if(!(id + 1)) // check for number or string
+		throw new Error("Cannot find module '" + req + "'.");
+	return id;
+};
+webpackContext.keys = function webpackContextKeys() {
+	return Object.keys(map);
+};
+webpackContext.resolve = webpackContextResolve;
+module.exports = webpackContext;
+webpackContext.id = 283;
+
+/***/ }),
+/* 284 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div :class=\"'rop-control-container-'+ ( license > 1 ) +  '  rop-schedule-tab-container'\" _v-397ecf27=\"\">\n\n\t\t<div class=\"columns py-2 rop-control\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<b _v-397ecf27=\"\">{{labels.schedule_type_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-397ecf27=\"\">{{labels.schedule_type_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<div class=\"form-group\" _v-397ecf27=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"schedule.type\" _v-397ecf27=\"\">\n\t\t\t\t\t\t<option value=\"recurring\" _v-397ecf27=\"\">{{labels.schedule_type_option_rec}}</option>\n\t\t\t\t\t\t<option value=\"fixed\" _v-397ecf27=\"\">{{labels.schedule_type_option_fix}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule Days -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<b _v-397ecf27=\"\">{{labels.schedule_fixed_days_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-397ecf27=\"\">{{labels.schedule_fixed_days_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<div class=\"form-group input-group\" _v-397ecf27=\"\">\n\t\t\t\t\t<button-checkbox v-for=\"( data, label ) in daysObject\" :key=\"label\" :value=\"data.value\" :label=\"label\" :checked=\"data.checked\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" _v-397ecf27=\"\"></button-checkbox>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule time -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<b _v-397ecf27=\"\">{{labels.schedule_fixed_time_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-397ecf27=\"\">{{labels.schedule_fixed_time_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<div class=\"form-group\" _v-397ecf27=\"\">\n\t\t\t\t\t<div class=\"input-group\" v-for=\"( time, index ) in schedule.interval_f.time\" _v-397ecf27=\"\">\n\t\t\t\t\t\t<vue-timepicker :minute-interval=\"5\" class=\"timepicker-style-fix\" :value=\"getTime( index )\" @change=\"syncTime( $event, index )\" hide-clear-button=\"\" _v-397ecf27=\"\"></vue-timepicker>\n\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn\" v-if=\"schedule.interval_f.time.length > 1\" @click=\"rmvTime( index )\" _v-397ecf27=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-minus\" _v-397ecf27=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t\t<button class=\"btn btn-success input-group-btn\" v-if=\"index == schedule.interval_f.time.length - 1\" @click=\"addTime()\" _v-397ecf27=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-plus\" _v-397ecf27=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Current time -->\n<div class=\"column col-6 col-sm-12 vertical-align float-right\" v-if=\"schedule.type === 'fixed'\" _v-397ecf27=\"\">\n\t\t<div class=\"toast rop-current-time text-center\" v-if=\"formatedDate\" _v-397ecf27=\"\">\n\t\t\t\t{{labels.time_now}}: {{ formatedDate }}\n\t\t</div>\n</div>\n\n\t\t<div class=\"columns py-2 rop-control\" v-else=\"\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<b _v-397ecf27=\"\">{{labels.schedule_rec_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-397ecf27=\"\">{{labels.schedule_rec_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<div class=\"form-group\" _v-397ecf27=\"\">\n\t\t\t\t\t<counter-input id=\"interval_r\" :value.sync=\"schedule.interval_r\" _v-397ecf27=\"\"></counter-input>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Upsell -->\n\t\t<div class=\"columns py-2\" v-if=\"license < 2\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column text-center\" _v-397ecf27=\"\">\n\t\t\t\t<p class=\"upsell\" _v-397ecf27=\"\"><i class=\"fa fa-lock\" _v-397ecf27=\"\"></i> {{labels.schedule_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-397ecf27=\"\"></span>\n\t</div>\n";
+
+/***/ }),
+/* 285 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"tab-view\" _v-44ae6e9d=\"\">\n\t\t<div class=\"panel-body\" _v-44ae6e9d=\"\">\n\t\t\t<div class=\"d-inline-block mt-2 column col-12\" _v-44ae6e9d=\"\">\n\t\t\t\t<p class=\"text-gray\" _v-44ae6e9d=\"\"><i class=\"fa fa-info-circle\" _v-44ae6e9d=\"\"></i> <span v-html=\"labels.accounts_selector\" _v-44ae6e9d=\"\"></span>\n\t\t\t\t</p>\n\t\t\t</div>\n\t\t\t<empty-active-accounts v-if=\"accountsCount === 0\" _v-44ae6e9d=\"\"></empty-active-accounts>\n\t\t\t<div class=\"container\" v-if=\"accountsCount > 0\" _v-44ae6e9d=\"\">\n\t\t\t\t<div class=\"columns\" _v-44ae6e9d=\"\">\n\t\t\t\t\t<div class=\"column col-3 col-sm-12 col-md-12 col-xl-3 col-lg-3 col-xs-12 col-rop-selector-accounts\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t<span class=\"divider\" _v-44ae6e9d=\"\"></span>\n\t\t\t\t\t\t<div v-for=\"( account, id ) in active_accounts\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t\t<div class=\"rop-selector-account-container\" :class=\"{active: selected_account===id}\" @click=\"setActiveAccount(id)\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t\t\t<div class=\"tile tile-centered rop-account\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"tile-icon\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"icon_box\" :class=\" (account.img ? 'has_image' : 'no-image' ) + ' ' +account.service \" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<img class=\"service_account_image\" :src=\"account.img\" v-if=\"account.img\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"fa  \" :class=\"getIcon(account)\" aria-hidden=\"true\" _v-44ae6e9d=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"tile-content\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t\t\t\t\t<p class=\"rop-account-name\" _v-44ae6e9d=\"\">{{account.user}}</p>\n\t\t\t\t\t\t\t\t\t\t<strong class=\"rop-service-name\" _v-44ae6e9d=\"\">{{account.service}}</strong>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-44ae6e9d=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-9 col-sm-12  col-md-12  col-xl-9 col-lg-9 col-xs-12\" :class=\"'rop-tab-state-'+is_loading\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t<component :is=\"type\" :account_id=\"selected_account\" :license=\"license\" _v-44ae6e9d=\"\"></component>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-44ae6e9d=\"\">\n\t\t\t<div class=\"panel-actions text-right\" v-if=\"allow_footer\" _v-44ae6e9d=\"\">\n\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-44ae6e9d=\"\"><i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-44ae6e9d=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-44ae6e9d=\"\"></i> {{labels.reset_selector_btn}} {{component_label}}\n\t\t\t\t\t{{labels.for}}\n\t\t\t\t\t<b _v-44ae6e9d=\"\">{{active_account_name}}</b>\n\t\t\t\t</button>\n\t\t\t\t<button class=\"btn btn-primary\" @click=\"saveAccountData()\" _v-44ae6e9d=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-44ae6e9d=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-44ae6e9d=\"\"></i> {{labels.save_selector_btn}} {{component_label}}\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 284 */
+/* 286 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(285)
-__vue_template__ = __webpack_require__(291)
+__vue_script__ = __webpack_require__(287)
+__vue_template__ = __webpack_require__(293)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -38712,7 +39026,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 285 */
+/* 287 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38722,7 +39036,7 @@ var _keys = __webpack_require__(14);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _queueCard = __webpack_require__(286);
+var _queueCard = __webpack_require__(288);
 
 var _queueCard2 = _interopRequireDefault(_queueCard);
 
@@ -38838,13 +39152,13 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 286 */
+/* 288 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(287)
-__vue_script__ = __webpack_require__(289)
-__vue_template__ = __webpack_require__(290)
+__webpack_require__(289)
+__vue_script__ = __webpack_require__(291)
+__vue_template__ = __webpack_require__(292)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -38861,13 +39175,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 287 */
+/* 289 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(288);
+var content = __webpack_require__(290);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -38887,7 +39201,7 @@ if(false) {
 }
 
 /***/ }),
-/* 288 */
+/* 290 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -38901,7 +39215,7 @@ exports.push([module.i, "\n\t.fa[_v-16ad60c3] {\n\t\tbackground: transparent;\n\
 
 
 /***/ }),
-/* 289 */
+/* 291 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39221,24 +39535,24 @@ module.exports = {
 };
 
 /***/ }),
-/* 290 */
+/* 292 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"card\" _v-16ad60c3=\"\">\n\t\t<div class=\"columns\" _v-16ad60c3=\"\">\n\t\t\t<div class=\"column col-sm-12 col-justified\" _v-16ad60c3=\"\">\n\t\t\t\t<div class=\"columns\" _v-16ad60c3=\"\">\n\t\t\t\t\t<div class=\"column\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<p class=\"text-gray text-left \" _v-16ad60c3=\"\"><i class=\"fa fa-clock-o\" _v-16ad60c3=\"\"></i> {{card_data.date}} <b _v-16ad60c3=\"\"><i class=\"fa fa-at\" _v-16ad60c3=\"\"></i></b> <i class=\"service fa\" :class=\"iconClass( card_data.account_id )\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t{{getAccountName(card_data.account_id)}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-if=\"!edit\" _v-16ad60c3=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<p v-html=\"content.content + hashtags( content.hashtags )\" _v-16ad60c3=\"\"></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"form-group columns\" v-if=\"edit\" _v-16ad60c3=\"\">\n\t\t\t\t\t<div class=\"column col-12\" v-if=\"content.post_with_image\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<label class=\"form-label\" for=\"image\" _v-16ad60c3=\"\">{{labels.queue_image}}</label>\n\t\t\t\t\t\t<div class=\"input-group\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<span class=\"input-group-addon\" _v-16ad60c3=\"\"><i class=\"fa fa-file-image-o\" _v-16ad60c3=\"\"></i></span>\n\t\t\t\t\t\t\t<input id=\"image\" type=\"text\" class=\"form-input\" :value=\"content.post_image\" readonly=\"\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary input-group-btn tooltip\" @click=\"uploadImage\" :data-tooltip=\"labels.upload_image\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-upload\" aria-hidden=\"true\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn tooltip\" @click=\"removeImage\" :data-tooltip=\"labels.remove_image\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-remove\" aria-hidden=\"true\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-12\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<label class=\"form-label\" for=\"content\" _v-16ad60c3=\"\">{{labels.queue_content}}</label>\n\t\t\t\t\t\t<textarea class=\"form-input\" id=\"content\" placeholder=\"\" rows=\"3\" @keyup=\"checkCount\" _v-16ad60c3=\"\">{{content.content}}</textarea>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns col-justified\" v-if=\"!edit\" _v-16ad60c3=\"\">\n\t\t\t\t\t<div class=\"column col-3\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-warning tooltip   tooltip-bottom \" @click=\"skipPost(card_data.account_id, card_data.post_id)\" :data-tooltip=\"labels.reschedule_post\" :disabled=\" ! enabled\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'skip'\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-step-forward\" v-else=\"\" aria-hidden=\"true\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t{{labels.skip_btn_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-danger tooltip     tooltip-bottom  \" :data-tooltip=\"labels.ban_post\" @click=\"blockPost(card_data.account_id, card_data.post_id)\" :disabled=\" ! enabled\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'block'\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-ban\" aria-hidden=\"true\" v-else=\"\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t{{labels.block_btn_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-primary\" @click=\"toggleEditState\" v-if=\"!edit\" :disabled=\" ! enabled\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-pencil\" aria-hidden=\"true\" _v-16ad60c3=\"\"></i> {{labels.edit_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3 col-ml-auto text-right\" v-if=\"content.post_url !== ''\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<p class=\"m-0\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<b _v-16ad60c3=\"\">{{labels.link_title}}:</b>\n\t\t\t\t\t\t\t<a :href=\"content.post_url\" target=\"_blank\" class=\"tooltip\" :data-tooltip=\"labels.link_shortned_start + ' ' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service )  \" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t\t{{'{' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service ) +\n\t\t\t\t\t\t\t\t'}'}}</a>\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-else=\"\" _v-16ad60c3=\"\">\n\t\t\t\t\t<div class=\"column col-3\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-success\" @click=\"saveChanges(card_data.account_id, card_data.post_id)\" v-if=\"edit\" :disabled=\" ! enabled\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'edit'\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-check\" aria-hidden=\"true\" v-else=\"\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t{{labels.save_edit}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-warning\" @click=\"cancelChanges\" v-if=\"edit\" :disabled=\" ! enabled\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-times\" aria-hidden=\"true\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t{{labels.cancel_edit}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"column col-4 col-sm-12 vertical-align\" v-if=\"!edit &amp;&amp; content.post_with_image\" _v-16ad60c3=\"\">\n\t\t\t\t<div v-if=\"content.post_image !== ''\" _v-16ad60c3=\"\">\n\t\t\t\t\t<figure class=\"figure\" v-if=\"content.post_image !== ''\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<img :src=\"( content.mimetype.type.indexOf('image') > -1 ? content.post_image : video_placeholder )\" class=\"img-fit-cover img-responsive\" _v-16ad60c3=\"\">\n\t\t\t\t\t</figure>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\t<div class=\"rop-image-placeholder\" v-else=\"\" _v-16ad60c3=\"\">\n\t\t\t\t\t<summary _v-16ad60c3=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t{{labels.queue_no_image}}\n\t\t\t\t\t</summary>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 291 */
+/* 293 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"tab-view rop-queue-tab-container\">\n\t\t<div class=\"panel-body\" :class=\"'rop-tab-state-'+is_loading\">\n\t\t\t<div class=\"columns\" v-if=\"! start_status\">\n\t\t\t\t<div class=\"column col-12 text-center empty-container\">\n\t\t\t\t\t<div class=\"empty-icon\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t\t<p class=\"empty-title h5\">{{labels.sharing_not_started}}</p>\n\t\t\t\t\t<p class=\"empty-subtitle\">{{labels.sharing_not_started_desc}}</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\n\t\t\t<div v-else-if=\"start_status && queueCount > 0 \">\n\n\t\t\t\t<div class=\"columns py-2\" v-if=\"! is_business\">\n\t\t\t\t\t<div class=\"column text-center\">\n\t\t\t\t\t\t<p class=\"upsell\"><i class=\"fa fa-lock\"></i> <span v-html=\"labels.biz_only\"></span></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<!-- When sharing is started but we  have the business plan. -->\n\t\t\t\t<div class=\"d-inline-block mt-2 column col-12\">\n\t\t\t\t\t<p class=\"text-gray info-paragraph\"><i class=\"fa fa-info-circle\"></i> {{labels.queue_desc}}</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"empty\" v-else-if=\"start_status && queueCount === 0\">\n\t\t\t\t<div class=\"empty-icon\">\n\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\"></i>\n\t\t\t\t</div>\n\t\t\t\t<p class=\"empty-title h5\">{{labels.no_posts}}</p>\n\t\t\t\t<p class=\"empty-subtitle\" v-html=\"labels.no_posts_desc\"></p>\n\t\t\t</div>\n\t\t\t<div class=\"columns\" v-if=\"start_status && queueCount > 0\">\n\t\t\t\t<div class=\"column col-12 text-left\" v-for=\" (data, index) in queue \">\n\t\t\t\t\t<queue-card :card_data=\"data.post_data\" :id=\"index\" :enabled=\"is_business\"/>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer text-rightcade\" v-if=\"start_status\">\n\t\t\t<button class=\"btn btn-secondary\" @click=\"refreshQueue(true)\">\n\t\t\t\t<i class=\"fa fa-refresh\" v-if=\"!is_loading\"></i>\n\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t{{labels.refresh_btn}}\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 292 */
+/* 294 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(293)
-__vue_script__ = __webpack_require__(295)
+__webpack_require__(295)
+__vue_script__ = __webpack_require__(297)
 __vue_template__ = __webpack_require__(298)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
@@ -39256,13 +39570,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 293 */
+/* 295 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(294);
+var content = __webpack_require__(296);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -39282,7 +39596,7 @@ if(false) {
 }
 
 /***/ }),
-/* 294 */
+/* 296 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -39296,7 +39610,7 @@ exports.push([module.i, "\n\t#rop_core .toast.log-toast p[_v-6c63d2c4] {\n\t\tma
 
 
 /***/ }),
-/* 295 */
+/* 297 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39433,310 +39747,6 @@ module.exports = {
 // </template>
 //
 // <script>
-
-/***/ }),
-/* 296 */
-/***/ (function(module, exports) {
-
-module.exports = function(module) {
-	if(!module.webpackPolyfill) {
-		module.deprecate = function() {};
-		module.paths = [];
-		// module.parent = undefined by default
-		if(!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			get: function() {
-				return module.l;
-			}
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			get: function() {
-				return module.i;
-			}
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
-};
-
-
-/***/ }),
-/* 297 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var map = {
-	"./af": 84,
-	"./af.js": 84,
-	"./ar": 85,
-	"./ar-dz": 86,
-	"./ar-dz.js": 86,
-	"./ar-kw": 87,
-	"./ar-kw.js": 87,
-	"./ar-ly": 88,
-	"./ar-ly.js": 88,
-	"./ar-ma": 89,
-	"./ar-ma.js": 89,
-	"./ar-sa": 90,
-	"./ar-sa.js": 90,
-	"./ar-tn": 91,
-	"./ar-tn.js": 91,
-	"./ar.js": 85,
-	"./az": 92,
-	"./az.js": 92,
-	"./be": 93,
-	"./be.js": 93,
-	"./bg": 94,
-	"./bg.js": 94,
-	"./bm": 95,
-	"./bm.js": 95,
-	"./bn": 96,
-	"./bn.js": 96,
-	"./bo": 97,
-	"./bo.js": 97,
-	"./br": 98,
-	"./br.js": 98,
-	"./bs": 99,
-	"./bs.js": 99,
-	"./ca": 100,
-	"./ca.js": 100,
-	"./cs": 101,
-	"./cs.js": 101,
-	"./cv": 102,
-	"./cv.js": 102,
-	"./cy": 103,
-	"./cy.js": 103,
-	"./da": 104,
-	"./da.js": 104,
-	"./de": 105,
-	"./de-at": 106,
-	"./de-at.js": 106,
-	"./de-ch": 107,
-	"./de-ch.js": 107,
-	"./de.js": 105,
-	"./dv": 108,
-	"./dv.js": 108,
-	"./el": 109,
-	"./el.js": 109,
-	"./en-SG": 110,
-	"./en-SG.js": 110,
-	"./en-au": 111,
-	"./en-au.js": 111,
-	"./en-ca": 112,
-	"./en-ca.js": 112,
-	"./en-gb": 113,
-	"./en-gb.js": 113,
-	"./en-ie": 114,
-	"./en-ie.js": 114,
-	"./en-il": 115,
-	"./en-il.js": 115,
-	"./en-nz": 116,
-	"./en-nz.js": 116,
-	"./eo": 117,
-	"./eo.js": 117,
-	"./es": 118,
-	"./es-do": 119,
-	"./es-do.js": 119,
-	"./es-us": 120,
-	"./es-us.js": 120,
-	"./es.js": 118,
-	"./et": 121,
-	"./et.js": 121,
-	"./eu": 122,
-	"./eu.js": 122,
-	"./fa": 123,
-	"./fa.js": 123,
-	"./fi": 124,
-	"./fi.js": 124,
-	"./fo": 125,
-	"./fo.js": 125,
-	"./fr": 126,
-	"./fr-ca": 127,
-	"./fr-ca.js": 127,
-	"./fr-ch": 128,
-	"./fr-ch.js": 128,
-	"./fr.js": 126,
-	"./fy": 129,
-	"./fy.js": 129,
-	"./ga": 130,
-	"./ga.js": 130,
-	"./gd": 131,
-	"./gd.js": 131,
-	"./gl": 132,
-	"./gl.js": 132,
-	"./gom-latn": 133,
-	"./gom-latn.js": 133,
-	"./gu": 134,
-	"./gu.js": 134,
-	"./he": 135,
-	"./he.js": 135,
-	"./hi": 136,
-	"./hi.js": 136,
-	"./hr": 137,
-	"./hr.js": 137,
-	"./hu": 138,
-	"./hu.js": 138,
-	"./hy-am": 139,
-	"./hy-am.js": 139,
-	"./id": 140,
-	"./id.js": 140,
-	"./is": 141,
-	"./is.js": 141,
-	"./it": 142,
-	"./it-ch": 143,
-	"./it-ch.js": 143,
-	"./it.js": 142,
-	"./ja": 144,
-	"./ja.js": 144,
-	"./jv": 145,
-	"./jv.js": 145,
-	"./ka": 146,
-	"./ka.js": 146,
-	"./kk": 147,
-	"./kk.js": 147,
-	"./km": 148,
-	"./km.js": 148,
-	"./kn": 149,
-	"./kn.js": 149,
-	"./ko": 150,
-	"./ko.js": 150,
-	"./ku": 151,
-	"./ku.js": 151,
-	"./ky": 152,
-	"./ky.js": 152,
-	"./lb": 153,
-	"./lb.js": 153,
-	"./lo": 154,
-	"./lo.js": 154,
-	"./lt": 155,
-	"./lt.js": 155,
-	"./lv": 156,
-	"./lv.js": 156,
-	"./me": 157,
-	"./me.js": 157,
-	"./mi": 158,
-	"./mi.js": 158,
-	"./mk": 159,
-	"./mk.js": 159,
-	"./ml": 160,
-	"./ml.js": 160,
-	"./mn": 161,
-	"./mn.js": 161,
-	"./mr": 162,
-	"./mr.js": 162,
-	"./ms": 163,
-	"./ms-my": 164,
-	"./ms-my.js": 164,
-	"./ms.js": 163,
-	"./mt": 165,
-	"./mt.js": 165,
-	"./my": 166,
-	"./my.js": 166,
-	"./nb": 167,
-	"./nb.js": 167,
-	"./ne": 168,
-	"./ne.js": 168,
-	"./nl": 169,
-	"./nl-be": 170,
-	"./nl-be.js": 170,
-	"./nl.js": 169,
-	"./nn": 171,
-	"./nn.js": 171,
-	"./pa-in": 172,
-	"./pa-in.js": 172,
-	"./pl": 173,
-	"./pl.js": 173,
-	"./pt": 174,
-	"./pt-br": 175,
-	"./pt-br.js": 175,
-	"./pt.js": 174,
-	"./ro": 176,
-	"./ro.js": 176,
-	"./ru": 177,
-	"./ru.js": 177,
-	"./sd": 178,
-	"./sd.js": 178,
-	"./se": 179,
-	"./se.js": 179,
-	"./si": 180,
-	"./si.js": 180,
-	"./sk": 181,
-	"./sk.js": 181,
-	"./sl": 182,
-	"./sl.js": 182,
-	"./sq": 183,
-	"./sq.js": 183,
-	"./sr": 184,
-	"./sr-cyrl": 185,
-	"./sr-cyrl.js": 185,
-	"./sr.js": 184,
-	"./ss": 186,
-	"./ss.js": 186,
-	"./sv": 187,
-	"./sv.js": 187,
-	"./sw": 188,
-	"./sw.js": 188,
-	"./ta": 189,
-	"./ta.js": 189,
-	"./te": 190,
-	"./te.js": 190,
-	"./tet": 191,
-	"./tet.js": 191,
-	"./tg": 192,
-	"./tg.js": 192,
-	"./th": 193,
-	"./th.js": 193,
-	"./tl-ph": 194,
-	"./tl-ph.js": 194,
-	"./tlh": 195,
-	"./tlh.js": 195,
-	"./tr": 196,
-	"./tr.js": 196,
-	"./tzl": 197,
-	"./tzl.js": 197,
-	"./tzm": 198,
-	"./tzm-latn": 199,
-	"./tzm-latn.js": 199,
-	"./tzm.js": 198,
-	"./ug-cn": 200,
-	"./ug-cn.js": 200,
-	"./uk": 201,
-	"./uk.js": 201,
-	"./ur": 202,
-	"./ur.js": 202,
-	"./uz": 203,
-	"./uz-latn": 204,
-	"./uz-latn.js": 204,
-	"./uz.js": 203,
-	"./vi": 205,
-	"./vi.js": 205,
-	"./x-pseudo": 206,
-	"./x-pseudo.js": 206,
-	"./yo": 207,
-	"./yo.js": 207,
-	"./zh-cn": 208,
-	"./zh-cn.js": 208,
-	"./zh-hk": 209,
-	"./zh-hk.js": 209,
-	"./zh-tw": 210,
-	"./zh-tw.js": 210
-};
-function webpackContext(req) {
-	return __webpack_require__(webpackContextResolve(req));
-};
-function webpackContextResolve(req) {
-	var id = map[req];
-	if(!(id + 1)) // check for number or string
-		throw new Error("Cannot find module '" + req + "'.");
-	return id;
-};
-webpackContext.keys = function webpackContextKeys() {
-	return Object.keys(map);
-};
-webpackContext.resolve = webpackContextResolve;
-module.exports = webpackContext;
-webpackContext.id = 297;
 
 /***/ }),
 /* 298 */
@@ -39920,7 +39930,7 @@ __webpack_require__(309);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // <template>
-// 	<div class="toast toast-success rop-current-time" v-if="isOn && accounts_no > 0">
+// 	<div class="toast rop-next-share-time" v-if="isOn && accounts_no > 0">
 // 		<span v-if="diff_seconds>0"> <b><i
 // 				class="fa fa-fast-forward"></i> {{labels.next_share}}</b> {{labels.in}}</span>
 // 		<small v-if="timediff !== ''">{{timediff}}</small>
@@ -41759,13 +41769,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 /* 310 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"toast toast-success rop-current-time\" v-if=\"isOn && accounts_no > 0\">\n\t\t<span v-if=\"diff_seconds>0\"> <b><i\n\t\t\t\tclass=\"fa fa-fast-forward\"></i> {{labels.next_share}}</b> {{labels.in}}</span>\n\t\t<small v-if=\"timediff !== ''\">{{timediff}}</small>\n\t</div>\n";
+module.exports = "\n\t<div class=\"toast rop-next-share-time\" v-if=\"isOn && accounts_no > 0\">\n\t\t<span v-if=\"diff_seconds>0\"> <b><i\n\t\t\t\tclass=\"fa fa-fast-forward\"></i> {{labels.next_share}}</b> {{labels.in}}</span>\n\t\t<small v-if=\"timediff !== ''\">{{timediff}}</small>\n\t</div>\n";
 
 /***/ }),
 /* 311 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <div class=\"columns panel-header\">\n            <div class=\"column header-logo vertical-align\">\n                <div>\n                    <img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/>\n                    <h1 class=\"plugin-title d-inline-block\">Revive Old Posts</h1><span class=\"powered d-inline-block\"> {{labels.by}} <a\n                        href=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\n                    <div id=\"rop_user_actions\">\n                        <a v-if=\"license  >= 1\" href=\"https://revive.social/pro-support/\" target=\"_blank\" class=\"rop-get-support-btn\"><span><i\n                                class=\"fa fa-commenting\" aria-hidden=\"true\"></i></span> {{labels.rop_support}}</a>\n                        <a v-if=\"license  < 1\" href=\"https://revive.social/support/\" target=\"_blank\" class=\"rop-get-support-btn\"><span><i\n                                class=\"fa fa-commenting\" aria-hidden=\"true\"></i></span> {{labels.rop_support}}</a>\n                        <a v-if=\"haveAccounts\"\n                           href=\"https://docs.revive.social/\"\n                           target=\"_blank\" class=\"rop-docs-btn\"><span><i class=\"fa fa-book\" aria-hidden=\"true\"></i></span> {{labels.rop_docs}}</a>\n                        <a v-if=\"haveAccounts\" href=\"https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post\" target=\"_blank\" class=\"leave-a-review\"><span><i class=\"fa fa-star\"\n                                                                                                                                                                            aria-hidden=\"true\"></i></span>\n                            {{labels.review_it}}</a>\n                    </div>\n                </div>\n            </div>\n            <toast/>\n            <div v-if=\" is_rest_api_error \" class=\"toast toast-error rop-api-not-available\" v-html=\"labels.api_not_available\">\n            </div>\n            <div v-if=\" is_fb_domain_notice \" class=\"toast toast-primary\">\n                <button class=\"btn btn-clear float-right\" @click=\"close_fb_domain_notice()\"></button>\n                <div v-html=\"labels.rop_facebook_domain_toast\"></div>\n            </div>\n            <div class=\"sidebar sidebar-top card rop-container-start\">\n                <div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n                    {{labels.now}}: {{ formatedDate }}\n                </div>\n                <countdown :current_time=\"current_time\"/>\n                <button class=\"btn btn-sm\" :class=\"btn_class\"\n                        :data-tooltip=\"labels.active_account_warning\"\n                        @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n                    <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n                    <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n                    <i class=\"fa fa-spinner fa-spin\" v-else></i>\n                    {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n                </button>\n            </div>\n        </div>\n\n        <div class=\"columns\">\n            <div class=\"panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\n                <div class=\"panel-nav\" style=\"padding: 8px;\">\n                    <ul class=\"tab \">\n                        <li class=\"tab-item c-hand\" v-for=\"tab in displayTabs\"\n                            :class=\"{ active: tab.isActive }\" v-bind:id=\"tab.name.replace(' ', '').toLowerCase()\">\n                            <a :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\n                               :data-badge=\"logs_no\"\n                               @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\n                        </li>\n                    </ul>\n                </div>\n                <component :is=\"page.template\" :type=\"page.view\"></component>\n            </div>\n\n            <div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\n                 :class=\"'rop-license-plan-'+license\">\n\n                <div class=\"card rop-container-start\">\n                    <button id=\"rop_start_stop_btn\" class=\"btn\" :class=\"btn_class\"\n                            :data-tooltip=\"labels.active_account_warning\"\n                            @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n                        <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n                        <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n                        <i class=\"fa fa-spinner fa-spin\" v-else></i>\n                        {{labels.click}} {{labels.to}} {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n                    </button>\n\n                    <div class=\"sharing-box\" :class=\"status_color_class\">{{ status_label_display }}</div>\n\n                    <countdown :current_time=\"current_time\"/>\n\n                    <div class=\"toast rop-current-time\" v-if=\"formatedDate && haveAccounts\">\n                        {{labels.now}}: {{ formatedDate }}\n                    </div>\n\n                    <div id=\"staging-status\" v-if=\"staging\">\n                        {{labels.staging_status}}\n                    </div>\n                    <div v-if=\"!haveAccounts\" class=\"rop-spacer\"></div>\n                    <div v-if=\"haveAccounts\">\n                        <upsell-sidebar></upsell-sidebar>\n                    </div>\n                    <a v-if=\"haveAccounts\" href=\"https://trello.com/b/svAZqXO1/roadmap-revive-old-posts\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.rop_roadmap}}</a>\n                    <a v-if=\"haveAccounts\" href=\"https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform\" target=\"_blank\"\n                       class=\"btn rop-sidebar-action-btns\">{{labels.survey}}</a>\n                    <a v-if=\"haveAccounts\"\n                       href=\"https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial\"\n                       target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.tweet_about_it}}</a>\n                </div>\n\n            </div>\n        </div>\n    </div>\n";
+module.exports = "\n    <div>\n        <div class=\"columns panel-header\">\n            <div class=\"column header-logo vertical-align\">\n                <div>\n                    <img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/>\n                    <h1 class=\"plugin-title d-inline-block\">Revive Old Posts</h1><span class=\"powered d-inline-block\"> {{labels.by}} <a\n                        href=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\n                </div>\n            </div>\n            <toast/>\n            <div v-if=\" is_rest_api_error \" class=\"toast toast-error rop-api-not-available\" v-html=\"labels.api_not_available\">\n            </div>\n            <div v-if=\" is_fb_domain_notice \" class=\"toast toast-primary\">\n                <button class=\"btn btn-clear float-right\" @click=\"close_fb_domain_notice()\"></button>\n                <div v-html=\"labels.rop_facebook_domain_toast\"></div>\n            </div>\n            <div class=\"sidebar sidebar-top card rop-container-start\">\n\n              <!-- Next post count down -->\n                <countdown :current_time=\"current_time\"/>\n                <!--  -->\n\n                <button class=\"btn btn-sm\" :class=\"btn_class\"\n                        :data-tooltip=\"labels.active_account_warning\"\n                        @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n                    <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n                    <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n                    <i class=\"fa fa-spinner fa-spin\" v-else></i>\n                    {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n                </button>\n            </div>\n        </div>\n\n        <div class=\"columns\">\n            <div class=\"panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\n                <div class=\"panel-nav\" style=\"padding: 8px;\">\n                    <ul class=\"tab \">\n                        <li class=\"tab-item c-hand\" v-for=\"tab in displayTabs\"\n                            :class=\"{ active: tab.isActive }\" v-bind:id=\"tab.name.replace(' ', '').toLowerCase()\">\n                            <a :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\n                               :data-badge=\"logs_no\"\n                               @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\n                        </li>\n                    </ul>\n                </div>\n                <component :is=\"page.template\" :type=\"page.view\"></component>\n            </div>\n\n            <div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\n                 :class=\"'rop-license-plan-'+license\">\n\n                <div class=\"card rop-container-start\">\n                    <button id=\"rop_start_stop_btn\" class=\"btn\" :class=\"btn_class\"\n                            :data-tooltip=\"labels.active_account_warning\"\n                            @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n                        <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n                        <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n                        <i class=\"fa fa-spinner fa-spin\" v-else></i>\n                        {{labels.click}} {{labels.to}} {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n                    </button>\n\n                    <div class=\"sharing-box\" :class=\"status_color_class\">{{ status_label_display }}</div>\n\n                    <countdown :current_time=\"current_time\"/>\n\n                    <div id=\"staging-status\" v-if=\"staging\">\n                        {{labels.staging_status}}\n                    </div>\n                    <div v-if=\"!haveAccounts\" class=\"rop-spacer\"></div>\n                    <div v-if=\"haveAccounts\">\n                        <upsell-sidebar></upsell-sidebar>\n                    </div>\n                    <a v-if=\"license  >= 1\" href=\"https://revive.social/pro-support/\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.rop_support}}</a>\n                    <a v-if=\"license  < 1\" href=\"https://revive.social/support/\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.rop_support}}</a>\n                    <a v-if=\"haveAccounts\" href=\"https://docs.revive.social/\" target=\"_blank\"\n                       class=\"btn rop-sidebar-action-btns\">{{labels.rop_docs}}</a>\n                    <a v-if=\"haveAccounts\"\n                       href=\"https://wordpress.org/support/plugin/tweet-old-post/reviews/?rate=5#new-post\"\n                       target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.review_it}}</a>\n                </div>\n\n            </div>\n        </div>\n    </div>\n";
 
 /***/ })
 /******/ ]);
