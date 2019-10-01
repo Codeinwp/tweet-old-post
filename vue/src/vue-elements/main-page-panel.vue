@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="columns panel-header">
-            <div class="column header-logo vertical-align">
+            <div class="column header-logo vertical-align" v-if="is_preloading_over > 0">
                 <div>
                     <img :src="plugin_logo" class="plugin-logo avatar avatar-lg"/>
                     <h1 class="plugin-title d-inline-block">Revive Old Posts</h1><span class="powered d-inline-block"> {{labels.by}} <a
@@ -41,8 +41,8 @@
         </div>
 
         <div class="columns">
-            <div class="panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                <div class="panel-nav" style="padding: 8px;">
+            <div class="panel column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                <div class="panel-nav" style="padding: 8px;" v-if="is_preloading_over > 0">
                     <ul class="tab ">
                         <li class="tab-item c-hand" v-for="tab in displayTabs"
                             :class="{ active: tab.isActive }" v-bind:id="tab.name.replace(' ', '').toLowerCase()">
@@ -56,7 +56,7 @@
             </div>
 
             <div class="sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12"
-                 :class="'rop-license-plan-'+license">
+                 :class="'rop-license-plan-'+license" v-if="is_preloading_over > 0">
 
                 <div class="card rop-container-start">
                     <div class="toast rop-current-time" v-if="formatedDate && haveAccounts">
@@ -103,6 +103,9 @@
     module.exports = {
         name: 'main-page-panel',
         computed: {
+            is_preloading_over: function(){
+                return this.$store.state.hide_preloading;
+            },
             /**
              * Display the clicked tab.
              *
@@ -201,6 +204,7 @@
             this.get_toast_message(false);
         },
         created() {
+
         },
         data: function () {
             return {

@@ -92,7 +92,7 @@ export default new Vuex.Store({
         activeSchedule: [],
         queue: {},
         publish_now: ropApiSettings.publish_now,
-        hide_preloading : 0
+        hide_preloading: 0
     },
     mutations: {
 
@@ -112,6 +112,9 @@ export default new Vuex.Store({
         },
         apiNotAvailable(state, data) {
             state.api_not_available = data
+        },
+        preloading_change(state, data) {
+            state.hide_preloading = data;
         },
         updateState(state, {stateData, requestName}) {
             Vue.$log.debug('State change for ', requestName);
@@ -292,6 +295,11 @@ export default new Vuex.Store({
                         commit('apiNotAvailable', true);
 
                         Vue.$log.error('Error when trying to do request: ', data.req);
+                    }).catch(error => {
+                        commit('setAjaxState', false);
+                        commit('apiNotAvailable', true);
+                        commit('preloading_change', 1);
+                        Vue.$log.error('Error when getting response for: ', data.req, error);
                     })
                 })
             }
