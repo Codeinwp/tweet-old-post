@@ -852,6 +852,7 @@ class Rop_Post_Format_Helper {
 				if ( is_numeric( $image_id ) ) {
 					$image = wp_get_attachment_url( absint( $image_id ) );
 					if ( false !== $image ) {
+						$this->sequential_index = null;
 						return $image;
 					}
 				}
