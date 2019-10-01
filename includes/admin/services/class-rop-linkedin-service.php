@@ -43,7 +43,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @access  protected
 	 * @var     array $scopes The scopes to authorize with LinkedIn.
 	 */
-	protected $scopes = array( 'r_liteprofile', 'r_emailaddress', 'w_member_social');
+	protected $scopes = array( 'r_liteprofile', 'r_emailaddress', 'w_member_social' );
 	// Company(organization) sharing scope cannot be used unless app approved for this scope.
 	// Added here for future reference
 	// https://stackoverflow.com/questions/54821731/in-linkedin-api-v2-0-how-to-get-company-list-by-persons-token
@@ -101,12 +101,20 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		$credentials = $_SESSION['rop_linkedin_credentials'];
 
-		$api         = $this->get_api( $credentials['client_id'], $credentials['secret'] );
-		$accessToken = $api->getAccessToken( $_GET['code'] );
+		$api = $this->get_api( $credentials['client_id'], $credentials['secret'] );
+		try {
+			$accessToken = $api->getAccessToken( $_GET['code'] );
 
-		$_SESSION['rop_linkedin_token'] = $accessToken->getToken();
+			$_SESSION['rop_linkedin_token'] = $accessToken->getToken();
 
-		parent::authorize();
+			parent::authorize();
+
+		} catch ( GuzzleHttp\Exception\ConnectException $e ) {
+			$this->error->throw_exception( '400 Bad Request', 'Linkedin API returned an error: ' . $e->getMessage() );
+		} catch ( Exception $e ) {
+			$this->error->throw_exception( '400 Bad Request', 'Linkedin API returned an error X: ' . $e->getMessage() );
+		}
+		return false;
 		// echo '<script>window.setTimeout("window.close()", 500);</script>';
 	}
 
@@ -287,14 +295,14 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		$email = $email_array['elements']['0']['handle~']['emailAddress'];
 
-		$img = $data['profilePicture']['displayImage~']['elements']['0']['identifiers']['0']['identifier'];
-		$user_details            = $this->user_default;
+		$img          = $data['profilePicture']['displayImage~']['elements']['0']['identifiers']['0']['identifier'];
+		$user_details = $this->user_default;
 
 		$fname_array = array_values( $data['firstName']['localized'] );
-		$firstname = $fname_array[0];
+		$firstname   = $fname_array[0];
 
 		$lname_array = array_values( $data['lastName']['localized'] );
-		$lastname = $lname_array[0];
+		$lastname    = $lname_array[0];
 
 		$user_details['id']      = $this->strip_underscore( $data['id'] );
 		$user_details['account'] = $email;
@@ -303,37 +311,37 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		$users = array( $user_details );
 
-			/*
-		We're not requesting the w_organization_social scope so code below wouldn't be used.
-		See scope property at the top of file for more details.
+		/*
+	We're not requesting the w_organization_social scope so code below wouldn't be used.
+	See scope property at the top of file for more details.
 
-		try {
-			$companies = $this->api->api(
-				'organizationalEntityAcls?q=roleAssignee&role=ADMINISTRATOR&projection=(elements*(organizationalTarget~(localizedName,vanityName,logoV2)))',
-				array(),
-				'GET'
-			);
-		} catch ( Exception $e ) {
-			return $users;
-		}
-		if ( empty( $companies ) ) {
-			return $users;
-		}
-		if ( empty( $companies['elements'] ) ) {
-			return $users;
-		}
-		foreach ( $companies['elements'] as $company ) {
-			$users[] = wp_parse_args(
-				array(
-					'id'         => $this->strip_underscore( $company['id'] ),
-					'account'    => $company['localizedName'],
-					'is_company' => true,
-					'user'       => $company['localizedName'],
-				),
-				$this->user_default
-			);
-		}
-		*/
+	try {
+		$companies = $this->api->api(
+			'organizationalEntityAcls?q=roleAssignee&role=ADMINISTRATOR&projection=(elements*(organizationalTarget~(localizedName,vanityName,logoV2)))',
+			array(),
+			'GET'
+		);
+	} catch ( Exception $e ) {
+		return $users;
+	}
+	if ( empty( $companies ) ) {
+		return $users;
+	}
+	if ( empty( $companies['elements'] ) ) {
+		return $users;
+	}
+	foreach ( $companies['elements'] as $company ) {
+		$users[] = wp_parse_args(
+			array(
+				'id'         => $this->strip_underscore( $company['id'] ),
+				'account'    => $company['localizedName'],
+				'is_company' => true,
+				'user'       => $company['localizedName'],
+			),
+			$this->user_default
+		);
+	}
+	*/
 
 		return $users;
 	}
@@ -401,6 +409,11 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			session_start();
 		}
 		// @codeCoverageIgnoreEnd
+		try{
+
+		}catch ( Exception $e ) {
+			$this->error->throw_exception( '400 Bad Request', 'TEST: ' . $e->getMessage() );
+		}
 		$_SESSION['rop_linkedin_credentials'] = $credentials;
 		$this->set_api( $credentials['client_id'], $credentials['secret'] );
 		$api = $this->get_api();
@@ -484,40 +497,40 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 */
 	private function linkedin_article_post( $post_details, $args ) {
 
-		$new_post = array (
-			'author' => 'urn:li:person:' . $args['id'],
-			'lifecycleState' => 'PUBLISHED',
+		$new_post = array(
+			'author'          => 'urn:li:person:' . $args['id'],
+			'lifecycleState'  => 'PUBLISHED',
 			'specificContent' =>
-			array (
-				'com.linkedin.ugc.ShareContent' =>
-				array (
-					'shareCommentary' =>
-					array (
-						'text' => $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $post_details['hashtags'],
-					),
-					'shareMediaCategory' => 'ARTICLE',
-					'media' =>
-					array (
-						0 =>
-						array (
-							'status' => 'READY',
-							'description' =>
-							array (
-								'text' => $this->strip_excess_blank_lines( $post_details['content'] ),
-							),
-							'originalUrl' => trim( $this->get_url( $post_details ) ),
-							'title' =>
-							array (
-								'text' => html_entity_decode( get_the_title( $post_details['post_id'] ) ),
-							),
+				array(
+					'com.linkedin.ugc.ShareContent' =>
+						array(
+							'shareCommentary'    =>
+								array(
+									'text' => $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $post_details['hashtags'],
+								),
+							'shareMediaCategory' => 'ARTICLE',
+							'media'              =>
+								array(
+									0 =>
+										array(
+											'status'      => 'READY',
+											'description' =>
+												array(
+													'text' => $this->strip_excess_blank_lines( $post_details['content'] ),
+												),
+											'originalUrl' => trim( $this->get_url( $post_details ) ),
+											'title'       =>
+												array(
+													'text' => html_entity_decode( get_the_title( $post_details['post_id'] ) ),
+												),
+										),
+								),
 						),
-					),
 				),
-			),
-			'visibility' =>
-			array (
-				'com.linkedin.ugc.MemberNetworkVisibility' => 'PUBLIC',
-			),
+			'visibility'      =>
+				array(
+					'com.linkedin.ugc.MemberNetworkVisibility' => 'PUBLIC',
+				),
 		);
 
 		return $new_post;
@@ -530,36 +543,36 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @since   8.2.3
 	 * @access  private
 	 *
-	 * @param   array  $post_details The post details to be published by the service.
-	 * @param   array  $args Arguments needed by the method.
+	 * @param   array $post_details The post details to be published by the service.
+	 * @param   array $args Arguments needed by the method.
 	 * @param   string $token The user token.
 	 *
 	 * @return array
 	 */
 	private function linkedin_image_post( $post_details, $args, $token, $api ) {
 
-		$register_image = array (
+		$register_image = array(
 			'registerUploadRequest' =>
-			array (
-				'recipes' =>
-				array (
-					0 => 'urn:li:digitalmediaRecipe:feedshare-image',
+				array(
+					'recipes'              =>
+						array(
+							0 => 'urn:li:digitalmediaRecipe:feedshare-image',
+						),
+					'owner'                => 'urn:li:person:' . $args['id'],
+					'serviceRelationships' =>
+						array(
+							0 =>
+								array(
+									'relationshipType' => 'OWNER',
+									'identifier'       => 'urn:li:userGeneratedContent',
+								),
+						),
 				),
-				'owner' => 'urn:li:person:' . $args['id'],
-				'serviceRelationships' =>
-				array (
-					0 =>
-					array (
-						'relationshipType' => 'OWNER',
-						'identifier' => 'urn:li:userGeneratedContent',
-					),
-				),
-			),
 		);
 
-		$response = $api->post( 'https://api.linkedin.com/v2/assets?action=registerUpload', $register_image );
+		$response   = $api->post( 'https://api.linkedin.com/v2/assets?action=registerUpload', $register_image );
 		$upload_url = $response['value']['uploadMechanism']['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest']['uploadUrl'];
-		$asset = $response['value']['asset'];
+		$asset      = $response['value']['asset'];
 
 		// If this is an attachment post we need to make sure we pass the URL to get_path_by_url() correctly
 		if ( get_post_type( $post_details['post_id'] ) === 'attachment' ) {
@@ -570,62 +583,62 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		$img_mime_type = image_type_to_mime_type( exif_imagetype( $img ) );
 
-		$img_data = file_get_contents( $img );
+		$img_data   = file_get_contents( $img );
 		$img_length = strlen( $img_data );
 
 		$wp_img_put = wp_remote_request(
 			$upload_url,
 			array(
-				'method' => 'PUT',
+				'method'  => 'PUT',
 				'headers' => array( 'Authorization' => 'Bearer ' . $token, 'Content-type' => $img_mime_type, 'Content-Length' => $img_length ),
-				'body' => $img_data,
+				'body'    => $img_data,
 			)
 		);
 
 		if ( ! empty( $wp_img_put['body'] ) ) {
-			$response_code = $wp_img_put['response']['code'];
+			$response_code    = $wp_img_put['response']['code'];
 			$response_message = $wp_img_put['response']['message'];
 			$this->logger->alert_error( 'Cannot share to linkedin. Error:  ' . $response_code . ' ' . $response_message );
 			exit( 1 );
 		}
 
-		  $new_post = array (
-			  'author' => 'urn:li:person:' . $args['id'],
-			  'lifecycleState' => 'PUBLISHED',
-			  'specificContent' =>
-			  array (
-				  'com.linkedin.ugc.ShareContent' =>
-				  array (
-					  'shareCommentary' =>
-					  array (
-						  'text' => $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $post_details['hashtags'],
-					  ),
-					  'shareMediaCategory' => 'IMAGE',
-					  'media' =>
-					  array (
-						  0 =>
-						  array (
-							  'status' => 'READY',
-							  'description' =>
-							  array (
-								  'text' => html_entity_decode( get_the_title( $post_details['post_id'] ) ),
-							  ),
-							  'media' => $asset,
-							  'title' =>
-							  array (
-								  'text' => html_entity_decode( get_the_title( $post_details['post_id'] ) ),
-							  ),
-						  ),
-					  ),
-				  ),
-			  ),
-			  'visibility' =>
-			  array (
-				  'com.linkedin.ugc.MemberNetworkVisibility' => 'PUBLIC',
-			  ),
-		  );
+		$new_post = array(
+			'author'          => 'urn:li:person:' . $args['id'],
+			'lifecycleState'  => 'PUBLISHED',
+			'specificContent' =>
+				array(
+					'com.linkedin.ugc.ShareContent' =>
+						array(
+							'shareCommentary'    =>
+								array(
+									'text' => $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $post_details['hashtags'],
+								),
+							'shareMediaCategory' => 'IMAGE',
+							'media'              =>
+								array(
+									0 =>
+										array(
+											'status'      => 'READY',
+											'description' =>
+												array(
+													'text' => html_entity_decode( get_the_title( $post_details['post_id'] ) ),
+												),
+											'media'       => $asset,
+											'title'       =>
+												array(
+													'text' => html_entity_decode( get_the_title( $post_details['post_id'] ) ),
+												),
+										),
+								),
+						),
+				),
+			'visibility'      =>
+				array(
+					'com.linkedin.ugc.MemberNetworkVisibility' => 'PUBLIC',
+				),
+		);
 
-		  return $new_post;
+		return $new_post;
 	}
 
 }
