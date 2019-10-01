@@ -16,10 +16,11 @@
                 <div v-html="labels.rop_facebook_domain_toast"></div>
             </div>
             <div class="sidebar sidebar-top card rop-container-start">
-                <div class="toast rop-current-time" v-if="formatedDate">
-                    {{labels.now}}: {{ formatedDate }}
-                </div>
+
+              <!-- Next post count down -->
                 <countdown :current_time="current_time"/>
+                <!--  -->
+
                 <button class="btn btn-sm" :class="btn_class"
                         :data-tooltip="labels.active_account_warning"
                         @click="togglePosting()" :disabled="!haveAccountsActive">
@@ -208,16 +209,6 @@
              */
             generalSettings: function () {
                 return this.$store.state.generalSettings
-            },
-            /**
-             * Get general settings.
-             * @returns {module.exports.computed.generalSettings|Array|*}
-             */
-            formatedDate: function () {
-                if (typeof this.date_format === 'undefined') {
-                    return '';
-                }
-                return moment.utc(this.current_time, 'X').format(this.date_format.replace('mm', 'mm:ss'));
             },
         },
         mounted: function () {

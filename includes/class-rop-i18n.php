@@ -250,6 +250,7 @@ class Rop_I18n {
 			),
 			'schedule'    => array(
 				'menu_item'                 => __( 'Custom Schedule', 'tweet-old-post' ),
+				'time_now'                    		=> __( 'Time now', 'tweet-old-post' ),
 				'schedule_type_title'       => __( 'Schedule Type', 'tweet-old-post' ),
 				'schedule_type_desc'        => __( 'What type of schedule to use.', 'tweet-old-post' ),
 				'schedule_type_option_fix'  => __( 'Fixed', 'tweet-old-post' ),
@@ -306,7 +307,6 @@ class Rop_I18n {
 				'by'                     => __( 'by', 'tweet-old-post' ),
 				'review_it'              => __( 'Leave a review', 'tweet-old-post' ),
 				'in'                     => __( 'in', 'tweet-old-post' ),
-				'now'                    => __( 'Now', 'tweet-old-post' ),
 				'start'                  => __( 'Start', 'tweet-old-post' ),
 				'stop'                   => __( 'Stop', 'tweet-old-post' ),
 				'sharing'                => __( 'Sharing', 'tweet-old-post' ),
