@@ -4321,6 +4321,7 @@ a.active {
 #rop_core .toast.rop-next-share-time{
   background: #8bc34a;
   border: none;
+  margin-bottom: 0;
 }
 
 .sharing-box{

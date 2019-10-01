@@ -250,7 +250,7 @@ class Rop_I18n {
 			),
 			'schedule'    => array(
 				'menu_item'                 => __( 'Custom Schedule', 'tweet-old-post' ),
-				'time_now'                    		=> __( 'Time now', 'tweet-old-post' ),
+				'time_now'                          => __( 'Time now', 'tweet-old-post' ),
 				'schedule_type_title'       => __( 'Schedule Type', 'tweet-old-post' ),
 				'schedule_type_desc'        => __( 'What type of schedule to use.', 'tweet-old-post' ),
 				'schedule_type_option_fix'  => __( 'Fixed', 'tweet-old-post' ),
