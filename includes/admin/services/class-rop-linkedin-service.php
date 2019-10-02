@@ -99,22 +99,22 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		$credentials = $_SESSION['rop_linkedin_credentials'];
-
-		$api = $this->get_api( $credentials['client_id'], $credentials['secret'] );
 		try {
+			$credentials = $_SESSION['rop_linkedin_credentials'];
+
+			$api         = $this->get_api( $credentials['client_id'], $credentials['secret'] );
 			$accessToken = $api->getAccessToken( $_GET['code'] );
 
 			$_SESSION['rop_linkedin_token'] = $accessToken->getToken();
 
 			parent::authorize();
-
-		} catch ( GuzzleHttp\Exception\ConnectException $e ) {
-			$this->error->throw_exception( '400 Bad Request', 'Linkedin API returned an error: ' . $e->getMessage() );
 		} catch ( Exception $e ) {
-			$this->error->throw_exception( '400 Bad Request', 'Linkedin API returned an error X: ' . $e->getMessage() );
+			$message = 'Linkedin Error: Code[ ' . $e->getCode() . ' ] ' . $e->getDescription();
+			$this->logger->alert_error( $message );
+
+			exit( wp_redirect( $this->get_legacy_url() ) );
 		}
-		return false;
+
 		// echo '<script>window.setTimeout("window.close()", 500);</script>';
 	}
 
@@ -409,11 +409,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			session_start();
 		}
 		// @codeCoverageIgnoreEnd
-		try{
-
-		}catch ( Exception $e ) {
-			$this->error->throw_exception( '400 Bad Request', 'TEST: ' . $e->getMessage() );
-		}
 		$_SESSION['rop_linkedin_credentials'] = $credentials;
 		$this->set_api( $credentials['client_id'], $credentials['secret'] );
 		$api = $this->get_api();
