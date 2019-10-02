@@ -109,10 +109,17 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 			parent::authorize();
 		} catch ( Exception $e ) {
+
 			$message = 'Linkedin Error: Code[ ' . $e->getCode() . ' ] ' . $e->getDescription();
 			$this->logger->alert_error( $message );
-
-			exit( wp_redirect( $this->get_legacy_url() ) );
+			$referrer = $_SERVER['HTTP_REFERER'];
+			// If the user is trying to authenticate.
+			if ( ! empty( substr_count( $referrer, 'linkedin.com' ) ) ) {
+				exit( wp_redirect( $this->get_legacy_url() ) );
+			} else {
+				// If the function is used by the Cron and this error occurs.
+				$this->error->throw_exception( 'Error ' . $e->getCode(), $message );
+			}
 		}
 
 		// echo '<script>window.setTimeout("window.close()", 500);</script>';
