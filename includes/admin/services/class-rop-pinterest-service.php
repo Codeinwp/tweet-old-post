@@ -84,7 +84,15 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 			session_start();
 		}
 
-		$this->request_api_token();
+		try {
+			$this->request_api_token();
+		} catch ( Exception $e ) {
+			echo '<pre>';
+			print_r($e);
+			echo '</pre>';
+			die();
+			$this->error->throw_exception( '400 Bad Request', 'TEST: ' . $e->getMessage() );
+		}
 
 		parent::authorize();
 		// echo '<script>window.setTimeout("window.close()", 500);</script>';
@@ -285,7 +293,7 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 			)
 		);
 
-		$search = array( ' ', '.', ',', '/', '!', '@', '&', '#', '%', '*', '(', ')', '{', '}', '[', ']', '|', '\\', '$' );
+		$search  = array( ' ', '.', ',', '/', '!', '@', '&', '#', '%', '*', '(', ')', '{', '}', '[', ']', '|', '\\', '$' );
 		$replace = array( '-', '' );
 
 		foreach ( $boards as $board ) {
@@ -386,7 +394,7 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 				'note'      => $this->strip_excess_blank_lines( $post_details['content'] ) . $post_details['hashtags'],
 				'image_url' => $post_details['post_image'],
 				'board'     => $args['id'],
-				'link'     => $post_details['post_url'],
+				'link'      => $post_details['post_url'],
 			)
 		);
 
