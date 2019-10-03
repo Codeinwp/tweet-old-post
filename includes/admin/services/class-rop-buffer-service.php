@@ -282,7 +282,7 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 
 		$_SESSION['rop_buffer_credentials'] = $data['credentials']['access_token'];
 
-		$url = get_site_url() . '/wp-admin/admin.php?page=TweetOldPost&state=buffer&network=buffer';
+		$url = get_admin_url( get_current_blog_id(), 'admin.php?page=TweetOldPost&state=buffer&network=buffer' );
 
 		return $url;
 	}

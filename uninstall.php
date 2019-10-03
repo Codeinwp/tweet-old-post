@@ -54,6 +54,15 @@ if ( isset( $housekeeping ) && $housekeeping ) {
 		'rop_facebook_via_rs_app',
 		'rop_twitter_via_rs_app',
 		'rop_first_install_version',
+		/**
+		 * Related functions
+		 *
+		 * @see Rop_Services_Model::facebook_exception_toast()
+		 * @see Rop_Services_Model::facebook_exception_toast_remove()
+		 * @see Rop_Admin::facebook_exception_toast_display()
+		 * @see Rop_Rest_Api::fb_exception_toast()
+		 */
+		'rop_facebook_domain_toast',
 	);
 
 	foreach ( $option_keys as $key ) {
