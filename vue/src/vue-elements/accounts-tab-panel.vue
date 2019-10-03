@@ -14,7 +14,6 @@
                             </div>
                             <p class="empty-title h5">{{labels.no_accounts}}</p>
                             <p class="empty-subtitle">{{labels.no_accounts_desc}}</p>
-                            <p class="empty-subtitle"><span v-html="labels.no_accounts_pro_upsell"></span></p>
                         </div>
                         <div class="account-container" v-for="( account, id ) in accounts" v-if="is_preloading > 0">
                             <service-user-tile :account_data="account" :account_id="id"></service-user-tile>
@@ -40,10 +39,10 @@
                         </p>
                     </div>
                 </div>
-                <div class="columns" v-if="accountsCount < 1">
+                <div class="columns" v-if="checkLicense && !pro_installed">
                     <div class="column col-12">
                         <p><i class="fa fa-info-circle"></i> <span
-                                v-html="labels.has_accounts_desc"></span></p>
+                                v-html="labels.lite_pro_table_upsell"></span></p>
                     </div>
                 </div>
                 <div class="column col-12 text-right">
