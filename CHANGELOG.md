@@ -1,4 +1,46 @@
 
+ ### v8.4.4 - 2019-10-03 
+ **Changes:** 
+ * New: Label to show sharing status.
+* Change: Removed some UI buttons and made UX improvements to dashboard.
+* Change: Send posts to Facebook as text posts if users have not verified their domain with Facebook; inform users on how to go about the process. .
+ 
+ ### v8.4.3 - 2019-09-12 
+ **Changes:** 
+ * New: Toast message will now show on ROP dashboard when an error is present in the log.
+* New: Added a check to detect when ROP cron event is not firing.
+* Fix: Switching from queue tab to another tab would refresh queue order.
+* Fix: Linkedin 411 length required error.
+* Fix: Users would be redirected to Tumblr homepage if credentials were wrong. An error will now be displayed.
+* Fix: Pressing Twitter account button after deleting a Twitter account from ROP would refresh the page.
+* Change: Edited "no accounts" text area with more details to help users get started.
+* Change: Moved Support & Documentation buttons to top section of ROP dashboard.
+* Change: Set rviv.ly back as default shortener.
+* Change: Delete icon will now show whenever an account is deactivated
+ 
+ ### v8.4.2 - 2019-08-23 
+ **Changes:** 
+ * PRO Fix: Unauthorized error when updating Pro plugin 
+* Fix: Error would occur if the user tried to sign in while the API credentials form fields were empty
+* Fix: Timer was not stopped if all accounts were removed using "remove all accounts" button
+* Fix: Removing an account and then immediately trying to add it back would attempt to validate with old API credentials
+ 
+ ### v8.4.1 - 2019-08-19 
+ **Changes:** 
+ * Fix: Use own keys button was appearing in Twitter modal for old installs
+ 
+ ### v8.4.0 - 2019-08-19 
+ **Changes:** 
+ * PRO: Share to Instagram, Facebook Groups, LinkedIn Company Pages via Buffer integration.
+* New: Made it easier to connect Twitter accounts for new users.
+* Fix: Wrong error solution doc link would sometimes be given in Log.
+* Fix: Fixed a bug where the sharing queue would be duplicated when switching tabs.
+* Fix: Sites with Jetpack Photon feature activated would have issues with sharing images to twitter.
+ 
+ ### v8.3.5 - 2019-08-02 
+ **Changes:** 
+ * Change: Made some UX changes to plugin dashboard
+ 
  ### v8.3.4 - 2019-07-21 
  **Changes:** 
  * New: Roadmap & Voting button! See where ROP is headed and vote on or recommend features which matter to you.

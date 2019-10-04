@@ -57,6 +57,13 @@
 			</div>
 		</div>
 
+		<!-- Current time -->
+<div class="column col-6 col-sm-12 vertical-align float-right" v-if="schedule.type === 'fixed'">
+		<div class="toast rop-current-time text-center" v-if="formatedDate">
+				{{labels.time_now}}: {{ formatedDate }}
+		</div>
+</div>
+
 		<div class="columns py-2 rop-control" v-else>
 			<div class="column col-6 col-sm-12 vertical-align">
 				<b>{{labels.schedule_rec_title}}</b>
@@ -83,6 +90,7 @@
 	import ButtonCheckbox from './reusables/button-checkbox.vue'
 	import VueTimepicker from 'vue2-timepicker'
 	import CounterInput from './reusables/counter-input.vue'
+	import moment from 'moment'
 
 	module.exports = {
 		name: 'account-schedule',
@@ -133,6 +141,28 @@
 					daysObject[day].checked = this.isChecked(daysObject[day].value)
 				}
 				return daysObject
+			},
+			/**
+			 * Get general settings.
+			 * @returns {module.exports.computed.generalSettings|Array|*}
+			 */
+			formatedDate: function () {
+					if (typeof this.date_format === 'undefined') {
+							return '';
+					}
+					return moment.utc(this.current_time, 'X').format(this.date_format.replace('mm', 'mm:ss'));
+			},
+			current_time: {
+					get: function () {
+							return this.$store.state.cron_status.current_time;
+					},
+					set: function (value) {
+							this.$store.state.cron_status.current_time = value;
+					}
+			},
+			date_format: function () {
+
+					return this.$store.state.cron_status.date_format;
 			},
 		},
 		methods: {
