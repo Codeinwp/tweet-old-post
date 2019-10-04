@@ -84,36 +84,72 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 			session_start();
 		}
 
-		try {
-			$this->request_api_token();
-		} catch ( Exception $e ) {
-			echo '<pre>';
-			print_r($e);
-			echo '</pre>';
-			die();
-			$this->error->throw_exception( '400 Bad Request', 'TEST: ' . $e->getMessage() );
+		error_log( '###' . __FUNCTION__ . ' SESSION ' . wp_json_encode( $_SESSION ) );
+
+		if ( ! $this->is_set_not_empty(
+			$_SESSION,
+			array(
+				'rop_pinterest_credentials',
+			)
+		) ) {
+			return false;
 		}
 
-		parent::authorize();
+		try {
+			$this->request_api_token();
+			parent::authorize();
+		} catch ( Exception $e ) {
+			error_log( '###' . __FUNCTION__ . ' Exception ' . wp_json_encode( $e ) );
+			$message = 'Pinterest Error: Code[ ' . $e->getCode() . ' ] ' . $e->getMessage();
+			$this->logger->alert_error( $message );
+			#$referrer = ( isset( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : '' );
+			#error_log( '###' . __FUNCTION__ . ' $referrer ' . $referrer );
+			// If the user is trying to authenticate.
+			#if ( ! empty( substr_count( $referrer, 'pinterest.com' ) ) ) {
+			exit( wp_redirect( $this->get_legacy_url() ) );
+			#} else {
+			// If the function is used by the Cron and this error occurs.
+			#$this->error->throw_exception( 'Error ' . $e->getCode(), $message );
+			#}
+		}
 		// echo '<script>window.setTimeout("window.close()", 500);</script>';
 	}
 
 	/**
 	 * Method to request a token from api.
 	 *
-	 * @codeCoverageIgnore
-	 *
 	 * @since   8.0.0
 	 * @access  protected
-	 * @return mixed
+	 *
+	 * @return mixed|void
+	 * @throws Exception
 	 */
 	public function request_api_token() {
+		if ( ! session_id() ) {
+			session_start();
+		}
 		$credentials = $_SESSION['rop_pinterest_credentials'];
-
+		error_log( '###' . __FUNCTION__ . ' SESSION ' . wp_json_encode( $credentials ) );
 		$api = $this->get_api( $credentials['app_id'], $credentials['secret'] );
 
 		if ( isset( $_GET['code'] ) ) {
-			$token = $api->auth->getOAuthToken( $_GET['code'] );
+			error_log( '###' . __FUNCTION__ . ' GET code ' . wp_json_encode( $_GET['code'] ) );
+			$token = $api->auth->getOAuthToken( trim($_GET['code']) );
+			echo '<pre>';
+			print_r($api);
+			echo '<hr>';
+			print_r($token);
+			echo '<hr>';
+			print_r($token->access_token);
+			echo '</pre>';
+
+			if(!isset($token->access_token)){
+				throw new Exception($this->display_name. ' could not get Oauth Token');
+			}
+			die();
+			#error_log( '###' . __FUNCTION__ . ' getRateLimit ' . wp_json_encode( $api->getRateLimit() ) );
+			#error_log( '###' . __FUNCTION__ . ' getRateLimitRemaining ' . wp_json_encode( $api->getRateLimitRemaining()() ) );
+			error_log( '###' . __FUNCTION__ . ' $token ' . wp_json_encode( $token ) );
 			$api->auth->setOAuthToken( $token->access_token );
 			$_SESSION['rop_pinterest_token'] = $token->access_token;
 		}
@@ -128,7 +164,7 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	 * @param   string $app_id The Pinterest APP ID. Default empty.
 	 * @param   string $secret The Pinterest APP Secret. Default empty.
 	 *
-	 * @return \Facebook\Facebook
+	 * @return \DirkGroenen\Pinterest\Pinterest
 	 */
 	public function get_api( $app_id = '', $secret = '' ) {
 		if ( $this->api == null ) {
@@ -150,12 +186,15 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function set_api( $app_id = '', $secret = '' ) {
+		error_log( '###' . __FUNCTION__ . ' $app_id/$secret ' . $app_id . '/' . $secret );
 		try {
 			if ( empty( $app_id ) || empty( $secret ) ) {
 				return false;
 			}
 
 			$this->api = new DirkGroenen\Pinterest\Pinterest( $this->strip_whitespace( $app_id ), $this->strip_whitespace( $secret ) );
+			error_log( '###' . __FUNCTION__ . ' ->api ' . wp_json_encode( $this->api ) );
+			error_log( '###' . __FUNCTION__ . ' ->strip_whitespace ' . $this->strip_whitespace( $app_id ) . ' / ' . $this->strip_whitespace( $secret ) );
 		} catch ( Exception $exception ) {
 			$this->logger->alert_error( 'Can not load Pinterest api. Error: ' . $exception->getMessage() );
 		}
@@ -195,7 +234,7 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 		}
 		$credentials = $_SESSION['rop_pinterest_credentials'];
 		$token       = $_SESSION['rop_pinterest_token'];
-
+		error_log( '###' . __FUNCTION__ . ' $credentials ' . wp_json_encode( $credentials ) );
 		$credentials['token'] = $token;
 		unset( $_SESSION['rop_pinterest_credentials'] );
 		unset( $_SESSION['rop_pinterest_token'] );
@@ -262,6 +301,8 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 			),
 			'available_accounts' => $this->get_boards( $api, $user ),
 		);
+		error_log( '###' . __FUNCTION__ . ' ->service ' . wp_json_encode( $this->service ) );
+		error_log( '###' . __FUNCTION__ . ' ->$api ' . wp_json_encode( $api ) );
 
 		return true;
 
@@ -284,6 +325,8 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	 *
 	 * @param object $api The api object.
 	 * @param object $user The user object.
+	 *
+	 * @return array
 	 */
 	private function get_boards( $api, $user ) {
 		$user_boards = array();
@@ -292,6 +335,7 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 				'fields' => 'name',
 			)
 		);
+		error_log( '###' . __FUNCTION__ . ' ->$boards ' . wp_json_encode( $boards ) );
 
 		$search  = array( ' ', '.', ',', '/', '!', '@', '&', '#', '%', '*', '(', ')', '{', '}', '[', ']', '|', '\\', '$' );
 		$replace = array( '-', '' );
@@ -310,6 +354,10 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 			$board_details['img']     = $img;
 			$board_details['created'] = $this->user_default['created'];
 			$user_boards[]            = $board_details;
+		}
+
+		if ( empty( $user_boards ) ) {
+			$this->logger->alert_error( 'You need to create at least one board in Pinterest to add the account.' );
 		}
 
 		return $user_boards;
@@ -343,9 +391,10 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 		}
 
 		$_SESSION['rop_pinterest_credentials'] = $credentials;
-
+		error_log( '###' . __FUNCTION__ . ' $_SESSION[\'rop_pinterest_credentials\'] ' . wp_json_encode( $_SESSION['rop_pinterest_credentials'] ) );
+		error_log( '###' . __FUNCTION__ . ' $credentials ' . wp_json_encode( $credentials ) );
 		$api = $this->get_api( $credentials['app_id'], $credentials['secret'] );
-		$url = $api->auth->getLoginUrl( $this->get_legacy_url( $this->service_name ), $this->permissions );
+		$url = $api->auth->getLoginUrl( trim( $this->get_legacy_url( $this->service_name ) ), $this->permissions );
 
 		return $url;
 	}
