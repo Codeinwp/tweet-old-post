@@ -419,7 +419,8 @@ class Rop_Admin {
 				}
 			}
 
-			add_action( 'rop_cron_job_publish_now', array( $this, 'rop_cron_job_publish_now' ) );
+			$this->rop_cron_job_publish_now();
+			//add_action( 'rop_cron_job_publish_now', array( $this, 'rop_cron_job_publish_now' ) );
 
 			return rest_ensure_response(
 				array(
