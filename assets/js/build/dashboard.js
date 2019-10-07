@@ -33732,7 +33732,7 @@ module.exports = {
    */
 		getTooltip: function getTooltip(service, network) {
 			if (service !== undefined && service.active === false) {
-				return this.labels.onlyInPro;
+				return this.labels.only_in_pro;
 			}
 			var countAuthServices = 0;
 			for (var authService in this.$store.state.authenticatedServices) {
@@ -33749,7 +33749,7 @@ module.exports = {
 			}
 
 			if (service !== undefined && (service.allowed_accounts <= countAuthServices || service.allowed_accounts <= countActiveAccounts)) {
-				return this.labels.limitReached;
+				return this.labels.limit_reached;
 			}
 			return '';
 		},
