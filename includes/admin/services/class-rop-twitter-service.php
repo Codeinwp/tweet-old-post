@@ -281,6 +281,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 * @return array
 	 */
 	private function get_users( $data = null ) {
+		//assign default values to variable
 		$user = $this->user_default;
 		if ( $data == null ) {
 			$this->set_api( $this->credentials['oauth_token'], $this->credentials['oauth_token_secret'], $this->consumer_key, $this->consumer_secret );

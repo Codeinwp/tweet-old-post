@@ -35301,19 +35301,45 @@ module.exports = {
 			});
 		},
 
+		/**
+   * Add LinkedIn account.
+   *
+   * @param data Data.
+   */
+		addAccountLI: function addAccountLI(data) {
+			var _this4 = this;
+
+			this.$store.dispatch('fetchAJAXPromise', {
+				req: 'add_account_li',
+				updateState: false,
+				data: data
+			}).then(function (response) {
+				window.removeEventListener("message", function (event) {
+					return _this4.getChildWindowMessage(event);
+				});
+				_this4.authPopupWindow.close();
+				window.location.reload();
+			}, function (error) {
+				_this4.is_loading = false;
+				Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+			});
+		},
+
 		getChildWindowMessage: function getChildWindowMessage(event) {
 			if (~event.origin.indexOf(this.appOrigin)) {
 				if ('Twitter' === this.modal.serviceName) {
 					this.addAccountTW(JSON.parse(event.data));
 				} else if ('Facebook' === this.modal.serviceName) {
 					this.addAccountFB(JSON.parse(event.data));
+				} else if ('LinkedIn' === this.modal.serviceName) {
+					this.addAccountLI(JSON.parse(event.data));
 				}
 			} else {
 				return;
 			}
 		},
 		openPopupFB: function openPopupFB() {
-			var _this4 = this;
+			var _this5 = this;
 
 			var loginUrl = this.appOrigin + this.appPathFB + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
 			try {
@@ -35325,11 +35351,11 @@ module.exports = {
 				this.cancelModal();
 			}
 			window.addEventListener("message", function (event) {
-				return _this4.getChildWindowMessage(event);
+				return _this5.getChildWindowMessage(event);
 			});
 		},
 		openPopupTW: function openPopupTW() {
-			var _this5 = this;
+			var _this6 = this;
 
 			// Open the popup specific for Twitter
 			var loginUrl = this.appOrigin + this.appPathTW + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
@@ -35342,11 +35368,11 @@ module.exports = {
 				this.cancelModal();
 			}
 			window.addEventListener("message", function (event) {
-				return _this5.getChildWindowMessage(event);
+				return _this6.getChildWindowMessage(event);
 			});
 		},
 		openPopupLI: function openPopupLI() {
-			var _this6 = this;
+			var _this7 = this;
 
 			// Open the popup specific for LinkedIn
 			var loginUrl = this.appOrigin + this.appPathLI + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
@@ -35359,7 +35385,7 @@ module.exports = {
 				this.cancelModal();
 			}
 			window.addEventListener("message", function (event) {
-				return _this6.getChildWindowMessage(event);
+				return _this7.getChildWindowMessage(event);
 			});
 		}
 	},
