@@ -24,6 +24,11 @@ class Rop_Cron_Helper {
 	const CRON_NAMESPACE = 'rop_cron_job';
 
 	/**
+	 * Cron action name.
+	 */
+	const CRON_NAMESPACE_ONCE = 'rop_cron_job_once';
+
+	/**
 	 * Cron action name for sharing specific post(s).
 	 */
 	const CRON_NAMESPACE_PUBLISH_NOW = 'rop_cron_job_publish_now';
@@ -103,7 +108,7 @@ class Rop_Cron_Helper {
 				$this->fresh_start();
 				$settings = new Rop_Global_Settings();
 				$settings->update_start_time();
-				wp_schedule_single_event( time() + 30, self::CRON_NAMESPACE . '2' );
+				wp_schedule_single_event( time() + 30, self::CRON_NAMESPACE );
 			}
 			wp_schedule_event( time(), '5min', self::CRON_NAMESPACE );
 		}
@@ -119,27 +124,79 @@ class Rop_Cron_Helper {
 	 * @return bool
 	 */
 	public function remove_cron() {
-		$timestamp        = wp_next_scheduled( self::CRON_NAMESPACE );
-		$timestamp_single = wp_next_scheduled( self::CRON_NAMESPACE . '2' );
 
-		if ( ! empty( $timestamp ) ) {
+		$current_cron_list = _get_cron_array();
+		$rop_cron_key      = self::get_schedule_key( array( self::CRON_NAMESPACE ) );
+		echo '<pre>';
+		print_r($rop_cron_key);
+		echo '</pre>';
+		die();
+		if ( ! empty( $rop_cron_key ) ) {
+			foreach ( $rop_cron_key as $rop_active_cron ) {
 
-			$crons = _get_cron_array();
-			if ( isset( $crons[ $timestamp ][ self::CRON_NAMESPACE ][ '40cd750bba9870f18aada2478b24840a' ] ) ) {
-				$args = $crons[ $timestamp ][ self::CRON_NAMESPACE ][ '40cd750bba9870f18aada2478b24840a' ]['args'];
-				wp_unschedule_event( $timestamp, self::CRON_NAMESPACE, $args );
+				$cron_time      = (int) $rop_active_cron['time'];
+				$cron_key       = $rop_active_cron['key'];
+				$cron_namespace = $rop_active_cron['key'];
+
+				if ( isset( $current_cron_list[ $cron_time ][ $cron_namespace ][ $cron_key ] ) ) {
+					$args = $current_cron_list[ $cron_time ][ $cron_namespace ][ $cron_key ]['args'];
+					wp_unschedule_event( $cron_time, $cron_namespace, $args );
+				}
 			}
-
-			if ( isset( $crons[ $timestamp_single ][ self::CRON_NAMESPACE. '2' ][ '40cd750bba9870f18aada2478b24840a' ] ) ) {
-				$args = $crons[ $timestamp_single ][ self::CRON_NAMESPACE. '2' ][ '40cd750bba9870f18aada2478b24840a' ]['args'];
-				wp_unschedule_event( $timestamp_single, self::CRON_NAMESPACE. '2', $args );
-			}
-
-			wp_clear_scheduled_hook( self::CRON_NAMESPACE );
-			wp_clear_scheduled_hook( self::CRON_NAMESPACE . '2' );
+			#wp_clear_scheduled_hook( self::CRON_NAMESPACE );
+			#wp_clear_scheduled_hook( self::CRON_NAMESPACE_ONCE );
 		}
 
+
 		$this->fresh_start();
+
+		return false;
+	}
+
+	/**
+	 * Will return the cron MD5 key used to unschedule cron event
+	 * @see wp_unschedule_event()
+	 * @see _get_cron_array()
+	 *
+	 * @since 8.5.0
+	 *
+	 * @param string|array $namespace array for multiple cron data
+	 *
+	 * @return array|bool
+	 */
+	public static function get_schedule_key( $namespace ) {
+		if ( empty( $namespace ) ) {
+			return false;
+		}
+
+		if ( is_array( $namespace ) ) {
+			$namespace = array_map( 'strtolower', $namespace );
+		}
+
+		$return_keys = array();
+		$cron_list   = _get_cron_array();
+		if ( ! empty( $cron_list ) ) {
+			foreach ( $cron_list as $cron_time => $cron_data ) {
+				$cron_name = key( $cron_data );
+
+				if (
+					( is_array( $namespace ) && in_array( strtolower( $cron_name ), $namespace, true ) )
+					||
+					( is_string( $namespace ) && strtolower( $cron_name ) === strtolower( $namespace ) )
+				) {
+					$key           = isset( $cron_data[ $cron_name ] ) ? key( $cron_data[ $cron_name ] ) : '';
+					$return_keys[] = array(
+						'time'      => $cron_time, // next time the cron will run.
+						'key'       => $key, // This is the cron signature.
+						'namespace' => $cron_name, // cron name space.
+					);
+				}
+			}
+
+			if ( ! empty( $return_keys ) ) {
+				return $return_keys;
+			}
+		}
 
 		return false;
 	}
