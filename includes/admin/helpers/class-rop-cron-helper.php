@@ -84,6 +84,7 @@ class Rop_Cron_Helper {
 		if ( ! wp_next_scheduled( self::CRON_NAMESPACE_PUBLISH_NOW ) ) {
 			wp_schedule_single_event( time() + 15, self::CRON_NAMESPACE_PUBLISH_NOW );
 		}
+
 		return true;
 	}
 
@@ -102,7 +103,7 @@ class Rop_Cron_Helper {
 				$this->fresh_start();
 				$settings = new Rop_Global_Settings();
 				$settings->update_start_time();
-				wp_schedule_single_event( time() + 30, self::CRON_NAMESPACE );
+				wp_schedule_single_event( time() + 30, self::CRON_NAMESPACE . '2' );
 			}
 			wp_schedule_event( time(), '5min', self::CRON_NAMESPACE );
 		}
@@ -118,11 +119,28 @@ class Rop_Cron_Helper {
 	 * @return bool
 	 */
 	public function remove_cron() {
-		$timestamp = wp_next_scheduled( self::CRON_NAMESPACE );
-		if ( is_int( $timestamp ) ) {
+		$timestamp        = wp_next_scheduled( self::CRON_NAMESPACE );
+		$timestamp_single = wp_next_scheduled( self::CRON_NAMESPACE . '2' );
+
+		if ( ! empty( $timestamp ) ) {
+
+			$crons = _get_cron_array();
+			if ( isset( $crons[ $timestamp ][ self::CRON_NAMESPACE ][ '40cd750bba9870f18aada2478b24840a' ] ) ) {
+				$args = $crons[ $timestamp ][ self::CRON_NAMESPACE ][ '40cd750bba9870f18aada2478b24840a' ]['args'];
+				wp_unschedule_event( $timestamp, self::CRON_NAMESPACE, $args );
+			}
+
+			if ( isset( $crons[ $timestamp_single ][ self::CRON_NAMESPACE. '2' ][ '40cd750bba9870f18aada2478b24840a' ] ) ) {
+				$args = $crons[ $timestamp_single ][ self::CRON_NAMESPACE. '2' ][ '40cd750bba9870f18aada2478b24840a' ]['args'];
+				wp_unschedule_event( $timestamp_single, self::CRON_NAMESPACE. '2', $args );
+			}
+
 			wp_clear_scheduled_hook( self::CRON_NAMESPACE );
+			wp_clear_scheduled_hook( self::CRON_NAMESPACE . '2' );
 		}
+
 		$this->fresh_start();
+
 		return false;
 	}
 
