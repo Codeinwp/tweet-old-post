@@ -928,7 +928,7 @@ class Rop_Rest_Api {
 	 * @since   ...
 	 * @access  private
 	 *
-	 * @param   array $data Facebook page data.
+	 * @param   array $data Twitter account data.
 	 *
 	 * @return  array
 	 */
@@ -973,14 +973,14 @@ class Rop_Rest_Api {
 	}
 
 	/**
-	 * API method called to add Twitter pages via app.
+	 * API method called to add Linkedin pages via app.
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
 	 *
 	 * @since   ...
 	 * @access  private
 	 *
-	 * @param   array $data Facebook page data.
+	 * @param   array $data LinkedIn accounts data.
 	 *
 	 * @return  array
 	 */

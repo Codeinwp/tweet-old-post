@@ -44,11 +44,13 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @var     array $scopes The scopes to authorize with LinkedIn.
 	 */
 	protected $scopes = array( 'r_liteprofile', 'r_emailaddress', 'w_member_social', 'r_organization_social', 'w_organization_social', 'rw_organization_admin');
+	// protected $scopes = array( 'r_liteprofile', 'r_emailaddress', 'w_member_social', , 'w_organization_social');
+
 	// Company(organization) sharing scope cannot be used unless app approved for this scope.
 	// Added here for future reference
 	// https://stackoverflow.com/questions/54821731/in-linkedin-api-v2-0-how-to-get-company-list-by-persons-token
 	// https://business.linkedin.com/marketing-solutions/marketing-partners/become-a-partner/marketing-developer-program
-	// protected $scopes = array( 'r_liteprofile', 'r_emailaddress', 'w_member_social', , 'w_organization_social');
+
 
 	/**
 	 * Method to inject functionality into constructor.
@@ -303,68 +305,56 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		$users = array( $user_details );
 
+		try {
 
-
-try{
-
-    $admined_linkedin_pages = $this->api->api(
-				//'organizationalEntityAcls?q=roleAssignee&role=ADMINISTRATOR&projection=(elements*(organizationalTarget~(localizedName,vanityName,logoV2)))',
+			$admined_linkedin_pages = $this->api->api(
+				// 'organizationalEntityAcls?q=roleAssignee&role=ADMINISTRATOR&projection=(elements*(organizationalTarget~(localizedName,vanityName,logoV2)))',
 				'organizationalEntityAcls?q=roleAssignee&role=ADMINISTRATOR&state=APPROVED',
 				array(),
 				'GET'
 			);
 
+			$all_organization_urns = array();
+			foreach ( $admined_linkedin_pages as $key => $value ) {
 
-$all_organization_urns = array();
-foreach( $admined_linkedin_pages as $key => $value ){
+				if ( $key === 'elements' ) {
 
-    if( $key === 'elements'){
+					foreach ( $value as $key2 => $value2 ) {
 
-        foreach( $value as $key2 => $value2 ){
+						   $organizationalTarget = $value2['organizationalTarget'];
 
-           $organizationalTarget = $value2['organizationalTarget'];
+						   // urn:li:organization:5552231
+						   $parts = explode( ':', $organizationalTarget );
 
-           //urn:li:organization:5552231
-           $parts = explode(":", $organizationalTarget);
-
-          if( !in_array($parts[3], $all_organization_urns) ){
-              $all_organization_urns[] = $parts[3];
-          }
-
-        }
-
-    }
-
-}
-
-
-
-
-    }catch ( Exception $e ) {
-		  $this->logger->alert_error( 'Got in exception:  ' . $e);
-			return $users;
-		}
-
-
-	if ( empty( $all_organization_urns ) ) {
-			return $users;
-		}
-
-
-foreach($all_organization_urns as $organization_urn){
-
-		try {
-			$company = $this->api->api(
-				//'organizationalEntityAcls?q=roleAssignee&role=ADMINISTRATOR&projection=(elements*(organizationalTarget~(localizedName,vanityName,logoV2)))',
-				'organizations/'. $organization_urn,
-				array(),
-				'GET'
-			);
-
+						if ( ! in_array( $parts[3], $all_organization_urns ) ) {
+							$all_organization_urns[] = $parts[3];
+						}
+					}
+				}
+			}
 		} catch ( Exception $e ) {
-		 $this->logger->alert_error( 'Got in exception:  ' . $e);
+			  $this->logger->alert_error( 'Got in exception:  ' . $e );
 			return $users;
 		}
+
+		if ( empty( $all_organization_urns ) ) {
+			return $users;
+		}
+
+		foreach ( $all_organization_urns as $organization_urn ) {
+
+			try {
+				$company = $this->api->api(
+					// 'organizationalEntityAcls?q=roleAssignee&role=ADMINISTRATOR&projection=(elements*(organizationalTarget~(localizedName,vanityName,logoV2)))',
+					'organizations/' . $organization_urn,
+					array(),
+					'GET'
+				);
+
+			} catch ( Exception $e ) {
+				$this->logger->alert_error( 'Got in exception:  ' . $e );
+				return $users;
+			}
 
 			$users[] = wp_parse_args(
 				array(
@@ -376,9 +366,9 @@ foreach($all_organization_urns as $organization_urn){
 				$this->user_default
 			);
 
+		}
+		return $users;
 	}
-return $users;
-}
 
 	/**
 	 * Method to register credentials for the service.
@@ -466,10 +456,18 @@ return $users;
 			return false;
 		}
 
-		$this->set_api( $this->credentials['client_id'], $this->credentials['secret'] );
-		$api   = $this->get_api();
-		$token = new \LinkedIn\AccessToken( $this->credentials['token'] );
-		$api->setAccessToken( $token );
+		$added_with_app = get_option( 'rop_linkedin_via_rs_app' );
+
+		if ( ! empty( $added_with_app ) ) {
+			$token = new \LinkedIn\AccessToken( $args['credentials'] );
+		} else {
+			$this->set_api( $this->credentials['client_id'], $this->credentials['secret'] );
+			$token = new \LinkedIn\AccessToken( $this->credentials['token'] );
+		}
+
+		$api = $this->get_api();
+
+		 $api->setAccessToken( $token );
 
 		if ( get_post_type( $post_details['post_id'] ) !== 'attachment' ) {
 			// If post image option unchecked, share as article post
@@ -488,11 +486,8 @@ return $users;
 		}
 
 		try {
-			//if ( isset( $args['is_company'] ) && $args['is_company'] === true ) {
-			//	$api->post( sprintf( 'companies/%s/shares?format=json', $this->unstrip_underscore( $args['id'] ) ), $new_post );
-			//} else {
 				$api->post( 'ugcPosts', $new_post );
-			//}
+
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
@@ -525,9 +520,7 @@ return $users;
 	 */
 	private function linkedin_article_post( $post_details, $args ) {
 
-
-    	$author_urn = $args['is_company'] ? 'urn:li:organization:' : 'urn:li:person:';
-
+		$author_urn = $args['is_company'] ? 'urn:li:organization:' : 'urn:li:person:';
 
 		$new_post = array (
 			'author' => $author_urn . $args['id'],
@@ -583,7 +576,7 @@ return $users;
 	 */
 	private function linkedin_image_post( $post_details, $args, $token, $api ) {
 
-	    $author_urn = $args['is_company'] ? 'urn:li:organization:' : 'urn:li:person:';
+		$author_urn = $args['is_company'] ? 'urn:li:organization:' : 'urn:li:person:';
 
 		$register_image = array (
 			'registerUploadRequest' =>
@@ -676,13 +669,13 @@ return $users;
 	}
 
 	/**
-	 * This method will load and prepare the account data for Twitter user.
+	 * This method will load and prepare the account data for LinkedIn user.
 	 * Used in Rest Api.
 	 *
 	 * @since   8.4.0
 	 * @access  public
 	 *
-	 * @param   array $account_data Twitter pages data.
+	 * @param   array $account_data Linked accounts data.
 	 *
 	 * @return  bool
 	 */
@@ -691,34 +684,38 @@ return $users;
 			return false;
 		}
 
-		$the_id       = unserialize( base64_decode($accounts_data['id']));
-		$accounts_array =  unserialize( base64_decode($accounts_data['pages']));
-		
+		$the_id       = unserialize( base64_decode( $accounts_data['id'] ) );
+		$accounts_array = unserialize( base64_decode( $accounts_data['pages'] ) );
+
 		$accounts = array();
 
 		for ( $i = 0; $i < sizeof( $accounts_array ); $i++ ) {
 
-     $account = $this->user_default;
+			$account = $this->user_default;
 
-     $account_data = $accounts_array[$i];
+			$account_data = $accounts_array[ $i ];
 
-     $account['id'] = $account_data['id'];
-     $account['img'] = $account_data['img'];
-     $account['account'] = $account_data['account'];
-     $account['is_company'] = $account_data['is_company'];
-     $account['user'] = $account_data['user'];
-     $account['access_token'] = $account_data['access_token'];
+			$account['id'] = $account_data['id'];
+			$account['img'] = $account_data['img'];
+			$account['account'] = $account_data['account'];
+			$account['is_company'] = $account_data['is_company'];
+			$account['user'] = $account_data['user'];
+			$account['access_token'] = $account_data['access_token'];
 
-     $accounts[] = $account;
- }
+			if ( $i === 0 ) {
+				$account['active'] = true;
+			} else {
+				$account['active'] = false;
+			}
 
-
+			$accounts[] = $account;
+		}
 
 		// Prepare the data that will be saved as new account added.
 		$this->service = array(
 			'id'                 => $the_id,
 			'service'            => $this->service_name,
-			'credentials'        => $this->credentials,
+			'credentials'        => $account['access_token'],
 			'available_accounts' => $accounts,
 		);
 
