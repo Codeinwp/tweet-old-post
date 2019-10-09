@@ -7,7 +7,7 @@
             <div class="container">
                 <div class="columns" :class="'rop-tab-state-'+is_loading">
                     <div class="column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2">
-                        <vue_spinner :preloader_message="labels.preloader_message_accounts" ref="Preloader" v-if="is_preloading === 0"></vue_spinner>
+                        <vue_spinner :preloader_message="labels.preloader_message_loading" ref="Preloader" v-if="is_preloading === 0"></vue_spinner>
                         <div class="empty mb-2" v-if="accountsCount === 0 && is_preloading > 0">
                             <div class="empty-icon">
                                 <i class="fa fa-3x fa-user-circle-o"></i>
