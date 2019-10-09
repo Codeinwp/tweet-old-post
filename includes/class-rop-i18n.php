@@ -113,7 +113,7 @@ class Rop_I18n {
 			',
 					'tweet-old-post'
 				),
-				'preloader_message_accounts' => __( 'Loading your accounts...', 'tweet-old-post' ),
+				'preloader_message_accounts' => __( 'Loading your Dashboard...', 'tweet-old-post' ),
 				'preloader_message_default'  => __( 'Loading...', 'tweet-old-post' ),
 			),
 			'settings'    => array(
