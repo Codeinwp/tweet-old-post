@@ -62,7 +62,7 @@ class Rop_Pointers {
 			'pointers' => array(
 				'settings'          => array(
 					'target'       => '#toplevel_page_TweetOldPost',
-					'next'         => '',
+					'next'         => 'rop-dashboard',
 					'next_trigger' => array(),
 					'options'      => array(
 						'content'  => '<h3>' . esc_html__( 'Get Started', 'tweet-old-post' ) . '</h3>' .
@@ -347,17 +347,30 @@ class Rop_Pointers {
 				),
 				'start-stop'        => array(
 					'target'       => '#rop_start_stop_btn',
-					'next'         => '',
+					'next'         => 'add-account-now',
 					'next_trigger' => array(
 						'target' => '',
 						'event'  => '',
 					),
 					'options'      => array(
-						'content'  => '<h3>' . esc_html__( 'Start & Forget', 'tweet-old-post' ) . '</h3>' .
+						'content'  => '<h3>' . esc_html__( 'Start Sharing', 'tweet-old-post' ) . '</h3>' .
 						'<p>' . esc_html__( 'Once you\'ve connected your accounts and setup their Post Format settings, use this button to start the plugin.', 'tweet-old-post' ) . '</p>',
 						'position' => array(
 							'edge'  => 'right',
 							'align' => 'left',
+						),
+					),
+				),
+				'add-account-now' => array(
+					'target'       => '#accounts',
+					'next'         => 'finish',
+					'next_trigger' => array(),
+					'options'      => array(
+						'content'  => '<h3>' . esc_html__( 'Add Your Accounts', 'tweet-old-post' ) . '</h3>' .
+						'<p>' . esc_html__( 'Switch to the accounts tab now to add your social media accounts to the plugin and begin sharing.', 'tweet-old-post' ) . '</p>',
+						'position' => array(
+							'edge'  => 'left',
+							'align' => 'right',
 						),
 					),
 				),
@@ -400,11 +413,12 @@ class Rop_Pointers {
 		}
 
 		$pointers = wp_json_encode( $pointers );
-
+		$site_url = get_site_url();
 		?>
 	  <script type="text/javascript">
 	  jQuery( function( $ ) {
 
+		var rop_url = '<?php echo $site_url; ?>' + '/wp-admin/admin.php?page=TweetOldPost';
 		var rop_pointer = <?php echo $pointers; ?>;
 	  var rop_license = <?php echo $general_settings->license_type(); ?>;
 
@@ -427,21 +441,27 @@ class Rop_Pointers {
 			  if ( pointer.next == 'min-interval' && rop_license > 1 ){
 				pointer = rop_pointer.pointers[ 'min-interval' ];
 			  }
+				if ( pointer.next == 'rop-dashboard' ){
+				 window.location = rop_url;
+			  }
 			  show_rop_pointer( pointer.next );
 			}
 		  },
 		  buttons: function( event, t ) {
 
-			if ( pointer.next !== 'min-interval' ) {
 
-			  var close   = " <?php echo esc_js( __( 'Dismiss', 'tweet-old-post' ) ); ?>",
-			  next    = "<?php echo esc_js( __( 'Next', 'tweet-old-post' ) ); ?>",
+				var close   = " <?php echo esc_js( __( 'Dismiss', 'tweet-old-post' ) ); ?>";
+				button  = $( '<a class=\"close\" href=\"#\">' + close + '</a>' );
 
-			  button  = $( '<a class=\"close\" href=\"#\">' + close + '</a>' ),
-			  button2 = $( '<a class=\"button button-primary next\" href=\"#\">' + next + '</a>' ),
-			  wrapper = $( '<div class=\"rop-pointer-buttons\" />' );
+				var next    = "<?php echo esc_js( __( 'Next', 'tweet-old-post' ) ); ?>";
+				button2 = $( '<a class=\"button button-primary next\" href=\"#\">' + next + '</a>' );
 
-			  button.bind( 'click.pointer', function(e) {
+				var finish    = "<?php echo esc_js( __( 'Finish', 'tweet-old-post' ) ); ?>";
+				button3 = $( '<a class=\"button button-primary next\" href=\"#\">' + finish + '</a>' );
+
+				wrapper = $( '<div class=\"rop-pointer-buttons\" />' );
+
+				button.bind( 'click.pointer', function(e) {
 				e.preventDefault();
 				t.element.pointer('destroy');
 			  });
@@ -469,11 +489,22 @@ class Rop_Pointers {
 				}
 			  });
 
+				button3.bind( 'click.pointer', function(e) {
+				e.preventDefault();
+				t.element.pointer('destroy');
+			  });
+
 			  wrapper.append( button );
-			  wrapper.append( button2 );
+
+				if ( pointer.next !== 'min-interval' && pointer.next !== 'finish' ) {
+				wrapper.append( button2 );
+				}
+
+				if ( pointer.next == 'finish' ) {
+				wrapper.append( button3 );
+				}
 
 			  return wrapper;
-			}
 		  },
 		} );
 
