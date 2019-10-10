@@ -681,6 +681,9 @@ class Rop_Admin {
 		}
 	}
 
+	public function rop_cron_job_once() {
+
+	}
 	/**
 	 * The Cron Job for the plugin.
 	 *

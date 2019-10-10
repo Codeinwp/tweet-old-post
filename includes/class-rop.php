@@ -144,6 +144,7 @@ class Rop {
 		$this->loader->add_action( 'admin_print_footer_scripts', $tutorial_pointers, 'rop_enqueue_pointers' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'menu_pages' );
 		$this->loader->add_action( 'rop_cron_job', $plugin_admin, 'rop_cron_job' );
+		$this->loader->add_action( 'rop_cron_job_once', $plugin_admin, 'rop_cron_job_once' );
 
 		$this->loader->add_action( 'rop_cron_job_publish_now', $plugin_admin, 'rop_cron_job_publish_now' );
 		$this->loader->add_action( 'post_submitbox_misc_actions', $plugin_admin, 'add_publish_actions' );
