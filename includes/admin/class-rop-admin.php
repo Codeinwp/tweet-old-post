@@ -718,7 +718,7 @@ class Rop_Admin {
 						} catch ( Exception $exception ) {
 							$error_message = sprintf( Rop_I18n::get_labels( 'accounts.service_error' ), $account_data['service'] );
 							$logger->alert_error( $error_message . ' Error: ' . $exception->getMessage() );
-							$logger->alert_error( $error_message . ' Error: ' . wp_json_encode($exception->getTrace()) ); // TODO WPRIDERS remove this before final push
+							$logger->alert_error( $error_message . ' Error: ' . wp_json_encode( $exception->getTrace() ) ); // TODO WPRIDERS remove this before final push
 						}
 					}
 				}
