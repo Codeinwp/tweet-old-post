@@ -53,6 +53,7 @@ if ( isset( $housekeeping ) && $housekeeping ) {
 		'rop_install_token',
 		'rop_facebook_via_rs_app',
 		'rop_twitter_via_rs_app',
+		'rop_linkedin_via_rs_app',
 		'rop_first_install_version',
 		/**
 		 * Related functions
