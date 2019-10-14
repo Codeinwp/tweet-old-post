@@ -17,7 +17,7 @@
             </div>
             <div class="sidebar sidebar-top card rop-container-start">
 
-              <!-- Next post count down -->
+                <!-- Next post count down -->
                 <countdown :current_time="current_time"/>
                 <!--  -->
 
@@ -267,13 +267,28 @@
                     return;
                 }
                 this.is_loading = true;
+                let new_status = this.start_status === false ? 'start' : 'stop';
                 this.$store.dispatch('fetchAJAXPromise', {
                     req: 'manage_cron',
                     data: {
-                        'action': this.start_status === false ? 'start' : 'stop'
+                        'action': new_status
                     }
                 }).then(response => {
-                    this.is_loading = false;
+                    if ('stop' === new_status) {
+                        this.$store.dispatch('fetchAJAXPromise', {
+                            req: 'manage_cron',
+                            data: {
+                                'action': new_status
+                            }
+                        }).then(response => {
+                            this.is_loading = false;
+                        }, error => {
+                            this.is_loading = false;
+                            Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+                        })
+                    } else {
+                        this.is_loading = false;
+                    }
                 }, error => {
                     this.is_loading = false;
                     Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)

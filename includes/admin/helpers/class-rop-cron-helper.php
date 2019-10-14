@@ -124,37 +124,37 @@ class Rop_Cron_Helper {
 	 * @return bool
 	 */
 	public function remove_cron() {
-//		global $wpdb;
-//
-//		$current_cron_list = _get_cron_array();
-//		$rop_cron_key      = self::get_schedule_key( array( self::CRON_NAMESPACE, self::CRON_NAMESPACE_ONCE ) );
-//		error_log( '$rop_cron_key ' . wp_json_encode( $rop_cron_key ) );
-//		if ( ! empty( $rop_cron_key ) ) {
-//			$i = 1;
-//			#$wpdb->query( 'START TRANSACTION' );
-//			foreach ( $rop_cron_key as $rop_active_cron ) {
-//				error_log( '= PRE #'.$i );
-//				$cron_time      = (int) $rop_active_cron['time'];
-//				$cron_key       = $rop_active_cron['key'];
-//				$cron_namespace = $rop_active_cron['namespace'];
-//
-//				if ( isset( $current_cron_list[ $cron_time ][ $cron_namespace ][ $cron_key ] ) ) {
-//					$args = $current_cron_list[ $cron_time ][ $cron_namespace ][ $cron_key ]['args'];
-//					wp_unschedule_event( $cron_time, $cron_namespace, $args );
-//					error_log( '= DID #'.$i );
-//				}
-//				$i ++;
-//			}
-//			wp_clear_scheduled_hook( self::CRON_NAMESPACE );
-//			wp_clear_scheduled_hook( self::CRON_NAMESPACE_ONCE );
-//			#$wpdb->query( 'COMMIT' );
-//			#wp_clear_scheduled_hook( self::CRON_NAMESPACE_ONCE );
-//			$this->remove_cron();
-//		} else {
-//			$this->fresh_start();
-//		}
+		global $wpdb;
 
-		$this->testme();
+		$current_cron_list = _get_cron_array();
+		$rop_cron_key      = self::get_schedule_key( array( self::CRON_NAMESPACE, self::CRON_NAMESPACE_ONCE ) );
+		error_log( '$rop_cron_key ' . wp_json_encode( $rop_cron_key ) );
+		if ( ! empty( $rop_cron_key ) ) {
+			$i = 1;
+			#$wpdb->query( 'START TRANSACTION' );
+			foreach ( $rop_cron_key as $rop_active_cron ) {
+				error_log( '= PRE #'.$i );
+				$cron_time      = (int) $rop_active_cron['time'];
+				$cron_key       = $rop_active_cron['key'];
+				$cron_namespace = $rop_active_cron['namespace'];
+
+				if ( isset( $current_cron_list[ $cron_time ][ $cron_namespace ][ $cron_key ] ) ) {
+					$args = $current_cron_list[ $cron_time ][ $cron_namespace ][ $cron_key ]['args'];
+					wp_unschedule_event( $cron_time, $cron_namespace, $args );
+					error_log( '= DID #'.$i );
+				}
+				$i ++;
+			}
+			wp_clear_scheduled_hook( self::CRON_NAMESPACE );
+			wp_clear_scheduled_hook( self::CRON_NAMESPACE_ONCE );
+			#$wpdb->query( 'COMMIT' );
+			#wp_clear_scheduled_hook( self::CRON_NAMESPACE_ONCE );
+			$this->remove_cron();
+		} else {
+			$this->fresh_start();
+		}
+
+		#$this->testme();
 		$this->fresh_start();
 
 		return false;
