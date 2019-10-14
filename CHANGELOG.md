@@ -1,4 +1,10 @@
 
+ ### v8.4.4 - 2019-10-03 
+ **Changes:** 
+ * New: Label to show sharing status.
+* Change: Removed some UI buttons and made UX improvements to dashboard.
+* Change: Send posts to Facebook as text posts if users have not verified their domain with Facebook; inform users on how to go about the process. .
+ 
  ### v8.4.3 - 2019-09-12 
  **Changes:** 
  * New: Toast message will now show on ROP dashboard when an error is present in the log.

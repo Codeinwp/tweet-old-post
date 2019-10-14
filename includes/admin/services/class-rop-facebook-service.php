@@ -650,10 +650,23 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
 				$errorMsg = $e->getMessage();
 
-				if ( strpos( $errorMsg, '(#100)' ) !== false && ! empty( $new_post['name'] ) ) {
+				if (
+					strpos( $errorMsg, '(#100)' ) !== false &&
+					(
+						! empty( $new_post['name'] ) ||
+						( ! empty( $new_post['link'] ) && isset( $new_post['message'] ) )
+					)
+				) {
 					// https://developers.facebook.com/docs/graph-api/reference/v3.2/page/feed#custom-image
-					// retry without name
-					unset( $new_post['name'] );
+					// retry without name and with link inside message.
+
+					if ( isset( $new_post['name'] ) ) {
+						unset( $new_post['name'] );
+					}
+					if ( ! empty( $new_post['link'] ) && isset( $new_post['message'] ) ) {
+						$new_post['message'] .= $new_post['link'];
+						unset( $new_post['link'] );
+					}
 
 					try {
 						$api->post( $path, $new_post, $token );
@@ -709,9 +722,54 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			if ( ! empty( $body['id'] ) ) {
 				return true;
 			} elseif ( ! empty( $body['error']['message'] ) ) {
-				$this->logger->alert_error( 'Error Posting to Facebook: ' . $body['error']['message'] );
-				$this->rop_get_error_docs( $body['error']['message'] );
-				return false;
+				if (
+					strpos( $body['error']['message'], '(#100)' ) !== false &&
+					(
+						! empty( $post_data['name'] ) ||
+						( ! empty( $post_data['link'] ) && isset( $post_data['message'] ) )
+					)
+				) {
+					// https://developers.facebook.com/docs/graph-api/reference/v3.2/page/feed#custom-image
+					// retry without name and with link inside message.
+
+					if ( isset( $post_data['name'] ) ) {
+						unset( $post_data['name'] );
+					}
+					if ( ! empty( $post_data['link'] ) && isset( $post_data['message'] ) ) {
+						$post_data['message'] .= $post_data['link'];
+						unset( $post_data['link'] );
+					}
+
+					$response = wp_remote_post(
+						$url,
+						array(
+
+							'body' => $post_data,
+							'headers' => array(
+								'Content-Type' => 'application/x-www-form-urlencoded',
+							),
+							'timeout' => 60,
+
+						)
+					);
+
+					$body = json_decode( wp_remote_retrieve_body( $response ), true );
+
+					if ( ! empty( $body['id'] ) ) {
+						return true;
+					} elseif ( ! empty( $body['error']['message'] ) ) {
+						$this->logger->alert_error( 'Error Posting to Facebook: ' . $body['error']['message'] );
+						$this->rop_get_error_docs( $body['error']['message'] );
+						return false;
+					} else {
+						$this->logger->alert_error( 'Error Posting to Facebook, response: ' . print_r( $response, true ) );
+						return false;
+					}
+				} else {
+					$this->logger->alert_error( 'Error Posting to Facebook: ' . $body['error']['message'] );
+					$this->rop_get_error_docs( $body['error']['message'] );
+					return false;
+				}
 			} else {
 				$this->logger->alert_error( 'Error Posting to Facebook, response: ' . print_r( $response, true ) );
 				return false;

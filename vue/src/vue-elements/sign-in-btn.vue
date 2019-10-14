@@ -26,7 +26,7 @@
 							<button class="btn btn-primary big-btn" @click="openPopupFB()">{{labels.fb_app_signin_btn}}</button>
 							<span class="text-center">{{labels.fb_own_app_signin}}</span>
 						</div>
-						<div class="auth-app" v-if="isTwitter && isAllowedTwitter">
+						<div class="auth-app" v-if="isTwitter">
 							<button class="btn btn-primary big-btn" @click="openPopupTW()">{{labels.tw_app_signin_btn}}</button>
 							<span class="text-center">{{labels.tw_own_app_signin}}</span>
 						</div>
@@ -34,10 +34,10 @@
 							<button class="btn btn-primary big-btn" @click="openPopupLI()">{{labels.li_app_signin_btn}}</button>
 							<span class="text-center">{{labels.tw_own_app_signin}}</span>
 						</div>
-						<div id="rop-advanced-config" v-if="isFacebook || (isTwitter && isAllowedTwitter)">
+						<div id="rop-advanced-config" v-if="isFacebook || isTwitter">
 						<button class="btn btn-primary" v-on:click="showAdvanceConfig = !showAdvanceConfig">{{labels.show_advance_config}}</button>
 					</div>
-						<div v-if="showAdvanceConfig && (isFacebook ||  (isTwitter && isAllowedTwitter) )">
+						<div v-if="showAdvanceConfig && (isFacebook || isTwitter )">
 						<div class="form-group" v-for="( field, id ) in modal.data">
 							<label class="form-label" :for="field.id">{{ field.name }}</label>
 							<input :class="[ 'form-input', field.error ? ' is-error' : '' ]" type="text" :id="field.id" v-model="field.value"
@@ -46,7 +46,7 @@
 							<p class="text-gray">{{ field.description }}</p>
 						</div>
 					</div>
-						<div v-if="(!isTwitter && !isFacebook) || ( isTwitter && !isAllowedTwitter)">
+						<div v-if="!isTwitter && !isFacebook">
 						<div class="form-group" v-for="( field, id ) in modal.data">
 							<label class="form-label" :for="field.id">{{ field.name }}</label>
 							<input :class="[ 'form-input', field.error ? ' is-error' : '' ]" type="text" :id="field.id" v-model="field.value"
@@ -57,14 +57,14 @@
 					</div>
 				</div>
 				</div>
-				<div v-if="isFacebook || (isTwitter && isAllowedTwitter)" class="modal-footer">
+				<div v-if="isFacebook || isTwitter" class="modal-footer">
 					<p class="text-left pull-left mr-2" v-html="labels.rs_app_info"></p>
 				</div>
 				<div v-if="showAdvanceConfig && (isFacebook || isTwitter)" class="modal-footer">
 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 				</div>
-				<div v-if="(!isTwitter && !isFacebook) || (isTwitter && !isAllowedTwitter)" class="modal-footer">
+				<div v-if="!isTwitter && !isFacebook" class="modal-footer">
 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 				</div>
@@ -100,7 +100,6 @@
 				appSignature: ropAuthAppData.authSignature,
 				windowParameters: 'top=20,left=100,width=560,height=670',
 				authPopupWindow: null,
-        showTwAppBtn: ropApiSettings.show_tw_app_btn,
 				showBtn: false
 			}
 		},
@@ -366,18 +365,9 @@
             // will return true if the current service actions are for LinkedIn.
             isLinkedIn() {
                 return this.modal.serviceName === 'LinkedIn';
-            },
-            isAllowedTwitter: function () {
-                let showButton = true;
-
-                if (!this.showTwAppBtn) {
-                    showButton = false;
-                }
-
-                return showButton;
             }
-		}
 	}
+}
 </script>
 <style scoped>
 	#rop-sign-in-area .btn[disabled]{
