@@ -246,7 +246,7 @@ class Rop_Admin {
 		}
 
 		$services        = new Rop_Services_Model();
-		$li_service 		 = new Rop_Linkedin_Service();
+		$li_service          = new Rop_Linkedin_Service();
 		$active_accounts = $services->get_active_accounts();
 
 		$global_settings = new Rop_Global_Settings();

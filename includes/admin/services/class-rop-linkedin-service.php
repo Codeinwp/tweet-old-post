@@ -675,7 +675,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @since   8.4.0
 	 * @access  public
 	 *
-	 * @param   array $account_data Linked accounts data.
+	 * @param   array $accounts_data Linked accounts data.
 	 *
 	 * @return  bool
 	 */
