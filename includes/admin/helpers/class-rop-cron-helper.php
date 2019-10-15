@@ -60,11 +60,11 @@ class Rop_Cron_Helper {
 	 * @return  array Current status.
 	 */
 	public function manage_cron( $request ) {
-		if ( isset( $request['action'] ) && $request['action'] === 'start' ) {
+		if ( isset( $request['action'] ) && 'start' === $request['action'] ) {
 			$this->create_cron( true );
-		} elseif ( isset( $request['action'] ) && $request['action'] === 'stop' ) {
-			$this->remove_cron();
-		} elseif ( isset( $request['action'] ) && $request['action'] === 'publish-now' ) {
+		} elseif ( isset( $request['action'] ) && 'stop' === $request['action'] ) {
+			$this->remove_cron( $request );
+		} elseif ( isset( $request['action'] ) && 'publish-now' === $request['action'] ) {
 			$this->publish_now();
 		}
 
@@ -99,6 +99,9 @@ class Rop_Cron_Helper {
 	 *
 	 * @since   8.0.0rc
 	 * @access  public
+	 *
+	 * @param bool $first
+	 *
 	 * @return bool
 	 */
 	public function create_cron( $first = true ) {
@@ -121,96 +124,44 @@ class Rop_Cron_Helper {
 	 *
 	 * @since   8.0.0rc
 	 * @access  public
+	 *
+	 * @param array $request
+	 *
 	 * @return bool
 	 */
-	public function remove_cron() {
-		global $wpdb;
-
+	public function remove_cron( $request = array() ) {
 		$current_cron_list = _get_cron_array();
 		$rop_cron_key      = self::get_schedule_key( array( self::CRON_NAMESPACE, self::CRON_NAMESPACE_ONCE ) );
-		error_log( '$rop_cron_key ' . wp_json_encode( $rop_cron_key ) );
+
 		if ( ! empty( $rop_cron_key ) ) {
-			$i = 1;
-			#$wpdb->query( 'START TRANSACTION' );
+
+			wp_cache_delete( 'alloptions', 'options' );
+
 			foreach ( $rop_cron_key as $rop_active_cron ) {
-				error_log( '= PRE #'.$i );
 				$cron_time      = (int) $rop_active_cron['time'];
 				$cron_key       = $rop_active_cron['key'];
 				$cron_namespace = $rop_active_cron['namespace'];
 
-				if ( isset( $current_cron_list[ $cron_time ][ $cron_namespace ][ $cron_key ] ) ) {
-					$args = $current_cron_list[ $cron_time ][ $cron_namespace ][ $cron_key ]['args'];
-					wp_unschedule_event( $cron_time, $cron_namespace, $args );
-					error_log( '= DID #'.$i );
+//				if ( isset( $current_cron_list[ $cron_time ][ $cron_namespace ][ $cron_key ] ) ) {
+//					$args = $current_cron_list[ $cron_time ][ $cron_namespace ][ $cron_key ]['args'];
+//					wp_unschedule_event( $cron_time, $cron_namespace, $args );
+//				}
+
+				unset( $current_cron_list[ $cron_time ][ $cron_namespace ][ $cron_key ] );
+				if ( empty( $current_cron_list[ $cron_time ][ $cron_namespace ] ) ) {
+					unset( $current_cron_list[ $cron_time ][ $cron_namespace ] );
 				}
-				$i ++;
+
+				if ( empty( $current_cron_list[ $cron_time ] ) ) {
+					unset( $current_cron_list[ $cron_time ] );
+				}
 			}
-			wp_clear_scheduled_hook( self::CRON_NAMESPACE );
-			wp_clear_scheduled_hook( self::CRON_NAMESPACE_ONCE );
-			#$wpdb->query( 'COMMIT' );
+			uksort( $current_cron_list, 'strnatcasecmp' );
+			_set_cron_array( $current_cron_list );
+			#wp_clear_scheduled_hook( self::CRON_NAMESPACE );
 			#wp_clear_scheduled_hook( self::CRON_NAMESPACE_ONCE );
-			$this->remove_cron();
-		} else {
-			$this->fresh_start();
-		}
-
-		#$this->testme();
-		$this->fresh_start();
-
-		return false;
-	}
-
-	public static function testme() {
-		global $wpdb;
-
-		$namespace = array( self::CRON_NAMESPACE, self::CRON_NAMESPACE_ONCE );
-		if ( empty( $namespace ) ) {
-			return false;
-		}
-
-		#$wpdb->flush();
-
-		if ( is_array( $namespace ) ) {
-			$namespace = array_map( 'strtolower', $namespace );
-		}
-
-		$return_keys = array();
-		#$wpdb->query( 'START TRANSACTION' );
-		wp_cache_delete( 'alloptions', 'options' );
-		$cron_list = _get_cron_array();
-		error_log( '_get_cron_array : ' . wp_json_encode( $cron_list ) );
-		if ( ! empty( $cron_list ) ) {
-			foreach ( $cron_list as $cron_time => $cron_data ) {
-				$cron_name = key( $cron_data );
-
-				if (
-					( is_array( $namespace ) && in_array( strtolower( $cron_name ), $namespace, true ) )
-					||
-					( is_string( $namespace ) && strtolower( $cron_name ) === strtolower( $namespace ) )
-				) {
-					$key           = isset( $cron_data[ $cron_name ] ) ? key( $cron_data[ $cron_name ] ) : '';
-					$return_keys[] = array(
-						'time'      => $cron_time, // next time the cron will run.
-						'key'       => $key, // This is the cron signature.
-						'namespace' => $cron_name, // cron name space.
-					);
-					unset( $cron_list[ $cron_time ][ $cron_name ][ $key ] );
-					if ( empty( $cron_list[ $cron_time ][ $cron_name ] ) ) {
-						unset( $cron_list[ $cron_time ][ $cron_name ] );
-					}
-
-					if ( empty( $cron_list[ $cron_time ] ) ) {
-						unset( $cron_list[ $cron_time ] );
-					}
-				}
-			}
-		}
-		if ( ! empty( $return_keys ) ) {
-			error_log( '_set_cron_array : ' . wp_json_encode( $cron_list ) );
-			uksort( $cron_list, 'strnatcasecmp' );
-			$option = 'cron';
-
-			$serialized_value = maybe_serialize( $cron_list );
+			$option           = 'cron';
+			$serialized_value = maybe_serialize( $current_cron_list );
 
 			$notoptions = wp_cache_get( 'notoptions', 'options' );
 			if ( is_array( $notoptions ) && isset( $notoptions[ $option ] ) ) {
@@ -218,7 +169,7 @@ class Rop_Cron_Helper {
 				wp_cache_set( 'notoptions', $notoptions, 'options' );
 			}
 
-			error_log( '$serialized_value ' . $serialized_value );
+
 			$alloptions = wp_load_alloptions();
 			if ( isset( $alloptions[ $option ] ) ) {
 				$alloptions[ $option ] = $serialized_value;
@@ -227,16 +178,10 @@ class Rop_Cron_Helper {
 				wp_cache_set( $option, $serialized_value, 'options' );
 			}
 
-
-			$test = _set_cron_array( $cron_list );
-			error_log( '$test  : ' . $test );
-			$wpdb->flush();
-
-			return $return_keys;
 		}
-
-		#$wpdb->query( 'COMMIT' );
-
+		if ( ! isset( $request['refresh_action'] ) ) {
+			$this->fresh_start();
+		}
 
 		return false;
 	}
@@ -263,7 +208,6 @@ class Rop_Cron_Helper {
 
 		$return_keys = array();
 		$cron_list   = _get_cron_array();
-		error_log( '$cron_list ' . wp_json_encode( $cron_list ) );
 		if ( ! empty( $cron_list ) ) {
 			foreach ( $cron_list as $cron_time => $cron_data ) {
 				$cron_name = key( $cron_data );
@@ -345,7 +289,7 @@ class Rop_Cron_Helper {
 	 * @return string
 	 */
 	private function convert_phpformat_to_js( $format ) {
-		$replacements = array(
+		$replacements  = array(
 			'd' => 'DD',
 			'D' => 'ddd',
 			'j' => 'D',
@@ -384,9 +328,9 @@ class Rop_Cron_Helper {
 			'r' => '', // no equivalent
 			'U' => 'X',
 		);
-		$momentFormat = strtr( $format, $replacements );
+		$moment_format = strtr( $format, $replacements );
 
-		return $momentFormat;
+		return $moment_format;
 	}
 
 	/**

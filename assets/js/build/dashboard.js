@@ -34519,7 +34519,8 @@ module.exports = {
                     _this3.$store.dispatch('fetchAJAXPromise', {
                         req: 'manage_cron',
                         data: {
-                            'action': new_status
+                            'action': new_status,
+                            'refresh_action': false
                         }
                     }).then(function (response) {
                         _this3.is_loading = false;

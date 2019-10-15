@@ -278,7 +278,8 @@
                         this.$store.dispatch('fetchAJAXPromise', {
                             req: 'manage_cron',
                             data: {
-                                'action': new_status
+                                'action': new_status,
+                                'refresh_action': false
                             }
                         }).then(response => {
                             this.is_loading = false;
