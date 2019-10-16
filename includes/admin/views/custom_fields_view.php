@@ -88,6 +88,7 @@
 <?php
 $label_button        = Rop_I18n::get_labels( 'post_editor.variation_image' );
 $label_button_change = Rop_I18n::get_labels( 'post_editor.variation_image_change' );
+$button_remove       = Rop_I18n::get_labels( 'post_editor.variation_remove_image' );
 
 if ( ! empty( $rop_custom_messages_group ) ) {
 	$i                      = 1;
@@ -113,7 +114,6 @@ if ( ! empty( $rop_custom_messages_group ) ) {
 		}
 
 		$button_label_switch = ( empty( $image_id ) ) ? $label_button : $label_button_change;
-		$button_remove       = Rop_I18n::get_labels( 'post_editor.variation_remove_image' );
 
 		echo <<<MULTIPLE_VARIATION_GROUP
         <div class="rop-content-variation">
@@ -185,6 +185,7 @@ MSG_GROUP;
 $label_new_variation    = Rop_I18n::get_labels( 'post_editor.new_variation' );
 $label_example          = Rop_Pro_I18n::get_labels( 'magic_tags.example' );
 $label_remove_variation = Rop_I18n::get_labels( 'post_editor.remove_variation' );
+$hide_remove            = ' style="display:none"';
 
 echo <<<DEFAULT_GROUP
     <div class="empty-row rop-content-variation screen-reader-text">
@@ -204,6 +205,7 @@ echo <<<DEFAULT_GROUP
                     <img class="rop-img-attached" src='' width="100" height="100" alt="">
                 </div>
                 <input class="rop-image-attach" type="button" class="button" value="{$label_button}" data-rop-img-id=""/>
+                <input class="rop-image-remove" type="button" class="button" value="{$button_remove}" data-rop-img-id="{$i}" {$hide_remove}/>
                 <input type='hidden' value='' class="rop-hidden-attachment-id" name="rop_custom_image[]">
             </div>
             <div style="clear:both"></div>

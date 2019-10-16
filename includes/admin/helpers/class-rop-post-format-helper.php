@@ -55,7 +55,7 @@ class Rop_Post_Format_Helper {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   int        $post_id The post ID.
+	 * @param   int $post_id The post ID.
 	 * @param   string|int $account_id The post account id.
 	 *
 	 * @return array
@@ -163,14 +163,13 @@ class Rop_Post_Format_Helper {
 		$custom_messages = get_post_meta( $post_id, 'rop_custom_messages_group', true );
 
 		if ( ! empty( $custom_messages ) ) {
-			$custom_messages = array_values( $custom_messages );
 
 			$settings                    = new Rop_Settings_Model();
 			$custom_messages_share_order = $settings->get_custom_messages_share_order();
 
 			if ( $custom_messages_share_order ) {
 				$sequential_index = get_post_meta( $post_id, 'rop_variation_index', true );
-				$sequential_index = ( ! empty( $sequential_index ) ) ? $sequential_index : 0;
+				$sequential_index = ( ! empty( $sequential_index ) ) ? absint( $sequential_index ) : 0;
 
 				$share_content          = $custom_messages[ $sequential_index ]['rop_custom_description'];
 				$this->sequential_index = $sequential_index; // Will be used to get the variation image
@@ -184,8 +183,11 @@ class Rop_Post_Format_Helper {
 					delete_post_meta( $post_id, 'rop_variation_index' );
 				}
 			} else {
-
-				$random_index           = rand( 0, ( count( $custom_messages ) - 1 ) );
+				$messages_count = count( $custom_messages );
+				$random_index   = 0;
+				if ( $messages_count > 1 ) {
+					$random_index = rand( 0, ( $messages_count - 1 ) );
+				}
 				$this->sequential_index = $random_index; // Will be used to get the variation image
 				$share_content          = $custom_messages[ $random_index ]['rop_custom_description'];
 			}
@@ -280,7 +282,7 @@ class Rop_Post_Format_Helper {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   int    $post_id The post ID.
+	 * @param   int $post_id The post ID.
 	 * @param   string $field_key The field key name.
 	 *
 	 * @return mixed
@@ -331,9 +333,9 @@ class Rop_Post_Format_Helper {
 	 * @since   8.0.0
 	 * @access  private
 	 *
-	 * @param   string             $content The content to filter.
+	 * @param   string $content The content to filter.
 	 * @param   Rop_Content_Helper $content_helper The content helper class. Used for processing.
-	 * @param   int                $post The post object.
+	 * @param   int $post The post object.
 	 *
 	 * @return array
 	 */
@@ -841,7 +843,6 @@ class Rop_Post_Format_Helper {
 		 */
 		$custom_images = get_post_meta( $post_id, 'rop_custom_images_group', true );
 		if ( ! empty( $custom_images ) && ! is_null( $this->sequential_index ) ) {
-			$custom_images = array_values( $custom_images );
 			/**
 			 * the variable $this->sequential_index gets its value from
 			 *
@@ -851,21 +852,22 @@ class Rop_Post_Format_Helper {
 				$image_id = $custom_images[ $this->sequential_index ]['rop_custom_image'];
 				if ( is_numeric( $image_id ) ) {
 					$image = wp_get_attachment_url( absint( $image_id ) );
-					if ( false !== $image ) {
+					if ( ! empty( $image ) ) {
 						$this->sequential_index = null;
-						return $image;
 					}
 				}
 			}
 		}
 
-		if ( has_post_thumbnail( $post_id ) ) {
-			$image = get_the_post_thumbnail_url( $post_id, 'large' );
-		} elseif ( get_post_type( $post_id ) === 'attachment' ) {
-			$image = wp_get_attachment_url( $post_id );
+		if ( empty( $image ) ) {
+			if ( has_post_thumbnail( $post_id ) ) {
+				$image = get_the_post_thumbnail_url( $post_id, 'large' );
+			} elseif ( get_post_type( $post_id ) === 'attachment' ) {
+				$image = wp_get_attachment_url( $post_id );
+			}
 		}
 
-		if ( $photon_bypass && class_exists( 'Jetpack_Photon' ) ) {
+		if ( isset( $photon_bypass ) && class_exists( 'Jetpack_Photon' ) ) {
 			// Re-enable Jetpack Photon filter.
 			add_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ), 10, 3 );
 		}
@@ -883,7 +885,7 @@ class Rop_Post_Format_Helper {
 	 *
 	 * @param   string $url The URL to shorten.
 	 * @param   string $short_url_service The shorten service. Used by the factory to build the service.
-	 * @param   array  $credentials Optional. If needed the service credentials.
+	 * @param   array $credentials Optional. If needed the service credentials.
 	 *
 	 * @return string
 	 */
