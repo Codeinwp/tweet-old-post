@@ -3,6 +3,8 @@
 		var file_names = {};
 		var rop_elements = $('.rop-content-variation');
 		var count_elements = parseInt(rop_elements.length);
+		var label_upload = '<?php echo esc_attr( Rop_I18n::get_labels( 'post_editor.variation_image' ) ); ?>';
+		var label_change = '<?php echo esc_attr( Rop_I18n::get_labels( 'post_editor.variation_image_change' ) ); ?>';
 
 		$('#add-row').on('click', function () {
 			count_elements++;
@@ -24,12 +26,14 @@
 		$variations_container.on('click tap', '.rop-image-remove', function (e) {
 			e.preventDefault();
 			var row_container = $(this).closest('.rop-content-variation');
+			var upload_button = row_container.find('.rop-image-attach');
 			var image_id = row_container.find('.rop-hidden-attachment-id');
 			var image_src = row_container.find('.rop-img-attached');
 
 			image_src.attr('src', '');
 			image_id.val('');
 			$(this).hide();
+			upload_button.val(label_upload);
 		});
 
 
@@ -43,6 +47,7 @@
 			var image_src = row_container.find('.rop-img-attached');
 			var remove_button = row_container.find('.rop-image-remove');
 			var this_image = file_names[identifier];
+			var this_button = $(this);
 
 			if (this_image) {
 				// Set the post ID to what we want
@@ -69,6 +74,7 @@
 					image_src.attr('src', attachment.url).css('width', 'auto');
 					image_id.val(attachment.id);
 					remove_button.show();
+					this_button.val(label_change);
 
 					// Restore the main post ID
 					wp.media.model.settings.post.id = wp_media_post_id;
@@ -132,8 +138,8 @@ if ( ! empty( $rop_custom_messages_group ) ) {
                     <div class='image-preview-wrapper'>
                         <img class="rop-img-attached" src='{$image_path}' style="width: auto; height: 100px;" alt="">
                     </div>
-                    <input class="rop-image-attach" type="button" class="button" value="{$button_label_switch}" data-rop-img-id="{$i}"/>
-                    <input class="rop-image-remove" type="button" class="button" value="{$button_remove}" data-rop-img-id="{$i}" {$hide_remove}/>
+                    <input class="rop-image-attach button button-primary" type="button" value="{$button_label_switch}" data-rop-img-id="{$i}"/>
+                    <input class="rop-image-remove button button-secondary" type="button" value="{$button_remove}" data-rop-img-id="{$i}" {$hide_remove}/>
                     <input type='hidden' value='{$image_id}' class="rop-hidden-attachment-id" name="rop_custom_image[]">
                 </div>
                 <div style="clear:both"></div>
@@ -170,7 +176,7 @@ MULTIPLE_VARIATION_GROUP;
                 <div class='image-preview-wrapper'>
                     <img class="rop-img-attached" src='' width="100" height="100" alt="">
                 </div>
-                <input class="rop-image-attach" type="button" class="button" value="{$label_button}" data-rop-img-id="0"/>
+                <input class="rop-image-attach button button-primary" type="button" value="{$label_button}" data-rop-img-id="0"/>
                 <input type='hidden' value='' class="rop-hidden-attachment-id" name="rop_custom_image[]">
             </div>
             <div style="clear:both"></div>
@@ -204,8 +210,8 @@ echo <<<DEFAULT_GROUP
                 <div class='image-preview-wrapper'>
                     <img class="rop-img-attached" src='' width="100" height="100" alt="">
                 </div>
-                <input class="rop-image-attach" type="button" class="button" value="{$label_button}" data-rop-img-id=""/>
-                <input class="rop-image-remove" type="button" class="button" value="{$button_remove}" data-rop-img-id="{$i}" {$hide_remove}/>
+                <input class="rop-image-attach button button-primary" type="button" value="{$label_button}" data-rop-img-id=""/>
+                <input class="rop-image-remove button button-secondary" type="button" value="{$button_remove}" data-rop-img-id="{$i}" {$hide_remove}/>
                 <input type='hidden' value='' class="rop-hidden-attachment-id" name="rop_custom_image[]">
             </div>
             <div style="clear:both"></div>

@@ -55,7 +55,7 @@ class Rop_Post_Format_Helper {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   int $post_id The post ID.
+	 * @param   int        $post_id The post ID.
 	 * @param   string|int $account_id The post account id.
 	 *
 	 * @return array
@@ -133,7 +133,10 @@ class Rop_Post_Format_Helper {
 	 * @return array
 	 */
 	public function build_content( $post_id ) {
-		$default_content = array( 'display_content' => '', 'hashtags' => '' );
+		$default_content = array(
+			'display_content' => '',
+			'hashtags'        => '',
+		);
 		$content_helper  = new Rop_Content_Helper();
 		$max_length      = $this->post_format['maximum_length'];
 
@@ -220,7 +223,7 @@ class Rop_Post_Format_Helper {
 			$size = $max_length;
 		}
 		$service = $this->get_service();
-		if ( $service === 'twitter' && $this->post_format['include_link'] ) {
+		if ( 'twitter' === $service && $this->post_format['include_link'] ) {
 			$size = $size - 24;
 		}
 		$base_content = $content_helper->token_truncate( $base_content, $size );
@@ -282,7 +285,7 @@ class Rop_Post_Format_Helper {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   int $post_id The post ID.
+	 * @param   int    $post_id The post ID.
 	 * @param   string $field_key The field key name.
 	 *
 	 * @return mixed
@@ -333,9 +336,9 @@ class Rop_Post_Format_Helper {
 	 * @since   8.0.0
 	 * @access  private
 	 *
-	 * @param   string $content The content to filter.
+	 * @param   string             $content The content to filter.
 	 * @param   Rop_Content_Helper $content_helper The content helper class. Used for processing.
-	 * @param   int $post The post object.
+	 * @param   int                $post The post object.
 	 *
 	 * @return array
 	 */
@@ -386,7 +389,7 @@ class Rop_Post_Format_Helper {
 		$service = $this->get_service();
 
 		foreach ( $result as $hashtag ) {
-			if ( $content_helper->mark_hashtags( $content, $hashtag ) !== false && $service !== 'tumblr' ) { // if the hashtag exists in $content
+			if ( $content_helper->mark_hashtags( $content, $hashtag ) !== false && 'tumblr' !== $service ) { // if the hashtag exists in $content
 				$content = $content_helper->mark_hashtags( $content, $hashtag ); // simply add a # there
 				$hashtags_length --; // subtract 1 for the # we added to $content
 			} elseif ( $this->string_length( $hashtag . $hashtags ) <= $hashtags_length || $hashtags_length == 0 ) {
@@ -885,7 +888,7 @@ class Rop_Post_Format_Helper {
 	 *
 	 * @param   string $url The URL to shorten.
 	 * @param   string $short_url_service The shorten service. Used by the factory to build the service.
-	 * @param   array $credentials Optional. If needed the service credentials.
+	 * @param   array  $credentials Optional. If needed the service credentials.
 	 *
 	 * @return string
 	 */
