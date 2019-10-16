@@ -1,10 +1,13 @@
 <template>
 	<div>
 		<div class="tile-content">
-			<div class="tile-title"><span v-html="labels.add_account"></span></div>
 		</div>
 		<div class="rop-add-account">
-					<sign-in-btn></sign-in-btn>
+     <button class="btn btn-secondary" v-if="!this.add_more_clicked" @click="addMore()">
+        <i class="fa fa-plus"></i>{{labels.add_all_cta}}
+     </button>
+
+					<sign-in-btn  v-if="this.add_more_clicked"></sign-in-btn>
 		</div>
 	</div>
 </template>
@@ -19,13 +22,19 @@
 				addAccountActive: false,
 				labels: this.$store.state.labels.accounts,
 				upsell_link: ropApiSettings.upsell_link,
+    add_more_clicked: false,
 			}
 		},
 		computed: {
 		},
 		components: {
 			SignInBtn,
-		}
+		},
+  methods: {
+    addMore: function () {
+        this.add_more_clicked = true;
+    },
+  }
 	}
 </script>
 
@@ -50,4 +59,5 @@
 	.fa {
 		transition: all .3s cubic-bezier(.34, 1.61, .7, 1);
 	}
+
 </style>

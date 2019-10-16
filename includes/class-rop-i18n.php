@@ -94,6 +94,7 @@ class Rop_I18n {
 				'no_accounts_desc'        => __( 'Use the network buttons below to sign in and add your social media accounts to the plugin.', 'tweet-old-post' ),
 				'lite_pro_table_upsell'  => sprintf( __( 'Unlock more great features! Checkout the Lite vs Pro table %1$shere%2$s.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/941-revive-old-post-free-vs-pro" target="_blank">', '</a>' ),
 				'has_accounts_desc'       => __( ' Authenticate a new service (eg. Facebook, Twitter etc. ), select the account you want to add from that service and ensure the switch is in the <b>ON</b> position. Only the active accounts will be used for sharing.', 'tweet-old-post' ),
+				'add_all_cta'          => __( 'Add more accounts', 'tweet-old-post' ),
 				'remove_all_cta'          => __( 'Remove all accounts', 'tweet-old-post' ),
 				'accounts_selector'       => __( 'Each <b>account</b> can have it\'s own options for sharing, on the left you can see the current selected account and network, bellow are the options for the account. Don\'t forget to save after each change and remember, you can always reset an account to the network defaults.', 'tweet-old-post' ),
 				'save_selector_btn'       => __( 'Save', 'tweet-old-post' ),
