@@ -246,7 +246,6 @@ class Rop_Admin {
 		}
 
 		$services        = new Rop_Services_Model();
-		$tw_service      = new Rop_Twitter_Service();
 		$active_accounts = $services->get_active_accounts();
 
 		$global_settings = new Rop_Global_Settings();
@@ -258,7 +257,6 @@ class Rop_Admin {
 		$array_nonce['upsell_link']             = Rop_I18n::UPSELL_LINK;
 		$array_nonce['pro_installed']           = ( defined( 'ROP_PRO_VERSION' ) ) ? true : false;
 		$array_nonce['staging']                 = $this->rop_site_is_staging();
-		$array_nonce['show_tw_app_btn']         = $tw_service->rop_show_tw_app_btn();
 		$array_nonce['debug']                   = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
 		$array_nonce['publish_now']             = array(
 			'action'   => $settings->get_instant_sharing_by_default(),
