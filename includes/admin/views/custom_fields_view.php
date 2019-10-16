@@ -18,14 +18,30 @@
 			return false;
 		});
 
+		var $variations_container = $('#rop-custom-messages-group');
+
+		// ROP remove variation image
+		$variations_container.on('click tap', '.rop-image-remove', function (e) {
+			e.preventDefault();
+			var row_container = $(this).closest('.rop-content-variation');
+			var image_id = row_container.find('.rop-hidden-attachment-id');
+			var image_src = row_container.find('.rop-img-attached');
+
+			image_src.attr('src', '');
+			image_id.val('');
+			$(this).hide();
+		});
+
+
 		// ROP image upload for variation
-		$('#rop-custom-messages-group').on("click tap", ".rop-image-attach", function (e) {
+		$variations_container.on('click tap', '.rop-image-attach', function (e) {
 			e.preventDefault();
 			var identifier = this.dataset.ropImgId;
 			var row_container = $(this).closest('.rop-content-variation');
 			var wp_media_post_id = wp.media.model.settings.post.id; // Store the old id
 			var image_id = row_container.find('.rop-hidden-attachment-id');
 			var image_src = row_container.find('.rop-img-attached');
+			var remove_button = row_container.find('.rop-image-remove');
 			var this_image = file_names[identifier];
 
 			if (this_image) {
@@ -52,6 +68,7 @@
 					// Do something with attachment.id and/or attachment.url here
 					image_src.attr('src', attachment.url).css('width', 'auto');
 					image_id.val(attachment.id);
+					remove_button.show();
 
 					// Restore the main post ID
 					wp.media.model.settings.post.id = wp_media_post_id;
@@ -69,7 +86,8 @@
 
 
 <?php
-$label_button = Rop_I18n::get_labels( 'post_editor.variation_image' );
+$label_button        = Rop_I18n::get_labels( 'post_editor.variation_image' );
+$label_button_change = Rop_I18n::get_labels( 'post_editor.variation_image_change' );
 
 if ( ! empty( $rop_custom_messages_group ) ) {
 	$i                      = 1;
@@ -81,16 +99,21 @@ if ( ! empty( $rop_custom_messages_group ) ) {
 		$description_value = ( ( ! empty( trim( $field['rop_custom_description'] ) ) ) ? esc_attr( $field['rop_custom_description'] ) : '' );
 		$image_value       = ( ! empty( $rop_custom_images_group ) && isset( $rop_custom_images_group[ $img_index ] ) ) ? $rop_custom_images_group[ $img_index ]['rop_custom_image'] : 0;
 
-		$image_id   = '';
-		$image_path = '';
+		$image_id    = '';
+		$image_path  = '';
+		$hide_remove = '';
 		if ( ! empty( $image_value ) ) {
 			$image_id       = $image_value;
 			$get_image_path = wp_get_attachment_url( absint( $image_id ) );
 			if ( ! empty( $get_image_path ) ) {
 				$image_path = $get_image_path;
 			}
+		} else {
+			$hide_remove = ' style="display:none"';
 		}
 
+		$button_label_switch = ( empty( $image_id ) ) ? $label_button : $label_button_change;
+		$button_remove       = Rop_I18n::get_labels( 'post_editor.variation_remove_image' );
 
 		echo <<<MULTIPLE_VARIATION_GROUP
         <div class="rop-content-variation">
@@ -109,7 +132,8 @@ if ( ! empty( $rop_custom_messages_group ) ) {
                     <div class='image-preview-wrapper'>
                         <img class="rop-img-attached" src='{$image_path}' style="width: auto; height: 100px;" alt="">
                     </div>
-                    <input class="rop-image-attach" type="button" class="button" value="{$label_button}" data-rop-img-id="{$i}"/>
+                    <input class="rop-image-attach" type="button" class="button" value="{$button_label_switch}" data-rop-img-id="{$i}"/>
+                    <input class="rop-image-remove" type="button" class="button" value="{$button_remove}" data-rop-img-id="{$i}" {$hide_remove}/>
                     <input type='hidden' value='{$image_id}' class="rop-hidden-attachment-id" name="rop_custom_image[]">
                 </div>
                 <div style="clear:both"></div>
