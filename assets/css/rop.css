@@ -4362,3 +4362,9 @@ padding: 0 20px;
 .rop-spacer{
 	margin: 5px;
 }
+
+
+.tile-action div {
+	display: inline-block;
+	vertical-align: middle;
+}
