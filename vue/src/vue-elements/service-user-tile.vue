@@ -1,10 +1,6 @@
 <template>
 	<div class="tile tile-centered rop-account" :class="'rop-'+type+'-account'">
 
-		<div class="tile-icon rop-remove-account tooltip tooltip-right" @click="removeAccount(account_id) "  :data-tooltip="labels.remove_account" v-if=" ! account_data.active">
-			<i class="fa fa-trash" v-if=" ! is_loading"></i>
-			<i class="fa fa-spinner fa-spin" v-else></i>
-		</div>
 		<div class="tile-icon">
 			<div class="icon_box" :class="service">
 				<img class="service_account_image" :src="img" v-if="img"/>
@@ -24,6 +20,12 @@
 					<i class="form-icon"></i>
 				</label>
 			</div>
+
+   		<div class="tile-icon rop-remove-account tooltip tooltip-right" @click="removeAccount(account_id) "  :data-tooltip="labels.remove_account" v-if=" ! account_data.active">
+			<i class="fa fa-trash" v-if=" ! is_loading"></i>
+			<i class="fa fa-spinner fa-spin" v-else></i>
+		</div>
+
 		</div>
 	</div>
 </template>
@@ -228,8 +230,6 @@
 		width:15px;
 		text-align: center;
 		cursor: pointer;
-	    padding-right: 10px;
-		margin-right: 10px;
 		height: 100%;
 		-ms-flex: 0 0 auto;
 		line-height: 40px;
