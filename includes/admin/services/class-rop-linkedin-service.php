@@ -456,6 +456,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
+		// check if linkedin Account was added using Revive Social app
 		$added_with_app = get_option( 'rop_linkedin_via_rs_app' );
 
 		if ( ! empty( $added_with_app ) ) {
@@ -496,6 +497,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 					$post_details['service']
 				)
 			);
+			// check if the token will expire soon
+			$this->rop_refresh_linkedin_token_notice();
 		} catch ( Exception $exception ) {
 			$this->logger->alert_error( 'Cannot share to linkedin. Error:  ' . $exception->getMessage() );
 			$this->rop_get_error_docs( $exception->getMessage() );
@@ -687,6 +690,11 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$the_id       = unserialize( base64_decode( $accounts_data['id'] ) );
 		$accounts_array = unserialize( base64_decode( $accounts_data['pages'] ) );
 
+		// last array item contains notify date
+		$notify_user_at = array_pop( $accounts_array );
+		// save timestamp for when to notify user to refresh their linkedin token
+		update_option( 'rop_linkedin_refresh_token_notice', $notify_user_at['notify_user_at'] );
+
 		$accounts = array();
 
 		for ( $i = 0; $i < sizeof( $accounts_array ); $i++ ) {
@@ -739,6 +747,39 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Method used to notify user that they should refresh their LinkedIn token
+	 *
+	 * @since   8.5.0
+	 * @access  public
+	 */
+	public function rop_refresh_linkedin_token_notice() {
+
+		$notify_at = get_option( 'rop_linkedin_refresh_token_notice' );
+
+		if ( empty( $notify_at ) ) {
+			return;
+		}
+
+		$now = time();
+
+		if ( $notify_at <= $now ) {
+
+				$headers = array('Content-Type: text/html; charset=UTF-8');
+				$admin_email = get_option( 'admin_email' );
+				$subject = Rop_I18n::get_labels( 'emails.refresh_linkedin_token_subject' );
+				$message = Rop_I18n::get_labels( 'emails.refresh_linkedin_token_message' );
+
+				// notify user to refresh token
+				wp_mail( $admin_email, $subject, $message, $headers );
+				$this->logger->alert_error( Rop_I18n::get_labels( 'general.rop_linkedin_refresh_token' ) );
+
+		} else {
+			return;
+		}
+
 	}
 
 }
