@@ -517,15 +517,15 @@ class Rop_Admin {
 	 * @since   8.5.0
 	 * @access  public
 	 */
-	 function rop_roadmap_new_tab() {
-    ?>
-    <script type="text/javascript">
-        jQuery(document).ready( function($) {
-            $( "ul#adminmenu a[href$='https://trello.com/b/svAZqXO1/roadmap-revive-old-posts']" ).attr( 'target', '_blank' );
-        });
-    </script>
-    <?php
-}
+	function rop_roadmap_new_tab() {
+		?>
+	<script type="text/javascript">
+		jQuery(document).ready( function($) {
+			$( "ul#adminmenu a[href$='https://trello.com/b/svAZqXO1/roadmap-revive-old-posts']" ).attr( 'target', '_blank' );
+		});
+	</script>
+		<?php
+	}
 
 	/**
 	 * Publish now upsell
