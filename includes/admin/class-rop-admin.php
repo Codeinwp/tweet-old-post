@@ -504,6 +504,30 @@ class Rop_Admin {
 				'content_filters',
 			)
 		);
+
+		add_submenu_page(
+			'TweetOldPost',
+			__( 'Roadmap', 'tweet-old-post' ),
+			__( 'Plugin Roadmap', 'tweet-old-post' ),
+			'manage_options',
+			'https://www.google.com'
+		);
+	}
+
+	/**
+	 * Open roadmap in new tab
+	 *
+	 * @since   8.5.0
+	 * @access  public
+	 */
+	function rop_roadmap_new_tab() {
+		?>
+	<script type="text/javascript">
+		jQuery(document).ready( function($) {
+			$( "ul#adminmenu a[href$='https://trello.com/b/svAZqXO1/roadmap-revive-old-posts']" ).attr( 'target', '_blank' );
+		});
+	</script>
+		<?php
 	}
 
 	/**

@@ -35586,7 +35586,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t.rop-remove-account[_v-f1ff4bd0]{\n\t\twidth:15px;\n\t\ttext-align: center;\n\t\tcursor: pointer;\n\t    padding-right: 10px;\n\t\tmargin-right: 10px;\n\t\theight: 100%;\n\t\t-ms-flex: 0 0 auto;\n\t\tline-height: 40px;\n\t\topacity: 1;\n\t\tmargin-left:0;\n\t\ttransition-timing-function: ease-in;\n\t\ttransition: 1s;\n\t\tz-index:9999;\n\t}\n\n", ""]);
+exports.push([module.i, "\n\t.rop-remove-account[_v-f1ff4bd0]{\n\t\twidth:15px;\n\t\ttext-align: center;\n\t\tcursor: pointer;\n\t\theight: 100%;\n\t\t-ms-flex: 0 0 auto;\n\t\tline-height: 40px;\n\t\topacity: 1;\n\t\tmargin-left:0;\n\t\ttransition-timing-function: ease-in;\n\t\ttransition: 1s;\n\t\tz-index:9999;\n\t}\n\n", ""]);
 
 // exports
 
@@ -35798,8 +35798,6 @@ module.exports = {
 	// 		width:15px;
 	// 		text-align: center;
 	// 		cursor: pointer;
-	// 	    padding-right: 10px;
-	// 		margin-right: 10px;
 	// 		height: 100%;
 	// 		-ms-flex: 0 0 auto;
 	// 		line-height: 40px;
@@ -35816,10 +35814,6 @@ module.exports = {
 }; // <template>
 // 	<div class="tile tile-centered rop-account" :class="'rop-'+type+'-account'">
 //
-// 		<div class="tile-icon rop-remove-account tooltip tooltip-right" @click="removeAccount(account_id) "  :data-tooltip="labels.remove_account" v-if=" ! account_data.active">
-// 			<i class="fa fa-trash" v-if=" ! is_loading"></i>
-// 			<i class="fa fa-spinner fa-spin" v-else></i>
-// 		</div>
 // 		<div class="tile-icon">
 // 			<div class="icon_box" :class="service">
 // 				<img class="service_account_image" :src="img" v-if="img"/>
@@ -35839,6 +35833,12 @@ module.exports = {
 // 					<i class="form-icon"></i>
 // 				</label>
 // 			</div>
+//
+//    		<div class="tile-icon rop-remove-account tooltip tooltip-right" @click="removeAccount(account_id) "  :data-tooltip="labels.remove_account" v-if=" ! account_data.active">
+// 			<i class="fa fa-trash" v-if=" ! is_loading"></i>
+// 			<i class="fa fa-spinner fa-spin" v-else></i>
+// 		</div>
+//
 // 		</div>
 // 	</div>
 // </template>
@@ -35849,7 +35849,7 @@ module.exports = {
 /* 231 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tile tile-centered rop-account\" :class=\"'rop-'+type+'-account'\" _v-f1ff4bd0=\"\">\n\n\t\t<div class=\"tile-icon rop-remove-account tooltip tooltip-right\" @click=\"removeAccount(account_id) \" :data-tooltip=\"labels.remove_account\" v-if=\" ! account_data.active\" _v-f1ff4bd0=\"\">\n\t\t\t<i class=\"fa fa-trash\" v-if=\" ! is_loading\" _v-f1ff4bd0=\"\"></i>\n\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-f1ff4bd0=\"\"></i>\n\t\t</div>\n\t\t<div class=\"tile-icon\" _v-f1ff4bd0=\"\">\n\t\t\t<div class=\"icon_box\" :class=\"service\" _v-f1ff4bd0=\"\">\n\t\t\t\t<img class=\"service_account_image\" :src=\"img\" v-if=\"img\" _v-f1ff4bd0=\"\">\n\t\t\t\t<i class=\"fa  \" :class=\"icon\" aria-hidden=\"true\" _v-f1ff4bd0=\"\"></i>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"tile-content\" _v-f1ff4bd0=\"\">\n\t\t\t<div class=\"tile-title\" _v-f1ff4bd0=\"\">{{ user }}</div>\n\t\t\t<div class=\"tile-subtitle text-gray\" _v-f1ff4bd0=\"\">{{ serviceInfo }}</div>\n\t\t</div>\n\t\t<div class=\"tile-action\" _v-f1ff4bd0=\"\">\n\t\t\t<div class=\"form-group\" _v-f1ff4bd0=\"\">\n\t\t\t\t<label class=\"form-switch\" _v-f1ff4bd0=\"\">\n\t\t\t\t\t<div class=\"ajax-loader \" _v-f1ff4bd0=\"\"><i class=\"fa fa-spinner fa-spin\" v-show=\"is_loading\" _v-f1ff4bd0=\"\"></i></div>\n\t\t\t\t\t<input :disabled=\"checkDisabled\" type=\"checkbox\" v-model=\"account_data.active\" @change=\"startToggleAccount( account_id, type )\" _v-f1ff4bd0=\"\">\n\t\t\t\t\t<i class=\"form-icon\" _v-f1ff4bd0=\"\"></i>\n\t\t\t\t</label>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tile tile-centered rop-account\" :class=\"'rop-'+type+'-account'\" _v-f1ff4bd0=\"\">\n\n\t\t<div class=\"tile-icon\" _v-f1ff4bd0=\"\">\n\t\t\t<div class=\"icon_box\" :class=\"service\" _v-f1ff4bd0=\"\">\n\t\t\t\t<img class=\"service_account_image\" :src=\"img\" v-if=\"img\" _v-f1ff4bd0=\"\">\n\t\t\t\t<i class=\"fa  \" :class=\"icon\" aria-hidden=\"true\" _v-f1ff4bd0=\"\"></i>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"tile-content\" _v-f1ff4bd0=\"\">\n\t\t\t<div class=\"tile-title\" _v-f1ff4bd0=\"\">{{ user }}</div>\n\t\t\t<div class=\"tile-subtitle text-gray\" _v-f1ff4bd0=\"\">{{ serviceInfo }}</div>\n\t\t</div>\n\t\t<div class=\"tile-action\" _v-f1ff4bd0=\"\">\n\t\t\t<div class=\"form-group\" _v-f1ff4bd0=\"\">\n\t\t\t\t<label class=\"form-switch\" _v-f1ff4bd0=\"\">\n\t\t\t\t\t<div class=\"ajax-loader \" _v-f1ff4bd0=\"\"><i class=\"fa fa-spinner fa-spin\" v-show=\"is_loading\" _v-f1ff4bd0=\"\"></i></div>\n\t\t\t\t\t<input :disabled=\"checkDisabled\" type=\"checkbox\" v-model=\"account_data.active\" @change=\"startToggleAccount( account_id, type )\" _v-f1ff4bd0=\"\">\n\t\t\t\t\t<i class=\"form-icon\" _v-f1ff4bd0=\"\"></i>\n\t\t\t\t</label>\n\t\t\t</div>\n\n   \t\t<div class=\"tile-icon rop-remove-account tooltip tooltip-right\" @click=\"removeAccount(account_id) \" :data-tooltip=\"labels.remove_account\" v-if=\" ! account_data.active\" _v-f1ff4bd0=\"\">\n\t\t\t<i class=\"fa fa-trash\" v-if=\" ! is_loading\" _v-f1ff4bd0=\"\"></i>\n\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-f1ff4bd0=\"\"></i>\n\t\t</div>\n\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 232 */
