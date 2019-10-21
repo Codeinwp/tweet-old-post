@@ -832,7 +832,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 	/**
 	 * Method to scrape post URLs before sharing.
-	 * 
+	 *
 	 * Facebook crawler caches post details, this method ensures the shared post always reflects the correct info
 	 *
 	 * @since   8.5.0
