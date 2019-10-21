@@ -128,6 +128,7 @@ class Rop {
 		$tutorial_pointers = new Rop_Pointers();
 
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'legacy_auth', 2 );
+		$this->loader->add_action( 'admin_head', $plugin_admin, 'rop_roadmap_new_tab' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_dismiss_rop_event_not_firing_notice' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_cron_event_status_notice' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_dismiss_buffer_addon_disabled_notice' );
