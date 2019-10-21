@@ -806,6 +806,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		for ( $i = 0; $i < sizeof( $pages_arr ); $i++ ) {
 
 			$page_data = unserialize( base64_decode( $pages_arr[ $i ] ) );
+			// assign default values to variable
 			$page = $this->user_default;
 			$page['id'] = $page_data['id'];
 			$page['user'] = $this->normalize_string( empty( $page_data['name'] ) ? '' : $page_data['name'] );
