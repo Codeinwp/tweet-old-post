@@ -249,7 +249,7 @@ class Rop_Admin {
 		$li_service          = new Rop_Linkedin_Service();
 		$active_accounts = $services->get_active_accounts();
 
-		$added_services	= $services->get_authenticated_services();
+		$added_services = $services->get_authenticated_services();
 		$added_networks = 0;
 		if ( $added_services ) {
 			$added_networks = count( array_unique( wp_list_pluck( array_values( $added_services ), 'service' ) ) );
