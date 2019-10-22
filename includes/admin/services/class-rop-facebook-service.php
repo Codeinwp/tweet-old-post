@@ -659,7 +659,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				) {
 					// https://developers.facebook.com/docs/graph-api/reference/v3.2/page/feed#custom-image
 					// retry without name and with link inside message.
-
 					if ( isset( $new_post['name'] ) ) {
 						unset( $new_post['name'] );
 					}
@@ -731,7 +730,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				) {
 					// https://developers.facebook.com/docs/graph-api/reference/v3.2/page/feed#custom-image
 					// retry without name and with link inside message.
-
 					if ( isset( $post_data['name'] ) ) {
 						unset( $post_data['name'] );
 					}

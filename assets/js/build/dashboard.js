@@ -34515,22 +34515,7 @@ module.exports = {
                     'action': new_status
                 }
             }).then(function (response) {
-                if ('stop' === new_status) {
-                    _this3.$store.dispatch('fetchAJAXPromise', {
-                        req: 'manage_cron',
-                        data: {
-                            'action': new_status,
-                            'refresh_action': false
-                        }
-                    }).then(function (response) {
-                        _this3.is_loading = false;
-                    }, function (error) {
-                        _this3.is_loading = false;
-                        Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
-                    });
-                } else {
-                    _this3.is_loading = false;
-                }
+                _this3.is_loading = false;
             }, function (error) {
                 _this3.is_loading = false;
                 Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);

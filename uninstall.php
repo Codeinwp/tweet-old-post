@@ -14,7 +14,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
-$settings = get_option( 'rop_data' );
+$settings     = get_option( 'rop_data' );
 $housekeeping = $settings['general_settings']['housekeeping'];
 
 if ( isset( $housekeeping ) && $housekeeping ) {
@@ -63,6 +63,15 @@ if ( isset( $housekeeping ) && $housekeeping ) {
 		 * @see Rop_Rest_Api::fb_exception_toast()
 		 */
 		'rop_facebook_domain_toast',
+		/**
+		 * Related function
+		 *
+		 * @since 8.5.0
+		 *
+		 * @see Rop_Admin::check_cron_status()
+		 * @see Rop_Cron_Helper::cron_status_global_change()
+		 */
+		'rop_is_sharing_cron_active',
 	);
 
 	foreach ( $option_keys as $key ) {

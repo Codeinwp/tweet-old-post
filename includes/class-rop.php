@@ -145,7 +145,7 @@ class Rop {
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'menu_pages' );
 		$this->loader->add_action( 'rop_cron_job', $plugin_admin, 'rop_cron_job' );
 		$this->loader->add_action( 'rop_cron_job_once', $plugin_admin, 'rop_cron_job_once' );
-
+		$this->loader->add_action( 'init', $plugin_admin, 'check_cron_status', 20 );
 		$this->loader->add_action( 'rop_cron_job_publish_now', $plugin_admin, 'rop_cron_job_publish_now' );
 		$this->loader->add_action( 'post_submitbox_misc_actions', $plugin_admin, 'add_publish_actions' );
 		$this->loader->add_action( 'post_submitbox_misc_actions', $plugin_admin, 'publish_now_upsell' );
@@ -190,6 +190,7 @@ class Rop {
 			'title' => __( 'Below is a detailed view of all data that ReviveSocial will receive if you fill in this survey. No domain name, email address or IP addresses are transmited after you submit the survey.', 'tweet-old-post' ),
 		);
 	}
+
 	/**
 	 * Change review confirm text.
 	 *
@@ -207,6 +208,7 @@ class Rop {
 	public function change_review_cancel_message() {
 		return __( 'No, thanks', 'tweet-old-post' );
 	}
+
 	/**
 	 * Change old message asking for review.
 	 *
@@ -217,6 +219,7 @@ class Rop {
 	public function change_review_message( $old_message ) {
 		return __( 'Hi there, <br/><strong>Revive Social</strong> team here, we noticed you\'ve been using our plugin for a while now, has it been a great help? If so, would you mind leaving us a review? It would help a ton, thanks!<br/>', 'tweet-old-post' );
 	}
+
 	/**
 	 * The name of the plugin used to uniquely identify it within the context of
 	 * WordPress and to define internationalization functionality.
@@ -256,7 +259,7 @@ class Rop {
 
 			// Skip if the buffer addon is not active.
 			if ( ! class_exists( 'Rop_Buffer_Service' ) && $service === 'buffer' ) {
-					continue;
+				continue;
 			}
 
 			try {

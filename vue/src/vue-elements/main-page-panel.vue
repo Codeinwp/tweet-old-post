@@ -274,22 +274,7 @@
                         'action': new_status
                     }
                 }).then(response => {
-                    if ('stop' === new_status) {
-                        this.$store.dispatch('fetchAJAXPromise', {
-                            req: 'manage_cron',
-                            data: {
-                                'action': new_status,
-                                'refresh_action': false
-                            }
-                        }).then(response => {
-                            this.is_loading = false;
-                        }, error => {
-                            this.is_loading = false;
-                            Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
-                        })
-                    } else {
-                        this.is_loading = false;
-                    }
+                    this.is_loading = false;
                 }, error => {
                     this.is_loading = false;
                     Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)

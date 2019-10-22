@@ -176,7 +176,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @access  public
 	 *
 	 * @param   string $account_id The account ID.
-	 * @param   bool $schedule_data The schedule data.
+	 * @param   bool   $schedule_data The schedule data.
 	 *
 	 * @return mixed
 	 */
@@ -303,7 +303,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   int $base Timestamp to reffer to.
+	 * @param   int    $base Timestamp to reffer to.
 	 * @param   string $account_id Timestamp to reffer to.
 	 *
 	 * @return array
@@ -446,7 +446,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @access  private
 	 *
 	 * @param   float $value The value to be converted.
-	 * @param   bool $as_array Flag to change return type to array.
+	 * @param   bool  $as_array Flag to change return type to array.
 	 *
 	 * @return array|string
 	 */
@@ -471,8 +471,8 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @access  private
 	 *
 	 * @param   string $time The time to append to.
-	 * @param   int $hours The hours to be added.
-	 * @param   int $minutes The minutes to be added.
+	 * @param   int    $hours The hours to be added.
+	 * @param   int    $minutes The minutes to be added.
 	 *
 	 * @return false|string
 	 */
@@ -521,7 +521,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * Update the events timeline.
 	 *
 	 * @param $new_events $new_events New events timeline.
-	 * @param string $account_id account id
+	 * @param string     $account_id account id
 	 *
 	 * @return bool Success or not.
 	 */
@@ -547,7 +547,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	/**
 	 * Remove timestamp from timeline.
 	 *
-	 * @param int $timestamp Timestamp value.
+	 * @param int    $timestamp Timestamp value.
 	 * @param string $account_id Account id.
 	 *
 	 * @return int Index to remove.
