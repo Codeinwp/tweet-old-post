@@ -34442,7 +34442,8 @@ module.exports = {
 			addAccountActive: false,
 			labels: this.$store.state.labels.accounts,
 			upsell_link: ropApiSettings.upsell_link,
-			add_more_clicked: false
+			add_more_clicked: false,
+			added_networks: ropApiSettings.added_networks
 		};
 	},
 	computed: {},
@@ -34486,11 +34487,11 @@ module.exports = {
 // 		<div class="tile-content">
 // 		</div>
 // 		<div class="rop-add-account">
-//      <button class="btn btn-secondary" v-if="!this.add_more_clicked" @click="addMore()">
+//      <button class="btn btn-secondary" v-if="!this.add_more_clicked && this.added_networks >= 2" @click="addMore()">
 //         <i class="fa fa-plus"></i>{{labels.add_all_cta}}
 //      </button>
 //
-// 					<sign-in-btn  v-if="this.add_more_clicked"></sign-in-btn>
+// 					<sign-in-btn  v-if="this.add_more_clicked || this.added_networks < 2"></sign-in-btn>
 // 		</div>
 // 	</div>
 // </template>
@@ -34501,7 +34502,7 @@ module.exports = {
 /* 232 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div _v-6836684e=\"\">\n\t\t<div class=\"tile-content\" _v-6836684e=\"\">\n\t\t</div>\n\t\t<div class=\"rop-add-account\" _v-6836684e=\"\">\n     <button class=\"btn btn-secondary\" v-if=\"!this.add_more_clicked\" @click=\"addMore()\" _v-6836684e=\"\">\n        <i class=\"fa fa-plus\" _v-6836684e=\"\"></i>{{labels.add_all_cta}}\n     </button>\n\n\t\t\t\t\t<sign-in-btn v-if=\"this.add_more_clicked\" _v-6836684e=\"\"></sign-in-btn>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div _v-6836684e=\"\">\n\t\t<div class=\"tile-content\" _v-6836684e=\"\">\n\t\t</div>\n\t\t<div class=\"rop-add-account\" _v-6836684e=\"\">\n     <button class=\"btn btn-secondary\" v-if=\"!this.add_more_clicked &amp;&amp; this.added_networks >= 2\" @click=\"addMore()\" _v-6836684e=\"\">\n        <i class=\"fa fa-plus\" _v-6836684e=\"\"></i>{{labels.add_all_cta}}\n     </button>\n\n\t\t\t\t\t<sign-in-btn v-if=\"this.add_more_clicked || this.added_networks < 2\" _v-6836684e=\"\"></sign-in-btn>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 233 */

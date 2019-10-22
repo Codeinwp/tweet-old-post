@@ -248,6 +248,12 @@ class Rop_Admin {
 		$services        = new Rop_Services_Model();
 		$active_accounts = $services->get_active_accounts();
 
+		$added_services	= $services->get_authenticated_services();
+		$added_networks = 0;
+		if ( $added_services ) {
+			$added_networks = count( array_unique( wp_list_pluck( array_values( $added_services ), 'service' ) ) );
+		}
+
 		$global_settings = new Rop_Global_Settings();
 		$settings        = new Rop_Settings_Model();
 
@@ -262,6 +268,7 @@ class Rop_Admin {
 			'action'   => $settings->get_instant_sharing_by_default(),
 			'accounts' => $active_accounts,
 		);
+		$array_nonce['added_networks']                   = $added_networks;
 
 		$admin_url = get_admin_url( get_current_blog_id(), 'admin.php?page=TweetOldPost' );
 		$token     = get_option( ROP_APP_TOKEN_OPTION );

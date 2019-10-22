@@ -3,11 +3,11 @@
 		<div class="tile-content">
 		</div>
 		<div class="rop-add-account">
-     <button class="btn btn-secondary" v-if="!this.add_more_clicked" @click="addMore()">
+     <button class="btn btn-secondary" v-if="!this.add_more_clicked && this.added_networks >= 2" @click="addMore()">
         <i class="fa fa-plus"></i>{{labels.add_all_cta}}
      </button>
 
-					<sign-in-btn  v-if="this.add_more_clicked"></sign-in-btn>
+					<sign-in-btn  v-if="this.add_more_clicked || this.added_networks < 2"></sign-in-btn>
 		</div>
 	</div>
 </template>
@@ -23,6 +23,7 @@
 				labels: this.$store.state.labels.accounts,
 				upsell_link: ropApiSettings.upsell_link,
     add_more_clicked: false,
+    added_networks: ropApiSettings.added_networks,
 			}
 		},
 		computed: {
