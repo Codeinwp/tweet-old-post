@@ -34,6 +34,10 @@
 							<button class="btn btn-primary big-btn" @click="openPopupLI()">{{labels.li_app_signin_btn}}</button>
 							<span class="text-center">{{labels.li_own_app_signin}}</span>
 						</div>
+						<div class="auth-app" v-if="isBuffer">
+							<button class="btn btn-primary big-btn" @click="openPopupBuffer()">{{labels.buffer_app_signin_btn}}</button>
+							<span class="text-center">{{labels.li_own_app_signin}}</span>
+						</div>
 						<div id="rop-advanced-config" v-if="isFacebook || isTwitter || (isLinkedIn && isAllowedLinkedIn)">
 						<button class="btn btn-primary" v-on:click="showAdvanceConfig = !showAdvanceConfig">{{labels.show_advance_config}}</button>
 					</div>
@@ -94,6 +98,7 @@
 				appPathFB: ropAuthAppData.authAppFacebookPath,
         appPathTW: ropAuthAppData.authAppTwitterPath,
         appPathLI: ropAuthAppData.authAppLinkedInPath,
+        appPathBuffer: ropAuthAppData.authAppBufferPath,
 				appAdminEmail: ropAuthAppData.adminEmail,
 				siteAdminUrl: ropAuthAppData.adminUrl,
 				appUniqueId: ropAuthAppData.authToken,
@@ -327,6 +332,18 @@
                     this.cancelModal();
                 }
                 window.addEventListener("message", event => this.getChildWindowMessage(event));
+			},
+            openPopupBuffer: function () { // Open the popup specific for Buffer
+                let loginUrl = this.appOrigin + this.appPathBuffer + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
+                try {
+                    this.authPopupWindow.close();
+                } catch (e) {
+                    // nothing to do
+                } finally {
+                    this.authPopupWindow = window.open(loginUrl, 'authLI', this.windowParameters);
+                    this.cancelModal();
+                }
+                window.addEventListener("message", event => this.getChildWindowMessage(event));
 			}
 		},
 		computed: {
@@ -373,6 +390,10 @@
 									showButton = false;
 							}
 							return showButton;
+					},
+					// will return true if the current service actions are for Buffer.
+					isBuffer() {
+							return this.modal.serviceName === 'Buffer';
 					},
 	}
 }
