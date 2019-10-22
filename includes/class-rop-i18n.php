@@ -79,8 +79,10 @@ class Rop_I18n {
 				'show_advance_config'     => __( 'Use your own keys', 'tweet-old-post' ),
 				'fb_app_signin_btn'       => __( 'Sign in to Facebook', 'tweet-old-post' ),
 				'tw_app_signin_btn'       => __( 'Sign in to Twitter', 'tweet-old-post' ),
+				'li_app_signin_btn'       => __( 'Sign in to LinkedIn', 'tweet-old-post' ),
 				'fb_own_app_signin'       => __( 'Or', 'tweet-old-post' ),
 				'tw_own_app_signin'       => __( 'Or', 'tweet-old-post' ),
+				'li_own_app_signin'       => __( 'Or', 'tweet-old-post' ),
 				'rs_app_info'             => sprintf( __( 'We collect some info, learn more %1$shere%2$s.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/1066-info-we-collect-in-seamless-social-network-connection" target="_blank">', '</a>' ),
 				'service_popup_title'     => __( 'Service Credentials', 'tweet-old-post' ),
 				'sign_in_btn'             => __( 'Sign In', 'tweet-old-post' ),
@@ -333,6 +335,7 @@ You can try to disable any of the security plugins that you use in order to see 
 				),
 				'rop_docs'                  => __( 'Documentation', 'tweet-old-post' ),
 				'rop_roadmap'               => __( 'Roadmap & Voting', 'tweet-old-post' ),
+				'rop_linkedin_refresh_token' => __( 'Your Linkedin access token is about to expire. You need to refresh your LinkedIn token to continue sharing without issue. Paste this link in your browser to find out why and how: https://is.gd/refresh_linkedin_token', 'tweet-old-post' ),
 			),
 			'post_editor' => array(
 				'remove_variation'    => __( 'Delete', 'tweet-old-post' ),
@@ -342,8 +345,10 @@ You can try to disable any of the security plugins that you use in order to see 
 				'variation_num'       => __( 'Content Variation #', 'tweet-old-post' ),
 			),
 			'emails'      => array(
-				'share_once_sharing_done_subject' => __( 'ROP - All Posts Shared', 'tweet-old-post' ),
+				'share_once_sharing_done_subject' => __( 'Revive Old Posts - All Posts Shared', 'tweet-old-post' ),
+				'refresh_linkedin_token_subject' => __( 'Revive Old Posts - Refresh Your LinkedIn Token', 'tweet-old-post' ),
 				'share_once_sharing_done_message' => __( 'All posts have been shared to your connected social media accounts. No previously shared posts will be re-shared until you click the button to "Stop Sharing" and "Start Sharing" on the Revive Old Posts plugin dashboard.', 'tweet-old-post' ),
+				'refresh_linkedin_token_message' => sprintf( __( 'Hi! This email was sent by Revive Old Posts on your website. Your LinkedIn token is about to expire. You need to refresh it to continue sharing without issue. Click the link below to find out why and how: %1$s %2$s', 'tweet-old-post' ), '<br><br>', '<a href="https://docs.revive.social/article/1151-how-to-refresh-linkedin-access-token">https://docs.revive.social/article/1151-how-to-refresh-linkedin-access-token</a>' ),
 			),
 			// pro only.
 			'publish_now' => array(

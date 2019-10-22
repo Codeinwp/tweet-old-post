@@ -246,6 +246,7 @@ class Rop_Admin {
 		}
 
 		$services        = new Rop_Services_Model();
+		$li_service          = new Rop_Linkedin_Service();
 		$active_accounts = $services->get_active_accounts();
 
 		$added_services	= $services->get_authenticated_services();
@@ -263,6 +264,7 @@ class Rop_Admin {
 		$array_nonce['upsell_link']             = Rop_I18n::UPSELL_LINK;
 		$array_nonce['pro_installed']           = ( defined( 'ROP_PRO_VERSION' ) ) ? true : false;
 		$array_nonce['staging']                 = $this->rop_site_is_staging();
+		$array_nonce['show_li_app_btn']         = $li_service->rop_show_li_app_btn();
 		$array_nonce['debug']                   = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
 		$array_nonce['publish_now']             = array(
 			'action'   => $settings->get_instant_sharing_by_default(),
@@ -279,6 +281,7 @@ class Rop_Admin {
 			'authAppUrl'          => ROP_AUTH_APP_URL,
 			'authAppFacebookPath' => ROP_APP_FACEBOOK_PATH,
 			'authAppTwitterPath'  => ROP_APP_TWITTER_PATH,
+			'authAppLinkedInPath' => ROP_APP_LINKEDIN_PATH,
 			'authToken'           => $token,
 			'adminUrl'            => urlencode( $admin_url ),
 			'authSignature'       => $signature,
@@ -508,6 +511,30 @@ class Rop_Admin {
 				'content_filters',
 			)
 		);
+
+		add_submenu_page(
+			'TweetOldPost',
+			__( 'Roadmap', 'tweet-old-post' ),
+			__( 'Plugin Roadmap', 'tweet-old-post' ),
+			'manage_options',
+			'https://www.google.com'
+		);
+	}
+
+	/**
+	 * Open roadmap in new tab
+	 *
+	 * @since   8.5.0
+	 * @access  public
+	 */
+	function rop_roadmap_new_tab() {
+		?>
+	<script type="text/javascript">
+		jQuery(document).ready( function($) {
+			$( "ul#adminmenu a[href$='https://trello.com/b/svAZqXO1/roadmap-revive-old-posts']" ).attr( 'target', '_blank' );
+		});
+	</script>
+		<?php
 	}
 
 	/**
