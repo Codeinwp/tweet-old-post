@@ -283,15 +283,36 @@
                     Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
 				});
 			},
+            /**
+             * Add Buffer account.
+             *
+             * @param data Data.
+             */
+            addAccountBuffer(data) {
+                this.$store.dispatch('fetchAJAXPromise', {
+                    req: 'add_account_buffer',
+                    updateState: false,
+                    data: data
+                }).then(response => {
+                    window.removeEventListener("message", event => this.getChildWindowMessage(event));
+                    this.authPopupWindow.close();
+                    window.location.reload();
+                }, error => {
+                    this.is_loading = false;
+                    Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+				});
+			},
 			getChildWindowMessage: function (event) {
 				if (~event.origin.indexOf(this.appOrigin)) {
-                    if ('Twitter' === this.modal.serviceName) {
-                        this.addAccountTW(JSON.parse(event.data));
-                    } else if ('Facebook' === this.modal.serviceName) {
+            if ('Twitter' === this.modal.serviceName) {
+            this.addAccountTW(JSON.parse(event.data));
+            } else if ('Facebook' === this.modal.serviceName) {
 					    this.addAccountFB(JSON.parse(event.data));
 						} else if ('LinkedIn' === this.modal.serviceName) {
 					    this.addAccountLI(JSON.parse(event.data));
-                    }
+						} else if ('Buffer' === this.modal.serviceName) {
+					    this.addAccountBuffer(JSON.parse(event.data));
+            }
 
 				} else {
 					return;

@@ -246,7 +246,6 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 			$buffer_profile['service'] = $this->service_name;
 
 			$buffer_profile['img']     = $response_field['avatar_https'];
-			$buffer_profile['created'] = date( 'Y-m-d H:i:s', substr( $response_field['created_at'], 0, 10 ) );
 			$buffer_profiles[]            = $buffer_profile;
 		}
 
@@ -438,6 +437,59 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 		}
 
 		return $data;
+	}
+
+	/**
+	 * This method will load and prepare the account data for Buffer user.
+	 * Used in Rest Api.
+	 *
+	 * @since   8.5.0
+	 * @access  public
+	 *
+	 * @param   array $accounts_data Buffer accounts data.
+	 *
+	 * @return  bool
+	 */
+	public function add_account_with_app( $accounts_data ) {
+		if ( ! $this->is_set_not_empty( $accounts_data, array( 'id' ) ) ) {
+			return false;
+		}
+
+		$the_id       = unserialize( base64_decode( $accounts_data['id'] ) );
+		$accounts_array = unserialize( base64_decode( $accounts_data['pages'] ) );
+
+		$accounts = array();
+
+		for ( $i = 0; $i < sizeof( $accounts_array ); $i++ ) {
+
+			$account = $this->user_default;
+
+			$account_data = $accounts_array[ $i ];
+
+			$account['id'] = $account_data['id'];
+			$account['img'] = $account_data['img'];
+			$account['account'] = $account_data['account'];
+			$account['user'] = $account_data['user'];
+			$account['access_token'] = $account_data['access_token'];
+
+			if ( $i === 0 ) {
+				$account['active'] = true;
+			} else {
+				$account['active'] = false;
+			}
+
+			$accounts[] = $account;
+		}
+
+		// Prepare the data that will be saved as new account added.
+		$this->service = array(
+			'id'                 => $the_id,
+			'service'            => $this->service_name,
+			'credentials'        => $account['access_token'],
+			'available_accounts' => $accounts,
+		);
+
+		return true;
 	}
 
 }

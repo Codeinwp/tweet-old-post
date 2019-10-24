@@ -35402,6 +35402,30 @@ module.exports = {
 			});
 		},
 
+		/**
+   * Add Buffer account.
+   *
+   * @param data Data.
+   */
+		addAccountBuffer: function addAccountBuffer(data) {
+			var _this5 = this;
+
+			this.$store.dispatch('fetchAJAXPromise', {
+				req: 'add_account_buffer',
+				updateState: false,
+				data: data
+			}).then(function (response) {
+				window.removeEventListener("message", function (event) {
+					return _this5.getChildWindowMessage(event);
+				});
+				_this5.authPopupWindow.close();
+				window.location.reload();
+			}, function (error) {
+				_this5.is_loading = false;
+				Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+			});
+		},
+
 		getChildWindowMessage: function getChildWindowMessage(event) {
 			if (~event.origin.indexOf(this.appOrigin)) {
 				if ('Twitter' === this.modal.serviceName) {
@@ -35410,13 +35434,15 @@ module.exports = {
 					this.addAccountFB(JSON.parse(event.data));
 				} else if ('LinkedIn' === this.modal.serviceName) {
 					this.addAccountLI(JSON.parse(event.data));
+				} else if ('Buffer' === this.modal.serviceName) {
+					this.addAccountBuffer(JSON.parse(event.data));
 				}
 			} else {
 				return;
 			}
 		},
 		openPopupFB: function openPopupFB() {
-			var _this5 = this;
+			var _this6 = this;
 
 			var loginUrl = this.appOrigin + this.appPathFB + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
 			try {
@@ -35428,11 +35454,11 @@ module.exports = {
 				this.cancelModal();
 			}
 			window.addEventListener("message", function (event) {
-				return _this5.getChildWindowMessage(event);
+				return _this6.getChildWindowMessage(event);
 			});
 		},
 		openPopupTW: function openPopupTW() {
-			var _this6 = this;
+			var _this7 = this;
 
 			// Open the popup specific for Twitter
 			var loginUrl = this.appOrigin + this.appPathTW + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
@@ -35445,11 +35471,11 @@ module.exports = {
 				this.cancelModal();
 			}
 			window.addEventListener("message", function (event) {
-				return _this6.getChildWindowMessage(event);
+				return _this7.getChildWindowMessage(event);
 			});
 		},
 		openPopupLI: function openPopupLI() {
-			var _this7 = this;
+			var _this8 = this;
 
 			// Open the popup specific for LinkedIn
 			var loginUrl = this.appOrigin + this.appPathLI + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
@@ -35462,11 +35488,11 @@ module.exports = {
 				this.cancelModal();
 			}
 			window.addEventListener("message", function (event) {
-				return _this7.getChildWindowMessage(event);
+				return _this8.getChildWindowMessage(event);
 			});
 		},
 		openPopupBuffer: function openPopupBuffer() {
-			var _this8 = this;
+			var _this9 = this;
 
 			// Open the popup specific for Buffer
 			var loginUrl = this.appOrigin + this.appPathBuffer + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
@@ -35479,7 +35505,7 @@ module.exports = {
 				this.cancelModal();
 			}
 			window.addEventListener("message", function (event) {
-				return _this8.getChildWindowMessage(event);
+				return _this9.getChildWindowMessage(event);
 			});
 		}
 	},
