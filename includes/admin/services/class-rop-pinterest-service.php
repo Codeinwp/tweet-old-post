@@ -414,13 +414,15 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 				'board'     => $args['id'],
 			);
 
-
-			$large_image_path = $this->this_image_realpath_to_uploads( 38, 'large' );
-			if ( $large_image_path ) {
-				$base64_img = $this->this_image_to_base64( $large_image_path );
-				if ( ! empty( $base64_img ) ) {
-					$info_to_pin['image_base64'] = $base64_img;
-					unset( $info_to_pin['image_url'] );
+			$image_id = $this->retrieve_image_id_from_db( $post_details['post_image'] );
+			if ( ! empty( $image_id ) ) {
+				$large_image_path = $this->this_image_realpath_to_uploads( $image_id, 'large' );
+				if ( $large_image_path ) {
+					$base64_img = $this->this_image_to_base64( $large_image_path );
+					if ( ! empty( $base64_img ) ) {
+						$info_to_pin['image_base64'] = $base64_img;
+						unset( $info_to_pin['image_url'] );
+					}
 				}
 			}
 
@@ -452,6 +454,14 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 		return true;
 	}
 
+	/**
+	 * Returns local full path to the upload folder for image.
+	 *
+	 * @param int $image_id
+	 * @param string $requested_size
+	 *
+	 * @return bool|string
+	 */
 	function this_image_realpath_to_uploads( $image_id = 0, $requested_size = 'large' ) {
 		if ( empty( $image_id ) ) {
 			return false;
@@ -479,12 +489,52 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 		return realpath( $image_path );
 	}
 
-	function this_image_to_base64( $image_path ) {
+	/**
+	 * Converts local image into base_64 code
+	 *
+	 * @param $image_path
+	 *
+	 * @return string
+	 */
+	public function this_image_to_base64( $image_path ) {
 		$opened_file = fopen( $image_path, 'r' );
 		$contents    = fread( $opened_file, filesize( $image_path ) );
 		fclose( $opened_file );
 
 		return base64_encode( $contents );
+	}
+
+	/**
+	 * Returns post_id or false, where post_id is image media ID
+	 *
+	 * @param string $image_path
+	 *
+	 * @return bool|int
+	 */
+	public function retrieve_image_id_from_db( $image_path = '' ) {
+		global $wpdb;
+
+		$image_path = trim( $image_path );
+
+		if ( empty( $image_path ) ) {
+			return false;
+		}
+
+		$image_name = wp_basename( $image_path );
+		if ( empty( $image_name ) ) {
+			return false;
+		}
+
+		$image_name = $wpdb->esc_like( '' . $image_name . '' );
+		$image_name = '%' . $image_name . '%';
+		// PHPStorm throwing phpcs warning here
+		$prepare_query = $wpdb->prepare( "SELECT `post_id` FROM $wpdb->postmeta WHERE `meta_value` LIKE '%%%s%%' LIMIT 1", $image_name );//phpcs:ignore
+		$image_id      = $wpdb->get_var( $prepare_query );//phpcs:ignore
+		if ( ! empty( $image_id ) ) {
+			return absint( $image_id );
+		}
+
+		return false;
 	}
 
 }
