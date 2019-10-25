@@ -408,12 +408,21 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 
 		// Don't shorten post link, pinterest might reject post if shortened and it also looks bad on pinterest with a shortlink
 		try {
-
 			$info_to_pin = array(
 				'note'      => $this->strip_excess_blank_lines( $post_details['content'] ) . $post_details['hashtags'],
 				'image_url' => $post_details['post_image'],
 				'board'     => $args['id'],
 			);
+
+
+			$large_image_path = $this->this_image_realpath_to_uploads( 38, 'large' );
+			if ( $large_image_path ) {
+				$base64_img = $this->this_image_to_base64( $large_image_path );
+				if ( ! empty( $base64_img ) ) {
+					$info_to_pin['image_base64'] = $base64_img;
+					unset( $info_to_pin['image_url'] );
+				}
+			}
 
 			$pin = $api->pins->create( $info_to_pin );
 		} catch ( \DirkGroenen\Pinterest\Exceptions\PinterestException $e ) {
@@ -441,6 +450,41 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 		);
 
 		return true;
+	}
+
+	function this_image_realpath_to_uploads( $image_id = 0, $requested_size = 'large' ) {
+		if ( empty( $image_id ) ) {
+			return false;
+		}
+
+		$original_file_path = get_attached_file( $image_id, true );
+
+		if ( empty( $requested_size ) || 'full' === $requested_size ) {
+			return realpath( $original_file_path );
+		}
+
+		if ( false === wp_attachment_is_image( $image_id ) ) {
+			return false; // This is not a media ID
+		}
+
+		$image = image_get_intermediate_size( $image_id, $requested_size );
+
+		if ( ! is_array( $image ) || ! isset( $image['file'] ) ) {
+			return false; // File size does not exist
+		}
+
+		// Use the original path and add the required size filename instead.
+		$image_path = str_replace( wp_basename( $original_file_path ), $image['file'], $original_file_path );
+
+		return realpath( $image_path );
+	}
+
+	function this_image_to_base64( $image_path ) {
+		$opened_file = fopen( $image_path, 'r' );
+		$contents    = fread( $opened_file, filesize( $image_path ) );
+		fclose( $opened_file );
+
+		return base64_encode( $contents );
 	}
 
 }
