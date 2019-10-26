@@ -246,7 +246,7 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 			$buffer_profile['service'] = $this->service_name;
 
 			$buffer_profile['img']     = $response_field['avatar_https'];
-			$buffer_profiles[]            = $buffer_profile;
+			$buffer_profiles[]         = $buffer_profile;
 		}
 
 		return $buffer_profiles;
