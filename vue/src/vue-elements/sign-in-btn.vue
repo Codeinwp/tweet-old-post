@@ -3,6 +3,7 @@
 		<div class="input-group text-right buttons-wrap">
 			<button v-for="( service, network ) in services"
 					:disabled="checkDisabled( service, network )"
+					:title="getTooltip( service, network )"
 					class="btn input-group-btn"
 					:class="'btn-' + network"
 					@click="requestAuthorization( network )">
@@ -110,6 +111,37 @@
 			}
 		},
 		methods: {
+			/**
+			 * Get tooltip for the service.
+			 *
+			 *
+			 * @param service
+			 * @param network
+			 * @returns {string}
+			 */
+			getTooltip(service, network) {
+				if (service !== undefined && service.active === false) {
+					return this.labels.only_in_pro
+				}
+				let countAuthServices = 0
+				for (let authService in this.$store.state.authenticatedServices) {
+					if (this.$store.state.authenticatedServices[authService].service === network) {
+						countAuthServices++
+					}
+				}
+
+				let countActiveAccounts = 0
+				for (let activeAccount in this.$store.state.activeAccounts) {
+					if (this.$store.state.activeAccounts[activeAccount].service === network) {
+						countActiveAccounts++
+					}
+				}
+
+				if (service !== undefined && (service.allowed_accounts <= countAuthServices || service.allowed_accounts <= countActiveAccounts)) {
+					return this.labels.limit_reached
+				}
+    return ''
+  },
 			/**
 			 * Check status for the service.
 			 *
