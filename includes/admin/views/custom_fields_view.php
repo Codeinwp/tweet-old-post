@@ -1,91 +1,91 @@
 <script type="text/javascript">
-	jQuery(document).ready(function ($) {
-		var file_names = {};
-		var rop_elements = $('.rop-content-variation');
-		var count_elements = parseInt(rop_elements.length);
-		var label_upload = '<?php echo esc_attr( Rop_I18n::get_labels( 'post_editor.variation_image' ) ); ?>';
-		var label_change = '<?php echo esc_attr( Rop_I18n::get_labels( 'post_editor.variation_image_change' ) ); ?>';
+    jQuery(document).ready(function ($) {
+        var file_names = {};
+        var rop_elements = $('.rop-content-variation');
+        var count_elements = parseInt(rop_elements.length);
+        var label_upload = '<?php echo esc_attr( Rop_I18n::get_labels( 'post_editor.variation_image' ) ); ?>';
+        var label_change = '<?php echo esc_attr( Rop_I18n::get_labels( 'post_editor.variation_image_change' ) ); ?>';
 
-		$('#add-row').on('click', function () {
-			count_elements++;
-			var row = $('.empty-row.rop-content-variation.screen-reader-text').clone(true);
-			row.removeClass('empty-row screen-reader-text');
-			row.find('input.rop-image-attach').attr('data-rop-img-id', count_elements);
-			row.insertAfter($('[class^="rop-content-variation"]').last());
-			return false;
-		});
+        $('#add-row').on('click', function () {
+            count_elements++;
+            var row = $('.empty-row.rop-content-variation.screen-reader-text').clone(true);
+            row.removeClass('empty-row screen-reader-text');
+            row.find('input.rop-image-attach').attr('data-rop-img-id', count_elements);
+            row.insertAfter($('[class^="rop-content-variation"]').last());
+            return false;
+        });
 
-		$('.remove-row').on('click', function () {
-			$(this).parents('.rop-content-variation').remove();
-			return false;
-		});
+        $('.remove-row').on('click', function () {
+            $(this).parents('.rop-content-variation').remove();
+            return false;
+        });
 
-		var $variations_container = $('#rop-custom-messages-group');
+        var $variations_container = $('#rop-custom-messages-group');
 
-		// ROP remove variation image
-		$variations_container.on('click tap', '.rop-image-remove', function (e) {
-			e.preventDefault();
-			var row_container = $(this).closest('.rop-content-variation');
-			var upload_button = row_container.find('.rop-image-attach');
-			var image_id = row_container.find('.rop-hidden-attachment-id');
-			var image_src = row_container.find('.rop-img-attached');
+        // ROP remove variation image
+        $variations_container.on('click tap', '.rop-image-remove', function (e) {
+            e.preventDefault();
+            var row_container = $(this).closest('.rop-content-variation');
+            var upload_button = row_container.find('.rop-image-attach');
+            var image_id = row_container.find('.rop-hidden-attachment-id');
+            var image_src = row_container.find('.rop-img-attached');
 
-			image_src.attr('src', '');
-			image_id.val('');
-			$(this).hide();
-			upload_button.val(label_upload);
-		});
-
-
-		// ROP image upload for variation
-		$variations_container.on('click tap', '.rop-image-attach', function (e) {
-			e.preventDefault();
-			var identifier = this.dataset.ropImgId;
-			var row_container = $(this).closest('.rop-content-variation');
-			var wp_media_post_id = wp.media.model.settings.post.id; // Store the old id
-			var image_id = row_container.find('.rop-hidden-attachment-id');
-			var image_src = row_container.find('.rop-img-attached');
-			var remove_button = row_container.find('.rop-image-remove');
-			var this_image = file_names[identifier];
-			var this_button = $(this);
-
-			if (this_image) {
-				// Set the post ID to what we want
-				this_image.uploader.uploader.param('post_id', image_id.val());
-				// Open frame
-				this_image.open();
-			} else {
-				// Create the media frame.
-				this_image = wp.media.frames.this_image = wp.media({
-					title: 'Select a image to upload',
-					button: {
-						text: 'Use this image',
-					},
-					multiple: false	// Set to true to allow multiple files to be selected
-				});
+            image_src.attr('src', '');
+            image_id.val('');
+            $(this).hide();
+            upload_button.val(label_upload);
+        });
 
 
-				// When an image is selected, run a callback.
-				this_image.on('select', function () {
-					// We set multiple to false so only get one image from the uploader
-					var attachment = this_image.state().get('selection').first().toJSON();
+        // ROP image upload for variation
+        $variations_container.on('click tap', '.rop-image-attach', function (e) {
+            e.preventDefault();
+            var identifier = this.dataset.ropImgId;
+            var row_container = $(this).closest('.rop-content-variation');
+            var wp_media_post_id = wp.media.model.settings.post.id; // Store the old id
+            var image_id = row_container.find('.rop-hidden-attachment-id');
+            var image_src = row_container.find('.rop-img-attached');
+            var remove_button = row_container.find('.rop-image-remove');
+            var this_image = file_names[identifier];
+            var this_button = $(this);
 
-					// Do something with attachment.id and/or attachment.url here
-					image_src.attr('src', attachment.url).css('width', 'auto');
-					image_id.val(attachment.id);
-					remove_button.show();
-					this_button.val(label_change);
+            if (this_image) {
+                // Set the post ID to what we want
+                this_image.uploader.uploader.param('post_id', image_id.val());
+                // Open frame
+                this_image.open();
+            } else {
+                // Create the media frame.
+                this_image = wp.media.frames.this_image = wp.media({
+                    title: 'Select a image to upload',
+                    button: {
+                        text: 'Use this image',
+                    },
+                    multiple: false	// Set to true to allow multiple files to be selected
+                });
 
-					// Restore the main post ID
-					wp.media.model.settings.post.id = wp_media_post_id;
-				});
 
-				// Finally, open the modal
-				this_image.open();
-			}
+                // When an image is selected, run a callback.
+                this_image.on('select', function () {
+                    // We set multiple to false so only get one image from the uploader
+                    var attachment = this_image.state().get('selection').first().toJSON();
 
-		});
-	});
+                    // Do something with attachment.id and/or attachment.url here
+                    image_src.attr('src', attachment.url).css('width', 'auto');
+                    image_id.val(attachment.id);
+                    remove_button.show();
+                    this_button.val(label_change);
+
+                    // Restore the main post ID
+                    wp.media.model.settings.post.id = wp_media_post_id;
+                });
+
+                // Finally, open the modal
+                this_image.open();
+            }
+
+        });
+    });
 </script>
 
 <?php echo Rop_I18n::get_labels( 'post_editor.custom_message_info' ); ?>
@@ -158,6 +158,7 @@ MULTIPLE_VARIATION_GROUP;
 	 */
 	$label_new_variation = Rop_I18n::get_labels( 'post_editor.new_variation' );
 	$label_example       = Rop_Pro_I18n::get_labels( 'magic_tags.example' );
+	$hide_remove         = ' style="display:none"';
 
 	echo <<<MSG_GROUP
     <div class="rop-content-variation">
@@ -177,6 +178,7 @@ MULTIPLE_VARIATION_GROUP;
                     <img class="rop-img-attached" src='' width="100" height="100" alt="">
                 </div>
                 <input class="rop-image-attach button button-primary" type="button" value="{$label_button}" data-rop-img-id="0"/>
+                <input class="rop-image-remove button button-secondary" type="button" value="{$button_remove}" data-rop-img-id="0" {$hide_remove}/>
                 <input type='hidden' value='' class="rop-hidden-attachment-id" name="rop_custom_image[]">
             </div>
             <div style="clear:both"></div>
@@ -210,8 +212,8 @@ echo <<<DEFAULT_GROUP
                 <div class='image-preview-wrapper'>
                     <img class="rop-img-attached" src='' width="100" height="100" alt="">
                 </div>
-                <input class="rop-image-attach button button-primary" type="button" value="{$label_button}" data-rop-img-id=""/>
-                <input class="rop-image-remove button button-secondary" type="button" value="{$button_remove}" data-rop-img-id="{$i}" {$hide_remove}/>
+                <input class="rop-image-attach button button-primary" type="button" value="{$label_button}" data-rop-img-id="0"/>
+                <input class="rop-image-remove button button-secondary" type="button" value="{$button_remove}" data-rop-img-id="0" {$hide_remove}/>
                 <input type='hidden' value='' class="rop-hidden-attachment-id" name="rop_custom_image[]">
             </div>
             <div style="clear:both"></div>
@@ -226,7 +228,7 @@ DEFAULT_GROUP;
  */
 ?>
 <p>
-	<a id="add-row" class="button" href="#">
+    <a id="add-row" class="button" href="#">
 		<?php echo Rop_I18n::get_labels( 'post_editor.add_variation' ); ?>
-	</a>
+    </a>
 </p>
