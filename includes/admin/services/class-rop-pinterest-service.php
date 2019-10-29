@@ -111,7 +111,7 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	 * @access  protected
 	 *
 	 * @return mixed|void
-	 * @throws Exception
+	 * @throws Exception Capture all exceptions.
 	 */
 	public function request_api_token() {
 		if ( ! session_id() ) {
@@ -459,8 +459,8 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	/**
 	 * Returns local full path to the upload folder for image.
 	 *
-	 * @param int $image_id
-	 * @param string $requested_size
+	 * @param int    $image_id Media image ID.
+	 * @param string $requested_size Media image requested size.
 	 *
 	 * @return bool|string
 	 */
@@ -494,11 +494,11 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	/**
 	 * Converts local image into base_64 code
 	 *
-	 * @param $image_path
+	 * @param string $image_path - Full local image path to uploads folder.
 	 *
 	 * @return string
 	 */
-	public function this_image_to_base64( $image_path ) {
+	public function this_image_to_base64( $image_path = '' ) {
 		$opened_file = fopen( $image_path, 'r' );
 		$contents    = fread( $opened_file, filesize( $image_path ) );
 		fclose( $opened_file );
@@ -509,7 +509,7 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	/**
 	 * Returns post_id or false, where post_id is image media ID
 	 *
-	 * @param string $image_path
+	 * @param string $image_path Image http url for which to obtain the media ID.
 	 *
 	 * @return bool|int
 	 */

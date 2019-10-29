@@ -3,6 +3,7 @@
 		<div class="input-group text-right buttons-wrap">
 			<button v-for="( service, network ) in services"
 					:disabled="checkDisabled( service, network )"
+					:title="getTooltip( service, network )"
 					class="btn input-group-btn"
 					:class="'btn-' + network"
 					@click="requestAuthorization( network )">
@@ -26,14 +27,18 @@
 							<button class="btn btn-primary big-btn" @click="openPopupFB()">{{labels.fb_app_signin_btn}}</button>
 							<span class="text-center">{{labels.fb_own_app_signin}}</span>
 						</div>
-						<div class="auth-app" v-if="isTwitter && isAllowedTwitter">
+						<div class="auth-app" v-if="isTwitter">
 							<button class="btn btn-primary big-btn" @click="openPopupTW()">{{labels.tw_app_signin_btn}}</button>
 							<span class="text-center">{{labels.tw_own_app_signin}}</span>
 						</div>
-						<div id="rop-advanced-config" v-if="isFacebook || (isTwitter && isAllowedTwitter)">
+						<div class="auth-app" v-if="isLinkedIn && isAllowedLinkedIn">
+							<button class="btn btn-primary big-btn" @click="openPopupLI()">{{labels.li_app_signin_btn}}</button>
+							<span class="text-center">{{labels.li_own_app_signin}}</span>
+						</div>
+						<div id="rop-advanced-config" v-if="isFacebook || isTwitter || (isLinkedIn && isAllowedLinkedIn)">
 						<button class="btn btn-primary" v-on:click="showAdvanceConfig = !showAdvanceConfig">{{labels.show_advance_config}}</button>
 					</div>
-						<div v-if="showAdvanceConfig && (isFacebook ||  (isTwitter && isAllowedTwitter) )">
+						<div v-if="showAdvanceConfig && (isFacebook || isTwitter || (isLinkedIn && isAllowedLinkedIn) )">
 						<div class="form-group" v-for="( field, id ) in modal.data">
 							<label class="form-label" :for="field.id">{{ field.name }}</label>
 							<input :class="[ 'form-input', field.error ? ' is-error' : '' ]" type="text" :id="field.id" v-model="field.value"
@@ -42,7 +47,7 @@
 							<p class="text-gray">{{ field.description }}</p>
 						</div>
 					</div>
-						<div v-if="(!isTwitter && !isFacebook) || ( isTwitter && !isAllowedTwitter)">
+						<div v-if="(!isTwitter && !isFacebook && !isLinkedIn) || (isLinkedIn && !isAllowedLinkedIn)">
 						<div class="form-group" v-for="( field, id ) in modal.data">
 							<label class="form-label" :for="field.id">{{ field.name }}</label>
 							<input :class="[ 'form-input', field.error ? ' is-error' : '' ]" type="text" :id="field.id" v-model="field.value"
@@ -53,14 +58,14 @@
 					</div>
 				</div>
 				</div>
-				<div v-if="isFacebook || (isTwitter && isAllowedTwitter)" class="modal-footer">
+				<div v-if="isFacebook || isTwitter || (isLinkedIn && isAllowedLinkedIn)" class="modal-footer">
 					<p class="text-left pull-left mr-2" v-html="labels.rs_app_info"></p>
 				</div>
-				<div v-if="showAdvanceConfig && (isFacebook || isTwitter)" class="modal-footer">
+				<div v-if="showAdvanceConfig && (isFacebook || isTwitter || isLinkedIn)" class="modal-footer">
 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 				</div>
-				<div v-if="(!isTwitter && !isFacebook) || (isTwitter && !isAllowedTwitter)" class="modal-footer">
+				<div v-if="(!isTwitter && !isFacebook && !isLinkedIn) || (isLinkedIn && !isAllowedLinkedIn)" class="modal-footer">
 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 				</div>
@@ -89,17 +94,49 @@
 				appOrigin: ropAuthAppData.authAppUrl,
 				appPathFB: ropAuthAppData.authAppFacebookPath,
         appPathTW: ropAuthAppData.authAppTwitterPath,
+        appPathLI: ropAuthAppData.authAppLinkedInPath,
 				appAdminEmail: ropAuthAppData.adminEmail,
 				siteAdminUrl: ropAuthAppData.adminUrl,
 				appUniqueId: ropAuthAppData.authToken,
 				appSignature: ropAuthAppData.authSignature,
 				windowParameters: 'top=20,left=100,width=560,height=670',
 				authPopupWindow: null,
-        showTwAppBtn: ropApiSettings.show_tw_app_btn,
+				showLiAppBtn: ropApiSettings.show_li_app_btn,
 				showBtn: false
 			}
 		},
 		methods: {
+			/**
+			 * Get tooltip for the service.
+			 *
+			 *
+			 * @param service
+			 * @param network
+			 * @returns {string}
+			 */
+			getTooltip(service, network) {
+				if (service !== undefined && service.active === false) {
+					return this.labels.only_in_pro
+				}
+				let countAuthServices = 0
+				for (let authService in this.$store.state.authenticatedServices) {
+					if (this.$store.state.authenticatedServices[authService].service === network) {
+						countAuthServices++
+					}
+				}
+
+				let countActiveAccounts = 0
+				for (let activeAccount in this.$store.state.activeAccounts) {
+					if (this.$store.state.activeAccounts[activeAccount].service === network) {
+						countActiveAccounts++
+					}
+				}
+
+				if (service !== undefined && (service.allowed_accounts <= countAuthServices || service.allowed_accounts <= countActiveAccounts)) {
+					return this.labels.limit_reached
+				}
+    return ''
+  },
 			/**
 			 * Check status for the service.
 			 *
@@ -254,12 +291,33 @@
                     Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
 				});
 			},
+            /**
+             * Add LinkedIn account.
+             *
+             * @param data Data.
+             */
+            addAccountLI(data) {
+                this.$store.dispatch('fetchAJAXPromise', {
+                    req: 'add_account_li',
+                    updateState: false,
+                    data: data
+                }).then(response => {
+                    window.removeEventListener("message", event => this.getChildWindowMessage(event));
+                    this.authPopupWindow.close();
+                    window.location.reload();
+                }, error => {
+                    this.is_loading = false;
+                    Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+				});
+			},
 			getChildWindowMessage: function (event) {
 				if (~event.origin.indexOf(this.appOrigin)) {
                     if ('Twitter' === this.modal.serviceName) {
                         this.addAccountTW(JSON.parse(event.data));
                     } else if ('Facebook' === this.modal.serviceName) {
 					    this.addAccountFB(JSON.parse(event.data));
+						} else if ('LinkedIn' === this.modal.serviceName) {
+					    this.addAccountLI(JSON.parse(event.data));
                     }
 
 				} else {
@@ -286,6 +344,18 @@
                     // nothing to do
                 } finally {
                     this.authPopupWindow = window.open(loginUrl, 'authTW', this.windowParameters);
+                    this.cancelModal();
+                }
+                window.addEventListener("message", event => this.getChildWindowMessage(event));
+			},
+            openPopupLI: function () { // Open the popup specific for LinkedIn
+                let loginUrl = this.appOrigin + this.appPathLI + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
+                try {
+                    this.authPopupWindow.close();
+                } catch (e) {
+                    // nothing to do
+                } finally {
+                    this.authPopupWindow = window.open(loginUrl, 'authLI', this.windowParameters);
                     this.cancelModal();
                 }
                 window.addEventListener("message", event => this.getChildWindowMessage(event));
@@ -325,17 +395,19 @@
             isTwitter() {
                 return this.modal.serviceName === 'Twitter';
             },
-            isAllowedTwitter: function () {
-                let showButton = true;
-
-                if (!this.showTwAppBtn) {
-                    showButton = false;
-                }
-
-                return showButton;
-            }
-		}
+            // will return true if the current service actions are for LinkedIn.
+            isLinkedIn() {
+                return this.modal.serviceName === 'LinkedIn';
+            },
+						isAllowedLinkedIn: function () {
+							let showButton = true;
+							if (!this.showLiAppBtn) {
+									showButton = false;
+							}
+							return showButton;
+					},
 	}
+}
 </script>
 <style scoped>
 	#rop-sign-in-area .btn[disabled]{
