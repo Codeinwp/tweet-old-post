@@ -413,7 +413,7 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 	 */
 	private function buffer_media_post( $post_details, $args = array() ) {
 
-		if ( false === filter_var( $post_details['post_with_image'], FILTER_VALIDATE_BOOLEAN ) ) {
+		if ( false === filter_var( $post_details['post_with_image'], FILTER_VALIDATE_BOOLEAN ) || ! isset( $post_details['post_image'] ) || '' === trim( $post_details['post_image'] ) ) {
 			$format_helper = new Rop_Post_Format_Helper();
 
 			$image_to_share = $format_helper->build_image( $post_details['post_id'] );
