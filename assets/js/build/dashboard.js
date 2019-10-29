@@ -1919,7 +1919,7 @@
             try {
                 oldLocale = globalLocale._abbr;
                 var aliasedRequire = require;
-                __webpack_require__(287)("./" + name);
+                __webpack_require__(283)("./" + name);
                 getSetGlobalLocale(oldLocale);
             } catch (e) {}
         }
@@ -4670,7 +4670,7 @@
 
 })));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(286)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(282)(module)))
 
 /***/ }),
 /* 1 */
@@ -17736,7 +17736,9 @@ exports.default = new _vuex2.default.Store({
         activePostFormat: [],
         activeSchedule: [],
         queue: {},
-        publish_now: ropApiSettings.publish_now
+        publish_now: ropApiSettings.publish_now,
+        hide_preloading: 0,
+        fb_exception_toast: ropApiSettings.fb_domain_toast_display
     },
     mutations: {
         setTabView: function setTabView(state, view) {
@@ -17760,7 +17762,7 @@ exports.default = new _vuex2.default.Store({
             var stateData = _ref.stateData,
                 requestName = _ref.requestName;
 
-            _vue2.default.$log.debug('State change for ', requestName);
+            _vue2.default.$log.debug('State change for ', requestName, ' With value: ', stateData);
             switch (requestName) {
                 case 'manage_cron':
                     state.cron_status = stateData;
@@ -17770,6 +17772,9 @@ exports.default = new _vuex2.default.Store({
                     break;
                 case 'get_toast':
                     state.page.logs = stateData;
+                    break;
+                case 'fb_exception_toast':
+                    state.fb_exception_toast = stateData.display;
                     break;
                 case 'update_settings_toggle':
                 case 'get_general_settings':
@@ -17806,6 +17811,7 @@ exports.default = new _vuex2.default.Store({
                 case 'get_authenticated_services':
                 case 'remove_service':
                     state.authenticatedServices = stateData;
+                    state.hide_preloading++;
                     break;
                 case 'authenticate_service':
                     state.authenticatedServices = stateData;
@@ -17860,7 +17866,7 @@ exports.default = new _vuex2.default.Store({
                     break;
                 case 'update_toast':
                     state.toast = stateData;
-                    _vue2.default.$log.debug('yes yes here ', requestName);
+                    _vue2.default.$log.debug('Toast updated ', requestName);
                     break;
                 case 'toggle_account':
                 case 'exclude_post':
@@ -21958,9 +21964,9 @@ if (false) {(function () {  module.hot.accept()
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(242)
-__vue_script__ = __webpack_require__(244)
-__vue_template__ = __webpack_require__(245)
+__webpack_require__(252)
+__vue_script__ = __webpack_require__(254)
+__vue_template__ = __webpack_require__(255)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -34220,7 +34226,7 @@ window.addEventListener('load', function () {
 var __vue_script__, __vue_template__
 __webpack_require__(213)
 __vue_script__ = __webpack_require__(215)
-__vue_template__ = __webpack_require__(301)
+__vue_template__ = __webpack_require__(311)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -34291,27 +34297,27 @@ var _accountsTabPanel = __webpack_require__(219);
 
 var _accountsTabPanel2 = _interopRequireDefault(_accountsTabPanel);
 
-var _settingsTabPanel = __webpack_require__(238);
+var _settingsTabPanel = __webpack_require__(248);
 
 var _settingsTabPanel2 = _interopRequireDefault(_settingsTabPanel);
 
-var _accountsSelectorPanel = __webpack_require__(247);
+var _accountsSelectorPanel = __webpack_require__(257);
 
 var _accountsSelectorPanel2 = _interopRequireDefault(_accountsSelectorPanel);
 
-var _queueTabPanel = __webpack_require__(274);
+var _queueTabPanel = __webpack_require__(286);
 
 var _queueTabPanel2 = _interopRequireDefault(_queueTabPanel);
 
-var _logsTabPanel = __webpack_require__(282);
+var _logsTabPanel = __webpack_require__(294);
 
 var _logsTabPanel2 = _interopRequireDefault(_logsTabPanel);
 
-var _toast = __webpack_require__(289);
+var _toast = __webpack_require__(299);
 
 var _toast2 = _interopRequireDefault(_toast);
 
-var _countdown = __webpack_require__(294);
+var _countdown = __webpack_require__(304);
 
 var _countdown2 = _interopRequireDefault(_countdown);
 
@@ -34348,6 +34354,12 @@ module.exports = {
         is_rest_api_error: function is_rest_api_error() {
             return this.$store.state.api_not_available;
         },
+        /**
+         * Check if rest api is available.
+         */
+        is_fb_domain_notice: function is_fb_domain_notice() {
+            return this.$store.state.fb_exception_toast;
+        },
         current_time: {
             get: function get() {
                 return this.$store.state.cron_status.current_time;
@@ -34373,6 +34385,34 @@ module.exports = {
                 btn_class += ' tooltip button-disabled ';
             }
             return btn_class;
+        },
+        /**
+         * Status label.
+         */
+        status_color_class: function status_color_class() {
+            var status_color_class = 'sharing-status-' + (this.start_status ? 'sharing' : 'notsharing');
+            if (!this.haveAccountsActive) {
+                status_color_class = ' sharing-status-notsharing  ';
+            }
+            if (this.status_is_error_display) {
+                return ' sharing-status-error ';
+            }
+            return status_color_class;
+        },
+        status_label_display: function status_label_display() {
+            var labels = this.$store.state.labels.general;
+            var status_label_display = this.start_status ? labels.sharing_to_account : labels.sharing_not_started;
+            if (!this.haveAccountsActive) {
+                status_label_display = labels.sharing_not_started;
+            }
+
+            if (this.status_is_error_display) {
+                return labels.status + ': ' + labels.error_check_log;
+            }
+            return labels.status + ': ' + status_label_display;
+        },
+        status_is_error_display: function status_is_error_display() {
+            return this.status_is_error_display;
         },
         /**
          * Check if we have accounts connected.
@@ -34403,16 +34443,6 @@ module.exports = {
          */
         generalSettings: function generalSettings() {
             return this.$store.state.generalSettings;
-        },
-        /**
-         * Get general settings.
-         * @returns {module.exports.computed.generalSettings|Array|*}
-         */
-        formatedDate: function formatedDate() {
-            if (typeof this.date_format === 'undefined') {
-                return '';
-            }
-            return _moment2.default.utc(this.current_time, 'X').format(this.date_format.replace('mm', 'mm:ss'));
         }
     },
     mounted: function mounted() {
@@ -34439,15 +34469,39 @@ module.exports = {
             upsell_link: ropApiSettings.upsell_link,
             staging: ropApiSettings.staging,
             is_loading: false,
-            is_loading_logs: false
+            is_loading_logs: false,
+            status_is_error_display: false
         };
     },
     methods: {
         /**
+         *
+         * */
+        close_fb_domain_notice: function close_fb_domain_notice() {
+            var _this2 = this;
+
+            if (this.is_loading) {
+                this.$log.warn('Request in progress...Bail');
+                return;
+            }
+
+            this.$store.dispatch('fetchAJAXPromise', {
+                req: 'fb_exception_toast',
+                data: { action: 'hide' }
+            }).then(function (response) {
+                _this2.$log.info('Succesfully closed facebook domain toast.');
+                _this2.is_loading = false;
+            }, function (error) {
+                _this2.is_loading = false;
+                Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+            });
+        },
+
+        /**
          * Toggle sharing.
          */
         togglePosting: function togglePosting() {
-            var _this2 = this;
+            var _this3 = this;
 
             if (this.is_loading) {
                 this.$log.warn('Request in progress...Bail');
@@ -34460,9 +34514,9 @@ module.exports = {
                     'action': this.start_status === false ? 'start' : 'stop'
                 }
             }).then(function (response) {
-                _this2.is_loading = false;
+                _this3.is_loading = false;
             }, function (error) {
-                _this2.is_loading = false;
+                _this3.is_loading = false;
                 Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
             });
         },
@@ -34475,7 +34529,7 @@ module.exports = {
             this.$store.commit('setTabView', slug);
         },
         get_toast_message: function get_toast_message(force) {
-            var _this3 = this;
+            var _this4 = this;
 
             if (this.is_loading_logs) {
                 this.$log.warn('Request in progress...Bail');
@@ -34486,24 +34540,31 @@ module.exports = {
                 req: 'get_toast',
                 data: { force: force }
             }).then(function (response) {
-                _this3.$log.info('Succesfully fetched toast log.');
-                _this3.is_loading_logs = false;
-                _this3.$store.dispatch('fetchAJAX', { req: 'manage_cron', data: { action: 'status' } });
+                _this4.$log.info('Succesfully fetched toast log.');
+                _this4.is_loading_logs = false;
+                _this4.$store.dispatch('fetchAJAX', { req: 'manage_cron', data: { action: 'status' } });
 
                 // Toast message code start
                 if (response.length) {
-                    var toast = {
-                        type: response[0].type,
-                        show: true,
-                        title: 'Error encountered',
-                        message: response[0].message
-                    };
-                    _this3.$store.commit('updateState', { stateData: toast, requestName: 'update_toast' });
+                    for (var index_error in response) {
+                        if ('error' === response[index_error].type) {
+                            var toast = {
+                                type: response[index_error].type,
+                                show: true,
+                                title: 'Error encountered',
+                                message: response[index_error].message
+                            };
+                            _this4.$store.commit('updateState', { stateData: toast, requestName: 'update_toast' });
+                        } else if ('status_error' === response[index_error].type) {
+                            _this4.$log.warn('Status is error check logs, global admin notice will be displayed');
+                            _this4.status_is_error_display = true;
+                        }
+                    }
                 }
                 // Toast message code end
             }, function (error) {
                 Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
-                _this3.is_loading_logs = false;
+                _this4.is_loading_logs = false;
             });
         }
     },
@@ -34549,29 +34610,21 @@ module.exports = {
 //                     <img :src="plugin_logo" class="plugin-logo avatar avatar-lg"/>
 //                     <h1 class="plugin-title d-inline-block">Revive Old Posts</h1><span class="powered d-inline-block"> {{labels.by}} <a
 //                         href="https://revive.social" target="_blank"><b>Revive.Social</b></a></span>
-//                     <div id="rop_user_actions">
-//                         <a v-if="license  >= 1" href="https://revive.social/pro-support/" target="_blank" class="rop-get-support-btn"><span><i
-//                                 class="fa fa-commenting" aria-hidden="true"></i></span> {{labels.rop_support}}</a>
-//                         <a v-if="license  < 1" href="https://revive.social/support/" target="_blank" class="rop-get-support-btn"><span><i
-//                                 class="fa fa-commenting" aria-hidden="true"></i></span> {{labels.rop_support}}</a>
-//                         <a v-if="haveAccounts"
-//                            href="https://docs.revive.social/"
-//                            target="_blank" class="rop-docs-btn"><span><i class="fa fa-book" aria-hidden="true"></i></span> {{labels.rop_docs}}</a>
-//                         <a v-if="haveAccounts" href="https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post" target="_blank" class="leave-a-review"><span><i class="fa fa-star"
-//                                                                                                                                                                             aria-hidden="true"></i></span>
-//                             {{labels.review_it}}</a>
-//                     </div>
 //                 </div>
 //             </div>
 //             <toast/>
 //             <div v-if=" is_rest_api_error " class="toast toast-error rop-api-not-available" v-html="labels.api_not_available">
 //             </div>
-//
+//             <div v-if=" is_fb_domain_notice " class="toast toast-primary">
+//                 <button class="btn btn-clear float-right" @click="close_fb_domain_notice()"></button>
+//                 <div v-html="labels.rop_facebook_domain_toast"></div>
+//             </div>
 //             <div class="sidebar sidebar-top card rop-container-start">
-//                 <div class="toast rop-current-time" v-if="formatedDate">
-//                     {{labels.now}}: {{ formatedDate }}
-//                 </div>
+//
+//               <!-- Next post count down -->
 //                 <countdown :current_time="current_time"/>
+//                 <!--  -->
+//
 //                 <button class="btn btn-sm" :class="btn_class"
 //                         :data-tooltip="labels.active_account_warning"
 //                         @click="togglePosting()" :disabled="!haveAccountsActive">
@@ -34602,18 +34655,19 @@ module.exports = {
 //                  :class="'rop-license-plan-'+license">
 //
 //                 <div class="card rop-container-start">
-//                     <div class="toast rop-current-time" v-if="formatedDate && haveAccounts">
-//                         {{labels.now}}: {{ formatedDate }}
-//                     </div>
-//                     <countdown :current_time="current_time"/>
 //                     <button id="rop_start_stop_btn" class="btn" :class="btn_class"
 //                             :data-tooltip="labels.active_account_warning"
 //                             @click="togglePosting()" :disabled="!haveAccountsActive">
 //                         <i class="fa fa-play" v-if="!is_loading && !start_status"></i>
 //                         <i class="fa fa-stop" v-else-if="!is_loading && start_status"></i>
 //                         <i class="fa fa-spinner fa-spin" v-else></i>
-//                         {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}
+//                         {{labels.click}} {{labels.to}} {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}
 //                     </button>
+//
+//                     <div class="sharing-box" :class="status_color_class">{{ status_label_display }}</div>
+//
+//                     <countdown :current_time="current_time"/>
+//
 //                     <div id="staging-status" v-if="staging">
 //                         {{labels.staging_status}}
 //                     </div>
@@ -34621,9 +34675,13 @@ module.exports = {
 //                     <div v-if="haveAccounts">
 //                         <upsell-sidebar></upsell-sidebar>
 //                     </div>
-//                     <a v-if="haveAccounts" href="https://trello.com/b/svAZqXO1/roadmap-revive-old-posts" target="_blank" class="btn rop-sidebar-action-btns">{{labels.rop_roadmap}}</a>
-//                     <a v-if="haveAccounts" href="https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform" target="_blank" class="btn rop-sidebar-action-btns">{{labels.survey}}</a>
-//                     <a v-if="haveAccounts" href="https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial" target="_blank" class="btn rop-sidebar-action-btns">{{labels.tweet_about_it}}</a>
+//                     <a v-if="license  >= 1" href="https://revive.social/pro-support/" target="_blank" class="btn rop-sidebar-action-btns">{{labels.rop_support}}</a>
+//                     <a v-if="license  < 1" href="https://revive.social/support/" target="_blank" class="btn rop-sidebar-action-btns">{{labels.rop_support}}</a>
+//                     <a v-if="haveAccounts" href="https://docs.revive.social/" target="_blank"
+//                        class="btn rop-sidebar-action-btns">{{labels.rop_docs}}</a>
+//                     <a v-if="haveAccounts"
+//                        href="https://wordpress.org/support/plugin/tweet-old-post/reviews/?rate=5#new-post"
+//                        target="_blank" class="btn rop-sidebar-action-btns">{{labels.review_it}}</a>
 //                 </div>
 //
 //             </div>
@@ -34680,7 +34738,7 @@ module.exports = function (KEY, exec) {
 var __vue_script__, __vue_template__
 __webpack_require__(220)
 __vue_script__ = __webpack_require__(222)
-__vue_template__ = __webpack_require__(237)
+__vue_template__ = __webpack_require__(247)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -34731,7 +34789,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .columns.py-2 .text-gray[_v-93242342] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\n\t#rop_core .input-group[_v-93242342] {\n\t\twidth: 100%;\n\t}\n\n\tb[_v-93242342] {\n\t\tmargin-bottom: 5px;\n\t\tdisplay: block;\n\t}\n\n\t#rop_core .text-gray b[_v-93242342] {\n\t\tdisplay: inline;\n\t}\n\n\t#rop_core .input-group .input-group-addon[_v-93242342] {\n\t\tpadding: 3px 5px;\n\t}\n\n\t#rop_core .rop-available-accounts h5[_v-93242342] {\n\t\tmargin-bottom: 15px;\n\t}\n\n\t@media ( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-93242342] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\n\t\t#rop_core .text-right[_v-93242342] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n", ""]);
+exports.push([module.i, "\n    #rop_core .columns.py-2 .text-gray[_v-93242342] {\n        margin: 0;\n        line-height: normal;\n    }\n\n    #rop_core .input-group[_v-93242342] {\n        width: 100%;\n    }\n\n    b[_v-93242342] {\n        margin-bottom: 5px;\n        display: block;\n    }\n\n    #rop_core .text-gray b[_v-93242342] {\n        display: inline;\n    }\n\n    #rop_core .input-group .input-group-addon[_v-93242342] {\n        padding: 3px 5px;\n    }\n\n    #rop_core .rop-available-accounts h5[_v-93242342] {\n        margin-bottom: 15px;\n    }\n\n    @media ( max-width: 600px ) {\n        #rop_core .panel-body .text-gray[_v-93242342] {\n            margin-bottom: 10px;\n        }\n\n        #rop_core .text-right[_v-93242342] {\n            text-align: left;\n        }\n    }\n", ""]);
 
 // exports
 
@@ -34759,193 +34817,207 @@ var _addAccountTile = __webpack_require__(232);
 
 var _addAccountTile2 = _interopRequireDefault(_addAccountTile);
 
+var _vueSpinner = __webpack_require__(237);
+
+var _vueSpinner2 = _interopRequireDefault(_vueSpinner);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-module.exports = {
-	name: 'account-view',
-	data: function data() {
-		return {
-			addAccountActive: false,
-			accountsCount: 0,
-			is_loading: false,
-			twitter_warning: false,
-			labels: this.$store.state.labels.accounts,
-			upsell_link: ropApiSettings.upsell_link,
-			pro_installed: ropApiSettings.pro_installed
-		};
-	},
-	computed: {
-		/**
-   * Get all the available/active accounts.
-   */
-		accounts: function accounts() {
-			var all_accounts = {};
-			var twitter = 0;
-			var services = this.$store.state.authenticatedServices;
-			for (var key in services) {
-				if (!services.hasOwnProperty(key)) {
-					continue;
-				}
-				var service = services[key];
-				for (var account_id in service.available_accounts) {
-					if (!service.available_accounts.hasOwnProperty(account_id)) {
-						continue;
-					}
-					all_accounts[account_id] = service.available_accounts[account_id];
-					if (service.service === 'twitter') {
-						twitter += (0, _keys2.default)(service.available_accounts).length;
-					}
-				}
-			}
-			this.twitter_warning = twitter > 1;
-			this.$log.info('All accounts: ', all_accounts);
-			this.accountsCount = (0, _keys2.default)(all_accounts).length;
-			return all_accounts;
-		},
-		/**
-   * Check if we have a pro license.
-   * @returns {boolean}
-   */
-		checkLicense: function checkLicense() {
-			return this.$store.state.licence < 1;
-		}
-	},
-
-	methods: {
-		resetAccountData: function resetAccountData() {
-			var _this = this;
-
-			if (this.is_loading) {
-				this.$log.warn('Request in progress...Bail');
-				return;
-			}
-			this.is_loading = true;
-			this.$store.dispatch('fetchAJAXPromise', {
-				req: 'reset_accounts',
-				data: {}
-			}).then(function (response) {
-				_this.is_loading = false;
-				if (_this.$parent.start_status === true) {
-					// Stop sharing process if enabled.
-					_this.$parent.togglePosting();
-				}
-				_this.$store.dispatch('fetchAJAXPromise', {
-					req: 'get_available_services'
-				}).then(function (response) {
-					_this.is_loading = false;
-				});
-			}, function (error) {
-				_this.is_loading = false;
-				Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
-			});
-		}
-	},
-	components: {
-		SignInBtn: _signInBtn2.default,
-		ServiceUserTile: _serviceUserTile2.default,
-		AddAccountTile: _addAccountTile2.default
-	}
-	// </script>
-	// <style scoped>
-	// 	#rop_core .columns.py-2 .text-gray {
-	// 		margin: 0;
-	// 		line-height: normal;
-	// 	}
-	//
-	// 	#rop_core .input-group {
-	// 		width: 100%;
-	// 	}
-	//
-	// 	b {
-	// 		margin-bottom: 5px;
-	// 		display: block;
-	// 	}
-	//
-	// 	#rop_core .text-gray b {
-	// 		display: inline;
-	// 	}
-	//
-	// 	#rop_core .input-group .input-group-addon {
-	// 		padding: 3px 5px;
-	// 	}
-	//
-	// 	#rop_core .rop-available-accounts h5 {
-	// 		margin-bottom: 15px;
-	// 	}
-	//
-	// 	@media ( max-width: 600px ) {
-	// 		#rop_core .panel-body .text-gray {
-	// 			margin-bottom: 10px;
-	// 		}
-	//
-	// 		#rop_core .text-right {
-	// 			text-align: left;
-	// 		}
-	// 	}
-	// </style>
-	//
-
-}; // <template>
-// 	<div class="tab-view">
-// 		<div class="panel-body">
-// 			<div class="toast  toast-warning" v-html="labels.twitter_warning" v-if="twitter_warning">
+// <template>
+//     <div class="tab-view">
+//         <div class="panel-body">
+//             <div class="toast  toast-warning" v-html="labels.twitter_warning" v-if="twitter_warning">
 //
-// 			</div>
-// 			<div class="container">
-// 				<div class="columns" :class="'rop-tab-state-'+is_loading">
-// 					<div class="column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2">
-// 						<div class="empty mb-2" v-if="accountsCount === 0">
-// 							<div class="empty-icon">
-// 								<i class="fa fa-3x fa-user-circle-o"></i>
-// 							</div>
-// 							<p class="empty-title h5">{{labels.no_accounts}}</p>
-// 							<p class="empty-subtitle">{{labels.no_accounts_desc}}</p>
-// 							<p class="empty-subtitle"><span v-html="labels.no_accounts_pro_upsell"></span></p>
-// 						</div>
-// 						<div class="account-container" v-for="( account, id ) in accounts">
-// 							<service-user-tile :account_data="account" :account_id="id"></service-user-tile>
-// 							<span class="divider"></span>
-// 						</div>
-// 						<div class="add-accounts">
-// 							<add-account-tile></add-account-tile>
-// 							<span class="divider"></span>
-// 						</div>
-// 					</div>
-// 				</div>
-// 			</div>
-// 			<div class="panel-footer">
-// 				<div class="columns my-2" v-if="checkLicense && pro_installed">
-// 					<div class="column col-12">
-// 							<i class="fa fa-lock "></i> <span v-html="labels.activate_license"></span>
-// 					</div>
-// 				</div>
-// 				<div class="columns my-2" v-if="(checkLicense && accountsCount === 2) && !pro_installed">
-// 					<div class="column col-12">
-// 						<p class="upsell">
-// 							<i class="fa fa-lock "></i> <span v-html="labels.upsell_accounts"></span>
-// 						</p>
-// 					</div>
-// 				</div>
-// 				<div class="columns" v-if="accountsCount < 1">
-// 					<div class="column col-12">
-// 						<p><i class="fa fa-info-circle"></i> <span
-// 								v-html="labels.has_accounts_desc"></span></p>
-// 					</div>
-// 				</div>
-// 				<div class="column col-12 text-right">
-// 					<button class="btn btn-secondary" @click="resetAccountData()">
-// 						<i class="fa fa-ban" v-if="!this.is_loading"></i>
-// 						<i class="fa fa-spinner fa-spin" v-else></i>
-// 						{{labels.remove_all_cta}}
-// 					</button>
-// 				</div>
-// 			</div>
-// 		</div>
+//             </div>
+//             <div class="container">
+//                 <div class="columns" :class="'rop-tab-state-'+is_loading">
+//                     <div class="column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2">
+//                         <vue_spinner :preloader_message="labels.preloader_message_accounts" ref="Preloader" v-if="is_preloading === 0"></vue_spinner>
+//                         <div class="empty mb-2" v-if="accountsCount === 0 && is_preloading > 0">
+//                             <div class="empty-icon">
+//                                 <i class="fa fa-3x fa-user-circle-o"></i>
+//                             </div>
+//                             <p class="empty-title h5">{{labels.no_accounts}}</p>
+//                             <p class="empty-subtitle">{{labels.no_accounts_desc}}</p>
+//                         </div>
+//                         <div class="account-container" v-for="( account, id ) in accounts" v-if="is_preloading > 0">
+//                             <service-user-tile :account_data="account" :account_id="id"></service-user-tile>
+//                             <span class="divider"></span>
+//                         </div>
+//                         <div class="add-accounts" v-if="is_preloading > 0">
+//                             <add-account-tile></add-account-tile>
+//                             <span class="divider"></span>
+//                         </div>
+//                     </div>
+//                 </div>
+//             </div>
+//             <div class="panel-footer" v-if="is_preloading > 0">
+//                 <div class="columns my-2" v-if="checkLicense && pro_installed">
+//                     <div class="column col-12">
+//                         <i class="fa fa-info-circle "></i> <span v-html="labels.activate_license"></span>
+//                     </div>
+//                 </div>
+//                 <div class="columns my-2" v-if="(checkLicense && accountsCount === 2) && !pro_installed">
+//                     <div class="column col-12">
+//                         <p class="upsell">
+//                             <i class="fa fa-info-circle "></i> <span v-html="labels.upsell_accounts"></span>
+//                         </p>
+//                     </div>
+//                 </div>
+//                 <div class="column col-12 text-right">
+//                     <button class="btn btn-secondary" @click="resetAccountData()">
+//                         <i class="fa fa-ban" v-if="!this.is_loading"></i>
+//                         <i class="fa fa-spinner fa-spin" v-else></i>
+//                         {{labels.remove_all_cta}}
+//                     </button>
+//                 </div>
+//             </div>
+//         </div>
 //
-// 	</div>
+//     </div>
 // </template>
 //
 // <script>
+module.exports = {
+    name: 'account-view',
+    data: function data() {
+        return {
+            addAccountActive: false,
+            accountsCount: 0,
+            is_loading: false,
+            twitter_warning: false,
+            labels: this.$store.state.labels.accounts,
+            upsell_link: ropApiSettings.upsell_link,
+            pro_installed: ropApiSettings.pro_installed,
+            is_preloading: this.$store.state.hide_preloading
+        };
+    },
+    mounted: function mounted() {
+        if (0 === this.is_preloading) {
+            this.page_loader_module_display();
+        }
+    },
+    computed: {
+        /**
+         * Get all the available/active accounts.
+         */
+        accounts: function accounts() {
+            var all_accounts = {};
+            var twitter = 0;
+            var services = this.$store.state.authenticatedServices;
+            for (var key in services) {
+                if (!services.hasOwnProperty(key)) {
+                    continue;
+                }
+                var service = services[key];
+                for (var account_id in service.available_accounts) {
+                    if (!service.available_accounts.hasOwnProperty(account_id)) {
+                        continue;
+                    }
+                    all_accounts[account_id] = service.available_accounts[account_id];
+                    if (service.service === 'twitter') {
+                        twitter += (0, _keys2.default)(service.available_accounts).length;
+                    }
+                }
+            }
+            this.twitter_warning = twitter > 1;
+            this.$log.info('All accounts: ', all_accounts);
+            this.$log.debug('Preloading: ', this.$store.state.hide_preloading);
+            this.accountsCount = (0, _keys2.default)(all_accounts).length;
+            this.is_preloading = this.$store.state.hide_preloading;
+            return all_accounts;
+        },
+        /**
+         * Check if we have a pro license.
+         * @returns {boolean}
+         */
+        checkLicense: function checkLicense() {
+            return this.$store.state.licence < 1;
+        }
+    },
+
+    methods: {
+        page_loader_module_display: function page_loader_module_display() {
+            // Display the preloader until accounts are loaded.
+            //this.$refs.Preloader.preloader_message = this.$store.state.labels.accounts.preloader_message;
+            this.$refs.Preloader.show();
+        },
+
+        resetAccountData: function resetAccountData() {
+            var _this = this;
+
+            if (this.is_loading) {
+                this.$log.warn('Request in progress...Bail');
+                return;
+            }
+            this.is_loading = true;
+            this.$store.dispatch('fetchAJAXPromise', {
+                req: 'reset_accounts',
+                data: {}
+            }).then(function (response) {
+                _this.is_loading = false;
+                if (_this.$parent.start_status === true) {
+                    // Stop sharing process if enabled.
+                    _this.$parent.togglePosting();
+                }
+                _this.$store.dispatch('fetchAJAXPromise', {
+                    req: 'get_available_services'
+                }).then(function (response) {
+                    _this.is_loading = false;
+                });
+            }, function (error) {
+                _this.is_loading = false;
+                Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+            });
+        }
+    },
+    components: {
+        SignInBtn: _signInBtn2.default,
+        ServiceUserTile: _serviceUserTile2.default,
+        AddAccountTile: _addAccountTile2.default,
+        'vue_spinner': _vueSpinner2.default
+    }
+    // </script>
+    // <style scoped>
+    //     #rop_core .columns.py-2 .text-gray {
+    //         margin: 0;
+    //         line-height: normal;
+    //     }
+    //
+    //     #rop_core .input-group {
+    //         width: 100%;
+    //     }
+    //
+    //     b {
+    //         margin-bottom: 5px;
+    //         display: block;
+    //     }
+    //
+    //     #rop_core .text-gray b {
+    //         display: inline;
+    //     }
+    //
+    //     #rop_core .input-group .input-group-addon {
+    //         padding: 3px 5px;
+    //     }
+    //
+    //     #rop_core .rop-available-accounts h5 {
+    //         margin-bottom: 15px;
+    //     }
+    //
+    //     @media ( max-width: 600px ) {
+    //         #rop_core .panel-body .text-gray {
+    //             margin-bottom: 10px;
+    //         }
+    //
+    //         #rop_core .text-right {
+    //             text-align: left;
+    //         }
+    //     }
+    // </style>
+    //
+
+};
 
 /***/ }),
 /* 223 */
@@ -35009,6 +35081,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 		<div class="input-group text-right buttons-wrap">
 // 			<button v-for="( service, network ) in services"
 // 					:disabled="checkDisabled( service, network )"
+// 					:title="getTooltip( service, network )"
 // 					class="btn input-group-btn"
 // 					:class="'btn-' + network"
 // 					@click="requestAuthorization( network )">
@@ -35032,14 +35105,18 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 							<button class="btn btn-primary big-btn" @click="openPopupFB()">{{labels.fb_app_signin_btn}}</button>
 // 							<span class="text-center">{{labels.fb_own_app_signin}}</span>
 // 						</div>
-// 						<div class="auth-app" v-if="isTwitter && isAllowedTwitter">
+// 						<div class="auth-app" v-if="isTwitter">
 // 							<button class="btn btn-primary big-btn" @click="openPopupTW()">{{labels.tw_app_signin_btn}}</button>
 // 							<span class="text-center">{{labels.tw_own_app_signin}}</span>
 // 						</div>
-// 						<div id="rop-advanced-config" v-if="isFacebook || (isTwitter && isAllowedTwitter)">
+// 						<div class="auth-app" v-if="isLinkedIn && isAllowedLinkedIn">
+// 							<button class="btn btn-primary big-btn" @click="openPopupLI()">{{labels.li_app_signin_btn}}</button>
+// 							<span class="text-center">{{labels.li_own_app_signin}}</span>
+// 						</div>
+// 						<div id="rop-advanced-config" v-if="isFacebook || isTwitter || (isLinkedIn && isAllowedLinkedIn)">
 // 						<button class="btn btn-primary" v-on:click="showAdvanceConfig = !showAdvanceConfig">{{labels.show_advance_config}}</button>
 // 					</div>
-// 						<div v-if="showAdvanceConfig && (isFacebook ||  (isTwitter && isAllowedTwitter) )">
+// 						<div v-if="showAdvanceConfig && (isFacebook || isTwitter || (isLinkedIn && isAllowedLinkedIn) )">
 // 						<div class="form-group" v-for="( field, id ) in modal.data">
 // 							<label class="form-label" :for="field.id">{{ field.name }}</label>
 // 							<input :class="[ 'form-input', field.error ? ' is-error' : '' ]" type="text" :id="field.id" v-model="field.value"
@@ -35048,7 +35125,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 							<p class="text-gray">{{ field.description }}</p>
 // 						</div>
 // 					</div>
-// 						<div v-if="(!isTwitter && !isFacebook) || ( isTwitter && !isAllowedTwitter)">
+// 						<div v-if="(!isTwitter && !isFacebook && !isLinkedIn) || (isLinkedIn && !isAllowedLinkedIn)">
 // 						<div class="form-group" v-for="( field, id ) in modal.data">
 // 							<label class="form-label" :for="field.id">{{ field.name }}</label>
 // 							<input :class="[ 'form-input', field.error ? ' is-error' : '' ]" type="text" :id="field.id" v-model="field.value"
@@ -35059,14 +35136,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 					</div>
 // 				</div>
 // 				</div>
-// 				<div v-if="isFacebook || (isTwitter && isAllowedTwitter)" class="modal-footer">
+// 				<div v-if="isFacebook || isTwitter || (isLinkedIn && isAllowedLinkedIn)" class="modal-footer">
 // 					<p class="text-left pull-left mr-2" v-html="labels.rs_app_info"></p>
 // 				</div>
-// 				<div v-if="showAdvanceConfig && (isFacebook || isTwitter)" class="modal-footer">
+// 				<div v-if="showAdvanceConfig && (isFacebook || isTwitter || isLinkedIn)" class="modal-footer">
 // 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 // 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 // 				</div>
-// 				<div v-if="(!isTwitter && !isFacebook) || (isTwitter && !isAllowedTwitter)" class="modal-footer">
+// 				<div v-if="(!isTwitter && !isFacebook && !isLinkedIn) || (isLinkedIn && !isAllowedLinkedIn)" class="modal-footer">
 // 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 // 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 // 				</div>
@@ -35095,17 +35172,50 @@ module.exports = {
 			appOrigin: ropAuthAppData.authAppUrl,
 			appPathFB: ropAuthAppData.authAppFacebookPath,
 			appPathTW: ropAuthAppData.authAppTwitterPath,
+			appPathLI: ropAuthAppData.authAppLinkedInPath,
 			appAdminEmail: ropAuthAppData.adminEmail,
 			siteAdminUrl: ropAuthAppData.adminUrl,
 			appUniqueId: ropAuthAppData.authToken,
 			appSignature: ropAuthAppData.authSignature,
 			windowParameters: 'top=20,left=100,width=560,height=670',
 			authPopupWindow: null,
-			showTwAppBtn: ropApiSettings.show_tw_app_btn,
+			showLiAppBtn: ropApiSettings.show_li_app_btn,
 			showBtn: false
 		};
 	},
 	methods: {
+		/**
+   * Get tooltip for the service.
+   *
+   *
+   * @param service
+   * @param network
+   * @returns {string}
+   */
+		getTooltip: function getTooltip(service, network) {
+			if (service !== undefined && service.active === false) {
+				return this.labels.only_in_pro;
+			}
+			var countAuthServices = 0;
+			for (var authService in this.$store.state.authenticatedServices) {
+				if (this.$store.state.authenticatedServices[authService].service === network) {
+					countAuthServices++;
+				}
+			}
+
+			var countActiveAccounts = 0;
+			for (var activeAccount in this.$store.state.activeAccounts) {
+				if (this.$store.state.activeAccounts[activeAccount].service === network) {
+					countActiveAccounts++;
+				}
+			}
+
+			if (service !== undefined && (service.allowed_accounts <= countAuthServices || service.allowed_accounts <= countActiveAccounts)) {
+				return this.labels.limit_reached;
+			}
+			return '';
+		},
+
 		/**
    * Check status for the service.
    *
@@ -35296,19 +35406,45 @@ module.exports = {
 			});
 		},
 
+		/**
+   * Add LinkedIn account.
+   *
+   * @param data Data.
+   */
+		addAccountLI: function addAccountLI(data) {
+			var _this4 = this;
+
+			this.$store.dispatch('fetchAJAXPromise', {
+				req: 'add_account_li',
+				updateState: false,
+				data: data
+			}).then(function (response) {
+				window.removeEventListener("message", function (event) {
+					return _this4.getChildWindowMessage(event);
+				});
+				_this4.authPopupWindow.close();
+				window.location.reload();
+			}, function (error) {
+				_this4.is_loading = false;
+				Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+			});
+		},
+
 		getChildWindowMessage: function getChildWindowMessage(event) {
 			if (~event.origin.indexOf(this.appOrigin)) {
 				if ('Twitter' === this.modal.serviceName) {
 					this.addAccountTW(JSON.parse(event.data));
 				} else if ('Facebook' === this.modal.serviceName) {
 					this.addAccountFB(JSON.parse(event.data));
+				} else if ('LinkedIn' === this.modal.serviceName) {
+					this.addAccountLI(JSON.parse(event.data));
 				}
 			} else {
 				return;
 			}
 		},
 		openPopupFB: function openPopupFB() {
-			var _this4 = this;
+			var _this5 = this;
 
 			var loginUrl = this.appOrigin + this.appPathFB + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
 			try {
@@ -35320,11 +35456,11 @@ module.exports = {
 				this.cancelModal();
 			}
 			window.addEventListener("message", function (event) {
-				return _this4.getChildWindowMessage(event);
+				return _this5.getChildWindowMessage(event);
 			});
 		},
 		openPopupTW: function openPopupTW() {
-			var _this5 = this;
+			var _this6 = this;
 
 			// Open the popup specific for Twitter
 			var loginUrl = this.appOrigin + this.appPathTW + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
@@ -35337,7 +35473,24 @@ module.exports = {
 				this.cancelModal();
 			}
 			window.addEventListener("message", function (event) {
-				return _this5.getChildWindowMessage(event);
+				return _this6.getChildWindowMessage(event);
+			});
+		},
+		openPopupLI: function openPopupLI() {
+			var _this7 = this;
+
+			// Open the popup specific for LinkedIn
+			var loginUrl = this.appOrigin + this.appPathLI + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
+			try {
+				this.authPopupWindow.close();
+			} catch (e) {
+				// nothing to do
+			} finally {
+				this.authPopupWindow = window.open(loginUrl, 'authLI', this.windowParameters);
+				this.cancelModal();
+			}
+			window.addEventListener("message", function (event) {
+				return _this7.getChildWindowMessage(event);
 			});
 		}
 	},
@@ -35377,13 +35530,16 @@ module.exports = {
 			return this.modal.serviceName === 'Twitter';
 		},
 
-		isAllowedTwitter: function isAllowedTwitter() {
-			var showButton = true;
+		// will return true if the current service actions are for LinkedIn.
+		isLinkedIn: function isLinkedIn() {
+			return this.modal.serviceName === 'LinkedIn';
+		},
 
-			if (!this.showTwAppBtn) {
+		isAllowedLinkedIn: function isAllowedLinkedIn() {
+			var showButton = true;
+			if (!this.showLiAppBtn) {
 				showButton = false;
 			}
-
 			return showButton;
 		}
 	}
@@ -35403,7 +35559,7 @@ module.exports = {
 /* 226 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div id=\"rop-sign-in-area\" _v-e1c25e0c=\"\">\n\t\t<div class=\"input-group text-right buttons-wrap\" _v-e1c25e0c=\"\">\n\t\t\t<button v-for=\"( service, network ) in services\" :disabled=\"checkDisabled( service, network )\" class=\"btn input-group-btn\" :class=\"'btn-' + network\" @click=\"requestAuthorization( network )\" _v-e1c25e0c=\"\">\n\t\t\t\t<i v-if=\"network !== 'buffer'\" class=\"fa fa-fw\" :class=\"'fa-' + network\" _v-e1c25e0c=\"\"></i>\n\t\t\t\t<i v-if=\"network === 'buffer'\" class=\"fa fa-fw fa-plus-square\" _v-e1c25e0c=\"\"></i>\n\t\t\t\t{{service.name}}\n\t\t\t</button>\n\n\t\t</div>\n\n\t\t<div class=\"modal\" :class=\"modalActiveClass\" _v-e1c25e0c=\"\">\n\t\t\t<div class=\"modal-overlay\" _v-e1c25e0c=\"\"></div>\n\t\t\t<div class=\"modal-container\" _v-e1c25e0c=\"\">\n\t\t\t\t<div class=\"modal-header\" _v-e1c25e0c=\"\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"cancelModal()\" _v-e1c25e0c=\"\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\" _v-e1c25e0c=\"\">{{ modal.serviceName }} {{labels.service_popup_title}}</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\" _v-e1c25e0c=\"\">\n\t\t\t\t\t<div class=\"content\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isFacebook\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupFB()\" _v-e1c25e0c=\"\">{{labels.fb_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-e1c25e0c=\"\">{{labels.fb_own_app_signin}}</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isTwitter &amp;&amp; isAllowedTwitter\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupTW()\" _v-e1c25e0c=\"\">{{labels.tw_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-e1c25e0c=\"\">{{labels.tw_own_app_signin}}</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div id=\"rop-advanced-config\" v-if=\"isFacebook || (isTwitter &amp;&amp; isAllowedTwitter)\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-primary\" v-on:click=\"showAdvanceConfig = !showAdvanceConfig\" _v-e1c25e0c=\"\">{{labels.show_advance_config}}</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t\t<div v-if=\"showAdvanceConfig &amp;&amp; (isFacebook ||  (isTwitter &amp;&amp; isAllowedTwitter) )\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-e1c25e0c=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input :class=\"[ 'form-input', field.error ? ' is-error' : '' ]\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t\t<small class=\"text-error\" v-if=\"field.error\" _v-e1c25e0c=\"\">{{labels.field_required}}</small>\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-e1c25e0c=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t\t<div v-if=\"(!isTwitter &amp;&amp; !isFacebook) || ( isTwitter &amp;&amp; !isAllowedTwitter)\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-e1c25e0c=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input :class=\"[ 'form-input', field.error ? ' is-error' : '' ]\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t\t<small class=\"text-error\" v-if=\"field.error\" _v-e1c25e0c=\"\">{{labels.field_required}}</small>\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-e1c25e0c=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"isFacebook || (isTwitter &amp;&amp; isAllowedTwitter)\" class=\"modal-footer\" _v-e1c25e0c=\"\">\n\t\t\t\t\t<p class=\"text-left pull-left mr-2\" v-html=\"labels.rs_app_info\" _v-e1c25e0c=\"\"></p>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"showAdvanceConfig &amp;&amp; (isFacebook || isTwitter)\" class=\"modal-footer\" _v-e1c25e0c=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-e1c25e0c=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-e1c25e0c=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"(!isTwitter &amp;&amp; !isFacebook) || (isTwitter &amp;&amp; !isAllowedTwitter)\" class=\"modal-footer\" _v-e1c25e0c=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-e1c25e0c=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-e1c25e0c=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div id=\"rop-sign-in-area\" _v-e1c25e0c=\"\">\n\t\t<div class=\"input-group text-right buttons-wrap\" _v-e1c25e0c=\"\">\n\t\t\t<button v-for=\"( service, network ) in services\" :disabled=\"checkDisabled( service, network )\" :title=\"getTooltip( service, network )\" class=\"btn input-group-btn\" :class=\"'btn-' + network\" @click=\"requestAuthorization( network )\" _v-e1c25e0c=\"\">\n\t\t\t\t<i v-if=\"network !== 'buffer'\" class=\"fa fa-fw\" :class=\"'fa-' + network\" _v-e1c25e0c=\"\"></i>\n\t\t\t\t<i v-if=\"network === 'buffer'\" class=\"fa fa-fw fa-plus-square\" _v-e1c25e0c=\"\"></i>\n\t\t\t\t{{service.name}}\n\t\t\t</button>\n\n\t\t</div>\n\n\t\t<div class=\"modal\" :class=\"modalActiveClass\" _v-e1c25e0c=\"\">\n\t\t\t<div class=\"modal-overlay\" _v-e1c25e0c=\"\"></div>\n\t\t\t<div class=\"modal-container\" _v-e1c25e0c=\"\">\n\t\t\t\t<div class=\"modal-header\" _v-e1c25e0c=\"\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"cancelModal()\" _v-e1c25e0c=\"\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\" _v-e1c25e0c=\"\">{{ modal.serviceName }} {{labels.service_popup_title}}</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\" _v-e1c25e0c=\"\">\n\t\t\t\t\t<div class=\"content\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isFacebook\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupFB()\" _v-e1c25e0c=\"\">{{labels.fb_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-e1c25e0c=\"\">{{labels.fb_own_app_signin}}</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isTwitter\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupTW()\" _v-e1c25e0c=\"\">{{labels.tw_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-e1c25e0c=\"\">{{labels.tw_own_app_signin}}</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isLinkedIn &amp;&amp; isAllowedLinkedIn\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupLI()\" _v-e1c25e0c=\"\">{{labels.li_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-e1c25e0c=\"\">{{labels.li_own_app_signin}}</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div id=\"rop-advanced-config\" v-if=\"isFacebook || isTwitter || (isLinkedIn &amp;&amp; isAllowedLinkedIn)\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-primary\" v-on:click=\"showAdvanceConfig = !showAdvanceConfig\" _v-e1c25e0c=\"\">{{labels.show_advance_config}}</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t\t<div v-if=\"showAdvanceConfig &amp;&amp; (isFacebook || isTwitter || (isLinkedIn &amp;&amp; isAllowedLinkedIn) )\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-e1c25e0c=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input :class=\"[ 'form-input', field.error ? ' is-error' : '' ]\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t\t<small class=\"text-error\" v-if=\"field.error\" _v-e1c25e0c=\"\">{{labels.field_required}}</small>\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-e1c25e0c=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t\t<div v-if=\"(!isTwitter &amp;&amp; !isFacebook &amp;&amp; !isLinkedIn) || (isLinkedIn &amp;&amp; !isAllowedLinkedIn)\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-e1c25e0c=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input :class=\"[ 'form-input', field.error ? ' is-error' : '' ]\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t\t<small class=\"text-error\" v-if=\"field.error\" _v-e1c25e0c=\"\">{{labels.field_required}}</small>\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-e1c25e0c=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"isFacebook || isTwitter || (isLinkedIn &amp;&amp; isAllowedLinkedIn)\" class=\"modal-footer\" _v-e1c25e0c=\"\">\n\t\t\t\t\t<p class=\"text-left pull-left mr-2\" v-html=\"labels.rs_app_info\" _v-e1c25e0c=\"\"></p>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"showAdvanceConfig &amp;&amp; (isFacebook || isTwitter || isLinkedIn)\" class=\"modal-footer\" _v-e1c25e0c=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-e1c25e0c=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-e1c25e0c=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"(!isTwitter &amp;&amp; !isFacebook &amp;&amp; !isLinkedIn) || (isLinkedIn &amp;&amp; !isAllowedLinkedIn)\" class=\"modal-footer\" _v-e1c25e0c=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-e1c25e0c=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-e1c25e0c=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 227 */
@@ -35463,7 +35619,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t.rop-remove-account[_v-0145bf0e]{\n\t\twidth:15px;\n\t\ttext-align: center;\n\t\tcursor: pointer;\n\t    padding-right: 10px;\n\t\tmargin-right: 10px;\n\t\theight: 100%;\n\t\t-ms-flex: 0 0 auto;\n\t\tline-height: 40px;\n\t\topacity: 1;\n\t\tmargin-left:0;\n\t\ttransition-timing-function: ease-in;\n\t\ttransition: 1s;\n\t\tz-index:9999;\n\t}\n\n", ""]);
+exports.push([module.i, "\n\t.rop-remove-account[_v-0145bf0e]{\n\t\twidth:15px;\n\t\ttext-align: center;\n\t\tcursor: pointer;\n\t\theight: 100%;\n\t\t-ms-flex: 0 0 auto;\n\t\tline-height: 40px;\n\t\topacity: 1;\n\t\tmargin-left:0;\n\t\ttransition-timing-function: ease-in;\n\t\ttransition: 1s;\n\t\tz-index:9999;\n\t}\n\n", ""]);
 
 // exports
 
@@ -35675,8 +35831,6 @@ module.exports = {
 	// 		width:15px;
 	// 		text-align: center;
 	// 		cursor: pointer;
-	// 	    padding-right: 10px;
-	// 		margin-right: 10px;
 	// 		height: 100%;
 	// 		-ms-flex: 0 0 auto;
 	// 		line-height: 40px;
@@ -35693,10 +35847,6 @@ module.exports = {
 }; // <template>
 // 	<div class="tile tile-centered rop-account" :class="'rop-'+type+'-account'">
 //
-// 		<div class="tile-icon rop-remove-account tooltip tooltip-right" @click="removeAccount(account_id) "  :data-tooltip="labels.remove_account" v-if=" ! account_data.active">
-// 			<i class="fa fa-trash" v-if=" ! is_loading"></i>
-// 			<i class="fa fa-spinner fa-spin" v-else></i>
-// 		</div>
 // 		<div class="tile-icon">
 // 			<div class="icon_box" :class="service">
 // 				<img class="service_account_image" :src="img" v-if="img"/>
@@ -35716,6 +35866,12 @@ module.exports = {
 // 					<i class="form-icon"></i>
 // 				</label>
 // 			</div>
+//
+//    		<div class="tile-icon rop-remove-account tooltip tooltip-right" @click="removeAccount(account_id) "  :data-tooltip="labels.remove_account" v-if=" ! account_data.active">
+// 			<i class="fa fa-trash" v-if=" ! is_loading"></i>
+// 			<i class="fa fa-spinner fa-spin" v-else></i>
+// 		</div>
+//
 // 		</div>
 // 	</div>
 // </template>
@@ -35726,7 +35882,7 @@ module.exports = {
 /* 231 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tile tile-centered rop-account\" :class=\"'rop-'+type+'-account'\" _v-0145bf0e=\"\">\n\n\t\t<div class=\"tile-icon rop-remove-account tooltip tooltip-right\" @click=\"removeAccount(account_id) \" :data-tooltip=\"labels.remove_account\" v-if=\" ! account_data.active\" _v-0145bf0e=\"\">\n\t\t\t<i class=\"fa fa-trash\" v-if=\" ! is_loading\" _v-0145bf0e=\"\"></i>\n\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-0145bf0e=\"\"></i>\n\t\t</div>\n\t\t<div class=\"tile-icon\" _v-0145bf0e=\"\">\n\t\t\t<div class=\"icon_box\" :class=\"service\" _v-0145bf0e=\"\">\n\t\t\t\t<img class=\"service_account_image\" :src=\"img\" v-if=\"img\" _v-0145bf0e=\"\">\n\t\t\t\t<i class=\"fa  \" :class=\"icon\" aria-hidden=\"true\" _v-0145bf0e=\"\"></i>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"tile-content\" _v-0145bf0e=\"\">\n\t\t\t<div class=\"tile-title\" _v-0145bf0e=\"\">{{ user }}</div>\n\t\t\t<div class=\"tile-subtitle text-gray\" _v-0145bf0e=\"\">{{ serviceInfo }}</div>\n\t\t</div>\n\t\t<div class=\"tile-action\" _v-0145bf0e=\"\">\n\t\t\t<div class=\"form-group\" _v-0145bf0e=\"\">\n\t\t\t\t<label class=\"form-switch\" _v-0145bf0e=\"\">\n\t\t\t\t\t<div class=\"ajax-loader \" _v-0145bf0e=\"\"><i class=\"fa fa-spinner fa-spin\" v-show=\"is_loading\" _v-0145bf0e=\"\"></i></div>\n\t\t\t\t\t<input :disabled=\"checkDisabled\" type=\"checkbox\" v-model=\"account_data.active\" @change=\"startToggleAccount( account_id, type )\" _v-0145bf0e=\"\">\n\t\t\t\t\t<i class=\"form-icon\" _v-0145bf0e=\"\"></i>\n\t\t\t\t</label>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tile tile-centered rop-account\" :class=\"'rop-'+type+'-account'\" _v-0145bf0e=\"\">\n\n\t\t<div class=\"tile-icon\" _v-0145bf0e=\"\">\n\t\t\t<div class=\"icon_box\" :class=\"service\" _v-0145bf0e=\"\">\n\t\t\t\t<img class=\"service_account_image\" :src=\"img\" v-if=\"img\" _v-0145bf0e=\"\">\n\t\t\t\t<i class=\"fa  \" :class=\"icon\" aria-hidden=\"true\" _v-0145bf0e=\"\"></i>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"tile-content\" _v-0145bf0e=\"\">\n\t\t\t<div class=\"tile-title\" _v-0145bf0e=\"\">{{ user }}</div>\n\t\t\t<div class=\"tile-subtitle text-gray\" _v-0145bf0e=\"\">{{ serviceInfo }}</div>\n\t\t</div>\n\t\t<div class=\"tile-action\" _v-0145bf0e=\"\">\n\t\t\t<div class=\"form-group\" _v-0145bf0e=\"\">\n\t\t\t\t<label class=\"form-switch\" _v-0145bf0e=\"\">\n\t\t\t\t\t<div class=\"ajax-loader \" _v-0145bf0e=\"\"><i class=\"fa fa-spinner fa-spin\" v-show=\"is_loading\" _v-0145bf0e=\"\"></i></div>\n\t\t\t\t\t<input :disabled=\"checkDisabled\" type=\"checkbox\" v-model=\"account_data.active\" @change=\"startToggleAccount( account_id, type )\" _v-0145bf0e=\"\">\n\t\t\t\t\t<i class=\"form-icon\" _v-0145bf0e=\"\"></i>\n\t\t\t\t</label>\n\t\t\t</div>\n\n   \t\t<div class=\"tile-icon rop-remove-account tooltip tooltip-right\" @click=\"removeAccount(account_id) \" :data-tooltip=\"labels.remove_account\" v-if=\" ! account_data.active\" _v-0145bf0e=\"\">\n\t\t\t<i class=\"fa fa-trash\" v-if=\" ! is_loading\" _v-0145bf0e=\"\"></i>\n\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-0145bf0e=\"\"></i>\n\t\t</div>\n\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 232 */
@@ -35786,7 +35942,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t.icon_box[_v-6d45b7fb] {\n\t\tbackground: #efefef;\n\t\tpadding: 0;\n\t\ttransition: .3s ease;\n\t}\n\n\t.icon_box.close .fa[_v-6d45b7fb] {\n\t\tline-height: 1.6em;\n\t}\n\n\t.icon_box.open .fa[_v-6d45b7fb] {\n\t\tline-height: 1.7em;\n\t\twidth: 20px;\n\t\ttransform: rotate(-135deg);\n\t\t-webkit-transform: rotate(-135deg);\n\t}\n\n\t.fa[_v-6d45b7fb] {\n\t\ttransition: all .3s cubic-bezier(.34, 1.61, .7, 1);\n\t}\n", ""]);
+exports.push([module.i, "\n\t.icon_box[_v-6d45b7fb] {\n\t\tbackground: #efefef;\n\t\tpadding: 0;\n\t\ttransition: .3s ease;\n\t}\n\n\t.icon_box.close .fa[_v-6d45b7fb] {\n\t\tline-height: 1.6em;\n\t}\n\n\t.icon_box.open .fa[_v-6d45b7fb] {\n\t\tline-height: 1.7em;\n\t\twidth: 20px;\n\t\ttransform: rotate(-135deg);\n\t\t-webkit-transform: rotate(-135deg);\n\t}\n\n\t.fa[_v-6d45b7fb] {\n\t\ttransition: all .3s cubic-bezier(.34, 1.61, .7, 1);\n\t}\n\n", ""]);
 
 // exports
 
@@ -35810,12 +35966,19 @@ module.exports = {
 		return {
 			addAccountActive: false,
 			labels: this.$store.state.labels.accounts,
-			upsell_link: ropApiSettings.upsell_link
+			upsell_link: ropApiSettings.upsell_link,
+			add_more_clicked: false,
+			added_networks: ropApiSettings.added_networks
 		};
 	},
 	computed: {},
 	components: {
 		SignInBtn: _signInBtn2.default
+	},
+	methods: {
+		addMore: function addMore() {
+			this.add_more_clicked = true;
+		}
 	}
 	// </script>
 	//
@@ -35840,16 +36003,20 @@ module.exports = {
 	// 	.fa {
 	// 		transition: all .3s cubic-bezier(.34, 1.61, .7, 1);
 	// 	}
+	//
 	// </style>
 	//
 
 }; // <template>
 // 	<div>
 // 		<div class="tile-content">
-// 			<div class="tile-title"><span v-html="labels.add_account"></span></div>
 // 		</div>
 // 		<div class="rop-add-account">
-// 					<sign-in-btn></sign-in-btn>
+//      <button class="btn btn-secondary" v-if="!this.add_more_clicked && this.added_networks >= 2" @click="addMore()">
+//         <i class="fa fa-plus"></i>{{labels.add_all_cta}}
+//      </button>
+//
+// 					<sign-in-btn  v-if="this.add_more_clicked || this.added_networks < 2"></sign-in-btn>
 // 		</div>
 // 	</div>
 // </template>
@@ -35860,22 +36027,383 @@ module.exports = {
 /* 236 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div _v-6d45b7fb=\"\">\n\t\t<div class=\"tile-content\" _v-6d45b7fb=\"\">\n\t\t\t<div class=\"tile-title\" _v-6d45b7fb=\"\"><span v-html=\"labels.add_account\" _v-6d45b7fb=\"\"></span></div>\n\t\t</div>\n\t\t<div class=\"rop-add-account\" _v-6d45b7fb=\"\">\n\t\t\t\t\t<sign-in-btn _v-6d45b7fb=\"\"></sign-in-btn>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div _v-6d45b7fb=\"\">\n\t\t<div class=\"tile-content\" _v-6d45b7fb=\"\">\n\t\t</div>\n\t\t<div class=\"rop-add-account\" _v-6d45b7fb=\"\">\n     <button class=\"btn btn-secondary\" v-if=\"!this.add_more_clicked &amp;&amp; this.added_networks >= 2\" @click=\"addMore()\" _v-6d45b7fb=\"\">\n        <i class=\"fa fa-plus\" _v-6d45b7fb=\"\"></i>{{labels.add_all_cta}}\n     </button>\n\n\t\t\t\t\t<sign-in-btn v-if=\"this.add_more_clicked || this.added_networks < 2\" _v-6d45b7fb=\"\"></sign-in-btn>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 237 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = "\n\t<div class=\"tab-view\" _v-93242342=\"\">\n\t\t<div class=\"panel-body\" _v-93242342=\"\">\n\t\t\t<div class=\"toast  toast-warning\" v-html=\"labels.twitter_warning\" v-if=\"twitter_warning\" _v-93242342=\"\">\n\n\t\t\t</div>\n\t\t\t<div class=\"container\" _v-93242342=\"\">\n\t\t\t\t<div class=\"columns\" :class=\"'rop-tab-state-'+is_loading\" _v-93242342=\"\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2\" _v-93242342=\"\">\n\t\t\t\t\t\t<div class=\"empty mb-2\" v-if=\"accountsCount === 0\" _v-93242342=\"\">\n\t\t\t\t\t\t\t<div class=\"empty-icon\" _v-93242342=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\" _v-93242342=\"\"></i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<p class=\"empty-title h5\" _v-93242342=\"\">{{labels.no_accounts}}</p>\n\t\t\t\t\t\t\t<p class=\"empty-subtitle\" _v-93242342=\"\">{{labels.no_accounts_desc}}</p>\n\t\t\t\t\t\t\t<p class=\"empty-subtitle\" _v-93242342=\"\"><span v-html=\"labels.no_accounts_pro_upsell\" _v-93242342=\"\"></span></p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"account-container\" v-for=\"( account, id ) in accounts\" _v-93242342=\"\">\n\t\t\t\t\t\t\t<service-user-tile :account_data=\"account\" :account_id=\"id\" _v-93242342=\"\"></service-user-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-93242342=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"add-accounts\" _v-93242342=\"\">\n\t\t\t\t\t\t\t<add-account-tile _v-93242342=\"\"></add-account-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-93242342=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"panel-footer\" _v-93242342=\"\">\n\t\t\t\t<div class=\"columns my-2\" v-if=\"checkLicense &amp;&amp; pro_installed\" _v-93242342=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-93242342=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-lock \" _v-93242342=\"\"></i> <span v-html=\"labels.activate_license\" _v-93242342=\"\"></span>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns my-2\" v-if=\"(checkLicense &amp;&amp; accountsCount === 2) &amp;&amp; !pro_installed\" _v-93242342=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-93242342=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-93242342=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-lock \" _v-93242342=\"\"></i> <span v-html=\"labels.upsell_accounts\" _v-93242342=\"\"></span>\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-if=\"accountsCount < 1\" _v-93242342=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-93242342=\"\">\n\t\t\t\t\t\t<p _v-93242342=\"\"><i class=\"fa fa-info-circle\" _v-93242342=\"\"></i> <span v-html=\"labels.has_accounts_desc\" _v-93242342=\"\"></span></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 text-right\" _v-93242342=\"\">\n\t\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-93242342=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-93242342=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-93242342=\"\"></i>\n\t\t\t\t\t\t{{labels.remove_all_cta}}\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t</div>\n";
+var __vue_script__, __vue_template__
+__webpack_require__(238)
+__vue_script__ = __webpack_require__(240)
+__vue_template__ = __webpack_require__(246)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/vue-spinner.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
 
 /***/ }),
 /* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(239);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(2)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-8b660b3e&file=vue-spinner.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./vue-spinner.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-8b660b3e&file=vue-spinner.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./vue-spinner.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 239 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(1)();
+// imports
+
+
+// module
+exports.push([module.i, "\n    .preloader-container[_v-8b660b3e] {\n        position: relative;\n        z-index: 9998;\n        top: 0;\n        left: 0;\n        right: 0;\n        bottom: 0;\n        margin: auto;\n        width: 100%;\n        height: 218px;\n        background-color: rgba(255, 255, 255, 0.1);\n        display: block;\n    }\n\n    .preloader-body[_v-8b660b3e] {\n        width: 350px;\n        height: 80px;\n        position: absolute;\n        top: 0;\n        bottom: 0;\n        left: 0;\n        right: 0;\n        margin: auto;\n        text-align: center;\n        display: block;\n    }\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 240 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _preload_three_dots = __webpack_require__(241);
+
+var _preload_three_dots2 = _interopRequireDefault(_preload_three_dots);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var style_components = {
+    'loader-style': _preload_three_dots2.default
+}; // <template>
+//     <transition v-if="display_the_preloader">
+//         <div class="preloader-container">
+//             <div class="preloader-body text-center">
+//                 <p class="empty-title h5" v-html="loading_message"></p>
+//                 <component v-bind:is="spinner_style" :loading="loading" :color="color" :size="size" :margin="margin" :radius="radius"></component>
+//             </div>
+//         </div>
+//     </transition>
+// </template>
+//
+// <script>
+
+exports.default = {
+    name: "vue-spinner",
+    mounted: function mounted() {},
+
+    props: {
+        spinner_style: {
+            type: String,
+            default: 'loader-style'
+        },
+        loading: {
+            type: Boolean,
+            default: true
+        },
+        color: {
+            type: String,
+            default: '#429bf4'
+        },
+        size: {
+            type: String,
+            default: '30px'
+        },
+        margin: {
+            type: String,
+            default: '2px'
+        },
+        radius: {
+            type: String,
+            default: '100%'
+        },
+        preloader_message: {
+            type: String,
+            default: 'Loading...'
+        }
+    },
+    data: function data() {
+        return {
+            display_the_preloader: false,
+            loading_message: this.preloader_message
+        };
+    },
+
+    components: style_components,
+    methods: {
+        show: function show() {
+            this.display_the_preloader = true;
+        },
+        hide: function hide() {
+            this.display_the_preloader = false;
+        }
+    }
+    // </script>
+    //
+    // <style scoped>
+    //     .preloader-container {
+    //         position: relative;
+    //         z-index: 9998;
+    //         top: 0;
+    //         left: 0;
+    //         right: 0;
+    //         bottom: 0;
+    //         margin: auto;
+    //         width: 100%;
+    //         height: 218px;
+    //         background-color: rgba(255, 255, 255, 0.1);
+    //         display: block;
+    //     }
+    //
+    //     .preloader-body {
+    //         width: 350px;
+    //         height: 80px;
+    //         position: absolute;
+    //         top: 0;
+    //         bottom: 0;
+    //         left: 0;
+    //         right: 0;
+    //         margin: auto;
+    //         text-align: center;
+    //         display: block;
+    //     }
+    // </style>
+
+};
+
+/***/ }),
+/* 241 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var __vue_script__, __vue_template__
-__webpack_require__(239)
-__vue_script__ = __webpack_require__(241)
-__vue_template__ = __webpack_require__(246)
+__webpack_require__(242)
+__vue_script__ = __webpack_require__(244)
+__vue_template__ = __webpack_require__(245)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/preload_three_dots.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 242 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(243);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(2)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3856defc&file=preload_three_dots.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./preload_three_dots.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3856defc&file=preload_three_dots.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./preload_three_dots.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 243 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(1)();
+// imports
+
+
+// module
+exports.push([module.i, "\n\n    .preloader-loading-item .normal-dot[_v-3856defc] {\n        animation: dot-do-animation 0.7s infinite linear;\n        animation-fill-mode: both;\n        display: inline-block;\n    }\n\n    .preloader-loading-item .normal-dot-odd[_v-3856defc] {\n        animation-delay: 0s;\n    }\n\n    .preloader-loading-item .normal-dot-even[_v-3856defc] {\n        animation-delay: 0.50s;\n    }\n\n    @keyframes dot-do-animation {\n        50% {\n            transform: scale(0.75);\n            -webkit-opacity: 0.2;\n            opacity: 0.2;\n        }\n        100% {\n            transform: scale(1);\n            -webkit-opacity: 1;\n            opacity: 1;\n        }\n    }\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 244 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+// <template>
+//     <div class="preloader-loading-item" v-show="loading">
+//         <div class="normal-dot normal-dot-odd" v-bind:style="dot_style"></div>
+//         <div class="normal-dot normal-dot-even" v-bind:style="dot_style"></div>
+//         <div class="normal-dot normal-dot-odd" v-bind:style="dot_style"></div>
+//     </div>
+// </template>
+//
+// <script>
+exports.default = {
+
+    name: 'preload_three_dots',
+
+    props: {
+        loading: {
+            type: Boolean,
+            default: true
+        },
+        color: {
+            type: String,
+            default: '#5dc596'
+        },
+        size: {
+            type: String,
+            default: '15px'
+        },
+        margin: {
+            type: String,
+            default: '2px'
+        },
+        radius: {
+            type: String,
+            default: '100%'
+        }
+    },
+    data: function data() {
+        return {
+            dot_style: {
+                backgroundColor: this.color,
+                height: this.size,
+                width: this.size,
+                margin: this.margin,
+                borderRadius: this.radius
+            }
+        };
+    }
+};
+// </script>
+//
+// <style scoped>
+//
+//     .preloader-loading-item .normal-dot {
+//         -webkit-animation: dot-do-animation 0.7s infinite linear;
+//         animation: dot-do-animation 0.7s infinite linear;
+//         -webkit-animation-fill-mode: both;
+//         animation-fill-mode: both;
+//         display: inline-block;
+//     }
+//
+//     .preloader-loading-item .normal-dot-odd {
+//         animation-delay: 0s;
+//     }
+//
+//     .preloader-loading-item .normal-dot-even {
+//         animation-delay: 0.50s;
+//     }
+//
+//     @-webkit-keyframes dot-do-animation {
+//         50% {
+//             -webkit-transform: scale(0.75);
+//             transform: scale(0.75);
+//             -webkit-opacity: 0.2;
+//             opacity: 0.2;
+//         }
+//         100% {
+//             -webkit-transform: scale(1);
+//             transform: scale(1);
+//             -webkit-opacity: 1;
+//             opacity: 1;
+//         }
+//     }
+//
+//     @keyframes dot-do-animation {
+//         50% {
+//             -webkit-transform: scale(0.75);
+//             transform: scale(0.75);
+//             -webkit-opacity: 0.2;
+//             opacity: 0.2;
+//         }
+//         100% {
+//             -webkit-transform: scale(1);
+//             transform: scale(1);
+//             -webkit-opacity: 1;
+//             opacity: 1;
+//         }
+//     }
+// </style>
+
+/***/ }),
+/* 245 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div class=\"preloader-loading-item\" v-show=\"loading\" _v-3856defc=\"\">\n        <div class=\"normal-dot normal-dot-odd\" v-bind:style=\"dot_style\" _v-3856defc=\"\"></div>\n        <div class=\"normal-dot normal-dot-even\" v-bind:style=\"dot_style\" _v-3856defc=\"\"></div>\n        <div class=\"normal-dot normal-dot-odd\" v-bind:style=\"dot_style\" _v-3856defc=\"\"></div>\n    </div>\n";
+
+/***/ }),
+/* 246 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <transition v-if=\"display_the_preloader\" _v-8b660b3e=\"\">\n        <div class=\"preloader-container\" _v-8b660b3e=\"\">\n            <div class=\"preloader-body text-center\" _v-8b660b3e=\"\">\n                <p class=\"empty-title h5\" v-html=\"loading_message\" _v-8b660b3e=\"\"></p>\n                <component v-bind:is=\"spinner_style\" :loading=\"loading\" :color=\"color\" :size=\"size\" :margin=\"margin\" :radius=\"radius\" _v-8b660b3e=\"\"></component>\n            </div>\n        </div>\n    </transition>\n";
+
+/***/ }),
+/* 247 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div class=\"tab-view\" _v-93242342=\"\">\n        <div class=\"panel-body\" _v-93242342=\"\">\n            <div class=\"toast  toast-warning\" v-html=\"labels.twitter_warning\" v-if=\"twitter_warning\" _v-93242342=\"\">\n\n            </div>\n            <div class=\"container\" _v-93242342=\"\">\n                <div class=\"columns\" :class=\"'rop-tab-state-'+is_loading\" _v-93242342=\"\">\n                    <div class=\"column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2\" _v-93242342=\"\">\n                        <vue_spinner :preloader_message=\"labels.preloader_message_accounts\" ref=\"Preloader\" v-if=\"is_preloading === 0\" _v-93242342=\"\"></vue_spinner>\n                        <div class=\"empty mb-2\" v-if=\"accountsCount === 0 &amp;&amp; is_preloading > 0\" _v-93242342=\"\">\n                            <div class=\"empty-icon\" _v-93242342=\"\">\n                                <i class=\"fa fa-3x fa-user-circle-o\" _v-93242342=\"\"></i>\n                            </div>\n                            <p class=\"empty-title h5\" _v-93242342=\"\">{{labels.no_accounts}}</p>\n                            <p class=\"empty-subtitle\" _v-93242342=\"\">{{labels.no_accounts_desc}}</p>\n                        </div>\n                        <div class=\"account-container\" v-for=\"( account, id ) in accounts\" v-if=\"is_preloading > 0\" _v-93242342=\"\">\n                            <service-user-tile :account_data=\"account\" :account_id=\"id\" _v-93242342=\"\"></service-user-tile>\n                            <span class=\"divider\" _v-93242342=\"\"></span>\n                        </div>\n                        <div class=\"add-accounts\" v-if=\"is_preloading > 0\" _v-93242342=\"\">\n                            <add-account-tile _v-93242342=\"\"></add-account-tile>\n                            <span class=\"divider\" _v-93242342=\"\"></span>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"panel-footer\" v-if=\"is_preloading > 0\" _v-93242342=\"\">\n                <div class=\"columns my-2\" v-if=\"checkLicense &amp;&amp; pro_installed\" _v-93242342=\"\">\n                    <div class=\"column col-12\" _v-93242342=\"\">\n                        <i class=\"fa fa-info-circle \" _v-93242342=\"\"></i> <span v-html=\"labels.activate_license\" _v-93242342=\"\"></span>\n                    </div>\n                </div>\n                <div class=\"columns my-2\" v-if=\"(checkLicense &amp;&amp; accountsCount === 2) &amp;&amp; !pro_installed\" _v-93242342=\"\">\n                    <div class=\"column col-12\" _v-93242342=\"\">\n                        <p class=\"upsell\" _v-93242342=\"\">\n                            <i class=\"fa fa-info-circle \" _v-93242342=\"\"></i> <span v-html=\"labels.upsell_accounts\" _v-93242342=\"\"></span>\n                        </p>\n                    </div>\n                </div>\n                <div class=\"column col-12 text-right\" _v-93242342=\"\">\n                    <button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-93242342=\"\">\n                        <i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-93242342=\"\"></i>\n                        <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-93242342=\"\"></i>\n                        {{labels.remove_all_cta}}\n                    </button>\n                </div>\n            </div>\n        </div>\n\n    </div>\n";
+
+/***/ }),
+/* 248 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(249)
+__vue_script__ = __webpack_require__(251)
+__vue_template__ = __webpack_require__(256)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -35892,13 +36420,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 239 */
+/* 249 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(240);
+var content = __webpack_require__(250);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -35918,7 +36446,7 @@ if(false) {
 }
 
 /***/ }),
-/* 240 */
+/* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -35932,7 +36460,7 @@ exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-00498048] {\n\t
 
 
 /***/ }),
-/* 241 */
+/* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36357,13 +36885,13 @@ module.exports = {
 };
 
 /***/ }),
-/* 242 */
+/* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(243);
+var content = __webpack_require__(253);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -36383,7 +36911,7 @@ if(false) {
 }
 
 /***/ }),
-/* 243 */
+/* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -36397,7 +36925,7 @@ exports.push([module.i, "\n\t#rop_core .input-group.rop-counter-group {\n\t\tpos
 
 
 /***/ }),
-/* 244 */
+/* 254 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36542,25 +37070,25 @@ module.exports = {
 };
 
 /***/ }),
-/* 245 */
+/* 255 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"input-group rop-counter-group\">\n\t\t<input class=\"form-input rop-counter\" type=\"text\" v-model=\"inputValueC\" :id=\"id\">\n\t\t<button class=\"btn input-group-btn increment-btn up\" @mousedown=\"isPressed('up')\" @mouseup=\"isReleased('up')\"><i\n\t\t\t\tclass=\"fa fa-fw fa-caret-up\"></i></button>\n\t\t<button class=\"btn input-group-btn increment-btn down\" @mousedown=\"isPressed('down')\"\n\t\t        @mouseup=\"isReleased('down')\"><i class=\"fa fa-fw fa-caret-down\"></i></button>\n\t</div>\n";
 
 /***/ }),
-/* 246 */
+/* 256 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"tab-view\" _v-00498048=\"\">\n\t\t<div class=\"panel-body\" _v-00498048=\"\">\n\t\t\t<div class=\"container\" :class=\"'rop-tab-state-'+is_loading\" _v-00498048=\"\">\n\t\t\t\t<div class=\"columns py-2\" v-if=\"! isBiz\" _v-00498048=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-00498048=\"\">\n\t\t\t\t\t\t<b _v-00498048=\"\">{{labels.min_interval_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-00498048=\"\">{{labels.min_interval_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-00498048=\"\">\n\t\t\t\t\t\t<counter-input id=\"default_interval\" :value.sync=\"generalSettings.default_interval\" _v-00498048=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-00498048=\"\"></span>\n\t\t\t\t<div class=\"columns py-2\" _v-00498048=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-00498048=\"\">\n\t\t\t\t\t\t<b _v-00498048=\"\">{{labels.min_days_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-00498048=\"\">{{labels.min_days_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-00498048=\"\">\n\t\t\t\t\t\t<counter-input id=\"min_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.minimum_post_age\" _v-00498048=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- Max Post Age -->\n\t\t\t\t<div class=\"columns py-2\" _v-00498048=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-00498048=\"\">\n\t\t\t\t\t\t<b _v-00498048=\"\">{{labels.max_days_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-00498048=\"\">{{labels.max_days_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-00498048=\"\">\n\t\t\t\t\t\t<counter-input id=\"max_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.maximum_post_age\" _v-00498048=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-00498048=\"\"></span>\n\n\t\t\t\t<div class=\"columns py-2\" _v-00498048=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-00498048=\"\">\n\t\t\t\t\t\t<b _v-00498048=\"\">{{labels.no_posts_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-00498048=\"\">{{labels.no_posts_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-00498048=\"\">\n\t\t\t\t\t\t<counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\" _v-00498048=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-00498048=\"\"></span>\n\n\t\t\t\t<!-- Share more than once -->\n\t\t\t\t<div class=\"columns py-2\" _v-00498048=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-00498048=\"\">\n\t\t\t\t\t\t<b _v-00498048=\"\">{{labels.share_once_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-00498048=\"\">{{labels.share_once_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-00498048=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-00498048=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" id=\"share_more_than_once\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-00498048=\"\"></i> {{labels.share_once_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-00498048=\"\"></span>\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-00498048=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-00498048=\"\">\n\t\t\t\t\t\t<b _v-00498048=\"\">{{labels.post_types_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-00498048=\"\">{{labels.post_types_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-00498048=\"\">\n\t\t\t\t\t\t<multiple-select id=\"rop_post_types\" :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-00498048=\"\"></multiple-select>\n\n\t\t\t\t\t\t<p class=\"text-primary rop-post-type-badge\" v-if=\"checkMediaPostType \" v-html=\"labels.post_types_attachament_info\" _v-00498048=\"\"> </p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"columns \" v-if=\"!isPro\" _v-00498048=\"\">\n\t\t\t\t\t<div class=\"column text-center\" _v-00498048=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-00498048=\"\"><i class=\"fa fa-lock\" _v-00498048=\"\"></i> {{labels.post_types_upsell}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-00498048=\"\"></span>\n\n\t\t\t\t<!-- Taxonomies -->\n\t\t\t\t<div class=\"columns py-2\" _v-00498048=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-00498048=\"\">\n\t\t\t\t\t\t<b _v-00498048=\"\">{{labels.taxonomies_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-00498048=\"\">{{labels.taxonomies_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div id=\"rop_taxonomies\" class=\"column col-6 col-sm-12 vertical-align text-left\" _v-00498048=\"\">\n\t\t\t\t\t\t<div class=\"input-group\" _v-00498048=\"\">\n\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" _v-00498048=\"\"></multiple-select>\n\t\t\t\t\t\t\t<span class=\"input-group-addon vertical-align\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-00498048=\"\"></i>{{labels.taxonomies_exclude}}\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</span>\n\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t</div>\n\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-00498048=\"\"></span>\n\n\t\t\t\t<!-- Google Analytics -->\n\t\t\t\t<div class=\"columns py-2\" _v-00498048=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-00498048=\"\">\n\t\t\t\t\t\t<b _v-00498048=\"\">{{labels.ga_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-00498048=\"\">{{labels.ga_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-00498048=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-00498048=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.ga_tracking\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-00498048=\"\"></i>{{labels.ga_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-00498048=\"\"></span>\n\n\t\t\t\t\t\t\t<div class=\"columns py-2\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-00498048=\"\">{{labels.instant_share_title}}</b>\n\t\t\t\t\t\t\t\t\t\t<p class=\"text-gray\" _v-00498048=\"\">{{labels.instant_share_desc}}</p>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label id=\"rop_instant_share\" class=\"form-checkbox\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.instant_share\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-00498048=\"\"></i>{{labels.instant_share_yes}}\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t\t<span class=\"divider\" _v-00498048=\"\"></span>\n\n\t\t\t\t\t\t\t<div class=\"columns py-2\" v-if=\"isInstantShare\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-00498048=\"\">{{labels.instant_share_default_title}}</b>\n\t\t\t\t\t\t\t\t\t\t<p class=\"text-gray\" _v-00498048=\"\">{{labels.instant_share_default_desc}}</p>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.instant_share_default\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-00498048=\"\"></i>{{labels.instant_share_default_yes}}\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t\t<span class=\"divider\" v-if=\"isInstantShare\" _v-00498048=\"\"></span>\n\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-00498048=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-00498048=\"\">\n\t\t\t\t\t\t<b _v-00498048=\"\">{{labels.custom_share_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-00498048=\"\">{{labels.custom_share_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-00498048=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-00498048=\"\">\n\t\t\t\t\t\t\t<label id=\"rop_custom_share_msg\" class=\"form-checkbox\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" :disabled=\"!isPro\" v-model=\"generalSettings.custom_messages\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-00498048=\"\"></i>{{labels.custom_share_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-00498048=\"\"></span>\n\n\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" v-if=\"isCustomMsgs\" _v-00498048=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-00498048=\"\">\n\t\t\t\t\t\t<b _v-00498048=\"\">{{labels.custom_share_order_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-00498048=\"\">{{labels.custom_share_order_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-00498048=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-00498048=\"\">\n\t\t\t\t\t\t\t<label id=\"rop_custom_share_msg\" class=\"form-checkbox\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" :disabled=\"!isPro\" v-model=\"generalSettings.custom_messages_share_order\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-00498048=\"\"></i>{{labels.custom_share_order_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<!-- Upsell -->\n\t\t\t\t<div class=\"columns \" v-if=\"!isPro\" _v-00498048=\"\">\n\t\t\t\t\t<div class=\"column text-center\" _v-00498048=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-00498048=\"\"><i class=\"fa fa-lock\" _v-00498048=\"\"></i> {{labels.custom_share_upsell}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" v-if=\"isCustomMsgs\" _v-00498048=\"\"></span>\n\n\t\t\t\t<div class=\"columns py-2\" _v-00498048=\"\">\n\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-00498048=\"\">\n\t\t\t\t\t\t\t<b _v-00498048=\"\">{{labels.housekeeping}}</b>\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-00498048=\"\">{{labels.housekeeping_desc}}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-00498048=\"\">\n\t\t\t\t\t\t\t<div class=\"form-group\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.housekeeping\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-00498048=\"\"></i>{{labels.housekeeping_yes}}\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<span class=\"divider\" _v-00498048=\"\"></span>\n\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer text-right\" _v-00498048=\"\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\" _v-00498048=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-00498048=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-00498048=\"\"></i> {{labels.save}}\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 247 */
+/* 257 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(248)
-__vue_script__ = __webpack_require__(250)
-__vue_template__ = __webpack_require__(273)
+__webpack_require__(258)
+__vue_script__ = __webpack_require__(260)
+__vue_template__ = __webpack_require__(285)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -36577,13 +37105,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 248 */
+/* 258 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(249);
+var content = __webpack_require__(259);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -36603,7 +37131,7 @@ if(false) {
 }
 
 /***/ }),
-/* 249 */
+/* 259 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -36617,7 +37145,7 @@ exports.push([module.i, "\n\t.icon_box[_v-08d479da] {\n\t\twidth: 30px;\n\t\thei
 
 
 /***/ }),
-/* 250 */
+/* 260 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36627,15 +37155,15 @@ var _keys = __webpack_require__(14);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _emptyActiveAccounts = __webpack_require__(251);
+var _emptyActiveAccounts = __webpack_require__(261);
 
 var _emptyActiveAccounts2 = _interopRequireDefault(_emptyActiveAccounts);
 
-var _postFormat = __webpack_require__(254);
+var _postFormat = __webpack_require__(264);
 
 var _postFormat2 = _interopRequireDefault(_postFormat);
 
-var _accountSchedule = __webpack_require__(259);
+var _accountSchedule = __webpack_require__(269);
 
 var _accountSchedule2 = _interopRequireDefault(_accountSchedule);
 
@@ -36931,12 +37459,12 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 251 */
+/* 261 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(252)
-__vue_template__ = __webpack_require__(253)
+__vue_script__ = __webpack_require__(262)
+__vue_template__ = __webpack_require__(263)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -36953,7 +37481,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 252 */
+/* 262 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36988,19 +37516,19 @@ module.exports = {
 };
 
 /***/ }),
-/* 253 */
+/* 263 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"empty\">\n\t\t<div class=\"empty-icon\">\n\t\t\t<i class=\"fa fa-3x fa-user-circle-o\"></i>\n\t\t</div>\n\t\t<p class=\"empty-title h5\">{{labels.no_active_accounts}}</p>\n\t\t<p class=\"empty-subtitle\" v-html=\"labels.no_active_accounts_desc\"></p>\n\t\t<button class=\"btn btn-primary\" @click=\"goToAccounts()\">{{labels.go_to_accounts_btn}}</button>\n\t</div>\n";
 
 /***/ }),
-/* 254 */
+/* 264 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(255)
-__vue_script__ = __webpack_require__(257)
-__vue_template__ = __webpack_require__(258)
+__webpack_require__(265)
+__vue_script__ = __webpack_require__(267)
+__vue_template__ = __webpack_require__(268)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -37017,13 +37545,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 255 */
+/* 265 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(256);
+var content = __webpack_require__(266);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -37043,7 +37571,7 @@ if(false) {
 }
 
 /***/ }),
-/* 256 */
+/* 266 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -37057,7 +37585,7 @@ exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-05f3b2fa] {\n\t
 
 
 /***/ }),
-/* 257 */
+/* 267 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37419,19 +37947,19 @@ module.exports = {
 };
 
 /***/ }),
-/* 258 */
+/* 268 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div _v-05f3b2fa=\"\">\n\t\t<div class=\"columns py-2\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.post_content_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.post_content_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"form-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.post_content\" _v-05f3b2fa=\"\">\n\t\t\t\t\t\t<option value=\"post_title\" _v-05f3b2fa=\"\">{{labels.post_content_option_title}}</option>\n\t\t\t\t\t\t<option value=\"post_content\" _v-05f3b2fa=\"\">{{labels.post_content_option_content}}</option>\n\t\t\t\t\t\t<option value=\"post_title_content\" _v-05f3b2fa=\"\">{{labels.post_content_option_title_content}}</option>\n\t\t\t\t\t\t<option value=\"custom_field\" _v-05f3b2fa=\"\">{{labels.post_content_option_custom_field}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.post_content === 'custom_field'\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.custom_meta_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.custom_meta_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"form-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.custom_meta_field\" value=\"\" placeholder=\"\" _v-05f3b2fa=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<span class=\"divider\" _v-05f3b2fa=\"\"></span>\n\n\t\t<div class=\"columns py-2\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.max_char_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.max_char_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"form-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.maximum_length\" value=\"\" placeholder=\"\" _v-05f3b2fa=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-05f3b2fa=\"\"></span>\n\n\t\t<div class=\"columns py-2\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.add_char_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\"><span v-html=\"labels.add_char_desc\" _v-05f3b2fa=\"\"></span></p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"form-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<textarea class=\"form-input\" v-model=\"post_format.custom_text\" v-bind:placeholder=\"labels.add_char_placeholder\" _v-05f3b2fa=\"\">{{post_format.custom_text}}</textarea> \n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.add_pos_title}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"form-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.custom_text_pos\" _v-05f3b2fa=\"\">\n\t\t\t\t\t\t<option value=\"beginning\" _v-05f3b2fa=\"\">{{labels.add_pos_option_start}}</option>\n\t\t\t\t\t\t<option value=\"end\" _v-05f3b2fa=\"\">{{labels.add_pos_option_end}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.add_link_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.add_link_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"input-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-05f3b2fa=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.include_link\" _v-05f3b2fa=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-05f3b2fa=\"\"></i> {{labels.add_link_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-05f3b2fa=\"\"></span>\n\t\t<div class=\"columns py-2\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.meta_link_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.meta_link_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"input-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-05f3b2fa=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.url_from_meta\" _v-05f3b2fa=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-05f3b2fa=\"\"></i> {{labels.meta_link_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Custom Field -->\n\t\t<div class=\"columns py-2\" v-if=\"post_format.url_from_meta\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.meta_link_name_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.meta_link_name_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"form-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.url_meta_key\" value=\"\" placeholder=\"\" _v-05f3b2fa=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-05f3b2fa=\"\"></span>\n\t\t<div class=\"columns py-2\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.use_shortner_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.use_shortner_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"input-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-05f3b2fa=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.short_url\" _v-05f3b2fa=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-05f3b2fa=\"\"></i> {{labels.use_shortner_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" v-if=\"post_format.short_url\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.shortner_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.shortner_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"form-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.short_url_service\" _v-05f3b2fa=\"\">\n\t\t\t\t\t\t<option value=\"rviv.ly\" _v-05f3b2fa=\"\">rviv.ly</option>\n\t\t\t\t\t\t<option value=\"bit.ly\" _v-05f3b2fa=\"\">bit.ly</option>\n\t\t\t\t\t\t<option value=\"firebase\" _v-05f3b2fa=\"\">google firebase</option>\n\t\t\t\t\t\t<option value=\"ow.ly\" _v-05f3b2fa=\"\">ow.ly</option>\n\t\t\t\t\t\t<option value=\"is.gd\" _v-05f3b2fa=\"\">is.gd</option>\n      <option value=\"rebrand.ly\" _v-05f3b2fa=\"\">rebrand.ly</option>\n      <option value=\"wp_short_url\" _v-05f3b2fa=\"\">wp_short_url</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.short_url\" v-for=\"( credential, key_name ) in post_format.shortner_credentials\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{ key_name | capitalize }}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.shortner_field_desc_start}} \"{{key_name}}\"\n\t\t\t\t\t{{labels.shortner_field_desc_end}}\n\t\t\t\t\t<strong _v-05f3b2fa=\"\">{{post_format.short_url_service}}</strong> {{labels.shortner_api_field}}.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"form-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.shortner_credentials[key_name]\" _v-05f3b2fa=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.hashtags_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.hashtags_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"form-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.hashtags\" _v-05f3b2fa=\"\">\n\t\t\t\t\t\t<option value=\"no-hashtags\" _v-05f3b2fa=\"\">{{labels.hashtags_option_no}}</option>\n\t\t\t\t\t\t<option value=\"common-hashtags\" _v-05f3b2fa=\"\">{{labels.hashtags_option_common}}</option>\n\t\t\t\t\t\t<option value=\"categories-hashtags\" _v-05f3b2fa=\"\">{{labels.hashtags_option_cats}}</option>\n\t\t\t\t\t\t<option value=\"tags-hashtags\" _v-05f3b2fa=\"\">{{labels.hashtags_option_tags}}</option>\n\t\t\t\t\t\t<option value=\"custom-hashtags\" _v-05f3b2fa=\"\">{{labels.hashtags_option_field}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags === 'common-hashtags'\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.hastags_common_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.hastags_common_desc}} \",\".</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"form-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_common\" value=\"\" placeholder=\"\" _v-05f3b2fa=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags === 'custom-hashtags'\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.hastags_field_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.hastags_field_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"form-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_custom\" value=\"\" placeholder=\"\" _v-05f3b2fa=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags !== 'no-hashtags'\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.hashtags_length_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.hashtags_length_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"form-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.hashtags_length\" value=\"\" placeholder=\"\" _v-05f3b2fa=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<span class=\"divider\" _v-05f3b2fa=\"\"></span>\n\n\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.image_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.image_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"input-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-05f3b2fa=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.image\" :disabled=\"!isPro\" _v-05f3b2fa=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-05f3b2fa=\"\"></i> {{labels.image_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns \" v-if=\"!isPro\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column text-center\" _v-05f3b2fa=\"\">\n\t\t\t\t<p class=\"upsell\" _v-05f3b2fa=\"\"><i class=\"fa fa-lock\" _v-05f3b2fa=\"\"></i> {{labels.image_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-05f3b2fa=\"\"></span>\n\t\t<!-- Google Analytics -->\n\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.utm_campaign_medium}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.utm_campaign_medium_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"form-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t\t<input type=\"text\" :disabled=\"!isPro\" class=\"form-input\" v-model=\"post_format.utm_campaign_medium\" placeholder=\"social\" _v-05f3b2fa=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.utm_campaign_name}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.utm_campaign_name_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"form-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t\t<input type=\"text\" :disabled=\"!isPro\" class=\"form-input\" v-model=\"post_format.utm_campaign_name\" placeholder=\"ReviveOldPost\" _v-05f3b2fa=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns \" v-if=\"!isPro\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column text-center\" _v-05f3b2fa=\"\">\n\t\t\t\t<p class=\"upsell\" _v-05f3b2fa=\"\"><i class=\"fa fa-lock\" _v-05f3b2fa=\"\"></i> {{labels.custom_utm_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-05f3b2fa=\"\"></span>\n\t</div>\n";
 
 /***/ }),
-/* 259 */
+/* 269 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(260)
-__vue_script__ = __webpack_require__(262)
-__vue_template__ = __webpack_require__(272)
+__webpack_require__(270)
+__vue_script__ = __webpack_require__(272)
+__vue_template__ = __webpack_require__(284)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -37448,13 +37976,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 260 */
+/* 270 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(261);
+var content = __webpack_require__(271);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -37474,7 +38002,7 @@ if(false) {
 }
 
 /***/ }),
-/* 261 */
+/* 271 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -37488,7 +38016,7 @@ exports.push([module.i, "\n\t.rop-control-container-false[_v-19c4191e]  {\n\t\tc
 
 
 /***/ }),
-/* 262 */
+/* 272 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37498,7 +38026,7 @@ var _buttonCheckbox = __webpack_require__(72);
 
 var _buttonCheckbox2 = _interopRequireDefault(_buttonCheckbox);
 
-var _vue2Timepicker = __webpack_require__(263);
+var _vue2Timepicker = __webpack_require__(273);
 
 var _vue2Timepicker2 = _interopRequireDefault(_vue2Timepicker);
 
@@ -37506,8 +38034,101 @@ var _counterInput = __webpack_require__(83);
 
 var _counterInput2 = _interopRequireDefault(_counterInput);
 
+var _moment = __webpack_require__(0);
+
+var _moment2 = _interopRequireDefault(_moment);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// <template>
+// 	<div :class="'rop-control-container-'+ ( license > 1 ) +  '  rop-schedule-tab-container'">
+//
+// 		<div class="columns py-2 rop-control">
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<b>{{labels.schedule_type_title}}</b>
+// 				<p class="text-gray">{{labels.schedule_type_desc}}</p>
+// 			</div>
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<div class="form-group">
+// 					<select class="form-select" v-model="schedule.type">
+// 						<option value="recurring">{{labels.schedule_type_option_rec}}</option>
+// 						<option value="fixed">{{labels.schedule_type_option_fix}}</option>
+// 					</select>
+// 				</div>
+// 			</div>
+// 		</div>
+//
+// 		<!-- Fixed Schedule Days -->
+// 		<div class="columns py-2 rop-control" v-if="schedule.type === 'fixed'">
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<b>{{labels.schedule_fixed_days_title}}</b>
+// 				<p class="text-gray">{{labels.schedule_fixed_days_desc}}</p>
+// 			</div>
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<div class="form-group input-group">
+// 					<button-checkbox v-for="( data, label ) in daysObject" :key="label" :value="data.value"
+// 					                 :label="label" :checked="data.checked" @add-day="addDay" @rmv-day="rmvDay"
+// 					></button-checkbox>
+// 				</div>
+// 			</div>
+// 		</div>
+//
+// 		<!-- Fixed Schedule time -->
+// 		<div class="columns py-2 rop-control" v-if="schedule.type === 'fixed'">
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<b>{{labels.schedule_fixed_time_title}}</b>
+// 				<p class="text-gray">{{labels.schedule_fixed_time_desc}}</p>
+// 			</div>
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<div class="form-group">
+// 					<div class="input-group" v-for="( time, index ) in schedule.interval_f.time">
+// 						<vue-timepicker :minute-interval="5" class="timepicker-style-fix" :value="getTime( index )"
+// 						                @change="syncTime( $event, index )" hide-clear-button
+// 						></vue-timepicker>
+// 						<button class="btn btn-danger input-group-btn" v-if="schedule.interval_f.time.length > 1"
+// 						        @click="rmvTime( index )">
+// 							<i class="fa fa-fw fa-minus"></i>
+// 						</button>
+// 						<button class="btn btn-success input-group-btn"
+// 						        v-if="index == schedule.interval_f.time.length - 1" @click="addTime()"
+// 						>
+// 							<i class="fa fa-fw fa-plus"></i>
+// 						</button>
+// 					</div>
+// 				</div>
+// 			</div>
+// 		</div>
+//
+// 		<!-- Current time -->
+// <div class="column col-6 col-sm-12 vertical-align float-right" v-if="schedule.type === 'fixed'">
+// 		<div class="toast rop-current-time text-center" v-if="formatedDate">
+// 				{{labels.time_now}}: {{ formatedDate }}
+// 		</div>
+// </div>
+//
+// 		<div class="columns py-2 rop-control" v-else>
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<b>{{labels.schedule_rec_title}}</b>
+// 				<p class="text-gray">{{labels.schedule_rec_desc}}</p>
+// 			</div>
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<div class="form-group">
+// 					<counter-input id="interval_r" :value.sync="schedule.interval_r"></counter-input>
+// 				</div>
+// 			</div>
+// 		</div>
+//
+// 		<!-- Upsell -->
+// 		<div class="columns py-2" v-if="license < 2">
+// 			<div class="column text-center">
+// 				<p class="upsell"><i class="fa fa-lock"></i> {{labels.schedule_upsell}}</p>
+// 			</div>
+// 		</div>
+// 		<span class="divider"></span>
+// 	</div>
+// </template>
+//
+// <script>
 module.exports = {
 	name: 'account-schedule',
 	props: ['account_id', 'license'],
@@ -37557,6 +38178,28 @@ module.exports = {
 				daysObject[day].checked = this.isChecked(daysObject[day].value);
 			}
 			return daysObject;
+		},
+		/**
+   * Get general settings.
+   * @returns {module.exports.computed.generalSettings|Array|*}
+   */
+		formatedDate: function formatedDate() {
+			if (typeof this.date_format === 'undefined') {
+				return '';
+			}
+			return _moment2.default.utc(this.current_time, 'X').format(this.date_format.replace('mm', 'mm:ss'));
+		},
+		current_time: {
+			get: function get() {
+				return this.$store.state.cron_status.current_time;
+			},
+			set: function set(value) {
+				this.$store.state.cron_status.current_time = value;
+			}
+		},
+		date_format: function date_format() {
+
+			return this.$store.state.cron_status.date_format;
 		}
 	},
 	methods: {
@@ -37633,104 +38276,23 @@ module.exports = {
 	// </style>
 	//
 
-}; // <template>
-// 	<div :class="'rop-control-container-'+ ( license > 1 ) +  '  rop-schedule-tab-container'">
-//
-// 		<div class="columns py-2 rop-control">
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<b>{{labels.schedule_type_title}}</b>
-// 				<p class="text-gray">{{labels.schedule_type_desc}}</p>
-// 			</div>
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<div class="form-group">
-// 					<select class="form-select" v-model="schedule.type">
-// 						<option value="recurring">{{labels.schedule_type_option_rec}}</option>
-// 						<option value="fixed">{{labels.schedule_type_option_fix}}</option>
-// 					</select>
-// 				</div>
-// 			</div>
-// 		</div>
-//
-// 		<!-- Fixed Schedule Days -->
-// 		<div class="columns py-2 rop-control" v-if="schedule.type === 'fixed'">
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<b>{{labels.schedule_fixed_days_title}}</b>
-// 				<p class="text-gray">{{labels.schedule_fixed_days_desc}}</p>
-// 			</div>
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<div class="form-group input-group">
-// 					<button-checkbox v-for="( data, label ) in daysObject" :key="label" :value="data.value"
-// 					                 :label="label" :checked="data.checked" @add-day="addDay" @rmv-day="rmvDay"
-// 					></button-checkbox>
-// 				</div>
-// 			</div>
-// 		</div>
-//
-// 		<!-- Fixed Schedule time -->
-// 		<div class="columns py-2 rop-control" v-if="schedule.type === 'fixed'">
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<b>{{labels.schedule_fixed_time_title}}</b>
-// 				<p class="text-gray">{{labels.schedule_fixed_time_desc}}</p>
-// 			</div>
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<div class="form-group">
-// 					<div class="input-group" v-for="( time, index ) in schedule.interval_f.time">
-// 						<vue-timepicker :minute-interval="5" class="timepicker-style-fix" :value="getTime( index )"
-// 						                @change="syncTime( $event, index )" hide-clear-button
-// 						></vue-timepicker>
-// 						<button class="btn btn-danger input-group-btn" v-if="schedule.interval_f.time.length > 1"
-// 						        @click="rmvTime( index )">
-// 							<i class="fa fa-fw fa-minus"></i>
-// 						</button>
-// 						<button class="btn btn-success input-group-btn"
-// 						        v-if="index == schedule.interval_f.time.length - 1" @click="addTime()"
-// 						>
-// 							<i class="fa fa-fw fa-plus"></i>
-// 						</button>
-// 					</div>
-// 				</div>
-// 			</div>
-// 		</div>
-//
-// 		<div class="columns py-2 rop-control" v-else>
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<b>{{labels.schedule_rec_title}}</b>
-// 				<p class="text-gray">{{labels.schedule_rec_desc}}</p>
-// 			</div>
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<div class="form-group">
-// 					<counter-input id="interval_r" :value.sync="schedule.interval_r"></counter-input>
-// 				</div>
-// 			</div>
-// 		</div>
-//
-// 		<!-- Upsell -->
-// 		<div class="columns py-2" v-if="license < 2">
-// 			<div class="column text-center">
-// 				<p class="upsell"><i class="fa fa-lock"></i> {{labels.schedule_upsell}}</p>
-// 			</div>
-// 		</div>
-// 		<span class="divider"></span>
-// 	</div>
-// </template>
-//
-// <script>
+};
 
 /***/ }),
-/* 263 */
+/* 273 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(264)
+module.exports = __webpack_require__(274)
 
 
 /***/ }),
-/* 264 */
+/* 274 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(265)
-__vue_script__ = __webpack_require__(268)
-__vue_template__ = __webpack_require__(271)
+__webpack_require__(275)
+__vue_script__ = __webpack_require__(278)
+__vue_template__ = __webpack_require__(281)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -37747,13 +38309,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 265 */
+/* 275 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(266);
+var content = __webpack_require__(276);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -37773,12 +38335,12 @@ if(false) {
 }
 
 /***/ }),
-/* 266 */
+/* 276 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
 // imports
-exports.i(__webpack_require__(267), "");
+exports.i(__webpack_require__(277), "");
 
 // module
 exports.push([module.i, "\n", ""]);
@@ -37787,7 +38349,7 @@ exports.push([module.i, "\n", ""]);
 
 
 /***/ }),
-/* 267 */
+/* 277 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -37801,7 +38363,7 @@ exports.push([module.i, ".time-picker {\n  display: inline-block;\n  position: r
 
 
 /***/ }),
-/* 268 */
+/* 278 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37815,7 +38377,7 @@ var _keys = __webpack_require__(14);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _stringify = __webpack_require__(269);
+var _stringify = __webpack_require__(279);
 
 var _stringify2 = _interopRequireDefault(_stringify);
 
@@ -38191,13 +38753,13 @@ exports.default = {
 };
 
 /***/ }),
-/* 269 */
+/* 279 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(270), __esModule: true };
+module.exports = { "default": __webpack_require__(280), __esModule: true };
 
 /***/ }),
-/* 270 */
+/* 280 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var core = __webpack_require__(4);
@@ -38208,30 +38770,334 @@ module.exports = function stringify(it) { // eslint-disable-line no-unused-vars
 
 
 /***/ }),
-/* 271 */
+/* 281 */
 /***/ (function(module, exports) {
 
 module.exports = "\n<span class=\"time-picker\">\n  <input class=\"display-time\" :id=\"id\" v-model=\"displayTime\" @click.stop=\"toggleDropdown\" type=\"text\" readonly />\n  <span class=\"clear-btn\" v-if=\"!hideClearButton\" v-show=\"!showDropdown && showClearBtn\" @click.stop=\"clearTime\">&times;</span>\n  <div class=\"time-picker-overlay\" v-if=\"showDropdown\" @click.stop=\"toggleDropdown\"></div>\n  <div class=\"dropdown\" v-show=\"showDropdown\">\n    <div class=\"select-list\">\n      <ul class=\"hours\">\n        <li class=\"hint\" v-text=\"hourType\"></li>\n        <li v-for=\"hr in hours\" v-text=\"hr\" :class=\"{active: hour === hr}\" @click.stop=\"select('hour', hr)\"></li>\n      </ul>\n      <ul class=\"minutes\">\n        <li class=\"hint\" v-text=\"minuteType\"></li>\n        <li v-for=\"m in minutes\" v-text=\"m\" :class=\"{active: minute === m}\" @click.stop=\"select('minute', m)\"></li>\n      </ul>\n      <ul class=\"seconds\" v-if=\"secondType\">\n        <li class=\"hint\" v-text=\"secondType\"></li>\n        <li v-for=\"s in seconds\" v-text=\"s\" :class=\"{active: second === s}\" @click.stop=\"select('second', s)\"></li>\n      </ul>\n      <ul class=\"apms\" v-if=\"apmType\">\n        <li class=\"hint\" v-text=\"apmType\"></li>\n        <li v-for=\"a in apms\" v-text=\"a\" :class=\"{active: apm === a}\" @click.stop=\"select('apm', a)\"></li>\n      </ul>\n    </div>\n  </div>\n</span>\n";
 
 /***/ }),
-/* 272 */
+/* 282 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div :class=\"'rop-control-container-'+ ( license > 1 ) +  '  rop-schedule-tab-container'\" _v-19c4191e=\"\">\n\n\t\t<div class=\"columns py-2 rop-control\" _v-19c4191e=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-19c4191e=\"\">\n\t\t\t\t<b _v-19c4191e=\"\">{{labels.schedule_type_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-19c4191e=\"\">{{labels.schedule_type_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-19c4191e=\"\">\n\t\t\t\t<div class=\"form-group\" _v-19c4191e=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"schedule.type\" _v-19c4191e=\"\">\n\t\t\t\t\t\t<option value=\"recurring\" _v-19c4191e=\"\">{{labels.schedule_type_option_rec}}</option>\n\t\t\t\t\t\t<option value=\"fixed\" _v-19c4191e=\"\">{{labels.schedule_type_option_fix}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule Days -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-19c4191e=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-19c4191e=\"\">\n\t\t\t\t<b _v-19c4191e=\"\">{{labels.schedule_fixed_days_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-19c4191e=\"\">{{labels.schedule_fixed_days_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-19c4191e=\"\">\n\t\t\t\t<div class=\"form-group input-group\" _v-19c4191e=\"\">\n\t\t\t\t\t<button-checkbox v-for=\"( data, label ) in daysObject\" :key=\"label\" :value=\"data.value\" :label=\"label\" :checked=\"data.checked\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" _v-19c4191e=\"\"></button-checkbox>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule time -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-19c4191e=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-19c4191e=\"\">\n\t\t\t\t<b _v-19c4191e=\"\">{{labels.schedule_fixed_time_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-19c4191e=\"\">{{labels.schedule_fixed_time_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-19c4191e=\"\">\n\t\t\t\t<div class=\"form-group\" _v-19c4191e=\"\">\n\t\t\t\t\t<div class=\"input-group\" v-for=\"( time, index ) in schedule.interval_f.time\" _v-19c4191e=\"\">\n\t\t\t\t\t\t<vue-timepicker :minute-interval=\"5\" class=\"timepicker-style-fix\" :value=\"getTime( index )\" @change=\"syncTime( $event, index )\" hide-clear-button=\"\" _v-19c4191e=\"\"></vue-timepicker>\n\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn\" v-if=\"schedule.interval_f.time.length > 1\" @click=\"rmvTime( index )\" _v-19c4191e=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-minus\" _v-19c4191e=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t\t<button class=\"btn btn-success input-group-btn\" v-if=\"index == schedule.interval_f.time.length - 1\" @click=\"addTime()\" _v-19c4191e=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-plus\" _v-19c4191e=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2 rop-control\" v-else=\"\" _v-19c4191e=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-19c4191e=\"\">\n\t\t\t\t<b _v-19c4191e=\"\">{{labels.schedule_rec_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-19c4191e=\"\">{{labels.schedule_rec_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-19c4191e=\"\">\n\t\t\t\t<div class=\"form-group\" _v-19c4191e=\"\">\n\t\t\t\t\t<counter-input id=\"interval_r\" :value.sync=\"schedule.interval_r\" _v-19c4191e=\"\"></counter-input>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Upsell -->\n\t\t<div class=\"columns py-2\" v-if=\"license < 2\" _v-19c4191e=\"\">\n\t\t\t<div class=\"column text-center\" _v-19c4191e=\"\">\n\t\t\t\t<p class=\"upsell\" _v-19c4191e=\"\"><i class=\"fa fa-lock\" _v-19c4191e=\"\"></i> {{labels.schedule_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-19c4191e=\"\"></span>\n\t</div>\n";
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
 
 /***/ }),
-/* 273 */
+/* 283 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var map = {
+	"./af": 84,
+	"./af.js": 84,
+	"./ar": 85,
+	"./ar-dz": 86,
+	"./ar-dz.js": 86,
+	"./ar-kw": 87,
+	"./ar-kw.js": 87,
+	"./ar-ly": 88,
+	"./ar-ly.js": 88,
+	"./ar-ma": 89,
+	"./ar-ma.js": 89,
+	"./ar-sa": 90,
+	"./ar-sa.js": 90,
+	"./ar-tn": 91,
+	"./ar-tn.js": 91,
+	"./ar.js": 85,
+	"./az": 92,
+	"./az.js": 92,
+	"./be": 93,
+	"./be.js": 93,
+	"./bg": 94,
+	"./bg.js": 94,
+	"./bm": 95,
+	"./bm.js": 95,
+	"./bn": 96,
+	"./bn.js": 96,
+	"./bo": 97,
+	"./bo.js": 97,
+	"./br": 98,
+	"./br.js": 98,
+	"./bs": 99,
+	"./bs.js": 99,
+	"./ca": 100,
+	"./ca.js": 100,
+	"./cs": 101,
+	"./cs.js": 101,
+	"./cv": 102,
+	"./cv.js": 102,
+	"./cy": 103,
+	"./cy.js": 103,
+	"./da": 104,
+	"./da.js": 104,
+	"./de": 105,
+	"./de-at": 106,
+	"./de-at.js": 106,
+	"./de-ch": 107,
+	"./de-ch.js": 107,
+	"./de.js": 105,
+	"./dv": 108,
+	"./dv.js": 108,
+	"./el": 109,
+	"./el.js": 109,
+	"./en-SG": 110,
+	"./en-SG.js": 110,
+	"./en-au": 111,
+	"./en-au.js": 111,
+	"./en-ca": 112,
+	"./en-ca.js": 112,
+	"./en-gb": 113,
+	"./en-gb.js": 113,
+	"./en-ie": 114,
+	"./en-ie.js": 114,
+	"./en-il": 115,
+	"./en-il.js": 115,
+	"./en-nz": 116,
+	"./en-nz.js": 116,
+	"./eo": 117,
+	"./eo.js": 117,
+	"./es": 118,
+	"./es-do": 119,
+	"./es-do.js": 119,
+	"./es-us": 120,
+	"./es-us.js": 120,
+	"./es.js": 118,
+	"./et": 121,
+	"./et.js": 121,
+	"./eu": 122,
+	"./eu.js": 122,
+	"./fa": 123,
+	"./fa.js": 123,
+	"./fi": 124,
+	"./fi.js": 124,
+	"./fo": 125,
+	"./fo.js": 125,
+	"./fr": 126,
+	"./fr-ca": 127,
+	"./fr-ca.js": 127,
+	"./fr-ch": 128,
+	"./fr-ch.js": 128,
+	"./fr.js": 126,
+	"./fy": 129,
+	"./fy.js": 129,
+	"./ga": 130,
+	"./ga.js": 130,
+	"./gd": 131,
+	"./gd.js": 131,
+	"./gl": 132,
+	"./gl.js": 132,
+	"./gom-latn": 133,
+	"./gom-latn.js": 133,
+	"./gu": 134,
+	"./gu.js": 134,
+	"./he": 135,
+	"./he.js": 135,
+	"./hi": 136,
+	"./hi.js": 136,
+	"./hr": 137,
+	"./hr.js": 137,
+	"./hu": 138,
+	"./hu.js": 138,
+	"./hy-am": 139,
+	"./hy-am.js": 139,
+	"./id": 140,
+	"./id.js": 140,
+	"./is": 141,
+	"./is.js": 141,
+	"./it": 142,
+	"./it-ch": 143,
+	"./it-ch.js": 143,
+	"./it.js": 142,
+	"./ja": 144,
+	"./ja.js": 144,
+	"./jv": 145,
+	"./jv.js": 145,
+	"./ka": 146,
+	"./ka.js": 146,
+	"./kk": 147,
+	"./kk.js": 147,
+	"./km": 148,
+	"./km.js": 148,
+	"./kn": 149,
+	"./kn.js": 149,
+	"./ko": 150,
+	"./ko.js": 150,
+	"./ku": 151,
+	"./ku.js": 151,
+	"./ky": 152,
+	"./ky.js": 152,
+	"./lb": 153,
+	"./lb.js": 153,
+	"./lo": 154,
+	"./lo.js": 154,
+	"./lt": 155,
+	"./lt.js": 155,
+	"./lv": 156,
+	"./lv.js": 156,
+	"./me": 157,
+	"./me.js": 157,
+	"./mi": 158,
+	"./mi.js": 158,
+	"./mk": 159,
+	"./mk.js": 159,
+	"./ml": 160,
+	"./ml.js": 160,
+	"./mn": 161,
+	"./mn.js": 161,
+	"./mr": 162,
+	"./mr.js": 162,
+	"./ms": 163,
+	"./ms-my": 164,
+	"./ms-my.js": 164,
+	"./ms.js": 163,
+	"./mt": 165,
+	"./mt.js": 165,
+	"./my": 166,
+	"./my.js": 166,
+	"./nb": 167,
+	"./nb.js": 167,
+	"./ne": 168,
+	"./ne.js": 168,
+	"./nl": 169,
+	"./nl-be": 170,
+	"./nl-be.js": 170,
+	"./nl.js": 169,
+	"./nn": 171,
+	"./nn.js": 171,
+	"./pa-in": 172,
+	"./pa-in.js": 172,
+	"./pl": 173,
+	"./pl.js": 173,
+	"./pt": 174,
+	"./pt-br": 175,
+	"./pt-br.js": 175,
+	"./pt.js": 174,
+	"./ro": 176,
+	"./ro.js": 176,
+	"./ru": 177,
+	"./ru.js": 177,
+	"./sd": 178,
+	"./sd.js": 178,
+	"./se": 179,
+	"./se.js": 179,
+	"./si": 180,
+	"./si.js": 180,
+	"./sk": 181,
+	"./sk.js": 181,
+	"./sl": 182,
+	"./sl.js": 182,
+	"./sq": 183,
+	"./sq.js": 183,
+	"./sr": 184,
+	"./sr-cyrl": 185,
+	"./sr-cyrl.js": 185,
+	"./sr.js": 184,
+	"./ss": 186,
+	"./ss.js": 186,
+	"./sv": 187,
+	"./sv.js": 187,
+	"./sw": 188,
+	"./sw.js": 188,
+	"./ta": 189,
+	"./ta.js": 189,
+	"./te": 190,
+	"./te.js": 190,
+	"./tet": 191,
+	"./tet.js": 191,
+	"./tg": 192,
+	"./tg.js": 192,
+	"./th": 193,
+	"./th.js": 193,
+	"./tl-ph": 194,
+	"./tl-ph.js": 194,
+	"./tlh": 195,
+	"./tlh.js": 195,
+	"./tr": 196,
+	"./tr.js": 196,
+	"./tzl": 197,
+	"./tzl.js": 197,
+	"./tzm": 198,
+	"./tzm-latn": 199,
+	"./tzm-latn.js": 199,
+	"./tzm.js": 198,
+	"./ug-cn": 200,
+	"./ug-cn.js": 200,
+	"./uk": 201,
+	"./uk.js": 201,
+	"./ur": 202,
+	"./ur.js": 202,
+	"./uz": 203,
+	"./uz-latn": 204,
+	"./uz-latn.js": 204,
+	"./uz.js": 203,
+	"./vi": 205,
+	"./vi.js": 205,
+	"./x-pseudo": 206,
+	"./x-pseudo.js": 206,
+	"./yo": 207,
+	"./yo.js": 207,
+	"./zh-cn": 208,
+	"./zh-cn.js": 208,
+	"./zh-hk": 209,
+	"./zh-hk.js": 209,
+	"./zh-tw": 210,
+	"./zh-tw.js": 210
+};
+function webpackContext(req) {
+	return __webpack_require__(webpackContextResolve(req));
+};
+function webpackContextResolve(req) {
+	var id = map[req];
+	if(!(id + 1)) // check for number or string
+		throw new Error("Cannot find module '" + req + "'.");
+	return id;
+};
+webpackContext.keys = function webpackContextKeys() {
+	return Object.keys(map);
+};
+webpackContext.resolve = webpackContextResolve;
+module.exports = webpackContext;
+webpackContext.id = 283;
+
+/***/ }),
+/* 284 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div :class=\"'rop-control-container-'+ ( license > 1 ) +  '  rop-schedule-tab-container'\" _v-19c4191e=\"\">\n\n\t\t<div class=\"columns py-2 rop-control\" _v-19c4191e=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-19c4191e=\"\">\n\t\t\t\t<b _v-19c4191e=\"\">{{labels.schedule_type_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-19c4191e=\"\">{{labels.schedule_type_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-19c4191e=\"\">\n\t\t\t\t<div class=\"form-group\" _v-19c4191e=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"schedule.type\" _v-19c4191e=\"\">\n\t\t\t\t\t\t<option value=\"recurring\" _v-19c4191e=\"\">{{labels.schedule_type_option_rec}}</option>\n\t\t\t\t\t\t<option value=\"fixed\" _v-19c4191e=\"\">{{labels.schedule_type_option_fix}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule Days -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-19c4191e=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-19c4191e=\"\">\n\t\t\t\t<b _v-19c4191e=\"\">{{labels.schedule_fixed_days_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-19c4191e=\"\">{{labels.schedule_fixed_days_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-19c4191e=\"\">\n\t\t\t\t<div class=\"form-group input-group\" _v-19c4191e=\"\">\n\t\t\t\t\t<button-checkbox v-for=\"( data, label ) in daysObject\" :key=\"label\" :value=\"data.value\" :label=\"label\" :checked=\"data.checked\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" _v-19c4191e=\"\"></button-checkbox>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule time -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-19c4191e=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-19c4191e=\"\">\n\t\t\t\t<b _v-19c4191e=\"\">{{labels.schedule_fixed_time_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-19c4191e=\"\">{{labels.schedule_fixed_time_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-19c4191e=\"\">\n\t\t\t\t<div class=\"form-group\" _v-19c4191e=\"\">\n\t\t\t\t\t<div class=\"input-group\" v-for=\"( time, index ) in schedule.interval_f.time\" _v-19c4191e=\"\">\n\t\t\t\t\t\t<vue-timepicker :minute-interval=\"5\" class=\"timepicker-style-fix\" :value=\"getTime( index )\" @change=\"syncTime( $event, index )\" hide-clear-button=\"\" _v-19c4191e=\"\"></vue-timepicker>\n\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn\" v-if=\"schedule.interval_f.time.length > 1\" @click=\"rmvTime( index )\" _v-19c4191e=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-minus\" _v-19c4191e=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t\t<button class=\"btn btn-success input-group-btn\" v-if=\"index == schedule.interval_f.time.length - 1\" @click=\"addTime()\" _v-19c4191e=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-plus\" _v-19c4191e=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Current time -->\n<div class=\"column col-6 col-sm-12 vertical-align float-right\" v-if=\"schedule.type === 'fixed'\" _v-19c4191e=\"\">\n\t\t<div class=\"toast rop-current-time text-center\" v-if=\"formatedDate\" _v-19c4191e=\"\">\n\t\t\t\t{{labels.time_now}}: {{ formatedDate }}\n\t\t</div>\n</div>\n\n\t\t<div class=\"columns py-2 rop-control\" v-else=\"\" _v-19c4191e=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-19c4191e=\"\">\n\t\t\t\t<b _v-19c4191e=\"\">{{labels.schedule_rec_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-19c4191e=\"\">{{labels.schedule_rec_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-19c4191e=\"\">\n\t\t\t\t<div class=\"form-group\" _v-19c4191e=\"\">\n\t\t\t\t\t<counter-input id=\"interval_r\" :value.sync=\"schedule.interval_r\" _v-19c4191e=\"\"></counter-input>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Upsell -->\n\t\t<div class=\"columns py-2\" v-if=\"license < 2\" _v-19c4191e=\"\">\n\t\t\t<div class=\"column text-center\" _v-19c4191e=\"\">\n\t\t\t\t<p class=\"upsell\" _v-19c4191e=\"\"><i class=\"fa fa-lock\" _v-19c4191e=\"\"></i> {{labels.schedule_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-19c4191e=\"\"></span>\n\t</div>\n";
+
+/***/ }),
+/* 285 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"tab-view\" _v-08d479da=\"\">\n\t\t<div class=\"panel-body\" _v-08d479da=\"\">\n\t\t\t<div class=\"d-inline-block mt-2 column col-12\" _v-08d479da=\"\">\n\t\t\t\t<p class=\"text-gray\" _v-08d479da=\"\"><i class=\"fa fa-info-circle\" _v-08d479da=\"\"></i> <span v-html=\"labels.accounts_selector\" _v-08d479da=\"\"></span>\n\t\t\t\t</p>\n\t\t\t</div>\n\t\t\t<empty-active-accounts v-if=\"accountsCount === 0\" _v-08d479da=\"\"></empty-active-accounts>\n\t\t\t<div class=\"container\" v-if=\"accountsCount > 0\" _v-08d479da=\"\">\n\t\t\t\t<div class=\"columns\" _v-08d479da=\"\">\n\t\t\t\t\t<div class=\"column col-3 col-sm-12 col-md-12 col-xl-3 col-lg-3 col-xs-12 col-rop-selector-accounts\" _v-08d479da=\"\">\n\t\t\t\t\t\t<span class=\"divider\" _v-08d479da=\"\"></span>\n\t\t\t\t\t\t<div v-for=\"( account, id ) in active_accounts\" _v-08d479da=\"\">\n\t\t\t\t\t\t\t<div class=\"rop-selector-account-container\" :class=\"{active: selected_account===id}\" @click=\"setActiveAccount(id)\" _v-08d479da=\"\">\n\t\t\t\t\t\t\t\t<div class=\"tile tile-centered rop-account\" _v-08d479da=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"tile-icon\" _v-08d479da=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"icon_box\" :class=\" (account.img ? 'has_image' : 'no-image' ) + ' ' +account.service \" _v-08d479da=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<img class=\"service_account_image\" :src=\"account.img\" v-if=\"account.img\" _v-08d479da=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"fa  \" :class=\"getIcon(account)\" aria-hidden=\"true\" _v-08d479da=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"tile-content\" _v-08d479da=\"\">\n\t\t\t\t\t\t\t\t\t\t<p class=\"rop-account-name\" _v-08d479da=\"\">{{account.user}}</p>\n\t\t\t\t\t\t\t\t\t\t<strong class=\"rop-service-name\" _v-08d479da=\"\">{{account.service}}</strong>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-08d479da=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-9 col-sm-12  col-md-12  col-xl-9 col-lg-9 col-xs-12\" :class=\"'rop-tab-state-'+is_loading\" _v-08d479da=\"\">\n\t\t\t\t\t\t<component :is=\"type\" :account_id=\"selected_account\" :license=\"license\" _v-08d479da=\"\"></component>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-08d479da=\"\">\n\t\t\t<div class=\"panel-actions text-right\" v-if=\"allow_footer\" _v-08d479da=\"\">\n\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-08d479da=\"\"><i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-08d479da=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-08d479da=\"\"></i> {{labels.reset_selector_btn}} {{component_label}}\n\t\t\t\t\t{{labels.for}}\n\t\t\t\t\t<b _v-08d479da=\"\">{{active_account_name}}</b>\n\t\t\t\t</button>\n\t\t\t\t<button class=\"btn btn-primary\" @click=\"saveAccountData()\" _v-08d479da=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-08d479da=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-08d479da=\"\"></i> {{labels.save_selector_btn}} {{component_label}}\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 274 */
+/* 286 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(275)
-__vue_template__ = __webpack_require__(281)
+__vue_script__ = __webpack_require__(287)
+__vue_template__ = __webpack_require__(293)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -38248,7 +39114,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 275 */
+/* 287 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38258,7 +39124,7 @@ var _keys = __webpack_require__(14);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _queueCard = __webpack_require__(276);
+var _queueCard = __webpack_require__(288);
 
 var _queueCard2 = _interopRequireDefault(_queueCard);
 
@@ -38374,13 +39240,13 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 276 */
+/* 288 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(277)
-__vue_script__ = __webpack_require__(279)
-__vue_template__ = __webpack_require__(280)
+__webpack_require__(289)
+__vue_script__ = __webpack_require__(291)
+__vue_template__ = __webpack_require__(292)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -38397,13 +39263,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 277 */
+/* 289 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(278);
+var content = __webpack_require__(290);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -38423,7 +39289,7 @@ if(false) {
 }
 
 /***/ }),
-/* 278 */
+/* 290 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -38437,7 +39303,7 @@ exports.push([module.i, "\n\t.fa[_v-2fa55fe6] {\n\t\tbackground: transparent;\n\
 
 
 /***/ }),
-/* 279 */
+/* 291 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38757,25 +39623,25 @@ module.exports = {
 };
 
 /***/ }),
-/* 280 */
+/* 292 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"card\" _v-2fa55fe6=\"\">\n\t\t<div class=\"columns\" _v-2fa55fe6=\"\">\n\t\t\t<div class=\"column col-sm-12 col-justified\" _v-2fa55fe6=\"\">\n\t\t\t\t<div class=\"columns\" _v-2fa55fe6=\"\">\n\t\t\t\t\t<div class=\"column\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t<p class=\"text-gray text-left \" _v-2fa55fe6=\"\"><i class=\"fa fa-clock-o\" _v-2fa55fe6=\"\"></i> {{card_data.date}} <b _v-2fa55fe6=\"\"><i class=\"fa fa-at\" _v-2fa55fe6=\"\"></i></b> <i class=\"service fa\" :class=\"iconClass( card_data.account_id )\" _v-2fa55fe6=\"\"></i>\n\t\t\t\t\t\t\t{{getAccountName(card_data.account_id)}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-if=\"!edit\" _v-2fa55fe6=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t<p v-html=\"content.content + hashtags( content.hashtags )\" _v-2fa55fe6=\"\"></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"form-group columns\" v-if=\"edit\" _v-2fa55fe6=\"\">\n\t\t\t\t\t<div class=\"column col-12\" v-if=\"content.post_with_image\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t<label class=\"form-label\" for=\"image\" _v-2fa55fe6=\"\">{{labels.queue_image}}</label>\n\t\t\t\t\t\t<div class=\"input-group\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t\t<span class=\"input-group-addon\" _v-2fa55fe6=\"\"><i class=\"fa fa-file-image-o\" _v-2fa55fe6=\"\"></i></span>\n\t\t\t\t\t\t\t<input id=\"image\" type=\"text\" class=\"form-input\" :value=\"content.post_image\" readonly=\"\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary input-group-btn tooltip\" @click=\"uploadImage\" :data-tooltip=\"labels.upload_image\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-upload\" aria-hidden=\"true\" _v-2fa55fe6=\"\"></i>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn tooltip\" @click=\"removeImage\" :data-tooltip=\"labels.remove_image\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-remove\" aria-hidden=\"true\" _v-2fa55fe6=\"\"></i>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-12\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t<label class=\"form-label\" for=\"content\" _v-2fa55fe6=\"\">{{labels.queue_content}}</label>\n\t\t\t\t\t\t<textarea class=\"form-input\" id=\"content\" placeholder=\"\" rows=\"3\" @keyup=\"checkCount\" _v-2fa55fe6=\"\">{{content.content}}</textarea>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns col-justified\" v-if=\"!edit\" _v-2fa55fe6=\"\">\n\t\t\t\t\t<div class=\"column col-3\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-warning tooltip   tooltip-bottom \" @click=\"skipPost(card_data.account_id, card_data.post_id)\" :data-tooltip=\"labels.reschedule_post\" :disabled=\" ! enabled\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'skip'\" _v-2fa55fe6=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-step-forward\" v-else=\"\" aria-hidden=\"true\" _v-2fa55fe6=\"\"></i>\n\t\t\t\t\t\t\t{{labels.skip_btn_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-danger tooltip     tooltip-bottom  \" :data-tooltip=\"labels.ban_post\" @click=\"blockPost(card_data.account_id, card_data.post_id)\" :disabled=\" ! enabled\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'block'\" _v-2fa55fe6=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-ban\" aria-hidden=\"true\" v-else=\"\" _v-2fa55fe6=\"\"></i>\n\t\t\t\t\t\t\t{{labels.block_btn_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-primary\" @click=\"toggleEditState\" v-if=\"!edit\" :disabled=\" ! enabled\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-pencil\" aria-hidden=\"true\" _v-2fa55fe6=\"\"></i> {{labels.edit_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3 col-ml-auto text-right\" v-if=\"content.post_url !== ''\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t<p class=\"m-0\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t\t<b _v-2fa55fe6=\"\">{{labels.link_title}}:</b>\n\t\t\t\t\t\t\t<a :href=\"content.post_url\" target=\"_blank\" class=\"tooltip\" :data-tooltip=\"labels.link_shortned_start + ' ' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service )  \" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t\t\t{{'{' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service ) +\n\t\t\t\t\t\t\t\t'}'}}</a>\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-else=\"\" _v-2fa55fe6=\"\">\n\t\t\t\t\t<div class=\"column col-3\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-success\" @click=\"saveChanges(card_data.account_id, card_data.post_id)\" v-if=\"edit\" :disabled=\" ! enabled\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'edit'\" _v-2fa55fe6=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-check\" aria-hidden=\"true\" v-else=\"\" _v-2fa55fe6=\"\"></i>\n\t\t\t\t\t\t\t{{labels.save_edit}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-warning\" @click=\"cancelChanges\" v-if=\"edit\" :disabled=\" ! enabled\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-times\" aria-hidden=\"true\" _v-2fa55fe6=\"\"></i>\n\t\t\t\t\t\t\t{{labels.cancel_edit}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"column col-4 col-sm-12 vertical-align\" v-if=\"!edit &amp;&amp; content.post_with_image\" _v-2fa55fe6=\"\">\n\t\t\t\t<div v-if=\"content.post_image !== ''\" _v-2fa55fe6=\"\">\n\t\t\t\t\t<figure class=\"figure\" v-if=\"content.post_image !== ''\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t<img :src=\"( content.mimetype.type.indexOf('image') > -1 ? content.post_image : video_placeholder )\" class=\"img-fit-cover img-responsive\" _v-2fa55fe6=\"\">\n\t\t\t\t\t</figure>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\t<div class=\"rop-image-placeholder\" v-else=\"\" _v-2fa55fe6=\"\">\n\t\t\t\t\t<summary _v-2fa55fe6=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-2fa55fe6=\"\"></i>\n\t\t\t\t\t\t{{labels.queue_no_image}}\n\t\t\t\t\t</summary>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 281 */
+/* 293 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"tab-view rop-queue-tab-container\">\n\t\t<div class=\"panel-body\" :class=\"'rop-tab-state-'+is_loading\">\n\t\t\t<div class=\"columns\" v-if=\"! start_status\">\n\t\t\t\t<div class=\"column col-12 text-center empty-container\">\n\t\t\t\t\t<div class=\"empty-icon\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t\t<p class=\"empty-title h5\">{{labels.sharing_not_started}}</p>\n\t\t\t\t\t<p class=\"empty-subtitle\">{{labels.sharing_not_started_desc}}</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\n\t\t\t<div v-else-if=\"start_status && queueCount > 0 \">\n\n\t\t\t\t<div class=\"columns py-2\" v-if=\"! is_business\">\n\t\t\t\t\t<div class=\"column text-center\">\n\t\t\t\t\t\t<p class=\"upsell\"><i class=\"fa fa-lock\"></i> <span v-html=\"labels.biz_only\"></span></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<!-- When sharing is started but we  have the business plan. -->\n\t\t\t\t<div class=\"d-inline-block mt-2 column col-12\">\n\t\t\t\t\t<p class=\"text-gray info-paragraph\"><i class=\"fa fa-info-circle\"></i> {{labels.queue_desc}}</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"empty\" v-else-if=\"start_status && queueCount === 0\">\n\t\t\t\t<div class=\"empty-icon\">\n\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\"></i>\n\t\t\t\t</div>\n\t\t\t\t<p class=\"empty-title h5\">{{labels.no_posts}}</p>\n\t\t\t\t<p class=\"empty-subtitle\" v-html=\"labels.no_posts_desc\"></p>\n\t\t\t</div>\n\t\t\t<div class=\"columns\" v-if=\"start_status && queueCount > 0\">\n\t\t\t\t<div class=\"column col-12 text-left\" v-for=\" (data, index) in queue \">\n\t\t\t\t\t<queue-card :card_data=\"data.post_data\" :id=\"index\" :enabled=\"is_business\"/>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer text-rightcade\" v-if=\"start_status\">\n\t\t\t<button class=\"btn btn-secondary\" @click=\"refreshQueue(true)\">\n\t\t\t\t<i class=\"fa fa-refresh\" v-if=\"!is_loading\"></i>\n\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t{{labels.refresh_btn}}\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 282 */
+/* 294 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(283)
-__vue_script__ = __webpack_require__(285)
-__vue_template__ = __webpack_require__(288)
+__webpack_require__(295)
+__vue_script__ = __webpack_require__(297)
+__vue_template__ = __webpack_require__(298)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -38792,13 +39658,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 283 */
+/* 295 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(284);
+var content = __webpack_require__(296);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -38818,7 +39684,7 @@ if(false) {
 }
 
 /***/ }),
-/* 284 */
+/* 296 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -38832,7 +39698,7 @@ exports.push([module.i, "\n\t#rop_core .toast.log-toast p[_v-0ec47530] {\n\t\tma
 
 
 /***/ }),
-/* 285 */
+/* 297 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38971,323 +39837,19 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 286 */
-/***/ (function(module, exports) {
-
-module.exports = function(module) {
-	if(!module.webpackPolyfill) {
-		module.deprecate = function() {};
-		module.paths = [];
-		// module.parent = undefined by default
-		if(!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			get: function() {
-				return module.l;
-			}
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			get: function() {
-				return module.i;
-			}
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
-};
-
-
-/***/ }),
-/* 287 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var map = {
-	"./af": 84,
-	"./af.js": 84,
-	"./ar": 85,
-	"./ar-dz": 86,
-	"./ar-dz.js": 86,
-	"./ar-kw": 87,
-	"./ar-kw.js": 87,
-	"./ar-ly": 88,
-	"./ar-ly.js": 88,
-	"./ar-ma": 89,
-	"./ar-ma.js": 89,
-	"./ar-sa": 90,
-	"./ar-sa.js": 90,
-	"./ar-tn": 91,
-	"./ar-tn.js": 91,
-	"./ar.js": 85,
-	"./az": 92,
-	"./az.js": 92,
-	"./be": 93,
-	"./be.js": 93,
-	"./bg": 94,
-	"./bg.js": 94,
-	"./bm": 95,
-	"./bm.js": 95,
-	"./bn": 96,
-	"./bn.js": 96,
-	"./bo": 97,
-	"./bo.js": 97,
-	"./br": 98,
-	"./br.js": 98,
-	"./bs": 99,
-	"./bs.js": 99,
-	"./ca": 100,
-	"./ca.js": 100,
-	"./cs": 101,
-	"./cs.js": 101,
-	"./cv": 102,
-	"./cv.js": 102,
-	"./cy": 103,
-	"./cy.js": 103,
-	"./da": 104,
-	"./da.js": 104,
-	"./de": 105,
-	"./de-at": 106,
-	"./de-at.js": 106,
-	"./de-ch": 107,
-	"./de-ch.js": 107,
-	"./de.js": 105,
-	"./dv": 108,
-	"./dv.js": 108,
-	"./el": 109,
-	"./el.js": 109,
-	"./en-SG": 110,
-	"./en-SG.js": 110,
-	"./en-au": 111,
-	"./en-au.js": 111,
-	"./en-ca": 112,
-	"./en-ca.js": 112,
-	"./en-gb": 113,
-	"./en-gb.js": 113,
-	"./en-ie": 114,
-	"./en-ie.js": 114,
-	"./en-il": 115,
-	"./en-il.js": 115,
-	"./en-nz": 116,
-	"./en-nz.js": 116,
-	"./eo": 117,
-	"./eo.js": 117,
-	"./es": 118,
-	"./es-do": 119,
-	"./es-do.js": 119,
-	"./es-us": 120,
-	"./es-us.js": 120,
-	"./es.js": 118,
-	"./et": 121,
-	"./et.js": 121,
-	"./eu": 122,
-	"./eu.js": 122,
-	"./fa": 123,
-	"./fa.js": 123,
-	"./fi": 124,
-	"./fi.js": 124,
-	"./fo": 125,
-	"./fo.js": 125,
-	"./fr": 126,
-	"./fr-ca": 127,
-	"./fr-ca.js": 127,
-	"./fr-ch": 128,
-	"./fr-ch.js": 128,
-	"./fr.js": 126,
-	"./fy": 129,
-	"./fy.js": 129,
-	"./ga": 130,
-	"./ga.js": 130,
-	"./gd": 131,
-	"./gd.js": 131,
-	"./gl": 132,
-	"./gl.js": 132,
-	"./gom-latn": 133,
-	"./gom-latn.js": 133,
-	"./gu": 134,
-	"./gu.js": 134,
-	"./he": 135,
-	"./he.js": 135,
-	"./hi": 136,
-	"./hi.js": 136,
-	"./hr": 137,
-	"./hr.js": 137,
-	"./hu": 138,
-	"./hu.js": 138,
-	"./hy-am": 139,
-	"./hy-am.js": 139,
-	"./id": 140,
-	"./id.js": 140,
-	"./is": 141,
-	"./is.js": 141,
-	"./it": 142,
-	"./it-ch": 143,
-	"./it-ch.js": 143,
-	"./it.js": 142,
-	"./ja": 144,
-	"./ja.js": 144,
-	"./jv": 145,
-	"./jv.js": 145,
-	"./ka": 146,
-	"./ka.js": 146,
-	"./kk": 147,
-	"./kk.js": 147,
-	"./km": 148,
-	"./km.js": 148,
-	"./kn": 149,
-	"./kn.js": 149,
-	"./ko": 150,
-	"./ko.js": 150,
-	"./ku": 151,
-	"./ku.js": 151,
-	"./ky": 152,
-	"./ky.js": 152,
-	"./lb": 153,
-	"./lb.js": 153,
-	"./lo": 154,
-	"./lo.js": 154,
-	"./lt": 155,
-	"./lt.js": 155,
-	"./lv": 156,
-	"./lv.js": 156,
-	"./me": 157,
-	"./me.js": 157,
-	"./mi": 158,
-	"./mi.js": 158,
-	"./mk": 159,
-	"./mk.js": 159,
-	"./ml": 160,
-	"./ml.js": 160,
-	"./mn": 161,
-	"./mn.js": 161,
-	"./mr": 162,
-	"./mr.js": 162,
-	"./ms": 163,
-	"./ms-my": 164,
-	"./ms-my.js": 164,
-	"./ms.js": 163,
-	"./mt": 165,
-	"./mt.js": 165,
-	"./my": 166,
-	"./my.js": 166,
-	"./nb": 167,
-	"./nb.js": 167,
-	"./ne": 168,
-	"./ne.js": 168,
-	"./nl": 169,
-	"./nl-be": 170,
-	"./nl-be.js": 170,
-	"./nl.js": 169,
-	"./nn": 171,
-	"./nn.js": 171,
-	"./pa-in": 172,
-	"./pa-in.js": 172,
-	"./pl": 173,
-	"./pl.js": 173,
-	"./pt": 174,
-	"./pt-br": 175,
-	"./pt-br.js": 175,
-	"./pt.js": 174,
-	"./ro": 176,
-	"./ro.js": 176,
-	"./ru": 177,
-	"./ru.js": 177,
-	"./sd": 178,
-	"./sd.js": 178,
-	"./se": 179,
-	"./se.js": 179,
-	"./si": 180,
-	"./si.js": 180,
-	"./sk": 181,
-	"./sk.js": 181,
-	"./sl": 182,
-	"./sl.js": 182,
-	"./sq": 183,
-	"./sq.js": 183,
-	"./sr": 184,
-	"./sr-cyrl": 185,
-	"./sr-cyrl.js": 185,
-	"./sr.js": 184,
-	"./ss": 186,
-	"./ss.js": 186,
-	"./sv": 187,
-	"./sv.js": 187,
-	"./sw": 188,
-	"./sw.js": 188,
-	"./ta": 189,
-	"./ta.js": 189,
-	"./te": 190,
-	"./te.js": 190,
-	"./tet": 191,
-	"./tet.js": 191,
-	"./tg": 192,
-	"./tg.js": 192,
-	"./th": 193,
-	"./th.js": 193,
-	"./tl-ph": 194,
-	"./tl-ph.js": 194,
-	"./tlh": 195,
-	"./tlh.js": 195,
-	"./tr": 196,
-	"./tr.js": 196,
-	"./tzl": 197,
-	"./tzl.js": 197,
-	"./tzm": 198,
-	"./tzm-latn": 199,
-	"./tzm-latn.js": 199,
-	"./tzm.js": 198,
-	"./ug-cn": 200,
-	"./ug-cn.js": 200,
-	"./uk": 201,
-	"./uk.js": 201,
-	"./ur": 202,
-	"./ur.js": 202,
-	"./uz": 203,
-	"./uz-latn": 204,
-	"./uz-latn.js": 204,
-	"./uz.js": 203,
-	"./vi": 205,
-	"./vi.js": 205,
-	"./x-pseudo": 206,
-	"./x-pseudo.js": 206,
-	"./yo": 207,
-	"./yo.js": 207,
-	"./zh-cn": 208,
-	"./zh-cn.js": 208,
-	"./zh-hk": 209,
-	"./zh-hk.js": 209,
-	"./zh-tw": 210,
-	"./zh-tw.js": 210
-};
-function webpackContext(req) {
-	return __webpack_require__(webpackContextResolve(req));
-};
-function webpackContextResolve(req) {
-	var id = map[req];
-	if(!(id + 1)) // check for number or string
-		throw new Error("Cannot find module '" + req + "'.");
-	return id;
-};
-webpackContext.keys = function webpackContextKeys() {
-	return Object.keys(map);
-};
-webpackContext.resolve = webpackContextResolve;
-module.exports = webpackContext;
-webpackContext.id = 287;
-
-/***/ }),
-/* 288 */
+/* 298 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"tab-view\" _v-0ec47530=\"\">\n\t\t<div class=\"panel-body\" _v-0ec47530=\"\">\n\t\t\t<div class=\" columns mt-2\" v-if=\"logs_no > 0\" _v-0ec47530=\"\">\n\t\t\t\t<div class=\"column  col-12 text-right \" _v-0ec47530=\"\">\n\t\t\t\t\t<button class=\"btn  btn-secondary \" @click=\"getLogs(true)\" _v-0ec47530=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-remove\" v-if=\"!is_loading\" _v-0ec47530=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-0ec47530=\"\"></i>\n\t\t\t\t\t\t{{labels.clear_btn}}\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"columns\" _v-0ec47530=\"\">\n\t\t\t\t<div class=\"empty column col-12\" v-if=\"is_loading\" _v-0ec47530=\"\">\n\t\t\t\t\t<div class=\"empty-icon\" _v-0ec47530=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-spinner fa-spin\" _v-0ec47530=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"empty column col-12\" v-else-if=\"logs_no === 0\" _v-0ec47530=\"\">\n\t\t\t\t\t<div class=\"empty-icon\" _v-0ec47530=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\" _v-0ec47530=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t\t<p class=\"empty-title h5\" _v-0ec47530=\"\">{{labels.no_logs}}</p>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"column col-12 mt-2\" v-for=\" (data, index) in logs \" v-else-if=\"logs_no >  0\" _v-0ec47530=\"\">\n\t\t\t\t\t<div class=\"toast log-toast\" :class=\"'toast-' + data.type\" _v-0ec47530=\"\">\n\t\t\t\t\t\t<small class=\"pull-right text-right\" _v-0ec47530=\"\">{{formatDate ( data.time ) }}</small>\n\t\t\t\t\t\t<p _v-0ec47530=\"\">{{data.message}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 289 */
+/* 299 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(290)
-__vue_script__ = __webpack_require__(292)
-__vue_template__ = __webpack_require__(293)
+__webpack_require__(300)
+__vue_script__ = __webpack_require__(302)
+__vue_template__ = __webpack_require__(303)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -39304,13 +39866,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 290 */
+/* 300 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(291);
+var content = __webpack_require__(301);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -39330,7 +39892,7 @@ if(false) {
 }
 
 /***/ }),
-/* 291 */
+/* 301 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -39344,7 +39906,7 @@ exports.push([module.i, "\n\t#rop_core .toast.hidden {\n\t\tdisplay: none;\n\t}\
 
 
 /***/ }),
-/* 292 */
+/* 302 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39405,18 +39967,18 @@ module.exports = {
 };
 
 /***/ }),
-/* 293 */
+/* 303 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"toast\" :class=\"toastTypeClass\" >\n\t\t<button class=\"btn btn-clear float-right\" @click=\"closeThis\"></button>\n\t\t<b><i class=\"fa\" :class=\"iconClass\"></i> {{ toast.title }}</b><br/>\n\t\t<small>{{ toast.message }}</small>\n\t</div>\n";
 
 /***/ }),
-/* 294 */
+/* 304 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(295)
-__vue_template__ = __webpack_require__(300)
+__vue_script__ = __webpack_require__(305)
+__vue_template__ = __webpack_require__(310)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -39433,7 +39995,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 295 */
+/* 305 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39443,7 +40005,7 @@ var _keys = __webpack_require__(14);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _trunc = __webpack_require__(296);
+var _trunc = __webpack_require__(306);
 
 var _trunc2 = _interopRequireDefault(_trunc);
 
@@ -39451,12 +40013,12 @@ var _moment = __webpack_require__(0);
 
 var _moment2 = _interopRequireDefault(_moment);
 
-__webpack_require__(299);
+__webpack_require__(309);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // <template>
-// 	<div class="toast toast-success rop-current-time" v-if="isOn && accounts_no > 0">
+// 	<div class="toast rop-next-share-time" v-if="isOn && accounts_no > 0">
 // 		<span v-if="diff_seconds>0"> <b><i
 // 				class="fa fa-fast-forward"></i> {{labels.next_share}}</b> {{labels.in}}</span>
 // 		<small v-if="timediff !== ''">{{timediff}}</small>
@@ -39518,21 +40080,21 @@ module.exports = {
 };
 
 /***/ }),
-/* 296 */
+/* 306 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(297), __esModule: true };
+module.exports = { "default": __webpack_require__(307), __esModule: true };
 
 /***/ }),
-/* 297 */
+/* 307 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(298);
+__webpack_require__(308);
 module.exports = __webpack_require__(4).Math.trunc;
 
 
 /***/ }),
-/* 298 */
+/* 308 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.34 Math.trunc(x)
@@ -39546,7 +40108,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 299 */
+/* 309 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! Moment Duration Format v2.2.2
@@ -41292,16 +41854,16 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 /***/ }),
-/* 300 */
+/* 310 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"toast toast-success rop-current-time\" v-if=\"isOn && accounts_no > 0\">\n\t\t<span v-if=\"diff_seconds>0\"> <b><i\n\t\t\t\tclass=\"fa fa-fast-forward\"></i> {{labels.next_share}}</b> {{labels.in}}</span>\n\t\t<small v-if=\"timediff !== ''\">{{timediff}}</small>\n\t</div>\n";
+module.exports = "\n\t<div class=\"toast rop-next-share-time\" v-if=\"isOn && accounts_no > 0\">\n\t\t<span v-if=\"diff_seconds>0\"> <b><i\n\t\t\t\tclass=\"fa fa-fast-forward\"></i> {{labels.next_share}}</b> {{labels.in}}</span>\n\t\t<small v-if=\"timediff !== ''\">{{timediff}}</small>\n\t</div>\n";
 
 /***/ }),
-/* 301 */
+/* 311 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <div class=\"columns panel-header\">\n            <div class=\"column header-logo vertical-align\">\n                <div>\n                    <img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/>\n                    <h1 class=\"plugin-title d-inline-block\">Revive Old Posts</h1><span class=\"powered d-inline-block\"> {{labels.by}} <a\n                        href=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\n                    <div id=\"rop_user_actions\">\n                        <a v-if=\"license  >= 1\" href=\"https://revive.social/pro-support/\" target=\"_blank\" class=\"rop-get-support-btn\"><span><i\n                                class=\"fa fa-commenting\" aria-hidden=\"true\"></i></span> {{labels.rop_support}}</a>\n                        <a v-if=\"license  < 1\" href=\"https://revive.social/support/\" target=\"_blank\" class=\"rop-get-support-btn\"><span><i\n                                class=\"fa fa-commenting\" aria-hidden=\"true\"></i></span> {{labels.rop_support}}</a>\n                        <a v-if=\"haveAccounts\"\n                           href=\"https://docs.revive.social/\"\n                           target=\"_blank\" class=\"rop-docs-btn\"><span><i class=\"fa fa-book\" aria-hidden=\"true\"></i></span> {{labels.rop_docs}}</a>\n                        <a v-if=\"haveAccounts\" href=\"https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post\" target=\"_blank\" class=\"leave-a-review\"><span><i class=\"fa fa-star\"\n                                                                                                                                                                            aria-hidden=\"true\"></i></span>\n                            {{labels.review_it}}</a>\n                    </div>\n                </div>\n            </div>\n            <toast/>\n            <div v-if=\" is_rest_api_error \" class=\"toast toast-error rop-api-not-available\" v-html=\"labels.api_not_available\">\n            </div>\n\n            <div class=\"sidebar sidebar-top card rop-container-start\">\n                <div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n                    {{labels.now}}: {{ formatedDate }}\n                </div>\n                <countdown :current_time=\"current_time\"/>\n                <button class=\"btn btn-sm\" :class=\"btn_class\"\n                        :data-tooltip=\"labels.active_account_warning\"\n                        @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n                    <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n                    <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n                    <i class=\"fa fa-spinner fa-spin\" v-else></i>\n                    {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n                </button>\n            </div>\n        </div>\n\n        <div class=\"columns\">\n            <div class=\"panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\n                <div class=\"panel-nav\" style=\"padding: 8px;\">\n                    <ul class=\"tab \">\n                        <li class=\"tab-item c-hand\" v-for=\"tab in displayTabs\"\n                            :class=\"{ active: tab.isActive }\" v-bind:id=\"tab.name.replace(' ', '').toLowerCase()\">\n                            <a :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\n                               :data-badge=\"logs_no\"\n                               @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\n                        </li>\n                    </ul>\n                </div>\n                <component :is=\"page.template\" :type=\"page.view\"></component>\n            </div>\n\n            <div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\n                 :class=\"'rop-license-plan-'+license\">\n\n                <div class=\"card rop-container-start\">\n                    <div class=\"toast rop-current-time\" v-if=\"formatedDate && haveAccounts\">\n                        {{labels.now}}: {{ formatedDate }}\n                    </div>\n                    <countdown :current_time=\"current_time\"/>\n                    <button id=\"rop_start_stop_btn\" class=\"btn\" :class=\"btn_class\"\n                            :data-tooltip=\"labels.active_account_warning\"\n                            @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n                        <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n                        <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n                        <i class=\"fa fa-spinner fa-spin\" v-else></i>\n                        {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n                    </button>\n                    <div id=\"staging-status\" v-if=\"staging\">\n                        {{labels.staging_status}}\n                    </div>\n                    <div v-if=\"!haveAccounts\" class=\"rop-spacer\"></div>\n                    <div v-if=\"haveAccounts\">\n                        <upsell-sidebar></upsell-sidebar>\n                    </div>\n                    <a v-if=\"haveAccounts\" href=\"https://trello.com/b/svAZqXO1/roadmap-revive-old-posts\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.rop_roadmap}}</a>\n                    <a v-if=\"haveAccounts\" href=\"https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.survey}}</a>\n                    <a v-if=\"haveAccounts\" href=\"https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.tweet_about_it}}</a>\n                </div>\n\n            </div>\n        </div>\n    </div>\n";
+module.exports = "\n    <div>\n        <div class=\"columns panel-header\">\n            <div class=\"column header-logo vertical-align\">\n                <div>\n                    <img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/>\n                    <h1 class=\"plugin-title d-inline-block\">Revive Old Posts</h1><span class=\"powered d-inline-block\"> {{labels.by}} <a\n                        href=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\n                </div>\n            </div>\n            <toast/>\n            <div v-if=\" is_rest_api_error \" class=\"toast toast-error rop-api-not-available\" v-html=\"labels.api_not_available\">\n            </div>\n            <div v-if=\" is_fb_domain_notice \" class=\"toast toast-primary\">\n                <button class=\"btn btn-clear float-right\" @click=\"close_fb_domain_notice()\"></button>\n                <div v-html=\"labels.rop_facebook_domain_toast\"></div>\n            </div>\n            <div class=\"sidebar sidebar-top card rop-container-start\">\n\n              <!-- Next post count down -->\n                <countdown :current_time=\"current_time\"/>\n                <!--  -->\n\n                <button class=\"btn btn-sm\" :class=\"btn_class\"\n                        :data-tooltip=\"labels.active_account_warning\"\n                        @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n                    <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n                    <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n                    <i class=\"fa fa-spinner fa-spin\" v-else></i>\n                    {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n                </button>\n            </div>\n        </div>\n\n        <div class=\"columns\">\n            <div class=\"panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\n                <div class=\"panel-nav\" style=\"padding: 8px;\">\n                    <ul class=\"tab \">\n                        <li class=\"tab-item c-hand\" v-for=\"tab in displayTabs\"\n                            :class=\"{ active: tab.isActive }\" v-bind:id=\"tab.name.replace(' ', '').toLowerCase()\">\n                            <a :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\n                               :data-badge=\"logs_no\"\n                               @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\n                        </li>\n                    </ul>\n                </div>\n                <component :is=\"page.template\" :type=\"page.view\"></component>\n            </div>\n\n            <div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\n                 :class=\"'rop-license-plan-'+license\">\n\n                <div class=\"card rop-container-start\">\n                    <button id=\"rop_start_stop_btn\" class=\"btn\" :class=\"btn_class\"\n                            :data-tooltip=\"labels.active_account_warning\"\n                            @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n                        <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n                        <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n                        <i class=\"fa fa-spinner fa-spin\" v-else></i>\n                        {{labels.click}} {{labels.to}} {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n                    </button>\n\n                    <div class=\"sharing-box\" :class=\"status_color_class\">{{ status_label_display }}</div>\n\n                    <countdown :current_time=\"current_time\"/>\n\n                    <div id=\"staging-status\" v-if=\"staging\">\n                        {{labels.staging_status}}\n                    </div>\n                    <div v-if=\"!haveAccounts\" class=\"rop-spacer\"></div>\n                    <div v-if=\"haveAccounts\">\n                        <upsell-sidebar></upsell-sidebar>\n                    </div>\n                    <a v-if=\"license  >= 1\" href=\"https://revive.social/pro-support/\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.rop_support}}</a>\n                    <a v-if=\"license  < 1\" href=\"https://revive.social/support/\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.rop_support}}</a>\n                    <a v-if=\"haveAccounts\" href=\"https://docs.revive.social/\" target=\"_blank\"\n                       class=\"btn rop-sidebar-action-btns\">{{labels.rop_docs}}</a>\n                    <a v-if=\"haveAccounts\"\n                       href=\"https://wordpress.org/support/plugin/tweet-old-post/reviews/?rate=5#new-post\"\n                       target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.review_it}}</a>\n                </div>\n\n            </div>\n        </div>\n    </div>\n";
 
 /***/ })
 /******/ ]);

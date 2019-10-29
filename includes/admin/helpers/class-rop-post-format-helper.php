@@ -41,7 +41,7 @@ class Rop_Post_Format_Helper {
 	 * When variations exist, the message build_content function is ran first
 	 * This will set the number of variation.
 	 * We will store that number in this variable and get the variation image
-	 * attached to the message.
+	 * Attached to the message.
 	 *
 	 * @since 8.4.4
 	 * @access private
@@ -847,7 +847,7 @@ class Rop_Post_Format_Helper {
 		$custom_images = get_post_meta( $post_id, 'rop_custom_images_group', true );
 		if ( ! empty( $custom_images ) && ! is_null( $this->sequential_index ) ) {
 			/**
-			 * the variable $this->sequential_index gets its value from
+			 * The variable $this->sequential_index gets its value from
 			 *
 			 * @see Rop_Post_Format_Helper::build_content()
 			 */
