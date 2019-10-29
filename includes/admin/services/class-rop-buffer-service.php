@@ -413,6 +413,15 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 	 */
 	private function buffer_media_post( $post_details, $args = array() ) {
 
+		if ( false === filter_var( $post_details['post_with_image'], FILTER_VALIDATE_BOOLEAN ) ) {
+			$format_helper = new Rop_Post_Format_Helper();
+
+			$image_to_share = $format_helper->build_image( $post_details['post_id'] );
+		} else {
+			$image_to_share = $post_details['post_image'];
+		}
+
+
 		$data = array(
 			'pretty'       => 'true',
 			'now'          => 'true',
@@ -423,7 +432,7 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 			'shorten'      => 'false',
 			'text'         => $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'],
 			'media'        => array(
-				'photo' => $post_details['post_image'],
+				'photo' => $image_to_share,
 			),
 
 		);

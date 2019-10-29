@@ -1,5 +1,5 @@
 <template>
-	<div class="toast toast-success rop-current-time" v-if="isOn && accounts_no > 0">
+	<div class="toast rop-next-share-time" v-if="isOn && accounts_no > 0">
 		<span v-if="diff_seconds>0"> <b><i
 				class="fa fa-fast-forward"></i> {{labels.next_share}}</b> {{labels.in}}</span>
 		<small v-if="timediff !== ''">{{timediff}}</small>
