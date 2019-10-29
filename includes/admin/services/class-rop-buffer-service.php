@@ -421,7 +421,6 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 			$image_to_share = $post_details['post_image'];
 		}
 
-
 		$data = array(
 			'pretty'       => 'true',
 			'now'          => 'true',
