@@ -421,8 +421,10 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 					$base64_img = $this->this_image_to_base64( $large_image_path );
 					if ( ! empty( $base64_img ) ) {
 						$info_to_pin['image_base64'] = $base64_img;
-						unset( $info_to_pin['image_url'] );
+					} else {
+						$info_to_pin['image'] = $large_image_path;
 					}
+					unset( $info_to_pin['image_url'] );
 				}
 			}
 
