@@ -175,7 +175,7 @@ MULTIPLE_VARIATION_GROUP;
             </div>
             <div style="width: 28%; display:inline-block; text-align: center; float: left;">
                 <div class='image-preview-wrapper'>
-                    <img class="rop-img-attached" src='' width="100" height="100" alt="">
+                    <img class="rop-img-attached" src='' style="width: auto; height: 100px;" alt="" >
                 </div>
                 <input class="rop-image-attach button button-primary" type="button" value="{$label_button}" data-rop-img-id="0"/>
                 <input class="rop-image-remove button button-secondary" type="button" value="{$button_remove}" data-rop-img-id="0" {$hide_remove}/>
@@ -210,7 +210,7 @@ echo <<<DEFAULT_GROUP
             </div>
             <div style="width: 28%; display:inline-block; text-align: center; float: left;">
                 <div class='image-preview-wrapper'>
-                    <img class="rop-img-attached" src='' width="100" height="100" alt="">
+                    <img class="rop-img-attached" src='' style="width: auto; height: 100px;" alt="">
                 </div>
                 <input class="rop-image-attach button button-primary" type="button" value="{$label_button}" data-rop-img-id="0"/>
                 <input class="rop-image-remove button button-secondary" type="button" value="{$button_remove}" data-rop-img-id="0" {$hide_remove}/>
