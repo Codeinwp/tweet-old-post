@@ -411,7 +411,6 @@ class Rop_Pointers {
 				var rop_pointer = <?php echo $pointers; ?>;
 				var rop_license = <?php echo $general_settings->license_type(); ?>;
 
-
 				var rop_ajax_listener = {};
 				rop_ajax_listener.temporary_open = XMLHttpRequest.prototype.open;
 
@@ -420,13 +419,11 @@ class Rop_Pointers {
 
 					if (_url.indexOf('get_authenticated_services') !== -1 && true === call_pointers) {
 						this.addEventListener('load', function () {
-							// do something with the response text
-							console.log('load: ' + this.response);
+							// Do something with the response text
 							call_pointers = false;
 							setTimeout(init_rop_pointer, 400);
 						});
 
-						console.log(_url);
 					}
 					if (!_method) var _method = '';
 					if (!_url) var _url = '';
