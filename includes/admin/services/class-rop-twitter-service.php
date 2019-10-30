@@ -281,6 +281,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 * @return array
 	 */
 	private function get_users( $data = null ) {
+		// assign default values to variable
 		$user = $this->user_default;
 		if ( $data == null ) {
 			$this->set_api( $this->credentials['oauth_token'], $this->credentials['oauth_token_secret'], $this->consumer_key, $this->consumer_secret );
@@ -509,29 +510,6 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		} else {
 			$this->logger->alert_error( sprintf( 'Error posting on twitter. Error: %s', json_encode( $response ) ) );
 			$this->rop_get_error_docs( $response );
-		}
-
-		return false;
-	}
-
-	/**
-	 * Method used to decide whether or not to show Twitter button
-	 *
-	 * @since   8.4.0
-	 * @access  public
-	 *
-	 * @return  bool
-	 */
-	public function rop_show_tw_app_btn() {
-
-		$installed_at_version = get_option( 'rop_first_install_version' );
-
-		if ( empty( $installed_at_version ) ) {
-			return false;
-		}
-
-		if ( version_compare( $installed_at_version, '8.4.0', '>=' ) ) {
-			return true;
 		}
 
 		return false;

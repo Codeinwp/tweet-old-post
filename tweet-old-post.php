@@ -110,6 +110,7 @@ function run_rop() {
 	define( 'ROP_AUTH_APP_URL', 'https://app.revive.social' );
 	define( 'ROP_APP_FACEBOOK_PATH', '/fb_auth' );
 	define( 'ROP_APP_TWITTER_PATH', '/tw_auth' );
+	define( 'ROP_APP_LINKEDIN_PATH', '/li_auth' );
 	define( 'ROP_APP_TOKEN_OPTION', 'rop_install_token' );
 
 	$vendor_file = ROP_LITE_PATH . '/vendor/autoload.php';
