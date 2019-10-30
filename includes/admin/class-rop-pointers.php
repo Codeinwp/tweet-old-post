@@ -67,7 +67,7 @@ class Rop_Pointers {
 					'next_trigger' => array(),
 					'options'      => array(
 						'content'  => '<h3>' . esc_html__( 'Get Started', 'tweet-old-post' ) . '</h3>' .
-						              '<p>' . esc_html__( 'Click here to get started with Revive Old Posts (ROP).', 'tweet-old-post' ) . '</p>',
+									  '<p>' . esc_html__( 'Click here to get started with Revive Old Posts (ROP).', 'tweet-old-post' ) . '</p>',
 						'position' => array(
 							'edge'  => 'left',
 							'align' => 'left',
@@ -105,7 +105,7 @@ class Rop_Pointers {
 					),
 					'options'      => array(
 						'content'  => '<h3>' . esc_html__( 'Accounts Area', 'tweet-old-post' ) . '</h3>' .
-						              '<p>' . esc_html__( 'Your social media accounts will show here once connected.', 'tweet-old-post' ) . '</p>',
+									  '<p>' . esc_html__( 'Your social media accounts will show here once connected.', 'tweet-old-post' ) . '</p>',
 						'position' => array(
 							'edge'  => 'top',
 							'align' => 'left',
@@ -121,7 +121,7 @@ class Rop_Pointers {
 					),
 					'options'      => array(
 						'content'  => '<h3>' . esc_html__( 'Adding Accounts', 'tweet-old-post' ) . '</h3>' .
-						              '<p>' . sprintf( esc_html__( 'You can add your social media accounts here. %1$sLet\'s do this later%2$s.', 'tweet-old-post' ), '<strong>', '</strong>' ) . '</p>',
+									  '<p>' . sprintf( esc_html__( 'You can add your social media accounts here. %1$sLet\'s do this later%2$s.', 'tweet-old-post' ), '<strong>', '</strong>' ) . '</p>',
 						'position' => array(
 							'edge'  => 'bottom',
 							'align' => 'left',
@@ -137,7 +137,7 @@ class Rop_Pointers {
 					),
 					'options'      => array(
 						'content'  => '<h3>' . esc_html__( 'General Settings', 'tweet-old-post' ) . '</h3>' .
-						              '<p>' . esc_html__( 'This is the main configuration page of the plugin, we\'ll go through a few of the settings, click it now.', 'tweet-old-post' ) . '</p>',
+									  '<p>' . esc_html__( 'This is the main configuration page of the plugin, we\'ll go through a few of the settings, click it now.', 'tweet-old-post' ) . '</p>',
 						'position' => array(
 							'edge'  => 'top',
 							'align' => 'left',
@@ -153,7 +153,7 @@ class Rop_Pointers {
 					),
 					'options'      => array(
 						'content'  => '<h3>' . esc_html__( 'Time Between Shares', 'tweet-old-post' ) . '</h3>' .
-						              '<p>' . esc_html__( 'Here you can set how many hours you\'d like between shares.', 'tweet-old-post' ) . '</p>',
+									  '<p>' . esc_html__( 'Here you can set how many hours you\'d like between shares.', 'tweet-old-post' ) . '</p>',
 						'position' => array(
 							'edge'  => 'left',
 							'align' => 'right',
@@ -169,7 +169,7 @@ class Rop_Pointers {
 					),
 					'options'      => array(
 						'content'  => '<h3>' . esc_html__( 'Minimum Post Age', 'tweet-old-post' ) . '</h3>' .
-						              '<p>' . esc_html__( 'Here you can set how old posts should be before they are eligible to be shared.', 'tweet-old-post' ) . '</p>',
+									  '<p>' . esc_html__( 'Here you can set how old posts should be before they are eligible to be shared.', 'tweet-old-post' ) . '</p>',
 						'position' => array(
 							'edge'  => 'left',
 							'align' => 'right',
@@ -185,8 +185,8 @@ class Rop_Pointers {
 					),
 					'options'      => array(
 						'content'  => '<h3>' . esc_html__( 'Maximum Post Age', 'tweet-old-post' ) . '</h3>' .
-						              '<p>' . esc_html__( 'Here you can set the maximum age of posts that are eligible to be shared.', 'tweet-old-post' ) . '</p>' .
-						              '<p>' . esc_html__( 'E.g. setting this option to 15 would mean that posts older than 15 days will not be shared.', 'tweet-old-post' ) . '</p>',
+									  '<p>' . esc_html__( 'Here you can set the maximum age of posts that are eligible to be shared.', 'tweet-old-post' ) . '</p>' .
+									  '<p>' . esc_html__( 'E.g. setting this option to 15 would mean that posts older than 15 days will not be shared.', 'tweet-old-post' ) . '</p>',
 						'position' => array(
 							'edge'  => 'left',
 							'align' => 'right',
@@ -202,7 +202,7 @@ class Rop_Pointers {
 					),
 					'options'      => array(
 						'content'  => '<h3>' . esc_html__( 'Autopilot', 'tweet-old-post' ) . '</h3>' .
-						              '<p>' . esc_html__( 'Checking this option ensures that your posts share perpetually.', 'tweet-old-post' ) . '</p>',
+									  '<p>' . esc_html__( 'Checking this option ensures that your posts share perpetually.', 'tweet-old-post' ) . '</p>',
 						'position' => array(
 							'edge'  => 'left',
 							'align' => 'right',
@@ -218,9 +218,9 @@ class Rop_Pointers {
 					),
 					'options'      => array(
 						'content'  => '<h3>' . esc_html__( 'Post Types', 'tweet-old-post' ) . '</h3>' .
-						              '<p>' . esc_html__( 'Rop works with any post type, from products to posts, to custom post types.', 'tweet-old-post' ) . '</p>' .
-						              '<p>' . esc_html__( 'You can share media straight from your media library!', 'tweet-old-post' ) . '</p>' .
-						              '<p>' . sprintf( __( '%1$s%2$sLearn more about this feature%3$s%4$s.', 'tweet-old-post' ), '<strong>', '<a href="https://docs.revive.social/article/968-share-different-post-types-w-revive-old-posts?utm_source=rop_pointer&utm_medium=admin_pointers&utm_campaign=rop" target="_blank">', '</a>', '</strong>' ) . '</p>',
+									  '<p>' . esc_html__( 'Rop works with any post type, from products to posts, to custom post types.', 'tweet-old-post' ) . '</p>' .
+									  '<p>' . esc_html__( 'You can share media straight from your media library!', 'tweet-old-post' ) . '</p>' .
+									  '<p>' . sprintf( __( '%1$s%2$sLearn more about this feature%3$s%4$s.', 'tweet-old-post' ), '<strong>', '<a href="https://docs.revive.social/article/968-share-different-post-types-w-revive-old-posts?utm_source=rop_pointer&utm_medium=admin_pointers&utm_campaign=rop" target="_blank">', '</a>', '</strong>' ) . '</p>',
 						'position' => array(
 							'edge'  => 'left',
 							'align' => 'right',
@@ -236,10 +236,10 @@ class Rop_Pointers {
 					),
 					'options'      => array(
 						'content'  => '<h3>' . esc_html__( 'Taxonomy Filtering', 'tweet-old-post' ) . '</h3>' .
-						              '<p>' . esc_html__( 'Here you can set which WordPress taxonomies you\'d like to include/exclude from sharing.', 'tweet-old-post' ) . '</p>' .
-						              '<p>' . sprintf( __( '%1$sNote:%2$s', 'tweet-old-post' ), '<strong>', '</strong>' ) . '</p>' .
-						              '<p>' . sprintf( __( 'Selecting options here and %1$schecking%2$s the Exclude box will %1$sprevent%2$s posts in those taxonomies from sharing.', 'tweet-old-post' ), '<strong>', '</strong>' ) . '</p>' .
-						              '<p>' . sprintf( __( 'Selecting options here and leaving the Exclude box %1$sunchecked%2$s will %1$sonly share%2$s posts in those taxonomies.', 'tweet-old-post' ), '<strong>', '</strong>' ) . '</p>',
+									  '<p>' . esc_html__( 'Here you can set which WordPress taxonomies you\'d like to include/exclude from sharing.', 'tweet-old-post' ) . '</p>' .
+									  '<p>' . sprintf( __( '%1$sNote:%2$s', 'tweet-old-post' ), '<strong>', '</strong>' ) . '</p>' .
+									  '<p>' . sprintf( __( 'Selecting options here and %1$schecking%2$s the Exclude box will %1$sprevent%2$s posts in those taxonomies from sharing.', 'tweet-old-post' ), '<strong>', '</strong>' ) . '</p>' .
+									  '<p>' . sprintf( __( 'Selecting options here and leaving the Exclude box %1$sunchecked%2$s will %1$sonly share%2$s posts in those taxonomies.', 'tweet-old-post' ), '<strong>', '</strong>' ) . '</p>',
 						'position' => array(
 							'edge'  => 'left',
 							'align' => 'right',
@@ -255,8 +255,8 @@ class Rop_Pointers {
 					),
 					'options'      => array(
 						'content'  => '<h3>' . esc_html__( 'Share on Publish', 'tweet-old-post' ) . '</h3>' .
-						              '<p>' . esc_html__( 'ROP not only works on autopilot, it can also be used to push new posts to your social networks immediately.', 'tweet-old-post' ) . '</p>' .
-						              '<p>' . sprintf( __( '%1$s%2$sLearn more about this feature%3$s%4$s.', 'tweet-old-post' ), '<strong>', '<a href="https://docs.revive.social/article/933-how-to-share-posts-immediately-with-revive-old-posts?utm_source=rop_pointer&utm_medium=admin_pointers&utm_campaign=rop" target="_blank">', '</a>', '</strong>' ) . '</p>',
+									  '<p>' . esc_html__( 'ROP not only works on autopilot, it can also be used to push new posts to your social networks immediately.', 'tweet-old-post' ) . '</p>' .
+									  '<p>' . sprintf( __( '%1$s%2$sLearn more about this feature%3$s%4$s.', 'tweet-old-post' ), '<strong>', '<a href="https://docs.revive.social/article/933-how-to-share-posts-immediately-with-revive-old-posts?utm_source=rop_pointer&utm_medium=admin_pointers&utm_campaign=rop" target="_blank">', '</a>', '</strong>' ) . '</p>',
 						'position' => array(
 							'edge'  => 'left',
 							'align' => 'right',
@@ -272,8 +272,8 @@ class Rop_Pointers {
 					),
 					'options'      => array(
 						'content'  => '<h3>' . esc_html__( 'Share Content Variations', 'tweet-old-post' ) . '</h3>' .
-						              '<p>' . esc_html__( 'You can add multiple custom messages to individual posts as share variations! ROP will randomly select one to share.', 'tweet-old-post' ) . '</p>' .
-						              '<p>' . sprintf( __( '%1$s%2$sLearn more about this feature%3$s%4$s.', 'tweet-old-post' ), '<strong>', '<a href="https://docs.revive.social/article/971-how-to-add-variations-to-revive-old-posts-shares?utm_source=rop_pointer&utm_medium=admin_pointers&utm_campaign=rop" target="_blank">', '</a>', '</strong>' ) . '</p>',
+									  '<p>' . esc_html__( 'You can add multiple custom messages to individual posts as share variations! ROP will randomly select one to share.', 'tweet-old-post' ) . '</p>' .
+									  '<p>' . sprintf( __( '%1$s%2$sLearn more about this feature%3$s%4$s.', 'tweet-old-post' ), '<strong>', '<a href="https://docs.revive.social/article/971-how-to-add-variations-to-revive-old-posts-shares?utm_source=rop_pointer&utm_medium=admin_pointers&utm_campaign=rop" target="_blank">', '</a>', '</strong>' ) . '</p>',
 						'position' => array(
 							'edge'  => 'left',
 							'align' => 'right',
@@ -289,7 +289,7 @@ class Rop_Pointers {
 					),
 					'options'      => array(
 						'content'  => '<h3>' . esc_html__( 'Post Format', 'tweet-old-post' ) . '</h3>' .
-						              '<p>' . esc_html__( 'Once you\'ve connected an account(s) you\'ll be able to configure the settings for the account(s) here.', 'tweet-old-post' ) . '</p>',
+									  '<p>' . esc_html__( 'Once you\'ve connected an account(s) you\'ll be able to configure the settings for the account(s) here.', 'tweet-old-post' ) . '</p>',
 						'position' => array(
 							'edge'  => 'left',
 							'align' => 'right',
@@ -305,7 +305,7 @@ class Rop_Pointers {
 					),
 					'options'      => array(
 						'content'  => '<h3>' . esc_html__( 'Custom Schedule', 'tweet-old-post' ) . '</h3>' .
-						              '<p>' . esc_html__( 'Custom scheduling allows you to refine the post times and days of your posts.', 'tweet-old-post' ) . '</p>',
+									  '<p>' . esc_html__( 'Custom scheduling allows you to refine the post times and days of your posts.', 'tweet-old-post' ) . '</p>',
 						'<p>' . sprintf( __( '%1$s%2$sLearn more about this feature%3$s%4$s.', 'tweet-old-post' ), '<strong>', '<a href="https://docs.revive.social/article/972-revive-old-posts-custom-schedule-feature?utm_source=rop_pointer&utm_medium=admin_pointers&utm_campaign=rop" target="_blank">', '</a>', '</strong>' ) . '</p>',
 						'position' => array(
 							'edge'  => 'left',
@@ -322,8 +322,8 @@ class Rop_Pointers {
 					),
 					'options'      => array(
 						'content'  => '<h3>' . esc_html__( 'Sharing Queue', 'tweet-old-post' ) . '</h3>' .
-						              '<p>' . esc_html__( 'You\'ll be able to have look at the posts scheduled to go out by ROP. You can even skip or block them from sharing in the future.', 'tweet-old-post' ) . '</p>' .
-						              '<p>' . sprintf( __( '%1$s%2$sLearn more about this feature%3$s%4$s.', 'tweet-old-post' ), '<strong>', '<a href="https://docs.revive.social/article/973-working-with-revive-old-posts-sharing-queue?utm_source=rop_pointer&utm_medium=admin_pointers&utm_campaign=rop" target="_blank">', '</a>', '</strong>' ) . '</p>',
+									  '<p>' . esc_html__( 'You\'ll be able to have look at the posts scheduled to go out by ROP. You can even skip or block them from sharing in the future.', 'tweet-old-post' ) . '</p>' .
+									  '<p>' . sprintf( __( '%1$s%2$sLearn more about this feature%3$s%4$s.', 'tweet-old-post' ), '<strong>', '<a href="https://docs.revive.social/article/973-working-with-revive-old-posts-sharing-queue?utm_source=rop_pointer&utm_medium=admin_pointers&utm_campaign=rop" target="_blank">', '</a>', '</strong>' ) . '</p>',
 						'position' => array(
 							'edge'  => 'left',
 							'align' => 'right',
@@ -339,8 +339,8 @@ class Rop_Pointers {
 					),
 					'options'      => array(
 						'content'  => '<h3>' . esc_html__( 'Share Log', 'tweet-old-post' ) . '</h3>' .
-						              '<p>' . esc_html__( 'You can track the success and failings of your shares here.', 'tweet-old-post' ) . '</p>' .
-						              '<p>' . sprintf( __( 'The resolution to most of these possible errors can be found %1$s%2$sHere%3$s%4$s.', 'tweet-old-post' ), '<strong>', '<a href="https://docs.revive.social/?utm_source=rop_pointer&utm_medium=admin_pointers&utm_campaign=rop" target="_blank">', '</a>', '</strong>' ) . '</p>',
+									  '<p>' . esc_html__( 'You can track the success and failings of your shares here.', 'tweet-old-post' ) . '</p>' .
+									  '<p>' . sprintf( __( 'The resolution to most of these possible errors can be found %1$s%2$sHere%3$s%4$s.', 'tweet-old-post' ), '<strong>', '<a href="https://docs.revive.social/?utm_source=rop_pointer&utm_medium=admin_pointers&utm_campaign=rop" target="_blank">', '</a>', '</strong>' ) . '</p>',
 						'position' => array(
 							'edge'  => 'left',
 							'align' => 'right',
@@ -356,7 +356,7 @@ class Rop_Pointers {
 					),
 					'options'      => array(
 						'content'  => '<h3>' . esc_html__( 'Start Sharing', 'tweet-old-post' ) . '</h3>' .
-						              '<p>' . esc_html__( 'Once you\'ve connected your accounts and setup their Post Format settings, use this button to start the plugin.', 'tweet-old-post' ) . '</p>',
+									  '<p>' . esc_html__( 'Once you\'ve connected your accounts and setup their Post Format settings, use this button to start the plugin.', 'tweet-old-post' ) . '</p>',
 						'position' => array(
 							'edge'  => 'right',
 							'align' => 'left',
@@ -369,7 +369,7 @@ class Rop_Pointers {
 					'next_trigger' => array(),
 					'options'      => array(
 						'content'  => '<h3>' . esc_html__( 'Add Your Accounts', 'tweet-old-post' ) . '</h3>' .
-						              '<p>' . esc_html__( 'Switch to the accounts tab now to add your social media accounts to the plugin and begin sharing.', 'tweet-old-post' ) . '</p>',
+									  '<p>' . esc_html__( 'Switch to the accounts tab now to add your social media accounts to the plugin and begin sharing.', 'tweet-old-post' ) . '</p>',
 						'position' => array(
 							'edge'  => 'left',
 							'align' => 'right',
@@ -420,139 +420,139 @@ class Rop_Pointers {
 		$pointers = wp_json_encode( $pointers );
 		$site_url = get_site_url();
 		?>
-        <script type="text/javascript">
-            jQuery(function ($) {
+		<script type="text/javascript">
+			jQuery(function ($) {
 
-                var rop_url = '<?php echo $site_url; ?>' + '/wp-admin/admin.php?page=TweetOldPost';
-                var rop_pointer = <?php echo $pointers; ?>;
-                var rop_license = <?php echo $general_settings->license_type(); ?>;
+				var rop_url = '<?php echo $site_url; ?>' + '/wp-admin/admin.php?page=TweetOldPost';
+				var rop_pointer = <?php echo $pointers; ?>;
+				var rop_license = <?php echo $general_settings->license_type(); ?>;
 
 				<?php if ( false === $is_plugin_screen ) { ?>
-                var rop_ajax_listener = {};
-                rop_ajax_listener.temporary_open = XMLHttpRequest.prototype.open;
+				var rop_ajax_listener = {};
+				rop_ajax_listener.temporary_open = XMLHttpRequest.prototype.open;
 
-                var call_pointers = true;
-                XMLHttpRequest.prototype.open = function (_method, _url) {
+				var call_pointers = true;
+				XMLHttpRequest.prototype.open = function (_method, _url) {
 
-                    if (_url.indexOf('get_authenticated_services') !== -1 && true === call_pointers) {
-                        this.addEventListener('load', function () {
-                            // Do something with the response text
-                            call_pointers = false;
-                            setTimeout(init_rop_pointer, 400);
-                        });
+					if (_url.indexOf('get_authenticated_services') !== -1 && true === call_pointers) {
+						this.addEventListener('load', function () {
+							// Do something with the response text
+							call_pointers = false;
+							setTimeout(init_rop_pointer, 400);
+						});
 
-                    }
-                    if (!_method) _method = '';
-                    if (!_url) _url = '';
-                    rop_ajax_listener.temporary_open.apply(this, arguments);
-                    rop_ajax_listener.method = _method;
-                    rop_ajax_listener.url = _url;
-                    if (_method.toLowerCase() === 'get') {
-                        rop_ajax_listener.data = _url.split('?');
-                        rop_ajax_listener.data = rop_ajax_listener.data[1];
-                    }
-                };
+					}
+					if (!_method) _method = '';
+					if (!_url) _url = '';
+					rop_ajax_listener.temporary_open.apply(this, arguments);
+					rop_ajax_listener.method = _method;
+					rop_ajax_listener.url = _url;
+					if (_method.toLowerCase() === 'get') {
+						rop_ajax_listener.data = _url.split('?');
+						rop_ajax_listener.data = rop_ajax_listener.data[1];
+					}
+				};
 				<?php } else { ?>
-                setTimeout(init_rop_pointer, 800);
+				setTimeout(init_rop_pointer, 800);
 				<?php } ?>
 
-                function init_rop_pointer() {
-                    $.each(rop_pointer.pointers, function (i) {
-                        show_rop_pointer(i);
-                        return false;
-                    });
-                }
+				function init_rop_pointer() {
+					$.each(rop_pointer.pointers, function (i) {
+						show_rop_pointer(i);
+						return false;
+					});
+				}
 
-                function show_rop_pointer(id) {
-                    var pointer = rop_pointer.pointers[id];
-                    var options = $.extend(pointer.options, {
-                        pointerClass: 'wp-pointer rop-pointer',
-                        close: function () {
-                            if (pointer.next) {
-                                // Minimum sharing schedule option not present in Business and Marketer plans
-                                if (pointer.next == 'min-interval' && rop_license > 1) {
-                                    pointer = rop_pointer.pointers['min-interval'];
-                                }
-                                if (pointer.next == 'rop-dashboard') {
-                                    window.location = rop_url;
-                                }
-                                show_rop_pointer(pointer.next);
-                            }
-                        },
-                        buttons: function (event, t) {
+				function show_rop_pointer(id) {
+					var pointer = rop_pointer.pointers[id];
+					var options = $.extend(pointer.options, {
+						pointerClass: 'wp-pointer rop-pointer',
+						close: function () {
+							if (pointer.next) {
+								// Minimum sharing schedule option not present in Business and Marketer plans
+								if (pointer.next == 'min-interval' && rop_license > 1) {
+									pointer = rop_pointer.pointers['min-interval'];
+								}
+								if (pointer.next == 'rop-dashboard') {
+									window.location = rop_url;
+								}
+								show_rop_pointer(pointer.next);
+							}
+						},
+						buttons: function (event, t) {
 
 
-                            var close = " <?php echo esc_js( __( 'Dismiss', 'tweet-old-post' ) ); ?>";
-                            var button = $('<a class=\"close\" href=\"#\">' + close + '</a>');
+							var close = " <?php echo esc_js( __( 'Dismiss', 'tweet-old-post' ) ); ?>";
+							var button = $('<a class=\"close\" href=\"#\">' + close + '</a>');
 
-                            var next = "<?php echo esc_js( __( 'Next', 'tweet-old-post' ) ); ?>";
-                            var button2 = $('<a class=\"button button-primary next\" href=\"#\">' + next + '</a>');
+							var next = "<?php echo esc_js( __( 'Next', 'tweet-old-post' ) ); ?>";
+							var button2 = $('<a class=\"button button-primary next\" href=\"#\">' + next + '</a>');
 
-                            var finish = "<?php echo esc_js( __( 'Finish', 'tweet-old-post' ) ); ?>";
-                            var button3 = $('<a class=\"button button-primary next\" href=\"#\">' + finish + '</a>');
+							var finish = "<?php echo esc_js( __( 'Finish', 'tweet-old-post' ) ); ?>";
+							var button3 = $('<a class=\"button button-primary next\" href=\"#\">' + finish + '</a>');
 
-                            var wrapper = $('<div class=\"rop-pointer-buttons\" />');
+							var wrapper = $('<div class=\"rop-pointer-buttons\" />');
 
-                            button.bind('click.pointer', function (e) {
-                                e.preventDefault();
-                                t.element.pointer('destroy');
-                            });
+							button.bind('click.pointer', function (e) {
+								e.preventDefault();
+								t.element.pointer('destroy');
+							});
 
-                            button2.bind('click.pointer', function (e) {
-                                e.preventDefault();
-                                t.element.pointer('close');
+							button2.bind('click.pointer', function (e) {
+								e.preventDefault();
+								t.element.pointer('close');
 
-                                switch (pointer.next) {
-                                    case 'activate-rop':
-                                        window.scrollBy(0, 400);
-                                        break;
-                                    case 'rop-menu':
-                                        window.scrollBy(0, 400);
-                                        break;
-                                    case 'post-types':
-                                        window.scrollBy(0, 350);
-                                        break;
-                                    case 'custom-share':
-                                        window.scrollBy(0, 190);
-                                        break;
-                                    case 'post-format':
-                                        window.scrollBy(0, -590);
-                                        break;
-                                }
-                            });
+								switch (pointer.next) {
+									case 'activate-rop':
+										window.scrollBy(0, 400);
+										break;
+									case 'rop-menu':
+										window.scrollBy(0, 400);
+										break;
+									case 'post-types':
+										window.scrollBy(0, 350);
+										break;
+									case 'custom-share':
+										window.scrollBy(0, 190);
+										break;
+									case 'post-format':
+										window.scrollBy(0, -590);
+										break;
+								}
+							});
 
-                            button3.bind('click.pointer', function (e) {
-                                e.preventDefault();
-                                t.element.pointer('destroy');
-                            });
+							button3.bind('click.pointer', function (e) {
+								e.preventDefault();
+								t.element.pointer('destroy');
+							});
 
-                            wrapper.append(button);
+							wrapper.append(button);
 
-                            if (pointer.next !== 'min-interval' && pointer.next !== 'finish') {
-                                wrapper.append(button2);
-                            }
+							if (pointer.next !== 'min-interval' && pointer.next !== 'finish') {
+								wrapper.append(button2);
+							}
 
-                            if (pointer.next == 'finish') {
-                                wrapper.append(button3);
-                            }
+							if (pointer.next == 'finish') {
+								wrapper.append(button3);
+							}
 
-                            return wrapper;
-                        },
-                    });
+							return wrapper;
+						},
+					});
 
-                    var this_pointer = $(pointer.target).pointer(options);
-                    this_pointer.pointer('open');
+					var this_pointer = $(pointer.target).pointer(options);
+					this_pointer.pointer('open');
 
-                    if (pointer.next_trigger) {
-                        $(pointer.next_trigger.target).on(pointer.next_trigger.event, function () {
-                            setTimeout(function () {
-                                this_pointer.pointer('close');
-                            }, 400);
-                        });
-                    }
-                }
-            });
-        </script>
+					if (pointer.next_trigger) {
+						$(pointer.next_trigger.target).on(pointer.next_trigger.event, function () {
+							setTimeout(function () {
+								this_pointer.pointer('close');
+							}, 400);
+						});
+					}
+				}
+			});
+		</script>
 		<?php
 
 	}
