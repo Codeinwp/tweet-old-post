@@ -14,7 +14,6 @@
                             </div>
                             <p class="empty-title h5">{{labels.no_accounts}}</p>
                             <p class="empty-subtitle">{{labels.no_accounts_desc}}</p>
-                            <p class="empty-subtitle"><span v-html="labels.no_accounts_pro_upsell"></span></p>
                         </div>
                         <div class="account-container" v-for="( account, id ) in accounts" v-if="is_preloading > 0">
                             <service-user-tile :account_data="account" :account_id="id"></service-user-tile>
@@ -30,20 +29,14 @@
             <div class="panel-footer" v-if="is_preloading > 0">
                 <div class="columns my-2" v-if="checkLicense && pro_installed">
                     <div class="column col-12">
-                        <i class="fa fa-lock "></i> <span v-html="labels.activate_license"></span>
+                        <i class="fa fa-info-circle "></i> <span v-html="labels.activate_license"></span>
                     </div>
                 </div>
                 <div class="columns my-2" v-if="(checkLicense && accountsCount === 2) && !pro_installed">
                     <div class="column col-12">
                         <p class="upsell">
-                            <i class="fa fa-lock "></i> <span v-html="labels.upsell_accounts"></span>
+                            <i class="fa fa-info-circle "></i> <span v-html="labels.upsell_accounts"></span>
                         </p>
-                    </div>
-                </div>
-                <div class="columns" v-if="accountsCount < 1">
-                    <div class="column col-12">
-                        <p><i class="fa fa-info-circle"></i> <span
-                                v-html="labels.has_accounts_desc"></span></p>
                     </div>
                 </div>
                 <div class="column col-12 text-right">
