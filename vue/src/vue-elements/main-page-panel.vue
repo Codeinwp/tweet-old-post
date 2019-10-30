@@ -6,29 +6,21 @@
                     <img :src="plugin_logo" class="plugin-logo avatar avatar-lg"/>
                     <h1 class="plugin-title d-inline-block">Revive Old Posts</h1><span class="powered d-inline-block"> {{labels.by}} <a
                         href="https://revive.social" target="_blank"><b>Revive.Social</b></a></span>
-                    <div id="rop_user_actions">
-                        <a v-if="license  >= 1" href="https://revive.social/pro-support/" target="_blank" class="rop-get-support-btn"><span><i
-                                class="fa fa-commenting" aria-hidden="true"></i></span> {{labels.rop_support}}</a>
-                        <a v-if="license  < 1" href="https://revive.social/support/" target="_blank" class="rop-get-support-btn"><span><i
-                                class="fa fa-commenting" aria-hidden="true"></i></span> {{labels.rop_support}}</a>
-                        <a v-if="haveAccounts"
-                           href="https://docs.revive.social/"
-                           target="_blank" class="rop-docs-btn"><span><i class="fa fa-book" aria-hidden="true"></i></span> {{labels.rop_docs}}</a>
-                        <a v-if="haveAccounts" href="https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post" target="_blank" class="leave-a-review"><span><i class="fa fa-star"
-                                                                                                                                                                            aria-hidden="true"></i></span>
-                            {{labels.review_it}}</a>
-                    </div>
                 </div>
             </div>
             <toast/>
             <div v-if=" is_rest_api_error " class="toast toast-error rop-api-not-available" v-html="labels.api_not_available">
             </div>
-
+            <div v-if=" is_fb_domain_notice " class="toast toast-primary">
+                <button class="btn btn-clear float-right" @click="close_fb_domain_notice()"></button>
+                <div v-html="labels.rop_facebook_domain_toast"></div>
+            </div>
             <div class="sidebar sidebar-top card rop-container-start">
-                <div class="toast rop-current-time" v-if="formatedDate">
-                    {{labels.now}}: {{ formatedDate }}
-                </div>
+
+              <!-- Next post count down -->
                 <countdown :current_time="current_time"/>
+                <!--  -->
+
                 <button class="btn btn-sm" :class="btn_class"
                         :data-tooltip="labels.active_account_warning"
                         @click="togglePosting()" :disabled="!haveAccountsActive">
@@ -59,18 +51,19 @@
                  :class="'rop-license-plan-'+license" v-if="is_preloading_over > 0">
 
                 <div class="card rop-container-start">
-                    <div class="toast rop-current-time" v-if="formatedDate && haveAccounts">
-                        {{labels.now}}: {{ formatedDate }}
-                    </div>
-                    <countdown :current_time="current_time"/>
                     <button id="rop_start_stop_btn" class="btn" :class="btn_class"
                             :data-tooltip="labels.active_account_warning"
                             @click="togglePosting()" :disabled="!haveAccountsActive">
                         <i class="fa fa-play" v-if="!is_loading && !start_status"></i>
                         <i class="fa fa-stop" v-else-if="!is_loading && start_status"></i>
                         <i class="fa fa-spinner fa-spin" v-else></i>
-                        {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}
+                        {{labels.click}} {{labels.to}} {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}
                     </button>
+
+                    <div class="sharing-box" :class="status_color_class">{{ status_label_display }}</div>
+
+                    <countdown :current_time="current_time"/>
+
                     <div id="staging-status" v-if="staging">
                         {{labels.staging_status}}
                     </div>
@@ -78,9 +71,13 @@
                     <div v-if="haveAccounts">
                         <upsell-sidebar></upsell-sidebar>
                     </div>
-                    <a v-if="haveAccounts" href="https://trello.com/b/svAZqXO1/roadmap-revive-old-posts" target="_blank" class="btn rop-sidebar-action-btns">{{labels.rop_roadmap}}</a>
-                    <a v-if="haveAccounts" href="https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform" target="_blank" class="btn rop-sidebar-action-btns">{{labels.survey}}</a>
-                    <a v-if="haveAccounts" href="https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial" target="_blank" class="btn rop-sidebar-action-btns">{{labels.tweet_about_it}}</a>
+                    <a v-if="license  >= 1" href="https://revive.social/pro-support/" target="_blank" class="btn rop-sidebar-action-btns">{{labels.rop_support}}</a>
+                    <a v-if="license  < 1" href="https://revive.social/support/" target="_blank" class="btn rop-sidebar-action-btns">{{labels.rop_support}}</a>
+                    <a v-if="haveAccounts" href="https://docs.revive.social/" target="_blank"
+                       class="btn rop-sidebar-action-btns">{{labels.rop_docs}}</a>
+                    <a v-if="haveAccounts"
+                       href="https://wordpress.org/support/plugin/tweet-old-post/reviews/?rate=5#new-post"
+                       target="_blank" class="btn rop-sidebar-action-btns">{{labels.review_it}}</a>
                 </div>
 
             </div>
@@ -126,6 +123,12 @@
             is_rest_api_error: function () {
                 return this.$store.state.api_not_available
             },
+            /**
+             * Check if rest api is available.
+             */
+            is_fb_domain_notice: function () {
+                return this.$store.state.fb_exception_toast
+            },
             current_time: {
                 get: function () {
                     return this.$store.state.cron_status.current_time;
@@ -151,6 +154,34 @@
                     btn_class += ' tooltip button-disabled ';
                 }
                 return btn_class;
+            },
+            /**
+             * Status label.
+             */
+            status_color_class: function () {
+                let status_color_class = ('sharing-status-' + (this.start_status ? 'sharing' : 'notsharing'));
+                if (!this.haveAccountsActive) {
+                    status_color_class = ' sharing-status-notsharing  ';
+                }
+                if (this.status_is_error_display) {
+                    return ' sharing-status-error ';
+                }
+                return status_color_class;
+            },
+            status_label_display: function () {
+                let labels = this.$store.state.labels.general;
+                let status_label_display = (this.start_status ? labels.sharing_to_account : labels.sharing_not_started);
+                if (!this.haveAccountsActive) {
+                    status_label_display = labels.sharing_not_started;
+                }
+
+                if (this.status_is_error_display) {
+                    return labels.status + ': ' + labels.error_check_log;
+                }
+                return labels.status + ': ' + status_label_display;
+            },
+            status_is_error_display: function () {
+                return this.status_is_error_display;
             },
             /**
              * Check if we have accounts connected.
@@ -182,16 +213,6 @@
             generalSettings: function () {
                 return this.$store.state.generalSettings
             },
-            /**
-             * Get general settings.
-             * @returns {module.exports.computed.generalSettings|Array|*}
-             */
-            formatedDate: function () {
-                if (typeof this.date_format === 'undefined') {
-                    return '';
-                }
-                return moment.utc(this.current_time, 'X').format(this.date_format.replace('mm', 'mm:ss'));
-            },
         },
         mounted: function () {
             setInterval(() => {
@@ -217,9 +238,30 @@
                 staging: ropApiSettings.staging,
                 is_loading: false,
                 is_loading_logs: false,
+                status_is_error_display: false
             }
         },
         methods: {
+            /**
+             *
+             * */
+            close_fb_domain_notice() {
+                if (this.is_loading) {
+                    this.$log.warn('Request in progress...Bail');
+                    return;
+                }
+
+                this.$store.dispatch('fetchAJAXPromise', {
+                    req: 'fb_exception_toast',
+                    data: {action: 'hide'}
+                }).then(response => {
+                    this.$log.info('Succesfully closed facebook domain toast.');
+                    this.is_loading = false;
+                }, error => {
+                    this.is_loading = false;
+                    Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+                })
+            },
             /**
              * Toggle sharing.
              */
@@ -265,13 +307,20 @@
 
                     // Toast message code start
                     if (response.length) {
-                        let toast = {
-                            type: response[0].type,
-                            show: true,
-                            title: 'Error encountered',
-                            message: response[0].message
-                        };
-                        this.$store.commit('updateState', {stateData: toast, requestName: 'update_toast'});
+                        for (let index_error in response) {
+                            if ('error' === response[index_error].type) {
+                                let toast = {
+                                    type: response[index_error].type,
+                                    show: true,
+                                    title: 'Error encountered',
+                                    message: response[index_error].message
+                                };
+                                this.$store.commit('updateState', {stateData: toast, requestName: 'update_toast'});
+                            } else if ('status_error' === response[index_error].type) {
+                                this.$log.warn('Status is error check logs, global admin notice will be displayed');
+                                this.status_is_error_display = true;
+                            }
+                        }
                     }
                     // Toast message code end
 

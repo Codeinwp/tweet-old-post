@@ -644,16 +644,33 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			// Try post via Facebook Graph SDK
 			$api = $this->get_api();
 			try {
+
+				// Scrape post URL before sharing
+				$this->rop_fb_scrape_url( $posting_type, $new_post, $token );
+
 				$api->post( $path, $new_post, $token );
 
 				return true;
 			} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
 				$errorMsg = $e->getMessage();
 
-				if ( strpos( $errorMsg, '(#100)' ) !== false && ! empty( $new_post['name'] ) ) {
+				if (
+					strpos( $errorMsg, '(#100)' ) !== false &&
+					(
+						! empty( $new_post['name'] ) ||
+						( ! empty( $new_post['link'] ) && isset( $new_post['message'] ) )
+					)
+				) {
 					// https://developers.facebook.com/docs/graph-api/reference/v3.2/page/feed#custom-image
-					// retry without name
-					unset( $new_post['name'] );
+					// retry without name and with link inside message.
+
+					if ( isset( $new_post['name'] ) ) {
+						unset( $new_post['name'] );
+					}
+					if ( ! empty( $new_post['link'] ) && isset( $new_post['message'] ) ) {
+						$new_post['message'] .= $new_post['link'];
+						unset( $new_post['link'] );
+					}
 
 					try {
 						$api->post( $path, $new_post, $token );
@@ -691,6 +708,9 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				$url = 'https://graph.facebook.com' . $path;
 			}
 
+			// Scrape post URL before sharing
+			$this->rop_fb_scrape_url( $posting_type, $post_data, $token );
+
 			$response = wp_remote_post(
 				$url,
 				array(
@@ -709,9 +729,54 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			if ( ! empty( $body['id'] ) ) {
 				return true;
 			} elseif ( ! empty( $body['error']['message'] ) ) {
-				$this->logger->alert_error( 'Error Posting to Facebook: ' . $body['error']['message'] );
-				$this->rop_get_error_docs( $body['error']['message'] );
-				return false;
+				if (
+					strpos( $body['error']['message'], '(#100)' ) !== false &&
+					(
+						! empty( $post_data['name'] ) ||
+						( ! empty( $post_data['link'] ) && isset( $post_data['message'] ) )
+					)
+				) {
+					// https://developers.facebook.com/docs/graph-api/reference/v3.2/page/feed#custom-image
+					// retry without name and with link inside message.
+
+					if ( isset( $post_data['name'] ) ) {
+						unset( $post_data['name'] );
+					}
+					if ( ! empty( $post_data['link'] ) && isset( $post_data['message'] ) ) {
+						$post_data['message'] .= $post_data['link'];
+						unset( $post_data['link'] );
+					}
+
+					$response = wp_remote_post(
+						$url,
+						array(
+
+							'body' => $post_data,
+							'headers' => array(
+								'Content-Type' => 'application/x-www-form-urlencoded',
+							),
+							'timeout' => 60,
+
+						)
+					);
+
+					$body = json_decode( wp_remote_retrieve_body( $response ), true );
+
+					if ( ! empty( $body['id'] ) ) {
+						return true;
+					} elseif ( ! empty( $body['error']['message'] ) ) {
+						$this->logger->alert_error( 'Error Posting to Facebook: ' . $body['error']['message'] );
+						$this->rop_get_error_docs( $body['error']['message'] );
+						return false;
+					} else {
+						$this->logger->alert_error( 'Error Posting to Facebook, response: ' . print_r( $response, true ) );
+						return false;
+					}
+				} else {
+					$this->logger->alert_error( 'Error Posting to Facebook: ' . $body['error']['message'] );
+					$this->rop_get_error_docs( $body['error']['message'] );
+					return false;
+				}
 			} else {
 				$this->logger->alert_error( 'Error Posting to Facebook, response: ' . print_r( $response, true ) );
 				return false;
@@ -741,6 +806,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		for ( $i = 0; $i < sizeof( $pages_arr ); $i++ ) {
 
 			$page_data = unserialize( base64_decode( $pages_arr[ $i ] ) );
+			// assign default values to variable
 			$page = $this->user_default;
 			$page['id'] = $page_data['id'];
 			$page['user'] = $this->normalize_string( empty( $page_data['name'] ) ? '' : $page_data['name'] );
@@ -763,6 +829,49 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		);
 
 		return true;
+	}
+
+	/**
+	 * Method to scrape post URLs before sharing.
+	 *
+	 * Facebook crawler caches post details, this method ensures the shared post always reflects the correct info
+	 *
+	 * @since   8.5.0
+	 * @access  public
+	 *
+	 * @param   array $posting_type The type of post being created.
+	 * @param   array $post_data The share data.
+	 * @param   array $token The access token.
+	 */
+	public function rop_fb_scrape_url( $posting_type, $post_data, $token ) {
+
+		// Scrape post URL before sharing
+		if ( $posting_type !== 'video' ) {
+
+			$scrape = array();
+
+			$scrape['id'] = $post_data['link'] . '?scrape=true';
+			$scrape['access_token'] = $token;
+
+				$scrape_response = wp_remote_post(
+					'https://graph.facebook.com',
+					array(
+
+						'body' => $scrape,
+						'headers' => array(
+							'Content-Type' => 'application/x-www-form-urlencoded',
+						),
+						'timeout' => 60,
+
+					)
+				);
+
+					$body = wp_remote_retrieve_body( $scrape_response );
+
+			$this->logger->info( 'Scrape Info: ' . $body );
+
+		}
+
 	}
 
 }

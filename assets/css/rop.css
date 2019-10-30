@@ -4059,12 +4059,6 @@
 	text-overflow: initial;
 }
 
-#rop_core .sidebar .rop-current-time {
-	margin-bottom: 3px;
-	padding: 2px 10px;
-	font-size: 0.6rem;
-}
-
 #rop_core .rop-queue-post .card-top-header.columns {
 	position: absolute;
 	top: 0;
@@ -4183,65 +4177,6 @@
 
 #rop_core .powered a:hover {
 	cursor: pointer;
-}
-
-#rop_user_actions {
-	display: inline-block;
-	float: right;
-	margin-left: 40px;
-}
-
-#rop_user_actions a {
-	display: inline-block;
-	margin-right: 15px;
-	padding-right: 10px;
-	border-radius: 3px;
-	color: #fff;
-	font-weight: bold;
-	line-height: 2;
-	text-decoration: none;
-	text-transform: uppercase;
-}
-
-#rop_user_actions .rop-docs-btn {
-	background: #52c4ef;
-	text-shadow: 0 1px 0 #33a4ce;
-}
-
-#rop_user_actions .leave-a-review {
-	background: #f9866b;
-	text-shadow: 0 1px 0 #e46b3d;
-}
-
-#rop_user_actions .rop-get-support-btn{
-	background: #f5d426;
-  text-shadow: 0 1px 0 #ccad0e;
-}
-
-#rop_user_actions .rop-docs-btn span,
-#rop_user_actions .leave-a-review span,
-#rop_user_actions .rop-get-support-btn span {
-	display: block;
-	float: left;
-	width: 30px;
-	height: 30px;
-	margin-right: 10px;
-	border-radius: 3px 0 0 3px;
-}
-
-#rop_user_actions .rop-docs-btn span {
-	text-align: center;
-	background: #3eaed8;
-}
-
-#rop_user_actions .leave-a-review span {
-	text-align: center;
-	background: #f16848;
-}
-
-#rop_user_actions .rop-get-support-btn span {
-	text-align: center;
-	background: #d8b70e;
 }
 
 #rop_core .title-panel {
@@ -4382,16 +4317,6 @@
 }
 
 @media (max-width: 840px) {
-	#rop_user_actions {
-		display: inline-block;
-		width: 100%;
-		margin-bottom: 11px;
-		text-align: center;
-	}
-
-	#rop_user_actions a {
-		margin-bottom: 5px;
-	}
 
 	#rop_core .sidebar {
 		display: block;
@@ -4436,4 +4361,10 @@ padding: 0 20px;
 
 .rop-spacer{
 	margin: 5px;
+}
+
+
+.tile-action div {
+	display: inline-block;
+	vertical-align: middle;
 }
