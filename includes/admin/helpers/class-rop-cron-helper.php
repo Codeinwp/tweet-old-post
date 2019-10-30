@@ -216,7 +216,7 @@ class Rop_Cron_Helper {
 	}
 
 	/**
-	 * Change the option taht handles the cron status.
+	 * Change the option that handles the cron status.
 	 *
 	 * @since 8.5.0
 	 *
