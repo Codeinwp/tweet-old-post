@@ -521,7 +521,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * Update the events timeline.
 	 *
 	 * @param $new_events $new_events New events timeline.
-	 * @param string     $account_id account id
+	 * @param string     $account_id account id.
 	 *
 	 * @return bool Success or not.
 	 */
