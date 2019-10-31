@@ -45,7 +45,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 */
 	protected $scopes = array( 'r_liteprofile', 'r_emailaddress', 'w_member_social', 'r_organization_social', 'w_organization_social', 'rw_organization_admin');
 	// protected $scopes = array( 'r_liteprofile', 'r_emailaddress', 'w_member_social', , 'w_organization_social');
-
 	// Company(organization) sharing scope cannot be used unless app approved for this scope.
 	// Added here for future reference
 	// https://stackoverflow.com/questions/54821731/in-linkedin-api-v2-0-how-to-get-company-list-by-persons-token
