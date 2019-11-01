@@ -19,7 +19,7 @@
                             <service-user-tile :account_data="account" :account_id="id"></service-user-tile>
                             <span class="divider"></span>
                         </div>
-                        <div class="add-accounts" v-if="is_preloading > 0">
+                        <div class="add-accounts" v-if="is_preloading > 0" id="rop-add-account-button">
                             <add-account-tile></add-account-tile>
                             <span class="divider"></span>
                         </div>
