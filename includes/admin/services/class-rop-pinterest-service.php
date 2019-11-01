@@ -415,15 +415,18 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 				'link'      => $post_details['post_url'],
 			);
 
-			$absolute_image_path = $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] );
-			if ( $absolute_image_path ) {
-				$base64_img = $this->this_image_to_base64( $absolute_image_path );
-				if ( ! empty( $base64_img ) ) {
-					$info_to_pin['image_base64'] = $base64_img;
-				} else {
-					$info_to_pin['image'] = $absolute_image_path;
+			$image_id = $this->retrieve_image_id_from_db( $post_details['post_image'] );
+			if ( ! empty( $image_id ) ) {
+				$large_image_path = $this->this_image_realpath_to_uploads( $image_id, 'large' );
+				if ( $large_image_path ) {
+					$base64_img = $this->this_image_to_base64( $large_image_path );
+					if ( ! empty( $base64_img ) ) {
+						$info_to_pin['image_base64'] = $base64_img;
+					} else {
+						$info_to_pin['image'] = $large_image_path;
+					}
+					unset( $info_to_pin['image_url'] );
 				}
-				unset( $info_to_pin['image_url'] );
 			}
 
 			$pin = $api->pins->create( $info_to_pin );
@@ -455,6 +458,41 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	}
 
 	/**
+	 * Returns local full path to the upload folder for image.
+	 *
+	 * @param int $image_id Media image ID.
+	 * @param string $requested_size Media image requested size.
+	 *
+	 * @return bool|string
+	 */
+	function this_image_realpath_to_uploads( $image_id = 0, $requested_size = 'large' ) {
+		if ( empty( $image_id ) ) {
+			return false;
+		}
+
+		$original_file_path = get_attached_file( $image_id, true );
+
+		if ( empty( $requested_size ) || 'full' === $requested_size ) {
+			return realpath( $original_file_path );
+		}
+
+		if ( false === wp_attachment_is_image( $image_id ) ) {
+			return false; // This is not a media ID
+		}
+
+		$image = image_get_intermediate_size( $image_id, $requested_size );
+
+		if ( ! is_array( $image ) || ! isset( $image['file'] ) ) {
+			return false; // File size does not exist
+		}
+
+		// Use the original path and add the required size filename instead.
+		$image_path = str_replace( wp_basename( $original_file_path ), $image['file'], $original_file_path );
+
+		return realpath( $image_path );
+	}
+
+	/**
 	 * Converts local image into base_64 code
 	 *
 	 * @since 8.5.0
@@ -469,6 +507,40 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 		fclose( $opened_file );
 
 		return base64_encode( $contents );
+	}
+
+	/**
+	 * Returns post_id or false, where post_id is image media ID
+	 *
+	 * @since 8.5.0
+	 * @param string $image_path Image http url for which to obtain the media ID.
+	 *
+	 * @return bool|int
+	 */
+	public function retrieve_image_id_from_db( $image_path = '' ) {
+		global $wpdb;
+
+		$image_path = trim( $image_path );
+
+		if ( empty( $image_path ) ) {
+			return false;
+		}
+
+		$image_name = wp_basename( $image_path );
+		if ( empty( $image_name ) ) {
+			return false;
+		}
+
+		$image_name = $wpdb->esc_like( '' . $image_name . '' );
+		$image_name = '%' . $image_name . '%';
+		// PHPStorm throwing phpcs warning here
+		$prepare_query = $wpdb->prepare( "SELECT `post_id` FROM $wpdb->postmeta WHERE `meta_value` LIKE '%%%s%%' LIMIT 1", $image_name );//phpcs:ignore
+		$image_id      = $wpdb->get_var( $prepare_query );//phpcs:ignore
+		if ( ! empty( $image_id ) ) {
+			return absint( $image_id );
+		}
+
+		return false;
 	}
 
 }
