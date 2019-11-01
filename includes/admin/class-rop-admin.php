@@ -246,7 +246,7 @@ class Rop_Admin {
 		}
 
 		$services        = new Rop_Services_Model();
-		$li_service          = new Rop_Linkedin_Service();
+		$li_service      = new Rop_Linkedin_Service();
 		$active_accounts = $services->get_active_accounts();
 
 		$added_services = $services->get_authenticated_services();
@@ -270,7 +270,7 @@ class Rop_Admin {
 			'action'   => $settings->get_instant_sharing_by_default(),
 			'accounts' => $active_accounts,
 		);
-		$array_nonce['added_networks']                   = $added_networks;
+		$array_nonce['added_networks']          = $added_networks;
 
 		$admin_url = get_admin_url( get_current_blog_id(), 'admin.php?page=TweetOldPost' );
 		$token     = get_option( ROP_APP_TOKEN_OPTION );
@@ -529,11 +529,11 @@ class Rop_Admin {
 	 */
 	function rop_roadmap_new_tab() {
 		?>
-	<script type="text/javascript">
-		jQuery(document).ready( function($) {
-			$( "ul#adminmenu a[href$='https://trello.com/b/svAZqXO1/roadmap-revive-old-posts']" ).attr( 'target', '_blank' );
-		});
-	</script>
+		<script type="text/javascript">
+			jQuery(document).ready(function ($) {
+				$("ul#adminmenu a[href$='https://trello.com/b/svAZqXO1/roadmap-revive-old-posts']").attr('target', '_blank');
+			});
+		</script>
 		<?php
 	}
 
@@ -715,6 +715,8 @@ class Rop_Admin {
 
 	/**
 	 * Used for Cron Job sharing that will run once.
+	 *
+	 * @since 8.5.0
 	 */
 	public function rop_cron_job_once() {
 		$this->rop_cron_job();
@@ -835,6 +837,8 @@ class Rop_Admin {
 
 	/**
 	 * Disable Cron Jobs on refresh if remove_cron() method was called
+	 *
+	 * @since 8.5.0
 	 */
 	public function check_cron_status() {
 		$key             = 'rop_is_sharing_cron_active';

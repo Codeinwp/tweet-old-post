@@ -146,7 +146,7 @@ class Rop {
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'menu_pages' );
 		$this->loader->add_action( 'rop_cron_job', $plugin_admin, 'rop_cron_job' );
 		$this->loader->add_action( 'rop_cron_job_once', $plugin_admin, 'rop_cron_job_once' );
-		$this->loader->add_action( 'init', $plugin_admin, 'check_cron_status', 20 );
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'check_cron_status', 20 );
 		$this->loader->add_action( 'rop_cron_job_publish_now', $plugin_admin, 'rop_cron_job_publish_now' );
 		$this->loader->add_action( 'post_submitbox_misc_actions', $plugin_admin, 'add_publish_actions' );
 		$this->loader->add_action( 'post_submitbox_misc_actions', $plugin_admin, 'publish_now_upsell' );
