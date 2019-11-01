@@ -517,7 +517,7 @@ class Rop_Admin {
 			__( 'Roadmap', 'tweet-old-post' ),
 			__( 'Plugin Roadmap', 'tweet-old-post' ),
 			'manage_options',
-			'https://www.google.com'
+			'https://trello.com/b/svAZqXO1/roadmap-revive-old-posts'
 		);
 	}
 
