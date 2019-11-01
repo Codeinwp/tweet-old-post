@@ -520,7 +520,8 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	/**
 	 * Update the events timeline.
 	 *
-	 * @param array $new_events New events timeline.
+	 * @param $new_events $new_events New events timeline.
+	 * @param string     $account_id account id.
 	 *
 	 * @return bool Success or not.
 	 */
@@ -536,7 +537,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		$old_events   = $this->get( $this->events_namespace );
 		foreach ( $schedules as $id => $schedule ) {
 			$valid_events[ $id ] = isset( $old_events[ $id ] ) ? $old_events[ $id ] : array();
-			$valid_events[ $id ] = empty( $account_id ) ? ( isset( $new_events[ $id ] ) ? $new_events[ $id ] : array() ) : ( $id === $account_id ? $new_events : $valid_events[ $id ] );
+			$valid_events[ $id ] = empty( $account_id ) ? ( ( isset( $new_events[ $id ] ) ) ? $new_events[ $id ] : array() ) : ( $id === $account_id ? $new_events : $valid_events[ $id ] );
 		}
 		$this->set( $this->events_namespace, $valid_events );
 
