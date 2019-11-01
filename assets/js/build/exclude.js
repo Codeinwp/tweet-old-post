@@ -13145,9 +13145,6 @@ exports.default = new _vuex2.default.Store({
         apiNotAvailable: function apiNotAvailable(state, data) {
             state.api_not_available = data;
         },
-        preloading_change: function preloading_change(state, data) {
-            state.hide_preloading = data;
-        },
         updateState: function updateState(state, _ref) {
             var stateData = _ref.stateData,
                 requestName = _ref.requestName;
@@ -13337,11 +13334,6 @@ exports.default = new _vuex2.default.Store({
                         commit('apiNotAvailable', true);
 
                         _vue2.default.$log.error('Error when trying to do request: ', data.req);
-                    }).catch(function (error) {
-                        commit('setAjaxState', false);
-                        commit('apiNotAvailable', true);
-                        commit('preloading_change', 1);
-                        _vue2.default.$log.error('Error when getting response for: ', data.req, error);
                     });
                 });
             }
