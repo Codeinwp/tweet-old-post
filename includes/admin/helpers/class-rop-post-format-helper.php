@@ -55,7 +55,7 @@ class Rop_Post_Format_Helper {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   int $post_id The post ID.
+	 * @param   int        $post_id The post ID.
 	 * @param   string|int $account_id The post account id.
 	 *
 	 * @return array
@@ -291,7 +291,7 @@ class Rop_Post_Format_Helper {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   int $post_id The post ID.
+	 * @param   int    $post_id The post ID.
 	 * @param   string $field_key The field key name.
 	 *
 	 * @return mixed
@@ -342,9 +342,9 @@ class Rop_Post_Format_Helper {
 	 * @since   8.0.0
 	 * @access  private
 	 *
-	 * @param   string $content The content to filter.
+	 * @param   string             $content The content to filter.
 	 * @param   Rop_Content_Helper $content_helper The content helper class. Used for processing.
-	 * @param   int $post The post object.
+	 * @param   int                $post The post object.
 	 *
 	 * @return array
 	 */
@@ -894,7 +894,7 @@ class Rop_Post_Format_Helper {
 	 *
 	 * @param   string $url The URL to shorten.
 	 * @param   string $short_url_service The shorten service. Used by the factory to build the service.
-	 * @param   array $credentials Optional. If needed the service credentials.
+	 * @param   array  $credentials Optional. If needed the service credentials.
 	 *
 	 * @return string
 	 */
