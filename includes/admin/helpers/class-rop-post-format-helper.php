@@ -55,7 +55,7 @@ class Rop_Post_Format_Helper {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   int        $post_id The post ID.
+	 * @param   int $post_id The post ID.
 	 * @param   string|int $account_id The post account id.
 	 *
 	 * @return array
@@ -171,8 +171,12 @@ class Rop_Post_Format_Helper {
 			$custom_messages_share_order = $settings->get_custom_messages_share_order();
 
 			if ( $custom_messages_share_order ) {
-				$sequential_index = get_post_meta( $post_id, 'rop_variation_index', true );
-				$sequential_index = ( ! empty( $sequential_index ) ) ? absint( $sequential_index ) : 0;
+				$sequential_account_index = get_post_meta( $post_id, 'rop_variation_index', true );
+
+				if ( ! is_array( $sequential_account_index ) ) {
+					$sequential_account_index = array();
+				}
+				$sequential_index = ( ! empty( $sequential_account_index ) && isset( $sequential_account_index[ $this->account_id ] ) ) ? absint( $sequential_account_index[ $this->account_id ] ) : 0;
 
 				$share_content          = $custom_messages[ $sequential_index ]['rop_custom_description'];
 				$this->sequential_index = $sequential_index; // Will be used to get the variation image
@@ -181,9 +185,11 @@ class Rop_Post_Format_Helper {
 				$count     = count( $custom_messages ) - 1;
 
 				if ( $new_index <= $count ) {
-					update_post_meta( $post_id, 'rop_variation_index', $new_index );
+					$sequential_account_index[ $this->account_id ] = $new_index;
+					update_post_meta( $post_id, 'rop_variation_index', $sequential_account_index );
 				} else {
-					delete_post_meta( $post_id, 'rop_variation_index' );
+					unset( $sequential_account_index[ $this->account_id ] );
+					update_post_meta( $post_id, 'rop_variation_index', $sequential_account_index );
 				}
 			} else {
 				$messages_count = count( $custom_messages );
@@ -285,7 +291,7 @@ class Rop_Post_Format_Helper {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   int    $post_id The post ID.
+	 * @param   int $post_id The post ID.
 	 * @param   string $field_key The field key name.
 	 *
 	 * @return mixed
@@ -336,9 +342,9 @@ class Rop_Post_Format_Helper {
 	 * @since   8.0.0
 	 * @access  private
 	 *
-	 * @param   string             $content The content to filter.
+	 * @param   string $content The content to filter.
 	 * @param   Rop_Content_Helper $content_helper The content helper class. Used for processing.
-	 * @param   int                $post The post object.
+	 * @param   int $post The post object.
 	 *
 	 * @return array
 	 */
@@ -888,7 +894,7 @@ class Rop_Post_Format_Helper {
 	 *
 	 * @param   string $url The URL to shorten.
 	 * @param   string $short_url_service The shorten service. Used by the factory to build the service.
-	 * @param   array  $credentials Optional. If needed the service credentials.
+	 * @param   array $credentials Optional. If needed the service credentials.
 	 *
 	 * @return string
 	 */
