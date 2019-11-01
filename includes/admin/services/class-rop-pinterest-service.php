@@ -460,7 +460,7 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	/**
 	 * Returns local full path to the upload folder for image.
 	 *
-	 * @param int $image_id Media image ID.
+	 * @param int    $image_id Media image ID.
 	 * @param string $requested_size Media image requested size.
 	 *
 	 * @return bool|string
