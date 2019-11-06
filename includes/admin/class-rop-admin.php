@@ -555,7 +555,7 @@ class Rop_Admin {
 		$active_accounts = $services->get_active_accounts();
 
 		if ( $settings->get_instant_sharing() && count( $active_accounts ) >= 2 && ! defined( 'ROP_PRO_VERSION' ) ) {
-			echo '<div class="misc-pub-section  " style="font-size: 13px;text-align: center;line-height: 1.7em;color: #888;"><span class="dashicons dashicons-lock"></span>' .
+			echo '<div class="misc-pub-section  " style="font-size: 11px;text-align: center;line-height: 1.7em;color: #888;"><span class="dashicons dashicons-lock"></span>' .
 				__(
 					'Share to more accounts by upgrading to the extended version for ',
 					'tweet-old-post'
@@ -563,6 +563,50 @@ class Rop_Admin {
 						</div>';
 		}
 	}
+
+	/**
+	 * Creates publish now metabox.
+	 *
+	 * @since   8.5.0
+	 * @access  public
+	 */
+	public function rop_publish_now_metabox() {
+
+		$settings_model  = new Rop_Settings_Model();
+		// Get selected post types from General settings
+		$screens = wp_list_pluck( $settings_model->get_selected_post_types(), 'value' );
+
+		if ( empty( $screens ) ) {
+			 return;
+		}
+
+		foreach ( $screens as $screen ) {
+			add_meta_box(
+				'rop_publish_now_metabox',
+				'Revive Old Posts',
+				array($this, 'rop_publish_now_metabox_html'),
+				$screen,
+				'side',
+				'high'
+			);
+		}
+	}
+
+	/**
+	 * Publish now metabox html.
+	 *
+	 * @since   8.5.0
+	 * @access  public
+	 */
+	public function rop_publish_now_metabox_html() {
+
+		wp_nonce_field( 'rop_publish_now_nonce', 'rop_publish_now_nonce' );
+		include_once ROP_LITE_PATH . '/includes/admin/views/publish_now.php';
+
+		$this->publish_now_upsell();
+		
+	}
+
 
 	/**
 	 * Adds the publish now buttons.
