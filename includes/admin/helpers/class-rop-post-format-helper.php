@@ -360,7 +360,7 @@ class Rop_Post_Format_Helper {
 		}
 		$result   = $this->clean_hashtags( $result );
 		$hashtags = '';
-		$result   = array_filter( $result, [ $this, 'string_length' ] );
+		$result   = array_filter( $result, array( $this, 'string_length' ) );
 		$result   = array_map(
 			function ( $value ) {
 				return str_replace( '#', '', $value );
@@ -485,7 +485,7 @@ class Rop_Post_Format_Helper {
 			return array();
 		}
 		if ( is_string( $hashtag ) ) {
-			return [ $hashtag ];
+			return array( $hashtag );
 		}
 
 		return $hashtag;
@@ -504,10 +504,10 @@ class Rop_Post_Format_Helper {
 	private function clean_hashtags( $hashtags ) {
 		// WP terms with > and < are stored as entities
 		if ( is_string( $hashtags ) ) {
-			$hashtags = [ $hashtags ];
+			$hashtags = array( $hashtags );
 		}
 		if ( empty( $hashtags ) ) {
-			return [];
+			return array();
 		}
 		$hashtags = array_map(
 			function ( $value ) {
@@ -814,16 +814,25 @@ class Rop_Post_Format_Helper {
 			}
 		}
 
+		$image = '';
+
+		if ( class_exists( 'Jetpack_Photon' ) ) {
+			// Disable Jetpack Photon filter.
+			$photon_bypass = remove_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ) );
+		}
+
 		if ( has_post_thumbnail( $post_id ) ) {
-			return get_the_post_thumbnail_url( $post_id, 'large' );
+			$image = get_the_post_thumbnail_url( $post_id, 'large' );
+		} elseif ( get_post_type( $post_id ) === 'attachment' ) {
+			$image = wp_get_attachment_url( $post_id );
 		}
 
-		if ( get_post_type( $post_id ) === 'attachment' ) {
-			return wp_get_attachment_url( $post_id );
+		if ( $photon_bypass && class_exists( 'Jetpack_Photon' ) ) {
+			// Re-enable Jetpack Photon filter.
+			add_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ), 10, 3 );
 		}
 
-		return '';
-
+		return $image;
 	}
 
 	/**

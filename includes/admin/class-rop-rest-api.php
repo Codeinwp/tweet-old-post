@@ -171,7 +171,8 @@ class Rop_Rest_Api {
 	 */
 	private function get_queue( $data ) {
 		$queue = new Rop_Queue_Model();
-		if ( isset( $data['force'] ) ) {
+
+		if ( isset( $data['force'] ) && true === (bool) $data['force'] ) {
 			$queue->clear_queue();
 		}
 		$this->response->set_code( '200' )
@@ -811,13 +812,104 @@ class Rop_Rest_Api {
 	}
 
 	/**
+	 * This will disable facebook domain check toast message.
+	 *
+	 * @param mixed $data The data.
+	 *
+	 * @return array
+	 */
+	private function fb_exception_toast( $data ) {
+		update_option( 'rop_facebook_domain_toast', 'no' );
+		$this->response->set_code( '200' )
+					   ->set_message( 'Facebook domain check toast new status is closed' )
+					   ->set_data( array( 'display' => false ) );
+
+		return $this->response->to_array();
+	}
+
+	/**
+	 * API method called to retrieve the logs for toast.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
+	 *
+	 * @since   8.4.2
+	 * @access  private
+	 * @return string
+	 */
+	private function get_toast( $data ) {
+		$log = new Rop_Logger();
+
+		$this->response->set_code( '200' )
+					   ->set_message( 'OK' )
+					   ->set_data( $log->get_logs() );
+
+		$logs_response = $this->response->to_array();
+
+		$logs_data = $logs_response['data'];
+
+		if ( ! empty( $logs_data ) ) {
+			$custom_response = 0;
+			// Is it a status alert?
+			$is_status_logs_alert = $log->is_status_error_necessary( $logs_response ); // true | false
+			// The logs will contain latest entry  as first element first.
+			reset( $logs_data ); // reset pointer to first element
+			$latest_log_entry      = current( $logs_data ); // fetch the latest log entry
+			$logs_response['data'] = array(); // reset data
+			// Making sure it contains the important attributes.
+			if ( isset( $latest_log_entry['message'] ) && isset( $latest_log_entry['type'] ) ) {
+				// fetch log entry data;
+				$channel = $latest_log_entry['channel'];
+				$type    = $latest_log_entry['type'];
+				$level   = $latest_log_entry['level'];
+				$message = $latest_log_entry['message'];
+				$time    = (int) $latest_log_entry['time'];
+
+				if ( 'error' === $type ) { // Not displaying anything if there's no issue
+					$get_last_err_timestamp = (int) get_option( 'rop_toast', 0 ); // get the last error timestamp
+					if ( $get_last_err_timestamp !== $time ) { // If the time does not match, then proceed further.
+						// Check to see if the error needs to be "translated"
+						$latest_log_entry['message'] = $log->translate_messages( $message );
+						$logs_response['data'][]     = $latest_log_entry;
+						// Add the timestamp of the error into DB to now show this alert multiple times.
+						update_option( 'rop_toast', $time, 'no' );
+						$custom_response ++;
+					}
+				}
+			}
+
+			// We need to inform the user as there are many errors in the log
+			// This will change the status to "Error (check logs)"
+			if ( true === $is_status_logs_alert ) {
+				$custom_response ++;
+				$logs_response['data'][] = array(
+					'type'    => 'status_error',
+					'message' => '',
+					'channel' => 'rop_logs',
+					'time'    => Rop_Scheduler_Model::get_current_time(),
+				);
+			}
+
+			if ( ! empty( $custom_response ) ) {
+				// return the current error
+				return $logs_response;
+			}
+		}
+
+		$logs_response['data'] = array();
+
+		return $logs_response;
+	}
+
+	/**
 	 * API method called to add Facebook pages via app.
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
 	 *
 	 * @since   ...
 	 * @access  private
+	 *
 	 * @param   array $data Facebook page data.
+	 *
 	 * @return  array
 	 */
 	private function add_account_fb( $data ) {
@@ -831,7 +923,7 @@ class Rop_Rest_Api {
 		$facebook_service->add_account_with_app( $data );
 
 		$services[ $facebook_service->get_service_id() ] = $facebook_service->get_service();
-		$active_accounts = array_merge( $active_accounts, $facebook_service->get_service_active_accounts() );
+		$active_accounts                                 = array_merge( $active_accounts, $facebook_service->get_service_active_accounts() );
 
 		if ( ! empty( $services ) ) {
 			$model->add_authenticated_service( $services );
@@ -842,19 +934,73 @@ class Rop_Rest_Api {
 			$db->migrate_post_formats( $active_accounts );
 		} else {
 			$this->response->set_code( '500' )
-				->set_data( array() );
+						   ->set_data( array() );
+
 			return $this->response->to_array();
 		}
 
 		$this->response->set_code( '200' )
-			->set_message( 'OK' )
-			->set_data( array() );
+					   ->set_message( 'OK' )
+					   ->set_data( array() );
 
 		$rop_facebook_via_rs_app_option = 'rop_facebook_via_rs_app';
 		if ( ! get_option( $rop_facebook_via_rs_app_option ) ) {
 			add_option( $rop_facebook_via_rs_app_option, 'true', ' ', 'no' );
 		} else {
 			update_option( $rop_facebook_via_rs_app_option, 'true' );
+		}
+
+		return $this->response->to_array();
+	}
+
+
+	/**
+	 * API method called to add Twitter pages via app.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
+	 *
+	 * @since   ...
+	 * @access  private
+	 *
+	 * @param   array $data Facebook page data.
+	 *
+	 * @return  array
+	 */
+	private function add_account_tw( $data ) {
+		$services        = array();
+		$active_accounts = array();
+		$twitter_service = new Rop_Twitter_Service();
+		$model           = new Rop_Services_Model();
+		$db              = new Rop_Db_Upgrade();
+
+		$twitter_service->add_account_with_app( $data );
+
+		$services[ $twitter_service->get_service_id() ] = $twitter_service->get_service();
+		$active_accounts                                = array_merge( $active_accounts, $twitter_service->get_service_active_accounts() );
+
+		if ( ! empty( $services ) ) {
+			$model->add_authenticated_service( $services );
+		}
+
+		if ( ! empty( $active_accounts ) ) {
+			$db->migrate_schedule( $active_accounts );
+			$db->migrate_post_formats( $active_accounts );
+		} else {
+			$this->response->set_code( '500' )
+						   ->set_data( array() );
+
+			return $this->response->to_array();
+		}
+
+		$this->response->set_code( '200' )
+					   ->set_message( 'OK' )
+					   ->set_data( array() );
+
+		$rop_twitter_via_rs_app_option = 'rop_twitter_via_rs_app';
+		if ( ! get_option( $rop_twitter_via_rs_app_option ) ) {
+			add_option( $rop_twitter_via_rs_app_option, 'true', ' ', 'no' );
+		} else {
+			update_option( $rop_twitter_via_rs_app_option, 'true' );
 		}
 
 		return $this->response->to_array();

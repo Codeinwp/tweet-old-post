@@ -78,6 +78,15 @@
 					this.$log.info('Succesfully fetched logs.');
 					this.is_loading = false;
 					this.$store.dispatch('fetchAJAX', {req: 'manage_cron', data: {action: 'status'}})
+					if(true === force){
+						let toast = {
+							type: 'success',
+							show: false,
+							title: '',
+							message: ''
+						};
+						this.$store.commit('updateState', {stateData: toast, requestName: 'update_toast'});
+					}
 				}, error => {
 					Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
 

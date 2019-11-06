@@ -260,8 +260,9 @@
 
 #rop_core .btn:focus,
 #rop_core .btn:hover {
+	color: #fff;
 	border-color: #031c32;
-	background: #e85407;
+	background: #0074ab;
 	text-decoration: none;
 }
 
@@ -339,7 +340,7 @@
 #rop_core .btn.btn-facebook:hover {
 	border-color: #344e86;
 	color: #fff;
-	background: #385591;
+	background: #0074ab;
 }
 
 #rop_core .btn.btn-facebook:active,
@@ -368,7 +369,7 @@
 #rop_core .btn.btn-twitter:hover {
 	border-color: #3ea1ec;
 	color: #fff;
-	background: #4ca7ed;
+	background: #0074ab;
 }
 
 #rop_core .btn.btn-twitter:active,
@@ -397,7 +398,7 @@
 #rop_core .btn.btn-tumblr:hover {
 	border-color: #355473;
 	color: #fff;
-	background: #375878;
+	background: #0074ab;
 }
 
 #rop_core .btn.btn-tumblr:active,
@@ -437,6 +438,64 @@
 }
 
 #rop_core .btn.btn-linkedin.loading::after {
+	border-bottom-color: #fff;
+	border-left-color: #fff;
+}
+
+#rop_core .btn.btn-pinterest {
+	border-color: #0071a6;
+	color: #fff;
+	background: #bd081c;
+}
+
+#rop_core .btn.btn-pinterest:focus {
+	box-shadow: 0 0 0 0.1rem rgba(0, 123, 181, 0.2);
+}
+
+#rop_core .btn.btn-pinterest:focus,
+#rop_core .btn.btn-pinterest:hover {
+	border-color: #006a9c;
+	color: #fff;
+	background: #0074ab;
+}
+
+#rop_core .btn.btn-pinterest:active,
+#rop_core .btn.btn-pinterest.active {
+	border-color: #005882;
+	color: #fff;
+	background: #006391;
+}
+
+#rop_core .btn.btn-pinterest.loading::after {
+	border-bottom-color: #fff;
+	border-left-color: #fff;
+}
+
+#rop_core .btn.btn-buffer {
+	border-color: #0071a6;
+	color: #fff;
+	background: #323b43;
+}
+
+#rop_core .btn.btn-buffer:focus {
+	box-shadow: 0 0 0 0.1rem rgba(0, 123, 181, 0.2);
+}
+
+#rop_core .btn.btn-buffer:focus,
+#rop_core .btn.btn-buffer:hover {
+	border-color: #006a9c;
+	color: #fff;
+	background: #0074ab;
+}
+
+#rop_core .btn.btn-buffer:active,
+#rop_core .btn.btn-buffer.active {
+	border-color: #005882;
+	color: #fff;
+	background: #006391;
+}
+
+#rop_core .btn.btn-buffer.loading::after {
 	border-bottom-color: #fff;
 	border-left-color: #fff;
 }
@@ -934,24 +993,21 @@
 
 #rop_core .input-group .form-input:first-child:not(:last-child),
 #rop_core .input-group .form-select:first-child:not(:last-child),
-#rop_core .input-group .input-group-addon:first-child:not(:last-child),
-#rop_core .input-group .input-group-btn:first-child:not(:last-child) {
+#rop_core .input-group .input-group-addon:first-child:not(:last-child){
 	border-top-right-radius: 0;
 	border-bottom-right-radius: 0;
 }
 
 #rop_core .input-group .form-input:not(:first-child):not(:last-child),
 #rop_core .input-group .form-select:not(:first-child):not(:last-child),
-#rop_core .input-group .input-group-addon:not(:first-child):not(:last-child),
-#rop_core .input-group .input-group-btn:not(:first-child):not(:last-child) {
+#rop_core .input-group .input-group-addon:not(:first-child):not(:last-child){
 	margin-left: -0.05rem;
 	border-radius: 0;
 }
 
 #rop_core .input-group .form-input:last-child:not(:first-child),
 #rop_core .input-group .form-select:last-child:not(:first-child),
-#rop_core .input-group .input-group-addon:last-child:not(:first-child),
-#rop_core .input-group .input-group-btn:last-child:not(:first-child) {
+#rop_core .input-group .input-group-addon:last-child:not(:first-child){
 	margin-left: -0.05rem;
 	border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
@@ -3993,7 +4049,7 @@
 	margin-bottom: 20px;
 }
 
-#rop_core .sidebar .support_btns{
+#rop_core .sidebar .rop-sidebar-action-btns{
 	margin-bottom: 10px;
 }
 
@@ -4001,12 +4057,6 @@
 #rop_core .rop-container-start .tooltip::after {
 	white-space: initial;
 	text-overflow: initial;
-}
-
-#rop_core .sidebar .rop-current-time {
-	margin-bottom: 3px;
-	padding: 2px 10px;
-	font-size: 0.6rem;
 }
 
 #rop_core .rop-queue-post .card-top-header.columns {
@@ -4129,65 +4179,6 @@
 	cursor: pointer;
 }
 
-#rop_social_actions {
-	display: inline-block;
-	float: right;
-	margin-left: 40px;
-}
-
-#rop_social_actions a {
-	display: inline-block;
-	margin-right: 15px;
-	padding-right: 10px;
-	border-radius: 3px;
-	color: #fff;
-	font-weight: bold;
-	line-height: 2;
-	text-decoration: none;
-	text-transform: uppercase;
-}
-
-#rop_social_actions .tweet-about-it {
-	background: #52c4ef;
-	text-shadow: 0 1px 0 #33a4ce;
-}
-
-#rop_social_actions .leave-a-review {
-	background: #f9866b;
-	text-shadow: 0 1px 0 #e46b3d;
-}
-
-#rop_social_actions .submit-feedback{
-	background: #f5d426;
-  text-shadow: 0 1px 0 #ccad0e;
-}
-
-#rop_social_actions .tweet-about-it span,
-#rop_social_actions .leave-a-review span,
-#rop_social_actions .submit-feedback span {
-	display: block;
-	float: left;
-	width: 30px;
-	height: 30px;
-	margin-right: 10px;
-	border-radius: 3px 0 0 3px;
-}
-
-#rop_social_actions .tweet-about-it span {
-	text-align: center;
-	background: #3eaed8;
-}
-
-#rop_social_actions .leave-a-review span {
-	text-align: center;
-	background: #f16848;
-}
-
-#rop_social_actions .submit-feedback span {
-	text-align: center;
-	background: #d8b70e;
-}
-
 #rop_core .title-panel {
 	border-top: 4px solid #e85407;
 }
@@ -4243,10 +4234,7 @@
 
 #rop_core .upsell {
 	margin-bottom: 0;
-	padding: 0 10px;
 	border-radius: 0.1rem;
-	color: #8492a0;
-	text-align: right;
 }
 
 #rop_core .panel-body h3 {
@@ -4329,16 +4317,6 @@
 }
 
 @media (max-width: 840px) {
-	#rop_social_actions {
-		display: inline-block;
-		width: 100%;
-		margin-bottom: 11px;
-		text-align: center;
-	}
-
-	#rop_social_actions a {
-		margin-bottom: 5px;
-	}
 
 	#rop_core .sidebar {
 		display: block;
@@ -4404,4 +4382,13 @@
 
 #rop-advanced-config{
 	text-align: center;
+}
+
+#rop-sign-in-area button.btn{
+margin: 2px;
+padding: 0 20px;
+}
+
+.rop-spacer{
+	margin: 5px;
 }

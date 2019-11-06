@@ -45,13 +45,24 @@ if ( isset( $housekeeping ) && $housekeeping ) {
 		'tweet_old_post_review_flag',
 		// Misc
 		'rop_logs',
+		'rop_toast',
 		'cwp_rop_remote_trigger',
 		'rop_notice_active',
 		'rop_menu_pointer_queued',
 		'rop_dashboard_pointers_queued',
 		'rop_install_token',
 		'rop_facebook_via_rs_app',
+		'rop_twitter_via_rs_app',
 		'rop_first_install_version',
+		/**
+		 * Related functions
+		 *
+		 * @see Rop_Services_Model::facebook_exception_toast()
+		 * @see Rop_Services_Model::facebook_exception_toast_remove()
+		 * @see Rop_Admin::facebook_exception_toast_display()
+		 * @see Rop_Rest_Api::fb_exception_toast()
+		 */
+		'rop_facebook_domain_toast',
 	);
 
 	foreach ( $option_keys as $key ) {
@@ -60,7 +71,9 @@ if ( isset( $housekeeping ) && $housekeeping ) {
 
 	delete_metadata( 'user', 0, 'rop_publish_now_notice_dismissed', '', true );
 	delete_metadata( 'user', 0, 'rop-linkedin-api-notice-dismissed', '', true );
+	delete_metadata( 'user', 0, 'rop-buffer-addon-notice-dismissed', '', true );
 	delete_metadata( 'user', 0, 'rop-wp-cron-notice-dismissed', '', true );
+	delete_metadata( 'user', 0, 'rop-cron-event-status-notice-dismissed', '', true );
 
 	global $wpdb;
 	$post_meta = $wpdb->prefix . 'postmeta';

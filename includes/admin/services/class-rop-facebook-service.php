@@ -433,7 +433,10 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		$_SESSION['rop_facebook_credentials'] = $credentials;
 
-		$api    = $this->get_api( $credentials['app_id'], $credentials['secret'] );
+		$api = $this->get_api( $credentials['app_id'], $credentials['secret'] );
+		if ( empty( $api ) || ! method_exists( $api, 'getRedirectLoginHelper' ) ) {
+			return '';
+		}
 		$helper = $api->getRedirectLoginHelper();
 		$url    = $helper->getLoginUrl( $this->get_legacy_url(), $this->permissions );
 
@@ -515,20 +518,20 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 					$new_post['message'] = $post_details['content'] . $post_details['hashtags'];
 					$new_post['link'] = get_permalink( $post_id );
 
-					return [
+					return array(
 						'post_data' => $new_post,
 						'type'      => 'post',
-					];
+					);
 				}
 
 				$new_post['url'] = wp_get_attachment_url( $post_id );
 
 				$new_post['caption'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
 
-				return [
+				return array(
 					'post_data' => $new_post,
 					'type'      => 'photo',
-				];
+				);
 			}
 
 				// If is regular post, but post with image option checked, post as Image on FB
@@ -538,10 +541,10 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 				$new_post['caption'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
 
-				return [
+				return array(
 					'post_data' => $new_post,
 					'type'      => 'photo',
-				];
+				);
 
 			}
 		}
@@ -558,10 +561,10 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				$new_post['picture'] = $post_details['post_image'];
 			}
 
-			return [
+			return array(
 				'post_data' => $new_post,
 				'type'      => 'post',
-			];
+			);
 		}
 
 			// If we don't have an image link share as regular post.
@@ -574,10 +577,10 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				$new_post['link'] = $this->get_url( $post_details );
 			}
 
-			return [
+			return array(
 				'post_data' => $new_post,
 				'type'      => 'post',
-			];
+			);
 		}
 
 			$api = $this->get_api();
@@ -588,10 +591,10 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 			$new_post['message'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
 
-			return [
+			return array(
 				'post_data' => $new_post,
 				'type'      => 'photo',
-			];
+			);
 		}
 		if ( strpos( $post_details['mimetype']['type'], 'video' ) !== false ) {
 
@@ -599,10 +602,10 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			$new_post['title']       = html_entity_decode( get_the_title( $post_id ) );
 			$new_post['description'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
 
-			return [
+			return array(
 				'post_data' => $new_post,
 				'type'      => 'video',
-			];
+			);
 		}
 	}
 
@@ -639,7 +642,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		if ( $this->get_api() ) {
 			// Page was added using user application (old method)
 			// Try post via Facebook Graph SDK
-
 			$api = $this->get_api();
 			try {
 				$api->post( $path, $new_post, $token );
@@ -648,11 +650,23 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
 				$errorMsg = $e->getMessage();
 
-				if ( strpos( $errorMsg, '(#100)' ) !== false && ! empty( $new_post['name'] ) ) {
+				if (
+					strpos( $errorMsg, '(#100)' ) !== false &&
+					(
+						! empty( $new_post['name'] ) ||
+						( ! empty( $new_post['link'] ) && isset( $new_post['message'] ) )
+					)
+				) {
 					// https://developers.facebook.com/docs/graph-api/reference/v3.2/page/feed#custom-image
-					// retry without name
+					// retry without name and with link inside message.
 
-					unset( $new_post['name'] );
+					if ( isset( $new_post['name'] ) ) {
+						unset( $new_post['name'] );
+					}
+					if ( ! empty( $new_post['link'] ) && isset( $new_post['message'] ) ) {
+						$new_post['message'] .= $new_post['link'];
+						unset( $new_post['link'] );
+					}
 
 					try {
 						$api->post( $path, $new_post, $token );
@@ -681,8 +695,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			}
 		} else {
 			// Page was added using ROP application (new method)
-			// Try post via Guzzle 6
-
 			$post_data = $new_post;
 			$post_data['access_token'] = $token;
 
@@ -710,9 +722,54 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			if ( ! empty( $body['id'] ) ) {
 				return true;
 			} elseif ( ! empty( $body['error']['message'] ) ) {
-				$this->logger->alert_error( 'Error Posting to Facebook: ' . $body['error']['message'] );
-				$this->rop_get_error_docs( $body['error']['message'] );
-				return false;
+				if (
+					strpos( $body['error']['message'], '(#100)' ) !== false &&
+					(
+						! empty( $post_data['name'] ) ||
+						( ! empty( $post_data['link'] ) && isset( $post_data['message'] ) )
+					)
+				) {
+					// https://developers.facebook.com/docs/graph-api/reference/v3.2/page/feed#custom-image
+					// retry without name and with link inside message.
+
+					if ( isset( $post_data['name'] ) ) {
+						unset( $post_data['name'] );
+					}
+					if ( ! empty( $post_data['link'] ) && isset( $post_data['message'] ) ) {
+						$post_data['message'] .= $post_data['link'];
+						unset( $post_data['link'] );
+					}
+
+					$response = wp_remote_post(
+						$url,
+						array(
+
+							'body' => $post_data,
+							'headers' => array(
+								'Content-Type' => 'application/x-www-form-urlencoded',
+							),
+							'timeout' => 60,
+
+						)
+					);
+
+					$body = json_decode( wp_remote_retrieve_body( $response ), true );
+
+					if ( ! empty( $body['id'] ) ) {
+						return true;
+					} elseif ( ! empty( $body['error']['message'] ) ) {
+						$this->logger->alert_error( 'Error Posting to Facebook: ' . $body['error']['message'] );
+						$this->rop_get_error_docs( $body['error']['message'] );
+						return false;
+					} else {
+						$this->logger->alert_error( 'Error Posting to Facebook, response: ' . print_r( $response, true ) );
+						return false;
+					}
+				} else {
+					$this->logger->alert_error( 'Error Posting to Facebook: ' . $body['error']['message'] );
+					$this->rop_get_error_docs( $body['error']['message'] );
+					return false;
+				}
 			} else {
 				$this->logger->alert_error( 'Error Posting to Facebook, response: ' . print_r( $response, true ) );
 				return false;

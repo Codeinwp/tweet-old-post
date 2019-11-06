@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 208);
+/******/ 	return __webpack_require__(__webpack_require__.s = 211);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1211,22 +1211,36 @@
     function createDate (y, m, d, h, M, s, ms) {
         // can't just apply() to create a date:
         // https://stackoverflow.com/q/181348
-        var date = new Date(y, m, d, h, M, s, ms);
-
+        var date;
         // the date constructor remaps years 0-99 to 1900-1999
-        if (y < 100 && y >= 0 && isFinite(date.getFullYear())) {
-            date.setFullYear(y);
+        if (y < 100 && y >= 0) {
+            // preserve leap years using a full 400 year cycle, then reset
+            date = new Date(y + 400, m, d, h, M, s, ms);
+            if (isFinite(date.getFullYear())) {
+                date.setFullYear(y);
+            }
+        } else {
+            date = new Date(y, m, d, h, M, s, ms);
         }
+
         return date;
     }
 
     function createUTCDate (y) {
-        var date = new Date(Date.UTC.apply(null, arguments));
-
+        var date;
         // the Date.UTC function remaps years 0-99 to 1900-1999
-        if (y < 100 && y >= 0 && isFinite(date.getUTCFullYear())) {
-            date.setUTCFullYear(y);
+        if (y < 100 && y >= 0) {
+            var args = Array.prototype.slice.call(arguments);
+            // preserve leap years using a full 400 year cycle, then reset
+            args[0] = y + 400;
+            date = new Date(Date.UTC.apply(null, args));
+            if (isFinite(date.getUTCFullYear())) {
+                date.setUTCFullYear(y);
+            }
+        } else {
+            date = new Date(Date.UTC.apply(null, arguments));
         }
+
         return date;
     }
 
@@ -1437,25 +1451,28 @@
     }
 
     // LOCALES
+    function shiftWeekdays (ws, n) {
+        return ws.slice(n, 7).concat(ws.slice(0, n));
+    }
 
     var defaultLocaleWeekdays = 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday'.split('_');
     function localeWeekdays (m, format) {
-        if (!m) {
-            return isArray(this._weekdays) ? this._weekdays :
-                this._weekdays['standalone'];
-        }
-        return isArray(this._weekdays) ? this._weekdays[m.day()] :
-            this._weekdays[this._weekdays.isFormat.test(format) ? 'format' : 'standalone'][m.day()];
+        var weekdays = isArray(this._weekdays) ? this._weekdays :
+            this._weekdays[(m && m !== true && this._weekdays.isFormat.test(format)) ? 'format' : 'standalone'];
+        return (m === true) ? shiftWeekdays(weekdays, this._week.dow)
+            : (m) ? weekdays[m.day()] : weekdays;
     }
 
     var defaultLocaleWeekdaysShort = 'Sun_Mon_Tue_Wed_Thu_Fri_Sat'.split('_');
     function localeWeekdaysShort (m) {
-        return (m) ? this._weekdaysShort[m.day()] : this._weekdaysShort;
+        return (m === true) ? shiftWeekdays(this._weekdaysShort, this._week.dow)
+            : (m) ? this._weekdaysShort[m.day()] : this._weekdaysShort;
     }
 
     var defaultLocaleWeekdaysMin = 'Su_Mo_Tu_We_Th_Fr_Sa'.split('_');
     function localeWeekdaysMin (m) {
-        return (m) ? this._weekdaysMin[m.day()] : this._weekdaysMin;
+        return (m === true) ? shiftWeekdays(this._weekdaysMin, this._week.dow)
+            : (m) ? this._weekdaysMin[m.day()] : this._weekdaysMin;
     }
 
     function handleStrictParse$1(weekdayName, format, strict) {
@@ -1902,7 +1919,7 @@
             try {
                 oldLocale = globalLocale._abbr;
                 var aliasedRequire = require;
-                __webpack_require__(284)("./" + name);
+                __webpack_require__(283)("./" + name);
                 getSetGlobalLocale(oldLocale);
             } catch (e) {}
         }
@@ -3150,7 +3167,7 @@
     }
 
     function positiveMomentsDifference(base, other) {
-        var res = {milliseconds: 0, months: 0};
+        var res = {};
 
         res.months = other.month() - base.month() +
             (other.year() - base.year()) * 12;
@@ -3488,62 +3505,130 @@
         return this._locale;
     }
 
+    var MS_PER_SECOND = 1000;
+    var MS_PER_MINUTE = 60 * MS_PER_SECOND;
+    var MS_PER_HOUR = 60 * MS_PER_MINUTE;
+    var MS_PER_400_YEARS = (365 * 400 + 97) * 24 * MS_PER_HOUR;
+
+    // actual modulo - handles negative numbers (for dates before 1970):
+    function mod$1(dividend, divisor) {
+        return (dividend % divisor + divisor) % divisor;
+    }
+
+    function localStartOfDate(y, m, d) {
+        // the date constructor remaps years 0-99 to 1900-1999
+        if (y < 100 && y >= 0) {
+            // preserve leap years using a full 400 year cycle, then reset
+            return new Date(y + 400, m, d) - MS_PER_400_YEARS;
+        } else {
+            return new Date(y, m, d).valueOf();
+        }
+    }
+
+    function utcStartOfDate(y, m, d) {
+        // Date.UTC remaps years 0-99 to 1900-1999
+        if (y < 100 && y >= 0) {
+            // preserve leap years using a full 400 year cycle, then reset
+            return Date.UTC(y + 400, m, d) - MS_PER_400_YEARS;
+        } else {
+            return Date.UTC(y, m, d);
+        }
+    }
+
     function startOf (units) {
+        var time;
         units = normalizeUnits(units);
-        // the following switch intentionally omits break keywords
-        // to utilize falling through the cases.
+        if (units === undefined || units === 'millisecond' || !this.isValid()) {
+            return this;
+        }
+
+        var startOfDate = this._isUTC ? utcStartOfDate : localStartOfDate;
+
         switch (units) {
             case 'year':
-                this.month(0);
-                /* falls through */
+                time = startOfDate(this.year(), 0, 1);
+                break;
             case 'quarter':
+                time = startOfDate(this.year(), this.month() - this.month() % 3, 1);
+                break;
             case 'month':
-                this.date(1);
-                /* falls through */
+                time = startOfDate(this.year(), this.month(), 1);
+                break;
             case 'week':
+                time = startOfDate(this.year(), this.month(), this.date() - this.weekday());
+                break;
             case 'isoWeek':
+                time = startOfDate(this.year(), this.month(), this.date() - (this.isoWeekday() - 1));
+                break;
             case 'day':
             case 'date':
-                this.hours(0);
-                /* falls through */
+                time = startOfDate(this.year(), this.month(), this.date());
+                break;
             case 'hour':
-                this.minutes(0);
-                /* falls through */
+                time = this._d.valueOf();
+                time -= mod$1(time + (this._isUTC ? 0 : this.utcOffset() * MS_PER_MINUTE), MS_PER_HOUR);
+                break;
             case 'minute':
-                this.seconds(0);
-                /* falls through */
+                time = this._d.valueOf();
+                time -= mod$1(time, MS_PER_MINUTE);
+                break;
             case 'second':
-                this.milliseconds(0);
+                time = this._d.valueOf();
+                time -= mod$1(time, MS_PER_SECOND);
+                break;
         }
 
-        // weeks are a special case
-        if (units === 'week') {
-            this.weekday(0);
-        }
-        if (units === 'isoWeek') {
-            this.isoWeekday(1);
-        }
-
-        // quarters are also special
-        if (units === 'quarter') {
-            this.month(Math.floor(this.month() / 3) * 3);
-        }
-
+        this._d.setTime(time);
+        hooks.updateOffset(this, true);
         return this;
     }
 
     function endOf (units) {
+        var time;
         units = normalizeUnits(units);
-        if (units === undefined || units === 'millisecond') {
+        if (units === undefined || units === 'millisecond' || !this.isValid()) {
             return this;
         }
 
-        // 'date' is an alias for 'day', so it should be considered as such.
-        if (units === 'date') {
-            units = 'day';
+        var startOfDate = this._isUTC ? utcStartOfDate : localStartOfDate;
+
+        switch (units) {
+            case 'year':
+                time = startOfDate(this.year() + 1, 0, 1) - 1;
+                break;
+            case 'quarter':
+                time = startOfDate(this.year(), this.month() - this.month() % 3 + 3, 1) - 1;
+                break;
+            case 'month':
+                time = startOfDate(this.year(), this.month() + 1, 1) - 1;
+                break;
+            case 'week':
+                time = startOfDate(this.year(), this.month(), this.date() - this.weekday() + 7) - 1;
+                break;
+            case 'isoWeek':
+                time = startOfDate(this.year(), this.month(), this.date() - (this.isoWeekday() - 1) + 7) - 1;
+                break;
+            case 'day':
+            case 'date':
+                time = startOfDate(this.year(), this.month(), this.date() + 1) - 1;
+                break;
+            case 'hour':
+                time = this._d.valueOf();
+                time += MS_PER_HOUR - mod$1(time + (this._isUTC ? 0 : this.utcOffset() * MS_PER_MINUTE), MS_PER_HOUR) - 1;
+                break;
+            case 'minute':
+                time = this._d.valueOf();
+                time += MS_PER_MINUTE - mod$1(time, MS_PER_MINUTE) - 1;
+                break;
+            case 'second':
+                time = this._d.valueOf();
+                time += MS_PER_SECOND - mod$1(time, MS_PER_SECOND) - 1;
+                break;
         }
 
-        return this.startOf(units).add(1, (units === 'isoWeek' ? 'week' : units)).subtract(1, 'ms');
+        this._d.setTime(time);
+        hooks.updateOffset(this, true);
+        return this;
     }
 
     function valueOf () {
@@ -4249,10 +4334,14 @@
 
         units = normalizeUnits(units);
 
-        if (units === 'month' || units === 'year') {
-            days   = this._days   + milliseconds / 864e5;
+        if (units === 'month' || units === 'quarter' || units === 'year') {
+            days = this._days + milliseconds / 864e5;
             months = this._months + daysToMonths(days);
-            return units === 'month' ? months : months / 12;
+            switch (units) {
+                case 'month':   return months;
+                case 'quarter': return months / 3;
+                case 'year':    return months / 12;
+            }
         } else {
             // handle milliseconds separately because of floating point math errors (issue #1867)
             days = this._days + Math.round(monthsToDays(this._months));
@@ -4295,6 +4384,7 @@
     var asDays         = makeAs('d');
     var asWeeks        = makeAs('w');
     var asMonths       = makeAs('M');
+    var asQuarters     = makeAs('Q');
     var asYears        = makeAs('y');
 
     function clone$1 () {
@@ -4486,6 +4576,7 @@
     proto$2.asDays         = asDays;
     proto$2.asWeeks        = asWeeks;
     proto$2.asMonths       = asMonths;
+    proto$2.asQuarters     = asQuarters;
     proto$2.asYears        = asYears;
     proto$2.valueOf        = valueOf$1;
     proto$2._bubble        = bubble;
@@ -4530,7 +4621,7 @@
     // Side effect imports
 
 
-    hooks.version = '2.23.0';
+    hooks.version = '2.24.0';
 
     setHookCallback(createLocal);
 
@@ -4579,7 +4670,7 @@
 
 })));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(283)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(282)(module)))
 
 /***/ }),
 /* 1 */
@@ -5083,7 +5174,7 @@ process.umask = function() { return 0; };
 /* 4 */
 /***/ (function(module, exports) {
 
-var core = module.exports = { version: '2.6.1' };
+var core = module.exports = { version: '2.6.9' };
 if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 
@@ -5123,8 +5214,8 @@ $exports.store = store;
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* WEBPACK VAR INJECTION */(function(process, global, setImmediate) {/*!
- * Vue.js v2.5.21
- * (c) 2014-2018 Evan You
+ * Vue.js v2.6.10
+ * (c) 2014-2019 Evan You
  * Released under the MIT License.
  */
 /*  */
@@ -5200,13 +5291,21 @@ function isValidArrayIndex (val) {
   return n >= 0 && Math.floor(n) === n && isFinite(val)
 }
 
+function isPromise (val) {
+  return (
+    isDef(val) &&
+    typeof val.then === 'function' &&
+    typeof val.catch === 'function'
+  )
+}
+
 /**
  * Convert a value to a string that is actually rendered.
  */
 function toString (val) {
   return val == null
     ? ''
-    : typeof val === 'object'
+    : Array.isArray(val) || (isPlainObject(val) && val.toString === _toString)
       ? JSON.stringify(val, null, 2)
       : String(val)
 }
@@ -5482,7 +5581,8 @@ var LIFECYCLE_HOOKS = [
   'destroyed',
   'activated',
   'deactivated',
-  'errorCaptured'
+  'errorCaptured',
+  'serverPrefetch'
 ];
 
 /*  */
@@ -5586,6 +5686,13 @@ var config = ({
 /*  */
 
 /**
+ * unicode letters used for parsing html tags, component names and property paths.
+ * using https://www.w3.org/TR/html53/semantics-scripting.html#potentialcustomelementname
+ * skipping \u10000-\uEFFFF due to it freezing up PhantomJS
+ */
+var unicodeRegExp = /a-zA-Z\u00B7\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u037D\u037F-\u1FFF\u200C-\u200D\u203F-\u2040\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD/;
+
+/**
  * Check if a string starts with $ or _
  */
 function isReserved (str) {
@@ -5608,7 +5715,7 @@ function def (obj, key, val, enumerable) {
 /**
  * Parse simple path.
  */
-var bailRE = /[^\w.$]/;
+var bailRE = new RegExp(("[^" + (unicodeRegExp.source) + ".$_\\d]"));
 function parsePath (path) {
   if (bailRE.test(path)) {
     return
@@ -5639,6 +5746,8 @@ var isEdge = UA && UA.indexOf('edge/') > 0;
 var isAndroid = (UA && UA.indexOf('android') > 0) || (weexPlatform === 'android');
 var isIOS = (UA && /iphone|ipad|ipod|ios/.test(UA)) || (weexPlatform === 'ios');
 var isChrome = UA && /chrome\/\d+/.test(UA) && !isEdge;
+var isPhantomJS = UA && /phantomjs/.test(UA);
+var isFF = UA && UA.match(/firefox\/(\d+)/);
 
 // Firefox has a "watch" function on Object.prototype...
 var nativeWatch = ({}).watch;
@@ -5751,7 +5860,7 @@ if (process.env.NODE_ENV !== 'production') {
       ? vm.options
       : vm._isVue
         ? vm.$options || vm.constructor.options
-        : vm || {};
+        : vm;
     var name = options.name || options._componentTag;
     var file = options.__file;
     if (!name && file) {
@@ -5846,9 +5955,9 @@ Dep.prototype.notify = function notify () {
   }
 };
 
-// the current target watcher being evaluated.
-// this is globally unique because there could be only one
-// watcher being evaluated at any time.
+// The current target watcher being evaluated.
+// This is globally unique because only one watcher
+// can be evaluated at a time.
 Dep.target = null;
 var targetStack = [];
 
@@ -6284,9 +6393,15 @@ if (process.env.NODE_ENV !== 'production') {
 function mergeData (to, from) {
   if (!from) { return to }
   var key, toVal, fromVal;
-  var keys = Object.keys(from);
+
+  var keys = hasSymbol
+    ? Reflect.ownKeys(from)
+    : Object.keys(from);
+
   for (var i = 0; i < keys.length; i++) {
     key = keys[i];
+    // in case the object is already observed...
+    if (key === '__ob__') { continue }
     toVal = to[key];
     fromVal = from[key];
     if (!hasOwn(to, key)) {
@@ -6376,13 +6491,26 @@ function mergeHook (
   parentVal,
   childVal
 ) {
-  return childVal
+  var res = childVal
     ? parentVal
       ? parentVal.concat(childVal)
       : Array.isArray(childVal)
         ? childVal
         : [childVal]
-    : parentVal
+    : parentVal;
+  return res
+    ? dedupeHooks(res)
+    : res
+}
+
+function dedupeHooks (hooks) {
+  var res = [];
+  for (var i = 0; i < hooks.length; i++) {
+    if (res.indexOf(hooks[i]) === -1) {
+      res.push(hooks[i]);
+    }
+  }
+  return res
 }
 
 LIFECYCLE_HOOKS.forEach(function (hook) {
@@ -6493,11 +6621,10 @@ function checkComponents (options) {
 }
 
 function validateComponentName (name) {
-  if (!/^[a-zA-Z][\w-]*$/.test(name)) {
+  if (!new RegExp(("^[a-zA-Z][\\-\\.0-9_" + (unicodeRegExp.source) + "]*$")).test(name)) {
     warn(
       'Invalid component name: "' + name + '". Component names ' +
-      'can only contain alphanumeric characters and the hyphen, ' +
-      'and must start with a letter.'
+      'should conform to valid custom element name in html5 specification.'
     );
   }
   if (isBuiltInTag(name) || config.isReservedTag(name)) {
@@ -6580,9 +6707,9 @@ function normalizeDirectives (options) {
   var dirs = options.directives;
   if (dirs) {
     for (var key in dirs) {
-      var def = dirs[key];
-      if (typeof def === 'function') {
-        dirs[key] = { bind: def, update: def };
+      var def$$1 = dirs[key];
+      if (typeof def$$1 === 'function') {
+        dirs[key] = { bind: def$$1, update: def$$1 };
       }
     }
   }
@@ -6618,7 +6745,7 @@ function mergeOptions (
   normalizeProps(child, vm);
   normalizeInject(child, vm);
   normalizeDirectives(child);
-  
+
   // Apply extends and mixins on the child options,
   // but only if it is a raw options object that isn't
   // the result of another mergeOptions call.
@@ -6913,23 +7040,52 @@ function isBoolean () {
 /*  */
 
 function handleError (err, vm, info) {
-  if (vm) {
-    var cur = vm;
-    while ((cur = cur.$parent)) {
-      var hooks = cur.$options.errorCaptured;
-      if (hooks) {
-        for (var i = 0; i < hooks.length; i++) {
-          try {
-            var capture = hooks[i].call(cur, err, vm, info) === false;
-            if (capture) { return }
-          } catch (e) {
-            globalHandleError(e, cur, 'errorCaptured hook');
+  // Deactivate deps tracking while processing error handler to avoid possible infinite rendering.
+  // See: https://github.com/vuejs/vuex/issues/1505
+  pushTarget();
+  try {
+    if (vm) {
+      var cur = vm;
+      while ((cur = cur.$parent)) {
+        var hooks = cur.$options.errorCaptured;
+        if (hooks) {
+          for (var i = 0; i < hooks.length; i++) {
+            try {
+              var capture = hooks[i].call(cur, err, vm, info) === false;
+              if (capture) { return }
+            } catch (e) {
+              globalHandleError(e, cur, 'errorCaptured hook');
+            }
           }
         }
       }
     }
+    globalHandleError(err, vm, info);
+  } finally {
+    popTarget();
   }
-  globalHandleError(err, vm, info);
+}
+
+function invokeWithErrorHandling (
+  handler,
+  context,
+  args,
+  vm,
+  info
+) {
+  var res;
+  try {
+    res = args ? handler.apply(context, args) : handler.call(context);
+    if (res && !res._isVue && isPromise(res) && !res._handled) {
+      res.catch(function (e) { return handleError(e, vm, info + " (Promise/async)"); });
+      // issue #9511
+      // avoid catch triggering multiple times when nested calls
+      res._handled = true;
+    }
+  } catch (e) {
+    handleError(e, vm, info);
+  }
+  return res
 }
 
 function globalHandleError (err, vm, info) {
@@ -6937,7 +7093,11 @@ function globalHandleError (err, vm, info) {
     try {
       return config.errorHandler.call(null, err, vm, info)
     } catch (e) {
-      logError(e, null, 'config.errorHandler');
+      // if the user intentionally throws the original error in the handler,
+      // do not log it twice
+      if (e !== err) {
+        logError(e, null, 'config.errorHandler');
+      }
     }
   }
   logError(err, vm, info);
@@ -6957,6 +7117,8 @@ function logError (err, vm, info) {
 
 /*  */
 
+var isUsingMicroTask = false;
+
 var callbacks = [];
 var pending = false;
 
@@ -6969,76 +7131,69 @@ function flushCallbacks () {
   }
 }
 
-// Here we have async deferring wrappers using both microtasks and (macro) tasks.
-// In < 2.4 we used microtasks everywhere, but there are some scenarios where
-// microtasks have too high a priority and fire in between supposedly
-// sequential events (e.g. #4521, #6690) or even between bubbling of the same
-// event (#6566). However, using (macro) tasks everywhere also has subtle problems
-// when state is changed right before repaint (e.g. #6813, out-in transitions).
-// Here we use microtask by default, but expose a way to force (macro) task when
-// needed (e.g. in event handlers attached by v-on).
-var microTimerFunc;
-var macroTimerFunc;
-var useMacroTask = false;
+// Here we have async deferring wrappers using microtasks.
+// In 2.5 we used (macro) tasks (in combination with microtasks).
+// However, it has subtle problems when state is changed right before repaint
+// (e.g. #6813, out-in transitions).
+// Also, using (macro) tasks in event handler would cause some weird behaviors
+// that cannot be circumvented (e.g. #7109, #7153, #7546, #7834, #8109).
+// So we now use microtasks everywhere, again.
+// A major drawback of this tradeoff is that there are some scenarios
+// where microtasks have too high a priority and fire in between supposedly
+// sequential events (e.g. #4521, #6690, which have workarounds)
+// or even between bubbling of the same event (#6566).
+var timerFunc;
 
-// Determine (macro) task defer implementation.
-// Technically setImmediate should be the ideal choice, but it's only available
-// in IE. The only polyfill that consistently queues the callback after all DOM
-// events triggered in the same loop is by using MessageChannel.
-/* istanbul ignore if */
-if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) {
-  macroTimerFunc = function () {
-    setImmediate(flushCallbacks);
-  };
-} else if (typeof MessageChannel !== 'undefined' && (
-  isNative(MessageChannel) ||
-  // PhantomJS
-  MessageChannel.toString() === '[object MessageChannelConstructor]'
-)) {
-  var channel = new MessageChannel();
-  var port = channel.port2;
-  channel.port1.onmessage = flushCallbacks;
-  macroTimerFunc = function () {
-    port.postMessage(1);
-  };
-} else {
-  /* istanbul ignore next */
-  macroTimerFunc = function () {
-    setTimeout(flushCallbacks, 0);
-  };
-}
-
-// Determine microtask defer implementation.
+// The nextTick behavior leverages the microtask queue, which can be accessed
+// via either native Promise.then or MutationObserver.
+// MutationObserver has wider support, however it is seriously bugged in
+// UIWebView in iOS >= 9.3.3 when triggered in touch event handlers. It
+// completely stops working after triggering a few times... so, if native
+// Promise is available, we will use it:
 /* istanbul ignore next, $flow-disable-line */
 if (typeof Promise !== 'undefined' && isNative(Promise)) {
   var p = Promise.resolve();
-  microTimerFunc = function () {
+  timerFunc = function () {
     p.then(flushCallbacks);
-    // in problematic UIWebViews, Promise.then doesn't completely break, but
+    // In problematic UIWebViews, Promise.then doesn't completely break, but
     // it can get stuck in a weird state where callbacks are pushed into the
     // microtask queue but the queue isn't being flushed, until the browser
     // needs to do some other work, e.g. handle a timer. Therefore we can
     // "force" the microtask queue to be flushed by adding an empty timer.
     if (isIOS) { setTimeout(noop); }
   };
+  isUsingMicroTask = true;
+} else if (!isIE && typeof MutationObserver !== 'undefined' && (
+  isNative(MutationObserver) ||
+  // PhantomJS and iOS 7.x
+  MutationObserver.toString() === '[object MutationObserverConstructor]'
+)) {
+  // Use MutationObserver where native Promise is not available,
+  // e.g. PhantomJS, iOS7, Android 4.4
+  // (#6466 MutationObserver is unreliable in IE11)
+  var counter = 1;
+  var observer = new MutationObserver(flushCallbacks);
+  var textNode = document.createTextNode(String(counter));
+  observer.observe(textNode, {
+    characterData: true
+  });
+  timerFunc = function () {
+    counter = (counter + 1) % 2;
+    textNode.data = String(counter);
+  };
+  isUsingMicroTask = true;
+} else if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) {
+  // Fallback to setImmediate.
+  // Techinically it leverages the (macro) task queue,
+  // but it is still a better choice than setTimeout.
+  timerFunc = function () {
+    setImmediate(flushCallbacks);
+  };
 } else {
-  // fallback to macro
-  microTimerFunc = macroTimerFunc;
-}
-
-/**
- * Wrap a function so that if any code inside triggers state change,
- * the changes are queued using a (macro) task instead of a microtask.
- */
-function withMacroTask (fn) {
-  return fn._withTask || (fn._withTask = function () {
-    useMacroTask = true;
-    try {
-      return fn.apply(null, arguments)
-    } finally {
-      useMacroTask = false;    
-    }
-  })
+  // Fallback to setTimeout.
+  timerFunc = function () {
+    setTimeout(flushCallbacks, 0);
+  };
 }
 
 function nextTick (cb, ctx) {
@@ -7056,11 +7211,7 @@ function nextTick (cb, ctx) {
   });
   if (!pending) {
     pending = true;
-    if (useMacroTask) {
-      macroTimerFunc();
-    } else {
-      microTimerFunc();
-    }
+    timerFunc();
   }
   // $flow-disable-line
   if (!cb && typeof Promise !== 'undefined') {
@@ -7090,7 +7241,7 @@ if (process.env.NODE_ENV !== 'production') {
       perf.measure(name, startTag, endTag);
       perf.clearMarks(startTag);
       perf.clearMarks(endTag);
-      perf.clearMeasures(name);
+      // perf.clearMeasures(name)
     };
   }
 }
@@ -7237,7 +7388,7 @@ var normalizeEvent = cached(function (name) {
   }
 });
 
-function createFnInvoker (fns) {
+function createFnInvoker (fns, vm) {
   function invoker () {
     var arguments$1 = arguments;
 
@@ -7245,11 +7396,11 @@ function createFnInvoker (fns) {
     if (Array.isArray(fns)) {
       var cloned = fns.slice();
       for (var i = 0; i < cloned.length; i++) {
-        cloned[i].apply(null, arguments$1);
+        invokeWithErrorHandling(cloned[i], null, arguments$1, vm, "v-on handler");
       }
     } else {
       // return handler return value for single handlers
-      return fns.apply(null, arguments)
+      return invokeWithErrorHandling(fns, null, arguments, vm, "v-on handler")
     }
   }
   invoker.fns = fns;
@@ -7276,7 +7427,7 @@ function updateListeners (
       );
     } else if (isUndef(old)) {
       if (isUndef(cur.fns)) {
-        cur = on[name] = createFnInvoker(cur);
+        cur = on[name] = createFnInvoker(cur, vm);
       }
       if (isTrue(event.once)) {
         cur = on[name] = createOnceHandler(event.name, cur, event.capture);
@@ -7487,6 +7638,1173 @@ function normalizeArrayChildren (children, nestedIndex) {
 
 /*  */
 
+function initProvide (vm) {
+  var provide = vm.$options.provide;
+  if (provide) {
+    vm._provided = typeof provide === 'function'
+      ? provide.call(vm)
+      : provide;
+  }
+}
+
+function initInjections (vm) {
+  var result = resolveInject(vm.$options.inject, vm);
+  if (result) {
+    toggleObserving(false);
+    Object.keys(result).forEach(function (key) {
+      /* istanbul ignore else */
+      if (process.env.NODE_ENV !== 'production') {
+        defineReactive$$1(vm, key, result[key], function () {
+          warn(
+            "Avoid mutating an injected value directly since the changes will be " +
+            "overwritten whenever the provided component re-renders. " +
+            "injection being mutated: \"" + key + "\"",
+            vm
+          );
+        });
+      } else {
+        defineReactive$$1(vm, key, result[key]);
+      }
+    });
+    toggleObserving(true);
+  }
+}
+
+function resolveInject (inject, vm) {
+  if (inject) {
+    // inject is :any because flow is not smart enough to figure out cached
+    var result = Object.create(null);
+    var keys = hasSymbol
+      ? Reflect.ownKeys(inject)
+      : Object.keys(inject);
+
+    for (var i = 0; i < keys.length; i++) {
+      var key = keys[i];
+      // #6574 in case the inject object is observed...
+      if (key === '__ob__') { continue }
+      var provideKey = inject[key].from;
+      var source = vm;
+      while (source) {
+        if (source._provided && hasOwn(source._provided, provideKey)) {
+          result[key] = source._provided[provideKey];
+          break
+        }
+        source = source.$parent;
+      }
+      if (!source) {
+        if ('default' in inject[key]) {
+          var provideDefault = inject[key].default;
+          result[key] = typeof provideDefault === 'function'
+            ? provideDefault.call(vm)
+            : provideDefault;
+        } else if (process.env.NODE_ENV !== 'production') {
+          warn(("Injection \"" + key + "\" not found"), vm);
+        }
+      }
+    }
+    return result
+  }
+}
+
+/*  */
+
+
+
+/**
+ * Runtime helper for resolving raw children VNodes into a slot object.
+ */
+function resolveSlots (
+  children,
+  context
+) {
+  if (!children || !children.length) {
+    return {}
+  }
+  var slots = {};
+  for (var i = 0, l = children.length; i < l; i++) {
+    var child = children[i];
+    var data = child.data;
+    // remove slot attribute if the node is resolved as a Vue slot node
+    if (data && data.attrs && data.attrs.slot) {
+      delete data.attrs.slot;
+    }
+    // named slots should only be respected if the vnode was rendered in the
+    // same context.
+    if ((child.context === context || child.fnContext === context) &&
+      data && data.slot != null
+    ) {
+      var name = data.slot;
+      var slot = (slots[name] || (slots[name] = []));
+      if (child.tag === 'template') {
+        slot.push.apply(slot, child.children || []);
+      } else {
+        slot.push(child);
+      }
+    } else {
+      (slots.default || (slots.default = [])).push(child);
+    }
+  }
+  // ignore slots that contains only whitespace
+  for (var name$1 in slots) {
+    if (slots[name$1].every(isWhitespace)) {
+      delete slots[name$1];
+    }
+  }
+  return slots
+}
+
+function isWhitespace (node) {
+  return (node.isComment && !node.asyncFactory) || node.text === ' '
+}
+
+/*  */
+
+function normalizeScopedSlots (
+  slots,
+  normalSlots,
+  prevSlots
+) {
+  var res;
+  var hasNormalSlots = Object.keys(normalSlots).length > 0;
+  var isStable = slots ? !!slots.$stable : !hasNormalSlots;
+  var key = slots && slots.$key;
+  if (!slots) {
+    res = {};
+  } else if (slots._normalized) {
+    // fast path 1: child component re-render only, parent did not change
+    return slots._normalized
+  } else if (
+    isStable &&
+    prevSlots &&
+    prevSlots !== emptyObject &&
+    key === prevSlots.$key &&
+    !hasNormalSlots &&
+    !prevSlots.$hasNormal
+  ) {
+    // fast path 2: stable scoped slots w/ no normal slots to proxy,
+    // only need to normalize once
+    return prevSlots
+  } else {
+    res = {};
+    for (var key$1 in slots) {
+      if (slots[key$1] && key$1[0] !== '$') {
+        res[key$1] = normalizeScopedSlot(normalSlots, key$1, slots[key$1]);
+      }
+    }
+  }
+  // expose normal slots on scopedSlots
+  for (var key$2 in normalSlots) {
+    if (!(key$2 in res)) {
+      res[key$2] = proxyNormalSlot(normalSlots, key$2);
+    }
+  }
+  // avoriaz seems to mock a non-extensible $scopedSlots object
+  // and when that is passed down this would cause an error
+  if (slots && Object.isExtensible(slots)) {
+    (slots)._normalized = res;
+  }
+  def(res, '$stable', isStable);
+  def(res, '$key', key);
+  def(res, '$hasNormal', hasNormalSlots);
+  return res
+}
+
+function normalizeScopedSlot(normalSlots, key, fn) {
+  var normalized = function () {
+    var res = arguments.length ? fn.apply(null, arguments) : fn({});
+    res = res && typeof res === 'object' && !Array.isArray(res)
+      ? [res] // single vnode
+      : normalizeChildren(res);
+    return res && (
+      res.length === 0 ||
+      (res.length === 1 && res[0].isComment) // #9658
+    ) ? undefined
+      : res
+  };
+  // this is a slot using the new v-slot syntax without scope. although it is
+  // compiled as a scoped slot, render fn users would expect it to be present
+  // on this.$slots because the usage is semantically a normal slot.
+  if (fn.proxy) {
+    Object.defineProperty(normalSlots, key, {
+      get: normalized,
+      enumerable: true,
+      configurable: true
+    });
+  }
+  return normalized
+}
+
+function proxyNormalSlot(slots, key) {
+  return function () { return slots[key]; }
+}
+
+/*  */
+
+/**
+ * Runtime helper for rendering v-for lists.
+ */
+function renderList (
+  val,
+  render
+) {
+  var ret, i, l, keys, key;
+  if (Array.isArray(val) || typeof val === 'string') {
+    ret = new Array(val.length);
+    for (i = 0, l = val.length; i < l; i++) {
+      ret[i] = render(val[i], i);
+    }
+  } else if (typeof val === 'number') {
+    ret = new Array(val);
+    for (i = 0; i < val; i++) {
+      ret[i] = render(i + 1, i);
+    }
+  } else if (isObject(val)) {
+    if (hasSymbol && val[Symbol.iterator]) {
+      ret = [];
+      var iterator = val[Symbol.iterator]();
+      var result = iterator.next();
+      while (!result.done) {
+        ret.push(render(result.value, ret.length));
+        result = iterator.next();
+      }
+    } else {
+      keys = Object.keys(val);
+      ret = new Array(keys.length);
+      for (i = 0, l = keys.length; i < l; i++) {
+        key = keys[i];
+        ret[i] = render(val[key], key, i);
+      }
+    }
+  }
+  if (!isDef(ret)) {
+    ret = [];
+  }
+  (ret)._isVList = true;
+  return ret
+}
+
+/*  */
+
+/**
+ * Runtime helper for rendering <slot>
+ */
+function renderSlot (
+  name,
+  fallback,
+  props,
+  bindObject
+) {
+  var scopedSlotFn = this.$scopedSlots[name];
+  var nodes;
+  if (scopedSlotFn) { // scoped slot
+    props = props || {};
+    if (bindObject) {
+      if (process.env.NODE_ENV !== 'production' && !isObject(bindObject)) {
+        warn(
+          'slot v-bind without argument expects an Object',
+          this
+        );
+      }
+      props = extend(extend({}, bindObject), props);
+    }
+    nodes = scopedSlotFn(props) || fallback;
+  } else {
+    nodes = this.$slots[name] || fallback;
+  }
+
+  var target = props && props.slot;
+  if (target) {
+    return this.$createElement('template', { slot: target }, nodes)
+  } else {
+    return nodes
+  }
+}
+
+/*  */
+
+/**
+ * Runtime helper for resolving filters
+ */
+function resolveFilter (id) {
+  return resolveAsset(this.$options, 'filters', id, true) || identity
+}
+
+/*  */
+
+function isKeyNotMatch (expect, actual) {
+  if (Array.isArray(expect)) {
+    return expect.indexOf(actual) === -1
+  } else {
+    return expect !== actual
+  }
+}
+
+/**
+ * Runtime helper for checking keyCodes from config.
+ * exposed as Vue.prototype._k
+ * passing in eventKeyName as last argument separately for backwards compat
+ */
+function checkKeyCodes (
+  eventKeyCode,
+  key,
+  builtInKeyCode,
+  eventKeyName,
+  builtInKeyName
+) {
+  var mappedKeyCode = config.keyCodes[key] || builtInKeyCode;
+  if (builtInKeyName && eventKeyName && !config.keyCodes[key]) {
+    return isKeyNotMatch(builtInKeyName, eventKeyName)
+  } else if (mappedKeyCode) {
+    return isKeyNotMatch(mappedKeyCode, eventKeyCode)
+  } else if (eventKeyName) {
+    return hyphenate(eventKeyName) !== key
+  }
+}
+
+/*  */
+
+/**
+ * Runtime helper for merging v-bind="object" into a VNode's data.
+ */
+function bindObjectProps (
+  data,
+  tag,
+  value,
+  asProp,
+  isSync
+) {
+  if (value) {
+    if (!isObject(value)) {
+      process.env.NODE_ENV !== 'production' && warn(
+        'v-bind without argument expects an Object or Array value',
+        this
+      );
+    } else {
+      if (Array.isArray(value)) {
+        value = toObject(value);
+      }
+      var hash;
+      var loop = function ( key ) {
+        if (
+          key === 'class' ||
+          key === 'style' ||
+          isReservedAttribute(key)
+        ) {
+          hash = data;
+        } else {
+          var type = data.attrs && data.attrs.type;
+          hash = asProp || config.mustUseProp(tag, type, key)
+            ? data.domProps || (data.domProps = {})
+            : data.attrs || (data.attrs = {});
+        }
+        var camelizedKey = camelize(key);
+        var hyphenatedKey = hyphenate(key);
+        if (!(camelizedKey in hash) && !(hyphenatedKey in hash)) {
+          hash[key] = value[key];
+
+          if (isSync) {
+            var on = data.on || (data.on = {});
+            on[("update:" + key)] = function ($event) {
+              value[key] = $event;
+            };
+          }
+        }
+      };
+
+      for (var key in value) loop( key );
+    }
+  }
+  return data
+}
+
+/*  */
+
+/**
+ * Runtime helper for rendering static trees.
+ */
+function renderStatic (
+  index,
+  isInFor
+) {
+  var cached = this._staticTrees || (this._staticTrees = []);
+  var tree = cached[index];
+  // if has already-rendered static tree and not inside v-for,
+  // we can reuse the same tree.
+  if (tree && !isInFor) {
+    return tree
+  }
+  // otherwise, render a fresh tree.
+  tree = cached[index] = this.$options.staticRenderFns[index].call(
+    this._renderProxy,
+    null,
+    this // for render fns generated for functional component templates
+  );
+  markStatic(tree, ("__static__" + index), false);
+  return tree
+}
+
+/**
+ * Runtime helper for v-once.
+ * Effectively it means marking the node as static with a unique key.
+ */
+function markOnce (
+  tree,
+  index,
+  key
+) {
+  markStatic(tree, ("__once__" + index + (key ? ("_" + key) : "")), true);
+  return tree
+}
+
+function markStatic (
+  tree,
+  key,
+  isOnce
+) {
+  if (Array.isArray(tree)) {
+    for (var i = 0; i < tree.length; i++) {
+      if (tree[i] && typeof tree[i] !== 'string') {
+        markStaticNode(tree[i], (key + "_" + i), isOnce);
+      }
+    }
+  } else {
+    markStaticNode(tree, key, isOnce);
+  }
+}
+
+function markStaticNode (node, key, isOnce) {
+  node.isStatic = true;
+  node.key = key;
+  node.isOnce = isOnce;
+}
+
+/*  */
+
+function bindObjectListeners (data, value) {
+  if (value) {
+    if (!isPlainObject(value)) {
+      process.env.NODE_ENV !== 'production' && warn(
+        'v-on without argument expects an Object value',
+        this
+      );
+    } else {
+      var on = data.on = data.on ? extend({}, data.on) : {};
+      for (var key in value) {
+        var existing = on[key];
+        var ours = value[key];
+        on[key] = existing ? [].concat(existing, ours) : ours;
+      }
+    }
+  }
+  return data
+}
+
+/*  */
+
+function resolveScopedSlots (
+  fns, // see flow/vnode
+  res,
+  // the following are added in 2.6
+  hasDynamicKeys,
+  contentHashKey
+) {
+  res = res || { $stable: !hasDynamicKeys };
+  for (var i = 0; i < fns.length; i++) {
+    var slot = fns[i];
+    if (Array.isArray(slot)) {
+      resolveScopedSlots(slot, res, hasDynamicKeys);
+    } else if (slot) {
+      // marker for reverse proxying v-slot without scope on this.$slots
+      if (slot.proxy) {
+        slot.fn.proxy = true;
+      }
+      res[slot.key] = slot.fn;
+    }
+  }
+  if (contentHashKey) {
+    (res).$key = contentHashKey;
+  }
+  return res
+}
+
+/*  */
+
+function bindDynamicKeys (baseObj, values) {
+  for (var i = 0; i < values.length; i += 2) {
+    var key = values[i];
+    if (typeof key === 'string' && key) {
+      baseObj[values[i]] = values[i + 1];
+    } else if (process.env.NODE_ENV !== 'production' && key !== '' && key !== null) {
+      // null is a speical value for explicitly removing a binding
+      warn(
+        ("Invalid value for dynamic directive argument (expected string or null): " + key),
+        this
+      );
+    }
+  }
+  return baseObj
+}
+
+// helper to dynamically append modifier runtime markers to event names.
+// ensure only append when value is already string, otherwise it will be cast
+// to string and cause the type check to miss.
+function prependModifier (value, symbol) {
+  return typeof value === 'string' ? symbol + value : value
+}
+
+/*  */
+
+function installRenderHelpers (target) {
+  target._o = markOnce;
+  target._n = toNumber;
+  target._s = toString;
+  target._l = renderList;
+  target._t = renderSlot;
+  target._q = looseEqual;
+  target._i = looseIndexOf;
+  target._m = renderStatic;
+  target._f = resolveFilter;
+  target._k = checkKeyCodes;
+  target._b = bindObjectProps;
+  target._v = createTextVNode;
+  target._e = createEmptyVNode;
+  target._u = resolveScopedSlots;
+  target._g = bindObjectListeners;
+  target._d = bindDynamicKeys;
+  target._p = prependModifier;
+}
+
+/*  */
+
+function FunctionalRenderContext (
+  data,
+  props,
+  children,
+  parent,
+  Ctor
+) {
+  var this$1 = this;
+
+  var options = Ctor.options;
+  // ensure the createElement function in functional components
+  // gets a unique context - this is necessary for correct named slot check
+  var contextVm;
+  if (hasOwn(parent, '_uid')) {
+    contextVm = Object.create(parent);
+    // $flow-disable-line
+    contextVm._original = parent;
+  } else {
+    // the context vm passed in is a functional context as well.
+    // in this case we want to make sure we are able to get a hold to the
+    // real context instance.
+    contextVm = parent;
+    // $flow-disable-line
+    parent = parent._original;
+  }
+  var isCompiled = isTrue(options._compiled);
+  var needNormalization = !isCompiled;
+
+  this.data = data;
+  this.props = props;
+  this.children = children;
+  this.parent = parent;
+  this.listeners = data.on || emptyObject;
+  this.injections = resolveInject(options.inject, parent);
+  this.slots = function () {
+    if (!this$1.$slots) {
+      normalizeScopedSlots(
+        data.scopedSlots,
+        this$1.$slots = resolveSlots(children, parent)
+      );
+    }
+    return this$1.$slots
+  };
+
+  Object.defineProperty(this, 'scopedSlots', ({
+    enumerable: true,
+    get: function get () {
+      return normalizeScopedSlots(data.scopedSlots, this.slots())
+    }
+  }));
+
+  // support for compiled functional template
+  if (isCompiled) {
+    // exposing $options for renderStatic()
+    this.$options = options;
+    // pre-resolve slots for renderSlot()
+    this.$slots = this.slots();
+    this.$scopedSlots = normalizeScopedSlots(data.scopedSlots, this.$slots);
+  }
+
+  if (options._scopeId) {
+    this._c = function (a, b, c, d) {
+      var vnode = createElement(contextVm, a, b, c, d, needNormalization);
+      if (vnode && !Array.isArray(vnode)) {
+        vnode.fnScopeId = options._scopeId;
+        vnode.fnContext = parent;
+      }
+      return vnode
+    };
+  } else {
+    this._c = function (a, b, c, d) { return createElement(contextVm, a, b, c, d, needNormalization); };
+  }
+}
+
+installRenderHelpers(FunctionalRenderContext.prototype);
+
+function createFunctionalComponent (
+  Ctor,
+  propsData,
+  data,
+  contextVm,
+  children
+) {
+  var options = Ctor.options;
+  var props = {};
+  var propOptions = options.props;
+  if (isDef(propOptions)) {
+    for (var key in propOptions) {
+      props[key] = validateProp(key, propOptions, propsData || emptyObject);
+    }
+  } else {
+    if (isDef(data.attrs)) { mergeProps(props, data.attrs); }
+    if (isDef(data.props)) { mergeProps(props, data.props); }
+  }
+
+  var renderContext = new FunctionalRenderContext(
+    data,
+    props,
+    children,
+    contextVm,
+    Ctor
+  );
+
+  var vnode = options.render.call(null, renderContext._c, renderContext);
+
+  if (vnode instanceof VNode) {
+    return cloneAndMarkFunctionalResult(vnode, data, renderContext.parent, options, renderContext)
+  } else if (Array.isArray(vnode)) {
+    var vnodes = normalizeChildren(vnode) || [];
+    var res = new Array(vnodes.length);
+    for (var i = 0; i < vnodes.length; i++) {
+      res[i] = cloneAndMarkFunctionalResult(vnodes[i], data, renderContext.parent, options, renderContext);
+    }
+    return res
+  }
+}
+
+function cloneAndMarkFunctionalResult (vnode, data, contextVm, options, renderContext) {
+  // #7817 clone node before setting fnContext, otherwise if the node is reused
+  // (e.g. it was from a cached normal slot) the fnContext causes named slots
+  // that should not be matched to match.
+  var clone = cloneVNode(vnode);
+  clone.fnContext = contextVm;
+  clone.fnOptions = options;
+  if (process.env.NODE_ENV !== 'production') {
+    (clone.devtoolsMeta = clone.devtoolsMeta || {}).renderContext = renderContext;
+  }
+  if (data.slot) {
+    (clone.data || (clone.data = {})).slot = data.slot;
+  }
+  return clone
+}
+
+function mergeProps (to, from) {
+  for (var key in from) {
+    to[camelize(key)] = from[key];
+  }
+}
+
+/*  */
+
+/*  */
+
+/*  */
+
+/*  */
+
+// inline hooks to be invoked on component VNodes during patch
+var componentVNodeHooks = {
+  init: function init (vnode, hydrating) {
+    if (
+      vnode.componentInstance &&
+      !vnode.componentInstance._isDestroyed &&
+      vnode.data.keepAlive
+    ) {
+      // kept-alive components, treat as a patch
+      var mountedNode = vnode; // work around flow
+      componentVNodeHooks.prepatch(mountedNode, mountedNode);
+    } else {
+      var child = vnode.componentInstance = createComponentInstanceForVnode(
+        vnode,
+        activeInstance
+      );
+      child.$mount(hydrating ? vnode.elm : undefined, hydrating);
+    }
+  },
+
+  prepatch: function prepatch (oldVnode, vnode) {
+    var options = vnode.componentOptions;
+    var child = vnode.componentInstance = oldVnode.componentInstance;
+    updateChildComponent(
+      child,
+      options.propsData, // updated props
+      options.listeners, // updated listeners
+      vnode, // new parent vnode
+      options.children // new children
+    );
+  },
+
+  insert: function insert (vnode) {
+    var context = vnode.context;
+    var componentInstance = vnode.componentInstance;
+    if (!componentInstance._isMounted) {
+      componentInstance._isMounted = true;
+      callHook(componentInstance, 'mounted');
+    }
+    if (vnode.data.keepAlive) {
+      if (context._isMounted) {
+        // vue-router#1212
+        // During updates, a kept-alive component's child components may
+        // change, so directly walking the tree here may call activated hooks
+        // on incorrect children. Instead we push them into a queue which will
+        // be processed after the whole patch process ended.
+        queueActivatedComponent(componentInstance);
+      } else {
+        activateChildComponent(componentInstance, true /* direct */);
+      }
+    }
+  },
+
+  destroy: function destroy (vnode) {
+    var componentInstance = vnode.componentInstance;
+    if (!componentInstance._isDestroyed) {
+      if (!vnode.data.keepAlive) {
+        componentInstance.$destroy();
+      } else {
+        deactivateChildComponent(componentInstance, true /* direct */);
+      }
+    }
+  }
+};
+
+var hooksToMerge = Object.keys(componentVNodeHooks);
+
+function createComponent (
+  Ctor,
+  data,
+  context,
+  children,
+  tag
+) {
+  if (isUndef(Ctor)) {
+    return
+  }
+
+  var baseCtor = context.$options._base;
+
+  // plain options object: turn it into a constructor
+  if (isObject(Ctor)) {
+    Ctor = baseCtor.extend(Ctor);
+  }
+
+  // if at this stage it's not a constructor or an async component factory,
+  // reject.
+  if (typeof Ctor !== 'function') {
+    if (process.env.NODE_ENV !== 'production') {
+      warn(("Invalid Component definition: " + (String(Ctor))), context);
+    }
+    return
+  }
+
+  // async component
+  var asyncFactory;
+  if (isUndef(Ctor.cid)) {
+    asyncFactory = Ctor;
+    Ctor = resolveAsyncComponent(asyncFactory, baseCtor);
+    if (Ctor === undefined) {
+      // return a placeholder node for async component, which is rendered
+      // as a comment node but preserves all the raw information for the node.
+      // the information will be used for async server-rendering and hydration.
+      return createAsyncPlaceholder(
+        asyncFactory,
+        data,
+        context,
+        children,
+        tag
+      )
+    }
+  }
+
+  data = data || {};
+
+  // resolve constructor options in case global mixins are applied after
+  // component constructor creation
+  resolveConstructorOptions(Ctor);
+
+  // transform component v-model data into props & events
+  if (isDef(data.model)) {
+    transformModel(Ctor.options, data);
+  }
+
+  // extract props
+  var propsData = extractPropsFromVNodeData(data, Ctor, tag);
+
+  // functional component
+  if (isTrue(Ctor.options.functional)) {
+    return createFunctionalComponent(Ctor, propsData, data, context, children)
+  }
+
+  // extract listeners, since these needs to be treated as
+  // child component listeners instead of DOM listeners
+  var listeners = data.on;
+  // replace with listeners with .native modifier
+  // so it gets processed during parent component patch.
+  data.on = data.nativeOn;
+
+  if (isTrue(Ctor.options.abstract)) {
+    // abstract components do not keep anything
+    // other than props & listeners & slot
+
+    // work around flow
+    var slot = data.slot;
+    data = {};
+    if (slot) {
+      data.slot = slot;
+    }
+  }
+
+  // install component management hooks onto the placeholder node
+  installComponentHooks(data);
+
+  // return a placeholder vnode
+  var name = Ctor.options.name || tag;
+  var vnode = new VNode(
+    ("vue-component-" + (Ctor.cid) + (name ? ("-" + name) : '')),
+    data, undefined, undefined, undefined, context,
+    { Ctor: Ctor, propsData: propsData, listeners: listeners, tag: tag, children: children },
+    asyncFactory
+  );
+
+  return vnode
+}
+
+function createComponentInstanceForVnode (
+  vnode, // we know it's MountedComponentVNode but flow doesn't
+  parent // activeInstance in lifecycle state
+) {
+  var options = {
+    _isComponent: true,
+    _parentVnode: vnode,
+    parent: parent
+  };
+  // check inline-template render functions
+  var inlineTemplate = vnode.data.inlineTemplate;
+  if (isDef(inlineTemplate)) {
+    options.render = inlineTemplate.render;
+    options.staticRenderFns = inlineTemplate.staticRenderFns;
+  }
+  return new vnode.componentOptions.Ctor(options)
+}
+
+function installComponentHooks (data) {
+  var hooks = data.hook || (data.hook = {});
+  for (var i = 0; i < hooksToMerge.length; i++) {
+    var key = hooksToMerge[i];
+    var existing = hooks[key];
+    var toMerge = componentVNodeHooks[key];
+    if (existing !== toMerge && !(existing && existing._merged)) {
+      hooks[key] = existing ? mergeHook$1(toMerge, existing) : toMerge;
+    }
+  }
+}
+
+function mergeHook$1 (f1, f2) {
+  var merged = function (a, b) {
+    // flow complains about extra args which is why we use any
+    f1(a, b);
+    f2(a, b);
+  };
+  merged._merged = true;
+  return merged
+}
+
+// transform component v-model info (value and callback) into
+// prop and event handler respectively.
+function transformModel (options, data) {
+  var prop = (options.model && options.model.prop) || 'value';
+  var event = (options.model && options.model.event) || 'input'
+  ;(data.attrs || (data.attrs = {}))[prop] = data.model.value;
+  var on = data.on || (data.on = {});
+  var existing = on[event];
+  var callback = data.model.callback;
+  if (isDef(existing)) {
+    if (
+      Array.isArray(existing)
+        ? existing.indexOf(callback) === -1
+        : existing !== callback
+    ) {
+      on[event] = [callback].concat(existing);
+    }
+  } else {
+    on[event] = callback;
+  }
+}
+
+/*  */
+
+var SIMPLE_NORMALIZE = 1;
+var ALWAYS_NORMALIZE = 2;
+
+// wrapper function for providing a more flexible interface
+// without getting yelled at by flow
+function createElement (
+  context,
+  tag,
+  data,
+  children,
+  normalizationType,
+  alwaysNormalize
+) {
+  if (Array.isArray(data) || isPrimitive(data)) {
+    normalizationType = children;
+    children = data;
+    data = undefined;
+  }
+  if (isTrue(alwaysNormalize)) {
+    normalizationType = ALWAYS_NORMALIZE;
+  }
+  return _createElement(context, tag, data, children, normalizationType)
+}
+
+function _createElement (
+  context,
+  tag,
+  data,
+  children,
+  normalizationType
+) {
+  if (isDef(data) && isDef((data).__ob__)) {
+    process.env.NODE_ENV !== 'production' && warn(
+      "Avoid using observed data object as vnode data: " + (JSON.stringify(data)) + "\n" +
+      'Always create fresh vnode data objects in each render!',
+      context
+    );
+    return createEmptyVNode()
+  }
+  // object syntax in v-bind
+  if (isDef(data) && isDef(data.is)) {
+    tag = data.is;
+  }
+  if (!tag) {
+    // in case of component :is set to falsy value
+    return createEmptyVNode()
+  }
+  // warn against non-primitive key
+  if (process.env.NODE_ENV !== 'production' &&
+    isDef(data) && isDef(data.key) && !isPrimitive(data.key)
+  ) {
+    {
+      warn(
+        'Avoid using non-primitive value as key, ' +
+        'use string/number value instead.',
+        context
+      );
+    }
+  }
+  // support single function children as default scoped slot
+  if (Array.isArray(children) &&
+    typeof children[0] === 'function'
+  ) {
+    data = data || {};
+    data.scopedSlots = { default: children[0] };
+    children.length = 0;
+  }
+  if (normalizationType === ALWAYS_NORMALIZE) {
+    children = normalizeChildren(children);
+  } else if (normalizationType === SIMPLE_NORMALIZE) {
+    children = simpleNormalizeChildren(children);
+  }
+  var vnode, ns;
+  if (typeof tag === 'string') {
+    var Ctor;
+    ns = (context.$vnode && context.$vnode.ns) || config.getTagNamespace(tag);
+    if (config.isReservedTag(tag)) {
+      // platform built-in elements
+      vnode = new VNode(
+        config.parsePlatformTagName(tag), data, children,
+        undefined, undefined, context
+      );
+    } else if ((!data || !data.pre) && isDef(Ctor = resolveAsset(context.$options, 'components', tag))) {
+      // component
+      vnode = createComponent(Ctor, data, context, children, tag);
+    } else {
+      // unknown or unlisted namespaced elements
+      // check at runtime because it may get assigned a namespace when its
+      // parent normalizes children
+      vnode = new VNode(
+        tag, data, children,
+        undefined, undefined, context
+      );
+    }
+  } else {
+    // direct component options / constructor
+    vnode = createComponent(tag, data, context, children);
+  }
+  if (Array.isArray(vnode)) {
+    return vnode
+  } else if (isDef(vnode)) {
+    if (isDef(ns)) { applyNS(vnode, ns); }
+    if (isDef(data)) { registerDeepBindings(data); }
+    return vnode
+  } else {
+    return createEmptyVNode()
+  }
+}
+
+function applyNS (vnode, ns, force) {
+  vnode.ns = ns;
+  if (vnode.tag === 'foreignObject') {
+    // use default namespace inside foreignObject
+    ns = undefined;
+    force = true;
+  }
+  if (isDef(vnode.children)) {
+    for (var i = 0, l = vnode.children.length; i < l; i++) {
+      var child = vnode.children[i];
+      if (isDef(child.tag) && (
+        isUndef(child.ns) || (isTrue(force) && child.tag !== 'svg'))) {
+        applyNS(child, ns, force);
+      }
+    }
+  }
+}
+
+// ref #5318
+// necessary to ensure parent re-render when deep bindings like :style and
+// :class are used on slot nodes
+function registerDeepBindings (data) {
+  if (isObject(data.style)) {
+    traverse(data.style);
+  }
+  if (isObject(data.class)) {
+    traverse(data.class);
+  }
+}
+
+/*  */
+
+function initRender (vm) {
+  vm._vnode = null; // the root of the child tree
+  vm._staticTrees = null; // v-once cached trees
+  var options = vm.$options;
+  var parentVnode = vm.$vnode = options._parentVnode; // the placeholder node in parent tree
+  var renderContext = parentVnode && parentVnode.context;
+  vm.$slots = resolveSlots(options._renderChildren, renderContext);
+  vm.$scopedSlots = emptyObject;
+  // bind the createElement fn to this instance
+  // so that we get proper render context inside it.
+  // args order: tag, data, children, normalizationType, alwaysNormalize
+  // internal version is used by render functions compiled from templates
+  vm._c = function (a, b, c, d) { return createElement(vm, a, b, c, d, false); };
+  // normalization is always applied for the public version, used in
+  // user-written render functions.
+  vm.$createElement = function (a, b, c, d) { return createElement(vm, a, b, c, d, true); };
+
+  // $attrs & $listeners are exposed for easier HOC creation.
+  // they need to be reactive so that HOCs using them are always updated
+  var parentData = parentVnode && parentVnode.data;
+
+  /* istanbul ignore else */
+  if (process.env.NODE_ENV !== 'production') {
+    defineReactive$$1(vm, '$attrs', parentData && parentData.attrs || emptyObject, function () {
+      !isUpdatingChildComponent && warn("$attrs is readonly.", vm);
+    }, true);
+    defineReactive$$1(vm, '$listeners', options._parentListeners || emptyObject, function () {
+      !isUpdatingChildComponent && warn("$listeners is readonly.", vm);
+    }, true);
+  } else {
+    defineReactive$$1(vm, '$attrs', parentData && parentData.attrs || emptyObject, null, true);
+    defineReactive$$1(vm, '$listeners', options._parentListeners || emptyObject, null, true);
+  }
+}
+
+var currentRenderingInstance = null;
+
+function renderMixin (Vue) {
+  // install runtime convenience helpers
+  installRenderHelpers(Vue.prototype);
+
+  Vue.prototype.$nextTick = function (fn) {
+    return nextTick(fn, this)
+  };
+
+  Vue.prototype._render = function () {
+    var vm = this;
+    var ref = vm.$options;
+    var render = ref.render;
+    var _parentVnode = ref._parentVnode;
+
+    if (_parentVnode) {
+      vm.$scopedSlots = normalizeScopedSlots(
+        _parentVnode.data.scopedSlots,
+        vm.$slots,
+        vm.$scopedSlots
+      );
+    }
+
+    // set parent vnode. this allows render functions to have access
+    // to the data on the placeholder node.
+    vm.$vnode = _parentVnode;
+    // render self
+    var vnode;
+    try {
+      // There's no need to maintain a stack becaues all render fns are called
+      // separately from one another. Nested component's render fns are called
+      // when parent component is patched.
+      currentRenderingInstance = vm;
+      vnode = render.call(vm._renderProxy, vm.$createElement);
+    } catch (e) {
+      handleError(e, vm, "render");
+      // return error render result,
+      // or previous vnode to prevent render error causing blank component
+      /* istanbul ignore else */
+      if (process.env.NODE_ENV !== 'production' && vm.$options.renderError) {
+        try {
+          vnode = vm.$options.renderError.call(vm._renderProxy, vm.$createElement, e);
+        } catch (e) {
+          handleError(e, vm, "renderError");
+          vnode = vm._vnode;
+        }
+      } else {
+        vnode = vm._vnode;
+      }
+    } finally {
+      currentRenderingInstance = null;
+    }
+    // if the returned array contains only a single node, allow it
+    if (Array.isArray(vnode) && vnode.length === 1) {
+      vnode = vnode[0];
+    }
+    // return empty vnode in case the render function errored out
+    if (!(vnode instanceof VNode)) {
+      if (process.env.NODE_ENV !== 'production' && Array.isArray(vnode)) {
+        warn(
+          'Multiple root nodes returned from render function. Render function ' +
+          'should return a single root node.',
+          vm
+        );
+      }
+      vnode = createEmptyVNode();
+    }
+    // set parent
+    vnode.parent = _parentVnode;
+    return vnode
+  };
+}
+
+/*  */
+
 function ensureCtor (comp, base) {
   if (
     comp.__esModule ||
@@ -7514,8 +8832,7 @@ function createAsyncPlaceholder (
 
 function resolveAsyncComponent (
   factory,
-  baseCtor,
-  context
+  baseCtor
 ) {
   if (isTrue(factory.error) && isDef(factory.errorComp)) {
     return factory.errorComp
@@ -7525,24 +8842,39 @@ function resolveAsyncComponent (
     return factory.resolved
   }
 
+  var owner = currentRenderingInstance;
+  if (owner && isDef(factory.owners) && factory.owners.indexOf(owner) === -1) {
+    // already pending
+    factory.owners.push(owner);
+  }
+
   if (isTrue(factory.loading) && isDef(factory.loadingComp)) {
     return factory.loadingComp
   }
 
-  if (isDef(factory.contexts)) {
-    // already pending
-    factory.contexts.push(context);
-  } else {
-    var contexts = factory.contexts = [context];
+  if (owner && !isDef(factory.owners)) {
+    var owners = factory.owners = [owner];
     var sync = true;
+    var timerLoading = null;
+    var timerTimeout = null
+
+    ;(owner).$on('hook:destroyed', function () { return remove(owners, owner); });
 
     var forceRender = function (renderCompleted) {
-      for (var i = 0, l = contexts.length; i < l; i++) {
-        contexts[i].$forceUpdate();
+      for (var i = 0, l = owners.length; i < l; i++) {
+        (owners[i]).$forceUpdate();
       }
 
       if (renderCompleted) {
-        contexts.length = 0;
+        owners.length = 0;
+        if (timerLoading !== null) {
+          clearTimeout(timerLoading);
+          timerLoading = null;
+        }
+        if (timerTimeout !== null) {
+          clearTimeout(timerTimeout);
+          timerTimeout = null;
+        }
       }
     };
 
@@ -7553,6 +8885,8 @@ function resolveAsyncComponent (
       // (async resolves are shimmed as synchronous during SSR)
       if (!sync) {
         forceRender(true);
+      } else {
+        owners.length = 0;
       }
     });
 
@@ -7570,12 +8904,12 @@ function resolveAsyncComponent (
     var res = factory(resolve, reject);
 
     if (isObject(res)) {
-      if (typeof res.then === 'function') {
+      if (isPromise(res)) {
         // () => Promise
         if (isUndef(factory.resolved)) {
           res.then(resolve, reject);
         }
-      } else if (isDef(res.component) && typeof res.component.then === 'function') {
+      } else if (isPromise(res.component)) {
         res.component.then(resolve, reject);
 
         if (isDef(res.error)) {
@@ -7587,7 +8921,8 @@ function resolveAsyncComponent (
           if (res.delay === 0) {
             factory.loading = true;
           } else {
-            setTimeout(function () {
+            timerLoading = setTimeout(function () {
+              timerLoading = null;
               if (isUndef(factory.resolved) && isUndef(factory.error)) {
                 factory.loading = true;
                 forceRender(false);
@@ -7597,7 +8932,8 @@ function resolveAsyncComponent (
         }
 
         if (isDef(res.timeout)) {
-          setTimeout(function () {
+          timerTimeout = setTimeout(function () {
+            timerTimeout = null;
             if (isUndef(factory.resolved)) {
               reject(
                 process.env.NODE_ENV !== 'production'
@@ -7720,8 +9056,8 @@ function eventsMixin (Vue) {
     }
     // array of events
     if (Array.isArray(event)) {
-      for (var i = 0, l = event.length; i < l; i++) {
-        vm.$off(event[i], fn);
+      for (var i$1 = 0, l = event.length; i$1 < l; i$1++) {
+        vm.$off(event[i$1], fn);
       }
       return vm
     }
@@ -7734,16 +9070,14 @@ function eventsMixin (Vue) {
       vm._events[event] = null;
       return vm
     }
-    if (fn) {
-      // specific handler
-      var cb;
-      var i$1 = cbs.length;
-      while (i$1--) {
-        cb = cbs[i$1];
-        if (cb === fn || cb.fn === fn) {
-          cbs.splice(i$1, 1);
-          break
-        }
+    // specific handler
+    var cb;
+    var i = cbs.length;
+    while (i--) {
+      cb = cbs[i];
+      if (cb === fn || cb.fn === fn) {
+        cbs.splice(i, 1);
+        break
       }
     }
     return vm
@@ -7767,82 +9101,13 @@ function eventsMixin (Vue) {
     if (cbs) {
       cbs = cbs.length > 1 ? toArray(cbs) : cbs;
       var args = toArray(arguments, 1);
+      var info = "event handler for \"" + event + "\"";
       for (var i = 0, l = cbs.length; i < l; i++) {
-        try {
-          cbs[i].apply(vm, args);
-        } catch (e) {
-          handleError(e, vm, ("event handler for \"" + event + "\""));
-        }
+        invokeWithErrorHandling(cbs[i], vm, args, vm, info);
       }
     }
     return vm
   };
-}
-
-/*  */
-
-
-
-/**
- * Runtime helper for resolving raw children VNodes into a slot object.
- */
-function resolveSlots (
-  children,
-  context
-) {
-  var slots = {};
-  if (!children) {
-    return slots
-  }
-  for (var i = 0, l = children.length; i < l; i++) {
-    var child = children[i];
-    var data = child.data;
-    // remove slot attribute if the node is resolved as a Vue slot node
-    if (data && data.attrs && data.attrs.slot) {
-      delete data.attrs.slot;
-    }
-    // named slots should only be respected if the vnode was rendered in the
-    // same context.
-    if ((child.context === context || child.fnContext === context) &&
-      data && data.slot != null
-    ) {
-      var name = data.slot;
-      var slot = (slots[name] || (slots[name] = []));
-      if (child.tag === 'template') {
-        slot.push.apply(slot, child.children || []);
-      } else {
-        slot.push(child);
-      }
-    } else {
-      (slots.default || (slots.default = [])).push(child);
-    }
-  }
-  // ignore slots that contains only whitespace
-  for (var name$1 in slots) {
-    if (slots[name$1].every(isWhitespace)) {
-      delete slots[name$1];
-    }
-  }
-  return slots
-}
-
-function isWhitespace (node) {
-  return (node.isComment && !node.asyncFactory) || node.text === ' '
-}
-
-function resolveScopedSlots (
-  fns, // see flow/vnode
-  res
-) {
-  res = res || {};
-  for (var i = 0; i < fns.length; i++) {
-    if (Array.isArray(fns[i])) {
-      resolveScopedSlots(fns[i], res);
-    } else {
-      res[fns[i].key] = fns[i].fn;
-    }
-  }
-  return res
 }
 
 /*  */
@@ -8053,12 +9318,26 @@ function updateChildComponent (
   }
 
   // determine whether component has slot children
-  // we need to do this before overwriting $options._renderChildren
-  var hasChildren = !!(
+  // we need to do this before overwriting $options._renderChildren.
+
+  // check if there are dynamic scopedSlots (hand-written or compiled but with
+  // dynamic slot names). Static scoped slots compiled from template has the
+  // "$stable" marker.
+  var newScopedSlots = parentVnode.data.scopedSlots;
+  var oldScopedSlots = vm.$scopedSlots;
+  var hasDynamicScopedSlot = !!(
+    (newScopedSlots && !newScopedSlots.$stable) ||
+    (oldScopedSlots !== emptyObject && !oldScopedSlots.$stable) ||
+    (newScopedSlots && vm.$scopedSlots.$key !== newScopedSlots.$key)
+  );
+
+  // Any static slot children from the parent may have changed during parent's
+  // update. Dynamic scoped slots may also have changed. In such cases, a forced
+  // update is necessary to ensure correctness.
+  var needsForceUpdate = !!(
     renderChildren ||               // has new static slots
     vm.$options._renderChildren ||  // has old static slots
-    parentVnode.data.scopedSlots || // has new scoped slots
-    vm.$scopedSlots !== emptyObject // has old scoped slots
+    hasDynamicScopedSlot
   );
 
   vm.$options._parentVnode = parentVnode;
@@ -8097,7 +9376,7 @@ function updateChildComponent (
   updateComponentListeners(vm, listeners, oldListeners);
 
   // resolve slots + force update if has children
-  if (hasChildren) {
+  if (needsForceUpdate) {
     vm.$slots = resolveSlots(renderChildren, parentVnode.context);
     vm.$forceUpdate();
   }
@@ -8152,13 +9431,10 @@ function callHook (vm, hook) {
   // #7573 disable dep collection when invoking lifecycle hooks
   pushTarget();
   var handlers = vm.$options[hook];
+  var info = hook + " hook";
   if (handlers) {
     for (var i = 0, j = handlers.length; i < j; i++) {
-      try {
-        handlers[i].call(vm);
-      } catch (e) {
-        handleError(e, vm, (hook + " hook"));
-      }
+      invokeWithErrorHandling(handlers[i], vm, null, vm, info);
     }
   }
   if (vm._hasHookEvent) {
@@ -8191,10 +9467,42 @@ function resetSchedulerState () {
   waiting = flushing = false;
 }
 
+// Async edge case #6566 requires saving the timestamp when event listeners are
+// attached. However, calling performance.now() has a perf overhead especially
+// if the page has thousands of event listeners. Instead, we take a timestamp
+// every time the scheduler flushes and use that for all event listeners
+// attached during that flush.
+var currentFlushTimestamp = 0;
+
+// Async edge case fix requires storing an event listener's attach timestamp.
+var getNow = Date.now;
+
+// Determine what event timestamp the browser is using. Annoyingly, the
+// timestamp can either be hi-res (relative to page load) or low-res
+// (relative to UNIX epoch), so in order to compare time we have to use the
+// same timestamp type when saving the flush timestamp.
+// All IE versions use low-res event timestamps, and have problematic clock
+// implementations (#9632)
+if (inBrowser && !isIE) {
+  var performance = window.performance;
+  if (
+    performance &&
+    typeof performance.now === 'function' &&
+    getNow() > document.createEvent('Event').timeStamp
+  ) {
+    // if the event timestamp, although evaluated AFTER the Date.now(), is
+    // smaller than it, it means the event is using a hi-res timestamp,
+    // and we need to use the hi-res version for event listener timestamps as
+    // well.
+    getNow = function () { return performance.now(); };
+  }
+}
+
 /**
  * Flush both queues and run the watchers.
  */
 function flushSchedulerQueue () {
+  currentFlushTimestamp = getNow();
   flushing = true;
   var watcher, id;
 
@@ -8318,7 +9626,7 @@ function queueWatcher (watcher) {
 
 
 
-var uid$1 = 0;
+var uid$2 = 0;
 
 /**
  * A watcher parses an expression, collects dependencies,
@@ -8348,7 +9656,7 @@ var Watcher = function Watcher (
     this.deep = this.user = this.lazy = this.sync = false;
   }
   this.cb = cb;
-  this.id = ++uid$1; // uid for batching
+  this.id = ++uid$2; // uid for batching
   this.active = true;
   this.dirty = this.lazy; // for lazy watchers
   this.deps = [];
@@ -8869,943 +10177,6 @@ function stateMixin (Vue) {
 
 /*  */
 
-function initProvide (vm) {
-  var provide = vm.$options.provide;
-  if (provide) {
-    vm._provided = typeof provide === 'function'
-      ? provide.call(vm)
-      : provide;
-  }
-}
-
-function initInjections (vm) {
-  var result = resolveInject(vm.$options.inject, vm);
-  if (result) {
-    toggleObserving(false);
-    Object.keys(result).forEach(function (key) {
-      /* istanbul ignore else */
-      if (process.env.NODE_ENV !== 'production') {
-        defineReactive$$1(vm, key, result[key], function () {
-          warn(
-            "Avoid mutating an injected value directly since the changes will be " +
-            "overwritten whenever the provided component re-renders. " +
-            "injection being mutated: \"" + key + "\"",
-            vm
-          );
-        });
-      } else {
-        defineReactive$$1(vm, key, result[key]);
-      }
-    });
-    toggleObserving(true);
-  }
-}
-
-function resolveInject (inject, vm) {
-  if (inject) {
-    // inject is :any because flow is not smart enough to figure out cached
-    var result = Object.create(null);
-    var keys = hasSymbol
-      ? Reflect.ownKeys(inject).filter(function (key) {
-        /* istanbul ignore next */
-        return Object.getOwnPropertyDescriptor(inject, key).enumerable
-      })
-      : Object.keys(inject);
-
-    for (var i = 0; i < keys.length; i++) {
-      var key = keys[i];
-      var provideKey = inject[key].from;
-      var source = vm;
-      while (source) {
-        if (source._provided && hasOwn(source._provided, provideKey)) {
-          result[key] = source._provided[provideKey];
-          break
-        }
-        source = source.$parent;
-      }
-      if (!source) {
-        if ('default' in inject[key]) {
-          var provideDefault = inject[key].default;
-          result[key] = typeof provideDefault === 'function'
-            ? provideDefault.call(vm)
-            : provideDefault;
-        } else if (process.env.NODE_ENV !== 'production') {
-          warn(("Injection \"" + key + "\" not found"), vm);
-        }
-      }
-    }
-    return result
-  }
-}
-
-/*  */
-
-/**
- * Runtime helper for rendering v-for lists.
- */
-function renderList (
-  val,
-  render
-) {
-  var ret, i, l, keys, key;
-  if (Array.isArray(val) || typeof val === 'string') {
-    ret = new Array(val.length);
-    for (i = 0, l = val.length; i < l; i++) {
-      ret[i] = render(val[i], i);
-    }
-  } else if (typeof val === 'number') {
-    ret = new Array(val);
-    for (i = 0; i < val; i++) {
-      ret[i] = render(i + 1, i);
-    }
-  } else if (isObject(val)) {
-    keys = Object.keys(val);
-    ret = new Array(keys.length);
-    for (i = 0, l = keys.length; i < l; i++) {
-      key = keys[i];
-      ret[i] = render(val[key], key, i);
-    }
-  }
-  if (!isDef(ret)) {
-    ret = [];
-  }
-  (ret)._isVList = true;
-  return ret
-}
-
-/*  */
-
-/**
- * Runtime helper for rendering <slot>
- */
-function renderSlot (
-  name,
-  fallback,
-  props,
-  bindObject
-) {
-  var scopedSlotFn = this.$scopedSlots[name];
-  var nodes;
-  if (scopedSlotFn) { // scoped slot
-    props = props || {};
-    if (bindObject) {
-      if (process.env.NODE_ENV !== 'production' && !isObject(bindObject)) {
-        warn(
-          'slot v-bind without argument expects an Object',
-          this
-        );
-      }
-      props = extend(extend({}, bindObject), props);
-    }
-    nodes = scopedSlotFn(props) || fallback;
-  } else {
-    nodes = this.$slots[name] || fallback;
-  }
-
-  var target = props && props.slot;
-  if (target) {
-    return this.$createElement('template', { slot: target }, nodes)
-  } else {
-    return nodes
-  }
-}
-
-/*  */
-
-/**
- * Runtime helper for resolving filters
- */
-function resolveFilter (id) {
-  return resolveAsset(this.$options, 'filters', id, true) || identity
-}
-
-/*  */
-
-function isKeyNotMatch (expect, actual) {
-  if (Array.isArray(expect)) {
-    return expect.indexOf(actual) === -1
-  } else {
-    return expect !== actual
-  }
-}
-
-/**
- * Runtime helper for checking keyCodes from config.
- * exposed as Vue.prototype._k
- * passing in eventKeyName as last argument separately for backwards compat
- */
-function checkKeyCodes (
-  eventKeyCode,
-  key,
-  builtInKeyCode,
-  eventKeyName,
-  builtInKeyName
-) {
-  var mappedKeyCode = config.keyCodes[key] || builtInKeyCode;
-  if (builtInKeyName && eventKeyName && !config.keyCodes[key]) {
-    return isKeyNotMatch(builtInKeyName, eventKeyName)
-  } else if (mappedKeyCode) {
-    return isKeyNotMatch(mappedKeyCode, eventKeyCode)
-  } else if (eventKeyName) {
-    return hyphenate(eventKeyName) !== key
-  }
-}
-
-/*  */
-
-/**
- * Runtime helper for merging v-bind="object" into a VNode's data.
- */
-function bindObjectProps (
-  data,
-  tag,
-  value,
-  asProp,
-  isSync
-) {
-  if (value) {
-    if (!isObject(value)) {
-      process.env.NODE_ENV !== 'production' && warn(
-        'v-bind without argument expects an Object or Array value',
-        this
-      );
-    } else {
-      if (Array.isArray(value)) {
-        value = toObject(value);
-      }
-      var hash;
-      var loop = function ( key ) {
-        if (
-          key === 'class' ||
-          key === 'style' ||
-          isReservedAttribute(key)
-        ) {
-          hash = data;
-        } else {
-          var type = data.attrs && data.attrs.type;
-          hash = asProp || config.mustUseProp(tag, type, key)
-            ? data.domProps || (data.domProps = {})
-            : data.attrs || (data.attrs = {});
-        }
-        var camelizedKey = camelize(key);
-        if (!(key in hash) && !(camelizedKey in hash)) {
-          hash[key] = value[key];
-
-          if (isSync) {
-            var on = data.on || (data.on = {});
-            on[("update:" + camelizedKey)] = function ($event) {
-              value[key] = $event;
-            };
-          }
-        }
-      };
-
-      for (var key in value) loop( key );
-    }
-  }
-  return data
-}
-
-/*  */
-
-/**
- * Runtime helper for rendering static trees.
- */
-function renderStatic (
-  index,
-  isInFor
-) {
-  var cached = this._staticTrees || (this._staticTrees = []);
-  var tree = cached[index];
-  // if has already-rendered static tree and not inside v-for,
-  // we can reuse the same tree.
-  if (tree && !isInFor) {
-    return tree
-  }
-  // otherwise, render a fresh tree.
-  tree = cached[index] = this.$options.staticRenderFns[index].call(
-    this._renderProxy,
-    null,
-    this // for render fns generated for functional component templates
-  );
-  markStatic(tree, ("__static__" + index), false);
-  return tree
-}
-
-/**
- * Runtime helper for v-once.
- * Effectively it means marking the node as static with a unique key.
- */
-function markOnce (
-  tree,
-  index,
-  key
-) {
-  markStatic(tree, ("__once__" + index + (key ? ("_" + key) : "")), true);
-  return tree
-}
-
-function markStatic (
-  tree,
-  key,
-  isOnce
-) {
-  if (Array.isArray(tree)) {
-    for (var i = 0; i < tree.length; i++) {
-      if (tree[i] && typeof tree[i] !== 'string') {
-        markStaticNode(tree[i], (key + "_" + i), isOnce);
-      }
-    }
-  } else {
-    markStaticNode(tree, key, isOnce);
-  }
-}
-
-function markStaticNode (node, key, isOnce) {
-  node.isStatic = true;
-  node.key = key;
-  node.isOnce = isOnce;
-}
-
-/*  */
-
-function bindObjectListeners (data, value) {
-  if (value) {
-    if (!isPlainObject(value)) {
-      process.env.NODE_ENV !== 'production' && warn(
-        'v-on without argument expects an Object value',
-        this
-      );
-    } else {
-      var on = data.on = data.on ? extend({}, data.on) : {};
-      for (var key in value) {
-        var existing = on[key];
-        var ours = value[key];
-        on[key] = existing ? [].concat(existing, ours) : ours;
-      }
-    }
-  }
-  return data
-}
-
-/*  */
-
-function installRenderHelpers (target) {
-  target._o = markOnce;
-  target._n = toNumber;
-  target._s = toString;
-  target._l = renderList;
-  target._t = renderSlot;
-  target._q = looseEqual;
-  target._i = looseIndexOf;
-  target._m = renderStatic;
-  target._f = resolveFilter;
-  target._k = checkKeyCodes;
-  target._b = bindObjectProps;
-  target._v = createTextVNode;
-  target._e = createEmptyVNode;
-  target._u = resolveScopedSlots;
-  target._g = bindObjectListeners;
-}
-
-/*  */
-
-function FunctionalRenderContext (
-  data,
-  props,
-  children,
-  parent,
-  Ctor
-) {
-  var options = Ctor.options;
-  // ensure the createElement function in functional components
-  // gets a unique context - this is necessary for correct named slot check
-  var contextVm;
-  if (hasOwn(parent, '_uid')) {
-    contextVm = Object.create(parent);
-    // $flow-disable-line
-    contextVm._original = parent;
-  } else {
-    // the context vm passed in is a functional context as well.
-    // in this case we want to make sure we are able to get a hold to the
-    // real context instance.
-    contextVm = parent;
-    // $flow-disable-line
-    parent = parent._original;
-  }
-  var isCompiled = isTrue(options._compiled);
-  var needNormalization = !isCompiled;
-
-  this.data = data;
-  this.props = props;
-  this.children = children;
-  this.parent = parent;
-  this.listeners = data.on || emptyObject;
-  this.injections = resolveInject(options.inject, parent);
-  this.slots = function () { return resolveSlots(children, parent); };
-
-  // support for compiled functional template
-  if (isCompiled) {
-    // exposing $options for renderStatic()
-    this.$options = options;
-    // pre-resolve slots for renderSlot()
-    this.$slots = this.slots();
-    this.$scopedSlots = data.scopedSlots || emptyObject;
-  }
-
-  if (options._scopeId) {
-    this._c = function (a, b, c, d) {
-      var vnode = createElement(contextVm, a, b, c, d, needNormalization);
-      if (vnode && !Array.isArray(vnode)) {
-        vnode.fnScopeId = options._scopeId;
-        vnode.fnContext = parent;
-      }
-      return vnode
-    };
-  } else {
-    this._c = function (a, b, c, d) { return createElement(contextVm, a, b, c, d, needNormalization); };
-  }
-}
-
-installRenderHelpers(FunctionalRenderContext.prototype);
-
-function createFunctionalComponent (
-  Ctor,
-  propsData,
-  data,
-  contextVm,
-  children
-) {
-  var options = Ctor.options;
-  var props = {};
-  var propOptions = options.props;
-  if (isDef(propOptions)) {
-    for (var key in propOptions) {
-      props[key] = validateProp(key, propOptions, propsData || emptyObject);
-    }
-  } else {
-    if (isDef(data.attrs)) { mergeProps(props, data.attrs); }
-    if (isDef(data.props)) { mergeProps(props, data.props); }
-  }
-
-  var renderContext = new FunctionalRenderContext(
-    data,
-    props,
-    children,
-    contextVm,
-    Ctor
-  );
-
-  var vnode = options.render.call(null, renderContext._c, renderContext);
-
-  if (vnode instanceof VNode) {
-    return cloneAndMarkFunctionalResult(vnode, data, renderContext.parent, options, renderContext)
-  } else if (Array.isArray(vnode)) {
-    var vnodes = normalizeChildren(vnode) || [];
-    var res = new Array(vnodes.length);
-    for (var i = 0; i < vnodes.length; i++) {
-      res[i] = cloneAndMarkFunctionalResult(vnodes[i], data, renderContext.parent, options, renderContext);
-    }
-    return res
-  }
-}
-
-function cloneAndMarkFunctionalResult (vnode, data, contextVm, options, renderContext) {
-  // #7817 clone node before setting fnContext, otherwise if the node is reused
-  // (e.g. it was from a cached normal slot) the fnContext causes named slots
-  // that should not be matched to match.
-  var clone = cloneVNode(vnode);
-  clone.fnContext = contextVm;
-  clone.fnOptions = options;
-  if (process.env.NODE_ENV !== 'production') {
-    (clone.devtoolsMeta = clone.devtoolsMeta || {}).renderContext = renderContext;
-  }
-  if (data.slot) {
-    (clone.data || (clone.data = {})).slot = data.slot;
-  }
-  return clone
-}
-
-function mergeProps (to, from) {
-  for (var key in from) {
-    to[camelize(key)] = from[key];
-  }
-}
-
-/*  */
-
-/*  */
-
-/*  */
-
-/*  */
-
-// inline hooks to be invoked on component VNodes during patch
-var componentVNodeHooks = {
-  init: function init (vnode, hydrating) {
-    if (
-      vnode.componentInstance &&
-      !vnode.componentInstance._isDestroyed &&
-      vnode.data.keepAlive
-    ) {
-      // kept-alive components, treat as a patch
-      var mountedNode = vnode; // work around flow
-      componentVNodeHooks.prepatch(mountedNode, mountedNode);
-    } else {
-      var child = vnode.componentInstance = createComponentInstanceForVnode(
-        vnode,
-        activeInstance
-      );
-      child.$mount(hydrating ? vnode.elm : undefined, hydrating);
-    }
-  },
-
-  prepatch: function prepatch (oldVnode, vnode) {
-    var options = vnode.componentOptions;
-    var child = vnode.componentInstance = oldVnode.componentInstance;
-    updateChildComponent(
-      child,
-      options.propsData, // updated props
-      options.listeners, // updated listeners
-      vnode, // new parent vnode
-      options.children // new children
-    );
-  },
-
-  insert: function insert (vnode) {
-    var context = vnode.context;
-    var componentInstance = vnode.componentInstance;
-    if (!componentInstance._isMounted) {
-      componentInstance._isMounted = true;
-      callHook(componentInstance, 'mounted');
-    }
-    if (vnode.data.keepAlive) {
-      if (context._isMounted) {
-        // vue-router#1212
-        // During updates, a kept-alive component's child components may
-        // change, so directly walking the tree here may call activated hooks
-        // on incorrect children. Instead we push them into a queue which will
-        // be processed after the whole patch process ended.
-        queueActivatedComponent(componentInstance);
-      } else {
-        activateChildComponent(componentInstance, true /* direct */);
-      }
-    }
-  },
-
-  destroy: function destroy (vnode) {
-    var componentInstance = vnode.componentInstance;
-    if (!componentInstance._isDestroyed) {
-      if (!vnode.data.keepAlive) {
-        componentInstance.$destroy();
-      } else {
-        deactivateChildComponent(componentInstance, true /* direct */);
-      }
-    }
-  }
-};
-
-var hooksToMerge = Object.keys(componentVNodeHooks);
-
-function createComponent (
-  Ctor,
-  data,
-  context,
-  children,
-  tag
-) {
-  if (isUndef(Ctor)) {
-    return
-  }
-
-  var baseCtor = context.$options._base;
-
-  // plain options object: turn it into a constructor
-  if (isObject(Ctor)) {
-    Ctor = baseCtor.extend(Ctor);
-  }
-
-  // if at this stage it's not a constructor or an async component factory,
-  // reject.
-  if (typeof Ctor !== 'function') {
-    if (process.env.NODE_ENV !== 'production') {
-      warn(("Invalid Component definition: " + (String(Ctor))), context);
-    }
-    return
-  }
-
-  // async component
-  var asyncFactory;
-  if (isUndef(Ctor.cid)) {
-    asyncFactory = Ctor;
-    Ctor = resolveAsyncComponent(asyncFactory, baseCtor, context);
-    if (Ctor === undefined) {
-      // return a placeholder node for async component, which is rendered
-      // as a comment node but preserves all the raw information for the node.
-      // the information will be used for async server-rendering and hydration.
-      return createAsyncPlaceholder(
-        asyncFactory,
-        data,
-        context,
-        children,
-        tag
-      )
-    }
-  }
-
-  data = data || {};
-
-  // resolve constructor options in case global mixins are applied after
-  // component constructor creation
-  resolveConstructorOptions(Ctor);
-
-  // transform component v-model data into props & events
-  if (isDef(data.model)) {
-    transformModel(Ctor.options, data);
-  }
-
-  // extract props
-  var propsData = extractPropsFromVNodeData(data, Ctor, tag);
-
-  // functional component
-  if (isTrue(Ctor.options.functional)) {
-    return createFunctionalComponent(Ctor, propsData, data, context, children)
-  }
-
-  // extract listeners, since these needs to be treated as
-  // child component listeners instead of DOM listeners
-  var listeners = data.on;
-  // replace with listeners with .native modifier
-  // so it gets processed during parent component patch.
-  data.on = data.nativeOn;
-
-  if (isTrue(Ctor.options.abstract)) {
-    // abstract components do not keep anything
-    // other than props & listeners & slot
-
-    // work around flow
-    var slot = data.slot;
-    data = {};
-    if (slot) {
-      data.slot = slot;
-    }
-  }
-
-  // install component management hooks onto the placeholder node
-  installComponentHooks(data);
-
-  // return a placeholder vnode
-  var name = Ctor.options.name || tag;
-  var vnode = new VNode(
-    ("vue-component-" + (Ctor.cid) + (name ? ("-" + name) : '')),
-    data, undefined, undefined, undefined, context,
-    { Ctor: Ctor, propsData: propsData, listeners: listeners, tag: tag, children: children },
-    asyncFactory
-  );
-
-  return vnode
-}
-
-function createComponentInstanceForVnode (
-  vnode, // we know it's MountedComponentVNode but flow doesn't
-  parent // activeInstance in lifecycle state
-) {
-  var options = {
-    _isComponent: true,
-    _parentVnode: vnode,
-    parent: parent
-  };
-  // check inline-template render functions
-  var inlineTemplate = vnode.data.inlineTemplate;
-  if (isDef(inlineTemplate)) {
-    options.render = inlineTemplate.render;
-    options.staticRenderFns = inlineTemplate.staticRenderFns;
-  }
-  return new vnode.componentOptions.Ctor(options)
-}
-
-function installComponentHooks (data) {
-  var hooks = data.hook || (data.hook = {});
-  for (var i = 0; i < hooksToMerge.length; i++) {
-    var key = hooksToMerge[i];
-    var existing = hooks[key];
-    var toMerge = componentVNodeHooks[key];
-    if (existing !== toMerge && !(existing && existing._merged)) {
-      hooks[key] = existing ? mergeHook$1(toMerge, existing) : toMerge;
-    }
-  }
-}
-
-function mergeHook$1 (f1, f2) {
-  var merged = function (a, b) {
-    // flow complains about extra args which is why we use any
-    f1(a, b);
-    f2(a, b);
-  };
-  merged._merged = true;
-  return merged
-}
-
-// transform component v-model info (value and callback) into
-// prop and event handler respectively.
-function transformModel (options, data) {
-  var prop = (options.model && options.model.prop) || 'value';
-  var event = (options.model && options.model.event) || 'input'
-  ;(data.props || (data.props = {}))[prop] = data.model.value;
-  var on = data.on || (data.on = {});
-  var existing = on[event];
-  var callback = data.model.callback;
-  if (isDef(existing)) {
-    if (
-      Array.isArray(existing)
-        ? existing.indexOf(callback) === -1
-        : existing !== callback
-    ) {
-      on[event] = [callback].concat(existing);
-    }
-  } else {
-    on[event] = callback;
-  }
-}
-
-/*  */
-
-var SIMPLE_NORMALIZE = 1;
-var ALWAYS_NORMALIZE = 2;
-
-// wrapper function for providing a more flexible interface
-// without getting yelled at by flow
-function createElement (
-  context,
-  tag,
-  data,
-  children,
-  normalizationType,
-  alwaysNormalize
-) {
-  if (Array.isArray(data) || isPrimitive(data)) {
-    normalizationType = children;
-    children = data;
-    data = undefined;
-  }
-  if (isTrue(alwaysNormalize)) {
-    normalizationType = ALWAYS_NORMALIZE;
-  }
-  return _createElement(context, tag, data, children, normalizationType)
-}
-
-function _createElement (
-  context,
-  tag,
-  data,
-  children,
-  normalizationType
-) {
-  if (isDef(data) && isDef((data).__ob__)) {
-    process.env.NODE_ENV !== 'production' && warn(
-      "Avoid using observed data object as vnode data: " + (JSON.stringify(data)) + "\n" +
-      'Always create fresh vnode data objects in each render!',
-      context
-    );
-    return createEmptyVNode()
-  }
-  // object syntax in v-bind
-  if (isDef(data) && isDef(data.is)) {
-    tag = data.is;
-  }
-  if (!tag) {
-    // in case of component :is set to falsy value
-    return createEmptyVNode()
-  }
-  // warn against non-primitive key
-  if (process.env.NODE_ENV !== 'production' &&
-    isDef(data) && isDef(data.key) && !isPrimitive(data.key)
-  ) {
-    {
-      warn(
-        'Avoid using non-primitive value as key, ' +
-        'use string/number value instead.',
-        context
-      );
-    }
-  }
-  // support single function children as default scoped slot
-  if (Array.isArray(children) &&
-    typeof children[0] === 'function'
-  ) {
-    data = data || {};
-    data.scopedSlots = { default: children[0] };
-    children.length = 0;
-  }
-  if (normalizationType === ALWAYS_NORMALIZE) {
-    children = normalizeChildren(children);
-  } else if (normalizationType === SIMPLE_NORMALIZE) {
-    children = simpleNormalizeChildren(children);
-  }
-  var vnode, ns;
-  if (typeof tag === 'string') {
-    var Ctor;
-    ns = (context.$vnode && context.$vnode.ns) || config.getTagNamespace(tag);
-    if (config.isReservedTag(tag)) {
-      // platform built-in elements
-      vnode = new VNode(
-        config.parsePlatformTagName(tag), data, children,
-        undefined, undefined, context
-      );
-    } else if ((!data || !data.pre) && isDef(Ctor = resolveAsset(context.$options, 'components', tag))) {
-      // component
-      vnode = createComponent(Ctor, data, context, children, tag);
-    } else {
-      // unknown or unlisted namespaced elements
-      // check at runtime because it may get assigned a namespace when its
-      // parent normalizes children
-      vnode = new VNode(
-        tag, data, children,
-        undefined, undefined, context
-      );
-    }
-  } else {
-    // direct component options / constructor
-    vnode = createComponent(tag, data, context, children);
-  }
-  if (Array.isArray(vnode)) {
-    return vnode
-  } else if (isDef(vnode)) {
-    if (isDef(ns)) { applyNS(vnode, ns); }
-    if (isDef(data)) { registerDeepBindings(data); }
-    return vnode
-  } else {
-    return createEmptyVNode()
-  }
-}
-
-function applyNS (vnode, ns, force) {
-  vnode.ns = ns;
-  if (vnode.tag === 'foreignObject') {
-    // use default namespace inside foreignObject
-    ns = undefined;
-    force = true;
-  }
-  if (isDef(vnode.children)) {
-    for (var i = 0, l = vnode.children.length; i < l; i++) {
-      var child = vnode.children[i];
-      if (isDef(child.tag) && (
-        isUndef(child.ns) || (isTrue(force) && child.tag !== 'svg'))) {
-        applyNS(child, ns, force);
-      }
-    }
-  }
-}
-
-// ref #5318
-// necessary to ensure parent re-render when deep bindings like :style and
-// :class are used on slot nodes
-function registerDeepBindings (data) {
-  if (isObject(data.style)) {
-    traverse(data.style);
-  }
-  if (isObject(data.class)) {
-    traverse(data.class);
-  }
-}
-
-/*  */
-
-function initRender (vm) {
-  vm._vnode = null; // the root of the child tree
-  vm._staticTrees = null; // v-once cached trees
-  var options = vm.$options;
-  var parentVnode = vm.$vnode = options._parentVnode; // the placeholder node in parent tree
-  var renderContext = parentVnode && parentVnode.context;
-  vm.$slots = resolveSlots(options._renderChildren, renderContext);
-  vm.$scopedSlots = emptyObject;
-  // bind the createElement fn to this instance
-  // so that we get proper render context inside it.
-  // args order: tag, data, children, normalizationType, alwaysNormalize
-  // internal version is used by render functions compiled from templates
-  vm._c = function (a, b, c, d) { return createElement(vm, a, b, c, d, false); };
-  // normalization is always applied for the public version, used in
-  // user-written render functions.
-  vm.$createElement = function (a, b, c, d) { return createElement(vm, a, b, c, d, true); };
-
-  // $attrs & $listeners are exposed for easier HOC creation.
-  // they need to be reactive so that HOCs using them are always updated
-  var parentData = parentVnode && parentVnode.data;
-
-  /* istanbul ignore else */
-  if (process.env.NODE_ENV !== 'production') {
-    defineReactive$$1(vm, '$attrs', parentData && parentData.attrs || emptyObject, function () {
-      !isUpdatingChildComponent && warn("$attrs is readonly.", vm);
-    }, true);
-    defineReactive$$1(vm, '$listeners', options._parentListeners || emptyObject, function () {
-      !isUpdatingChildComponent && warn("$listeners is readonly.", vm);
-    }, true);
-  } else {
-    defineReactive$$1(vm, '$attrs', parentData && parentData.attrs || emptyObject, null, true);
-    defineReactive$$1(vm, '$listeners', options._parentListeners || emptyObject, null, true);
-  }
-}
-
-function renderMixin (Vue) {
-  // install runtime convenience helpers
-  installRenderHelpers(Vue.prototype);
-
-  Vue.prototype.$nextTick = function (fn) {
-    return nextTick(fn, this)
-  };
-
-  Vue.prototype._render = function () {
-    var vm = this;
-    var ref = vm.$options;
-    var render = ref.render;
-    var _parentVnode = ref._parentVnode;
-
-    if (_parentVnode) {
-      vm.$scopedSlots = _parentVnode.data.scopedSlots || emptyObject;
-    }
-
-    // set parent vnode. this allows render functions to have access
-    // to the data on the placeholder node.
-    vm.$vnode = _parentVnode;
-    // render self
-    var vnode;
-    try {
-      vnode = render.call(vm._renderProxy, vm.$createElement);
-    } catch (e) {
-      handleError(e, vm, "render");
-      // return error render result,
-      // or previous vnode to prevent render error causing blank component
-      /* istanbul ignore else */
-      if (process.env.NODE_ENV !== 'production' && vm.$options.renderError) {
-        try {
-          vnode = vm.$options.renderError.call(vm._renderProxy, vm.$createElement, e);
-        } catch (e) {
-          handleError(e, vm, "renderError");
-          vnode = vm._vnode;
-        }
-      } else {
-        vnode = vm._vnode;
-      }
-    }
-    // return empty vnode in case the render function errored out
-    if (!(vnode instanceof VNode)) {
-      if (process.env.NODE_ENV !== 'production' && Array.isArray(vnode)) {
-        warn(
-          'Multiple root nodes returned from render function. Render function ' +
-          'should return a single root node.',
-          vm
-        );
-      }
-      vnode = createEmptyVNode();
-    }
-    // set parent
-    vnode.parent = _parentVnode;
-    return vnode
-  };
-}
-
-/*  */
-
 var uid$3 = 0;
 
 function initMixin (Vue) {
@@ -9913,34 +10284,14 @@ function resolveConstructorOptions (Ctor) {
 function resolveModifiedOptions (Ctor) {
   var modified;
   var latest = Ctor.options;
-  var extended = Ctor.extendOptions;
   var sealed = Ctor.sealedOptions;
   for (var key in latest) {
     if (latest[key] !== sealed[key]) {
       if (!modified) { modified = {}; }
-      modified[key] = dedupe(latest[key], extended[key], sealed[key]);
+      modified[key] = latest[key];
     }
   }
   return modified
-}
-
-function dedupe (latest, extended, sealed) {
-  // compare latest and sealed to ensure lifecycle hooks won't be duplicated
-  // between merges
-  if (Array.isArray(latest)) {
-    var res = [];
-    sealed = Array.isArray(sealed) ? sealed : [sealed];
-    extended = Array.isArray(extended) ? extended : [extended];
-    for (var i = 0; i < latest.length; i++) {
-      // push original options and not sealed options to exclude duplicated options
-      if (extended.indexOf(latest[i]) >= 0 || sealed.indexOf(latest[i]) < 0) {
-        res.push(latest[i]);
-      }
-    }
-    return res
-  } else {
-    return latest
-  }
 }
 
 function Vue (options) {
@@ -10276,6 +10627,12 @@ function initGlobalAPI (Vue) {
   Vue.delete = del;
   Vue.nextTick = nextTick;
 
+  // 2.6 explicit observable API
+  Vue.observable = function (obj) {
+    observe(obj);
+    return obj
+  };
+
   Vue.options = Object.create(null);
   ASSET_TYPES.forEach(function (type) {
     Vue.options[type + 's'] = Object.create(null);
@@ -10311,7 +10668,7 @@ Object.defineProperty(Vue, 'FunctionalRenderContext', {
   value: FunctionalRenderContext
 });
 
-Vue.version = '2.5.21';
+Vue.version = '2.6.10';
 
 /*  */
 
@@ -10331,6 +10688,17 @@ var mustUseProp = function (tag, type, attr) {
 };
 
 var isEnumeratedAttr = makeMap('contenteditable,draggable,spellcheck');
+
+var isValidContentEditableValue = makeMap('events,caret,typing,plaintext-only');
+
+var convertEnumeratedValue = function (key, value) {
+  return isFalsyAttrValue(value) || value === 'false'
+    ? 'false'
+    // allow arbitrary string value for contenteditable
+    : key === 'contenteditable' && isValidContentEditableValue(value)
+      ? value
+      : 'true'
+};
 
 var isBooleanAttr = makeMap(
   'allowfullscreen,async,autofocus,autoplay,checked,compact,controls,declare,' +
@@ -11457,6 +11825,7 @@ function _update (oldVnode, vnode) {
     } else {
       // existing directive, update
       dir.oldValue = oldDir.value;
+      dir.oldArg = oldDir.arg;
       callHook$1(dir, 'update', vnode, oldVnode);
       if (dir.def && dir.def.componentUpdated) {
         dirsWithPostpatch.push(dir);
@@ -11600,7 +11969,7 @@ function setAttr (el, key, value) {
       el.setAttribute(key, value);
     }
   } else if (isEnumeratedAttr(key)) {
-    el.setAttribute(key, isFalsyAttrValue(value) || value === 'false' ? 'false' : 'true');
+    el.setAttribute(key, convertEnumeratedValue(key, value));
   } else if (isXlink(key)) {
     if (isFalsyAttrValue(value)) {
       el.removeAttributeNS(xlinkNS, getXlinkProp(key));
@@ -11622,8 +11991,8 @@ function baseSetAttr (el, key, value) {
     /* istanbul ignore if */
     if (
       isIE && !isIE9 &&
-      (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') &&
-      key === 'placeholder' && !el.__ieph
+      el.tagName === 'TEXTAREA' &&
+      key === 'placeholder' && value !== '' && !el.__ieph
     ) {
       var blocker = function (e) {
         e.stopImmediatePropagation();
@@ -11780,9 +12149,13 @@ function wrapFilter (exp, filter) {
 
 /*  */
 
-function baseWarn (msg) {
+
+
+/* eslint-disable no-unused-vars */
+function baseWarn (msg, range) {
   console.error(("[Vue compiler]: " + msg));
 }
+/* eslint-enable no-unused-vars */
 
 function pluckModuleFunction (
   modules,
@@ -11793,20 +12166,23 @@ function pluckModuleFunction (
     : []
 }
 
-function addProp (el, name, value) {
-  (el.props || (el.props = [])).push({ name: name, value: value });
+function addProp (el, name, value, range, dynamic) {
+  (el.props || (el.props = [])).push(rangeSetItem({ name: name, value: value, dynamic: dynamic }, range));
   el.plain = false;
 }
 
-function addAttr (el, name, value) {
-  (el.attrs || (el.attrs = [])).push({ name: name, value: value });
+function addAttr (el, name, value, range, dynamic) {
+  var attrs = dynamic
+    ? (el.dynamicAttrs || (el.dynamicAttrs = []))
+    : (el.attrs || (el.attrs = []));
+  attrs.push(rangeSetItem({ name: name, value: value, dynamic: dynamic }, range));
   el.plain = false;
 }
 
 // add a raw attr (use this in preTransforms)
-function addRawAttr (el, name, value) {
+function addRawAttr (el, name, value, range) {
   el.attrsMap[name] = value;
-  el.attrsList.push({ name: name, value: value });
+  el.attrsList.push(rangeSetItem({ name: name, value: value }, range));
 }
 
 function addDirective (
@@ -11815,10 +12191,25 @@ function addDirective (
   rawName,
   value,
   arg,
-  modifiers
+  isDynamicArg,
+  modifiers,
+  range
 ) {
-  (el.directives || (el.directives = [])).push({ name: name, rawName: rawName, value: value, arg: arg, modifiers: modifiers });
+  (el.directives || (el.directives = [])).push(rangeSetItem({
+    name: name,
+    rawName: rawName,
+    value: value,
+    arg: arg,
+    isDynamicArg: isDynamicArg,
+    modifiers: modifiers
+  }, range));
   el.plain = false;
+}
+
+function prependModifierMarker (symbol, name, dynamic) {
+  return dynamic
+    ? ("_p(" + name + ",\"" + symbol + "\")")
+    : symbol + name // mark the event as captured
 }
 
 function addHandler (
@@ -11827,7 +12218,9 @@ function addHandler (
   value,
   modifiers,
   important,
-  warn
+  warn,
+  range,
+  dynamic
 ) {
   modifiers = modifiers || emptyObject;
   // warn prevent and passive modifier
@@ -11838,18 +12231,25 @@ function addHandler (
   ) {
     warn(
       'passive and prevent can\'t be used together. ' +
-      'Passive handler can\'t prevent default event.'
+      'Passive handler can\'t prevent default event.',
+      range
     );
   }
 
   // normalize click.right and click.middle since they don't actually fire
   // this is technically browser-specific, but at least for now browsers are
   // the only target envs that have right/middle clicks.
-  if (name === 'click') {
-    if (modifiers.right) {
+  if (modifiers.right) {
+    if (dynamic) {
+      name = "(" + name + ")==='click'?'contextmenu':(" + name + ")";
+    } else if (name === 'click') {
       name = 'contextmenu';
       delete modifiers.right;
-    } else if (modifiers.middle) {
+    }
+  } else if (modifiers.middle) {
+    if (dynamic) {
+      name = "(" + name + ")==='click'?'mouseup':(" + name + ")";
+    } else if (name === 'click') {
       name = 'mouseup';
     }
   }
@@ -11857,16 +12257,16 @@ function addHandler (
   // check capture modifier
   if (modifiers.capture) {
     delete modifiers.capture;
-    name = '!' + name; // mark the event as captured
+    name = prependModifierMarker('!', name, dynamic);
   }
   if (modifiers.once) {
     delete modifiers.once;
-    name = '~' + name; // mark the event as once
+    name = prependModifierMarker('~', name, dynamic);
   }
   /* istanbul ignore if */
   if (modifiers.passive) {
     delete modifiers.passive;
-    name = '&' + name; // mark the event as passive
+    name = prependModifierMarker('&', name, dynamic);
   }
 
   var events;
@@ -11877,9 +12277,7 @@ function addHandler (
     events = el.events || (el.events = {});
   }
 
-  var newHandler = {
-    value: value.trim()
-  };
+  var newHandler = rangeSetItem({ value: value.trim(), dynamic: dynamic }, range);
   if (modifiers !== emptyObject) {
     newHandler.modifiers = modifiers;
   }
@@ -11895,6 +12293,15 @@ function addHandler (
   }
 
   el.plain = false;
+}
+
+function getRawBindingAttr (
+  el,
+  name
+) {
+  return el.rawAttrsMap[':' + name] ||
+    el.rawAttrsMap['v-bind:' + name] ||
+    el.rawAttrsMap[name]
 }
 
 function getBindingAttr (
@@ -11938,6 +12345,35 @@ function getAndRemoveAttr (
     delete el.attrsMap[name];
   }
   return val
+}
+
+function getAndRemoveAttrByRegex (
+  el,
+  name
+) {
+  var list = el.attrsList;
+  for (var i = 0, l = list.length; i < l; i++) {
+    var attr = list[i];
+    if (name.test(attr.name)) {
+      list.splice(i, 1);
+      return attr
+    }
+  }
+}
+
+function rangeSetItem (
+  item,
+  range
+) {
+  if (range) {
+    if (range.start != null) {
+      item.start = range.start;
+    }
+    if (range.end != null) {
+      item.end = range.end;
+    }
+  }
+  return item
 }
 
 /*  */
@@ -12114,7 +12550,8 @@ function model (
     if (tag === 'input' && type === 'file') {
       warn$1(
         "<" + (el.tag) + " v-model=\"" + value + "\" type=\"file\">:\n" +
-        "File inputs are read only. Use a v-on:change listener instead."
+        "File inputs are read only. Use a v-on:change listener instead.",
+        el.rawAttrsMap['v-model']
       );
     }
   }
@@ -12140,7 +12577,8 @@ function model (
       "<" + (el.tag) + " v-model=\"" + value + "\">: " +
       "v-model is not supported on this element type. " +
       'If you are working with contenteditable, it\'s recommended to ' +
-      'wrap a library dedicated for that purpose inside a custom component.'
+      'wrap a library dedicated for that purpose inside a custom component.',
+      el.rawAttrsMap['v-model']
     );
   }
 
@@ -12224,7 +12662,8 @@ function genDefaultModel (
       var binding = el.attrsMap['v-bind:value'] ? 'v-bind:value' : ':value';
       warn$1(
         binding + "=\"" + value$1 + "\" conflicts with v-model on the same element " +
-        'because the latter already expands to a value binding internally'
+        'because the latter already expands to a value binding internally',
+        el.rawAttrsMap[binding]
       );
     }
   }
@@ -12295,15 +12734,49 @@ function createOnceHandler$1 (event, handler, capture) {
   }
 }
 
+// #9446: Firefox <= 53 (in particular, ESR 52) has incorrect Event.timeStamp
+// implementation and does not fire microtasks in between event propagation, so
+// safe to exclude.
+var useMicrotaskFix = isUsingMicroTask && !(isFF && Number(isFF[1]) <= 53);
+
 function add$1 (
-  event,
+  name,
   handler,
   capture,
   passive
 ) {
-  handler = withMacroTask(handler);
+  // async edge case #6566: inner click event triggers patch, event handler
+  // attached to outer element during patch, and triggered again. This
+  // happens because browsers fire microtask ticks between event propagation.
+  // the solution is simple: we save the timestamp when a handler is attached,
+  // and the handler would only fire if the event passed to it was fired
+  // AFTER it was attached.
+  if (useMicrotaskFix) {
+    var attachedTimestamp = currentFlushTimestamp;
+    var original = handler;
+    handler = original._wrapper = function (e) {
+      if (
+        // no bubbling, should always fire.
+        // this is just a safety net in case event.timeStamp is unreliable in
+        // certain weird environments...
+        e.target === e.currentTarget ||
+        // event is fired after handler attachment
+        e.timeStamp >= attachedTimestamp ||
+        // bail for environments that have buggy event.timeStamp implementations
+        // #9462 iOS 9 bug: event.timeStamp is 0 after history.pushState
+        // #9681 QtWebEngine event.timeStamp is negative value
+        e.timeStamp <= 0 ||
+        // #9448 bail if event is fired in another document in a multi-page
+        // electron/nw.js app, since event.timeStamp will be using a different
+        // starting reference
+        e.target.ownerDocument !== document
+      ) {
+        return original.apply(this, arguments)
+      }
+    };
+  }
   target$1.addEventListener(
-    event,
+    name,
     handler,
     supportsPassive
       ? { capture: capture, passive: passive }
@@ -12312,14 +12785,14 @@ function add$1 (
 }
 
 function remove$2 (
-  event,
+  name,
   handler,
   capture,
   _target
 ) {
   (_target || target$1).removeEventListener(
-    event,
-    handler._withTask || handler,
+    name,
+    handler._wrapper || handler,
     capture
   );
 }
@@ -12343,6 +12816,8 @@ var events = {
 
 /*  */
 
+var svgContainer;
+
 function updateDOMProps (oldVnode, vnode) {
   if (isUndef(oldVnode.data.domProps) && isUndef(vnode.data.domProps)) {
     return
@@ -12357,10 +12832,11 @@ function updateDOMProps (oldVnode, vnode) {
   }
 
   for (key in oldProps) {
-    if (isUndef(props[key])) {
+    if (!(key in props)) {
       elm[key] = '';
     }
   }
+
   for (key in props) {
     cur = props[key];
     // ignore children if the node has textContent or innerHTML,
@@ -12376,7 +12852,7 @@ function updateDOMProps (oldVnode, vnode) {
       }
     }
 
-    if (key === 'value') {
+    if (key === 'value' && elm.tagName !== 'PROGRESS') {
       // store value as _value as well since
       // non-string values will be stringified
       elm._value = cur;
@@ -12385,8 +12861,29 @@ function updateDOMProps (oldVnode, vnode) {
       if (shouldUpdateValue(elm, strCur)) {
         elm.value = strCur;
       }
-    } else {
-      elm[key] = cur;
+    } else if (key === 'innerHTML' && isSVG(elm.tagName) && isUndef(elm.innerHTML)) {
+      // IE doesn't support innerHTML for SVG elements
+      svgContainer = svgContainer || document.createElement('div');
+      svgContainer.innerHTML = "<svg>" + cur + "</svg>";
+      var svg = svgContainer.firstChild;
+      while (elm.firstChild) {
+        elm.removeChild(elm.firstChild);
+      }
+      while (svg.firstChild) {
+        elm.appendChild(svg.firstChild);
+      }
+    } else if (
+      // skip the update if old and new VDOM state is the same.
+      // `value` is handled separately because the DOM value may be temporarily
+      // out of sync with VDOM state due to focus, composition and modifiers.
+      // This  #4521 by skipping the unnecesarry `checked` update.
+      cur !== oldProps[key]
+    ) {
+      // some property updates can throw
+      // e.g. `value` on <progress> w/ non-finite value
+      try {
+        elm[key] = cur;
+      } catch (e) {}
     }
   }
 }
@@ -12416,10 +12913,6 @@ function isDirtyWithModifiers (elm, newVal) {
   var value = elm.value;
   var modifiers = elm._vModifiers; // injected by v-model runtime
   if (isDef(modifiers)) {
-    if (modifiers.lazy) {
-      // inputs with lazy should only be updated when not in focus
-      return false
-    }
     if (modifiers.number) {
       return toNumber(value) !== toNumber(newVal)
     }
@@ -12514,7 +13007,7 @@ var setProp = function (el, name, val) {
   if (cssVarRE.test(name)) {
     el.style.setProperty(name, val);
   } else if (importantRE.test(val)) {
-    el.style.setProperty(name, val.replace(importantRE, ''), 'important');
+    el.style.setProperty(hyphenate(name), val.replace(importantRE, ''), 'important');
   } else {
     var normalizedName = normalize(name);
     if (Array.isArray(val)) {
@@ -12891,8 +13384,8 @@ function enter (vnode, toggleDisplay) {
   var context = activeInstance;
   var transitionNode = activeInstance.$vnode;
   while (transitionNode && transitionNode.parent) {
-    transitionNode = transitionNode.parent;
     context = transitionNode.context;
+    transitionNode = transitionNode.parent;
   }
 
   var isAppear = !context._isMounted || !vnode.isRootInsert;
@@ -13788,8 +14281,7 @@ if (inBrowser) {
         devtools.emit('init', Vue);
       } else if (
         process.env.NODE_ENV !== 'production' &&
-        process.env.NODE_ENV !== 'test' &&
-        isChrome
+        process.env.NODE_ENV !== 'test'
       ) {
         console[console.info ? 'info' : 'log'](
           'Download the Vue Devtools extension for a better development experience:\n' +
@@ -13871,7 +14363,8 @@ function transformNode (el, options) {
         "class=\"" + staticClass + "\": " +
         'Interpolation inside attributes has been removed. ' +
         'Use v-bind or the colon shorthand instead. For example, ' +
-        'instead of <div class="{{ val }}">, use <div :class="val">.'
+        'instead of <div class="{{ val }}">, use <div :class="val">.',
+        el.rawAttrsMap['class']
       );
     }
   }
@@ -13915,7 +14408,8 @@ function transformNode$1 (el, options) {
           "style=\"" + staticStyle + "\": " +
           'Interpolation inside attributes has been removed. ' +
           'Use v-bind or the colon shorthand instead. For example, ' +
-          'instead of <div style="{{ val }}">, use <div :style="val">.'
+          'instead of <div style="{{ val }}">, use <div :style="val">.',
+          el.rawAttrsMap['style']
         );
       }
     }
@@ -13986,9 +14480,8 @@ var isNonPhrasingTag = makeMap(
 
 // Regular Expressions for parsing tags and attributes
 var attribute = /^\s*([^\s"'<>\/=]+)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/;
-// could use https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-QName
-// but for Vue templates we can enforce a simple charset
-var ncname = '[a-zA-Z_][\\w\\-\\.]*';
+var dynamicArgAttribute = /^\s*((?:v-[\w-]+:|@|:|#)\[[^=]+\][^\s"'<>\/=]*)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/;
+var ncname = "[a-zA-Z_][\\-\\.0-9_a-zA-Z" + (unicodeRegExp.source) + "]*";
 var qnameCapture = "((?:" + ncname + "\\:)?" + ncname + ")";
 var startTagOpen = new RegExp(("^<" + qnameCapture));
 var startTagClose = /^\s*(\/?)>/;
@@ -14008,10 +14501,11 @@ var decodingMap = {
   '&quot;': '"',
   '&amp;': '&',
   '&#10;': '\n',
-  '&#9;': '\t'
+  '&#9;': '\t',
+  '&#39;': "'"
 };
-var encodedAttr = /&(?:lt|gt|quot|amp);/g;
-var encodedAttrWithNewLines = /&(?:lt|gt|quot|amp|#10|#9);/g;
+var encodedAttr = /&(?:lt|gt|quot|amp|#39);/g;
+var encodedAttrWithNewLines = /&(?:lt|gt|quot|amp|#39|#10|#9);/g;
 
 // #5992
 var isIgnoreNewlineTag = makeMap('pre,textarea', true);
@@ -14041,7 +14535,7 @@ function parseHTML (html, options) {
 
           if (commentEnd >= 0) {
             if (options.shouldKeepComment) {
-              options.comment(html.substring(4, commentEnd));
+              options.comment(html.substring(4, commentEnd), index, index + commentEnd + 3);
             }
             advance(commentEnd + 3);
             continue
@@ -14101,16 +14595,18 @@ function parseHTML (html, options) {
           rest = html.slice(textEnd);
         }
         text = html.substring(0, textEnd);
-        advance(textEnd);
       }
 
       if (textEnd < 0) {
         text = html;
-        html = '';
+      }
+
+      if (text) {
+        advance(text.length);
       }
 
       if (options.chars && text) {
-        options.chars(text);
+        options.chars(text, index - text.length, index);
       }
     } else {
       var endTagLength = 0;
@@ -14139,7 +14635,7 @@ function parseHTML (html, options) {
     if (html === last) {
       options.chars && options.chars(html);
       if (process.env.NODE_ENV !== 'production' && !stack.length && options.warn) {
-        options.warn(("Mal-formatted tag at end of template: \"" + html + "\""));
+        options.warn(("Mal-formatted tag at end of template: \"" + html + "\""), { start: index + html.length });
       }
       break
     }
@@ -14163,8 +14659,10 @@ function parseHTML (html, options) {
       };
       advance(start[0].length);
       var end, attr;
-      while (!(end = html.match(startTagClose)) && (attr = html.match(attribute))) {
+      while (!(end = html.match(startTagClose)) && (attr = html.match(dynamicArgAttribute) || html.match(attribute))) {
+        attr.start = index;
         advance(attr[0].length);
+        attr.end = index;
         match.attrs.push(attr);
       }
       if (end) {
@@ -14203,10 +14701,14 @@ function parseHTML (html, options) {
         name: args[1],
         value: decodeAttr(value, shouldDecodeNewlines)
       };
+      if (process.env.NODE_ENV !== 'production' && options.outputSourceRange) {
+        attrs[i].start = args.start + args[0].match(/^\s*/).length;
+        attrs[i].end = args.end;
+      }
     }
 
     if (!unary) {
-      stack.push({ tag: tagName, lowerCasedTag: tagName.toLowerCase(), attrs: attrs });
+      stack.push({ tag: tagName, lowerCasedTag: tagName.toLowerCase(), attrs: attrs, start: match.start, end: match.end });
       lastTag = tagName;
     }
 
@@ -14241,7 +14743,8 @@ function parseHTML (html, options) {
           options.warn
         ) {
           options.warn(
-            ("tag <" + (stack[i].tag) + "> has no matching end tag.")
+            ("tag <" + (stack[i].tag) + "> has no matching end tag."),
+            { start: stack[i].start, end: stack[i].end }
           );
         }
         if (options.end) {
@@ -14274,12 +14777,22 @@ var dirRE = /^v-|^@|^:/;
 var forAliasRE = /([\s\S]*?)\s+(?:in|of)\s+([\s\S]*)/;
 var forIteratorRE = /,([^,\}\]]*)(?:,([^,\}\]]*))?$/;
 var stripParensRE = /^\(|\)$/g;
+var dynamicArgRE = /^\[.*\]$/;
 
 var argRE = /:(.*)$/;
-var bindRE = /^:|^v-bind:/;
-var modifierRE = /\.[^.]+/g;
+var bindRE = /^:|^\.|^v-bind:/;
+var modifierRE = /\.[^.\]]+(?=[^\]]*$)/g;
+
+var slotRE = /^v-slot(:|$)|^#/;
+
+var lineBreakRE = /[\r\n]/;
+var whitespaceRE$1 = /\s+/g;
+
+var invalidAttributeRE = /[\s"'<>\/=]/;
 
 var decodeHTMLCached = cached(he.decode);
+
+var emptySlotScopeToken = "_empty_";
 
 // configurable state
 var warn$2;
@@ -14290,8 +14803,7 @@ var postTransforms;
 var platformIsPreTag;
 var platformMustUseProp;
 var platformGetTagNamespace;
-
-
+var maybeComponent;
 
 function createASTElement (
   tag,
@@ -14303,6 +14815,7 @@ function createASTElement (
     tag: tag,
     attrsList: attrs,
     attrsMap: makeAttrsMap(attrs),
+    rawAttrsMap: {},
     parent: parent,
     children: []
   }
@@ -14320,6 +14833,8 @@ function parse (
   platformIsPreTag = options.isPreTag || no;
   platformMustUseProp = options.mustUseProp || no;
   platformGetTagNamespace = options.getTagNamespace || no;
+  var isReservedTag = options.isReservedTag || no;
+  maybeComponent = function (el) { return !!el.component || !isReservedTag(el.tag); };
 
   transforms = pluckModuleFunction(options.modules, 'transformNode');
   preTransforms = pluckModuleFunction(options.modules, 'preTransformNode');
@@ -14329,20 +14844,67 @@ function parse (
 
   var stack = [];
   var preserveWhitespace = options.preserveWhitespace !== false;
+  var whitespaceOption = options.whitespace;
   var root;
   var currentParent;
   var inVPre = false;
   var inPre = false;
   var warned = false;
 
-  function warnOnce (msg) {
+  function warnOnce (msg, range) {
     if (!warned) {
       warned = true;
-      warn$2(msg);
+      warn$2(msg, range);
     }
   }
 
   function closeElement (element) {
+    trimEndingWhitespace(element);
+    if (!inVPre && !element.processed) {
+      element = processElement(element, options);
+    }
+    // tree management
+    if (!stack.length && element !== root) {
+      // allow root elements with v-if, v-else-if and v-else
+      if (root.if && (element.elseif || element.else)) {
+        if (process.env.NODE_ENV !== 'production') {
+          checkRootConstraints(element);
+        }
+        addIfCondition(root, {
+          exp: element.elseif,
+          block: element
+        });
+      } else if (process.env.NODE_ENV !== 'production') {
+        warnOnce(
+          "Component template should contain exactly one root element. " +
+          "If you are using v-if on multiple elements, " +
+          "use v-else-if to chain them instead.",
+          { start: element.start }
+        );
+      }
+    }
+    if (currentParent && !element.forbidden) {
+      if (element.elseif || element.else) {
+        processIfConditions(element, currentParent);
+      } else {
+        if (element.slotScope) {
+          // scoped slot
+          // keep it in the children list so that v-else(-if) conditions can
+          // find it as the prev node.
+          var name = element.slotTarget || '"default"'
+          ;(currentParent.scopedSlots || (currentParent.scopedSlots = {}))[name] = element;
+        }
+        currentParent.children.push(element);
+        element.parent = currentParent;
+      }
+    }
+
+    // final children cleanup
+    // filter out scoped slots
+    element.children = element.children.filter(function (c) { return !(c).slotScope; });
+    // remove trailing whitespace node again
+    trimEndingWhitespace(element);
+
     // check pre state
     if (element.pre) {
       inVPre = false;
@@ -14356,6 +14918,37 @@ function parse (
     }
   }
 
+  function trimEndingWhitespace (el) {
+    // remove trailing whitespace node
+    if (!inPre) {
+      var lastNode;
+      while (
+        (lastNode = el.children[el.children.length - 1]) &&
+        lastNode.type === 3 &&
+        lastNode.text === ' '
+      ) {
+        el.children.pop();
+      }
+    }
+  }
+
+  function checkRootConstraints (el) {
+    if (el.tag === 'slot' || el.tag === 'template') {
+      warnOnce(
+        "Cannot use <" + (el.tag) + "> as component root element because it may " +
+        'contain multiple nodes.',
+        { start: el.start }
+      );
+    }
+    if (el.attrsMap.hasOwnProperty('v-for')) {
+      warnOnce(
+        'Cannot use v-for on stateful component root element because ' +
+        'it renders multiple elements.',
+        el.rawAttrsMap['v-for']
+      );
+    }
+  }
+
   parseHTML(template, {
     warn: warn$2,
     expectHTML: options.expectHTML,
@@ -14364,7 +14957,8 @@ function parse (
     shouldDecodeNewlines: options.shouldDecodeNewlines,
     shouldDecodeNewlinesForHref: options.shouldDecodeNewlinesForHref,
     shouldKeepComment: options.comments,
-    start: function start (tag, attrs, unary) {
+    outputSourceRange: options.outputSourceRange,
+    start: function start (tag, attrs, unary, start$1, end) {
       // check namespace.
       // inherit parent ns if there is one
       var ns = (currentParent && currentParent.ns) || platformGetTagNamespace(tag);
@@ -14380,12 +14974,36 @@ function parse (
         element.ns = ns;
       }
 
+      if (process.env.NODE_ENV !== 'production') {
+        if (options.outputSourceRange) {
+          element.start = start$1;
+          element.end = end;
+          element.rawAttrsMap = element.attrsList.reduce(function (cumulated, attr) {
+            cumulated[attr.name] = attr;
+            return cumulated
+          }, {});
+        }
+        attrs.forEach(function (attr) {
+          if (invalidAttributeRE.test(attr.name)) {
+            warn$2(
+              "Invalid dynamic argument expression: attribute names cannot contain " +
+              "spaces, quotes, <, >, / or =.",
+              {
+                start: attr.start + attr.name.indexOf("["),
+                end: attr.start + attr.name.length
+              }
+            );
+          }
+        });
+      }
+
       if (isForbiddenTag(element) && !isServerRendering()) {
         element.forbidden = true;
         process.env.NODE_ENV !== 'production' && warn$2(
           'Templates should only be responsible for mapping the state to the ' +
           'UI. Avoid placing tags with side-effects in your templates, such as ' +
-          "<" + tag + ">" + ', as they will not be parsed.'
+          "<" + tag + ">" + ', as they will not be parsed.',
+          { start: element.start }
         );
       }
 
@@ -14410,59 +15028,15 @@ function parse (
         processFor(element);
         processIf(element);
         processOnce(element);
-        // element-scope stuff
-        processElement(element, options);
       }
 
-      function checkRootConstraints (el) {
-        if (process.env.NODE_ENV !== 'production') {
-          if (el.tag === 'slot' || el.tag === 'template') {
-            warnOnce(
-              "Cannot use <" + (el.tag) + "> as component root element because it may " +
-              'contain multiple nodes.'
-            );
-          }
-          if (el.attrsMap.hasOwnProperty('v-for')) {
-            warnOnce(
-              'Cannot use v-for on stateful component root element because ' +
-              'it renders multiple elements.'
-            );
-          }
-        }
-      }
-
-      // tree management
       if (!root) {
         root = element;
-        checkRootConstraints(root);
-      } else if (!stack.length) {
-        // allow root elements with v-if, v-else-if and v-else
-        if (root.if && (element.elseif || element.else)) {
-          checkRootConstraints(element);
-          addIfCondition(root, {
-            exp: element.elseif,
-            block: element
-          });
-        } else if (process.env.NODE_ENV !== 'production') {
-          warnOnce(
-            "Component template should contain exactly one root element. " +
-            "If you are using v-if on multiple elements, " +
-            "use v-else-if to chain them instead."
-          );
+        if (process.env.NODE_ENV !== 'production') {
+          checkRootConstraints(root);
         }
       }
-      if (currentParent && !element.forbidden) {
-        if (element.elseif || element.else) {
-          processIfConditions(element, currentParent);
-        } else if (element.slotScope) { // scoped slot
-          currentParent.plain = false;
-          var name = element.slotTarget || '"default"'
-          ;(currentParent.scopedSlots || (currentParent.scopedSlots = {}))[name] = element;
-        } else {
-          currentParent.children.push(element);
-          element.parent = currentParent;
-        }
-      }
+
       if (!unary) {
         currentParent = element;
         stack.push(element);
@@ -14471,29 +15045,29 @@ function parse (
       }
     },
 
-    end: function end () {
-      // remove trailing whitespace
+    end: function end (tag, start, end$1) {
       var element = stack[stack.length - 1];
-      var lastNode = element.children[element.children.length - 1];
-      if (lastNode && lastNode.type === 3 && lastNode.text === ' ' && !inPre) {
-        element.children.pop();
-      }
       // pop stack
       stack.length -= 1;
       currentParent = stack[stack.length - 1];
+      if (process.env.NODE_ENV !== 'production' && options.outputSourceRange) {
+        element.end = end$1;
+      }
       closeElement(element);
     },
 
-    chars: function chars (text) {
+    chars: function chars (text, start, end) {
       if (!currentParent) {
         if (process.env.NODE_ENV !== 'production') {
           if (text === template) {
             warnOnce(
-              'Component template requires a root element, rather than just text.'
+              'Component template requires a root element, rather than just text.',
+              { start: start }
             );
           } else if ((text = text.trim())) {
             warnOnce(
-              ("text \"" + text + "\" outside root element will be ignored.")
+              ("text \"" + text + "\" outside root element will be ignored."),
+              { start: start }
             );
           }
         }
@@ -14508,33 +15082,66 @@ function parse (
         return
       }
       var children = currentParent.children;
-      text = inPre || text.trim()
-        ? isTextTag(currentParent) ? text : decodeHTMLCached(text)
-        // only preserve whitespace if its not right after a starting tag
-        : preserveWhitespace && children.length ? ' ' : '';
+      if (inPre || text.trim()) {
+        text = isTextTag(currentParent) ? text : decodeHTMLCached(text);
+      } else if (!children.length) {
+        // remove the whitespace-only node right after an opening tag
+        text = '';
+      } else if (whitespaceOption) {
+        if (whitespaceOption === 'condense') {
+          // in condense mode, remove the whitespace node if it contains
+          // line break, otherwise condense to a single space
+          text = lineBreakRE.test(text) ? '' : ' ';
+        } else {
+          text = ' ';
+        }
+      } else {
+        text = preserveWhitespace ? ' ' : '';
+      }
       if (text) {
+        if (!inPre && whitespaceOption === 'condense') {
+          // condense consecutive whitespaces into single space
+          text = text.replace(whitespaceRE$1, ' ');
+        }
         var res;
+        var child;
         if (!inVPre && text !== ' ' && (res = parseText(text, delimiters))) {
-          children.push({
+          child = {
             type: 2,
             expression: res.expression,
             tokens: res.tokens,
             text: text
-          });
+          };
         } else if (text !== ' ' || !children.length || children[children.length - 1].text !== ' ') {
-          children.push({
+          child = {
             type: 3,
             text: text
-          });
+          };
+        }
+        if (child) {
+          if (process.env.NODE_ENV !== 'production' && options.outputSourceRange) {
+            child.start = start;
+            child.end = end;
+          }
+          children.push(child);
         }
       }
     },
-    comment: function comment (text) {
-      currentParent.children.push({
-        type: 3,
-        text: text,
-        isComment: true
-      });
+    comment: function comment (text, start, end) {
+      // adding anyting as a sibling to the root node is forbidden
+      // comments should still be allowed, but ignored
+      if (currentParent) {
+        var child = {
+          type: 3,
+          text: text,
+          isComment: true
+        };
+        if (process.env.NODE_ENV !== 'production' && options.outputSourceRange) {
+          child.start = start;
+          child.end = end;
+        }
+        currentParent.children.push(child);
+      }
     }
   });
   return root
@@ -14547,14 +15154,19 @@ function processPre (el) {
 }
 
 function processRawAttrs (el) {
-  var l = el.attrsList.length;
-  if (l) {
-    var attrs = el.attrs = new Array(l);
-    for (var i = 0; i < l; i++) {
+  var list = el.attrsList;
+  var len = list.length;
+  if (len) {
+    var attrs = el.attrs = new Array(len);
+    for (var i = 0; i < len; i++) {
       attrs[i] = {
-        name: el.attrsList[i].name,
-        value: JSON.stringify(el.attrsList[i].value)
+        name: list[i].name,
+        value: JSON.stringify(list[i].value)
       };
+      if (list[i].start != null) {
+        attrs[i].start = list[i].start;
+        attrs[i].end = list[i].end;
+      }
     }
   } else if (!el.pre) {
     // non root node in pre blocks with no attributes
@@ -14562,20 +15174,29 @@ function processRawAttrs (el) {
   }
 }
 
-function processElement (element, options) {
+function processElement (
+  element,
+  options
+) {
   processKey(element);
 
   // determine whether this is a plain element after
   // removing structural attributes
-  element.plain = !element.key && !element.attrsList.length;
+  element.plain = (
+    !element.key &&
+    !element.scopedSlots &&
+    !element.attrsList.length
+  );
 
   processRef(element);
-  processSlot(element);
+  processSlotContent(element);
+  processSlotOutlet(element);
   processComponent(element);
   for (var i = 0; i < transforms.length; i++) {
     element = transforms[i](element, options) || element;
   }
   processAttrs(element);
+  return element
 }
 
 function processKey (el) {
@@ -14583,7 +15204,10 @@ function processKey (el) {
   if (exp) {
     if (process.env.NODE_ENV !== 'production') {
       if (el.tag === 'template') {
-        warn$2("<template> cannot be keyed. Place the key on real elements instead.");
+        warn$2(
+          "<template> cannot be keyed. Place the key on real elements instead.",
+          getRawBindingAttr(el, 'key')
+        );
       }
       if (el.for) {
         var iterator = el.iterator2 || el.iterator1;
@@ -14591,7 +15215,9 @@ function processKey (el) {
         if (iterator && iterator === exp && parent && parent.tag === 'transition-group') {
           warn$2(
             "Do not use v-for index as key on <transition-group> children, " +
-            "this is the same as not using keys."
+            "this is the same as not using keys.",
+            getRawBindingAttr(el, 'key'),
+            true /* tip */
           );
         }
       }
@@ -14616,7 +15242,8 @@ function processFor (el) {
       extend(el, res);
     } else if (process.env.NODE_ENV !== 'production') {
       warn$2(
-        ("Invalid v-for expression: " + exp)
+        ("Invalid v-for expression: " + exp),
+        el.rawAttrsMap['v-for']
       );
     }
   }
@@ -14672,7 +15299,8 @@ function processIfConditions (el, parent) {
   } else if (process.env.NODE_ENV !== 'production') {
     warn$2(
       "v-" + (el.elseif ? ('else-if="' + el.elseif + '"') : 'else') + " " +
-      "used on element <" + (el.tag) + "> without corresponding v-if."
+      "used on element <" + (el.tag) + "> without corresponding v-if.",
+      el.rawAttrsMap[el.elseif ? 'v-else-if' : 'v-else']
     );
   }
 }
@@ -14686,7 +15314,8 @@ function findPrevElement (children) {
       if (process.env.NODE_ENV !== 'production' && children[i].text !== ' ') {
         warn$2(
           "text \"" + (children[i].text.trim()) + "\" between v-if and v-else(-if) " +
-          "will be ignored."
+          "will be ignored.",
+          children[i]
         );
       }
       children.pop();
@@ -14708,51 +15337,157 @@ function processOnce (el) {
   }
 }
 
-function processSlot (el) {
+// handle content being passed to a component as slot,
+// e.g. <template slot="xxx">, <div slot-scope="xxx">
+function processSlotContent (el) {
+  var slotScope;
+  if (el.tag === 'template') {
+    slotScope = getAndRemoveAttr(el, 'scope');
+    /* istanbul ignore if */
+    if (process.env.NODE_ENV !== 'production' && slotScope) {
+      warn$2(
+        "the \"scope\" attribute for scoped slots have been deprecated and " +
+        "replaced by \"slot-scope\" since 2.5. The new \"slot-scope\" attribute " +
+        "can also be used on plain elements in addition to <template> to " +
+        "denote scoped slots.",
+        el.rawAttrsMap['scope'],
+        true
+      );
+    }
+    el.slotScope = slotScope || getAndRemoveAttr(el, 'slot-scope');
+  } else if ((slotScope = getAndRemoveAttr(el, 'slot-scope'))) {
+    /* istanbul ignore if */
+    if (process.env.NODE_ENV !== 'production' && el.attrsMap['v-for']) {
+      warn$2(
+        "Ambiguous combined usage of slot-scope and v-for on <" + (el.tag) + "> " +
+        "(v-for takes higher priority). Use a wrapper <template> for the " +
+        "scoped slot to make it clearer.",
+        el.rawAttrsMap['slot-scope'],
+        true
+      );
+    }
+    el.slotScope = slotScope;
+  }
+
+  // slot="xxx"
+  var slotTarget = getBindingAttr(el, 'slot');
+  if (slotTarget) {
+    el.slotTarget = slotTarget === '""' ? '"default"' : slotTarget;
+    el.slotTargetDynamic = !!(el.attrsMap[':slot'] || el.attrsMap['v-bind:slot']);
+    // preserve slot as an attribute for native shadow DOM compat
+    // only for non-scoped slots.
+    if (el.tag !== 'template' && !el.slotScope) {
+      addAttr(el, 'slot', slotTarget, getRawBindingAttr(el, 'slot'));
+    }
+  }
+
+  // 2.6 v-slot syntax
+  {
+    if (el.tag === 'template') {
+      // v-slot on <template>
+      var slotBinding = getAndRemoveAttrByRegex(el, slotRE);
+      if (slotBinding) {
+        if (process.env.NODE_ENV !== 'production') {
+          if (el.slotTarget || el.slotScope) {
+            warn$2(
+              "Unexpected mixed usage of different slot syntaxes.",
+              el
+            );
+          }
+          if (el.parent && !maybeComponent(el.parent)) {
+            warn$2(
+              "<template v-slot> can only appear at the root level inside " +
+              "the receiving the component",
+              el
+            );
+          }
+        }
+        var ref = getSlotName(slotBinding);
+        var name = ref.name;
+        var dynamic = ref.dynamic;
+        el.slotTarget = name;
+        el.slotTargetDynamic = dynamic;
+        el.slotScope = slotBinding.value || emptySlotScopeToken; // force it into a scoped slot for perf
+      }
+    } else {
+      // v-slot on component, denotes default slot
+      var slotBinding$1 = getAndRemoveAttrByRegex(el, slotRE);
+      if (slotBinding$1) {
+        if (process.env.NODE_ENV !== 'production') {
+          if (!maybeComponent(el)) {
+            warn$2(
+              "v-slot can only be used on components or <template>.",
+              slotBinding$1
+            );
+          }
+          if (el.slotScope || el.slotTarget) {
+            warn$2(
+              "Unexpected mixed usage of different slot syntaxes.",
+              el
+            );
+          }
+          if (el.scopedSlots) {
+            warn$2(
+              "To avoid scope ambiguity, the default slot should also use " +
+              "<template> syntax when there are other named slots.",
+              slotBinding$1
+            );
+          }
+        }
+        // add the component's children to its default slot
+        var slots = el.scopedSlots || (el.scopedSlots = {});
+        var ref$1 = getSlotName(slotBinding$1);
+        var name$1 = ref$1.name;
+        var dynamic$1 = ref$1.dynamic;
+        var slotContainer = slots[name$1] = createASTElement('template', [], el);
+        slotContainer.slotTarget = name$1;
+        slotContainer.slotTargetDynamic = dynamic$1;
+        slotContainer.children = el.children.filter(function (c) {
+          if (!c.slotScope) {
+            c.parent = slotContainer;
+            return true
+          }
+        });
+        slotContainer.slotScope = slotBinding$1.value || emptySlotScopeToken;
+        // remove children as they are returned from scopedSlots now
+        el.children = [];
+        // mark el non-plain so data gets generated
+        el.plain = false;
+      }
+    }
+  }
+}
+
+function getSlotName (binding) {
+  var name = binding.name.replace(slotRE, '');
+  if (!name) {
+    if (binding.name[0] !== '#') {
+      name = 'default';
+    } else if (process.env.NODE_ENV !== 'production') {
+      warn$2(
+        "v-slot shorthand syntax requires a slot name.",
+        binding
+      );
+    }
+  }
+  return dynamicArgRE.test(name)
+    // dynamic [name]
+    ? { name: name.slice(1, -1), dynamic: true }
+    // static name
+    : { name: ("\"" + name + "\""), dynamic: false }
+}
+
+// handle <slot/> outlets
+function processSlotOutlet (el) {
   if (el.tag === 'slot') {
     el.slotName = getBindingAttr(el, 'name');
     if (process.env.NODE_ENV !== 'production' && el.key) {
       warn$2(
         "`key` does not work on <slot> because slots are abstract outlets " +
         "and can possibly expand into multiple elements. " +
-        "Use the key on a wrapping element instead."
+        "Use the key on a wrapping element instead.",
+        getRawBindingAttr(el, 'key')
       );
-    }
-  } else {
-    var slotScope;
-    if (el.tag === 'template') {
-      slotScope = getAndRemoveAttr(el, 'scope');
-      /* istanbul ignore if */
-      if (process.env.NODE_ENV !== 'production' && slotScope) {
-        warn$2(
-          "the \"scope\" attribute for scoped slots have been deprecated and " +
-          "replaced by \"slot-scope\" since 2.5. The new \"slot-scope\" attribute " +
-          "can also be used on plain elements in addition to <template> to " +
-          "denote scoped slots.",
-          true
-        );
-      }
-      el.slotScope = slotScope || getAndRemoveAttr(el, 'slot-scope');
-    } else if ((slotScope = getAndRemoveAttr(el, 'slot-scope'))) {
-      /* istanbul ignore if */
-      if (process.env.NODE_ENV !== 'production' && el.attrsMap['v-for']) {
-        warn$2(
-          "Ambiguous combined usage of slot-scope and v-for on <" + (el.tag) + "> " +
-          "(v-for takes higher priority). Use a wrapper <template> for the " +
-          "scoped slot to make it clearer.",
-          true
-        );
-      }
-      el.slotScope = slotScope;
-    }
-    var slotTarget = getBindingAttr(el, 'slot');
-    if (slotTarget) {
-      el.slotTarget = slotTarget === '""' ? '"default"' : slotTarget;
-      // preserve slot as an attribute for native shadow DOM compat
-      // only for non-scoped slots.
-      if (el.tag !== 'template' && !el.slotScope) {
-        addAttr(el, 'slot', slotTarget);
-      }
     }
   }
 }
@@ -14769,7 +15504,7 @@ function processComponent (el) {
 
 function processAttrs (el) {
   var list = el.attrsList;
-  var i, l, name, rawName, value, modifiers, isProp;
+  var i, l, name, rawName, value, modifiers, syncGen, isDynamic;
   for (i = 0, l = list.length; i < l; i++) {
     name = rawName = list[i].name;
     value = list[i].value;
@@ -14777,14 +15512,18 @@ function processAttrs (el) {
       // mark element as dynamic
       el.hasBindings = true;
       // modifiers
-      modifiers = parseModifiers(name);
+      modifiers = parseModifiers(name.replace(dirRE, ''));
+      // support .foo shorthand syntax for the .prop modifier
       if (modifiers) {
         name = name.replace(modifierRE, '');
       }
       if (bindRE.test(name)) { // v-bind
         name = name.replace(bindRE, '');
         value = parseFilters(value);
-        isProp = false;
+        isDynamic = dynamicArgRE.test(name);
+        if (isDynamic) {
+          name = name.slice(1, -1);
+        }
         if (
           process.env.NODE_ENV !== 'production' &&
           value.trim().length === 0
@@ -14794,41 +15533,79 @@ function processAttrs (el) {
           );
         }
         if (modifiers) {
-          if (modifiers.prop) {
-            isProp = true;
+          if (modifiers.prop && !isDynamic) {
             name = camelize(name);
             if (name === 'innerHtml') { name = 'innerHTML'; }
           }
-          if (modifiers.camel) {
+          if (modifiers.camel && !isDynamic) {
             name = camelize(name);
           }
           if (modifiers.sync) {
-            addHandler(
-              el,
-              ("update:" + (camelize(name))),
-              genAssignmentCode(value, "$event")
-            );
+            syncGen = genAssignmentCode(value, "$event");
+            if (!isDynamic) {
+              addHandler(
+                el,
+                ("update:" + (camelize(name))),
+                syncGen,
+                null,
+                false,
+                warn$2,
+                list[i]
+              );
+              if (hyphenate(name) !== camelize(name)) {
+                addHandler(
+                  el,
+                  ("update:" + (hyphenate(name))),
+                  syncGen,
+                  null,
+                  false,
+                  warn$2,
+                  list[i]
+                );
+              }
+            } else {
+              // handler w/ dynamic event name
+              addHandler(
+                el,
+                ("\"update:\"+(" + name + ")"),
+                syncGen,
+                null,
+                false,
+                warn$2,
+                list[i],
+                true // dynamic
+              );
+            }
           }
         }
-        if (isProp || (
+        if ((modifiers && modifiers.prop) || (
           !el.component && platformMustUseProp(el.tag, el.attrsMap.type, name)
         )) {
-          addProp(el, name, value);
+          addProp(el, name, value, list[i], isDynamic);
         } else {
-          addAttr(el, name, value);
+          addAttr(el, name, value, list[i], isDynamic);
         }
       } else if (onRE.test(name)) { // v-on
         name = name.replace(onRE, '');
-        addHandler(el, name, value, modifiers, false, warn$2);
+        isDynamic = dynamicArgRE.test(name);
+        if (isDynamic) {
+          name = name.slice(1, -1);
+        }
+        addHandler(el, name, value, modifiers, false, warn$2, list[i], isDynamic);
       } else { // normal directives
         name = name.replace(dirRE, '');
         // parse arg
         var argMatch = name.match(argRE);
         var arg = argMatch && argMatch[1];
+        isDynamic = false;
         if (arg) {
           name = name.slice(0, -(arg.length + 1));
+          if (dynamicArgRE.test(arg)) {
+            arg = arg.slice(1, -1);
+            isDynamic = true;
+          }
         }
-        addDirective(el, name, rawName, value, arg, modifiers);
+        addDirective(el, name, rawName, value, arg, isDynamic, modifiers, list[i]);
         if (process.env.NODE_ENV !== 'production' && name === 'model') {
           checkForAliasModel(el, value);
         }
@@ -14842,17 +15619,18 @@ function processAttrs (el) {
             name + "=\"" + value + "\": " +
             'Interpolation inside attributes has been removed. ' +
             'Use v-bind or the colon shorthand instead. For example, ' +
-            'instead of <div id="{{ val }}">, use <div :id="val">.'
+            'instead of <div id="{{ val }}">, use <div :id="val">.',
+            list[i]
           );
         }
       }
-      addAttr(el, name, JSON.stringify(value));
+      addAttr(el, name, JSON.stringify(value), list[i]);
       // #6887 firefox doesn't update muted state if set via attribute
       // even immediately after element creation
       if (!el.component &&
           name === 'muted' &&
           platformMustUseProp(el.tag, el.attrsMap.type, name)) {
-        addProp(el, name, 'true');
+        addProp(el, name, 'true', list[i]);
       }
     }
   }
@@ -14885,7 +15663,7 @@ function makeAttrsMap (attrs) {
       process.env.NODE_ENV !== 'production' &&
       map[attrs[i].name] && !isIE && !isEdge
     ) {
-      warn$2('duplicate attribute: ' + attrs[i].name);
+      warn$2('duplicate attribute: ' + attrs[i].name, attrs[i]);
     }
     map[attrs[i].name] = attrs[i].value;
   }
@@ -14932,7 +15710,8 @@ function checkForAliasModel (el, value) {
         "You are binding v-model directly to a v-for iteration alias. " +
         "This will not be able to modify the v-for source array because " +
         "writing to the alias is like modifying a function local variable. " +
-        "Consider using an array of objects and use v-model on an object property instead."
+        "Consider using an array of objects and use v-model on an object property instead.",
+        el.rawAttrsMap['v-model']
       );
     }
     _el = _el.parent;
@@ -15021,7 +15800,7 @@ var modules$1 = [
 
 function text (el, dir) {
   if (dir.value) {
-    addProp(el, 'textContent', ("_s(" + (dir.value) + ")"));
+    addProp(el, 'textContent', ("_s(" + (dir.value) + ")"), dir);
   }
 }
 
@@ -15029,7 +15808,7 @@ function text (el, dir) {
 
 function html (el, dir) {
   if (dir.value) {
-    addProp(el, 'innerHTML', ("_s(" + (dir.value) + ")"));
+    addProp(el, 'innerHTML', ("_s(" + (dir.value) + ")"), dir);
   }
 }
 
@@ -15084,7 +15863,7 @@ function optimize (root, options) {
 
 function genStaticKeys$1 (keys) {
   return makeMap(
-    'type,tag,attrsList,attrsMap,plain,parent,children,attrs' +
+    'type,tag,attrsList,attrsMap,plain,parent,children,attrs,start,end,rawAttrsMap' +
     (keys ? ',' + keys : '')
   )
 }
@@ -15183,7 +15962,8 @@ function isDirectChildOfTemplateFor (node) {
 
 /*  */
 
-var fnExpRE = /^([\w$_]+|\([^)]*?\))\s*=>|^function\s*\(/;
+var fnExpRE = /^([\w$_]+|\([^)]*?\))\s*=>|^function\s*(?:[\w$]+)?\s*\(/;
+var fnInvokeRE = /\([^)]*?\);*$/;
 var simplePathRE = /^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['[^']*?']|\["[^"]*?"]|\[\d+]|\[[A-Za-z_$][\w$]*])*$/;
 
 // KeyboardEvent.keyCode aliases
@@ -15238,33 +16018,43 @@ function genHandlers (
   events,
   isNative
 ) {
-  var res = isNative ? 'nativeOn:{' : 'on:{';
+  var prefix = isNative ? 'nativeOn:' : 'on:';
+  var staticHandlers = "";
+  var dynamicHandlers = "";
   for (var name in events) {
-    res += "\"" + name + "\":" + (genHandler(name, events[name])) + ",";
+    var handlerCode = genHandler(events[name]);
+    if (events[name] && events[name].dynamic) {
+      dynamicHandlers += name + "," + handlerCode + ",";
+    } else {
+      staticHandlers += "\"" + name + "\":" + handlerCode + ",";
+    }
   }
-  return res.slice(0, -1) + '}'
+  staticHandlers = "{" + (staticHandlers.slice(0, -1)) + "}";
+  if (dynamicHandlers) {
+    return prefix + "_d(" + staticHandlers + ",[" + (dynamicHandlers.slice(0, -1)) + "])"
+  } else {
+    return prefix + staticHandlers
+  }
 }
 
-function genHandler (
-  name,
-  handler
-) {
+function genHandler (handler) {
   if (!handler) {
     return 'function(){}'
   }
 
   if (Array.isArray(handler)) {
-    return ("[" + (handler.map(function (handler) { return genHandler(name, handler); }).join(',')) + "]")
+    return ("[" + (handler.map(function (handler) { return genHandler(handler); }).join(',')) + "]")
   }
 
   var isMethodPath = simplePathRE.test(handler.value);
   var isFunctionExpression = fnExpRE.test(handler.value);
+  var isFunctionInvocation = simplePathRE.test(handler.value.replace(fnInvokeRE, ''));
 
   if (!handler.modifiers) {
     if (isMethodPath || isFunctionExpression) {
       return handler.value
     }
-    return ("function($event){" + (handler.value) + "}") // inline statement
+    return ("function($event){" + (isFunctionInvocation ? ("return " + (handler.value)) : handler.value) + "}") // inline statement
   } else {
     var code = '';
     var genModifierCode = '';
@@ -15299,13 +16089,21 @@ function genHandler (
       ? ("return " + (handler.value) + "($event)")
       : isFunctionExpression
         ? ("return (" + (handler.value) + ")($event)")
-        : handler.value;
+        : isFunctionInvocation
+          ? ("return " + (handler.value))
+          : handler.value;
     return ("function($event){" + code + handlerCode + "}")
   }
 }
 
 function genKeyFilter (keys) {
-  return ("if(!('button' in $event)&&" + (keys.map(genFilterCode).join('&&')) + ")return null;")
+  return (
+    // make sure the key filters only apply to KeyboardEvents
+    // #9441: can't use 'keyCode' in $event because Chrome autofill fires fake
+    // key events that do not have keyCode property...
+    "if(!$event.type.indexOf('key')&&" +
+    (keys.map(genFilterCode).join('&&')) + ")return null;"
+  )
 }
 
 function genFilterCode (key) {
@@ -15363,7 +16161,7 @@ var CodegenState = function CodegenState (options) {
   this.dataGenFns = pluckModuleFunction(options.modules, 'genData');
   this.directives = extend(extend({}, baseDirectives), options.directives);
   var isReservedTag = options.isReservedTag || no;
-  this.maybeComponent = function (el) { return !(isReservedTag(el.tag) && !el.component); };
+  this.maybeComponent = function (el) { return !!el.component || !isReservedTag(el.tag); };
   this.onceId = 0;
   this.staticRenderFns = [];
   this.pre = false;
@@ -15454,7 +16252,8 @@ function genOnce (el, state) {
     }
     if (!key) {
       process.env.NODE_ENV !== 'production' && state.warn(
-        "v-once can only be used inside v-for that is keyed. "
+        "v-once can only be used inside v-for that is keyed. ",
+        el.rawAttrsMap['v-once']
       );
       return genElement(el, state)
     }
@@ -15522,6 +16321,7 @@ function genFor (
       "<" + (el.tag) + " v-for=\"" + alias + " in " + exp + "\">: component lists rendered with " +
       "v-for should have explicit keys. " +
       "See https://vuejs.org/guide/list.html#key for more info.",
+      el.rawAttrsMap['v-for'],
       true /* tip */
     );
   }
@@ -15566,11 +16366,11 @@ function genData$2 (el, state) {
   }
   // attributes
   if (el.attrs) {
-    data += "attrs:{" + (genProps(el.attrs)) + "},";
+    data += "attrs:" + (genProps(el.attrs)) + ",";
   }
   // DOM props
   if (el.props) {
-    data += "domProps:{" + (genProps(el.props)) + "},";
+    data += "domProps:" + (genProps(el.props)) + ",";
   }
   // event handlers
   if (el.events) {
@@ -15586,7 +16386,7 @@ function genData$2 (el, state) {
   }
   // scoped slots
   if (el.scopedSlots) {
-    data += (genScopedSlots(el.scopedSlots, state)) + ",";
+    data += (genScopedSlots(el, el.scopedSlots, state)) + ",";
   }
   // component v-model
   if (el.model) {
@@ -15600,6 +16400,12 @@ function genData$2 (el, state) {
     }
   }
   data = data.replace(/,$/, '') + '}';
+  // v-bind dynamic argument wrap
+  // v-bind with dynamic arguments must be applied using the same v-bind object
+  // merge helper so that class/style/mustUseProp attrs are handled correctly.
+  if (el.dynamicAttrs) {
+    data = "_b(" + data + ",\"" + (el.tag) + "\"," + (genProps(el.dynamicAttrs)) + ")";
+  }
   // v-bind data wrap
   if (el.wrapData) {
     data = el.wrapData(data);
@@ -15628,7 +16434,7 @@ function genDirectives (el, state) {
     }
     if (needRuntime) {
       hasRuntime = true;
-      res += "{name:\"" + (dir.name) + "\",rawName:\"" + (dir.rawName) + "\"" + (dir.value ? (",value:(" + (dir.value) + "),expression:" + (JSON.stringify(dir.value))) : '') + (dir.arg ? (",arg:\"" + (dir.arg) + "\"") : '') + (dir.modifiers ? (",modifiers:" + (JSON.stringify(dir.modifiers))) : '') + "},";
+      res += "{name:\"" + (dir.name) + "\",rawName:\"" + (dir.rawName) + "\"" + (dir.value ? (",value:(" + (dir.value) + "),expression:" + (JSON.stringify(dir.value))) : '') + (dir.arg ? (",arg:" + (dir.isDynamicArg ? dir.arg : ("\"" + (dir.arg) + "\""))) : '') + (dir.modifiers ? (",modifiers:" + (JSON.stringify(dir.modifiers))) : '') + "},";
     }
   }
   if (hasRuntime) {
@@ -15641,54 +16447,113 @@ function genInlineTemplate (el, state) {
   if (process.env.NODE_ENV !== 'production' && (
     el.children.length !== 1 || ast.type !== 1
   )) {
-    state.warn('Inline-template components must have exactly one child element.');
+    state.warn(
+      'Inline-template components must have exactly one child element.',
+      { start: el.start }
+    );
   }
-  if (ast.type === 1) {
+  if (ast && ast.type === 1) {
     var inlineRenderFns = generate(ast, state.options);
     return ("inlineTemplate:{render:function(){" + (inlineRenderFns.render) + "},staticRenderFns:[" + (inlineRenderFns.staticRenderFns.map(function (code) { return ("function(){" + code + "}"); }).join(',')) + "]}")
   }
 }
 
 function genScopedSlots (
+  el,
   slots,
   state
 ) {
-  return ("scopedSlots:_u([" + (Object.keys(slots).map(function (key) {
-      return genScopedSlot(key, slots[key], state)
-    }).join(',')) + "])")
+  // by default scoped slots are considered "stable", this allows child
+  // components with only scoped slots to skip forced updates from parent.
+  // but in some cases we have to bail-out of this optimization
+  // for example if the slot contains dynamic names, has v-if or v-for on them...
+  var needsForceUpdate = el.for || Object.keys(slots).some(function (key) {
+    var slot = slots[key];
+    return (
+      slot.slotTargetDynamic ||
+      slot.if ||
+      slot.for ||
+      containsSlotChild(slot) // is passing down slot from parent which may be dynamic
+    )
+  });
+
+  // #9534: if a component with scoped slots is inside a conditional branch,
+  // it's possible for the same component to be reused but with different
+  // compiled slot content. To avoid that, we generate a unique key based on
+  // the generated code of all the slot contents.
+  var needsKey = !!el.if;
+
+  // OR when it is inside another scoped slot or v-for (the reactivity may be
+  // disconnected due to the intermediate scope variable)
+  // #9438, #9506
+  // TODO: this can be further optimized by properly analyzing in-scope bindings
+  // and skip force updating ones that do not actually use scope variables.
+  if (!needsForceUpdate) {
+    var parent = el.parent;
+    while (parent) {
+      if (
+        (parent.slotScope && parent.slotScope !== emptySlotScopeToken) ||
+        parent.for
+      ) {
+        needsForceUpdate = true;
+        break
+      }
+      if (parent.if) {
+        needsKey = true;
+      }
+      parent = parent.parent;
+    }
+  }
+
+  var generatedSlots = Object.keys(slots)
+    .map(function (key) { return genScopedSlot(slots[key], state); })
+    .join(',');
+
+  return ("scopedSlots:_u([" + generatedSlots + "]" + (needsForceUpdate ? ",null,true" : "") + (!needsForceUpdate && needsKey ? (",null,false," + (hash(generatedSlots))) : "") + ")")
+}
+
+function hash(str) {
+  var hash = 5381;
+  var i = str.length;
+  while(i) {
+    hash = (hash * 33) ^ str.charCodeAt(--i);
+  }
+  return hash >>> 0
+}
+
+function containsSlotChild (el) {
+  if (el.type === 1) {
+    if (el.tag === 'slot') {
+      return true
+    }
+    return el.children.some(containsSlotChild)
+  }
+  return false
 }
 
 function genScopedSlot (
-  key,
   el,
   state
 ) {
-  if (el.for && !el.forProcessed) {
-    return genForScopedSlot(key, el, state)
+  var isLegacySyntax = el.attrsMap['slot-scope'];
+  if (el.if && !el.ifProcessed && !isLegacySyntax) {
+    return genIf(el, state, genScopedSlot, "null")
   }
-  var fn = "function(" + (String(el.slotScope)) + "){" +
+  if (el.for && !el.forProcessed) {
+    return genFor(el, state, genScopedSlot)
+  }
+  var slotScope = el.slotScope === emptySlotScopeToken
+    ? ""
+    : String(el.slotScope);
+  var fn = "function(" + slotScope + "){" +
     "return " + (el.tag === 'template'
-      ? el.if
+      ? el.if && isLegacySyntax
         ? ("(" + (el.if) + ")?" + (genChildren(el, state) || 'undefined') + ":undefined")
         : genChildren(el, state) || 'undefined'
       : genElement(el, state)) + "}";
-  return ("{key:" + key + ",fn:" + fn + "}")
-}
-
-function genForScopedSlot (
-  key,
-  el,
-  state
-) {
-  var exp = el.for;
-  var alias = el.alias;
-  var iterator1 = el.iterator1 ? ("," + (el.iterator1)) : '';
-  var iterator2 = el.iterator2 ? ("," + (el.iterator2)) : '';
-  el.forProcessed = true; // avoid recursion
-  return "_l((" + exp + ")," +
-    "function(" + alias + iterator1 + iterator2 + "){" +
-      "return " + (genScopedSlot(key, el, state)) +
-    '})'
+  // reverse proxy v-slot without scope on this.$slots
+  var reverseProxy = slotScope ? "" : ",proxy:true";
+  return ("{key:" + (el.slotTarget || "\"default\"") + ",fn:" + fn + reverseProxy + "}")
 }
 
 function genChildren (
@@ -15775,7 +16640,14 @@ function genSlot (el, state) {
   var slotName = el.slotName || '"default"';
   var children = genChildren(el, state);
   var res = "_t(" + slotName + (children ? ("," + children) : '');
-  var attrs = el.attrs && ("{" + (el.attrs.map(function (a) { return ((camelize(a.name)) + ":" + (a.value)); }).join(',')) + "}");
+  var attrs = el.attrs || el.dynamicAttrs
+    ? genProps((el.attrs || []).concat(el.dynamicAttrs || []).map(function (attr) { return ({
+        // slot props are camelized
+        name: camelize(attr.name),
+        value: attr.value,
+        dynamic: attr.dynamic
+      }); }))
+    : null;
   var bind$$1 = el.attrsMap['v-bind'];
   if ((attrs || bind$$1) && !children) {
     res += ",null";
@@ -15800,15 +16672,23 @@ function genComponent (
 }
 
 function genProps (props) {
-  var res = '';
+  var staticProps = "";
+  var dynamicProps = "";
   for (var i = 0; i < props.length; i++) {
     var prop = props[i];
-    /* istanbul ignore if */
-    {
-      res += "\"" + (prop.name) + "\":" + (transformSpecialNewlines(prop.value)) + ",";
+    var value = transformSpecialNewlines(prop.value);
+    if (prop.dynamic) {
+      dynamicProps += (prop.name) + "," + value + ",";
+    } else {
+      staticProps += "\"" + (prop.name) + "\":" + value + ",";
     }
   }
-  return res.slice(0, -1)
+  staticProps = "{" + (staticProps.slice(0, -1)) + "}";
+  if (dynamicProps) {
+    return ("_d(" + staticProps + ",[" + (dynamicProps.slice(0, -1)) + "])")
+  } else {
+    return staticProps
+  }
 }
 
 // #3895, #4268
@@ -15819,6 +16699,8 @@ function transformSpecialNewlines (text) {
 }
 
 /*  */
+
+
 
 // these keywords should not appear inside expressions, but operators like
 // typeof, instanceof and in are allowed
@@ -15837,92 +16719,149 @@ var unaryOperatorsRE = new RegExp('\\b' + (
 var stripStringRE = /'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\]|\\.)*\$\{|\}(?:[^`\\]|\\.)*`|`(?:[^`\\]|\\.)*`/g;
 
 // detect problematic expressions in a template
-function detectErrors (ast) {
-  var errors = [];
+function detectErrors (ast, warn) {
   if (ast) {
-    checkNode(ast, errors);
+    checkNode(ast, warn);
   }
-  return errors
 }
 
-function checkNode (node, errors) {
+function checkNode (node, warn) {
   if (node.type === 1) {
     for (var name in node.attrsMap) {
       if (dirRE.test(name)) {
         var value = node.attrsMap[name];
         if (value) {
+          var range = node.rawAttrsMap[name];
           if (name === 'v-for') {
-            checkFor(node, ("v-for=\"" + value + "\""), errors);
+            checkFor(node, ("v-for=\"" + value + "\""), warn, range);
           } else if (onRE.test(name)) {
-            checkEvent(value, (name + "=\"" + value + "\""), errors);
+            checkEvent(value, (name + "=\"" + value + "\""), warn, range);
           } else {
-            checkExpression(value, (name + "=\"" + value + "\""), errors);
+            checkExpression(value, (name + "=\"" + value + "\""), warn, range);
           }
         }
       }
     }
     if (node.children) {
       for (var i = 0; i < node.children.length; i++) {
-        checkNode(node.children[i], errors);
+        checkNode(node.children[i], warn);
       }
     }
   } else if (node.type === 2) {
-    checkExpression(node.expression, node.text, errors);
+    checkExpression(node.expression, node.text, warn, node);
   }
 }
 
-function checkEvent (exp, text, errors) {
+function checkEvent (exp, text, warn, range) {
   var stipped = exp.replace(stripStringRE, '');
   var keywordMatch = stipped.match(unaryOperatorsRE);
   if (keywordMatch && stipped.charAt(keywordMatch.index - 1) !== '$') {
-    errors.push(
+    warn(
       "avoid using JavaScript unary operator as property name: " +
-      "\"" + (keywordMatch[0]) + "\" in expression " + (text.trim())
+      "\"" + (keywordMatch[0]) + "\" in expression " + (text.trim()),
+      range
     );
   }
-  checkExpression(exp, text, errors);
+  checkExpression(exp, text, warn, range);
 }
 
-function checkFor (node, text, errors) {
-  checkExpression(node.for || '', text, errors);
-  checkIdentifier(node.alias, 'v-for alias', text, errors);
-  checkIdentifier(node.iterator1, 'v-for iterator', text, errors);
-  checkIdentifier(node.iterator2, 'v-for iterator', text, errors);
+function checkFor (node, text, warn, range) {
+  checkExpression(node.for || '', text, warn, range);
+  checkIdentifier(node.alias, 'v-for alias', text, warn, range);
+  checkIdentifier(node.iterator1, 'v-for iterator', text, warn, range);
+  checkIdentifier(node.iterator2, 'v-for iterator', text, warn, range);
 }
 
 function checkIdentifier (
   ident,
   type,
   text,
-  errors
+  warn,
+  range
 ) {
   if (typeof ident === 'string') {
     try {
       new Function(("var " + ident + "=_"));
     } catch (e) {
-      errors.push(("invalid " + type + " \"" + ident + "\" in expression: " + (text.trim())));
+      warn(("invalid " + type + " \"" + ident + "\" in expression: " + (text.trim())), range);
     }
   }
 }
 
-function checkExpression (exp, text, errors) {
+function checkExpression (exp, text, warn, range) {
   try {
     new Function(("return " + exp));
   } catch (e) {
     var keywordMatch = exp.replace(stripStringRE, '').match(prohibitedKeywordRE);
     if (keywordMatch) {
-      errors.push(
+      warn(
         "avoid using JavaScript keyword as property name: " +
-        "\"" + (keywordMatch[0]) + "\"\n  Raw expression: " + (text.trim())
+        "\"" + (keywordMatch[0]) + "\"\n  Raw expression: " + (text.trim()),
+        range
       );
     } else {
-      errors.push(
+      warn(
         "invalid expression: " + (e.message) + " in\n\n" +
         "    " + exp + "\n\n" +
-        "  Raw expression: " + (text.trim()) + "\n"
+        "  Raw expression: " + (text.trim()) + "\n",
+        range
       );
     }
   }
+}
+
+/*  */
+
+var range = 2;
+
+function generateCodeFrame (
+  source,
+  start,
+  end
+) {
+  if ( start === void 0 ) start = 0;
+  if ( end === void 0 ) end = source.length;
+
+  var lines = source.split(/\r?\n/);
+  var count = 0;
+  var res = [];
+  for (var i = 0; i < lines.length; i++) {
+    count += lines[i].length + 1;
+    if (count >= start) {
+      for (var j = i - range; j <= i + range || end > count; j++) {
+        if (j < 0 || j >= lines.length) { continue }
+        res.push(("" + (j + 1) + (repeat$1(" ", 3 - String(j + 1).length)) + "|  " + (lines[j])));
+        var lineLength = lines[j].length;
+        if (j === i) {
+          // push underline
+          var pad = start - (count - lineLength) + 1;
+          var length = end > count ? lineLength - pad : end - start;
+          res.push("   |  " + repeat$1(" ", pad) + repeat$1("^", length));
+        } else if (j > i) {
+          if (end > count) {
+            var length$1 = Math.min(end - count, lineLength);
+            res.push("   |  " + repeat$1("^", length$1));
+          }
+          count += lineLength + 1;
+        }
+      }
+      break
+    }
+  }
+  return res.join('\n')
+}
+
+function repeat$1 (str, n) {
+  var result = '';
+  if (n > 0) {
+    while (true) { // eslint-disable-line
+      if (n & 1) { result += str; }
+      n >>>= 1;
+      if (n <= 0) { break }
+      str += str;
+    }
+  }
+  return result
 }
 
 /*  */
@@ -15982,14 +16921,28 @@ function createCompileToFunctionFn (compile) {
     // check compilation errors/tips
     if (process.env.NODE_ENV !== 'production') {
       if (compiled.errors && compiled.errors.length) {
-        warn$$1(
-          "Error compiling template:\n\n" + template + "\n\n" +
-          compiled.errors.map(function (e) { return ("- " + e); }).join('\n') + '\n',
-          vm
-        );
+        if (options.outputSourceRange) {
+          compiled.errors.forEach(function (e) {
+            warn$$1(
+              "Error compiling template:\n\n" + (e.msg) + "\n\n" +
+              generateCodeFrame(template, e.start, e.end),
+              vm
+            );
+          });
+        } else {
+          warn$$1(
+            "Error compiling template:\n\n" + template + "\n\n" +
+            compiled.errors.map(function (e) { return ("- " + e); }).join('\n') + '\n',
+            vm
+          );
+        }
       }
       if (compiled.tips && compiled.tips.length) {
-        compiled.tips.forEach(function (msg) { return tip(msg, vm); });
+        if (options.outputSourceRange) {
+          compiled.tips.forEach(function (e) { return tip(e.msg, vm); });
+        } else {
+          compiled.tips.forEach(function (msg) { return tip(msg, vm); });
+        }
       }
     }
 
@@ -16035,11 +16988,29 @@ function createCompilerCreator (baseCompile) {
       var finalOptions = Object.create(baseOptions);
       var errors = [];
       var tips = [];
-      finalOptions.warn = function (msg, tip) {
+
+      var warn = function (msg, range, tip) {
         (tip ? tips : errors).push(msg);
       };
 
       if (options) {
+        if (process.env.NODE_ENV !== 'production' && options.outputSourceRange) {
+          // $flow-disable-line
+          var leadingSpaceLength = template.match(/^\s*/)[0].length;
+
+          warn = function (msg, range, tip) {
+            var data = { msg: msg };
+            if (range) {
+              if (range.start != null) {
+                data.start = range.start + leadingSpaceLength;
+              }
+              if (range.end != null) {
+                data.end = range.end + leadingSpaceLength;
+              }
+            }
+            (tip ? tips : errors).push(data);
+          };
+        }
         // merge custom modules
         if (options.modules) {
           finalOptions.modules =
@@ -16060,9 +17031,11 @@ function createCompilerCreator (baseCompile) {
         }
       }
 
-      var compiled = baseCompile(template, finalOptions);
+      finalOptions.warn = warn;
+
+      var compiled = baseCompile(template.trim(), finalOptions);
       if (process.env.NODE_ENV !== 'production') {
-        errors.push.apply(errors, detectErrors(compiled.ast));
+        detectErrors(compiled.ast, warn);
       }
       compiled.errors = errors;
       compiled.tips = tips;
@@ -16174,6 +17147,7 @@ Vue.prototype.$mount = function (
       }
 
       var ref = compileToFunctions(template, {
+        outputSourceRange: process.env.NODE_ENV !== 'production',
         shouldDecodeNewlines: shouldDecodeNewlines,
         shouldDecodeNewlinesForHref: shouldDecodeNewlinesForHref,
         delimiters: options.delimiters,
@@ -16297,7 +17271,7 @@ module.exports = {};
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(213), __esModule: true };
+module.exports = { "default": __webpack_require__(216), __esModule: true };
 
 /***/ }),
 /* 15 */
@@ -16660,7 +17634,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+    value: true
 });
 
 var _vue = __webpack_require__(7);
@@ -16687,288 +17661,298 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /* exported ropApiSettings */
 
 var logOptions = {
-	// required ['debug', 'info', 'warn', 'error', 'fatal']
-	logLevel: ropApiSettings.debug === 'yes' ? 'debug' : 'error',
-	// optional : defaults to false if not specified
-	stringifyArguments: false,
-	// optional : defaults to false if not specified
-	showLogLevel: false,
-	// optional : defaults to false if not specified
-	showMethodName: false,
-	// optional : defaults to '|' if not specified
-	separator: '|',
-	// optional : defaults to false if not specified
-	showConsoleColors: true
+    // required ['debug', 'info', 'warn', 'error', 'fatal']
+    logLevel: ropApiSettings.debug === 'yes' ? 'debug' : 'error',
+    // optional : defaults to false if not specified
+    stringifyArguments: false,
+    // optional : defaults to false if not specified
+    showLogLevel: false,
+    // optional : defaults to false if not specified
+    showMethodName: false,
+    // optional : defaults to '|' if not specified
+    separator: '|',
+    // optional : defaults to false if not specified
+    showConsoleColors: true
 };
 _vue2.default.use(_vuex2.default);
 _vue2.default.use(_vueResource2.default);
 _vue2.default.use(_vuejsLogger2.default, logOptions);
 
 exports.default = new _vuex2.default.Store({
-	state: {
-		page: {
-			debug: false,
-			logs: [],
-			view: 'accounts',
-			template: 'accounts'
-		},
-		cron_status: {},
-		toast: {
-			type: 'success',
-			show: false,
-			title: '',
-			message: ''
-		},
-		ajaxLoader: false,
-		api_not_available: false,
-		auth_in_progress: false,
-		displayTabs: [{
-			name: ropApiSettings.labels.accounts.menu_item,
-			slug: 'accounts',
-			view: 'accounts',
-			isActive: true
-		}, {
-			name: ropApiSettings.labels.settings.menu_item,
-			slug: 'settings',
-			view: 'settings',
-			isActive: false
-		}, {
-			name: ropApiSettings.labels.post_format.menu_item,
-			slug: 'post-format',
-			view: 'accounts-selector',
-			isActive: false
-		}, {
-			name: ropApiSettings.labels.schedule.menu_item,
-			slug: 'schedule',
-			view: 'accounts-selector',
-			isActive: false
-		}, {
-			name: ropApiSettings.labels.queue.menu_item,
-			slug: 'queue',
-			view: 'queue',
-			isActive: false
-		}, {
-			name: ropApiSettings.labels.logs.menu_item,
-			slug: 'logs',
-			view: 'logs',
-			isActive: false
-		}],
-		licence: parseInt(ropApiSettings.license_type),
-		labels: ropApiSettings.labels,
-		availableServices: [],
-		generalSettings: [],
-		authenticatedServices: [],
-		activeAccounts: {},
-		activePostFormat: [],
-		activeSchedule: [],
-		queue: {},
-		publish_now: ropApiSettings.publish_now
-	},
-	mutations: {
-		setTabView: function setTabView(state, view) {
-			_vue2.default.$log.debug('Changing tab to  ', view);
-			for (var tab in state.displayTabs) {
-				state.displayTabs[tab].isActive = false;
-				if (state.displayTabs[tab].slug === view) {
-					state.displayTabs[tab].isActive = true;
-					state.page.view = state.displayTabs[tab].slug;
-					state.page.template = state.displayTabs[tab].view;
-				}
-			}
-		},
-		setAjaxState: function setAjaxState(state, data) {
-			state.ajaxLoader = data;
-		},
-		apiNotAvailable: function apiNotAvailable(state, data) {
-			state.api_not_available = data;
-		},
-		updateState: function updateState(state, _ref) {
-			var stateData = _ref.stateData,
-			    requestName = _ref.requestName;
+    state: {
+        page: {
+            debug: false,
+            logs: [],
+            view: 'accounts',
+            template: 'accounts'
+        },
+        cron_status: {},
+        toast: {
+            type: 'success',
+            show: false,
+            title: '',
+            message: ''
+        },
+        ajaxLoader: false,
+        api_not_available: false,
+        auth_in_progress: false,
+        displayTabs: [{
+            name: ropApiSettings.labels.accounts.menu_item,
+            slug: 'accounts',
+            view: 'accounts',
+            isActive: true
+        }, {
+            name: ropApiSettings.labels.settings.menu_item,
+            slug: 'settings',
+            view: 'settings',
+            isActive: false
+        }, {
+            name: ropApiSettings.labels.post_format.menu_item,
+            slug: 'post-format',
+            view: 'accounts-selector',
+            isActive: false
+        }, {
+            name: ropApiSettings.labels.schedule.menu_item,
+            slug: 'schedule',
+            view: 'accounts-selector',
+            isActive: false
+        }, {
+            name: ropApiSettings.labels.queue.menu_item,
+            slug: 'queue',
+            view: 'queue',
+            isActive: false
+        }, {
+            name: ropApiSettings.labels.logs.menu_item,
+            slug: 'logs',
+            view: 'logs',
+            isActive: false
+        }],
+        licence: parseInt(ropApiSettings.license_type),
+        labels: ropApiSettings.labels,
+        availableServices: [],
+        generalSettings: [],
+        authenticatedServices: [],
+        activeAccounts: {},
+        activePostFormat: [],
+        activeSchedule: [],
+        queue: {},
+        publish_now: ropApiSettings.publish_now,
+        hide_preloading: 0,
+        fb_exception_toast: ropApiSettings.fb_domain_toast_display
+    },
+    mutations: {
+        setTabView: function setTabView(state, view) {
+            _vue2.default.$log.debug('Changing tab to  ', view);
+            for (var tab in state.displayTabs) {
+                state.displayTabs[tab].isActive = false;
+                if (state.displayTabs[tab].slug === view) {
+                    state.displayTabs[tab].isActive = true;
+                    state.page.view = state.displayTabs[tab].slug;
+                    state.page.template = state.displayTabs[tab].view;
+                }
+            }
+        },
+        setAjaxState: function setAjaxState(state, data) {
+            state.ajaxLoader = data;
+        },
+        apiNotAvailable: function apiNotAvailable(state, data) {
+            state.api_not_available = data;
+        },
+        updateState: function updateState(state, _ref) {
+            var stateData = _ref.stateData,
+                requestName = _ref.requestName;
 
-			_vue2.default.$log.debug('State change for ', requestName);
-			switch (requestName) {
-				case 'manage_cron':
-					state.cron_status = stateData;
-					break;
-				case 'get_log':
-					state.page.logs = stateData;
-					break;
-				case 'update_settings_toggle':
-				case 'get_general_settings':
-					state.generalSettings = stateData;
-					break;
-				case 'update_selected_post_types':
-					state.generalSettings.selected_post_types = stateData;
-					for (var index in state.generalSettings.available_post_types) {
-						state.generalSettings.available_post_types[index].selected = false;
-						for (var indexSelected in stateData) {
-							if (state.generalSettings.available_post_types[index].value === stateData[indexSelected].value) {
-								state.generalSettings.available_post_types[index].selected = true;
-							}
-						}
-					}
-					break;
-				case 'update_selected_taxonomies':
-					state.generalSettings.selected_taxonomies = stateData;
-					for (var _index in state.generalSettings.available_taxonomies) {
-						state.generalSettings.available_taxonomies[_index].selected = false;
-						for (var _indexSelected in stateData) {
-							if (state.generalSettings.available_taxonomies[_index].value === stateData[_indexSelected].value || state.generalSettings.available_taxonomies[_index].parent === stateData[_indexSelected].value) {
-								state.generalSettings.available_taxonomies[_index].selected = true;
-							}
-						}
-					}
-					break;
-				case 'update_selected_posts':
-					state.generalSettings.selected_posts = stateData;
-					break;
-				case 'get_available_services':
-					state.availableServices = stateData;
-					break;
-				case 'get_authenticated_services':
-				case 'remove_service':
-					state.authenticatedServices = stateData;
-					break;
-				case 'authenticate_service':
-					state.authenticatedServices = stateData;
-					state.auth_in_progress = false;
-					//state.activeAccounts = stateData
-					break;
-				case 'check_account_fb':
-				case 'add_account_fb':
-					state.activeAccounts = stateData;
-					state.auth_in_progress = true;
-					break;
-				case 'get_active_accounts':
-				case 'update_active_accounts':
-				case 'remove_account':
-					state.activeAccounts = stateData;
-					break;
-				case 'get_taxonomies':
-					state.generalSettings.available_taxonomies = stateData;
-					break;
-				case 'get_posts':
-					if (stateData.page === 1) {
-						state.generalSettings.available_posts = stateData.posts;
-					} else {
-						state.generalSettings.available_posts = state.generalSettings.available_posts.concat(stateData.posts);
-					}
+            _vue2.default.$log.debug('State change for ', requestName, ' With value: ', stateData);
+            switch (requestName) {
+                case 'manage_cron':
+                    state.cron_status = stateData;
+                    break;
+                case 'get_log':
+                    state.page.logs = stateData;
+                    break;
+                case 'get_toast':
+                    state.page.logs = stateData;
+                    break;
+                case 'fb_exception_toast':
+                    state.fb_exception_toast = stateData.display;
+                    break;
+                case 'update_settings_toggle':
+                case 'get_general_settings':
+                    state.generalSettings = stateData;
+                    break;
+                case 'update_selected_post_types':
+                    state.generalSettings.selected_post_types = stateData;
+                    for (var index in state.generalSettings.available_post_types) {
+                        state.generalSettings.available_post_types[index].selected = false;
+                        for (var indexSelected in stateData) {
+                            if (state.generalSettings.available_post_types[index].value === stateData[indexSelected].value) {
+                                state.generalSettings.available_post_types[index].selected = true;
+                            }
+                        }
+                    }
+                    break;
+                case 'update_selected_taxonomies':
+                    state.generalSettings.selected_taxonomies = stateData;
+                    for (var _index in state.generalSettings.available_taxonomies) {
+                        state.generalSettings.available_taxonomies[_index].selected = false;
+                        for (var _indexSelected in stateData) {
+                            if (state.generalSettings.available_taxonomies[_index].value === stateData[_indexSelected].value || state.generalSettings.available_taxonomies[_index].parent === stateData[_indexSelected].value) {
+                                state.generalSettings.available_taxonomies[_index].selected = true;
+                            }
+                        }
+                    }
+                    break;
+                case 'update_selected_posts':
+                    state.generalSettings.selected_posts = stateData;
+                    break;
+                case 'get_available_services':
+                    state.availableServices = stateData;
+                    break;
+                case 'get_authenticated_services':
+                case 'remove_service':
+                    state.authenticatedServices = stateData;
+                    state.hide_preloading++;
+                    break;
+                case 'authenticate_service':
+                    state.authenticatedServices = stateData;
+                    state.auth_in_progress = false;
+                    //state.activeAccounts = stateData
+                    break;
+                case 'check_account_fb':
+                case 'add_account_fb':
+                    state.activeAccounts = stateData;
+                    state.auth_in_progress = true;
+                    break;
+                case 'get_active_accounts':
+                case 'update_active_accounts':
+                case 'remove_account':
+                    state.activeAccounts = stateData;
+                    break;
+                case 'get_taxonomies':
+                    state.generalSettings.available_taxonomies = stateData;
+                    break;
+                case 'get_posts':
+                    if (stateData.page === 1) {
+                        state.generalSettings.available_posts = stateData.posts;
+                    } else {
+                        state.generalSettings.available_posts = state.generalSettings.available_posts.concat(stateData.posts);
+                    }
 
-					break;
-				case 'get_post_format':
-				case 'save_post_format':
-				case 'reset_post_format':
-					state.activePostFormat = stateData;
-					break;
-				case 'reset_accounts':
-					state.activeAccounts = {};
-					state.authenticatedServices = [];
-					break;
-				case 'get_shortner_credentials':
-					state.activePostFormat['shortner_credentials'] = stateData;
-					break;
-				case 'get_schedule':
-				case 'save_schedule':
-				case 'reset_schedule':
-					state.activeSchedule = stateData;
-					break;
-				case 'get_queue':
-				case 'update_queue_event':
-				case 'publish_queue_event':
-				case 'skip_queue_event':
-				case 'block_queue_event':
-					state.queue = stateData;
+                    break;
+                case 'get_post_format':
+                case 'save_post_format':
+                case 'reset_post_format':
+                    state.activePostFormat = stateData;
+                    break;
+                case 'reset_accounts':
+                    state.activeAccounts = {};
+                    state.authenticatedServices = [];
+                    break;
+                case 'get_shortner_credentials':
+                    state.activePostFormat['shortner_credentials'] = stateData;
+                    break;
+                case 'get_schedule':
+                case 'save_schedule':
+                case 'reset_schedule':
+                    state.activeSchedule = stateData;
+                    break;
+                case 'get_queue':
+                case 'update_queue_event':
+                case 'publish_queue_event':
+                case 'skip_queue_event':
+                case 'block_queue_event':
+                    state.queue = stateData;
 
-					break;
-				case 'update_toast':
-					state.toast = stateData;
-					break;
-				case 'toggle_account':
-				case 'exclude_post':
-				case 'exclude_post_batch':
+                    break;
+                case 'update_toast':
+                    state.toast = stateData;
+                    _vue2.default.$log.debug('Toast updated ', requestName);
+                    break;
+                case 'toggle_account':
+                case 'exclude_post':
+                case 'exclude_post_batch':
 
-					break;
-				default:
-					_vue2.default.$log.error('No state request for ', requestName);
-			}
-		}
-	},
-	actions: {
-		fetchAJAX: function fetchAJAX(_ref2, data) {
-			var commit = _ref2.commit;
+                    break;
+                default:
+                    _vue2.default.$log.error('No state request for ', requestName);
+            }
+        }
+    },
+    actions: {
+        fetchAJAX: function fetchAJAX(_ref2, data) {
+            var commit = _ref2.commit;
 
-			if (data.req !== '') {
-				commit('setAjaxState', true);
-				_vue2.default.http({
-					url: ropApiSettings.root,
-					method: 'POST',
-					headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-					params: { 'req': data.req },
-					body: data.data,
-					responseType: 'json'
-				}).then(function (response) {
-					commit('setAjaxState', false);
-					var display = false;
-					if (display) {
-						var toast = {
-							type: response.data.status,
-							show: true,
-							title: response.data.title,
-							message: response.data.message
-						};
-						commit('updateState', { stateData: toast, requestName: 'update_toast' });
-					}
-					var stateData = response.data;
-					if (response.data.data) {
-						stateData = response.data.data;
-					}
-					var requestName = data.req;
-					if (data.updateState !== false) {
-						commit('updateState', { stateData: stateData, requestName: requestName });
-					}
-				}, function () {
-					commit('setAjaxState', false);
-					_vue2.default.$log.error('Error when trying to do request: ', data.req);
-				});
-			}
-			return false;
-		},
-		fetchAJAXPromise: function fetchAJAXPromise(_ref3, data) {
-			var commit = _ref3.commit;
+            if (data.req !== '') {
+                commit('setAjaxState', true);
+                _vue2.default.http({
+                    url: ropApiSettings.root,
+                    method: 'POST',
+                    headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+                    params: { 'req': data.req },
+                    body: data.data,
+                    responseType: 'json'
+                }).then(function (response) {
+                    commit('setAjaxState', false);
+                    var display = false;
+                    if (display) {
+                        var toast = {
+                            type: response.data.status,
+                            show: true,
+                            title: response.data.title,
+                            message: response.data.message
+                        };
+                        commit('updateState', { stateData: toast, requestName: 'update_toast' });
+                    }
+                    var stateData = response.data;
+                    if (response.data.data) {
+                        stateData = response.data.data;
+                    }
+                    var requestName = data.req;
+                    if (data.updateState !== false) {
+                        commit('updateState', { stateData: stateData, requestName: requestName });
+                    }
+                }, function () {
+                    commit('setAjaxState', false);
+                    _vue2.default.$log.error('Error when trying to do request: ', data.req);
+                });
+            }
+            return false;
+        },
+        fetchAJAXPromise: function fetchAJAXPromise(_ref3, data) {
+            var commit = _ref3.commit;
 
-			if (data.req !== '') {
-				commit('setAjaxState', true);
-				return new Promise(function (resolve, reject) {
-					_vue2.default.http({
-						url: ropApiSettings.root,
-						method: 'POST',
-						headers: { 'X-WP-Nonce': ropApiSettings.nonce },
-						params: { 'req': data.req },
-						body: data.data,
-						responseType: 'json'
-					}).then(function (response) {
-						commit('setAjaxState', false);
-						var stateData = response.data;
-						if (response.data.data) {
-							stateData = response.data.data;
-						}
-						var requestName = data.req;
-						resolve(stateData);
-						if (data.updateState !== false) {
-							commit('updateState', { stateData: stateData, requestName: requestName });
-						}
-					}, function () {
-						commit('setAjaxState', false);
-						commit('apiNotAvailable', true);
+            if (data.req !== '') {
+                commit('setAjaxState', true);
+                return new Promise(function (resolve, reject) {
+                    _vue2.default.http({
+                        url: ropApiSettings.root,
+                        method: 'POST',
+                        headers: { 'X-WP-Nonce': ropApiSettings.nonce },
+                        params: { 'req': data.req },
+                        body: data.data,
+                        responseType: 'json'
+                    }).then(function (response) {
+                        commit('setAjaxState', false);
+                        var stateData = response.data;
+                        if (response.data.data) {
+                            stateData = response.data.data;
+                        }
+                        var requestName = data.req;
+                        resolve(stateData);
+                        if (data.updateState !== false) {
+                            commit('updateState', { stateData: stateData, requestName: requestName });
+                        }
+                    }, function () {
+                        commit('setAjaxState', false);
+                        commit('apiNotAvailable', true);
 
-						_vue2.default.$log.error('Error when trying to do request: ', data.req);
-					});
-				});
-			}
-			return false;
-		}
-	}
+                        _vue2.default.$log.error('Error when trying to do request: ', data.req);
+                    });
+                });
+            }
+            return false;
+        }
+    }
 });
 
 /***/ }),
@@ -19544,7 +20528,7 @@ var store = global[SHARED] || (global[SHARED] = {});
 })('versions', []).push({
   version: core.version,
   mode: __webpack_require__(32) ? 'pure' : 'global',
-  copyright: '© 2018 Denis Pushkarev (zloirock.ru)'
+  copyright: '© 2019 Denis Pushkarev (zloirock.ru)'
 });
 
 
@@ -20957,9 +21941,9 @@ module.exports = "\n\t<div id=\"rop-upsell-box\" _v-e57ad328=\"\">\n\t\t<div cla
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(220)
-__vue_script__ = __webpack_require__(222)
-__vue_template__ = __webpack_require__(223)
+__webpack_require__(223)
+__vue_script__ = __webpack_require__(225)
+__vue_template__ = __webpack_require__(226)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -20980,9 +21964,9 @@ if (false) {(function () {  module.hot.accept()
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(239)
-__vue_script__ = __webpack_require__(241)
-__vue_template__ = __webpack_require__(242)
+__webpack_require__(252)
+__vue_script__ = __webpack_require__(254)
+__vue_template__ = __webpack_require__(255)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -22721,6 +23705,12 @@ if (false) {(function () {  module.hot.accept()
 
     var months = 'leden_únor_březen_duben_květen_červen_červenec_srpen_září_říjen_listopad_prosinec'.split('_'),
         monthsShort = 'led_úno_bře_dub_kvě_čvn_čvc_srp_zář_říj_lis_pro'.split('_');
+
+    var monthsParse = [/^led/i, /^úno/i, /^bře/i, /^dub/i, /^kvě/i, /^(čvn|červen$|června)/i, /^(čvc|červenec|července)/i, /^srp/i, /^zář/i, /^říj/i, /^lis/i, /^pro/i];
+    // NOTE: 'červen' is substring of 'červenec'; therefore 'červenec' must precede 'červen' in the regex to be fully matched.
+    // Otherwise parser matches '1. červenec' as '1. červen' + 'ec'.
+    var monthsRegex = /^(leden|únor|březen|duben|květen|červenec|července|červen|června|srpen|září|říjen|listopad|prosinec|led|úno|bře|dub|kvě|čvn|čvc|srp|zář|říj|lis|pro)/i;
+
     function plural(n) {
         return (n > 1) && (n < 5) && (~~(n / 10) !== 1);
     }
@@ -22787,28 +23777,15 @@ if (false) {(function () {  module.hot.accept()
     var cs = moment.defineLocale('cs', {
         months : months,
         monthsShort : monthsShort,
-        monthsParse : (function (months, monthsShort) {
-            var i, _monthsParse = [];
-            for (i = 0; i < 12; i++) {
-                // use custom parser to solve problem with July (červenec)
-                _monthsParse[i] = new RegExp('^' + months[i] + '$|^' + monthsShort[i] + '$', 'i');
-            }
-            return _monthsParse;
-        }(months, monthsShort)),
-        shortMonthsParse : (function (monthsShort) {
-            var i, _shortMonthsParse = [];
-            for (i = 0; i < 12; i++) {
-                _shortMonthsParse[i] = new RegExp('^' + monthsShort[i] + '$', 'i');
-            }
-            return _shortMonthsParse;
-        }(monthsShort)),
-        longMonthsParse : (function (months) {
-            var i, _longMonthsParse = [];
-            for (i = 0; i < 12; i++) {
-                _longMonthsParse[i] = new RegExp('^' + months[i] + '$', 'i');
-            }
-            return _longMonthsParse;
-        }(months)),
+        monthsRegex : monthsRegex,
+        monthsShortRegex : monthsRegex,
+        // NOTE: 'červen' is substring of 'červenec'; therefore 'červenec' must precede 'červen' in the regex to be fully matched.
+        // Otherwise parser matches '1. červenec' as '1. červen' + 'ec'.
+        monthsStrictRegex : /^(leden|ledna|února|únor|březen|března|duben|dubna|květen|května|červenec|července|červen|června|srpen|srpna|září|říjen|října|listopadu|listopad|prosinec|prosince)/i,
+        monthsShortStrictRegex : /^(led|úno|bře|dub|kvě|čvn|čvc|srp|zář|říj|lis|pro)/i,
+        monthsParse : monthsParse,
+        longMonthsParse : monthsParse,
+        shortMonthsParse : monthsParse,
         weekdays : 'neděle_pondělí_úterý_středa_čtvrtek_pátek_sobota'.split('_'),
         weekdaysShort : 'ne_po_út_st_čt_pá_so'.split('_'),
         weekdaysMin : 'ne_po_út_st_čt_pá_so'.split('_'),
@@ -23564,6 +24541,77 @@ if (false) {(function () {  module.hot.accept()
 }(this, (function (moment) { 'use strict';
 
 
+    var enSG = moment.defineLocale('en-SG', {
+        months : 'January_February_March_April_May_June_July_August_September_October_November_December'.split('_'),
+        monthsShort : 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_'),
+        weekdays : 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday'.split('_'),
+        weekdaysShort : 'Sun_Mon_Tue_Wed_Thu_Fri_Sat'.split('_'),
+        weekdaysMin : 'Su_Mo_Tu_We_Th_Fr_Sa'.split('_'),
+        longDateFormat : {
+            LT : 'HH:mm',
+            LTS : 'HH:mm:ss',
+            L : 'DD/MM/YYYY',
+            LL : 'D MMMM YYYY',
+            LLL : 'D MMMM YYYY HH:mm',
+            LLLL : 'dddd, D MMMM YYYY HH:mm'
+        },
+        calendar : {
+            sameDay : '[Today at] LT',
+            nextDay : '[Tomorrow at] LT',
+            nextWeek : 'dddd [at] LT',
+            lastDay : '[Yesterday at] LT',
+            lastWeek : '[Last] dddd [at] LT',
+            sameElse : 'L'
+        },
+        relativeTime : {
+            future : 'in %s',
+            past : '%s ago',
+            s : 'a few seconds',
+            ss : '%d seconds',
+            m : 'a minute',
+            mm : '%d minutes',
+            h : 'an hour',
+            hh : '%d hours',
+            d : 'a day',
+            dd : '%d days',
+            M : 'a month',
+            MM : '%d months',
+            y : 'a year',
+            yy : '%d years'
+        },
+        dayOfMonthOrdinalParse: /\d{1,2}(st|nd|rd|th)/,
+        ordinal : function (number) {
+            var b = number % 10,
+                output = (~~(number % 100 / 10) === 1) ? 'th' :
+                (b === 1) ? 'st' :
+                (b === 2) ? 'nd' :
+                (b === 3) ? 'rd' : 'th';
+            return number + output;
+        },
+        week : {
+            dow : 1, // Monday is the first day of the week.
+            doy : 4  // The week that contains Jan 4th is the first week of the year.
+        }
+    });
+
+    return enSG;
+
+})));
+
+
+/***/ }),
+/* 111 */
+/***/ (function(module, exports, __webpack_require__) {
+
+//! moment.js locale configuration
+
+;(function (global, factory) {
+    true ? factory(__webpack_require__(0)) :
+   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
+   factory(global.moment)
+}(this, (function (moment) { 'use strict';
+
+
     var enAu = moment.defineLocale('en-au', {
         months : 'January_February_March_April_May_June_July_August_September_October_November_December'.split('_'),
         monthsShort : 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_'),
@@ -23623,7 +24671,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 111 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23690,7 +24738,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 112 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23761,7 +24809,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 113 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23782,7 +24830,7 @@ if (false) {(function () {  module.hot.accept()
         longDateFormat : {
             LT : 'HH:mm',
             LTS : 'HH:mm:ss',
-            L : 'DD-MM-YYYY',
+            L : 'DD/MM/YYYY',
             LL : 'D MMMM YYYY',
             LLL : 'D MMMM YYYY HH:mm',
             LLLL : 'dddd D MMMM YYYY HH:mm'
@@ -23832,7 +24880,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 114 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23898,7 +24946,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 115 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23969,7 +25017,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 116 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24044,7 +25092,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 117 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24140,7 +25188,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 118 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24236,7 +25284,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 119 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24251,6 +25299,9 @@ if (false) {(function () {  module.hot.accept()
     var monthsShortDot = 'ene._feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.'.split('_'),
         monthsShort = 'ene_feb_mar_abr_may_jun_jul_ago_sep_oct_nov_dic'.split('_');
 
+    var monthsParse = [/^ene/i, /^feb/i, /^mar/i, /^abr/i, /^may/i, /^jun/i, /^jul/i, /^ago/i, /^sep/i, /^oct/i, /^nov/i, /^dic/i];
+    var monthsRegex = /^(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre|ene\.?|feb\.?|mar\.?|abr\.?|may\.?|jun\.?|jul\.?|ago\.?|sep\.?|oct\.?|nov\.?|dic\.?)/i;
+
     var esUs = moment.defineLocale('es-us', {
         months : 'enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre'.split('_'),
         monthsShort : function (m, format) {
@@ -24262,7 +25313,13 @@ if (false) {(function () {  module.hot.accept()
                 return monthsShortDot[m.month()];
             }
         },
-        monthsParseExact : true,
+        monthsRegex: monthsRegex,
+        monthsShortRegex: monthsRegex,
+        monthsStrictRegex: /^(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)/i,
+        monthsShortStrictRegex: /^(ene\.?|feb\.?|mar\.?|abr\.?|may\.?|jun\.?|jul\.?|ago\.?|sep\.?|oct\.?|nov\.?|dic\.?)/i,
+        monthsParse: monthsParse,
+        longMonthsParse: monthsParse,
+        shortMonthsParse: monthsParse,
         weekdays : 'domingo_lunes_martes_miércoles_jueves_viernes_sábado'.split('_'),
         weekdaysShort : 'dom._lun._mar._mié._jue._vie._sáb.'.split('_'),
         weekdaysMin : 'do_lu_ma_mi_ju_vi_sá'.split('_'),
@@ -24271,9 +25328,9 @@ if (false) {(function () {  module.hot.accept()
             LT : 'h:mm A',
             LTS : 'h:mm:ss A',
             L : 'MM/DD/YYYY',
-            LL : 'MMMM [de] D [de] YYYY',
-            LLL : 'MMMM [de] D [de] YYYY h:mm A',
-            LLLL : 'dddd, MMMM [de] D [de] YYYY h:mm A'
+            LL : 'D [de] MMMM [de] YYYY',
+            LLL : 'D [de] MMMM [de] YYYY h:mm A',
+            LLLL : 'dddd, D [de] MMMM [de] YYYY h:mm A'
         },
         calendar : {
             sameDay : function () {
@@ -24323,7 +25380,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 120 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24407,7 +25464,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 121 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24477,7 +25534,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 122 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24587,7 +25644,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 123 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24700,7 +25757,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 124 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24739,13 +25796,13 @@ if (false) {(function () {  module.hot.accept()
             past : '%s síðani',
             s : 'fá sekund',
             ss : '%d sekundir',
-            m : 'ein minutt',
+            m : 'ein minuttur',
             mm : '%d minuttir',
             h : 'ein tími',
             hh : '%d tímar',
             d : 'ein dagur',
             dd : '%d dagar',
-            M : 'ein mánaði',
+            M : 'ein mánaður',
             MM : '%d mánaðir',
             y : 'eitt ár',
             yy : '%d ár'
@@ -24764,7 +25821,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 125 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24851,7 +25908,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 126 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24929,7 +25986,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 127 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25011,7 +26068,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 128 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25090,7 +26147,88 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 129 */
+/* 130 */
+/***/ (function(module, exports, __webpack_require__) {
+
+//! moment.js locale configuration
+
+;(function (global, factory) {
+    true ? factory(__webpack_require__(0)) :
+   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
+   factory(global.moment)
+}(this, (function (moment) { 'use strict';
+
+
+
+    var months = [
+        'Eanáir', 'Feabhra', 'Márta', 'Aibreán', 'Bealtaine', 'Méitheamh', 'Iúil', 'Lúnasa', 'Meán Fómhair', 'Deaireadh Fómhair', 'Samhain', 'Nollaig'
+    ];
+
+    var monthsShort = ['Eaná', 'Feab', 'Márt', 'Aibr', 'Beal', 'Méit', 'Iúil', 'Lúna', 'Meán', 'Deai', 'Samh', 'Noll'];
+
+    var weekdays = ['Dé Domhnaigh', 'Dé Luain', 'Dé Máirt', 'Dé Céadaoin', 'Déardaoin', 'Dé hAoine', 'Dé Satharn'];
+
+    var weekdaysShort = ['Dom', 'Lua', 'Mái', 'Céa', 'Déa', 'hAo', 'Sat'];
+
+    var weekdaysMin = ['Do', 'Lu', 'Má', 'Ce', 'Dé', 'hA', 'Sa'];
+
+    var ga = moment.defineLocale('ga', {
+        months: months,
+        monthsShort: monthsShort,
+        monthsParseExact: true,
+        weekdays: weekdays,
+        weekdaysShort: weekdaysShort,
+        weekdaysMin: weekdaysMin,
+        longDateFormat: {
+            LT: 'HH:mm',
+            LTS: 'HH:mm:ss',
+            L: 'DD/MM/YYYY',
+            LL: 'D MMMM YYYY',
+            LLL: 'D MMMM YYYY HH:mm',
+            LLLL: 'dddd, D MMMM YYYY HH:mm'
+        },
+        calendar: {
+            sameDay: '[Inniu ag] LT',
+            nextDay: '[Amárach ag] LT',
+            nextWeek: 'dddd [ag] LT',
+            lastDay: '[Inné aig] LT',
+            lastWeek: 'dddd [seo caite] [ag] LT',
+            sameElse: 'L'
+        },
+        relativeTime: {
+            future: 'i %s',
+            past: '%s ó shin',
+            s: 'cúpla soicind',
+            ss: '%d soicind',
+            m: 'nóiméad',
+            mm: '%d nóiméad',
+            h: 'uair an chloig',
+            hh: '%d uair an chloig',
+            d: 'lá',
+            dd: '%d lá',
+            M: 'mí',
+            MM: '%d mí',
+            y: 'bliain',
+            yy: '%d bliain'
+        },
+        dayOfMonthOrdinalParse: /\d{1,2}(d|na|mh)/,
+        ordinal: function (number) {
+            var output = number === 1 ? 'd' : number % 10 === 2 ? 'na' : 'mh';
+            return number + output;
+        },
+        week: {
+            dow: 1, // Monday is the first day of the week.
+            doy: 4  // The week that contains Jan 4th is the first week of the year.
+        }
+    });
+
+    return ga;
+
+})));
+
+
+/***/ }),
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25170,7 +26308,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 130 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25251,7 +26389,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 131 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25269,8 +26407,8 @@ if (false) {(function () {  module.hot.accept()
             'ss': [number + ' secondanim', number + ' second'],
             'm': ['eka mintan', 'ek minute'],
             'mm': [number + ' mintanim', number + ' mintam'],
-            'h': ['eka horan', 'ek hor'],
-            'hh': [number + ' horanim', number + ' horam'],
+            'h': ['eka voran', 'ek vor'],
+            'hh': [number + ' voranim', number + ' voram'],
             'd': ['eka disan', 'ek dis'],
             'dd': [number + ' disanim', number + ' dis'],
             'M': ['eka mhoinean', 'ek mhoino'],
@@ -25378,7 +26516,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 132 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25506,7 +26644,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 133 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25607,7 +26745,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 134 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25735,7 +26873,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 135 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25893,7 +27031,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 136 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26007,7 +27145,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 137 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26106,7 +27244,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 138 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26192,7 +27330,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 139 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26328,7 +27466,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 140 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26401,7 +27539,80 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 141 */
+/* 143 */
+/***/ (function(module, exports, __webpack_require__) {
+
+//! moment.js locale configuration
+
+;(function (global, factory) {
+    true ? factory(__webpack_require__(0)) :
+   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
+   factory(global.moment)
+}(this, (function (moment) { 'use strict';
+
+
+    var itCh = moment.defineLocale('it-ch', {
+        months : 'gennaio_febbraio_marzo_aprile_maggio_giugno_luglio_agosto_settembre_ottobre_novembre_dicembre'.split('_'),
+        monthsShort : 'gen_feb_mar_apr_mag_giu_lug_ago_set_ott_nov_dic'.split('_'),
+        weekdays : 'domenica_lunedì_martedì_mercoledì_giovedì_venerdì_sabato'.split('_'),
+        weekdaysShort : 'dom_lun_mar_mer_gio_ven_sab'.split('_'),
+        weekdaysMin : 'do_lu_ma_me_gi_ve_sa'.split('_'),
+        longDateFormat : {
+            LT : 'HH:mm',
+            LTS : 'HH:mm:ss',
+            L : 'DD.MM.YYYY',
+            LL : 'D MMMM YYYY',
+            LLL : 'D MMMM YYYY HH:mm',
+            LLLL : 'dddd D MMMM YYYY HH:mm'
+        },
+        calendar : {
+            sameDay: '[Oggi alle] LT',
+            nextDay: '[Domani alle] LT',
+            nextWeek: 'dddd [alle] LT',
+            lastDay: '[Ieri alle] LT',
+            lastWeek: function () {
+                switch (this.day()) {
+                    case 0:
+                        return '[la scorsa] dddd [alle] LT';
+                    default:
+                        return '[lo scorso] dddd [alle] LT';
+                }
+            },
+            sameElse: 'L'
+        },
+        relativeTime : {
+            future : function (s) {
+                return ((/^[0-9].+$/).test(s) ? 'tra' : 'in') + ' ' + s;
+            },
+            past : '%s fa',
+            s : 'alcuni secondi',
+            ss : '%d secondi',
+            m : 'un minuto',
+            mm : '%d minuti',
+            h : 'un\'ora',
+            hh : '%d ore',
+            d : 'un giorno',
+            dd : '%d giorni',
+            M : 'un mese',
+            MM : '%d mesi',
+            y : 'un anno',
+            yy : '%d anni'
+        },
+        dayOfMonthOrdinalParse : /\d{1,2}º/,
+        ordinal: '%dº',
+        week : {
+            dow : 1, // Monday is the first day of the week.
+            doy : 4  // The week that contains Jan 4th is the first week of the year.
+        }
+    });
+
+    return itCh;
+
+})));
+
+
+/***/ }),
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26414,7 +27625,7 @@ if (false) {(function () {  module.hot.accept()
 
 
     var ja = moment.defineLocale('ja', {
-        months : '1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月'.split('_'),
+        months : '一月_二月_三月_四月_五月_六月_七月_八月_九月_十月_十一月_十二月'.split('_'),
         monthsShort : '1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月'.split('_'),
         weekdays : '日曜日_月曜日_火曜日_水曜日_木曜日_金曜日_土曜日'.split('_'),
         weekdaysShort : '日_月_火_水_木_金_土'.split('_'),
@@ -26497,7 +27708,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 142 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26583,7 +27794,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 143 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26676,7 +27887,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 144 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26767,7 +27978,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 145 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26881,7 +28092,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 146 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27011,7 +28222,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 147 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27096,7 +28307,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 148 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27219,7 +28430,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 149 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27310,7 +28521,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 150 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27450,7 +28661,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 151 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27524,7 +28735,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 152 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27646,7 +28857,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 153 */
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27747,7 +28958,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 154 */
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27863,7 +29074,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 155 */
+/* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27931,7 +29142,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 156 */
+/* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28025,7 +29236,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 157 */
+/* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28110,7 +29321,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 158 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28218,7 +29429,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 159 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28382,7 +29593,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 160 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28468,7 +29679,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 161 */
+/* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28554,7 +29765,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 162 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28618,7 +29829,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 163 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28715,7 +29926,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 164 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28781,7 +29992,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 165 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28908,7 +30119,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 166 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28999,7 +30210,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 167 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29090,7 +30301,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 168 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29154,7 +30365,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 169 */
+/* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29282,7 +30493,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 170 */
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29412,7 +30623,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 171 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29425,8 +30636,8 @@ if (false) {(function () {  module.hot.accept()
 
 
     var pt = moment.defineLocale('pt', {
-        months : 'janeiro_fevereiro_março_abril_maio_junho_julho_agosto_setembro_outubro_novembro_dezembro'.split('_'),
-        monthsShort : 'jan_fev_mar_abr_mai_jun_jul_ago_set_out_nov_dez'.split('_'),
+        months : 'Janeiro_Fevereiro_Março_Abril_Maio_Junho_Julho_Agosto_Setembro_Outubro_Novembro_Dezembro'.split('_'),
+        monthsShort : 'Jan_Fev_Mar_Abr_Mai_Jun_Jul_Ago_Set_Out_Nov_Dez'.split('_'),
         weekdays : 'Domingo_Segunda-feira_Terça-feira_Quarta-feira_Quinta-feira_Sexta-feira_Sábado'.split('_'),
         weekdaysShort : 'Dom_Seg_Ter_Qua_Qui_Sex_Sáb'.split('_'),
         weekdaysMin : 'Do_2ª_3ª_4ª_5ª_6ª_Sá'.split('_'),
@@ -29481,7 +30692,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 172 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29494,8 +30705,8 @@ if (false) {(function () {  module.hot.accept()
 
 
     var ptBr = moment.defineLocale('pt-br', {
-        months : 'janeiro_fevereiro_março_abril_maio_junho_julho_agosto_setembro_outubro_novembro_dezembro'.split('_'),
-        monthsShort : 'jan_fev_mar_abr_mai_jun_jul_ago_set_out_nov_dez'.split('_'),
+        months : 'Janeiro_Fevereiro_Março_Abril_Maio_Junho_Julho_Agosto_Setembro_Outubro_Novembro_Dezembro'.split('_'),
+        monthsShort : 'Jan_Fev_Mar_Abr_Mai_Jun_Jul_Ago_Set_Out_Nov_Dez'.split('_'),
         weekdays : 'Domingo_Segunda-feira_Terça-feira_Quarta-feira_Quinta-feira_Sexta-feira_Sábado'.split('_'),
         weekdaysShort : 'Dom_Seg_Ter_Qua_Qui_Sex_Sáb'.split('_'),
         weekdaysMin : 'Do_2ª_3ª_4ª_5ª_6ª_Sá'.split('_'),
@@ -29546,7 +30757,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 173 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29625,7 +30836,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 174 */
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29811,7 +31022,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 175 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29913,7 +31124,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 176 */
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29977,7 +31188,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 177 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30052,7 +31263,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 178 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30212,7 +31423,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 179 */
+/* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30389,7 +31600,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 180 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30461,7 +31672,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 181 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30576,7 +31787,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 182 */
+/* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30691,7 +31902,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 183 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30783,7 +31994,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 184 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30856,7 +32067,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 185 */
+/* 188 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30919,7 +32130,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 186 */
+/* 189 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31052,7 +32263,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 187 */
+/* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31065,8 +32276,8 @@ if (false) {(function () {  module.hot.accept()
 
 
     var te = moment.defineLocale('te', {
-        months : 'జనవరి_ఫిబ్రవరి_మార్చి_ఏప్రిల్_మే_జూన్_జూలై_ఆగస్టు_సెప్టెంబర్_అక్టోబర్_నవంబర్_డిసెంబర్'.split('_'),
-        monthsShort : 'జన._ఫిబ్ర._మార్చి_ఏప్రి._మే_జూన్_జూలై_ఆగ._సెప్._అక్టో._నవ._డిసె.'.split('_'),
+        months : 'జనవరి_ఫిబ్రవరి_మార్చి_ఏప్రిల్_మే_జూన్_జులై_ఆగస్టు_సెప్టెంబర్_అక్టోబర్_నవంబర్_డిసెంబర్'.split('_'),
+        monthsShort : 'జన._ఫిబ్ర._మార్చి_ఏప్రి._మే_జూన్_జులై_ఆగ._సెప్._అక్టో._నవ._డిసె.'.split('_'),
         monthsParseExact : true,
         weekdays : 'ఆదివారం_సోమవారం_మంగళవారం_బుధవారం_గురువారం_శుక్రవారం_శనివారం'.split('_'),
         weekdaysShort : 'ఆది_సోమ_మంగళ_బుధ_గురు_శుక్ర_శని'.split('_'),
@@ -31145,7 +32356,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 188 */
+/* 191 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31216,7 +32427,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 189 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31336,7 +32547,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 190 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31407,7 +32618,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 191 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31473,7 +32684,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 192 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31599,7 +32810,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 193 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -31697,7 +32908,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 194 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31792,7 +33003,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 195 */
+/* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31854,7 +33065,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 196 */
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31916,7 +33127,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 197 */
+/* 200 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js language configuration
@@ -32039,7 +33250,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 198 */
+/* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32081,6 +33292,9 @@ if (false) {(function () {  module.hot.accept()
             'genitive': 'неділі_понеділка_вівторка_середи_четверга_п’ятниці_суботи'.split('_')
         };
 
+        if (m === true) {
+            return weekdays['nominative'].slice(1, 7).concat(weekdays['nominative'].slice(0, 1));
+        }
         if (!m) {
             return weekdays['nominative'];
         }
@@ -32194,7 +33408,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 199 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32296,7 +33510,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 200 */
+/* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32358,7 +33572,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 201 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32420,7 +33634,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 202 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32503,7 +33717,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 203 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32575,7 +33789,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 204 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32639,7 +33853,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 205 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32753,7 +33967,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 206 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32860,7 +34074,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 207 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32967,7 +34181,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 208 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32981,7 +34195,7 @@ var _rop_store = __webpack_require__(24);
 
 var _rop_store2 = _interopRequireDefault(_rop_store);
 
-var _mainPagePanel = __webpack_require__(209);
+var _mainPagePanel = __webpack_require__(212);
 
 var _mainPagePanel2 = _interopRequireDefault(_mainPagePanel);
 
@@ -33006,13 +34220,13 @@ window.addEventListener('load', function () {
 /* exported RopApp */
 
 /***/ }),
-/* 209 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(210)
-__vue_script__ = __webpack_require__(212)
-__vue_template__ = __webpack_require__(298)
+__webpack_require__(213)
+__vue_script__ = __webpack_require__(215)
+__vue_template__ = __webpack_require__(311)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -33029,13 +34243,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 210 */
+/* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(211);
+var content = __webpack_require__(214);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -33055,7 +34269,7 @@ if(false) {
 }
 
 /***/ }),
-/* 211 */
+/* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -33063,13 +34277,13 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .badge[data-badge]::after {\n\t\tposition: absolute;\n\t\tbottom: -16px;\n\t\tright: 0px;\n\t}\n\t#rop_core .rop-api-not-available {\n\t\tmargin:10px 0px 10px 0px;\n\t}\n\n\t#rop_core .badge.badge-logs::after {\n\t\tright: auto;\n\t\ttop: 0px;\n\t}\n\n\t#rop_core .badge.badge-logs {\n\t\tpadding-right: 10px;\n\t}\n", ""]);
+exports.push([module.i, "\n    #rop_core .badge[data-badge]::after {\n        position: absolute;\n        bottom: -16px;\n        right: 0px;\n    }\n\n    #rop_core .rop-api-not-available {\n        margin: 10px 0px 10px 0px;\n    }\n\n    #rop_core .badge.badge-logs::after {\n        right: auto;\n        top: 0px;\n    }\n\n    #rop_core .badge.badge-logs {\n        padding-right: 10px;\n    }\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 212 */
+/* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33079,31 +34293,31 @@ var _keys = __webpack_require__(14);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _accountsTabPanel = __webpack_require__(216);
+var _accountsTabPanel = __webpack_require__(219);
 
 var _accountsTabPanel2 = _interopRequireDefault(_accountsTabPanel);
 
-var _settingsTabPanel = __webpack_require__(235);
+var _settingsTabPanel = __webpack_require__(248);
 
 var _settingsTabPanel2 = _interopRequireDefault(_settingsTabPanel);
 
-var _accountsSelectorPanel = __webpack_require__(244);
+var _accountsSelectorPanel = __webpack_require__(257);
 
 var _accountsSelectorPanel2 = _interopRequireDefault(_accountsSelectorPanel);
 
-var _queueTabPanel = __webpack_require__(271);
+var _queueTabPanel = __webpack_require__(286);
 
 var _queueTabPanel2 = _interopRequireDefault(_queueTabPanel);
 
-var _logsTabPanel = __webpack_require__(279);
+var _logsTabPanel = __webpack_require__(294);
 
 var _logsTabPanel2 = _interopRequireDefault(_logsTabPanel);
 
-var _toast = __webpack_require__(286);
+var _toast = __webpack_require__(299);
 
 var _toast2 = _interopRequireDefault(_toast);
 
-var _countdown = __webpack_require__(291);
+var _countdown = __webpack_require__(304);
 
 var _countdown2 = _interopRequireDefault(_countdown);
 
@@ -33118,276 +34332,383 @@ var _upsellSidebar2 = _interopRequireDefault(_upsellSidebar);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 module.exports = {
-	name: 'main-page-panel',
-	computed: {
-		/**
-   * Display the clicked tab.
-   *
-   * @returns {module.exports.computed.displayTabs|*[]}
-   */
-		displayTabs: function displayTabs() {
-			return this.$store.state.displayTabs;
-		},
-		/**
-   * Get active page.
-   */
-		page: function page() {
-			return this.$store.state.page;
-		},
-		/**
-   * Check if rest api is available.
-   */
-		is_rest_api_error: function is_rest_api_error() {
-			return this.$store.state.api_not_available;
-		},
-		current_time: {
-			get: function get() {
-				return this.$store.state.cron_status.current_time;
-			},
-			set: function set(value) {
-				this.$store.state.cron_status.current_time = value;
-			}
-		},
-		date_format: function date_format() {
+    name: 'main-page-panel',
+    computed: {
+        /**
+         * Display the clicked tab.
+         *
+         * @returns {module.exports.computed.displayTabs|*[]}
+         */
+        displayTabs: function displayTabs() {
+            return this.$store.state.displayTabs;
+        },
+        /**
+         * Get active page.
+         */
+        page: function page() {
+            return this.$store.state.page;
+        },
+        /**
+         * Check if rest api is available.
+         */
+        is_rest_api_error: function is_rest_api_error() {
+            return this.$store.state.api_not_available;
+        },
+        /**
+         * Check if rest api is available.
+         */
+        is_fb_domain_notice: function is_fb_domain_notice() {
+            return this.$store.state.fb_exception_toast;
+        },
+        current_time: {
+            get: function get() {
+                return this.$store.state.cron_status.current_time;
+            },
+            set: function set(value) {
+                this.$store.state.cron_status.current_time = value;
+            }
+        },
+        date_format: function date_format() {
 
-			return this.$store.state.cron_status.date_format;
-		},
-		logs_no: function logs_no() {
+            return this.$store.state.cron_status.date_format;
+        },
+        logs_no: function logs_no() {
 
-			return this.$store.state.cron_status.logs_number;
-		},
-		/**
-   * Get btn start class.
-   */
-		btn_class: function btn_class() {
-			var btn_class = 'btn-' + (this.start_status ? 'danger' : 'success');
-			if (this.haveAccounts) {
-				btn_class += ' tooltip button-disabled ';
-			}
-			return btn_class;
-		},
-		/**
-   * Check if we have accounts active.
-   *
-   * @returns {boolean}
-   */
-		haveAccounts: function haveAccounts() {
-			return !((0, _keys2.default)(this.$store.state.activeAccounts).length > 0);
-		},
-		/*
-  * Check if the sharing is started.
-  */
-		start_status: function start_status() {
-			return this.$store.state.cron_status.current_status;
-		},
+            return this.$store.state.cron_status.logs_number;
+        },
+        /**
+         * Get btn start class.
+         */
+        btn_class: function btn_class() {
+            var btn_class = 'btn-' + (this.start_status ? 'danger' : 'success');
+            if (!this.haveAccountsActive) {
+                btn_class += ' tooltip button-disabled ';
+            }
+            return btn_class;
+        },
+        /**
+         * Status label.
+         */
+        status_color_class: function status_color_class() {
+            var status_color_class = 'sharing-status-' + (this.start_status ? 'sharing' : 'notsharing');
+            if (!this.haveAccountsActive) {
+                status_color_class = ' sharing-status-notsharing  ';
+            }
+            if (this.status_is_error_display) {
+                return ' sharing-status-error ';
+            }
+            return status_color_class;
+        },
+        status_label_display: function status_label_display() {
+            var labels = this.$store.state.labels.general;
+            var status_label_display = this.start_status ? labels.sharing_to_account : labels.sharing_not_started;
+            if (!this.haveAccountsActive) {
+                status_label_display = labels.sharing_not_started;
+            }
 
-		/**
-   * Get general settings.
-   * @returns {module.exports.computed.generalSettings|Array|*}
-   */
-		generalSettings: function generalSettings() {
-			return this.$store.state.generalSettings;
-		},
-		/**
-   * Get general settings.
-   * @returns {module.exports.computed.generalSettings|Array|*}
-   */
-		formatedDate: function formatedDate() {
-			if (typeof this.date_format === 'undefined') {
-				return '';
-			}
-			return _moment2.default.utc(this.current_time, 'X').format(this.date_format.replace('mm', 'mm:ss'));
-		}
-	},
-	mounted: function mounted() {
-		var _this = this;
+            if (this.status_is_error_display) {
+                return labels.status + ': ' + labels.error_check_log;
+            }
+            return labels.status + ': ' + status_label_display;
+        },
+        status_is_error_display: function status_is_error_display() {
+            return this.status_is_error_display;
+        },
+        /**
+         * Check if we have accounts connected.
+         *
+         * @returns {boolean}
+         */
+        haveAccounts: function haveAccounts() {
+            return (0, _keys2.default)(this.$store.state.authenticatedServices).length > 0;
+        },
+        /**
+         * Check if we have accounts active.
+         *
+         * @returns {boolean}
+         */
+        haveAccountsActive: function haveAccountsActive() {
+            return (0, _keys2.default)(this.$store.state.activeAccounts).length > 0;
+        },
+        /*
+        * Check if the sharing is started.
+        */
+        start_status: function start_status() {
+            return this.$store.state.cron_status.current_status;
+        },
 
-		setInterval(function () {
-			//this.$log.info('counting');
-			if (_this.current_time > 0) {
-				_this.current_time += 1;
-			}
-		}, 1000);
-	},
-	created: function created() {},
+        /**
+         * Get general settings.
+         * @returns {module.exports.computed.generalSettings|Array|*}
+         */
+        generalSettings: function generalSettings() {
+            return this.$store.state.generalSettings;
+        }
+    },
+    mounted: function mounted() {
+        var _this = this;
 
-	data: function data() {
-		return {
-			to_pro_upsell: ROP_ASSETS_URL + 'img/to_pro.png',
-			to_business_upsell: ROP_ASSETS_URL + 'img/to_business.png',
-			plugin_logo: ROP_ASSETS_URL + 'img/logo_rop.png',
-			license: this.$store.state.licence,
-			labels: this.$store.state.labels.general,
-			upsell_link: ropApiSettings.upsell_link,
-			staging: ropApiSettings.staging,
-			is_loading: false
-		};
-	},
-	methods: {
-		/**
-   * Toggle sharing.
-   */
-		togglePosting: function togglePosting() {
-			var _this2 = this;
+        setInterval(function () {
+            //this.$log.info('counting');
+            if (_this.current_time > 0) {
+                _this.current_time += 1;
+            }
+        }, 1000);
 
-			if (this.is_loading) {
-				this.$log.warn('Request in progress...Bail');
-				return;
-			}
-			this.is_loading = true;
-			this.$store.dispatch('fetchAJAXPromise', {
-				req: 'manage_cron',
-				data: {
-					'action': this.start_status === false ? 'start' : 'stop'
-				}
-			}).then(function (response) {
-				_this2.is_loading = false;
-			}, function (error) {
-				_this2.is_loading = false;
-				Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
-			});
-		},
+        this.get_toast_message(false);
+    },
+    created: function created() {},
 
-		/**
-   * Toggle tab active.
-   * @param slug
-   */
-		switchTab: function switchTab(slug) {
-			this.$store.commit('setTabView', slug);
-		}
-	},
-	components: {
-		'accounts': _accountsTabPanel2.default,
-		'settings': _settingsTabPanel2.default,
-		'accounts-selector': _accountsSelectorPanel2.default,
-		'queue': _queueTabPanel2.default,
-		'logs': _logsTabPanel2.default,
-		'upsell-sidebar': _upsellSidebar2.default,
-		'toast': _toast2.default,
-		'countdown': _countdown2.default
-	}
-	// </script>
-	//
-	// <style>
-	// 	#rop_core .badge[data-badge]::after {
-	// 		position: absolute;
-	// 		bottom: -16px;
-	// 		right: 0px;
-	// 	}
-	// 	#rop_core .rop-api-not-available {
-	// 		margin:10px 0px 10px 0px;
-	// 	}
-	//
-	// 	#rop_core .badge.badge-logs::after {
-	// 		right: auto;
-	// 		top: 0px;
-	// 	}
-	//
-	// 	#rop_core .badge.badge-logs {
-	// 		padding-right: 10px;
-	// 	}
-	// </style>
-	//
+    data: function data() {
+        return {
+            to_pro_upsell: ROP_ASSETS_URL + 'img/to_pro.png',
+            to_business_upsell: ROP_ASSETS_URL + 'img/to_business.png',
+            plugin_logo: ROP_ASSETS_URL + 'img/logo_rop.png',
+            license: this.$store.state.licence,
+            labels: this.$store.state.labels.general,
+            upsell_link: ropApiSettings.upsell_link,
+            staging: ropApiSettings.staging,
+            is_loading: false,
+            is_loading_logs: false,
+            status_is_error_display: false
+        };
+    },
+    methods: {
+        /**
+         *
+         * */
+        close_fb_domain_notice: function close_fb_domain_notice() {
+            var _this2 = this;
+
+            if (this.is_loading) {
+                this.$log.warn('Request in progress...Bail');
+                return;
+            }
+
+            this.$store.dispatch('fetchAJAXPromise', {
+                req: 'fb_exception_toast',
+                data: { action: 'hide' }
+            }).then(function (response) {
+                _this2.$log.info('Succesfully closed facebook domain toast.');
+                _this2.is_loading = false;
+            }, function (error) {
+                _this2.is_loading = false;
+                Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+            });
+        },
+
+        /**
+         * Toggle sharing.
+         */
+        togglePosting: function togglePosting() {
+            var _this3 = this;
+
+            if (this.is_loading) {
+                this.$log.warn('Request in progress...Bail');
+                return;
+            }
+            this.is_loading = true;
+            this.$store.dispatch('fetchAJAXPromise', {
+                req: 'manage_cron',
+                data: {
+                    'action': this.start_status === false ? 'start' : 'stop'
+                }
+            }).then(function (response) {
+                _this3.is_loading = false;
+            }, function (error) {
+                _this3.is_loading = false;
+                Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+            });
+        },
+
+        /**
+         * Toggle tab active.
+         * @param slug
+         */
+        switchTab: function switchTab(slug) {
+            this.$store.commit('setTabView', slug);
+        },
+        get_toast_message: function get_toast_message(force) {
+            var _this4 = this;
+
+            if (this.is_loading_logs) {
+                this.$log.warn('Request in progress...Bail');
+                return;
+            }
+            this.is_loading_logs = true;
+            this.$store.dispatch('fetchAJAXPromise', {
+                req: 'get_toast',
+                data: { force: force }
+            }).then(function (response) {
+                _this4.$log.info('Succesfully fetched toast log.');
+                _this4.is_loading_logs = false;
+                _this4.$store.dispatch('fetchAJAX', { req: 'manage_cron', data: { action: 'status' } });
+
+                // Toast message code start
+                if (response.length) {
+                    for (var index_error in response) {
+                        if ('error' === response[index_error].type) {
+                            var toast = {
+                                type: response[index_error].type,
+                                show: true,
+                                title: 'Error encountered',
+                                message: response[index_error].message
+                            };
+                            _this4.$store.commit('updateState', { stateData: toast, requestName: 'update_toast' });
+                        } else if ('status_error' === response[index_error].type) {
+                            _this4.$log.warn('Status is error check logs, global admin notice will be displayed');
+                            _this4.status_is_error_display = true;
+                        }
+                    }
+                }
+                // Toast message code end
+            }, function (error) {
+                Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+                _this4.is_loading_logs = false;
+            });
+        }
+    },
+    components: {
+        'accounts': _accountsTabPanel2.default,
+        'settings': _settingsTabPanel2.default,
+        'accounts-selector': _accountsSelectorPanel2.default,
+        'queue': _queueTabPanel2.default,
+        'logs': _logsTabPanel2.default,
+        'upsell-sidebar': _upsellSidebar2.default,
+        'toast': _toast2.default,
+        'countdown': _countdown2.default
+    }
+    // </script>
+    //
+    // <style>
+    //     #rop_core .badge[data-badge]::after {
+    //         position: absolute;
+    //         bottom: -16px;
+    //         right: 0px;
+    //     }
+    //
+    //     #rop_core .rop-api-not-available {
+    //         margin: 10px 0px 10px 0px;
+    //     }
+    //
+    //     #rop_core .badge.badge-logs::after {
+    //         right: auto;
+    //         top: 0px;
+    //     }
+    //
+    //     #rop_core .badge.badge-logs {
+    //         padding-right: 10px;
+    //     }
+    // </style>
+    //
 
 }; // <template>
-// 	<div>
-// 		<div class="columns panel-header">
-// 			<div class="column header-logo vertical-align">
-// 				<div>
-// 					<img :src="plugin_logo" class="plugin-logo avatar avatar-lg"/>
-// 					<h1 class="plugin-title d-inline-block">Revive Old Posts</h1><span class="powered d-inline-block"> {{labels.by}} <a
-// 						href="https://revive.social" target="_blank"><b>Revive.Social</b></a></span>
-// 					<div id="rop_social_actions">
-// 					<a href="https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform" target="_blank" class="submit-feedback"><span><i class="fa fa-commenting" aria-hidden="true"></i></span> {{labels.survey}}</a>
-// 					<a href="https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial" target="_blank" class="tweet-about-it"><span><i class="fa fa-twitter" aria-hidden="true"></i></span> {{labels.tweet_about_it}}</a>
-// 					<a href="https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post" target="_blank" class="leave-a-review"><span><i class="fa fa-star" aria-hidden="true"></i></span> {{labels.review_it}}</a>
-// 					</div>
-// 				</div>
-// 			</div>
-// 			<div v-if=" is_rest_api_error " class="toast toast-error rop-api-not-available" v-html="labels.api_not_available">
-// 			</div>
-// 			<div class="sidebar sidebar-top card rop-container-start">
-// 				<div class="toast rop-current-time" v-if="formatedDate">
-// 					{{labels.now}}: {{ formatedDate }}
-// 				</div>
-// 				<countdown :current_time="current_time"/>
-// 				<button class="btn btn-sm" :class="btn_class"
-// 				        :data-tooltip="labels.active_account_warning"
-// 				        @click="togglePosting()" :disabled="haveAccounts">
-// 					<i class="fa fa-play" v-if="!is_loading && !start_status"></i>
-// 					<i class="fa fa-stop" v-else-if="!is_loading && start_status"></i>
-// 					<i class="fa fa-spinner fa-spin" v-else></i>
-// 					{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}
-// 				</button>
-// 			</div>
-// 		</div>
+//     <div>
+//         <div class="columns panel-header">
+//             <div class="column header-logo vertical-align">
+//                 <div>
+//                     <img :src="plugin_logo" class="plugin-logo avatar avatar-lg"/>
+//                     <h1 class="plugin-title d-inline-block">Revive Old Posts</h1><span class="powered d-inline-block"> {{labels.by}} <a
+//                         href="https://revive.social" target="_blank"><b>Revive.Social</b></a></span>
+//                 </div>
+//             </div>
+//             <toast/>
+//             <div v-if=" is_rest_api_error " class="toast toast-error rop-api-not-available" v-html="labels.api_not_available">
+//             </div>
+//             <div v-if=" is_fb_domain_notice " class="toast toast-primary">
+//                 <button class="btn btn-clear float-right" @click="close_fb_domain_notice()"></button>
+//                 <div v-html="labels.rop_facebook_domain_toast"></div>
+//             </div>
+//             <div class="sidebar sidebar-top card rop-container-start">
 //
-// 		<div class="columns">
-// 			<div class="panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-// 				<div class="panel-nav" style="padding: 8px;">
-// 					<ul class="tab ">
-// 						<li class="tab-item c-hand" v-for="tab in displayTabs"
-// 						    :class="{ active: tab.isActive }" v-bind:id="tab.name.replace(' ', '').toLowerCase()">
-// 							<a :class=" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' "
-// 							   :data-badge="logs_no"
-// 							   @click="switchTab( tab.slug )">{{ tab.name }}</a>
-// 						</li>
-// 					</ul>
-// 				</div>
-// 				<component :is="page.template" :type="page.view"></component>
-// 			</div>
+//               <!-- Next post count down -->
+//                 <countdown :current_time="current_time"/>
+//                 <!--  -->
 //
-// 			<div class="sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12"
-// 			     :class="'rop-license-plan-'+license">
+//                 <button class="btn btn-sm" :class="btn_class"
+//                         :data-tooltip="labels.active_account_warning"
+//                         @click="togglePosting()" :disabled="!haveAccountsActive">
+//                     <i class="fa fa-play" v-if="!is_loading && !start_status"></i>
+//                     <i class="fa fa-stop" v-else-if="!is_loading && start_status"></i>
+//                     <i class="fa fa-spinner fa-spin" v-else></i>
+//                     {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}
+//                 </button>
+//             </div>
+//         </div>
 //
-// 				<div class="card rop-container-start">
-// 					<div class="toast rop-current-time" v-if="formatedDate">
-// 						{{labels.now}}: {{ formatedDate }}
-// 					</div>
-// 					<countdown :current_time="current_time"/>
-// 					<button  id="rop_start_stop_btn" class="btn" :class="btn_class"
-// 					        :data-tooltip="labels.active_account_warning"
-// 					        @click="togglePosting()" :disabled="haveAccounts">
-// 						<i class="fa fa-play" v-if="!is_loading && !start_status"></i>
-// 						<i class="fa fa-stop" v-else-if="!is_loading && start_status"></i>
-// 						<i class="fa fa-spinner fa-spin" v-else></i>
-// 						{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}
-// 					</button>
-// 					<div id="staging-status" v-if="staging">
-// 						{{labels.staging_status}}
-// 					</div>
-// 					<upsell-sidebar></upsell-sidebar>
-// 					<a href="https://trello.com/b/svAZqXO1/roadmap-revive-old-posts" target="_blank" class="btn support_btns">{{labels.rop_roadmap}}</a>
-// 					<a href="https://docs.revive.social/" target="_blank" class="btn support_btns">{{labels.rop_docs}}</a>
-// 					<a v-if="license  >= 1" href="https://revive.social/pro-support/" target="_blank" class="btn support_btns">{{labels.rop_support}}</a>
-// 					<a v-if="license  < 1" href="https://revive.social/support/" target="_blank" class="btn support_btns">{{labels.rop_support}}</a>
-// 				</div>
+//         <div class="columns">
+//             <div class="panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+//                 <div class="panel-nav" style="padding: 8px;">
+//                     <ul class="tab ">
+//                         <li class="tab-item c-hand" v-for="tab in displayTabs"
+//                             :class="{ active: tab.isActive }" v-bind:id="tab.name.replace(' ', '').toLowerCase()">
+//                             <a :class=" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' "
+//                                :data-badge="logs_no"
+//                                @click="switchTab( tab.slug )">{{ tab.name }}</a>
+//                         </li>
+//                     </ul>
+//                 </div>
+//                 <component :is="page.template" :type="page.view"></component>
+//             </div>
 //
-// 			</div>
-// 		</div>
-// 	</div>
+//             <div class="sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12"
+//                  :class="'rop-license-plan-'+license">
+//
+//                 <div class="card rop-container-start">
+//                     <button id="rop_start_stop_btn" class="btn" :class="btn_class"
+//                             :data-tooltip="labels.active_account_warning"
+//                             @click="togglePosting()" :disabled="!haveAccountsActive">
+//                         <i class="fa fa-play" v-if="!is_loading && !start_status"></i>
+//                         <i class="fa fa-stop" v-else-if="!is_loading && start_status"></i>
+//                         <i class="fa fa-spinner fa-spin" v-else></i>
+//                         {{labels.click}} {{labels.to}} {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}
+//                     </button>
+//
+//                     <div class="sharing-box" :class="status_color_class">{{ status_label_display }}</div>
+//
+//                     <countdown :current_time="current_time"/>
+//
+//                     <div id="staging-status" v-if="staging">
+//                         {{labels.staging_status}}
+//                     </div>
+//                     <div v-if="!haveAccounts" class="rop-spacer"></div>
+//                     <div v-if="haveAccounts">
+//                         <upsell-sidebar></upsell-sidebar>
+//                     </div>
+//                     <a v-if="license  >= 1" href="https://revive.social/pro-support/" target="_blank" class="btn rop-sidebar-action-btns">{{labels.rop_support}}</a>
+//                     <a v-if="license  < 1" href="https://revive.social/support/" target="_blank" class="btn rop-sidebar-action-btns">{{labels.rop_support}}</a>
+//                     <a v-if="haveAccounts" href="https://docs.revive.social/" target="_blank"
+//                        class="btn rop-sidebar-action-btns">{{labels.rop_docs}}</a>
+//                     <a v-if="haveAccounts"
+//                        href="https://wordpress.org/support/plugin/tweet-old-post/reviews/?rate=5#new-post"
+//                        target="_blank" class="btn rop-sidebar-action-btns">{{labels.review_it}}</a>
+//                 </div>
+//
+//             </div>
+//         </div>
+//     </div>
 // </template>
 //
 // <script>
 /* global ROP_ASSETS_URL */
 
 /***/ }),
-/* 213 */
+/* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(214);
+__webpack_require__(217);
 module.exports = __webpack_require__(4).Object.keys;
 
 
 /***/ }),
-/* 214 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.14 Object.keys(O)
 var toObject = __webpack_require__(40);
 var $keys = __webpack_require__(41);
 
-__webpack_require__(215)('keys', function () {
+__webpack_require__(218)('keys', function () {
   return function keys(it) {
     return $keys(toObject(it));
   };
@@ -33395,7 +34716,7 @@ __webpack_require__(215)('keys', function () {
 
 
 /***/ }),
-/* 215 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // most Object methods by ES6 should accept primitives
@@ -33411,13 +34732,13 @@ module.exports = function (KEY, exec) {
 
 
 /***/ }),
-/* 216 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(217)
-__vue_script__ = __webpack_require__(219)
-__vue_template__ = __webpack_require__(234)
+__webpack_require__(220)
+__vue_script__ = __webpack_require__(222)
+__vue_template__ = __webpack_require__(247)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -33434,13 +34755,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 217 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(218);
+var content = __webpack_require__(221);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -33460,7 +34781,7 @@ if(false) {
 }
 
 /***/ }),
-/* 218 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -33468,13 +34789,13 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .columns.py-2 .text-gray[_v-2ff296d6] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\t\n\t#rop_core .input-group[_v-2ff296d6] {\n\t\twidth: 100%;\n\t}\n\t\n\tb[_v-2ff296d6] {\n\t\tmargin-bottom: 5px;\n\t\tdisplay: block;\n\t}\n\t\n\t#rop_core .text-gray b[_v-2ff296d6] {\n\t\tdisplay: inline;\n\t}\n\t\n\t#rop_core .input-group .input-group-addon[_v-2ff296d6] {\n\t\tpadding: 3px 5px;\n\t}\n\t\n\t#rop_core .rop-available-accounts h5[_v-2ff296d6] {\n\t\tmargin-bottom: 15px;\n\t}\n\t\n\t@media ( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-2ff296d6] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\t\t\n\t\t#rop_core .text-right[_v-2ff296d6] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n", ""]);
+exports.push([module.i, "\n    #rop_core .columns.py-2 .text-gray[_v-2ff296d6] {\n        margin: 0;\n        line-height: normal;\n    }\n\n    #rop_core .input-group[_v-2ff296d6] {\n        width: 100%;\n    }\n\n    b[_v-2ff296d6] {\n        margin-bottom: 5px;\n        display: block;\n    }\n\n    #rop_core .text-gray b[_v-2ff296d6] {\n        display: inline;\n    }\n\n    #rop_core .input-group .input-group-addon[_v-2ff296d6] {\n        padding: 3px 5px;\n    }\n\n    #rop_core .rop-available-accounts h5[_v-2ff296d6] {\n        margin-bottom: 15px;\n    }\n\n    @media ( max-width: 600px ) {\n        #rop_core .panel-body .text-gray[_v-2ff296d6] {\n            margin-bottom: 10px;\n        }\n\n        #rop_core .text-right[_v-2ff296d6] {\n            text-align: left;\n        }\n    }\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 219 */
+/* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33488,179 +34809,230 @@ var _signInBtn = __webpack_require__(82);
 
 var _signInBtn2 = _interopRequireDefault(_signInBtn);
 
-var _serviceUserTile = __webpack_require__(224);
+var _serviceUserTile = __webpack_require__(227);
 
 var _serviceUserTile2 = _interopRequireDefault(_serviceUserTile);
 
-var _addAccountTile = __webpack_require__(229);
+var _addAccountTile = __webpack_require__(232);
 
 var _addAccountTile2 = _interopRequireDefault(_addAccountTile);
 
+var _vueSpinner = __webpack_require__(237);
+
+var _vueSpinner2 = _interopRequireDefault(_vueSpinner);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-module.exports = {
-	name: 'account-view',
-	data: function data() {
-		return {
-			addAccountActive: false,
-			accountsCount: 0,
-			is_loading: false,
-			twitter_warning: false,
-			labels: this.$store.state.labels.accounts,
-			upsell_link: ropApiSettings.upsell_link
-		};
-	},
-	computed: {
-		/**
-   * Get all the available/active accounts.
-   */
-		accounts: function accounts() {
-			var all_accounts = {};
-			var twitter = 0;
-			var services = this.$store.state.authenticatedServices;
-			for (var key in services) {
-				if (!services.hasOwnProperty(key)) {
-					continue;
-				}
-				var service = services[key];
-				for (var account_id in service.available_accounts) {
-					if (!service.available_accounts.hasOwnProperty(account_id)) {
-						continue;
-					}
-					all_accounts[account_id] = service.available_accounts[account_id];
-					if (service.service === 'twitter') {
-						twitter += (0, _keys2.default)(service.available_accounts).length;
-					}
-				}
-			}
-			this.twitter_warning = twitter > 1;
-			this.$log.info('All accounts: ', all_accounts);
-			this.accountsCount = (0, _keys2.default)(all_accounts).length;
-			return all_accounts;
-		}
-	},
-
-	methods: {
-		resetAccountData: function resetAccountData() {
-			var _this = this;
-
-			if (this.is_loading) {
-				this.$log.warn('Request in progress...Bail');
-				return;
-			}
-			this.is_loading = true;
-			this.$store.dispatch('fetchAJAXPromise', {
-				req: 'reset_accounts',
-				data: {}
-			}).then(function (response) {
-				_this.is_loading = false;
-			}, function (error) {
-				_this.is_loading = false;
-				Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
-			});
-		}
-	},
-	components: {
-		SignInBtn: _signInBtn2.default,
-		ServiceUserTile: _serviceUserTile2.default,
-		AddAccountTile: _addAccountTile2.default
-	}
-	// </script>
-	// <style scoped>
-	// 	#rop_core .columns.py-2 .text-gray {
-	// 		margin: 0;
-	// 		line-height: normal;
-	// 	}
-	//
-	// 	#rop_core .input-group {
-	// 		width: 100%;
-	// 	}
-	//
-	// 	b {
-	// 		margin-bottom: 5px;
-	// 		display: block;
-	// 	}
-	//
-	// 	#rop_core .text-gray b {
-	// 		display: inline;
-	// 	}
-	//
-	// 	#rop_core .input-group .input-group-addon {
-	// 		padding: 3px 5px;
-	// 	}
-	//
-	// 	#rop_core .rop-available-accounts h5 {
-	// 		margin-bottom: 15px;
-	// 	}
-	//
-	// 	@media ( max-width: 600px ) {
-	// 		#rop_core .panel-body .text-gray {
-	// 			margin-bottom: 10px;
-	// 		}
-	//
-	// 		#rop_core .text-right {
-	// 			text-align: left;
-	// 		}
-	// 	}
-	// </style>
-
-}; // <template>
-// 	<div class="tab-view">
-// 		<div class="panel-body">
-// 			<div class="toast  toast-warning" v-html="labels.twitter_warning" v-if="twitter_warning">
+// <template>
+//     <div class="tab-view">
+//         <div class="panel-body">
+//             <div class="toast  toast-warning" v-html="labels.twitter_warning" v-if="twitter_warning">
 //
-// 			</div>
-// 			<div class="container">
-// 				<div class="columns" :class="'rop-tab-state-'+is_loading">
-// 					<div class="column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2">
-// 						<div class="empty mb-2" v-if="accountsCount === 0">
-// 							<div class="empty-icon">
-// 								<i class="fa fa-3x fa-user-circle-o"></i>
-// 							</div>
-// 							<p class="empty-title h5">{{labels.no_accounts}}</p>
-// 							<p class="empty-subtitle">{{labels.no_accounts_desc}}</p>
-// 						</div>
-// 						<div class="account-container" v-for="( account, id ) in accounts">
-// 							<service-user-tile :account_data="account" :account_id="id"></service-user-tile>
-// 							<span class="divider"></span>
-// 						</div>
-// 						<div class="add-accounts">
-// 							<add-account-tile></add-account-tile>
-// 							<span class="divider"></span>
-// 						</div>
-// 					</div>
-// 				</div>
-// 			</div>
-// 			<div class="panel-footer" v-if="accountsCount > 0">
-// 				<div class="columns">
-// 					<div class="column col-12">
-// 						<p class="text-gray"><i class="fa fa-info-circle"></i> <span
-// 								v-html="labels.has_accounts_desc"></span></p>
-// 					</div>
-// 				</div>
-// 				<div class="column col-12 text-right">
-// 					<button class="btn btn-secondary" @click="resetAccountData()">
-// 						<i class="fa fa-ban" v-if="!this.is_loading"></i>
-// 						<i class="fa fa-spinner fa-spin" v-else></i>
-// 						{{labels.remove_all_cta}}
-// 					</button>
-// 				</div>
-// 			</div>
-// 		</div>
+//             </div>
+//             <div class="container">
+//                 <div class="columns" :class="'rop-tab-state-'+is_loading">
+//                     <div class="column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2">
+//                         <vue_spinner :preloader_message="labels.preloader_message_accounts" ref="Preloader" v-if="is_preloading === 0"></vue_spinner>
+//                         <div class="empty mb-2" v-if="accountsCount === 0 && is_preloading > 0">
+//                             <div class="empty-icon">
+//                                 <i class="fa fa-3x fa-user-circle-o"></i>
+//                             </div>
+//                             <p class="empty-title h5">{{labels.no_accounts}}</p>
+//                             <p class="empty-subtitle">{{labels.no_accounts_desc}}</p>
+//                         </div>
+//                         <div class="account-container" v-for="( account, id ) in accounts" v-if="is_preloading > 0">
+//                             <service-user-tile :account_data="account" :account_id="id"></service-user-tile>
+//                             <span class="divider"></span>
+//                         </div>
+//                         <div class="add-accounts" v-if="is_preloading > 0">
+//                             <add-account-tile></add-account-tile>
+//                             <span class="divider"></span>
+//                         </div>
+//                     </div>
+//                 </div>
+//             </div>
+//             <div class="panel-footer" v-if="is_preloading > 0">
+//                 <div class="columns my-2" v-if="checkLicense && pro_installed">
+//                     <div class="column col-12">
+//                         <i class="fa fa-lock "></i> <span v-html="labels.activate_license"></span>
+//                     </div>
+//                 </div>
+//                 <div class="columns my-2" v-if="(checkLicense && accountsCount === 2) && !pro_installed">
+//                     <div class="column col-12">
+//                         <p class="upsell">
+//                             <i class="fa fa-lock "></i> <span v-html="labels.upsell_accounts"></span>
+//                         </p>
+//                     </div>
+//                 </div>
+//                 <div class="columns" v-if="checkLicense && !pro_installed">
+//                     <div class="column col-12">
+//                         <p><i class="fa fa-info-circle"></i> <span
+//                                 v-html="labels.lite_pro_table_upsell"></span></p>
+//                     </div>
+//                 </div>
+//                 <div class="column col-12 text-right">
+//                     <button class="btn btn-secondary" @click="resetAccountData()">
+//                         <i class="fa fa-ban" v-if="!this.is_loading"></i>
+//                         <i class="fa fa-spinner fa-spin" v-else></i>
+//                         {{labels.remove_all_cta}}
+//                     </button>
+//                 </div>
+//             </div>
+//         </div>
 //
-// 	</div>
+//     </div>
 // </template>
 //
 // <script>
+module.exports = {
+    name: 'account-view',
+    data: function data() {
+        return {
+            addAccountActive: false,
+            accountsCount: 0,
+            is_loading: false,
+            twitter_warning: false,
+            labels: this.$store.state.labels.accounts,
+            upsell_link: ropApiSettings.upsell_link,
+            pro_installed: ropApiSettings.pro_installed,
+            is_preloading: this.$store.state.hide_preloading
+        };
+    },
+    mounted: function mounted() {
+        if (0 === this.is_preloading) {
+            this.page_loader_module_display();
+        }
+    },
+    computed: {
+        /**
+         * Get all the available/active accounts.
+         */
+        accounts: function accounts() {
+            var all_accounts = {};
+            var twitter = 0;
+            var services = this.$store.state.authenticatedServices;
+            for (var key in services) {
+                if (!services.hasOwnProperty(key)) {
+                    continue;
+                }
+                var service = services[key];
+                for (var account_id in service.available_accounts) {
+                    if (!service.available_accounts.hasOwnProperty(account_id)) {
+                        continue;
+                    }
+                    all_accounts[account_id] = service.available_accounts[account_id];
+                    if (service.service === 'twitter') {
+                        twitter += (0, _keys2.default)(service.available_accounts).length;
+                    }
+                }
+            }
+            this.twitter_warning = twitter > 1;
+            this.$log.info('All accounts: ', all_accounts);
+            this.$log.debug('Preloading: ', this.$store.state.hide_preloading);
+            this.accountsCount = (0, _keys2.default)(all_accounts).length;
+            this.is_preloading = this.$store.state.hide_preloading;
+            return all_accounts;
+        },
+        /**
+         * Check if we have a pro license.
+         * @returns {boolean}
+         */
+        checkLicense: function checkLicense() {
+            return this.$store.state.licence < 1;
+        }
+    },
+
+    methods: {
+        page_loader_module_display: function page_loader_module_display() {
+            // Display the preloader until accounts are loaded.
+            //this.$refs.Preloader.preloader_message = this.$store.state.labels.accounts.preloader_message;
+            this.$refs.Preloader.show();
+        },
+
+        resetAccountData: function resetAccountData() {
+            var _this = this;
+
+            if (this.is_loading) {
+                this.$log.warn('Request in progress...Bail');
+                return;
+            }
+            this.is_loading = true;
+            this.$store.dispatch('fetchAJAXPromise', {
+                req: 'reset_accounts',
+                data: {}
+            }).then(function (response) {
+                _this.is_loading = false;
+                if (_this.$parent.start_status === true) {
+                    // Stop sharing process if enabled.
+                    _this.$parent.togglePosting();
+                }
+                _this.$store.dispatch('fetchAJAXPromise', {
+                    req: 'get_available_services'
+                }).then(function (response) {
+                    _this.is_loading = false;
+                });
+            }, function (error) {
+                _this.is_loading = false;
+                Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+            });
+        }
+    },
+    components: {
+        SignInBtn: _signInBtn2.default,
+        ServiceUserTile: _serviceUserTile2.default,
+        AddAccountTile: _addAccountTile2.default,
+        'vue_spinner': _vueSpinner2.default
+    }
+    // </script>
+    // <style scoped>
+    //     #rop_core .columns.py-2 .text-gray {
+    //         margin: 0;
+    //         line-height: normal;
+    //     }
+    //
+    //     #rop_core .input-group {
+    //         width: 100%;
+    //     }
+    //
+    //     b {
+    //         margin-bottom: 5px;
+    //         display: block;
+    //     }
+    //
+    //     #rop_core .text-gray b {
+    //         display: inline;
+    //     }
+    //
+    //     #rop_core .input-group .input-group-addon {
+    //         padding: 3px 5px;
+    //     }
+    //
+    //     #rop_core .rop-available-accounts h5 {
+    //         margin-bottom: 15px;
+    //     }
+    //
+    //     @media ( max-width: 600px ) {
+    //         #rop_core .panel-body .text-gray {
+    //             margin-bottom: 10px;
+    //         }
+    //
+    //         #rop_core .text-right {
+    //             text-align: left;
+    //         }
+    //     }
+    // </style>
+    //
+
+};
 
 /***/ }),
-/* 220 */
+/* 223 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(221);
+var content = __webpack_require__(224);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -33680,7 +35052,7 @@ if(false) {
 }
 
 /***/ }),
-/* 221 */
+/* 224 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -33694,7 +35066,7 @@ exports.push([module.i, "\n\t#rop-sign-in-area .btn[disabled][_v-2f84fb84]{\n\t\
 
 
 /***/ }),
-/* 222 */
+/* 225 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33718,7 +35090,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 					class="btn input-group-btn"
 // 					:class="'btn-' + network"
 // 					@click="requestAuthorization( network )">
-// 				<i class="fa fa-fw" :class="'fa-' + network"></i>{{service.name}}
+// 				<i v-if="network !== 'buffer'" class="fa fa-fw" :class="'fa-' + network"></i>
+// 				<i v-if="network === 'buffer'" class="fa fa-fw fa-plus-square"></i>
+// 				{{service.name}}
 // 			</button>
 //
 // 		</div>
@@ -33736,35 +35110,41 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 							<button class="btn btn-primary big-btn" @click="openPopupFB()">{{labels.fb_app_signin_btn}}</button>
 // 							<span class="text-center">{{labels.fb_own_app_signin}}</span>
 // 						</div>
-// 						<div id="rop-advanced-config" v-if="isFacebook">
+// 						<div class="auth-app" v-if="isTwitter && isAllowedTwitter">
+// 							<button class="btn btn-primary big-btn" @click="openPopupTW()">{{labels.tw_app_signin_btn}}</button>
+// 							<span class="text-center">{{labels.tw_own_app_signin}}</span>
+// 						</div>
+// 						<div id="rop-advanced-config" v-if="isFacebook || (isTwitter && isAllowedTwitter)">
 // 						<button class="btn btn-primary" v-on:click="showAdvanceConfig = !showAdvanceConfig">{{labels.show_advance_config}}</button>
 // 					</div>
-// 						<div v-if="showAdvanceConfig && isFacebook">
+// 						<div v-if="showAdvanceConfig && (isFacebook ||  (isTwitter && isAllowedTwitter) )">
 // 						<div class="form-group" v-for="( field, id ) in modal.data">
 // 							<label class="form-label" :for="field.id">{{ field.name }}</label>
-// 							<input class="form-input" type="text" :id="field.id" v-model="field.value"
+// 							<input :class="[ 'form-input', field.error ? ' is-error' : '' ]" type="text" :id="field.id" v-model="field.value"
 // 								   :placeholder="field.name"/>
+// 							<small class="text-error" v-if="field.error">{{labels.field_required}}</small>
 // 							<p class="text-gray">{{ field.description }}</p>
 // 						</div>
 // 					</div>
-// 						<div v-if="!isFacebook">
+// 						<div v-if="(!isTwitter && !isFacebook) || ( isTwitter && !isAllowedTwitter)">
 // 						<div class="form-group" v-for="( field, id ) in modal.data">
 // 							<label class="form-label" :for="field.id">{{ field.name }}</label>
-// 							<input class="form-input" type="text" :id="field.id" v-model="field.value"
+// 							<input :class="[ 'form-input', field.error ? ' is-error' : '' ]" type="text" :id="field.id" v-model="field.value"
 // 								   :placeholder="field.name"/>
+// 							<small class="text-error" v-if="field.error">{{labels.field_required}}</small>
 // 							<p class="text-gray">{{ field.description }}</p>
 // 						</div>
 // 					</div>
 // 				</div>
 // 				</div>
-// 				<div v-if="isFacebook" class="modal-footer">
-// 					<p class="text-left pull-left mr-2" v-html="labels.fb_rs_app_info"></p>
+// 				<div v-if="isFacebook || (isTwitter && isAllowedTwitter)" class="modal-footer">
+// 					<p class="text-left pull-left mr-2" v-html="labels.rs_app_info"></p>
 // 				</div>
-// 				<div v-if="showAdvanceConfig && isFacebook" class="modal-footer">
+// 				<div v-if="showAdvanceConfig && (isFacebook || isTwitter)" class="modal-footer">
 // 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 // 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 // 				</div>
-// 				<div v-if="!isFacebook" class="modal-footer">
+// 				<div v-if="(!isTwitter && !isFacebook) || (isTwitter && !isAllowedTwitter)" class="modal-footer">
 // 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 // 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 // 				</div>
@@ -33792,12 +35172,14 @@ module.exports = {
 			activePopup: '',
 			appOrigin: ropAuthAppData.authAppUrl,
 			appPathFB: ropAuthAppData.authAppFacebookPath,
+			appPathTW: ropAuthAppData.authAppTwitterPath,
 			appAdminEmail: ropAuthAppData.adminEmail,
 			siteAdminUrl: ropAuthAppData.adminUrl,
 			appUniqueId: ropAuthAppData.authToken,
 			appSignature: ropAuthAppData.authSignature,
 			windowParameters: 'top=20,left=100,width=560,height=670',
 			authPopupWindow: null,
+			showTwAppBtn: ropApiSettings.show_tw_app_btn,
 			showBtn: false
 		};
 	},
@@ -33875,7 +35257,12 @@ module.exports = {
 				data: { service: this.selected_network, credentials: credentials }
 			}).then(function (response) {
 				//  console.log( 'Got some data, now lets show something in this component', response )
-				_this.openPopup(response.url);
+				if (!response.url || response.url == '') {
+					_this.cancelModal();
+					alert('Could not authenticate, please make sure you entered the correct credentials.');
+				} else {
+					_this.openPopup(response.url);
+				}
 			}, function (error) {
 				Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
 			});
@@ -33892,6 +35279,7 @@ module.exports = {
 		},
 		closeModal: function closeModal() {
 			var credentials = {};
+			var valid = true;
 			var _iteratorNormalCompletion = true;
 			var _didIteratorError = false;
 			var _iteratorError = undefined;
@@ -33901,8 +35289,12 @@ module.exports = {
 					var index = _step.value;
 
 					credentials[index] = '';
-					if ('value' in this.modal.data[index]) {
-						credentials[index] = this.modal.data[index]['value'];
+					if ('value' in this.modal.data[index] && '' !== this.modal.data[index].value) {
+						credentials[index] = this.modal.data[index].value;
+						this.modal.data[index].error = false;
+					} else {
+						this.modal.data[index].error = true;
+						valid = false;
 					}
 				}
 			} catch (err) {
@@ -33920,13 +35312,18 @@ module.exports = {
 				}
 			}
 
+			if (!valid) {
+				this.$forceUpdate();
+				return;
+			}
+
 			this.activePopup = this.selected_network;
 			this.getUrlAndGo(credentials);
-
 			this.modal.isOpen = false;
 		},
 		cancelModal: function cancelModal() {
 			this.$store.state.auth_in_progress = false;
+			this.showAdvanceConfig = false;
 			this.modal.isOpen = false;
 		},
 		/**
@@ -33953,15 +35350,43 @@ module.exports = {
 			});
 		},
 
+		/**
+   * Add Twitter account.
+   *
+   * @param data Data.
+   */
+		addAccountTW: function addAccountTW(data) {
+			var _this3 = this;
+
+			this.$store.dispatch('fetchAJAXPromise', {
+				req: 'add_account_tw',
+				updateState: false,
+				data: data
+			}).then(function (response) {
+				window.removeEventListener("message", function (event) {
+					return _this3.getChildWindowMessage(event);
+				});
+				_this3.authPopupWindow.close();
+				window.location.reload();
+			}, function (error) {
+				_this3.is_loading = false;
+				Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+			});
+		},
+
 		getChildWindowMessage: function getChildWindowMessage(event) {
 			if (~event.origin.indexOf(this.appOrigin)) {
-				this.addAccountFB(JSON.parse(event.data));
+				if ('Twitter' === this.modal.serviceName) {
+					this.addAccountTW(JSON.parse(event.data));
+				} else if ('Facebook' === this.modal.serviceName) {
+					this.addAccountFB(JSON.parse(event.data));
+				}
 			} else {
 				return;
 			}
 		},
 		openPopupFB: function openPopupFB() {
-			var _this3 = this;
+			var _this4 = this;
 
 			var loginUrl = this.appOrigin + this.appPathFB + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
 			try {
@@ -33973,7 +35398,24 @@ module.exports = {
 				this.cancelModal();
 			}
 			window.addEventListener("message", function (event) {
-				return _this3.getChildWindowMessage(event);
+				return _this4.getChildWindowMessage(event);
+			});
+		},
+		openPopupTW: function openPopupTW() {
+			var _this5 = this;
+
+			// Open the popup specific for Twitter
+			var loginUrl = this.appOrigin + this.appPathTW + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
+			try {
+				this.authPopupWindow.close();
+			} catch (e) {
+				// nothing to do
+			} finally {
+				this.authPopupWindow = window.open(loginUrl, 'authTW', this.windowParameters);
+				this.cancelModal();
+			}
+			window.addEventListener("message", function (event) {
+				return _this5.getChildWindowMessage(event);
 			});
 		}
 	},
@@ -34006,6 +35448,21 @@ module.exports = {
 		},
 		isFacebook: function isFacebook() {
 			return this.modal.serviceName === 'Facebook';
+		},
+
+		// will return true if the current service actions are for Twitter.
+		isTwitter: function isTwitter() {
+			return this.modal.serviceName === 'Twitter';
+		},
+
+		isAllowedTwitter: function isAllowedTwitter() {
+			var showButton = true;
+
+			if (!this.showTwAppBtn) {
+				showButton = false;
+			}
+
+			return showButton;
 		}
 	}
 	// </script>
@@ -34021,19 +35478,19 @@ module.exports = {
 };
 
 /***/ }),
-/* 223 */
+/* 226 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div id=\"rop-sign-in-area\" _v-2f84fb84=\"\">\n\t\t<div class=\"input-group text-right buttons-wrap\" _v-2f84fb84=\"\">\n\t\t\t<button v-for=\"( service, network ) in services\" :disabled=\"checkDisabled( service, network )\" class=\"btn input-group-btn\" :class=\"'btn-' + network\" @click=\"requestAuthorization( network )\" _v-2f84fb84=\"\">\n\t\t\t\t<i class=\"fa fa-fw\" :class=\"'fa-' + network\" _v-2f84fb84=\"\"></i>{{service.name}}\n\t\t\t</button>\n\n\t\t</div>\n\n\t\t<div class=\"modal\" :class=\"modalActiveClass\" _v-2f84fb84=\"\">\n\t\t\t<div class=\"modal-overlay\" _v-2f84fb84=\"\"></div>\n\t\t\t<div class=\"modal-container\" _v-2f84fb84=\"\">\n\t\t\t\t<div class=\"modal-header\" _v-2f84fb84=\"\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"cancelModal()\" _v-2f84fb84=\"\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\" _v-2f84fb84=\"\">{{ modal.serviceName }} {{labels.service_popup_title}}</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\" _v-2f84fb84=\"\">\n\t\t\t\t\t<div class=\"content\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isFacebook\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupFB()\" _v-2f84fb84=\"\">{{labels.fb_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-2f84fb84=\"\">{{labels.fb_own_app_signin}}</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div id=\"rop-advanced-config\" v-if=\"isFacebook\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-primary\" v-on:click=\"showAdvanceConfig = !showAdvanceConfig\" _v-2f84fb84=\"\">{{labels.show_advance_config}}</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t\t<div v-if=\"showAdvanceConfig &amp;&amp; isFacebook\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-2f84fb84=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-2f84fb84=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t\t<div v-if=\"!isFacebook\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-2f84fb84=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input class=\"form-input\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-2f84fb84=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"isFacebook\" class=\"modal-footer\" _v-2f84fb84=\"\">\n\t\t\t\t\t<p class=\"text-left pull-left mr-2\" v-html=\"labels.fb_rs_app_info\" _v-2f84fb84=\"\"></p>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"showAdvanceConfig &amp;&amp; isFacebook\" class=\"modal-footer\" _v-2f84fb84=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-2f84fb84=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-2f84fb84=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"!isFacebook\" class=\"modal-footer\" _v-2f84fb84=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-2f84fb84=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-2f84fb84=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div id=\"rop-sign-in-area\" _v-2f84fb84=\"\">\n\t\t<div class=\"input-group text-right buttons-wrap\" _v-2f84fb84=\"\">\n\t\t\t<button v-for=\"( service, network ) in services\" :disabled=\"checkDisabled( service, network )\" class=\"btn input-group-btn\" :class=\"'btn-' + network\" @click=\"requestAuthorization( network )\" _v-2f84fb84=\"\">\n\t\t\t\t<i v-if=\"network !== 'buffer'\" class=\"fa fa-fw\" :class=\"'fa-' + network\" _v-2f84fb84=\"\"></i>\n\t\t\t\t<i v-if=\"network === 'buffer'\" class=\"fa fa-fw fa-plus-square\" _v-2f84fb84=\"\"></i>\n\t\t\t\t{{service.name}}\n\t\t\t</button>\n\n\t\t</div>\n\n\t\t<div class=\"modal\" :class=\"modalActiveClass\" _v-2f84fb84=\"\">\n\t\t\t<div class=\"modal-overlay\" _v-2f84fb84=\"\"></div>\n\t\t\t<div class=\"modal-container\" _v-2f84fb84=\"\">\n\t\t\t\t<div class=\"modal-header\" _v-2f84fb84=\"\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"cancelModal()\" _v-2f84fb84=\"\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\" _v-2f84fb84=\"\">{{ modal.serviceName }} {{labels.service_popup_title}}</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\" _v-2f84fb84=\"\">\n\t\t\t\t\t<div class=\"content\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isFacebook\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupFB()\" _v-2f84fb84=\"\">{{labels.fb_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-2f84fb84=\"\">{{labels.fb_own_app_signin}}</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isTwitter &amp;&amp; isAllowedTwitter\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupTW()\" _v-2f84fb84=\"\">{{labels.tw_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-2f84fb84=\"\">{{labels.tw_own_app_signin}}</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div id=\"rop-advanced-config\" v-if=\"isFacebook || (isTwitter &amp;&amp; isAllowedTwitter)\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-primary\" v-on:click=\"showAdvanceConfig = !showAdvanceConfig\" _v-2f84fb84=\"\">{{labels.show_advance_config}}</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t\t<div v-if=\"showAdvanceConfig &amp;&amp; (isFacebook ||  (isTwitter &amp;&amp; isAllowedTwitter) )\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-2f84fb84=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input :class=\"[ 'form-input', field.error ? ' is-error' : '' ]\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<small class=\"text-error\" v-if=\"field.error\" _v-2f84fb84=\"\">{{labels.field_required}}</small>\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-2f84fb84=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t\t<div v-if=\"(!isTwitter &amp;&amp; !isFacebook) || ( isTwitter &amp;&amp; !isAllowedTwitter)\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-2f84fb84=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input :class=\"[ 'form-input', field.error ? ' is-error' : '' ]\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<small class=\"text-error\" v-if=\"field.error\" _v-2f84fb84=\"\">{{labels.field_required}}</small>\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-2f84fb84=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"isFacebook || (isTwitter &amp;&amp; isAllowedTwitter)\" class=\"modal-footer\" _v-2f84fb84=\"\">\n\t\t\t\t\t<p class=\"text-left pull-left mr-2\" v-html=\"labels.rs_app_info\" _v-2f84fb84=\"\"></p>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"showAdvanceConfig &amp;&amp; (isFacebook || isTwitter)\" class=\"modal-footer\" _v-2f84fb84=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-2f84fb84=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-2f84fb84=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"(!isTwitter &amp;&amp; !isFacebook) || (isTwitter &amp;&amp; !isAllowedTwitter)\" class=\"modal-footer\" _v-2f84fb84=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-2f84fb84=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-2f84fb84=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 224 */
+/* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(225)
-__vue_script__ = __webpack_require__(227)
-__vue_template__ = __webpack_require__(228)
+__webpack_require__(228)
+__vue_script__ = __webpack_require__(230)
+__vue_template__ = __webpack_require__(231)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -34050,13 +35507,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 225 */
+/* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(226);
+var content = __webpack_require__(229);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -34076,7 +35533,7 @@ if(false) {
 }
 
 /***/ }),
-/* 226 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -34084,13 +35541,13 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t.rop-remove-account[_v-f1ff4bd0]{\n\t\twidth:15px;\n\t\ttext-align: center;\n\t\tcursor: pointer;\n\t    padding-right: 10px;\n\t\tmargin-right: 10px;\n\t\theight: 100%;\n\t\t-ms-flex: 0 0 auto;\n\t\tline-height: 40px;\n\t\topacity: 0;\n\t\tmargin-left:-20px;\n\t\ttransition-timing-function: ease-in;\n\t\ttransition: 1s;\n\t\ttransform: translateX(130%);\n\t}\n\t.rop-account:hover .rop-remove-account[_v-f1ff4bd0]{\n\t\topacity:1;\n\t\tz-index:9999;\n\t\tmargin-left:0px;\n\t\ttransition-timing-function: ease-out;\n\t\ttransition: 0.25s;\n\t\ttransform: translateX(0);\n\t}\n", ""]);
+exports.push([module.i, "\n\t.rop-remove-account[_v-f1ff4bd0]{\n\t\twidth:15px;\n\t\ttext-align: center;\n\t\tcursor: pointer;\n\t    padding-right: 10px;\n\t\tmargin-right: 10px;\n\t\theight: 100%;\n\t\t-ms-flex: 0 0 auto;\n\t\tline-height: 40px;\n\t\topacity: 1;\n\t\tmargin-left:0;\n\t\ttransition-timing-function: ease-in;\n\t\ttransition: 1s;\n\t\tz-index:9999;\n\t}\n\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 227 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34227,6 +35684,11 @@ module.exports = {
 				}, function (error) {
 					_this.is_loading = false;
 				});
+				// This needs to be run to reset the available services to make the social media auth buttons available again.
+				_this.$store.dispatch('fetchAJAXPromise', { req: 'get_available_services' }).then(function (response) {}, function (error) {
+					_vue2.default.$log.error('service-user-tile.vue => fetchAJAXPromise::get_available_services issue: ', error);
+				});
+				// get_available_services
 			}, function (error) {
 				_this.is_loading = false;
 				_vue2.default.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
@@ -34296,20 +35758,13 @@ module.exports = {
 	// 		height: 100%;
 	// 		-ms-flex: 0 0 auto;
 	// 		line-height: 40px;
-	// 		opacity: 0;
-	// 		margin-left:-20px;
+	// 		opacity: 1;
+	// 		margin-left:0;
 	// 		transition-timing-function: ease-in;
 	// 		transition: 1s;
-	// 		transform: translateX(130%);
-	// 	}
-	// 	.rop-account:hover .rop-remove-account{
-	// 		opacity:1;
 	// 		z-index:9999;
-	// 		margin-left:0px;
-	// 		transition-timing-function: ease-out;
-	// 		transition: 0.25s;
-	// 		transform: translateX(0);
 	// 	}
+	//
 	// </style>
 	//
 
@@ -34346,19 +35801,19 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 228 */
+/* 231 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"tile tile-centered rop-account\" :class=\"'rop-'+type+'-account'\" _v-f1ff4bd0=\"\">\n\n\t\t<div class=\"tile-icon rop-remove-account tooltip tooltip-right\" @click=\"removeAccount(account_id) \" :data-tooltip=\"labels.remove_account\" v-if=\" ! account_data.active\" _v-f1ff4bd0=\"\">\n\t\t\t<i class=\"fa fa-trash\" v-if=\" ! is_loading\" _v-f1ff4bd0=\"\"></i>\n\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-f1ff4bd0=\"\"></i>\n\t\t</div>\n\t\t<div class=\"tile-icon\" _v-f1ff4bd0=\"\">\n\t\t\t<div class=\"icon_box\" :class=\"service\" _v-f1ff4bd0=\"\">\n\t\t\t\t<img class=\"service_account_image\" :src=\"img\" v-if=\"img\" _v-f1ff4bd0=\"\">\n\t\t\t\t<i class=\"fa  \" :class=\"icon\" aria-hidden=\"true\" _v-f1ff4bd0=\"\"></i>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"tile-content\" _v-f1ff4bd0=\"\">\n\t\t\t<div class=\"tile-title\" _v-f1ff4bd0=\"\">{{ user }}</div>\n\t\t\t<div class=\"tile-subtitle text-gray\" _v-f1ff4bd0=\"\">{{ serviceInfo }}</div>\n\t\t</div>\n\t\t<div class=\"tile-action\" _v-f1ff4bd0=\"\">\n\t\t\t<div class=\"form-group\" _v-f1ff4bd0=\"\">\n\t\t\t\t<label class=\"form-switch\" _v-f1ff4bd0=\"\">\n\t\t\t\t\t<div class=\"ajax-loader \" _v-f1ff4bd0=\"\"><i class=\"fa fa-spinner fa-spin\" v-show=\"is_loading\" _v-f1ff4bd0=\"\"></i></div>\n\t\t\t\t\t<input :disabled=\"checkDisabled\" type=\"checkbox\" v-model=\"account_data.active\" @change=\"startToggleAccount( account_id, type )\" _v-f1ff4bd0=\"\">\n\t\t\t\t\t<i class=\"form-icon\" _v-f1ff4bd0=\"\"></i>\n\t\t\t\t</label>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 229 */
+/* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(230)
-__vue_script__ = __webpack_require__(232)
-__vue_template__ = __webpack_require__(233)
+__webpack_require__(233)
+__vue_script__ = __webpack_require__(235)
+__vue_template__ = __webpack_require__(236)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -34375,13 +35830,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 230 */
+/* 233 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(231);
+var content = __webpack_require__(234);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -34401,7 +35856,7 @@ if(false) {
 }
 
 /***/ }),
-/* 231 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -34415,7 +35870,7 @@ exports.push([module.i, "\n\t.icon_box[_v-89b02f9e] {\n\t\tbackground: #efefef;\
 
 
 /***/ }),
-/* 232 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34436,15 +35891,7 @@ module.exports = {
 			upsell_link: ropApiSettings.upsell_link
 		};
 	},
-	computed: {
-		/**
-   * Check if we have a pro license.
-   * @returns {boolean}
-   */
-		checkLicense: function checkLicense() {
-			return this.$store.state.licence < 1;
-		}
-	},
+	computed: {},
 	components: {
 		SignInBtn: _signInBtn2.default
 	}
@@ -34476,55 +35923,398 @@ module.exports = {
 
 }; // <template>
 // 	<div>
-// 		<div class="tile tile-centered rop-add-account">
-// 			<a class="tile-icon c-hand" @click="addAccountActive = !addAccountActive">
-// 				<div class="icon_box" id="rop-add-account-btn" :class="(addAccountActive) ? 'close bg-error' : 'open bg-success'">
-// 					<i class="fa fa-2x fa-close" aria-hidden="true"></i>
-// 				</div>
-// 			</a>
-// 			<div class="tile-content">
-// 				<div class="tile-title">{{labels.add_account}}</div>
-// 			</div>
-// 			<transition name="fade">
-// 				<div class="tile-action" v-if="addAccountActive">
-// 					<sign-in-btn></sign-in-btn>
-// 				</div>
-// 			</transition>
+// 		<div class="tile-content">
+// 			<div class="tile-title"><span v-html="labels.add_account"></span></div>
 // 		</div>
-// 		<transition name="fade">
-// 			<div class="columns my-2" v-if="checkLicense && addAccountActive">
-// 				<div class="column col-12 text-center">
-// 					<p class="upsell">
-// 						<i class="fa fa-lock "></i> <span v-html="labels.upsell_accounts"></span>
-// 					</p>
-// 				</div>
-// 			</div>
-// 		</transition>
+// 		<div class="rop-add-account">
+// 					<sign-in-btn></sign-in-btn>
+// 		</div>
 // 	</div>
 // </template>
 //
 // <script>
 
 /***/ }),
-/* 233 */
+/* 236 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div _v-89b02f9e=\"\">\n\t\t<div class=\"tile tile-centered rop-add-account\" _v-89b02f9e=\"\">\n\t\t\t<a class=\"tile-icon c-hand\" @click=\"addAccountActive = !addAccountActive\" _v-89b02f9e=\"\">\n\t\t\t\t<div class=\"icon_box\" id=\"rop-add-account-btn\" :class=\"(addAccountActive) ? 'close bg-error' : 'open bg-success'\" _v-89b02f9e=\"\">\n\t\t\t\t\t<i class=\"fa fa-2x fa-close\" aria-hidden=\"true\" _v-89b02f9e=\"\"></i>\n\t\t\t\t</div>\n\t\t\t</a>\n\t\t\t<div class=\"tile-content\" _v-89b02f9e=\"\">\n\t\t\t\t<div class=\"tile-title\" _v-89b02f9e=\"\">{{labels.add_account}}</div>\n\t\t\t</div>\n\t\t\t<transition name=\"fade\" _v-89b02f9e=\"\">\n\t\t\t\t<div class=\"tile-action\" v-if=\"addAccountActive\" _v-89b02f9e=\"\">\n\t\t\t\t\t<sign-in-btn _v-89b02f9e=\"\"></sign-in-btn>\n\t\t\t\t</div>\n\t\t\t</transition>\n\t\t</div>\n\t\t<transition name=\"fade\" _v-89b02f9e=\"\">\n\t\t\t<div class=\"columns my-2\" v-if=\"checkLicense &amp;&amp; addAccountActive\" _v-89b02f9e=\"\">\n\t\t\t\t<div class=\"column col-12 text-center\" _v-89b02f9e=\"\">\n\t\t\t\t\t<p class=\"upsell\" _v-89b02f9e=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-lock \" _v-89b02f9e=\"\"></i> <span v-html=\"labels.upsell_accounts\" _v-89b02f9e=\"\"></span>\n\t\t\t\t\t</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</transition>\n\t</div>\n";
+module.exports = "\n\t<div _v-89b02f9e=\"\">\n\t\t<div class=\"tile-content\" _v-89b02f9e=\"\">\n\t\t\t<div class=\"tile-title\" _v-89b02f9e=\"\"><span v-html=\"labels.add_account\" _v-89b02f9e=\"\"></span></div>\n\t\t</div>\n\t\t<div class=\"rop-add-account\" _v-89b02f9e=\"\">\n\t\t\t\t\t<sign-in-btn _v-89b02f9e=\"\"></sign-in-btn>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 234 */
-/***/ (function(module, exports) {
-
-module.exports = "\n\t<div class=\"tab-view\" _v-2ff296d6=\"\">\n\t\t<div class=\"panel-body\" _v-2ff296d6=\"\">\n\t\t\t<div class=\"toast  toast-warning\" v-html=\"labels.twitter_warning\" v-if=\"twitter_warning\" _v-2ff296d6=\"\">\n\t\t\t\n\t\t\t</div>\n\t\t\t<div class=\"container\" _v-2ff296d6=\"\">\n\t\t\t\t<div class=\"columns\" :class=\"'rop-tab-state-'+is_loading\" _v-2ff296d6=\"\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t<div class=\"empty mb-2\" v-if=\"accountsCount === 0\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t<div class=\"empty-icon\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\" _v-2ff296d6=\"\"></i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<p class=\"empty-title h5\" _v-2ff296d6=\"\">{{labels.no_accounts}}</p>\n\t\t\t\t\t\t\t<p class=\"empty-subtitle\" _v-2ff296d6=\"\">{{labels.no_accounts_desc}}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"account-container\" v-for=\"( account, id ) in accounts\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t<service-user-tile :account_data=\"account\" :account_id=\"id\" _v-2ff296d6=\"\"></service-user-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-2ff296d6=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"add-accounts\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t<add-account-tile _v-2ff296d6=\"\"></add-account-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-2ff296d6=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-2ff296d6=\"\">\n\t\t\t\t<div class=\"columns\" _v-2ff296d6=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t<p class=\"text-gray\" _v-2ff296d6=\"\"><i class=\"fa fa-info-circle\" _v-2ff296d6=\"\"></i> <span v-html=\"labels.has_accounts_desc\" _v-2ff296d6=\"\"></span></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 text-right\" _v-2ff296d6=\"\">\n\t\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-2ff296d6=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-2ff296d6=\"\"></i>\n\t\t\t\t\t\t{{labels.remove_all_cta}}\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\n\t</div>\n";
-
-/***/ }),
-/* 235 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(236)
-__vue_script__ = __webpack_require__(238)
-__vue_template__ = __webpack_require__(243)
+__webpack_require__(238)
+__vue_script__ = __webpack_require__(240)
+__vue_template__ = __webpack_require__(246)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/reusables/vue-spinner.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 238 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(239);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(2)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5bcf006b&file=vue-spinner.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./vue-spinner.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5bcf006b&file=vue-spinner.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./vue-spinner.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 239 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(1)();
+// imports
+
+
+// module
+exports.push([module.i, "\n    .preloader-container[_v-5bcf006b] {\n        position: relative;\n        z-index: 9998;\n        top: 0;\n        left: 0;\n        right: 0;\n        bottom: 0;\n        margin: auto;\n        width: 100%;\n        height: 218px;\n        background-color: rgba(255, 255, 255, 0.1);\n        display: block;\n    }\n\n    .preloader-body[_v-5bcf006b] {\n        width: 350px;\n        height: 80px;\n        position: absolute;\n        top: 0;\n        bottom: 0;\n        left: 0;\n        right: 0;\n        margin: auto;\n        text-align: center;\n        display: block;\n    }\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 240 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _preload_three_dots = __webpack_require__(241);
+
+var _preload_three_dots2 = _interopRequireDefault(_preload_three_dots);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var style_components = {
+    'loader-style': _preload_three_dots2.default
+}; // <template>
+//     <transition v-if="display_the_preloader">
+//         <div class="preloader-container">
+//             <div class="preloader-body text-center">
+//                 <p class="empty-title h5" v-html="loading_message"></p>
+//                 <component v-bind:is="spinner_style" :loading="loading" :color="color" :size="size" :margin="margin" :radius="radius"></component>
+//             </div>
+//         </div>
+//     </transition>
+// </template>
+//
+// <script>
+
+exports.default = {
+    name: "vue-spinner",
+    mounted: function mounted() {},
+
+    props: {
+        spinner_style: {
+            type: String,
+            default: 'loader-style'
+        },
+        loading: {
+            type: Boolean,
+            default: true
+        },
+        color: {
+            type: String,
+            default: '#429bf4'
+        },
+        size: {
+            type: String,
+            default: '30px'
+        },
+        margin: {
+            type: String,
+            default: '2px'
+        },
+        radius: {
+            type: String,
+            default: '100%'
+        },
+        preloader_message: {
+            type: String,
+            default: 'Loading...'
+        }
+    },
+    data: function data() {
+        return {
+            display_the_preloader: false,
+            loading_message: this.preloader_message
+        };
+    },
+
+    components: style_components,
+    methods: {
+        show: function show() {
+            this.display_the_preloader = true;
+        },
+        hide: function hide() {
+            this.display_the_preloader = false;
+        }
+    }
+    // </script>
+    //
+    // <style scoped>
+    //     .preloader-container {
+    //         position: relative;
+    //         z-index: 9998;
+    //         top: 0;
+    //         left: 0;
+    //         right: 0;
+    //         bottom: 0;
+    //         margin: auto;
+    //         width: 100%;
+    //         height: 218px;
+    //         background-color: rgba(255, 255, 255, 0.1);
+    //         display: block;
+    //     }
+    //
+    //     .preloader-body {
+    //         width: 350px;
+    //         height: 80px;
+    //         position: absolute;
+    //         top: 0;
+    //         bottom: 0;
+    //         left: 0;
+    //         right: 0;
+    //         margin: auto;
+    //         text-align: center;
+    //         display: block;
+    //     }
+    // </style>
+
+};
+
+/***/ }),
+/* 241 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(242)
+__vue_script__ = __webpack_require__(244)
+__vue_template__ = __webpack_require__(245)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/reusables/preload_three_dots.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 242 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(243);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(2)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-41eb8b38&file=preload_three_dots.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./preload_three_dots.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-41eb8b38&file=preload_three_dots.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./preload_three_dots.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 243 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(1)();
+// imports
+
+
+// module
+exports.push([module.i, "\n\n    .preloader-loading-item .normal-dot[_v-41eb8b38] {\n        animation: dot-do-animation 0.7s infinite linear;\n        animation-fill-mode: both;\n        display: inline-block;\n    }\n\n    .preloader-loading-item .normal-dot-odd[_v-41eb8b38] {\n        animation-delay: 0s;\n    }\n\n    .preloader-loading-item .normal-dot-even[_v-41eb8b38] {\n        animation-delay: 0.50s;\n    }\n\n    @keyframes dot-do-animation {\n        50% {\n            transform: scale(0.75);\n            -webkit-opacity: 0.2;\n            opacity: 0.2;\n        }\n        100% {\n            transform: scale(1);\n            -webkit-opacity: 1;\n            opacity: 1;\n        }\n    }\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 244 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+// <template>
+//     <div class="preloader-loading-item" v-show="loading">
+//         <div class="normal-dot normal-dot-odd" v-bind:style="dot_style"></div>
+//         <div class="normal-dot normal-dot-even" v-bind:style="dot_style"></div>
+//         <div class="normal-dot normal-dot-odd" v-bind:style="dot_style"></div>
+//     </div>
+// </template>
+//
+// <script>
+exports.default = {
+
+    name: 'preload_three_dots',
+
+    props: {
+        loading: {
+            type: Boolean,
+            default: true
+        },
+        color: {
+            type: String,
+            default: '#5dc596'
+        },
+        size: {
+            type: String,
+            default: '15px'
+        },
+        margin: {
+            type: String,
+            default: '2px'
+        },
+        radius: {
+            type: String,
+            default: '100%'
+        }
+    },
+    data: function data() {
+        return {
+            dot_style: {
+                backgroundColor: this.color,
+                height: this.size,
+                width: this.size,
+                margin: this.margin,
+                borderRadius: this.radius
+            }
+        };
+    }
+};
+// </script>
+//
+// <style scoped>
+//
+//     .preloader-loading-item .normal-dot {
+//         -webkit-animation: dot-do-animation 0.7s infinite linear;
+//         animation: dot-do-animation 0.7s infinite linear;
+//         -webkit-animation-fill-mode: both;
+//         animation-fill-mode: both;
+//         display: inline-block;
+//     }
+//
+//     .preloader-loading-item .normal-dot-odd {
+//         animation-delay: 0s;
+//     }
+//
+//     .preloader-loading-item .normal-dot-even {
+//         animation-delay: 0.50s;
+//     }
+//
+//     @-webkit-keyframes dot-do-animation {
+//         50% {
+//             -webkit-transform: scale(0.75);
+//             transform: scale(0.75);
+//             -webkit-opacity: 0.2;
+//             opacity: 0.2;
+//         }
+//         100% {
+//             -webkit-transform: scale(1);
+//             transform: scale(1);
+//             -webkit-opacity: 1;
+//             opacity: 1;
+//         }
+//     }
+//
+//     @keyframes dot-do-animation {
+//         50% {
+//             -webkit-transform: scale(0.75);
+//             transform: scale(0.75);
+//             -webkit-opacity: 0.2;
+//             opacity: 0.2;
+//         }
+//         100% {
+//             -webkit-transform: scale(1);
+//             transform: scale(1);
+//             -webkit-opacity: 1;
+//             opacity: 1;
+//         }
+//     }
+// </style>
+
+/***/ }),
+/* 245 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div class=\"preloader-loading-item\" v-show=\"loading\" _v-41eb8b38=\"\">\n        <div class=\"normal-dot normal-dot-odd\" v-bind:style=\"dot_style\" _v-41eb8b38=\"\"></div>\n        <div class=\"normal-dot normal-dot-even\" v-bind:style=\"dot_style\" _v-41eb8b38=\"\"></div>\n        <div class=\"normal-dot normal-dot-odd\" v-bind:style=\"dot_style\" _v-41eb8b38=\"\"></div>\n    </div>\n";
+
+/***/ }),
+/* 246 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <transition v-if=\"display_the_preloader\" _v-5bcf006b=\"\">\n        <div class=\"preloader-container\" _v-5bcf006b=\"\">\n            <div class=\"preloader-body text-center\" _v-5bcf006b=\"\">\n                <p class=\"empty-title h5\" v-html=\"loading_message\" _v-5bcf006b=\"\"></p>\n                <component v-bind:is=\"spinner_style\" :loading=\"loading\" :color=\"color\" :size=\"size\" :margin=\"margin\" :radius=\"radius\" _v-5bcf006b=\"\"></component>\n            </div>\n        </div>\n    </transition>\n";
+
+/***/ }),
+/* 247 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div class=\"tab-view\" _v-2ff296d6=\"\">\n        <div class=\"panel-body\" _v-2ff296d6=\"\">\n            <div class=\"toast  toast-warning\" v-html=\"labels.twitter_warning\" v-if=\"twitter_warning\" _v-2ff296d6=\"\">\n\n            </div>\n            <div class=\"container\" _v-2ff296d6=\"\">\n                <div class=\"columns\" :class=\"'rop-tab-state-'+is_loading\" _v-2ff296d6=\"\">\n                    <div class=\"column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2\" _v-2ff296d6=\"\">\n                        <vue_spinner :preloader_message=\"labels.preloader_message_accounts\" ref=\"Preloader\" v-if=\"is_preloading === 0\" _v-2ff296d6=\"\"></vue_spinner>\n                        <div class=\"empty mb-2\" v-if=\"accountsCount === 0 &amp;&amp; is_preloading > 0\" _v-2ff296d6=\"\">\n                            <div class=\"empty-icon\" _v-2ff296d6=\"\">\n                                <i class=\"fa fa-3x fa-user-circle-o\" _v-2ff296d6=\"\"></i>\n                            </div>\n                            <p class=\"empty-title h5\" _v-2ff296d6=\"\">{{labels.no_accounts}}</p>\n                            <p class=\"empty-subtitle\" _v-2ff296d6=\"\">{{labels.no_accounts_desc}}</p>\n                        </div>\n                        <div class=\"account-container\" v-for=\"( account, id ) in accounts\" v-if=\"is_preloading > 0\" _v-2ff296d6=\"\">\n                            <service-user-tile :account_data=\"account\" :account_id=\"id\" _v-2ff296d6=\"\"></service-user-tile>\n                            <span class=\"divider\" _v-2ff296d6=\"\"></span>\n                        </div>\n                        <div class=\"add-accounts\" v-if=\"is_preloading > 0\" _v-2ff296d6=\"\">\n                            <add-account-tile _v-2ff296d6=\"\"></add-account-tile>\n                            <span class=\"divider\" _v-2ff296d6=\"\"></span>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"panel-footer\" v-if=\"is_preloading > 0\" _v-2ff296d6=\"\">\n                <div class=\"columns my-2\" v-if=\"checkLicense &amp;&amp; pro_installed\" _v-2ff296d6=\"\">\n                    <div class=\"column col-12\" _v-2ff296d6=\"\">\n                        <i class=\"fa fa-lock \" _v-2ff296d6=\"\"></i> <span v-html=\"labels.activate_license\" _v-2ff296d6=\"\"></span>\n                    </div>\n                </div>\n                <div class=\"columns my-2\" v-if=\"(checkLicense &amp;&amp; accountsCount === 2) &amp;&amp; !pro_installed\" _v-2ff296d6=\"\">\n                    <div class=\"column col-12\" _v-2ff296d6=\"\">\n                        <p class=\"upsell\" _v-2ff296d6=\"\">\n                            <i class=\"fa fa-lock \" _v-2ff296d6=\"\"></i> <span v-html=\"labels.upsell_accounts\" _v-2ff296d6=\"\"></span>\n                        </p>\n                    </div>\n                </div>\n                <div class=\"columns\" v-if=\"checkLicense &amp;&amp; !pro_installed\" _v-2ff296d6=\"\">\n                    <div class=\"column col-12\" _v-2ff296d6=\"\">\n                        <p _v-2ff296d6=\"\"><i class=\"fa fa-info-circle\" _v-2ff296d6=\"\"></i> <span v-html=\"labels.lite_pro_table_upsell\" _v-2ff296d6=\"\"></span></p>\n                    </div>\n                </div>\n                <div class=\"column col-12 text-right\" _v-2ff296d6=\"\">\n                    <button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-2ff296d6=\"\">\n                        <i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-2ff296d6=\"\"></i>\n                        <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-2ff296d6=\"\"></i>\n                        {{labels.remove_all_cta}}\n                    </button>\n                </div>\n            </div>\n        </div>\n\n    </div>\n";
+
+/***/ }),
+/* 248 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(249)
+__vue_script__ = __webpack_require__(251)
+__vue_template__ = __webpack_require__(256)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -34541,13 +36331,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 236 */
+/* 249 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(237);
+var content = __webpack_require__(250);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -34567,7 +36357,7 @@ if(false) {
 }
 
 /***/ }),
-/* 237 */
+/* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -34581,7 +36371,7 @@ exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-31740612] {\n\t
 
 
 /***/ }),
-/* 238 */
+/* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35006,13 +36796,13 @@ module.exports = {
 };
 
 /***/ }),
-/* 239 */
+/* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(240);
+var content = __webpack_require__(253);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -35032,7 +36822,7 @@ if(false) {
 }
 
 /***/ }),
-/* 240 */
+/* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -35046,7 +36836,7 @@ exports.push([module.i, "\n\t#rop_core .input-group.rop-counter-group {\n\t\tpos
 
 
 /***/ }),
-/* 241 */
+/* 254 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35191,25 +36981,25 @@ module.exports = {
 };
 
 /***/ }),
-/* 242 */
+/* 255 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"input-group rop-counter-group\">\n\t\t<input class=\"form-input rop-counter\" type=\"text\" v-model=\"inputValueC\" :id=\"id\">\n\t\t<button class=\"btn input-group-btn increment-btn up\" @mousedown=\"isPressed('up')\" @mouseup=\"isReleased('up')\"><i\n\t\t\t\tclass=\"fa fa-fw fa-caret-up\"></i></button>\n\t\t<button class=\"btn input-group-btn increment-btn down\" @mousedown=\"isPressed('down')\"\n\t\t        @mouseup=\"isReleased('down')\"><i class=\"fa fa-fw fa-caret-down\"></i></button>\n\t</div>\n";
 
 /***/ }),
-/* 243 */
+/* 256 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"tab-view\" _v-31740612=\"\">\n\t\t<div class=\"panel-body\" _v-31740612=\"\">\n\t\t\t<div class=\"container\" :class=\"'rop-tab-state-'+is_loading\" _v-31740612=\"\">\n\t\t\t\t<div class=\"columns py-2\" v-if=\"! isBiz\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.min_interval_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.min_interval_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<counter-input id=\"default_interval\" :value.sync=\"generalSettings.default_interval\" _v-31740612=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\t\t\t\t<div class=\"columns py-2\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.min_days_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.min_days_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<counter-input id=\"min_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.minimum_post_age\" _v-31740612=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- Max Post Age -->\n\t\t\t\t<div class=\"columns py-2\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.max_days_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.max_days_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<counter-input id=\"max_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.maximum_post_age\" _v-31740612=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\n\t\t\t\t<div class=\"columns py-2\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.no_posts_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.no_posts_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\" _v-31740612=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\n\t\t\t\t<!-- Share more than once -->\n\t\t\t\t<div class=\"columns py-2\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.share_once_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.share_once_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-31740612=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-31740612=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" id=\"share_more_than_once\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-31740612=\"\"></i> {{labels.share_once_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.post_types_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.post_types_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t<multiple-select id=\"rop_post_types\" :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-31740612=\"\"></multiple-select>\n\n\t\t\t\t\t\t<p class=\"text-primary rop-post-type-badge\" v-if=\"checkMediaPostType \" v-html=\"labels.post_types_attachament_info\" _v-31740612=\"\"> </p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"columns \" v-if=\"!isPro\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column text-center\" _v-31740612=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-31740612=\"\"><i class=\"fa fa-lock\" _v-31740612=\"\"></i> {{labels.post_types_upsell}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\n\t\t\t\t<!-- Taxonomies -->\n\t\t\t\t<div class=\"columns py-2\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.taxonomies_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.taxonomies_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div id=\"rop_taxonomies\" class=\"column col-6 col-sm-12 vertical-align text-left\" _v-31740612=\"\">\n\t\t\t\t\t\t<div class=\"input-group\" _v-31740612=\"\">\n\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" _v-31740612=\"\"></multiple-select>\n\t\t\t\t\t\t\t<span class=\"input-group-addon vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-31740612=\"\"></i>{{labels.taxonomies_exclude}}\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</span>\n\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t</div>\n\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\n\t\t\t\t<!-- Google Analytics -->\n\t\t\t\t<div class=\"columns py-2\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.ga_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.ga_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-31740612=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-31740612=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.ga_tracking\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-31740612=\"\"></i>{{labels.ga_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\n\t\t\t\t\t\t\t<div class=\"columns py-2\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.instant_share_title}}</b>\n\t\t\t\t\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.instant_share_desc}}</p>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label id=\"rop_instant_share\" class=\"form-checkbox\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.instant_share\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-31740612=\"\"></i>{{labels.instant_share_yes}}\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\n\t\t\t\t\t\t\t<div class=\"columns py-2\" v-if=\"isInstantShare\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.instant_share_default_title}}</b>\n\t\t\t\t\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.instant_share_default_desc}}</p>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.instant_share_default\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-31740612=\"\"></i>{{labels.instant_share_default_yes}}\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t\t<span class=\"divider\" v-if=\"isInstantShare\" _v-31740612=\"\"></span>\n\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.custom_share_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.custom_share_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-31740612=\"\">\n\t\t\t\t\t\t\t<label id=\"rop_custom_share_msg\" class=\"form-checkbox\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" :disabled=\"!isPro\" v-model=\"generalSettings.custom_messages\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-31740612=\"\"></i>{{labels.custom_share_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\n\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" v-if=\"isCustomMsgs\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.custom_share_order_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.custom_share_order_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-31740612=\"\">\n\t\t\t\t\t\t\t<label id=\"rop_custom_share_msg\" class=\"form-checkbox\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" :disabled=\"!isPro\" v-model=\"generalSettings.custom_messages_share_order\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-31740612=\"\"></i>{{labels.custom_share_order_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<!-- Upsell -->\n\t\t\t\t<div class=\"columns \" v-if=\"!isPro\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column text-center\" _v-31740612=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-31740612=\"\"><i class=\"fa fa-lock\" _v-31740612=\"\"></i> {{labels.custom_share_upsell}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" v-if=\"isCustomMsgs\" _v-31740612=\"\"></span>\n\n\t\t\t\t<div class=\"columns py-2\" _v-31740612=\"\">\n\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.housekeeping}}</b>\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.housekeeping_desc}}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t\t<div class=\"form-group\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.housekeeping\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-31740612=\"\"></i>{{labels.housekeeping_yes}}\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer text-right\" _v-31740612=\"\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\" _v-31740612=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-31740612=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-31740612=\"\"></i> {{labels.save}}\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 244 */
+/* 257 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(245)
-__vue_script__ = __webpack_require__(247)
-__vue_template__ = __webpack_require__(270)
+__webpack_require__(258)
+__vue_script__ = __webpack_require__(260)
+__vue_template__ = __webpack_require__(285)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -35226,13 +37016,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 245 */
+/* 258 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(246);
+var content = __webpack_require__(259);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -35252,7 +37042,7 @@ if(false) {
 }
 
 /***/ }),
-/* 246 */
+/* 259 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -35266,7 +37056,7 @@ exports.push([module.i, "\n\t.icon_box[_v-44ae6e9d] {\n\t\twidth: 30px;\n\t\thei
 
 
 /***/ }),
-/* 247 */
+/* 260 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35276,15 +37066,15 @@ var _keys = __webpack_require__(14);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _emptyActiveAccounts = __webpack_require__(248);
+var _emptyActiveAccounts = __webpack_require__(261);
 
 var _emptyActiveAccounts2 = _interopRequireDefault(_emptyActiveAccounts);
 
-var _postFormat = __webpack_require__(251);
+var _postFormat = __webpack_require__(264);
 
 var _postFormat2 = _interopRequireDefault(_postFormat);
 
-var _accountSchedule = __webpack_require__(256);
+var _accountSchedule = __webpack_require__(269);
 
 var _accountSchedule2 = _interopRequireDefault(_accountSchedule);
 
@@ -35580,12 +37370,12 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 248 */
+/* 261 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(249)
-__vue_template__ = __webpack_require__(250)
+__vue_script__ = __webpack_require__(262)
+__vue_template__ = __webpack_require__(263)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -35602,7 +37392,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 249 */
+/* 262 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35637,19 +37427,19 @@ module.exports = {
 };
 
 /***/ }),
-/* 250 */
+/* 263 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"empty\">\n\t\t<div class=\"empty-icon\">\n\t\t\t<i class=\"fa fa-3x fa-user-circle-o\"></i>\n\t\t</div>\n\t\t<p class=\"empty-title h5\">{{labels.no_active_accounts}}</p>\n\t\t<p class=\"empty-subtitle\" v-html=\"labels.no_active_accounts_desc\"></p>\n\t\t<button class=\"btn btn-primary\" @click=\"goToAccounts()\">{{labels.go_to_accounts_btn}}</button>\n\t</div>\n";
 
 /***/ }),
-/* 251 */
+/* 264 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(252)
-__vue_script__ = __webpack_require__(254)
-__vue_template__ = __webpack_require__(255)
+__webpack_require__(265)
+__vue_script__ = __webpack_require__(267)
+__vue_template__ = __webpack_require__(268)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -35666,13 +37456,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 252 */
+/* 265 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(253);
+var content = __webpack_require__(266);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -35692,7 +37482,7 @@ if(false) {
 }
 
 /***/ }),
-/* 253 */
+/* 266 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -35706,7 +37496,7 @@ exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-b34c44f8] {\n\t
 
 
 /***/ }),
-/* 254 */
+/* 267 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36068,19 +37858,19 @@ module.exports = {
 };
 
 /***/ }),
-/* 255 */
+/* 268 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div _v-b34c44f8=\"\">\n\t\t<div class=\"columns py-2\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.post_content_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.post_content_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.post_content\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<option value=\"post_title\" _v-b34c44f8=\"\">{{labels.post_content_option_title}}</option>\n\t\t\t\t\t\t<option value=\"post_content\" _v-b34c44f8=\"\">{{labels.post_content_option_content}}</option>\n\t\t\t\t\t\t<option value=\"post_title_content\" _v-b34c44f8=\"\">{{labels.post_content_option_title_content}}</option>\n\t\t\t\t\t\t<option value=\"custom_field\" _v-b34c44f8=\"\">{{labels.post_content_option_custom_field}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.post_content === 'custom_field'\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.custom_meta_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.custom_meta_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.custom_meta_field\" value=\"\" placeholder=\"\" _v-b34c44f8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<span class=\"divider\" _v-b34c44f8=\"\"></span>\n\n\t\t<div class=\"columns py-2\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.max_char_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.max_char_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.maximum_length\" value=\"\" placeholder=\"\" _v-b34c44f8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-b34c44f8=\"\"></span>\n\n\t\t<div class=\"columns py-2\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.add_char_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\"><span v-html=\"labels.add_char_desc\" _v-b34c44f8=\"\"></span></p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<textarea class=\"form-input\" v-model=\"post_format.custom_text\" v-bind:placeholder=\"labels.add_char_placeholder\" _v-b34c44f8=\"\">{{post_format.custom_text}}</textarea> \n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.add_pos_title}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.custom_text_pos\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<option value=\"beginning\" _v-b34c44f8=\"\">{{labels.add_pos_option_start}}</option>\n\t\t\t\t\t\t<option value=\"end\" _v-b34c44f8=\"\">{{labels.add_pos_option_end}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.add_link_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.add_link_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"input-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.include_link\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-b34c44f8=\"\"></i> {{labels.add_link_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-b34c44f8=\"\"></span>\n\t\t<div class=\"columns py-2\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.meta_link_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.meta_link_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"input-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.url_from_meta\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-b34c44f8=\"\"></i> {{labels.meta_link_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Custom Field -->\n\t\t<div class=\"columns py-2\" v-if=\"post_format.url_from_meta\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.meta_link_name_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.meta_link_name_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.url_meta_key\" value=\"\" placeholder=\"\" _v-b34c44f8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-b34c44f8=\"\"></span>\n\t\t<div class=\"columns py-2\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.use_shortner_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.use_shortner_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"input-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.short_url\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-b34c44f8=\"\"></i> {{labels.use_shortner_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" v-if=\"post_format.short_url\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.shortner_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.shortner_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.short_url_service\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<option value=\"rviv.ly\" _v-b34c44f8=\"\">rviv.ly</option>\n\t\t\t\t\t\t<option value=\"bit.ly\" _v-b34c44f8=\"\">bit.ly</option>\n\t\t\t\t\t\t<option value=\"firebase\" _v-b34c44f8=\"\">google firebase</option>\n\t\t\t\t\t\t<option value=\"ow.ly\" _v-b34c44f8=\"\">ow.ly</option>\n\t\t\t\t\t\t<option value=\"is.gd\" _v-b34c44f8=\"\">is.gd</option>\n      <option value=\"rebrand.ly\" _v-b34c44f8=\"\">rebrand.ly</option>\n      <option value=\"wp_short_url\" _v-b34c44f8=\"\">wp_short_url</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.short_url\" v-for=\"( credential, key_name ) in post_format.shortner_credentials\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{ key_name | capitalize }}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.shortner_field_desc_start}} \"{{key_name}}\"\n\t\t\t\t\t{{labels.shortner_field_desc_end}}\n\t\t\t\t\t<strong _v-b34c44f8=\"\">{{post_format.short_url_service}}</strong> {{labels.shortner_api_field}}.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.shortner_credentials[key_name]\" _v-b34c44f8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.hashtags_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.hashtags_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.hashtags\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<option value=\"no-hashtags\" _v-b34c44f8=\"\">{{labels.hashtags_option_no}}</option>\n\t\t\t\t\t\t<option value=\"common-hashtags\" _v-b34c44f8=\"\">{{labels.hashtags_option_common}}</option>\n\t\t\t\t\t\t<option value=\"categories-hashtags\" _v-b34c44f8=\"\">{{labels.hashtags_option_cats}}</option>\n\t\t\t\t\t\t<option value=\"tags-hashtags\" _v-b34c44f8=\"\">{{labels.hashtags_option_tags}}</option>\n\t\t\t\t\t\t<option value=\"custom-hashtags\" _v-b34c44f8=\"\">{{labels.hashtags_option_field}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags === 'common-hashtags'\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.hastags_common_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.hastags_common_desc}} \",\".</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_common\" value=\"\" placeholder=\"\" _v-b34c44f8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags === 'custom-hashtags'\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.hastags_field_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.hastags_field_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_custom\" value=\"\" placeholder=\"\" _v-b34c44f8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags !== 'no-hashtags'\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.hashtags_length_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.hashtags_length_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.hashtags_length\" value=\"\" placeholder=\"\" _v-b34c44f8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<span class=\"divider\" _v-b34c44f8=\"\"></span>\n\n\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.image_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.image_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"input-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.image\" :disabled=\"!isPro\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-b34c44f8=\"\"></i> {{labels.image_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns \" v-if=\"!isPro\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column text-center\" _v-b34c44f8=\"\">\n\t\t\t\t<p class=\"upsell\" _v-b34c44f8=\"\"><i class=\"fa fa-lock\" _v-b34c44f8=\"\"></i> {{labels.image_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-b34c44f8=\"\"></span>\n\t\t<!-- Google Analytics -->\n\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.utm_campaign_medium}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.utm_campaign_medium_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<input type=\"text\" :disabled=\"!isPro\" class=\"form-input\" v-model=\"post_format.utm_campaign_medium\" placeholder=\"social\" _v-b34c44f8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.utm_campaign_name}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.utm_campaign_name_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<input type=\"text\" :disabled=\"!isPro\" class=\"form-input\" v-model=\"post_format.utm_campaign_name\" placeholder=\"ReviveOldPost\" _v-b34c44f8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns \" v-if=\"!isPro\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column text-center\" _v-b34c44f8=\"\">\n\t\t\t\t<p class=\"upsell\" _v-b34c44f8=\"\"><i class=\"fa fa-lock\" _v-b34c44f8=\"\"></i> {{labels.custom_utm_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-b34c44f8=\"\"></span>\n\t</div>\n";
 
 /***/ }),
-/* 256 */
+/* 269 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(257)
-__vue_script__ = __webpack_require__(259)
-__vue_template__ = __webpack_require__(269)
+__webpack_require__(270)
+__vue_script__ = __webpack_require__(272)
+__vue_template__ = __webpack_require__(284)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -36097,13 +37887,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 257 */
+/* 270 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(258);
+var content = __webpack_require__(271);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -36123,7 +37913,7 @@ if(false) {
 }
 
 /***/ }),
-/* 258 */
+/* 271 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -36137,7 +37927,7 @@ exports.push([module.i, "\n\t.rop-control-container-false[_v-397ecf27]  {\n\t\tc
 
 
 /***/ }),
-/* 259 */
+/* 272 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36147,7 +37937,7 @@ var _buttonCheckbox = __webpack_require__(72);
 
 var _buttonCheckbox2 = _interopRequireDefault(_buttonCheckbox);
 
-var _vue2Timepicker = __webpack_require__(260);
+var _vue2Timepicker = __webpack_require__(273);
 
 var _vue2Timepicker2 = _interopRequireDefault(_vue2Timepicker);
 
@@ -36155,8 +37945,101 @@ var _counterInput = __webpack_require__(83);
 
 var _counterInput2 = _interopRequireDefault(_counterInput);
 
+var _moment = __webpack_require__(0);
+
+var _moment2 = _interopRequireDefault(_moment);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// <template>
+// 	<div :class="'rop-control-container-'+ ( license > 1 ) +  '  rop-schedule-tab-container'">
+//
+// 		<div class="columns py-2 rop-control">
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<b>{{labels.schedule_type_title}}</b>
+// 				<p class="text-gray">{{labels.schedule_type_desc}}</p>
+// 			</div>
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<div class="form-group">
+// 					<select class="form-select" v-model="schedule.type">
+// 						<option value="recurring">{{labels.schedule_type_option_rec}}</option>
+// 						<option value="fixed">{{labels.schedule_type_option_fix}}</option>
+// 					</select>
+// 				</div>
+// 			</div>
+// 		</div>
+//
+// 		<!-- Fixed Schedule Days -->
+// 		<div class="columns py-2 rop-control" v-if="schedule.type === 'fixed'">
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<b>{{labels.schedule_fixed_days_title}}</b>
+// 				<p class="text-gray">{{labels.schedule_fixed_days_desc}}</p>
+// 			</div>
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<div class="form-group input-group">
+// 					<button-checkbox v-for="( data, label ) in daysObject" :key="label" :value="data.value"
+// 					                 :label="label" :checked="data.checked" @add-day="addDay" @rmv-day="rmvDay"
+// 					></button-checkbox>
+// 				</div>
+// 			</div>
+// 		</div>
+//
+// 		<!-- Fixed Schedule time -->
+// 		<div class="columns py-2 rop-control" v-if="schedule.type === 'fixed'">
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<b>{{labels.schedule_fixed_time_title}}</b>
+// 				<p class="text-gray">{{labels.schedule_fixed_time_desc}}</p>
+// 			</div>
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<div class="form-group">
+// 					<div class="input-group" v-for="( time, index ) in schedule.interval_f.time">
+// 						<vue-timepicker :minute-interval="5" class="timepicker-style-fix" :value="getTime( index )"
+// 						                @change="syncTime( $event, index )" hide-clear-button
+// 						></vue-timepicker>
+// 						<button class="btn btn-danger input-group-btn" v-if="schedule.interval_f.time.length > 1"
+// 						        @click="rmvTime( index )">
+// 							<i class="fa fa-fw fa-minus"></i>
+// 						</button>
+// 						<button class="btn btn-success input-group-btn"
+// 						        v-if="index == schedule.interval_f.time.length - 1" @click="addTime()"
+// 						>
+// 							<i class="fa fa-fw fa-plus"></i>
+// 						</button>
+// 					</div>
+// 				</div>
+// 			</div>
+// 		</div>
+//
+// 		<!-- Current time -->
+// <div class="column col-6 col-sm-12 vertical-align float-right" v-if="schedule.type === 'fixed'">
+// 		<div class="toast rop-current-time text-center" v-if="formatedDate">
+// 				{{labels.time_now}}: {{ formatedDate }}
+// 		</div>
+// </div>
+//
+// 		<div class="columns py-2 rop-control" v-else>
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<b>{{labels.schedule_rec_title}}</b>
+// 				<p class="text-gray">{{labels.schedule_rec_desc}}</p>
+// 			</div>
+// 			<div class="column col-6 col-sm-12 vertical-align">
+// 				<div class="form-group">
+// 					<counter-input id="interval_r" :value.sync="schedule.interval_r"></counter-input>
+// 				</div>
+// 			</div>
+// 		</div>
+//
+// 		<!-- Upsell -->
+// 		<div class="columns py-2" v-if="license < 2">
+// 			<div class="column text-center">
+// 				<p class="upsell"><i class="fa fa-lock"></i> {{labels.schedule_upsell}}</p>
+// 			</div>
+// 		</div>
+// 		<span class="divider"></span>
+// 	</div>
+// </template>
+//
+// <script>
 module.exports = {
 	name: 'account-schedule',
 	props: ['account_id', 'license'],
@@ -36206,6 +38089,28 @@ module.exports = {
 				daysObject[day].checked = this.isChecked(daysObject[day].value);
 			}
 			return daysObject;
+		},
+		/**
+   * Get general settings.
+   * @returns {module.exports.computed.generalSettings|Array|*}
+   */
+		formatedDate: function formatedDate() {
+			if (typeof this.date_format === 'undefined') {
+				return '';
+			}
+			return _moment2.default.utc(this.current_time, 'X').format(this.date_format.replace('mm', 'mm:ss'));
+		},
+		current_time: {
+			get: function get() {
+				return this.$store.state.cron_status.current_time;
+			},
+			set: function set(value) {
+				this.$store.state.cron_status.current_time = value;
+			}
+		},
+		date_format: function date_format() {
+
+			return this.$store.state.cron_status.date_format;
 		}
 	},
 	methods: {
@@ -36282,104 +38187,23 @@ module.exports = {
 	// </style>
 	//
 
-}; // <template>
-// 	<div :class="'rop-control-container-'+ ( license > 1 ) +  '  rop-schedule-tab-container'">
-//
-// 		<div class="columns py-2 rop-control">
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<b>{{labels.schedule_type_title}}</b>
-// 				<p class="text-gray">{{labels.schedule_type_desc}}</p>
-// 			</div>
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<div class="form-group">
-// 					<select class="form-select" v-model="schedule.type">
-// 						<option value="recurring">{{labels.schedule_type_option_rec}}</option>
-// 						<option value="fixed">{{labels.schedule_type_option_fix}}</option>
-// 					</select>
-// 				</div>
-// 			</div>
-// 		</div>
-//
-// 		<!-- Fixed Schedule Days -->
-// 		<div class="columns py-2 rop-control" v-if="schedule.type === 'fixed'">
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<b>{{labels.schedule_fixed_days_title}}</b>
-// 				<p class="text-gray">{{labels.schedule_fixed_days_desc}}</p>
-// 			</div>
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<div class="form-group input-group">
-// 					<button-checkbox v-for="( data, label ) in daysObject" :key="label" :value="data.value"
-// 					                 :label="label" :checked="data.checked" @add-day="addDay" @rmv-day="rmvDay"
-// 					></button-checkbox>
-// 				</div>
-// 			</div>
-// 		</div>
-//
-// 		<!-- Fixed Schedule time -->
-// 		<div class="columns py-2 rop-control" v-if="schedule.type === 'fixed'">
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<b>{{labels.schedule_fixed_time_title}}</b>
-// 				<p class="text-gray">{{labels.schedule_fixed_time_desc}}</p>
-// 			</div>
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<div class="form-group">
-// 					<div class="input-group" v-for="( time, index ) in schedule.interval_f.time">
-// 						<vue-timepicker :minute-interval="5" class="timepicker-style-fix" :value="getTime( index )"
-// 						                @change="syncTime( $event, index )" hide-clear-button
-// 						></vue-timepicker>
-// 						<button class="btn btn-danger input-group-btn" v-if="schedule.interval_f.time.length > 1"
-// 						        @click="rmvTime( index )">
-// 							<i class="fa fa-fw fa-minus"></i>
-// 						</button>
-// 						<button class="btn btn-success input-group-btn"
-// 						        v-if="index == schedule.interval_f.time.length - 1" @click="addTime()"
-// 						>
-// 							<i class="fa fa-fw fa-plus"></i>
-// 						</button>
-// 					</div>
-// 				</div>
-// 			</div>
-// 		</div>
-//
-// 		<div class="columns py-2 rop-control" v-else>
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<b>{{labels.schedule_rec_title}}</b>
-// 				<p class="text-gray">{{labels.schedule_rec_desc}}</p>
-// 			</div>
-// 			<div class="column col-6 col-sm-12 vertical-align">
-// 				<div class="form-group">
-// 					<counter-input id="interval_r" :value.sync="schedule.interval_r"></counter-input>
-// 				</div>
-// 			</div>
-// 		</div>
-//
-// 		<!-- Upsell -->
-// 		<div class="columns py-2" v-if="license < 2">
-// 			<div class="column text-center">
-// 				<p class="upsell"><i class="fa fa-lock"></i> {{labels.schedule_upsell}}</p>
-// 			</div>
-// 		</div>
-// 		<span class="divider"></span>
-// 	</div>
-// </template>
-//
-// <script>
+};
 
 /***/ }),
-/* 260 */
+/* 273 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(261)
+module.exports = __webpack_require__(274)
 
 
 /***/ }),
-/* 261 */
+/* 274 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(262)
-__vue_script__ = __webpack_require__(265)
-__vue_template__ = __webpack_require__(268)
+__webpack_require__(275)
+__vue_script__ = __webpack_require__(278)
+__vue_template__ = __webpack_require__(281)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -36396,13 +38220,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 262 */
+/* 275 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(263);
+var content = __webpack_require__(276);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -36422,12 +38246,12 @@ if(false) {
 }
 
 /***/ }),
-/* 263 */
+/* 276 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
 // imports
-exports.i(__webpack_require__(264), "");
+exports.i(__webpack_require__(277), "");
 
 // module
 exports.push([module.i, "\n", ""]);
@@ -36436,7 +38260,7 @@ exports.push([module.i, "\n", ""]);
 
 
 /***/ }),
-/* 264 */
+/* 277 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -36450,7 +38274,7 @@ exports.push([module.i, ".time-picker {\n  display: inline-block;\n  position: r
 
 
 /***/ }),
-/* 265 */
+/* 278 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36464,7 +38288,7 @@ var _keys = __webpack_require__(14);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _stringify = __webpack_require__(266);
+var _stringify = __webpack_require__(279);
 
 var _stringify2 = _interopRequireDefault(_stringify);
 
@@ -36840,13 +38664,13 @@ exports.default = {
 };
 
 /***/ }),
-/* 266 */
+/* 279 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(267), __esModule: true };
+module.exports = { "default": __webpack_require__(280), __esModule: true };
 
 /***/ }),
-/* 267 */
+/* 280 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var core = __webpack_require__(4);
@@ -36857,30 +38681,334 @@ module.exports = function stringify(it) { // eslint-disable-line no-unused-vars
 
 
 /***/ }),
-/* 268 */
+/* 281 */
 /***/ (function(module, exports) {
 
 module.exports = "\n<span class=\"time-picker\">\n  <input class=\"display-time\" :id=\"id\" v-model=\"displayTime\" @click.stop=\"toggleDropdown\" type=\"text\" readonly />\n  <span class=\"clear-btn\" v-if=\"!hideClearButton\" v-show=\"!showDropdown && showClearBtn\" @click.stop=\"clearTime\">&times;</span>\n  <div class=\"time-picker-overlay\" v-if=\"showDropdown\" @click.stop=\"toggleDropdown\"></div>\n  <div class=\"dropdown\" v-show=\"showDropdown\">\n    <div class=\"select-list\">\n      <ul class=\"hours\">\n        <li class=\"hint\" v-text=\"hourType\"></li>\n        <li v-for=\"hr in hours\" v-text=\"hr\" :class=\"{active: hour === hr}\" @click.stop=\"select('hour', hr)\"></li>\n      </ul>\n      <ul class=\"minutes\">\n        <li class=\"hint\" v-text=\"minuteType\"></li>\n        <li v-for=\"m in minutes\" v-text=\"m\" :class=\"{active: minute === m}\" @click.stop=\"select('minute', m)\"></li>\n      </ul>\n      <ul class=\"seconds\" v-if=\"secondType\">\n        <li class=\"hint\" v-text=\"secondType\"></li>\n        <li v-for=\"s in seconds\" v-text=\"s\" :class=\"{active: second === s}\" @click.stop=\"select('second', s)\"></li>\n      </ul>\n      <ul class=\"apms\" v-if=\"apmType\">\n        <li class=\"hint\" v-text=\"apmType\"></li>\n        <li v-for=\"a in apms\" v-text=\"a\" :class=\"{active: apm === a}\" @click.stop=\"select('apm', a)\"></li>\n      </ul>\n    </div>\n  </div>\n</span>\n";
 
 /***/ }),
-/* 269 */
+/* 282 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div :class=\"'rop-control-container-'+ ( license > 1 ) +  '  rop-schedule-tab-container'\" _v-397ecf27=\"\">\n\n\t\t<div class=\"columns py-2 rop-control\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<b _v-397ecf27=\"\">{{labels.schedule_type_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-397ecf27=\"\">{{labels.schedule_type_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<div class=\"form-group\" _v-397ecf27=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"schedule.type\" _v-397ecf27=\"\">\n\t\t\t\t\t\t<option value=\"recurring\" _v-397ecf27=\"\">{{labels.schedule_type_option_rec}}</option>\n\t\t\t\t\t\t<option value=\"fixed\" _v-397ecf27=\"\">{{labels.schedule_type_option_fix}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule Days -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<b _v-397ecf27=\"\">{{labels.schedule_fixed_days_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-397ecf27=\"\">{{labels.schedule_fixed_days_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<div class=\"form-group input-group\" _v-397ecf27=\"\">\n\t\t\t\t\t<button-checkbox v-for=\"( data, label ) in daysObject\" :key=\"label\" :value=\"data.value\" :label=\"label\" :checked=\"data.checked\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" _v-397ecf27=\"\"></button-checkbox>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule time -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<b _v-397ecf27=\"\">{{labels.schedule_fixed_time_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-397ecf27=\"\">{{labels.schedule_fixed_time_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<div class=\"form-group\" _v-397ecf27=\"\">\n\t\t\t\t\t<div class=\"input-group\" v-for=\"( time, index ) in schedule.interval_f.time\" _v-397ecf27=\"\">\n\t\t\t\t\t\t<vue-timepicker :minute-interval=\"5\" class=\"timepicker-style-fix\" :value=\"getTime( index )\" @change=\"syncTime( $event, index )\" hide-clear-button=\"\" _v-397ecf27=\"\"></vue-timepicker>\n\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn\" v-if=\"schedule.interval_f.time.length > 1\" @click=\"rmvTime( index )\" _v-397ecf27=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-minus\" _v-397ecf27=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t\t<button class=\"btn btn-success input-group-btn\" v-if=\"index == schedule.interval_f.time.length - 1\" @click=\"addTime()\" _v-397ecf27=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-plus\" _v-397ecf27=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2 rop-control\" v-else=\"\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<b _v-397ecf27=\"\">{{labels.schedule_rec_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-397ecf27=\"\">{{labels.schedule_rec_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<div class=\"form-group\" _v-397ecf27=\"\">\n\t\t\t\t\t<counter-input id=\"interval_r\" :value.sync=\"schedule.interval_r\" _v-397ecf27=\"\"></counter-input>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Upsell -->\n\t\t<div class=\"columns py-2\" v-if=\"license < 2\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column text-center\" _v-397ecf27=\"\">\n\t\t\t\t<p class=\"upsell\" _v-397ecf27=\"\"><i class=\"fa fa-lock\" _v-397ecf27=\"\"></i> {{labels.schedule_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-397ecf27=\"\"></span>\n\t</div>\n";
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
 
 /***/ }),
-/* 270 */
+/* 283 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var map = {
+	"./af": 84,
+	"./af.js": 84,
+	"./ar": 85,
+	"./ar-dz": 86,
+	"./ar-dz.js": 86,
+	"./ar-kw": 87,
+	"./ar-kw.js": 87,
+	"./ar-ly": 88,
+	"./ar-ly.js": 88,
+	"./ar-ma": 89,
+	"./ar-ma.js": 89,
+	"./ar-sa": 90,
+	"./ar-sa.js": 90,
+	"./ar-tn": 91,
+	"./ar-tn.js": 91,
+	"./ar.js": 85,
+	"./az": 92,
+	"./az.js": 92,
+	"./be": 93,
+	"./be.js": 93,
+	"./bg": 94,
+	"./bg.js": 94,
+	"./bm": 95,
+	"./bm.js": 95,
+	"./bn": 96,
+	"./bn.js": 96,
+	"./bo": 97,
+	"./bo.js": 97,
+	"./br": 98,
+	"./br.js": 98,
+	"./bs": 99,
+	"./bs.js": 99,
+	"./ca": 100,
+	"./ca.js": 100,
+	"./cs": 101,
+	"./cs.js": 101,
+	"./cv": 102,
+	"./cv.js": 102,
+	"./cy": 103,
+	"./cy.js": 103,
+	"./da": 104,
+	"./da.js": 104,
+	"./de": 105,
+	"./de-at": 106,
+	"./de-at.js": 106,
+	"./de-ch": 107,
+	"./de-ch.js": 107,
+	"./de.js": 105,
+	"./dv": 108,
+	"./dv.js": 108,
+	"./el": 109,
+	"./el.js": 109,
+	"./en-SG": 110,
+	"./en-SG.js": 110,
+	"./en-au": 111,
+	"./en-au.js": 111,
+	"./en-ca": 112,
+	"./en-ca.js": 112,
+	"./en-gb": 113,
+	"./en-gb.js": 113,
+	"./en-ie": 114,
+	"./en-ie.js": 114,
+	"./en-il": 115,
+	"./en-il.js": 115,
+	"./en-nz": 116,
+	"./en-nz.js": 116,
+	"./eo": 117,
+	"./eo.js": 117,
+	"./es": 118,
+	"./es-do": 119,
+	"./es-do.js": 119,
+	"./es-us": 120,
+	"./es-us.js": 120,
+	"./es.js": 118,
+	"./et": 121,
+	"./et.js": 121,
+	"./eu": 122,
+	"./eu.js": 122,
+	"./fa": 123,
+	"./fa.js": 123,
+	"./fi": 124,
+	"./fi.js": 124,
+	"./fo": 125,
+	"./fo.js": 125,
+	"./fr": 126,
+	"./fr-ca": 127,
+	"./fr-ca.js": 127,
+	"./fr-ch": 128,
+	"./fr-ch.js": 128,
+	"./fr.js": 126,
+	"./fy": 129,
+	"./fy.js": 129,
+	"./ga": 130,
+	"./ga.js": 130,
+	"./gd": 131,
+	"./gd.js": 131,
+	"./gl": 132,
+	"./gl.js": 132,
+	"./gom-latn": 133,
+	"./gom-latn.js": 133,
+	"./gu": 134,
+	"./gu.js": 134,
+	"./he": 135,
+	"./he.js": 135,
+	"./hi": 136,
+	"./hi.js": 136,
+	"./hr": 137,
+	"./hr.js": 137,
+	"./hu": 138,
+	"./hu.js": 138,
+	"./hy-am": 139,
+	"./hy-am.js": 139,
+	"./id": 140,
+	"./id.js": 140,
+	"./is": 141,
+	"./is.js": 141,
+	"./it": 142,
+	"./it-ch": 143,
+	"./it-ch.js": 143,
+	"./it.js": 142,
+	"./ja": 144,
+	"./ja.js": 144,
+	"./jv": 145,
+	"./jv.js": 145,
+	"./ka": 146,
+	"./ka.js": 146,
+	"./kk": 147,
+	"./kk.js": 147,
+	"./km": 148,
+	"./km.js": 148,
+	"./kn": 149,
+	"./kn.js": 149,
+	"./ko": 150,
+	"./ko.js": 150,
+	"./ku": 151,
+	"./ku.js": 151,
+	"./ky": 152,
+	"./ky.js": 152,
+	"./lb": 153,
+	"./lb.js": 153,
+	"./lo": 154,
+	"./lo.js": 154,
+	"./lt": 155,
+	"./lt.js": 155,
+	"./lv": 156,
+	"./lv.js": 156,
+	"./me": 157,
+	"./me.js": 157,
+	"./mi": 158,
+	"./mi.js": 158,
+	"./mk": 159,
+	"./mk.js": 159,
+	"./ml": 160,
+	"./ml.js": 160,
+	"./mn": 161,
+	"./mn.js": 161,
+	"./mr": 162,
+	"./mr.js": 162,
+	"./ms": 163,
+	"./ms-my": 164,
+	"./ms-my.js": 164,
+	"./ms.js": 163,
+	"./mt": 165,
+	"./mt.js": 165,
+	"./my": 166,
+	"./my.js": 166,
+	"./nb": 167,
+	"./nb.js": 167,
+	"./ne": 168,
+	"./ne.js": 168,
+	"./nl": 169,
+	"./nl-be": 170,
+	"./nl-be.js": 170,
+	"./nl.js": 169,
+	"./nn": 171,
+	"./nn.js": 171,
+	"./pa-in": 172,
+	"./pa-in.js": 172,
+	"./pl": 173,
+	"./pl.js": 173,
+	"./pt": 174,
+	"./pt-br": 175,
+	"./pt-br.js": 175,
+	"./pt.js": 174,
+	"./ro": 176,
+	"./ro.js": 176,
+	"./ru": 177,
+	"./ru.js": 177,
+	"./sd": 178,
+	"./sd.js": 178,
+	"./se": 179,
+	"./se.js": 179,
+	"./si": 180,
+	"./si.js": 180,
+	"./sk": 181,
+	"./sk.js": 181,
+	"./sl": 182,
+	"./sl.js": 182,
+	"./sq": 183,
+	"./sq.js": 183,
+	"./sr": 184,
+	"./sr-cyrl": 185,
+	"./sr-cyrl.js": 185,
+	"./sr.js": 184,
+	"./ss": 186,
+	"./ss.js": 186,
+	"./sv": 187,
+	"./sv.js": 187,
+	"./sw": 188,
+	"./sw.js": 188,
+	"./ta": 189,
+	"./ta.js": 189,
+	"./te": 190,
+	"./te.js": 190,
+	"./tet": 191,
+	"./tet.js": 191,
+	"./tg": 192,
+	"./tg.js": 192,
+	"./th": 193,
+	"./th.js": 193,
+	"./tl-ph": 194,
+	"./tl-ph.js": 194,
+	"./tlh": 195,
+	"./tlh.js": 195,
+	"./tr": 196,
+	"./tr.js": 196,
+	"./tzl": 197,
+	"./tzl.js": 197,
+	"./tzm": 198,
+	"./tzm-latn": 199,
+	"./tzm-latn.js": 199,
+	"./tzm.js": 198,
+	"./ug-cn": 200,
+	"./ug-cn.js": 200,
+	"./uk": 201,
+	"./uk.js": 201,
+	"./ur": 202,
+	"./ur.js": 202,
+	"./uz": 203,
+	"./uz-latn": 204,
+	"./uz-latn.js": 204,
+	"./uz.js": 203,
+	"./vi": 205,
+	"./vi.js": 205,
+	"./x-pseudo": 206,
+	"./x-pseudo.js": 206,
+	"./yo": 207,
+	"./yo.js": 207,
+	"./zh-cn": 208,
+	"./zh-cn.js": 208,
+	"./zh-hk": 209,
+	"./zh-hk.js": 209,
+	"./zh-tw": 210,
+	"./zh-tw.js": 210
+};
+function webpackContext(req) {
+	return __webpack_require__(webpackContextResolve(req));
+};
+function webpackContextResolve(req) {
+	var id = map[req];
+	if(!(id + 1)) // check for number or string
+		throw new Error("Cannot find module '" + req + "'.");
+	return id;
+};
+webpackContext.keys = function webpackContextKeys() {
+	return Object.keys(map);
+};
+webpackContext.resolve = webpackContextResolve;
+module.exports = webpackContext;
+webpackContext.id = 283;
+
+/***/ }),
+/* 284 */
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div :class=\"'rop-control-container-'+ ( license > 1 ) +  '  rop-schedule-tab-container'\" _v-397ecf27=\"\">\n\n\t\t<div class=\"columns py-2 rop-control\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<b _v-397ecf27=\"\">{{labels.schedule_type_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-397ecf27=\"\">{{labels.schedule_type_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<div class=\"form-group\" _v-397ecf27=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"schedule.type\" _v-397ecf27=\"\">\n\t\t\t\t\t\t<option value=\"recurring\" _v-397ecf27=\"\">{{labels.schedule_type_option_rec}}</option>\n\t\t\t\t\t\t<option value=\"fixed\" _v-397ecf27=\"\">{{labels.schedule_type_option_fix}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule Days -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<b _v-397ecf27=\"\">{{labels.schedule_fixed_days_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-397ecf27=\"\">{{labels.schedule_fixed_days_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<div class=\"form-group input-group\" _v-397ecf27=\"\">\n\t\t\t\t\t<button-checkbox v-for=\"( data, label ) in daysObject\" :key=\"label\" :value=\"data.value\" :label=\"label\" :checked=\"data.checked\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" _v-397ecf27=\"\"></button-checkbox>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule time -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<b _v-397ecf27=\"\">{{labels.schedule_fixed_time_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-397ecf27=\"\">{{labels.schedule_fixed_time_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<div class=\"form-group\" _v-397ecf27=\"\">\n\t\t\t\t\t<div class=\"input-group\" v-for=\"( time, index ) in schedule.interval_f.time\" _v-397ecf27=\"\">\n\t\t\t\t\t\t<vue-timepicker :minute-interval=\"5\" class=\"timepicker-style-fix\" :value=\"getTime( index )\" @change=\"syncTime( $event, index )\" hide-clear-button=\"\" _v-397ecf27=\"\"></vue-timepicker>\n\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn\" v-if=\"schedule.interval_f.time.length > 1\" @click=\"rmvTime( index )\" _v-397ecf27=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-minus\" _v-397ecf27=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t\t<button class=\"btn btn-success input-group-btn\" v-if=\"index == schedule.interval_f.time.length - 1\" @click=\"addTime()\" _v-397ecf27=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-plus\" _v-397ecf27=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Current time -->\n<div class=\"column col-6 col-sm-12 vertical-align float-right\" v-if=\"schedule.type === 'fixed'\" _v-397ecf27=\"\">\n\t\t<div class=\"toast rop-current-time text-center\" v-if=\"formatedDate\" _v-397ecf27=\"\">\n\t\t\t\t{{labels.time_now}}: {{ formatedDate }}\n\t\t</div>\n</div>\n\n\t\t<div class=\"columns py-2 rop-control\" v-else=\"\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<b _v-397ecf27=\"\">{{labels.schedule_rec_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-397ecf27=\"\">{{labels.schedule_rec_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<div class=\"form-group\" _v-397ecf27=\"\">\n\t\t\t\t\t<counter-input id=\"interval_r\" :value.sync=\"schedule.interval_r\" _v-397ecf27=\"\"></counter-input>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Upsell -->\n\t\t<div class=\"columns py-2\" v-if=\"license < 2\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column text-center\" _v-397ecf27=\"\">\n\t\t\t\t<p class=\"upsell\" _v-397ecf27=\"\"><i class=\"fa fa-lock\" _v-397ecf27=\"\"></i> {{labels.schedule_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-397ecf27=\"\"></span>\n\t</div>\n";
+
+/***/ }),
+/* 285 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"tab-view\" _v-44ae6e9d=\"\">\n\t\t<div class=\"panel-body\" _v-44ae6e9d=\"\">\n\t\t\t<div class=\"d-inline-block mt-2 column col-12\" _v-44ae6e9d=\"\">\n\t\t\t\t<p class=\"text-gray\" _v-44ae6e9d=\"\"><i class=\"fa fa-info-circle\" _v-44ae6e9d=\"\"></i> <span v-html=\"labels.accounts_selector\" _v-44ae6e9d=\"\"></span>\n\t\t\t\t</p>\n\t\t\t</div>\n\t\t\t<empty-active-accounts v-if=\"accountsCount === 0\" _v-44ae6e9d=\"\"></empty-active-accounts>\n\t\t\t<div class=\"container\" v-if=\"accountsCount > 0\" _v-44ae6e9d=\"\">\n\t\t\t\t<div class=\"columns\" _v-44ae6e9d=\"\">\n\t\t\t\t\t<div class=\"column col-3 col-sm-12 col-md-12 col-xl-3 col-lg-3 col-xs-12 col-rop-selector-accounts\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t<span class=\"divider\" _v-44ae6e9d=\"\"></span>\n\t\t\t\t\t\t<div v-for=\"( account, id ) in active_accounts\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t\t<div class=\"rop-selector-account-container\" :class=\"{active: selected_account===id}\" @click=\"setActiveAccount(id)\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t\t\t<div class=\"tile tile-centered rop-account\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"tile-icon\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"icon_box\" :class=\" (account.img ? 'has_image' : 'no-image' ) + ' ' +account.service \" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<img class=\"service_account_image\" :src=\"account.img\" v-if=\"account.img\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"fa  \" :class=\"getIcon(account)\" aria-hidden=\"true\" _v-44ae6e9d=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"tile-content\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t\t\t\t\t<p class=\"rop-account-name\" _v-44ae6e9d=\"\">{{account.user}}</p>\n\t\t\t\t\t\t\t\t\t\t<strong class=\"rop-service-name\" _v-44ae6e9d=\"\">{{account.service}}</strong>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-44ae6e9d=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-9 col-sm-12  col-md-12  col-xl-9 col-lg-9 col-xs-12\" :class=\"'rop-tab-state-'+is_loading\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t<component :is=\"type\" :account_id=\"selected_account\" :license=\"license\" _v-44ae6e9d=\"\"></component>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-44ae6e9d=\"\">\n\t\t\t<div class=\"panel-actions text-right\" v-if=\"allow_footer\" _v-44ae6e9d=\"\">\n\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-44ae6e9d=\"\"><i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-44ae6e9d=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-44ae6e9d=\"\"></i> {{labels.reset_selector_btn}} {{component_label}}\n\t\t\t\t\t{{labels.for}}\n\t\t\t\t\t<b _v-44ae6e9d=\"\">{{active_account_name}}</b>\n\t\t\t\t</button>\n\t\t\t\t<button class=\"btn btn-primary\" @click=\"saveAccountData()\" _v-44ae6e9d=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-44ae6e9d=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-44ae6e9d=\"\"></i> {{labels.save_selector_btn}} {{component_label}}\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 271 */
+/* 286 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(272)
-__vue_template__ = __webpack_require__(278)
+__vue_script__ = __webpack_require__(287)
+__vue_template__ = __webpack_require__(293)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -36897,7 +39025,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 272 */
+/* 287 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36907,7 +39035,7 @@ var _keys = __webpack_require__(14);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _queueCard = __webpack_require__(273);
+var _queueCard = __webpack_require__(288);
 
 var _queueCard2 = _interopRequireDefault(_queueCard);
 
@@ -36943,7 +39071,7 @@ module.exports = {
 	},
 	mounted: function mounted() {
 		if (this.start_status) {
-			this.refreshQueue();
+			this.refreshQueue(false);
 		}
 	},
 	methods: {
@@ -37023,13 +39151,13 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 273 */
+/* 288 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(274)
-__vue_script__ = __webpack_require__(276)
-__vue_template__ = __webpack_require__(277)
+__webpack_require__(289)
+__vue_script__ = __webpack_require__(291)
+__vue_template__ = __webpack_require__(292)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -37046,13 +39174,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 274 */
+/* 289 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(275);
+var content = __webpack_require__(290);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -37072,7 +39200,7 @@ if(false) {
 }
 
 /***/ }),
-/* 275 */
+/* 290 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -37086,7 +39214,7 @@ exports.push([module.i, "\n\t.fa[_v-16ad60c3] {\n\t\tbackground: transparent;\n\
 
 
 /***/ }),
-/* 276 */
+/* 291 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37406,25 +39534,25 @@ module.exports = {
 };
 
 /***/ }),
-/* 277 */
+/* 292 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"card\" _v-16ad60c3=\"\">\n\t\t<div class=\"columns\" _v-16ad60c3=\"\">\n\t\t\t<div class=\"column col-sm-12 col-justified\" _v-16ad60c3=\"\">\n\t\t\t\t<div class=\"columns\" _v-16ad60c3=\"\">\n\t\t\t\t\t<div class=\"column\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<p class=\"text-gray text-left \" _v-16ad60c3=\"\"><i class=\"fa fa-clock-o\" _v-16ad60c3=\"\"></i> {{card_data.date}} <b _v-16ad60c3=\"\"><i class=\"fa fa-at\" _v-16ad60c3=\"\"></i></b> <i class=\"service fa\" :class=\"iconClass( card_data.account_id )\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t{{getAccountName(card_data.account_id)}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-if=\"!edit\" _v-16ad60c3=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<p v-html=\"content.content + hashtags( content.hashtags )\" _v-16ad60c3=\"\"></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"form-group columns\" v-if=\"edit\" _v-16ad60c3=\"\">\n\t\t\t\t\t<div class=\"column col-12\" v-if=\"content.post_with_image\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<label class=\"form-label\" for=\"image\" _v-16ad60c3=\"\">{{labels.queue_image}}</label>\n\t\t\t\t\t\t<div class=\"input-group\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<span class=\"input-group-addon\" _v-16ad60c3=\"\"><i class=\"fa fa-file-image-o\" _v-16ad60c3=\"\"></i></span>\n\t\t\t\t\t\t\t<input id=\"image\" type=\"text\" class=\"form-input\" :value=\"content.post_image\" readonly=\"\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary input-group-btn tooltip\" @click=\"uploadImage\" :data-tooltip=\"labels.upload_image\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-upload\" aria-hidden=\"true\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn tooltip\" @click=\"removeImage\" :data-tooltip=\"labels.remove_image\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-remove\" aria-hidden=\"true\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-12\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<label class=\"form-label\" for=\"content\" _v-16ad60c3=\"\">{{labels.queue_content}}</label>\n\t\t\t\t\t\t<textarea class=\"form-input\" id=\"content\" placeholder=\"\" rows=\"3\" @keyup=\"checkCount\" _v-16ad60c3=\"\">{{content.content}}</textarea>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns col-justified\" v-if=\"!edit\" _v-16ad60c3=\"\">\n\t\t\t\t\t<div class=\"column col-3\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-warning tooltip   tooltip-bottom \" @click=\"skipPost(card_data.account_id, card_data.post_id)\" :data-tooltip=\"labels.reschedule_post\" :disabled=\" ! enabled\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'skip'\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-step-forward\" v-else=\"\" aria-hidden=\"true\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t{{labels.skip_btn_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-danger tooltip     tooltip-bottom  \" :data-tooltip=\"labels.ban_post\" @click=\"blockPost(card_data.account_id, card_data.post_id)\" :disabled=\" ! enabled\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'block'\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-ban\" aria-hidden=\"true\" v-else=\"\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t{{labels.block_btn_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-primary\" @click=\"toggleEditState\" v-if=\"!edit\" :disabled=\" ! enabled\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-pencil\" aria-hidden=\"true\" _v-16ad60c3=\"\"></i> {{labels.edit_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3 col-ml-auto text-right\" v-if=\"content.post_url !== ''\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<p class=\"m-0\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<b _v-16ad60c3=\"\">{{labels.link_title}}:</b>\n\t\t\t\t\t\t\t<a :href=\"content.post_url\" target=\"_blank\" class=\"tooltip\" :data-tooltip=\"labels.link_shortned_start + ' ' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service )  \" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t\t{{'{' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service ) +\n\t\t\t\t\t\t\t\t'}'}}</a>\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-else=\"\" _v-16ad60c3=\"\">\n\t\t\t\t\t<div class=\"column col-3\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-success\" @click=\"saveChanges(card_data.account_id, card_data.post_id)\" v-if=\"edit\" :disabled=\" ! enabled\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'edit'\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-check\" aria-hidden=\"true\" v-else=\"\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t{{labels.save_edit}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-warning\" @click=\"cancelChanges\" v-if=\"edit\" :disabled=\" ! enabled\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-times\" aria-hidden=\"true\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t{{labels.cancel_edit}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"column col-4 col-sm-12 vertical-align\" v-if=\"!edit &amp;&amp; content.post_with_image\" _v-16ad60c3=\"\">\n\t\t\t\t<div v-if=\"content.post_image !== ''\" _v-16ad60c3=\"\">\n\t\t\t\t\t<figure class=\"figure\" v-if=\"content.post_image !== ''\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<img :src=\"( content.mimetype.type.indexOf('image') > -1 ? content.post_image : video_placeholder )\" class=\"img-fit-cover img-responsive\" _v-16ad60c3=\"\">\n\t\t\t\t\t</figure>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\t<div class=\"rop-image-placeholder\" v-else=\"\" _v-16ad60c3=\"\">\n\t\t\t\t\t<summary _v-16ad60c3=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t{{labels.queue_no_image}}\n\t\t\t\t\t</summary>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 278 */
+/* 293 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"tab-view rop-queue-tab-container\">\n\t\t<div class=\"panel-body\" :class=\"'rop-tab-state-'+is_loading\">\n\t\t\t<div class=\"columns\" v-if=\"! start_status\">\n\t\t\t\t<div class=\"column col-12 text-center empty-container\">\n\t\t\t\t\t<div class=\"empty-icon\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t\t<p class=\"empty-title h5\">{{labels.sharing_not_started}}</p>\n\t\t\t\t\t<p class=\"empty-subtitle\">{{labels.sharing_not_started_desc}}</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\n\t\t\t<div v-else-if=\"start_status && queueCount > 0 \">\n\n\t\t\t\t<div class=\"columns py-2\" v-if=\"! is_business\">\n\t\t\t\t\t<div class=\"column text-center\">\n\t\t\t\t\t\t<p class=\"upsell\"><i class=\"fa fa-lock\"></i> <span v-html=\"labels.biz_only\"></span></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<!-- When sharing is started but we  have the business plan. -->\n\t\t\t\t<div class=\"d-inline-block mt-2 column col-12\">\n\t\t\t\t\t<p class=\"text-gray info-paragraph\"><i class=\"fa fa-info-circle\"></i> {{labels.queue_desc}}</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"empty\" v-else-if=\"start_status && queueCount === 0\">\n\t\t\t\t<div class=\"empty-icon\">\n\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\"></i>\n\t\t\t\t</div>\n\t\t\t\t<p class=\"empty-title h5\">{{labels.no_posts}}</p>\n\t\t\t\t<p class=\"empty-subtitle\" v-html=\"labels.no_posts_desc\"></p>\n\t\t\t</div>\n\t\t\t<div class=\"columns\" v-if=\"start_status && queueCount > 0\">\n\t\t\t\t<div class=\"column col-12 text-left\" v-for=\" (data, index) in queue \">\n\t\t\t\t\t<queue-card :card_data=\"data.post_data\" :id=\"index\" :enabled=\"is_business\"/>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer text-rightcade\" v-if=\"start_status\">\n\t\t\t<button class=\"btn btn-secondary\" @click=\"refreshQueue(true)\">\n\t\t\t\t<i class=\"fa fa-refresh\" v-if=\"!is_loading\"></i>\n\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t{{labels.refresh_btn}}\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 279 */
+/* 294 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(280)
-__vue_script__ = __webpack_require__(282)
-__vue_template__ = __webpack_require__(285)
+__webpack_require__(295)
+__vue_script__ = __webpack_require__(297)
+__vue_template__ = __webpack_require__(298)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -37441,13 +39569,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 280 */
+/* 295 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(281);
+var content = __webpack_require__(296);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -37467,7 +39595,7 @@ if(false) {
 }
 
 /***/ }),
-/* 281 */
+/* 296 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -37481,7 +39609,7 @@ exports.push([module.i, "\n\t#rop_core .toast.log-toast p[_v-6c63d2c4] {\n\t\tma
 
 
 /***/ }),
-/* 282 */
+/* 297 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37535,6 +39663,15 @@ module.exports = {
 				_this.$log.info('Succesfully fetched logs.');
 				_this.is_loading = false;
 				_this.$store.dispatch('fetchAJAX', { req: 'manage_cron', data: { action: 'status' } });
+				if (true === force) {
+					var toast = {
+						type: 'success',
+						show: false,
+						title: '',
+						message: ''
+					};
+					_this.$store.commit('updateState', { stateData: toast, requestName: 'update_toast' });
+				}
 			}, function (error) {
 				Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
 
@@ -37611,317 +39748,19 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 283 */
-/***/ (function(module, exports) {
-
-module.exports = function(module) {
-	if(!module.webpackPolyfill) {
-		module.deprecate = function() {};
-		module.paths = [];
-		// module.parent = undefined by default
-		if(!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			get: function() {
-				return module.l;
-			}
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			get: function() {
-				return module.i;
-			}
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
-};
-
-
-/***/ }),
-/* 284 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var map = {
-	"./af": 84,
-	"./af.js": 84,
-	"./ar": 85,
-	"./ar-dz": 86,
-	"./ar-dz.js": 86,
-	"./ar-kw": 87,
-	"./ar-kw.js": 87,
-	"./ar-ly": 88,
-	"./ar-ly.js": 88,
-	"./ar-ma": 89,
-	"./ar-ma.js": 89,
-	"./ar-sa": 90,
-	"./ar-sa.js": 90,
-	"./ar-tn": 91,
-	"./ar-tn.js": 91,
-	"./ar.js": 85,
-	"./az": 92,
-	"./az.js": 92,
-	"./be": 93,
-	"./be.js": 93,
-	"./bg": 94,
-	"./bg.js": 94,
-	"./bm": 95,
-	"./bm.js": 95,
-	"./bn": 96,
-	"./bn.js": 96,
-	"./bo": 97,
-	"./bo.js": 97,
-	"./br": 98,
-	"./br.js": 98,
-	"./bs": 99,
-	"./bs.js": 99,
-	"./ca": 100,
-	"./ca.js": 100,
-	"./cs": 101,
-	"./cs.js": 101,
-	"./cv": 102,
-	"./cv.js": 102,
-	"./cy": 103,
-	"./cy.js": 103,
-	"./da": 104,
-	"./da.js": 104,
-	"./de": 105,
-	"./de-at": 106,
-	"./de-at.js": 106,
-	"./de-ch": 107,
-	"./de-ch.js": 107,
-	"./de.js": 105,
-	"./dv": 108,
-	"./dv.js": 108,
-	"./el": 109,
-	"./el.js": 109,
-	"./en-au": 110,
-	"./en-au.js": 110,
-	"./en-ca": 111,
-	"./en-ca.js": 111,
-	"./en-gb": 112,
-	"./en-gb.js": 112,
-	"./en-ie": 113,
-	"./en-ie.js": 113,
-	"./en-il": 114,
-	"./en-il.js": 114,
-	"./en-nz": 115,
-	"./en-nz.js": 115,
-	"./eo": 116,
-	"./eo.js": 116,
-	"./es": 117,
-	"./es-do": 118,
-	"./es-do.js": 118,
-	"./es-us": 119,
-	"./es-us.js": 119,
-	"./es.js": 117,
-	"./et": 120,
-	"./et.js": 120,
-	"./eu": 121,
-	"./eu.js": 121,
-	"./fa": 122,
-	"./fa.js": 122,
-	"./fi": 123,
-	"./fi.js": 123,
-	"./fo": 124,
-	"./fo.js": 124,
-	"./fr": 125,
-	"./fr-ca": 126,
-	"./fr-ca.js": 126,
-	"./fr-ch": 127,
-	"./fr-ch.js": 127,
-	"./fr.js": 125,
-	"./fy": 128,
-	"./fy.js": 128,
-	"./gd": 129,
-	"./gd.js": 129,
-	"./gl": 130,
-	"./gl.js": 130,
-	"./gom-latn": 131,
-	"./gom-latn.js": 131,
-	"./gu": 132,
-	"./gu.js": 132,
-	"./he": 133,
-	"./he.js": 133,
-	"./hi": 134,
-	"./hi.js": 134,
-	"./hr": 135,
-	"./hr.js": 135,
-	"./hu": 136,
-	"./hu.js": 136,
-	"./hy-am": 137,
-	"./hy-am.js": 137,
-	"./id": 138,
-	"./id.js": 138,
-	"./is": 139,
-	"./is.js": 139,
-	"./it": 140,
-	"./it.js": 140,
-	"./ja": 141,
-	"./ja.js": 141,
-	"./jv": 142,
-	"./jv.js": 142,
-	"./ka": 143,
-	"./ka.js": 143,
-	"./kk": 144,
-	"./kk.js": 144,
-	"./km": 145,
-	"./km.js": 145,
-	"./kn": 146,
-	"./kn.js": 146,
-	"./ko": 147,
-	"./ko.js": 147,
-	"./ku": 148,
-	"./ku.js": 148,
-	"./ky": 149,
-	"./ky.js": 149,
-	"./lb": 150,
-	"./lb.js": 150,
-	"./lo": 151,
-	"./lo.js": 151,
-	"./lt": 152,
-	"./lt.js": 152,
-	"./lv": 153,
-	"./lv.js": 153,
-	"./me": 154,
-	"./me.js": 154,
-	"./mi": 155,
-	"./mi.js": 155,
-	"./mk": 156,
-	"./mk.js": 156,
-	"./ml": 157,
-	"./ml.js": 157,
-	"./mn": 158,
-	"./mn.js": 158,
-	"./mr": 159,
-	"./mr.js": 159,
-	"./ms": 160,
-	"./ms-my": 161,
-	"./ms-my.js": 161,
-	"./ms.js": 160,
-	"./mt": 162,
-	"./mt.js": 162,
-	"./my": 163,
-	"./my.js": 163,
-	"./nb": 164,
-	"./nb.js": 164,
-	"./ne": 165,
-	"./ne.js": 165,
-	"./nl": 166,
-	"./nl-be": 167,
-	"./nl-be.js": 167,
-	"./nl.js": 166,
-	"./nn": 168,
-	"./nn.js": 168,
-	"./pa-in": 169,
-	"./pa-in.js": 169,
-	"./pl": 170,
-	"./pl.js": 170,
-	"./pt": 171,
-	"./pt-br": 172,
-	"./pt-br.js": 172,
-	"./pt.js": 171,
-	"./ro": 173,
-	"./ro.js": 173,
-	"./ru": 174,
-	"./ru.js": 174,
-	"./sd": 175,
-	"./sd.js": 175,
-	"./se": 176,
-	"./se.js": 176,
-	"./si": 177,
-	"./si.js": 177,
-	"./sk": 178,
-	"./sk.js": 178,
-	"./sl": 179,
-	"./sl.js": 179,
-	"./sq": 180,
-	"./sq.js": 180,
-	"./sr": 181,
-	"./sr-cyrl": 182,
-	"./sr-cyrl.js": 182,
-	"./sr.js": 181,
-	"./ss": 183,
-	"./ss.js": 183,
-	"./sv": 184,
-	"./sv.js": 184,
-	"./sw": 185,
-	"./sw.js": 185,
-	"./ta": 186,
-	"./ta.js": 186,
-	"./te": 187,
-	"./te.js": 187,
-	"./tet": 188,
-	"./tet.js": 188,
-	"./tg": 189,
-	"./tg.js": 189,
-	"./th": 190,
-	"./th.js": 190,
-	"./tl-ph": 191,
-	"./tl-ph.js": 191,
-	"./tlh": 192,
-	"./tlh.js": 192,
-	"./tr": 193,
-	"./tr.js": 193,
-	"./tzl": 194,
-	"./tzl.js": 194,
-	"./tzm": 195,
-	"./tzm-latn": 196,
-	"./tzm-latn.js": 196,
-	"./tzm.js": 195,
-	"./ug-cn": 197,
-	"./ug-cn.js": 197,
-	"./uk": 198,
-	"./uk.js": 198,
-	"./ur": 199,
-	"./ur.js": 199,
-	"./uz": 200,
-	"./uz-latn": 201,
-	"./uz-latn.js": 201,
-	"./uz.js": 200,
-	"./vi": 202,
-	"./vi.js": 202,
-	"./x-pseudo": 203,
-	"./x-pseudo.js": 203,
-	"./yo": 204,
-	"./yo.js": 204,
-	"./zh-cn": 205,
-	"./zh-cn.js": 205,
-	"./zh-hk": 206,
-	"./zh-hk.js": 206,
-	"./zh-tw": 207,
-	"./zh-tw.js": 207
-};
-function webpackContext(req) {
-	return __webpack_require__(webpackContextResolve(req));
-};
-function webpackContextResolve(req) {
-	var id = map[req];
-	if(!(id + 1)) // check for number or string
-		throw new Error("Cannot find module '" + req + "'.");
-	return id;
-};
-webpackContext.keys = function webpackContextKeys() {
-	return Object.keys(map);
-};
-webpackContext.resolve = webpackContextResolve;
-module.exports = webpackContext;
-webpackContext.id = 284;
-
-/***/ }),
-/* 285 */
+/* 298 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"tab-view\" _v-6c63d2c4=\"\">\n\t\t<div class=\"panel-body\" _v-6c63d2c4=\"\">\n\t\t\t<div class=\" columns mt-2\" v-if=\"logs_no > 0\" _v-6c63d2c4=\"\">\n\t\t\t\t<div class=\"column  col-12 text-right \" _v-6c63d2c4=\"\">\n\t\t\t\t\t<button class=\"btn  btn-secondary \" @click=\"getLogs(true)\" _v-6c63d2c4=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-remove\" v-if=\"!is_loading\" _v-6c63d2c4=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-6c63d2c4=\"\"></i>\n\t\t\t\t\t\t{{labels.clear_btn}}\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"columns\" _v-6c63d2c4=\"\">\n\t\t\t\t<div class=\"empty column col-12\" v-if=\"is_loading\" _v-6c63d2c4=\"\">\n\t\t\t\t\t<div class=\"empty-icon\" _v-6c63d2c4=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-spinner fa-spin\" _v-6c63d2c4=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"empty column col-12\" v-else-if=\"logs_no === 0\" _v-6c63d2c4=\"\">\n\t\t\t\t\t<div class=\"empty-icon\" _v-6c63d2c4=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\" _v-6c63d2c4=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t\t<p class=\"empty-title h5\" _v-6c63d2c4=\"\">{{labels.no_logs}}</p>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"column col-12 mt-2\" v-for=\" (data, index) in logs \" v-else-if=\"logs_no >  0\" _v-6c63d2c4=\"\">\n\t\t\t\t\t<div class=\"toast log-toast\" :class=\"'toast-' + data.type\" _v-6c63d2c4=\"\">\n\t\t\t\t\t\t<small class=\"pull-right text-right\" _v-6c63d2c4=\"\">{{formatDate ( data.time ) }}</small>\n\t\t\t\t\t\t<p _v-6c63d2c4=\"\">{{data.message}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 286 */
+/* 299 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(287)
-__vue_script__ = __webpack_require__(289)
-__vue_template__ = __webpack_require__(290)
+__webpack_require__(300)
+__vue_script__ = __webpack_require__(302)
+__vue_template__ = __webpack_require__(303)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -37938,13 +39777,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 287 */
+/* 300 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(288);
+var content = __webpack_require__(301);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -37964,7 +39803,7 @@ if(false) {
 }
 
 /***/ }),
-/* 288 */
+/* 301 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -37972,13 +39811,13 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .toast.hidden {\n\t\tdisplay: none;\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop_core .toast.hidden {\n\t\tdisplay: none;\n\t}\n\t#rop_core .toast {\n\t\tmargin: 10px 0;\n\t}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 289 */
+/* 302 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38017,6 +39856,9 @@ module.exports = {
 			};
 		}
 	},
+	mounted: function mounted() {},
+	created: function created() {},
+
 	methods: {
 		closeThis: function closeThis() {
 			this.toast.show = false;
@@ -38028,23 +39870,26 @@ module.exports = {
 	// 	#rop_core .toast.hidden {
 	// 		display: none;
 	// 	}
+	// 	#rop_core .toast {
+	// 		margin: 10px 0;
+	// 	}
 	// </style>
 
 };
 
 /***/ }),
-/* 290 */
+/* 303 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\t<div class=\"toast\" :class=\"toastTypeClass\" >\n\t\t<button class=\"btn btn-clear float-right\" @click=\"closeThis\"></button>\n\t\t<b><i class=\"fa\" :class=\"iconClass\"></i> {{ toast.title }}</b><br/>\n\t\t<small>{{ toast.message }}</small>\n\t</div>\n";
 
 /***/ }),
-/* 291 */
+/* 304 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(292)
-__vue_template__ = __webpack_require__(297)
+__vue_script__ = __webpack_require__(305)
+__vue_template__ = __webpack_require__(310)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -38061,7 +39906,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 292 */
+/* 305 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38071,7 +39916,7 @@ var _keys = __webpack_require__(14);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _trunc = __webpack_require__(293);
+var _trunc = __webpack_require__(306);
 
 var _trunc2 = _interopRequireDefault(_trunc);
 
@@ -38079,12 +39924,12 @@ var _moment = __webpack_require__(0);
 
 var _moment2 = _interopRequireDefault(_moment);
 
-__webpack_require__(296);
+__webpack_require__(309);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // <template>
-// 	<div class="toast toast-success rop-current-time" v-if="isOn && accounts_no > 0">
+// 	<div class="toast rop-next-share-time" v-if="isOn && accounts_no > 0">
 // 		<span v-if="diff_seconds>0"> <b><i
 // 				class="fa fa-fast-forward"></i> {{labels.next_share}}</b> {{labels.in}}</span>
 // 		<small v-if="timediff !== ''">{{timediff}}</small>
@@ -38146,21 +39991,21 @@ module.exports = {
 };
 
 /***/ }),
-/* 293 */
+/* 306 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(294), __esModule: true };
+module.exports = { "default": __webpack_require__(307), __esModule: true };
 
 /***/ }),
-/* 294 */
+/* 307 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(295);
+__webpack_require__(308);
 module.exports = __webpack_require__(4).Math.trunc;
 
 
 /***/ }),
-/* 295 */
+/* 308 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.34 Math.trunc(x)
@@ -38174,7 +40019,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 296 */
+/* 309 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! Moment Duration Format v2.2.2
@@ -38225,6 +40070,22 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     // the plugin will "pre-round" number values using the fallback number format
     // function before passing them to `toLocaleString` for final formatting.
     var toLocaleStringRoundingWorks = false;
+
+    // `Intl.NumberFormat#format` is tested on plugin initialization.
+    // If the feature test passes, `intlNumberFormatRoundingWorks` will be set to
+    // `true` and the native function will be used to generate formatted output.
+    // If the feature test fails, either `Number#tolocaleString` (if
+    // `toLocaleStringWorks` is `true`), or the fallback format function internal
+    //  to this plugin will be used.
+    var intlNumberFormatWorks = false;
+
+    // `Intl.NumberFormat#format` rounds incorrectly for select numbers in Microsoft
+    // environments (Edge, IE11, Windows Phone) and possibly other environments.
+    // If the rounding test fails and `Intl.NumberFormat#format` will be used for
+    // formatting, the plugin will "pre-round" number values using the fallback number
+    // format function before passing them to `Intl.NumberFormat#format` for final
+    // formatting.
+    var intlNumberFormatRoundingWorks = false;
 
     // Token type names in order of descending magnitude.
     var types = "escape years months weeks days hours minutes seconds milliseconds general".split(" ");
@@ -38330,6 +40191,33 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return digitsArray.reverse().join("");
     }
 
+    // cachedNumberFormat
+    // Returns an `Intl.NumberFormat` instance for the given locale and configuration.
+    // On first use of a particular configuration, the instance is cached for fast
+    // repeat access.
+    function cachedNumberFormat(locale, options) {
+        // Create a sorted, stringified version of `options`
+        // for use as part of the cache key
+        var optionsString = map(
+            keys(options).sort(),
+            function(key) {
+                return key + ':' + options[key];
+            }
+        ).join(',');
+
+        // Set our cache key
+        var cacheKey = locale + '+' + optionsString;
+
+        // If we don't have this configuration cached, configure and cache it
+        if (!cachedNumberFormat.cache[cacheKey]) {
+            cachedNumberFormat.cache[cacheKey] = Intl.NumberFormat(locale, options);
+        }
+
+        // Return the cached version of this configuration
+        return cachedNumberFormat.cache[cacheKey];
+    }
+    cachedNumberFormat.cache = {};
+
     // formatNumber
     // Formats any number greater than or equal to zero using these options:
     // - userLocale
@@ -38342,8 +40230,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     // - groupingSeparator
     // - decimalSeparator
     //
-    // `useToLocaleString` will use `toLocaleString` for formatting.
-    // `userLocale` option is passed through to `toLocaleString`.
+    // `useToLocaleString` will use `Intl.NumberFormat` or `toLocaleString` for formatting.
+    // `userLocale` option is passed through to the formatting function.
     // `fractionDigits` is passed through to `maximumFractionDigits` and `minimumFractionDigits`
     // Using `maximumSignificantDigits` will override `minimumIntegerDigits` and `fractionDigits`.
     function formatNumber(number, options, userLocale) {
@@ -38373,14 +40261,25 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 localeStringOptions.maximumSignificantDigits = maximumSignificantDigits;
             }
 
-            if (!toLocaleStringRoundingWorks) {
-                var roundingOptions = extend({}, options);
-                roundingOptions.useGrouping = false;
-                roundingOptions.decimalSeparator = ".";
-                number = parseFloat(formatNumber(number, roundingOptions), 10);
-            }
+            if (intlNumberFormatWorks) {
+                if (!intlNumberFormatRoundingWorks) {
+                    var roundingOptions = extend({}, options);
+                    roundingOptions.useGrouping = false;
+                    roundingOptions.decimalSeparator = ".";
+                    number = parseFloat(formatNumber(number, roundingOptions), 10);
+                }
 
-            return number.toLocaleString(userLocale, localeStringOptions);
+                return cachedNumberFormat(userLocale, localeStringOptions).format(number);
+            } else {
+                if (!toLocaleStringRoundingWorks) {
+                    var roundingOptions = extend({}, options);
+                    roundingOptions.useGrouping = false;
+                    roundingOptions.decimalSeparator = ".";
+                    number = parseFloat(formatNumber(number, roundingOptions), 10);
+                }
+
+                return number.toLocaleString(userLocale, localeStringOptions);
+            }
         }
 
         var numberString;
@@ -38796,8 +40695,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return false;
     }
 
-    function featureTestToLocaleStringRounding() {
-        return (3.55).toLocaleString("en", {
+    function featureTestFormatterRounding(formatter) {
+        return formatter(3.55, "en", {
             useGrouping: false,
             minimumIntegerDigits: 1,
             minimumFractionDigits: 1,
@@ -38805,37 +40704,33 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }) === "3.6";
     }
 
-    function featureTestToLocaleString() {
+    function featureTestFormatter(formatter) {
         var passed = true;
 
-        // Test locale.
-        passed = passed && toLocaleStringSupportsLocales();
-        if (!passed) { return false; }
-
         // Test minimumIntegerDigits.
-        passed = passed && (1).toLocaleString("en", { minimumIntegerDigits: 1 }) === "1";
-        passed = passed && (1).toLocaleString("en", { minimumIntegerDigits: 2 }) === "01";
-        passed = passed && (1).toLocaleString("en", { minimumIntegerDigits: 3 }) === "001";
+        passed = passed && formatter(1, "en", { minimumIntegerDigits: 1 }) === "1";
+        passed = passed && formatter(1, "en", { minimumIntegerDigits: 2 }) === "01";
+        passed = passed && formatter(1, "en", { minimumIntegerDigits: 3 }) === "001";
         if (!passed) { return false; }
 
         // Test maximumFractionDigits and minimumFractionDigits.
-        passed = passed && (99.99).toLocaleString("en", { maximumFractionDigits: 0, minimumFractionDigits: 0 }) === "100";
-        passed = passed && (99.99).toLocaleString("en", { maximumFractionDigits: 1, minimumFractionDigits: 1 }) === "100.0";
-        passed = passed && (99.99).toLocaleString("en", { maximumFractionDigits: 2, minimumFractionDigits: 2 }) === "99.99";
-        passed = passed && (99.99).toLocaleString("en", { maximumFractionDigits: 3, minimumFractionDigits: 3 }) === "99.990";
+        passed = passed && formatter(99.99, "en", { maximumFractionDigits: 0, minimumFractionDigits: 0 }) === "100";
+        passed = passed && formatter(99.99, "en", { maximumFractionDigits: 1, minimumFractionDigits: 1 }) === "100.0";
+        passed = passed && formatter(99.99, "en", { maximumFractionDigits: 2, minimumFractionDigits: 2 }) === "99.99";
+        passed = passed && formatter(99.99, "en", { maximumFractionDigits: 3, minimumFractionDigits: 3 }) === "99.990";
         if (!passed) { return false; }
 
         // Test maximumSignificantDigits.
-        passed = passed && (99.99).toLocaleString("en", { maximumSignificantDigits: 1 }) === "100";
-        passed = passed && (99.99).toLocaleString("en", { maximumSignificantDigits: 2 }) === "100";
-        passed = passed && (99.99).toLocaleString("en", { maximumSignificantDigits: 3 }) === "100";
-        passed = passed && (99.99).toLocaleString("en", { maximumSignificantDigits: 4 }) === "99.99";
-        passed = passed && (99.99).toLocaleString("en", { maximumSignificantDigits: 5 }) === "99.99";
+        passed = passed && formatter(99.99, "en", { maximumSignificantDigits: 1 }) === "100";
+        passed = passed && formatter(99.99, "en", { maximumSignificantDigits: 2 }) === "100";
+        passed = passed && formatter(99.99, "en", { maximumSignificantDigits: 3 }) === "100";
+        passed = passed && formatter(99.99, "en", { maximumSignificantDigits: 4 }) === "99.99";
+        passed = passed && formatter(99.99, "en", { maximumSignificantDigits: 5 }) === "99.99";
         if (!passed) { return false; }
 
         // Test grouping.
-        passed = passed && (1000).toLocaleString("en", { useGrouping: true }) === "1,000";
-        passed = passed && (1000).toLocaleString("en", { useGrouping: false }) === "1000";
+        passed = passed && formatter(1000, "en", { useGrouping: true }) === "1,000";
+        passed = passed && formatter(1000, "en", { useGrouping: false }) === "1000";
         if (!passed) { return false; }
 
         return true;
@@ -39074,7 +40969,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var decimalSeparator = settings.decimalSeparator;
         var grouping = settings.grouping;
 
-        useToLocaleString = useToLocaleString && toLocaleStringWorks;
+        useToLocaleString = useToLocaleString && (toLocaleStringWorks || intlNumberFormatWorks);
 
         // Trim options.
         var trim = settings.trim;
@@ -39843,8 +41738,22 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
 
     // Run feature tests for `Number#toLocaleString`.
-    toLocaleStringWorks = featureTestToLocaleString();
-    toLocaleStringRoundingWorks = toLocaleStringWorks && featureTestToLocaleStringRounding();
+    var toLocaleStringFormatter = function(number, locale, options) {
+        return number.toLocaleString(locale, options);
+    };
+
+    toLocaleStringWorks = toLocaleStringSupportsLocales() && featureTestFormatter(toLocaleStringFormatter);
+    toLocaleStringRoundingWorks = toLocaleStringWorks && featureTestFormatterRounding(toLocaleStringFormatter);
+
+    // Run feature tests for `Intl.NumberFormat#format`.
+    var intlNumberFormatFormatter = function(number, locale, options) {
+        if (typeof window !== 'undefined' && window && window.Intl && window.Intl.NumberFormat) {
+            return window.Intl.NumberFormat(locale, options).format(number);
+        }
+    };
+
+    intlNumberFormatWorks = featureTestFormatter(intlNumberFormatFormatter);
+    intlNumberFormatRoundingWorks = intlNumberFormatWorks && featureTestFormatterRounding(intlNumberFormatFormatter);
 
     // Initialize duration format on the global moment instance.
     init(moment);
@@ -39856,20 +41765,16 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 /***/ }),
-/* 297 */
+/* 310 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"toast toast-success rop-current-time\" v-if=\"isOn && accounts_no > 0\">\n\t\t<span v-if=\"diff_seconds>0\"> <b><i\n\t\t\t\tclass=\"fa fa-fast-forward\"></i> {{labels.next_share}}</b> {{labels.in}}</span>\n\t\t<small v-if=\"timediff !== ''\">{{timediff}}</small>\n\t</div>\n";
+module.exports = "\n\t<div class=\"toast rop-next-share-time\" v-if=\"isOn && accounts_no > 0\">\n\t\t<span v-if=\"diff_seconds>0\"> <b><i\n\t\t\t\tclass=\"fa fa-fast-forward\"></i> {{labels.next_share}}</b> {{labels.in}}</span>\n\t\t<small v-if=\"timediff !== ''\">{{timediff}}</small>\n\t</div>\n";
 
 /***/ }),
-/* 298 */
+/* 311 */
 /***/ (function(module, exports) {
 
-<<<<<<< HEAD
-module.exports = "\n\t<div>\n\t\t<div class=\"columns panel-header\">\n\t\t\t<div class=\"column header-logo vertical-align\">\n\t\t\t\t<div>\n\t\t\t\t\t<img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/>\n\t\t\t\t\t<h1 class=\"plugin-title d-inline-block\">Revive Old Posts</h1><span class=\"powered d-inline-block\"> {{labels.by}} <a\n\t\t\t\t\t\thref=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\n\t\t\t\t\t<div id=\"rop_social_actions\">\n\t\t\t\t\t<a href=\"https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform\" target=\"_blank\" class=\"submit-feedback\"><span><i class=\"fa fa-commenting\" aria-hidden=\"true\"></i></span> {{labels.survey}}</a>\n\t\t\t\t\t<a href=\"https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial\" target=\"_blank\" class=\"tweet-about-it\"><span><i class=\"fa fa-twitter\" aria-hidden=\"true\"></i></span> {{labels.tweet_about_it}}</a>\n\t\t\t\t\t<a href=\"https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post\" target=\"_blank\" class=\"leave-a-review\"><span><i class=\"fa fa-star\" aria-hidden=\"true\"></i></span> {{labels.review_it}}</a>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div v-if=\" is_rest_api_error \" class=\"toast toast-error rop-api-not-available\" v-html=\"labels.api_not_available\">\n\t\t\t</div>\n\t\t\t<div class=\"sidebar sidebar-top card rop-container-start\">\n\t\t\t\t<div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n\t\t\t\t\t{{labels.now}}: {{ formatedDate }}\n\t\t\t\t</div>\n\t\t\t\t<countdown :current_time=\"current_time\"/>\n\t\t\t\t<button class=\"btn btn-sm\" :class=\"btn_class\"\n\t\t\t\t        :data-tooltip=\"labels.active_account_warning\"\n\t\t\t\t        @click=\"togglePosting()\" :disabled=\"haveAccounts\">\n\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t\t{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns\">\n\t\t\t<div class=\"panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\n\t\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t\t<ul class=\"tab \">\n\t\t\t\t\t\t<li class=\"tab-item c-hand\" v-for=\"tab in displayTabs\"\n\t\t\t\t\t\t    :class=\"{ active: tab.isActive }\" v-bind:id=\"tab.name.replace(' ', '').toLowerCase()\">\n\t\t\t\t\t\t\t<a :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\n\t\t\t\t\t\t\t   :data-badge=\"logs_no\"\n\t\t\t\t\t\t\t   @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\n\t\t\t\t\t\t</li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t\t<component :is=\"page.template\" :type=\"page.view\"></component>\n\t\t\t</div>\n\n\t\t\t<div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\n\t\t\t     :class=\"'rop-license-plan-'+license\">\n\n\t\t\t\t<div class=\"card rop-container-start\">\n\t\t\t\t\t<div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n\t\t\t\t\t\t{{labels.now}}: {{ formatedDate }}\n\t\t\t\t\t</div>\n\t\t\t\t\t<countdown :current_time=\"current_time\"/>\n\t\t\t\t\t<button  id=\"rop_start_stop_btn\" class=\"btn\" :class=\"btn_class\"\n\t\t\t\t\t        :data-tooltip=\"labels.active_account_warning\"\n\t\t\t\t\t        @click=\"togglePosting()\" :disabled=\"haveAccounts\">\n\t\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t\t\t{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n\t\t\t\t\t</button>\n\t\t\t\t\t<div id=\"staging-status\" v-if=\"staging\">\n\t\t\t\t\t\t{{labels.staging_status}}\n\t\t\t\t\t</div>\n\t\t\t\t\t<upsell-sidebar></upsell-sidebar>\n\t\t\t\t\t<a href=\"https://docs.revive.social/\" target=\"_blank\" class=\"btn support_btns\">{{labels.rop_docs}}</a>\n\t\t\t\t\t<a v-if=\"license  >= 1\" href=\"https://revive.social/pro-support/\" target=\"_blank\" class=\"btn support_btns\">{{labels.rop_support}}</a>\n\t\t\t\t\t<a v-if=\"license  < 1\" href=\"https://revive.social/support/\" target=\"_blank\" class=\"btn support_btns\">{{labels.rop_support}}</a>\n\t\t\t\t</div>\n\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
-=======
-module.exports = "\n\t<div>\n\t\t<div class=\"columns panel-header\">\n\t\t\t<div class=\"column header-logo vertical-align\">\n\t\t\t\t<div>\n\t\t\t\t\t<img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/>\n\t\t\t\t\t<h1 class=\"plugin-title d-inline-block\">Revive Old Posts</h1><span class=\"powered d-inline-block\"> {{labels.by}} <a\n\t\t\t\t\t\thref=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\n\t\t\t\t\t<div id=\"rop_social_actions\">\n\t\t\t\t\t<a href=\"https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform\" target=\"_blank\" class=\"submit-feedback\"><span><i class=\"fa fa-commenting\" aria-hidden=\"true\"></i></span> {{labels.help_improve}}</a>\n\t\t\t\t\t<a href=\"https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial\" target=\"_blank\" class=\"tweet-about-it\"><span><i class=\"fa fa-twitter\" aria-hidden=\"true\"></i></span> {{labels.tweet_about_it}}</a>\n\t\t\t\t\t<a href=\"https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post\" target=\"_blank\" class=\"leave-a-review\"><span><i class=\"fa fa-star\" aria-hidden=\"true\"></i></span> {{labels.review_it}}</a>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div v-if=\" is_rest_api_error \" class=\"toast toast-error rop-api-not-available\" v-html=\"labels.api_not_available\">\n\t\t\t</div>\n\t\t\t<div class=\"sidebar sidebar-top card rop-container-start\">\n\t\t\t\t<div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n\t\t\t\t\t{{labels.now}}: {{ formatedDate }}\n\t\t\t\t</div>\n\t\t\t\t<countdown :current_time=\"current_time\"/>\n\t\t\t\t<button class=\"btn btn-sm\" :class=\"btn_class\"\n\t\t\t\t        :data-tooltip=\"labels.active_account_warning\"\n\t\t\t\t        @click=\"togglePosting()\" :disabled=\"haveAccounts\">\n\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t\t{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns\">\n\t\t\t<div class=\"panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\n\t\t\t\t<div class=\"panel-nav\" style=\"padding: 8px;\">\n\t\t\t\t\t<ul class=\"tab \">\n\t\t\t\t\t\t<li class=\"tab-item c-hand\" v-for=\"tab in displayTabs\"\n\t\t\t\t\t\t    :class=\"{ active: tab.isActive }\" v-bind:id=\"tab.name.replace(' ', '').toLowerCase()\">\n\t\t\t\t\t\t\t<a :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\n\t\t\t\t\t\t\t   :data-badge=\"logs_no\"\n\t\t\t\t\t\t\t   @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\n\t\t\t\t\t\t</li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t\t<component :is=\"page.template\" :type=\"page.view\"></component>\n\t\t\t</div>\n\n\t\t\t<div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\n\t\t\t     :class=\"'rop-license-plan-'+license\">\n\n\t\t\t\t<div class=\"card rop-container-start\">\n\t\t\t\t\t<div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n\t\t\t\t\t\t{{labels.now}}: {{ formatedDate }}\n\t\t\t\t\t</div>\n\t\t\t\t\t<countdown :current_time=\"current_time\"/>\n\t\t\t\t\t<button  id=\"rop_start_stop_btn\" class=\"btn\" :class=\"btn_class\"\n\t\t\t\t\t        :data-tooltip=\"labels.active_account_warning\"\n\t\t\t\t\t        @click=\"togglePosting()\" :disabled=\"haveAccounts\">\n\t\t\t\t\t\t<i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t\t\t{{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n\t\t\t\t\t</button>\n\t\t\t\t\t<div id=\"staging-status\" v-if=\"staging\">\n\t\t\t\t\t\t{{labels.staging_status}}\n\t\t\t\t\t</div>\n\t\t\t\t\t<upsell-sidebar></upsell-sidebar>\n\t\t\t\t\t<a href=\"https://trello.com/b/svAZqXO1/roadmap-revive-old-posts\" target=\"_blank\" class=\"btn support_btns\">{{labels.rop_roadmap}}</a>\n\t\t\t\t\t<a href=\"https://docs.revive.social/\" target=\"_blank\" class=\"btn support_btns\">{{labels.rop_docs}}</a>\n\t\t\t\t\t<a v-if=\"license  >= 1\" href=\"https://revive.social/pro-support/\" target=\"_blank\" class=\"btn support_btns\">{{labels.rop_support}}</a>\n\t\t\t\t\t<a v-if=\"license  < 1\" href=\"https://revive.social/support/\" target=\"_blank\" class=\"btn support_btns\">{{labels.rop_support}}</a>\n\t\t\t\t</div>\n\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
->>>>>>> 02a26ed694c877e6d5adbca41a754848569a4fa0
+module.exports = "\n    <div>\n        <div class=\"columns panel-header\">\n            <div class=\"column header-logo vertical-align\">\n                <div>\n                    <img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/>\n                    <h1 class=\"plugin-title d-inline-block\">Revive Old Posts</h1><span class=\"powered d-inline-block\"> {{labels.by}} <a\n                        href=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\n                </div>\n            </div>\n            <toast/>\n            <div v-if=\" is_rest_api_error \" class=\"toast toast-error rop-api-not-available\" v-html=\"labels.api_not_available\">\n            </div>\n            <div v-if=\" is_fb_domain_notice \" class=\"toast toast-primary\">\n                <button class=\"btn btn-clear float-right\" @click=\"close_fb_domain_notice()\"></button>\n                <div v-html=\"labels.rop_facebook_domain_toast\"></div>\n            </div>\n            <div class=\"sidebar sidebar-top card rop-container-start\">\n\n              <!-- Next post count down -->\n                <countdown :current_time=\"current_time\"/>\n                <!--  -->\n\n                <button class=\"btn btn-sm\" :class=\"btn_class\"\n                        :data-tooltip=\"labels.active_account_warning\"\n                        @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n                    <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n                    <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n                    <i class=\"fa fa-spinner fa-spin\" v-else></i>\n                    {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n                </button>\n            </div>\n        </div>\n\n        <div class=\"columns\">\n            <div class=\"panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\n                <div class=\"panel-nav\" style=\"padding: 8px;\">\n                    <ul class=\"tab \">\n                        <li class=\"tab-item c-hand\" v-for=\"tab in displayTabs\"\n                            :class=\"{ active: tab.isActive }\" v-bind:id=\"tab.name.replace(' ', '').toLowerCase()\">\n                            <a :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\n                               :data-badge=\"logs_no\"\n                               @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\n                        </li>\n                    </ul>\n                </div>\n                <component :is=\"page.template\" :type=\"page.view\"></component>\n            </div>\n\n            <div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\n                 :class=\"'rop-license-plan-'+license\">\n\n                <div class=\"card rop-container-start\">\n                    <button id=\"rop_start_stop_btn\" class=\"btn\" :class=\"btn_class\"\n                            :data-tooltip=\"labels.active_account_warning\"\n                            @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n                        <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n                        <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n                        <i class=\"fa fa-spinner fa-spin\" v-else></i>\n                        {{labels.click}} {{labels.to}} {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n                    </button>\n\n                    <div class=\"sharing-box\" :class=\"status_color_class\">{{ status_label_display }}</div>\n\n                    <countdown :current_time=\"current_time\"/>\n\n                    <div id=\"staging-status\" v-if=\"staging\">\n                        {{labels.staging_status}}\n                    </div>\n                    <div v-if=\"!haveAccounts\" class=\"rop-spacer\"></div>\n                    <div v-if=\"haveAccounts\">\n                        <upsell-sidebar></upsell-sidebar>\n                    </div>\n                    <a v-if=\"license  >= 1\" href=\"https://revive.social/pro-support/\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.rop_support}}</a>\n                    <a v-if=\"license  < 1\" href=\"https://revive.social/support/\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.rop_support}}</a>\n                    <a v-if=\"haveAccounts\" href=\"https://docs.revive.social/\" target=\"_blank\"\n                       class=\"btn rop-sidebar-action-btns\">{{labels.rop_docs}}</a>\n                    <a v-if=\"haveAccounts\"\n                       href=\"https://wordpress.org/support/plugin/tweet-old-post/reviews/?rate=5#new-post\"\n                       target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.review_it}}</a>\n                </div>\n\n            </div>\n        </div>\n    </div>\n";
 
 /***/ })
 /******/ ]);

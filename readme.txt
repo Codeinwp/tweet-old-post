@@ -13,41 +13,57 @@ Automatically share your WordPress posts on Twitter, Facebook, LinkedIn. Get mor
 
 ### What the plugin can do ?
 
-This plugin helps you keep your old posts alive by automatically sharing them and driving more traffic to them from Social Networks. It also helps you to promote your content. You can set sharing interval and number of posts to share to drive more traffic. For questions, comments, or feature requests, [contact us](http://revive.social/support/?utm_source=readmetop&utm_medium=announce&utm_campaign=top)!
+Revive Old Posts is the best Social Media automation tool for WordPress.
 
-ROP can work as a facebook or twitter auto-poster and using it you can easily auto-share your posts on social media.
+The plugin helps you keep your old and new WordPress posts infront of users by automatically sharing them to your social media accounts; improving engagement and driving more traffic to your website.
+
+You can set a sharing interval and the number of posts to share to your social media networks as well as some other filters to help you get the most out of your website content.
+
+Revive Old Posts (ROP) can help keep your website posts and content evergreen by continuosly sharing them to Facebook, Twitter, LinkedIn, Tumblr, Pinterest and Instagram. Content types shareable by ROP include Posts, Pages, WooCommerce Products as well as any other WordPress Custom Post Type.
+
+
+For questions, comments, or feature requests, [Contact Us](http://revive.social/support/?utm_source=readmetop&utm_medium=announce&utm_campaign=top)!
+
+Checkout the Roadmap to vote on awesome features you'd like to see in the plugin. [Roadmap](https://trello.com/b/svAZqXO1/roadmap-revive-old-posts):
 
 
 
 **Revive Old Posts provides the following features**
 
 - Share new and old posts.
-- Post to social media on publish.
+- WordPress to Facebook sharing.
+- WordPress to Twitter sharing.
+- Share to your social media accounts on post publish.
 - Choose the time between posts.
 - Choose the number of posts to share.
+- Choose the maximum and minimum age of posts eligible for sharing.
 - Use hashtags to focus on topics.
 - Include links back to your site.
 - Exclude categories.
 - Exclude specific posts.
 - Integrated with Google Analytics.
 - Compatible with URL Shortners.
-- WP to Twitter.
 
 
 > ### Why to upgrade to PRO ?
 
-> Using the [PRO version](http://revive.social/plugins/revive-old-post/) of Revive Old Posts unlocks a host of new features sure to improve social traffic to your website.
+> Using the [PRO version](http://revive.social/plugins/revive-old-post/) of Revive Old Posts unlocks a host of new features sure to improve engagement on your social media accounts as well as bring more social traffic to your website.
 
 > Awesome features in Pro:
 
-> * Multiple Social Accounts
+> * WordPress to Instagram
+> * WordPress to Facebook Groups
+> * WordPress to LinkedIn Company Pages
+> * WordPress to LinkedIn Profiles
+> * WordPress to Tumblr
+> * WordPress to Pinterest
+> * Multiple accounts
 > * [Custom UTM tags for analytics](https://docs.revive.social/article/925-how-to-use-custom-utm-tags)
 > * [Share Content Variations](https://docs.revive.social/article/971-how-to-add-variations-to-revive-old-posts-shares)
 > * [Magic tags for Custom Share Messages](https://docs.revive.social/article/952-available-magic-tags-in-revive-old-posts)
 > * [Magic tags for Additional Texts option](https://docs.revive.social/article/952-available-magic-tags-in-revive-old-posts)
 > * [Share Images and Video From Your Media Library](https://docs.revive.social/article/934-how-to-use-revive-old-post-media-sharing-feature)
 > * [Custom Post Types support](https://docs.revive.social/article/968-how-to-share-different-wordpress-post-types-to-social-media-w-revive-old-posts)
-> * LinkedIn, Tumblr, Pinterest Support
 > * Post with image
 > * [Custom Schedule](https://docs.revive.social/article/972-revive-old-posts-custom-schedule-feature)
 
@@ -125,7 +141,55 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
-= 8.3.4 - 2019-07-21  = 
+= 8.4.4 - 2019-10-03  = 
+
+* New: Label to show sharing status.
+* Change: Removed some UI buttons and made UX improvements to dashboard.
+* Change: Send posts to Facebook as text posts if users have not verified their domain with Facebook; inform users on how to go about the process. .
+
+
+= 8.4.3 - 2019-09-12  = 
+
+* New: Toast message will now show on ROP dashboard when an error is present in the log.
+* New: Added a check to detect when ROP cron event is not firing.
+* Fix: Switching from queue tab to another tab would refresh queue order.
+* Fix: Linkedin 411 length required error.
+* Fix: Users would be redirected to Tumblr homepage if credentials were wrong. An error will now be displayed.
+* Fix: Pressing Twitter account button after deleting a Twitter account from ROP would refresh the page.
+* Change: Edited "no accounts" text area with more details to help users get started.
+* Change: Moved Support & Documentation buttons to top section of ROP dashboard.
+* Change: Set rviv.ly back as default shortener.
+* Change: Delete icon will now show whenever an account is deactivated
+
+
+= 8.4.2 - 2019-08-23  = 
+
+* PRO Fix: Unauthorized error when updating Pro plugin 
+* Fix: Error would occur if the user tried to sign in while the API credentials form fields were empty
+* Fix: Timer was not stopped if all accounts were removed using "remove all accounts" button
+* Fix: Removing an account and then immediately trying to add it back would attempt to validate with old API credentials
+
+
+= 8.4.1 - 2019-08-19  = 
+
+* Fix: Use own keys button was appearing in Twitter modal for old installs
+
+
+= 8.4.0 - 2019-08-19  = 
+
+* PRO: Share to Instagram, Facebook Groups, LinkedIn Company Pages via Buffer integration.
+* New: Made it easier to connect Twitter accounts for new users.
+* Fix: Wrong error solution doc link would sometimes be given in Log.
+* Fix: Fixed a bug where the sharing queue would be duplicated when switching tabs.
+* Fix: Sites with Jetpack Photon feature activated would have issues with sharing images to twitter.
+
+
+= 8.3.5 - 2019-08-02  =
+
+* Change: Made some UX changes to plugin dashboard
+
+
+= 8.3.4 - 2019-07-21  =
 
 * New: Roadmap & Voting button! See where ROP is headed and vote on or recommend features which matter to you.
 * Fix: PHP warning when Share Immediately feature would receive a non-array of selected accounts in rare cases.
