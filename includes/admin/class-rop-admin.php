@@ -604,7 +604,7 @@ class Rop_Admin {
 		include_once ROP_LITE_PATH . '/includes/admin/views/publish_now.php';
 
 		$this->publish_now_upsell();
-		
+
 	}
 
 
