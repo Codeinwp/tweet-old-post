@@ -433,9 +433,11 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 		} catch ( \DirkGroenen\Pinterest\Exceptions\PinterestException $e ) {
 			$message = 'Pinterest Excepction: Code[ ' . $e->getCode() . ' ] when trying to pin, ' . $e->getMessage();
 			$this->logger->alert_error( $message );
+			$this->rop_get_error_docs( $message );
 		} catch ( Exception $e ) {
 			$message = 'Pinterest Error: Code[ ' . $e->getCode() . ' ] when trying to pin, ' . $e->getMessage();
 			$this->logger->alert_error( $message );
+			$this->rop_get_error_docs( $message );
 		}
 
 		if ( empty( $pin ) ) {

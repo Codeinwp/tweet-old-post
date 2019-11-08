@@ -523,6 +523,12 @@ abstract class Rop_Services_Abstract {
 				'link' => 'https://is.gd/fix_link_issue',
 			),
 
+			// Pinterest errors
+			'Pinterest error (code: 429) with message: You have exceeded your rate limit' => array(
+				'message' => 'You\'ve hit the Pinterest rate limit.',
+				'link' => 'https://is.gd/pinterest_rate_limit',
+			),
+
 			// Add more common errors as necessary
 		);
 
