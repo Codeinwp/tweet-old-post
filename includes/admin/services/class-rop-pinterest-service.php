@@ -84,28 +84,49 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 			session_start();
 		}
 
-		$this->request_api_token();
+		if ( ! $this->is_set_not_empty(
+			$_SESSION,
+			array(
+				'rop_pinterest_credentials',
+			)
+		) ) {
+			return false;
+		}
 
-		parent::authorize();
+		try {
+			$this->request_api_token();
+			parent::authorize();
+		} catch ( Exception $e ) {
+			$message = 'Pinterest Error: Code[ ' . $e->getCode() . ' ] ' . $e->getMessage();
+			$this->logger->alert_error( $message );
+			exit( wp_redirect( $this->get_legacy_url() ) );
+		}
 		// echo '<script>window.setTimeout("window.close()", 500);</script>';
 	}
 
 	/**
 	 * Method to request a token from api.
 	 *
-	 * @codeCoverageIgnore
-	 *
 	 * @since   8.0.0
 	 * @access  protected
-	 * @return mixed
+	 *
+	 * @return mixed|void
+	 * @throws Exception Capture all exceptions.
 	 */
 	public function request_api_token() {
+		if ( ! session_id() ) {
+			session_start();
+		}
 		$credentials = $_SESSION['rop_pinterest_credentials'];
-
-		$api = $this->get_api( $credentials['app_id'], $credentials['secret'] );
+		$api         = $this->get_api( $credentials['app_id'], $credentials['secret'] );
 
 		if ( isset( $_GET['code'] ) ) {
-			$token = $api->auth->getOAuthToken( $_GET['code'] );
+			$token = $api->auth->getOAuthToken( trim( $_GET['code'] ) );
+
+			if ( ! isset( $token->access_token ) ) {
+				throw new Exception( $this->display_name . ' could not get Oauth Token' );
+			}
+
 			$api->auth->setOAuthToken( $token->access_token );
 			$_SESSION['rop_pinterest_token'] = $token->access_token;
 		}
@@ -120,10 +141,10 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	 * @param   string $app_id The Pinterest APP ID. Default empty.
 	 * @param   string $secret The Pinterest APP Secret. Default empty.
 	 *
-	 * @return \Facebook\Facebook
+	 * @return \DirkGroenen\Pinterest\Pinterest
 	 */
 	public function get_api( $app_id = '', $secret = '' ) {
-		if ( $this->api == null ) {
+		if ( null == $this->api ) {
 			$this->set_api( $app_id, $secret );
 		}
 
@@ -185,9 +206,8 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 		) ) {
 			return false;
 		}
-		$credentials = $_SESSION['rop_pinterest_credentials'];
-		$token       = $_SESSION['rop_pinterest_token'];
-
+		$credentials          = $_SESSION['rop_pinterest_credentials'];
+		$token                = $_SESSION['rop_pinterest_token'];
 		$credentials['token'] = $token;
 		unset( $_SESSION['rop_pinterest_credentials'] );
 		unset( $_SESSION['rop_pinterest_token'] );
@@ -200,7 +220,7 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	 * Method to authenticate an user based on provided credentials.
 	 * Used in DB upgrade.
 	 *
-	 * @param array $args The arguments for facebook service auth.
+	 * @param array $args The arguments for Pinterest service auth.
 	 *
 	 * @return bool
 	 */
@@ -276,6 +296,8 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	 *
 	 * @param object $api The api object.
 	 * @param object $user The user object.
+	 *
+	 * @return array
 	 */
 	private function get_boards( $api, $user ) {
 		$user_boards = array();
@@ -285,7 +307,7 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 			)
 		);
 
-		$search = array( ' ', '.', ',', '/', '!', '@', '&', '#', '%', '*', '(', ')', '{', '}', '[', ']', '|', '\\', '$' );
+		$search  = array( ' ', '.', ',', '/', '!', '@', '&', '#', '%', '*', '(', ')', '{', '}', '[', ']', '|', '\\', '$' );
 		$replace = array( '-', '' );
 
 		foreach ( $boards as $board ) {
@@ -302,6 +324,10 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 			$board_details['img']     = $img;
 			$board_details['created'] = $this->user_default['created'];
 			$user_boards[]            = $board_details;
+		}
+
+		if ( empty( $user_boards ) ) {
+			$this->logger->alert_error( 'You need to create at least one board in Pinterest to add the account.' );
 		}
 
 		return $user_boards;
@@ -337,13 +363,13 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 		$_SESSION['rop_pinterest_credentials'] = $credentials;
 
 		$api = $this->get_api( $credentials['app_id'], $credentials['secret'] );
-		$url = $api->auth->getLoginUrl( $this->get_legacy_url( $this->service_name ), $this->permissions );
+		$url = $api->auth->getLoginUrl( trim( $this->get_legacy_url( $this->service_name ) ), $this->permissions );
 
 		return $url;
 	}
 
 	/**
-	 * Method for publishing with Facebook service.
+	 * Method for publishing with Pinterest service.
 	 *
 	 * @since   8.0.0
 	 * @access  public
@@ -381,14 +407,36 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 		}
 
 		// Don't shorten post link, pinterest might reject post if shortened and it also looks bad on pinterest with a shortlink
-		$pin = $api->pins->create(
-			array(
+		try {
+			$info_to_pin = array(
 				'note'      => $this->strip_excess_blank_lines( $post_details['content'] ) . $post_details['hashtags'],
 				'image_url' => $post_details['post_image'],
 				'board'     => $args['id'],
-				'link'     => $post_details['post_url'],
-			)
-		);
+				'link'      => $post_details['post_url'],
+			);
+
+			$image_id = $this->retrieve_image_id_from_db( $post_details['post_image'] );
+			if ( ! empty( $image_id ) ) {
+				$large_image_path = $this->this_image_realpath_to_uploads( $image_id, 'large' );
+				if ( $large_image_path ) {
+					$base64_img = $this->this_image_to_base64( $large_image_path );
+					if ( ! empty( $base64_img ) ) {
+						$info_to_pin['image_base64'] = $base64_img;
+					} else {
+						$info_to_pin['image'] = $large_image_path;
+					}
+					unset( $info_to_pin['image_url'] );
+				}
+			}
+
+			$pin = $api->pins->create( $info_to_pin );
+		} catch ( \DirkGroenen\Pinterest\Exceptions\PinterestException $e ) {
+			$message = 'Pinterest Excepction: Code[ ' . $e->getCode() . ' ] when trying to pin, ' . $e->getMessage();
+			$this->logger->alert_error( $message );
+		} catch ( Exception $e ) {
+			$message = 'Pinterest Error: Code[ ' . $e->getCode() . ' ] when trying to pin, ' . $e->getMessage();
+			$this->logger->alert_error( $message );
+		}
 
 		if ( empty( $pin ) ) {
 			$this->logger->alert_error( sprintf( 'Unable to pin to %s for %s', $args['id'], $post_details['service'] ) );
@@ -407,6 +455,92 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 		);
 
 		return true;
+	}
+
+	/**
+	 * Returns local full path to the upload folder for image.
+	 *
+	 * @param int    $image_id Media image ID.
+	 * @param string $requested_size Media image requested size.
+	 *
+	 * @return bool|string
+	 */
+	function this_image_realpath_to_uploads( $image_id = 0, $requested_size = 'large' ) {
+		if ( empty( $image_id ) ) {
+			return false;
+		}
+
+		$original_file_path = get_attached_file( $image_id, true );
+
+		if ( empty( $requested_size ) || 'full' === $requested_size ) {
+			return realpath( $original_file_path );
+		}
+
+		if ( false === wp_attachment_is_image( $image_id ) ) {
+			return false; // This is not a media ID
+		}
+
+		$image = image_get_intermediate_size( $image_id, $requested_size );
+
+		if ( ! is_array( $image ) || ! isset( $image['file'] ) ) {
+			return false; // File size does not exist
+		}
+
+		// Use the original path and add the required size filename instead.
+		$image_path = str_replace( wp_basename( $original_file_path ), $image['file'], $original_file_path );
+
+		return realpath( $image_path );
+	}
+
+	/**
+	 * Converts local image into base_64 code
+	 *
+	 * @since 8.5.0
+	 *
+	 * @param string $image_path - Full local image path to uploads folder.
+	 *
+	 * @return string
+	 */
+	public function this_image_to_base64( $image_path = '' ) {
+		$opened_file = fopen( $image_path, 'r' );
+		$contents    = fread( $opened_file, filesize( $image_path ) );
+		fclose( $opened_file );
+
+		return base64_encode( $contents );
+	}
+
+	/**
+	 * Returns post_id or false, where post_id is image media ID
+	 *
+	 * @since 8.5.0
+	 * @param string $image_path Image http url for which to obtain the media ID.
+	 *
+	 * @return bool|int
+	 */
+	public function retrieve_image_id_from_db( $image_path = '' ) {
+		global $wpdb;
+
+		$image_path = trim( $image_path );
+
+		if ( empty( $image_path ) ) {
+			return false;
+		}
+
+		$image_name = wp_basename( $image_path );
+		if ( empty( $image_name ) ) {
+			return false;
+		}
+
+		$image_name = $wpdb->esc_like( '' . $image_name . '' );
+		$image_name = '%' . $image_name . '%';
+		// PHPStorm throwing phpcs warning here
+		$prepare_query = $wpdb->prepare( "SELECT `post_id` FROM $wpdb->postmeta WHERE `meta_value` LIKE '%%%s%%' LIMIT 1", $image_name );//phpcs:ignore
+		$image_id      = $wpdb->get_var( $prepare_query );//phpcs:ignore
+		if ( ! empty( $image_id ) ) {
+			return absint( $image_id );
+		}
+
+		return false;
 	}
 
 }
