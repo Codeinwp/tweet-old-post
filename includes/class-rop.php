@@ -148,8 +148,12 @@ class Rop {
 		$this->loader->add_action( 'rop_cron_job_once', $plugin_admin, 'rop_cron_job_once' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'check_cron_status', 20 );
 		$this->loader->add_action( 'rop_cron_job_publish_now', $plugin_admin, 'rop_cron_job_publish_now' );
-		$this->loader->add_action( 'post_submitbox_misc_actions', $plugin_admin, 'add_publish_actions' );
-		$this->loader->add_action( 'post_submitbox_misc_actions', $plugin_admin, 'publish_now_upsell' );
+		$this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'rop_publish_now_metabox' );
+
+		// Not being used in as of v8.5.0. Feature moved to metabox until proper Gutenberg support
+		// $this->loader->add_action( 'post_submitbox_misc_actions', $plugin_admin, 'add_publish_actions' );
+		// $this->loader->add_action( 'post_submitbox_misc_actions', $plugin_admin, 'publish_now_upsell' );
+
 		$this->loader->add_action( 'save_post', $plugin_admin, 'maybe_publish_now' );
 		$this->loader->add_filter( 'rop_publish_now_attributes', $plugin_admin, 'publish_now_attributes' );
 
