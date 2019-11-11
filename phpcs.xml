@@ -39,6 +39,8 @@
         <exclude name="WordPress.PHP.StrictComparisons.LooseComparison" />
         <exclude name="WordPress.PHP.StrictInArray.MissingTrueStrict" />
         <exclude name="WordPress.PHP.RestrictedPHPFunctions.date_date" />
+        <exclude name="WordPress.DateTime.RestrictedFunctions.date_date" />
+        <exclude name="WordPress.DateTime.CurrentTimeTimestamp.Requested" />
     </rule>
     <rule ref="WordPress-Docs">
 
