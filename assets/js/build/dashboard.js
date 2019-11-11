@@ -35125,6 +35125,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 							<button class="btn btn-primary big-btn" @click="openPopupLI()">{{labels.li_app_signin_btn}}</button>
 // 							<span class="text-center">{{labels.li_own_app_signin}}</span>
 // 						</div>
+// 						<div class="auth-app" v-if="isBuffer">
+// 							<button class="btn btn-primary big-btn" @click="openPopupBuffer()">{{labels.buffer_app_signin_btn}}</button>
+// 						</div>
 // 						<div id="rop-advanced-config" v-if="isFacebook || isTwitter || (isLinkedIn && isAllowedLinkedIn)">
 // 						<button class="btn btn-primary" v-on:click="showAdvanceConfig = !showAdvanceConfig">{{labels.show_advance_config}}</button>
 // 					</div>
@@ -35137,7 +35140,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 							<p class="text-gray">{{ field.description }}</p>
 // 						</div>
 // 					</div>
-// 						<div v-if="(!isTwitter && !isFacebook && !isLinkedIn) || (isLinkedIn && !isAllowedLinkedIn)">
+// 						<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isBuffer) || (isLinkedIn && !isAllowedLinkedIn)">
 // 						<div class="form-group" v-for="( field, id ) in modal.data">
 // 							<label class="form-label" :for="field.id">{{ field.name }}</label>
 // 							<input :class="[ 'form-input', field.error ? ' is-error' : '' ]" type="text" :id="field.id" v-model="field.value"
@@ -35155,7 +35158,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 // 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 // 				</div>
-// 				<div v-if="(!isTwitter && !isFacebook && !isLinkedIn) || (isLinkedIn && !isAllowedLinkedIn)" class="modal-footer">
+// 				<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isBuffer) || (isLinkedIn && !isAllowedLinkedIn)" class="modal-footer">
 // 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 // 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 // 				</div>
@@ -35185,6 +35188,7 @@ module.exports = {
 			appPathFB: ropAuthAppData.authAppFacebookPath,
 			appPathTW: ropAuthAppData.authAppTwitterPath,
 			appPathLI: ropAuthAppData.authAppLinkedInPath,
+			appPathBuffer: ropAuthAppData.authAppBufferPath,
 			appAdminEmail: ropAuthAppData.adminEmail,
 			siteAdminUrl: ropAuthAppData.adminUrl,
 			appUniqueId: ropAuthAppData.authToken,
@@ -35442,6 +35446,30 @@ module.exports = {
 			});
 		},
 
+		/**
+   * Add Buffer account.
+   *
+   * @param data Data.
+   */
+		addAccountBuffer: function addAccountBuffer(data) {
+			var _this5 = this;
+
+			this.$store.dispatch('fetchAJAXPromise', {
+				req: 'add_account_buffer',
+				updateState: false,
+				data: data
+			}).then(function (response) {
+				window.removeEventListener("message", function (event) {
+					return _this5.getChildWindowMessage(event);
+				});
+				_this5.authPopupWindow.close();
+				window.location.reload();
+			}, function (error) {
+				_this5.is_loading = false;
+				Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+			});
+		},
+
 		getChildWindowMessage: function getChildWindowMessage(event) {
 			if (~event.origin.indexOf(this.appOrigin)) {
 				if ('Twitter' === this.modal.serviceName) {
@@ -35450,13 +35478,15 @@ module.exports = {
 					this.addAccountFB(JSON.parse(event.data));
 				} else if ('LinkedIn' === this.modal.serviceName) {
 					this.addAccountLI(JSON.parse(event.data));
+				} else if ('Buffer' === this.modal.serviceName) {
+					this.addAccountBuffer(JSON.parse(event.data));
 				}
 			} else {
 				return;
 			}
 		},
 		openPopupFB: function openPopupFB() {
-			var _this5 = this;
+			var _this6 = this;
 
 			var loginUrl = this.appOrigin + this.appPathFB + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
 			try {
@@ -35468,11 +35498,11 @@ module.exports = {
 				this.cancelModal();
 			}
 			window.addEventListener("message", function (event) {
-				return _this5.getChildWindowMessage(event);
+				return _this6.getChildWindowMessage(event);
 			});
 		},
 		openPopupTW: function openPopupTW() {
-			var _this6 = this;
+			var _this7 = this;
 
 			// Open the popup specific for Twitter
 			var loginUrl = this.appOrigin + this.appPathTW + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
@@ -35485,11 +35515,11 @@ module.exports = {
 				this.cancelModal();
 			}
 			window.addEventListener("message", function (event) {
-				return _this6.getChildWindowMessage(event);
+				return _this7.getChildWindowMessage(event);
 			});
 		},
 		openPopupLI: function openPopupLI() {
-			var _this7 = this;
+			var _this8 = this;
 
 			// Open the popup specific for LinkedIn
 			var loginUrl = this.appOrigin + this.appPathLI + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
@@ -35502,7 +35532,24 @@ module.exports = {
 				this.cancelModal();
 			}
 			window.addEventListener("message", function (event) {
-				return _this7.getChildWindowMessage(event);
+				return _this8.getChildWindowMessage(event);
+			});
+		},
+		openPopupBuffer: function openPopupBuffer() {
+			var _this9 = this;
+
+			// Open the popup specific for Buffer
+			var loginUrl = this.appOrigin + this.appPathBuffer + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
+			try {
+				this.authPopupWindow.close();
+			} catch (e) {
+				// nothing to do
+			} finally {
+				this.authPopupWindow = window.open(loginUrl, 'authLI', this.windowParameters);
+				this.cancelModal();
+			}
+			window.addEventListener("message", function (event) {
+				return _this9.getChildWindowMessage(event);
 			});
 		}
 	},
@@ -35553,6 +35600,10 @@ module.exports = {
 				showButton = false;
 			}
 			return showButton;
+		},
+		// will return true if the current service actions are for Buffer.
+		isBuffer: function isBuffer() {
+			return this.modal.serviceName === 'Buffer';
 		}
 	}
 	// </script>
@@ -35571,7 +35622,7 @@ module.exports = {
 /* 226 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div id=\"rop-sign-in-area\" _v-2f84fb84=\"\">\n\t\t<div class=\"input-group text-right buttons-wrap\" _v-2f84fb84=\"\">\n\t\t\t<button v-for=\"( service, network ) in services\" :disabled=\"checkDisabled( service, network )\" :title=\"getTooltip( service, network )\" class=\"btn input-group-btn\" :class=\"'btn-' + network\" @click=\"requestAuthorization( network )\" _v-2f84fb84=\"\">\n\t\t\t\t<i v-if=\"network !== 'buffer'\" class=\"fa fa-fw\" :class=\"'fa-' + network\" _v-2f84fb84=\"\"></i>\n\t\t\t\t<i v-if=\"network === 'buffer'\" class=\"fa fa-fw fa-plus-square\" _v-2f84fb84=\"\"></i>\n\t\t\t\t{{service.name}}\n\t\t\t</button>\n\n\t\t</div>\n\n\t\t<div class=\"modal\" :class=\"modalActiveClass\" _v-2f84fb84=\"\">\n\t\t\t<div class=\"modal-overlay\" _v-2f84fb84=\"\"></div>\n\t\t\t<div class=\"modal-container\" _v-2f84fb84=\"\">\n\t\t\t\t<div class=\"modal-header\" _v-2f84fb84=\"\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"cancelModal()\" _v-2f84fb84=\"\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\" _v-2f84fb84=\"\">{{ modal.serviceName }} {{labels.service_popup_title}}</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\" _v-2f84fb84=\"\">\n\t\t\t\t\t<div class=\"content\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isFacebook\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupFB()\" _v-2f84fb84=\"\">{{labels.fb_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-2f84fb84=\"\">{{labels.fb_own_app_signin}}</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isTwitter\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupTW()\" _v-2f84fb84=\"\">{{labels.tw_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-2f84fb84=\"\">{{labels.tw_own_app_signin}}</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isLinkedIn &amp;&amp; isAllowedLinkedIn\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupLI()\" _v-2f84fb84=\"\">{{labels.li_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-2f84fb84=\"\">{{labels.li_own_app_signin}}</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div id=\"rop-advanced-config\" v-if=\"isFacebook || isTwitter || (isLinkedIn &amp;&amp; isAllowedLinkedIn)\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-primary\" v-on:click=\"showAdvanceConfig = !showAdvanceConfig\" _v-2f84fb84=\"\">{{labels.show_advance_config}}</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t\t<div v-if=\"showAdvanceConfig &amp;&amp; (isFacebook || isTwitter || (isLinkedIn &amp;&amp; isAllowedLinkedIn) )\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-2f84fb84=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input :class=\"[ 'form-input', field.error ? ' is-error' : '' ]\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<small class=\"text-error\" v-if=\"field.error\" _v-2f84fb84=\"\">{{labels.field_required}}</small>\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-2f84fb84=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t\t<div v-if=\"(!isTwitter &amp;&amp; !isFacebook &amp;&amp; !isLinkedIn) || (isLinkedIn &amp;&amp; !isAllowedLinkedIn)\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-2f84fb84=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input :class=\"[ 'form-input', field.error ? ' is-error' : '' ]\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<small class=\"text-error\" v-if=\"field.error\" _v-2f84fb84=\"\">{{labels.field_required}}</small>\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-2f84fb84=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"isFacebook || isTwitter || (isLinkedIn &amp;&amp; isAllowedLinkedIn)\" class=\"modal-footer\" _v-2f84fb84=\"\">\n\t\t\t\t\t<p class=\"text-left pull-left mr-2\" v-html=\"labels.rs_app_info\" _v-2f84fb84=\"\"></p>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"showAdvanceConfig &amp;&amp; (isFacebook || isTwitter || isLinkedIn)\" class=\"modal-footer\" _v-2f84fb84=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-2f84fb84=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-2f84fb84=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"(!isTwitter &amp;&amp; !isFacebook &amp;&amp; !isLinkedIn) || (isLinkedIn &amp;&amp; !isAllowedLinkedIn)\" class=\"modal-footer\" _v-2f84fb84=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-2f84fb84=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-2f84fb84=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div id=\"rop-sign-in-area\" _v-2f84fb84=\"\">\n\t\t<div class=\"input-group text-right buttons-wrap\" _v-2f84fb84=\"\">\n\t\t\t<button v-for=\"( service, network ) in services\" :disabled=\"checkDisabled( service, network )\" :title=\"getTooltip( service, network )\" class=\"btn input-group-btn\" :class=\"'btn-' + network\" @click=\"requestAuthorization( network )\" _v-2f84fb84=\"\">\n\t\t\t\t<i v-if=\"network !== 'buffer'\" class=\"fa fa-fw\" :class=\"'fa-' + network\" _v-2f84fb84=\"\"></i>\n\t\t\t\t<i v-if=\"network === 'buffer'\" class=\"fa fa-fw fa-plus-square\" _v-2f84fb84=\"\"></i>\n\t\t\t\t{{service.name}}\n\t\t\t</button>\n\n\t\t</div>\n\n\t\t<div class=\"modal\" :class=\"modalActiveClass\" _v-2f84fb84=\"\">\n\t\t\t<div class=\"modal-overlay\" _v-2f84fb84=\"\"></div>\n\t\t\t<div class=\"modal-container\" _v-2f84fb84=\"\">\n\t\t\t\t<div class=\"modal-header\" _v-2f84fb84=\"\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"cancelModal()\" _v-2f84fb84=\"\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\" _v-2f84fb84=\"\">{{ modal.serviceName }} {{labels.service_popup_title}}</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\" _v-2f84fb84=\"\">\n\t\t\t\t\t<div class=\"content\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isFacebook\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupFB()\" _v-2f84fb84=\"\">{{labels.fb_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-2f84fb84=\"\">{{labels.fb_own_app_signin}}</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isTwitter\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupTW()\" _v-2f84fb84=\"\">{{labels.tw_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-2f84fb84=\"\">{{labels.tw_own_app_signin}}</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isLinkedIn &amp;&amp; isAllowedLinkedIn\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupLI()\" _v-2f84fb84=\"\">{{labels.li_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-2f84fb84=\"\">{{labels.li_own_app_signin}}</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isBuffer\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupBuffer()\" _v-2f84fb84=\"\">{{labels.buffer_app_signin_btn}}</button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div id=\"rop-advanced-config\" v-if=\"isFacebook || isTwitter || (isLinkedIn &amp;&amp; isAllowedLinkedIn)\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-primary\" v-on:click=\"showAdvanceConfig = !showAdvanceConfig\" _v-2f84fb84=\"\">{{labels.show_advance_config}}</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t\t<div v-if=\"showAdvanceConfig &amp;&amp; (isFacebook || isTwitter || (isLinkedIn &amp;&amp; isAllowedLinkedIn) )\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-2f84fb84=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input :class=\"[ 'form-input', field.error ? ' is-error' : '' ]\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<small class=\"text-error\" v-if=\"field.error\" _v-2f84fb84=\"\">{{labels.field_required}}</small>\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-2f84fb84=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t\t<div v-if=\"(!isTwitter &amp;&amp; !isFacebook &amp;&amp; !isLinkedIn &amp;&amp; !isBuffer) || (isLinkedIn &amp;&amp; !isAllowedLinkedIn)\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-2f84fb84=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input :class=\"[ 'form-input', field.error ? ' is-error' : '' ]\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<small class=\"text-error\" v-if=\"field.error\" _v-2f84fb84=\"\">{{labels.field_required}}</small>\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-2f84fb84=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"isFacebook || isTwitter || (isLinkedIn &amp;&amp; isAllowedLinkedIn)\" class=\"modal-footer\" _v-2f84fb84=\"\">\n\t\t\t\t\t<p class=\"text-left pull-left mr-2\" v-html=\"labels.rs_app_info\" _v-2f84fb84=\"\"></p>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"showAdvanceConfig &amp;&amp; (isFacebook || isTwitter || isLinkedIn)\" class=\"modal-footer\" _v-2f84fb84=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-2f84fb84=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-2f84fb84=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"(!isTwitter &amp;&amp; !isFacebook &amp;&amp; !isLinkedIn &amp;&amp; !isBuffer) || (isLinkedIn &amp;&amp; !isAllowedLinkedIn)\" class=\"modal-footer\" _v-2f84fb84=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-2f84fb84=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-2f84fb84=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 227 */

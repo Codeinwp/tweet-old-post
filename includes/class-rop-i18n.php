@@ -80,6 +80,7 @@ class Rop_I18n {
 				'fb_app_signin_btn'          => __( 'Sign in to Facebook', 'tweet-old-post' ),
 				'tw_app_signin_btn'          => __( 'Sign in to Twitter', 'tweet-old-post' ),
 				'li_app_signin_btn'          => __( 'Sign in to LinkedIn', 'tweet-old-post' ),
+				'buffer_app_signin_btn'      => __( 'Sign in to Buffer', 'tweet-old-post' ),
 				'fb_own_app_signin'          => __( 'Or', 'tweet-old-post' ),
 				'tw_own_app_signin'          => __( 'Or', 'tweet-old-post' ),
 				'li_own_app_signin'          => __( 'Or', 'tweet-old-post' ),

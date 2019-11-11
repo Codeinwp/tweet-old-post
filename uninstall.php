@@ -56,6 +56,7 @@ if ( isset( $housekeeping ) && $housekeeping ) {
 		'rop_linkedin_via_rs_app',
 		'rop_first_install_version',
 		'rop_linkedin_refresh_token_notice',
+		'rop_buffer_via_rs_app',
 		/**
 		 * Related functions
 		 *

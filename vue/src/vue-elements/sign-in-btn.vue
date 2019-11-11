@@ -35,6 +35,9 @@
 							<button class="btn btn-primary big-btn" @click="openPopupLI()">{{labels.li_app_signin_btn}}</button>
 							<span class="text-center">{{labels.li_own_app_signin}}</span>
 						</div>
+						<div class="auth-app" v-if="isBuffer">
+							<button class="btn btn-primary big-btn" @click="openPopupBuffer()">{{labels.buffer_app_signin_btn}}</button>
+						</div>
 						<div id="rop-advanced-config" v-if="isFacebook || isTwitter || (isLinkedIn && isAllowedLinkedIn)">
 						<button class="btn btn-primary" v-on:click="showAdvanceConfig = !showAdvanceConfig">{{labels.show_advance_config}}</button>
 					</div>
@@ -47,7 +50,7 @@
 							<p class="text-gray">{{ field.description }}</p>
 						</div>
 					</div>
-						<div v-if="(!isTwitter && !isFacebook && !isLinkedIn) || (isLinkedIn && !isAllowedLinkedIn)">
+						<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isBuffer) || (isLinkedIn && !isAllowedLinkedIn)">
 						<div class="form-group" v-for="( field, id ) in modal.data">
 							<label class="form-label" :for="field.id">{{ field.name }}</label>
 							<input :class="[ 'form-input', field.error ? ' is-error' : '' ]" type="text" :id="field.id" v-model="field.value"
@@ -65,7 +68,7 @@
 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 				</div>
-				<div v-if="(!isTwitter && !isFacebook && !isLinkedIn) || (isLinkedIn && !isAllowedLinkedIn)" class="modal-footer">
+				<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isBuffer) || (isLinkedIn && !isAllowedLinkedIn)" class="modal-footer">
 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 				</div>
@@ -95,6 +98,7 @@
 				appPathFB: ropAuthAppData.authAppFacebookPath,
         appPathTW: ropAuthAppData.authAppTwitterPath,
         appPathLI: ropAuthAppData.authAppLinkedInPath,
+        appPathBuffer: ropAuthAppData.authAppBufferPath,
 				appAdminEmail: ropAuthAppData.adminEmail,
 				siteAdminUrl: ropAuthAppData.adminUrl,
 				appUniqueId: ropAuthAppData.authToken,
@@ -310,15 +314,36 @@
                     Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
 				});
 			},
+            /**
+             * Add Buffer account.
+             *
+             * @param data Data.
+             */
+            addAccountBuffer(data) {
+                this.$store.dispatch('fetchAJAXPromise', {
+                    req: 'add_account_buffer',
+                    updateState: false,
+                    data: data
+                }).then(response => {
+                    window.removeEventListener("message", event => this.getChildWindowMessage(event));
+                    this.authPopupWindow.close();
+                    window.location.reload();
+                }, error => {
+                    this.is_loading = false;
+                    Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+				});
+			},
 			getChildWindowMessage: function (event) {
 				if (~event.origin.indexOf(this.appOrigin)) {
-                    if ('Twitter' === this.modal.serviceName) {
-                        this.addAccountTW(JSON.parse(event.data));
-                    } else if ('Facebook' === this.modal.serviceName) {
+            if ('Twitter' === this.modal.serviceName) {
+            this.addAccountTW(JSON.parse(event.data));
+            } else if ('Facebook' === this.modal.serviceName) {
 					    this.addAccountFB(JSON.parse(event.data));
 						} else if ('LinkedIn' === this.modal.serviceName) {
 					    this.addAccountLI(JSON.parse(event.data));
-                    }
+						} else if ('Buffer' === this.modal.serviceName) {
+					    this.addAccountBuffer(JSON.parse(event.data));
+            }
 
 				} else {
 					return;
@@ -350,6 +375,18 @@
 			},
             openPopupLI: function () { // Open the popup specific for LinkedIn
                 let loginUrl = this.appOrigin + this.appPathLI + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
+                try {
+                    this.authPopupWindow.close();
+                } catch (e) {
+                    // nothing to do
+                } finally {
+                    this.authPopupWindow = window.open(loginUrl, 'authLI', this.windowParameters);
+                    this.cancelModal();
+                }
+                window.addEventListener("message", event => this.getChildWindowMessage(event));
+			},
+            openPopupBuffer: function () { // Open the popup specific for Buffer
+                let loginUrl = this.appOrigin + this.appPathBuffer + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
                 try {
                     this.authPopupWindow.close();
                 } catch (e) {
@@ -405,6 +442,10 @@
 									showButton = false;
 							}
 							return showButton;
+					},
+					// will return true if the current service actions are for Buffer.
+					isBuffer() {
+							return this.modal.serviceName === 'Buffer';
 					},
 	}
 }

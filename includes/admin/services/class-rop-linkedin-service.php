@@ -698,7 +698,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * This method will load and prepare the account data for LinkedIn user.
 	 * Used in Rest Api.
 	 *
-	 * @since   8.4.0
+	 * @since   8.5.0
 	 * @access  public
 	 *
 	 * @param   array $accounts_data Linked accounts data.

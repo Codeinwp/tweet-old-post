@@ -282,6 +282,7 @@ class Rop_Admin {
 			'authAppFacebookPath' => ROP_APP_FACEBOOK_PATH,
 			'authAppTwitterPath'  => ROP_APP_TWITTER_PATH,
 			'authAppLinkedInPath' => ROP_APP_LINKEDIN_PATH,
+			'authAppBufferPath'     => ROP_APP_BUFFER_PATH,
 			'authToken'           => $token,
 			'adminUrl'            => urlencode( $admin_url ),
 			'authSignature'       => $signature,
