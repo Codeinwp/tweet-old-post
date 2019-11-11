@@ -278,8 +278,8 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 					return true;
 				}
 				/**
-			 * Dont allow consecutive shared events on less than 60s diff.
-			 */
+				 * Dont allow consecutive shared events on less than 60s diff.
+				 */
 				if ( abs( $value - $prev ) < 60 ) {
 					return false;
 				}
@@ -303,7 +303,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   int    $base       Timestamp to reffer to.
+	 * @param   int    $base Timestamp to reffer to.
 	 * @param   string $account_id Timestamp to reffer to.
 	 *
 	 * @return array
@@ -445,7 +445,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  private
 	 *
-	 * @param   float $value    The value to be converted.
+	 * @param   float $value The value to be converted.
 	 * @param   bool  $as_array Flag to change return type to array.
 	 *
 	 * @return array|string
@@ -470,8 +470,8 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * @since   8.0.0
 	 * @access  private
 	 *
-	 * @param   string $time    The time to append to.
-	 * @param   int    $hours   The hours to be added.
+	 * @param   string $time The time to append to.
+	 * @param   int    $hours The hours to be added.
 	 * @param   int    $minutes The minutes to be added.
 	 *
 	 * @return false|string
@@ -520,7 +520,8 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	/**
 	 * Update the events timeline.
 	 *
-	 * @param array $new_events New events timeline.
+	 * @param $new_events $new_events New events timeline.
+	 * @param string     $account_id account id.
 	 *
 	 * @return bool Success or not.
 	 */
@@ -536,7 +537,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		$old_events   = $this->get( $this->events_namespace );
 		foreach ( $schedules as $id => $schedule ) {
 			$valid_events[ $id ] = isset( $old_events[ $id ] ) ? $old_events[ $id ] : array();
-			$valid_events[ $id ] = empty( $account_id ) ? $new_events[ $id ] : ( $id === $account_id ? $new_events : $valid_events[ $id ] );
+			$valid_events[ $id ] = empty( $account_id ) ? ( ( isset( $new_events[ $id ] ) ) ? $new_events[ $id ] : array() ) : ( $id === $account_id ? $new_events : $valid_events[ $id ] );
 		}
 		$this->set( $this->events_namespace, $valid_events );
 

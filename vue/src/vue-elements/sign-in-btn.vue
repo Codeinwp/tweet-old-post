@@ -37,7 +37,6 @@
 						</div>
 						<div class="auth-app" v-if="isBuffer">
 							<button class="btn btn-primary big-btn" @click="openPopupBuffer()">{{labels.buffer_app_signin_btn}}</button>
-							<span class="text-center">{{labels.li_own_app_signin}}</span>
 						</div>
 						<div id="rop-advanced-config" v-if="isFacebook || isTwitter || (isLinkedIn && isAllowedLinkedIn)">
 						<button class="btn btn-primary" v-on:click="showAdvanceConfig = !showAdvanceConfig">{{labels.show_advance_config}}</button>
@@ -51,7 +50,7 @@
 							<p class="text-gray">{{ field.description }}</p>
 						</div>
 					</div>
-						<div v-if="(!isTwitter && !isFacebook && !isLinkedIn) || (isLinkedIn && !isAllowedLinkedIn)">
+						<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isBuffer) || (isLinkedIn && !isAllowedLinkedIn)">
 						<div class="form-group" v-for="( field, id ) in modal.data">
 							<label class="form-label" :for="field.id">{{ field.name }}</label>
 							<input :class="[ 'form-input', field.error ? ' is-error' : '' ]" type="text" :id="field.id" v-model="field.value"
@@ -69,7 +68,7 @@
 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 				</div>
-				<div v-if="(!isTwitter && !isFacebook && !isLinkedIn) || (isLinkedIn && !isAllowedLinkedIn)" class="modal-footer">
+				<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isBuffer) || (isLinkedIn && !isAllowedLinkedIn)" class="modal-footer">
 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 				</div>

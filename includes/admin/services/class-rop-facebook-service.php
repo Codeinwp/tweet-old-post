@@ -498,25 +498,25 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	private function prepare_for_sharing( $post_details ) {
 		$post_id = $post_details['post_id'];
 
-			/**
-			 *
-			 * TODO Add in the post format tab, for facebook, an posting behaviour option,
-			 * where we should allow user to choose how the posting with image will work, as regular post or photo post.
-			 */
+		/**
+		 *
+		 * TODO Add in the post format tab, for facebook, an posting behaviour option,
+		 * where we should allow user to choose how the posting with image will work, as regular post or photo post.
+		 */
 
-			// Fb connected via Revive Social App
-			$installed_with_app = get_option( 'rop_facebook_via_rs_app' );
+		// Fb connected via Revive Social App
+		$installed_with_app = get_option( 'rop_facebook_via_rs_app' );
 
 		if ( ! empty( $installed_with_app ) ) {
 
-				// If is media attachment post
+			// If is media attachment post
 			if ( get_post_type( $post_id ) === 'attachment' ) {
 
 				// If media video post, share as regular post on FB
 				if ( strpos( get_post_mime_type( $post_id ), 'video' ) !== false ) {
 
 					$new_post['message'] = $post_details['content'] . $post_details['hashtags'];
-					$new_post['link'] = get_permalink( $post_id );
+					$new_post['link']    = get_permalink( $post_id );
 
 					return array(
 						'post_data' => $new_post,
@@ -534,7 +534,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				);
 			}
 
-				// If is regular post, but post with image option checked, post as Image on FB
+			// If is regular post, but post with image option checked, post as Image on FB
 			if ( get_post_type( $post_id ) !== 'attachment' && ! empty( $post_details['post_image'] ) ) {
 
 				$new_post['url'] = $post_details['post_image'];
@@ -567,7 +567,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			);
 		}
 
-			// If we don't have an image link share as regular post.
+		// If we don't have an image link share as regular post.
 		if ( get_post_type( $post_id ) !== 'attachment' && empty( $post_details['post_image'] ) ) {
 
 			$new_post['message'] = $post_details['content'] . $post_details['hashtags'];
@@ -583,7 +583,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			);
 		}
 
-			$api = $this->get_api();
+		$api = $this->get_api();
 
 		if ( strpos( $post_details['mimetype']['type'], 'image' ) !== false ) {
 
@@ -663,7 +663,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				) {
 					// https://developers.facebook.com/docs/graph-api/reference/v3.2/page/feed#custom-image
 					// retry without name and with link inside message.
-
 					if ( isset( $new_post['name'] ) ) {
 						unset( $new_post['name'] );
 					}
@@ -674,6 +673,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 					try {
 						$api->post( $path, $new_post, $token );
+
 						return true;
 					} catch ( Facebook\Exceptions\FacebookResponseException $e ) {
 						$this->logger->alert_error( 'Unable to share post for facebook. (FacebookResponseException) Error: ' . $e->getMessage() );
@@ -695,11 +695,12 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			} catch ( Facebook\Exceptions\FacebookSDKException $e ) {
 				$this->logger->alert_error( 'Unable to share post for facebook.  Error: ' . $e->getMessage() );
 				$this->rop_get_error_docs( $e->getMessage() );
+
 				return false;
 			}
 		} else {
 			// Page was added using ROP application (new method)
-			$post_data = $new_post;
+			$post_data                 = $new_post;
 			$post_data['access_token'] = $token;
 
 			if ( $posting_type === 'video' ) {
@@ -715,7 +716,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				$url,
 				array(
 
-					'body' => $post_data,
+					'body'    => $post_data,
 					'headers' => array(
 						'Content-Type' => 'application/x-www-form-urlencoded',
 					),
@@ -738,7 +739,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				) {
 					// https://developers.facebook.com/docs/graph-api/reference/v3.2/page/feed#custom-image
 					// retry without name and with link inside message.
-
 					if ( isset( $post_data['name'] ) ) {
 						unset( $post_data['name'] );
 					}
@@ -751,7 +751,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 						$url,
 						array(
 
-							'body' => $post_data,
+							'body'    => $post_data,
 							'headers' => array(
 								'Content-Type' => 'application/x-www-form-urlencoded',
 							),
@@ -767,18 +767,22 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 					} elseif ( ! empty( $body['error']['message'] ) ) {
 						$this->logger->alert_error( 'Error Posting to Facebook: ' . $body['error']['message'] );
 						$this->rop_get_error_docs( $body['error']['message'] );
+
 						return false;
 					} else {
 						$this->logger->alert_error( 'Error Posting to Facebook, response: ' . print_r( $response, true ) );
+
 						return false;
 					}
 				} else {
 					$this->logger->alert_error( 'Error Posting to Facebook: ' . $body['error']['message'] );
 					$this->rop_get_error_docs( $body['error']['message'] );
+
 					return false;
 				}
 			} else {
 				$this->logger->alert_error( 'Error Posting to Facebook, response: ' . print_r( $response, true ) );
+
 				return false;
 			}
 		}
@@ -792,6 +796,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @access  public
 	 *
 	 * @param   array $account_data Facebook pages data.
+	 *
 	 * @return  bool
 	 */
 	public function add_account_with_app( $account_data ) {
@@ -803,15 +808,15 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		$pages_arr = $account_data['pages'];
 
-		for ( $i = 0; $i < sizeof( $pages_arr ); $i++ ) {
+		for ( $i = 0; $i < sizeof( $pages_arr ); $i ++ ) {
 
-			$page_data = unserialize( base64_decode( $pages_arr[ $i ] ) );
+			$page_data            = unserialize( base64_decode( $pages_arr[ $i ] ) );
 			// assign default values to variable
-			$page = $this->user_default;
-			$page['id'] = $page_data['id'];
-			$page['user'] = $this->normalize_string( empty( $page_data['name'] ) ? '' : $page_data['name'] );
-			$page['account'] = $page_data['email'];
-			$page['img'] = $page_data['img'];
+			$page                 = $this->user_default;
+			$page['id']           = $page_data['id'];
+			$page['user']         = $this->normalize_string( empty( $page_data['name'] ) ? '' : $page_data['name'] );
+			$page['account']      = $page_data['email'];
+			$page['img']          = $page_data['img'];
 			$page['access_token'] = $page_data['access_token'];
 			if ( $i == 0 ) {
 				$page['active'] = true;
@@ -822,9 +827,9 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		}
 
 		$this->service = array(
-			'id' => unserialize( base64_decode( $account_data['id'] ) ),
-			'service' => $this->service_name,
-			'credentials' => $this->credentials,
+			'id'                 => unserialize( base64_decode( $account_data['id'] ) ),
+			'service'            => $this->service_name,
+			'credentials'        => $this->credentials,
 			'available_accounts' => $accounts,
 		);
 

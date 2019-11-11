@@ -154,10 +154,11 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		$token = $_SESSION['rop_buffer_credentials'];
+		$token                = $_SESSION['rop_buffer_credentials'];
 		$credentials['token'] = $token;
 
 		unset( $_SESSION['rop_buffer_credentials'] );
+
 		return $this->authenticate( $credentials );
 
 	}
@@ -180,8 +181,9 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 		$response = json_decode( wp_remote_retrieve_body( $response ), true );
 
 		if ( ! isset( $response['id'] ) ) {
-			  $this->logger->alert_error( 'Buffer error: ' . $response['error'] );
-			  return false;
+			$this->logger->alert_error( 'Buffer error: ' . $response['error'] );
+
+			return false;
 		}
 
 		$this->service = array(
@@ -226,6 +228,7 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 
 		if ( isset( $response['error'] ) ) {
 			$this->logger->alert_error( 'Buffer error: ' . $response['error'] );
+
 			return false;
 		}
 
@@ -236,9 +239,9 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 
 		foreach ( $response as $response_field ) {
 			if ( ! in_array( $response_field['formatted_service'], $allowed ) ) {
-				 continue;
+				continue;
 			}
-			$buffer_profile          = array();
+			$buffer_profile            = array();
 			$buffer_profile['id']      = $response_field['id'];
 			$buffer_profile['account'] = $response_field['formatted_username'];
 			$buffer_profile['user']    = $response_field['formatted_service'] . ' - ' . $response_field['formatted_username'];
@@ -281,9 +284,7 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 
 		$_SESSION['rop_buffer_credentials'] = $data['credentials']['access_token'];
 
-		$url = get_admin_url( get_current_blog_id(), 'admin.php?page=TweetOldPost&state=buffer&network=buffer' );
-
-		return $url;
+		return get_admin_url( get_current_blog_id(), 'admin.php?page=TweetOldPost&state=buffer&network=buffer' );
 	}
 
 	/**
@@ -293,7 +294,7 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 	 * @access public
 	 *
 	 * @param array $post_details The post details to be published by the service.
-	 * @param array $args         Optional arguments needed by the method.
+	 * @param array $args Optional arguments needed by the method.
 	 *
 	 * @return mixed
 	 */
@@ -307,18 +308,18 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 		if ( get_post_type( $post_id ) !== 'attachment' ) {
 			// If post image option unchecked, share as article post
 			if ( empty( $post_details['post_image'] ) ) {
-				$new_post  = $this->buffer_article_post( $post_details, $args );
+				$new_post = $this->buffer_article_post( $post_details, $args );
 			} else {
-				$new_post  = $this->buffer_media_post( $post_details, $args );
+				$new_post = $this->buffer_media_post( $post_details, $args );
 			}
 		} elseif ( get_post_type( $post_id ) === 'attachment' ) {
 
 			// work on video post
 			if ( strpos( $post_details['mimetype']['type'], 'video' ) !== false ) {
-				   $new_post  = $this->buffer_media_post( $post_details, $args );
+				$new_post = $this->buffer_media_post( $post_details, $args );
 			}
 
-			$new_post  = $this->buffer_media_post( $post_details, $args );
+			$new_post = $this->buffer_media_post( $post_details, $args );
 
 		}
 
@@ -337,8 +338,9 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 		$response = wp_remote_retrieve_body( $response );
 		$response = json_decode( $response, true );
 
-		if ( $response['success'] === false ) {
+		if ( false === filter_var( $response['success'], FILTER_VALIDATE_BOOLEAN ) ) {
 			$this->logger->alert_error( 'Buffer error: ' . $response['message'] );
+
 			return false;
 		}
 
@@ -361,7 +363,7 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 	 * @access private
 	 *
 	 * @param array $post_details The post details to be published by the service.
-	 * @param array $args         Optional arguments needed by the method.
+	 * @param array $args Optional arguments needed by the method.
 	 *
 	 * @return array
 	 */
@@ -372,22 +374,22 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 		}
 
 		$data = array(
-			'pretty' => 'true',
-			'now' => 'true',
+			'pretty'       => 'true',
+			'now'          => 'true',
 			'access_token' => $args['credentials'],
-			'profile_ids' => array(
+			'profile_ids'  => array(
 				$args['id'],
 			),
-			'shorten' => 'false',
-			'text' => $post_details['content'] . $post_details['hashtags'],
-			'media' => array(
+			'shorten'      => 'false',
+			'text'         => $post_details['content'] . $post_details['hashtags'],
+			'media'        => array(
 				'link' => trim( $this->get_url( $post_details ) ),
 			),
 
 		);
 
 		// Schedule some posts via buffer
-		 $value = mt_rand( 0, 6 );
+		$value = mt_rand( 0, 6 );
 
 		if ( $value >= 3 ) {
 			$data['scheduled_at'] = time() + 60;
@@ -404,27 +406,31 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 	 * @access private
 	 *
 	 * @param array $post_details The post details to be published by the service.
-	 * @param array $args         Optional arguments needed by the method.
+	 * @param array $args Optional arguments needed by the method.
 	 *
 	 * @return array
 	 */
 	private function buffer_media_post( $post_details, $args = array() ) {
 
-		$format_helper = new Rop_Post_Format_Helper();
+		if ( false === filter_var( $post_details['post_with_image'], FILTER_VALIDATE_BOOLEAN ) || ! isset( $post_details['post_image'] ) || '' === trim( $post_details['post_image'] ) ) {
+			$format_helper = new Rop_Post_Format_Helper();
 
-		$img = $format_helper->build_image( $post_details['post_id'] );
+			$image_to_share = $format_helper->build_image( $post_details['post_id'] );
+		} else {
+			$image_to_share = $post_details['post_image'];
+		}
 
 		$data = array(
-			'pretty' => 'true',
-			'now' => 'true',
+			'pretty'       => 'true',
+			'now'          => 'true',
 			'access_token' => $args['credentials'],
-			'profile_ids' => array(
+			'profile_ids'  => array(
 				$args['id'],
 			),
-			'shorten' => 'false',
-			'text' => $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'],
-			'media' => array(
-				'photo' => $img,
+			'shorten'      => 'false',
+			'text'         => $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'],
+			'media'        => array(
+				'photo' => $image_to_share,
 			),
 
 		);

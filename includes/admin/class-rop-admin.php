@@ -246,7 +246,7 @@ class Rop_Admin {
 		}
 
 		$services        = new Rop_Services_Model();
-		$li_service          = new Rop_Linkedin_Service();
+		$li_service      = new Rop_Linkedin_Service();
 		$active_accounts = $services->get_active_accounts();
 
 		$added_services = $services->get_authenticated_services();
@@ -270,7 +270,7 @@ class Rop_Admin {
 			'action'   => $settings->get_instant_sharing_by_default(),
 			'accounts' => $active_accounts,
 		);
-		$array_nonce['added_networks']                   = $added_networks;
+		$array_nonce['added_networks']          = $added_networks;
 
 		$admin_url = get_admin_url( get_current_blog_id(), 'admin.php?page=TweetOldPost' );
 		$token     = get_option( ROP_APP_TOKEN_OPTION );
@@ -518,7 +518,7 @@ class Rop_Admin {
 			__( 'Roadmap', 'tweet-old-post' ),
 			__( 'Plugin Roadmap', 'tweet-old-post' ),
 			'manage_options',
-			'https://www.google.com'
+			'https://trello.com/b/svAZqXO1/roadmap-revive-old-posts'
 		);
 	}
 
@@ -530,11 +530,11 @@ class Rop_Admin {
 	 */
 	function rop_roadmap_new_tab() {
 		?>
-	<script type="text/javascript">
-		jQuery(document).ready( function($) {
-			$( "ul#adminmenu a[href$='https://trello.com/b/svAZqXO1/roadmap-revive-old-posts']" ).attr( 'target', '_blank' );
-		});
-	</script>
+		<script type="text/javascript">
+			jQuery(document).ready(function ($) {
+				$("ul#adminmenu a[href$='https://trello.com/b/svAZqXO1/roadmap-revive-old-posts']").attr('target', '_blank');
+			});
+		</script>
 		<?php
 	}
 
@@ -556,7 +556,7 @@ class Rop_Admin {
 		$active_accounts = $services->get_active_accounts();
 
 		if ( $settings->get_instant_sharing() && count( $active_accounts ) >= 2 && ! defined( 'ROP_PRO_VERSION' ) ) {
-			echo '<div class="misc-pub-section  " style="font-size: 13px;text-align: center;line-height: 1.7em;color: #888;"><span class="dashicons dashicons-lock"></span>' .
+			echo '<div class="misc-pub-section  " style="font-size: 11px;text-align: center;line-height: 1.7em;color: #888;"><span class="dashicons dashicons-lock"></span>' .
 				__(
 					'Share to more accounts by upgrading to the extended version for ',
 					'tweet-old-post'
@@ -564,6 +564,50 @@ class Rop_Admin {
 						</div>';
 		}
 	}
+
+	/**
+	 * Creates publish now metabox.
+	 *
+	 * @since   8.5.0
+	 * @access  public
+	 */
+	public function rop_publish_now_metabox() {
+
+		$settings_model  = new Rop_Settings_Model();
+		// Get selected post types from General settings
+		$screens = wp_list_pluck( $settings_model->get_selected_post_types(), 'value' );
+
+		if ( empty( $screens ) ) {
+			 return;
+		}
+
+		foreach ( $screens as $screen ) {
+			add_meta_box(
+				'rop_publish_now_metabox',
+				'Revive Old Posts',
+				array($this, 'rop_publish_now_metabox_html'),
+				$screen,
+				'side',
+				'high'
+			);
+		}
+	}
+
+	/**
+	 * Publish now metabox html.
+	 *
+	 * @since   8.5.0
+	 * @access  public
+	 */
+	public function rop_publish_now_metabox_html() {
+
+		wp_nonce_field( 'rop_publish_now_nonce', 'rop_publish_now_nonce' );
+		include_once ROP_LITE_PATH . '/includes/admin/views/publish_now.php';
+
+		$this->publish_now_upsell();
+
+	}
+
 
 	/**
 	 * Adds the publish now buttons.
@@ -715,6 +759,16 @@ class Rop_Admin {
 	}
 
 	/**
+	 * Used for Cron Job sharing that will run once.
+	 *
+	 * @since 8.5.0
+	 */
+	public function rop_cron_job_once() {
+		$this->rop_cron_job();
+
+	}
+
+	/**
 	 * The Cron Job for the plugin.
 	 *
 	 * @since   8.0.0
@@ -750,7 +804,7 @@ class Rop_Admin {
 							}
 						} catch ( Exception $exception ) {
 							$error_message = sprintf( Rop_I18n::get_labels( 'accounts.service_error' ), $account_data['service'] );
-							$logger->alert_error( $error_message . ' Error: ' . $exception->getTrace() );
+							$logger->alert_error( $error_message . ' Error: ' . $exception->getMessage() );
 						}
 					}
 				}
@@ -823,6 +877,22 @@ class Rop_Admin {
 			add_user_meta( $user_id, 'rop-linkedin-api-notice-dismissed', 'true', true );
 		}
 
+	}
+
+
+	/**
+	 * Disable Cron Jobs on refresh if remove_cron() method was called
+	 *
+	 * @since 8.5.0
+	 */
+	public function check_cron_status() {
+		$key             = 'rop_is_sharing_cron_active';
+		$should_cron_run = get_option( $key, 'yes' );
+		$should_cron_run = filter_var( $should_cron_run, FILTER_VALIDATE_BOOLEAN );
+		if ( false === $should_cron_run ) {
+			wp_clear_scheduled_hook( Rop_Cron_Helper::CRON_NAMESPACE );
+			wp_clear_scheduled_hook( Rop_Cron_Helper::CRON_NAMESPACE_ONCE );
+		}
 	}
 
 	/**

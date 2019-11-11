@@ -24,6 +24,11 @@ class Rop_Cron_Helper {
 	const CRON_NAMESPACE = 'rop_cron_job';
 
 	/**
+	 * Cron action name.
+	 */
+	const CRON_NAMESPACE_ONCE = 'rop_cron_job_once';
+
+	/**
 	 * Cron action name for sharing specific post(s).
 	 */
 	const CRON_NAMESPACE_PUBLISH_NOW = 'rop_cron_job_publish_now';
@@ -55,11 +60,11 @@ class Rop_Cron_Helper {
 	 * @return  array Current status.
 	 */
 	public function manage_cron( $request ) {
-		if ( isset( $request['action'] ) && $request['action'] === 'start' ) {
+		if ( isset( $request['action'] ) && 'start' === $request['action'] ) {
 			$this->create_cron( true );
-		} elseif ( isset( $request['action'] ) && $request['action'] === 'stop' ) {
-			$this->remove_cron();
-		} elseif ( isset( $request['action'] ) && $request['action'] === 'publish-now' ) {
+		} elseif ( isset( $request['action'] ) && 'stop' === $request['action'] ) {
+			$this->remove_cron( $request );
+		} elseif ( isset( $request['action'] ) && 'publish-now' === $request['action'] ) {
 			$this->publish_now();
 		}
 
@@ -84,6 +89,7 @@ class Rop_Cron_Helper {
 		if ( ! wp_next_scheduled( self::CRON_NAMESPACE_PUBLISH_NOW ) ) {
 			wp_schedule_single_event( time() + 15, self::CRON_NAMESPACE_PUBLISH_NOW );
 		}
+
 		return true;
 	}
 
@@ -93,6 +99,9 @@ class Rop_Cron_Helper {
 	 *
 	 * @since   8.0.0rc
 	 * @access  public
+	 *
+	 * @param bool $first cron that runs once.
+	 *
 	 * @return bool
 	 */
 	public function create_cron( $first = true ) {
@@ -102,9 +111,10 @@ class Rop_Cron_Helper {
 				$this->fresh_start();
 				$settings = new Rop_Global_Settings();
 				$settings->update_start_time();
-				wp_schedule_single_event( time() + 30, self::CRON_NAMESPACE );
+				wp_schedule_single_event( time() + 30, self::CRON_NAMESPACE_ONCE );
 			}
 			wp_schedule_event( time(), '5min', self::CRON_NAMESPACE );
+			$this->cron_status_global_change( true );
 		}
 
 		return true;
@@ -115,15 +125,108 @@ class Rop_Cron_Helper {
 	 *
 	 * @since   8.0.0rc
 	 * @access  public
+	 *
+	 * @param array $request data transmitted via ajax.
+	 *
 	 * @return bool
 	 */
-	public function remove_cron() {
-		$timestamp = wp_next_scheduled( self::CRON_NAMESPACE );
-		if ( is_int( $timestamp ) ) {
-			wp_clear_scheduled_hook( self::CRON_NAMESPACE );
+	public function remove_cron( $request = array() ) {
+		global $wpdb;
+
+		$current_cron_list = _get_cron_array();
+		$rop_cron_key      = self::get_schedule_key( array( self::CRON_NAMESPACE, self::CRON_NAMESPACE_ONCE ) );
+		if ( ! empty( $rop_cron_key ) ) {
+			$wpdb->query( 'START TRANSACTION' );
+			$this->cron_status_global_change( false );
+
+			foreach ( $rop_cron_key as $rop_active_cron ) {
+				$cron_time      = (int) $rop_active_cron['time'];
+				$cron_key       = $rop_active_cron['key'];
+				$cron_namespace = $rop_active_cron['namespace'];
+
+				unset( $current_cron_list[ $cron_time ][ $cron_namespace ][ $cron_key ] );
+				if ( empty( $current_cron_list[ $cron_time ][ $cron_namespace ] ) ) {
+					unset( $current_cron_list[ $cron_time ][ $cron_namespace ] );
+				}
+
+				if ( empty( $current_cron_list[ $cron_time ] ) ) {
+					unset( $current_cron_list[ $cron_time ] );
+				}
+			}
+			uksort( $current_cron_list, 'strnatcasecmp' );
+			_set_cron_array( $current_cron_list );
+
+			wp_cache_delete( 'alloptions', 'options' );
+
+			$wpdb->query( 'COMMIT' );
 		}
+
 		$this->fresh_start();
+
 		return false;
+	}
+
+	/**
+	 * Will return the cron MD5 key used to unschedule cron event
+	 *
+	 * @see wp_unschedule_event()
+	 * @see _get_cron_array()
+	 *
+	 * @since 8.5.0
+	 *
+	 * @param string|array $namespace array for multiple cron data.
+	 *
+	 * @return array|bool
+	 */
+	public static function get_schedule_key( $namespace ) {
+		if ( empty( $namespace ) ) {
+			return false;
+		}
+
+		if ( is_array( $namespace ) ) {
+			$namespace = array_map( 'strtolower', $namespace );
+		}
+
+		$return_keys = array();
+		$cron_list   = _get_cron_array();
+		if ( ! empty( $cron_list ) ) {
+			foreach ( $cron_list as $cron_time => $cron_data ) {
+				$cron_name = key( $cron_data );
+
+				if (
+					( is_array( $namespace ) && in_array( strtolower( $cron_name ), $namespace, true ) )
+					||
+					( is_string( $namespace ) && strtolower( $cron_name ) === strtolower( $namespace ) )
+				) {
+					$key           = isset( $cron_data[ $cron_name ] ) ? key( $cron_data[ $cron_name ] ) : '';
+					$return_keys[] = array(
+						'time'      => $cron_time, // next time the cron will run.
+						'key'       => $key, // This is the cron signature.
+						'namespace' => $cron_name, // cron name space.
+					);
+				}
+			}
+
+			if ( ! empty( $return_keys ) ) {
+				return $return_keys;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Change the option that handles the cron status.
+	 *
+	 * @since 8.5.0
+	 *
+	 * @param bool $action true/false if crons should work or stop.
+	 */
+	function cron_status_global_change( $action = false ) {
+		$key         = 'rop_is_sharing_cron_active';
+		$cron_status = ( true === $action ) ? 'yes' : 'no';
+
+		update_option( $key, $cron_status, 'no' );
 	}
 
 	/**
@@ -181,7 +284,7 @@ class Rop_Cron_Helper {
 	 * @return string
 	 */
 	private function convert_phpformat_to_js( $format ) {
-		$replacements = array(
+		$replacements  = array(
 			'd' => 'DD',
 			'D' => 'ddd',
 			'j' => 'D',
@@ -220,9 +323,9 @@ class Rop_Cron_Helper {
 			'r' => '', // no equivalent
 			'U' => 'X',
 		);
-		$momentFormat = strtr( $format, $replacements );
+		$moment_format = strtr( $format, $replacements );
 
-		return $momentFormat;
+		return $moment_format;
 	}
 
 	/**
