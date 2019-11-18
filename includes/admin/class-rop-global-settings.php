@@ -484,7 +484,7 @@ class Rop_Global_Settings {
 
 		foreach ( $available_services as $key => $service ) {
 			$registered = $service_model->get_authenticated_services( $key );
-			error_log( '$key => $service ' . $key . ' <>' . var_export( $service, true ) );
+
 			if ( empty( $registered ) ) {
 				continue;
 			}
