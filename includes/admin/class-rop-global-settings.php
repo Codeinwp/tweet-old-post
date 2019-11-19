@@ -118,7 +118,7 @@ class Rop_Global_Settings {
 			'active' => false,
 			'name'   => 'Pinterest',
 		),
-		'buffer' => array(
+		'buffer'    => array(
 			'active' => false,
 			'name'   => 'Buffer',
 		),
@@ -132,27 +132,27 @@ class Rop_Global_Settings {
 	 * @var     array $settings_defaults The class defaults for settings.
 	 */
 	private $settings_defaults = array(
-		'default_interval'     => 10,
-		'minimum_post_age'     => 30,
-		'maximum_post_age'     => 0,
-		'number_of_posts'      => 1,
-		'more_than_once'       => true,
-		'available_post_types' => array(),
-		'selected_post_types'  => array( array( 'name' => 'Posts', 'value' => 'post', 'selected' => true ) ),
-		'available_taxonomies' => array(),
-		'selected_taxonomies'  => array(),
-		'exclude_taxonomies'   => false,
-		'available_posts'      => array(), // get_posts(),
-		'selected_posts'       => array(),
-		'exclude_posts'        => true,
-		'ga_tracking'          => true,
-		'beta_user'            => false,
-		'remote_check'         => false,
-		'custom_messages'      => false,
-		'custom_share_order'   => false,
-		'instant_share'        => true,
+		'default_interval'      => 10,
+		'minimum_post_age'      => 30,
+		'maximum_post_age'      => 0,
+		'number_of_posts'       => 1,
+		'more_than_once'        => true,
+		'available_post_types'  => array(),
+		'selected_post_types'   => array( array( 'name' => 'Posts', 'value' => 'post', 'selected' => true ) ),
+		'available_taxonomies'  => array(),
+		'selected_taxonomies'   => array(),
+		'exclude_taxonomies'    => false,
+		'available_posts'       => array(), // get_posts(),
+		'selected_posts'        => array(),
+		'exclude_posts'         => true,
+		'ga_tracking'           => true,
+		'beta_user'             => false,
+		'remote_check'          => false,
+		'custom_messages'       => false,
+		'custom_share_order'    => false,
+		'instant_share'         => true,
 		'instant_share_default' => false,
-		'start_time'           => false,
+		'start_time'            => false,
 	);
 
 	/**
@@ -203,7 +203,7 @@ class Rop_Global_Settings {
 			'utm_campaign_medium'  => 'social',
 			'utm_campaign_name'    => 'ReviveOldPost',
 		),
-		'buffer'   => array(
+		'buffer'    => array(
 			'post_content'         => 'post_title',
 			'custom_meta_field'    => '',
 			'maximum_length'       => '140',
@@ -497,9 +497,16 @@ class Rop_Global_Settings {
 			if ( empty( $registered ) ) {
 				continue;
 			}
-			$service['credentials']      = array();
-			$service['two_step_sign_in'] = false;
-			$available_services[ $key ]  = $service;
+			$service['credentials'] = array();
+			/**
+			 * These variables prevent Twitter service to register multiple accounts.
+			 * $service['two_step_sign_in'] = false; For Twitter, this prevent the modal to open up
+			 * Even if the modal displays, the variable $available_services[ $key ] will prevent the form to show up.
+			 */
+			if ( 'twitter' !== $key ) {
+				$service['two_step_sign_in'] = false;
+				$available_services[ $key ]  = $service;
+			}
 		}
 
 		return $available_services;
