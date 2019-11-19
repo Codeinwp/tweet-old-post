@@ -566,16 +566,12 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			}
 		}
 
+		// if regular post, but "Include link" is selected in Post Format settings, post as normal article post
 		if ( get_post_type( $post_id ) !== 'attachment' && ! empty( $post_details['post_url'] ) ) {
 
 			$new_post['message'] = $this->strip_excess_blank_lines( $post_details['content'] ) . $post_details['hashtags'];
 
-			$new_post['name'] = html_entity_decode( get_the_title( $post_details['post_id'] ) );
 			$new_post['link'] = $this->get_url( $post_details );
-
-			if ( ! empty( $post_details['post_image'] ) ) {
-				$new_post['picture'] = $post_details['post_image'];
-			}
 
 			return array(
 				'post_data' => $new_post,
@@ -583,15 +579,10 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			);
 		}
 
-		// If we don't have an image link share as regular post.
-		if ( get_post_type( $post_id ) !== 'attachment' && empty( $post_details['post_image'] ) ) {
+		// if we don't have "Post with image", nor "Include link" checked in Post Format settings, post as text post.
+		if ( get_post_type( $post_id ) !== 'attachment' && empty( $post_details['post_image'] ) && empty( $post_details['post_url'] ) ) {
 
 			$new_post['message'] = $post_details['content'] . $post_details['hashtags'];
-
-			if ( ! empty( $post_details['post_url'] ) ) {
-				$new_post['name'] = html_entity_decode( get_the_title( $post_details['post_id'] ) );
-				$new_post['link'] = $this->get_url( $post_details );
-			}
 
 			return array(
 				'post_data' => $new_post,
