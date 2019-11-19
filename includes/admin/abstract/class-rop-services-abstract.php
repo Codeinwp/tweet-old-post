@@ -504,7 +504,7 @@ abstract class Rop_Services_Abstract {
 			),
 
 			// Twitter errors
-			'Desktop applications only support the oauth_callback value'                  => array(
+			'Desktop applications only support the oauth_callback value' => array(
 				'message' => 'Your Callback URL for your Twitter app might not be correct.',
 				'link'    => 'https://is.gd/fix_oauth_callback_value',
 			),
@@ -516,7 +516,7 @@ abstract class Rop_Services_Abstract {
 				'message' => 'Our plugin might be having an issue posting tweets with an image to your account.',
 				'link'    => 'https://is.gd/fix_invalid_media',
 			),
-			'Callback URL not approved for this client application'                       => array(
+			'Callback URL not approved for this client application' => array(
 				'message' => 'Your Callback URL for your Twitter app might not be correct.',
 				'link'    => 'https://is.gd/fix_oauth_callback_value',
 			),
