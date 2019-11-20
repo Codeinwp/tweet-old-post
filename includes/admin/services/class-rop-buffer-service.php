@@ -457,12 +457,16 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 	 * @return  bool
 	 */
 	public function add_account_with_app( $accounts_data ) {
-		if ( ! $this->is_set_not_empty( $accounts_data, array( 'id' ) ) ) {
-			return false;
-		}
 
 		$the_id       = unserialize( base64_decode( $accounts_data['id'] ) );
 		$accounts_array = unserialize( base64_decode( $accounts_data['pages'] ) );
+
+		// we're checking for an ID inside the buffer connected accounts ($accounts_data['pages'])
+		// because $accounts_data['id'] will always be present even though user does not have valid connected accounts
+		if ( ! $this->is_set_not_empty( $accounts_array[0], array( 'id' ) ) ) {
+			$this->logger->alert_error( 'Buffer error: No valid accounts found. Please make sure you have a Facebook Group or Instagram Account connected to your Buffer profile.' );
+			return false;
+		}
 
 		$accounts = array();
 
