@@ -296,7 +296,7 @@ class Rop_I18n {
 
 			),
 			'logs'        => array(
-				'menu_item' => __( 'Logs', 'tweet-old-post' ),
+				'menu_item' => __( 'Sharing Logs', 'tweet-old-post' ),
 				'clear_btn' => __( 'Clear logs', 'tweet-old-post' ),
 				'no_logs'   => __( 'No recent logs!', 'tweet-old-post' ),
 			),
