@@ -675,7 +675,7 @@ abstract class Rop_Services_Abstract {
 	 *
 	 * @return string
 	 */
-	public function convert_image_to_base64( $image_path = '' ) {
+	protected function convert_image_to_base64( $image_path = '' ) {
 		$opened_file = fopen( $image_path, 'r' );
 		if ( false === $opened_file ) { // If the file cannot be opened, we need to return the given path instead.
 			return $image_path;
@@ -685,5 +685,28 @@ abstract class Rop_Services_Abstract {
 		fclose( $opened_file );
 
 		return base64_encode( $contents );
+	}
+
+	/**
+	 * Checks to see if the cURL library is loaded and the function can be found.
+	 *
+	 * @return bool true/false if function is found.
+	 * @since 8.5.0
+	 */
+	protected function is_curl_active() {
+		return function_exists( 'curl_init' );
+	}
+
+	/**
+	 * Returns true if the string $file_path is an URL.
+	 *
+	 * @param string $file_path string with filepath or url.
+	 *
+	 * @since 8.5.0
+	 *
+	 * @return boolean
+	 */
+	protected function is_remote_file( $file_path = '' ) {
+		return preg_match( '/^(https?|ftp):\/\/.*/', $file_path ) === 1;
 	}
 }

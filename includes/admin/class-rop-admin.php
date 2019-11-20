@@ -216,8 +216,9 @@ class Rop_Admin {
 	 */
 	private function facebook_exception_toast_display() {
 		$show_the_toast = get_option( 'rop_facebook_domain_toast', 'no' );
-
-		return filter_var( $show_the_toast, FILTER_VALIDATE_BOOLEAN );
+		// Will comment this return for now, might be of use later on.
+		// return filter_var( $show_the_toast, FILTER_VALIDATE_BOOLEAN );
+		return false;
 	}
 
 	/**
@@ -282,7 +283,7 @@ class Rop_Admin {
 			'authAppFacebookPath' => ROP_APP_FACEBOOK_PATH,
 			'authAppTwitterPath'  => ROP_APP_TWITTER_PATH,
 			'authAppLinkedInPath' => ROP_APP_LINKEDIN_PATH,
-			'authAppBufferPath'     => ROP_APP_BUFFER_PATH,
+			'authAppBufferPath'   => ROP_APP_BUFFER_PATH,
 			'authToken'           => $token,
 			'adminUrl'            => urlencode( $admin_url ),
 			'authSignature'       => $signature,
@@ -573,19 +574,19 @@ class Rop_Admin {
 	 */
 	public function rop_publish_now_metabox() {
 
-		$settings_model  = new Rop_Settings_Model();
+		$settings_model = new Rop_Settings_Model();
 		// Get selected post types from General settings
 		$screens = wp_list_pluck( $settings_model->get_selected_post_types(), 'value' );
 
 		if ( empty( $screens ) ) {
-			 return;
+			return;
 		}
 
 		foreach ( $screens as $screen ) {
 			add_meta_box(
 				'rop_publish_now_metabox',
 				'Revive Old Posts',
-				array($this, 'rop_publish_now_metabox_html'),
+				array( $this, 'rop_publish_now_metabox_html' ),
 				$screen,
 				'side',
 				'high'
