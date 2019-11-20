@@ -112,7 +112,7 @@ class Rop_I18n {
 				'service_error'              => __( 'The %1$s service can not be used or was not found', 'tweet-old-post' ),
 				'twitter_warning'            => __(
 					'
-					 It seems like you are using more than 1 Twitter account for sharing. On March 23rd Twitter changed it\'s policy regarding automatic posting across multiple accounts. You should ensure you comply with this new policy by sharing to only one twitter account at a time or risk getting one of your accounts banned.  Read more about this change <a href="https://blog.twitter.com/developer/en_us/topics/tips/2018/automation-and-the-use-of-multiple-accounts.html" target="_blank"><b>here</b></a>.
+					 You have more than one Twitter account connected. Twitter has changed it\'s policy regarding automatic posting of same content across multiple accounts. You should ensure you comply with this policy by sharing to only one twitter account at a time, or you risk getting one of your accounts BANNED. Disconnect one of your Twitter accounts to avoid having your account banned.
 			',
 					'tweet-old-post'
 				),
