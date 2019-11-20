@@ -750,10 +750,13 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 					if ( ! empty( $attachment_url ) ) {
 						$post_data['url'] = $attachment_url; // To use HTTP request, we need image url back.
 					}
-					unset( $post_data['source'] );
+					if ( isset( $post_data['source'] ) ) {
+						unset( $post_data['source'] );
+					}
+
 					// Send the request via http request.
 					$sent_request = $this->remote_post_http( $url, $post_data );
-					$response     = $sent_request['sent_request'];
+					$response     = $sent_request['response'];
 					$body         = $sent_request['body'];
 				}
 			} else {
@@ -763,7 +766,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				}
 				// Send the request via http request.
 				$sent_request = $this->remote_post_http( $url, $post_data );
-				$response     = $sent_request['sent_request'];
+				$response     = $sent_request['response'];
 				$body         = $sent_request['body'];
 			}
 
@@ -787,8 +790,12 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 						unset( $post_data['link'] );
 					}
 
-					unset( $post_data['source'] );
-					unset( $post_data['url'] );
+					if ( isset( $post_data['source'] ) ) {
+						unset( $post_data['source'] );
+					}
+					if ( isset( $post_data['url'] ) ) {
+						unset( $post_data['url'] );
+					}
 
 					// If the cURL library is installed and usable
 					if ( $this->is_curl_active() && ! empty( $attachment_path ) && false === $this->is_remote_file( $attachment_path ) ) {
@@ -803,10 +810,12 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 							if ( ! empty( $attachment_url ) ) {
 								$post_data['url'] = $attachment_url; // To use HTTP request, we need image url back.
 							}
-							unset( $post_data['source'] );
+							if ( isset( $post_data['source'] ) ) {
+								unset( $post_data['source'] );
+							}
 							// Send the request via http request.
 							$sent_request = $this->remote_post_http( $url, $post_data );
-							$response     = $sent_request['sent_request'];
+							$response     = $sent_request['response'];
 							$body         = $sent_request['body'];
 						}
 					} else {
@@ -816,7 +825,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 						}
 						// Send the request via http request.
 						$sent_request = $this->remote_post_http( $url, $post_data );
-						$response     = $sent_request['sent_request'];
+						$response     = $sent_request['response'];
 						$body         = $sent_request['body'];
 					}
 
