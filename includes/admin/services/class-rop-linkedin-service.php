@@ -44,7 +44,19 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @var     array $scopes The scopes to authorize with LinkedIn.
 	 */
 	protected $scopes = array( 'r_liteprofile', 'r_emailaddress', 'w_member_social', 'r_organization_social', 'w_organization_social', 'rw_organization_admin');
-	// protected $scopes = array( 'r_liteprofile', 'r_emailaddress', 'w_member_social', , 'w_organization_social');
+
+	/**
+	 * Old permissions required by custom user apps.
+	 *
+	 * This does not try to pull in the company profile, just the user's profile.
+	 * LinkedIn made it so that all new apps being created require company verification to work (which would give them the permissions in $scope).
+	 * So this is only valid for old apps that were already created.
+	 *
+	 * @since   8.5.0
+	 * @access  protected
+	 * @var     array $scopes_old The scopes to authorize with LinkedIn.
+	 */
+	protected $scopes_old = array( 'r_liteprofile', 'r_emailaddress', 'w_member_social');
 	// Company(organization) sharing scope cannot be used unless app approved for this scope.
 	// Added here for future reference
 	// https://stackoverflow.com/questions/54821731/in-linkedin-api-v2-0-how-to-get-company-list-by-persons-token
@@ -458,8 +470,12 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$_SESSION['rop_linkedin_credentials'] = $credentials;
 		$this->set_api( $credentials['client_id'], $credentials['secret'] );
 		$api = $this->get_api();
-		$url = $api->getLoginUrl( $this->scopes );
 
+		if(rop_show_li_app_btn){
+		$url = $api->getLoginUrl( $this->scopes );
+	}else{
+		$url = $api->getLoginUrl( $this->scopes_old );
+	}
 		return $url;
 	}
 
