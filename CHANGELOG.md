@@ -1,4 +1,20 @@
 
+ ### v8.5.0 - 2019-11-21 
+ **Changes:** 
+ * New PRO: Made it easier to connect LinkedIn Accounts for New Users
+* New PRO: Plugin will now grab LinkedIn company pages using LinkedIn service in ROP dashboard
+* New PRO: Easier addition of Instagram accounts and Facebook Groups using Buffer integration
+* New PRO: Ability to add custom images to post share variations
+* Fix PRO: Fixed an issue where Pinterest sharing failed on some hosts
+* Fix: Post immediately feature not working in Gutenberg
+* Change: Moved post immediately feature to metabox
+* Change: Opened up easier Twitter login workflow for old installs
+* Change: Sharing as an article post to Facebook no longer requires varifying domain with Facebook Business Manager
+* Change: Scrape post details before sharing to Facebook to ensure link preview is always up to date
+* Change: Enhance tutorial pointers
+* Change: Plugin Roadmap link added to submenu (Vote for features you want to see in ROP!)
+* Info: Tested on WP 5.3
+ 
  ### v8.4.4 - 2019-10-03 
  **Changes:** 
  * New: Label to show sharing status.
