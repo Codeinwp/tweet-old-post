@@ -251,9 +251,9 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
-= 8.5.1 - 2019-11-21  = 
+= 8.5.1 - 2019-11-21  =
 
-* V851
+* Fix PRO: LinkedIn invalid scope error on old installs
 
 
 = 8.5.0 - 2019-11-21  =
