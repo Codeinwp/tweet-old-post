@@ -254,7 +254,7 @@ http://revive.social/plugins/revive-old-post
 = 8.5.0 - 2019-11-21  =
 
 * New PRO: Made it easier to connect LinkedIn Accounts for new installs
-* New PRO: Plugin will now grab LinkedIn company pages using LinkedIn service in ROP dashboard (For new installs of plugin only)
+* New PRO: Plugin will now grab LinkedIn company pages using when using "Sign into LinkedIn" option on the LinkedIn service inside ROP dashboard for new installs
 * New PRO: Easier addition of Instagram accounts and Facebook Groups using Buffer integration
 * New PRO: Ability to add custom images to post share variations
 * Fix PRO: Fixed an issue where Pinterest sharing failed on some hosts
