@@ -251,6 +251,11 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.5.1 - 2019-11-21  = 
+
+* V851
+
+
 = 8.5.0 - 2019-11-21  =
 
 * New PRO: Made it easier to connect LinkedIn Accounts for new installs

@@ -1,4 +1,8 @@
 
+ ### v8.5.1 - 2019-11-21 
+ **Changes:** 
+ * V851
+ 
  ### v8.5.0 - 2019-11-21 
  **Changes:** 
  * New PRO: Made it easier to connect LinkedIn Accounts for New Users
