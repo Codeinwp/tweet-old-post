@@ -154,10 +154,11 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		$token = $_SESSION['rop_buffer_credentials'];
+		$token                = $_SESSION['rop_buffer_credentials'];
 		$credentials['token'] = $token;
 
 		unset( $_SESSION['rop_buffer_credentials'] );
+
 		return $this->authenticate( $credentials );
 
 	}
@@ -180,8 +181,9 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 		$response = json_decode( wp_remote_retrieve_body( $response ), true );
 
 		if ( ! isset( $response['id'] ) ) {
-			  $this->logger->alert_error( 'Buffer error: ' . $response['error'] );
-			  return false;
+			$this->logger->alert_error( 'Buffer error: ' . $response['error'] );
+
+			return false;
 		}
 
 		$this->service = array(
@@ -226,6 +228,7 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 
 		if ( isset( $response['error'] ) ) {
 			$this->logger->alert_error( 'Buffer error: ' . $response['error'] );
+
 			return false;
 		}
 
@@ -236,9 +239,9 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 
 		foreach ( $response as $response_field ) {
 			if ( ! in_array( $response_field['formatted_service'], $allowed ) ) {
-				 continue;
+				continue;
 			}
-			$buffer_profile          = array();
+			$buffer_profile            = array();
 			$buffer_profile['id']      = $response_field['id'];
 			$buffer_profile['account'] = $response_field['formatted_username'];
 			$buffer_profile['user']    = $response_field['formatted_service'] . ' - ' . $response_field['formatted_username'];
@@ -246,8 +249,7 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 			$buffer_profile['service'] = $this->service_name;
 
 			$buffer_profile['img']     = $response_field['avatar_https'];
-			$buffer_profile['created'] = date( 'Y-m-d H:i:s', substr( $response_field['created_at'], 0, 10 ) );
-			$buffer_profiles[]            = $buffer_profile;
+			$buffer_profiles[]         = $buffer_profile;
 		}
 
 		return $buffer_profiles;
@@ -282,9 +284,7 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 
 		$_SESSION['rop_buffer_credentials'] = $data['credentials']['access_token'];
 
-		$url = get_admin_url( get_current_blog_id(), 'admin.php?page=TweetOldPost&state=buffer&network=buffer' );
-
-		return $url;
+		return get_admin_url( get_current_blog_id(), 'admin.php?page=TweetOldPost&state=buffer&network=buffer' );
 	}
 
 	/**
@@ -294,7 +294,7 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 	 * @access public
 	 *
 	 * @param array $post_details The post details to be published by the service.
-	 * @param array $args         Optional arguments needed by the method.
+	 * @param array $args Optional arguments needed by the method.
 	 *
 	 * @return mixed
 	 */
@@ -308,18 +308,18 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 		if ( get_post_type( $post_id ) !== 'attachment' ) {
 			// If post image option unchecked, share as article post
 			if ( empty( $post_details['post_image'] ) ) {
-				$new_post  = $this->buffer_article_post( $post_details, $args );
+				$new_post = $this->buffer_article_post( $post_details, $args );
 			} else {
-				$new_post  = $this->buffer_media_post( $post_details, $args );
+				$new_post = $this->buffer_media_post( $post_details, $args );
 			}
 		} elseif ( get_post_type( $post_id ) === 'attachment' ) {
 
 			// work on video post
 			if ( strpos( $post_details['mimetype']['type'], 'video' ) !== false ) {
-				   $new_post  = $this->buffer_media_post( $post_details, $args );
+				$new_post = $this->buffer_media_post( $post_details, $args );
 			}
 
-			$new_post  = $this->buffer_media_post( $post_details, $args );
+			$new_post = $this->buffer_media_post( $post_details, $args );
 
 		}
 
@@ -338,8 +338,9 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 		$response = wp_remote_retrieve_body( $response );
 		$response = json_decode( $response, true );
 
-		if ( $response['success'] === false ) {
+		if ( false === filter_var( $response['success'], FILTER_VALIDATE_BOOLEAN ) ) {
 			$this->logger->alert_error( 'Buffer error: ' . $response['message'] );
+
 			return false;
 		}
 
@@ -362,7 +363,7 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 	 * @access private
 	 *
 	 * @param array $post_details The post details to be published by the service.
-	 * @param array $args         Optional arguments needed by the method.
+	 * @param array $args Optional arguments needed by the method.
 	 *
 	 * @return array
 	 */
@@ -373,22 +374,22 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 		}
 
 		$data = array(
-			'pretty' => 'true',
-			'now' => 'true',
+			'pretty'       => 'true',
+			'now'          => 'true',
 			'access_token' => $args['credentials'],
-			'profile_ids' => array(
+			'profile_ids'  => array(
 				$args['id'],
 			),
-			'shorten' => 'false',
-			'text' => $post_details['content'] . $post_details['hashtags'],
-			'media' => array(
+			'shorten'      => 'false',
+			'text'         => $post_details['content'] . $post_details['hashtags'],
+			'media'        => array(
 				'link' => trim( $this->get_url( $post_details ) ),
 			),
 
 		);
 
 		// Schedule some posts via buffer
-		 $value = mt_rand( 0, 6 );
+		$value = mt_rand( 0, 6 );
 
 		if ( $value >= 3 ) {
 			$data['scheduled_at'] = time() + 60;
@@ -405,27 +406,31 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 	 * @access private
 	 *
 	 * @param array $post_details The post details to be published by the service.
-	 * @param array $args         Optional arguments needed by the method.
+	 * @param array $args Optional arguments needed by the method.
 	 *
 	 * @return array
 	 */
 	private function buffer_media_post( $post_details, $args = array() ) {
 
-		$format_helper = new Rop_Post_Format_Helper();
+		if ( false === filter_var( $post_details['post_with_image'], FILTER_VALIDATE_BOOLEAN ) || ! isset( $post_details['post_image'] ) || '' === trim( $post_details['post_image'] ) ) {
+			$format_helper = new Rop_Post_Format_Helper();
 
-		$img = $format_helper->build_image( $post_details['post_id'] );
+			$image_to_share = $format_helper->build_image( $post_details['post_id'] );
+		} else {
+			$image_to_share = $post_details['post_image'];
+		}
 
 		$data = array(
-			'pretty' => 'true',
-			'now' => 'true',
+			'pretty'       => 'true',
+			'now'          => 'true',
 			'access_token' => $args['credentials'],
-			'profile_ids' => array(
+			'profile_ids'  => array(
 				$args['id'],
 			),
-			'shorten' => 'false',
-			'text' => $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'],
-			'media' => array(
-				'photo' => $img,
+			'shorten'      => 'false',
+			'text'         => $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'],
+			'media'        => array(
+				'photo' => $image_to_share,
 			),
 
 		);
@@ -438,6 +443,63 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 		}
 
 		return $data;
+	}
+
+	/**
+	 * This method will load and prepare the account data for Buffer user.
+	 * Used in Rest Api.
+	 *
+	 * @since   8.5.0
+	 * @access  public
+	 *
+	 * @param   array $accounts_data Buffer accounts data.
+	 *
+	 * @return  bool
+	 */
+	public function add_account_with_app( $accounts_data ) {
+
+		$the_id       = unserialize( base64_decode( $accounts_data['id'] ) );
+		$accounts_array = unserialize( base64_decode( $accounts_data['pages'] ) );
+
+		// we're checking for an ID inside the buffer connected accounts ($accounts_data['pages'])
+		// because $accounts_data['id'] will always be present even though user does not have valid connected accounts
+		if ( ! $this->is_set_not_empty( $accounts_array[0], array( 'id' ) ) ) {
+			$this->logger->alert_error( 'Buffer error: No valid accounts found. Please make sure you have a Facebook Group or Instagram Account connected to your Buffer profile.' );
+			return false;
+		}
+
+		$accounts = array();
+
+		for ( $i = 0; $i < sizeof( $accounts_array ); $i++ ) {
+
+			$account = $this->user_default;
+
+			$account_data = $accounts_array[ $i ];
+
+			$account['id'] = $account_data['id'];
+			$account['img'] = $account_data['img'];
+			$account['account'] = $account_data['account'];
+			$account['user'] = $account_data['user'];
+			$account['access_token'] = $account_data['access_token'];
+
+			if ( $i === 0 ) {
+				$account['active'] = true;
+			} else {
+				$account['active'] = false;
+			}
+
+			$accounts[] = $account;
+		}
+
+		// Prepare the data that will be saved as new account added.
+		$this->service = array(
+			'id'                 => $the_id,
+			'service'            => $this->service_name,
+			'credentials'        => $account['access_token'],
+			'available_accounts' => $accounts,
+		);
+
+		return true;
 	}
 
 }

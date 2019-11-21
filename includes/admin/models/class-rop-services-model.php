@@ -74,8 +74,9 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 			return false;
 		}
 
-		$this->facebook_exception_toast( $new_service );
-
+		// FB toast message init.
+		// We will disable this for now, but will leave the code because it can be used in the future if required
+		// $this->facebook_exception_toast( $new_service );
 		return $this->update_authenticated_services( wp_parse_args( $new_service, $this->get_authenticated_services() ) );
 	}
 

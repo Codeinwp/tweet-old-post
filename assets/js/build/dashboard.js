@@ -17758,6 +17758,9 @@ exports.default = new _vuex2.default.Store({
         apiNotAvailable: function apiNotAvailable(state, data) {
             state.api_not_available = data;
         },
+        preloading_change: function preloading_change(state, data) {
+            state.hide_preloading = data;
+        },
         updateState: function updateState(state, _ref) {
             var stateData = _ref.stateData,
                 requestName = _ref.requestName;
@@ -17947,6 +17950,11 @@ exports.default = new _vuex2.default.Store({
                         commit('apiNotAvailable', true);
 
                         _vue2.default.$log.error('Error when trying to do request: ', data.req);
+                    }).catch(function (error) {
+                        commit('setAjaxState', false);
+                        commit('apiNotAvailable', true);
+                        commit('preloading_change', 1);
+                        _vue2.default.$log.error('Error when getting response for: ', data.req, error);
                     });
                 });
             }
@@ -21254,7 +21262,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/reusables/multiple-select.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/multiple-select.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -21689,7 +21697,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/reusables/button-checkbox.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/button-checkbox.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -21713,8 +21721,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1bfc9917&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1bfc9917&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-933eafe6&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-933eafe6&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -21732,7 +21740,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .input-group .input-group-addon.btn.active[_v-1bfc9917] {\n\t\tbackground-color: #8bc34a;\n\t\tborder-color: #33691e;\n\t\tcolor: #FFF;\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop_core .input-group .input-group-addon.btn.active[_v-933eafe6] {\n\t\tbackground-color: #8bc34a;\n\t\tborder-color: #33691e;\n\t\tcolor: #FFF;\n\t}\n", ""]);
 
 // exports
 
@@ -21817,7 +21825,7 @@ module.exports = {
 /* 76 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<button class=\"btn input-group-addon column\" :class=\"is_active\" @click=\"toggleThis()\" _v-1bfc9917=\"\">{{label}}</button>\n";
+module.exports = "\n\t<button class=\"btn input-group-addon column\" :class=\"is_active\" @click=\"toggleThis()\" _v-933eafe6=\"\">{{label}}</button>\n";
 
 /***/ }),
 /* 77 */
@@ -21834,7 +21842,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/upsell-sidebar.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/upsell-sidebar.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -21858,8 +21866,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-e57ad328&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-e57ad328&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-87db7594&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-87db7594&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -21877,7 +21885,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop-upsell-box[_v-e57ad328]{\n\t\tmargin-top:20px;\n\t}\n\t#rop_core .rop-upsell-business-card[_v-e57ad328],\n\t#rop_core .rop-upsell-pro-card[_v-e57ad328] {\n\t\tpadding: 0;\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop-upsell-box[_v-87db7594]{\n\t\tmargin-top:20px;\n\t}\n\t#rop_core .rop-upsell-business-card[_v-87db7594],\n\t#rop_core .rop-upsell-pro-card[_v-87db7594] {\n\t\tpadding: 0;\n\t}\n", ""]);
 
 // exports
 
@@ -21934,7 +21942,7 @@ module.exports = {
 /* 81 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div id=\"rop-upsell-box\" _v-e57ad328=\"\">\n\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \" _v-e57ad328=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-e57ad328=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_pro_upsell\" :alt=\"labels.upgrade_pro_cta\" _v-e57ad328=\"\">\n\t\t\t</a>\n\t\t</div>\n\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1\" _v-e57ad328=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-e57ad328=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_business_upsell\" :alt=\"labels.upgrade_biz_cta\" _v-e57ad328=\"\">\n\t\t\t</a>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div id=\"rop-upsell-box\" _v-87db7594=\"\">\n\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \" _v-87db7594=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-87db7594=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_pro_upsell\" :alt=\"labels.upgrade_pro_cta\" _v-87db7594=\"\">\n\t\t\t</a>\n\t\t</div>\n\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1\" _v-87db7594=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-87db7594=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_business_upsell\" :alt=\"labels.upgrade_biz_cta\" _v-87db7594=\"\">\n\t\t\t</a>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 82 */
@@ -21951,7 +21959,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/sign-in-btn.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/sign-in-btn.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -21974,7 +21982,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/reusables/counter-input.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/counter-input.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -34234,7 +34242,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/main-page-panel.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/main-page-panel.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -34258,8 +34266,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-35f11a9a&file=main-page-panel.vue!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./main-page-panel.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-35f11a9a&file=main-page-panel.vue!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./main-page-panel.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3dd175e0&file=main-page-panel.vue!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./main-page-panel.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3dd175e0&file=main-page-panel.vue!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./main-page-panel.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -34334,6 +34342,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 module.exports = {
     name: 'main-page-panel',
     computed: {
+        is_preloading_over: function is_preloading_over() {
+            return this.$store.state.hide_preloading;
+        },
         /**
          * Display the clicked tab.
          *
@@ -34508,10 +34519,11 @@ module.exports = {
                 return;
             }
             this.is_loading = true;
+            var new_status = this.start_status === false ? 'start' : 'stop';
             this.$store.dispatch('fetchAJAXPromise', {
                 req: 'manage_cron',
                 data: {
-                    'action': this.start_status === false ? 'start' : 'stop'
+                    'action': new_status
                 }
             }).then(function (response) {
                 _this3.is_loading = false;
@@ -34605,7 +34617,7 @@ module.exports = {
 }; // <template>
 //     <div>
 //         <div class="columns panel-header">
-//             <div class="column header-logo vertical-align">
+//             <div class="column header-logo vertical-align" v-if="is_preloading_over > 0">
 //                 <div>
 //                     <img :src="plugin_logo" class="plugin-logo avatar avatar-lg"/>
 //                     <h1 class="plugin-title d-inline-block">Revive Old Posts</h1><span class="powered d-inline-block"> {{labels.by}} <a
@@ -34621,7 +34633,7 @@ module.exports = {
 //             </div>
 //             <div class="sidebar sidebar-top card rop-container-start">
 //
-//               <!-- Next post count down -->
+//                 <!-- Next post count down -->
 //                 <countdown :current_time="current_time"/>
 //                 <!--  -->
 //
@@ -34637,8 +34649,8 @@ module.exports = {
 //         </div>
 //
 //         <div class="columns">
-//             <div class="panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-//                 <div class="panel-nav" style="padding: 8px;">
+//             <div class="panel column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+//                 <div class="panel-nav" style="padding: 8px;" v-if="is_preloading_over > 0">
 //                     <ul class="tab ">
 //                         <li class="tab-item c-hand" v-for="tab in displayTabs"
 //                             :class="{ active: tab.isActive }" v-bind:id="tab.name.replace(' ', '').toLowerCase()">
@@ -34652,7 +34664,7 @@ module.exports = {
 //             </div>
 //
 //             <div class="sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12"
-//                  :class="'rop-license-plan-'+license">
+//                  :class="'rop-license-plan-'+license" v-if="is_preloading_over > 0">
 //
 //                 <div class="card rop-container-start">
 //                     <button id="rop_start_stop_btn" class="btn" :class="btn_class"
@@ -34746,7 +34758,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/accounts-tab-panel.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/accounts-tab-panel.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -34770,8 +34782,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2ff296d6&file=accounts-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-tab-panel.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2ff296d6&file=accounts-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-tab-panel.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-93242342&file=accounts-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-tab-panel.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-93242342&file=accounts-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-tab-panel.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -34789,7 +34801,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n    #rop_core .columns.py-2 .text-gray[_v-2ff296d6] {\n        margin: 0;\n        line-height: normal;\n    }\n\n    #rop_core .input-group[_v-2ff296d6] {\n        width: 100%;\n    }\n\n    b[_v-2ff296d6] {\n        margin-bottom: 5px;\n        display: block;\n    }\n\n    #rop_core .text-gray b[_v-2ff296d6] {\n        display: inline;\n    }\n\n    #rop_core .input-group .input-group-addon[_v-2ff296d6] {\n        padding: 3px 5px;\n    }\n\n    #rop_core .rop-available-accounts h5[_v-2ff296d6] {\n        margin-bottom: 15px;\n    }\n\n    @media ( max-width: 600px ) {\n        #rop_core .panel-body .text-gray[_v-2ff296d6] {\n            margin-bottom: 10px;\n        }\n\n        #rop_core .text-right[_v-2ff296d6] {\n            text-align: left;\n        }\n    }\n", ""]);
+exports.push([module.i, "\n    #rop_core .columns.py-2 .text-gray[_v-93242342] {\n        margin: 0;\n        line-height: normal;\n    }\n\n    #rop_core .input-group[_v-93242342] {\n        width: 100%;\n    }\n\n    b[_v-93242342] {\n        margin-bottom: 5px;\n        display: block;\n    }\n\n    #rop_core .text-gray b[_v-93242342] {\n        display: inline;\n    }\n\n    #rop_core .input-group .input-group-addon[_v-93242342] {\n        padding: 3px 5px;\n    }\n\n    #rop_core .rop-available-accounts h5[_v-93242342] {\n        margin-bottom: 15px;\n    }\n\n    @media ( max-width: 600px ) {\n        #rop_core .panel-body .text-gray[_v-93242342] {\n            margin-bottom: 10px;\n        }\n\n        #rop_core .text-right[_v-93242342] {\n            text-align: left;\n        }\n    }\n", ""]);
 
 // exports
 
@@ -34844,7 +34856,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //                             <service-user-tile :account_data="account" :account_id="id"></service-user-tile>
 //                             <span class="divider"></span>
 //                         </div>
-//                         <div class="add-accounts" v-if="is_preloading > 0">
+//                         <div class="add-accounts" v-if="is_preloading > 0" id="rop-add-account-button">
 //                             <add-account-tile></add-account-tile>
 //                             <span class="divider"></span>
 //                         </div>
@@ -34854,20 +34866,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //             <div class="panel-footer" v-if="is_preloading > 0">
 //                 <div class="columns my-2" v-if="checkLicense && pro_installed">
 //                     <div class="column col-12">
-//                         <i class="fa fa-lock "></i> <span v-html="labels.activate_license"></span>
+//                         <i class="fa fa-info-circle "></i> <span v-html="labels.activate_license"></span>
 //                     </div>
 //                 </div>
 //                 <div class="columns my-2" v-if="(checkLicense && accountsCount === 2) && !pro_installed">
 //                     <div class="column col-12">
 //                         <p class="upsell">
-//                             <i class="fa fa-lock "></i> <span v-html="labels.upsell_accounts"></span>
+//                             <i class="fa fa-info-circle "></i> <span v-html="labels.upsell_accounts"></span>
 //                         </p>
-//                     </div>
-//                 </div>
-//                 <div class="columns" v-if="checkLicense && !pro_installed">
-//                     <div class="column col-12">
-//                         <p><i class="fa fa-info-circle"></i> <span
-//                                 v-html="labels.lite_pro_table_upsell"></span></p>
 //                     </div>
 //                 </div>
 //                 <div class="column col-12 text-right">
@@ -35041,8 +35047,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2f84fb84&file=sign-in-btn.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./sign-in-btn.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2f84fb84&file=sign-in-btn.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./sign-in-btn.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-e1c25e0c&file=sign-in-btn.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./sign-in-btn.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-e1c25e0c&file=sign-in-btn.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./sign-in-btn.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -35060,7 +35066,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop-sign-in-area .btn[disabled][_v-2f84fb84]{\n\t\tcursor:not-allowed;\n\t\tpointer-events: auto;\n\t\topacity: 0.3;\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop-sign-in-area .btn[disabled][_v-e1c25e0c]{\n\t\tcursor:not-allowed;\n\t\tpointer-events: auto;\n\t\topacity: 0.3;\n\t}\n", ""]);
 
 // exports
 
@@ -35087,6 +35093,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 		<div class="input-group text-right buttons-wrap">
 // 			<button v-for="( service, network ) in services"
 // 					:disabled="checkDisabled( service, network )"
+// 					:title="getTooltip( service, network )"
 // 					class="btn input-group-btn"
 // 					:class="'btn-' + network"
 // 					@click="requestAuthorization( network )">
@@ -35110,14 +35117,21 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 							<button class="btn btn-primary big-btn" @click="openPopupFB()">{{labels.fb_app_signin_btn}}</button>
 // 							<span class="text-center">{{labels.fb_own_app_signin}}</span>
 // 						</div>
-// 						<div class="auth-app" v-if="isTwitter && isAllowedTwitter">
+// 						<div class="auth-app" v-if="isTwitter">
 // 							<button class="btn btn-primary big-btn" @click="openPopupTW()">{{labels.tw_app_signin_btn}}</button>
 // 							<span class="text-center">{{labels.tw_own_app_signin}}</span>
 // 						</div>
-// 						<div id="rop-advanced-config" v-if="isFacebook || (isTwitter && isAllowedTwitter)">
+// 						<div class="auth-app" v-if="isLinkedIn && isAllowedLinkedIn">
+// 							<button class="btn btn-primary big-btn" @click="openPopupLI()">{{labels.li_app_signin_btn}}</button>
+// 							<span class="text-center">{{labels.li_own_app_signin}}</span>
+// 						</div>
+// 						<div class="auth-app" v-if="isBuffer">
+// 							<button class="btn btn-primary big-btn" @click="openPopupBuffer()">{{labels.buffer_app_signin_btn}}</button>
+// 						</div>
+// 						<div id="rop-advanced-config" v-if="isFacebook || isTwitter || (isLinkedIn && isAllowedLinkedIn)">
 // 						<button class="btn btn-primary" v-on:click="showAdvanceConfig = !showAdvanceConfig">{{labels.show_advance_config}}</button>
 // 					</div>
-// 						<div v-if="showAdvanceConfig && (isFacebook ||  (isTwitter && isAllowedTwitter) )">
+// 						<div v-if="showAdvanceConfig && (isFacebook || isTwitter || (isLinkedIn && isAllowedLinkedIn) )">
 // 						<div class="form-group" v-for="( field, id ) in modal.data">
 // 							<label class="form-label" :for="field.id">{{ field.name }}</label>
 // 							<input :class="[ 'form-input', field.error ? ' is-error' : '' ]" type="text" :id="field.id" v-model="field.value"
@@ -35126,7 +35140,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 							<p class="text-gray">{{ field.description }}</p>
 // 						</div>
 // 					</div>
-// 						<div v-if="(!isTwitter && !isFacebook) || ( isTwitter && !isAllowedTwitter)">
+// 						<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isBuffer) || (isLinkedIn && !isAllowedLinkedIn)">
 // 						<div class="form-group" v-for="( field, id ) in modal.data">
 // 							<label class="form-label" :for="field.id">{{ field.name }}</label>
 // 							<input :class="[ 'form-input', field.error ? ' is-error' : '' ]" type="text" :id="field.id" v-model="field.value"
@@ -35137,14 +35151,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 					</div>
 // 				</div>
 // 				</div>
-// 				<div v-if="isFacebook || (isTwitter && isAllowedTwitter)" class="modal-footer">
+// 				<div v-if="isFacebook || isTwitter || (isLinkedIn && isAllowedLinkedIn)" class="modal-footer">
 // 					<p class="text-left pull-left mr-2" v-html="labels.rs_app_info"></p>
 // 				</div>
-// 				<div v-if="showAdvanceConfig && (isFacebook || isTwitter)" class="modal-footer">
+// 				<div v-if="showAdvanceConfig && (isFacebook || isTwitter || isLinkedIn)" class="modal-footer">
 // 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 // 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 // 				</div>
-// 				<div v-if="(!isTwitter && !isFacebook) || (isTwitter && !isAllowedTwitter)" class="modal-footer">
+// 				<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isBuffer) || (isLinkedIn && !isAllowedLinkedIn)" class="modal-footer">
 // 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 // 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 // 				</div>
@@ -35173,17 +35187,51 @@ module.exports = {
 			appOrigin: ropAuthAppData.authAppUrl,
 			appPathFB: ropAuthAppData.authAppFacebookPath,
 			appPathTW: ropAuthAppData.authAppTwitterPath,
+			appPathLI: ropAuthAppData.authAppLinkedInPath,
+			appPathBuffer: ropAuthAppData.authAppBufferPath,
 			appAdminEmail: ropAuthAppData.adminEmail,
 			siteAdminUrl: ropAuthAppData.adminUrl,
 			appUniqueId: ropAuthAppData.authToken,
 			appSignature: ropAuthAppData.authSignature,
 			windowParameters: 'top=20,left=100,width=560,height=670',
 			authPopupWindow: null,
-			showTwAppBtn: ropApiSettings.show_tw_app_btn,
+			showLiAppBtn: ropApiSettings.show_li_app_btn,
 			showBtn: false
 		};
 	},
 	methods: {
+		/**
+   * Get tooltip for the service.
+   *
+   *
+   * @param service
+   * @param network
+   * @returns {string}
+   */
+		getTooltip: function getTooltip(service, network) {
+			if (service !== undefined && service.active === false) {
+				return this.labels.only_in_pro;
+			}
+			var countAuthServices = 0;
+			for (var authService in this.$store.state.authenticatedServices) {
+				if (this.$store.state.authenticatedServices[authService].service === network) {
+					countAuthServices++;
+				}
+			}
+
+			var countActiveAccounts = 0;
+			for (var activeAccount in this.$store.state.activeAccounts) {
+				if (this.$store.state.activeAccounts[activeAccount].service === network) {
+					countActiveAccounts++;
+				}
+			}
+
+			if (service !== undefined && (service.allowed_accounts <= countAuthServices || service.allowed_accounts <= countActiveAccounts)) {
+				return this.labels.limit_reached;
+			}
+			return '';
+		},
+
 		/**
    * Check status for the service.
    *
@@ -35374,19 +35422,71 @@ module.exports = {
 			});
 		},
 
+		/**
+   * Add LinkedIn account.
+   *
+   * @param data Data.
+   */
+		addAccountLI: function addAccountLI(data) {
+			var _this4 = this;
+
+			this.$store.dispatch('fetchAJAXPromise', {
+				req: 'add_account_li',
+				updateState: false,
+				data: data
+			}).then(function (response) {
+				window.removeEventListener("message", function (event) {
+					return _this4.getChildWindowMessage(event);
+				});
+				_this4.authPopupWindow.close();
+				window.location.reload();
+			}, function (error) {
+				_this4.is_loading = false;
+				Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+			});
+		},
+
+		/**
+   * Add Buffer account.
+   *
+   * @param data Data.
+   */
+		addAccountBuffer: function addAccountBuffer(data) {
+			var _this5 = this;
+
+			this.$store.dispatch('fetchAJAXPromise', {
+				req: 'add_account_buffer',
+				updateState: false,
+				data: data
+			}).then(function (response) {
+				window.removeEventListener("message", function (event) {
+					return _this5.getChildWindowMessage(event);
+				});
+				_this5.authPopupWindow.close();
+				window.location.reload();
+			}, function (error) {
+				_this5.is_loading = false;
+				Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+			});
+		},
+
 		getChildWindowMessage: function getChildWindowMessage(event) {
 			if (~event.origin.indexOf(this.appOrigin)) {
 				if ('Twitter' === this.modal.serviceName) {
 					this.addAccountTW(JSON.parse(event.data));
 				} else if ('Facebook' === this.modal.serviceName) {
 					this.addAccountFB(JSON.parse(event.data));
+				} else if ('LinkedIn' === this.modal.serviceName) {
+					this.addAccountLI(JSON.parse(event.data));
+				} else if ('Buffer' === this.modal.serviceName) {
+					this.addAccountBuffer(JSON.parse(event.data));
 				}
 			} else {
 				return;
 			}
 		},
 		openPopupFB: function openPopupFB() {
-			var _this4 = this;
+			var _this6 = this;
 
 			var loginUrl = this.appOrigin + this.appPathFB + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
 			try {
@@ -35398,11 +35498,11 @@ module.exports = {
 				this.cancelModal();
 			}
 			window.addEventListener("message", function (event) {
-				return _this4.getChildWindowMessage(event);
+				return _this6.getChildWindowMessage(event);
 			});
 		},
 		openPopupTW: function openPopupTW() {
-			var _this5 = this;
+			var _this7 = this;
 
 			// Open the popup specific for Twitter
 			var loginUrl = this.appOrigin + this.appPathTW + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
@@ -35415,7 +35515,41 @@ module.exports = {
 				this.cancelModal();
 			}
 			window.addEventListener("message", function (event) {
-				return _this5.getChildWindowMessage(event);
+				return _this7.getChildWindowMessage(event);
+			});
+		},
+		openPopupLI: function openPopupLI() {
+			var _this8 = this;
+
+			// Open the popup specific for LinkedIn
+			var loginUrl = this.appOrigin + this.appPathLI + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
+			try {
+				this.authPopupWindow.close();
+			} catch (e) {
+				// nothing to do
+			} finally {
+				this.authPopupWindow = window.open(loginUrl, 'authLI', this.windowParameters);
+				this.cancelModal();
+			}
+			window.addEventListener("message", function (event) {
+				return _this8.getChildWindowMessage(event);
+			});
+		},
+		openPopupBuffer: function openPopupBuffer() {
+			var _this9 = this;
+
+			// Open the popup specific for Buffer
+			var loginUrl = this.appOrigin + this.appPathBuffer + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
+			try {
+				this.authPopupWindow.close();
+			} catch (e) {
+				// nothing to do
+			} finally {
+				this.authPopupWindow = window.open(loginUrl, 'authLI', this.windowParameters);
+				this.cancelModal();
+			}
+			window.addEventListener("message", function (event) {
+				return _this9.getChildWindowMessage(event);
 			});
 		}
 	},
@@ -35455,14 +35589,21 @@ module.exports = {
 			return this.modal.serviceName === 'Twitter';
 		},
 
-		isAllowedTwitter: function isAllowedTwitter() {
-			var showButton = true;
+		// will return true if the current service actions are for LinkedIn.
+		isLinkedIn: function isLinkedIn() {
+			return this.modal.serviceName === 'LinkedIn';
+		},
 
-			if (!this.showTwAppBtn) {
+		isAllowedLinkedIn: function isAllowedLinkedIn() {
+			var showButton = true;
+			if (!this.showLiAppBtn) {
 				showButton = false;
 			}
-
 			return showButton;
+		},
+		// will return true if the current service actions are for Buffer.
+		isBuffer: function isBuffer() {
+			return this.modal.serviceName === 'Buffer';
 		}
 	}
 	// </script>
@@ -35481,7 +35622,7 @@ module.exports = {
 /* 226 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div id=\"rop-sign-in-area\" _v-2f84fb84=\"\">\n\t\t<div class=\"input-group text-right buttons-wrap\" _v-2f84fb84=\"\">\n\t\t\t<button v-for=\"( service, network ) in services\" :disabled=\"checkDisabled( service, network )\" class=\"btn input-group-btn\" :class=\"'btn-' + network\" @click=\"requestAuthorization( network )\" _v-2f84fb84=\"\">\n\t\t\t\t<i v-if=\"network !== 'buffer'\" class=\"fa fa-fw\" :class=\"'fa-' + network\" _v-2f84fb84=\"\"></i>\n\t\t\t\t<i v-if=\"network === 'buffer'\" class=\"fa fa-fw fa-plus-square\" _v-2f84fb84=\"\"></i>\n\t\t\t\t{{service.name}}\n\t\t\t</button>\n\n\t\t</div>\n\n\t\t<div class=\"modal\" :class=\"modalActiveClass\" _v-2f84fb84=\"\">\n\t\t\t<div class=\"modal-overlay\" _v-2f84fb84=\"\"></div>\n\t\t\t<div class=\"modal-container\" _v-2f84fb84=\"\">\n\t\t\t\t<div class=\"modal-header\" _v-2f84fb84=\"\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"cancelModal()\" _v-2f84fb84=\"\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\" _v-2f84fb84=\"\">{{ modal.serviceName }} {{labels.service_popup_title}}</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\" _v-2f84fb84=\"\">\n\t\t\t\t\t<div class=\"content\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isFacebook\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupFB()\" _v-2f84fb84=\"\">{{labels.fb_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-2f84fb84=\"\">{{labels.fb_own_app_signin}}</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isTwitter &amp;&amp; isAllowedTwitter\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupTW()\" _v-2f84fb84=\"\">{{labels.tw_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-2f84fb84=\"\">{{labels.tw_own_app_signin}}</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div id=\"rop-advanced-config\" v-if=\"isFacebook || (isTwitter &amp;&amp; isAllowedTwitter)\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-primary\" v-on:click=\"showAdvanceConfig = !showAdvanceConfig\" _v-2f84fb84=\"\">{{labels.show_advance_config}}</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t\t<div v-if=\"showAdvanceConfig &amp;&amp; (isFacebook ||  (isTwitter &amp;&amp; isAllowedTwitter) )\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-2f84fb84=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input :class=\"[ 'form-input', field.error ? ' is-error' : '' ]\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<small class=\"text-error\" v-if=\"field.error\" _v-2f84fb84=\"\">{{labels.field_required}}</small>\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-2f84fb84=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t\t<div v-if=\"(!isTwitter &amp;&amp; !isFacebook) || ( isTwitter &amp;&amp; !isAllowedTwitter)\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-2f84fb84=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input :class=\"[ 'form-input', field.error ? ' is-error' : '' ]\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-2f84fb84=\"\">\n\t\t\t\t\t\t\t<small class=\"text-error\" v-if=\"field.error\" _v-2f84fb84=\"\">{{labels.field_required}}</small>\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-2f84fb84=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"isFacebook || (isTwitter &amp;&amp; isAllowedTwitter)\" class=\"modal-footer\" _v-2f84fb84=\"\">\n\t\t\t\t\t<p class=\"text-left pull-left mr-2\" v-html=\"labels.rs_app_info\" _v-2f84fb84=\"\"></p>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"showAdvanceConfig &amp;&amp; (isFacebook || isTwitter)\" class=\"modal-footer\" _v-2f84fb84=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-2f84fb84=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-2f84fb84=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"(!isTwitter &amp;&amp; !isFacebook) || (isTwitter &amp;&amp; !isAllowedTwitter)\" class=\"modal-footer\" _v-2f84fb84=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-2f84fb84=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-2f84fb84=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div id=\"rop-sign-in-area\" _v-e1c25e0c=\"\">\n\t\t<div class=\"input-group text-right buttons-wrap\" _v-e1c25e0c=\"\">\n\t\t\t<button v-for=\"( service, network ) in services\" :disabled=\"checkDisabled( service, network )\" :title=\"getTooltip( service, network )\" class=\"btn input-group-btn\" :class=\"'btn-' + network\" @click=\"requestAuthorization( network )\" _v-e1c25e0c=\"\">\n\t\t\t\t<i v-if=\"network !== 'buffer'\" class=\"fa fa-fw\" :class=\"'fa-' + network\" _v-e1c25e0c=\"\"></i>\n\t\t\t\t<i v-if=\"network === 'buffer'\" class=\"fa fa-fw fa-plus-square\" _v-e1c25e0c=\"\"></i>\n\t\t\t\t{{service.name}}\n\t\t\t</button>\n\n\t\t</div>\n\n\t\t<div class=\"modal\" :class=\"modalActiveClass\" _v-e1c25e0c=\"\">\n\t\t\t<div class=\"modal-overlay\" _v-e1c25e0c=\"\"></div>\n\t\t\t<div class=\"modal-container\" _v-e1c25e0c=\"\">\n\t\t\t\t<div class=\"modal-header\" _v-e1c25e0c=\"\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"cancelModal()\" _v-e1c25e0c=\"\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\" _v-e1c25e0c=\"\">{{ modal.serviceName }} {{labels.service_popup_title}}</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\" _v-e1c25e0c=\"\">\n\t\t\t\t\t<div class=\"content\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isFacebook\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupFB()\" _v-e1c25e0c=\"\">{{labels.fb_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-e1c25e0c=\"\">{{labels.fb_own_app_signin}}</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isTwitter\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupTW()\" _v-e1c25e0c=\"\">{{labels.tw_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-e1c25e0c=\"\">{{labels.tw_own_app_signin}}</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isLinkedIn &amp;&amp; isAllowedLinkedIn\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupLI()\" _v-e1c25e0c=\"\">{{labels.li_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-e1c25e0c=\"\">{{labels.li_own_app_signin}}</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isBuffer\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupBuffer()\" _v-e1c25e0c=\"\">{{labels.buffer_app_signin_btn}}</button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div id=\"rop-advanced-config\" v-if=\"isFacebook || isTwitter || (isLinkedIn &amp;&amp; isAllowedLinkedIn)\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-primary\" v-on:click=\"showAdvanceConfig = !showAdvanceConfig\" _v-e1c25e0c=\"\">{{labels.show_advance_config}}</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t\t<div v-if=\"showAdvanceConfig &amp;&amp; (isFacebook || isTwitter || (isLinkedIn &amp;&amp; isAllowedLinkedIn) )\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-e1c25e0c=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input :class=\"[ 'form-input', field.error ? ' is-error' : '' ]\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t\t<small class=\"text-error\" v-if=\"field.error\" _v-e1c25e0c=\"\">{{labels.field_required}}</small>\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-e1c25e0c=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t\t<div v-if=\"(!isTwitter &amp;&amp; !isFacebook &amp;&amp; !isLinkedIn &amp;&amp; !isBuffer) || (isLinkedIn &amp;&amp; !isAllowedLinkedIn)\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-e1c25e0c=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input :class=\"[ 'form-input', field.error ? ' is-error' : '' ]\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-e1c25e0c=\"\">\n\t\t\t\t\t\t\t<small class=\"text-error\" v-if=\"field.error\" _v-e1c25e0c=\"\">{{labels.field_required}}</small>\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-e1c25e0c=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"isFacebook || isTwitter || (isLinkedIn &amp;&amp; isAllowedLinkedIn)\" class=\"modal-footer\" _v-e1c25e0c=\"\">\n\t\t\t\t\t<p class=\"text-left pull-left mr-2\" v-html=\"labels.rs_app_info\" _v-e1c25e0c=\"\"></p>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"showAdvanceConfig &amp;&amp; (isFacebook || isTwitter || isLinkedIn)\" class=\"modal-footer\" _v-e1c25e0c=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-e1c25e0c=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-e1c25e0c=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"(!isTwitter &amp;&amp; !isFacebook &amp;&amp; !isLinkedIn &amp;&amp; !isBuffer) || (isLinkedIn &amp;&amp; !isAllowedLinkedIn)\" class=\"modal-footer\" _v-e1c25e0c=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-e1c25e0c=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-e1c25e0c=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 227 */
@@ -35498,7 +35639,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/service-user-tile.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/service-user-tile.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -35522,8 +35663,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-f1ff4bd0&file=service-user-tile.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./service-user-tile.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-f1ff4bd0&file=service-user-tile.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./service-user-tile.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0145bf0e&file=service-user-tile.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./service-user-tile.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0145bf0e&file=service-user-tile.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./service-user-tile.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -35541,7 +35682,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t.rop-remove-account[_v-f1ff4bd0]{\n\t\twidth:15px;\n\t\ttext-align: center;\n\t\tcursor: pointer;\n\t    padding-right: 10px;\n\t\tmargin-right: 10px;\n\t\theight: 100%;\n\t\t-ms-flex: 0 0 auto;\n\t\tline-height: 40px;\n\t\topacity: 1;\n\t\tmargin-left:0;\n\t\ttransition-timing-function: ease-in;\n\t\ttransition: 1s;\n\t\tz-index:9999;\n\t}\n\n", ""]);
+exports.push([module.i, "\n\t.rop-remove-account[_v-0145bf0e]{\n\t\twidth:15px;\n\t\ttext-align: center;\n\t\tcursor: pointer;\n\t\theight: 100%;\n\t\t-ms-flex: 0 0 auto;\n\t\tline-height: 40px;\n\t\topacity: 1;\n\t\tmargin-left:0;\n\t\ttransition-timing-function: ease-in;\n\t\ttransition: 1s;\n\t\tz-index:9999;\n\t}\n\n", ""]);
 
 // exports
 
@@ -35753,8 +35894,6 @@ module.exports = {
 	// 		width:15px;
 	// 		text-align: center;
 	// 		cursor: pointer;
-	// 	    padding-right: 10px;
-	// 		margin-right: 10px;
 	// 		height: 100%;
 	// 		-ms-flex: 0 0 auto;
 	// 		line-height: 40px;
@@ -35771,10 +35910,6 @@ module.exports = {
 }; // <template>
 // 	<div class="tile tile-centered rop-account" :class="'rop-'+type+'-account'">
 //
-// 		<div class="tile-icon rop-remove-account tooltip tooltip-right" @click="removeAccount(account_id) "  :data-tooltip="labels.remove_account" v-if=" ! account_data.active">
-// 			<i class="fa fa-trash" v-if=" ! is_loading"></i>
-// 			<i class="fa fa-spinner fa-spin" v-else></i>
-// 		</div>
 // 		<div class="tile-icon">
 // 			<div class="icon_box" :class="service">
 // 				<img class="service_account_image" :src="img" v-if="img"/>
@@ -35794,6 +35929,12 @@ module.exports = {
 // 					<i class="form-icon"></i>
 // 				</label>
 // 			</div>
+//
+//    		<div class="tile-icon rop-remove-account tooltip tooltip-right" @click="removeAccount(account_id) "  :data-tooltip="labels.remove_account" v-if=" ! account_data.active">
+// 			<i class="fa fa-trash" v-if=" ! is_loading"></i>
+// 			<i class="fa fa-spinner fa-spin" v-else></i>
+// 		</div>
+//
 // 		</div>
 // 	</div>
 // </template>
@@ -35804,7 +35945,7 @@ module.exports = {
 /* 231 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tile tile-centered rop-account\" :class=\"'rop-'+type+'-account'\" _v-f1ff4bd0=\"\">\n\n\t\t<div class=\"tile-icon rop-remove-account tooltip tooltip-right\" @click=\"removeAccount(account_id) \" :data-tooltip=\"labels.remove_account\" v-if=\" ! account_data.active\" _v-f1ff4bd0=\"\">\n\t\t\t<i class=\"fa fa-trash\" v-if=\" ! is_loading\" _v-f1ff4bd0=\"\"></i>\n\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-f1ff4bd0=\"\"></i>\n\t\t</div>\n\t\t<div class=\"tile-icon\" _v-f1ff4bd0=\"\">\n\t\t\t<div class=\"icon_box\" :class=\"service\" _v-f1ff4bd0=\"\">\n\t\t\t\t<img class=\"service_account_image\" :src=\"img\" v-if=\"img\" _v-f1ff4bd0=\"\">\n\t\t\t\t<i class=\"fa  \" :class=\"icon\" aria-hidden=\"true\" _v-f1ff4bd0=\"\"></i>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"tile-content\" _v-f1ff4bd0=\"\">\n\t\t\t<div class=\"tile-title\" _v-f1ff4bd0=\"\">{{ user }}</div>\n\t\t\t<div class=\"tile-subtitle text-gray\" _v-f1ff4bd0=\"\">{{ serviceInfo }}</div>\n\t\t</div>\n\t\t<div class=\"tile-action\" _v-f1ff4bd0=\"\">\n\t\t\t<div class=\"form-group\" _v-f1ff4bd0=\"\">\n\t\t\t\t<label class=\"form-switch\" _v-f1ff4bd0=\"\">\n\t\t\t\t\t<div class=\"ajax-loader \" _v-f1ff4bd0=\"\"><i class=\"fa fa-spinner fa-spin\" v-show=\"is_loading\" _v-f1ff4bd0=\"\"></i></div>\n\t\t\t\t\t<input :disabled=\"checkDisabled\" type=\"checkbox\" v-model=\"account_data.active\" @change=\"startToggleAccount( account_id, type )\" _v-f1ff4bd0=\"\">\n\t\t\t\t\t<i class=\"form-icon\" _v-f1ff4bd0=\"\"></i>\n\t\t\t\t</label>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tile tile-centered rop-account\" :class=\"'rop-'+type+'-account'\" _v-0145bf0e=\"\">\n\n\t\t<div class=\"tile-icon\" _v-0145bf0e=\"\">\n\t\t\t<div class=\"icon_box\" :class=\"service\" _v-0145bf0e=\"\">\n\t\t\t\t<img class=\"service_account_image\" :src=\"img\" v-if=\"img\" _v-0145bf0e=\"\">\n\t\t\t\t<i class=\"fa  \" :class=\"icon\" aria-hidden=\"true\" _v-0145bf0e=\"\"></i>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"tile-content\" _v-0145bf0e=\"\">\n\t\t\t<div class=\"tile-title\" _v-0145bf0e=\"\">{{ user }}</div>\n\t\t\t<div class=\"tile-subtitle text-gray\" _v-0145bf0e=\"\">{{ serviceInfo }}</div>\n\t\t</div>\n\t\t<div class=\"tile-action\" _v-0145bf0e=\"\">\n\t\t\t<div class=\"form-group\" _v-0145bf0e=\"\">\n\t\t\t\t<label class=\"form-switch\" _v-0145bf0e=\"\">\n\t\t\t\t\t<div class=\"ajax-loader \" _v-0145bf0e=\"\"><i class=\"fa fa-spinner fa-spin\" v-show=\"is_loading\" _v-0145bf0e=\"\"></i></div>\n\t\t\t\t\t<input :disabled=\"checkDisabled\" type=\"checkbox\" v-model=\"account_data.active\" @change=\"startToggleAccount( account_id, type )\" _v-0145bf0e=\"\">\n\t\t\t\t\t<i class=\"form-icon\" _v-0145bf0e=\"\"></i>\n\t\t\t\t</label>\n\t\t\t</div>\n\n   \t\t<div class=\"tile-icon rop-remove-account tooltip tooltip-right\" @click=\"removeAccount(account_id) \" :data-tooltip=\"labels.remove_account\" v-if=\" ! account_data.active\" _v-0145bf0e=\"\">\n\t\t\t<i class=\"fa fa-trash\" v-if=\" ! is_loading\" _v-0145bf0e=\"\"></i>\n\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-0145bf0e=\"\"></i>\n\t\t</div>\n\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 232 */
@@ -35821,7 +35962,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/reusables/add-account-tile.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/add-account-tile.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -35845,8 +35986,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-89b02f9e&file=add-account-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./add-account-tile.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-89b02f9e&file=add-account-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./add-account-tile.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6d45b7fb&file=add-account-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./add-account-tile.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6d45b7fb&file=add-account-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./add-account-tile.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -35864,7 +36005,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t.icon_box[_v-89b02f9e] {\n\t\tbackground: #efefef;\n\t\tpadding: 0;\n\t\ttransition: .3s ease;\n\t}\n\n\t.icon_box.close .fa[_v-89b02f9e] {\n\t\tline-height: 1.6em;\n\t}\n\n\t.icon_box.open .fa[_v-89b02f9e] {\n\t\tline-height: 1.7em;\n\t\twidth: 20px;\n\t\ttransform: rotate(-135deg);\n\t\t-webkit-transform: rotate(-135deg);\n\t}\n\n\t.fa[_v-89b02f9e] {\n\t\ttransition: all .3s cubic-bezier(.34, 1.61, .7, 1);\n\t}\n", ""]);
+exports.push([module.i, "\n\t.icon_box[_v-6d45b7fb] {\n\t\tbackground: #efefef;\n\t\tpadding: 0;\n\t\ttransition: .3s ease;\n\t}\n\n\t.icon_box.close .fa[_v-6d45b7fb] {\n\t\tline-height: 1.6em;\n\t}\n\n\t.icon_box.open .fa[_v-6d45b7fb] {\n\t\tline-height: 1.7em;\n\t\twidth: 20px;\n\t\ttransform: rotate(-135deg);\n\t\t-webkit-transform: rotate(-135deg);\n\t}\n\n\t.fa[_v-6d45b7fb] {\n\t\ttransition: all .3s cubic-bezier(.34, 1.61, .7, 1);\n\t}\n\n", ""]);
 
 // exports
 
@@ -35888,12 +36029,19 @@ module.exports = {
 		return {
 			addAccountActive: false,
 			labels: this.$store.state.labels.accounts,
-			upsell_link: ropApiSettings.upsell_link
+			upsell_link: ropApiSettings.upsell_link,
+			add_more_clicked: false,
+			added_networks: ropApiSettings.added_networks
 		};
 	},
 	computed: {},
 	components: {
 		SignInBtn: _signInBtn2.default
+	},
+	methods: {
+		addMore: function addMore() {
+			this.add_more_clicked = true;
+		}
 	}
 	// </script>
 	//
@@ -35918,16 +36066,20 @@ module.exports = {
 	// 	.fa {
 	// 		transition: all .3s cubic-bezier(.34, 1.61, .7, 1);
 	// 	}
+	//
 	// </style>
 	//
 
 }; // <template>
 // 	<div>
 // 		<div class="tile-content">
-// 			<div class="tile-title"><span v-html="labels.add_account"></span></div>
 // 		</div>
 // 		<div class="rop-add-account">
-// 					<sign-in-btn></sign-in-btn>
+//      <button class="btn btn-secondary" v-if="!this.add_more_clicked && this.added_networks >= 2" @click="addMore()">
+//         <i class="fa fa-plus"></i>{{labels.add_all_cta}}
+//      </button>
+//
+// 					<sign-in-btn  v-if="this.add_more_clicked || this.added_networks < 2"></sign-in-btn>
 // 		</div>
 // 	</div>
 // </template>
@@ -35938,7 +36090,7 @@ module.exports = {
 /* 236 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div _v-89b02f9e=\"\">\n\t\t<div class=\"tile-content\" _v-89b02f9e=\"\">\n\t\t\t<div class=\"tile-title\" _v-89b02f9e=\"\"><span v-html=\"labels.add_account\" _v-89b02f9e=\"\"></span></div>\n\t\t</div>\n\t\t<div class=\"rop-add-account\" _v-89b02f9e=\"\">\n\t\t\t\t\t<sign-in-btn _v-89b02f9e=\"\"></sign-in-btn>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div _v-6d45b7fb=\"\">\n\t\t<div class=\"tile-content\" _v-6d45b7fb=\"\">\n\t\t</div>\n\t\t<div class=\"rop-add-account\" _v-6d45b7fb=\"\">\n     <button class=\"btn btn-secondary\" v-if=\"!this.add_more_clicked &amp;&amp; this.added_networks >= 2\" @click=\"addMore()\" _v-6d45b7fb=\"\">\n        <i class=\"fa fa-plus\" _v-6d45b7fb=\"\"></i>{{labels.add_all_cta}}\n     </button>\n\n\t\t\t\t\t<sign-in-btn v-if=\"this.add_more_clicked || this.added_networks < 2\" _v-6d45b7fb=\"\"></sign-in-btn>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 237 */
@@ -35955,7 +36107,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/reusables/vue-spinner.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/vue-spinner.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -35979,8 +36131,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5bcf006b&file=vue-spinner.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./vue-spinner.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5bcf006b&file=vue-spinner.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./vue-spinner.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-8b660b3e&file=vue-spinner.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./vue-spinner.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-8b660b3e&file=vue-spinner.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./vue-spinner.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -35998,7 +36150,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n    .preloader-container[_v-5bcf006b] {\n        position: relative;\n        z-index: 9998;\n        top: 0;\n        left: 0;\n        right: 0;\n        bottom: 0;\n        margin: auto;\n        width: 100%;\n        height: 218px;\n        background-color: rgba(255, 255, 255, 0.1);\n        display: block;\n    }\n\n    .preloader-body[_v-5bcf006b] {\n        width: 350px;\n        height: 80px;\n        position: absolute;\n        top: 0;\n        bottom: 0;\n        left: 0;\n        right: 0;\n        margin: auto;\n        text-align: center;\n        display: block;\n    }\n", ""]);
+exports.push([module.i, "\n    .preloader-container[_v-8b660b3e] {\n        position: relative;\n        z-index: 9998;\n        top: 0;\n        left: 0;\n        right: 0;\n        bottom: 0;\n        margin: auto;\n        width: 100%;\n        height: 218px;\n        background-color: rgba(255, 255, 255, 0.1);\n        display: block;\n    }\n\n    .preloader-body[_v-8b660b3e] {\n        width: 350px;\n        height: 80px;\n        position: absolute;\n        top: 0;\n        bottom: 0;\n        left: 0;\n        right: 0;\n        margin: auto;\n        text-align: center;\n        display: block;\n    }\n", ""]);
 
 // exports
 
@@ -36133,7 +36285,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/reusables/preload_three_dots.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/preload_three_dots.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -36157,8 +36309,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-41eb8b38&file=preload_three_dots.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./preload_three_dots.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-41eb8b38&file=preload_three_dots.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./preload_three_dots.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3856defc&file=preload_three_dots.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./preload_three_dots.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3856defc&file=preload_three_dots.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./preload_three_dots.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -36176,7 +36328,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\n    .preloader-loading-item .normal-dot[_v-41eb8b38] {\n        animation: dot-do-animation 0.7s infinite linear;\n        animation-fill-mode: both;\n        display: inline-block;\n    }\n\n    .preloader-loading-item .normal-dot-odd[_v-41eb8b38] {\n        animation-delay: 0s;\n    }\n\n    .preloader-loading-item .normal-dot-even[_v-41eb8b38] {\n        animation-delay: 0.50s;\n    }\n\n    @keyframes dot-do-animation {\n        50% {\n            transform: scale(0.75);\n            -webkit-opacity: 0.2;\n            opacity: 0.2;\n        }\n        100% {\n            transform: scale(1);\n            -webkit-opacity: 1;\n            opacity: 1;\n        }\n    }\n", ""]);
+exports.push([module.i, "\n\n    .preloader-loading-item .normal-dot[_v-3856defc] {\n        animation: dot-do-animation 0.7s infinite linear;\n        animation-fill-mode: both;\n        display: inline-block;\n    }\n\n    .preloader-loading-item .normal-dot-odd[_v-3856defc] {\n        animation-delay: 0s;\n    }\n\n    .preloader-loading-item .normal-dot-even[_v-3856defc] {\n        animation-delay: 0.50s;\n    }\n\n    @keyframes dot-do-animation {\n        50% {\n            transform: scale(0.75);\n            -webkit-opacity: 0.2;\n            opacity: 0.2;\n        }\n        100% {\n            transform: scale(1);\n            -webkit-opacity: 1;\n            opacity: 1;\n        }\n    }\n", ""]);
 
 // exports
 
@@ -36293,19 +36445,19 @@ exports.default = {
 /* 245 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"preloader-loading-item\" v-show=\"loading\" _v-41eb8b38=\"\">\n        <div class=\"normal-dot normal-dot-odd\" v-bind:style=\"dot_style\" _v-41eb8b38=\"\"></div>\n        <div class=\"normal-dot normal-dot-even\" v-bind:style=\"dot_style\" _v-41eb8b38=\"\"></div>\n        <div class=\"normal-dot normal-dot-odd\" v-bind:style=\"dot_style\" _v-41eb8b38=\"\"></div>\n    </div>\n";
+module.exports = "\n    <div class=\"preloader-loading-item\" v-show=\"loading\" _v-3856defc=\"\">\n        <div class=\"normal-dot normal-dot-odd\" v-bind:style=\"dot_style\" _v-3856defc=\"\"></div>\n        <div class=\"normal-dot normal-dot-even\" v-bind:style=\"dot_style\" _v-3856defc=\"\"></div>\n        <div class=\"normal-dot normal-dot-odd\" v-bind:style=\"dot_style\" _v-3856defc=\"\"></div>\n    </div>\n";
 
 /***/ }),
 /* 246 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <transition v-if=\"display_the_preloader\" _v-5bcf006b=\"\">\n        <div class=\"preloader-container\" _v-5bcf006b=\"\">\n            <div class=\"preloader-body text-center\" _v-5bcf006b=\"\">\n                <p class=\"empty-title h5\" v-html=\"loading_message\" _v-5bcf006b=\"\"></p>\n                <component v-bind:is=\"spinner_style\" :loading=\"loading\" :color=\"color\" :size=\"size\" :margin=\"margin\" :radius=\"radius\" _v-5bcf006b=\"\"></component>\n            </div>\n        </div>\n    </transition>\n";
+module.exports = "\n    <transition v-if=\"display_the_preloader\" _v-8b660b3e=\"\">\n        <div class=\"preloader-container\" _v-8b660b3e=\"\">\n            <div class=\"preloader-body text-center\" _v-8b660b3e=\"\">\n                <p class=\"empty-title h5\" v-html=\"loading_message\" _v-8b660b3e=\"\"></p>\n                <component v-bind:is=\"spinner_style\" :loading=\"loading\" :color=\"color\" :size=\"size\" :margin=\"margin\" :radius=\"radius\" _v-8b660b3e=\"\"></component>\n            </div>\n        </div>\n    </transition>\n";
 
 /***/ }),
 /* 247 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"tab-view\" _v-2ff296d6=\"\">\n        <div class=\"panel-body\" _v-2ff296d6=\"\">\n            <div class=\"toast  toast-warning\" v-html=\"labels.twitter_warning\" v-if=\"twitter_warning\" _v-2ff296d6=\"\">\n\n            </div>\n            <div class=\"container\" _v-2ff296d6=\"\">\n                <div class=\"columns\" :class=\"'rop-tab-state-'+is_loading\" _v-2ff296d6=\"\">\n                    <div class=\"column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2\" _v-2ff296d6=\"\">\n                        <vue_spinner :preloader_message=\"labels.preloader_message_accounts\" ref=\"Preloader\" v-if=\"is_preloading === 0\" _v-2ff296d6=\"\"></vue_spinner>\n                        <div class=\"empty mb-2\" v-if=\"accountsCount === 0 &amp;&amp; is_preloading > 0\" _v-2ff296d6=\"\">\n                            <div class=\"empty-icon\" _v-2ff296d6=\"\">\n                                <i class=\"fa fa-3x fa-user-circle-o\" _v-2ff296d6=\"\"></i>\n                            </div>\n                            <p class=\"empty-title h5\" _v-2ff296d6=\"\">{{labels.no_accounts}}</p>\n                            <p class=\"empty-subtitle\" _v-2ff296d6=\"\">{{labels.no_accounts_desc}}</p>\n                        </div>\n                        <div class=\"account-container\" v-for=\"( account, id ) in accounts\" v-if=\"is_preloading > 0\" _v-2ff296d6=\"\">\n                            <service-user-tile :account_data=\"account\" :account_id=\"id\" _v-2ff296d6=\"\"></service-user-tile>\n                            <span class=\"divider\" _v-2ff296d6=\"\"></span>\n                        </div>\n                        <div class=\"add-accounts\" v-if=\"is_preloading > 0\" _v-2ff296d6=\"\">\n                            <add-account-tile _v-2ff296d6=\"\"></add-account-tile>\n                            <span class=\"divider\" _v-2ff296d6=\"\"></span>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"panel-footer\" v-if=\"is_preloading > 0\" _v-2ff296d6=\"\">\n                <div class=\"columns my-2\" v-if=\"checkLicense &amp;&amp; pro_installed\" _v-2ff296d6=\"\">\n                    <div class=\"column col-12\" _v-2ff296d6=\"\">\n                        <i class=\"fa fa-lock \" _v-2ff296d6=\"\"></i> <span v-html=\"labels.activate_license\" _v-2ff296d6=\"\"></span>\n                    </div>\n                </div>\n                <div class=\"columns my-2\" v-if=\"(checkLicense &amp;&amp; accountsCount === 2) &amp;&amp; !pro_installed\" _v-2ff296d6=\"\">\n                    <div class=\"column col-12\" _v-2ff296d6=\"\">\n                        <p class=\"upsell\" _v-2ff296d6=\"\">\n                            <i class=\"fa fa-lock \" _v-2ff296d6=\"\"></i> <span v-html=\"labels.upsell_accounts\" _v-2ff296d6=\"\"></span>\n                        </p>\n                    </div>\n                </div>\n                <div class=\"columns\" v-if=\"checkLicense &amp;&amp; !pro_installed\" _v-2ff296d6=\"\">\n                    <div class=\"column col-12\" _v-2ff296d6=\"\">\n                        <p _v-2ff296d6=\"\"><i class=\"fa fa-info-circle\" _v-2ff296d6=\"\"></i> <span v-html=\"labels.lite_pro_table_upsell\" _v-2ff296d6=\"\"></span></p>\n                    </div>\n                </div>\n                <div class=\"column col-12 text-right\" _v-2ff296d6=\"\">\n                    <button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-2ff296d6=\"\">\n                        <i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-2ff296d6=\"\"></i>\n                        <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-2ff296d6=\"\"></i>\n                        {{labels.remove_all_cta}}\n                    </button>\n                </div>\n            </div>\n        </div>\n\n    </div>\n";
+module.exports = "\n    <div class=\"tab-view\" _v-93242342=\"\">\n        <div class=\"panel-body\" _v-93242342=\"\">\n            <div class=\"toast  toast-warning\" v-html=\"labels.twitter_warning\" v-if=\"twitter_warning\" _v-93242342=\"\">\n\n            </div>\n            <div class=\"container\" _v-93242342=\"\">\n                <div class=\"columns\" :class=\"'rop-tab-state-'+is_loading\" _v-93242342=\"\">\n                    <div class=\"column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2\" _v-93242342=\"\">\n                        <vue_spinner :preloader_message=\"labels.preloader_message_accounts\" ref=\"Preloader\" v-if=\"is_preloading === 0\" _v-93242342=\"\"></vue_spinner>\n                        <div class=\"empty mb-2\" v-if=\"accountsCount === 0 &amp;&amp; is_preloading > 0\" _v-93242342=\"\">\n                            <div class=\"empty-icon\" _v-93242342=\"\">\n                                <i class=\"fa fa-3x fa-user-circle-o\" _v-93242342=\"\"></i>\n                            </div>\n                            <p class=\"empty-title h5\" _v-93242342=\"\">{{labels.no_accounts}}</p>\n                            <p class=\"empty-subtitle\" _v-93242342=\"\">{{labels.no_accounts_desc}}</p>\n                        </div>\n                        <div class=\"account-container\" v-for=\"( account, id ) in accounts\" v-if=\"is_preloading > 0\" _v-93242342=\"\">\n                            <service-user-tile :account_data=\"account\" :account_id=\"id\" _v-93242342=\"\"></service-user-tile>\n                            <span class=\"divider\" _v-93242342=\"\"></span>\n                        </div>\n                        <div class=\"add-accounts\" v-if=\"is_preloading > 0\" id=\"rop-add-account-button\" _v-93242342=\"\">\n                            <add-account-tile _v-93242342=\"\"></add-account-tile>\n                            <span class=\"divider\" _v-93242342=\"\"></span>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"panel-footer\" v-if=\"is_preloading > 0\" _v-93242342=\"\">\n                <div class=\"columns my-2\" v-if=\"checkLicense &amp;&amp; pro_installed\" _v-93242342=\"\">\n                    <div class=\"column col-12\" _v-93242342=\"\">\n                        <i class=\"fa fa-info-circle \" _v-93242342=\"\"></i> <span v-html=\"labels.activate_license\" _v-93242342=\"\"></span>\n                    </div>\n                </div>\n                <div class=\"columns my-2\" v-if=\"(checkLicense &amp;&amp; accountsCount === 2) &amp;&amp; !pro_installed\" _v-93242342=\"\">\n                    <div class=\"column col-12\" _v-93242342=\"\">\n                        <p class=\"upsell\" _v-93242342=\"\">\n                            <i class=\"fa fa-info-circle \" _v-93242342=\"\"></i> <span v-html=\"labels.upsell_accounts\" _v-93242342=\"\"></span>\n                        </p>\n                    </div>\n                </div>\n                <div class=\"column col-12 text-right\" _v-93242342=\"\">\n                    <button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-93242342=\"\">\n                        <i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-93242342=\"\"></i>\n                        <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-93242342=\"\"></i>\n                        {{labels.remove_all_cta}}\n                    </button>\n                </div>\n            </div>\n        </div>\n\n    </div>\n";
 
 /***/ }),
 /* 248 */
@@ -36322,7 +36474,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/settings-tab-panel.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/settings-tab-panel.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -36346,8 +36498,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-31740612&file=settings-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./settings-tab-panel.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-31740612&file=settings-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./settings-tab-panel.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-00498048&file=settings-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./settings-tab-panel.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-00498048&file=settings-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./settings-tab-panel.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -36365,7 +36517,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-31740612] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\n\t#rop_core .input-group[_v-31740612] {\n\t\twidth: 100%;\n\t}\n\n\tb[_v-31740612] {\n\t\tmargin-bottom: 5px;\n\t\tdisplay: block;\n\t}\n\n\t#rop_core .input-group .input-group-addon[_v-31740612] {\n\t\tpadding: 3px 5px;\n\t}\n\n\t@media ( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-31740612] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\n\t\t#rop_core .text-right[_v-31740612] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n\n\t.rop-post-type-badge[_v-31740612]{\n\t\ttext-align: center;\n\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-00498048] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\n\t#rop_core .input-group[_v-00498048] {\n\t\twidth: 100%;\n\t}\n\n\tb[_v-00498048] {\n\t\tmargin-bottom: 5px;\n\t\tdisplay: block;\n\t}\n\n\t#rop_core .input-group .input-group-addon[_v-00498048] {\n\t\tpadding: 3px 5px;\n\t}\n\n\t@media ( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-00498048] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\n\t\t#rop_core .text-right[_v-00498048] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n\n\t.rop-post-type-badge[_v-00498048]{\n\t\ttext-align: center;\n\n\t}\n", ""]);
 
 // exports
 
@@ -36811,8 +36963,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-15ebd6dc&file=counter-input.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./counter-input.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-15ebd6dc&file=counter-input.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./counter-input.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-a81d2df0&file=counter-input.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./counter-input.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-a81d2df0&file=counter-input.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./counter-input.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -36990,7 +37142,7 @@ module.exports = "\n\t<div class=\"input-group rop-counter-group\">\n\t\t<input 
 /* 256 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\" _v-31740612=\"\">\n\t\t<div class=\"panel-body\" _v-31740612=\"\">\n\t\t\t<div class=\"container\" :class=\"'rop-tab-state-'+is_loading\" _v-31740612=\"\">\n\t\t\t\t<div class=\"columns py-2\" v-if=\"! isBiz\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.min_interval_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.min_interval_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<counter-input id=\"default_interval\" :value.sync=\"generalSettings.default_interval\" _v-31740612=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\t\t\t\t<div class=\"columns py-2\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.min_days_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.min_days_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<counter-input id=\"min_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.minimum_post_age\" _v-31740612=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- Max Post Age -->\n\t\t\t\t<div class=\"columns py-2\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.max_days_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.max_days_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<counter-input id=\"max_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.maximum_post_age\" _v-31740612=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\n\t\t\t\t<div class=\"columns py-2\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.no_posts_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.no_posts_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\" _v-31740612=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\n\t\t\t\t<!-- Share more than once -->\n\t\t\t\t<div class=\"columns py-2\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.share_once_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.share_once_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-31740612=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-31740612=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" id=\"share_more_than_once\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-31740612=\"\"></i> {{labels.share_once_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.post_types_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.post_types_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t<multiple-select id=\"rop_post_types\" :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-31740612=\"\"></multiple-select>\n\n\t\t\t\t\t\t<p class=\"text-primary rop-post-type-badge\" v-if=\"checkMediaPostType \" v-html=\"labels.post_types_attachament_info\" _v-31740612=\"\"> </p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"columns \" v-if=\"!isPro\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column text-center\" _v-31740612=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-31740612=\"\"><i class=\"fa fa-lock\" _v-31740612=\"\"></i> {{labels.post_types_upsell}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\n\t\t\t\t<!-- Taxonomies -->\n\t\t\t\t<div class=\"columns py-2\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.taxonomies_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.taxonomies_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div id=\"rop_taxonomies\" class=\"column col-6 col-sm-12 vertical-align text-left\" _v-31740612=\"\">\n\t\t\t\t\t\t<div class=\"input-group\" _v-31740612=\"\">\n\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" _v-31740612=\"\"></multiple-select>\n\t\t\t\t\t\t\t<span class=\"input-group-addon vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-31740612=\"\"></i>{{labels.taxonomies_exclude}}\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</span>\n\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t</div>\n\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\n\t\t\t\t<!-- Google Analytics -->\n\t\t\t\t<div class=\"columns py-2\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.ga_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.ga_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-31740612=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-31740612=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.ga_tracking\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-31740612=\"\"></i>{{labels.ga_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\n\t\t\t\t\t\t\t<div class=\"columns py-2\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.instant_share_title}}</b>\n\t\t\t\t\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.instant_share_desc}}</p>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label id=\"rop_instant_share\" class=\"form-checkbox\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.instant_share\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-31740612=\"\"></i>{{labels.instant_share_yes}}\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\n\t\t\t\t\t\t\t<div class=\"columns py-2\" v-if=\"isInstantShare\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.instant_share_default_title}}</b>\n\t\t\t\t\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.instant_share_default_desc}}</p>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.instant_share_default\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-31740612=\"\"></i>{{labels.instant_share_default_yes}}\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t\t<span class=\"divider\" v-if=\"isInstantShare\" _v-31740612=\"\"></span>\n\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.custom_share_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.custom_share_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-31740612=\"\">\n\t\t\t\t\t\t\t<label id=\"rop_custom_share_msg\" class=\"form-checkbox\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" :disabled=\"!isPro\" v-model=\"generalSettings.custom_messages\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-31740612=\"\"></i>{{labels.custom_share_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\n\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" v-if=\"isCustomMsgs\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.custom_share_order_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.custom_share_order_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-31740612=\"\">\n\t\t\t\t\t\t\t<label id=\"rop_custom_share_msg\" class=\"form-checkbox\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" :disabled=\"!isPro\" v-model=\"generalSettings.custom_messages_share_order\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-31740612=\"\"></i>{{labels.custom_share_order_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<!-- Upsell -->\n\t\t\t\t<div class=\"columns \" v-if=\"!isPro\" _v-31740612=\"\">\n\t\t\t\t\t<div class=\"column text-center\" _v-31740612=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-31740612=\"\"><i class=\"fa fa-lock\" _v-31740612=\"\"></i> {{labels.custom_share_upsell}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" v-if=\"isCustomMsgs\" _v-31740612=\"\"></span>\n\n\t\t\t\t<div class=\"columns py-2\" _v-31740612=\"\">\n\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t\t<b _v-31740612=\"\">{{labels.housekeeping}}</b>\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-31740612=\"\">{{labels.housekeeping_desc}}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-31740612=\"\">\n\t\t\t\t\t\t\t<div class=\"form-group\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.housekeeping\" _v-31740612=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-31740612=\"\"></i>{{labels.housekeeping_yes}}\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<span class=\"divider\" _v-31740612=\"\"></span>\n\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer text-right\" _v-31740612=\"\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\" _v-31740612=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-31740612=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-31740612=\"\"></i> {{labels.save}}\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\" _v-00498048=\"\">\n\t\t<div class=\"panel-body\" _v-00498048=\"\">\n\t\t\t<div class=\"container\" :class=\"'rop-tab-state-'+is_loading\" _v-00498048=\"\">\n\t\t\t\t<div class=\"columns py-2\" v-if=\"! isBiz\" _v-00498048=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-00498048=\"\">\n\t\t\t\t\t\t<b _v-00498048=\"\">{{labels.min_interval_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-00498048=\"\">{{labels.min_interval_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-00498048=\"\">\n\t\t\t\t\t\t<counter-input id=\"default_interval\" :value.sync=\"generalSettings.default_interval\" _v-00498048=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-00498048=\"\"></span>\n\t\t\t\t<div class=\"columns py-2\" _v-00498048=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-00498048=\"\">\n\t\t\t\t\t\t<b _v-00498048=\"\">{{labels.min_days_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-00498048=\"\">{{labels.min_days_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-00498048=\"\">\n\t\t\t\t\t\t<counter-input id=\"min_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.minimum_post_age\" _v-00498048=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- Max Post Age -->\n\t\t\t\t<div class=\"columns py-2\" _v-00498048=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-00498048=\"\">\n\t\t\t\t\t\t<b _v-00498048=\"\">{{labels.max_days_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-00498048=\"\">{{labels.max_days_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-00498048=\"\">\n\t\t\t\t\t\t<counter-input id=\"max_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.maximum_post_age\" _v-00498048=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-00498048=\"\"></span>\n\n\t\t\t\t<div class=\"columns py-2\" _v-00498048=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-00498048=\"\">\n\t\t\t\t\t\t<b _v-00498048=\"\">{{labels.no_posts_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-00498048=\"\">{{labels.no_posts_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-00498048=\"\">\n\t\t\t\t\t\t<counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\" _v-00498048=\"\"></counter-input>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-00498048=\"\"></span>\n\n\t\t\t\t<!-- Share more than once -->\n\t\t\t\t<div class=\"columns py-2\" _v-00498048=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-00498048=\"\">\n\t\t\t\t\t\t<b _v-00498048=\"\">{{labels.share_once_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-00498048=\"\">{{labels.share_once_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-00498048=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-00498048=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" id=\"share_more_than_once\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.more_than_once\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-00498048=\"\"></i> {{labels.share_once_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-00498048=\"\"></span>\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-00498048=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-00498048=\"\">\n\t\t\t\t\t\t<b _v-00498048=\"\">{{labels.post_types_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-00498048=\"\">{{labels.post_types_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-00498048=\"\">\n\t\t\t\t\t\t<multiple-select id=\"rop_post_types\" :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-00498048=\"\"></multiple-select>\n\n\t\t\t\t\t\t<p class=\"text-primary rop-post-type-badge\" v-if=\"checkMediaPostType \" v-html=\"labels.post_types_attachament_info\" _v-00498048=\"\"> </p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"columns \" v-if=\"!isPro\" _v-00498048=\"\">\n\t\t\t\t\t<div class=\"column text-center\" _v-00498048=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-00498048=\"\"><i class=\"fa fa-lock\" _v-00498048=\"\"></i> {{labels.post_types_upsell}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-00498048=\"\"></span>\n\n\t\t\t\t<!-- Taxonomies -->\n\t\t\t\t<div class=\"columns py-2\" _v-00498048=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-00498048=\"\">\n\t\t\t\t\t\t<b _v-00498048=\"\">{{labels.taxonomies_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-00498048=\"\">{{labels.taxonomies_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div id=\"rop_taxonomies\" class=\"column col-6 col-sm-12 vertical-align text-left\" _v-00498048=\"\">\n\t\t\t\t\t\t<div class=\"input-group\" _v-00498048=\"\">\n\t\t\t\t\t\t\t<multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" _v-00498048=\"\"></multiple-select>\n\t\t\t\t\t\t\t<span class=\"input-group-addon vertical-align\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-00498048=\"\"></i>{{labels.taxonomies_exclude}}\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</span>\n\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t</div>\n\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-00498048=\"\"></span>\n\n\t\t\t\t<!-- Google Analytics -->\n\t\t\t\t<div class=\"columns py-2\" _v-00498048=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-00498048=\"\">\n\t\t\t\t\t\t<b _v-00498048=\"\">{{labels.ga_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-00498048=\"\">{{labels.ga_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-00498048=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-00498048=\"\">\n\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.ga_tracking\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-00498048=\"\"></i>{{labels.ga_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class=\"divider\" _v-00498048=\"\"></span>\n\n\t\t\t\t\t\t\t<div class=\"columns py-2\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-00498048=\"\">{{labels.instant_share_title}}</b>\n\t\t\t\t\t\t\t\t\t\t<p class=\"text-gray\" _v-00498048=\"\">{{labels.instant_share_desc}}</p>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label id=\"rop_instant_share\" class=\"form-checkbox\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.instant_share\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-00498048=\"\"></i>{{labels.instant_share_yes}}\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t\t<span class=\"divider\" _v-00498048=\"\"></span>\n\n\t\t\t\t\t\t\t<div class=\"columns py-2\" v-if=\"isInstantShare\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t\t<b _v-00498048=\"\">{{labels.instant_share_default_title}}</b>\n\t\t\t\t\t\t\t\t\t\t<p class=\"text-gray\" _v-00498048=\"\">{{labels.instant_share_default_desc}}</p>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.instant_share_default\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-00498048=\"\"></i>{{labels.instant_share_default_yes}}\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t\t<span class=\"divider\" v-if=\"isInstantShare\" _v-00498048=\"\"></span>\n\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-00498048=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-00498048=\"\">\n\t\t\t\t\t\t<b _v-00498048=\"\">{{labels.custom_share_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-00498048=\"\">{{labels.custom_share_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-00498048=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-00498048=\"\">\n\t\t\t\t\t\t\t<label id=\"rop_custom_share_msg\" class=\"form-checkbox\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" :disabled=\"!isPro\" v-model=\"generalSettings.custom_messages\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-00498048=\"\"></i>{{labels.custom_share_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" _v-00498048=\"\"></span>\n\n\n\t\t\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" v-if=\"isCustomMsgs\" _v-00498048=\"\">\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-00498048=\"\">\n\t\t\t\t\t\t<b _v-00498048=\"\">{{labels.custom_share_order_title}}</b>\n\t\t\t\t\t\t<p class=\"text-gray\" _v-00498048=\"\">{{labels.custom_share_order_desc}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-00498048=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-00498048=\"\">\n\t\t\t\t\t\t\t<label id=\"rop_custom_share_msg\" class=\"form-checkbox\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t<input type=\"checkbox\" :disabled=\"!isPro\" v-model=\"generalSettings.custom_messages_share_order\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-00498048=\"\"></i>{{labels.custom_share_order_yes}}\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<!-- Upsell -->\n\t\t\t\t<div class=\"columns \" v-if=\"!isPro\" _v-00498048=\"\">\n\t\t\t\t\t<div class=\"column text-center\" _v-00498048=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-00498048=\"\"><i class=\"fa fa-lock\" _v-00498048=\"\"></i> {{labels.custom_share_upsell}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<span class=\"divider\" v-if=\"isCustomMsgs\" _v-00498048=\"\"></span>\n\n\t\t\t\t<div class=\"columns py-2\" _v-00498048=\"\">\n\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-00498048=\"\">\n\t\t\t\t\t\t\t<b _v-00498048=\"\">{{labels.housekeeping}}</b>\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-00498048=\"\">{{labels.housekeeping_desc}}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-00498048=\"\">\n\t\t\t\t\t\t\t<div class=\"form-group\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.housekeeping\" _v-00498048=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-00498048=\"\"></i>{{labels.housekeeping_yes}}\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<span class=\"divider\" _v-00498048=\"\"></span>\n\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer text-right\" _v-00498048=\"\">\n\t\t\t<button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\" _v-00498048=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-00498048=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-00498048=\"\"></i> {{labels.save}}\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 257 */
@@ -37007,7 +37159,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/accounts-selector-panel.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/accounts-selector-panel.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -37031,8 +37183,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-44ae6e9d&file=accounts-selector-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-selector-panel.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-44ae6e9d&file=accounts-selector-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-selector-panel.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-08d479da&file=accounts-selector-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-selector-panel.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-08d479da&file=accounts-selector-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-selector-panel.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -37050,7 +37202,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t.icon_box[_v-44ae6e9d] {\n\t\twidth: 30px;\n\t\theight: 30px;\n\t\tpadding: 5px;\n\t}\n\n\t.icon_box.no-image[_v-44ae6e9d] {\n\t\tpadding: 0;\n\t}\n\n\t.icon_box.has_image > .fa[_v-44ae6e9d] {\n\t\twidth: 15px;\n\t\theight: 15px;\n\t\tpadding: 0;\n\t\tline-height: 15px;\n\t}\n\n\t.icon_box.no-image > .fa[_v-44ae6e9d] {\n\t\tfont-size: 20px;\n\t\tbackground: transparent;\n\t\tline-height: 30px;\n\t}\n", ""]);
+exports.push([module.i, "\n\t.icon_box[_v-08d479da] {\n\t\twidth: 30px;\n\t\theight: 30px;\n\t\tpadding: 5px;\n\t}\n\n\t.icon_box.no-image[_v-08d479da] {\n\t\tpadding: 0;\n\t}\n\n\t.icon_box.has_image > .fa[_v-08d479da] {\n\t\twidth: 15px;\n\t\theight: 15px;\n\t\tpadding: 0;\n\t\tline-height: 15px;\n\t}\n\n\t.icon_box.no-image > .fa[_v-08d479da] {\n\t\tfont-size: 20px;\n\t\tbackground: transparent;\n\t\tline-height: 30px;\n\t}\n", ""]);
 
 // exports
 
@@ -37383,7 +37535,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/reusables/empty-active-accounts.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/empty-active-accounts.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -37447,7 +37599,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/post-format.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/post-format.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -37471,8 +37623,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-b34c44f8&file=post-format.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./post-format.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-b34c44f8&file=post-format.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./post-format.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-05f3b2fa&file=post-format.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./post-format.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-05f3b2fa&file=post-format.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./post-format.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -37490,7 +37642,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-b34c44f8] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\n\tb[_v-b34c44f8] {\n\t\tmargin-bottom: 5px;\n\t\tdisplay: block;\n\t}\n\n\t#rop_core .input-group .input-group-addon[_v-b34c44f8] {\n\t\tpadding: 3px 5px;\n\t}\n\n\t@media ( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-b34c44f8] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\n\t\t#rop_core .text-right[_v-b34c44f8] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-05f3b2fa] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\n\tb[_v-05f3b2fa] {\n\t\tmargin-bottom: 5px;\n\t\tdisplay: block;\n\t}\n\n\t#rop_core .input-group .input-group-addon[_v-05f3b2fa] {\n\t\tpadding: 3px 5px;\n\t}\n\n\t@media ( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-05f3b2fa] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\n\t\t#rop_core .text-right[_v-05f3b2fa] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n", ""]);
 
 // exports
 
@@ -37861,7 +38013,7 @@ module.exports = {
 /* 268 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div _v-b34c44f8=\"\">\n\t\t<div class=\"columns py-2\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.post_content_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.post_content_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.post_content\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<option value=\"post_title\" _v-b34c44f8=\"\">{{labels.post_content_option_title}}</option>\n\t\t\t\t\t\t<option value=\"post_content\" _v-b34c44f8=\"\">{{labels.post_content_option_content}}</option>\n\t\t\t\t\t\t<option value=\"post_title_content\" _v-b34c44f8=\"\">{{labels.post_content_option_title_content}}</option>\n\t\t\t\t\t\t<option value=\"custom_field\" _v-b34c44f8=\"\">{{labels.post_content_option_custom_field}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.post_content === 'custom_field'\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.custom_meta_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.custom_meta_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.custom_meta_field\" value=\"\" placeholder=\"\" _v-b34c44f8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<span class=\"divider\" _v-b34c44f8=\"\"></span>\n\n\t\t<div class=\"columns py-2\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.max_char_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.max_char_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.maximum_length\" value=\"\" placeholder=\"\" _v-b34c44f8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-b34c44f8=\"\"></span>\n\n\t\t<div class=\"columns py-2\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.add_char_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\"><span v-html=\"labels.add_char_desc\" _v-b34c44f8=\"\"></span></p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<textarea class=\"form-input\" v-model=\"post_format.custom_text\" v-bind:placeholder=\"labels.add_char_placeholder\" _v-b34c44f8=\"\">{{post_format.custom_text}}</textarea> \n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.add_pos_title}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.custom_text_pos\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<option value=\"beginning\" _v-b34c44f8=\"\">{{labels.add_pos_option_start}}</option>\n\t\t\t\t\t\t<option value=\"end\" _v-b34c44f8=\"\">{{labels.add_pos_option_end}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.add_link_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.add_link_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"input-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.include_link\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-b34c44f8=\"\"></i> {{labels.add_link_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-b34c44f8=\"\"></span>\n\t\t<div class=\"columns py-2\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.meta_link_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.meta_link_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"input-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.url_from_meta\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-b34c44f8=\"\"></i> {{labels.meta_link_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Custom Field -->\n\t\t<div class=\"columns py-2\" v-if=\"post_format.url_from_meta\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.meta_link_name_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.meta_link_name_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.url_meta_key\" value=\"\" placeholder=\"\" _v-b34c44f8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-b34c44f8=\"\"></span>\n\t\t<div class=\"columns py-2\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.use_shortner_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.use_shortner_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"input-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.short_url\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-b34c44f8=\"\"></i> {{labels.use_shortner_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" v-if=\"post_format.short_url\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.shortner_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.shortner_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.short_url_service\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<option value=\"rviv.ly\" _v-b34c44f8=\"\">rviv.ly</option>\n\t\t\t\t\t\t<option value=\"bit.ly\" _v-b34c44f8=\"\">bit.ly</option>\n\t\t\t\t\t\t<option value=\"firebase\" _v-b34c44f8=\"\">google firebase</option>\n\t\t\t\t\t\t<option value=\"ow.ly\" _v-b34c44f8=\"\">ow.ly</option>\n\t\t\t\t\t\t<option value=\"is.gd\" _v-b34c44f8=\"\">is.gd</option>\n      <option value=\"rebrand.ly\" _v-b34c44f8=\"\">rebrand.ly</option>\n      <option value=\"wp_short_url\" _v-b34c44f8=\"\">wp_short_url</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.short_url\" v-for=\"( credential, key_name ) in post_format.shortner_credentials\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{ key_name | capitalize }}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.shortner_field_desc_start}} \"{{key_name}}\"\n\t\t\t\t\t{{labels.shortner_field_desc_end}}\n\t\t\t\t\t<strong _v-b34c44f8=\"\">{{post_format.short_url_service}}</strong> {{labels.shortner_api_field}}.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.shortner_credentials[key_name]\" _v-b34c44f8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.hashtags_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.hashtags_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.hashtags\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<option value=\"no-hashtags\" _v-b34c44f8=\"\">{{labels.hashtags_option_no}}</option>\n\t\t\t\t\t\t<option value=\"common-hashtags\" _v-b34c44f8=\"\">{{labels.hashtags_option_common}}</option>\n\t\t\t\t\t\t<option value=\"categories-hashtags\" _v-b34c44f8=\"\">{{labels.hashtags_option_cats}}</option>\n\t\t\t\t\t\t<option value=\"tags-hashtags\" _v-b34c44f8=\"\">{{labels.hashtags_option_tags}}</option>\n\t\t\t\t\t\t<option value=\"custom-hashtags\" _v-b34c44f8=\"\">{{labels.hashtags_option_field}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags === 'common-hashtags'\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.hastags_common_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.hastags_common_desc}} \",\".</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_common\" value=\"\" placeholder=\"\" _v-b34c44f8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags === 'custom-hashtags'\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.hastags_field_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.hastags_field_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_custom\" value=\"\" placeholder=\"\" _v-b34c44f8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags !== 'no-hashtags'\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.hashtags_length_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.hashtags_length_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.hashtags_length\" value=\"\" placeholder=\"\" _v-b34c44f8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<span class=\"divider\" _v-b34c44f8=\"\"></span>\n\n\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.image_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.image_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"input-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.image\" :disabled=\"!isPro\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-b34c44f8=\"\"></i> {{labels.image_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns \" v-if=\"!isPro\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column text-center\" _v-b34c44f8=\"\">\n\t\t\t\t<p class=\"upsell\" _v-b34c44f8=\"\"><i class=\"fa fa-lock\" _v-b34c44f8=\"\"></i> {{labels.image_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-b34c44f8=\"\"></span>\n\t\t<!-- Google Analytics -->\n\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.utm_campaign_medium}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.utm_campaign_medium_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<input type=\"text\" :disabled=\"!isPro\" class=\"form-input\" v-model=\"post_format.utm_campaign_medium\" placeholder=\"social\" _v-b34c44f8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-b34c44f8=\"\">\n\t\t\t\t<b _v-b34c44f8=\"\">{{labels.utm_campaign_name}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-b34c44f8=\"\">{{labels.utm_campaign_name_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-b34c44f8=\"\">\n\t\t\t\t<div class=\"form-group\" _v-b34c44f8=\"\">\n\t\t\t\t\t\t<input type=\"text\" :disabled=\"!isPro\" class=\"form-input\" v-model=\"post_format.utm_campaign_name\" placeholder=\"ReviveOldPost\" _v-b34c44f8=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns \" v-if=\"!isPro\" _v-b34c44f8=\"\">\n\t\t\t<div class=\"column text-center\" _v-b34c44f8=\"\">\n\t\t\t\t<p class=\"upsell\" _v-b34c44f8=\"\"><i class=\"fa fa-lock\" _v-b34c44f8=\"\"></i> {{labels.custom_utm_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-b34c44f8=\"\"></span>\n\t</div>\n";
+module.exports = "\n\t<div _v-05f3b2fa=\"\">\n\t\t<div class=\"columns py-2\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.post_content_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.post_content_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"form-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.post_content\" _v-05f3b2fa=\"\">\n\t\t\t\t\t\t<option value=\"post_title\" _v-05f3b2fa=\"\">{{labels.post_content_option_title}}</option>\n\t\t\t\t\t\t<option value=\"post_content\" _v-05f3b2fa=\"\">{{labels.post_content_option_content}}</option>\n\t\t\t\t\t\t<option value=\"post_title_content\" _v-05f3b2fa=\"\">{{labels.post_content_option_title_content}}</option>\n\t\t\t\t\t\t<option value=\"custom_field\" _v-05f3b2fa=\"\">{{labels.post_content_option_custom_field}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.post_content === 'custom_field'\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.custom_meta_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.custom_meta_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"form-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.custom_meta_field\" value=\"\" placeholder=\"\" _v-05f3b2fa=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<span class=\"divider\" _v-05f3b2fa=\"\"></span>\n\n\t\t<div class=\"columns py-2\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.max_char_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.max_char_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"form-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.maximum_length\" value=\"\" placeholder=\"\" _v-05f3b2fa=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-05f3b2fa=\"\"></span>\n\n\t\t<div class=\"columns py-2\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.add_char_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\"><span v-html=\"labels.add_char_desc\" _v-05f3b2fa=\"\"></span></p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"form-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<textarea class=\"form-input\" v-model=\"post_format.custom_text\" v-bind:placeholder=\"labels.add_char_placeholder\" _v-05f3b2fa=\"\">{{post_format.custom_text}}</textarea> \n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.add_pos_title}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"form-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.custom_text_pos\" _v-05f3b2fa=\"\">\n\t\t\t\t\t\t<option value=\"beginning\" _v-05f3b2fa=\"\">{{labels.add_pos_option_start}}</option>\n\t\t\t\t\t\t<option value=\"end\" _v-05f3b2fa=\"\">{{labels.add_pos_option_end}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.add_link_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.add_link_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"input-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-05f3b2fa=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.include_link\" _v-05f3b2fa=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-05f3b2fa=\"\"></i> {{labels.add_link_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-05f3b2fa=\"\"></span>\n\t\t<div class=\"columns py-2\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.meta_link_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.meta_link_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"input-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-05f3b2fa=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.url_from_meta\" _v-05f3b2fa=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-05f3b2fa=\"\"></i> {{labels.meta_link_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Custom Field -->\n\t\t<div class=\"columns py-2\" v-if=\"post_format.url_from_meta\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.meta_link_name_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.meta_link_name_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"form-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.url_meta_key\" value=\"\" placeholder=\"\" _v-05f3b2fa=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-05f3b2fa=\"\"></span>\n\t\t<div class=\"columns py-2\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.use_shortner_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.use_shortner_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"input-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-05f3b2fa=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.short_url\" _v-05f3b2fa=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-05f3b2fa=\"\"></i> {{labels.use_shortner_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" v-if=\"post_format.short_url\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.shortner_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.shortner_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"form-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.short_url_service\" _v-05f3b2fa=\"\">\n\t\t\t\t\t\t<option value=\"rviv.ly\" _v-05f3b2fa=\"\">rviv.ly</option>\n\t\t\t\t\t\t<option value=\"bit.ly\" _v-05f3b2fa=\"\">bit.ly</option>\n\t\t\t\t\t\t<option value=\"firebase\" _v-05f3b2fa=\"\">google firebase</option>\n\t\t\t\t\t\t<option value=\"ow.ly\" _v-05f3b2fa=\"\">ow.ly</option>\n\t\t\t\t\t\t<option value=\"is.gd\" _v-05f3b2fa=\"\">is.gd</option>\n      <option value=\"rebrand.ly\" _v-05f3b2fa=\"\">rebrand.ly</option>\n      <option value=\"wp_short_url\" _v-05f3b2fa=\"\">wp_short_url</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.short_url\" v-for=\"( credential, key_name ) in post_format.shortner_credentials\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{ key_name | capitalize }}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.shortner_field_desc_start}} \"{{key_name}}\"\n\t\t\t\t\t{{labels.shortner_field_desc_end}}\n\t\t\t\t\t<strong _v-05f3b2fa=\"\">{{post_format.short_url_service}}</strong> {{labels.shortner_api_field}}.</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"form-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.shortner_credentials[key_name]\" _v-05f3b2fa=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.hashtags_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.hashtags_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"form-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"post_format.hashtags\" _v-05f3b2fa=\"\">\n\t\t\t\t\t\t<option value=\"no-hashtags\" _v-05f3b2fa=\"\">{{labels.hashtags_option_no}}</option>\n\t\t\t\t\t\t<option value=\"common-hashtags\" _v-05f3b2fa=\"\">{{labels.hashtags_option_common}}</option>\n\t\t\t\t\t\t<option value=\"categories-hashtags\" _v-05f3b2fa=\"\">{{labels.hashtags_option_cats}}</option>\n\t\t\t\t\t\t<option value=\"tags-hashtags\" _v-05f3b2fa=\"\">{{labels.hashtags_option_tags}}</option>\n\t\t\t\t\t\t<option value=\"custom-hashtags\" _v-05f3b2fa=\"\">{{labels.hashtags_option_field}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags === 'common-hashtags'\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.hastags_common_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.hastags_common_desc}} \",\".</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"form-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_common\" value=\"\" placeholder=\"\" _v-05f3b2fa=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags === 'custom-hashtags'\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.hastags_field_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.hastags_field_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"form-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_custom\" value=\"\" placeholder=\"\" _v-05f3b2fa=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" v-if=\"post_format.hashtags !== 'no-hashtags'\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.hashtags_length_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.hashtags_length_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"form-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<input class=\"form-input\" type=\"number\" v-model=\"post_format.hashtags_length\" value=\"\" placeholder=\"\" _v-05f3b2fa=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<span class=\"divider\" _v-05f3b2fa=\"\"></span>\n\n\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.image_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.image_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"input-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t<label class=\"form-checkbox\" _v-05f3b2fa=\"\">\n\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"post_format.image\" :disabled=\"!isPro\" _v-05f3b2fa=\"\">\n\t\t\t\t\t\t<i class=\"form-icon\" _v-05f3b2fa=\"\"></i> {{labels.image_yes}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns \" v-if=\"!isPro\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column text-center\" _v-05f3b2fa=\"\">\n\t\t\t\t<p class=\"upsell\" _v-05f3b2fa=\"\"><i class=\"fa fa-lock\" _v-05f3b2fa=\"\"></i> {{labels.image_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-05f3b2fa=\"\"></span>\n\t\t<!-- Google Analytics -->\n\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.utm_campaign_medium}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.utm_campaign_medium_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"form-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t\t<input type=\"text\" :disabled=\"!isPro\" class=\"form-input\" v-model=\"post_format.utm_campaign_medium\" placeholder=\"social\" _v-05f3b2fa=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-05f3b2fa=\"\">\n\t\t\t\t<b _v-05f3b2fa=\"\">{{labels.utm_campaign_name}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-05f3b2fa=\"\">{{labels.utm_campaign_name_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-05f3b2fa=\"\">\n\t\t\t\t<div class=\"form-group\" _v-05f3b2fa=\"\">\n\t\t\t\t\t\t<input type=\"text\" :disabled=\"!isPro\" class=\"form-input\" v-model=\"post_format.utm_campaign_name\" placeholder=\"ReviveOldPost\" _v-05f3b2fa=\"\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"columns \" v-if=\"!isPro\" _v-05f3b2fa=\"\">\n\t\t\t<div class=\"column text-center\" _v-05f3b2fa=\"\">\n\t\t\t\t<p class=\"upsell\" _v-05f3b2fa=\"\"><i class=\"fa fa-lock\" _v-05f3b2fa=\"\"></i> {{labels.custom_utm_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-05f3b2fa=\"\"></span>\n\t</div>\n";
 
 /***/ }),
 /* 269 */
@@ -37878,7 +38030,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/account-schedule.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/account-schedule.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -37902,8 +38054,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-397ecf27&file=account-schedule.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./account-schedule.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-397ecf27&file=account-schedule.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./account-schedule.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-19c4191e&file=account-schedule.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./account-schedule.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-19c4191e&file=account-schedule.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./account-schedule.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -37921,7 +38073,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t.rop-control-container-false[_v-397ecf27]  {\n\t\tcursor:not-allowed !important;\n\t}\n\t#rop_core .panel-body .text-gray[_v-397ecf27] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\n\tb[_v-397ecf27] {\n\t\tmargin-bottom: 5px;\n\t\tdisplay: block;\n\t}\n\n\t#rop_core .input-group .input-group-addon[_v-397ecf27] {\n\t\tpadding: 3px 5px;\n\t}\n\n\t.time-picker[_v-397ecf27] {\n\t\tmargin-bottom: 10px;\n\t}\n\n\t@media ( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-397ecf27] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\n\t\t#rop_core .text-right[_v-397ecf27] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n\n", ""]);
+exports.push([module.i, "\n\t.rop-control-container-false[_v-19c4191e]  {\n\t\tcursor:not-allowed !important;\n\t}\n\t#rop_core .panel-body .text-gray[_v-19c4191e] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\n\tb[_v-19c4191e] {\n\t\tmargin-bottom: 5px;\n\t\tdisplay: block;\n\t}\n\n\t#rop_core .input-group .input-group-addon[_v-19c4191e] {\n\t\tpadding: 3px 5px;\n\t}\n\n\t.time-picker[_v-19c4191e] {\n\t\tmargin-bottom: 10px;\n\t}\n\n\t@media ( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-19c4191e] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\n\t\t#rop_core .text-right[_v-19c4191e] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n\n", ""]);
 
 // exports
 
@@ -38211,7 +38363,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/node_modules/vue2-timepicker/src/vue-timepicker.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/node_modules/vue2-timepicker/src/vue-timepicker.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -38235,8 +38387,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../css-loader/index.js!../../vue-loader/lib/style-rewriter.js?id=_v-0ad98b58&file=vue-timepicker.vue!../../vue-loader/lib/selector.js?type=style&index=0!./vue-timepicker.vue", function() {
-			var newContent = require("!!../../css-loader/index.js!../../vue-loader/lib/style-rewriter.js?id=_v-0ad98b58&file=vue-timepicker.vue!../../vue-loader/lib/selector.js?type=style&index=0!./vue-timepicker.vue");
+		module.hot.accept("!!../../css-loader/index.js!../../vue-loader/lib/style-rewriter.js?id=_v-861149bc&file=vue-timepicker.vue!../../vue-loader/lib/selector.js?type=style&index=0!./vue-timepicker.vue", function() {
+			var newContent = require("!!../../css-loader/index.js!../../vue-loader/lib/style-rewriter.js?id=_v-861149bc&file=vue-timepicker.vue!../../vue-loader/lib/selector.js?type=style&index=0!./vue-timepicker.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -38994,13 +39146,13 @@ webpackContext.id = 283;
 /* 284 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div :class=\"'rop-control-container-'+ ( license > 1 ) +  '  rop-schedule-tab-container'\" _v-397ecf27=\"\">\n\n\t\t<div class=\"columns py-2 rop-control\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<b _v-397ecf27=\"\">{{labels.schedule_type_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-397ecf27=\"\">{{labels.schedule_type_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<div class=\"form-group\" _v-397ecf27=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"schedule.type\" _v-397ecf27=\"\">\n\t\t\t\t\t\t<option value=\"recurring\" _v-397ecf27=\"\">{{labels.schedule_type_option_rec}}</option>\n\t\t\t\t\t\t<option value=\"fixed\" _v-397ecf27=\"\">{{labels.schedule_type_option_fix}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule Days -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<b _v-397ecf27=\"\">{{labels.schedule_fixed_days_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-397ecf27=\"\">{{labels.schedule_fixed_days_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<div class=\"form-group input-group\" _v-397ecf27=\"\">\n\t\t\t\t\t<button-checkbox v-for=\"( data, label ) in daysObject\" :key=\"label\" :value=\"data.value\" :label=\"label\" :checked=\"data.checked\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" _v-397ecf27=\"\"></button-checkbox>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule time -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<b _v-397ecf27=\"\">{{labels.schedule_fixed_time_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-397ecf27=\"\">{{labels.schedule_fixed_time_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<div class=\"form-group\" _v-397ecf27=\"\">\n\t\t\t\t\t<div class=\"input-group\" v-for=\"( time, index ) in schedule.interval_f.time\" _v-397ecf27=\"\">\n\t\t\t\t\t\t<vue-timepicker :minute-interval=\"5\" class=\"timepicker-style-fix\" :value=\"getTime( index )\" @change=\"syncTime( $event, index )\" hide-clear-button=\"\" _v-397ecf27=\"\"></vue-timepicker>\n\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn\" v-if=\"schedule.interval_f.time.length > 1\" @click=\"rmvTime( index )\" _v-397ecf27=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-minus\" _v-397ecf27=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t\t<button class=\"btn btn-success input-group-btn\" v-if=\"index == schedule.interval_f.time.length - 1\" @click=\"addTime()\" _v-397ecf27=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-plus\" _v-397ecf27=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Current time -->\n<div class=\"column col-6 col-sm-12 vertical-align float-right\" v-if=\"schedule.type === 'fixed'\" _v-397ecf27=\"\">\n\t\t<div class=\"toast rop-current-time text-center\" v-if=\"formatedDate\" _v-397ecf27=\"\">\n\t\t\t\t{{labels.time_now}}: {{ formatedDate }}\n\t\t</div>\n</div>\n\n\t\t<div class=\"columns py-2 rop-control\" v-else=\"\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<b _v-397ecf27=\"\">{{labels.schedule_rec_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-397ecf27=\"\">{{labels.schedule_rec_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-397ecf27=\"\">\n\t\t\t\t<div class=\"form-group\" _v-397ecf27=\"\">\n\t\t\t\t\t<counter-input id=\"interval_r\" :value.sync=\"schedule.interval_r\" _v-397ecf27=\"\"></counter-input>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Upsell -->\n\t\t<div class=\"columns py-2\" v-if=\"license < 2\" _v-397ecf27=\"\">\n\t\t\t<div class=\"column text-center\" _v-397ecf27=\"\">\n\t\t\t\t<p class=\"upsell\" _v-397ecf27=\"\"><i class=\"fa fa-lock\" _v-397ecf27=\"\"></i> {{labels.schedule_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-397ecf27=\"\"></span>\n\t</div>\n";
+module.exports = "\n\t<div :class=\"'rop-control-container-'+ ( license > 1 ) +  '  rop-schedule-tab-container'\" _v-19c4191e=\"\">\n\n\t\t<div class=\"columns py-2 rop-control\" _v-19c4191e=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-19c4191e=\"\">\n\t\t\t\t<b _v-19c4191e=\"\">{{labels.schedule_type_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-19c4191e=\"\">{{labels.schedule_type_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-19c4191e=\"\">\n\t\t\t\t<div class=\"form-group\" _v-19c4191e=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"schedule.type\" _v-19c4191e=\"\">\n\t\t\t\t\t\t<option value=\"recurring\" _v-19c4191e=\"\">{{labels.schedule_type_option_rec}}</option>\n\t\t\t\t\t\t<option value=\"fixed\" _v-19c4191e=\"\">{{labels.schedule_type_option_fix}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule Days -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-19c4191e=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-19c4191e=\"\">\n\t\t\t\t<b _v-19c4191e=\"\">{{labels.schedule_fixed_days_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-19c4191e=\"\">{{labels.schedule_fixed_days_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-19c4191e=\"\">\n\t\t\t\t<div class=\"form-group input-group\" _v-19c4191e=\"\">\n\t\t\t\t\t<button-checkbox v-for=\"( data, label ) in daysObject\" :key=\"label\" :value=\"data.value\" :label=\"label\" :checked=\"data.checked\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" _v-19c4191e=\"\"></button-checkbox>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule time -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-19c4191e=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-19c4191e=\"\">\n\t\t\t\t<b _v-19c4191e=\"\">{{labels.schedule_fixed_time_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-19c4191e=\"\">{{labels.schedule_fixed_time_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-19c4191e=\"\">\n\t\t\t\t<div class=\"form-group\" _v-19c4191e=\"\">\n\t\t\t\t\t<div class=\"input-group\" v-for=\"( time, index ) in schedule.interval_f.time\" _v-19c4191e=\"\">\n\t\t\t\t\t\t<vue-timepicker :minute-interval=\"5\" class=\"timepicker-style-fix\" :value=\"getTime( index )\" @change=\"syncTime( $event, index )\" hide-clear-button=\"\" _v-19c4191e=\"\"></vue-timepicker>\n\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn\" v-if=\"schedule.interval_f.time.length > 1\" @click=\"rmvTime( index )\" _v-19c4191e=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-minus\" _v-19c4191e=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t\t<button class=\"btn btn-success input-group-btn\" v-if=\"index == schedule.interval_f.time.length - 1\" @click=\"addTime()\" _v-19c4191e=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-plus\" _v-19c4191e=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Current time -->\n<div class=\"column col-6 col-sm-12 vertical-align float-right\" v-if=\"schedule.type === 'fixed'\" _v-19c4191e=\"\">\n\t\t<div class=\"toast rop-current-time text-center\" v-if=\"formatedDate\" _v-19c4191e=\"\">\n\t\t\t\t{{labels.time_now}}: {{ formatedDate }}\n\t\t</div>\n</div>\n\n\t\t<div class=\"columns py-2 rop-control\" v-else=\"\" _v-19c4191e=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-19c4191e=\"\">\n\t\t\t\t<b _v-19c4191e=\"\">{{labels.schedule_rec_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-19c4191e=\"\">{{labels.schedule_rec_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-19c4191e=\"\">\n\t\t\t\t<div class=\"form-group\" _v-19c4191e=\"\">\n\t\t\t\t\t<counter-input id=\"interval_r\" :value.sync=\"schedule.interval_r\" _v-19c4191e=\"\"></counter-input>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Upsell -->\n\t\t<div class=\"columns py-2\" v-if=\"license < 2\" _v-19c4191e=\"\">\n\t\t\t<div class=\"column text-center\" _v-19c4191e=\"\">\n\t\t\t\t<p class=\"upsell\" _v-19c4191e=\"\"><i class=\"fa fa-lock\" _v-19c4191e=\"\"></i> {{labels.schedule_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-19c4191e=\"\"></span>\n\t</div>\n";
 
 /***/ }),
 /* 285 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\" _v-44ae6e9d=\"\">\n\t\t<div class=\"panel-body\" _v-44ae6e9d=\"\">\n\t\t\t<div class=\"d-inline-block mt-2 column col-12\" _v-44ae6e9d=\"\">\n\t\t\t\t<p class=\"text-gray\" _v-44ae6e9d=\"\"><i class=\"fa fa-info-circle\" _v-44ae6e9d=\"\"></i> <span v-html=\"labels.accounts_selector\" _v-44ae6e9d=\"\"></span>\n\t\t\t\t</p>\n\t\t\t</div>\n\t\t\t<empty-active-accounts v-if=\"accountsCount === 0\" _v-44ae6e9d=\"\"></empty-active-accounts>\n\t\t\t<div class=\"container\" v-if=\"accountsCount > 0\" _v-44ae6e9d=\"\">\n\t\t\t\t<div class=\"columns\" _v-44ae6e9d=\"\">\n\t\t\t\t\t<div class=\"column col-3 col-sm-12 col-md-12 col-xl-3 col-lg-3 col-xs-12 col-rop-selector-accounts\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t<span class=\"divider\" _v-44ae6e9d=\"\"></span>\n\t\t\t\t\t\t<div v-for=\"( account, id ) in active_accounts\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t\t<div class=\"rop-selector-account-container\" :class=\"{active: selected_account===id}\" @click=\"setActiveAccount(id)\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t\t\t<div class=\"tile tile-centered rop-account\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"tile-icon\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"icon_box\" :class=\" (account.img ? 'has_image' : 'no-image' ) + ' ' +account.service \" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<img class=\"service_account_image\" :src=\"account.img\" v-if=\"account.img\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"fa  \" :class=\"getIcon(account)\" aria-hidden=\"true\" _v-44ae6e9d=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"tile-content\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t\t\t\t\t<p class=\"rop-account-name\" _v-44ae6e9d=\"\">{{account.user}}</p>\n\t\t\t\t\t\t\t\t\t\t<strong class=\"rop-service-name\" _v-44ae6e9d=\"\">{{account.service}}</strong>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-44ae6e9d=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-9 col-sm-12  col-md-12  col-xl-9 col-lg-9 col-xs-12\" :class=\"'rop-tab-state-'+is_loading\" _v-44ae6e9d=\"\">\n\t\t\t\t\t\t<component :is=\"type\" :account_id=\"selected_account\" :license=\"license\" _v-44ae6e9d=\"\"></component>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-44ae6e9d=\"\">\n\t\t\t<div class=\"panel-actions text-right\" v-if=\"allow_footer\" _v-44ae6e9d=\"\">\n\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-44ae6e9d=\"\"><i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-44ae6e9d=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-44ae6e9d=\"\"></i> {{labels.reset_selector_btn}} {{component_label}}\n\t\t\t\t\t{{labels.for}}\n\t\t\t\t\t<b _v-44ae6e9d=\"\">{{active_account_name}}</b>\n\t\t\t\t</button>\n\t\t\t\t<button class=\"btn btn-primary\" @click=\"saveAccountData()\" _v-44ae6e9d=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-44ae6e9d=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-44ae6e9d=\"\"></i> {{labels.save_selector_btn}} {{component_label}}\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\" _v-08d479da=\"\">\n\t\t<div class=\"panel-body\" _v-08d479da=\"\">\n\t\t\t<div class=\"d-inline-block mt-2 column col-12\" _v-08d479da=\"\">\n\t\t\t\t<p class=\"text-gray\" _v-08d479da=\"\"><i class=\"fa fa-info-circle\" _v-08d479da=\"\"></i> <span v-html=\"labels.accounts_selector\" _v-08d479da=\"\"></span>\n\t\t\t\t</p>\n\t\t\t</div>\n\t\t\t<empty-active-accounts v-if=\"accountsCount === 0\" _v-08d479da=\"\"></empty-active-accounts>\n\t\t\t<div class=\"container\" v-if=\"accountsCount > 0\" _v-08d479da=\"\">\n\t\t\t\t<div class=\"columns\" _v-08d479da=\"\">\n\t\t\t\t\t<div class=\"column col-3 col-sm-12 col-md-12 col-xl-3 col-lg-3 col-xs-12 col-rop-selector-accounts\" _v-08d479da=\"\">\n\t\t\t\t\t\t<span class=\"divider\" _v-08d479da=\"\"></span>\n\t\t\t\t\t\t<div v-for=\"( account, id ) in active_accounts\" _v-08d479da=\"\">\n\t\t\t\t\t\t\t<div class=\"rop-selector-account-container\" :class=\"{active: selected_account===id}\" @click=\"setActiveAccount(id)\" _v-08d479da=\"\">\n\t\t\t\t\t\t\t\t<div class=\"tile tile-centered rop-account\" _v-08d479da=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"tile-icon\" _v-08d479da=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"icon_box\" :class=\" (account.img ? 'has_image' : 'no-image' ) + ' ' +account.service \" _v-08d479da=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<img class=\"service_account_image\" :src=\"account.img\" v-if=\"account.img\" _v-08d479da=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"fa  \" :class=\"getIcon(account)\" aria-hidden=\"true\" _v-08d479da=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"tile-content\" _v-08d479da=\"\">\n\t\t\t\t\t\t\t\t\t\t<p class=\"rop-account-name\" _v-08d479da=\"\">{{account.user}}</p>\n\t\t\t\t\t\t\t\t\t\t<strong class=\"rop-service-name\" _v-08d479da=\"\">{{account.service}}</strong>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-08d479da=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-9 col-sm-12  col-md-12  col-xl-9 col-lg-9 col-xs-12\" :class=\"'rop-tab-state-'+is_loading\" _v-08d479da=\"\">\n\t\t\t\t\t\t<component :is=\"type\" :account_id=\"selected_account\" :license=\"license\" _v-08d479da=\"\"></component>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-08d479da=\"\">\n\t\t\t<div class=\"panel-actions text-right\" v-if=\"allow_footer\" _v-08d479da=\"\">\n\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-08d479da=\"\"><i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-08d479da=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-08d479da=\"\"></i> {{labels.reset_selector_btn}} {{component_label}}\n\t\t\t\t\t{{labels.for}}\n\t\t\t\t\t<b _v-08d479da=\"\">{{active_account_name}}</b>\n\t\t\t\t</button>\n\t\t\t\t<button class=\"btn btn-primary\" @click=\"saveAccountData()\" _v-08d479da=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-08d479da=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-08d479da=\"\"></i> {{labels.save_selector_btn}} {{component_label}}\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 286 */
@@ -39016,7 +39168,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/queue-tab-panel.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/queue-tab-panel.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -39165,7 +39317,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/reusables/queue-card.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/queue-card.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -39189,8 +39341,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-16ad60c3&file=queue-card.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./queue-card.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-16ad60c3&file=queue-card.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./queue-card.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2fa55fe6&file=queue-card.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./queue-card.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2fa55fe6&file=queue-card.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./queue-card.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -39208,7 +39360,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t.fa[_v-16ad60c3] {\n\t\tbackground: transparent;\n\t}\n\t\n\t#rop_core .vertical-align[_v-16ad60c3] {\n\t\t-ms-flex-align: end;\n\t\t    align-items: flex-end;\n\t}\n\t\n\t#rop_core figure.figure[_v-16ad60c3] {\n\t\tmargin: -.7em -2em -1em 0;\n\t}\n\t\n\t@media (max-width: 600px) {\n\t\t#rop_core .vertical-align[_v-16ad60c3] {\n\t\t\t-ms-flex-align: center;\n\t\t\t    align-items: center;\n\t\t}\n\t\t\n\t\t#rop_core figure.figure[_v-16ad60c3] {\n\t\t\tmargin: 10px auto 0;\n\t\t}\n\t}\n", ""]);
+exports.push([module.i, "\n\t.fa[_v-2fa55fe6] {\n\t\tbackground: transparent;\n\t}\n\t\n\t#rop_core .vertical-align[_v-2fa55fe6] {\n\t\t-ms-flex-align: end;\n\t\t    align-items: flex-end;\n\t}\n\t\n\t#rop_core figure.figure[_v-2fa55fe6] {\n\t\tmargin: -.7em -2em -1em 0;\n\t}\n\t\n\t@media (max-width: 600px) {\n\t\t#rop_core .vertical-align[_v-2fa55fe6] {\n\t\t\t-ms-flex-align: center;\n\t\t\t    align-items: center;\n\t\t}\n\t\t\n\t\t#rop_core figure.figure[_v-2fa55fe6] {\n\t\t\tmargin: 10px auto 0;\n\t\t}\n\t}\n", ""]);
 
 // exports
 
@@ -39537,7 +39689,7 @@ module.exports = {
 /* 292 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"card\" _v-16ad60c3=\"\">\n\t\t<div class=\"columns\" _v-16ad60c3=\"\">\n\t\t\t<div class=\"column col-sm-12 col-justified\" _v-16ad60c3=\"\">\n\t\t\t\t<div class=\"columns\" _v-16ad60c3=\"\">\n\t\t\t\t\t<div class=\"column\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<p class=\"text-gray text-left \" _v-16ad60c3=\"\"><i class=\"fa fa-clock-o\" _v-16ad60c3=\"\"></i> {{card_data.date}} <b _v-16ad60c3=\"\"><i class=\"fa fa-at\" _v-16ad60c3=\"\"></i></b> <i class=\"service fa\" :class=\"iconClass( card_data.account_id )\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t{{getAccountName(card_data.account_id)}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-if=\"!edit\" _v-16ad60c3=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<p v-html=\"content.content + hashtags( content.hashtags )\" _v-16ad60c3=\"\"></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"form-group columns\" v-if=\"edit\" _v-16ad60c3=\"\">\n\t\t\t\t\t<div class=\"column col-12\" v-if=\"content.post_with_image\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<label class=\"form-label\" for=\"image\" _v-16ad60c3=\"\">{{labels.queue_image}}</label>\n\t\t\t\t\t\t<div class=\"input-group\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<span class=\"input-group-addon\" _v-16ad60c3=\"\"><i class=\"fa fa-file-image-o\" _v-16ad60c3=\"\"></i></span>\n\t\t\t\t\t\t\t<input id=\"image\" type=\"text\" class=\"form-input\" :value=\"content.post_image\" readonly=\"\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary input-group-btn tooltip\" @click=\"uploadImage\" :data-tooltip=\"labels.upload_image\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-upload\" aria-hidden=\"true\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn tooltip\" @click=\"removeImage\" :data-tooltip=\"labels.remove_image\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-remove\" aria-hidden=\"true\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-12\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<label class=\"form-label\" for=\"content\" _v-16ad60c3=\"\">{{labels.queue_content}}</label>\n\t\t\t\t\t\t<textarea class=\"form-input\" id=\"content\" placeholder=\"\" rows=\"3\" @keyup=\"checkCount\" _v-16ad60c3=\"\">{{content.content}}</textarea>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns col-justified\" v-if=\"!edit\" _v-16ad60c3=\"\">\n\t\t\t\t\t<div class=\"column col-3\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-warning tooltip   tooltip-bottom \" @click=\"skipPost(card_data.account_id, card_data.post_id)\" :data-tooltip=\"labels.reschedule_post\" :disabled=\" ! enabled\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'skip'\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-step-forward\" v-else=\"\" aria-hidden=\"true\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t{{labels.skip_btn_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-danger tooltip     tooltip-bottom  \" :data-tooltip=\"labels.ban_post\" @click=\"blockPost(card_data.account_id, card_data.post_id)\" :disabled=\" ! enabled\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'block'\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-ban\" aria-hidden=\"true\" v-else=\"\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t{{labels.block_btn_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-primary\" @click=\"toggleEditState\" v-if=\"!edit\" :disabled=\" ! enabled\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-pencil\" aria-hidden=\"true\" _v-16ad60c3=\"\"></i> {{labels.edit_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3 col-ml-auto text-right\" v-if=\"content.post_url !== ''\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<p class=\"m-0\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<b _v-16ad60c3=\"\">{{labels.link_title}}:</b>\n\t\t\t\t\t\t\t<a :href=\"content.post_url\" target=\"_blank\" class=\"tooltip\" :data-tooltip=\"labels.link_shortned_start + ' ' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service )  \" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t\t{{'{' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service ) +\n\t\t\t\t\t\t\t\t'}'}}</a>\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-else=\"\" _v-16ad60c3=\"\">\n\t\t\t\t\t<div class=\"column col-3\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-success\" @click=\"saveChanges(card_data.account_id, card_data.post_id)\" v-if=\"edit\" :disabled=\" ! enabled\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'edit'\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-check\" aria-hidden=\"true\" v-else=\"\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t{{labels.save_edit}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-warning\" @click=\"cancelChanges\" v-if=\"edit\" :disabled=\" ! enabled\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-times\" aria-hidden=\"true\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t\t{{labels.cancel_edit}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"column col-4 col-sm-12 vertical-align\" v-if=\"!edit &amp;&amp; content.post_with_image\" _v-16ad60c3=\"\">\n\t\t\t\t<div v-if=\"content.post_image !== ''\" _v-16ad60c3=\"\">\n\t\t\t\t\t<figure class=\"figure\" v-if=\"content.post_image !== ''\" _v-16ad60c3=\"\">\n\t\t\t\t\t\t<img :src=\"( content.mimetype.type.indexOf('image') > -1 ? content.post_image : video_placeholder )\" class=\"img-fit-cover img-responsive\" _v-16ad60c3=\"\">\n\t\t\t\t\t</figure>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\t<div class=\"rop-image-placeholder\" v-else=\"\" _v-16ad60c3=\"\">\n\t\t\t\t\t<summary _v-16ad60c3=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-16ad60c3=\"\"></i>\n\t\t\t\t\t\t{{labels.queue_no_image}}\n\t\t\t\t\t</summary>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"card\" _v-2fa55fe6=\"\">\n\t\t<div class=\"columns\" _v-2fa55fe6=\"\">\n\t\t\t<div class=\"column col-sm-12 col-justified\" _v-2fa55fe6=\"\">\n\t\t\t\t<div class=\"columns\" _v-2fa55fe6=\"\">\n\t\t\t\t\t<div class=\"column\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t<p class=\"text-gray text-left \" _v-2fa55fe6=\"\"><i class=\"fa fa-clock-o\" _v-2fa55fe6=\"\"></i> {{card_data.date}} <b _v-2fa55fe6=\"\"><i class=\"fa fa-at\" _v-2fa55fe6=\"\"></i></b> <i class=\"service fa\" :class=\"iconClass( card_data.account_id )\" _v-2fa55fe6=\"\"></i>\n\t\t\t\t\t\t\t{{getAccountName(card_data.account_id)}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-if=\"!edit\" _v-2fa55fe6=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t<p v-html=\"content.content + hashtags( content.hashtags )\" _v-2fa55fe6=\"\"></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"form-group columns\" v-if=\"edit\" _v-2fa55fe6=\"\">\n\t\t\t\t\t<div class=\"column col-12\" v-if=\"content.post_with_image\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t<label class=\"form-label\" for=\"image\" _v-2fa55fe6=\"\">{{labels.queue_image}}</label>\n\t\t\t\t\t\t<div class=\"input-group\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t\t<span class=\"input-group-addon\" _v-2fa55fe6=\"\"><i class=\"fa fa-file-image-o\" _v-2fa55fe6=\"\"></i></span>\n\t\t\t\t\t\t\t<input id=\"image\" type=\"text\" class=\"form-input\" :value=\"content.post_image\" readonly=\"\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary input-group-btn tooltip\" @click=\"uploadImage\" :data-tooltip=\"labels.upload_image\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-upload\" aria-hidden=\"true\" _v-2fa55fe6=\"\"></i>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn tooltip\" @click=\"removeImage\" :data-tooltip=\"labels.remove_image\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-remove\" aria-hidden=\"true\" _v-2fa55fe6=\"\"></i>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-12\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t<label class=\"form-label\" for=\"content\" _v-2fa55fe6=\"\">{{labels.queue_content}}</label>\n\t\t\t\t\t\t<textarea class=\"form-input\" id=\"content\" placeholder=\"\" rows=\"3\" @keyup=\"checkCount\" _v-2fa55fe6=\"\">{{content.content}}</textarea>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns col-justified\" v-if=\"!edit\" _v-2fa55fe6=\"\">\n\t\t\t\t\t<div class=\"column col-3\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-warning tooltip   tooltip-bottom \" @click=\"skipPost(card_data.account_id, card_data.post_id)\" :data-tooltip=\"labels.reschedule_post\" :disabled=\" ! enabled\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'skip'\" _v-2fa55fe6=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-step-forward\" v-else=\"\" aria-hidden=\"true\" _v-2fa55fe6=\"\"></i>\n\t\t\t\t\t\t\t{{labels.skip_btn_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-danger tooltip     tooltip-bottom  \" :data-tooltip=\"labels.ban_post\" @click=\"blockPost(card_data.account_id, card_data.post_id)\" :disabled=\" ! enabled\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'block'\" _v-2fa55fe6=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-ban\" aria-hidden=\"true\" v-else=\"\" _v-2fa55fe6=\"\"></i>\n\t\t\t\t\t\t\t{{labels.block_btn_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-primary\" @click=\"toggleEditState\" v-if=\"!edit\" :disabled=\" ! enabled\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-pencil\" aria-hidden=\"true\" _v-2fa55fe6=\"\"></i> {{labels.edit_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3 col-ml-auto text-right\" v-if=\"content.post_url !== ''\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t<p class=\"m-0\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t\t<b _v-2fa55fe6=\"\">{{labels.link_title}}:</b>\n\t\t\t\t\t\t\t<a :href=\"content.post_url\" target=\"_blank\" class=\"tooltip\" :data-tooltip=\"labels.link_shortned_start + ' ' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service )  \" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t\t\t{{'{' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service ) +\n\t\t\t\t\t\t\t\t'}'}}</a>\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-else=\"\" _v-2fa55fe6=\"\">\n\t\t\t\t\t<div class=\"column col-3\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-success\" @click=\"saveChanges(card_data.account_id, card_data.post_id)\" v-if=\"edit\" :disabled=\" ! enabled\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'edit'\" _v-2fa55fe6=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-check\" aria-hidden=\"true\" v-else=\"\" _v-2fa55fe6=\"\"></i>\n\t\t\t\t\t\t\t{{labels.save_edit}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-warning\" @click=\"cancelChanges\" v-if=\"edit\" :disabled=\" ! enabled\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-times\" aria-hidden=\"true\" _v-2fa55fe6=\"\"></i>\n\t\t\t\t\t\t\t{{labels.cancel_edit}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"column col-4 col-sm-12 vertical-align\" v-if=\"!edit &amp;&amp; content.post_with_image\" _v-2fa55fe6=\"\">\n\t\t\t\t<div v-if=\"content.post_image !== ''\" _v-2fa55fe6=\"\">\n\t\t\t\t\t<figure class=\"figure\" v-if=\"content.post_image !== ''\" _v-2fa55fe6=\"\">\n\t\t\t\t\t\t<img :src=\"( content.mimetype.type.indexOf('image') > -1 ? content.post_image : video_placeholder )\" class=\"img-fit-cover img-responsive\" _v-2fa55fe6=\"\">\n\t\t\t\t\t</figure>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\t<div class=\"rop-image-placeholder\" v-else=\"\" _v-2fa55fe6=\"\">\n\t\t\t\t\t<summary _v-2fa55fe6=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-2fa55fe6=\"\"></i>\n\t\t\t\t\t\t{{labels.queue_no_image}}\n\t\t\t\t\t</summary>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 293 */
@@ -39560,7 +39712,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/logs-tab-panel.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/logs-tab-panel.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -39584,8 +39736,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6c63d2c4&file=logs-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./logs-tab-panel.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6c63d2c4&file=logs-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./logs-tab-panel.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0ec47530&file=logs-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./logs-tab-panel.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0ec47530&file=logs-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./logs-tab-panel.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -39603,7 +39755,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .toast.log-toast p[_v-6c63d2c4] {\n\t\tmargin: 0px;\n\t\tline-height: inherit;\n\t}\n\n\t#rop_core .toast.log-toast[_v-6c63d2c4]:hover {\n\t\topacity: 0.9;\n\t}\n\n\t#rop_core .toast.log-toast[_v-6c63d2c4] {\n\t\tpadding: 0.1rem;\n\t\tpadding-left: 10px;\n\t\tmargin-top: 2px;\n\t}\n\n\t#rop_core .container[_v-6c63d2c4] {\n\t\tmin-height: 400px;\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop_core .toast.log-toast p[_v-0ec47530] {\n\t\tmargin: 0px;\n\t\tline-height: inherit;\n\t}\n\n\t#rop_core .toast.log-toast[_v-0ec47530]:hover {\n\t\topacity: 0.9;\n\t}\n\n\t#rop_core .toast.log-toast[_v-0ec47530] {\n\t\tpadding: 0.1rem;\n\t\tpadding-left: 10px;\n\t\tmargin-top: 2px;\n\t}\n\n\t#rop_core .container[_v-0ec47530] {\n\t\tmin-height: 400px;\n\t}\n", ""]);
 
 // exports
 
@@ -39751,7 +39903,7 @@ module.exports = {
 /* 298 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\" _v-6c63d2c4=\"\">\n\t\t<div class=\"panel-body\" _v-6c63d2c4=\"\">\n\t\t\t<div class=\" columns mt-2\" v-if=\"logs_no > 0\" _v-6c63d2c4=\"\">\n\t\t\t\t<div class=\"column  col-12 text-right \" _v-6c63d2c4=\"\">\n\t\t\t\t\t<button class=\"btn  btn-secondary \" @click=\"getLogs(true)\" _v-6c63d2c4=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-remove\" v-if=\"!is_loading\" _v-6c63d2c4=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-6c63d2c4=\"\"></i>\n\t\t\t\t\t\t{{labels.clear_btn}}\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"columns\" _v-6c63d2c4=\"\">\n\t\t\t\t<div class=\"empty column col-12\" v-if=\"is_loading\" _v-6c63d2c4=\"\">\n\t\t\t\t\t<div class=\"empty-icon\" _v-6c63d2c4=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-spinner fa-spin\" _v-6c63d2c4=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"empty column col-12\" v-else-if=\"logs_no === 0\" _v-6c63d2c4=\"\">\n\t\t\t\t\t<div class=\"empty-icon\" _v-6c63d2c4=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\" _v-6c63d2c4=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t\t<p class=\"empty-title h5\" _v-6c63d2c4=\"\">{{labels.no_logs}}</p>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"column col-12 mt-2\" v-for=\" (data, index) in logs \" v-else-if=\"logs_no >  0\" _v-6c63d2c4=\"\">\n\t\t\t\t\t<div class=\"toast log-toast\" :class=\"'toast-' + data.type\" _v-6c63d2c4=\"\">\n\t\t\t\t\t\t<small class=\"pull-right text-right\" _v-6c63d2c4=\"\">{{formatDate ( data.time ) }}</small>\n\t\t\t\t\t\t<p _v-6c63d2c4=\"\">{{data.message}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\" _v-0ec47530=\"\">\n\t\t<div class=\"panel-body\" _v-0ec47530=\"\">\n\t\t\t<div class=\" columns mt-2\" v-if=\"logs_no > 0\" _v-0ec47530=\"\">\n\t\t\t\t<div class=\"column  col-12 text-right \" _v-0ec47530=\"\">\n\t\t\t\t\t<button class=\"btn  btn-secondary \" @click=\"getLogs(true)\" _v-0ec47530=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-remove\" v-if=\"!is_loading\" _v-0ec47530=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-0ec47530=\"\"></i>\n\t\t\t\t\t\t{{labels.clear_btn}}\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"columns\" _v-0ec47530=\"\">\n\t\t\t\t<div class=\"empty column col-12\" v-if=\"is_loading\" _v-0ec47530=\"\">\n\t\t\t\t\t<div class=\"empty-icon\" _v-0ec47530=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-spinner fa-spin\" _v-0ec47530=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"empty column col-12\" v-else-if=\"logs_no === 0\" _v-0ec47530=\"\">\n\t\t\t\t\t<div class=\"empty-icon\" _v-0ec47530=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\" _v-0ec47530=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t\t<p class=\"empty-title h5\" _v-0ec47530=\"\">{{labels.no_logs}}</p>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"column col-12 mt-2\" v-for=\" (data, index) in logs \" v-else-if=\"logs_no >  0\" _v-0ec47530=\"\">\n\t\t\t\t\t<div class=\"toast log-toast\" :class=\"'toast-' + data.type\" _v-0ec47530=\"\">\n\t\t\t\t\t\t<small class=\"pull-right text-right\" _v-0ec47530=\"\">{{formatDate ( data.time ) }}</small>\n\t\t\t\t\t\t<p _v-0ec47530=\"\">{{data.message}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 299 */
@@ -39768,7 +39920,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/reusables/toast.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/toast.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -39792,8 +39944,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-08254000&file=toast.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./toast.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-08254000&file=toast.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./toast.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-99692b14&file=toast.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./toast.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-99692b14&file=toast.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./toast.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -39897,7 +40049,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/reusables/countdown.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/countdown.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -41774,7 +41926,7 @@ module.exports = "\n\t<div class=\"toast rop-next-share-time\" v-if=\"isOn && ac
 /* 311 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <div class=\"columns panel-header\">\n            <div class=\"column header-logo vertical-align\">\n                <div>\n                    <img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/>\n                    <h1 class=\"plugin-title d-inline-block\">Revive Old Posts</h1><span class=\"powered d-inline-block\"> {{labels.by}} <a\n                        href=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\n                </div>\n            </div>\n            <toast/>\n            <div v-if=\" is_rest_api_error \" class=\"toast toast-error rop-api-not-available\" v-html=\"labels.api_not_available\">\n            </div>\n            <div v-if=\" is_fb_domain_notice \" class=\"toast toast-primary\">\n                <button class=\"btn btn-clear float-right\" @click=\"close_fb_domain_notice()\"></button>\n                <div v-html=\"labels.rop_facebook_domain_toast\"></div>\n            </div>\n            <div class=\"sidebar sidebar-top card rop-container-start\">\n\n              <!-- Next post count down -->\n                <countdown :current_time=\"current_time\"/>\n                <!--  -->\n\n                <button class=\"btn btn-sm\" :class=\"btn_class\"\n                        :data-tooltip=\"labels.active_account_warning\"\n                        @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n                    <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n                    <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n                    <i class=\"fa fa-spinner fa-spin\" v-else></i>\n                    {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n                </button>\n            </div>\n        </div>\n\n        <div class=\"columns\">\n            <div class=\"panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\n                <div class=\"panel-nav\" style=\"padding: 8px;\">\n                    <ul class=\"tab \">\n                        <li class=\"tab-item c-hand\" v-for=\"tab in displayTabs\"\n                            :class=\"{ active: tab.isActive }\" v-bind:id=\"tab.name.replace(' ', '').toLowerCase()\">\n                            <a :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\n                               :data-badge=\"logs_no\"\n                               @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\n                        </li>\n                    </ul>\n                </div>\n                <component :is=\"page.template\" :type=\"page.view\"></component>\n            </div>\n\n            <div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\n                 :class=\"'rop-license-plan-'+license\">\n\n                <div class=\"card rop-container-start\">\n                    <button id=\"rop_start_stop_btn\" class=\"btn\" :class=\"btn_class\"\n                            :data-tooltip=\"labels.active_account_warning\"\n                            @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n                        <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n                        <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n                        <i class=\"fa fa-spinner fa-spin\" v-else></i>\n                        {{labels.click}} {{labels.to}} {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n                    </button>\n\n                    <div class=\"sharing-box\" :class=\"status_color_class\">{{ status_label_display }}</div>\n\n                    <countdown :current_time=\"current_time\"/>\n\n                    <div id=\"staging-status\" v-if=\"staging\">\n                        {{labels.staging_status}}\n                    </div>\n                    <div v-if=\"!haveAccounts\" class=\"rop-spacer\"></div>\n                    <div v-if=\"haveAccounts\">\n                        <upsell-sidebar></upsell-sidebar>\n                    </div>\n                    <a v-if=\"license  >= 1\" href=\"https://revive.social/pro-support/\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.rop_support}}</a>\n                    <a v-if=\"license  < 1\" href=\"https://revive.social/support/\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.rop_support}}</a>\n                    <a v-if=\"haveAccounts\" href=\"https://docs.revive.social/\" target=\"_blank\"\n                       class=\"btn rop-sidebar-action-btns\">{{labels.rop_docs}}</a>\n                    <a v-if=\"haveAccounts\"\n                       href=\"https://wordpress.org/support/plugin/tweet-old-post/reviews/?rate=5#new-post\"\n                       target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.review_it}}</a>\n                </div>\n\n            </div>\n        </div>\n    </div>\n";
+module.exports = "\n    <div>\n        <div class=\"columns panel-header\">\n            <div class=\"column header-logo vertical-align\" v-if=\"is_preloading_over > 0\">\n                <div>\n                    <img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/>\n                    <h1 class=\"plugin-title d-inline-block\">Revive Old Posts</h1><span class=\"powered d-inline-block\"> {{labels.by}} <a\n                        href=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\n                </div>\n            </div>\n            <toast/>\n            <div v-if=\" is_rest_api_error \" class=\"toast toast-error rop-api-not-available\" v-html=\"labels.api_not_available\">\n            </div>\n            <div v-if=\" is_fb_domain_notice \" class=\"toast toast-primary\">\n                <button class=\"btn btn-clear float-right\" @click=\"close_fb_domain_notice()\"></button>\n                <div v-html=\"labels.rop_facebook_domain_toast\"></div>\n            </div>\n            <div class=\"sidebar sidebar-top card rop-container-start\">\n\n                <!-- Next post count down -->\n                <countdown :current_time=\"current_time\"/>\n                <!--  -->\n\n                <button class=\"btn btn-sm\" :class=\"btn_class\"\n                        :data-tooltip=\"labels.active_account_warning\"\n                        @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n                    <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n                    <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n                    <i class=\"fa fa-spinner fa-spin\" v-else></i>\n                    {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n                </button>\n            </div>\n        </div>\n\n        <div class=\"columns\">\n            <div class=\"panel column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\n                <div class=\"panel-nav\" style=\"padding: 8px;\" v-if=\"is_preloading_over > 0\">\n                    <ul class=\"tab \">\n                        <li class=\"tab-item c-hand\" v-for=\"tab in displayTabs\"\n                            :class=\"{ active: tab.isActive }\" v-bind:id=\"tab.name.replace(' ', '').toLowerCase()\">\n                            <a :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\n                               :data-badge=\"logs_no\"\n                               @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\n                        </li>\n                    </ul>\n                </div>\n                <component :is=\"page.template\" :type=\"page.view\"></component>\n            </div>\n\n            <div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\n                 :class=\"'rop-license-plan-'+license\" v-if=\"is_preloading_over > 0\">\n\n                <div class=\"card rop-container-start\">\n                    <button id=\"rop_start_stop_btn\" class=\"btn\" :class=\"btn_class\"\n                            :data-tooltip=\"labels.active_account_warning\"\n                            @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n                        <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n                        <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n                        <i class=\"fa fa-spinner fa-spin\" v-else></i>\n                        {{labels.click}} {{labels.to}} {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n                    </button>\n\n                    <div class=\"sharing-box\" :class=\"status_color_class\">{{ status_label_display }}</div>\n\n                    <countdown :current_time=\"current_time\"/>\n\n                    <div id=\"staging-status\" v-if=\"staging\">\n                        {{labels.staging_status}}\n                    </div>\n                    <div v-if=\"!haveAccounts\" class=\"rop-spacer\"></div>\n                    <div v-if=\"haveAccounts\">\n                        <upsell-sidebar></upsell-sidebar>\n                    </div>\n                    <a v-if=\"license  >= 1\" href=\"https://revive.social/pro-support/\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.rop_support}}</a>\n                    <a v-if=\"license  < 1\" href=\"https://revive.social/support/\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.rop_support}}</a>\n                    <a v-if=\"haveAccounts\" href=\"https://docs.revive.social/\" target=\"_blank\"\n                       class=\"btn rop-sidebar-action-btns\">{{labels.rop_docs}}</a>\n                    <a v-if=\"haveAccounts\"\n                       href=\"https://wordpress.org/support/plugin/tweet-old-post/reviews/?rate=5#new-post\"\n                       target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.review_it}}</a>\n                </div>\n\n            </div>\n        </div>\n    </div>\n";
 
 /***/ })
 /******/ ]);

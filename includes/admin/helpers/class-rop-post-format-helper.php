@@ -38,6 +38,18 @@ class Rop_Post_Format_Helper {
 	private $account_id = false;
 
 	/**
+	 * When variations exist, the message build_content function is ran first
+	 * This will set the number of variation.
+	 * We will store that number in this variable and get the variation image
+	 * Attached to the message.
+	 *
+	 * @since 8.4.4
+	 * @access private
+	 * @var null $sequential_index The variation index used for images
+	 */
+	private $sequential_index = null;
+
+	/**
 	 * Formats an object from the post data for sharing.
 	 *
 	 * @since   8.0.0
@@ -58,8 +70,8 @@ class Rop_Post_Format_Helper {
 		}
 
 		if ( function_exists( 'icl_object_id' ) ) {
-				$selector = new Rop_Posts_Selector_Model;
-				$post_id = $selector->rop_wpml_id( $post_id );
+			$selector = new Rop_Posts_Selector_Model;
+			$post_id  = $selector->rop_wpml_id( $post_id );
 		}
 
 		$service                            = $this->get_service();
@@ -121,7 +133,10 @@ class Rop_Post_Format_Helper {
 	 * @return array
 	 */
 	public function build_content( $post_id ) {
-		$default_content = array( 'display_content' => '', 'hashtags' => '' );
+		$default_content = array(
+			'display_content' => '',
+			'hashtags'        => '',
+		);
 		$content_helper  = new Rop_Content_Helper();
 		$max_length      = $this->post_format['maximum_length'];
 
@@ -151,37 +166,46 @@ class Rop_Post_Format_Helper {
 		$custom_messages = get_post_meta( $post_id, 'rop_custom_messages_group', true );
 
 		if ( ! empty( $custom_messages ) ) {
-			$custom_messages = array_values( $custom_messages );
 
-			$settings = new Rop_Settings_Model();
+			$settings                    = new Rop_Settings_Model();
 			$custom_messages_share_order = $settings->get_custom_messages_share_order();
 
 			if ( $custom_messages_share_order ) {
-				$sequential_index = get_post_meta( $post_id, 'rop_variation_index', true );
-				$sequential_index = ( ! empty( $sequential_index ) ) ? $sequential_index : 0;
+				$sequential_account_index = get_post_meta( $post_id, 'rop_variation_index', true );
 
-					$share_content = $custom_messages[ $sequential_index ]['rop_custom_description'];
+				if ( ! is_array( $sequential_account_index ) ) {
+					$sequential_account_index = array();
+				}
+				$sequential_index = ( ! empty( $sequential_account_index ) && isset( $sequential_account_index[ $this->account_id ] ) ) ? absint( $sequential_account_index[ $this->account_id ] ) : 0;
+
+				$share_content          = $custom_messages[ $sequential_index ]['rop_custom_description'];
+				$this->sequential_index = $sequential_index; // Will be used to get the variation image
 
 				$new_index = $sequential_index + 1;
-				$count = count( $custom_messages ) - 1;
+				$count     = count( $custom_messages ) - 1;
 
 				if ( $new_index <= $count ) {
-					update_post_meta( $post_id, 'rop_variation_index', $new_index );
+					$sequential_account_index[ $this->account_id ] = $new_index;
+					update_post_meta( $post_id, 'rop_variation_index', $sequential_account_index );
 				} else {
-					delete_post_meta( $post_id, 'rop_variation_index' );
+					unset( $sequential_account_index[ $this->account_id ] );
+					update_post_meta( $post_id, 'rop_variation_index', $sequential_account_index );
 				}
 			} else {
-
-				$random_index    = rand( 0, ( count( $custom_messages ) - 1 ) );
-				$share_content   = $custom_messages[ $random_index ]['rop_custom_description'];
-
+				$messages_count = count( $custom_messages );
+				$random_index   = 0;
+				if ( $messages_count > 1 ) {
+					$random_index = rand( 0, ( $messages_count - 1 ) );
+				}
+				$this->sequential_index = $random_index; // Will be used to get the variation image
+				$share_content          = $custom_messages[ $random_index ]['rop_custom_description'];
 			}
 
 			if ( isset( $pro_format_helper ) ) {
 				$share_content = $pro_format_helper->rop_replace_magic_tags( $share_content, $post_id );
 			}
 
-			$share_content   = $content_helper->token_truncate( $share_content, $max_length );
+			$share_content = $content_helper->token_truncate( $share_content, $max_length );
 
 			return wp_parse_args( array( 'display_content' => $share_content ), $default_content );
 		}
@@ -193,8 +217,8 @@ class Rop_Post_Format_Helper {
 		 * Generate content based on the post format settings.
 		 */
 
-		$base_content  = $this->build_base_content( $post_id );
-		$result = $this->make_hashtags( $base_content, $content_helper, $post_id );
+		$base_content = $this->build_base_content( $post_id );
+		$result       = $this->make_hashtags( $base_content, $content_helper, $post_id );
 
 		$base_content  = $content_helper->token_truncate( $result['content'], $max_length );
 		$custom_length = $this->get_custom_length();
@@ -205,7 +229,7 @@ class Rop_Post_Format_Helper {
 			$size = $max_length;
 		}
 		$service = $this->get_service();
-		if ( $service === 'twitter' && $this->post_format['include_link'] ) {
+		if ( 'twitter' === $service && $this->post_format['include_link'] ) {
 			$size = $size - 24;
 		}
 		$base_content = $content_helper->token_truncate( $base_content, $size );
@@ -371,7 +395,7 @@ class Rop_Post_Format_Helper {
 		$service = $this->get_service();
 
 		foreach ( $result as $hashtag ) {
-			if ( $content_helper->mark_hashtags( $content, $hashtag ) !== false && $service !== 'tumblr' ) { // if the hashtag exists in $content
+			if ( $content_helper->mark_hashtags( $content, $hashtag ) !== false && 'tumblr' !== $service ) { // if the hashtag exists in $content
 				$content = $content_helper->mark_hashtags( $content, $hashtag ); // simply add a # there
 				$hashtags_length --; // subtract 1 for the # we added to $content
 			} elseif ( $this->string_length( $hashtag . $hashtags ) <= $hashtags_length || $hashtags_length == 0 ) {
@@ -417,7 +441,7 @@ class Rop_Post_Format_Helper {
 	private function get_categories_hashtags( $post_id ) {
 
 		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) ) {
-				$pro_format_helper = new Rop_Pro_Post_Format_Helper;
+			$pro_format_helper = new Rop_Pro_Post_Format_Helper;
 		}
 
 		if ( ! isset( $pro_format_helper ) ) {
@@ -425,6 +449,7 @@ class Rop_Post_Format_Helper {
 			if ( empty( $post_categories ) ) {
 				return array();
 			}
+
 			return wp_list_pluck( $post_categories, 'name' );
 		} else {
 			return $pro_format_helper->pro_get_categories_hashtags( $post_id );
@@ -445,7 +470,7 @@ class Rop_Post_Format_Helper {
 	private function get_tags_hashtags( $post_id ) {
 
 		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) ) {
-				$pro_format_helper = new Rop_Pro_Post_Format_Helper;
+			$pro_format_helper = new Rop_Pro_Post_Format_Helper;
 		}
 
 		if ( ! isset( $pro_format_helper ) ) {
@@ -453,6 +478,7 @@ class Rop_Post_Format_Helper {
 			if ( empty( $tags ) ) {
 				return array();
 			}
+
 			return wp_list_pluck( $tags, 'name' );
 		} else {
 			return $pro_format_helper->pro_get_tags_hashtags( $post_id );
@@ -821,13 +847,36 @@ class Rop_Post_Format_Helper {
 			$photon_bypass = remove_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ) );
 		}
 
-		if ( has_post_thumbnail( $post_id ) ) {
-			$image = get_the_post_thumbnail_url( $post_id, 'large' );
-		} elseif ( get_post_type( $post_id ) === 'attachment' ) {
-			$image = wp_get_attachment_url( $post_id );
+		/**
+		 * Check custom images(share variations) if exists.
+		 */
+		$custom_images = get_post_meta( $post_id, 'rop_custom_images_group', true );
+		if ( ! empty( $custom_images ) && ! is_null( $this->sequential_index ) ) {
+			/**
+			 * The variable $this->sequential_index gets its value from
+			 *
+			 * @see Rop_Post_Format_Helper::build_content()
+			 */
+			if ( isset( $custom_images[ $this->sequential_index ], $custom_images[ $this->sequential_index ]['rop_custom_image'] ) ) {
+				$image_id = $custom_images[ $this->sequential_index ]['rop_custom_image'];
+				if ( is_numeric( $image_id ) ) {
+					$image = wp_get_attachment_url( absint( $image_id ) );
+					if ( ! empty( $image ) ) {
+						$this->sequential_index = null;
+					}
+				}
+			}
 		}
 
-		if ( $photon_bypass && class_exists( 'Jetpack_Photon' ) ) {
+		if ( empty( $image ) ) {
+			if ( has_post_thumbnail( $post_id ) ) {
+				$image = get_the_post_thumbnail_url( $post_id, 'large' );
+			} elseif ( get_post_type( $post_id ) === 'attachment' ) {
+				$image = wp_get_attachment_url( $post_id );
+			}
+		}
+
+		if ( isset( $photon_bypass ) && class_exists( 'Jetpack_Photon' ) ) {
 			// Re-enable Jetpack Photon filter.
 			add_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ), 10, 3 );
 		}

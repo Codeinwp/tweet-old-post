@@ -19,7 +19,7 @@
                             <service-user-tile :account_data="account" :account_id="id"></service-user-tile>
                             <span class="divider"></span>
                         </div>
-                        <div class="add-accounts" v-if="is_preloading > 0">
+                        <div class="add-accounts" v-if="is_preloading > 0" id="rop-add-account-button">
                             <add-account-tile></add-account-tile>
                             <span class="divider"></span>
                         </div>
@@ -29,20 +29,14 @@
             <div class="panel-footer" v-if="is_preloading > 0">
                 <div class="columns my-2" v-if="checkLicense && pro_installed">
                     <div class="column col-12">
-                        <i class="fa fa-lock "></i> <span v-html="labels.activate_license"></span>
+                        <i class="fa fa-info-circle "></i> <span v-html="labels.activate_license"></span>
                     </div>
                 </div>
                 <div class="columns my-2" v-if="(checkLicense && accountsCount === 2) && !pro_installed">
                     <div class="column col-12">
                         <p class="upsell">
-                            <i class="fa fa-lock "></i> <span v-html="labels.upsell_accounts"></span>
+                            <i class="fa fa-info-circle "></i> <span v-html="labels.upsell_accounts"></span>
                         </p>
-                    </div>
-                </div>
-                <div class="columns" v-if="checkLicense && !pro_installed">
-                    <div class="column col-12">
-                        <p><i class="fa fa-info-circle"></i> <span
-                                v-html="labels.lite_pro_table_upsell"></span></p>
                     </div>
                 </div>
                 <div class="column col-12 text-right">

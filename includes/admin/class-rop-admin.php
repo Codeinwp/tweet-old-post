@@ -216,8 +216,9 @@ class Rop_Admin {
 	 */
 	private function facebook_exception_toast_display() {
 		$show_the_toast = get_option( 'rop_facebook_domain_toast', 'no' );
-
-		return filter_var( $show_the_toast, FILTER_VALIDATE_BOOLEAN );
+		// Will comment this return for now, might be of use later on.
+		// return filter_var( $show_the_toast, FILTER_VALIDATE_BOOLEAN );
+		return false;
 	}
 
 	/**
@@ -246,8 +247,14 @@ class Rop_Admin {
 		}
 
 		$services        = new Rop_Services_Model();
-		$tw_service      = new Rop_Twitter_Service();
+		$li_service      = new Rop_Linkedin_Service();
 		$active_accounts = $services->get_active_accounts();
+
+		$added_services = $services->get_authenticated_services();
+		$added_networks = 0;
+		if ( $added_services ) {
+			$added_networks = count( array_unique( wp_list_pluck( array_values( $added_services ), 'service' ) ) );
+		}
 
 		$global_settings = new Rop_Global_Settings();
 		$settings        = new Rop_Settings_Model();
@@ -258,12 +265,13 @@ class Rop_Admin {
 		$array_nonce['upsell_link']             = Rop_I18n::UPSELL_LINK;
 		$array_nonce['pro_installed']           = ( defined( 'ROP_PRO_VERSION' ) ) ? true : false;
 		$array_nonce['staging']                 = $this->rop_site_is_staging();
-		$array_nonce['show_tw_app_btn']         = $tw_service->rop_show_tw_app_btn();
+		$array_nonce['show_li_app_btn']         = $li_service->rop_show_li_app_btn();
 		$array_nonce['debug']                   = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
 		$array_nonce['publish_now']             = array(
 			'action'   => $settings->get_instant_sharing_by_default(),
 			'accounts' => $active_accounts,
 		);
+		$array_nonce['added_networks']          = $added_networks;
 
 		$admin_url = get_admin_url( get_current_blog_id(), 'admin.php?page=TweetOldPost' );
 		$token     = get_option( ROP_APP_TOKEN_OPTION );
@@ -274,6 +282,8 @@ class Rop_Admin {
 			'authAppUrl'          => ROP_AUTH_APP_URL,
 			'authAppFacebookPath' => ROP_APP_FACEBOOK_PATH,
 			'authAppTwitterPath'  => ROP_APP_TWITTER_PATH,
+			'authAppLinkedInPath' => ROP_APP_LINKEDIN_PATH,
+			'authAppBufferPath'   => ROP_APP_BUFFER_PATH,
 			'authToken'           => $token,
 			'adminUrl'            => urlencode( $admin_url ),
 			'authSignature'       => $signature,
@@ -503,6 +513,30 @@ class Rop_Admin {
 				'content_filters',
 			)
 		);
+
+		add_submenu_page(
+			'TweetOldPost',
+			__( 'Roadmap', 'tweet-old-post' ),
+			__( 'Plugin Roadmap', 'tweet-old-post' ),
+			'manage_options',
+			'https://trello.com/b/svAZqXO1/roadmap-revive-old-posts'
+		);
+	}
+
+	/**
+	 * Open roadmap in new tab
+	 *
+	 * @since   8.5.0
+	 * @access  public
+	 */
+	function rop_roadmap_new_tab() {
+		?>
+		<script type="text/javascript">
+			jQuery(document).ready(function ($) {
+				$("ul#adminmenu a[href$='https://trello.com/b/svAZqXO1/roadmap-revive-old-posts']").attr('target', '_blank');
+			});
+		</script>
+		<?php
 	}
 
 	/**
@@ -523,7 +557,7 @@ class Rop_Admin {
 		$active_accounts = $services->get_active_accounts();
 
 		if ( $settings->get_instant_sharing() && count( $active_accounts ) >= 2 && ! defined( 'ROP_PRO_VERSION' ) ) {
-			echo '<div class="misc-pub-section  " style="font-size: 13px;text-align: center;line-height: 1.7em;color: #888;"><span class="dashicons dashicons-lock"></span>' .
+			echo '<div class="misc-pub-section  " style="font-size: 11px;text-align: center;line-height: 1.7em;color: #888;"><span class="dashicons dashicons-lock"></span>' .
 				__(
 					'Share to more accounts by upgrading to the extended version for ',
 					'tweet-old-post'
@@ -531,6 +565,50 @@ class Rop_Admin {
 						</div>';
 		}
 	}
+
+	/**
+	 * Creates publish now metabox.
+	 *
+	 * @since   8.5.0
+	 * @access  public
+	 */
+	public function rop_publish_now_metabox() {
+
+		$settings_model = new Rop_Settings_Model();
+		// Get selected post types from General settings
+		$screens = wp_list_pluck( $settings_model->get_selected_post_types(), 'value' );
+
+		if ( empty( $screens ) ) {
+			return;
+		}
+
+		foreach ( $screens as $screen ) {
+			add_meta_box(
+				'rop_publish_now_metabox',
+				'Revive Old Posts',
+				array( $this, 'rop_publish_now_metabox_html' ),
+				$screen,
+				'side',
+				'high'
+			);
+		}
+	}
+
+	/**
+	 * Publish now metabox html.
+	 *
+	 * @since   8.5.0
+	 * @access  public
+	 */
+	public function rop_publish_now_metabox_html() {
+
+		wp_nonce_field( 'rop_publish_now_nonce', 'rop_publish_now_nonce' );
+		include_once ROP_LITE_PATH . '/includes/admin/views/publish_now.php';
+
+		$this->publish_now_upsell();
+
+	}
+
 
 	/**
 	 * Adds the publish now buttons.
@@ -682,6 +760,16 @@ class Rop_Admin {
 	}
 
 	/**
+	 * Used for Cron Job sharing that will run once.
+	 *
+	 * @since 8.5.0
+	 */
+	public function rop_cron_job_once() {
+		$this->rop_cron_job();
+
+	}
+
+	/**
 	 * The Cron Job for the plugin.
 	 *
 	 * @since   8.0.0
@@ -717,7 +805,7 @@ class Rop_Admin {
 							}
 						} catch ( Exception $exception ) {
 							$error_message = sprintf( Rop_I18n::get_labels( 'accounts.service_error' ), $account_data['service'] );
-							$logger->alert_error( $error_message . ' Error: ' . $exception->getTrace() );
+							$logger->alert_error( $error_message . ' Error: ' . $exception->getMessage() );
 						}
 					}
 				}
@@ -790,6 +878,22 @@ class Rop_Admin {
 			add_user_meta( $user_id, 'rop-linkedin-api-notice-dismissed', 'true', true );
 		}
 
+	}
+
+
+	/**
+	 * Disable Cron Jobs on refresh if remove_cron() method was called
+	 *
+	 * @since 8.5.0
+	 */
+	public function check_cron_status() {
+		$key             = 'rop_is_sharing_cron_active';
+		$should_cron_run = get_option( $key, 'yes' );
+		$should_cron_run = filter_var( $should_cron_run, FILTER_VALIDATE_BOOLEAN );
+		if ( false === $should_cron_run ) {
+			wp_clear_scheduled_hook( Rop_Cron_Helper::CRON_NAMESPACE );
+			wp_clear_scheduled_hook( Rop_Cron_Helper::CRON_NAMESPACE_ONCE );
+		}
 	}
 
 	/**

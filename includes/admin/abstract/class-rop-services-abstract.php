@@ -158,7 +158,7 @@ abstract class Rop_Services_Abstract {
 			$authenticated = $this->maybe_authenticate();
 
 			if ( $authenticated ) {
-				$service                    = $this->get_service();
+				$service = $this->get_service();
 				/**
 				 * For LinkedIn, it seems they include '_' char into the service id and
 				 * we need to replace with something else in order to not mess with the way we store the indices.
@@ -423,6 +423,7 @@ abstract class Rop_Services_Abstract {
 	protected function normalize_string( $string ) {
 		return preg_replace( '/[[:^print:]]/', '', $string );
 	}
+
 	/**
 	 * Strip underscore and replace with safe char.
 	 *
@@ -433,6 +434,7 @@ abstract class Rop_Services_Abstract {
 	protected function strip_underscore( $name ) {
 		return str_replace( '_', '---', $name );
 	}
+
 	/**
 	 * Adds back the underscore.
 	 *
@@ -453,6 +455,7 @@ abstract class Rop_Services_Abstract {
 	 */
 	protected function strip_whitespace( $data ) {
 		$data = rtrim( ltrim( $data ) );
+
 		return $data;
 	}
 
@@ -465,6 +468,7 @@ abstract class Rop_Services_Abstract {
 	 */
 	protected function strip_excess_blank_lines( $content ) {
 		$content = preg_replace( "/([\r\n]{4,}|[\n]{3,}|[\r]{3,})/", "\n\n", $content );
+
 		return $content;
 	}
 
@@ -486,53 +490,59 @@ abstract class Rop_Services_Abstract {
 
 		$errors_docs = array(
 			// Facebook errors
-			'Only owners of the URL have the ability' => array(
+			'Only owners of the URL have the ability'                                     => array(
 				'message' => __( 'You need to verify your website with Facebook before sharing posts as article posts.', 'tweet-old-post' ),
-				'link' => 'https://is.gd/fix_owners_url',
+				'link'    => 'https://is.gd/fix_owners_url',
 			),
-			'manage_pages and publish_pages as an admin' => array(
+			'manage_pages and publish_pages as an admin'                                  => array(
 				'message' => __( 'You need to put your Facebook app through review.', 'tweet-old-post' ),
-				'link' => 'https://is.gd/fix_manage_pages_error',
+				'link'    => 'https://is.gd/fix_manage_pages_error',
 			),
-			'Invalid parameter' => array(
+			'Invalid parameter'                                                           => array(
 				'message' => 'There might be an issue with link creations on your website.',
-				'link' => 'https://is.gd/fix_link_issue',
+				'link'    => 'https://is.gd/fix_link_issue',
 			),
 
 			// Twitter errors
 			'Desktop applications only support the oauth_callback value' => array(
 				'message' => 'Your Callback URL for your Twitter app might not be correct.',
-				'link' => 'https://is.gd/fix_oauth_callback_value',
+				'link'    => 'https://is.gd/fix_oauth_callback_value',
 			),
-			'User is over daily status update limit' => array(
+			'User is over daily status update limit'                                      => array(
 				'message' => 'You might be over your daily limit for sending tweets or our app has hit a limit.',
-				'link' => 'https://is.gd/fix_over_daily_limit',
+				'link'    => 'https://is.gd/fix_over_daily_limit',
 			),
-			'Invalid media_id: Some' => array(
+			'Invalid media_id: Some'                                                      => array(
 				'message' => 'Our plugin might be having an issue posting tweets with an image to your account.',
-				'link' => 'https://is.gd/fix_invalid_media',
+				'link'    => 'https://is.gd/fix_invalid_media',
 			),
 			'Callback URL not approved for this client application' => array(
 				'message' => 'Your Callback URL for your Twitter app might not be correct.',
-				'link' => 'https://is.gd/fix_oauth_callback_value',
+				'link'    => 'https://is.gd/fix_oauth_callback_value',
 			),
 
 			// LinkedIn errors
-			'&#39;submitted-url&#39; can not be empty' => array(
+			'&#39;submitted-url&#39; can not be empty'                                    => array(
 				'message' => 'There might be an issue with link creations on your website.',
-				'link' => 'https://is.gd/fix_link_issue',
+				'link'    => 'https://is.gd/fix_link_issue',
+			),
+
+			// Pinterest errors
+			'Pinterest error (code: 429) with message: You have exceeded your rate limit' => array(
+				'message' => 'You\'ve hit the Pinterest rate limit.',
+				'link'    => 'https://is.gd/pinterest_rate_limit',
 			),
 
 			// Add more common errors as necessary
 		);
 
 		$message = '';
-		$link = '';
+		$link    = '';
 
 		foreach ( $errors_docs as $error => $data ) {
 			if ( strpos( $response, $error ) !== false ) {
 				$message = $data['message'];
-				$link = $data['link'];
+				$link    = $data['link'];
 				break;
 			}
 		}
@@ -541,7 +551,7 @@ abstract class Rop_Services_Abstract {
 			return;
 		}
 
-		$known_error = __( 'This error is a known one. ', 'tweet-old-post' );
+		$known_error  = __( 'This error is a known one. ', 'tweet-old-post' );
 		$instructions = __( 'Please copy and paste the following link in your browser to see the solution: ', 'tweet-old-post' );
 
 		return $this->logger->alert_error( $known_error . $message . $instructions . $link );
@@ -554,23 +564,28 @@ abstract class Rop_Services_Abstract {
 	 * Used where file_get_contents might not work with urls, we provide the file path.
 	 *
 	 * @param string $image_url Image url.
+	 * @param array  $mimetype Used to identify the mime type.
 	 *
 	 * @return string Image path.
 	 */
-	protected function get_path_by_url( $image_url, $mimetype ) {
+	protected function get_path_by_url( $image_url, $mimetype = array() ) {
+		if ( empty( $image_url ) ) {
+			return '';
+		}
 
-		$dir = wp_upload_dir();
-
+		// Upload folder.
+		$dir    = wp_upload_dir();
 		$parsed = parse_url( $dir['baseurl'] );
-
-		$dir = $parsed['host'] . $parsed['path'];
+		$dir    = $parsed['host'] . $parsed['path'];
 
 		if ( false === strpos( $image_url, $dir ) ) {
 			return $image_url;
 		}
+		// Fetch the filename.
+		$file = wp_basename( $image_url );
 
-		$file     = basename( $image_url );
-		$query    = array(
+		// Find the media ID in the database using the filename.
+		$query = array(
 			'post_type'      => 'attachment',
 			'fields'         => 'ids',
 			'posts_per_page' => '20',
@@ -583,25 +598,37 @@ abstract class Rop_Services_Abstract {
 				),
 			),
 		);
+
 		$ids      = get_posts( $query );
 		$id_found = false;
+
+		// If the attachment is not an image, return the url.
 		if ( strpos( $mimetype['type'], 'video' ) !== false ) {
 			if ( empty( $ids ) ) {
 				return $image_url;
 			}
 
-			return get_attached_file( reset( $ids ) );
-		}
-		if ( ! empty( $ids ) ) {
+			$reset_id_list = reset( $ids );
 
+			return get_attached_file( $reset_id_list );
+		}
+
+		if ( ! empty( $ids ) ) {
 			foreach ( $ids as $id ) {
-				if ( $image_url === array_shift( wp_get_attachment_image_src( $id, 'full' ) ) ) {
+				$image_get             = wp_get_attachment_image_src( $id, 'full' );
+				$attachment_url        = array_shift( $image_get );
+				$attachment_image_name = wp_basename( $attachment_url ); // get filename from URL.
+				$image_url_name        = wp_basename( $image_url ); // get filename from URL.
+				// Check if the found image is the one we require.
+				if ( $image_url_name === $attachment_image_name ) {
 					$id_found = $id;
 					break;
 				}
 			}
 		}
-		if ( $id_found === false ) {
+
+		// If the image is a WP size instead of full.
+		if ( false === $id_found ) {
 			$query['meta_query'][0]['key'] = '_wp_attachment_metadata';
 
 			// query attachments again
@@ -614,22 +641,23 @@ abstract class Rop_Services_Abstract {
 			foreach ( $ids as $id ) {
 
 				$meta = wp_get_attachment_metadata( $id );
-
+				// Check which of the size value is the requested one.
 				foreach ( $meta['sizes'] as $size => $values ) {
-
-					if ( $values['file'] === $file && $image_url === array_shift( wp_get_attachment_image_src( $id, $size ) ) ) {
+					if ( $values['file'] === $file ) { // compare filenames.
 						$id_found = $id;
 						break;
 					}
 				}
-				if ( $id_found === false ) {
+				if ( false === $id_found ) {
 					break;
 				}
 			}
 		}
-		if ( $id_found === false ) {
+
+		if ( false === $id_found ) {
 			return $image_url;
 		}
+
 		$path = get_attached_file( $id_found );
 		if ( empty( $path ) ) {
 			return $image_url;
@@ -638,5 +666,47 @@ abstract class Rop_Services_Abstract {
 		return $path;
 	}
 
+	/**
+	 * Converts image into base_64 code from given local path
+	 *
+	 * @since 8.5.0
+	 *
+	 * @param string $image_path - Full local image path to uploads folder.
+	 *
+	 * @return string
+	 */
+	protected function convert_image_to_base64( $image_path = '' ) {
+		$opened_file = fopen( $image_path, 'r' );
+		if ( false === $opened_file ) { // If the file cannot be opened, we need to return the given path instead.
+			return $image_path;
+		}
 
+		$contents = fread( $opened_file, filesize( $image_path ) );
+		fclose( $opened_file );
+
+		return base64_encode( $contents );
+	}
+
+	/**
+	 * Checks to see if the cURL library is loaded and the function can be found.
+	 *
+	 * @return bool true/false if function is found.
+	 * @since 8.5.0
+	 */
+	protected function is_curl_active() {
+		return function_exists( 'curl_init' );
+	}
+
+	/**
+	 * Returns true if the string $file_path is an URL.
+	 *
+	 * @param string $file_path string with filepath or url.
+	 *
+	 * @since 8.5.0
+	 *
+	 * @return boolean
+	 */
+	protected function is_remote_file( $file_path = '' ) {
+		return preg_match( '/^(https?|ftp):\/\/.*/', $file_path ) === 1;
+	}
 }

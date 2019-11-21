@@ -959,10 +959,10 @@ class Rop_Rest_Api {
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
 	 *
-	 * @since   ...
+	 * @since   8.4.0
 	 * @access  private
 	 *
-	 * @param   array $data Facebook page data.
+	 * @param   array $data Twitter account data.
 	 *
 	 * @return  array
 	 */
@@ -1001,6 +1001,110 @@ class Rop_Rest_Api {
 			add_option( $rop_twitter_via_rs_app_option, 'true', ' ', 'no' );
 		} else {
 			update_option( $rop_twitter_via_rs_app_option, 'true' );
+		}
+
+		return $this->response->to_array();
+	}
+
+	/**
+	 * API method called to add Linkedin pages via app.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
+	 *
+	 * @since   8.5.0
+	 * @access  private
+	 *
+	 * @param   array $data LinkedIn accounts data.
+	 *
+	 * @return  array
+	 */
+	private function add_account_li( $data ) {
+		$services        = array();
+		$active_accounts = array();
+		$linkedin_service = new Rop_Linkedin_Service();
+		$model           = new Rop_Services_Model();
+		$db              = new Rop_Db_Upgrade();
+
+		$linkedin_service->add_account_with_app( $data );
+
+		$services[ $linkedin_service->get_service_id() ] = $linkedin_service->get_service();
+		$active_accounts                                = array_merge( $active_accounts, $linkedin_service->get_service_active_accounts() );
+
+		if ( ! empty( $services ) ) {
+			$model->add_authenticated_service( $services );
+		}
+
+		if ( ! empty( $active_accounts ) ) {
+			$db->migrate_schedule( $active_accounts );
+			$db->migrate_post_formats( $active_accounts );
+		} else {
+			$this->response->set_code( '500' )
+						   ->set_data( array() );
+
+			return $this->response->to_array();
+		}
+
+		$this->response->set_code( '200' )
+					   ->set_message( 'OK' )
+					   ->set_data( array() );
+
+		$rop_linkedin_via_rs_app_option = 'rop_linkedin_via_rs_app';
+		if ( ! get_option( $rop_linkedin_via_rs_app_option ) ) {
+			add_option( $rop_linkedin_via_rs_app_option, 'true', ' ', 'no' );
+		} else {
+			update_option( $rop_linkedin_via_rs_app_option, 'true' );
+		}
+
+		return $this->response->to_array();
+	}
+
+	/**
+	 * API method called to add Buffer profiles via app.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
+	 *
+	 * @since   8.5.0
+	 * @access  private
+	 *
+	 * @param   array $data Buffer accounts data.
+	 *
+	 * @return  array
+	 */
+	private function add_account_buffer( $data ) {
+		$services        = array();
+		$active_accounts = array();
+		$buffer_service = new Rop_Buffer_Service();
+		$model           = new Rop_Services_Model();
+		$db              = new Rop_Db_Upgrade();
+
+		$buffer_service->add_account_with_app( $data );
+
+		$services[ $buffer_service->get_service_id() ] = $buffer_service->get_service();
+		$active_accounts                                = array_merge( $active_accounts, $buffer_service->get_service_active_accounts() );
+
+		if ( ! empty( $services ) ) {
+			$model->add_authenticated_service( $services );
+		}
+
+		if ( ! empty( $active_accounts ) ) {
+			$db->migrate_schedule( $active_accounts );
+			$db->migrate_post_formats( $active_accounts );
+		} else {
+			$this->response->set_code( '500' )
+						   ->set_data( array() );
+
+			return $this->response->to_array();
+		}
+
+		$this->response->set_code( '200' )
+					   ->set_message( 'OK' )
+					   ->set_data( array() );
+
+		$rop_buffer_via_rs_app_option = 'rop_buffer_via_rs_app';
+		if ( ! get_option( $rop_buffer_via_rs_app_option ) ) {
+			add_option( $rop_buffer_via_rs_app_option, 'true', ' ', 'no' );
+		} else {
+			update_option( $rop_buffer_via_rs_app_option, 'true' );
 		}
 
 		return $this->response->to_array();
