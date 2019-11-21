@@ -58,8 +58,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 */
 	protected $scopes_old = array( 'r_liteprofile', 'r_emailaddress', 'w_member_social');
 	// Company(organization) sharing scope cannot be used unless app approved for this scope.
-	// Added here for future reference
-	// https://stackoverflow.com/questions/54821731/in-linkedin-api-v2-0-how-to-get-company-list-by-persons-token
 	// https://business.linkedin.com/marketing-solutions/marketing-partners/become-a-partner/marketing-developer-program
 
 
@@ -117,6 +115,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 				if ( isset( $_GET['error'], $_GET['error_description'] ) ) {
 					$message = 'Linkedin Error: [ ' . $_GET['error'] . ' ] ' . html_entity_decode( urldecode( $_GET['error_description'] ) );
 					$this->logger->alert_error( $message );
+					$this->rop_get_error_docs( $message );
 				}
 				exit( wp_redirect( $this->get_legacy_url() ) );
 			} else {
@@ -131,6 +130,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 			$message = 'Linkedin Error: Code[ ' . $e->getCode() . ' ] ' . $e->getDescription();
 			$this->logger->alert_error( $message );
+			$this->rop_get_error_docs( $message );
 			$referrer = $_SERVER['HTTP_REFERER'];
 			// If the user is trying to authenticate.
 			if ( ! empty( substr_count( $referrer, 'linkedin.com' ) ) ) {
@@ -337,36 +337,41 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		$users = array( $user_details );
 
-		try {
+		// only new installs can connect company accounts because they will have the organization scope
+		if ( $this->rop_show_li_app_btn() ) {
+			try {
 
-			$admined_linkedin_pages = $this->api->api(
-				// 'organizationalEntityAcls?q=roleAssignee&role=ADMINISTRATOR&projection=(elements*(organizationalTarget~(localizedName,vanityName,logoV2)))',
-				'organizationalEntityAcls?q=roleAssignee&role=ADMINISTRATOR&state=APPROVED',
-				array(),
-				'GET'
-			);
+				$admined_linkedin_pages = $this->api->api(
+					// 'organizationalEntityAcls?q=roleAssignee&role=ADMINISTRATOR&projection=(elements*(organizationalTarget~(localizedName,vanityName,logoV2)))',
+					'organizationalEntityAcls?q=roleAssignee&role=ADMINISTRATOR&state=APPROVED',
+					array(),
+					'GET'
+				);
 
-			$all_organization_urns = array();
-			foreach ( $admined_linkedin_pages as $key => $value ) {
+				$all_organization_urns = array();
+				foreach ( $admined_linkedin_pages as $key => $value ) {
 
-				if ( $key === 'elements' ) {
+					if ( $key === 'elements' ) {
 
-					foreach ( $value as $key2 => $value2 ) {
+						foreach ( $value as $key2 => $value2 ) {
 
-						$organizationalTarget = $value2['organizationalTarget'];
+							$organizationalTarget = $value2['organizationalTarget'];
 
-						// urn:li:organization:5552231
-						$parts = explode( ':', $organizationalTarget );
+							// urn:li:organization:5552231
+							$parts = explode( ':', $organizationalTarget );
 
-						if ( ! in_array( $parts[3], $all_organization_urns ) ) {
-							$all_organization_urns[] = $parts[3];
+							if ( ! in_array( $parts[3], $all_organization_urns ) ) {
+								$all_organization_urns[] = $parts[3];
+							}
 						}
 					}
 				}
-			}
-		} catch ( Exception $e ) {
-			$this->logger->alert_error( 'Got in exception:  ' . $e );
+			} catch ( Exception $e ) {
+				$this->logger->alert_error( 'Got in exception:  ' . $e );
 
+				return $users;
+			}
+		} else {
 			return $users;
 		}
 
@@ -471,11 +476,14 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$this->set_api( $credentials['client_id'], $credentials['secret'] );
 		$api = $this->get_api();
 
-		if(rop_show_li_app_btn){
-		$url = $api->getLoginUrl( $this->scopes );
-	}else{
-		$url = $api->getLoginUrl( $this->scopes_old );
-	}
+		// NOTE: When we open up new linkedin login method for all users we need to give users a notice in their dashboard
+		// NOTE: Letting them know that they need to go through the upgrade process by connecting through our APP
+		// NOTE: Or we can simply keep them using their old app by keeping this rop_show_li_app_btn method which would be present only in this file and renaming it to something like rop_is_new_install
+		if ( $this->rop_show_li_app_btn() ) {
+			$url = $api->getLoginUrl( $this->scopes );
+		} else {
+			$url = $api->getLoginUrl( $this->scopes_old );
+		}
 		return $url;
 	}
 
@@ -498,7 +506,9 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		// check if linkedin Account was added using Revive Social app
 		$added_with_app = get_option( 'rop_linkedin_via_rs_app' );
 
-		if ( ! empty( $added_with_app ) ) {
+		// if linkedin was connected with "Sign into Linkedin" button, use appropriate key for access token
+		// accounts added with "Sign into Linkedin" button will not have the ['credentials']['client_id'] array key
+		if ( ! empty( $added_with_app ) && empty( $args['credentials']['client_id'] ) ) {
 			$token = new \LinkedIn\AccessToken( $args['credentials'] );
 		} else {
 			$this->set_api( $this->credentials['client_id'], $this->credentials['secret'] );

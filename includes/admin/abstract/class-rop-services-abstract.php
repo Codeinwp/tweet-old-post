@@ -522,9 +522,14 @@ abstract class Rop_Services_Abstract {
 			),
 
 			// LinkedIn errors
-			'&#39;submitted-url&#39; can not be empty'                                    => array(
+			'&#39;submitted-url&#39; can not be empty' => array(
 				'message' => 'There might be an issue with link creations on your website.',
 				'link'    => 'https://is.gd/fix_link_issue',
+			),
+
+			'[ unauthorized_scope_error ] Scope "r_organization_social"' => array(
+				'message' => 'You might need to reconnect your LinkedIn account. ',
+				'link'    => 'https://is.gd/fix_linkedin_scope_error',
 			),
 
 			// Pinterest errors
