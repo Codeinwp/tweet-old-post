@@ -1,6 +1,6 @@
 === Revive Old Posts - Social Media Auto Post and Scheduling Plugin ===
 Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle, rsocial, uriahs-victor
-Tags: auto publish, auto post, social media automation, social media scheduling, automatic, facebook, twitter, linkedin, pinterest, autopilot, analytics, sharing
+Tags: share to social media, auto publish, auto post, social media scheduling, social media auto posting, social media marketing, social media automation, social media sharing
 Requires at least: 4.7
 Tested up to: 5.3
 Requires PHP: 5.6
