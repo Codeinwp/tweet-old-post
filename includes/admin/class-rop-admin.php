@@ -582,7 +582,7 @@ class Rop_Admin {
 			return;
 		}
 
-		if ( ! $settings_model->get_instant_sharing() ){
+		if ( ! $settings_model->get_instant_sharing() ) {
 			return;
 		}
 
