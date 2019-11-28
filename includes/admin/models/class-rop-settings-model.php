@@ -415,6 +415,9 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	/**
 	 * Getter for remote check option.
 	 *
+	 *
+	 * Not being used in plugin currently.
+	 *
 	 * @since   8.0.0
 	 * @access  public
 	 * @return mixed

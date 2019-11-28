@@ -582,6 +582,10 @@ class Rop_Admin {
 			return;
 		}
 
+		if ( ! $settings_model->get_instant_sharing() ){
+			return;
+		}
+
 		foreach ( $screens as $screen ) {
 			add_meta_box(
 				'rop_publish_now_metabox',
