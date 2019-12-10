@@ -161,6 +161,9 @@ Post questions and issues on the [Support Forum](https://wordpress.org/support/p
 - See where ROP is headed, check out the roadmap [here](https://trello.com/b/svAZqXO1/roadmap-revive-old-posts).
 - For plugin documentation [see here](https://docs.revive.social/).
 - Read more about social media marketing on [our blog](https://revive.social/blog/).
+- Read more about WordPress on [our blog](https://www.codeinwp.com/blog/).
+- Take a look at our other plugins [see here](https://themeisle.com/wordpress-plugins/).
+
 
 
 = Translations =
