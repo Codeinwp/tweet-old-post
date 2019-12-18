@@ -83,7 +83,7 @@ class Rop_Post_Format_Helper {
 		$filtered_post['content']           = apply_filters( 'rop_content_filter', $content['display_content'], $post_id, $account_id, $service );
 		$filtered_post['hashtags']          = $content['hashtags'];
 		$filtered_post['post_url']          = $this->build_url( $post_id );
-		$filtered_post['post_image']        = $this->post_format['image'] ? $this->build_image( $post_id ) : '';
+		$filtered_post['post_image']        = $this->build_image( $post_id );
 		$filtered_post['mimetype']          = empty( $filtered_post['post_image'] ) ? '' : wp_check_filetype( $filtered_post['post_image'] );
 		$filtered_post['short_url']         = $this->post_format['short_url'];
 		$filtered_post['short_url_service'] = ( $this->post_format['short_url'] ) ? $this->post_format['short_url_service'] : '';
@@ -841,6 +841,7 @@ class Rop_Post_Format_Helper {
 		}
 
 		$image = '';
+		$post_with_image = $this->post_format['image'];
 
 		if ( class_exists( 'Jetpack_Photon' ) ) {
 			// Disable Jetpack Photon filter.
@@ -868,11 +869,15 @@ class Rop_Post_Format_Helper {
 			}
 		}
 
+		// Get image from featured image, if attachment post type (Video or image); get attachment URL.
 		if ( empty( $image ) ) {
-			if ( has_post_thumbnail( $post_id ) ) {
-				$image = get_the_post_thumbnail_url( $post_id, 'large' );
-			} elseif ( get_post_type( $post_id ) === 'attachment' ) {
+			// Get attachement URL
+			if ( get_post_type( $post_id ) === 'attachment'  ) {
 				$image = wp_get_attachment_url( $post_id );
+			} elseif ( has_post_thumbnail( $post_id ) && !empty($post_with_image) ) { // Get featured image only if "post with image" is checked
+				$image = get_the_post_thumbnail_url( $post_id, 'large' );
+			}else{
+				$image = '';
 			}
 		}
 
