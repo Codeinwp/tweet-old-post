@@ -395,10 +395,6 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 
 		$api = $this->get_api( $this->credentials['consumer_key'], $this->credentials['consumer_secret'], $this->credentials['oauth_token'], $this->credentials['oauth_token_secret'] );
 
-		if ( ! empty( $post_details['post_image'] ) ) {
-			$new_post['thumbnail'] = $post_details['post_image'];
-		}
-
 		$post_type = new Rop_Posts_Selector_Model();
 		$post_id   = $post_details['post_id'];
 
@@ -407,7 +403,10 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		$hashtags = ltrim( $hashtags, ',' );
 
 		// Link post
-		if ( ! empty( $post_details['post_url'] ) && empty( $post_details['post_image'] ) ) {
+		if ( ! empty( $post_details['post_url'] ) && empty( $post_details['post_with_image'] ) ) {
+
+			$new_post['thumbnail'] = get_the_post_thumbnail_url( $post_id, 'large' );
+
 			$new_post['type']        = 'link';
 			$new_post['url']         = trim( $this->get_url( $post_details ) );
 			$new_post['title']       = get_the_title( $post_details['post_id'] );
@@ -417,7 +416,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		}
 
 		// Text post
-		if ( empty( $post_details['post_url'] ) && empty( $post_details['post_image'] ) ) {
+		if ( empty( $post_details['post_url'] ) && empty( $post_details['post_with_image'] ) ) {
 			$new_post['type'] = 'text';
 			$new_post['body'] = $this->strip_excess_blank_lines( $post_details['content'] );
 			$new_post['tags'] = $hashtags;
