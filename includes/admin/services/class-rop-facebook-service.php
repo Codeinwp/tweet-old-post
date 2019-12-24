@@ -654,7 +654,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 				// Scrape post URL before sharing
 				if ( isset( $new_post['link'] ) ) {
-					$this->rop_fb_scrape_url( $posting_type, $new_post, $token );
+					$this->rop_fb_scrape_url( $posting_type, $post_id, $token );
 				}
 
 				$api->post( $path, $new_post, $token );
@@ -720,7 +720,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 			// Scrape post URL before sharing
 			if ( isset( $post_data['link'] ) ) {
-				$this->rop_fb_scrape_url( $posting_type, $post_data, $token );
+				$this->rop_fb_scrape_url( $posting_type, $post_id, $token );
 			}
 
 			// Hold this value for now
@@ -968,17 +968,18 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @access  public
 	 *
 	 * @param   array $posting_type The type of post being created.
-	 * @param   array $post_data The share data.
+	 * @param   array $post_id The post id.
 	 * @param   array $token The access token.
 	 */
-	public function rop_fb_scrape_url( $posting_type, $post_data, $token ) {
+	public function rop_fb_scrape_url( $posting_type, $post_id, $token ) {
 
 		// Scrape post URL before sharing
 		if ( $posting_type !== 'video' && $posting_type !== 'photo' ) {
 
 			$scrape = array();
+			$url = get_permalink( $post_id );
 
-			$scrape['id']           = $post_data['link'] . '?scrape=true';
+			$scrape['id']           = $url . '?scrape=true';
 			$scrape['access_token'] = $token;
 
 			$scrape_response = wp_remote_post(
