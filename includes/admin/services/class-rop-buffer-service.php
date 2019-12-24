@@ -307,7 +307,7 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 
 		if ( get_post_type( $post_id ) !== 'attachment' ) {
 			// If post image option unchecked, share as article post
-			if ( empty( $post_details['post_image'] ) ) {
+			if ( empty( $post_details['post_with_image'] ) ) {
 				$new_post = $this->buffer_article_post( $post_details, $args );
 			} else {
 				$new_post = $this->buffer_media_post( $post_details, $args );

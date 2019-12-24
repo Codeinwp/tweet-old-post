@@ -521,7 +521,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		if ( get_post_type( $post_details['post_id'] ) !== 'attachment' ) {
 			// If post image option unchecked, share as article post
-			if ( empty( $post_details['post_image'] ) ) {
+			if ( empty( $post_details['post_with_image'] ) ) {
 				$new_post = $this->linkedin_article_post( $post_details, $args );
 			} else {
 				$new_post = $this->linkedin_image_post( $post_details, $args, $token, $api );
