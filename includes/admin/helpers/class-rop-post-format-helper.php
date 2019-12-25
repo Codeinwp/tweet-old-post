@@ -155,6 +155,8 @@ class Rop_Post_Format_Helper {
 				$share_content = $pro_format_helper->rop_replace_magic_tags( $share_content, $post_id );
 			}
 			if ( ! empty( $share_content ) ) {
+
+				$share_content = $this->remove_divi_shortcodes( $share_content );
 				$share_content = $content_helper->token_truncate( $share_content, $max_length );
 
 				return wp_parse_args( array( 'display_content' => $share_content ), $default_content );
@@ -205,6 +207,7 @@ class Rop_Post_Format_Helper {
 				$share_content = $pro_format_helper->rop_replace_magic_tags( $share_content, $post_id );
 			}
 
+			$share_content = $this->remove_divi_shortcodes( $share_content );
 			$share_content = $content_helper->token_truncate( $share_content, $max_length );
 
 			return wp_parse_args( array( 'display_content' => $share_content ), $default_content );
@@ -219,6 +222,8 @@ class Rop_Post_Format_Helper {
 
 		$base_content = $this->build_base_content( $post_id );
 		$result       = $this->make_hashtags( $base_content, $content_helper, $post_id );
+
+		$result['content'] = $this->remove_divi_shortcodes( $result['content'] );
 
 		$base_content  = $content_helper->token_truncate( $result['content'], $max_length );
 		$custom_length = $this->get_custom_length();
@@ -281,6 +286,7 @@ class Rop_Post_Format_Helper {
 		$content = wp_strip_all_tags( html_entity_decode( $content, ENT_QUOTES ) );
 
 		$content = trim( $content );
+		$content = $this->remove_divi_shortcodes( $content );
 
 		return $content;
 	}
@@ -869,14 +875,13 @@ class Rop_Post_Format_Helper {
 			}
 		}
 
-		// Get image from featured image, if attachment post type (Video or image); get attachment URL.
 		if ( empty( $image ) ) {
-			// Get attachement URL
-			if ( get_post_type( $post_id ) === 'attachment'  ) {
+			// Get image from featured image, if attachment post type (Video or image); get attachment URL.
+			if ( get_post_type( $post_id ) === 'attachment' ) {
 				$image = wp_get_attachment_url( $post_id );
-			} elseif ( has_post_thumbnail( $post_id ) && !empty($post_with_image) ) { // Get featured image only if "post with image" is checked
+			} elseif ( has_post_thumbnail( $post_id ) && ! empty( $post_with_image ) ) {
 				$image = get_the_post_thumbnail_url( $post_id, 'large' );
-			}else{
+			} else {
 				$image = '';
 			}
 		}
@@ -920,4 +925,22 @@ class Rop_Post_Format_Helper {
 
 		return $short_url;
 	}
+
+	/**
+	 * Returns content without divi pagebuilder shortcodes.
+	 *
+	 * strip_shortcodes() doesn't remove divi shortcodes, so we remove it with regex.
+	 *
+	 * @since   8.5.2
+	 * @access  public
+	 *
+	 * @param   string $content The content to strip the shortcodes from.
+	 *
+	 * @return string
+	 */
+	public function remove_divi_shortcodes( $content ) {
+		$content = preg_replace( '/\[\/?et_pb.*?\]/', '', $content );
+		return $content;
+	}
+
 }
