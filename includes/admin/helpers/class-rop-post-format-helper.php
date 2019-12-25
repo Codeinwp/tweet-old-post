@@ -929,7 +929,7 @@ class Rop_Post_Format_Helper {
 	/**
 	 * Returns content without divi pagebuilder shortcodes.
 	 *
-	 * strip_shortcodes() doesn't remove divi shortcodes, so we remove it with regex.
+	 * Strip_shortcodes() doesn't remove divi shortcodes, so we remove it with regex.
 	 *
 	 * @since   8.5.2
 	 * @access  public
@@ -939,6 +939,12 @@ class Rop_Post_Format_Helper {
 	 * @return string
 	 */
 	public function remove_divi_shortcodes( $content ) {
+
+		// bail if divi builder not active
+		if ( ! defined( 'ET_BUILDER_PLUGIN_ACTIVE' ) ) {
+			return $content;
+		}
+
 		$content = preg_replace( '/\[\/?et_pb.*?\]/', '', $content );
 		return $content;
 	}
