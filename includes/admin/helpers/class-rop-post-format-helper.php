@@ -929,7 +929,7 @@ class Rop_Post_Format_Helper {
 	/**
 	 * Returns content without divi pagebuilder shortcodes.
 	 *
-	 * strip_shortcodes() doesn't remove divi shortcodes, so we remove it with regex.
+	 * Strip_shortcodes() doesn't remove divi shortcodes, so we remove it with regex.
 	 *
 	 * @since   8.5.2
 	 * @access  public

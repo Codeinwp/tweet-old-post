@@ -480,4 +480,19 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 		return isset( $this->settings['instant_share_default'] ) ? $this->settings['instant_share_default'] : false;
 	}
 
+	/**
+	 * Getter for instant sharing on scheduled post publish.
+	 *
+	 * Getting for checking if the option to share scheduled posts after their post status has changed from future to publish.
+	 *
+	 * @see Rop::define_admin_hooks For the function being called on 'future_to_publish' hook.
+	 *
+	 * @since   8.5.2
+	 * @access  public
+	 * @return bool
+	 */
+	public function get_instant_share_future_scheduled() {
+		return isset( $this->settings['instant_share_future_scheduled'] ) ? $this->settings['instant_share_future_scheduled'] : false;
+	}
+
 }
