@@ -164,6 +164,28 @@
 
 								<span class="divider" v-if="isInstantShare"></span>
 
+							<div class="columns py-2" v-if="isInstantShare" :class="'rop-control-container-'+isPro">
+									<div class="column col-6 col-sm-12 vertical-align rop-control">
+										<b>{{labels.instant_share_future_scheduled_title}}</b>
+										<p class="text-gray">{{labels.instant_share_future_scheduled_desc}}</p>
+									</div>
+									<div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+										<div class="form-group">
+											<label class="form-checkbox">
+												<input type="checkbox" v-model="generalSettings.instant_share_future_scheduled"/>
+												<i class="form-icon"></i>{{labels.instant_share_future_scheduled_yes}}
+											</label>
+										</div>
+									</div>
+								</div>
+								<!-- Upsell -->
+								<div class="columns " v-if="!isPro && isInstantShare">
+									<div class="column text-center">
+										<span><i class="fa fa-lock"></i><p class="upsell" v-html="labels.instant_share_future_scheduled_upsell"></p></span>
+									</div>
+								</div>
+								<span class="divider" v-if="isInstantShare"></span>
+
 				<div class="columns py-2" :class="'rop-control-container-'+isPro">
 					<div class="column col-6 col-sm-12 vertical-align rop-control">
 						<b>{{labels.custom_share_title}}</b>
@@ -346,6 +368,7 @@
 						custom_messages_share_order: this.generalSettings.custom_messages_share_order,
 						instant_share: this.generalSettings.instant_share,
 						instant_share_default: this.generalSettings.instant_share_default,
+						instant_share_future_scheduled: this.generalSettings.instant_share_future_scheduled,
 						housekeeping: this.generalSettings.housekeeping,
 					}
 				}).then(response => {
