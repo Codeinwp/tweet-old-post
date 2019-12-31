@@ -68,7 +68,7 @@ class Rop {
 	public function __construct() {
 
 		$this->plugin_name = 'rop';
-		$this->version     = '8.5.1';
+		$this->version     = '8.5.2';
 
 		$this->load_dependencies();
 		$this->set_locale();
