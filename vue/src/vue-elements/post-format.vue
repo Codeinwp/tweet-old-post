@@ -54,7 +54,7 @@
 			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="form-group">
 					<textarea class="form-input" v-model="post_format.custom_text"
-					          v-bind:placeholder="labels.add_char_placeholder">{{post_format.custom_text}}</textarea> 
+					          v-bind:placeholder="labels.add_char_placeholder">{{post_format.custom_text}}</textarea>
 				</div>
 			</div>
 		</div>
@@ -224,7 +224,7 @@
 		<div class="columns py-2" :class="'rop-control-container-'+isPro">
 			<div class="column col-6 col-sm-12 vertical-align">
 				<b>{{labels.image_title}}</b>
-				<p class="text-gray">{{labels.image_desc}}</p>
+				<p class="text-gray"><span v-html="labels.image_desc"></span></p>
 			</div>
 			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="input-group">
