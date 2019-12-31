@@ -529,7 +529,7 @@ abstract class Rop_Services_Abstract {
 
 			'[ unauthorized_scope_error ] Scope "r_organization_social"' => array(
 				'message' => 'You might need to reconnect your LinkedIn account. ',
-				'link'    => 'https://is.gd/fix_linkedin_scope_error',
+				'link'    => 'https://is.gd/linkedin_scope_error',
 			),
 
 			// Pinterest errors

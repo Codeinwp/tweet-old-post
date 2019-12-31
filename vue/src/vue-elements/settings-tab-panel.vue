@@ -67,7 +67,7 @@
 				<div class="columns py-2" :class="'rop-control-container-'+isPro">
 					<div class="column col-6 col-sm-12 vertical-align rop-control">
 						<b>{{labels.post_types_title}}</b>
-						<p class="text-gray">{{labels.post_types_desc}}</p>
+						<p class="text-gray"><span v-html="labels.post_types_desc"></span></p>
 					</div>
 					<div class="column col-6 col-sm-12 vertical-align text-left rop-control">
 						<multiple-select id="rop_post_types" :options="postTypes" :disabled="isPro"
@@ -90,7 +90,7 @@
 				<div class="columns py-2">
 					<div class="column col-6 col-sm-12 vertical-align">
 						<b>{{labels.taxonomies_title}}</b>
-						<p class="text-gray">{{labels.taxonomies_desc}}</p>
+						<p class="text-gray"><span v-html="labels.taxonomies_desc"></span></p>
 					</div>
 					<div id="rop_taxonomies" class="column col-6 col-sm-12 vertical-align text-left">
 						<div class="input-group">
@@ -133,7 +133,7 @@
 							<div class="columns py-2">
 									<div class="column col-6 col-sm-12 vertical-align rop-control">
 										<b>{{labels.instant_share_title}}</b>
-										<p class="text-gray">{{labels.instant_share_desc}}</p>
+										<p class="text-gray"><span v-html="labels.instant_share_desc"></span></p>
 									</div>
 									<div class="column col-6 col-sm-12 vertical-align text-left rop-control">
 										<div class="form-group">
@@ -164,10 +164,32 @@
 
 								<span class="divider" v-if="isInstantShare"></span>
 
+							<div class="columns py-2" v-if="isInstantShare" :class="'rop-control-container-'+isPro">
+									<div class="column col-6 col-sm-12 vertical-align rop-control">
+										<b>{{labels.instant_share_future_scheduled_title}}</b>
+										<p class="text-gray"><span v-html="labels.instant_share_future_scheduled_desc"></span></p>
+									</div>
+									<div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+										<div class="form-group">
+											<label class="form-checkbox">
+												<input type="checkbox" v-model="generalSettings.instant_share_future_scheduled"/>
+												<i class="form-icon"></i>{{labels.instant_share_future_scheduled_yes}}
+											</label>
+										</div>
+									</div>
+								</div>
+								<!-- Upsell -->
+								<div class="columns " v-if="!isPro && isInstantShare">
+									<div class="column text-center">
+											<p class="upsell"><i class="fa fa-lock"></i> {{labels.instant_share_future_scheduled_upsell}}</p>
+									</div>
+								</div>
+								<span class="divider" v-if="isInstantShare"></span>
+
 				<div class="columns py-2" :class="'rop-control-container-'+isPro">
 					<div class="column col-6 col-sm-12 vertical-align rop-control">
 						<b>{{labels.custom_share_title}}</b>
-						<p class="text-gray">{{labels.custom_share_desc}}</p>
+						<p class="text-gray"><span v-html="labels.custom_share_desc"></span></p>
 					</div>
 					<div class="column col-6 col-sm-12 vertical-align text-left rop-control">
 						<div class="form-group">
@@ -346,6 +368,7 @@
 						custom_messages_share_order: this.generalSettings.custom_messages_share_order,
 						instant_share: this.generalSettings.instant_share,
 						instant_share_default: this.generalSettings.instant_share_default,
+						instant_share_future_scheduled: this.generalSettings.instant_share_future_scheduled,
 						housekeeping: this.generalSettings.housekeeping,
 					}
 				}).then(response => {

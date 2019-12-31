@@ -582,6 +582,10 @@ class Rop_Admin {
 			return;
 		}
 
+		if ( ! $settings_model->get_instant_sharing() ) {
+			return;
+		}
+
 		foreach ( $screens as $screen ) {
 			add_meta_box(
 				'rop_publish_now_metabox',
@@ -696,6 +700,63 @@ class Rop_Admin {
 
 		$cron = new Rop_Cron_Helper();
 		$cron->manage_cron( array( 'action' => 'publish-now' ) );
+	}
+
+	/**
+	 * Method to share future scheduled WP posts to social media on publish.
+	 *
+	 * @since   8.5.2
+	 *
+	 * @param   object $post The post object.
+	 * @access  public
+	 */
+	public function share_scheduled_future_post( $post ) {
+
+		$settings = new Rop_Settings_Model();
+		$selected_post_types = wp_list_pluck( $settings->get_selected_post_types(), 'value' );
+
+		if ( ! $settings->get_instant_share_future_scheduled() ) {
+			return;
+		}
+
+		if ( ! in_array( $post->post_type, $selected_post_types ) ) {
+			return;
+		}
+
+		// get taxonomies selected in general settings
+		$selected_taxonomies = $settings->get_selected_taxonomies();
+
+		if ( ! empty( $selected_taxonomies ) ) {
+
+			// check if "Exclude" is checked
+			$taxonomies_are_excluded = $settings->get_exclude_taxonomies();
+
+			$taxonomies = array();
+			foreach ( $selected_taxonomies as $key => $value ) {
+				$taxonomies[] = $value['tax'];
+			}
+
+			// check if current post has any of the taxonomies set in general settings
+			$post_terms = wp_get_post_terms( $post->ID, $taxonomies );
+			// if the post contains any of the taxonomies that are exluded, bail
+			if ( ! empty( $post_terms ) && $taxonomies_are_excluded ) {
+				return;
+			}
+			// if the post doesn't contain any of the selected taxonomies that are whitelisted for posting, bail
+			if ( empty( $post_terms ) && ! $taxonomies_are_excluded ) {
+				return;
+			}
+		}
+
+		$services = new Rop_Services_Model();
+		$active  = array_keys( $services->get_active_accounts() );
+
+		update_post_meta( $post->ID, 'rop_publish_now', 'yes' );
+		update_post_meta( $post->ID, 'rop_publish_now_accounts', $active );
+
+		$cron = new Rop_Cron_Helper();
+		$cron->manage_cron( array( 'action' => 'publish-now' ) );
+
 	}
 
 
