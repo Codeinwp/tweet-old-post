@@ -1,4 +1,16 @@
 
+ ### v8.5.2 - 2019-12-31 
+ **Changes:** 
+ * New PRO: Share posts that have been scheduled for future publication by WordPress when their status change from "Scheduled" to "Publish" [Learn more](https://docs.revive.social/article/1194-share-scheduled-posts-to-social-media-on-publish-with-revive-old-posts)
+* Fix PRO: Better compatibility for grabbing images for Tumblr shares on WPEngine hosted websites.
+* Fix PRO: Tumblr URL shares were not showing the Link preview image.
+* Fix: Instant sharing options set on the General Settings tab were not being honored.
+* Fix: Corrected support doc URL for a LinkedIn error.
+* Fix: Strip Divi builder shortcodes from the content before sharing to prevent undesired share output.
+* Change: Videos selected for sharing in Media gallery will always be uploaded as a native video to Twitter regardless of "Post with image" option.
+* Change: Call for Facebook URL scrape will now occur on original URL instead of the processed URL.
+* Info: Added "Learn more" links for certain setting options on the plugin dashboard
+ 
  ### v8.5.1 - 2019-11-21 
  **Changes:** 
  * V851
