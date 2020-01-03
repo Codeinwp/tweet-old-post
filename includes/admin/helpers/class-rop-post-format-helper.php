@@ -941,7 +941,7 @@ class Rop_Post_Format_Helper {
 	public function remove_divi_shortcodes( $content ) {
 
 		// bail if divi builder not active
-		if ( ! defined( 'ET_BUILDER_PLUGIN_ACTIVE' )  && ! defined( 'ET_BUILDER_THEME' ) ) {
+		if ( ! defined( 'ET_BUILDER_PLUGIN_ACTIVE' ) && ! defined( 'ET_BUILDER_THEME' ) ) {
 			return $content;
 		}
 
