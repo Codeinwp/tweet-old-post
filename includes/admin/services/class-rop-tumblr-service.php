@@ -395,10 +395,6 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 
 		$api = $this->get_api( $this->credentials['consumer_key'], $this->credentials['consumer_secret'], $this->credentials['oauth_token'], $this->credentials['oauth_token_secret'] );
 
-		if ( ! empty( $post_details['post_image'] ) ) {
-			$new_post['thumbnail'] = $post_details['post_image'];
-		}
-
 		$post_type = new Rop_Posts_Selector_Model();
 		$post_id   = $post_details['post_id'];
 
@@ -407,7 +403,10 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		$hashtags = ltrim( $hashtags, ',' );
 
 		// Link post
-		if ( ! empty( $post_details['post_url'] ) && empty( $post_details['post_image'] ) ) {
+		if ( ! empty( $post_details['post_url'] ) && empty( $post_details['post_with_image'] ) ) {
+
+			$new_post['thumbnail'] = get_the_post_thumbnail_url( $post_id, 'large' );
+
 			$new_post['type']        = 'link';
 			$new_post['url']         = trim( $this->get_url( $post_details ) );
 			$new_post['title']       = get_the_title( $post_details['post_id'] );
@@ -417,7 +416,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		}
 
 		// Text post
-		if ( empty( $post_details['post_url'] ) && empty( $post_details['post_image'] ) ) {
+		if ( empty( $post_details['post_url'] ) && empty( $post_details['post_with_image'] ) ) {
 			$new_post['type'] = 'text';
 			$new_post['body'] = $this->strip_excess_blank_lines( $post_details['content'] );
 			$new_post['tags'] = $hashtags;
@@ -425,12 +424,30 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 
 		// Photo post
 		if ( ! empty( $post_details['post_image'] ) && strpos( $post_details['mimetype']['type'], 'image' ) !== false ) {
-
 			$new_post['type']       = 'photo';
 			$new_post['source_url'] = esc_url( get_site_url() );
-			$new_post['data']       = $post_details['post_image'];
-			$new_post['caption']    = $this->strip_excess_blank_lines( $post_details['content'] ) . ' ' . trim( $this->get_url( $post_details ) );
-			$new_post['tags']       = $hashtags;
+
+			// get image path
+			$image_source = $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] );
+			// If the URL is returned instead of PATH, use the url.
+			if ( $this->is_remote_file( $image_source ) ) {
+				$new_post['data'] = $post_details['post_image'];
+			} else {
+				// If the file can't be read, it returns the normal path back.
+				$get_base64 = $this->convert_image_to_base64( $image_source );
+				// We need to check if it was encoded or not.
+				if ( $get_base64 === $image_source ) {
+					// This is normal path, but Tumblr API doesn't seem to have support for image path
+					// Fallback to image URL.
+					$new_post['data'] = $post_details['post_image'];
+
+				} else { // This is base 64
+					$new_post['data64'] = $get_base64;
+				}
+			}
+
+			$new_post['caption'] = $this->strip_excess_blank_lines( $post_details['content'] ) . ' ' . trim( $this->get_url( $post_details ) );
+			$new_post['tags']    = $hashtags;
 		}
 
 		// Video post| HTML5 video doesn't support all our initially set video formats
