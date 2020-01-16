@@ -43,7 +43,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @access  protected
 	 * @var     array $scopes The scopes to authorize with LinkedIn.
 	 */
-	protected $scopes = array( 'r_liteprofile', 'r_emailaddress', 'w_member_social', 'r_organization_social', 'w_organization_social', 'rw_organization_admin');
+	protected $scopes = array( 'r_liteprofile', 'r_emailaddress', 'w_member_social', 'r_organization_social', 'w_organization_social', 'rw_organization_admin' );
 
 	/**
 	 * Old permissions required by custom user apps.
@@ -56,7 +56,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @access  protected
 	 * @var     array $scopes_old The scopes to authorize with LinkedIn.
 	 */
-	protected $scopes_old = array( 'r_liteprofile', 'r_emailaddress', 'w_member_social');
+	protected $scopes_old = array( 'r_liteprofile', 'r_emailaddress', 'w_member_social' );
 	// Company(organization) sharing scope cannot be used unless app approved for this scope.
 	// https://business.linkedin.com/marketing-solutions/marketing-partners/become-a-partner/marketing-developer-program
 
@@ -77,9 +77,9 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * This should be invoked by the Factory class
 	 * to register all endpoints at once.
 	 *
+	 * @return mixed
 	 * @since   8.0.0
 	 * @access  public
-	 * @return mixed
 	 */
 	public function expose_endpoints() {
 		$this->register_endpoint( 'authorize', 'authorize' );
@@ -91,9 +91,9 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 *
 	 * @codeCoverageIgnore
 	 *
+	 * @return mixed
 	 * @since   8.0.0
 	 * @access  public
-	 * @return mixed
 	 */
 	public function authorize() {
 		header( 'Content-Type: text/html' );
@@ -147,13 +147,13 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	/**
 	 * Method to retrieve the api object.
 	 *
+	 * @param string $client_id The Client ID. Default empty.
+	 * @param string $client_secret The Client Secret. Default empty.
+	 *
+	 * @return \LinkedIn\Client Client Linkedin.
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $client_id The Client ID. Default empty.
-	 * @param   string $client_secret The Client Secret. Default empty.
-	 *
-	 * @return \LinkedIn\Client Client Linkedin.
 	 */
 	public function get_api( $client_id = '', $client_secret = '' ) {
 		if ( $this->api == null ) {
@@ -166,13 +166,13 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	/**
 	 * Method to define the api.
 	 *
+	 * @param string $client_id The Client ID. Default empty.
+	 * @param string $client_secret The Client Secret. Default empty.
+	 *
+	 * @return mixed
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   string $client_id The Client ID. Default empty.
-	 * @param   string $client_secret The Client Secret. Default empty.
-	 *
-	 * @return mixed
 	 */
 	public function set_api( $client_id = '', $client_secret = '' ) {
 		if ( ! class_exists( '\LinkedIn\Client' ) ) {
@@ -190,9 +190,9 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 *
 	 * @codeCoverageIgnore
 	 *
+	 * @return mixed
 	 * @since   8.0.0
 	 * @access  public
-	 * @return mixed
 	 */
 	public function maybe_authenticate() {
 		if ( ! session_id() ) {
@@ -232,9 +232,9 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 *
 	 * @codeCoverageIgnore
 	 *
+	 * @return mixed
 	 * @since   8.0.0
 	 * @access  public
-	 * @return mixed
 	 */
 	public function authenticate( $args ) {
 		if ( ! $this->is_set_not_empty(
@@ -269,8 +269,11 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		if ( ! isset( $profile['id'] ) ) {
 			return false;
 		}
+
+		$available_users = $this->get_users( $profile, $api );
+
 		$this->service = array(
-			'id'                 => $profile['id'],
+			'id'                 => str_replace( '_', '!sp!', $profile['id'] ), // Replacing the underscore.
 			'service'            => $this->service_name,
 			'credentials'        => $this->credentials,
 			'public_credentials' => array(
@@ -285,7 +288,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 					'private' => true,
 				),
 			),
-			'available_accounts' => $this->get_users( $profile, $api ),
+			'available_accounts' => $available_users,
 		);
 
 		return true;
@@ -297,12 +300,12 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 *
 	 * @codeCoverageIgnore
 	 *
+	 * @param object $data Response data from Twitter.
+	 *
+	 * @return array
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   object $data Response data from Twitter.
-	 *
-	 * @return array
 	 */
 	private function get_users( $data = null, $api ) {
 		if ( empty( $data ) ) {
@@ -330,7 +333,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$lname_array = array_values( $data['lastName']['localized'] );
 		$lastname    = $lname_array[0];
 
-		$user_details['id']      = $this->strip_underscore( $data['id'] );
+		$user_details['id']      = str_replace( '_', '!sp!', $data['id'] );
 		$user_details['account'] = $email;
 		$user_details['user']    = $firstname . ' ' . $lastname;
 		$user_details['img']     = $img;
@@ -342,7 +345,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			try {
 
 				$admined_linkedin_pages = $this->api->api(
-					// 'organizationalEntityAcls?q=roleAssignee&role=ADMINISTRATOR&projection=(elements*(organizationalTarget~(localizedName,vanityName,logoV2)))',
+				// 'organizationalEntityAcls?q=roleAssignee&role=ADMINISTRATOR&projection=(elements*(organizationalTarget~(localizedName,vanityName,logoV2)))',
 					'organizationalEntityAcls?q=roleAssignee&role=ADMINISTRATOR&state=APPROVED',
 					array(),
 					'GET'
@@ -383,7 +386,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 			try {
 				$company = $this->api->api(
-					// 'organizationalEntityAcls?q=roleAssignee&role=ADMINISTRATOR&projection=(elements*(organizationalTarget~(localizedName,vanityName,logoV2)))',
+				// 'organizationalEntityAcls?q=roleAssignee&role=ADMINISTRATOR&projection=(elements*(organizationalTarget~(localizedName,vanityName,logoV2)))',
 					'organizations/' . $organization_urn,
 					array(),
 					'GET'
@@ -397,7 +400,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 			$users[] = wp_parse_args(
 				array(
-					'id'         => $this->strip_underscore( $company['id'] ),
+					'id'         => str_replace( '_', '!sp!', $company['id'] ),
 					'account'    => $email,
 					'is_company' => true,
 					'user'       => $company['localizedName'],
@@ -413,10 +416,11 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	/**
 	 * Method to register credentials for the service.
 	 *
+	 * @param array $args The credentials array.
+	 *
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   array $args The credentials array.
 	 */
 	public function set_credentials( $args ) {
 		$this->credentials = $args;
@@ -427,9 +431,9 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 *
 	 * @codeCoverageIgnore
 	 *
+	 * @return mixed
 	 * @since   8.0.0
 	 * @access  protected
-	 * @return mixed
 	 */
 	public function request_api_token() {
 		if ( ! session_id() ) {
@@ -447,9 +451,9 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	/**
 	 * Returns information for the current service.
 	 *
+	 * @return mixed
 	 * @since   8.0.0
 	 * @access  public
-	 * @return mixed
 	 */
 	public function get_service() {
 		return $this->service;
@@ -458,12 +462,12 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	/**
 	 * Generate the sign in URL.
 	 *
+	 * @param array $data The data from the user.
+	 *
+	 * @return mixed
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   array $data The data from the user.
-	 *
-	 * @return mixed
 	 */
 	public function sign_in_url( $data ) {
 		$credentials = $data['credentials'];
@@ -484,23 +488,28 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		} else {
 			$url = $api->getLoginUrl( $this->scopes_old );
 		}
+
 		return $url;
 	}
 
 	/**
 	 * Method for publishing with Linkedin service.
 	 *
+	 * @param array $post_details The post details to be published by the service.
+	 * @param array $args Optional arguments needed by the method.
+	 *
+	 * @return mixed
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   array $post_details The post details to be published by the service.
-	 * @param   array $args Optional arguments needed by the method.
-	 *
-	 * @return mixed
 	 */
 	public function share( $post_details, $args = array() ) {
 		if ( Rop_Admin::rop_site_is_staging() ) {
 			return false;
+		}
+
+		if ( isset( $args['id'] ) ) {
+			$args['id'] = str_replace( '!sp!', '_', $args['id'] ); // Add the underscore back.
 		}
 
 		// check if linkedin Account was added using Revive Social app
@@ -562,13 +571,13 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	/**
 	 * Linkedin article post.
 	 *
+	 * @param array $post_details The post details to be published by the service.
+	 * @param array $args Arguments needed by the method.
+	 *
+	 * @return array
 	 * @since   8.2.3
 	 * @access  private
 	 *
-	 * @param   array $post_details The post details to be published by the service.
-	 * @param   array $args Arguments needed by the method.
-	 *
-	 * @return array
 	 */
 	private function linkedin_article_post( $post_details, $args ) {
 
@@ -617,14 +626,14 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	/**
 	 * Linkedin image post format.
 	 *
+	 * @param array $post_details The post details to be published by the service.
+	 * @param array $args Arguments needed by the method.
+	 * @param string $token The user token.
+	 *
+	 * @return array
 	 * @since   8.2.3
 	 * @access  private
 	 *
-	 * @param   array  $post_details The post details to be published by the service.
-	 * @param   array  $args Arguments needed by the method.
-	 * @param   string $token The user token.
-	 *
-	 * @return array
 	 */
 	private function linkedin_image_post( $post_details, $args, $token, $api ) {
 
@@ -724,12 +733,12 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * This method will load and prepare the account data for LinkedIn user.
 	 * Used in Rest Api.
 	 *
+	 * @param array $accounts_data Linked accounts data.
+	 *
+	 * @return  bool
 	 * @since   8.5.0
 	 * @access  public
 	 *
-	 * @param   array $accounts_data Linked accounts data.
-	 *
-	 * @return  bool
 	 */
 	public function add_account_with_app( $accounts_data ) {
 		if ( ! $this->is_set_not_empty( $accounts_data, array( 'id' ) ) ) {
@@ -752,7 +761,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 			$account_data = $accounts_array[ $i ];
 
-			$account['id']           = $account_data['id'];
+			$account['id']           = str_replace( '_', '!sp!', $account_data['id'] );
 			$account['img']          = $account_data['img'];
 			$account['account']      = $account_data['account'];
 			$account['is_company']   = $account_data['is_company'];
@@ -770,7 +779,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		// Prepare the data that will be saved as new account added.
 		$this->service = array(
-			'id'                 => $the_id,
+			'id'                 => str_replace( '_', '!sp!', $the_id ),
 			'service'            => $this->service_name,
 			'credentials'        => $account['access_token'],
 			'available_accounts' => $accounts,
@@ -782,10 +791,10 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	/**
 	 * Method used to decide whether or not to show Linked button
 	 *
+	 * @return  bool
 	 * @since   8.5.0
 	 * @access  public
 	 *
-	 * @return  bool
 	 */
 	public function rop_show_li_app_btn() {
 		$installed_at_version = get_option( 'rop_first_install_version' );
