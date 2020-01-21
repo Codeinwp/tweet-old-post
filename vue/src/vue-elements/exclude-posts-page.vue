@@ -28,9 +28,11 @@
 					<div class="input-group">
 						<multiple-select :options="taxonomies"
 						                 :selected="generalSettings.selected_taxonomies"
-						                 :changed-selection="updatedTaxonomies"></multiple-select>
+						                 :changed-selection="updatedTaxonomies"
+										 :is_pro_version="isPro" :apply_limit="isTaxLimit" v-on:display-limiter-notice="displayProMessage"></multiple-select>
 					
 					</div>
+					<p class="text-primary rop-post-type-badge" v-if="is_taxonomy_message" v-html="labels.post_types_taxonomy_limit"></p>
 					<div class="columns">
 						<span class="input-group-addon column col-6 pull-right vertical-align">
 								<label class="form-checkbox">{{labels.taxonomies_exclude_explicit}}
@@ -133,6 +135,7 @@
 				upsell_link: ropApiSettings.upsell_link,
 				is_loading: false,
 				is_loading_single: false,
+				is_taxonomy_message: false
 			}
 		},
 		watch: {
@@ -150,6 +153,13 @@
 			isPro: function () {
 				return (this.$store.state.licence >= 1);
 			},
+			isTaxLimit: function () {
+
+				if (ropApiSettings.tax_apply_limit > 0) {
+					return true;
+				}
+				return false;
+			},
 			postTypes: function () {
 				return this.$store.state.generalSettings.available_post_types;
 			},
@@ -166,6 +176,16 @@
 			this.getGeneralSettings();
 		},
 		methods: {
+			displayProMessage(data) {
+
+				if (!this.isPro && data >= 2 ) {
+					if (true === this.isTaxLimit) {
+						this.is_taxonomy_message = true;
+					} else {
+						this.is_taxonomy_message = false;
+					}
+				}
+			},
 			excludeSinglePost(post_id, state) {
 
 				this.$log.info('Excluding post ', post_id, state);
@@ -256,12 +276,28 @@
 				this.requestPostUpdate()
 			},
 			updatedTaxonomies(data) {
-				let taxonomies = []
-				for (let index in data) {
-					taxonomies.push(data[index].value)
+				if (this.isPro || false === this.isTaxLimit) {
+					this.is_taxonomy_message = false;
+					let taxonomies = []
+					for (let index in data) {
+						taxonomies.push(data[index].value)
+					}
+					this.$store.commit('updateState', {stateData: data, requestName: 'update_selected_taxonomies'})
+					this.requestPostUpdate()
+				} else {
+					if (data.length > 1) {
+						this.is_taxonomy_message = true;
+					}else{
+						this.is_taxonomy_message = false;
+						let taxonomies = []
+						for (let index in data) {
+							taxonomies.push(data[index].value)
+						}
+						this.$store.commit('updateState', {stateData: data, requestName: 'update_selected_taxonomies'})
+						this.requestPostUpdate()
+					}
 				}
-				this.$store.commit('updateState', {stateData: data, requestName: 'update_selected_taxonomies'})
-				this.requestPostUpdate()
+
 			},
 			excludeTaxonomiesChange() {
 				this.requestPostUpdate()
