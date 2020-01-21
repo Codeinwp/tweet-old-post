@@ -74,9 +74,9 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	 *
 	 * @codeCoverageIgnore
 	 *
+	 * @return mixed
 	 * @since   8.0.0
 	 * @access  public
-	 * @return mixed
 	 */
 	public function authorize() {
 		header( 'Content-Type: text/html' );
@@ -107,11 +107,10 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	/**
 	 * Method to request a token from api.
 	 *
-	 * @since   8.0.0
-	 * @access  protected
-	 *
 	 * @return mixed|void
 	 * @throws Exception Capture all exceptions.
+	 * @since   8.0.0
+	 * @access  protected
 	 */
 	public function request_api_token() {
 		if ( ! session_id() ) {
@@ -135,13 +134,12 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	/**
 	 * Method to retrieve the api object.
 	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   string $app_id The Pinterest APP ID. Default empty.
-	 * @param   string $secret The Pinterest APP Secret. Default empty.
+	 * @param string $app_id The Pinterest APP ID. Default empty.
+	 * @param string $secret The Pinterest APP Secret. Default empty.
 	 *
 	 * @return \DirkGroenen\Pinterest\Pinterest
+	 * @since   8.0.0
+	 * @access  public
 	 */
 	public function get_api( $app_id = '', $secret = '' ) {
 		if ( null == $this->api ) {
@@ -154,13 +152,12 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	/**
 	 * Method to define the api.
 	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   string $app_id The Pinterest APP ID. Default empty.
-	 * @param   string $secret The Pinterest APP Secret. Default empty.
+	 * @param string $app_id The Pinterest APP ID. Default empty.
+	 * @param string $secret The Pinterest APP Secret. Default empty.
 	 *
 	 * @return mixed
+	 * @since   8.0.0
+	 * @access  public
 	 */
 	public function set_api( $app_id = '', $secret = '' ) {
 		try {
@@ -179,9 +176,9 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	 *
 	 * @codeCoverageIgnore
 	 *
+	 * @return mixed
 	 * @since   8.0.0
 	 * @access  public
-	 * @return mixed
 	 */
 	public function maybe_authenticate() {
 		if ( ! session_id() ) {
@@ -257,7 +254,7 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 		);
 
 		$this->service = array(
-			'id'                 => $user->id,
+			'id'                 => $this->treat_underscore_exception( $user->id ), // Replacing the underscore.,
 			'service'            => $this->service_name,
 			'credentials'        => $this->credentials,
 			'public_credentials' => array(
@@ -282,10 +279,10 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	/**
 	 * Method to register credentials for the service.
 	 *
+	 * @param array $args The credentials array.
+	 *
 	 * @since   8.0.0
 	 * @access  public
-	 *
-	 * @param   array $args The credentials array.
 	 */
 	public function set_credentials( $args ) {
 		$this->credentials = $args;
@@ -311,8 +308,12 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 		$replace = array( '-', '' );
 
 		foreach ( $boards as $board ) {
+
+			$board->name = str_replace( $search, $replace, $board->name );
+			$board->name = $this->treat_underscore_exception( $board->name );
+
 			$board_details            = array();
-			$board_details['id']      = $user->username . '/' . str_replace( $search, $replace, $board->name );
+			$board_details['id']      = $user->username . '/' . $board->name;
 			$board_details['account'] = $this->normalize_string( sprintf( '%s %s', $user->first_name, $user->last_name ) );
 			$board_details['user']    = $this->normalize_string( $board->name );
 			$board_details['active']  = false;
@@ -336,9 +337,9 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	/**
 	 * Returns information for the current service.
 	 *
+	 * @return mixed
 	 * @since   8.0.0
 	 * @access  public
-	 * @return mixed
 	 */
 	public function get_service() {
 		return $this->service;
@@ -347,12 +348,11 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	/**
 	 * Generate the sign in URL.
 	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   array $data The data from the user.
+	 * @param array $data The data from the user.
 	 *
 	 * @return mixed
+	 * @since   8.0.0
+	 * @access  public
 	 */
 	public function sign_in_url( $data ) {
 		$credentials = $data['credentials'];
@@ -371,13 +371,12 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	/**
 	 * Method for publishing with Pinterest service.
 	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   array $post_details The post details to be published by the service.
-	 * @param   array $args Optional arguments needed by the method.
+	 * @param array $post_details The post details to be published by the service.
+	 * @param array $args Optional arguments needed by the method.
 	 *
 	 * @return mixed
+	 * @since   8.0.0
+	 * @access  public
 	 */
 	public function share( $post_details, $args = array() ) {
 		if ( Rop_Admin::rop_site_is_staging() ) {
@@ -391,6 +390,10 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 
 		$api = $this->get_api();
 		$api->auth->setOAuthToken( $args['credentials']['token'] );
+
+		if ( isset( $args['id'] ) ) {
+			$args['id'] = $this->treat_underscore_exception( $args['id'], true );
+		}
 
 		// Check if image is present.
 		if ( empty( $post_details['post_image'] ) ) {
@@ -497,11 +500,10 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	/**
 	 * Converts local image into base_64 code
 	 *
-	 * @since 8.5.0
-	 *
 	 * @param string $image_path - Full local image path to uploads folder.
 	 *
 	 * @return string
+	 * @since 8.5.0
 	 */
 	public function this_image_to_base64( $image_path = '' ) {
 		$opened_file = fopen( $image_path, 'r' );
@@ -514,10 +516,10 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	/**
 	 * Returns post_id or false, where post_id is image media ID
 	 *
-	 * @since 8.5.0
 	 * @param string $image_path Image http url for which to obtain the media ID.
 	 *
 	 * @return bool|int
+	 * @since 8.5.0
 	 */
 	public function retrieve_image_id_from_db( $image_path = '' ) {
 		global $wpdb;

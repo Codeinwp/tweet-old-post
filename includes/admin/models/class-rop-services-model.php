@@ -67,7 +67,6 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 * @return mixed|null
 	 * @since   8.0.0
 	 * @access  public
-	 *
 	 */
 	public function add_authenticated_service( $new_service ) {
 		if ( empty( $new_service ) ) {
@@ -90,7 +89,6 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 * @return bool
 	 * @since 8.4.3
 	 * @access public
-	 *
 	 */
 	public function facebook_exception_toast( $new_service ) {
 
@@ -112,7 +110,6 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 * @return bool
 	 * @since 8.4.3
 	 * @access public
-	 *
 	 */
 	public function facebook_exception_toast_remove( $accounts_list ) {
 		$remove_toast_option = false;
@@ -154,7 +151,6 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 * @return boolean
 	 * @since   8.0.0
 	 * @access  public
-	 *
 	 */
 	public function update_authenticated_services( $new_auth_services ) {
 		if ( empty( $new_auth_services ) ) {
@@ -190,7 +186,10 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 				continue;
 			}
 			foreach ( $service_details['available_accounts'] as $account ) {
-				$id = $service_details['service'] . '_' . $service_details['id'] . '_' . str_replace( '_', '!sp!', $account['id'] ); // Replace the underscore.
+				$service_details['id'] = str_replace( '_', '!sp!', $service_details['id'] );
+				$account['id']         = str_replace( '_', '!sp!', $account['id'] );
+
+				$id = $service_details['service'] . '_' . $service_details['id'] . '_' . $account['id']; // Replace the underscore.
 				if ( $account['active'] ) {
 					$this->add_active_accounts( $id );
 				} else {
@@ -206,7 +205,6 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 * @return array
 	 * @since   8.0.0
 	 * @access  public
-	 *
 	 */
 	public function get_authenticated_services( $service = '' ) {
 
@@ -286,7 +284,6 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 * @return mixed|null
 	 * @since   8.0.0
 	 * @access  public
-	 *
 	 */
 	public function add_active_accounts( $new_active_accounts ) {
 
@@ -307,13 +304,12 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	/**
 	 * Method to updated the state of an account from the services array.
 	 *
-	 * @param string $index The active account index.
+	 * @param string  $index The active account index.
 	 * @param boolean $state The desired state (true/false).
 	 *
 	 * @return array|mixed
 	 * @since   8.0.0
 	 * @access  private
-	 *
 	 */
 	private function toggle_account_state( $index, $state ) {
 		$scheduler = new Rop_Scheduler_Model();
@@ -351,7 +347,6 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 * @return mixed|null
 	 * @since   8.0.0
 	 * @access  public
-	 *
 	 */
 	public function update_active_accounts( $new_active_accounts ) {
 		$this->set( $this->accounts_namespace, $new_active_accounts );
@@ -365,7 +360,6 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 * @return mixed|null
 	 * @since   8.0.0
 	 * @access  public
-	 *
 	 */
 	public function get_active_accounts() {
 		$accounts = $this->get( $this->accounts_namespace );
@@ -396,7 +390,6 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 * @return mixed|null
 	 * @since   8.0.0
 	 * @access  public
-	 *
 	 */
 	public function delete_active_accounts( $index ) {
 		$accounts = $this->get_active_accounts();
@@ -416,7 +409,6 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 * @return mixed|null
 	 * @since   8.0.0
 	 * @access  public
-	 *
 	 */
 	public function delete_authenticated_service( $service_id, $service ) {
 		$services           = $this->get_authenticated_services();
@@ -474,7 +466,6 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 * @return bool|array
 	 * @since   8.0.0
 	 * @access  public
-	 *
 	 */
 	public function find_account( $account_id ) {
 		$services = $this->get_authenticated_services();

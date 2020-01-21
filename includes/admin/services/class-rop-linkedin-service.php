@@ -153,7 +153,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @return \LinkedIn\Client Client Linkedin.
 	 * @since   8.0.0
 	 * @access  public
-	 *
 	 */
 	public function get_api( $client_id = '', $client_secret = '' ) {
 		if ( $this->api == null ) {
@@ -172,7 +171,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 * @since   8.0.0
 	 * @access  public
-	 *
 	 */
 	public function set_api( $client_id = '', $client_secret = '' ) {
 		if ( ! class_exists( '\LinkedIn\Client' ) ) {
@@ -273,7 +271,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$available_users = $this->get_users( $profile, $api );
 
 		$this->service = array(
-			'id'                 => str_replace( '_', '!sp!', $profile['id'] ), // Replacing the underscore.
+			'id'                 => $this->treat_underscore_exception( $profile['id'] ), // Replacing the underscore.
 			'service'            => $this->service_name,
 			'credentials'        => $this->credentials,
 			'public_credentials' => array(
@@ -296,7 +294,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	}
 
 	/**
-	 * Utility method to retrieve users from the Twitter account.
+	 * Utility method to retrieve users from the Linkedin account.
 	 *
 	 * @codeCoverageIgnore
 	 *
@@ -305,7 +303,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @return array
 	 * @since   8.0.0
 	 * @access  public
-	 *
 	 */
 	private function get_users( $data = null, $api ) {
 		if ( empty( $data ) ) {
@@ -333,7 +330,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$lname_array = array_values( $data['lastName']['localized'] );
 		$lastname    = $lname_array[0];
 
-		$user_details['id']      = str_replace( '_', '!sp!', $data['id'] );
+		$user_details['id']      = $this->treat_underscore_exception( $data['id'] );
 		$user_details['account'] = $email;
 		$user_details['user']    = $firstname . ' ' . $lastname;
 		$user_details['img']     = $img;
@@ -400,7 +397,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 			$users[] = wp_parse_args(
 				array(
-					'id'         => str_replace( '_', '!sp!', $company['id'] ),
+					'id'         => $this->treat_underscore_exception( $company['id'] ),
 					'account'    => $email,
 					'is_company' => true,
 					'user'       => $company['localizedName'],
@@ -420,7 +417,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  public
-	 *
 	 */
 	public function set_credentials( $args ) {
 		$this->credentials = $args;
@@ -467,7 +463,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 * @since   8.0.0
 	 * @access  public
-	 *
 	 */
 	public function sign_in_url( $data ) {
 		$credentials = $data['credentials'];
@@ -501,7 +496,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 * @since   8.0.0
 	 * @access  public
-	 *
 	 */
 	public function share( $post_details, $args = array() ) {
 		if ( Rop_Admin::rop_site_is_staging() ) {
@@ -509,7 +503,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		}
 
 		if ( isset( $args['id'] ) ) {
-			$args['id'] = str_replace( '!sp!', '_', $args['id'] ); // Add the underscore back.
+			$args['id'] = $this->treat_underscore_exception( $args['id'], true ); // Add the underscore back.
 		}
 
 		// check if linkedin Account was added using Revive Social app
@@ -577,7 +571,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @return array
 	 * @since   8.2.3
 	 * @access  private
-	 *
 	 */
 	private function linkedin_article_post( $post_details, $args ) {
 
@@ -626,14 +619,13 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	/**
 	 * Linkedin image post format.
 	 *
-	 * @param array $post_details The post details to be published by the service.
-	 * @param array $args Arguments needed by the method.
+	 * @param array  $post_details The post details to be published by the service.
+	 * @param array  $args Arguments needed by the method.
 	 * @param string $token The user token.
 	 *
 	 * @return array
 	 * @since   8.2.3
 	 * @access  private
-	 *
 	 */
 	private function linkedin_image_post( $post_details, $args, $token, $api ) {
 
@@ -738,7 +730,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @return  bool
 	 * @since   8.5.0
 	 * @access  public
-	 *
 	 */
 	public function add_account_with_app( $accounts_data ) {
 		if ( ! $this->is_set_not_empty( $accounts_data, array( 'id' ) ) ) {
@@ -761,7 +752,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 			$account_data = $accounts_array[ $i ];
 
-			$account['id']           = str_replace( '_', '!sp!', $account_data['id'] );
+			$account['id']           = $this->treat_underscore_exception( $account_data['id'] );
 			$account['img']          = $account_data['img'];
 			$account['account']      = $account_data['account'];
 			$account['is_company']   = $account_data['is_company'];
@@ -779,7 +770,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		// Prepare the data that will be saved as new account added.
 		$this->service = array(
-			'id'                 => str_replace( '_', '!sp!', $the_id ),
+			'id'                 => $this->treat_underscore_exception( $the_id ),
 			'service'            => $this->service_name,
 			'credentials'        => $account['access_token'],
 			'available_accounts' => $accounts,
@@ -794,7 +785,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @return  bool
 	 * @since   8.5.0
 	 * @access  public
-	 *
 	 */
 	public function rop_show_li_app_btn() {
 		$installed_at_version = get_option( 'rop_first_install_version' );
