@@ -498,6 +498,10 @@ abstract class Rop_Services_Abstract {
 				'message' => __( 'You need to put your Facebook app through review.', 'tweet-old-post' ),
 				'link'    => 'https://is.gd/fix_manage_pages_error',
 			),
+			'The session has been invalidated because the user changed their password' => array(
+				'message' => __( 'You need to reconnect your Facebook account.', 'tweet-old-post' ),
+				'link'    => 'https://is.gd/fix_fb_invalid_session',
+			),
 			'Invalid parameter'                                                           => array(
 				'message' => 'There might be an issue with link creations on your website.',
 				'link'    => 'https://is.gd/fix_link_issue',
