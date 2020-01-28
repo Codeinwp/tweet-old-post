@@ -308,9 +308,10 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 		$replace = array( '-', '' );
 
 		foreach ( $boards as $board ) {
-
-			$board->name = str_replace( $search, $replace, $board->name );
 			$board->name = $this->treat_underscore_exception( $board->name );
+			$board->name = str_replace( $search, $replace, $board->name );
+
+			$user->username = $this->treat_underscore_exception( $user->username );
 
 			$board_details            = array();
 			$board_details['id']      = $user->username . '/' . $board->name;
