@@ -660,6 +660,11 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			$img = $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] );
 		}
 
+		if ( empty( $img ) ) {
+					$this->logger->alert_error( 'No image set for post: ' . get_the_title( $post_details['post_id'] ) . ', cannot share as an image post to LinkedIn.' );
+				  return false;
+		}
+
 		$img_mime_type = image_type_to_mime_type( exif_imagetype( $img ) );
 
 		$img_data   = file_get_contents( $img );
