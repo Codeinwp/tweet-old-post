@@ -21601,7 +21601,7 @@ module.exports = {
         },
         limit_selection: function limit_selection() {
             if (true === this.apply_limit) {
-                if (false === this.is_pro_version && this.selected.length > 1) {
+                if (false === this.is_pro_version && this.selected.length > 3) {
                     this.$refs.search.focus();
                     this.magic_flag = false;
                     this.search = '';
@@ -36890,7 +36890,7 @@ module.exports = {
     },
     methods: {
         displayProMessage: function displayProMessage(data) {
-            if (!this.isPro && data >= 2) {
+            if (!this.isPro && data >= 4) {
                 if (true === this.isTaxLimit) {
                     this.is_taxonomy_message = true;
                 } else {
@@ -36936,7 +36936,7 @@ module.exports = {
                 this.$store.commit('updateState', { stateData: data, requestName: 'update_selected_taxonomies' });
             } else {
 
-                if (data.length > 1) {
+                if (data.length > 3) {
                     this.is_taxonomy_message = true;
                 } else {
                     this.is_taxonomy_message = false;

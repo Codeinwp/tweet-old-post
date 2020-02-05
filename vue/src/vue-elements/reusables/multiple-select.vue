@@ -253,7 +253,7 @@
             },
             limit_selection() {
                 if(true === this.apply_limit){
-                    if (false === this.is_pro_version && this.selected.length > 1) {
+                    if (false === this.is_pro_version && this.selected.length > 3) {
                         this.$refs.search.focus();
                         this.magic_flag = false;
                         this.search = '';

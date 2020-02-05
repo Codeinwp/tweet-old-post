@@ -319,7 +319,7 @@
         },
         methods: {
             displayProMessage(data) {
-                if (!this.isPro && data >= 2 ) {
+                if (!this.isPro && data >= 4 ) {
                     if (true === this.isTaxLimit) {
                         this.is_taxonomy_message = true;
                     } else {
@@ -365,7 +365,7 @@
                     this.$store.commit('updateState', {stateData: data, requestName: 'update_selected_taxonomies'})
                 } else {
 
-                    if (data.length > 1) {
+                    if (data.length > 3) {
                         this.is_taxonomy_message = true;
                     } else {
                         this.is_taxonomy_message = false;
