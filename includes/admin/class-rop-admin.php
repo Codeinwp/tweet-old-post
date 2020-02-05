@@ -663,6 +663,10 @@ class Rop_Admin {
 			return;
 		}
 
+		if ( get_post_status( $post_id ) !== 'publish' ) {
+			return;
+		}
+
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return;
 		}
