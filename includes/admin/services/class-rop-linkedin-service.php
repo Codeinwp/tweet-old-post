@@ -439,7 +439,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$api           = $this->get_api();
 		$request_token = $api->oauth( 'oauth/request_token', array( 'oauth_callback' => $this->get_legacy_url( 'linkedin' ) ) );
 
-		$_SESSION['rop_twitter_request_token'] = $request_token;
+		$_SESSION['rop_linkedin_request_token'] = $request_token;
 
 		return $request_token;
 	}

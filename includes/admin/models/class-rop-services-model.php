@@ -163,7 +163,12 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 				$service_data['available_accounts'] = array();
 			}
 			foreach ( $service_data['available_accounts'] as $account ) {
-				$key              = $service_key . '_' . str_replace( '_', '!sp!', $account['id'] );
+				$key = $service_key . '_' . $account['id'];
+				// Linkedin Exception.
+				if ( 'linkedin' === $service_key ) {
+					$key = $service_key . '_' . str_replace( '_', '!sp!', $account['id'] );
+				}
+
 				$accounts[ $key ] = $account;
 			}
 			$new_auth_services[ $service_key ]['available_accounts'] = $accounts;
@@ -186,10 +191,16 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 				continue;
 			}
 			foreach ( $service_details['available_accounts'] as $account ) {
-				$service_details['id'] = str_replace( '_', '!sp!', $service_details['id'] );
-				$account['id']         = str_replace( '_', '!sp!', $account['id'] );
 
-				$id = $service_details['service'] . '_' . $service_details['id'] . '_' . $account['id']; // Replace the underscore.
+				if ( 'linkedin' === $service_details['service'] ) {
+					$service_details_id = str_replace( '_', '!sp!', $service_details['id'] );
+					$account_id         = str_replace( '_', '!sp!', $account['id'] );
+				} else {
+					$service_details_id = $service_details['id'];
+					$account_id         = $account['id'];
+				}
+
+				$id = $service_details['service'] . '_' . $service_details_id . '_' . $account_id; // Replace the underscore.
 				if ( $account['active'] ) {
 					$this->add_active_accounts( $id );
 				} else {
@@ -201,6 +212,8 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 
 	/**
 	 * Method to retrieve the authenticated services from DB.
+	 *
+	 * @param string $service Service type.
 	 *
 	 * @return array
 	 * @since   8.0.0
@@ -317,9 +330,13 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 
 		$services = $this->get_authenticated_services();
 		$return   = array();
-		list( $service, $service_id, $account_id ) = explode( '_', $index );
-		if ( count( $services[ $service . '_' . $service_id ]['available_accounts'] ) > 0 ) {
-			foreach ( $services[ $service . '_' . $service_id ]['available_accounts'] as $key => $account ) {
+
+		list( $service, $service_id, $account_id ) = $this->handle_underscore_exception( $index );
+
+		$service_key = $service . '_' . $service_id;
+
+		if ( count( $services[ $service_key ]['available_accounts'] ) > 0 ) {
+			foreach ( $services[ $service_key ]['available_accounts'] as $key => $account ) {
 				if ( $account['id'] == $account_id ) {
 					/**
 					 * Reset events timeline for this account when switching state.
@@ -330,7 +347,7 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 					 */
 					$queue->clear_queue( $account_id );
 					$services[ $service . '_' . $service_id ]['available_accounts'][ $key ]['active'] = $state;
-					$return                                                                           = $services[ $service . '_' . $service_id ]['available_accounts'][ $key ];
+					$return                                                                           = $services[ $service_key ]['available_accounts'][ $key ];
 				}
 			}
 			$this->set( $this->services_namespace, $services );
@@ -435,13 +452,11 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 			return false;
 		}
 
-		$parts = explode( '_', $account_id );
-		if ( count( $parts ) !== 3 ) {
-			return false;
-		}
+		list( $service, $service_id, $account_id_num ) = $this->handle_underscore_exception( $account_id );
 
-		$service_id = $parts[0] . '_' . $parts[1];
-		$services   = $this->get_authenticated_services();
+		$service_id = $service . '_' . $service_id;
+
+		$services = $this->get_authenticated_services();
 
 		unset( $services[ $service_id ]['available_accounts'][ $account_id ] );
 
@@ -469,7 +484,9 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 	 */
 	public function find_account( $account_id ) {
 		$services = $this->get_authenticated_services();
-		list( $service, $service_id, $user_id ) = explode( '_', $account_id );
+
+		list( $service, $service_id, $user_id ) = $this->handle_underscore_exception( $account_id );
+
 		if ( count( $services[ $service . '_' . $service_id ]['available_accounts'] ) >= 1 ) {
 			foreach ( $services[ $service . '_' . $service_id ]['available_accounts'] as $key => $account ) {
 				if ( $account['id'] == $user_id ) {

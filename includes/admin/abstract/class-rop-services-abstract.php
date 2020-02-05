@@ -159,11 +159,18 @@ abstract class Rop_Services_Abstract {
 
 			if ( $authenticated ) {
 				$service = $this->get_service();
-				/**
-				 * For LinkedIn, it seems they include '_' char into the service id and
-				 * we need to replace with something else in order to not mess with the way we store the indices.
-				 */
-				$service_id                 = $service['service'] . '_' . $this->treat_underscore_exception( $service['id'] );
+
+				if ( 'linkedin' === $service['service'] ) {
+
+					/**
+					 * For LinkedIn, it seems they include '_' char into the service id and
+					 * we need to replace with something else in order to not mess with the way we store the indices.
+					 */
+					$service_id = $service['service'] . '_' . $this->treat_underscore_exception( $service['id'] );
+				} else {
+					$service_id = $service['service'] . '_' . $this->strip_underscore( $service['id'] );
+				}
+
 				$new_service[ $service_id ] = $service;
 			}
 
@@ -268,7 +275,11 @@ abstract class Rop_Services_Abstract {
 		);
 		$accounts_ids    = array();
 		foreach ( $active_accounts as $account ) {
-			$accounts_ids[ $this->get_service_id() . '_' . $this->treat_underscore_exception( $account['id'] ) ] = $account;
+
+			$accounts_ids[ $this->get_service_id() . '_' . $account['id'] ] = $account;
+			if ( 'linkedin' === $this->get_service_id() ) {
+				$accounts_ids[ $this->get_service_id() . '_' . $this->treat_underscore_exception( $account['id'] ) ] = $account;
+			}
 		}
 
 		return $accounts_ids;
@@ -287,7 +298,13 @@ abstract class Rop_Services_Abstract {
 			return '';
 		}
 
-		return $this->service_name . '_' . $this->treat_underscore_exception( $service_details['id'] );
+
+		if ( 'linkedin' === $this->service_name ) {
+			return $this->service_name . '_' . $this->treat_underscore_exception( $service_details['id'] );
+		} else {
+			return $this->service_name . '_' . $service_details['id'];
+		}
+
 	}
 
 	/**
@@ -484,15 +501,15 @@ abstract class Rop_Services_Abstract {
 
 		$errors_docs = array(
 			// Facebook errors
-			'Only owners of the URL have the ability' => array(
+			'Only owners of the URL have the ability'                    => array(
 				'message' => __( 'You need to verify your website with Facebook before sharing posts as article posts.', 'tweet-old-post' ),
 				'link'    => 'https://is.gd/fix_owners_url',
 			),
-			'manage_pages and publish_pages as an admin' => array(
+			'manage_pages and publish_pages as an admin'                 => array(
 				'message' => __( 'You need to put your Facebook app through review.', 'tweet-old-post' ),
 				'link'    => 'https://is.gd/fix_manage_pages_error',
 			),
-			'Invalid parameter' => array(
+			'Invalid parameter'                                          => array(
 				'message' => 'There might be an issue with link creations on your website.',
 				'link'    => 'https://is.gd/fix_link_issue',
 			),
@@ -502,11 +519,11 @@ abstract class Rop_Services_Abstract {
 				'message' => 'Your Callback URL for your Twitter app might not be correct.',
 				'link'    => 'https://is.gd/fix_oauth_callback_value',
 			),
-			'User is over daily status update limit' => array(
+			'User is over daily status update limit'                     => array(
 				'message' => 'You might be over your daily limit for sending tweets or our app has hit a limit.',
 				'link'    => 'https://is.gd/fix_over_daily_limit',
 			),
-			'Invalid media_id: Some' => array(
+			'Invalid media_id: Some'                                     => array(
 				'message' => 'Our plugin might be having an issue posting tweets with an image to your account.',
 				'link'    => 'https://is.gd/fix_invalid_media',
 			),
@@ -516,7 +533,7 @@ abstract class Rop_Services_Abstract {
 			),
 
 			// LinkedIn errors
-			'&#39;submitted-url&#39; can not be empty' => array(
+			'&#39;submitted-url&#39; can not be empty'                   => array(
 				'message' => 'There might be an issue with link creations on your website.',
 				'link'    => 'https://is.gd/fix_link_issue',
 			),

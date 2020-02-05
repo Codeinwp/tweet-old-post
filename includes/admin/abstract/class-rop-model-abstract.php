@@ -40,9 +40,10 @@ abstract class Rop_Model_Abstract {
 	/**
 	 * Rop_Model_Abstract constructor.
 	 *
+	 * @param bool|string $namespace Optional. Used to specify a new namespace for a model.
+	 *
 	 * @since   8.0.0
 	 * @access  public
-	 * @param   bool|string $namespace Optional. Used to specify a new namespace for a model.
 	 */
 	public function __construct( $namespace = false ) {
 		if ( $namespace != false ) {
@@ -54,10 +55,11 @@ abstract class Rop_Model_Abstract {
 	/**
 	 * The get method for the model data.
 	 *
+	 * @param string $key The key to retrieve from model data.
+	 *
+	 * @return mixed
 	 * @since   8.0.0
 	 * @access  protected
-	 * @param   string $key The key to retrieve from model data.
-	 * @return mixed
 	 */
 	protected function get( $key ) {
 		$value = null;
@@ -71,18 +73,58 @@ abstract class Rop_Model_Abstract {
 	/**
 	 * The set method for the model data.
 	 *
+	 * @param string $key The key to set inside the model data.
+	 * @param mixed  $value The value for the specified key.
+	 *
+	 * @return mixed
 	 * @since   8.0.0
 	 * @access  protected
-	 * @param   string $key The key to set inside the model data.
-	 * @param   mixed  $value The value for the specified key.
-	 * @return mixed
 	 */
 	protected function set( $key, $value = '' ) {
 		if ( is_array( $this->data ) && ! array_key_exists( $key, $this->data ) ) {
 			$this->data[ $key ] = '';
 		}
 		$this->data[ $key ] = apply_filters( 'rop_set_key_' . $key, $value );
+
 		return update_option( $this->namespace, $this->data );
+	}
+
+
+	/**
+	 * This method will treat the exception that may exist in Linkedin service account key.
+	 *
+	 * @param string $index The long concatenated string.
+	 * @param bool   $is_treat_any Treat any exception, not just for Linkedin.
+	 *
+	 * @return array
+	 * @since 8.5.3
+	 */
+	protected function handle_underscore_exception( $index, $is_treat_any = false ) {
+
+		$explode_index    = explode( '_', $index );
+		$count_underscore = count( $explode_index );
+
+		list( $service, $service_key, $account_id ) = $explode_index;
+
+		if ( 'linkedin' === $service || $is_treat_any ) {
+			// Exception: When there are 2 extra underscores e.g. "linkedin_33_test_33_test"
+			if ( 5 === $count_underscore ) {
+				$service_key = $explode_index[1] . '_' . $explode_index[2];
+				$account_id  = $explode_index[3] . '_' . $explode_index[4];
+			} elseif ( 4 === $count_underscore ) {
+				// Exception: When there is one extra underscore "linkedin_33_test_33test"
+				$service_key = $explode_index[1] . '_' . $explode_index[2];
+				$account_id  = $explode_index[3];
+			}
+		}
+
+		$return_correct_format = array(
+			$service,
+			$service_key,
+			$account_id,
+		);
+
+		return $return_correct_format;
 	}
 
 }
