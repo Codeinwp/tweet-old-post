@@ -275,10 +275,10 @@ abstract class Rop_Services_Abstract {
 		);
 		$accounts_ids    = array();
 		foreach ( $active_accounts as $account ) {
-
-			$accounts_ids[ $this->get_service_id() . '_' . $account['id'] ] = $account;
 			if ( 'linkedin' === $this->get_service_id() ) {
 				$accounts_ids[ $this->get_service_id() . '_' . $this->treat_underscore_exception( $account['id'] ) ] = $account;
+			} else {
+				$accounts_ids[ $this->get_service_id() . '_' . $account['id'] ] = $account;
 			}
 		}
 
@@ -297,7 +297,6 @@ abstract class Rop_Services_Abstract {
 		if ( ! isset( $service_details['id'] ) ) {
 			return '';
 		}
-
 
 		if ( 'linkedin' === $this->service_name ) {
 			return $this->service_name . '_' . $this->treat_underscore_exception( $service_details['id'] );
