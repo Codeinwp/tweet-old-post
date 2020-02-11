@@ -1019,6 +1019,7 @@ class Rop_Rest_Api {
 	 * @return  array
 	 */
 	private function add_account_li( $data ) {
+
 		$services        = array();
 		$active_accounts = array();
 		$linkedin_service = new Rop_Linkedin_Service();

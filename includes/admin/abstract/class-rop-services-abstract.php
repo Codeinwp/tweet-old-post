@@ -159,11 +159,18 @@ abstract class Rop_Services_Abstract {
 
 			if ( $authenticated ) {
 				$service = $this->get_service();
-				/**
-				 * For LinkedIn, it seems they include '_' char into the service id and
-				 * we need to replace with something else in order to not mess with the way we store the indices.
-				 */
-				$service_id                 = $service['service'] . '_' . $this->strip_underscore( $service['id'] );
+
+				if ( 'linkedin' === $service['service'] ) {
+
+					/**
+					 * For LinkedIn, it seems they include '_' char into the service id and
+					 * we need to replace with something else in order to not mess with the way we store the indices.
+					 */
+					$service_id = $service['service'] . '_' . $this->treat_underscore_exception( $service['id'] );
+				} else {
+					$service_id = $service['service'] . '_' . $this->strip_underscore( $service['id'] );
+				}
+
 				$new_service[ $service_id ] = $service;
 			}
 
@@ -217,25 +224,23 @@ abstract class Rop_Services_Abstract {
 	/**
 	 * Method for publishing with the service.
 	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   array $post_details The post details to be published by the service.
-	 * @param   array $args Optional arguments needed by the method.
+	 * @param array $post_details The post details to be published by the service.
+	 * @param array $args Optional arguments needed by the method.
 	 *
 	 * @return mixed
+	 * @since   8.0.0
+	 * @access  public
 	 */
 	public abstract function share( $post_details, $args = array() );
 
 	/**
 	 * Method to retrieve an endpoint URL.
 	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   string $path The endpoint path.
+	 * @param string $path The endpoint path.
 	 *
 	 * @return mixed
+	 * @since   8.0.0
+	 * @access  public
 	 */
 	public function get_endpoint_url( $path = '' ) {
 		return rest_url( '/tweet-old-post/v8/' . $this->service_name . '/' . $path );
@@ -271,7 +276,11 @@ abstract class Rop_Services_Abstract {
 		);
 		$accounts_ids    = array();
 		foreach ( $active_accounts as $account ) {
-			$accounts_ids[ $this->get_service_id() . '_' . $account['id'] ] = $account;
+			if ( 'linkedin' === $this->get_service_id() ) {
+				$accounts_ids[ $this->get_service_id() . '_' . $this->treat_underscore_exception( $account['id'] ) ] = $account;
+			} else {
+				$accounts_ids[ $this->get_service_id() . '_' . $account['id'] ] = $account;
+			}
 		}
 
 		return $accounts_ids;
@@ -291,7 +300,12 @@ abstract class Rop_Services_Abstract {
 			return '';
 		}
 
-		return $this->service_name . '_' . $service_details['id'];
+		if ( 'linkedin' === $this->service_name ) {
+			return $this->service_name . '_' . $this->treat_underscore_exception( $service_details['id'] );
+		} else {
+			return $this->service_name . '_' . $service_details['id'];
+		}
+
 	}
 
 	/**
@@ -306,12 +320,11 @@ abstract class Rop_Services_Abstract {
 	/**
 	 * Method to generate url for service post share.
 	 *
-	 * @since   8.0.0rc
-	 * @access  protected
-	 *
-	 * @param   array $post_details The post details to be published by the service.
+	 * @param array $post_details The post details to be published by the service.
 	 *
 	 * @return string
+	 * @since   8.0.0rc
+	 * @access  protected
 	 */
 	protected function get_url( $post_details ) {
 
@@ -370,12 +383,12 @@ abstract class Rop_Services_Abstract {
 	/**
 	 * Utility method to register a REST endpoint via WP.
 	 *
+	 * @param string $path The path for the endpoint.
+	 * @param string $callback The method name from the service class.
+	 * @param string $method The request type ( GET, POST, PUT, DELETE etc. ).
+	 *
 	 * @since   8.0.0
 	 * @access  protected
-	 *
-	 * @param   string $path The path for the endpoint.
-	 * @param   string $callback The method name from the service class.
-	 * @param   string $method The request type ( GET, POST, PUT, DELETE etc. ).
 	 */
 	protected function register_endpoint( $path, $callback, $method = 'GET' ) {
 
@@ -490,11 +503,11 @@ abstract class Rop_Services_Abstract {
 
 		$errors_docs = array(
 			// Facebook errors
-			'Only owners of the URL have the ability'                                     => array(
+			'Only owners of the URL have the ability'                    => array(
 				'message' => __( 'You need to verify your website with Facebook before sharing posts as article posts.', 'tweet-old-post' ),
 				'link'    => 'https://is.gd/fix_owners_url',
 			),
-			'manage_pages and publish_pages as an admin'                                  => array(
+			'manage_pages and publish_pages as an admin'                 => array(
 				'message' => __( 'You need to put your Facebook app through review.', 'tweet-old-post' ),
 				'link'    => 'https://is.gd/fix_manage_pages_error',
 			),
@@ -502,7 +515,7 @@ abstract class Rop_Services_Abstract {
 				'message' => __( 'You need to reconnect your Facebook account.', 'tweet-old-post' ),
 				'link'    => 'https://is.gd/fix_fb_invalid_session',
 			),
-			'Invalid parameter'                                                           => array(
+			'Invalid parameter'                                          => array(
 				'message' => 'There might be an issue with link creations on your website.',
 				'link'    => 'https://is.gd/fix_link_issue',
 			),
@@ -516,11 +529,11 @@ abstract class Rop_Services_Abstract {
 				'message' => 'Your Callback URL for your Twitter app might not be correct.',
 				'link'    => 'https://is.gd/fix_oauth_callback_value',
 			),
-			'User is over daily status update limit'                                      => array(
+			'User is over daily status update limit'                     => array(
 				'message' => 'You might be over your daily limit for sending tweets or our app has hit a limit.',
 				'link'    => 'https://is.gd/fix_over_daily_limit',
 			),
-			'Invalid media_id: Some'                                                      => array(
+			'Invalid media_id: Some'                                     => array(
 				'message' => 'Our plugin might be having an issue posting tweets with an image to your account.',
 				'link'    => 'https://is.gd/fix_invalid_media',
 			),
@@ -530,7 +543,7 @@ abstract class Rop_Services_Abstract {
 			),
 
 			// LinkedIn errors
-			'&#39;submitted-url&#39; can not be empty' => array(
+			'&#39;submitted-url&#39; can not be empty'                   => array(
 				'message' => 'There might be an issue with link creations on your website.',
 				'link'    => 'https://is.gd/fix_link_issue',
 			),
@@ -724,5 +737,25 @@ abstract class Rop_Services_Abstract {
 	 */
 	protected function is_remote_file( $file_path = '' ) {
 		return preg_match( '/^(https?|ftp):\/\/.*/', $file_path ) === 1;
+	}
+
+	/**
+	 * Treat the underscore exception.
+	 *
+	 * @param string $given_id Social media ID.
+	 * @param bool   $reverse replace underscore or put it back.
+	 *
+	 * @return string|string[]
+	 * @since 8.5.3
+	 */
+	protected function treat_underscore_exception( $given_id, $reverse = false ) {
+
+		if ( false === $reverse ) {
+			$given_id = str_replace( '_', '!sp!', $given_id );
+		} else {
+			$given_id = str_replace( '!sp!', '_', $given_id );
+		}
+
+		return $given_id;
 	}
 }
