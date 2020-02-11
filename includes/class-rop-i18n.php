@@ -138,6 +138,7 @@ class Rop_I18n {
 					'tweet-old-post'
 				),
 				'post_types_title'            => __( 'Post types', 'tweet-old-post' ),
+				'post_types_taxonomy_limit' => sprintf( __( 'Upgrade to Pro to select more than four taxonomies %1$shere%2$s.', 'tweet-old-post' ), '<a href="https://revive.social/" target="_blank">', '</a>' ),
 				'post_types_attachament_info' => sprintf( __( 'You need to select the media files which you want to share, find out more information %1$shere%2$s.', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/934-how-to-use-revive-old-post-media-sharing-feature" target="_blank">', '</a>' ),
 				'post_types_desc'             => __( 'Which post types should Revive Old Posts share? <a href="https://docs.revive.social/article/968-how-to-share-different-wordpress-post-types-to-social-media-w-revive-old-posts" target="_blank">Learn more</a>.', 'tweet-old-post' ),
 				'post_types_upsell'           => __(

@@ -49,10 +49,10 @@ class Rop_Admin {
 	/**
 	 * Initialize the class and set its properties.
 	 *
-	 * @since    8.0.0
+	 * @param string $plugin_name The name of this plugin.
+	 * @param string $version The version of this plugin.
 	 *
-	 * @param      string $plugin_name The name of this plugin.
-	 * @param      string $version The version of this plugin.
+	 * @since    8.0.0
 	 */
 	public function __construct( $plugin_name = '', $version = '' ) {
 
@@ -109,11 +109,10 @@ class Rop_Admin {
 	/**
 	 * Check if a shortener is in use.
 	 *
-	 * @since    8.1.5
-	 *
 	 * @param string $shortener The shortener to check.
 	 *
 	 * @return bool If shortener is in use.
+	 * @since    8.1.5
 	 */
 	public function check_shortener_service( $shortener ) {
 
@@ -210,15 +209,33 @@ class Rop_Admin {
 	/**
 	 * Whether we will display the toast message related to facebook
 	 *
-	 * @since 8.4.3
-	 *
 	 * @return mixed
+	 * @since 8.4.3
 	 */
 	private function facebook_exception_toast_display() {
 		$show_the_toast = get_option( 'rop_facebook_domain_toast', 'no' );
 		// Will comment this return for now, might be of use later on.
 		// return filter_var( $show_the_toast, FILTER_VALIDATE_BOOLEAN );
 		return false;
+	}
+
+	/**
+	 * Method used to decide whether or not to limit taxonomy select
+	 *
+	 * @return  bool
+	 * @since   8.5.0
+	 * @access  public
+	 */
+	public function limit_tax_dropdown_list() {
+		$installed_at_version = get_option( 'rop_first_install_version' );
+		if ( empty( $installed_at_version ) ) {
+			return 0;
+		}
+		if ( version_compare( $installed_at_version, '8.5.3', '>=' ) ) {
+			return 1;
+		}
+
+		return 0;
 	}
 
 	/**
@@ -267,6 +284,7 @@ class Rop_Admin {
 		$array_nonce['staging']                 = $this->rop_site_is_staging();
 		$array_nonce['show_li_app_btn']         = $li_service->rop_show_li_app_btn();
 		$array_nonce['debug']                   = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
+		$array_nonce['tax_apply_limit']         = $this->limit_tax_dropdown_list();
 		$array_nonce['publish_now']             = array(
 			'action'   => $settings->get_instant_sharing_by_default(),
 			'accounts' => $active_accounts,
@@ -304,10 +322,9 @@ class Rop_Admin {
 	/**
 	 * Set our supported mime types.
 	 *
+	 * @return array
 	 * @since   8.1.0
 	 * @access  public
-	 *
-	 * @return array
 	 */
 	public function rop_supported_mime_types() {
 
@@ -347,8 +364,8 @@ class Rop_Admin {
 	/**
 	 * Detects if is a staging environment
 	 *
-	 * @since     8.0.4
 	 * @return    bool   true/false
+	 * @since     8.0.4
 	 */
 	public static function rop_site_is_staging() {
 
@@ -640,7 +657,7 @@ class Rop_Admin {
 	/**
 	 * Publish now attributes to be provided to the javascript.
 	 *
-	 * @param   array $default The default attributes.
+	 * @param array $default The default attributes.
 	 */
 	public function publish_now_attributes( $default ) {
 		global $post;
@@ -656,7 +673,7 @@ class Rop_Admin {
 	/**
 	 * Publish now, if enabled.
 	 *
-	 * @param   int $post_id The post ID.
+	 * @param int $post_id The post ID.
 	 */
 	public function maybe_publish_now( $post_id ) {
 		if ( ! isset( $_POST['rop_publish_now_nonce'] ) || ! wp_verify_nonce( $_POST['rop_publish_now_nonce'], 'rop_publish_now_nonce' ) ) {
@@ -709,14 +726,14 @@ class Rop_Admin {
 	/**
 	 * Method to share future scheduled WP posts to social media on publish.
 	 *
-	 * @since   8.5.2
+	 * @param object $post The post object.
 	 *
-	 * @param   object $post The post object.
 	 * @access  public
+	 * @since   8.5.2
 	 */
 	public function share_scheduled_future_post( $post ) {
 
-		$settings = new Rop_Settings_Model();
+		$settings            = new Rop_Settings_Model();
 		$selected_post_types = wp_list_pluck( $settings->get_selected_post_types(), 'value' );
 
 		if ( ! $settings->get_instant_share_future_scheduled() ) {
@@ -753,7 +770,7 @@ class Rop_Admin {
 		}
 
 		$services = new Rop_Services_Model();
-		$active  = array_keys( $services->get_active_accounts() );
+		$active   = array_keys( $services->get_active_accounts() );
 
 		update_post_meta( $post->ID, 'rop_publish_now', 'yes' );
 		update_post_meta( $post->ID, 'rop_publish_now_accounts', $active );
