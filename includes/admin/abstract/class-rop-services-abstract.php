@@ -109,9 +109,9 @@ abstract class Rop_Services_Abstract {
 	/**
 	 * Method to inject functionality into constructor.
 	 *
-	 * @return mixed
 	 * @since   8.0.0
 	 * @access  public
+	 * @return mixed
 	 */
 	public abstract function init();
 
@@ -120,36 +120,36 @@ abstract class Rop_Services_Abstract {
 	 * This should be invoked by the Factory class
 	 * to register all endpoints at once.
 	 *
-	 * @return mixed
 	 * @since   8.0.0
 	 * @access  public
+	 * @return mixed
 	 */
 	public abstract function expose_endpoints();
 
 	/**
 	 * Method to retrieve the api object.
 	 *
-	 * @return mixed
 	 * @since   8.0.0
 	 * @access  public
+	 * @return mixed
 	 */
 	public abstract function get_api();
 
 	/**
 	 * Method to define the api.
 	 *
-	 * @return mixed
 	 * @since   8.0.0
 	 * @access  public
+	 * @return mixed
 	 */
 	public abstract function set_api();
 
 	/**
 	 * Method for authorizing the service.
 	 *
-	 * @return mixed
 	 * @since   8.0.0
 	 * @access  public
+	 * @return mixed
 	 */
 	public function authorize() {
 
@@ -187,37 +187,37 @@ abstract class Rop_Services_Abstract {
 	/**
 	 * Method for checking authentication the service.
 	 *
-	 * @return mixed
 	 * @since   8.0.0
 	 * @access  public
+	 * @return mixed
 	 */
 	public abstract function maybe_authenticate();
 
 	/**
 	 * Returns information for the current service.
 	 *
-	 * @return mixed
 	 * @since   8.0.0
 	 * @access  public
+	 * @return mixed
 	 */
 	public abstract function get_service();
 
 	/**
 	 * Method for authenticate the service.
 	 *
-	 * @return mixed
 	 * @since   8.0.0
 	 * @access  public
+	 * @return mixed
 	 */
 	public abstract function authenticate( $args );
 
 	/**
 	 * Method to register credentials for the service.
 	 *
-	 * @param array $args The credentials array.
-	 *
 	 * @since   8.0.0
 	 * @access  public
+	 *
+	 * @param   array $args The credentials array.
 	 */
 	public abstract function set_credentials( $args );
 
@@ -249,9 +249,10 @@ abstract class Rop_Services_Abstract {
 	/**
 	 * Method to retrieve an service id.
 	 *
-	 * @return array
 	 * @since   8.0.0
 	 * @access  public
+	 *
+	 * @return array
 	 */
 	public function get_service_active_accounts() {
 		$service_details = $this->service;
@@ -288,9 +289,10 @@ abstract class Rop_Services_Abstract {
 	/**
 	 * Method to retrieve an service id.
 	 *
-	 * @return string
 	 * @since   8.0.0
 	 * @access  public
+	 *
+	 * @return string
 	 */
 	public function get_service_id() {
 		$service_details = $this->service;
@@ -309,9 +311,9 @@ abstract class Rop_Services_Abstract {
 	/**
 	 * Method to request a token from api.
 	 *
-	 * @return mixed
 	 * @since   8.0.0
 	 * @access  protected
+	 * @return mixed
 	 */
 	protected abstract function request_api_token();
 
@@ -486,11 +488,12 @@ abstract class Rop_Services_Abstract {
 	/**
 	 * Gets the appropriate documentation for errors in log.
 	 *
+	 * @since   8.2.3
+	 * @access  public
+	 *
 	 * @param string $response the API error response.
 	 *
 	 * @return string The document link.
-	 * @since   8.2.3
-	 * @access  public
 	 */
 	protected function rop_get_error_docs( $response ) {
 		if ( is_array( $response ) || is_object( $response ) ) {
@@ -508,9 +511,17 @@ abstract class Rop_Services_Abstract {
 				'message' => __( 'You need to put your Facebook app through review.', 'tweet-old-post' ),
 				'link'    => 'https://is.gd/fix_manage_pages_error',
 			),
+			'The session has been invalidated because the user changed their password' => array(
+				'message' => __( 'You need to reconnect your Facebook account.', 'tweet-old-post' ),
+				'link'    => 'https://is.gd/fix_fb_invalid_session',
+			),
 			'Invalid parameter'                                          => array(
 				'message' => 'There might be an issue with link creations on your website.',
 				'link'    => 'https://is.gd/fix_link_issue',
+			),
+			'The \'manage_pages\' permission must be granted before impersonating' => array(
+				'message' => 'You might need to reconnect your Facebook account. ',
+				'link'    => 'https://is.gd/fix_impersonating_error',
 			),
 
 			// Twitter errors
@@ -536,10 +547,13 @@ abstract class Rop_Services_Abstract {
 				'message' => 'There might be an issue with link creations on your website.',
 				'link'    => 'https://is.gd/fix_link_issue',
 			),
-
 			'[ unauthorized_scope_error ] Scope "r_organization_social"' => array(
 				'message' => 'You might need to reconnect your LinkedIn account. ',
 				'link'    => 'https://is.gd/linkedin_scope_error',
+			),
+			'The token used in the request has expired' => array(
+				'message' => 'You need to reconnect your LinkedIn account. ',
+				'link'    => 'https://is.gd/refresh_linkedin_token',
 			),
 
 			// Pinterest errors
@@ -684,10 +698,11 @@ abstract class Rop_Services_Abstract {
 	/**
 	 * Converts image into base_64 code from given local path
 	 *
+	 * @since 8.5.0
+	 *
 	 * @param string $image_path - Full local image path to uploads folder.
 	 *
 	 * @return string
-	 * @since 8.5.0
 	 */
 	protected function convert_image_to_base64( $image_path = '' ) {
 		$opened_file = fopen( $image_path, 'r' );
@@ -716,8 +731,9 @@ abstract class Rop_Services_Abstract {
 	 *
 	 * @param string $file_path string with filepath or url.
 	 *
-	 * @return boolean
 	 * @since 8.5.0
+	 *
+	 * @return boolean
 	 */
 	protected function is_remote_file( $file_path = '' ) {
 		return preg_match( '/^(https?|ftp):\/\/.*/', $file_path ) === 1;
