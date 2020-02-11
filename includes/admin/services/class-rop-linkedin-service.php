@@ -340,9 +340,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		// only new installs can connect company accounts because they will have the organization scope
 		if ( $this->rop_show_li_app_btn() ) {
 			try {
-
-				$admined_linkedin_pages = $this->api->api(
 				// 'organizationalEntityAcls?q=roleAssignee&role=ADMINISTRATOR&projection=(elements*(organizationalTarget~(localizedName,vanityName,logoV2)))',
+				$admined_linkedin_pages = $this->api->api(
 					'organizationalEntityAcls?q=roleAssignee&role=ADMINISTRATOR&state=APPROVED',
 					array(),
 					'GET'
@@ -382,8 +381,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		foreach ( $all_organization_urns as $organization_urn ) {
 
 			try {
-				$company = $this->api->api(
 				// 'organizationalEntityAcls?q=roleAssignee&role=ADMINISTRATOR&projection=(elements*(organizationalTarget~(localizedName,vanityName,logoV2)))',
+				$company = $this->api->api(
 					'organizations/' . $organization_urn,
 					array(),
 					'GET'
