@@ -498,9 +498,17 @@ abstract class Rop_Services_Abstract {
 				'message' => __( 'You need to put your Facebook app through review.', 'tweet-old-post' ),
 				'link'    => 'https://is.gd/fix_manage_pages_error',
 			),
+			'The session has been invalidated because the user changed their password' => array(
+				'message' => __( 'You need to reconnect your Facebook account.', 'tweet-old-post' ),
+				'link'    => 'https://is.gd/fix_fb_invalid_session',
+			),
 			'Invalid parameter'                                                           => array(
 				'message' => 'There might be an issue with link creations on your website.',
 				'link'    => 'https://is.gd/fix_link_issue',
+			),
+			'The \'manage_pages\' permission must be granted before impersonating' => array(
+				'message' => 'You might need to reconnect your Facebook account. ',
+				'link'    => 'https://is.gd/fix_impersonating_error',
 			),
 
 			// Twitter errors
@@ -526,10 +534,13 @@ abstract class Rop_Services_Abstract {
 				'message' => 'There might be an issue with link creations on your website.',
 				'link'    => 'https://is.gd/fix_link_issue',
 			),
-
 			'[ unauthorized_scope_error ] Scope "r_organization_social"' => array(
 				'message' => 'You might need to reconnect your LinkedIn account. ',
 				'link'    => 'https://is.gd/linkedin_scope_error',
+			),
+			'The token used in the request has expired' => array(
+				'message' => 'You need to reconnect your LinkedIn account. ',
+				'link'    => 'https://is.gd/refresh_linkedin_token',
 			),
 
 			// Pinterest errors

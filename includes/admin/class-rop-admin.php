@@ -249,7 +249,7 @@ class Rop_Admin {
 		if ( empty( $page ) ) {
 			return;
 		}
-
+		wp_enqueue_media();
 		wp_register_script( $this->plugin_name . '-dashboard', ROP_LITE_URL . 'assets/js/build/dashboard' . ( ( ROP_DEBUG ) ? '' : '.min' ) . '.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
 		wp_register_script( $this->plugin_name . '-exclude', ROP_LITE_URL . 'assets/js/build/exclude' . ( ( ROP_DEBUG ) ? '' : '.min' ) . '.js', array(), ( ROP_DEBUG ) ? time() : $this->version, false );
 
@@ -680,6 +680,10 @@ class Rop_Admin {
 			return;
 		}
 
+		if ( get_post_status( $post_id ) !== 'publish' ) {
+			return;
+		}
+
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return;
 		}
@@ -808,32 +812,6 @@ class Rop_Admin {
 					$logger->alert_error( $error_message . ' Error: ' . $exception->getTrace() );
 				}
 			}
-		}
-	}
-
-	/**
-	 * The publish now feature notice message
-	 *
-	 * @since   8.2.0
-	 * @access  public
-	 */
-	public function publish_now_notice() {
-		$user_id = get_current_user_id();
-		if ( ! get_user_meta( $user_id, 'rop_publish_now_notice_dismissed' ) ) {
-			echo '<div class="notice notice-info"><p>' . sprintf( __( '%1$sRevive Old Posts Update:%2$s You can now share posts on publish to your social networks in the free version of %1$sRevive Old Posts%2$s! This can help with Facebook App reviews. %3$sLearn more here.%4$s', 'tweet-old-post' ), '<strong>', '</strong>', '<a href="https://docs.revive.social/article/926-how-to-go-through-the-facebook-review-process" target="_blank">', '</a>' ) . '</p><p><a href="?publish_now_notice_dismissed">' . __( 'Dismiss', 'tweet-old-post' ) . '</a></p></div>';
-		}
-	}
-
-	/**
-	 * The publish now feature notice dismissal
-	 *
-	 * @since   8.2.0
-	 * @access  public
-	 */
-	public function publish_now_notice_dismissed() {
-		$user_id = get_current_user_id();
-		if ( isset( $_GET['publish_now_notice_dismissed'] ) ) {
-			add_user_meta( $user_id, 'rop_publish_now_notice_dismissed', 'true', true );
 		}
 	}
 
