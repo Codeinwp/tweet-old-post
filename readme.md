@@ -254,6 +254,15 @@ http://revive.social/plugins/revive-old-post
 
 
 ## Changelog ##
+### 8.5.3 - 2020-02-13  ###
+
+* Fix PRO: Fixed an issue where custom images could not be uploaded from the share queue. 
+* Fix PRO: Fixed an issue where it would not be possible to activate some LinkedIn accounts due to their LinkedIn ID format. 
+* Fix: Strip Divi shortcodes that are created by the Divi theme before the content is shared.
+* Fix: Share immediately details were being saved in the DB for posts that were still drafts.
+* Change: Optimized text for some log error messages and introduced known error fixes for a few others.
+
+
 ### 8.5.2 - 2019-12-31  ###
 
 * New PRO: Share posts that have been scheduled for future publication by WordPress when their status change from "Scheduled" to "Publish" [Learn more](https://docs.revive.social/article/1194-share-scheduled-posts-to-social-media-on-publish-with-revive-old-posts)
