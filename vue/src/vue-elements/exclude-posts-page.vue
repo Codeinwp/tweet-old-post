@@ -4,7 +4,7 @@
             <div class="columns py-2" :class="'rop-control-container-'+isPro">
                 <div class="column col-12 col-sm-12 vertical-align rop-control">
                     <b>{{labels.post_types_title}}</b>
-                    <p class="text-gray">{{labels.post_types_desc}}</p>
+                    <p class="text-gray"> {{labels.filter_by_post_types_desc}}</p>
                 </div>
                 <div class="column col-12 col-sm-12 vertical-align text-left rop-control">
                     <multiple-select :options="postTypes" :disabled="isPro"
@@ -22,7 +22,7 @@
             <div class="columns py-2">
                 <div class="column col-12 col-sm-12 vertical-align">
                     <b>{{labels.taxonomies_title}}</b>
-                    <p class="text-gray">{{labels.taxonomies_desc}}</p>
+                    <p class="text-gray"> {{labels.filter_by_taxonomies_desc}}</p>
                 </div>
                 <div class="column col-12 col-sm-12 vertical-align text-left">
                     <div class="input-group">
