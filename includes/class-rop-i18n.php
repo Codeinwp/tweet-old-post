@@ -138,9 +138,10 @@ class Rop_I18n {
 					'tweet-old-post'
 				),
 				'post_types_title'            => __( 'Post types', 'tweet-old-post' ),
-				'post_types_taxonomy_limit' => sprintf( __( 'Upgrade to Pro to select more than four taxonomies %1$shere%2$s.', 'tweet-old-post' ), '<a href="https://revive.social/" target="_blank">', '</a>' ),
+				'post_types_taxonomy_limit' => sprintf( __( 'Upgrade to pro version to select more than 4 taxonomies. You can upgrade %1$shere%2$s.', 'tweet-old-post' ), '<a href="https://revive.social/plugins/revive-old-post/" target="_blank">', '</a>' ),
 				'post_types_attachament_info' => sprintf( __( 'You need to select the media files which you want to share, find out more information %1$shere%2$s.', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/934-how-to-use-revive-old-post-media-sharing-feature" target="_blank">', '</a>' ),
 				'post_types_desc'             => __( 'Which post types should Revive Old Posts share? <a href="https://docs.revive.social/article/968-how-to-share-different-wordpress-post-types-to-social-media-w-revive-old-posts" target="_blank">Learn more</a>.', 'tweet-old-post' ),
+				'filter_by_post_types_desc'   => __( 'Filter posts list by Post Type', 'tweet-old-post' ),
 				'post_types_upsell'           => __(
 					'Selecting custom post types is available in the pro
 							version.',
@@ -152,6 +153,7 @@ class Rop_I18n {
 							posts. <a href="https://docs.revive.social/article/457-how-to-exclude-taxonomies-in-revive-old-post" target="_blank">Learn more</a>.',
 					'tweet-old-post'
 				),
+				'filter_by_taxonomies_desc'             => __( 'Filter posts list by Taxonomy', 'tweet-old-post' ),
 				'taxonomies_exclude'          => __( 'Exclude?', 'tweet-old-post' ),
 				'posts_title'                 => __( 'Posts', 'tweet-old-post' ),
 				'posts_desc'                  => __( 'Posts excluded from sharing, filtered based on previous selections.', 'tweet-old-post' ),
