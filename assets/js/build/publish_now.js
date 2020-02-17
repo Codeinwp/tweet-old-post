@@ -3839,16 +3839,17 @@ module.exports = {
 	created: function created() {},
 
 	computed: {
-		share_on_update_enabled: function share_on_update_enabled() {
-			return this.$store.state.publish_now.action === true;
-		}
+		/*share_on_update_enabled: function () {
+  	return this.$store.state.publish_now.action == true;
+  }*/
 	},
 	data: function data() {
 
 		return {
 			labels: this.$store.state.labels.publish_now,
 			accounts: this.$store.state.publish_now.accounts,
-			active: this.$store.state.publish_now.active
+			active: this.$store.state.publish_now.active,
+			share_on_update_enabled: this.$store.state.publish_now.action
 		};
 	},
 	components: {
