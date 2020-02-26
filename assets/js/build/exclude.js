@@ -566,7 +566,7 @@ process.umask = function() { return 0; };
 /* 4 */
 /***/ (function(module, exports) {
 
-var core = module.exports = { version: '2.6.11' };
+var core = module.exports = { version: '2.6.9' };
 if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 
@@ -606,7 +606,7 @@ $exports.store = store;
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* WEBPACK VAR INJECTION */(function(process, global, setImmediate) {/*!
- * Vue.js v2.6.11
+ * Vue.js v2.6.10
  * (c) 2014-2019 Evan You
  * Released under the MIT License.
  */
@@ -2576,7 +2576,7 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
   isUsingMicroTask = true;
 } else if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) {
   // Fallback to setImmediate.
-  // Technically it leverages the (macro) task queue,
+  // Techinically it leverages the (macro) task queue,
   // but it is still a better choice than setTimeout.
   timerFunc = function () {
     setImmediate(flushCallbacks);
@@ -2665,7 +2665,7 @@ if (process.env.NODE_ENV !== 'production') {
     warn(
       "Property \"" + key + "\" must be accessed with \"$data." + key + "\" because " +
       'properties starting with "$" or "_" are not proxied in the Vue instance to ' +
-      'prevent conflicts with Vue internals. ' +
+      'prevent conflicts with Vue internals' +
       'See: https://vuejs.org/v2/api/#data',
       target
     );
@@ -3527,7 +3527,7 @@ function bindDynamicKeys (baseObj, values) {
     if (typeof key === 'string' && key) {
       baseObj[values[i]] = values[i + 1];
     } else if (process.env.NODE_ENV !== 'production' && key !== '' && key !== null) {
-      // null is a special value for explicitly removing a binding
+      // null is a speical value for explicitly removing a binding
       warn(
         ("Invalid value for dynamic directive argument (expected string or null): " + key),
         this
@@ -4023,12 +4023,6 @@ function _createElement (
     ns = (context.$vnode && context.$vnode.ns) || config.getTagNamespace(tag);
     if (config.isReservedTag(tag)) {
       // platform built-in elements
-      if (process.env.NODE_ENV !== 'production' && isDef(data) && isDef(data.nativeOn)) {
-        warn(
-          ("The .native modifier for v-on is only valid on components but it was used on <" + tag + ">."),
-          context
-        );
-      }
       vnode = new VNode(
         config.parsePlatformTagName(tag), data, children,
         undefined, undefined, context
@@ -4157,7 +4151,7 @@ function renderMixin (Vue) {
     // render self
     var vnode;
     try {
-      // There's no need to maintain a stack because all render fns are called
+      // There's no need to maintain a stack becaues all render fns are called
       // separately from one another. Nested component's render fns are called
       // when parent component is patched.
       currentRenderingInstance = vm;
@@ -6066,7 +6060,7 @@ Object.defineProperty(Vue, 'FunctionalRenderContext', {
   value: FunctionalRenderContext
 });
 
-Vue.version = '2.6.11';
+Vue.version = '2.6.10';
 
 /*  */
 
@@ -6739,7 +6733,7 @@ function createPatchFunction (backend) {
     }
   }
 
-  function removeVnodes (vnodes, startIdx, endIdx) {
+  function removeVnodes (parentElm, vnodes, startIdx, endIdx) {
     for (; startIdx <= endIdx; ++startIdx) {
       var ch = vnodes[startIdx];
       if (isDef(ch)) {
@@ -6850,7 +6844,7 @@ function createPatchFunction (backend) {
       refElm = isUndef(newCh[newEndIdx + 1]) ? null : newCh[newEndIdx + 1].elm;
       addVnodes(parentElm, refElm, newCh, newStartIdx, newEndIdx, insertedVnodeQueue);
     } else if (newStartIdx > newEndIdx) {
-      removeVnodes(oldCh, oldStartIdx, oldEndIdx);
+      removeVnodes(parentElm, oldCh, oldStartIdx, oldEndIdx);
     }
   }
 
@@ -6942,7 +6936,7 @@ function createPatchFunction (backend) {
         if (isDef(oldVnode.text)) { nodeOps.setTextContent(elm, ''); }
         addVnodes(elm, null, ch, 0, ch.length - 1, insertedVnodeQueue);
       } else if (isDef(oldCh)) {
-        removeVnodes(oldCh, 0, oldCh.length - 1);
+        removeVnodes(elm, oldCh, 0, oldCh.length - 1);
       } else if (isDef(oldVnode.text)) {
         nodeOps.setTextContent(elm, '');
       }
@@ -7173,7 +7167,7 @@ function createPatchFunction (backend) {
 
         // destroy old node
         if (isDef(parentElm)) {
-          removeVnodes([oldVnode], 0, 0);
+          removeVnodes(parentElm, [oldVnode], 0, 0);
         } else if (isDef(oldVnode.tag)) {
           invokeDestroyHook(oldVnode);
         }
@@ -9885,7 +9879,7 @@ var startTagOpen = new RegExp(("^<" + qnameCapture));
 var startTagClose = /^\s*(\/?)>/;
 var endTag = new RegExp(("^<\\/" + qnameCapture + "[^>]*>"));
 var doctype = /^<!DOCTYPE [^>]+>/i;
-// #7298: escape - to avoid being passed as HTML comment when inlined in page
+// #7298: escape - to avoid being pased as HTML comment when inlined in page
 var comment = /^<!\--/;
 var conditionalComment = /^<!\[/;
 
@@ -10171,7 +10165,7 @@ function parseHTML (html, options) {
 /*  */
 
 var onRE = /^@|^v-on:/;
-var dirRE = /^v-|^@|^:|^#/;
+var dirRE = /^v-|^@|^:/;
 var forAliasRE = /([\s\S]*?)\s+(?:in|of)\s+([\s\S]*)/;
 var forIteratorRE = /,([^,\}\]]*)(?:,([^,\}\]]*))?$/;
 var stripParensRE = /^\(|\)$/g;
@@ -10795,7 +10789,7 @@ function processSlotContent (el) {
           if (el.parent && !maybeComponent(el.parent)) {
             warn$2(
               "<template v-slot> can only appear at the root level inside " +
-              "the receiving component",
+              "the receiving the component",
               el
             );
           }
@@ -11360,7 +11354,7 @@ function isDirectChildOfTemplateFor (node) {
 
 /*  */
 
-var fnExpRE = /^([\w$_]+|\([^)]*?\))\s*=>|^function(?:\s+[\w$]+)?\s*\(/;
+var fnExpRE = /^([\w$_]+|\([^)]*?\))\s*=>|^function\s*(?:[\w$]+)?\s*\(/;
 var fnInvokeRE = /\([^)]*?\);*$/;
 var simplePathRE = /^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['[^']*?']|\["[^"]*?"]|\[\d+]|\[[A-Za-z_$][\w$]*])*$/;
 
@@ -12132,8 +12126,6 @@ function checkNode (node, warn) {
           var range = node.rawAttrsMap[name];
           if (name === 'v-for') {
             checkFor(node, ("v-for=\"" + value + "\""), warn, range);
-          } else if (name === 'v-slot' || name[0] === '#') {
-            checkFunctionParameterExpression(value, (name + "=\"" + value + "\""), warn, range);
           } else if (onRE.test(name)) {
             checkEvent(value, (name + "=\"" + value + "\""), warn, range);
           } else {
@@ -12153,9 +12145,9 @@ function checkNode (node, warn) {
 }
 
 function checkEvent (exp, text, warn, range) {
-  var stripped = exp.replace(stripStringRE, '');
-  var keywordMatch = stripped.match(unaryOperatorsRE);
-  if (keywordMatch && stripped.charAt(keywordMatch.index - 1) !== '$') {
+  var stipped = exp.replace(stripStringRE, '');
+  var keywordMatch = stipped.match(unaryOperatorsRE);
+  if (keywordMatch && stipped.charAt(keywordMatch.index - 1) !== '$') {
     warn(
       "avoid using JavaScript unary operator as property name: " +
       "\"" + (keywordMatch[0]) + "\" in expression " + (text.trim()),
@@ -12207,19 +12199,6 @@ function checkExpression (exp, text, warn, range) {
         range
       );
     }
-  }
-}
-
-function checkFunctionParameterExpression (exp, text, warn, range) {
-  try {
-    new Function(exp, '');
-  } catch (e) {
-    warn(
-      "invalid function parameter expression: " + (e.message) + " in\n\n" +
-      "    " + exp + "\n\n" +
-      "  Raw expression: " + (text.trim()) + "\n",
-      range
-    );
   }
 }
 
@@ -16670,7 +16649,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/reusables/multiple-select.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/multiple-select.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -17140,7 +17119,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/upsell-sidebar.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/upsell-sidebar.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -17164,8 +17143,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-e57ad328&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-e57ad328&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-87db7594&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-87db7594&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -17183,7 +17162,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop-upsell-box[_v-e57ad328]{\n\t\tmargin-top:20px;\n\t}\n\t#rop_core .rop-upsell-business-card[_v-e57ad328],\n\t#rop_core .rop-upsell-pro-card[_v-e57ad328] {\n\t\tpadding: 0;\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop-upsell-box[_v-87db7594]{\n\t\tmargin-top:20px;\n\t}\n\t#rop_core .rop-upsell-business-card[_v-87db7594],\n\t#rop_core .rop-upsell-pro-card[_v-87db7594] {\n\t\tpadding: 0;\n\t}\n", ""]);
 
 // exports
 
@@ -17240,7 +17219,7 @@ module.exports = {
 /* 81 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div id=\"rop-upsell-box\" _v-e57ad328=\"\">\n\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \" _v-e57ad328=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-e57ad328=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_pro_upsell\" :alt=\"labels.upgrade_pro_cta\" _v-e57ad328=\"\">\n\t\t\t</a>\n\t\t</div>\n\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1\" _v-e57ad328=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-e57ad328=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_business_upsell\" :alt=\"labels.upgrade_biz_cta\" _v-e57ad328=\"\">\n\t\t\t</a>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div id=\"rop-upsell-box\" _v-87db7594=\"\">\n\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \" _v-87db7594=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-87db7594=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_pro_upsell\" :alt=\"labels.upgrade_pro_cta\" _v-87db7594=\"\">\n\t\t\t</a>\n\t\t</div>\n\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1\" _v-87db7594=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-87db7594=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_business_upsell\" :alt=\"labels.upgrade_biz_cta\" _v-87db7594=\"\">\n\t\t\t</a>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 82 */,
@@ -17513,7 +17492,7 @@ window.addEventListener('load', function () {
 var __vue_script__, __vue_template__
 __webpack_require__(314)
 __vue_script__ = __webpack_require__(316)
-__vue_template__ = __webpack_require__(317)
+__vue_template__ = __webpack_require__(322)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -17521,7 +17500,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/exclude-posts-page.vue"
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/exclude-posts-page.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -17545,8 +17524,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-df8172e8&file=exclude-posts-page.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./exclude-posts-page.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-df8172e8&file=exclude-posts-page.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./exclude-posts-page.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5ea68056&file=exclude-posts-page.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./exclude-posts-page.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5ea68056&file=exclude-posts-page.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./exclude-posts-page.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -17564,7 +17543,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n    #rop-sidebar-selector[_v-df8172e8] {\n        border: 1px solid #e5e5e5;\n        background: #fff;\n    }\n\n    #rop-posts-listing .rop-post-item td[_v-df8172e8] {\n        position: relative;\n    }\n\n    #rop-posts-table[_v-df8172e8] {\n        margin-top: 20px;\n    }\n\n    #rop-posts-listing .rop-post-item:hover button.rop-exclude-post[_v-df8172e8] {\n        display: block;\n    }\n\n    #rop-posts-listing .rop-post-item td button.rop-exclude-post[_v-df8172e8] {\n        position: absolute;\n        top: 5px;\n        right: 10px;\n        display: none;\n        padding: 0px 20px;\n    }\n\n    .rop-post-true[_v-df8172e8] {\n        opacity: 0.8;\n        background-color: #F6DBDA;\n\n    }\n\n    .rop-load-more-posts[_v-df8172e8] {\n        text-align: center;\n    }\n", ""]);
+exports.push([module.i, "\n    #rop-sidebar-selector[_v-5ea68056] {\n        border: 1px solid #e5e5e5;\n        background: #fff;\n    }\n\n    #rop-posts-listing .rop-post-item td[_v-5ea68056] {\n        position: relative;\n    }\n\n    #rop-posts-table[_v-5ea68056] {\n        margin-top: 20px;\n    }\n\n    #rop-posts-listing .rop-post-item:hover button.rop-exclude-post[_v-5ea68056] {\n        display: block;\n    }\n\n    #rop-posts-listing .rop-post-item td button.rop-exclude-post[_v-5ea68056] {\n        position: absolute;\n        top: 5px;\n        right: 10px;\n        display: none;\n        padding: 0px 20px;\n    }\n\n    .rop-post-true[_v-5ea68056] {\n        opacity: 0.8;\n        background-color: #F6DBDA;\n\n    }\n\n    .rop-load-more-posts[_v-5ea68056] {\n        text-align: center;\n    }\n", ""]);
 
 // exports
 
@@ -17584,298 +17563,19 @@ var _upsellSidebar = __webpack_require__(77);
 
 var _upsellSidebar2 = _interopRequireDefault(_upsellSidebar);
 
+var _popover = __webpack_require__(317);
+
+var _popover2 = _interopRequireDefault(_popover);
+
 var _vue = __webpack_require__(7);
 
 var _vue2 = _interopRequireDefault(_vue);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-module.exports = {
-    name: 'exclude-posts-page',
-    data: function data() {
-        return {
-            searchQuery: '',
-            show_excluded: false,
-            postTimeout: '',
-            paged: 1,
-            has_pages: true,
-            labels: this.$store.state.labels.settings,
-            upsell_link: ropApiSettings.upsell_link,
-            is_loading: false,
-            is_loading_single: false,
-            is_taxonomy_message: false
-        };
-    },
-    watch: {
-        searchQuery: function searchQuery(val) {
-            this.searchUpdate(val);
-        },
-        postsAvailable: function postsAvailable(val) {
-            this.has_pages = this.postsAvailable.length % 100 === 0;
-        }
-    },
-    computed: {
-        generalSettings: function generalSettings() {
-            return this.$store.state.generalSettings;
-        },
-        isPro: function isPro() {
-            return this.$store.state.licence >= 1;
-        },
-        isTaxLimit: function isTaxLimit() {
+// Vue.use(Tooltip);
 
-            if (ropApiSettings.tax_apply_limit > 0) {
-                return true;
-            }
-            return false;
-        },
-        postTypes: function postTypes() {
-            return this.$store.state.generalSettings.available_post_types;
-        },
-        taxonomies: function taxonomies() {
-            this.requestPostUpdate();
-            return this.$store.state.generalSettings.available_taxonomies;
-        },
-        postsAvailable: function postsAvailable() {
-            return this.$store.state.generalSettings.available_posts;
-        }
-    },
-    mounted: function mounted() {
-        this.$log.info('In General Settings state ');
-        this.getGeneralSettings();
-    },
-    methods: {
-        displayProMessage: function displayProMessage(data) {
-
-            if (!this.isPro && data >= 4) {
-                if (true === this.isTaxLimit) {
-                    this.is_taxonomy_message = true;
-                } else {
-                    this.is_taxonomy_message = false;
-                }
-            }
-        },
-        excludeSinglePost: function excludeSinglePost(post_id, state) {
-            var _this = this;
-
-            this.$log.info('Excluding post ', post_id, state);
-            this.is_loading_single = true;
-            this.$store.dispatch('fetchAJAXPromise', {
-                req: 'exclude_post',
-                data: {
-                    post_id: post_id,
-                    exclude: state
-                }
-            }).then(function (response) {
-                _this.is_loading_single = false;
-                var findex = false;
-                var fdata = {};
-                var exists = _this.postsAvailable.some(function (post, index) {
-                    if (post.value === post_id) {
-                        findex = index;
-                        post.selected = true;
-                        fdata = post;
-                    }
-                    return post.value === post_id;
-                });
-                if (findex !== false) {
-                    if (state) {
-                        _vue2.default.delete(_this.postsAvailable, findex);
-                    } else {
-                        _vue2.default.set(_this.postsAvailable, findex, fdata);
-                    }
-                }
-                _this.$log.info('Excluding post ', findex);
-                _this.$log.debug('Succesfully fetched.');
-            }, function (error) {
-                _this.is_loading_single = false;
-                _this.$log.error('Can not exclude post settings.');
-            });
-        },
-        excludePostsBatch: function excludePostsBatch() {
-            var _this2 = this;
-
-            this.$log.info('Excluding posts batch', this.searchQuery);
-            this.is_loading = true;
-
-            var postTypesSelected = this.$store.state.generalSettings.selected_post_types;
-            var taxonomiesSelected = this.$store.state.generalSettings.selected_taxonomies;
-            this.$store.dispatch('fetchAJAXPromise', {
-                req: 'exclude_post_batch',
-                data: {
-                    post_types: postTypesSelected,
-                    search: this.searchQuery,
-                    taxonomies: taxonomiesSelected,
-                    exclude: this.generalSettings.exclude_taxonomies
-                }
-            }).then(function (response) {
-                _this2.is_loading = false;
-                _this2.postsAvailable.map(function (post, index) {
-                    post.selected = true;
-                });
-                _this2.$log.debug('Succesfully excluded based on key.', _this2.searchQuery);
-            }, function (error) {
-                _this2.is_loading = false;
-                _this2.$log.error('Can not exclude in batch.');
-            });
-        },
-        getGeneralSettings: function getGeneralSettings() {
-            var _this3 = this;
-
-            if (this.$store.state.generalSettings.length === 0) {
-                this.is_loading = true;
-                this.$log.info('Fetching general settings.');
-                this.$store.dispatch('fetchAJAXPromise', { req: 'get_general_settings' }).then(function (response) {
-                    _this3.is_loading = false;
-                    _this3.$log.debug('Succesfully fetched.');
-                }, function (error) {
-                    _this3.is_loading = false;
-                    _this3.$log.error('Can not fetch the general settings.');
-                });
-            }
-        },
-        searchUpdate: function searchUpdate(newQuery) {
-            this.searchQuery = newQuery;
-            this.requestPostUpdate();
-        },
-        updatedPostTypes: function updatedPostTypes(data) {
-            var postTypes = [];
-            for (var index in data) {
-                postTypes.push(data[index].value);
-            }
-
-            this.$store.commit('updateState', { stateData: data, requestName: 'update_selected_post_types' });
-            this.$store.dispatch('fetchAJAX', { req: 'get_taxonomies', data: { post_types: postTypes } });
-            this.requestPostUpdate();
-        },
-        updatedTaxonomies: function updatedTaxonomies(data) {
-            var taxonomies = [];
-            for (var index in data) {
-                taxonomies.push(data[index].value);
-            }
-            this.$store.commit('updateState', { stateData: data, requestName: 'update_selected_taxonomies' });
-            this.requestPostUpdate();
-        },
-        excludeTaxonomiesChange: function excludeTaxonomiesChange() {
-            this.requestPostUpdate();
-        },
-        excludePostsChange: function excludePostsChange() {
-            this.requestPostUpdate();
-        },
-        doPostUpdate: function doPostUpdate() {
-            var _this4 = this;
-
-            var new_page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-
-            if (new_page) {
-                this.paged = 1;
-                this.is_loading = true;
-            } else {
-                this.is_loading_single = true;
-            }
-            var postTypesSelected = this.$store.state.generalSettings.selected_post_types;
-            var taxonomiesSelected = this.$store.state.generalSettings.selected_taxonomies;
-
-            this.$log.info('Sending request for loading posts..');
-            this.$store.dispatch('fetchAJAXPromise', {
-                req: 'get_posts',
-                data: {
-                    post_types: postTypesSelected,
-                    search_query: this.searchQuery,
-                    show_excluded: this.show_excluded,
-                    taxonomies: taxonomiesSelected,
-                    page: this.paged,
-                    exclude: this.generalSettings.exclude_taxonomies
-                }
-            }).then(function (response) {
-                _this4.is_loading = false;
-                _this4.is_loading_single = false;
-                _this4.$log.info('Successfully loaded psots.');
-            }, function (error) {
-                _this4.is_loading = false;
-                _this4.is_loading_single = false;
-                _vue2.default.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
-            });
-        },
-        requestPostUpdate: function requestPostUpdate() {
-            if (this.postTimeout !== '') {
-                clearTimeout(this.postTimeout);
-            }
-            this.postTimeout = setTimeout(this.doPostUpdate, 500);
-        },
-        loadMorePosts: function loadMorePosts() {
-            this.paged++;
-            this.doPostUpdate(false);
-        },
-        saveGeneralSettings: function saveGeneralSettings() {
-            var _this5 = this;
-
-            var postTypesSelected = this.$store.state.generalSettings.selected_post_types;
-            var taxonomiesSelected = this.$store.state.generalSettings.selected_taxonomies;
-            var excludeTaxonomies = this.generalSettings.exclude_taxonomies;
-            this.is_loading = true;
-            this.$log.info('Sending request for saving general settings..');
-            this.$store.dispatch('fetchAJAXPromise', {
-                req: 'save_general_settings',
-                updateState: false,
-                data: {
-                    selected_post_types: postTypesSelected,
-                    selected_taxonomies: taxonomiesSelected,
-                    exclude_taxonomies: excludeTaxonomies
-                }
-            }).then(function (response) {
-                _this5.is_loading = false;
-                _this5.$log.info('Successfully saved general settings.');
-            }, function (error) {
-
-                _this5.$log.error('Successfully saved general settings.');
-                _this5.is_loading = false;
-                _vue2.default.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
-            });
-        }
-    },
-    components: {
-        MultipleSelect: _multipleSelect2.default, UpsellSidebar: _upsellSidebar2.default
-    }
-    // </script>
-    // <style scoped>
-    //     #rop-sidebar-selector {
-    //         border: 1px solid #e5e5e5;
-    //         background: #fff;
-    //     }
-    //
-    //     #rop-posts-listing .rop-post-item td {
-    //         position: relative;
-    //     }
-    //
-    //     #rop-posts-table {
-    //         margin-top: 20px;
-    //     }
-    //
-    //     #rop-posts-listing .rop-post-item:hover button.rop-exclude-post {
-    //         display: block;
-    //     }
-    //
-    //     #rop-posts-listing .rop-post-item td button.rop-exclude-post {
-    //         position: absolute;
-    //         top: 5px;
-    //         right: 10px;
-    //         display: none;
-    //         padding: 0px 20px;
-    //     }
-    //
-    //     .rop-post-true {
-    //         opacity: 0.8;
-    //         background-color: #F6DBDA;
-    //
-    //     }
-    //
-    //     .rop-load-more-posts {
-    //         text-align: center;
-    //     }
-    // </style>
-    //
-
-}; // <template>
+// <template>
 //     <div id="rop_core" class="columns ">
 //         <div id="rop-sidebar-selector" class="column col-3   col-xl-5 col-lg-5 col-md-6 col-sm-6 col-xs-12  pull-right">
 //             <div class="columns py-2" :class="'rop-control-container-'+isPro">
@@ -17937,6 +17637,8 @@ module.exports = {
 //                             <i class="form-icon"></i>{{labels.search_posts_show_excluded}}
 //                         </label>
 //                     </div>
+//
+//                     <p class="text-primary rop-post-type-badge" v-if="apply_limit_exclude" v-html="labels.post_types_exclude_limit"></p>
 //                 </div>
 //                 <div class="column col-12  px-2" v-if="postsAvailable">
 //                     <div v-if="postsAvailable.length === 0 && !is_loading">
@@ -17946,13 +17648,20 @@ module.exports = {
 //                         <table id="rop-posts-table" class="table table-striped table-hover" v-if=" ! is_loading">
 //                             <tr v-for="(post,index ) in postsAvailable" class="rop-post-item">
 //                                 <td :class="'rop-post-' + post.selected">{{post.name}}
-//                                     <button class="btn btn-error rop-exclude-post"
-//                                             @click="excludeSinglePost(post.value,post.selected)">
-//                                         <i class="fa" :class="'fa-' + (post.selected ? 'plus' : 'remove') "
-//                                            v-if="!is_loading_single"></i>
-//                                         <i class="fa fa-spinner fa-spin" v-else></i>
-//                                         <span v-html=" ( post.selected ? labels.include_single_post  : labels.exclude_single_post) "> </span>
-//                                     </button>
+//                                     <template>
+//                                         <tooltip placement="top-right" mode="hover" :is_show="apply_limit_exclude">
+//                                             <div slot="outlet">
+//                                                 <button class="btn btn-error rop-exclude-post"
+//                                                         @click="excludeSinglePost(post.value,post.selected)">
+//                                                     <i class="fa" :class="'fa-' + (post.selected ? 'plus' : 'remove') "
+//                                                        v-if="!is_loading_single"></i>
+//                                                     <i class="fa fa-spinner fa-spin" v-else></i>
+//                                                     <span v-html=" ( post.selected ? labels.include_single_post  : labels.exclude_single_post) "> </span>
+//                                                 </button>
+//                                             </div>
+//                                             <div slot="tooltip" v-html="labels.post_types_exclude_limit_tooltip"></div>
+//                                         </tooltip>
+//                                     </template>
 //                                 </td>
 //                             </tr>
 //                             <tr v-if="has_pages">
@@ -17976,12 +17685,753 @@ module.exports = {
 // </template>
 //
 // <script>
+module.exports = {
+	name: 'exclude-posts-page',
+	data: function data() {
+		return {
+			searchQuery: '',
+			show_excluded: false,
+			postTimeout: '',
+			paged: 1,
+			has_pages: true,
+			labels: this.$store.state.labels.settings,
+			upsell_link: ropApiSettings.upsell_link,
+			is_loading: false,
+			is_loading_single: false,
+			is_taxonomy_message: false,
+			limit_exclude_posts: 3,
+			posts_selected_currently: 0,
+			apply_limit_exclude: false
+		};
+	},
+	watch: {
+		searchQuery: function searchQuery(val) {
+			this.searchUpdate(val);
+		},
+		postsAvailable: function postsAvailable(val) {
+			this.has_pages = this.postsAvailable.length % 100 === 0;
+		}
+	},
+	computed: {
+		generalSettings: function generalSettings() {
+			return this.$store.state.generalSettings;
+		},
+		isPro: function isPro() {
+			return this.$store.state.licence >= 1;
+		},
+		isTaxLimit: function isTaxLimit() {
+
+			if (ropApiSettings.tax_apply_limit > 0) {
+				return true;
+			}
+			return false;
+		},
+		postTypes: function postTypes() {
+			return this.$store.state.generalSettings.available_post_types;
+		},
+		taxonomies: function taxonomies() {
+			this.requestPostUpdate();
+			return this.$store.state.generalSettings.available_taxonomies;
+		},
+		postsAvailable: function postsAvailable() {
+			return this.$store.state.generalSettings.available_posts;
+		},
+		apply_exclude_limit: function apply_exclude_limit() {
+			return ropApiSettings.exclude_apply_limit > 0;
+		}
+
+	},
+	mounted: function mounted() {
+		this.$log.info('In General Settings state ');
+		this.getGeneralSettings();
+	},
+	methods: {
+		calculate_limit: function calculate_limit(action) {
+			this.posts_selected_currently += action;
+			if (!this.isPro && this.apply_exclude_limit) {
+				if (this.posts_selected_currently >= this.limit_exclude_posts) {
+					this.apply_limit_exclude = true;
+				} else {
+					this.apply_limit_exclude = false;
+				}
+			}
+		},
+		displayProMessage: function displayProMessage(data) {
+
+			if (!this.isPro && data >= 4) {
+				if (true === this.isTaxLimit) {
+					this.is_taxonomy_message = true;
+				} else {
+					this.is_taxonomy_message = false;
+				}
+			}
+		},
+		excludeSinglePost: function excludeSinglePost(post_id, state) {
+			var _this = this;
+
+			if (false === state && this.apply_limit_exclude) {
+				//alert( this.$store.state.labels.settings.post_types_exclude_limit );
+				return false;
+			}
+
+			this.$log.info('Excluding post ', post_id, state);
+			this.is_loading_single = true;
+			this.$store.dispatch('fetchAJAXPromise', {
+				req: 'exclude_post',
+				data: {
+					post_id: post_id,
+					exclude: state
+				}
+			}).then(function (response) {
+				if (false === state) {
+					_this.calculate_limit(1);
+				} else {
+					_this.calculate_limit(-1);
+				}
+
+				_this.is_loading_single = false;
+				var findex = false;
+				var fdata = {};
+				var exists = _this.postsAvailable.some(function (post, index) {
+					if (post.value === post_id) {
+						findex = index;
+						post.selected = true;
+						fdata = post;
+					}
+					return post.value === post_id;
+				});
+				if (findex !== false) {
+					if (state) {
+						_vue2.default.delete(_this.postsAvailable, findex);
+					} else {
+						_vue2.default.set(_this.postsAvailable, findex, fdata);
+					}
+				}
+				_this.$log.info('Excluding post ', findex);
+				_this.$log.debug('Succesfully fetched.');
+			}, function (error) {
+				_this.is_loading_single = false;
+				_this.$log.error('Can not exclude post settings.');
+			});
+		},
+		excludePostsBatch: function excludePostsBatch() {
+			var _this2 = this;
+
+			this.$log.info('Excluding posts batch', this.searchQuery);
+			this.is_loading = true;
+
+			var postTypesSelected = this.$store.state.generalSettings.selected_post_types;
+			var taxonomiesSelected = this.$store.state.generalSettings.selected_taxonomies;
+			this.$store.dispatch('fetchAJAXPromise', {
+				req: 'exclude_post_batch',
+				data: {
+					post_types: postTypesSelected,
+					search: this.searchQuery,
+					taxonomies: taxonomiesSelected,
+					exclude: this.generalSettings.exclude_taxonomies
+				}
+			}).then(function (response) {
+				_this2.is_loading = false;
+				_this2.postsAvailable.map(function (post, index) {
+					post.selected = true;
+				});
+				_this2.$log.debug('Succesfully excluded based on key.', _this2.searchQuery);
+			}, function (error) {
+				_this2.is_loading = false;
+				_this2.$log.error('Can not exclude in batch.');
+			});
+		},
+		getGeneralSettings: function getGeneralSettings() {
+			var _this3 = this;
+
+			if (this.$store.state.generalSettings.length === 0) {
+				this.is_loading = true;
+				this.$log.info('Fetching general settings.');
+				this.$store.dispatch('fetchAJAXPromise', { req: 'get_general_settings' }).then(function (response) {
+					_this3.is_loading = false;
+					_this3.$log.debug('Succesfully fetched.');
+					_this3.calculate_limit(response.selected_posts.length);
+				}, function (error) {
+					_this3.is_loading = false;
+					_this3.$log.error('Can not fetch the general settings.');
+				});
+			}
+		},
+		searchUpdate: function searchUpdate(newQuery) {
+			this.searchQuery = newQuery;
+			this.requestPostUpdate();
+		},
+		updatedPostTypes: function updatedPostTypes(data) {
+			var postTypes = [];
+			for (var index in data) {
+				postTypes.push(data[index].value);
+			}
+
+			this.$store.commit('updateState', { stateData: data, requestName: 'update_selected_post_types' });
+			this.$store.dispatch('fetchAJAX', { req: 'get_taxonomies', data: { post_types: postTypes } });
+			this.requestPostUpdate();
+		},
+		updatedTaxonomies: function updatedTaxonomies(data) {
+			var taxonomies = [];
+			for (var index in data) {
+				taxonomies.push(data[index].value);
+			}
+			this.$store.commit('updateState', { stateData: data, requestName: 'update_selected_taxonomies' });
+			this.requestPostUpdate();
+		},
+		excludeTaxonomiesChange: function excludeTaxonomiesChange() {
+			this.requestPostUpdate();
+		},
+		excludePostsChange: function excludePostsChange() {
+			this.requestPostUpdate();
+		},
+		doPostUpdate: function doPostUpdate() {
+			var _this4 = this;
+
+			var new_page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+
+			if (new_page) {
+				this.paged = 1;
+				this.is_loading = true;
+			} else {
+				this.is_loading_single = true;
+			}
+			var postTypesSelected = this.$store.state.generalSettings.selected_post_types;
+			var taxonomiesSelected = this.$store.state.generalSettings.selected_taxonomies;
+
+			this.$log.info('Sending request for loading posts..');
+			this.$store.dispatch('fetchAJAXPromise', {
+				req: 'get_posts',
+				data: {
+					post_types: postTypesSelected,
+					search_query: this.searchQuery,
+					show_excluded: this.show_excluded,
+					taxonomies: taxonomiesSelected,
+					page: this.paged,
+					exclude: this.generalSettings.exclude_taxonomies
+				}
+			}).then(function (response) {
+				_this4.is_loading = false;
+				_this4.is_loading_single = false;
+				_this4.$log.info('Successfully loaded psots.');
+			}, function (error) {
+				_this4.is_loading = false;
+				_this4.is_loading_single = false;
+				_vue2.default.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+			});
+		},
+		requestPostUpdate: function requestPostUpdate() {
+			if (this.postTimeout !== '') {
+				clearTimeout(this.postTimeout);
+			}
+			this.postTimeout = setTimeout(this.doPostUpdate, 500);
+		},
+		loadMorePosts: function loadMorePosts() {
+			this.paged++;
+			this.doPostUpdate(false);
+		},
+		saveGeneralSettings: function saveGeneralSettings() {
+			var _this5 = this;
+
+			var postTypesSelected = this.$store.state.generalSettings.selected_post_types;
+			var taxonomiesSelected = this.$store.state.generalSettings.selected_taxonomies;
+			var excludeTaxonomies = this.generalSettings.exclude_taxonomies;
+			this.is_loading = true;
+			this.$log.info('Sending request for saving general settings..');
+			this.$store.dispatch('fetchAJAXPromise', {
+				req: 'save_general_settings',
+				updateState: false,
+				data: {
+					selected_post_types: postTypesSelected,
+					selected_taxonomies: taxonomiesSelected,
+					exclude_taxonomies: excludeTaxonomies
+				}
+			}).then(function (response) {
+				_this5.is_loading = false;
+				_this5.$log.info('Successfully saved general settings.');
+			}, function (error) {
+
+				_this5.$log.error('Successfully saved general settings.');
+				_this5.is_loading = false;
+				_vue2.default.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+			});
+		}
+	},
+	components: {
+		MultipleSelect: _multipleSelect2.default, UpsellSidebar: _upsellSidebar2.default, Tooltip: _popover2.default
+	}
+	// </script>
+	// <style scoped>
+	//     #rop-sidebar-selector {
+	//         border: 1px solid #e5e5e5;
+	//         background: #fff;
+	//     }
+	//
+	//     #rop-posts-listing .rop-post-item td {
+	//         position: relative;
+	//     }
+	//
+	//     #rop-posts-table {
+	//         margin-top: 20px;
+	//     }
+	//
+	//     #rop-posts-listing .rop-post-item:hover button.rop-exclude-post {
+	//         display: block;
+	//     }
+	//
+	//     #rop-posts-listing .rop-post-item td button.rop-exclude-post {
+	//         position: absolute;
+	//         top: 5px;
+	//         right: 10px;
+	//         display: none;
+	//         padding: 0px 20px;
+	//     }
+	//
+	//     .rop-post-true {
+	//         opacity: 0.8;
+	//         background-color: #F6DBDA;
+	//
+	//     }
+	//
+	//     .rop-load-more-posts {
+	//         text-align: center;
+	//     }
+	// </style>
+	//
+
+};
 
 /***/ }),
 /* 317 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(318)
+__vue_script__ = __webpack_require__(320)
+__vue_template__ = __webpack_require__(321)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/popover.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 318 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(319);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(2)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-db575b98&file=popover.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./popover.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-db575b98&file=popover.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./popover.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 319 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(1)();
+// imports
+
+
+// module
+exports.push([module.i, "\n    .wpr-tooltip {\n        font: 10px \"Helvetica Neue\", Helvetica, \"PingFang SC\", \"Hiragino Sans GB\", \"Microsoft YaHei\", SimSun, sans-serif;\n        position: absolute;\n        top: 0;\n        right: 10px;\n        padding: 0px 20px;\n    }\n\n    .wpr-tooltip > .outlet,\n    .wpr-tooltip > .wpr-tooltip {\n        font-size: 1.4em;\n    }\n\n    .wpr-tooltip > .wpr-tooltip {\n        display: none;\n        position: absolute;\n        background-color: rgba(0, 0, 0, 1);\n        color: #fff;\n        border-radius: 5px;\n        border: 0;\n        outline: none;\n        padding: 5px 8px;\n        z-index: 100;\n    }\n\n    .wpr-tooltip .wpr-arrow {\n        position: absolute;\n        width: 0px;\n        height: 0px;\n        border-style: solid;\n    }\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 320 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+// <template>
+//     <div class="wpr-tooltip">
+//         <div class="outlet" @mouseover="autoShowWithMode" @mouseleave="autoHideWithMode" @click="autoShowWithMode">
+//             <slot name="outlet"></slot>
+//         </div>
+//         <div class="wpr-tooltip" :style="tooltipStyle">
+//             <div class="inner">
+//                 <slot name="tooltip"></slot>
+//             </div>
+//             <div class="wpr-arrow" :style="arrowStyle"></div>
+//         </div>
+//     </div>
+// </template>
+//
+// <script>
+var EMPTY_FN = function EMPTY_FN() {};
+
+exports.default = {
+	name: 'Tooltip',
+
+	data: function data() {
+		return {
+			arrowStyle: {},
+			isShowing: false
+		};
+	},
+
+
+	props: {
+		// hover|click|manual
+		mode: {
+			type: String,
+			default: 'hover'
+		},
+		value: {
+			type: Boolean,
+			default: true
+		},
+		// top|top-left|top-right
+		// right|right-top|right-bottom
+		// bottom|bottom-left|bottom-right
+		// left|left-top|left-bottom
+		placement: {
+			type: String,
+			default: 'top'
+		},
+		minWidth: {
+			type: Number,
+			default: 0
+		},
+		maxWidth: {
+			type: Number,
+			default: 0
+		},
+		nowrap: {
+			type: Boolean,
+			default: true
+		},
+		is_show: {
+			type: Boolean,
+			default: true
+		},
+		arrowWidth: {
+			type: Number,
+			default: 10
+		},
+		arrowHeight: {
+			type: Number,
+			default: 6
+		},
+		cbHide: {
+			type: Function,
+			default: EMPTY_FN
+		}
+	},
+	computed: {
+		tooltipStyle: function tooltipStyle() {
+			var s = {};
+			if (this.minWidth > 0) {
+				s.minWidth = this.minWidth + 'px';
+			}
+			if (this.maxWidth > 0) {
+				s.maxWidth = this.maxWidth + 'px';
+			}
+			if (this.nowrap) {
+				s.whiteSpace = 'nowrap';
+			}
+			return s;
+		},
+		outletEl: function outletEl() {
+			return this.$el.querySelector('.outlet');
+		},
+		outletInnerEl: function outletInnerEl() {
+			return this.$el.querySelector('.outlet > *');
+		},
+		tooltipEl: function tooltipEl() {
+			return this.$el.querySelector('.wpr-tooltip');
+		}
+	},
+	watch: {
+		value: function value(newVal) {
+			if (newVal === true && this.mode === 'manual') {
+				this.show();
+			} else if (newVal === false && (this.mode === 'manual' || this.mode === 'click')) {
+				this.hide();
+			}
+		},
+		is_show: function is_show(the_value) {
+			console.log('the is show value : ' + the_value);
+		}
+	},
+	methods: {
+		updateArrowStyle: function updateArrowStyle() {
+			var s = {};
+			var tooltipRect = this.rect(this.tooltipEl);
+
+			// top|bottom
+			if (this.placement.indexOf('top') === 0 || this.placement.indexOf('bottom') === 0) {
+				if (this.placement.indexOf('top') === 0) {
+					s.borderTopColor = 'rgba(0, 0, 0, 0.8)';
+					s.borderLeftColor = 'transparent';
+					s.borderRightColor = 'transparent';
+					s.borderBottomColor = 'transparent';
+					s.borderLeftWidth = this.arrowWidth / 2;
+					s.borderRightWidth = s.borderLeftWidth + 'px';
+					s.borderLeftWidth += 'px';
+					s.borderTopWidth = this.arrowHeight + 'px';
+					s.borderBottomWidth = '0px';
+					s.bottom = -this.arrowHeight + 'px';
+				} else {
+					s.borderTopColor = 'transparent';
+					s.borderLeftColor = 'transparent';
+					s.borderRightColor = 'transparent';
+					s.borderBottomColor = 'rgba(0, 0, 0, 0.8)';
+					s.borderLeftWidth = this.arrowWidth / 2;
+					s.borderRightWidth = s.borderLeftWidth + 'px';
+					s.borderLeftWidth += 'px';
+					s.borderTopWidth = '0px';
+					s.borderBottomWidth = this.arrowHeight + 'px';
+					s.top = -this.arrowHeight + 'px';
+				}
+				if (this.placement.indexOf('left') !== -1) {
+					s.left = this.arrowWidth + 'px';
+				} else if (this.placement.indexOf('right') !== -1) {
+					s.right = this.arrowWidth + 'px';
+				} else {
+					s.left = (tooltipRect.width - this.arrowWidth) / 2 + 'px';
+				}
+				this.arrowStyle = s;
+				return;
+			}
+
+			// left
+			if (this.placement.indexOf('left') === 0 || this.placement.indexOf('right') === 0) {
+				if (this.placement.indexOf('left') === 0) {
+					s.borderTopColor = 'transparent';
+					s.borderLeftColor = 'rgba(0, 0, 0, 0.8)';
+					s.borderRightColor = 'transparent';
+					s.borderBottomColor = 'transparent';
+					s.borderLeftWidth = this.arrowHeight + 'px';
+					s.borderRightWidth = '0px';
+					s.borderTopWidth = this.arrowWidth / 2;
+					s.borderBottomWidth = s.borderTopWidth + 'px';
+					s.borderTopWidth += 'px';
+					s.right = -this.arrowHeight + 'px';
+				} else {
+					s.borderTopColor = 'transparent';
+					s.borderLeftColor = 'transparent';
+					s.borderRightColor = 'rgba(0, 0, 0, 0.8)';
+					s.borderBottomColor = 'transparent';
+					s.borderLeftWidth = '0px';
+					s.borderRightWidth = this.arrowHeight + 'px';
+					s.borderTopWidth = this.arrowWidth / 2;
+					s.borderBottomWidth = s.borderTopWidth + 'px';
+					s.borderTopWidth += 'px';
+					s.left = -this.arrowHeight + 'px';
+				}
+				if (this.placement.indexOf('top') !== -1 && tooltipRect.height > 30) {
+					s.top = this.arrowWidth + 'px';
+				} else if (this.placement.indexOf('bottom') !== -1 && tooltipRect.height > 30) {
+					s.bottom = this.arrowWidth + 'px';
+				} else {
+					s.top = (tooltipRect.height - this.arrowWidth) / 2 + 'px';
+				}
+				this.arrowStyle = s;
+				return;
+			}
+		},
+		place: function place() {
+			var containerRect = this.$el.getBoundingClientRect();
+			var outletInnerRect = this.outletInnerEl.getBoundingClientRect();
+			var tooltipRect = this.rect(this.tooltipEl);
+
+			// top|bottom
+			if (this.placement.indexOf('top') === 0 || this.placement.indexOf('bottom') === 0) {
+				var top = void 0;
+				var left = void 0;
+				if (this.placement.indexOf('top') === 0) {
+					top = outletInnerRect.top - containerRect.top - tooltipRect.height - this.arrowHeight - 5 + 'px';
+				} else {
+					top = outletInnerRect.bottom - containerRect.top + this.arrowHeight + 5 + 'px';
+				}
+				if (this.placement.indexOf('left') !== -1) {
+					left = outletInnerRect.left - containerRect.left + 'px';
+				} else if (this.placement.indexOf('right') !== -1) {
+					left = outletInnerRect.right - containerRect.left - tooltipRect.width + 'px';
+				} else {
+					left = outletInnerRect.left - containerRect.left + (outletInnerRect.width - tooltipRect.width) / 2 + 'px';
+				}
+				this.tooltipEl.style.top = top;
+				this.tooltipEl.style.left = left;
+				return;
+			}
+
+			// left
+			if (this.placement.indexOf('left') === 0 || this.placement.indexOf('right') === 0) {
+				var _top = void 0;
+				var _left = void 0;
+				if (this.placement.indexOf('left') === 0) {
+					_left = outletInnerRect.left - containerRect.left - tooltipRect.width - this.arrowHeight - 5 + 'px';
+				} else {
+					_left = outletInnerRect.right - containerRect.left + this.arrowHeight + 5 + 'px';
+				}
+				if (this.placement.indexOf('top') !== -1) {
+					_top = outletInnerRect.top - containerRect.top + 'px';
+				} else if (this.placement.indexOf('bottom') !== -1) {
+					_top = outletInnerRect.bottom - containerRect.top - tooltipRect.height + 'px';
+				} else {
+					_top = outletInnerRect.top - containerRect.top + (outletInnerRect.width - tooltipRect.width) / 2 + 'px';
+				}
+				this.tooltipEl.style.top = _top;
+				this.tooltipEl.style.left = _left;
+				return;
+			}
+		},
+		rect: function rect(el) {
+			var rect = el.getBoundingClientRect();
+			if (rect.width !== 0 || rect.height !== 0) {
+				return rect;
+			}
+
+			var style = window.getComputedStyle(el);
+			var display = style.getPropertyValue('display');
+			var top = style.getPropertyValue('top');
+			var left = style.getPropertyValue('left');
+
+			el.style.top = '-1000px';
+			el.style.left = '-1000px';
+			el.style.display = 'block';
+			rect = el.getBoundingClientRect();
+
+			el.style.display = display;
+			el.style.top = top;
+			el.style.left = left;
+
+			return rect;
+		},
+		show: function show() {
+			if (true == this.is_show) {
+				if (this.isShowing) return;
+				this.isShowing = true;
+				this.tooltipEl.style.display = 'block';
+				this.updateArrowStyle();
+				this.place();
+			}
+		},
+		hide: function hide() {
+			if (!this.isShowing) return;
+			this.tooltipEl.style.display = 'none';
+			this.cbHide !== EMPTY_FN && this.cbHide();
+			this.isShowing = false;
+		},
+		autoShowWithMode: function autoShowWithMode(evt) {
+			if (this.mode === 'hover') {
+				if (evt.type === 'mouseover') {
+					this.show();
+					this.$emit('input', true);
+				}
+				return;
+			}
+
+			if (this.mode === 'click' && evt.type === 'click') {
+				if (this.isShowing) {
+					this.hide();
+					this.$emit('input', false);
+				} else {
+					this.show();
+					this.$emit('input', true);
+				}
+			}
+		},
+		autoHideWithMode: function autoHideWithMode(evt) {
+			if (this.mode === 'hover' && evt.type === 'mouseleave') {
+				this.hide();
+				this.$emit('input', false);
+			} else if (this.mode === 'click' && evt.type === 'click' && !this.$el.contains(evt.target)) {
+				this.hide();
+				this.$emit('input', false);
+			}
+		}
+	},
+	mounted: function mounted() {
+		if (this.mode === 'manual' && this.value) {
+			this.show();
+		}
+		document.addEventListener('click', this.autoHideWithMode, false);
+	},
+	destroyed: function destroyed() {
+		document.removeEventListener('click', this.autoHideWithMode, false);
+	}
+};
+// </script>
+//
+// <style>
+//     .wpr-tooltip {
+//         font: 10px "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimSun, sans-serif;
+//         position: absolute;
+//         top: 0;
+//         right: 10px;
+//         padding: 0px 20px;
+//     }
+//
+//     .wpr-tooltip > .outlet,
+//     .wpr-tooltip > .wpr-tooltip {
+//         font-size: 1.4em;
+//     }
+//
+//     .wpr-tooltip > .wpr-tooltip {
+//         display: none;
+//         position: absolute;
+//         background-color: rgba(0, 0, 0, 1);
+//         color: #fff;
+//         border-radius: 5px;
+//         border: 0;
+//         outline: none;
+//         padding: 5px 8px;
+//         z-index: 100;
+//     }
+//
+//     .wpr-tooltip .wpr-arrow {
+//         position: absolute;
+//         width: 0px;
+//         height: 0px;
+//         border-style: solid;
+//     }
+// </style>
+
+/***/ }),
+/* 321 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div id=\"rop_core\" class=\"columns \" _v-df8172e8=\"\">\n        <div id=\"rop-sidebar-selector\" class=\"column col-3   col-xl-5 col-lg-5 col-md-6 col-sm-6 col-xs-12  pull-right\" _v-df8172e8=\"\">\n            <div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-df8172e8=\"\">\n                <div class=\"column col-12 col-sm-12 vertical-align rop-control\" _v-df8172e8=\"\">\n                    <b _v-df8172e8=\"\">{{labels.post_types_title}}</b>\n                    <p class=\"text-gray\" _v-df8172e8=\"\"> {{labels.filter_by_post_types_desc}}</p>\n                </div>\n                <div class=\"column col-12 col-sm-12 vertical-align text-left rop-control\" _v-df8172e8=\"\">\n                    <multiple-select :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-df8172e8=\"\"></multiple-select>\n                </div>\n            </div>\n\n            <span class=\"divider\" _v-df8172e8=\"\"></span>\n            <div class=\"columns py-2\" v-if=\"!isPro\" _v-df8172e8=\"\">\n                <div class=\"column text-center\" _v-df8172e8=\"\">\n                    <p class=\"upsell\" _v-df8172e8=\"\"><i class=\"fa fa-lock\" _v-df8172e8=\"\"></i> {{labels.post_types_upsell}}</p>\n                </div>\n            </div>\n            <div class=\"columns py-2\" _v-df8172e8=\"\">\n                <div class=\"column col-12 col-sm-12 vertical-align\" _v-df8172e8=\"\">\n                    <b _v-df8172e8=\"\">{{labels.taxonomies_title}}</b>\n                    <p class=\"text-gray\" _v-df8172e8=\"\"> {{labels.filter_by_taxonomies_desc}}</p>\n                </div>\n                <div class=\"column col-12 col-sm-12 vertical-align text-left\" _v-df8172e8=\"\">\n                    <div class=\"input-group\" _v-df8172e8=\"\">\n                        <multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" _v-df8172e8=\"\"></multiple-select>\n\n                    </div>\n                </div>\n\n            </div>\n            <upsell-sidebar _v-df8172e8=\"\"></upsell-sidebar>\n        </div>\n        <div id=\"rop-posts-listing\" class=\"column col-9  col-xl-7 col-lg-7 col-md-6 col-sm-6 col-xs-12 col- pull-left\" _v-df8172e8=\"\">\n            <div class=\"columns py-2\" _v-df8172e8=\"\">\n                <div class=\"column col-12 col-sm-12 vertical-align\" _v-df8172e8=\"\">\n                    <div class=\"input-group has-icon-right\" _v-df8172e8=\"\">\n                        <input class=\"form-input\" type=\"text\" v-model=\"searchQuery\" :placeholder=\"labels.search_posts_to_exclude\" _v-df8172e8=\"\">\n                        <i class=\"form-icon loading\" v-if=\"is_loading\" _v-df8172e8=\"\"></i>\n                    </div>\n                </div>\n                <div class=\"column col-12 col-sm-12 mt-2\" _v-df8172e8=\"\">\n                    <div class=\"form-group pull-right\" v-if=\"searchQuery != '' &amp;&amp; ! show_excluded\" _v-df8172e8=\"\">\n                        <button class=\"btn btn-primary\" @click=\"excludePostsBatch\" _v-df8172e8=\"\">\n                            <i class=\"fa fa-save \" v-if=\"!this.is_loading\" _v-df8172e8=\"\"></i>\n                            <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-df8172e8=\"\"></i>\n                            {{labels.exclude_matching}} \"{{searchQuery}}\"\n                        </button>\n                    </div>\n                    <div class=\"form-group pull-right \" _v-df8172e8=\"\">\n                        <label class=\"form-switch\" _v-df8172e8=\"\">\n                            <input type=\"checkbox\" v-model=\"show_excluded\" @change=\"excludePostsChange\" _v-df8172e8=\"\">\n                            <i class=\"form-icon\" _v-df8172e8=\"\"></i>{{labels.search_posts_show_excluded}}\n                        </label>\n                    </div>\n                </div>\n                <div class=\"column col-12  px-2\" v-if=\"postsAvailable\" _v-df8172e8=\"\">\n                    <div v-if=\"postsAvailable.length === 0 &amp;&amp; !is_loading\" _v-df8172e8=\"\">\n                        {{labels.no_posts_found}}\n                    </div>\n                    <div v-else=\"\" _v-df8172e8=\"\">\n                        <table id=\"rop-posts-table\" class=\"table table-striped table-hover\" v-if=\" ! is_loading\" _v-df8172e8=\"\">\n                            <tbody _v-df8172e8=\"\"><tr v-for=\"(post,index ) in postsAvailable\" class=\"rop-post-item\" _v-df8172e8=\"\">\n                                <td :class=\"'rop-post-' + post.selected\" _v-df8172e8=\"\">{{post.name}}\n                                    <button class=\"btn btn-error rop-exclude-post\" @click=\"excludeSinglePost(post.value,post.selected)\" _v-df8172e8=\"\">\n                                        <i class=\"fa\" :class=\"'fa-' + (post.selected ? 'plus' : 'remove') \" v-if=\"!is_loading_single\" _v-df8172e8=\"\"></i>\n                                        <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-df8172e8=\"\"></i>\n                                        <span v-html=\" ( post.selected ? labels.include_single_post  : labels.exclude_single_post) \" _v-df8172e8=\"\"> </span>\n                                    </button>\n                                </td>\n                            </tr>\n                            <tr v-if=\"has_pages\" _v-df8172e8=\"\">\n                                <td class=\"rop-load-more-posts\" _v-df8172e8=\"\">\n                                    <button class=\"btn btn-error\" @click=\"loadMorePosts()\" _v-df8172e8=\"\">\n                                        <i class=\"fa fa-newspaper-o \" v-if=\"!is_loading_single\" _v-df8172e8=\"\"></i>\n                                        <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-df8172e8=\"\"></i>\n                                        {{labels.load_more_posts}}\n                                    </button>\n                                </td>\n                            </tr>\n                        </tbody></table>\n                        <div class=\"loading loading-lg\" v-else=\"\" _v-df8172e8=\"\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n\n    </div>\n";
+module.exports = "\n    <div class=\"wpr-tooltip\">\n        <div class=\"outlet\" @mouseover=\"autoShowWithMode\" @mouseleave=\"autoHideWithMode\" @click=\"autoShowWithMode\">\n            <slot name=\"outlet\"></slot>\n        </div>\n        <div class=\"wpr-tooltip\" :style=\"tooltipStyle\">\n            <div class=\"inner\">\n                <slot name=\"tooltip\"></slot>\n            </div>\n            <div class=\"wpr-arrow\" :style=\"arrowStyle\"></div>\n        </div>\n    </div>\n";
+
+/***/ }),
+/* 322 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div id=\"rop_core\" class=\"columns \" _v-5ea68056=\"\">\n        <div id=\"rop-sidebar-selector\" class=\"column col-3   col-xl-5 col-lg-5 col-md-6 col-sm-6 col-xs-12  pull-right\" _v-5ea68056=\"\">\n            <div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-5ea68056=\"\">\n                <div class=\"column col-12 col-sm-12 vertical-align rop-control\" _v-5ea68056=\"\">\n                    <b _v-5ea68056=\"\">{{labels.post_types_title}}</b>\n                    <p class=\"text-gray\" _v-5ea68056=\"\"> {{labels.filter_by_post_types_desc}}</p>\n                </div>\n                <div class=\"column col-12 col-sm-12 vertical-align text-left rop-control\" _v-5ea68056=\"\">\n                    <multiple-select :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-5ea68056=\"\"></multiple-select>\n                </div>\n            </div>\n\n            <span class=\"divider\" _v-5ea68056=\"\"></span>\n            <div class=\"columns py-2\" v-if=\"!isPro\" _v-5ea68056=\"\">\n                <div class=\"column text-center\" _v-5ea68056=\"\">\n                    <p class=\"upsell\" _v-5ea68056=\"\"><i class=\"fa fa-lock\" _v-5ea68056=\"\"></i> {{labels.post_types_upsell}}</p>\n                </div>\n            </div>\n            <div class=\"columns py-2\" _v-5ea68056=\"\">\n                <div class=\"column col-12 col-sm-12 vertical-align\" _v-5ea68056=\"\">\n                    <b _v-5ea68056=\"\">{{labels.taxonomies_title}}</b>\n                    <p class=\"text-gray\" _v-5ea68056=\"\"> {{labels.filter_by_taxonomies_desc}}</p>\n                </div>\n                <div class=\"column col-12 col-sm-12 vertical-align text-left\" _v-5ea68056=\"\">\n                    <div class=\"input-group\" _v-5ea68056=\"\">\n                        <multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" _v-5ea68056=\"\"></multiple-select>\n\n                    </div>\n                </div>\n\n            </div>\n            <upsell-sidebar _v-5ea68056=\"\"></upsell-sidebar>\n        </div>\n        <div id=\"rop-posts-listing\" class=\"column col-9  col-xl-7 col-lg-7 col-md-6 col-sm-6 col-xs-12 col- pull-left\" _v-5ea68056=\"\">\n            <div class=\"columns py-2\" _v-5ea68056=\"\">\n                <div class=\"column col-12 col-sm-12 vertical-align\" _v-5ea68056=\"\">\n                    <div class=\"input-group has-icon-right\" _v-5ea68056=\"\">\n                        <input class=\"form-input\" type=\"text\" v-model=\"searchQuery\" :placeholder=\"labels.search_posts_to_exclude\" _v-5ea68056=\"\">\n                        <i class=\"form-icon loading\" v-if=\"is_loading\" _v-5ea68056=\"\"></i>\n                    </div>\n                </div>\n                <div class=\"column col-12 col-sm-12 mt-2\" _v-5ea68056=\"\">\n                    <div class=\"form-group pull-right\" v-if=\"searchQuery != '' &amp;&amp; ! show_excluded\" _v-5ea68056=\"\">\n                        <button class=\"btn btn-primary\" @click=\"excludePostsBatch\" _v-5ea68056=\"\">\n                            <i class=\"fa fa-save \" v-if=\"!this.is_loading\" _v-5ea68056=\"\"></i>\n                            <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-5ea68056=\"\"></i>\n                            {{labels.exclude_matching}} \"{{searchQuery}}\"\n                        </button>\n                    </div>\n                    <div class=\"form-group pull-right \" _v-5ea68056=\"\">\n                        <label class=\"form-switch\" _v-5ea68056=\"\">\n                            <input type=\"checkbox\" v-model=\"show_excluded\" @change=\"excludePostsChange\" _v-5ea68056=\"\">\n                            <i class=\"form-icon\" _v-5ea68056=\"\"></i>{{labels.search_posts_show_excluded}}\n                        </label>\n                    </div>\n\n                    <p class=\"text-primary rop-post-type-badge\" v-if=\"apply_limit_exclude\" v-html=\"labels.post_types_exclude_limit\" _v-5ea68056=\"\"></p>\n                </div>\n                <div class=\"column col-12  px-2\" v-if=\"postsAvailable\" _v-5ea68056=\"\">\n                    <div v-if=\"postsAvailable.length === 0 &amp;&amp; !is_loading\" _v-5ea68056=\"\">\n                        {{labels.no_posts_found}}\n                    </div>\n                    <div v-else=\"\" _v-5ea68056=\"\">\n                        <table id=\"rop-posts-table\" class=\"table table-striped table-hover\" v-if=\" ! is_loading\" _v-5ea68056=\"\">\n                            <tbody _v-5ea68056=\"\"><tr v-for=\"(post,index ) in postsAvailable\" class=\"rop-post-item\" _v-5ea68056=\"\">\n                                <td :class=\"'rop-post-' + post.selected\" _v-5ea68056=\"\">{{post.name}}\n                                    <template _v-5ea68056=\"\">\n                                        <tooltip placement=\"top-right\" mode=\"hover\" :is_show=\"apply_limit_exclude\" _v-5ea68056=\"\">\n                                            <div slot=\"outlet\" _v-5ea68056=\"\">\n                                                <button class=\"btn btn-error rop-exclude-post\" @click=\"excludeSinglePost(post.value,post.selected)\" _v-5ea68056=\"\">\n                                                    <i class=\"fa\" :class=\"'fa-' + (post.selected ? 'plus' : 'remove') \" v-if=\"!is_loading_single\" _v-5ea68056=\"\"></i>\n                                                    <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-5ea68056=\"\"></i>\n                                                    <span v-html=\" ( post.selected ? labels.include_single_post  : labels.exclude_single_post) \" _v-5ea68056=\"\"> </span>\n                                                </button>\n                                            </div>\n                                            <div slot=\"tooltip\" v-html=\"labels.post_types_exclude_limit_tooltip\" _v-5ea68056=\"\"></div>\n                                        </tooltip>\n                                    </template>\n                                </td>\n                            </tr>\n                            <tr v-if=\"has_pages\" _v-5ea68056=\"\">\n                                <td class=\"rop-load-more-posts\" _v-5ea68056=\"\">\n                                    <button class=\"btn btn-error\" @click=\"loadMorePosts()\" _v-5ea68056=\"\">\n                                        <i class=\"fa fa-newspaper-o \" v-if=\"!is_loading_single\" _v-5ea68056=\"\"></i>\n                                        <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-5ea68056=\"\"></i>\n                                        {{labels.load_more_posts}}\n                                    </button>\n                                </td>\n                            </tr>\n                        </tbody></table>\n                        <div class=\"loading loading-lg\" v-else=\"\" _v-5ea68056=\"\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n\n    </div>\n";
 
 /***/ })
 /******/ ]);

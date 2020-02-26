@@ -122,6 +122,8 @@ class Rop_I18n {
 				'limit_reached'              => __( 'Limit reached', 'tweet-old-post' ),
 			),
 			'settings'    => array(
+				'post_types_exclude_limit' => sprintf( __( 'Upgrade to pro version to select more than 30 posts. You can upgrade %1$shere%2$s.', 'tweet-old-post' ), '<a href="https://revive.social/plugins/revive-old-post/" target="_blank">', '</a>' ),
+				'post_types_exclude_limit_tooltip' => __( 'Upgrade to pro version to select more than 30 posts.', 'tweet-old-post' ),
 				'menu_item'                   => __( 'General Settings', 'tweet-old-post' ),
 				'min_interval_title'          => __( 'Minimum interval between shares', 'tweet-old-post' ),
 				'min_interval_desc'           => __( 'Minimum time between shares (hour/hours), 0.4 can be used.', 'tweet-old-post' ),
