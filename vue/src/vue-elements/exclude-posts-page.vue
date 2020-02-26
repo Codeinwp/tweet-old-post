@@ -130,7 +130,7 @@
 				is_loading: false,
 				is_loading_single: false,
 				is_taxonomy_message: false,
-				limit_exclude_posts: 3,
+				limit_exclude_posts: 30,
 				posts_selected_currently: 0,
 				apply_limit_exclude: false
 			}

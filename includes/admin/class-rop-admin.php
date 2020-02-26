@@ -239,7 +239,7 @@ class Rop_Admin {
 	}
 
 	/**
-	 * Method used to decide whether or not to limit taxonomy select
+	 * Method used to decide whether or not to limit exclude posts.
 	 *
 	 * @return  bool
 	 * @since   8.5.4
