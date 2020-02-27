@@ -239,6 +239,25 @@ class Rop_Admin {
 	}
 
 	/**
+	 * Method used to decide whether or not to limit exclude posts.
+	 *
+	 * @return  bool
+	 * @since   8.5.4
+	 * @access  public
+	 */
+	public function limit_exclude_list() {
+		$installed_at_version = get_option( 'rop_first_install_version' );
+		if ( empty( $installed_at_version ) ) {
+			return 0;
+		}
+		if ( version_compare( $installed_at_version, '8.5.4', '>=' ) ) {
+			return 1;
+		}
+
+		return 0;
+	}
+
+	/**
 	 * Register the JavaScript for the admin area.
 	 *
 	 * @since    8.0.0
@@ -285,6 +304,7 @@ class Rop_Admin {
 		$array_nonce['show_li_app_btn']         = $li_service->rop_show_li_app_btn();
 		$array_nonce['debug']                   = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
 		$array_nonce['tax_apply_limit']         = $this->limit_tax_dropdown_list();
+		$array_nonce['exclude_apply_limit']     = $this->limit_exclude_list();
 		$array_nonce['publish_now']             = array(
 			'action'   => $settings->get_instant_sharing_by_default(),
 			'accounts' => $active_accounts,
@@ -549,9 +569,9 @@ class Rop_Admin {
 	function rop_roadmap_new_tab() {
 		?>
 		<script type="text/javascript">
-			jQuery(document).ready(function ($) {
-				$("ul#adminmenu a[href$='https://trello.com/b/svAZqXO1/roadmap-revive-old-posts']").attr('target', '_blank');
-			});
+		   jQuery( document ).ready( function ( $ ) {
+			   $( "ul#adminmenu a[href$='https://trello.com/b/svAZqXO1/roadmap-revive-old-posts']" ).attr( 'target', '_blank' );
+		   } );
 		</script>
 		<?php
 	}
