@@ -203,6 +203,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 		foreach ( $upcoming_events as $account_id => $events ) {
 			$account_queue                   = isset( $current_queue[ $account_id ] ) ? $current_queue[ $account_id ] : array();
 			$normalized_queue[ $account_id ] = array();
+
 			$post_pool                       = $this->selector->select( $account_id );
 			if ( empty( $post_pool ) ) {
 				$this->logger->error( 'No posts are available to share for your account. Try activating the Share more than once option or changing the minimum and maximum post age setting to widen the pool of available posts.' );

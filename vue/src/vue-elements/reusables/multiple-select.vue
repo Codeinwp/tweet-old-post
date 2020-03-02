@@ -101,8 +101,30 @@
 					}
 				}
 			}
-
 			// this.$emit( 'update', this.search )
+		},
+		updated(){
+
+			for (let selection of this.selected) {
+				if (selection.selected) {
+					let index = 0
+					for (let option of this.options) {
+						if (option.value === selection.value) {
+							this.options[index].selected = selection.selected
+						}
+						index++
+					}
+				}
+			}
+		},
+		created(){
+			this.rand = Math.round(Math.random() * 1000);
+			let index = 0
+			for (let option of this.options) {
+				this.options[index].selected = false;
+				index++
+			}
+
 		},
 		data: function () {
 			return {
@@ -111,7 +133,8 @@
 				no_results: false,
 				labels: this.$store.state.labels.general,
 				upsell_link: ropApiSettings.upsell_link,
-				magic_flag: false
+				magic_flag: false,
+				rand: 0
 			}
 		},
 		watch: {

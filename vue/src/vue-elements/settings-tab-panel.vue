@@ -84,10 +84,10 @@
 					</div>
 				</div>
 
-				<span class="divider"></span>
+				<span class="divider" v-if="!isPro"></span>
 
 				<!-- Taxonomies -->
-				<div class="columns py-2">
+				<div class="columns py-2" v-if="!isPro">
 					<div class="column col-6 col-sm-12 vertical-align">
 						<b>{{labels.taxonomies_title}}</b>
 						<p class="text-gray"><span v-html="labels.taxonomies_desc"></span></p>
@@ -103,11 +103,8 @@
 									<i class="form-icon"></i>{{labels.taxonomies_exclude}}
 								</label>
 							</span>
-
 						</div>
-
 					</div>
-
 				</div>
 
 				<span class="divider"></span>

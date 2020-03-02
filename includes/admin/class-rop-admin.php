@@ -49,10 +49,11 @@ class Rop_Admin {
 	/**
 	 * Initialize the class and set its properties.
 	 *
+	 * @param string $plugin_name The name of this plugin.
+	 * @param string $version The version of this plugin.
+	 *
 	 * @since    8.0.0
 	 *
-	 * @param      string $plugin_name The name of this plugin.
-	 * @param      string $version The version of this plugin.
 	 */
 	public function __construct( $plugin_name = '', $version = '' ) {
 
@@ -74,12 +75,12 @@ class Rop_Admin {
 		$is_status_logs_alert = $log->is_status_error_necessary(); // true | false
 		if ( $is_status_logs_alert ) {
 			?>
-			<div class="notice notice-error is-dismissible">
-				<p>
-					<strong><?php echo esc_html( Rop_I18n::get_labels( 'general.plugin_name' ) ); ?></strong>:
+            <div class="notice notice-error is-dismissible">
+                <p>
+                    <strong><?php echo esc_html( Rop_I18n::get_labels( 'general.plugin_name' ) ); ?></strong>:
 					<?php echo Rop_I18n::get_labels( 'general.status_error_global' ); ?>
-				</p>
-			</div>
+                </p>
+            </div>
 			<?php
 		}
 	}
@@ -109,11 +110,11 @@ class Rop_Admin {
 	/**
 	 * Check if a shortener is in use.
 	 *
-	 * @since    8.1.5
-	 *
 	 * @param string $shortener The shortener to check.
 	 *
 	 * @return bool If shortener is in use.
+	 * @since    8.1.5
+	 *
 	 */
 	public function check_shortener_service( $shortener ) {
 
@@ -146,9 +147,9 @@ class Rop_Admin {
 			return;
 		}
 		?>
-		<div class="notice notice-error is-dismissible">
+        <div class="notice notice-error is-dismissible">
 			<?php echo sprintf( __( '%1$s%2$sRevive Old Posts:%3$s Please upgrade your Bit.ly keys. See this %4$sarticle for instructions.%5$s%6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/976-how-to-connect-bit-ly-to-revive-old-posts" target="_blank">', '</a>', '</p>' ); ?>
-		</div>
+        </div>
 		<?php
 	}
 
@@ -210,9 +211,9 @@ class Rop_Admin {
 	/**
 	 * Whether we will display the toast message related to facebook
 	 *
+	 * @return mixed
 	 * @since 8.4.3
 	 *
-	 * @return mixed
 	 */
 	private function facebook_exception_toast_display() {
 		$show_the_toast = get_option( 'rop_facebook_domain_toast', 'no' );
@@ -304,10 +305,10 @@ class Rop_Admin {
 	/**
 	 * Set our supported mime types.
 	 *
+	 * @return array
 	 * @since   8.1.0
 	 * @access  public
 	 *
-	 * @return array
 	 */
 	public function rop_supported_mime_types() {
 
@@ -347,8 +348,8 @@ class Rop_Admin {
 	/**
 	 * Detects if is a staging environment
 	 *
-	 * @since     8.0.4
 	 * @return    bool   true/false
+	 * @since     8.0.4
 	 */
 	public static function rop_site_is_staging() {
 
@@ -437,9 +438,9 @@ class Rop_Admin {
 	public function rop_main_page() {
 		$this->wrong_pro_version();
 		?>
-		<div id="rop_core" style="margin: 20px 20px 40px 0;">
-			<main-page-panel></main-page-panel>
-		</div>
+        <div id="rop_core" style="margin: 20px 20px 40px 0;">
+            <main-page-panel></main-page-panel>
+        </div>
 		<?php
 	}
 
@@ -449,11 +450,11 @@ class Rop_Admin {
 	private function wrong_pro_version() {
 		if ( defined( 'ROP_PRO_VERSION' ) && ( - 1 === version_compare( ROP_PRO_VERSION, '2.0.0' ) ) ) {
 			?>
-			<div class="error">
-				<p>In order to use the premium features for <b>v8.0</b> of Revive Old Posts you will need to update the
-					Premium addon to at least 2.0. In case that you don't see the update, please download from your <a
-							href="https://revive.social/your-purchases/" target="_blank">purchase history</a></p>
-			</div>
+            <div class="error">
+                <p>In order to use the premium features for <b>v8.0</b> of Revive Old Posts you will need to update the
+                    Premium addon to at least 2.0. In case that you don't see the update, please download from your <a
+                            href="https://revive.social/your-purchases/" target="_blank">purchase history</a></p>
+            </div>
 			<?php
 		}
 	}
@@ -467,9 +468,9 @@ class Rop_Admin {
 	public function content_filters() {
 		$this->wrong_pro_version();
 		?>
-		<div id="rop_content_filters" style="margin: 20px 20px 40px 0;">
-			<exclude-posts-page></exclude-posts-page>
-		</div>
+        <div id="rop_content_filters" style="margin: 20px 20px 40px 0;">
+            <exclude-posts-page></exclude-posts-page>
+        </div>
 		<?php
 	}
 
@@ -531,11 +532,11 @@ class Rop_Admin {
 	 */
 	function rop_roadmap_new_tab() {
 		?>
-		<script type="text/javascript">
-			jQuery(document).ready(function ($) {
-				$("ul#adminmenu a[href$='https://trello.com/b/svAZqXO1/roadmap-revive-old-posts']").attr('target', '_blank');
-			});
-		</script>
+        <script type="text/javascript">
+		   jQuery( document ).ready( function ( $ ) {
+			   $( "ul#adminmenu a[href$='https://trello.com/b/svAZqXO1/roadmap-revive-old-posts']" ).attr( 'target', '_blank' );
+		   } );
+        </script>
 		<?php
 	}
 
@@ -558,10 +559,10 @@ class Rop_Admin {
 
 		if ( $settings->get_instant_sharing() && count( $active_accounts ) >= 2 && ! defined( 'ROP_PRO_VERSION' ) ) {
 			echo '<div class="misc-pub-section  " style="font-size: 11px;text-align: center;line-height: 1.7em;color: #888;"><span class="dashicons dashicons-lock"></span>' .
-				__(
-					'Share to more accounts by upgrading to the extended version for ',
-					'tweet-old-post'
-				) . '<a href="' . ROP_PRO_URL . '" target="_blank">Revive Old Posts </a>
+			     __(
+				     'Share to more accounts by upgrading to the extended version for ',
+				     'tweet-old-post'
+			     ) . '<a href="' . ROP_PRO_URL . '" target="_blank">Revive Old Posts </a>
 						</div>';
 		}
 	}
@@ -625,12 +626,12 @@ class Rop_Admin {
 
 		$post_types = wp_list_pluck( $settings_model->get_selected_post_types(), 'value' );
 		if ( in_array( $post->post_type, $post_types ) && in_array(
-			$pagenow,
-			array(
-				'post.php',
-				'post-new.php',
-			)
-		) && ( ( method_exists( $settings_model, 'get_instant_sharing' ) && $settings_model->get_instant_sharing() ) || ! method_exists( $settings_model, 'get_instant_sharing' ) )
+				$pagenow,
+				array(
+					'post.php',
+					'post-new.php',
+				)
+			) && ( ( method_exists( $settings_model, 'get_instant_sharing' ) && $settings_model->get_instant_sharing() ) || ! method_exists( $settings_model, 'get_instant_sharing' ) )
 		) {
 			wp_nonce_field( 'rop_publish_now_nonce', 'rop_publish_now_nonce' );
 			include_once ROP_LITE_PATH . '/includes/admin/views/publish_now.php';
@@ -640,7 +641,7 @@ class Rop_Admin {
 	/**
 	 * Publish now attributes to be provided to the javascript.
 	 *
-	 * @param   array $default The default attributes.
+	 * @param array $default The default attributes.
 	 */
 	public function publish_now_attributes( $default ) {
 		global $post;
@@ -656,7 +657,7 @@ class Rop_Admin {
 	/**
 	 * Publish now, if enabled.
 	 *
-	 * @param   int $post_id The post ID.
+	 * @param int $post_id The post ID.
 	 */
 	public function maybe_publish_now( $post_id ) {
 		if ( ! isset( $_POST['rop_publish_now_nonce'] ) || ! wp_verify_nonce( $_POST['rop_publish_now_nonce'], 'rop_publish_now_nonce' ) ) {
@@ -705,14 +706,15 @@ class Rop_Admin {
 	/**
 	 * Method to share future scheduled WP posts to social media on publish.
 	 *
+	 * @param object $post The post object.
+	 *
+	 * @access  public
 	 * @since   8.5.2
 	 *
-	 * @param   object $post The post object.
-	 * @access  public
 	 */
 	public function share_scheduled_future_post( $post ) {
 
-		$settings = new Rop_Settings_Model();
+		$settings            = new Rop_Settings_Model();
 		$selected_post_types = wp_list_pluck( $settings->get_selected_post_types(), 'value' );
 
 		if ( ! $settings->get_instant_share_future_scheduled() ) {
@@ -749,7 +751,7 @@ class Rop_Admin {
 		}
 
 		$services = new Rop_Services_Model();
-		$active  = array_keys( $services->get_active_accounts() );
+		$active   = array_keys( $services->get_active_accounts() );
 
 		update_post_meta( $post->ID, 'rop_publish_now', 'yes' );
 		update_post_meta( $post->ID, 'rop_publish_now_accounts', $active );
@@ -919,10 +921,10 @@ class Rop_Admin {
 		}
 
 		?>
-		<div class="notice notice-error">
+        <div class="notice notice-error">
 			<?php echo sprintf( __( '%1$s%2$sRevive Old Posts:%3$s The Linkedin API Has been updated. You need to reconnect your LinkedIn account to continue posting to LinkedIn. Please see %4$sthis article for instructions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/1040-how-to-move-to-linkedin-api-v2" target="_blank">', '</a>', '<a style="float: right;" href="?rop-linkedin-api-notice-dismissed">Dismiss</a>', '</p>' ); ?>
 
-		</div>
+        </div>
 		<?php
 
 	}
@@ -978,10 +980,10 @@ class Rop_Admin {
 		if ( DISABLE_WP_CRON ) {
 
 			?>
-			<div class="notice notice-error">
+            <div class="notice notice-error">
 				<?php echo sprintf( __( '%1$s%2$sRevive Old Posts:%3$s The WordPress Cron seems is disabled on your website. This can cause sharing issues with Revive Old Posts. If sharing is not working, then see %4$shere for solutions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/686-fix-revive-old-post-not-posting" target="_blank">', '</a>', '<a style="float: right;" href="?rop-wp-cron-notice-dismissed">Dismiss</a>', '</p>' ); ?>
 
-			</div>
+            </div>
 			<?php
 
 		}
@@ -1001,6 +1003,76 @@ class Rop_Admin {
 			add_user_meta( $user_id, 'rop-wp-cron-notice-dismissed', 'true', true );
 		}
 
+	}
+
+	/**
+	 * Migrate the taxonomies from General Settings to Post Format for Pro users.
+	 * @since 8.5.4
+	 */
+	public function migrate_taxonomies_to_post_format() {
+
+		$global_settings = new Rop_Global_Settings();
+		// If any type of Pro is installed and active.
+		if ( $global_settings->license_type() > 0 ) {
+			// Get the current plugin options.
+			$option = get_option( 'rop_data' );
+			// Get the custom options.
+			// If this option exists, then the migration took place, and it will not happen again.
+			// Should return false the first time as it does not exist.
+			$update_took_place = get_option( 'rop_data_migrated_tax' );
+
+			$general_settings = array();
+			// Making sure the option we need, exists.
+			if ( empty( $update_took_place ) && isset( $option['general_settings'] ) ) {
+				$general_settings = $option['general_settings'];
+
+				$selected_taxonomies = array();
+				$exclude_taxonomies  = '';
+				if ( isset( $general_settings['selected_taxonomies'] ) ) {
+					// Get the selected Taxonomies from General Settings tab.
+					$selected_taxonomies = $general_settings['selected_taxonomies'];
+				}
+
+				// Making sure to check "Excluded" if the main General Tab ahs it checked.
+				if ( isset( $general_settings['exclude_taxonomies'] ) && ! empty( $general_settings['exclude_taxonomies'] ) ) {
+					$exclude_taxonomies = $general_settings['exclude_taxonomies'];
+				}
+
+				// If there are any taxonomies selected in the general tab.
+				if ( ! empty( $selected_taxonomies ) ) {
+
+					if ( isset( $option['post_format'] ) && ! empty( $option['post_format'] ) ) {
+						foreach ( $option['post_format'] as &$social_media_account_data ) {
+							// If the options exists in Post Format but it's empty or,
+							// If the option does not exist at all.
+							if (
+								! isset( $social_media_account_data['taxonomy_filter'] ) ||
+								(
+									isset( $social_media_account_data['taxonomy_filter'] ) &&
+									empty( $social_media_account_data['taxonomy_filter'] )
+								)
+							) {
+								// Add the taxonomies to all social media accounts.
+								$social_media_account_data['taxonomy_filter'] = $selected_taxonomies;
+								// inform that the update took place.
+								$update_took_place = true;
+								// If excluded is checked, we also add it to post format.
+								$social_media_account_data['exclude_taxonomies'] = $exclude_taxonomies;
+							}
+
+						}
+					}
+				}
+
+				if ( true === $update_took_place ) {
+					// Create the option so that the migrate code will not run again.
+					add_option( 'rop_data_migrated_tax', 'yes', null, 'no' );
+					// Update the plugin data containing the changes.
+					update_option( 'rop_data', $option );
+				}
+
+			}
+		}
 	}
 
 	/**
@@ -1034,10 +1106,10 @@ class Rop_Admin {
 		if ( $rop_cron_elapsed_time >= $rop_cron_event_excess_elapsed_time ) {
 
 			?>
-			<div class="notice notice-error">
+            <div class="notice notice-error">
 				<?php echo sprintf( __( '%1$s%2$sRevive Old Posts:%3$s There might be an issue preventing Revive Old Posts from sharing to your connected accounts. If sharing is not working, then see %4$shere for solutions.%5$s%6$s%7$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/686-fix-revive-old-post-not-posting" target="_blank">', '</a>', '<a style="float: right;" href="?rop-cron-event-status-notice-dismissed">Dismiss</a>', '</p>' ); ?>
 
-			</div>
+            </div>
 			<?php
 
 		}
@@ -1081,9 +1153,9 @@ class Rop_Admin {
 
 		?>
 
-		<div class="notice notice-error">
+        <div class="notice notice-error">
 			<?php echo sprintf( __( '%1$s We\'ve bundled the Buffer feature into Revive Old Posts Pro, and therefore deactivated the Buffer Addon automatically to prevent any conflicts. If you were a free user testing out the addon then please send us a support request %2$shere%3$s. %4$s %5$s', 'tweet-old-post' ), '<p>', '<a href="https://revive.social/support/" target="_blank">', '</a>', '<a style="float: right;" href="?rop-wp-cron-notice-dismissed">Dismiss</a>', '</p>' ); ?>
-		</div>
+        </div>
 		<?php
 
 	}
