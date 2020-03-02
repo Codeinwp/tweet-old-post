@@ -29,11 +29,6 @@ class Rop_Cron_Helper {
 	const CRON_NAMESPACE_ONCE = 'rop_cron_job_once';
 
 	/**
-	 * Cron action name for sharing specific post(s).
-	 */
-	const CRON_NAMESPACE_PUBLISH_NOW = 'rop_cron_job_publish_now';
-
-	/**
 	 * Defines new schedules for cron use.
 	 *
 	 * @since   8.0.0
@@ -64,8 +59,6 @@ class Rop_Cron_Helper {
 			$this->create_cron( true );
 		} elseif ( isset( $request['action'] ) && 'stop' === $request['action'] ) {
 			$this->remove_cron( $request );
-		} elseif ( isset( $request['action'] ) && 'publish-now' === $request['action'] ) {
-			$this->publish_now();
 		}
 
 		return array(
@@ -77,22 +70,6 @@ class Rop_Cron_Helper {
 			'current_time'     => Rop_Scheduler_Model::get_current_time(),
 		);
 	}
-
-
-	/**
-	 * Utility method to create a single event for publishing specific post(s).
-	 *
-	 * @access  private
-	 * @return bool
-	 */
-	private function publish_now() {
-		if ( ! wp_next_scheduled( self::CRON_NAMESPACE_PUBLISH_NOW ) ) {
-			wp_schedule_single_event( time() + 15, self::CRON_NAMESPACE_PUBLISH_NOW );
-		}
-
-		return true;
-	}
-
 
 	/**
 	 * Utility method to start a cron.

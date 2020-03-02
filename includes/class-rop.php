@@ -147,7 +147,6 @@ class Rop {
 		$this->loader->add_action( 'rop_cron_job', $plugin_admin, 'rop_cron_job' );
 		$this->loader->add_action( 'rop_cron_job_once', $plugin_admin, 'rop_cron_job_once' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'check_cron_status', 20 );
-		$this->loader->add_action( 'rop_cron_job_publish_now', $plugin_admin, 'rop_cron_job_publish_now' );
 		$this->loader->add_action( 'future_to_publish', $plugin_admin, 'share_scheduled_future_post', 10, 1 );
 		$this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'rop_publish_now_metabox' );
 

@@ -713,9 +713,6 @@ class Rop_Admin {
 		}
 
 		if ( ! isset( $_POST['publish_now'] ) || empty( $_POST['publish_now'] ) ) {
-			delete_post_meta( $post_id, 'rop_publish_now' );
-			delete_post_meta( $post_id, 'rop_publish_now_accounts' );
-
 			return;
 		}
 
@@ -732,15 +729,11 @@ class Rop_Admin {
 		// reject the extra.
 		$enabled = array_diff( $enabled, $extra );
 
-		update_post_meta( $post_id, 'rop_publish_now', 'yes' );
-		update_post_meta( $post_id, 'rop_publish_now_accounts', $enabled );
-
 		if ( ! $enabled ) {
 			return;
 		}
 
-		$cron = new Rop_Cron_Helper();
-		$cron->manage_cron( array( 'action' => 'publish-now' ) );
+$this->rop_cron_job_publish_now($post_id,$enabled);
 	}
 
 	/**
@@ -753,6 +746,7 @@ class Rop_Admin {
 	 */
 	public function share_scheduled_future_post( $post ) {
 
+		$post_id = $post->ID;
 		$settings            = new Rop_Settings_Model();
 		$selected_post_types = wp_list_pluck( $settings->get_selected_post_types(), 'value' );
 
@@ -778,7 +772,7 @@ class Rop_Admin {
 			}
 
 			// check if current post has any of the taxonomies set in general settings
-			$post_terms = wp_get_post_terms( $post->ID, $taxonomies );
+			$post_terms = wp_get_post_terms( $post_id, $taxonomies );
 			// if the post contains any of the taxonomies that are exluded, bail
 			if ( ! empty( $post_terms ) && $taxonomies_are_excluded ) {
 				return;
@@ -790,13 +784,9 @@ class Rop_Admin {
 		}
 
 		$services = new Rop_Services_Model();
-		$active   = array_keys( $services->get_active_accounts() );
+		$enabled   = array_keys( $services->get_active_accounts() );
 
-		update_post_meta( $post->ID, 'rop_publish_now', 'yes' );
-		update_post_meta( $post->ID, 'rop_publish_now_accounts', $active );
-
-		$cron = new Rop_Cron_Helper();
-		$cron->manage_cron( array( 'action' => 'publish-now' ) );
+		$this->rop_cron_job_publish_now($post_id,$enabled);
 
 	}
 
@@ -804,16 +794,19 @@ class Rop_Admin {
 	/**
 	 * The publish now Cron Job for the plugin.
 	 *
+	 * @param int $post_id The post id.
+	 * @param array $enabled The enabled accounts.
+	 *
 	 * @since   8.1.0
 	 * @access  public
 	 */
-	public function rop_cron_job_publish_now() {
+	public function rop_cron_job_publish_now($post_id = '',$enabled = array()) {
 		$queue           = new Rop_Queue_Model();
 		$services_model  = new Rop_Services_Model();
 		$logger          = new Rop_Logger();
 		$service_factory = new Rop_Services_Factory();
 
-		$queue_stack = $queue->build_queue_publish_now();
+		$queue_stack = $queue->build_queue_publish_now($post_id,$enabled);
 		$logger->info( 'Fetching publish now queue', array( 'queue' => $queue_stack ) );
 		foreach ( $queue_stack as $account => $events ) {
 			foreach ( $events as $index => $event ) {
