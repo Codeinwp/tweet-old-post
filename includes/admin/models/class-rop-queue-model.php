@@ -308,32 +308,32 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	/**
 	 * Method to build the queue for posts to be published on update/create.
 	 *
-	 * @param int $post_id The post id.
- 	 * @param array $enabled The enabled accounts.
+	 * @param int   $post_id The post id.
+	 * @param array $enabled The enabled accounts.
 	 *
 	 * @access  public
 	 * @return array
 	 */
-	public function build_queue_publish_now($post_id= '',$enabled = array()) {
+	public function build_queue_publish_now( $post_id = '', $enabled = array() ) {
 		$accounts   = $enabled;
 		$normalized_queue   = array();
 
-		if ( empty($post_id) ) {
+		if ( empty( $post_id ) ) {
 			return $normalized_queue;
 		}
 
 		$index = 0;
 
-			if ( empty( $accounts) ) {
-					return $normalized_queue;
-				}
+		if ( empty( $accounts ) ) {
+				return $normalized_queue;
+		}
 
-			foreach ( $accounts as $account_id ) {
-				$normalized_queue[ $account_id ][ $index ] = array(
-					'posts' => array( $post_id ),
-				);
-	$index++;
-			}
+		foreach ( $accounts as $account_id ) {
+			$normalized_queue[ $account_id ][ $index ] = array(
+				'posts' => array( $post_id ),
+			);
+			$index++;
+		}
 
 		return $normalized_queue;
 	}

@@ -733,7 +733,7 @@ class Rop_Admin {
 			return;
 		}
 
-$this->rop_cron_job_publish_now($post_id,$enabled);
+		$this->rop_cron_job_publish_now( $post_id, $enabled );
 	}
 
 	/**
@@ -786,7 +786,7 @@ $this->rop_cron_job_publish_now($post_id,$enabled);
 		$services = new Rop_Services_Model();
 		$enabled   = array_keys( $services->get_active_accounts() );
 
-		$this->rop_cron_job_publish_now($post_id,$enabled);
+		$this->rop_cron_job_publish_now( $post_id, $enabled );
 
 	}
 
@@ -794,19 +794,19 @@ $this->rop_cron_job_publish_now($post_id,$enabled);
 	/**
 	 * The publish now Cron Job for the plugin.
 	 *
-	 * @param int $post_id The post id.
+	 * @param int   $post_id The post id.
 	 * @param array $enabled The enabled accounts.
 	 *
 	 * @since   8.1.0
 	 * @access  public
 	 */
-	public function rop_cron_job_publish_now($post_id = '',$enabled = array()) {
+	public function rop_cron_job_publish_now( $post_id = '', $enabled = array() ) {
 		$queue           = new Rop_Queue_Model();
 		$services_model  = new Rop_Services_Model();
 		$logger          = new Rop_Logger();
 		$service_factory = new Rop_Services_Factory();
 
-		$queue_stack = $queue->build_queue_publish_now($post_id,$enabled);
+		$queue_stack = $queue->build_queue_publish_now( $post_id, $enabled );
 		$logger->info( 'Fetching publish now queue', array( 'queue' => $queue_stack ) );
 		foreach ( $queue_stack as $account => $events ) {
 			foreach ( $events as $index => $event ) {
