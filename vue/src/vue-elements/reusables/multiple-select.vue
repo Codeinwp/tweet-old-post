@@ -87,6 +87,14 @@
 			dontLock: {
 				default: false,
 				type: Boolean
+            },
+            is_pro_version: {
+                default: false,
+                type: Boolean
+            },
+            apply_limit: {
+                default: false,
+                type: Boolean
 			}
 		},
 		mounted() {
@@ -99,9 +107,9 @@
 						}
 						index++
 					}
+
 				}
 			}
-			// this.$emit( 'update', this.search )
 		},
 		updated(){
 
@@ -117,14 +125,28 @@
 				}
 			}
 		},
-		created(){
+		created() {
+			let selected_items_no = 0;
+			for (let selection of this.selected) {
+				if (selection.selected) {
+					let index = 0;
+					for (let option of this.options) {
+						if (option.value === selection.value) {
+							this.options[index].selected = selection.selected;
+							selected_items_no++
+						}
+						index++
+					}
+
+				}
+			}
+
 			this.rand = Math.round(Math.random() * 1000);
 			let index = 0
 			for (let option of this.options) {
 				this.options[index].selected = false;
 				index++
 			}
-
 		},
 		data: function () {
 			return {
@@ -140,6 +162,9 @@
 		watch: {
 			search: function (val) {
 				this.$emit('update', val)
+            },
+            selected: function (val) {
+                this.$emit( 'display-limiter-notice', this.selected.length)
 			}
 		},
 		computed: {
@@ -234,23 +259,40 @@
 				if (this.is_disabled) {
 					return;
 				}
-				let newSelection = this.options[index]
-				newSelection.selected = true
-				this.selected.push(newSelection)
-				this.$refs.search.focus()
-				this.magic_flag = false
-				this.search = ''
-				this.changedSelection(this.selected)
-			},
-			removeSelected(index) {
-				if (this.is_disabled) {
-					return;
-				}
-				this.selected.splice(index, 1)
-				this.$refs.search.focus()
-				this.magic_flag = false
-				this.search = ''
-				this.changedSelection(this.selected)
+
+                if (false === this.limit_selection()) {
+                    return;
+                }
+
+                let newSelection = this.options[index]
+                newSelection.selected = true
+                this.selected.push(newSelection)
+                this.$refs.search.focus()
+                this.magic_flag = false
+                this.search = ''
+                this.changedSelection(this.selected)
+            },
+            removeSelected(index) {
+                if (this.is_disabled) {
+                    return;
+                }
+                this.selected.splice(index, 1)
+                this.$refs.search.focus()
+                this.magic_flag = false
+                this.search = ''
+                this.changedSelection(this.selected)
+            },
+            limit_selection() {
+                if(true === this.apply_limit){
+                    if (false === this.is_pro_version && this.selected.length > 3) {
+                        this.$refs.search.focus();
+                        this.magic_flag = false;
+                        this.search = '';
+
+                        return false;
+                    }
+                }
+                return true;
 			}
 		}
 	}

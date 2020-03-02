@@ -71,7 +71,6 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @return array|bool
 	 * @since   8.0.0
 	 * @access  public
-	 *
 	 */
 	public function get_taxonomies( $post_formats = array() ) {
 
@@ -137,15 +136,14 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	/**
 	 * Utility method to retrieve posts.
 	 *
-	 * @param array $selected_post_types The selected post types.
-	 * @param array $taxonomies The selected taxonomies.
+	 * @param array  $selected_post_types The selected post types.
+	 * @param array  $taxonomies The selected taxonomies.
 	 * @param string $search A search query.
-	 * @param bool $exclude The exclude taxonomies flag.
+	 * @param bool   $exclude The exclude taxonomies flag.
 	 *
 	 * @return array
 	 * @since   8.0.0
 	 * @access  public
-	 *
 	 */
 	public function get_posts( $selected_post_types, $taxonomies, $search = '', $exclude, $show_excluded_posts = false, $page = 1 ) {
 		$search = strval( $search );
@@ -221,7 +219,6 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @return array
 	 * @since   8.0.0
 	 * @access  private
-	 *
 	 */
 	private function build_post_types( $selected_post_types = array() ) {
 		$post_types = array();
@@ -246,7 +243,6 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @return array
 	 * @since   8.0.0
 	 * @access  private
-	 *
 	 */
 	private function build_tax_query( $custom_data = array() ) {
 
@@ -293,7 +289,6 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 * @since   8.0.0
 	 * @access  public
-	 *
 	 */
 	public function select( $account_id = false ) {
 		$post_types      = $this->build_post_types();
@@ -374,14 +369,13 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * Utility method to query the DB for posts.
 	 *
 	 * @param string $account_id The account ID.
-	 * @param array $post_types The post types array.
-	 * @param array $tax_queries The taxonomies query array.
-	 * @param array $excluded_by_user Excluded post ID's by the user.
+	 * @param array  $post_types The post types array.
+	 * @param array  $tax_queries The taxonomies query array.
+	 * @param array  $excluded_by_user Excluded post ID's by the user.
 	 *
 	 * @return mixed
 	 * @since   8.0.0
 	 * @access  private
-	 *
 	 */
 	private function query_results( $account_id, $post_types, $tax_queries, $excluded_by_user ) {
 		$exclude = $this->build_exclude( $account_id, $excluded_by_user );
@@ -417,7 +411,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * Utility method to build an exclusion list.
 	 *
 	 * @param string $account_id The account ID.
-	 * @param array $excluded_by_user Excluded post ID's by the user.
+	 * @param array  $excluded_by_user Excluded post ID's by the user.
 	 *
 	 * @return array|mixed
 	 * @uses $blocked buffer ( banned posts ).
@@ -425,7 +419,6 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  private
-	 *
 	 */
 	private function build_exclude( $account_id, $excluded_by_user = array() ) {
 		$exclude = array();
@@ -450,7 +443,6 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @return array
 	 * @since   8.0.0
 	 * @access  private
-	 *
 	 */
 	private function build_query_args( $post_types, $tax_queries, $exclude ) {
 		$admin = new Rop_Admin();
@@ -513,7 +505,6 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @return bool
 	 * @since   8.0.0
 	 * @access  public
-	 *
 	 */
 	public function has_buffer_items( $account_id ) {
 		$this->buffer = wp_parse_args( $this->get( 'posts_buffer' ), $this->buffer );
@@ -528,7 +519,6 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  public
-	 *
 	 */
 	public function clear_buffer( $account_id = false ) {
 		if ( isset( $account_id ) && $account_id ) {
@@ -546,11 +536,10 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * Utility method to mark a post ID as blocked.
 	 *
 	 * @param string $account_id The account ID.
-	 * @param int $post_id The post ID.
+	 * @param int    $post_id The post ID.
 	 *
 	 * @since   8.0.0
 	 * @access  public
-	 *
 	 */
 	public function mark_as_blocked( $account_id, $post_id ) {
 		if ( ! isset( $this->blocked[ $account_id ] ) ) {
@@ -567,11 +556,10 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * Method to update the buffer.
 	 *
 	 * @param string $account_id The account ID.
-	 * @param int $post_id The post ID.
+	 * @param int    $post_id The post ID.
 	 *
 	 * @since   8.0.0
 	 * @acess   public
-	 *
 	 */
 	public function update_buffer( $account_id, $post_id ) {
 		if ( ! isset( $this->buffer[ $account_id ] ) ) {
@@ -633,7 +621,6 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @return  mixed
 	 * @since   8.1.7
 	 * @access   public
-	 *
 	 */
 	public function rop_wpml_id( $post_id ) {
 
@@ -664,7 +651,6 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @return  string
 	 * @since   8.1.7
 	 * @access   public
-	 *
 	 */
 	public function rop_wpml_link( $url ) {
 		$default_lang = apply_filters( 'wpml_default_language', null );

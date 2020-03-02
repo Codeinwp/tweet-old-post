@@ -394,7 +394,7 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 
 		// Check if image is present.
 		if ( empty( $post_details['post_image'] ) ) {
-			$this->logger->alert_error( sprintf( 'No image present in %s to pin to %s for %s', html_entity_decode( get_the_title( $post_details['post_id'] ) ), $args['id'], $post_details['service'] ) );
+			$this->logger->alert_error( sprintf( 'No featured image set for %s cannot pin to %s on Pinterest', html_entity_decode( get_the_title( $post_details['post_id'] ) ), $args['id'] ) );
 
 			return false;
 		}
