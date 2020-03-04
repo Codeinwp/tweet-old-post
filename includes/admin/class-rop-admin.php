@@ -1025,15 +1025,39 @@ class Rop_Admin {
 	 */
 	public function migrate_taxonomies_to_post_format() {
 
+		$installed_at_version = get_option( 'rop_first_install_version' );
+		// If this option does not exist, stop the process.
+		if ( empty( $installed_at_version ) ) {
+			return;
+		}
+
+		// Apply the migration process only for users that installed an older version.
+		if ( version_compare( $installed_at_version, '8.5.4', '>' ) ) {
+			return;
+		}
+
+		// Fetch the plugin global settings.
 		$global_settings = new Rop_Global_Settings();
+
+		// If there is no pro licence, cut process early.
+		if ( $global_settings->license_type() < 1 ) {
+			return;
+		}
+
 		// If any type of Pro is installed and active.
 		if ( $global_settings->license_type() > 0 ) {
 			// Get the current plugin options.
 			$option = get_option( 'rop_data' );
+
 			// Get the custom options.
 			// If this option exists, then the migration took place, and it will not happen again.
 			// Should return false the first time as it does not exist.
 			$update_took_place = get_option( 'rop_data_migrated_tax' );
+
+			// If the update already took place and the general settings array value does not exist, cut process early.
+			if ( ! empty( $update_took_place ) && ! isset( $option['general_settings'] ) ) {
+				return;
+			}
 
 			$general_settings = array();
 			// Making sure the option we need, exists.
@@ -1056,6 +1080,7 @@ class Rop_Admin {
 				if ( ! empty( $selected_taxonomies ) ) {
 
 					if ( isset( $option['post_format'] ) && ! empty( $option['post_format'] ) ) {
+
 						foreach ( $option['post_format'] as &$social_media_account_data ) {
 							// If the options exists in Post Format but it's empty or,
 							// If the option does not exist at all.
@@ -1068,11 +1093,14 @@ class Rop_Admin {
 							) {
 								// Add the taxonomies to all social media accounts.
 								$social_media_account_data['taxonomy_filter'] = $selected_taxonomies;
-								// inform that the update took place.
-								$update_took_place = true;
+
 								// If excluded is checked, we also add it to post format.
 								$social_media_account_data['exclude_taxonomies'] = $exclude_taxonomies;
+
 							}
+
+							// inform that the update took place.
+							$update_took_place = true;
 						}
 					}
 				}
