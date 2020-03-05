@@ -240,7 +240,6 @@
 				let self = this
 				window.on('select', function () {
 					let first = window.state().get('selection').first().toJSON()
-					//console.log( first )
 					self.content.post_image = first.url;
 					self.post_edit.image = first.url;
 				})

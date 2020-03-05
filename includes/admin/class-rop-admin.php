@@ -1022,6 +1022,103 @@ class Rop_Admin {
 	}
 
 	/**
+	 * Migrate the taxonomies from General Settings to Post Format for Pro users.
+	 *
+	 * @since 8.5.4
+	 */
+	public function migrate_taxonomies_to_post_format() {
+
+		$installed_at_version = get_option( 'rop_first_install_version' );
+		// If this option does not exist, stop the process.
+		if ( empty( $installed_at_version ) ) {
+			return;
+		}
+
+		// Apply the migration process only for users that installed an older version.
+		if ( version_compare( $installed_at_version, '8.5.4', '>' ) ) {
+			return;
+		}
+
+		// Fetch the plugin global settings.
+		$global_settings = new Rop_Global_Settings();
+
+		// If there is no pro licence, cut process early.
+		if ( $global_settings->license_type() < 1 ) {
+			return;
+		}
+
+		// If any type of Pro is installed and active.
+		if ( $global_settings->license_type() > 0 ) {
+			// Get the current plugin options.
+			$option = get_option( 'rop_data' );
+
+			// Get the custom options.
+			// If this option exists, then the migration took place, and it will not happen again.
+			// Should return false the first time as it does not exist.
+			$update_took_place = get_option( 'rop_data_migrated_tax' );
+
+			// If the update already took place and the general settings array value does not exist, cut process early.
+			if ( ! empty( $update_took_place ) && ! isset( $option['general_settings'] ) ) {
+				return;
+			}
+
+			$general_settings = array();
+			// Making sure the option we need, exists.
+			if ( empty( $update_took_place ) && isset( $option['general_settings'] ) ) {
+				$general_settings = $option['general_settings'];
+
+				$selected_taxonomies = array();
+				$exclude_taxonomies  = '';
+				if ( isset( $general_settings['selected_taxonomies'] ) ) {
+					// Get the selected Taxonomies from General Settings tab.
+					$selected_taxonomies = $general_settings['selected_taxonomies'];
+				}
+
+				// Making sure to check "Excluded" if the main General Tab ahs it checked.
+				if ( isset( $general_settings['exclude_taxonomies'] ) && ! empty( $general_settings['exclude_taxonomies'] ) ) {
+					$exclude_taxonomies = $general_settings['exclude_taxonomies'];
+				}
+
+				// If there are any taxonomies selected in the general tab.
+				if ( ! empty( $selected_taxonomies ) ) {
+
+					if ( isset( $option['post_format'] ) && ! empty( $option['post_format'] ) ) {
+
+						foreach ( $option['post_format'] as &$social_media_account_data ) {
+							// If the options exists in Post Format but it's empty or,
+							// If the option does not exist at all.
+							if (
+								! isset( $social_media_account_data['taxonomy_filter'] ) ||
+								(
+									isset( $social_media_account_data['taxonomy_filter'] ) &&
+									empty( $social_media_account_data['taxonomy_filter'] )
+								)
+							) {
+								// Add the taxonomies to all social media accounts.
+								$social_media_account_data['taxonomy_filter'] = $selected_taxonomies;
+
+								// If excluded is checked, we also add it to post format.
+								$social_media_account_data['exclude_taxonomies'] = $exclude_taxonomies;
+
+							}
+
+							// inform that the update took place.
+							$update_took_place = true;
+						}
+					}
+				}
+
+				if ( true === $update_took_place ) {
+					// Create the option so that the migrate code will not run again.
+					add_option( 'rop_data_migrated_tax', 'yes', null, 'no' );
+					// Update the plugin data containing the changes.
+					update_option( 'rop_data', $option );
+				}
+			}
+		}
+	}
+
+	/**
 	 * Checks to see if the cron schedule is firing.
 	 *
 	 * @since   8.4.3

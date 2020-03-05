@@ -84,10 +84,10 @@
                     </div>
                 </div>
 
-                <span class="divider"></span>
+				<span class="divider" v-if="!isPro"></span>
 
                 <!-- Taxonomies -->
-                <div class="columns py-2">
+				<div class="columns py-2" v-if="!isPro">
                     <div class="column col-6 col-sm-12 vertical-align">
                         <b>{{labels.taxonomies_title}}</b>
                         <p class="text-gray"><span v-html="labels.taxonomies_desc"></span></p>
@@ -104,11 +104,9 @@
 									<i class="form-icon"></i>{{labels.taxonomies_exclude}}
 								</label>
 							</span>
-
                         </div>
                         <p class="text-primary rop-post-type-badge" v-if="is_taxonomy_message" v-html="labels.post_types_taxonomy_limit"></p>
                     </div>
-
                 </div>
 
                 <span class="divider"></span>
@@ -351,9 +349,9 @@
                     postTypes.push(data[index].value)
                 }
 
-                this.$store.commit('updateState', {stateData: data, requestName: 'update_selected_post_types'})
-                this.$store.dispatch('fetchAJAX', {req: 'get_taxonomies', data: {post_types: postTypes}})
-            },
+				this.$store.commit('updateState', {stateData: data, requestName: 'update_selected_post_types'})
+				this.$store.dispatch('fetchAJAX', {req: 'get_taxonomies', data: {post_types: postTypes}})
+			},
             updatedTaxonomies(data) {
                 let taxonomies = [];
 
@@ -377,84 +375,84 @@
                 }
 
 
-            },
-            saveGeneralSettings() {
-                let postTypesSelected = this.$store.state.generalSettings.selected_post_types
-                let taxonomiesSelected = this.$store.state.generalSettings.selected_taxonomies
-                let excludeTaxonomies = this.generalSettings.exclude_taxonomies
-                let postsSelected = this.generalSettings.selected_posts
-                this.is_loading = true;
-                this.$log.info('Sending request for saving general settings..');
-                this.$store.dispatch('fetchAJAXPromise', {
-                    req: 'save_general_settings',
-                    updateState: false,
-                    data: {
-                        available_taxonomies: this.generalSettings.available_taxonomies,
-                        default_interval: this.generalSettings.default_interval,
-                        minimum_post_age: this.generalSettings.minimum_post_age,
-                        maximum_post_age: this.generalSettings.maximum_post_age,
-                        number_of_posts: this.generalSettings.number_of_posts,
-                        more_than_once: this.generalSettings.more_than_once,
-                        selected_post_types: postTypesSelected,
-                        selected_taxonomies: taxonomiesSelected,
-                        exclude_taxonomies: excludeTaxonomies,
-                        ga_tracking: this.generalSettings.ga_tracking,
-                        custom_messages: this.generalSettings.custom_messages,
-                        custom_messages_share_order: this.generalSettings.custom_messages_share_order,
-                        instant_share: this.generalSettings.instant_share,
-                        instant_share_default: this.generalSettings.instant_share_default,
-                        instant_share_future_scheduled: this.generalSettings.instant_share_future_scheduled,
-                        housekeeping: this.generalSettings.housekeeping,
-                    }
-                }).then(response => {
-                    this.is_loading = false;
-                    this.$log.info('Successfully saved general settings.');
-                }, error => {
+			},
+			saveGeneralSettings() {
+				let postTypesSelected = this.$store.state.generalSettings.selected_post_types
+				let taxonomiesSelected = this.$store.state.generalSettings.selected_taxonomies
+				let excludeTaxonomies = this.generalSettings.exclude_taxonomies
+				let postsSelected = this.generalSettings.selected_posts
+				this.is_loading = true;
+				this.$log.info('Sending request for saving general settings..');
+				this.$store.dispatch('fetchAJAXPromise', {
+					req: 'save_general_settings',
+					updateState: false,
+					data: {
+						available_taxonomies: this.generalSettings.available_taxonomies,
+						default_interval: this.generalSettings.default_interval,
+						minimum_post_age: this.generalSettings.minimum_post_age,
+						maximum_post_age: this.generalSettings.maximum_post_age,
+						number_of_posts: this.generalSettings.number_of_posts,
+						more_than_once: this.generalSettings.more_than_once,
+						selected_post_types: postTypesSelected,
+						selected_taxonomies: taxonomiesSelected,
+						exclude_taxonomies: excludeTaxonomies,
+						ga_tracking: this.generalSettings.ga_tracking,
+						custom_messages: this.generalSettings.custom_messages,
+						custom_messages_share_order: this.generalSettings.custom_messages_share_order,
+						instant_share: this.generalSettings.instant_share,
+						instant_share_default: this.generalSettings.instant_share_default,
+						instant_share_future_scheduled: this.generalSettings.instant_share_future_scheduled,
+						housekeeping: this.generalSettings.housekeeping,
+					}
+				}).then(response => {
+					this.is_loading = false;
+					this.$log.info('Successfully saved general settings.');
+				}, error => {
 
-                    this.$log.error('Successfully saved general settings.');
-                    this.is_loading = false;
-                    Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
-                })
-            }
-        },
-        components: {
-            counterInput,
-            MultipleSelect
-        }
-    }
+					this.$log.error('Successfully saved general settings.');
+					this.is_loading = false;
+					Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+				})
+			}
+		},
+		components: {
+			counterInput,
+			MultipleSelect
+		}
+	}
 </script>
 
 <style scoped>
-    #rop_core .panel-body .text-gray {
-        margin: 0;
-        line-height: normal;
-    }
+	#rop_core .panel-body .text-gray {
+		margin: 0;
+		line-height: normal;
+	}
 
-    #rop_core .input-group {
-        width: 100%;
-    }
+	#rop_core .input-group {
+		width: 100%;
+	}
 
-    b {
-        margin-bottom: 5px;
-        display: block;
-    }
+	b {
+		margin-bottom: 5px;
+		display: block;
+	}
 
-    #rop_core .input-group .input-group-addon {
-        padding: 3px 5px;
-    }
+	#rop_core .input-group .input-group-addon {
+		padding: 3px 5px;
+	}
 
-    @media ( max-width: 600px ) {
-        #rop_core .panel-body .text-gray {
-            margin-bottom: 10px;
-        }
+	@media ( max-width: 600px ) {
+		#rop_core .panel-body .text-gray {
+			margin-bottom: 10px;
+		}
 
-        #rop_core .text-right {
-            text-align: left;
-        }
-    }
+		#rop_core .text-right {
+			text-align: left;
+		}
+	}
 
-    .rop-post-type-badge {
-        text-align: center;
+	.rop-post-type-badge{
+		text-align: center;
 
-    }
+	}
 </style>
