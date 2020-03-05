@@ -92,7 +92,7 @@ export default new Vuex.Store({
         activeSchedule: [],
         queue: {},
         publish_now: ropApiSettings.publish_now,
-        hide_preloading : 0,
+        hide_preloading: 0,
         fb_exception_toast: ropApiSettings.fb_domain_toast_display
     },
     mutations: {
@@ -118,7 +118,7 @@ export default new Vuex.Store({
             state.hide_preloading = data;
         },
         updateState(state, {stateData, requestName}) {
-            Vue.$log.debug('State change for ', requestName , ' With value: ', stateData);
+            Vue.$log.debug('State change for ', requestName, ' With value: ', stateData);
             switch (requestName) {
                 case 'manage_cron':
                     state.cron_status = stateData;
