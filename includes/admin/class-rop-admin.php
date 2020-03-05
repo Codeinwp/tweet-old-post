@@ -753,58 +753,58 @@ class Rop_Admin {
 	 */
 	public function share_scheduled_future_post( $post ) {
 
-	$settings            = new Rop_Settings_Model();
-	$selected_post_types = wp_list_pluck( $settings->get_selected_post_types(), 'value' );
+		$settings            = new Rop_Settings_Model();
+		$selected_post_types = wp_list_pluck( $settings->get_selected_post_types(), 'value' );
 
-	if ( ! $settings->get_instant_share_future_scheduled() ) {
-		return;
-	}
-
-	if ( ! in_array( $post->post_type, $selected_post_types ) ) {
-		return;
-	}
-
-	// get taxonomies selected in general settings
-	$selected_taxonomies = $settings->get_selected_taxonomies();
-
-	if ( ! empty( $selected_taxonomies ) ) {
-
-		// check if "Exclude" is checked
-		$taxonomies_are_excluded = $settings->get_exclude_taxonomies();
-
-		$taxonomies = array();
-		foreach ( $selected_taxonomies as $key => $value ) {
-			$taxonomies[$value['tax']] = $value['value'];
-		}
-
-					$taxonomies_slug = array_keys($taxonomies);
-					$taxonomies_ids = array_values($taxonomies);
-
-		// check if current post has any of the taxonomies set in general settings
-		$post_term_ids = wp_get_post_terms( $post->ID, $taxonomies_slug,  array( 'fields' => 'ids' ) );
-
-		//GET ALL THE IDS FOR THE TERMS ASSIGNED TO THE POST AND THEN COMPARE IT AGAINST WHAT IS IN THE TAXONOMY FIELD
-
-			$common = array_intersect($taxonomies_ids, $post_term_ids );
-
-		// if the post contains any of the taxonomies that are excluded, bail
-		if ( count($common) > 0 && $taxonomies_are_excluded ) {
+		if ( ! $settings->get_instant_share_future_scheduled() ) {
 			return;
 		}
-		// if the post doesn't contain any of the selected taxonomies that are whitelisted for posting, bail
-		if ( count($common) < 1 && ! $taxonomies_are_excluded ) {
+
+		if ( ! in_array( $post->post_type, $selected_post_types ) ) {
 			return;
 		}
-	}
 
-	$services = new Rop_Services_Model();
-	$active   = array_keys( $services->get_active_accounts() );
+		// get taxonomies selected in general settings
+		$selected_taxonomies = $settings->get_selected_taxonomies();
 
-	update_post_meta( $post->ID, 'rop_publish_now', 'yes' );
-	update_post_meta( $post->ID, 'rop_publish_now_accounts', $active );
+		if ( ! empty( $selected_taxonomies ) ) {
 
-	$cron = new Rop_Cron_Helper();
-	$cron->manage_cron( array( 'action' => 'publish-now' ) );
+			// check if "Exclude" is checked
+			$taxonomies_are_excluded = $settings->get_exclude_taxonomies();
+
+			$taxonomies = array();
+
+			foreach ( $selected_taxonomies as $key => $value ) {
+				$taxonomies[ $value['tax'] ] = $value['value'];
+			}
+
+			$taxonomies_slug = array_keys( $taxonomies );
+			$taxonomies_ids = array_values( $taxonomies );
+
+			// get term ids for the taxonomies selected on General Settings of ROP that are present in the current post
+			$post_term_ids = wp_get_post_terms( $post->ID, $taxonomies_slug, array( 'fields' => 'ids' ) );
+
+			// get the common term ids between what's assigned to the post and what's selected in General Settings
+			$common = array_intersect( $taxonomies_ids, $post_term_ids );
+
+			// if the post contains any of the taxonomies that are excluded, bail
+			if ( count( $common ) > 0 && $taxonomies_are_excluded ) {
+				return;
+			}
+			// if the post doesn't contain any of the selected taxonomies that are whitelisted for posting, bail
+			if ( count( $common ) < 1 && ! $taxonomies_are_excluded ) {
+				return;
+			}
+		}
+
+		$services = new Rop_Services_Model();
+		$active   = array_keys( $services->get_active_accounts() );
+
+		update_post_meta( $post->ID, 'rop_publish_now', 'yes' );
+		update_post_meta( $post->ID, 'rop_publish_now_accounts', $active );
+
+		$cron = new Rop_Cron_Helper();
+		$cron->manage_cron( array( 'action' => 'publish-now' ) );
 	}
 
 
