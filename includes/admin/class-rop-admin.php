@@ -769,14 +769,7 @@ class Rop_Admin {
 
 		if ( ! empty( $selected_taxonomies ) ) {
 
-			// check if "Exclude" is checked
-			$taxonomies_are_excluded = $settings->get_exclude_taxonomies();
-
-			$taxonomies = array();
-
-			foreach ( $selected_taxonomies as $key => $value ) {
-				$taxonomies[ $value['tax'] ] = $value['value'];
-			}
+			$taxonomies = array_column( $selected_taxonomies, 'value', 'tax' );
 
 			$taxonomies_slug = array_keys( $taxonomies );
 			$taxonomies_ids = array_values( $taxonomies );
@@ -786,6 +779,9 @@ class Rop_Admin {
 
 			// get the common term ids between what's assigned to the post and what's selected in General Settings
 			$common = array_intersect( $taxonomies_ids, $post_term_ids );
+
+			// check if "Exclude" is checked
+			$taxonomies_are_excluded = $settings->get_exclude_taxonomies();
 
 			// if the post contains any of the taxonomies that are excluded, bail
 			if ( count( $common ) > 0 && $taxonomies_are_excluded ) {
