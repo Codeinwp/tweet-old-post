@@ -767,9 +767,10 @@ class Rop_Admin {
 		$global_settings = new Rop_Global_Settings();
 
 		$services = new Rop_Services_Model();
-		$active   = array_keys( $services->get_active_accounts() );
+		$active_accounts = array_keys( $services->get_active_accounts() );
 
-		$rop_active_status = is_plugin_active( 'tweet-old-post-pro/tweet-old-post-pro.php' );
+		$active_plugins = apply_filters('active_plugins', get_option('active_plugins'));
+		$rop_active_status = in_array('tweet-old-post-pro/tweet-old-post-pro.php', $active_plugins );
 
 		// this would only be possible in Pro plugin
 		if ( $global_settings->license_type() > 0 && $rop_active_status ) {
@@ -815,9 +816,9 @@ class Rop_Admin {
 			}
 
 			// accounts to share to
-			$active = array_intersect( $active, $social_accounts );
+			$active_accounts = array_intersect( $active_accounts, $social_accounts );
 
-			if ( empty( $active ) ) {
+			if ( empty( $active_accounts ) ) {
 				return;
 			}
 		}
@@ -853,7 +854,7 @@ class Rop_Admin {
 		}
 
 		update_post_meta( $post->ID, 'rop_publish_now', 'yes' );
-		update_post_meta( $post->ID, 'rop_publish_now_accounts', $active );
+		update_post_meta( $post->ID, 'rop_publish_now_accounts', $active_accounts );
 
 		$cron = new Rop_Cron_Helper();
 		$cron->manage_cron( array( 'action' => 'publish-now' ) );
