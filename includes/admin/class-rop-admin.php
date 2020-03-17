@@ -769,8 +769,8 @@ class Rop_Admin {
 		$services = new Rop_Services_Model();
 		$active_accounts = array_keys( $services->get_active_accounts() );
 
-		$active_plugins = apply_filters('active_plugins', get_option('active_plugins'));
-		$rop_active_status = in_array('tweet-old-post-pro/tweet-old-post-pro.php', $active_plugins );
+		$active_plugins = apply_filters( 'active_plugins', get_option( 'active_plugins' ) );
+		$rop_active_status = in_array( 'tweet-old-post-pro/tweet-old-post-pro.php', $active_plugins );
 
 		// this would only be possible in Pro plugin
 		if ( $global_settings->license_type() > 0 && $rop_active_status ) {
