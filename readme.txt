@@ -254,6 +254,14 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.5.4 - 2020-03-18  = 
+
+* New PRO: Taxonomy filtering is now account-based
+* Fix: Fixed an issue where the connected accounts would not drop down after clicking the "Share immediately using Revive Old Posts" button
+* Change: Changed the function the "share immediately using Revive Old Posts" feature uses to set the cron task time
+* Info: Tested on WP 5.4 RC
+
+
 = 8.5.3 - 2020-02-13  = 
 
 * Fix PRO: Fixed an issue where custom images could not be uploaded from the share queue. 
