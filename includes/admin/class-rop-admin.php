@@ -764,40 +764,100 @@ class Rop_Admin {
 			return;
 		}
 
-		// get taxonomies selected in general settings
-		$selected_taxonomies = $settings->get_selected_taxonomies();
+		$global_settings = new Rop_Global_Settings();
 
-		if ( ! empty( $selected_taxonomies ) ) {
+		$services = new Rop_Services_Model();
+		$active_accounts = array_keys( $services->get_active_accounts() );
 
-			// check if "Exclude" is checked
-			$taxonomies_are_excluded = $settings->get_exclude_taxonomies();
+		$active_plugins = apply_filters( 'active_plugins', get_option( 'active_plugins' ) );
+		$rop_active_status = in_array( 'tweet-old-post-pro/tweet-old-post-pro.php', $active_plugins );
 
-			$taxonomies = array();
-			foreach ( $selected_taxonomies as $key => $value ) {
-				$taxonomies[] = $value['tax'];
+		// this would only be possible in Pro plugin
+		if ( $global_settings->license_type() > 0 && $rop_active_status ) {
+
+			// Get the current plugin options.
+			$option = get_option( 'rop_data' );
+
+			$social_accounts = array();
+			$post_formats = $option['post_format'];
+
+			foreach ( $post_formats as $key => $value ) {
+
+				if ( ! array_key_exists( 'taxonomy_filter', $value ) ) {
+					// share to accounts where no filters are selected
+					$social_accounts[] = $key;
+					continue;
+				}
+
+				// get account specific taxonomy filter
+				$taxonomy_filter = array_column( $value['taxonomy_filter'], 'tax', 'value' );
+				$taxonomies_are_excluded = $value['exclude_taxonomies'];
+
+				$taxonomies_slug = array_values( $taxonomy_filter );
+				$taxonomies_ids = array_keys( $taxonomy_filter );
+
+				// get term ids for the taxonomies selected on General Settings of ROP that are present in the current post
+				$post_term_ids = wp_get_post_terms( $post->ID, $taxonomies_slug, array( 'fields' => 'ids' ) );
+
+				// get the common term ids between what's assigned to the post and what's selected in General Settings
+				$common = array_intersect( $taxonomies_ids, $post_term_ids );
+
+				// if the post contains any of the taxonomies that are excluded, bail
+				if ( count( $common ) > 0 && $taxonomies_are_excluded ) {
+					continue;
+				}
+				// if the post doesn't contain any of the selected taxonomies that are whitelisted for posting, bail
+				if ( count( $common ) < 1 && ! $taxonomies_are_excluded ) {
+					continue;
+				}
+
+				$social_accounts[] = $key;
+
 			}
 
-			// check if current post has any of the taxonomies set in general settings
-			$post_terms = wp_get_post_terms( $post->ID, $taxonomies );
-			// if the post contains any of the taxonomies that are exluded, bail
-			if ( ! empty( $post_terms ) && $taxonomies_are_excluded ) {
-				return;
-			}
-			// if the post doesn't contain any of the selected taxonomies that are whitelisted for posting, bail
-			if ( empty( $post_terms ) && ! $taxonomies_are_excluded ) {
+			// accounts to share to
+			$active_accounts = array_intersect( $active_accounts, $social_accounts );
+
+			if ( empty( $active_accounts ) ) {
 				return;
 			}
 		}
 
-		$services = new Rop_Services_Model();
-		$active   = array_keys( $services->get_active_accounts() );
+		// get taxonomies selected in general settings
+		$selected_taxonomies = $settings->get_selected_taxonomies();
+
+		// only run if free version
+		if ( ! empty( $selected_taxonomies ) && ( $global_settings->license_type() < 1 || ! $rop_active_status ) ) {
+
+			$taxonomies = array_column( $selected_taxonomies, 'tax', 'value' );
+
+			$taxonomies_slug = array_values( $taxonomies );
+			$taxonomies_ids = array_keys( $taxonomies );
+
+			// get term ids for the taxonomies selected on General Settings of ROP that are present in the current post
+			$post_term_ids = wp_get_post_terms( $post->ID, $taxonomies_slug, array( 'fields' => 'ids' ) );
+
+			// get the common term ids between what's assigned to the post and what's selected in General Settings
+			$common = array_intersect( $taxonomies_ids, $post_term_ids );
+
+			// check if "Exclude" is checked
+			$taxonomies_are_excluded = $settings->get_exclude_taxonomies();
+
+			// if the post contains any of the taxonomies that are excluded, bail
+			if ( count( $common ) > 0 && $taxonomies_are_excluded ) {
+				return;
+			}
+			// if the post doesn't contain any of the selected taxonomies that are whitelisted for posting, bail
+			if ( count( $common ) < 1 && ! $taxonomies_are_excluded ) {
+				return;
+			}
+		}
 
 		update_post_meta( $post->ID, 'rop_publish_now', 'yes' );
-		update_post_meta( $post->ID, 'rop_publish_now_accounts', $active );
+		update_post_meta( $post->ID, 'rop_publish_now_accounts', $active_accounts );
 
 		$cron = new Rop_Cron_Helper();
 		$cron->manage_cron( array( 'action' => 'publish-now' ) );
-
 	}
 
 
