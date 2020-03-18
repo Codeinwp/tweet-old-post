@@ -59,6 +59,7 @@
 	import EmptyActiveAccounts from './reusables/empty-active-accounts.vue'
 	import PostFormat from './post-format.vue'
 	import AccountSchedule from './account-schedule.vue'
+	import MultipleSelect from './reusables/multiple-select.vue'
 
 	module.exports = {
 		name: 'account-selector-view',
@@ -257,6 +258,7 @@
 			'empty-active-accounts': EmptyActiveAccounts,
 			'post-format': PostFormat,
 			'schedule': AccountSchedule,
+			'MultipleSelect': MultipleSelect
 		}
 	}
 </script>
