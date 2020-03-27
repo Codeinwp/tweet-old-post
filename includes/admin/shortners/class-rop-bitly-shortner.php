@@ -63,33 +63,29 @@ class Rop_Bitly_Shortner extends Rop_Url_Shortner_Abstract {
 	 */
 	public function shorten_url( $url ) {
 		$saved          = $this->get_credentials();
-		$credentials    = array();
-		if ( array_key_exists( 'generic_access_token', $saved ) ) {
-			$credentials    = array(
-				'access_token'   => $saved['generic_access_token'],
-			);
-		} else {
-			$credentials    = array(
-				'login'   => $saved['user'],
-				'apiKey'  => $saved['key'],
-			);
+
+		if ( ! array_key_exists( 'generic_access_token', $saved ) ) {
+			$logger          = new Rop_Logger();
+			$logger->alert_error('Generic Access Token not found. Please see the following link for instructions: https://is.gd/rop_bitly');
+
+			return $url;
 		}
 
 		$response = $this->callAPI(
-			'https://api-ssl.bit.ly/v3/shorten',
-			array( 'method' => 'get' ),
-			array_merge(
-				array(
-					'longUrl' => $url,
-					'format'  => 'txt',
-				),
-				$credentials
+			'https://api-ssl.bit.ly/v4/shorten',
+			array( 'method' 	=> 'json' ),
+			array( 'long_url' => $url ),
+			array(
+				'Authorization' => 'Bearer ' . $saved['generic_access_token'],
+				'Content-Type' 	=> 'application/json',
 			),
-			null
 		);
+
 		$shortURL = $url;
-		if ( intval( $response['error'] ) == 200 ) {
-			$shortURL = $response['response'];
+
+		if ( intval( $response['error'] ) === 200 || intval( $response['error'] ) === 201 ) {
+			$response = json_decode( $response['response'] );
+			$shortURL = $response->link;
 		}
 
 		return trim( $shortURL );
