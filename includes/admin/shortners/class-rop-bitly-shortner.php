@@ -66,18 +66,18 @@ class Rop_Bitly_Shortner extends Rop_Url_Shortner_Abstract {
 
 		if ( ! array_key_exists( 'generic_access_token', $saved ) ) {
 			$logger          = new Rop_Logger();
-			$logger->alert_error('Generic Access Token not found. Please see the following link for instructions: https://is.gd/rop_bitly');
+			$logger->alert_error( 'Generic Access Token not found. Please see the following link for instructions: https://is.gd/rop_bitly' );
 
 			return $url;
 		}
 
 		$response = $this->callAPI(
 			'https://api-ssl.bit.ly/v4/shorten',
-			array( 'method' 	=> 'json' ),
+			array( 'method'     => 'json' ),
 			array( 'long_url' => $url ),
 			array(
 				'Authorization' => 'Bearer ' . $saved['generic_access_token'],
-				'Content-Type' 	=> 'application/json',
+				'Content-Type'  => 'application/json',
 			),
 		);
 
