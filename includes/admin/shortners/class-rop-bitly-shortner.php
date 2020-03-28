@@ -73,7 +73,7 @@ class Rop_Bitly_Shortner extends Rop_Url_Shortner_Abstract {
 
 		$response = $this->callAPI(
 			'https://api-ssl.bit.ly/v4/shorten',
-			array( 'method'     => 'json' ),
+			array( 'method'   => 'json' ),
 			array( 'long_url' => $url ),
 			array(
 				'Authorization' => 'Bearer ' . $saved['generic_access_token'],
