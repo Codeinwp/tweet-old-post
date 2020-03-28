@@ -78,7 +78,7 @@ class Rop_Bitly_Shortner extends Rop_Url_Shortner_Abstract {
 			array(
 				'Authorization' => 'Bearer ' . $saved['generic_access_token'],
 				'Content-Type'  => 'application/json',
-			),
+			)
 		);
 
 		$shortURL = $url;
