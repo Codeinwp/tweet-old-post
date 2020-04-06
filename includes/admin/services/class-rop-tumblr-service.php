@@ -502,4 +502,28 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		// allow users to not include author in shared posts
 		return apply_filters( 'rop_tumblr_post_author', $author );
 	}
+
+	/**
+ * Method used to decide whether or not to show Tumblr button
+ *
+ * @since   8.5.6
+ * @access  public
+ *
+ * @return  bool
+ */
+public function rop_show_tmblr_app_btn() {
+
+	$installed_at_version = get_option( 'rop_first_install_version' );
+
+	if ( empty( $installed_at_version ) ) {
+		return false;
+	}
+
+	if ( version_compare( $installed_at_version, '8.5.0', '>=' ) ) {
+		return true;
+	}
+
+	return false;
+}
+
 }
