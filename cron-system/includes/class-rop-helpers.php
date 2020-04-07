@@ -1,0 +1,97 @@
+<?php
+
+namespace RopCronSystem\ROP_Helpers;
+
+
+if ( ! defined( 'ABSPATH' ) ) {
+	header( 'Status: 403 Forbidden' );
+	header( 'HTTP/1.1 403 Forbidden' );
+	exit;
+}
+
+/**
+ * Class Rop_Helpers
+ *
+ * @package RopCronSystem\ROP_Helpers
+ * @since 8.5.5
+ */
+class Rop_Helpers {
+
+
+	/**
+	 * Extracts the next time to share from the database.
+	 * The next time to share does not matter for which social media it belongs.s
+	 *
+	 * @return bool|int|mixed Unix timestamp with the next time to share
+	 * @access public
+	 * @static
+	 * @since 8.5.5
+	 */
+	static public function extract_time_to_share() {
+		// dates are stored into variable "rop_schedules_data".
+		$cron_datetime      = get_option( 'rop_schedules_data', '' );
+		$next_time_to_share = 0;
+
+		if ( empty( $cron_datetime ) ) {
+			// TODO add to log that there are no items in queue;
+			return false;
+		}
+
+		if ( is_array( $cron_datetime ) && ! empty( $cron_datetime ) && isset( $cron_datetime['rop_events_timeline'] ) ) {
+			$time_list = array();
+			// extract all future date-times from all social media types.
+			foreach ( $cron_datetime['rop_events_timeline'] as $social => $unix_timestamps ) {
+				foreach ( $unix_timestamps as $future_date ) {
+					if ( ! empty( $future_date ) && ! in_array( $future_date, $time_list, true ) ) {
+						$time_list[] = $future_date;
+					}
+				}
+			}
+
+			if ( empty( $time_list ) ) {
+				return false;
+			}
+
+			$current_time = current_time( 'timestamp' ); // phpcs:ignore
+			// This function sorts an array. Elements will be arranged from lowest to highest when this function has completed.
+			sort( $time_list, SORT_NUMERIC );
+
+
+			foreach ( $time_list as $future_time ) {
+				// we need to make sure the next time to share is a future time.
+				if ( (int) $future_time > $current_time ) {
+					$next_time_to_share = $future_time;
+					break;
+				}
+			}
+		}
+
+		return $next_time_to_share;
+	}
+
+	/**
+	 * Extracts the date change from general settings.
+	 *
+	 * @return bool|mixed|void
+	 * @access public
+	 * @static
+	 * @since 8.5.5
+	 */
+	static public function local_timezone() {
+
+		// WordPress saves timezone in 2 different variables.
+		// If it's UTC the option name is "".
+		$urc_string = get_option( 'gmt_offset', '' ); // can contain int or float numbers
+		// If it's valid timezone string the option name is "".
+		$timezone_string = get_option( 'timezone_string', '' ); // string only.
+
+		if ( empty( $urc_string ) ) {
+			return $timezone_string;
+		} elseif ( empty( $timezone_string ) ) {
+
+			return $urc_string;
+		}
+
+		return false;
+	}
+}

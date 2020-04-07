@@ -62,6 +62,7 @@ class Rop_Cron_Helper {
 	public function manage_cron( $request ) {
 		if ( isset( $request['action'] ) && 'start' === $request['action'] ) {
 			$this->create_cron( true );
+			do_action('rop_process_start_share');
 		} elseif ( isset( $request['action'] ) && 'stop' === $request['action'] ) {
 			$this->remove_cron( $request );
 		} elseif ( isset( $request['action'] ) && 'publish-now' === $request['action'] ) {
