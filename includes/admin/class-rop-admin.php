@@ -732,6 +732,14 @@ class Rop_Admin {
 		// reject the extra.
 		$enabled = array_diff( $enabled, $extra );
 
+		$rop_true_share_immediately = apply_filters( 'rop_true_share_immediately', true );
+
+		// If user wants to run this operation on page refresh(default) instead of via Cron.
+		if ( $rop_true_share_immediately === true ) {
+			$this->rop_cron_job_publish_now( $post_id, $enabled );
+			return;
+		}
+
 		update_post_meta( $post_id, 'rop_publish_now', 'yes' );
 		update_post_meta( $post_id, 'rop_publish_now_accounts', $enabled );
 
@@ -753,6 +761,7 @@ class Rop_Admin {
 	 */
 	public function share_scheduled_future_post( $post ) {
 
+		$post_id = $post->ID;
 		$settings            = new Rop_Settings_Model();
 		$selected_post_types = wp_list_pluck( $settings->get_selected_post_types(), 'value' );
 
@@ -775,7 +784,7 @@ class Rop_Admin {
 		// this would only be possible in Pro plugin
 		if ( $global_settings->license_type() > 0 && $rop_active_status ) {
 
-			// Get the current plugin options.
+			// set the current plugin options.
 			$option = get_option( 'rop_data' );
 
 			$social_accounts = array();
@@ -797,7 +806,7 @@ class Rop_Admin {
 				$taxonomies_ids = array_keys( $taxonomy_filter );
 
 				// get term ids for the taxonomies selected on General Settings of ROP that are present in the current post
-				$post_term_ids = wp_get_post_terms( $post->ID, $taxonomies_slug, array( 'fields' => 'ids' ) );
+				$post_term_ids = wp_get_post_terms( $post_id, $taxonomies_slug, array( 'fields' => 'ids' ) );
 
 				// get the common term ids between what's assigned to the post and what's selected in General Settings
 				$common = array_intersect( $taxonomies_ids, $post_term_ids );
@@ -835,7 +844,7 @@ class Rop_Admin {
 			$taxonomies_ids = array_keys( $taxonomies );
 
 			// get term ids for the taxonomies selected on General Settings of ROP that are present in the current post
-			$post_term_ids = wp_get_post_terms( $post->ID, $taxonomies_slug, array( 'fields' => 'ids' ) );
+			$post_term_ids = wp_get_post_terms( $post_id, $taxonomies_slug, array( 'fields' => 'ids' ) );
 
 			// get the common term ids between what's assigned to the post and what's selected in General Settings
 			$common = array_intersect( $taxonomies_ids, $post_term_ids );
@@ -853,11 +862,7 @@ class Rop_Admin {
 			}
 		}
 
-		update_post_meta( $post->ID, 'rop_publish_now', 'yes' );
-		update_post_meta( $post->ID, 'rop_publish_now_accounts', $active_accounts );
-
-		$cron = new Rop_Cron_Helper();
-		$cron->manage_cron( array( 'action' => 'publish-now' ) );
+		$this->rop_cron_job_publish_now( $post_id, $active_accounts );
 	}
 
 
@@ -866,14 +871,16 @@ class Rop_Admin {
 	 *
 	 * @since   8.1.0
 	 * @access  public
+	 * @param int   $post_id the Post ID, only present when rop_true_share_immediately set to true.
+	 * @param array $enabled the accounts the user has selected to share the post to(by clicking the checkbox).
 	 */
-	public function rop_cron_job_publish_now() {
+	public function rop_cron_job_publish_now( $post_id = '', $enabled = array() ) {
 		$queue           = new Rop_Queue_Model();
 		$services_model  = new Rop_Services_Model();
 		$logger          = new Rop_Logger();
 		$service_factory = new Rop_Services_Factory();
 
-		$queue_stack = $queue->build_queue_publish_now();
+		$queue_stack = $queue->build_queue_publish_now( $post_id, $enabled );
 		$logger->info( 'Fetching publish now queue', array( 'queue' => $queue_stack ) );
 		foreach ( $queue_stack as $account => $events ) {
 			foreach ( $events as $index => $event ) {
