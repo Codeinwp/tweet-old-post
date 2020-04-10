@@ -537,6 +537,11 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			}
 		}
 
+		if( empty( $new_post ) ){
+			$this->logger->info( '$new_post variable empty, bailing process.' );
+					 return;
+			 }
+
 		try {
 			$api->post( 'ugcPosts', $new_post );
 
@@ -662,7 +667,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		if ( empty( $img ) ) {
 					$this->logger->alert_error( 'No image set for post: ' . get_the_title( $post_details['post_id'] ) . ', cannot share as an image post to LinkedIn.' );
-				  return false;
+				  return array();
 		}
 
 		$img_mime_type = image_type_to_mime_type( exif_imagetype( $img ) );
