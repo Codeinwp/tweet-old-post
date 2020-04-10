@@ -537,10 +537,10 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			}
 		}
 
-		if( empty( $new_post ) ){
+		if ( empty( $new_post ) ) {
 			$this->logger->info( '$new_post variable empty, bailing process.' );
 					 return;
-			 }
+		}
 
 		try {
 			$api->post( 'ugcPosts', $new_post );
