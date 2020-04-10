@@ -774,7 +774,8 @@ class Rop_Admin {
 
 		// this would only be possible in Pro plugin
 		if ( $global_settings->license_type() > 0 && $rop_active_status ) {
-
+			
+			$logger          = new Rop_Logger();
 			// Get the current plugin options.
 			$options = get_option( 'rop_data' );
 
@@ -782,7 +783,7 @@ class Rop_Admin {
 			$post_formats = array_key_exists( 'post_format', $options ) ? $options['post_format'] : '';
 
 			if ( empty( $post_formats ) ) {
-				 $logger->alert_error( Rop_I18n::get_labels( 'post_format.no_post_format_error' ) );
+				$logger->alert_error( Rop_I18n::get_labels( 'post_format.no_post_format_error' ) );
 				return;
 			}
 
