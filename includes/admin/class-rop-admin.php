@@ -779,10 +779,10 @@ class Rop_Admin {
 			$options = get_option( 'rop_data' );
 
 			$social_accounts = array();
-			$post_formats = array_key_exists('post_format', $options) ? $options['post_format'] : '';
+			$post_formats = array_key_exists( 'post_format', $options ) ? $options['post_format'] : '';
 
-			if( empty($post_formats) ){
-				 $logger->alert_error(Rop_I18n::get_labels( 'post_format.no_post_format_error' ));
+			if ( empty( $post_formats ) ) {
+				 $logger->alert_error( Rop_I18n::get_labels( 'post_format.no_post_format_error' ) );
 				return;
 			}
 
