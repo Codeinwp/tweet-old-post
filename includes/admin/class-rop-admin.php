@@ -774,7 +774,7 @@ class Rop_Admin {
 
 		// this would only be possible in Pro plugin
 		if ( $global_settings->license_type() > 0 && $rop_active_status ) {
-			
+
 			$logger          = new Rop_Logger();
 			// Get the current plugin options.
 			$options = get_option( 'rop_data' );
