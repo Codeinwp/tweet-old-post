@@ -259,6 +259,7 @@ class Rop_I18n {
 				'media_post_option_alt_text'        => __( 'Alt Text', 'tweet-old-post' ),
 				'media_post_option_description'     => __( 'Description', 'tweet-old-post' ),
 				'media_post_upsell'                 => __( 'Media posting is available in the Business version.', 'tweet-old-post' ),
+				'no_post_format_error'              => __( 'Post Format option empty, "Share scheduled posts to social media on publish" cannot work. Please go to the Post Format tab and click "Save" for this feature to work', 'tweet-old-post' ),
 			),
 			'schedule'    => array(
 				'menu_item'                 => __( 'Custom Schedule', 'tweet-old-post' ),

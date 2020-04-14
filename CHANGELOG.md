@@ -1,4 +1,11 @@
 
+ ### v8.5.5 - 2020-04-11 
+ **Changes:** 
+ * Fix PRO: PHP Error when "Post with image" is checked in Post format for LinkedIn and post has no featured image set.
+* Fix PRO: PHP Error when no post format option is available in the database and ROP tries to share a WP scheduled post that has become published.  
+* Change: Bit.ly now uses bit.ly's v4 API endpoint.
+* Info: Tested on WP 5.4.
+ 
  ### v8.5.4 - 2020-03-18 
  **Changes:** 
  * New PRO: Taxonomy filtering is now account-based
