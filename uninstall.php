@@ -58,6 +58,7 @@ if ( isset( $housekeeping ) && $housekeeping ) {
 		'rop_linkedin_refresh_token_notice',
 		'rop_buffer_via_rs_app',
 		'rop_data_migrated_tax',
+		'rop_changed_shortener',
 		/**
 		 * Related functions
 		 *
@@ -87,6 +88,7 @@ if ( isset( $housekeeping ) && $housekeeping ) {
 	delete_metadata( 'user', 0, 'rop-buffer-addon-notice-dismissed', '', true );
 	delete_metadata( 'user', 0, 'rop-wp-cron-notice-dismissed', '', true );
 	delete_metadata( 'user', 0, 'rop-cron-event-status-notice-dismissed', '', true );
+	delete_metadata( 'user', 0, 'rop-shortener-changed-notice-dismissed', '', true );
 
 	global $wpdb;
 	$post_meta = $wpdb->prefix . 'postmeta';

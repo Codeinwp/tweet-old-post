@@ -1300,4 +1300,99 @@ class Rop_Admin {
 
 	}
 
+	/**
+	 * Update default shortener from rviv.ly.
+	 *
+	 * Rviv.ly domain is currently blacklisted by some social media networks.
+	 * This code changes the rviv.ly shortener to is.id
+	 *
+	 * @since   8.5.6
+	 * @access  public
+	 */
+	public function rop_update_shortener() {
+
+		$user_id = get_current_user_id();
+
+		if ( get_user_meta( $user_id, 'rop-shortener-changed-notice-dismissed' ) ) {
+			return;
+		}
+
+		$updated_shortener = get_option( 'rop_changed_shortener' );
+
+		if ( ! empty( $updated_shortener ) ) {
+			return;
+		}
+
+		$options = get_option( 'rop_data' );
+
+		if ( empty( $options ) ) {
+			return;
+		}
+
+		$post_format = array_key_exists( 'post_format', $options ) ? $options['post_format'] : '';
+
+		if ( empty( $post_format ) ) {
+			return;
+		}
+
+		foreach ( $post_format as $account => $settings ) {
+
+			foreach ( $settings as $key => $value ) {
+
+				if ( $key === 'short_url_service' && $value === 'rviv.ly' ) {
+					update_option( 'rop_changed_shortener', true );
+					$post_format[ $account ][ $key ] = 'is.gd';
+				}
+			}
+		}
+
+		$options['post_format'] = $post_format;
+		update_option( 'rop_data', $options );
+
+	}
+
+	/**
+	 * Shortener changed notice.
+	 *
+	 * @since   8.5.6
+	 * @access  public
+	 */
+	public function rop_shortener_changed_notice() {
+
+		$updated_shortener = get_option( 'rop_changed_shortener' );
+
+		if ( empty( $updated_shortener ) ) {
+			return;
+		}
+
+		$user_id = get_current_user_id();
+
+		if ( get_user_meta( $user_id, 'rop-shortener-changed-notice-dismissed' ) ) {
+			return;
+		}
+
+		?>
+
+		<div class="notice notice-error">
+			<?php echo sprintf( __( '%1$s We\'ve automatically changed your Revive Old Posts\' shortener from rviv.ly to is.gd. Read the reason for the change %2$shere%3$s. %4$s %5$s', 'tweet-old-post' ), '<p>', '<a href="https://docs.revive.social/article/1244-why-we-automatically-changed-your-shortener-from-rviv-ly-to-is-gd" target="_blank">', '</a>', '<a style="float: right;" href="?rop-shortener-changed-notice-dismissed">Dismiss</a>', '</p>' ); ?>
+		</div>
+		<?php
+
+	}
+
+	/**
+	 * Dismiss Shortener changed notice.
+	 *
+	 * @since   8.5.6
+	 * @access  public
+	 */
+	public function rop_shortener_changed_disabled_notice() {
+
+		$user_id = get_current_user_id();
+		if ( isset( $_GET['rop-shortener-changed-notice-dismissed'] ) ) {
+			add_user_meta( $user_id, 'rop-shortener-changed-notice-dismissed', 'true', true );
+		}
+
+	}
+
 }
