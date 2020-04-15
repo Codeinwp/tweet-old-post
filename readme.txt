@@ -264,6 +264,11 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.5.6 - 2020-04-15  = 
+
+* Change: Switched rviv.ly shortener with is.gd shortener to prevent issues with sharing.
+
+
 = 8.5.5 - 2020-04-11  = 
 
 * Fix PRO: PHP Error when "Post with image" is checked in Post format for LinkedIn and post has no featured image set.
