@@ -1317,9 +1317,9 @@ class Rop_Admin {
 			return;
 		}
 
-		$updated_shortener = get_option('rop_changed_shortener');
+		$updated_shortener = get_option( 'rop_changed_shortener' );
 
-		if( !empty($updated_shortener) ){
+		if ( ! empty( $updated_shortener ) ) {
 			return;
 		}
 
@@ -1340,7 +1340,7 @@ class Rop_Admin {
 			foreach ( $settings as $key => $value ) {
 
 				if ( $key === 'short_url_service' && $value === 'rviv.ly' ) {
-					update_option('rop_changed_shortener', true);
+					update_option( 'rop_changed_shortener', true );
 					$post_format[ $account ][ $key ] = 'is.gd';
 				}
 			}
@@ -1359,9 +1359,9 @@ class Rop_Admin {
 	 */
 	public function rop_shortener_changed_notice() {
 
-		$updated_shortener = get_option('rop_changed_shortener');
+		$updated_shortener = get_option( 'rop_changed_shortener' );
 
-		if( empty($updated_shortener) ){
+		if ( empty( $updated_shortener ) ) {
 			return;
 		}
 
