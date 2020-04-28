@@ -340,7 +340,7 @@
 				});
 			},
             /**
-             * Add Buffer account.
+             * Add Tumblr account.
              *
              * @param data Data.
              */
