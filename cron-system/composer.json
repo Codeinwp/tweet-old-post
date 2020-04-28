@@ -1,0 +1,22 @@
+{
+  "name": "rop-stand-alone-cron-system/rop-cron",
+  "description": "Replaces the user cron system with the server true cron.",
+  "minimum-stability": "dev",
+  "license": "GPL-2.0+",
+  "authors": [
+    {
+      "name": "ThemeIsle Team",
+      "email": "friends@themeisle.com.com",
+      "homepage": "https://themeisle.com"
+    }
+  ],
+  "autoload": {
+    "classmap": [
+      "includes/class-rop-curl-methods.php",
+      "includes/class-rop-helpers.php",
+      "rest-endpoints/class-rop-ping-system.php",
+      "rest-endpoints/class-rop-system-base.php",
+      "class-rop-cron-core.php"
+    ]
+  }
+}

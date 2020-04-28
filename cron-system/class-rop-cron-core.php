@@ -37,15 +37,18 @@ class Rop_Cron_Core {
 	}
 
 	public function server_start_share() {
+
+		$time_to_share = current_time( 'timestamp' ) + 30;
+
 		$request_call = new Rop_Curl_Methods();
 
 		$arguments = array(
-			'type'         => 'POST',
-			'request_path' => ':activate_account:',
+			'type'          => 'POST',
+			'request_path'  => ':activate_account:',
+			'time_to_share' => date( 'Y-m-d H:i:s', $time_to_share ),
 		);
 
 		$call_response = $request_call->create_call_process( $arguments );
-
 		// TODO add to log.
 	}
 
@@ -58,7 +61,6 @@ class Rop_Cron_Core {
 		);
 
 		$call_response = $request_call->create_call_process( $arguments );
-
 		// TODO add to log.
 	}
 
@@ -83,6 +85,3 @@ class Rop_Cron_Core {
 	}
 
 }
-
-
-new Rop_Cron_Core();

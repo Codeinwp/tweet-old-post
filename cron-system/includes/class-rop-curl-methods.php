@@ -65,13 +65,14 @@ class Rop_Curl_Methods {
 	 */
 	public function create_call_process( $args = array() ) {
 		$default = array(
-			'type'         => 'POST',
-			'request_path' => '',
+			'type'          => 'POST',
+			'request_path'  => '',
+			'time_to_share' => '',
 		);
 
 		$args = wp_parse_args( $args, $default );
 
-		if ( empty( $args['share_time'] ) ) {
+		if ( empty( $args['request_path'] ) ) {
 			// TODO add to log, important parameter missing. "Please specify the server path __CLASS__ > __FUNCTION__ > request_path"
 			return false;
 		}
@@ -93,13 +94,15 @@ class Rop_Curl_Methods {
 
 					$this->server_url = self::SERVER_URL . $this->server_paths[':register_account:'];
 					$this->connection = curl_init( $this->server_url );
-					$this->register_to_top_server( $args['request_path'] );
+					$this->register_to_top_server( $args );
 				} else {
 
 					$this->server_url = self::SERVER_URL . $this->server_paths[ $args['request_path'] ];
+
 					$this->connection = curl_init( $this->server_url );
-					if ( ':share_time:' === $args['request_path'] && isset( $args['time_to_share'] ) && ! empty( $args['time_to_share'] ) ) {
+					if ( isset( $args['time_to_share'] ) && ! empty( $args['time_to_share'] ) ) {
 						$post_fields = array( 'next_ping' => $args['time_to_share'] );
+
 					}
 
 					return $this->request_type_post( $post_fields );
@@ -155,13 +158,13 @@ class Rop_Curl_Methods {
 	 * Handles the registration to ROP server.
 	 * If callback exists, it will try to use it.
 	 *
-	 * @param string $callback_param method that exists in $this.
+	 * @param array $callback_param Original request type parameters..
 	 *
 	 * @return mixed
 	 * @access private
 	 * @since 8.5.5
 	 */
-	private function register_to_top_server( $callback_param = '' ) {
+	private function register_to_top_server( $callback_param = array() ) {
 
 		curl_setopt( $this->connection, CURLOPT_RETURNTRANSFER, true );
 		curl_setopt( $this->connection, CURLOPT_SSL_VERIFYHOST, false );
@@ -190,13 +193,8 @@ class Rop_Curl_Methods {
 			if ( true === $success && ! empty( $callback_param ) ) {
 
 				if ( is_callable( array( 'Rop_Curl_Methods', 'create_call_process' ) ) ) {
-
-					$arguments    = array(
-						'type'         => 'POST',
-						'request_path' => $callback_param,
-					);
 					$request_call = new Rop_Curl_Methods();
-					$request_call->create_call_process( $arguments );
+					$request_call->create_call_process( $callback_param );
 				}
 			}
 
@@ -235,7 +233,7 @@ class Rop_Curl_Methods {
 				$this->connection,
 				CURLOPT_HTTPHEADER,
 				array(
-					'ROP-Authorization: ' . $header_data,
+					'ROP-Authorization:' . $header_data,
 				)
 			);
 

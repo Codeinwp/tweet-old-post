@@ -3,6 +3,7 @@
 namespace RopCronSystem\Endpoint_Ping_Server;
 
 use RopCronSystem\Endpoint_Cron_Base\Rop_System_Base;
+use RopCronSystem\ROP_Helpers\Rop_Helpers;
 use WP_REST_Request;
 use WP_REST_Server;
 
@@ -152,7 +153,12 @@ class Rop_Ping_System extends Rop_System_Base {
 	 * @access private
 	 */
 	private function fetch_next_time_to_share() {
-		$time_to_share = time();
+		$time_to_share = Rop_Helpers::extract_time_to_share();// This will be in UNIX time from the database queue.
+
+		if ( empty( $time_to_share ) ) {
+			// TODO add to log that we could not find the next time to share.
+			return false;
+		}
 
 		// TODO , read form the database the next time to share and return it.
 		return $time_to_share;

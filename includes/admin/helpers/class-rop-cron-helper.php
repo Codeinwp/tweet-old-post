@@ -36,12 +36,12 @@ class Rop_Cron_Helper {
 	/**
 	 * Defines new schedules for cron use.
 	 *
+	 * @param array $schedules The schedules array.
+	 *
+	 * @return mixed
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   array $schedules The schedules array.
-	 *
-	 * @return mixed
 	 */
 	public static function rop_cron_schedules( $schedules ) {
 		$schedules['5min'] = array(
@@ -55,16 +55,17 @@ class Rop_Cron_Helper {
 	/**
 	 * Utility method to manage cron.
 	 *
+	 * @return  array Current status.
 	 * @since   8.0.0rc
 	 * @access  public
-	 * @return  array Current status.
 	 */
 	public function manage_cron( $request ) {
 		if ( isset( $request['action'] ) && 'start' === $request['action'] ) {
 			$this->create_cron( true );
-			do_action('rop_process_start_share');
+			do_action( 'rop_process_start_share' );
 		} elseif ( isset( $request['action'] ) && 'stop' === $request['action'] ) {
 			$this->remove_cron( $request );
+			do_action( 'rop_process_stop_share' );
 		} elseif ( isset( $request['action'] ) && 'publish-now' === $request['action'] ) {
 			$this->publish_now();
 		}
@@ -98,12 +99,12 @@ class Rop_Cron_Helper {
 	/**
 	 * Utility method to start a cron.
 	 *
-	 * @since   8.0.0rc
-	 * @access  public
-	 *
 	 * @param bool $first cron that runs once.
 	 *
 	 * @return bool
+	 * @since   8.0.0rc
+	 * @access  public
+	 *
 	 */
 	public function create_cron( $first = true ) {
 		if ( ! wp_next_scheduled( self::CRON_NAMESPACE ) ) {
@@ -115,7 +116,7 @@ class Rop_Cron_Helper {
 				wp_schedule_single_event( time() + 30, self::CRON_NAMESPACE_ONCE );
 			}
 			wp_schedule_event( time(), '5min', self::CRON_NAMESPACE );
-			$this->cron_status_global_change( true );
+
 		}
 
 		return true;
@@ -124,12 +125,12 @@ class Rop_Cron_Helper {
 	/**
 	 * Utility method to stop a cron.
 	 *
-	 * @since   8.0.0rc
-	 * @access  public
-	 *
 	 * @param array $request data transmitted via ajax.
 	 *
 	 * @return bool
+	 * @since   8.0.0rc
+	 * @access  public
+	 *
 	 */
 	public function remove_cron( $request = array() ) {
 		global $wpdb;
@@ -170,14 +171,14 @@ class Rop_Cron_Helper {
 	/**
 	 * Will return the cron MD5 key used to unschedule cron event
 	 *
-	 * @see wp_unschedule_event()
-	 * @see _get_cron_array()
-	 *
-	 * @since 8.5.0
-	 *
 	 * @param string|array $namespace array for multiple cron data.
 	 *
 	 * @return array|bool
+	 * @since 8.5.0
+	 *
+	 * @see wp_unschedule_event()
+	 * @see _get_cron_array()
+	 *
 	 */
 	public static function get_schedule_key( $namespace ) {
 		if ( empty( $namespace ) ) {
@@ -219,9 +220,10 @@ class Rop_Cron_Helper {
 	/**
 	 * Change the option that handles the cron status.
 	 *
+	 * @param bool $action true/false if crons should work or stop.
+	 *
 	 * @since 8.5.0
 	 *
-	 * @param bool $action true/false if crons should work or stop.
 	 */
 	function cron_status_global_change( $action = false ) {
 		$key         = 'rop_is_sharing_cron_active';
