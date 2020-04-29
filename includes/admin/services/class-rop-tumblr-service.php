@@ -262,7 +262,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	 * @return array
 	 */
 	private function get_users( $data = null ) {
-	$users = array();
+		$users = array();
 
 		foreach ( $data as $page ) {
 			$img = '';
@@ -538,87 +538,87 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	}
 
 	/**
- * Method used to decide whether or not to show Tumblr button
- *
- * @since   8.5.6
- * @access  public
- *
- * @return  bool
- */
-public function rop_show_tmblr_app_btn() {
+	 * Method used to decide whether or not to show Tumblr button
+	 *
+	 * @since   8.5.6
+	 * @access  public
+	 *
+	 * @return  bool
+	 */
+	public function rop_show_tmblr_app_btn() {
 
-	$installed_at_version = get_option( 'rop_first_install_version' );
+		$installed_at_version = get_option( 'rop_first_install_version' );
 
-	if ( empty( $installed_at_version ) ) {
+		if ( empty( $installed_at_version ) ) {
+			return false;
+		}
+
+		if ( version_compare( $installed_at_version, '8.5.0', '>=' ) ) {
+			return true;
+		}
+
 		return false;
 	}
 
-	if ( version_compare( $installed_at_version, '8.5.0', '>=' ) ) {
+	/**
+	 * This method will load and prepare the account data for Tumblr user.
+	 * Used in Rest Api.
+	 *
+	 * @since   8.5.7
+	 * @access  public
+	 *
+	 * @param   array $account_data Tumblr pages data.
+	 *
+	 * @return  bool
+	 */
+	public function add_account_with_app( $account_data ) {
+		if ( ! $this->is_set_not_empty( $account_data, array( 'id' ) ) ) {
+			return false;
+		}
+
+		$the_id         = unserialize( base64_decode( $account_data['id'] ) );
+		$accounts_array = unserialize( base64_decode( $account_data['pages'] ) );
+
+		$args = array(
+			'oauth_token'        => $accounts_array[0]['credentials']['oauth_token'],
+			'oauth_token_secret' => $accounts_array[0]['credentials']['oauth_token_secret'],
+			'consumer_key'       => $accounts_array[0]['credentials']['consumer_key'],
+			'consumer_secret'    => $accounts_array[0]['credentials']['consumer_secret'],
+		);
+
+		$this->set_credentials(
+			array_intersect_key(
+				$args,
+				array(
+					'oauth_token'        => '',
+					'oauth_token_secret' => '',
+					'consumer_key'       => '',
+					'consumer_secret'    => '',
+				)
+			)
+		);
+
+		// Prepare the data that will be saved as new account added.
+		$this->service = array(
+			'id'                 => $the_id,
+			'service'            => $this->service_name,
+			'credentials'        => $this->credentials,
+			'public_credentials' => array(
+				'consumer_key'    => array(
+					'name'    => 'API Key',
+					'value'   => $accounts_array[0]['credentials']['consumer_key'],
+					'private' => false,
+				),
+				'consumer_secret' => array(
+					'name'    => 'API secret key',
+					'value'   => $accounts_array[0]['credentials']['consumer_secret'],
+					'private' => true,
+				),
+			),
+			'available_accounts' => $this->get_users_rs_app( $accounts_array ),
+		);
+
 		return true;
 	}
-
-	return false;
-}
-
-/**
- * This method will load and prepare the account data for Tumblr user.
- * Used in Rest Api.
- *
- * @since   8.5.7
- * @access  public
- *
- * @param   array $account_data Tumblr pages data.
- *
- * @return  bool
- */
-public function add_account_with_app( $account_data ) {
-	if ( ! $this->is_set_not_empty( $account_data, array( 'id' ) ) ) {
-		return false;
-	}
-
-	$the_id         = unserialize( base64_decode( $account_data['id'] ) );
-	$accounts_array = unserialize( base64_decode( $account_data['pages'] ) );
-
-	$args = array(
-		'oauth_token'        => $accounts_array[0]['credentials']['oauth_token'],
-		'oauth_token_secret' => $accounts_array[0]['credentials']['oauth_token_secret'],
-		'consumer_key'       => $accounts_array[0]['credentials']['consumer_key'],
-		'consumer_secret'    => $accounts_array[0]['credentials']['consumer_secret'],
-	);
-
-	$this->set_credentials(
-		array_intersect_key(
-			$args,
-			array(
-				'oauth_token'        => '',
-				'oauth_token_secret' => '',
-				'consumer_key'       => '',
-				'consumer_secret'    => '',
-			)
-		)
-	);
-
-	// Prepare the data that will be saved as new account added.
-	$this->service = array(
-		'id'                 => $the_id,
-		'service'            => $this->service_name,
-		'credentials'        => $this->credentials,
-		'public_credentials' => array(
-			'consumer_key'    => array(
-				'name'    => 'API Key',
-				'value'   => $accounts_array[0]['credentials']['consumer_key'],
-				'private' => false,
-			),
-			'consumer_secret' => array(
-				'name'    => 'API secret key',
-				'value'   => $accounts_array[0]['credentials']['consumer_secret'],
-				'private' => true,
-			),
-		),
-		'available_accounts' => $this->get_users_rs_app( $accounts_array ),
-	);
-
-	return true;
-}
 
 }
