@@ -250,7 +250,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	}
 
 	/**
-	 * Utility method to retrieve users from the Twitter account.
+	 * Utility method to retrieve users from the Tumblr account.
 	 *
 	 * @codeCoverageIgnore
 	 *
@@ -262,19 +262,51 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	 * @return array
 	 */
 	private function get_users( $data = null ) {
+	$users = array();
+
+		foreach ( $data as $page ) {
+			$img = '';
+			if ( isset( $page->name ) ) {
+				$img = 'https://api.tumblr.com/v2/blog/' . $page->name . '.tumblr.com/avatar';
+			}
+			$user_details = wp_parse_args(
+				array(
+					'id'      => $page->name,
+					'user'    => $this->normalize_string( $page->title ),
+					'account' => $this->normalize_string( $page->name ),
+					'img'     => $img,
+				),
+				$this->user_default
+			);
+			$users[]      = $user_details;
+		}
+
+		return $users;
+	}
+
+
+	/**
+	 * Utility method to retrieve users from the Tumblr account connected using the RS app.
+	 *
+	 * @codeCoverageIgnore
+	 *
+	 * @since   8.5.7
+	 * @access  public
+	 *
+	 * @param   object $data Response data from Tumblr.
+	 *
+	 * @return array
+	 */
+	private function get_users_rs_app( $data = null ) {
 		$users = array();
-
-
-// this neds to work for both accounts added with RS app and user own app.
-
 
 		foreach ( $data as $page ) {
 
 			$user_details = wp_parse_args(
 				array(
 					'id'      => $page['id'],
-					'user'    => $this->normalize_string( $page['user'] ),
-					'account' => $this->normalize_string( $page['account'] ),
+					'user'    => $this->normalize_string( $page['account'] ),
+					'account' => $this->normalize_string( $page['user'] ),
 					'img'     => $page['img'],
 				),
 				$this->user_default
@@ -394,7 +426,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			return;
 		}
 
-		$api = $this->get_api( $this->credentials['consumer_key'], $this->credentials['consumer_secret'], $this->credentials['oauth_token'], $this->credentials['oauth_token_secret'] );
+		$api = $this->get_api( $args['credentials']['consumer_key'], $args['credentials']['consumer_secret'], $args['credentials']['oauth_token'], $args['credentials']['oauth_token_secret'] );
 
 		$post_type = new Rop_Posts_Selector_Model();
 		$post_id   = $post_details['post_id'];
@@ -466,6 +498,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		try {
 
 			$api->createPost( $args['id'] . '.tumblr.com', $new_post );
+
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
@@ -475,7 +508,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 				)
 			);
 		} catch ( Exception $exception ) {
-			$this->logger->alert_error( 'Posting failed for Tumblr. Error: ' . $exception->getMessage() );
+			$this->logger->alert_error( 'Posting failed to Tumblr. Error: ' . $exception->getMessage() );
 			$this->rop_get_error_docs( $exception->getMessage() );
 
 			return false;
@@ -542,17 +575,15 @@ public function add_account_with_app( $account_data ) {
 	if ( ! $this->is_set_not_empty( $account_data, array( 'id' ) ) ) {
 		return false;
 	}
-	$the_id       = $account_data['id'];
-	$account_data = $account_data['pages'];
 
-	$the_id         = unserialize( base64_decode( $accounts_data['id'] ) );
-	$accounts_array = unserialize( base64_decode( $accounts_data['pages'] ) );
+	$the_id         = unserialize( base64_decode( $account_data['id'] ) );
+	$accounts_array = unserialize( base64_decode( $account_data['pages'] ) );
 
 	$args = array(
-		'oauth_token'        => $accounts_array['credentials']['oauth_token'],
-		'oauth_token_secret' => $accounts_array['credentials']['oauth_token_secret'],
-		'consumer_key'       => $accounts_array['credentials']['consumer_key'],
-		'consumer_secret'    => $accounts_array['credentials']['consumer_secret'],
+		'oauth_token'        => $accounts_array[0]['credentials']['oauth_token'],
+		'oauth_token_secret' => $accounts_array[0]['credentials']['oauth_token_secret'],
+		'consumer_key'       => $accounts_array[0]['credentials']['consumer_key'],
+		'consumer_secret'    => $accounts_array[0]['credentials']['consumer_secret'],
 	);
 
 	$this->set_credentials(
@@ -575,16 +606,16 @@ public function add_account_with_app( $account_data ) {
 		'public_credentials' => array(
 			'consumer_key'    => array(
 				'name'    => 'API Key',
-				'value'   => $accounts_array['credentials']['consumer_key'],
+				'value'   => $accounts_array[0]['credentials']['consumer_key'],
 				'private' => false,
 			),
 			'consumer_secret' => array(
 				'name'    => 'API secret key',
-				'value'   => $accounts_array['credentials']['consumer_secret'],
+				'value'   => $accounts_array[0]['credentials']['consumer_secret'],
 				'private' => true,
 			),
 		),
-		'available_accounts' => $this->get_users( $accounts_array ),
+		'available_accounts' => $this->get_users_rs_app( $accounts_array ),
 	);
 
 	return true;
