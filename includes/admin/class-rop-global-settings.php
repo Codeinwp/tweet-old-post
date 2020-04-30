@@ -504,7 +504,7 @@ class Rop_Global_Settings {
 			 * $service['two_step_sign_in'] = false; For Twitter, this prevent the modal to open up
 			 * Even if the modal displays, the variable $available_services[ $key ] will prevent the form to show up.
 			 */
-			if ( 'twitter' !== $key ) {
+			if ( 'twitter' !== $key && 'tumblr' !== $key ) {
 				$service['two_step_sign_in'] = false;
 				$available_services[ $key ]  = $service;
 			}
