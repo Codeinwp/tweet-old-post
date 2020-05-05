@@ -107,7 +107,7 @@ class Rop_Cron_Helper {
 	 *
 	 */
 	public function create_cron( $first = true ) {
-		if ( ! wp_next_scheduled( self::CRON_NAMESPACE ) ) {
+		if ( defined( 'ROP_CRON_ALTERNATIVE' ) && false === ROP_CRON_ALTERNATIVE && ! wp_next_scheduled( self::CRON_NAMESPACE ) ) {
 
 			if ( $first ) {
 				$this->fresh_start();
@@ -117,6 +117,13 @@ class Rop_Cron_Helper {
 			}
 			wp_schedule_event( time(), '5min', self::CRON_NAMESPACE );
 
+		} elseif ( defined( 'ROP_CRON_ALTERNATIVE' ) && true === ROP_CRON_ALTERNATIVE ) {
+			if ( $first ) {
+				$this->fresh_start();
+				$settings = new Rop_Global_Settings();
+				$settings->update_start_time();
+				$this->cron_status_global_change( true );
+			}
 		}
 
 		return true;
@@ -134,12 +141,13 @@ class Rop_Cron_Helper {
 	 */
 	public function remove_cron( $request = array() ) {
 		global $wpdb;
+		// Mark sharing system as stopped
+		$this->cron_status_global_change( false );
 
 		$current_cron_list = _get_cron_array();
 		$rop_cron_key      = self::get_schedule_key( array( self::CRON_NAMESPACE, self::CRON_NAMESPACE_ONCE ) );
 		if ( ! empty( $rop_cron_key ) ) {
 			$wpdb->query( 'START TRANSACTION' );
-			$this->cron_status_global_change( false );
 
 			foreach ( $rop_cron_key as $rop_active_cron ) {
 				$cron_time      = (int) $rop_active_cron['time'];
@@ -239,7 +247,12 @@ class Rop_Cron_Helper {
 	 */
 	public function get_status() {
 
-		return is_int( wp_next_scheduled( self::CRON_NAMESPACE ) );
+		if ( defined( 'ROP_CRON_ALTERNATIVE' ) && true === ROP_CRON_ALTERNATIVE ) {
+			return filter_var( get_option( 'rop_is_sharing_cron_active', 'no' ), FILTER_VALIDATE_BOOLEAN );
+		} else {
+			return is_int( wp_next_scheduled( self::CRON_NAMESPACE ) );
+		}
+
 	}
 
 	/**

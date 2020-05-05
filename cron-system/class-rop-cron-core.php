@@ -81,7 +81,14 @@ class Rop_Cron_Core {
 	}
 
 	public function server_register_client() {
+		$request_call = new Rop_Curl_Methods();
 
+		$arguments     = array(
+			'type'         => 'POST',
+			'request_path' => ':register_account:',
+		);
+		$call_response = $request_call->create_call_process( $arguments );
+		
 	}
 
 }

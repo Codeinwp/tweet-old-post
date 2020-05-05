@@ -2,6 +2,8 @@
 
 namespace RopCronSystem\Endpoint_Cron_Base;
 
+use Rop_Exception_Handler;
+use Rop_Logger;
 use WP_REST_Controller;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -17,6 +19,27 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 8.5.5
  */
 class Rop_System_Base extends WP_REST_Controller {
+	/**
+	 * Holds the Rop_Exception_Handler
+	 *
+	 * @since   8.0.0
+	 * @access  protected
+	 * @var     Rop_Exception_Handler $error The exception handler.
+	 */
+	protected $error;
+	/**
+	 * Holds the logger
+	 *
+	 * @since   8.0.0
+	 * @access  protected
+	 * @var     Rop_Logger $logger The logger handler.
+	 */
+	protected $logger;
+
+	function __construct() {
+		$this->error  = new Rop_Exception_Handler();
+		$this->logger = new Rop_Logger();
+	}
 
 	/**
 	 * Retrieves the client token from headers sent with the request with REST API.

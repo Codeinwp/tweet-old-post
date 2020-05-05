@@ -2,6 +2,7 @@
 
 namespace RopCronSystem\Endpoint_Ping_Server;
 
+use Rop_Admin;
 use RopCronSystem\Endpoint_Cron_Base\Rop_System_Base;
 use RopCronSystem\ROP_Helpers\Rop_Helpers;
 use WP_REST_Request;
@@ -101,6 +102,9 @@ class Rop_Ping_System extends Rop_System_Base {
 				'success'            => true,
 				'next-time-to-share' => $fetch_related_data, // test line
 			);
+
+			$admin = new Rop_Admin();
+			$admin->rop_cron_job();
 		} else {
 			// Could not fetch the next time to share.
 			$return_data = array(
@@ -109,7 +113,7 @@ class Rop_Ping_System extends Rop_System_Base {
 			);
 		}
 
-		// TODO action to start the sharing system.
+
 
 		wp_send_json( $return_data );
 	}
@@ -156,11 +160,10 @@ class Rop_Ping_System extends Rop_System_Base {
 		$time_to_share = Rop_Helpers::extract_time_to_share();// This will be in UNIX time from the database queue.
 
 		if ( empty( $time_to_share ) ) {
-			// TODO add to log that we could not find the next time to share.
+			$this->logger->alert_error( 'Could not fetch future share timer.' );
 			return false;
 		}
 
-		// TODO , read form the database the next time to share and return it.
 		return $time_to_share;
 	}
 }

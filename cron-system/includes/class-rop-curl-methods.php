@@ -2,6 +2,8 @@
 
 namespace RopCronSystem\Curl_Helpers;
 
+use Rop_Exception_Handler;
+use Rop_Logger;
 use RopCronSystem\ROP_Helpers\Rop_Helpers;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -45,13 +47,31 @@ class Rop_Curl_Methods {
 	);
 
 	/**
+	 * Holds the Rop_Exception_Handler
+	 *
+	 * @since   8.0.0
+	 * @access  protected
+	 * @var     Rop_Exception_Handler $error The exception handler.
+	 */
+	protected $error;
+	/**
+	 * Holds the logger
+	 *
+	 * @since   8.0.0
+	 * @access  protected
+	 * @var     Rop_Logger $logger The logger handler.
+	 */
+	protected $logger;
+
+	/**
 	 * @var string Server API path concatenated with endpoint path.
 	 * @since 8.5.5
 	 */
 	private $server_url = '';
 
 	function __construct() {
-		// For now, nothing here.
+		$this->error  = new Rop_Exception_Handler();
+		$this->logger = new Rop_Logger();
 	}
 
 	/**
@@ -198,8 +218,13 @@ class Rop_Curl_Methods {
 				}
 			}
 
+
+			$this->logger->alert_success( 'Successfully registereed to the Cron Service' );
+
 			return $success;
 		} else {
+			$this->logger->alert_error( 'Error registering to the Cron Service. Error: ' . $response_array['error'] );
+
 			// Add to error log the message.
 			return $response_array['error'];
 		}
