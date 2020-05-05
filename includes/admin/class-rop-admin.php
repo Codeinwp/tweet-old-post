@@ -1024,7 +1024,7 @@ class Rop_Admin {
 
 
 	/**
-	 * Disable Cron Jobs on refresh if remove_cron() method was called
+	 * If the option "rop_is_sharing_cron_active" value is off/false/no then the WP Cron Jobs will be cleared.
 	 *
 	 * @since 8.5.0
 	 */

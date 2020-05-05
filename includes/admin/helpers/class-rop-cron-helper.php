@@ -115,8 +115,8 @@ class Rop_Cron_Helper {
 		}
 
 		/**
-		 * This option will make the Cron Service is not switched off.
-		 * This value must become true anytime the Start Share button is clicked..
+		 * Changing this option to true, upon page refresh the WP Cron Jobs will work as normal.
+		 * This value must become true anytime the "Start Share" button is clicked.
 		 *
 		 * @see Rop_Admin::check_cron_status()
 		 */
@@ -138,7 +138,8 @@ class Rop_Cron_Helper {
 		global $wpdb;
 
 		/**
-		 * This option will make the Cron Service is switched off.
+		 * Changing this option to false, upon page refresh the WP Cron Jobs will be cleared.
+		 * This value must become false anytime the "Stop Share" button is clicked.
 		 *
 		 * @see Rop_Admin::check_cron_status()
 		 */
