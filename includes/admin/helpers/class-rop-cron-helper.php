@@ -36,12 +36,11 @@ class Rop_Cron_Helper {
 	/**
 	 * Defines new schedules for cron use.
 	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   array $schedules The schedules array.
+	 * @param array $schedules The schedules array.
 	 *
 	 * @return mixed
+	 * @since   8.0.0
+	 * @access  public
 	 */
 	public static function rop_cron_schedules( $schedules ) {
 		$schedules['5min'] = array(
@@ -55,9 +54,9 @@ class Rop_Cron_Helper {
 	/**
 	 * Utility method to manage cron.
 	 *
+	 * @return  array Current status.
 	 * @since   8.0.0rc
 	 * @access  public
-	 * @return  array Current status.
 	 */
 	public function manage_cron( $request ) {
 		if ( isset( $request['action'] ) && 'start' === $request['action'] ) {
@@ -97,12 +96,11 @@ class Rop_Cron_Helper {
 	/**
 	 * Utility method to start a cron.
 	 *
-	 * @since   8.0.0rc
-	 * @access  public
-	 *
 	 * @param bool $first cron that runs once.
 	 *
 	 * @return bool
+	 * @since   8.0.0rc
+	 * @access  public
 	 */
 	public function create_cron( $first = true ) {
 		if ( ! wp_next_scheduled( self::CRON_NAMESPACE ) ) {
@@ -114,8 +112,15 @@ class Rop_Cron_Helper {
 				wp_schedule_single_event( time() + 30, self::CRON_NAMESPACE_ONCE );
 			}
 			wp_schedule_event( time(), '5min', self::CRON_NAMESPACE );
-			$this->cron_status_global_change( true );
 		}
+
+		/**
+		 * This option will make the Cron Service is not switched off.
+		 * This value must become true anytime the Start Share button is clicked..
+		 *
+		 * @see Rop_Admin::check_cron_status()
+		 */
+		$this->cron_status_global_change( true );
 
 		return true;
 	}
@@ -123,22 +128,27 @@ class Rop_Cron_Helper {
 	/**
 	 * Utility method to stop a cron.
 	 *
-	 * @since   8.0.0rc
-	 * @access  public
-	 *
 	 * @param array $request data transmitted via ajax.
 	 *
 	 * @return bool
+	 * @since   8.0.0rc
+	 * @access  public
 	 */
 	public function remove_cron( $request = array() ) {
 		global $wpdb;
 
+		/**
+		 * This option will make the Cron Service is switched off.
+		 *
+		 * @see Rop_Admin::check_cron_status()
+		 */
+		$this->cron_status_global_change( false );
+
 		$current_cron_list = _get_cron_array();
 		$rop_cron_key      = self::get_schedule_key( array( self::CRON_NAMESPACE, self::CRON_NAMESPACE_ONCE ) );
+
 		if ( ! empty( $rop_cron_key ) ) {
 			$wpdb->query( 'START TRANSACTION' );
-			$this->cron_status_global_change( false );
-
 			foreach ( $rop_cron_key as $rop_active_cron ) {
 				$cron_time      = (int) $rop_active_cron['time'];
 				$cron_key       = $rop_active_cron['key'];
@@ -169,14 +179,13 @@ class Rop_Cron_Helper {
 	/**
 	 * Will return the cron MD5 key used to unschedule cron event
 	 *
-	 * @see wp_unschedule_event()
-	 * @see _get_cron_array()
-	 *
-	 * @since 8.5.0
-	 *
 	 * @param string|array $namespace array for multiple cron data.
 	 *
 	 * @return array|bool
+	 * @since 8.5.0
+	 *
+	 * @see wp_unschedule_event()
+	 * @see _get_cron_array()
 	 */
 	public static function get_schedule_key( $namespace ) {
 		if ( empty( $namespace ) ) {
@@ -218,9 +227,9 @@ class Rop_Cron_Helper {
 	/**
 	 * Change the option that handles the cron status.
 	 *
-	 * @since 8.5.0
-	 *
 	 * @param bool $action true/false if crons should work or stop.
+	 *
+	 * @since 8.5.0
 	 */
 	function cron_status_global_change( $action = false ) {
 		$key         = 'rop_is_sharing_cron_active';
