@@ -438,7 +438,11 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		// Link post
 		if ( ! empty( $post_details['post_url'] ) && empty( $post_details['post_with_image'] ) ) {
 
-			$new_post['thumbnail'] = get_the_post_thumbnail_url( $post_id, 'large' );
+			 $thumbnail = get_the_post_thumbnail_url( $post_id, 'large' );
+
+			if ( ! empty( $thumbnail ) ) {
+				$new_post['thumbnail'] = $thumbnail;
+			}
 
 			$new_post['type']        = 'link';
 			$new_post['url']         = trim( $this->get_url( $post_details ) );
