@@ -500,7 +500,6 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 *
 	 * Getting for checking if the option to enable True instant sharing is checked. True instant sharing means share happens on save_post hook.
 	 *
-	 *
 	 * @since   8.5.7
 	 * @access  public
 	 * @return bool
