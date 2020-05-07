@@ -438,8 +438,9 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		// Link post
 		if ( ! empty( $post_details['post_url'] ) && empty( $post_details['post_with_image'] ) ) {
 
-			 $thumbnail = get_the_post_thumbnail_url( $post_id, 'large' );
+			$thumbnail = get_the_post_thumbnail_url( $post_id, 'large' );
 
+			// if thumbnail parameter is set but empty, tumblr would return an error. So we prevent this here. 
 			if ( ! empty( $thumbnail ) ) {
 				$new_post['thumbnail'] = $thumbnail;
 			}
