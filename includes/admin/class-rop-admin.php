@@ -284,6 +284,7 @@ class Rop_Admin {
 
 		$services        = new Rop_Services_Model();
 		$li_service      = new Rop_Linkedin_Service();
+		$tmblr_service   = new Rop_Tumblr_Service();
 		$active_accounts = $services->get_active_accounts();
 
 		$added_services = $services->get_authenticated_services();
@@ -302,6 +303,7 @@ class Rop_Admin {
 		$array_nonce['pro_installed']           = ( defined( 'ROP_PRO_VERSION' ) ) ? true : false;
 		$array_nonce['staging']                 = $this->rop_site_is_staging();
 		$array_nonce['show_li_app_btn']         = $li_service->rop_show_li_app_btn();
+		$array_nonce['show_tmblr_app_btn']      = $tmblr_service->rop_show_tmblr_app_btn();
 		$array_nonce['debug']                   = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
 		$array_nonce['tax_apply_limit']         = $this->limit_tax_dropdown_list();
 		$array_nonce['exclude_apply_limit']     = $this->limit_exclude_list();
@@ -322,6 +324,7 @@ class Rop_Admin {
 			'authAppTwitterPath'  => ROP_APP_TWITTER_PATH,
 			'authAppLinkedInPath' => ROP_APP_LINKEDIN_PATH,
 			'authAppBufferPath'   => ROP_APP_BUFFER_PATH,
+			'authAppTumblrPath'   => ROP_APP_TUMBLR_PATH,
 			'authToken'           => $token,
 			'adminUrl'            => urlencode( $admin_url ),
 			'authSignature'       => $signature,
