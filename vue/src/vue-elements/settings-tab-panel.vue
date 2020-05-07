@@ -148,17 +148,34 @@
 
                 <div class="columns py-2" v-if="isInstantShare">
                     <div class="column col-6 col-sm-12 vertical-align rop-control">
-                        <b>{{labels.instant_share_default_title}}</b>
-                        <p class="text-gray">{{labels.instant_share_default_desc}}</p>
+                        <b>{{labels.true_instant_share_title}}</b>
+                        <p class="text-gray"><span v-html="labels.true_instant_share_desc"></span></p>
                     </div>
                     <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
                         <div class="form-group">
                             <label class="form-checkbox">
-                                <input type="checkbox" v-model="generalSettings.instant_share_default"/>
-                                <i class="form-icon"></i>{{labels.instant_share_default_yes}}
+                                <input type="checkbox" v-model="generalSettings.true_instant_share"/>
+                                <i class="form-icon"></i>{{labels.true_instant_share_yes}}
                             </label>
                         </div>
                     </div>
+                </div>
+
+                <span class="divider"></span>
+
+                <div class="columns py-2" v-if="isInstantShare">
+                  <div class="column col-6 col-sm-12 vertical-align rop-control">
+                    <b>{{labels.instant_share_default_title}}</b>
+                    <p class="text-gray">{{labels.instant_share_default_desc}}</p>
+                  </div>
+                  <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+                    <div class="form-group">
+                      <label class="form-checkbox">
+                        <input type="checkbox" v-model="generalSettings.instant_share_default"/>
+                        <i class="form-icon"></i>{{labels.instant_share_default_yes}}
+                      </label>
+                    </div>
+                  </div>
                 </div>
 
                 <span class="divider" v-if="isInstantShare"></span>
@@ -400,6 +417,7 @@
 						custom_messages: this.generalSettings.custom_messages,
 						custom_messages_share_order: this.generalSettings.custom_messages_share_order,
 						instant_share: this.generalSettings.instant_share,
+						true_instant_share: this.generalSettings.true_instant_share,
 						instant_share_default: this.generalSettings.instant_share_default,
 						instant_share_future_scheduled: this.generalSettings.instant_share_future_scheduled,
 						housekeeping: this.generalSettings.housekeeping,

@@ -726,16 +726,16 @@ class Rop_Admin {
 		}
 
 		$services = new Rop_Services_Model();
+		$settings = new Rop_Settings_Model();
+
 		$active   = array_keys( $services->get_active_accounts() );
 		// has something been added extra?
 		$extra = array_diff( $enabled, $active );
 		// reject the extra.
 		$enabled = array_diff( $enabled, $extra );
 
-		$rop_true_share_immediately = apply_filters( 'rop_true_share_immediately', true );
-
-		// If user wants to run this operation on page refresh(default) instead of via Cron.
-		if ( $rop_true_share_immediately === true ) {
+		// If user wants to run this operation on page refresh instead of via Cron.
+		if ( $settings->get_true_instant_share() ) {
 			$this->rop_cron_job_publish_now( $post_id, $enabled );
 			return;
 		}
@@ -871,8 +871,8 @@ class Rop_Admin {
 	 *
 	 * @since   8.1.0
 	 * @access  public
-	 * @param int   $post_id the Post ID, only present when rop_true_share_immediately set to true.
-	 * @param array $enabled the accounts the user has selected to share the post to(by clicking the checkbox).
+	 * @param int   $post_id the Post ID, only present when sharing truly immediately (True Instant Sharing).
+	 * @param array $enabled the accounts the user has selected to share the post to (by clicking the checkbox).
 	 */
 	public function rop_cron_job_publish_now( $post_id = '', $enabled = array() ) {
 		$queue           = new Rop_Queue_Model();
