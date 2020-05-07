@@ -174,8 +174,8 @@ class Rop_Global_Settings {
 			'include_link'         => true,
 			'url_from_meta'        => false,
 			'url_meta_key'         => '',
-			'short_url'            => true,
-			'short_url_service'    => 'rviv.ly',
+			'short_url'            => false,
+			'short_url_service'    => 'is.gd',
 			'hashtags'             => 'no-hashtags',
 			'hashtags_length'      => '20',
 			'hashtags_common'      => '',
@@ -194,8 +194,8 @@ class Rop_Global_Settings {
 			'include_link'         => true,
 			'url_from_meta'        => false,
 			'url_meta_key'         => '',
-			'short_url'            => true,
-			'short_url_service'    => 'rviv.ly',
+			'short_url'            => false,
+			'short_url_service'    => 'is.gd',
 			'hashtags'             => 'no-hashtags',
 			'hashtags_length'      => '20',
 			'hashtags_common'      => '',
@@ -214,8 +214,8 @@ class Rop_Global_Settings {
 			'include_link'         => true,
 			'url_from_meta'        => false,
 			'url_meta_key'         => '',
-			'short_url'            => true,
-			'short_url_service'    => 'rviv.ly',
+			'short_url'            => false,
+			'short_url_service'    => 'is.gd',
 			'hashtags'             => 'no-hashtags',
 			'hashtags_length'      => '10',
 			'hashtags_common'      => '',
@@ -235,8 +235,8 @@ class Rop_Global_Settings {
 			'url_from_meta'        => false,
 			'shortner_credentials' => array(),
 			'url_meta_key'         => '',
-			'short_url'            => true,
-			'short_url_service'    => 'rviv.ly',
+			'short_url'            => false,
+			'short_url_service'    => 'is.gd',
 			'hashtags'             => 'no-hashtags',
 			'hashtags_length'      => '10',
 			'hashtags_common'      => '',
@@ -255,8 +255,8 @@ class Rop_Global_Settings {
 			'include_link'         => true,
 			'url_from_meta'        => false,
 			'url_meta_key'         => '',
-			'short_url'            => true,
-			'short_url_service'    => 'rviv.ly',
+			'short_url'            => false,
+			'short_url_service'    => 'is.gd',
 			'hashtags'             => 'no-hashtags',
 			'hashtags_length'      => '10',
 			'hashtags_common'      => '',
@@ -274,8 +274,8 @@ class Rop_Global_Settings {
 			'include_link'         => true,
 			'url_from_meta'        => false,
 			'url_meta_key'         => '',
-			'short_url'            => true,
-			'short_url_service'    => 'rviv.ly',
+			'short_url'            => false,
+			'short_url_service'    => 'is.gd',
 			'hashtags'             => 'no-hashtags',
 			'hashtags_length'      => '20',
 			'hashtags_common'      => '',
@@ -505,7 +505,7 @@ class Rop_Global_Settings {
 			 * $service['two_step_sign_in'] = false; For Twitter, this prevent the modal to open up
 			 * Even if the modal displays, the variable $available_services[ $key ] will prevent the form to show up.
 			 */
-			if ( 'twitter' !== $key ) {
+			if ( 'twitter' !== $key && 'tumblr' !== $key ) {
 				$service['two_step_sign_in'] = false;
 				$available_services[ $key ]  = $service;
 			}

@@ -25,23 +25,27 @@
 					<div class="content">
 						<div class="auth-app" v-if="isFacebook">
 							<button class="btn btn-primary big-btn" @click="openPopupFB()">{{labels.fb_app_signin_btn}}</button>
-							<span class="text-center">{{labels.fb_own_app_signin}}</span>
+							<span class="text-center">{{labels.app_option_signin}}</span>
 						</div>
 						<div class="auth-app" v-if="isTwitter">
 							<button class="btn btn-primary big-btn" @click="openPopupTW()">{{labels.tw_app_signin_btn}}</button>
-							<span class="text-center">{{labels.tw_own_app_signin}}</span>
+							<span class="text-center">{{labels.app_option_signin}}</span>
 						</div>
 						<div class="auth-app" v-if="isLinkedIn && isAllowedLinkedIn">
 							<button class="btn btn-primary big-btn" @click="openPopupLI()">{{labels.li_app_signin_btn}}</button>
-							<span class="text-center">{{labels.li_own_app_signin}}</span>
+							<span class="text-center">{{labels.app_option_signin}}</span>
+						</div>
+						<div class="auth-app" v-if="isTumblr && isAllowedTumblr">
+							<button class="btn btn-primary big-btn" @click="openPopupTumblr()">{{labels.tumblr_app_signin_btn}}</button>
+							<span class="text-center">{{labels.app_option_signin}}</span>
 						</div>
 						<div class="auth-app" v-if="isBuffer">
 							<button class="btn btn-primary big-btn" @click="openPopupBuffer()">{{labels.buffer_app_signin_btn}}</button>
 						</div>
-						<div id="rop-advanced-config" v-if="isFacebook || isTwitter || (isLinkedIn && isAllowedLinkedIn)">
+						<div id="rop-advanced-config" v-if="isFacebook || isTwitter || (isLinkedIn && isAllowedLinkedIn) || (isTumblr && isAllowedTumblr)">
 						<button class="btn btn-primary" v-on:click="showAdvanceConfig = !showAdvanceConfig">{{labels.show_advance_config}}</button>
 					</div>
-						<div v-if="showAdvanceConfig && (isFacebook || isTwitter || (isLinkedIn && isAllowedLinkedIn) )">
+						<div v-if="showAdvanceConfig && (isFacebook || isTwitter || (isLinkedIn && isAllowedLinkedIn) || (isTumblr && isAllowedTumblr) )">
 						<div class="form-group" v-for="( field, id ) in modal.data">
 							<label class="form-label" :for="field.id">{{ field.name }}</label>
 							<input :class="[ 'form-input', field.error ? ' is-error' : '' ]" type="text" :id="field.id" v-model="field.value"
@@ -50,7 +54,7 @@
 							<p class="text-gray">{{ field.description }}</p>
 						</div>
 					</div>
-						<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isBuffer) || (isLinkedIn && !isAllowedLinkedIn)">
+						<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isBuffer && !isTumblr) || (isLinkedIn && !isAllowedLinkedIn) || (isTumblr && !isAllowedTumblr)">
 						<div class="form-group" v-for="( field, id ) in modal.data">
 							<label class="form-label" :for="field.id">{{ field.name }}</label>
 							<input :class="[ 'form-input', field.error ? ' is-error' : '' ]" type="text" :id="field.id" v-model="field.value"
@@ -61,14 +65,14 @@
 					</div>
 				</div>
 				</div>
-				<div v-if="isFacebook || isTwitter || (isLinkedIn && isAllowedLinkedIn)" class="modal-footer">
+				<div v-if="isFacebook || isTwitter || (isLinkedIn && isAllowedLinkedIn) || (isTumblr && isAllowedTumblr)" class="modal-footer">
 					<p class="text-left pull-left mr-2" v-html="labels.rs_app_info"></p>
 				</div>
-				<div v-if="showAdvanceConfig && (isFacebook || isTwitter || isLinkedIn)" class="modal-footer">
+				<div v-if="showAdvanceConfig && (isFacebook || isTwitter || isLinkedIn || isTumblr)" class="modal-footer">
 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 				</div>
-				<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isBuffer) || (isLinkedIn && !isAllowedLinkedIn)" class="modal-footer">
+				<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isBuffer && !isTumblr) || (isLinkedIn && !isAllowedLinkedIn) || (isTumblr && !isAllowedTumblr)" class="modal-footer">
 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 				</div>
@@ -99,6 +103,7 @@
         appPathTW: ropAuthAppData.authAppTwitterPath,
         appPathLI: ropAuthAppData.authAppLinkedInPath,
         appPathBuffer: ropAuthAppData.authAppBufferPath,
+        appPathTumblr: ropAuthAppData.authAppTumblrPath,
 				appAdminEmail: ropAuthAppData.adminEmail,
 				siteAdminUrl: ropAuthAppData.adminUrl,
 				appUniqueId: ropAuthAppData.authToken,
@@ -106,6 +111,7 @@
 				windowParameters: 'top=20,left=100,width=560,height=670',
 				authPopupWindow: null,
 				showLiAppBtn: ropApiSettings.show_li_app_btn,
+				showTmblrAppBtn: ropApiSettings.show_tmblr_app_btn,
 				showBtn: false
 			}
 		},
@@ -333,6 +339,25 @@
                     Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
 				});
 			},
+            /**
+             * Add Tumblr account.
+             *
+             * @param data Data.
+             */
+            addAccountTumblr(data) {
+                this.$store.dispatch('fetchAJAXPromise', {
+                    req: 'add_account_tumblr',
+                    updateState: false,
+                    data: data
+                }).then(response => {
+                    window.removeEventListener("message", event => this.getChildWindowMessage(event));
+                    this.authPopupWindow.close();
+                    window.location.reload();
+                }, error => {
+                    this.is_loading = false;
+                    Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+				});
+			},
 			getChildWindowMessage: function (event) {
 				if (~event.origin.indexOf(this.appOrigin)) {
             if ('Twitter' === this.modal.serviceName) {
@@ -343,6 +368,8 @@
 					    this.addAccountLI(JSON.parse(event.data));
 						} else if ('Buffer' === this.modal.serviceName) {
 					    this.addAccountBuffer(JSON.parse(event.data));
+            } else if ('Tumblr' === this.modal.serviceName) {
+					    this.addAccountTumblr(JSON.parse(event.data));
             }
 
 				} else {
@@ -396,6 +423,18 @@
                     this.cancelModal();
                 }
                 window.addEventListener("message", event => this.getChildWindowMessage(event));
+			},
+            openPopupTumblr: function () { // Open the popup specific for Tumblr
+                let loginUrl = this.appOrigin + this.appPathTumblr + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
+                try {
+                    this.authPopupWindow.close();
+                } catch (e) {
+                    // nothing to do
+                } finally {
+                    this.authPopupWindow = window.open(loginUrl, 'authTmblr', this.windowParameters);
+                    this.cancelModal();
+                }
+                window.addEventListener("message", event => this.getChildWindowMessage(event));
 			}
 		},
 		computed: {
@@ -436,6 +475,14 @@
             isLinkedIn() {
                 return this.modal.serviceName === 'LinkedIn';
             },
+						// will return true if the current service actions are for Buffer.
+						isBuffer() {
+								return this.modal.serviceName === 'Buffer';
+						},
+            // will return true if the current service actions are for Tumblr.
+            isTumblr() {
+                return this.modal.serviceName === 'Tumblr';
+            },
 						isAllowedLinkedIn: function () {
 							let showButton = true;
 							if (!this.showLiAppBtn) {
@@ -443,10 +490,14 @@
 							}
 							return showButton;
 					},
-					// will return true if the current service actions are for Buffer.
-					isBuffer() {
-							return this.modal.serviceName === 'Buffer';
+						isAllowedTumblr: function () {
+							let showButton = true;
+							if (!this.showTmblrAppBtn) {
+									showButton = false;
+							}
+							return showButton;
 					},
+
 	}
 }
 </script>

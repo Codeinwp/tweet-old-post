@@ -284,6 +284,7 @@ class Rop_Admin {
 
 		$services        = new Rop_Services_Model();
 		$li_service      = new Rop_Linkedin_Service();
+		$tmblr_service   = new Rop_Tumblr_Service();
 		$active_accounts = $services->get_active_accounts();
 
 		$added_services = $services->get_authenticated_services();
@@ -302,6 +303,7 @@ class Rop_Admin {
 		$array_nonce['pro_installed']           = ( defined( 'ROP_PRO_VERSION' ) ) ? true : false;
 		$array_nonce['staging']                 = $this->rop_site_is_staging();
 		$array_nonce['show_li_app_btn']         = $li_service->rop_show_li_app_btn();
+		$array_nonce['show_tmblr_app_btn']      = $tmblr_service->rop_show_tmblr_app_btn();
 		$array_nonce['debug']                   = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
 		$array_nonce['tax_apply_limit']         = $this->limit_tax_dropdown_list();
 		$array_nonce['exclude_apply_limit']     = $this->limit_exclude_list();
@@ -322,6 +324,7 @@ class Rop_Admin {
 			'authAppTwitterPath'  => ROP_APP_TWITTER_PATH,
 			'authAppLinkedInPath' => ROP_APP_LINKEDIN_PATH,
 			'authAppBufferPath'   => ROP_APP_BUFFER_PATH,
+			'authAppTumblrPath'   => ROP_APP_TUMBLR_PATH,
 			'authToken'           => $token,
 			'adminUrl'            => urlencode( $admin_url ),
 			'authSignature'       => $signature,
@@ -784,11 +787,17 @@ class Rop_Admin {
 		// this would only be possible in Pro plugin
 		if ( $global_settings->license_type() > 0 && $rop_active_status ) {
 
-			// set the current plugin options.
-			$option = get_option( 'rop_data' );
+			$logger          = new Rop_Logger();
+			// Get the current plugin options.
+			$options = get_option( 'rop_data' );
 
 			$social_accounts = array();
-			$post_formats = $option['post_format'];
+			$post_formats = array_key_exists( 'post_format', $options ) ? $options['post_format'] : '';
+
+			if ( empty( $post_formats ) ) {
+				$logger->alert_error( Rop_I18n::get_labels( 'post_format.no_post_format_error' ) );
+				return;
+			}
 
 			foreach ( $post_formats as $key => $value ) {
 
@@ -1025,7 +1034,7 @@ class Rop_Admin {
 
 
 	/**
-	 * Disable Cron Jobs on refresh if remove_cron() method was called
+	 * If the option "rop_is_sharing_cron_active" value is off/false/no then the WP Cron Jobs will be cleared.
 	 *
 	 * @since 8.5.0
 	 */
@@ -1297,6 +1306,101 @@ class Rop_Admin {
 
 		if ( ! $settings->get_more_than_once() ) {
 			delete_option( 'rop_one_time_share_accounts' );
+		}
+
+	}
+
+	/**
+	 * Update default shortener from rviv.ly.
+	 *
+	 * Rviv.ly domain is currently blacklisted by some social media networks.
+	 * This code changes the rviv.ly shortener to is.id
+	 *
+	 * @since   8.5.6
+	 * @access  public
+	 */
+	public function rop_update_shortener() {
+
+		$user_id = get_current_user_id();
+
+		if ( get_user_meta( $user_id, 'rop-shortener-changed-notice-dismissed' ) ) {
+			return;
+		}
+
+		$updated_shortener = get_option( 'rop_changed_shortener' );
+
+		if ( ! empty( $updated_shortener ) ) {
+			return;
+		}
+
+		$options = get_option( 'rop_data' );
+
+		if ( empty( $options ) ) {
+			return;
+		}
+
+		$post_format = array_key_exists( 'post_format', $options ) ? $options['post_format'] : '';
+
+		if ( empty( $post_format ) ) {
+			return;
+		}
+
+		foreach ( $post_format as $account => $settings ) {
+
+			foreach ( $settings as $key => $value ) {
+
+				if ( $key === 'short_url_service' && $value === 'rviv.ly' ) {
+					update_option( 'rop_changed_shortener', true );
+					$post_format[ $account ][ $key ] = 'is.gd';
+				}
+			}
+		}
+
+		$options['post_format'] = $post_format;
+		update_option( 'rop_data', $options );
+
+	}
+
+	/**
+	 * Shortener changed notice.
+	 *
+	 * @since   8.5.6
+	 * @access  public
+	 */
+	public function rop_shortener_changed_notice() {
+
+		$updated_shortener = get_option( 'rop_changed_shortener' );
+
+		if ( empty( $updated_shortener ) ) {
+			return;
+		}
+
+		$user_id = get_current_user_id();
+
+		if ( get_user_meta( $user_id, 'rop-shortener-changed-notice-dismissed' ) ) {
+			return;
+		}
+
+		?>
+
+		<div class="notice notice-error">
+			<?php echo sprintf( __( '%1$s We\'ve automatically changed your Revive Old Posts\' shortener from rviv.ly to is.gd. Read the reason for the change %2$shere%3$s. %4$s %5$s', 'tweet-old-post' ), '<p>', '<a href="https://docs.revive.social/article/1244-why-we-automatically-changed-your-shortener-from-rviv-ly-to-is-gd" target="_blank">', '</a>', '<a style="float: right;" href="?rop-shortener-changed-notice-dismissed">Dismiss</a>', '</p>' ); ?>
+		</div>
+		<?php
+
+	}
+
+	/**
+	 * Dismiss Shortener changed notice.
+	 *
+	 * @since   8.5.6
+	 * @access  public
+	 */
+	public function rop_shortener_changed_disabled_notice() {
+
+		$user_id = get_current_user_id();
+		if ( isset( $_GET['rop-shortener-changed-notice-dismissed'] ) ) {
+			add_user_meta( $user_id, 'rop-shortener-changed-notice-dismissed', 'true', true );
 		}
 
 	}

@@ -340,10 +340,18 @@ abstract class Rop_Services_Abstract {
 		if ( empty( $post_details['short_url_service'] ) ) {
 			return $link;
 		}
+
+			$post_format_helper = new Rop_Post_Format_Helper();
+
 		if ( $post_details['short_url_service'] === 'wp_short_url' ) {
 			return $link;
 		}
-		$post_format_helper = new Rop_Post_Format_Helper();
+		// rviv.ly currently blacklisted, switch to is.gd
+		if ( $post_details['short_url_service'] === 'rviv.ly' ) {
+			$link = ' ' . $post_format_helper->get_short_url( $post_details['post_url'], 'is.gd', '' );
+			return $link;
+		}
+
 		$link               = ' ' . $post_format_helper->get_short_url( $post_details['post_url'], $post_details['short_url_service'], $post_details['shortner_credentials'] );
 
 		return $link;
