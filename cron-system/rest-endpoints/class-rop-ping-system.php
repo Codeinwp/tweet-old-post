@@ -58,9 +58,12 @@ class Rop_Ping_System extends Rop_System_Base {
 	 */
 	public function register_routes() {
 
+		$namespace = self::$rop_namespace . self::$rop_version;
+		$base_tag  = self::$rop_base_tag;
+
 		register_rest_route(
-			self::$rop_namespace . self::$rop_version,
-			self::$rop_base_tag,
+			$namespace,
+			$base_tag,
 			array(
 				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => array( &$this, 'catch_authorization_data' ),
@@ -79,11 +82,12 @@ class Rop_Ping_System extends Rop_System_Base {
 	 * @access public
 	 */
 	public function catch_authorization_data( WP_REST_Request $request ) {
-
+		error_log('### ' . __FUNCTION__);
 		// Get the headers the client is sending.
-		$headers = apache_request_headers();
+		$headers = Rop_Helpers::apache_request_headers();
 
 		if ( empty( $headers ) || ! isset( $headers['Rop-Authorization'] ) ) {
+			error_log('### ' . __FUNCTION__ . ' header issue');
 			return false;
 		}
 
@@ -91,6 +95,7 @@ class Rop_Ping_System extends Rop_System_Base {
 		$fetch_token = $this->fetch_token_from_headers( $headers['Rop-Authorization'] );
 
 		if ( false === $fetch_token ) {
+			error_log('### ' . __FUNCTION__ . ' token issue');
 			return false;
 		}
 
@@ -102,17 +107,18 @@ class Rop_Ping_System extends Rop_System_Base {
 				'success'            => true,
 				'next-time-to-share' => $fetch_related_data, // test line
 			);
-
+			error_log('### ' . __FUNCTION__ . ' next time to share : ' . $fetch_related_data);
 			$admin = new Rop_Admin();
 			$admin->rop_cron_job();
 		} else {
+			error_log('### ' . __FUNCTION__ . ' next time to share ISSUE : ' . $fetch_related_data);
 			// Could not fetch the next time to share.
 			$return_data = array(
 				'success'            => false,
 				'next-time-to-share' => false, // test line
 			);
 		}
-
+		error_log('### ' . __FUNCTION__ . ' reached end of function : ' . $fetch_related_data);
 
 
 		wp_send_json( $return_data );
@@ -128,7 +134,8 @@ class Rop_Ping_System extends Rop_System_Base {
 	 */
 	public function catch_authorization_data_permissions() {
 		// Get the headers the client is sending.
-		$headers = apache_request_headers();
+		#error_log(var_export(function_exists('apache_request_headers'),true));
+		$headers = Rop_Helpers::apache_request_headers();
 
 		if ( empty( $headers ) || ! isset( $headers['Rop-Authorization'] ) ) {
 			return false;

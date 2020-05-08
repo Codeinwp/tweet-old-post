@@ -88,6 +88,8 @@ class Rop_System_Base extends WP_REST_Controller {
 			return false;
 		}
 
-		// TODO Check the database.
+		$saved_token = get_option( 'rop_access_token' );
+
+		return trim( $token ) === trim( $saved_token );
 	}
 }

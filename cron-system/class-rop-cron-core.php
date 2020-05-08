@@ -3,6 +3,7 @@
 namespace RopCronSystem;
 
 use RopCronSystem\Curl_Helpers\Rop_Curl_Methods;
+use RopCronSystem\Endpoint_Ping_Server\Rop_Ping_System;
 use RopCronSystem\ROP_Helpers\Rop_Helpers;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -34,6 +35,15 @@ class Rop_Cron_Core {
 
 		add_action( 'rop_process_do_register', array( &$this, 'server_register_client' ) );
 
+		add_action( 'init', array( &$this, 'init_endpoint_items' ) );
+
+
+	}
+
+	public function init_endpoint_items() {
+		// Share now function.
+		$share_now = new Rop_Ping_System();
+		$share_now->init_rest_api_route();
 	}
 
 	public function server_start_share() {
@@ -88,7 +98,7 @@ class Rop_Cron_Core {
 			'request_path' => ':register_account:',
 		);
 		$call_response = $request_call->create_call_process( $arguments );
-		
+
 	}
 
 }

@@ -94,4 +94,23 @@ class Rop_Helpers {
 
 		return false;
 	}
+
+	static public function apache_request_headers() {
+		if ( ! function_exists( 'apache_request_headers' ) ) {
+			$headers_output = array();
+
+			foreach ( $_SERVER as $key => $value ) {
+				if ( 'HTTP_' === mb_strtoupper( substr( $key, 0, 5 ) ) ) {
+					$key                    = str_replace( ' ', '-', ucwords( strtolower( str_replace( '_', ' ', substr( $key, 5 ) ) ) ) );
+					$headers_output[ $key ] = $value;
+				} else {
+					$headers_output[ $key ] = $value;
+				}
+			}
+
+			return $headers_output;
+		} else {
+			return apache_request_headers();
+		}
+	}
 }
