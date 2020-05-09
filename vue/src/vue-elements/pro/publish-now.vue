@@ -12,8 +12,12 @@
 
 			<div class="form-group rop-publish-now-accounts-wrapper" v-if="share_on_update_enabled" v-for="(account, key) in accounts">
 				<label class="form-checkbox rop-publish-now-account">
-					<input type="checkbox" :checked="(active != null && active.indexOf(key) >= 0) || (share_on_update_enabled)" :value="key"
-					       name="publish_now_accounts[]"/>
+					<input type="checkbox" :checked="(active != null && active.indexOf(key) >= 0) || (share_on_update_enabled)" v-on:click="getTheClick(key)" :value="key"
+					       name="publish_now_accounts[]" class="account-names"/>
+					<!-- <input type="checkbox" :checked="(active != null && active.indexOf(key) >= 0) || (share_on_update_enabled)" v-on:click="getTheClick(key)" :value="key"
+					       name="publish_now_accounts[]" /> -->
+								 <input type="text" v-show="showArea()" :name="key" value=""/>
+								 <!-- <input type="text" v-if="show_input" :name="key" value="SHOW INPUT"/> -->
 					<i class=" fa " :class="getServiceClass(account.service)"></i> {{account.user}}
 				</label>
 			</div>
@@ -33,12 +37,15 @@
 		},
 		data: function () {
 
+
 			return {
 				labels: this.$store.state.labels.publish_now,
 				accounts: this.$store.state.publish_now.accounts,
 				active: this.$store.state.publish_now.active,
-				share_on_update_enabled: this.$store.state.publish_now.action
+				share_on_update_enabled: this.$store.state.publish_now.action,
+				show_input: false,
 			}
+
 		},
 		components: {
 			ButtonCheckbox
@@ -55,6 +62,35 @@
 
 				return serviceIcon;
 			},
+			showArea: function(show = false){
+				console.log('got into show area ' + show);
+				this.show_input = true;
+				console.log('got passed this.show_input ' + show);
+				return show;
+			},
+
+			getTheClick: function(value){
+
+				console.log(value)
+				const field = document.querySelectorAll(".account-names")
+				console.log(field);
+
+				var self = this;
+
+				field.forEach(function(account){
+					const account_id = account.value;
+					if( value === account_id ){
+						console.log( 'got into if');
+						console.log( 'account id: ' + account_id);
+						// return show_input = true;
+
+						self.showArea(true);
+					}
+
+				});
+
+			},
+
 		}
 	}
 </script>
