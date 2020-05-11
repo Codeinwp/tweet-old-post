@@ -1,5 +1,21 @@
 <template>
     <div>
+        <div class="columns py-2" v-if="wpml_active_status">
+            <div class="column col-6 col-sm-12 vertical-align">
+                <b>{{labels.language_title}}</b>
+                <p class="text-gray">{{labels.language_title_desc}}</p>
+            </div>
+            <div class="column col-6 col-sm-12 vertical-align">
+                <div class="form-group">
+                    <select class="form-select" v-model="post_format.wpml_language">
+                        <option  v-for="(lang, index) in wpml_languages" :value="lang.code">{{lang.value}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <span class="divider"></span>
+
         <div class="columns py-2">
             <div class="column col-6 col-sm-12 vertical-align">
                 <b>{{labels.post_content_title}}</b>
@@ -17,18 +33,18 @@
             </div>
         </div>
 
-        <div class="columns py-2" v-if="post_format.post_content === 'custom_field'">
-            <div class="column col-6 col-sm-12 vertical-align">
-                <b>{{labels.custom_meta_title}}</b>
-                <p class="text-gray">{{labels.custom_meta_desc}}</p>
-            </div>
-            <div class="column col-6 col-sm-12 vertical-align">
-                <div class="form-group">
-                    <input class="form-input" type="text" v-model="post_format.custom_meta_field"
-                           value="" placeholder=""/>
+                <div class="columns py-2" v-if="post_format.post_content === 'custom_field'">
+                    <div class="column col-6 col-sm-12 vertical-align">
+                        <b>{{labels.custom_meta_title}}</b>
+                        <p class="text-gray">{{labels.custom_meta_desc}}</p>
+                    </div>
+                    <div class="column col-6 col-sm-12 vertical-align">
+                        <div class="form-group">
+                            <input class="form-input" type="text" v-model="post_format.custom_meta_field"
+                                   value="" placeholder=""/>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
 
         <span class="divider"></span>
 
@@ -309,11 +325,19 @@
                 labels: this.$store.state.labels.post_format,
                 labels_settings: this.$store.state.labels.settings,
                 upsell_link: ropApiSettings.upsell_link,
+                wpml_active_status: ropApiSettings.rop_get_wpml_active_status,
+                wpml_languages: ropApiSettings.rop_get_wpml_languages,
                 selected_tax_filter: [],
             }
         },
         created: function () {
             this.get_taxonomy_list();
+
+            this.wpml_languages.filter(lang =>{
+      var code = Object.keys(lang)[0];
+      lang.code = code;
+      lang.value = lang[code];
+    });
         },
         methods:{
             get_taxonomy_list(){

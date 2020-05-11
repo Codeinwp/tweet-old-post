@@ -289,6 +289,8 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @return mixed
 	 * @since   8.0.0
 	 * @access  public
+	 *
+	 * @see Rop_Queue_Model::get_queue For how this function is getting used
 	 */
 	public function select( $account_id = false ) {
 		$post_types      = $this->build_post_types();
@@ -399,7 +401,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		$posts = array_values( $posts );
 
 		if ( function_exists( 'icl_object_id' ) ) {
-			$posts = $this->rop_wpml_id( $posts );
+			$posts = $this->rop_wpml_id( $posts, $account_id );
 		}
 
 		wp_reset_postdata();
@@ -622,10 +624,27 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @since   8.1.7
 	 * @access   public
 	 */
-	public function rop_wpml_id( $post_id ) {
+	public function rop_wpml_id( $post_id, $account_id = '' ) {
+
+		$logger      = new Rop_Logger();
 
 		$default_lang = apply_filters( 'wpml_default_language', null );
 		$lang_code    = apply_filters( 'rop_wpml_lang', $default_lang );
+
+
+		if( ! empty ($account_id) ){
+
+		$post_format_model = new Rop_Post_Format_Model();
+		$rop_account_lang_code = $post_format_model->get_post_format($account_id);
+		$rop_account_lang_code = $rop_account_lang_code['wpml_language'];
+
+		}
+
+if( ! empty($rop_account_lang_code) ){
+		      $lang_code = $rop_account_lang_code;
+	}else{
+		$logger->alert_error( 'Account ID Empty' );
+	}
 
 		if ( is_array( $post_id ) ) {
 			foreach ( $post_id as $id ) {
@@ -652,9 +671,25 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 * @since   8.1.7
 	 * @access   public
 	 */
-	public function rop_wpml_link( $url ) {
+	public function rop_wpml_link( $url, $account_id ) {
 		$default_lang = apply_filters( 'wpml_default_language', null );
 		$lang_code    = apply_filters( 'rop_wpml_lang', $default_lang );
+
+    $logger      = new Rop_Logger();
+		if( ! empty ($account_id) ){
+
+		$post_format_model = new Rop_Post_Format_Model();
+		$rop_account_lang_code = $post_format_model->get_post_format($account_id);
+		$rop_account_lang_code = $rop_account_lang_code['wpml_language'];
+
+		}
+
+	if( ! empty($rop_account_lang_code) ){
+					$lang_code = $rop_account_lang_code;
+	}else{
+		$logger->alert_error( 'Account ID Empty' );
+	}
+
 		$wpml_url     = apply_filters( 'wpml_permalink', $url, $lang_code );
 
 		return $wpml_url;

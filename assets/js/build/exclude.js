@@ -13068,6 +13068,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /* global ropApiSettings */
 /* exported ropApiSettings */
 
+/* eslint-disable*/
+
 var logOptions = {
     // required ['debug', 'info', 'warn', 'error', 'fatal']
     logLevel: ropApiSettings.debug === 'yes' ? 'debug' : 'error',

@@ -198,6 +198,8 @@ class Rop_I18n {
 			),
 			'post_format' => array(
 				'menu_item'                         => __( 'Post Format', 'tweet-old-post' ),
+				'language_title'              			=> __( 'Language', 'tweet-old-post' ),
+				'language_title_desc'               => __( 'We\'ve detected that this is a multilingual website. Select the post language you want to share to this account.', 'tweet-old-post' ),
 				'post_content_title'                => __( 'Post Content', 'tweet-old-post' ),
 				'post_content_desc'                 => __( 'From where to fetch the content which will be shared.', 'tweet-old-post' ),
 				'post_content_option_title'         => __( 'Post Title', 'tweet-old-post' ),

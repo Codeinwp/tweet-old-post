@@ -3,6 +3,8 @@
 /* global ropApiSettings */
 /* exported ropApiSettings */
 
+/* eslint-disable*/
+
 import Vue from 'vue'
 import Vuex from 'vuex'
 import VueResource from 'vue-resource'

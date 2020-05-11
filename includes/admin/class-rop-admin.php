@@ -304,6 +304,8 @@ class Rop_Admin {
 		$array_nonce['staging']                 = $this->rop_site_is_staging();
 		$array_nonce['show_li_app_btn']         = $li_service->rop_show_li_app_btn();
 		$array_nonce['show_tmblr_app_btn']      = $tmblr_service->rop_show_tmblr_app_btn();
+		$array_nonce['rop_get_wpml_active_status']  = $this->rop_get_wpml_active_status();
+		$array_nonce['rop_get_wpml_languages']  = $this->rop_get_wpml_languages();
 		$array_nonce['debug']                   = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
 		$array_nonce['tax_apply_limit']         = $this->limit_tax_dropdown_list();
 		$array_nonce['exclude_apply_limit']     = $this->limit_exclude_list();
@@ -1396,6 +1398,47 @@ class Rop_Admin {
 			add_user_meta( $user_id, 'rop-shortener-changed-notice-dismissed', 'true', true );
 		}
 
+	}
+
+	/**
+	 * Check if WPML is active on the website.
+	 *
+	 * @since   8.5.8
+	 * @access  public
+	 * @return bool Whether or not the WPML plugin is active.
+	 */
+	public function rop_get_wpml_active_status() {
+
+		if ( function_exists( 'icl_object_id' ) ) {
+			return true;
+		} else {
+			return false;
+		}
+
+	}
+
+	/**
+	 * Get WPML active languages.
+	 *
+	 * @since   8.5.8
+	 * @access  public
+	 * @return array Returns an array of active lanuages set in the WPML settings. NOTE: Though 'skip_missing' flag is set, WPML still returns all language codes, regardless if there are no posts using that translation on the website.
+	 */
+	public function rop_get_wpml_languages() {
+
+		if( $this->rop_get_wpml_active_status() === false ){
+					 return;
+			}
+
+		$wpml_active_languages = apply_filters( 'wpml_active_languages', NULL, array('skip_missing' => 1));
+
+		$languages_array = array();
+
+		foreach( $wpml_active_languages as $key => $value ){
+		$languages_array[] = array($key => $value['native_name'] );
+		}
+
+		return $languages_array;
 	}
 
 }
