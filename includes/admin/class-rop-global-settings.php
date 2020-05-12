@@ -151,7 +151,7 @@ class Rop_Global_Settings {
 		'custom_messages'       => false,
 		'custom_share_order'    => false,
 		'instant_share'         => true,
-		'true_instant_share'    => false,
+		'true_instant_share'    => true,
 		'instant_share_default' => false,
 		'instant_share_future_scheduled' => false,
 		'start_time'            => false,

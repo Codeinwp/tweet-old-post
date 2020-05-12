@@ -161,7 +161,7 @@
                     </div>
                 </div>
 
-                <span class="divider"></span>
+                <span class="divider" v-if="isInstantShare"></span>
 
                 <div class="columns py-2" v-if="isInstantShare">
                   <div class="column col-6 col-sm-12 vertical-align rop-control">
