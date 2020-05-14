@@ -116,6 +116,7 @@ class Rop_Cron_Helper {
 				wp_schedule_single_event( time() + 30, self::CRON_NAMESPACE_ONCE );
 			}
 			wp_schedule_event( time(), '5min', self::CRON_NAMESPACE );
+			$this->cron_status_global_change( true );
 
 		} elseif ( defined( 'ROP_CRON_ALTERNATIVE' ) && true === ROP_CRON_ALTERNATIVE ) {
 			if ( $first ) {

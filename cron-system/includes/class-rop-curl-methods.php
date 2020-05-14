@@ -49,7 +49,7 @@ class Rop_Curl_Methods {
 	/**
 	 * Holds the Rop_Exception_Handler
 	 *
-	 * @since   8.0.0
+	 * @since   8.5.5
 	 * @access  protected
 	 * @var     Rop_Exception_Handler $error The exception handler.
 	 */
@@ -57,7 +57,7 @@ class Rop_Curl_Methods {
 	/**
 	 * Holds the logger
 	 *
-	 * @since   8.0.0
+	 * @since   8.5.5
 	 * @access  protected
 	 * @var     Rop_Logger $logger The logger handler.
 	 */
@@ -276,17 +276,19 @@ class Rop_Curl_Methods {
 	 * @return string
 	 */
 	private function create_register_data() {
+		$local_website_url = get_bloginfo( 'url' );
+
 		// Generate a pseudo-random string of bytes.
 		$random_key = openssl_random_pseudo_bytes( 40 );
 		// Local WordPress salt
-		$local_salt = SECURE_AUTH_SALT;
+		$local_salt = SECURE_AUTH_SALT . $local_website_url;
 		// Auth token creation.
 		$created_token = hash( 'sha256', $local_salt . $random_key, false );
 
 		// Compile data that will be sent to the server.
 		$account_data = array(
 			'email'         => get_bloginfo( 'admin_email' ),
-			'website_url'   => get_bloginfo( 'url' ),
+			'website_url'   => $local_website_url,
 			'register_hash' => $created_token,
 			'date_time'     => current_time( 'mysql' ),
 			'timezone'      => Rop_Helpers::local_timezone(),

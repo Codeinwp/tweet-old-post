@@ -22,7 +22,7 @@ class Rop_System_Base extends WP_REST_Controller {
 	/**
 	 * Holds the Rop_Exception_Handler
 	 *
-	 * @since   8.0.0
+	 * @since   8.5.5
 	 * @access  protected
 	 * @var     Rop_Exception_Handler $error The exception handler.
 	 */
@@ -30,7 +30,7 @@ class Rop_System_Base extends WP_REST_Controller {
 	/**
 	 * Holds the logger
 	 *
-	 * @since   8.0.0
+	 * @since   8.5.5
 	 * @access  protected
 	 * @var     Rop_Logger $logger The logger handler.
 	 */
