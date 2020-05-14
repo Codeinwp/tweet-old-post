@@ -311,8 +311,30 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 *
 	 * @access  public
 	 * @return array
+	 * @param int   $post_id the Post ID, only present when sharing truly immediately (True Instant Sharing).
+	 * @param array $enabled the accounts the user has selected to share the post to (by clicking the checkbox).
 	 */
-	public function build_queue_publish_now() {
+	public function build_queue_publish_now( $post_id = '', $enabled = array() ) {
+
+		// Below will only run when sharing truly immediately (True Instant Sharing)
+		if ( ! empty( $post_id ) && ! empty( $enabled ) ) {
+
+			$accounts   = $enabled;
+			$normalized_queue   = array();
+
+				$index = 0;
+
+			foreach ( $accounts as $account_id ) {
+						$normalized_queue[ $account_id ][ $index ] = array(
+							'posts' => array( $post_id ),
+						);
+						$index++;
+			}
+
+			return $normalized_queue;
+		}
+
+		// Below will only run when sharing truly immediately (True Instant Sharing)
 		$selector           = new Rop_Posts_Selector_Model();
 		$posts              = $selector->get_publish_now_posts();
 
