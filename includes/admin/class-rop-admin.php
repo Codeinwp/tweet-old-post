@@ -284,6 +284,7 @@ class Rop_Admin {
 
 		$services        = new Rop_Services_Model();
 		$li_service      = new Rop_Linkedin_Service();
+		$tmblr_service   = new Rop_Tumblr_Service();
 		$active_accounts = $services->get_active_accounts();
 
 		$added_services = $services->get_authenticated_services();
@@ -302,6 +303,7 @@ class Rop_Admin {
 		$array_nonce['pro_installed']           = ( defined( 'ROP_PRO_VERSION' ) ) ? true : false;
 		$array_nonce['staging']                 = $this->rop_site_is_staging();
 		$array_nonce['show_li_app_btn']         = $li_service->rop_show_li_app_btn();
+		$array_nonce['show_tmblr_app_btn']      = $tmblr_service->rop_show_tmblr_app_btn();
 		$array_nonce['debug']                   = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
 		$array_nonce['tax_apply_limit']         = $this->limit_tax_dropdown_list();
 		$array_nonce['exclude_apply_limit']     = $this->limit_exclude_list();
@@ -322,6 +324,7 @@ class Rop_Admin {
 			'authAppTwitterPath'  => ROP_APP_TWITTER_PATH,
 			'authAppLinkedInPath' => ROP_APP_LINKEDIN_PATH,
 			'authAppBufferPath'   => ROP_APP_BUFFER_PATH,
+			'authAppTumblrPath'   => ROP_APP_TUMBLR_PATH,
 			'authToken'           => $token,
 			'adminUrl'            => urlencode( $admin_url ),
 			'authSignature'       => $signature,
@@ -726,11 +729,19 @@ class Rop_Admin {
 		}
 
 		$services = new Rop_Services_Model();
+		$settings = new Rop_Settings_Model();
+
 		$active   = array_keys( $services->get_active_accounts() );
 		// has something been added extra?
 		$extra = array_diff( $enabled, $active );
 		// reject the extra.
 		$enabled = array_diff( $enabled, $extra );
+
+		// If user wants to run this operation on page refresh instead of via Cron.
+		if ( $settings->get_true_instant_share() ) {
+			$this->rop_cron_job_publish_now( $post_id, $enabled );
+			return;
+		}
 
 		update_post_meta( $post_id, 'rop_publish_now', 'yes' );
 		update_post_meta( $post_id, 'rop_publish_now_accounts', $enabled );
@@ -753,6 +764,7 @@ class Rop_Admin {
 	 */
 	public function share_scheduled_future_post( $post ) {
 
+		$post_id = $post->ID;
 		$settings            = new Rop_Settings_Model();
 		$selected_post_types = wp_list_pluck( $settings->get_selected_post_types(), 'value' );
 
@@ -803,7 +815,7 @@ class Rop_Admin {
 				$taxonomies_ids = array_keys( $taxonomy_filter );
 
 				// get term ids for the taxonomies selected on General Settings of ROP that are present in the current post
-				$post_term_ids = wp_get_post_terms( $post->ID, $taxonomies_slug, array( 'fields' => 'ids' ) );
+				$post_term_ids = wp_get_post_terms( $post_id, $taxonomies_slug, array( 'fields' => 'ids' ) );
 
 				// get the common term ids between what's assigned to the post and what's selected in General Settings
 				$common = array_intersect( $taxonomies_ids, $post_term_ids );
@@ -841,7 +853,7 @@ class Rop_Admin {
 			$taxonomies_ids = array_keys( $taxonomies );
 
 			// get term ids for the taxonomies selected on General Settings of ROP that are present in the current post
-			$post_term_ids = wp_get_post_terms( $post->ID, $taxonomies_slug, array( 'fields' => 'ids' ) );
+			$post_term_ids = wp_get_post_terms( $post_id, $taxonomies_slug, array( 'fields' => 'ids' ) );
 
 			// get the common term ids between what's assigned to the post and what's selected in General Settings
 			$common = array_intersect( $taxonomies_ids, $post_term_ids );
@@ -859,11 +871,7 @@ class Rop_Admin {
 			}
 		}
 
-		update_post_meta( $post->ID, 'rop_publish_now', 'yes' );
-		update_post_meta( $post->ID, 'rop_publish_now_accounts', $active_accounts );
-
-		$cron = new Rop_Cron_Helper();
-		$cron->manage_cron( array( 'action' => 'publish-now' ) );
+		$this->rop_cron_job_publish_now( $post_id, $active_accounts );
 	}
 
 
@@ -872,14 +880,16 @@ class Rop_Admin {
 	 *
 	 * @since   8.1.0
 	 * @access  public
+	 * @param int   $post_id the Post ID, only present when sharing truly immediately (True Instant Sharing).
+	 * @param array $enabled the accounts the user has selected to share the post to (by clicking the checkbox).
 	 */
-	public function rop_cron_job_publish_now() {
+	public function rop_cron_job_publish_now( $post_id = '', $enabled = array() ) {
 		$queue           = new Rop_Queue_Model();
 		$services_model  = new Rop_Services_Model();
 		$logger          = new Rop_Logger();
 		$service_factory = new Rop_Services_Factory();
 
-		$queue_stack = $queue->build_queue_publish_now();
+		$queue_stack = $queue->build_queue_publish_now( $post_id, $enabled );
 		$logger->info( 'Fetching publish now queue', array( 'queue' => $queue_stack ) );
 		foreach ( $queue_stack as $account => $events ) {
 			foreach ( $events as $index => $event ) {
@@ -1024,7 +1034,7 @@ class Rop_Admin {
 
 
 	/**
-	 * Disable Cron Jobs on refresh if remove_cron() method was called
+	 * If the option "rop_is_sharing_cron_active" value is off/false/no then the WP Cron Jobs will be cleared.
 	 *
 	 * @since 8.5.0
 	 */

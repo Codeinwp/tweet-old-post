@@ -250,14 +250,14 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	}
 
 	/**
-	 * Utility method to retrieve users from the Twitter account.
+	 * Utility method to retrieve users from the Tumblr account.
 	 *
 	 * @codeCoverageIgnore
 	 *
 	 * @since   8.0.0
 	 * @access  public
 	 *
-	 * @param   object $data Response data from Twitter.
+	 * @param   object $data Response data from Tumblr.
 	 *
 	 * @return array
 	 */
@@ -275,6 +275,39 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 					'user'    => $this->normalize_string( $page->title ),
 					'account' => $this->normalize_string( $page->name ),
 					'img'     => $img,
+				),
+				$this->user_default
+			);
+			$users[]      = $user_details;
+		}
+
+		return $users;
+	}
+
+
+	/**
+	 * Utility method to retrieve users from the Tumblr account connected using the RS app.
+	 *
+	 * @codeCoverageIgnore
+	 *
+	 * @since   8.5.7
+	 * @access  public
+	 *
+	 * @param   object $data Response data from Tumblr.
+	 *
+	 * @return array
+	 */
+	private function get_users_rs_app( $data = null ) {
+		$users = array();
+
+		foreach ( $data as $page ) {
+
+			$user_details = wp_parse_args(
+				array(
+					'id'      => $page['id'],
+					'user'    => $this->normalize_string( $page['account'] ),
+					'account' => $this->normalize_string( $page['user'] ),
+					'img'     => $page['img'],
 				),
 				$this->user_default
 			);
@@ -393,7 +426,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			return;
 		}
 
-		$api = $this->get_api( $this->credentials['consumer_key'], $this->credentials['consumer_secret'], $this->credentials['oauth_token'], $this->credentials['oauth_token_secret'] );
+		$api = $this->get_api( $args['credentials']['consumer_key'], $args['credentials']['consumer_secret'], $args['credentials']['oauth_token'], $args['credentials']['oauth_token_secret'] );
 
 		$post_type = new Rop_Posts_Selector_Model();
 		$post_id   = $post_details['post_id'];
@@ -405,7 +438,12 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		// Link post
 		if ( ! empty( $post_details['post_url'] ) && empty( $post_details['post_with_image'] ) ) {
 
-			$new_post['thumbnail'] = get_the_post_thumbnail_url( $post_id, 'large' );
+			$thumbnail = get_the_post_thumbnail_url( $post_id, 'large' );
+
+			// if thumbnail parameter is set but empty, tumblr would return an error. So we prevent this here.
+			if ( ! empty( $thumbnail ) ) {
+				$new_post['thumbnail'] = $thumbnail;
+			}
 
 			$new_post['type']        = 'link';
 			$new_post['url']         = trim( $this->get_url( $post_details ) );
@@ -465,6 +503,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		try {
 
 			$api->createPost( $args['id'] . '.tumblr.com', $new_post );
+
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
@@ -474,7 +513,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 				)
 			);
 		} catch ( Exception $exception ) {
-			$this->logger->alert_error( 'Posting failed for Tumblr. Error: ' . $exception->getMessage() );
+			$this->logger->alert_error( 'Posting failed to Tumblr. Error: ' . $exception->getMessage() );
 			$this->rop_get_error_docs( $exception->getMessage() );
 
 			return false;
@@ -502,4 +541,89 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 		// allow users to not include author in shared posts
 		return apply_filters( 'rop_tumblr_post_author', $author );
 	}
+
+	/**
+	 * Method used to decide whether or not to show Tumblr button
+	 *
+	 * @since   8.5.6
+	 * @access  public
+	 *
+	 * @return  bool
+	 */
+	public function rop_show_tmblr_app_btn() {
+
+		$installed_at_version = get_option( 'rop_first_install_version' );
+
+		if ( empty( $installed_at_version ) ) {
+			return false;
+		}
+
+		if ( version_compare( $installed_at_version, '8.5.0', '>=' ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * This method will load and prepare the account data for Tumblr user.
+	 * Used in Rest Api.
+	 *
+	 * @since   8.5.7
+	 * @access  public
+	 *
+	 * @param   array $account_data Tumblr pages data.
+	 *
+	 * @return  bool
+	 */
+	public function add_account_with_app( $account_data ) {
+		if ( ! $this->is_set_not_empty( $account_data, array( 'id' ) ) ) {
+			return false;
+		}
+
+		$the_id         = unserialize( base64_decode( $account_data['id'] ) );
+		$accounts_array = unserialize( base64_decode( $account_data['pages'] ) );
+
+		$args = array(
+			'oauth_token'        => $accounts_array[0]['credentials']['oauth_token'],
+			'oauth_token_secret' => $accounts_array[0]['credentials']['oauth_token_secret'],
+			'consumer_key'       => $accounts_array[0]['credentials']['consumer_key'],
+			'consumer_secret'    => $accounts_array[0]['credentials']['consumer_secret'],
+		);
+
+		$this->set_credentials(
+			array_intersect_key(
+				$args,
+				array(
+					'oauth_token'        => '',
+					'oauth_token_secret' => '',
+					'consumer_key'       => '',
+					'consumer_secret'    => '',
+				)
+			)
+		);
+
+		// Prepare the data that will be saved as new account added.
+		$this->service = array(
+			'id'                 => $the_id,
+			'service'            => $this->service_name,
+			'credentials'        => $this->credentials,
+			'public_credentials' => array(
+				'consumer_key'    => array(
+					'name'    => 'API Key',
+					'value'   => $accounts_array[0]['credentials']['consumer_key'],
+					'private' => false,
+				),
+				'consumer_secret' => array(
+					'name'    => 'API secret key',
+					'value'   => $accounts_array[0]['credentials']['consumer_secret'],
+					'private' => true,
+				),
+			),
+			'available_accounts' => $this->get_users_rs_app( $accounts_array ),
+		);
+
+		return true;
+	}
+
 }
