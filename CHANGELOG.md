@@ -1,4 +1,11 @@
 
+ ### v8.5.7 - 2020-05-14 
+ **Changes:** 
+ * New PRO: Made it easier to connect Tumblr accounts for new installs.
+* New: Added an option in general settings to make Instant Share feature truly immediate and more reliable.
+* Change: Edited some text titles and descriptions in the plugin dashboard to make them easier to understand. 
+* 
+ 
  ### v8.5.6 - 2020-04-15 
  **Changes:** 
  * Change: Switched rviv.ly shortener with is.gd shortener to prevent issues with sharing.
