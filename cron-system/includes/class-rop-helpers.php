@@ -85,11 +85,10 @@ class Rop_Helpers {
 		// If it's valid timezone string the option name is "".
 		$timezone_string = get_option( 'timezone_string', '' ); // string only.
 
-		if ( empty( $urc_string ) ) {
-			return $timezone_string;
-		} elseif ( empty( $timezone_string ) ) {
-
+		if ( false !== $urc_string && '' !== trim( $urc_string ) ) {
 			return $urc_string;
+		} elseif ( false !== $timezone_string && '' !== trim( $timezone_string ) ) {
+			return $timezone_string;
 		}
 
 		return false;

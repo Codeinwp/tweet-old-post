@@ -223,7 +223,11 @@ class Rop_Curl_Methods {
 
 			return $success;
 		} else {
-			$this->logger->alert_error( 'Error registering to the Cron Service. Error: ' . $response_array['error'] );
+			$error = '{not received}';
+			if ( ! empty( $response_array ) ) {
+				$error = wp_json_encode( $response_array );
+			}
+			$this->logger->alert_error( 'Error registering to the Cron Service. Error: ' . $error );
 
 			// Add to error log the message.
 			return $response_array['error'];
