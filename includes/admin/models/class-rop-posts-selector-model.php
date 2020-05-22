@@ -626,8 +626,6 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 */
 	public function rop_wpml_id( $post_id, $account_id = '' ) {
 
-		$logger      = new Rop_Logger();
-
 		$default_lang = apply_filters( 'wpml_default_language', null );
 		$lang_code    = apply_filters( 'rop_wpml_lang', $default_lang );
 
@@ -635,15 +633,13 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		if( ! empty ($account_id) ){
 
 		$post_format_model = new Rop_Post_Format_Model();
-		$rop_account_lang_code = $post_format_model->get_post_format($account_id);
-		$rop_account_lang_code = $rop_account_lang_code['wpml_language'];
+		$rop_account_post_format = $post_format_model->get_post_format($account_id);
+		$rop_account_lang_code = $rop_account_post_format['wpml_language'];
 
 		}
 
 if( ! empty($rop_account_lang_code) ){
 		      $lang_code = $rop_account_lang_code;
-	}else{
-		$logger->alert_error( 'Account ID Empty' );
 	}
 
 		if ( is_array( $post_id ) ) {
@@ -675,19 +671,16 @@ if( ! empty($rop_account_lang_code) ){
 		$default_lang = apply_filters( 'wpml_default_language', null );
 		$lang_code    = apply_filters( 'rop_wpml_lang', $default_lang );
 
-    $logger      = new Rop_Logger();
 		if( ! empty ($account_id) ){
 
 		$post_format_model = new Rop_Post_Format_Model();
-		$rop_account_lang_code = $post_format_model->get_post_format($account_id);
-		$rop_account_lang_code = $rop_account_lang_code['wpml_language'];
+		$rop_account_post_format = $post_format_model->get_post_format($account_id);
+		$rop_account_lang_code = $rop_account_post_format['wpml_language'];
 
 		}
 
 	if( ! empty($rop_account_lang_code) ){
 					$lang_code = $rop_account_lang_code;
-	}else{
-		$logger->alert_error( 'Account ID Empty' );
 	}
 
 		$wpml_url     = apply_filters( 'wpml_permalink', $url, $lang_code );

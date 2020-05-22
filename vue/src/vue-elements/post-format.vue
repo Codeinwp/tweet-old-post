@@ -1,19 +1,24 @@
 <template>
     <div>
-        <div class="columns py-2" v-if="wpml_active_status">
+        <div class="columns py-2" v-if="wpml_active_status && (wpml_languages.length > 0)">
             <div class="column col-6 col-sm-12 vertical-align">
                 <b>{{labels.language_title}}</b>
                 <p class="text-gray">{{labels.language_title_desc}}</p>
             </div>
             <div class="column col-6 col-sm-12 vertical-align">
                 <div class="form-group">
-                    <select class="form-select" v-model="post_format.wpml_language">
+                    <select class="form-select" v-model="post_format.wpml_language" :disabled="!isPro">
+                        <option value="" selected>{{labels.wpml_select_language}}</option>
                         <option  v-for="(lang, index) in wpml_languages" :value="lang.code">{{lang.value}}</option>
                     </select>
                 </div>
             </div>
         </div>
-
+        <div class="columns " v-if="!isPro">
+            <div class="column text-center">
+                <p class="upsell"><i class="fa fa-lock"></i> {{labels.full_wpml_support_upsell}}</p>
+            </div>
+        </div>
         <span class="divider"></span>
 
         <div class="columns py-2">

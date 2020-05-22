@@ -117,12 +117,12 @@ class Rop_I18n {
 				),
 				'preloader_message_accounts' => __( 'Loading your Dashboard...', 'tweet-old-post' ),
 				'preloader_message_default'  => __( 'Loading...', 'tweet-old-post' ),
-				'only_in_pro'                => __( 'Available in PRO', 'tweet-old-post' ),
+				'only_in_pro'                => __( 'Available in Pro', 'tweet-old-post' ),
 				'limit_reached'              => __( 'Limit reached', 'tweet-old-post' ),
 			),
 			'settings'    => array(
-				'post_types_exclude_limit' => sprintf( __( 'Upgrade to pro version to select more than 30 posts. You can upgrade %1$shere%2$s.', 'tweet-old-post' ), '<a href="https://revive.social/plugins/revive-old-post/" target="_blank">', '</a>' ),
-				'post_types_exclude_limit_tooltip' => __( 'Upgrade to pro version to select more than 30 posts.', 'tweet-old-post' ),
+				'post_types_exclude_limit' => sprintf( __( 'Upgrade to Pro version to select more than 30 posts. You can upgrade %1$shere%2$s.', 'tweet-old-post' ), '<a href="https://revive.social/plugins/revive-old-post/" target="_blank">', '</a>' ),
+				'post_types_exclude_limit_tooltip' => __( 'Upgrade to Pro version to select more than 30 posts.', 'tweet-old-post' ),
 				'menu_item'                   => __( 'General Settings', 'tweet-old-post' ),
 				'min_interval_title'          => __( 'Minimum interval between shares', 'tweet-old-post' ),
 				'min_interval_desc'           => __( 'Minimum time between shares (hour/hours), 0.4 can be used.', 'tweet-old-post' ),
@@ -139,12 +139,12 @@ class Rop_I18n {
 					'tweet-old-post'
 				),
 				'post_types_title'            => __( 'Post types', 'tweet-old-post' ),
-				'post_types_taxonomy_limit' => sprintf( __( 'Upgrade to pro version to select more than 4 taxonomies. You can upgrade %1$shere%2$s.', 'tweet-old-post' ), '<a href="https://revive.social/plugins/revive-old-post/" target="_blank">', '</a>' ),
+				'post_types_taxonomy_limit' => sprintf( __( 'Upgrade to Pro version to select more than 4 taxonomies. You can upgrade %1$shere%2$s.', 'tweet-old-post' ), '<a href="https://revive.social/plugins/revive-old-post/" target="_blank">', '</a>' ),
 				'post_types_attachament_info' => sprintf( __( 'You need to select the media files which you want to share, find out more information %1$shere%2$s.', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/934-how-to-use-revive-old-post-media-sharing-feature" target="_blank">', '</a>' ),
 				'post_types_desc'             => __( 'Which post types should Revive Old Posts share? <a href="https://docs.revive.social/article/968-how-to-share-different-wordpress-post-types-to-social-media-w-revive-old-posts" target="_blank">Learn more</a>.', 'tweet-old-post' ),
 				'filter_by_post_types_desc'   => __( 'Filter posts list by Post Type', 'tweet-old-post' ),
 				'post_types_upsell'           => __(
-					'Selecting custom post types is available in the pro
+					'Selecting custom post types is available in the Pro
 							version.',
 					'tweet-old-post'
 				),
@@ -168,7 +168,7 @@ class Rop_I18n {
 				'custom_share_title'          => __( 'Enable Share Content Variations', 'tweet-old-post' ),
 				'custom_share_desc'           => __( 'These messages will override the Post Content option in Post Format settings. You can go to each post and add multiple share content variations. <a href="https://docs.revive.social/article/971-how-to-add-variations-to-revive-old-posts-shares" target="_blank">Learn more</a>.', 'tweet-old-post' ),
 				'custom_share_yes'            => __( 'Yes', 'tweet-old-post' ),
-				'custom_share_upsell'         => __( 'Using a custom share message is available in the pro version.', 'tweet-old-post' ),
+				'custom_share_upsell'         => __( 'Using a custom share message is available in the Pro version.', 'tweet-old-post' ),
 				'custom_share_order_title'    => __( 'Share message variations in order they are added.', 'tweet-old-post' ),
 				'custom_share_order_desc'     => __( 'By default message variations are shared randomly. Checking this box will cause them to share in the order they were added.', 'tweet-old-post' ),
 				'custom_share_order_yes'      => __( 'Yes', 'tweet-old-post' ),
@@ -181,7 +181,7 @@ class Rop_I18n {
 				'instant_share_future_scheduled_title'  => __( 'Share scheduled posts to social media on publish', 'tweet-old-post' ),
 				'instant_share_future_scheduled_desc'   => __( 'Allows for the sharing of posts scheduled to publish at a future date by WordPress to your active social media accounts as soon as they change from "Scheduled" to "Published". <a href="https://docs.revive.social/article/1194-share-scheduled-posts-to-social-media-on-publish-with-revive-old-posts" target="_blank">Learn more</a>.', 'tweet-old-post' ),
 				'instant_share_future_scheduled_yes'    => __( 'Yes', 'tweet-old-post' ),
-				'instant_share_future_scheduled_upsell' => __( ' This feature is only available in the pro version.', 'tweet-old-post' ),
+				'instant_share_future_scheduled_upsell' => __( ' This feature is only available in the Pro version.', 'tweet-old-post' ),
 				'housekeeping'                => __( 'Housekeeping', 'tweet-old-post' ),
 				'housekeeping_desc'           => __( 'Should we delete all saved settings on deletion of the Revive Old Posts plugin?', 'tweet-old-post' ),
 				'housekeeping_yes'            => __( 'Yes', 'tweet-old-post' ),
@@ -252,8 +252,10 @@ class Rop_I18n {
 				'utm_campaign_medium_desc'          => __( 'The marketing medium you want to show in Google Analytics e.g: "social", "website", etc.', 'tweet-old-post' ),
 				'utm_campaign_name'                 => __( 'Campaign Name', 'tweet-old-post' ),
 				'utm_campaign_name_desc'            => __( 'The campaign name you want to show in Google Analytics e.g: "november_sale" etc.', 'tweet-old-post' ),
-				'custom_utm_upsell'                 => __( 'Custom UTMs are only available in the pro version.', 'tweet-old-post' ),
-				'image_upsell'                      => __( 'Posting with images is available in the pro version.', 'tweet-old-post' ),
+				'custom_utm_upsell'                 => __( 'Custom UTMs are only available in the Pro version.', 'tweet-old-post' ),
+				'image_upsell'                      => __( 'Posting with images is available in the Pro version.', 'tweet-old-post' ),
+				'full_wpml_support_upsell'          => __( 'Posting with images is available in the Pro version.', 'tweet-old-post' ),
+				'wpml_select_language'          		=> __( 'Choose language', 'tweet-old-post' ),
 				'media_post_title'                  => __( 'Media Posts Content', 'tweet-old-post' ),
 				'media_post_desc'                   => __( 'Which content should we share for media posts?', 'tweet-old-post' ),
 				'media_post_option_title'           => __( 'Title', 'tweet-old-post' ),
@@ -364,7 +366,7 @@ You can try to disable any of the security plugins that you use in order to see 
 				'share_once_sharing_done_message' => __( 'All posts have been shared to your connected social media accounts. No previously shared posts will be re-shared until you click the button to "Stop Sharing" and "Start Sharing" on the Revive Old Posts plugin dashboard.', 'tweet-old-post' ),
 				'refresh_linkedin_token_message'  => sprintf( __( 'Hi! This email was sent by Revive Old Posts on your website. Your LinkedIn token is about to expire. You need to refresh it to continue sharing without issue. Click the link below to find out why and how: %1$s %2$s', 'tweet-old-post' ), '<br><br>', '<a href="https://docs.revive.social/article/1151-how-to-refresh-linkedin-access-token">https://docs.revive.social/article/1151-how-to-refresh-linkedin-access-token</a>' ),
 			),
-			// pro only.
+			// Pro only.
 			'publish_now' => array(
 				'share_on_update' => __( 'Share <b>immediately</b> via <small>Revive Old Posts</small>  ', 'tweet-old-post' ),
 				'clear_on_share'  => __( 'These checkboxes will be cleared once the post is shared.', 'tweet-old-post' ),
