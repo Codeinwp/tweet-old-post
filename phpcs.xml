@@ -41,6 +41,7 @@
         <exclude name="WordPress.PHP.RestrictedPHPFunctions.date_date" />
         <exclude name="WordPress.DateTime.RestrictedFunctions.date_date" />
         <exclude name="WordPress.DateTime.CurrentTimeTimestamp.Requested" />
+        <exclude name="WordPress.WP.I18n.NoHtmlWrappedStrings" />
     </rule>
     <rule ref="WordPress-Docs">
 
