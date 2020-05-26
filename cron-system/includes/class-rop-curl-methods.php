@@ -27,7 +27,7 @@ class Rop_Curl_Methods {
 	 *
 	 * @since 8.5.5
 	 */
-	const SERVER_URL = 'https://ropserver.wpr/wp-json/';
+	const SERVER_URL = 'https://dev-rop-cron.pantheonsite.io/wp-json/';
 
 	/**
 	 * @var resource cURL connection object.
@@ -118,7 +118,6 @@ class Rop_Curl_Methods {
 				} else {
 
 					$this->server_url = self::SERVER_URL . $this->server_paths[ $args['request_path'] ];
-
 					$this->connection = curl_init( $this->server_url );
 					if ( isset( $args['time_to_share'] ) && ! empty( $args['time_to_share'] ) ) {
 						$post_fields = array( 'next_ping' => $args['time_to_share'] );
@@ -169,7 +168,7 @@ class Rop_Curl_Methods {
 		$http_code            = curl_getinfo( $this->connection, CURLINFO_HTTP_CODE );
 		// TODO check $http_code and add to the Log if it's not the expected 200.
 		curl_close( $this->connection );
-
+		error_log( 'request_type_post > ' . var_export( $server_response_body, true ) );
 		return $server_response_body;
 
 	}
@@ -206,20 +205,26 @@ class Rop_Curl_Methods {
 		curl_close( $this->connection );
 
 		$response_array = json_decode( $server_response_body, true );
-
+		error_log( '$response_array is ' . var_export( $response_array, true ) );
 		if ( isset( $response_array['success'] ) ) {
 			$success = filter_var( $response_array['success'], FILTER_VALIDATE_BOOLEAN );
-
+			error_log( '$success is ' . var_export( $callback_param, true ) );
+			error_log( 'create_call_process is ' . var_export( is_callable( array( 'Rop_Curl_Methods', 'create_call_process' ) ), true ) );
 			if ( true === $success && ! empty( $callback_param ) ) {
 
-				if ( is_callable( array( 'Rop_Curl_Methods', 'create_call_process' ) ) ) {
+				#if ( is_callable( array( 'Rop_Curl_Methods', 'create_call_process' ) ) ) {
 					$request_call = new Rop_Curl_Methods();
 					$request_call->create_call_process( $callback_param );
+					error_log( 'callback is ' . var_export( $callback_param, true ) );
+				#}
+				$this->logger->alert_success( 'Successfully registered to the Cron Service' );
+			} else {
+				$error = '{not received}';
+				if ( ! empty( $response_array ) ) {
+					$error = wp_json_encode( $response_array );
 				}
+				$this->logger->alert_error( 'Error registering to the Cron Service. Error: ' . $error );
 			}
-
-
-			$this->logger->alert_success( 'Successfully registereed to the Cron Service' );
 
 			return $success;
 		} else {
