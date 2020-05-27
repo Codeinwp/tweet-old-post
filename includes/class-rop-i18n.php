@@ -201,7 +201,7 @@ class Rop_I18n {
 			),
 			'post_format' => array(
 				'menu_item'                         => __( 'Post Format', 'tweet-old-post' ),
-				'language_title'              			=> __( 'Language', 'tweet-old-post' ),
+				'language_title'                        => __( 'Language', 'tweet-old-post' ),
 				'language_title_desc'               => __( 'We\'ve detected that this is a multilingual website. Select the post language you want to share to this account.', 'tweet-old-post' ),
 				'post_content_title'                => __( 'Share Content', 'tweet-old-post' ),
 				'post_content_desc'                 => __( 'Which part of the post should we use as the caption?', 'tweet-old-post' ),
@@ -258,7 +258,7 @@ class Rop_I18n {
 				'custom_utm_upsell'                 => __( 'Custom UTMs are only available in the Pro version.', 'tweet-old-post' ),
 				'image_upsell'                      => __( 'Posting with images is available in the Pro version.', 'tweet-old-post' ),
 				'full_wpml_support_upsell'          => __( 'Posting with images is available in the Pro version.', 'tweet-old-post' ),
-				'wpml_select_language'          		=> __( 'Choose language', 'tweet-old-post' ),
+				'wpml_select_language'                  => __( 'Choose language', 'tweet-old-post' ),
 				'media_post_title'                  => __( 'Media Posts Content', 'tweet-old-post' ),
 				'media_post_desc'                   => __( 'Which content should we share for media posts?', 'tweet-old-post' ),
 				'media_post_option_title'           => __( 'Title', 'tweet-old-post' ),

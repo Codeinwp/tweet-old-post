@@ -739,18 +739,18 @@ class Rop_Admin {
 		// reject the extra.
 		$enabled = array_diff( $enabled, $extra );
 
+		if ( empty( $enabled ) ) {
+			return;
+		}
+
 		// If user wants to run this operation on page refresh instead of via Cron.
-		if ( $settings->get_true_instant_share() ) {
+		if ( $settings->get_true_instant_share() || $this->rop_get_wpml_active_status() ) {
 			$this->rop_cron_job_publish_now( $post_id, $enabled );
 			return;
 		}
 
 		update_post_meta( $post_id, 'rop_publish_now', 'yes' );
 		update_post_meta( $post_id, 'rop_publish_now_accounts', $enabled );
-
-		if ( ! $enabled ) {
-			return;
-		}
 
 		$cron = new Rop_Cron_Helper();
 		$cron->manage_cron( array( 'action' => 'publish-now' ) );
@@ -786,7 +786,7 @@ class Rop_Admin {
 		$active_plugins = apply_filters( 'active_plugins', get_option( 'active_plugins' ) );
 		$rop_active_status = in_array( 'tweet-old-post-pro/tweet-old-post-pro.php', $active_plugins );
 
-		// this would only be possible in Pro plugin
+		// This would only be possible in Pro plugin
 		if ( $global_settings->license_type() > 0 && $rop_active_status ) {
 
 			$logger          = new Rop_Logger();
@@ -883,16 +883,27 @@ class Rop_Admin {
 	 * @since   8.1.0
 	 * @access  public
 	 * @param int   $post_id the Post ID, only present when sharing truly immediately (True Instant Sharing).
-	 * @param array $enabled the accounts the user has selected to share the post to (by clicking the checkbox).
+	 * @param array $share_to_accounts the accounts the user has selected to share the post to (by clicking the checkbox).
 	 */
-	public function rop_cron_job_publish_now( $post_id = '', $enabled = array() ) {
+	public function rop_cron_job_publish_now( $post_id = '', $share_to_accounts = array() ) {
 		$queue           = new Rop_Queue_Model();
 		$services_model  = new Rop_Services_Model();
 		$logger          = new Rop_Logger();
 		$service_factory = new Rop_Services_Factory();
+		$settings            = new Rop_Settings_Model();
 
-		$queue_stack = $queue->build_queue_publish_now( $post_id, $enabled );
-		$logger->info( 'Fetching publish now queue', array( 'queue' => $queue_stack ) );
+		if ( $this->rop_get_wpml_active_status() ) {
+			$share_to_accounts = $this->rop_wpml_filter_accounts( $post_id, $share_to_accounts );
+		}
+
+		$queue_stack = $queue->build_queue_publish_now( $post_id, $share_to_accounts );
+
+		if ( empty( $queue_stack ) ) {
+			$logger->info( 'Publish now queue stack is empty.' );
+		} else {
+			$logger->info( 'Fetching publish now queue: ' . print_r( $queue_stack, true ) );
+		}
+
 		foreach ( $queue_stack as $account => $events ) {
 			foreach ( $events as $index => $event ) {
 				$posts        = $event['posts'];
@@ -1007,7 +1018,7 @@ class Rop_Admin {
 			}
 		}
 
-		if ( $show_notice == false ) {
+		if ( $show_notice === false ) {
 			return;
 		}
 
@@ -1433,19 +1444,56 @@ class Rop_Admin {
 	 */
 	public function rop_get_wpml_languages() {
 
-		if( $this->rop_get_wpml_active_status() === false ){
+		if ( $this->rop_get_wpml_active_status() === false ) {
 					 return;
-			}
+		}
 
-		$wpml_active_languages = apply_filters( 'wpml_active_languages', NULL, array('skip_missing' => 1));
+		$wpml_active_languages = apply_filters( 'wpml_active_languages', null, array('skip_missing' => 1) );
 
 		$languages_array = array();
 
-		foreach( $wpml_active_languages as $key => $value ){
-		$languages_array[] = array($key => $value['native_name'] );
+		foreach ( $wpml_active_languages as $key => $value ) {
+			$languages_array[] = array($key => $value['native_name'] );
 		}
 
 		return $languages_array;
 	}
+
+
+	/**
+	 * Filter an array accounts by the WPML language set for the account.
+	 *
+	 * @since   8.5.8
+	 * @access  public
+	 * @param int   $post_id The post ID.
+	 * @param array $share_to_accounts The accounts to share to.
+	 * @return array Returns an array of the accounts that WPML should share to based on the language user has chosen in Post Format Settings
+	 */
+	public function rop_wpml_filter_accounts( $post_id, $share_to_accounts ) {
+
+		if ( ! is_array( $share_to_accounts ) ) {
+			return '';
+		}
+
+				$post_format_model = new Rop_Post_Format_Model();
+		$filtered_share_to_accounts = array();
+
+				$post_lang_code = apply_filters( 'wpml_post_language_details', '', $post_id )['language_code'];
+
+		foreach ( $share_to_accounts as $account_id ) {
+
+			$rop_account_post_format = $post_format_model->get_post_format( $account_id );
+			$rop_account_lang_code = $rop_account_post_format['wpml_language'];
+
+			if ( $post_lang_code === $rop_account_lang_code ) {
+				$filtered_share_to_accounts[] = $account_id;
+			}
+		}
+
+		return $filtered_share_to_accounts;
+
+	}
+
+
 
 }

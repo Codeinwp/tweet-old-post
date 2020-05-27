@@ -629,18 +629,17 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		$default_lang = apply_filters( 'wpml_default_language', null );
 		$lang_code    = apply_filters( 'rop_wpml_lang', $default_lang );
 
+		if ( ! empty( $account_id ) ) {
 
-		if( ! empty ($account_id) ){
-
-		$post_format_model = new Rop_Post_Format_Model();
-		$rop_account_post_format = $post_format_model->get_post_format($account_id);
-		$rop_account_lang_code = $rop_account_post_format['wpml_language'];
+			$post_format_model = new Rop_Post_Format_Model();
+			$rop_account_post_format = $post_format_model->get_post_format( $account_id );
+			$rop_account_lang_code = $rop_account_post_format['wpml_language'];
 
 		}
 
-if( ! empty($rop_account_lang_code) ){
-		      $lang_code = $rop_account_lang_code;
-	}
+		if ( ! empty( $rop_account_lang_code ) ) {
+			  $lang_code = $rop_account_lang_code;
+		}
 
 		if ( is_array( $post_id ) ) {
 			foreach ( $post_id as $id ) {
@@ -671,17 +670,17 @@ if( ! empty($rop_account_lang_code) ){
 		$default_lang = apply_filters( 'wpml_default_language', null );
 		$lang_code    = apply_filters( 'rop_wpml_lang', $default_lang );
 
-		if( ! empty ($account_id) ){
+		if ( ! empty( $account_id ) ) {
 
-		$post_format_model = new Rop_Post_Format_Model();
-		$rop_account_post_format = $post_format_model->get_post_format($account_id);
-		$rop_account_lang_code = $rop_account_post_format['wpml_language'];
+			$post_format_model = new Rop_Post_Format_Model();
+			$rop_account_post_format = $post_format_model->get_post_format( $account_id );
+			$rop_account_lang_code = $rop_account_post_format['wpml_language'];
 
 		}
 
-	if( ! empty($rop_account_lang_code) ){
+		if ( ! empty( $rop_account_lang_code ) ) {
 					$lang_code = $rop_account_lang_code;
-	}
+		}
 
 		$wpml_url     = apply_filters( 'wpml_permalink', $url, $lang_code );
 
