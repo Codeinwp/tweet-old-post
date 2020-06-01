@@ -1,7 +1,7 @@
 <template>
 	<div class="rop-control-container" v-if="Object.keys(accounts).length > 0" >
 
-		<!-- Share on update -->
+		<!-- Share on publish/update -->
 		<fieldset>
 			<label class="form-checkbox">
 				<input type="checkbox" :checked="share_on_update_enabled" v-on:click="share_on_update_enabled = !share_on_update_enabled" name="publish_now" value="1"/>
@@ -35,9 +35,7 @@
 			return {
 				labels: this.$store.state.labels.publish_now,
 				accounts: this.$store.state.publish_now.accounts,
-				active: this.$store.state.publish_now.active,
 				share_on_update_enabled: this.$store.state.publish_now.action,
-				show_input: false,
 			}
 
 		},
@@ -67,7 +65,7 @@
 				`;
 
 				let textarea = document.querySelector(`p#${value}`);
-//				console.log(textarea);
+
 				if( textarea === null  || textarea === undefined){
 				edit_caption_span.insertAdjacentHTML('afterend', custom_caption_textarea);
 			}else{

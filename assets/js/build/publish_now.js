@@ -3844,9 +3844,8 @@ module.exports = {
 		return {
 			labels: this.$store.state.labels.publish_now,
 			accounts: this.$store.state.publish_now.accounts,
-			active: this.$store.state.publish_now.active,
-			share_on_update_enabled: this.$store.state.publish_now.action,
-			show_input: false
+			// active: this.$store.state.publish_now.active, // where is this used?
+			share_on_update_enabled: this.$store.state.publish_now.action
 		};
 	},
 	components: {
@@ -3899,7 +3898,7 @@ module.exports = {
 }; // <template>
 // 	<div class="rop-control-container" v-if="Object.keys(accounts).length > 0" >
 //
-// 		<!-- Share on update -->
+// 		<!-- Share on publish/update -->
 // 		<fieldset>
 // 			<label class="form-checkbox">
 // 				<input type="checkbox" :checked="share_on_update_enabled" v-on:click="share_on_update_enabled = !share_on_update_enabled" name="publish_now" value="1"/>
@@ -3909,7 +3908,6 @@ module.exports = {
 // 			<div class="form-group rop-publish-now-accounts-wrapper" v-if="share_on_update_enabled" v-for="(account, key) in accounts" :id="key">
 // 				<label class="form-checkbox rop-publish-now-account" :id="key">
 // 					<input type="checkbox" :checked="share_on_update_enabled" :value="key" name="publish_now_accounts[]" class="rop-account-names"/>
-// 					<!-- <input type="checkbox" :checked="share_on_update_enabled" v-on:click="getTheClick(key)" :value="key" name="publish_now_accounts[]" class="rop-account-names"/> -->
 // 					<i class=" fa " :class="getServiceClass(account.service)"></i> {{account.user}}
 // 				</label>
 // 				<span style="text-decoration: underline; color: #0073aa;font-style:italic; cursor: pointer;" v-on:click="getTheClick(key)" :id="key">edit caption</span>
@@ -3926,7 +3924,7 @@ module.exports = {
 /***/ 328:
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"rop-control-container\" v-if=\"Object.keys(accounts).length > 0\" >\n\n\t\t<!-- Share on update -->\n\t\t<fieldset>\n\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t<input type=\"checkbox\" :checked=\"share_on_update_enabled\" v-on:click=\"share_on_update_enabled = !share_on_update_enabled\" name=\"publish_now\" value=\"1\"/>\n\t\t\t\t<span v-html=\" labels.share_on_update\"></span>\n\t\t\t</label>\n\n\t\t\t<div class=\"form-group rop-publish-now-accounts-wrapper\" v-if=\"share_on_update_enabled\" v-for=\"(account, key) in accounts\" :id=\"key\">\n\t\t\t\t<label class=\"form-checkbox rop-publish-now-account\" :id=\"key\">\n\t\t\t\t\t<input type=\"checkbox\" :checked=\"share_on_update_enabled\" :value=\"key\" name=\"publish_now_accounts[]\" class=\"rop-account-names\"/>\n\t\t\t\t\t<!-- <input type=\"checkbox\" :checked=\"share_on_update_enabled\" v-on:click=\"getTheClick(key)\" :value=\"key\" name=\"publish_now_accounts[]\" class=\"rop-account-names\"/> -->\n\t\t\t\t\t<i class=\" fa \" :class=\"getServiceClass(account.service)\"></i> {{account.user}}\n\t\t\t\t</label>\n\t\t\t\t<span style=\"text-decoration: underline; color: #0073aa;font-style:italic; cursor: pointer;\" v-on:click=\"getTheClick(key)\" :id=\"key\">edit caption</span>\n\t\t\t</div>\n\t\t</fieldset>\n\n\t</div>\n";
+module.exports = "\n\t<div class=\"rop-control-container\" v-if=\"Object.keys(accounts).length > 0\" >\n\n\t\t<!-- Share on publish/update -->\n\t\t<fieldset>\n\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t<input type=\"checkbox\" :checked=\"share_on_update_enabled\" v-on:click=\"share_on_update_enabled = !share_on_update_enabled\" name=\"publish_now\" value=\"1\"/>\n\t\t\t\t<span v-html=\" labels.share_on_update\"></span>\n\t\t\t</label>\n\n\t\t\t<div class=\"form-group rop-publish-now-accounts-wrapper\" v-if=\"share_on_update_enabled\" v-for=\"(account, key) in accounts\" :id=\"key\">\n\t\t\t\t<label class=\"form-checkbox rop-publish-now-account\" :id=\"key\">\n\t\t\t\t\t<input type=\"checkbox\" :checked=\"share_on_update_enabled\" :value=\"key\" name=\"publish_now_accounts[]\" class=\"rop-account-names\"/>\n\t\t\t\t\t<i class=\" fa \" :class=\"getServiceClass(account.service)\"></i> {{account.user}}\n\t\t\t\t</label>\n\t\t\t\t<span style=\"text-decoration: underline; color: #0073aa;font-style:italic; cursor: pointer;\" v-on:click=\"getTheClick(key)\" :id=\"key\">edit caption</span>\n\t\t\t</div>\n\t\t</fieldset>\n\n\t</div>\n";
 
 /***/ }),
 
