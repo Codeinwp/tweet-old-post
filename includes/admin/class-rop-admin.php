@@ -728,6 +728,14 @@ class Rop_Admin {
 			$enabled = array();
 		}
 
+		$custom_captions = array();
+
+		foreach ( $enabled as $account_id ) {
+			if ( ! empty( $_POST[ $account_id ] ) ) {
+				$custom_captions[] = array(  'accound_id' => $account_id, 'message' => $_POST[ $account_id ]);
+			}
+		}
+
 		$services = new Rop_Services_Model();
 		$active   = array_keys( $services->get_active_accounts() );
 		// has something been added extra?

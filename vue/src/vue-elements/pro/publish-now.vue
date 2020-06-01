@@ -3,23 +3,17 @@
 
 		<!-- Share on update -->
 		<fieldset>
-			<input type="checkbox" :checked="share_on_update_enabled"
-			       v-on:click="share_on_update_enabled = !share_on_update_enabled" name="publish_now" value="1"/>
 			<label class="form-checkbox">
-
-				  <span v-html=" labels.share_on_update"></span>
+				<input type="checkbox" :checked="share_on_update_enabled" v-on:click="share_on_update_enabled = !share_on_update_enabled" name="publish_now" value="1"/>
+				<span v-html=" labels.share_on_update"></span>
 			</label>
 
-			<div class="form-group rop-publish-now-accounts-wrapper" v-if="share_on_update_enabled" v-for="(account, key) in accounts">
-				<label class="form-checkbox rop-publish-now-account">
-					<input type="checkbox" :checked="(active != null && active.indexOf(key) >= 0) || (share_on_update_enabled)" v-on:click="getTheClick(key)" :value="key"
-					       name="publish_now_accounts[]" class="account-names"/>
-					<!-- <input type="checkbox" :checked="(active != null && active.indexOf(key) >= 0) || (share_on_update_enabled)" v-on:click="getTheClick(key)" :value="key"
-					       name="publish_now_accounts[]" /> -->
-								 <input type="text" v-show="showArea()" :name="key" value=""/>
-								 <!-- <input type="text" v-if="show_input" :name="key" value="SHOW INPUT"/> -->
+			<div class="form-group rop-publish-now-accounts-wrapper" v-if="share_on_update_enabled" v-for="(account, key) in accounts" :id="key">
+				<label class="form-checkbox rop-publish-now-account" :id="key">
+					<input type="checkbox" :checked="share_on_update_enabled" :value="key" name="publish_now_accounts[]" class="rop-account-names"/>
 					<i class=" fa " :class="getServiceClass(account.service)"></i> {{account.user}}
 				</label>
+				<span style="text-decoration: underline; color: #0073aa;font-style:italic; cursor: pointer;" v-on:click="getTheClick(key)" :id="key">edit caption</span>
 			</div>
 		</fieldset>
 
@@ -52,7 +46,6 @@
 		},
 		methods: {
 			getServiceClass: function (service) {
-
 				let serviceIcon = 'fa-'
 				if (service === 'facebook') serviceIcon = serviceIcon.concat('facebook')
 				if (service === 'twitter') serviceIcon = serviceIcon.concat('twitter')
@@ -62,33 +55,24 @@
 
 				return serviceIcon;
 			},
-			showArea: function(show = false){
-				console.log('got into show area ' + show);
-				this.show_input = true;
-				console.log('got passed this.show_input ' + show);
-				return show;
-			},
 
 			getTheClick: function(value){
 
-				console.log(value)
-				const field = document.querySelectorAll(".account-names")
-				console.log(field);
+				let edit_caption_span = document.querySelector(`span#${value}`);
 
-				var self = this;
+				let custom_caption_textarea = `
+	<p id="${value}" style="margin-left:15px">	Custom Caption:
+	<textarea name="${value}" class="rop-custom-captions" style="width:100%;"></textarea>
+	 </p>
+				`;
 
-				field.forEach(function(account){
-					const account_id = account.value;
-					if( value === account_id ){
-						console.log( 'got into if');
-						console.log( 'account id: ' + account_id);
-						// return show_input = true;
-
-						self.showArea(true);
-					}
-
-				});
-
+				let textarea = document.querySelector(`p#${value}`);
+//				console.log(textarea);
+				if( textarea === null  || textarea === undefined){
+				edit_caption_span.insertAdjacentHTML('afterend', custom_caption_textarea);
+			}else{
+					textarea.remove();
+			}
 			},
 
 		}
