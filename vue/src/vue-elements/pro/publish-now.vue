@@ -8,12 +8,13 @@
 				<span v-html=" labels.share_on_update"></span>
 			</label>
 
-			<div class="form-group rop-publish-now-accounts-wrapper" v-if="share_on_update_enabled" v-for="(account, key) in accounts" :id="key">
+			<div class="form-group rop-publish-now-accounts-wrapper" v-if="share_on_update_enabled" v-for="(account, key) in accounts" :id="key" v-bind:key="key">
 				<label class="form-checkbox rop-publish-now-account" :id="key">
-					<input type="checkbox" :checked="share_on_update_enabled" :value="key" name="publish_now_accounts[]" class="rop-account-names"/>
+					<input type="checkbox" :checked="share_on_update_enabled" :value="key" v-on:click="toggleServices($event, key)" name="publish_now_accounts[]" class="rop-account-names"/>
 					<i class=" fa " :class="getServiceClass(account.service)"></i> {{account.user}}
 				</label>
-				<span style="text-decoration: underline; color: #0073aa;font-style:italic; cursor: pointer;" v-on:click="getTheClick(key)" :id="key">edit caption</span>
+				<span v-on:click="togglefields(key)" :id="key" class="rop-edit-message-text">{{ showField[key] ? 'done' : 'edit message' }}</span>
+				<textarea v-show="showField[key]" :name="key" class="rop-custom-message-area"></textarea>
 			</div>
 		</fieldset>
 
@@ -30,14 +31,17 @@
 		computed: {
 		},
 		data: function () {
-
+			var fields = {};
+			Object.keys( this.$store.state.publish_now.accounts ).forEach( e => {
+				fields[e] = false;
+			} );
 
 			return {
 				labels: this.$store.state.labels.publish_now,
 				accounts: this.$store.state.publish_now.accounts,
 				share_on_update_enabled: this.$store.state.publish_now.action,
+				showField: fields
 			}
-
 		},
 		components: {
 			ButtonCheckbox
@@ -54,23 +58,18 @@
 				return serviceIcon;
 			},
 
-			getTheClick: function(value){
+			toggleServices: function(event, value){
+				var self = this;
+				if( event.target.checked ) {
+					return;
+				}
 
-				let edit_caption_span = document.querySelector(`span#${value}`);
+				return self.showField[value] = false;
+			},
 
-				let custom_caption_textarea = `
-	<p id="${value}" style="margin-left:15px">	Custom Caption:
-	<textarea name="${value}" class="rop-custom-captions" style="width:100%;"></textarea>
-	 </p>
-				`;
-
-				let textarea = document.querySelector(`p#${value}`);
-
-				if( textarea === null  || textarea === undefined){
-				edit_caption_span.insertAdjacentHTML('afterend', custom_caption_textarea);
-			}else{
-					textarea.remove();
-			}
+			togglefields: function(value){
+				var self = this;
+				return self.showField[value] = ! self.showField[value];
 			},
 
 		}
@@ -82,8 +81,15 @@
 		width:100%;
 		float:right;
 	}
-	.rop-publish-now-account{
-		margin-left: 17px;
+	.rop-edit-message-text{
+		text-decoration: underline;
+		color: #0073aa;
+		font-size: 12px;
+		font-style:italic;
+		cursor: pointer;
+	}
+	.rop-publish-now-account, .rop-custom-message-area{
+		margin: 5px 0 10px 16px
 	}
 	.rop-publish-now-accounts-wrapper{
 		margin-top:5px;

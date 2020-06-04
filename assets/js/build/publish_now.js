@@ -122,6 +122,138 @@ module.exports = function() {
 
 /***/ }),
 
+/***/ 10:
+/***/ (function(module, exports) {
+
+var hasOwnProperty = {}.hasOwnProperty;
+module.exports = function (it, key) {
+  return hasOwnProperty.call(it, key);
+};
+
+
+/***/ }),
+
+/***/ 11:
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+
+/***/ 12:
+/***/ (function(module, exports, __webpack_require__) {
+
+var isObject = __webpack_require__(13);
+module.exports = function (it) {
+  if (!isObject(it)) throw TypeError(it + ' is not an object!');
+  return it;
+};
+
+
+/***/ }),
+
+/***/ 13:
+/***/ (function(module, exports) {
+
+module.exports = function (it) {
+  return typeof it === 'object' ? it !== null : typeof it === 'function';
+};
+
+
+/***/ }),
+
+/***/ 14:
+/***/ (function(module, exports) {
+
+// 7.2.1 RequireObjectCoercible(argument)
+module.exports = function (it) {
+  if (it == undefined) throw TypeError("Can't call method on  " + it);
+  return it;
+};
+
+
+/***/ }),
+
+/***/ 15:
+/***/ (function(module, exports, __webpack_require__) {
+
+// to indexed object, toObject with fallback for non-array-like ES3 strings
+var IObject = __webpack_require__(41);
+var defined = __webpack_require__(14);
+module.exports = function (it) {
+  return IObject(defined(it));
+};
+
+
+/***/ }),
+
+/***/ 16:
+/***/ (function(module, exports) {
+
+// 7.1.4 ToInteger
+var ceil = Math.ceil;
+var floor = Math.floor;
+module.exports = function (it) {
+  return isNaN(it = +it) ? 0 : (it > 0 ? floor : ceil)(it);
+};
+
+
+/***/ }),
+
+/***/ 17:
+/***/ (function(module, exports) {
+
+module.exports = function (exec) {
+  try {
+    return !!exec();
+  } catch (e) {
+    return true;
+  }
+};
+
+
+/***/ }),
+
+/***/ 18:
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = { "default": __webpack_require__(53), __esModule: true };
+
+/***/ }),
+
+/***/ 19:
+/***/ (function(module, exports, __webpack_require__) {
+
+var shared = __webpack_require__(23)('keys');
+var uid = __webpack_require__(25);
+module.exports = function (key) {
+  return shared[key] || (shared[key] = uid(key));
+};
+
+
+/***/ }),
+
 /***/ 2:
 /***/ (function(module, exports) {
 
@@ -375,7 +507,225 @@ function updateLink(linkElement, obj) {
 
 /***/ }),
 
+/***/ 20:
+/***/ (function(module, exports, __webpack_require__) {
+
+var anObject = __webpack_require__(12);
+var IE8_DOM_DEFINE = __webpack_require__(47);
+var toPrimitive = __webpack_require__(48);
+var dP = Object.defineProperty;
+
+exports.f = __webpack_require__(7) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
+  anObject(O);
+  P = toPrimitive(P, true);
+  anObject(Attributes);
+  if (IE8_DOM_DEFINE) try {
+    return dP(O, P, Attributes);
+  } catch (e) { /* empty */ }
+  if ('get' in Attributes || 'set' in Attributes) throw TypeError('Accessors not supported!');
+  if ('value' in Attributes) O[P] = Attributes.value;
+  return O;
+};
+
+
+/***/ }),
+
 /***/ 22:
+/***/ (function(module, exports) {
+
+var toString = {}.toString;
+
+module.exports = function (it) {
+  return toString.call(it).slice(8, -1);
+};
+
+
+/***/ }),
+
+/***/ 23:
+/***/ (function(module, exports, __webpack_require__) {
+
+var core = __webpack_require__(3);
+var global = __webpack_require__(4);
+var SHARED = '__core-js_shared__';
+var store = global[SHARED] || (global[SHARED] = {});
+
+(module.exports = function (key, value) {
+  return store[key] || (store[key] = value !== undefined ? value : {});
+})('versions', []).push({
+  version: core.version,
+  mode: __webpack_require__(24) ? 'pure' : 'global',
+  copyright: '© 2019 Denis Pushkarev (zloirock.ru)'
+});
+
+
+/***/ }),
+
+/***/ 24:
+/***/ (function(module, exports) {
+
+module.exports = true;
+
+
+/***/ }),
+
+/***/ 25:
+/***/ (function(module, exports) {
+
+var id = 0;
+var px = Math.random();
+module.exports = function (key) {
+  return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
+};
+
+
+/***/ }),
+
+/***/ 26:
+/***/ (function(module, exports) {
+
+// IE 8- don't enum bug keys
+module.exports = (
+  'constructor,hasOwnProperty,isPrototypeOf,propertyIsEnumerable,toLocaleString,toString,valueOf'
+).split(',');
+
+
+/***/ }),
+
+/***/ 27:
+/***/ (function(module, exports, __webpack_require__) {
+
+var global = __webpack_require__(4);
+var core = __webpack_require__(3);
+var ctx = __webpack_require__(45);
+var hide = __webpack_require__(6);
+var has = __webpack_require__(10);
+var PROTOTYPE = 'prototype';
+
+var $export = function (type, name, source) {
+  var IS_FORCED = type & $export.F;
+  var IS_GLOBAL = type & $export.G;
+  var IS_STATIC = type & $export.S;
+  var IS_PROTO = type & $export.P;
+  var IS_BIND = type & $export.B;
+  var IS_WRAP = type & $export.W;
+  var exports = IS_GLOBAL ? core : core[name] || (core[name] = {});
+  var expProto = exports[PROTOTYPE];
+  var target = IS_GLOBAL ? global : IS_STATIC ? global[name] : (global[name] || {})[PROTOTYPE];
+  var key, own, out;
+  if (IS_GLOBAL) source = name;
+  for (key in source) {
+    // contains in native
+    own = !IS_FORCED && target && target[key] !== undefined;
+    if (own && has(exports, key)) continue;
+    // export native or passed
+    out = own ? target[key] : source[key];
+    // prevent global pollution for namespaces
+    exports[key] = IS_GLOBAL && typeof target[key] != 'function' ? source[key]
+    // bind timers to global for call from export context
+    : IS_BIND && own ? ctx(out, global)
+    // wrap global constructors for prevent change them in library
+    : IS_WRAP && target[key] == out ? (function (C) {
+      var F = function (a, b, c) {
+        if (this instanceof C) {
+          switch (arguments.length) {
+            case 0: return new C();
+            case 1: return new C(a);
+            case 2: return new C(a, b);
+          } return new C(a, b, c);
+        } return C.apply(this, arguments);
+      };
+      F[PROTOTYPE] = C[PROTOTYPE];
+      return F;
+    // make static versions for prototype methods
+    })(out) : IS_PROTO && typeof out == 'function' ? ctx(Function.call, out) : out;
+    // export proto methods to core.%CONSTRUCTOR%.methods.%NAME%
+    if (IS_PROTO) {
+      (exports.virtual || (exports.virtual = {}))[key] = out;
+      // export proto methods to core.%CONSTRUCTOR%.prototype.%NAME%
+      if (type & $export.R && expProto && !expProto[key]) hide(expProto, key, out);
+    }
+  }
+};
+// type bitmap
+$export.F = 1;   // forced
+$export.G = 2;   // global
+$export.S = 4;   // static
+$export.P = 8;   // proto
+$export.B = 16;  // bind
+$export.W = 32;  // wrap
+$export.U = 64;  // safe
+$export.R = 128; // real proto method for `library`
+module.exports = $export;
+
+
+/***/ }),
+
+/***/ 28:
+/***/ (function(module, exports, __webpack_require__) {
+
+var isObject = __webpack_require__(13);
+var document = __webpack_require__(4).document;
+// typeof document.createElement is 'object' in old IE
+var is = isObject(document) && isObject(document.createElement);
+module.exports = function (it) {
+  return is ? document.createElement(it) : {};
+};
+
+
+/***/ }),
+
+/***/ 29:
+/***/ (function(module, exports) {
+
+module.exports = function (bitmap, value) {
+  return {
+    enumerable: !(bitmap & 1),
+    configurable: !(bitmap & 2),
+    writable: !(bitmap & 4),
+    value: value
+  };
+};
+
+
+/***/ }),
+
+/***/ 3:
+/***/ (function(module, exports) {
+
+var core = module.exports = { version: '2.6.11' };
+if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
+
+
+/***/ }),
+
+/***/ 30:
+/***/ (function(module, exports, __webpack_require__) {
+
+// 7.1.13 ToObject(argument)
+var defined = __webpack_require__(14);
+module.exports = function (it) {
+  return Object(defined(it));
+};
+
+
+/***/ }),
+
+/***/ 31:
+/***/ (function(module, exports, __webpack_require__) {
+
+// 19.1.2.14 / 15.2.3.14 Object.keys(O)
+var $keys = __webpack_require__(40);
+var enumBugKeys = __webpack_require__(26);
+
+module.exports = Object.keys || function keys(O) {
+  return $keys(O, enumBugKeys);
+};
+
+
+/***/ }),
+
+/***/ 32:
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
@@ -431,7 +781,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(23);
+__webpack_require__(33);
 // On some exotic environments, it's not clear which object `setimmediate` was
 // able to install onto.  Search each possibility in the same order as the
 // `setimmediate` library.
@@ -442,11 +792,232 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
                          (typeof global !== "undefined" && global.clearImmediate) ||
                          (this && this.clearImmediate);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)))
 
 /***/ }),
 
-/***/ 23:
+/***/ 323:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _vue = __webpack_require__(9);
+
+var _vue2 = _interopRequireDefault(_vue);
+
+var _rop_store = __webpack_require__(34);
+
+var _rop_store2 = _interopRequireDefault(_rop_store);
+
+var _publishNow = __webpack_require__(324);
+
+var _publishNow2 = _interopRequireDefault(_publishNow);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+window.addEventListener('load', function () {
+	var RopPublishNow = new _vue2.default({
+		el: '#rop_publish_now',
+		store: _rop_store2.default,
+		components: {
+			PublishNow: _publishNow2.default
+		},
+		created: function created() {}
+	});
+}); // jshint ignore: start
+/* eslint no-unused-vars: 0 */
+
+/***/ }),
+
+/***/ 324:
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(325)
+__vue_script__ = __webpack_require__(327)
+__vue_template__ = __webpack_require__(328)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/pro/publish-now.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+
+/***/ 325:
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(326);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(2)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-f4350914&file=publish-now.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./publish-now.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-f4350914&file=publish-now.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./publish-now.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+
+/***/ 326:
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(1)();
+// imports
+
+
+// module
+exports.push([module.i, "\n\t.rop-publish-now-branding{\n\t\ttext-align: right;\n\t\twidth:100%;\n\t\tfloat:right;\n\t}\n\t.rop-edit-message-text{\n\t\ttext-decoration: underline;\n\t\tcolor: #0073aa;\n\t\tfont-size: 12px;\n\t\tfont-style:italic;\n\t\tcursor: pointer;\n\t}\n\t.rop-publish-now-account, .rop-custom-message-area{\n\t\tmargin: 5px 0 10px 16px\n\t}\n\t.rop-publish-now-accounts-wrapper{\n\t\tmargin-top:5px;\n\t}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ 327:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _keys = __webpack_require__(18);
+
+var _keys2 = _interopRequireDefault(_keys);
+
+var _buttonCheckbox = __webpack_require__(75);
+
+var _buttonCheckbox2 = _interopRequireDefault(_buttonCheckbox);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+module.exports = {
+	name: 'publish-now',
+	created: function created() {},
+
+	computed: {},
+	data: function data() {
+		var fields = {};
+		(0, _keys2.default)(this.$store.state.publish_now.accounts).forEach(function (e) {
+			fields[e] = false;
+		});
+
+		return {
+			labels: this.$store.state.labels.publish_now,
+			accounts: this.$store.state.publish_now.accounts,
+			share_on_update_enabled: this.$store.state.publish_now.action,
+			showField: fields
+		};
+	},
+	components: {
+		ButtonCheckbox: _buttonCheckbox2.default
+	},
+	methods: {
+		getServiceClass: function getServiceClass(service) {
+			var serviceIcon = 'fa-';
+			if (service === 'facebook') serviceIcon = serviceIcon.concat('facebook');
+			if (service === 'twitter') serviceIcon = serviceIcon.concat('twitter');
+			if (service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin');
+			if (service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr');
+			if (service === 'pinterest') serviceIcon = serviceIcon.concat('pinterest');
+
+			return serviceIcon;
+		},
+
+		toggleServices: function toggleServices(event, value) {
+			var self = this;
+			if (event.target.checked) {
+				return;
+			}
+
+			return self.showField[value] = false;
+		},
+
+		togglefields: function togglefields(value) {
+			var self = this;
+			return self.showField[value] = !self.showField[value];
+		}
+
+	}
+	// </script>
+	// <style>
+	// 	.rop-publish-now-branding{
+	// 		text-align: right;
+	// 		width:100%;
+	// 		float:right;
+	// 	}
+	// 	.rop-edit-message-text{
+	// 		text-decoration: underline;
+	// 		color: #0073aa;
+	// 		font-size: 12px;
+	// 		font-style:italic;
+	// 		cursor: pointer;
+	// 	}
+	// 	.rop-publish-now-account, .rop-custom-message-area{
+	// 		margin: 5px 0 10px 16px
+	// 	}
+	// 	.rop-publish-now-accounts-wrapper{
+	// 		margin-top:5px;
+	// 	}
+	// </style>
+	//
+
+}; // <template>
+// 	<div class="rop-control-container" v-if="Object.keys(accounts).length > 0" >
+//
+// 		<!-- Share on publish/update -->
+// 		<fieldset>
+// 			<label class="form-checkbox">
+// 				<input type="checkbox" :checked="share_on_update_enabled" v-on:click="share_on_update_enabled = !share_on_update_enabled" name="publish_now" value="1"/>
+// 				<span v-html=" labels.share_on_update"></span>
+// 			</label>
+//
+// 			<div class="form-group rop-publish-now-accounts-wrapper" v-if="share_on_update_enabled" v-for="(account, key) in accounts" :id="key" v-bind:key="key">
+// 				<label class="form-checkbox rop-publish-now-account" :id="key">
+// 					<input type="checkbox" :checked="share_on_update_enabled" :value="key" v-on:click="toggleServices($event, key)" name="publish_now_accounts[]" class="rop-account-names"/>
+// 					<i class=" fa " :class="getServiceClass(account.service)"></i> {{account.user}}
+// 				</label>
+// 				<span v-on:click="togglefields(key)" :id="key" class="rop-edit-message-text">{{ showField[key] ? 'done' : 'edit message' }}</span>
+// 				<textarea v-show="showField[key]" :name="key" class="rop-custom-message-area"></textarea>
+// 			</div>
+// 		</fieldset>
+//
+// 	</div>
+// </template>
+//
+// <script>
+
+/***/ }),
+
+/***/ 328:
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div class=\"rop-control-container\" v-if=\"Object.keys(accounts).length > 0\" >\n\n\t\t<!-- Share on publish/update -->\n\t\t<fieldset>\n\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t<input type=\"checkbox\" :checked=\"share_on_update_enabled\" v-on:click=\"share_on_update_enabled = !share_on_update_enabled\" name=\"publish_now\" value=\"1\"/>\n\t\t\t\t<span v-html=\" labels.share_on_update\"></span>\n\t\t\t</label>\n\n\t\t\t<div class=\"form-group rop-publish-now-accounts-wrapper\" v-if=\"share_on_update_enabled\" v-for=\"(account, key) in accounts\" :id=\"key\" v-bind:key=\"key\">\n\t\t\t\t<label class=\"form-checkbox rop-publish-now-account\" :id=\"key\">\n\t\t\t\t\t<input type=\"checkbox\" :checked=\"share_on_update_enabled\" :value=\"key\" v-on:click=\"toggleServices($event, key)\" name=\"publish_now_accounts[]\" class=\"rop-account-names\"/>\n\t\t\t\t\t<i class=\" fa \" :class=\"getServiceClass(account.service)\"></i> {{account.user}}\n\t\t\t\t</label>\n\t\t\t\t<span v-on:click=\"togglefields(key)\" :id=\"key\" class=\"rop-edit-message-text\">{{ showField[key] ? 'done' : 'edit message' }}</span>\n\t\t\t\t<textarea v-show=\"showField[key]\" :name=\"key\" class=\"rop-custom-message-area\"></textarea>\n\t\t\t</div>\n\t\t</fieldset>\n\n\t</div>\n";
+
+/***/ }),
+
+/***/ 33:
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -636,11 +1207,11 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(3)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11), __webpack_require__(5)))
 
 /***/ }),
 
-/***/ 24:
+/***/ 34:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -650,19 +1221,19 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _vue = __webpack_require__(7);
+var _vue = __webpack_require__(9);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _vuex = __webpack_require__(25);
+var _vuex = __webpack_require__(35);
 
 var _vuex2 = _interopRequireDefault(_vuex);
 
-var _vueResource = __webpack_require__(26);
+var _vueResource = __webpack_require__(36);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _vuejsLogger = __webpack_require__(28);
+var _vuejsLogger = __webpack_require__(38);
 
 var _vuejsLogger2 = _interopRequireDefault(_vuejsLogger);
 
@@ -978,7 +1549,7 @@ exports.default = new _vuex2.default.Store({
 
 /***/ }),
 
-/***/ 25:
+/***/ 35:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1922,11 +2493,11 @@ var index_esm = {
 
 /* harmony default export */ __webpack_exports__["default"] = (index_esm);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(3)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(5)))
 
 /***/ }),
 
-/***/ 26:
+/***/ 36:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3025,7 +3596,7 @@ function xhrClient (request) {
 
 function nodeClient (request) {
 
-    var client = __webpack_require__(27);
+    var client = __webpack_require__(37);
 
     return new PromiseObj(function (resolve) {
 
@@ -3494,14 +4065,14 @@ if (typeof window !== 'undefined' && window.Vue) {
 
 /***/ }),
 
-/***/ 27:
+/***/ 37:
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
 
-/***/ 28:
+/***/ 38:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3511,7 +4082,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _logger = __webpack_require__(29);
+var _logger = __webpack_require__(39);
 
 var _logger2 = _interopRequireDefault(_logger);
 
@@ -3523,7 +4094,7 @@ exports.default = {
 
 /***/ }),
 
-/***/ 29:
+/***/ 39:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3531,7 +4102,181 @@ function _toConsumableArray(o){if(Array.isArray(o)){for(var e=0,r=Array(o.length
 
 /***/ }),
 
-/***/ 3:
+/***/ 4:
+/***/ (function(module, exports) {
+
+// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
+var global = module.exports = typeof window != 'undefined' && window.Math == Math
+  ? window : typeof self != 'undefined' && self.Math == Math ? self
+  // eslint-disable-next-line no-new-func
+  : Function('return this')();
+if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
+
+
+/***/ }),
+
+/***/ 40:
+/***/ (function(module, exports, __webpack_require__) {
+
+var has = __webpack_require__(10);
+var toIObject = __webpack_require__(15);
+var arrayIndexOf = __webpack_require__(42)(false);
+var IE_PROTO = __webpack_require__(19)('IE_PROTO');
+
+module.exports = function (object, names) {
+  var O = toIObject(object);
+  var i = 0;
+  var result = [];
+  var key;
+  for (key in O) if (key != IE_PROTO) has(O, key) && result.push(key);
+  // Don't enum bug & hidden keys
+  while (names.length > i) if (has(O, key = names[i++])) {
+    ~arrayIndexOf(result, key) || result.push(key);
+  }
+  return result;
+};
+
+
+/***/ }),
+
+/***/ 41:
+/***/ (function(module, exports, __webpack_require__) {
+
+// fallback for non-array-like ES3 and non-enumerable old V8 strings
+var cof = __webpack_require__(22);
+// eslint-disable-next-line no-prototype-builtins
+module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
+  return cof(it) == 'String' ? it.split('') : Object(it);
+};
+
+
+/***/ }),
+
+/***/ 42:
+/***/ (function(module, exports, __webpack_require__) {
+
+// false -> Array#indexOf
+// true  -> Array#includes
+var toIObject = __webpack_require__(15);
+var toLength = __webpack_require__(43);
+var toAbsoluteIndex = __webpack_require__(44);
+module.exports = function (IS_INCLUDES) {
+  return function ($this, el, fromIndex) {
+    var O = toIObject($this);
+    var length = toLength(O.length);
+    var index = toAbsoluteIndex(fromIndex, length);
+    var value;
+    // Array#includes uses SameValueZero equality algorithm
+    // eslint-disable-next-line no-self-compare
+    if (IS_INCLUDES && el != el) while (length > index) {
+      value = O[index++];
+      // eslint-disable-next-line no-self-compare
+      if (value != value) return true;
+    // Array#indexOf ignores holes, Array#includes - not
+    } else for (;length > index; index++) if (IS_INCLUDES || index in O) {
+      if (O[index] === el) return IS_INCLUDES || index || 0;
+    } return !IS_INCLUDES && -1;
+  };
+};
+
+
+/***/ }),
+
+/***/ 43:
+/***/ (function(module, exports, __webpack_require__) {
+
+// 7.1.15 ToLength
+var toInteger = __webpack_require__(16);
+var min = Math.min;
+module.exports = function (it) {
+  return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
+};
+
+
+/***/ }),
+
+/***/ 44:
+/***/ (function(module, exports, __webpack_require__) {
+
+var toInteger = __webpack_require__(16);
+var max = Math.max;
+var min = Math.min;
+module.exports = function (index, length) {
+  index = toInteger(index);
+  return index < 0 ? max(index + length, 0) : min(index, length);
+};
+
+
+/***/ }),
+
+/***/ 45:
+/***/ (function(module, exports, __webpack_require__) {
+
+// optional / simple context binding
+var aFunction = __webpack_require__(46);
+module.exports = function (fn, that, length) {
+  aFunction(fn);
+  if (that === undefined) return fn;
+  switch (length) {
+    case 1: return function (a) {
+      return fn.call(that, a);
+    };
+    case 2: return function (a, b) {
+      return fn.call(that, a, b);
+    };
+    case 3: return function (a, b, c) {
+      return fn.call(that, a, b, c);
+    };
+  }
+  return function (/* ...args */) {
+    return fn.apply(that, arguments);
+  };
+};
+
+
+/***/ }),
+
+/***/ 46:
+/***/ (function(module, exports) {
+
+module.exports = function (it) {
+  if (typeof it != 'function') throw TypeError(it + ' is not a function!');
+  return it;
+};
+
+
+/***/ }),
+
+/***/ 47:
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = !__webpack_require__(7) && !__webpack_require__(17)(function () {
+  return Object.defineProperty(__webpack_require__(28)('div'), 'a', { get: function () { return 7; } }).a != 7;
+});
+
+
+/***/ }),
+
+/***/ 48:
+/***/ (function(module, exports, __webpack_require__) {
+
+// 7.1.1 ToPrimitive(input [, PreferredType])
+var isObject = __webpack_require__(13);
+// instead of the ES6 spec version, we didn't implement @@toPrimitive case
+// and the second argument - flag - preferred type is a string
+module.exports = function (it, S) {
+  if (!isObject(it)) return it;
+  var fn, val;
+  if (S && typeof (fn = it.toString) == 'function' && !isObject(val = fn.call(it))) return val;
+  if (typeof (fn = it.valueOf) == 'function' && !isObject(val = fn.call(it))) return val;
+  if (!S && typeof (fn = it.toString) == 'function' && !isObject(val = fn.call(it))) return val;
+  throw TypeError("Can't convert object to primitive value");
+};
+
+
+/***/ }),
+
+/***/ 5:
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -3722,47 +4467,81 @@ process.umask = function() { return 0; };
 
 /***/ }),
 
-/***/ 323:
+/***/ 53:
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
+__webpack_require__(54);
+module.exports = __webpack_require__(3).Object.keys;
 
-
-var _vue = __webpack_require__(7);
-
-var _vue2 = _interopRequireDefault(_vue);
-
-var _rop_store = __webpack_require__(24);
-
-var _rop_store2 = _interopRequireDefault(_rop_store);
-
-var _publishNow = __webpack_require__(324);
-
-var _publishNow2 = _interopRequireDefault(_publishNow);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-window.addEventListener('load', function () {
-	var RopPublishNow = new _vue2.default({
-		el: '#rop_publish_now',
-		store: _rop_store2.default,
-		components: {
-			PublishNow: _publishNow2.default
-		},
-		created: function created() {}
-	});
-}); // jshint ignore: start
-/* eslint no-unused-vars: 0 */
 
 /***/ }),
 
-/***/ 324:
+/***/ 54:
+/***/ (function(module, exports, __webpack_require__) {
+
+// 19.1.2.14 Object.keys(O)
+var toObject = __webpack_require__(30);
+var $keys = __webpack_require__(31);
+
+__webpack_require__(55)('keys', function () {
+  return function keys(it) {
+    return $keys(toObject(it));
+  };
+});
+
+
+/***/ }),
+
+/***/ 55:
+/***/ (function(module, exports, __webpack_require__) {
+
+// most Object methods by ES6 should accept primitives
+var $export = __webpack_require__(27);
+var core = __webpack_require__(3);
+var fails = __webpack_require__(17);
+module.exports = function (KEY, exec) {
+  var fn = (core.Object || {})[KEY] || Object[KEY];
+  var exp = {};
+  exp[KEY] = exec(fn);
+  $export($export.S + $export.F * fails(function () { fn(1); }), 'Object', exp);
+};
+
+
+/***/ }),
+
+/***/ 6:
+/***/ (function(module, exports, __webpack_require__) {
+
+var dP = __webpack_require__(20);
+var createDesc = __webpack_require__(29);
+module.exports = __webpack_require__(7) ? function (object, key, value) {
+  return dP.f(object, key, createDesc(1, value));
+} : function (object, key, value) {
+  object[key] = value;
+  return object;
+};
+
+
+/***/ }),
+
+/***/ 7:
+/***/ (function(module, exports, __webpack_require__) {
+
+// Thank's IE8 for his funny defineProperty
+module.exports = !__webpack_require__(17)(function () {
+  return Object.defineProperty({}, 'a', { get: function () { return 7; } }).a != 7;
+});
+
+
+/***/ }),
+
+/***/ 75:
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(325)
-__vue_script__ = __webpack_require__(327)
-__vue_template__ = __webpack_require__(328)
+__webpack_require__(76)
+__vue_script__ = __webpack_require__(78)
+__vue_template__ = __webpack_require__(79)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -3770,7 +4549,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/pro/publish-now.vue"
+  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/reusables/button-checkbox.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -3780,13 +4559,13 @@ if (false) {(function () {  module.hot.accept()
 
 /***/ }),
 
-/***/ 325:
+/***/ 76:
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(326);
+var content = __webpack_require__(77);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -3795,8 +4574,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-f4350914&file=publish-now.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./publish-now.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-f4350914&file=publish-now.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./publish-now.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1bfc9917&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1bfc9917&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -3807,7 +4586,7 @@ if(false) {
 
 /***/ }),
 
-/***/ 326:
+/***/ 77:
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -3815,120 +4594,98 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t.rop-publish-now-branding{\n\t\ttext-align: right;\n\t\twidth:100%;\n\t\tfloat:right;\n\t}\n\t.rop-publish-now-account{\n\t\tmargin-left: 17px;\n\t}\n\t.rop-publish-now-accounts-wrapper{\n\t\tmargin-top:5px;\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop_core .input-group .input-group-addon.btn.active[_v-1bfc9917] {\n\t\tbackground-color: #8bc34a;\n\t\tborder-color: #33691e;\n\t\tcolor: #FFF;\n\t}\n", ""]);
 
 // exports
 
 
 /***/ }),
 
-/***/ 327:
+/***/ 78:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _buttonCheckbox = __webpack_require__(72);
-
-var _buttonCheckbox2 = _interopRequireDefault(_buttonCheckbox);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-module.exports = {
-	name: 'publish-now',
-	created: function created() {},
-
-	computed: {},
-	data: function data() {
-
-		return {
-			labels: this.$store.state.labels.publish_now,
-			accounts: this.$store.state.publish_now.accounts,
-			// active: this.$store.state.publish_now.active, // where is this used?
-			share_on_update_enabled: this.$store.state.publish_now.action
-		};
-	},
-	components: {
-		ButtonCheckbox: _buttonCheckbox2.default
-	},
-	methods: {
-		getServiceClass: function getServiceClass(service) {
-			var serviceIcon = 'fa-';
-			if (service === 'facebook') serviceIcon = serviceIcon.concat('facebook');
-			if (service === 'twitter') serviceIcon = serviceIcon.concat('twitter');
-			if (service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin');
-			if (service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr');
-			if (service === 'pinterest') serviceIcon = serviceIcon.concat('pinterest');
-
-			return serviceIcon;
-		},
-
-		getTheClick: function getTheClick(value) {
-
-			var edit_caption_span = document.querySelector('span#' + value);
-
-			var custom_caption_textarea = '\n\t<p id="' + value + '" style="margin-left:15px">\tCustom Caption:\n\t<textarea name="' + value + '" class="rop-custom-captions" style="width:100%;"></textarea>\n\t </p>\n\t\t\t\t';
-
-			var textarea = document.querySelector('p#' + value);
-			//				console.log(textarea);
-			if (textarea === null || textarea === undefined) {
-				edit_caption_span.insertAdjacentHTML('afterend', custom_caption_textarea);
-			} else {
-				textarea.remove();
-			}
-		}
-
-	}
-	// </script>
-	// <style>
-	// 	.rop-publish-now-branding{
-	// 		text-align: right;
-	// 		width:100%;
-	// 		float:right;
-	// 	}
-	// 	.rop-publish-now-account{
-	// 		margin-left: 17px;
-	// 	}
-	// 	.rop-publish-now-accounts-wrapper{
-	// 		margin-top:5px;
-	// 	}
-	// </style>
-	//
-
-}; // <template>
-// 	<div class="rop-control-container" v-if="Object.keys(accounts).length > 0" >
-//
-// 		<!-- Share on publish/update -->
-// 		<fieldset>
-// 			<label class="form-checkbox">
-// 				<input type="checkbox" :checked="share_on_update_enabled" v-on:click="share_on_update_enabled = !share_on_update_enabled" name="publish_now" value="1"/>
-// 				<span v-html=" labels.share_on_update"></span>
-// 			</label>
-//
-// 			<div class="form-group rop-publish-now-accounts-wrapper" v-if="share_on_update_enabled" v-for="(account, key) in accounts" :id="key">
-// 				<label class="form-checkbox rop-publish-now-account" :id="key">
-// 					<input type="checkbox" :checked="share_on_update_enabled" :value="key" name="publish_now_accounts[]" class="rop-account-names"/>
-// 					<i class=" fa " :class="getServiceClass(account.service)"></i> {{account.user}}
-// 				</label>
-// 				<span style="text-decoration: underline; color: #0073aa;font-style:italic; cursor: pointer;" v-on:click="getTheClick(key)" :id="key">edit caption</span>
-// 			</div>
-// 		</fieldset>
-//
-// 	</div>
+// <template>
+// 	<button class="btn input-group-addon column" :class="is_active" @click="toggleThis()" >{{label}}</button>
 // </template>
 //
 // <script>
+module.exports = {
+	name: 'button-checkbox',
+	props: {
+		value: {
+			default: '0',
+			type: String
+		},
+		label: {
+			default: '',
+			type: String
+		},
+		id: {
+			default: function _default() {
+				var base = 'day';
+				if (this.label !== '' && this.label !== undefined) {
+					base = base + '_' + this.label.toLowerCase();
+				}
+
+				return base;
+			}
+		},
+		checked: {
+			default: false,
+			type: Boolean
+		}
+	},
+	data: function data() {
+		return {
+			componentCheckState: this.checked
+		};
+	},
+	computed: {
+		is_active: function is_active() {
+			return {
+				'active': this.componentCheckState === true
+			};
+		}
+	},
+	watch: {
+		checked: function checked() {
+			this.componentCheckState = this.checked;
+		}
+	},
+	methods: {
+		toggleThis: function toggleThis() {
+			this.componentCheckState = !this.componentCheckState;
+			if (this.componentCheckState) {
+				this.$emit('add-day', this.value);
+			} else {
+				this.$emit('rmv-day', this.value);
+			}
+		}
+	}
+	// </script>
+	// <style scoped>
+	// 	#rop_core .input-group .input-group-addon.btn.active {
+	// 		background-color: #8bc34a;
+	// 		border-color: #33691e;
+	// 		color: #FFF;
+	// 	}
+	// </style>
+
+};
 
 /***/ }),
 
-/***/ 328:
+/***/ 79:
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"rop-control-container\" v-if=\"Object.keys(accounts).length > 0\" >\n\n\t\t<!-- Share on publish/update -->\n\t\t<fieldset>\n\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t<input type=\"checkbox\" :checked=\"share_on_update_enabled\" v-on:click=\"share_on_update_enabled = !share_on_update_enabled\" name=\"publish_now\" value=\"1\"/>\n\t\t\t\t<span v-html=\" labels.share_on_update\"></span>\n\t\t\t</label>\n\n\t\t\t<div class=\"form-group rop-publish-now-accounts-wrapper\" v-if=\"share_on_update_enabled\" v-for=\"(account, key) in accounts\" :id=\"key\">\n\t\t\t\t<label class=\"form-checkbox rop-publish-now-account\" :id=\"key\">\n\t\t\t\t\t<input type=\"checkbox\" :checked=\"share_on_update_enabled\" :value=\"key\" name=\"publish_now_accounts[]\" class=\"rop-account-names\"/>\n\t\t\t\t\t<i class=\" fa \" :class=\"getServiceClass(account.service)\"></i> {{account.user}}\n\t\t\t\t</label>\n\t\t\t\t<span style=\"text-decoration: underline; color: #0073aa;font-style:italic; cursor: pointer;\" v-on:click=\"getTheClick(key)\" :id=\"key\">edit caption</span>\n\t\t\t</div>\n\t\t</fieldset>\n\n\t</div>\n";
+module.exports = "\n\t<button class=\"btn input-group-addon column\" :class=\"is_active\" @click=\"toggleThis()\" _v-1bfc9917=\"\">{{label}}</button>\n";
 
 /***/ }),
 
-/***/ 7:
+/***/ 9:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15927,185 +16684,7 @@ Vue.compile = compileToFunctions;
 
 /* harmony default export */ __webpack_exports__["default"] = (Vue);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(3), __webpack_require__(8), __webpack_require__(22).setImmediate))
-
-/***/ }),
-
-/***/ 72:
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(73)
-__vue_script__ = __webpack_require__(75)
-__vue_template__ = __webpack_require__(76)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/reusables/button-checkbox.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-
-/***/ 73:
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(74);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1bfc9917&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1bfc9917&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-
-/***/ 74:
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(1)();
-// imports
-
-
-// module
-exports.push([module.i, "\n\t#rop_core .input-group .input-group-addon.btn.active[_v-1bfc9917] {\n\t\tbackground-color: #8bc34a;\n\t\tborder-color: #33691e;\n\t\tcolor: #FFF;\n\t}\n", ""]);
-
-// exports
-
-
-/***/ }),
-
-/***/ 75:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-// <template>
-// 	<button class="btn input-group-addon column" :class="is_active" @click="toggleThis()" >{{label}}</button>
-// </template>
-//
-// <script>
-module.exports = {
-	name: 'button-checkbox',
-	props: {
-		value: {
-			default: '0',
-			type: String
-		},
-		label: {
-			default: '',
-			type: String
-		},
-		id: {
-			default: function _default() {
-				var base = 'day';
-				if (this.label !== '' && this.label !== undefined) {
-					base = base + '_' + this.label.toLowerCase();
-				}
-
-				return base;
-			}
-		},
-		checked: {
-			default: false,
-			type: Boolean
-		}
-	},
-	data: function data() {
-		return {
-			componentCheckState: this.checked
-		};
-	},
-	computed: {
-		is_active: function is_active() {
-			return {
-				'active': this.componentCheckState === true
-			};
-		}
-	},
-	watch: {
-		checked: function checked() {
-			this.componentCheckState = this.checked;
-		}
-	},
-	methods: {
-		toggleThis: function toggleThis() {
-			this.componentCheckState = !this.componentCheckState;
-			if (this.componentCheckState) {
-				this.$emit('add-day', this.value);
-			} else {
-				this.$emit('rmv-day', this.value);
-			}
-		}
-	}
-	// </script>
-	// <style scoped>
-	// 	#rop_core .input-group .input-group-addon.btn.active {
-	// 		background-color: #8bc34a;
-	// 		border-color: #33691e;
-	// 		color: #FFF;
-	// 	}
-	// </style>
-
-};
-
-/***/ }),
-
-/***/ 76:
-/***/ (function(module, exports) {
-
-module.exports = "\n\t<button class=\"btn input-group-addon column\" :class=\"is_active\" @click=\"toggleThis()\" _v-1bfc9917=\"\">{{label}}</button>\n";
-
-/***/ }),
-
-/***/ 8:
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(5), __webpack_require__(11), __webpack_require__(32).setImmediate))
 
 /***/ })
 
