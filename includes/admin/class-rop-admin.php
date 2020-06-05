@@ -47,6 +47,15 @@ class Rop_Admin {
 	private $version;
 
 	/**
+	 * Custom instant sharing messages entered into the metabox for respective accounts on the edit screen.
+	 *
+	 * @since    8.5.8
+	 * @access   private
+	 * @var      array $custom_instant_share_messages The custom instant share messages entered by user.
+	 */
+		private $custom_instant_share_messages = array();
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @param string $plugin_name The name of this plugin.
@@ -724,24 +733,35 @@ class Rop_Admin {
 
 		$enabled = $_POST['publish_now_accounts'];
 
-		if ( ! is_array( $enabled ) ) {
-			$enabled = array();
-		}
-
-		$custom_captions = array();
-
-		foreach ( $enabled as $account_id ) {
-			if ( ! empty( $_POST[ $account_id ] ) ) {
-				$custom_captions[] = array(  'accound_id' => $account_id, 'message' => $_POST[ $account_id ]);
+		if( ! is_array( $enabled ) ){
+				$enabled = array();
 			}
-		}
 
 		$services = new Rop_Services_Model();
+		$settings = new Rop_Settings_Model();
+
 		$active   = array_keys( $services->get_active_accounts() );
 		// has something been added extra?
 		$extra = array_diff( $enabled, $active );
 		// reject the extra.
 		$enabled = array_diff( $enabled, $extra );
+
+		$custom_instant_share_messages = array();
+
+		foreach ( $enabled as $account_id ) {
+			if ( ! empty( $_POST[ $account_id ] ) ) {
+					$custom_message = $_POST[ $account_id ];
+				$custom_instant_share_messages[ $account_id ] = $custom_message;
+			}
+		}
+
+		$this->custom_instant_share_messages = $custom_instant_share_messages;
+
+		// If user wants to run this operation on page refresh instead of via Cron.
+		if ( $settings->get_true_instant_share() ) {
+			$this->rop_cron_job_publish_now( $post_id, $enabled );
+			return;
+		}
 
 		update_post_meta( $post_id, 'rop_publish_now', 'yes' );
 		update_post_meta( $post_id, 'rop_publish_now_accounts', $enabled );
@@ -764,6 +784,7 @@ class Rop_Admin {
 	 */
 	public function share_scheduled_future_post( $post ) {
 
+		$post_id = $post->ID;
 		$settings            = new Rop_Settings_Model();
 		$selected_post_types = wp_list_pluck( $settings->get_selected_post_types(), 'value' );
 
@@ -814,7 +835,7 @@ class Rop_Admin {
 				$taxonomies_ids = array_keys( $taxonomy_filter );
 
 				// get term ids for the taxonomies selected on General Settings of ROP that are present in the current post
-				$post_term_ids = wp_get_post_terms( $post->ID, $taxonomies_slug, array( 'fields' => 'ids' ) );
+				$post_term_ids = wp_get_post_terms( $post_id, $taxonomies_slug, array( 'fields' => 'ids' ) );
 
 				// get the common term ids between what's assigned to the post and what's selected in General Settings
 				$common = array_intersect( $taxonomies_ids, $post_term_ids );
@@ -852,7 +873,7 @@ class Rop_Admin {
 			$taxonomies_ids = array_keys( $taxonomies );
 
 			// get term ids for the taxonomies selected on General Settings of ROP that are present in the current post
-			$post_term_ids = wp_get_post_terms( $post->ID, $taxonomies_slug, array( 'fields' => 'ids' ) );
+			$post_term_ids = wp_get_post_terms( $post_id, $taxonomies_slug, array( 'fields' => 'ids' ) );
 
 			// get the common term ids between what's assigned to the post and what's selected in General Settings
 			$common = array_intersect( $taxonomies_ids, $post_term_ids );
@@ -870,11 +891,7 @@ class Rop_Admin {
 			}
 		}
 
-		update_post_meta( $post->ID, 'rop_publish_now', 'yes' );
-		update_post_meta( $post->ID, 'rop_publish_now_accounts', $active_accounts );
-
-		$cron = new Rop_Cron_Helper();
-		$cron->manage_cron( array( 'action' => 'publish-now' ) );
+		$this->rop_cron_job_publish_now( $post_id, $active_accounts );
 	}
 
 
@@ -883,14 +900,18 @@ class Rop_Admin {
 	 *
 	 * @since   8.1.0
 	 * @access  public
+	 * @param int   $post_id the Post ID, only present when sharing truly immediately (True Instant Sharing).
+	 * @param array $enabled the accounts the user has selected to share the post to (by clicking the checkbox).
 	 */
-	public function rop_cron_job_publish_now() {
+	public function rop_cron_job_publish_now( $post_id = '', $enabled = array() ) {
 		$queue           = new Rop_Queue_Model();
 		$services_model  = new Rop_Services_Model();
 		$logger          = new Rop_Logger();
 		$service_factory = new Rop_Services_Factory();
 
-		$queue_stack = $queue->build_queue_publish_now();
+		$custom_instant_share_messages = $this->custom_instant_share_messages;
+
+		$queue_stack = $queue->build_queue_publish_now( $post_id, $enabled );
 		$logger->info( 'Fetching publish now queue', array( 'queue' => $queue_stack ) );
 		foreach ( $queue_stack as $account => $events ) {
 			foreach ( $events as $index => $event ) {
@@ -901,6 +922,10 @@ class Rop_Admin {
 					$service->set_credentials( $account_data['credentials'] );
 					foreach ( $posts as $post ) {
 						$post_data = $queue->prepare_post_object( $post, $account );
+						$custom_instant_share_message = ! empty( $custom_instant_share_messages[ $account ] ) ? $custom_instant_share_messages[ $account ] : '';
+						if ( ! empty( $custom_instant_share_message ) ) {
+							$post_data['content'] = $custom_instant_share_message;
+						}
 						$logger->info( 'Posting', array( 'extra' => $post_data ) );
 						$service->share( $post_data, $account_data );
 					}
