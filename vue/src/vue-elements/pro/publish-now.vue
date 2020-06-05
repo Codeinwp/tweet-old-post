@@ -13,8 +13,10 @@
 					<input type="checkbox" :checked="share_on_update_enabled" :value="key" v-on:click="toggleServices($event, key)" name="publish_now_accounts[]" class="rop-account-names"/>
 					<i class=" fa " :class="getServiceClass(account.service)"></i> {{account.user}}
 				</label>
-				<span v-on:click="togglefields(key)" :id="key" class="rop-edit-message-text">{{ showField[key] ? 'done' : 'edit message' }}</span>
-				<textarea v-show="showField[key]" :name="key" class="rop-custom-message-area"></textarea>
+				<span v-on:click="togglefields(key)" :id="key" class="rop-edit-custom-instant-share-message-text">{{ showField[key] ? 'done' : 'edit message' }}</span>
+				<p v-show="showField[key]" class="rop-custom-instant-share-message-text">Custom share message:</p>
+				<textarea v-show="showField[key]" :name="key" :disabled="!isPro" class="rop-custom-instant-share-message-area"></textarea>
+				<p v-if="!isPro && showField[key]" v-html="labels.custom_instant_share_messages_upsell" class="custom-instant-share-upsell"></p>
 			</div>
 		</fieldset>
 
@@ -37,6 +39,7 @@
 			} );
 
 			return {
+				license: this.$store.state.licence,
 				labels: this.$store.state.labels.publish_now,
 				accounts: this.$store.state.publish_now.accounts,
 				share_on_update_enabled: this.$store.state.publish_now.action,
@@ -72,6 +75,11 @@
 				return self.showField[value] = ! self.showField[value];
 			},
 
+		},
+		computed: {
+			isPro: function () {
+					return (this.license > 0);
+			},
 		}
 	}
 </script>
@@ -81,17 +89,25 @@
 		width:100%;
 		float:right;
 	}
-	.rop-edit-message-text{
+	.rop-edit-custom-instant-share-message-text{
 		text-decoration: underline;
 		color: #0073aa;
 		font-size: 12px;
 		font-style:italic;
 		cursor: pointer;
 	}
-	.rop-publish-now-account, .rop-custom-message-area{
-		margin: 5px 0 10px 16px
+	.rop-publish-now-account, .rop-custom-instant-share-message-area{
+		margin: 0 0 0 16px;
+	}
+	.custom-instant-share-upsell{
+		color: #808080;
+		margin: 0 0 12px 16px;
+	}
+	.rop-custom-instant-share-message-text{
+		margin: 5px 0 5px 16px;
+		font-style: italic;
 	}
 	.rop-publish-now-accounts-wrapper{
-		margin-top:5px;
+		margin-top:10px;
 	}
 </style>
