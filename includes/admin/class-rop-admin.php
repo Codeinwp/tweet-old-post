@@ -733,9 +733,9 @@ class Rop_Admin {
 
 		$enabled = $_POST['publish_now_accounts'];
 
-		if( ! is_array( $enabled ) ){
+		if ( ! is_array( $enabled ) ) {
 				$enabled = array();
-			}
+		}
 
 		$services = new Rop_Services_Model();
 		$settings = new Rop_Settings_Model();
@@ -750,7 +750,7 @@ class Rop_Admin {
 
 		foreach ( $enabled as $account_id ) {
 			if ( ! empty( $_POST[ $account_id ] ) ) {
-					$custom_message = $_POST[ $account_id ];
+				$custom_message = $_POST[ $account_id ];
 				$custom_instant_share_messages[ $account_id ] = $custom_message;
 			}
 		}
