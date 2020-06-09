@@ -312,21 +312,22 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @access  public
 	 * @return array
 	 * @param int   $post_id the Post ID, only present when sharing truly immediately (True Instant Sharing).
-	 * @param array $enabled the accounts the user has selected to share the post to (by clicking the checkbox).
+	 * @param array $instant_share_content the accounts the user has selected to share the post to (by clicking the checkbox), also contains the custom share message if any was entered.
 	 */
-	public function build_queue_publish_now( $post_id = '', $enabled = array() ) {
+	public function build_queue_publish_now( $post_id = '', $instant_share_content = array() ) {
 
 		// Below will only run when sharing truly immediately (True Instant Sharing)
-		if ( ! empty( $post_id ) && ! empty( $enabled ) ) {
+		if ( ! empty( $post_id ) && ! empty( $instant_share_content ) ) {
 
-			$accounts   = $enabled;
+			$accounts   = $instant_share_content;
 			$normalized_queue   = array();
 
 				$index = 0;
 
-			foreach ( $accounts as $account_id ) {
+			foreach ( $accounts as $account_id => $custom_instant_share_message) {
 						$normalized_queue[ $account_id ][ $index ] = array(
-							'posts' => array( $post_id ),
+							'post' => array( $post_id ),
+							'custom_instant_share_message' => $custom_instant_share_message,
 						);
 						$index++;
 			}
@@ -353,13 +354,16 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 			// delete the meta so that when the post loads again after publishing, the checkboxes are cleared.
 			delete_post_meta( $post_id, 'rop_publish_now_accounts' );
 
-			foreach ( $accounts as $account_id ) {
+			foreach ( $accounts as $account_id => $custom_instant_share_message) {
 				$normalized_queue[ $account_id ][ $index ] = array(
-					'posts' => array( $post_id ),
+					'post' => array( $post_id ),
+					'custom_instant_share_message' => $custom_instant_share_message,
 				);
 			}
 			$index++;
 		}
+
+        update_option('rop_normalized_queue', print_r($normalized_queue, true));
 
 		return $normalized_queue;
 	}
@@ -401,13 +405,14 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 *
 	 * @param   integer $post_id A WordPress Post Object.
 	 * @param   string  $account_id The account ID.
+	 * @param array $custom_share_message The customer share message created by the user with the instant share feature
 	 *
 	 * @return array
 	 */
-	public function prepare_post_object( $post_id, $account_id ) {
+	public function prepare_post_object( $post_id, $account_id, $custom_instant_share_message = array() ) {
 		$post_format_helper = new Rop_Post_Format_Helper();
-		$post_format_helper->set_post_format( $account_id );
-		$filtered_post = $post_format_helper->get_formated_object( $post_id );
+		//$post_format_helper->set_post_format( $account_id );
+		$filtered_post = $post_format_helper->get_formated_object( $post_id, $account_id, $custom_instant_share_message );
 
 		return $filtered_post;
 	}
