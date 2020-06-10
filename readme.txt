@@ -29,7 +29,7 @@ Save time in your social media marketing efforts, add some social media automati
 
 - **Hobby bloggers**
 
-_Thinking of ways to grow your business? [Read why Social Media is Important.](https://marketinginsidergroup.com/content-marketing/why-social-media-is-important-for-business-marketing/)_
+_Thinking of ways to grow your business? [Read why Social Media is Important.](https://revive.social/benefits-of-social-media-marketing/) But don't stop there, [learn how to create a social media marketing plan](https://revive.social/social-media-marketing-plan/)_
 
 ## How Can Revive Old Posts Help Me?
 
@@ -264,23 +264,23 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
-= 8.5.7 - 2020-05-14  = 
+= 8.5.7 - 2020-05-14  =
 
 * New PRO: Made it easier to connect Tumblr accounts for new installs.
 * New: Added an option in general settings to make Instant Share feature truly immediate and more reliable.
-* Change: Edited some text titles and descriptions in the plugin dashboard to make them easier to understand. 
-* 
+* Change: Edited some text titles and descriptions in the plugin dashboard to make them easier to understand.
+*
 
 
-= 8.5.6 - 2020-04-15  = 
+= 8.5.6 - 2020-04-15  =
 
 * Change: Switched rviv.ly shortener with is.gd shortener to prevent issues with sharing.
 
 
-= 8.5.5 - 2020-04-11  = 
+= 8.5.5 - 2020-04-11  =
 
 * Fix PRO: PHP Error when "Post with image" is checked in Post format for LinkedIn and post has no featured image set.
-* Fix PRO: PHP Error when no post format option is available in the database and ROP tries to share a WP scheduled post that has become published.  
+* Fix PRO: PHP Error when no post format option is available in the database and ROP tries to share a WP scheduled post that has become published.
 * Change: Bit.ly now uses bit.ly's v4 API endpoint.
 * Info: Tested on WP 5.4.
 
