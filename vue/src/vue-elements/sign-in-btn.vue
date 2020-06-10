@@ -31,7 +31,7 @@
 							<button class="btn btn-primary big-btn" @click="openPopupTW()">{{labels.tw_app_signin_btn}}</button>
 							<span class="text-center">{{labels.app_option_signin}}</span>
 						</div>
-						<div class="auth-app" v-if="isLinkedIn && isAllowedLinkedIn">
+						<div class="auth-app" v-if="isLinkedIn">
 							<button class="btn btn-primary big-btn" @click="openPopupLI()">{{labels.li_app_signin_btn}}</button>
 							<span class="text-center">{{labels.app_option_signin}}</span>
 						</div>
@@ -42,10 +42,10 @@
 						<div class="auth-app" v-if="isBuffer">
 							<button class="btn btn-primary big-btn" @click="openPopupBuffer()">{{labels.buffer_app_signin_btn}}</button>
 						</div>
-						<div id="rop-advanced-config" v-if="isFacebook || isTwitter || (isLinkedIn && isAllowedLinkedIn) || (isTumblr && isAllowedTumblr)">
+						<div id="rop-advanced-config" v-if="isFacebook || isTwitter || isLinkedIn || (isTumblr && isAllowedTumblr)">
 						<button class="btn btn-primary" v-on:click="showAdvanceConfig = !showAdvanceConfig">{{labels.show_advance_config}}</button>
 					</div>
-						<div v-if="showAdvanceConfig && (isFacebook || isTwitter || (isLinkedIn && isAllowedLinkedIn) || (isTumblr && isAllowedTumblr) )">
+						<div v-if="showAdvanceConfig && (isFacebook || isTwitter || isLinkedIn || (isTumblr && isAllowedTumblr) )">
 						<div class="form-group" v-for="( field, id ) in modal.data">
 							<label class="form-label" :for="field.id">{{ field.name }}</label>
 							<input :class="[ 'form-input', field.error ? ' is-error' : '' ]" type="text" :id="field.id" v-model="field.value"
@@ -54,7 +54,7 @@
 							<p class="text-gray">{{ field.description }}</p>
 						</div>
 					</div>
-						<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isBuffer && !isTumblr) || (isLinkedIn && !isAllowedLinkedIn) || (isTumblr && !isAllowedTumblr)">
+						<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isBuffer && !isTumblr) || (isTumblr && !isAllowedTumblr)">
 						<div class="form-group" v-for="( field, id ) in modal.data">
 							<label class="form-label" :for="field.id">{{ field.name }}</label>
 							<input :class="[ 'form-input', field.error ? ' is-error' : '' ]" type="text" :id="field.id" v-model="field.value"
@@ -65,14 +65,14 @@
 					</div>
 				</div>
 				</div>
-				<div v-if="isFacebook || isTwitter || (isLinkedIn && isAllowedLinkedIn) || (isTumblr && isAllowedTumblr)" class="modal-footer">
+				<div v-if="isFacebook || isTwitter || isLinkedIn || (isTumblr && isAllowedTumblr)" class="modal-footer">
 					<p class="text-left pull-left mr-2" v-html="labels.rs_app_info"></p>
 				</div>
 				<div v-if="showAdvanceConfig && (isFacebook || isTwitter || isLinkedIn || isTumblr)" class="modal-footer">
 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 				</div>
-				<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isBuffer && !isTumblr) || (isLinkedIn && !isAllowedLinkedIn) || (isTumblr && !isAllowedTumblr)" class="modal-footer">
+				<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isBuffer && !isTumblr) || (isTumblr && !isAllowedTumblr)" class="modal-footer">
 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 				</div>
@@ -483,13 +483,6 @@
             isTumblr() {
                 return this.modal.serviceName === 'Tumblr';
             },
-						isAllowedLinkedIn: function () {
-							let showButton = true;
-							if (!this.showLiAppBtn) {
-									showButton = false;
-							}
-							return showButton;
-					},
 						isAllowedTumblr: function () {
 							let showButton = true;
 							if (!this.showTmblrAppBtn) {
