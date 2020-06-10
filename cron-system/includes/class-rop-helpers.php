@@ -94,6 +94,14 @@ class Rop_Helpers {
 		return false;
 	}
 
+	/**
+	 * Returns array with the request headers.
+	 *
+	 * @return array|false
+	 * @since 8.5.5
+	 * @access public
+	 * @static
+	 */
 	static public function apache_request_headers() {
 		if ( ! function_exists( 'apache_request_headers' ) ) {
 			$headers_output = array();

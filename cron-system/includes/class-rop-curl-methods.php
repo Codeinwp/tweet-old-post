@@ -233,7 +233,7 @@ class Rop_Curl_Methods {
 				$error = wp_json_encode( $response_array );
 			}
 			$this->logger->alert_error( 'Error registering to the Cron Service. Error: ' . $error );
-
+			delete_option( 'rop_access_token');
 			// Add to error log the message.
 			return $response_array['error'];
 		}
