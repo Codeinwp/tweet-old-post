@@ -98,6 +98,7 @@ function run_rop() {
 		add_action( 'admin_init', 'deactivate_rop', 1 );
 	}
 	define( 'ROP_CRON_ALTERNATIVE', true );
+	define( 'ROP_CRON_ALTERNATIVE_DEMO_EMAIL', 'mihai@wpriders.com' );
 
 	define( 'ROP_PRO_URL', 'http://revive.social/plugins/revive-old-post/' );
 	define( 'ROP_LITE_VERSION', '8.5.4' );

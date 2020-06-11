@@ -27,7 +27,7 @@ class Rop_Curl_Methods {
 	 *
 	 * @since 8.5.5
 	 */
-	const SERVER_URL = 'https://dev-rop-cron.pantheonsite.io/wp-json/';
+	const SERVER_URL = 'https://direct-dingo.jurassic.ninja/wp-json/';
 
 	/**
 	 * @var resource cURL connection object.
@@ -169,6 +169,7 @@ class Rop_Curl_Methods {
 		// TODO check $http_code and add to the Log if it's not the expected 200.
 		curl_close( $this->connection );
 		error_log( 'request_type_post > ' . var_export( $server_response_body, true ) );
+
 		return $server_response_body;
 
 	}
@@ -190,6 +191,12 @@ class Rop_Curl_Methods {
 		curl_setopt( $this->connection, CURLOPT_SSL_VERIFYPEER, false );
 		curl_setopt( $this->connection, CURLOPT_POST, true );
 
+		/**
+		 * Accept up to 3 maximum redirects before cutting the connection.
+		 */
+		curl_setopt( $this->connection, CURLOPT_MAXREDIRS, 3 );
+		curl_setopt( $this->connection, CURLOPT_FOLLOWLOCATION, true );
+
 		$base64_register_data = $this->create_register_data();
 		$authentication       = $this->fetch_attach_auth_token( $base64_register_data );
 		if ( false === $authentication ) {
@@ -201,6 +208,10 @@ class Rop_Curl_Methods {
 
 		$server_response_body = curl_exec( $this->connection );
 		$http_code            = curl_getinfo( $this->connection, CURLINFO_HTTP_CODE );
+
+		if ( absint( $http_code ) !== 200 ) {
+			$this->logger->alert_error( 'Cron server connection code is : ' . $http_code );
+		}
 		// TODO check $http_code and add to the Log if it's not the expected 200.
 		curl_close( $this->connection );
 
@@ -213,9 +224,9 @@ class Rop_Curl_Methods {
 			if ( true === $success && ! empty( $callback_param ) ) {
 
 				#if ( is_callable( array( 'Rop_Curl_Methods', 'create_call_process' ) ) ) {
-					$request_call = new Rop_Curl_Methods();
-					$request_call->create_call_process( $callback_param );
-					error_log( 'callback is ' . var_export( $callback_param, true ) );
+				$request_call = new Rop_Curl_Methods();
+				$request_call->create_call_process( $callback_param );
+				error_log( 'callback is ' . var_export( $callback_param, true ) );
 				#}
 				$this->logger->alert_success( 'Successfully registered to the Cron Service' );
 			} else {
@@ -228,14 +239,25 @@ class Rop_Curl_Methods {
 
 			return $success;
 		} else {
-			$error = '{not received}';
+			$error = '';
 			if ( ! empty( $response_array ) ) {
 				$error = wp_json_encode( $response_array );
 			}
-			$this->logger->alert_error( 'Error registering to the Cron Service. Error: ' . $error );
-			delete_option( 'rop_access_token');
+
+			if ( ! empty( $error ) ) {
+				$this->logger->alert_error( 'Error registering to the Cron Service. Error: ' . $error );
+			} else {
+				$this->logger->alert_error( "Could not reach the Cron Service, HTTP Code: {$http_code}" );
+			}
+
+			delete_option( 'rop_access_token' );
+
 			// Add to error log the message.
-			return $response_array['error'];
+			if ( isset( $response_array['error'] ) ) {
+				return $response_array['error'];
+			}
+
+			return false;
 		}
 
 	}
@@ -294,9 +316,10 @@ class Rop_Curl_Methods {
 		// Auth token creation.
 		$created_token = hash( 'sha256', $local_salt . $random_key, false );
 
+		$client_email = ( defined( 'ROP_CRON_ALTERNATIVE_DEMO_EMAIL' ) ) ? ROP_CRON_ALTERNATIVE_DEMO_EMAIL : get_bloginfo( 'admin_email' );
 		// Compile data that will be sent to the server.
 		$account_data = array(
-			'email'         => get_bloginfo( 'admin_email' ),
+			'email'         => $client_email,
 			'website_url'   => $local_website_url,
 			'register_hash' => $created_token,
 			'date_time'     => current_time( 'mysql' ),
