@@ -725,7 +725,7 @@ class Rop_Admin {
 		$enabled = $_POST['publish_now_accounts'];
 
 		if ( ! is_array( $enabled ) ) {
-			$enabled = array();
+				$enabled = array();
 		}
 
 		$services = new Rop_Services_Model();
@@ -737,14 +737,23 @@ class Rop_Admin {
 		// reject the extra.
 		$enabled = array_diff( $enabled, $extra );
 
+		$instant_share_content = array();
+
+		foreach ( $enabled as $account_id ) {
+				$custom_message = ! empty( $_POST[ $account_id ] ) ? $_POST[ $account_id ] : '';
+				$instant_share_content[ $account_id ] = $custom_message;
+		}
+
+		$this->instant_share_content = $instant_share_content;
+
 		// If user wants to run this operation on page refresh instead of via Cron.
 		if ( $settings->get_true_instant_share() ) {
-			$this->rop_cron_job_publish_now( $post_id, $enabled );
+			$this->rop_cron_job_publish_now( $post_id, $instant_share_content );
 			return;
 		}
 
 		update_post_meta( $post_id, 'rop_publish_now', 'yes' );
-		update_post_meta( $post_id, 'rop_publish_now_accounts', $enabled );
+		update_post_meta( $post_id, 'rop_publish_now_accounts', $instant_share_content );
 
 		if ( ! $enabled ) {
 			return;
@@ -881,25 +890,30 @@ class Rop_Admin {
 	 * @since   8.1.0
 	 * @access  public
 	 * @param int   $post_id the Post ID, only present when sharing truly immediately (True Instant Sharing).
-	 * @param array $enabled the accounts the user has selected to share the post to (by clicking the checkbox).
+	 * @param array $instant_share_content the accounts the user has selected to share the post to (by clicking the checkbox), also contains the custom share message if any was entered.
 	 */
-	public function rop_cron_job_publish_now( $post_id = '', $enabled = array() ) {
+	public function rop_cron_job_publish_now( $post_id = '', $instant_share_content = array() ) {
 		$queue           = new Rop_Queue_Model();
 		$services_model  = new Rop_Services_Model();
 		$logger          = new Rop_Logger();
 		$service_factory = new Rop_Services_Factory();
 
-		$queue_stack = $queue->build_queue_publish_now( $post_id, $enabled );
+		$queue_stack = $queue->build_queue_publish_now( $post_id, $instant_share_content );
 		$logger->info( 'Fetching publish now queue', array( 'queue' => $queue_stack ) );
 		foreach ( $queue_stack as $account => $events ) {
 			foreach ( $events as $index => $event ) {
-				$posts        = $event['posts'];
+				$post    = $event['post'];
+				$message = ! empty( $event['custom_instant_share_message'] ) ? $event['custom_instant_share_message'] : '';
 				$account_data = $services_model->find_account( $account );
 				try {
 					$service = $service_factory->build( $account_data['service'] );
 					$service->set_credentials( $account_data['credentials'] );
-					foreach ( $posts as $post ) {
-						$post_data = $queue->prepare_post_object( $post, $account );
+					foreach ( $post as $post_id ) {
+						$post_data = $queue->prepare_post_object( $post_id, $account );
+						$custom_instant_share_message = $message;
+						if ( ! empty( $custom_instant_share_message ) ) {
+							$post_data['content'] = $custom_instant_share_message;
+						}
 						$logger->info( 'Posting', array( 'extra' => $post_data ) );
 						$service->share( $post_data, $account_data );
 					}
