@@ -405,14 +405,13 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 *
 	 * @param   integer $post_id A WordPress Post Object.
 	 * @param   string  $account_id The account ID.
-	 * @param array   $custom_share_message The customer share message created by the user with the instant share feature
 	 *
 	 * @return array
 	 */
-	public function prepare_post_object( $post_id, $account_id, $custom_instant_share_message = array() ) {
+	public function prepare_post_object( $post_id, $account_id ) {
 		$post_format_helper = new Rop_Post_Format_Helper();
 		// $post_format_helper->set_post_format( $account_id );
-		$filtered_post = $post_format_helper->get_formated_object( $post_id, $account_id, $custom_instant_share_message );
+		$filtered_post = $post_format_helper->get_formated_object( $post_id, $account_id );
 
 		return $filtered_post;
 	}
