@@ -740,7 +740,7 @@ class Rop_Admin {
 		$instant_share_content = array();
 
 		foreach ( $enabled as $account_id ) {
-				$custom_message = ! empty($_POST[ $account_id ]) ? $_POST[ $account_id ] : '';
+				$custom_message = ! empty( $_POST[ $account_id ] ) ? $_POST[ $account_id ] : '';
 				$instant_share_content[ $account_id ] = $custom_message;
 		}
 
@@ -903,7 +903,7 @@ class Rop_Admin {
 		foreach ( $queue_stack as $account => $events ) {
 			foreach ( $events as $index => $event ) {
 				$post    = $event['post'];
-				$message = ! empty($event['custom_instant_share_message']) ? $event['custom_instant_share_message'] : '';
+				$message = ! empty( $event['custom_instant_share_message'] ) ? $event['custom_instant_share_message'] : '';
 				$account_data = $services_model->find_account( $account );
 				try {
 					$service = $service_factory->build( $account_data['service'] );

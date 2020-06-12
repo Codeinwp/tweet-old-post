@@ -324,7 +324,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 
 				$index = 0;
 
-			foreach ( $accounts as $account_id => $custom_instant_share_message) {
+			foreach ( $accounts as $account_id => $custom_instant_share_message ) {
 						$normalized_queue[ $account_id ][ $index ] = array(
 							'post' => array( $post_id ),
 							'custom_instant_share_message' => $custom_instant_share_message,
@@ -354,7 +354,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 			// delete the meta so that when the post loads again after publishing, the checkboxes are cleared.
 			delete_post_meta( $post_id, 'rop_publish_now_accounts' );
 
-			foreach ( $accounts as $account_id => $custom_instant_share_message) {
+			foreach ( $accounts as $account_id => $custom_instant_share_message ) {
 				$normalized_queue[ $account_id ][ $index ] = array(
 					'post' => array( $post_id ),
 					'custom_instant_share_message' => $custom_instant_share_message,
@@ -363,7 +363,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 			$index++;
 		}
 
-        update_option('rop_normalized_queue', print_r($normalized_queue, true));
+		update_option( 'rop_normalized_queue', print_r( $normalized_queue, true ) );
 
 		return $normalized_queue;
 	}
@@ -405,13 +405,13 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 *
 	 * @param   integer $post_id A WordPress Post Object.
 	 * @param   string  $account_id The account ID.
-	 * @param array $custom_share_message The customer share message created by the user with the instant share feature
+	 * @param array   $custom_share_message The customer share message created by the user with the instant share feature
 	 *
 	 * @return array
 	 */
 	public function prepare_post_object( $post_id, $account_id, $custom_instant_share_message = array() ) {
 		$post_format_helper = new Rop_Post_Format_Helper();
-		//$post_format_helper->set_post_format( $account_id );
+		// $post_format_helper->set_post_format( $account_id );
 		$filtered_post = $post_format_helper->get_formated_object( $post_id, $account_id, $custom_instant_share_message );
 
 		return $filtered_post;
