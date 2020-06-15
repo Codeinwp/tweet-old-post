@@ -33,7 +33,7 @@ _Thinking of ways to grow your business? [Read why Social Media is Important.](h
 
 ## How Can Revive Old Posts Help Me?
 
-ROP can be used for many use cases and help many different blogs and sites boost their social media traffic by introducing social media automation functionality to WordPress, it can act as all of the following in one:
+Revive Old Posts is much more than just a wp to facebook or wp to twitter plugin. ROP can be used for many use cases and help many different blogs and sites boost their social media traffic by introducing social media automation functionality to WordPress, it can act as all of the following in one:
 
 ### A WordPress **Social Media Scheduling** Plugin
 
