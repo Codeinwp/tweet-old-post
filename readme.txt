@@ -264,6 +264,13 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.5.8 - 2020-06-16  = 
+
+* New PRO: Custom instant sharing messages. You can now alter the caption that would be sent to the social media network.
+* Change: Opened up easier LinkedIn login workflow for old installs.
+* Change: Increased default category hashtag length. Old value was causing users categories to get dropped before sharing if they were too long
+
+
 = 8.5.7 - 2020-05-14  =
 
 * New PRO: Made it easier to connect Tumblr accounts for new installs.

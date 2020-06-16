@@ -1,4 +1,10 @@
 
+ ### v8.5.8 - 2020-06-16 
+ **Changes:** 
+ * New PRO: Custom instant sharing messages. You can now alter the caption that would be sent to the social media network.
+* Change: Opened up easier LinkedIn login workflow for old installs.
+* Change: Increased default category hashtag length. Old value was causing users categories to get dropped before sharing if they were too long
+ 
  ### v8.5.7 - 2020-05-14 
  **Changes:** 
  * New PRO: Made it easier to connect Tumblr accounts for new installs.
