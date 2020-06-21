@@ -122,6 +122,10 @@ class Rop_Global_Settings {
 			'active' => false,
 			'name'   => 'Buffer',
 		),
+		'gmb'    => array(
+			'active' => false,
+			'name'   => 'Google My Business',
+		),
 	);
 
 	/**

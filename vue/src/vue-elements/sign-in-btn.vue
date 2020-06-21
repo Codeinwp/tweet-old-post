@@ -7,8 +7,9 @@
 					class="btn input-group-btn"
 					:class="'btn-' + network"
 					@click="requestAuthorization( network )">
-				<i v-if="network !== 'buffer'" class="fa fa-fw" :class="'fa-' + network"></i>
+				<i v-if="network !== 'buffer' && network !== 'gmb'" class="fa fa-fw" :class="'fa-' + network"></i>
 				<i v-if="network === 'buffer'" class="fa fa-fw fa-plus-square"></i>
+				<i v-if="network === 'gmb'" class="fa fa-fw fa-google"></i>
 				{{service.name}}
 			</button>
 
