@@ -41,4 +41,8 @@ class Rop_GMB_Service {
     return;
   }
 
+	public function init() {
+		$this->display_name = 'Gmb';
+	}
+
 }

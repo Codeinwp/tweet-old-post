@@ -124,7 +124,7 @@ class Rop_Global_Settings {
 		),
 		'gmb'    => array(
 			'active' => false,
-			'name'   => 'Google My Business',
+			'name'   => 'Gmb',
 		),
 	);
 

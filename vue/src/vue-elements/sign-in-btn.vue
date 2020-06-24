@@ -43,6 +43,9 @@
 						<div class="auth-app" v-if="isBuffer">
 							<button class="btn btn-primary big-btn" @click="openPopupBuffer()">{{labels.buffer_app_signin_btn}}</button>
 						</div>
+						<div class="auth-app" v-if="isGmb">
+							<button class="btn btn-primary big-btn" @click="openPopupGmb()">{{labels.gmb_app_signin_btn}}</button>
+						</div>
 						<div id="rop-advanced-config" v-if="isFacebook || isTwitter || isLinkedIn || (isTumblr && isAllowedTumblr)">
 						<button class="btn btn-primary" v-on:click="showAdvanceConfig = !showAdvanceConfig">{{labels.show_advance_config}}</button>
 					</div>
@@ -55,7 +58,7 @@
 							<p class="text-gray">{{ field.description }}</p>
 						</div>
 					</div>
-						<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isBuffer && !isTumblr) || (isTumblr && !isAllowedTumblr)">
+						<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isBuffer && !isGmb && !isTumblr) || (isTumblr && !isAllowedTumblr)">
 						<div class="form-group" v-for="( field, id ) in modal.data">
 							<label class="form-label" :for="field.id">{{ field.name }}</label>
 							<input :class="[ 'form-input', field.error ? ' is-error' : '' ]" type="text" :id="field.id" v-model="field.value"
@@ -66,14 +69,14 @@
 					</div>
 				</div>
 				</div>
-				<div v-if="isFacebook || isTwitter || isLinkedIn || (isTumblr && isAllowedTumblr)" class="modal-footer">
+				<div v-if="isFacebook || isTwitter || isLinkedIn || isBuffer || isGmb || (isTumblr && isAllowedTumblr)" class="modal-footer">
 					<p class="text-left pull-left mr-2" v-html="labels.rs_app_info"></p>
 				</div>
 				<div v-if="showAdvanceConfig && (isFacebook || isTwitter || isLinkedIn || isTumblr)" class="modal-footer">
 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 				</div>
-				<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isBuffer && !isTumblr) || (isTumblr && !isAllowedTumblr)" class="modal-footer">
+				<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isBuffer && !isGmb && !isTumblr) || (isTumblr && !isAllowedTumblr)" class="modal-footer">
 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 				</div>
@@ -105,6 +108,7 @@
         appPathLI: ropAuthAppData.authAppLinkedInPath,
         appPathBuffer: ropAuthAppData.authAppBufferPath,
         appPathTumblr: ropAuthAppData.authAppTumblrPath,
+        appPathGmb: ropAuthAppData.authAppGmbPath,
 				appAdminEmail: ropAuthAppData.adminEmail,
 				siteAdminUrl: ropAuthAppData.adminUrl,
 				appUniqueId: ropAuthAppData.authToken,
@@ -371,6 +375,8 @@
 					    this.addAccountBuffer(JSON.parse(event.data));
             } else if ('Tumblr' === this.modal.serviceName) {
 					    this.addAccountTumblr(JSON.parse(event.data));
+            } else if ('Gmb' === this.modal.serviceName) {
+					    this.addAccountGmb(JSON.parse(event.data));
             }
 
 				} else {
@@ -436,7 +442,19 @@
                     this.cancelModal();
                 }
                 window.addEventListener("message", event => this.getChildWindowMessage(event));
-			}
+			},
+            openPopupGmb: function () { // Open the popup specific for Tumblr
+                let loginUrl = this.appOrigin + this.appPathGmb + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
+                try {
+                    this.authPopupWindow.close();
+                } catch (e) {
+                    // nothing to do
+                } finally {
+                    this.authPopupWindow = window.open(loginUrl, 'authGmb', this.windowParameters);
+                    this.cancelModal();
+                }
+                window.addEventListener("message", event => this.getChildWindowMessage(event));
+			},
 		},
 		computed: {
 			selected_service: function () {
@@ -483,6 +501,14 @@
             // will return true if the current service actions are for Tumblr.
             isTumblr() {
                 return this.modal.serviceName === 'Tumblr';
+            },
+            // will return true if the current service actions are for Google My Business.
+            isGmb() {
+                return this.modal.serviceName === 'Gmb';
+            },
+            // will return true if the current service actions are for Pinterest.
+            isPinterest() {
+                return this.modal.serviceName === 'Pinterest';
             },
 						isAllowedTumblr: function () {
 							let showButton = true;
