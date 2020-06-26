@@ -2,6 +2,9 @@
 /**
  * The file that defines the Buffer Service specifics.
  *
+ * NOTE: Extending abstract class but not making use of some of the methods with new authentication workflow.
+ * 			 Abstract class will be cleaned up once we move all services to one click sign on and drop users connecting own apps.
+ *
  * A class that is used to interact with Buffer.
  * It extends the Rop_Services_Abstract class.
  *

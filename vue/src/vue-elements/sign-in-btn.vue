@@ -44,7 +44,7 @@
 							<button class="btn btn-primary big-btn" @click="openPopupBuffer()">{{labels.buffer_app_signin_btn}}</button>
 						</div>
 						<div class="auth-app" v-if="isGmb">
-							<button class="btn btn-primary big-btn" @click="openPopupGmb()">{{labels.gmb_app_signin_btn}}</button>
+							<button class="btn btn-primary big-btn" id="gmb-btn" @click="openPopupGmb()">{{labels.gmb_app_signin_btn}}</button>
 						</div>
 						<div id="rop-advanced-config" v-if="isFacebook || isTwitter || isLinkedIn || (isTumblr && isAllowedTumblr)">
 						<button class="btn btn-primary" v-on:click="showAdvanceConfig = !showAdvanceConfig">{{labels.show_advance_config}}</button>
@@ -363,6 +363,25 @@
                     Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
 				});
 			},
+            /**
+             * Add Google My Business account.
+             *
+             * @param data Data.
+             */
+            addAccountGmb(data) {
+                this.$store.dispatch('fetchAJAXPromise', {
+                    req: 'add_account_gmb',
+                    updateState: false,
+                    data: data
+                }).then(response => {
+                    window.removeEventListener("message", event => this.getChildWindowMessage(event));
+                    this.authPopupWindow.close();
+                    window.location.reload();
+                }, error => {
+                    this.is_loading = false;
+                    Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+				});
+			},
 			getChildWindowMessage: function (event) {
 				if (~event.origin.indexOf(this.appOrigin)) {
             if ('Twitter' === this.modal.serviceName) {
@@ -526,5 +545,8 @@
 		cursor:not-allowed;
 		pointer-events: auto;
 		opacity: 0.3;
+	}
+	.big-btn#gmb-btn{
+	padding: 0 35px 0 14px;
 	}
 </style>
