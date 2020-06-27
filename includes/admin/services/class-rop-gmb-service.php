@@ -197,6 +197,8 @@ class Rop_Gmb_Service extends Rop_Services_Abstract{
 			'id'                 => $the_id,
 			'service'            => $this->service_name,
 			'credentials'        => array(
+					'created'				 => $account['created'],
+					'expires_in'		 => $account['expires_in'],
 					'access_token' 	 => $account['access_token'],
 					'refresh_token'  => $account['refresh_token'],
 				),
@@ -207,7 +209,80 @@ class Rop_Gmb_Service extends Rop_Services_Abstract{
 	}
 
 	/**
-	 * Method for publishing with Buffer service.
+	* Method to refresh access token.
+	*
+	* @since  8.5.9
+	* @access private
+	*
+	*
+	* @return array
+	*/
+	private function gmb_refresh_access_token(){
+
+	$rop_services_data	= get_option('rop_data')['services'];
+
+		foreach( $rop_services_data as $service => $service_data){
+
+			if($service_data['service'] === 'gmb'){
+				$created = $service_data['credentials']['created'];
+				$expires_in = $service_data['credentials']['expires_in'];
+				$access_token = $service_data['credentials']['access_token'];
+				$refresh_token = $service_data['credentials']['refresh_token'];
+				$service_id = $service;
+				break;
+			}
+
+		}
+
+		// $created = '1593273390';
+		// check if access token will expire in next 30 seconds.
+		$expired = ($created + ($expires_in - 30)) < time();
+
+		// if it's not expired then return current access token in DB
+		if( ! $expired ){
+			return $access_token;
+		}
+
+		$this->logger->info('Access token has expired, fetching new...');
+
+		$url = ROP_AUTH_APP_URL . '/wp-json/gmb/v1/access_token?refresh_token=' . $refresh_token;
+
+		$response = wp_remote_get( $url );
+		$response = json_decode( wp_remote_retrieve_body( $response ), true );
+		$this->logger->alert_error(print_r($response, true));
+
+		// Update token code in db
+
+		return $response['token_data'];
+
+	}
+
+	/**
+	* Method for sending link(article) posts to Google My Business.
+	*
+	* @since  8.5.9
+	* @access private
+	*
+	* @param array $post_details The post details to be published by the service.
+	* @param array $args Optional arguments needed by the method.
+	*
+	* @return array
+	*/
+	private function gmb_article_post($post_details, $args){
+
+	$access_token = $this->gmb_refresh_access_token();
+
+	require_once ROP_LITE_PATH . 'includes/admin/helpers/class-gmb-service-helper.php';
+	$client = new Google_Client();
+	$client->setAccessToken($access_token);
+
+	$gmb = new Google_Service_MyBusiness($client);
+
+
+	}
+
+	/**
+	 * Method for publishing with Google My Business service.
 	 *
 	 * @since  8.5.9
 	 * @access public
@@ -218,7 +293,10 @@ class Rop_Gmb_Service extends Rop_Services_Abstract{
 	 * @return mixed
 	 */
 	public function share( $post_details, $args = array() ) {
+	$this->gmb_article_post($post_details, $args);
 		return;
 	}
+
+
 
 }
