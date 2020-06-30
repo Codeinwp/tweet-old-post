@@ -183,6 +183,8 @@ class Rop_I18n {
 				'instant_share_future_scheduled_desc'   => __( 'Allows for the sharing of posts scheduled to publish at a future date by WordPress to your active social media accounts as soon as they change from "Scheduled" to "Published". <a href="https://docs.revive.social/article/1194-share-scheduled-posts-to-social-media-on-publish-with-revive-old-posts" target="_blank">Learn more</a>.', 'tweet-old-post' ),
 				'instant_share_future_scheduled_yes'    => __( 'Yes', 'tweet-old-post' ),
 				'instant_share_future_scheduled_upsell' => __( ' This feature is only available in the pro version.', 'tweet-old-post' ),
+				'cron_type_label'                => __( 'Cron Job Type', 'tweet-old-post' ),
+				'cron_type_label_desc'           => __( 'Temp desc: select remote or local CronJob System', 'tweet-old-post' ),
 				'housekeeping'                => __( 'Housekeeping', 'tweet-old-post' ),
 				'housekeeping_desc'           => __( 'Should we delete all saved settings on deletion of the Revive Old Posts plugin?', 'tweet-old-post' ),
 				'housekeeping_yes'            => __( 'Yes', 'tweet-old-post' ),

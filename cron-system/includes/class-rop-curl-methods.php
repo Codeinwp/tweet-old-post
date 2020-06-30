@@ -27,7 +27,7 @@ class Rop_Curl_Methods {
 	 *
 	 * @since 8.5.5
 	 */
-	const SERVER_URL = 'https://direct-dingo.jurassic.ninja/wp-json/';
+	const SERVER_URL = 'https://ropserver.wpr/wp-json/';
 
 	/**
 	 * @var resource cURL connection object.
@@ -84,6 +84,7 @@ class Rop_Curl_Methods {
 	 * @since 8.5.5
 	 */
 	public function create_call_process( $args = array() ) {
+
 		$default = array(
 			'type'          => 'POST',
 			'request_path'  => '',

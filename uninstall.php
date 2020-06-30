@@ -76,6 +76,16 @@ if ( isset( $housekeeping ) && $housekeeping ) {
 		 * @see Rop_Cron_Helper::cron_status_global_change()
 		 */
 		'rop_is_sharing_cron_active',
+		/**
+		 * Use remote or local Cron Job.
+		 *
+		 * @since 8.5.5
+		 * @category New Cron System
+		 *
+		 * @see Rop_Cron_Helper::update_cron_type()
+		 * @see Rop_Rest_Api::update_cron_type()
+		 */
+		'rop_use_remote_cron',
 	);
 
 	foreach ( $option_keys as $key ) {

@@ -82,12 +82,13 @@ class Rop_Ping_System extends Rop_System_Base {
 	 * @access public
 	 */
 	public function catch_authorization_data( WP_REST_Request $request ) {
-		error_log('### ' . __FUNCTION__);
+		error_log( '### ' . __FUNCTION__ );
 		// Get the headers the client is sending.
 		$headers = Rop_Helpers::apache_request_headers();
 
 		if ( empty( $headers ) || ! isset( $headers['Rop-Authorization'] ) ) {
-			error_log('### ' . __FUNCTION__ . ' header issue');
+			error_log( '### ' . __FUNCTION__ . ' header issue' );
+
 			return false;
 		}
 
@@ -95,7 +96,8 @@ class Rop_Ping_System extends Rop_System_Base {
 		$fetch_token = $this->fetch_token_from_headers( $headers['Rop-Authorization'] );
 
 		if ( false === $fetch_token ) {
-			error_log('### ' . __FUNCTION__ . ' token issue');
+			error_log( '### ' . __FUNCTION__ . ' token issue' );
+
 			return false;
 		}
 
@@ -106,19 +108,20 @@ class Rop_Ping_System extends Rop_System_Base {
 			$return_data = array(
 				'success'            => true,
 				'next-time-to-share' => $fetch_related_data, // test line
+				'timezone'           => Rop_Helpers::local_timezone(),
 			);
-			error_log('### ' . __FUNCTION__ . ' next time to share : ' . $fetch_related_data);
+			error_log( '### ' . __FUNCTION__ . ' next time to share : ' . $fetch_related_data );
 			$admin = new Rop_Admin();
 			$admin->rop_cron_job();
 		} else {
-			error_log('### ' . __FUNCTION__ . ' next time to share ISSUE : ' . $fetch_related_data);
+			error_log( '### ' . __FUNCTION__ . ' next time to share ISSUE : ' . $fetch_related_data );
 			// Could not fetch the next time to share.
 			$return_data = array(
 				'success'            => false,
 				'next-time-to-share' => false, // test line
 			);
 		}
-		error_log('### ' . __FUNCTION__ . ' reached end of function : ' . $fetch_related_data);
+		error_log( '### ' . __FUNCTION__ . ' reached end of function : ' . $fetch_related_data );
 
 
 		wp_send_json( $return_data );
@@ -168,6 +171,7 @@ class Rop_Ping_System extends Rop_System_Base {
 
 		if ( empty( $time_to_share ) ) {
 			$this->logger->alert_error( 'Could not fetch future share timer.' );
+
 			return false;
 		}
 

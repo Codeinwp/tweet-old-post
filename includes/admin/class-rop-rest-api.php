@@ -107,6 +107,25 @@ class Rop_Rest_Api {
 	}
 
 	/**
+	 * Rest Api called, will update the variable which informs the system
+	 * to use local or remote Cron Job System.
+	 *
+	 * @param array $data Data passed from the AJAX call.
+	 *
+	 * @return array
+	 * @since   8.0.0rc
+	 * @access  private
+	 * @category New Cron System
+	 */
+	private function update_cron_type( $data ) {
+		$cron_helper = new Rop_Cron_Helper();
+		$this->response->set_code( '200' )
+					->set_data( $cron_helper->update_cron_type( $data ) );
+
+		return $this->response->to_array();
+	}
+
+	/**
 	 * API method called to skip a queue event and return active queue.
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.

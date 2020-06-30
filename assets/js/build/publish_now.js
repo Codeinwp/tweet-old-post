@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 323);
+/******/ 	return __webpack_require__(__webpack_require__.s = 330);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -636,7 +636,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(3)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(4)))
 
 /***/ }),
 
@@ -650,7 +650,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _vue = __webpack_require__(7);
+var _vue = __webpack_require__(3);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -751,7 +751,14 @@ exports.default = new _vuex2.default.Store({
         queue: {},
         publish_now: ropApiSettings.publish_now,
         hide_preloading: 0,
-        fb_exception_toast: ropApiSettings.fb_domain_toast_display
+        fb_exception_toast: ropApiSettings.fb_domain_toast_display,
+        /**
+         * Local or Remote Cron Job System.
+         * true for remote.
+         *
+         * @category New Cron System
+         */
+        rop_cron_remote: ropApiSettings.rop_cron_remote
     },
     mutations: {
         setTabView: function setTabView(state, view) {
@@ -780,6 +787,12 @@ exports.default = new _vuex2.default.Store({
 
             _vue2.default.$log.debug('State change for ', requestName, ' With value: ', stateData);
             switch (requestName) {
+                /**
+                 * @category New Cron System
+                 */
+                case 'update_cron_type':
+                    state.rop_cron_remote = stateData;
+                    break;
                 case 'manage_cron':
                     state.cron_status = stateData;
                     break;
@@ -1922,7 +1935,7 @@ var index_esm = {
 
 /* harmony default export */ __webpack_exports__["default"] = (index_esm);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(3)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(4)))
 
 /***/ }),
 
@@ -3532,390 +3545,6 @@ function _toConsumableArray(o){if(Array.isArray(o)){for(var e=0,r=Array(o.length
 /***/ }),
 
 /***/ 3:
-/***/ (function(module, exports) {
-
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-
-/***/ }),
-
-/***/ 323:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _vue = __webpack_require__(7);
-
-var _vue2 = _interopRequireDefault(_vue);
-
-var _rop_store = __webpack_require__(24);
-
-var _rop_store2 = _interopRequireDefault(_rop_store);
-
-var _publishNow = __webpack_require__(324);
-
-var _publishNow2 = _interopRequireDefault(_publishNow);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-window.addEventListener('load', function () {
-	var RopPublishNow = new _vue2.default({
-		el: '#rop_publish_now',
-		store: _rop_store2.default,
-		components: {
-			PublishNow: _publishNow2.default
-		},
-		created: function created() {}
-	});
-}); // jshint ignore: start
-/* eslint no-unused-vars: 0 */
-
-/***/ }),
-
-/***/ 324:
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(325)
-__vue_script__ = __webpack_require__(327)
-__vue_template__ = __webpack_require__(328)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/pro/publish-now.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-
-/***/ 325:
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(326);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-f4350914&file=publish-now.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./publish-now.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-f4350914&file=publish-now.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./publish-now.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-
-/***/ 326:
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(1)();
-// imports
-
-
-// module
-exports.push([module.i, "\n\t.rop-publish-now-branding{\n\t\ttext-align: right;\n\t\twidth:100%;\n\t\tfloat:right;\n\t}\n\t.rop-publish-now-account{\n\t\tmargin-left: 17px;\n\t}\n\t.rop-publish-now-accounts-wrapper{\n\t\tmargin-top:5px;\n\t}\n", ""]);
-
-// exports
-
-
-/***/ }),
-
-/***/ 327:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _buttonCheckbox = __webpack_require__(72);
-
-var _buttonCheckbox2 = _interopRequireDefault(_buttonCheckbox);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-module.exports = {
-	name: 'publish-now',
-	created: function created() {},
-
-	computed: {},
-	data: function data() {
-
-		return {
-			labels: this.$store.state.labels.publish_now,
-			accounts: this.$store.state.publish_now.accounts,
-			active: this.$store.state.publish_now.active,
-			share_on_update_enabled: this.$store.state.publish_now.action
-		};
-	},
-	components: {
-		ButtonCheckbox: _buttonCheckbox2.default
-	},
-	methods: {
-		getServiceClass: function getServiceClass(service) {
-
-			var serviceIcon = 'fa-';
-			if (service === 'facebook') serviceIcon = serviceIcon.concat('facebook');
-			if (service === 'twitter') serviceIcon = serviceIcon.concat('twitter');
-			if (service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin');
-			if (service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr');
-			if (service === 'pinterest') serviceIcon = serviceIcon.concat('pinterest');
-
-			return serviceIcon;
-		}
-	}
-	// </script>
-	// <style>
-	// 	.rop-publish-now-branding{
-	// 		text-align: right;
-	// 		width:100%;
-	// 		float:right;
-	// 	}
-	// 	.rop-publish-now-account{
-	// 		margin-left: 17px;
-	// 	}
-	// 	.rop-publish-now-accounts-wrapper{
-	// 		margin-top:5px;
-	// 	}
-	// </style>
-	//
-
-}; // <template>
-// 	<div class="rop-control-container" v-if="Object.keys(accounts).length > 0" >
-//
-// 		<!-- Share on update -->
-// 		<fieldset>
-// 			<input type="checkbox" :checked="share_on_update_enabled"
-// 			       v-on:click="share_on_update_enabled = !share_on_update_enabled" name="publish_now" value="1"/>
-// 			<label class="form-checkbox">
-//
-// 				  <span v-html=" labels.share_on_update"></span>
-// 			</label>
-//
-// 			<div class="form-group rop-publish-now-accounts-wrapper" v-if="share_on_update_enabled" v-for="(account, key) in accounts">
-// 				<label class="form-checkbox rop-publish-now-account">
-// 					<input type="checkbox" :checked="(active != null && active.indexOf(key) >= 0) || (share_on_update_enabled)" :value="key"
-// 					       name="publish_now_accounts[]"/>
-// 					<i class=" fa " :class="getServiceClass(account.service)"></i> {{account.user}}
-// 				</label>
-// 			</div>
-// 		</fieldset>
-//
-// 	</div>
-// </template>
-//
-// <script>
-
-/***/ }),
-
-/***/ 328:
-/***/ (function(module, exports) {
-
-module.exports = "\n\t<div class=\"rop-control-container\" v-if=\"Object.keys(accounts).length > 0\" >\n\n\t\t<!-- Share on update -->\n\t\t<fieldset>\n\t\t\t<input type=\"checkbox\" :checked=\"share_on_update_enabled\"\n\t\t\t       v-on:click=\"share_on_update_enabled = !share_on_update_enabled\" name=\"publish_now\" value=\"1\"/>\n\t\t\t<label class=\"form-checkbox\">\n\n\t\t\t\t  <span v-html=\" labels.share_on_update\"></span>\n\t\t\t</label>\n\n\t\t\t<div class=\"form-group rop-publish-now-accounts-wrapper\" v-if=\"share_on_update_enabled\" v-for=\"(account, key) in accounts\">\n\t\t\t\t<label class=\"form-checkbox rop-publish-now-account\">\n\t\t\t\t\t<input type=\"checkbox\" :checked=\"(active != null && active.indexOf(key) >= 0) || (share_on_update_enabled)\" :value=\"key\"\n\t\t\t\t\t       name=\"publish_now_accounts[]\"/>\n\t\t\t\t\t<i class=\" fa \" :class=\"getServiceClass(account.service)\"></i> {{account.user}}\n\t\t\t\t</label>\n\t\t\t</div>\n\t\t</fieldset>\n\n\t</div>\n";
-
-/***/ }),
-
-/***/ 7:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15914,7 +15543,391 @@ Vue.compile = compileToFunctions;
 
 /* harmony default export */ __webpack_exports__["default"] = (Vue);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(3), __webpack_require__(8), __webpack_require__(22).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(4), __webpack_require__(8), __webpack_require__(22).setImmediate))
+
+/***/ }),
+
+/***/ 330:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _vue = __webpack_require__(3);
+
+var _vue2 = _interopRequireDefault(_vue);
+
+var _rop_store = __webpack_require__(24);
+
+var _rop_store2 = _interopRequireDefault(_rop_store);
+
+var _publishNow = __webpack_require__(331);
+
+var _publishNow2 = _interopRequireDefault(_publishNow);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+window.addEventListener('load', function () {
+	var RopPublishNow = new _vue2.default({
+		el: '#rop_publish_now',
+		store: _rop_store2.default,
+		components: {
+			PublishNow: _publishNow2.default
+		},
+		created: function created() {}
+	});
+}); // jshint ignore: start
+/* eslint no-unused-vars: 0 */
+
+/***/ }),
+
+/***/ 331:
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(332)
+__vue_script__ = __webpack_require__(334)
+__vue_template__ = __webpack_require__(335)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/irodiumihai/Local Sites/ropserver/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/pro/publish-now.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+
+/***/ 332:
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(333);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(2)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0d051532&file=publish-now.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./publish-now.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0d051532&file=publish-now.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./publish-now.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+
+/***/ 333:
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(1)();
+// imports
+
+
+// module
+exports.push([module.i, "\n\t.rop-publish-now-branding{\n\t\ttext-align: right;\n\t\twidth:100%;\n\t\tfloat:right;\n\t}\n\t.rop-publish-now-account{\n\t\tmargin-left: 17px;\n\t}\n\t.rop-publish-now-accounts-wrapper{\n\t\tmargin-top:5px;\n\t}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ 334:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _buttonCheckbox = __webpack_require__(72);
+
+var _buttonCheckbox2 = _interopRequireDefault(_buttonCheckbox);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+module.exports = {
+	name: 'publish-now',
+	created: function created() {},
+
+	computed: {},
+	data: function data() {
+
+		return {
+			labels: this.$store.state.labels.publish_now,
+			accounts: this.$store.state.publish_now.accounts,
+			active: this.$store.state.publish_now.active,
+			share_on_update_enabled: this.$store.state.publish_now.action
+		};
+	},
+	components: {
+		ButtonCheckbox: _buttonCheckbox2.default
+	},
+	methods: {
+		getServiceClass: function getServiceClass(service) {
+
+			var serviceIcon = 'fa-';
+			if (service === 'facebook') serviceIcon = serviceIcon.concat('facebook');
+			if (service === 'twitter') serviceIcon = serviceIcon.concat('twitter');
+			if (service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin');
+			if (service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr');
+			if (service === 'pinterest') serviceIcon = serviceIcon.concat('pinterest');
+
+			return serviceIcon;
+		}
+	}
+	// </script>
+	// <style>
+	// 	.rop-publish-now-branding{
+	// 		text-align: right;
+	// 		width:100%;
+	// 		float:right;
+	// 	}
+	// 	.rop-publish-now-account{
+	// 		margin-left: 17px;
+	// 	}
+	// 	.rop-publish-now-accounts-wrapper{
+	// 		margin-top:5px;
+	// 	}
+	// </style>
+	//
+
+}; // <template>
+// 	<div class="rop-control-container" v-if="Object.keys(accounts).length > 0" >
+//
+// 		<!-- Share on update -->
+// 		<fieldset>
+// 			<input type="checkbox" :checked="share_on_update_enabled"
+// 			       v-on:click="share_on_update_enabled = !share_on_update_enabled" name="publish_now" value="1"/>
+// 			<label class="form-checkbox">
+//
+// 				  <span v-html=" labels.share_on_update"></span>
+// 			</label>
+//
+// 			<div class="form-group rop-publish-now-accounts-wrapper" v-if="share_on_update_enabled" v-for="(account, key) in accounts">
+// 				<label class="form-checkbox rop-publish-now-account">
+// 					<input type="checkbox" :checked="(active != null && active.indexOf(key) >= 0) || (share_on_update_enabled)" :value="key"
+// 					       name="publish_now_accounts[]"/>
+// 					<i class=" fa " :class="getServiceClass(account.service)"></i> {{account.user}}
+// 				</label>
+// 			</div>
+// 		</fieldset>
+//
+// 	</div>
+// </template>
+//
+// <script>
+
+/***/ }),
+
+/***/ 335:
+/***/ (function(module, exports) {
+
+module.exports = "\n\t<div class=\"rop-control-container\" v-if=\"Object.keys(accounts).length > 0\" >\n\n\t\t<!-- Share on update -->\n\t\t<fieldset>\n\t\t\t<input type=\"checkbox\" :checked=\"share_on_update_enabled\"\n\t\t\t       v-on:click=\"share_on_update_enabled = !share_on_update_enabled\" name=\"publish_now\" value=\"1\"/>\n\t\t\t<label class=\"form-checkbox\">\n\n\t\t\t\t  <span v-html=\" labels.share_on_update\"></span>\n\t\t\t</label>\n\n\t\t\t<div class=\"form-group rop-publish-now-accounts-wrapper\" v-if=\"share_on_update_enabled\" v-for=\"(account, key) in accounts\">\n\t\t\t\t<label class=\"form-checkbox rop-publish-now-account\">\n\t\t\t\t\t<input type=\"checkbox\" :checked=\"(active != null && active.indexOf(key) >= 0) || (share_on_update_enabled)\" :value=\"key\"\n\t\t\t\t\t       name=\"publish_now_accounts[]\"/>\n\t\t\t\t\t<i class=\" fa \" :class=\"getServiceClass(account.service)\"></i> {{account.user}}\n\t\t\t\t</label>\n\t\t\t</div>\n\t\t</fieldset>\n\n\t</div>\n";
+
+/***/ }),
+
+/***/ 4:
+/***/ (function(module, exports) {
+
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
 
 /***/ }),
 
@@ -15932,7 +15945,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/reusables/button-checkbox.vue"
+  var id = "/Users/irodiumihai/Local Sites/ropserver/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/button-checkbox.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -15957,8 +15970,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1bfc9917&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1bfc9917&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4804cc70&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4804cc70&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -15977,7 +15990,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .input-group .input-group-addon.btn.active[_v-1bfc9917] {\n\t\tbackground-color: #8bc34a;\n\t\tborder-color: #33691e;\n\t\tcolor: #FFF;\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop_core .input-group .input-group-addon.btn.active[_v-4804cc70] {\n\t\tbackground-color: #8bc34a;\n\t\tborder-color: #33691e;\n\t\tcolor: #FFF;\n\t}\n", ""]);
 
 // exports
 
@@ -16064,7 +16077,7 @@ module.exports = {
 /***/ 76:
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<button class=\"btn input-group-addon column\" :class=\"is_active\" @click=\"toggleThis()\" _v-1bfc9917=\"\">{{label}}</button>\n";
+module.exports = "\n\t<button class=\"btn input-group-addon column\" :class=\"is_active\" @click=\"toggleThis()\" _v-4804cc70=\"\">{{label}}</button>\n";
 
 /***/ }),
 

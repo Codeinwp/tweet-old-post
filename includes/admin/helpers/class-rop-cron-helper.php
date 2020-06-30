@@ -80,6 +80,51 @@ class Rop_Cron_Helper {
 		);
 	}
 
+	/**
+	 * Update database to which Cron System to use.
+	 *
+	 * @param array $request Cron type
+	 *
+	 * @return bool
+	 * @since 8.5.5
+	 * @access public
+	 * @category New Cron System
+	 */
+	public function update_cron_type( $request ) {
+		if ( ! empty( $request ) && isset( $request['action'] ) ) {
+			$is_remote_cron = $request['action'];
+			update_option( 'rop_use_remote_cron', $is_remote_cron );
+			$this->cron_status_global_change( false );
+
+			$is_registered = get_option( 'rop_access_token', false );
+			/**
+			 * We need to make sure we stop the remote CronJob when cron-type is changed.
+			 * if the user is registered to the remote Cron System.
+			 */
+			if ( false === $is_remote_cron && ! empty( $is_registered ) ) {
+
+				$cron_system_file = ROP_PATH . 'cron-system/vendor/autoload.php';
+				// load the library
+				if ( file_exists( $cron_system_file ) ) {
+					/**
+					 * $cron_system_file Cron System autoload.
+					 */
+					require_once $cron_system_file;
+
+					new RopCronSystem\Rop_Cron_Core();
+
+					// Request cron stop
+					$stop_cron = new RopCronSystem\Rop_Cron_Core();
+					$stop_cron->server_stop_share();
+				}
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
 
 	/**
 	 * Utility method to create a single event for publishing specific post(s).
@@ -108,7 +153,6 @@ class Rop_Cron_Helper {
 	 */
 	public function create_cron( $first = true ) {
 		if ( defined( 'ROP_CRON_ALTERNATIVE' ) && false === ROP_CRON_ALTERNATIVE && ! wp_next_scheduled( self::CRON_NAMESPACE ) ) {
-
 			if ( $first ) {
 				$this->fresh_start();
 				$settings = new Rop_Global_Settings();
@@ -119,6 +163,7 @@ class Rop_Cron_Helper {
 			$this->cron_status_global_change( true );
 
 		} elseif ( defined( 'ROP_CRON_ALTERNATIVE' ) && true === ROP_CRON_ALTERNATIVE ) {
+
 			if ( $first ) {
 				$this->fresh_start();
 				$settings = new Rop_Global_Settings();
@@ -143,6 +188,7 @@ class Rop_Cron_Helper {
 	public function remove_cron( $request = array() ) {
 		global $wpdb;
 		// Mark sharing system as stopped
+
 		$this->cron_status_global_change( false );
 
 		$current_cron_list = _get_cron_array();

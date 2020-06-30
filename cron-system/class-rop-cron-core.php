@@ -90,6 +90,7 @@ class Rop_Cron_Core {
 	 * @since 8.5.5
 	 */
 	public function server_stop_share() {
+		error_log('Stop was sent');
 		$request_call = new Rop_Curl_Methods();
 
 		$arguments = array(

@@ -310,6 +310,7 @@ class Rop_Admin {
 			'accounts' => $active_accounts,
 		);
 		$array_nonce['added_networks']          = $added_networks;
+		$array_nonce['rop_cron_remote']         = filter_var( get_option( 'rop_use_remote_cron', false ), FILTER_VALIDATE_BOOLEAN );
 
 		$admin_url = get_admin_url( get_current_blog_id(), 'admin.php?page=TweetOldPost' );
 		$token     = get_option( ROP_APP_TOKEN_OPTION );

@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 312);
+/******/ 	return __webpack_require__(__webpack_require__.s = 319);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -374,233 +374,6 @@ function updateLink(linkElement, obj) {
 
 /***/ }),
 /* 3 */
-/***/ (function(module, exports) {
-
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-var core = module.exports = { version: '2.6.11' };
-if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports) {
-
-// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
-var global = module.exports = typeof window != 'undefined' && window.Math == Math
-  ? window : typeof self != 'undefined' && self.Math == Math ? self
-  // eslint-disable-next-line no-new-func
-  : Function('return this')();
-if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var store = __webpack_require__(31)('wks');
-var uid = __webpack_require__(33);
-var Symbol = __webpack_require__(5).Symbol;
-var USE_SYMBOL = typeof Symbol == 'function';
-
-var $exports = module.exports = function (name) {
-  return store[name] || (store[name] =
-    USE_SYMBOL && Symbol[name] || (USE_SYMBOL ? Symbol : uid)('Symbol.' + name));
-};
-
-$exports.store = store;
-
-
-/***/ }),
-/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -12599,7 +12372,234 @@ Vue.compile = compileToFunctions;
 
 /* harmony default export */ __webpack_exports__["default"] = (Vue);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(3), __webpack_require__(8), __webpack_require__(22).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(4), __webpack_require__(8), __webpack_require__(22).setImmediate))
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+var core = module.exports = { version: '2.6.11' };
+if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
+var global = module.exports = typeof window != 'undefined' && window.Math == Math
+  ? window : typeof self != 'undefined' && self.Math == Math ? self
+  // eslint-disable-next-line no-new-func
+  : Function('return this')();
+if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var store = __webpack_require__(31)('wks');
+var uid = __webpack_require__(33);
+var Symbol = __webpack_require__(6).Symbol;
+var USE_SYMBOL = typeof Symbol == 'function';
+
+var $exports = module.exports = function (name) {
+  return store[name] || (store[name] =
+    USE_SYMBOL && Symbol[name] || (USE_SYMBOL ? Symbol : uid)('Symbol.' + name));
+};
+
+$exports.store = store;
+
 
 /***/ }),
 /* 8 */
@@ -13032,7 +13032,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(3)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(4)))
 
 /***/ }),
 /* 24 */
@@ -13045,7 +13045,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _vue = __webpack_require__(7);
+var _vue = __webpack_require__(3);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -13146,7 +13146,14 @@ exports.default = new _vuex2.default.Store({
         queue: {},
         publish_now: ropApiSettings.publish_now,
         hide_preloading: 0,
-        fb_exception_toast: ropApiSettings.fb_domain_toast_display
+        fb_exception_toast: ropApiSettings.fb_domain_toast_display,
+        /**
+         * Local or Remote Cron Job System.
+         * true for remote.
+         *
+         * @category New Cron System
+         */
+        rop_cron_remote: ropApiSettings.rop_cron_remote
     },
     mutations: {
         setTabView: function setTabView(state, view) {
@@ -13175,6 +13182,12 @@ exports.default = new _vuex2.default.Store({
 
             _vue2.default.$log.debug('State change for ', requestName, ' With value: ', stateData);
             switch (requestName) {
+                /**
+                 * @category New Cron System
+                 */
+                case 'update_cron_type':
+                    state.rop_cron_remote = stateData;
+                    break;
                 case 'manage_cron':
                     state.cron_status = stateData;
                     break;
@@ -14316,7 +14329,7 @@ var index_esm = {
 
 /* harmony default export */ __webpack_exports__["default"] = (index_esm);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(3)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(4)))
 
 /***/ }),
 /* 26 */
@@ -15934,8 +15947,8 @@ module.exports = function (it) {
 /* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var core = __webpack_require__(4);
-var global = __webpack_require__(5);
+var core = __webpack_require__(5);
+var global = __webpack_require__(6);
 var SHARED = '__core-js_shared__';
 var store = global[SHARED] || (global[SHARED] = {});
 
@@ -15980,8 +15993,8 @@ module.exports = (
 /* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var global = __webpack_require__(5);
-var core = __webpack_require__(4);
+var global = __webpack_require__(6);
+var core = __webpack_require__(5);
 var ctx = __webpack_require__(49);
 var hide = __webpack_require__(9);
 var has = __webpack_require__(10);
@@ -16049,7 +16062,7 @@ module.exports = $export;
 /***/ (function(module, exports, __webpack_require__) {
 
 var isObject = __webpack_require__(20);
-var document = __webpack_require__(5).document;
+var document = __webpack_require__(6).document;
 // typeof document.createElement is 'object' in old IE
 var is = isObject(document) && isObject(document.createElement);
 module.exports = function (it) {
@@ -16091,7 +16104,7 @@ var Iterators = __webpack_require__(13);
 var $iterCreate = __webpack_require__(59);
 var setToStringTag = __webpack_require__(40);
 var getPrototypeOf = __webpack_require__(63);
-var ITERATOR = __webpack_require__(6)('iterator');
+var ITERATOR = __webpack_require__(7)('iterator');
 var BUGGY = !([].keys && 'next' in [].keys()); // Safari has buggy iterators w/o `next`
 var FF_ITERATOR = '@@iterator';
 var KEYS = 'keys';
@@ -16159,7 +16172,7 @@ module.exports = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
 
 var def = __webpack_require__(19).f;
 var has = __webpack_require__(10);
-var TAG = __webpack_require__(6)('toStringTag');
+var TAG = __webpack_require__(7)('toStringTag');
 
 module.exports = function (it, tag, stat) {
   if (it && !has(it = stat ? it : it.prototype, TAG)) def(it, TAG, { configurable: true, value: tag });
@@ -16180,7 +16193,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/reusables/multiple-select.vue"
+  var id = "/Users/irodiumihai/Local Sites/ropserver/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/multiple-select.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -16378,10 +16391,10 @@ module.exports = __webpack_require__(66);
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(55);
-var global = __webpack_require__(5);
+var global = __webpack_require__(6);
 var hide = __webpack_require__(9);
 var Iterators = __webpack_require__(13);
-var TO_STRING_TAG = __webpack_require__(6)('toStringTag');
+var TO_STRING_TAG = __webpack_require__(7)('toStringTag');
 
 var DOMIterables = ('CSSRuleList,CSSStyleDeclaration,CSSValueList,ClientRectList,DOMRectList,DOMStringList,' +
   'DOMTokenList,DataTransferItemList,FileList,HTMLAllCollection,HTMLCollection,HTMLFormElement,HTMLSelectElement,' +
@@ -16474,7 +16487,7 @@ var setToStringTag = __webpack_require__(40);
 var IteratorPrototype = {};
 
 // 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-__webpack_require__(9)(IteratorPrototype, __webpack_require__(6)('iterator'), function () { return this; });
+__webpack_require__(9)(IteratorPrototype, __webpack_require__(7)('iterator'), function () { return this; });
 
 module.exports = function (Constructor, NAME, next) {
   Constructor.prototype = create(IteratorPrototype, { next: descriptor(1, next) });
@@ -16552,7 +16565,7 @@ module.exports = __webpack_require__(12) ? Object.defineProperties : function de
 /* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var document = __webpack_require__(5).document;
+var document = __webpack_require__(6).document;
 module.exports = document && document.documentElement;
 
 
@@ -16628,7 +16641,7 @@ module.exports = function (TO_STRING) {
 
 var anObject = __webpack_require__(11);
 var get = __webpack_require__(67);
-module.exports = __webpack_require__(4).getIterator = function (it) {
+module.exports = __webpack_require__(5).getIterator = function (it) {
   var iterFn = get(it);
   if (typeof iterFn != 'function') throw TypeError(it + ' is not iterable!');
   return anObject(iterFn.call(it));
@@ -16640,9 +16653,9 @@ module.exports = __webpack_require__(4).getIterator = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var classof = __webpack_require__(68);
-var ITERATOR = __webpack_require__(6)('iterator');
+var ITERATOR = __webpack_require__(7)('iterator');
 var Iterators = __webpack_require__(13);
-module.exports = __webpack_require__(4).getIteratorMethod = function (it) {
+module.exports = __webpack_require__(5).getIteratorMethod = function (it) {
   if (it != undefined) return it[ITERATOR]
     || it['@@iterator']
     || Iterators[classof(it)];
@@ -16655,7 +16668,7 @@ module.exports = __webpack_require__(4).getIteratorMethod = function (it) {
 
 // getting tag from 19.1.3.6 Object.prototype.toString()
 var cof = __webpack_require__(30);
-var TAG = __webpack_require__(6)('toStringTag');
+var TAG = __webpack_require__(7)('toStringTag');
 // ES3 wrong here
 var ARG = cof(function () { return arguments; }()) == 'Arguments';
 
@@ -17169,7 +17182,7 @@ module.exports = {
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
-var Vue = __webpack_require__(7);
+var Vue = __webpack_require__(3);
 Vue = 'default' in Vue ? Vue['default'] : Vue;
 
 var version = '2.2.2';
@@ -17250,7 +17263,7 @@ var mixin = {
 exports.version = version;
 exports.directive = directive;
 exports.mixin = mixin;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
 /* 71 */
@@ -17278,7 +17291,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/upsell-sidebar.vue"
+  var id = "/Users/irodiumihai/Local Sites/ropserver/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/upsell-sidebar.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -17302,8 +17315,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-e57ad328&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-e57ad328&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-ee89cb4a&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-ee89cb4a&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -17321,7 +17334,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop-upsell-box[_v-e57ad328]{\n\t\tmargin-top:20px;\n\t}\n\t#rop_core .rop-upsell-business-card[_v-e57ad328],\n\t#rop_core .rop-upsell-pro-card[_v-e57ad328] {\n\t\tpadding: 0;\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop-upsell-box[_v-ee89cb4a]{\n\t\tmargin-top:20px;\n\t}\n\t#rop_core .rop-upsell-business-card[_v-ee89cb4a],\n\t#rop_core .rop-upsell-pro-card[_v-ee89cb4a] {\n\t\tpadding: 0;\n\t}\n", ""]);
 
 // exports
 
@@ -17378,7 +17391,7 @@ module.exports = {
 /* 81 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div id=\"rop-upsell-box\" _v-e57ad328=\"\">\n\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \" _v-e57ad328=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-e57ad328=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_pro_upsell\" :alt=\"labels.upgrade_pro_cta\" _v-e57ad328=\"\">\n\t\t\t</a>\n\t\t</div>\n\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1\" _v-e57ad328=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-e57ad328=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_business_upsell\" :alt=\"labels.upgrade_biz_cta\" _v-e57ad328=\"\">\n\t\t\t</a>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div id=\"rop-upsell-box\" _v-ee89cb4a=\"\">\n\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \" _v-ee89cb4a=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-ee89cb4a=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_pro_upsell\" :alt=\"labels.upgrade_pro_cta\" _v-ee89cb4a=\"\">\n\t\t\t</a>\n\t\t</div>\n\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1\" _v-ee89cb4a=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-ee89cb4a=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_business_upsell\" :alt=\"labels.upgrade_biz_cta\" _v-ee89cb4a=\"\">\n\t\t\t</a>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 82 */,
@@ -17611,13 +17624,20 @@ module.exports = "\n\t<div id=\"rop-upsell-box\" _v-e57ad328=\"\">\n\t\t<div cla
 /* 309 */,
 /* 310 */,
 /* 311 */,
-/* 312 */
+/* 312 */,
+/* 313 */,
+/* 314 */,
+/* 315 */,
+/* 316 */,
+/* 317 */,
+/* 318 */,
+/* 319 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _vue = __webpack_require__(7);
+var _vue = __webpack_require__(3);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -17625,7 +17645,7 @@ var _rop_store = __webpack_require__(24);
 
 var _rop_store2 = _interopRequireDefault(_rop_store);
 
-var _excludePostsPage = __webpack_require__(313);
+var _excludePostsPage = __webpack_require__(320);
 
 var _excludePostsPage2 = _interopRequireDefault(_excludePostsPage);
 
@@ -17645,13 +17665,13 @@ window.addEventListener('load', function () {
 /* exported RopExcludePosts */
 
 /***/ }),
-/* 313 */
+/* 320 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(314)
-__vue_script__ = __webpack_require__(316)
-__vue_template__ = __webpack_require__(322)
+__webpack_require__(321)
+__vue_script__ = __webpack_require__(323)
+__vue_template__ = __webpack_require__(329)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -17659,7 +17679,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/exclude-posts-page.vue"
+  var id = "/Users/irodiumihai/Local Sites/ropserver/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/exclude-posts-page.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -17668,13 +17688,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 314 */
+/* 321 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(315);
+var content = __webpack_require__(322);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -17683,8 +17703,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-df8172e8&file=exclude-posts-page.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./exclude-posts-page.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-df8172e8&file=exclude-posts-page.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./exclude-posts-page.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-52e63afb&file=exclude-posts-page.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./exclude-posts-page.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-52e63afb&file=exclude-posts-page.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./exclude-posts-page.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -17694,7 +17714,7 @@ if(false) {
 }
 
 /***/ }),
-/* 315 */
+/* 322 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -17702,13 +17722,13 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n    #rop-sidebar-selector[_v-df8172e8] {\n        border: 1px solid #e5e5e5;\n        background: #fff;\n    }\n\n    #rop-posts-listing .rop-post-item td[_v-df8172e8] {\n        position: relative;\n    }\n\n    #rop-posts-table[_v-df8172e8] {\n        margin-top: 20px;\n    }\n\n    #rop-posts-listing .rop-post-item:hover button.rop-exclude-post[_v-df8172e8] {\n        display: block;\n    }\n\n    #rop-posts-listing .rop-post-item td button.rop-exclude-post[_v-df8172e8] {\n        position: absolute;\n        top: 5px;\n        right: 10px;\n        display: none;\n        padding: 0px 20px;\n    }\n\n    .rop-post-true[_v-df8172e8] {\n        opacity: 0.8;\n        background-color: #F6DBDA;\n\n    }\n\n    .rop-load-more-posts[_v-df8172e8] {\n        text-align: center;\n    }\n", ""]);
+exports.push([module.i, "\n    #rop-sidebar-selector[_v-52e63afb] {\n        border: 1px solid #e5e5e5;\n        background: #fff;\n    }\n\n    #rop-posts-listing .rop-post-item td[_v-52e63afb] {\n        position: relative;\n    }\n\n    #rop-posts-table[_v-52e63afb] {\n        margin-top: 20px;\n    }\n\n    #rop-posts-listing .rop-post-item:hover button.rop-exclude-post[_v-52e63afb] {\n        display: block;\n    }\n\n    #rop-posts-listing .rop-post-item td button.rop-exclude-post[_v-52e63afb] {\n        position: absolute;\n        top: 5px;\n        right: 10px;\n        display: none;\n        padding: 0px 20px;\n    }\n\n    .rop-post-true[_v-52e63afb] {\n        opacity: 0.8;\n        background-color: #F6DBDA;\n\n    }\n\n    .rop-load-more-posts[_v-52e63afb] {\n        text-align: center;\n    }\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 316 */
+/* 323 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17722,11 +17742,11 @@ var _upsellSidebar = __webpack_require__(77);
 
 var _upsellSidebar2 = _interopRequireDefault(_upsellSidebar);
 
-var _popover = __webpack_require__(317);
+var _popover = __webpack_require__(324);
 
 var _popover2 = _interopRequireDefault(_popover);
 
-var _vue = __webpack_require__(7);
+var _vue = __webpack_require__(3);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -18161,13 +18181,13 @@ module.exports = {
 };
 
 /***/ }),
-/* 317 */
+/* 324 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(318)
-__vue_script__ = __webpack_require__(320)
-__vue_template__ = __webpack_require__(321)
+__webpack_require__(325)
+__vue_script__ = __webpack_require__(327)
+__vue_template__ = __webpack_require__(328)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -18175,7 +18195,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/home/uriahsvictor/atom/git_repos/tweet-old-post/vue/src/vue-elements/reusables/popover.vue"
+  var id = "/Users/irodiumihai/Local Sites/ropserver/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/popover.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -18184,13 +18204,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 318 */
+/* 325 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(319);
+var content = __webpack_require__(326);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -18199,8 +18219,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-180eed3e&file=popover.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./popover.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-180eed3e&file=popover.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./popover.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-05902eef&file=popover.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./popover.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-05902eef&file=popover.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./popover.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -18210,7 +18230,7 @@ if(false) {
 }
 
 /***/ }),
-/* 319 */
+/* 326 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -18224,7 +18244,7 @@ exports.push([module.i, "\n    .wpr-tooltip {\n        font: 10px \"Helvetica Ne
 
 
 /***/ }),
-/* 320 */
+/* 327 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18581,16 +18601,16 @@ exports.default = {
 // </style>
 
 /***/ }),
-/* 321 */
+/* 328 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div class=\"wpr-tooltip\">\n        <div class=\"outlet\" @mouseover=\"autoShowWithMode\" @mouseleave=\"autoHideWithMode\" @click=\"autoShowWithMode\">\n            <slot name=\"outlet\"></slot>\n        </div>\n        <div class=\"wpr-tooltip\" :style=\"tooltipStyle\">\n            <div class=\"inner\">\n                <slot name=\"tooltip\"></slot>\n            </div>\n            <div class=\"wpr-arrow\" :style=\"arrowStyle\"></div>\n        </div>\n    </div>\n";
 
 /***/ }),
-/* 322 */
+/* 329 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div id=\"rop_core\" class=\"columns \" _v-df8172e8=\"\">\n        <div id=\"rop-sidebar-selector\" class=\"column col-3   col-xl-5 col-lg-5 col-md-6 col-sm-6 col-xs-12  pull-right\" _v-df8172e8=\"\">\n            <div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-df8172e8=\"\">\n                <div class=\"column col-12 col-sm-12 vertical-align rop-control\" _v-df8172e8=\"\">\n                    <b _v-df8172e8=\"\">{{labels.post_types_title}}</b>\n                    <p class=\"text-gray\" _v-df8172e8=\"\"> {{labels.filter_by_post_types_desc}}</p>\n                </div>\n                <div class=\"column col-12 col-sm-12 vertical-align text-left rop-control\" _v-df8172e8=\"\">\n                    <multiple-select :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-df8172e8=\"\"></multiple-select>\n                </div>\n            </div>\n\n            <span class=\"divider\" _v-df8172e8=\"\"></span>\n            <div class=\"columns py-2\" v-if=\"!isPro\" _v-df8172e8=\"\">\n                <div class=\"column text-center\" _v-df8172e8=\"\">\n                    <p class=\"upsell\" _v-df8172e8=\"\"><i class=\"fa fa-lock\" _v-df8172e8=\"\"></i> {{labels.post_types_upsell}}</p>\n                </div>\n            </div>\n            <div class=\"columns py-2\" _v-df8172e8=\"\">\n                <div class=\"column col-12 col-sm-12 vertical-align\" _v-df8172e8=\"\">\n                    <b _v-df8172e8=\"\">{{labels.taxonomies_title}}</b>\n                    <p class=\"text-gray\" _v-df8172e8=\"\"> {{labels.filter_by_taxonomies_desc}}</p>\n                </div>\n                <div class=\"column col-12 col-sm-12 vertical-align text-left\" _v-df8172e8=\"\">\n                    <div class=\"input-group\" _v-df8172e8=\"\">\n                        <multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" _v-df8172e8=\"\"></multiple-select>\n\n                    </div>\n                </div>\n\n            </div>\n            <upsell-sidebar _v-df8172e8=\"\"></upsell-sidebar>\n        </div>\n        <div id=\"rop-posts-listing\" class=\"column col-9  col-xl-7 col-lg-7 col-md-6 col-sm-6 col-xs-12 col- pull-left\" _v-df8172e8=\"\">\n            <div class=\"columns py-2\" _v-df8172e8=\"\">\n                <div class=\"column col-12 col-sm-12 vertical-align\" _v-df8172e8=\"\">\n                    <div class=\"input-group has-icon-right\" _v-df8172e8=\"\">\n                        <input class=\"form-input\" type=\"text\" v-model=\"searchQuery\" :placeholder=\"labels.search_posts_to_exclude\" _v-df8172e8=\"\">\n                        <i class=\"form-icon loading\" v-if=\"is_loading\" _v-df8172e8=\"\"></i>\n                    </div>\n                </div>\n                <div class=\"column col-12 col-sm-12 mt-2\" _v-df8172e8=\"\">\n                    <div class=\"form-group pull-right\" v-if=\"searchQuery != '' &amp;&amp; ! show_excluded\" _v-df8172e8=\"\">\n                        <button class=\"btn btn-primary\" @click=\"excludePostsBatch\" _v-df8172e8=\"\">\n                            <i class=\"fa fa-save \" v-if=\"!this.is_loading\" _v-df8172e8=\"\"></i>\n                            <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-df8172e8=\"\"></i>\n                            {{labels.exclude_matching}} \"{{searchQuery}}\"\n                        </button>\n                    </div>\n                    <div class=\"form-group pull-right \" _v-df8172e8=\"\">\n                        <label class=\"form-switch\" _v-df8172e8=\"\">\n                            <input type=\"checkbox\" v-model=\"show_excluded\" @change=\"excludePostsChange\" _v-df8172e8=\"\">\n                            <i class=\"form-icon\" _v-df8172e8=\"\"></i>{{labels.search_posts_show_excluded}}\n                        </label>\n                    </div>\n\n                    <p class=\"text-primary rop-post-type-badge\" v-if=\"apply_limit_exclude\" v-html=\"labels.post_types_exclude_limit\" _v-df8172e8=\"\"></p>\n                </div>\n                <div class=\"column col-12  px-2\" v-if=\"postsAvailable\" _v-df8172e8=\"\">\n                    <div v-if=\"postsAvailable.length === 0 &amp;&amp; !is_loading\" _v-df8172e8=\"\">\n                        {{labels.no_posts_found}}\n                    </div>\n                    <div v-else=\"\" _v-df8172e8=\"\">\n                        <table id=\"rop-posts-table\" class=\"table table-striped table-hover\" v-if=\" ! is_loading\" _v-df8172e8=\"\">\n                            <tbody _v-df8172e8=\"\"><tr v-for=\"(post,index ) in postsAvailable\" class=\"rop-post-item\" _v-df8172e8=\"\">\n                                <td :class=\"'rop-post-' + post.selected\" _v-df8172e8=\"\">{{post.name}}\n                                    <template _v-df8172e8=\"\">\n                                        <tooltip placement=\"top-right\" mode=\"hover\" :is_show=\"apply_limit_exclude\" _v-df8172e8=\"\">\n                                            <div slot=\"outlet\" _v-df8172e8=\"\">\n                                                <button class=\"btn btn-error rop-exclude-post\" @click=\"excludeSinglePost(post.value,post.selected)\" _v-df8172e8=\"\">\n                                                    <i class=\"fa\" :class=\"'fa-' + (post.selected ? 'plus' : 'remove') \" v-if=\"!is_loading_single\" _v-df8172e8=\"\"></i>\n                                                    <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-df8172e8=\"\"></i>\n                                                    <span v-html=\" ( post.selected ? labels.include_single_post  : labels.exclude_single_post) \" _v-df8172e8=\"\"> </span>\n                                                </button>\n                                            </div>\n                                            <div slot=\"tooltip\" v-html=\"labels.post_types_exclude_limit_tooltip\" _v-df8172e8=\"\"></div>\n                                        </tooltip>\n                                    </template>\n                                </td>\n                            </tr>\n                            <tr v-if=\"has_pages\" _v-df8172e8=\"\">\n                                <td class=\"rop-load-more-posts\" _v-df8172e8=\"\">\n                                    <button class=\"btn btn-error\" @click=\"loadMorePosts()\" _v-df8172e8=\"\">\n                                        <i class=\"fa fa-newspaper-o \" v-if=\"!is_loading_single\" _v-df8172e8=\"\"></i>\n                                        <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-df8172e8=\"\"></i>\n                                        {{labels.load_more_posts}}\n                                    </button>\n                                </td>\n                            </tr>\n                        </tbody></table>\n                        <div class=\"loading loading-lg\" v-else=\"\" _v-df8172e8=\"\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n\n    </div>\n";
+module.exports = "\n    <div id=\"rop_core\" class=\"columns \" _v-52e63afb=\"\">\n        <div id=\"rop-sidebar-selector\" class=\"column col-3   col-xl-5 col-lg-5 col-md-6 col-sm-6 col-xs-12  pull-right\" _v-52e63afb=\"\">\n            <div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-52e63afb=\"\">\n                <div class=\"column col-12 col-sm-12 vertical-align rop-control\" _v-52e63afb=\"\">\n                    <b _v-52e63afb=\"\">{{labels.post_types_title}}</b>\n                    <p class=\"text-gray\" _v-52e63afb=\"\"> {{labels.filter_by_post_types_desc}}</p>\n                </div>\n                <div class=\"column col-12 col-sm-12 vertical-align text-left rop-control\" _v-52e63afb=\"\">\n                    <multiple-select :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-52e63afb=\"\"></multiple-select>\n                </div>\n            </div>\n\n            <span class=\"divider\" _v-52e63afb=\"\"></span>\n            <div class=\"columns py-2\" v-if=\"!isPro\" _v-52e63afb=\"\">\n                <div class=\"column text-center\" _v-52e63afb=\"\">\n                    <p class=\"upsell\" _v-52e63afb=\"\"><i class=\"fa fa-lock\" _v-52e63afb=\"\"></i> {{labels.post_types_upsell}}</p>\n                </div>\n            </div>\n            <div class=\"columns py-2\" _v-52e63afb=\"\">\n                <div class=\"column col-12 col-sm-12 vertical-align\" _v-52e63afb=\"\">\n                    <b _v-52e63afb=\"\">{{labels.taxonomies_title}}</b>\n                    <p class=\"text-gray\" _v-52e63afb=\"\"> {{labels.filter_by_taxonomies_desc}}</p>\n                </div>\n                <div class=\"column col-12 col-sm-12 vertical-align text-left\" _v-52e63afb=\"\">\n                    <div class=\"input-group\" _v-52e63afb=\"\">\n                        <multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" _v-52e63afb=\"\"></multiple-select>\n\n                    </div>\n                </div>\n\n            </div>\n            <upsell-sidebar _v-52e63afb=\"\"></upsell-sidebar>\n        </div>\n        <div id=\"rop-posts-listing\" class=\"column col-9  col-xl-7 col-lg-7 col-md-6 col-sm-6 col-xs-12 col- pull-left\" _v-52e63afb=\"\">\n            <div class=\"columns py-2\" _v-52e63afb=\"\">\n                <div class=\"column col-12 col-sm-12 vertical-align\" _v-52e63afb=\"\">\n                    <div class=\"input-group has-icon-right\" _v-52e63afb=\"\">\n                        <input class=\"form-input\" type=\"text\" v-model=\"searchQuery\" :placeholder=\"labels.search_posts_to_exclude\" _v-52e63afb=\"\">\n                        <i class=\"form-icon loading\" v-if=\"is_loading\" _v-52e63afb=\"\"></i>\n                    </div>\n                </div>\n                <div class=\"column col-12 col-sm-12 mt-2\" _v-52e63afb=\"\">\n                    <div class=\"form-group pull-right\" v-if=\"searchQuery != '' &amp;&amp; ! show_excluded\" _v-52e63afb=\"\">\n                        <button class=\"btn btn-primary\" @click=\"excludePostsBatch\" _v-52e63afb=\"\">\n                            <i class=\"fa fa-save \" v-if=\"!this.is_loading\" _v-52e63afb=\"\"></i>\n                            <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-52e63afb=\"\"></i>\n                            {{labels.exclude_matching}} \"{{searchQuery}}\"\n                        </button>\n                    </div>\n                    <div class=\"form-group pull-right \" _v-52e63afb=\"\">\n                        <label class=\"form-switch\" _v-52e63afb=\"\">\n                            <input type=\"checkbox\" v-model=\"show_excluded\" @change=\"excludePostsChange\" _v-52e63afb=\"\">\n                            <i class=\"form-icon\" _v-52e63afb=\"\"></i>{{labels.search_posts_show_excluded}}\n                        </label>\n                    </div>\n\n                    <p class=\"text-primary rop-post-type-badge\" v-if=\"apply_limit_exclude\" v-html=\"labels.post_types_exclude_limit\" _v-52e63afb=\"\"></p>\n                </div>\n                <div class=\"column col-12  px-2\" v-if=\"postsAvailable\" _v-52e63afb=\"\">\n                    <div v-if=\"postsAvailable.length === 0 &amp;&amp; !is_loading\" _v-52e63afb=\"\">\n                        {{labels.no_posts_found}}\n                    </div>\n                    <div v-else=\"\" _v-52e63afb=\"\">\n                        <table id=\"rop-posts-table\" class=\"table table-striped table-hover\" v-if=\" ! is_loading\" _v-52e63afb=\"\">\n                            <tbody _v-52e63afb=\"\"><tr v-for=\"(post,index ) in postsAvailable\" class=\"rop-post-item\" _v-52e63afb=\"\">\n                                <td :class=\"'rop-post-' + post.selected\" _v-52e63afb=\"\">{{post.name}}\n                                    <template _v-52e63afb=\"\">\n                                        <tooltip placement=\"top-right\" mode=\"hover\" :is_show=\"apply_limit_exclude\" _v-52e63afb=\"\">\n                                            <div slot=\"outlet\" _v-52e63afb=\"\">\n                                                <button class=\"btn btn-error rop-exclude-post\" @click=\"excludeSinglePost(post.value,post.selected)\" _v-52e63afb=\"\">\n                                                    <i class=\"fa\" :class=\"'fa-' + (post.selected ? 'plus' : 'remove') \" v-if=\"!is_loading_single\" _v-52e63afb=\"\"></i>\n                                                    <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-52e63afb=\"\"></i>\n                                                    <span v-html=\" ( post.selected ? labels.include_single_post  : labels.exclude_single_post) \" _v-52e63afb=\"\"> </span>\n                                                </button>\n                                            </div>\n                                            <div slot=\"tooltip\" v-html=\"labels.post_types_exclude_limit_tooltip\" _v-52e63afb=\"\"></div>\n                                        </tooltip>\n                                    </template>\n                                </td>\n                            </tr>\n                            <tr v-if=\"has_pages\" _v-52e63afb=\"\">\n                                <td class=\"rop-load-more-posts\" _v-52e63afb=\"\">\n                                    <button class=\"btn btn-error\" @click=\"loadMorePosts()\" _v-52e63afb=\"\">\n                                        <i class=\"fa fa-newspaper-o \" v-if=\"!is_loading_single\" _v-52e63afb=\"\"></i>\n                                        <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-52e63afb=\"\"></i>\n                                        {{labels.load_more_posts}}\n                                    </button>\n                                </td>\n                            </tr>\n                        </tbody></table>\n                        <div class=\"loading loading-lg\" v-else=\"\" _v-52e63afb=\"\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n\n    </div>\n";
 
 /***/ })
 /******/ ]);

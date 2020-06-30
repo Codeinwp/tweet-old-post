@@ -97,13 +97,16 @@ function run_rop() {
 		add_action( 'admin_notices', 'rop_php_notice' );
 		add_action( 'admin_init', 'deactivate_rop', 1 );
 	}
-	define( 'ROP_CRON_ALTERNATIVE', true );
+
+	$use_remote_cron = get_option( 'rop_use_remote_cron', false );
+	$use_remote_cron = filter_var( $use_remote_cron, FILTER_VALIDATE_BOOLEAN );
+	define( 'ROP_CRON_ALTERNATIVE', $use_remote_cron );
 	define( 'ROP_CRON_ALTERNATIVE_DEMO_EMAIL', 'mihai@wpriders.com' );
 
 	define( 'ROP_PRO_URL', 'http://revive.social/plugins/revive-old-post/' );
 	define( 'ROP_LITE_VERSION', '8.5.4' );
 	define( 'ROP_LITE_BASE_FILE', __FILE__ );
-	define( 'ROP_DEBUG', false );
+	define( 'ROP_DEBUG', true );
 	define( 'ROP_LITE_PATH', plugin_dir_path( __FILE__ ) );
 	define( 'ROP_PATH', plugin_dir_path( __FILE__ ) );
 	define( 'ROP_LITE_URL', plugin_dir_url( __FILE__ ) );
