@@ -1178,7 +1178,7 @@ class Rop_Rest_Api {
 	private function add_account_gmb( $data ) {
 		$services        = array();
 		$active_accounts = array();
-		$gmb_service  	 = new Rop_Gmb_Service();
+		$gmb_service     = new Rop_Gmb_Service();
 		$model           = new Rop_Services_Model();
 		$db              = new Rop_Db_Upgrade();
 

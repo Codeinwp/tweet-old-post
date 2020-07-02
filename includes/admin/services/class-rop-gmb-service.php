@@ -3,7 +3,7 @@
  * The file that defines the Google My Business Service specifics.
  *
  * NOTE: Extending abstract class but not making use of some of the methods with new authentication workflow.
- * 			 Abstract class will be cleaned up once we move all services to one click sign on and drop users connecting own apps.
+ *           Abstract class will be cleaned up once we move all services to one click sign on and drop users connecting own apps.
  *
  * A class that is used to interact with Google My Business.
  * It extends the Rop_Services_Abstract class.
@@ -21,9 +21,9 @@
  * @since   8.5.9
  * @link    https://themeisle.com/
  */
-class Rop_Gmb_Service extends Rop_Services_Abstract{
+class Rop_Gmb_Service extends Rop_Services_Abstract {
 
-  /**
+	/**
 	 * Defines the service name in slug format.
 	 *
 	 * @since  8.5.9
@@ -50,21 +50,21 @@ class Rop_Gmb_Service extends Rop_Services_Abstract{
 		 * @access public
 		 * @return mixed
 		 */
-		public function get_service() {
-			return $this->service;
-		}
+	public function get_service() {
+		return $this->service;
+	}
 
-  /**
-   * Abstract function, not in Use. Method to expose desired endpoints.
-   * This should be invoked by the Factory class
-   * to register all endpoints at once.
-   *
-   * @since  8.5.9
-   * @access public
-   */
-  public function expose_endpoints() {
-    return;
-  }
+	/**
+	 * Abstract function, not in Use. Method to expose desired endpoints.
+	 * This should be invoked by the Factory class
+	 * to register all endpoints at once.
+	 *
+	 * @since  8.5.9
+	 * @access public
+	 */
+	public function expose_endpoints() {
+		return;
+	}
 
 	/**
 	 * Abstract function, not in Use. Method to register credentials for the service.
@@ -169,7 +169,6 @@ class Rop_Gmb_Service extends Rop_Services_Abstract{
 
 		$accounts = array();
 
-
 		for ( $i = 0; $i < sizeof( $accounts_array ); $i++ ) {
 
 			$account = $this->user_default;
@@ -180,8 +179,6 @@ class Rop_Gmb_Service extends Rop_Services_Abstract{
 			$account['img'] = $account_data['img'];
 			$account['account'] = $account_data['account'];
 			$account['user'] = $account_data['user'];
-			$account['access_token'] = $account_data['access_token'];
-			$account['refresh_token'] = $account_data['refresh_token'];
 
 			if ( $i === 0 ) {
 				$account['active'] = true;
@@ -197,11 +194,11 @@ class Rop_Gmb_Service extends Rop_Services_Abstract{
 			'id'                 => $the_id,
 			'service'            => $this->service_name,
 			'credentials'        => array(
-					'created'				 => $account['created'],
-					'expires_in'		 => $account['expires_in'],
-					'access_token' 	 => $account['access_token'],
-					'refresh_token'  => $account['refresh_token'],
-				),
+				'created'                => $account_data['created'],
+				'expires_in'         => $account_data['expires_in'],
+				'access_token'   => $account_data['access_token'],
+				'refresh_token'  => $account_data['refresh_token'],
+			),
 			'available_accounts' => $accounts,
 		);
 
@@ -209,78 +206,166 @@ class Rop_Gmb_Service extends Rop_Services_Abstract{
 	}
 
 	/**
-	* Method to refresh access token.
-	*
-	* @since  8.5.9
-	* @access private
-	*
-	*
-	* @return array
-	*/
-	private function gmb_refresh_access_token(){
+	 * Method to refresh access token.
+	 *
+	 * @since  8.5.9
+	 * @access private
+	 *
+	 * @return array
+	 */
+	private function gmb_refresh_access_token() {
 
-	$rop_services_data	= get_option('rop_data')['services'];
+		$rop_data = get_option( 'rop_data' );
+		$rop_services_data  = $rop_data['services'];
 
-		foreach( $rop_services_data as $service => $service_data){
+		foreach ( $rop_services_data as $service => $service_data ) {
 
-			if($service_data['service'] === 'gmb'){
+			if ( $service_data['service'] === 'gmb' ) {
 				$created = $service_data['credentials']['created'];
 				$expires_in = $service_data['credentials']['expires_in'];
 				$access_token = $service_data['credentials']['access_token'];
 				$refresh_token = $service_data['credentials']['refresh_token'];
-				$service_id = $service;
+				$id = $service_data['id'];
+				$gmb_service_id = $service;
 				break;
 			}
-
 		}
 
 		// $created = '1593273390';
 		// check if access token will expire in next 30 seconds.
-		$expired = ($created + ($expires_in - 30)) < time();
+		$expired = ( $created + ( $expires_in - 30 ) ) < time();
 
 		// if it's not expired then return current access token in DB
-		if( ! $expired ){
+		if ( ! $expired ) {
+			$this->logger->alert_error( 'Access token not expired' );
+			// add an expires_in value to prevent Google Client PHP notice for undefined expires_in index
+			$access_token = array('access_token' => $access_token, 'expires_in' => $expires_in);
 			return $access_token;
 		}
 
-		$this->logger->info('Access token has expired, fetching new...');
+		$this->logger->info( 'Google My Business access token has expired, fetching new...' );
 
 		$url = ROP_AUTH_APP_URL . '/wp-json/gmb/v1/access_token?refresh_token=' . $refresh_token;
 
 		$response = wp_remote_get( $url );
 		$response = json_decode( wp_remote_retrieve_body( $response ), true );
-		$this->logger->alert_error(print_r($response, true));
 
-		// Update token code in db
+		if ( $response['code'] !== 200 ) {
+			$this->logger->alert_error( 'Failed to retrieve Google My Business access token' );
+			return;
+		}
+
+		$update_token = array(
+			'services' => array(
+				$gmb_service_id => array(
+					'id' => $id,
+					'service' => 'gmb',
+					'credentials' => array(
+						'created' => $response['token_data']['created'],
+						'expires_in' => $response['token_data']['expires_in'],
+						'access_token' => $response['token_data']['access_token'],
+					),
+				),
+			),
+
+		);
+
+		$rop_updated_data = array_replace_recursive( $rop_data, $update_token );
+
+		update_option( 'rop_data', $rop_updated_data );
 
 		return $response['token_data'];
 
 	}
 
 	/**
-	* Method for sending link(article) posts to Google My Business.
-	*
-	* @since  8.5.9
-	* @access private
-	*
-	* @param array $post_details The post details to be published by the service.
-	* @param array $args Optional arguments needed by the method.
-	*
-	* @return array
-	*/
-	private function gmb_article_post($post_details, $args){
+	 * Method for creating link(article) posts to Google My Business.
+	 *
+	 * @since  8.5.9
+	 * @access private
+	 *
+	 * @param array $post_details The post details to be published by the service.
+	 * @param array $args Optional arguments needed by the method.
+	 *
+	 * @return object
+	 */
+	private function gmb_article_post( $post_details, $args ) {
 
-	$access_token = $this->gmb_refresh_access_token();
+		$image_url = get_the_post_thumbnail_url( $post_details['post_id'], 'large' );
 
-	require_once ROP_LITE_PATH . 'includes/admin/helpers/class-gmb-service-helper.php';
-	$client = new Google_Client();
-	$client->setAccessToken($access_token);
+		// if image is empty lets create a different type of GMB post
+		if ( empty( $image_url ) ) {
+			return $this->gmb_link_with_no_image_post( $post_details, $args );
+		}
 
-	$gmb = new Google_Service_MyBusiness($client);
+		$this->logger->info( print_r( 'Thumbnail URL: ' . $image_url, true ) );
 
+		$content = $post_details['content'];
+		$locale = get_locale();
+		$action_type = apply_filters( 'rop_gmb_action_type', 'LEARN_MORE' );
+		$url = $this->get_url( $post_details );
+
+		$new_post = new Google_Service_MyBusiness_LocalPost();
+
+		 $new_post->setLanguageCode( $locale );
+
+		 $new_post->setSummary( $content );
+
+		 $call_to_action = new Google_Service_MyBusiness_CallToAction();
+
+		 $call_to_action->setActionType( $action_type );
+
+		 $call_to_action->setUrl( $url );
+
+		 $new_post->setCallToAction( $call_to_action );
+
+		$media = new Google_Service_MyBusiness_MediaItem();
+
+		$media->setMediaFormat( 'PHOTO' );
+		$media->setSourceUrl( $image_url );
+
+		$new_post->setMedia( $media );
+
+				return $new_post;
 
 	}
 
+
+	/**
+	 * Method for creating posts with no featured image on Google My Business.
+	 *
+	 * @since  8.5.9
+	 * @access private
+	 *
+	 * @param array $post_details The post details to be published by the service.
+	 * @param array $args Optional arguments needed by the method.
+	 *
+	 * @return object
+	 */
+	private function gmb_link_with_no_image_post( $post_details, $args ) {
+
+		$content = $post_details['content'];
+		$locale = get_locale();
+		$action_type = apply_filters( 'rop_gmb_action_type', 'LEARN_MORE' );
+		$url = $this->get_url( $post_details );
+
+		$new_post = new Google_Service_MyBusiness_LocalPost();
+
+		$new_post->setLanguageCode( $locale );
+
+		$new_post->setSummary( $content );
+
+		$call_to_action = new Google_Service_MyBusiness_CallToAction();
+
+		$call_to_action->setActionType( $action_type );
+
+		$call_to_action->setUrl( $url );
+
+		$new_post->setCallToAction( $call_to_action );
+
+				return $new_post;
+
+	}
 	/**
 	 * Method for publishing with Google My Business service.
 	 *
@@ -293,10 +378,38 @@ class Rop_Gmb_Service extends Rop_Services_Abstract{
 	 * @return mixed
 	 */
 	public function share( $post_details, $args = array() ) {
-	$this->gmb_article_post($post_details, $args);
-		return;
-	}
 
+		require_once ROP_LITE_PATH . 'includes/admin/helpers/class-gmb-service-helper.php';
+		$client = new Google_Client();
+		$access_token = $this->gmb_refresh_access_token();
+		$client->setAccessToken( $access_token );
+
+		$gmb = new Google_Service_MyBusiness( $client );
+		$post_creator = $gmb->accounts_locations_localPosts;
+
+		$location = $args['id'];
+		$new_post = $this->gmb_article_post( $post_details, $args );
+		$response = $post_creator->create( $location, $new_post );
+
+		if ( $response->state === 'LIVE' ) {
+
+			$this->logger->alert_success(
+				sprintf(
+					'Successfully shared %s to %s on Google My Business ',
+					html_entity_decode( get_the_title( $post_details['post_id'] ) ),
+					$args['user']
+				)
+			);
+
+		} else {
+
+			$this->logger->alert_error( 'Could not share post to Google My Business with LIVE state: ' . print_r( $response, true ) );
+				return false;
+		}
+
+		return true;
+
+	}
 
 
 }

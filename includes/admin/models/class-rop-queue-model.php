@@ -107,10 +107,11 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 *
 	 * @param   int    $timestamp The timestamp which we should clear.
 	 * @param   string $account_id The account ID.
+	 * @param   bool   $refresh Whether to refresh the rop_data property in parent abstract class with new rop_data option value.
 	 *
 	 * @return mixed
 	 */
-	public function remove_from_queue( $timestamp, $account_id ) {
+	public function remove_from_queue( $timestamp, $account_id, $refresh = false ) {
 		$index = $this->scheduler->remove_timestamp( $timestamp, $account_id );
 		$posts = $this->queue[ $account_id ][ $index ];
 
@@ -121,7 +122,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 		unset( $this->queue[ $account_id ][ $index ] );
 		$this->update_queue( $this->queue );
 		foreach ( $posts as $post ) {
-			$this->selector->update_buffer( $account_id, $post );
+			$this->selector->update_buffer( $account_id, $post, $refresh );
 		}
 
 		return true;

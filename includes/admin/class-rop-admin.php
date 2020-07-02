@@ -325,7 +325,7 @@ class Rop_Admin {
 			'authAppLinkedInPath' => ROP_APP_LINKEDIN_PATH,
 			'authAppBufferPath'   => ROP_APP_BUFFER_PATH,
 			'authAppTumblrPath'   => ROP_APP_TUMBLR_PATH,
-			'authAppGmbPath'   		=> ROP_APP_GMB_PATH,
+			'authAppGmbPath'        => ROP_APP_GMB_PATH,
 			'authToken'           => $token,
 			'adminUrl'            => urlencode( $admin_url ),
 			'authSignature'       => $signature,
@@ -944,9 +944,9 @@ class Rop_Admin {
 	 */
 	public function rop_cron_job() {
 		$queue           = new Rop_Queue_Model();
+		$queue_stack     = $queue->build_queue();
 		$services_model  = new Rop_Services_Model();
 		$logger          = new Rop_Logger();
-		$queue_stack     = $queue->build_queue();
 		$service_factory = new Rop_Services_Factory();
 
 		$cron = new Rop_Cron_Helper();
@@ -959,7 +959,20 @@ class Rop_Admin {
 				 */
 				if ( $event['time'] <= Rop_Scheduler_Model::get_current_time() ) {
 					$posts = $event['posts'];
-					$queue->remove_from_queue( $event['time'], $account );
+					$logger->info( $account );
+					// if current account is not gmb, refresh options data
+					// add check for if gmb is connected, if in_array($queue_Stack, 'gmb')
+					// try adding this remove queue option after below if statement to see result
+					if ( strpos( $account, 'gmb_' ) === false ) {
+						$queue->remove_from_queue( $event['time'], $account, true );
+
+					} else {
+						$queue->remove_from_queue( $event['time'], $account );
+						$logger->info( 'did not refresh queue' );
+					}
+
+					update_option( 'rop_queue_stack', $queue_stack );
+
 					if ( ( Rop_Scheduler_Model::get_current_time() - $event['time'] ) < ( 15 * MINUTE_IN_SECONDS ) ) {
 						$account_data = $services_model->find_account( $account );
 						try {
