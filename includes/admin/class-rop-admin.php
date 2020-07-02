@@ -948,11 +948,17 @@ class Rop_Admin {
 		$services_model  = new Rop_Services_Model();
 		$logger          = new Rop_Logger();
 		$service_factory = new Rop_Services_Factory();
+		$refresh_rop_data = false;
 
 		$cron = new Rop_Cron_Helper();
 		$cron->create_cron( false );
 
 		foreach ( $queue_stack as $account => $events ) {
+
+		    if( strpos( json_encode($queue_stack), 'gmb_' ) !== false  ){
+		      $refresh_rop_data = true;
+		      }
+
 			foreach ( $events as $index => $event ) {
 				/**
 				 * Trigger share if we have an event in the past, and the timestamp of that event is in the last 15mins.
@@ -960,18 +966,14 @@ class Rop_Admin {
 				if ( $event['time'] <= Rop_Scheduler_Model::get_current_time() ) {
 					$posts = $event['posts'];
 					$logger->info( $account );
-					// if current account is not gmb, refresh options data
-					// add check for if gmb is connected, if in_array($queue_Stack, 'gmb')
-					// try adding this remove queue option after below if statement to see result
-					if ( strpos( $account, 'gmb_' ) === false ) {
+					// if current account is not gmb, and gmb is active, refresh options data in case gmb updated it's options
+					if ( $refresh_rop_data && (strpos( $account, 'gmb_' ) === false)) {
 						$queue->remove_from_queue( $event['time'], $account, true );
-
+            $logger->info( 'refreshed rop data' );
 					} else {
 						$queue->remove_from_queue( $event['time'], $account );
-						$logger->info( 'did not refresh queue' );
+						$logger->info( 'did not refresh rop data' );
 					}
-
-					update_option( 'rop_queue_stack', $queue_stack );
 
 					if ( ( Rop_Scheduler_Model::get_current_time() - $event['time'] ) < ( 15 * MINUTE_IN_SECONDS ) ) {
 						$account_data = $services_model->find_account( $account );

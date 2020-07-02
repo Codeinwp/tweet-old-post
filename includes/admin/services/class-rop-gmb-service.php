@@ -231,7 +231,7 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 			}
 		}
 
-		// $created = '1593273390';
+		 $created = '1593273390';
 		// check if access token will expire in next 30 seconds.
 		$expired = ( $created + ( $expires_in - 30 ) ) < time();
 
@@ -251,7 +251,7 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 		$response = json_decode( wp_remote_retrieve_body( $response ), true );
 
 		if ( $response['code'] !== 200 ) {
-			$this->logger->alert_error( 'Failed to retrieve Google My Business access token' );
+			$this->logger->alert_error( 'Failed to retrieve Google My Business access token: ' . print_r($response, true) );
 			return;
 		}
 
@@ -379,7 +379,7 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 	 */
 	public function share( $post_details, $args = array() ) {
 
-		require_once ROP_LITE_PATH . 'includes/admin/helpers/class-gmb-service-helper.php';
+		require_once ROP_LITE_PATH . 'includes/lib/gmb-service-helper.php';
 		$client = new Google_Client();
 		$access_token = $this->gmb_refresh_access_token();
 		$client->setAccessToken( $access_token );
@@ -389,7 +389,7 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 
 		$location = $args['id'];
 		$new_post = $this->gmb_article_post( $post_details, $args );
-		$response = $post_creator->create( $location, $new_post );
+		//$response = $post_creator->create( $location, $new_post );
 
 		if ( $response->state === 'LIVE' ) {
 

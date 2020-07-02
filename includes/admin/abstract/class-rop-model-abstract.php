@@ -75,15 +75,21 @@ abstract class Rop_Model_Abstract {
 	 *
 	 * @param string $key The key to set inside the model data.
 	 * @param mixed  $value The value for the specified key.
+	 * @param bool   $refresh Whether to refresh the rop_data property in class with new rop_data option values.
 	 *
 	 * @return mixed
 	 * @since   8.0.0
 	 * @access  protected
 	 */
-	protected function set( $key, $value = '' ) {
+	protected function set( $key, $value = '', $refresh = false ) {
 		if ( is_array( $this->data ) && ! array_key_exists( $key, $this->data ) ) {
 			$this->data[ $key ] = '';
 		}
+
+	    if ( $refresh ) {
+				  $this->data = get_option( 'rop_data' );
+		}
+
 		$this->data[ $key ] = apply_filters( 'rop_set_key_' . $key, $value );
 
 		return update_option( $this->namespace, $this->data );
