@@ -231,7 +231,7 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 			}
 		}
 
-		 $created = '1593273390';
+		 // $created = '1593273390';
 		// check if access token will expire in next 30 seconds.
 		$expired = ( $created + ( $expires_in - 30 ) ) < time();
 
@@ -251,7 +251,7 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 		$response = json_decode( wp_remote_retrieve_body( $response ), true );
 
 		if ( $response['code'] !== 200 ) {
-			$this->logger->alert_error( 'Failed to retrieve Google My Business access token: ' . print_r($response, true) );
+			$this->logger->alert_error( 'Failed to retrieve Google My Business access token: ' . print_r( $response, true ) );
 			return;
 		}
 
@@ -279,45 +279,46 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 	}
 
 	/**
-	 * Method for creating link(article) posts to Google My Business.
+	 * Method for creating image posts on Google My Business.
 	 *
 	 * @since  8.5.9
 	 * @access private
 	 *
-	 * @param array $post_details The post details to be published by the service.
-	 * @param array $args Optional arguments needed by the method.
+	 * @param array  $post_details The post details to be published by the service.
+	 * @param array  $args Optional arguments needed by the method.
+	 * @param object $new_post Google My Business Local Posts object.
 	 *
 	 * @return object
 	 */
-	private function gmb_article_post( $post_details, $args ) {
+	private function gmb_image_post( $post_details, $args, $new_post ) {
 
-		$image_url = get_the_post_thumbnail_url( $post_details['post_id'], 'large' );
+		$image_url = $post_details['post_image'];
 
 		// if image is empty lets create a different type of GMB post
 		if ( empty( $image_url ) ) {
+			$this->logger->info( 'Could not get image. Falling back to text post with link.' );
 			return $this->gmb_link_with_no_image_post( $post_details, $args );
 		}
 
-		$this->logger->info( print_r( 'Thumbnail URL: ' . $image_url, true ) );
-
-		$content = $post_details['content'];
 		$locale = get_locale();
-		$action_type = apply_filters( 'rop_gmb_action_type', 'LEARN_MORE' );
-		$url = $this->get_url( $post_details );
 
-		$new_post = new Google_Service_MyBusiness_LocalPost();
+		$new_post->setLanguageCode( $locale );
 
-		 $new_post->setLanguageCode( $locale );
+		if ( ! empty( $post_details['post_url'] ) ) {
+            $this->logger->info( 'This is an image share but it would have CTA button' );
+			$action_type = apply_filters( 'rop_gmb_action_type', 'LEARN_MORE' );
+			$url = $this->get_url( $post_details );
 
-		 $new_post->setSummary( $content );
+			$new_post->setSummary( $post_details['content'] );
 
-		 $call_to_action = new Google_Service_MyBusiness_CallToAction();
+			$call_to_action = new Google_Service_MyBusiness_CallToAction();
 
-		 $call_to_action->setActionType( $action_type );
+			$call_to_action->setActionType( $action_type );
 
-		 $call_to_action->setUrl( $url );
+			$call_to_action->setUrl( $url );
 
-		 $new_post->setCallToAction( $call_to_action );
+			$new_post->setCallToAction( $call_to_action );
+		}
 
 		$media = new Google_Service_MyBusiness_MediaItem();
 
@@ -326,7 +327,83 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 
 		$new_post->setMedia( $media );
 
-				return $new_post;
+		return $new_post;
+
+	}
+
+
+	/**
+	 * Method for text posts to Google My Business.
+	 *
+	 * @since  8.5.9
+	 * @access private
+	 *
+	 * @param array  $post_details The post details to be published by the service.
+	 * @param array  $args Optional arguments needed by the method.
+	 * @param object $new_post Google My Business Local Posts object.
+	 *
+	 * @return object
+	 */
+	private function gmb_text_post( $post_details, $args, $new_post ) {
+
+		$locale = get_locale();
+
+		$new_post->setLanguageCode( $locale );
+
+		 $new_post->setSummary( $post_details['content'] );
+
+		return $new_post;
+
+	}
+
+	/**
+	 * Method for creating link(article) posts to Google My Business.
+	 *
+	 * @since  8.5.9
+	 * @access private
+	 *
+	 * @param array  $post_details The post details to be published by the service.
+	 * @param array  $args Optional arguments needed by the method.
+	 * @param object $new_post Google My Business Local Posts object.
+	 *
+	 * @return object
+	 */
+	private function gmb_article_post( $post_details, $args, $new_post ) {
+
+		$image_url = $post_details['post_image'];
+
+		// if image is empty lets create a different type of GMB post
+		if ( empty( $image_url ) ) {
+			$this->logger->info( 'Could not get image. Falling back to text post with link.' );
+			return $this->gmb_link_with_no_image_post( $post_details, $args, $new_post );
+		}
+
+		$this->logger->info( print_r( 'Thumbnail URL: ' . $image_url, true ) );
+
+		$locale = get_locale();
+		$action_type = apply_filters( 'rop_gmb_action_type', 'LEARN_MORE' );
+		$url = $this->get_url( $post_details );
+
+		$new_post->setLanguageCode( $locale );
+
+		$new_post->setSummary( $post_details['content'] );
+
+		$call_to_action = new Google_Service_MyBusiness_CallToAction();
+
+		$call_to_action->setActionType( $action_type );
+
+		$call_to_action->setUrl( $url );
+
+		$new_post->setCallToAction( $call_to_action );
+
+		$media = new Google_Service_MyBusiness_MediaItem();
+
+		$media->setMediaFormat( 'PHOTO' );
+		$media->setSourceUrl( $image_url );
+
+		$new_post->setMedia( $media );
+
+		return $new_post;
 
 	}
 
@@ -337,23 +414,21 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 	 * @since  8.5.9
 	 * @access private
 	 *
-	 * @param array $post_details The post details to be published by the service.
-	 * @param array $args Optional arguments needed by the method.
+	 * @param array  $post_details The post details to be published by the service.
+	 * @param array  $args Optional arguments needed by the method.
+	 * @param object $new_post Google My Business Local Posts object.
 	 *
 	 * @return object
 	 */
-	private function gmb_link_with_no_image_post( $post_details, $args ) {
+	private function gmb_link_with_no_image_post( $post_details, $args, $new_post ) {
 
-		$content = $post_details['content'];
 		$locale = get_locale();
 		$action_type = apply_filters( 'rop_gmb_action_type', 'LEARN_MORE' );
 		$url = $this->get_url( $post_details );
 
-		$new_post = new Google_Service_MyBusiness_LocalPost();
-
 		$new_post->setLanguageCode( $locale );
 
-		$new_post->setSummary( $content );
+		$new_post->setSummary( $post_details['content'] );
 
 		$call_to_action = new Google_Service_MyBusiness_CallToAction();
 
@@ -363,7 +438,7 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 
 		$new_post->setCallToAction( $call_to_action );
 
-				return $new_post;
+		return $new_post;
 
 	}
 	/**
@@ -380,16 +455,41 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 	public function share( $post_details, $args = array() ) {
 
 		require_once ROP_LITE_PATH . 'includes/lib/gmb-service-helper.php';
+
 		$client = new Google_Client();
 		$access_token = $this->gmb_refresh_access_token();
 		$client->setAccessToken( $access_token );
+
+		$post_id = $post_details['post_id'];
+		$post_url = $post_details['post_url'];
+		$share_as_image_post = $post_details['post_with_image'];
+		$new_post = new Google_Service_MyBusiness_LocalPost();
 
 		$gmb = new Google_Service_MyBusiness( $client );
 		$post_creator = $gmb->accounts_locations_localPosts;
 
 		$location = $args['id'];
-		$new_post = $this->gmb_article_post( $post_details, $args );
-		//$response = $post_creator->create( $location, $new_post );
+		update_option( 'rop_post_details', print_r( $post_details, true ) );
+
+		// GMB link post
+		if ( ! empty( $post_url ) && empty( $share_as_image_post ) && get_post_type( $post_id ) !== 'attachment' ) {
+			$this->logger->info( 'GMB Link Post' );
+			$new_post = $this->gmb_article_post( $post_details, $args, $new_post );
+		}
+
+		// GMB image post
+		if ( ! empty( $share_as_image_post ) || get_post_type( $post_id ) === 'attachment' ) {
+			$this->logger->info( 'GMB Image Post' );
+			$new_post = $this->gmb_image_post( $post_details, $args, $new_post );
+		}
+
+		// GMB plain text post
+		if ( empty( $share_as_image_post ) && empty( $post_url ) ) {
+			$this->logger->info( 'GMB Text Post' );
+			$new_post = $this->gmb_text_post( $post_details, $args, $new_post );
+		}
+
+		$response = $post_creator->create( $location, $new_post );
 
 		if ( $response->state === 'LIVE' ) {
 
@@ -410,6 +510,5 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 		return true;
 
 	}
-
 
 }

@@ -86,7 +86,7 @@ abstract class Rop_Model_Abstract {
 			$this->data[ $key ] = '';
 		}
 
-	    if ( $refresh ) {
+		if ( $refresh ) {
 				  $this->data = get_option( 'rop_data' );
 		}
 

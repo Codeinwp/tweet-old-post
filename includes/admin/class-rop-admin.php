@@ -955,9 +955,9 @@ class Rop_Admin {
 
 		foreach ( $queue_stack as $account => $events ) {
 
-		    if( strpos( json_encode($queue_stack), 'gmb_' ) !== false  ){
-		      $refresh_rop_data = true;
-		      }
+			if ( strpos( json_encode( $queue_stack ), 'gmb_' ) !== false ) {
+				$refresh_rop_data = true;
+			}
 
 			foreach ( $events as $index => $event ) {
 				/**
@@ -967,9 +967,9 @@ class Rop_Admin {
 					$posts = $event['posts'];
 					$logger->info( $account );
 					// if current account is not gmb, and gmb is active, refresh options data in case gmb updated it's options
-					if ( $refresh_rop_data && (strpos( $account, 'gmb_' ) === false)) {
+					if ( $refresh_rop_data && ( strpos( $account, 'gmb_' ) === false ) ) {
 						$queue->remove_from_queue( $event['time'], $account, true );
-            $logger->info( 'refreshed rop data' );
+						$logger->info( 'refreshed rop data' );
 					} else {
 						$queue->remove_from_queue( $event['time'], $account );
 						$logger->info( 'did not refresh rop data' );
