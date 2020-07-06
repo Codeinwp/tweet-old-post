@@ -800,6 +800,7 @@ class Rop_Admin {
 
 			$social_accounts = array();
 			$post_formats = array_key_exists( 'post_format', $options ) ? $options['post_format'] : '';
+			$account_from_formats = array_keys($post_formats);
 
 			if ( empty( $post_formats ) ) {
 				$logger->alert_error( Rop_I18n::get_labels( 'post_format.no_post_format_error' ) );
@@ -807,6 +808,15 @@ class Rop_Admin {
 			}
 
 			foreach ( $post_formats as $key => $value ) {
+
+				// check if an account is active, but has no post format saved in the DB
+				 // if it doesn't then sharing scheduled posts on publish would not work for that account
+				 foreach( $active_accounts as $account ){
+						 $active_social_network = ucfirst(explode('_', $account)[0]);
+						 if( ! in_array( $account, $account_from_formats ) ){
+				 $logger->alert_error(Rop_I18n::get_labels( 'post_format. active_account_no_post_format_error' ) . $active_social_network);        
+								 }
+						 }
 
 				if ( ! array_key_exists( 'taxonomy_filter', $value ) ) {
 					// share to accounts where no filters are selected
