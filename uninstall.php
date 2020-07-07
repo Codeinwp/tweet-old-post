@@ -15,9 +15,9 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 
 $settings     = get_option( 'rop_data' );
-$housekeeping = ! empty($settings['general_settings']['housekeeping']) ? $settings['general_settings']['housekeeping'] : '';
+$housekeeping = ! empty( $settings['general_settings']['housekeeping'] ) ? $settings['general_settings']['housekeeping'] : '';
 
-if ( !empty( $housekeeping ) ) {
+if ( ! empty( $housekeeping ) ) {
 
 	$option_keys = array(
 		// Sharing
