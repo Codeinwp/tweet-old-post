@@ -737,23 +737,21 @@ class Rop_Admin {
 		// reject the extra.
 		$enabled = array_diff( $enabled, $extra );
 
-		$instant_share_content = array();
+		$instant_share_custom_content = array();
 
 		foreach ( $enabled as $account_id ) {
 				$custom_message = ! empty( $_POST[ $account_id ] ) ? $_POST[ $account_id ] : '';
-				$instant_share_content[ $account_id ] = $custom_message;
+				$instant_share_custom_content[ $account_id ] = $custom_message;
 		}
-
-		$this->instant_share_content = $instant_share_content;
 
 		// If user wants to run this operation on page refresh instead of via Cron.
 		if ( $settings->get_true_instant_share() ) {
-			$this->rop_cron_job_publish_now( $post_id, $instant_share_content );
+			$this->rop_cron_job_publish_now( $post_id, $instant_share_custom_content );
 			return;
 		}
 
 		update_post_meta( $post_id, 'rop_publish_now', 'yes' );
-		update_post_meta( $post_id, 'rop_publish_now_accounts', $instant_share_content );
+		update_post_meta( $post_id, 'rop_publish_now_accounts', $instant_share_custom_content );
 
 		if ( ! $enabled ) {
 			return;
@@ -802,6 +800,7 @@ class Rop_Admin {
 
 			$social_accounts = array();
 			$post_formats = array_key_exists( 'post_format', $options ) ? $options['post_format'] : '';
+			$account_from_formats = array_keys( $post_formats );
 
 			if ( empty( $post_formats ) ) {
 				$logger->alert_error( Rop_I18n::get_labels( 'post_format.no_post_format_error' ) );
@@ -809,6 +808,15 @@ class Rop_Admin {
 			}
 
 			foreach ( $post_formats as $key => $value ) {
+
+				// check if an account is active, but has no post format saved in the DB
+				 // if it doesn't then sharing scheduled posts on publish would not work for that account
+				foreach ( $active_accounts as $account ) {
+						$active_social_network = ucfirst( explode( '_', $account )[0] );
+					if ( ! in_array( $account, $account_from_formats ) ) {
+						$logger->alert_error( Rop_I18n::get_labels( 'post_format.active_account_no_post_format_error' ) . $active_social_network );
+					}
+				}
 
 				if ( ! array_key_exists( 'taxonomy_filter', $value ) ) {
 					// share to accounts where no filters are selected
@@ -880,7 +888,7 @@ class Rop_Admin {
 			}
 		}
 
-		$this->rop_cron_job_publish_now( $post_id, $active_accounts );
+		$this->rop_cron_job_publish_now( $post_id, $active_accounts, true );
 	}
 
 
@@ -889,16 +897,18 @@ class Rop_Admin {
 	 *
 	 * @since   8.1.0
 	 * @access  public
-	 * @param int   $post_id the Post ID, only present when sharing truly immediately (True Instant Sharing).
-	 * @param array $instant_share_content the accounts the user has selected to share the post to (by clicking the checkbox), also contains the custom share message if any was entered.
+	 * @param int   $post_id the Post ID.
+	 * @param array $accounts_data The accounts data, may either be the accounts the user has selected to share the post to (by clicking the instant sharing checkbox on post edit screen, would also contain the custom share message if any was entered), or an array of active accounts to share to by the share_scheduled_future_post() method.
+	 * @param bool  $is_future_post Whether method was called by share_scheduled_future_post() method.
 	 */
-	public function rop_cron_job_publish_now( $post_id = '', $instant_share_content = array() ) {
+	public function rop_cron_job_publish_now( $post_id = '', $accounts_data = array(), $is_future_post = false ) {
 		$queue           = new Rop_Queue_Model();
 		$services_model  = new Rop_Services_Model();
 		$logger          = new Rop_Logger();
 		$service_factory = new Rop_Services_Factory();
+		$settings = new Rop_Settings_Model();
 
-		$queue_stack = $queue->build_queue_publish_now( $post_id, $instant_share_content );
+		$queue_stack = $queue->build_queue_publish_now( $post_id, $accounts_data, $is_future_post, $settings->get_true_instant_share() );
 		$logger->info( 'Fetching publish now queue', array( 'queue' => $queue_stack ) );
 		foreach ( $queue_stack as $account => $events ) {
 			foreach ( $events as $index => $event ) {
