@@ -315,12 +315,10 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @param array $accounts_data The accounts data, may either be the accounts the user has selected to share the post to (by clicking the instant sharing checkbox on post edit screen, would also contain the custom share message if any was entered), or an array of active accounts to share to by the share_scheduled_future_post() method.
 	 * @param bool $is_future_post Whether method was called by share_scheduled_future_post() method.
 	 * @param bool $true_instant_share Whether the share immediately option is checked.
-
 	 */
-	// public function build_queue_publish_now( $post_id = '', $instant_share_content = array() ) {
 	public function build_queue_publish_now( $post_id = '', $accounts_data = array(), $is_future_post = false, $true_instant_share = false ) {
 
-		if($is_future_post){
+		if ( $is_future_post ) {
 			$accounts   = $accounts_data;
 			$normalized_queue   = array();
 
@@ -334,7 +332,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 			}
 
 			return $normalized_queue;
-		}elseif ($true_instant_share) {
+		} elseif ( $true_instant_share ) {
 			$accounts   = $accounts_data;
 			$normalized_queue   = array();
 
@@ -350,8 +348,8 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 
 			return $normalized_queue;
 
-		}else{
-			
+		} else {
+
 			$selector           = new Rop_Posts_Selector_Model();
 			$posts              = $selector->get_publish_now_posts();
 
@@ -383,7 +381,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 
 		}
 
-/*
+		/*
 		// Below will only run when sharing truly immediately (True Instant Sharing)
 		if ( ! empty( $post_id ) && ! empty( $instant_share_content ) ) {
 

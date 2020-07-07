@@ -800,7 +800,7 @@ class Rop_Admin {
 
 			$social_accounts = array();
 			$post_formats = array_key_exists( 'post_format', $options ) ? $options['post_format'] : '';
-			$account_from_formats = array_keys($post_formats);
+			$account_from_formats = array_keys( $post_formats );
 
 			if ( empty( $post_formats ) ) {
 				$logger->alert_error( Rop_I18n::get_labels( 'post_format.no_post_format_error' ) );
@@ -811,12 +811,12 @@ class Rop_Admin {
 
 				// check if an account is active, but has no post format saved in the DB
 				 // if it doesn't then sharing scheduled posts on publish would not work for that account
-				 foreach( $active_accounts as $account ){
-						 $active_social_network = ucfirst(explode('_', $account)[0]);
-						 if( ! in_array( $account, $account_from_formats ) ){
-				 $logger->alert_error(Rop_I18n::get_labels( 'post_format. active_account_no_post_format_error' ) . $active_social_network);        
-								 }
-						 }
+				foreach ( $active_accounts as $account ) {
+						$active_social_network = ucfirst( explode( '_', $account )[0] );
+					if ( ! in_array( $account, $account_from_formats ) ) {
+						$logger->alert_error( Rop_I18n::get_labels( 'post_format. active_account_no_post_format_error' ) . $active_social_network );
+					}
+				}
 
 				if ( ! array_key_exists( 'taxonomy_filter', $value ) ) {
 					// share to accounts where no filters are selected
@@ -897,9 +897,9 @@ class Rop_Admin {
 	 *
 	 * @since   8.1.0
 	 * @access  public
-	 * @param int   $post_id the Post ID
+	 * @param int   $post_id the Post ID.
 	 * @param array $accounts_data The accounts data, may either be the accounts the user has selected to share the post to (by clicking the instant sharing checkbox on post edit screen, would also contain the custom share message if any was entered), or an array of active accounts to share to by the share_scheduled_future_post() method.
-	 * @param bool $is_future_post Whether method was called by share_scheduled_future_post() method.
+	 * @param bool  $is_future_post Whether method was called by share_scheduled_future_post() method.
 	 */
 	public function rop_cron_job_publish_now( $post_id = '', $accounts_data = array(), $is_future_post = false ) {
 		$queue           = new Rop_Queue_Model();
@@ -907,7 +907,6 @@ class Rop_Admin {
 		$logger          = new Rop_Logger();
 		$service_factory = new Rop_Services_Factory();
 		$settings = new Rop_Settings_Model();
-
 
 		$queue_stack = $queue->build_queue_publish_now( $post_id, $accounts_data, $is_future_post, $settings->get_true_instant_share() );
 		$logger->info( 'Fetching publish now queue', array( 'queue' => $queue_stack ) );
