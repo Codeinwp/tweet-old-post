@@ -351,7 +351,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 			return $normalized_queue;
 
 		}else{
-
+			
 			$selector           = new Rop_Posts_Selector_Model();
 			$posts              = $selector->get_publish_now_posts();
 
