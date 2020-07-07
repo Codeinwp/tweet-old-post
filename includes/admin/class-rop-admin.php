@@ -814,7 +814,7 @@ class Rop_Admin {
 				foreach ( $active_accounts as $account ) {
 						$active_social_network = ucfirst( explode( '_', $account )[0] );
 					if ( ! in_array( $account, $account_from_formats ) ) {
-						$logger->alert_error( Rop_I18n::get_labels( 'post_format. active_account_no_post_format_error' ) . $active_social_network );
+						$logger->alert_error( Rop_I18n::get_labels( 'post_format.active_account_no_post_format_error' ) . $active_social_network );
 					}
 				}
 
