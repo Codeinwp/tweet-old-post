@@ -460,7 +460,11 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
+		$installed_with_app = get_option( 'rop_facebook_via_rs_app' );
+
+		if ( empty( $installed_with_app ) ) {
+			$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
+		}
 
 		$post_id = $post_details['post_id'];
 
@@ -632,6 +636,9 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @return bool
 	 */
 	private function try_post( $new_post, $page_id, $token, $post_id, $posting_type ) {
+
+		$installed_with_app = get_option( 'rop_facebook_via_rs_app' );
+
 		$path = '/' . $page_id . '/feed';
 		switch ( $posting_type ) {
 			case 'photo':
@@ -644,9 +651,10 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				break;
 		}
 
-		$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
-
-		if ( $this->get_api() ) {
+		if ( empty( $installed_with_app ) ) {
+			$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
+		}
+		if ( $this->get_api() && empty( $installed_with_app ) ) {
 			// Page was added using user application (old method)
 			// Try post via Facebook Graph SDK
 			$api = $this->get_api();

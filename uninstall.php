@@ -15,9 +15,9 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 
 $settings     = get_option( 'rop_data' );
-$housekeeping = $settings['general_settings']['housekeeping'];
+$housekeeping = ! empty( $settings['general_settings']['housekeeping'] ) ? $settings['general_settings']['housekeeping'] : '';
 
-if ( isset( $housekeeping ) && $housekeeping ) {
+if ( ! empty( $housekeeping ) ) {
 
 	$option_keys = array(
 		// Sharing
@@ -27,6 +27,7 @@ if ( isset( $housekeeping ) && $housekeeping ) {
 		'rop-settings',
 		'rop_opt_cat_filter',
 		'rop_current_network_oauth',
+		'rop_last_post_shared',
 		// Shortners
 		'rop_shortners_bitly',
 		'rop_shortners_rvivly',

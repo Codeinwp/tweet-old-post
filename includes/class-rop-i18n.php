@@ -264,6 +264,7 @@ class Rop_I18n {
 				'media_post_option_description'     => __( 'Description', 'tweet-old-post' ),
 				'media_post_upsell'                 => __( 'Media posting is available in the Business version.', 'tweet-old-post' ),
 				'no_post_format_error'              => __( 'Post Format option empty, "Share scheduled posts to social media on publish" cannot work. Please go to the Post Format tab and click "Save" for this feature to work', 'tweet-old-post' ),
+				'active_account_no_post_format_error' => __( 'No post format found for the following network, please go to "Post Format" tab and save your changes for: ', 'tweet-old-post' ),
 			),
 			'schedule'    => array(
 				'menu_item'                 => __( 'Custom Schedule', 'tweet-old-post' ),
@@ -373,6 +374,9 @@ You can try to disable any of the security plugins that you use in order to see 
 				'custom_instant_share_messages_upsell'  => sprintf( __( '%1$sCustom instant share messages are available in the %2$sPro version%3$s of the plugin.%4$s', 'tweet-old-post' ), '<small>', '<a href="https://revive.social/plugins/revive-old-post/" target="_blank">', '</a>', '</small>' ),
 			),
 
+			'sharing' => array(
+				'post_already_shared' => __( 'This post went out on the last share event and might be a duplicate. Skipping...', 'tweet-old-post' ),
+			),
 		);
 		if ( empty( $key ) ) {
 			return $labels;

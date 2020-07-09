@@ -438,6 +438,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 
 			$upload_args = array(
 				'media' => $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] ),
+				'media_type' => $post_details['mimetype']['type'],
 			);
 
 			if ( $photon_bypass && class_exists( 'Jetpack_Photon' ) ) {
