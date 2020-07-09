@@ -27,6 +27,7 @@ if ( ! empty( $housekeeping ) ) {
 		'rop-settings',
 		'rop_opt_cat_filter',
 		'rop_current_network_oauth',
+		'rop_last_post_shared',
 		// Shortners
 		'rop_shortners_bitly',
 		'rop_shortners_rvivly',

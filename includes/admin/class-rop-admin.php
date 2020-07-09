@@ -953,9 +953,9 @@ class Rop_Admin {
 	 */
 	public function rop_cron_job() {
 		$queue           = new Rop_Queue_Model();
+		$queue_stack     = $queue->build_queue();
 		$services_model  = new Rop_Services_Model();
 		$logger          = new Rop_Logger();
-		$queue_stack     = $queue->build_queue();
 		$service_factory = new Rop_Services_Factory();
 
 		$cron = new Rop_Cron_Helper();
@@ -975,9 +975,15 @@ class Rop_Admin {
 							$service = $service_factory->build( $account_data['service'] );
 							$service->set_credentials( $account_data['credentials'] );
 							foreach ( $posts as $post ) {
+								$post_shared = $account . '_post_id_' . $post;
+								if ( get_option( 'rop_last_post_shared' ) === $post_shared ) {
+									$logger->info( ucfirst( $account_data['service'] ) . ': ' . Rop_I18n::get_labels( 'sharing.post_already_shared' ) );
+									continue;
+								}
 								$post_data = $queue->prepare_post_object( $post, $account );
 								$logger->info( 'Posting', array( 'extra' => $post_data ) );
 								$service->share( $post_data, $account_data );
+								update_option( 'rop_last_post_shared', $post_shared );
 							}
 						} catch ( Exception $exception ) {
 							$error_message = sprintf( Rop_I18n::get_labels( 'accounts.service_error' ), $account_data['service'] );

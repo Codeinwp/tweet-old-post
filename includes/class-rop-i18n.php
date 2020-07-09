@@ -373,6 +373,9 @@ You can try to disable any of the security plugins that you use in order to see 
 				'custom_instant_share_messages_upsell'  => sprintf( __( '%1$sCustom instant share messages are available in the %2$sPro version%3$s of the plugin.%4$s', 'tweet-old-post' ), '<small>', '<a href="https://revive.social/plugins/revive-old-post/" target="_blank">', '</a>', '</small>' ),
 			),
 
+			'sharing' => array(
+				'post_already_shared' => __( 'This post went out on the last share event and might be a duplicate. Skipping...', 'tweet-old-post' ),
+			),
 		);
 		if ( empty( $key ) ) {
 			return $labels;
