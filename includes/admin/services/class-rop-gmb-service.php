@@ -231,7 +231,7 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 			}
 		}
 
-		 //$created = '1593273390';
+		 // $created = '1593273390';
 		// check if access token will expire in next 30 seconds.
 		$expired = ( $created + ( $expires_in - 30 ) ) < time();
 
@@ -245,7 +245,7 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 
 		$this->logger->info( 'Google My Business access token has expired, fetching new...' );
 
-		$url = ROP_AUTH_APP_URL . '/wp-json/gmb/v1/access_token?refresh_token=' . $refresh_token;
+		$url = ROP_AUTH_APP_URL . '/wp-json/gmb/v1/access-token?refresh_token=' . $refresh_token;
 
 		$response = wp_remote_get( $url );
 		$response = json_decode( wp_remote_retrieve_body( $response ), true );
@@ -305,7 +305,7 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 		$new_post->setLanguageCode( $locale );
 
 		if ( ! empty( $post_details['post_url'] ) ) {
-            $this->logger->info( 'This is an image share but it would have CTA button' );
+			$this->logger->info( 'This is an image share but it would have CTA button' );
 			$action_type = apply_filters( 'rop_gmb_action_type', 'LEARN_MORE' );
 			$url = $this->get_url( $post_details );
 
@@ -469,7 +469,6 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 		$post_creator = $gmb->accounts_locations_localPosts;
 
 		$location = $args['id'];
-		update_option( 'rop_post_details', print_r( $post_details, true ) );
 
 		// GMB link post
 		if ( ! empty( $post_url ) && empty( $share_as_image_post ) && get_post_type( $post_id ) !== 'attachment' ) {
@@ -510,6 +509,53 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 		return true;
 
 	}
-
+//
+// 	/**
+// 	 * Registers the API endpoint.
+// 	 *
+// 	 * @since   8.5.9
+// 	 * @access  public
+// 	 */
+// 	public function gmb_authenticate_request_sender_endpoint() {
+// 		add_action(
+// 			'rest_api_init',
+// 			function () {
+// 				register_rest_route(
+// 					'tweet-old-post/v8',
+// 					'/api/authenticate/access-token-refresh',
+// 					array(
+// 						'methods'             => array( 'GET' ),
+// 						'callback'            => array( $this, 'gmb_authenticate_request_sender' ),
+// 					)
+// 				);
+// 			}
+// 		);
+// 	}
+//
+// 	/**
+// 	 * Registers the API endpoint.
+// 	 *
+// 	 * @since   8.5.9
+// 	 * @access  public
+// 	 */
+// 	 public function gmb_authenticate_request_sender($params) {
+// 		 $received_install_token = $params['token'];
+// 		 $received_hash = $params['hash'];
+//
+// 		 $current_install_token = get_option(ROP_INSTALL_TOKEN_OPTION);
+// 		 $current_request_hash = get_option('rop_gmb_refresh_access_token_hash');
+//
+// 		 if( ($received_install_token === $current_install_token) && ($received_hash === $current_request_hash) ){
+// 			 $response = array(
+//         'code' => 200,
+//       );
+// 		}else{
+// 			$response = array(
+//         'code' => 404,
+// 			);
+// 		}
+//
+// 		return $response;
+// }
 
 }
