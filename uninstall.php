@@ -28,6 +28,7 @@ if ( ! empty( $housekeeping ) ) {
 		'rop_opt_cat_filter',
 		'rop_current_network_oauth',
 		'rop_last_post_shared',
+		'rop_gmb_refresh_access_token_hash',
 		// Shortners
 		'rop_shortners_bitly',
 		'rop_shortners_rvivly',

@@ -245,12 +245,26 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 
 		$this->logger->info( 'Google My Business access token has expired, fetching new...' );
 
-		$url = ROP_AUTH_APP_URL . '/wp-json/gmb/v1/access-token?refresh_token=' . $refresh_token;
+		// create hash
+		if( function_exists('openssl_random_pseudo_bytes') ){
+			$hash = bin2hex(openssl_random_pseudo_bytes(20));
+		}else{
+			$hash = wp_generate_password(20, false, false);
+		}
+
+		update_option('rop_gmb_refresh_access_token_hash', $hash, false);
+
+		$install_token = get_option(ROP_INSTALL_TOKEN_OPTION);
+		$site_url = urlencode(esc_url(get_site_url()));
+		$url = ROP_AUTH_APP_URL . '/wp-json/gmb/v1/access-token?refresh-token=' . $refresh_token . '&site-url=' . $site_url . '&install-token=' . $install_token . '&hash=' . $hash;
 
 		$response = wp_remote_get( $url );
 		$response = json_decode( wp_remote_retrieve_body( $response ), true );
 
-		if ( $response['code'] !== 200 ) {
+		if ( empty($response['code']) ) {
+			$this->logger->alert_error( 'Failed to retrieve Google My Business access token. Code parameter was empty.'  );
+			return;
+		}elseif ( $response['code'] !== 200 ) {
 			$this->logger->alert_error( 'Failed to retrieve Google My Business access token: ' . print_r( $response, true ) );
 			return;
 		}
@@ -509,53 +523,5 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 		return true;
 
 	}
-//
-// 	/**
-// 	 * Registers the API endpoint.
-// 	 *
-// 	 * @since   8.5.9
-// 	 * @access  public
-// 	 */
-// 	public function gmb_authenticate_request_sender_endpoint() {
-// 		add_action(
-// 			'rest_api_init',
-// 			function () {
-// 				register_rest_route(
-// 					'tweet-old-post/v8',
-// 					'/api/authenticate/access-token-refresh',
-// 					array(
-// 						'methods'             => array( 'GET' ),
-// 						'callback'            => array( $this, 'gmb_authenticate_request_sender' ),
-// 					)
-// 				);
-// 			}
-// 		);
-// 	}
-//
-// 	/**
-// 	 * Registers the API endpoint.
-// 	 *
-// 	 * @since   8.5.9
-// 	 * @access  public
-// 	 */
-// 	 public function gmb_authenticate_request_sender($params) {
-// 		 $received_install_token = $params['token'];
-// 		 $received_hash = $params['hash'];
-//
-// 		 $current_install_token = get_option(ROP_INSTALL_TOKEN_OPTION);
-// 		 $current_request_hash = get_option('rop_gmb_refresh_access_token_hash');
-//
-// 		 if( ($received_install_token === $current_install_token) && ($received_hash === $current_request_hash) ){
-// 			 $response = array(
-//         'code' => 200,
-//       );
-// 		}else{
-// 			$response = array(
-//         'code' => 404,
-// 			);
-// 		}
-//
-// 		return $response;
-// }
 
 }
