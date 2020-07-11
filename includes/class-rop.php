@@ -260,12 +260,10 @@ class Rop {
 	 */
 	public function register_service_api_endpoints() {
 
-		/** Google My Business **/
-		// will later hold all rest related tasks for the services
+		// Google My Business.
+		// Will later hold all rest related tasks for the services
 		$service_rest_api = new Rop_Gmb_Rest_Api();
 		$service_rest_api->gmb_authenticate_request_sender_endpoint();
-
-		/*****/
 
 		$plugin_rest_api = new Rop_Rest_Api();
 		$plugin_rest_api->register();
