@@ -976,13 +976,11 @@ class Rop_Admin {
 				if ( $event['time'] <= Rop_Scheduler_Model::get_current_time() ) {
 					$posts = $event['posts'];
 					$logger->info( $account );
-					// if current account is not gmb, and gmb is active, refresh options data in case gmb updated it's options
+					// If current account is not Google My Business, but GMB is active, refresh options data in instance; in case GMB updated it's options(access token)
 					if ( $refresh_rop_data && ( strpos( $account, 'gmb_' ) === false ) ) {
 						$queue->remove_from_queue( $event['time'], $account, true );
-						$logger->info( 'refreshed rop data' );
-					} else {
+					} else { // no need to refresh options otherwise.
 						$queue->remove_from_queue( $event['time'], $account );
-						$logger->info( 'did not refresh rop data' );
 					}
 
 					if ( ( Rop_Scheduler_Model::get_current_time() - $event['time'] ) < ( 15 * MINUTE_IN_SECONDS ) ) {
@@ -994,6 +992,7 @@ class Rop_Admin {
 								$post_shared = $account . '_post_id_' . $post;
 								if ( get_option( 'rop_last_post_shared' ) === $post_shared ) {
 									$logger->info( ucfirst( $account_data['service'] ) . ': ' . Rop_I18n::get_labels( 'sharing.post_already_shared' ) );
+									// help prevent duplicate posts on some systems
 									continue;
 								}
 								$post_data = $queue->prepare_post_object( $post, $account );

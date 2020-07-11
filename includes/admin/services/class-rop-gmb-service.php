@@ -160,7 +160,7 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 	public function add_account_with_app( $accounts_data ) {
 
 		if ( ! $this->is_set_not_empty( $accounts_data, array( 'id' ) ) ) {
-			$this->logger->alert_error( 'Google My Business error: No valid accounts found. Please make sure you have access to a Google My Business account.' );
+			$this->logger->alert_error( Rop_I18n::get_labels('errors.gmb_no_valid_accounts') );
 			return false;
 		}
 
@@ -237,7 +237,6 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 
 		// if it's not expired then return current access token in DB
 		if ( ! $expired ) {
-			$this->logger->alert_error( 'Access token not expired' );
 			// add an expires_in value to prevent Google Client PHP notice for undefined expires_in index
 			$access_token = array('access_token' => $access_token, 'expires_in' => $expires_in);
 			return $access_token;
@@ -262,10 +261,10 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 		$response = json_decode( wp_remote_retrieve_body( $response ), true );
 
 		if ( empty($response['code']) ) {
-			$this->logger->alert_error( 'Failed to retrieve Google My Business access token. Code parameter was empty.'  );
+			$this->logger->alert_error( Rop_I18n::get_labels('errors.gmb_access_token_refresh_empty_code') );
 			return;
 		}elseif ( $response['code'] !== 200 ) {
-			$this->logger->alert_error( 'Failed to retrieve Google My Business access token: ' . print_r( $response, true ) );
+			$this->logger->alert_error( Rop_I18n::get_labels('errors.gmb_access_token_refresh') . print_r( $response, true ) );
 			return;
 		}
 
@@ -516,7 +515,7 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 
 		} else {
 
-			$this->logger->alert_error( 'Could not share post to Google My Business with LIVE state: ' . print_r( $response, true ) );
+			$this->logger->alert_error( Rop_I18n::get_labels('errors.gmb_failed_share') . print_r( $response, true ) );
 				return false;
 		}
 

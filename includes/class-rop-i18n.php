@@ -377,12 +377,18 @@ You can try to disable any of the security plugins that you use in order to see 
 			'sharing' => array(
 				'post_already_shared' => __( 'This post went out on the last share event and might be a duplicate. Skipping...', 'tweet-old-post' ),
 			),
+			'errors' => array(
+				'gmb_access_token_refresh' => __('Failed to retrieve Google My Business access token: ','tweet-old-post'),
+				'gmb_access_token_refresh_empty_code' => __('Failed to retrieve Google My Business access token. Code parameter was empty.','tweet-old-post'),
+				'gmb_failed_share' => __('Could not share post to Google My Business with LIVE state: ','tweet-old-post'),
+				'gmb_no_valid_accounts' => __('Google My Business error: No valid accounts found. Please make sure you have access to a Google My Business account.','tweet-old-post'),
+			)
 		);
 		if ( empty( $key ) ) {
 			return $labels;
 		}
 		/**
-		 * Allow accesing labels by key.
+		 * Allow accessing labels by key.
 		 */
 		$keys = explode( '.', $key );
 		if ( count( $keys ) === 1 ) {
