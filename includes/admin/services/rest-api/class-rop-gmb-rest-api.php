@@ -59,6 +59,7 @@ class Rop_Gmb_Rest_Api{
      if( empty($received_install_token) || empty($received_hash) ){
       return array(
         'code' => 400,
+        'message' => 'Bad Request: Could not authenticate request sender. Received install token or hash is parameter is empty.',
 			);
      }
 
@@ -72,6 +73,7 @@ class Rop_Gmb_Rest_Api{
 		}else{
 			$response = array(
         'code' => 401,
+        'message' => 'Unauthorized: Could not authenticate request sender. Received install token or hash does not match.',
 			);
 		}
 
