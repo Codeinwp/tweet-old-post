@@ -549,4 +549,7 @@
 	.big-btn#gmb-btn{
 	padding: 0 35px 0 14px;
 	}
+	.btn-gmb{
+	text-transform: uppercase;
+	}
 </style>

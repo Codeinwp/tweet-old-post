@@ -35255,7 +35255,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop-sign-in-area .btn[disabled][_v-2f84fb84]{\n\t\tcursor:not-allowed;\n\t\tpointer-events: auto;\n\t\topacity: 0.3;\n\t}\n\t.big-btn#gmb-btn[_v-2f84fb84]{\n\tpadding: 0 35px 0 14px;\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop-sign-in-area .btn[disabled][_v-2f84fb84]{\n\t\tcursor:not-allowed;\n\t\tpointer-events: auto;\n\t\topacity: 0.3;\n\t}\n\t.big-btn#gmb-btn[_v-2f84fb84]{\n\tpadding: 0 35px 0 14px;\n\t}\n\t.btn-gmb[_v-2f84fb84]{\n\ttext-transform: uppercase;\n\t}\n", ""]);
 
 // exports
 
@@ -35918,6 +35918,9 @@ module.exports = {
 	// 	}
 	// 	.big-btn#gmb-btn{
 	// 	padding: 0 35px 0 14px;
+	// 	}
+	// 	.btn-gmb{
+	// 	text-transform: uppercase;
 	// 	}
 	// </style>
 	//
