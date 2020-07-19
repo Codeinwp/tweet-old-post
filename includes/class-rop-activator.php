@@ -64,7 +64,7 @@ class Rop_Activator {
 
 		$token = hash( 'ripemd160', $url . date( 'Y-m-d H:i:s' ) );
 
-		update_option( ROP_INSTALL_TOKEN_OPTION, $token, false );
+		update_option( ROP_APP_TOKEN_OPTION, $token, false );
 
 	}
 

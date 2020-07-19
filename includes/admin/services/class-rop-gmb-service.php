@@ -237,6 +237,7 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 
 		// if it's not expired then return current access token in DB
 		if ( ! $expired ) {
+			$this->logger->alert_error( 'Access token not expired' );
 			// add an expires_in value to prevent Google Client PHP notice for undefined expires_in index
 			$access_token = array('access_token' => $access_token, 'expires_in' => $expires_in);
 			return $access_token;
@@ -244,27 +245,13 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 
 		$this->logger->info( 'Google My Business access token has expired, fetching new...' );
 
-		// create hash
-		if ( function_exists( 'openssl_random_pseudo_bytes' ) ) {
-			$hash = bin2hex( openssl_random_pseudo_bytes( 20 ) );
-		} else {
-			$hash = wp_generate_password( 20, false, false );
-		}
-
-		update_option( 'rop_gmb_refresh_access_token_hash', $hash, false );
-
-		$install_token = get_option( ROP_INSTALL_TOKEN_OPTION );
-		$site_url = urlencode( esc_url( get_site_url() ) );
-		$url = ROP_AUTH_APP_URL . '/wp-json/gmb/v1/access-token?refresh-token=' . $refresh_token . '&site-url=' . $site_url . '&install-token=' . $install_token . '&hash=' . $hash;
+		$url = ROP_AUTH_APP_URL . '/wp-json/gmb/v1/access-token?refresh-token=' . $refresh_token;
 
 		$response = wp_remote_get( $url );
 		$response = json_decode( wp_remote_retrieve_body( $response ), true );
 
-		if ( empty( $response['code'] ) ) {
-			$this->logger->alert_error( Rop_I18n::get_labels( 'errors.gmb_access_token_refresh_empty_code' ) );
-			return;
-		} elseif ( $response['code'] !== 200 ) {
-			$this->logger->alert_error( Rop_I18n::get_labels( 'errors.gmb_access_token_refresh' ) . print_r( $response, true ) );
+		if ( $response['code'] !== 200 ) {
+			$this->logger->alert_error( Rop_I18n::get_labels( 'errors.gmb_failed_access_token_refresh' ) . print_r( $response, true ) );
 			return;
 		}
 
