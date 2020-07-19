@@ -237,7 +237,6 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 
 		// if it's not expired then return current access token in DB
 		if ( ! $expired ) {
-			$this->logger->alert_error( 'Access token not expired' );
 			// add an expires_in value to prevent Google Client PHP notice for undefined expires_in index
 			$access_token = array('access_token' => $access_token, 'expires_in' => $expires_in);
 			return $access_token;
