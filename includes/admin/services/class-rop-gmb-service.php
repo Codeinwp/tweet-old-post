@@ -304,7 +304,6 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 		$new_post->setLanguageCode( $locale );
 
 		if ( ! empty( $post_details['post_url'] ) ) {
-			$this->logger->info( 'This is an image share but it would have CTA button' );
 			$action_type = apply_filters( 'rop_gmb_action_type', 'LEARN_MORE' );
 			$url = $this->get_url( $post_details );
 
@@ -376,8 +375,6 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 			$this->logger->info( 'Could not get image. Falling back to text post with link.' );
 			return $this->gmb_link_with_no_image_post( $post_details, $args, $new_post );
 		}
-
-		$this->logger->info( print_r( 'Thumbnail URL: ' . $image_url, true ) );
 
 		$locale = get_locale();
 		$action_type = apply_filters( 'rop_gmb_action_type', 'LEARN_MORE' );
@@ -471,19 +468,16 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 
 		// GMB link post
 		if ( ! empty( $post_url ) && empty( $share_as_image_post ) && get_post_type( $post_id ) !== 'attachment' ) {
-			$this->logger->info( 'GMB Link Post' );
 			$new_post = $this->gmb_article_post( $post_details, $args, $new_post );
 		}
 
 		// GMB image post
 		if ( ! empty( $share_as_image_post ) || get_post_type( $post_id ) === 'attachment' ) {
-			$this->logger->info( 'GMB Image Post' );
 			$new_post = $this->gmb_image_post( $post_details, $args, $new_post );
 		}
 
 		// GMB plain text post
 		if ( empty( $share_as_image_post ) && empty( $post_url ) ) {
-			$this->logger->info( 'GMB Text Post' );
 			$new_post = $this->gmb_text_post( $post_details, $args, $new_post );
 		}
 

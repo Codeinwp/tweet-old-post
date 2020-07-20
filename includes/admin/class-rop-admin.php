@@ -975,7 +975,6 @@ class Rop_Admin {
 				 */
 				if ( $event['time'] <= Rop_Scheduler_Model::get_current_time() ) {
 					$posts = $event['posts'];
-					$logger->info( $account );
 					// If current account is not Google My Business, but GMB is active, refresh options data in instance; in case GMB updated it's options(access token)
 					if ( $refresh_rop_data && ( strpos( $account, 'gmb_' ) === false ) ) {
 						$queue->remove_from_queue( $event['time'], $account, true );
