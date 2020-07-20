@@ -82,6 +82,7 @@ class Rop_I18n {
 				'li_app_signin_btn'          => __( 'Sign in to LinkedIn', 'tweet-old-post' ),
 				'buffer_app_signin_btn'      => __( 'Sign in to Buffer', 'tweet-old-post' ),
 				'tumblr_app_signin_btn'      => __( 'Sign in to Tumblr', 'tweet-old-post' ),
+				'gmb_app_signin_btn'         => __( 'Sign in to Google My Business', 'tweet-old-post' ),
 				'app_option_signin'          => __( 'Or', 'tweet-old-post' ),
 				'rs_app_info'                => sprintf( __( 'We collect some info, learn more %1$shere%2$s.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/1066-info-we-collect-in-seamless-social-network-connection" target="_blank">', '</a>' ),
 				'service_popup_title'        => __( 'Service Credentials', 'tweet-old-post' ),
@@ -376,12 +377,17 @@ You can try to disable any of the security plugins that you use in order to see 
 			'sharing' => array(
 				'post_already_shared' => __( 'This post went out on the last share event and might be a duplicate. Skipping...', 'tweet-old-post' ),
 			),
+			'errors' => array(
+				'gmb_failed_access_token_refresh' => __( 'Failed to retrieve Google My Business access token: ', 'tweet-old-post' ),
+				'gmb_failed_share' => __( 'Could not share post to Google My Business with LIVE state: ', 'tweet-old-post' ),
+				'gmb_no_valid_accounts' => __( 'Google My Business error: No valid accounts found. Please make sure you have access to a Google My Business location.', 'tweet-old-post' ),
+			),
 		);
 		if ( empty( $key ) ) {
 			return $labels;
 		}
 		/**
-		 * Allow accesing labels by key.
+		 * Allow accessing labels by key.
 		 */
 		$keys = explode( '.', $key );
 		if ( count( $keys ) === 1 ) {

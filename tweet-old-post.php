@@ -113,7 +113,8 @@ function run_rop() {
 	define( 'ROP_APP_LINKEDIN_PATH', '/li_auth' );
 	define( 'ROP_APP_BUFFER_PATH', '/buffer_auth' );
 	define( 'ROP_APP_TUMBLR_PATH', '/tumblr_auth' );
-	define( 'ROP_APP_TOKEN_OPTION', 'rop_install_token' );
+	define( 'ROP_APP_GMB_PATH', '/gmb_auth' );
+	define( 'ROP_INSTALL_TOKEN_OPTION', 'rop_install_token' );
 
 	$vendor_file = ROP_LITE_PATH . '/vendor/autoload.php';
 	if ( is_readable( $vendor_file ) ) {

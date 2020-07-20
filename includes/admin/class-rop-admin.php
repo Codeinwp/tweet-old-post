@@ -314,7 +314,7 @@ class Rop_Admin {
 		$array_nonce['added_networks']          = $added_networks;
 
 		$admin_url = get_admin_url( get_current_blog_id(), 'admin.php?page=TweetOldPost' );
-		$token     = get_option( ROP_APP_TOKEN_OPTION );
+		$token     = get_option( 'ROP_INSTALL_TOKEN_OPTION' );
 		$signature = md5( $admin_url . $token );
 
 		$rop_auth_app_data = array(
@@ -325,6 +325,7 @@ class Rop_Admin {
 			'authAppLinkedInPath' => ROP_APP_LINKEDIN_PATH,
 			'authAppBufferPath'   => ROP_APP_BUFFER_PATH,
 			'authAppTumblrPath'   => ROP_APP_TUMBLR_PATH,
+			'authAppGmbPath'        => ROP_APP_GMB_PATH,
 			'authToken'           => $token,
 			'adminUrl'            => urlencode( $admin_url ),
 			'authSignature'       => $signature,
@@ -957,18 +958,30 @@ class Rop_Admin {
 		$services_model  = new Rop_Services_Model();
 		$logger          = new Rop_Logger();
 		$service_factory = new Rop_Services_Factory();
+		$refresh_rop_data = false;
 
 		$cron = new Rop_Cron_Helper();
 		$cron->create_cron( false );
 
 		foreach ( $queue_stack as $account => $events ) {
+
+			if ( strpos( json_encode( $queue_stack ), 'gmb_' ) !== false ) {
+				$refresh_rop_data = true;
+			}
+
 			foreach ( $events as $index => $event ) {
 				/**
 				 * Trigger share if we have an event in the past, and the timestamp of that event is in the last 15mins.
 				 */
 				if ( $event['time'] <= Rop_Scheduler_Model::get_current_time() ) {
 					$posts = $event['posts'];
-					$queue->remove_from_queue( $event['time'], $account );
+					// If current account is not Google My Business, but GMB is active, refresh options data in instance; in case GMB updated it's options(access token)
+					if ( $refresh_rop_data && ( strpos( $account, 'gmb_' ) === false ) ) {
+						$queue->remove_from_queue( $event['time'], $account, true );
+					} else {
+						$queue->remove_from_queue( $event['time'], $account );
+					}
+
 					if ( ( Rop_Scheduler_Model::get_current_time() - $event['time'] ) < ( 15 * MINUTE_IN_SECONDS ) ) {
 						$account_data = $services_model->find_account( $account );
 						try {
@@ -978,6 +991,7 @@ class Rop_Admin {
 								$post_shared = $account . '_post_id_' . $post;
 								if ( get_option( 'rop_last_post_shared' ) === $post_shared ) {
 									$logger->info( ucfirst( $account_data['service'] ) . ': ' . Rop_I18n::get_labels( 'sharing.post_already_shared' ) );
+									// help prevent duplicate posts on some systems
 									continue;
 								}
 								$post_data = $queue->prepare_post_object( $post, $account );

@@ -2,7 +2,10 @@
 /**
  * The file that defines the Buffer Service specifics.
  *
- * A class that is used to interact with Pinterest.
+ * NOTE: Extending abstract class but not making use of some of the methods with new authentication workflow.
+ *           Abstract class will be cleaned up once we move all services to one click sign on and drop users connecting own apps.
+ *
+ * A class that is used to interact with Buffer.
  * It extends the Rop_Services_Abstract class.
  *
  * @link  https://revive.social/
@@ -13,7 +16,7 @@
  */
 
 /**
- * Class Rop_Pinterest_Service
+ * Class Rop_Buffer_Service
  *
  * @since 8.0.0
  * @link  https://revive.social/
@@ -22,7 +25,7 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 
 
 	/**
-	 * An instance of authenticated Pinterest user.
+	 * An instance of authenticated Buffer user.
 	 *
 	 * @since  8.0.0
 	 * @access private
@@ -42,7 +45,7 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 	 *
 	 * @since  8.0.0
 	 * @access private
-	 * @var    array $permissions The Pinterest required permissions.
+	 * @var    array $permissions The Buffer required permissions.
 	 */
 
 	/**
@@ -106,8 +109,8 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 	 * @since  8.0.0
 	 * @access public
 	 *
-	 * @param string $app_id The Pinterest APP ID. Default empty.
-	 * @param string $secret The Pinterest APP Secret. Default empty.
+	 * @param string $app_id The Buffer APP ID. Default empty.
+	 * @param string $secret The Buffer APP Secret. Default empty.
 	 *
 	 * @return null abstract method not used for this service specifically.
 	 */
@@ -121,8 +124,8 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 	 * @since  8.0.0
 	 * @access public
 	 *
-	 * @param string $app_id The Pinterest APP ID. Default empty.
-	 * @param string $secret The Pinterest APP Secret. Default empty.
+	 * @param string $app_id The Buffer APP ID. Default empty.
+	 * @param string $secret The Buffer APP Secret. Default empty.
 	 *
 	 * @return mixed
 	 */
