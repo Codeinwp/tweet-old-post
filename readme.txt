@@ -11,7 +11,7 @@ Automatically share your WordPress posts on Twitter, Facebook, LinkedIn. Get mor
 
 == Description ==
 
-ROP is a **must-have** WordPress plugin created to help website administrators **boost their website traffic**, grow their **social media followers** and keep their existing **followers engaged** by **automatically** sharing posts and content from their WP site to their social media networks.
+ROP is a **must-have** WordPress plugin created to help website administrators **boost their website traffic**, grow their **social media followers** and keep their existing **followers engaged** by **automatically** sharing posts and content from their WP site to their social media networks such as Facebook, Twitter, Google My Business, LinkedIN, Instagram and Tumblr.
 
 _Over 40,000+ WP site owners trust Revive Old Posts as the go-to social media automation and scheduling plugin for WordPress._
 
@@ -87,7 +87,7 @@ Revive Old Posts isn't like every other social media marketing tool. We've tailo
 - WordPress to Linkedin Profile [Pro]
 - WordPress to Linkedin Page [Pro]
 - WordPress to Tumblr [Pro]
-- WordPress to Pinterest [Pro]
+- WordPress to Google My Business [Pro]
 
 Some of the available networks and features require the Pro version of the plugin. Check out the free vs pro table [here.](https://docs.revive.social/article/941-revive-old-post-free-vs-pro)
 
@@ -144,7 +144,7 @@ Using the PRO version of Revive Old Posts unlocks a host of additional features 
 
 - **WordPress to Tumblr** scheduling and auto post
 
-- **WordPress to Pinterest** scheduling and auto post
+- **WordPress to Google My Business** scheduling and auto post
 
 - Connect **multiple social media accounts** to WP
 
@@ -264,7 +264,7 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
-= 8.5.8 - 2020-06-16  = 
+= 8.5.8 - 2020-06-16  =
 
 * New PRO: Custom instant sharing messages. You can now alter the caption that would be sent to the social media network.
 * Change: Opened up easier LinkedIn login workflow for old installs.
