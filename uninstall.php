@@ -10,8 +10,34 @@
  */
 
 // If uninstall not called from WordPress, then exit.
+
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
+}
+
+
+$rop_cron_token = get_option( 'rop_access_token', '' );
+
+if ( ! empty( $rop_cron_token ) ) {
+	$cron_system_file = ROP_PATH . 'cron-system/vendor/autoload.php';
+
+	if ( file_exists( $cron_system_file ) ) {
+		/**
+		 * $cron_system_file Cron System autoload.
+		 */
+		require_once $cron_system_file;
+
+		new RopCronSystem\Rop_Cron_Core();
+
+		$request_call = new RopCronSystem\Curl_Helpers\Rop_Curl_Methods();
+
+		$arguments = array(
+			'type'         => 'POST',
+			'request_path' => ':delete_account:',
+		);
+
+		$call_response = $request_call->create_call_process( $arguments );
+	}
 }
 
 $settings     = get_option( 'rop_data' );
@@ -86,6 +112,13 @@ if ( isset( $housekeeping ) && $housekeeping ) {
 		 * @see Rop_Rest_Api::update_cron_type()
 		 */
 		'rop_use_remote_cron',
+		/**
+		 * Used in remote Cron Server debug test
+		 * @since 8.5.5
+		 *
+		 * @see Debug_Page::load_custom_wp_admin_style()
+		 */
+		'rop_temp_debug',
 	);
 
 	foreach ( $option_keys as $key ) {

@@ -98,10 +98,11 @@ function run_rop() {
 		add_action( 'admin_init', 'deactivate_rop', 1 );
 	}
 
+	// Is the remote Cron in use ?
 	$use_remote_cron = get_option( 'rop_use_remote_cron', false );
 	$use_remote_cron = filter_var( $use_remote_cron, FILTER_VALIDATE_BOOLEAN );
 	define( 'ROP_CRON_ALTERNATIVE', $use_remote_cron );
-	define( 'ROP_CRON_ALTERNATIVE_DEMO_EMAIL', 'mihai@wpriders.com' );
+
 
 	define( 'ROP_PRO_URL', 'http://revive.social/plugins/revive-old-post/' );
 	define( 'ROP_LITE_VERSION', '8.5.4' );

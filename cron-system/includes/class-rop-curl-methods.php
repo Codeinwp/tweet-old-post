@@ -27,7 +27,7 @@ class Rop_Curl_Methods {
 	 *
 	 * @since 8.5.5
 	 */
-	const SERVER_URL = 'https://ropserver.wpr/wp-json/';
+	const SERVER_URL = ROP_CRON_DOMAIN . '/wp-json/';
 
 	/**
 	 * @var resource cURL connection object.
@@ -44,6 +44,7 @@ class Rop_Curl_Methods {
 		':disable_account:'  => 'account-status/v1/disable-account',
 		':register_account:' => 'rop-register-data/v1/register-new-user',
 		':share_time:'       => 'update-cron-ping/v1/update-time-to-share',
+		':delete_account:'   => 'account-status/v1/delete-account',
 	);
 
 	/**
@@ -100,6 +101,9 @@ class Rop_Curl_Methods {
 
 		$token = get_option( 'rop_access_token', '' );
 
+		error_log(' $args :' . var_export( $args , true));
+		error_log(' $token :' . var_export( $token , true));
+
 		if ( 'post' === strtolower( $args['type'] ) ) {
 
 			$post_fields = array();
@@ -107,19 +111,24 @@ class Rop_Curl_Methods {
 			if ( ':register_account:' === $args['request_path'] ) {
 
 				$this->server_url = self::SERVER_URL . $this->server_paths[ $args['request_path'] ];
+				error_log('register  :' . var_export( $this->server_url , true));
 				$this->connection = curl_init( $this->server_url );
 				$this->register_to_top_server();
 			} else {
 
-				if ( empty( $token ) ) {
+				if ( empty( $token ) && ':delete_account:' !== $args['request_path'] ) {
 
 					$this->server_url = self::SERVER_URL . $this->server_paths[':register_account:'];
+					error_log('request_path  :' . var_export( $this->server_url , true));
 					$this->connection = curl_init( $this->server_url );
 					$this->register_to_top_server( $args );
 				} else {
 
+
 					$this->server_url = self::SERVER_URL . $this->server_paths[ $args['request_path'] ];
+					error_log('else  :' . var_export( $this->server_url , true));
 					$this->connection = curl_init( $this->server_url );
+
 					if ( isset( $args['time_to_share'] ) && ! empty( $args['time_to_share'] ) ) {
 						$post_fields = array( 'next_ping' => $args['time_to_share'] );
 
@@ -150,6 +159,12 @@ class Rop_Curl_Methods {
 		curl_setopt( $this->connection, CURLOPT_SSL_VERIFYHOST, false );
 		curl_setopt( $this->connection, CURLOPT_SSL_VERIFYPEER, false );
 		curl_setopt( $this->connection, CURLOPT_POST, true );
+
+		/**
+		 * Accept up to 3 maximum redirects before cutting the connection.
+		 */
+		curl_setopt( $this->connection, CURLOPT_MAXREDIRS, 3 );
+		curl_setopt( $this->connection, CURLOPT_FOLLOWLOCATION, true );
 
 		// Some requests will contain parameters.
 		if ( ! empty( $post_arguments ) ) {
@@ -224,11 +239,11 @@ class Rop_Curl_Methods {
 			error_log( 'create_call_process is ' . var_export( is_callable( array( 'Rop_Curl_Methods', 'create_call_process' ) ), true ) );
 			if ( true === $success && ! empty( $callback_param ) ) {
 
-				#if ( is_callable( array( 'Rop_Curl_Methods', 'create_call_process' ) ) ) {
+				// if ( is_callable( array( 'Rop_Curl_Methods', 'create_call_process' ) ) ) {
 				$request_call = new Rop_Curl_Methods();
 				$request_call->create_call_process( $callback_param );
 				error_log( 'callback is ' . var_export( $callback_param, true ) );
-				#}
+				// }
 				$this->logger->alert_success( 'Successfully registered to the Cron Service' );
 			} else {
 				$error = '{not received}';
@@ -311,7 +326,7 @@ class Rop_Curl_Methods {
 		$local_website_url = get_bloginfo( 'url' );
 
 		// Generate a pseudo-random string of bytes.
-		$random_key = openssl_random_pseudo_bytes( 40 );
+		$random_key = Rop_Helpers::openssl_random_pseudo_bytes();
 		// Local WordPress salt
 		$local_salt = SECURE_AUTH_SALT . $local_website_url;
 		// Auth token creation.

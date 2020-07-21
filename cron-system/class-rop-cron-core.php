@@ -3,7 +3,10 @@
 namespace RopCronSystem;
 
 use RopCronSystem\Curl_Helpers\Rop_Curl_Methods;
+use RopCronSystem\Endpoint_Ping_Server\Rop_Debug_Ping;
 use RopCronSystem\Endpoint_Ping_Server\Rop_Ping_System;
+use RopCronSystem\Endpoint_Ping_Server\Rop_Registration_Check;
+use RopCronSystem\Pages\Debug_Page;
 use RopCronSystem\ROP_Helpers\Rop_Helpers;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -11,6 +14,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	header( 'HTTP/1.1 403 Forbidden' );
 	exit;
 }
+
+// For testing purpose.
+define( 'ROP_CRON_ALTERNATIVE_DEMO_EMAIL', 'mihai.irodiu@outlook.com' );
+// ROP Cron System Server URL, no "/" slash a t the end.
+define( 'ROP_CRON_DOMAIN', 'https://ropserver.wpr' );
 
 /**
  * Handles the load of the new Cron System.
@@ -58,9 +66,18 @@ class Rop_Cron_Core {
 	 * @since 8.5.5
 	 */
 	public function init_endpoint_items() {
+
 		// Share now function.
 		$share_now = new Rop_Ping_System();
 		$share_now->init_rest_api_route();
+
+		$debug = new Rop_Debug_Ping();
+		$debug->init_rest_api_route();
+
+		$registration_check = new Rop_Registration_Check();
+		$registration_check->init_rest_api_route();
+
+		new Debug_Page();
 	}
 
 	/**
@@ -90,7 +107,7 @@ class Rop_Cron_Core {
 	 * @since 8.5.5
 	 */
 	public function server_stop_share() {
-		error_log('Stop was sent');
+		error_log( 'Stop was sent' );
 		$request_call = new Rop_Curl_Methods();
 
 		$arguments = array(

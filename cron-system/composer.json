@@ -14,8 +14,11 @@
     "classmap": [
       "includes/class-rop-curl-methods.php",
       "includes/class-rop-helpers.php",
+      "includes/class-debug-page.php",
       "rest-endpoints/class-rop-ping-system.php",
       "rest-endpoints/class-rop-system-base.php",
+      "rest-endpoints/class-rop-debug-ping.php",
+      "rest-endpoints/class-rop-registration-check.php",
       "class-rop-cron-core.php"
     ]
   }

@@ -56,7 +56,6 @@ class Rop_Helpers {
 			// This function sorts an array. Elements will be arranged from lowest to highest when this function has completed.
 			sort( $time_list, SORT_NUMERIC );
 
-
 			foreach ( $time_list as $future_time ) {
 				// we need to make sure the next time to share is a future time.
 				if ( (int) $future_time > $current_time ) {
@@ -120,4 +119,34 @@ class Rop_Helpers {
 			return apache_request_headers();
 		}
 	}
+
+	/**
+	 * Create a random string.
+	 *
+	 * @param int $count Default is set to 40
+	 *
+	 * @return false|string
+	 */
+	static public function openssl_random_pseudo_bytes( $count = 40 ) {
+		if ( function_exists( 'openssl_random_pseudo_bytes' ) ) {
+			return openssl_random_pseudo_bytes( $count );
+		} else {
+			$random = microtime();
+
+			if ( function_exists( 'getmypid' ) ) {
+				$random .= getmypid();
+			}
+
+			$bytes = '';
+			for ( $i = 0; $i < $count; $i += 16 ) {
+				$random = md5( microtime() . $random );
+				$bytes  .= md5( $random, true );
+			}
+
+			return substr( $bytes, 0, $count );
+
+		}
+	}
 }
+
+
