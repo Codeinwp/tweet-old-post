@@ -264,6 +264,14 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.5.10 - 2020-07-21  = 
+
+* New PRO: You can now share your website posts to your Google My Business location(s).
+* Fix PRO: Unknown service error when using "Share Scheduled Posts to Social Media On Publish" feature.
+* Fix PRO: Missing media type error(silent) when "Share as image Post" feature was used for Twitter.
+* Info: Added checks to help prevent duplicate post issues which can occur in some environments with database caching.
+
+
 = 8.5.9 - 2020-07-20  = 
 
 * New PRO: You can now share your website posts to your Google My Business location(s).
