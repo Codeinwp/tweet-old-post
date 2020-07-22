@@ -555,6 +555,19 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				}
 			}
 
+					// if regular post, but "Include link" is selected in Post Format settings, post as normal article post
+					if ( get_post_type( $post_id ) !== 'attachment' && ! empty( $post_details['post_url'] ) && empty($post_details['post_with_image']) ) {
+
+						$new_post['message'] = $this->strip_excess_blank_lines( $post_details['content'] ) . $post_details['hashtags'];
+
+						$new_post['link'] = $this->get_url( $post_details );
+
+						return array(
+							'post_data' => $new_post,
+							'type'      => 'post',
+						);
+					}
+
 			// If is regular post, but post with image option checked, post as Image on FB
 			if ( get_post_type( $post_id ) !== 'attachment' && ! empty( $post_details['post_image'] ) ) {
 				// The source and url, one of these parameters will become unset later on, as only 1 is used for posting.
@@ -568,19 +581,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				);
 
 			}
-		}
-
-		// if regular post, but "Include link" is selected in Post Format settings, post as normal article post
-		if ( get_post_type( $post_id ) !== 'attachment' && ! empty( $post_details['post_url'] ) ) {
-
-			$new_post['message'] = $this->strip_excess_blank_lines( $post_details['content'] ) . $post_details['hashtags'];
-
-			$new_post['link'] = $this->get_url( $post_details );
-
-			return array(
-				'post_data' => $new_post,
-				'type'      => 'post',
-			);
 		}
 
 		// if we don't have "Post with image", nor "Include link" checked in Post Format settings, post as text post.
