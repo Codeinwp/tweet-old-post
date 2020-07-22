@@ -368,7 +368,7 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 	 */
 	private function gmb_article_post( $post_details, $args, $new_post ) {
 
-		$image_url = $post_details['post_image'];
+		$image_url = get_the_post_thumbnail_url( $post_details['post_id'], 'large' );
 
 		// if image is empty lets create a different type of GMB post
 		if ( empty( $image_url ) ) {
