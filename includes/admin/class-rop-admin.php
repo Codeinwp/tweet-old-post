@@ -915,6 +915,7 @@ class Rop_Admin {
 			foreach ( $events as $index => $event ) {
 				$post    = $event['post'];
 				$message = ! empty( $event['custom_instant_share_message'] ) ? $event['custom_instant_share_message'] : '';
+				$message = apply_filters('rop_instant_share_message', $message, $event);
 				$account_data = $services_model->find_account( $account );
 				try {
 					$service = $service_factory->build( $account_data['service'] );
