@@ -882,7 +882,7 @@ class Rop_Post_Format_Helper {
 			} elseif ( has_post_thumbnail( $post_id ) && ! empty( $post_with_image ) ) {
 				$image = get_the_post_thumbnail_url( $post_id, 'large' );
 			} else {
-				$image = get_the_post_thumbnail_url( $post_id, 'large' );
+				$image = '';
 			}
 		}
 
