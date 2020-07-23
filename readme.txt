@@ -264,6 +264,12 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.5.11 - 2020-07-23  = 
+
+* Fix: Posts always sharing as image posts even with option unchecked.
+* Info: Added "rop_instant_share_message" filter for manipulating custom instant share messages.
+
+
 = 8.5.10 - 2020-07-21  = 
 
 * New PRO: You can now share your website posts to your Google My Business location(s).

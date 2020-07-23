@@ -1,4 +1,9 @@
 
+ ### v8.5.11 - 2020-07-23 
+ **Changes:** 
+ * Fix: Posts always sharing as image posts even with option unchecked.
+* Info: Added "rop_instant_share_message" filter for manipulating custom instant share messages.
+ 
  ### v8.5.10 - 2020-07-21 
  **Changes:** 
  * New PRO: You can now share your website posts to your Google My Business location(s).
