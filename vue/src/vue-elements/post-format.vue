@@ -7,7 +7,7 @@
             </div>
             <div class="column col-6 col-sm-12 vertical-align">
                 <div class="form-group">
-                    <select class="form-select" v-model="post_format.wpml_language" :disabled="!isPro">
+                    <select class="form-select" v-model="post_format.wpml_language" :disabled="!isPro" v-on:change="refresh_language_taxonomies">
                         <option value="" selected>{{labels.wpml_select_language}}</option>
                         <option  v-for="(lang, index) in wpml_languages" :value="lang.code">{{lang.value}}</option>
                     </select>
@@ -345,13 +345,20 @@
     });
         },
         methods:{
+
+            refresh_language_taxonomies: function(e){
+
+            const lang = e.target.options[e.target.options.selectedIndex].value;
+            this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes, language_code: lang}});
+
+            },
             get_taxonomy_list(){
                 if (this.$store.state.generalSettings.length === 0) {
                     this.is_loading = true;
                     this.$log.info('Fetching general settings.');
                     this.$store.dispatch('fetchAJAXPromise', {req: 'get_general_settings'}).then(response => {
                         this.is_loading = false;
-                        this.$log.debug('Succesfully fetched.')
+                        this.$log.debug('Successfully fetched.')
                     }, error => {
                         this.is_loading = false;
                         this.$log.error('Can not fetch the general settings.')
@@ -380,6 +387,9 @@
 
         },
         computed: {
+        postTypes: function () {
+            return this.$store.state.generalSettings.available_post_types;
+        },
             post_format: function () {
                 return this.$store.state.activePostFormat[this.account_id] ? this.$store.state.activePostFormat[this.account_id] : [];
             },
@@ -404,8 +414,12 @@
                 return (postFormat.taxonomy_filter) ? postFormat.taxonomy_filter : [];
             },
             taxonomy: function () {
-
-                return this.$store.state.generalSettings.available_taxonomies
+              // console.log('before taxonomy');
+              // console.log(this.available_taxonomies);
+             // this.available_taxonomies = this.$store.state.generalSettings.available_taxonomies;
+             // console.log(this.available_taxonomies);
+                // console.log('after taxonomy');
+                return this.$store.state.generalSettings.available_taxonomies;
             }
         },
         watch: {

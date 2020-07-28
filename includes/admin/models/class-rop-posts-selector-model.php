@@ -66,25 +66,43 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	/**
 	 * Method to retrieve taxonomies.
 	 *
-	 * @param array $post_formats The post formats to use.
+	 * @param array $data Contains an array of post types to get the taxonomies for. Can also contain a language code passed by the langauge selector option on the Post Format settings for an account.
 	 *
 	 * @return array|bool
 	 * @since   8.0.0
 	 * @access  public
 	 */
-	public function get_taxonomies( $post_formats = array() ) {
+	public function get_taxonomies( $data = array() ) {
 
-		if ( empty( $post_formats ) ) {
+		$post_types = array();
+
+		if ( empty( $data['language_code'] ) ) {
+			$post_types = $data;
+		} else {
+			$post_types = $data['post_types'];
+			$language_code = $data['language_code'];
+		}
+
+		if ( empty( $post_types ) ) {
 			return array();
 		}
+
 		$taxonomies = array();
-		foreach ( $post_formats as $post_type_name ) {
+
+		if ( function_exists( 'icl_object_id' ) ) {
+			$wpml_current_lang = apply_filters( 'wpml_current_language', null );
+			// changes the language of global query to use the specfied language
+			do_action( 'wpml_switch_language', $language_code );
+		}
+
+		foreach ( $post_types as $post_type_name ) {
 
 			$post_type_taxonomies = get_object_taxonomies( $post_type_name, 'objects' );
 
 			$post_type_taxonomies = $this->ignore_taxonomies( $post_type_taxonomies );
 
 			foreach ( $post_type_taxonomies as $post_type_taxonomy ) {
+
 				$taxonomy = get_taxonomy( $post_type_taxonomy->name );
 
 				if ( empty( $taxonomy ) ) {
@@ -96,8 +114,18 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 					continue;
 				}
 
+					update_option( 'rop_taxonomy', print_r( $taxonomy, true ) );
+
 				$tax_name = $taxonomy->labels->singular_name;
+
 				foreach ( $terms as $term ) {
+					/*
+					$translated_term_id = apply_filters( 'wpml_object_id', $term->term_id, $taxonomy->name, FALSE, $lang );
+					$args = array('element_id' => $translated_term_id, 'element_type' => $taxonomy->name );
+					$lang_details = apply_filters( 'wpml_element_language_details', null, $args );
+					$translated_name =  apply_filters( 'wpml_translated_language_name', NULL, $lang_details->language_code, $lang_details->language_code );
+					*/
+
 					array_push(
 						$taxonomies,
 						array(
@@ -115,6 +143,10 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			return array();
 		}
 
+		if ( function_exists( 'icl_object_id' ) ) {
+			// set language back to original
+			do_action( 'wpml_switch_language', $wpml_current_lang );
+		}
 		return $taxonomies;
 	}
 
