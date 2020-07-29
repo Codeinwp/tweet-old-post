@@ -819,8 +819,8 @@ class Rop_Admin {
 					}
 				}
 
-				if ( ! array_key_exists( 'taxonomy_filter', $value ) ) {
-					// share to accounts where no filters are selected
+				if ( ! array_key_exists( 'taxonomy_filter', $value ) || empty( $value['taxonomy_filter'] ) ) {
+					// share to accounts where no filters are selected, or no filters exist
 					$social_accounts[] = $key;
 					continue;
 				}
