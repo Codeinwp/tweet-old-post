@@ -257,7 +257,7 @@ class Rop_I18n {
 				'utm_campaign_name_desc'            => __( 'The campaign name you want to show in Google Analytics e.g: "november_sale" etc.', 'tweet-old-post' ),
 				'custom_utm_upsell'                 => __( 'Custom UTMs are only available in the Pro version.', 'tweet-old-post' ),
 				'image_upsell'                      => __( 'Posting with images is available in the Pro version.', 'tweet-old-post' ),
-				'full_wpml_support_upsell'          => __( 'Posting with images is available in the Pro version.', 'tweet-old-post' ),
+				'full_wpml_support_upsell'          => __( 'Language-based sharing only available in the Pro version', 'tweet-old-post' ),
 				'wpml_select_language'                  => __( 'Choose language', 'tweet-old-post' ),
 				'media_post_title'                  => __( 'Media Posts Content', 'tweet-old-post' ),
 				'media_post_desc'                   => __( 'Which content should we share for media posts?', 'tweet-old-post' ),

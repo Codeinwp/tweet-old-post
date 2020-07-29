@@ -74,6 +74,9 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 */
 	public function get_taxonomies( $data = array() ) {
 
+		// TODO: If language change to example Spanish, and user navigavtes from dashboard,
+		// and then changes their language to English, when they come back to the ROP dahsboard, the taxonomies loaded will be for English
+
 		$post_types = array();
 
 		if ( empty( $data['language_code'] ) ) {
@@ -89,7 +92,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 
 		$taxonomies = array();
 
-		if ( function_exists( 'icl_object_id' ) ) {
+		if ( function_exists( 'icl_object_id' ) && !empty( $language_code )  ) {
 			$wpml_current_lang = apply_filters( 'wpml_current_language', null );
 			// changes the language of global query to use the specfied language
 			do_action( 'wpml_switch_language', $language_code );
@@ -113,8 +116,6 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 				if ( empty( $terms ) ) {
 					continue;
 				}
-
-					update_option( 'rop_taxonomy', print_r( $taxonomy, true ) );
 
 				$tax_name = $taxonomy->labels->singular_name;
 
@@ -143,7 +144,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			return array();
 		}
 
-		if ( function_exists( 'icl_object_id' ) ) {
+		if ( function_exists( 'icl_object_id' ) && !empty( $language_code )  ) {
 			// set language back to original
 			do_action( 'wpml_switch_language', $wpml_current_lang );
 		}
@@ -335,6 +336,13 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			$post_format_model = new Rop_Post_Format_Model( $service );
 			$post_format       = $post_format_model->get_post_format( $account_id );
 
+			if ( function_exists( 'icl_object_id' ) && !empty( $post_format['wpml_language'] ) ) {
+				$wpml_current_lang = apply_filters( 'wpml_current_language', null );
+					// changes the language of global query to use the specfied language for the account
+				do_action( 'wpml_switch_language', $post_format['wpml_language']);
+				}
+
+
 			$custom_data = array();
 			if ( isset( $post_format['taxonomy_filter'] ) && ! empty( $post_format['taxonomy_filter'] ) ) {
 
@@ -395,6 +403,11 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		}
 
 		$this->selection = $results;
+
+		if ( function_exists( 'icl_object_id' ) && !empty( $post_format['wpml_language'] ) ) {
+				// changes the language of global query to use the specfied language for the account
+			do_action( 'wpml_switch_language', $wpml_current_lang);
+			}
 
 		return $results;
 	}
@@ -660,6 +673,8 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 
 		$default_lang = apply_filters( 'wpml_default_language', null );
 		$lang_code    = apply_filters( 'rop_wpml_lang', $default_lang );
+
+		$post = $post_id;
 
 		if ( ! empty( $account_id ) ) {
 

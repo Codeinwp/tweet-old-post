@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="columns py-2" v-if="wpml_active_status && (wpml_languages.length > 0)">
+        <div class="columns py-2" v-if="wpml_active_status">
             <div class="column col-6 col-sm-12 vertical-align">
                 <b>{{labels.language_title}}</b>
                 <p class="text-gray">{{labels.language_title_desc}}</p>
@@ -349,6 +349,9 @@
             refresh_language_taxonomies: function(e){
 
             const lang = e.target.options[e.target.options.selectedIndex].value;
+            console.log('wpml language selected: ', lang);
+            // clear selected taxonomies on language change
+            this.post_format.taxonomy_filter = [];
             this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes, language_code: lang}});
 
             },
@@ -414,11 +417,6 @@
                 return (postFormat.taxonomy_filter) ? postFormat.taxonomy_filter : [];
             },
             taxonomy: function () {
-              // console.log('before taxonomy');
-              // console.log(this.available_taxonomies);
-             // this.available_taxonomies = this.$store.state.generalSettings.available_taxonomies;
-             // console.log(this.available_taxonomies);
-                // console.log('after taxonomy');
                 return this.$store.state.generalSettings.available_taxonomies;
             }
         },
