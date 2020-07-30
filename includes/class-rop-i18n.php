@@ -126,7 +126,7 @@ class Rop_I18n {
 				'post_types_exclude_limit_tooltip' => __( 'Upgrade to PRO version to select more than 30 posts.', 'tweet-old-post' ),
 				'menu_item'                   => __( 'General Settings', 'tweet-old-post' ),
 				'min_interval_title'          => __( 'Minimum Interval Between Shares', 'tweet-old-post' ),
-				'min_interval_desc'           => __( 'Minimum time between shares (hour/hours), 0.4 can be used.', 'tweet-old-post' ),
+				'min_interval_desc'           => __( 'How many hours between each share?', 'tweet-old-post' ),
 				'min_days_title'              => __( 'Minimum Post Age', 'tweet-old-post' ),
 				'min_days_desc'               => __( 'Minimum age of posts available for sharing, in days.', 'tweet-old-post' ),
 				'max_days_title'              => __( 'Maximum Post Age', 'tweet-old-post' ),
