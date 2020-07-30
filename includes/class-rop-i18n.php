@@ -256,7 +256,7 @@ class Rop_I18n {
 				'utm_campaign_name'                 => __( 'Campaign Name', 'tweet-old-post' ),
 				'utm_campaign_name_desc'            => __( 'The campaign name you want to show in Google Analytics e.g: "november_sale" etc.', 'tweet-old-post' ),
 				'custom_utm_upsell'                 => __( 'Custom UTMs are only available in the PRO version.', 'tweet-old-post' ),
-				'image_upsell'                      => __( 'Posting with images is available in the PRO version.', 'tweet-old-post' ),
+				'image_upsell'                      => __( 'Sharing as image posts is available in the PRO version.', 'tweet-old-post' ),
 				'media_post_title'                  => __( 'Media Posts Content', 'tweet-old-post' ),
 				'media_post_desc'                   => __( 'Which content should we share for media posts?', 'tweet-old-post' ),
 				'media_post_option_title'           => __( 'Title', 'tweet-old-post' ),

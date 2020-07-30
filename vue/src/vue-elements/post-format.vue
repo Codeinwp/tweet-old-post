@@ -72,6 +72,7 @@
                 </div>
             </div>
         </div>
+        <span class="divider"></span>
         <div class="columns py-2">
             <div class="column col-6 col-sm-12 vertical-align">
                 <b>{{labels.add_link_title}}</b>
@@ -115,7 +116,7 @@
                 </div>
             </div>
         </div>
-        <span class="divider" v-if="isPro"></span>
+        <span class="divider"></span>
 
         <div class="columns py-2" :class="'rop-control-container-'+isPro">
             <div class="column col-6 col-sm-12 vertical-align rop-control">
