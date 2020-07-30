@@ -74,9 +74,6 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 */
 	public function get_taxonomies( $data = array() ) {
 
-		// TODO: If language change to example Spanish, and user navigavtes from dashboard,
-		// and then changes their language to English, when they come back to the ROP dahsboard, the taxonomies loaded will be for English
-
 		$post_types = array();
 
 		if ( empty( $data['language_code'] ) ) {
@@ -405,7 +402,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		$this->selection = $results;
 
 		if ( function_exists( 'icl_object_id' ) && !empty( $post_format['wpml_language'] ) ) {
-				// changes the language of global query to use the specfied language for the account
+				// Sets WP language back to what user set it.
 			do_action( 'wpml_switch_language', $wpml_current_lang);
 			}
 

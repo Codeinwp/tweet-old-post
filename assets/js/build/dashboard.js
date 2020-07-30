@@ -38156,7 +38156,9 @@ module.exports = {
         },
         taxonomy: function taxonomy() {
             // below should only happen if is pro
-            this.$store.dispatch('fetchAJAXPromise', { req: 'get_taxonomies', data: { post_types: this.postTypes, language_code: this.post_format.wpml_language } });
+            if (this.isPro && this.wpml_active_status && this.post_format.wpml_language !== '') {
+                this.$store.dispatch('fetchAJAXPromise', { req: 'get_taxonomies', data: { post_types: this.postTypes, language_code: this.post_format.wpml_language } });
+            }
             //
             return this.$store.state.generalSettings.available_taxonomies;
         }
