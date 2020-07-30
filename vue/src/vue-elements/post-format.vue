@@ -417,6 +417,9 @@
                 return (postFormat.taxonomy_filter) ? postFormat.taxonomy_filter : [];
             },
             taxonomy: function () {
+              // below should only happen if is pro
+                this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes, language_code: this.post_format.wpml_language }});
+              //
                 return this.$store.state.generalSettings.available_taxonomies;
             }
         },
