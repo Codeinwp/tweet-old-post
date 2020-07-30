@@ -43,7 +43,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @access  private
 	 * @var     array $permissions The Facebook required permissions.
 	 */
-	private $permissions = array( 'email', 'manage_pages', 'publish_pages' );
+	private $permissions = array( 'email', 'pages_manage_posts' );
 
 	/**
 	 * Method to inject functionality into constructor.
