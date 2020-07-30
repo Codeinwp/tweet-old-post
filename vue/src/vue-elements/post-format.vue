@@ -117,24 +117,28 @@
         </div>
         <span class="divider" v-if="isPro"></span>
 
-        <div class="columns py-2" v-if="isPro">
-            <div class="column col-6 col-sm-12 vertical-align">
+        <div class="columns py-2" :class="'rop-control-container-'+isPro">
+            <div class="column col-6 col-sm-12 vertical-align rop-control">
                 <b>{{labels_settings.taxonomies_title}}</b>
                 <p class="text-gray"><span v-html="labels_settings.taxonomies_desc"></span></p>
             </div>
             <div class="column col-6 col-sm-12 vertical-align">
                 <div class="input-group">
-                    <multiple-select :options="taxonomy" :selected="taxonomy_filter" :name="post_format.taxonomy_filter" :changed-selection="updated_tax_filter" :key="this.account_id"></multiple-select>
+                    <multiple-select :disabled="!!isPro" :options="taxonomy" :selected="taxonomy_filter" :name="post_format.taxonomy_filter" :changed-selection="updated_tax_filter" :key="this.account_id"></multiple-select>
                     <span class="input-group-addon vertical-align">
                         <label class="form-checkbox">
-						    <input type="checkbox" v-model="post_format.exclude_taxonomies"/>
+						    <input :disabled="!isPro" type="checkbox" v-model="post_format.exclude_taxonomies"/>
 							<i class="form-icon"></i>{{labels_settings.taxonomies_exclude}}
 						</label>
 					</span>
                 </div>
             </div>
         </div>
-
+        <div class="columns " v-if="!isPro">
+            <div class="column text-center">
+                <p class="upsell"><i class="fa fa-lock"></i> {{labels.taxonomy_based_sharing_upsell}}</p>
+            </div>
+        </div>
         <span class="divider"></span>
         <div class="columns py-2">
             <div class="column col-6 col-sm-12 vertical-align">
@@ -244,7 +248,7 @@
         <span class="divider"></span>
 
         <div class="columns py-2" :class="'rop-control-container-'+isPro">
-            <div class="column col-6 col-sm-12 vertical-align">
+            <div class="column col-6 col-sm-12 vertical-align rop-control">
                 <b>{{labels.image_title}}</b>
                 <p class="text-gray"><span v-html="labels.image_desc"></span></p>
             </div>
