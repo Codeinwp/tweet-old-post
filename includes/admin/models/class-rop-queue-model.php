@@ -382,56 +382,6 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 
 		}
 
-		/*
-		// Below will only run when sharing truly immediately (True Instant Sharing)
-		if ( ! empty( $post_id ) && ! empty( $instant_share_content ) ) {
-
-			$accounts   = $instant_share_content;
-			$normalized_queue   = array();
-
-				$index = 0;
-
-			foreach ( $accounts as $account_id => $custom_instant_share_message ) {
-						$normalized_queue[ $account_id ][ $index ] = array(
-							'post' => array( $post_id ),
-							'custom_instant_share_message' => $custom_instant_share_message,
-						);
-						$index++;
-			}
-
-			return $normalized_queue;
-		}
-
-		// Below will only run when sharing truly immediately (True Instant Sharing)
-		$selector           = new Rop_Posts_Selector_Model();
-		$posts              = $selector->get_publish_now_posts();
-
-		$normalized_queue   = array();
-		if ( ! $posts ) {
-			return $normalized_queue;
-		}
-
-		$index              = 0;
-		foreach ( $posts as $post_id ) {
-			$accounts   = get_post_meta( $post_id, 'rop_publish_now_accounts', true );
-			if ( ! $accounts ) {
-				continue;
-			}
-
-			// delete the meta so that when the post loads again after publishing, the checkboxes are cleared.
-			delete_post_meta( $post_id, 'rop_publish_now_accounts' );
-
-			foreach ( $accounts as $account_id => $custom_instant_share_message ) {
-				$normalized_queue[ $account_id ][ $index ] = array(
-					'post' => array( $post_id ),
-					'custom_instant_share_message' => $custom_instant_share_message,
-				);
-			}
-			$index++;
-		}
-
-		return $normalized_queue;
-		*/
 	}
 
 	/**
