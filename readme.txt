@@ -11,7 +11,7 @@ Automatically share your WordPress posts on Twitter, Facebook, LinkedIn. Get mor
 
 == Description ==
 
-ROP is a **must-have** WordPress plugin created to help website administrators **boost their website traffic**, grow their **social media followers** and keep their existing **followers engaged** by **automatically** sharing posts and content from their WP site to their social media networks such as Facebook, Twitter, Google My Business, LinkedIN, Instagram and Tumblr.
+ROP is a **must-have** WordPress plugin created to help website administrators **boost their website traffic**, grow their **social media followers** and keep their existing **followers engaged** by **automatically** sharing posts and content from their WP site to their social media networks such as Facebook, Twitter, Google My Business, LinkedIN, Instagram, Tumblr and even Buffer.
 
 _Over 40,000+ WP site owners trust Revive Old Posts as the go-to social media automation and scheduling plugin for WordPress._
 
@@ -88,6 +88,7 @@ Revive Old Posts isn't like every other social media marketing tool. We've tailo
 - WordPress to Linkedin Page [Pro]
 - WordPress to Tumblr [Pro]
 - WordPress to Google My Business [Pro]
+- WordPress to Buffer [Pro]
 
 Some of the available networks and features require the Pro version of the plugin. Check out the free vs pro table [here.](https://docs.revive.social/article/941-revive-old-post-free-vs-pro)
 
@@ -264,13 +265,13 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
-= 8.5.11 - 2020-07-23  = 
+= 8.5.11 - 2020-07-23  =
 
 * Fix: Posts always sharing as image posts even with option unchecked.
 * Info: Added "rop_instant_share_message" filter for manipulating custom instant share messages.
 
 
-= 8.5.10 - 2020-07-21  = 
+= 8.5.10 - 2020-07-21  =
 
 * New PRO: You can now share your website posts to your Google My Business location(s).
 * Fix PRO: Unknown service error when using "Share Scheduled Posts to Social Media On Publish" feature.
@@ -278,7 +279,7 @@ http://revive.social/plugins/revive-old-post
 * Info: Added checks to help prevent duplicate post issues which can occur in some environments with database caching.
 
 
-= 8.5.9 - 2020-07-20  = 
+= 8.5.9 - 2020-07-20  =
 
 * New PRO: You can now share your website posts to your Google My Business location(s).
 * Fix PRO: Unknown service error when using "Share Scheduled Posts to Social Media On Publish" feature.
