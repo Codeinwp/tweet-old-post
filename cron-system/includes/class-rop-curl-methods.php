@@ -40,11 +40,11 @@ class Rop_Curl_Methods {
 	 * @since 8.5.5
 	 */
 	private $server_paths = array(
-		':activate_account:' => 'account-status/v1/activate-account',
-		':disable_account:'  => 'account-status/v1/disable-account',
-		':register_account:' => 'rop-register-data/v1/register-new-user',
-		':share_time:'       => 'update-cron-ping/v1/update-time-to-share',
-		':delete_account:'   => 'account-status/v1/delete-account',
+		':activate_account:' => 'account-status/v1/activate-account/',
+		':disable_account:'  => 'account-status/v1/disable-account/',
+		':register_account:' => 'rop-register-data/v1/register-new-user/',
+		':share_time:'       => 'update-cron-ping/v1/update-time-to-share/',
+		':delete_account:'   => 'account-status/v1/delete-account/',
 	);
 
 	/**
@@ -87,9 +87,10 @@ class Rop_Curl_Methods {
 	public function create_call_process( $args = array() ) {
 
 		$default = array(
-			'type'          => 'POST',
-			'request_path'  => '',
-			'time_to_share' => '',
+			'type'            => 'POST',
+			'request_path'    => '',
+			'time_to_share'   => '',
+			'remove_location' => get_bloginfo( 'url' ),
 		);
 
 		$args = wp_parse_args( $args, $default );
@@ -101,32 +102,28 @@ class Rop_Curl_Methods {
 
 		$token = get_option( 'rop_access_token', '' );
 
-		error_log(' $args :' . var_export( $args , true));
-		error_log(' $token :' . var_export( $token , true));
-
 		if ( 'post' === strtolower( $args['type'] ) ) {
+
+			if ( ':delete_account:' !== $args['request_path'] ) {
+				#unset( $args['remove_location'] );
+			}
 
 			$post_fields = array();
 
 			if ( ':register_account:' === $args['request_path'] ) {
 
 				$this->server_url = self::SERVER_URL . $this->server_paths[ $args['request_path'] ];
-				error_log('register  :' . var_export( $this->server_url , true));
 				$this->connection = curl_init( $this->server_url );
 				$this->register_to_top_server();
 			} else {
 
 				if ( empty( $token ) && ':delete_account:' !== $args['request_path'] ) {
-
 					$this->server_url = self::SERVER_URL . $this->server_paths[':register_account:'];
-					error_log('request_path  :' . var_export( $this->server_url , true));
 					$this->connection = curl_init( $this->server_url );
 					$this->register_to_top_server( $args );
 				} else {
 
-
 					$this->server_url = self::SERVER_URL . $this->server_paths[ $args['request_path'] ];
-					error_log('else  :' . var_export( $this->server_url , true));
 					$this->connection = curl_init( $this->server_url );
 
 					if ( isset( $args['time_to_share'] ) && ! empty( $args['time_to_share'] ) ) {
@@ -134,7 +131,7 @@ class Rop_Curl_Methods {
 
 					}
 
-					return $this->request_type_post( $post_fields );
+					return $this->request_type_post( $post_fields, $args['request_path'] );
 				}
 			}
 		}
@@ -147,31 +144,35 @@ class Rop_Curl_Methods {
 	/**
 	 * Handles the API calls of type POST.
 	 *
-	 * @param array $post_arguments
+	 * @param array $post_arguments Post arguments array.
+	 * @param string $path_action Action type.
 	 *
 	 * @return bool|string
 	 * @access private
 	 * @since 8.5.5
 	 */
-	private function request_type_post( $post_arguments = array() ) {
+	private function request_type_post( $post_arguments = array(), $path_action = '' ) {
 
 		curl_setopt( $this->connection, CURLOPT_RETURNTRANSFER, true );
 		curl_setopt( $this->connection, CURLOPT_SSL_VERIFYHOST, false );
 		curl_setopt( $this->connection, CURLOPT_SSL_VERIFYPEER, false );
 		curl_setopt( $this->connection, CURLOPT_POST, true );
-
+		curl_setopt( $this->connection, CURLOPT_ENCODING, '' );
+		curl_setopt( $this->connection, CURLOPT_FAILONERROR, true );
 		/**
 		 * Accept up to 3 maximum redirects before cutting the connection.
 		 */
 		curl_setopt( $this->connection, CURLOPT_MAXREDIRS, 3 );
 		curl_setopt( $this->connection, CURLOPT_FOLLOWLOCATION, true );
 
+		$params_stringified = '';
 		// Some requests will contain parameters.
 		if ( ! empty( $post_arguments ) ) {
-			curl_setopt( $this->connection, CURLOPT_POSTFIELDS, build_query( $post_arguments ) );
+			$params_stringified = build_query( $post_arguments );
+			curl_setopt( $this->connection, CURLOPT_POSTFIELDS, $params_stringified );
 		}
 
-		$authentication = $this->fetch_attach_auth_token();
+		$authentication = $this->fetch_attach_auth_token( '', $params_stringified );
 
 		if ( false === $authentication ) {
 			unset( $this->connection );
@@ -181,13 +182,67 @@ class Rop_Curl_Methods {
 		}
 
 		$server_response_body = curl_exec( $this->connection );
-		$http_code            = curl_getinfo( $this->connection, CURLINFO_HTTP_CODE );
+
+		if ( false === $server_response_body || curl_errno( $this->connection ) ) {
+			error_log( 'Curl error: ' . curl_error( $this->connection ) );
+		}
+
+		$http_code = curl_getinfo( $this->connection, CURLINFO_HTTP_CODE );
+		if ( absint( $http_code ) !== 200 ) {
+			$this->logger->alert_error( 'Cron server connection code is : ' . $http_code );
+		}
 		// TODO check $http_code and add to the Log if it's not the expected 200.
 		curl_close( $this->connection );
-		error_log( 'request_type_post > ' . var_export( $server_response_body, true ) );
 
-		return $server_response_body;
+		// Decode JSON string.
+		$response_array = json_decode( $server_response_body, true );
 
+		// If the response contains the success variable.
+		if ( isset( $response_array['success'] ) ) {
+
+			// cast the value to make sure it's not set as string.
+			$success = filter_var( $response_array['success'], FILTER_VALIDATE_BOOLEAN );
+
+			// If the response was a success.
+			if ( true === $success ) {
+				switch ( $path_action ) {
+					case ':activate_account:':
+						// Inform the user about the action
+						$this->logger->alert_success( 'Remote cron: Started.' );
+						break;
+					case ':disable_account:':
+						// Inform the user about the action
+						$this->logger->alert_success( 'Remote cron: Stopped.' );
+						break;
+					case ':share_time:':
+						// Inform the user about the action
+						$this->logger->alert_success( 'Remote cron: Share time sent' );
+						break;
+				}
+			}
+
+			return $success;
+		} else {
+			// The success variable was not found.
+			$error = '';
+			if ( ! empty( $response_array ) ) {
+				$error = wp_json_encode( $response_array );
+			}
+
+			// Let's try our best to inform the user about possible issues found.
+			if ( ! empty( $error ) ) {
+				$this->logger->alert_error( 'Error registering to the Cron Service. Error: ' . $error );
+			} else {
+				$this->logger->alert_error( "Could not reach the Cron Service, HTTP Code: {$http_code}" );
+			}
+
+			// Add to error log the message.
+			if ( isset( $response_array['error'] ) ) {
+				return $response_array['error'];
+			}
+
+			return false;
+		}
 	}
 
 	/**
@@ -201,12 +256,14 @@ class Rop_Curl_Methods {
 	 * @since 8.5.5
 	 */
 	private function register_to_top_server( $callback_param = array() ) {
-
 		curl_setopt( $this->connection, CURLOPT_RETURNTRANSFER, true );
 		curl_setopt( $this->connection, CURLOPT_SSL_VERIFYHOST, false );
 		curl_setopt( $this->connection, CURLOPT_SSL_VERIFYPEER, false );
 		curl_setopt( $this->connection, CURLOPT_POST, true );
+		curl_setopt( $this->connection, CURLOPT_FAILONERROR, true );
+		curl_setopt( $this->connection, CURLOPT_ENCODING, '' );
 
+		curl_setopt( $this->connection, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)' );
 		/**
 		 * Accept up to 3 maximum redirects before cutting the connection.
 		 */
@@ -214,7 +271,8 @@ class Rop_Curl_Methods {
 		curl_setopt( $this->connection, CURLOPT_FOLLOWLOCATION, true );
 
 		$base64_register_data = $this->create_register_data();
-		$authentication       = $this->fetch_attach_auth_token( $base64_register_data );
+
+		$authentication = $this->fetch_attach_auth_token( $base64_register_data, '' );
 		if ( false === $authentication ) {
 			unset( $this->connection );
 			// TODO add to log, client token is missing.
@@ -223,7 +281,12 @@ class Rop_Curl_Methods {
 		}
 
 		$server_response_body = curl_exec( $this->connection );
-		$http_code            = curl_getinfo( $this->connection, CURLINFO_HTTP_CODE );
+
+		if ( false === $server_response_body || curl_errno( $this->connection ) ) {
+			error_log( 'Curl error: ' . curl_error( $this->connection ) );
+		}
+
+		$http_code = curl_getinfo( $this->connection, CURLINFO_HTTP_CODE );
 
 		if ( absint( $http_code ) !== 200 ) {
 			$this->logger->alert_error( 'Cron server connection code is : ' . $http_code );
@@ -231,41 +294,49 @@ class Rop_Curl_Methods {
 		// TODO check $http_code and add to the Log if it's not the expected 200.
 		curl_close( $this->connection );
 
+		// Decode JSON string.
 		$response_array = json_decode( $server_response_body, true );
-		error_log( '$response_array is ' . var_export( $response_array, true ) );
+
+		// If the response contains the success variable.
 		if ( isset( $response_array['success'] ) ) {
+			// cast the value to make sure it's not set as string.
 			$success = filter_var( $response_array['success'], FILTER_VALIDATE_BOOLEAN );
-			error_log( '$success is ' . var_export( $callback_param, true ) );
-			error_log( 'create_call_process is ' . var_export( is_callable( array( 'Rop_Curl_Methods', 'create_call_process' ) ), true ) );
+
+			// If the response was a success.
 			if ( true === $success && ! empty( $callback_param ) ) {
 
-				// if ( is_callable( array( 'Rop_Curl_Methods', 'create_call_process' ) ) ) {
+				// Being registered with success, let's do the requested call.
 				$request_call = new Rop_Curl_Methods();
 				$request_call->create_call_process( $callback_param );
-				error_log( 'callback is ' . var_export( $callback_param, true ) );
-				// }
+
+				// Inform the user about the action
 				$this->logger->alert_success( 'Successfully registered to the Cron Service' );
 			} else {
 				$error = '{not received}';
 				if ( ! empty( $response_array ) ) {
 					$error = wp_json_encode( $response_array );
 				}
+				// Some error was encountered, inform the user about it.
 				$this->logger->alert_error( 'Error registering to the Cron Service. Error: ' . $error );
 			}
 
 			return $success;
+
 		} else {
+			// The success variable was not found.
 			$error = '';
 			if ( ! empty( $response_array ) ) {
 				$error = wp_json_encode( $response_array );
 			}
 
+			// Let's try our best to inform the user about possible issues found.
 			if ( ! empty( $error ) ) {
 				$this->logger->alert_error( 'Error registering to the Cron Service. Error: ' . $error );
 			} else {
 				$this->logger->alert_error( "Could not reach the Cron Service, HTTP Code: {$http_code}" );
 			}
 
+			// We need this removed because it will be recreated once a retry is made.
 			delete_option( 'rop_access_token' );
 
 			// Add to error log the message.
@@ -283,11 +354,13 @@ class Rop_Curl_Methods {
 	 *
 	 * @param string $custom_value custom string that will go into ROP-Authorization.
 	 *
+	 * @param string $post_data Post data used for content length
+	 *
 	 * @return bool
 	 * @access private
 	 * @since 8.5.5
 	 */
-	private function fetch_attach_auth_token( $custom_value = '' ) {
+	private function fetch_attach_auth_token( $custom_value = '', $post_data = '' ) {
 		$token = get_option( 'rop_access_token', '' );
 
 		if ( ! empty( $token ) || ! empty( $custom_value ) ) {
@@ -306,11 +379,14 @@ class Rop_Curl_Methods {
 				CURLOPT_HTTPHEADER,
 				array(
 					'ROP-Authorization:' . $header_data,
+					'Accept: */*',
+					'Content-Length: ' . strlen( $post_data ),
 				)
 			);
 
 			return true;
 		} else {
+
 			return false;
 		}
 

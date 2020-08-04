@@ -37,6 +37,7 @@ if ( ! empty( $rop_cron_token ) ) {
 		);
 
 		$call_response = $request_call->create_call_process( $arguments );
+		delete_option( 'rop_access_token' );
 	}
 }
 
