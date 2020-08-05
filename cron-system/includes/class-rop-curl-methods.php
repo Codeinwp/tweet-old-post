@@ -105,7 +105,7 @@ class Rop_Curl_Methods {
 		if ( 'post' === strtolower( $args['type'] ) ) {
 
 			if ( ':delete_account:' !== $args['request_path'] ) {
-				#unset( $args['remove_location'] );
+				// unset( $args['remove_location'] );
 			}
 
 			$post_fields = array();
@@ -144,7 +144,7 @@ class Rop_Curl_Methods {
 	/**
 	 * Handles the API calls of type POST.
 	 *
-	 * @param array $post_arguments Post arguments array.
+	 * @param array  $post_arguments Post arguments array.
 	 * @param string $path_action Action type.
 	 *
 	 * @return bool|string
@@ -197,11 +197,21 @@ class Rop_Curl_Methods {
 		// Decode JSON string.
 		$response_array = json_decode( $server_response_body, true );
 
+		$response_success = null;
+		// if custom message is received.
+		if ( is_array( $response_array ) && isset( $response_array['success'] ) ) {
+			$response_success = $response_array['success'];
+
+			// If customized WP_Error is received.
+		} elseif ( is_array( $response_array ) && isset( $response_array['data'] ) && isset( $response_array['data']['success'] ) ) {
+			$response_success = $response_array['data']['success'];
+		}
+
 		// If the response contains the success variable.
-		if ( isset( $response_array['success'] ) ) {
+		if ( ! is_null( $response_success ) ) {
 
 			// cast the value to make sure it's not set as string.
-			$success = filter_var( $response_array['success'], FILTER_VALIDATE_BOOLEAN );
+			$success = filter_var( $response_success, FILTER_VALIDATE_BOOLEAN );
 
 			// If the response was a success.
 			if ( true === $success ) {
@@ -225,13 +235,18 @@ class Rop_Curl_Methods {
 		} else {
 			// The success variable was not found.
 			$error = '';
-			if ( ! empty( $response_array ) ) {
+
+			if ( isset( $response_array['message'] ) ) {
+				$error = $response_array['message'];
+			} elseif ( isset( $response_array['error'] ) ) {
+				$error = $response_array['error'];
+			} elseif ( ! empty( $response_array ) ) {
 				$error = wp_json_encode( $response_array );
 			}
 
 			// Let's try our best to inform the user about possible issues found.
 			if ( ! empty( $error ) ) {
-				$this->logger->alert_error( 'Error registering to the Cron Service. Error: ' . $error );
+				$this->logger->alert_error( 'Could not process the request. Error message : ' . $error );
 			} else {
 				$this->logger->alert_error( "Could not reach the Cron Service, HTTP Code: {$http_code}" );
 			}
@@ -272,6 +287,7 @@ class Rop_Curl_Methods {
 
 		$base64_register_data = $this->create_register_data();
 
+		// Get the authentication token.
 		$authentication = $this->fetch_attach_auth_token( $base64_register_data, '' );
 		if ( false === $authentication ) {
 			unset( $this->connection );
@@ -280,16 +296,19 @@ class Rop_Curl_Methods {
 			exit;
 		}
 
+		// Execute the cURL call.
 		$server_response_body = curl_exec( $this->connection );
 
+		// If the response is an error we try to display usable information.
 		if ( false === $server_response_body || curl_errno( $this->connection ) ) {
 			error_log( 'Curl error: ' . curl_error( $this->connection ) );
 		}
 
+		// Get the request apache code.
 		$http_code = curl_getinfo( $this->connection, CURLINFO_HTTP_CODE );
 
 		if ( absint( $http_code ) !== 200 ) {
-			$this->logger->alert_error( 'Cron server connection code is : ' . $http_code );
+			$this->logger->alert_error( 'Cron server connection code : ' . $http_code );
 		}
 		// TODO check $http_code and add to the Log if it's not the expected 200.
 		curl_close( $this->connection );
@@ -297,10 +316,20 @@ class Rop_Curl_Methods {
 		// Decode JSON string.
 		$response_array = json_decode( $server_response_body, true );
 
-		// If the response contains the success variable.
+		$response_success = null;
+		// if custom message is received.
 		if ( isset( $response_array['success'] ) ) {
+			$response_success = $response_array['success'];
+
+			// If customized WP_Error is received.
+		} elseif ( isset( $response_array['data'] ) && isset( $response_array['data']['success'] ) ) {
+			$response_success = $response_array['data']['success'];
+		}
+
+		// If the response contains the success variable.
+		if ( ! is_null( $response_success ) ) {
 			// cast the value to make sure it's not set as string.
-			$success = filter_var( $response_array['success'], FILTER_VALIDATE_BOOLEAN );
+			$success = filter_var( $response_success, FILTER_VALIDATE_BOOLEAN );
 
 			// If the response was a success.
 			if ( true === $success && ! empty( $callback_param ) ) {
@@ -313,11 +342,18 @@ class Rop_Curl_Methods {
 				$this->logger->alert_success( 'Successfully registered to the Cron Service' );
 			} else {
 				$error = '{not received}';
-				if ( ! empty( $response_array ) ) {
+				if ( isset( $response_array['message'] ) ) {
+					$error = $response_array['message'];
+				} elseif ( isset( $response_array['error'] ) ) {
+					$error = $response_array['error'];
+				} elseif ( ! empty( $response_array ) ) {
 					$error = wp_json_encode( $response_array );
 				}
+
 				// Some error was encountered, inform the user about it.
-				$this->logger->alert_error( 'Error registering to the Cron Service. Error: ' . $error );
+				$this->logger->alert_error( 'Could not register to the Cron Service. Error message: ' . $error );
+
+				delete_option( 'rop_access_token' );
 			}
 
 			return $success;
@@ -325,7 +361,11 @@ class Rop_Curl_Methods {
 		} else {
 			// The success variable was not found.
 			$error = '';
-			if ( ! empty( $response_array ) ) {
+			if ( isset( $response_array['message'] ) ) {
+				$error = $response_array['message'];
+			} elseif ( isset( $response_array['error'] ) ) {
+				$error = $response_array['error'];
+			} elseif ( ! empty( $response_array ) ) {
 				$error = wp_json_encode( $response_array );
 			}
 

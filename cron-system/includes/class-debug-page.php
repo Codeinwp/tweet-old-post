@@ -16,6 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * WP-Admin debug page
  *
  * Class Debug_Page
+ *
  * @package RopCronSystem\Pages
  */
 class Debug_Page {
@@ -70,14 +71,14 @@ class Debug_Page {
 		}
 
 		?>
-        <div class="wrap" id="rop-debug-table">
-            <h1>Debug Info</h1>
-            <br/>
+		<div class="wrap" id="rop-debug-table">
+			<h1>Debug Info</h1>
+			<br/>
 
-            <table>
-                <tr>
-                    <td valign="top"><?php _e( 'PHP Version: ', 'tweet-old-post' ); ?></td>
-                    <td>
+			<table>
+				<tr>
+					<td valign="top"><?php _e( 'PHP Version: ', 'tweet-old-post' ); ?></td>
+					<td>
 						<?php
 						echo $version;
 
@@ -86,12 +87,12 @@ class Debug_Page {
 						}
 
 						?>
-                        <br/>
-                    </td>
-                </tr>
-                <tr>
-                    <td valign="top"><?php _e( 'cURL Info: ', 'tweet-old-post' ); ?></td>
-                    <td>
+						<br/>
+					</td>
+				</tr>
+				<tr>
+					<td valign="top"><?php _e( 'cURL Info: ', 'tweet-old-post' ); ?></td>
+					<td>
 						<?php
 						if ( ! empty( $curl_version ) ) {
 							echo 'version: ' . $curl_version['version'] . ' (' . $curl_version['version_number'] . ') ' . '<br/>';
@@ -106,24 +107,24 @@ class Debug_Page {
 							echo '<strong style="color:darkred">No version of CURL detected.</strong>';
 						}
 						?>
-                        <br/>
-                    </td>
-                </tr>
-                <tr>
-                    <td valign="top"><?php _e( 'Check connection with<br/>ROP Cron SyStem: ', 'tweet-old-post' ); ?></td>
-                    <td>
+						<br/>
+					</td>
+				</tr>
+				<tr>
+					<td valign="top"><?php _e( 'Check connection with<br/>ROP Cron SyStem: ', 'tweet-old-post' ); ?></td>
+					<td>
 						<?php _e( 'WordPress -> Server:', '' ); ?>
-                        <span id="server_responded">N/A</span>
-                        <br/>
+						<span id="server_responded">N/A</span>
+						<br/>
 						<?php _e( 'Server -> WordPress:', '' ); ?>
-                        <span id="website_responded">N/A</span>
-                        <br/>
-                        <br/>
-                        <input type="button" value="Check connection" id="rop_conection_check"/>
-                    </td>
-                </tr>
-            </table>
-        </div>
+						<span id="website_responded">N/A</span>
+						<br/>
+						<br/>
+						<input type="button" value="Check connection" id="rop_conection_check"/>
+					</td>
+				</tr>
+			</table>
+		</div>
 		<?php
 	}
 }
