@@ -20,6 +20,7 @@
                                         :color="{checked: '#7DCE94', unchecked: '#82C7EB'}"
                                         @change="rop_cron_remote = $event.value; update_cron_type_action()"
                                         :disabled="is_cron_btn_active"
+                                        :sync="true"
                                 />
                             </div>
                         </div>
@@ -370,6 +371,7 @@
                 }).then(response => {
                     this.is_cron_btn_active = false;
                     this.$root.$refs.main_page.togglePosting(true);
+                    ropApiSettings.rop_cron_remote = this.rop_cron_remote;
                     //this.$emit( 'togglePosting', true);
                     //this.togglePosting(true);
                 }, error => {
