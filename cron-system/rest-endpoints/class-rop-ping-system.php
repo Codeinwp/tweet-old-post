@@ -86,14 +86,14 @@ class Rop_Ping_System extends Rop_System_Base {
 		// Get the headers the client is sending.
 		$headers = Rop_Helpers::apache_request_headers();
 
-		if ( empty( $headers ) || ! isset( $headers['Rop-Authorization'] ) ) {
+		if ( empty( $headers ) || ! isset( $headers['rop-authorization'] ) ) {
 			error_log( '### ' . __FUNCTION__ . ' header issue' );
 
 			return false;
 		}
 
 		// Fetch the client identity from headers.
-		$fetch_token = $this->fetch_token_from_headers( $headers['Rop-Authorization'] );
+		$fetch_token = $this->fetch_token_from_headers( $headers['rop-authorization'] );
 
 		if ( false === $fetch_token ) {
 			error_log( '### ' . __FUNCTION__ . ' token issue' );
@@ -140,11 +140,11 @@ class Rop_Ping_System extends Rop_System_Base {
 		#error_log(var_export(function_exists('apache_request_headers'),true));
 		$headers = Rop_Helpers::apache_request_headers();
 
-		if ( empty( $headers ) || ! isset( $headers['Rop-Authorization'] ) ) {
+		if ( empty( $headers ) || ! isset( $headers['rop-authorization'] ) ) {
 			return false;
 		}
 
-		return $this->is_valid_token( $headers['Rop-Authorization'] );
+		return $this->is_valid_token( $headers['rop-authorization'] );
 	}
 
 

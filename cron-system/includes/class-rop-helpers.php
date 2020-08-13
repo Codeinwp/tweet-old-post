@@ -102,8 +102,9 @@ class Rop_Helpers {
 	 * @static
 	 */
 	static public function apache_request_headers() {
+		$headers_output             = array();
+		$headers_output_return = array();
 		if ( ! function_exists( 'apache_request_headers' ) ) {
-			$headers_output = array();
 
 			foreach ( $_SERVER as $key => $value ) {
 				if ( 'HTTP_' === mb_strtoupper( substr( $key, 0, 5 ) ) ) {
@@ -113,11 +114,17 @@ class Rop_Helpers {
 					$headers_output[ $key ] = $value;
 				}
 			}
-
-			return $headers_output;
 		} else {
-			return apache_request_headers();
+			$headers_output = apache_request_headers();
 		}
+
+		if ( ! empty( $headers_output ) ) {
+			foreach ( $headers_output as $header_key => $heaver_value ) {
+				$headers_output_return[ strtolower( $header_key ) ] = $heaver_value;
+			}
+		}
+
+		return $headers_output_return;
 	}
 
 	/**

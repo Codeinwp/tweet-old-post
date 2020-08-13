@@ -418,7 +418,7 @@ class Rop_Curl_Methods {
 				$this->connection,
 				CURLOPT_HTTPHEADER,
 				array(
-					'ROP-Authorization:' . $header_data,
+					'rop-authorization:' . $header_data,
 					'Accept: */*',
 					'Content-Length: ' . strlen( $post_data ),
 				)
