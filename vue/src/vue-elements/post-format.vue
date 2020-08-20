@@ -7,9 +7,10 @@
             </div>
             <div class="column col-6 col-sm-12 vertical-align">
                 <div class="form-group">
-                    <select class="form-select" v-model="post_format.wpml_language" :disabled="!isPro" v-on:change="refresh_language_taxonomies">
+                    <select id="wpml-language-selector" class="form-select" v-model="post_format.wpml_language" :disabled="!isPro" v-on:change="refresh_language_taxonomies">
                         <option value="" selected>{{labels.wpml_select_language}}</option>
-                        <option  v-for="(lang, index) in wpml_languages" :value="lang.code">{{lang.value}}</option>
+                        <!-- <option value="" v-bind:selected="post_format.wpml_language == ''">{{labels.wpml_select_language}}</option> -->
+                        <option v-for="(lang, index) in wpml_languages" :value="lang.code" v-bind:selected="lang.code == post_format.wpml_language ? 'selected' : false">{{lang.value}}</option>
                     </select>
                 </div>
             </div>
@@ -333,6 +334,8 @@
                 wpml_active_status: ropApiSettings.rop_get_wpml_active_status,
                 wpml_languages: ropApiSettings.rop_get_wpml_languages,
                 selected_tax_filter: [],
+                // selected_language: this.$store.state.activePostFormat[this.account_id] ? this.$store.state.activePostFormat[this.account_id].wpml_language : [],
+                // post_types: this.$store.state.generalSettings.available_post_types,
             }
         },
         created: function () {
@@ -343,8 +346,44 @@
       lang.code = code;
       lang.value = lang[code];
     });
+
+    //if( this.isPro && this.wpml_active_status &&  this.post_format.wpml_language !== '' ){
+      // this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.post_types, language_code: this.selected_language }});
+      // this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes, language_code: this.post_format.wpml_language }});
+    //}
+
         },
-        methods:{
+        mounted: function() {
+          // below should only happen if is pro.
+//this.load_taxonomy();
+//
+// document.onreadystatechange = () => {
+//    if (document.readyState == "complete") {
+//      const wpml_language_selector = document.querySelector('#wpml-language-selector');
+//      console.log(wpml_language_selector);
+//      console.log(wpml_language_selector.value);
+//    }
+//  }
+//
+//  window.addEventListener('load', () => {
+//    const wpml_language_selector = document.querySelector('#wpml-language-selector');
+//    console.log(wpml_language_selector);
+//    console.log(wpml_language_selector.value);
+//    })
+
+          // if( this.isPro && this.wpml_active_status &&  this.post_format.wpml_language !== '' ){
+          //   this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.$store.state.generalSettings.available_post_types, language_code: 'en' }});
+          //   // this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes, language_code: this.post_format.wpml_language }});
+          // }
+
+          // if( this.isPro && this.wpml_active_status &&  this.post_format.wpml_language !== '' ){
+          //   this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.post_types, language_code: this.selected_language }});
+          //   // this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes, language_code: this.post_format.wpml_language }});
+          // }
+      //    this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.post_types, language_code: this.selected_language }});
+
+},
+       methods:{
 
             refresh_language_taxonomies: function(e){
 
@@ -417,12 +456,14 @@
                 return (postFormat.taxonomy_filter) ? postFormat.taxonomy_filter : [];
             },
             taxonomy: function () {
-              // below should only happen if is pro
+              // this.selected_language = this.post_format.wpml_language;
+              // this.post_types = this.postTypes;
+              // console.log(this.selected_language);
+              // console.log( this.post_types);
               if( this.isPro && this.wpml_active_status &&  this.post_format.wpml_language !== '' ){
-                this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes, language_code: this.post_format.wpml_language }});
+              //  this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes, language_code: this.post_format.wpml_language }});
               }
-              //
-                return this.$store.state.generalSettings.available_taxonomies;
+              return this.$store.state.generalSettings.available_taxonomies;
             }
         },
         watch: {

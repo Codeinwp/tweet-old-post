@@ -95,6 +95,9 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			do_action( 'wpml_switch_language', $language_code );
 		}
 
+		// check the first active account and it's post format and see if it has a language code.
+		// If it does then also refresh the taxonomies list with that language
+
 		foreach ( $post_types as $post_type_name ) {
 
 			$post_type_taxonomies = get_object_taxonomies( $post_type_name, 'objects' );

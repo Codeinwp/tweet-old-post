@@ -88,6 +88,7 @@
 		},
 		mounted: function () {
 			this.setupData();
+			this.refresh_language_taxonomies();
 		},
 		filters: {
 			capitalize: function (value) {
@@ -140,6 +141,15 @@
 			}
 		},
 		methods: {
+
+			postTypes: function () {
+				// console.log('post types:', this.$store.state.generalSettings.available_post_types);
+					return this.$store.state.generalSettings.available_post_types;
+			},
+			refresh_language_taxonomies: function(){
+				// the 'ja' language code below needs to be dynamic like we did in post-format.vue
+				 this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes(), language_code: 'ja'}});
+			},
 			setupData() {
 				let action = this.type.replace('-', '_');
 				let label = '';
@@ -237,6 +247,9 @@
 				}
 			},
 			setActiveAccount(id) {
+				const wpml_language_selector = document.querySelector('#wpml-language-selector');
+				console.log(wpml_language_selector);
+				console.log(wpml_language_selector.value);
 				if (this.is_loading) {
 					this.$log.warn("Request in progress...Bail");
 					return;
