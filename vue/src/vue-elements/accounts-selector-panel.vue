@@ -88,7 +88,7 @@
 		},
 		mounted: function () {
 			this.setupData();
-			this.refresh_language_taxonomies();
+		//	this.refresh_language_taxonomies();
 		},
 		filters: {
 			capitalize: function (value) {

@@ -37644,13 +37644,9 @@ module.exports = {
 			is_loading: false
 		};
 	},
-	created: function created() {
-		this.refresh_language_taxonomies();
-	},
 	mounted: function mounted() {
 		this.setupData();
-		var wpml_language_selector = document.querySelector('#wpml-language-selector');
-		this.refresh_language_taxonomies();
+		//	this.refresh_language_taxonomies();
 	},
 	filters: {
 		capitalize: function capitalize(value) {
@@ -37707,6 +37703,7 @@ module.exports = {
 			return this.$store.state.generalSettings.available_post_types;
 		},
 		refresh_language_taxonomies: function refresh_language_taxonomies() {
+			// the 'ja' language code below needs to be dynamic like we did in post-format.vue
 			this.$store.dispatch('fetchAJAXPromise', { req: 'get_taxonomies', data: { post_types: this.postTypes(), language_code: 'ja' } });
 		},
 		setupData: function setupData() {
@@ -38025,9 +38022,9 @@ module.exports = {
             upsell_link: ropApiSettings.upsell_link,
             wpml_active_status: ropApiSettings.rop_get_wpml_active_status,
             wpml_languages: ropApiSettings.rop_get_wpml_languages,
-            selected_tax_filter: [],
+            selected_tax_filter: []
             // selected_language: this.$store.state.activePostFormat[this.account_id] ? this.$store.state.activePostFormat[this.account_id].wpml_language : [],
-            post_types: this.$store.state.generalSettings.available_post_types
+            // post_types: this.$store.state.generalSettings.available_post_types,
         };
     },
     created: function created() {
@@ -38047,20 +38044,20 @@ module.exports = {
     mounted: function mounted() {
         // below should only happen if is pro.
         //this.load_taxonomy();
-
-        document.onreadystatechange = function () {
-            if (document.readyState == "complete") {
-                var wpml_language_selector = document.querySelector('#wpml-language-selector');
-                console.log(wpml_language_selector);
-                console.log(wpml_language_selector.value);
-            }
-        };
-
-        window.addEventListener('load', function () {
-            var wpml_language_selector = document.querySelector('#wpml-language-selector');
-            console.log(wpml_language_selector);
-            console.log(wpml_language_selector.value);
-        });
+        //
+        // document.onreadystatechange = () => {
+        //    if (document.readyState == "complete") {
+        //      const wpml_language_selector = document.querySelector('#wpml-language-selector');
+        //      console.log(wpml_language_selector);
+        //      console.log(wpml_language_selector.value);
+        //    }
+        //  }
+        //
+        //  window.addEventListener('load', () => {
+        //    const wpml_language_selector = document.querySelector('#wpml-language-selector');
+        //    console.log(wpml_language_selector);
+        //    console.log(wpml_language_selector.value);
+        //    })
 
         // if( this.isPro && this.wpml_active_status &&  this.post_format.wpml_language !== '' ){
         //   this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.$store.state.generalSettings.available_post_types, language_code: 'en' }});
@@ -38072,6 +38069,7 @@ module.exports = {
         //   // this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes, language_code: this.post_format.wpml_language }});
         // }
         //    this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.post_types, language_code: this.selected_language }});
+
     },
     methods: {
 

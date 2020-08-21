@@ -95,8 +95,25 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			do_action( 'wpml_switch_language', $language_code );
 		}
 
-		// check the first active account and it's post format and see if it has a language code.
-		// If it does then also refresh the taxonomies list with that language
+		// Here We are refreshing the taxonomies "on page load"
+		// This method fires whenever the post format page is brought into view.
+		// We're refreshing the taxonomies based on whether that first account has a language assigned or not
+		if( function_exists( 'icl_object_id' ) && empty($language_code) ){
+			// check the first active account and it's post format and see if it has a language code.
+			$first_account_id = array_keys($this->data['active_accounts'])[0];
+			$post_format_model = new Rop_Post_Format_Model;
+			$post_format = $post_format_model->get_post_format($first_account_id);
+			$first_account_lang = !empty($post_format['wpml_language']) ? $post_format['wpml_language'] : '';
+
+			if( !empty($first_account_lang) ){
+				$wpml_current_lang = apply_filters( 'wpml_current_language', null );
+				// changes the language of global query to use the specfied language
+				do_action( 'wpml_switch_language', $first_account_lang );
+			}
+
+			update_option('rop_active_acc', print_r($first_account_lang, true));
+		}
+
 
 		foreach ( $post_types as $post_type_name ) {
 
@@ -148,6 +165,12 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			// set language back to original
 			do_action( 'wpml_switch_language', $wpml_current_lang );
 		}
+
+		if( function_exists( 'icl_object_id' ) && !empty($first_account_lang) ){
+			// set language back to original
+			do_action( 'wpml_switch_language', $wpml_current_lang );
+		}
+
 		return $taxonomies;
 	}
 
