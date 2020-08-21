@@ -42,6 +42,7 @@ abstract class Rop_Services_Abstract {
 		'is_company' => false,
 		'img'        => '',
 		'service'    => '',
+		'link'    => '',
 	);
 	/**
 	 * Stores the service details.
@@ -143,6 +144,16 @@ abstract class Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public abstract function set_api();
+
+
+	/**
+	 * Method to populate additional data.
+	 *
+	 * @since   ?
+	 * @access  public
+	 * @return mixed
+	 */
+	public abstract function populate_additional_data( $account );
 
 	/**
 	 * Method for authorizing the service.

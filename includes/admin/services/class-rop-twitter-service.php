@@ -584,4 +584,16 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		return true;
 	}
 
+	/**
+	 * Method to populate additional data.
+	 *
+	 * @since   ?
+	 * @access  public
+	 * @return mixed
+	 */
+	public function populate_additional_data( $account ) {
+		$account['link'] = sprintf( 'https://twitter.com/%s', $account['user'] );
+		return $account;
+	}
+
 }

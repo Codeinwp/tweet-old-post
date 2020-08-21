@@ -1010,5 +1010,15 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		}
 
 	}
+	/**
+	 * Method to populate additional data.
+	 *
+	 * @since   ?
+	 * @access  public
+	 * @return mixed
+	 */
+	public function populate_additional_data( $account ) {
+		return $accounts;
+	}
 
 }

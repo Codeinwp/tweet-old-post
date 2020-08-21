@@ -251,6 +251,8 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 				 */
 				$service['available_accounts'] = array_map(
 					function ( $account ) {
+						$service = Rop_Services_Factory::build( $account['service'] );
+						$account = $service->populate_additional_data( $account );
 						return $this->normalize_account( $account );
 					},
 					$service['available_accounts']
