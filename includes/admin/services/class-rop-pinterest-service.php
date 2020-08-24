@@ -548,12 +548,13 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	/**
 	 * Method to populate additional data.
 	 *
-	 * @since   ?
+	 * @since   8.5.13
 	 * @access  public
 	 * @return mixed
 	 */
 	public function populate_additional_data( $account ) {
-		return $accounts;
+		$account['link'] = 'https://pinterest.com';
+		return $account;
 	}
 
 }

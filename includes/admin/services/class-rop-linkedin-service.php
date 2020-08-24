@@ -843,12 +843,17 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	/**
 	 * Method to populate additional data.
 	 *
-	 * @since   ?
+	 * @since   8.5.13
 	 * @access  public
 	 * @return mixed
 	 */
 	public function populate_additional_data( $account ) {
-		return $accounts;
+		if ( $account['is_company'] ) {
+			$account['link'] = sprintf( 'https://linkedin.com/company/%s', $account['id'] );
+		} else {
+			$account['link'] = 'https://linkedin.com/feed/';
+		}
+		return $account;
 	}
 
 }

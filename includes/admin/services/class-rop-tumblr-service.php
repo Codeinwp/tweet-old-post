@@ -629,12 +629,13 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	/**
 	 * Method to populate additional data.
 	 *
-	 * @since   ?
+	 * @since   8.5.13
 	 * @access  public
 	 * @return mixed
 	 */
 	public function populate_additional_data( $account ) {
-		return $accounts;
+		$account['link'] = sprintf( 'https://tumblr.com/blog/%s', $account['id'] );
+		return $account;
 	}
 
 }
