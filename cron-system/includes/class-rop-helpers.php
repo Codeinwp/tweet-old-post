@@ -177,7 +177,7 @@ class Rop_Helpers {
 		}
 
 		$token = get_option( 'rop_access_token', '' );
-		if ( ! empty( $token ) ) {
+		if ( empty( $token ) ) {
 			$logger->alert_error( 'Could not update the Cron Server, your access token is missing from the database.' );
 
 			return false;
@@ -219,6 +219,9 @@ class Rop_Helpers {
 		curl_setopt( $connection, CURLOPT_FOLLOWLOCATION, true );
 
 		$server_response_body = curl_exec( $connection );
+
+		error_log( '$server_response_body: ' . var_export( $server_response_body, true ) );
+
 		$http_code            = curl_getinfo( $connection, CURLINFO_HTTP_CODE );
 		curl_close( $connection );
 
@@ -226,7 +229,8 @@ class Rop_Helpers {
 			$logger->alert_error( 'Cron server connection code : ' . $http_code );
 		} else {
 			$response_array = json_decode( $server_response_body, true );
-			if ( ! empty( $response_array ) && json_last_error() !== JSON_ERROR_NONE ) {
+
+			if ( ! empty( $response_array ) && json_last_error() === JSON_ERROR_NONE ) {
 
 				$response_success = null;
 				// if custom message is received.
@@ -244,7 +248,7 @@ class Rop_Helpers {
 					$success = filter_var( $response_success, FILTER_VALIDATE_BOOLEAN );
 
 					if ( true === $success ) {
-						$logger->alert_success( 'Cron service timer updated.' );
+						$logger->alert_success( $response_array['message'] );
 					} else {
 						// An issue was found.
 						$error = '';

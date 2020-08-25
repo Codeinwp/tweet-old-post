@@ -215,6 +215,18 @@ class Rop_Rest_Api {
 	private function save_schedule( $data ) {
 		$pro_api = new Rop_Pro_Api();
 
+		$cron_status = filter_var( get_option( 'rop_is_sharing_cron_active', 'no' ), FILTER_VALIDATE_BOOLEAN );
+
+		if ( true ===$cron_status && defined( 'ROP_CRON_ALTERNATIVE' ) && true === ROP_CRON_ALTERNATIVE ) {
+			$server_url = ROP_CRON_DOMAIN . '/wp-json/update-cron-ping/v1/update-time-to-share/';
+			// inform the cron server to ping this website in the next process.
+			$time_to_share = array(
+				'next_ping' => current_time( 'mysql' ), // phpcs:ignore
+			);
+
+			RopCronSystem\ROP_Helpers\Rop_Helpers::custom_curl_post_request( $server_url, $time_to_share );
+		}
+
 		return $pro_api->save_schedule( $data );
 	}
 
@@ -543,7 +555,9 @@ class Rop_Rest_Api {
 		$this->response->set_code( '200' )
 		               ->set_data( $settings_model->get_settings() );
 
-		if ( defined( 'ROP_CRON_ALTERNATIVE' ) && true === ROP_CRON_ALTERNATIVE ) {
+		$cron_status = filter_var( get_option( 'rop_is_sharing_cron_active', 'no' ), FILTER_VALIDATE_BOOLEAN );
+
+		if ( true === $cron_status && defined( 'ROP_CRON_ALTERNATIVE' ) && true === ROP_CRON_ALTERNATIVE ) {
 			$new_default_interval = trim( $data['default_interval'] );
 
 			$saved_default_interval = trim( $saved_data['default_interval'] );
@@ -554,7 +568,7 @@ class Rop_Rest_Api {
 
 				// inform the cron server to ping this website in the next process.
 				$time_to_share = array(
-					'next_ping' => current_time( 'timestamp' ), // phpcs:ignore
+					'next_ping' => current_time( 'mysql' ), // phpcs:ignore
 				);
 
 				RopCronSystem\ROP_Helpers\Rop_Helpers::custom_curl_post_request( $server_url, $time_to_share );
