@@ -2,7 +2,7 @@
     <div class="tab-view">
         <div class="panel-body">
             <div class="container" :class="'rop-tab-state-'+is_loading">
-                <div class="columns py-2">
+                <div class="columns py-2" v-if="this.apply_exclude_limit_cron" >
                     <div class="column col-6 col-sm-12 vertical-align rop-control">
                         <b>{{labels.cron_type_label}}</b>
                         <p class="text-gray">{{labels.cron_type_label_desc}}</p>
@@ -26,7 +26,7 @@
                         </div>
                     </div>
                 </div>
-                <span class="divider"></span>
+                <span class="divider" v-if="this.apply_exclude_limit_cron" ></span>
 
                 <div class="columns py-2" v-if="! isBiz">
                     <div class="column col-6 col-sm-12 vertical-align">
@@ -344,6 +344,9 @@
             },
             isCustomMsgs: function () {
                 return this.$store.state.generalSettings.custom_messages;
+            },
+            apply_exclude_limit_cron: function () {
+              return ropApiSettings.remote_cron_type_limit > 0;
             }
         },
         mounted: function () {

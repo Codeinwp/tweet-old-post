@@ -19,6 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 #define( 'ROP_CRON_ALTERNATIVE_DEMO_EMAIL', 'mihai@wpriders.com' );
 // ROP Cron System Server URL, no "/" slash a t the end.
 define( 'ROP_CRON_DOMAIN', 'https://ropserver.ernomo.re' );
+#define( 'ROP_CRON_DOMAIN', 'https://ropserver.wpr' );
 
 /**
  * Handles the load of the new Cron System.

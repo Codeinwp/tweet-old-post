@@ -120,6 +120,11 @@ class Rop_Curl_Methods {
 				if ( empty( $token ) && ':delete_account:' !== $args['request_path'] ) {
 					$this->server_url = self::SERVER_URL . $this->server_paths[':register_account:'];
 					$this->connection = curl_init( $this->server_url );
+
+					if ( ':disable_account:' === $args['request_path'] ) {
+						$args = array();
+					}
+
 					$this->register_to_top_server( $args );
 				} else {
 
@@ -144,7 +149,7 @@ class Rop_Curl_Methods {
 	/**
 	 * Handles the API calls of type POST.
 	 *
-	 * @param array  $post_arguments Post arguments array.
+	 * @param array $post_arguments Post arguments array.
 	 * @param string $path_action Action type.
 	 *
 	 * @return bool|string
@@ -332,12 +337,13 @@ class Rop_Curl_Methods {
 			$success = filter_var( $response_success, FILTER_VALIDATE_BOOLEAN );
 
 			// If the response was a success.
-			if ( true === $success && ! empty( $callback_param ) ) {
+			if ( true === $success ) {
 
-				// Being registered with success, let's do the requested call.
-				$request_call = new Rop_Curl_Methods();
-				$request_call->create_call_process( $callback_param );
-
+				if ( ! empty( $callback_param ) ) {
+					// Being registered with success, let's do the requested call.
+					$request_call = new Rop_Curl_Methods();
+					$request_call->create_call_process( $callback_param );
+				}
 				// Inform the user about the action
 				$this->logger->alert_success( 'Successfully registered to the Cron Service' );
 			} else {
