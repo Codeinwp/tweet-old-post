@@ -3,6 +3,9 @@
 namespace RopCronSystem\ROP_Helpers;
 
 
+use Rop_Exception_Handler;
+use Rop_Logger;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	header( 'Status: 403 Forbidden' );
 	header( 'HTTP/1.1 403 Forbidden' );
@@ -102,7 +105,7 @@ class Rop_Helpers {
 	 * @static
 	 */
 	static public function apache_request_headers() {
-		$headers_output             = array();
+		$headers_output        = array();
 		$headers_output_return = array();
 		if ( ! function_exists( 'apache_request_headers' ) ) {
 
@@ -153,6 +156,128 @@ class Rop_Helpers {
 			return substr( $bytes, 0, $count );
 
 		}
+	}
+
+	/**
+	 * Function used to create custom requests to the Cron Server.
+	 *
+	 * @param string $url Server endpoint.
+	 * @param array $post_arguments
+	 *
+	 * @return bool|string
+	 */
+	static public function custom_curl_post_request( $url = '', $post_arguments = array() ) {
+
+		$logger = new Rop_Logger();
+
+		if ( empty( $url ) ) {
+			$logger->alert_error( 'Could not update the Cron Server, the URL is missing.' );
+
+			return false;
+		}
+
+		$token = get_option( 'rop_access_token', '' );
+		if ( ! empty( $token ) ) {
+			$logger->alert_error( 'Could not update the Cron Server, your access token is missing from the database.' );
+
+			return false;
+		}
+
+		$connection = curl_init( $url );
+		curl_setopt( $connection, CURLOPT_RETURNTRANSFER, true );
+		curl_setopt( $connection, CURLOPT_SSL_VERIFYHOST, false );
+		curl_setopt( $connection, CURLOPT_SSL_VERIFYPEER, false );
+		curl_setopt( $connection, CURLOPT_POST, true );
+
+		$post_data = '';
+
+		if ( ! empty( $post_arguments ) ) {
+			$post_data = build_query( $post_arguments );
+			curl_setopt( $connection, CURLOPT_POSTFIELDS, $post_data );
+		}
+
+		$auth_token  = array(
+			'token' => $token,
+		);
+		$string_data = http_build_query( $auth_token );
+		$header_data = base64_encode( $string_data );
+
+		curl_setopt(
+			$connection,
+			CURLOPT_HTTPHEADER,
+			array(
+				'rop-authorization:' . $header_data,
+				'Accept: */*',
+				'Content-Length: ' . strlen( $post_data ),
+			)
+		);
+
+		/**
+		 * Accept up to 3 maximum redirects before cutting the connection.
+		 */
+		curl_setopt( $connection, CURLOPT_MAXREDIRS, 3 );
+		curl_setopt( $connection, CURLOPT_FOLLOWLOCATION, true );
+
+		$server_response_body = curl_exec( $connection );
+		$http_code            = curl_getinfo( $connection, CURLINFO_HTTP_CODE );
+		curl_close( $connection );
+
+		if ( absint( $http_code ) !== 200 ) {
+			$logger->alert_error( 'Cron server connection code : ' . $http_code );
+		} else {
+			$response_array = json_decode( $server_response_body, true );
+			if ( ! empty( $response_array ) && json_last_error() !== JSON_ERROR_NONE ) {
+
+				$response_success = null;
+				// if custom message is received.
+				if ( isset( $response_array['success'] ) ) {
+					$response_success = $response_array['success'];
+
+					// If customized WP_Error is received.
+				} elseif ( isset( $response_array['data'] ) && isset( $response_array['data']['success'] ) ) {
+					$response_success = $response_array['data']['success'];
+				}
+
+				// If the response contains the success variable.
+				if ( ! is_null( $response_success ) ) {
+					// Making sure to cast the value into boolean.
+					$success = filter_var( $response_success, FILTER_VALIDATE_BOOLEAN );
+
+					if ( true === $success ) {
+						$logger->alert_success( 'Cron service timer updated.' );
+					} else {
+						// An issue was found.
+						$error = '';
+						if ( isset( $response_array['message'] ) ) {
+							$error = $response_array['message'];
+						} elseif ( isset( $response_array['error'] ) ) {
+							$error = $response_array['error'];
+						}
+
+						if ( ! empty( $error ) ) {
+							$logger->alert_error( 'Error registering to the Cron Service. Error: ' . $error );
+						}
+					}
+				} else {
+					// The success variable was not found.
+					$error = '';
+					if ( isset( $response_array['message'] ) ) {
+						$error = $response_array['message'];
+					} elseif ( isset( $response_array['error'] ) ) {
+						$error = $response_array['error'];
+					}
+
+					if ( ! empty( $error ) ) {
+						$logger->alert_error( 'Error registering to the Cron Service. Error: ' . $error );
+					}
+				}
+			} else {
+				$logger->alert_error( 'Cron server could not be reached to update the timer.' );
+			}
+		}
+
+
+		return $server_response_body;
 	}
 }
 

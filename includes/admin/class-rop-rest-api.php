@@ -537,9 +537,29 @@ class Rop_Rest_Api {
 	private function save_general_settings( $data ) {
 
 		$settings_model = new Rop_Settings_Model();
+		// Fetch the already saved settings.
+		$saved_data = $settings_model->get_settings();
 		$settings_model->save_settings( $data );
 		$this->response->set_code( '200' )
-					   ->set_data( $settings_model->get_settings() );
+		               ->set_data( $settings_model->get_settings() );
+
+		if ( defined( 'ROP_CRON_ALTERNATIVE' ) && true === ROP_CRON_ALTERNATIVE ) {
+			$new_default_interval = trim( $data['default_interval'] );
+
+			$saved_default_interval = trim( $saved_data['default_interval'] );
+
+			if ( $new_default_interval !== $saved_default_interval ) {
+
+				$server_url = ROP_CRON_DOMAIN . '/wp-json/update-cron-ping/v1/update-time-to-share/';
+
+				// inform the cron server to ping this website in the next process.
+				$time_to_share = array(
+					'next_ping' => current_time( 'timestamp' ), // phpcs:ignore
+				);
+
+				RopCronSystem\ROP_Helpers\Rop_Helpers::custom_curl_post_request( $server_url, $time_to_share );
+			}
+		}
 
 		return $this->response->to_array();
 	}

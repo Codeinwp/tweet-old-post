@@ -239,6 +239,25 @@ class Rop_Admin {
 	}
 
 	/**
+	 * Method used to decide whether or not to limit taxonomy select
+	 *
+	 * @return  bool
+	 * @since   8.6.0
+	 * @access  public
+	 */
+	public function limit_remote_cron_system() {
+		$installed_at_version = get_option( 'rop_first_install_version' );
+		if ( empty( $installed_at_version ) ) {
+			return 0;
+		}
+		if ( version_compare( $installed_at_version, '8.6.0', '>=' ) ) {
+			return 1;
+		}
+
+		return 0;
+	}
+
+	/**
 	 * Method used to decide whether or not to limit exclude posts.
 	 *
 	 * @return  bool
