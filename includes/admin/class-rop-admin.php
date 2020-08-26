@@ -303,6 +303,7 @@ class Rop_Admin {
 
 		$services        = new Rop_Services_Model();
 		$li_service      = new Rop_Linkedin_Service();
+		$tmblr_service   = new Rop_Tumblr_Service();
 		$active_accounts = $services->get_active_accounts();
 
 		$added_services = $services->get_authenticated_services();
@@ -314,27 +315,28 @@ class Rop_Admin {
 		$global_settings = new Rop_Global_Settings();
 		$settings        = new Rop_Settings_Model();
 
-	  $array_nonce['license_type']              = $global_settings->license_type();
-	  $array_nonce['fb_domain_toast_display']   = $this->facebook_exception_toast_display();
-	  $array_nonce['labels']                    = Rop_I18n::get_labels();
-	  $array_nonce['upsell_link']               = Rop_I18n::UPSELL_LINK;
-	  $array_nonce['pro_installed']             = ( defined( 'ROP_PRO_VERSION' ) ) ? true : false;
-	  $array_nonce['staging']                   = $this->rop_site_is_staging();
-	  $array_nonce['show_li_app_btn']           = $li_service->rop_show_li_app_btn();
-	  $array_nonce['debug']                     = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
-	  $array_nonce['tax_apply_limit']           = $this->limit_tax_dropdown_list();
+		$array_nonce['license_type']            = $global_settings->license_type();
+		$array_nonce['fb_domain_toast_display'] = $this->facebook_exception_toast_display();
+		$array_nonce['labels']                  = Rop_I18n::get_labels();
+		$array_nonce['upsell_link']             = Rop_I18n::UPSELL_LINK;
+		$array_nonce['pro_installed']           = ( defined( 'ROP_PRO_VERSION' ) ) ? true : false;
+		$array_nonce['staging']                 = $this->rop_site_is_staging();
+		$array_nonce['show_li_app_btn']         = $li_service->rop_show_li_app_btn();
+		$array_nonce['show_tmblr_app_btn']      = $tmblr_service->rop_show_tmblr_app_btn();
+		$array_nonce['debug']                   = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
+		$array_nonce['tax_apply_limit']         = $this->limit_tax_dropdown_list();
 	  $array_nonce['remote_cron_type_limit']    = $this->limit_remote_cron_system();
-	  $array_nonce['exclude_apply_limit']       = $this->limit_exclude_list();
-	  $array_nonce['publish_now']               = array(
-		  'action'   => $settings->get_instant_sharing_by_default(),
-		  'accounts' => $active_accounts,
-	  );
-	  $array_nonce['added_networks']            = $added_networks;
+		$array_nonce['exclude_apply_limit']     = $this->limit_exclude_list();
+		$array_nonce['publish_now']             = array(
+			'action'   => $settings->get_instant_sharing_by_default(),
+			'accounts' => $active_accounts,
+		);
+		$array_nonce['added_networks']          = $added_networks;
 	  $array_nonce['rop_cron_remote']           = filter_var( get_option( 'rop_use_remote_cron', false ), FILTER_VALIDATE_BOOLEAN );
 	  $array_nonce['rop_cron_remote_agreement'] = filter_var( get_option( 'rop_remote_cron_terms_agree', false ), FILTER_VALIDATE_BOOLEAN );
 
 		$admin_url = get_admin_url( get_current_blog_id(), 'admin.php?page=TweetOldPost' );
-		$token     = get_option( ROP_APP_TOKEN_OPTION );
+		$token     = get_option( 'ROP_INSTALL_TOKEN_OPTION' );
 		$signature = md5( $admin_url . $token );
 
 		$rop_auth_app_data = array(
@@ -344,6 +346,8 @@ class Rop_Admin {
 			'authAppTwitterPath'  => ROP_APP_TWITTER_PATH,
 			'authAppLinkedInPath' => ROP_APP_LINKEDIN_PATH,
 			'authAppBufferPath'   => ROP_APP_BUFFER_PATH,
+			'authAppTumblrPath'   => ROP_APP_TUMBLR_PATH,
+			'authAppGmbPath'        => ROP_APP_GMB_PATH,
 			'authToken'           => $token,
 			'adminUrl'            => urlencode( $admin_url ),
 			'authSignature'       => $signature,
@@ -744,18 +748,33 @@ class Rop_Admin {
 		$enabled = $_POST['publish_now_accounts'];
 
 		if ( ! is_array( $enabled ) ) {
-			$enabled = array();
+				$enabled = array();
 		}
 
 		$services = new Rop_Services_Model();
+		$settings = new Rop_Settings_Model();
+
 		$active   = array_keys( $services->get_active_accounts() );
 		// has something been added extra?
 		$extra = array_diff( $enabled, $active );
 		// reject the extra.
 		$enabled = array_diff( $enabled, $extra );
 
+		$instant_share_custom_content = array();
+
+		foreach ( $enabled as $account_id ) {
+				$custom_message = ! empty( $_POST[ $account_id ] ) ? $_POST[ $account_id ] : '';
+				$instant_share_custom_content[ $account_id ] = $custom_message;
+		}
+
+		// If user wants to run this operation on page refresh instead of via Cron.
+		if ( $settings->get_true_instant_share() ) {
+			$this->rop_cron_job_publish_now( $post_id, $instant_share_custom_content );
+			return;
+		}
+
 		update_post_meta( $post_id, 'rop_publish_now', 'yes' );
-		update_post_meta( $post_id, 'rop_publish_now_accounts', $enabled );
+		update_post_meta( $post_id, 'rop_publish_now_accounts', $instant_share_custom_content );
 
 		if ( ! $enabled ) {
 			return;
@@ -775,6 +794,7 @@ class Rop_Admin {
 	 */
 	public function share_scheduled_future_post( $post ) {
 
+		$post_id = $post->ID;
 		$settings            = new Rop_Settings_Model();
 		$selected_post_types = wp_list_pluck( $settings->get_selected_post_types(), 'value' );
 
@@ -797,16 +817,32 @@ class Rop_Admin {
 		// this would only be possible in Pro plugin
 		if ( $global_settings->license_type() > 0 && $rop_active_status ) {
 
+			$logger          = new Rop_Logger();
 			// Get the current plugin options.
-			$option = get_option( 'rop_data' );
+			$options = get_option( 'rop_data' );
 
 			$social_accounts = array();
-			$post_formats = $option['post_format'];
+			$post_formats = array_key_exists( 'post_format', $options ) ? $options['post_format'] : '';
+			$account_from_formats = array_keys( $post_formats );
+
+			if ( empty( $post_formats ) ) {
+				$logger->alert_error( Rop_I18n::get_labels( 'post_format.no_post_format_error' ) );
+				return;
+			}
 
 			foreach ( $post_formats as $key => $value ) {
 
-				if ( ! array_key_exists( 'taxonomy_filter', $value ) ) {
-					// share to accounts where no filters are selected
+				// check if an account is active, but has no post format saved in the DB
+				 // if it doesn't then sharing scheduled posts on publish would not work for that account
+				foreach ( $active_accounts as $account ) {
+						$active_social_network = ucfirst( explode( '_', $account )[0] );
+					if ( ! in_array( $account, $account_from_formats ) ) {
+						$logger->alert_error( Rop_I18n::get_labels( 'post_format.active_account_no_post_format_error' ) . $active_social_network );
+					}
+				}
+
+				if ( ! array_key_exists( 'taxonomy_filter', $value ) || empty( $value['taxonomy_filter'] ) ) {
+					// share to accounts where no filters are selected, or no filters exist
 					$social_accounts[] = $key;
 					continue;
 				}
@@ -819,7 +855,7 @@ class Rop_Admin {
 				$taxonomies_ids = array_keys( $taxonomy_filter );
 
 				// get term ids for the taxonomies selected on General Settings of ROP that are present in the current post
-				$post_term_ids = wp_get_post_terms( $post->ID, $taxonomies_slug, array( 'fields' => 'ids' ) );
+				$post_term_ids = wp_get_post_terms( $post_id, $taxonomies_slug, array( 'fields' => 'ids' ) );
 
 				// get the common term ids between what's assigned to the post and what's selected in General Settings
 				$common = array_intersect( $taxonomies_ids, $post_term_ids );
@@ -857,7 +893,7 @@ class Rop_Admin {
 			$taxonomies_ids = array_keys( $taxonomies );
 
 			// get term ids for the taxonomies selected on General Settings of ROP that are present in the current post
-			$post_term_ids = wp_get_post_terms( $post->ID, $taxonomies_slug, array( 'fields' => 'ids' ) );
+			$post_term_ids = wp_get_post_terms( $post_id, $taxonomies_slug, array( 'fields' => 'ids' ) );
 
 			// get the common term ids between what's assigned to the post and what's selected in General Settings
 			$common = array_intersect( $taxonomies_ids, $post_term_ids );
@@ -875,11 +911,7 @@ class Rop_Admin {
 			}
 		}
 
-		update_post_meta( $post->ID, 'rop_publish_now', 'yes' );
-		update_post_meta( $post->ID, 'rop_publish_now_accounts', $active_accounts );
-
-		$cron = new Rop_Cron_Helper();
-		$cron->manage_cron( array( 'action' => 'publish-now' ) );
+		$this->rop_cron_job_publish_now( $post_id, $active_accounts, true );
 	}
 
 
@@ -888,24 +920,34 @@ class Rop_Admin {
 	 *
 	 * @since   8.1.0
 	 * @access  public
+	 * @param int   $post_id the Post ID.
+	 * @param array $accounts_data The accounts data, may either be the accounts the user has selected to share the post to (by clicking the instant sharing checkbox on post edit screen, would also contain the custom share message if any was entered), or an array of active accounts to share to by the share_scheduled_future_post() method.
+	 * @param bool  $is_future_post Whether method was called by share_scheduled_future_post() method.
 	 */
-	public function rop_cron_job_publish_now() {
+	public function rop_cron_job_publish_now( $post_id = '', $accounts_data = array(), $is_future_post = false ) {
 		$queue           = new Rop_Queue_Model();
 		$services_model  = new Rop_Services_Model();
 		$logger          = new Rop_Logger();
 		$service_factory = new Rop_Services_Factory();
+		$settings = new Rop_Settings_Model();
 
-		$queue_stack = $queue->build_queue_publish_now();
+		$queue_stack = $queue->build_queue_publish_now( $post_id, $accounts_data, $is_future_post, $settings->get_true_instant_share() );
 		$logger->info( 'Fetching publish now queue', array( 'queue' => $queue_stack ) );
 		foreach ( $queue_stack as $account => $events ) {
 			foreach ( $events as $index => $event ) {
-				$posts        = $event['posts'];
+				$post    = $event['post'];
+				$message = ! empty( $event['custom_instant_share_message'] ) ? $event['custom_instant_share_message'] : '';
+				$message = apply_filters( 'rop_instant_share_message', $message, $event );
 				$account_data = $services_model->find_account( $account );
 				try {
 					$service = $service_factory->build( $account_data['service'] );
 					$service->set_credentials( $account_data['credentials'] );
-					foreach ( $posts as $post ) {
-						$post_data = $queue->prepare_post_object( $post, $account );
+					foreach ( $post as $post_id ) {
+						$post_data = $queue->prepare_post_object( $post_id, $account );
+						$custom_instant_share_message = $message;
+						if ( ! empty( $custom_instant_share_message ) ) {
+							$post_data['content'] = $custom_instant_share_message;
+						}
 						$logger->info( 'Posting', array( 'extra' => $post_data ) );
 						$service->share( $post_data, $account_data );
 					}
@@ -935,31 +977,50 @@ class Rop_Admin {
 	 */
 	public function rop_cron_job() {
 		$queue           = new Rop_Queue_Model();
+		$queue_stack     = $queue->build_queue();
 		$services_model  = new Rop_Services_Model();
 		$logger          = new Rop_Logger();
-		$queue_stack     = $queue->build_queue();
 		$service_factory = new Rop_Services_Factory();
+		$refresh_rop_data = false;
 
 		$cron = new Rop_Cron_Helper();
 		$cron->create_cron( false );
 
 		foreach ( $queue_stack as $account => $events ) {
+
+			if ( strpos( json_encode( $queue_stack ), 'gmb_' ) !== false ) {
+				$refresh_rop_data = true;
+			}
+
 			foreach ( $events as $index => $event ) {
 				/**
 				 * Trigger share if we have an event in the past, and the timestamp of that event is in the last 15mins.
 				 */
 				if ( $event['time'] <= Rop_Scheduler_Model::get_current_time() ) {
 					$posts = $event['posts'];
-					$queue->remove_from_queue( $event['time'], $account );
+					// If current account is not Google My Business, but GMB is active, refresh options data in instance; in case GMB updated it's options(access token)
+					if ( $refresh_rop_data && ( strpos( $account, 'gmb_' ) === false ) ) {
+						$queue->remove_from_queue( $event['time'], $account, true );
+					} else {
+						$queue->remove_from_queue( $event['time'], $account );
+					}
+
 					if ( ( Rop_Scheduler_Model::get_current_time() - $event['time'] ) < ( 15 * MINUTE_IN_SECONDS ) ) {
 						$account_data = $services_model->find_account( $account );
 						try {
 							$service = $service_factory->build( $account_data['service'] );
 							$service->set_credentials( $account_data['credentials'] );
 							foreach ( $posts as $post ) {
+								$post_shared = $account . '_post_id_' . $post;
+								if ( get_option( 'rop_last_post_shared' ) === $post_shared ) {
+									$logger->info( ucfirst( $account_data['service'] ) . ': ' . Rop_I18n::get_labels( 'sharing.post_already_shared' ) );
+									// help prevent duplicate posts on some systems
+									continue;
+								}
 								$post_data = $queue->prepare_post_object( $post, $account );
 								$logger->info( 'Posting', array( 'extra' => $post_data ) );
 								$service->share( $post_data, $account_data );
+								update_option( 'rop_last_post_shared', $post_shared );
 							}
 						} catch ( Exception $exception ) {
 							$error_message = sprintf( Rop_I18n::get_labels( 'accounts.service_error' ), $account_data['service'] );
@@ -1040,7 +1101,7 @@ class Rop_Admin {
 
 
 	/**
-	 * Disable Cron Jobs on refresh if remove_cron() method was called
+	 * If the option "rop_is_sharing_cron_active" value is off/false/no then the WP Cron Jobs will be cleared.
 	 *
 	 * @since 8.5.0
 	 */
@@ -1312,6 +1373,101 @@ class Rop_Admin {
 
 		if ( ! $settings->get_more_than_once() ) {
 			delete_option( 'rop_one_time_share_accounts' );
+		}
+
+	}
+
+	/**
+	 * Update default shortener from rviv.ly.
+	 *
+	 * Rviv.ly domain is currently blacklisted by some social media networks.
+	 * This code changes the rviv.ly shortener to is.id
+	 *
+	 * @since   8.5.6
+	 * @access  public
+	 */
+	public function rop_update_shortener() {
+
+		$user_id = get_current_user_id();
+
+		if ( get_user_meta( $user_id, 'rop-shortener-changed-notice-dismissed' ) ) {
+			return;
+		}
+
+		$updated_shortener = get_option( 'rop_changed_shortener' );
+
+		if ( ! empty( $updated_shortener ) ) {
+			return;
+		}
+
+		$options = get_option( 'rop_data' );
+
+		if ( empty( $options ) ) {
+			return;
+		}
+
+		$post_format = array_key_exists( 'post_format', $options ) ? $options['post_format'] : '';
+
+		if ( empty( $post_format ) ) {
+			return;
+		}
+
+		foreach ( $post_format as $account => $settings ) {
+
+			foreach ( $settings as $key => $value ) {
+
+				if ( $key === 'short_url_service' && $value === 'rviv.ly' ) {
+					update_option( 'rop_changed_shortener', true );
+					$post_format[ $account ][ $key ] = 'is.gd';
+				}
+			}
+		}
+
+		$options['post_format'] = $post_format;
+		update_option( 'rop_data', $options );
+
+	}
+
+	/**
+	 * Shortener changed notice.
+	 *
+	 * @since   8.5.6
+	 * @access  public
+	 */
+	public function rop_shortener_changed_notice() {
+
+		$updated_shortener = get_option( 'rop_changed_shortener' );
+
+		if ( empty( $updated_shortener ) ) {
+			return;
+		}
+
+		$user_id = get_current_user_id();
+
+		if ( get_user_meta( $user_id, 'rop-shortener-changed-notice-dismissed' ) ) {
+			return;
+		}
+
+		?>
+
+		<div class="notice notice-error">
+			<?php echo sprintf( __( '%1$s We\'ve automatically changed your Revive Old Posts\' shortener from rviv.ly to is.gd. Read the reason for the change %2$shere%3$s. %4$s %5$s', 'tweet-old-post' ), '<p>', '<a href="https://docs.revive.social/article/1244-why-we-automatically-changed-your-shortener-from-rviv-ly-to-is-gd" target="_blank">', '</a>', '<a style="float: right;" href="?rop-shortener-changed-notice-dismissed">Dismiss</a>', '</p>' ); ?>
+		</div>
+		<?php
+
+	}
+
+	/**
+	 * Dismiss Shortener changed notice.
+	 *
+	 * @since   8.5.6
+	 * @access  public
+	 */
+	public function rop_shortener_changed_disabled_notice() {
+
+		$user_id = get_current_user_id();
+		if ( isset( $_GET['rop-shortener-changed-notice-dismissed'] ) ) {
+			add_user_meta( $user_id, 'rop-shortener-changed-notice-dismissed', 'true', true );
 		}
 
 	}

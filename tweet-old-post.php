@@ -16,11 +16,11 @@
  * Plugin Name: Revive Old Posts
  * Plugin URI: https://revive.social/
  * Description: WordPress plugin that helps you to keeps your old posts alive by sharing them and driving more traffic to them from twitter/facebook or linkedin. It also helps you to promote your content. You can set time and no of posts to share to drive more traffic.For questions, comments, or feature requests, <a href="http://revive.social/support/?utm_source=plugindesc&utm_medium=announce&utm_campaign=top">contact </a> us!
- * Version:           8.5.4
+ * Version:           8.5.12
  * Author:            revive.social
  * Author URI:        https://revive.social/
  * Requires at least: 3.5
- * Tested up to:      5.4
+ * Tested up to:      5.5
  * Stable tag:        trunk
  * WordPress Available:  yes
  * Pro Slug:          tweet-old-post-pro
@@ -105,7 +105,7 @@ function run_rop() {
 
 
 	define( 'ROP_PRO_URL', 'http://revive.social/plugins/revive-old-post/' );
-	define( 'ROP_LITE_VERSION', '8.5.4' );
+	define( 'ROP_LITE_VERSION', '8.5.12' );
 	define( 'ROP_LITE_BASE_FILE', __FILE__ );
 	define( 'ROP_DEBUG', true );
 	define( 'ROP_LITE_PATH', plugin_dir_path( __FILE__ ) );
@@ -119,7 +119,9 @@ function run_rop() {
 	define( 'ROP_APP_TWITTER_PATH', '/tw_auth' );
 	define( 'ROP_APP_LINKEDIN_PATH', '/li_auth' );
 	define( 'ROP_APP_BUFFER_PATH', '/buffer_auth' );
-	define( 'ROP_APP_TOKEN_OPTION', 'rop_install_token' );
+	define( 'ROP_APP_TUMBLR_PATH', '/tumblr_auth' );
+	define( 'ROP_APP_GMB_PATH', '/gmb_auth' );
+	define( 'ROP_INSTALL_TOKEN_OPTION', 'rop_install_token' );
 
 	if ( defined( 'ROP_CRON_ALTERNATIVE' ) && true === ROP_CRON_ALTERNATIVE ) {
 

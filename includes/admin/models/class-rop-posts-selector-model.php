@@ -557,11 +557,12 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 *
 	 * @param string $account_id The account ID.
 	 * @param int    $post_id The post ID.
+	 * @param   bool   $refresh Whether to refresh the rop_data property in parent abstract class with new rop_data option value.
 	 *
 	 * @since   8.0.0
 	 * @acess   public
 	 */
-	public function update_buffer( $account_id, $post_id ) {
+	public function update_buffer( $account_id, $post_id, $refresh = false ) {
 		if ( ! isset( $this->buffer[ $account_id ] ) ) {
 			$this->buffer[ $account_id ] = array();
 		}
@@ -569,7 +570,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			array_push( $this->buffer[ $account_id ], $post_id );
 		}
 
-		$this->set( 'posts_buffer', $this->buffer );
+		$this->set( 'posts_buffer', $this->buffer, $refresh );
 	}
 
 	/**

@@ -1,4 +1,53 @@
 
+ ### v8.5.12 - 2020-08-03 
+ **Changes:** 
+ * Fix PRO: Edge case where "Share Scheduled Posts to Social Media On Publish" feature would not share posts because of empty array.
+* Change: Switched Facebook API calls to Graph API 7.0
+* Info: Tested on WP 5.5 RC1
+ 
+ ### v8.5.11 - 2020-07-23 
+ **Changes:** 
+ * Fix: Posts always sharing as image posts even with option unchecked.
+* Info: Added "rop_instant_share_message" filter for manipulating custom instant share messages.
+ 
+ ### v8.5.10 - 2020-07-21 
+ **Changes:** 
+ * New PRO: You can now share your website posts to your Google My Business location(s).
+* Fix PRO: Unknown service error when using "Share Scheduled Posts to Social Media On Publish" feature.
+* Fix PRO: Missing media type error(silent) when "Share as image Post" feature was used for Twitter.
+* Info: Added checks to help prevent duplicate post issues which can occur in some environments with database caching.
+ 
+ ### v8.5.9 - 2020-07-20 
+ **Changes:** 
+ * New PRO: You can now share your website posts to your Google My Business location(s).
+* Fix PRO: Unknown service error when using "Share Scheduled Posts to Social Media On Publish" feature.
+* Fix PRO: Missing media type error(silent) when "Share as image Post" feature was used for Twitter.
+* Info: Added checks to help prevent duplicate post issues which can occur in some environments with database caching.
+ 
+ ### v8.5.8 - 2020-06-16 
+ **Changes:** 
+ * New PRO: Custom instant sharing messages. You can now alter the caption that would be sent to the social media network.
+* Change: Opened up easier LinkedIn login workflow for old installs.
+* Change: Increased default category hashtag length. Old value was causing users categories to get dropped before sharing if they were too long
+ 
+ ### v8.5.7 - 2020-05-14 
+ **Changes:** 
+ * New PRO: Made it easier to connect Tumblr accounts for new installs.
+* New: Added an option in general settings to make Instant Share feature truly immediate and more reliable.
+* Change: Edited some text titles and descriptions in the plugin dashboard to make them easier to understand. 
+* 
+ 
+ ### v8.5.6 - 2020-04-15 
+ **Changes:** 
+ * Change: Switched rviv.ly shortener with is.gd shortener to prevent issues with sharing.
+ 
+ ### v8.5.5 - 2020-04-11 
+ **Changes:** 
+ * Fix PRO: PHP Error when "Post with image" is checked in Post format for LinkedIn and post has no featured image set.
+* Fix PRO: PHP Error when no post format option is available in the database and ROP tries to share a WP scheduled post that has become published.  
+* Change: Bit.ly now uses bit.ly's v4 API endpoint.
+* Info: Tested on WP 5.4.
+ 
  ### v8.5.4 - 2020-03-18 
  **Changes:** 
  * New PRO: Taxonomy filtering is now account-based

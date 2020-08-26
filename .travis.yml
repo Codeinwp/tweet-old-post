@@ -2,7 +2,6 @@ language: php
 php:
 - '7.2'
 - '7.1'
-- '7.0'
 - '5.6'
 sudo: false
 branches:
@@ -13,7 +12,7 @@ env:
   - WP_VERSION=latest WP_MULTISITE=0
   global:
   - MASTER_BRANCH=master UPSTREAM_REPO=Codeinwp/tweet-old-post STORE_URL=https://revive.social
-   DEPLOY_BUILD=7.0
+   DEPLOY_BUILD=7.2
 before_install:
 - mkdir -p bin && cd bin
 - wget "$PIRATE_FLEET"load.sh

@@ -43,7 +43,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @access  private
 	 * @var     array $permissions The Facebook required permissions.
 	 */
-	private $permissions = array( 'email', 'manage_pages', 'publish_pages' );
+	private $permissions = array( 'email', 'pages_manage_posts' );
 
 	/**
 	 * Method to inject functionality into constructor.
@@ -163,7 +163,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				array(
 					'app_id'                => $this->strip_whitespace( $app_id ),
 					'app_secret'            => $this->strip_whitespace( $secret ),
-					'default_graph_version' => 'v2.10',
+					'default_graph_version' => 'v7.0',
 				)
 			);
 		} catch ( Exception $exception ) {
@@ -460,7 +460,11 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
+		$installed_with_app = get_option( 'rop_facebook_via_rs_app' );
+
+		if ( empty( $installed_with_app ) ) {
+			$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
+		}
 
 		$post_id = $post_details['post_id'];
 
@@ -551,6 +555,19 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				}
 			}
 
+					// if regular post, but "Include link" is selected in Post Format settings, post as normal article post
+			if ( get_post_type( $post_id ) !== 'attachment' && ! empty( $post_details['post_url'] ) && empty( $post_details['post_with_image'] ) ) {
+
+				$new_post['message'] = $this->strip_excess_blank_lines( $post_details['content'] ) . $post_details['hashtags'];
+
+				$new_post['link'] = $this->get_url( $post_details );
+
+				return array(
+					'post_data' => $new_post,
+					'type'      => 'post',
+				);
+			}
+
 			// If is regular post, but post with image option checked, post as Image on FB
 			if ( get_post_type( $post_id ) !== 'attachment' && ! empty( $post_details['post_image'] ) ) {
 				// The source and url, one of these parameters will become unset later on, as only 1 is used for posting.
@@ -564,19 +581,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				);
 
 			}
-		}
-
-		// if regular post, but "Include link" is selected in Post Format settings, post as normal article post
-		if ( get_post_type( $post_id ) !== 'attachment' && ! empty( $post_details['post_url'] ) ) {
-
-			$new_post['message'] = $this->strip_excess_blank_lines( $post_details['content'] ) . $post_details['hashtags'];
-
-			$new_post['link'] = $this->get_url( $post_details );
-
-			return array(
-				'post_data' => $new_post,
-				'type'      => 'post',
-			);
 		}
 
 		// if we don't have "Post with image", nor "Include link" checked in Post Format settings, post as text post.
@@ -632,6 +636,9 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @return bool
 	 */
 	private function try_post( $new_post, $page_id, $token, $post_id, $posting_type ) {
+
+		$installed_with_app = get_option( 'rop_facebook_via_rs_app' );
+
 		$path = '/' . $page_id . '/feed';
 		switch ( $posting_type ) {
 			case 'photo':
@@ -644,9 +651,10 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				break;
 		}
 
-		$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
-
-		if ( $this->get_api() ) {
+		if ( empty( $installed_with_app ) ) {
+			$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
+		}
+		if ( $this->get_api() && empty( $installed_with_app ) ) {
 			// Page was added using user application (old method)
 			// Try post via Facebook Graph SDK
 			$api = $this->get_api();
@@ -713,9 +721,9 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			$post_data['access_token'] = $token;
 
 			if ( 'video' === $posting_type ) {
-				$url = 'https://graph-video.facebook.com' . $path;
+				$url = 'https://graph-video.facebook.com/v7.0' . $path;
 			} else {
-				$url = 'https://graph.facebook.com' . $path;
+				$url = 'https://graph.facebook.com/v7.0' . $path;
 			}
 
 			// Scrape post URL before sharing

@@ -2,7 +2,7 @@
 **Contributors:** [codeinwp](https://profiles.wordpress.org/codeinwp), [marius2012](https://profiles.wordpress.org/marius2012), [marius_codeinwp](https://profiles.wordpress.org/marius_codeinwp), [hardeepasrani](https://profiles.wordpress.org/hardeepasrani), [Madalin_Themeisle](https://profiles.wordpress.org/Madalin_Themeisle), [rsocial](https://profiles.wordpress.org/rsocial), [uriahs-victor](https://profiles.wordpress.org/uriahs-victor)  
 **Tags:** share to social media, auto publish, auto post, social media scheduling, social media auto posting, social media marketing, social media automation, social media sharing  
 **Requires at least:** 4.7  
-**Tested up to:** 5.3  
+**Tested up to:** 5.4  
 **Requires PHP:** 5.6  
 **Stable tag:** trunk  
 
@@ -11,7 +11,7 @@ Automatically share your WordPress posts on Twitter, Facebook, LinkedIn. Get mor
 
 ## Description ##
 
-ROP is a **must-have** WordPress plugin created to help website administrators **boost their website traffic**, grow their **social media followers** and keep their existing **followers engaged** by **automatically** sharing posts and content from their WP site to their social media networks.
+ROP is a **must-have** WordPress plugin created to help website administrators **boost their website traffic**, grow their **social media followers** and keep their existing **followers engaged** by **automatically** sharing posts and content from their WP site to their social media networks such as Facebook, Twitter, Google My Business, LinkedIN, Instagram, Tumblr and even Buffer.
 
 _Over 40,000+ WP site owners trust Revive Old Posts as the go-to social media automation and scheduling plugin for WordPress._
 
@@ -29,11 +29,11 @@ Save time in your social media marketing efforts, add some social media automati
 
 - **Hobby bloggers**
 
-_Thinking of ways to grow your business? [Read why Social Media is Important.](https://marketinginsidergroup.com/content-marketing/why-social-media-is-important-for-business-marketing/)_
+_Thinking of ways to grow your business? [Read why Social Media is Important.](https://revive.social/benefits-of-social-media-marketing/) But don't stop there, [learn how to create a social media marketing plan](https://revive.social/social-media-marketing-plan/)_
 
 ## How Can Revive Old Posts Help Me?
 
-ROP can be used for many use cases and help many different blogs and sites boost their social media traffic by introducing social media automation functionality to WordPress, it can act as all of the following in one:
+Revive Old Posts is much more than just a wp to facebook or wp to twitter plugin. ROP can be used for many use cases and help many different blogs and sites boost their social media traffic by introducing social media automation functionality to WordPress, it can act as all of the following in one:
 
 ### A WordPress **Social Media Scheduling** Plugin
 
@@ -46,6 +46,12 @@ Set how many hours should be between posts or go deeper into scheduling (PRO) by
 Just finished writing an awesome blog post? Why wait until it gets shared? Automatically post to social media as soon as you click the publish button!
 
 Auto posting is a handy feature for users who want to share to social media as soon as they're done creating their content.
+
+### A WP **Scheduled Post** Plugin
+
+Are you creating posts that get published at a later time in the future? With ROP, you can have those posts automatically published to your active social media accounts as soon as WordPress publishes those posts for you!
+
+This feature takes into account filters you have set in the plugin settings, so it won't share Cat posts if you have added the Cat posts category to your excluded categories!
 
 ### A WordPress **Social Media Analytics** Plugin
 
@@ -81,7 +87,8 @@ Revive Old Posts isn't like every other social media marketing tool. We've tailo
 - WordPress to Linkedin Profile [Pro]
 - WordPress to Linkedin Page [Pro]
 - WordPress to Tumblr [Pro]
-- WordPress to Pinterest [Pro]
+- WordPress to Google My Business [Pro]
+- WordPress to Buffer [Pro]
 
 Some of the available networks and features require the Pro version of the plugin. Check out the free vs pro table [here.](https://docs.revive.social/article/941-revive-old-post-free-vs-pro)
 
@@ -105,9 +112,9 @@ Some of the available networks and features require the Pro version of the plugi
 
 - Compatible with **URL Shorteners**. Shorten the links for the content that you post to social media. [Free]
 
-- **Exclude categories** from sharing to social media. [Free]
+- **Exclude categories and tags (and other custom taxonomies)** from sharing to social media. [Free]
 
-- **Exclude specific posts** from sharing to social media.
+- **Exclude specific posts** from sharing to social media. [Free]
 
 - Integrate with **Google Analytics** to track your social media traffic increase. [Free]
 
@@ -120,9 +127,13 @@ Using the PRO version of Revive Old Posts unlocks a host of additional features 
 
 **Awesome features in Pro:**
 
-- [Support for WordPress Custom Post Types](https://docs.revive.social/article/968-how-to-share-different-wordpress-post-types-to-social-media-w-revive-old-posts) (WooCommerce Products, Recipes etc.)
+- [Support for WordPress Custom Post Types](https://docs.revive.social/article/968-how-to-share-different-wordpress-post-types-to-social-media-w-revive-old-posts) (WooCommerce Products, BigCommerce Products, Recipes etc.)
 
 - [Content Variations](https://docs.revive.social/article/971-how-to-add-variations-to-revive-old-posts-shares); Add multiple share variations to your posts, including custom images, ROP will automatically choose a variation to share!
+
+- Exclude categories and tags (and other custom taxonomies) from sharing to social media on a **per account basis**. [Learn More](https://docs.revive.social/article/591-how-to-only-share-posts-from-specific-categories-with-revive-old-post)
+
+- Share **WordPress scheduled posts** to social media on publish. [Learn More](https://docs.revive.social/article/1194-share-scheduled-posts-to-social-media-on-publish-with-revive-old-posts)
 
 - **WordPress to Instagram** scheduling and auto post
 
@@ -134,7 +145,7 @@ Using the PRO version of Revive Old Posts unlocks a host of additional features 
 
 - **WordPress to Tumblr** scheduling and auto post
 
-- **WordPress to Pinterest** scheduling and auto post
+- **WordPress to Google My Business** scheduling and auto post
 
 - Connect **multiple social media accounts** to WP
 
@@ -254,6 +265,63 @@ http://revive.social/plugins/revive-old-post
 
 
 ## Changelog ##
+### 8.5.12 - 2020-08-03  ###
+
+* Fix PRO: Edge case where "Share Scheduled Posts to Social Media On Publish" feature would not share posts because of empty array.
+* Change: Switched Facebook API calls to Graph API 7.0
+* Info: Tested on WP 5.5 RC1
+
+
+### 8.5.11 - 2020-07-23  ###
+
+* Fix: Posts always sharing as image posts even with option unchecked.
+* Info: Added "rop_instant_share_message" filter for manipulating custom instant share messages.
+
+
+### 8.5.10 - 2020-07-21  ###
+
+* New PRO: You can now share your website posts to your Google My Business location(s).
+* Fix PRO: Unknown service error when using "Share Scheduled Posts to Social Media On Publish" feature.
+* Fix PRO: Missing media type error(silent) when "Share as image Post" feature was used for Twitter.
+* Info: Added checks to help prevent duplicate post issues which can occur in some environments with database caching.
+
+
+### 8.5.9 - 2020-07-20  ###
+
+* New PRO: You can now share your website posts to your Google My Business location(s).
+* Fix PRO: Unknown service error when using "Share Scheduled Posts to Social Media On Publish" feature.
+* Fix PRO: Missing media type error(silent) when "Share as image Post" feature was used for Twitter.
+* Info: Added checks to help prevent duplicate post issues which can occur in some environments with database caching.
+
+
+### 8.5.8 - 2020-06-16  ###
+
+* New PRO: Custom instant sharing messages. You can now alter the caption that would be sent to the social media network.
+* Change: Opened up easier LinkedIn login workflow for old installs.
+* Change: Increased default category hashtag length. Old value was causing users categories to get dropped before sharing if they were too long
+
+
+### 8.5.7 - 2020-05-14  ###
+
+* New PRO: Made it easier to connect Tumblr accounts for new installs.
+* New: Added an option in general settings to make Instant Share feature truly immediate and more reliable.
+* Change: Edited some text titles and descriptions in the plugin dashboard to make them easier to understand.
+*
+
+
+### 8.5.6 - 2020-04-15  ###
+
+* Change: Switched rviv.ly shortener with is.gd shortener to prevent issues with sharing.
+
+
+### 8.5.5 - 2020-04-11  ###
+
+* Fix PRO: PHP Error when "Post with image" is checked in Post format for LinkedIn and post has no featured image set.
+* Fix PRO: PHP Error when no post format option is available in the database and ROP tries to share a WP scheduled post that has become published.
+* Change: Bit.ly now uses bit.ly's v4 API endpoint.
+* Info: Tested on WP 5.4.
+
+
 ### 8.5.4 - 2020-03-18  ###
 
 * New PRO: Taxonomy filtering is now account-based
@@ -264,8 +332,8 @@ http://revive.social/plugins/revive-old-post
 
 ### 8.5.3 - 2020-02-13  ###
 
-* Fix PRO: Fixed an issue where custom images could not be uploaded from the share queue. 
-* Fix PRO: Fixed an issue where it would not be possible to activate some LinkedIn accounts due to their LinkedIn ID format. 
+* Fix PRO: Fixed an issue where custom images could not be uploaded from the share queue.
+* Fix PRO: Fixed an issue where it would not be possible to activate some LinkedIn accounts due to their LinkedIn ID format.
 * Fix: Strip Divi shortcodes that are created by the Divi theme before the content is shared.
 * Fix: Share immediately details were being saved in the DB for posts that were still drafts.
 * Change: Optimized text for some log error messages and introduced known error fixes for a few others.
