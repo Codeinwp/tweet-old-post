@@ -2,7 +2,7 @@
 Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle, rsocial, uriahs-victor
 Tags: share to social media, auto publish, auto post, social media scheduling, social media auto posting, social media marketing, social media automation, social media sharing
 Requires at least: 4.7
-Tested up to: 5.4
+Tested up to: 5.5
 Requires PHP: 5.6
 Stable tag: trunk
 
@@ -265,7 +265,7 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
-= 8.5.12 - 2020-08-03  = 
+= 8.5.12 - 2020-08-03  =
 
 * Fix PRO: Edge case where "Share Scheduled Posts to Social Media On Publish" feature would not share posts because of empty array.
 * Change: Switched Facebook API calls to Graph API 7.0

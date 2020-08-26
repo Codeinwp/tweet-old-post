@@ -425,7 +425,9 @@ abstract class Rop_Services_Abstract {
 					array(
 						'methods'  => $method,
 						'callback' => array( $this, $callback ),
-
+						'permission_callback' => function () {
+							return current_user_can( 'manage_options' );
+						},
 					)
 				);
 			}
