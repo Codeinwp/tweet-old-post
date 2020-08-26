@@ -152,7 +152,7 @@ abstract class Rop_Services_Abstract {
 	 * @since   8.5.13
 	 * @access  public
 	 * @return mixed
-	 * @param array $account The account details. See $user_default in Services Abstract
+	 * @param array $account The account details. See $user_default in Services Abstract.
 	 */
 	public abstract function populate_additional_data( $account );
 
