@@ -133,6 +133,9 @@ export default new Vuex.Store({
                 case 'update_cron_type':
                     state.rop_cron_remote = stateData;
                     break;
+                case 'update_cron_type_agreement':
+                    state.rop_cron_remote = stateData;
+                    break;
                 case 'manage_cron':
                     state.cron_status = stateData;
                     break;

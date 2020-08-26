@@ -19,10 +19,17 @@
                                         :switch-color="{checked: '#FFFFFF', unchecked: '#FFFFFF'}"
                                         :color="{checked: '#7DCE94', unchecked: '#82C7EB'}"
                                         @change="rop_cron_remote = $event.value; update_cron_type_action()"
-                                        :disabled="is_cron_btn_active"
+                                        :disabled="!rop_cron_remote_agreement"
                                         :sync="true"
                                 />
                             </div>
+
+                          <input
+                              type="checkbox"
+                              :checked="rop_cron_remote_agreement"
+                              :disabled="rop_cron_remote_agreement"
+                              @change="update_agreement_checkbox()"
+                          /> <span v-html="labels.cron_type_label_desc_terms"></span>
                         </div>
                     </div>
                 </div>
@@ -300,6 +307,7 @@
                  * @category New Cron System
                  */
                 rop_cron_remote: Boolean(ropApiSettings.rop_cron_remote),
+                rop_cron_remote_agreement: Boolean(ropApiSettings.rop_cron_remote_agreement),
                 is_cron_btn_active: false
             }
         },
@@ -382,6 +390,27 @@
                     Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
                 })
             },
+            update_agreement_checkbox(){
+
+              this.rop_cron_remote_agreement = true;
+              Vue.$log.info('#! User agreement : ' + this.rop_cron_remote_agreement);
+
+              this.$store.dispatch('fetchAJAXPromise', {
+                req: 'update_cron_type_agreement',
+                data: {
+                  'action': this.rop_cron_remote_agreement
+                }
+              }).then(response => {
+
+                this.is_cron_btn_active = false;
+                ropApiSettings.rop_cron_remote_agreement = this.rop_cron_remote_agreement;
+
+              }, error => {
+                this.rop_cron_remote_agreement = false;
+                Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+              })
+
+          },
             displayProMessage(data) {
                 if (!this.isPro && data >= 4 ) {
                     if (true === this.isTaxLimit) {

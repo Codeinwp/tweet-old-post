@@ -120,6 +120,16 @@ if ( isset( $housekeeping ) && $housekeeping ) {
 		 * @see Debug_Page::load_custom_wp_admin_style()
 		 */
 		'rop_temp_debug',
+		/**
+		 * Holds information if the user agreed with terms and conditions of remote Cron system.
+		 * @since 8.6.0
+		 *
+		 * Being removed here.
+		 * @see \RopCronSystem\Pages\Debug_Page::reset_local_client()
+		 *
+		 * Being saved here.
+		 */
+		'rop_remote_cron_terms_agree',
 	);
 
 	foreach ( $option_keys as $key ) {

@@ -113,14 +113,40 @@ class Rop_Rest_Api {
 	 * @param array $data Data passed from the AJAX call.
 	 *
 	 * @return array
-	 * @since   8.0.0rc
+	 * @since   8.6.0
 	 * @access  private
 	 * @category New Cron System
 	 */
 	private function update_cron_type( $data ) {
+
 		$cron_helper = new Rop_Cron_Helper();
 		$this->response->set_code( '200' )
 					->set_data( $cron_helper->update_cron_type( $data ) );
+
+		return $this->response->to_array();
+	}
+
+	/**
+	 * Saves user agreeing with the Terms and Conditions for the remote CronJob system.
+	 *
+	 * @param array $data Data passed from the AJAX call.
+	 *
+	 * @return array
+	 * @since   8.6.0
+	 * @access  private
+	 * @category New Cron System
+	 */
+	private function update_cron_type_agreement( $data ) {
+		$response = false;
+		error_log( '$data: ' . var_export( $data, true ) );
+
+		if ( ! empty( $data ) && isset( $data['action'] ) ) {
+			update_option( 'rop_remote_cron_terms_agree', $data['action'] );
+			$response = true;
+		}
+
+		$this->response->set_code( '200' )
+		               ->set_data( $response );
 
 		return $this->response->to_array();
 	}

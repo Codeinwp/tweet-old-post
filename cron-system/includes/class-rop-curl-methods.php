@@ -30,12 +30,16 @@ class Rop_Curl_Methods {
 	const SERVER_URL = ROP_CRON_DOMAIN . '/wp-json/';
 
 	/**
+	 * CURL connection resource.
+	 *
 	 * @var resource cURL connection object.
 	 * @since 8.5.5
 	 */
 	private $connection;
 
 	/**
+	 * Possible requests to the cron server.
+	 *
 	 * @var array Fixed server paths that can be called.
 	 * @since 8.5.5
 	 */
@@ -65,11 +69,18 @@ class Rop_Curl_Methods {
 	protected $logger;
 
 	/**
+	 * Full server remote URL.
+	 *
 	 * @var string Server API path concatenated with endpoint path.
 	 * @since 8.5.5
 	 */
 	private $server_url = '';
 
+	/**
+	 * Load ROP plugin Logger class.
+	 *
+	 * Rop_Curl_Methods constructor.
+	 */
 	function __construct() {
 		$this->error  = new Rop_Exception_Handler();
 		$this->logger = new Rop_Logger();
@@ -121,14 +132,19 @@ class Rop_Curl_Methods {
 					$this->server_url = self::SERVER_URL . $this->server_paths[':register_account:'];
 					$this->connection = curl_init( $this->server_url );
 
+					// If the request comes with "Stop cron" action, there's no need for it in account registration.
 					if ( ':disable_account:' === $args['request_path'] ) {
 						$args = array();
 					}
 
 					$this->register_to_top_server( $args );
 				} else {
+					error_log('here');
 
 					$this->server_url = self::SERVER_URL . $this->server_paths[ $args['request_path'] ];
+
+					error_log( 'this->server_url: ' . var_export( $this->server_url, true ) );
+
 					$this->connection = curl_init( $this->server_url );
 
 					if ( isset( $args['time_to_share'] ) && ! empty( $args['time_to_share'] ) ) {
@@ -149,7 +165,7 @@ class Rop_Curl_Methods {
 	/**
 	 * Handles the API calls of type POST.
 	 *
-	 * @param array $post_arguments Post arguments array.
+	 * @param array  $post_arguments Post arguments array.
 	 * @param string $path_action Action type.
 	 *
 	 * @return bool|string
@@ -400,7 +416,7 @@ class Rop_Curl_Methods {
 	 *
 	 * @param string $custom_value custom string that will go into ROP-Authorization.
 	 *
-	 * @param string $post_data Post data used for content length
+	 * @param string $post_data Post data used for content length.
 	 *
 	 * @return bool
 	 * @access private

@@ -133,7 +133,7 @@ class Rop_Helpers {
 	/**
 	 * Create a random string.
 	 *
-	 * @param int $count Default is set to 40
+	 * @param int $count Default is set to 40.
 	 *
 	 * @return false|string
 	 */
@@ -162,7 +162,7 @@ class Rop_Helpers {
 	 * Function used to create custom requests to the Cron Server.
 	 *
 	 * @param string $url Server endpoint.
-	 * @param array $post_arguments
+	 * @param array  $post_arguments Parameters sent over to server end-point.
 	 *
 	 * @return bool|string
 	 */
@@ -279,7 +279,6 @@ class Rop_Helpers {
 				$logger->alert_error( 'Cron server could not be reached to update the timer.' );
 			}
 		}
-
 
 		return $server_response_body;
 	}
