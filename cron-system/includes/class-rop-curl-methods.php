@@ -139,12 +139,8 @@ class Rop_Curl_Methods {
 
 					$this->register_to_top_server( $args );
 				} else {
-					error_log('here');
 
 					$this->server_url = self::SERVER_URL . $this->server_paths[ $args['request_path'] ];
-
-					error_log( 'this->server_url: ' . var_export( $this->server_url, true ) );
-
 					$this->connection = curl_init( $this->server_url );
 
 					if ( isset( $args['time_to_share'] ) && ! empty( $args['time_to_share'] ) ) {
@@ -205,7 +201,7 @@ class Rop_Curl_Methods {
 		$server_response_body = curl_exec( $this->connection );
 
 		if ( false === $server_response_body || curl_errno( $this->connection ) ) {
-			error_log( 'Curl error: ' . curl_error( $this->connection ) );
+			$this->logger->alert_error( 'Curl error: ' . curl_error( $this->connection ) );
 		}
 
 		$http_code = curl_getinfo( $this->connection, CURLINFO_HTTP_CODE );
@@ -322,7 +318,7 @@ class Rop_Curl_Methods {
 
 		// If the response is an error we try to display usable information.
 		if ( false === $server_response_body || curl_errno( $this->connection ) ) {
-			error_log( 'Curl error: ' . curl_error( $this->connection ) );
+			$this->logger->alert_error( 'Curl error: ' . curl_error( $this->connection ) );
 		}
 
 		// Get the request apache code.

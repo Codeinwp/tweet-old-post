@@ -220,8 +220,6 @@ class Rop_Helpers {
 
 		$server_response_body = curl_exec( $connection );
 
-		error_log( '$server_response_body: ' . var_export( $server_response_body, true ) );
-
 		$http_code            = curl_getinfo( $connection, CURLINFO_HTTP_CODE );
 		curl_close( $connection );
 

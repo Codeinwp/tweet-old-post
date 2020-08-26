@@ -138,7 +138,6 @@ class Rop_Rest_Api {
 	 */
 	private function update_cron_type_agreement( $data ) {
 		$response = false;
-		error_log( '$data: ' . var_export( $data, true ) );
 
 		if ( ! empty( $data ) && isset( $data['action'] ) ) {
 			update_option( 'rop_remote_cron_terms_agree', $data['action'] );
