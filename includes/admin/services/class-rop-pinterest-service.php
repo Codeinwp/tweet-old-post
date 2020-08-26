@@ -545,4 +545,16 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 		return false;
 	}
 
+	/**
+	 * Method to populate additional data.
+	 *
+	 * @since   8.5.13
+	 * @access  public
+	 * @return mixed
+	 */
+	public function populate_additional_data( $account ) {
+		$account['link'] = 'https://pinterest.com';
+		return $account;
+	}
+
 }

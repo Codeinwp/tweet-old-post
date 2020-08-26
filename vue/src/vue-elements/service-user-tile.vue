@@ -8,7 +8,7 @@
 			</div>
 		</div>
 		<div class="tile-content">
-			<div class="tile-title">{{ user }}</div>
+			<div class="tile-title"><a :href="link" target="_blank">{{ user }}</a></div>
 			<div class="tile-subtitle text-gray">{{ serviceInfo }}</div>
 		</div>
 		<div class="tile-action">
@@ -128,6 +128,12 @@
 			 */
 			user: function () {
 				return this.account_data.user
+			},
+			/**
+			 * Return account link.
+			 */
+			link: function () {
+				return this.account_data.link
 			},
 			/**
 			 * Return account info details.

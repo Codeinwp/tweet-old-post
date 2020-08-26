@@ -503,4 +503,16 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 
 	}
 
+	/**
+	 * Method to populate additional data.
+	 *
+	 * @since   8.5.13
+	 * @access  public
+	 * @return mixed
+	 */
+	public function populate_additional_data( $account ) {
+		$account['link'] = 'https://business.google.com/';
+		return $account;
+	}
+
 }
