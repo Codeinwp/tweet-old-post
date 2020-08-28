@@ -19,11 +19,14 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Used to test if the server can reach this point.
  *
  * Class Rop_Debug_Ping
+ *
  * @package RopCronSystem\Endpoint_Ping_Server
  * @since 8.5.5
  */
 class Rop_Registration_Check {
 	/**
+	 * Defining endpoint namespace.
+	 *
 	 * @var string Endpoint namespace.
 	 * @since 8.5.5
 	 * @access private
@@ -32,6 +35,8 @@ class Rop_Registration_Check {
 	private static $rop_namespace = 'tweet-old-post-cron/v';
 
 	/**
+	 * Defined endpoint version.
+	 *
 	 * @var string Endpoint version.
 	 * @since 8.5.5
 	 * @access private
@@ -40,6 +45,8 @@ class Rop_Registration_Check {
 	private static $rop_version = '1';
 
 	/**
+	 * Defined endpoint base.
+	 *
 	 * @var string Endpoint base tag.
 	 * @since 8.5.5
 	 * @access private
@@ -71,7 +78,6 @@ class Rop_Registration_Check {
 						'validate_callback' => function ( $parameter, $request, $key ) {
 							// If test_parameter does not contain allowed parameter, we validate it as false
 
-
 							return ! empty( $parameter );
 						},
 						'required'          => true,
@@ -99,16 +105,15 @@ class Rop_Registration_Check {
 
 		$return_data = array(
 			'success' => false,
-			'message' => 'Registration is not valid'
+			'message' => 'Registration is not valid',
 		);
 
 		if ( $decoded_key === $saved_token ) {
 			$return_data = array(
 				'success' => true,
-				'message' => 'Registration is valid'
+				'message' => 'Registration is valid',
 			);
 		}
-
 
 		wp_send_json( $return_data );
 	}

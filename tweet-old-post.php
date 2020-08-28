@@ -65,9 +65,9 @@ register_deactivation_hook( __FILE__, 'rop_deactivation' );
 function rop_php_notice() {
 	?>
 
-    <div class="notice notice-error is-dismissible">
+	<div class="notice notice-error is-dismissible">
 		<?php echo sprintf( __( '%1$s You\'re using a PHP version lower than 5.6! Revive Old Posts requires at least %2$sPHP 5.6%3$s to function properly. Plugin has been deactivated. %4$sLearn more here%5$s. %6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/947-how-to-update-your-php-version" target="_blank">', '</a>', '</p>' ); ?>
-    </div>
+	</div>
 	<?php
 }
 
@@ -102,7 +102,6 @@ function run_rop() {
 	$use_remote_cron = get_option( 'rop_use_remote_cron', false );
 	$use_remote_cron = filter_var( $use_remote_cron, FILTER_VALIDATE_BOOLEAN );
 	define( 'ROP_CRON_ALTERNATIVE', $use_remote_cron );
-
 
 	define( 'ROP_PRO_URL', 'http://revive.social/plugins/revive-old-post/' );
 	define( 'ROP_LITE_VERSION', '8.5.12' );

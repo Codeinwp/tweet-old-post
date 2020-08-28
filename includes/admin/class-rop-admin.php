@@ -325,15 +325,15 @@ class Rop_Admin {
 		$array_nonce['show_tmblr_app_btn']      = $tmblr_service->rop_show_tmblr_app_btn();
 		$array_nonce['debug']                   = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
 		$array_nonce['tax_apply_limit']         = $this->limit_tax_dropdown_list();
-	  $array_nonce['remote_cron_type_limit']    = $this->limit_remote_cron_system();
+		$array_nonce['remote_cron_type_limit']    = $this->limit_remote_cron_system();
 		$array_nonce['exclude_apply_limit']     = $this->limit_exclude_list();
 		$array_nonce['publish_now']             = array(
 			'action'   => $settings->get_instant_sharing_by_default(),
 			'accounts' => $active_accounts,
 		);
 		$array_nonce['added_networks']          = $added_networks;
-	  $array_nonce['rop_cron_remote']           = filter_var( get_option( 'rop_use_remote_cron', false ), FILTER_VALIDATE_BOOLEAN );
-	  $array_nonce['rop_cron_remote_agreement'] = filter_var( get_option( 'rop_remote_cron_terms_agree', false ), FILTER_VALIDATE_BOOLEAN );
+		$array_nonce['rop_cron_remote']           = filter_var( get_option( 'rop_use_remote_cron', false ), FILTER_VALIDATE_BOOLEAN );
+		$array_nonce['rop_cron_remote_agreement'] = filter_var( get_option( 'rop_remote_cron_terms_agree', false ), FILTER_VALIDATE_BOOLEAN );
 
 		$admin_url = get_admin_url( get_current_blog_id(), 'admin.php?page=TweetOldPost' );
 		$token     = get_option( 'ROP_INSTALL_TOKEN_OPTION' );

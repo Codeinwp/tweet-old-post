@@ -39,6 +39,9 @@ class Debug_Page {
 		add_action( 'wp_ajax_remove_remote_account', array( &$this, 'cron_system_delete_account' ) );
 	}
 
+	/**
+	 * Used to delete the remote user account.
+	 */
 	public function cron_system_delete_account() {
 		$response = array();
 
@@ -67,7 +70,6 @@ class Debug_Page {
 			$response['success'] = true;
 			$response['message'] = __( 'Remote account removed and the plugin reverted to using your WordPress CronJob.', 'tweet-old-post' );
 		}
-
 
 		wp_send_json( $response );
 	}
@@ -161,14 +163,14 @@ class Debug_Page {
 		}
 
 		?>
-      <div class="wrap" id="rop-debug-table">
-        <h1><?php _e( 'Debug Info: ', 'tweet-old-post' ); ?></h1>
-        <br/>
+	  <div class="wrap" id="rop-debug-table">
+		<h1><?php _e( 'Debug Info: ', 'tweet-old-post' ); ?></h1>
+		<br/>
 
-        <table>
-          <tr>
-            <td valign="top"><?php _e( 'PHP Version: ', 'tweet-old-post' ); ?></td>
-            <td>
+		<table>
+		  <tr>
+			<td valign="top"><?php _e( 'PHP Version: ', 'tweet-old-post' ); ?></td>
+			<td>
 				<?php
 				echo $version;
 
@@ -177,12 +179,12 @@ class Debug_Page {
 				}
 
 				?>
-              <br/>
-            </td>
-          </tr>
-          <tr>
-            <td valign="top"><?php _e( 'cURL Info: ', 'tweet-old-post' ); ?></td>
-            <td>
+			  <br/>
+			</td>
+		  </tr>
+		  <tr>
+			<td valign="top"><?php _e( 'cURL Info: ', 'tweet-old-post' ); ?></td>
+			<td>
 				<?php
 				if ( ! empty( $curl_version ) ) {
 					echo 'version: ' . $curl_version['version'] . ' (' . $curl_version['version_number'] . ') ' . '<br/>';
@@ -197,70 +199,70 @@ class Debug_Page {
 					echo '<strong style="color:darkred">' . __( 'No version of CURL detected.', 'tweet-old-post' ) . '</strong>';
 				}
 				?>
-              <br/>
-            </td>
-          </tr>
-          <tr>
-            <td valign="top"><?php _e( 'Check connection with<br/>ROP Cron SyStem: ', 'tweet-old-post' ); ?></td>
-            <td>
+			  <br/>
+			</td>
+		  </tr>
+		  <tr>
+			<td valign="top"><?php _e( 'Check connection with<br/>ROP Cron SyStem: ', 'tweet-old-post' ); ?></td>
+			<td>
 				<?php _e( 'WordPress -> Server:', 'tweet-old-post' ); ?>
-              <span id="server_responded">N/A</span>
-              <br/>
+			  <span id="server_responded">N/A</span>
+			  <br/>
 				<?php _e( 'Server -> WordPress:', 'tweet-old-post' ); ?>
-              <span id="website_responded">N/A</span>
-              <br/>
-              <br/>
-              <input type="button" value="<?php _e( 'Check connection', 'tweet-old-post' ); ?>" id="rop_conection_check"/>
-            </td>
-          </tr>
-        </table>
+			  <span id="website_responded">N/A</span>
+			  <br/>
+			  <br/>
+			  <input type="button" value="<?php _e( 'Check connection', 'tweet-old-post' ); ?>" id="rop_conection_check"/>
+			</td>
+		  </tr>
+		</table>
 
-        <br/>
-        <hr/>
-        <br/>
+		<br/>
+		<hr/>
+		<br/>
 
-        <table>
-          <tr>
-            <td>
-              <input type="button" value="<?php _e( 'Delete remote CronJob system account', 'tweet-old-post' ); ?>" id="rop_remove_account"/>
-              <span id="ajax_rop_remove_account">
+		<table>
+		  <tr>
+			<td>
+			  <input type="button" value="<?php _e( 'Delete remote CronJob system account', 'tweet-old-post' ); ?>" id="rop_remove_account"/>
+			  <span id="ajax_rop_remove_account">
 
-              </span>
+			  </span>
 
-              <p>
-                <em>
+			  <p>
+				<em>
 					<?php _e( 'This option will delete your account from the remote cron system.', 'tweet-old-post' ); ?>
-                  <br/>
+				  <br/>
 					<?php _e( 'Local data will be reset and fallback to using the local CronJob system.', 'tweet-old-post' ); ?>
-                  <br/>
+				  <br/>
 					<?php _e( 'You can create a new account at anytime from General Settings > Cron Type, switch from local to remote.', 'tweet-old-post' ); ?>
-                </em>
-              </p>
-            </td>
-          </tr>
-        </table>
+				</em>
+			  </p>
+			</td>
+		  </tr>
+		</table>
 
-        <table>
-          <tr>
-            <td>
-              <input type="button" value="<?php _e( 'Clear Local Cron Data', 'tweet-old-post' ); ?>" id="rop_clear_local"/>
-              <span id="ajax_rop_clear_local">
+		<table>
+		  <tr>
+			<td>
+			  <input type="button" value="<?php _e( 'Clear Local Cron Data', 'tweet-old-post' ); ?>" id="rop_clear_local"/>
+			  <span id="ajax_rop_clear_local">
 
-              </span>
+			  </span>
 
-              <p>
-                <em>
+			  <p>
+				<em>
 					<?php _e( 'This will remove the Cron server authentication key from your local database. ', 'tweet-old-post' ); ?>
-                  <br/>
+				  <br/>
 					<?php _e( 'A new authentication key will be created when you register to the remote Cron server. ', 'tweet-old-post' ); ?>
-                </em>
-              </p>
-            </td>
-          </tr>
-        </table>
+				</em>
+			  </p>
+			</td>
+		  </tr>
+		</table>
 
 
-      </div>
+	  </div>
 		<?php
 	}
 }

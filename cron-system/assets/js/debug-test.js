@@ -1,3 +1,4 @@
+/* jshint ignore:start */
 ( function ( $ ) {
 
 	var $action_button = $( '#rop_conection_check' );
@@ -18,7 +19,7 @@
 						type: "GET",
 						url: rop_debug.remote_url,
 						data: { 'secret_temp_key': rop_debug.nonce, 'respond_to': rop_debug.local_url },
-						dataType: "json", // xml, html, script, json, jsonp, text
+						dataType: 'json', // xml, html, script, json, jsonp, text
 						success: function ( data ) {
 							if ( typeof data !== 'undefined' ) {
 								if ( true === data.success ) {
@@ -35,11 +36,14 @@
 							}
 						},
 						error: function ( jqXHR, textStatus, errorThrown ) {
+							console.log( jqXHR );
+							console.log( textStatus );
+							console.log( errorThrown );
 							$server_response.html( '&#10006; ' + 'Could not reach ROP Cron System' ).css( 'color', 'darkred' );
 							$wordpress_response.html( '&#10006; ' + 'Could not reach ROP Cron System' ).css( 'color', 'darkred' );
 						},
 						// called when the request finishes (after success and error callbacks are executed)
-						complete: function ( jqXHR, textStatus ) {
+						complete: function () {
 							$action_button.removeAttr( 'disabled' ).val( initial_label );
 						}
 					}
@@ -81,7 +85,7 @@
 							type: "GET",
 							url: ajaxurl,
 							data: { 'action': 'reset_local_auth_key' },
-							dataType: "json", // xml, html, script, json, jsonp, text
+							dataType: 'json', // xml, html, script, json, jsonp, text
 							success: function ( data ) {
 								if ( true === data.success ) {
 									$clear_local_cron_data_response.html( '<span style="color:darkgreen">&#10004; ' + data.message + '</span>' );
@@ -90,6 +94,9 @@
 								}
 							},
 							error: function ( jqXHR, textStatus, errorThrown ) {
+								console.log( jqXHR );
+								console.log( textStatus );
+								console.log( errorThrown );
 								$clear_local_cron_data_response.html( '<span style="color:darkred">&#10006; ' + rop_debug.action_fail + '</span>' );
 							},
 							// called when the request finishes (after success and error callbacks are executed)
@@ -137,7 +144,7 @@
 							type: "GET",
 							url: ajaxurl,
 							data: { 'action': 'remove_remote_account' },
-							dataType: "json", // xml, html, script, json, jsonp, text
+							dataType: 'json', // xml, html, script, json, jsonp, text
 							success: function ( data ) {
 								if ( true === data.success ) {
 									$delete_account_data_response.html( '<span style="color:darkgreen">&#10004; ' + data.message + '</span>' );
@@ -146,10 +153,13 @@
 								}
 							},
 							error: function ( jqXHR, textStatus, errorThrown ) {
+								console.log( jqXHR );
+								console.log( textStatus );
+								console.log( errorThrown );
 								$delete_account_data_response.html( '<span style="color:darkred">&#10006; ' + rop_debug.action_fail + '</span>' );
 							},
 							// called when the request finishes (after success and error callbacks are executed)
-							complete: function ( jqXHR, textStatus ) {
+							complete: function () {
 								$delete_account_data.removeAttr( 'disabled' ).val( initial_label );
 							}
 						}
@@ -162,3 +172,5 @@
 	}
 
 } )( jQuery );
+
+/* jshint ignore:end */

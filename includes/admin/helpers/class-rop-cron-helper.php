@@ -82,7 +82,7 @@ class Rop_Cron_Helper {
 	/**
 	 * Update database to which Cron System to use.
 	 *
-	 * @param array $request Cron type
+	 * @param array $request Cron type.
 	 *
 	 * @return bool
 	 * @since 8.5.5

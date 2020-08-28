@@ -54,7 +54,6 @@ class Rop_Cron_Core {
 		 */
 		add_action( 'init', array( &$this, 'init_endpoint_items' ) );
 
-
 	}
 
 	/**
@@ -80,6 +79,7 @@ class Rop_Cron_Core {
 
 	/**
 	 * Register to ROP Cron the share start.
+	 *
 	 * @access public
 	 * @since 8.5.5
 	 */
@@ -101,6 +101,7 @@ class Rop_Cron_Core {
 
 	/**
 	 * Register to ROP Cron the share stop.
+	 *
 	 * @access public
 	 * @since 8.5.5
 	 */
@@ -118,6 +119,7 @@ class Rop_Cron_Core {
 
 	/**
 	 * Register to ROP Cron the next valid time to share from queue.
+	 *
 	 * @access public
 	 * @since 8.5.5
 	 */
@@ -139,6 +141,7 @@ class Rop_Cron_Core {
 
 	/**
 	 * Register to ROP Cron a new account.
+	 *
 	 * @access public
 	 * @since 8.5.5
 	 */

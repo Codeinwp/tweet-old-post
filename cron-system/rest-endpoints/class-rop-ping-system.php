@@ -25,6 +25,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Rop_Ping_System extends Rop_System_Base {
 	/**
+	 * Defining endpoint namespace.
+	 *
 	 * @var string Endpoint namespace.
 	 * @since 8.5.5
 	 * @access private
@@ -33,6 +35,8 @@ class Rop_Ping_System extends Rop_System_Base {
 	private static $rop_namespace = 'share-now/v';
 
 	/**
+	 * Defined endpoint version.
+	 *
 	 * @var string Endpoint version.
 	 * @since 8.5.5
 	 * @access private
@@ -41,6 +45,8 @@ class Rop_Ping_System extends Rop_System_Base {
 	private static $rop_version = '1';
 
 	/**
+	 * Defined endpoint base.
+	 *
 	 * @var string Endpoint base tag.
 	 * @since 8.5.5
 	 * @access private

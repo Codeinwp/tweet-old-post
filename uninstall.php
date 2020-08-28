@@ -118,6 +118,7 @@ if ( ! empty( $housekeeping ) ) {
 		'rop_use_remote_cron',
 		/**
 		 * Used in remote Cron Server debug test
+		 *
 		 * @since 8.5.5
 		 *
 		 * @see Debug_Page::load_custom_wp_admin_style()
@@ -125,6 +126,7 @@ if ( ! empty( $housekeeping ) ) {
 		'rop_temp_debug',
 		/**
 		 * Holds information if the user agreed with terms and conditions of remote Cron system.
+		 *
 		 * @since 8.6.0
 		 *
 		 * Being removed here.

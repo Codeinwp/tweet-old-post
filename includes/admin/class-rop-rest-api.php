@@ -145,7 +145,7 @@ class Rop_Rest_Api {
 		}
 
 		$this->response->set_code( '200' )
-		               ->set_data( $response );
+					   ->set_data( $response );
 
 		return $this->response->to_array();
 	}
@@ -242,7 +242,7 @@ class Rop_Rest_Api {
 
 		$cron_status = filter_var( get_option( 'rop_is_sharing_cron_active', 'no' ), FILTER_VALIDATE_BOOLEAN );
 
-		if ( true ===$cron_status && defined( 'ROP_CRON_ALTERNATIVE' ) && true === ROP_CRON_ALTERNATIVE ) {
+		if ( true === $cron_status && defined( 'ROP_CRON_ALTERNATIVE' ) && true === ROP_CRON_ALTERNATIVE ) {
 			$server_url = ROP_CRON_DOMAIN . '/wp-json/update-cron-ping/v1/update-time-to-share/';
 			// inform the cron server to ping this website in the next process.
 			$time_to_share = array(
@@ -578,7 +578,7 @@ class Rop_Rest_Api {
 		$saved_data = $settings_model->get_settings();
 		$settings_model->save_settings( $data );
 		$this->response->set_code( '200' )
-		               ->set_data( $settings_model->get_settings() );
+					   ->set_data( $settings_model->get_settings() );
 
 		$cron_status = filter_var( get_option( 'rop_is_sharing_cron_active', 'no' ), FILTER_VALIDATE_BOOLEAN );
 
