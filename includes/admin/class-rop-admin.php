@@ -239,6 +239,25 @@ class Rop_Admin {
 	}
 
 	/**
+	 * Method used to decide whether or not to limit taxonomy select
+	 *
+	 * @return  bool
+	 * @since   8.6.0
+	 * @access  public
+	 */
+	public function limit_remote_cron_system() {
+		$installed_at_version = get_option( 'rop_first_install_version' );
+		if ( empty( $installed_at_version ) ) {
+			return 0;
+		}
+		if ( version_compare( $installed_at_version, '8.6.0', '>=' ) ) {
+			return 1;
+		}
+
+		return 0;
+	}
+
+	/**
 	 * Method used to decide whether or not to limit exclude posts.
 	 *
 	 * @return  bool
@@ -306,12 +325,15 @@ class Rop_Admin {
 		$array_nonce['show_tmblr_app_btn']      = $tmblr_service->rop_show_tmblr_app_btn();
 		$array_nonce['debug']                   = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
 		$array_nonce['tax_apply_limit']         = $this->limit_tax_dropdown_list();
+		$array_nonce['remote_cron_type_limit']    = $this->limit_remote_cron_system();
 		$array_nonce['exclude_apply_limit']     = $this->limit_exclude_list();
 		$array_nonce['publish_now']             = array(
 			'action'   => $settings->get_instant_sharing_by_default(),
 			'accounts' => $active_accounts,
 		);
 		$array_nonce['added_networks']          = $added_networks;
+		$array_nonce['rop_cron_remote']           = filter_var( get_option( 'rop_use_remote_cron', false ), FILTER_VALIDATE_BOOLEAN );
+		$array_nonce['rop_cron_remote_agreement'] = filter_var( get_option( 'rop_remote_cron_terms_agree', false ), FILTER_VALIDATE_BOOLEAN );
 
 		$admin_url = get_admin_url( get_current_blog_id(), 'admin.php?page=TweetOldPost' );
 		$token     = get_option( 'ROP_INSTALL_TOKEN_OPTION' );
