@@ -51,7 +51,7 @@
                  :class="'rop-license-plan-'+license" v-if="is_preloading_over > 0">
 
                 <div class="card rop-container-start">
-                    <button id="rop_start_stop_btn" class="btn" :class="btn_class"
+                     <button id="rop_start_stop_btn" class="btn" :class="btn_class"
                             :data-tooltip="labels.active_account_warning"
                             @click="togglePosting()" :disabled="!haveAccountsActive">
                         <i class="fa fa-play" v-if="!is_loading && !start_status"></i>
@@ -100,7 +100,7 @@
     module.exports = {
         name: 'main-page-panel',
         computed: {
-            is_preloading_over: function(){
+            is_preloading_over: function () {
                 return this.$store.state.hide_preloading;
             },
             /**
@@ -225,7 +225,7 @@
             this.get_toast_message(false);
         },
         created() {
-
+            this.$root.$refs.main_page = this;
         },
         data: function () {
             return {
@@ -264,14 +264,25 @@
             },
             /**
              * Toggle sharing.
+             *
+             * @category New Cron System - adapted
              */
-            togglePosting() {
+            togglePosting(force_status) {
                 if (this.is_loading) {
                     this.$log.warn('Request in progress...Bail');
                     return;
                 }
+
+                let new_status = false;
+
+                if (typeof force_status === 'undefined') {
+                    new_status = this.start_status === false ? 'start' : 'stop';
+                } else {
+                    new_status = force_status === false ? 'start' : 'stop';
+                }
+
                 this.is_loading = true;
-                let new_status = this.start_status === false ? 'start' : 'stop';
+
                 this.$store.dispatch('fetchAJAXPromise', {
                     req: 'manage_cron',
                     data: {

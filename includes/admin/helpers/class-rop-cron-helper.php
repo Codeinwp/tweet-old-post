@@ -61,8 +61,10 @@ class Rop_Cron_Helper {
 	public function manage_cron( $request ) {
 		if ( isset( $request['action'] ) && 'start' === $request['action'] ) {
 			$this->create_cron( true );
+			do_action( 'rop_process_start_share' );
 		} elseif ( isset( $request['action'] ) && 'stop' === $request['action'] ) {
 			$this->remove_cron( $request );
+			do_action( 'rop_process_stop_share' );
 		} elseif ( isset( $request['action'] ) && 'publish-now' === $request['action'] ) {
 			$this->publish_now();
 		}
@@ -75,6 +77,51 @@ class Rop_Cron_Helper {
 			'current_php_date' => Rop_Scheduler_Model::get_date(),
 			'current_time'     => Rop_Scheduler_Model::get_current_time(),
 		);
+	}
+
+	/**
+	 * Update database to which Cron System to use.
+	 *
+	 * @param array $request Cron type.
+	 *
+	 * @return bool
+	 * @since 8.5.5
+	 * @access public
+	 * @category New Cron System
+	 */
+	public function update_cron_type( $request ) {
+		if ( ! empty( $request ) && isset( $request['action'] ) ) {
+			$is_remote_cron = $request['action'];
+			update_option( 'rop_use_remote_cron', $is_remote_cron );
+			$this->cron_status_global_change( false );
+
+			$is_registered = get_option( 'rop_access_token', false );
+			/**
+			 * We need to make sure we stop the remote CronJob when cron-type is changed.
+			 * if the user is registered to the remote Cron System.
+			 */
+			if ( false === $is_remote_cron && ! empty( $is_registered ) ) {
+
+				$cron_system_file = ROP_PATH . 'cron-system/vendor/autoload.php';
+				// load the library
+				if ( file_exists( $cron_system_file ) ) {
+					/**
+					 * $cron_system_file Cron System autoload.
+					 */
+					require_once $cron_system_file;
+
+					new RopCronSystem\Rop_Cron_Core();
+
+					// Request cron stop
+					$stop_cron = new RopCronSystem\Rop_Cron_Core();
+					$stop_cron->server_stop_share();
+				}
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 
 
@@ -103,8 +150,7 @@ class Rop_Cron_Helper {
 	 * @access  public
 	 */
 	public function create_cron( $first = true ) {
-		if ( ! wp_next_scheduled( self::CRON_NAMESPACE ) ) {
-
+		if ( defined( 'ROP_CRON_ALTERNATIVE' ) && false === ROP_CRON_ALTERNATIVE && ! wp_next_scheduled( self::CRON_NAMESPACE ) ) {
 			if ( $first ) {
 				$this->fresh_start();
 				$settings = new Rop_Global_Settings();
@@ -112,15 +158,29 @@ class Rop_Cron_Helper {
 				wp_schedule_single_event( time() + 30, self::CRON_NAMESPACE_ONCE );
 			}
 			wp_schedule_event( time(), '5min', self::CRON_NAMESPACE );
-		}
+			/**
+			 * Changing this option to true, upon page refresh the WP Cron Jobs will work as normal.
+			 * This value must become true anytime the "Start Share" button is clicked.
+			 *
+			 * @see Rop_Admin::check_cron_status()
+			 */
+			$this->cron_status_global_change( true );
 
-		/**
-		 * Changing this option to true, upon page refresh the WP Cron Jobs will work as normal.
-		 * This value must become true anytime the "Start Share" button is clicked.
-		 *
-		 * @see Rop_Admin::check_cron_status()
-		 */
-		$this->cron_status_global_change( true );
+		} elseif ( defined( 'ROP_CRON_ALTERNATIVE' ) && true === ROP_CRON_ALTERNATIVE ) {
+
+			if ( $first ) {
+				$this->fresh_start();
+				$settings = new Rop_Global_Settings();
+				$settings->update_start_time();
+				/**
+				 * Changing this option to true, upon page refresh the WP Cron Jobs will work as normal.
+				 * This value must become true anytime the "Start Share" button is clicked.
+				 *
+				 * @see Rop_Admin::check_cron_status()
+				 */
+				$this->cron_status_global_change( true );
+			}
+		}
 
 		return true;
 	}
@@ -246,7 +306,12 @@ class Rop_Cron_Helper {
 	 */
 	public function get_status() {
 
-		return is_int( wp_next_scheduled( self::CRON_NAMESPACE ) );
+		if ( defined( 'ROP_CRON_ALTERNATIVE' ) && true === ROP_CRON_ALTERNATIVE ) {
+			return filter_var( get_option( 'rop_is_sharing_cron_active', 'no' ), FILTER_VALIDATE_BOOLEAN );
+		} else {
+			return is_int( wp_next_scheduled( self::CRON_NAMESPACE ) );
+		}
+
 	}
 
 	/**
