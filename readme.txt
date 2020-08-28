@@ -265,6 +265,13 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.5.13 - 2020-08-28  = 
+
+* Change: Made account names clickable.
+* Fix: WP 5.5 missing permissions callback notice.
+* Info: Tested on WP 5.5
+
+
 = 8.5.12 - 2020-08-03  =
 
 * Fix PRO: Edge case where "Share Scheduled Posts to Social Media On Publish" feature would not share posts because of empty array.

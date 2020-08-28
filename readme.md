@@ -2,7 +2,7 @@
 **Contributors:** [codeinwp](https://profiles.wordpress.org/codeinwp), [marius2012](https://profiles.wordpress.org/marius2012), [marius_codeinwp](https://profiles.wordpress.org/marius_codeinwp), [hardeepasrani](https://profiles.wordpress.org/hardeepasrani), [Madalin_Themeisle](https://profiles.wordpress.org/Madalin_Themeisle), [rsocial](https://profiles.wordpress.org/rsocial), [uriahs-victor](https://profiles.wordpress.org/uriahs-victor)  
 **Tags:** share to social media, auto publish, auto post, social media scheduling, social media auto posting, social media marketing, social media automation, social media sharing  
 **Requires at least:** 4.7  
-**Tested up to:** 5.4  
+**Tested up to:** 5.5  
 **Requires PHP:** 5.6  
 **Stable tag:** trunk  
 
@@ -265,6 +265,13 @@ http://revive.social/plugins/revive-old-post
 
 
 ## Changelog ##
+### 8.5.13 - 2020-08-28  ###
+
+* Change: Made account names clickable.
+* Fix: WP 5.5 missing permissions callback notice.
+* Info: Tested on WP 5.5
+
+
 ### 8.5.12 - 2020-08-03  ###
 
 * Fix PRO: Edge case where "Share Scheduled Posts to Social Media On Publish" feature would not share posts because of empty array.
