@@ -36110,6 +36110,12 @@ module.exports = {
 			return this.account_data.user;
 		},
 		/**
+   * Return account link.
+   */
+		link: function link() {
+			return this.account_data.link;
+		},
+		/**
    * Return account info details.
    * @returns {T[]}
    */
@@ -36234,7 +36240,7 @@ module.exports = {
 // 			</div>
 // 		</div>
 // 		<div class="tile-content">
-// 			<div class="tile-title">{{ user }}</div>
+// 			<div class="tile-title"><a :href="link" target="_blank">{{ user }}</a></div>
 // 			<div class="tile-subtitle text-gray">{{ serviceInfo }}</div>
 // 		</div>
 // 		<div class="tile-action">
@@ -36262,7 +36268,7 @@ module.exports = {
 /* 231 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tile tile-centered rop-account\" :class=\"'rop-'+type+'-account'\" _v-55ac145d=\"\">\n\n\t\t<div class=\"tile-icon\" _v-55ac145d=\"\">\n\t\t\t<div class=\"icon_box\" :class=\"service\" _v-55ac145d=\"\">\n\t\t\t\t<img class=\"service_account_image\" :src=\"img\" v-if=\"img\" _v-55ac145d=\"\">\n\t\t\t\t<i class=\"fa  \" :class=\"icon\" aria-hidden=\"true\" _v-55ac145d=\"\"></i>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"tile-content\" _v-55ac145d=\"\">\n\t\t\t<div class=\"tile-title\" _v-55ac145d=\"\">{{ user }}</div>\n\t\t\t<div class=\"tile-subtitle text-gray\" _v-55ac145d=\"\">{{ serviceInfo }}</div>\n\t\t</div>\n\t\t<div class=\"tile-action\" _v-55ac145d=\"\">\n\t\t\t<div class=\"form-group\" _v-55ac145d=\"\">\n\t\t\t\t<label class=\"form-switch\" _v-55ac145d=\"\">\n\t\t\t\t\t<div class=\"ajax-loader \" _v-55ac145d=\"\"><i class=\"fa fa-spinner fa-spin\" v-show=\"is_loading\" _v-55ac145d=\"\"></i></div>\n\t\t\t\t\t<input :disabled=\"checkDisabled\" type=\"checkbox\" v-model=\"account_data.active\" @change=\"startToggleAccount( account_id, type )\" _v-55ac145d=\"\">\n\t\t\t\t\t<i class=\"form-icon\" _v-55ac145d=\"\"></i>\n\t\t\t\t</label>\n\t\t\t</div>\n\n   \t\t<div class=\"tile-icon rop-remove-account tooltip tooltip-right\" @click=\"removeAccount(account_id) \" :data-tooltip=\"labels.remove_account\" v-if=\" ! account_data.active\" _v-55ac145d=\"\">\n\t\t\t<i class=\"fa fa-trash\" v-if=\" ! is_loading\" _v-55ac145d=\"\"></i>\n\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-55ac145d=\"\"></i>\n\t\t</div>\n\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tile tile-centered rop-account\" :class=\"'rop-'+type+'-account'\" _v-55ac145d=\"\">\n\n\t\t<div class=\"tile-icon\" _v-55ac145d=\"\">\n\t\t\t<div class=\"icon_box\" :class=\"service\" _v-55ac145d=\"\">\n\t\t\t\t<img class=\"service_account_image\" :src=\"img\" v-if=\"img\" _v-55ac145d=\"\">\n\t\t\t\t<i class=\"fa  \" :class=\"icon\" aria-hidden=\"true\" _v-55ac145d=\"\"></i>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"tile-content\" _v-55ac145d=\"\">\n\t\t\t<div class=\"tile-title\" _v-55ac145d=\"\"><a :href=\"link\" target=\"_blank\" _v-55ac145d=\"\">{{ user }}</a></div>\n\t\t\t<div class=\"tile-subtitle text-gray\" _v-55ac145d=\"\">{{ serviceInfo }}</div>\n\t\t</div>\n\t\t<div class=\"tile-action\" _v-55ac145d=\"\">\n\t\t\t<div class=\"form-group\" _v-55ac145d=\"\">\n\t\t\t\t<label class=\"form-switch\" _v-55ac145d=\"\">\n\t\t\t\t\t<div class=\"ajax-loader \" _v-55ac145d=\"\"><i class=\"fa fa-spinner fa-spin\" v-show=\"is_loading\" _v-55ac145d=\"\"></i></div>\n\t\t\t\t\t<input :disabled=\"checkDisabled\" type=\"checkbox\" v-model=\"account_data.active\" @change=\"startToggleAccount( account_id, type )\" _v-55ac145d=\"\">\n\t\t\t\t\t<i class=\"form-icon\" _v-55ac145d=\"\"></i>\n\t\t\t\t</label>\n\t\t\t</div>\n\n   \t\t<div class=\"tile-icon rop-remove-account tooltip tooltip-right\" @click=\"removeAccount(account_id) \" :data-tooltip=\"labels.remove_account\" v-if=\" ! account_data.active\" _v-55ac145d=\"\">\n\t\t\t<i class=\"fa fa-trash\" v-if=\" ! is_loading\" _v-55ac145d=\"\"></i>\n\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-55ac145d=\"\"></i>\n\t\t</div>\n\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 232 */
