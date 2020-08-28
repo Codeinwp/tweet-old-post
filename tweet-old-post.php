@@ -16,7 +16,7 @@
  * Plugin Name: Revive Old Posts
  * Plugin URI: https://revive.social/
  * Description: WordPress plugin that helps you to keeps your old posts alive by sharing them and driving more traffic to them from twitter/facebook or linkedin. It also helps you to promote your content. You can set time and no of posts to share to drive more traffic.For questions, comments, or feature requests, <a href="http://revive.social/support/?utm_source=plugindesc&utm_medium=announce&utm_campaign=top">contact </a> us!
- * Version:           8.5.12
+ * Version:           8.6.13
  * Author:            revive.social
  * Author URI:        https://revive.social/
  * Requires at least: 3.5
