@@ -450,7 +450,7 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 	 */
 	public function share( $post_details, $args = array() ) {
 
-		if (! class_exists('Google_Service_MyBusiness')) {
+		if ( ! class_exists( 'Google_Service_MyBusiness' ) ) {
 			require_once ROP_LITE_PATH . 'includes/lib/gmb-service-helper.php';
 		}
 
