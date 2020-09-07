@@ -325,7 +325,7 @@ class Rop_Admin {
 			'authAppLinkedInPath' => ROP_APP_LINKEDIN_PATH,
 			'authAppBufferPath'   => ROP_APP_BUFFER_PATH,
 			'authAppTumblrPath'   => ROP_APP_TUMBLR_PATH,
-			'authAppGmbPath'        => ROP_APP_GMB_PATH,
+			'authAppGmbPath'      => ROP_APP_GMB_PATH,
 			'authToken'           => $token,
 			'adminUrl'            => urlencode( $admin_url ),
 			'authSignature'       => $signature,
