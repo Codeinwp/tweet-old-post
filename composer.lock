@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bc8591e4a27b03dc2fbed047a417b2e9",
+    "content-hash": "661d5e6642563b6312a2c02bc0439224",
     "packages": [
         {
             "name": "abraham/twitteroauth",
@@ -62,16 +62,16 @@
         },
         {
             "name": "codeinwp/themeisle-sdk",
-            "version": "3.1.4",
+            "version": "3.2.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeinwp/themeisle-sdk.git",
-                "reference": "ede4dbdb119ad5b5d317f3866d68c90a45fe8179"
+                "reference": "95b7447a5f4faba410c281c4bf278fbd740fed71"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeinwp/themeisle-sdk/zipball/ede4dbdb119ad5b5d317f3866d68c90a45fe8179",
-                "reference": "ede4dbdb119ad5b5d317f3866d68c90a45fe8179",
+                "url": "https://api.github.com/repos/Codeinwp/themeisle-sdk/zipball/95b7447a5f4faba410c281c4bf278fbd740fed71",
+                "reference": "95b7447a5f4faba410c281c4bf278fbd740fed71",
                 "shasum": ""
             },
             "require-dev": {
@@ -96,7 +96,7 @@
             "keywords": [
                 "wordpress"
             ],
-            "time": "2019-08-23T08:47:43+00:00"
+            "time": "2020-07-23T15:02:10+00:00"
         },
         {
             "name": "facebook/graph-sdk",
@@ -1040,5 +1040,6 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
 }
