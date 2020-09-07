@@ -552,4 +552,7 @@
 	.btn-gmb{
 	text-transform: uppercase;
 	}
+	#rop_core .btn.btn-buffer{
+		display: none;
+	}
 </style>

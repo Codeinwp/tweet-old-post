@@ -23,7 +23,6 @@
  */
 class Rop_Buffer_Service extends Rop_Services_Abstract {
 
-
 	/**
 	 * An instance of authenticated Buffer user.
 	 *
