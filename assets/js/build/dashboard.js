@@ -36045,6 +36045,13 @@ module.exports = {
 			}
 			var service_limit = available_services[this.account_data.service].allowed_accounts;
 
+			// if is free version disable Facebook groups
+			if (this.account_data.service === 'facebook') {
+				if (this.user.includes('Facebook Group:') && !this.isPro) {
+					return true;
+				}
+			}
+
 			var countActiveAccounts = 0;
 			for (var activeAccount in this.$store.state.activeAccounts) {
 				if (this.$store.state.activeAccounts[activeAccount].service === this.account_data.service) {
@@ -36053,6 +36060,13 @@ module.exports = {
 			}
 			this.$log.info('Service limit details ', this.account_data.service, service_limit, countActiveAccounts);
 			return service_limit <= countActiveAccounts;
+		},
+		/**
+            * Check if we have a pro license.
+            * @returns {boolean}
+            */
+		isPro: function isPro() {
+			return this.$store.state.licence > 0;
 		},
 		/**
    * Returns account type.
