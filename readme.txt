@@ -258,6 +258,13 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.5.14 - 2020-09-08  = 
+
+* Change Pro: Removed Buffer integration. To connect your Facebook Groups to ROP, simply reconnect your Facebook account to the plugin, your groups will be imported automatically. Instagram sharing will cease to work on September 30th. [Please see this doc for more info.](https://docs.revive.social/article/1297-why-were-removing-buffer)
+* New PRO: Your admined groups are imported into ROP by default along with your pages.
+* Info: Added known error log message for Facebook permissions error. If receiving permission errors in the ROP logs while connecting different Facebook pages to different websites. Then [please see this doc for the solution](https://docs.revive.social/article/1031-fix-error-200-requires-managepages-and-publishpages)
+
+
 = 8.5.13 - 2020-08-28  = 
 
 * Change: Made account names clickable.
