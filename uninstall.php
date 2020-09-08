@@ -91,6 +91,7 @@ if ( ! empty( $housekeeping ) ) {
 	delete_metadata( 'user', 0, 'rop-wp-cron-notice-dismissed', '', true );
 	delete_metadata( 'user', 0, 'rop-cron-event-status-notice-dismissed', '', true );
 	delete_metadata( 'user', 0, 'rop-shortener-changed-notice-dismissed', '', true );
+	delete_metadata( 'user', 0, 'rop-dropping-buffer-notice-dismissed', '', true );
 
 	global $wpdb;
 	$post_meta = $wpdb->prefix . 'postmeta';

@@ -11,7 +11,7 @@ Automatically share your WordPress posts on Twitter, Facebook, LinkedIn. Get mor
 
 == Description ==
 
-ROP is a **must-have** WordPress plugin created to help website administrators **boost their website traffic**, grow their **social media followers** and keep their existing **followers engaged** by **automatically** sharing posts and content from their WP site to their social media networks such as Facebook, Twitter, Google My Business, LinkedIN, Instagram, Tumblr and even Buffer.
+ROP is a **must-have** WordPress plugin created to help website administrators **boost their website traffic**, grow their **social media followers** and keep their existing **followers engaged** by **automatically** sharing posts and content from their WP site to their social media networks such as Facebook, Twitter, Google My Business, LinkedIN, and Tumblr
 
 _Over 40,000+ WP site owners trust Revive Old Posts as the go-to social media automation and scheduling plugin for WordPress._
 
@@ -83,12 +83,10 @@ Revive Old Posts isn't like every other social media marketing tool. We've tailo
 - WordPress to Facebook page
 - WordPress to Facebook Groups [Pro]
 - WordPress to Twitter
-- WordPress to Instagram [Pro]
 - WordPress to Linkedin Profile [Pro]
 - WordPress to Linkedin Page [Pro]
 - WordPress to Tumblr [Pro]
 - WordPress to Google My Business [Pro]
-- WordPress to Buffer [Pro]
 
 Some of the available networks and features require the Pro version of the plugin. Check out the free vs pro table [here.](https://docs.revive.social/article/941-revive-old-post-free-vs-pro)
 
@@ -135,7 +133,6 @@ Using the PRO version of Revive Old Posts unlocks a host of additional features 
 
 - Share **WordPress scheduled posts** to social media on publish. [Learn More](https://docs.revive.social/article/1194-share-scheduled-posts-to-social-media-on-publish-with-revive-old-posts)
 
-- **WordPress to Instagram** scheduling and auto post
 
 - **WordPress to Facebook Groups** scheduling and auto post
 
@@ -234,10 +231,6 @@ If you have any questions please ask on the [support forum](https://wordpress.or
 **Can Revive Old Posts share Posts from WordPress to Facebook Group?**
 
 - Yes, this however requires the pro version of the plugin.
-
-**Can Revive Old Posts share to Instagram Business page?**
-
-- Yes, ROP can share to Instagram business page as well as personal profiles.
 
 **Can Revive Old Posts share to LinkedIn Business page?**
 

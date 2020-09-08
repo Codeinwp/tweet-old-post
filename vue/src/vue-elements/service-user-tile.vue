@@ -67,6 +67,12 @@
 				}
 				let service_limit = available_services[this.account_data.service].allowed_accounts;
 
+				// if is free version disable Facebook groups
+				if(this.account_data.service === 'facebook'){
+				if( this.user.includes('Facebook Group:') && !this.isPro ){
+					return true;
+				}
+				}
 
 				let countActiveAccounts = 0
 				for (let activeAccount in this.$store.state.activeAccounts) {
@@ -79,6 +85,13 @@
 
 
 			},
+			/**
+             * Check if we have a pro license.
+             * @returns {boolean}
+             */
+			isPro: function () {
+                return (this.$store.state.licence > 0);
+            },
 			/**
 			 * Returns account type.
 			 * @returns {string}

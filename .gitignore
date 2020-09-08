@@ -6,3 +6,4 @@ artifact
 vendor
 bin/
 tweet-old-post.zip
+.DS_Store
