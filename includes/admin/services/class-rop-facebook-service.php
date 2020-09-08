@@ -462,7 +462,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		$global_settings = new Rop_Global_Settings();
 
-		if( strpos($args['user'], 'Facebook Group:') !== false && $global_settings->license_type() < 1  ){
+		if ( strpos( $args['user'], 'Facebook Group:' ) !== false && $global_settings->license_type() < 1 ) {
 			$this->logger->alert_error( 'An active Pro license is needed to share to Facebook Groups.' );
 			return false;
 		}
