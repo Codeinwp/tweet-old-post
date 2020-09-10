@@ -46,6 +46,9 @@
 						<div class="auth-app" v-if="isGmb">
 							<button class="btn btn-primary big-btn" id="gmb-btn" @click="openPopupGmb()">{{labels.gmb_app_signin_btn}}</button>
 						</div>
+						<div class="auth-app" v-if="isVk">
+							<button class="btn btn-primary big-btn" id="vk-btn" @click="openPopupVk()">{{labels.vk_app_signin_btn}}</button>
+						</div>
 						<div id="rop-advanced-config" v-if="isFacebook || isTwitter || isLinkedIn || (isTumblr && isAllowedTumblr)">
 						<button class="btn btn-primary" v-on:click="showAdvanceConfig = !showAdvanceConfig">{{labels.show_advance_config}}</button>
 					</div>
@@ -58,7 +61,7 @@
 							<p class="text-gray">{{ field.description }}</p>
 						</div>
 					</div>
-						<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isBuffer && !isGmb && !isTumblr) || (isTumblr && !isAllowedTumblr)">
+						<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isBuffer && !isGmb && !isTumblr && !isVk) || (isTumblr && !isAllowedTumblr)">
 						<div class="form-group" v-for="( field, id ) in modal.data">
 							<label class="form-label" :for="field.id">{{ field.name }}</label>
 							<input :class="[ 'form-input', field.error ? ' is-error' : '' ]" type="text" :id="field.id" v-model="field.value"
@@ -69,14 +72,14 @@
 					</div>
 				</div>
 				</div>
-				<div v-if="isFacebook || isTwitter || isLinkedIn || isBuffer || isGmb || (isTumblr && isAllowedTumblr)" class="modal-footer">
+				<div v-if="isFacebook || isTwitter || isLinkedIn || isBuffer || isGmb || isVk || (isTumblr && isAllowedTumblr)" class="modal-footer">
 					<p class="text-left pull-left mr-2" v-html="labels.rs_app_info"></p>
 				</div>
 				<div v-if="showAdvanceConfig && (isFacebook || isTwitter || isLinkedIn || isTumblr)" class="modal-footer">
 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 				</div>
-				<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isBuffer && !isGmb && !isTumblr) || (isTumblr && !isAllowedTumblr)" class="modal-footer">
+				<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isBuffer && !isGmb && !isVk && !isTumblr) || (isTumblr && !isAllowedTumblr)" class="modal-footer">
 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 				</div>
@@ -104,11 +107,12 @@
 				activePopup: '',
 				appOrigin: ropAuthAppData.authAppUrl,
 				appPathFB: ropAuthAppData.authAppFacebookPath,
-        appPathTW: ropAuthAppData.authAppTwitterPath,
-        appPathLI: ropAuthAppData.authAppLinkedInPath,
-        appPathBuffer: ropAuthAppData.authAppBufferPath,
-        appPathTumblr: ropAuthAppData.authAppTumblrPath,
-        appPathGmb: ropAuthAppData.authAppGmbPath,
+        		appPathTW: ropAuthAppData.authAppTwitterPath,
+        		appPathLI: ropAuthAppData.authAppLinkedInPath,
+        		appPathBuffer: ropAuthAppData.authAppBufferPath,
+        		appPathTumblr: ropAuthAppData.authAppTumblrPath,
+        		appPathGmb: ropAuthAppData.authAppGmbPath,
+        		appPathVk: ropAuthAppData.authAppVkPath,
 				appAdminEmail: ropAuthAppData.adminEmail,
 				siteAdminUrl: ropAuthAppData.adminUrl,
 				appUniqueId: ropAuthAppData.authToken,
@@ -382,25 +386,48 @@
                     Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
 				});
 			},
+            /**
+             * Add VK account.
+             *
+             * @param data Data.
+             */
+            addAccountVk(data) {
+                this.$store.dispatch('fetchAJAXPromise', {
+                    req: 'add_account_vk',
+                    updateState: false,
+                    data: data
+                }).then(response => {
+                    window.removeEventListener("message", event => this.getChildWindowMessage(event));
+                    this.authPopupWindow.close();
+                    window.location.reload();
+                }, error => {
+                    this.is_loading = false;
+                    Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+				});
+			},
 			getChildWindowMessage: function (event) {
-				if (~event.origin.indexOf(this.appOrigin)) {
-            if ('Twitter' === this.modal.serviceName) {
+			
+			if (~event.origin.indexOf(this.appOrigin)) {
+			
+			if ('Twitter' === this.modal.serviceName) {
             this.addAccountTW(JSON.parse(event.data));
             } else if ('Facebook' === this.modal.serviceName) {
-					    this.addAccountFB(JSON.parse(event.data));
-						} else if ('LinkedIn' === this.modal.serviceName) {
-					    this.addAccountLI(JSON.parse(event.data));
-						} else if ('Buffer' === this.modal.serviceName) {
-					    this.addAccountBuffer(JSON.parse(event.data));
+			this.addAccountFB(JSON.parse(event.data));
+			} else if ('LinkedIn' === this.modal.serviceName) {
+			this.addAccountLI(JSON.parse(event.data));
+			} else if ('Buffer' === this.modal.serviceName) {
+			this.addAccountBuffer(JSON.parse(event.data));
             } else if ('Tumblr' === this.modal.serviceName) {
-					    this.addAccountTumblr(JSON.parse(event.data));
+			this.addAccountTumblr(JSON.parse(event.data));
             } else if ('Gmb' === this.modal.serviceName) {
-					    this.addAccountGmb(JSON.parse(event.data));
+			this.addAccountGmb(JSON.parse(event.data));
+            } else if ('Vk' === this.modal.serviceName) {
+			this.addAccountVk(JSON.parse(event.data));
             }
 
-				} else {
-					return;
-				}
+			} else {
+			return;
+			}
 			},
 			openPopupFB: function () {
 				let loginUrl = this.appOrigin + this.appPathFB + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
@@ -462,7 +489,7 @@
                 }
                 window.addEventListener("message", event => this.getChildWindowMessage(event));
 			},
-            openPopupGmb: function () { // Open the popup specific for Tumblr
+            openPopupGmb: function () { // Open the popup specific for Google My Business
                 let loginUrl = this.appOrigin + this.appPathGmb + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
                 try {
                     this.authPopupWindow.close();
@@ -470,6 +497,18 @@
                     // nothing to do
                 } finally {
                     this.authPopupWindow = window.open(loginUrl, 'authGmb', this.windowParameters);
+                    this.cancelModal();
+                }
+                window.addEventListener("message", event => this.getChildWindowMessage(event));
+			},
+            openPopupVk: function () { // Open the popup specific for VK
+                let loginUrl = this.appOrigin + this.appPathVk + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
+                try {
+                    this.authPopupWindow.close();
+                } catch (e) {
+                    // nothing to do
+                } finally {
+                    this.authPopupWindow = window.open(loginUrl, 'authVk', this.windowParameters);
                     this.cancelModal();
                 }
                 window.addEventListener("message", event => this.getChildWindowMessage(event));
@@ -513,10 +552,10 @@
             isLinkedIn() {
                 return this.modal.serviceName === 'LinkedIn';
             },
-						// will return true if the current service actions are for Buffer.
-						isBuffer() {
-								return this.modal.serviceName === 'Buffer';
-						},
+			// will return true if the current service actions are for Buffer.
+			isBuffer() {
+					return this.modal.serviceName === 'Buffer';
+			},
             // will return true if the current service actions are for Tumblr.
             isTumblr() {
                 return this.modal.serviceName === 'Tumblr';
@@ -525,17 +564,22 @@
             isGmb() {
                 return this.modal.serviceName === 'Gmb';
             },
+            // will return true if the current service actions are for Vk.
+            isVk() {
+                return this.modal.serviceName === 'Vk';
+            },
             // will return true if the current service actions are for Pinterest.
             isPinterest() {
                 return this.modal.serviceName === 'Pinterest';
-            },
-						isAllowedTumblr: function () {
-							let showButton = true;
-							if (!this.showTmblrAppBtn) {
-									showButton = false;
-							}
-							return showButton;
-					},
+			},
+			
+			isAllowedTumblr: function () {
+				let showButton = true;
+				if (!this.showTmblrAppBtn) {
+						showButton = false;
+				}
+				return showButton;
+		},
 
 	}
 }
