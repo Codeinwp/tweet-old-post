@@ -111,7 +111,6 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 				do_action( 'wpml_switch_language', $first_account_lang );
 			}
 
-			update_option('rop_active_acc', print_r($first_account_lang, true));
 		}
 
 

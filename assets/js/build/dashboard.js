@@ -37694,17 +37694,21 @@ module.exports = {
 	watch: {
 		type: function type() {
 			this.setupData();
+			//this.get_lang();
 		}
 	},
 	methods: {
-
 		postTypes: function postTypes() {
 			// console.log('post types:', this.$store.state.generalSettings.available_post_types);
 			return this.$store.state.generalSettings.available_post_types;
 		},
-		refresh_language_taxonomies: function refresh_language_taxonomies() {
-			// the 'ja' language code below needs to be dynamic like we did in post-format.vue
-			this.$store.dispatch('fetchAJAXPromise', { req: 'get_taxonomies', data: { post_types: this.postTypes(), language_code: 'ja' } });
+		refresh_language_taxonomies: function refresh_language_taxonomies(lang) {
+			this.$store.dispatch('fetchAJAXPromise', { req: 'get_taxonomies', data: { post_types: this.postTypes(), language_code: lang } });
+		},
+		get_lang: function get_lang() {
+			console.log("Inside Get lang");
+			console.log("LANG: ", document.querySelector('#wpml-language-selector').value);
+			return document.querySelector('#wpml-language-selector').value;
 		},
 		setupData: function setupData() {
 			var action = this.type.replace('-', '_');
@@ -37809,9 +37813,10 @@ module.exports = {
 			}
 		},
 		setActiveAccount: function setActiveAccount(id) {
-			var wpml_language_selector = document.querySelector('#wpml-language-selector');
-			console.log(wpml_language_selector);
-			console.log(wpml_language_selector.value);
+			// this.get_lang;
+
+			// console.log(wpml_language_selector);
+			// console.log(wpml_language_selector.value);
 			if (this.is_loading) {
 				this.$log.warn("Request in progress...Bail");
 				return;
@@ -37827,6 +37832,10 @@ module.exports = {
     * When a new account is added and we don't have any data for it.
     */
 			this.checkActiveData();
+			// below is getting wrong value, its getting the language value from the previously selected account 
+			// this is because it is firing before the dom for the newly selected account loads
+			var wpml_language_selector = document.querySelector('#wpml-language-selector');
+			this.refresh_language_taxonomies(wpml_language_selector.value);
 		}
 	},
 	components: {
