@@ -623,7 +623,7 @@ abstract class Rop_Services_Abstract {
 	 *
 	 * @return string Image path.
 	 */
-	protected function get_path_by_url( $image_url, $mimetype = array() ) {
+	protected function get_path_by_url( $image_url, $mimetype = '' ) {
 		if ( empty( $image_url ) ) {
 			return '';
 		}
@@ -658,7 +658,7 @@ abstract class Rop_Services_Abstract {
 		$id_found = false;
 
 		// If the attachment is not an image, return the url.
-		if ( strpos( $mimetype['type'], 'video' ) !== false ) {
+		if ( strpos( $mimetype, 'video' ) !== false ) {
 			if ( empty( $ids ) ) {
 				return $image_url;
 			}
