@@ -33,6 +33,7 @@
  */
 
 // If this file is called directly, abort.
+
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
@@ -109,6 +110,11 @@ register_deactivation_hook( __FILE__, 'rop_deactivation' );
  */
 function run_rop() {
 
+	// Is the remote Cron in use ?
+	$use_remote_cron = get_option( 'rop_use_remote_cron', false );
+	$use_remote_cron = filter_var( $use_remote_cron, FILTER_VALIDATE_BOOLEAN );
+	define( 'ROP_CRON_ALTERNATIVE', $use_remote_cron );
+
 	define( 'ROP_PRO_URL', 'http://revive.social/plugins/revive-old-post/' );
 	define( 'ROP_LITE_VERSION', '8.5.15' );
 	define( 'ROP_LITE_BASE_FILE', __FILE__ );
@@ -126,6 +132,20 @@ function run_rop() {
 	define( 'ROP_APP_TUMBLR_PATH', '/tumblr_auth' );
 	define( 'ROP_APP_GMB_PATH', '/gmb_auth' );
 	define( 'ROP_INSTALL_TOKEN_OPTION', 'rop_install_token' );
+
+	if ( defined( 'ROP_CRON_ALTERNATIVE' ) && true === ROP_CRON_ALTERNATIVE ) {
+
+		$cron_system_file = ROP_PATH . 'cron-system/vendor/autoload.php';
+
+		if ( file_exists( $cron_system_file ) ) {
+			/**
+			 * $cron_system_file Cron System autoload.
+			 */
+			require_once $cron_system_file;
+
+			new RopCronSystem\Rop_Cron_Core();
+		}
+	}
 
 	$vendor_file = ROP_LITE_PATH . '/vendor/autoload.php';
 	if ( is_readable( $vendor_file ) ) {
