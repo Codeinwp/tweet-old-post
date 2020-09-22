@@ -180,6 +180,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 			$account['img'] = $account_data['img'];
 			$account['account'] = $account_data['account'];
 			$account['user'] = $account_data['user'];
+			$account['is_company'] = $account_data['is_company'];
 
 			if ( $i === 0 ) {
 				$account['active'] = true;
@@ -211,20 +212,85 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	 *
 	 * @param array  $post_details The post details to be published by the service.
 	 * @param array  $args Optional arguments needed by the method.
-	 * @param object $new_post Google My Business Local Posts object.
+	 * @param int $owner_id The owner id.
+	 * @param object $client Instance of the client.
+	 * @param string $access_token The access token.
 	 *
-	 * @return object
+	 * @return array $new_post The post contents
 	 */
-	private function vk_image_post( $post_details, $args, $new_post ) {
+	private function vk_image_post( $post_details, $args, $owner_id, $client, $access_token ) {
 
-		$image_url = $post_details['post_image'];
+		$param = array();
 
-		// if image is empty lets create a different type of GMB post
-		if ( empty( $image_url ) ) {
-			$this->logger->info( 'Could not get image. Falling back to text post with link.' );
-			return $this->vk_link_with_no_image_post( $post_details, $args );
+		if( $args['is_company'] ){
+			$param['group_id'] = $args['id'];
 		}
 
+		$photo_response = $client->photos()->getWallUploadServer(
+			$access_token,
+			$param
+			);
+			
+		$upload_url = $photo_response['upload_url'];
+		$this->logger->info( print_r('Upload URL: ' . $upload_url, true) );
+
+		$attachment_url = wp_get_attachment_url( $post_details['post_id'] );
+		$this->logger->info( print_r($attachment_url, true) );
+
+
+		$url = $this->get_path_by_url( $attachment_url, $post_details['mimetype'] );
+		$this->logger->info( print_r($url, true) );
+		
+
+		$data = array(
+			'photo' => new CURLFile(
+				$url, 
+				'multipart/form-data',
+				'image.jpg'
+			),
+		);
+
+		$this->logger->info( print_r($data, true) );
+		
+		$ch = curl_init($upload_url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		
+		$response = json_decode(curl_exec($ch), true);
+
+		$this->logger->info( print_r($response, true) );
+		
+		$params = array(
+			'photo' => (string) $response['photo'],
+			'server' => (int) $response['server'],
+			'hash' => (string) $response['hash'],
+		);
+
+		if( $args['is_company'] ){
+			$params['group_id'] = (int) $args['id']; //has to be positive
+		}else{
+			$params['user_id'] = (int) $args['id'];
+		}
+
+		$response = $client->photos()->saveWallPhoto(
+			$access_token,
+			$params
+		);
+
+	$this->logger->info( print_r($response, true) );
+	$this->logger->info( print_r($response[0]['id'], true) );
+
+	$attachment = 'photo'. $args['id'] . '_' . $response[0]['id'];
+	$this->logger->info( print_r($attachment, true) );
+
+	$new_post = array(
+		'owner_id' => $owner_id,
+		'friends_only' => 0,
+		'message' => $post_details['content'] . $post_details['hashtags'],
+		'attachments' => $attachment . ',' . $this->get_url( $post_details ),
+	);
 		return $new_post;
 
 	}
@@ -238,17 +304,19 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	 *
 	 * @param array  $post_details The post details to be published by the service.
 	 * @param array  $args Optional arguments needed by the method.
-	 * @param object $new_post Google My Business Local Posts object.
+	 * @param int $owner_id The owner id.
 	 *
-	 * @return object
+	 * @return array $new_post The post contents
 	 */
-	private function vk_text_post( $post_details, $args, $new_post ) {
+	private function vk_text_post( $post_details, $args, $owner_id ) {
 
-		$locale = get_locale();
+		$this->logger->info( 'Plain Text Post' );
 
-		$new_post->setLanguageCode( $locale );
-
-		 $new_post->setSummary( $post_details['content'] );
+		$new_post = array(
+			'owner_id' => $owner_id,
+			'friends_only' => 0,
+			'message' => $post_details['content'] . $post_details['hashtags'],
+		);
 
 		return $new_post;
 
@@ -262,42 +330,22 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	 *
 	 * @param array  $post_details The post details to be published by the service.
 	 * @param array  $args Optional arguments needed by the method.
-	 * @param object $new_post Google My Business Local Posts object.
 	 *
 	 * @return object
 	 */
-	private function vk_article_post( $post_details, $args, $new_post ) {
+	private function vk_article_post( $post_details, $args, $owner_id ) {
 
-		$image_url = get_the_post_thumbnail_url( $post_details['post_id'], 'large' );
-
-		// if image is empty lets create a different type of GMB post
-		if ( empty( $image_url ) ) {
-			$this->logger->info( 'Could not get image. Falling back to text post with link.' );
-			return $this->vk_link_with_no_image_post( $post_details, $args, $new_post );
-		}
+		$new_post = array(
+			'owner_id' => $owner_id,
+			'friends_only' => 0,
+			'message' => $post_details['content'] . $post_details['hashtags'],
+			'attachments' => $this->get_url( $post_details ),
+		);
 
 		return $new_post;
 
 	}
 
-
-	/**
-	 * Method for creating posts with no featured image on Google My Business.
-	 *
-	 * @since  8.5.9
-	 * @access private
-	 *
-	 * @param array  $post_details The post details to be published by the service.
-	 * @param array  $args Optional arguments needed by the method.
-	 * @param object $new_post Google My Business Local Posts object.
-	 *
-	 * @return object
-	 */
-	private function vk_link_with_no_image_post( $post_details, $args, $new_post ) {
-
-		return $new_post;
-
-	}
 	/**
 	 * Method for publishing with Google My Business service.
 	 *
@@ -311,27 +359,36 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	 */
 	public function share( $post_details, $args = array() ) {
 		
-		$client = new VKApiClient();
-
 		$post_id = $post_details['post_id'];
+
+		$client = new VKApiClient();
+		$access_token = $args['credentials']['access_token'];
+		$owner_id = ($args['is_company']) ? '-'.$args['id'] : $args['id'];
+
 		$post_url = $post_details['post_url'];
 		$share_as_image_post = $post_details['post_with_image'];
+	
+		// VK link post
+		if ( ! empty( $post_url ) && empty( $share_as_image_post ) && get_post_type( $post_id ) !== 'attachment' ) {
+			$new_post = $this->vk_article_post( $post_details, $args, $owner_id );
+		}
 
+		// VK plain text post
+		if ( empty( $share_as_image_post ) && empty( $post_url ) ) {
+			$new_post = $this->vk_text_post( $post_details, $args, $owner_id );
+		}
+
+		// VK image post
+		if ( ! empty( $share_as_image_post ) || get_post_type( $post_id ) === 'attachment' ) {
+			$new_post = $this->vk_image_post( $post_details, $args, $owner_id, $client, $access_token );
+		}
 
 		$response = $client->wall()->post(
-
-		'cad239af8c9653799222786193c2873cb8fc104e3f136581273f839eff13dacec8ca5d65ae4b8867f04a3',
-		array(
-		'owner_id' => '611178731',
-		'friends_only' => 0,
-		'message' => $post_details['content'],
-		'attachments' => 'https://revive.social',
-		)
-
+		$args['credentials']['access_token'],
+		$new_post
 		);
 
-
-		if ( !empty($response) ) {
+		if ( !empty($response['post_id']) ) {
 
 			$this->logger->alert_success(
 				sprintf(
@@ -341,6 +398,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 				)
 			);
 
+			$this->logger->info( print_r($response, true) );
 			return true;
 
 		} else {
@@ -348,40 +406,6 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 			$this->logger->alert_error( 'Error sharing to Vkontakte' . print_r( $response, true ) );
 				return false;
 		}
-
-		// GMB link post
-		if ( ! empty( $post_url ) && empty( $share_as_image_post ) && get_post_type( $post_id ) !== 'attachment' ) {
-			$new_post = $this->vk_article_post( $post_details, $args, $new_post );
-		}
-
-		// GMB image post
-		if ( ! empty( $share_as_image_post ) || get_post_type( $post_id ) === 'attachment' ) {
-			$new_post = $this->vk_image_post( $post_details, $args, $new_post );
-		}
-
-		// GMB plain text post
-		if ( empty( $share_as_image_post ) && empty( $post_url ) ) {
-			$new_post = $this->vk_text_post( $post_details, $args, $new_post );
-		}
-
-
-		if ( $response->state === 'LIVE' ) {
-
-			$this->logger->alert_success(
-				sprintf(
-					'Successfully shared %s to %s on Google My Business ',
-					html_entity_decode( get_the_title( $post_details['post_id'] ) ),
-					$args['user']
-				)
-			);
-
-		} else {
-
-			$this->logger->alert_error( Rop_I18n::get_labels( 'errors.vk_failed_share' ) . print_r( $response, true ) );
-				return false;
-		}
-
-		return true;
 
 	}
 

@@ -991,7 +991,7 @@ class Rop_Admin {
 							$service->set_credentials( $account_data['credentials'] );
 							foreach ( $posts as $post ) {
 								$post_shared = $account . '_post_id_' . $post;
-								if ( get_option( 'rop_last_post_shared' ) === $post_shared ) {
+								if ( get_option( 'rop_last_post_shared' ) === $post_shared  && ! ROP_DEBUG ) {
 									$logger->info( ucfirst( $account_data['service'] ) . ': ' . Rop_I18n::get_labels( 'sharing.post_already_shared' ) );
 									// help prevent duplicate posts on some systems
 									continue;

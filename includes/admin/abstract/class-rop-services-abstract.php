@@ -658,7 +658,7 @@ abstract class Rop_Services_Abstract {
 		$id_found = false;
 
 		// If the attachment is not an image, return the url.
-		if ( strpos( $mimetype, 'video' ) !== false ) {
+		if ( strpos( $mimetype['type'], 'video' ) !== false ) {
 			if ( empty( $ids ) ) {
 				return $image_url;
 			}
