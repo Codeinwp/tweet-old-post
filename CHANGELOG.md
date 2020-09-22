@@ -1,4 +1,9 @@
 
+ ### v8.5.15 - 2020-09-09 
+ **Changes:** 
+ * Change: Require at least PHP 7.1
+* Info: Next versions of ROP will not work with PHP 5.6. Please see [this doc](https://docs.revive.social/article/947-how-to-update-your-php-version) for details on updating your PHP version.
+ 
  ### v8.5.14 - 2020-09-08 
  **Changes:** 
  * Change Pro: Removed Buffer integration. To connect your Facebook Groups to ROP, simply reconnect your Facebook account to the plugin, your groups will be imported automatically. Instagram sharing will cease to work on September 30th. [Please see this doc for more info.](https://docs.revive.social/article/1297-why-were-removing-buffer)
