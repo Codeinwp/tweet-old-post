@@ -112,7 +112,7 @@ function run_rop() {
 	define( 'ROP_PRO_URL', 'http://revive.social/plugins/revive-old-post/' );
 	define( 'ROP_LITE_VERSION', '8.5.15' );
 	define( 'ROP_LITE_BASE_FILE', __FILE__ );
-	define( 'ROP_DEBUG', false );
+	define( 'ROP_DEBUG', true );
 	define( 'ROP_LITE_PATH', plugin_dir_path( __FILE__ ) );
 	define( 'ROP_PATH', plugin_dir_path( __FILE__ ) );
 	define( 'ROP_LITE_URL', plugin_dir_url( __FILE__ ) );
@@ -123,7 +123,6 @@ function run_rop() {
 	define( 'ROP_APP_FACEBOOK_PATH', '/fb_auth' );
 	define( 'ROP_APP_TWITTER_PATH', '/tw_auth' );
 	define( 'ROP_APP_LINKEDIN_PATH', '/li_auth' );
-	define( 'ROP_APP_BUFFER_PATH', '/buffer_auth' );
 	define( 'ROP_APP_TUMBLR_PATH', '/tumblr_auth' );
 	define( 'ROP_APP_GMB_PATH', '/gmb_auth' );
 	define( 'ROP_INSTALL_TOKEN_OPTION', 'rop_install_token' );

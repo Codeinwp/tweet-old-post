@@ -35255,7 +35255,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop-sign-in-area .btn[disabled][_v-90680408]{\n\t\tcursor:not-allowed;\n\t\tpointer-events: auto;\n\t\topacity: 0.3;\n\t}\n\t.big-btn#gmb-btn[_v-90680408]{\n\tpadding: 0 35px 0 14px;\n\t}\n\t.btn-gmb[_v-90680408]{\n\ttext-transform: uppercase;\n\t}\n\t#rop_core .btn.btn-buffer[_v-90680408]{\n\t\tdisplay: none;\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop-sign-in-area .btn[disabled][_v-90680408]{\n\t\tcursor:not-allowed;\n\t\tpointer-events: auto;\n\t\topacity: 0.3;\n\t}\n\t.big-btn#gmb-btn[_v-90680408]{\n\tpadding: 0 35px 0 14px;\n\t}\n\t.btn-gmb[_v-90680408]{\n\ttext-transform: uppercase;\n\t}\n", ""]);
 
 // exports
 
@@ -35286,8 +35286,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 					class="btn input-group-btn"
 // 					:class="'btn-' + network"
 // 					@click="requestAuthorization( network )">
-// 				<i v-if="network !== 'buffer' && network !== 'gmb'" class="fa fa-fw" :class="'fa-' + network"></i>
-// 				<i v-if="network === 'buffer'" class="fa fa-fw fa-plus-square"></i>
+// 				<i v-if="network !== 'gmb'" class="fa fa-fw" :class="'fa-' + network"></i>
 // 				<i v-if="network === 'gmb'" class="fa fa-fw fa-google"></i>
 // 				{{service.name}}
 // 			</button>
@@ -35319,9 +35318,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 							<button class="btn btn-primary big-btn" @click="openPopupTumblr()">{{labels.tumblr_app_signin_btn}}</button>
 // 							<span class="text-center">{{labels.app_option_signin}}</span>
 // 						</div>
-// 						<div class="auth-app" v-if="isBuffer">
-// 							<button class="btn btn-primary big-btn" @click="openPopupBuffer()">{{labels.buffer_app_signin_btn}}</button>
-// 						</div>
 // 						<div class="auth-app" v-if="isGmb">
 // 							<button class="btn btn-primary big-btn" id="gmb-btn" @click="openPopupGmb()">{{labels.gmb_app_signin_btn}}</button>
 // 						</div>
@@ -35337,7 +35333,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 							<p class="text-gray">{{ field.description }}</p>
 // 						</div>
 // 					</div>
-// 						<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isBuffer && !isGmb && !isTumblr) || (isTumblr && !isAllowedTumblr)">
+// 						<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isGmb && !isTumblr) || (isTumblr && !isAllowedTumblr)">
 // 						<div class="form-group" v-for="( field, id ) in modal.data">
 // 							<label class="form-label" :for="field.id">{{ field.name }}</label>
 // 							<input :class="[ 'form-input', field.error ? ' is-error' : '' ]" type="text" :id="field.id" v-model="field.value"
@@ -35348,14 +35344,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 					</div>
 // 				</div>
 // 				</div>
-// 				<div v-if="isFacebook || isTwitter || isLinkedIn || isBuffer || isGmb || (isTumblr && isAllowedTumblr)" class="modal-footer">
+// 				<div v-if="isFacebook || isTwitter || isLinkedIn || isGmb || (isTumblr && isAllowedTumblr)" class="modal-footer">
 // 					<p class="text-left pull-left mr-2" v-html="labels.rs_app_info"></p>
 // 				</div>
 // 				<div v-if="showAdvanceConfig && (isFacebook || isTwitter || isLinkedIn || isTumblr)" class="modal-footer">
 // 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 // 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 // 				</div>
-// 				<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isBuffer && !isGmb && !isTumblr) || (isTumblr && !isAllowedTumblr)" class="modal-footer">
+// 				<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isGmb && !isTumblr) || (isTumblr && !isAllowedTumblr)" class="modal-footer">
 // 					<div class="text-left pull-left mr-2" v-html="modal.description"></div>
 // 					<button class="btn btn-primary" @click="closeModal()">{{labels.sign_in_btn}}</button>
 // 				</div>
@@ -35385,7 +35381,6 @@ module.exports = {
 			appPathFB: ropAuthAppData.authAppFacebookPath,
 			appPathTW: ropAuthAppData.authAppTwitterPath,
 			appPathLI: ropAuthAppData.authAppLinkedInPath,
-			appPathBuffer: ropAuthAppData.authAppBufferPath,
 			appPathTumblr: ropAuthAppData.authAppTumblrPath,
 			appPathGmb: ropAuthAppData.authAppGmbPath,
 			appAdminEmail: ropAuthAppData.adminEmail,
@@ -35647,15 +35642,15 @@ module.exports = {
 		},
 
 		/**
-   * Add Buffer account.
+   * Add Tumblr account.
    *
    * @param data Data.
    */
-		addAccountBuffer: function addAccountBuffer(data) {
+		addAccountTumblr: function addAccountTumblr(data) {
 			var _this5 = this;
 
 			this.$store.dispatch('fetchAJAXPromise', {
-				req: 'add_account_buffer',
+				req: 'add_account_tumblr',
 				updateState: false,
 				data: data
 			}).then(function (response) {
@@ -35671,15 +35666,15 @@ module.exports = {
 		},
 
 		/**
-   * Add Tumblr account.
+   * Add Google My Business account.
    *
    * @param data Data.
    */
-		addAccountTumblr: function addAccountTumblr(data) {
+		addAccountGmb: function addAccountGmb(data) {
 			var _this6 = this;
 
 			this.$store.dispatch('fetchAJAXPromise', {
-				req: 'add_account_tumblr',
+				req: 'add_account_gmb',
 				updateState: false,
 				data: data
 			}).then(function (response) {
@@ -35694,30 +35689,6 @@ module.exports = {
 			});
 		},
 
-		/**
-   * Add Google My Business account.
-   *
-   * @param data Data.
-   */
-		addAccountGmb: function addAccountGmb(data) {
-			var _this7 = this;
-
-			this.$store.dispatch('fetchAJAXPromise', {
-				req: 'add_account_gmb',
-				updateState: false,
-				data: data
-			}).then(function (response) {
-				window.removeEventListener("message", function (event) {
-					return _this7.getChildWindowMessage(event);
-				});
-				_this7.authPopupWindow.close();
-				window.location.reload();
-			}, function (error) {
-				_this7.is_loading = false;
-				Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
-			});
-		},
-
 		getChildWindowMessage: function getChildWindowMessage(event) {
 			if (~event.origin.indexOf(this.appOrigin)) {
 				if ('Twitter' === this.modal.serviceName) {
@@ -35726,8 +35697,6 @@ module.exports = {
 					this.addAccountFB(JSON.parse(event.data));
 				} else if ('LinkedIn' === this.modal.serviceName) {
 					this.addAccountLI(JSON.parse(event.data));
-				} else if ('Buffer' === this.modal.serviceName) {
-					this.addAccountBuffer(JSON.parse(event.data));
 				} else if ('Tumblr' === this.modal.serviceName) {
 					this.addAccountTumblr(JSON.parse(event.data));
 				} else if ('Gmb' === this.modal.serviceName) {
@@ -35738,7 +35707,7 @@ module.exports = {
 			}
 		},
 		openPopupFB: function openPopupFB() {
-			var _this8 = this;
+			var _this7 = this;
 
 			var loginUrl = this.appOrigin + this.appPathFB + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
 			try {
@@ -35750,11 +35719,11 @@ module.exports = {
 				this.cancelModal();
 			}
 			window.addEventListener("message", function (event) {
-				return _this8.getChildWindowMessage(event);
+				return _this7.getChildWindowMessage(event);
 			});
 		},
 		openPopupTW: function openPopupTW() {
-			var _this9 = this;
+			var _this8 = this;
 
 			// Open the popup specific for Twitter
 			var loginUrl = this.appOrigin + this.appPathTW + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
@@ -35767,11 +35736,11 @@ module.exports = {
 				this.cancelModal();
 			}
 			window.addEventListener("message", function (event) {
-				return _this9.getChildWindowMessage(event);
+				return _this8.getChildWindowMessage(event);
 			});
 		},
 		openPopupLI: function openPopupLI() {
-			var _this10 = this;
+			var _this9 = this;
 
 			// Open the popup specific for LinkedIn
 			var loginUrl = this.appOrigin + this.appPathLI + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
@@ -35784,28 +35753,11 @@ module.exports = {
 				this.cancelModal();
 			}
 			window.addEventListener("message", function (event) {
-				return _this10.getChildWindowMessage(event);
-			});
-		},
-		openPopupBuffer: function openPopupBuffer() {
-			var _this11 = this;
-
-			// Open the popup specific for Buffer
-			var loginUrl = this.appOrigin + this.appPathBuffer + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
-			try {
-				this.authPopupWindow.close();
-			} catch (e) {
-				// nothing to do
-			} finally {
-				this.authPopupWindow = window.open(loginUrl, 'authLI', this.windowParameters);
-				this.cancelModal();
-			}
-			window.addEventListener("message", function (event) {
-				return _this11.getChildWindowMessage(event);
+				return _this9.getChildWindowMessage(event);
 			});
 		},
 		openPopupTumblr: function openPopupTumblr() {
-			var _this12 = this;
+			var _this10 = this;
 
 			// Open the popup specific for Tumblr
 			var loginUrl = this.appOrigin + this.appPathTumblr + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
@@ -35818,11 +35770,11 @@ module.exports = {
 				this.cancelModal();
 			}
 			window.addEventListener("message", function (event) {
-				return _this12.getChildWindowMessage(event);
+				return _this10.getChildWindowMessage(event);
 			});
 		},
 		openPopupGmb: function openPopupGmb() {
-			var _this13 = this;
+			var _this11 = this;
 
 			// Open the popup specific for Tumblr
 			var loginUrl = this.appOrigin + this.appPathGmb + '?callback_url=' + this.siteAdminUrl + '&token=' + this.appUniqueId + '&signature=' + this.appSignature + '&data=' + this.appAdminEmail;
@@ -35835,7 +35787,7 @@ module.exports = {
 				this.cancelModal();
 			}
 			window.addEventListener("message", function (event) {
-				return _this13.getChildWindowMessage(event);
+				return _this11.getChildWindowMessage(event);
 			});
 		}
 	},
@@ -35880,11 +35832,6 @@ module.exports = {
 			return this.modal.serviceName === 'LinkedIn';
 		},
 
-		// will return true if the current service actions are for Buffer.
-		isBuffer: function isBuffer() {
-			return this.modal.serviceName === 'Buffer';
-		},
-
 		// will return true if the current service actions are for Tumblr.
 		isTumblr: function isTumblr() {
 			return this.modal.serviceName === 'Tumblr';
@@ -35922,9 +35869,6 @@ module.exports = {
 	// 	.btn-gmb{
 	// 	text-transform: uppercase;
 	// 	}
-	// 	#rop_core .btn.btn-buffer{
-	// 		display: none;
-	// 	}
 	// </style>
 	//
 
@@ -35934,7 +35878,7 @@ module.exports = {
 /* 226 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div id=\"rop-sign-in-area\" _v-90680408=\"\">\n\t\t<div class=\"input-group text-right buttons-wrap\" _v-90680408=\"\">\n\t\t\t<button v-for=\"( service, network ) in services\" :disabled=\"checkDisabled( service, network )\" :title=\"getTooltip( service, network )\" class=\"btn input-group-btn\" :class=\"'btn-' + network\" @click=\"requestAuthorization( network )\" _v-90680408=\"\">\n\t\t\t\t<i v-if=\"network !== 'buffer' &amp;&amp; network !== 'gmb'\" class=\"fa fa-fw\" :class=\"'fa-' + network\" _v-90680408=\"\"></i>\n\t\t\t\t<i v-if=\"network === 'buffer'\" class=\"fa fa-fw fa-plus-square\" _v-90680408=\"\"></i>\n\t\t\t\t<i v-if=\"network === 'gmb'\" class=\"fa fa-fw fa-google\" _v-90680408=\"\"></i>\n\t\t\t\t{{service.name}}\n\t\t\t</button>\n\n\t\t</div>\n\n\t\t<div class=\"modal\" :class=\"modalActiveClass\" _v-90680408=\"\">\n\t\t\t<div class=\"modal-overlay\" _v-90680408=\"\"></div>\n\t\t\t<div class=\"modal-container\" _v-90680408=\"\">\n\t\t\t\t<div class=\"modal-header\" _v-90680408=\"\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"cancelModal()\" _v-90680408=\"\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\" _v-90680408=\"\">{{ modal.serviceName }} {{labels.service_popup_title}}</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\" _v-90680408=\"\">\n\t\t\t\t\t<div class=\"content\" _v-90680408=\"\">\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isFacebook\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupFB()\" _v-90680408=\"\">{{labels.fb_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-90680408=\"\">{{labels.app_option_signin}}</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isTwitter\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupTW()\" _v-90680408=\"\">{{labels.tw_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-90680408=\"\">{{labels.app_option_signin}}</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isLinkedIn\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupLI()\" _v-90680408=\"\">{{labels.li_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-90680408=\"\">{{labels.app_option_signin}}</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isTumblr &amp;&amp; isAllowedTumblr\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupTumblr()\" _v-90680408=\"\">{{labels.tumblr_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-90680408=\"\">{{labels.app_option_signin}}</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isBuffer\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupBuffer()\" _v-90680408=\"\">{{labels.buffer_app_signin_btn}}</button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isGmb\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" id=\"gmb-btn\" @click=\"openPopupGmb()\" _v-90680408=\"\">{{labels.gmb_app_signin_btn}}</button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div id=\"rop-advanced-config\" v-if=\"isFacebook || isTwitter || isLinkedIn || (isTumblr &amp;&amp; isAllowedTumblr)\" _v-90680408=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-primary\" v-on:click=\"showAdvanceConfig = !showAdvanceConfig\" _v-90680408=\"\">{{labels.show_advance_config}}</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t\t<div v-if=\"showAdvanceConfig &amp;&amp; (isFacebook || isTwitter || isLinkedIn || (isTumblr &amp;&amp; isAllowedTumblr) )\" _v-90680408=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-90680408=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input :class=\"[ 'form-input', field.error ? ' is-error' : '' ]\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<small class=\"text-error\" v-if=\"field.error\" _v-90680408=\"\">{{labels.field_required}}</small>\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-90680408=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t\t<div v-if=\"(!isTwitter &amp;&amp; !isFacebook &amp;&amp; !isLinkedIn &amp;&amp; !isBuffer &amp;&amp; !isGmb &amp;&amp; !isTumblr) || (isTumblr &amp;&amp; !isAllowedTumblr)\" _v-90680408=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-90680408=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input :class=\"[ 'form-input', field.error ? ' is-error' : '' ]\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<small class=\"text-error\" v-if=\"field.error\" _v-90680408=\"\">{{labels.field_required}}</small>\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-90680408=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"isFacebook || isTwitter || isLinkedIn || isBuffer || isGmb || (isTumblr &amp;&amp; isAllowedTumblr)\" class=\"modal-footer\" _v-90680408=\"\">\n\t\t\t\t\t<p class=\"text-left pull-left mr-2\" v-html=\"labels.rs_app_info\" _v-90680408=\"\"></p>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"showAdvanceConfig &amp;&amp; (isFacebook || isTwitter || isLinkedIn || isTumblr)\" class=\"modal-footer\" _v-90680408=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-90680408=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-90680408=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"(!isTwitter &amp;&amp; !isFacebook &amp;&amp; !isLinkedIn &amp;&amp; !isBuffer &amp;&amp; !isGmb &amp;&amp; !isTumblr) || (isTumblr &amp;&amp; !isAllowedTumblr)\" class=\"modal-footer\" _v-90680408=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-90680408=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-90680408=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div id=\"rop-sign-in-area\" _v-90680408=\"\">\n\t\t<div class=\"input-group text-right buttons-wrap\" _v-90680408=\"\">\n\t\t\t<button v-for=\"( service, network ) in services\" :disabled=\"checkDisabled( service, network )\" :title=\"getTooltip( service, network )\" class=\"btn input-group-btn\" :class=\"'btn-' + network\" @click=\"requestAuthorization( network )\" _v-90680408=\"\">\n\t\t\t\t<i v-if=\"network !== 'gmb'\" class=\"fa fa-fw\" :class=\"'fa-' + network\" _v-90680408=\"\"></i>\n\t\t\t\t<i v-if=\"network === 'gmb'\" class=\"fa fa-fw fa-google\" _v-90680408=\"\"></i>\n\t\t\t\t{{service.name}}\n\t\t\t</button>\n\n\t\t</div>\n\n\t\t<div class=\"modal\" :class=\"modalActiveClass\" _v-90680408=\"\">\n\t\t\t<div class=\"modal-overlay\" _v-90680408=\"\"></div>\n\t\t\t<div class=\"modal-container\" _v-90680408=\"\">\n\t\t\t\t<div class=\"modal-header\" _v-90680408=\"\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"cancelModal()\" _v-90680408=\"\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\" _v-90680408=\"\">{{ modal.serviceName }} {{labels.service_popup_title}}</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\" _v-90680408=\"\">\n\t\t\t\t\t<div class=\"content\" _v-90680408=\"\">\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isFacebook\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupFB()\" _v-90680408=\"\">{{labels.fb_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-90680408=\"\">{{labels.app_option_signin}}</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isTwitter\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupTW()\" _v-90680408=\"\">{{labels.tw_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-90680408=\"\">{{labels.app_option_signin}}</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isLinkedIn\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupLI()\" _v-90680408=\"\">{{labels.li_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-90680408=\"\">{{labels.app_option_signin}}</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isTumblr &amp;&amp; isAllowedTumblr\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupTumblr()\" _v-90680408=\"\">{{labels.tumblr_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-90680408=\"\">{{labels.app_option_signin}}</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isGmb\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" id=\"gmb-btn\" @click=\"openPopupGmb()\" _v-90680408=\"\">{{labels.gmb_app_signin_btn}}</button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div id=\"rop-advanced-config\" v-if=\"isFacebook || isTwitter || isLinkedIn || (isTumblr &amp;&amp; isAllowedTumblr)\" _v-90680408=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-primary\" v-on:click=\"showAdvanceConfig = !showAdvanceConfig\" _v-90680408=\"\">{{labels.show_advance_config}}</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t\t<div v-if=\"showAdvanceConfig &amp;&amp; (isFacebook || isTwitter || isLinkedIn || (isTumblr &amp;&amp; isAllowedTumblr) )\" _v-90680408=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-90680408=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input :class=\"[ 'form-input', field.error ? ' is-error' : '' ]\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<small class=\"text-error\" v-if=\"field.error\" _v-90680408=\"\">{{labels.field_required}}</small>\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-90680408=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t\t<div v-if=\"(!isTwitter &amp;&amp; !isFacebook &amp;&amp; !isLinkedIn &amp;&amp; !isGmb &amp;&amp; !isTumblr) || (isTumblr &amp;&amp; !isAllowedTumblr)\" _v-90680408=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-90680408=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input :class=\"[ 'form-input', field.error ? ' is-error' : '' ]\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<small class=\"text-error\" v-if=\"field.error\" _v-90680408=\"\">{{labels.field_required}}</small>\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-90680408=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"isFacebook || isTwitter || isLinkedIn || isGmb || (isTumblr &amp;&amp; isAllowedTumblr)\" class=\"modal-footer\" _v-90680408=\"\">\n\t\t\t\t\t<p class=\"text-left pull-left mr-2\" v-html=\"labels.rs_app_info\" _v-90680408=\"\"></p>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"showAdvanceConfig &amp;&amp; (isFacebook || isTwitter || isLinkedIn || isTumblr)\" class=\"modal-footer\" _v-90680408=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-90680408=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-90680408=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"(!isTwitter &amp;&amp; !isFacebook &amp;&amp; !isLinkedIn &amp;&amp; !isGmb &amp;&amp; !isTumblr) || (isTumblr &amp;&amp; !isAllowedTumblr)\" class=\"modal-footer\" _v-90680408=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-90680408=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-90680408=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 227 */
