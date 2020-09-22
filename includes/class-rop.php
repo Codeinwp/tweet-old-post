@@ -68,7 +68,7 @@ class Rop {
 	public function __construct() {
 
 		$this->plugin_name = 'rop';
-		$this->version     = '8.5.13';
+		$this->version     = '8.5.15';
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -131,8 +131,13 @@ class Rop {
 		$this->loader->add_action( 'admin_head', $plugin_admin, 'rop_roadmap_new_tab' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_dismiss_rop_event_not_firing_notice' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_cron_event_status_notice' );
+
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_dismiss_buffer_addon_disabled_notice' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_buffer_addon_notice' );
+
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_dismiss_dropping_buffer_notice' );
+		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_dropping_buffer_notice' );
+
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_dismiss_linkedin_api_v2_notice' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_linkedin_api_v2_notice' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'bitly_shortener_upgrade_notice' );
@@ -265,11 +270,6 @@ class Rop {
 		$factory         = new Rop_Services_Factory();
 		$global_settings = new Rop_Global_Settings();
 		foreach ( $global_settings->get_all_services_handle() as $service ) {
-
-			// Skip if the buffer addon is not active.
-			if ( ! class_exists( 'Rop_Buffer_Service' ) && $service === 'buffer' ) {
-				continue;
-			}
 
 			try {
 				${$service . '_service'} = $factory->build( $service );

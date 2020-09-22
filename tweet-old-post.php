@@ -16,7 +16,7 @@
  * Plugin Name: Revive Old Posts
  * Plugin URI: https://revive.social/
  * Description: WordPress plugin that helps you to keeps your old posts alive by sharing them and driving more traffic to them from twitter/facebook or linkedin. It also helps you to promote your content. You can set time and no of posts to share to drive more traffic.For questions, comments, or feature requests, <a href="http://revive.social/support/?utm_source=plugindesc&utm_medium=announce&utm_campaign=top">contact </a> us!
- * Version:           8.5.13
+ * Version:           8.5.15
  * Author:            revive.social
  * Author URI:        https://revive.social/
  * Requires at least: 3.5
@@ -25,7 +25,7 @@
  * WordPress Available:  yes
  * Pro Slug:          tweet-old-post-pro
  * Requires License:    no
- * Requires PHP: 5.6
+ * Requires PHP: 7.1
  * License:           GPLv2 or later
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: tweet-old-post
@@ -36,6 +36,48 @@
 
 if ( ! defined( 'WPINC' ) ) {
 	die;
+}
+
+if ( function_exists( 'phpversion' ) ) {
+
+	if ( version_compare( phpversion(), '7.1', '<' ) ) {
+		add_action( 'admin_notices', 'rop_php_notice' );
+		add_action( 'admin_init', 'deactivate_rop', 1 );
+		return;
+	}
+}
+
+if ( defined( 'PHP_VERSION' ) ) {
+	if ( version_compare( PHP_VERSION, '7.1', '<' ) ) {
+		add_action( 'admin_notices', 'rop_php_notice' );
+		add_action( 'admin_init', 'deactivate_rop', 1 );
+		return;
+	}
+}
+
+/**
+ * Shows a notice for sites running PHP less than 5.6.
+ *
+ * @since    8.1.4
+ */
+function rop_php_notice() {
+	?>
+
+	<div class="notice notice-error is-dismissible">
+		<?php echo sprintf( __( '%1$s You\'re using a PHP version lower than 7.1! Revive Old Posts requires at least %2$sPHP 7.1%3$s to function properly. Plugin has been deactivated. %4$sLearn more here%5$s. %6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/947-how-to-update-your-php-version" target="_blank">', '</a>', '</p>' ); ?>
+	</div>
+	<?php
+}
+
+/**
+ * Deactivates Revive Old Posts.
+ *
+ * @since    8.1.4
+ */
+function deactivate_rop() {
+	if ( is_plugin_active( 'tweet-old-post/tweet-old-post.php' ) ) {
+		deactivate_plugins( 'tweet-old-post/tweet-old-post.php' );
+	}
 }
 
 /**
@@ -58,31 +100,6 @@ register_activation_hook( __FILE__, 'rop_activation' );
 register_deactivation_hook( __FILE__, 'rop_deactivation' );
 
 /**
- * Shows a notice for sites running PHP less than 5.6.
- *
- * @since    8.1.4
- */
-function rop_php_notice() {
-	?>
-
-	<div class="notice notice-error is-dismissible">
-		<?php echo sprintf( __( '%1$s You\'re using a PHP version lower than 5.6! Revive Old Posts requires at least %2$sPHP 5.6%3$s to function properly. Plugin has been deactivated. %4$sLearn more here%5$s. %6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/947-how-to-update-your-php-version" target="_blank">', '</a>', '</p>' ); ?>
-	</div>
-	<?php
-}
-
-/**
- * Deactivates Revive Old Posts.
- *
- * @since    8.1.4
- */
-function deactivate_rop() {
-	if ( is_plugin_active( 'tweet-old-post/tweet-old-post.php' ) ) {
-		deactivate_plugins( 'tweet-old-post/tweet-old-post.php' );
-	}
-}
-
-/**
  * Begins execution of the plugin.
  *
  * Since everything within the plugin is registered via hooks,
@@ -93,18 +110,13 @@ function deactivate_rop() {
  */
 function run_rop() {
 
-	if ( version_compare( PHP_VERSION, '5.6.0', '<' ) ) {
-		add_action( 'admin_notices', 'rop_php_notice' );
-		add_action( 'admin_init', 'deactivate_rop', 1 );
-	}
-
 	// Is the remote Cron in use ?
 	$use_remote_cron = get_option( 'rop_use_remote_cron', false );
 	$use_remote_cron = filter_var( $use_remote_cron, FILTER_VALIDATE_BOOLEAN );
 	define( 'ROP_CRON_ALTERNATIVE', $use_remote_cron );
 
 	define( 'ROP_PRO_URL', 'http://revive.social/plugins/revive-old-post/' );
-	define( 'ROP_LITE_VERSION', '8.5.13' );
+	define( 'ROP_LITE_VERSION', '8.5.15' );
 	define( 'ROP_LITE_BASE_FILE', __FILE__ );
 	define( 'ROP_DEBUG', false );
 	define( 'ROP_LITE_PATH', plugin_dir_path( __FILE__ ) );
@@ -117,7 +129,6 @@ function run_rop() {
 	define( 'ROP_APP_FACEBOOK_PATH', '/fb_auth' );
 	define( 'ROP_APP_TWITTER_PATH', '/tw_auth' );
 	define( 'ROP_APP_LINKEDIN_PATH', '/li_auth' );
-	define( 'ROP_APP_BUFFER_PATH', '/buffer_auth' );
 	define( 'ROP_APP_TUMBLR_PATH', '/tumblr_auth' );
 	define( 'ROP_APP_GMB_PATH', '/gmb_auth' );
 	define( 'ROP_INSTALL_TOKEN_OPTION', 'rop_install_token' );
