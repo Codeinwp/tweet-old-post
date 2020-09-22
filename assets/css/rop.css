@@ -471,31 +471,31 @@
 	border-left-color: #fff;
 }
 
-#rop_core .btn.btn-buffer {
+#rop_core .btn.btn-gmb {
 	border-color: #0071a6;
 	color: #fff;
 	background: #323b43;
 }
 
-#rop_core .btn.btn-buffer:focus {
+#rop_core .btn.btn-gmb:focus {
 	box-shadow: 0 0 0 0.1rem rgba(0, 123, 181, 0.2);
 }
 
-#rop_core .btn.btn-buffer:focus,
-#rop_core .btn.btn-buffer:hover {
+#rop_core .btn.btn-gmb:focus,
+#rop_core .btn.btn-gmb:hover {
 	border-color: #006a9c;
 	color: #fff;
 	background: #0074ab;
 }
 
-#rop_core .btn.btn-buffer:active,
-#rop_core .btn.btn-buffer.active {
+#rop_core .btn.btn-gmb:active,
+#rop_core .btn.btn-gmb.active {
 	border-color: #005882;
 	color: #fff;
 	background: #006391;
 }
 
-#rop_core .btn.btn-buffer.loading::after {
+#rop_core .btn.btn-gmb.loading::after {
 	border-bottom-color: #fff;
 	border-left-color: #fff;
 }
