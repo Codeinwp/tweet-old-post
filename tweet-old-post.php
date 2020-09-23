@@ -33,6 +33,7 @@
  */
 
 // If this file is called directly, abort.
+
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
@@ -109,11 +110,6 @@ register_deactivation_hook( __FILE__, 'rop_deactivation' );
  */
 function run_rop() {
 
-	if ( version_compare( PHP_VERSION, '5.6.0', '<' ) ) {
-		add_action( 'admin_notices', 'rop_php_notice' );
-		add_action( 'admin_init', 'deactivate_rop', 1 );
-	}
-
 	// Is the remote Cron in use ?
 	$use_remote_cron = get_option( 'rop_use_remote_cron', false );
 	$use_remote_cron = filter_var( $use_remote_cron, FILTER_VALIDATE_BOOLEAN );
@@ -133,7 +129,6 @@ function run_rop() {
 	define( 'ROP_APP_FACEBOOK_PATH', '/fb_auth' );
 	define( 'ROP_APP_TWITTER_PATH', '/tw_auth' );
 	define( 'ROP_APP_LINKEDIN_PATH', '/li_auth' );
-	define( 'ROP_APP_BUFFER_PATH', '/buffer_auth' );
 	define( 'ROP_APP_TUMBLR_PATH', '/tumblr_auth' );
 	define( 'ROP_APP_GMB_PATH', '/gmb_auth' );
 	define( 'ROP_INSTALL_TOKEN_OPTION', 'rop_install_token' );
