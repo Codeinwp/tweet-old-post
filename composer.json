@@ -27,7 +27,6 @@
   "require": {
     "facebook/graph-sdk": "5.7",
     "abraham/twitteroauth": "1.1.0",
-    "monolog/monolog": "1.24",
     "codeinwp/themeisle-sdk": "3.2.15",
     "google/apiclient": "2.7.1"
   },
