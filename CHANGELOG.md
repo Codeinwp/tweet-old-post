@@ -1,4 +1,21 @@
 
+ ### v8.5.15 - 2020-09-09 
+ **Changes:** 
+ * Change: Require at least PHP 7.1
+* Info: Next versions of ROP will not work with PHP 5.6. Please see [this doc](https://docs.revive.social/article/947-how-to-update-your-php-version) for details on updating your PHP version.
+ 
+ ### v8.5.14 - 2020-09-08 
+ **Changes:** 
+ * Change Pro: Removed Buffer integration. To connect your Facebook Groups to ROP, simply reconnect your Facebook account to the plugin, your groups will be imported automatically. Instagram sharing will cease to work on September 30th. [Please see this doc for more info.](https://docs.revive.social/article/1297-why-were-removing-buffer)
+* New PRO: Your admined groups are imported into ROP by default along with your pages.
+* Info: Added known error log message for Facebook permissions error. If receiving permission errors in the ROP logs while connecting different Facebook pages to different websites. Then [please see this doc for the solution](https://docs.revive.social/article/1031-fix-error-200-requires-managepages-and-publishpages)
+ 
+ ### v8.5.13 - 2020-08-28 
+ **Changes:** 
+ * Change: Made account names clickable.
+* Fix: WP 5.5 missing permissions callback notice.
+* Info: Tested on WP 5.5
+ 
  ### v8.5.12 - 2020-08-03 
  **Changes:** 
  * Fix PRO: Edge case where "Share Scheduled Posts to Social Media On Publish" feature would not share posts because of empty array.

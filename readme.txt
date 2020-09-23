@@ -3,7 +3,7 @@ Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisl
 Tags: share to social media, auto publish, auto post, social media scheduling, social media auto posting, social media marketing, social media automation, social media sharing
 Requires at least: 4.7
 Tested up to: 5.5
-Requires PHP: 5.6
+Requires PHP: 7.1
 Stable tag: trunk
 
 
@@ -11,7 +11,7 @@ Automatically share your WordPress posts on Twitter, Facebook, LinkedIn. Get mor
 
 == Description ==
 
-ROP is a **must-have** WordPress plugin created to help website administrators **boost their website traffic**, grow their **social media followers** and keep their existing **followers engaged** by **automatically** sharing posts and content from their WP site to their social media networks such as Facebook, Twitter, Google My Business, LinkedIN, Instagram, Tumblr and even Buffer.
+ROP is a **must-have** WordPress plugin created to help website administrators **boost their website traffic**, grow their **social media followers** and keep their existing **followers engaged** by **automatically** sharing posts and content from their WP site to their social media networks such as Facebook, Twitter, Google My Business, LinkedIN, and Tumblr
 
 _Over 40,000+ WP site owners trust Revive Old Posts as the go-to social media automation and scheduling plugin for WordPress._
 
@@ -83,12 +83,10 @@ Revive Old Posts isn't like every other social media marketing tool. We've tailo
 - WordPress to Facebook page
 - WordPress to Facebook Groups [Pro]
 - WordPress to Twitter
-- WordPress to Instagram [Pro]
 - WordPress to Linkedin Profile [Pro]
 - WordPress to Linkedin Page [Pro]
 - WordPress to Tumblr [Pro]
 - WordPress to Google My Business [Pro]
-- WordPress to Buffer [Pro]
 
 Some of the available networks and features require the Pro version of the plugin. Check out the free vs pro table [here.](https://docs.revive.social/article/941-revive-old-post-free-vs-pro)
 
@@ -135,7 +133,6 @@ Using the PRO version of Revive Old Posts unlocks a host of additional features 
 
 - Share **WordPress scheduled posts** to social media on publish. [Learn More](https://docs.revive.social/article/1194-share-scheduled-posts-to-social-media-on-publish-with-revive-old-posts)
 
-- **WordPress to Instagram** scheduling and auto post
 
 - **WordPress to Facebook Groups** scheduling and auto post
 
@@ -235,10 +232,6 @@ If you have any questions please ask on the [support forum](https://wordpress.or
 
 - Yes, this however requires the pro version of the plugin.
 
-**Can Revive Old Posts share to Instagram Business page?**
-
-- Yes, ROP can share to Instagram business page as well as personal profiles.
-
 **Can Revive Old Posts share to LinkedIn Business page?**
 
 - Yes, ROP can share to LinkedIn business pages as well as personal profiles.
@@ -265,6 +258,26 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.5.15 - 2020-09-09  = 
+
+* Change: Require at least PHP 7.1
+* Info: Next versions of ROP will not work with PHP 5.6. Please see [this doc](https://docs.revive.social/article/947-how-to-update-your-php-version) for details on updating your PHP version.
+
+
+= 8.5.14 - 2020-09-08  = 
+
+* Change Pro: Removed Buffer integration. To connect your Facebook Groups to ROP, simply reconnect your Facebook account to the plugin, your groups will be imported automatically. Instagram sharing will cease to work on September 30th. [Please see this doc for more info.](https://docs.revive.social/article/1297-why-were-removing-buffer)
+* New PRO: Your admined groups are imported into ROP by default along with your pages.
+* Info: Added known error log message for Facebook permissions error. If receiving permission errors in the ROP logs while connecting different Facebook pages to different websites. Then [please see this doc for the solution](https://docs.revive.social/article/1031-fix-error-200-requires-managepages-and-publishpages)
+
+
+= 8.5.13 - 2020-08-28  = 
+
+* Change: Made account names clickable.
+* Fix: WP 5.5 missing permissions callback notice.
+* Info: Tested on WP 5.5
+
+
 = 8.5.12 - 2020-08-03  =
 
 * Fix PRO: Edge case where "Share Scheduled Posts to Social Media On Publish" feature would not share posts because of empty array.

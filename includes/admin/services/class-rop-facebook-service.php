@@ -450,13 +450,20 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @access  public
 	 *
 	 * @param   array $post_details The post details to be published by the service.
-	 * @param   array $args Optional arguments needed by the method.
+	 * @param   array $args Optional arguments needed by the method (the account data).
 	 *
 	 * @return mixed
 	 * @throws \Facebook\Exceptions\FacebookSDKException Facebook library exception.
 	 */
 	public function share( $post_details, $args = array() ) {
 		if ( Rop_Admin::rop_site_is_staging() ) {
+			return false;
+		}
+
+		$global_settings = new Rop_Global_Settings();
+
+		if ( strpos( $args['user'], 'Facebook Group:' ) !== false && $global_settings->license_type() < 1 ) {
+			$this->logger->alert_error( 'An active Pro license is needed to share to Facebook Groups.' );
 			return false;
 		}
 
