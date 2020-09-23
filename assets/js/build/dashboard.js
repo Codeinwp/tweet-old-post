@@ -40322,7 +40322,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .toast.log-toast p[_v-ed733db4] {\n\t\tmargin: 0px;\n\t\tline-height: inherit;\n\t}\n\n\t#rop_core .toast.log-toast[_v-ed733db4]:hover {\n\t\topacity: 0.9;\n\t}\n\n\t#rop_core .toast.log-toast[_v-ed733db4] {\n\t\tpadding: 0.1rem;\n\t\tpadding-left: 10px;\n\t\tmargin-top: 2px;\n\t}\n\n\t#rop_core .container[_v-ed733db4] {\n\t\tmin-height: 400px;\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop_core .toast.log-toast p[_v-ed733db4] {\n\t\tmargin: 0px;\n\t\tline-height: inherit;\n\t}\n\n\t#rop_core .toast.log-toast[_v-ed733db4]:hover {\n\t\topacity: 0.9;\n\t}\n\n\t#rop_core .toast.log-toast[_v-ed733db4] {\n\t\tpadding: 0.1rem;\n\t\tpadding-left: 10px;\n\t\tmargin-top: 2px;\n\t}\n\n\t#rop_core .container[_v-ed733db4] {\n\t\tmin-height: 400px;\n\t}\n\n\t.columns[_v-ed733db4] {\n\t\tline-break: anywhere;\n\t}\n", ""]);
 
 // exports
 
@@ -40424,6 +40424,10 @@ module.exports = {
 	//
 	// 	#rop_core .container {
 	// 		min-height: 400px;
+	// 	}
+	//
+	// 	.columns {
+	// 		line-break: anywhere;
 	// 	}
 	// </style>
 	//

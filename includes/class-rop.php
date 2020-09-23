@@ -282,7 +282,7 @@ class Rop {
 			} catch ( Exception $exception ) {
 				// Service can't be built. Not found or otherwise. Maybe log this.
 				$log = new Rop_Logger();
-				$log->warn( 'The service "' . $service . '" can NOT be built or was not found', $exception->getMessage() );
+				$log->alert_error( 'The service "' . $service . '" can NOT be built or was not found', $exception->getMessage() );
 			}
 		}
 
