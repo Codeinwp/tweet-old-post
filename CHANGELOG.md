@@ -1,4 +1,8 @@
 
+ ### v8.5.17 - 2020-09-24 
+ **Changes:** 
+ * Dev: Add post-install command to composer.json
+ 
  ### v8.5.16 - 2020-09-23 
  **Changes:** 
  * Info: Update Google My Business dependency version

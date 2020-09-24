@@ -258,6 +258,11 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.5.17 - 2020-09-24  = 
+
+* Dev: Add post-install command to composer.json
+
+
 = 8.5.16 - 2020-09-23  = 
 
 * Info: Update Google My Business dependency version
