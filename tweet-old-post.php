@@ -133,6 +133,11 @@ function run_rop() {
 	define( 'ROP_APP_GMB_PATH', '/gmb_auth' );
 	define( 'ROP_INSTALL_TOKEN_OPTION', 'rop_install_token' );
 
+	$vendor_file = ROP_LITE_PATH . '/vendor/autoload.php';
+	if ( is_readable( $vendor_file ) ) {
+		require_once $vendor_file;
+	}
+
 	if ( defined( 'ROP_CRON_ALTERNATIVE' ) && true === ROP_CRON_ALTERNATIVE ) {
 
 		$cron_system_file = ROP_PATH . 'cron-system/vendor/autoload.php';
@@ -147,10 +152,6 @@ function run_rop() {
 		}
 	}
 
-	$vendor_file = ROP_LITE_PATH . '/vendor/autoload.php';
-	if ( is_readable( $vendor_file ) ) {
-		require_once $vendor_file;
-	}
 	add_filter(
 		'themeisle_sdk_products',
 		function ( $products ) {

@@ -19,7 +19,12 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 $rop_cron_token = get_option( 'rop_access_token', '' );
 
 if ( ! empty( $rop_cron_token ) ) {
-	$cron_system_file = ROP_PATH . 'cron-system/vendor/autoload.php';
+
+	if ( ! defined( 'ROP_LITE_PATH' ) ) {
+		define( 'ROP_LITE_PATH', plugin_dir_path( __FILE__ ) );
+	}
+
+	$cron_system_file = ROP_LITE_PATH . '/vendor/autoload.php';
 
 	if ( file_exists( $cron_system_file ) ) {
 		/**
