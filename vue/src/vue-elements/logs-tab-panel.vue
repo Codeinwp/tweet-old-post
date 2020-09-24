@@ -123,4 +123,8 @@
 	#rop_core .container {
 		min-height: 400px;
 	}
+
+	.columns {
+		line-break: anywhere;
+	}
 </style>
