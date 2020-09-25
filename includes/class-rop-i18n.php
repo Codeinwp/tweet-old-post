@@ -186,7 +186,7 @@ class Rop_I18n {
 				'instant_share_future_scheduled_yes'    => __( 'Yes', 'tweet-old-post' ),
 				'instant_share_future_scheduled_upsell' => __( ' This feature is only available in the PRO version.', 'tweet-old-post' ),
 				'cron_type_label'                => __( 'Cron Job Type', 'tweet-old-post' ),
-				'cron_type_label_desc'           => __( 'Temp desc: select remote or local CronJob System', 'tweet-old-post' ),
+				'cron_type_label_desc'           => sprintf( __( 'Select the between your local built-in WordPress task scheduler, or Revive Social\'s, %1$sLearn More%2$s', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/1303-rop-local-cron-vs-remote-cron" target="_blank">', '</a>' ),
 				'cron_type_label_desc_terms'           => __( 'I Agree with <a href="" target="_blank">Terms and Conditions</a>', 'tweet-old-post' ),
 				'housekeeping'                => __( 'Housekeeping', 'tweet-old-post' ),
 				'housekeeping_desc'           => __( 'Should we delete all saved settings on deletion of the Revive Old Posts plugin?', 'tweet-old-post' ),

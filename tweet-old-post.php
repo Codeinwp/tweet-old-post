@@ -118,7 +118,7 @@ function run_rop() {
 	define( 'ROP_PRO_URL', 'http://revive.social/plugins/revive-old-post/' );
 	define( 'ROP_LITE_VERSION', '8.6.0' );
 	define( 'ROP_LITE_BASE_FILE', __FILE__ );
-	define( 'ROP_DEBUG', false );
+	define( 'ROP_DEBUG', true );
 	define( 'ROP_LITE_PATH', plugin_dir_path( __FILE__ ) );
 	define( 'ROP_PATH', plugin_dir_path( __FILE__ ) );
 	define( 'ROP_LITE_URL', plugin_dir_url( __FILE__ ) );
@@ -140,16 +140,16 @@ function run_rop() {
 
 	if ( defined( 'ROP_CRON_ALTERNATIVE' ) && true === ROP_CRON_ALTERNATIVE ) {
 
-		$cron_system_file = ROP_PATH . 'cron-system/vendor/autoload.php';
+		// $cron_system_file = ROP_PATH . 'cron-system/vendor/autoload.php';
 
-		if ( file_exists( $cron_system_file ) ) {
+		// if ( file_exists( $cron_system_file ) ) {
 			/**
 			 * $cron_system_file Cron System autoload.
 			 */
-			require_once $cron_system_file;
+			// require_once $cron_system_file;
 
 			new RopCronSystem\Rop_Cron_Core();
-		}
+		// }
 	}
 
 	add_filter(
