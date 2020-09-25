@@ -102,13 +102,8 @@ class Rop_Cron_Helper {
 			 */
 			if ( false === $is_remote_cron && ! empty( $is_registered ) ) {
 
-				$cron_system_file = ROP_PATH . 'cron-system/vendor/autoload.php';
 				// load the library
-				if ( file_exists( $cron_system_file ) ) {
-					/**
-					 * $cron_system_file Cron System autoload.
-					 */
-					require_once $cron_system_file;
+				if ( class_exists( 'RopCronSystem\Rop_Cron_Core' ) ) {
 
 					new RopCronSystem\Rop_Cron_Core();
 

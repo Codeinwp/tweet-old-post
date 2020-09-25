@@ -140,16 +140,10 @@ function run_rop() {
 
 	if ( defined( 'ROP_CRON_ALTERNATIVE' ) && true === ROP_CRON_ALTERNATIVE ) {
 
-		// $cron_system_file = ROP_PATH . 'cron-system/vendor/autoload.php';
-
-		// if ( file_exists( $cron_system_file ) ) {
-			/**
-			 * $cron_system_file Cron System autoload.
-			 */
-			// require_once $cron_system_file;
+		if ( class_exists( 'RopCronSystem\Rop_Cron_Core' ) ) {
 
 			new RopCronSystem\Rop_Cron_Core();
-		// }
+		}
 	}
 
 	add_filter(
