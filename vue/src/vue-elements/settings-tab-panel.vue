@@ -5,7 +5,7 @@
                 <div class="columns py-2" v-if="this.apply_exclude_limit_cron" >
                     <div class="column col-6 col-sm-12 vertical-align rop-control">
                         <b>{{labels.cron_type_label}}</b>
-                        <p class="text-gray">{{labels.cron_type_label_desc}}</p>
+                        <p class="text-gray"><span v-html="labels.cron_type_label_desc"></span></p>
                     </div>
                     <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
                         <div class="form-group">
@@ -32,7 +32,7 @@
                         </div>
                     </div>
                 </div>
-                <span class="divider" v-if="this.apply_exclude_limit_cron" ></span>
+                <span class="divider" v-if="this.apply_exclude_limit_cron && ! isBiz" ></span>
 
                 <div class="columns py-2" v-if="! isBiz">
                     <div class="column col-6 col-sm-12 vertical-align">

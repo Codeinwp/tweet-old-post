@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // ROP Cron System Server URL, no "/" slash a t the end.
-define( 'ROP_CRON_DOMAIN', 'https://app.revive.social' );
+define( 'ROP_CRON_DOMAIN', 'https://nuclear-reticulated.jurassic.ninja' );
 
 /**
  * Handles the load of the new Cron System.

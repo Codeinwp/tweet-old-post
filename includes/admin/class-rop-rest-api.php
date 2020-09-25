@@ -331,7 +331,7 @@ class Rop_Rest_Api {
 			// Service not found or can't be built. Maybe log this exception.
 			$log           = new Rop_Logger();
 			$error_message = sprintf( 'The shortner service %1$s can NOT be built or was not found', $data['short_url_service'] );
-			$log->warn( $error_message . $exception->getMessage() );
+			$log->alert_error( $error_message . $exception->getMessage() );
 			$this->response->set_code( '500' );
 		}
 
@@ -366,7 +366,7 @@ class Rop_Rest_Api {
 			// Also shorten service not updated at this point.
 			$log           = new Rop_Logger();
 			$error_message = sprintf( 'The shortner service %1$s can NOT be built or was not found', $data['data']['short_url_service'] );
-			$log->warn( $error_message . $exception->getMessage() );
+			$log->alert_error( $error_message . $exception->getMessage() );
 			$this->response->set_code( '500' );
 		}
 		if ( $post_format->add_update_post_format( $data['account_id'], $data['data'] ) ) {
@@ -796,7 +796,7 @@ class Rop_Rest_Api {
 		} catch ( Exception $exception ) {
 			// Service can't be built. Not found or otherwise. Maybe log this.
 			$log = new Rop_Logger();
-			$log->warn( 'The service "' . $data['service'] . '" can NOT be built or was not found', $exception );
+			$log->alert_error( 'The service "' . $data['service'] . '" can NOT be built or was not found', $exception );
 
 			return null;
 		}
@@ -862,7 +862,7 @@ class Rop_Rest_Api {
 		} catch ( Exception $exception ) {
 			// Service can't be built. Not found or otherwise. Maybe log this.
 			$log = new Rop_Logger();
-			$log->warn( 'The service "' . $data['service'] . '" can NOT be built or was not found' . $exception->getMessage() );
+			$log->alert_error( 'The service "' . $data['service'] . '" can NOT be built or was not found' . $exception->getMessage() );
 			$url = '';
 		}
 
@@ -938,7 +938,6 @@ class Rop_Rest_Api {
 				// fetch log entry data;
 				$channel = $latest_log_entry['channel'];
 				$type    = $latest_log_entry['type'];
-				$level   = $latest_log_entry['level'];
 				$message = $latest_log_entry['message'];
 				$time    = (int) $latest_log_entry['time'];
 

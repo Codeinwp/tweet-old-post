@@ -258,6 +258,18 @@ http://revive.social/plugins/revive-old-post
 
 
 ## Changelog ##
+### 8.5.17 - 2020-09-24  ###
+
+* Dev: Add post-install command to composer.json
+
+
+### 8.5.16 - 2020-09-23  ###
+
+* Info: Update Google My Business dependency version
+* Info: Update Themeisle SDK dependency version
+* Change: Dropped monolog dependency in favor of custom logging methods
+
+
 ### 8.5.15 - 2020-09-09  ###
 
 * Change: Require at least PHP 7.1
