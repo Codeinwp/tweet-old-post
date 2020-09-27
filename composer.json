@@ -27,17 +27,6 @@
   "require": {
     "facebook/graph-sdk": "5.7",
     "abraham/twitteroauth": "1.1.0",
-    "codeinwp/themeisle-sdk": "3.2.15",
-    "google/apiclient": "2.7.1"
-  },
-  "scripts": {
-    "post-install-cmd": "Google_Task_Composer::cleanup",
-    "post-update-cmd": "Google_Task_Composer::cleanup"
-  },
-  "extra": {
-  "installer-disable": true,
-  "google/apiclient-services": [
-    ""
-  ]
+    "codeinwp/themeisle-sdk": "3.2.15"
   }
 }
