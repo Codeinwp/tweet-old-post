@@ -258,6 +258,11 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.5.18 - 2020-09-27  = 
+
+* Change Pro: Move GMB dependency to Pro plugin.
+
+
 = 8.5.17 - 2020-09-24  = 
 
 * Dev: Add post-install command to composer.json
