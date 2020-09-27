@@ -450,11 +450,25 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 	 */
 	public function share( $post_details, $args = array() ) {
 
-		if ( ! class_exists( 'Google_Service_MyBusiness' ) ) {
-			require_once ROP_LITE_PATH . 'includes/lib/gmb-service-helper.php';
+		if ( ! class_exists( 'Google_Client' ) ) {
+			$this->logger->alert_error( Rop_I18n::get_labels( 'errors.gmb_missing_main_class' ) );
+			return;
+		} else {
+			$client = new Google_Client();
 		}
 
-		$client = new Google_Client();
+		if ( ! class_exists( 'Google_Service_MyBusiness' ) ) {
+
+			include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+
+			if ( is_plugin_active( 'tweet-old-post-pro/tweet-old-post-pro.php' ) ) {
+				require_once ROP_PRO_PATH . 'lib/gmb/gmb-service-helper.php';
+			} else {
+				$this->logger->alert_error( Rop_I18n::get_labels( 'errors.gmb_missing_lib_class' ) );
+				return;
+			}
+		}
+
 		$access_token = $this->gmb_refresh_access_token();
 		$client->setAccessToken( $access_token );
 

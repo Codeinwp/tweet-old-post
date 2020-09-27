@@ -382,6 +382,8 @@ You can try to disable any of the security plugins that you use in order to see 
 				'gmb_failed_access_token_refresh' => __( 'Failed to retrieve Google My Business access token: ', 'tweet-old-post' ),
 				'gmb_failed_share' => __( 'Could not share post to Google My Business with LIVE state: ', 'tweet-old-post' ),
 				'gmb_no_valid_accounts' => __( 'Google My Business error: No valid accounts found. Please make sure you have access to a Google My Business location.', 'tweet-old-post' ),
+				'gmb_missing_main_class' => __( 'Unable to find Google_Client Class. Please ensure you have the Revive Old Posts Pro Addon activated.', 'tweet-old-post' ),
+				'gmb_missing_lib_class' => __( 'Unable to find Google_Service_MyBusiness Class. Please ensure you have the Revive Old Posts Pro Addon activated.', 'tweet-old-post' ),
 			),
 		);
 		if ( empty( $key ) ) {
