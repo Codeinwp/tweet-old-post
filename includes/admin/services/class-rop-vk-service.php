@@ -1,11 +1,11 @@
 <?php
 /**
- * The file that defines the Google My Business Service specifics.
+ * The file that defines the Vkontakte Service specifics.
  *
  * NOTE: Extending abstract class but not making use of some of the methods with new authentication workflow.
  *           Abstract class will be cleaned up once we move all services to one click sign on and drop users connecting own apps.
  *
- * A class that is used to interact with Google My Business.
+ * A class that is used to interact with  Vkontakte
  * It extends the Rop_Services_Abstract class.
  *
  * @link       https://themeisle.com/
@@ -148,7 +148,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	}
 
 	/**
-	 * This method will load and prepare the account data for Google My Business user.
+	 * This method will load and prepare the account data for Vkontakte user.
 	 * Used in Rest Api.
 	 *
 	 * @since   8.5.9
@@ -205,7 +205,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	}
 
 	/**
-	 * Method for creating image posts on Google My Business.
+	 * Method for creating image posts on Vkontakte.
 	 *
 	 * @since  8.5.9
 	 * @access private
@@ -297,7 +297,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 
 
 	/**
-	 * Method for text posts to Google My Business.
+	 * Method for text posts to Vkontakte.
 	 *
 	 * @since  8.5.9
 	 * @access private
@@ -323,7 +323,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	}
 
 	/**
-	 * Method for creating link(article) posts to Google My Business.
+	 * Method for creating link(article) posts to Vkontakte.
 	 *
 	 * @since  8.5.9
 	 * @access private
@@ -347,7 +347,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	}
 
 	/**
-	 * Method for publishing with Google My Business service.
+	 * Method for publishing with Vkontakte service.
 	 *
 	 * @since  8.5.9
 	 * @access public
