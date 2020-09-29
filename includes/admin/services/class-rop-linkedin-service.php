@@ -513,6 +513,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		if ( ! empty( $added_with_app ) && empty( $args['credentials']['client_id'] ) ) {
 			$token = new \LinkedIn\AccessToken( $args['credentials'] );
 		} else {
+			// Add check to see if this key exists, then tell user reconnect their account since we dropped support.
 			$this->set_api( $this->credentials['client_id'], $this->credentials['secret'] );
 			$token = new \LinkedIn\AccessToken( $this->credentials['token'] );
 		}
@@ -542,8 +543,26 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 					 return;
 		}
 
-		try {
-			$api->post( 'ugcPosts', $new_post );
+		$api_url = 'https://api.linkedin.com/v2/ugcPosts';
+		$response = wp_remote_post(
+			$api_url,
+			array(
+				'body'    => json_encode($new_post),
+				'headers' => array(
+					'Content-Type' => 'application/json',
+					'x-li-format' => 'json',
+					'X-Restli-Protocol-Version' => '2.0.0',
+					'Authorization' => 'Bearer '. $args['credentials'],
+				),
+			)
+		);
+
+		$body = $response['body'];
+
+
+		$this->logger->alert_error(print_r($body, true));
+
+		if( array_key_exists('id', json_decode($body, true) ) ){
 
 			$this->logger->alert_success(
 				sprintf(
@@ -554,15 +573,17 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 				)
 			);
 			// check if the token will expire soon
-			$this->rop_refresh_linkedin_token_notice();
-		} catch ( Exception $exception ) {
-			$this->logger->alert_error( 'Cannot share to linkedin. Error:  ' . $exception->getMessage() );
-			$this->rop_get_error_docs( $exception->getMessage() );
+			$this->rop_refresh_linkedin_token_notice();	
+			return true;		
+		}else{
 
+			$this->logger->alert_error( 'Cannot share to linkedin. Error:  ' . $body );
+			$this->rop_get_error_docs( $body );
+			// check if the token will expire soon
+			$this->rop_refresh_linkedin_token_notice();	
 			return false;
 		}
 
-		return true;
 	}
 
 
