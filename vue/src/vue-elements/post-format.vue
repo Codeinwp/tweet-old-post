@@ -162,8 +162,8 @@
             </div>
             <div class="column col-6 col-sm-12 vertical-align">
                 <div class="form-group">
-                    <select class="form-select">
-                        <option v-for="shortener in shorteners" :value="shortener.name" :disabled="shortener.active !== true" :selected="shortener.name == post_format.short_url_service">{{ shortener.name }}{{ !shortener.active ? labels_generic.only_pro_suffix : ''}}</option>
+                    <select class="form-select" v-model="post_format.short_url_service">
+                        <option v-for="shortener in shorteners" :value="shortener.id" :disabled="shortener.active !== true" :selected="shortener.name == post_format.short_url_service">{{ shortener.name }}{{ !shortener.active ? labels_generic.only_pro_suffix : ''}}</option>
                     </select>
                 </div>
             </div>
@@ -378,7 +378,6 @@
                 return this.$store.state.generalSettings.available_taxonomies
             },
             shorteners: function () {
-                console.log('yo', this.$store.state.generalSettings.available_shorteners);
                 return this.$store.state.generalSettings.available_shorteners;
             }
         },

@@ -53,30 +53,37 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	 */
 	private static $shorteners = array(
 		'bit.ly' => array(
+			'id' => 'bit.ly',
 			'name' => 'bit.ly',
 			'active' => true,
 		),
 		'firebase' => array(
-			'name' => 'firebase',
+			'id' => 'firebase',
+			'name' => 'google firebase',
 			'active' => true,
 		),
 		'ow.ly' => array(
+			'id' => 'ow.ly',
 			'name' => 'ow.ly',
 			'active' => true,
 		),
 		'is.id' => array(
+			'id' => 'is.gd',
 			'name' => 'is.gd',
 			'active' => true,
 		),
 		'rebrand.ly' => array(
+			'id' => 'rebrand.ly',
 			'name' => 'rebrand.ly',
 			'active' => true,
 		),
 		'wp_short_url' => array(
+			'id' => 'wp_short_url',
 			'name' => 'wp_short_url',
 			'active' => true,
 		),
 		'rviv.ly' => array(
+			'id' => 'rviv.ly',
 			'name' => 'rviv.ly',
 			'active' => false,
 		),
