@@ -559,7 +559,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		$body = $response['body'];
 
-
 		$this->logger->alert_error(print_r($body, true));
 
 		if( array_key_exists('id', json_decode($body, true) ) ){
