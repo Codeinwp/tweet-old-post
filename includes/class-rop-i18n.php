@@ -383,6 +383,9 @@ You can try to disable any of the security plugins that you use in order to see 
 				'gmb_failed_share' => __( 'Could not share post to Google My Business with LIVE state: ', 'tweet-old-post' ),
 				'gmb_no_valid_accounts' => __( 'Google My Business error: No valid accounts found. Please make sure you have access to a Google My Business location.', 'tweet-old-post' ),
 			),
+			'generic' => array(
+				'only_pro_suffix' => ' (' . __( 'Available in PRO', 'tweet-old-post' ) . ')',
+			),
 		);
 		if ( empty( $key ) ) {
 			return $labels;

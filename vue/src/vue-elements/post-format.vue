@@ -162,15 +162,8 @@
             </div>
             <div class="column col-6 col-sm-12 vertical-align">
                 <div class="form-group">
-                    <select class="form-select" v-model="post_format.short_url_service">
-                      <!-- rviv.ly currently blacklisted -->
-                        <!-- <option value="rviv.ly">rviv.ly</option> -->
-                        <option value="bit.ly">bit.ly</option>
-                        <option value="firebase">google firebase</option>
-                        <option value="ow.ly">ow.ly</option>
-                        <option value="is.gd">is.gd</option>
-                        <option value="rebrand.ly">rebrand.ly</option>
-                        <option value="wp_short_url">wp_short_url</option>
+                    <select class="form-select">
+                        <option v-for="shortener in shorteners" :value="shortener.name" :disabled="shortener.active !== true" :selected="shortener.name == post_format.short_url_service">{{ shortener.name }}{{ !shortener.active ? labels_generic.only_pro_suffix : ''}}</option>
                     </select>
                 </div>
             </div>
@@ -313,6 +306,7 @@
             return {
                 labels: this.$store.state.labels.post_format,
                 labels_settings: this.$store.state.labels.settings,
+                labels_generic: this.$store.state.labels.generic,
                 upsell_link: ropApiSettings.upsell_link,
                 selected_tax_filter: [],
             }
@@ -382,6 +376,10 @@
             taxonomy: function () {
 
                 return this.$store.state.generalSettings.available_taxonomies
+            },
+            shorteners: function () {
+                console.log('yo', this.$store.state.generalSettings.available_shorteners);
+                return this.$store.state.generalSettings.available_shorteners;
             }
         },
         watch: {

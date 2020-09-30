@@ -41,6 +41,48 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 	private $defaults = array();
 
 	/**
+	 * The available shorteners.
+	 *
+	 * False indicates availability only in PRO.
+	 * But that does not make it automatically available - the filter has to be used.
+	 * To remove, remove from the array.
+	 *
+	 * @since   ?
+	 * @access  private
+	 * @var     array $shorteners The class defaults for shorteners.
+	 */
+	private static $shorteners = array(
+		'bit.ly' => array(
+			'name' => 'bit.ly',
+			'active' => true,
+		),
+		'firebase' => array(
+			'name' => 'firebase',
+			'active' => true,
+		),
+		'ow.ly' => array(
+			'name' => 'ow.ly',
+			'active' => true,
+		),
+		'is.id' => array(
+			'name' => 'is.gd',
+			'active' => true,
+		),
+		'rebrand.ly' => array(
+			'name' => 'rebrand.ly',
+			'active' => true,
+		),
+		'wp_short_url' => array(
+			'name' => 'wp_short_url',
+			'active' => true,
+		),
+		'rviv.ly' => array(
+			'name' => 'rviv.ly',
+			'active' => false,
+		),
+	);
+
+	/**
 	 * Rop_Settings_Model constructor.
 	 *
 	 * @since   8.0.0
@@ -110,6 +152,10 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 		if ( $include_dynamic ) {
 			$this->settings['available_taxonomies'] = $this->get_available_taxonomies( $this->get_selected_post_types() );
 			$this->settings['available_post_types'] = $this->get_available_post_types();
+			$this->settings['available_shorteners'] = apply_filters(
+				'rop_available_shorteners',
+				self::$shorteners
+			);
 		}
 
 		return $this->settings;
