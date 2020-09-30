@@ -120,6 +120,7 @@ function run_rop() {
 	define( 'ROP_LITE_BASE_FILE', __FILE__ );
 	define( 'ROP_DEBUG', false );
 	define( 'ROP_LITE_PATH', plugin_dir_path( __FILE__ ) );
+	define( 'ROP_PRO_PATH', WP_PLUGIN_DIR . '/tweet-old-post-pro/' );
 	define( 'ROP_PATH', plugin_dir_path( __FILE__ ) );
 	define( 'ROP_LITE_URL', plugin_dir_url( __FILE__ ) );
 	define( 'ROP_STATUS_ALERT', 6 );// How many consecutive errors count towards status alert "Status: Error (check logs)"

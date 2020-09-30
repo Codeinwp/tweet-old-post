@@ -1,4 +1,8 @@
 
+ ### v8.5.18 - 2020-09-27 
+ **Changes:** 
+ * Change Pro: Move GMB dependency to Pro plugin.
+ 
  ### v8.5.17 - 2020-09-24 
  **Changes:** 
  * Dev: Add post-install command to composer.json

@@ -85,7 +85,7 @@ class Rop_Cron_Helper {
 	 * @param array $request Cron type.
 	 *
 	 * @return bool
-	 * @since 8.5.5
+	 * @since 8.6.0
 	 * @access public
 	 * @category New Cron System
 	 */
@@ -110,6 +110,10 @@ class Rop_Cron_Helper {
 					// Request cron stop
 					$stop_cron = new RopCronSystem\Rop_Cron_Core();
 					$stop_cron->server_stop_share();
+				} else {
+					$log = new Rop_Logger();
+					$log->alert_error( 'Error: Cannot find ROP_Cron_Core Class.' );
+					return false;
 				}
 			}
 
