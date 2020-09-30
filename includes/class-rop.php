@@ -138,9 +138,6 @@ class Rop {
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'bitly_shortener_upgrade_notice' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_dismiss_cron_disabled_notice' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_wp_cron_notice' );
-		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_shortener_changed_disabled_notice' );
-		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_shortener_changed_notice' );
-		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_update_shortener' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'migrate_taxonomies_to_post_format' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
