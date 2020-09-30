@@ -26,19 +26,28 @@
 					<div class="content">
 						<div class="auth-app" v-if="isFacebook">
 							<button class="btn btn-primary big-btn" @click="openPopupFB()">{{labels.fb_app_signin_btn}}</button>
-							<!-- <span class="text-center">{{labels.app_option_signin}}</span> -->
+							<div v-if="!hideOwnAppOption">
+							<span class="text-center">{{labels.app_option_signin}}</span>
+							</div>
 						</div>
 						<div class="auth-app" v-if="isTwitter">
 							<button class="btn btn-primary big-btn" @click="openPopupTW()">{{labels.tw_app_signin_btn}}</button>
-							<!-- <span class="text-center">{{labels.app_option_signin}}</span> -->
+							<div v-if="!hideOwnAppOption">
+							<span class="text-center">{{labels.app_option_signin}}</span>
+							</div>
 						</div>
 						<div class="auth-app" v-if="isLinkedIn">
 							<button class="btn btn-primary big-btn" @click="openPopupLI()">{{labels.li_app_signin_btn}}</button>
-							<!-- <span class="text-center">{{labels.app_option_signin}}</span> -->
+							<div v-if="!hideOwnAppOption">
+							<span class="text-center">{{labels.app_option_signin}}</span>
+							</div>
+
 						</div>
 						<div class="auth-app" v-if="isTumblr && isAllowedTumblr">
 							<button class="btn btn-primary big-btn" @click="openPopupTumblr()">{{labels.tumblr_app_signin_btn}}</button>
-							<!-- <span class="text-center">{{labels.app_option_signin}}</span> -->
+							<div v-if="!hideOwnAppOption">
+							<span class="text-center">{{labels.app_option_signin}}</span>
+							</div>
 						</div>
 						<div class="auth-app" v-if="isBuffer">
 							<button class="btn btn-primary big-btn" @click="openPopupBuffer()">{{labels.buffer_app_signin_btn}}</button>
@@ -46,10 +55,12 @@
 						<div class="auth-app" v-if="isGmb">
 							<button class="btn btn-primary big-btn" id="gmb-btn" @click="openPopupGmb()">{{labels.gmb_app_signin_btn}}</button>
 						</div>
-						<!-- <div id="rop-advanced-config" v-if="isFacebook || isTwitter || isLinkedIn || (isTumblr && isAllowedTumblr)">
+						
+							<div v-if="!hideOwnAppOption">
+						<div id="rop-advanced-config" v-if="isFacebook || isTwitter || isLinkedIn || (isTumblr && isAllowedTumblr)">
 						<button class="btn btn-primary" v-on:click="showAdvanceConfig = !showAdvanceConfig">{{labels.show_advance_config}}</button>
-					 </div> -->
-						<!-- <div v-if="showAdvanceConfig && (isFacebook || isTwitter || isLinkedIn || (isTumblr && isAllowedTumblr) )">
+					 </div>
+						<div v-if="showAdvanceConfig && (isFacebook || isTwitter || isLinkedIn || (isTumblr && isAllowedTumblr) )">
 						<div class="form-group" v-for="( field, id ) in modal.data">
 							<label class="form-label" :for="field.id">{{ field.name }}</label>
 							<input :class="[ 'form-input', field.error ? ' is-error' : '' ]" type="text" :id="field.id" v-model="field.value"
@@ -57,7 +68,9 @@
 							<small class="text-error" v-if="field.error">{{labels.field_required}}</small>
 							<p class="text-gray">{{ field.description }}</p>
 						</div>
-					 </div> -->
+					 </div>
+							</div>
+							
 						<div v-if="(!isTwitter && !isFacebook && !isLinkedIn && !isBuffer && !isGmb && !isTumblr) || (isTumblr && !isAllowedTumblr)">
 						 <div class="form-group" v-for="( field, id ) in modal.data">
 							<label class="form-label" :for="field.id">{{ field.name }}</label>
@@ -117,6 +130,7 @@
 				authPopupWindow: null,
 				showLiAppBtn: ropApiSettings.show_li_app_btn,
 				showTmblrAppBtn: ropApiSettings.show_tmblr_app_btn,
+				hideOwnAppOption: ropApiSettings.hide_own_app_option,
 				showBtn: false
 			}
 		},
@@ -535,6 +549,13 @@
 									showButton = false;
 							}
 							return showButton;
+					},
+						hideOwnAppOption: function () {
+							let hideOption = true;
+							if (!this.hideOwnAppOption) {
+									hideOption = false;
+							}
+							return hideOption;
 					},
 
 	}

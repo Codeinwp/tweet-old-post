@@ -304,6 +304,7 @@ class Rop_Admin {
 		$array_nonce['staging']                 = $this->rop_site_is_staging();
 		$array_nonce['show_li_app_btn']         = $li_service->rop_show_li_app_btn();
 		$array_nonce['show_tmblr_app_btn']      = $tmblr_service->rop_show_tmblr_app_btn();
+		$array_nonce['hide_own_app_option']      = $this->rop_hide_add_own_app_option();
 		$array_nonce['debug']                   = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
 		$array_nonce['tax_apply_limit']         = $this->limit_tax_dropdown_list();
 		$array_nonce['exclude_apply_limit']     = $this->limit_exclude_list();
@@ -1506,6 +1507,20 @@ class Rop_Admin {
 		if ( isset( $_GET['rop-shortener-changed-notice-dismissed'] ) ) {
 			add_user_meta( $user_id, 'rop-shortener-changed-notice-dismissed', 'true', true );
 		}
+
+	}
+
+	private function rop_hide_add_own_app_option(){
+
+		$installed_at_version = get_option( 'rop_first_install_version' );
+		if ( empty( $installed_at_version ) ) {
+			return false;
+		}
+		if ( version_compare( $installed_at_version, '8.6.0', '>=' ) ) {
+			return true;
+		}
+
+		return false;
 
 	}
 

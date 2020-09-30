@@ -298,7 +298,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 *
 	 * @codeCoverageIgnore
 	 *
-	 * @param object $data Response data from Twitter.
+	 * @param object $data Response data from LinkedIn.
 	 *
 	 * @return array
 	 * @since   8.0.0
@@ -501,6 +501,12 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
+		if( !empty($args['credentials']['client_id']) ){
+			$this->logger->alert_error(Rop_Pro_I18n::get_labels( 'errors.reconnect_linkedin' ));
+			$this->rop_get_error_docs( Rop_Pro_I18n::get_labels( 'errors.reconnect_linkedin' ) );
+			return false;
+		}
+
 		if ( isset( $args['id'] ) ) {
 			$args['id'] = $this->treat_underscore_exception( $args['id'], true ); // Add the underscore back.
 		}
@@ -511,36 +517,33 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		// if linkedin was connected with "Sign into Linkedin" button, use appropriate key for access token
 		// accounts added with "Sign into Linkedin" button will not have the ['credentials']['client_id'] array key
 		if ( ! empty( $added_with_app ) && empty( $args['credentials']['client_id'] ) ) {
-			$token = new \LinkedIn\AccessToken( $args['credentials'] );
+			$token = $args['credentials'];
 		} else {
 			// Add check to see if this key exists, then tell user reconnect their account since we dropped support.
 			$this->set_api( $this->credentials['client_id'], $this->credentials['secret'] );
 			$token = new \LinkedIn\AccessToken( $this->credentials['token'] );
 		}
 
-		$api = $this->get_api();
-
-		$api->setAccessToken( $token );
 
 		if ( get_post_type( $post_details['post_id'] ) !== 'attachment' ) {
 			// If post image option unchecked, share as article post
 			if ( empty( $post_details['post_with_image'] ) ) {
 				$new_post = $this->linkedin_article_post( $post_details, $args );
 			} else {
-				$new_post = $this->linkedin_image_post( $post_details, $args, $token, $api );
+				$new_post = $this->linkedin_image_post( $post_details, $args, $token );
 			}
 		} elseif ( get_post_type( $post_details['post_id'] ) === 'attachment' ) {
 			// Linkedin Api v2 doesn't support video upload. Share as article post
 			if ( strpos( get_post_mime_type( $post_details['post_id'] ), 'video' ) !== false ) {
 				$new_post = $this->linkedin_article_post( $post_details, $args );
 			} else {
-				$new_post = $this->linkedin_image_post( $post_details, $args, $token, $api );
+				$new_post = $this->linkedin_image_post( $post_details, $args, $token );
 			}
 		}
 
 		if ( empty( $new_post ) ) {
 			$this->logger->info( '$new_post variable empty, bailing process.' );
-					 return;
+			return;
 		}
 
 		$api_url = 'https://api.linkedin.com/v2/ugcPosts';
@@ -552,16 +555,14 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 					'Content-Type' => 'application/json',
 					'x-li-format' => 'json',
 					'X-Restli-Protocol-Version' => '2.0.0',
-					'Authorization' => 'Bearer '. $args['credentials'],
+					'Authorization' => 'Bearer '. $token,
 				),
 			)
 		);
 
-		$body = $response['body'];
+		$body = json_decode(wp_remote_retrieve_body($response), true);
 
-		$this->logger->alert_error(print_r($body, true));
-
-		if( array_key_exists('id', json_decode($body, true) ) ){
+		if( array_key_exists('id', $body ) ){
 
 			$this->logger->alert_success(
 				sprintf(
@@ -651,7 +652,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @since   8.2.3
 	 * @access  private
 	 */
-	private function linkedin_image_post( $post_details, $args, $token, $api ) {
+	private function linkedin_image_post( $post_details, $args, $token ) {
 
 		$author_urn = $args['is_company'] ? 'urn:li:organization:' : 'urn:li:person:';
 
@@ -674,9 +675,23 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 				),
 		);
 
-		$response   = $api->post( 'https://api.linkedin.com/v2/assets?action=registerUpload', $register_image );
-		$upload_url = $response['value']['uploadMechanism']['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest']['uploadUrl'];
-		$asset      = $response['value']['asset'];
+		$api_url = 'https://api.linkedin.com/v2/assets?action=registerUpload';
+		$response = wp_remote_post(
+			$api_url,
+			array(
+				'body'    => json_encode($register_image),
+				'headers' => array(
+					'Content-Type' => 'application/json',
+					'x-li-format' => 'json',
+					'X-Restli-Protocol-Version' => '2.0.0',
+					'Authorization' => 'Bearer '. $token,
+				),
+			)
+		);
+
+		$body = json_decode( wp_remote_retrieve_body($response), true );
+		$upload_url = $body['value']['uploadMechanism']['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest']['uploadUrl'];
+		$asset      = $body['value']['asset'];
 
 		// If this is an attachment post we need to make sure we pass the URL to get_path_by_url() correctly
 		if ( get_post_type( $post_details['post_id'] ) === 'attachment' ) {

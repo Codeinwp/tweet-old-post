@@ -860,7 +860,6 @@ class Rop_Rest_Api {
 				// fetch log entry data;
 				$channel = $latest_log_entry['channel'];
 				$type    = $latest_log_entry['type'];
-				$level   = $latest_log_entry['level'];
 				$message = $latest_log_entry['message'];
 				$time    = (int) $latest_log_entry['time'];
 
