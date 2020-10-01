@@ -68,7 +68,7 @@ class Rop {
 	public function __construct() {
 
 		$this->plugin_name = 'rop';
-		$this->version     = '8.5.12';
+		$this->version     = '8.5.18';
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -131,8 +131,13 @@ class Rop {
 		$this->loader->add_action( 'admin_head', $plugin_admin, 'rop_roadmap_new_tab' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_dismiss_rop_event_not_firing_notice' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_cron_event_status_notice' );
+
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_dismiss_buffer_addon_disabled_notice' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_buffer_addon_notice' );
+
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_dismiss_dropping_buffer_notice' );
+		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_dropping_buffer_notice' );
+
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_dismiss_linkedin_api_v2_notice' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_linkedin_api_v2_notice' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'bitly_shortener_upgrade_notice' );
@@ -274,7 +279,7 @@ class Rop {
 			} catch ( Exception $exception ) {
 				// Service can't be built. Not found or otherwise. Maybe log this.
 				$log = new Rop_Logger();
-				$log->warn( 'The service "' . $service . '" can NOT be built or was not found', $exception->getMessage() );
+				$log->alert_error( 'The service "' . $service . '" can NOT be built or was not found', $exception->getMessage() );
 			}
 		}
 

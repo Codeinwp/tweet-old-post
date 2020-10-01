@@ -42,6 +42,7 @@ abstract class Rop_Services_Abstract {
 		'is_company' => false,
 		'img'        => '',
 		'service'    => '',
+		'link'    => '',
 	);
 	/**
 	 * Stores the service details.
@@ -143,6 +144,17 @@ abstract class Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public abstract function set_api();
+
+
+	/**
+	 * Method to populate additional data.
+	 *
+	 * @since   8.5.13
+	 * @access  public
+	 * @return mixed
+	 * @param array $account The account details. See $user_default in Services Abstract.
+	 */
+	public abstract function populate_additional_data( $account );
 
 	/**
 	 * Method for authorizing the service.
@@ -413,7 +425,9 @@ abstract class Rop_Services_Abstract {
 					array(
 						'methods'  => $method,
 						'callback' => array( $this, $callback ),
-
+						'permission_callback' => function () {
+							return current_user_can( 'manage_options' );
+						},
 					)
 				);
 			}
@@ -528,8 +542,12 @@ abstract class Rop_Services_Abstract {
 				'link'    => 'https://is.gd/fix_link_issue',
 			),
 			'The \'manage_pages\' permission must be granted before impersonating' => array(
-				'message' => 'You might need to reconnect your Facebook account. ',
-				'link'    => 'https://is.gd/fix_impersonating_error',
+				'message' => 'You might need to reconnect your Facebook account.',
+				'link'    => 'https://is.gd/fix_pages_group_permissions',
+			),
+			'If posting to a group, requires app being installed in the group' => array(
+				'message' => 'If posting to a page, then you might have to reconnect your Facebook account. If posting to a group then you need to install the Revive Social App on the group.',
+				'link'    => 'https://is.gd/fix_pages_group_permissions',
 			),
 
 			// Twitter errors
@@ -556,11 +574,11 @@ abstract class Rop_Services_Abstract {
 				'link'    => 'https://is.gd/fix_link_issue',
 			),
 			'[ unauthorized_scope_error ] Scope "r_organization_social"' => array(
-				'message' => 'You might need to reconnect your LinkedIn account. ',
+				'message' => 'You might need to reconnect your LinkedIn account.',
 				'link'    => 'https://is.gd/linkedin_scope_error',
 			),
 			'The token used in the request has expired' => array(
-				'message' => 'You need to reconnect your LinkedIn account. ',
+				'message' => 'You need to reconnect your LinkedIn account.',
 				'link'    => 'https://is.gd/refresh_linkedin_token',
 			),
 
@@ -588,8 +606,8 @@ abstract class Rop_Services_Abstract {
 			return;
 		}
 
-		$known_error  = __( 'This error is a known one. ', 'tweet-old-post' );
-		$instructions = __( 'Please copy and paste the following link in your browser to see the solution: ', 'tweet-old-post' );
+		$known_error  = __( 'This error is a known one: ', 'tweet-old-post' );
+		$instructions = __( ' Please copy and paste the following link in your browser to see the solution: ', 'tweet-old-post' );
 
 		return $this->logger->alert_error( $known_error . $message . $instructions . $link );
 

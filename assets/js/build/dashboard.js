@@ -33771,7 +33771,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\r\n\t#rop-sign-in-area .btn[disabled][_v-304fae2e]{\r\n\t\tcursor:not-allowed;\r\n\t\tpointer-events: auto;\r\n\t\topacity: 0.3;\r\n\t}\r\n\t.big-btn#gmb-btn[_v-304fae2e]{\r\n\tpadding: 0 35px 0 14px;\r\n\t}\r\n\t.btn-gmb[_v-304fae2e]{\r\n\ttext-transform: uppercase;\r\n\t}\r\n", ""]);
+exports.push([module.i, "\r\n\t#rop-sign-in-area .btn[disabled][_v-304fae2e]{\r\n\t\tcursor:not-allowed;\r\n\t\tpointer-events: auto;\r\n\t\topacity: 0.3;\r\n\t}\r\n\t.big-btn#gmb-btn[_v-304fae2e]{\r\n\tpadding: 0 35px 0 14px;\r\n\t}\r\n\t.btn-gmb[_v-304fae2e]{\r\n\ttext-transform: uppercase;\r\n\t}\r\n\t#rop_core .btn.btn-buffer[_v-304fae2e]{\r\n\t\tdisplay: none;\r\n\t}\r\n", ""]);
 
 // exports
 
@@ -34438,6 +34438,9 @@ module.exports = {
 	// 	.btn-gmb{
 	// 	text-transform: uppercase;
 	// 	}
+	// 	#rop_core .btn.btn-buffer{
+	// 		display: none;
+	// 	}
 	// </style>
 	//
 
@@ -34558,6 +34561,13 @@ module.exports = {
 			}
 			var service_limit = available_services[this.account_data.service].allowed_accounts;
 
+			// if is free version disable Facebook groups
+			if (this.account_data.service === 'facebook') {
+				if (this.user.includes('Facebook Group:') && !this.isPro) {
+					return true;
+				}
+			}
+
 			var countActiveAccounts = 0;
 			for (var activeAccount in this.$store.state.activeAccounts) {
 				if (this.$store.state.activeAccounts[activeAccount].service === this.account_data.service) {
@@ -34566,6 +34576,13 @@ module.exports = {
 			}
 			this.$log.info('Service limit details ', this.account_data.service, service_limit, countActiveAccounts);
 			return service_limit <= countActiveAccounts;
+		},
+		/**
+            * Check if we have a pro license.
+            * @returns {boolean}
+            */
+		isPro: function isPro() {
+			return this.$store.state.licence > 0;
 		},
 		/**
    * Returns account type.
@@ -34616,6 +34633,12 @@ module.exports = {
    */
 		user: function user() {
 			return this.account_data.user;
+		},
+		/**
+   * Return account link.
+   */
+		link: function link() {
+			return this.account_data.link;
 		},
 		/**
    * Return account info details.
@@ -34742,7 +34765,7 @@ module.exports = {
 // 			</div>
 // 		</div>
 // 		<div class="tile-content">
-// 			<div class="tile-title">{{ user }}</div>
+// 			<div class="tile-title"><a :href="link" target="_blank">{{ user }}</a></div>
 // 			<div class="tile-subtitle text-gray">{{ serviceInfo }}</div>
 // 		</div>
 // 		<div class="tile-action">
@@ -34770,7 +34793,7 @@ module.exports = {
 /* 227 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tile tile-centered rop-account\" :class=\"'rop-'+type+'-account'\" _v-6759b086=\"\">\n\n\t\t<div class=\"tile-icon\" _v-6759b086=\"\">\n\t\t\t<div class=\"icon_box\" :class=\"service\" _v-6759b086=\"\">\n\t\t\t\t<img class=\"service_account_image\" :src=\"img\" v-if=\"img\" _v-6759b086=\"\">\n\t\t\t\t<i class=\"fa  \" :class=\"icon\" aria-hidden=\"true\" _v-6759b086=\"\"></i>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"tile-content\" _v-6759b086=\"\">\n\t\t\t<div class=\"tile-title\" _v-6759b086=\"\">{{ user }}</div>\n\t\t\t<div class=\"tile-subtitle text-gray\" _v-6759b086=\"\">{{ serviceInfo }}</div>\n\t\t</div>\n\t\t<div class=\"tile-action\" _v-6759b086=\"\">\n\t\t\t<div class=\"form-group\" _v-6759b086=\"\">\n\t\t\t\t<label class=\"form-switch\" _v-6759b086=\"\">\n\t\t\t\t\t<div class=\"ajax-loader \" _v-6759b086=\"\"><i class=\"fa fa-spinner fa-spin\" v-show=\"is_loading\" _v-6759b086=\"\"></i></div>\n\t\t\t\t\t<input :disabled=\"checkDisabled\" type=\"checkbox\" v-model=\"account_data.active\" @change=\"startToggleAccount( account_id, type )\" _v-6759b086=\"\">\n\t\t\t\t\t<i class=\"form-icon\" _v-6759b086=\"\"></i>\n\t\t\t\t</label>\n\t\t\t</div>\n\n   \t\t<div class=\"tile-icon rop-remove-account tooltip tooltip-right\" @click=\"removeAccount(account_id) \" :data-tooltip=\"labels.remove_account\" v-if=\" ! account_data.active\" _v-6759b086=\"\">\n\t\t\t<i class=\"fa fa-trash\" v-if=\" ! is_loading\" _v-6759b086=\"\"></i>\n\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-6759b086=\"\"></i>\n\t\t</div>\n\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tile tile-centered rop-account\" :class=\"'rop-'+type+'-account'\" _v-6759b086=\"\">\n\n\t\t<div class=\"tile-icon\" _v-6759b086=\"\">\n\t\t\t<div class=\"icon_box\" :class=\"service\" _v-6759b086=\"\">\n\t\t\t\t<img class=\"service_account_image\" :src=\"img\" v-if=\"img\" _v-6759b086=\"\">\n\t\t\t\t<i class=\"fa  \" :class=\"icon\" aria-hidden=\"true\" _v-6759b086=\"\"></i>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"tile-content\" _v-6759b086=\"\">\n\t\t\t<div class=\"tile-title\" _v-6759b086=\"\"><a :href=\"link\" target=\"_blank\" _v-6759b086=\"\">{{ user }}</a></div>\n\t\t\t<div class=\"tile-subtitle text-gray\" _v-6759b086=\"\">{{ serviceInfo }}</div>\n\t\t</div>\n\t\t<div class=\"tile-action\" _v-6759b086=\"\">\n\t\t\t<div class=\"form-group\" _v-6759b086=\"\">\n\t\t\t\t<label class=\"form-switch\" _v-6759b086=\"\">\n\t\t\t\t\t<div class=\"ajax-loader \" _v-6759b086=\"\"><i class=\"fa fa-spinner fa-spin\" v-show=\"is_loading\" _v-6759b086=\"\"></i></div>\n\t\t\t\t\t<input :disabled=\"checkDisabled\" type=\"checkbox\" v-model=\"account_data.active\" @change=\"startToggleAccount( account_id, type )\" _v-6759b086=\"\">\n\t\t\t\t\t<i class=\"form-icon\" _v-6759b086=\"\"></i>\n\t\t\t\t</label>\n\t\t\t</div>\n\n   \t\t<div class=\"tile-icon rop-remove-account tooltip tooltip-right\" @click=\"removeAccount(account_id) \" :data-tooltip=\"labels.remove_account\" v-if=\" ! account_data.active\" _v-6759b086=\"\">\n\t\t\t<i class=\"fa fa-trash\" v-if=\" ! is_loading\" _v-6759b086=\"\"></i>\n\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-6759b086=\"\"></i>\n\t\t</div>\n\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 228 */
@@ -38804,7 +38827,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\r\n\t#rop_core .toast.log-toast p[_v-3d8499ce] {\r\n\t\tmargin: 0px;\r\n\t\tline-height: inherit;\r\n\t}\r\n\r\n\t#rop_core .toast.log-toast[_v-3d8499ce]:hover {\r\n\t\topacity: 0.9;\r\n\t}\r\n\r\n\t#rop_core .toast.log-toast[_v-3d8499ce] {\r\n\t\tpadding: 0.1rem;\r\n\t\tpadding-left: 10px;\r\n\t\tmargin-top: 2px;\r\n\t}\r\n\r\n\t#rop_core .container[_v-3d8499ce] {\r\n\t\tmin-height: 400px;\r\n\t}\r\n", ""]);
+exports.push([module.i, "\r\n\t#rop_core .toast.log-toast p[_v-3d8499ce] {\r\n\t\tmargin: 0px;\r\n\t\tline-height: inherit;\r\n\t}\r\n\r\n\t#rop_core .toast.log-toast[_v-3d8499ce]:hover {\r\n\t\topacity: 0.9;\r\n\t}\r\n\r\n\t#rop_core .toast.log-toast[_v-3d8499ce] {\r\n\t\tpadding: 0.1rem;\r\n\t\tpadding-left: 10px;\r\n\t\tmargin-top: 2px;\r\n\t}\r\n\r\n\t#rop_core .container[_v-3d8499ce] {\r\n\t\tmin-height: 400px;\r\n\t}\r\n\r\n\t.columns[_v-3d8499ce] {\r\n\t\tline-break: anywhere;\r\n\t}\r\n", ""]);
 
 // exports
 
@@ -38906,6 +38929,10 @@ module.exports = {
 	//
 	// 	#rop_core .container {
 	// 		min-height: 400px;
+	// 	}
+	//
+	// 	.columns {
+	// 		line-break: anywhere;
 	// 	}
 	// </style>
 	//

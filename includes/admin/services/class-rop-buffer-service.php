@@ -23,7 +23,6 @@
  */
 class Rop_Buffer_Service extends Rop_Services_Abstract {
 
-
 	/**
 	 * An instance of authenticated Buffer user.
 	 *
@@ -503,6 +502,18 @@ class Rop_Buffer_Service extends Rop_Services_Abstract {
 		);
 
 		return true;
+	}
+
+	/**
+	 * Method to populate additional data.
+	 *
+	 * @since   8.5.13
+	 * @access  public
+	 * @return mixed
+	 */
+	public function populate_additional_data( $account ) {
+		$account['link'] = 'https://publish.buffer.com/profile/';
+		return $account;
 	}
 
 }

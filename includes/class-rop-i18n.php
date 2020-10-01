@@ -98,7 +98,7 @@ class Rop_I18n {
 				'has_accounts_desc'          => __( ' Authenticate a new service (eg. Facebook, Twitter etc. ), select the account you want to add from that service and ensure the switch is in the <b>ON</b> position. Only the active accounts will be used for sharing.', 'tweet-old-post' ),
 				'add_all_cta'                => __( ' Add more accounts', 'tweet-old-post' ),
 				'remove_all_cta'             => __( 'Remove all accounts', 'tweet-old-post' ),
-				'accounts_selector'          => __( 'Each <b>account</b> can have it\'s own options for sharing, on the left you can see the current selected account and network, bellow are the options for the account. Don\'t forget to save after each change and remember, you can always reset an account to the network defaults.', 'tweet-old-post' ),
+				'accounts_selector'          => __( 'Each <b>account</b> can have it\'s own options for sharing, on the left you can see the current selected account and network, below are the options for the account. Don\'t forget to save after each change and remember, you can always reset an account to the network defaults.', 'tweet-old-post' ),
 				'save_selector_btn'          => __( 'Save', 'tweet-old-post' ),
 				'reset_selector_btn'         => __( 'Reset', 'tweet-old-post' ),
 				'for'                        => __( 'for', 'tweet-old-post' ),
@@ -382,6 +382,8 @@ You can try to disable any of the security plugins that you use in order to see 
 				'gmb_failed_access_token_refresh' => __( 'Failed to retrieve Google My Business access token: ', 'tweet-old-post' ),
 				'gmb_failed_share' => __( 'Could not share post to Google My Business with LIVE state: ', 'tweet-old-post' ),
 				'gmb_no_valid_accounts' => __( 'Google My Business error: No valid accounts found. Please make sure you have access to a Google My Business location.', 'tweet-old-post' ),
+				'gmb_missing_main_class' => __( 'Unable to find Google_Client Class. Please ensure you have the Revive Old Posts Pro Addon activated.', 'tweet-old-post' ),
+				'gmb_missing_lib_class' => __( 'Unable to find Google_Service_MyBusiness Class. Please ensure you have the Revive Old Posts Pro Addon activated.', 'tweet-old-post' ),
 			),
 			'generic' => array(
 				'only_pro_suffix' => ' (' . __( 'Available in PRO', 'tweet-old-post' ) . ')',
