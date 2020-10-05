@@ -387,6 +387,9 @@ You can try to disable any of the security plugins that you use in order to see 
 				'gmb_missing_main_class' => __( 'Unable to find Google_Client Class. Please ensure you have the Revive Old Posts Pro Addon activated.', 'tweet-old-post' ),
 				'gmb_missing_lib_class' => __( 'Unable to find Google_Service_MyBusiness Class. Please ensure you have the Revive Old Posts Pro Addon activated.', 'tweet-old-post' ),
 			),
+			'generic' => array(
+				'only_pro_suffix' => ' (' . __( 'Available in PRO', 'tweet-old-post' ) . ')',
+			),
 		);
 		if ( empty( $key ) ) {
 			return $labels;
