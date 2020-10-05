@@ -62,6 +62,7 @@ class Rop_Rvivly_Shortner extends Rop_Url_Shortner_Abstract {
 	 * @return string
 	 */
 	public function shorten_url( $url ) {
-		return apply_filters( 'rop_shorten_url', $url, 'rviv.ly', $this->website, $this->credentials );
+		$instance = $this;
+		return apply_filters( 'rop_shorten_url', $url, 'rviv.ly', $this->website, $this->credentials, $instance );
 	}
 }
