@@ -550,13 +550,6 @@
 							}
 							return showButton;
 					},
-						hideOwnAppOption: function () {
-							let hideOption = true;
-							if (!this.hideOwnAppOption) {
-									hideOption = false;
-							}
-							return hideOption;
-					},
 
 	}
 }

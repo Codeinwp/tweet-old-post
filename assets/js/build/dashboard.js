@@ -35920,13 +35920,6 @@ module.exports = {
 				showButton = false;
 			}
 			return showButton;
-		},
-		hideOwnAppOption: function hideOwnAppOption() {
-			var hideOption = true;
-			if (!this.hideOwnAppOption) {
-				hideOption = false;
-			}
-			return hideOption;
 		}
 
 	}

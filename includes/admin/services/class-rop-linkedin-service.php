@@ -511,19 +511,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			$args['id'] = $this->treat_underscore_exception( $args['id'], true ); // Add the underscore back.
 		}
 
-		// check if linkedin Account was added using Revive Social app
-		$added_with_app = get_option( 'rop_linkedin_via_rs_app' );
-
-		// if linkedin was connected with "Sign into Linkedin" button, use appropriate key for access token
-		// accounts added with "Sign into Linkedin" button will not have the ['credentials']['client_id'] array key
-		if ( ! empty( $added_with_app ) && empty( $args['credentials']['client_id'] ) ) {
-			$token = $args['credentials'];
-		} else {
-			// Add check to see if this key exists, then tell user reconnect their account since we dropped support.
-			$this->set_api( $this->credentials['client_id'], $this->credentials['secret'] );
-			$token = new \LinkedIn\AccessToken( $this->credentials['token'] );
-		}
-
+		$token = $args['credentials'];
 
 		if ( get_post_type( $post_details['post_id'] ) !== 'attachment' ) {
 			// If post image option unchecked, share as article post
@@ -705,8 +693,12 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 				  return array();
 		}
 
+		if( function_exists('exif_imagetype') ){
 		$img_mime_type = image_type_to_mime_type( exif_imagetype( $img ) );
-
+		}else{
+		$this->logger->alert_error(  Rop_I18n::get_labels('errors.linkedin_missing_exif_imagetype') );
+		return false;
+		}
 		$img_data   = file_get_contents( $img );
 		$img_length = strlen( $img_data );
 
