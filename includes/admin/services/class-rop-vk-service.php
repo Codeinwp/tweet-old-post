@@ -234,7 +234,14 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 		$upload_url = $photo_response['upload_url'];
 		$this->logger->info( print_r('Upload URL: ' . $upload_url, true) );
 
-		$attachment_url = wp_get_attachment_url( $post_details['post_id'] );
+		
+		if( get_post_type( $post_details['post_id'] ) !== 'attachment' ){
+			$attachment_url = get_the_post_thumbnail_url($post_details['post_id'] ,'full');
+			
+		}elseif (get_post_type( $post_details['post_id'] ) === 'attachment') {
+			$attachment_url = wp_get_attachment_url( $post_details['post_id'] );
+		}
+
 		$this->logger->info( print_r($attachment_url, true) );
 
 
@@ -263,7 +270,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 		$this->logger->info( print_r($response, true) );
 		
 		$params = array(
-			'photo' => (string) $response['photo'],
+			'photo' => stripslashes($response['photo']),
 			'server' => (int) $response['server'],
 			'hash' => (string) $response['hash'],
 		);
@@ -287,8 +294,10 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 
 	$new_post = array(
 		'owner_id' => $owner_id,
-		'friends_only' => 0,
+		// 'from_group' => 1,
+		// 'signed' => 1,
 		'message' => $post_details['content'] . $post_details['hashtags'],
+		// 'attachments' => $attachment,
 		'attachments' => $attachment . ',' . $this->get_url( $post_details ),
 	);
 		return $new_post;
