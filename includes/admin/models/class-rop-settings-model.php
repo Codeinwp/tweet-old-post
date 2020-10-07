@@ -340,9 +340,16 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 		if ( isset( $data['default_interval'] ) ) {
 			$data['default_interval'] = floatval( $data['default_interval'] );
 			if ( $data['default_interval'] < 0.1 ) {
-				$this->logger->alert_error( 'Minimum interval between consecutive shares is 6mins.' );
+				$this->logger->alert_error( 'Minimum interval between consecutive shares is 6 mins.' );
 				$data['default_interval'] = 0.1;
 			}
+
+			$min_allowed = apply_filters( 'rop_min_interval_bw_shares_min', ROP_DEBUG ? 0.1 : 0.5 );
+			if ( $data['default_interval'] < $min_allowed ) {
+				$this->logger->alert_error( sprintf( 'Minimum allowed value of mininum interval between consecutive shares is %d mins.', $min_allowed * 60 ) );
+				$data['default_interval'] = $min_allowed;
+			}
+
 			$data['default_interval'] = round( $data['default_interval'], 1 );
 		}
 		if ( empty( $data['selected_post_types'] ) ) {
