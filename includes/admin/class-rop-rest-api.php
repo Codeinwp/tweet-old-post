@@ -107,6 +107,50 @@ class Rop_Rest_Api {
 	}
 
 	/**
+	 * Rest Api called, will update the variable which informs the system
+	 * to use local or remote Cron Job System.
+	 *
+	 * @param array $data Data passed from the AJAX call.
+	 *
+	 * @return array
+	 * @since   8.6.0
+	 * @access  private
+	 * @category New Cron System
+	 */
+	private function update_cron_type( $data ) {
+
+		$cron_helper = new Rop_Cron_Helper();
+		$this->response->set_code( '200' )
+					->set_data( $cron_helper->update_cron_type( $data ) );
+
+		return $this->response->to_array();
+	}
+
+	/**
+	 * Saves user agreeing with the Terms and Conditions for the remote CronJob system.
+	 *
+	 * @param array $data Data passed from the AJAX call.
+	 *
+	 * @return array
+	 * @since   8.6.0
+	 * @access  private
+	 * @category New Cron System
+	 */
+	private function update_cron_type_agreement( $data ) {
+		$response = false;
+
+		if ( ! empty( $data ) && isset( $data['action'] ) ) {
+			update_option( 'rop_remote_cron_terms_agree', $data['action'] );
+			$response = true;
+		}
+
+		$this->response->set_code( '200' )
+					   ->set_data( $response );
+
+		return $this->response->to_array();
+	}
+
+	/**
 	 * API method called to skip a queue event and return active queue.
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
@@ -195,6 +239,18 @@ class Rop_Rest_Api {
 	 */
 	private function save_schedule( $data ) {
 		$pro_api = new Rop_Pro_Api();
+
+		$cron_status = filter_var( get_option( 'rop_is_sharing_cron_active', 'no' ), FILTER_VALIDATE_BOOLEAN );
+
+		if ( true === $cron_status && defined( 'ROP_CRON_ALTERNATIVE' ) && true === ROP_CRON_ALTERNATIVE ) {
+			$server_url = ROP_CRON_DOMAIN . '/wp-json/update-cron-ping/v1/update-time-to-share/';
+			// inform the cron server to ping this website in the next process.
+			$time_to_share = array(
+				'next_ping' => current_time( 'mysql' ), // phpcs:ignore
+			);
+
+			RopCronSystem\ROP_Helpers\Rop_Helpers::custom_curl_post_request( $server_url, $time_to_share );
+		}
 
 		return $pro_api->save_schedule( $data );
 	}
@@ -518,9 +574,31 @@ class Rop_Rest_Api {
 	private function save_general_settings( $data ) {
 
 		$settings_model = new Rop_Settings_Model();
+		// Fetch the already saved settings.
+		$saved_data = $settings_model->get_settings();
 		$settings_model->save_settings( $data );
 		$this->response->set_code( '200' )
 					   ->set_data( $settings_model->get_settings() );
+
+		$cron_status = filter_var( get_option( 'rop_is_sharing_cron_active', 'no' ), FILTER_VALIDATE_BOOLEAN );
+
+		if ( true === $cron_status && defined( 'ROP_CRON_ALTERNATIVE' ) && true === ROP_CRON_ALTERNATIVE ) {
+			$new_default_interval = trim( $data['default_interval'] );
+
+			$saved_default_interval = trim( $saved_data['default_interval'] );
+
+			if ( $new_default_interval !== $saved_default_interval ) {
+
+				$server_url = ROP_CRON_DOMAIN . '/wp-json/update-cron-ping/v1/update-time-to-share/';
+
+				// inform the cron server to ping this website in the next process.
+				$time_to_share = array(
+					'next_ping' => current_time( 'mysql' ), // phpcs:ignore
+				);
+
+				RopCronSystem\ROP_Helpers\Rop_Helpers::custom_curl_post_request( $server_url, $time_to_share );
+			}
+		}
 
 		return $this->response->to_array();
 	}
@@ -860,7 +938,6 @@ class Rop_Rest_Api {
 				// fetch log entry data;
 				$channel = $latest_log_entry['channel'];
 				$type    = $latest_log_entry['type'];
-				$level   = $latest_log_entry['level'];
 				$message = $latest_log_entry['message'];
 				$time    = (int) $latest_log_entry['time'];
 
@@ -1054,58 +1131,6 @@ class Rop_Rest_Api {
 			add_option( $rop_linkedin_via_rs_app_option, 'true', ' ', 'no' );
 		} else {
 			update_option( $rop_linkedin_via_rs_app_option, 'true' );
-		}
-
-		return $this->response->to_array();
-	}
-
-	/**
-	 * API method called to add Buffer profiles via app.
-	 *
-	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
-	 *
-	 * @since   8.5.0
-	 * @access  private
-	 *
-	 * @param   array $data Buffer accounts data.
-	 *
-	 * @return  array
-	 */
-	private function add_account_buffer( $data ) {
-		$services        = array();
-		$active_accounts = array();
-		$buffer_service  = new Rop_Buffer_Service();
-		$model           = new Rop_Services_Model();
-		$db              = new Rop_Db_Upgrade();
-
-		$buffer_service->add_account_with_app( $data );
-
-		$services[ $buffer_service->get_service_id() ] = $buffer_service->get_service();
-		$active_accounts                                = array_merge( $active_accounts, $buffer_service->get_service_active_accounts() );
-
-		if ( ! empty( $services ) ) {
-			$model->add_authenticated_service( $services );
-		}
-
-		if ( ! empty( $active_accounts ) ) {
-			$db->migrate_schedule( $active_accounts );
-			$db->migrate_post_formats( $active_accounts );
-		} else {
-			$this->response->set_code( '500' )
-						   ->set_data( array() );
-
-			return $this->response->to_array();
-		}
-
-		$this->response->set_code( '200' )
-					   ->set_message( 'OK' )
-					   ->set_data( array() );
-
-		$rop_buffer_via_rs_app_option = 'rop_buffer_via_rs_app';
-		if ( ! get_option( $rop_buffer_via_rs_app_option ) ) {
-			add_option( $rop_buffer_via_rs_app_option, 'true', ' ', 'no' );
-		} else {
-			update_option( $rop_buffer_via_rs_app_option, 'true' );
 		}
 
 		return $this->response->to_array();

@@ -80,7 +80,6 @@ class Rop_I18n {
 				'fb_app_signin_btn'          => __( 'Sign in to Facebook', 'tweet-old-post' ),
 				'tw_app_signin_btn'          => __( 'Sign in to Twitter', 'tweet-old-post' ),
 				'li_app_signin_btn'          => __( 'Sign in to LinkedIn', 'tweet-old-post' ),
-				'buffer_app_signin_btn'      => __( 'Sign in to Buffer', 'tweet-old-post' ),
 				'tumblr_app_signin_btn'      => __( 'Sign in to Tumblr', 'tweet-old-post' ),
 				'gmb_app_signin_btn'         => __( 'Sign in to Google My Business', 'tweet-old-post' ),
 				'app_option_signin'          => __( 'Or', 'tweet-old-post' ),
@@ -186,6 +185,9 @@ class Rop_I18n {
 				'instant_share_future_scheduled_desc'   => __( 'Allows for the sharing of posts scheduled to publish at a future date by WordPress to your active social media accounts as soon as they change from "Scheduled" to "Published". <a href="https://docs.revive.social/article/1194-share-scheduled-posts-to-social-media-on-publish-with-revive-old-posts" target="_blank">Learn more</a>.', 'tweet-old-post' ),
 				'instant_share_future_scheduled_yes'    => __( 'Yes', 'tweet-old-post' ),
 				'instant_share_future_scheduled_upsell' => __( ' This feature is only available in the PRO version.', 'tweet-old-post' ),
+				'cron_type_label'                => __( 'Cron Job Type', 'tweet-old-post' ),
+				'cron_type_label_desc'           => sprintf( __( 'Select the between your local built-in WordPress task scheduler, or Revive Social\'s, %1$sLearn More%2$s', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/1303-rop-local-cron-vs-remote-cron" target="_blank">', '</a>' ),
+				'cron_type_label_desc_terms'           => __( 'I Agree with <a href="" target="_blank">Terms and Conditions</a>', 'tweet-old-post' ),
 				'housekeeping'                => __( 'Housekeeping', 'tweet-old-post' ),
 				'housekeeping_desc'           => __( 'Should we delete all saved settings on deletion of the Revive Old Posts plugin?', 'tweet-old-post' ),
 				'housekeeping_yes'            => __( 'Yes', 'tweet-old-post' ),
@@ -384,6 +386,9 @@ You can try to disable any of the security plugins that you use in order to see 
 				'gmb_no_valid_accounts' => __( 'Google My Business error: No valid accounts found. Please make sure you have access to a Google My Business location.', 'tweet-old-post' ),
 				'gmb_missing_main_class' => __( 'Unable to find Google_Client Class. Please ensure you have the Revive Old Posts Pro Addon activated.', 'tweet-old-post' ),
 				'gmb_missing_lib_class' => __( 'Unable to find Google_Service_MyBusiness Class. Please ensure you have the Revive Old Posts Pro Addon activated.', 'tweet-old-post' ),
+			),
+			'generic' => array(
+				'only_pro_suffix' => ' (' . __( 'Available in PRO', 'tweet-old-post' ) . ')',
 			),
 		);
 		if ( empty( $key ) ) {

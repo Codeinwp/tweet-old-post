@@ -168,7 +168,7 @@ abstract class Rop_Url_Shortner_Abstract {
 	 * @codeCoverageIgnore
 	 *
 	 * @since   8.0.0
-	 * @access  protected
+	 * @access  public
 	 *
 	 * @param   string $url     The URL to shorten.
 	 * @param   array  $props   cURL props.
@@ -177,7 +177,7 @@ abstract class Rop_Url_Shortner_Abstract {
 	 *
 	 * @return array
 	 */
-	protected final function callAPI( $url, $props = array(), $params = array(), $headers = array() ) {
+	final public function callAPI( $url, $props = array(), $params = array(), $headers = array() ) {
 		$body  = null;
 		$error = null;
 
