@@ -1,4 +1,18 @@
 
+ ### v8.5.18 - 2020-09-27 
+ **Changes:** 
+ * Change Pro: Move GMB dependency to Pro plugin.
+ 
+ ### v8.5.17 - 2020-09-24 
+ **Changes:** 
+ * Dev: Add post-install command to composer.json
+ 
+ ### v8.5.16 - 2020-09-23 
+ **Changes:** 
+ * Info: Update Google My Business dependency version
+* Info: Update Themeisle SDK dependency version
+* Change: Dropped monolog dependency in favor of custom logging methods
+ 
  ### v8.5.15 - 2020-09-09 
  **Changes:** 
  * Change: Require at least PHP 7.1

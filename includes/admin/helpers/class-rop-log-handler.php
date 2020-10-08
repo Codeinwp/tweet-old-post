@@ -10,13 +10,10 @@
  * @since
  */
 
-use Monolog\Handler\AbstractProcessingHandler;
-use Monolog\Logger;
-
 /**
  * Class Rop_Log_Handler, procesor for user logs.
  */
-class Rop_Log_Handler extends AbstractProcessingHandler {
+class Rop_Log_Handler {
 	/**
 	 * List of logs.
 	 *
@@ -46,13 +43,9 @@ class Rop_Log_Handler extends AbstractProcessingHandler {
 	 * Rop_Log_Handler constructor.
 	 *
 	 * @param string $option_name Option where to save this.
-	 * @param int    $level Level of log.
-	 * @param bool   $bubble Bubble.
 	 */
-	public function __construct( $option_name, $level = Logger::DEBUG, $bubble = true ) {
+	public function __construct( $option_name ) {
 		$this->namespace = $option_name;
-
-		parent::__construct( $level, $bubble );
 	}
 
 	/**
@@ -76,6 +69,15 @@ class Rop_Log_Handler extends AbstractProcessingHandler {
 		if ( ! is_array( $current_logs ) ) {
 			$current_logs = array();
 		}
+
+		if ( ROP_DEBUG !== true ) {
+			foreach ( $current_logs as $key => $log_data ) {
+				if ( $log_data['type'] === 'info' ) {
+					unset( $current_logs[ $key ] );
+				}
+			}
+		}
+
 		self::$current_logs = $current_logs;
 		$this->initialized  = true;
 	}
@@ -113,14 +115,13 @@ class Rop_Log_Handler extends AbstractProcessingHandler {
 	 *
 	 * @param array $record Record written.
 	 */
-	protected function write( array $record ) {
+	public function write( array $record ) {
 		if ( ! $this->initialized ) {
 			$this->initialize();
 		}
 		self::$current_logs[] = array(
 			'channel' => $record['channel'],
 			'type'    => isset( $record['context']['type'] ) ? $record['context']['type'] : 'info',
-			'level'   => $record['level'],
 			'message' => $record['formatted'],
 			'time'    => Rop_Scheduler_Model::get_current_time(),
 		);

@@ -40,10 +40,6 @@ class Test_RopLogger extends WP_UnitTestCase {
 		$this->assertArrayHasKey( 'type', $log_record, 'Type key is not present in the logs' );
 		$this->assertEquals( 'success', $log_record['type'], 'Type key is not present in the logs' );
 
-		$log->clear_user_logs();
-		$log->info( 'Test info' );
-		$this->assertEmpty( $log->get_logs(), 'Info logs should not be present into production' );
-
 	}
 
 }
