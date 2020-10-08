@@ -126,7 +126,7 @@ function run_rop() {
 	define( 'ROP_STATUS_ALERT', 6 );// How many consecutive errors count towards status alert "Status: Error (check logs)"
 
 	// Authorization APP Data
-	define( 'ROP_AUTH_APP_URL', 'https://rop.local' );
+	define( 'ROP_AUTH_APP_URL', 'https://app.revive.social' );
 	define( 'ROP_APP_FACEBOOK_PATH', '/fb_auth' );
 	define( 'ROP_APP_TWITTER_PATH', '/tw_auth' );
 	define( 'ROP_APP_LINKEDIN_PATH', '/li_auth' );
