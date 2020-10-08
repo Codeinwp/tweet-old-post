@@ -9,25 +9,25 @@
  * It extends the Rop_Services_Abstract class.
  *
  * @link       https://themeisle.com/
- * @since      8.5.9
+ * @since      8.6.0
  *
  * @package    Rop
  * @subpackage Rop/includes/admin/services
  */
 
+use \VK\Client\VKApiClient;
 /**
  * Class Rop_Vk_Service
  *
- * @since   8.5.9
+ * @since   8.6.0
  * @link    https://themeisle.com/
  */
-use \VK\Client\VKApiClient;
 class Rop_Vk_Service extends Rop_Services_Abstract {
 
 	/**
 	 * Defines the service name in slug format.
 	 *
-	 * @since  8.5.9
+	 * @since  8.6.0
 	 * @access protected
 	 * @var    string $service_name The service name.
 	 */
@@ -37,7 +37,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	 * Method to inject functionality into constructor.
 	 * Defines the defaults and settings for this service.
 	 *
-	 * @since  8.5.9
+	 * @since  8.6.0
 	 * @access public
 	 */
 	public function init() {
@@ -47,7 +47,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 		/**
 		 * Returns information for the current service.
 		 *
-		 * @since  8.5.9
+		 * @since  8.6.0
 		 * @access public
 		 * @return mixed
 		 */
@@ -60,7 +60,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	 * This should be invoked by the Factory class
 	 * to register all endpoints at once.
 	 *
-	 * @since  8.5.9
+	 * @since  8.6.0
 	 * @access public
 	 */
 	public function expose_endpoints() {
@@ -84,7 +84,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	 *
 	 * @codeCoverageIgnore
 	 *
-	 * @since  8.5.9
+	 * @since  8.6.0
 	 * @access protected
 	 * @return mixed
 	 */
@@ -95,7 +95,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	/**
 	 * Abstract function, not in Use. Method to retrieve the api object.
 	 *
-	 * @since  8.5.9
+	 * @since  8.6.0
 	 * @access public
 	 *
 	 * @param string $app_id The APP ID. Default empty.
@@ -110,7 +110,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	/**
 	 * Abstract function, not in Use. Method to define the api.
 	 *
-	 * @since  8.5.9
+	 * @since  8.6.0
 	 * @access public
 	 *
 	 * @param string $app_id The APP ID. Default empty.
@@ -127,7 +127,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	 *
 	 * @codeCoverageIgnore
 	 *
-	 * @since  8.5.9
+	 * @since  8.6.0
 	 * @access public
 	 * @return mixed
 	 */
@@ -151,7 +151,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	 * This method will load and prepare the account data for Vkontakte user.
 	 * Used in Rest Api.
 	 *
-	 * @since   8.5.9
+	 * @since   8.6.0
 	 * @access  public
 	 *
 	 * @param   array $accounts_data Buffer accounts data.
@@ -205,79 +205,81 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	}
 
 	/**
-	 * Method for creating image posts on Vkontakte.
+	 * Method for creating media posts on Vkontakte.
 	 *
-	 * @since  8.5.9
+	 * @since  8.6.0
 	 * @access private
 	 *
 	 * @param array  $post_details The post details to be published by the service.
 	 * @param array  $args Optional arguments needed by the method.
-	 * @param int $owner_id The owner id.
+	 * @param int    $owner_id The owner id.
 	 * @param object $client Instance of the client.
 	 * @param string $access_token The access token.
 	 *
 	 * @return array $new_post The post contents
 	 */
-	private function vk_image_post( $post_details, $args, $owner_id, $client, $access_token ) {
+	private function vk_media_post( $post_details, $args, $owner_id, $client, $access_token ) {
+
+		if ( ! function_exists( 'curl_init' ) ) {
+			$this->logger->alert_error( Rop_I18n::get_labels( 'misc.curl_not_detected' ) );
+			return false;
+		}
+
+		if ( get_post_type( $post_details['post_id'] ) !== 'attachment' ) {
+			$attachment_url = get_the_post_thumbnail_url( $post_details['post_id'], 'full' );
+
+		} elseif ( get_post_type( $post_details['post_id'] ) === 'attachment' ) {
+			$attachment_url = wp_get_attachment_url( $post_details['post_id'] );
+		}
+
+		$attachment_path = $this->get_path_by_url( $attachment_url, $post_details['mimetype'] );
+
+		// if attachment is video
+		if ( strpos( $post_details['mimetype']['type'], 'video' ) !== false ) {
+			return $this->vk_video_post( $post_details, $attachment_path, $args, $owner_id, $client, $access_token );
+		}
 
 		$param = array();
 
-		if( $args['is_company'] ){
+		if ( $args['is_company'] ) {
 			$param['group_id'] = $args['id'];
 		}
 
 		$photo_response = $client->photos()->getWallUploadServer(
 			$access_token,
 			$param
-			);
-			
+		);
+
 		$upload_url = $photo_response['upload_url'];
-		$this->logger->info( print_r('Upload URL: ' . $upload_url, true) );
-
-		
-		if( get_post_type( $post_details['post_id'] ) !== 'attachment' ){
-			$attachment_url = get_the_post_thumbnail_url($post_details['post_id'] ,'full');
-			
-		}elseif (get_post_type( $post_details['post_id'] ) === 'attachment') {
-			$attachment_url = wp_get_attachment_url( $post_details['post_id'] );
-		}
-
-		$this->logger->info( print_r($attachment_url, true) );
-
-
-		$url = $this->get_path_by_url( $attachment_url, $post_details['mimetype'] );
-		$this->logger->info( print_r($url, true) );
-		
 
 		$data = array(
 			'photo' => new CURLFile(
-				$url, 
+				$attachment_path,
 				'multipart/form-data',
 				'image.jpg'
 			),
 		);
 
-		$this->logger->info( print_r($data, true) );
-		
-		$ch = curl_init($upload_url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_POST, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-		curl_setopt($ch, CURLOPT_HEADER, 0);
-		
-		$response = json_decode(curl_exec($ch), true);
+		$ch = '';
+		$ch = curl_init( $upload_url );
+		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+		curl_setopt( $ch, CURLOPT_POST, 1 );
+		curl_setopt( $ch, CURLOPT_POSTFIELDS, $data );
+		curl_setopt( $ch, CURLOPT_HEADER, 0 );
 
-		$this->logger->info( print_r($response, true) );
-		
+		$response = json_decode( curl_exec( $ch ), true );
+
+		curl_close( $ch );
+
 		$params = array(
-			'photo' => stripslashes($response['photo']),
+			'photo' => stripslashes( $response['photo'] ),
 			'server' => (int) $response['server'],
 			'hash' => (string) $response['hash'],
 		);
 
-		if( $args['is_company'] ){
-			$params['group_id'] = (int) $args['id']; //has to be positive
-		}else{
+		if ( $args['is_company'] ) {
+			$params['group_id'] = (int) $args['id']; // has to be positive
+		} else {
 			$params['user_id'] = (int) $args['id'];
 		}
 
@@ -286,20 +288,75 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 			$params
 		);
 
-	$this->logger->info( print_r($response, true) );
-	$this->logger->info( print_r($response[0]['id'], true) );
+		$attachment = 'photo' . $response[0]['owner_id'] . '_' . $response[0]['id'];
 
-	$attachment = 'photo'. $args['id'] . '_' . $response[0]['id'];
-	$this->logger->info( print_r($attachment, true) );
+		$new_post = array(
+			'owner_id' => $owner_id,
+			'message' => $post_details['content'] . $post_details['hashtags'],
+			'attachments' => $attachment . ',' . $this->get_url( $post_details ),
+		);
+		return $new_post;
 
-	$new_post = array(
-		'owner_id' => $owner_id,
-		// 'from_group' => 1,
-		// 'signed' => 1,
-		'message' => $post_details['content'] . $post_details['hashtags'],
-		// 'attachments' => $attachment,
-		'attachments' => $attachment . ',' . $this->get_url( $post_details ),
-	);
+	}
+
+	/**
+	 * Method for publishing videos to Vkontakte service.
+	 *
+	 * @since  8.6.0
+	 * @access private
+	 *
+	 * @param array  $post_details The post details to be published by the service.
+	 * @param string $attachment_path The video attachment URL.
+	 * @param array  $args Optional arguments needed by the method.
+	 * @param int    $owner_id The owner id.
+	 * @param object $client Instance of the client.
+	 * @param string $access_token The access token.
+	 *
+	 * @return array $new_post The post contents
+	 */
+	private function vk_video_post( $post_details, $attachment_path, $args, $owner_id, $client, $access_token ) {
+
+		$params = array(
+			'name' => get_the_title( $post_details['post_id'] ),
+			'description' => $post_details['content'],
+		);
+
+		if ( $args['is_company'] ) {
+			$params['group_id'] = $args['id'];
+		}
+
+		$upload_url = $client->video()->save(
+			$access_token,
+			$params
+		)['upload_url'];
+
+		$data = array(
+			'video_file' => new CURLFile(
+				$attachment_path,
+				'multipart/form-data',
+				'video.mp4'
+			),
+		);
+
+		$ch = '';
+		$ch = curl_init( $upload_url );
+		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+		curl_setopt( $ch, CURLOPT_POST, 1 );
+		curl_setopt( $ch, CURLOPT_POSTFIELDS, $data );
+		curl_setopt( $ch, CURLOPT_HEADER, 0 );
+
+		$response = json_decode( curl_exec( $ch ), true );
+
+		curl_close( $ch );
+
+		$attachment = 'video' . $response['owner_id'] . '_' . $response['video_id'];
+
+		$new_post = array(
+			'owner_id' => $response['owner_id'],
+			'message' => $post_details['content'] . $post_details['hashtags'],
+			'attachments' => $attachment . ',' . $this->get_url( $post_details ),
+		);
+
 		return $new_post;
 
 	}
@@ -308,18 +365,16 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	/**
 	 * Method for text posts to Vkontakte.
 	 *
-	 * @since  8.5.9
+	 * @since  8.6.0
 	 * @access private
 	 *
-	 * @param array  $post_details The post details to be published by the service.
-	 * @param array  $args Optional arguments needed by the method.
-	 * @param int $owner_id The owner id.
+	 * @param array $post_details The post details to be published by the service.
+	 * @param array $args Optional arguments needed by the method.
+	 * @param int   $owner_id The owner id.
 	 *
 	 * @return array $new_post The post contents
 	 */
 	private function vk_text_post( $post_details, $args, $owner_id ) {
-
-		$this->logger->info( 'Plain Text Post' );
 
 		$new_post = array(
 			'owner_id' => $owner_id,
@@ -334,11 +389,11 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	/**
 	 * Method for creating link(article) posts to Vkontakte.
 	 *
-	 * @since  8.5.9
+	 * @since  8.6.0
 	 * @access private
 	 *
-	 * @param array  $post_details The post details to be published by the service.
-	 * @param array  $args Optional arguments needed by the method.
+	 * @param array $post_details The post details to be published by the service.
+	 * @param array $args Optional arguments needed by the method.
 	 *
 	 * @return object
 	 */
@@ -358,7 +413,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	/**
 	 * Method for publishing with Vkontakte service.
 	 *
-	 * @since  8.5.9
+	 * @since  8.6.0
 	 * @access public
 	 *
 	 * @param array $post_details The post details to be published by the service.
@@ -367,16 +422,16 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function share( $post_details, $args = array() ) {
-		
+
 		$post_id = $post_details['post_id'];
 
 		$client = new VKApiClient();
 		$access_token = $args['credentials']['access_token'];
-		$owner_id = ($args['is_company']) ? '-'.$args['id'] : $args['id'];
+		$owner_id = ( $args['is_company'] ) ? '-' . $args['id'] : $args['id'];
 
 		$post_url = $post_details['post_url'];
 		$share_as_image_post = $post_details['post_with_image'];
-	
+
 		// VK link post
 		if ( ! empty( $post_url ) && empty( $share_as_image_post ) && get_post_type( $post_id ) !== 'attachment' ) {
 			$new_post = $this->vk_article_post( $post_details, $args, $owner_id );
@@ -389,15 +444,20 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 
 		// VK image post
 		if ( ! empty( $share_as_image_post ) || get_post_type( $post_id ) === 'attachment' ) {
-			$new_post = $this->vk_image_post( $post_details, $args, $owner_id, $client, $access_token );
+			$new_post = $this->vk_media_post( $post_details, $args, $owner_id, $client, $access_token );
+		}
+
+		if ( empty( $new_post ) ) {
+			$this->logger->alert_error( Rop_I18n::get_labels( 'misc.no_post_data' ) );
+			return;
 		}
 
 		$response = $client->wall()->post(
-		$args['credentials']['access_token'],
-		$new_post
+			$args['credentials']['access_token'],
+			$new_post
 		);
 
-		if ( !empty($response['post_id']) ) {
+		if ( ! empty( $response['post_id'] ) ) {
 
 			$this->logger->alert_success(
 				sprintf(
@@ -407,13 +467,12 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 				)
 			);
 
-			$this->logger->info( print_r($response, true) );
 			return true;
 
 		} else {
 
 			$this->logger->alert_error( 'Error sharing to Vkontakte' . print_r( $response, true ) );
-				return false;
+			return false;
 		}
 
 	}
