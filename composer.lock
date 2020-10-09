@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2325dc873e66efcaac3aaae75a54ac00",
+    "content-hash": "be802e74fab03d487a6100e98e7655f9",
     "packages": [
         {
             "name": "abraham/twitteroauth",
@@ -155,6 +155,45 @@
                 "sdk"
             ],
             "time": "2018-12-11T22:56:31+00:00"
+        },
+        {
+            "name": "vkcom/vk-php-sdk",
+            "version": "5.101.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/VKCOM/vk-php-sdk.git",
+                "reference": "46a8f76503050c0c6730359fc234a4d6448b8653"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/VKCOM/vk-php-sdk/zipball/46a8f76503050c0c6730359fc234a4d6448b8653",
+                "reference": "46a8f76503050c0c6730359fc234a4d6448b8653",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6",
+                "vkcom/vk-api-schema": "^5.80.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "VK\\": "src/VK"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "VK PHP SDK",
+            "homepage": "https://github.com/VKCOM/vk-php-sdk",
+            "keywords": [
+                "sdk",
+                "vk"
+            ],
+            "time": "2019-08-16T12:13:20+00:00"
         }
     ],
     "packages-dev": [],

@@ -618,7 +618,7 @@ abstract class Rop_Services_Abstract {
 	 *
 	 * @return string Image path.
 	 */
-	protected function get_path_by_url( $image_url, $mimetype = array() ) {
+	protected function get_path_by_url( $image_url, $mimetype = '' ) {
 		if ( empty( $image_url ) ) {
 			return '';
 		}
