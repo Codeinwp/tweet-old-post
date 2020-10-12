@@ -347,6 +347,7 @@ class Rop_Admin {
 			'authAppLinkedInPath' => ROP_APP_LINKEDIN_PATH,
 			'authAppTumblrPath'   => ROP_APP_TUMBLR_PATH,
 			'authAppGmbPath'      => ROP_APP_GMB_PATH,
+			'authAppVkPath'       => ROP_APP_VK_PATH,
 			'authToken'           => $token,
 			'adminUrl'            => urlencode( $admin_url ),
 			'authSignature'       => $signature,
@@ -952,7 +953,7 @@ class Rop_Admin {
 					}
 				} catch ( Exception $exception ) {
 					$error_message = sprintf( Rop_I18n::get_labels( 'accounts.service_error' ), $account_data['service'] );
-					$logger->alert_error( $error_message . ' Error: ' . $exception->getTrace() );
+					$logger->alert_error( $error_message . ' Error: ' . print_r( $exception->getTrace(), true ) );
 				}
 			}
 		}

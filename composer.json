@@ -37,7 +37,8 @@
   "require": {
     "facebook/graph-sdk": "5.7",
     "abraham/twitteroauth": "1.1.0",
-    "codeinwp/themeisle-sdk": "3.2.15"
+    "codeinwp/themeisle-sdk": "3.2.15",
+    "vkcom/vk-php-sdk": "5.101.0"
   },
   "extra": {
     "installer-disable": true
