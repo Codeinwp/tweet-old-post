@@ -405,6 +405,7 @@ class Rop_Global_Settings {
 	 * @return  int
 	 */
 	public function license_type() {
+		return 2;
 		$pro_check = defined( 'ROP_PRO_VERSION' );
 		if ( ! $pro_check ) {
 			return - 1;
