@@ -501,8 +501,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		if( !empty($args['credentials']['client_id']) ){
-			$this->logger->alert_error(Rop_Pro_I18n::get_labels( 'errors.reconnect_linkedin' ));
+		if ( ! empty( $args['credentials']['client_id'] ) ) {
+			$this->logger->alert_error( Rop_Pro_I18n::get_labels( 'errors.reconnect_linkedin' ) );
 			$this->rop_get_error_docs( Rop_Pro_I18n::get_labels( 'errors.reconnect_linkedin' ) );
 			return false;
 		}
@@ -538,19 +538,19 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$response = wp_remote_post(
 			$api_url,
 			array(
-				'body'    => json_encode($new_post),
+				'body'    => json_encode( $new_post ),
 				'headers' => array(
 					'Content-Type' => 'application/json',
 					'x-li-format' => 'json',
 					'X-Restli-Protocol-Version' => '2.0.0',
-					'Authorization' => 'Bearer '. $token,
+					'Authorization' => 'Bearer ' . $token,
 				),
 			)
 		);
 
-		$body = json_decode(wp_remote_retrieve_body($response), true);
+		$body = json_decode( wp_remote_retrieve_body( $response ), true );
 
-		if( array_key_exists('id', $body ) ){
+		if ( array_key_exists( 'id', $body ) ) {
 
 			$this->logger->alert_success(
 				sprintf(
@@ -561,14 +561,14 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 				)
 			);
 			// check if the token will expire soon
-			$this->rop_refresh_linkedin_token_notice();	
-			return true;		
-		}else{
+			$this->rop_refresh_linkedin_token_notice();
+			return true;
+		} else {
 
 			$this->logger->alert_error( 'Cannot share to linkedin. Error:  ' . $body );
 			$this->rop_get_error_docs( $body );
 			// check if the token will expire soon
-			$this->rop_refresh_linkedin_token_notice();	
+			$this->rop_refresh_linkedin_token_notice();
 			return false;
 		}
 
@@ -667,17 +667,17 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$response = wp_remote_post(
 			$api_url,
 			array(
-				'body'    => json_encode($register_image),
+				'body'    => json_encode( $register_image ),
 				'headers' => array(
 					'Content-Type' => 'application/json',
 					'x-li-format' => 'json',
 					'X-Restli-Protocol-Version' => '2.0.0',
-					'Authorization' => 'Bearer '. $token,
+					'Authorization' => 'Bearer ' . $token,
 				),
 			)
 		);
 
-		$body = json_decode( wp_remote_retrieve_body($response), true );
+		$body = json_decode( wp_remote_retrieve_body( $response ), true );
 		$upload_url = $body['value']['uploadMechanism']['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest']['uploadUrl'];
 		$asset      = $body['value']['asset'];
 
@@ -693,11 +693,11 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 				  return array();
 		}
 
-		if( function_exists('exif_imagetype') ){
-		$img_mime_type = image_type_to_mime_type( exif_imagetype( $img ) );
-		}else{
-		$this->logger->alert_error(  Rop_I18n::get_labels('errors.linkedin_missing_exif_imagetype') );
-		return false;
+		if ( function_exists( 'exif_imagetype' ) ) {
+			$img_mime_type = image_type_to_mime_type( exif_imagetype( $img ) );
+		} else {
+			$this->logger->alert_error( Rop_I18n::get_labels( 'errors.linkedin_missing_exif_imagetype' ) );
+			return false;
 		}
 		$img_data   = file_get_contents( $img );
 		$img_length = strlen( $img_data );

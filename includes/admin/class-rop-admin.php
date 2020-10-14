@@ -1437,8 +1437,17 @@ class Rop_Admin {
 
 	}
 
-
-	private function rop_hide_add_own_app_option(){
+	/**
+	 * Hides the own app option from the account modal
+	 *
+	 *  
+	 * This method hides the own app option for installs after v8.6.0 as a way to ease the transition
+	 * to only the quick sign on method.
+	 *
+	 * @since   8.6.0
+	 * @access  public
+	 */
+	private function rop_hide_add_own_app_option() {
 
 		$installed_at_version = get_option( 'rop_first_install_version' );
 		if ( empty( $installed_at_version ) ) {
