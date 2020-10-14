@@ -22,12 +22,23 @@
   "autoload": {
     "files": [
       "vendor/codeinwp/themeisle-sdk/load.php"
+    ],
+    "classmap": [
+      "cron-system/includes/class-rop-curl-methods.php",
+      "cron-system/includes/class-rop-helpers.php",
+      "cron-system/includes/class-debug-page.php",
+      "cron-system/rest-endpoints/class-rop-ping-system.php",
+      "cron-system/rest-endpoints/class-rop-system-base.php",
+      "cron-system/rest-endpoints/class-rop-debug-ping.php",
+      "cron-system/rest-endpoints/class-rop-registration-check.php",
+      "cron-system/class-rop-cron-core.php"
     ]
   },
   "require": {
     "facebook/graph-sdk": "5.7",
     "abraham/twitteroauth": "1.1.0",
-    "codeinwp/themeisle-sdk": "3.2.15"
+    "codeinwp/themeisle-sdk": "3.2.15",
+    "vkcom/vk-php-sdk": "5.101.0"
   },
   "extra": {
     "installer-disable": true
