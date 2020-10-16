@@ -83,9 +83,9 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 			'active' => true,
 		),
 		// 'rviv.ly' => array(
-		// 	'id' => 'rviv.ly',
-		// 	'name' => 'rviv.ly',
-		// 	'active' => false,
+		// 'id' => 'rviv.ly',
+		// 'name' => 'rviv.ly',
+		// 'active' => false,
 		// ),
 	);
 
