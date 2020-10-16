@@ -82,11 +82,11 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 			'name' => 'wp_short_url',
 			'active' => true,
 		),
-		'rviv.ly' => array(
-			'id' => 'rviv.ly',
-			'name' => 'rviv.ly',
-			'active' => false,
-		),
+		// 'rviv.ly' => array(
+		// 'id' => 'rviv.ly',
+		// 'name' => 'rviv.ly',
+		// 'active' => false,
+		// ),
 	);
 
 	/**
