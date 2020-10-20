@@ -32,6 +32,10 @@
 			maxVal: {
 				default: 0,
 				type: Number
+			},
+			stepVal: {
+				default: 1,
+				type: Number
 			}
 		},
 		data: function () {
@@ -61,13 +65,13 @@
 				let now = new Date()
 				let secondsPassed = parseInt((now.getTime() - this.pressStartTime.getTime()) / 1000)
 				let increment = secondsPassed
-				if (secondsPassed === 0) increment = 1
-				increment = parseInt(increment);
-				if (this.incrementUp === 1) {
+				if (secondsPassed === 0) increment = this.stepVal
+				increment = parseFloat(increment);
+				if (this.incrementUp > 0) {
 					this.inputValue += increment
 					if (this.inputValue > this.maxVal && this.maxVal !== 0) this.inputValue = this.maxVal
 				}
-				if (this.incrementDown === 1) {
+				if (this.incrementDown > 0) {
 					this.inputValue -= increment
 					if (this.inputValue < 0 && this.allowNegative === false) this.inputValue = 0
 					if (this.inputValue < this.minVal) this.inputValue = this.minVal
@@ -77,9 +81,9 @@
 			},
 			isPressed(type) {
 				if (type === 'up') {
-					this.incrementUp = 1
+					this.incrementUp = this.stepVal
 				} else {
-					this.incrementDown = 1
+					this.incrementDown = this.stepVal
 				}
 				this.pressStartTime = new Date()
 				this.updateInput()

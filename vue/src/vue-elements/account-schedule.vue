@@ -71,7 +71,7 @@
 			</div>
 			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="form-group">
-					<counter-input id="interval_r" :value.sync="schedule.interval_r"></counter-input>
+					<counter-input id="interval_r" :value.sync="schedule.interval_r" :min-val="generalSettings.min_interval" :step-val="generalSettings.step_interval"></counter-input>
 				</div>
 			</div>
 		</div>
@@ -132,6 +132,9 @@
 			}
 		},
 		computed: {
+    generalSettings: function () {
+        return this.$store.state.generalSettings;
+    },
 			schedule: function () {
 				return this.$store.state.activeSchedule[this.account_id] ? this.$store.state.activeSchedule[this.account_id] : [];
 			},
@@ -165,7 +168,25 @@
 					return this.$store.state.cron_status.date_format;
 			},
 		},
+    mounted: function () {
+        this.$log.info('In General Settings state ');
+        this.getGeneralSettings();
+    },
 		methods: {
+    getGeneralSettings() {
+        if (this.$store.state.generalSettings.length === 0) {
+            this.is_loading = true;
+            this.$log.info('Fetching general settings.');
+            this.$store.dispatch('fetchAJAXPromise', {req: 'get_general_settings'}).then(response => {
+                this.is_loading = false;
+                this.$log.debug('Succesfully fetched.');
+            }, error => {
+                this.is_loading = false;
+                this.$log.error('Can not fetch the general settings.')
+            })
+        }
+
+    },
 			isChecked(value) {
 				return (this.schedule.interval_f !== undefined && this.schedule.interval_f.week_days.indexOf(value) > -1);
 

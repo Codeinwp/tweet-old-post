@@ -844,7 +844,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/uvdev/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/pro/publish-now.vue"
+  var id = "E:\\work\\projects\\webdesign\\wordpress-themeisle\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\pro\\publish-now.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -869,8 +869,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-9512fc24&file=publish-now.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./publish-now.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-9512fc24&file=publish-now.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./publish-now.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-030d6e8e&file=publish-now.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./publish-now.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-030d6e8e&file=publish-now.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./publish-now.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -889,7 +889,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t.rop-publish-now-branding{\n\t\ttext-align: right;\n\t\twidth:100%;\n\t\tfloat:right;\n\t}\n\t.rop-edit-custom-instant-share-message-text{\n\t\ttext-decoration: underline;\n\t\tcolor: #0073aa;\n\t\tfont-size: 12px;\n\t\tfont-style:italic;\n\t\tcursor: pointer;\n\t}\n\t.rop-publish-now-account, .rop-custom-instant-share-message-area{\n\t\tmargin: 0 0 0 16px;\n\t}\n\t.custom-instant-share-upsell{\n\t\tcolor: #808080;\n\t\tmargin: 0 0 12px 16px;\n\t}\n\t.rop-custom-instant-share-message-text{\n\t\tmargin: 5px 0 5px 16px;\n\t\tfont-style: italic;\n\t}\n\t.rop-publish-now-accounts-wrapper{\n\t\tmargin-top:10px;\n\t}\n", ""]);
+exports.push([module.i, "\r\n\t.rop-publish-now-branding{\r\n\t\ttext-align: right;\r\n\t\twidth:100%;\r\n\t\tfloat:right;\r\n\t}\r\n\t.rop-edit-custom-instant-share-message-text{\r\n\t\ttext-decoration: underline;\r\n\t\tcolor: #0073aa;\r\n\t\tfont-size: 12px;\r\n\t\tfont-style:italic;\r\n\t\tcursor: pointer;\r\n\t}\r\n\t.rop-publish-now-account, .rop-custom-instant-share-message-area{\r\n\t\tmargin: 0 0 0 16px;\r\n\t}\r\n\t.custom-instant-share-upsell{\r\n\t\tcolor: #808080;\r\n\t\tmargin: 0 0 12px 16px;\r\n\t}\r\n\t.rop-custom-instant-share-message-text{\r\n\t\tmargin: 5px 0 5px 16px;\r\n\t\tfont-style: italic;\r\n\t}\r\n\t.rop-publish-now-accounts-wrapper{\r\n\t\tmargin-top:10px;\r\n\t}\r\n", ""]);
 
 // exports
 
@@ -1286,7 +1286,7 @@ $export($export.S + $export.F * !__webpack_require__(5), 'Object', { definePrope
 /***/ 333:
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"rop-control-container\" v-if=\"Object.keys(accounts).length > 0\" >\n\n\t\t<!-- Share on publish/update -->\n\t\t<fieldset>\n\t\t\t<label class=\"form-checkbox\">\n\t\t\t\t<input type=\"checkbox\" :checked=\"share_on_update_enabled\" v-on:click=\"share_on_update_enabled = !share_on_update_enabled\" name=\"publish_now\" value=\"1\"/>\n\t\t\t\t<span v-html=\" labels.share_on_update\"></span>\n\t\t\t</label>\n\n\t\t\t<div class=\"form-group rop-publish-now-accounts-wrapper\" v-if=\"share_on_update_enabled\" v-for=\"(account, key) in accounts\" :id=\"key\" v-bind:key=\"key\">\n\t\t\t\t<label class=\"form-checkbox rop-publish-now-account\" :id=\"key\">\n\t\t\t\t\t<input type=\"checkbox\" :checked=\"share_on_update_enabled\" :value=\"key\" v-on:click=\"toggleServices($event, key)\" name=\"publish_now_accounts[]\" class=\"rop-account-names\"/>\n\t\t\t\t\t<i class=\" fa \" :class=\"getServiceClass(account.service)\"></i> {{account.user}}\n\t\t\t\t</label>\n\t\t\t\t<span v-on:click=\"togglefields(key)\" :id=\"key\" class=\"rop-edit-custom-instant-share-message-text\">{{ showField[key] ? 'done' : 'edit message' }}</span>\n\t\t\t\t<p v-show=\"showField[key]\" class=\"rop-custom-instant-share-message-text\">Custom share message:</p>\n\t\t\t\t<textarea v-show=\"showField[key]\" :name=\"key\" :disabled=\"!isPro\" class=\"rop-custom-instant-share-message-area\"></textarea>\n\t\t\t\t<p v-if=\"!isPro && showField[key]\" v-html=\"labels.custom_instant_share_messages_upsell\" class=\"custom-instant-share-upsell\"></p>\n\t\t\t</div>\n\t\t</fieldset>\n\n\t</div>\n";
+module.exports = "\r\n\t<div class=\"rop-control-container\" v-if=\"Object.keys(accounts).length > 0\" >\r\n\r\n\t\t<!-- Share on publish/update -->\r\n\t\t<fieldset>\r\n\t\t\t<label class=\"form-checkbox\">\r\n\t\t\t\t<input type=\"checkbox\" :checked=\"share_on_update_enabled\" v-on:click=\"share_on_update_enabled = !share_on_update_enabled\" name=\"publish_now\" value=\"1\"/>\r\n\t\t\t\t<span v-html=\" labels.share_on_update\"></span>\r\n\t\t\t</label>\r\n\r\n\t\t\t<div class=\"form-group rop-publish-now-accounts-wrapper\" v-if=\"share_on_update_enabled\" v-for=\"(account, key) in accounts\" :id=\"key\" v-bind:key=\"key\">\r\n\t\t\t\t<label class=\"form-checkbox rop-publish-now-account\" :id=\"key\">\r\n\t\t\t\t\t<input type=\"checkbox\" :checked=\"share_on_update_enabled\" :value=\"key\" v-on:click=\"toggleServices($event, key)\" name=\"publish_now_accounts[]\" class=\"rop-account-names\"/>\r\n\t\t\t\t\t<i class=\" fa \" :class=\"getServiceClass(account.service)\"></i> {{account.user}}\r\n\t\t\t\t</label>\r\n\t\t\t\t<span v-on:click=\"togglefields(key)\" :id=\"key\" class=\"rop-edit-custom-instant-share-message-text\">{{ showField[key] ? 'done' : 'edit message' }}</span>\r\n\t\t\t\t<p v-show=\"showField[key]\" class=\"rop-custom-instant-share-message-text\">Custom share message:</p>\r\n\t\t\t\t<textarea v-show=\"showField[key]\" :name=\"key\" :disabled=\"!isPro\" class=\"rop-custom-instant-share-message-area\"></textarea>\r\n\t\t\t\t<p v-if=\"!isPro && showField[key]\" v-html=\"labels.custom_instant_share_messages_upsell\" class=\"custom-instant-share-upsell\"></p>\r\n\t\t\t</div>\r\n\t\t</fieldset>\r\n\r\n\t</div>\r\n";
 
 /***/ }),
 
@@ -16632,7 +16632,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/uvdev/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/button-checkbox.vue"
+  var id = "E:\\work\\projects\\webdesign\\wordpress-themeisle\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\button-checkbox.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -16657,8 +16657,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1c9c2ce2&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1c9c2ce2&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-03c0a06f&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-03c0a06f&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -16677,7 +16677,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .input-group .input-group-addon.btn.active[_v-1c9c2ce2] {\n\t\tbackground-color: #8bc34a;\n\t\tborder-color: #33691e;\n\t\tcolor: #FFF;\n\t}\n", ""]);
+exports.push([module.i, "\r\n\t#rop_core .input-group .input-group-addon.btn.active[_v-03c0a06f] {\r\n\t\tbackground-color: #8bc34a;\r\n\t\tborder-color: #33691e;\r\n\t\tcolor: #FFF;\r\n\t}\r\n", ""]);
 
 // exports
 
@@ -16764,7 +16764,7 @@ module.exports = {
 /***/ 79:
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<button class=\"btn input-group-addon column\" :class=\"is_active\" @click=\"toggleThis()\" _v-1c9c2ce2=\"\">{{label}}</button>\n";
+module.exports = "\n\t<button class=\"btn input-group-addon column\" :class=\"is_active\" @click=\"toggleThis()\" _v-03c0a06f=\"\">{{label}}</button>\n";
 
 /***/ }),
 
