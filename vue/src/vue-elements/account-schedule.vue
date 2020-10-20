@@ -40,7 +40,7 @@
 			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="form-group">
 					<div class="input-group" v-for="( time, index ) in schedule.interval_f.time">
-						<vue-timepicker :minute-interval="5" class="timepicker-style-fix" :value="getTime( index )"
+						<vue-timepicker :minute-interval="generalSettings.minute_interval" class="timepicker-style-fix" :value="getTime( index )"
 						                @change="syncTime( $event, index )" hide-clear-button
 						></vue-timepicker>
 						<button class="btn btn-danger input-group-btn" v-if="schedule.interval_f.time.length > 1"
