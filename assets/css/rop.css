@@ -500,6 +500,35 @@
 	border-left-color: #fff;
 }
 
+#rop_core .btn.btn-vk {
+	border-color: #0071a6;
+	color: #fff;
+	background: #45668e;
+}
+
+#rop_core .btn.btn-vk:focus {
+	box-shadow: 0 0 0 0.1rem rgba(0, 123, 181, 0.2);
+}
+
+#rop_core .btn.btn-vk:focus,
+#rop_core .btn.btn-vk:hover {
+	border-color: #006a9c;
+	color: #fff;
+	background: #0074ab;
+}
+
+#rop_core .btn.btn-vk:active,
+#rop_core .btn.btn-vk.active {
+	border-color: #005882;
+	color: #fff;
+	background: #006391;
+}
+
+#rop_core .btn.btn-vk.loading::after {
+	border-bottom-color: #fff;
+	border-left-color: #fff;
+}
+
 #rop_core .btn.btn-sm {
 	height: 1.2rem;
 	padding: 0.05rem 0.3rem;
