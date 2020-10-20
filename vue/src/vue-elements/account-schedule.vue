@@ -71,7 +71,7 @@
 			</div>
 			<div class="column col-6 col-sm-12 vertical-align">
 				<div class="form-group">
-					<counter-input id="interval_r" :value.sync="generalSettings.default_interval" :min-val="generalSettings.min_interval" :step-val="generalSettings.step_interval"></counter-input>
+					<counter-input id="interval_r" :value.sync="schedule.interval_r" :min-val="generalSettings.min_interval" :step-val="generalSettings.step_interval"></counter-input>
 				</div>
 			</div>
 		</div>

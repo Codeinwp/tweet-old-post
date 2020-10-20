@@ -15,41 +15,43 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
-
-$rop_cron_token = get_option( 'rop_access_token', '' );
-
-if ( ! empty( $rop_cron_token ) ) {
-
-	if ( ! defined( 'ROP_LITE_PATH' ) ) {
-		define( 'ROP_LITE_PATH', plugin_dir_path( __FILE__ ) );
-	}
-
-	$cron_system_file = ROP_LITE_PATH . '/vendor/autoload.php';
-
-	if ( file_exists( $cron_system_file ) ) {
-		/**
-		 * $cron_system_file Cron System autoload.
-		 */
-		require_once $cron_system_file;
-
-		new RopCronSystem\Rop_Cron_Core();
-
-		$request_call = new RopCronSystem\Curl_Helpers\Rop_Curl_Methods();
-
-		$arguments = array(
-			'type'         => 'POST',
-			'request_path' => ':delete_account:',
-		);
-
-		$call_response = $request_call->create_call_process( $arguments );
-		delete_option( 'rop_access_token' );
-	}
-}
-
 $settings     = get_option( 'rop_data' );
 $housekeeping = ! empty( $settings['general_settings']['housekeeping'] ) ? $settings['general_settings']['housekeeping'] : '';
 
 if ( ! empty( $housekeeping ) ) {
+
+	$rop_cron_token = get_option( 'rop_access_token', '' );
+
+	if ( ! empty( $rop_cron_token ) ) {
+
+		if ( ! defined( 'ROP_LITE_PATH' ) ) {
+			define( 'ROP_LITE_PATH', plugin_dir_path( __FILE__ ) );
+		}
+
+		$vendor_file = ROP_LITE_PATH . 'vendor/autoload.php';
+		if ( is_readable( $vendor_file ) ) {
+			require_once $vendor_file;
+
+			require( plugin_dir_path( __FILE__ ) . '/class-rop-autoloader.php' );
+			Rop_Autoloader::define_namespaces( array( 'Rop' ) );
+			/**
+			 * Invocation of the Autoloader::loader method.
+			 *
+			 * @since   8.0.0
+			 */
+			spl_autoload_register( array( 'Rop_Autoloader', 'loader' ) );
+
+			new RopCronSystem\Rop_Cron_Core();
+			$request_call = new RopCronSystem\Curl_Helpers\Rop_Curl_Methods();
+
+			$arguments = array(
+				'type'         => 'POST',
+				'request_path' => ':delete_account:',
+			);
+
+			$call_response = $request_call->create_call_process( $arguments );
+		}
+	}
 
 	$option_keys = array(
 		// Sharing
@@ -140,6 +142,13 @@ if ( ! empty( $housekeeping ) ) {
 		 * Being saved here.
 		 */
 		'rop_remote_cron_terms_agree',
+		/**
+		 * Removes the access key for remote Cron Service.
+		 *
+		 * @since 8.6.0
+		 * @see Rop_Curl_Methods::create_register_data() creation.
+		 */
+		'rop_access_token',
 	);
 
 	foreach ( $option_keys as $key ) {
