@@ -216,7 +216,7 @@ class Rop_I18n {
 				'max_char_title'                    => __( 'Maximum Characters', 'tweet-old-post' ),
 				'max_char_desc'                     => __( 'Maximum length of the message, in characters. Each letter is considered a character.', 'tweet-old-post' ),
 				'add_char_title'                    => __( 'Additional Text', 'tweet-old-post' ),
-				'add_char_desc'                     => sprintf( __( 'Add custom content to shared posts. Supports magic tags, %1$sLearn More%2$s', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/952-available-magic-tags-in-revive-old-posts" target="_blank">', '</a>' ),
+				'add_char_desc'                     => sprintf( __( 'Add custom content to shared posts. It supports magic tags in the PRO version of ROP %1$sLearn More%2$s', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/952-available-magic-tags-in-revive-old-posts" target="_blank">', '</a>' ),
 				'add_char_placeholder'              => __( '...written by {author} on {date}.', 'tweet-old-post' ),
 				'add_pos_title'                     => __( 'Choose where you want the Additional Text to appear.', 'tweet-old-post' ),
 				'add_pos_option_start'              => __( 'Beginning of Caption', 'tweet-old-post' ),
