@@ -41219,6 +41219,8 @@ module.exports = {
 				if (account !== undefined && account.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin linkedin');
 				if (account !== undefined && account.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr tumblr');
 				if (account !== undefined && account.service === 'pinterest') serviceIcon = serviceIcon.concat('pinterest pinterest');
+				if (account !== undefined && account.service === 'vk') serviceIcon = serviceIcon.concat('vk vk');
+				if (account !== undefined && account.service === 'gmb') serviceIcon = serviceIcon.concat('google google');
 			}
 			return serviceIcon;
 		},

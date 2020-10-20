@@ -3814,6 +3814,14 @@
 	color: #32506d;
 }
 
+#rop_core .service.vk {
+	color: #45668e;
+}
+
+#rop_core .service.google {
+	color: #4285f4;
+}
+
 #rop_core .rop-selector-account-container.active {
 	opacity: 1;
 }
