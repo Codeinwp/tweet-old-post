@@ -82,11 +82,11 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 			'name' => 'wp_short_url',
 			'active' => true,
 		),
-		'rviv.ly' => array(
-			'id' => 'rviv.ly',
-			'name' => 'rviv.ly',
-			'active' => false,
-		),
+		// 'rviv.ly' => array(
+		// 'id' => 'rviv.ly',
+		// 'name' => 'rviv.ly',
+		// 'active' => false,
+		// ),
 	);
 
 	/**
@@ -393,11 +393,35 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 		if ( isset( $data['default_interval'] ) ) {
 			$data['default_interval'] = floatval( $data['default_interval'] );
 			if ( $data['default_interval'] < 0.1 ) {
-				$this->logger->alert_error( 'Minimum interval between consecutive shares is 6mins.' );
+				$this->logger->alert_error( 'Minimum interval between consecutive shares is 6 mins.' );
 				$data['default_interval'] = 0.1;
 			}
+
+			$min_allowed = apply_filters( 'rop_min_interval_bw_shares_min', ROP_DEBUG ? 0.1 : 0.5 );
+			if ( $data['default_interval'] < $min_allowed ) {
+				$this->logger->alert_error( sprintf( 'Minimum allowed value of mininum interval between consecutive shares is %d mins.', $min_allowed * 60 ) );
+				$data['default_interval'] = $min_allowed;
+			}
+
 			$data['default_interval'] = round( $data['default_interval'], 1 );
 		}
+
+		if ( isset( $data['interval_r'] ) ) {
+			$data['interval_r'] = floatval( $data['interval_r'] );
+			if ( $data['interval_r'] < 0.1 ) {
+				$this->logger->alert_error( 'Minimum interval between consecutive shares is 6 mins.' );
+				$data['interval_r'] = 0.1;
+			}
+
+			$min_allowed = apply_filters( 'rop_min_interval_bw_shares_min', ROP_DEBUG ? 0.1 : 0.5 );
+			if ( $data['interval_r'] < $min_allowed ) {
+				$this->logger->alert_error( sprintf( 'Minimum allowed value of mininum interval between consecutive shares is %d mins.', $min_allowed * 60 ) );
+				$data['interval_r'] = $min_allowed;
+			}
+
+			$data['interval_r'] = round( $data['interval_r'], 1 );
+		}
+
 		if ( empty( $data['selected_post_types'] ) ) {
 			$this->logger->alert_error( 'You need to have at least one post type to share.' );
 			$data['selected_post_types'] = $this->defaults['selected_post_types'];

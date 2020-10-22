@@ -40,7 +40,7 @@
                         <p class="text-gray">{{labels.min_interval_desc}}</p>
                     </div>
                     <div class="column col-6 col-sm-12 vertical-align">
-                        <counter-input id="default_interval"
+                        <counter-input id="default_interval" :min-val="generalSettings.min_interval" :step-val="generalSettings.step_interval"
                                        :value.sync="generalSettings.default_interval"></counter-input>
                     </div>
                 </div>

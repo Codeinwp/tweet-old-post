@@ -137,6 +137,8 @@ class Rop_Global_Settings {
 	 */
 	private $settings_defaults = array(
 		'default_interval'      => 10,
+		'min_interval'          => 0.5,
+		'step_interval'         => 0.1,
 		'minimum_post_age'      => 30,
 		'maximum_post_age'      => 0,
 		'number_of_posts'       => 1,
@@ -159,6 +161,7 @@ class Rop_Global_Settings {
 		'instant_share_default' => false,
 		'instant_share_future_scheduled' => false,
 		'start_time'            => false,
+		'minute_interval'      => 5,
 	);
 
 	/**
@@ -368,6 +371,9 @@ class Rop_Global_Settings {
 				'rop_available_services',
 				self::$instance->services_defaults
 			);
+
+			self::$instance->settings_defaults['min_interval'] = apply_filters( 'rop_min_interval_bw_shares_min', ROP_DEBUG ? 0.1 : 0.5 );
+			self::$instance->settings_defaults['step_interval'] = apply_filters( 'rop_min_interval_bw_shares_step', 0.1 );
 
 			self::$instance->settings = apply_filters(
 				'rop_general_settings_defaults',
