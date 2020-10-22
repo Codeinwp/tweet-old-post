@@ -513,14 +513,23 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		$token = $args['credentials'];
 
-		if ( get_post_type( $post_details['post_id'] ) !== 'attachment' ) {
-			// If post image option unchecked, share as article post
-			if ( empty( $post_details['post_with_image'] ) ) {
-				$new_post = $this->linkedin_article_post( $post_details, $args );
-			} else {
-				$new_post = $this->linkedin_image_post( $post_details, $args, $token );
-			}
-		} elseif ( get_post_type( $post_details['post_id'] ) === 'attachment' ) {
+		$post_url = $post_details['post_url'];
+		$share_as_image_post = $post_details['post_with_image'];
+		$post_id = $post_details['post_id'];
+
+		// LinkedIn link post
+		if ( ! empty( $post_url ) && empty( $share_as_image_post ) && get_post_type( $post_id ) !== 'attachment' ) {
+			$new_post = $this->linkedin_article_post( $post_details, $args );
+		}
+
+		// LinkedIn plain text post
+		if ( empty( $share_as_image_post ) && empty( $post_url ) ) {
+			$new_post = $this->linkedin_text_post( $post_details, $args );
+		}
+
+		// LinkedIn media post
+		if ( ! empty( $share_as_image_post ) || get_post_type( $post_id ) === 'attachment' ) {
+
 			// Linkedin Api v2 doesn't support video upload. Share as article post
 			if ( strpos( get_post_mime_type( $post_details['post_id'] ), 'video' ) !== false ) {
 				$new_post = $this->linkedin_article_post( $post_details, $args );
@@ -530,7 +539,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		}
 
 		if ( empty( $new_post ) ) {
-			$this->logger->info( '$new_post variable empty, bailing process.' );
+			$this->logger->alert_error( Rop_I18n::get_labels( 'misc.no_post_data' ) );
 			return;
 		}
 
@@ -565,7 +574,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			return true;
 		} else {
 
-			$this->logger->alert_error( 'Cannot share to linkedin. Error:  ' . $body );
+			$this->logger->alert_error( 'Cannot share to linkedin. Error:  ' . print_r( $body, true ) );
 			$this->rop_get_error_docs( $body );
 			// check if the token will expire soon
 			$this->rop_refresh_linkedin_token_notice();
@@ -617,6 +626,44 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 												),
 										),
 								),
+						),
+				),
+			'visibility'      =>
+				array(
+					'com.linkedin.ugc.MemberNetworkVisibility' => 'PUBLIC',
+				),
+		);
+
+		return $new_post;
+
+	}
+
+	/**
+	 * Linkedin Text post.
+	 *
+	 * @param array $post_details The post details to be published by the service.
+	 * @param array $args Arguments needed by the method.
+	 *
+	 * @return array
+	 * @since   8.6.0
+	 * @access  private
+	 */
+	private function linkedin_text_post( $post_details, $args ) {
+
+		$author_urn = $args['is_company'] ? 'urn:li:organization:' : 'urn:li:person:';
+
+		$new_post = array(
+			'author'          => $author_urn . $args['id'],
+			'lifecycleState'  => 'PUBLISHED',
+			'specificContent' =>
+				array(
+					'com.linkedin.ugc.ShareContent' =>
+						array(
+							'shareCommentary'    =>
+								array(
+									'text' => $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $post_details['hashtags'],
+								),
+							'shareMediaCategory' => 'NONE',
 						),
 				),
 			'visibility'      =>
