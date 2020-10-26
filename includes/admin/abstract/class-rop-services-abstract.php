@@ -576,6 +576,10 @@ abstract class Rop_Services_Abstract {
 				'message' => 'You need to reconnect your LinkedIn account.',
 				'link'    => 'https://is.gd/refresh_linkedin_token',
 			),
+			'You are using an old method of sharing to LinkedIn' => array(
+				'message' => 'You need to reconnect your LinkedIn account.',
+				'link'    => 'https://is.gd/switch_linkedin_signon_method',
+			),
 
 			// Pinterest errors
 			'Pinterest error (code: 429) with message: You have exceeded your rate limit' => array(

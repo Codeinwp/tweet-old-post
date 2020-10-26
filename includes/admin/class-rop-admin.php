@@ -323,6 +323,7 @@ class Rop_Admin {
 		$array_nonce['staging']                 = $this->rop_site_is_staging();
 		$array_nonce['show_li_app_btn']         = $li_service->rop_show_li_app_btn();
 		$array_nonce['show_tmblr_app_btn']      = $tmblr_service->rop_show_tmblr_app_btn();
+		$array_nonce['hide_own_app_option']      = $this->rop_hide_add_own_app_option();
 		$array_nonce['debug']                   = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
 		$array_nonce['tax_apply_limit']         = $this->limit_tax_dropdown_list();
 		$array_nonce['remote_cron_type_limit']    = $this->limit_remote_cron_system();
@@ -1436,5 +1437,27 @@ class Rop_Admin {
 
 	}
 
+	/**
+	 * Hides the own app option from the account modal
+	 *
+	 * This method hides the own app option for installs after v8.6.0 as a way to ease the transition
+	 * to only the quick sign on method.
+	 *
+	 * @since   8.6.0
+	 * @access  public
+	 */
+	private function rop_hide_add_own_app_option() {
+
+		$installed_at_version = get_option( 'rop_first_install_version' );
+		if ( empty( $installed_at_version ) ) {
+			return false;
+		}
+		if ( version_compare( $installed_at_version, '8.6.0', '>=' ) ) {
+			return true;
+		}
+
+		return false;
+
+	}
 
 }
