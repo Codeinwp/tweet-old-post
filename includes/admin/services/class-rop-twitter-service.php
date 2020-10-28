@@ -419,23 +419,9 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		
 		$this->logger->info( get_post_type($post_details['post_id']) );
 
-		$is_revive_network_share = false;
 		
-		if( get_post_type($post_details['post_id']) === 'revive-network-share' ){
-			
-			$revive_network_share_item = get_post_meta( $post_details['post_id'], 'revive-network-share-item', true );
-			
-			$feed_name = $revive_network_share_item['feed_name'];
-			$feed_item_link = $revive_network_share_item['feed_item_link'];
-
-			$post_details['post_url'] = $feed_item_link;
-			
-			// $this->logger->info(  );
-			// $this->logger->info(  );
-			
-			$post_details['short_url'] = false;
-			$post_details['short_url_service'] = false;
-
+		if( $this->rop_is_revive_network_share( $post_details['post_id'] ) ){
+			$post_details = $this->rop_prepare_revive_network_share($post_details);
 			$is_revive_network_share = true;
 		}
 
@@ -529,31 +515,35 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 				)
 			);
 
-			if( $is_revive_network_share ){
+			if( !empty($is_revive_network_share) ){
 
-			$revive_network_imported_shares = get_option('revive-network-imported-shares');
+			$this->rop_delete_revive_network_feed_post($post_id, $post_details['account_id']);
+			
+			return true;
 
-			foreach( $revive_network_imported_shares as $key => $values ){
+			// $revive_network_imported_shares = get_option('revive-network-imported-shares');
 
-				if( $key === $feed_name ){
+			// foreach( $revive_network_imported_shares as $key => $values ){
 
-					// count how many items in $values
-					// if its above the set amount then perform below procedures or else return.
+			// 	if( $key === $feed_name ){
 
-					$this->logger->info( print_r($values, true) );
-					// search the links array for what we just shared and get it's index
-					$link_index = array_search($feed_item_link, $values);
-					$this->logger->info( print_r($link_index, true) );
-					// drop that index
-					unset($values[$link_index]);
-					// overwrite the previous array values
-					$revive_network_imported_shares[$key] = $values;
-					$this->logger->info( print_r($revive_network_imported_shares, true) );
-					update_option('revive-network-imported-shares', $revive_network_imported_shares);
-				break;
-				}
+			// 		// count how many items in $values
+			// 		// if its above the set amount then perform below procedures or else return.
 
-			}
+			// 		$this->logger->info( print_r($values, true) );
+			// 		// search the links array for what we just shared and get it's index
+			// 		$link_index = array_search($feed_item_link, $values);
+			// 		$this->logger->info( print_r($link_index, true) );
+			// 		// drop that index
+			// 		unset($values[$link_index]);
+			// 		// overwrite the previous array values
+			// 		$revive_network_imported_shares[$key] = $values;
+			// 		$this->logger->info( print_r($revive_network_imported_shares, true) );
+			// 		update_option('revive-network-imported-shares', $revive_network_imported_shares);
+			// 	break;
+			// 	}
+
+			// }
 
 			}
 
