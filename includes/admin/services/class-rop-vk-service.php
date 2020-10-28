@@ -232,6 +232,12 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 			$attachment_url = wp_get_attachment_url( $post_details['post_id'] );
 		}
 
+		// if the post has no image but "Share as image post" is checked
+		// share as an article post
+		if ( empty( $attachment_url ) ) {
+			return $this->vk_article_post( $post_details, $args, $owner_id );
+		}
+
 		$attachment_path = $this->get_path_by_url( $attachment_url, $post_details['mimetype'] );
 
 		// if attachment is video
