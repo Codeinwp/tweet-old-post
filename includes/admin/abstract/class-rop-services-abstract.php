@@ -672,12 +672,30 @@ abstract class Rop_Services_Abstract {
 			foreach ( $ids as $id ) {
 				$image_get             = wp_get_attachment_image_src( $id, 'full' );
 				$attachment_url        = array_shift( $image_get );
-				$attachment_image_name = wp_basename( $attachment_url ); // get filename from URL.
-				$image_url_name        = wp_basename( $image_url ); // get filename from URL.
-				// Check if the found image is the one we require.
-				if ( $image_url_name === $attachment_image_name ) {
-					$id_found = $id;
-					break;
+
+				$attachment_url_is_wp_upload = strpos( $attachment_url, '/uploads/' );
+				$image_url_is_wp_upload = strpos( $image_url, '/uploads/' );
+
+				if ( ! empty( $attachment_url_is_wp_upload ) && ! empty( $image_url_is_wp_upload ) ) {
+
+					$attachment_image_uploads_path = explode( 'uploads', $attachment_url )[1]; // get uploads path from URL.
+					$image_url_uploads_path       = explode( 'uploads', $image_url )[1]; // get uploads path from URL.
+
+					// Check if the found image is the one we require.
+					if ( $image_url_uploads_path === $attachment_image_uploads_path ) {
+						$id_found = $id;
+						break;
+					}
+				} else {
+
+					$attachment_image_name = wp_basename( $attachment_url ); // get filename from URL.
+					$image_url_name        = wp_basename( $image_url ); // get filename from URL.
+
+					// Check if the found image is the one we require.
+					if ( $image_url_name === $attachment_image_name ) {
+						$id_found = $id;
+						break;
+					}
 				}
 			}
 		}
