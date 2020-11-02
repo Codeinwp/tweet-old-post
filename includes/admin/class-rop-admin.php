@@ -521,6 +521,8 @@ class Rop_Admin {
 	 * @access  public
 	 */
 	public function menu_pages() {
+        $logger = new Rop_Logger();
+// $logger->alert_error(get_option('rop_queue'));
 		add_menu_page(
 			__( 'Revive Old Posts', 'tweet-old-post' ),
 			__( 'Revive Old Posts', 'tweet-old-post' ),
@@ -965,6 +967,10 @@ class Rop_Admin {
 		$cron->create_cron( false );
 
 		foreach ( $queue_stack as $account => $events ) {
+			
+			$logger->info( print_r($queue_stack, true));
+			update_option('rop_rn_queue', $queue_stack);
+			update_option('rop_rn_queue2', $account);
 
 			if ( strpos( json_encode( $queue_stack ), 'gmb_' ) !== false ) {
 				$refresh_rop_data = true;
@@ -997,8 +1003,37 @@ class Rop_Admin {
 								}
 								$post_data = $queue->prepare_post_object( $post, $account );
 								$logger->info( 'Posting', array( 'extra' => $post_data ) );
-								$service->share( $post_data, $account_data );
-								update_option( 'rop_last_post_shared', $post_shared );
+
+								if( class_exists('Revive_Network_Rop_Post_Helper') ){
+								if( Revive_Network_Rop_Post_Helper::rn_is_revive_network_share( $post_data['post_id'] ) ){
+								// adjust post data to suit Revive Network
+								$post_data = Revive_Network_Rop_Post_Helper::rn_prepare_revive_network_share($post_data);
+								$is_revive_network_share = true;
+								}
+								}
+								
+								$response = $service->share( $post_data, $account_data );
+								
+								if( class_exists('Revive_Network_Rop_Post_Helper') ){
+									if( Revive_Network_Rop_Post_Helper::rn_is_revive_network_share( $post_data['post_id'] ) ){
+
+								if( $response === true && !empty($is_revive_network_share) ){
+									//the queue updating might be getting overwritten in the foreach
+									Revive_Network_Rop_Post_Helper::rn_delete_revive_network_feed_post($post, $event['time'], $account, $queue);
+									
+									if( in_array($post,$event['posts']) ){
+										unset($events[$index]);
+									}
+
+									$queue_stack[$account] = $events;
+								
+								}
+							}
+						}
+
+								if($response === true){
+									update_option( 'rop_last_post_shared', $post_shared );
+								}
 							}
 						} catch ( Exception $exception ) {
 							$error_message = sprintf( Rop_I18n::get_labels( 'accounts.service_error' ), $account_data['service'] );
@@ -1007,6 +1042,8 @@ class Rop_Admin {
 					}
 				}
 			}
+		//unset post ids from queue stack
+		// update queue option
 		}
 		$cron->create_cron( false );
 	}

@@ -416,14 +416,6 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		if ( Rop_Admin::rop_site_is_staging() ) {
 			return false;
 		}
-		
-		$this->logger->info( get_post_type($post_details['post_id']) );
-
-		
-		if( $this->rop_is_revive_network_share( $post_details['post_id'] ) ){
-			$post_details = $this->rop_prepare_revive_network_share($post_details);
-			$is_revive_network_share = true;
-		}
 
 		$this->set_api(
 			$this->credentials['oauth_token'],
@@ -515,46 +507,13 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 				)
 			);
 
-			if( !empty($is_revive_network_share) ){
-
-			$this->rop_delete_revive_network_feed_post($post_id, $post_details['account_id']);
-			
-			return true;
-
-			// $revive_network_imported_shares = get_option('revive-network-imported-shares');
-
-			// foreach( $revive_network_imported_shares as $key => $values ){
-
-			// 	if( $key === $feed_name ){
-
-			// 		// count how many items in $values
-			// 		// if its above the set amount then perform below procedures or else return.
-
-			// 		$this->logger->info( print_r($values, true) );
-			// 		// search the links array for what we just shared and get it's index
-			// 		$link_index = array_search($feed_item_link, $values);
-			// 		$this->logger->info( print_r($link_index, true) );
-			// 		// drop that index
-			// 		unset($values[$link_index]);
-			// 		// overwrite the previous array values
-			// 		$revive_network_imported_shares[$key] = $values;
-			// 		$this->logger->info( print_r($revive_network_imported_shares, true) );
-			// 		update_option('revive-network-imported-shares', $revive_network_imported_shares);
-			// 	break;
-			// 	}
-
-			// }
-
-			}
-
-
-			return true;
 		} else {
 			$this->logger->alert_error( sprintf( 'Error posting on twitter. Error: %s', json_encode( $response ) ) );
 			$this->rop_get_error_docs( $response );
+			return false;
 		}
-
-		return false;
+		
+		return true;
 	}
 
 	/**
