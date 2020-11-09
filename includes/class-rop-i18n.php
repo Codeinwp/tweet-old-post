@@ -396,6 +396,8 @@ You can try to disable any of the security plugins that you use in order to see 
 			'misc' => array(
 				'curl_not_detected' => __( 'cURL was not detected on your website. Please contact your Web Host and ask that they enable cURL for your website.', 'tweet-old-post' ),
 				'no_post_data' => __( 'Post data for share empty.', 'tweet-old-post' ),
+				'revive_network_desc' => __( 'Revive Network allows you to share content from multiple RSS feeds from any website to your connected social media accounts. Join the waiting list to help us test it out!', 'tweet-old-post' ),
+				'revive_network_learn_more_btn' => __( 'Request Access', 'tweet-old-post' ),
 			),
 		);
 		if ( empty( $key ) ) {
