@@ -79,13 +79,12 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * Update a queue object with custom data, passed by the user.
 	 *
 	 * @param string $account_id The account ID.
-	 * @param int $post_id The post ID referenced.
-	 * @param array $custom_data The custom data.
+	 * @param int    $post_id The post ID referenced.
+	 * @param array  $custom_data The custom data.
 	 *
 	 * @return bool
 	 * @since   8.0.0
 	 * @access  public
-	 *
 	 */
 	public function update_queue_object( $account_id, $post_id, $custom_data ) {
 		$key             = '_rop_edit_' . md5( $account_id );
@@ -102,14 +101,13 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	/**
 	 * Utility method to remove from queue.
 	 *
-	 * @param int $timestamp The timestamp which we should clear.
+	 * @param int    $timestamp The timestamp which we should clear.
 	 * @param string $account_id The account ID.
-	 * @param bool $refresh Whether to refresh the rop_data property in parent abstract class with new rop_data option value.
+	 * @param bool   $refresh Whether to refresh the rop_data property in parent abstract class with new rop_data option value.
 	 *
 	 * @return mixed
 	 * @since   8.0.0
 	 * @access  public
-	 *
 	 */
 	public function remove_from_queue( $timestamp, $account_id, $refresh = false ) {
 		$index = $this->scheduler->remove_timestamp( $timestamp, $account_id );
@@ -118,7 +116,6 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 		} else {
 			return false;
 		}
-
 
 		if ( empty( $posts ) ) {
 			return false;
@@ -151,7 +148,6 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 *
 	 * @since   8.0.0
 	 * @access  public
-	 *
 	 */
 	public function remove_account_from_queue( $account_id ) {
 		unset( $this->queue[ $account_id ] );
@@ -161,13 +157,12 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	/**
 	 * Mark a post_id as blocked for the account.
 	 *
-	 * @param int $post_id The post id.
+	 * @param int    $post_id The post id.
 	 * @param string $account_id The account ID.
 	 *
 	 * @return bool Ban status.
 	 * @since   8.0.0
 	 * @access  public
-	 *
 	 */
 	public function ban_post( $post_id, $account_id ) {
 		$queue = $this->get_queue();
@@ -318,10 +313,10 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 *
 	 * @access  public
 	 *
-	 * @param int $post_id the Post ID.
+	 * @param int   $post_id the Post ID.
 	 * @param array $accounts_data The accounts data, may either be the accounts the user has selected to share the post to (by clicking the instant sharing checkbox on post edit screen, would also contain the custom share message if any was entered), or an array of active accounts to share to by the share_scheduled_future_post() method.
-	 * @param bool $is_future_post Whether method was called by share_scheduled_future_post() method.
-	 * @param bool $true_instant_share Whether the share immediately option is checked.
+	 * @param bool  $is_future_post Whether method was called by share_scheduled_future_post() method.
+	 * @param bool  $true_instant_share Whether the share immediately option is checked.
 	 *
 	 * @return array
 	 */
@@ -425,12 +420,11 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * and preserving the old user settings. Or creates a new one.
 	 *
 	 * @param integer $post_id A WordPress Post Object.
-	 * @param string $account_id The account ID.
+	 * @param string  $account_id The account ID.
 	 *
 	 * @return array
 	 * @since   8.0.0
 	 * @access  private
-	 *
 	 */
 	public function prepare_post_object( $post_id, $account_id ) {
 		$post_format_helper = new Rop_Post_Format_Helper();
@@ -459,13 +453,12 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	/**
 	 * Method to skip post for the given account.
 	 *
-	 * @param int $post_id The post uid.
+	 * @param int    $post_id The post uid.
 	 * @param string $account_id The account ID.
 	 *
 	 * @return bool
 	 * @since   8.0.0
 	 * @access  public
-	 *
 	 */
 	public function skip_post( $post_id, $account_id ) {
 		$queue = $this->get_queue();
