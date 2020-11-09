@@ -520,9 +520,9 @@ class Rop_Admin {
 		<div><p style="font-size: 40px; color: #000;">Revive Old Posts - Addons</p></div>
 
 		<div style="background: #ffffff; padding: 10px; width: 400px; border-radius: 5px; box-shadow: 0px 0px 5px black;">
-			<img src="<?php echo ROP_LITE_URL . "assets/img/revivenetwork.jpg" ?>" alt="Revive Network">
-			<p><?php echo Rop_I18n::get_labels( 'misc.revive_network_desc' ) ?>
-			<a href="https://forms.gle/89sRJKPE8Xkxvkpj6" target="_blank" style="cursor: pointer;"><button><?php echo Rop_I18n::get_labels( 'misc.revive_network_learn_more_btn' )?></button></a>
+			<img src="<?php echo ROP_LITE_URL . 'assets/img/revivenetwork.jpg'; ?>" alt="Revive Network">
+			<p><?php echo Rop_I18n::get_labels( 'misc.revive_network_desc' ); ?>
+			<a href="https://forms.gle/89sRJKPE8Xkxvkpj6" target="_blank" style="cursor: pointer;"><button><?php echo Rop_I18n::get_labels( 'misc.revive_network_learn_more_btn' ); ?></button></a>
 			</p>
 		</div>
 	</div>
