@@ -239,6 +239,25 @@ class Rop_Admin {
 	}
 
 	/**
+	 * Method used to decide whether or not to limit taxonomy select
+	 *
+	 * @return  bool
+	 * @since   8.6.0
+	 * @access  public
+	 */
+	public function limit_remote_cron_system() {
+		$installed_at_version = get_option( 'rop_first_install_version' );
+		if ( empty( $installed_at_version ) ) {
+			return 0;
+		}
+		if ( version_compare( $installed_at_version, '8.6.0', '>=' ) ) {
+			return 1;
+		}
+
+		return 0;
+	}
+
+	/**
 	 * Method used to decide whether or not to limit exclude posts.
 	 *
 	 * @return  bool
@@ -304,14 +323,18 @@ class Rop_Admin {
 		$array_nonce['staging']                 = $this->rop_site_is_staging();
 		$array_nonce['show_li_app_btn']         = $li_service->rop_show_li_app_btn();
 		$array_nonce['show_tmblr_app_btn']      = $tmblr_service->rop_show_tmblr_app_btn();
+		$array_nonce['hide_own_app_option']      = $this->rop_hide_add_own_app_option();
 		$array_nonce['debug']                   = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
 		$array_nonce['tax_apply_limit']         = $this->limit_tax_dropdown_list();
+		$array_nonce['remote_cron_type_limit']    = $this->limit_remote_cron_system();
 		$array_nonce['exclude_apply_limit']     = $this->limit_exclude_list();
 		$array_nonce['publish_now']             = array(
 			'action'   => $settings->get_instant_sharing_by_default(),
 			'accounts' => $active_accounts,
 		);
 		$array_nonce['added_networks']          = $added_networks;
+		$array_nonce['rop_cron_remote']           = filter_var( get_option( 'rop_use_remote_cron', false ), FILTER_VALIDATE_BOOLEAN );
+		$array_nonce['rop_cron_remote_agreement'] = filter_var( get_option( 'rop_remote_cron_terms_agree', false ), FILTER_VALIDATE_BOOLEAN );
 
 		$admin_url = get_admin_url( get_current_blog_id(), 'admin.php?page=TweetOldPost' );
 		$token     = get_option( 'ROP_INSTALL_TOKEN_OPTION' );
@@ -323,9 +346,9 @@ class Rop_Admin {
 			'authAppFacebookPath' => ROP_APP_FACEBOOK_PATH,
 			'authAppTwitterPath'  => ROP_APP_TWITTER_PATH,
 			'authAppLinkedInPath' => ROP_APP_LINKEDIN_PATH,
-			'authAppBufferPath'   => ROP_APP_BUFFER_PATH,
 			'authAppTumblrPath'   => ROP_APP_TUMBLR_PATH,
 			'authAppGmbPath'      => ROP_APP_GMB_PATH,
+			'authAppVkPath'       => ROP_APP_VK_PATH,
 			'authToken'           => $token,
 			'adminUrl'            => urlencode( $admin_url ),
 			'authSignature'       => $signature,
@@ -931,7 +954,7 @@ class Rop_Admin {
 					}
 				} catch ( Exception $exception ) {
 					$error_message = sprintf( Rop_I18n::get_labels( 'accounts.service_error' ), $account_data['service'] );
-					$logger->alert_error( $error_message . ' Error: ' . $exception->getTrace() );
+					$logger->alert_error( $error_message . ' Error: ' . print_r( $exception->getTrace(), true ) );
 				}
 			}
 		}
@@ -1415,97 +1438,25 @@ class Rop_Admin {
 	}
 
 	/**
-	 * Update default shortener from rviv.ly.
+	 * Hides the own app option from the account modal
 	 *
-	 * Rviv.ly domain is currently blacklisted by some social media networks.
-	 * This code changes the rviv.ly shortener to is.id
+	 * This method hides the own app option for installs after v8.6.0 as a way to ease the transition
+	 * to only the quick sign on method.
 	 *
-	 * @since   8.5.6
+	 * @since   8.6.0
 	 * @access  public
 	 */
-	public function rop_update_shortener() {
+	private function rop_hide_add_own_app_option() {
 
-		$user_id = get_current_user_id();
-
-		if ( get_user_meta( $user_id, 'rop-shortener-changed-notice-dismissed' ) ) {
-			return;
+		$installed_at_version = get_option( 'rop_first_install_version' );
+		if ( empty( $installed_at_version ) ) {
+			return false;
+		}
+		if ( version_compare( $installed_at_version, '8.6.0', '>=' ) ) {
+			return true;
 		}
 
-		$updated_shortener = get_option( 'rop_changed_shortener' );
-
-		if ( ! empty( $updated_shortener ) ) {
-			return;
-		}
-
-		$options = get_option( 'rop_data' );
-
-		if ( empty( $options ) ) {
-			return;
-		}
-
-		$post_format = array_key_exists( 'post_format', $options ) ? $options['post_format'] : '';
-
-		if ( empty( $post_format ) ) {
-			return;
-		}
-
-		foreach ( $post_format as $account => $settings ) {
-
-			foreach ( $settings as $key => $value ) {
-
-				if ( $key === 'short_url_service' && $value === 'rviv.ly' ) {
-					update_option( 'rop_changed_shortener', true );
-					$post_format[ $account ][ $key ] = 'is.gd';
-				}
-			}
-		}
-
-		$options['post_format'] = $post_format;
-		update_option( 'rop_data', $options );
-
-	}
-
-	/**
-	 * Shortener changed notice.
-	 *
-	 * @since   8.5.6
-	 * @access  public
-	 */
-	public function rop_shortener_changed_notice() {
-
-		$updated_shortener = get_option( 'rop_changed_shortener' );
-
-		if ( empty( $updated_shortener ) ) {
-			return;
-		}
-
-		$user_id = get_current_user_id();
-
-		if ( get_user_meta( $user_id, 'rop-shortener-changed-notice-dismissed' ) ) {
-			return;
-		}
-
-		?>
-
-		<div class="notice notice-error">
-			<?php echo sprintf( __( '%1$s We\'ve automatically changed your Revive Old Posts\' shortener from rviv.ly to is.gd. Read the reason for the change %2$shere%3$s. %4$s %5$s', 'tweet-old-post' ), '<p>', '<a href="https://docs.revive.social/article/1244-why-we-automatically-changed-your-shortener-from-rviv-ly-to-is-gd" target="_blank">', '</a>', '<a style="float: right;" href="?rop-shortener-changed-notice-dismissed">Dismiss</a>', '</p>' ); ?>
-		</div>
-		<?php
-
-	}
-
-	/**
-	 * Dismiss Shortener changed notice.
-	 *
-	 * @since   8.5.6
-	 * @access  public
-	 */
-	public function rop_shortener_changed_disabled_notice() {
-
-		$user_id = get_current_user_id();
-		if ( isset( $_GET['rop-shortener-changed-notice-dismissed'] ) ) {
-			add_user_meta( $user_id, 'rop-shortener-changed-notice-dismissed', 'true', true );
-		}
+		return false;
 
 	}
 
