@@ -68,7 +68,7 @@ class Rop {
 	public function __construct() {
 
 		$this->plugin_name = 'rop';
-		$this->version     = '8.5.18';
+		$this->version     = '8.6.0';
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -270,11 +270,6 @@ class Rop {
 		$factory         = new Rop_Services_Factory();
 		$global_settings = new Rop_Global_Settings();
 		foreach ( $global_settings->get_all_services_handle() as $service ) {
-
-			// Skip if the buffer addon is not active.
-			if ( ! class_exists( 'Rop_Buffer_Service' ) && $service === 'buffer' ) {
-				continue;
-			}
 
 			try {
 				${$service . '_service'} = $factory->build( $service );
