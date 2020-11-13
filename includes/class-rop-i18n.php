@@ -82,6 +82,7 @@ class Rop_I18n {
 				'li_app_signin_btn'          => __( 'Sign in to LinkedIn', 'tweet-old-post' ),
 				'tumblr_app_signin_btn'      => __( 'Sign in to Tumblr', 'tweet-old-post' ),
 				'gmb_app_signin_btn'         => __( 'Sign in to Google My Business', 'tweet-old-post' ),
+				'vk_app_signin_btn'          => __( 'Sign in to Vkontake', 'tweet-old-post' ),
 				'app_option_signin'          => __( 'Or', 'tweet-old-post' ),
 				'rs_app_info'                => sprintf( __( 'We collect some info, learn more %1$shere%2$s.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/1066-info-we-collect-in-seamless-social-network-connection" target="_blank">', '</a>' ),
 				'service_popup_title'        => __( 'Service Credentials', 'tweet-old-post' ),
@@ -215,7 +216,7 @@ class Rop_I18n {
 				'max_char_title'                    => __( 'Maximum Characters', 'tweet-old-post' ),
 				'max_char_desc'                     => __( 'Maximum length of the message, in characters. Each letter is considered a character.', 'tweet-old-post' ),
 				'add_char_title'                    => __( 'Additional Text', 'tweet-old-post' ),
-				'add_char_desc'                     => sprintf( __( 'Add custom content to shared posts. Supports magic tags, %1$sLearn More%2$s', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/952-available-magic-tags-in-revive-old-posts" target="_blank">', '</a>' ),
+				'add_char_desc'                     => sprintf( __( 'Add custom content to shared posts. It supports magic tags in the PRO version of ROP %1$sLearn More%2$s', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/952-available-magic-tags-in-revive-old-posts" target="_blank">', '</a>' ),
 				'add_char_placeholder'              => __( '...written by {author} on {date}.', 'tweet-old-post' ),
 				'add_pos_title'                     => __( 'Choose where you want the Additional Text to appear.', 'tweet-old-post' ),
 				'add_pos_option_start'              => __( 'Beginning of Caption', 'tweet-old-post' ),
@@ -386,6 +387,15 @@ You can try to disable any of the security plugins that you use in order to see 
 				'gmb_no_valid_accounts' => __( 'Google My Business error: No valid accounts found. Please make sure you have access to a Google My Business location.', 'tweet-old-post' ),
 				'gmb_missing_main_class' => __( 'Unable to find Google_Client Class. Please ensure you have the Revive Old Posts Pro Addon activated.', 'tweet-old-post' ),
 				'gmb_missing_lib_class' => __( 'Unable to find Google_Service_MyBusiness Class. Please ensure you have the Revive Old Posts Pro Addon activated.', 'tweet-old-post' ),
+				'linkedin_missing_exif_imagetype' => __( 'Cannot share image to LinkedIn. exif_imagetype() function is missing from your system. Please contact your web host and ask that this function be enabled on your hosting.', 'tweet-old-post' ),
+				'linkedin_issue_fetching_token' => __( 'There was an issue fetching the LinkedIn Token. Please contact Revive Old Posts support for assistance.', 'tweet-old-post' ),
+			),
+			'generic' => array(
+				'only_pro_suffix' => ' (' . __( 'Available in PRO', 'tweet-old-post' ) . ')',
+			),
+			'misc' => array(
+				'curl_not_detected' => __( 'cURL was not detected on your website. Please contact your Web Host and ask that they enable cURL for your website.', 'tweet-old-post' ),
+				'no_post_data' => __( 'Post data for share empty.', 'tweet-old-post' ),
 			),
 		);
 		if ( empty( $key ) ) {

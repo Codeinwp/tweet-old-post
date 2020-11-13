@@ -1196,7 +1196,7 @@ class Rop_Rest_Api {
 	 * @since   8.5.9
 	 * @access  private
 	 *
-	 * @param   array $data Tumblr accounts data.
+	 * @param   array $data Google My Business accounts data.
 	 *
 	 * @return  array
 	 */
@@ -1211,6 +1211,50 @@ class Rop_Rest_Api {
 
 		$services[ $gmb_service->get_service_id() ] = $gmb_service->get_service();
 		$active_accounts                                = array_merge( $active_accounts, $gmb_service->get_service_active_accounts() );
+
+		if ( ! empty( $services ) ) {
+			$model->add_authenticated_service( $services );
+		}
+
+		if ( ! empty( $active_accounts ) ) {
+			$db->migrate_schedule( $active_accounts );
+			$db->migrate_post_formats( $active_accounts );
+		} else {
+			$this->response->set_code( '500' )
+						   ->set_data( array() );
+
+			return $this->response->to_array();
+		}
+
+		$this->response->set_code( '200' )
+					   ->set_message( 'OK' )
+					   ->set_data( array() );
+
+		return $this->response->to_array();
+	}
+	/**
+	 * API method called to add VK via app.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod) As it is called dynamically.
+	 *
+	 * @since   8.6.1
+	 * @access  private
+	 *
+	 * @param   array $data Vk accounts data.
+	 *
+	 * @return  array
+	 */
+	private function add_account_vk( $data ) {
+		$services        = array();
+		$active_accounts = array();
+		$vk_service     = new Rop_Vk_Service();
+		$model           = new Rop_Services_Model();
+		$db              = new Rop_Db_Upgrade();
+
+		$vk_service->add_account_with_app( $data );
+
+		$services[ $vk_service->get_service_id() ] = $vk_service->get_service();
+		$active_accounts                                = array_merge( $active_accounts, $vk_service->get_service_active_accounts() );
 
 		if ( ! empty( $services ) ) {
 			$model->add_authenticated_service( $services );

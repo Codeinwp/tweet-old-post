@@ -358,13 +358,8 @@ abstract class Rop_Services_Abstract {
 		if ( $post_details['short_url_service'] === 'wp_short_url' ) {
 			return $link;
 		}
-		// rviv.ly currently blacklisted, switch to is.gd
-		if ( $post_details['short_url_service'] === 'rviv.ly' ) {
-			$link = ' ' . $post_format_helper->get_short_url( $post_details['post_url'], 'is.gd', '' );
-			return $link;
-		}
 
-		$link               = ' ' . $post_format_helper->get_short_url( $post_details['post_url'], $post_details['short_url_service'], $post_details['shortner_credentials'] );
+		$link = ' ' . $post_format_helper->get_short_url( $post_details['post_url'], $post_details['short_url_service'], $post_details['shortner_credentials'] );
 
 		return $link;
 	}
@@ -581,6 +576,10 @@ abstract class Rop_Services_Abstract {
 				'message' => 'You need to reconnect your LinkedIn account.',
 				'link'    => 'https://is.gd/refresh_linkedin_token',
 			),
+			'You are using an old method of sharing to LinkedIn' => array(
+				'message' => 'You need to reconnect your LinkedIn account.',
+				'link'    => 'https://is.gd/switch_linkedin_signon_method',
+			),
 
 			// Pinterest errors
 			'Pinterest error (code: 429) with message: You have exceeded your rate limit' => array(
@@ -623,7 +622,7 @@ abstract class Rop_Services_Abstract {
 	 *
 	 * @return string Image path.
 	 */
-	protected function get_path_by_url( $image_url, $mimetype = array() ) {
+	protected function get_path_by_url( $image_url, $mimetype = '' ) {
 		if ( empty( $image_url ) ) {
 			return '';
 		}
