@@ -522,7 +522,6 @@ class Rop_Admin {
 	 */
 	public function menu_pages() {
         $logger = new Rop_Logger();
-// $logger->alert_error(get_option('rop_queue'));
 		add_menu_page(
 			__( 'Revive Old Posts', 'tweet-old-post' ),
 			__( 'Revive Old Posts', 'tweet-old-post' ),
@@ -962,15 +961,16 @@ class Rop_Admin {
 		$logger          = new Rop_Logger();
 		$service_factory = new Rop_Services_Factory();
 		$refresh_rop_data = false;
+		$revive_network_active = false;
+
+		if( class_exists('Revive_Network_Rop_Post_Helper') ){
+		$revive_network_active = true;
+		}
 
 		$cron = new Rop_Cron_Helper();
 		$cron->create_cron( false );
 
 		foreach ( $queue_stack as $account => $events ) {
-			
-			$logger->info( print_r($queue_stack, true));
-			update_option('rop_rn_queue', $queue_stack);
-			update_option('rop_rn_queue2', $account);
 
 			if ( strpos( json_encode( $queue_stack ), 'gmb_' ) !== false ) {
 				$refresh_rop_data = true;
@@ -994,6 +994,7 @@ class Rop_Admin {
 						try {
 							$service = $service_factory->build( $account_data['service'] );
 							$service->set_credentials( $account_data['credentials'] );
+							
 							foreach ( $posts as $post ) {
 								$post_shared = $account . '_post_id_' . $post;
 								if ( get_option( 'rop_last_post_shared' ) === $post_shared && ROP_DEBUG !== true ) {
@@ -1004,32 +1005,34 @@ class Rop_Admin {
 								$post_data = $queue->prepare_post_object( $post, $account );
 								$logger->info( 'Posting', array( 'extra' => $post_data ) );
 
-								if( class_exists('Revive_Network_Rop_Post_Helper') ){
+								if( $revive_network_active ){
+
 								if( Revive_Network_Rop_Post_Helper::rn_is_revive_network_share( $post_data['post_id'] ) ){
+									
+								$revive_network_settings = Revive_Network_Rop_Post_Helper::revive_network_get_plugin_settings();
+								$delete_post_after_share = $revive_network_settings['delete_rss_item_after_share'];
+								
 								// adjust post data to suit Revive Network
 								$post_data = Revive_Network_Rop_Post_Helper::rn_prepare_revive_network_share($post_data);
-								$is_revive_network_share = true;
 								}
+								
 								}
 								
 								$response = $service->share( $post_data, $account_data );
 								
-								if( class_exists('Revive_Network_Rop_Post_Helper') ){
-									if( Revive_Network_Rop_Post_Helper::rn_is_revive_network_share( $post_data['post_id'] ) ){
+								if( $revive_network_active ){
 
-								if( $response === true && !empty($is_revive_network_share) ){
-									//the queue updating might be getting overwritten in the foreach
+									if(Revive_Network_Rop_Post_Helper::rn_is_revive_network_share( $post_data['post_id'] )){
+									// Delete Feed post after it has been shared if the option is checked in RN settings.
+									if( $response === true && !empty($delete_post_after_share) ){
+																			
 									Revive_Network_Rop_Post_Helper::rn_delete_revive_network_feed_post($post, $event['time'], $account, $queue);
-									
-									if( in_array($post,$event['posts']) ){
-										unset($events[$index]);
-									}
-
-									$queue_stack[$account] = $events;
 								
+									}else{
+										$logger->info( "Delete feed post item after share option is disabled." );
+									}
 								}
 							}
-						}
 
 								if($response === true){
 									update_option( 'rop_last_post_shared', $post_shared );

@@ -245,7 +245,8 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 *
 	 * @return array List of upcoming events.
 	 */
-	public function get_upcoming_events( $account_id = 0 ) {
+	public function get_upcoming_events( $account_id = 0, $retry = 0 ) {
+
 		if ( empty( $account_id ) ) {
 			return array();
 		}
@@ -257,14 +258,22 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		if ( ! is_array( $account_events ) ) {
 			$account_events = array();
 		}
+
 		if ( count( $account_events ) === self::EVENTS_PER_ACCOUNT ) {
 			return $account_events;
 		}
 		if ( empty( $account_events ) ) {
 			$events = $this->generate_upcoming_events( self::get_current_time(), $account_id, self::EVENTS_PER_ACCOUNT );
 		} else {
-			$last_time  = $account_events [ count( $account_events ) - 1 ];
-			$events_new = $this->generate_upcoming_events( $last_time, $account_id, self::EVENTS_PER_ACCOUNT - count( $account_events ) );
+			$events_count = count( $account_events );
+			$last_time    = end( $account_events );
+			reset( $account_events );
+
+			if ( empty( $last_time ) ) {
+				$last_time = self::get_current_time();
+			}
+
+			$events_new = $this->generate_upcoming_events( $last_time, $account_id, self::EVENTS_PER_ACCOUNT - $events_count );
 			$events     = array_merge( $account_events, $events_new );
 		}
 		sort( $events );
@@ -293,6 +302,11 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 
 		$this->update_timeline( $current_events );
 
+		$retry ++;
+		if ( empty( $events ) && 0 === $retry ) {
+			$events = $this->get_upcoming_events( $account_id, $retry );
+		}
+		
 		return $events;
 	}
 
