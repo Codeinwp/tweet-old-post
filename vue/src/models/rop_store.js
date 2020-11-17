@@ -95,7 +95,14 @@ export default new Vuex.Store({
         queue: {},
         publish_now: ropApiSettings.publish_now,
         hide_preloading: 0,
-        fb_exception_toast: ropApiSettings.fb_domain_toast_display
+        fb_exception_toast: ropApiSettings.fb_domain_toast_display,
+        /**
+         * Local or Remote Cron Job System.
+         * true for remote.
+         *
+         * @category New Cron System
+         */
+        rop_cron_remote: ropApiSettings.rop_cron_remote,
     },
     mutations: {
 
@@ -122,6 +129,15 @@ export default new Vuex.Store({
         updateState(state, {stateData, requestName}) {
             Vue.$log.debug('State change for ', requestName, ' With value: ', stateData);
             switch (requestName) {
+                /**
+                 * @category New Cron System
+                 */
+                case 'update_cron_type':
+                    state.rop_cron_remote = stateData;
+                    break;
+                case 'update_cron_type_agreement':
+                    state.rop_cron_remote = stateData;
+                    break;
                 case 'manage_cron':
                     state.cron_status = stateData;
                     break;

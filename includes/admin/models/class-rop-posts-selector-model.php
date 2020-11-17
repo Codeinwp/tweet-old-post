@@ -89,7 +89,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 
 		$taxonomies = array();
 
-		if ( function_exists( 'icl_object_id' ) && !empty( $language_code )  ) {
+		if ( function_exists( 'icl_object_id' ) && ! empty( $language_code ) ) {
 			$wpml_current_lang = apply_filters( 'wpml_current_language', null );
 			// changes the language of global query to use the specfied language
 			do_action( 'wpml_switch_language', $language_code );
@@ -98,21 +98,19 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		// Here We are refreshing the taxonomies "on page load"
 		// This method fires whenever the post format page is brought into view.
 		// We're refreshing the taxonomies based on whether that first account has a language assigned or not
-		if( function_exists( 'icl_object_id' ) && empty($language_code) ){
+		if ( function_exists( 'icl_object_id' ) && empty( $language_code ) ) {
 			// check the first active account and it's post format and see if it has a language code.
-			$first_account_id = array_keys($this->data['active_accounts'])[0];
+			$first_account_id = array_keys( $this->data['active_accounts'] )[0];
 			$post_format_model = new Rop_Post_Format_Model;
-			$post_format = $post_format_model->get_post_format($first_account_id);
-			$first_account_lang = !empty($post_format['wpml_language']) ? $post_format['wpml_language'] : '';
+			$post_format = $post_format_model->get_post_format( $first_account_id );
+			$first_account_lang = ! empty( $post_format['wpml_language'] ) ? $post_format['wpml_language'] : '';
 
-			if( !empty($first_account_lang) ){
+			if ( ! empty( $first_account_lang ) ) {
 				$wpml_current_lang = apply_filters( 'wpml_current_language', null );
 				// changes the language of global query to use the specfied language
 				do_action( 'wpml_switch_language', $first_account_lang );
 			}
-
 		}
-
 
 		foreach ( $post_types as $post_type_name ) {
 
@@ -160,12 +158,12 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			return array();
 		}
 
-		if ( function_exists( 'icl_object_id' ) && !empty( $language_code )  ) {
+		if ( function_exists( 'icl_object_id' ) && ! empty( $language_code ) ) {
 			// set language back to original
 			do_action( 'wpml_switch_language', $wpml_current_lang );
 		}
 
-		if( function_exists( 'icl_object_id' ) && !empty($first_account_lang) ){
+		if ( function_exists( 'icl_object_id' ) && ! empty( $first_account_lang ) ) {
 			// set language back to original
 			do_action( 'wpml_switch_language', $wpml_current_lang );
 		}
@@ -358,12 +356,11 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			$post_format_model = new Rop_Post_Format_Model( $service );
 			$post_format       = $post_format_model->get_post_format( $account_id );
 
-			if ( function_exists( 'icl_object_id' ) && !empty( $post_format['wpml_language'] ) ) {
+			if ( function_exists( 'icl_object_id' ) && ! empty( $post_format['wpml_language'] ) ) {
 				$wpml_current_lang = apply_filters( 'wpml_current_language', null );
 					// changes the language of global query to use the specfied language for the account
-				do_action( 'wpml_switch_language', $post_format['wpml_language']);
-				}
-
+				do_action( 'wpml_switch_language', $post_format['wpml_language'] );
+			}
 
 			$custom_data = array();
 			if ( isset( $post_format['taxonomy_filter'] ) && ! empty( $post_format['taxonomy_filter'] ) ) {
@@ -426,10 +423,10 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 
 		$this->selection = $results;
 
-		if ( function_exists( 'icl_object_id' ) && !empty( $post_format['wpml_language'] ) ) {
+		if ( function_exists( 'icl_object_id' ) && ! empty( $post_format['wpml_language'] ) ) {
 				// Sets WP language back to what user set it.
-			do_action( 'wpml_switch_language', $wpml_current_lang);
-			}
+			do_action( 'wpml_switch_language', $wpml_current_lang );
+		}
 
 		return $results;
 	}
@@ -626,11 +623,12 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 	 *
 	 * @param string $account_id The account ID.
 	 * @param int    $post_id The post ID.
+	 * @param   bool   $refresh Whether to refresh the rop_data property in parent abstract class with new rop_data option value.
 	 *
 	 * @since   8.0.0
 	 * @acess   public
 	 */
-	public function update_buffer( $account_id, $post_id ) {
+	public function update_buffer( $account_id, $post_id, $refresh = false ) {
 		if ( ! isset( $this->buffer[ $account_id ] ) ) {
 			$this->buffer[ $account_id ] = array();
 		}
@@ -638,7 +636,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			array_push( $this->buffer[ $account_id ], $post_id );
 		}
 
-		$this->set( 'posts_buffer', $this->buffer );
+		$this->set( 'posts_buffer', $this->buffer, $refresh );
 	}
 
 	/**

@@ -438,9 +438,10 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 
 			$upload_args = array(
 				'media' => $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] ),
+				'media_type' => $post_details['mimetype']['type'],
 			);
 
-			if ( $photon_bypass && class_exists( 'Jetpack_Photon' ) ) {
+			if ( ! empty( $photon_bypass ) && class_exists( 'Jetpack_Photon' ) ) {
 				// Re-enable Jetpack Photon filter.
 				add_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ), 10, 3 );
 			}
@@ -581,6 +582,18 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		);
 
 		return true;
+	}
+
+	/**
+	 * Method to populate additional data.
+	 *
+	 * @since   8.5.13
+	 * @access  public
+	 * @return mixed
+	 */
+	public function populate_additional_data( $account ) {
+		$account['link'] = sprintf( 'https://twitter.com/%s', $account['user'] );
+		return $account;
 	}
 
 }

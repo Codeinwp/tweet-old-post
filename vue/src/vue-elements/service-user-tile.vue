@@ -8,7 +8,7 @@
 			</div>
 		</div>
 		<div class="tile-content">
-			<div class="tile-title">{{ user }}</div>
+			<div class="tile-title"><a :href="link" target="_blank">{{ user }}</a></div>
 			<div class="tile-subtitle text-gray">{{ serviceInfo }}</div>
 		</div>
 		<div class="tile-action">
@@ -67,6 +67,12 @@
 				}
 				let service_limit = available_services[this.account_data.service].allowed_accounts;
 
+				// if is free version disable Facebook groups
+				if(this.account_data.service === 'facebook'){
+				if( this.user.includes('Facebook Group:') && !this.isPro ){
+					return true;
+				}
+				}
 
 				let countActiveAccounts = 0
 				for (let activeAccount in this.$store.state.activeAccounts) {
@@ -79,6 +85,13 @@
 
 
 			},
+			/**
+             * Check if we have a pro license.
+             * @returns {boolean}
+             */
+			isPro: function () {
+                return (this.$store.state.licence > 0);
+            },
 			/**
 			 * Returns account type.
 			 * @returns {string}
@@ -128,6 +141,12 @@
 			 */
 			user: function () {
 				return this.account_data.user
+			},
+			/**
+			 * Return account link.
+			 */
+			link: function () {
+				return this.account_data.link
 			},
 			/**
 			 * Return account info details.

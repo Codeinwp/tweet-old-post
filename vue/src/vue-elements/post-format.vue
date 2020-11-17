@@ -94,6 +94,7 @@
                 </div>
             </div>
         </div>
+        <span class="divider"></span>
         <div class="columns py-2">
             <div class="column col-6 col-sm-12 vertical-align">
                 <b>{{labels.add_link_title}}</b>
@@ -137,26 +138,30 @@
                 </div>
             </div>
         </div>
-        <span class="divider" v-if="isPro"></span>
+        <span class="divider"></span>
 
-        <div class="columns py-2" v-if="isPro">
-            <div class="column col-6 col-sm-12 vertical-align">
+        <div class="columns py-2" :class="'rop-control-container-'+isPro">
+            <div class="column col-6 col-sm-12 vertical-align rop-control">
                 <b>{{labels_settings.taxonomies_title}}</b>
                 <p class="text-gray"><span v-html="labels_settings.taxonomies_desc"></span></p>
             </div>
             <div class="column col-6 col-sm-12 vertical-align">
                 <div class="input-group">
-                    <multiple-select :options="taxonomy" :selected="taxonomy_filter" :name="post_format.taxonomy_filter" :changed-selection="updated_tax_filter" :key="this.account_id"></multiple-select>
+                    <multiple-select :disabled="!!isPro" :options="taxonomy" :selected="taxonomy_filter" :name="post_format.taxonomy_filter" :changed-selection="updated_tax_filter" :key="this.account_id"></multiple-select>
                     <span class="input-group-addon vertical-align">
                         <label class="form-checkbox">
-						    <input type="checkbox" v-model="post_format.exclude_taxonomies"/>
+						    <input :disabled="!isPro" type="checkbox" v-model="post_format.exclude_taxonomies"/>
 							<i class="form-icon"></i>{{labels_settings.taxonomies_exclude}}
 						</label>
 					</span>
                 </div>
             </div>
         </div>
-
+        <div class="columns " v-if="!isPro">
+            <div class="column text-center">
+                <p class="upsell"><i class="fa fa-lock"></i> {{labels.taxonomy_based_sharing_upsell}}</p>
+            </div>
+        </div>
         <span class="divider"></span>
         <div class="columns py-2">
             <div class="column col-6 col-sm-12 vertical-align">
@@ -180,14 +185,7 @@
             <div class="column col-6 col-sm-12 vertical-align">
                 <div class="form-group">
                     <select class="form-select" v-model="post_format.short_url_service">
-                      <!-- rviv.ly currently blacklisted -->
-                        <!-- <option value="rviv.ly">rviv.ly</option> -->
-                        <option value="bit.ly">bit.ly</option>
-                        <option value="firebase">google firebase</option>
-                        <option value="ow.ly">ow.ly</option>
-                        <option value="is.gd">is.gd</option>
-                        <option value="rebrand.ly">rebrand.ly</option>
-                        <option value="wp_short_url">wp_short_url</option>
+                        <option v-for="shortener in shorteners" :value="shortener.id" :disabled="shortener.active !== true" :selected="shortener.name == post_format.short_url_service">{{ shortener.name }}{{ !shortener.active ? labels_generic.only_pro_suffix : ''}}</option>
                     </select>
                 </div>
             </div>
@@ -266,7 +264,7 @@
         <span class="divider"></span>
 
         <div class="columns py-2" :class="'rop-control-container-'+isPro">
-            <div class="column col-6 col-sm-12 vertical-align">
+            <div class="column col-6 col-sm-12 vertical-align rop-control">
                 <b>{{labels.image_title}}</b>
                 <p class="text-gray"><span v-html="labels.image_desc"></span></p>
             </div>
@@ -330,6 +328,7 @@
             return {
                 labels: this.$store.state.labels.post_format,
                 labels_settings: this.$store.state.labels.settings,
+                labels_generic: this.$store.state.labels.generic,
                 upsell_link: ropApiSettings.upsell_link,
                 wpml_active_status: ropApiSettings.rop_get_wpml_active_status,
                 wpml_languages: ropApiSettings.rop_get_wpml_languages,
@@ -463,7 +462,11 @@
               if( this.isPro && this.wpml_active_status &&  this.post_format.wpml_language !== '' ){
               //  this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes, language_code: this.post_format.wpml_language }});
               }
-              return this.$store.state.generalSettings.available_taxonomies;
+
+                return this.$store.state.generalSettings.available_taxonomies
+            },
+            shorteners: function () {
+                return this.$store.state.generalSettings.available_shorteners;
             }
         },
         watch: {

@@ -2,8 +2,8 @@
 Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle, rsocial, uriahs-victor
 Tags: share to social media, auto publish, auto post, social media scheduling, social media auto posting, social media marketing, social media automation, social media sharing
 Requires at least: 4.7
-Tested up to: 5.4
-Requires PHP: 5.6
+Tested up to: 5.5
+Requires PHP: 7.1
 Stable tag: trunk
 
 
@@ -11,7 +11,7 @@ Automatically share your WordPress posts on Twitter, Facebook, LinkedIn. Get mor
 
 == Description ==
 
-ROP is a **must-have** WordPress plugin created to help website administrators **boost their website traffic**, grow their **social media followers** and keep their existing **followers engaged** by **automatically** sharing posts and content from their WP site to their social media networks.
+ROP is a **must-have** WordPress plugin created to help website administrators **boost their website traffic**, grow their **social media followers** and keep their existing **followers engaged** by **automatically** sharing posts and content from their WP site to their social media networks such as Facebook, Twitter, Google My Business, LinkedIN, and Tumblr
 
 _Over 40,000+ WP site owners trust Revive Old Posts as the go-to social media automation and scheduling plugin for WordPress._
 
@@ -29,11 +29,11 @@ Save time in your social media marketing efforts, add some social media automati
 
 - **Hobby bloggers**
 
-_Thinking of ways to grow your business? [Read why Social Media is Important.](https://marketinginsidergroup.com/content-marketing/why-social-media-is-important-for-business-marketing/)_
+_Thinking of ways to grow your business? [Read why Social Media is Important.](https://revive.social/benefits-of-social-media-marketing/) But don't stop there, [learn how to create a social media marketing plan](https://revive.social/social-media-marketing-plan/)_
 
 ## How Can Revive Old Posts Help Me?
 
-ROP can be used for many use cases and help many different blogs and sites boost their social media traffic by introducing social media automation functionality to WordPress, it can act as all of the following in one:
+Revive Old Posts is much more than just a wp to facebook or wp to twitter plugin. ROP can be used for many use cases and help many different blogs and sites boost their social media traffic by introducing social media automation functionality to WordPress, it can act as all of the following in one:
 
 ### A WordPress **Social Media Scheduling** Plugin
 
@@ -83,11 +83,10 @@ Revive Old Posts isn't like every other social media marketing tool. We've tailo
 - WordPress to Facebook page
 - WordPress to Facebook Groups [Pro]
 - WordPress to Twitter
-- WordPress to Instagram [Pro]
 - WordPress to Linkedin Profile [Pro]
 - WordPress to Linkedin Page [Pro]
 - WordPress to Tumblr [Pro]
-- WordPress to Pinterest [Pro]
+- WordPress to Google My Business [Pro]
 
 Some of the available networks and features require the Pro version of the plugin. Check out the free vs pro table [here.](https://docs.revive.social/article/941-revive-old-post-free-vs-pro)
 
@@ -134,7 +133,6 @@ Using the PRO version of Revive Old Posts unlocks a host of additional features 
 
 - Share **WordPress scheduled posts** to social media on publish. [Learn More](https://docs.revive.social/article/1194-share-scheduled-posts-to-social-media-on-publish-with-revive-old-posts)
 
-- **WordPress to Instagram** scheduling and auto post
 
 - **WordPress to Facebook Groups** scheduling and auto post
 
@@ -144,7 +142,7 @@ Using the PRO version of Revive Old Posts unlocks a host of additional features 
 
 - **WordPress to Tumblr** scheduling and auto post
 
-- **WordPress to Pinterest** scheduling and auto post
+- **WordPress to Google My Business** scheduling and auto post
 
 - Connect **multiple social media accounts** to WP
 
@@ -234,10 +232,6 @@ If you have any questions please ask on the [support forum](https://wordpress.or
 
 - Yes, this however requires the pro version of the plugin.
 
-**Can Revive Old Posts share to Instagram Business page?**
-
-- Yes, ROP can share to Instagram business page as well as personal profiles.
-
 **Can Revive Old Posts share to LinkedIn Business page?**
 
 - Yes, ROP can share to LinkedIn business pages as well as personal profiles.
@@ -264,23 +258,96 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
-= 8.5.7 - 2020-05-14  = 
+= 8.5.18 - 2020-09-27  = 
+
+* Change Pro: Move GMB dependency to Pro plugin.
+
+
+= 8.5.17 - 2020-09-24  = 
+
+* Dev: Add post-install command to composer.json
+
+
+= 8.5.16 - 2020-09-23  = 
+
+* Info: Update Google My Business dependency version
+* Info: Update Themeisle SDK dependency version
+* Change: Dropped monolog dependency in favor of custom logging methods
+
+
+= 8.5.15 - 2020-09-09  = 
+
+* Change: Require at least PHP 7.1
+* Info: Next versions of ROP will not work with PHP 5.6. Please see [this doc](https://docs.revive.social/article/947-how-to-update-your-php-version) for details on updating your PHP version.
+
+
+= 8.5.14 - 2020-09-08  = 
+
+* Change Pro: Removed Buffer integration. To connect your Facebook Groups to ROP, simply reconnect your Facebook account to the plugin, your groups will be imported automatically. Instagram sharing will cease to work on September 30th. [Please see this doc for more info.](https://docs.revive.social/article/1297-why-were-removing-buffer)
+* New PRO: Your admined groups are imported into ROP by default along with your pages.
+* Info: Added known error log message for Facebook permissions error. If receiving permission errors in the ROP logs while connecting different Facebook pages to different websites. Then [please see this doc for the solution](https://docs.revive.social/article/1031-fix-error-200-requires-managepages-and-publishpages)
+
+
+= 8.5.13 - 2020-08-28  = 
+
+* Change: Made account names clickable.
+* Fix: WP 5.5 missing permissions callback notice.
+* Info: Tested on WP 5.5
+
+
+= 8.5.12 - 2020-08-03  =
+
+* Fix PRO: Edge case where "Share Scheduled Posts to Social Media On Publish" feature would not share posts because of empty array.
+* Change: Switched Facebook API calls to Graph API 7.0
+* Info: Tested on WP 5.5 RC1
+
+
+= 8.5.11 - 2020-07-23  =
+
+* Fix: Posts always sharing as image posts even with option unchecked.
+* Info: Added "rop_instant_share_message" filter for manipulating custom instant share messages.
+
+
+= 8.5.10 - 2020-07-21  =
+
+* New PRO: You can now share your website posts to your Google My Business location(s).
+* Fix PRO: Unknown service error when using "Share Scheduled Posts to Social Media On Publish" feature.
+* Fix PRO: Missing media type error(silent) when "Share as image Post" feature was used for Twitter.
+* Info: Added checks to help prevent duplicate post issues which can occur in some environments with database caching.
+
+
+= 8.5.9 - 2020-07-20  =
+
+* New PRO: You can now share your website posts to your Google My Business location(s).
+* Fix PRO: Unknown service error when using "Share Scheduled Posts to Social Media On Publish" feature.
+* Fix PRO: Missing media type error(silent) when "Share as image Post" feature was used for Twitter.
+* Info: Added checks to help prevent duplicate post issues which can occur in some environments with database caching.
+
+
+= 8.5.8 - 2020-06-16  =
+
+* New PRO: Custom instant sharing messages. You can now alter the caption that would be sent to the social media network.
+* Change: Opened up easier LinkedIn login workflow for old installs.
+* Change: Increased default category hashtag length. Old value was causing users categories to get dropped before sharing if they were too long
+
+
+= 8.5.7 - 2020-05-14  =
 
 * New PRO: Made it easier to connect Tumblr accounts for new installs.
 * New: Added an option in general settings to make Instant Share feature truly immediate and more reliable.
-* Change: Edited some text titles and descriptions in the plugin dashboard to make them easier to understand. 
-* 
+* Change: Edited some text titles and descriptions in the plugin dashboard to make them easier to understand.
+*
 
 
-= 8.5.6 - 2020-04-15  = 
+= 8.5.6 - 2020-04-15  =
 
 * Change: Switched rviv.ly shortener with is.gd shortener to prevent issues with sharing.
 
 
-= 8.5.5 - 2020-04-11  = 
+= 8.5.5 - 2020-04-11  =
 
 * Fix PRO: PHP Error when "Post with image" is checked in Post format for LinkedIn and post has no featured image set.
-* Fix PRO: PHP Error when no post format option is available in the database and ROP tries to share a WP scheduled post that has become published.  
+* Fix PRO: PHP Error when no post format option is available in the database and ROP tries to share a WP scheduled post that has become published.
 * Change: Bit.ly now uses bit.ly's v4 API endpoint.
 * Info: Tested on WP 5.4.
 

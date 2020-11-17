@@ -10,14 +10,48 @@
  */
 
 // If uninstall not called from WordPress, then exit.
+
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
 $settings     = get_option( 'rop_data' );
-$housekeeping = $settings['general_settings']['housekeeping'];
+$housekeeping = ! empty( $settings['general_settings']['housekeeping'] ) ? $settings['general_settings']['housekeeping'] : '';
 
-if ( isset( $housekeeping ) && $housekeeping ) {
+if ( ! empty( $housekeeping ) ) {
+
+	$rop_cron_token = get_option( 'rop_access_token', '' );
+
+	if ( ! empty( $rop_cron_token ) ) {
+
+		if ( ! defined( 'ROP_LITE_PATH' ) ) {
+			define( 'ROP_LITE_PATH', plugin_dir_path( __FILE__ ) );
+		}
+
+		$vendor_file = ROP_LITE_PATH . 'vendor/autoload.php';
+		if ( is_readable( $vendor_file ) ) {
+			require_once $vendor_file;
+
+			require( plugin_dir_path( __FILE__ ) . '/class-rop-autoloader.php' );
+			Rop_Autoloader::define_namespaces( array( 'Rop' ) );
+			/**
+			 * Invocation of the Autoloader::loader method.
+			 *
+			 * @since   8.0.0
+			 */
+			spl_autoload_register( array( 'Rop_Autoloader', 'loader' ) );
+
+			new RopCronSystem\Rop_Cron_Core();
+			$request_call = new RopCronSystem\Curl_Helpers\Rop_Curl_Methods();
+
+			$arguments = array(
+				'type'         => 'POST',
+				'request_path' => ':delete_account:',
+			);
+
+			$call_response = $request_call->create_call_process( $arguments );
+		}
+	}
 
 	$option_keys = array(
 		// Sharing
@@ -27,6 +61,7 @@ if ( isset( $housekeeping ) && $housekeeping ) {
 		'rop-settings',
 		'rop_opt_cat_filter',
 		'rop_current_network_oauth',
+		'rop_last_post_shared',
 		// Shortners
 		'rop_shortners_bitly',
 		'rop_shortners_rvivly',
@@ -78,6 +113,42 @@ if ( isset( $housekeeping ) && $housekeeping ) {
 		 * @see Rop_Cron_Helper::cron_status_global_change()
 		 */
 		'rop_is_sharing_cron_active',
+		/**
+		 * Use remote or local Cron Job.
+		 *
+		 * @since 8.5.5
+		 * @category New Cron System
+		 *
+		 * @see Rop_Cron_Helper::update_cron_type()
+		 * @see Rop_Rest_Api::update_cron_type()
+		 */
+		'rop_use_remote_cron',
+		/**
+		 * Used in remote Cron Server debug test
+		 *
+		 * @since 8.5.5
+		 *
+		 * @see Debug_Page::load_custom_wp_admin_style()
+		 */
+		'rop_temp_debug',
+		/**
+		 * Holds information if the user agreed with terms and conditions of remote Cron system.
+		 *
+		 * @since 8.6.0
+		 *
+		 * Being removed here.
+		 * @see \RopCronSystem\Pages\Debug_Page::reset_local_client()
+		 *
+		 * Being saved here.
+		 */
+		'rop_remote_cron_terms_agree',
+		/**
+		 * Removes the access key for remote Cron Service.
+		 *
+		 * @since 8.6.0
+		 * @see Rop_Curl_Methods::create_register_data() creation.
+		 */
+		'rop_access_token',
 	);
 
 	foreach ( $option_keys as $key ) {
@@ -90,6 +161,7 @@ if ( isset( $housekeeping ) && $housekeeping ) {
 	delete_metadata( 'user', 0, 'rop-wp-cron-notice-dismissed', '', true );
 	delete_metadata( 'user', 0, 'rop-cron-event-status-notice-dismissed', '', true );
 	delete_metadata( 'user', 0, 'rop-shortener-changed-notice-dismissed', '', true );
+	delete_metadata( 'user', 0, 'rop-dropping-buffer-notice-dismissed', '', true );
 
 	global $wpdb;
 	$post_meta = $wpdb->prefix . 'postmeta';
