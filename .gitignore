@@ -8,3 +8,5 @@ composer.lock
 bin/
 package-lock.json
 tweet-old-post.zip
+assets/.DS_Store
+.DS_Store
