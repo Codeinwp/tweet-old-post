@@ -188,7 +188,7 @@ class Rop_I18n {
 				'instant_share_future_scheduled_upsell' => __( ' This feature is only available in the PRO version.', 'tweet-old-post' ),
 				'cron_type_label'                => __( 'Cron Job Type', 'tweet-old-post' ),
 				'cron_type_label_desc'           => sprintf( __( 'Select the between your local built-in WordPress task scheduler, or Revive Social\'s, %1$sLearn More%2$s', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/1303-rop-local-cron-vs-remote-cron" target="_blank">', '</a>' ),
-				'cron_type_label_desc_terms'           => __( 'I Agree with <a href="" target="_blank">Terms and Conditions</a>', 'tweet-old-post' ),
+				'cron_type_label_desc_terms'           => __( 'I understand that some site data is stored on the ROP\'s Remote Cron System to provide this service. <a href="https://docs.revive.social/article/1317-info-we-collect-for-remote-cron-service" target="_blank">Read More Here</a>', 'tweet-old-post' ),
 				'housekeeping'                => __( 'Housekeeping', 'tweet-old-post' ),
 				'housekeeping_desc'           => __( 'Should we delete all saved settings on deletion of the Revive Old Posts plugin?', 'tweet-old-post' ),
 				'housekeeping_yes'            => __( 'Yes', 'tweet-old-post' ),
@@ -371,6 +371,10 @@ You can try to disable any of the security plugins that you use in order to see 
 				'share_once_sharing_done_message' => __( 'All posts have been shared to your connected social media accounts. No previously shared posts will be re-shared until you click the button to "Stop Sharing" and "Start Sharing" on the Revive Old Posts plugin dashboard.', 'tweet-old-post' ),
 				'refresh_linkedin_token_message'  => sprintf( __( 'Hi! This email was sent by Revive Old Posts on your website. Your LinkedIn token is about to expire. You need to refresh it to continue sharing without issue. Click the link below to find out why and how: %1$s %2$s', 'tweet-old-post' ), '<br><br>', '<a href="https://docs.revive.social/article/1151-how-to-refresh-linkedin-access-token">https://docs.revive.social/article/1151-how-to-refresh-linkedin-access-token</a>' ),
 			),
+			'cron_system' => array(
+				'delete_cron_service_account_info' => sprintf( __( 'This option will delete your website information from our Remote Cron Service. %1$s Revive Old Posts will then fallback to using the Local Cron System built into WordPress. %1$s You can re-enable the Remote Cron System at anytime from General Settings > Cron Type, switch from Local Cron to Remote.', 'tweet-old-post' ), '<br>' ),
+				'clear_local_cron_info' => sprintf( __( 'This will remove the Cron server authentication key from your local database. %1$s A new authentication key will be created when you register to the remote Cron server.', 'tweet-old-post' ), '<br>' ),
+			),
 			// PRO only.
 			'publish_now' => array(
 				'share_on_update' => __( 'Share <b>immediately</b> via <small>Revive Old Posts</small>  ', 'tweet-old-post' ),
@@ -396,6 +400,8 @@ You can try to disable any of the security plugins that you use in order to see 
 			'misc' => array(
 				'curl_not_detected' => __( 'cURL was not detected on your website. Please contact your Web Host and ask that they enable cURL for your website.', 'tweet-old-post' ),
 				'no_post_data' => __( 'Post data for share empty.', 'tweet-old-post' ),
+				'revive_network_desc' => __( 'Revive Network allows you to share content from multiple RSS feeds from any website to your connected social media accounts. Join the waiting list to help us test it out!', 'tweet-old-post' ),
+				'revive_network_learn_more_btn' => __( 'Request Access', 'tweet-old-post' ),
 			),
 		);
 		if ( empty( $key ) ) {

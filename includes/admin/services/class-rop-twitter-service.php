@@ -441,7 +441,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 				'media_type' => $post_details['mimetype']['type'],
 			);
 
-			if ( $photon_bypass && class_exists( 'Jetpack_Photon' ) ) {
+			if ( ! empty( $photon_bypass ) && class_exists( 'Jetpack_Photon' ) ) {
 				// Re-enable Jetpack Photon filter.
 				add_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ), 10, 3 );
 			}

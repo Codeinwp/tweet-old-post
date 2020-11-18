@@ -5,6 +5,7 @@ namespace RopCronSystem\ROP_Helpers;
 
 use Rop_Exception_Handler;
 use Rop_Logger;
+use Rop_Scheduler_Model;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	header( 'Status: 403 Forbidden' );
@@ -32,7 +33,9 @@ class Rop_Helpers {
 	 */
 	static public function extract_time_to_share() {
 		// dates are stored into variable "rop_schedules_data".
-		$cron_datetime      = get_option( 'rop_schedules_data', '' );
+		$scheduler         = new Rop_Scheduler_Model();
+
+		$cron_datetime      = $scheduler->get_all_upcoming_events();
 		$next_time_to_share = 0;
 
 		if ( empty( $cron_datetime ) ) {
@@ -40,10 +43,10 @@ class Rop_Helpers {
 			return false;
 		}
 
-		if ( is_array( $cron_datetime ) && ! empty( $cron_datetime ) && isset( $cron_datetime['rop_events_timeline'] ) ) {
+		if ( is_array( $cron_datetime ) && ! empty( $cron_datetime ) ) {
 			$time_list = array();
 			// extract all future date-times from all social media types.
-			foreach ( $cron_datetime['rop_events_timeline'] as $social => $unix_timestamps ) {
+			foreach ( $cron_datetime as $social => $unix_timestamps ) {
 				foreach ( $unix_timestamps as $future_date ) {
 					if ( ! empty( $future_date ) && ! in_array( $future_date, $time_list, true ) ) {
 						$time_list[] = $future_date;
