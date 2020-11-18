@@ -1070,7 +1070,7 @@ class Rop_Admin {
 								$delete_post_after_share = $revive_network_settings['delete_rss_item_after_share'];
 								
 								// adjust post data to suit Revive Network
-								$post_data = Revive_Network_Rop_Post_Helper::rn_prepare_revive_network_share($post_data);
+								$post_data = Revive_Network_Rop_Post_Helper::revive_network_prepare_revive_network_share($post_data);
 								}
 								
 								}
@@ -1085,9 +1085,8 @@ class Rop_Admin {
 																			
 									Revive_Network_Rop_Post_Helper::rn_delete_revive_network_feed_post($post, $event['time'], $account, $queue);
 								
-									}else{
-										$logger->info( "Delete feed post item after share option is disabled." );
 									}
+									
 								}
 							}
 
