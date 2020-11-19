@@ -1568,7 +1568,7 @@ class Rop_Admin {
 
 		$post_lang_code = apply_filters( 'wpml_post_language_details', '', $post_id )['language_code'];
 
-		// TODO double check that this is looping correctly since pulling down latest changes 
+		// TODO double check that this is looping correctly since pulling down latest changes
 		// from v860
 		foreach ( $share_to_accounts as $account_id ) {
 
