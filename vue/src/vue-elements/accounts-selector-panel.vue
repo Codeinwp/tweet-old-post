@@ -88,6 +88,7 @@
 		},
 		mounted: function () {
 			this.setupData();
+		//	this.refresh_language_taxonomies();
 		},
 		filters: {
 			capitalize: function (value) {
@@ -137,9 +138,23 @@
 		watch: {
 			type: function () {
 				this.setupData();
+				//this.get_lang();
 			}
 		},
 		methods: {
+
+			postTypes() {
+				// console.log('post types:', this.$store.state.generalSettings.available_post_types);
+					return this.$store.state.generalSettings.available_post_types;
+			},
+			refresh_language_taxonomies(lang){
+				 this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes(), language_code: lang}});
+			},
+			get_lang(){
+				console.log("Inside Get lang");
+				console.log("LANG: ", document.querySelector('#wpml-language-selector').value);
+				return document.querySelector('#wpml-language-selector').value;
+			},
 			setupData() {
 				let action = this.type.replace('-', '_');
 				let label = '';
@@ -237,6 +252,10 @@
 				}
 			},
 			setActiveAccount(id) {
+				// this.get_lang;
+				
+				// console.log(wpml_language_selector);
+				// console.log(wpml_language_selector.value);
 				if (this.is_loading) {
 					this.$log.warn("Request in progress...Bail");
 					return;
@@ -252,6 +271,10 @@
 				 * When a new account is added and we don't have any data for it.
 				 */
 				this.checkActiveData();
+				// below is getting wrong value, its getting the language value from the previously selected account 
+				// this is because it is firing before the dom for the newly selected account loads
+				const wpml_language_selector = document.querySelector('#wpml-language-selector');
+				this.refresh_language_taxonomies(wpml_language_selector.value);
 			}
 		},
 		components: {
