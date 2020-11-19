@@ -177,7 +177,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 			$account_data = $accounts_array[ $i ];
 
 			$account['id'] = $account_data['id'];
-			$account['img'] = $account_data['img'];
+			$account['img'] = apply_filters('rop_custom_vk_avatar', $account_data['img']);
 			$account['account'] = $account_data['account'];
 			$account['user'] = $account_data['user'];
 			$account['is_company'] = $account_data['is_company'];
