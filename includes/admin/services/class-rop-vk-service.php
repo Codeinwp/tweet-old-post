@@ -225,12 +225,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		if ( get_post_type( $post_details['post_id'] ) !== 'attachment' ) {
-			$attachment_url = get_the_post_thumbnail_url( $post_details['post_id'], 'full' );
-
-		} elseif ( get_post_type( $post_details['post_id'] ) === 'attachment' ) {
-			$attachment_url = wp_get_attachment_url( $post_details['post_id'] );
-		}
+		$attachment_url = $post_details['post_image'];
 
 		// if the post has no image but "Share as image post" is checked
 		// share as an article post
