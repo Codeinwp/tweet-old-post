@@ -307,7 +307,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		$user['id']      = $data->id;
 		$user['account'] = $this->normalize_string( $data->name );
 		$user['user']    = '@' . $this->normalize_string( $data->screen_name );
-		$user['img']     = apply_filters('rop_custom_tw_avatar', $img);
+		$user['img']     = apply_filters( 'rop_custom_tw_avatar', $img );
 		$user['service'] = $this->service_name;
 
 		return array( $this->get_service_id() . '_' . $user['id'] => $user );
