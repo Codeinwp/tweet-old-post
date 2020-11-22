@@ -954,7 +954,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			$page['id']           = $page_data['id'];
 			$page['user']         = $this->normalize_string( empty( $page_data['name'] ) ? '' : $page_data['name'] );
 			$page['account']      = $page_data['email'];
-			$page['img']          = apply_filters('rop_custom_fb_avatar', $page_data['img']);
+			$page['img']          = apply_filters( 'rop_custom_fb_avatar', $page_data['img'] );
 			$page['access_token'] = $page_data['access_token'];
 			if ( $i == 0 ) {
 				$page['active'] = true;
