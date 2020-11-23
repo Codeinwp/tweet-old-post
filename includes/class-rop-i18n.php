@@ -241,7 +241,7 @@ class Rop_I18n {
 				'hashtags_title'                    => __( 'Hashtags', 'tweet-old-post' ),
 				'hashtags_desc'                     => __( 'Hashtags for published content.', 'tweet-old-post' ),
 				'hashtags_option_no'                => __( 'Don\'t add any hashtags', 'tweet-old-post' ),
-				'hashtags_option_common'            => __( 'Common hastags for all shares', 'tweet-old-post' ),
+				'hashtags_option_common'            => __( 'Common hashtags for all shares', 'tweet-old-post' ),
 				'hashtags_option_cats'              => __( 'Create hashtags from categories', 'tweet-old-post' ),
 				'hashtags_option_tags'              => __( 'Create hashtags from tags', 'tweet-old-post' ),
 				'hashtags_option_field'             => __( 'Create hashtags from a custom field', 'tweet-old-post' ),
