@@ -587,7 +587,8 @@ class Rop_Admin {
 			array(
 				$this,
 				'rop_main_page',
-			)
+			),
+			0
 		);
 		add_submenu_page(
 			'TweetOldPost',
