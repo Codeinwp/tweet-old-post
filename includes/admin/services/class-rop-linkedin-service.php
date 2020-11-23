@@ -836,7 +836,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			$account_data = $accounts_array[ $i ];
 
 			$account['id']           = $this->treat_underscore_exception( $account_data['id'] );
-			$account['img']          = $account_data['img'];
+			$account['img']          = apply_filters( 'rop_custom_li_avatar', $account_data['img'] );
 			$account['account']      = $account_data['account'];
 			$account['is_company']   = $account_data['is_company'];
 			$account['user']         = $account_data['user'];

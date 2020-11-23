@@ -307,7 +307,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 					'id'      => $page['id'],
 					'user'    => $this->normalize_string( $page['account'] ),
 					'account' => $this->normalize_string( $page['user'] ),
-					'img'     => $page['img'],
+					'img'     => apply_filters( 'rop_custom_tmblr_avatar', $page['img'] ),
 				),
 				$this->user_default
 			);
