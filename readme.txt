@@ -86,7 +86,8 @@ Revive Old Posts isn't like every other social media marketing tool. We've tailo
 - WordPress to Linkedin Profile [Pro]
 - WordPress to Linkedin Page [Pro]
 - WordPress to Tumblr [Pro]
-- WordPress to Google My Business [Pro]
+- WordPress to Google My Business(GMB) [Pro]
+- WordPress to Vkontakte(VK) [Pro]
 
 Some of the available networks and features require the Pro version of the plugin. Check out the free vs pro table [here.](https://docs.revive.social/article/941-revive-old-post-free-vs-pro)
 
@@ -142,7 +143,9 @@ Using the PRO version of Revive Old Posts unlocks a host of additional features 
 
 - **WordPress to Tumblr** scheduling and auto post
 
-- **WordPress to Google My Business** scheduling and auto post
+- **WordPress to Google My Business(GMB)** scheduling and auto post
+
+- **WordPress to Vkontakte(VK)** scheduling and auto post
 
 - Connect **multiple social media accounts** to WP
 
