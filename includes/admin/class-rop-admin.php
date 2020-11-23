@@ -448,9 +448,8 @@ class Rop_Admin {
 
 	/**
 	 * Legacy auth callback.
-	 * 
 	 */
-	//TODO Remove this method if we're only going to allow simple
+	// TODO Remove this method if we're only going to allow simple
 	public function legacy_auth() {
 		$code    = sanitize_text_field( isset( $_GET['code'] ) ? $_GET['code'] : '' );
 		$state   = sanitize_text_field( isset( $_GET['state'] ) ? $_GET['state'] : '' );
@@ -1512,13 +1511,13 @@ class Rop_Admin {
 			return false;
 		}
 		if ( version_compare( $installed_at_version, '8.6.0', '>=' ) ) {
-			echo "<style>
+			echo '<style>
 			
 			#rop_core .btn.btn-pinterest{
 				display: none;
 			}
 			
-			</style>";
+			</style>';
 		}
 
 		return false;
