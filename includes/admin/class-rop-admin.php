@@ -448,7 +448,9 @@ class Rop_Admin {
 
 	/**
 	 * Legacy auth callback.
+	 * 
 	 */
+	//TODO Remove this method if we're only going to allow simple
 	public function legacy_auth() {
 		$code    = sanitize_text_field( isset( $_GET['code'] ) ? $_GET['code'] : '' );
 		$state   = sanitize_text_field( isset( $_GET['state'] ) ? $_GET['state'] : '' );
@@ -1488,6 +1490,35 @@ class Rop_Admin {
 		}
 		if ( version_compare( $installed_at_version, '8.6.0', '>=' ) ) {
 			return true;
+		}
+
+		return false;
+
+	}
+
+	/**
+	 * Hides the pinterest account button
+	 *
+	 * Pinterest changed API and has no ETA on when they'll start reviewing developer apps.
+	 * Disable this for now
+	 *
+	 * @since   8.6.0
+	 * @access  public
+	 */
+	public function rop_hide_pinterest_network_btn() {
+
+		$installed_at_version = get_option( 'rop_first_install_version' );
+		if ( empty( $installed_at_version ) ) {
+			return false;
+		}
+		if ( version_compare( $installed_at_version, '8.6.0', '>=' ) ) {
+			echo "<style>
+			
+			#rop_core .btn.btn-pinterest{
+				display: none;
+			}
+			
+			</style>";
 		}
 
 		return false;
