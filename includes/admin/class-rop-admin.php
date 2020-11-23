@@ -449,8 +449,8 @@ class Rop_Admin {
 	/**
 	 * Legacy auth callback.
 	 */
-	// TODO Remove this method if we're only going to allow simple
 	public function legacy_auth() {
+		// TODO Remove this method if we're only going to allow simple
 		$code    = sanitize_text_field( isset( $_GET['code'] ) ? $_GET['code'] : '' );
 		$state   = sanitize_text_field( isset( $_GET['state'] ) ? $_GET['state'] : '' );
 		$network = sanitize_text_field( isset( $_GET['network'] ) ? $_GET['network'] : '' );
