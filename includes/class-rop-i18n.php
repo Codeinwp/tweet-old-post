@@ -338,7 +338,7 @@ class Rop_I18n {
 				'multiselect_not_found'      => __( 'Nothing found matching', 'tweet-old-post' ),
 				'next_share'                 => __( 'Next share', 'tweet-old-post' ),
 				'sharing_now'                => __( 'Sharing...', 'tweet-old-post' ),
-				'cron_interval'              => __( 'Once every 1 min', 'tweet-old-post' ),
+				'cron_interval'              => __( 'Once every 5 min', 'tweet-old-post' ),
 				'staging_status'             => __( 'This is a staging website, posts will not share to your accounts.', 'tweet-old-post' ),
 				'api_not_available'          => __(
 					'It seems there is an issue with your WordPress configuration and the core REST API functionality is not available. This is crucial as Revive Old Posts relies on this functionality in order to work.<br/>

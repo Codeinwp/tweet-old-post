@@ -268,7 +268,6 @@ http://revive.social/plugins/revive-old-post
 * New: Addons menu. RSS feed sharing is coming to ROP. Apply for access to Revive Network RC1. Only select users will be chosen for the testing phase.
 * Change PRO: Dropped LinkedIn API dependency in favor of our own LinkedIn API methods
 * Info PRO: Added error log for LinkedIn image sharing when exif_imagetype function does not exist on the server.
-* 
 
 
 = 8.5.18 - 2020-09-27  = 
