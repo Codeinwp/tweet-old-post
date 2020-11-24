@@ -266,7 +266,14 @@ class Rop {
 
 		$factory         = new Rop_Services_Factory();
 		$global_settings = new Rop_Global_Settings();
+
 		foreach ( $global_settings->get_all_services_handle() as $service ) {
+
+			// If the service class does not exist, don't try building it.
+			$service_class = 'Rop_' . str_replace( '-', '_', ucwords( $service ) ) . '_Service';
+			if ( ! class_exists( $service_class ) ) {
+				continue;
+			}
 
 			try {
 				${$service . '_service'} = $factory->build( $service );
