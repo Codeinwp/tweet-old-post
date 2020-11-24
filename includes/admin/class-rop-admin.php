@@ -1136,51 +1136,6 @@ class Rop_Admin {
 	}
 
 	/**
-	 * Dropping buffer notice.
-	 *
-	 * @since   8.5.14
-	 * @access  public
-	 */
-	public function rop_dropping_buffer_notice() {
-
-		if ( ! current_user_can( 'install_plugins' ) ) {
-			return;
-		}
-
-		$user_id = get_current_user_id();
-
-		if ( get_user_meta( $user_id, 'rop-dropping-buffer-notice-dismissed' ) ) {
-			return;
-		}
-
-		$show_notice = false;
-
-		$services_model = new Rop_Services_Model();
-
-		$services = $services_model->get_authenticated_services();
-
-		foreach ( $services as $key => $value ) {
-
-			if ( $value['service'] === 'buffer' ) {
-				$show_notice = true;
-				break;
-			}
-		}
-
-		if ( $show_notice === false ) {
-			return;
-		}
-
-		?>
-		<div class="notice notice-error" style="min-height: 80px">
-			<?php echo sprintf( __( '%1$s%2$sRevive Old Posts:%3$s The Buffer integration will cease to work in future versions of ROP. Posting to Facebook Groups will be possible but not Instagram. Please see %4$sthis article for more information.%5$s%6$s%7$s', 'tweet-old-post' ), '<p style="width: 85%">', '<b>', '</b>', '<a href="https://docs.revive.social/article/1297-why-were-removing-buffer" target="_blank">', '</a>', '</p>', '<a style="float: right;" href="?rop-dropping-buffer-notice-dismissed">Dismiss</a>' ); ?>
-
-		</div>
-		<?php
-
-	}
-
-	/**
 	 * Dismiss dropping buffer notice.
 	 *
 	 * @since   8.2.3
