@@ -86,7 +86,8 @@ Revive Old Posts isn't like every other social media marketing tool. We've tailo
 - WordPress to Linkedin Profile [Pro]
 - WordPress to Linkedin Page [Pro]
 - WordPress to Tumblr [Pro]
-- WordPress to Google My Business [Pro]
+- WordPress to Google My Business(GMB) [Pro]
+- WordPress to Vkontakte(VK) [Pro]
 
 Some of the available networks and features require the Pro version of the plugin. Check out the free vs pro table [here.](https://docs.revive.social/article/941-revive-old-post-free-vs-pro)
 
@@ -142,7 +143,9 @@ Using the PRO version of Revive Old Posts unlocks a host of additional features 
 
 - **WordPress to Tumblr** scheduling and auto post
 
-- **WordPress to Google My Business** scheduling and auto post
+- **WordPress to Google My Business(GMB)** scheduling and auto post
+
+- **WordPress to Vkontakte(VK)** scheduling and auto post
 
 - Connect **multiple social media accounts** to WP
 
@@ -258,6 +261,16 @@ http://revive.social/plugins/revive-old-post
 
 
 ## Changelog ##
+### 8.6.0 - 2020-11-24  ###
+
+* New PRO: New social media network- Vkontakte
+* New: Dedicated Remote Cron Service. Option to let our service take care of ROP shares more reliably for sites experiencing WP Cron issues or issues with posts not getting shared.
+* New: Addons menu. RSS feed sharing is coming to ROP. Apply for access to Revive Network RC1. Only select users will be chosen for the testing phase.
+* Change PRO: Dropped LinkedIn API dependency in favor of our own LinkedIn API methods
+* Info PRO: Added error log for LinkedIn image sharing when exif_imagetype function does not exist on the server.
+* 
+
+
 ### 8.5.18 - 2020-09-27  ###
 
 * Change Pro: Move GMB dependency to Pro plugin.
