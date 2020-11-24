@@ -1,4 +1,8 @@
 
+ ### v8.6.1 - 2020-11-24 
+ **Changes:** 
+ * PRO Fix: Plugin tried to build buffer service that did not exist. Buffer network is no longer supported in Revive Old Posts.
+ 
  ### v8.6.0 - 2020-11-24 
  **Changes:** 
  * New PRO: New social media network- Vkontakte
