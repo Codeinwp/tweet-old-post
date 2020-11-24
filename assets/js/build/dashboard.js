@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 214);
+/******/ 	return __webpack_require__(__webpack_require__.s = 219);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1919,7 +1919,7 @@
             try {
                 oldLocale = globalLocale._abbr;
                 var aliasedRequire = require;
-                __webpack_require__(284)("./" + name);
+                __webpack_require__(303)("./" + name);
                 getSetGlobalLocale(oldLocale);
             } catch (e) {}
         }
@@ -4670,7 +4670,7 @@
 
 })));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(283)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(302)(module)))
 
 /***/ }),
 /* 1 */
@@ -5005,13 +5005,54 @@ if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
 /***/ (function(module, exports, __webpack_require__) {
 
 // Thank's IE8 for his funny defineProperty
-module.exports = !__webpack_require__(19)(function () {
+module.exports = !__webpack_require__(15)(function () {
   return Object.defineProperty({}, 'a', { get: function () { return 7; } }).a != 7;
 });
 
 
 /***/ }),
 /* 6 */
+/***/ (function(module, exports) {
+
+var hasOwnProperty = {}.hasOwnProperty;
+module.exports = function (it, key) {
+  return hasOwnProperty.call(it, key);
+};
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var store = __webpack_require__(28)('wks');
+var uid = __webpack_require__(22);
+var Symbol = __webpack_require__(4).Symbol;
+var USE_SYMBOL = typeof Symbol == 'function';
+
+var $exports = module.exports = function (name) {
+  return store[name] || (store[name] =
+    USE_SYMBOL && Symbol[name] || (USE_SYMBOL ? Symbol : uid)('Symbol.' + name));
+};
+
+$exports.store = store;
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var dP = __webpack_require__(12);
+var createDesc = __webpack_require__(24);
+module.exports = __webpack_require__(5) ? function (object, key, value) {
+  return dP.f(object, key, createDesc(1, value));
+} : function (object, key, value) {
+  object[key] = value;
+  return object;
+};
+
+
+/***/ }),
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17010,10 +17051,10 @@ Vue.compile = compileToFunctions;
 
 /* harmony default export */ __webpack_exports__["default"] = (Vue);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(7), __webpack_require__(11), __webpack_require__(32).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(10), __webpack_require__(16), __webpack_require__(36).setImmediate))
 
 /***/ }),
-/* 7 */
+/* 10 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -17203,48 +17244,74 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 8 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var dP = __webpack_require__(18);
-var createDesc = __webpack_require__(29);
-module.exports = __webpack_require__(5) ? function (object, key, value) {
-  return dP.f(object, key, createDesc(1, value));
-} : function (object, key, value) {
-  object[key] = value;
-  return object;
+// to indexed object, toObject with fallback for non-array-like ES3 strings
+var IObject = __webpack_require__(44);
+var defined = __webpack_require__(17);
+module.exports = function (it) {
+  return IObject(defined(it));
 };
 
 
 /***/ }),
-/* 9 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var store = __webpack_require__(24)('wks');
-var uid = __webpack_require__(26);
-var Symbol = __webpack_require__(4).Symbol;
-var USE_SYMBOL = typeof Symbol == 'function';
+var anObject = __webpack_require__(14);
+var IE8_DOM_DEFINE = __webpack_require__(34);
+var toPrimitive = __webpack_require__(32);
+var dP = Object.defineProperty;
 
-var $exports = module.exports = function (name) {
-  return store[name] || (store[name] =
-    USE_SYMBOL && Symbol[name] || (USE_SYMBOL ? Symbol : uid)('Symbol.' + name));
+exports.f = __webpack_require__(5) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
+  anObject(O);
+  P = toPrimitive(P, true);
+  anObject(Attributes);
+  if (IE8_DOM_DEFINE) try {
+    return dP(O, P, Attributes);
+  } catch (e) { /* empty */ }
+  if ('get' in Attributes || 'set' in Attributes) throw TypeError('Accessors not supported!');
+  if ('value' in Attributes) O[P] = Attributes.value;
+  return O;
 };
-
-$exports.store = store;
 
 
 /***/ }),
-/* 10 */
+/* 13 */
 /***/ (function(module, exports) {
 
-var hasOwnProperty = {}.hasOwnProperty;
-module.exports = function (it, key) {
-  return hasOwnProperty.call(it, key);
+module.exports = function (it) {
+  return typeof it === 'object' ? it !== null : typeof it === 'function';
 };
 
 
 /***/ }),
-/* 11 */
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isObject = __webpack_require__(13);
+module.exports = function (it) {
+  if (!isObject(it)) throw TypeError(it + ' is not an object!');
+  return it;
+};
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports) {
+
+module.exports = function (exec) {
+  try {
+    return !!exec();
+  } catch (e) {
+    return true;
+  }
+};
+
+
+/***/ }),
+/* 16 */
 /***/ (function(module, exports) {
 
 var g;
@@ -17271,33 +17338,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var isObject = __webpack_require__(13);
-module.exports = function (it) {
-  if (!isObject(it)) throw TypeError(it + ' is not an object!');
-  return it;
-};
-
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports) {
-
-module.exports = function (it) {
-  return typeof it === 'object' ? it !== null : typeof it === 'function';
-};
-
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = { "default": __webpack_require__(53), __esModule: true };
-
-/***/ }),
-/* 15 */
+/* 17 */
 /***/ (function(module, exports) {
 
 // 7.2.1 RequireObjectCoercible(argument)
@@ -17308,19 +17349,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// to indexed object, toObject with fallback for non-array-like ES3 strings
-var IObject = __webpack_require__(41);
-var defined = __webpack_require__(15);
-module.exports = function (it) {
-  return IObject(defined(it));
-};
-
-
-/***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports) {
 
 // 7.1.4 ToInteger
@@ -17332,46 +17361,17 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var anObject = __webpack_require__(12);
-var IE8_DOM_DEFINE = __webpack_require__(47);
-var toPrimitive = __webpack_require__(48);
-var dP = Object.defineProperty;
-
-exports.f = __webpack_require__(5) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
-  anObject(O);
-  P = toPrimitive(P, true);
-  anObject(Attributes);
-  if (IE8_DOM_DEFINE) try {
-    return dP(O, P, Attributes);
-  } catch (e) { /* empty */ }
-  if ('get' in Attributes || 'set' in Attributes) throw TypeError('Accessors not supported!');
-  if ('value' in Attributes) O[P] = Attributes.value;
-  return O;
-};
-
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports) {
-
-module.exports = function (exec) {
-  try {
-    return !!exec();
-  } catch (e) {
-    return true;
-  }
-};
-
+module.exports = { "default": __webpack_require__(57), __esModule: true };
 
 /***/ }),
 /* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var shared = __webpack_require__(24)('keys');
-var uid = __webpack_require__(26);
+var shared = __webpack_require__(28)('keys');
+var uid = __webpack_require__(22);
 module.exports = function (key) {
   return shared[key] || (shared[key] = uid(key));
 };
@@ -17381,18 +17381,29 @@ module.exports = function (key) {
 /* 21 */
 /***/ (function(module, exports) {
 
-module.exports = {};
+module.exports = true;
 
 
 /***/ }),
 /* 22 */
+/***/ (function(module, exports) {
+
+var id = 0;
+var px = Math.random();
+module.exports = function (key) {
+  return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
+};
+
+
+/***/ }),
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(4);
 var core = __webpack_require__(3);
-var ctx = __webpack_require__(45);
+var ctx = __webpack_require__(48);
 var hide = __webpack_require__(8);
-var has = __webpack_require__(10);
+var has = __webpack_require__(6);
 var PROTOTYPE = 'prototype';
 
 var $export = function (type, name, source) {
@@ -17453,77 +17464,7 @@ module.exports = $export;
 
 
 /***/ }),
-/* 23 */
-/***/ (function(module, exports) {
-
-var toString = {}.toString;
-
-module.exports = function (it) {
-  return toString.call(it).slice(8, -1);
-};
-
-
-/***/ }),
 /* 24 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var core = __webpack_require__(3);
-var global = __webpack_require__(4);
-var SHARED = '__core-js_shared__';
-var store = global[SHARED] || (global[SHARED] = {});
-
-(module.exports = function (key, value) {
-  return store[key] || (store[key] = value !== undefined ? value : {});
-})('versions', []).push({
-  version: core.version,
-  mode: __webpack_require__(25) ? 'pure' : 'global',
-  copyright: '© 2019 Denis Pushkarev (zloirock.ru)'
-});
-
-
-/***/ }),
-/* 25 */
-/***/ (function(module, exports) {
-
-module.exports = true;
-
-
-/***/ }),
-/* 26 */
-/***/ (function(module, exports) {
-
-var id = 0;
-var px = Math.random();
-module.exports = function (key) {
-  return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
-};
-
-
-/***/ }),
-/* 27 */
-/***/ (function(module, exports) {
-
-// IE 8- don't enum bug keys
-module.exports = (
-  'constructor,hasOwnProperty,isPrototypeOf,propertyIsEnumerable,toLocaleString,toString,valueOf'
-).split(',');
-
-
-/***/ }),
-/* 28 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var isObject = __webpack_require__(13);
-var document = __webpack_require__(4).document;
-// typeof document.createElement is 'object' in old IE
-var is = isObject(document) && isObject(document.createElement);
-module.exports = function (it) {
-  return is ? document.createElement(it) : {};
-};
-
-
-/***/ }),
-/* 29 */
 /***/ (function(module, exports) {
 
 module.exports = function (bitmap, value) {
@@ -17537,11 +17478,70 @@ module.exports = function (bitmap, value) {
 
 
 /***/ }),
+/* 25 */
+/***/ (function(module, exports) {
+
+module.exports = {};
+
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 19.1.2.14 / 15.2.3.14 Object.keys(O)
+var $keys = __webpack_require__(33);
+var enumBugKeys = __webpack_require__(29);
+
+module.exports = Object.keys || function keys(O) {
+  return $keys(O, enumBugKeys);
+};
+
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports) {
+
+var toString = {}.toString;
+
+module.exports = function (it) {
+  return toString.call(it).slice(8, -1);
+};
+
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var core = __webpack_require__(3);
+var global = __webpack_require__(4);
+var SHARED = '__core-js_shared__';
+var store = global[SHARED] || (global[SHARED] = {});
+
+(module.exports = function (key, value) {
+  return store[key] || (store[key] = value !== undefined ? value : {});
+})('versions', []).push({
+  version: core.version,
+  mode: __webpack_require__(21) ? 'pure' : 'global',
+  copyright: '© 2019 Denis Pushkarev (zloirock.ru)'
+});
+
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports) {
+
+// IE 8- don't enum bug keys
+module.exports = (
+  'constructor,hasOwnProperty,isPrototypeOf,propertyIsEnumerable,toLocaleString,toString,valueOf'
+).split(',');
+
+
+/***/ }),
 /* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.13 ToObject(argument)
-var defined = __webpack_require__(15);
+var defined = __webpack_require__(17);
 module.exports = function (it) {
   return Object(defined(it));
 };
@@ -17551,17 +17551,80 @@ module.exports = function (it) {
 /* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// 19.1.2.14 / 15.2.3.14 Object.keys(O)
-var $keys = __webpack_require__(40);
-var enumBugKeys = __webpack_require__(27);
-
-module.exports = Object.keys || function keys(O) {
-  return $keys(O, enumBugKeys);
+var isObject = __webpack_require__(13);
+var document = __webpack_require__(4).document;
+// typeof document.createElement is 'object' in old IE
+var is = isObject(document) && isObject(document.createElement);
+module.exports = function (it) {
+  return is ? document.createElement(it) : {};
 };
 
 
 /***/ }),
 /* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 7.1.1 ToPrimitive(input [, PreferredType])
+var isObject = __webpack_require__(13);
+// instead of the ES6 spec version, we didn't implement @@toPrimitive case
+// and the second argument - flag - preferred type is a string
+module.exports = function (it, S) {
+  if (!isObject(it)) return it;
+  var fn, val;
+  if (S && typeof (fn = it.toString) == 'function' && !isObject(val = fn.call(it))) return val;
+  if (typeof (fn = it.valueOf) == 'function' && !isObject(val = fn.call(it))) return val;
+  if (!S && typeof (fn = it.toString) == 'function' && !isObject(val = fn.call(it))) return val;
+  throw TypeError("Can't convert object to primitive value");
+};
+
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var has = __webpack_require__(6);
+var toIObject = __webpack_require__(11);
+var arrayIndexOf = __webpack_require__(45)(false);
+var IE_PROTO = __webpack_require__(20)('IE_PROTO');
+
+module.exports = function (object, names) {
+  var O = toIObject(object);
+  var i = 0;
+  var result = [];
+  var key;
+  for (key in O) if (key != IE_PROTO) has(O, key) && result.push(key);
+  // Don't enum bug & hidden keys
+  while (names.length > i) if (has(O, key = names[i++])) {
+    ~arrayIndexOf(result, key) || result.push(key);
+  }
+  return result;
+};
+
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = !__webpack_require__(5) && !__webpack_require__(15)(function () {
+  return Object.defineProperty(__webpack_require__(31)('div'), 'a', { get: function () { return 7; } }).a != 7;
+});
+
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var def = __webpack_require__(12).f;
+var has = __webpack_require__(6);
+var TAG = __webpack_require__(7)('toStringTag');
+
+module.exports = function (it, tag, stat) {
+  if (it && !has(it = stat ? it : it.prototype, TAG)) def(it, TAG, { configurable: true, value: tag });
+};
+
+
+/***/ }),
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
@@ -17617,7 +17680,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(33);
+__webpack_require__(37);
 // On some exotic environments, it's not clear which object `setimmediate` was
 // able to install onto.  Search each possibility in the same order as the
 // `setimmediate` library.
@@ -17628,10 +17691,10 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
                          (typeof global !== "undefined" && global.clearImmediate) ||
                          (this && this.clearImmediate);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)))
 
 /***/ }),
-/* 33 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -17821,10 +17884,10 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11), __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16), __webpack_require__(10)))
 
 /***/ }),
-/* 34 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17834,19 +17897,19 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _vue = __webpack_require__(6);
+var _vue = __webpack_require__(9);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _vuex = __webpack_require__(35);
+var _vuex = __webpack_require__(39);
 
 var _vuex2 = _interopRequireDefault(_vuex);
 
-var _vueResource = __webpack_require__(36);
+var _vueResource = __webpack_require__(40);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _vuejsLogger = __webpack_require__(38);
+var _vuejsLogger = __webpack_require__(42);
 
 var _vuejsLogger2 = _interopRequireDefault(_vuejsLogger);
 
@@ -17944,7 +18007,8 @@ exports.default = new _vuex2.default.Store({
          *
          * @category New Cron System
          */
-        rop_cron_remote: ropApiSettings.rop_cron_remote
+        rop_cron_remote: ropApiSettings.rop_cron_remote,
+        dom_updated: false
     },
     mutations: {
         setTabView: function setTabView(state, view) {
@@ -18179,7 +18243,7 @@ exports.default = new _vuex2.default.Store({
 });
 
 /***/ }),
-/* 35 */
+/* 39 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -19123,10 +19187,10 @@ var index_esm = {
 
 /* harmony default export */ __webpack_exports__["default"] = (index_esm);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(10)))
 
 /***/ }),
-/* 36 */
+/* 40 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -20225,7 +20289,7 @@ function xhrClient (request) {
 
 function nodeClient (request) {
 
-    var client = __webpack_require__(37);
+    var client = __webpack_require__(41);
 
     return new PromiseObj(function (resolve) {
 
@@ -20693,13 +20757,13 @@ if (typeof window !== 'undefined' && window.Vue) {
 
 
 /***/ }),
-/* 37 */
+/* 41 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 38 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20709,7 +20773,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _logger = __webpack_require__(39);
+var _logger = __webpack_require__(43);
 
 var _logger2 = _interopRequireDefault(_logger);
 
@@ -20720,41 +20784,18 @@ exports.default = {
 };
 
 /***/ }),
-/* 39 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 function _toConsumableArray(o){if(Array.isArray(o)){for(var e=0,r=Array(o.length);e<o.length;e++)r[e]=o[e];return r}return Array.from(o)}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=function(){function o(o,r){var t={};return r.forEach(function(a){r.indexOf(a)>=r.indexOf(o.logLevel)?t[a]=function(){for(var r=arguments.length,t=Array(r),s=0;s<r;s++)t[s]=arguments[s];var l=n(),i=o.showMethodName?l+" "+o.separator+" ":"",g=o.showLogLevel?a+" "+o.separator+" ":"",f=o.stringifyArguments?t.map(function(o){return JSON.stringify(o)}):t;e(a,g,i,f,o.showConsoleColors)}:t[a]=function(){}}),t}function e(){var o=arguments.length>0&&void 0!==arguments[0]&&arguments[0],e=arguments.length>1&&void 0!==arguments[1]&&arguments[1],r=arguments.length>2&&void 0!==arguments[2]&&arguments[2],t=arguments.length>3&&void 0!==arguments[3]&&arguments[3];if(arguments.length>4&&void 0!==arguments[4]&&arguments[4]&&("warn"===o||"error"===o||"fatal"===o)){var n;(n=console)["fatal"===o?"error":o].apply(n,[e,r].concat(_toConsumableArray(t)))}else{var a;(a=console).log.apply(a,[e,r].concat(_toConsumableArray(t)))}}function r(o,e){return!!(o.logLevel&&"string"==typeof o.logLevel&&e.indexOf(o.logLevel)>-1)&&((!o.stringifyArguments||"boolean"==typeof o.stringifyArguments)&&((!o.showLogLevel||"boolean"==typeof o.showLogLevel)&&((!o.showConsoleColors||"boolean"==typeof o.showConsoleColors)&&((!o.separator||!("string"!=typeof o.separator||"string"==typeof o.separator&&o.separator.length>3))&&!(o.showMethodName&&"boolean"!=typeof o.showMethodName)))))}function t(e,t){if(t=Object.assign(a,t),!r(t,s))throw new Error("Provided options for vuejs-logger are not valid.");e.$log=o(t,s),e.prototype.$log=e.$log}function n(){var o={};try{throw new Error("")}catch(e){o=e}var e=o.stack.split("\n")[3];return/ /.test(e)&&(e=e.trim().split(" ")[1]),e&&e.includes(".")&&(e=e.split(".")[1]),e}var a={logLevel:"debug",separator:"|",stringifyArguments:!1,showLogLevel:!1,showMethodName:!1,showConsoleColors:!1},s=["debug","info","warn","error","fatal"];return{install:t,isValidOptions:r,print:e,initLoggerInstance:o,logLevels:s}}();
 
 /***/ }),
-/* 40 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var has = __webpack_require__(10);
-var toIObject = __webpack_require__(16);
-var arrayIndexOf = __webpack_require__(42)(false);
-var IE_PROTO = __webpack_require__(20)('IE_PROTO');
-
-module.exports = function (object, names) {
-  var O = toIObject(object);
-  var i = 0;
-  var result = [];
-  var key;
-  for (key in O) if (key != IE_PROTO) has(O, key) && result.push(key);
-  // Don't enum bug & hidden keys
-  while (names.length > i) if (has(O, key = names[i++])) {
-    ~arrayIndexOf(result, key) || result.push(key);
-  }
-  return result;
-};
-
-
-/***/ }),
-/* 41 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for non-array-like ES3 and non-enumerable old V8 strings
-var cof = __webpack_require__(23);
+var cof = __webpack_require__(27);
 // eslint-disable-next-line no-prototype-builtins
 module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
   return cof(it) == 'String' ? it.split('') : Object(it);
@@ -20762,14 +20803,14 @@ module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
 
 
 /***/ }),
-/* 42 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // false -> Array#indexOf
 // true  -> Array#includes
-var toIObject = __webpack_require__(16);
-var toLength = __webpack_require__(43);
-var toAbsoluteIndex = __webpack_require__(44);
+var toIObject = __webpack_require__(11);
+var toLength = __webpack_require__(46);
+var toAbsoluteIndex = __webpack_require__(47);
 module.exports = function (IS_INCLUDES) {
   return function ($this, el, fromIndex) {
     var O = toIObject($this);
@@ -20791,11 +20832,11 @@ module.exports = function (IS_INCLUDES) {
 
 
 /***/ }),
-/* 43 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.15 ToLength
-var toInteger = __webpack_require__(17);
+var toInteger = __webpack_require__(18);
 var min = Math.min;
 module.exports = function (it) {
   return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
@@ -20803,10 +20844,10 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 44 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var toInteger = __webpack_require__(17);
+var toInteger = __webpack_require__(18);
 var max = Math.max;
 var min = Math.min;
 module.exports = function (index, length) {
@@ -20816,11 +20857,11 @@ module.exports = function (index, length) {
 
 
 /***/ }),
-/* 45 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // optional / simple context binding
-var aFunction = __webpack_require__(46);
+var aFunction = __webpack_require__(49);
 module.exports = function (fn, that, length) {
   aFunction(fn);
   if (that === undefined) return fn;
@@ -20842,7 +20883,7 @@ module.exports = function (fn, that, length) {
 
 
 /***/ }),
-/* 46 */
+/* 49 */
 /***/ (function(module, exports) {
 
 module.exports = function (it) {
@@ -20852,53 +20893,26 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 47 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = !__webpack_require__(5) && !__webpack_require__(19)(function () {
-  return Object.defineProperty(__webpack_require__(28)('div'), 'a', { get: function () { return 7; } }).a != 7;
-});
-
-
-/***/ }),
-/* 48 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// 7.1.1 ToPrimitive(input [, PreferredType])
-var isObject = __webpack_require__(13);
-// instead of the ES6 spec version, we didn't implement @@toPrimitive case
-// and the second argument - flag - preferred type is a string
-module.exports = function (it, S) {
-  if (!isObject(it)) return it;
-  var fn, val;
-  if (S && typeof (fn = it.toString) == 'function' && !isObject(val = fn.call(it))) return val;
-  if (typeof (fn = it.valueOf) == 'function' && !isObject(val = fn.call(it))) return val;
-  if (!S && typeof (fn = it.toString) == 'function' && !isObject(val = fn.call(it))) return val;
-  throw TypeError("Can't convert object to primitive value");
-};
-
-
-/***/ }),
-/* 49 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = { "default": __webpack_require__(56), __esModule: true };
-
-/***/ }),
 /* 50 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = { "default": __webpack_require__(60), __esModule: true };
+
+/***/ }),
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var LIBRARY = __webpack_require__(25);
-var $export = __webpack_require__(22);
-var redefine = __webpack_require__(61);
+var LIBRARY = __webpack_require__(21);
+var $export = __webpack_require__(23);
+var redefine = __webpack_require__(54);
 var hide = __webpack_require__(8);
-var Iterators = __webpack_require__(21);
-var $iterCreate = __webpack_require__(62);
-var setToStringTag = __webpack_require__(51);
-var getPrototypeOf = __webpack_require__(66);
-var ITERATOR = __webpack_require__(9)('iterator');
+var Iterators = __webpack_require__(25);
+var $iterCreate = __webpack_require__(64);
+var setToStringTag = __webpack_require__(35);
+var getPrototypeOf = __webpack_require__(67);
+var ITERATOR = __webpack_require__(7)('iterator');
 var BUGGY = !([].keys && 'next' in [].keys()); // Safari has buggy iterators w/o `next`
 var FF_ITERATOR = '@@iterator';
 var KEYS = 'keys';
@@ -20961,19 +20975,6 @@ module.exports = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
 
 
 /***/ }),
-/* 51 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var def = __webpack_require__(18).f;
-var has = __webpack_require__(10);
-var TAG = __webpack_require__(9)('toStringTag');
-
-module.exports = function (it, tag, stat) {
-  if (it && !has(it = stat ? it : it.prototype, TAG)) def(it, TAG, { configurable: true, value: tag });
-};
-
-
-/***/ }),
 /* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20987,7 +20988,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/uvdev/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/multiple-select.vue"
+  var id = "E:\\work\\projects\\webdesign\\wordpress-themeisle\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\multiple-select.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -20999,59 +21000,11 @@ if (false) {(function () {  module.hot.accept()
 /* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(54);
-module.exports = __webpack_require__(3).Object.keys;
-
-
-/***/ }),
-/* 54 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// 19.1.2.14 Object.keys(O)
-var toObject = __webpack_require__(30);
-var $keys = __webpack_require__(31);
-
-__webpack_require__(55)('keys', function () {
-  return function keys(it) {
-    return $keys(toObject(it));
-  };
-});
-
-
-/***/ }),
-/* 55 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// most Object methods by ES6 should accept primitives
-var $export = __webpack_require__(22);
-var core = __webpack_require__(3);
-var fails = __webpack_require__(19);
-module.exports = function (KEY, exec) {
-  var fn = (core.Object || {})[KEY] || Object[KEY];
-  var exp = {};
-  exp[KEY] = exec(fn);
-  $export($export.S + $export.F * fails(function () { fn(1); }), 'Object', exp);
-};
-
-
-/***/ }),
-/* 56 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(57);
-__webpack_require__(67);
-module.exports = __webpack_require__(69);
-
-
-/***/ }),
-/* 57 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(58);
+__webpack_require__(61);
 var global = __webpack_require__(4);
 var hide = __webpack_require__(8);
-var Iterators = __webpack_require__(21);
-var TO_STRING_TAG = __webpack_require__(9)('toStringTag');
+var Iterators = __webpack_require__(25);
+var TO_STRING_TAG = __webpack_require__(7)('toStringTag');
 
 var DOMIterables = ('CSSRuleList,CSSStyleDeclaration,CSSValueList,ClientRectList,DOMRectList,DOMStringList,' +
   'DOMTokenList,DataTransferItemList,FileList,HTMLAllCollection,HTMLCollection,HTMLFormElement,HTMLSelectElement,' +
@@ -21069,97 +21022,20 @@ for (var i = 0; i < DOMIterables.length; i++) {
 
 
 /***/ }),
-/* 58 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var addToUnscopables = __webpack_require__(59);
-var step = __webpack_require__(60);
-var Iterators = __webpack_require__(21);
-var toIObject = __webpack_require__(16);
-
-// 22.1.3.4 Array.prototype.entries()
-// 22.1.3.13 Array.prototype.keys()
-// 22.1.3.29 Array.prototype.values()
-// 22.1.3.30 Array.prototype[@@iterator]()
-module.exports = __webpack_require__(50)(Array, 'Array', function (iterated, kind) {
-  this._t = toIObject(iterated); // target
-  this._i = 0;                   // next index
-  this._k = kind;                // kind
-// 22.1.5.2.1 %ArrayIteratorPrototype%.next()
-}, function () {
-  var O = this._t;
-  var kind = this._k;
-  var index = this._i++;
-  if (!O || index >= O.length) {
-    this._t = undefined;
-    return step(1);
-  }
-  if (kind == 'keys') return step(0, index);
-  if (kind == 'values') return step(0, O[index]);
-  return step(0, [index, O[index]]);
-}, 'values');
-
-// argumentsList[@@iterator] is %ArrayProto_values% (9.4.4.6, 9.4.4.7)
-Iterators.Arguments = Iterators.Array;
-
-addToUnscopables('keys');
-addToUnscopables('values');
-addToUnscopables('entries');
-
-
-/***/ }),
-/* 59 */
-/***/ (function(module, exports) {
-
-module.exports = function () { /* empty */ };
-
-
-/***/ }),
-/* 60 */
-/***/ (function(module, exports) {
-
-module.exports = function (done, value) {
-  return { value: value, done: !!done };
-};
-
-
-/***/ }),
-/* 61 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(8);
 
 
 /***/ }),
-/* 62 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var create = __webpack_require__(63);
-var descriptor = __webpack_require__(29);
-var setToStringTag = __webpack_require__(51);
-var IteratorPrototype = {};
-
-// 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-__webpack_require__(8)(IteratorPrototype, __webpack_require__(9)('iterator'), function () { return this; });
-
-module.exports = function (Constructor, NAME, next) {
-  Constructor.prototype = create(IteratorPrototype, { next: descriptor(1, next) });
-  setToStringTag(Constructor, NAME + ' Iterator');
-};
-
-
-/***/ }),
-/* 63 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
-var anObject = __webpack_require__(12);
-var dPs = __webpack_require__(64);
-var enumBugKeys = __webpack_require__(27);
+var anObject = __webpack_require__(14);
+var dPs = __webpack_require__(65);
+var enumBugKeys = __webpack_require__(29);
 var IE_PROTO = __webpack_require__(20)('IE_PROTO');
 var Empty = function () { /* empty */ };
 var PROTOTYPE = 'prototype';
@@ -21167,13 +21043,13 @@ var PROTOTYPE = 'prototype';
 // Create object with fake `null` prototype: use iframe Object with cleared prototype
 var createDict = function () {
   // Thrash, waste and sodomy: IE GC bug
-  var iframe = __webpack_require__(28)('iframe');
+  var iframe = __webpack_require__(31)('iframe');
   var i = enumBugKeys.length;
   var lt = '<';
   var gt = '>';
   var iframeDocument;
   iframe.style.display = 'none';
-  __webpack_require__(65).appendChild(iframe);
+  __webpack_require__(66).appendChild(iframe);
   iframe.src = 'javascript:'; // eslint-disable-line no-script-url
   // createDict = iframe.contentWindow.Object;
   // html.removeChild(iframe);
@@ -21200,53 +21076,7 @@ module.exports = Object.create || function create(O, Properties) {
 
 
 /***/ }),
-/* 64 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var dP = __webpack_require__(18);
-var anObject = __webpack_require__(12);
-var getKeys = __webpack_require__(31);
-
-module.exports = __webpack_require__(5) ? Object.defineProperties : function defineProperties(O, Properties) {
-  anObject(O);
-  var keys = getKeys(Properties);
-  var length = keys.length;
-  var i = 0;
-  var P;
-  while (length > i) dP.f(O, P = keys[i++], Properties[P]);
-  return O;
-};
-
-
-/***/ }),
-/* 65 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var document = __webpack_require__(4).document;
-module.exports = document && document.documentElement;
-
-
-/***/ }),
-/* 66 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
-var has = __webpack_require__(10);
-var toObject = __webpack_require__(30);
-var IE_PROTO = __webpack_require__(20)('IE_PROTO');
-var ObjectProto = Object.prototype;
-
-module.exports = Object.getPrototypeOf || function (O) {
-  O = toObject(O);
-  if (has(O, IE_PROTO)) return O[IE_PROTO];
-  if (typeof O.constructor == 'function' && O instanceof O.constructor) {
-    return O.constructor.prototype;
-  } return O instanceof Object ? ObjectProto : null;
-};
-
-
-/***/ }),
-/* 67 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21254,7 +21084,7 @@ module.exports = Object.getPrototypeOf || function (O) {
 var $at = __webpack_require__(68)(true);
 
 // 21.1.3.27 String.prototype[@@iterator]()
-__webpack_require__(50)(String, 'String', function (iterated) {
+__webpack_require__(51)(String, 'String', function (iterated) {
   this._t = String(iterated); // target
   this._i = 0;                // next index
 // 21.1.5.2.1 %StringIteratorPrototype%.next()
@@ -21270,11 +21100,182 @@ __webpack_require__(50)(String, 'String', function (iterated) {
 
 
 /***/ }),
+/* 57 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(58);
+module.exports = __webpack_require__(3).Object.keys;
+
+
+/***/ }),
+/* 58 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 19.1.2.14 Object.keys(O)
+var toObject = __webpack_require__(30);
+var $keys = __webpack_require__(26);
+
+__webpack_require__(59)('keys', function () {
+  return function keys(it) {
+    return $keys(toObject(it));
+  };
+});
+
+
+/***/ }),
+/* 59 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// most Object methods by ES6 should accept primitives
+var $export = __webpack_require__(23);
+var core = __webpack_require__(3);
+var fails = __webpack_require__(15);
+module.exports = function (KEY, exec) {
+  var fn = (core.Object || {})[KEY] || Object[KEY];
+  var exp = {};
+  exp[KEY] = exec(fn);
+  $export($export.S + $export.F * fails(function () { fn(1); }), 'Object', exp);
+};
+
+
+/***/ }),
+/* 60 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(53);
+__webpack_require__(56);
+module.exports = __webpack_require__(69);
+
+
+/***/ }),
+/* 61 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var addToUnscopables = __webpack_require__(62);
+var step = __webpack_require__(63);
+var Iterators = __webpack_require__(25);
+var toIObject = __webpack_require__(11);
+
+// 22.1.3.4 Array.prototype.entries()
+// 22.1.3.13 Array.prototype.keys()
+// 22.1.3.29 Array.prototype.values()
+// 22.1.3.30 Array.prototype[@@iterator]()
+module.exports = __webpack_require__(51)(Array, 'Array', function (iterated, kind) {
+  this._t = toIObject(iterated); // target
+  this._i = 0;                   // next index
+  this._k = kind;                // kind
+// 22.1.5.2.1 %ArrayIteratorPrototype%.next()
+}, function () {
+  var O = this._t;
+  var kind = this._k;
+  var index = this._i++;
+  if (!O || index >= O.length) {
+    this._t = undefined;
+    return step(1);
+  }
+  if (kind == 'keys') return step(0, index);
+  if (kind == 'values') return step(0, O[index]);
+  return step(0, [index, O[index]]);
+}, 'values');
+
+// argumentsList[@@iterator] is %ArrayProto_values% (9.4.4.6, 9.4.4.7)
+Iterators.Arguments = Iterators.Array;
+
+addToUnscopables('keys');
+addToUnscopables('values');
+addToUnscopables('entries');
+
+
+/***/ }),
+/* 62 */
+/***/ (function(module, exports) {
+
+module.exports = function () { /* empty */ };
+
+
+/***/ }),
+/* 63 */
+/***/ (function(module, exports) {
+
+module.exports = function (done, value) {
+  return { value: value, done: !!done };
+};
+
+
+/***/ }),
+/* 64 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var create = __webpack_require__(55);
+var descriptor = __webpack_require__(24);
+var setToStringTag = __webpack_require__(35);
+var IteratorPrototype = {};
+
+// 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
+__webpack_require__(8)(IteratorPrototype, __webpack_require__(7)('iterator'), function () { return this; });
+
+module.exports = function (Constructor, NAME, next) {
+  Constructor.prototype = create(IteratorPrototype, { next: descriptor(1, next) });
+  setToStringTag(Constructor, NAME + ' Iterator');
+};
+
+
+/***/ }),
+/* 65 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var dP = __webpack_require__(12);
+var anObject = __webpack_require__(14);
+var getKeys = __webpack_require__(26);
+
+module.exports = __webpack_require__(5) ? Object.defineProperties : function defineProperties(O, Properties) {
+  anObject(O);
+  var keys = getKeys(Properties);
+  var length = keys.length;
+  var i = 0;
+  var P;
+  while (length > i) dP.f(O, P = keys[i++], Properties[P]);
+  return O;
+};
+
+
+/***/ }),
+/* 66 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var document = __webpack_require__(4).document;
+module.exports = document && document.documentElement;
+
+
+/***/ }),
+/* 67 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
+var has = __webpack_require__(6);
+var toObject = __webpack_require__(30);
+var IE_PROTO = __webpack_require__(20)('IE_PROTO');
+var ObjectProto = Object.prototype;
+
+module.exports = Object.getPrototypeOf || function (O) {
+  O = toObject(O);
+  if (has(O, IE_PROTO)) return O[IE_PROTO];
+  if (typeof O.constructor == 'function' && O instanceof O.constructor) {
+    return O.constructor.prototype;
+  } return O instanceof Object ? ObjectProto : null;
+};
+
+
+/***/ }),
 /* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var toInteger = __webpack_require__(17);
-var defined = __webpack_require__(15);
+var toInteger = __webpack_require__(18);
+var defined = __webpack_require__(17);
 // true  -> String#at
 // false -> String#codePointAt
 module.exports = function (TO_STRING) {
@@ -21296,7 +21297,7 @@ module.exports = function (TO_STRING) {
 /* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var anObject = __webpack_require__(12);
+var anObject = __webpack_require__(14);
 var get = __webpack_require__(70);
 module.exports = __webpack_require__(3).getIterator = function (it) {
   var iterFn = get(it);
@@ -21310,8 +21311,8 @@ module.exports = __webpack_require__(3).getIterator = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var classof = __webpack_require__(71);
-var ITERATOR = __webpack_require__(9)('iterator');
-var Iterators = __webpack_require__(21);
+var ITERATOR = __webpack_require__(7)('iterator');
+var Iterators = __webpack_require__(25);
 module.exports = __webpack_require__(3).getIteratorMethod = function (it) {
   if (it != undefined) return it[ITERATOR]
     || it['@@iterator']
@@ -21324,8 +21325,8 @@ module.exports = __webpack_require__(3).getIteratorMethod = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // getting tag from 19.1.3.6 Object.prototype.toString()
-var cof = __webpack_require__(23);
-var TAG = __webpack_require__(9)('toStringTag');
+var cof = __webpack_require__(27);
+var TAG = __webpack_require__(7)('toStringTag');
 // ES3 wrong here
 var ARG = cof(function () { return arguments; }()) == 'Arguments';
 
@@ -21355,7 +21356,7 @@ module.exports = function (it) {
 "use strict";
 
 
-var _getIterator2 = __webpack_require__(49);
+var _getIterator2 = __webpack_require__(50);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -21839,7 +21840,7 @@ module.exports = {
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
-var Vue = __webpack_require__(6);
+var Vue = __webpack_require__(9);
 Vue = 'default' in Vue ? Vue['default'] : Vue;
 
 var version = '2.2.2';
@@ -21920,22 +21921,25 @@ var mixin = {
 exports.version = version;
 exports.directive = directive;
 exports.mixin = mixin;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
 
 /***/ }),
 /* 74 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"form-autocomplete\" style=\"width: 100%;\" v-on-clickaway=\"closeDropdown\">\n\t\t<!-- autocomplete input container -->\n\t\t<div class=\"form-autocomplete-input form-input\" :class=\"is_focused\">\n\t\t\t\n\t\t\t<!-- autocomplete chips -->\n\t\t\t<label class=\"chip\" v-for=\"( option, index ) in selected\">\n\t\t\t\t{{option.name}}\n\t\t\t\t<a href=\"#\" class=\"btn btn-clear\" aria-label=\"Close\" @click.prevent=\"removeSelected(index)\"\n\t\t\t\t   role=\"button\"></a>\n\t\t\t</label>\n\t\t\t\n\t\t\t<!-- autocomplete real input box -->\n\t\t\t<input style=\"height: 1.0rem;\" class=\"form-input\" type=\"text\" ref=\"search\" v-model=\"search\"\n\t\t\t       :placeholder=\"autocomplete_placeholder\" @click=\"magic_flag = true\" @focus=\"magic_flag = true\"\n\t\t\t       @keyup=\"magic_flag = true\" @keydown.8=\"popLast()\" @keydown.38=\"highlightItem(true)\"\n\t\t\t       @keydown.40=\"highlightItem()\" :disabled=\"is_disabled\">\n\t\t</div>\n\t\t\n\t\t<!-- autocomplete suggestion list -->\n\t\t<ul class=\"menu\" ref=\"autocomplete_results\" :class=\"is_visible\"\n\t\t    style=\"overflow-y: scroll; max-height: 120px\">\n\t\t\t<!-- menu list chips -->\n\t\t\t<li class=\"menu-item\" v-for=\"( option, index ) in options\" v-if=\"filterSearch(option)\">\n\t\t\t\t<a href=\"#\" @click.prevent=\"addToSelected(index)\" @keydown.38=\"highlightItem(true)\"\n\t\t\t\t   @keydown.40=\"highlightItem()\">\n\t\t\t\t\t<div class=\"tile tile-centered\">\n\t\t\t\t\t\t<div class=\"tile-content\" v-html=\"markMatch(option.name, search)\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</a>\n\t\t\t</li>\n\t\t\t<li v-if=\"has_results\">\n\t\t\t\t<a href=\"#\">\n\t\t\t\t\t<div class=\"tile tile-centered\">\n\t\t\t\t\t\t<div class=\"tile-content\"><i>{{labels.multiselect_not_found}}\"{{search}}\" ...</i></div>\n\t\t\t\t\t</div>\n\t\t\t\t</a>\n\t\t\t</li>\n\t\t</ul>\n\t</div>\n\n";
+module.exports = "\r\n\t<div class=\"form-autocomplete\" style=\"width: 100%;\" v-on-clickaway=\"closeDropdown\">\r\n\t\t<!-- autocomplete input container -->\r\n\t\t<div class=\"form-autocomplete-input form-input\" :class=\"is_focused\">\r\n\t\t\t\r\n\t\t\t<!-- autocomplete chips -->\r\n\t\t\t<label class=\"chip\" v-for=\"( option, index ) in selected\">\r\n\t\t\t\t{{option.name}}\r\n\t\t\t\t<a href=\"#\" class=\"btn btn-clear\" aria-label=\"Close\" @click.prevent=\"removeSelected(index)\"\r\n\t\t\t\t   role=\"button\"></a>\r\n\t\t\t</label>\r\n\t\t\t\r\n\t\t\t<!-- autocomplete real input box -->\r\n\t\t\t<input style=\"height: 1.0rem;\" class=\"form-input\" type=\"text\" ref=\"search\" v-model=\"search\"\r\n\t\t\t       :placeholder=\"autocomplete_placeholder\" @click=\"magic_flag = true\" @focus=\"magic_flag = true\"\r\n\t\t\t       @keyup=\"magic_flag = true\" @keydown.8=\"popLast()\" @keydown.38=\"highlightItem(true)\"\r\n\t\t\t       @keydown.40=\"highlightItem()\" :disabled=\"is_disabled\">\r\n\t\t</div>\r\n\t\t\r\n\t\t<!-- autocomplete suggestion list -->\r\n\t\t<ul class=\"menu\" ref=\"autocomplete_results\" :class=\"is_visible\"\r\n\t\t    style=\"overflow-y: scroll; max-height: 120px\">\r\n\t\t\t<!-- menu list chips -->\r\n\t\t\t<li class=\"menu-item\" v-for=\"( option, index ) in options\" v-if=\"filterSearch(option)\">\r\n\t\t\t\t<a href=\"#\" @click.prevent=\"addToSelected(index)\" @keydown.38=\"highlightItem(true)\"\r\n\t\t\t\t   @keydown.40=\"highlightItem()\">\r\n\t\t\t\t\t<div class=\"tile tile-centered\">\r\n\t\t\t\t\t\t<div class=\"tile-content\" v-html=\"markMatch(option.name, search)\"></div>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</a>\r\n\t\t\t</li>\r\n\t\t\t<li v-if=\"has_results\">\r\n\t\t\t\t<a href=\"#\">\r\n\t\t\t\t\t<div class=\"tile tile-centered\">\r\n\t\t\t\t\t\t<div class=\"tile-content\"><i>{{labels.multiselect_not_found}}\"{{search}}\" ...</i></div>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</a>\r\n\t\t\t</li>\r\n\t\t</ul>\r\n\t</div>\r\n\r\n";
 
 /***/ }),
-/* 75 */
+/* 75 */,
+/* 76 */,
+/* 77 */,
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(76)
-__vue_script__ = __webpack_require__(78)
-__vue_template__ = __webpack_require__(79)
+__webpack_require__(79)
+__vue_script__ = __webpack_require__(81)
+__vue_template__ = __webpack_require__(82)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -21943,7 +21947,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/uvdev/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/button-checkbox.vue"
+  var id = "E:\\work\\projects\\webdesign\\wordpress-themeisle\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\button-checkbox.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -21952,13 +21956,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 76 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(77);
+var content = __webpack_require__(80);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -21967,8 +21971,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1c9c2ce2&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1c9c2ce2&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-03c0a06f&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-03c0a06f&file=button-checkbox.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./button-checkbox.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -21978,7 +21982,7 @@ if(false) {
 }
 
 /***/ }),
-/* 77 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -21986,13 +21990,13 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .input-group .input-group-addon.btn.active[_v-1c9c2ce2] {\n\t\tbackground-color: #8bc34a;\n\t\tborder-color: #33691e;\n\t\tcolor: #FFF;\n\t}\n", ""]);
+exports.push([module.i, "\r\n\t#rop_core .input-group .input-group-addon.btn.active[_v-03c0a06f] {\r\n\t\tbackground-color: #8bc34a;\r\n\t\tborder-color: #33691e;\r\n\t\tcolor: #FFF;\r\n\t}\r\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 78 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22068,19 +22072,19 @@ module.exports = {
 };
 
 /***/ }),
-/* 79 */
+/* 82 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<button class=\"btn input-group-addon column\" :class=\"is_active\" @click=\"toggleThis()\" _v-1c9c2ce2=\"\">{{label}}</button>\n";
+module.exports = "\n\t<button class=\"btn input-group-addon column\" :class=\"is_active\" @click=\"toggleThis()\" _v-03c0a06f=\"\">{{label}}</button>\n";
 
 /***/ }),
-/* 80 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(81)
-__vue_script__ = __webpack_require__(83)
-__vue_template__ = __webpack_require__(84)
+__webpack_require__(84)
+__vue_script__ = __webpack_require__(86)
+__vue_template__ = __webpack_require__(87)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -22088,7 +22092,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/uvdev/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/upsell-sidebar.vue"
+  var id = "E:\\work\\projects\\webdesign\\wordpress-themeisle\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\upsell-sidebar.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -22097,13 +22101,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 81 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(82);
+var content = __webpack_require__(85);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -22112,8 +22116,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4cbae0f4&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4cbae0f4&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-b69b9a32&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-b69b9a32&file=upsell-sidebar.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./upsell-sidebar.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -22123,7 +22127,7 @@ if(false) {
 }
 
 /***/ }),
-/* 82 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -22131,13 +22135,13 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop-upsell-box[_v-4cbae0f4]{\n\t\tmargin-top:20px;\n\t}\n\t#rop_core .rop-upsell-business-card[_v-4cbae0f4],\n\t#rop_core .rop-upsell-pro-card[_v-4cbae0f4] {\n\t\tpadding: 0;\n\t}\n", ""]);
+exports.push([module.i, "\r\n\t#rop-upsell-box[_v-b69b9a32]{\r\n\t\tmargin-top:20px;\r\n\t}\r\n\t#rop_core .rop-upsell-business-card[_v-b69b9a32],\r\n\t#rop_core .rop-upsell-pro-card[_v-b69b9a32] {\r\n\t\tpadding: 0;\r\n\t}\r\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 83 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22185,19 +22189,19 @@ module.exports = {
 };
 
 /***/ }),
-/* 84 */
+/* 87 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div id=\"rop-upsell-box\" _v-4cbae0f4=\"\">\n\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \" _v-4cbae0f4=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-4cbae0f4=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_pro_upsell\" :alt=\"labels.upgrade_pro_cta\" _v-4cbae0f4=\"\">\n\t\t\t</a>\n\t\t</div>\n\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1\" _v-4cbae0f4=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-4cbae0f4=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_business_upsell\" :alt=\"labels.upgrade_biz_cta\" _v-4cbae0f4=\"\">\n\t\t\t</a>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div id=\"rop-upsell-box\" _v-b69b9a32=\"\">\n\t\t<div class=\"card rop-upsell-pro-card\" v-if=\"license  < 1 \" _v-b69b9a32=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-b69b9a32=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_pro_upsell\" :alt=\"labels.upgrade_pro_cta\" _v-b69b9a32=\"\">\n\t\t\t</a>\n\t\t</div>\n\t\t<div class=\"card rop-upsell-business-card\" v-if=\"license  === 1\" _v-b69b9a32=\"\">\n\t\t\t<a :href=\"upsell_link\" target=\"_blank\" _v-b69b9a32=\"\">\n\t\t\t\t<img class=\"img-responsive\" :src=\"to_business_upsell\" :alt=\"labels.upgrade_biz_cta\" _v-b69b9a32=\"\">\n\t\t\t</a>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 85 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(223)
-__vue_script__ = __webpack_require__(225)
-__vue_template__ = __webpack_require__(226)
+__webpack_require__(228)
+__vue_script__ = __webpack_require__(230)
+__vue_template__ = __webpack_require__(231)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -22205,7 +22209,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/uvdev/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/sign-in-btn.vue"
+  var id = "E:\\work\\projects\\webdesign\\wordpress-themeisle\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\sign-in-btn.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -22214,13 +22218,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 86 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(252)
-__vue_script__ = __webpack_require__(254)
-__vue_template__ = __webpack_require__(255)
+__webpack_require__(257)
+__vue_script__ = __webpack_require__(259)
+__vue_template__ = __webpack_require__(260)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -22228,7 +22232,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/uvdev/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/counter-input.vue"
+  var id = "E:\\work\\projects\\webdesign\\wordpress-themeisle\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\counter-input.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -22237,7 +22241,9 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 87 */
+/* 90 */,
+/* 91 */,
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22314,7 +22320,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 88 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22453,7 +22459,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 89 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22516,7 +22522,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 90 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22579,7 +22585,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 91 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22705,7 +22711,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 92 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22768,7 +22774,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 93 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22876,7 +22882,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 94 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22939,7 +22945,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 95 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23048,7 +23054,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 96 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23184,7 +23190,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 97 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23278,7 +23284,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 98 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23340,7 +23346,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 99 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23463,7 +23469,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 100 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23586,7 +23592,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 101 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23698,7 +23704,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 102 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23853,7 +23859,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 103 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23945,7 +23951,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 104 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24121,7 +24127,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 105 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24188,7 +24194,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 106 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24272,7 +24278,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 107 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24336,7 +24342,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 108 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24416,7 +24422,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 109 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24496,7 +24502,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 110 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24576,7 +24582,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 111 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24679,7 +24685,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 112 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24783,7 +24789,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 113 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24854,7 +24860,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 114 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24925,7 +24931,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 115 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24992,7 +24998,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 116 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25063,7 +25069,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 117 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25134,7 +25140,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 118 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25200,7 +25206,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 119 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25271,7 +25277,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 120 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25346,7 +25352,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 121 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25442,7 +25448,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 122 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25538,7 +25544,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 123 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25634,7 +25640,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 124 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25718,7 +25724,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 125 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25788,7 +25794,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 126 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25898,7 +25904,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 127 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26011,7 +26017,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 128 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26075,7 +26081,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 129 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26162,7 +26168,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 130 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26240,7 +26246,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 131 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26322,7 +26328,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 132 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26401,7 +26407,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 133 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26482,7 +26488,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 134 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26562,7 +26568,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 135 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26643,7 +26649,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 136 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26770,7 +26776,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 137 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26898,7 +26904,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 138 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26999,7 +27005,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 139 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27127,7 +27133,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 140 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27285,7 +27291,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 141 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27399,7 +27405,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 142 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27498,7 +27504,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 143 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27584,7 +27590,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 144 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27720,7 +27726,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 145 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27793,7 +27799,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 146 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27866,7 +27872,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 147 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27962,7 +27968,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 148 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28048,7 +28054,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 149 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28141,7 +28147,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 150 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28232,7 +28238,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 151 */
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28346,7 +28352,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 152 */
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28476,7 +28482,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 153 */
+/* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28561,7 +28567,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 154 */
+/* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28684,7 +28690,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 155 */
+/* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28775,7 +28781,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 156 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28915,7 +28921,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 157 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28989,7 +28995,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 158 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29111,7 +29117,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 159 */
+/* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29212,7 +29218,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 160 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29328,7 +29334,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 161 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29396,7 +29402,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 162 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29490,7 +29496,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 163 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29575,7 +29581,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 164 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29683,7 +29689,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 165 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29847,7 +29853,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 166 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -29933,7 +29939,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 167 */
+/* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30019,7 +30025,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 168 */
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30083,7 +30089,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 169 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30180,7 +30186,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 170 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30246,7 +30252,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 171 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30373,7 +30379,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 172 */
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30464,7 +30470,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 173 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30555,7 +30561,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 174 */
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30619,7 +30625,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 175 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30747,7 +30753,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 176 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30877,7 +30883,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 177 */
+/* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -30946,7 +30952,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 178 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31011,7 +31017,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 179 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31090,7 +31096,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 180 */
+/* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31276,7 +31282,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 181 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31378,7 +31384,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 182 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31442,7 +31448,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 183 */
+/* 188 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31517,7 +31523,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 184 */
+/* 189 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31677,7 +31683,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 185 */
+/* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31854,7 +31860,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 186 */
+/* 191 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -31926,7 +31932,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 187 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32041,7 +32047,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 188 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32156,7 +32162,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 189 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32248,7 +32254,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 190 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32321,7 +32327,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 191 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32384,7 +32390,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 192 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32517,7 +32523,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 193 */
+/* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32610,7 +32616,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 194 */
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32681,7 +32687,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 195 */
+/* 200 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32801,7 +32807,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 196 */
+/* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32872,7 +32878,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 197 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32938,7 +32944,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 198 */
+/* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -33064,7 +33070,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 199 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -33162,7 +33168,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 200 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -33257,7 +33263,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 201 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -33319,7 +33325,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 202 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -33381,7 +33387,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 203 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js language configuration
@@ -33504,7 +33510,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 204 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -33662,7 +33668,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 205 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -33764,7 +33770,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 206 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -33826,7 +33832,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 207 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -33888,7 +33894,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 208 */
+/* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -33971,7 +33977,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 209 */
+/* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -34043,7 +34049,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 210 */
+/* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -34107,7 +34113,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 211 */
+/* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -34221,7 +34227,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 212 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -34328,7 +34334,7 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 213 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -34435,21 +34441,21 @@ if (false) {(function () {  module.hot.accept()
 
 
 /***/ }),
-/* 214 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _vue = __webpack_require__(6);
+var _vue = __webpack_require__(9);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _rop_store = __webpack_require__(34);
+var _rop_store = __webpack_require__(38);
 
 var _rop_store2 = _interopRequireDefault(_rop_store);
 
-var _mainPagePanel = __webpack_require__(215);
+var _mainPagePanel = __webpack_require__(220);
 
 var _mainPagePanel2 = _interopRequireDefault(_mainPagePanel);
 
@@ -34474,13 +34480,13 @@ window.addEventListener('load', function () {
 /* exported RopApp */
 
 /***/ }),
-/* 215 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(216)
-__vue_script__ = __webpack_require__(218)
-__vue_template__ = __webpack_require__(312)
+__webpack_require__(221)
+__vue_script__ = __webpack_require__(223)
+__vue_template__ = __webpack_require__(331)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -34488,7 +34494,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/uvdev/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/main-page-panel.vue"
+  var id = "E:\\work\\projects\\webdesign\\wordpress-themeisle\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\main-page-panel.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -34497,13 +34503,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 216 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(217);
+var content = __webpack_require__(222);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -34512,8 +34518,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-65822112&file=main-page-panel.vue!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./main-page-panel.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-65822112&file=main-page-panel.vue!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./main-page-panel.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0c750d7f&file=main-page-panel.vue!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./main-page-panel.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0c750d7f&file=main-page-panel.vue!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./main-page-panel.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -34523,7 +34529,7 @@ if(false) {
 }
 
 /***/ }),
-/* 217 */
+/* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -34531,47 +34537,47 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n    #rop_core .badge[data-badge]::after {\n        position: absolute;\n        bottom: -16px;\n        right: 0px;\n    }\n\n    #rop_core .rop-api-not-available {\n        margin: 10px 0px 10px 0px;\n    }\n\n    #rop_core .badge.badge-logs::after {\n        right: auto;\n        top: 0px;\n    }\n\n    #rop_core .badge.badge-logs {\n        padding-right: 10px;\n    }\n", ""]);
+exports.push([module.i, "\r\n    #rop_core .badge[data-badge]::after {\r\n        position: absolute;\r\n        bottom: -16px;\r\n        right: 0px;\r\n    }\r\n\r\n    #rop_core .rop-api-not-available {\r\n        margin: 10px 0px 10px 0px;\r\n    }\r\n\r\n    #rop_core .badge.badge-logs::after {\r\n        right: auto;\r\n        top: 0px;\r\n    }\r\n\r\n    #rop_core .badge.badge-logs {\r\n        padding-right: 10px;\r\n    }\r\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 218 */
+/* 223 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _keys = __webpack_require__(14);
+var _keys = __webpack_require__(19);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _accountsTabPanel = __webpack_require__(219);
+var _accountsTabPanel = __webpack_require__(224);
 
 var _accountsTabPanel2 = _interopRequireDefault(_accountsTabPanel);
 
-var _settingsTabPanel = __webpack_require__(248);
+var _settingsTabPanel = __webpack_require__(253);
 
 var _settingsTabPanel2 = _interopRequireDefault(_settingsTabPanel);
 
-var _accountsSelectorPanel = __webpack_require__(258);
+var _accountsSelectorPanel = __webpack_require__(263);
 
 var _accountsSelectorPanel2 = _interopRequireDefault(_accountsSelectorPanel);
 
-var _queueTabPanel = __webpack_require__(287);
+var _queueTabPanel = __webpack_require__(306);
 
 var _queueTabPanel2 = _interopRequireDefault(_queueTabPanel);
 
-var _logsTabPanel = __webpack_require__(295);
+var _logsTabPanel = __webpack_require__(314);
 
 var _logsTabPanel2 = _interopRequireDefault(_logsTabPanel);
 
-var _toast = __webpack_require__(300);
+var _toast = __webpack_require__(319);
 
 var _toast2 = _interopRequireDefault(_toast);
 
-var _countdown = __webpack_require__(305);
+var _countdown = __webpack_require__(324);
 
 var _countdown2 = _interopRequireDefault(_countdown);
 
@@ -34579,7 +34585,7 @@ var _moment = __webpack_require__(0);
 
 var _moment2 = _interopRequireDefault(_moment);
 
-var _upsellSidebar = __webpack_require__(80);
+var _upsellSidebar = __webpack_require__(83);
 
 var _upsellSidebar2 = _interopRequireDefault(_upsellSidebar);
 
@@ -34964,13 +34970,13 @@ module.exports = {
 /* global ROP_ASSETS_URL */
 
 /***/ }),
-/* 219 */
+/* 224 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(220)
-__vue_script__ = __webpack_require__(222)
-__vue_template__ = __webpack_require__(247)
+__webpack_require__(225)
+__vue_script__ = __webpack_require__(227)
+__vue_template__ = __webpack_require__(252)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -34978,7 +34984,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/uvdev/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/accounts-tab-panel.vue"
+  var id = "E:\\work\\projects\\webdesign\\wordpress-themeisle\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\accounts-tab-panel.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -34987,13 +34993,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 220 */
+/* 225 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(221);
+var content = __webpack_require__(226);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -35002,8 +35008,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-45c67b1d&file=accounts-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-tab-panel.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-45c67b1d&file=accounts-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-tab-panel.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4d0d9b90&file=accounts-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-tab-panel.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4d0d9b90&file=accounts-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-tab-panel.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -35013,7 +35019,7 @@ if(false) {
 }
 
 /***/ }),
-/* 221 */
+/* 226 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -35021,35 +35027,35 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n    #rop_core .columns.py-2 .text-gray[_v-45c67b1d] {\n        margin: 0;\n        line-height: normal;\n    }\n\n    #rop_core .input-group[_v-45c67b1d] {\n        width: 100%;\n    }\n\n    b[_v-45c67b1d] {\n        margin-bottom: 5px;\n        display: block;\n    }\n\n    #rop_core .text-gray b[_v-45c67b1d] {\n        display: inline;\n    }\n\n    #rop_core .input-group .input-group-addon[_v-45c67b1d] {\n        padding: 3px 5px;\n    }\n\n    #rop_core .rop-available-accounts h5[_v-45c67b1d] {\n        margin-bottom: 15px;\n    }\n\n    @media ( max-width: 600px ) {\n        #rop_core .panel-body .text-gray[_v-45c67b1d] {\n            margin-bottom: 10px;\n        }\n\n        #rop_core .text-right[_v-45c67b1d] {\n            text-align: left;\n        }\n    }\n", ""]);
+exports.push([module.i, "\r\n    #rop_core .columns.py-2 .text-gray[_v-4d0d9b90] {\r\n        margin: 0;\r\n        line-height: normal;\r\n    }\r\n\r\n    #rop_core .input-group[_v-4d0d9b90] {\r\n        width: 100%;\r\n    }\r\n\r\n    b[_v-4d0d9b90] {\r\n        margin-bottom: 5px;\r\n        display: block;\r\n    }\r\n\r\n    #rop_core .text-gray b[_v-4d0d9b90] {\r\n        display: inline;\r\n    }\r\n\r\n    #rop_core .input-group .input-group-addon[_v-4d0d9b90] {\r\n        padding: 3px 5px;\r\n    }\r\n\r\n    #rop_core .rop-available-accounts h5[_v-4d0d9b90] {\r\n        margin-bottom: 15px;\r\n    }\r\n\r\n    @media ( max-width: 600px ) {\r\n        #rop_core .panel-body .text-gray[_v-4d0d9b90] {\r\n            margin-bottom: 10px;\r\n        }\r\n\r\n        #rop_core .text-right[_v-4d0d9b90] {\r\n            text-align: left;\r\n        }\r\n    }\r\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 222 */
+/* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _keys = __webpack_require__(14);
+var _keys = __webpack_require__(19);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _signInBtn = __webpack_require__(85);
+var _signInBtn = __webpack_require__(88);
 
 var _signInBtn2 = _interopRequireDefault(_signInBtn);
 
-var _serviceUserTile = __webpack_require__(227);
+var _serviceUserTile = __webpack_require__(232);
 
 var _serviceUserTile2 = _interopRequireDefault(_serviceUserTile);
 
-var _addAccountTile = __webpack_require__(232);
+var _addAccountTile = __webpack_require__(237);
 
 var _addAccountTile2 = _interopRequireDefault(_addAccountTile);
 
-var _vueSpinner = __webpack_require__(237);
+var _vueSpinner = __webpack_require__(242);
 
 var _vueSpinner2 = _interopRequireDefault(_vueSpinner);
 
@@ -35252,13 +35258,13 @@ module.exports = {
 };
 
 /***/ }),
-/* 223 */
+/* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(224);
+var content = __webpack_require__(229);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -35267,8 +35273,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-90680408&file=sign-in-btn.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./sign-in-btn.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-90680408&file=sign-in-btn.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./sign-in-btn.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-304fae2e&file=sign-in-btn.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./sign-in-btn.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-304fae2e&file=sign-in-btn.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./sign-in-btn.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -35278,7 +35284,7 @@ if(false) {
 }
 
 /***/ }),
-/* 224 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -35286,23 +35292,23 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop-sign-in-area .btn[disabled][_v-90680408]{\n\t\tcursor:not-allowed;\n\t\tpointer-events: auto;\n\t\topacity: 0.3;\n\t}\n\t.big-btn#gmb-btn[_v-90680408]{\n\tpadding: 0 35px 0 14px;\n\t}\n\t.btn-gmb[_v-90680408]{\n\ttext-transform: uppercase;\n\t}\n", ""]);
+exports.push([module.i, "\r\n\t#rop-sign-in-area .btn[disabled][_v-304fae2e]{\r\n\t\tcursor:not-allowed;\r\n\t\tpointer-events: auto;\r\n\t\topacity: 0.3;\r\n\t}\r\n\t.big-btn#gmb-btn[_v-304fae2e]{\r\n\tpadding: 0 35px 0 14px;\r\n\t}\r\n\t.btn-gmb[_v-304fae2e]{\r\n\ttext-transform: uppercase;\r\n\t}\r\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 225 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _keys = __webpack_require__(14);
+var _keys = __webpack_require__(19);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _getIterator2 = __webpack_require__(49);
+var _getIterator2 = __webpack_require__(50);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -35976,19 +35982,19 @@ module.exports = {
 };
 
 /***/ }),
-/* 226 */
+/* 231 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div id=\"rop-sign-in-area\" _v-90680408=\"\">\n\t\t<div class=\"input-group text-right buttons-wrap\" _v-90680408=\"\">\n\t\t\t<button v-for=\"( service, network ) in services\" :disabled=\"checkDisabled( service, network )\" :title=\"getTooltip( service, network )\" class=\"btn input-group-btn\" :class=\"'btn-' + network\" @click=\"requestAuthorization( network )\" _v-90680408=\"\">\n\t\t\t\t<i v-if=\"network !== 'gmb'\" class=\"fa fa-fw\" :class=\"'fa-' + network\" _v-90680408=\"\"></i>\n\t\t\t\t<i v-if=\"network === 'gmb'\" class=\"fa fa-fw fa-google\" _v-90680408=\"\"></i>\n\t\t\t\t{{service.name}}\n\t\t\t</button>\n\n\t\t</div>\n\n\t\t<div class=\"modal\" :class=\"modalActiveClass\" _v-90680408=\"\">\n\t\t\t<div class=\"modal-overlay\" _v-90680408=\"\"></div>\n\t\t\t<div class=\"modal-container\" _v-90680408=\"\">\n\t\t\t\t<div class=\"modal-header\" _v-90680408=\"\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"cancelModal()\" _v-90680408=\"\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\" _v-90680408=\"\">{{ modal.serviceName }} {{labels.service_popup_title}}</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\" _v-90680408=\"\">\n\t\t\t\t\t<div class=\"content\" _v-90680408=\"\">\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isFacebook\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupFB()\" _v-90680408=\"\">{{labels.fb_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<div v-if=\"!hideOwnAppOption\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-90680408=\"\">{{labels.app_option_signin}}</span>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isTwitter\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupTW()\" _v-90680408=\"\">{{labels.tw_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<div v-if=\"!hideOwnAppOption\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-90680408=\"\">{{labels.app_option_signin}}</span>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isLinkedIn\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupLI()\" _v-90680408=\"\">{{labels.li_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<div v-if=\"!hideOwnAppOption\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-90680408=\"\">{{labels.app_option_signin}}</span>\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isTumblr &amp;&amp; isAllowedTumblr\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupTumblr()\" _v-90680408=\"\">{{labels.tumblr_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<div v-if=\"!hideOwnAppOption\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-90680408=\"\">{{labels.app_option_signin}}</span>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isGmb\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" id=\"gmb-btn\" @click=\"openPopupGmb()\" _v-90680408=\"\">{{labels.gmb_app_signin_btn}}</button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isVk\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" id=\"vk-btn\" @click=\"openPopupVk()\" _v-90680408=\"\">{{labels.vk_app_signin_btn}}</button>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<div v-if=\"!hideOwnAppOption\" _v-90680408=\"\">\n\t\t\t\t\t\t<div id=\"rop-advanced-config\" v-if=\"isFacebook || isTwitter || isLinkedIn || (isTumblr &amp;&amp; isAllowedTumblr)\" _v-90680408=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-primary\" v-on:click=\"showAdvanceConfig = !showAdvanceConfig\" _v-90680408=\"\">{{labels.show_advance_config}}</button>\n\t\t\t\t\t </div>\n\t\t\t\t\t\t<div v-if=\"showAdvanceConfig &amp;&amp; (isFacebook || isTwitter || isLinkedIn || (isTumblr &amp;&amp; isAllowedTumblr) )\" _v-90680408=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-90680408=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input :class=\"[ 'form-input', field.error ? ' is-error' : '' ]\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<small class=\"text-error\" v-if=\"field.error\" _v-90680408=\"\">{{labels.field_required}}</small>\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-90680408=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t\t<div v-if=\"(!isTwitter &amp;&amp; !isFacebook &amp;&amp; !isLinkedIn &amp;&amp; !isGmb &amp;&amp; !isTumblr &amp;&amp; !isVk) || (isTumblr &amp;&amp; !isAllowedTumblr)\" _v-90680408=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-90680408=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input :class=\"[ 'form-input', field.error ? ' is-error' : '' ]\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-90680408=\"\">\n\t\t\t\t\t\t\t<small class=\"text-error\" v-if=\"field.error\" _v-90680408=\"\">{{labels.field_required}}</small>\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-90680408=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<div v-if=\"isFacebook || isTwitter || isLinkedIn || isGmb || isVk ||(isTumblr &amp;&amp; isAllowedTumblr)\" class=\"modal-footer\" _v-90680408=\"\">\n\t\t\t\t\t<p class=\"text-left pull-left mr-2\" v-html=\"labels.rs_app_info\" _v-90680408=\"\"></p>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"showAdvanceConfig &amp;&amp; (isFacebook || isTwitter || isLinkedIn || isTumblr)\" class=\"modal-footer\" _v-90680408=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-90680408=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-90680408=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"(!isTwitter &amp;&amp; !isFacebook &amp;&amp; !isLinkedIn &amp;&amp; !isGmb &amp;&amp; !isTumblr &amp;&amp; !isVk) || (isTumblr &amp;&amp; !isAllowedTumblr)\" class=\"modal-footer\" _v-90680408=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-90680408=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-90680408=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div id=\"rop-sign-in-area\" _v-304fae2e=\"\">\n\t\t<div class=\"input-group text-right buttons-wrap\" _v-304fae2e=\"\">\n\t\t\t<button v-for=\"( service, network ) in services\" :disabled=\"checkDisabled( service, network )\" :title=\"getTooltip( service, network )\" class=\"btn input-group-btn\" :class=\"'btn-' + network\" @click=\"requestAuthorization( network )\" _v-304fae2e=\"\">\n\t\t\t\t<i v-if=\"network !== 'gmb'\" class=\"fa fa-fw\" :class=\"'fa-' + network\" _v-304fae2e=\"\"></i>\n\t\t\t\t<i v-if=\"network === 'gmb'\" class=\"fa fa-fw fa-google\" _v-304fae2e=\"\"></i>\n\t\t\t\t{{service.name}}\n\t\t\t</button>\n\n\t\t</div>\n\n\t\t<div class=\"modal\" :class=\"modalActiveClass\" _v-304fae2e=\"\">\n\t\t\t<div class=\"modal-overlay\" _v-304fae2e=\"\"></div>\n\t\t\t<div class=\"modal-container\" _v-304fae2e=\"\">\n\t\t\t\t<div class=\"modal-header\" _v-304fae2e=\"\">\n\t\t\t\t\t<button class=\"btn btn-clear float-right\" @click=\"cancelModal()\" _v-304fae2e=\"\"></button>\n\t\t\t\t\t<div class=\"modal-title h5\" _v-304fae2e=\"\">{{ modal.serviceName }} {{labels.service_popup_title}}</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal-body\" _v-304fae2e=\"\">\n\t\t\t\t\t<div class=\"content\" _v-304fae2e=\"\">\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isFacebook\" _v-304fae2e=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupFB()\" _v-304fae2e=\"\">{{labels.fb_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<div v-if=\"!hideOwnAppOption\" _v-304fae2e=\"\">\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-304fae2e=\"\">{{labels.app_option_signin}}</span>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isTwitter\" _v-304fae2e=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupTW()\" _v-304fae2e=\"\">{{labels.tw_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<div v-if=\"!hideOwnAppOption\" _v-304fae2e=\"\">\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-304fae2e=\"\">{{labels.app_option_signin}}</span>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isLinkedIn\" _v-304fae2e=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupLI()\" _v-304fae2e=\"\">{{labels.li_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<div v-if=\"!hideOwnAppOption\" _v-304fae2e=\"\">\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-304fae2e=\"\">{{labels.app_option_signin}}</span>\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isTumblr &amp;&amp; isAllowedTumblr\" _v-304fae2e=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" @click=\"openPopupTumblr()\" _v-304fae2e=\"\">{{labels.tumblr_app_signin_btn}}</button>\n\t\t\t\t\t\t\t<div v-if=\"!hideOwnAppOption\" _v-304fae2e=\"\">\n\t\t\t\t\t\t\t<span class=\"text-center\" _v-304fae2e=\"\">{{labels.app_option_signin}}</span>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isGmb\" _v-304fae2e=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" id=\"gmb-btn\" @click=\"openPopupGmb()\" _v-304fae2e=\"\">{{labels.gmb_app_signin_btn}}</button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div class=\"auth-app\" v-if=\"isVk\" _v-304fae2e=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary big-btn\" id=\"vk-btn\" @click=\"openPopupVk()\" _v-304fae2e=\"\">{{labels.vk_app_signin_btn}}</button>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<div v-if=\"!hideOwnAppOption\" _v-304fae2e=\"\">\n\t\t\t\t\t\t<div id=\"rop-advanced-config\" v-if=\"isFacebook || isTwitter || isLinkedIn || (isTumblr &amp;&amp; isAllowedTumblr)\" _v-304fae2e=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-primary\" v-on:click=\"showAdvanceConfig = !showAdvanceConfig\" _v-304fae2e=\"\">{{labels.show_advance_config}}</button>\n\t\t\t\t\t </div>\n\t\t\t\t\t\t<div v-if=\"showAdvanceConfig &amp;&amp; (isFacebook || isTwitter || isLinkedIn || (isTumblr &amp;&amp; isAllowedTumblr) )\" _v-304fae2e=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-304fae2e=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-304fae2e=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input :class=\"[ 'form-input', field.error ? ' is-error' : '' ]\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-304fae2e=\"\">\n\t\t\t\t\t\t\t<small class=\"text-error\" v-if=\"field.error\" _v-304fae2e=\"\">{{labels.field_required}}</small>\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-304fae2e=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t\t<div v-if=\"(!isTwitter &amp;&amp; !isFacebook &amp;&amp; !isLinkedIn &amp;&amp; !isGmb &amp;&amp; !isTumblr &amp;&amp; !isVk) || (isTumblr &amp;&amp; !isAllowedTumblr)\" _v-304fae2e=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" v-for=\"( field, id ) in modal.data\" _v-304fae2e=\"\">\n\t\t\t\t\t\t\t<label class=\"form-label\" :for=\"field.id\" _v-304fae2e=\"\">{{ field.name }}</label>\n\t\t\t\t\t\t\t<input :class=\"[ 'form-input', field.error ? ' is-error' : '' ]\" type=\"text\" :id=\"field.id\" v-model=\"field.value\" :placeholder=\"field.name\" _v-304fae2e=\"\">\n\t\t\t\t\t\t\t<small class=\"text-error\" v-if=\"field.error\" _v-304fae2e=\"\">{{labels.field_required}}</small>\n\t\t\t\t\t\t\t<p class=\"text-gray\" _v-304fae2e=\"\">{{ field.description }}</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<div v-if=\"isFacebook || isTwitter || isLinkedIn || isGmb || isVk ||(isTumblr &amp;&amp; isAllowedTumblr)\" class=\"modal-footer\" _v-304fae2e=\"\">\n\t\t\t\t\t<p class=\"text-left pull-left mr-2\" v-html=\"labels.rs_app_info\" _v-304fae2e=\"\"></p>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"showAdvanceConfig &amp;&amp; (isFacebook || isTwitter || isLinkedIn || isTumblr)\" class=\"modal-footer\" _v-304fae2e=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-304fae2e=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-304fae2e=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t\t<div v-if=\"(!isTwitter &amp;&amp; !isFacebook &amp;&amp; !isLinkedIn &amp;&amp; !isGmb &amp;&amp; !isTumblr &amp;&amp; !isVk) || (isTumblr &amp;&amp; !isAllowedTumblr)\" class=\"modal-footer\" _v-304fae2e=\"\">\n\t\t\t\t\t<div class=\"text-left pull-left mr-2\" v-html=\"modal.description\" _v-304fae2e=\"\"></div>\n\t\t\t\t\t<button class=\"btn btn-primary\" @click=\"closeModal()\" _v-304fae2e=\"\">{{labels.sign_in_btn}}</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 227 */
+/* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(228)
-__vue_script__ = __webpack_require__(230)
-__vue_template__ = __webpack_require__(231)
+__webpack_require__(233)
+__vue_script__ = __webpack_require__(235)
+__vue_template__ = __webpack_require__(236)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -35996,7 +36002,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/uvdev/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/service-user-tile.vue"
+  var id = "E:\\work\\projects\\webdesign\\wordpress-themeisle\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\service-user-tile.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -36005,13 +36011,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 228 */
+/* 233 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(229);
+var content = __webpack_require__(234);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -36020,8 +36026,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1669a290&file=service-user-tile.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./service-user-tile.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1669a290&file=service-user-tile.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./service-user-tile.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6759b086&file=service-user-tile.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./service-user-tile.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6759b086&file=service-user-tile.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./service-user-tile.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -36031,7 +36037,7 @@ if(false) {
 }
 
 /***/ }),
-/* 229 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -36039,19 +36045,19 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t.rop-remove-account[_v-1669a290]{\n\t\twidth:15px;\n\t\ttext-align: center;\n\t\tcursor: pointer;\n\t\theight: 100%;\n\t\t-ms-flex: 0 0 auto;\n\t\tline-height: 40px;\n\t\topacity: 1;\n\t\tmargin-left:0;\n\t\ttransition-timing-function: ease-in;\n\t\ttransition: 1s;\n\t\tz-index:9999;\n\t}\n\n", ""]);
+exports.push([module.i, "\r\n\t.rop-remove-account[_v-6759b086]{\r\n\t\twidth:15px;\r\n\t\ttext-align: center;\r\n\t\tcursor: pointer;\r\n\t\theight: 100%;\r\n\t\t-ms-flex: 0 0 auto;\r\n\t\tline-height: 40px;\r\n\t\topacity: 1;\r\n\t\tmargin-left:0;\r\n\t\ttransition-timing-function: ease-in;\r\n\t\ttransition: 1s;\r\n\t\tz-index:9999;\r\n\t}\r\n\r\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 230 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _vue = __webpack_require__(6);
+var _vue = __webpack_require__(9);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -36319,19 +36325,19 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 231 */
+/* 236 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tile tile-centered rop-account\" :class=\"'rop-'+type+'-account'\" _v-1669a290=\"\">\n\n\t\t<div class=\"tile-icon\" _v-1669a290=\"\">\n\t\t\t<div class=\"icon_box\" :class=\"service\" _v-1669a290=\"\">\n\t\t\t\t<img class=\"service_account_image\" :src=\"img\" v-if=\"img\" _v-1669a290=\"\">\n\t\t\t\t<i class=\"fa  \" :class=\"icon\" aria-hidden=\"true\" _v-1669a290=\"\"></i>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"tile-content\" _v-1669a290=\"\">\n\t\t\t<div class=\"tile-title\" _v-1669a290=\"\"><a :href=\"link\" target=\"_blank\" _v-1669a290=\"\">{{ user }}</a></div>\n\t\t\t<div class=\"tile-subtitle text-gray\" _v-1669a290=\"\">{{ serviceInfo }}</div>\n\t\t</div>\n\t\t<div class=\"tile-action\" _v-1669a290=\"\">\n\t\t\t<div class=\"form-group\" _v-1669a290=\"\">\n\t\t\t\t<label class=\"form-switch\" _v-1669a290=\"\">\n\t\t\t\t\t<div class=\"ajax-loader \" _v-1669a290=\"\"><i class=\"fa fa-spinner fa-spin\" v-show=\"is_loading\" _v-1669a290=\"\"></i></div>\n\t\t\t\t\t<input :disabled=\"checkDisabled\" type=\"checkbox\" v-model=\"account_data.active\" @change=\"startToggleAccount( account_id, type )\" _v-1669a290=\"\">\n\t\t\t\t\t<i class=\"form-icon\" _v-1669a290=\"\"></i>\n\t\t\t\t</label>\n\t\t\t</div>\n\n   \t\t<div class=\"tile-icon rop-remove-account tooltip tooltip-right\" @click=\"removeAccount(account_id) \" :data-tooltip=\"labels.remove_account\" v-if=\" ! account_data.active\" _v-1669a290=\"\">\n\t\t\t<i class=\"fa fa-trash\" v-if=\" ! is_loading\" _v-1669a290=\"\"></i>\n\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-1669a290=\"\"></i>\n\t\t</div>\n\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tile tile-centered rop-account\" :class=\"'rop-'+type+'-account'\" _v-6759b086=\"\">\n\n\t\t<div class=\"tile-icon\" _v-6759b086=\"\">\n\t\t\t<div class=\"icon_box\" :class=\"service\" _v-6759b086=\"\">\n\t\t\t\t<img class=\"service_account_image\" :src=\"img\" v-if=\"img\" _v-6759b086=\"\">\n\t\t\t\t<i class=\"fa  \" :class=\"icon\" aria-hidden=\"true\" _v-6759b086=\"\"></i>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"tile-content\" _v-6759b086=\"\">\n\t\t\t<div class=\"tile-title\" _v-6759b086=\"\"><a :href=\"link\" target=\"_blank\" _v-6759b086=\"\">{{ user }}</a></div>\n\t\t\t<div class=\"tile-subtitle text-gray\" _v-6759b086=\"\">{{ serviceInfo }}</div>\n\t\t</div>\n\t\t<div class=\"tile-action\" _v-6759b086=\"\">\n\t\t\t<div class=\"form-group\" _v-6759b086=\"\">\n\t\t\t\t<label class=\"form-switch\" _v-6759b086=\"\">\n\t\t\t\t\t<div class=\"ajax-loader \" _v-6759b086=\"\"><i class=\"fa fa-spinner fa-spin\" v-show=\"is_loading\" _v-6759b086=\"\"></i></div>\n\t\t\t\t\t<input :disabled=\"checkDisabled\" type=\"checkbox\" v-model=\"account_data.active\" @change=\"startToggleAccount( account_id, type )\" _v-6759b086=\"\">\n\t\t\t\t\t<i class=\"form-icon\" _v-6759b086=\"\"></i>\n\t\t\t\t</label>\n\t\t\t</div>\n\n   \t\t<div class=\"tile-icon rop-remove-account tooltip tooltip-right\" @click=\"removeAccount(account_id) \" :data-tooltip=\"labels.remove_account\" v-if=\" ! account_data.active\" _v-6759b086=\"\">\n\t\t\t<i class=\"fa fa-trash\" v-if=\" ! is_loading\" _v-6759b086=\"\"></i>\n\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-6759b086=\"\"></i>\n\t\t</div>\n\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 232 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(233)
-__vue_script__ = __webpack_require__(235)
-__vue_template__ = __webpack_require__(236)
+__webpack_require__(238)
+__vue_script__ = __webpack_require__(240)
+__vue_template__ = __webpack_require__(241)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -36339,7 +36345,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/uvdev/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/add-account-tile.vue"
+  var id = "E:\\work\\projects\\webdesign\\wordpress-themeisle\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\add-account-tile.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -36348,13 +36354,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 233 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(234);
+var content = __webpack_require__(239);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -36363,8 +36369,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-c7c6b28e&file=add-account-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./add-account-tile.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-c7c6b28e&file=add-account-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./add-account-tile.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6836684e&file=add-account-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./add-account-tile.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6836684e&file=add-account-tile.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./add-account-tile.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -36374,7 +36380,7 @@ if(false) {
 }
 
 /***/ }),
-/* 234 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -36382,19 +36388,19 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t.icon_box[_v-c7c6b28e] {\n\t\tbackground: #efefef;\n\t\tpadding: 0;\n\t\ttransition: .3s ease;\n\t}\n\n\t.icon_box.close .fa[_v-c7c6b28e] {\n\t\tline-height: 1.6em;\n\t}\n\n\t.icon_box.open .fa[_v-c7c6b28e] {\n\t\tline-height: 1.7em;\n\t\twidth: 20px;\n\t\ttransform: rotate(-135deg);\n\t\t-webkit-transform: rotate(-135deg);\n\t}\n\n\t.fa[_v-c7c6b28e] {\n\t\ttransition: all .3s cubic-bezier(.34, 1.61, .7, 1);\n\t}\n\n", ""]);
+exports.push([module.i, "\r\n\t.icon_box[_v-6836684e] {\r\n\t\tbackground: #efefef;\r\n\t\tpadding: 0;\r\n\t\ttransition: .3s ease;\r\n\t}\r\n\r\n\t.icon_box.close .fa[_v-6836684e] {\r\n\t\tline-height: 1.6em;\r\n\t}\r\n\r\n\t.icon_box.open .fa[_v-6836684e] {\r\n\t\tline-height: 1.7em;\r\n\t\twidth: 20px;\r\n\t\ttransform: rotate(-135deg);\r\n\t\t-webkit-transform: rotate(-135deg);\r\n\t}\r\n\r\n\t.fa[_v-6836684e] {\r\n\t\ttransition: all .3s cubic-bezier(.34, 1.61, .7, 1);\r\n\t}\r\n\r\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 235 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _signInBtn = __webpack_require__(85);
+var _signInBtn = __webpack_require__(88);
 
 var _signInBtn2 = _interopRequireDefault(_signInBtn);
 
@@ -36464,19 +36470,19 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 236 */
+/* 241 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div _v-c7c6b28e=\"\">\n\t\t<div class=\"tile-content\" _v-c7c6b28e=\"\">\n\t\t</div>\n\t\t<div class=\"rop-add-account\" _v-c7c6b28e=\"\">\n     <button class=\"btn btn-secondary\" v-if=\"!this.add_more_clicked &amp;&amp; this.added_networks >= 2\" @click=\"addMore()\" _v-c7c6b28e=\"\">\n        <i class=\"fa fa-plus\" _v-c7c6b28e=\"\"></i>{{labels.add_all_cta}}\n     </button>\n\n\t\t\t\t\t<sign-in-btn v-if=\"this.add_more_clicked || this.added_networks < 2\" _v-c7c6b28e=\"\"></sign-in-btn>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div _v-6836684e=\"\">\n\t\t<div class=\"tile-content\" _v-6836684e=\"\">\n\t\t</div>\n\t\t<div class=\"rop-add-account\" _v-6836684e=\"\">\n     <button class=\"btn btn-secondary\" v-if=\"!this.add_more_clicked &amp;&amp; this.added_networks >= 2\" @click=\"addMore()\" _v-6836684e=\"\">\n        <i class=\"fa fa-plus\" _v-6836684e=\"\"></i>{{labels.add_all_cta}}\n     </button>\n\n\t\t\t\t\t<sign-in-btn v-if=\"this.add_more_clicked || this.added_networks < 2\" _v-6836684e=\"\"></sign-in-btn>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 237 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(238)
-__vue_script__ = __webpack_require__(240)
-__vue_template__ = __webpack_require__(246)
+__webpack_require__(243)
+__vue_script__ = __webpack_require__(245)
+__vue_template__ = __webpack_require__(251)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -36484,7 +36490,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/uvdev/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/vue-spinner.vue"
+  var id = "E:\\work\\projects\\webdesign\\wordpress-themeisle\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\vue-spinner.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -36493,13 +36499,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 238 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(239);
+var content = __webpack_require__(244);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -36508,8 +36514,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0bef4ce3&file=vue-spinner.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./vue-spinner.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0bef4ce3&file=vue-spinner.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./vue-spinner.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-bea7187a&file=vue-spinner.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./vue-spinner.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-bea7187a&file=vue-spinner.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./vue-spinner.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -36519,7 +36525,7 @@ if(false) {
 }
 
 /***/ }),
-/* 239 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -36527,13 +36533,13 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n    .preloader-container[_v-0bef4ce3] {\n        position: relative;\n        z-index: 9998;\n        top: 0;\n        left: 0;\n        right: 0;\n        bottom: 0;\n        margin: auto;\n        width: 100%;\n        height: 218px;\n        background-color: rgba(255, 255, 255, 0.1);\n        display: block;\n    }\n\n    .preloader-body[_v-0bef4ce3] {\n        width: 350px;\n        height: 80px;\n        position: absolute;\n        top: 0;\n        bottom: 0;\n        left: 0;\n        right: 0;\n        margin: auto;\n        text-align: center;\n        display: block;\n    }\n", ""]);
+exports.push([module.i, "\r\n    .preloader-container[_v-bea7187a] {\r\n        position: relative;\r\n        z-index: 9998;\r\n        top: 0;\r\n        left: 0;\r\n        right: 0;\r\n        bottom: 0;\r\n        margin: auto;\r\n        width: 100%;\r\n        height: 218px;\r\n        background-color: rgba(255, 255, 255, 0.1);\r\n        display: block;\r\n    }\r\n\r\n    .preloader-body[_v-bea7187a] {\r\n        width: 350px;\r\n        height: 80px;\r\n        position: absolute;\r\n        top: 0;\r\n        bottom: 0;\r\n        left: 0;\r\n        right: 0;\r\n        margin: auto;\r\n        text-align: center;\r\n        display: block;\r\n    }\r\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 240 */
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36543,7 +36549,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _preload_three_dots = __webpack_require__(241);
+var _preload_three_dots = __webpack_require__(246);
 
 var _preload_three_dots2 = _interopRequireDefault(_preload_three_dots);
 
@@ -36648,13 +36654,13 @@ exports.default = {
 };
 
 /***/ }),
-/* 241 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(242)
-__vue_script__ = __webpack_require__(244)
-__vue_template__ = __webpack_require__(245)
+__webpack_require__(247)
+__vue_script__ = __webpack_require__(249)
+__vue_template__ = __webpack_require__(250)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -36662,7 +36668,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/uvdev/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/preload_three_dots.vue"
+  var id = "E:\\work\\projects\\webdesign\\wordpress-themeisle\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\preload_three_dots.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -36671,13 +36677,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 242 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(243);
+var content = __webpack_require__(248);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -36686,8 +36692,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-8eaa7080&file=preload_three_dots.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./preload_three_dots.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-8eaa7080&file=preload_three_dots.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./preload_three_dots.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-16fe24e0&file=preload_three_dots.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./preload_three_dots.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-16fe24e0&file=preload_three_dots.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./preload_three_dots.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -36697,7 +36703,7 @@ if(false) {
 }
 
 /***/ }),
-/* 243 */
+/* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -36705,13 +36711,13 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\n    .preloader-loading-item .normal-dot[_v-8eaa7080] {\n        animation: dot-do-animation 0.7s infinite linear;\n        animation-fill-mode: both;\n        display: inline-block;\n    }\n\n    .preloader-loading-item .normal-dot-odd[_v-8eaa7080] {\n        animation-delay: 0s;\n    }\n\n    .preloader-loading-item .normal-dot-even[_v-8eaa7080] {\n        animation-delay: 0.50s;\n    }\n\n    @keyframes dot-do-animation {\n        50% {\n            transform: scale(0.75);\n            -webkit-opacity: 0.2;\n            opacity: 0.2;\n        }\n        100% {\n            transform: scale(1);\n            -webkit-opacity: 1;\n            opacity: 1;\n        }\n    }\n", ""]);
+exports.push([module.i, "\r\n\r\n    .preloader-loading-item .normal-dot[_v-16fe24e0] {\r\n        animation: dot-do-animation 0.7s infinite linear;\r\n        animation-fill-mode: both;\r\n        display: inline-block;\r\n    }\r\n\r\n    .preloader-loading-item .normal-dot-odd[_v-16fe24e0] {\r\n        animation-delay: 0s;\r\n    }\r\n\r\n    .preloader-loading-item .normal-dot-even[_v-16fe24e0] {\r\n        animation-delay: 0.50s;\r\n    }\r\n\r\n    @keyframes dot-do-animation {\r\n        50% {\r\n            transform: scale(0.75);\r\n            -webkit-opacity: 0.2;\r\n            opacity: 0.2;\r\n        }\r\n        100% {\r\n            transform: scale(1);\r\n            -webkit-opacity: 1;\r\n            opacity: 1;\r\n        }\r\n    }\r\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 244 */
+/* 249 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36819,31 +36825,31 @@ exports.default = {
 // </style>
 
 /***/ }),
-/* 245 */
+/* 250 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"preloader-loading-item\" v-show=\"loading\" _v-8eaa7080=\"\">\n        <div class=\"normal-dot normal-dot-odd\" v-bind:style=\"dot_style\" _v-8eaa7080=\"\"></div>\n        <div class=\"normal-dot normal-dot-even\" v-bind:style=\"dot_style\" _v-8eaa7080=\"\"></div>\n        <div class=\"normal-dot normal-dot-odd\" v-bind:style=\"dot_style\" _v-8eaa7080=\"\"></div>\n    </div>\n";
+module.exports = "\n    <div class=\"preloader-loading-item\" v-show=\"loading\" _v-16fe24e0=\"\">\n        <div class=\"normal-dot normal-dot-odd\" v-bind:style=\"dot_style\" _v-16fe24e0=\"\"></div>\n        <div class=\"normal-dot normal-dot-even\" v-bind:style=\"dot_style\" _v-16fe24e0=\"\"></div>\n        <div class=\"normal-dot normal-dot-odd\" v-bind:style=\"dot_style\" _v-16fe24e0=\"\"></div>\n    </div>\n";
 
 /***/ }),
-/* 246 */
+/* 251 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <transition v-if=\"display_the_preloader\" _v-0bef4ce3=\"\">\n        <div class=\"preloader-container\" _v-0bef4ce3=\"\">\n            <div class=\"preloader-body text-center\" _v-0bef4ce3=\"\">\n                <p class=\"empty-title h5\" v-html=\"loading_message\" _v-0bef4ce3=\"\"></p>\n                <component v-bind:is=\"spinner_style\" :loading=\"loading\" :color=\"color\" :size=\"size\" :margin=\"margin\" :radius=\"radius\" _v-0bef4ce3=\"\"></component>\n            </div>\n        </div>\n    </transition>\n";
+module.exports = "\n    <transition v-if=\"display_the_preloader\" _v-bea7187a=\"\">\n        <div class=\"preloader-container\" _v-bea7187a=\"\">\n            <div class=\"preloader-body text-center\" _v-bea7187a=\"\">\n                <p class=\"empty-title h5\" v-html=\"loading_message\" _v-bea7187a=\"\"></p>\n                <component v-bind:is=\"spinner_style\" :loading=\"loading\" :color=\"color\" :size=\"size\" :margin=\"margin\" :radius=\"radius\" _v-bea7187a=\"\"></component>\n            </div>\n        </div>\n    </transition>\n";
 
 /***/ }),
-/* 247 */
+/* 252 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"tab-view\" _v-45c67b1d=\"\">\n        <div class=\"panel-body\" _v-45c67b1d=\"\">\n            <div class=\"toast  toast-warning\" v-html=\"labels.twitter_warning\" v-if=\"twitter_warning\" _v-45c67b1d=\"\">\n\n            </div>\n            <div class=\"container\" _v-45c67b1d=\"\">\n                <div class=\"columns\" :class=\"'rop-tab-state-'+is_loading\" _v-45c67b1d=\"\">\n                    <div class=\"column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2\" _v-45c67b1d=\"\">\n                        <vue_spinner :preloader_message=\"labels.preloader_message_accounts\" ref=\"Preloader\" v-if=\"is_preloading === 0\" _v-45c67b1d=\"\"></vue_spinner>\n                        <div class=\"empty mb-2\" v-if=\"accountsCount === 0 &amp;&amp; is_preloading > 0\" _v-45c67b1d=\"\">\n                            <div class=\"empty-icon\" _v-45c67b1d=\"\">\n                                <i class=\"fa fa-3x fa-user-circle-o\" _v-45c67b1d=\"\"></i>\n                            </div>\n                            <p class=\"empty-title h5\" _v-45c67b1d=\"\">{{labels.no_accounts}}</p>\n                            <p class=\"empty-subtitle\" _v-45c67b1d=\"\">{{labels.no_accounts_desc}}</p>\n                        </div>\n                        <div class=\"account-container\" v-for=\"( account, id ) in accounts\" v-if=\"is_preloading > 0\" _v-45c67b1d=\"\">\n                            <service-user-tile :account_data=\"account\" :account_id=\"id\" _v-45c67b1d=\"\"></service-user-tile>\n                            <span class=\"divider\" _v-45c67b1d=\"\"></span>\n                        </div>\n                        <div class=\"add-accounts\" v-if=\"is_preloading > 0\" id=\"rop-add-account-button\" _v-45c67b1d=\"\">\n                            <add-account-tile _v-45c67b1d=\"\"></add-account-tile>\n                            <span class=\"divider\" _v-45c67b1d=\"\"></span>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"panel-footer\" v-if=\"is_preloading > 0\" _v-45c67b1d=\"\">\n                <div class=\"columns my-2\" v-if=\"checkLicense &amp;&amp; pro_installed\" _v-45c67b1d=\"\">\n                    <div class=\"column col-12\" _v-45c67b1d=\"\">\n                        <i class=\"fa fa-info-circle \" _v-45c67b1d=\"\"></i> <span v-html=\"labels.activate_license\" _v-45c67b1d=\"\"></span>\n                    </div>\n                </div>\n                <div class=\"columns my-2\" v-if=\"(checkLicense &amp;&amp; accountsCount === 2) &amp;&amp; !pro_installed\" _v-45c67b1d=\"\">\n                    <div class=\"column col-12\" _v-45c67b1d=\"\">\n                        <p class=\"upsell\" _v-45c67b1d=\"\">\n                            <i class=\"fa fa-info-circle \" _v-45c67b1d=\"\"></i> <span v-html=\"labels.upsell_accounts\" _v-45c67b1d=\"\"></span>\n                        </p>\n                    </div>\n                </div>\n                <div class=\"column col-12 text-right\" _v-45c67b1d=\"\">\n                    <button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-45c67b1d=\"\">\n                        <i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-45c67b1d=\"\"></i>\n                        <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-45c67b1d=\"\"></i>\n                        {{labels.remove_all_cta}}\n                    </button>\n                </div>\n            </div>\n        </div>\n\n    </div>\n";
+module.exports = "\n    <div class=\"tab-view\" _v-4d0d9b90=\"\">\n        <div class=\"panel-body\" _v-4d0d9b90=\"\">\n            <div class=\"toast  toast-warning\" v-html=\"labels.twitter_warning\" v-if=\"twitter_warning\" _v-4d0d9b90=\"\">\n\n            </div>\n            <div class=\"container\" _v-4d0d9b90=\"\">\n                <div class=\"columns\" :class=\"'rop-tab-state-'+is_loading\" _v-4d0d9b90=\"\">\n                    <div class=\"column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2\" _v-4d0d9b90=\"\">\n                        <vue_spinner :preloader_message=\"labels.preloader_message_accounts\" ref=\"Preloader\" v-if=\"is_preloading === 0\" _v-4d0d9b90=\"\"></vue_spinner>\n                        <div class=\"empty mb-2\" v-if=\"accountsCount === 0 &amp;&amp; is_preloading > 0\" _v-4d0d9b90=\"\">\n                            <div class=\"empty-icon\" _v-4d0d9b90=\"\">\n                                <i class=\"fa fa-3x fa-user-circle-o\" _v-4d0d9b90=\"\"></i>\n                            </div>\n                            <p class=\"empty-title h5\" _v-4d0d9b90=\"\">{{labels.no_accounts}}</p>\n                            <p class=\"empty-subtitle\" _v-4d0d9b90=\"\">{{labels.no_accounts_desc}}</p>\n                        </div>\n                        <div class=\"account-container\" v-for=\"( account, id ) in accounts\" v-if=\"is_preloading > 0\" _v-4d0d9b90=\"\">\n                            <service-user-tile :account_data=\"account\" :account_id=\"id\" _v-4d0d9b90=\"\"></service-user-tile>\n                            <span class=\"divider\" _v-4d0d9b90=\"\"></span>\n                        </div>\n                        <div class=\"add-accounts\" v-if=\"is_preloading > 0\" id=\"rop-add-account-button\" _v-4d0d9b90=\"\">\n                            <add-account-tile _v-4d0d9b90=\"\"></add-account-tile>\n                            <span class=\"divider\" _v-4d0d9b90=\"\"></span>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"panel-footer\" v-if=\"is_preloading > 0\" _v-4d0d9b90=\"\">\n                <div class=\"columns my-2\" v-if=\"checkLicense &amp;&amp; pro_installed\" _v-4d0d9b90=\"\">\n                    <div class=\"column col-12\" _v-4d0d9b90=\"\">\n                        <i class=\"fa fa-info-circle \" _v-4d0d9b90=\"\"></i> <span v-html=\"labels.activate_license\" _v-4d0d9b90=\"\"></span>\n                    </div>\n                </div>\n                <div class=\"columns my-2\" v-if=\"(checkLicense &amp;&amp; accountsCount === 2) &amp;&amp; !pro_installed\" _v-4d0d9b90=\"\">\n                    <div class=\"column col-12\" _v-4d0d9b90=\"\">\n                        <p class=\"upsell\" _v-4d0d9b90=\"\">\n                            <i class=\"fa fa-info-circle \" _v-4d0d9b90=\"\"></i> <span v-html=\"labels.upsell_accounts\" _v-4d0d9b90=\"\"></span>\n                        </p>\n                    </div>\n                </div>\n                <div class=\"column col-12 text-right\" _v-4d0d9b90=\"\">\n                    <button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-4d0d9b90=\"\">\n                        <i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-4d0d9b90=\"\"></i>\n                        <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-4d0d9b90=\"\"></i>\n                        {{labels.remove_all_cta}}\n                    </button>\n                </div>\n            </div>\n        </div>\n\n    </div>\n";
 
 /***/ }),
-/* 248 */
+/* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(249)
-__vue_script__ = __webpack_require__(251)
-__vue_template__ = __webpack_require__(257)
+__webpack_require__(254)
+__vue_script__ = __webpack_require__(256)
+__vue_template__ = __webpack_require__(262)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -36851,7 +36857,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/uvdev/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/settings-tab-panel.vue"
+  var id = "E:\\work\\projects\\webdesign\\wordpress-themeisle\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\settings-tab-panel.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -36860,13 +36866,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 249 */
+/* 254 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(250);
+var content = __webpack_require__(255);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -36875,8 +36881,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-e19866cc&file=settings-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./settings-tab-panel.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-e19866cc&file=settings-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./settings-tab-panel.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-d30a25e6&file=settings-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./settings-tab-panel.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-d30a25e6&file=settings-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./settings-tab-panel.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -36886,7 +36892,7 @@ if(false) {
 }
 
 /***/ }),
-/* 250 */
+/* 255 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -36894,23 +36900,23 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .panel-body .text-gray[_v-e19866cc] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\n\t#rop_core .input-group[_v-e19866cc] {\n\t\twidth: 100%;\n\t}\n\n\tb[_v-e19866cc] {\n\t\tmargin-bottom: 5px;\n\t\tdisplay: block;\n\t}\n\n\t#rop_core .input-group .input-group-addon[_v-e19866cc] {\n\t\tpadding: 3px 5px;\n\t}\n\n\t@media ( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-e19866cc] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\n\t\t#rop_core .text-right[_v-e19866cc] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n\n\t.rop-post-type-badge[_v-e19866cc]{\n\t\ttext-align: center;\n\n\t}\n", ""]);
+exports.push([module.i, "\r\n\t#rop_core .panel-body .text-gray[_v-d30a25e6] {\r\n\t\tmargin: 0;\r\n\t\tline-height: normal;\r\n\t}\r\n\r\n\t#rop_core .input-group[_v-d30a25e6] {\r\n\t\twidth: 100%;\r\n\t}\r\n\r\n\tb[_v-d30a25e6] {\r\n\t\tmargin-bottom: 5px;\r\n\t\tdisplay: block;\r\n\t}\r\n\r\n\t#rop_core .input-group .input-group-addon[_v-d30a25e6] {\r\n\t\tpadding: 3px 5px;\r\n\t}\r\n\r\n\t@media ( max-width: 600px ) {\r\n\t\t#rop_core .panel-body .text-gray[_v-d30a25e6] {\r\n\t\t\tmargin-bottom: 10px;\r\n\t\t}\r\n\r\n\t\t#rop_core .text-right[_v-d30a25e6] {\r\n\t\t\ttext-align: left;\r\n\t\t}\r\n\t}\r\n\r\n\t.rop-post-type-badge[_v-d30a25e6]{\r\n\t\ttext-align: center;\r\n\r\n\t}\r\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 251 */
+/* 256 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _vue = __webpack_require__(6);
+var _vue = __webpack_require__(9);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _counterInput = __webpack_require__(86);
+var _counterInput = __webpack_require__(89);
 
 var _counterInput2 = _interopRequireDefault(_counterInput);
 
@@ -36918,7 +36924,7 @@ var _multipleSelect = __webpack_require__(52);
 
 var _multipleSelect2 = _interopRequireDefault(_multipleSelect);
 
-var _vueJsToggleButton = __webpack_require__(256);
+var _vueJsToggleButton = __webpack_require__(261);
 
 var _vueJsToggleButton2 = _interopRequireDefault(_vueJsToggleButton);
 
@@ -37496,13 +37502,13 @@ module.exports = {
 };
 
 /***/ }),
-/* 252 */
+/* 257 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(253);
+var content = __webpack_require__(258);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -37511,8 +37517,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1e49230a&file=counter-input.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./counter-input.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1e49230a&file=counter-input.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./counter-input.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-785811ea&file=counter-input.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./counter-input.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-785811ea&file=counter-input.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./counter-input.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -37522,7 +37528,7 @@ if(false) {
 }
 
 /***/ }),
-/* 253 */
+/* 258 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -37530,13 +37536,13 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .input-group.rop-counter-group {\n\t\tposition: relative;\n\t\twidth: 100%;\n\t}\n\t\n\t#rop_core .btn.increment-btn {\n\t\tposition: absolute;\n\t\tright: 0;\n\t\twidth: 1rem;\n\t\theight: 0.85rem;\n\t\tpadding: 0.025rem 0.010rem;\n\t\tline-height: 0.3rem;\n\t\tz-index: 2;\n\t\tcolor: #ababab;\n\t\tborder-color: #ababab;\n\t}\n\t\n\t#rop_core .btn.increment-btn:hover, #rop_core .btn.increment-btn:active, #rop_core .btn.increment-btn:focus {\n\t\tbackground-color: #00a6e3;\n\t\tcolor: #fff;\n\t\tborder-color: #00a6e3;\n\t}\n\t\n\t#rop_core .btn.increment-btn.up {\n\t\ttop: 0;\n\t}\n\t\n\t#rop_core .btn.increment-btn.down {\n\t\tbottom: 0;\n\t}\n\t\n\tinput.rop-counter::-webkit-inner-spin-button {\n\t\tdisplay: none;\n\t}\n", ""]);
+exports.push([module.i, "\r\n\t#rop_core .input-group.rop-counter-group {\r\n\t\tposition: relative;\r\n\t\twidth: 100%;\r\n\t}\r\n\t\r\n\t#rop_core .btn.increment-btn {\r\n\t\tposition: absolute;\r\n\t\tright: 0;\r\n\t\twidth: 1rem;\r\n\t\theight: 0.85rem;\r\n\t\tpadding: 0.025rem 0.010rem;\r\n\t\tline-height: 0.3rem;\r\n\t\tz-index: 2;\r\n\t\tcolor: #ababab;\r\n\t\tborder-color: #ababab;\r\n\t}\r\n\t\r\n\t#rop_core .btn.increment-btn:hover, #rop_core .btn.increment-btn:active, #rop_core .btn.increment-btn:focus {\r\n\t\tbackground-color: #00a6e3;\r\n\t\tcolor: #fff;\r\n\t\tborder-color: #00a6e3;\r\n\t}\r\n\t\r\n\t#rop_core .btn.increment-btn.up {\r\n\t\ttop: 0;\r\n\t}\r\n\t\r\n\t#rop_core .btn.increment-btn.down {\r\n\t\tbottom: 0;\r\n\t}\r\n\t\r\n\tinput.rop-counter::-webkit-inner-spin-button {\r\n\t\tdisplay: none;\r\n\t}\r\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 254 */
+/* 259 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37685,13 +37691,13 @@ module.exports = {
 };
 
 /***/ }),
-/* 255 */
+/* 260 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"input-group rop-counter-group\">\n\t\t<input class=\"form-input rop-counter\" type=\"text\" v-model=\"inputValueC\" :id=\"id\">\n\t\t<button class=\"btn input-group-btn increment-btn up\" @mousedown=\"isPressed('up')\" @mouseup=\"isReleased('up')\"><i\n\t\t\t\tclass=\"fa fa-fw fa-caret-up\"></i></button>\n\t\t<button class=\"btn input-group-btn increment-btn down\" @mousedown=\"isPressed('down')\"\n\t\t        @mouseup=\"isReleased('down')\"><i class=\"fa fa-fw fa-caret-down\"></i></button>\n\t</div>\n";
+module.exports = "\r\n\t<div class=\"input-group rop-counter-group\">\r\n\t\t<input class=\"form-input rop-counter\" type=\"text\" v-model=\"inputValueC\" :id=\"id\">\r\n\t\t<button class=\"btn input-group-btn increment-btn up\" @mousedown=\"isPressed('up')\" @mouseup=\"isReleased('up')\"><i\r\n\t\t\t\tclass=\"fa fa-fw fa-caret-up\"></i></button>\r\n\t\t<button class=\"btn input-group-btn increment-btn down\" @mousedown=\"isPressed('down')\"\r\n\t\t        @mouseup=\"isReleased('down')\"><i class=\"fa fa-fw fa-caret-down\"></i></button>\r\n\t</div>\r\n";
 
 /***/ }),
-/* 256 */
+/* 261 */
 /***/ (function(module, exports, __webpack_require__) {
 
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -38550,19 +38556,19 @@ module.exports = function listToStyles (parentId, list) {
 //# sourceMappingURL=index.js.map
 
 /***/ }),
-/* 257 */
+/* 262 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"tab-view\" _v-e19866cc=\"\">\n        <div class=\"panel-body\" _v-e19866cc=\"\">\n            <div class=\"container\" :class=\"'rop-tab-state-'+is_loading\" _v-e19866cc=\"\">\n                <div class=\"columns py-2\" v-if=\"this.apply_exclude_limit_cron\" _v-e19866cc=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-e19866cc=\"\">\n                        <b _v-e19866cc=\"\">{{labels.cron_type_label}}</b>\n                        <p class=\"text-gray\" _v-e19866cc=\"\"><span v-html=\"labels.cron_type_label_desc\" _v-e19866cc=\"\"></span></p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-e19866cc=\"\">\n                        <div class=\"form-group\" _v-e19866cc=\"\">\n                            <!-- @category New Cron System -->\n                            <div style=\"padding: 10px; text-align: left;\" _v-e19866cc=\"\">\n                                <toggle-button :value=\"rop_cron_remote\" :labels=\"{checked: 'Remote Cron', unchecked: 'Local Cron'}\" :width=\"110\" :height=\"28\" :switch-color=\"{checked: '#FFFFFF', unchecked: '#FFFFFF'}\" :color=\"{checked: '#7DCE94', unchecked: '#82C7EB'}\" @change=\"rop_cron_remote = $event.value; update_cron_type_action()\" :disabled=\"!rop_cron_remote_agreement\" :sync=\"true\" _v-e19866cc=\"\">\n                            </toggle-button></div>\n                          <input type=\"checkbox\" :checked=\"rop_cron_remote_agreement\" :disabled=\"rop_cron_remote_agreement\" @change=\"update_agreement_checkbox()\" _v-e19866cc=\"\"> <span v-html=\"labels.cron_type_label_desc_terms\" _v-e19866cc=\"\"></span>\n                        </div>\n                    </div>\n                </div>\n                <span class=\"divider\" v-if=\"this.apply_exclude_limit_cron &amp;&amp; ! isBiz\" _v-e19866cc=\"\"></span>\n\n                <div class=\"columns py-2\" v-if=\"! isBiz\" _v-e19866cc=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align\" _v-e19866cc=\"\">\n                        <b _v-e19866cc=\"\">{{labels.min_interval_title}}</b>\n                        <p class=\"text-gray\" _v-e19866cc=\"\">{{labels.min_interval_desc}}</p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align\" _v-e19866cc=\"\">\n                        <counter-input id=\"default_interval\" :min-val=\"generalSettings.min_interval\" :step-val=\"generalSettings.step_interval\" :value.sync=\"generalSettings.default_interval\" _v-e19866cc=\"\"></counter-input>\n                    </div>\n                </div>\n                <span class=\"divider\" _v-e19866cc=\"\"></span>\n                <div class=\"columns py-2\" _v-e19866cc=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align\" _v-e19866cc=\"\">\n                        <b _v-e19866cc=\"\">{{labels.min_days_title}}</b>\n                        <p class=\"text-gray\" _v-e19866cc=\"\">{{labels.min_days_desc}}</p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align\" _v-e19866cc=\"\">\n                        <counter-input id=\"min_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.minimum_post_age\" _v-e19866cc=\"\"></counter-input>\n                    </div>\n                </div>\n                <!-- Max Post Age -->\n                <div class=\"columns py-2\" _v-e19866cc=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align\" _v-e19866cc=\"\">\n                        <b _v-e19866cc=\"\">{{labels.max_days_title}}</b>\n                        <p class=\"text-gray\" _v-e19866cc=\"\">{{labels.max_days_desc}}</p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align\" _v-e19866cc=\"\">\n                        <counter-input id=\"max_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.maximum_post_age\" _v-e19866cc=\"\"></counter-input>\n                    </div>\n                </div>\n\n                <span class=\"divider\" _v-e19866cc=\"\"></span>\n\n                <div class=\"columns py-2\" _v-e19866cc=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align\" _v-e19866cc=\"\">\n                        <b _v-e19866cc=\"\">{{labels.no_posts_title}}</b>\n                        <p class=\"text-gray\" _v-e19866cc=\"\">{{labels.no_posts_desc}}</p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align\" _v-e19866cc=\"\">\n                        <counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\" _v-e19866cc=\"\"></counter-input>\n                    </div>\n                </div>\n                <span class=\"divider\" _v-e19866cc=\"\"></span>\n\n                <!-- Share more than once -->\n                <div class=\"columns py-2\" _v-e19866cc=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align\" _v-e19866cc=\"\">\n                        <b _v-e19866cc=\"\">{{labels.share_once_title}}</b>\n                        <p class=\"text-gray\" _v-e19866cc=\"\">{{labels.share_once_desc}}</p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-e19866cc=\"\">\n                        <div class=\"form-group\" _v-e19866cc=\"\">\n                            <label class=\"form-checkbox\" id=\"share_more_than_once\" _v-e19866cc=\"\">\n                                <input type=\"checkbox\" v-model=\"generalSettings.more_than_once\" _v-e19866cc=\"\">\n                                <i class=\"form-icon\" _v-e19866cc=\"\"></i> {{labels.share_once_yes}}\n                            </label>\n                        </div>\n                    </div>\n                </div>\n                <span class=\"divider\" _v-e19866cc=\"\"></span>\n                <div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-e19866cc=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-e19866cc=\"\">\n                        <b _v-e19866cc=\"\">{{labels.post_types_title}}</b>\n                        <p class=\"text-gray\" _v-e19866cc=\"\"><span v-html=\"labels.post_types_desc\" _v-e19866cc=\"\"></span></p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-e19866cc=\"\">\n                        <multiple-select id=\"rop_post_types\" :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-e19866cc=\"\"></multiple-select>\n\n                        <p class=\"text-primary rop-post-type-badge\" v-if=\"checkMediaPostType \" v-html=\"labels.post_types_attachament_info\" _v-e19866cc=\"\"></p>\n                    </div>\n                </div>\n\n                <div class=\"columns \" v-if=\"!isPro\" _v-e19866cc=\"\">\n                    <div class=\"column text-center\" _v-e19866cc=\"\">\n                        <p class=\"upsell\" _v-e19866cc=\"\"><i class=\"fa fa-lock\" _v-e19866cc=\"\"></i> {{labels.post_types_upsell}}</p>\n                    </div>\n                </div>\n\n\t\t\t\t<span class=\"divider\" v-if=\"!isPro\" _v-e19866cc=\"\"></span>\n\n                <!-- Taxonomies -->\n\t\t\t\t<div class=\"columns py-2\" v-if=\"!isPro\" _v-e19866cc=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align\" _v-e19866cc=\"\">\n                        <b _v-e19866cc=\"\">{{labels.taxonomies_title}}</b>\n                        <p class=\"text-gray\" _v-e19866cc=\"\"><span v-html=\"labels.taxonomies_desc\" _v-e19866cc=\"\"></span></p>\n                    </div>\n                    <div id=\"rop_taxonomies\" class=\"column col-6 col-sm-12 vertical-align text-left\" _v-e19866cc=\"\">\n                        <div class=\"input-group\" _v-e19866cc=\"\">\n                            <multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" :is_pro_version=\"isPro\" :apply_limit=\"isTaxLimit\" v-on:display-limiter-notice=\"displayProMessage\" _v-e19866cc=\"\"></multiple-select>\n                            <span class=\"input-group-addon vertical-align\" _v-e19866cc=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-e19866cc=\"\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" _v-e19866cc=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-e19866cc=\"\"></i>{{labels.taxonomies_exclude}}\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</span>\n                        </div>\n                        <p class=\"text-primary rop-post-type-badge\" v-if=\"is_taxonomy_message\" v-html=\"labels.post_types_taxonomy_limit\" _v-e19866cc=\"\"></p>\n                    </div>\n                </div>\n\n                <span class=\"divider\" _v-e19866cc=\"\"></span>\n\n                <!-- Google Analytics -->\n                <div class=\"columns py-2\" _v-e19866cc=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align\" _v-e19866cc=\"\">\n                        <b _v-e19866cc=\"\">{{labels.ga_title}}</b>\n                        <p class=\"text-gray\" _v-e19866cc=\"\">{{labels.ga_desc}}</p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-e19866cc=\"\">\n                        <div class=\"form-group\" _v-e19866cc=\"\">\n                            <label class=\"form-checkbox\" _v-e19866cc=\"\">\n                                <input type=\"checkbox\" v-model=\"generalSettings.ga_tracking\" _v-e19866cc=\"\">\n                                <i class=\"form-icon\" _v-e19866cc=\"\"></i>{{labels.ga_yes}}\n                            </label>\n                        </div>\n                    </div>\n                </div>\n\n                <span class=\"divider\" _v-e19866cc=\"\"></span>\n\n                <div class=\"columns py-2\" _v-e19866cc=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-e19866cc=\"\">\n                        <b _v-e19866cc=\"\">{{labels.instant_share_title}}</b>\n                        <p class=\"text-gray\" _v-e19866cc=\"\"><span v-html=\"labels.instant_share_desc\" _v-e19866cc=\"\"></span></p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-e19866cc=\"\">\n                        <div class=\"form-group\" _v-e19866cc=\"\">\n                            <label id=\"rop_instant_share\" class=\"form-checkbox\" _v-e19866cc=\"\">\n                                <input type=\"checkbox\" v-model=\"generalSettings.instant_share\" _v-e19866cc=\"\">\n                                <i class=\"form-icon\" _v-e19866cc=\"\"></i>{{labels.instant_share_yes}}\n                            </label>\n                        </div>\n                    </div>\n                </div>\n\n                <span class=\"divider\" _v-e19866cc=\"\"></span>\n\n                <div class=\"columns py-2\" v-if=\"isInstantShare\" _v-e19866cc=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-e19866cc=\"\">\n                        <b _v-e19866cc=\"\">{{labels.true_instant_share_title}}</b>\n                        <p class=\"text-gray\" _v-e19866cc=\"\"><span v-html=\"labels.true_instant_share_desc\" _v-e19866cc=\"\"></span></p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-e19866cc=\"\">\n                        <div class=\"form-group\" _v-e19866cc=\"\">\n                            <label class=\"form-checkbox\" _v-e19866cc=\"\">\n                                <input type=\"checkbox\" v-model=\"generalSettings.true_instant_share\" _v-e19866cc=\"\">\n                                <i class=\"form-icon\" _v-e19866cc=\"\"></i>{{labels.true_instant_share_yes}}\n                            </label>\n                        </div>\n                    </div>\n                </div>\n\n                <span class=\"divider\" v-if=\"isInstantShare\" _v-e19866cc=\"\"></span>\n\n                <div class=\"columns py-2\" v-if=\"isInstantShare\" _v-e19866cc=\"\">\n                  <div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-e19866cc=\"\">\n                    <b _v-e19866cc=\"\">{{labels.instant_share_default_title}}</b>\n                    <p class=\"text-gray\" _v-e19866cc=\"\">{{labels.instant_share_default_desc}}</p>\n                  </div>\n                  <div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-e19866cc=\"\">\n                    <div class=\"form-group\" _v-e19866cc=\"\">\n                      <label class=\"form-checkbox\" _v-e19866cc=\"\">\n                        <input type=\"checkbox\" v-model=\"generalSettings.instant_share_default\" _v-e19866cc=\"\">\n                        <i class=\"form-icon\" _v-e19866cc=\"\"></i>{{labels.instant_share_default_yes}}\n                      </label>\n                    </div>\n                  </div>\n                </div>\n\n                <span class=\"divider\" v-if=\"isInstantShare\" _v-e19866cc=\"\"></span>\n\n                <div class=\"columns py-2\" v-if=\"isInstantShare\" :class=\"'rop-control-container-'+isPro\" _v-e19866cc=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-e19866cc=\"\">\n                        <b _v-e19866cc=\"\">{{labels.instant_share_future_scheduled_title}}</b>\n                        <p class=\"text-gray\" _v-e19866cc=\"\"><span v-html=\"labels.instant_share_future_scheduled_desc\" _v-e19866cc=\"\"></span></p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-e19866cc=\"\">\n                        <div class=\"form-group\" _v-e19866cc=\"\">\n                            <label class=\"form-checkbox\" _v-e19866cc=\"\">\n                                <input type=\"checkbox\" v-model=\"generalSettings.instant_share_future_scheduled\" _v-e19866cc=\"\">\n                                <i class=\"form-icon\" _v-e19866cc=\"\"></i>{{labels.instant_share_future_scheduled_yes}}\n                            </label>\n                        </div>\n                    </div>\n                </div>\n                <!-- Upsell -->\n                <div class=\"columns \" v-if=\"!isPro &amp;&amp; isInstantShare\" _v-e19866cc=\"\">\n                    <div class=\"column text-center\" _v-e19866cc=\"\">\n                        <p class=\"upsell\" _v-e19866cc=\"\"><i class=\"fa fa-lock\" _v-e19866cc=\"\"></i> {{labels.instant_share_future_scheduled_upsell}}</p>\n                    </div>\n                </div>\n                <span class=\"divider\" v-if=\"isInstantShare\" _v-e19866cc=\"\"></span>\n\n                <div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-e19866cc=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-e19866cc=\"\">\n                        <b _v-e19866cc=\"\">{{labels.custom_share_title}}</b>\n                        <p class=\"text-gray\" _v-e19866cc=\"\"><span v-html=\"labels.custom_share_desc\" _v-e19866cc=\"\"></span></p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-e19866cc=\"\">\n                        <div class=\"form-group\" _v-e19866cc=\"\">\n                            <label id=\"rop_custom_share_msg\" class=\"form-checkbox\" _v-e19866cc=\"\">\n                                <input type=\"checkbox\" :disabled=\"!isPro\" v-model=\"generalSettings.custom_messages\" _v-e19866cc=\"\">\n                                <i class=\"form-icon\" _v-e19866cc=\"\"></i>{{labels.custom_share_yes}}\n                            </label>\n                        </div>\n                    </div>\n                </div>\n                <span class=\"divider\" _v-e19866cc=\"\"></span>\n\n\n                <div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" v-if=\"isCustomMsgs\" _v-e19866cc=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-e19866cc=\"\">\n                        <b _v-e19866cc=\"\">{{labels.custom_share_order_title}}</b>\n                        <p class=\"text-gray\" _v-e19866cc=\"\">{{labels.custom_share_order_desc}}</p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-e19866cc=\"\">\n                        <div class=\"form-group\" _v-e19866cc=\"\">\n                            <label id=\"rop_custom_share_msg\" class=\"form-checkbox\" _v-e19866cc=\"\">\n                                <input type=\"checkbox\" :disabled=\"!isPro\" v-model=\"generalSettings.custom_messages_share_order\" _v-e19866cc=\"\">\n                                <i class=\"form-icon\" _v-e19866cc=\"\"></i>{{labels.custom_share_order_yes}}\n                            </label>\n                        </div>\n                    </div>\n                </div>\n\n                <!-- Upsell -->\n                <div class=\"columns \" v-if=\"!isPro\" _v-e19866cc=\"\">\n                    <div class=\"column text-center\" _v-e19866cc=\"\">\n                        <p class=\"upsell\" _v-e19866cc=\"\"><i class=\"fa fa-lock\" _v-e19866cc=\"\"></i> {{labels.custom_share_upsell}}</p>\n                    </div>\n                </div>\n                <span class=\"divider\" v-if=\"isCustomMsgs\" _v-e19866cc=\"\"></span>\n\n                <div class=\"columns py-2\" _v-e19866cc=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-e19866cc=\"\">\n                        <b _v-e19866cc=\"\">{{labels.housekeeping}}</b>\n                        <p class=\"text-gray\" _v-e19866cc=\"\">{{labels.housekeeping_desc}}</p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-e19866cc=\"\">\n                        <div class=\"form-group\" _v-e19866cc=\"\">\n                            <label class=\"form-checkbox\" _v-e19866cc=\"\">\n                                <input type=\"checkbox\" v-model=\"generalSettings.housekeeping\" _v-e19866cc=\"\">\n                                <i class=\"form-icon\" _v-e19866cc=\"\"></i>{{labels.housekeeping_yes}}\n                            </label>\n                        </div>\n                    </div>\n                </div>\n                <span class=\"divider\" _v-e19866cc=\"\"></span>\n\n            </div>\n        </div>\n        <div class=\"panel-footer text-right\" _v-e19866cc=\"\">\n            <button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\" _v-e19866cc=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-e19866cc=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-e19866cc=\"\"></i> {{labels.save}}\n            </button>\n        </div>\n    </div>\n";
+module.exports = "\n    <div class=\"tab-view\" _v-d30a25e6=\"\">\n        <div class=\"panel-body\" _v-d30a25e6=\"\">\n            <div class=\"container\" :class=\"'rop-tab-state-'+is_loading\" _v-d30a25e6=\"\">\n                <div class=\"columns py-2\" v-if=\"this.apply_exclude_limit_cron\" _v-d30a25e6=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-d30a25e6=\"\">\n                        <b _v-d30a25e6=\"\">{{labels.cron_type_label}}</b>\n                        <p class=\"text-gray\" _v-d30a25e6=\"\"><span v-html=\"labels.cron_type_label_desc\" _v-d30a25e6=\"\"></span></p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-d30a25e6=\"\">\n                        <div class=\"form-group\" _v-d30a25e6=\"\">\n                            <!-- @category New Cron System -->\n                            <div style=\"padding: 10px; text-align: left;\" _v-d30a25e6=\"\">\n                                <toggle-button :value=\"rop_cron_remote\" :labels=\"{checked: 'Remote Cron', unchecked: 'Local Cron'}\" :width=\"110\" :height=\"28\" :switch-color=\"{checked: '#FFFFFF', unchecked: '#FFFFFF'}\" :color=\"{checked: '#7DCE94', unchecked: '#82C7EB'}\" @change=\"rop_cron_remote = $event.value; update_cron_type_action()\" :disabled=\"!rop_cron_remote_agreement\" :sync=\"true\" _v-d30a25e6=\"\">\n                            </toggle-button></div>\n                          <input type=\"checkbox\" :checked=\"rop_cron_remote_agreement\" :disabled=\"rop_cron_remote_agreement\" @change=\"update_agreement_checkbox()\" _v-d30a25e6=\"\"> <span v-html=\"labels.cron_type_label_desc_terms\" _v-d30a25e6=\"\"></span>\n                        </div>\n                    </div>\n                </div>\n                <span class=\"divider\" v-if=\"this.apply_exclude_limit_cron &amp;&amp; ! isBiz\" _v-d30a25e6=\"\"></span>\n\n                <div class=\"columns py-2\" v-if=\"! isBiz\" _v-d30a25e6=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align\" _v-d30a25e6=\"\">\n                        <b _v-d30a25e6=\"\">{{labels.min_interval_title}}</b>\n                        <p class=\"text-gray\" _v-d30a25e6=\"\">{{labels.min_interval_desc}}</p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align\" _v-d30a25e6=\"\">\n                        <counter-input id=\"default_interval\" :min-val=\"generalSettings.min_interval\" :step-val=\"generalSettings.step_interval\" :value.sync=\"generalSettings.default_interval\" _v-d30a25e6=\"\"></counter-input>\n                    </div>\n                </div>\n                <span class=\"divider\" _v-d30a25e6=\"\"></span>\n                <div class=\"columns py-2\" _v-d30a25e6=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align\" _v-d30a25e6=\"\">\n                        <b _v-d30a25e6=\"\">{{labels.min_days_title}}</b>\n                        <p class=\"text-gray\" _v-d30a25e6=\"\">{{labels.min_days_desc}}</p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align\" _v-d30a25e6=\"\">\n                        <counter-input id=\"min_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.minimum_post_age\" _v-d30a25e6=\"\"></counter-input>\n                    </div>\n                </div>\n                <!-- Max Post Age -->\n                <div class=\"columns py-2\" _v-d30a25e6=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align\" _v-d30a25e6=\"\">\n                        <b _v-d30a25e6=\"\">{{labels.max_days_title}}</b>\n                        <p class=\"text-gray\" _v-d30a25e6=\"\">{{labels.max_days_desc}}</p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align\" _v-d30a25e6=\"\">\n                        <counter-input id=\"max_post_age\" :max-val=\"365\" :value.sync=\"generalSettings.maximum_post_age\" _v-d30a25e6=\"\"></counter-input>\n                    </div>\n                </div>\n\n                <span class=\"divider\" _v-d30a25e6=\"\"></span>\n\n                <div class=\"columns py-2\" _v-d30a25e6=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align\" _v-d30a25e6=\"\">\n                        <b _v-d30a25e6=\"\">{{labels.no_posts_title}}</b>\n                        <p class=\"text-gray\" _v-d30a25e6=\"\">{{labels.no_posts_desc}}</p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align\" _v-d30a25e6=\"\">\n                        <counter-input id=\"no_of_posts\" :value.sync=\"generalSettings.number_of_posts\" _v-d30a25e6=\"\"></counter-input>\n                    </div>\n                </div>\n                <span class=\"divider\" _v-d30a25e6=\"\"></span>\n\n                <!-- Share more than once -->\n                <div class=\"columns py-2\" _v-d30a25e6=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align\" _v-d30a25e6=\"\">\n                        <b _v-d30a25e6=\"\">{{labels.share_once_title}}</b>\n                        <p class=\"text-gray\" _v-d30a25e6=\"\">{{labels.share_once_desc}}</p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-d30a25e6=\"\">\n                        <div class=\"form-group\" _v-d30a25e6=\"\">\n                            <label class=\"form-checkbox\" id=\"share_more_than_once\" _v-d30a25e6=\"\">\n                                <input type=\"checkbox\" v-model=\"generalSettings.more_than_once\" _v-d30a25e6=\"\">\n                                <i class=\"form-icon\" _v-d30a25e6=\"\"></i> {{labels.share_once_yes}}\n                            </label>\n                        </div>\n                    </div>\n                </div>\n                <span class=\"divider\" _v-d30a25e6=\"\"></span>\n                <div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-d30a25e6=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-d30a25e6=\"\">\n                        <b _v-d30a25e6=\"\">{{labels.post_types_title}}</b>\n                        <p class=\"text-gray\" _v-d30a25e6=\"\"><span v-html=\"labels.post_types_desc\" _v-d30a25e6=\"\"></span></p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-d30a25e6=\"\">\n                        <multiple-select id=\"rop_post_types\" :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-d30a25e6=\"\"></multiple-select>\n\n                        <p class=\"text-primary rop-post-type-badge\" v-if=\"checkMediaPostType \" v-html=\"labels.post_types_attachament_info\" _v-d30a25e6=\"\"></p>\n                    </div>\n                </div>\n\n                <div class=\"columns \" v-if=\"!isPro\" _v-d30a25e6=\"\">\n                    <div class=\"column text-center\" _v-d30a25e6=\"\">\n                        <p class=\"upsell\" _v-d30a25e6=\"\"><i class=\"fa fa-lock\" _v-d30a25e6=\"\"></i> {{labels.post_types_upsell}}</p>\n                    </div>\n                </div>\n\n\t\t\t\t<span class=\"divider\" v-if=\"!isPro\" _v-d30a25e6=\"\"></span>\n\n                <!-- Taxonomies -->\n\t\t\t\t<div class=\"columns py-2\" v-if=\"!isPro\" _v-d30a25e6=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align\" _v-d30a25e6=\"\">\n                        <b _v-d30a25e6=\"\">{{labels.taxonomies_title}}</b>\n                        <p class=\"text-gray\" _v-d30a25e6=\"\"><span v-html=\"labels.taxonomies_desc\" _v-d30a25e6=\"\"></span></p>\n                    </div>\n                    <div id=\"rop_taxonomies\" class=\"column col-6 col-sm-12 vertical-align text-left\" _v-d30a25e6=\"\">\n                        <div class=\"input-group\" _v-d30a25e6=\"\">\n                            <multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" :is_pro_version=\"isPro\" :apply_limit=\"isTaxLimit\" v-on:display-limiter-notice=\"displayProMessage\" _v-d30a25e6=\"\"></multiple-select>\n                            <span class=\"input-group-addon vertical-align\" _v-d30a25e6=\"\">\n\t\t\t\t\t\t\t\t<label class=\"form-checkbox\" _v-d30a25e6=\"\">\n\t\t\t\t\t\t\t\t\t<input type=\"checkbox\" v-model=\"generalSettings.exclude_taxonomies\" _v-d30a25e6=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"form-icon\" _v-d30a25e6=\"\"></i>{{labels.taxonomies_exclude}}\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</span>\n                        </div>\n                        <p class=\"text-primary rop-post-type-badge\" v-if=\"is_taxonomy_message\" v-html=\"labels.post_types_taxonomy_limit\" _v-d30a25e6=\"\"></p>\n                    </div>\n                </div>\n\n                <span class=\"divider\" _v-d30a25e6=\"\"></span>\n\n                <!-- Google Analytics -->\n                <div class=\"columns py-2\" _v-d30a25e6=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align\" _v-d30a25e6=\"\">\n                        <b _v-d30a25e6=\"\">{{labels.ga_title}}</b>\n                        <p class=\"text-gray\" _v-d30a25e6=\"\">{{labels.ga_desc}}</p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align text-left\" _v-d30a25e6=\"\">\n                        <div class=\"form-group\" _v-d30a25e6=\"\">\n                            <label class=\"form-checkbox\" _v-d30a25e6=\"\">\n                                <input type=\"checkbox\" v-model=\"generalSettings.ga_tracking\" _v-d30a25e6=\"\">\n                                <i class=\"form-icon\" _v-d30a25e6=\"\"></i>{{labels.ga_yes}}\n                            </label>\n                        </div>\n                    </div>\n                </div>\n\n                <span class=\"divider\" _v-d30a25e6=\"\"></span>\n\n                <div class=\"columns py-2\" _v-d30a25e6=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-d30a25e6=\"\">\n                        <b _v-d30a25e6=\"\">{{labels.instant_share_title}}</b>\n                        <p class=\"text-gray\" _v-d30a25e6=\"\"><span v-html=\"labels.instant_share_desc\" _v-d30a25e6=\"\"></span></p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-d30a25e6=\"\">\n                        <div class=\"form-group\" _v-d30a25e6=\"\">\n                            <label id=\"rop_instant_share\" class=\"form-checkbox\" _v-d30a25e6=\"\">\n                                <input type=\"checkbox\" v-model=\"generalSettings.instant_share\" _v-d30a25e6=\"\">\n                                <i class=\"form-icon\" _v-d30a25e6=\"\"></i>{{labels.instant_share_yes}}\n                            </label>\n                        </div>\n                    </div>\n                </div>\n\n                <span class=\"divider\" _v-d30a25e6=\"\"></span>\n\n                <div class=\"columns py-2\" v-if=\"isInstantShare\" _v-d30a25e6=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-d30a25e6=\"\">\n                        <b _v-d30a25e6=\"\">{{labels.true_instant_share_title}}</b>\n                        <p class=\"text-gray\" _v-d30a25e6=\"\"><span v-html=\"labels.true_instant_share_desc\" _v-d30a25e6=\"\"></span></p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-d30a25e6=\"\">\n                        <div class=\"form-group\" _v-d30a25e6=\"\">\n                            <label class=\"form-checkbox\" _v-d30a25e6=\"\">\n                                <input type=\"checkbox\" v-model=\"generalSettings.true_instant_share\" _v-d30a25e6=\"\">\n                                <i class=\"form-icon\" _v-d30a25e6=\"\"></i>{{labels.true_instant_share_yes}}\n                            </label>\n                        </div>\n                    </div>\n                </div>\n\n                <span class=\"divider\" v-if=\"isInstantShare\" _v-d30a25e6=\"\"></span>\n\n                <div class=\"columns py-2\" v-if=\"isInstantShare\" _v-d30a25e6=\"\">\n                  <div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-d30a25e6=\"\">\n                    <b _v-d30a25e6=\"\">{{labels.instant_share_default_title}}</b>\n                    <p class=\"text-gray\" _v-d30a25e6=\"\">{{labels.instant_share_default_desc}}</p>\n                  </div>\n                  <div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-d30a25e6=\"\">\n                    <div class=\"form-group\" _v-d30a25e6=\"\">\n                      <label class=\"form-checkbox\" _v-d30a25e6=\"\">\n                        <input type=\"checkbox\" v-model=\"generalSettings.instant_share_default\" _v-d30a25e6=\"\">\n                        <i class=\"form-icon\" _v-d30a25e6=\"\"></i>{{labels.instant_share_default_yes}}\n                      </label>\n                    </div>\n                  </div>\n                </div>\n\n                <span class=\"divider\" v-if=\"isInstantShare\" _v-d30a25e6=\"\"></span>\n\n                <div class=\"columns py-2\" v-if=\"isInstantShare\" :class=\"'rop-control-container-'+isPro\" _v-d30a25e6=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-d30a25e6=\"\">\n                        <b _v-d30a25e6=\"\">{{labels.instant_share_future_scheduled_title}}</b>\n                        <p class=\"text-gray\" _v-d30a25e6=\"\"><span v-html=\"labels.instant_share_future_scheduled_desc\" _v-d30a25e6=\"\"></span></p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-d30a25e6=\"\">\n                        <div class=\"form-group\" _v-d30a25e6=\"\">\n                            <label class=\"form-checkbox\" _v-d30a25e6=\"\">\n                                <input type=\"checkbox\" v-model=\"generalSettings.instant_share_future_scheduled\" _v-d30a25e6=\"\">\n                                <i class=\"form-icon\" _v-d30a25e6=\"\"></i>{{labels.instant_share_future_scheduled_yes}}\n                            </label>\n                        </div>\n                    </div>\n                </div>\n                <!-- Upsell -->\n                <div class=\"columns \" v-if=\"!isPro &amp;&amp; isInstantShare\" _v-d30a25e6=\"\">\n                    <div class=\"column text-center\" _v-d30a25e6=\"\">\n                        <p class=\"upsell\" _v-d30a25e6=\"\"><i class=\"fa fa-lock\" _v-d30a25e6=\"\"></i> {{labels.instant_share_future_scheduled_upsell}}</p>\n                    </div>\n                </div>\n                <span class=\"divider\" v-if=\"isInstantShare\" _v-d30a25e6=\"\"></span>\n\n                <div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-d30a25e6=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-d30a25e6=\"\">\n                        <b _v-d30a25e6=\"\">{{labels.custom_share_title}}</b>\n                        <p class=\"text-gray\" _v-d30a25e6=\"\"><span v-html=\"labels.custom_share_desc\" _v-d30a25e6=\"\"></span></p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-d30a25e6=\"\">\n                        <div class=\"form-group\" _v-d30a25e6=\"\">\n                            <label id=\"rop_custom_share_msg\" class=\"form-checkbox\" _v-d30a25e6=\"\">\n                                <input type=\"checkbox\" :disabled=\"!isPro\" v-model=\"generalSettings.custom_messages\" _v-d30a25e6=\"\">\n                                <i class=\"form-icon\" _v-d30a25e6=\"\"></i>{{labels.custom_share_yes}}\n                            </label>\n                        </div>\n                    </div>\n                </div>\n                <span class=\"divider\" _v-d30a25e6=\"\"></span>\n\n\n                <div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" v-if=\"isCustomMsgs\" _v-d30a25e6=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-d30a25e6=\"\">\n                        <b _v-d30a25e6=\"\">{{labels.custom_share_order_title}}</b>\n                        <p class=\"text-gray\" _v-d30a25e6=\"\">{{labels.custom_share_order_desc}}</p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-d30a25e6=\"\">\n                        <div class=\"form-group\" _v-d30a25e6=\"\">\n                            <label id=\"rop_custom_share_msg\" class=\"form-checkbox\" _v-d30a25e6=\"\">\n                                <input type=\"checkbox\" :disabled=\"!isPro\" v-model=\"generalSettings.custom_messages_share_order\" _v-d30a25e6=\"\">\n                                <i class=\"form-icon\" _v-d30a25e6=\"\"></i>{{labels.custom_share_order_yes}}\n                            </label>\n                        </div>\n                    </div>\n                </div>\n\n                <!-- Upsell -->\n                <div class=\"columns \" v-if=\"!isPro\" _v-d30a25e6=\"\">\n                    <div class=\"column text-center\" _v-d30a25e6=\"\">\n                        <p class=\"upsell\" _v-d30a25e6=\"\"><i class=\"fa fa-lock\" _v-d30a25e6=\"\"></i> {{labels.custom_share_upsell}}</p>\n                    </div>\n                </div>\n                <span class=\"divider\" v-if=\"isCustomMsgs\" _v-d30a25e6=\"\"></span>\n\n                <div class=\"columns py-2\" _v-d30a25e6=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-d30a25e6=\"\">\n                        <b _v-d30a25e6=\"\">{{labels.housekeeping}}</b>\n                        <p class=\"text-gray\" _v-d30a25e6=\"\">{{labels.housekeeping_desc}}</p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-d30a25e6=\"\">\n                        <div class=\"form-group\" _v-d30a25e6=\"\">\n                            <label class=\"form-checkbox\" _v-d30a25e6=\"\">\n                                <input type=\"checkbox\" v-model=\"generalSettings.housekeeping\" _v-d30a25e6=\"\">\n                                <i class=\"form-icon\" _v-d30a25e6=\"\"></i>{{labels.housekeeping_yes}}\n                            </label>\n                        </div>\n                    </div>\n                </div>\n                <span class=\"divider\" _v-d30a25e6=\"\"></span>\n\n            </div>\n        </div>\n        <div class=\"panel-footer text-right\" _v-d30a25e6=\"\">\n            <button class=\"btn btn-primary\" @click=\"saveGeneralSettings()\" _v-d30a25e6=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-d30a25e6=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-d30a25e6=\"\"></i> {{labels.save}}\n            </button>\n        </div>\n    </div>\n";
 
 /***/ }),
-/* 258 */
+/* 263 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(259)
-__vue_script__ = __webpack_require__(261)
-__vue_template__ = __webpack_require__(286)
+__webpack_require__(264)
+__vue_script__ = __webpack_require__(266)
+__vue_template__ = __webpack_require__(305)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -38570,7 +38576,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/uvdev/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/accounts-selector-panel.vue"
+  var id = "E:\\work\\projects\\webdesign\\wordpress-themeisle\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\accounts-selector-panel.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -38579,13 +38585,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 259 */
+/* 264 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(260);
+var content = __webpack_require__(265);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -38594,8 +38600,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6ded7d15&file=accounts-selector-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-selector-panel.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6ded7d15&file=accounts-selector-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-selector-panel.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3a57ac82&file=accounts-selector-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-selector-panel.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3a57ac82&file=accounts-selector-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./accounts-selector-panel.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -38605,7 +38611,7 @@ if(false) {
 }
 
 /***/ }),
-/* 260 */
+/* 265 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -38613,31 +38619,31 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t.icon_box[_v-6ded7d15] {\n\t\twidth: 30px;\n\t\theight: 30px;\n\t\tpadding: 5px;\n\t}\n\n\t.icon_box.no-image[_v-6ded7d15] {\n\t\tpadding: 0;\n\t}\n\n\t.icon_box.has_image > .fa[_v-6ded7d15] {\n\t\twidth: 15px;\n\t\theight: 15px;\n\t\tpadding: 0;\n\t\tline-height: 15px;\n\t}\n\n\t.icon_box.no-image > .fa[_v-6ded7d15] {\n\t\tfont-size: 20px;\n\t\tbackground: transparent;\n\t\tline-height: 30px;\n\t}\n", ""]);
+exports.push([module.i, "\r\n\t.icon_box[_v-3a57ac82] {\r\n\t\twidth: 30px;\r\n\t\theight: 30px;\r\n\t\tpadding: 5px;\r\n\t}\r\n\r\n\t.icon_box.no-image[_v-3a57ac82] {\r\n\t\tpadding: 0;\r\n\t}\r\n\r\n\t.icon_box.has_image > .fa[_v-3a57ac82] {\r\n\t\twidth: 15px;\r\n\t\theight: 15px;\r\n\t\tpadding: 0;\r\n\t\tline-height: 15px;\r\n\t}\r\n\r\n\t.icon_box.no-image > .fa[_v-3a57ac82] {\r\n\t\tfont-size: 20px;\r\n\t\tbackground: transparent;\r\n\t\tline-height: 30px;\r\n\t}\r\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 261 */
+/* 266 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _keys = __webpack_require__(14);
+var _keys = __webpack_require__(19);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _emptyActiveAccounts = __webpack_require__(262);
+var _emptyActiveAccounts = __webpack_require__(267);
 
 var _emptyActiveAccounts2 = _interopRequireDefault(_emptyActiveAccounts);
 
-var _postFormat = __webpack_require__(265);
+var _postFormat = __webpack_require__(270);
 
 var _postFormat2 = _interopRequireDefault(_postFormat);
 
-var _accountSchedule = __webpack_require__(270);
+var _accountSchedule = __webpack_require__(289);
 
 var _accountSchedule2 = _interopRequireDefault(_accountSchedule);
 
@@ -38918,10 +38924,7 @@ module.exports = {
     * When a new account is added and we don't have any data for it.
     */
 			this.checkActiveData();
-			// below is getting wrong value, its getting the language value from the previously selected account 
-			// this is because it is firing before the dom for the newly selected account loads
-			var wpml_language_selector = document.querySelector('#wpml-language-selector');
-			this.refresh_language_taxonomies(wpml_language_selector.value);
+			this.$store.state.dom_updated = false;
 		}
 	},
 	components: {
@@ -38961,12 +38964,12 @@ module.exports = {
 };
 
 /***/ }),
-/* 262 */
+/* 267 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(263)
-__vue_template__ = __webpack_require__(264)
+__vue_script__ = __webpack_require__(268)
+__vue_template__ = __webpack_require__(269)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -38974,7 +38977,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/uvdev/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/empty-active-accounts.vue"
+  var id = "E:\\work\\projects\\webdesign\\wordpress-themeisle\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\empty-active-accounts.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -38983,7 +38986,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 263 */
+/* 268 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39018,19 +39021,19 @@ module.exports = {
 };
 
 /***/ }),
-/* 264 */
+/* 269 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"empty\">\n\t\t<div class=\"empty-icon\">\n\t\t\t<i class=\"fa fa-3x fa-user-circle-o\"></i>\n\t\t</div>\n\t\t<p class=\"empty-title h5\">{{labels.no_active_accounts}}</p>\n\t\t<p class=\"empty-subtitle\" v-html=\"labels.no_active_accounts_desc\"></p>\n\t\t<button class=\"btn btn-primary\" @click=\"goToAccounts()\">{{labels.go_to_accounts_btn}}</button>\n\t</div>\n";
+module.exports = "\r\n\t<div class=\"empty\">\r\n\t\t<div class=\"empty-icon\">\r\n\t\t\t<i class=\"fa fa-3x fa-user-circle-o\"></i>\r\n\t\t</div>\r\n\t\t<p class=\"empty-title h5\">{{labels.no_active_accounts}}</p>\r\n\t\t<p class=\"empty-subtitle\" v-html=\"labels.no_active_accounts_desc\"></p>\r\n\t\t<button class=\"btn btn-primary\" @click=\"goToAccounts()\">{{labels.go_to_accounts_btn}}</button>\r\n\t</div>\r\n";
 
 /***/ }),
-/* 265 */
+/* 270 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(266)
-__vue_script__ = __webpack_require__(268)
-__vue_template__ = __webpack_require__(269)
+__webpack_require__(271)
+__vue_script__ = __webpack_require__(273)
+__vue_template__ = __webpack_require__(288)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -39038,7 +39041,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/uvdev/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/post-format.vue"
+  var id = "E:\\work\\projects\\webdesign\\wordpress-themeisle\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\post-format.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -39047,13 +39050,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 266 */
+/* 271 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(267);
+var content = __webpack_require__(272);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -39062,8 +39065,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2ea0dffc&file=post-format.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./post-format.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2ea0dffc&file=post-format.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./post-format.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5ead0ae9&file=post-format.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./post-format.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5ead0ae9&file=post-format.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./post-format.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -39073,7 +39076,7 @@ if(false) {
 }
 
 /***/ }),
-/* 267 */
+/* 272 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -39081,25 +39084,21 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n    #rop_core .panel-body .text-gray[_v-2ea0dffc] {\n        margin: 0;\n        line-height: normal;\n    }\n\n    b[_v-2ea0dffc] {\n        margin-bottom: 5px;\n        display: block;\n    }\n\n    #rop_core .input-group .input-group-addon[_v-2ea0dffc] {\n        padding: 3px 5px;\n    }\n\n    @media ( max-width: 600px ) {\n        #rop_core .panel-body .text-gray[_v-2ea0dffc] {\n            margin-bottom: 10px;\n        }\n\n        #rop_core .text-right[_v-2ea0dffc] {\n            text-align: left;\n        }\n    }\n", ""]);
+exports.push([module.i, "\r\n    #rop_core .panel-body .text-gray[_v-5ead0ae9] {\r\n        margin: 0;\r\n        line-height: normal;\r\n    }\r\n\r\n    b[_v-5ead0ae9] {\r\n        margin-bottom: 5px;\r\n        display: block;\r\n    }\r\n\r\n    #rop_core .input-group .input-group-addon[_v-5ead0ae9] {\r\n        padding: 3px 5px;\r\n    }\r\n\r\n    @media ( max-width: 600px ) {\r\n        #rop_core .panel-body .text-gray[_v-5ead0ae9] {\r\n            margin-bottom: 10px;\r\n        }\r\n\r\n        #rop_core .text-right[_v-5ead0ae9] {\r\n            text-align: left;\r\n        }\r\n    }\r\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 268 */
+/* 273 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _getIterator2 = __webpack_require__(49);
+var _getIterator2 = __webpack_require__(50);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
-
-var _keys = __webpack_require__(14);
-
-var _keys2 = _interopRequireDefault(_keys);
 
 var _multipleSelect = __webpack_require__(52);
 
@@ -39125,57 +39124,24 @@ module.exports = {
     },
     created: function created() {
         this.get_taxonomy_list();
-
-        this.wpml_languages.filter(function (lang) {
-            var code = (0, _keys2.default)(lang)[0];
-            lang.code = code;
-            lang.value = lang[code];
-        });
-
-        //if( this.isPro && this.wpml_active_status &&  this.post_format.wpml_language !== '' ){
-        // this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.post_types, language_code: this.selected_language }});
-        // this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes, language_code: this.post_format.wpml_language }});
-        //}
     },
-    mounted: function mounted() {
-        // below should only happen if is pro.
-        //this.load_taxonomy();
-        //
-        // document.onreadystatechange = () => {
-        //    if (document.readyState == "complete") {
-        //      const wpml_language_selector = document.querySelector('#wpml-language-selector');
-        //      console.log(wpml_language_selector);
-        //      console.log(wpml_language_selector.value);
-        //    }
-        //  }
-        //
-        //  window.addEventListener('load', () => {
-        //    const wpml_language_selector = document.querySelector('#wpml-language-selector');
-        //    console.log(wpml_language_selector);
-        //    console.log(wpml_language_selector.value);
-        //    })
-
-        // if( this.isPro && this.wpml_active_status &&  this.post_format.wpml_language !== '' ){
-        //   this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.$store.state.generalSettings.available_post_types, language_code: 'en' }});
-        //   // this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes, language_code: this.post_format.wpml_language }});
-        // }
-
-        // if( this.isPro && this.wpml_active_status &&  this.post_format.wpml_language !== '' ){
-        //   this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.post_types, language_code: this.selected_language }});
-        //   // this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes, language_code: this.post_format.wpml_language }});
-        // }
-        //    this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.post_types, language_code: this.selected_language }});
-
+    updated: function updated() {
+        this.$nextTick(function () {
+            if (!this.$store.state.dom_updated) {
+                this.refresh_language_taxonomies();
+            }
+        });
     },
     methods: {
-
         refresh_language_taxonomies: function refresh_language_taxonomies(e) {
-
-            var lang = e.target.options[e.target.options.selectedIndex].value;
+            var lang = e && e.target ? e.target.options[e.target.options.selectedIndex].value : document.querySelector('#wpml-language-selector').value;
             console.log('wpml language selected: ', lang);
             // clear selected taxonomies on language change
             this.post_format.taxonomy_filter = [];
-            this.$store.dispatch('fetchAJAXPromise', { req: 'get_taxonomies', data: { post_types: this.postTypes, language_code: lang } });
+            if (lang !== '') {
+                this.$store.dispatch('fetchAJAXPromise', { req: 'get_taxonomies', data: { post_types: this.postTypes, language_code: lang } });
+            }
+            this.$store.state.dom_updated = true;
         },
         get_taxonomy_list: function get_taxonomy_list() {
             var _this = this;
@@ -39301,14 +39267,6 @@ module.exports = {
             return postFormat.taxonomy_filter ? postFormat.taxonomy_filter : [];
         },
         taxonomy: function taxonomy() {
-            // this.selected_language = this.post_format.wpml_language;
-            // this.post_types = this.postTypes;
-            // console.log(this.selected_language);
-            // console.log( this.post_types);
-            if (this.isPro && this.wpml_active_status && this.post_format.wpml_language !== '') {
-                //  this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes, language_code: this.post_format.wpml_language }});
-            }
-
             return this.$store.state.generalSettings.available_taxonomies;
         },
         shorteners: function shorteners() {
@@ -39382,9 +39340,7 @@ module.exports = {
 //             <div class="column col-6 col-sm-12 vertical-align">
 //                 <div class="form-group">
 //                     <select id="wpml-language-selector" class="form-select" v-model="post_format.wpml_language" :disabled="!isPro" v-on:change="refresh_language_taxonomies">
-//                         <option value="" selected>{{labels.wpml_select_language}}</option>
-//                         <!-- <option value="" v-bind:selected="post_format.wpml_language == ''">{{labels.wpml_select_language}}</option> -->
-//                         <option v-for="(lang, index) in wpml_languages" :value="lang.code" v-bind:selected="lang.code == post_format.wpml_language ? 'selected' : false">{{lang.value}}</option>
+//                         <option v-for="(lang, index) in wpml_languages" :value="lang.code" v-bind:selected="index == 0 || lang.code == post_format.wpml_language ? true : false">{{lang.label}}</option>
 //                     </select>
 //                 </div>
 //             </div>
@@ -39695,19 +39651,33 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 269 */
+/* 274 */,
+/* 275 */,
+/* 276 */,
+/* 277 */,
+/* 278 */,
+/* 279 */,
+/* 280 */,
+/* 281 */,
+/* 282 */,
+/* 283 */,
+/* 284 */,
+/* 285 */,
+/* 286 */,
+/* 287 */,
+/* 288 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div _v-2ea0dffc=\"\">\n        <div class=\"columns py-2\" v-if=\"wpml_active_status\" _v-2ea0dffc=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <b _v-2ea0dffc=\"\">{{labels.language_title}}</b>\n                <p class=\"text-gray\" _v-2ea0dffc=\"\">{{labels.language_title_desc}}</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <div class=\"form-group\" _v-2ea0dffc=\"\">\n                    <select id=\"wpml-language-selector\" class=\"form-select\" v-model=\"post_format.wpml_language\" :disabled=\"!isPro\" v-on:change=\"refresh_language_taxonomies\" _v-2ea0dffc=\"\">\n                        <option value=\"\" selected=\"\" _v-2ea0dffc=\"\">{{labels.wpml_select_language}}</option>\n                        <!-- <option value=\"\" v-bind:selected=\"post_format.wpml_language == ''\">{{labels.wpml_select_language}}</option> -->\n                        <option v-for=\"(lang, index) in wpml_languages\" :value=\"lang.code\" v-bind:selected=\"lang.code == post_format.wpml_language ? 'selected' : false\" _v-2ea0dffc=\"\">{{lang.value}}</option>\n                    </select>\n                </div>\n            </div>\n        </div>\n        <div class=\"columns \" v-if=\"!isPro\" _v-2ea0dffc=\"\">\n            <div class=\"column text-center\" _v-2ea0dffc=\"\">\n                <p class=\"upsell\" _v-2ea0dffc=\"\"><i class=\"fa fa-lock\" _v-2ea0dffc=\"\"></i> {{labels.full_wpml_support_upsell}}</p>\n            </div>\n        </div>\n        <span class=\"divider\" _v-2ea0dffc=\"\"></span>\n\n        <div class=\"columns py-2\" _v-2ea0dffc=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <b _v-2ea0dffc=\"\">{{labels.post_content_title}}</b>\n                <p class=\"text-gray\" _v-2ea0dffc=\"\">{{labels.post_content_desc}}</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <div class=\"form-group\" _v-2ea0dffc=\"\">\n                    <select class=\"form-select\" v-model=\"post_format.post_content\" _v-2ea0dffc=\"\">\n                        <option value=\"post_title\" _v-2ea0dffc=\"\">{{labels.post_content_option_title}}</option>\n                        <option value=\"post_content\" _v-2ea0dffc=\"\">{{labels.post_content_option_content}}</option>\n                        <option value=\"post_title_content\" _v-2ea0dffc=\"\">{{labels.post_content_option_title_content}}</option>\n                        <option value=\"custom_field\" _v-2ea0dffc=\"\">{{labels.post_content_option_custom_field}}</option>\n                    </select>\n                </div>\n            </div>\n        </div>\n\n                <div class=\"columns py-2\" v-if=\"post_format.post_content === 'custom_field'\" _v-2ea0dffc=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                        <b _v-2ea0dffc=\"\">{{labels.custom_meta_title}}</b>\n                        <p class=\"text-gray\" _v-2ea0dffc=\"\">{{labels.custom_meta_desc}}</p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                        <div class=\"form-group\" _v-2ea0dffc=\"\">\n                            <input class=\"form-input\" type=\"text\" v-model=\"post_format.custom_meta_field\" value=\"\" placeholder=\"\" _v-2ea0dffc=\"\">\n                        </div>\n                    </div>\n                </div>\n\n        <span class=\"divider\" _v-2ea0dffc=\"\"></span>\n\n        <div class=\"columns py-2\" _v-2ea0dffc=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <b _v-2ea0dffc=\"\">{{labels.max_char_title}}</b>\n                <p class=\"text-gray\" _v-2ea0dffc=\"\">{{labels.max_char_desc}}</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <div class=\"form-group\" _v-2ea0dffc=\"\">\n                    <input class=\"form-input\" type=\"number\" v-model=\"post_format.maximum_length\" value=\"\" placeholder=\"\" _v-2ea0dffc=\"\">\n                </div>\n            </div>\n        </div>\n        <span class=\"divider\" _v-2ea0dffc=\"\"></span>\n\n        <div class=\"columns py-2\" _v-2ea0dffc=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <b _v-2ea0dffc=\"\">{{labels.add_char_title}}</b>\n                <p class=\"text-gray\" _v-2ea0dffc=\"\"><span v-html=\"labels.add_char_desc\" _v-2ea0dffc=\"\"></span></p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <div class=\"form-group\" _v-2ea0dffc=\"\">\n\t\t\t\t\t<textarea class=\"form-input\" v-model=\"post_format.custom_text\" v-bind:placeholder=\"labels.add_char_placeholder\" _v-2ea0dffc=\"\">{{post_format.custom_text}}</textarea>\n                </div>\n            </div>\n        </div>\n\n        <div class=\"columns py-2\" _v-2ea0dffc=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <p class=\"text-gray\" _v-2ea0dffc=\"\">{{labels.add_pos_title}}</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <div class=\"form-group\" _v-2ea0dffc=\"\">\n                    <select class=\"form-select\" v-model=\"post_format.custom_text_pos\" _v-2ea0dffc=\"\">\n                        <option value=\"beginning\" _v-2ea0dffc=\"\">{{labels.add_pos_option_start}}</option>\n                        <option value=\"end\" _v-2ea0dffc=\"\">{{labels.add_pos_option_end}}</option>\n                    </select>\n                </div>\n            </div>\n        </div>\n        <span class=\"divider\" _v-2ea0dffc=\"\"></span>\n        <div class=\"columns py-2\" _v-2ea0dffc=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <b _v-2ea0dffc=\"\">{{labels.add_link_title}}</b>\n                <p class=\"text-gray\" _v-2ea0dffc=\"\">{{labels.add_link_desc}}</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <div class=\"input-group\" _v-2ea0dffc=\"\">\n                    <label class=\"form-checkbox\" _v-2ea0dffc=\"\">\n                        <input type=\"checkbox\" v-model=\"post_format.include_link\" _v-2ea0dffc=\"\">\n                        <i class=\"form-icon\" _v-2ea0dffc=\"\"></i> {{labels.add_link_yes}}\n                    </label>\n                </div>\n            </div>\n        </div>\n        <span class=\"divider\" _v-2ea0dffc=\"\"></span>\n        <div class=\"columns py-2\" _v-2ea0dffc=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <b _v-2ea0dffc=\"\">{{labels.meta_link_title}}</b>\n                <p class=\"text-gray\" _v-2ea0dffc=\"\">{{labels.meta_link_desc}}</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <div class=\"input-group\" _v-2ea0dffc=\"\">\n                    <label class=\"form-checkbox\" _v-2ea0dffc=\"\">\n                        <input type=\"checkbox\" v-model=\"post_format.url_from_meta\" _v-2ea0dffc=\"\">\n                        <i class=\"form-icon\" _v-2ea0dffc=\"\"></i> {{labels.meta_link_yes}}\n                    </label>\n                </div>\n            </div>\n        </div>\n\n        <!-- Custom Field -->\n        <div class=\"columns py-2\" v-if=\"post_format.url_from_meta\" _v-2ea0dffc=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <b _v-2ea0dffc=\"\">{{labels.meta_link_name_title}}</b>\n                <p class=\"text-gray\" _v-2ea0dffc=\"\">{{labels.meta_link_name_desc}}</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <div class=\"form-group\" _v-2ea0dffc=\"\">\n                    <input class=\"form-input\" type=\"text\" v-model=\"post_format.url_meta_key\" value=\"\" placeholder=\"\" _v-2ea0dffc=\"\">\n                </div>\n            </div>\n        </div>\n        <span class=\"divider\" _v-2ea0dffc=\"\"></span>\n\n        <div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-2ea0dffc=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-2ea0dffc=\"\">\n                <b _v-2ea0dffc=\"\">{{labels_settings.taxonomies_title}}</b>\n                <p class=\"text-gray\" _v-2ea0dffc=\"\"><span v-html=\"labels_settings.taxonomies_desc\" _v-2ea0dffc=\"\"></span></p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <div class=\"input-group\" _v-2ea0dffc=\"\">\n                    <multiple-select :disabled=\"!!isPro\" :options=\"taxonomy\" :selected=\"taxonomy_filter\" :name=\"post_format.taxonomy_filter\" :changed-selection=\"updated_tax_filter\" :key=\"this.account_id\" _v-2ea0dffc=\"\"></multiple-select>\n                    <span class=\"input-group-addon vertical-align\" _v-2ea0dffc=\"\">\n                        <label class=\"form-checkbox\" _v-2ea0dffc=\"\">\n\t\t\t\t\t\t    <input :disabled=\"!isPro\" type=\"checkbox\" v-model=\"post_format.exclude_taxonomies\" _v-2ea0dffc=\"\">\n\t\t\t\t\t\t\t<i class=\"form-icon\" _v-2ea0dffc=\"\"></i>{{labels_settings.taxonomies_exclude}}\n\t\t\t\t\t\t</label>\n\t\t\t\t\t</span>\n                </div>\n            </div>\n        </div>\n        <div class=\"columns \" v-if=\"!isPro\" _v-2ea0dffc=\"\">\n            <div class=\"column text-center\" _v-2ea0dffc=\"\">\n                <p class=\"upsell\" _v-2ea0dffc=\"\"><i class=\"fa fa-lock\" _v-2ea0dffc=\"\"></i> {{labels.taxonomy_based_sharing_upsell}}</p>\n            </div>\n        </div>\n        <span class=\"divider\" _v-2ea0dffc=\"\"></span>\n        <div class=\"columns py-2\" _v-2ea0dffc=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <b _v-2ea0dffc=\"\">{{labels.use_shortner_title}}</b>\n                <p class=\"text-gray\" _v-2ea0dffc=\"\">{{labels.use_shortner_desc}}</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <div class=\"input-group\" _v-2ea0dffc=\"\">\n                    <label class=\"form-checkbox\" _v-2ea0dffc=\"\">\n                        <input type=\"checkbox\" v-model=\"post_format.short_url\" _v-2ea0dffc=\"\">\n                        <i class=\"form-icon\" _v-2ea0dffc=\"\"></i> {{labels.use_shortner_yes}}\n                    </label>\n                </div>\n            </div>\n        </div>\n        <div class=\"columns py-2\" v-if=\"post_format.short_url\" _v-2ea0dffc=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <b _v-2ea0dffc=\"\">{{labels.shortner_title}}</b>\n                <p class=\"text-gray\" _v-2ea0dffc=\"\">{{labels.shortner_desc}}</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <div class=\"form-group\" _v-2ea0dffc=\"\">\n                    <select class=\"form-select\" v-model=\"post_format.short_url_service\" _v-2ea0dffc=\"\">\n                        <option v-for=\"shortener in shorteners\" :value=\"shortener.id\" :disabled=\"shortener.active !== true\" :selected=\"shortener.name == post_format.short_url_service\" _v-2ea0dffc=\"\">{{ shortener.name }}{{ !shortener.active ? labels_generic.only_pro_suffix : ''}}</option>\n                    </select>\n                </div>\n            </div>\n        </div>\n\n        <div class=\"columns py-2\" v-if=\"post_format.short_url\" v-for=\"( credential, key_name ) in post_format.shortner_credentials\" _v-2ea0dffc=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <b _v-2ea0dffc=\"\">{{ key_name | capitalize }}</b>\n                <p class=\"text-gray\" _v-2ea0dffc=\"\">{{labels.shortner_field_desc_start}} \"{{key_name}}\"\n                    {{labels.shortner_field_desc_end}}\n                    <strong _v-2ea0dffc=\"\">{{post_format.short_url_service}}</strong> {{labels.shortner_api_field}}.</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <div class=\"form-group\" _v-2ea0dffc=\"\">\n                    <input class=\"form-input\" type=\"text\" v-model=\"post_format.shortner_credentials[key_name]\" _v-2ea0dffc=\"\">\n                </div>\n            </div>\n        </div>\n\n        <div class=\"columns py-2\" _v-2ea0dffc=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <b _v-2ea0dffc=\"\">{{labels.hashtags_title}}</b>\n                <p class=\"text-gray\" _v-2ea0dffc=\"\">{{labels.hashtags_desc}}</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <div class=\"form-group\" _v-2ea0dffc=\"\">\n                    <select class=\"form-select\" v-model=\"post_format.hashtags\" _v-2ea0dffc=\"\">\n                        <option value=\"no-hashtags\" _v-2ea0dffc=\"\">{{labels.hashtags_option_no}}</option>\n                        <option value=\"common-hashtags\" _v-2ea0dffc=\"\">{{labels.hashtags_option_common}}</option>\n                        <option value=\"categories-hashtags\" _v-2ea0dffc=\"\">{{labels.hashtags_option_cats}}</option>\n                        <option value=\"tags-hashtags\" _v-2ea0dffc=\"\">{{labels.hashtags_option_tags}}</option>\n                        <option value=\"custom-hashtags\" _v-2ea0dffc=\"\">{{labels.hashtags_option_field}}</option>\n                    </select>\n                </div>\n            </div>\n        </div>\n        <div class=\"columns py-2\" v-if=\"post_format.hashtags === 'common-hashtags'\" _v-2ea0dffc=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <b _v-2ea0dffc=\"\">{{labels.hastags_common_title}}</b>\n                <p class=\"text-gray\" _v-2ea0dffc=\"\">{{labels.hastags_common_desc}} \",\".</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <div class=\"form-group\" _v-2ea0dffc=\"\">\n                    <input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_common\" value=\"\" placeholder=\"\" _v-2ea0dffc=\"\">\n                </div>\n            </div>\n        </div>\n\n        <div class=\"columns py-2\" v-if=\"post_format.hashtags === 'custom-hashtags'\" _v-2ea0dffc=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <b _v-2ea0dffc=\"\">{{labels.hastags_field_title}}</b>\n                <p class=\"text-gray\" _v-2ea0dffc=\"\">{{labels.hastags_field_desc}}</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <div class=\"form-group\" _v-2ea0dffc=\"\">\n                    <input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_custom\" value=\"\" placeholder=\"\" _v-2ea0dffc=\"\">\n                </div>\n            </div>\n        </div>\n\n        <div class=\"columns py-2\" v-if=\"post_format.hashtags !== 'no-hashtags'\" _v-2ea0dffc=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <b _v-2ea0dffc=\"\">{{labels.hashtags_length_title}}</b>\n                <p class=\"text-gray\" _v-2ea0dffc=\"\">{{labels.hashtags_length_desc}}</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <div class=\"form-group\" _v-2ea0dffc=\"\">\n                    <input class=\"form-input\" type=\"number\" v-model=\"post_format.hashtags_length\" value=\"\" placeholder=\"\" _v-2ea0dffc=\"\">\n                </div>\n            </div>\n        </div>\n\n        <span class=\"divider\" _v-2ea0dffc=\"\"></span>\n\n        <div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-2ea0dffc=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-2ea0dffc=\"\">\n                <b _v-2ea0dffc=\"\">{{labels.image_title}}</b>\n                <p class=\"text-gray\" _v-2ea0dffc=\"\"><span v-html=\"labels.image_desc\" _v-2ea0dffc=\"\"></span></p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-2ea0dffc=\"\">\n                <div class=\"input-group\" _v-2ea0dffc=\"\">\n                    <label class=\"form-checkbox\" _v-2ea0dffc=\"\">\n                        <input type=\"checkbox\" v-model=\"post_format.image\" :disabled=\"!isPro\" _v-2ea0dffc=\"\">\n                        <i class=\"form-icon\" _v-2ea0dffc=\"\"></i> {{labels.image_yes}}\n                    </label>\n                </div>\n            </div>\n        </div>\n\n        <div class=\"columns \" v-if=\"!isPro\" _v-2ea0dffc=\"\">\n            <div class=\"column text-center\" _v-2ea0dffc=\"\">\n                <p class=\"upsell\" _v-2ea0dffc=\"\"><i class=\"fa fa-lock\" _v-2ea0dffc=\"\"></i> {{labels.image_upsell}}</p>\n            </div>\n        </div>\n        <span class=\"divider\" _v-2ea0dffc=\"\"></span>\n        <!-- Google Analytics -->\n        <div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-2ea0dffc=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-2ea0dffc=\"\">\n                <b _v-2ea0dffc=\"\">{{labels.utm_campaign_medium}}</b>\n                <p class=\"text-gray\" _v-2ea0dffc=\"\">{{labels.utm_campaign_medium_desc}}</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-2ea0dffc=\"\">\n                <div class=\"form-group\" _v-2ea0dffc=\"\">\n                    <input type=\"text\" :disabled=\"!isPro\" class=\"form-input\" v-model=\"post_format.utm_campaign_medium\" placeholder=\"social\" _v-2ea0dffc=\"\">\n                </div>\n            </div>\n        </div>\n\n        <div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-2ea0dffc=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-2ea0dffc=\"\">\n                <b _v-2ea0dffc=\"\">{{labels.utm_campaign_name}}</b>\n                <p class=\"text-gray\" _v-2ea0dffc=\"\">{{labels.utm_campaign_name_desc}}</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-2ea0dffc=\"\">\n                <div class=\"form-group\" _v-2ea0dffc=\"\">\n                    <input type=\"text\" :disabled=\"!isPro\" class=\"form-input\" v-model=\"post_format.utm_campaign_name\" placeholder=\"ReviveOldPost\" _v-2ea0dffc=\"\">\n                </div>\n            </div>\n        </div>\n        <div class=\"columns \" v-if=\"!isPro\" _v-2ea0dffc=\"\">\n            <div class=\"column text-center\" _v-2ea0dffc=\"\">\n                <p class=\"upsell\" _v-2ea0dffc=\"\"><i class=\"fa fa-lock\" _v-2ea0dffc=\"\"></i> {{labels.custom_utm_upsell}}</p>\n            </div>\n        </div>\n        <span class=\"divider\" _v-2ea0dffc=\"\"></span>\n    </div>\n";
+module.exports = "\n    <div _v-5ead0ae9=\"\">\n        <div class=\"columns py-2\" v-if=\"wpml_active_status\" _v-5ead0ae9=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <b _v-5ead0ae9=\"\">{{labels.language_title}}</b>\n                <p class=\"text-gray\" _v-5ead0ae9=\"\">{{labels.language_title_desc}}</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <div class=\"form-group\" _v-5ead0ae9=\"\">\n                    <select id=\"wpml-language-selector\" class=\"form-select\" v-model=\"post_format.wpml_language\" :disabled=\"!isPro\" v-on:change=\"refresh_language_taxonomies\" _v-5ead0ae9=\"\">\n                        <option v-for=\"(lang, index) in wpml_languages\" :value=\"lang.code\" v-bind:selected=\"index == 0 || lang.code == post_format.wpml_language ? true : false\" _v-5ead0ae9=\"\">{{lang.label}}</option>\n                    </select>\n                </div>\n            </div>\n        </div>\n        <div class=\"columns \" v-if=\"!isPro\" _v-5ead0ae9=\"\">\n            <div class=\"column text-center\" _v-5ead0ae9=\"\">\n                <p class=\"upsell\" _v-5ead0ae9=\"\"><i class=\"fa fa-lock\" _v-5ead0ae9=\"\"></i> {{labels.full_wpml_support_upsell}}</p>\n            </div>\n        </div>\n        <span class=\"divider\" _v-5ead0ae9=\"\"></span>\n\n        <div class=\"columns py-2\" _v-5ead0ae9=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <b _v-5ead0ae9=\"\">{{labels.post_content_title}}</b>\n                <p class=\"text-gray\" _v-5ead0ae9=\"\">{{labels.post_content_desc}}</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <div class=\"form-group\" _v-5ead0ae9=\"\">\n                    <select class=\"form-select\" v-model=\"post_format.post_content\" _v-5ead0ae9=\"\">\n                        <option value=\"post_title\" _v-5ead0ae9=\"\">{{labels.post_content_option_title}}</option>\n                        <option value=\"post_content\" _v-5ead0ae9=\"\">{{labels.post_content_option_content}}</option>\n                        <option value=\"post_title_content\" _v-5ead0ae9=\"\">{{labels.post_content_option_title_content}}</option>\n                        <option value=\"custom_field\" _v-5ead0ae9=\"\">{{labels.post_content_option_custom_field}}</option>\n                    </select>\n                </div>\n            </div>\n        </div>\n\n                <div class=\"columns py-2\" v-if=\"post_format.post_content === 'custom_field'\" _v-5ead0ae9=\"\">\n                    <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                        <b _v-5ead0ae9=\"\">{{labels.custom_meta_title}}</b>\n                        <p class=\"text-gray\" _v-5ead0ae9=\"\">{{labels.custom_meta_desc}}</p>\n                    </div>\n                    <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                        <div class=\"form-group\" _v-5ead0ae9=\"\">\n                            <input class=\"form-input\" type=\"text\" v-model=\"post_format.custom_meta_field\" value=\"\" placeholder=\"\" _v-5ead0ae9=\"\">\n                        </div>\n                    </div>\n                </div>\n\n        <span class=\"divider\" _v-5ead0ae9=\"\"></span>\n\n        <div class=\"columns py-2\" _v-5ead0ae9=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <b _v-5ead0ae9=\"\">{{labels.max_char_title}}</b>\n                <p class=\"text-gray\" _v-5ead0ae9=\"\">{{labels.max_char_desc}}</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <div class=\"form-group\" _v-5ead0ae9=\"\">\n                    <input class=\"form-input\" type=\"number\" v-model=\"post_format.maximum_length\" value=\"\" placeholder=\"\" _v-5ead0ae9=\"\">\n                </div>\n            </div>\n        </div>\n        <span class=\"divider\" _v-5ead0ae9=\"\"></span>\n\n        <div class=\"columns py-2\" _v-5ead0ae9=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <b _v-5ead0ae9=\"\">{{labels.add_char_title}}</b>\n                <p class=\"text-gray\" _v-5ead0ae9=\"\"><span v-html=\"labels.add_char_desc\" _v-5ead0ae9=\"\"></span></p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <div class=\"form-group\" _v-5ead0ae9=\"\">\n\t\t\t\t\t<textarea class=\"form-input\" v-model=\"post_format.custom_text\" v-bind:placeholder=\"labels.add_char_placeholder\" _v-5ead0ae9=\"\">{{post_format.custom_text}}</textarea>\n                </div>\n            </div>\n        </div>\n\n        <div class=\"columns py-2\" _v-5ead0ae9=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <p class=\"text-gray\" _v-5ead0ae9=\"\">{{labels.add_pos_title}}</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <div class=\"form-group\" _v-5ead0ae9=\"\">\n                    <select class=\"form-select\" v-model=\"post_format.custom_text_pos\" _v-5ead0ae9=\"\">\n                        <option value=\"beginning\" _v-5ead0ae9=\"\">{{labels.add_pos_option_start}}</option>\n                        <option value=\"end\" _v-5ead0ae9=\"\">{{labels.add_pos_option_end}}</option>\n                    </select>\n                </div>\n            </div>\n        </div>\n        <span class=\"divider\" _v-5ead0ae9=\"\"></span>\n        <div class=\"columns py-2\" _v-5ead0ae9=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <b _v-5ead0ae9=\"\">{{labels.add_link_title}}</b>\n                <p class=\"text-gray\" _v-5ead0ae9=\"\">{{labels.add_link_desc}}</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <div class=\"input-group\" _v-5ead0ae9=\"\">\n                    <label class=\"form-checkbox\" _v-5ead0ae9=\"\">\n                        <input type=\"checkbox\" v-model=\"post_format.include_link\" _v-5ead0ae9=\"\">\n                        <i class=\"form-icon\" _v-5ead0ae9=\"\"></i> {{labels.add_link_yes}}\n                    </label>\n                </div>\n            </div>\n        </div>\n        <span class=\"divider\" _v-5ead0ae9=\"\"></span>\n        <div class=\"columns py-2\" _v-5ead0ae9=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <b _v-5ead0ae9=\"\">{{labels.meta_link_title}}</b>\n                <p class=\"text-gray\" _v-5ead0ae9=\"\">{{labels.meta_link_desc}}</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <div class=\"input-group\" _v-5ead0ae9=\"\">\n                    <label class=\"form-checkbox\" _v-5ead0ae9=\"\">\n                        <input type=\"checkbox\" v-model=\"post_format.url_from_meta\" _v-5ead0ae9=\"\">\n                        <i class=\"form-icon\" _v-5ead0ae9=\"\"></i> {{labels.meta_link_yes}}\n                    </label>\n                </div>\n            </div>\n        </div>\n\n        <!-- Custom Field -->\n        <div class=\"columns py-2\" v-if=\"post_format.url_from_meta\" _v-5ead0ae9=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <b _v-5ead0ae9=\"\">{{labels.meta_link_name_title}}</b>\n                <p class=\"text-gray\" _v-5ead0ae9=\"\">{{labels.meta_link_name_desc}}</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <div class=\"form-group\" _v-5ead0ae9=\"\">\n                    <input class=\"form-input\" type=\"text\" v-model=\"post_format.url_meta_key\" value=\"\" placeholder=\"\" _v-5ead0ae9=\"\">\n                </div>\n            </div>\n        </div>\n        <span class=\"divider\" _v-5ead0ae9=\"\"></span>\n\n        <div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-5ead0ae9=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-5ead0ae9=\"\">\n                <b _v-5ead0ae9=\"\">{{labels_settings.taxonomies_title}}</b>\n                <p class=\"text-gray\" _v-5ead0ae9=\"\"><span v-html=\"labels_settings.taxonomies_desc\" _v-5ead0ae9=\"\"></span></p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <div class=\"input-group\" _v-5ead0ae9=\"\">\n                    <multiple-select :disabled=\"!!isPro\" :options=\"taxonomy\" :selected=\"taxonomy_filter\" :name=\"post_format.taxonomy_filter\" :changed-selection=\"updated_tax_filter\" :key=\"this.account_id\" _v-5ead0ae9=\"\"></multiple-select>\n                    <span class=\"input-group-addon vertical-align\" _v-5ead0ae9=\"\">\n                        <label class=\"form-checkbox\" _v-5ead0ae9=\"\">\n\t\t\t\t\t\t    <input :disabled=\"!isPro\" type=\"checkbox\" v-model=\"post_format.exclude_taxonomies\" _v-5ead0ae9=\"\">\n\t\t\t\t\t\t\t<i class=\"form-icon\" _v-5ead0ae9=\"\"></i>{{labels_settings.taxonomies_exclude}}\n\t\t\t\t\t\t</label>\n\t\t\t\t\t</span>\n                </div>\n            </div>\n        </div>\n        <div class=\"columns \" v-if=\"!isPro\" _v-5ead0ae9=\"\">\n            <div class=\"column text-center\" _v-5ead0ae9=\"\">\n                <p class=\"upsell\" _v-5ead0ae9=\"\"><i class=\"fa fa-lock\" _v-5ead0ae9=\"\"></i> {{labels.taxonomy_based_sharing_upsell}}</p>\n            </div>\n        </div>\n        <span class=\"divider\" _v-5ead0ae9=\"\"></span>\n        <div class=\"columns py-2\" _v-5ead0ae9=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <b _v-5ead0ae9=\"\">{{labels.use_shortner_title}}</b>\n                <p class=\"text-gray\" _v-5ead0ae9=\"\">{{labels.use_shortner_desc}}</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <div class=\"input-group\" _v-5ead0ae9=\"\">\n                    <label class=\"form-checkbox\" _v-5ead0ae9=\"\">\n                        <input type=\"checkbox\" v-model=\"post_format.short_url\" _v-5ead0ae9=\"\">\n                        <i class=\"form-icon\" _v-5ead0ae9=\"\"></i> {{labels.use_shortner_yes}}\n                    </label>\n                </div>\n            </div>\n        </div>\n        <div class=\"columns py-2\" v-if=\"post_format.short_url\" _v-5ead0ae9=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <b _v-5ead0ae9=\"\">{{labels.shortner_title}}</b>\n                <p class=\"text-gray\" _v-5ead0ae9=\"\">{{labels.shortner_desc}}</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <div class=\"form-group\" _v-5ead0ae9=\"\">\n                    <select class=\"form-select\" v-model=\"post_format.short_url_service\" _v-5ead0ae9=\"\">\n                        <option v-for=\"shortener in shorteners\" :value=\"shortener.id\" :disabled=\"shortener.active !== true\" :selected=\"shortener.name == post_format.short_url_service\" _v-5ead0ae9=\"\">{{ shortener.name }}{{ !shortener.active ? labels_generic.only_pro_suffix : ''}}</option>\n                    </select>\n                </div>\n            </div>\n        </div>\n\n        <div class=\"columns py-2\" v-if=\"post_format.short_url\" v-for=\"( credential, key_name ) in post_format.shortner_credentials\" _v-5ead0ae9=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <b _v-5ead0ae9=\"\">{{ key_name | capitalize }}</b>\n                <p class=\"text-gray\" _v-5ead0ae9=\"\">{{labels.shortner_field_desc_start}} \"{{key_name}}\"\n                    {{labels.shortner_field_desc_end}}\n                    <strong _v-5ead0ae9=\"\">{{post_format.short_url_service}}</strong> {{labels.shortner_api_field}}.</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <div class=\"form-group\" _v-5ead0ae9=\"\">\n                    <input class=\"form-input\" type=\"text\" v-model=\"post_format.shortner_credentials[key_name]\" _v-5ead0ae9=\"\">\n                </div>\n            </div>\n        </div>\n\n        <div class=\"columns py-2\" _v-5ead0ae9=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <b _v-5ead0ae9=\"\">{{labels.hashtags_title}}</b>\n                <p class=\"text-gray\" _v-5ead0ae9=\"\">{{labels.hashtags_desc}}</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <div class=\"form-group\" _v-5ead0ae9=\"\">\n                    <select class=\"form-select\" v-model=\"post_format.hashtags\" _v-5ead0ae9=\"\">\n                        <option value=\"no-hashtags\" _v-5ead0ae9=\"\">{{labels.hashtags_option_no}}</option>\n                        <option value=\"common-hashtags\" _v-5ead0ae9=\"\">{{labels.hashtags_option_common}}</option>\n                        <option value=\"categories-hashtags\" _v-5ead0ae9=\"\">{{labels.hashtags_option_cats}}</option>\n                        <option value=\"tags-hashtags\" _v-5ead0ae9=\"\">{{labels.hashtags_option_tags}}</option>\n                        <option value=\"custom-hashtags\" _v-5ead0ae9=\"\">{{labels.hashtags_option_field}}</option>\n                    </select>\n                </div>\n            </div>\n        </div>\n        <div class=\"columns py-2\" v-if=\"post_format.hashtags === 'common-hashtags'\" _v-5ead0ae9=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <b _v-5ead0ae9=\"\">{{labels.hastags_common_title}}</b>\n                <p class=\"text-gray\" _v-5ead0ae9=\"\">{{labels.hastags_common_desc}} \",\".</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <div class=\"form-group\" _v-5ead0ae9=\"\">\n                    <input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_common\" value=\"\" placeholder=\"\" _v-5ead0ae9=\"\">\n                </div>\n            </div>\n        </div>\n\n        <div class=\"columns py-2\" v-if=\"post_format.hashtags === 'custom-hashtags'\" _v-5ead0ae9=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <b _v-5ead0ae9=\"\">{{labels.hastags_field_title}}</b>\n                <p class=\"text-gray\" _v-5ead0ae9=\"\">{{labels.hastags_field_desc}}</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <div class=\"form-group\" _v-5ead0ae9=\"\">\n                    <input class=\"form-input\" type=\"text\" v-model=\"post_format.hashtags_custom\" value=\"\" placeholder=\"\" _v-5ead0ae9=\"\">\n                </div>\n            </div>\n        </div>\n\n        <div class=\"columns py-2\" v-if=\"post_format.hashtags !== 'no-hashtags'\" _v-5ead0ae9=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <b _v-5ead0ae9=\"\">{{labels.hashtags_length_title}}</b>\n                <p class=\"text-gray\" _v-5ead0ae9=\"\">{{labels.hashtags_length_desc}}</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <div class=\"form-group\" _v-5ead0ae9=\"\">\n                    <input class=\"form-input\" type=\"number\" v-model=\"post_format.hashtags_length\" value=\"\" placeholder=\"\" _v-5ead0ae9=\"\">\n                </div>\n            </div>\n        </div>\n\n        <span class=\"divider\" _v-5ead0ae9=\"\"></span>\n\n        <div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-5ead0ae9=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-5ead0ae9=\"\">\n                <b _v-5ead0ae9=\"\">{{labels.image_title}}</b>\n                <p class=\"text-gray\" _v-5ead0ae9=\"\"><span v-html=\"labels.image_desc\" _v-5ead0ae9=\"\"></span></p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align\" _v-5ead0ae9=\"\">\n                <div class=\"input-group\" _v-5ead0ae9=\"\">\n                    <label class=\"form-checkbox\" _v-5ead0ae9=\"\">\n                        <input type=\"checkbox\" v-model=\"post_format.image\" :disabled=\"!isPro\" _v-5ead0ae9=\"\">\n                        <i class=\"form-icon\" _v-5ead0ae9=\"\"></i> {{labels.image_yes}}\n                    </label>\n                </div>\n            </div>\n        </div>\n\n        <div class=\"columns \" v-if=\"!isPro\" _v-5ead0ae9=\"\">\n            <div class=\"column text-center\" _v-5ead0ae9=\"\">\n                <p class=\"upsell\" _v-5ead0ae9=\"\"><i class=\"fa fa-lock\" _v-5ead0ae9=\"\"></i> {{labels.image_upsell}}</p>\n            </div>\n        </div>\n        <span class=\"divider\" _v-5ead0ae9=\"\"></span>\n        <!-- Google Analytics -->\n        <div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-5ead0ae9=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-5ead0ae9=\"\">\n                <b _v-5ead0ae9=\"\">{{labels.utm_campaign_medium}}</b>\n                <p class=\"text-gray\" _v-5ead0ae9=\"\">{{labels.utm_campaign_medium_desc}}</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-5ead0ae9=\"\">\n                <div class=\"form-group\" _v-5ead0ae9=\"\">\n                    <input type=\"text\" :disabled=\"!isPro\" class=\"form-input\" v-model=\"post_format.utm_campaign_medium\" placeholder=\"social\" _v-5ead0ae9=\"\">\n                </div>\n            </div>\n        </div>\n\n        <div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-5ead0ae9=\"\">\n            <div class=\"column col-6 col-sm-12 vertical-align rop-control\" _v-5ead0ae9=\"\">\n                <b _v-5ead0ae9=\"\">{{labels.utm_campaign_name}}</b>\n                <p class=\"text-gray\" _v-5ead0ae9=\"\">{{labels.utm_campaign_name_desc}}</p>\n            </div>\n            <div class=\"column col-6 col-sm-12 vertical-align text-left rop-control\" _v-5ead0ae9=\"\">\n                <div class=\"form-group\" _v-5ead0ae9=\"\">\n                    <input type=\"text\" :disabled=\"!isPro\" class=\"form-input\" v-model=\"post_format.utm_campaign_name\" placeholder=\"ReviveOldPost\" _v-5ead0ae9=\"\">\n                </div>\n            </div>\n        </div>\n        <div class=\"columns \" v-if=\"!isPro\" _v-5ead0ae9=\"\">\n            <div class=\"column text-center\" _v-5ead0ae9=\"\">\n                <p class=\"upsell\" _v-5ead0ae9=\"\"><i class=\"fa fa-lock\" _v-5ead0ae9=\"\"></i> {{labels.custom_utm_upsell}}</p>\n            </div>\n        </div>\n        <span class=\"divider\" _v-5ead0ae9=\"\"></span>\n    </div>\n";
 
 /***/ }),
-/* 270 */
+/* 289 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(271)
-__vue_script__ = __webpack_require__(273)
-__vue_template__ = __webpack_require__(285)
+__webpack_require__(290)
+__vue_script__ = __webpack_require__(292)
+__vue_template__ = __webpack_require__(304)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -39715,7 +39685,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/uvdev/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/account-schedule.vue"
+  var id = "E:\\work\\projects\\webdesign\\wordpress-themeisle\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\account-schedule.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -39724,13 +39694,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 271 */
+/* 290 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(272);
+var content = __webpack_require__(291);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -39739,8 +39709,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-07e2d0a2&file=account-schedule.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./account-schedule.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-07e2d0a2&file=account-schedule.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./account-schedule.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-337938e2&file=account-schedule.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./account-schedule.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-337938e2&file=account-schedule.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./account-schedule.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -39750,7 +39720,7 @@ if(false) {
 }
 
 /***/ }),
-/* 272 */
+/* 291 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -39758,27 +39728,27 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t.rop-control-container-false[_v-07e2d0a2]  {\n\t\tcursor:not-allowed !important;\n\t}\n\t#rop_core .panel-body .text-gray[_v-07e2d0a2] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\n\tb[_v-07e2d0a2] {\n\t\tmargin-bottom: 5px;\n\t\tdisplay: block;\n\t}\n\n\t#rop_core .input-group .input-group-addon[_v-07e2d0a2] {\n\t\tpadding: 3px 5px;\n\t}\n\n\t.time-picker[_v-07e2d0a2] {\n\t\tmargin-bottom: 10px;\n\t}\n\n\t@media ( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-07e2d0a2] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\n\t\t#rop_core .text-right[_v-07e2d0a2] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n\n", ""]);
+exports.push([module.i, "\r\n\t.rop-control-container-false[_v-337938e2]  {\r\n\t\tcursor:not-allowed !important;\r\n\t}\r\n\t#rop_core .panel-body .text-gray[_v-337938e2] {\r\n\t\tmargin: 0;\r\n\t\tline-height: normal;\r\n\t}\r\n\r\n\tb[_v-337938e2] {\r\n\t\tmargin-bottom: 5px;\r\n\t\tdisplay: block;\r\n\t}\r\n\r\n\t#rop_core .input-group .input-group-addon[_v-337938e2] {\r\n\t\tpadding: 3px 5px;\r\n\t}\r\n\r\n\t.time-picker[_v-337938e2] {\r\n\t\tmargin-bottom: 10px;\r\n\t}\r\n\r\n\t@media ( max-width: 600px ) {\r\n\t\t#rop_core .panel-body .text-gray[_v-337938e2] {\r\n\t\t\tmargin-bottom: 10px;\r\n\t\t}\r\n\r\n\t\t#rop_core .text-right[_v-337938e2] {\r\n\t\t\ttext-align: left;\r\n\t\t}\r\n\t}\r\n\r\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 273 */
+/* 292 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _buttonCheckbox = __webpack_require__(75);
+var _buttonCheckbox = __webpack_require__(78);
 
 var _buttonCheckbox2 = _interopRequireDefault(_buttonCheckbox);
 
-var _vue2Timepicker = __webpack_require__(274);
+var _vue2Timepicker = __webpack_require__(293);
 
 var _vue2Timepicker2 = _interopRequireDefault(_vue2Timepicker);
 
-var _counterInput = __webpack_require__(86);
+var _counterInput = __webpack_require__(89);
 
 var _counterInput2 = _interopRequireDefault(_counterInput);
 
@@ -40049,20 +40019,20 @@ module.exports = {
 };
 
 /***/ }),
-/* 274 */
+/* 293 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(275)
+module.exports = __webpack_require__(294)
 
 
 /***/ }),
-/* 275 */
+/* 294 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(276)
-__vue_script__ = __webpack_require__(279)
-__vue_template__ = __webpack_require__(282)
+__webpack_require__(295)
+__vue_script__ = __webpack_require__(298)
+__vue_template__ = __webpack_require__(301)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -40070,7 +40040,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/uvdev/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/node_modules/vue2-timepicker/src/vue-timepicker.vue"
+  var id = "E:\\work\\projects\\webdesign\\wordpress-themeisle\\wp-content\\plugins\\tweet-old-post\\node_modules\\vue2-timepicker\\src\\vue-timepicker.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -40079,13 +40049,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 276 */
+/* 295 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(277);
+var content = __webpack_require__(296);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -40094,8 +40064,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../css-loader/index.js!../../vue-loader/lib/style-rewriter.js?id=_v-28636c40&file=vue-timepicker.vue!../../vue-loader/lib/selector.js?type=style&index=0!./vue-timepicker.vue", function() {
-			var newContent = require("!!../../css-loader/index.js!../../vue-loader/lib/style-rewriter.js?id=_v-28636c40&file=vue-timepicker.vue!../../vue-loader/lib/selector.js?type=style&index=0!./vue-timepicker.vue");
+		module.hot.accept("!!../../css-loader/index.js!../../vue-loader/lib/style-rewriter.js?id=_v-5271afc7&file=vue-timepicker.vue!../../vue-loader/lib/selector.js?type=style&index=0!./vue-timepicker.vue", function() {
+			var newContent = require("!!../../css-loader/index.js!../../vue-loader/lib/style-rewriter.js?id=_v-5271afc7&file=vue-timepicker.vue!../../vue-loader/lib/selector.js?type=style&index=0!./vue-timepicker.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -40105,12 +40075,12 @@ if(false) {
 }
 
 /***/ }),
-/* 277 */
+/* 296 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
 // imports
-exports.i(__webpack_require__(278), "");
+exports.i(__webpack_require__(297), "");
 
 // module
 exports.push([module.i, "\n", ""]);
@@ -40119,7 +40089,7 @@ exports.push([module.i, "\n", ""]);
 
 
 /***/ }),
-/* 278 */
+/* 297 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -40133,7 +40103,7 @@ exports.push([module.i, ".time-picker {\n  display: inline-block;\n  position: r
 
 
 /***/ }),
-/* 279 */
+/* 298 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40143,11 +40113,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _keys = __webpack_require__(14);
+var _keys = __webpack_require__(19);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _stringify = __webpack_require__(280);
+var _stringify = __webpack_require__(299);
 
 var _stringify2 = _interopRequireDefault(_stringify);
 
@@ -40523,13 +40493,13 @@ exports.default = {
 };
 
 /***/ }),
-/* 280 */
+/* 299 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(281), __esModule: true };
+module.exports = { "default": __webpack_require__(300), __esModule: true };
 
 /***/ }),
-/* 281 */
+/* 300 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var core = __webpack_require__(3);
@@ -40540,13 +40510,13 @@ module.exports = function stringify(it) { // eslint-disable-line no-unused-vars
 
 
 /***/ }),
-/* 282 */
+/* 301 */
 /***/ (function(module, exports) {
 
 module.exports = "\n<span class=\"time-picker\">\n  <input class=\"display-time\" :id=\"id\" v-model=\"displayTime\" @click.stop=\"toggleDropdown\" type=\"text\" readonly />\n  <span class=\"clear-btn\" v-if=\"!hideClearButton\" v-show=\"!showDropdown && showClearBtn\" @click.stop=\"clearTime\">&times;</span>\n  <div class=\"time-picker-overlay\" v-if=\"showDropdown\" @click.stop=\"toggleDropdown\"></div>\n  <div class=\"dropdown\" v-show=\"showDropdown\">\n    <div class=\"select-list\">\n      <ul class=\"hours\">\n        <li class=\"hint\" v-text=\"hourType\"></li>\n        <li v-for=\"hr in hours\" v-text=\"hr\" :class=\"{active: hour === hr}\" @click.stop=\"select('hour', hr)\"></li>\n      </ul>\n      <ul class=\"minutes\">\n        <li class=\"hint\" v-text=\"minuteType\"></li>\n        <li v-for=\"m in minutes\" v-text=\"m\" :class=\"{active: minute === m}\" @click.stop=\"select('minute', m)\"></li>\n      </ul>\n      <ul class=\"seconds\" v-if=\"secondType\">\n        <li class=\"hint\" v-text=\"secondType\"></li>\n        <li v-for=\"s in seconds\" v-text=\"s\" :class=\"{active: second === s}\" @click.stop=\"select('second', s)\"></li>\n      </ul>\n      <ul class=\"apms\" v-if=\"apmType\">\n        <li class=\"hint\" v-text=\"apmType\"></li>\n        <li v-for=\"a in apms\" v-text=\"a\" :class=\"{active: apm === a}\" @click.stop=\"select('apm', a)\"></li>\n      </ul>\n    </div>\n  </div>\n</span>\n";
 
 /***/ }),
-/* 283 */
+/* 302 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -40574,264 +40544,264 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 284 */
+/* 303 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
-	"./af": 87,
-	"./af.js": 87,
-	"./ar": 88,
-	"./ar-dz": 89,
-	"./ar-dz.js": 89,
-	"./ar-kw": 90,
-	"./ar-kw.js": 90,
-	"./ar-ly": 91,
-	"./ar-ly.js": 91,
-	"./ar-ma": 92,
-	"./ar-ma.js": 92,
-	"./ar-sa": 93,
-	"./ar-sa.js": 93,
-	"./ar-tn": 94,
-	"./ar-tn.js": 94,
-	"./ar.js": 88,
-	"./az": 95,
-	"./az.js": 95,
-	"./be": 96,
-	"./be.js": 96,
-	"./bg": 97,
-	"./bg.js": 97,
-	"./bm": 98,
-	"./bm.js": 98,
-	"./bn": 99,
-	"./bn.js": 99,
-	"./bo": 100,
-	"./bo.js": 100,
-	"./br": 101,
-	"./br.js": 101,
-	"./bs": 102,
-	"./bs.js": 102,
-	"./ca": 103,
-	"./ca.js": 103,
-	"./cs": 104,
-	"./cs.js": 104,
-	"./cv": 105,
-	"./cv.js": 105,
-	"./cy": 106,
-	"./cy.js": 106,
-	"./da": 107,
-	"./da.js": 107,
-	"./de": 108,
-	"./de-at": 109,
-	"./de-at.js": 109,
-	"./de-ch": 110,
-	"./de-ch.js": 110,
-	"./de.js": 108,
-	"./dv": 111,
-	"./dv.js": 111,
-	"./el": 112,
-	"./el.js": 112,
-	"./en-SG": 113,
-	"./en-SG.js": 113,
-	"./en-au": 114,
-	"./en-au.js": 114,
-	"./en-ca": 115,
-	"./en-ca.js": 115,
-	"./en-gb": 116,
-	"./en-gb.js": 116,
-	"./en-ie": 117,
-	"./en-ie.js": 117,
-	"./en-il": 118,
-	"./en-il.js": 118,
-	"./en-nz": 119,
-	"./en-nz.js": 119,
-	"./eo": 120,
-	"./eo.js": 120,
-	"./es": 121,
-	"./es-do": 122,
-	"./es-do.js": 122,
-	"./es-us": 123,
-	"./es-us.js": 123,
-	"./es.js": 121,
-	"./et": 124,
-	"./et.js": 124,
-	"./eu": 125,
-	"./eu.js": 125,
-	"./fa": 126,
-	"./fa.js": 126,
-	"./fi": 127,
-	"./fi.js": 127,
-	"./fo": 128,
-	"./fo.js": 128,
-	"./fr": 129,
-	"./fr-ca": 130,
-	"./fr-ca.js": 130,
-	"./fr-ch": 131,
-	"./fr-ch.js": 131,
-	"./fr.js": 129,
-	"./fy": 132,
-	"./fy.js": 132,
-	"./ga": 133,
-	"./ga.js": 133,
-	"./gd": 134,
-	"./gd.js": 134,
-	"./gl": 135,
-	"./gl.js": 135,
-	"./gom-latn": 136,
-	"./gom-latn.js": 136,
-	"./gu": 137,
-	"./gu.js": 137,
-	"./he": 138,
-	"./he.js": 138,
-	"./hi": 139,
-	"./hi.js": 139,
-	"./hr": 140,
-	"./hr.js": 140,
-	"./hu": 141,
-	"./hu.js": 141,
-	"./hy-am": 142,
-	"./hy-am.js": 142,
-	"./id": 143,
-	"./id.js": 143,
-	"./is": 144,
-	"./is.js": 144,
-	"./it": 145,
-	"./it-ch": 146,
-	"./it-ch.js": 146,
-	"./it.js": 145,
-	"./ja": 147,
-	"./ja.js": 147,
-	"./jv": 148,
-	"./jv.js": 148,
-	"./ka": 149,
-	"./ka.js": 149,
-	"./kk": 150,
-	"./kk.js": 150,
-	"./km": 151,
-	"./km.js": 151,
-	"./kn": 152,
-	"./kn.js": 152,
-	"./ko": 153,
-	"./ko.js": 153,
-	"./ku": 154,
-	"./ku.js": 154,
-	"./ky": 155,
-	"./ky.js": 155,
-	"./lb": 156,
-	"./lb.js": 156,
-	"./lo": 157,
-	"./lo.js": 157,
-	"./lt": 158,
-	"./lt.js": 158,
-	"./lv": 159,
-	"./lv.js": 159,
-	"./me": 160,
-	"./me.js": 160,
-	"./mi": 161,
-	"./mi.js": 161,
-	"./mk": 162,
-	"./mk.js": 162,
-	"./ml": 163,
-	"./ml.js": 163,
-	"./mn": 164,
-	"./mn.js": 164,
-	"./mr": 165,
-	"./mr.js": 165,
-	"./ms": 166,
-	"./ms-my": 167,
-	"./ms-my.js": 167,
-	"./ms.js": 166,
-	"./mt": 168,
-	"./mt.js": 168,
-	"./my": 169,
-	"./my.js": 169,
-	"./nb": 170,
-	"./nb.js": 170,
-	"./ne": 171,
-	"./ne.js": 171,
-	"./nl": 172,
-	"./nl-be": 173,
-	"./nl-be.js": 173,
-	"./nl.js": 172,
-	"./nn": 174,
-	"./nn.js": 174,
-	"./pa-in": 175,
-	"./pa-in.js": 175,
-	"./pl": 176,
-	"./pl.js": 176,
-	"./pt": 177,
-	"./pt-br": 178,
-	"./pt-br.js": 178,
-	"./pt.js": 177,
-	"./ro": 179,
-	"./ro.js": 179,
-	"./ru": 180,
-	"./ru.js": 180,
-	"./sd": 181,
-	"./sd.js": 181,
-	"./se": 182,
-	"./se.js": 182,
-	"./si": 183,
-	"./si.js": 183,
-	"./sk": 184,
-	"./sk.js": 184,
-	"./sl": 185,
-	"./sl.js": 185,
-	"./sq": 186,
-	"./sq.js": 186,
-	"./sr": 187,
-	"./sr-cyrl": 188,
-	"./sr-cyrl.js": 188,
-	"./sr.js": 187,
-	"./ss": 189,
-	"./ss.js": 189,
-	"./sv": 190,
-	"./sv.js": 190,
-	"./sw": 191,
-	"./sw.js": 191,
-	"./ta": 192,
-	"./ta.js": 192,
-	"./te": 193,
-	"./te.js": 193,
-	"./tet": 194,
-	"./tet.js": 194,
-	"./tg": 195,
-	"./tg.js": 195,
-	"./th": 196,
-	"./th.js": 196,
-	"./tl-ph": 197,
-	"./tl-ph.js": 197,
-	"./tlh": 198,
-	"./tlh.js": 198,
-	"./tr": 199,
-	"./tr.js": 199,
-	"./tzl": 200,
-	"./tzl.js": 200,
-	"./tzm": 201,
-	"./tzm-latn": 202,
-	"./tzm-latn.js": 202,
-	"./tzm.js": 201,
-	"./ug-cn": 203,
-	"./ug-cn.js": 203,
-	"./uk": 204,
-	"./uk.js": 204,
-	"./ur": 205,
-	"./ur.js": 205,
-	"./uz": 206,
-	"./uz-latn": 207,
-	"./uz-latn.js": 207,
-	"./uz.js": 206,
-	"./vi": 208,
-	"./vi.js": 208,
-	"./x-pseudo": 209,
-	"./x-pseudo.js": 209,
-	"./yo": 210,
-	"./yo.js": 210,
-	"./zh-cn": 211,
-	"./zh-cn.js": 211,
-	"./zh-hk": 212,
-	"./zh-hk.js": 212,
-	"./zh-tw": 213,
-	"./zh-tw.js": 213
+	"./af": 92,
+	"./af.js": 92,
+	"./ar": 93,
+	"./ar-dz": 94,
+	"./ar-dz.js": 94,
+	"./ar-kw": 95,
+	"./ar-kw.js": 95,
+	"./ar-ly": 96,
+	"./ar-ly.js": 96,
+	"./ar-ma": 97,
+	"./ar-ma.js": 97,
+	"./ar-sa": 98,
+	"./ar-sa.js": 98,
+	"./ar-tn": 99,
+	"./ar-tn.js": 99,
+	"./ar.js": 93,
+	"./az": 100,
+	"./az.js": 100,
+	"./be": 101,
+	"./be.js": 101,
+	"./bg": 102,
+	"./bg.js": 102,
+	"./bm": 103,
+	"./bm.js": 103,
+	"./bn": 104,
+	"./bn.js": 104,
+	"./bo": 105,
+	"./bo.js": 105,
+	"./br": 106,
+	"./br.js": 106,
+	"./bs": 107,
+	"./bs.js": 107,
+	"./ca": 108,
+	"./ca.js": 108,
+	"./cs": 109,
+	"./cs.js": 109,
+	"./cv": 110,
+	"./cv.js": 110,
+	"./cy": 111,
+	"./cy.js": 111,
+	"./da": 112,
+	"./da.js": 112,
+	"./de": 113,
+	"./de-at": 114,
+	"./de-at.js": 114,
+	"./de-ch": 115,
+	"./de-ch.js": 115,
+	"./de.js": 113,
+	"./dv": 116,
+	"./dv.js": 116,
+	"./el": 117,
+	"./el.js": 117,
+	"./en-SG": 118,
+	"./en-SG.js": 118,
+	"./en-au": 119,
+	"./en-au.js": 119,
+	"./en-ca": 120,
+	"./en-ca.js": 120,
+	"./en-gb": 121,
+	"./en-gb.js": 121,
+	"./en-ie": 122,
+	"./en-ie.js": 122,
+	"./en-il": 123,
+	"./en-il.js": 123,
+	"./en-nz": 124,
+	"./en-nz.js": 124,
+	"./eo": 125,
+	"./eo.js": 125,
+	"./es": 126,
+	"./es-do": 127,
+	"./es-do.js": 127,
+	"./es-us": 128,
+	"./es-us.js": 128,
+	"./es.js": 126,
+	"./et": 129,
+	"./et.js": 129,
+	"./eu": 130,
+	"./eu.js": 130,
+	"./fa": 131,
+	"./fa.js": 131,
+	"./fi": 132,
+	"./fi.js": 132,
+	"./fo": 133,
+	"./fo.js": 133,
+	"./fr": 134,
+	"./fr-ca": 135,
+	"./fr-ca.js": 135,
+	"./fr-ch": 136,
+	"./fr-ch.js": 136,
+	"./fr.js": 134,
+	"./fy": 137,
+	"./fy.js": 137,
+	"./ga": 138,
+	"./ga.js": 138,
+	"./gd": 139,
+	"./gd.js": 139,
+	"./gl": 140,
+	"./gl.js": 140,
+	"./gom-latn": 141,
+	"./gom-latn.js": 141,
+	"./gu": 142,
+	"./gu.js": 142,
+	"./he": 143,
+	"./he.js": 143,
+	"./hi": 144,
+	"./hi.js": 144,
+	"./hr": 145,
+	"./hr.js": 145,
+	"./hu": 146,
+	"./hu.js": 146,
+	"./hy-am": 147,
+	"./hy-am.js": 147,
+	"./id": 148,
+	"./id.js": 148,
+	"./is": 149,
+	"./is.js": 149,
+	"./it": 150,
+	"./it-ch": 151,
+	"./it-ch.js": 151,
+	"./it.js": 150,
+	"./ja": 152,
+	"./ja.js": 152,
+	"./jv": 153,
+	"./jv.js": 153,
+	"./ka": 154,
+	"./ka.js": 154,
+	"./kk": 155,
+	"./kk.js": 155,
+	"./km": 156,
+	"./km.js": 156,
+	"./kn": 157,
+	"./kn.js": 157,
+	"./ko": 158,
+	"./ko.js": 158,
+	"./ku": 159,
+	"./ku.js": 159,
+	"./ky": 160,
+	"./ky.js": 160,
+	"./lb": 161,
+	"./lb.js": 161,
+	"./lo": 162,
+	"./lo.js": 162,
+	"./lt": 163,
+	"./lt.js": 163,
+	"./lv": 164,
+	"./lv.js": 164,
+	"./me": 165,
+	"./me.js": 165,
+	"./mi": 166,
+	"./mi.js": 166,
+	"./mk": 167,
+	"./mk.js": 167,
+	"./ml": 168,
+	"./ml.js": 168,
+	"./mn": 169,
+	"./mn.js": 169,
+	"./mr": 170,
+	"./mr.js": 170,
+	"./ms": 171,
+	"./ms-my": 172,
+	"./ms-my.js": 172,
+	"./ms.js": 171,
+	"./mt": 173,
+	"./mt.js": 173,
+	"./my": 174,
+	"./my.js": 174,
+	"./nb": 175,
+	"./nb.js": 175,
+	"./ne": 176,
+	"./ne.js": 176,
+	"./nl": 177,
+	"./nl-be": 178,
+	"./nl-be.js": 178,
+	"./nl.js": 177,
+	"./nn": 179,
+	"./nn.js": 179,
+	"./pa-in": 180,
+	"./pa-in.js": 180,
+	"./pl": 181,
+	"./pl.js": 181,
+	"./pt": 182,
+	"./pt-br": 183,
+	"./pt-br.js": 183,
+	"./pt.js": 182,
+	"./ro": 184,
+	"./ro.js": 184,
+	"./ru": 185,
+	"./ru.js": 185,
+	"./sd": 186,
+	"./sd.js": 186,
+	"./se": 187,
+	"./se.js": 187,
+	"./si": 188,
+	"./si.js": 188,
+	"./sk": 189,
+	"./sk.js": 189,
+	"./sl": 190,
+	"./sl.js": 190,
+	"./sq": 191,
+	"./sq.js": 191,
+	"./sr": 192,
+	"./sr-cyrl": 193,
+	"./sr-cyrl.js": 193,
+	"./sr.js": 192,
+	"./ss": 194,
+	"./ss.js": 194,
+	"./sv": 195,
+	"./sv.js": 195,
+	"./sw": 196,
+	"./sw.js": 196,
+	"./ta": 197,
+	"./ta.js": 197,
+	"./te": 198,
+	"./te.js": 198,
+	"./tet": 199,
+	"./tet.js": 199,
+	"./tg": 200,
+	"./tg.js": 200,
+	"./th": 201,
+	"./th.js": 201,
+	"./tl-ph": 202,
+	"./tl-ph.js": 202,
+	"./tlh": 203,
+	"./tlh.js": 203,
+	"./tr": 204,
+	"./tr.js": 204,
+	"./tzl": 205,
+	"./tzl.js": 205,
+	"./tzm": 206,
+	"./tzm-latn": 207,
+	"./tzm-latn.js": 207,
+	"./tzm.js": 206,
+	"./ug-cn": 208,
+	"./ug-cn.js": 208,
+	"./uk": 209,
+	"./uk.js": 209,
+	"./ur": 210,
+	"./ur.js": 210,
+	"./uz": 211,
+	"./uz-latn": 212,
+	"./uz-latn.js": 212,
+	"./uz.js": 211,
+	"./vi": 213,
+	"./vi.js": 213,
+	"./x-pseudo": 214,
+	"./x-pseudo.js": 214,
+	"./yo": 215,
+	"./yo.js": 215,
+	"./zh-cn": 216,
+	"./zh-cn.js": 216,
+	"./zh-hk": 217,
+	"./zh-hk.js": 217,
+	"./zh-tw": 218,
+	"./zh-tw.js": 218
 };
 function webpackContext(req) {
 	return __webpack_require__(webpackContextResolve(req));
@@ -40847,27 +40817,27 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 284;
+webpackContext.id = 303;
 
 /***/ }),
-/* 285 */
+/* 304 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div :class=\"'rop-control-container-'+ ( license > 1 ) +  '  rop-schedule-tab-container'\" _v-07e2d0a2=\"\">\n\n\t\t<div class=\"columns py-2 rop-control\" _v-07e2d0a2=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-07e2d0a2=\"\">\n\t\t\t\t<b _v-07e2d0a2=\"\">{{labels.schedule_type_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-07e2d0a2=\"\">{{labels.schedule_type_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-07e2d0a2=\"\">\n\t\t\t\t<div class=\"form-group\" _v-07e2d0a2=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"schedule.type\" _v-07e2d0a2=\"\">\n\t\t\t\t\t\t<option value=\"recurring\" _v-07e2d0a2=\"\">{{labels.schedule_type_option_rec}}</option>\n\t\t\t\t\t\t<option value=\"fixed\" _v-07e2d0a2=\"\">{{labels.schedule_type_option_fix}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule Days -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-07e2d0a2=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-07e2d0a2=\"\">\n\t\t\t\t<b _v-07e2d0a2=\"\">{{labels.schedule_fixed_days_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-07e2d0a2=\"\">{{labels.schedule_fixed_days_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-07e2d0a2=\"\">\n\t\t\t\t<div class=\"form-group input-group\" _v-07e2d0a2=\"\">\n\t\t\t\t\t<button-checkbox v-for=\"( data, label ) in daysObject\" :key=\"label\" :value=\"data.value\" :label=\"label\" :checked=\"data.checked\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" _v-07e2d0a2=\"\"></button-checkbox>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule time -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-07e2d0a2=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-07e2d0a2=\"\">\n\t\t\t\t<b _v-07e2d0a2=\"\">{{labels.schedule_fixed_time_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-07e2d0a2=\"\">{{labels.schedule_fixed_time_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-07e2d0a2=\"\">\n\t\t\t\t<div class=\"form-group\" _v-07e2d0a2=\"\">\n\t\t\t\t\t<div class=\"input-group\" v-for=\"( time, index ) in schedule.interval_f.time\" _v-07e2d0a2=\"\">\n\t\t\t\t\t\t<vue-timepicker :minute-interval=\"generalSettings.minute_interval\" class=\"timepicker-style-fix\" :value=\"getTime( index )\" @change=\"syncTime( $event, index )\" hide-clear-button=\"\" _v-07e2d0a2=\"\"></vue-timepicker>\n\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn\" v-if=\"schedule.interval_f.time.length > 1\" @click=\"rmvTime( index )\" _v-07e2d0a2=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-minus\" _v-07e2d0a2=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t\t<button class=\"btn btn-success input-group-btn\" v-if=\"index == schedule.interval_f.time.length - 1\" @click=\"addTime()\" _v-07e2d0a2=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-plus\" _v-07e2d0a2=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Current time -->\n<div class=\"column col-6 col-sm-12 vertical-align float-right\" v-if=\"schedule.type === 'fixed'\" _v-07e2d0a2=\"\">\n\t\t<div class=\"toast rop-current-time text-center\" v-if=\"formatedDate\" _v-07e2d0a2=\"\">\n\t\t\t\t{{labels.time_now}}: {{ formatedDate }}\n\t\t</div>\n</div>\n\n\t\t<div class=\"columns py-2 rop-control\" v-else=\"\" _v-07e2d0a2=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-07e2d0a2=\"\">\n\t\t\t\t<b _v-07e2d0a2=\"\">{{labels.schedule_rec_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-07e2d0a2=\"\">{{labels.schedule_rec_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-07e2d0a2=\"\">\n\t\t\t\t<div class=\"form-group\" _v-07e2d0a2=\"\">\n\t\t\t\t\t<counter-input id=\"interval_r\" :value.sync=\"schedule.interval_r\" :min-val=\"generalSettings.min_interval\" :step-val=\"generalSettings.step_interval\" _v-07e2d0a2=\"\"></counter-input>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Upsell -->\n\t\t<div class=\"columns py-2\" v-if=\"license < 2\" _v-07e2d0a2=\"\">\n\t\t\t<div class=\"column text-center\" _v-07e2d0a2=\"\">\n\t\t\t\t<p class=\"upsell\" _v-07e2d0a2=\"\"><i class=\"fa fa-lock\" _v-07e2d0a2=\"\"></i> {{labels.schedule_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-07e2d0a2=\"\"></span>\n\t</div>\n";
+module.exports = "\n\t<div :class=\"'rop-control-container-'+ ( license > 1 ) +  '  rop-schedule-tab-container'\" _v-337938e2=\"\">\n\n\t\t<div class=\"columns py-2 rop-control\" _v-337938e2=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-337938e2=\"\">\n\t\t\t\t<b _v-337938e2=\"\">{{labels.schedule_type_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-337938e2=\"\">{{labels.schedule_type_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-337938e2=\"\">\n\t\t\t\t<div class=\"form-group\" _v-337938e2=\"\">\n\t\t\t\t\t<select class=\"form-select\" v-model=\"schedule.type\" _v-337938e2=\"\">\n\t\t\t\t\t\t<option value=\"recurring\" _v-337938e2=\"\">{{labels.schedule_type_option_rec}}</option>\n\t\t\t\t\t\t<option value=\"fixed\" _v-337938e2=\"\">{{labels.schedule_type_option_fix}}</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule Days -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-337938e2=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-337938e2=\"\">\n\t\t\t\t<b _v-337938e2=\"\">{{labels.schedule_fixed_days_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-337938e2=\"\">{{labels.schedule_fixed_days_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-337938e2=\"\">\n\t\t\t\t<div class=\"form-group input-group\" _v-337938e2=\"\">\n\t\t\t\t\t<button-checkbox v-for=\"( data, label ) in daysObject\" :key=\"label\" :value=\"data.value\" :label=\"label\" :checked=\"data.checked\" @add-day=\"addDay\" @rmv-day=\"rmvDay\" _v-337938e2=\"\"></button-checkbox>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Fixed Schedule time -->\n\t\t<div class=\"columns py-2 rop-control\" v-if=\"schedule.type === 'fixed'\" _v-337938e2=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-337938e2=\"\">\n\t\t\t\t<b _v-337938e2=\"\">{{labels.schedule_fixed_time_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-337938e2=\"\">{{labels.schedule_fixed_time_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-337938e2=\"\">\n\t\t\t\t<div class=\"form-group\" _v-337938e2=\"\">\n\t\t\t\t\t<div class=\"input-group\" v-for=\"( time, index ) in schedule.interval_f.time\" _v-337938e2=\"\">\n\t\t\t\t\t\t<vue-timepicker :minute-interval=\"generalSettings.minute_interval\" class=\"timepicker-style-fix\" :value=\"getTime( index )\" @change=\"syncTime( $event, index )\" hide-clear-button=\"\" _v-337938e2=\"\"></vue-timepicker>\n\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn\" v-if=\"schedule.interval_f.time.length > 1\" @click=\"rmvTime( index )\" _v-337938e2=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-minus\" _v-337938e2=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t\t<button class=\"btn btn-success input-group-btn\" v-if=\"index == schedule.interval_f.time.length - 1\" @click=\"addTime()\" _v-337938e2=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-fw fa-plus\" _v-337938e2=\"\"></i>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Current time -->\n<div class=\"column col-6 col-sm-12 vertical-align float-right\" v-if=\"schedule.type === 'fixed'\" _v-337938e2=\"\">\n\t\t<div class=\"toast rop-current-time text-center\" v-if=\"formatedDate\" _v-337938e2=\"\">\n\t\t\t\t{{labels.time_now}}: {{ formatedDate }}\n\t\t</div>\n</div>\n\n\t\t<div class=\"columns py-2 rop-control\" v-else=\"\" _v-337938e2=\"\">\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-337938e2=\"\">\n\t\t\t\t<b _v-337938e2=\"\">{{labels.schedule_rec_title}}</b>\n\t\t\t\t<p class=\"text-gray\" _v-337938e2=\"\">{{labels.schedule_rec_desc}}</p>\n\t\t\t</div>\n\t\t\t<div class=\"column col-6 col-sm-12 vertical-align\" _v-337938e2=\"\">\n\t\t\t\t<div class=\"form-group\" _v-337938e2=\"\">\n\t\t\t\t\t<counter-input id=\"interval_r\" :value.sync=\"schedule.interval_r\" :min-val=\"generalSettings.min_interval\" :step-val=\"generalSettings.step_interval\" _v-337938e2=\"\"></counter-input>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<!-- Upsell -->\n\t\t<div class=\"columns py-2\" v-if=\"license < 2\" _v-337938e2=\"\">\n\t\t\t<div class=\"column text-center\" _v-337938e2=\"\">\n\t\t\t\t<p class=\"upsell\" _v-337938e2=\"\"><i class=\"fa fa-lock\" _v-337938e2=\"\"></i> {{labels.schedule_upsell}}</p>\n\t\t\t</div>\n\t\t</div>\n\t\t<span class=\"divider\" _v-337938e2=\"\"></span>\n\t</div>\n";
 
 /***/ }),
-/* 286 */
+/* 305 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\" _v-6ded7d15=\"\">\n\t\t<div class=\"panel-body\" _v-6ded7d15=\"\">\n\t\t\t<div class=\"d-inline-block mt-2 column col-12\" _v-6ded7d15=\"\">\n\t\t\t\t<p class=\"text-gray\" _v-6ded7d15=\"\"><i class=\"fa fa-info-circle\" _v-6ded7d15=\"\"></i> <span v-html=\"labels.accounts_selector\" _v-6ded7d15=\"\"></span>\n\t\t\t\t</p>\n\t\t\t</div>\n\t\t\t<empty-active-accounts v-if=\"accountsCount === 0\" _v-6ded7d15=\"\"></empty-active-accounts>\n\t\t\t<div class=\"container\" v-if=\"accountsCount > 0\" _v-6ded7d15=\"\">\n\t\t\t\t<div class=\"columns\" _v-6ded7d15=\"\">\n\t\t\t\t\t<div class=\"column col-3 col-sm-12 col-md-12 col-xl-3 col-lg-3 col-xs-12 col-rop-selector-accounts\" _v-6ded7d15=\"\">\n\t\t\t\t\t\t<span class=\"divider\" _v-6ded7d15=\"\"></span>\n\t\t\t\t\t\t<div v-for=\"( account, id ) in active_accounts\" _v-6ded7d15=\"\">\n\t\t\t\t\t\t\t<div class=\"rop-selector-account-container\" :class=\"{active: selected_account===id}\" @click=\"setActiveAccount(id)\" _v-6ded7d15=\"\">\n\t\t\t\t\t\t\t\t<div class=\"tile tile-centered rop-account\" _v-6ded7d15=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"tile-icon\" _v-6ded7d15=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"icon_box\" :class=\" (account.img ? 'has_image' : 'no-image' ) + ' ' +account.service \" _v-6ded7d15=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<img class=\"service_account_image\" :src=\"account.img\" v-if=\"account.img\" _v-6ded7d15=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"fa  \" :class=\"getIcon(account)\" aria-hidden=\"true\" _v-6ded7d15=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"tile-content\" _v-6ded7d15=\"\">\n\t\t\t\t\t\t\t\t\t\t<p class=\"rop-account-name\" _v-6ded7d15=\"\">{{account.user}}</p>\n\t\t\t\t\t\t\t\t\t\t<strong class=\"rop-service-name\" _v-6ded7d15=\"\">{{account.service}}</strong>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-6ded7d15=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-9 col-sm-12  col-md-12  col-xl-9 col-lg-9 col-xs-12\" :class=\"'rop-tab-state-'+is_loading\" _v-6ded7d15=\"\">\n\t\t\t\t\t\t<component :is=\"type\" :account_id=\"selected_account\" :license=\"license\" _v-6ded7d15=\"\"></component>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-6ded7d15=\"\">\n\t\t\t<div class=\"panel-actions text-right\" v-if=\"allow_footer\" _v-6ded7d15=\"\">\n\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-6ded7d15=\"\"><i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-6ded7d15=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-6ded7d15=\"\"></i> {{labels.reset_selector_btn}} {{component_label}}\n\t\t\t\t\t{{labels.for}}\n\t\t\t\t\t<b _v-6ded7d15=\"\">{{active_account_name}}</b>\n\t\t\t\t</button>\n\t\t\t\t<button class=\"btn btn-primary\" @click=\"saveAccountData()\" _v-6ded7d15=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-6ded7d15=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-6ded7d15=\"\"></i> {{labels.save_selector_btn}} {{component_label}}\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\" _v-3a57ac82=\"\">\n\t\t<div class=\"panel-body\" _v-3a57ac82=\"\">\n\t\t\t<div class=\"d-inline-block mt-2 column col-12\" _v-3a57ac82=\"\">\n\t\t\t\t<p class=\"text-gray\" _v-3a57ac82=\"\"><i class=\"fa fa-info-circle\" _v-3a57ac82=\"\"></i> <span v-html=\"labels.accounts_selector\" _v-3a57ac82=\"\"></span>\n\t\t\t\t</p>\n\t\t\t</div>\n\t\t\t<empty-active-accounts v-if=\"accountsCount === 0\" _v-3a57ac82=\"\"></empty-active-accounts>\n\t\t\t<div class=\"container\" v-if=\"accountsCount > 0\" _v-3a57ac82=\"\">\n\t\t\t\t<div class=\"columns\" _v-3a57ac82=\"\">\n\t\t\t\t\t<div class=\"column col-3 col-sm-12 col-md-12 col-xl-3 col-lg-3 col-xs-12 col-rop-selector-accounts\" _v-3a57ac82=\"\">\n\t\t\t\t\t\t<span class=\"divider\" _v-3a57ac82=\"\"></span>\n\t\t\t\t\t\t<div v-for=\"( account, id ) in active_accounts\" _v-3a57ac82=\"\">\n\t\t\t\t\t\t\t<div class=\"rop-selector-account-container\" :class=\"{active: selected_account===id}\" @click=\"setActiveAccount(id)\" _v-3a57ac82=\"\">\n\t\t\t\t\t\t\t\t<div class=\"tile tile-centered rop-account\" _v-3a57ac82=\"\">\n\t\t\t\t\t\t\t\t\t<div class=\"tile-icon\" _v-3a57ac82=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"icon_box\" :class=\" (account.img ? 'has_image' : 'no-image' ) + ' ' +account.service \" _v-3a57ac82=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<img class=\"service_account_image\" :src=\"account.img\" v-if=\"account.img\" _v-3a57ac82=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<i class=\"fa  \" :class=\"getIcon(account)\" aria-hidden=\"true\" _v-3a57ac82=\"\"></i>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"tile-content\" _v-3a57ac82=\"\">\n\t\t\t\t\t\t\t\t\t\t<p class=\"rop-account-name\" _v-3a57ac82=\"\">{{account.user}}</p>\n\t\t\t\t\t\t\t\t\t\t<strong class=\"rop-service-name\" _v-3a57ac82=\"\">{{account.service}}</strong>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-3a57ac82=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-9 col-sm-12  col-md-12  col-xl-9 col-lg-9 col-xs-12\" :class=\"'rop-tab-state-'+is_loading\" _v-3a57ac82=\"\">\n\t\t\t\t\t\t<component :is=\"type\" :account_id=\"selected_account\" :license=\"license\" _v-3a57ac82=\"\"></component>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer\" v-if=\"accountsCount > 0\" _v-3a57ac82=\"\">\n\t\t\t<div class=\"panel-actions text-right\" v-if=\"allow_footer\" _v-3a57ac82=\"\">\n\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-3a57ac82=\"\"><i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-3a57ac82=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-3a57ac82=\"\"></i> {{labels.reset_selector_btn}} {{component_label}}\n\t\t\t\t\t{{labels.for}}\n\t\t\t\t\t<b _v-3a57ac82=\"\">{{active_account_name}}</b>\n\t\t\t\t</button>\n\t\t\t\t<button class=\"btn btn-primary\" @click=\"saveAccountData()\" _v-3a57ac82=\"\"><i class=\"fa fa-check\" v-if=\"!this.is_loading\" _v-3a57ac82=\"\"></i> <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-3a57ac82=\"\"></i> {{labels.save_selector_btn}} {{component_label}}\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 287 */
+/* 306 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(288)
-__vue_template__ = __webpack_require__(294)
+__vue_script__ = __webpack_require__(307)
+__vue_template__ = __webpack_require__(313)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -40875,7 +40845,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/uvdev/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/queue-tab-panel.vue"
+  var id = "E:\\work\\projects\\webdesign\\wordpress-themeisle\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\queue-tab-panel.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -40884,17 +40854,17 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 288 */
+/* 307 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _keys = __webpack_require__(14);
+var _keys = __webpack_require__(19);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _queueCard = __webpack_require__(289);
+var _queueCard = __webpack_require__(308);
 
 var _queueCard2 = _interopRequireDefault(_queueCard);
 
@@ -41010,13 +40980,13 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 289 */
+/* 308 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(290)
-__vue_script__ = __webpack_require__(292)
-__vue_template__ = __webpack_require__(293)
+__webpack_require__(309)
+__vue_script__ = __webpack_require__(311)
+__vue_template__ = __webpack_require__(312)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -41024,7 +40994,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/uvdev/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/queue-card.vue"
+  var id = "E:\\work\\projects\\webdesign\\wordpress-themeisle\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\queue-card.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -41033,13 +41003,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 290 */
+/* 309 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(291);
+var content = __webpack_require__(310);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -41048,8 +41018,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0395a54b&file=queue-card.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./queue-card.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0395a54b&file=queue-card.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./queue-card.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2128226b&file=queue-card.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./queue-card.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2128226b&file=queue-card.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./queue-card.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -41059,7 +41029,7 @@ if(false) {
 }
 
 /***/ }),
-/* 291 */
+/* 310 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -41067,13 +41037,13 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t.fa[_v-0395a54b] {\n\t\tbackground: transparent;\n\t}\n\t\n\t#rop_core .vertical-align[_v-0395a54b] {\n\t\t-ms-flex-align: end;\n\t\t    align-items: flex-end;\n\t}\n\t\n\t#rop_core figure.figure[_v-0395a54b] {\n\t\tmargin: -.7em -2em -1em 0;\n\t}\n\t\n\t@media (max-width: 600px) {\n\t\t#rop_core .vertical-align[_v-0395a54b] {\n\t\t\t-ms-flex-align: center;\n\t\t\t    align-items: center;\n\t\t}\n\t\t\n\t\t#rop_core figure.figure[_v-0395a54b] {\n\t\t\tmargin: 10px auto 0;\n\t\t}\n\t}\n", ""]);
+exports.push([module.i, "\r\n\t.fa[_v-2128226b] {\r\n\t\tbackground: transparent;\r\n\t}\r\n\t\r\n\t#rop_core .vertical-align[_v-2128226b] {\r\n\t\t-ms-flex-align: end;\r\n\t\t    align-items: flex-end;\r\n\t}\r\n\t\r\n\t#rop_core figure.figure[_v-2128226b] {\r\n\t\tmargin: -.7em -2em -1em 0;\r\n\t}\r\n\t\r\n\t@media (max-width: 600px) {\r\n\t\t#rop_core .vertical-align[_v-2128226b] {\r\n\t\t\t-ms-flex-align: center;\r\n\t\t\t    align-items: center;\r\n\t\t}\r\n\t\t\r\n\t\t#rop_core figure.figure[_v-2128226b] {\r\n\t\t\tmargin: 10px auto 0;\r\n\t\t}\r\n\t}\r\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 292 */
+/* 311 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -41394,25 +41364,25 @@ module.exports = {
 };
 
 /***/ }),
-/* 293 */
+/* 312 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"card\" _v-0395a54b=\"\">\n\t\t<div class=\"columns\" _v-0395a54b=\"\">\n\t\t\t<div class=\"column col-sm-12 col-justified\" _v-0395a54b=\"\">\n\t\t\t\t<div class=\"columns\" _v-0395a54b=\"\">\n\t\t\t\t\t<div class=\"column\" _v-0395a54b=\"\">\n\t\t\t\t\t\t<p class=\"text-gray text-left \" _v-0395a54b=\"\"><i class=\"fa fa-clock-o\" _v-0395a54b=\"\"></i> {{card_data.date}} <b _v-0395a54b=\"\"><i class=\"fa fa-at\" _v-0395a54b=\"\"></i></b> <i class=\"service fa\" :class=\"iconClass( card_data.account_id )\" _v-0395a54b=\"\"></i>\n\t\t\t\t\t\t\t{{getAccountName(card_data.account_id)}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-if=\"!edit\" _v-0395a54b=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-0395a54b=\"\">\n\t\t\t\t\t\t<p v-html=\"content.content + hashtags( content.hashtags )\" _v-0395a54b=\"\"></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"form-group columns\" v-if=\"edit\" _v-0395a54b=\"\">\n\t\t\t\t\t<div class=\"column col-12\" v-if=\"content.post_with_image\" _v-0395a54b=\"\">\n\t\t\t\t\t\t<label class=\"form-label\" for=\"image\" _v-0395a54b=\"\">{{labels.queue_image}}</label>\n\t\t\t\t\t\t<div class=\"input-group\" _v-0395a54b=\"\">\n\t\t\t\t\t\t\t<span class=\"input-group-addon\" _v-0395a54b=\"\"><i class=\"fa fa-file-image-o\" _v-0395a54b=\"\"></i></span>\n\t\t\t\t\t\t\t<input id=\"image\" type=\"text\" class=\"form-input\" :value=\"content.post_image\" readonly=\"\" _v-0395a54b=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary input-group-btn tooltip\" @click=\"uploadImage\" :data-tooltip=\"labels.upload_image\" _v-0395a54b=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-upload\" aria-hidden=\"true\" _v-0395a54b=\"\"></i>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn tooltip\" @click=\"removeImage\" :data-tooltip=\"labels.remove_image\" _v-0395a54b=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-remove\" aria-hidden=\"true\" _v-0395a54b=\"\"></i>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-12\" _v-0395a54b=\"\">\n\t\t\t\t\t\t<label class=\"form-label\" for=\"content\" _v-0395a54b=\"\">{{labels.queue_content}}</label>\n\t\t\t\t\t\t<textarea class=\"form-input\" id=\"content\" placeholder=\"\" rows=\"3\" @keyup=\"checkCount\" _v-0395a54b=\"\">{{content.content}}</textarea>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns col-justified\" v-if=\"!edit\" _v-0395a54b=\"\">\n\t\t\t\t\t<div class=\"column col-3\" _v-0395a54b=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-warning tooltip   tooltip-bottom \" @click=\"skipPost(card_data.account_id, card_data.post_id)\" :data-tooltip=\"labels.reschedule_post\" :disabled=\" ! enabled\" _v-0395a54b=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'skip'\" _v-0395a54b=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-step-forward\" v-else=\"\" aria-hidden=\"true\" _v-0395a54b=\"\"></i>\n\t\t\t\t\t\t\t{{labels.skip_btn_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-0395a54b=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-danger tooltip     tooltip-bottom  \" :data-tooltip=\"labels.ban_post\" @click=\"blockPost(card_data.account_id, card_data.post_id)\" :disabled=\" ! enabled\" _v-0395a54b=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'block'\" _v-0395a54b=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-ban\" aria-hidden=\"true\" v-else=\"\" _v-0395a54b=\"\"></i>\n\t\t\t\t\t\t\t{{labels.block_btn_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-0395a54b=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-primary\" @click=\"toggleEditState\" v-if=\"!edit\" :disabled=\" ! enabled\" _v-0395a54b=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-pencil\" aria-hidden=\"true\" _v-0395a54b=\"\"></i> {{labels.edit_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3 col-ml-auto text-right\" v-if=\"content.post_url !== ''\" _v-0395a54b=\"\">\n\t\t\t\t\t\t<p class=\"m-0\" _v-0395a54b=\"\">\n\t\t\t\t\t\t\t<b _v-0395a54b=\"\">{{labels.link_title}}:</b>\n\t\t\t\t\t\t\t<a :href=\"content.post_url\" target=\"_blank\" class=\"tooltip\" :data-tooltip=\"labels.link_shortned_start + ' ' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service )  \" _v-0395a54b=\"\">\n\t\t\t\t\t\t\t\t{{'{' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service ) +\n\t\t\t\t\t\t\t\t'}'}}</a>\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-else=\"\" _v-0395a54b=\"\">\n\t\t\t\t\t<div class=\"column col-3\" _v-0395a54b=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-success\" @click=\"saveChanges(card_data.account_id, card_data.post_id)\" v-if=\"edit\" :disabled=\" ! enabled\" _v-0395a54b=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'edit'\" _v-0395a54b=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-check\" aria-hidden=\"true\" v-else=\"\" _v-0395a54b=\"\"></i>\n\t\t\t\t\t\t\t{{labels.save_edit}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-0395a54b=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-warning\" @click=\"cancelChanges\" v-if=\"edit\" :disabled=\" ! enabled\" _v-0395a54b=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-times\" aria-hidden=\"true\" _v-0395a54b=\"\"></i>\n\t\t\t\t\t\t\t{{labels.cancel_edit}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"column col-4 col-sm-12 vertical-align\" v-if=\"!edit &amp;&amp; content.post_with_image\" _v-0395a54b=\"\">\n\t\t\t\t<div v-if=\"content.post_image !== ''\" _v-0395a54b=\"\">\n\t\t\t\t\t<figure class=\"figure\" v-if=\"content.post_image !== ''\" _v-0395a54b=\"\">\n\t\t\t\t\t\t<img :src=\"( content.mimetype.type.indexOf('image') > -1 ? content.post_image : video_placeholder )\" class=\"img-fit-cover img-responsive\" _v-0395a54b=\"\">\n\t\t\t\t\t</figure>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\t<div class=\"rop-image-placeholder\" v-else=\"\" _v-0395a54b=\"\">\n\t\t\t\t\t<summary _v-0395a54b=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-0395a54b=\"\"></i>\n\t\t\t\t\t\t{{labels.queue_no_image}}\n\t\t\t\t\t</summary>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"card\" _v-2128226b=\"\">\n\t\t<div class=\"columns\" _v-2128226b=\"\">\n\t\t\t<div class=\"column col-sm-12 col-justified\" _v-2128226b=\"\">\n\t\t\t\t<div class=\"columns\" _v-2128226b=\"\">\n\t\t\t\t\t<div class=\"column\" _v-2128226b=\"\">\n\t\t\t\t\t\t<p class=\"text-gray text-left \" _v-2128226b=\"\"><i class=\"fa fa-clock-o\" _v-2128226b=\"\"></i> {{card_data.date}} <b _v-2128226b=\"\"><i class=\"fa fa-at\" _v-2128226b=\"\"></i></b> <i class=\"service fa\" :class=\"iconClass( card_data.account_id )\" _v-2128226b=\"\"></i>\n\t\t\t\t\t\t\t{{getAccountName(card_data.account_id)}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-if=\"!edit\" _v-2128226b=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-2128226b=\"\">\n\t\t\t\t\t\t<p v-html=\"content.content + hashtags( content.hashtags )\" _v-2128226b=\"\"></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"form-group columns\" v-if=\"edit\" _v-2128226b=\"\">\n\t\t\t\t\t<div class=\"column col-12\" v-if=\"content.post_with_image\" _v-2128226b=\"\">\n\t\t\t\t\t\t<label class=\"form-label\" for=\"image\" _v-2128226b=\"\">{{labels.queue_image}}</label>\n\t\t\t\t\t\t<div class=\"input-group\" _v-2128226b=\"\">\n\t\t\t\t\t\t\t<span class=\"input-group-addon\" _v-2128226b=\"\"><i class=\"fa fa-file-image-o\" _v-2128226b=\"\"></i></span>\n\t\t\t\t\t\t\t<input id=\"image\" type=\"text\" class=\"form-input\" :value=\"content.post_image\" readonly=\"\" _v-2128226b=\"\">\n\t\t\t\t\t\t\t<button class=\"btn btn-primary input-group-btn tooltip\" @click=\"uploadImage\" :data-tooltip=\"labels.upload_image\" _v-2128226b=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-upload\" aria-hidden=\"true\" _v-2128226b=\"\"></i>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<button class=\"btn btn-danger input-group-btn tooltip\" @click=\"removeImage\" :data-tooltip=\"labels.remove_image\" _v-2128226b=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-remove\" aria-hidden=\"true\" _v-2128226b=\"\"></i>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-12\" _v-2128226b=\"\">\n\t\t\t\t\t\t<label class=\"form-label\" for=\"content\" _v-2128226b=\"\">{{labels.queue_content}}</label>\n\t\t\t\t\t\t<textarea class=\"form-input\" id=\"content\" placeholder=\"\" rows=\"3\" @keyup=\"checkCount\" _v-2128226b=\"\">{{content.content}}</textarea>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns col-justified\" v-if=\"!edit\" _v-2128226b=\"\">\n\t\t\t\t\t<div class=\"column col-3\" _v-2128226b=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-warning tooltip   tooltip-bottom \" @click=\"skipPost(card_data.account_id, card_data.post_id)\" :data-tooltip=\"labels.reschedule_post\" :disabled=\" ! enabled\" _v-2128226b=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'skip'\" _v-2128226b=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-step-forward\" v-else=\"\" aria-hidden=\"true\" _v-2128226b=\"\"></i>\n\t\t\t\t\t\t\t{{labels.skip_btn_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-2128226b=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-danger tooltip     tooltip-bottom  \" :data-tooltip=\"labels.ban_post\" @click=\"blockPost(card_data.account_id, card_data.post_id)\" :disabled=\" ! enabled\" _v-2128226b=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'block'\" _v-2128226b=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-ban\" aria-hidden=\"true\" v-else=\"\" _v-2128226b=\"\"></i>\n\t\t\t\t\t\t\t{{labels.block_btn_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-2128226b=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-primary\" @click=\"toggleEditState\" v-if=\"!edit\" :disabled=\" ! enabled\" _v-2128226b=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-pencil\" aria-hidden=\"true\" _v-2128226b=\"\"></i> {{labels.edit_queue}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3 col-ml-auto text-right\" v-if=\"content.post_url !== ''\" _v-2128226b=\"\">\n\t\t\t\t\t\t<p class=\"m-0\" _v-2128226b=\"\">\n\t\t\t\t\t\t\t<b _v-2128226b=\"\">{{labels.link_title}}:</b>\n\t\t\t\t\t\t\t<a :href=\"content.post_url\" target=\"_blank\" class=\"tooltip\" :data-tooltip=\"labels.link_shortned_start + ' ' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service )  \" _v-2128226b=\"\">\n\t\t\t\t\t\t\t\t{{'{' + ( content.short_url_service == '' ? 'permalink' : content.short_url_service ) +\n\t\t\t\t\t\t\t\t'}'}}</a>\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-else=\"\" _v-2128226b=\"\">\n\t\t\t\t\t<div class=\"column col-3\" _v-2128226b=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-success\" @click=\"saveChanges(card_data.account_id, card_data.post_id)\" v-if=\"edit\" :disabled=\" ! enabled\" _v-2128226b=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-if=\" is_loading === 'edit'\" _v-2128226b=\"\"></i>\n\t\t\t\t\t\t\t<i class=\"fa fa-check\" aria-hidden=\"true\" v-else=\"\" _v-2128226b=\"\"></i>\n\t\t\t\t\t\t\t{{labels.save_edit}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"column col-3\" _v-2128226b=\"\">\n\t\t\t\t\t\t<button class=\"btn btn-sm btn-block btn-warning\" @click=\"cancelChanges\" v-if=\"edit\" :disabled=\" ! enabled\" _v-2128226b=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-times\" aria-hidden=\"true\" _v-2128226b=\"\"></i>\n\t\t\t\t\t\t\t{{labels.cancel_edit}}\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"column col-4 col-sm-12 vertical-align\" v-if=\"!edit &amp;&amp; content.post_with_image\" _v-2128226b=\"\">\n\t\t\t\t<div v-if=\"content.post_image !== ''\" _v-2128226b=\"\">\n\t\t\t\t\t<figure class=\"figure\" v-if=\"content.post_image !== ''\" _v-2128226b=\"\">\n\t\t\t\t\t\t<img :src=\"( content.mimetype.type.indexOf('image') > -1 ? content.post_image : video_placeholder )\" class=\"img-fit-cover img-responsive\" _v-2128226b=\"\">\n\t\t\t\t\t</figure>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\t<div class=\"rop-image-placeholder\" v-else=\"\" _v-2128226b=\"\">\n\t\t\t\t\t<summary _v-2128226b=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-file-image-o\" _v-2128226b=\"\"></i>\n\t\t\t\t\t\t{{labels.queue_no_image}}\n\t\t\t\t\t</summary>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 294 */
+/* 313 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view rop-queue-tab-container\">\n\t\t<div class=\"panel-body\" :class=\"'rop-tab-state-'+is_loading\">\n\t\t\t<div class=\"columns\" v-if=\"! start_status\">\n\t\t\t\t<div class=\"column col-12 text-center empty-container\">\n\t\t\t\t\t<div class=\"empty-icon\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t\t<p class=\"empty-title h5\">{{labels.sharing_not_started}}</p>\n\t\t\t\t\t<p class=\"empty-subtitle\">{{labels.sharing_not_started_desc}}</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\n\t\t\t<div v-else-if=\"start_status && queueCount > 0 \">\n\n\t\t\t\t<div class=\"columns py-2\" v-if=\"! is_business\">\n\t\t\t\t\t<div class=\"column text-center\">\n\t\t\t\t\t\t<p class=\"upsell\"><i class=\"fa fa-lock\"></i> <span v-html=\"labels.biz_only\"></span></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<!-- When sharing is started but we  have the business plan. -->\n\t\t\t\t<div class=\"d-inline-block mt-2 column col-12\">\n\t\t\t\t\t<p class=\"text-gray info-paragraph\"><i class=\"fa fa-info-circle\"></i> {{labels.queue_desc}}</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"empty\" v-else-if=\"start_status && queueCount === 0\">\n\t\t\t\t<div class=\"empty-icon\">\n\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\"></i>\n\t\t\t\t</div>\n\t\t\t\t<p class=\"empty-title h5\">{{labels.no_posts}}</p>\n\t\t\t\t<p class=\"empty-subtitle\" v-html=\"labels.no_posts_desc\"></p>\n\t\t\t</div>\n\t\t\t<div class=\"columns\" v-if=\"start_status && queueCount > 0\">\n\t\t\t\t<div class=\"column col-12 text-left\" v-for=\" (data, index) in queue \">\n\t\t\t\t\t<queue-card :card_data=\"data.post_data\" :id=\"index\" :enabled=\"is_business\"/>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"panel-footer text-rightcade\" v-if=\"start_status\">\n\t\t\t<button class=\"btn btn-secondary\" @click=\"refreshQueue(true)\">\n\t\t\t\t<i class=\"fa fa-refresh\" v-if=\"!is_loading\"></i>\n\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\n\t\t\t\t{{labels.refresh_btn}}\n\t\t\t</button>\n\t\t</div>\n\t</div>\n";
+module.exports = "\r\n\t<div class=\"tab-view rop-queue-tab-container\">\r\n\t\t<div class=\"panel-body\" :class=\"'rop-tab-state-'+is_loading\">\r\n\t\t\t<div class=\"columns\" v-if=\"! start_status\">\r\n\t\t\t\t<div class=\"column col-12 text-center empty-container\">\r\n\t\t\t\t\t<div class=\"empty-icon\">\r\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\"></i>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\t<p class=\"empty-title h5\">{{labels.sharing_not_started}}</p>\r\n\t\t\t\t\t<p class=\"empty-subtitle\">{{labels.sharing_not_started_desc}}</p>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\r\n\t\t\t<div v-else-if=\"start_status && queueCount > 0 \">\r\n\r\n\t\t\t\t<div class=\"columns py-2\" v-if=\"! is_business\">\r\n\t\t\t\t\t<div class=\"column text-center\">\r\n\t\t\t\t\t\t<p class=\"upsell\"><i class=\"fa fa-lock\"></i> <span v-html=\"labels.biz_only\"></span></p>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</div>\r\n\r\n\t\t\t\t<!-- When sharing is started but we  have the business plan. -->\r\n\t\t\t\t<div class=\"d-inline-block mt-2 column col-12\">\r\n\t\t\t\t\t<p class=\"text-gray info-paragraph\"><i class=\"fa fa-info-circle\"></i> {{labels.queue_desc}}</p>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\t\t\t<div class=\"empty\" v-else-if=\"start_status && queueCount === 0\">\r\n\t\t\t\t<div class=\"empty-icon\">\r\n\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\"></i>\r\n\t\t\t\t</div>\r\n\t\t\t\t<p class=\"empty-title h5\">{{labels.no_posts}}</p>\r\n\t\t\t\t<p class=\"empty-subtitle\" v-html=\"labels.no_posts_desc\"></p>\r\n\t\t\t</div>\r\n\t\t\t<div class=\"columns\" v-if=\"start_status && queueCount > 0\">\r\n\t\t\t\t<div class=\"column col-12 text-left\" v-for=\" (data, index) in queue \">\r\n\t\t\t\t\t<queue-card :card_data=\"data.post_data\" :id=\"index\" :enabled=\"is_business\"/>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\t\t</div>\r\n\t\t<div class=\"panel-footer text-rightcade\" v-if=\"start_status\">\r\n\t\t\t<button class=\"btn btn-secondary\" @click=\"refreshQueue(true)\">\r\n\t\t\t\t<i class=\"fa fa-refresh\" v-if=\"!is_loading\"></i>\r\n\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else></i>\r\n\t\t\t\t{{labels.refresh_btn}}\r\n\t\t\t</button>\r\n\t\t</div>\r\n\t</div>\r\n";
 
 /***/ }),
-/* 295 */
+/* 314 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(296)
-__vue_script__ = __webpack_require__(298)
-__vue_template__ = __webpack_require__(299)
+__webpack_require__(315)
+__vue_script__ = __webpack_require__(317)
+__vue_template__ = __webpack_require__(318)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -41420,7 +41390,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/uvdev/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/logs-tab-panel.vue"
+  var id = "E:\\work\\projects\\webdesign\\wordpress-themeisle\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\logs-tab-panel.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -41429,13 +41399,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 296 */
+/* 315 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(297);
+var content = __webpack_require__(316);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -41444,8 +41414,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-ed733db4&file=logs-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./logs-tab-panel.vue", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-ed733db4&file=logs-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./logs-tab-panel.vue");
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3d8499ce&file=logs-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./logs-tab-panel.vue", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3d8499ce&file=logs-tab-panel.vue&scoped=true!../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../node_modules/eslint-loader/index.js!../../../node_modules/eslint-loader/index.js!./logs-tab-panel.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -41455,7 +41425,7 @@ if(false) {
 }
 
 /***/ }),
-/* 297 */
+/* 316 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -41463,13 +41433,13 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .toast.log-toast p[_v-ed733db4] {\n\t\tmargin: 0px;\n\t\tline-height: inherit;\n\t}\n\n\t#rop_core .toast.log-toast[_v-ed733db4]:hover {\n\t\topacity: 0.9;\n\t}\n\n\t#rop_core .toast.log-toast[_v-ed733db4] {\n\t\tpadding: 0.1rem;\n\t\tpadding-left: 10px;\n\t\tmargin-top: 2px;\n\t}\n\n\t#rop_core .container[_v-ed733db4] {\n\t\tmin-height: 400px;\n\t}\n\n\t.columns[_v-ed733db4] {\n\t\tline-break: anywhere;\n\t}\n", ""]);
+exports.push([module.i, "\r\n\t#rop_core .toast.log-toast p[_v-3d8499ce] {\r\n\t\tmargin: 0px;\r\n\t\tline-height: inherit;\r\n\t}\r\n\r\n\t#rop_core .toast.log-toast[_v-3d8499ce]:hover {\r\n\t\topacity: 0.9;\r\n\t}\r\n\r\n\t#rop_core .toast.log-toast[_v-3d8499ce] {\r\n\t\tpadding: 0.1rem;\r\n\t\tpadding-left: 10px;\r\n\t\tmargin-top: 2px;\r\n\t}\r\n\r\n\t#rop_core .container[_v-3d8499ce] {\r\n\t\tmin-height: 400px;\r\n\t}\r\n\r\n\t.columns[_v-3d8499ce] {\r\n\t\tline-break: anywhere;\r\n\t}\r\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 298 */
+/* 317 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -41612,19 +41582,19 @@ module.exports = {
 // <script>
 
 /***/ }),
-/* 299 */
+/* 318 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\" _v-ed733db4=\"\">\n\t\t<div class=\"panel-body\" _v-ed733db4=\"\">\n\t\t\t<div class=\" columns mt-2\" v-if=\"logs_no > 0\" _v-ed733db4=\"\">\n\t\t\t\t<div class=\"column  col-12 text-right \" _v-ed733db4=\"\">\n\t\t\t\t\t<button class=\"btn  btn-secondary \" @click=\"getLogs(true)\" _v-ed733db4=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-remove\" v-if=\"!is_loading\" _v-ed733db4=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-ed733db4=\"\"></i>\n\t\t\t\t\t\t{{labels.clear_btn}}\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"columns\" _v-ed733db4=\"\">\n\t\t\t\t<div class=\"empty column col-12\" v-if=\"is_loading\" _v-ed733db4=\"\">\n\t\t\t\t\t<div class=\"empty-icon\" _v-ed733db4=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-spinner fa-spin\" _v-ed733db4=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"empty column col-12\" v-else-if=\"logs_no === 0\" _v-ed733db4=\"\">\n\t\t\t\t\t<div class=\"empty-icon\" _v-ed733db4=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\" _v-ed733db4=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t\t<p class=\"empty-title h5\" _v-ed733db4=\"\">{{labels.no_logs}}</p>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"column col-12 mt-2\" v-for=\" (data, index) in logs \" v-else-if=\"logs_no >  0\" _v-ed733db4=\"\">\n\t\t\t\t\t<div class=\"toast log-toast\" :class=\"'toast-' + data.type\" _v-ed733db4=\"\">\n\t\t\t\t\t\t<small class=\"pull-right text-right\" _v-ed733db4=\"\">{{formatDate ( data.time ) }}</small>\n\t\t\t\t\t\t<p _v-ed733db4=\"\">{{data.message}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\" _v-3d8499ce=\"\">\n\t\t<div class=\"panel-body\" _v-3d8499ce=\"\">\n\t\t\t<div class=\" columns mt-2\" v-if=\"logs_no > 0\" _v-3d8499ce=\"\">\n\t\t\t\t<div class=\"column  col-12 text-right \" _v-3d8499ce=\"\">\n\t\t\t\t\t<button class=\"btn  btn-secondary \" @click=\"getLogs(true)\" _v-3d8499ce=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-remove\" v-if=\"!is_loading\" _v-3d8499ce=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-3d8499ce=\"\"></i>\n\t\t\t\t\t\t{{labels.clear_btn}}\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"columns\" _v-3d8499ce=\"\">\n\t\t\t\t<div class=\"empty column col-12\" v-if=\"is_loading\" _v-3d8499ce=\"\">\n\t\t\t\t\t<div class=\"empty-icon\" _v-3d8499ce=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-spinner fa-spin\" _v-3d8499ce=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"empty column col-12\" v-else-if=\"logs_no === 0\" _v-3d8499ce=\"\">\n\t\t\t\t\t<div class=\"empty-icon\" _v-3d8499ce=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-3x fa-info-circle\" _v-3d8499ce=\"\"></i>\n\t\t\t\t\t</div>\n\t\t\t\t\t<p class=\"empty-title h5\" _v-3d8499ce=\"\">{{labels.no_logs}}</p>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"column col-12 mt-2\" v-for=\" (data, index) in logs \" v-else-if=\"logs_no >  0\" _v-3d8499ce=\"\">\n\t\t\t\t\t<div class=\"toast log-toast\" :class=\"'toast-' + data.type\" _v-3d8499ce=\"\">\n\t\t\t\t\t\t<small class=\"pull-right text-right\" _v-3d8499ce=\"\">{{formatDate ( data.time ) }}</small>\n\t\t\t\t\t\t<p _v-3d8499ce=\"\">{{data.message}}</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
-/* 300 */
+/* 319 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(301)
-__vue_script__ = __webpack_require__(303)
-__vue_template__ = __webpack_require__(304)
+__webpack_require__(320)
+__vue_script__ = __webpack_require__(322)
+__vue_template__ = __webpack_require__(323)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -41632,7 +41602,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/uvdev/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/toast.vue"
+  var id = "E:\\work\\projects\\webdesign\\wordpress-themeisle\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\toast.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -41641,13 +41611,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 301 */
+/* 320 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(302);
+var content = __webpack_require__(321);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(2)(content, {});
@@ -41656,8 +41626,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-37b64678&file=toast.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./toast.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-37b64678&file=toast.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./toast.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-60dbd550&file=toast.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./toast.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-60dbd550&file=toast.vue!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./toast.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -41667,7 +41637,7 @@ if(false) {
 }
 
 /***/ }),
-/* 302 */
+/* 321 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
@@ -41675,13 +41645,13 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .toast.hidden {\n\t\tdisplay: none;\n\t}\n\t#rop_core .toast {\n\t\tmargin: 10px 0;\n\t}\n", ""]);
+exports.push([module.i, "\r\n\t#rop_core .toast.hidden {\r\n\t\tdisplay: none;\r\n\t}\r\n\t#rop_core .toast {\r\n\t\tmargin: 10px 0;\r\n\t}\r\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 303 */
+/* 322 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -41742,18 +41712,18 @@ module.exports = {
 };
 
 /***/ }),
-/* 304 */
+/* 323 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"toast\" :class=\"toastTypeClass\" >\n\t\t<button class=\"btn btn-clear float-right\" @click=\"closeThis\"></button>\n\t\t<b><i class=\"fa\" :class=\"iconClass\"></i> {{ toast.title }}</b><br/>\n\t\t<small>{{ toast.message }}</small>\n\t</div>\n";
+module.exports = "\r\n\t<div class=\"toast\" :class=\"toastTypeClass\" >\r\n\t\t<button class=\"btn btn-clear float-right\" @click=\"closeThis\"></button>\r\n\t\t<b><i class=\"fa\" :class=\"iconClass\"></i> {{ toast.title }}</b><br/>\r\n\t\t<small>{{ toast.message }}</small>\r\n\t</div>\r\n";
 
 /***/ }),
-/* 305 */
+/* 324 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__vue_script__ = __webpack_require__(306)
-__vue_template__ = __webpack_require__(311)
+__vue_script__ = __webpack_require__(325)
+__vue_template__ = __webpack_require__(330)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -41761,7 +41731,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/uvdev/Local Sites/rop/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/countdown.vue"
+  var id = "E:\\work\\projects\\webdesign\\wordpress-themeisle\\wp-content\\plugins\\tweet-old-post\\vue\\src\\vue-elements\\reusables\\countdown.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -41770,17 +41740,17 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 306 */
+/* 325 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _keys = __webpack_require__(14);
+var _keys = __webpack_require__(19);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _trunc = __webpack_require__(307);
+var _trunc = __webpack_require__(326);
 
 var _trunc2 = _interopRequireDefault(_trunc);
 
@@ -41788,7 +41758,7 @@ var _moment = __webpack_require__(0);
 
 var _moment2 = _interopRequireDefault(_moment);
 
-__webpack_require__(310);
+__webpack_require__(329);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -41855,25 +41825,25 @@ module.exports = {
 };
 
 /***/ }),
-/* 307 */
+/* 326 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(308), __esModule: true };
+module.exports = { "default": __webpack_require__(327), __esModule: true };
 
 /***/ }),
-/* 308 */
+/* 327 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(309);
+__webpack_require__(328);
 module.exports = __webpack_require__(3).Math.trunc;
 
 
 /***/ }),
-/* 309 */
+/* 328 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.34 Math.trunc(x)
-var $export = __webpack_require__(22);
+var $export = __webpack_require__(23);
 
 $export($export.S, 'Math', {
   trunc: function trunc(it) {
@@ -41883,7 +41853,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 310 */
+/* 329 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! Moment Duration Format v2.2.2
@@ -43629,16 +43599,16 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 /***/ }),
-/* 311 */
+/* 330 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"toast rop-next-share-time\" v-if=\"isOn && accounts_no > 0\">\n\t\t<span v-if=\"diff_seconds>0\"> <b><i\n\t\t\t\tclass=\"fa fa-fast-forward\"></i> {{labels.next_share}}</b> {{labels.in}}</span>\n\t\t<small v-if=\"timediff !== ''\">{{timediff}}</small>\n\t</div>\n";
+module.exports = "\r\n\t<div class=\"toast rop-next-share-time\" v-if=\"isOn && accounts_no > 0\">\r\n\t\t<span v-if=\"diff_seconds>0\"> <b><i\r\n\t\t\t\tclass=\"fa fa-fast-forward\"></i> {{labels.next_share}}</b> {{labels.in}}</span>\r\n\t\t<small v-if=\"timediff !== ''\">{{timediff}}</small>\r\n\t</div>\r\n";
 
 /***/ }),
-/* 312 */
+/* 331 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <div class=\"columns panel-header\">\n            <div class=\"column header-logo vertical-align\" v-if=\"is_preloading_over > 0\">\n                <div>\n                    <img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/>\n                    <h1 class=\"plugin-title d-inline-block\">Revive Old Posts</h1><span class=\"powered d-inline-block\"> {{labels.by}} <a\n                        href=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\n                </div>\n            </div>\n            <toast/>\n            <div v-if=\" is_rest_api_error \" class=\"toast toast-error rop-api-not-available\" v-html=\"labels.api_not_available\">\n            </div>\n            <div v-if=\" is_fb_domain_notice \" class=\"toast toast-primary\">\n                <button class=\"btn btn-clear float-right\" @click=\"close_fb_domain_notice()\"></button>\n                <div v-html=\"labels.rop_facebook_domain_toast\"></div>\n            </div>\n            <div class=\"sidebar sidebar-top card rop-container-start\">\n\n                <!-- Next post count down -->\n                <countdown :current_time=\"current_time\"/>\n                <!--  -->\n\n                <button class=\"btn btn-sm\" :class=\"btn_class\"\n                        :data-tooltip=\"labels.active_account_warning\"\n                        @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n                    <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n                    <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n                    <i class=\"fa fa-spinner fa-spin\" v-else></i>\n                    {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n                </button>\n            </div>\n        </div>\n\n        <div class=\"columns\">\n            <div class=\"panel column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\n                <div class=\"panel-nav\" style=\"padding: 8px;\" v-if=\"is_preloading_over > 0\">\n                    <ul class=\"tab \">\n                        <li class=\"tab-item c-hand\" v-for=\"tab in displayTabs\"\n                            :class=\"{ active: tab.isActive }\" v-bind:id=\"tab.name.replace(' ', '').toLowerCase()\">\n                            <a :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\n                               :data-badge=\"logs_no\"\n                               @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\n                        </li>\n                    </ul>\n                </div>\n                <component :is=\"page.template\" :type=\"page.view\"></component>\n            </div>\n\n            <div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\n                 :class=\"'rop-license-plan-'+license\" v-if=\"is_preloading_over > 0\">\n\n                <div class=\"card rop-container-start\">\n                     <button id=\"rop_start_stop_btn\" class=\"btn\" :class=\"btn_class\"\n                            :data-tooltip=\"labels.active_account_warning\"\n                            @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n                        <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n                        <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n                        <i class=\"fa fa-spinner fa-spin\" v-else></i>\n                        {{labels.click}} {{labels.to}} {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n                    </button>\n\n                    <div class=\"sharing-box\" :class=\"status_color_class\">{{ status_label_display }}</div>\n\n                    <countdown :current_time=\"current_time\"/>\n\n                    <div id=\"staging-status\" v-if=\"staging\">\n                        {{labels.staging_status}}\n                    </div>\n                    <div v-if=\"!haveAccounts\" class=\"rop-spacer\"></div>\n                    <div v-if=\"haveAccounts\">\n                        <upsell-sidebar></upsell-sidebar>\n                    </div>\n                    <a v-if=\"license  >= 1\" href=\"https://revive.social/pro-support/\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.rop_support}}</a>\n                    <a v-if=\"license  < 1\" href=\"https://revive.social/support/\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.rop_support}}</a>\n                    <a v-if=\"haveAccounts\" href=\"https://docs.revive.social/\" target=\"_blank\"\n                       class=\"btn rop-sidebar-action-btns\">{{labels.rop_docs}}</a>\n                    <a v-if=\"haveAccounts\"\n                       href=\"https://wordpress.org/support/plugin/tweet-old-post/reviews/?rate=5#new-post\"\n                       target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.review_it}}</a>\n                </div>\n\n            </div>\n        </div>\n    </div>\n";
+module.exports = "\r\n    <div>\r\n        <div class=\"columns panel-header\">\r\n            <div class=\"column header-logo vertical-align\" v-if=\"is_preloading_over > 0\">\r\n                <div>\r\n                    <img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/>\r\n                    <h1 class=\"plugin-title d-inline-block\">Revive Old Posts</h1><span class=\"powered d-inline-block\"> {{labels.by}} <a\r\n                        href=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\r\n                </div>\r\n            </div>\r\n            <toast/>\r\n            <div v-if=\" is_rest_api_error \" class=\"toast toast-error rop-api-not-available\" v-html=\"labels.api_not_available\">\r\n            </div>\r\n            <div v-if=\" is_fb_domain_notice \" class=\"toast toast-primary\">\r\n                <button class=\"btn btn-clear float-right\" @click=\"close_fb_domain_notice()\"></button>\r\n                <div v-html=\"labels.rop_facebook_domain_toast\"></div>\r\n            </div>\r\n            <div class=\"sidebar sidebar-top card rop-container-start\">\r\n\r\n                <!-- Next post count down -->\r\n                <countdown :current_time=\"current_time\"/>\r\n                <!--  -->\r\n\r\n                <button class=\"btn btn-sm\" :class=\"btn_class\"\r\n                        :data-tooltip=\"labels.active_account_warning\"\r\n                        @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\r\n                    <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\r\n                    <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\r\n                    <i class=\"fa fa-spinner fa-spin\" v-else></i>\r\n                    {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\r\n                </button>\r\n            </div>\r\n        </div>\r\n\r\n        <div class=\"columns\">\r\n            <div class=\"panel column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\r\n                <div class=\"panel-nav\" style=\"padding: 8px;\" v-if=\"is_preloading_over > 0\">\r\n                    <ul class=\"tab \">\r\n                        <li class=\"tab-item c-hand\" v-for=\"tab in displayTabs\"\r\n                            :class=\"{ active: tab.isActive }\" v-bind:id=\"tab.name.replace(' ', '').toLowerCase()\">\r\n                            <a :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\r\n                               :data-badge=\"logs_no\"\r\n                               @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\r\n                        </li>\r\n                    </ul>\r\n                </div>\r\n                <component :is=\"page.template\" :type=\"page.view\"></component>\r\n            </div>\r\n\r\n            <div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\r\n                 :class=\"'rop-license-plan-'+license\" v-if=\"is_preloading_over > 0\">\r\n\r\n                <div class=\"card rop-container-start\">\r\n                     <button id=\"rop_start_stop_btn\" class=\"btn\" :class=\"btn_class\"\r\n                            :data-tooltip=\"labels.active_account_warning\"\r\n                            @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\r\n                        <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\r\n                        <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\r\n                        <i class=\"fa fa-spinner fa-spin\" v-else></i>\r\n                        {{labels.click}} {{labels.to}} {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\r\n                    </button>\r\n\r\n                    <div class=\"sharing-box\" :class=\"status_color_class\">{{ status_label_display }}</div>\r\n\r\n                    <countdown :current_time=\"current_time\"/>\r\n\r\n                    <div id=\"staging-status\" v-if=\"staging\">\r\n                        {{labels.staging_status}}\r\n                    </div>\r\n                    <div v-if=\"!haveAccounts\" class=\"rop-spacer\"></div>\r\n                    <div v-if=\"haveAccounts\">\r\n                        <upsell-sidebar></upsell-sidebar>\r\n                    </div>\r\n                    <a v-if=\"license  >= 1\" href=\"https://revive.social/pro-support/\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.rop_support}}</a>\r\n                    <a v-if=\"license  < 1\" href=\"https://revive.social/support/\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.rop_support}}</a>\r\n                    <a v-if=\"haveAccounts\" href=\"https://docs.revive.social/\" target=\"_blank\"\r\n                       class=\"btn rop-sidebar-action-btns\">{{labels.rop_docs}}</a>\r\n                    <a v-if=\"haveAccounts\"\r\n                       href=\"https://wordpress.org/support/plugin/tweet-old-post/reviews/?rate=5#new-post\"\r\n                       target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.review_it}}</a>\r\n                </div>\r\n\r\n            </div>\r\n        </div>\r\n    </div>\r\n";
 
 /***/ })
 /******/ ]);

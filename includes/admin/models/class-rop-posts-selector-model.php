@@ -89,8 +89,9 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 
 		$taxonomies = array();
 
+		$wpml_current_lang = apply_filters( 'wpml_current_language', null );
+
 		if ( function_exists( 'icl_object_id' ) && ! empty( $language_code ) ) {
-			$wpml_current_lang = apply_filters( 'wpml_current_language', null );
 			// changes the language of global query to use the specfied language
 			do_action( 'wpml_switch_language', $language_code );
 		}
@@ -106,7 +107,6 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			$first_account_lang = ! empty( $post_format['wpml_language'] ) ? $post_format['wpml_language'] : '';
 
 			if ( ! empty( $first_account_lang ) ) {
-				$wpml_current_lang = apply_filters( 'wpml_current_language', null );
 				// changes the language of global query to use the specfied language
 				do_action( 'wpml_switch_language', $first_account_lang );
 			}
@@ -154,18 +154,13 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			}
 		}
 
+		if ( function_exists( 'icl_object_id' ) && ! ( empty( $language_code ) && empty( $first_account_lang ) ) ) {
+			// set language back to original
+			do_action( 'wpml_switch_language', $wpml_current_lang );
+		}
+
 		if ( empty( $taxonomies ) ) {
 			return array();
-		}
-
-		if ( function_exists( 'icl_object_id' ) && ! empty( $language_code ) ) {
-			// set language back to original
-			do_action( 'wpml_switch_language', $wpml_current_lang );
-		}
-
-		if ( function_exists( 'icl_object_id' ) && ! empty( $first_account_lang ) ) {
-			// set language back to original
-			do_action( 'wpml_switch_language', $wpml_current_lang );
 		}
 
 		return $taxonomies;

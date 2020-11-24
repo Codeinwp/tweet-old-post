@@ -8,9 +8,7 @@
             <div class="column col-6 col-sm-12 vertical-align">
                 <div class="form-group">
                     <select id="wpml-language-selector" class="form-select" v-model="post_format.wpml_language" :disabled="!isPro" v-on:change="refresh_language_taxonomies">
-                        <option value="" selected>{{labels.wpml_select_language}}</option>
-                        <!-- <option value="" v-bind:selected="post_format.wpml_language == ''">{{labels.wpml_select_language}}</option> -->
-                        <option v-for="(lang, index) in wpml_languages" :value="lang.code" v-bind:selected="lang.code == post_format.wpml_language ? 'selected' : false">{{lang.value}}</option>
+                        <option v-for="(lang, index) in wpml_languages" :value="lang.code" v-bind:selected="index == 0 || lang.code == post_format.wpml_language ? true : false">{{lang.label}}</option>
                     </select>
                 </div>
             </div>
@@ -339,59 +337,24 @@
         },
         created: function () {
             this.get_taxonomy_list();
-
-            this.wpml_languages.filter(lang =>{
-      var code = Object.keys(lang)[0];
-      lang.code = code;
-      lang.value = lang[code];
-    });
-
-    //if( this.isPro && this.wpml_active_status &&  this.post_format.wpml_language !== '' ){
-      // this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.post_types, language_code: this.selected_language }});
-      // this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes, language_code: this.post_format.wpml_language }});
-    //}
-
         },
-        mounted: function() {
-          // below should only happen if is pro.
-//this.load_taxonomy();
-//
-// document.onreadystatechange = () => {
-//    if (document.readyState == "complete") {
-//      const wpml_language_selector = document.querySelector('#wpml-language-selector');
-//      console.log(wpml_language_selector);
-//      console.log(wpml_language_selector.value);
-//    }
-//  }
-//
-//  window.addEventListener('load', () => {
-//    const wpml_language_selector = document.querySelector('#wpml-language-selector');
-//    console.log(wpml_language_selector);
-//    console.log(wpml_language_selector.value);
-//    })
-
-          // if( this.isPro && this.wpml_active_status &&  this.post_format.wpml_language !== '' ){
-          //   this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.$store.state.generalSettings.available_post_types, language_code: 'en' }});
-          //   // this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes, language_code: this.post_format.wpml_language }});
-          // }
-
-          // if( this.isPro && this.wpml_active_status &&  this.post_format.wpml_language !== '' ){
-          //   this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.post_types, language_code: this.selected_language }});
-          //   // this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes, language_code: this.post_format.wpml_language }});
-          // }
-      //    this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.post_types, language_code: this.selected_language }});
-
-},
+        updated: function() {
+            this.$nextTick(function () {
+                if(!this.$store.state.dom_updated){
+                    this.refresh_language_taxonomies();
+                }
+            });
+        },
        methods:{
-
             refresh_language_taxonomies: function(e){
-
-            const lang = e.target.options[e.target.options.selectedIndex].value;
-            console.log('wpml language selected: ', lang);
-            // clear selected taxonomies on language change
-            this.post_format.taxonomy_filter = [];
-            this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes, language_code: lang}});
-
+                const lang = e && e.target ? e.target.options[e.target.options.selectedIndex].value : document.querySelector('#wpml-language-selector').value;
+                console.log('wpml language selected: ', lang);
+                // clear selected taxonomies on language change
+                this.post_format.taxonomy_filter = [];
+                if(lang !== ''){
+                    this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes, language_code: lang}});
+                }
+                this.$store.state.dom_updated = true;
             },
             get_taxonomy_list(){
                 if (this.$store.state.generalSettings.length === 0) {
@@ -428,9 +391,9 @@
 
         },
         computed: {
-        postTypes: function () {
-            return this.$store.state.generalSettings.available_post_types;
-        },
+            postTypes: function () {
+                return this.$store.state.generalSettings.available_post_types;
+            },
             post_format: function () {
                 return this.$store.state.activePostFormat[this.account_id] ? this.$store.state.activePostFormat[this.account_id] : [];
             },
@@ -455,14 +418,6 @@
                 return (postFormat.taxonomy_filter) ? postFormat.taxonomy_filter : [];
             },
             taxonomy: function () {
-              // this.selected_language = this.post_format.wpml_language;
-              // this.post_types = this.postTypes;
-              // console.log(this.selected_language);
-              // console.log( this.post_types);
-              if( this.isPro && this.wpml_active_status &&  this.post_format.wpml_language !== '' ){
-              //  this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes, language_code: this.post_format.wpml_language }});
-              }
-
                 return this.$store.state.generalSettings.available_taxonomies
             },
             shorteners: function () {
