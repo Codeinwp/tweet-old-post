@@ -88,9 +88,9 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
 	 *
+	 * @return array
 	 * @since   8.0.0
 	 * @access  private
-	 * @return array
 	 */
 	private function get_schedules() {
 		$services        = new Rop_Services_Model();
@@ -112,12 +112,11 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	/**
 	 * Method to create a schedule array.
 	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   array $schedule_data The schedule data.
+	 * @param array $schedule_data The schedule data.
 	 *
 	 * @return mixed
+	 * @since   8.0.0
+	 * @access  public
 	 */
 	public function create_schedule( $schedule_data = array() ) {
 		$schedule = $this->schedule_defaults;
@@ -172,13 +171,12 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	/**
 	 * Method to add or update a schedule in DB.
 	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   string $account_id The account ID.
-	 * @param   bool   $schedule_data The schedule data.
+	 * @param string $account_id The account ID.
+	 * @param bool   $schedule_data The schedule data.
 	 *
 	 * @return mixed
+	 * @since   8.0.0
+	 * @access  public
 	 */
 	public function add_update_schedule( $account_id, $schedule_data = false ) {
 
@@ -242,10 +240,11 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * If the events are missing or are less than the limit, regenerate them.
 	 *
 	 * @param string $account_id Account to update.
+	 * @param int    $retry How many times the function was called.
 	 *
 	 * @return array List of upcoming events.
 	 */
-	public function get_upcoming_events( $account_id = 0 ) {
+	public function get_upcoming_events( $account_id = 0, $retry = 0 ) {
 		if ( empty( $account_id ) ) {
 			return array();
 		}
@@ -263,8 +262,15 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		if ( empty( $account_events ) ) {
 			$events = $this->generate_upcoming_events( self::get_current_time(), $account_id, self::EVENTS_PER_ACCOUNT );
 		} else {
-			$last_time  = $account_events [ count( $account_events ) - 1 ];
-			$events_new = $this->generate_upcoming_events( $last_time, $account_id, self::EVENTS_PER_ACCOUNT - count( $account_events ) );
+			$events_count = count( $account_events );
+			$last_time    = end( $account_events );
+			reset( $account_events );
+
+			if ( empty( $last_time ) ) {
+				$last_time = self::get_current_time();
+			}
+
+			$events_new = $this->generate_upcoming_events( $last_time, $account_id, self::EVENTS_PER_ACCOUNT - $events_count );
 			$events     = array_merge( $account_events, $events_new );
 		}
 		sort( $events );
@@ -293,6 +299,11 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 
 		$this->update_timeline( $current_events );
 
+		$retry ++;
+		if ( empty( $events ) && 0 === $retry ) {
+			$events = $this->get_upcoming_events( $account_id, $retry );
+		}
+
 		return $events;
 	}
 
@@ -300,13 +311,12 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	 * Method to compute and get upcoming schedules
 	 * using a basetime according to an account schedule.
 	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   int    $base Timestamp to reffer to.
-	 * @param   string $account_id Timestamp to reffer to.
+	 * @param int    $base Timestamp to reffer to.
+	 * @param string $account_id Timestamp to reffer to.
 	 *
 	 * @return array
+	 * @since   8.0.0
+	 * @access  public
 	 */
 	public function generate_upcoming_events( $base = 0, $account_id, $limit = 0 ) {
 
@@ -419,12 +429,11 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	/**
 	 * Method to retrieve a schedule for the account id from the DB.
 	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   string $account_id The account ID.
+	 * @param string $account_id The account ID.
 	 *
 	 * @return array|mixed
+	 * @since   8.0.0
+	 * @access  public
 	 */
 	public function get_schedule( $account_id = null ) {
 
@@ -442,13 +451,12 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	/**
 	 * Utility method to convert a float value fo HH:mm format.
 	 *
-	 * @since   8.0.0
-	 * @access  private
-	 *
-	 * @param   float $value The value to be converted.
-	 * @param   bool  $as_array Flag to change return type to array.
+	 * @param float $value The value to be converted.
+	 * @param bool  $as_array Flag to change return type to array.
 	 *
 	 * @return array|string
+	 * @since   8.0.0
+	 * @access  private
 	 */
 	private function convert_float_to_time( $value, $as_array = true ) {
 		$value   = floatval( $value );
@@ -467,14 +475,13 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	/**
 	 * Utility method to add to specified time.
 	 *
-	 * @since   8.0.0
-	 * @access  private
-	 *
-	 * @param   string $time The time to append to.
-	 * @param   int    $hours The hours to be added.
-	 * @param   int    $minutes The minutes to be added.
+	 * @param string $time The time to append to.
+	 * @param int    $hours The hours to be added.
+	 * @param int    $minutes The minutes to be added.
 	 *
 	 * @return false|string
+	 * @since   8.0.0
+	 * @access  private
 	 */
 	private function add_to_time( $time, $hours = 0, $minutes = 0 ) {
 		$timestamp = strtotime( '+' . $hours . ' hour +' . $minutes . ' minutes', $time );
@@ -485,12 +492,11 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	/**
 	 * Utility method to convert a time string to int seconds.
 	 *
-	 * @since   8.0.0
-	 * @access  private
-	 *
-	 * @param   string $value The value to be converted.
+	 * @param string $value The value to be converted.
 	 *
 	 * @return integer
+	 * @since   8.0.0
+	 * @access  private
 	 */
 	private function convert_string_to_float( $value ) {
 		$parts = explode( ':', $value );
@@ -566,12 +572,11 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 	/**
 	 * Method to remove a schedule from DB.
 	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   string $account_id The account ID.
+	 * @param string $account_id The account ID.
 	 *
 	 * @return mixed
+	 * @since   8.0.0
+	 * @access  public
 	 */
 	public function remove_schedule( $account_id ) {
 		$this->schedules = $this->get_schedules();

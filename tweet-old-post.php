@@ -16,7 +16,7 @@
  * Plugin Name: Revive Old Posts
  * Plugin URI: https://revive.social/
  * Description: WordPress plugin that helps you to keeps your old posts alive by sharing them and driving more traffic to them from twitter/facebook or linkedin. It also helps you to promote your content. You can set time and no of posts to share to drive more traffic.For questions, comments, or feature requests, <a href="http://revive.social/support/?utm_source=plugindesc&utm_medium=announce&utm_campaign=top">contact </a> us!
- * Version:           8.5.18
+ * Version:           8.6.0
  * Author:            revive.social
  * Author URI:        https://revive.social/
  * Requires at least: 3.5
@@ -33,6 +33,7 @@
  */
 
 // If this file is called directly, abort.
+
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
@@ -109,8 +110,13 @@ register_deactivation_hook( __FILE__, 'rop_deactivation' );
  */
 function run_rop() {
 
+	// Is the remote Cron in use ?
+	$use_remote_cron = get_option( 'rop_use_remote_cron', false );
+	$use_remote_cron = filter_var( $use_remote_cron, FILTER_VALIDATE_BOOLEAN );
+	define( 'ROP_CRON_ALTERNATIVE', $use_remote_cron );
+
 	define( 'ROP_PRO_URL', 'http://revive.social/plugins/revive-old-post/' );
-	define( 'ROP_LITE_VERSION', '8.5.18' );
+	define( 'ROP_LITE_VERSION', '8.6.0' );
 	define( 'ROP_LITE_BASE_FILE', __FILE__ );
 	define( 'ROP_DEBUG', false );
 	define( 'ROP_LITE_PATH', plugin_dir_path( __FILE__ ) );
@@ -124,15 +130,24 @@ function run_rop() {
 	define( 'ROP_APP_FACEBOOK_PATH', '/fb_auth' );
 	define( 'ROP_APP_TWITTER_PATH', '/tw_auth' );
 	define( 'ROP_APP_LINKEDIN_PATH', '/li_auth' );
-	define( 'ROP_APP_BUFFER_PATH', '/buffer_auth' );
 	define( 'ROP_APP_TUMBLR_PATH', '/tumblr_auth' );
 	define( 'ROP_APP_GMB_PATH', '/gmb_auth' );
+	define( 'ROP_APP_VK_PATH', '/vk_auth' );
 	define( 'ROP_INSTALL_TOKEN_OPTION', 'rop_install_token' );
 
 	$vendor_file = ROP_LITE_PATH . '/vendor/autoload.php';
 	if ( is_readable( $vendor_file ) ) {
 		require_once $vendor_file;
 	}
+
+	if ( defined( 'ROP_CRON_ALTERNATIVE' ) && true === ROP_CRON_ALTERNATIVE ) {
+
+		if ( class_exists( 'RopCronSystem\Rop_Cron_Core' ) ) {
+
+			new RopCronSystem\Rop_Cron_Core();
+		}
+	}
+
 	add_filter(
 		'themeisle_sdk_products',
 		function ( $products ) {

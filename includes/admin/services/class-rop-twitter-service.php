@@ -307,7 +307,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		$user['id']      = $data->id;
 		$user['account'] = $this->normalize_string( $data->name );
 		$user['user']    = '@' . $this->normalize_string( $data->screen_name );
-		$user['img']     = $img;
+		$user['img']     = apply_filters( 'rop_custom_tw_avatar', $img );
 		$user['service'] = $this->service_name;
 
 		return array( $this->get_service_id() . '_' . $user['id'] => $user );
@@ -441,7 +441,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 				'media_type' => $post_details['mimetype']['type'],
 			);
 
-			if ( $photon_bypass && class_exists( 'Jetpack_Photon' ) ) {
+			if ( ! empty( $photon_bypass ) && class_exists( 'Jetpack_Photon' ) ) {
 				// Re-enable Jetpack Photon filter.
 				add_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ), 10, 3 );
 			}

@@ -80,9 +80,9 @@ class Rop_I18n {
 				'fb_app_signin_btn'          => __( 'Sign in to Facebook', 'tweet-old-post' ),
 				'tw_app_signin_btn'          => __( 'Sign in to Twitter', 'tweet-old-post' ),
 				'li_app_signin_btn'          => __( 'Sign in to LinkedIn', 'tweet-old-post' ),
-				'buffer_app_signin_btn'      => __( 'Sign in to Buffer', 'tweet-old-post' ),
 				'tumblr_app_signin_btn'      => __( 'Sign in to Tumblr', 'tweet-old-post' ),
 				'gmb_app_signin_btn'         => __( 'Sign in to Google My Business', 'tweet-old-post' ),
+				'vk_app_signin_btn'          => __( 'Sign in to Vkontake', 'tweet-old-post' ),
 				'app_option_signin'          => __( 'Or', 'tweet-old-post' ),
 				'rs_app_info'                => sprintf( __( 'We collect some info, learn more %1$shere%2$s.', 'tweet-old-post' ), '<a class="text-bold" href="https://docs.revive.social/article/1066-info-we-collect-in-seamless-social-network-connection" target="_blank">', '</a>' ),
 				'service_popup_title'        => __( 'Service Credentials', 'tweet-old-post' ),
@@ -186,6 +186,9 @@ class Rop_I18n {
 				'instant_share_future_scheduled_desc'   => __( 'Allows for the sharing of posts scheduled to publish at a future date by WordPress to your active social media accounts as soon as they change from "Scheduled" to "Published". <a href="https://docs.revive.social/article/1194-share-scheduled-posts-to-social-media-on-publish-with-revive-old-posts" target="_blank">Learn more</a>.', 'tweet-old-post' ),
 				'instant_share_future_scheduled_yes'    => __( 'Yes', 'tweet-old-post' ),
 				'instant_share_future_scheduled_upsell' => __( ' This feature is only available in the PRO version.', 'tweet-old-post' ),
+				'cron_type_label'                => __( 'Cron Job Type', 'tweet-old-post' ),
+				'cron_type_label_desc'           => sprintf( __( 'Select the between your local built-in WordPress task scheduler, or Revive Social\'s, %1$sLearn More%2$s', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/1303-rop-local-cron-vs-remote-cron" target="_blank">', '</a>' ),
+				'cron_type_label_desc_terms'           => __( 'I understand that some site data is stored on the ROP\'s Remote Cron System to provide this service. <a href="https://docs.revive.social/article/1317-info-we-collect-for-remote-cron-service" target="_blank">Read More Here</a>', 'tweet-old-post' ),
 				'housekeeping'                => __( 'Housekeeping', 'tweet-old-post' ),
 				'housekeeping_desc'           => __( 'Should we delete all saved settings on deletion of the Revive Old Posts plugin?', 'tweet-old-post' ),
 				'housekeeping_yes'            => __( 'Yes', 'tweet-old-post' ),
@@ -213,7 +216,7 @@ class Rop_I18n {
 				'max_char_title'                    => __( 'Maximum Characters', 'tweet-old-post' ),
 				'max_char_desc'                     => __( 'Maximum length of the message, in characters. Each letter is considered a character.', 'tweet-old-post' ),
 				'add_char_title'                    => __( 'Additional Text', 'tweet-old-post' ),
-				'add_char_desc'                     => sprintf( __( 'Add custom content to shared posts. Supports magic tags, %1$sLearn More%2$s', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/952-available-magic-tags-in-revive-old-posts" target="_blank">', '</a>' ),
+				'add_char_desc'                     => sprintf( __( 'Add custom content to shared posts. It supports magic tags in the PRO version of ROP %1$sLearn More%2$s', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/952-available-magic-tags-in-revive-old-posts" target="_blank">', '</a>' ),
 				'add_char_placeholder'              => __( '...written by {author} on {date}.', 'tweet-old-post' ),
 				'add_pos_title'                     => __( 'Choose where you want the Additional Text to appear.', 'tweet-old-post' ),
 				'add_pos_option_start'              => __( 'Beginning of Caption', 'tweet-old-post' ),
@@ -238,7 +241,7 @@ class Rop_I18n {
 				'hashtags_title'                    => __( 'Hashtags', 'tweet-old-post' ),
 				'hashtags_desc'                     => __( 'Hashtags for published content.', 'tweet-old-post' ),
 				'hashtags_option_no'                => __( 'Don\'t add any hashtags', 'tweet-old-post' ),
-				'hashtags_option_common'            => __( 'Common hastags for all shares', 'tweet-old-post' ),
+				'hashtags_option_common'            => __( 'Common hashtags for all shares', 'tweet-old-post' ),
 				'hashtags_option_cats'              => __( 'Create hashtags from categories', 'tweet-old-post' ),
 				'hashtags_option_tags'              => __( 'Create hashtags from tags', 'tweet-old-post' ),
 				'hashtags_option_field'             => __( 'Create hashtags from a custom field', 'tweet-old-post' ),
@@ -368,6 +371,10 @@ You can try to disable any of the security plugins that you use in order to see 
 				'share_once_sharing_done_message' => __( 'All posts have been shared to your connected social media accounts. No previously shared posts will be re-shared until you click the button to "Stop Sharing" and "Start Sharing" on the Revive Old Posts plugin dashboard.', 'tweet-old-post' ),
 				'refresh_linkedin_token_message'  => sprintf( __( 'Hi! This email was sent by Revive Old Posts on your website. Your LinkedIn token is about to expire. You need to refresh it to continue sharing without issue. Click the link below to find out why and how: %1$s %2$s', 'tweet-old-post' ), '<br><br>', '<a href="https://docs.revive.social/article/1151-how-to-refresh-linkedin-access-token">https://docs.revive.social/article/1151-how-to-refresh-linkedin-access-token</a>' ),
 			),
+			'cron_system' => array(
+				'delete_cron_service_account_info' => sprintf( __( 'This option will delete your website information from our Remote Cron Service. %1$s Revive Old Posts will then fallback to using the Local Cron System built into WordPress. %1$s You can re-enable the Remote Cron System at anytime from General Settings > Cron Type, switch from Local Cron to Remote.', 'tweet-old-post' ), '<br>' ),
+				'clear_local_cron_info' => sprintf( __( 'This will remove the Cron server authentication key from your local database. %1$s A new authentication key will be created when you register to the remote Cron server.', 'tweet-old-post' ), '<br>' ),
+			),
 			// PRO only.
 			'publish_now' => array(
 				'share_on_update' => __( 'Share <b>immediately</b> via <small>Revive Old Posts</small>  ', 'tweet-old-post' ),
@@ -384,6 +391,17 @@ You can try to disable any of the security plugins that you use in order to see 
 				'gmb_no_valid_accounts' => __( 'Google My Business error: No valid accounts found. Please make sure you have access to a Google My Business location.', 'tweet-old-post' ),
 				'gmb_missing_main_class' => __( 'Unable to find Google_Client Class. Please ensure you have the Revive Old Posts Pro Addon activated.', 'tweet-old-post' ),
 				'gmb_missing_lib_class' => __( 'Unable to find Google_Service_MyBusiness Class. Please ensure you have the Revive Old Posts Pro Addon activated.', 'tweet-old-post' ),
+				'linkedin_missing_exif_imagetype' => __( 'Cannot share image to LinkedIn. exif_imagetype() function is missing from your system. Please contact your web host and ask that this function be enabled on your hosting.', 'tweet-old-post' ),
+				'linkedin_issue_fetching_token' => __( 'There was an issue fetching the LinkedIn Token. Please contact Revive Old Posts support for assistance.', 'tweet-old-post' ),
+			),
+			'generic' => array(
+				'only_pro_suffix' => ' (' . __( 'Available in PRO', 'tweet-old-post' ) . ')',
+			),
+			'misc' => array(
+				'curl_not_detected' => __( 'cURL was not detected on your website. Please contact your Web Host and ask that they enable cURL for your website.', 'tweet-old-post' ),
+				'no_post_data' => __( 'Post data for share empty.', 'tweet-old-post' ),
+				'revive_network_desc' => __( 'Revive Network allows you to share content from multiple RSS feeds from any website to your connected social media accounts. Join the waiting list to help us test it out!', 'tweet-old-post' ),
+				'revive_network_learn_more_btn' => __( 'Request Access', 'tweet-old-post' ),
 			),
 		);
 		if ( empty( $key ) ) {

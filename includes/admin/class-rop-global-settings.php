@@ -118,13 +118,13 @@ class Rop_Global_Settings {
 			'active' => false,
 			'name'   => 'Pinterest',
 		),
-		'buffer'    => array(
-			'active' => false,
-			'name'   => 'Buffer',
-		),
 		'gmb'    => array(
 			'active' => false,
 			'name'   => 'Gmb',
+		),
+		'vk'    => array(
+			'active' => false,
+			'name'   => 'Vk',
 		),
 	);
 
@@ -137,6 +137,8 @@ class Rop_Global_Settings {
 	 */
 	private $settings_defaults = array(
 		'default_interval'      => 10,
+		'min_interval'          => 0.5,
+		'step_interval'         => 0.1,
 		'minimum_post_age'      => 30,
 		'maximum_post_age'      => 0,
 		'number_of_posts'       => 1,
@@ -159,6 +161,7 @@ class Rop_Global_Settings {
 		'instant_share_default' => false,
 		'instant_share_future_scheduled' => false,
 		'start_time'            => false,
+		'minute_interval'      => 5,
 	);
 
 	/**
@@ -206,26 +209,6 @@ class Rop_Global_Settings {
 			'shortner_credentials' => array(),
 			'hashtags_custom'      => '',
 			'image'                => false,
-			'utm_campaign_medium'  => 'social',
-			'utm_campaign_name'    => 'ReviveOldPost',
-		),
-		'buffer'    => array(
-			'post_content'         => 'post_title',
-			'custom_meta_field'    => '',
-			'maximum_length'       => '140',
-			'custom_text'          => '',
-			'custom_text_pos'      => 'beginning',
-			'include_link'         => true,
-			'url_from_meta'        => false,
-			'url_meta_key'         => '',
-			'short_url'            => false,
-			'short_url_service'    => 'is.gd',
-			'hashtags'             => 'no-hashtags',
-			'hashtags_length'      => '200',
-			'hashtags_common'      => '',
-			'shortner_credentials' => array(),
-			'hashtags_custom'      => '',
-			'image'                => true,
 			'utm_campaign_medium'  => 'social',
 			'utm_campaign_name'    => 'ReviveOldPost',
 		),
@@ -309,6 +292,26 @@ class Rop_Global_Settings {
 			'utm_campaign_medium'  => 'social',
 			'utm_campaign_name'    => 'ReviveOldPost',
 		),
+		'vk' => array(
+			'post_content'         => 'post_title',
+			'custom_meta_field'    => '',
+			'maximum_length'       => '1000',
+			'custom_text'          => '',
+			'custom_text_pos'      => 'beginning',
+			'include_link'         => true,
+			'url_from_meta'        => false,
+			'url_meta_key'         => '',
+			'short_url'            => false,
+			'short_url_service'    => 'is.gd',
+			'hashtags'             => 'no-hashtags',
+			'hashtags_length'      => '200',
+			'hashtags_common'      => '',
+			'hashtags_custom'      => '',
+			'shortner_credentials' => array(),
+			'image'                => false,
+			'utm_campaign_medium'  => 'social',
+			'utm_campaign_name'    => 'ReviveOldPost',
+		),
 	);
 
 	/**
@@ -368,6 +371,9 @@ class Rop_Global_Settings {
 				'rop_available_services',
 				self::$instance->services_defaults
 			);
+
+			self::$instance->settings_defaults['min_interval'] = apply_filters( 'rop_min_interval_bw_shares_min', ROP_DEBUG ? 0.1 : 0.5 );
+			self::$instance->settings_defaults['step_interval'] = apply_filters( 'rop_min_interval_bw_shares_step', 0.1 );
 
 			self::$instance->settings = apply_filters(
 				'rop_general_settings_defaults',

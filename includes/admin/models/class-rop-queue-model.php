@@ -78,14 +78,13 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	/**
 	 * Update a queue object with custom data, passed by the user.
 	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   string $account_id The account ID.
-	 * @param   int    $post_id The post ID referenced.
-	 * @param   array  $custom_data The custom data.
+	 * @param string $account_id The account ID.
+	 * @param int    $post_id The post ID referenced.
+	 * @param array  $custom_data The custom data.
 	 *
 	 * @return bool
+	 * @since   8.0.0
+	 * @access  public
 	 */
 	public function update_queue_object( $account_id, $post_id, $custom_data ) {
 		$key             = '_rop_edit_' . md5( $account_id );
@@ -102,18 +101,21 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	/**
 	 * Utility method to remove from queue.
 	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   int    $timestamp The timestamp which we should clear.
-	 * @param   string $account_id The account ID.
-	 * @param   bool   $refresh Whether to refresh the rop_data property in parent abstract class with new rop_data option value.
+	 * @param int    $timestamp The timestamp which we should clear.
+	 * @param string $account_id The account ID.
+	 * @param bool   $refresh Whether to refresh the rop_data property in parent abstract class with new rop_data option value.
 	 *
 	 * @return mixed
+	 * @since   8.0.0
+	 * @access  public
 	 */
 	public function remove_from_queue( $timestamp, $account_id, $refresh = false ) {
 		$index = $this->scheduler->remove_timestamp( $timestamp, $account_id );
-		$posts = $this->queue[ $account_id ][ $index ];
+		if ( isset( $this->queue[ $account_id ], $this->queue[ $account_id ][ $index ] ) ) {
+			$posts = $this->queue[ $account_id ][ $index ];
+		} else {
+			return false;
+		}
 
 		if ( empty( $posts ) ) {
 			return false;
@@ -142,10 +144,10 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	/**
 	 * Removes an account from queue
 	 *
+	 * @param string $account_id The account ID.
+	 *
 	 * @since   8.0.0
 	 * @access  public
-	 *
-	 * @param   string $account_id The account ID.
 	 */
 	public function remove_account_from_queue( $account_id ) {
 		unset( $this->queue[ $account_id ] );
@@ -155,13 +157,12 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	/**
 	 * Mark a post_id as blocked for the account.
 	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   int    $post_id The post id.
-	 * @param   string $account_id The account ID.
+	 * @param int    $post_id The post id.
+	 * @param string $account_id The account ID.
 	 *
 	 * @return bool Ban status.
+	 * @since   8.0.0
+	 * @access  public
 	 */
 	public function ban_post( $post_id, $account_id ) {
 		$queue = $this->get_queue();
@@ -187,9 +188,9 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * Method to retrieve the queue based on the number of timeline events.
 	 * It creates the queue order, refill it in case that we don't have enought elements.
 	 *
+	 * @return array
 	 * @since   8.0.0
 	 * @access  public
-	 * @return array
 	 */
 	public function get_queue() {
 		$settings    = new Rop_Settings_Model();
@@ -205,7 +206,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 			$account_queue                   = isset( $current_queue[ $account_id ] ) ? $current_queue[ $account_id ] : array();
 			$normalized_queue[ $account_id ] = array();
 
-			$post_pool                       = $this->selector->select( $account_id );
+			$post_pool = $this->selector->select( $account_id );
 			if ( empty( $post_pool ) ) {
 				$this->logger->alert_error( 'No posts are available to share for your account. Try activating the Share more than once option or changing the minimum and maximum post age setting to widen the pool of available posts.' );
 				continue;
@@ -256,9 +257,9 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	/**
 	 * Method to retrieve the queue formatted for display.
 	 *
+	 * @return array
 	 * @since   8.0.0
 	 * @access  public
-	 * @return array
 	 */
 	public function get_ordered_queue() {
 		$cron_helper = new Rop_Cron_Helper();
@@ -311,57 +312,59 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * Method to build the queue for posts to be published on update/create.
 	 *
 	 * @access  public
-	 * @return array
+	 *
 	 * @param int   $post_id the Post ID.
 	 * @param array $accounts_data The accounts data, may either be the accounts the user has selected to share the post to (by clicking the instant sharing checkbox on post edit screen, would also contain the custom share message if any was entered), or an array of active accounts to share to by the share_scheduled_future_post() method.
 	 * @param bool  $is_future_post Whether method was called by share_scheduled_future_post() method.
 	 * @param bool  $true_instant_share Whether the share immediately option is checked.
+	 *
+	 * @return array
 	 */
 	public function build_queue_publish_now( $post_id = '', $accounts_data = array(), $is_future_post = false, $true_instant_share = false ) {
 
 		if ( $is_future_post ) {
-			$accounts   = $accounts_data;
-			$normalized_queue   = array();
+			$accounts         = $accounts_data;
+			$normalized_queue = array();
 
-				$index = 0;
+			$index = 0;
 
 			foreach ( $accounts as $account_id ) {
-						$normalized_queue[ $account_id ][ $index ] = array(
-							'post' => array( $post_id ),
-						);
-						$index++;
+				$normalized_queue[ $account_id ][ $index ] = array(
+					'post' => array( $post_id ),
+				);
+				$index ++;
 			}
 
 			return $normalized_queue;
 		} elseif ( $true_instant_share ) {
-			$accounts   = $accounts_data;
-			$normalized_queue   = array();
+			$accounts         = $accounts_data;
+			$normalized_queue = array();
 
-				$index = 0;
+			$index = 0;
 
 			foreach ( $accounts as $account_id => $custom_instant_share_message ) {
-						$normalized_queue[ $account_id ][ $index ] = array(
-							'post' => array( $post_id ),
-							'custom_instant_share_message' => $custom_instant_share_message,
-						);
-						$index++;
+				$normalized_queue[ $account_id ][ $index ] = array(
+					'post'                         => array( $post_id ),
+					'custom_instant_share_message' => $custom_instant_share_message,
+				);
+				$index ++;
 			}
 
 			return $normalized_queue;
 
 		} else {
 
-			$selector           = new Rop_Posts_Selector_Model();
-			$posts              = $selector->get_publish_now_posts();
+			$selector = new Rop_Posts_Selector_Model();
+			$posts    = $selector->get_publish_now_posts();
 
-			$normalized_queue   = array();
+			$normalized_queue = array();
 			if ( ! $posts ) {
 				return $normalized_queue;
 			}
 
-			$index              = 0;
+			$index = 0;
 			foreach ( $posts as $post_id ) {
-				$accounts   = get_post_meta( $post_id, 'rop_publish_now_accounts', true );
+				$accounts = get_post_meta( $post_id, 'rop_publish_now_accounts', true );
 				if ( ! $accounts ) {
 					continue;
 				}
@@ -371,11 +374,11 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 
 				foreach ( $accounts as $account_id => $custom_instant_share_message ) {
 					$normalized_queue[ $account_id ][ $index ] = array(
-						'post' => array( $post_id ),
+						'post'                         => array( $post_id ),
 						'custom_instant_share_message' => $custom_instant_share_message,
 					);
 				}
-				$index++;
+				$index ++;
 			}
 
 			return $normalized_queue;
@@ -387,9 +390,9 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	/**
 	 * Method to build the queue according to the timeline.
 	 *
+	 * @return array
 	 * @since   8.0.0
 	 * @access  public
-	 * @return array
 	 */
 	public function build_queue() {
 		$queue            = $this->get_queue();
@@ -416,13 +419,12 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * Rebuilds the post object using the updated post format
 	 * and preserving the old user settings. Or creates a new one.
 	 *
-	 * @since   8.0.0
-	 * @access  private
-	 *
-	 * @param   integer $post_id A WordPress Post Object.
-	 * @param   string  $account_id The account ID.
+	 * @param integer $post_id A WordPress Post Object.
+	 * @param string  $account_id The account ID.
 	 *
 	 * @return array
+	 * @since   8.0.0
+	 * @access  private
 	 */
 	public function prepare_post_object( $post_id, $account_id ) {
 		$post_format_helper = new Rop_Post_Format_Helper();
@@ -435,9 +437,9 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	/**
 	 * Method to clear the queue
 	 *
+	 * @return void
 	 * @since   8.0.0
 	 * @access  public
-	 * @return void
 	 */
 	public function clear_queue( $account_id = false ) {
 		if ( empty( $account_id ) ) {
@@ -451,13 +453,12 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	/**
 	 * Method to skip post for the given account.
 	 *
-	 * @since   8.0.0
-	 * @access  public
-	 *
-	 * @param   int    $post_id The post uid.
-	 * @param   string $account_id The account ID.
+	 * @param int    $post_id The post uid.
+	 * @param string $account_id The account ID.
 	 *
 	 * @return bool
+	 * @since   8.0.0
+	 * @access  public
 	 */
 	public function skip_post( $post_id, $account_id ) {
 		$queue = $this->get_queue();

@@ -2,13 +2,45 @@
     <div class="tab-view">
         <div class="panel-body">
             <div class="container" :class="'rop-tab-state-'+is_loading">
+                <div class="columns py-2" v-if="this.apply_exclude_limit_cron" >
+                    <div class="column col-6 col-sm-12 vertical-align rop-control">
+                        <b>{{labels.cron_type_label}}</b>
+                        <p class="text-gray"><span v-html="labels.cron_type_label_desc"></span></p>
+                    </div>
+                    <div class="column col-6 col-sm-12 vertical-align text-left rop-control">
+                        <div class="form-group">
+                            <!-- @category New Cron System -->
+                            <div style="padding: 10px; text-align: left;">
+                                <toggle-button
+                                        :value="rop_cron_remote"
+                                        :labels="{checked: 'Remote Cron', unchecked: 'Local Cron'}"
+                                        :width="110"
+                                        :height="28"
+                                        :switch-color="{checked: '#FFFFFF', unchecked: '#FFFFFF'}"
+                                        :color="{checked: '#7DCE94', unchecked: '#82C7EB'}"
+                                        @change="rop_cron_remote = $event.value; update_cron_type_action()"
+                                        :disabled="!rop_cron_remote_agreement"
+                                        :sync="true"
+                                />
+                            </div>
+                          <input
+                              type="checkbox"
+                              :checked="rop_cron_remote_agreement"
+                              :disabled="rop_cron_remote_agreement"
+                              @change="update_agreement_checkbox()"
+                          /> <span v-html="labels.cron_type_label_desc_terms"></span>
+                        </div>
+                    </div>
+                </div>
+                <span class="divider" v-if="this.apply_exclude_limit_cron && ! isBiz" ></span>
+
                 <div class="columns py-2" v-if="! isBiz">
                     <div class="column col-6 col-sm-12 vertical-align">
                         <b>{{labels.min_interval_title}}</b>
                         <p class="text-gray">{{labels.min_interval_desc}}</p>
                     </div>
                     <div class="column col-6 col-sm-12 vertical-align">
-                        <counter-input id="default_interval"
+                        <counter-input id="default_interval" :min-val="generalSettings.min_interval" :step-val="generalSettings.step_interval"
                                        :value.sync="generalSettings.default_interval"></counter-input>
                     </div>
                 </div>
@@ -270,8 +302,12 @@
 </template>
 
 <script>
+    import Vue from 'vue'
     import counterInput from './reusables/counter-input.vue'
     import MultipleSelect from './reusables/multiple-select.vue'
+    import ToggleButton from 'vue-js-toggle-button'
+
+    Vue.use(ToggleButton);
 
     module.exports = {
         name: 'settings-view',
@@ -282,7 +318,13 @@
                 labels: this.$store.state.labels.settings,
                 upsell_link: ropApiSettings.upsell_link,
                 is_loading: false,
-                is_taxonomy_message: false
+                is_taxonomy_message: false,
+                /**
+                 * @category New Cron System
+                 */
+                rop_cron_remote: Boolean(ropApiSettings.rop_cron_remote),
+                rop_cron_remote_agreement: Boolean(ropApiSettings.rop_cron_remote_agreement),
+                is_cron_btn_active: false
             }
         },
         computed: {
@@ -326,6 +368,9 @@
             },
             isCustomMsgs: function () {
                 return this.$store.state.generalSettings.custom_messages;
+            },
+            apply_exclude_limit_cron: function () {
+              return ropApiSettings.remote_cron_type_limit > 0;
             }
         },
         mounted: function () {
@@ -333,6 +378,55 @@
             this.getGeneralSettings();
         },
         methods: {
+            /**
+             * Will update settings related to Cron
+             * true = Will use remote true Cron Job System
+             * false = Will use local WordPress Cron Job System.
+             *
+             * @category New Cron System
+             */
+            update_cron_type_action() {
+
+                this.is_cron_btn_active = true;
+                Vue.$log.info('#! Use Remote Cron : ' + this.rop_cron_remote);
+
+                this.$store.dispatch('fetchAJAXPromise', {
+                    req: 'update_cron_type',
+                    data: {
+                        'action': this.rop_cron_remote
+                    }
+                }).then(response => {
+                    this.is_cron_btn_active = false;
+                    this.$root.$refs.main_page.togglePosting(true);
+                    ropApiSettings.rop_cron_remote = this.rop_cron_remote;
+                    //this.$emit( 'togglePosting', true);
+                    //this.togglePosting(true);
+                }, error => {
+                    this.is_cron_btn_active = false;
+                    Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+                })
+            },
+            update_agreement_checkbox(){
+
+              this.rop_cron_remote_agreement = true;
+              Vue.$log.info('#! User agreement : ' + this.rop_cron_remote_agreement);
+
+              this.$store.dispatch('fetchAJAXPromise', {
+                req: 'update_cron_type_agreement',
+                data: {
+                  'action': this.rop_cron_remote_agreement
+                }
+              }).then(response => {
+
+                this.is_cron_btn_active = false;
+                ropApiSettings.rop_cron_remote_agreement = this.rop_cron_remote_agreement;
+
+              }, error => {
+                this.rop_cron_remote_agreement = false;
+                Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error)
+              })
+
+          },
             displayProMessage(data) {
                 if (!this.isPro && data >= 4 ) {
                     if (true === this.isTaxLimit) {

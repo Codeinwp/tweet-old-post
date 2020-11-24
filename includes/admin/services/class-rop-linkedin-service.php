@@ -298,7 +298,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 *
 	 * @codeCoverageIgnore
 	 *
-	 * @param object $data Response data from Twitter.
+	 * @param object $data Response data from LinkedIn.
 	 *
 	 * @return array
 	 * @since   8.0.0
@@ -501,49 +501,65 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
+		if ( ! empty( $args['credentials']['client_id'] ) ) {
+			$this->logger->alert_error( Rop_Pro_I18n::get_labels( 'errors.reconnect_linkedin' ) );
+			$this->rop_get_error_docs( Rop_Pro_I18n::get_labels( 'errors.reconnect_linkedin' ) );
+			return false;
+		}
+
 		if ( isset( $args['id'] ) ) {
 			$args['id'] = $this->treat_underscore_exception( $args['id'], true ); // Add the underscore back.
 		}
 
-		// check if linkedin Account was added using Revive Social app
-		$added_with_app = get_option( 'rop_linkedin_via_rs_app' );
+		$token = $args['credentials'];
 
-		// if linkedin was connected with "Sign into Linkedin" button, use appropriate key for access token
-		// accounts added with "Sign into Linkedin" button will not have the ['credentials']['client_id'] array key
-		if ( ! empty( $added_with_app ) && empty( $args['credentials']['client_id'] ) ) {
-			$token = new \LinkedIn\AccessToken( $args['credentials'] );
-		} else {
-			$this->set_api( $this->credentials['client_id'], $this->credentials['secret'] );
-			$token = new \LinkedIn\AccessToken( $this->credentials['token'] );
+		$post_url = $post_details['post_url'];
+		$share_as_image_post = $post_details['post_with_image'];
+		$post_id = $post_details['post_id'];
+
+		// LinkedIn link post
+		if ( ! empty( $post_url ) && empty( $share_as_image_post ) && get_post_type( $post_id ) !== 'attachment' ) {
+			$new_post = $this->linkedin_article_post( $post_details, $args );
 		}
 
-		$api = $this->get_api();
+		// LinkedIn plain text post
+		if ( empty( $share_as_image_post ) && empty( $post_url ) ) {
+			$new_post = $this->linkedin_text_post( $post_details, $args );
+		}
 
-		$api->setAccessToken( $token );
+		// LinkedIn media post
+		if ( ! empty( $share_as_image_post ) || get_post_type( $post_id ) === 'attachment' ) {
 
-		if ( get_post_type( $post_details['post_id'] ) !== 'attachment' ) {
-			// If post image option unchecked, share as article post
-			if ( empty( $post_details['post_with_image'] ) ) {
-				$new_post = $this->linkedin_article_post( $post_details, $args );
-			} else {
-				$new_post = $this->linkedin_image_post( $post_details, $args, $token, $api );
-			}
-		} elseif ( get_post_type( $post_details['post_id'] ) === 'attachment' ) {
 			// Linkedin Api v2 doesn't support video upload. Share as article post
 			if ( strpos( get_post_mime_type( $post_details['post_id'] ), 'video' ) !== false ) {
 				$new_post = $this->linkedin_article_post( $post_details, $args );
 			} else {
-				$new_post = $this->linkedin_image_post( $post_details, $args, $token, $api );
+				$new_post = $this->linkedin_image_post( $post_details, $args, $token );
 			}
 		}
 
 		if ( empty( $new_post ) ) {
-			$this->logger->info( '$new_post variable empty, bailing process.' );
-					 return;
+			$this->logger->alert_error( Rop_I18n::get_labels( 'misc.no_post_data' ) );
+			return;
 		}
 
-		try {
-			$api->post( 'ugcPosts', $new_post );
+		$api_url = 'https://api.linkedin.com/v2/ugcPosts';
+		$response = wp_remote_post(
+			$api_url,
+			array(
+				'body'    => json_encode( $new_post ),
+				'headers' => array(
+					'Content-Type' => 'application/json',
+					'x-li-format' => 'json',
+					'X-Restli-Protocol-Version' => '2.0.0',
+					'Authorization' => 'Bearer ' . $token,
+				),
+			)
+		);
+
+		$body = json_decode( wp_remote_retrieve_body( $response ), true );
+
+		if ( array_key_exists( 'id', $body ) ) {
 
 			$this->logger->alert_success(
 				sprintf(
@@ -555,14 +571,16 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			);
 			// check if the token will expire soon
 			$this->rop_refresh_linkedin_token_notice();
-		} catch ( Exception $exception ) {
-			$this->logger->alert_error( 'Cannot share to linkedin. Error:  ' . $exception->getMessage() );
-			$this->rop_get_error_docs( $exception->getMessage() );
+			return true;
+		} else {
 
+			$this->logger->alert_error( 'Cannot share to linkedin. Error:  ' . print_r( $body, true ) );
+			$this->rop_get_error_docs( $body );
+			// check if the token will expire soon
+			$this->rop_refresh_linkedin_token_notice();
 			return false;
 		}
 
-		return true;
 	}
 
 
@@ -621,6 +639,44 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	}
 
 	/**
+	 * Linkedin Text post.
+	 *
+	 * @param array $post_details The post details to be published by the service.
+	 * @param array $args Arguments needed by the method.
+	 *
+	 * @return array
+	 * @since   8.6.0
+	 * @access  private
+	 */
+	private function linkedin_text_post( $post_details, $args ) {
+
+		$author_urn = $args['is_company'] ? 'urn:li:organization:' : 'urn:li:person:';
+
+		$new_post = array(
+			'author'          => $author_urn . $args['id'],
+			'lifecycleState'  => 'PUBLISHED',
+			'specificContent' =>
+				array(
+					'com.linkedin.ugc.ShareContent' =>
+						array(
+							'shareCommentary'    =>
+								array(
+									'text' => $this->strip_excess_blank_lines( $post_details['content'] ) . $this->get_url( $post_details ) . $post_details['hashtags'],
+								),
+							'shareMediaCategory' => 'NONE',
+						),
+				),
+			'visibility'      =>
+				array(
+					'com.linkedin.ugc.MemberNetworkVisibility' => 'PUBLIC',
+				),
+		);
+
+		return $new_post;
+
+	}
+
+	/**
 	 * Linkedin image post format.
 	 *
 	 * @param array  $post_details The post details to be published by the service.
@@ -631,7 +687,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @since   8.2.3
 	 * @access  private
 	 */
-	private function linkedin_image_post( $post_details, $args, $token, $api ) {
+	private function linkedin_image_post( $post_details, $args, $token ) {
 
 		$author_urn = $args['is_company'] ? 'urn:li:organization:' : 'urn:li:person:';
 
@@ -654,9 +710,23 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 				),
 		);
 
-		$response   = $api->post( 'https://api.linkedin.com/v2/assets?action=registerUpload', $register_image );
-		$upload_url = $response['value']['uploadMechanism']['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest']['uploadUrl'];
-		$asset      = $response['value']['asset'];
+		$api_url = 'https://api.linkedin.com/v2/assets?action=registerUpload';
+		$response = wp_remote_post(
+			$api_url,
+			array(
+				'body'    => json_encode( $register_image ),
+				'headers' => array(
+					'Content-Type' => 'application/json',
+					'x-li-format' => 'json',
+					'X-Restli-Protocol-Version' => '2.0.0',
+					'Authorization' => 'Bearer ' . $token,
+				),
+			)
+		);
+
+		$body = json_decode( wp_remote_retrieve_body( $response ), true );
+		$upload_url = $body['value']['uploadMechanism']['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest']['uploadUrl'];
+		$asset      = $body['value']['asset'];
 
 		// If this is an attachment post we need to make sure we pass the URL to get_path_by_url() correctly
 		if ( get_post_type( $post_details['post_id'] ) === 'attachment' ) {
@@ -670,8 +740,12 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 				  return array();
 		}
 
-		$img_mime_type = image_type_to_mime_type( exif_imagetype( $img ) );
-
+		if ( function_exists( 'exif_imagetype' ) ) {
+			$img_mime_type = image_type_to_mime_type( exif_imagetype( $img ) );
+		} else {
+			$this->logger->alert_error( Rop_I18n::get_labels( 'errors.linkedin_missing_exif_imagetype' ) );
+			return false;
+		}
 		$img_data   = file_get_contents( $img );
 		$img_length = strlen( $img_data );
 
@@ -762,7 +836,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 			$account_data = $accounts_array[ $i ];
 
 			$account['id']           = $this->treat_underscore_exception( $account_data['id'] );
-			$account['img']          = $account_data['img'];
+			$account['img']          = apply_filters( 'rop_custom_li_avatar', $account_data['img'] );
 			$account['account']      = $account_data['account'];
 			$account['is_company']   = $account_data['is_company'];
 			$account['user']         = $account_data['user'];
