@@ -1136,21 +1136,6 @@ class Rop_Admin {
 	}
 
 	/**
-	 * Dismiss dropping buffer notice.
-	 *
-	 * @since   8.2.3
-	 * @access  public
-	 */
-	public function rop_dismiss_dropping_buffer_notice() {
-		$user_id = get_current_user_id();
-		if ( isset( $_GET['rop-dropping-buffer-notice-dismissed'] ) ) {
-			add_user_meta( $user_id, 'rop-dropping-buffer-notice-dismissed', 'true', true );
-		}
-
-	}
-
-
-	/**
 	 * If the option "rop_is_sharing_cron_active" value is off/false/no then the WP Cron Jobs will be cleared.
 	 *
 	 * @since 8.5.0
@@ -1360,50 +1345,6 @@ class Rop_Admin {
 		$user_id = get_current_user_id();
 		if ( isset( $_GET['rop-cron-event-status-notice-dismissed'] ) ) {
 			add_user_meta( $user_id, 'rop-cron-event-status-notice-dismissed', 'true', true );
-		}
-
-	}
-
-	/**
-	 * Buffer addon disabled notice.
-	 *
-	 * @since   8.4.0
-	 * @access  public
-	 */
-	public function rop_buffer_addon_notice() {
-
-		if ( is_plugin_active( 'rop-buffer-addon/rop-buffer-addon.php' ) ) {
-			deactivate_plugins( 'rop-buffer-addon/rop-buffer-addon.php' );
-		} else {
-			return;
-		}
-
-		$user_id = get_current_user_id();
-
-		if ( get_user_meta( $user_id, 'rop-buffer-addon-notice-dismissed' ) ) {
-			return;
-		}
-
-		?>
-
-		<div class="notice notice-error">
-			<?php echo sprintf( __( '%1$s We\'ve bundled the Buffer feature into Revive Old Posts Pro, and therefore deactivated the Buffer Addon automatically to prevent any conflicts. If you were a free user testing out the addon then please send us a support request %2$shere%3$s. %4$s %5$s', 'tweet-old-post' ), '<p>', '<a href="https://revive.social/support/" target="_blank">', '</a>', '<a style="float: right;" href="?rop-wp-cron-notice-dismissed">Dismiss</a>', '</p>' ); ?>
-		</div>
-		<?php
-
-	}
-
-	/**
-	 * Dismiss WordPress Cron disabled notice.
-	 *
-	 * @since   8.4.0
-	 * @access  public
-	 */
-	public function rop_dismiss_buffer_addon_disabled_notice() {
-
-		$user_id = get_current_user_id();
-		if ( isset( $_GET['rop-buffer-addon-notice-dismissed'] ) ) {
-			add_user_meta( $user_id, 'rop-buffer-addon-notice-dismissed', 'true', true );
 		}
 
 	}
