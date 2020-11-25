@@ -1176,66 +1176,6 @@ class Rop_Admin {
 	}
 
 	/**
-	 * Dropping buffer notice.
-	 *
-	 * @since   8.5.14
-	 * @access  public
-	 */
-	public function rop_dropping_buffer_notice() {
-
-		if ( ! current_user_can( 'install_plugins' ) ) {
-			return;
-		}
-
-		$user_id = get_current_user_id();
-
-		if ( get_user_meta( $user_id, 'rop-dropping-buffer-notice-dismissed' ) ) {
-			return;
-		}
-
-		$show_notice = false;
-
-		$services_model = new Rop_Services_Model();
-
-		$services = $services_model->get_authenticated_services();
-
-		foreach ( $services as $key => $value ) {
-
-			if ( $value['service'] === 'buffer' ) {
-				$show_notice = true;
-				break;
-			}
-		}
-
-		if ( $show_notice === false ) {
-			return;
-		}
-
-		?>
-		<div class="notice notice-error" style="min-height: 80px">
-			<?php echo sprintf( __( '%1$s%2$sRevive Old Posts:%3$s The Buffer integration will cease to work in future versions of ROP. Posting to Facebook Groups will be possible but not Instagram. Please see %4$sthis article for more information.%5$s%6$s%7$s', 'tweet-old-post' ), '<p style="width: 85%">', '<b>', '</b>', '<a href="https://docs.revive.social/article/1297-why-were-removing-buffer" target="_blank">', '</a>', '</p>', '<a style="float: right;" href="?rop-dropping-buffer-notice-dismissed">Dismiss</a>' ); ?>
-
-		</div>
-		<?php
-
-	}
-
-	/**
-	 * Dismiss dropping buffer notice.
-	 *
-	 * @since   8.2.3
-	 * @access  public
-	 */
-	public function rop_dismiss_dropping_buffer_notice() {
-		$user_id = get_current_user_id();
-		if ( isset( $_GET['rop-dropping-buffer-notice-dismissed'] ) ) {
-			add_user_meta( $user_id, 'rop-dropping-buffer-notice-dismissed', 'true', true );
-		}
-
-	}
-
-
-	/**
 	 * If the option "rop_is_sharing_cron_active" value is off/false/no then the WP Cron Jobs will be cleared.
 	 *
 	 * @since 8.5.0
@@ -1445,50 +1385,6 @@ class Rop_Admin {
 		$user_id = get_current_user_id();
 		if ( isset( $_GET['rop-cron-event-status-notice-dismissed'] ) ) {
 			add_user_meta( $user_id, 'rop-cron-event-status-notice-dismissed', 'true', true );
-		}
-
-	}
-
-	/**
-	 * Buffer addon disabled notice.
-	 *
-	 * @since   8.4.0
-	 * @access  public
-	 */
-	public function rop_buffer_addon_notice() {
-
-		if ( is_plugin_active( 'rop-buffer-addon/rop-buffer-addon.php' ) ) {
-			deactivate_plugins( 'rop-buffer-addon/rop-buffer-addon.php' );
-		} else {
-			return;
-		}
-
-		$user_id = get_current_user_id();
-
-		if ( get_user_meta( $user_id, 'rop-buffer-addon-notice-dismissed' ) ) {
-			return;
-		}
-
-		?>
-
-		<div class="notice notice-error">
-			<?php echo sprintf( __( '%1$s We\'ve bundled the Buffer feature into Revive Old Posts Pro, and therefore deactivated the Buffer Addon automatically to prevent any conflicts. If you were a free user testing out the addon then please send us a support request %2$shere%3$s. %4$s %5$s', 'tweet-old-post' ), '<p>', '<a href="https://revive.social/support/" target="_blank">', '</a>', '<a style="float: right;" href="?rop-wp-cron-notice-dismissed">Dismiss</a>', '</p>' ); ?>
-		</div>
-		<?php
-
-	}
-
-	/**
-	 * Dismiss WordPress Cron disabled notice.
-	 *
-	 * @since   8.4.0
-	 * @access  public
-	 */
-	public function rop_dismiss_buffer_addon_disabled_notice() {
-
-		$user_id = get_current_user_id();
-		if ( isset( $_GET['rop-buffer-addon-notice-dismissed'] ) ) {
-			add_user_meta( $user_id, 'rop-buffer-addon-notice-dismissed', 'true', true );
 		}
 
 	}
