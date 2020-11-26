@@ -348,9 +348,10 @@
        methods:{
             refresh_language_taxonomies: function(e){
                 const lang = e && e.target ? e.target.options[e.target.options.selectedIndex].value : document.querySelector('#wpml-language-selector').value;
-                console.log('wpml language selected: ', lang);
-                // clear selected taxonomies on language change
-                this.post_format.taxonomy_filter = [];
+                if(e && e.target){
+                    // clear selected taxonomies on language change
+                    this.post_format.taxonomy_filter = [];
+                }
                 if(lang !== ''){
                     this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes, language_code: lang}});
                 }
