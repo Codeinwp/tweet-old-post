@@ -495,7 +495,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		} else {
 			return false;
 		}
-		
+
 		return true;
 
 	}

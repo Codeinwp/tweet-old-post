@@ -512,7 +512,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			$this->rop_get_error_docs( $response );
 			return false;
 		}
-		
+
 		return true;
 	}
 

@@ -772,11 +772,11 @@ class Rop_Post_Format_Helper {
 		$global_settings = new Rop_Global_Settings();
 
 		if ( $global_settings->license_type() <= 0 ) {
-			$post_url = $this->rop_prepare_utm_link($post_url, true);
+			$post_url = $this->rop_prepare_utm_link( $post_url, true );
 		}
 
 		if ( $global_settings->license_type() > 0 ) {
-			$post_url = $this->rop_prepare_utm_link($post_url, false);
+			$post_url = $this->rop_prepare_utm_link( $post_url, false );
 		}
 
 		return $post_url;
@@ -789,39 +789,38 @@ class Rop_Post_Format_Helper {
 	 * @access  public
 	 *
 	 * @param   string $post_url The post url.
-	 * @param   bool $free Whether this is a free plan.
+	 * @param   bool   $free Whether this is a free plan.
 	 *
 	 * @return string
 	 */
-	public function rop_prepare_utm_link( $post_url, $free = true ){
+	public function rop_prepare_utm_link( $post_url, $free = true ) {
 
 		$settings_model  = new Rop_Settings_Model();
 
-		if($settings_model->get_ga_tracking()){
+		if ( $settings_model->get_ga_tracking() ) {
 
-		if( $free ){
-			
-		$params                 = array();
-		$params['utm_source']   = 'ReviveOldPost';
-		$params['utm_medium']   = 'social';
-		$params['utm_campaign'] = 'ReviveOldPost';
-		$post_url               = add_query_arg( $params, $post_url );
-		
-		}else{
+			if ( $free ) {
 
-			$utm_source   = $this->get_utm_tags( 'utm_campaign_source' );
-			$utm_medium   = $this->get_utm_tags( 'utm_campaign_medium' );
-			$utm_campaign = $this->get_utm_tags( 'utm_campaign_name' );
+				$params                 = array();
+				$params['utm_source']   = 'ReviveOldPost';
+				$params['utm_medium']   = 'social';
+				$params['utm_campaign'] = 'ReviveOldPost';
+				$post_url               = add_query_arg( $params, $post_url );
 
-			$params                 = array();
-			$params['utm_source']   = empty( $utm_source ) ? 'ReviveOldPost' : $utm_source;
-			$params['utm_medium']   = empty( $utm_medium ) ? 'social' : $utm_medium;
-			$params['utm_campaign'] = empty( $utm_campaign ) ? 'ReviveOldPost' : $utm_campaign;
-			$post_url               = empty( $post_url ) ? '' : add_query_arg( $params, $post_url );
+			} else {
 
+				$utm_source   = $this->get_utm_tags( 'utm_campaign_source' );
+				$utm_medium   = $this->get_utm_tags( 'utm_campaign_medium' );
+				$utm_campaign = $this->get_utm_tags( 'utm_campaign_name' );
+
+				$params                 = array();
+				$params['utm_source']   = empty( $utm_source ) ? 'ReviveOldPost' : $utm_source;
+				$params['utm_medium']   = empty( $utm_medium ) ? 'social' : $utm_medium;
+				$params['utm_campaign'] = empty( $utm_campaign ) ? 'ReviveOldPost' : $utm_campaign;
+				$post_url               = empty( $post_url ) ? '' : add_query_arg( $params, $post_url );
+
+			}
 		}
-
-	}
 
 		return $post_url;
 

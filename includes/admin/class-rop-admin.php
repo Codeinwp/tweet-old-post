@@ -567,7 +567,7 @@ class Rop_Admin {
 	 * @access  public
 	 */
 	public function menu_pages() {
-        $logger = new Rop_Logger();
+		$logger = new Rop_Logger();
 		add_menu_page(
 			__( 'Revive Old Posts', 'tweet-old-post' ),
 			__( 'Revive Old Posts', 'tweet-old-post' ),
@@ -1022,8 +1022,8 @@ class Rop_Admin {
 		$refresh_rop_data = false;
 		$revive_network_active = false;
 
-		if( class_exists('Revive_Network_Rop_Post_Helper') ){
-		$revive_network_active = true;
+		if ( class_exists( 'Revive_Network_Rop_Post_Helper' ) ) {
+			$revive_network_active = true;
 		}
 
 		$cron = new Rop_Cron_Helper();
@@ -1053,7 +1053,7 @@ class Rop_Admin {
 						try {
 							$service = $service_factory->build( $account_data['service'] );
 							$service->set_credentials( $account_data['credentials'] );
-							
+
 							foreach ( $posts as $post ) {
 								$post_shared = $account . '_post_id_' . $post;
 								if ( get_option( 'rop_last_post_shared' ) === $post_shared && ROP_DEBUG !== true ) {
@@ -1064,35 +1064,33 @@ class Rop_Admin {
 								$post_data = $queue->prepare_post_object( $post, $account );
 								$logger->info( 'Posting', array( 'extra' => $post_data ) );
 
-								if( $revive_network_active ){
+								if ( $revive_network_active ) {
 
-								if( Revive_Network_Rop_Post_Helper::rn_is_revive_network_share( $post_data['post_id'] ) ){
-									
-								$revive_network_settings = Revive_Network_Rop_Post_Helper::revive_network_get_plugin_settings();
-								$delete_post_after_share = $revive_network_settings['delete_rss_item_after_share'];
-								
-								// adjust post data to suit Revive Network
-								$post_data = Revive_Network_Rop_Post_Helper::revive_network_prepare_revive_network_share($post_data);
-								}
-								
-								}
-								
-								$response = $service->share( $post_data, $account_data );
-								
-								if( $revive_network_active ){
+									if ( Revive_Network_Rop_Post_Helper::rn_is_revive_network_share( $post_data['post_id'] ) ) {
 
-									if(Revive_Network_Rop_Post_Helper::rn_is_revive_network_share( $post_data['post_id'] )){
-									// Delete Feed post after it has been shared if the option is checked in RN settings.
-									if( $response === true && !empty($delete_post_after_share) ){
-																			
-									Revive_Network_Rop_Post_Helper::rn_delete_revive_network_feed_post($post, $event['time'], $account, $queue);
-								
+										$revive_network_settings = Revive_Network_Rop_Post_Helper::revive_network_get_plugin_settings();
+										$delete_post_after_share = $revive_network_settings['delete_rss_item_after_share'];
+
+										// adjust post data to suit Revive Network
+										$post_data = Revive_Network_Rop_Post_Helper::revive_network_prepare_revive_network_share( $post_data );
 									}
-									
 								}
-							}
 
-								if($response === true){
+								$response = $service->share( $post_data, $account_data );
+
+								if ( $revive_network_active ) {
+
+									if ( Revive_Network_Rop_Post_Helper::rn_is_revive_network_share( $post_data['post_id'] ) ) {
+										// Delete Feed post after it has been shared if the option is checked in RN settings.
+										if ( $response === true && ! empty( $delete_post_after_share ) ) {
+
+											Revive_Network_Rop_Post_Helper::rn_delete_revive_network_feed_post( $post, $event['time'], $account, $queue );
+
+										}
+									}
+								}
+
+								if ( $response === true ) {
 									update_option( 'rop_last_post_shared', $post_shared );
 								}
 							}
@@ -1103,8 +1101,8 @@ class Rop_Admin {
 					}
 				}
 			}
-		//unset post ids from queue stack
-		// update queue option
+			// unset post ids from queue stack
+			// update queue option
 		}
 		$cron->create_cron( false );
 	}

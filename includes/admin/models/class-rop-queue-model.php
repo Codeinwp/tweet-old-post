@@ -285,11 +285,12 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 						continue;
 					}
 
-					/* Prevents queue from showing posts that do not exist 
-					* on the website. This can occur when a post is deleted 
+					/*
+					 Prevents queue from showing posts that do not exist
+					* on the website. This can occur when a post is deleted
 					* and queue hasn't yet refreshed.
 					*/
-					if( empty(get_post_status($post_id)) ){
+					if ( empty( get_post_status( $post_id ) ) ) {
 						continue;
 					}
 
