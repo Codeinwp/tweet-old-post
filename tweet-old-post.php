@@ -55,6 +55,29 @@ if ( defined( 'PHP_VERSION' ) ) {
 	}
 }
 
+function rop_buffer_present_notice(){
+	?>
+
+	<div class="notice notice-error is-dismissible">
+		<?php echo sprintf( __( '%1$s %2$sRevive Old Posts:%3$s You have a Buffer account active inside Revive Old Posts. Please rollback the plugin; remove the Buffer account from your accounts area, and try updating again. Plugin has been deactivated. %4$sLearn more here%5$s. %6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/947-how-to-update-your-php-version" target="_blank">', '</a>', '</p>' ); ?>
+	</div>
+	<?php
+}
+
+function rop_buffer_present(){
+	$rop_data = get_option( 'rop_data' );
+	$services = $rop_data['services'];
+	foreach ($services as $service) {
+
+		if( strpos($service['service'], 'buffer') !== false ){
+			add_action( 'admin_notices', 'rop_buffer_present_notice' );
+			deactivate_plugins( 'tweet-old-post/tweet-old-post.php' );
+		}
+
+	}
+}
+add_action( 'init', 'rop_buffer_present', 1);
+
 /**
  * Shows a notice for sites running PHP less than 5.6.
  *
