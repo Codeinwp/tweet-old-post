@@ -57,8 +57,7 @@ if ( defined( 'PHP_VERSION' ) ) {
 
 /**
  * Shows a notice with a doc link to a fix for sites which have Buffer connected.
- * 
- * 
+ *
  * @since    8.6.2
  */
 function rop_buffer_present_notice() {
@@ -71,10 +70,10 @@ function rop_buffer_present_notice() {
 }
 
 /**
- * Detects if there's a buffer account connected to ROP. 
- * 
+ * Detects if there's a buffer account connected to ROP.
+ *
  * Disables ROP if any are found
- * 
+ *
  * @since    8.6.2
  */
 function rop_buffer_present() {
