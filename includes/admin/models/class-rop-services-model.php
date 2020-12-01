@@ -253,8 +253,9 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 				$service['available_accounts'] = array_map(
 					function ( $account ) {
 						// Added in v8.6.2 to prevent fatal errors due to us dropping buffer
-						if( $account['service'] === 'buffer' ){
-							unset($account['service']);
+						// TODO: Remove below code in later version of ROP
+						if ( $account['service'] === 'buffer' ) {
+							unset( $account['service'] );
 							return;
 						}
 						$service = Rop_Services_Factory::build( $account['service'] );
