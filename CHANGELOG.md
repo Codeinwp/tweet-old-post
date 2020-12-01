@@ -1,4 +1,8 @@
 
+ ### v8.6.2 - 2020-12-01 
+ **Changes:** 
+ * Fix PRO: Error in the dashboard if the user had a previously connected Buffer account inside ROP and tried to update the plugin. A notice will now be shown with a link to updating steps for those situations.
+ 
  ### v8.6.1 - 2020-11-24 
  **Changes:** 
  * PRO Fix: Plugin tried to build buffer service that did not exist. Buffer network is no longer supported in Revive Old Posts.
