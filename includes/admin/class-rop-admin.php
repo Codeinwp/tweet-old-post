@@ -567,7 +567,6 @@ class Rop_Admin {
 	 * @access  public
 	 */
 	public function menu_pages() {
-		$logger = new Rop_Logger();
 		add_menu_page(
 			__( 'Revive Old Posts', 'tweet-old-post' ),
 			__( 'Revive Old Posts', 'tweet-old-post' ),
@@ -1101,8 +1100,7 @@ class Rop_Admin {
 					}
 				}
 			}
-			// unset post ids from queue stack
-			// update queue option
+	
 		}
 		$cron->create_cron( false );
 	}
