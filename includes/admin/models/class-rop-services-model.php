@@ -244,6 +244,7 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 				return false;
 			}
 		);
+
 		$services = array_map(
 			function ( $service ) {
 				/**
@@ -251,6 +252,12 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 				 */
 				$service['available_accounts'] = array_map(
 					function ( $account ) {
+						// Added in v8.6.2 to prevent fatal errors due to us dropping buffer
+						// TODO: Remove below code in later version of ROP
+						if ( $account['service'] === 'buffer' ) {
+							unset( $account['service'] );
+							return;
+						}
 						$service = Rop_Services_Factory::build( $account['service'] );
 						$account = $service->populate_additional_data( $account );
 						return $this->normalize_account( $account );

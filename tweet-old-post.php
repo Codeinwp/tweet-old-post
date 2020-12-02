@@ -16,7 +16,7 @@
  * Plugin Name: Revive Old Posts
  * Plugin URI: https://revive.social/
  * Description: WordPress plugin that helps you to keeps your old posts alive by sharing them and driving more traffic to them from twitter/facebook or linkedin. It also helps you to promote your content. You can set time and no of posts to share to drive more traffic.For questions, comments, or feature requests, <a href="http://revive.social/support/?utm_source=plugindesc&utm_medium=announce&utm_campaign=top">contact </a> us!
- * Version:           8.6.1
+ * Version:           8.6.2
  * Author:            revive.social
  * Author URI:        https://revive.social/
  * Requires at least: 3.5
@@ -54,6 +54,52 @@ if ( defined( 'PHP_VERSION' ) ) {
 		return;
 	}
 }
+
+/**
+ * Shows a notice with a doc link to a fix for sites which have Buffer connected.
+ *
+ * @since    8.6.2
+ */
+function rop_buffer_present_notice() {
+	?>
+
+	<div class="notice notice-error is-dismissible">
+		<?php echo sprintf( __( '%1$s %2$sRevive Old Posts:%3$s You have Buffer account(s) connected to Revive Old Posts. You need to remove these accounts to avoid issues with the plugin. Plugin has been deactivated. %4$sClick here to read the article with the fix.%5$s %6$s', 'tweet-old-post' ), '<p>', '<b>', '</b>', '<a href="https://docs.revive.social/article/1318-fix-php-fatal-error-uncaught-exception-invalid-service-name-given" target="_blank">', '</a>', '</p>' ); ?>
+	</div>
+	<?php
+}
+
+/**
+ * Detects if there's a buffer account connected to ROP.
+ *
+ * Disables ROP if any are found
+ *
+ * @since    8.6.2
+ */
+function rop_buffer_present() {
+
+	$rop_data = get_option( 'rop_data' );
+
+	if ( empty( $rop_data['services'] ) ) {
+		return;
+	}
+
+	$services = $rop_data['services'];
+
+	foreach ( $services as $service ) {
+
+		if ( strpos( $service['service'], 'buffer' ) !== false ) {
+			add_action( 'admin_notices', 'rop_buffer_present_notice' );
+
+			if ( ! function_exists( 'deactivate_plugins' ) ) {
+				require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+			}
+			deactivate_plugins( 'tweet-old-post/tweet-old-post.php' );
+			return;
+		}
+	}
+}
+add_action( 'init', 'rop_buffer_present', 1 );
 
 /**
  * Shows a notice for sites running PHP less than 5.6.
@@ -116,7 +162,7 @@ function run_rop() {
 	define( 'ROP_CRON_ALTERNATIVE', $use_remote_cron );
 
 	define( 'ROP_PRO_URL', 'http://revive.social/plugins/revive-old-post/' );
-	define( 'ROP_LITE_VERSION', '8.6.1' );
+	define( 'ROP_LITE_VERSION', '8.6.2' );
 	define( 'ROP_LITE_BASE_FILE', __FILE__ );
 	define( 'ROP_DEBUG', true );
 	define( 'ROP_LITE_PATH', plugin_dir_path( __FILE__ ) );
