@@ -1100,7 +1100,6 @@ class Rop_Admin {
 					}
 				}
 			}
-	
 		}
 		$cron->create_cron( false );
 	}
