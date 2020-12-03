@@ -570,7 +570,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			array_push( $this->buffer[ $account_id ], $post_id );
 		}
 
-		$this->set( 'posts_buffer', $this->buffer, $refresh );
+		return $this->set( 'posts_buffer', $this->buffer, $refresh );
 	}
 
 	/**

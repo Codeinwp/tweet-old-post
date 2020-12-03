@@ -259,7 +259,7 @@ abstract class Rop_Services_Abstract {
 	}
 
 	/**
-	 * Method to retrieve an service id.
+	 * Method to get currently active accounts for the service.
 	 *
 	 * @since   8.0.0
 	 * @access  public
@@ -805,4 +805,5 @@ abstract class Rop_Services_Abstract {
 
 		return $given_id;
 	}
+
 }

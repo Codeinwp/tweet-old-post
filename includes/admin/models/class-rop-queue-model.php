@@ -136,7 +136,6 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @param array $queue New queue to update.
 	 */
 	public function update_queue( $queue ) {
-
 		$this->set( $this->queue_namespace, $queue );
 		$this->queue = $queue;
 	}
@@ -271,6 +270,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 		}
 		$queue   = $this->build_queue();
 		$ordered = array();
+
 		foreach ( $queue as $account_id => $data ) {
 			foreach ( $data as $index => $events_posts ) {
 				if ( ! isset( $events_posts['posts'] ) ) {
@@ -284,6 +284,16 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 					if ( Rop_Scheduler_Model::get_current_time() > $events_posts['time'] ) {
 						continue;
 					}
+
+					/*
+					 Prevents queue from showing posts that do not exist
+					* on the website. This can occur when a post is deleted
+					* and queue hasn't yet refreshed.
+					*/
+					if ( empty( get_post_status( $post_id ) ) ) {
+						continue;
+					}
+
 					$ordered[] = array(
 						'time'      => $events_posts['time'],
 						'post_data' => array(
