@@ -1060,8 +1060,8 @@ class Rop_Admin {
 									// help prevent duplicate posts on some systems
 									continue;
 								}
+
 								$post_data = $queue->prepare_post_object( $post, $account );
-								$logger->info( 'Posting', array( 'extra' => $post_data ) );
 
 								if ( $revive_network_active ) {
 
@@ -1075,6 +1075,7 @@ class Rop_Admin {
 									}
 								}
 
+								$logger->info( 'Posting', array( 'extra' => $post_data ) );
 								$response = $service->share( $post_data, $account_data );
 
 								if ( $revive_network_active ) {

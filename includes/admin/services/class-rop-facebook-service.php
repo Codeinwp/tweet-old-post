@@ -492,11 +492,12 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 					$post_details['service']
 				)
 			);
+
+			return true;
+
 		} else {
 			return false;
 		}
-
-		return true;
 
 	}
 
@@ -990,6 +991,11 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @param   array $token The access token.
 	 */
 	public function rop_fb_scrape_url( $posting_type, $post_id, $token ) {
+
+		if ( get_post_type( $post_id ) === 'revive-network-share' ) {
+			$this->logger->info( 'This is a Revive Network share, skipped Facebook scraping.' );
+			return;
+		}
 
 		// Scrape post URL before sharing
 		if ( $posting_type !== 'video' && $posting_type !== 'photo' ) {

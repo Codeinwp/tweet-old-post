@@ -507,13 +507,13 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 				)
 			);
 
+			return true;
 		} else {
 			$this->logger->alert_error( sprintf( 'Error posting on twitter. Error: %s', json_encode( $response ) ) );
 			$this->rop_get_error_docs( $response );
 			return false;
 		}
 
-		return true;
 	}
 
 	/**
