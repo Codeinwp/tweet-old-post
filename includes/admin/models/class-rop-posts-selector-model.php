@@ -627,7 +627,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 
 		$default_lang = apply_filters( 'wpml_default_language', null );
 		$lang_code    = apply_filters( 'rop_wpml_lang', $default_lang );
-
+		
 		if ( is_array( $post_id ) ) {
 			foreach ( $post_id as $id ) {
 				$post_type = get_post_type( $id );
@@ -641,7 +641,12 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			$post      = apply_filters( 'wpml_object_id', $post_id, $post_type, false, $lang_code );
 		}
 
-		return $post;
+		if( empty($post) ){
+			return $post_id;
+		}else{
+			return $post;
+		}
+
 	}
 
 	/**
