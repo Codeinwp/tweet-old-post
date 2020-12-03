@@ -492,6 +492,9 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 					$post_details['service']
 				)
 			);
+
+			return true;
+
 		} else {
 			return false;
 		}

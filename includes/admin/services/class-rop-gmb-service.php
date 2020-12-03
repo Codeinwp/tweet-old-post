@@ -509,13 +509,12 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 				)
 			);
 
+			return true;
 		} else {
 
 			$this->logger->alert_error( Rop_I18n::get_labels( 'errors.gmb_failed_share' ) . print_r( $response, true ) );
-				return false;
+			return false;
 		}
-
-		return true;
 
 	}
 
