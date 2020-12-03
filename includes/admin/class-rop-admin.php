@@ -1060,21 +1060,21 @@ class Rop_Admin {
 									// help prevent duplicate posts on some systems
 									continue;
 								}
-								
+
 								$post_data = $queue->prepare_post_object( $post, $account );
-								
+
 								if ( $revive_network_active ) {
-									
+
 									if ( Revive_Network_Rop_Post_Helper::rn_is_revive_network_share( $post_data['post_id'] ) ) {
-										
+
 										$revive_network_settings = Revive_Network_Rop_Post_Helper::revive_network_get_plugin_settings();
 										$delete_post_after_share = $revive_network_settings['delete_rss_item_after_share'];
-										
+
 										// adjust post data to suit Revive Network
 										$post_data = Revive_Network_Rop_Post_Helper::revive_network_prepare_revive_network_share( $post_data );
 									}
 								}
-								
+
 								$logger->info( 'Posting', array( 'extra' => $post_data ) );
 								$response = $service->share( $post_data, $account_data );
 
