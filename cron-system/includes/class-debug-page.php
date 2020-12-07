@@ -137,8 +137,8 @@ class Debug_Page {
 	public function debug_page_menu() {
 		add_submenu_page(
 			'TweetOldPost',
-			__( 'Debug ROP', 'tweet-old-post' ),
-			__( 'Debug ROP', 'tweet-old-post' ),
+			__( 'Debug Remote Cron', 'tweet-old-post' ),
+			__( 'Debug Remote Cron', 'tweet-old-post' ),
 			'manage_options',
 			'rop_service_debug',
 			array(
@@ -224,18 +224,17 @@ class Debug_Page {
 		<table>
 		  <tr>
 			<td>
-			  <input type="button" value="<?php _e( 'Delete remote CronJob system account', 'tweet-old-post' ); ?>" id="rop_remove_account"/>
+			  <input type="button" value="<?php _e( 'Delete Remote Cron Service Data', 'tweet-old-post' ); ?>" id="rop_remove_account"/>
 			  <span id="ajax_rop_remove_account">
 
 			  </span>
 
 			  <p>
 				<em>
-					<?php _e( 'This option will delete your account from the remote cron system.', 'tweet-old-post' ); ?>
-				  <br/>
-					<?php _e( 'Local data will be reset and fallback to using the local CronJob system.', 'tweet-old-post' ); ?>
-				  <br/>
-					<?php _e( 'You can create a new account at anytime from General Settings > Cron Type, switch from local to remote.', 'tweet-old-post' ); ?>
+					<?php
+					$labels = new \Rop_I18n();
+					echo $labels::get_labels( 'cron_system.delete_cron_service_account_info' );
+					?>
 				</em>
 			  </p>
 			</td>
@@ -252,9 +251,9 @@ class Debug_Page {
 
 			  <p>
 				<em>
-					<?php _e( 'This will remove the Cron server authentication key from your local database. ', 'tweet-old-post' ); ?>
-				  <br/>
-					<?php _e( 'A new authentication key will be created when you register to the remote Cron server. ', 'tweet-old-post' ); ?>
+					<?php
+					echo $labels::get_labels( 'cron_system.clear_local_cron_info' );
+					?>
 				</em>
 			  </p>
 			</td>

@@ -271,10 +271,7 @@
 				 * When a new account is added and we don't have any data for it.
 				 */
 				this.checkActiveData();
-				// below is getting wrong value, its getting the language value from the previously selected account 
-				// this is because it is firing before the dom for the newly selected account loads
-				const wpml_language_selector = document.querySelector('#wpml-language-selector');
-				this.refresh_language_taxonomies(wpml_language_selector.value);
+    this.$store.state.dom_updated = false;
 			}
 		},
 		components: {

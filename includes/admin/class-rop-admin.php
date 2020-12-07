@@ -1541,7 +1541,7 @@ class Rop_Admin {
 		$languages_array = array();
 
 		foreach ( $wpml_active_languages as $key => $value ) {
-			$languages_array[] = array($key => $value['native_name'] );
+			$languages_array[] = array( 'code' => $key, 'label' => $value['native_name'] );
 		}
 
 		return $languages_array;

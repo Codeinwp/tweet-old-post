@@ -103,6 +103,7 @@ export default new Vuex.Store({
          * @category New Cron System
          */
         rop_cron_remote: ropApiSettings.rop_cron_remote,
+        dom_updated: false,
     },
     mutations: {
 
