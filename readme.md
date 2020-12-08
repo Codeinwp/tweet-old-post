@@ -261,6 +261,11 @@ http://revive.social/plugins/revive-old-post
 
 
 ## Changelog ##
+### 8.6.3 - 2020-12-08  ###
+
+* Info Pro: Add Revive Network base support. Apply to be a Beta tester [here](https://forms.gle/M4mcqrFZze4Pe4pu7)
+
+
 ### 8.6.2 - 2020-12-01  ###
 
 * Fix PRO: Error in the dashboard if the user had a previously connected Buffer account inside ROP and tried to update the plugin. A notice will now be shown with a link to updating steps for those situations.
