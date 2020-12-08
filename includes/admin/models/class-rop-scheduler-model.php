@@ -256,6 +256,7 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		if ( ! is_array( $account_events ) ) {
 			$account_events = array();
 		}
+
 		if ( count( $account_events ) === self::EVENTS_PER_ACCOUNT ) {
 			return $account_events;
 		}
@@ -303,7 +304,6 @@ class Rop_Scheduler_Model extends Rop_Model_Abstract {
 		if ( empty( $events ) && 0 === $retry ) {
 			$events = $this->get_upcoming_events( $account_id, $retry );
 		}
-
 		return $events;
 	}
 

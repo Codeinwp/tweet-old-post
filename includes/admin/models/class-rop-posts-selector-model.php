@@ -570,7 +570,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			array_push( $this->buffer[ $account_id ], $post_id );
 		}
 
-		$this->set( 'posts_buffer', $this->buffer, $refresh );
+		return $this->set( 'posts_buffer', $this->buffer, $refresh );
 	}
 
 	/**
@@ -641,7 +641,12 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			$post      = apply_filters( 'wpml_object_id', $post_id, $post_type, false, $lang_code );
 		}
 
-		return $post;
+		if ( empty( $post ) ) {
+			return $post_id;
+		} else {
+			return $post;
+		}
+
 	}
 
 	/**

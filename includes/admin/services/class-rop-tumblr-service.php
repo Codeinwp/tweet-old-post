@@ -512,6 +512,9 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 					$post_details['service']
 				)
 			);
+
+			return true;
+
 		} catch ( Exception $exception ) {
 			$this->logger->alert_error( 'Posting failed to Tumblr. Error: ' . $exception->getMessage() );
 			$this->rop_get_error_docs( $exception->getMessage() );
@@ -519,7 +522,6 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		return true;
 	}
 
 	/**
