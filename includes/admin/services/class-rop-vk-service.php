@@ -230,6 +230,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 		// if the post has no image but "Share as image post" is checked
 		// share as an article post
 		if ( empty( $attachment_url ) ) {
+			$this->logger->info( 'No image set for post, but "Share as Image Post" is checked. Falling back to article post' );
 			return $this->vk_article_post( $post_details, $args, $owner_id );
 		}
 

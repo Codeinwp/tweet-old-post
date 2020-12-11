@@ -689,6 +689,18 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 */
 	private function linkedin_image_post( $post_details, $args, $token ) {
 
+		// If this is an attachment post we need to make sure we pass the URL to get_path_by_url() correctly
+		if ( get_post_type( $post_details['post_id'] ) === 'attachment' ) {
+			$img = $this->get_path_by_url( wp_get_attachment_url( $post_details['post_id'] ), $post_details['mimetype'] );
+		} else {
+			$img = $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] );
+		}
+
+		if ( empty( $img ) ) {
+			$this->logger->info( 'No image set for post, but "Share as Image Post" is checked. Falling back to article post' );
+			return $this->linkedin_article_post($post_details, $args);
+		}
+
 		$author_urn = $args['is_company'] ? 'urn:li:organization:' : 'urn:li:person:';
 
 		$register_image = array(
@@ -727,18 +739,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$body = json_decode( wp_remote_retrieve_body( $response ), true );
 		$upload_url = $body['value']['uploadMechanism']['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest']['uploadUrl'];
 		$asset      = $body['value']['asset'];
-
-		// If this is an attachment post we need to make sure we pass the URL to get_path_by_url() correctly
-		if ( get_post_type( $post_details['post_id'] ) === 'attachment' ) {
-			$img = $this->get_path_by_url( wp_get_attachment_url( $post_details['post_id'] ), $post_details['mimetype'] );
-		} else {
-			$img = $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] );
-		}
-
-		if ( empty( $img ) ) {
-					$this->logger->alert_error( 'No image set for post: ' . get_the_title( $post_details['post_id'] ) . ', cannot share as an image post to LinkedIn.' );
-				  return array();
-		}
 
 		if ( function_exists( 'exif_imagetype' ) ) {
 			$img_mime_type = image_type_to_mime_type( exif_imagetype( $img ) );
