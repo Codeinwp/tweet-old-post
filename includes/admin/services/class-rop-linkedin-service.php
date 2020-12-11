@@ -941,8 +941,8 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 			$this->logger->alert_error( Rop_I18n::get_labels( 'general.rop_linkedin_refresh_token' ) );
 
-		} 
-		
+		}
+
 	}
 
 	/**
