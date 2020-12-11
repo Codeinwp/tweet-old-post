@@ -825,7 +825,13 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		// last array item contains notify date
 		$notify_user_at = array_pop( $accounts_array );
 		// save timestamp for when to notify user to refresh their linkedin token
-		update_option( 'rop_linkedin_refresh_token_notice', $notify_user_at['notify_user_at'] );
+		// set notified count to 0
+		$notify_data = array(
+			'notify_at' => $notify_user_at['notify_user_at'],
+			'notified_count' => 0,
+		);
+
+		update_option( 'rop_linkedin_refresh_token_notice', $notify_data );
 
 		$accounts = array();
 
@@ -889,27 +895,52 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 */
 	public function rop_refresh_linkedin_token_notice() {
 
-		$notify_at = get_option( 'rop_linkedin_refresh_token_notice' );
+		$notify = get_option( 'rop_linkedin_refresh_token_notice' );
 
-		if ( empty( $notify_at ) ) {
+		if ( empty( $notify ) ) {
 			return;
 		}
 
+		// Backwards compatibility pre v8.6.4
+		if ( ! is_array( $notify ) ) {
+			$notify = array(
+				'notify_at' => $notify,
+				'notified_count' => 0,
+			);
+		}
+
+		$notify_at = $notify['notify_at'];
+		$notified_count = $notify['notified_count'];
+
 		$now = time();
 
-		if ( $notify_at <= $now ) {
+		if ( $notify_at <= $now && $notified_count <= 4 ) {
 
 			$headers     = array( 'Content-Type: text/html; charset=UTF-8' );
 			$admin_email = get_option( 'admin_email' );
-			$subject     = Rop_I18n::get_labels( 'emails.refresh_linkedin_token_subject' );
-			$message     = Rop_I18n::get_labels( 'emails.refresh_linkedin_token_message' );
+
+			if ( $notified_count < 4 ) {
+				$subject     = Rop_I18n::get_labels( 'emails.refresh_linkedin_token_subject' );
+				$message     = Rop_I18n::get_labels( 'emails.refresh_linkedin_token_message' );
+			} else {
+				$subject     = Rop_I18n::get_labels( 'emails.refresh_linkedin_token_subject_final' );
+				$message     = Rop_I18n::get_labels( 'emails.refresh_linkedin_token_message_final' );
+			}
 
 			// notify user to refresh token
-			wp_mail( $admin_email, $subject, $message, $headers );
+			$sent = wp_mail( $admin_email, $subject, $message, $headers );
+
+			if ( $sent ) {
+				$notified_count++;
+				$notify_data = array(
+					'notify_at' => $notify_at,
+					'notified_count' => $notified_count,
+				);
+				update_option( 'rop_linkedin_refresh_token_notice', $notify_data, false );
+			}
+
 			$this->logger->alert_error( Rop_I18n::get_labels( 'general.rop_linkedin_refresh_token' ) );
 
-		} else {
-			return;
 		}
 
 	}
