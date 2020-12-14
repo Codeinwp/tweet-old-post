@@ -475,7 +475,30 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 		$post_id = $post_details['post_id'];
 
-		$sharing_data = $this->prepare_for_sharing( $post_details );
+		$post_id = $post_details['post_id'];
+		$post_url = $post_details['post_url'];
+		$share_as_image_post = $post_details['post_with_image'];
+
+		// FB link post
+		if ( ! empty( $post_url ) && empty( $share_as_image_post ) && get_post_type( $post_id ) !== 'attachment' ) {
+			$sharing_data = $this->fb_article_post( $post_details );
+		}
+		
+		// FB plain text post
+		if ( empty( $share_as_image_post ) && empty( $post_url ) ) {
+			$sharing_data = $this->fb_text_post( $post_details );
+		}
+
+		// FB media post
+		if ( ! empty( $share_as_image_post ) || get_post_type( $post_id ) === 'attachment' ) {
+
+			if ( strpos( get_post_mime_type( $post_details['post_id'] ), 'video' ) === false ) {
+				$sharing_data = $this->fb_image_post( $post_details );
+			}else{
+				$sharing_data = $this->fb_video_post( $post_details );
+			}
+			
+		}
 
 		if ( ! isset( $args['id'] ) || ! isset( $args['access_token'] ) ) {
 			$this->logger->alert_error( 'Unable to authenticate to facebook, no access_token/id provided. ' );
@@ -487,7 +510,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
-					html_entity_decode( get_the_title( $post_id ) ),
+					html_entity_decode( get_the_title( $post_id ), ENT_QUOTES ), //TODO Set ENT_QUOTES for all other entity decode occurences in plugin
 					$args['user'],
 					$post_details['service']
 				)
@@ -502,133 +525,110 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	}
 
 	/**
-	 * Method for preparing post to share with Facebook service.
+	 * Method for preparing article post to share with Facebook service.
 	 *
-	 * @since   8.1.0
+	 * @since   8.6.4
 	 * @access  private
 	 *
 	 * @param   array $post_details The post details to be published by the service.
 	 *
 	 * @return array
-	 * @throws \Facebook\Exceptions\FacebookSDKException Facebook library exception.
 	 */
-	private function prepare_for_sharing( $post_details ) {
-		$post_id = $post_details['post_id'];
+	private function fb_article_post( $post_details ) {
+		
+		$new_post = array();
+		
+		$new_post['message'] = $this->strip_excess_blank_lines( $post_details['content'] ) . $post_details['hashtags'];
 
-		/**
-		 *
-		 * TODO Add in the post format tab, for facebook, an posting behaviour option,
-		 * where we should allow user to choose how the posting with image will work, as regular post or photo post.
-		 */
+		$new_post['link'] = $this->get_url( $post_details );
 
-		// Fb connected via Revive Social App
-		$installed_with_app = get_option( 'rop_facebook_via_rs_app' );
+		return array(
+			'post_data' => $new_post,
+			'type'      => 'post',
+		);
+	}
 
-		if ( ! empty( $installed_with_app ) ) {
+	/**
+	 * Method for preparing image post to share with Facebook service.
+	 *
+	 * @since   8.6.4
+	 * @access  private
+	 *
+	 * @param   array $post_details The post details to be published by the service.
+	 *
+	 * @return array
+	 */
+	private function fb_image_post( $post_details ) {
+		
+		$attachment_url = $post_details['post_image'];
 
-			// If is media attachment post
-			if ( get_post_type( $post_id ) === 'attachment' ) {
-
-				// If media video post, share as regular post on FB
-				if ( strpos( get_post_mime_type( $post_id ), 'video' ) !== false ) {
-
-					$new_post['message'] = $post_details['content'] . $post_details['hashtags'];
-					$new_post['link']    = get_permalink( $post_id );
-
-					return array(
-						'post_data' => $new_post,
-						'type'      => 'post',
-					);
-				}
-
-				$attachment_url = wp_get_attachment_url( $post_id );
-				// before making a PHOTO request, we need to make sure the post has an image attached.
-				if ( false !== $attachment_url ) {
-					// Where $post_id is attachment ID.
-					// The source and url, one of these parameters will become unset later on, as only 1 is used for posting.
-					$new_post['source']  = $this->get_path_by_url( $attachment_url, get_post_mime_type( $post_id ) ); // get image path
-					$new_post['url']     = $attachment_url; // get image url
-					$new_post['caption'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
-
-					return array(
-						'post_data' => $new_post,
-						'type'      => 'photo',
-					);
-
-				} else { // If there is not attachment image the request becomes POST.
-					$new_post['message'] = $post_details['content'] . $post_details['hashtags'];
-					$new_post['link']    = get_permalink( $post_id );
-
-					return array(
-						'post_data' => $new_post,
-						'type'      => 'post',
-					);
-				}
-			}
-
-					// if regular post, but "Include link" is selected in Post Format settings, post as normal article post
-			if ( get_post_type( $post_id ) !== 'attachment' && ! empty( $post_details['post_url'] ) && empty( $post_details['post_with_image'] ) ) {
-
-				$new_post['message'] = $this->strip_excess_blank_lines( $post_details['content'] ) . $post_details['hashtags'];
-
-				$new_post['link'] = $this->get_url( $post_details );
-
-				return array(
-					'post_data' => $new_post,
-					'type'      => 'post',
-				);
-			}
-
-			// If is regular post, but post with image option checked, post as Image on FB
-			if ( get_post_type( $post_id ) !== 'attachment' && ! empty( $post_details['post_image'] ) ) {
-				// The source and url, one of these parameters will become unset later on, as only 1 is used for posting.
-				$new_post['url']     = $post_details['post_image'];// get image url
-				$new_post['source']  = $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] ); // get image path
-				$new_post['caption'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
-
-				return array(
-					'post_data' => $new_post,
-					'type'      => 'photo',
-				);
-
-			}
+		// if the post has no image but "Share as image post" is checked
+		// share as an article post
+		if ( empty( $attachment_url ) ) {
+			$this->logger->info( 'No image set for post, but "Share as Image Post" is checked. Falling back to article post' );
+			return $this->fb_article_post( $post_details );
 		}
 
-		// if we don't have "Post with image", nor "Include link" checked in Post Format settings, post as text post.
-		if ( get_post_type( $post_id ) !== 'attachment' && empty( $post_details['post_image'] ) && empty( $post_details['post_url'] ) ) {
+		$new_post = array();
+		
+		$new_post['url']     = 	$attachment_url;
+		$new_post['source']  = $this->get_path_by_url( $attachment_url, $post_details['mimetype'] ); // get image path
+		$new_post['caption'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
 
-			$new_post['message'] = $post_details['content'] . $post_details['hashtags'];
+		return array(
+			'post_data' => $new_post,
+			'type'      => 'photo',
+		);
 
-			return array(
-				'post_data' => $new_post,
-				'type'      => 'post',
-			);
-		}
+	}
 
-		$api = $this->get_api();
-
-		if ( strpos( $post_details['mimetype']['type'], 'image' ) !== false ) {
-			$image              = $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] );
-			$new_post['source'] = $api->fileToUpload( $image );
-
-			$new_post['message'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
-
-			return array(
-				'post_data' => $new_post,
-				'type'      => 'photo',
-			);
-		}
-		if ( strpos( $post_details['mimetype']['type'], 'video' ) !== false ) {
-			$image                   = $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] );
-			$new_post['source']      = $api->videoToUpload( $image );
-			$new_post['title']       = html_entity_decode( get_the_title( $post_id ) );
+	/**
+	 * Method for preparing video post to share with Facebook service.
+	 *
+	 * @since   8.6.4
+	 * @access  private
+	 *
+	 * @param   array $post_details The post details to be published by the service.
+	 *
+	 * @return array
+	 */
+	private function fb_video_post( $post_details ) {
+		
+		$new_post = array();
+		
+			$image     = $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] );
+			$new_post['source']      = $image;
+			// $new_post['source']      = $api->videoToUpload( $image );
+			$new_post['title']       = html_entity_decode( get_the_title( $post_id ), ENT_QUOTES );
 			$new_post['description'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
 
 			return array(
 				'post_data' => $new_post,
 				'type'      => 'video',
 			);
-		}
+	}
+
+	/**
+	 * Method for preparing plain text post to share with Facebook service.
+	 *
+	 * @since   8.6.4
+	 * @access  private
+	 *
+	 * @param   array $post_details The post details to be published by the service.
+	 *
+	 * @return array
+	 */
+	private function fb_text_post( $post_details ) {
+		
+		$new_post = array();
+		
+		$new_post['message'] = $post_details['content'] . $post_details['hashtags'];
+
+		return array(
+			'post_data' => $new_post,
+			'type'      => 'post',
+		);
+
 	}
 
 	/**
