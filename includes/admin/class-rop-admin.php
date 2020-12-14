@@ -135,7 +135,7 @@ class Rop_Admin {
 	 */
 	public function bitly_shortener_upgrade_notice() {
 
-		if( ! current_user_can('manage_options') ){
+		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
 
@@ -1202,10 +1202,10 @@ class Rop_Admin {
 			return;
 		}
 
-		if( ! current_user_can('manage_options') ){
+		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
-		
+
 		$user_id = get_current_user_id();
 
 		if ( get_user_meta( $user_id, 'rop-wp-cron-notice-dismissed' ) ) {
@@ -1345,7 +1345,7 @@ class Rop_Admin {
 	 */
 	public function rop_cron_event_status_notice() {
 
-		if( ! current_user_can('manage_options') ){
+		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
 
