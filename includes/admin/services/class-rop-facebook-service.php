@@ -474,8 +474,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		}
 
 		$post_id = $post_details['post_id'];
-
-		$post_id = $post_details['post_id'];
 		$post_url = $post_details['post_url'];
 		$share_as_image_post = $post_details['post_with_image'];
 
