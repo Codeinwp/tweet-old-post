@@ -295,7 +295,7 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 
 		// if image is empty lets create a different type of GMB post
 		if ( empty( $image_url ) ) {
-			$this->logger->info( 'Could not get image. Falling back to text post with link.' );
+			$this->logger->info( 'No image set for post, but "Share as Image Post" is checked. Falling back to article post' );
 			return $this->gmb_link_with_no_image_post( $post_details, $args );
 		}
 
