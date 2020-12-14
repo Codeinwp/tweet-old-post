@@ -596,7 +596,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			$image     = $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] );
 			$new_post['source']      = $image;
 			// $new_post['source']      = $api->videoToUpload( $image );
-			$new_post['title']       = html_entity_decode( get_the_title( $post_id ), ENT_QUOTES );
+			$new_post['title']       = html_entity_decode( get_the_title( $post_details['post_id'] ), ENT_QUOTES );
 			$new_post['description'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
 
 			return array(
