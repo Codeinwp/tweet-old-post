@@ -698,7 +698,7 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 
 		if ( empty( $img ) ) {
 			$this->logger->info( 'No image set for post, but "Share as Image Post" is checked. Falling back to article post' );
-			return $this->linkedin_article_post($post_details, $args);
+			return $this->linkedin_article_post( $post_details, $args );
 		}
 
 		$author_urn = $args['is_company'] ? 'urn:li:organization:' : 'urn:li:person:';

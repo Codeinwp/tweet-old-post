@@ -481,7 +481,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		if ( ! empty( $post_url ) && empty( $share_as_image_post ) && get_post_type( $post_id ) !== 'attachment' ) {
 			$sharing_data = $this->fb_article_post( $post_details );
 		}
-		
+
 		// FB plain text post
 		if ( empty( $share_as_image_post ) && empty( $post_url ) ) {
 			$sharing_data = $this->fb_text_post( $post_details );
@@ -492,10 +492,9 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 
 			if ( strpos( get_post_mime_type( $post_details['post_id'] ), 'video' ) === false ) {
 				$sharing_data = $this->fb_image_post( $post_details );
-			}else{
+			} else {
 				$sharing_data = $this->fb_video_post( $post_details );
 			}
-			
 		}
 
 		if ( ! isset( $args['id'] ) || ! isset( $args['access_token'] ) ) {
@@ -508,7 +507,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			$this->logger->alert_success(
 				sprintf(
 					'Successfully shared %s to %s on %s ',
-					html_entity_decode( get_the_title( $post_id ), ENT_QUOTES ), //TODO Set ENT_QUOTES for all other entity decode occurences in plugin
+					html_entity_decode( get_the_title( $post_id ), ENT_QUOTES ), // TODO Set ENT_QUOTES for all other entity decode occurences in plugin
 					$args['user'],
 					$post_details['service']
 				)
@@ -533,9 +532,9 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @return array
 	 */
 	private function fb_article_post( $post_details ) {
-		
+
 		$new_post = array();
-		
+
 		$new_post['message'] = $this->strip_excess_blank_lines( $post_details['content'] ) . $post_details['hashtags'];
 
 		$new_post['link'] = $this->get_url( $post_details );
@@ -557,7 +556,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @return array
 	 */
 	private function fb_image_post( $post_details ) {
-		
+
 		$attachment_url = $post_details['post_image'];
 
 		// if the post has no image but "Share as image post" is checked
@@ -568,8 +567,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		}
 
 		$new_post = array();
-		
-		$new_post['url']     = 	$attachment_url;
+
+		$new_post['url']     = $attachment_url;
 		$new_post['source']  = $this->get_path_by_url( $attachment_url, $post_details['mimetype'] ); // get image path
 		$new_post['caption'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
 
@@ -591,9 +590,9 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @return array
 	 */
 	private function fb_video_post( $post_details ) {
-		
+
 		$new_post = array();
-		
+
 			$image     = $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] );
 			$new_post['source']      = $image;
 			// $new_post['source']      = $api->videoToUpload( $image );
@@ -617,9 +616,9 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @return array
 	 */
 	private function fb_text_post( $post_details ) {
-		
+
 		$new_post = array();
-		
+
 		$new_post['message'] = $post_details['content'] . $post_details['hashtags'];
 
 		return array(
