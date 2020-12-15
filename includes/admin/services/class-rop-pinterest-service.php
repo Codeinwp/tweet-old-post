@@ -380,12 +380,12 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function share( $post_details, $args = array() ) {
-		
-		if ( Rop_Admin::rop_site_is_staging($post_details['post_id']) ) {
+
+		if ( Rop_Admin::rop_site_is_staging( $post_details['post_id'] ) ) {
 			$this->logger->alert_error( Rop_I18n::get_labels( 'sharing.share_attempted_on_staging' ) );
 			return false;
 		}
-		
+
 		$post_id = $post_details['post_id'];
 		$this->set_api(
 			$this->credentials['app_id'],

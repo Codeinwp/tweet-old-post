@@ -418,14 +418,14 @@ class Rop_Admin {
 	 * @return    bool   true/false
 	 * @since     8.0.4
 	 */
-	public static function rop_site_is_staging($post_id = '') {
+	public static function rop_site_is_staging( $post_id = '' ) {
 
-		if( get_post_type( $post_id ) === 'revive-network-share' ){
+		if ( get_post_type( $post_id ) === 'revive-network-share' ) {
 			return apply_filters( 'rop_dont_work_on_staging', false ); // Allow Revive Network shares to go through by default
 		}
 
 		// This would also cover local wp installations
-		if( function_exists('wp_get_environment_type') && wp_get_environment_type() !== 'production' ){
+		if ( function_exists( 'wp_get_environment_type' ) && wp_get_environment_type() !== 'production' ) {
 			return apply_filters( 'rop_dont_work_on_staging', true );
 		}
 
