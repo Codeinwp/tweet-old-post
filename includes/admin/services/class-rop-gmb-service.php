@@ -450,6 +450,11 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 	 */
 	public function share( $post_details, $args = array() ) {
 
+		if ( Rop_Admin::rop_site_is_staging( $post_details['post_id'] ) ) {
+			$this->logger->alert_error( Rop_I18n::get_labels( 'sharing.share_attempted_on_staging' ) );
+			return false;
+		}
+
 		if ( ! class_exists( 'Google_Client' ) ) {
 			$this->logger->alert_error( Rop_I18n::get_labels( 'errors.gmb_missing_main_class' ) );
 			return;
