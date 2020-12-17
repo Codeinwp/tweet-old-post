@@ -1002,12 +1002,11 @@ class Rop_Admin {
 						$custom_instant_share_message = $message;
 						if ( ! empty( $custom_instant_share_message ) ) {
 
-							if( $pro_format_helper !== false ){
-								$post_data['content'] = $pro_format_helper->rop_replace_magic_tags($custom_instant_share_message, $post_id);
-							}else{
+							if ( $pro_format_helper !== false ) {
+								$post_data['content'] = $pro_format_helper->rop_replace_magic_tags( $custom_instant_share_message, $post_id );
+							} else {
 								$post_data['content'] = $custom_instant_share_message;
 							}
-
 						}
 						$logger->info( 'Posting', array( 'extra' => $post_data ) );
 						$service->share( $post_data, $account_data );
