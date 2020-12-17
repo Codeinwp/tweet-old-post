@@ -339,7 +339,7 @@ class Rop_I18n {
 				'next_share'                 => __( 'Next share', 'tweet-old-post' ),
 				'sharing_now'                => __( 'Sharing...', 'tweet-old-post' ),
 				'cron_interval'              => __( 'Once every 5 min', 'tweet-old-post' ),
-				'staging_status'             => __( 'This is a staging website, posts will not share to your accounts.', 'tweet-old-post' ),
+				'staging_status'             => sprintf( __( 'This seems to be a staging or development website. Some post types will not share to your accounts. %1$sLearn How to Turn Off%2$s', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/1321-allow-revive-old-posts-to-work-on-staging-or-development-websites" target="_blank">', '</a>' ),
 				'api_not_available'          => __(
 					'It seems there is an issue with your WordPress configuration and the core REST API functionality is not available. This is crucial as Revive Old Posts relies on this functionality in order to work.<br/>
 The root cause might be either a security plugin which blocks this feature or some faulty server configuration which constrain this WordPress feature. <br/>
@@ -386,6 +386,7 @@ You can try to disable any of the security plugins that you use in order to see 
 
 			'sharing' => array(
 				'post_already_shared' => __( 'This post went out on the last share event and might be a duplicate. Skipping...', 'tweet-old-post' ),
+				'share_attempted_on_staging' => __( 'ROP has detected that this is a development website. Share process skipped.', 'tweet-old-post' ),
 			),
 			'errors' => array(
 				'gmb_failed_access_token_refresh' => __( 'Failed to retrieve Google My Business access token: ', 'tweet-old-post' ),
