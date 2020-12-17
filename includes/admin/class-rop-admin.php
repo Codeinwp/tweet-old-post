@@ -135,6 +135,10 @@ class Rop_Admin {
 	 */
 	public function bitly_shortener_upgrade_notice() {
 
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
 		if ( ! $this->check_shortener_service( 'bit.ly' ) ) {
 			return;
 		}
@@ -416,7 +420,18 @@ class Rop_Admin {
 	 * @return    bool   true/false
 	 * @since     8.0.4
 	 */
-	public static function rop_site_is_staging() {
+	public static function rop_site_is_staging( $post_id = '' ) {
+
+		if ( get_post_type( $post_id ) === 'revive-network-share' ) {
+			return apply_filters( 'rop_dont_work_on_staging', false ); // Allow Revive Network shares to go through by default
+		}
+
+		// This would also cover local wp installations
+		if ( function_exists( 'wp_get_environment_type' ) ) {
+			if ( wp_get_environment_type() !== 'production' ) {
+				return apply_filters( 'rop_dont_work_on_staging', true );
+			}
+		}
 
 		$rop_known_staging = array(
 			'IS_WPE_SNAPSHOT',
@@ -452,6 +467,7 @@ class Rop_Admin {
 	 * Legacy auth callback.
 	 */
 	public function legacy_auth() {
+		// TODO Remove this method if we're only going to allow simple
 		$code    = sanitize_text_field( isset( $_GET['code'] ) ? $_GET['code'] : '' );
 		$state   = sanitize_text_field( isset( $_GET['state'] ) ? $_GET['state'] : '' );
 		$network = sanitize_text_field( isset( $_GET['network'] ) ? $_GET['network'] : '' );
@@ -588,7 +604,8 @@ class Rop_Admin {
 			array(
 				$this,
 				'rop_main_page',
-			)
+			),
+			0
 		);
 		add_submenu_page(
 			'TweetOldPost',
@@ -966,7 +983,12 @@ class Rop_Admin {
 		$services_model  = new Rop_Services_Model();
 		$logger          = new Rop_Logger();
 		$service_factory = new Rop_Services_Factory();
-		$settings            = new Rop_Settings_Model();
+		$settings = new Rop_Settings_Model();
+		$pro_format_helper = false;
+
+		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) ) {
+			$pro_format_helper = new Rop_Pro_Post_Format_Helper;
+		}
 
 		if ( $this->rop_get_wpml_active_status() ) {
 			$accounts_data = $this->rop_wpml_filter_accounts( $post_id, $accounts_data );
@@ -993,7 +1015,12 @@ class Rop_Admin {
 						$post_data = $queue->prepare_post_object( $post_id, $account );
 						$custom_instant_share_message = $message;
 						if ( ! empty( $custom_instant_share_message ) ) {
-							$post_data['content'] = $custom_instant_share_message;
+
+							if ( $pro_format_helper !== false ) {
+								$post_data['content'] = $pro_format_helper->rop_replace_magic_tags( $custom_instant_share_message, $post_id );
+							} else {
+								$post_data['content'] = $custom_instant_share_message;
+							}
 						}
 						$logger->info( 'Posting', array( 'extra' => $post_data ) );
 						$service->share( $post_data, $account_data );
@@ -1029,6 +1056,11 @@ class Rop_Admin {
 		$logger          = new Rop_Logger();
 		$service_factory = new Rop_Services_Factory();
 		$refresh_rop_data = false;
+		$revive_network_active = false;
+
+		if ( class_exists( 'Revive_Network_Rop_Post_Helper' ) ) {
+			$revive_network_active = true;
+		}
 
 		$cron = new Rop_Cron_Helper();
 		$cron->create_cron( false );
@@ -1057,6 +1089,7 @@ class Rop_Admin {
 						try {
 							$service = $service_factory->build( $account_data['service'] );
 							$service->set_credentials( $account_data['credentials'] );
+
 							foreach ( $posts as $post ) {
 								$post_shared = $account . '_post_id_' . $post;
 								if ( get_option( 'rop_last_post_shared' ) === $post_shared && ROP_DEBUG !== true ) {
@@ -1064,10 +1097,39 @@ class Rop_Admin {
 									// help prevent duplicate posts on some systems
 									continue;
 								}
+
 								$post_data = $queue->prepare_post_object( $post, $account );
+
+								if ( $revive_network_active ) {
+
+									if ( Revive_Network_Rop_Post_Helper::rn_is_revive_network_share( $post_data['post_id'] ) ) {
+
+										$revive_network_settings = Revive_Network_Rop_Post_Helper::revive_network_get_plugin_settings();
+										$delete_post_after_share = $revive_network_settings['delete_rss_item_after_share'];
+
+										// adjust post data to suit Revive Network
+										$post_data = Revive_Network_Rop_Post_Helper::revive_network_prepare_revive_network_share( $post_data );
+									}
+								}
+
 								$logger->info( 'Posting', array( 'extra' => $post_data ) );
-								$service->share( $post_data, $account_data );
-								update_option( 'rop_last_post_shared', $post_shared );
+								$response = $service->share( $post_data, $account_data );
+
+								if ( $revive_network_active ) {
+
+									if ( Revive_Network_Rop_Post_Helper::rn_is_revive_network_share( $post_data['post_id'] ) ) {
+										// Delete Feed post after it has been shared if the option is checked in RN settings.
+										if ( $response === true && ! empty( $delete_post_after_share ) ) {
+
+											Revive_Network_Rop_Post_Helper::rn_delete_revive_network_feed_post( $post, $account, $queue );
+
+										}
+									}
+								}
+
+								if ( $response === true ) {
+									update_option( 'rop_last_post_shared', $post_shared );
+								}
 							}
 						} catch ( Exception $exception ) {
 							$error_message = sprintf( Rop_I18n::get_labels( 'accounts.service_error' ), $account_data['service'] );
@@ -1147,66 +1209,6 @@ class Rop_Admin {
 	}
 
 	/**
-	 * Dropping buffer notice.
-	 *
-	 * @since   8.5.14
-	 * @access  public
-	 */
-	public function rop_dropping_buffer_notice() {
-
-		if ( ! current_user_can( 'install_plugins' ) ) {
-			return;
-		}
-
-		$user_id = get_current_user_id();
-
-		if ( get_user_meta( $user_id, 'rop-dropping-buffer-notice-dismissed' ) ) {
-			return;
-		}
-
-		$show_notice = false;
-
-		$services_model = new Rop_Services_Model();
-
-		$services = $services_model->get_authenticated_services();
-
-		foreach ( $services as $key => $value ) {
-
-			if ( $value['service'] === 'buffer' ) {
-				$show_notice = true;
-				break;
-			}
-		}
-
-		if ( $show_notice === false ) {
-			return;
-		}
-
-		?>
-		<div class="notice notice-error" style="min-height: 80px">
-			<?php echo sprintf( __( '%1$s%2$sRevive Old Posts:%3$s The Buffer integration will cease to work in future versions of ROP. Posting to Facebook Groups will be possible but not Instagram. Please see %4$sthis article for more information.%5$s%6$s%7$s', 'tweet-old-post' ), '<p style="width: 85%">', '<b>', '</b>', '<a href="https://docs.revive.social/article/1297-why-were-removing-buffer" target="_blank">', '</a>', '</p>', '<a style="float: right;" href="?rop-dropping-buffer-notice-dismissed">Dismiss</a>' ); ?>
-
-		</div>
-		<?php
-
-	}
-
-	/**
-	 * Dismiss dropping buffer notice.
-	 *
-	 * @since   8.2.3
-	 * @access  public
-	 */
-	public function rop_dismiss_dropping_buffer_notice() {
-		$user_id = get_current_user_id();
-		if ( isset( $_GET['rop-dropping-buffer-notice-dismissed'] ) ) {
-			add_user_meta( $user_id, 'rop-dropping-buffer-notice-dismissed', 'true', true );
-		}
-
-	}
-
-
-	/**
 	 * If the option "rop_is_sharing_cron_active" value is off/false/no then the WP Cron Jobs will be cleared.
 	 *
 	 * @since 8.5.0
@@ -1230,6 +1232,10 @@ class Rop_Admin {
 	public function rop_wp_cron_notice() {
 
 		if ( ! defined( 'DISABLE_WP_CRON' ) ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
 
@@ -1372,6 +1378,10 @@ class Rop_Admin {
 	 */
 	public function rop_cron_event_status_notice() {
 
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
 		$user_id = get_current_user_id();
 
 		if ( get_user_meta( $user_id, 'rop-cron-event-status-notice-dismissed' ) ) {
@@ -1416,50 +1426,6 @@ class Rop_Admin {
 		$user_id = get_current_user_id();
 		if ( isset( $_GET['rop-cron-event-status-notice-dismissed'] ) ) {
 			add_user_meta( $user_id, 'rop-cron-event-status-notice-dismissed', 'true', true );
-		}
-
-	}
-
-	/**
-	 * Buffer addon disabled notice.
-	 *
-	 * @since   8.4.0
-	 * @access  public
-	 */
-	public function rop_buffer_addon_notice() {
-
-		if ( is_plugin_active( 'rop-buffer-addon/rop-buffer-addon.php' ) ) {
-			deactivate_plugins( 'rop-buffer-addon/rop-buffer-addon.php' );
-		} else {
-			return;
-		}
-
-		$user_id = get_current_user_id();
-
-		if ( get_user_meta( $user_id, 'rop-buffer-addon-notice-dismissed' ) ) {
-			return;
-		}
-
-		?>
-
-		<div class="notice notice-error">
-			<?php echo sprintf( __( '%1$s We\'ve bundled the Buffer feature into Revive Old Posts Pro, and therefore deactivated the Buffer Addon automatically to prevent any conflicts. If you were a free user testing out the addon then please send us a support request %2$shere%3$s. %4$s %5$s', 'tweet-old-post' ), '<p>', '<a href="https://revive.social/support/" target="_blank">', '</a>', '<a style="float: right;" href="?rop-wp-cron-notice-dismissed">Dismiss</a>', '</p>' ); ?>
-		</div>
-		<?php
-
-	}
-
-	/**
-	 * Dismiss WordPress Cron disabled notice.
-	 *
-	 * @since   8.4.0
-	 * @access  public
-	 */
-	public function rop_dismiss_buffer_addon_disabled_notice() {
-
-		$user_id = get_current_user_id();
-		if ( isset( $_GET['rop-buffer-addon-notice-dismissed'] ) ) {
-			add_user_meta( $user_id, 'rop-buffer-addon-notice-dismissed', 'true', true );
 		}
 
 	}
@@ -1584,6 +1550,34 @@ class Rop_Admin {
 
 	}
 
+	/**
+	 * Hides the pinterest account button
+	 *
+	 * Pinterest changed API and has no ETA on when they'll start reviewing developer apps.
+	 * Disable this for now
+	 *
+	 * @since   8.6.0
+	 * @access  public
+	 */
+	public function rop_hide_pinterest_network_btn() {
+
+		$installed_at_version = get_option( 'rop_first_install_version' );
+		if ( empty( $installed_at_version ) ) {
+			return false;
+		}
+		if ( version_compare( $installed_at_version, '8.6.0', '>=' ) ) {
+			echo '<style>
+			
+			#rop_core .btn.btn-pinterest{
+				display: none;
+			}
+			
+			</style>';
+		}
+
+		return false;
+
+	}
 
 
 }

@@ -64,8 +64,7 @@
 
                     <countdown :current_time="current_time"/>
 
-                    <div id="staging-status" v-if="staging">
-                        {{labels.staging_status}}
+                    <div id="staging-status" v-if="staging" v-html="labels.staging_status">
                     </div>
                     <div v-if="!haveAccounts" class="rop-spacer"></div>
                     <div v-if="haveAccounts">

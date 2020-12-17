@@ -69,6 +69,10 @@ With our plugin, it is possible to implement curation capabilities by **filterin
 
 Once set, the plugin will then be able to determine which content to auto share to social media.
 
+### A RSS to Social Media Plugin
+
+With our Revive Network addon, you can share posts from any RSS feed to Facebook, Twitter, Linkedin, Tumblr, Google My Business or Vkontakte(VK).
+
 ---
 
 Revive Old Posts isn't like every other social media marketing tool. We've tailored its features while keeping the following in mind:
@@ -86,7 +90,9 @@ Revive Old Posts isn't like every other social media marketing tool. We've tailo
 - WordPress to Linkedin Profile [Pro]
 - WordPress to Linkedin Page [Pro]
 - WordPress to Tumblr [Pro]
-- WordPress to Google My Business [Pro]
+- WordPress to Google My Business(GMB) [Pro]
+- WordPress to Vkontakte(VK) Profiles [Pro]
+- WordPress to Vkontakte(VK) Communities [Pro]
 
 Some of the available networks and features require the Pro version of the plugin. Check out the free vs pro table [here.](https://docs.revive.social/article/941-revive-old-post-free-vs-pro)
 
@@ -106,7 +112,7 @@ Some of the available networks and features require the Pro version of the plugi
 
 - **Automatically generate hashtags** for post shares from **tags**, **categories** or from **custom fields**. [Free]
 
-- Include links **back to your site**. [Free]
+- Include link **back to your site**. [Free]
 
 - Compatible with **URL Shorteners**. Shorten the links for the content that you post to social media. [Free]
 
@@ -116,6 +122,24 @@ Some of the available networks and features require the Pro version of the plugi
 
 - Integrate with **Google Analytics** to track your social media traffic increase. [Free]
 
+- Post to Facebook Pages. [Free]
+
+- Post to Twitter. [Free]
+
+- Post to Facebook Groups. [Pro]
+
+- Post to LinkedIn Profiles. [Pro]
+
+- Post to LinkedIn Pages. [Pro]
+
+- Post to Tumblr Blogs [Pro]
+
+- Post to Google My Business [Pro]
+
+- Post to Vk Profiles [Pro]
+
+- Post to Vk Communities [Pro]
+
 And More! Try Revive Old Posts, see why it's the **best** WordPress social media marketing tool to boost your site traffic and keep your followers engaged.
 
 
@@ -124,6 +148,8 @@ And More! Try Revive Old Posts, see why it's the **best** WordPress social media
 Using the PRO version of Revive Old Posts unlocks a host of additional features to help  improve social media engagement on your accounts as well as bring more social media traffic to your website.
 
 **Awesome features in Pro:**
+
+- RSS feed sharing. Share feed items from ANY website to your connected social media accounts. With the Revive Network addon(available with Revive Old Posts Pro) it's all possible. 
 
 - [Support for WordPress Custom Post Types](https://docs.revive.social/article/968-how-to-share-different-wordpress-post-types-to-social-media-w-revive-old-posts) (WooCommerce Products, BigCommerce Products, Recipes etc.)
 
@@ -142,7 +168,11 @@ Using the PRO version of Revive Old Posts unlocks a host of additional features 
 
 - **WordPress to Tumblr** scheduling and auto post
 
-- **WordPress to Google My Business** scheduling and auto post
+- **WordPress to Google My Business(GMB)** scheduling and auto post
+
+- **WordPress to Vkontakte(VK) Profiles** scheduling and auto post
+
+- **WordPress to Vkontakte(VK) Communities** scheduling and auto post
 
 - Connect **multiple social media accounts** to WP
 
@@ -212,6 +242,10 @@ If you have any questions please ask on the [support forum](https://wordpress.or
 
 - Yes, this feature is free for the accounts that can be connected via the free plugin (Facebook and Twitter). Once you check the option to post on publish, our plugin will do the rest.
 
+**Can I share RSS feeds to social media?.**
+
+- Yes, you will need our Revive Network addon which is currently in the beta stages of testing for Pro users.
+
 **REST API error**
 
 - This issue is normally caused by an antimalware or firewall plugin. Please try disabling all plugins(except Revive Old Posts) to see if the issue persists. If not then enable each plugin one by one while checking Revive Old Posts dashboard to see if the issue returns, that will help you determine the conflicting plugin.
@@ -258,6 +292,30 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.6.3 - 2020-12-08  = 
+
+* Info Pro: Add Revive Network base support. Apply to be a Beta tester [here](https://forms.gle/M4mcqrFZze4Pe4pu7)
+
+
+= 8.6.2 - 2020-12-01  = 
+
+* Fix PRO: Error in the dashboard if the user had a previously connected Buffer account inside ROP and tried to update the plugin. A notice will now be shown with a link to updating steps for those situations.
+
+
+= 8.6.1 - 2020-11-24  = 
+
+* PRO Fix: Plugin tried to build buffer service that did not exist. Buffer network is no longer supported in Revive Old Posts.
+
+
+= 8.6.0 - 2020-11-24  = 
+
+* New PRO: New social media network- Vkontakte
+* New: Dedicated Remote Cron Service. Option to let our service take care of ROP shares more reliably for sites experiencing WP Cron issues or issues with posts not getting shared.
+* New: Addons menu. RSS feed sharing is coming to ROP. Apply for access to Revive Network RC1. Only select users will be chosen for the testing phase.
+* Change PRO: Dropped LinkedIn API dependency in favor of our own LinkedIn API methods
+* Info PRO: Added error log for LinkedIn image sharing when exif_imagetype function does not exist on the server.
+
+
 = 8.5.18 - 2020-09-27  = 
 
 * Change Pro: Move GMB dependency to Pro plugin.

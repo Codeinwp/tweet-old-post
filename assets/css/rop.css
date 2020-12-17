@@ -3803,6 +3803,16 @@
 	background-color: #32506d;
 }
 
+.vk,
+.icon_box .fa-vk {
+	background-color: #45668e;
+}
+
+.google,
+.icon_box .fa-google {
+	background-color: #4285f4;
+}
+
 #rop_core .avatar .avatar-icon {
 	border-radius: 50%;
 	background: #333;

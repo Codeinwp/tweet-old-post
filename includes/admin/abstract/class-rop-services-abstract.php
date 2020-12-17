@@ -259,7 +259,7 @@ abstract class Rop_Services_Abstract {
 	}
 
 	/**
-	 * Method to retrieve an service id.
+	 * Method to get currently active accounts for the service.
 	 *
 	 * @since   8.0.0
 	 * @access  public
@@ -670,7 +670,7 @@ abstract class Rop_Services_Abstract {
 		if ( ! empty( $ids ) ) {
 			foreach ( $ids as $id ) {
 				$image_get             = wp_get_attachment_image_src( $id, 'full' );
-				$attachment_url        = array_shift( $image_get );
+				$attachment_url        = $image_get[0];
 
 				$attachment_url_is_wp_upload = strpos( $attachment_url, '/uploads/' );
 				$image_url_is_wp_upload = strpos( $image_url, '/uploads/' );
@@ -679,6 +679,10 @@ abstract class Rop_Services_Abstract {
 
 					$attachment_image_uploads_path = explode( 'uploads', $attachment_url )[1]; // get uploads path from URL.
 					$image_url_uploads_path       = explode( 'uploads', $image_url )[1]; // get uploads path from URL.
+
+					// Remove query string from URL which sometime exists for jetpack images.
+					$attachment_image_uploads_path = explode( '?', $attachment_image_uploads_path )[0];
+					$image_url_uploads_path = explode( '?', $image_url_uploads_path )[0];
 
 					// Check if the found image is the one we require.
 					if ( $image_url_uploads_path === $attachment_image_uploads_path ) {
@@ -801,4 +805,5 @@ abstract class Rop_Services_Abstract {
 
 		return $given_id;
 	}
+
 }

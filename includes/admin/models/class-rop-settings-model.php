@@ -82,6 +82,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 			'name' => 'wp_short_url',
 			'active' => true,
 		),
+		// TODO Reintroduce Rvivly after refactor
 		// 'rviv.ly' => array(
 		// 'id' => 'rviv.ly',
 		// 'name' => 'rviv.ly',

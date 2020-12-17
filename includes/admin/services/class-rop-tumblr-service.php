@@ -307,7 +307,7 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 					'id'      => $page['id'],
 					'user'    => $this->normalize_string( $page['account'] ),
 					'account' => $this->normalize_string( $page['user'] ),
-					'img'     => $page['img'],
+					'img'     => apply_filters( 'rop_custom_tmblr_avatar', $page['img'] ),
 				),
 				$this->user_default
 			);
@@ -422,8 +422,10 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function share( $post_details, $args = array() ) {
-		if ( Rop_Admin::rop_site_is_staging() ) {
-			return;
+
+		if ( Rop_Admin::rop_site_is_staging( $post_details['post_id'] ) ) {
+			$this->logger->alert_error( Rop_I18n::get_labels( 'sharing.share_attempted_on_staging' ) );
+			return false;
 		}
 
 		$api = $this->get_api( $args['credentials']['consumer_key'], $args['credentials']['consumer_secret'], $args['credentials']['oauth_token'], $args['credentials']['oauth_token_secret'] );
@@ -512,6 +514,9 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 					$post_details['service']
 				)
 			);
+
+			return true;
+
 		} catch ( Exception $exception ) {
 			$this->logger->alert_error( 'Posting failed to Tumblr. Error: ' . $exception->getMessage() );
 			$this->rop_get_error_docs( $exception->getMessage() );
@@ -519,7 +524,6 @@ class Rop_Tumblr_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		return true;
 	}
 
 	/**

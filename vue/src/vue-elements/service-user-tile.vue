@@ -123,6 +123,9 @@
 				if (this.account_data.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin');
 				if (this.account_data.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr');
 				if (this.account_data.service === 'pinterest') serviceIcon = serviceIcon.concat('pinterest');
+				if (this.account_data.service === 'vk') serviceIcon = serviceIcon.concat('vk')
+				if (this.account_data.service === 'gmb') serviceIcon = serviceIcon.concat('google')
+
 				return serviceIcon
 			},
 			/**

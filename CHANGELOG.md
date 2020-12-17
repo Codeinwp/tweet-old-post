@@ -1,4 +1,25 @@
 
+ ### v8.6.3 - 2020-12-08 
+ **Changes:** 
+ * Info Pro: Add Revive Network base support. Apply to be a Beta tester [here](https://forms.gle/M4mcqrFZze4Pe4pu7)
+ 
+ ### v8.6.2 - 2020-12-01 
+ **Changes:** 
+ * Fix PRO: Error in the dashboard if the user had a previously connected Buffer account inside ROP and tried to update the plugin. A notice will now be shown with a link to updating steps for those situations.
+ 
+ ### v8.6.1 - 2020-11-24 
+ **Changes:** 
+ * PRO Fix: Plugin tried to build buffer service that did not exist. Buffer network is no longer supported in Revive Old Posts.
+ 
+ ### v8.6.0 - 2020-11-24 
+ **Changes:** 
+ * New PRO: New social media network- Vkontakte
+* New: Dedicated Remote Cron Service. Option to let our service take care of ROP shares more reliably for sites experiencing WP Cron issues or issues with posts not getting shared.
+* New: Addons menu. RSS feed sharing is coming to ROP. Apply for access to Revive Network RC1. Only select users will be chosen for the testing phase.
+* Change PRO: Dropped LinkedIn API dependency in favor of our own LinkedIn API methods
+* Info PRO: Added error log for LinkedIn image sharing when exif_imagetype function does not exist on the server.
+* 
+ 
  ### v8.5.18 - 2020-09-27 
  **Changes:** 
  * Change Pro: Move GMB dependency to Pro plugin.
