@@ -425,8 +425,10 @@ class Rop_Admin {
 		}
 
 		// This would also cover local wp installations
-		if ( function_exists( 'wp_get_environment_type' ) && wp_get_environment_type() !== 'production' ) {
-			return apply_filters( 'rop_dont_work_on_staging', true );
+		if ( function_exists( 'wp_get_environment_type' ) ) {
+			if ( wp_get_environment_type() !== 'production' ) {
+				return apply_filters( 'rop_dont_work_on_staging', true );
+			}
 		}
 
 		$rop_known_staging = array(
