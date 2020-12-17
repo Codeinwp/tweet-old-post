@@ -292,6 +292,15 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.6.4 - 2020-12-17  = 
+
+* Change: Show admin notices only to users with 'manage_options' capability.
+* Change: Skip sharing on websites where 'wp_get_environment_type()' doesn't return 'production' 
+* Change Pro: Fallback to article post share when no featured image is set and "Share as Image Post" option is checked in Post format settings.
+* Change Pro: Limit the LinkedIn refresh token notification to 5 emails max.
+* Info: Tested on WP 5.6
+
+
 = 8.6.3 - 2020-12-08  = 
 
 * Info Pro: Add Revive Network base support. Apply to be a Beta tester [here](https://forms.gle/M4mcqrFZze4Pe4pu7)
