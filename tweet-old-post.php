@@ -16,11 +16,11 @@
  * Plugin Name: Revive Old Posts
  * Plugin URI: https://revive.social/
  * Description: WordPress plugin that helps you to keeps your old posts alive by sharing them and driving more traffic to them from twitter/facebook or linkedin. It also helps you to promote your content. You can set time and no of posts to share to drive more traffic.For questions, comments, or feature requests, <a href="http://revive.social/support/?utm_source=plugindesc&utm_medium=announce&utm_campaign=top">contact </a> us!
- * Version:           8.6.3
+ * Version:           8.6.4
  * Author:            revive.social
  * Author URI:        https://revive.social/
  * Requires at least: 3.5
- * Tested up to:      5.5
+ * Tested up to:      5.6
  * Stable tag:        trunk
  * WordPress Available:  yes
  * Pro Slug:          tweet-old-post-pro
@@ -162,9 +162,15 @@ function run_rop() {
 	define( 'ROP_CRON_ALTERNATIVE', $use_remote_cron );
 
 	define( 'ROP_PRO_URL', 'http://revive.social/plugins/revive-old-post/' );
-	define( 'ROP_LITE_VERSION', '8.6.3' );
+	define( 'ROP_LITE_VERSION', '8.6.4' );
 	define( 'ROP_LITE_BASE_FILE', __FILE__ );
-	define( 'ROP_DEBUG', false );
+	$debug = false;
+	if ( function_exists( 'wp_get_environment_type' ) ) {
+		if ( wp_get_environment_type() !== 'production' ) {
+			$debug = true;
+		}
+	}
+	define( 'ROP_DEBUG', $debug );
 	define( 'ROP_LITE_PATH', plugin_dir_path( __FILE__ ) );
 	define( 'ROP_PRO_PATH', WP_PLUGIN_DIR . '/tweet-old-post-pro/' );
 	define( 'ROP_PATH', plugin_dir_path( __FILE__ ) );

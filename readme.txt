@@ -69,6 +69,10 @@ With our plugin, it is possible to implement curation capabilities by **filterin
 
 Once set, the plugin will then be able to determine which content to auto share to social media.
 
+### A RSS to Social Media Plugin
+
+With our Revive Network addon, you can share posts from any RSS feed to Facebook, Twitter, Linkedin, Tumblr, Google My Business or Vkontakte(VK).
+
 ---
 
 Revive Old Posts isn't like every other social media marketing tool. We've tailored its features while keeping the following in mind:
@@ -87,7 +91,8 @@ Revive Old Posts isn't like every other social media marketing tool. We've tailo
 - WordPress to Linkedin Page [Pro]
 - WordPress to Tumblr [Pro]
 - WordPress to Google My Business(GMB) [Pro]
-- WordPress to Vkontakte(VK) [Pro]
+- WordPress to Vkontakte(VK) Profiles [Pro]
+- WordPress to Vkontakte(VK) Communities [Pro]
 
 Some of the available networks and features require the Pro version of the plugin. Check out the free vs pro table [here.](https://docs.revive.social/article/941-revive-old-post-free-vs-pro)
 
@@ -107,7 +112,7 @@ Some of the available networks and features require the Pro version of the plugi
 
 - **Automatically generate hashtags** for post shares from **tags**, **categories** or from **custom fields**. [Free]
 
-- Include links **back to your site**. [Free]
+- Include link **back to your site**. [Free]
 
 - Compatible with **URL Shorteners**. Shorten the links for the content that you post to social media. [Free]
 
@@ -117,6 +122,24 @@ Some of the available networks and features require the Pro version of the plugi
 
 - Integrate with **Google Analytics** to track your social media traffic increase. [Free]
 
+- Post to Facebook Pages. [Free]
+
+- Post to Twitter. [Free]
+
+- Post to Facebook Groups. [Pro]
+
+- Post to LinkedIn Profiles. [Pro]
+
+- Post to LinkedIn Pages. [Pro]
+
+- Post to Tumblr Blogs [Pro]
+
+- Post to Google My Business [Pro]
+
+- Post to Vk Profiles [Pro]
+
+- Post to Vk Communities [Pro]
+
 And More! Try Revive Old Posts, see why it's the **best** WordPress social media marketing tool to boost your site traffic and keep your followers engaged.
 
 
@@ -125,6 +148,8 @@ And More! Try Revive Old Posts, see why it's the **best** WordPress social media
 Using the PRO version of Revive Old Posts unlocks a host of additional features to help  improve social media engagement on your accounts as well as bring more social media traffic to your website.
 
 **Awesome features in Pro:**
+
+- RSS feed sharing. Share feed items from ANY website to your connected social media accounts. With the Revive Network addon(available with Revive Old Posts Pro) it's all possible. 
 
 - [Support for WordPress Custom Post Types](https://docs.revive.social/article/968-how-to-share-different-wordpress-post-types-to-social-media-w-revive-old-posts) (WooCommerce Products, BigCommerce Products, Recipes etc.)
 
@@ -145,7 +170,9 @@ Using the PRO version of Revive Old Posts unlocks a host of additional features 
 
 - **WordPress to Google My Business(GMB)** scheduling and auto post
 
-- **WordPress to Vkontakte(VK)** scheduling and auto post
+- **WordPress to Vkontakte(VK) Profiles** scheduling and auto post
+
+- **WordPress to Vkontakte(VK) Communities** scheduling and auto post
 
 - Connect **multiple social media accounts** to WP
 
@@ -214,6 +241,10 @@ If you have any questions please ask on the [support forum](https://wordpress.or
 **Is the Auto Publish (aka Auto Post) feature free?.**
 
 - Yes, this feature is free for the accounts that can be connected via the free plugin (Facebook and Twitter). Once you check the option to post on publish, our plugin will do the rest.
+
+**Can I share RSS feeds to social media?.**
+
+- Yes, you will need our Revive Network addon which is currently in the beta stages of testing for Pro users.
 
 **REST API error**
 

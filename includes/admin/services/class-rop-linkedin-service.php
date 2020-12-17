@@ -497,7 +497,9 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 * @access  public
 	 */
 	public function share( $post_details, $args = array() ) {
-		if ( Rop_Admin::rop_site_is_staging() ) {
+
+		if ( Rop_Admin::rop_site_is_staging( $post_details['post_id'] ) ) {
+			$this->logger->alert_error( Rop_I18n::get_labels( 'sharing.share_attempted_on_staging' ) );
 			return false;
 		}
 
@@ -689,6 +691,18 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 */
 	private function linkedin_image_post( $post_details, $args, $token ) {
 
+		// If this is an attachment post we need to make sure we pass the URL to get_path_by_url() correctly
+		if ( get_post_type( $post_details['post_id'] ) === 'attachment' ) {
+			$img = $this->get_path_by_url( wp_get_attachment_url( $post_details['post_id'] ), $post_details['mimetype'] );
+		} else {
+			$img = $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] );
+		}
+
+		if ( empty( $img ) ) {
+			$this->logger->info( 'No image set for post, but "Share as Image Post" is checked. Falling back to article post' );
+			return $this->linkedin_article_post( $post_details, $args );
+		}
+
 		$author_urn = $args['is_company'] ? 'urn:li:organization:' : 'urn:li:person:';
 
 		$register_image = array(
@@ -727,18 +741,6 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		$body = json_decode( wp_remote_retrieve_body( $response ), true );
 		$upload_url = $body['value']['uploadMechanism']['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest']['uploadUrl'];
 		$asset      = $body['value']['asset'];
-
-		// If this is an attachment post we need to make sure we pass the URL to get_path_by_url() correctly
-		if ( get_post_type( $post_details['post_id'] ) === 'attachment' ) {
-			$img = $this->get_path_by_url( wp_get_attachment_url( $post_details['post_id'] ), $post_details['mimetype'] );
-		} else {
-			$img = $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] );
-		}
-
-		if ( empty( $img ) ) {
-					$this->logger->alert_error( 'No image set for post: ' . get_the_title( $post_details['post_id'] ) . ', cannot share as an image post to LinkedIn.' );
-				  return array();
-		}
 
 		if ( function_exists( 'exif_imagetype' ) ) {
 			$img_mime_type = image_type_to_mime_type( exif_imagetype( $img ) );
@@ -825,7 +827,13 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 		// last array item contains notify date
 		$notify_user_at = array_pop( $accounts_array );
 		// save timestamp for when to notify user to refresh their linkedin token
-		update_option( 'rop_linkedin_refresh_token_notice', $notify_user_at['notify_user_at'] );
+		// set notified count to 0
+		$notify_data = array(
+			'notify_at' => $notify_user_at['notify_user_at'],
+			'notified_count' => 0,
+		);
+
+		update_option( 'rop_linkedin_refresh_token_notice', $notify_data );
 
 		$accounts = array();
 
@@ -889,27 +897,52 @@ class Rop_Linkedin_Service extends Rop_Services_Abstract {
 	 */
 	public function rop_refresh_linkedin_token_notice() {
 
-		$notify_at = get_option( 'rop_linkedin_refresh_token_notice' );
+		$notify = get_option( 'rop_linkedin_refresh_token_notice' );
 
-		if ( empty( $notify_at ) ) {
+		if ( empty( $notify ) ) {
 			return;
 		}
 
+		// Backwards compatibility pre v8.6.4
+		if ( ! is_array( $notify ) ) {
+			$notify = array(
+				'notify_at' => $notify,
+				'notified_count' => 0,
+			);
+		}
+
+		$notify_at = $notify['notify_at'];
+		$notified_count = $notify['notified_count'];
+
 		$now = time();
 
-		if ( $notify_at <= $now ) {
+		if ( $notify_at <= $now && $notified_count <= 4 ) {
 
 			$headers     = array( 'Content-Type: text/html; charset=UTF-8' );
 			$admin_email = get_option( 'admin_email' );
-			$subject     = Rop_I18n::get_labels( 'emails.refresh_linkedin_token_subject' );
-			$message     = Rop_I18n::get_labels( 'emails.refresh_linkedin_token_message' );
+
+			if ( $notified_count < 4 ) {
+				$subject     = Rop_I18n::get_labels( 'emails.refresh_linkedin_token_subject' );
+				$message     = Rop_I18n::get_labels( 'emails.refresh_linkedin_token_message' );
+			} else {
+				$subject     = Rop_I18n::get_labels( 'emails.refresh_linkedin_token_subject_final' );
+				$message     = Rop_I18n::get_labels( 'emails.refresh_linkedin_token_message_final' );
+			}
 
 			// notify user to refresh token
-			wp_mail( $admin_email, $subject, $message, $headers );
+			$sent = wp_mail( $admin_email, $subject, $message, $headers );
+
+			if ( $sent ) {
+				$notified_count++;
+				$notify_data = array(
+					'notify_at' => $notify_at,
+					'notified_count' => $notified_count,
+				);
+				update_option( 'rop_linkedin_refresh_token_notice', $notify_data, false );
+			}
+
 			$this->logger->alert_error( Rop_I18n::get_labels( 'general.rop_linkedin_refresh_token' ) );
 
-		} else {
-			return;
 		}
 
 	}

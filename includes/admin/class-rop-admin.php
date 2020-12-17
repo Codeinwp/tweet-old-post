@@ -135,6 +135,10 @@ class Rop_Admin {
 	 */
 	public function bitly_shortener_upgrade_notice() {
 
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
 		if ( ! $this->check_shortener_service( 'bit.ly' ) ) {
 			return;
 		}
@@ -414,7 +418,18 @@ class Rop_Admin {
 	 * @return    bool   true/false
 	 * @since     8.0.4
 	 */
-	public static function rop_site_is_staging() {
+	public static function rop_site_is_staging( $post_id = '' ) {
+
+		if ( get_post_type( $post_id ) === 'revive-network-share' ) {
+			return apply_filters( 'rop_dont_work_on_staging', false ); // Allow Revive Network shares to go through by default
+		}
+
+		// This would also cover local wp installations
+		if ( function_exists( 'wp_get_environment_type' ) ) {
+			if ( wp_get_environment_type() !== 'production' ) {
+				return apply_filters( 'rop_dont_work_on_staging', true );
+			}
+		}
 
 		$rop_known_staging = array(
 			'IS_WPE_SNAPSHOT',
@@ -967,6 +982,11 @@ class Rop_Admin {
 		$logger          = new Rop_Logger();
 		$service_factory = new Rop_Services_Factory();
 		$settings = new Rop_Settings_Model();
+		$pro_format_helper = false;
+
+		if ( class_exists( 'Rop_Pro_Post_Format_Helper' ) ) {
+			$pro_format_helper = new Rop_Pro_Post_Format_Helper;
+		}
 
 		$queue_stack = $queue->build_queue_publish_now( $post_id, $accounts_data, $is_future_post, $settings->get_true_instant_share() );
 		$logger->info( 'Fetching publish now queue', array( 'queue' => $queue_stack ) );
@@ -983,7 +1003,12 @@ class Rop_Admin {
 						$post_data = $queue->prepare_post_object( $post_id, $account );
 						$custom_instant_share_message = $message;
 						if ( ! empty( $custom_instant_share_message ) ) {
-							$post_data['content'] = $custom_instant_share_message;
+
+							if ( $pro_format_helper !== false ) {
+								$post_data['content'] = $pro_format_helper->rop_replace_magic_tags( $custom_instant_share_message, $post_id );
+							} else {
+								$post_data['content'] = $custom_instant_share_message;
+							}
 						}
 						$logger->info( 'Posting', array( 'extra' => $post_data ) );
 						$service->share( $post_data, $account_data );
@@ -1198,6 +1223,10 @@ class Rop_Admin {
 			return;
 		}
 
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
 		$user_id = get_current_user_id();
 
 		if ( get_user_meta( $user_id, 'rop-wp-cron-notice-dismissed' ) ) {
@@ -1336,6 +1365,10 @@ class Rop_Admin {
 	 * @access  public
 	 */
 	public function rop_cron_event_status_notice() {
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
 
 		$user_id = get_current_user_id();
 

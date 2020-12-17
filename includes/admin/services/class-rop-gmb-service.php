@@ -295,7 +295,7 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 
 		// if image is empty lets create a different type of GMB post
 		if ( empty( $image_url ) ) {
-			$this->logger->info( 'Could not get image. Falling back to text post with link.' );
+			$this->logger->info( 'No image set for post, but "Share as Image Post" is checked. Falling back to article post' );
 			return $this->gmb_link_with_no_image_post( $post_details, $args );
 		}
 
@@ -449,6 +449,11 @@ class Rop_Gmb_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function share( $post_details, $args = array() ) {
+
+		if ( Rop_Admin::rop_site_is_staging( $post_details['post_id'] ) ) {
+			$this->logger->alert_error( Rop_I18n::get_labels( 'sharing.share_attempted_on_staging' ) );
+			return false;
+		}
 
 		if ( ! class_exists( 'Google_Client' ) ) {
 			$this->logger->alert_error( Rop_I18n::get_labels( 'errors.gmb_missing_main_class' ) );

@@ -339,7 +339,7 @@ class Rop_I18n {
 				'next_share'                 => __( 'Next share', 'tweet-old-post' ),
 				'sharing_now'                => __( 'Sharing...', 'tweet-old-post' ),
 				'cron_interval'              => __( 'Once every 5 min', 'tweet-old-post' ),
-				'staging_status'             => __( 'This is a staging website, posts will not share to your accounts.', 'tweet-old-post' ),
+				'staging_status'             => sprintf( __( 'This seems to be a staging or development website. Some post types will not share to your accounts. %1$sLearn How to Turn Off%2$s', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/1321-allow-revive-old-posts-to-work-on-staging-or-development-websites" target="_blank">', '</a>' ),
 				'api_not_available'          => __(
 					'It seems there is an issue with your WordPress configuration and the core REST API functionality is not available. This is crucial as Revive Old Posts relies on this functionality in order to work.<br/>
 The root cause might be either a security plugin which blocks this feature or some faulty server configuration which constrain this WordPress feature. <br/>
@@ -368,8 +368,10 @@ You can try to disable any of the security plugins that you use in order to see 
 			'emails'      => array(
 				'share_once_sharing_done_subject' => __( 'Revive Old Posts - All Posts Shared', 'tweet-old-post' ),
 				'refresh_linkedin_token_subject'  => __( 'Revive Old Posts - Refresh Your LinkedIn Token', 'tweet-old-post' ),
+				'refresh_linkedin_token_subject_final'  => __( 'Final - Refresh Your LinkedIn Token', 'tweet-old-post' ),
 				'share_once_sharing_done_message' => __( 'All posts have been shared to your connected social media accounts. No previously shared posts will be re-shared until you click the button to "Stop Sharing" and "Start Sharing" on the Revive Old Posts plugin dashboard.', 'tweet-old-post' ),
 				'refresh_linkedin_token_message'  => sprintf( __( 'Hi! This email was sent by Revive Old Posts on your website. Your LinkedIn token is about to expire. You need to refresh it to continue sharing without issue. Click the link below to find out why and how: %1$s %2$s', 'tweet-old-post' ), '<br><br>', '<a href="https://docs.revive.social/article/1151-how-to-refresh-linkedin-access-token">https://docs.revive.social/article/1151-how-to-refresh-linkedin-access-token</a>' ),
+				'refresh_linkedin_token_message_final'  => sprintf( __( 'Hi! This email was sent by Revive Old Posts on your website. Your LinkedIn token is about to expire. You need to refresh it to continue sharing without issue. Click the link below to find out why and how: %1$s %2$s. %3$sThis is the final notice email you will receieve from Revive Old Posts.', 'tweet-old-post' ), '<br><br>', '<a href="https://docs.revive.social/article/1151-how-to-refresh-linkedin-access-token">https://docs.revive.social/article/1151-how-to-refresh-linkedin-access-token</a>', '<br><br>' ),
 			),
 			'cron_system' => array(
 				'delete_cron_service_account_info' => sprintf( __( 'This option will delete your website information from our Remote Cron Service. %1$s Revive Old Posts will then fallback to using the Local Cron System built into WordPress. %1$s You can re-enable the Remote Cron System at anytime from General Settings > Cron Type, switch from Local Cron to Remote.', 'tweet-old-post' ), '<br>' ),
@@ -384,6 +386,7 @@ You can try to disable any of the security plugins that you use in order to see 
 
 			'sharing' => array(
 				'post_already_shared' => __( 'This post went out on the last share event and might be a duplicate. Skipping...', 'tweet-old-post' ),
+				'share_attempted_on_staging' => __( 'ROP has detected that this is a development website. Share process skipped.', 'tweet-old-post' ),
 			),
 			'errors' => array(
 				'gmb_failed_access_token_refresh' => __( 'Failed to retrieve Google My Business access token: ', 'tweet-old-post' ),

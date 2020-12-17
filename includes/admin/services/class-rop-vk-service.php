@@ -230,6 +230,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 		// if the post has no image but "Share as image post" is checked
 		// share as an article post
 		if ( empty( $attachment_url ) ) {
+			$this->logger->info( 'No image set for post, but "Share as Image Post" is checked. Falling back to article post' );
 			return $this->vk_article_post( $post_details, $args, $owner_id );
 		}
 
@@ -423,6 +424,11 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function share( $post_details, $args = array() ) {
+
+		if ( Rop_Admin::rop_site_is_staging( $post_details['post_id'] ) ) {
+			$this->logger->alert_error( Rop_I18n::get_labels( 'sharing.share_attempted_on_staging' ) );
+			return false;
+		}
 
 		$post_id = $post_details['post_id'];
 
