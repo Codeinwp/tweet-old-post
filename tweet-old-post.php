@@ -168,8 +168,8 @@ function run_rop() {
 	if ( function_exists( 'wp_get_environment_type' ) ) {
 		if ( wp_get_environment_type() !== 'production' ) {
 			$debug = true;
-		} 
-	} 
+		}
+	}
 	define( 'ROP_DEBUG', $debug );
 	define( 'ROP_LITE_PATH', plugin_dir_path( __FILE__ ) );
 	define( 'ROP_PRO_PATH', WP_PLUGIN_DIR . '/tweet-old-post-pro/' );
