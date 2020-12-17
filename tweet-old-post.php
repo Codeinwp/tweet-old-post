@@ -167,7 +167,7 @@ function run_rop() {
 	if ( function_exists( 'wp_get_environment_type' ) ) {
 		if ( wp_get_environment_type() !== 'production' ) {
 			define( 'ROP_DEBUG', true );
-		}else{
+		} else {
 			define( 'ROP_DEBUG', false );
 		}
 	} else {
