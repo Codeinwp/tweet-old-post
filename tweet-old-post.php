@@ -164,7 +164,13 @@ function run_rop() {
 	define( 'ROP_PRO_URL', 'http://revive.social/plugins/revive-old-post/' );
 	define( 'ROP_LITE_VERSION', '8.6.4' );
 	define( 'ROP_LITE_BASE_FILE', __FILE__ );
-	define( 'ROP_DEBUG', false );
+	$debug = false;
+	if ( function_exists( 'wp_get_environment_type' ) ) {
+		if ( wp_get_environment_type() !== 'production' ) {
+			$debug = true;
+		}
+	}
+	define( 'ROP_DEBUG', $debug );
 	define( 'ROP_LITE_PATH', plugin_dir_path( __FILE__ ) );
 	define( 'ROP_PRO_PATH', WP_PLUGIN_DIR . '/tweet-old-post-pro/' );
 	define( 'ROP_PATH', plugin_dir_path( __FILE__ ) );
