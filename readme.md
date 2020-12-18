@@ -2,7 +2,7 @@
 **Contributors:** [codeinwp](https://profiles.wordpress.org/codeinwp), [marius2012](https://profiles.wordpress.org/marius2012), [marius_codeinwp](https://profiles.wordpress.org/marius_codeinwp), [hardeepasrani](https://profiles.wordpress.org/hardeepasrani), [Madalin_Themeisle](https://profiles.wordpress.org/Madalin_Themeisle), [rsocial](https://profiles.wordpress.org/rsocial), [uriahs-victor](https://profiles.wordpress.org/uriahs-victor)  
 **Tags:** share to social media, auto publish, auto post, social media scheduling, social media auto posting, social media marketing, social media automation, social media sharing  
 **Requires at least:** 4.7  
-**Tested up to:** 5.5  
+**Tested up to:** 5.6  
 **Requires PHP:** 7.1  
 **Stable tag:** trunk  
 
@@ -292,6 +292,11 @@ http://revive.social/plugins/revive-old-post
 
 
 ## Changelog ##
+### 8.6.5 - 2020-12-18  ###
+
+* Info: Update "Tested up to" version in readme.txt to reflect tested up to inside plugin file header
+
+
 ### 8.6.4 - 2020-12-17  ###
 
 * Change: Show admin notices only to users with 'manage_options' capability.

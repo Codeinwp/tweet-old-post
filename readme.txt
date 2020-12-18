@@ -292,6 +292,11 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.6.5 - 2020-12-18  = 
+
+* Info: Update "Tested up to" version in readme.txt to reflect tested up to inside plugin file header
+
+
 = 8.6.4 - 2020-12-17  = 
 
 * Change: Show admin notices only to users with 'manage_options' capability.
