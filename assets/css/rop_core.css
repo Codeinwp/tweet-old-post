@@ -4345,3 +4345,15 @@ a.active {
     color: #fff;
     background-color: #c62828;
 }
+
+#rop_vid_tuts span{
+    margin-left: 20px;
+    padding: 10px;
+    background: #FF0000;
+    border-radius: 20pc;
+    color: #fff;
+}
+
+#rop_vid_tuts:hover{
+    text-decoration: none;
+}
