@@ -1114,7 +1114,7 @@ class Rop_Admin {
 										// Delete Feed post after it has been shared if the option is checked in RN settings.
 										if ( $response === true && ! empty( $delete_post_after_share ) ) {
 
-											Revive_Network_Rop_Post_Helper::rn_delete_revive_network_feed_post( $post, $account, $queue );
+											Revive_Network_Rop_Post_Helper::revive_network_delete_revive_network_feed_post( $post, $account, $queue );
 
 										}
 									}
