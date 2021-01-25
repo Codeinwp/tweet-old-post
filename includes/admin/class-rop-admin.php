@@ -690,7 +690,7 @@ class Rop_Admin {
 	public function rop_publish_now_metabox() {
 
 		$settings_model = new Rop_Settings_Model();
-		
+
 		// Get selected post types from General settings
 		$screens = wp_list_pluck( $settings_model->get_selected_post_types(), 'value' );
 
@@ -702,10 +702,9 @@ class Rop_Admin {
 			return;
 		}
 
-
-		$revive_network_post_type_key = array_search('revive-network-share', $screens, true);
+		$revive_network_post_type_key = array_search( 'revive-network-share', $screens, true );
 		// Remove Revive Network post type. Publish now feature not available for RSS feed items.
-		unset($screens[$revive_network_post_type_key]);
+		unset( $screens[ $revive_network_post_type_key ] );
 
 		foreach ( $screens as $screen ) {
 			add_meta_box(
