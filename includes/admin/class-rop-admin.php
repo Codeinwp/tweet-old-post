@@ -1095,7 +1095,7 @@ class Rop_Admin {
 
 								if ( $revive_network_active ) {
 
-									if ( Revive_Network_Rop_Post_Helper::rn_is_revive_network_share( $post_data['post_id'] ) ) {
+									if ( Revive_Network_Rop_Post_Helper::revive_network_is_revive_network_share( $post_data['post_id'] ) ) {
 
 										$revive_network_settings = Revive_Network_Rop_Post_Helper::revive_network_get_plugin_settings();
 										$delete_post_after_share = $revive_network_settings['delete_rss_item_after_share'];
@@ -1110,7 +1110,7 @@ class Rop_Admin {
 
 								if ( $revive_network_active ) {
 
-									if ( Revive_Network_Rop_Post_Helper::rn_is_revive_network_share( $post_data['post_id'] ) ) {
+									if ( Revive_Network_Rop_Post_Helper::revive_network_is_revive_network_share( $post_data['post_id'] ) ) {
 										// Delete Feed post after it has been shared if the option is checked in RN settings.
 										if ( $response === true && ! empty( $delete_post_after_share ) ) {
 
