@@ -5,7 +5,8 @@
                 <div>
                     <img :src="plugin_logo" class="plugin-logo avatar avatar-lg"/>
                     <h1 class="plugin-title d-inline-block">Revive Old Posts</h1><span class="powered d-inline-block"> {{labels.by}} <a
-                        href="https://revive.social" target="_blank"><b>Revive.Social</b></a></span>
+                        href="https://revive.social" target="_blank"><b>Revive.Social</b></a> <a href="https://www.youtube.com/playlist?list=PLAsG7vAH40Q512C8d_0lBpVZusUQqUxuH" target="_blank" id="rop_vid_tuts"><span>START HERE <i class="fa fa-play-circle" aria-hidden="true"></i></span></a></span>
+                    
                 </div>
             </div>
             <toast/>
