@@ -292,6 +292,12 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.6.6 - 2021-01-31  = 
+
+* New PRO: Import and share RSS feed items from any website on the web to your social media accounts using the Revive Network Addon. Never run out of content to keep your followers engaged (available for download from the Addons area of the Revive Old Posts menu item)
+* Info: Added "Start Here" button on Dashboards that link to Youtube playlists which will house how-to and explainer videos for Revive Old Posts and Revive Network
+
+
 = 8.6.5 - 2020-12-18  = 
 
 * Info: Update "Tested up to" version in readme.txt to reflect tested up to inside plugin file header
