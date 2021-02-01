@@ -1,4 +1,8 @@
 
+ ### v8.6.7 - 2021-02-01 
+ **Changes:** 
+ * Fix: Instant share metabox would not show unless RSS feed item post type was selected on General Settings screen
+ 
  ### v8.6.6 - 2021-01-31 
  **Changes:** 
  * New PRO: Import and share RSS feed items from any website on the web to your social media accounts using the Revive Network Addon. Never run out of content to keep your followers engaged (available for download from the Addons area of the Revive Old Posts menu item)
