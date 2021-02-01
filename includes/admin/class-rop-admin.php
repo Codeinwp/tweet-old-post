@@ -704,7 +704,10 @@ class Rop_Admin {
 
 		$revive_network_post_type_key = array_search( 'revive-network-share', $screens, true );
 		// Remove Revive Network post type. Publish now feature not available for RSS feed items.
-		unset( $screens[ $revive_network_post_type_key ] );
+
+		if ( ! empty( $revive_network_post_type_key ) ) {
+			unset( $screens[ $revive_network_post_type_key ] );
+		}
 
 		foreach ( $screens as $screen ) {
 			add_meta_box(
