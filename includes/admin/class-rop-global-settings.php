@@ -173,6 +173,7 @@ class Rop_Global_Settings {
 	 */
 	private $post_format_defaults = array(
 		'facebook'  => array(
+			'wpml_language' => '',
 			'post_content'         => 'post_title',
 			'custom_meta_field'    => '',
 			'maximum_length'       => '1000',
@@ -193,6 +194,7 @@ class Rop_Global_Settings {
 			'utm_campaign_name'    => 'ReviveOldPost',
 		),
 		'twitter'   => array(
+			'wpml_language' => '',
 			'post_content'         => 'post_title',
 			'custom_meta_field'    => '',
 			'maximum_length'       => '140',
@@ -212,7 +214,8 @@ class Rop_Global_Settings {
 			'utm_campaign_medium'  => 'social',
 			'utm_campaign_name'    => 'ReviveOldPost',
 		),
-		'linkedin'  => array(
+		'linkedin'    => array(
+			'wpml_language' => '',
 			'post_content'         => 'post_title',
 			'custom_meta_field'    => '',
 			'maximum_length'       => '1000',
@@ -232,7 +235,8 @@ class Rop_Global_Settings {
 			'utm_campaign_medium'  => 'social',
 			'utm_campaign_name'    => 'ReviveOldPost',
 		),
-		'tumblr'    => array(
+		'tumblr'  => array(
+			'wpml_language' => '',
 			'post_content'         => 'post_title',
 			'custom_meta_field'    => '',
 			'maximum_length'       => '1000',
@@ -252,7 +256,8 @@ class Rop_Global_Settings {
 			'utm_campaign_medium'  => 'social',
 			'utm_campaign_name'    => 'ReviveOldPost',
 		),
-		'pinterest' => array(
+		'pinterest'    => array(
+			'wpml_language' => '',
 			'post_content'         => 'post_title',
 			'custom_meta_field'    => '',
 			'maximum_length'       => '1000',
@@ -293,6 +298,7 @@ class Rop_Global_Settings {
 			'utm_campaign_name'    => 'ReviveOldPost',
 		),
 		'vk' => array(
+			'wpml_language' => '',
 			'post_content'         => 'post_title',
 			'custom_meta_field'    => '',
 			'maximum_length'       => '1000',

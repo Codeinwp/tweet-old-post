@@ -327,6 +327,8 @@ class Rop_Admin {
 		$array_nonce['staging']                 = $this->rop_site_is_staging();
 		$array_nonce['show_li_app_btn']         = $li_service->rop_show_li_app_btn();
 		$array_nonce['show_tmblr_app_btn']      = $tmblr_service->rop_show_tmblr_app_btn();
+		$array_nonce['rop_get_wpml_active_status']  = $this->rop_get_wpml_active_status();
+		$array_nonce['rop_get_wpml_languages']  = $this->rop_get_wpml_languages();
 		$array_nonce['hide_own_app_option']      = $this->rop_hide_add_own_app_option();
 		$array_nonce['debug']                   = ( ( ROP_DEBUG ) ? 'yes' : 'no' );
 		$array_nonce['tax_apply_limit']         = $this->limit_tax_dropdown_list();
@@ -836,7 +838,7 @@ class Rop_Admin {
 		update_post_meta( $post_id, 'rop_publish_now', 'yes' );
 		update_post_meta( $post_id, 'rop_publish_now_accounts', $instant_share_custom_content );
 
-		if ( ! $enabled ) {
+		if ( empty( $enabled ) ) {
 			return;
 		}
 
@@ -874,7 +876,7 @@ class Rop_Admin {
 		$active_plugins = apply_filters( 'active_plugins', get_option( 'active_plugins' ) );
 		$rop_active_status = in_array( 'tweet-old-post-pro/tweet-old-post-pro.php', $active_plugins );
 
-		// this would only be possible in Pro plugin
+		// This would only be possible in Pro plugin
 		if ( $global_settings->license_type() > 0 && $rop_active_status ) {
 
 			$logger          = new Rop_Logger();
@@ -996,8 +998,18 @@ class Rop_Admin {
 			$pro_format_helper = new Rop_Pro_Post_Format_Helper;
 		}
 
+		if ( $this->rop_get_wpml_active_status() ) {
+			$accounts_data = $this->rop_wpml_filter_accounts( $post_id, $accounts_data );
+		}
+
 		$queue_stack = $queue->build_queue_publish_now( $post_id, $accounts_data, $is_future_post, $settings->get_true_instant_share() );
-		$logger->info( 'Fetching publish now queue', array( 'queue' => $queue_stack ) );
+
+		if ( empty( $queue_stack ) ) {
+			$logger->info( 'Publish now queue stack is empty.' );
+		} else {
+			$logger->info( 'Fetching publish now queue: ' . print_r( $queue_stack, true ) );
+		}
+
 		foreach ( $queue_stack as $account => $events ) {
 			foreach ( $events as $index => $event ) {
 				$post    = $event['post'];
@@ -1177,7 +1189,7 @@ class Rop_Admin {
 			}
 		}
 
-		if ( $show_notice == false ) {
+		if ( $show_notice === false ) {
 			return;
 		}
 
@@ -1469,6 +1481,84 @@ class Rop_Admin {
 	}
 
 	/**
+	 * Check if WPML is active on the website.
+	 *
+	 * @since   8.5.8
+	 * @access  public
+	 * @return bool Whether or not the WPML plugin is active.
+	 */
+	public function rop_get_wpml_active_status() {
+
+		if ( function_exists( 'icl_object_id' ) ) {
+			return true;
+		} else {
+			return false;
+		}
+
+	}
+
+	/**
+	 * Get WPML active languages.
+	 *
+	 * @since   8.5.8
+	 * @access  public
+	 * @return array Returns an array of active lanuages set in the WPML settings. NOTE: Though 'skip_missing' flag is set, WPML still returns all language codes, regardless if there are no posts using that translation on the website.
+	 */
+	public function rop_get_wpml_languages() {
+
+		if ( $this->rop_get_wpml_active_status() === false ) {
+					 return;
+		}
+
+		$wpml_active_languages = apply_filters( 'wpml_active_languages', null, array('skip_missing' => 1) );
+
+		$languages_array = array();
+
+		foreach ( $wpml_active_languages as $key => $value ) {
+			$languages_array[] = array( 'code' => $key, 'label' => $value['native_name'] );
+		}
+
+		return $languages_array;
+	}
+
+
+	/**
+	 * Filter an array accounts by the WPML language set for the account.
+	 *
+	 * @since   8.5.8
+	 * @access  public
+	 * @param int   $post_id The post ID.
+	 * @param array $share_to_accounts The accounts to share to.
+	 * @return array Returns an array of the accounts that WPML should share to based on the language user has chosen in Post Format Settings
+	 */
+	public function rop_wpml_filter_accounts( $post_id, $share_to_accounts ) {
+
+		if ( ! is_array( $share_to_accounts ) ) {
+			return '';
+		}
+
+		$post_format_model = new Rop_Post_Format_Model();
+		$filtered_share_to_accounts = array();
+
+		$post_lang_code = apply_filters( 'wpml_post_language_details', '', $post_id )['language_code'];
+
+		// TODO double check that this is looping correctly since pulling down latest changes
+		// from v860
+		foreach ( $share_to_accounts as $account_id ) {
+
+			$rop_account_post_format = $post_format_model->get_post_format( $account_id );
+			$rop_account_lang_code = $rop_account_post_format['wpml_language'];
+
+			if ( $post_lang_code === $rop_account_lang_code ) {
+				$filtered_share_to_accounts[] = $account_id;
+			}
+		}
+
+		return $filtered_share_to_accounts;
+
+	}
+
+	/**
 	 * Hides the pinterest account button
 	 *
 	 * Pinterest changed API and has no ETA on when they'll start reviewing developer apps.
@@ -1496,5 +1586,6 @@ class Rop_Admin {
 		return false;
 
 	}
+
 
 }
