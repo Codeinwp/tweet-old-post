@@ -307,7 +307,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		$user['id']      = $data->id;
 		$user['account'] = $this->normalize_string( $data->name );
 		$user['user']    = '@' . $this->normalize_string( $data->screen_name );
-		$user['img']     = $img;
+		$user['img']     = apply_filters( 'rop_custom_tw_avatar', $img );
 		$user['service'] = $this->service_name;
 
 		return array( $this->get_service_id() . '_' . $user['id'] => $user );
@@ -413,7 +413,9 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function share( $post_details, $args = array() ) {
-		if ( Rop_Admin::rop_site_is_staging() ) {
+
+		if ( Rop_Admin::rop_site_is_staging( $post_details['post_id'] ) ) {
+			$this->logger->alert_error( Rop_I18n::get_labels( 'sharing.share_attempted_on_staging' ) );
 			return false;
 		}
 
@@ -511,9 +513,9 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		} else {
 			$this->logger->alert_error( sprintf( 'Error posting on twitter. Error: %s', json_encode( $response ) ) );
 			$this->rop_get_error_docs( $response );
+			return false;
 		}
 
-		return false;
 	}
 
 	/**

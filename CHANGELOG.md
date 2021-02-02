@@ -1,4 +1,46 @@
 
+ ### v8.6.7 - 2021-02-01 
+ **Changes:** 
+ * Fix: Instant share metabox would not show unless RSS feed item post type was selected on General Settings screen
+ 
+ ### v8.6.6 - 2021-01-31 
+ **Changes:** 
+ * New PRO: Import and share RSS feed items from any website on the web to your social media accounts using the Revive Network Addon. Never run out of content to keep your followers engaged (available for download from the Addons area of the Revive Old Posts menu item)
+* Info: Added "Start Here" button on Dashboards that link to Youtube playlists which will house how-to and explainer videos for Revive Old Posts and Revive Network
+ 
+ ### v8.6.5 - 2020-12-18 
+ **Changes:** 
+ * Info: Update "Tested up to" version in readme.txt to reflect tested up to inside plugin file header
+ 
+ ### v8.6.4 - 2020-12-17 
+ **Changes:** 
+ * Change: Show admin notices only to users with 'manage_options' capability.
+* Change: Skip sharing on websites where 'wp_get_environment_type()' doesn't return 'production' 
+* Change Pro: Fallback to article post share when no featured image is set and "Share as Image Post" option is checked in Post format settings.
+* Change Pro: Limit the LinkedIn refresh token notification to 5 emails max.
+* Info: Tested on WP 5.6
+ 
+ ### v8.6.3 - 2020-12-08 
+ **Changes:** 
+ * Info Pro: Add Revive Network base support. Apply to be a Beta tester [here](https://forms.gle/M4mcqrFZze4Pe4pu7)
+ 
+ ### v8.6.2 - 2020-12-01 
+ **Changes:** 
+ * Fix PRO: Error in the dashboard if the user had a previously connected Buffer account inside ROP and tried to update the plugin. A notice will now be shown with a link to updating steps for those situations.
+ 
+ ### v8.6.1 - 2020-11-24 
+ **Changes:** 
+ * PRO Fix: Plugin tried to build buffer service that did not exist. Buffer network is no longer supported in Revive Old Posts.
+ 
+ ### v8.6.0 - 2020-11-24 
+ **Changes:** 
+ * New PRO: New social media network- Vkontakte
+* New: Dedicated Remote Cron Service. Option to let our service take care of ROP shares more reliably for sites experiencing WP Cron issues or issues with posts not getting shared.
+* New: Addons menu. RSS feed sharing is coming to ROP. Apply for access to Revive Network RC1. Only select users will be chosen for the testing phase.
+* Change PRO: Dropped LinkedIn API dependency in favor of our own LinkedIn API methods
+* Info PRO: Added error log for LinkedIn image sharing when exif_imagetype function does not exist on the server.
+* 
+ 
  ### v8.5.18 - 2020-09-27 
  **Changes:** 
  * Change Pro: Move GMB dependency to Pro plugin.

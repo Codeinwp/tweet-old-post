@@ -177,7 +177,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 			$account_data = $accounts_array[ $i ];
 
 			$account['id'] = $account_data['id'];
-			$account['img'] = $account_data['img'];
+			$account['img'] = apply_filters( 'rop_custom_vk_avatar', $account_data['img'] );
 			$account['account'] = $account_data['account'];
 			$account['user'] = $account_data['user'];
 			$account['is_company'] = $account_data['is_company'];
@@ -225,16 +225,12 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
-		if ( get_post_type( $post_details['post_id'] ) !== 'attachment' ) {
-			$attachment_url = get_the_post_thumbnail_url( $post_details['post_id'], 'full' );
-
-		} elseif ( get_post_type( $post_details['post_id'] ) === 'attachment' ) {
-			$attachment_url = wp_get_attachment_url( $post_details['post_id'] );
-		}
+		$attachment_url = $post_details['post_image'];
 
 		// if the post has no image but "Share as image post" is checked
 		// share as an article post
 		if ( empty( $attachment_url ) ) {
+			$this->logger->info( 'No image set for post, but "Share as Image Post" is checked. Falling back to article post' );
 			return $this->vk_article_post( $post_details, $args, $owner_id );
 		}
 
@@ -428,6 +424,11 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function share( $post_details, $args = array() ) {
+
+		if ( Rop_Admin::rop_site_is_staging( $post_details['post_id'] ) ) {
+			$this->logger->alert_error( Rop_I18n::get_labels( 'sharing.share_attempted_on_staging' ) );
+			return false;
+		}
 
 		$post_id = $post_details['post_id'];
 

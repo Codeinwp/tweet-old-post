@@ -222,6 +222,8 @@
 				if (account.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin')
 				if (account.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr')
 				if (account.service === 'pinterest') serviceIcon = serviceIcon.concat('pinterest')
+				if (account.service === 'vk') serviceIcon = serviceIcon.concat('vk')
+				if (account.service === 'gmb') serviceIcon = serviceIcon.concat('google')
 
 				return serviceIcon;
 			},
