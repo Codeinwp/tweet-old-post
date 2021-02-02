@@ -1,4 +1,25 @@
 
+ ### v8.6.7 - 2021-02-01 
+ **Changes:** 
+ * Fix: Instant share metabox would not show unless RSS feed item post type was selected on General Settings screen
+ 
+ ### v8.6.6 - 2021-01-31 
+ **Changes:** 
+ * New PRO: Import and share RSS feed items from any website on the web to your social media accounts using the Revive Network Addon. Never run out of content to keep your followers engaged (available for download from the Addons area of the Revive Old Posts menu item)
+* Info: Added "Start Here" button on Dashboards that link to Youtube playlists which will house how-to and explainer videos for Revive Old Posts and Revive Network
+ 
+ ### v8.6.5 - 2020-12-18 
+ **Changes:** 
+ * Info: Update "Tested up to" version in readme.txt to reflect tested up to inside plugin file header
+ 
+ ### v8.6.4 - 2020-12-17 
+ **Changes:** 
+ * Change: Show admin notices only to users with 'manage_options' capability.
+* Change: Skip sharing on websites where 'wp_get_environment_type()' doesn't return 'production' 
+* Change Pro: Fallback to article post share when no featured image is set and "Share as Image Post" option is checked in Post format settings.
+* Change Pro: Limit the LinkedIn refresh token notification to 5 emails max.
+* Info: Tested on WP 5.6
+ 
  ### v8.6.3 - 2020-12-08 
  **Changes:** 
  * Info Pro: Add Revive Network base support. Apply to be a Beta tester [here](https://forms.gle/M4mcqrFZze4Pe4pu7)

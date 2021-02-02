@@ -540,7 +540,7 @@ class Rop_Admin {
 		<div style="background: #ffffff; padding: 10px; width: 400px; border-radius: 5px; box-shadow: 0px 0px 5px black;">
 			<img src="<?php echo ROP_LITE_URL . 'assets/img/revivenetwork.jpg'; ?>" alt="Revive Network">
 			<p><?php echo Rop_I18n::get_labels( 'misc.revive_network_desc' ); ?>
-			<a href="https://forms.gle/89sRJKPE8Xkxvkpj6" target="_blank" style="cursor: pointer;"><button><?php echo Rop_I18n::get_labels( 'misc.revive_network_learn_more_btn' ); ?></button></a>
+			<a href="https://s3.amazonaws.com/downloads.themeisle.com/products/revive-network/latest/revive-network.zip" target="_blank" style="cursor: pointer;"><button><?php echo Rop_I18n::get_labels( 'misc.revive_network_learn_more_btn' ); ?></button></a>
 			</p>
 		</div>
 	</div>
@@ -692,6 +692,7 @@ class Rop_Admin {
 	public function rop_publish_now_metabox() {
 
 		$settings_model = new Rop_Settings_Model();
+
 		// Get selected post types from General settings
 		$screens = wp_list_pluck( $settings_model->get_selected_post_types(), 'value' );
 
@@ -701,6 +702,13 @@ class Rop_Admin {
 
 		if ( ! $settings_model->get_instant_sharing() ) {
 			return;
+		}
+
+		$revive_network_post_type_key = array_search( 'revive-network-share', $screens, true );
+		// Remove Revive Network post type. Publish now feature not available for RSS feed items.
+
+		if ( ! empty( $revive_network_post_type_key ) ) {
+			unset( $screens[ $revive_network_post_type_key ] );
 		}
 
 		foreach ( $screens as $screen ) {
@@ -1102,7 +1110,7 @@ class Rop_Admin {
 
 								if ( $revive_network_active ) {
 
-									if ( Revive_Network_Rop_Post_Helper::rn_is_revive_network_share( $post_data['post_id'] ) ) {
+									if ( Revive_Network_Rop_Post_Helper::revive_network_is_revive_network_share( $post_data['post_id'] ) ) {
 
 										$revive_network_settings = Revive_Network_Rop_Post_Helper::revive_network_get_plugin_settings();
 										$delete_post_after_share = $revive_network_settings['delete_rss_item_after_share'];
@@ -1117,11 +1125,11 @@ class Rop_Admin {
 
 								if ( $revive_network_active ) {
 
-									if ( Revive_Network_Rop_Post_Helper::rn_is_revive_network_share( $post_data['post_id'] ) ) {
+									if ( Revive_Network_Rop_Post_Helper::revive_network_is_revive_network_share( $post_data['post_id'] ) ) {
 										// Delete Feed post after it has been shared if the option is checked in RN settings.
 										if ( $response === true && ! empty( $delete_post_after_share ) ) {
 
-											Revive_Network_Rop_Post_Helper::rn_delete_revive_network_feed_post( $post, $account, $queue );
+											Revive_Network_Rop_Post_Helper::revive_network_delete_revive_network_feed_post( $post, $account, $queue );
 
 										}
 									}

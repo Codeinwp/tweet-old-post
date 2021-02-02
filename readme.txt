@@ -2,7 +2,7 @@
 Contributors: codeinwp,marius2012,marius_codeinwp,hardeepasrani,Madalin_Themeisle, rsocial, uriahs-victor
 Tags: share to social media, auto publish, auto post, social media scheduling, social media auto posting, social media marketing, social media automation, social media sharing
 Requires at least: 4.7
-Tested up to: 5.5
+Tested up to: 5.6
 Requires PHP: 7.1
 Stable tag: trunk
 
@@ -292,6 +292,31 @@ http://revive.social/plugins/revive-old-post
 
 
 == Changelog ==
+= 8.6.7 - 2021-02-01  = 
+
+* Fix: Instant share metabox would not show unless RSS feed item post type was selected on General Settings screen
+
+
+= 8.6.6 - 2021-01-31  = 
+
+* New PRO: Import and share RSS feed items from any website on the web to your social media accounts using the Revive Network Addon. Never run out of content to keep your followers engaged (available for download from the Addons area of the Revive Old Posts menu item)
+* Info: Added "Start Here" button on Dashboards that link to Youtube playlists which will house how-to and explainer videos for Revive Old Posts and Revive Network
+
+
+= 8.6.5 - 2020-12-18  = 
+
+* Info: Update "Tested up to" version in readme.txt to reflect tested up to inside plugin file header
+
+
+= 8.6.4 - 2020-12-17  = 
+
+* Change: Show admin notices only to users with 'manage_options' capability.
+* Change: Skip sharing on websites where 'wp_get_environment_type()' doesn't return 'production' 
+* Change Pro: Fallback to article post share when no featured image is set and "Share as Image Post" option is checked in Post format settings.
+* Change Pro: Limit the LinkedIn refresh token notification to 5 emails max.
+* Info: Tested on WP 5.6
+
+
 = 8.6.3 - 2020-12-08  = 
 
 * Info Pro: Add Revive Network base support. Apply to be a Beta tester [here](https://forms.gle/M4mcqrFZze4Pe4pu7)
