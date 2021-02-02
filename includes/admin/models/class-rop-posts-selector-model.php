@@ -696,7 +696,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			$post_format_model = new Rop_Post_Format_Model();
 			$rop_account_post_format = $post_format_model->get_post_format( $account_id );
 			// If no language set, use default WPML language
-			$rop_account_lang_code = !empty($rop_account_post_format['wpml_language']) ? $rop_account_post_format['wpml_language'] : $default_lang;
+			$rop_account_lang_code = ! empty( $rop_account_post_format['wpml_language'] ) ? $rop_account_post_format['wpml_language'] : $default_lang;
 
 		}
 
@@ -743,7 +743,7 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 			$post_format_model = new Rop_Post_Format_Model();
 			$rop_account_post_format = $post_format_model->get_post_format( $account_id );
 			// If no language set, use default WPML language
-			$rop_account_lang_code = !empty($rop_account_post_format['wpml_language']) ? $rop_account_post_format['wpml_language'] : $default_lang;
+			$rop_account_lang_code = ! empty( $rop_account_post_format['wpml_language'] ) ? $rop_account_post_format['wpml_language'] : $default_lang;
 
 		}
 
