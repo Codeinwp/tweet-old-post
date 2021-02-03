@@ -71,7 +71,7 @@ class Rop_Post_Format_Helper {
 
 		if ( function_exists( 'icl_object_id' ) ) {
 			$selector = new Rop_Posts_Selector_Model;
-			$post_id  = $selector->rop_wpml_id( $post_id );
+			$post_id  = $selector->rop_wpml_id( $post_id, $this->account_id );
 		}
 
 		$service                            = $this->get_service();
@@ -745,7 +745,7 @@ class Rop_Post_Format_Helper {
 
 		if ( function_exists( 'icl_object_id' ) ) {
 			$selector = new Rop_Posts_Selector_Model;
-			$post_url = $selector->rop_wpml_link( $post_url );
+			$post_url = $selector->rop_wpml_link( $post_url, $this->account_id );
 		}
 
 		if ( isset( $this->post_format['url_from_meta'] ) && $this->post_format['url_from_meta'] && isset( $this->post_format['url_meta_key'] ) && ! empty( $this->post_format['url_meta_key'] ) ) {

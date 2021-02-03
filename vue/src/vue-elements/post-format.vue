@@ -1,5 +1,25 @@
 <template>
     <div>
+        <div class="columns py-2" v-if="wpml_active_status">
+            <div class="column col-6 col-sm-12 vertical-align">
+                <b>{{labels.language_title}}</b>
+                <p class="text-gray">{{labels.language_title_desc}}</p>
+            </div>
+            <div class="column col-6 col-sm-12 vertical-align">
+                <div class="form-group">
+                    <select id="wpml-language-selector" class="form-select" v-model="post_format.wpml_language" :disabled="!isPro" v-on:change="refresh_language_taxonomies">
+                        <option v-for="(lang, index) in wpml_languages" :value="lang.code" v-bind:selected="index == 0 || lang.code == post_format.wpml_language ? true : false">{{lang.label}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="columns " v-if="!isPro">
+            <div class="column text-center">
+                <p class="upsell"><i class="fa fa-lock"></i> {{labels.full_wpml_support_upsell}}</p>
+            </div>
+        </div>
+        <span class="divider"></span>
+
         <div class="columns py-2">
             <div class="column col-6 col-sm-12 vertical-align">
                 <b>{{labels.post_content_title}}</b>
@@ -17,18 +37,18 @@
             </div>
         </div>
 
-        <div class="columns py-2" v-if="post_format.post_content === 'custom_field'">
-            <div class="column col-6 col-sm-12 vertical-align">
-                <b>{{labels.custom_meta_title}}</b>
-                <p class="text-gray">{{labels.custom_meta_desc}}</p>
-            </div>
-            <div class="column col-6 col-sm-12 vertical-align">
-                <div class="form-group">
-                    <input class="form-input" type="text" v-model="post_format.custom_meta_field"
-                           value="" placeholder=""/>
+                <div class="columns py-2" v-if="post_format.post_content === 'custom_field'">
+                    <div class="column col-6 col-sm-12 vertical-align">
+                        <b>{{labels.custom_meta_title}}</b>
+                        <p class="text-gray">{{labels.custom_meta_desc}}</p>
+                    </div>
+                    <div class="column col-6 col-sm-12 vertical-align">
+                        <div class="form-group">
+                            <input class="form-input" type="text" v-model="post_format.custom_meta_field"
+                                   value="" placeholder=""/>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
 
         <span class="divider"></span>
 
@@ -308,20 +328,42 @@
                 labels_settings: this.$store.state.labels.settings,
                 labels_generic: this.$store.state.labels.generic,
                 upsell_link: ropApiSettings.upsell_link,
+                wpml_active_status: ropApiSettings.rop_get_wpml_active_status,
+                wpml_languages: ropApiSettings.rop_get_wpml_languages,
                 selected_tax_filter: [],
+                // selected_language: this.$store.state.activePostFormat[this.account_id] ? this.$store.state.activePostFormat[this.account_id].wpml_language : [],
+                // post_types: this.$store.state.generalSettings.available_post_types,
             }
         },
         created: function () {
             this.get_taxonomy_list();
         },
-        methods:{
+        updated: function() {
+            this.$nextTick(function () {
+                if(!this.$store.state.dom_updated){
+                    this.refresh_language_taxonomies();
+                }
+            });
+        },
+       methods:{
+            refresh_language_taxonomies: function(e){
+                const lang = e && e.target ? e.target.options[e.target.options.selectedIndex].value : document.querySelector('#wpml-language-selector').value;
+                if(e && e.target){
+                    // clear selected taxonomies on language change
+                    this.post_format.taxonomy_filter = [];
+                }
+                if(lang !== ''){
+                    this.$store.dispatch('fetchAJAXPromise', {req: 'get_taxonomies', data: {post_types: this.postTypes, language_code: lang}});
+                }
+                this.$store.state.dom_updated = true;
+            },
             get_taxonomy_list(){
                 if (this.$store.state.generalSettings.length === 0) {
                     this.is_loading = true;
                     this.$log.info('Fetching general settings.');
                     this.$store.dispatch('fetchAJAXPromise', {req: 'get_general_settings'}).then(response => {
                         this.is_loading = false;
-                        this.$log.debug('Succesfully fetched.')
+                        this.$log.debug('Successfully fetched.')
                     }, error => {
                         this.is_loading = false;
                         this.$log.error('Can not fetch the general settings.')
@@ -350,6 +392,9 @@
 
         },
         computed: {
+            postTypes: function () {
+                return this.$store.state.generalSettings.available_post_types;
+            },
             post_format: function () {
                 return this.$store.state.activePostFormat[this.account_id] ? this.$store.state.activePostFormat[this.account_id] : [];
             },
@@ -374,7 +419,6 @@
                 return (postFormat.taxonomy_filter) ? postFormat.taxonomy_filter : [];
             },
             taxonomy: function () {
-
                 return this.$store.state.generalSettings.available_taxonomies
             },
             shorteners: function () {

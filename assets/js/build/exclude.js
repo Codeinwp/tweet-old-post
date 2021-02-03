@@ -13244,6 +13244,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /* global ropApiSettings */
 /* exported ropApiSettings */
 
+/* eslint-disable*/
+
 var logOptions = {
     // required ['debug', 'info', 'warn', 'error', 'fatal']
     logLevel: ropApiSettings.debug === 'yes' ? 'debug' : 'error',
@@ -13329,7 +13331,8 @@ exports.default = new _vuex2.default.Store({
          *
          * @category New Cron System
          */
-        rop_cron_remote: ropApiSettings.rop_cron_remote
+        rop_cron_remote: ropApiSettings.rop_cron_remote,
+        dom_updated: false
     },
     mutations: {
         setTabView: function setTabView(state, view) {
