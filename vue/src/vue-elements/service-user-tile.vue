@@ -54,10 +54,19 @@
 			 * @returns {boolean}
 			 */
 			informFbProProducts: function(){
+				
 				if( (this.account_data.account_type === 'instagram_account' || this.account_data.account_type === 'facebook_group') &&  !this.isPro ){
 					return true;
 				}
 
+				// Backwards compatibilty < v8.7.0 we weren't storing 'account_type' for Facebook groups yet.
+				// If is free version disable Facebook groups
+				if(this.account_data.service === 'facebook'){
+					if( this.user.includes('Facebook Group:') && !this.isPro ){
+						return true;
+					}
+				}
+				
 			},
 			/**
 			 * Check if the account is allowed to be activate.
