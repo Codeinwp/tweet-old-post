@@ -914,6 +914,16 @@ class Rop_Post_Format_Helper {
 			} else {
 				$image = '';
 			}
+
+			// TODO better streamline this...We're only doing the below to make instagram always having as a photo
+			// This ideally should be in the if elseif statement above, there should be no `&& ! empty( $post_with_image )`
+
+			$services_model = new Rop_Services_Model();
+			$account = $services_model->find_account( $this->account_id );
+
+			if ( $account['account_type'] === 'instagram_account' ) {
+				$image = get_the_post_thumbnail_url( $post_id, 'large' );
+			}
 		}
 
 		if ( isset( $photon_bypass ) && class_exists( 'Jetpack_Photon' ) ) {

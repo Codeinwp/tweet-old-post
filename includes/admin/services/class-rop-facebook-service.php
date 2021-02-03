@@ -462,10 +462,32 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			return false;
 		}
 
+		$post_id = $post_details['post_id'];
+		$post_url = $post_details['post_url'];
+		$share_as_image_post = $post_details['post_with_image'];
 		$global_settings = new Rop_Global_Settings();
 
+		// **** Instagram Sharing ***** //
+		if ( array_key_exists( 'account_type', $args ) ) {
+
+			if ( ( $args['account_type'] === 'instagram_account' || $args['account_type'] === 'facebook_group' ) && $global_settings->license_type() < 1 ) {
+				$this->logger->alert_error( sprintf( Rop_I18n::get_labels( 'errors.license_not_active' ), $args['user'] ) );
+				return false;
+			}
+
+			if ( $args['account_type'] === 'instagram_account' && class_exists( 'Rop_Pro_Instagram_Service' ) ) {
+
+				$response = Rop_Pro_Instagram_Service::share( $post_details, $args );
+
+				return $response;
+
+			}
+		}
+		// ***** //
+
+		// Backwards compatibilty < v8.7.0 we weren't storing 'account_type' for Facebook groups yet.
 		if ( strpos( $args['user'], 'Facebook Group:' ) !== false && $global_settings->license_type() < 1 ) {
-			$this->logger->alert_error( 'An active Pro license is needed to share to Facebook Groups.' );
+			$this->logger->alert_error( sprintf( Rop_I18n::get_labels( 'errors.license_not_active' ), $args['user'] ) );
 			return false;
 		}
 
@@ -474,10 +496,6 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		if ( empty( $installed_with_app ) ) {
 			$this->set_api( $this->credentials['app_id'], $this->credentials['secret'] );
 		}
-
-		$post_id = $post_details['post_id'];
-		$post_url = $post_details['post_url'];
-		$share_as_image_post = $post_details['post_with_image'];
 
 		// FB link post
 		if ( ! empty( $post_url ) && empty( $share_as_image_post ) && get_post_type( $post_id ) !== 'attachment' ) {
@@ -956,6 +974,15 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 			$page                 = $this->user_default;
 			$page['id']           = $page_data['id'];
 			$page['user']         = $this->normalize_string( empty( $page_data['name'] ) ? '' : $page_data['name'] );
+
+			if ( array_key_exists( 'user_name', $page_data ) ) {
+				$page['username']     = $page_data['user_name'];
+			}
+
+			if ( array_key_exists( 'account_type', $page_data ) ) {
+				$page['account_type']     = $page_data['account_type'];
+			}
+
 			$page['account']      = $page_data['email'];
 			$page['img']          = apply_filters( 'rop_custom_fb_avatar', $page_data['img'] );
 			$page['access_token'] = $page_data['access_token'];
@@ -1025,6 +1052,7 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		}
 
 	}
+
 	/**
 	 * Method to populate additional data.
 	 *
@@ -1033,7 +1061,11 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function populate_additional_data( $account ) {
-		$account['link'] = sprintf( 'https://facebook.com/%s', $account['id'] );
+		if ( strpos( $account['user'], 'Instagram Account:' ) === false ) {
+			$account['link'] = sprintf( 'https://facebook.com/%s', $account['id'] );
+		} else {
+			$account['link'] = sprintf( 'https://instagram.com/%s', $account['username'] );
+		}
 		return $account;
 	}
 

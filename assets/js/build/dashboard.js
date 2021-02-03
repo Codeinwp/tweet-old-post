@@ -36064,11 +36064,21 @@ module.exports = {
     * Loading state used for showing animations.
     */
 			is_loading: false,
-			labels: this.$store.state.labels.accounts,
+			account_labels: this.$store.state.labels.accounts,
+			all_labels: this.$store.state.labels,
 			upsell_link: ropApiSettings.upsell_link
 		};
 	},
 	computed: {
+		/**
+   * Inform the user that Instagram and Facebook Groups are available in Pro version
+   * @returns {boolean}
+   */
+		informFbProProducts: function informFbProProducts() {
+			if ((this.account_data.account_type === 'instagram_account' || this.account_data.account_type === 'facebook_group') && !this.isPro) {
+				return true;
+			}
+		},
 		/**
    * Check if the account is allowed to be activate.
    * @returns {boolean}
@@ -36088,11 +36098,17 @@ module.exports = {
 			}
 			var service_limit = available_services[this.account_data.service].allowed_accounts;
 
-			// if is free version disable Facebook groups
+			// Backwards compatibilty < v8.7.0 we weren't storing 'account_type' for Facebook groups yet.
+			// If is free version disable Facebook groups
 			if (this.account_data.service === 'facebook') {
 				if (this.user.includes('Facebook Group:') && !this.isPro) {
 					return true;
 				}
+			}
+
+			// If is free version disable Instagram
+			if ((this.account_data.account_type === 'instagram_account' || this.account_data.account_type === 'facebook_group') && !this.isPro) {
+				return true;
 			}
 
 			var countActiveAccounts = 0;
@@ -36176,7 +36192,7 @@ module.exports = {
    */
 		serviceInfo: function serviceInfo() {
 
-			return this.account_data.account.concat(' ' + this.labels.at + ': ').concat(this.account_data.created);
+			return this.account_data.account.concat(' ' + this.account_labels.at + ': ').concat(this.account_data.created);
 		}
 	},
 	methods: {
@@ -36308,11 +36324,11 @@ module.exports = {
 // 				</label>
 // 			</div>
 //
-//    		<div class="tile-icon rop-remove-account tooltip tooltip-right" @click="removeAccount(account_id) "  :data-tooltip="labels.remove_account" v-if=" ! account_data.active">
+//    		<div class="tile-icon rop-remove-account tooltip tooltip-right" @click="removeAccount(account_id) "  :data-tooltip="account_labels.remove_account" v-if=" ! account_data.active">
 // 			<i class="fa fa-trash" v-if=" ! is_loading"></i>
 // 			<i class="fa fa-spinner fa-spin" v-else></i>
 // 		</div>
-//
+// 			<a href="https://revive.social/plugins/revive-old-post/?utm_source=rop&utm_medium=dashboard&utm_campaign=upsell" target="_blank"><p v-if="informFbProProducts">{{ all_labels.generic.only_pro_suffix }}</p></a>
 // 		</div>
 // 	</div>
 // </template>
@@ -36323,7 +36339,7 @@ module.exports = {
 /* 231 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tile tile-centered rop-account\" :class=\"'rop-'+type+'-account'\" _v-1669a290=\"\">\n\n\t\t<div class=\"tile-icon\" _v-1669a290=\"\">\n\t\t\t<div class=\"icon_box\" :class=\"service\" _v-1669a290=\"\">\n\t\t\t\t<img class=\"service_account_image\" :src=\"img\" v-if=\"img\" _v-1669a290=\"\">\n\t\t\t\t<i class=\"fa  \" :class=\"icon\" aria-hidden=\"true\" _v-1669a290=\"\"></i>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"tile-content\" _v-1669a290=\"\">\n\t\t\t<div class=\"tile-title\" _v-1669a290=\"\"><a :href=\"link\" target=\"_blank\" _v-1669a290=\"\">{{ user }}</a></div>\n\t\t\t<div class=\"tile-subtitle text-gray\" _v-1669a290=\"\">{{ serviceInfo }}</div>\n\t\t</div>\n\t\t<div class=\"tile-action\" _v-1669a290=\"\">\n\t\t\t<div class=\"form-group\" _v-1669a290=\"\">\n\t\t\t\t<label class=\"form-switch\" _v-1669a290=\"\">\n\t\t\t\t\t<div class=\"ajax-loader \" _v-1669a290=\"\"><i class=\"fa fa-spinner fa-spin\" v-show=\"is_loading\" _v-1669a290=\"\"></i></div>\n\t\t\t\t\t<input :disabled=\"checkDisabled\" type=\"checkbox\" v-model=\"account_data.active\" @change=\"startToggleAccount( account_id, type )\" _v-1669a290=\"\">\n\t\t\t\t\t<i class=\"form-icon\" _v-1669a290=\"\"></i>\n\t\t\t\t</label>\n\t\t\t</div>\n\n   \t\t<div class=\"tile-icon rop-remove-account tooltip tooltip-right\" @click=\"removeAccount(account_id) \" :data-tooltip=\"labels.remove_account\" v-if=\" ! account_data.active\" _v-1669a290=\"\">\n\t\t\t<i class=\"fa fa-trash\" v-if=\" ! is_loading\" _v-1669a290=\"\"></i>\n\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-1669a290=\"\"></i>\n\t\t</div>\n\n\t\t</div>\n\t</div>\n";
+module.exports = "\n\t<div class=\"tile tile-centered rop-account\" :class=\"'rop-'+type+'-account'\" _v-1669a290=\"\">\n\n\t\t<div class=\"tile-icon\" _v-1669a290=\"\">\n\t\t\t<div class=\"icon_box\" :class=\"service\" _v-1669a290=\"\">\n\t\t\t\t<img class=\"service_account_image\" :src=\"img\" v-if=\"img\" _v-1669a290=\"\">\n\t\t\t\t<i class=\"fa  \" :class=\"icon\" aria-hidden=\"true\" _v-1669a290=\"\"></i>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"tile-content\" _v-1669a290=\"\">\n\t\t\t<div class=\"tile-title\" _v-1669a290=\"\"><a :href=\"link\" target=\"_blank\" _v-1669a290=\"\">{{ user }}</a></div>\n\t\t\t<div class=\"tile-subtitle text-gray\" _v-1669a290=\"\">{{ serviceInfo }}</div>\n\t\t</div>\n\t\t<div class=\"tile-action\" _v-1669a290=\"\">\n\t\t\t<div class=\"form-group\" _v-1669a290=\"\">\n\t\t\t\t<label class=\"form-switch\" _v-1669a290=\"\">\n\t\t\t\t\t<div class=\"ajax-loader \" _v-1669a290=\"\"><i class=\"fa fa-spinner fa-spin\" v-show=\"is_loading\" _v-1669a290=\"\"></i></div>\n\t\t\t\t\t<input :disabled=\"checkDisabled\" type=\"checkbox\" v-model=\"account_data.active\" @change=\"startToggleAccount( account_id, type )\" _v-1669a290=\"\">\n\t\t\t\t\t<i class=\"form-icon\" _v-1669a290=\"\"></i>\n\t\t\t\t</label>\n\t\t\t</div>\n\n   \t\t<div class=\"tile-icon rop-remove-account tooltip tooltip-right\" @click=\"removeAccount(account_id) \" :data-tooltip=\"account_labels.remove_account\" v-if=\" ! account_data.active\" _v-1669a290=\"\">\n\t\t\t<i class=\"fa fa-trash\" v-if=\" ! is_loading\" _v-1669a290=\"\"></i>\n\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-1669a290=\"\"></i>\n\t\t</div>\n\t\t\t<a href=\"https://revive.social/plugins/revive-old-post/?utm_source=rop&amp;utm_medium=dashboard&amp;utm_campaign=upsell\" target=\"_blank\" _v-1669a290=\"\"><p v-if=\"informFbProProducts\" _v-1669a290=\"\">{{ all_labels.generic.only_pro_suffix }}</p></a>\n\t\t</div>\n\t</div>\n";
 
 /***/ }),
 /* 232 */

@@ -431,6 +431,7 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		$post_id = $post_details['post_id'];
 		$message = $this->strip_excess_blank_lines( $post_details['content'] );
 
+		// TODO Change to post_with_image
 		if ( ! empty( $post_details['post_image'] ) ) {
 
 			if ( class_exists( 'Jetpack_Photon' ) ) {

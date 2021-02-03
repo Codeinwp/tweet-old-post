@@ -396,6 +396,8 @@ You can try to disable any of the security plugins that you use in order to see 
 				'gmb_missing_lib_class' => __( 'Unable to find Google_Service_MyBusiness Class. Please ensure you have the Revive Old Posts Pro Addon activated.', 'tweet-old-post' ),
 				'linkedin_missing_exif_imagetype' => __( 'Cannot share image to LinkedIn. exif_imagetype() function is missing from your system. Please contact your web host and ask that this function be enabled on your hosting.', 'tweet-old-post' ),
 				'linkedin_issue_fetching_token' => __( 'There was an issue fetching the LinkedIn Token. Please contact Revive Old Posts support for assistance.', 'tweet-old-post' ),
+				'no_image_found' => __( 'No image was found for post %1$s cannot share as an image post to: %2$s. Please double check that you have a featured image set.', 'tweet-old-post' ),
+				'license_not_active' => __( 'An active Pro license is needed to share to %1$s', 'tweet-old-post' ),
 			),
 			'generic' => array(
 				'only_pro_suffix' => ' (' . __( 'Available in PRO', 'tweet-old-post' ) . ')',

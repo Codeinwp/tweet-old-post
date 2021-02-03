@@ -21,11 +21,11 @@
 				</label>
 			</div>
 
-   		<div class="tile-icon rop-remove-account tooltip tooltip-right" @click="removeAccount(account_id) "  :data-tooltip="labels.remove_account" v-if=" ! account_data.active">
+   		<div class="tile-icon rop-remove-account tooltip tooltip-right" @click="removeAccount(account_id) "  :data-tooltip="account_labels.remove_account" v-if=" ! account_data.active">
 			<i class="fa fa-trash" v-if=" ! is_loading"></i>
 			<i class="fa fa-spinner fa-spin" v-else></i>
 		</div>
-
+			<a href="https://revive.social/plugins/revive-old-post/?utm_source=rop&utm_medium=dashboard&utm_campaign=upsell" target="_blank"><p v-if="informFbProProducts">{{ all_labels.generic.only_pro_suffix }}</p></a>
 		</div>
 	</div>
 </template>
@@ -43,11 +43,22 @@
 				 * Loading state used for showing animations.
 				 */
 				is_loading: false,
-				labels: this.$store.state.labels.accounts,
+				account_labels: this.$store.state.labels.accounts,
+				all_labels: this.$store.state.labels,
 				upsell_link: ropApiSettings.upsell_link,
 			}
 		},
 		computed: {
+			/**
+			 * Inform the user that Instagram and Facebook Groups are available in Pro version
+			 * @returns {boolean}
+			 */
+			informFbProProducts: function(){
+				if( (this.account_data.account_type === 'instagram_account' || this.account_data.account_type === 'facebook_group') &&  !this.isPro ){
+					return true;
+				}
+
+			},
 			/**
 			 * Check if the account is allowed to be activate.
 			 * @returns {boolean}
@@ -67,11 +78,17 @@
 				}
 				let service_limit = available_services[this.account_data.service].allowed_accounts;
 
-				// if is free version disable Facebook groups
+				// Backwards compatibilty < v8.7.0 we weren't storing 'account_type' for Facebook groups yet.
+				// If is free version disable Facebook groups
 				if(this.account_data.service === 'facebook'){
-				if( this.user.includes('Facebook Group:') && !this.isPro ){
-					return true;
+					if( this.user.includes('Facebook Group:') && !this.isPro ){
+						return true;
+					}
 				}
+
+				// If is free version disable Instagram
+				if( (this.account_data.account_type === 'instagram_account' || this.account_data.account_type === 'facebook_group' ) && !this.isPro ){
+				return true;
 				}
 
 				let countActiveAccounts = 0
@@ -157,7 +174,7 @@
 			 */
 			serviceInfo: function () {
 
-				return this.account_data.account.concat(' ' + this.labels.at + ': ').concat(this.account_data.created)
+				return this.account_data.account.concat(' ' + this.account_labels.at + ': ').concat(this.account_data.created)
 			}
 		},
 		methods: {
