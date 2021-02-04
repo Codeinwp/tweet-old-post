@@ -66,7 +66,7 @@
 						return true;
 					}
 				}
-				
+
 			},
 			/**
 			 * Check if the account is allowed to be activate.
@@ -144,7 +144,15 @@
 			 */
 			icon: function () {
 				let serviceIcon = 'fa-';
-				if (this.account_data.service === 'facebook') serviceIcon = serviceIcon.concat('facebook');
+
+				if( this.account_data.service === 'facebook' &&  this.account_data.account_type !== 'instagram_account' && this.account_data.account_type !== 'facebook_group' ){
+					serviceIcon = serviceIcon.concat('facebook');
+				}else if(this.account_data.account_type === 'instagram_account'){
+					serviceIcon = serviceIcon.concat('instagram');
+				}else if(this.account_data.account_type === 'facebook_group'){
+					serviceIcon = serviceIcon.concat('users');
+				}
+
 				if (this.account_data.service === 'twitter') serviceIcon = serviceIcon.concat('twitter');
 				if (this.account_data.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin');
 				if (this.account_data.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr');

@@ -217,7 +217,15 @@
 			getIcon(account) {
 
 				let serviceIcon = 'fa-'
-				if (account.service === 'facebook') serviceIcon = serviceIcon.concat('facebook')
+
+				if( account.service === 'facebook' &&  account.account_type !== 'instagram_account' && account.account_type !== 'facebook_group' ){
+					serviceIcon = serviceIcon.concat('facebook');
+				}else if(account.account_type === 'instagram_account'){
+					serviceIcon = serviceIcon.concat('instagram');
+				}else if(account.account_type === 'facebook_group'){
+					serviceIcon = serviceIcon.concat('users');
+				}
+
 				if (account.service === 'twitter') serviceIcon = serviceIcon.concat('twitter')
 				if (account.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin')
 				if (account.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr')

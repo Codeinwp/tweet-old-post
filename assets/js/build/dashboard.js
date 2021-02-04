@@ -36165,7 +36165,15 @@ module.exports = {
    */
 		icon: function icon() {
 			var serviceIcon = 'fa-';
-			if (this.account_data.service === 'facebook') serviceIcon = serviceIcon.concat('facebook');
+
+			if (this.account_data.service === 'facebook' && this.account_data.account_type !== 'instagram_account' && this.account_data.account_type !== 'facebook_group') {
+				serviceIcon = serviceIcon.concat('facebook');
+			} else if (this.account_data.account_type === 'instagram_account') {
+				serviceIcon = serviceIcon.concat('instagram');
+			} else if (this.account_data.account_type === 'facebook_group') {
+				serviceIcon = serviceIcon.concat('users');
+			}
+
 			if (this.account_data.service === 'twitter') serviceIcon = serviceIcon.concat('twitter');
 			if (this.account_data.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin');
 			if (this.account_data.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr');
@@ -38891,7 +38899,15 @@ module.exports = {
 		getIcon: function getIcon(account) {
 
 			var serviceIcon = 'fa-';
-			if (account.service === 'facebook') serviceIcon = serviceIcon.concat('facebook');
+
+			if (account.service === 'facebook' && account.account_type !== 'instagram_account' && account.account_type !== 'facebook_group') {
+				serviceIcon = serviceIcon.concat('facebook');
+			} else if (account.account_type === 'instagram_account') {
+				serviceIcon = serviceIcon.concat('instagram');
+			} else if (account.account_type === 'facebook_group') {
+				serviceIcon = serviceIcon.concat('users');
+			}
+
 			if (account.service === 'twitter') serviceIcon = serviceIcon.concat('twitter');
 			if (account.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin');
 			if (account.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr');
