@@ -743,6 +743,7 @@ class Rop_Post_Format_Helper {
 			$post_url = get_permalink( $post_id );
 		}
 
+		// WPML compatibility
 		if ( function_exists( 'icl_object_id' ) ) {
 			$selector = new Rop_Posts_Selector_Model;
 			$post_url = $selector->rop_wpml_link( $post_url, $this->account_id );

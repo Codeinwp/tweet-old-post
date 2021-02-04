@@ -273,6 +273,8 @@ class Rop_I18n {
 				'media_post_upsell'                 => __( 'Media posting is available in the Business version.', 'tweet-old-post' ),
 				'no_post_format_error'              => __( 'Post Format option empty, "Share scheduled posts to social media on publish" cannot work. Please go to the Post Format tab and click "Save" for this feature to work', 'tweet-old-post' ),
 				'active_account_no_post_format_error' => __( 'No post format found for the following network, please go to "Post Format" tab and save your changes for: ', 'tweet-old-post' ),
+				'instagram_disable_link_recommendation' => __( 'We recommend that you disable links for Instagram posts. If you do leave this option checked, then we recommend that you enable a shortener.', 'tweet-old-post' ),
+				'instagram_image_post_default' => __( 'Instagram posts need to be an image.', 'tweet-old-post' ),
 			),
 			'schedule'    => array(
 				'menu_item'                 => __( 'Custom Schedule', 'tweet-old-post' ),
