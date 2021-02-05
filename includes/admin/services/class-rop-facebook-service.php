@@ -467,14 +467,14 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 		$share_as_image_post = $post_details['post_with_image'];
 		$global_settings = new Rop_Global_Settings();
 
-		// **** Instagram Sharing ***** //
 		if ( array_key_exists( 'account_type', $args ) ) {
-
+			
 			if ( ( $args['account_type'] === 'instagram_account' || $args['account_type'] === 'facebook_group' ) && $global_settings->license_type() < 1 ) {
 				$this->logger->alert_error( sprintf( Rop_I18n::get_labels( 'errors.license_not_active' ), $args['user'] ) );
 				return false;
 			}
-
+			
+			// **** Instagram Sharing ***** //
 			if ( $args['account_type'] === 'instagram_account' && class_exists( 'Rop_Pro_Instagram_Service' ) ) {
 
 				$response = Rop_Pro_Instagram_Service::share( $post_details, $args );
@@ -482,8 +482,8 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 				return $response;
 
 			}
+			// ***** //
 		}
-		// ***** //
 
 		// Backwards compatibilty < v8.7.0 we weren't storing 'account_type' for Facebook groups yet.
 		if ( strpos( $args['user'], 'Facebook Group:' ) !== false && $global_settings->license_type() < 1 ) {
