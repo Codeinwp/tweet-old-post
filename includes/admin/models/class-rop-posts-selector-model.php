@@ -705,22 +705,39 @@ class Rop_Posts_Selector_Model extends Rop_Model_Abstract {
 		}
 
 		if ( is_array( $post_id ) ) {
+
+			$post = array();
+
 			foreach ( $post_id as $id ) {
+
 				$post_type = get_post_type( $id );
 				$wpml_post = apply_filters( 'wpml_object_id', $id, $post_type, false, $lang_code );
+
 				if ( ! empty( $wpml_post ) ) {
+
+					if ( get_post_status( $wpml_post ) !== 'publish' ) {
+						continue;
+					}
+
 					$post[] = $wpml_post;
 				}
 			}
 		} else {
+
+			$post = '';
 			$post_type = get_post_type( $post_id );
-			$post      = apply_filters( 'wpml_object_id', $post_id, $post_type, false, $lang_code );
+			$wpml_post = apply_filters( 'wpml_object_id', $post_id, $post_type, false, $lang_code );
+
+			if ( get_post_status( $wpml_post ) === 'publish' ) {
+				$post = $wpml_post;
+			}
 		}
 
-		if ( empty( $post ) ) {
-			return $post_id;
-		} else {
+		if ( ! empty( $post ) ) {
 			return $post;
+		} else {
+			// Return original passed in post id if none of the conditions are met.
+			return $post_id;
 		}
 
 	}
