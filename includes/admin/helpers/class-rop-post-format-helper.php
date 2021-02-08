@@ -910,20 +910,10 @@ class Rop_Post_Format_Helper {
 			// Get image from featured image, if attachment post type (Video or image); get attachment URL.
 			if ( get_post_type( $post_id ) === 'attachment' ) {
 				$image = wp_get_attachment_url( $post_id );
-			} elseif ( has_post_thumbnail( $post_id ) && ! empty( $post_with_image ) ) {
+			} elseif ( has_post_thumbnail( $post_id ) ) {
 				$image = get_the_post_thumbnail_url( $post_id, 'large' );
 			} else {
 				$image = '';
-			}
-
-			// TODO better streamline this...We're only doing the below to make instagram always having as a photo
-			// This ideally should be in the if elseif statement above, there should be no `&& ! empty( $post_with_image )`
-
-			$services_model = new Rop_Services_Model();
-			$account = $services_model->find_account( $this->account_id );
-
-			if ( $account['account_type'] === 'instagram_account' ) {
-				$image = get_the_post_thumbnail_url( $post_id, 'large' );
 			}
 		}
 

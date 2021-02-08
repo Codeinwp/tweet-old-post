@@ -411,10 +411,10 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 *
 	 * @return array
 	 */
-	private function twitter_article_post( $post_details ){
-	
+	private function twitter_article_post( $post_details ) {
+
 		$new_post['status'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
-		
+
 		return $new_post;
 	}
 
@@ -428,10 +428,10 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 *
 	 * @return array
 	 */
-	private function twitter_text_post( $post_details ){
-	
+	private function twitter_text_post( $post_details ) {
+
 		$new_post['status'] = $post_details['content'] . $post_details['hashtags'];
-		
+
 		return $new_post;
 	}
 
@@ -441,15 +441,15 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 	 * @since  8.7.0
 	 * @access private
 	 *
-	 * @param array $post_details The post details to be published by the service.
+	 * @param array  $post_details The post details to be published by the service.
 	 * @param object $api Instance of twitter api wrapper.
 	 *
 	 * @return array
 	 */
-	private function twitter_media_post( $post_details, $api ){
-	
+	private function twitter_media_post( $post_details, $api ) {
+
 		$attachment_url = $post_details['post_image'];
-		
+
 		// if the post has no image but "Share as image post" is checked
 		// share as an article post
 		if ( empty( $attachment_url ) ) {
@@ -461,12 +461,12 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			// Disable Jetpack Photon filter.
 			$photon_bypass = remove_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ) );
 		}
-		
+
 		$upload_args = array(
 			'media' => $this->get_path_by_url( $post_details['post_image'], $post_details['mimetype'] ),
 			'media_type' => $post_details['mimetype']['type'],
 		);
-		
+
 		if ( ! empty( $photon_bypass ) && class_exists( 'Jetpack_Photon' ) ) {
 			// Re-enable Jetpack Photon filter.
 			add_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ), 10, 3 );
@@ -518,10 +518,9 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 			$this->logger->alert_error( sprintf( 'Can not upload media to twitter. Error: %s', json_encode( $media_response ) ) );
 			$this->rop_get_error_docs( $media_response );
 		}
-	
 
-		$new_post['status'] = $message . $this->get_url( $post_details ) . $post_details['hashtags'];
-		
+		$new_post['status'] = $post_details['content'] . $this->get_url( $post_details ) . $post_details['hashtags'];
+
 		return $new_post;
 	}
 
@@ -570,6 +569,11 @@ class Rop_Twitter_Service extends Rop_Services_Abstract {
 		// Twitter media post
 		if ( ! empty( $share_as_image_post ) || get_post_type( $post_id ) === 'attachment' ) {
 			$new_post = $this->twitter_media_post( $post_details, $api );
+		}
+
+		if ( empty( $new_post ) ) {
+			$this->logger->alert_error( Rop_I18n::get_labels( 'misc.no_post_data' ) );
+			return false;
 		}
 
 		$this->logger->info( sprintf( 'Before twitter share: %s', json_encode( $new_post ) ) );

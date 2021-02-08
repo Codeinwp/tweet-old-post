@@ -456,7 +456,7 @@ class Rop_Vk_Service extends Rop_Services_Abstract {
 
 		if ( empty( $new_post ) ) {
 			$this->logger->alert_error( Rop_I18n::get_labels( 'misc.no_post_data' ) );
-			return;
+			return false;
 		}
 
 		$response = $client->wall()->post(
