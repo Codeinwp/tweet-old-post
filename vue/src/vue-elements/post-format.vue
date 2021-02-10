@@ -60,7 +60,7 @@
             <div class="column col-6 col-sm-12 vertical-align">
                 <div class="form-group">
                     <input class="form-input" type="number" v-model="post_format.maximum_length"
-                           value="" placeholder=""/>
+                           value="" placeholder="" max="280"/>
                 </div>
             </div>
         </div>
