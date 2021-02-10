@@ -197,7 +197,7 @@ class Rop_Global_Settings {
 			'wpml_language' => '',
 			'post_content'         => 'post_title',
 			'custom_meta_field'    => '',
-			'maximum_length'       => '140',
+			'maximum_length'       => '240',
 			'custom_text'          => '',
 			'custom_text_pos'      => 'beginning',
 			'include_link'         => true,
