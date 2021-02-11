@@ -162,14 +162,18 @@ class Rop_Post_Format_Helper {
 				return wp_parse_args( array( 'display_content' => $share_content ), $default_content );
 			}
 		}
+
+		$settings = new Rop_Settings_Model();
+		$general_settings = $settings->get_settings();
+
 		/**
 		 * Check custom messages(share variations) if exists.
 		 */
 		$custom_messages = get_post_meta( $post_id, 'rop_custom_messages_group', true );
 
-		if ( ! empty( $custom_messages ) ) {
+		// If share variations exist for this post and the option to use them is turned on
+		if ( ! empty( $custom_messages ) && ! empty( $general_settings['custom_messages'] ) ) {
 
-			$settings                    = new Rop_Settings_Model();
 			$custom_messages_share_order = $settings->get_custom_messages_share_order();
 
 			if ( $custom_messages_share_order ) {
