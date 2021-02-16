@@ -355,6 +355,16 @@ class Rop_Rest_Api {
 		$post_format = new Rop_Post_Format_Model( $data['service'] );
 		$sh_factory  = new Rop_Shortner_Factory();
 		$this->response->set_code( '500' );
+
+		if ( $data['service'] === 'twitter' ) {
+
+			$max_char_length = $data['data']['maximum_length'];
+
+			if ( $max_char_length > 280 ) {
+				$data['data']['maximum_length'] = 280;
+			}
+		}
+
 		try {
 			if ( $data['data']['short_url_service'] !== 'wp_short_url' ) {
 				$shortner = $sh_factory->build( $data['data']['short_url_service'] );
