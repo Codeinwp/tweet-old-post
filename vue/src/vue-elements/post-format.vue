@@ -15,7 +15,7 @@
         </div>
         <div class="columns " v-if="!isPro">
             <div class="column text-center">
-                <p class="upsell"><i class="fa fa-lock"></i> {{labels.full_wpml_support_upsell}}</p>
+                <p class="upsell"><i class="fa fa-lock"></i> <span v-html="labels.full_wpml_support_upsell"></span></p>
             </div>
         </div>
         <span class="divider"></span>
