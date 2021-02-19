@@ -25,7 +25,7 @@ class Rop_Admin_Notices {
 
 		 $days_since_installed = Rop_Admin_Notices_Helpers::rop_get_days_since_installed();
 		 $should_show_notice = Rop_Admin_Notices_Helpers::rop_should_show_notice( $user_id, $notice_id );
-         $revive_network_active = class_exists('Revive_Network_Admin');
+		 $revive_network_active = class_exists( 'Revive_Network_Admin' );
 
 		if ( $days_since_installed >= 3 && $should_show_notice && $revive_network_active === false ) {
 
