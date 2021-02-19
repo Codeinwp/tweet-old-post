@@ -381,6 +381,13 @@ You can try to disable any of the security plugins that you use in order to see 
 				'delete_cron_service_account_info' => sprintf( __( 'This option will delete your website information from our Remote Cron Service. %1$s Revive Old Posts will then fallback to using the Local Cron System built into WordPress. %1$s You can re-enable the Remote Cron System at anytime from General Settings > Cron Type, switch from Local Cron to Remote.', 'tweet-old-post' ), '<br>' ),
 				'clear_local_cron_info' => sprintf( __( 'This will remove the Cron server authentication key from your local database. %1$s A new authentication key will be created when you register to the remote Cron server.', 'tweet-old-post' ), '<br>' ),
 			),
+			'notices' => array(
+				'revive_network_upsell_notice_title' => sprintf( __( '%1$sRSS Sharing In Revive Old Posts%2$s', 'tweet-old-post' ), '<b>', '</b>' ),
+				'revive_network_upsell_notice_body' => sprintf( __( 'Expose your followers to other relevant content sources, and keep their interest by sharing posts from your favorite blogs to your social media accounts.%1$s %2$sRevive Network%3$s is an Addon plugin for Revive Old Posts that lets you share content from any RSS or Atom feed to your connected accounts.', 'tweet-old-post' ), '<br><br>', '<b>', '</b>' ),
+				'revive_network_upsell_notice_product_pag' => sprintf( __( 'Expose your followers to other relevant content sources, and keep their interest by sharing posts from your favorite blogs to your social media accounts.%1$s %2$sRevive Network%3$s is an Addon plugin for Revive Old Posts that lets you share content from any RSS or Atom feed to your connected accounts.', 'tweet-old-post' ), '<br><br>', '<b>', '</b>' ),
+				'dismiss_permanently' => __( 'Dismiss Permanently', 'tweet-old-post' ),
+
+			),
 			// PRO only.
 			'publish_now' => array(
 				'share_on_update' => __( 'Share <b>immediately</b> via <small>Revive Old Posts</small>  ', 'tweet-old-post' ),
@@ -409,6 +416,7 @@ You can try to disable any of the security plugins that you use in order to see 
 				'no_post_data' => __( 'Post data for share empty.', 'tweet-old-post' ),
 				'revive_network_desc' => __( 'Revive Network allows you to share content from multiple RSS or Atom feeds, from any website on the web, to your connected social media accounts.', 'tweet-old-post' ),
 				'revive_network_learn_more_btn' => __( 'Download', 'tweet-old-post' ),
+				'learn_more' => __( 'Learn More!', 'tweet-old-post' ),
 			),
 		);
 		if ( empty( $key ) ) {

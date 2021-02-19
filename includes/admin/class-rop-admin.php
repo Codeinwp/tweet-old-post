@@ -92,7 +92,10 @@ class Rop_Admin {
 	public function enqueue_styles() {
 
 		$page = $this->get_current_page();
+
 		if ( empty( $page ) ) {
+			// Always enqueue notices style
+			wp_enqueue_style( $this->plugin_name . '_admin_notices', ROP_LITE_URL . 'assets/css/admin-notices.css', '', $this->version, 'all' );
 			return;
 		}
 
@@ -101,6 +104,7 @@ class Rop_Admin {
 			wp_enqueue_style( $this->plugin_name . '_core', ROP_LITE_URL . 'assets/css/rop_core.css', array(), $this->version, 'all' );
 			$deps = array( $this->plugin_name . '_core' );
 		}
+
 		wp_enqueue_style( $this->plugin_name, ROP_LITE_URL . 'assets/css/rop.css', $deps, $this->version, 'all' );
 		wp_enqueue_style( $this->plugin_name . '_fa', ROP_LITE_URL . 'assets/css/font-awesome.min.css', array(), $this->version );
 
