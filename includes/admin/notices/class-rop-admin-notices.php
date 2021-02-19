@@ -46,8 +46,7 @@ class Rop_Admin_Notices {
 <p class="rop-revive-network-notice-body">$upsell_body </p>
 <br>
 <ul class="rop-revive-network-notice-body rop-revive-network-red">
-<!-- <li><span class="dashicons dashicons-media-text"></span><a target="_blank" href="https://ninjaforms.com/documentation/?utm_medium=plugin&amp;utm_source=admin-notice&amp;utm_campaign=Ninja+Forms+Upsell&amp;utm_content=Ninja+Forms+Docs">Check out our documentation</a></li> -->
-<li><span class="dashicons dashicons-share-alt2"></span><a target="_blank" href="https://revive.social/plugins/revive-network" style="color: #2b4fa3">$learn_more</a></li>
+<li><span class="dashicons dashicons-share-alt2"></span><a target="_blank" href="https://revive.social/plugins/revive-network/?utm_source=rop&utm_medium=cta&utm_campaign=revive_network_upsell&utm_content=admin_notice" style="color: #2b4fa3">$learn_more</a></li>
 <li><span class="dashicons dashicons-dismiss"></span><a href="$dismiss_url" style="color: #2b4fa3">$dismiss</a></li>
 </ul>
 

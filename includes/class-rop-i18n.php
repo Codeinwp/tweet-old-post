@@ -414,8 +414,8 @@ You can try to disable any of the security plugins that you use in order to see 
 			'misc' => array(
 				'curl_not_detected' => __( 'cURL was not detected on your website. Please contact your Web Host and ask that they enable cURL for your website.', 'tweet-old-post' ),
 				'no_post_data' => __( 'Post data for share empty.', 'tweet-old-post' ),
-				'revive_network_desc' => __( 'Revive Network allows you to share content from multiple RSS or Atom feeds, from any website on the web, to your connected social media accounts.', 'tweet-old-post' ),
-				'revive_network_learn_more_btn' => __( 'Download', 'tweet-old-post' ),
+				'revive_network_desc' => __( 'Revive Network allows you to share content from multiple RSS or Atom feeds from any website on the web to your connected social media accounts. An active Revive Old Posts Pro subscription is required to download and use Revive Network.', 'tweet-old-post' ),
+				'revive_network_learn_more_btn' => __( 'Learn More', 'tweet-old-post' ),
 				'learn_more' => __( 'Learn More!', 'tweet-old-post' ),
 			),
 		);

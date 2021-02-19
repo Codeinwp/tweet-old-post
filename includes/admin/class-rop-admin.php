@@ -543,8 +543,10 @@ class Rop_Admin {
 
 		<div style="background: #ffffff; padding: 10px; width: 400px; border-radius: 5px; box-shadow: 0px 0px 5px black;">
 			<img src="<?php echo ROP_LITE_URL . 'assets/img/revivenetwork.jpg'; ?>" alt="Revive Network">
-			<p><?php echo Rop_I18n::get_labels( 'misc.revive_network_desc' ); ?>
-			<a href="https://s3.amazonaws.com/downloads.themeisle.com/products/revive-network/latest/revive-network.zip" target="_blank" style="cursor: pointer;"><button><?php echo Rop_I18n::get_labels( 'misc.revive_network_learn_more_btn' ); ?></button></a>
+			<p style="font-size: 14px"><?php echo Rop_I18n::get_labels( 'misc.revive_network_desc' ); ?>
+			<br>
+			<br>
+			<a style="align: right"href="https://revive.social/plugins/revive-network/?utm_source=rop&utm_medium=cta&utm_campaign=revive_network_upsell&utm_content=addons_page" target="_blank"><button style="cursor: pointer;"><?php echo Rop_I18n::get_labels( 'misc.revive_network_learn_more_btn' ); ?></button></a>
 			</p>
 		</div>
 	</div>
