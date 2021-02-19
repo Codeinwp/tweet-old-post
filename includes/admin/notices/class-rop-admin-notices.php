@@ -25,8 +25,9 @@ class Rop_Admin_Notices {
 
 		 $days_since_installed = Rop_Admin_Notices_Helpers::rop_get_days_since_installed();
 		 $should_show_notice = Rop_Admin_Notices_Helpers::rop_should_show_notice( $user_id, $notice_id );
+         $revive_network_active = class_exists('Revive_Network_Admin');
 
-		if ( $days_since_installed >= 3 && $should_show_notice ) {
+		if ( $days_since_installed >= 3 && $should_show_notice && $revive_network_active === false ) {
 
 			$plugin_image_path = ROP_LITE_URL . 'assets/img/revive-network-logo.png';
 			$upsell_title = Rop_I18n::get_labels( 'notices.revive_network_upsell_notice_title' );
