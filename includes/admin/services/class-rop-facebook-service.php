@@ -1061,10 +1061,10 @@ class Rop_Facebook_Service extends Rop_Services_Abstract {
 	 * @return mixed
 	 */
 	public function populate_additional_data( $account ) {
-		
-		$account_id = ( !empty( $account['id'] ) ) ? $account['id'] : '';
-		$account_username = ( !empty( $account['username'] ) ) ? $account['username'] : '';
-		$account_type = ( !empty($account['account_type']) ) ? $account['account_type'] : '';
+
+		$account_id = ( ! empty( $account['id'] ) ) ? $account['id'] : '';
+		$account_username = ( ! empty( $account['username'] ) ) ? $account['username'] : '';
+		$account_type = ( ! empty( $account['account_type'] ) ) ? $account['account_type'] : '';
 
 		if ( $account_type !== 'instagram_account' ) {
 			$account['link'] = sprintf( 'https://facebook.com/%s', $account_id );
