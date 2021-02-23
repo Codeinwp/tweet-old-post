@@ -45,6 +45,7 @@ class Rop_Activator {
 		}
 
 		self::rop_create_install_token();
+		self::rop_set_first_install_date();
 
 	}
 
@@ -66,6 +67,22 @@ class Rop_Activator {
 
 		update_option( ROP_INSTALL_TOKEN_OPTION, $token, false );
 
+	}
+
+	/**
+	 * Set Install Date.
+	 *
+	 * @since  1.0.0
+	 */
+	private static function rop_set_first_install_date() {
+
+		// Create timestamp for when plugin was activated.
+		$install_date = time();
+
+		// If our option doesn't exist already, we'll create it with today's timestamp.
+		if ( empty( get_option( 'rop_first_install_date' ) ) ) {
+			add_option( 'rop_first_install_date', $install_date, '', 'yes' );
+		}
 	}
 
 }

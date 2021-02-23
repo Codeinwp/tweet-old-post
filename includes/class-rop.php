@@ -124,14 +124,18 @@ class Rop {
 	private function define_admin_hooks() {
 
 		$plugin_admin = new Rop_Admin( $this->get_plugin_name(), $this->get_version() );
-
+		$plugin_admin_notices = new Rop_Admin_Notices();
+		$plugin_admin_notices_helpers = new Rop_Admin_Notices_Helpers();
 		$tutorial_pointers = new Rop_Pointers();
+
+		$this->loader->add_action( 'wp_ajax_rop_notice_dismissed', $plugin_admin_notices_helpers, 'rop_notice_dismissed' );
 
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'legacy_auth', 2 );
 		$this->loader->add_action( 'admin_head', $plugin_admin, 'rop_roadmap_new_tab' );
 		$this->loader->add_action( 'admin_head', $plugin_admin, 'rop_hide_pinterest_network_btn' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_dismiss_rop_event_not_firing_notice' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_cron_event_status_notice' );
+		$this->loader->add_action( 'admin_notices', $plugin_admin_notices, 'rop_revive_network_nag_delayed' );
 
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'rop_dismiss_linkedin_api_v2_notice' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'rop_linkedin_api_v2_notice' );
