@@ -396,13 +396,13 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 		if ( isset( $data['default_interval'] ) ) {
 			$data['default_interval'] = floatval( $data['default_interval'] );
 			if ( $data['default_interval'] < 0.1 ) {
-				$this->logger->alert_error( 'Minimum interval between consecutive shares is 6 mins.' );
+				$this->logger->alert_error( Rop_I18n::get_labels('misc.min_interval_6_mins') );
 				$data['default_interval'] = 0.1;
 			}
 
 			$min_allowed = apply_filters( 'rop_min_interval_bw_shares_min', ROP_DEBUG ? 0.1 : 5 );
 			if ( $data['default_interval'] < $min_allowed ) {
-				$this->logger->alert_error( sprintf( 'Lowest allowed value for "Minimum Interval Between Shares" is %d hours in the Lite version of Revive Old Posts.', $min_allowed ) );
+				$this->logger->alert_error( sprintf( Rop_I18n::get_labels('misc.min_interval_between_shares') , $min_allowed ) );
 				$data['default_interval'] = $min_allowed;
 			}
 
@@ -414,13 +414,13 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 		if ( isset( $data['interval_r'] ) ) {
 			$data['interval_r'] = floatval( $data['interval_r'] );
 			if ( $data['interval_r'] < 0.1 ) {
-				$this->logger->alert_error( 'Minimum interval between consecutive shares is 6 mins.' );
+				$this->logger->alert_error( Rop_I18n::get_labels('misc.min_interval_6_mins') );
 				$data['interval_r'] = 0.1;
 			}
 
 			$min_allowed = apply_filters( 'rop_min_interval_bw_shares_min', ROP_DEBUG ? 0.1 : 5 );
 			if ( $data['interval_r'] < $min_allowed ) {
-				$this->logger->alert_error( sprintf( 'Lowest allowed value for "Minimum Interval Between Shares" is %d hours in the Lite version of Revive Old Posts.', $min_allowed ) );
+				$this->logger->alert_error( sprintf( Rop_I18n::get_labels('misc.min_interval_between_shares'), $min_allowed ) );
 				$data['interval_r'] = $min_allowed;
 			}
 
@@ -429,18 +429,18 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 		// ***
 
 		if ( empty( $data['selected_post_types'] ) ) {
-			$this->logger->alert_error( 'You need to have at least one post type to share.' );
+			$this->logger->alert_error( Rop_I18n::get_labels('misc.no_post_types_selected') );
 			$data['selected_post_types'] = $this->defaults['selected_post_types'];
 		}
 
 		if ( isset( $data['number_of_posts'] ) ) {
 			$data['number_of_posts'] = intval( $data['number_of_posts'] );
 			if ( $data['number_of_posts'] < 0 ) {
-				$this->logger->alert_error( 'A minimum of 1 post needs to be shared.' );
+				$this->logger->alert_error( Rop_I18n::get_labels('misc.min_number_of_concurrent_posts') );
 				$data['number_of_posts'] = 1;
 			}
 			if ( $data['number_of_posts'] > 4 ) {
-				$this->logger->alert_error( 'Maximum posts to allowed to share at once is 4.' );
+				$this->logger->alert_error( Rop_I18n::get_labels('misc.max_number_of_concurrent_posts')  );
 				$data['number_of_posts'] = 4;
 			}
 		}
