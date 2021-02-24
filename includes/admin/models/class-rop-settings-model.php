@@ -409,7 +409,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 			$data['default_interval'] = round( $data['default_interval'], 1 );
 		}
 
-		// FIXME This code doesn't seem to do anything. 
+		// FIXME This code doesn't seem to do anything.
 		// We're actually checking for this in Rop_Scheduler_Model::create_schedule()
 		if ( isset( $data['interval_r'] ) ) {
 			$data['interval_r'] = floatval( $data['interval_r'] );
@@ -427,7 +427,7 @@ class Rop_Settings_Model extends Rop_Model_Abstract {
 			$data['interval_r'] = round( $data['interval_r'], 1 );
 		}
 		// ***
-		
+
 		if ( empty( $data['selected_post_types'] ) ) {
 			$this->logger->alert_error( 'You need to have at least one post type to share.' );
 			$data['selected_post_types'] = $this->defaults['selected_post_types'];
