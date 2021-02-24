@@ -144,6 +144,21 @@ class Rop_I18n {
 				'post_types_attachament_info' => sprintf( __( 'You need to select the media files which you want to share, find out more information %1$shere%2$s.', 'tweet-old-post' ), '<a href="https://docs.revive.social/article/934-how-to-use-revive-old-post-media-sharing-feature" target="_blank">', '</a>' ),
 				'post_types_desc'             => __( 'Which post types should Revive Old Posts share? <a href="https://docs.revive.social/article/968-how-to-share-different-wordpress-post-types-to-social-media-w-revive-old-posts" target="_blank">Learn more</a>.', 'tweet-old-post' ),
 				'filter_by_post_types_desc'   => __( 'Filter posts list by Post Type', 'tweet-old-post' ),
+				'minimum_interval_upsell'           => __(
+					'Changing the minimum interval is available in the PRO
+							version.',
+					'tweet-old-post'
+				),
+				'number_of_posts_upsell'           => __(
+					'Changing the number of posts per share is available in the PRO
+							version.',
+					'tweet-old-post'
+				),
+				'maximum_post_age_upsell'           => __(
+					'Changing the maximum post age is available in the PRO
+					version..',
+					'tweet-old-post'
+				),
 				'post_types_upsell'           => __(
 					'Selecting custom post types is available in the PRO
 							version.',
@@ -261,7 +276,7 @@ class Rop_I18n {
 				'utm_campaign_name'                 => __( 'Campaign Name', 'tweet-old-post' ),
 				'utm_campaign_name_desc'            => __( 'The campaign name you want to show in Google Analytics e.g: "november_sale" etc.', 'tweet-old-post' ),
 				'custom_utm_upsell'                 => __( 'Custom UTMs are only available in the Pro version.', 'tweet-old-post' ),
-				'image_upsell'                      => __( 'Posting with images is available in the Pro version.', 'tweet-old-post' ),
+				'image_upsell'                      => __( 'Sharing as an Image Post is available in the Pro version.', 'tweet-old-post' ),
 				'full_wpml_support_upsell'          => __( 'Language-based sharing only available in the Pro version', 'tweet-old-post' ),
 				'wpml_select_language'                  => __( 'Choose language', 'tweet-old-post' ),
 				'media_post_title'                  => __( 'Media Posts Content', 'tweet-old-post' ),
@@ -285,7 +300,7 @@ class Rop_I18n {
 				'schedule_fixed_days_desc'  => __( 'The days when to share for this account.', 'tweet-old-post' ),
 				'schedule_fixed_time_title' => __( 'Fixed Schedule Time.', 'tweet-old-post' ),
 				'schedule_fixed_time_desc'  => __( 'The time at witch to share for this account.', 'tweet-old-post' ),
-				'schedule_rec_title'        => __( 'Recurring Schedule Interval.', 'tweet-old-post' ),
+				'schedule_rec_title'        => __( 'Recurring Schedule Interval', 'tweet-old-post' ),
 				'schedule_rec_desc'         => __( 'A recurring interval to use for sharing. Once every \'X\' hours.', 'tweet-old-post' ),
 				'schedule_upsell'           => __( 'The Custom Schedule is available only in the Business version.', 'tweet-old-post' ),
 			),
