@@ -428,12 +428,12 @@ You can try to disable any of the security plugins that you use in order to see 
 				'revive_network_desc' => __( 'Revive Network allows you to share content from multiple RSS or Atom feeds from any website on the web to your connected social media accounts. An active Revive Old Posts Pro subscription is required to download and use Revive Network.', 'tweet-old-post' ),
 				'revive_network_learn_more_btn' => __( 'Learn More', 'tweet-old-post' ),
 				'learn_more' => __( 'Learn More!', 'tweet-old-post' ),
-				'min_interval_6_mins'=> __('Minimum interval between consecutive shares is 6 minutes.', 'tweet-old-post'),
-				'min_interval_between_shares'=> __('Lowest allowed value for "Minimum Interval Between Shares" is %d hours in the Lite version of Revive Old Posts.', 'tweet-old-post'),
-				'min_recurring_schedule_interval'=> __('Lowest allowed value for "Recurring Schedule Interval" is %d minutes.', 'tweet-old-post'),
-				'no_post_types_selected'=> __('You need to have at least one post type to share.', 'tweet-old-post'),
-				'min_number_of_concurrent_posts'=> __('At least one posts need to be shared.', 'tweet-old-post'),
-				'max_number_of_concurrent_posts'=> __('Maximum concurrent post shares is 4.', 'tweet-old-post'),
+				'min_interval_6_mins' => __( 'Minimum interval between consecutive shares is 6 minutes.', 'tweet-old-post' ),
+				'min_interval_between_shares' => __( 'Lowest allowed value for "Minimum Interval Between Shares" is %d hours in the Lite version of Revive Old Posts.', 'tweet-old-post' ),
+				'min_recurring_schedule_interval' => __( 'Lowest allowed value for "Recurring Schedule Interval" is %d minutes.', 'tweet-old-post' ),
+				'no_post_types_selected' => __( 'You need to have at least one post type to share.', 'tweet-old-post' ),
+				'min_number_of_concurrent_posts' => __( 'At least one posts need to be shared.', 'tweet-old-post' ),
+				'max_number_of_concurrent_posts' => __( 'Maximum concurrent post shares is 4.', 'tweet-old-post' ),
 			),
 		);
 		if ( empty( $key ) ) {
