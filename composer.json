@@ -19,6 +19,9 @@
     "issues": "https://github.com/Codeinwp/tweet-old-post/issues",
     "source": "https://github.com/Codeinwp/tweet-old-post"
   },
+  "scripts": {
+    "test": "vendor/bin/phpunit"
+  },
   "autoload": {
     "files": [
       "vendor/codeinwp/themeisle-sdk/load.php"
@@ -42,5 +45,8 @@
   },
   "extra": {
     "installer-disable": true
+  },
+  "require-dev": {
+    "phpunit/phpunit": "7.*"
   }
 }
