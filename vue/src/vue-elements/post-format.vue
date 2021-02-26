@@ -13,9 +13,9 @@
                 </div>
             </div>
         </div>
-        <div class="columns " v-if="!isPro">
+        <div class="columns " v-if="!isPro && wpml_active_status">
             <div class="column text-center">
-                <p class="upsell"><i class="fa fa-lock"></i> <span v-html="labels.full_wpml_support_upsell"></span></p>
+                <p class="upsell"><i class="fa fa-info-circle"></i> <span v-html="labels.full_wpml_support_upsell"></span></p>
             </div>
         </div>
         <span class="divider"></span>
@@ -157,7 +157,7 @@
         </div>
         <div class="columns " v-if="!isPro">
             <div class="column text-center">
-                <p class="upsell"><i class="fa fa-lock"></i> {{labels.taxonomy_based_sharing_upsell}}</p>
+                <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.taxonomy_based_sharing_upsell}}</p>
             </div>
         </div>
         <span class="divider"></span>
@@ -279,7 +279,7 @@
 
         <div class="columns " v-if="!isPro">
             <div class="column text-center">
-                <p class="upsell"><i class="fa fa-lock"></i> {{labels.image_upsell}}</p>
+                <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.image_upsell}}</p>
             </div>
         </div>
         <span class="divider"></span>
@@ -309,7 +309,7 @@
         </div>
         <div class="columns " v-if="!isPro">
             <div class="column text-center">
-                <p class="upsell"><i class="fa fa-lock"></i> {{labels.custom_utm_upsell}}</p>
+                <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.custom_utm_upsell}}</p>
             </div>
         </div>
         <span class="divider"></span>

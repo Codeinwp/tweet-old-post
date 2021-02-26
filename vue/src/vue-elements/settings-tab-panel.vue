@@ -33,6 +33,8 @@
                     </div>
                 </div>
                 <span class="divider" v-if="this.apply_exclude_limit_cron && ! isBiz" ></span>
+                
+                <!-- Minimum interval between shares -->
 
                 <div class="columns py-2" v-if="! isBiz">
                     <div class="column col-6 col-sm-12 vertical-align">
@@ -42,6 +44,7 @@
                     <div class="column col-6 col-sm-12 vertical-align">
                         <counter-input id="default_interval" :min-val="generalSettings.min_interval" :step-val="generalSettings.step_interval"
                                        :value.sync="generalSettings.default_interval"></counter-input>
+                                     
                     </div>
                 </div>
                 <span class="divider"></span>
@@ -54,7 +57,11 @@
                         <counter-Input id="min_post_age" :max-val="365"
                                        :value.sync="generalSettings.minimum_post_age"></counter-Input>
                     </div>
+                    
                 </div>
+
+                <span class="divider"></span>
+
                 <!-- Max Post Age -->
                 <div class="columns py-2">
                     <div class="column col-6 col-sm-12 vertical-align">
@@ -63,19 +70,30 @@
                     </div>
                     <div class="column col-6 col-sm-12 vertical-align">
                         <counter-input id="max_post_age" :max-val="365"
-                                       :value.sync="generalSettings.maximum_post_age"></counter-input>
+                                       :value.sync="generalSettings.maximum_post_age" :disabled="!isPro"></counter-input>
                     </div>
                 </div>
-
+                
+                <div class="columns " v-if="!isPro">
+                    <div class="column text-center">
+                        <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.maximum_post_age_upsell}}</p>
+                    </div>
+                </div>
                 <span class="divider"></span>
-
-                <div class="columns py-2">
-                    <div class="column col-6 col-sm-12 vertical-align">
+              
+                <!-- Number of Posts -->
+                <div class="columns py-2" :class="'rop-control-container-'+isPro">
+                    <div class="column col-6 col-sm-12 vertical-align rop-control">
                         <b>{{labels.no_posts_title}}</b>
                         <p class="text-gray">{{labels.no_posts_desc}}</p>
                     </div>
-                    <div class="column col-6 col-sm-12 vertical-align">
-                        <counter-input id="no_of_posts" :value.sync="generalSettings.number_of_posts"></counter-input>
+                    <div class="column col-6 col-sm-12 vertical-align rop-control">
+                        <counter-input id="no_of_posts" :value.sync="generalSettings.number_of_posts" :disabled="!isPro"></counter-input>
+                    </div>
+                </div>
+                   <div class="columns " v-if="!isPro">
+                    <div class="column text-center">
+                        <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.number_of_posts_upsell}}</p>
                     </div>
                 </div>
                 <span class="divider"></span>
@@ -96,6 +114,9 @@
                     </div>
                 </div>
                 <span class="divider"></span>
+               
+                <!-- Post Types -->
+
                 <div class="columns py-2" :class="'rop-control-container-'+isPro">
                     <div class="column col-6 col-sm-12 vertical-align rop-control">
                         <b>{{labels.post_types_title}}</b>
@@ -112,7 +133,7 @@
 
                 <div class="columns " v-if="!isPro">
                     <div class="column text-center">
-                        <p class="upsell"><i class="fa fa-lock"></i> {{labels.post_types_upsell}}</p>
+                        <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.post_types_upsell}}</p>
                     </div>
                 </div>
 
@@ -229,7 +250,7 @@
                 <!-- Upsell -->
                 <div class="columns " v-if="!isPro && isInstantShare">
                     <div class="column text-center">
-                        <p class="upsell"><i class="fa fa-lock"></i> {{labels.instant_share_future_scheduled_upsell}}</p>
+                        <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.instant_share_future_scheduled_upsell}}</p>
                     </div>
                 </div>
                 <span class="divider" v-if="isInstantShare"></span>
@@ -269,7 +290,7 @@
                 <!-- Upsell -->
                 <div class="columns " v-if="!isPro">
                     <div class="column text-center">
-                        <p class="upsell"><i class="fa fa-lock"></i> {{labels.custom_share_upsell}}</p>
+                        <p class="upsell"><i class="fa fa-info-circle"></i> {{labels.custom_share_upsell}}</p>
                     </div>
                 </div>
                 <span class="divider" v-if="isCustomMsgs"></span>

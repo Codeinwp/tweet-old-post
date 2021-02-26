@@ -137,10 +137,10 @@ class Rop_Global_Settings {
 	 */
 	private $settings_defaults = array(
 		'default_interval'      => 10,
-		'min_interval'          => 0.5,
-		'step_interval'         => 0.1,
+		'min_interval'          => 5,
+		'step_interval'         => 0.5,
 		'minimum_post_age'      => 30,
-		'maximum_post_age'      => 0,
+		'maximum_post_age'      => 365,
 		'number_of_posts'       => 1,
 		'more_than_once'        => true,
 		'available_post_types'  => array(),
