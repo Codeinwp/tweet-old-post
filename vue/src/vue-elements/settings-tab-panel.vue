@@ -138,9 +138,9 @@
                 </div>
 
 				<span class="divider" v-if="!isPro"></span>
-
                 <!-- Taxonomies -->
-				<div class="columns py-2" v-if="!isPro">
+                <!-- Price ID 7 is Starter Plan -->
+				<div class="columns py-2" v-if="!isPro || license_price_id === 7">
                     <div class="column col-6 col-sm-12 vertical-align">
                         <b>{{labels.taxonomies_title}}</b>
                         <p class="text-gray"><span v-html="labels.taxonomies_desc"></span></p>
@@ -354,6 +354,9 @@
             },
             isPro: function () {
                 return (this.$store.state.licence >= 1);
+            },
+            license_price_id: function () {
+                return this.$store.state.licence;
             },
             isTaxLimit: function () {
                 if (ropApiSettings.tax_apply_limit > 0) {
