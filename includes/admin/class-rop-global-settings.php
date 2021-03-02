@@ -412,9 +412,9 @@ class Rop_Global_Settings {
 	 * @return  int
 	 */
 	public function license_type() {
-		
+
 		$pro_check = defined( 'ROP_PRO_VERSION' );
-		
+
 		if ( ! $pro_check ) {
 			return - 1;
 		}
@@ -448,7 +448,7 @@ class Rop_Global_Settings {
 		$plan = get_option( $product_key . '_license_plan', - 1 );
 
 		$plan = intval( $plan );
-		
+
 		/**
 		 * If the plan is not fetched but we have pro.
 		 */
