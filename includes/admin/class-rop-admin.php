@@ -1259,7 +1259,7 @@ class Rop_Admin {
 			return;
 		}
 
-		if ( DISABLE_WP_CRON ) {
+		if ( DISABLE_WP_CRON && ROP_DEBUG ) {
 
 			?>
 			<div class="notice notice-error">
