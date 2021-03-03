@@ -241,7 +241,7 @@ class Rop_I18n {
 				'meta_link_yes'                     => __( 'Yes', 'tweet-old-post' ),
 				'meta_link_name_title'              => __( 'Custom Field', 'tweet-old-post' ),
 				'meta_link_name_desc'               => __( 'Custom Field from which to get the URL.', 'tweet-old-post' ),
-				'taxonomy_based_sharing_upsell'         => __( 'Per account Taxonomy filters feature is available in the Pro version.', 'tweet-old-post' ),
+				'taxonomy_based_sharing_upsell'         => __( 'Per account Taxonomy filters feature is available in the Pro version (Personal Plan and higher).', 'tweet-old-post' ),
 				'use_shortner_title'                => __( 'Use URL Shortener', 'tweet-old-post' ),
 				'use_shortner_desc'                 => __( 'Should we use a shortener when adding the links to the content?', 'tweet-old-post' ),
 				'use_shortner_yes'                  => __( 'Yes', 'tweet-old-post' ),
