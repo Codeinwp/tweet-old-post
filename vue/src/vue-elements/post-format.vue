@@ -137,6 +137,7 @@
             </div>
         </div>
         <span class="divider"></span>
+        <!-- License price id 7 is starter plan. Per account based filtering not included in starter plan,  -->
         <div class="columns py-2" :class="'rop-control-container-'+(isPro && (license_price_id !== 7))">
             <div class="column col-6 col-sm-12 vertical-align rop-control">
                 <b>{{labels_settings.taxonomies_title}}</b>
