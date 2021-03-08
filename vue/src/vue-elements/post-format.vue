@@ -59,9 +59,12 @@
             </div>
             <div class="column col-6 col-sm-12 vertical-align">
                 <div class="form-group">
-                    <input class="form-input" type="number" v-model="post_format.maximum_length"
+                    <input v-if="allAccounts[this.account_id].service === 'twitter'" class="form-input" type="number" v-model="post_format.maximum_length"
+                           value="" max="280"/>
+                    <input v-if="allAccounts[this.account_id].service !== 'twitter'" class="form-input" type="number" v-model="post_format.maximum_length"
                            value="" placeholder="" />
                 </div>
+            <p v-if="allAccounts[this.account_id].service === 'twitter'" v-html="labels.twitter_max_characters_notice"></p>
             </div>
         </div>
         <span class="divider"></span>
@@ -105,9 +108,8 @@
                         <i class="form-icon"></i> {{labels.add_link_yes}}
                     </label>
                 </div>
-            <p v-if="allAccounts[this.account_id].account_type === 'instagram_account'">{{labels.instagram_disable_link_recommendation}}</p>
+            <p v-if="allAccounts[this.account_id].account_type === 'instagram_account'" v-html="labels.instagram_disable_link_recommendation"></p>
             </div>
-
         </div>
         <span class="divider"></span>
         <div class="columns py-2">
@@ -279,7 +281,7 @@
                         <i class="form-icon"></i> {{labels.image_yes}}
                     </label>
                 </div>
-            <p v-if="is_instagram_account">{{labels.instagram_image_post_default}}</p>
+            <p v-if="is_instagram_account" v-html="labels.instagram_image_post_default"></p>
             </div>
         </div>
 
