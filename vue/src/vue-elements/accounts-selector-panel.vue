@@ -167,7 +167,8 @@
 					/**
 					 * Allow footer if we have a valid license.
 					 */
-					this.allow_footer = (this.license > 1);
+					// 7 is the price id for Starter license. This feature is not available in Starter plan
+					this.allow_footer = (this.license > 1 && this.license !== 7 ); 
 				}
 				this.action = action;
 				this.component_label = label;
